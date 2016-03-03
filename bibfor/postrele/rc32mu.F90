@@ -120,17 +120,6 @@ subroutine rc32mu()
         call rcver1('MECANIQUE', tbsig(13), tbsig(12))
     endif
 !
-!
-    call wkvect('&&RC3200.CORPS', 'V V L', 1, jcorp)
-    if (ns(10) .ne. 0) then
-        zl(jcorp) = .true.
-    else
-        zl(jcorp) = .false.
-    endif
-!
-!
-!
-!
 ! --- ON RECUPERE L'ABSC_CURV DANS LA TABLE 'TABL_MX'
 !
     valek = 'ABSC_CURV       '

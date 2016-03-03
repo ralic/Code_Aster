@@ -15,19 +15,7 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine rcZ200(sn, snet, fatigu, lrocht,&
-                      mater, symax, transip, transif, fatiguenv)
-        aster_logical :: sn
-        aster_logical :: snet
-        aster_logical :: fatigu
-        aster_logical :: lrocht
-        character(len=8) :: mater
-        real(kind=8) :: symax
-        aster_logical :: transip
-        aster_logical :: transif
-        aster_logical :: fatiguenv
-    end subroutine rcZ200
+    subroutine rc32t()
+    end subroutine rc32t
 end interface

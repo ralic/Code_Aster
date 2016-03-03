@@ -7,6 +7,7 @@ subroutine rcmo02(etat, numsit, vale)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+#include "asterfort/getvtx.h"
     integer :: numsit
     real(kind=8) :: vale(*)
     character(len=1) :: etat
@@ -30,6 +31,7 @@ subroutine rcmo02(etat, numsit, vale)
 !     ------------------------------------------------------------------
 !     RECUPERATION DES MOMENTS POUR UN ETAT STABILISE
 !
+! IN  : TRANSIF: SI OUI B3200
 ! IN  : ETAT   : ETAT STABILISE "A" OU "B"
 !              : OU "S" SI SEISME
 ! IN  : NUMSIT : NUMERO DE LA SITUATION
@@ -48,9 +50,10 @@ subroutine rcmo02(etat, numsit, vale)
 !                VALE(12) = MZ_CORP
 !     ------------------------------------------------------------------
 !
-    integer :: i, j, numcha, jlcha, nbchar, jchar, iret
+    integer :: i, j, numcha, jlcha, nbchar, jchar, iret, n1
     character(len=1) :: etats
     character(len=8) ::  knumes, knumec
+    character(len=16) ::  typmec
 ! DEB ------------------------------------------------------------------
 !
     do 10 i = 1, 12
@@ -61,6 +64,10 @@ subroutine rcmo02(etat, numsit, vale)
     call codent(numsit, 'D0', knumes(2:8))
 !
 ! --- LISTE DES CHARGEMENTS POUR LE NUMERO DE SITUATION
+!
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+!
+    if (typmec .eq. 'B3200_T') goto 8888
 !
     if ((etat.eq.'S') .or. (etat.eq.'A')) then
         etats = 'A'
@@ -93,7 +100,7 @@ subroutine rcmo02(etat, numsit, vale)
 104          continue
         endif
 !
-100  end do
+100 end do
 !
     if (etat .eq. 'S') then
         do 106 j = 1, 12
@@ -101,6 +108,8 @@ subroutine rcmo02(etat, numsit, vale)
 106      continue
     endif
 !
-9999  continue
+9999    continue
+!
+8888 continue
 !
 end subroutine

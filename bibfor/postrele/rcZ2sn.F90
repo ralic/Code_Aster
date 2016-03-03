@@ -1,6 +1,6 @@
 subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse,&
-                  snij, transip, transif)
+                  snij)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -13,9 +13,10 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/jexnom.h"
 #include "asterfort/rcZ2s0.h"
 #include "asterfort/rcZ2st.h"
+#include "asterfort/getvtx.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
-    aster_logical :: seisme, transip, transif
+    aster_logical :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -46,22 +47,24 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 ! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 ! IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
 ! IN  : PI     : PRESSION ASSOCIEE A L'ETAT STABILISE I
-! IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE I (6)
+! IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE I (12)
 ! IN  : NUMSIQ : NUMERO SITUATION DE L'ETAT STABILISE Q
 ! IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
-! IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (6)
+! IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J (12)
 ! IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 ! IN  : MSE    : EFFORTS DUS AU SEISME
 ! OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 !     ------------------------------------------------------------------
 !
     integer :: icmp, nbinst, long, i1, nbthep, nbtheq
-    integer :: jthun, indicp, indicq, jvalin
+    integer :: jthun, indicp, indicq, jvalin, n1
     integer :: nbprep, nbp, nbpreq, nbq, nbmecap, nbmecaq
-    real(kind=8) :: pij, mij(6), sn, sij, sqma(6), sqmi(6), sn1, sn2
+    real(kind=8) :: pij, mij(12), sn, sij, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6), racine, c1, c2, diam, ep, inertie
     character(len=4) :: typ2, typ3
     character(len=8) :: type, knumes, knumet
+    character(len=16) :: typmec
+    aster_logical :: transip, transif
 ! DEB ------------------------------------------------------------------
     call jemarq()
     type = typz
@@ -71,6 +74,18 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
     sn2 = 0.d0
     sij = 0.d0
     racine = 0.d0
+!
+    transip=.false.
+    transif=.false.
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+!
+    if (typmec .eq. 'ZE200b') then
+        transip = .true.
+    endif
+!
+    if (typmec .eq. 'B3200_T') then
+        transif = .true.
+    endif
 !
 !--- RECUPERATION DES CARACTERISTIQUES GEOMETRIQUES
 !--- ET INDICES DE CONTRAINTE
@@ -88,7 +103,7 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
 !
 ! --- SOMME QUADRATIQUE DES VARIATIONS DE MOMENT RESULTANT
 !
-    do 10 icmp = 1, 6
+    do 10 icmp = 1, 12
         mij(icmp) = mi(icmp) - mj(icmp)
         racine = racine + mij(icmp)**2
  10 end do
@@ -133,10 +148,10 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
             endif
             snij = max( snij , sn )
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsip, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthun)
             nbinst = 2
             if (type .eq. 'SN_COMB') then
                 indicp = jthun + 6*nbinst
@@ -212,10 +227,10 @@ subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
                 snij = max( snij , sn )
             endif
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsiq, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthun)
             nbinst = 2
             if (type .eq. 'SN_COMB') then
                 indicq = jthun + 6*nbinst

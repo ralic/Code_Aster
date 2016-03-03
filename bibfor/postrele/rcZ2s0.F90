@@ -73,19 +73,19 @@ subroutine rcZ2s0(option, mm, pr, mse,&
 !     ----------------
     if (nbinst .eq. 0) then
         do 70 i1 = 1, 2
-            mtt(1) = mm(1) + mse(1)*e1(i1)
+            mtt(1) = mm(4) + mse(4)*e1(i1)
             do 60 i2 = 1, 2
-                mtt(2) = mm(2) + mse(2)*e2(i2)
+                mtt(2) = mm(5) + mse(5)*e2(i2)
                 do 50 i3 = 1, 2
-                    mtt(3) = mm(3) + mse(3)*e3(i3)
+                    mtt(3) = mm(6) + mse(6)*e3(i3)
 ! CAS CORPS/TUBULURE
                     if (zl(jcorp)) then
                         do 71 i11 = 1, 2
-                            mtc(1) = mm(4) + mse(4)*e1( i11)
+                            mtc(1) = mm(10) + mse(10)*e1( i11)
                             do 61 i21 = 1, 2
-                                mtc(2) = mm(5) + mse(5)*e2( i21)
+                                mtc(2) = mm(11) + mse(11)*e2( i21)
                                 do 51 i31 = 1, 2
-                                    mtc(3) = mm(6) + mse(6)*e3( i31)
+                                    mtc(3) = mm(12) + mse(12)*e3( i31)
 !
                                     sij = 0.d0
                                     do 12 icmp = 1, 3
@@ -118,19 +118,19 @@ subroutine rcZ2s0(option, mm, pr, mse,&
 !     ------------------------
     else
         do 170 i1 = 1, 2
-            mtt(1) = mm(1) + mse(1)*e1(i1)
+            mtt(1) = mm(4) + mse(4)*e1(i1)
             do 160 i2 = 1, 2
-                mtt(2) = mm(2) + mse(2)*e2(i2)
+                mtt(2) = mm(5) + mse(5)*e2(i2)
                 do 150 i3 = 1, 2
-                    mtt(3) = mm(3) + mse(3)*e3(i3)
+                    mtt(3) = mm(6) + mse(6)*e3(i3)
 ! CAS CORPS/TUBULURE
                     if (zl(jcorp)) then
                         do 171 i11 = 1, 2
-                            mtc(1) = mm(4) + mse(4)*e1( i11)
+                            mtc(1) = mm(10) + mse(10)*e1( i11)
                             do 161 i21 = 1, 2
-                                mtc(2) = mm(5) + mse(5)*e2( i21)
+                                mtc(2) = mm(11) + mse(11)*e2( i21)
                                 do 151 i31 = 1, 2
-                                    mtc(3) = mm(6) + mse(6)*e3( i31)
+                                    mtc(3) = mm(12) + mse(12)*e3( i31)
 !
                                     sij = 0.d0
                                     do 112 icmp = 1, 3

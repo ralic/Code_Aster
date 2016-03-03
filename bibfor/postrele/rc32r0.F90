@@ -89,7 +89,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
 !
         if (pmpb) then
             valer(1) = zr(jvale)

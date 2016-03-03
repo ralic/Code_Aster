@@ -87,15 +87,15 @@ subroutine rcZ2r0(nomres, sn, snet)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
 !
         if (sn) then
-            valer(1) = zr(jvale+1)
+            valer(1) = zr(jvale+5)
         else
             valer(1) = r8vide()
         endif
         if (snet) then
-            valer(2) = zr(jvale+2)
+            valer(2) = zr(jvale+6)
         else
             valer(2) = r8vide()
         endif
@@ -129,7 +129,7 @@ subroutine rcZ2r0(nomres, sn, snet)
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
 !
-                call tbajli(nomres, npar2, nopar2, valei, zr(jpmpba- 1+7*(is-1)+1),&
+                call tbajli(nomres, npar2, nopar2, valei, zr(jpmpba- 1+10*(is-1)+4),&
                             [c16b], valek, 0)
 204         continue
 !
@@ -138,7 +138,7 @@ subroutine rcZ2r0(nomres, sn, snet)
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
 !
-                call tbajli(nomres, npar2, nopar2, valei, zr(jpmpbs- 1+7*(is-1)+1),&
+                call tbajli(nomres, npar2, nopar2, valei, zr(jpmpbs- 1+10*(is-1)+4),&
                             [c16b], valek, 0)
 206         continue
 202     continue

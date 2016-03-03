@@ -1,4 +1,4 @@
-subroutine rcZ2r8(nomres, mater, symax)
+subroutine rcZ2r8(nomres, mater)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -8,7 +8,7 @@ subroutine rcZ2r8(nomres, mater, symax)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/utmess.h"
-    real(kind=8) :: symax
+#include "asterfort/getvr8.h"
     character(len=8) :: nomres, mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +34,8 @@ subroutine rcZ2r8(nomres, mater, symax)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, npar1, im, jresu
+    real(kind=8) :: symax
+    integer :: ibid, npar1, im, jresu,n1
     parameter    ( npar1 = 7 )
     real(kind=8) :: rbid, valer(npar1), valres(1)
     complex(kind=8) :: c16b
@@ -55,6 +56,9 @@ subroutine rcZ2r8(nomres, mater, symax)
     c16b=(0.d0,0.d0)
     call tbajpa(nomres, npar1-2, nopar1(3), typar1(3))
 !
+    symax = r8vide()
+    call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1) 
+!
     if (symax .eq. r8vide()) then
         call rcvale(mater, 'RCCM', 0, k8b, [rbid],&
                     1, 'SY_02   ', valres(1), icodre(1), 0)
@@ -73,10 +77,10 @@ subroutine rcZ2r8(nomres, mater, symax)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jresu)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jresu)
 !
-        valer(2) = zr(jresu+9)
-        valer(3) = zr(jresu+8)
+        valer(2) = zr(jresu+13)
+        valer(3) = zr(jresu+12)
 !
         call rcmcrt(symax, valer(3), valer(4), valer(5))
 !

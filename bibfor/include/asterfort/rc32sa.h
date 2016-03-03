@@ -17,7 +17,7 @@
 !
 interface
     subroutine rc32sa(typz, nommat, mati, matj, snpq,&
-                      spij, typeke, spmeca, kemeca,&
+                      spij, spmeca, kemeca,&
                       kether, saltij, sm, fuij)
         character(len=*) :: typz
         character(len=8) :: nommat
@@ -25,7 +25,6 @@ interface
         real(kind=8) :: matj(*)
         real(kind=8) :: snpq
         real(kind=8) :: spij(2)
-        real(kind=8) :: typeke
         real(kind=8) :: spmeca(2)
         real(kind=8) :: kemeca
         real(kind=8) :: kether

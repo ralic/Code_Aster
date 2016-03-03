@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rc32r8(nomres, mater, symax)
+    subroutine rc32r8(nomres, mater)
         character(len=8) :: nomres
         character(len=8) :: mater
-        real(kind=8) :: symax
     end subroutine rc32r8
 end interface

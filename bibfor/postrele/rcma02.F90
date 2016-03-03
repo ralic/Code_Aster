@@ -38,7 +38,7 @@ subroutine rcma02(etat, iocc, vale)
 !     ------------------------------------------------------------------
 !
     integer :: nbcmp, i, jvale
-    parameter   ( nbcmp = 8 )
+    parameter   ( nbcmp = 7 )
 ! DEB ------------------------------------------------------------------
 !
 ! --- LES CARACTERISTIQUES MATERIAU

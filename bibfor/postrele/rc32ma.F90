@@ -1,16 +1,16 @@
-subroutine rc32ma(mater)
+subroutine rc32ma()
     implicit none
+#include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/getvid.h"
 #include "asterfort/rccome.h"
-#include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
+#include "asterc/getfac.h"
 #include "asterfort/wkvect.h"
-    character(len=8) :: mater
+#include "asterfort/getvr8.h"
+#include "asterfort/rcvale.h"
+#include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,35 +29,24 @@ subroutine rc32ma(mater)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     TRAITEMENT DU CHAM_MATER
 !     RECUPERATION POUR CHAQUE ETAT STABILISE
 !          DE  E, NU, ALPHA    SOUS ELAS
 !          DE  E_REFE          SOUS FATIGUE
 !          DE  M_KE, N_KE, SM  SOUS RCCM
-!
 !     ------------------------------------------------------------------
 !
-    integer :: nbcmp, nbpa, nbpb, iocc, nbsitu, na, nb, ndim, jvala, jvalb, i
-    integer :: nbcmp2
-    parameter    ( nbcmp = 7, nbcmp2=nbcmp+1 )
-    real(kind=8) :: para(nbcmp), tempa, tempb, tke
-    integer :: icodre(nbcmp)
-    character(len=8) :: nopa, nopb, typeke, nocmp(nbcmp)
-    character(len=16) :: motclf
+    character(len=8) :: mater, nocmp(7), nopa, nopb
+    integer :: n1, icodre(7) ,nbsitu, ndim, jvala, jvalb
+    integer :: iocc, na, nbpa, i, nb, nbpb
+    real(kind=8) :: tempa, para(7), tempb
+!
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-!    RECUP TYPE KE
-    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
-    if (typeke .eq. 'KE_MECA') then
-        tke=-1.d0
-    else
-        tke=1.d0
-    endif
-!
-    motclf = 'SITUATION'
-    call getfac(motclf, nbsitu)
+! --- le matériau contient-il tous les comportements nécessaires ?
+    call getvid(' ', 'MATER', scal=mater, nbret=n1)
 !
     call rccome(mater, 'ELAS', icodre(1))
     if (icodre(1) .eq. 1) then
@@ -74,6 +63,9 @@ subroutine rc32ma(mater)
         call utmess('F', 'POSTRCCM_7', sk='RCCM')
     endif
 !
+! --- ON STOCKE 7 VALEURS : E, NU, ALPHA, E_REFE, SM, M_KE, N_KE
+!     POUR LES 2 ETATS STABILISES DE CHAQUE SITUATION
+!
     nocmp(1) = 'E'
     nocmp(2) = 'NU'
     nocmp(3) = 'ALPHA'
@@ -82,19 +74,16 @@ subroutine rc32ma(mater)
     nocmp(6) = 'M_KE'
     nocmp(7) = 'N_KE'
 !
-! --- ON STOCKE 7 VALEURS : E, NU, ALPHA, E_REFE, SM, M_KE, N_KE
-!     POUR LES 2 ETATS STABILISES DE CHAQUE SITUATION
-!
-    ndim = nbcmp2 * nbsitu
+    call getfac('SITUATION', nbsitu)
+    ndim = 7 * nbsitu
     call wkvect('&&RC3200.MATERIAU_A', 'V V R8', ndim, jvala)
     call wkvect('&&RC3200.MATERIAU_B', 'V V R8', ndim, jvalb)
 !
     do 10, iocc = 1, nbsitu, 1
 !
-! ------ ETAT STABILISE "A"
-!        ------------------
+! ------ état stabilisé A
 !
-    call getvr8(motclf, 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
+    call getvr8('SITUATION', 'TEMP_REF_A', iocc=iocc, scal=tempa, nbret=na)
     if (na .eq. 0) then
         nbpa = 0
         nopa = ' '
@@ -113,16 +102,14 @@ subroutine rc32ma(mater)
     call rcvale(mater, 'RCCM', nbpa, nopa, [tempa],&
                 3, nocmp(5), para(5), icodre, 2)
 !
-    do 12 i = 1, nbcmp
-        zr(jvala-1+nbcmp2*(iocc-1)+i) = para(i)
+    do 12 i = 1, 7
+        zr(jvala-1+7*(iocc-1)+i) = para(i)
 12  continue
-    zr(jvala-1+nbcmp2*(iocc-1)+8) = tke
 !
-! ------ ETAT STABILISE "B"
-!        ------------------
+! ------ état stabilisé B
 !
-    call getvr8(motclf, 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
-    if (na .eq. 0) then
+    call getvr8('SITUATION', 'TEMP_REF_B', iocc=iocc, scal=tempb, nbret=nb)
+    if (nb .eq. 0) then
         nbpb = 0
         nopb = ' '
         tempb = 0.d0
@@ -140,10 +127,9 @@ subroutine rc32ma(mater)
     call rcvale(mater, 'RCCM', nbpb, nopb, [tempb],&
                 3, nocmp(5), para(5), icodre, 2)
 !
-    do 14 i = 1, nbcmp
-        zr(jvalb-1+nbcmp2*(iocc-1)+i) = para(i)
+    do 14 i = 1, 7
+        zr(jvalb-1+7*(iocc-1)+i) = para(i)
 14  continue
-    zr(jvalb-1+nbcmp2*(iocc-1)+8) = tke
 !
     10 end do
 !

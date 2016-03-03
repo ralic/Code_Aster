@@ -18,15 +18,6 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
-                      mater, symax, fatiguenv)
-        aster_logical :: pmpb
-        aster_logical :: sn
-        aster_logical :: snet
-        aster_logical :: fatigu
-        aster_logical :: lrocht
-        character(len=8) :: mater
-        real(kind=8) :: symax
-        aster_logical :: fatiguenv
+    subroutine rc3200()
     end subroutine rc3200
 end interface

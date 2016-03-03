@@ -55,6 +55,7 @@ SN1 = POST_RCCM( MATER=MAT,
                  INDI_SIGM=(
                    _F(C1=1.0,
                       K1=1.0,
+                      K2=1.0,
                       C2=2.0,
                       C3=1.0,
                       K3=1.0,),),

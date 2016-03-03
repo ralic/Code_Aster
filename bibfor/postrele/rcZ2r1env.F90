@@ -126,17 +126,17 @@ subroutine rcZ2r1env(nomres)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
 !
-        utot = zr(jvale+6)
-        utotenv = zr(jvale+7)
+        utot = zr(jvale+10)
+        utotenv = zr(jvale+11)
         call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
         if (utotenv/utot .gt. fenint) then
             utotenv = utotenv/fenint
-            zr(jvale+7)=utotenv  
+            zr(jvale+11)=utotenv  
         endif
 !
-        call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale),&
+        call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale+4),&
                     [c16b], valek, 0)
 !
 110  end do
@@ -166,14 +166,14 @@ subroutine rcZ2r1env(nomres)
             do 104 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
-                call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+7*(is-1)+1),&
+                call tbajli(nomres, npar4, nopar4, valei, zr(jreas- 1+10*(is-1)+4),&
                             [c16b], valek, 0)
 104          continue
             valek(2) = 'SANS'
             do 106 is = 1, nbsigr
                 ioc = zi(jnsg+is-1)
                 valei(2) = situ_numero(ioc)
-                call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+7*(is-1)+1),&
+                call tbajli(nomres, npar4, nopar4, valei, zr(jress- 1+10*(is-1)+4),&
                             [c16b], valek, 0)
 106          continue
 102      continue
@@ -225,9 +225,9 @@ subroutine rcZ2r1env(nomres)
         do 112 im = 1, 2
             valek(2) = lieu(im)
 !
-            call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
-            utot = zr(jvale+6)
-            utotenv = zr(jvale+7)
+            call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
+            utot = zr(jvale+10)
+            utotenv = zr(jvale+11)
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
 !
             k24t = '&&RC3200.FACT_USAGE '//lieu(im)

@@ -121,7 +121,7 @@ subroutine rc32r1(nomres)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
 !
         call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale),&
                     [c16b], valek, 0)
@@ -212,7 +212,7 @@ subroutine rc32r1(nomres)
         do 112 im = 1, 2
             valek(2) = lieu(im)
 !
-            call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+            call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
             utot = zr(jvale+10)
 !
             k24t = '&&RC3200.FACT_USAGE '//lieu(im)

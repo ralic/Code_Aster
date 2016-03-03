@@ -1,4 +1,4 @@
-subroutine rcZ2rt(transip, transif, pi, pj, simpij)
+subroutine rcZ2rt(pi, pj, simpij)
     implicit   none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -6,7 +6,6 @@ subroutine rcZ2rt(transip, transif, pi, pj, simpij)
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
     real(kind=8) :: pi, pj, simpij
-    aster_logical :: transip, transif
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,23 +30,14 @@ subroutine rcZ2rt(transip, transif, pi, pj, simpij)
 !     - AVEC TRANSITOIRES DE PRESSION P(t), LA CONTRAINTE VAUT ???
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: presi, presj, rayon, ep
-    integer :: jvalin
+    real(kind=8) :: pij
+!
 ! DEB ------------------------------------------------------------------
 !
     call jemarq()
 !
-    call jeveuo('&&RC3200.INDI', 'L', jvalin)
-    rayon = zr(jvalin+6)
-    ep = zr(jvalin+7)
-!
-    if (transip .or. transif) then
-        simpij = 0.d0
-    else
-        presi= pi*rayon/ep
-        presj= pj*rayon/ep  
-        simpij = max(presi, presj)
-   endif
+    pij=pi-pj
+    simpij = 0.d0*pij
 !
     call jedema()
 end subroutine

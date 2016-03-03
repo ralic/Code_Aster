@@ -1,16 +1,20 @@
-subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
-                  mater, symax, fatiguenv)
+subroutine rc32rs(b3200, mater, lpmpb, lsn,&
+                  lther, lfat, lefat)
     implicit none
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/rc32r0.h"
-#include "asterfort/rc32r1.h"
-#include "asterfort/rc32r8.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/rc32r1env.h"
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht, fatiguenv
-    real(kind=8) :: symax
+#include "asterfort/rcZ2r1env.h"
+#include "asterfort/rc32r1.h"
+#include "asterfort/rcZ2r1.h"
+#include "asterfort/rc32r0.h"
+#include "asterfort/rcZ2r0.h"
+#include "asterfort/rc32r8.h"
+#include "asterfort/rcZ2r8.h"
     character(len=8) :: mater
+    aster_logical :: b3200, lpmpb, lsn, lther, lfat, lefat
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,8 +33,8 @@ subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
-!     STOCKAGE DES RESULTATS DANS LA TABLE DE SORTIE
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
+!     AFFICHAGE DES RESULTATS DANS LA TABLE DE SORTIE
 !
 !     ------------------------------------------------------------------
     character(len=8) :: nomres
@@ -41,23 +45,32 @@ subroutine rc32rs(pmpb, sn, snet, fatigu, lrocht,&
 !
     call tbcrsd(nomres, 'G')
 !
-!     -----------------------------------------------------------------
-!
-    if (fatigu) then
-!
-        if (fatiguenv) then
-            call rc32r1env(nomres)
+    if (lfat) then
+        if (lefat) then
+            if(b3200) then
+                call rc32r1env(nomres)
+            else
+                call rcZ2r1env(nomres)
+            endif
         else
-            call rc32r1(nomres)
+            if(b3200) then
+                call rc32r1(nomres)
+            else
+                call rcZ2r1(nomres)
+            endif
         endif
-!
     else
-!
-        call rc32r0(nomres, pmpb, sn, snet)
-!
+        if(b3200) then
+            call rc32r0(nomres, lpmpb, lsn, lther)
+        else
+            call rcZ2r0(nomres, lsn, lther)
+        endif
     endif
 !
-!     -----------------------------------------------------------------
-    if (lrocht) call rc32r8(nomres, mater, symax)
+    if (b3200) then
+        if (lther) call rc32r8(nomres, mater)
+    else
+        if (lther) call rcZ2r8(nomres, mater)
+    endif
 !
 end subroutine

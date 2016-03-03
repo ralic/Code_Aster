@@ -72,7 +72,8 @@ cata_msg = {
 """),
 
     12: _(u"""
- "NUME_GROUPE" doit être strictement positif
+ "NUME_GROUPE" est obligatoire, il peut contenir 1 ou 2 valeurs qui 
+ doivent être strictement positives
 """),
 
     13: _(u"""
@@ -182,7 +183,8 @@ cata_msg = {
 """),
 
     34: _(u"""
- avec une ou des situations de passage, il faut définir au plus 3 groupes
+ "NUME_PASSAGE" contient les numéros des deux groupes la situation de passage, 
+ ces numéros sont strictement positifs. Compatible avec au plus 3 groupes
 """),
 
     36: _(u"""

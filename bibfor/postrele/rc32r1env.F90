@@ -123,7 +123,7 @@ subroutine rc32r1env(nomres)
 !
         valek(2) = lieu(im)
 !
-        call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+        call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
 !
         utot = zr(jvale+10)
         utotenv = zr(jvale+11)
@@ -222,7 +222,7 @@ subroutine rc32r1env(nomres)
         do 112 im = 1, 2
             valek(2) = lieu(im)
 !
-            call jeveuo('&&RC3200.RESULTAT  .'//lieu(im), 'L', jvale)
+            call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jvale)
             utot = zr(jvale+10)
             utotenv = zr(jvale+11)
             call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)

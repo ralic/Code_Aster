@@ -1,9 +1,10 @@
 subroutine rc32sa(typz, nommat, mati, matj, snpq,&
-                  spij, typeke, spmeca, kemeca,&
+                  spij, spmeca, kemeca,&
                   kether, saltij, sm, fuij)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/getvtx.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/limend.h"
@@ -12,7 +13,7 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 #include "asterfort/utmess.h"
 #include "asterfort/jeveuo.h"
     real(kind=8) :: mati(*), matj(*), snpq, spij(2), saltij(2), sm
-    real(kind=8) :: typeke, spmeca(2), spther(2), fuij(2)
+    real(kind=8) :: spmeca(2), spther(2), fuij(2)
     character(len=8) :: nommat
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -42,7 +43,6 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 ! IN  : MATJ   : MATERIAU ASSOCIE A L'ETAT STABILISE J
 ! IN  : SNPQ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 ! IN  : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
-! IN  : TYPEKE    : =-1 SI KE_MECA, =1 SI KE_MIXTE
 ! IN  : SPMECA   : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
 ! OUT : SALTIJ : AMPLITUDE DE CONTRAINTE ENTRE LES ETATS I ET J
 ! OUT : FUIJ : FACTEUR D USAGE POUR LA COMBINAISON ENTRE I ET J
@@ -51,8 +51,8 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 !
     real(kind=8) :: e, ec, para(3), m, n, nadm(1), saltm, salth, kemeca, kether
     real(kind=8) :: kethe1, valr(2), ktsn, ktsp
-    character(len=8) :: kbid
-    integer :: icodre(1), jvalin
+    character(len=8) :: kbid, typeke
+    integer :: icodre(1), jvalin, nb
     aster_logical :: endur
 ! DEB ------------------------------------------------------------------
 !
@@ -89,7 +89,8 @@ subroutine rc32sa(typz, nommat, mati, matj, snpq,&
 ! --- CALCUL DE LA CONTRAINTE EQUIVALENTE ALTERNEE SALT
 ! --- CALCUL DU NOMBRE DE CYCLES ADMISSIBLE nadm(1)
 !
-    if (typeke .lt. 0.d0) then
+    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
+    if (typeke .eq. 'KE_MECA') then
         call prccm3(nommat, para, sm, snpq, spij(1),&
                     kemeca, saltij(1), nadm(1))
         fuij(1) = 1.d0 / nadm(1)

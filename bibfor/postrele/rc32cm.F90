@@ -1,5 +1,19 @@
 subroutine rc32cm()
     implicit none
+#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/jemarq.h"
+#include "asterc/getfac.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/getvis.h"
+#include "asterfort/codent.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/getvr8.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,84 +32,74 @@ subroutine rc32cm()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
 !     LECTURE DU MOT CLE FACTEUR "CHAR_MECA"
-!
 !     ------------------------------------------------------------------
 !
-#include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/codent.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-!
-    integer :: n1, n1t, iocc, ndim, nbchar, nume, jchar
+    integer :: nbchar, iocc, nume, n1, jchar, i, n2
     character(len=8) :: knumec
-    character(len=16) :: motclf
+    integer :: jcorp
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    motclf = 'CHAR_MECA'
-    call getfac(motclf, nbchar)
-!
-    ndim = 0
-    do 10, iocc = 1, nbchar, 1
-    call getvis(motclf, 'NUME_CHAR', iocc=iocc, scal=nume, nbret=n1)
-    ndim = max (ndim, nume)
-    10 end do
-!
+    call getfac('CHAR_MECA', nbchar)
+!-- si on est en B3200_T
+    if (nbchar .eq. 0) goto 9999
+!-- sinon
     call jecrec('&&RC3200.VALE_CHAR', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbchar)
 !
     do 20, iocc = 1, nbchar, 1
 !
-    call getvis(motclf, 'NUME_CHAR', iocc=iocc, scal=nume, nbret=n1)
+        call getvis('CHAR_MECA', 'NUME_CHAR', iocc=iocc, scal=nume, nbret=n1)
+        knumec = 'C       '
+        call codent(nume, 'D0', knumec(2:8))
 !
-    knumec = 'C       '
-    call codent(nume, 'D0', knumec(2:8))
+        call jecroc(jexnom('&&RC3200.VALE_CHAR', knumec))
+        call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONMAX', 12)
+        call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONUTI', 12)
+        call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'E', jchar)
 !
+!-- cas simple ou cas corps/tubulure ?
+        do 30 i=1,12
+            zr(jchar-1+i)=0.d0
+ 30 end do
 !
-    call jecroc(jexnom('&&RC3200.VALE_CHAR', knumec))
-    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONMAX', 12)
-    call jeecra(jexnom('&&RC3200.VALE_CHAR', knumec), 'LONUTI', 12)
-    call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'E', jchar)
+        call getvr8('CHAR_MECA', 'MX', iocc=iocc, nbval=0, nbret=n2)
 !
-! ------ UN SEUL TENSEUR OU 2 ?
+        if (n2 .ne. 0) then
+            call getvr8('CHAR_MECA', 'FX', iocc=iocc, scal=zr(jchar-1+1), nbret=n1)
+            call getvr8('CHAR_MECA', 'FY', iocc=iocc, scal=zr(jchar-1+2), nbret=n1)
+            call getvr8('CHAR_MECA', 'FZ', iocc=iocc, scal=zr(jchar-1+3), nbret=n1)
+            call getvr8('CHAR_MECA', 'MX', iocc=iocc, scal=zr(jchar-1+4), nbret=n1)
+            call getvr8('CHAR_MECA', 'MY', iocc=iocc, scal=zr(jchar-1+5), nbret=n1)
+            call getvr8('CHAR_MECA', 'MZ', iocc=iocc, scal=zr(jchar-1+6), nbret=n1)
 !
-    call getvr8(motclf, 'MX', iocc=iocc, nbval=0, nbret=n1t)
+        else
+            call getvr8('CHAR_MECA', 'FX_TUBU', iocc=iocc, scal=zr(jchar-1+1), nbret=n1)
+            call getvr8('CHAR_MECA', 'FY_TUBU', iocc=iocc, scal=zr(jchar-1+2), nbret=n1)
+            call getvr8('CHAR_MECA', 'FZ_TUBU', iocc=iocc, scal=zr(jchar-1+3), nbret=n1)
+            call getvr8('CHAR_MECA', 'MX_TUBU', iocc=iocc, scal=zr(jchar-1+4), nbret=n1)
+            call getvr8('CHAR_MECA', 'MY_TUBU', iocc=iocc, scal=zr(jchar-1+5), nbret=n1)
+            call getvr8('CHAR_MECA', 'MZ_TUBU', iocc=iocc, scal=zr(jchar-1+6), nbret=n1)
 !
-    if (n1t .ne. 0) then
-        call getvr8(motclf, 'FX', iocc=iocc, scal=zr(jchar-1+1), nbret=n1)
-        call getvr8(motclf, 'FY', iocc=iocc, scal=zr(jchar-1+2), nbret=n1)
-        call getvr8(motclf, 'FZ', iocc=iocc, scal=zr(jchar-1+3), nbret=n1)
-        call getvr8(motclf, 'MX', iocc=iocc, scal=zr(jchar-1+4), nbret=n1)
-        call getvr8(motclf, 'MY', iocc=iocc, scal=zr(jchar-1+5), nbret=n1)
-        call getvr8(motclf, 'MZ', iocc=iocc, scal=zr(jchar-1+6), nbret=n1)
-!
-    else
-        call getvr8(motclf, 'FX_TUBU', iocc=iocc, scal=zr(jchar-1+1), nbret=n1)
-        call getvr8(motclf, 'FY_TUBU', iocc=iocc, scal=zr(jchar-1+2), nbret=n1)
-        call getvr8(motclf, 'FZ_TUBU', iocc=iocc, scal=zr(jchar-1+3), nbret=n1)
-        call getvr8(motclf, 'MX_TUBU', iocc=iocc, scal=zr(jchar-1+4), nbret=n1)
-        call getvr8(motclf, 'MY_TUBU', iocc=iocc, scal=zr(jchar-1+5), nbret=n1)
-        call getvr8(motclf, 'MZ_TUBU', iocc=iocc, scal=zr(jchar-1+6), nbret=n1)
-!
-        call getvr8(motclf, 'FX_CORP', iocc=iocc, scal=zr(jchar-1+7), nbret=n1)
-        call getvr8(motclf, 'FY_CORP', iocc=iocc, scal=zr(jchar-1+8), nbret=n1)
-        call getvr8(motclf, 'FZ_CORP', iocc=iocc, scal=zr(jchar-1+9), nbret=n1)
-        call getvr8(motclf, 'MX_CORP', iocc=iocc, scal=zr(jchar-1+10), nbret=n1)
-        call getvr8(motclf, 'MY_CORP', iocc=iocc, scal=zr(jchar-1+11), nbret=n1)
-        call getvr8(motclf, 'MZ_CORP', iocc=iocc, scal=zr(jchar-1+12), nbret=n1)
-    endif
+            call getvr8('CHAR_MECA', 'FX_CORP', iocc=iocc, scal=zr(jchar-1+7), nbret=n1)
+            call getvr8('CHAR_MECA', 'FY_CORP', iocc=iocc, scal=zr(jchar-1+8), nbret=n1)
+            call getvr8('CHAR_MECA', 'FZ_CORP', iocc=iocc, scal=zr(jchar-1+9), nbret=n1)
+            call getvr8('CHAR_MECA', 'MX_CORP', iocc=iocc, scal=zr(jchar-1+10), nbret=n1)
+            call getvr8('CHAR_MECA', 'MY_CORP', iocc=iocc, scal=zr(jchar-1+11), nbret=n1)
+            call getvr8('CHAR_MECA', 'MZ_CORP', iocc=iocc, scal=zr(jchar-1+12), nbret=n1)
+        endif
 !
     20 end do
 !
+    call wkvect('&&RC3200.CORPS', 'V V L', 1, jcorp)
+    if (n2 .ne. 0) then
+        zl(jcorp) = .false.
+    else
+        zl(jcorp) = .true.
+    endif
+!
+9999 continue
     call jedema()
 end subroutine

@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rc32ac(lpmpb, lsn, lsnet, lfatig, lrocht,&
-                      mater, fatiguenv)
+    subroutine rc32ac(b3200, mater, lpmpb, lsn,&
+                      lther, lfat, lefat)
+        aster_logical :: b3200
+        character(len=8) :: mater
         aster_logical :: lpmpb
         aster_logical :: lsn
-        aster_logical :: lsnet
-        aster_logical :: lfatig
-        aster_logical :: lrocht
-        character(len=8) :: mater
-        aster_logical :: fatiguenv
+        aster_logical :: lther
+        aster_logical :: lfat
+        aster_logical :: lefat
     end subroutine rc32ac
 end interface

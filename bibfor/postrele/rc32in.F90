@@ -2,10 +2,9 @@ subroutine rc32in()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/getvr8.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -25,50 +24,61 @@ subroutine rc32in()
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
-!     RECUPERATION DES FACTEURS D'INTENSITE DE CONTRAINTE 
-!                  KT_SN ET KT_SP
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200 et ZE200
+!     RECUPERATION
+!          DE  C1, C2, K1, K2, C3, K3      SOUS INDI_SIGM
+!          DE  DIAM, INERTIE, EP           SOUS CARAC_TUYAU
+!          DE  KT_SN, KT_SP                SOUS FACT_SIGM
 !     ------------------------------------------------------------------
 !
-    character(len=16) :: motclf3    
-    integer :: jvalin, ndim, n1, ik3, ik4, nb3
+    integer :: ndim, jvalin, n1, ktsn, ktsp
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
+!
     ndim = 11
     call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
-    motclf3 = 'FACT_SIGM'
 !
-    zr(jvalin) = 0
-    zr(jvalin+1) = 0
-    zr(jvalin+2) = 0
-    zr(jvalin+3) = 0
-    zr(jvalin+4) = 0
-    zr(jvalin+5) = 0
-    zr(jvalin+6) = 1
-    zr(jvalin+7) = 1
-    zr(jvalin+8) = 1
+! --- indices de contrainte et carac. géométriques de la tuyauterie
+! ----- cas du ze200
+    call getvr8('INDI_SIGM', 'K1', nbval=0, iocc=1, nbret=n1)
+    if (n1 .ne. 0) then
+        call getvr8('INDI_SIGM', 'K1', scal=zr(jvalin), iocc=1, nbret=n1)
+        call getvr8('INDI_SIGM', 'C1', scal=zr(jvalin+1), iocc=1, nbret=n1)  
+        call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1)  
+        call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1)
+        call getvr8('INDI_SIGM', 'K3', scal=zr(jvalin+4), iocc=1, nbret=n1)  
+        call getvr8('INDI_SIGM', 'C3', scal=zr(jvalin+5), iocc=1, nbret=n1)
 !
-    call getfac(motclf3, nb3)
-    if(nb3 .eq. 0) then
-        zr(jvalin+9) = 1
-        zr(jvalin+10) = 1
-    else 
-        call getvr8(motclf3, 'KT_SN', iocc=1, nbval=0, nbret=ik3)
-        if (ik3 .ne. 0) then
-            call getvr8(motclf3, 'KT_SN', scal=zr(jvalin+9), iocc=1, nbret=n1)
-        else
-            zr(jvalin+9) = 1
-        endif
+        call getvr8('TUYAU', 'R', scal=zr(jvalin+6),iocc=1, nbret=n1)
+        call getvr8('TUYAU', 'EP', scal=zr(jvalin+7),iocc=1, nbret=n1)
+        call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1)
+! ----- cas du b3200
+    else
+        zr(jvalin) = 0
+        zr(jvalin+1) = 0
+        zr(jvalin+2) = 0
+        zr(jvalin+3) = 0
+        zr(jvalin+4) = 0
+        zr(jvalin+5) = 0
+        zr(jvalin+6) = 1
+        zr(jvalin+7) = 1
+        zr(jvalin+8) = 1
+    endif
 !
-        call getvr8(motclf3, 'KT_SP', iocc=1, nbval=0, nbret=ik4)
-        if (ik4 .ne. 0) then
-            call getvr8(motclf3, 'KT_SP', scal=zr(jvalin+10), iocc=1, nbret=n1)
-        else
-            zr(jvalin+10) = 1
-        endif
-    endif             
+! --- facteur de concentration de contrainte (b3200 uniquement)
+    zr(jvalin+9)  = 1
+    zr(jvalin+10) = 1
+!
+    call getvr8('FACT_SIGM', 'KT_SN', iocc=1, nbval=0, nbret=ktsn)
+    if (ktsn .ne. 0) then
+        call getvr8('FACT_SIGM', 'KT_SN', scal=zr(jvalin+9), iocc=1, nbret=ktsn)
+    endif
+!
+    call getvr8('FACT_SIGM', 'KT_SP', iocc=1, nbval=0, nbret=ktsp)
+    if (ktsp .ne. 0) then
+        call getvr8('FACT_SIGM', 'KT_SP', scal=zr(jvalin+10), iocc=1, nbret=ktsp)
+    endif                 
 !
     call jedema()    
 end subroutine
-

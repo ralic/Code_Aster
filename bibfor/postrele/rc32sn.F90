@@ -116,10 +116,10 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
             endif
             snij = max( snij , sn )
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsip, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthun)
             nbinst = 2
             if (type .eq. 'SN_COMB') then
                 indicp = jthun + 6*nbinst
@@ -184,10 +184,10 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                 snij = max( snij , sn )
             endif
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsiq, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthun)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthun)
             nbinst = 2
             if (type .eq. 'SN_COMB') then
                 indicq = jthun + 6*nbinst

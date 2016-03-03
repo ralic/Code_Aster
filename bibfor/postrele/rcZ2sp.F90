@@ -1,6 +1,6 @@
 subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                   numsiq, pj, mj, seisme, mse, sn,&
-                  spij, typeke, spmeca, transip, transif)
+                  spij, spmeca)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -14,10 +14,11 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 #include "asterfort/rcZ2s0.h"
 #include "asterfort/rcZ2s2.h"
 #include "asterfort/rcZ2st.h"
+#include "asterfort/getvtx.h"
     integer :: numsip, numsiq
-    real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), typeke, spmeca(2)
+    real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), spmeca(2)
     real(kind=8) :: sn
-    aster_logical :: seisme, transip, transif
+    aster_logical :: seisme
     character(len=4) :: lieu
     character(len=*) :: typz
 !     ------------------------------------------------------------------
@@ -56,19 +57,23 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 ! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
 !
-    integer :: icmp, long, nbinst, nbthep, nbtheq
+    integer :: icmp, long, nbinst, nbthep, nbtheq, n1, nb
     integer :: jthunq, i1, jthunp, jthun, jvalin, nbprep, nbp
     integer :: nbpreq, nbq, nbmecap, nbmecaq, indicp, indicq
-    real(kind=8) :: pij, mij(6), sp, sij, sqma(6), sqmi(6)
+    real(kind=8) :: pij, mij(12), sp, sij, sqma(6), sqmi(6)
     real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
     real(kind=8) :: racine, c1, c2, diam, ep, inertie, k1, k2, k3, c3
     real(kind=8) :: spqmec1(6), spqmec2(6)
     character(len=4) :: typ2, typ3
-    character(len=8) :: type, knumes, knumet
+    character(len=8) :: type, knumes, knumet, typeke
+    character(len=16) :: typmec
+    aster_logical :: transip, transif
 ! DEB ------------------------------------------------------------------
     call jemarq()
     type = typz
     typ3 = 'SP'
+!
+    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
 !
     spij(1) = 0.d0
     spij(2) = 0.d0
@@ -82,6 +87,18 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !
     sij = 0.d0
     racine = 0.d0
+!
+    transip=.false.
+    transif=.false.
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+!
+    if (typmec .eq. 'ZE200b') then
+        transip = .true.
+    endif
+!
+    if (typmec .eq. 'B3200_T') then
+        transif = .true.
+    endif
 !
 !--- RECUPERATION DES CARACTERISTIQUES GEOMETRIQUES
 !--- ET INDICES DE CONTRAINTE
@@ -103,7 +120,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
 !
 ! --- SOMME QUADRATIQUE DES VARIATIONS DE MOMENT RESULTANT
 !
-    do 10 icmp = 1, 6
+    do 10 icmp = 1, 12
         mij(icmp) = mi(icmp) - mj(icmp)
         racine = racine + mij(icmp)**2
  10 end do
@@ -157,12 +174,12 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
             endif
             spij(1) = max(spij(1),sp)
             if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
-            if (typeke .gt. 0.d0) spmeca(1)=sp
+            if (typeke .eq. 'KE_MIXTE') spmeca(1)=sp
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsip, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunp)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthunp)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then
@@ -182,7 +199,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 endif
                 spij(1) = max(spij(1),sp)
 ! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour la situation p
-                if (typeke .gt. 0.d0) then
+                if (typeke .eq. 'KE_MIXTE') then
                     nbinst = 2
 ! on vient chercher les contraintes mécaniques seules
                     indicp = jthunp + nbinst*6*4
@@ -242,10 +259,10 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                 endif
             endif
         else
-            knumet = 'T       '
+            knumet = 'S       '
             call codent(numsiq, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.T .'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.T .'//lieu, knumet), 'L', jthunq)
+            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
+            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthunq)
             nbinst = 2
             typ2 = '????'
             if (type .eq. 'SP_COMB') then
@@ -275,7 +292,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                         call rcZ2s2(sij, sqth, spij)
                     endif
 ! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour la situation p
-                    if (typeke .gt. 0.d0) then
+                    if (typeke .eq. 'KE_MIXTE') then
                        nbinst = 2
 ! on vient chercher les contraintes mécaniques seules
                         indicq = jthunq + nbinst*6*4
@@ -304,7 +321,7 @@ subroutine rcZ2sp(typz, lieu, numsip, pi, mi,&
                         spij(2) = min(spqma(1),spqmi(1))
                     endif
 ! CAS DE KE_MIXTE (CALCUL DE SP_MECA) pour les situations p et q
-                    if (typeke .gt. 0.d0) then
+                    if (typeke .eq. 'KE_MIXTE') then
                         nbinst = 2
 ! on vient chercher les contraintes mécaniques seules
                         indicp = jthunp + nbinst*6*4

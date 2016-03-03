@@ -1,20 +1,19 @@
-subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
-                  mater, symax, fatiguenv)
+subroutine rc3200()
     implicit none
 #include "asterf_types.h"
-#include "asterfort/jedetc.h"
-#include "asterfort/rc32ac.h"
-#include "asterfort/rc32cm.h"
-#include "asterfort/rc32ma.h"
-#include "asterfort/rc32mu.h"
-#include "asterfort/rc32rs.h"
+#include "jeveux.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/getvid.h"
+#include "asterc/getfac.h"
 #include "asterfort/rc32si.h"
-#include "asterfort/rcZ2t.h"
+#include "asterfort/rc32ma.h"
 #include "asterfort/rc32in.h"
-    real(kind=8) :: symax
-    aster_logical :: pmpb, sn, snet, fatigu, lrocht
-    aster_logical :: fatiguenv
-    character(len=8) :: mater
+#include "asterfort/rc32cm.h"
+#include "asterfort/rc32t.h"
+#include "asterfort/rc32mu.h"
+#include "asterfort/rc32ac.h"
+#include "asterfort/rc32rs.h"
+#include "asterfort/jedetc.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,71 +32,105 @@ subroutine rc3200(pmpb, sn, snet, fatigu, lrocht,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200 et B3200_T
+!
+    character(len=8) :: mater
+    integer :: n1, nbther, nbopt, iopt
+    character(len=16) :: typmec, kopt(3)
+    aster_logical :: b3200, lpmpb, lsn, lther, lfat, lefat
+    real(kind=8) :: symax
 !
 ! DEB ------------------------------------------------------------------
 !
-    aster_logical :: transip, transif
-!
+    b3200 = .false.
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+    if (typmec .eq. 'B3200_UNIT') b3200=.true.
+
 !     ------------------------------------------------------------------
-!                           LES SITUATIONS
+!              TRAITEMENT DES SITUATIONS (GROUPES, PASSAGE...)
 !     ------------------------------------------------------------------
 !
-    transip = .false.
-    transif = .false.
-    call rc32si(transip, transif)
+    call rc32si()
 !
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CARACTERISTIQUES MATERIAU
 !     ------------------------------------------------------------------
 !
-    call rc32ma(mater)
+    call rc32ma()
 !
 !     ------------------------------------------------------------------
-!              RECUPERATION DES FACTEURS D'INTENSITE DE CONTRAINTE
+!              RECUPERATION DES INDICES DE CONTRAINTES 
+!              ET DES CARACTERISTIQUES DE LA TUYAUTERIE
 !     ------------------------------------------------------------------
 !
     call rc32in()
-!
-!     ------------------------------------------------------------------
-!              RECUPERATION DU CALCUL MECANIQUE UNITAIRE
-!     ------------------------------------------------------------------
-!
-    call rc32mu()
-!
+! 
 !     ------------------------------------------------------------------
 !              RECUPERATION DES CHARGES MECANIQUES
+!                        SOUS CHAR_MECA 
 !     ------------------------------------------------------------------
 !
     call rc32cm()
 !
 !     ------------------------------------------------------------------
-!              RECUPERATION DES RESULTATS THERMIQUES
+!                  RECUPERATION DES TRANSITOIRES :
+!                    - THERMIQUES(si RESU_THER)
+!                    - DE PRESSION(si RESU_PRES)
+!                    - EFFORTS EXTERNES(si RESU_MECA)
 !     ------------------------------------------------------------------
 !
-    call rcZ2t()
+    call rc32t()
 !
 !     ------------------------------------------------------------------
 !              CALCULS DES AMPLITUDES DE CONTRAINTES
+!                  ET DU FACTEUR D'USAGE
 !     ------------------------------------------------------------------
 !
-!     CALCUL DES AMPLITUDES DE CONTRAINTES QUI CORRESPONDENT AUX
-!     COMBINAISONS DE TOUS LES ETATS STABILISES APPARTENANT AUX
-!     SITUATIONS D'UN GROUPE DONNE
+    call getvid(' ', 'MATER', scal=mater, nbret=n1)
 !
-! --- CALCUL DES AMPLITUDES DE CONTRAINTES
-!     CALCUL DU FACTEUR D'USAGE
-!     -------------------------
+    lpmpb = .false.
+    lsn   = .false.
+    lther = .false.
+    lfat  = .false.
+    lefat = .false.
 !
-    call rc32ac(pmpb, sn, snet, fatigu, lrocht,&
-                mater, fatiguenv)
+    call getfac('RESU_THER', nbther)
+    if (nbther .ne. 0) then
+        lther = .true.
+    endif
 !
+    call getvtx(' ', 'OPTION', nbval=0, nbret=n1)
+    nbopt = -n1
+    call getvtx(' ', 'OPTION', nbval=nbopt, vect=kopt, nbret=n1)
+    do 20 iopt = 1, nbopt
+        if (kopt(iopt) .eq. 'PM_PB') then
+            lpmpb = .true.
+        else if (kopt(iopt) .eq. 'SN') then
+            lsn = .true.
+        else if (kopt(iopt) .eq. 'FATIGUE') then
+            lpmpb = .true.
+            lfat = .true.
+            lsn = .true.
+        else if (kopt(iopt) .eq. 'EFAT') then
+            lpmpb = .true.
+            lfat = .true.
+            lsn = .true.
+            lefat = .true.
+        endif
+ 20 continue
 !
-! --- STOCKAGE DES RESULTATS
-!     ----------------------
+
 !
-    call rc32rs(pmpb, sn, snet, fatigu, lrocht,&
-                mater, symax, fatiguenv)
+    if (b3200) call rc32mu()
+!
+    call rc32ac(b3200, mater, lpmpb, lsn, lther, lfat, lefat)
+!
+!     ------------------------------------------------------------------
+!                       STOCKAGE DES RESULTATS
+!     ------------------------------------------------------------------
+!
+    call rc32rs(b3200, mater, lpmpb, lsn, lther,&
+                lfat, lefat)
 !
     call jedetc('V', '&&RC3200', 1)
 !

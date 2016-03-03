@@ -18,40 +18,28 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ201(transip, transif, lsn, lsnet, lfatig, lrocht,&
-                      lieu, ig, iocs, seisme, npass,&
-                      mater, snmax, snemax, spmax, kemax,&
-                      spmecm, spthem, samax, utot, utotenv, sm,&
-                      sigpm, resuas, resuss, resuca, resucs,&
-                      factus, fatiguenv)
-        aster_logical :: transip
-        aster_logical :: transif
-        aster_logical :: lsn
-        aster_logical :: lsnet
-        aster_logical :: lfatig
-        aster_logical :: lrocht
-        character(len=4) :: lieu
+    subroutine rcZ201(ig, lsn, lther, lfat, lefat,&
+                      yapass, seisme, iocs, mater,&
+                      lieu, utot, utotenv, resuas,&
+                      resuss, resuca, resucs,&
+                      factus, resumax)
         integer :: ig
-        integer :: iocs
+        aster_logical :: lsn
+        aster_logical :: lther
+        aster_logical :: lfat
+        aster_logical :: lefat
+        aster_logical :: yapass
         aster_logical :: seisme
-        integer :: npass
+        integer :: iocs
         character(len=8) :: mater
-        real(kind=8) :: snmax
-        real(kind=8) :: snemax
-        real(kind=8) :: spmax
-        real(kind=8) :: kemax
-        real(kind=8) :: spmecm
-        real(kind=8) :: spthem
-        real(kind=8) :: samax
+        character(len=4) :: lieu
         real(kind=8) :: utot
         real(kind=8) :: utotenv
-        real(kind=8) :: sm
-        real(kind=8) :: sigpm
         real(kind=8) :: resuas(*)
         real(kind=8) :: resuss(*)
         real(kind=8) :: resuca(*)
         real(kind=8) :: resucs(*)
         real(kind=8) :: factus(*)
-        aster_logical :: fatiguenv
+        real(kind=8) :: resumax(*)
     end subroutine rcZ201
 end interface
