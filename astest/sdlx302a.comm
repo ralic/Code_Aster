@@ -393,6 +393,16 @@ INTEREP1=REST_SPEC_PHYS(         MODE_MECA=MODE1,
                                         OPTION='TOUT_TOUT'  )
 
 #
+INTEREP2=REST_SPEC_PHYS(         MODE_MECA=MODE1,
+                                         BANDE=( 1., 101., ),
+                                INTE_SPEC_GENE=DYNALEA1,
+                                         NOEUD='N21',
+                                        MAILLE='M1',
+                                      NOM_CHAM='SIPO_ELNO',
+                                       NOM_CMP='SMFZ',
+                                        OPTION='TOUT_TOUT'  )
+
+#
 POSALEA1=POST_DYNA_ALEA(INTERSPECTRE=_F(
                               INTE_SPEC=INTEREP1,
                                 NOEUD_I='N1',
@@ -401,6 +411,14 @@ POSALEA1=POST_DYNA_ALEA(INTERSPECTRE=_F(
                               NOM_CMP_J='DX',
                           ))
 
+#
+POSALEA2=POST_DYNA_ALEA(INTERSPECTRE=_F(
+                              INTE_SPEC=INTEREP2,
+                                NOEUD_I='N21',
+                              NOM_CMP_I='SMFZ',
+                                NOEUD_J='N21',
+                              NOM_CMP_J='SMFZ',
+                          ))
 #
 TEST_TABLE(PRECISION=0.11,
            VALE_CALC=0.034424456,
@@ -414,5 +432,17 @@ TEST_TABLE(PRECISION=0.11,
                       VALE_K='N1',),
                    ),
            )
+
+#
+TEST_TABLE(VALE_CALC=153291347.068,
+           NOM_PARA='ECART',
+           TABLE=POSALEA2,
+           FILTRE=(_F(NOM_PARA='NOEUD_I',
+                      VALE_K='N21',),
+                   _F(NOM_PARA='NOEUD_J',
+                      VALE_K='N21',),
+                   ),
+           )
+
 
 FIN( )
