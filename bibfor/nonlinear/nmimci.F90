@@ -5,7 +5,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/SetCol.h"
+#include "asterfort/SetTableColumn.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,8 +56,8 @@ implicit none
 !
 ! - Set and activate value
 !
-    call SetCol(table_cvg, name_ = col_name_,&
-                flag_affe_ = l_affe, valei_ = vali)
+    call SetTableColumn(table_cvg, name_ = col_name_,&
+                        flag_affe_ = l_affe, valei_ = vali)
 !
 ! - Set convergence table
 !

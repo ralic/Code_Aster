@@ -5,7 +5,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/SetCol.h"
+#include "asterfort/SetTableColumn.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +61,7 @@ implicit none
         if (table_cvg%l_cols_acti(i_col)) then
             col_name = table_cvg%cols(i_col)%name
             if (loop_name .eq. col_name(1:4)) then
-                call SetCol(table_cvg, name_ = col_name, flag_affe_ = .false._1)
+                call SetTableColumn(table_cvg, name_ = col_name, flag_affe_ = .false._1)
             endif
         endif
     end do

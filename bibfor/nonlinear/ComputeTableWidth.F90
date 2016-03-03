@@ -1,4 +1,4 @@
-subroutine ComputeTableWidth(table, width)
+subroutine ComputeTableWidth(table, line_width, nb_cols_active)
 !
 use NonLin_Datastructure_type
 !
@@ -27,53 +27,47 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
-    integer, intent(out) :: width
+    integer, intent(out) :: line_width
+    integer, intent(out) :: nb_cols_active
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
-! Compute width of table
+! Compute line of table
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  table            : datastructure for table
-! Out width            : width of table
+! Out line_width       : width of line
+! Out nb_cols_active   : number of active columns
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols, nb_cols_active
+    integer :: i_col, nb_cols
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cols    = table%nb_cols
-    width      = 0
+    nb_cols        = table%nb_cols
+    line_width     = 0
+    nb_cols_active = 0
 !
 ! - Number of active columns
 !
-    nb_cols_active = 0
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
             nb_cols_active = nb_cols_active + 1
         endif
     end do
-    if (nb_cols_active .ge. 15) then
-        call utmess('F', 'IMPRESSION_1', si=nb_cols_active)
-    endif
 !
 ! - Compute width
 !
-    width = 1
+    line_width = 1
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
-            width = width + (16+1)
+            line_width = line_width + (16+1)
         endif
     end do
-!
-! - Save value
-!
-    if (width .gt. 255) then
-        call utmess('F', 'IMPRESSION_2', si=width)
-    endif
+    ASSERT(line_width .le. 512)
 !
 end subroutine

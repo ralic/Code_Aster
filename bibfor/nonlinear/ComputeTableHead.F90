@@ -28,11 +28,11 @@ implicit none
 !
     type(NL_DS_Table), intent(in) :: table
     character(len=1), intent(in) :: col_sep
-    character(len=255), intent(out) :: table_head(3)
+    character(len=512), intent(out) :: table_head(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
 ! Compute head of table
 !
@@ -57,9 +57,9 @@ implicit none
     nb_cols      = table%nb_cols
     title_height = table%title_height
     table_width  = table%width
-    ASSERT((title_height.gt.0).and.(title_height.le.3))
-    ASSERT(table_width.le.255)
-    ASSERT(nb_cols.le.table%nb_cols_maxi)
+    ASSERT((title_height .gt. 0).and.(title_height .le. 3))
+    ASSERT(table_width .le. 512)
+    ASSERT(nb_cols .le. table%nb_cols_maxi)
 !
 ! - Prepare heads of table with empty cols
 !

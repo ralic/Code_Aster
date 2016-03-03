@@ -41,7 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=255) :: sep_line, table_head(3)
+    character(len=512) :: sep_line, table_head(3)
     type(NL_DS_Table) :: table_cvg
     aster_logical :: l_tcvg_csv
     integer :: line_width, mesg_unit, tcvg_unit

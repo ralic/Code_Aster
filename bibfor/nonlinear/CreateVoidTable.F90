@@ -30,7 +30,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
 ! Create void table
 !

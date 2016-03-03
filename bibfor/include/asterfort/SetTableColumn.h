@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine SetCol(table     , name_ , flag_acti_,&
-                      flag_affe_, valer_, valei_    , valek_, mark_)
+    subroutine SetTableColumn(table     , name_ , flag_acti_,&
+                              flag_affe_, valer_, valei_    , valek_, mark_)
         use NonLin_Datastructure_type
         type(NL_DS_Table), intent(inout) :: table
         character(len=*), optional, intent(in) :: name_
@@ -27,5 +27,5 @@ interface
         integer, optional, intent(in) :: valei_
         character(len=*), optional, intent(in) :: valek_
         character(len=1), optional, intent(in) :: mark_
-    end subroutine SetCol
+    end subroutine SetTableColumn
 end interface

@@ -20,6 +20,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Table), intent(in) :: table
         character(len=1), intent(in) :: col_sep
-        character(len=255), intent(out) :: table_head(3)
+        character(len=512), intent(out) :: table_head(3)
     end subroutine ComputeTableHead
 end interface

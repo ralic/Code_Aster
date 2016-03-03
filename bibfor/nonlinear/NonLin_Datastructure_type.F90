@@ -71,7 +71,7 @@ implicit none
 ! ----- eNumber of lines for title
         integer                :: title_height
 ! ----- Separation line
-        character(len=255)     :: sep_line
+        character(len=512)     :: sep_line
 ! ----- Flag for outside file (CSV)
         aster_logical          :: l_csv
 ! ----- Logical unit for outside file (CSV)
@@ -98,7 +98,7 @@ implicit none
         aster_logical :: l_tcvg_csv
         integer :: tcvg_unit
         integer :: reac_print
-        character(len=255) :: sep_line
+        character(len=512) :: sep_line
     end type NL_DS_Print
 !
 ! - Type: residuals

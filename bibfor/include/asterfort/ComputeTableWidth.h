@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ComputeTableWidth(table, width)
+    subroutine ComputeTableWidth(table, line_width, nb_cols_active)
         use NonLin_Datastructure_type
         type(NL_DS_Table), intent(in) :: table
-        integer, intent(out) :: width
+        integer, intent(out) :: line_width
+        integer, intent(out) :: nb_cols_active
     end subroutine ComputeTableWidth
 end interface

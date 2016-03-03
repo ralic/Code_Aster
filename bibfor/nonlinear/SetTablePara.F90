@@ -74,7 +74,7 @@ implicit none
         endif
     end do
 !
-! - Set total number of paramters
+! - Set total number of parameters
 !
     ASSERT(nb_para .eq. (nb_para_real + nb_para_inte))
     ASSERT(nb_para .le. nb_cols)

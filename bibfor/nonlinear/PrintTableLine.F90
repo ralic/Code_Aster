@@ -36,7 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
 ! Print line of table
 !
@@ -55,7 +55,7 @@ implicit none
     character(len=16) :: chvide
     character(len=24) :: valk, name
     real(kind=8) :: valr
-    character(len=255) :: table_line
+    character(len=512) :: table_line
     integer :: longr, precr, longi
     aster_logical :: l_vale_affe, l_vale_real, l_vale_inte, l_vale_strg
     integer :: col_width, line_width
@@ -74,7 +74,7 @@ implicit none
 !
     nb_cols         = table%nb_cols
     line_width      = table%width
-    ASSERT(line_width.le.255)
+    ASSERT(line_width .le. 512)
 !
 ! - Prepare line of table - Void columns
 !

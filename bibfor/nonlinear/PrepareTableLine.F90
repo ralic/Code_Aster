@@ -29,11 +29,11 @@ implicit none
 !
     type(NL_DS_Table), intent(in) :: table
     character(len=1), intent(in) :: col_sep
-    character(len=255), intent(out) :: table_line
+    character(len=512), intent(out) :: table_line
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
 ! Prepare line of table with empty cols
 !
@@ -55,8 +55,8 @@ implicit none
 !
     nb_cols         = table%nb_cols
     line_width      = table%width
-    ASSERT(line_width.le.255)
-    ASSERT(nb_cols.le.table%nb_cols_maxi)
+    ASSERT(line_width .le. 512)
+    ASSERT(nb_cols .le. table%nb_cols_maxi)
 !
 ! - Prepare line
 !
@@ -65,9 +65,8 @@ implicit none
     do i_col = 1, nb_cols
         if (table%l_cols_acti(i_col)) then
             width       = 16
-            ASSERT(width.le.255)
             total_width = total_width + width + 1
-            ASSERT(total_width + width + 1.le.255)
+            ASSERT(total_width + width + 1 .le. 512)
             table_line(total_width:total_width) = col_sep
         endif
     end do

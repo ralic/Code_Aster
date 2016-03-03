@@ -1,5 +1,5 @@
-subroutine SetCol(table     , name_ , flag_acti_,&
-                  flag_affe_, valer_, valei_    , valek_, mark_)
+subroutine SetTableColumn(table     , name_ , flag_acti_,&
+                          flag_affe_, valer_, valei_    , valek_, mark_)
 !
 use NonLin_Datastructure_type
 !
@@ -37,7 +37,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! MECA_NON_LINE - Print management
+! MECA_NON_LINE - Table management
 !
 ! Set column in table
 !
