@@ -1,7 +1,11 @@
-subroutine impfok(messag, long, unite)
+subroutine impfok(mesg, length, unit)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,47 +21,42 @@ subroutine impfok(messag, long, unite)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/assert.h"
-    character(len=*) :: messag
-    integer :: long
-    integer :: unite
+    character(len=*), intent(in) :: mesg
+    integer, intent(in) :: length
+    integer, intent(in) :: unit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (AFFICHAGE - UTILITAIRE)
+! MECA_NON_LINE - Print management
 !
-! CREATION D'UNE CHAINE FORMATEE DANS UNE CHAINE
+! Create string to print text in logical unit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  mesg             : message to write
+! In  length           : length of message
+! In  unit             : logical unit
 !
-! IN  MESSAG : CHAINE A FORMATER
-! IN  LONG   : LONGUEUR DE FORMATAGE DE LA CHAINE
-!                 SI ZERO, PAS DE FORMATAGE
-! IN  UNITE  : UNITE D'IMPRESSION
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: zlig
-    parameter       (zlig = 255)
+    integer, parameter :: zlig  = 512
     character(len=6) :: forma
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    if (long .le. 0) then
+    if (length .le. 0) then
         forma = '(A)'
-    else if (long.gt.zlig) then
+    else if (length .gt. zlig) then
         ASSERT(.false.)
     else
-        write(forma,1001) long
+        write(forma,10) length
     endif
-    if (unite .le. 0) then
+    if (unit .le. 0) then
         ASSERT(.false.)
     else
-        write(unite,forma) messag(1:long)
+        write(unit,forma) mesg(1:length)
     endif
 !
-    1001 format ('(A',i3,')')
+10  format ('(A',i3,')')
 !
 end subroutine

@@ -95,12 +95,12 @@ implicit none
 !
 ! - Contact solving
 !
-    call nmtime(ds_measure, 'Init'  , 'Contact_Algo')
-    call nmtime(ds_measure, 'Launch', 'Contact_Algo')
+    call nmtime(ds_measure, 'Init'  , 'Cont_Algo')
+    call nmtime(ds_measure, 'Launch', 'Cont_Algo')
     call cfalgo(mesh          , ds_measure, resi_glob_rela, iter_newt,&
                 solver        , nume_dof  , matr_asse     , disp_iter,&
                 disp_cumu_inst, ds_contact, ctccvg        )
-    call nmtime(ds_measure, 'Stop', 'Contact_Algo')
+    call nmtime(ds_measure, 'Stop', 'Cont_Algo')
 !
 ! - Pairing ended
 !

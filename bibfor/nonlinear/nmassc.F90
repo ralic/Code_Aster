@@ -95,8 +95,8 @@ implicit none
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , 'Second_Member')
-    call nmtime(ds_measure, 'Launch', 'Second_Member')
+    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! --- CALCUL DU VECTEUR DES CHARGEMENTS FIXES        (NEUMANN)
 !
@@ -164,6 +164,6 @@ implicit none
 !
 ! - End timer
 !
-    call nmtime(ds_measure, 'Stop', 'Second_Member')
+    call nmtime(ds_measure, 'Stop', '2nd_Member')
 !
 end subroutine

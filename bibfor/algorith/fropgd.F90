@@ -154,8 +154,7 @@ implicit none
 !
     if (niv .ge. 2) then
         write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : DUALISATION'
-        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: '//&
-     &                'PENALISATION'
+        write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: PENALISATION'
     endif
 !
 ! --- LECTURE DES STRUCTURES DE DONNEES DE CONTACT
@@ -436,8 +435,8 @@ implicit none
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Contact_Algo    ', input_count = iter)
-    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
 !
     call jedema()
 !

@@ -60,12 +60,12 @@ implicit none
 !
 ! - Geometric loop: new geometric iteration for statistics
 !
-    call nmrinc(ds_measure, 'Contact_Geometry')
+    call nmrinc(ds_measure, 'Cont_Geom')
 !
 ! - Geometric loop: begin timer
 !
-    call nmtime(ds_measure, 'Init'  , 'Contact_Geometry')
-    call nmtime(ds_measure, 'Launch', 'Contact_Geometry')
+    call nmtime(ds_measure, 'Init'  , 'Cont_Geom')
+    call nmtime(ds_measure, 'Launch', 'Cont_Geom')
 !
 ! - Geometric actualisation
 !
@@ -77,6 +77,6 @@ implicit none
 !
 ! - Geometric loop: end timer
 !
-    call nmtime(ds_measure, 'Stop', 'Contact_Geometry')
+    call nmtime(ds_measure, 'Stop', 'Cont_Geom')
 !
 end subroutine

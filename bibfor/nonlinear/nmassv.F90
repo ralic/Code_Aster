@@ -136,14 +136,13 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<MECANONLINE><VECT> ASSEMBLAGE DES VECT_ELEM'&
-        // ' DE TYPE <',typvec,'>'
+        write (ifm,*) '<MECANONLINE><VECT> ASSEMBLAGE DES VECT_ELEM DE TYPE <',typvec,'>'
     endif
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init'  , 'Second_Member')
-    call nmtime(ds_measure, 'Launch', 'Second_Member')
+    call nmtime(ds_measure, 'Init'  , '2nd_Member')
+    call nmtime(ds_measure, 'Launch', '2nd_Member')
 !
 ! --- FORCES NODALES
 !
@@ -291,7 +290,7 @@ implicit none
 !
 ! - Stop timer
 !
-    call nmtime(ds_measure, 'Stop', 'Second_Member')
+    call nmtime(ds_measure, 'Stop', '2nd_Member')
 !
     call jedema()
 !

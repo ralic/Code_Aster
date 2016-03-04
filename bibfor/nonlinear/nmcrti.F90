@@ -86,13 +86,13 @@ implicit none
 !
 ! - Activate devices (standard)
 !
-    call ActivateDevice(ds_measure, 'Computation')
+    call ActivateDevice(ds_measure, 'Compute')
     call ActivateDevice(ds_measure, 'Time_Step')
     call ActivateDevice(ds_measure, 'Newt_Iter')
-    call ActivateDevice(ds_measure, 'Integration')
-    call ActivateDevice(ds_measure, 'Matrix_Assembly')
+    call ActivateDevice(ds_measure, 'Integrate')
+    call ActivateDevice(ds_measure, 'Matr_Asse')
     call ActivateDevice(ds_measure, 'Factor')
-    call ActivateDevice(ds_measure, 'Second_Member')
+    call ActivateDevice(ds_measure, '2nd_Member')
     call ActivateDevice(ds_measure, 'Solve')
     call ActivateDevice(ds_measure, 'Store')
     call ActivateDevice(ds_measure, 'Post')
@@ -100,29 +100,29 @@ implicit none
     call ActivateDevice(ds_measure, 'Other')
     
     if (l_line_search) then
-        call ActivateDevice(ds_measure, 'Line_Search')
+        call ActivateDevice(ds_measure, 'LineSearch')
     endif
 !
 ! - Activate devices for contact (10)
 !
     if (l_cont .and. (.not.l_all_verif)) then
-        call ActivateDevice(ds_measure, 'Contact_NumbCont')
+        call ActivateDevice(ds_measure, 'Cont_NCont')
         if (l_fric) then
-            call ActivateDevice(ds_measure, 'Contact_NumbFric')
+            call ActivateDevice(ds_measure, 'Cont_NFric')
         endif
         if (l_loop_geom .or. l_newt_geom) then
-            call ActivateDevice(ds_measure, 'Contact_Geometry')
+            call ActivateDevice(ds_measure, 'Cont_Geom')
         endif
         if (l_cont_disc) then
-            call ActivateDevice(ds_measure, 'Contact_Algo')
+            call ActivateDevice(ds_measure, 'Cont_Algo')
         endif
         if (l_cont_cont) then
-            call ActivateDevice(ds_measure, 'Contact_Prepare')
-            call ActivateDevice(ds_measure, 'Contact_Elem')
-            call ActivateDevice(ds_measure, 'Contact_Cycl_1')
-            call ActivateDevice(ds_measure, 'Contact_Cycl_2')
-            call ActivateDevice(ds_measure, 'Contact_Cycl_3')
-            call ActivateDevice(ds_measure, 'Contact_Cycl_4')
+            call ActivateDevice(ds_measure, 'Cont_Prep')
+            call ActivateDevice(ds_measure, 'Cont_Elem')
+            call ActivateDevice(ds_measure, 'Cont_Cycl1')
+            call ActivateDevice(ds_measure, 'Cont_Cycl2')
+            call ActivateDevice(ds_measure, 'Cont_Cycl3')
+            call ActivateDevice(ds_measure, 'Cont_Cycl4')
         endif
     endif
 !

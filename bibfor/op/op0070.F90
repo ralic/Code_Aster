@@ -180,7 +180,7 @@ implicit none
 !
 ! - Launch timer for total time
 !
-    call nmtime(ds_measure, 'Launch', 'Computation')
+    call nmtime(ds_measure, 'Launch', 'Compute')
 !
 ! --- PREMIER INSTANT
 !
@@ -352,7 +352,7 @@ implicit none
 !
 ! - End of timer for total time
 !
-    call nmtime(ds_measure, 'Stop', 'Computation')
+    call nmtime(ds_measure, 'Stop', 'Compute')
 !
 ! --- IMPRESSION STATISTIQUES FINALES
 !

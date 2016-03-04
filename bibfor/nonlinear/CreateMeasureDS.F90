@@ -67,15 +67,15 @@ implicit none
 !
 ! - Type of device
 !
-    character(len=16), parameter :: device_type(nb_device_defi) = (/&
-                    'Computation     ','Lost_Time       ','Time_Step       ',&
-                    'Newt_Iter       ','Store           ','Post            ',&
-                    'Integration     ','Factor          ','Second_Member   ',&
-                    'Solve           ','Contact_Geometry','Contact_Algo    ',&
-                    'Contact_Prepare ','Contact_Elem    ','Matrix_Assembly ',&
-                    'Contact_NumbCont','Contact_NumbFric','Line_Search     ',&
-                    'Contact_Cycl_1  ','Contact_Cycl_2  ','Contact_Cycl_3  ',&
-                    'Contact_Cycl_4  ','Other           '/)
+    character(len=10), parameter :: device_type(nb_device_defi) = (/&
+                    'Compute   ','Lost_Time ','Time_Step ',&
+                    'Newt_Iter ','Store     ','Post      ',&
+                    'Integrate ','Factor    ','2nd_Member',&
+                    'Solve     ','Cont_Geom ','Cont_Algo ',&
+                    'Cont_Prep ','Cont_Elem ','Matr_Asse ',&
+                    'Cont_NCont','Cont_NFric','LineSearch',&
+                    'Cont_Cycl1','Cont_Cycl2','Cont_Cycl3',&
+                    'Cont_Cycl4','Other     '/)
 !
 ! - Timer linked to device
 !

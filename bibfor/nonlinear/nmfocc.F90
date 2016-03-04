@@ -129,15 +129,15 @@ implicit none
 ! - Compute contact forces
 !
     if (l_elem_cont .and. (.not.l_all_verif)) then
-        call nmtime(ds_measure, 'Init'  , 'Contact_Elem')
-        call nmtime(ds_measure, 'Launch', 'Contact_Elem')
+        call nmtime(ds_measure, 'Init'  , 'Cont_Elem')
+        call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('CONT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
                     vect_elem_cont)
         call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
-        call nmtime(ds_measure, 'Stop', 'Contact_Elem')
-        call nmrinc(ds_measure, 'Contact_Elem')
+        call nmtime(ds_measure, 'Stop', 'Cont_Elem')
+        call nmrinc(ds_measure, 'Cont_Elem')
         if (niv .eq. 2) then
             call nmdebg('VECT', vect_asse_cont, ifm)
         endif
@@ -146,15 +146,15 @@ implicit none
 ! - Compute friction forces
 !
     if (l_elem_frot .and. (.not.l_all_verif)) then
-        call nmtime(ds_measure, 'Init'  , 'Contact_Elem')
-        call nmtime(ds_measure, 'Launch', 'Contact_Elem')
+        call nmtime(ds_measure, 'Init'  , 'Cont_Elem')
+        call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('FROT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
                     vect_elem_frot)
         call assvec('V', vect_asse_frot, 1, vect_elem_frot, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
-        call nmtime(ds_measure, 'Stop', 'Contact_Elem')
-        call nmrinc(ds_measure, 'Contact_Elem')
+        call nmtime(ds_measure, 'Stop', 'Cont_Elem')
+        call nmrinc(ds_measure, 'Cont_Elem')
         if (niv .eq. 2) then
             call nmdebg('VECT', vect_asse_frot, ifm)
         endif

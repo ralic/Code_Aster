@@ -55,7 +55,7 @@ implicit none
     type(NL_DS_Device) :: device
     aster_logical :: l_acti, l_vale_inte, l_vale_real
     integer :: count
-    character(len=16) :: device_type
+    character(len=10) :: device_type
     real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------

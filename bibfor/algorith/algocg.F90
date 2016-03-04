@@ -117,8 +117,7 @@ implicit none
 ! --- AFFICHAGE
 !
     if (niv .ge. 2) then
-        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : GRADIENT '//&
-     &    'CONJUGUE PROJETE'
+        write(ifm,*) '<CONTACT><CALC> ALGO_CONTACT   : GRADIENT CONJUGUE PROJETE'
         write(ifm,*) '<CONTACT><CALC> ALGO_FROTTEMENT: SANS'
     endif
 !
@@ -310,15 +309,12 @@ implicit none
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Contact_Algo    ', input_count = iter)
-    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
 !
     call jedema()
 !
     9010 format (' <CONTACT><CALC> DEBUT DES ITERATIONS (MAX: ',i8,')')
     9020 format (' <CONTACT><CALC> FIN DES ITERATIONS (NBR: ',i8,')')
-!
-!
-    9060 format (' <CONTACT><CALC> NORME INFINIE DU RESIDU : ',&
-     &        1pe12.5,' (CRITERE: ',1pe12.5,')')
+    9060 format (' <CONTACT><CALC> NORME INFINIE DU RESIDU : ', 1pe12.5,' (CRITERE: ',1pe12.5,')')
 end subroutine

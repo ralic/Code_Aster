@@ -49,7 +49,7 @@ implicit none
 !
     type(NL_DS_Device) :: device
     character(len=9) :: timer_type
-    character(len=16) :: device_type
+    character(len=10) :: device_type
     integer :: i_timer, timer_indx, nb_timer
     type(NL_DS_Timer) :: timer
     character(len=24) :: operation, cpu_name

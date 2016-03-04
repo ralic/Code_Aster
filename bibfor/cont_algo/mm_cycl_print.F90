@@ -45,10 +45,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call nmrvai(ds_measure, 'Contact_Cycl_1', phasis = 'N', output_count = cycl_nb(1))
-    call nmrvai(ds_measure, 'Contact_Cycl_2', phasis = 'N', output_count = cycl_nb(2))
-    call nmrvai(ds_measure, 'Contact_Cycl_3', phasis = 'N', output_count = cycl_nb(3))
-    call nmrvai(ds_measure, 'Contact_Cycl_4', phasis = 'N', output_count = cycl_nb(4))
+    call nmrvai(ds_measure, 'Cont_Cycl1', phasis = 'N', output_count = cycl_nb(1))
+    call nmrvai(ds_measure, 'Cont_Cycl2', phasis = 'N', output_count = cycl_nb(2))
+    call nmrvai(ds_measure, 'Cont_Cycl3', phasis = 'N', output_count = cycl_nb(3))
+    call nmrvai(ds_measure, 'Cont_Cycl4', phasis = 'N', output_count = cycl_nb(4))
     cycl_nb_tot = cycl_nb(1) + cycl_nb(2) + cycl_nb(3) + cycl_nb(4)
     call nmimci(ds_print, 'CTCC_CYCL', cycl_nb_tot, .true._1)
 

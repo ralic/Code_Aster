@@ -147,15 +147,15 @@ implicit none
                             optcal, ldccvg, codere)
             else
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
-                    call nmtime(ds_measure, 'Init', 'Contact_Elem')
-                    call nmtime(ds_measure, 'Launch', 'Contact_Elem')
+                    call nmtime(ds_measure, 'Init', 'Cont_Elem')
+                    call nmtime(ds_measure, 'Launch', 'Cont_Elem')
                 endif
                 call nmcalm(typmat, modelz, lischa, mate       , carele,&
                             compor, instam, instap, valinc     , solalg,&
                             optcal, base  , meelem, ds_contact_, matele)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
-                    call nmtime(ds_measure, 'Stop', 'Contact_Elem')
-                    call nmrinc(ds_measure, 'Contact_Elem')
+                    call nmtime(ds_measure, 'Stop', 'Cont_Elem')
+                    call nmrinc(ds_measure, 'Cont_Elem')
                 endif
             endif
         endif
@@ -163,12 +163,12 @@ implicit none
 ! --- ASSEMBLER MATR_ELEM
 !
         if (lasse) then
-            call nmtime(ds_measure, 'Init', 'Matrix_Assembly')
-            call nmtime(ds_measure, 'Launch', 'Matrix_Assembly')
+            call nmtime(ds_measure, 'Init', 'Matr_Asse')
+            call nmtime(ds_measure, 'Launch', 'Matr_Asse')
             call nmchex(measse, 'MEASSE', typmat, matass)
             call nmassm(fonact, lischa, numedd, numfix, ds_algopara,&
                         typmat, optass, meelem, matass)
-            call nmtime(ds_measure, 'Stop', 'Matrix_Assembly')
+            call nmtime(ds_measure, 'Stop', 'Matr_Asse')
         endif
     end do
 !

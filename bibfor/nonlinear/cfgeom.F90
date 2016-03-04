@@ -90,8 +90,8 @@ implicit none
 !
     if (l_pair) then
 !
-        call nmtime(ds_measure, 'Init'  , 'Contact_Geometry')
-        call nmtime(ds_measure, 'Launch', 'Contact_Geometry')
+        call nmtime(ds_measure, 'Init'  , 'Cont_Geom')
+        call nmtime(ds_measure, 'Launch', 'Cont_Geom')
 !
 ! ----- Update geometry
 !
@@ -100,8 +100,8 @@ implicit none
 ! ----- Pairing
 !
         call cfappa(mesh, ds_contact, time_curr)
-        call nmtime(ds_measure, 'Stop', 'Contact_Geometry')
-        call nmrinc(ds_measure, 'Contact_Geometry')
+        call nmtime(ds_measure, 'Stop', 'Cont_Geom')
+        call nmrinc(ds_measure, 'Cont_Geom')
 !
     else
 !

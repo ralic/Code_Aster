@@ -171,8 +171,8 @@ implicit none
 999 continue
 !
     call jedetr(dejcal)
-    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
-    call nmrvai(ds_measure, 'Contact_NumbFric', input_count = nbliaf)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_NFric', input_count = nbliaf)
 !
     call jedema()
 end subroutine

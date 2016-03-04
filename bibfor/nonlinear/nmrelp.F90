@@ -286,13 +286,13 @@ implicit none
 !
 ! ----- REACTUALISATION DES REACTIONS D'APPUI BT.LAMBDA
 !
-        call nmtime(ds_measure, 'Init'  , 'Second_Member')
-        call nmtime(ds_measure, 'Launch', 'Second_Member')
+        call nmtime(ds_measure, 'Init'  , '2nd_Member')
+        call nmtime(ds_measure, 'Launch', '2nd_Member')
         call nmdiri(modele, mate, carele, lischa, sddyna,&
                     depplt, k19bla, k19bla, vediri)
         call nmadir(numedd, fonact, ds_contact, veasse, vediri,&
                     cndirs(act))
-        call nmtime(ds_measure, 'Stop', 'Second_Member')
+        call nmtime(ds_measure, 'Stop', '2nd_Member')
         if (niv .ge. 2) then
             write (ifm,*) '<MECANONLINE> ...... FORCES INTERNES'
             call nmdebg('VECT', cnfins(act), 6)

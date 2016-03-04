@@ -184,8 +184,8 @@ implicit none
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call nmtime(ds_measure, 'Init', 'Second_Member')
-    call nmtime(ds_measure, 'Launch', 'Second_Member')
+    call nmtime(ds_measure, 'Init', '2nd_Member')
+    call nmtime(ds_measure, 'Launch', '2nd_Member')
     if (lcfint) then
         call nmaint(numedd, fonact, ds_contact, veasse, vefint,&
                     cnfint, sdnume)
@@ -205,7 +205,7 @@ implicit none
     call nmbudi(modele, numedd, lischa, depplu, vebudi,&
                 cnbudi, matass)
 !
-    call nmtime(ds_measure, 'Stop', 'Second_Member')
+    call nmtime(ds_measure, 'Stop', '2nd_Member')
 !
 999 continue
 !

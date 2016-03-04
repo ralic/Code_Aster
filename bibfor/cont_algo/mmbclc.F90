@@ -107,7 +107,7 @@ implicit none
 ! ----- Start timer for preparation of contact
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call nmtime(ds_measure, 'Launch', 'Contact_Prepare ')
+            call nmtime(ds_measure, 'Launch', 'Cont_Prep')
         endif
 !
 ! ----- Create contact elements
@@ -132,8 +132,8 @@ implicit none
 ! ----- Stop timer for preparation of contact
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call nmtime(ds_measure, 'Stop', 'Contact_Prepare ')
-            call nmrinc(ds_measure, 'Contact_Prepare ')
+            call nmtime(ds_measure, 'Stop', 'Cont_Prep')
+            call nmrinc(ds_measure, 'Cont_Prep ')
         endif
     endif
 !

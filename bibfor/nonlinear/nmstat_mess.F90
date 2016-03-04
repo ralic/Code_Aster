@@ -53,7 +53,7 @@ implicit none
     type(NL_DS_Device) :: device
     aster_logical :: l_time, l_count, l_acti
     integer :: time_mesg, count_mesg, count
-    character(len=16) :: device_type
+    character(len=10) :: device_type
     real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,10 +63,10 @@ implicit none
         device = ds_measure%device(i_device)
         l_acti = ds_measure%l_device_acti(i_device)
         if (l_acti) then
-            if (phasis.eq.'P') then
+            if (phasis .eq. 'P') then
                 time_mesg   = device%time_indi_step
                 count_mesg  = device%count_indi_step
-            elseif (phasis.eq.'T') then
+            elseif (phasis .eq. 'T') then
                 time_mesg   = device%time_indi_comp
                 count_mesg  = device%count_indi_comp
             else

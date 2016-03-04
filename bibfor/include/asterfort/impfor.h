@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine impfor(unite, long, prec, valr, chaine)
-        integer :: unite
-        integer :: long
-        integer :: prec
-        real(kind=8) :: valr
-        character(len=*) :: chaine
+    subroutine impfor(unit, length, prec, valr, string)
+        integer, intent(in) :: unit
+        integer, intent(in) :: length
+        integer, intent(in) :: prec
+        real(kind=8), intent(in) :: valr
+        character(len=*), intent(out) :: string
     end subroutine impfor
 end interface

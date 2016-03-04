@@ -80,9 +80,9 @@ implicit none
 !
 ! - Saving for statistics
 !
-    call nmrvai(ds_measure, 'Contact_Cycl_1', input_count = cycl_nb(1))
-    call nmrvai(ds_measure, 'Contact_Cycl_2', input_count = cycl_nb(2))
-    call nmrvai(ds_measure, 'Contact_Cycl_3', input_count = cycl_nb(3))
-    call nmrvai(ds_measure, 'Contact_Cycl_4', input_count = cycl_nb(4))
+    call nmrvai(ds_measure, 'Cont_Cycl1', input_count = cycl_nb(1))
+    call nmrvai(ds_measure, 'Cont_Cycl2', input_count = cycl_nb(2))
+    call nmrvai(ds_measure, 'Cont_Cycl3', input_count = cycl_nb(3))
+    call nmrvai(ds_measure, 'Cont_Cycl4', input_count = cycl_nb(4))
 !
 end subroutine

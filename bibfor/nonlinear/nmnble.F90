@@ -122,7 +122,7 @@ implicit none
 !
 ! - Start timer for preparation of contact
 !
-    call nmtime(ds_measure, 'Launch', 'Contact_Prepare ')
+    call nmtime(ds_measure, 'Launch', 'Cont_Prep')
 !
 ! - Create elements for contact
 !
@@ -135,8 +135,8 @@ implicit none
 !
 ! - Stop timer for preparation of contact
 !
-    call nmtime(ds_measure, 'Stop', 'Contact_Prepare ')
-    call nmrinc(ds_measure, 'Contact_Prepare ')
+    call nmtime(ds_measure, 'Stop', 'Cont_Prep')
+    call nmrinc(ds_measure, 'Cont_Prep')
 !
 999 continue
 !

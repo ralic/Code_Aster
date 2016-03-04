@@ -37,7 +37,7 @@ implicit none
 ! - Type: column for table
 ! 
     type NL_DS_Column
-        character(len=24)  :: name
+        character(len=16)  :: name
         character(len=16)  :: title(3)
         character(len=1)   :: mark
         aster_logical      :: l_vale_affe
@@ -312,7 +312,7 @@ implicit none
 ! 
     type NL_DS_Device
 ! ----- Type of device
-        character(len=16) :: type
+        character(len=10) :: type
 ! ----- Name of timer
         character(len=9)  :: timer_name
 ! ----- Times: for Newton iteration, time step and complete computation

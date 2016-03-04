@@ -99,8 +99,8 @@ implicit none
 !
 ! - Launch timer
 !
-    call nmtime(ds_measure, 'Init', 'Integration')
-    call nmtime(ds_measure, 'Launch', 'Integration')
+    call nmtime(ds_measure, 'Init', 'Integrate')
+    call nmtime(ds_measure, 'Launch', 'Integrate')
 !
 ! --- CALCUL DES FORCES INTERIEURES
 !
@@ -111,8 +111,8 @@ implicit none
 !
 ! - End timer
 !
-    call nmtime(ds_measure, 'Stop', 'Integration')
-    call nmrinc(ds_measure, 'Integration')
+    call nmtime(ds_measure, 'Stop', 'Integrate')
+    call nmrinc(ds_measure, 'Integrate')
 !
 ! --- CODE RETOUR ERREUR INTEGRATION LDC
 !

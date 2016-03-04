@@ -178,7 +178,7 @@ implicit none
         if (lreli) then
             line_sear_coef = ds_conv%line_sear_coef
             line_sear_iter = ds_conv%line_sear_iter
-            call nmrvai(ds_measure, 'Line_Search', input_count = line_sear_iter)
+            call nmrvai(ds_measure, 'LineSearch', input_count = line_sear_iter)
         endif
 !
 ! ----- Compute residuals

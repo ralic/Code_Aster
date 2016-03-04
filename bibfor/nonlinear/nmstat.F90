@@ -67,7 +67,7 @@ implicit none
     real(kind=8) :: time_sub = 0.d0, time = 0.d0
     integer :: i_device, nb_device
     type(NL_DS_Device) :: device
-    character(len=16) :: device_type
+    character(len=10) :: device_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,13 +84,13 @@ implicit none
 !
     nb_device = ds_measure%nb_device
     if (phasis.eq.'P') then
-        call nmtimr(ds_measure, 'Time_Step'  , phasis, time_time_step)
+        call nmtimr(ds_measure, 'Time_Step', phasis, time_time_step)
         time_sub  = 0.d0
         do i_device = 1, nb_device
             device      = ds_measure%device(i_device)
             device_type = device%type
             call GetDevice(ds_measure, device_type, device)
-            if (device%time_indi_step .ne. 0 .and. device_type.ne.'Time_Step') then
+            if (device%time_indi_step .ne. 0 .and. device_type .ne. 'Time_Step') then
                 call nmtimr(ds_measure, device_type, phasis, time)
                 time_sub = time_sub + time
             endif

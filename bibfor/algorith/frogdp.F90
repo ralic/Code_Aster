@@ -214,10 +214,10 @@ implicit none
 !
 ! --- CALCUL DES FORCES DE CONTACT (AT.MU) ET FROTTEMENT (AF.MU)
 !
-    do 350 ieq = 1, neq
+    do ieq = 1, neq
         zr(jafmu-1+ieq) = zr(jafmu-1+ieq) + zr(jatmu-1+ieq)
         zr(jatmu-1+ieq) = 0.d0
-350  end do
+    end do
 !
 999  continue
 !
@@ -227,8 +227,8 @@ implicit none
 !
 ! --- SAUVEGARDE DES INFOS DE DIAGNOSTIC
 !
-    call nmrvai(ds_measure, 'Contact_Algo    ', input_count = iter)
-    call nmrvai(ds_measure, 'Contact_NumbCont', input_count = nbliac)
+    call nmrvai(ds_measure, 'Cont_Algo ', input_count = iter)
+    call nmrvai(ds_measure, 'Cont_NCont', input_count = nbliac)
 !
     call jedema()
 !

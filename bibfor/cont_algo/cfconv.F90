@@ -76,7 +76,7 @@ implicit none
 ! - Get contact parameters
 !
     l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
-    call nmrvai(ds_measure, 'Contact_Algo', phasis = 'N', input_count = nb_cont_iter)
+    call nmrvai(ds_measure, 'Cont_Algo', phasis = 'N', input_count = nb_cont_iter)
 !
 ! - Values in convergence table: not affected
 !
