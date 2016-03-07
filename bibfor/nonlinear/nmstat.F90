@@ -1,4 +1,4 @@
-subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst)
+subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
 !
 use NonLin_Datastructure_type
 !
@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/impfot.h"
 #include "asterfort/impmem.h"
 #include "asterfort/GetDevice.h"
+#include "asterfort/PrintTableLine.h"
 #include "asterfort/nmrini.h"
 #include "asterfort/nmrvai.h"
 #include "asterfort/nmrtim.h"
@@ -18,6 +19,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/nmstat_mess.h"
 #include "asterfort/nmstat_table.h"
+#include "asterfort/nmstat_vale.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +44,7 @@ implicit none
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=19), intent(in) :: sddisc
     integer, intent(in) :: nume_inst
+    character(len=24), intent(in) :: sderro
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +61,7 @@ implicit none
 ! In  ds_print         : datastructure for printing parameters
 ! In  sddisc           : datastructure for time discretization
 ! In  nume_inst        : index of current step time
+! In  sderro           : datastructure for errors during algorithm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +87,7 @@ implicit none
 ! - Time for other operations (not measured)
 !
     nb_device = ds_measure%nb_device
-    if (phasis.eq.'P') then
+    if (phasis .eq. 'P') then
         call nmtimr(ds_measure, 'Time_Step', phasis, time_time_step)
         time_sub  = 0.d0
         do i_device = 1, nb_device
@@ -102,6 +106,12 @@ implicit none
         call nmrtim(ds_measure, 'Other', time_other)
     endif
 !
+! - Save values in columns
+!
+    if (phasis.eq.'P') then
+        call nmstat_vale(ds_measure, time_curr, sderro)
+    endif
+!
 ! - Print at end of current step time
 !
     if ((phasis.eq.'P') .and. l_print) then
@@ -112,7 +122,13 @@ implicit none
 ! - Save in table
 !
     if ((phasis.eq.'P') .and. ds_measure%l_table) then
-        call nmstat_table(ds_measure, time_curr)
+        call nmstat_table(ds_measure)
+    endif
+!
+! - Save in file
+!
+    if ((phasis.eq.'P') .and. ds_measure%table%l_csv) then
+        call PrintTableLine(ds_measure%table, ',', ds_measure%table%unit_csv)
     endif
 !
 ! - Print at end of computation

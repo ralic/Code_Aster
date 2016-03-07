@@ -1,4 +1,4 @@
-subroutine nmstat_table(ds_measure, time_curr)
+subroutine nmstat_table(ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -6,8 +6,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/nmtimr.h"
-#include "asterfort/nmrvai.h"
 #include "asterfort/tbajli.h"
 !
 ! ======================================================================
@@ -28,8 +26,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(NL_DS_Measure), intent(inout) :: ds_measure
-    real(kind=8), intent(in) :: time_curr
+    type(NL_DS_Measure), intent(in) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,8 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_measure       : datastructure for measure and statistics management
-! In  time_curr        : current time
+! In  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +45,13 @@ implicit none
     integer :: vali(40)
     character(len=8) :: k8bid
     complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
-    real(kind=8) :: valr(40)
+    real(kind=8) :: valr(40), vale_r
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
     type(NL_DS_Device) :: device
     aster_logical :: l_acti, l_vale_inte, l_vale_real
-    integer :: count
+    integer :: vale_i
     character(len=10) :: device_type
-    real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,12 +63,6 @@ implicit none
     table     = ds_measure%table
     nb_cols   = table%nb_cols
     nb_device = ds_measure%nb_device
-!
-! - First value
-!
-    i_para_real       = i_para_real + 1
-    valr(i_para_real) = time_curr
-    ASSERT(table%cols(1)%name(1:4) .eq. 'INST')
 !
 ! - Set list of values
 !
@@ -87,20 +76,14 @@ implicit none
             l_vale_inte = column%l_vale_inte
             l_vale_real = column%l_vale_real
             if (l_vale_real) then
-                if (column%name .eq. 'INST') then  
-                    time = time_curr
-                else
-                    call nmtimr(ds_measure, device_type, 'P', time)
-                    ASSERT(table%cols(i_col)%name(1:5) .eq. 'Time_')
-                endif
+                vale_r            = column%vale_real
                 i_para_real       = i_para_real + 1
-                valr(i_para_real) = time
+                valr(i_para_real) = vale_r
             endif
             if (l_vale_inte) then
-                call nmrvai(ds_measure, device_type, 'P', output_count = count)
+                vale_i            = column%vale_inte
                 i_para_inte       = i_para_inte + 1
-                vali(i_para_inte) = count
-                ASSERT(table%cols(i_col)%name(1:6) .eq. 'Count_')
+                vali(i_para_inte) = vale_i
             endif
         endif
     end do

@@ -8,10 +8,15 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
+#include "asterfort/ulopen.h"
 #include "asterfort/uttcpu.h"
+#include "asterfort/impfok.h"
 #include "asterfort/ActivateDevice.h"
 #include "asterfort/CreateTable.h"
 #include "asterfort/SetTablePara.h"
+#include "asterfort/SetTableColumn.h"
+#include "asterfort/ComputeTableHead.h"
+#include "asterfort/ComputeTableWidth.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,8 +57,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_timer, nb_timer, i_device, i_col
+    integer :: i_timer, nb_timer, i_device, i_col, line_width, nb_cols_active
     character(len=24) :: cpu_name
+    character(len=512) :: table_head(3)
     aster_logical :: l_line_search
     aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont
     aster_logical :: l_loop_cont, l_loop_fric, l_loop_geom, l_newt_geom
@@ -98,7 +104,6 @@ implicit none
     call ActivateDevice(ds_measure, 'Post')
     call ActivateDevice(ds_measure, 'Lost_Time')
     call ActivateDevice(ds_measure, 'Other')
-    
     if (l_line_search) then
         call ActivateDevice(ds_measure, 'LineSearch')
     endif
@@ -137,7 +142,7 @@ implicit none
 !
 ! - Create table
 !
-    if (ds_measure%l_table) then
+    if (ds_measure%l_table .or. ds_measure%table%l_csv) then
 !
 ! ----- Get table
 !
@@ -164,9 +169,15 @@ implicit none
                     table%l_cols_acti(i_col) = .true._1
                     ASSERT(table%cols(i_col)%name(1:6) .eq. 'Count_')
                 endif
-            endif
-            
+            endif   
         end do
+!
+! ----- Activate state and memory
+!
+        if (table%l_csv) then
+            call SetTableColumn(table, 'State' , flag_acti_ = .true._1)
+            call SetTableColumn(table, 'Memory' , flag_acti_ = .true._1)
+        endif
 !
 ! ----- Set table
 !
@@ -179,6 +190,20 @@ implicit none
 ! ----- Create table in results datastructure
 !
         call CreateTable(result, table)
+!
+! ----- Prepare table in output CSV file
+!
+        call ComputeTableWidth(table, line_width, nb_cols_active)
+        table%width        = line_width
+!
+! ----- Print table head in output CSV file
+!
+        if (table%l_csv) then
+            call ulopen(table%unit_csv, ' ', ' ', 'NEW', 'O')
+            call ComputeTableHead(table, ',', table_head)
+            call impfok(table_head(1), table%width, table%unit_csv)
+            call impfok(table_head(2), table%width, table%unit_csv)
+        endif
 !
 ! ----- Set table
 !

@@ -174,7 +174,8 @@ implicit none
 ! - Create table
 !
     call CreateVoidTable(table)
-    table%table_type = 'STAT'
+    table%table_type   = 'STAT'
+    table%title_height = 2
 !
 ! - First column: time
 !
@@ -182,6 +183,8 @@ implicit none
     call CreateVoidColumn(column)
     column%name        = 'INST'
     column%l_vale_real = .true._1
+    column%title(1)    = ' '
+    column%title(2)    = 'INST'
     table%cols(i_col)  = column
 !
 ! - List of columns for step
@@ -198,6 +201,8 @@ implicit none
             column%name        = 'Time_'//device%type
             column%l_vale_real = .true._1
             column%l_vale_inte = .false._1
+            column%title(1)    = 'Time'
+            column%title(2)    = device%type
             ds_measure%indx_cols(2*(i_device-1)+1) = i_col
             table%cols(i_col)  = column
             table%indx_vale(i_col) = i_device
@@ -207,13 +212,37 @@ implicit none
             column%name        = 'Count_'//device%type
             column%l_vale_real = .false._1
             column%l_vale_inte = .true._1
+            column%title(1)    = 'Count'
+            column%title(2)    = device%type
             ds_measure%indx_cols(2*(i_device-1)+2) = i_col
             table%cols(i_col)  = column
             table%indx_vale(i_col) = i_device
         endif
         ASSERT(i_col .le. table%nb_cols_maxi)
-        table%nb_cols          = i_col
-    end do 
+        
+    end do
+!
+! - Other column: state and memory
+!
+    i_col = i_col + 1
+    call CreateVoidColumn(column)
+    column%name        = 'State'
+    column%l_vale_strg = .true._1
+    column%title(1)    = ' '
+    column%title(2)    = 'State'
+    table%cols(i_col)  = column
+    table%nb_cols    = i_col
+    i_col = i_col + 1
+    call CreateVoidColumn(column)
+    column%name        = 'Memory'
+    column%l_vale_inte = .true._1
+    column%title(1)    = 'Memory'
+    column%title(2)    = 'VmPeak'
+    table%cols(i_col)  = column
+    table%nb_cols    = i_col
+!
+! - Save table
+!
     ds_measure%table = table  
 !
 ! - Checks

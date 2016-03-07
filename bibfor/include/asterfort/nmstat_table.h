@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmstat_table(ds_measure, time_curr)
+    subroutine nmstat_table(ds_measure)
         use NonLin_Datastructure_type        
-        type(NL_DS_Measure), intent(inout) :: ds_measure
-        real(kind=8), intent(in) :: time_curr
+        type(NL_DS_Measure), intent(in) :: ds_measure
     end subroutine nmstat_table
 end interface

@@ -6,6 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 !
 ! ======================================================================
@@ -41,7 +42,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=16) :: keyw, keywfact, answer
+    character(len=16) :: keywfact, answer
+    aster_logical :: l_csv, l_table
+    integer :: unit_csv, noc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,11 +56,29 @@ implicit none
 ! - Initializations
 !
     keywfact = 'MESURE'
-    keyw     = 'TABLE'
+    unit_csv = 0
+    l_table  = .false.
+    l_csv    = .false.
 !
-! - Get name of datastructure from DEFI_CONTACT
+! - Read parameters
 !
-    call getvtx(keywfact, keyw, iocc=1, scal=answer)
-    ds_measure%l_table = answer.eq.'OUI'
+    call getvtx(keywfact, 'TABLE', iocc=1, scal=answer)
+    l_table = answer.eq.'OUI'
+    call getvis(keywfact, 'UNITE', iocc=1, scal=unit_csv, nbret=noc)
+    if (noc .eq. 0) then
+        l_csv = .false.
+    else
+        if (unit_csv .eq. 0) then
+            l_csv = .false.
+        else
+            l_csv = .true.
+        endif
+    endif
+!
+! - Save parameters
+!
+    ds_measure%l_table        = l_table
+    ds_measure%table%l_csv    = l_csv
+    ds_measure%table%unit_csv = unit_csv
 !
 end subroutine

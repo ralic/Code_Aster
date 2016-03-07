@@ -273,7 +273,7 @@ implicit none
 ! --- STATISTIQUES SUR PAS DE TEMPS
 !
     if (.not.lexpl) then
-        call nmstat('P', ds_measure, ds_print, sddisc, numins)
+        call nmstat('P', ds_measure, ds_print, sddisc, numins, sderro)
     endif
 !
 ! --- GESTION DES ACTIONS A LA FIN D'UN PAS DE TEMPS
@@ -357,7 +357,7 @@ implicit none
 ! --- IMPRESSION STATISTIQUES FINALES
 !
     if (.not.lexpl) then
-        call nmstat('T', ds_measure, ds_print, sddisc, numins)
+        call nmstat('T', ds_measure, ds_print, sddisc, numins, sderro)
     endif
 !
 ! --- ON REMET LE MECANISME D'EXCEPTION A SA VALEUR INITIALE

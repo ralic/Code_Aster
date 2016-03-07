@@ -40,7 +40,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_all_col, i_col
-    integer :: nb_cols, nb_para_real, nb_para_inte, nb_para
+    integer :: nb_cols, nb_para_real, nb_para_inte, nb_para_strg, nb_para
     aster_logical :: l_acti
     character(len=24) :: col_name
 !
@@ -50,6 +50,7 @@ implicit none
     nb_para      = 0
     nb_para_inte = 0
     nb_para_real = 0
+    nb_para_strg = 0
     nb_cols      = table%nb_cols
 !
 ! - On all cols
@@ -68,6 +69,10 @@ implicit none
                 table%type_para(i_col) = 'R'
                 nb_para          = nb_para + 1
                 nb_para_real     = nb_para_real + 1
+            elseif (table%cols(i_all_col)%l_vale_strg) then
+                table%type_para(i_col) = 'K16'
+                nb_para          = nb_para + 1
+                nb_para_strg     = nb_para_strg + 1
             else
                 ASSERT(.false.)
             endif
@@ -76,10 +81,11 @@ implicit none
 !
 ! - Set total number of parameters
 !
-    ASSERT(nb_para .eq. (nb_para_real + nb_para_inte))
+    ASSERT(nb_para .eq. (nb_para_real + nb_para_inte + nb_para_strg))
     ASSERT(nb_para .le. nb_cols)
     table%nb_para      = nb_para
     table%nb_para_real = nb_para_real
     table%nb_para_inte = nb_para_inte
+    table%nb_para_strg = nb_para_strg
 !
 end subroutine
