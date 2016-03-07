@@ -1,27 +1,8 @@
 subroutine op0195()
-    implicit none
-!     -----------------------------------------------------------------
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
-!     COMMANDE CREA_CHAMP
-!     -----------------------------------------------------------------
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/cheksd.h"
 #include "asterc/getres.h"
 #include "asterc/getfac.h"
@@ -46,6 +27,7 @@ subroutine op0195()
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/idensd.h"
 #include "asterfort/imprsd.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
@@ -60,7 +42,33 @@ subroutine op0195()
 #include "asterfort/varaff.h"
 #include "asterfort/x195cb.h"
 #include "asterfort/xasdpl.h"
-    integer :: n1, ib, ifm, niv, iret, i11, i12, test, ibid, nocc
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! person_in_charge: jacques.pellet at edf.fr
+
+!
+! --------------------------------------------------------------------------------------------------
+!
+!   COMMANDE CREA_CHAMP
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: n1, ifm, niv, iret, i11, i12, test, ibid, nocc
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
     character(len=8) :: kbid, mo, ma, chou, nomgd, nomgd2, carel
@@ -68,10 +76,12 @@ subroutine op0195()
     character(len=16) :: tychr1, opera, optio2, typco, option
     character(len=19) :: ligrel, chatmp, celmod, prchn1, cns1, ch1, prchn2, chin, chou2
     character(len=8) :: nu1
-!     -----------------------------------------------------------------
+    character(len=24), pointer :: v_refe(:) => null()
+    character(len=24), pointer :: v_celmod_celk(:) => null()
     aster_logical :: dbg
     character(len=24) :: valk(4)
-!     ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infmaj()
@@ -95,7 +105,7 @@ subroutine op0195()
 !
 !     ------------------------------------------------------------------
 !
-    call getvtx(' ', 'OPERATION', scal=opera, nbret=ib)
+    call getvtx(' ', 'OPERATION', scal=opera)
 !
     call getvid(' ', 'MODELE', scal=mo, nbret=n1)
     if (n1 .eq. 0) mo = ' '
@@ -116,13 +126,13 @@ subroutine op0195()
             call utmess('F', 'UTILITAI3_43')
         endif
     endif
-    call getvtx(' ', 'TYPE_CHAM', scal=tychr1, nbret=ib)
+    call getvtx(' ', 'TYPE_CHAM', scal=tychr1)
     tychr = tychr1(1:4)
     nomgd = tychr1(6:13)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
     prol0=' '
-    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ib)
+    call getvtx(' ', 'PROL_ZERO', scal=prol0)
     if ((prol0.eq.'NON') .and. (tsca.eq.'R')) prol0='NAN'
 !
     call getvtx(' ', 'OPTION', scal=option, nbret=n1)
@@ -148,7 +158,7 @@ subroutine op0195()
 !           -- SI OPERATION 'ASSE', IL Y A PEUT-ETRE UNE MEILLEURE
 !              OPTION A CHOISIR PAR DEFAUT QUE TOU_INI_ELXX
                 if (opera .eq. 'ASSE') then
-                    call getvid('ASSE', 'CHAM_GD', iocc=1, scal=chin, nbret=ib)
+                    call getvid('ASSE', 'CHAM_GD', iocc=1, scal=chin)
                     call dismoi('NOM_MAILLA', chin, 'CHAMP', repk=ma2)
                     if (ma2 .ne. ma) then
                         valk(1) = chin
@@ -171,8 +181,8 @@ subroutine op0195()
             nompar = nopar2(optio2,nomgd,'INOUT')
             celmod = '&&OP0195.CELMOD'
             call alchml(ligrel, optio2, nompar, 'V', celmod,&
-                        ib, ' ')
-            if (ib .ne. 0) then
+                        iret, ' ')
+            if (iret .ne. 0) then
                 valk(1)=ligrel
                 valk(2)=nompar
                 valk(3)=optio2
@@ -180,8 +190,8 @@ subroutine op0195()
             endif
 !
 !         VERIFICATION DU TYPE DE CELMOD : ELGA/ELNO/ELEM :
-            call jeveuo(celmod//'.CELK', 'L', ib)
-            if (zk24(ib-1+3) .ne. tychr) then
+            call jeveuo(celmod//'.CELK', 'L', vk24 = v_celmod_celk)
+            if (v_celmod_celk(3) .ne. tychr) then
                 valk(1) = optio2
                 valk(2) = tychr
                 call utmess('F', 'UTILITAI3_24', nk=2, valk=valk)
@@ -268,7 +278,7 @@ subroutine op0195()
 !
     else if (opera.eq.'DISC') then
 !     -----------------------------------------
-        call getvid(' ', 'CHAM_GD', scal=chin, nbret=ib)
+        call getvid(' ', 'CHAM_GD', scal=chin)
         call dismoi('NOM_GD', chin, 'CHAMP', repk=nomgd2)
         if (nomgd .ne. nomgd2) then
 !          -- EXCEPTION : NOMGD='VARI_R' ET NOMGD2='VAR2_R'
@@ -338,12 +348,20 @@ subroutine op0195()
   1         continue
 !
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
-            if (prchn1 .ne. prchn2) then
+            if (idensd('PROF_CHNO',prchn1,prchn2)) then
+                call detrsd('PROF_CHNO', prchn2)
+                call jeveuo(chou(1:8)//'           .REFE', 'L', vk24 = v_refe)
+                v_refe(2) = prchn1
+            else
+                call getfac('COMB', nocc)
+                if (nocc .ne. 0) then
+                    call utmess('A', 'CREACHAMP1_14')
+                endif
                 cns1 = '&&OP0195.CNS1'
                 call cnocns(chou, 'V', cns1)
                 if (prchn2(1:8) .eq. chou(1:8)) call detrsd('PROF_CHNO', prchn2)
                 prol0='NON'
-                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=ibid)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0)
                 call cnscno(cns1, prchn1, prol0, 'G', chou,&
                             'F', ibid)
                 call detrsd('CHAM_NO_S', cns1)

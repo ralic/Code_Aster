@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,26 +55,6 @@ cata_msg = {
  transcodage : une incohérence a été détectée entre les déclarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivités
 """),
 
-    10 : _(u"""
- Erreur utilisateur dans CREA_CHAMP / COMB :
-   Les champs que l'on cherche à combiner doivent tous être des champs aux noeuds.
-"""),
-
-    11 : _(u"""
- Erreur utilisateur dans CREA_CHAMP / COMB :
-   Les champs que l'on cherche à combiner doivent tous avoir la même grandeur (DEPL_R, ...).
-   Ce doit être la même que celle donnée dans TYPE_CHAM).
-"""),
-
-    12 : _(u"""
- Erreur utilisateur dans CREA_CHAMP / COMB :
-   Les champs que l'on cherche à combiner doivent tous avoir la même numérotation.
-"""),
-
-    13 : _(u"""
- Erreur utilisateur dans CREA_CHAMP / COMB :
-   Les champs que l'on cherche à combiner doivent tous s'appuyer sur le même maillage.
-"""),
 
     36 : _(u"""
  un GROUP_MA n'a pas de nom, suppression de ce groupe.
