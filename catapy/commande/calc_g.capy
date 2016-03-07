@@ -75,7 +75,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
             EXCIT           =FACT(statut='f',max='**',
                CHARGE          =SIMP(statut='f',typ=(char_meca,char_cine_meca)),
                FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-               TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE",into=("FIXE",) ),
+               TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",) ),
                                  ),
          ),
 

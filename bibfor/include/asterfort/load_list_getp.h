@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine load_list_getp(phenom      , l_load_user, v_llresu_info, v_llresu_name, v_list_dble,&
                               l_apply_user, i_load     , nb_load      , i_excit      , load_name  ,&
-                              load_type   , ligrch     , load_apply)
+                              load_type   , ligrch     , load_apply_)
         character(len=4), intent(in) :: phenom
         aster_logical, intent(in) :: l_load_user
         character(len=8), pointer, intent(in) :: v_list_dble(:)
@@ -32,7 +32,7 @@ interface
         integer, intent(inout) :: i_excit
         character(len=8), intent(out) :: load_name
         character(len=8), intent(out) :: load_type
-        character(len=8), optional, intent(out) :: load_apply
+        character(len=16), optional, intent(out) :: load_apply_
         character(len=19), intent(out) :: ligrch
     end subroutine load_list_getp
 end interface

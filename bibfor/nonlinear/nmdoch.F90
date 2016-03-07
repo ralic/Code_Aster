@@ -27,7 +27,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,12 +77,12 @@ implicit none
     integer :: itych
     integer :: n1
     integer :: npilo, nb_excit, nb_load
-    integer :: infmax, i_excit, i_load, iret, infc, j, i_load_new
+    integer :: infmax, i_excit, i_load, iret, infc, j, i_load_new, iret_cable_cine
     character(len=4) :: typcal
     character(len=5) :: suffix
-    character(len=8) :: k8bid, load_type, parcha, load_apply
+    character(len=8) :: k8bid, load_type, parcha
     character(len=8) :: fctcsr
-    character(len=16) :: nomcmd, typesd
+    character(len=16) :: nomcmd, typesd, load_apply
     character(len=8) :: load_name, nomfct
     character(len=24) :: info_type
     character(len=19) :: lisdbl
@@ -194,12 +194,6 @@ implicit none
                                 i_excit     , load_name   , load_type    , ligrch       ,&
                                 load_apply)
 !
-! --------- Number of loads "PILOTAGE"
-!
-            if (load_apply .eq. 'FIXE_PIL') then
-                npilo = npilo + 1
-            endif
-!
 ! --------- FONCTIONS MULTIPLICATIVES DES CHARGES
 !
             if (nomcmd(1:10) .eq. 'DYNA_VIBRA') then
@@ -211,8 +205,12 @@ implicit none
             lacce = (nomcmd.eq.'DYNA_NON_LINE'.or. nomcmd.eq.'LIRE_RESU')
             call lislfc(list_load_resu, i_load, i_excit, l_load_user, nb_excit,&
                         lfcplx, lacce, fctcsr, nomfct)
-            if (nomfct .ne. fctcsr) then
-                if (load_apply .eq. 'FIXE_PIL') then
+!
+! --------- Check loads "PILOTAGE"
+!
+            if (load_apply .eq. 'FIXE_PILO') then
+                npilo = npilo + 1
+                if (nomfct .ne. fctcsr) then
                     call utmess('F', 'CHARGES_38', sk=load_name)
                 endif
             endif
@@ -222,13 +220,13 @@ implicit none
             nb_info_type = 0
             info_type = 'RIEN'
             if (load_type(1:5) .eq. 'CIME_') then
-                if (load_apply(1:4) .eq. 'SUIV') then
+                if (load_apply .eq. 'SUIV') then
                     call utmess('F', 'CHARGES_23', sk=load_name)
-                else if (load_apply.eq.'FIXE_PIL') then
+                else if (load_apply .eq. 'FIXE_PILO') then
                     call utmess('F', 'CHARGES_27', sk=load_name)
-                else if (load_apply(1:4).eq.'DIDI') then
+                else if (load_apply .eq. 'DIDI') then
                     call utmess('F', 'CHARGES_24', sk=load_name)
-                else
+                else if (load_apply .eq. 'FIXE_CSTE') then
                     if (load_type(5:7) .eq. '_FT') then
                         info_type = 'CINE_FT'
                     else if (load_type(5:7).eq.'_FO') then
@@ -236,6 +234,8 @@ implicit none
                     else
                         info_type = 'CINE_CSTE'
                     endif
+                else
+                    ASSERT(.false.)
                 endif
             endif
             if (info_type .ne. 'RIEN') then
@@ -250,10 +250,10 @@ implicit none
             lchin = ligrch(1:13)//'.CIMPO.DESC'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
-                if (load_apply(1:4) .eq. 'SUIV') then
+                if (load_apply .eq. 'SUIV') then
                     info_type     = 'DIRI_SUIV'
                     l_diri_undead = .true.
-                else if (load_apply.eq.'FIXE_PIL') then
+                else if (load_apply .eq. 'FIXE_PILO') then
                     call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
                     if (parcha(1:3) .eq. 'OUI') then
                         call utmess('F', 'CHARGES_28', sk=load_name)
@@ -265,7 +265,7 @@ implicit none
                     else
                         info_type = 'DIRI_PILO'
                     endif
-                else
+                else if (load_apply .eq. 'DIDI') then
                     if (load_type(5:7) .eq. '_FO') then
                         info_type = 'DIRI_FO'
                         call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
@@ -275,9 +275,19 @@ implicit none
                     else
                         info_type = 'DIRI_CSTE'
                     endif
-                    if (load_apply(1:4) .eq. 'DIDI') then
-                        info_type = info_type(1:9)//'_DIDI'
+                    info_type = info_type(1:9)//'_DIDI'
+                else if (load_apply .eq. 'FIXE_CSTE') then
+                    if (load_type(5:7) .eq. '_FO') then
+                        info_type = 'DIRI_FO'
+                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
+                        if (parcha(1:3) .eq. 'OUI') then
+                            info_type = 'DIRI_FT'
+                        endif
+                    else
+                        info_type = 'DIRI_CSTE'
                     endif
+                else
+                    ASSERT(.false.)
                 endif
             endif
             if (info_type .ne. 'RIEN') then
@@ -302,7 +312,7 @@ implicit none
                         info_type = 'NEUM_ONDE'
                     else if (nomlig(itych).eq.'.SIINT') then
                         info_type = 'NEUM_SIGM_INT'
-                    else if (load_apply.eq.'FIXE_PIL') then
+                    else if (load_apply .eq. 'FIXE_PILO') then
                         info_type = 'NEUM_PILO'
                         if (nomlig(itych) .ne. '.VEASS') then
                             call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
@@ -310,17 +320,36 @@ implicit none
                                 call utmess('F', 'CHARGES_28')
                             endif
                         endif
-                    else if (load_apply(1:4).eq.'SUIV') then
+                    else if (load_apply .eq. 'SUIV') then
                         info_type = 'NEUM_SUIV'
-                    else if (load_type(5:7).eq.'_FO') then
-                        call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
-                        if (parcha(1:3) .eq. 'OUI') then
-                            info_type = 'NEUM_FT'
+                    else if (load_apply .eq. 'FIXE_CSTE') then
+                        if (load_type(5:7).eq.'_FO') then
+                            call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
+                            if (parcha(1:3) .eq. 'OUI') then
+                                info_type = 'NEUM_FT'
+                            else
+                                info_type = 'NEUM_FO'
+                            endif
                         else
-                            info_type = 'NEUM_FO'
+                            info_type = 'NEUM_CSTE'
+                        endif
+                    else if (load_apply .eq. 'DIDI') then
+                        call jeexin(load_name//'.CHME.CIMPO.DESC', iret_cable_cine)
+                        if (iret_cable_cine .eq. 0 ) then
+                            call utmess('F', 'CHARGES_31', sk=load_name)
+                        endif
+                        if (load_type(5:7).eq.'_FO') then
+                            call dismoi('PARA_INST', lchin(1:19), 'CARTE', repk=parcha)
+                            if (parcha(1:3) .eq. 'OUI') then
+                                info_type = 'NEUM_FT'
+                            else
+                                info_type = 'NEUM_FO'
+                            endif
+                        else
+                            info_type = 'NEUM_CSTE'
                         endif
                     else
-                        info_type = 'NEUM_CSTE'
+                        ASSERT(.false.)
                     endif
                 endif
                 if (info_type .ne. 'RIEN') then
@@ -336,13 +365,16 @@ implicit none
             lchin = ligrch(1:13)//'.EVOL.CHAR'
             call jeexin(lchin, iret)
             if (iret .ne. 0) then
-                if (load_apply(1:4) .eq. 'SUIV') then
+                if (load_apply .eq. 'SUIV') then
                     info_type = 'NEUM_SUIV'
-                else
+                else if (load_apply .eq. 'FIXE_CSTE') then
                     info_type = 'NEUM_CSTE'
-                endif
-                if (load_apply .eq. 'FIXE_PIL') then
+                else if (load_apply .eq. 'FIXE_PILO') then
                     call utmess('F', 'CHARGES_34', sk=load_name)
+                else if (load_apply .eq. 'DIDI') then
+                    call utmess('F', 'CHARGES_31', sk=load_name)
+                else
+                    ASSERT(.false.)
                 endif
             endif
             if (info_type .ne. 'RIEN') then
@@ -362,17 +394,21 @@ implicit none
                 endif
                 if (load_apply .eq. 'SUIV') then
                     call utmess('F', 'CHARGES_51', sk=load_name)
-                endif
-                if (load_apply .eq. 'DIDI') then
+                elseif (load_apply .eq. 'DIDI') then
                     call utmess('F', 'CHARGES_52', sk=load_name)
+                else if (load_apply .eq. 'FIXE_PILO') then
+                    call utmess('F', 'CHARGES_34', sk=load_name)
+                else if (load_apply .eq. 'FIXE_CSTE') then
+                    if (load_type(5:6) .eq. '_F') then
+                        call utmess('F', 'CHARGES_53', sk=load_name)
+                    endif
+                    if (nomfct .ne. fctcsr) then
+                        call utmess('F', 'CHARGES_54', sk=load_name)
+                    endif
+                    info_type = 'EXCIT_SOL'
+                else
+                    ASSERT(.false.)
                 endif
-                if (load_type(5:6) .eq. '_F') then
-                    call utmess('F', 'CHARGES_53', sk=load_name)
-                endif
-                if (nomfct .ne. fctcsr) then
-                    call utmess('F', 'CHARGES_54', sk=load_name)
-                endif
-                info_type = 'EXCIT_SOL'
             endif
             if (info_type .ne. 'RIEN') then
                 nb_info_type = nb_info_type + 1

@@ -1,6 +1,6 @@
 subroutine load_list_getp(phenom      , l_load_user, v_llresu_info, v_llresu_name, v_list_dble,&
                           l_apply_user, i_load     , nb_load      , i_excit      , load_name  ,&
-                          load_type   , ligrch     , load_apply   )
+                          load_type   , ligrch     , load_apply_  )
 !
 implicit none
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ implicit none
     character(len=8), intent(out) :: load_name
     character(len=8), intent(out) :: load_type
     character(len=19), intent(out) :: ligrch
-    character(len=8), optional, intent(out) :: load_apply
+    character(len=16), optional, intent(out) :: load_apply_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,13 +67,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywf, load_pheno
+    character(len=16) :: keywf, load_apply, load_pheno
     integer :: i_load_dble, nocc
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    load_name = ' '
-    keywf     = 'EXCIT'
+    load_name  = ' '
+    load_apply = 'FIXE_CSTE'
+    keywf      = 'EXCIT'
 !
     if (l_load_user) then
         i_excit = i_excit + 1
@@ -130,32 +131,37 @@ implicit none
 ! - Type of applying load
 !
     if (phenom.eq.'MECA') then
-        ASSERT(present(load_apply))
+        ASSERT(present(load_apply_))
         if (l_load_user) then
             if (l_apply_user) then
                 call getvtx(keywf, 'TYPE_CHARGE', iocc=i_excit, scal=load_apply)
             else
-                load_apply = 'FIXE'
+                load_apply = 'FIXE_CSTE'
             endif
         else
             if (l_apply_user) then
-                load_apply = 'FIXE_CST'
+                load_apply = 'FIXE_CSTE'
             else
                 if (v_llresu_info(i_load+1) .eq. 4 .or.&
                     v_llresu_info(1+nb_load+i_load) .eq. 4) then
                     load_apply = 'SUIV'
-                elseif (v_llresu_info(i_load+1).eq.5 .or.&
-                        v_llresu_info(1+nb_load+i_load).eq.5) then
-                    load_apply = 'FIXE_PIL'
-                else if (v_llresu_info(1+3*nb_load+2+i_load).eq.1) then
+                elseif (v_llresu_info(i_load+1) .eq. 5 .or.&
+                        v_llresu_info(1+nb_load+i_load) .eq. 5) then
+                    load_apply = 'FIXE_PILO'
+                else if (v_llresu_info(1+3*nb_load+2+i_load) .eq. 1) then
                     load_apply = 'DIDI'
+                else
+                    load_apply = 'FIXE_CSTE'
                 endif
             endif
         endif
     elseif (phenom.eq.'THER') then
-        ASSERT(.not.present(load_apply))        
+        ASSERT(.not.present(load_apply_))        
     else
         ASSERT(.false.)
+    endif
+    if (present(load_apply_)) then
+        load_apply_ = load_apply
     endif
 !
 end subroutine

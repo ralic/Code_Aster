@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_C
 """),
 
     20 : _(u"""
-La charge %(k1)s  n'est pas compatible avec FONC_MULT.
+La charge %(k1)s n'est pas compatible avec FONC_MULT.
 """),
 
     21 : _(u"""
@@ -62,8 +62,7 @@ Si votre chargement contient plusieurs types dont certains ne peuvent être pilo
 
 
     27 : _(u"""
-La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE):
- elle ne peut pas être pilotée.
+La charge %(k1)s est de type cinématique (AFFE_CHAR_CINE): elle ne peut pas être pilotée.
 """),
 
     28 : _(u"""
@@ -81,10 +80,12 @@ Erreur utilisateur :
   Le code ne sait pas encore traiter ces relations non linéaires.
 """),
 
-
+    31 : _(u"""
+La charge %(k1)s est un chargement de type force ou flux et ne peut donc pas utiliser DIDI.
+"""),
 
     34 : _(u"""
-La charge de type EVOL_CHAR %(k1)s  ne peut pas être pilotée.
+La charge %(k1)s ne peut pas être pilotée.
 """),
 
     38 : _(u"""
