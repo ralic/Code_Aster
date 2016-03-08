@@ -244,7 +244,8 @@ subroutine op0018()
 !
 ! ------------- 2D modelisations
 !
-                if (modeli(1:4).eq.'AXIS' .or. modeli(1:4).eq.'PLAN' .or. modeli(2:6).eq.'_PLAN') then
+                if (modeli(1:4).eq.'AXIS' .or. modeli(1:4).eq.'PLAN' &
+                    .or. modeli(2:6).eq.'_PLAN') then
                     call dismoi('Z_QUASI_ZERO', mesh, 'MAILLAGE', repk=z_quasi_zero)
                     if (z_quasi_zero .ne. 'OUI') then
                         call utmess('A', 'MODELE1_3')

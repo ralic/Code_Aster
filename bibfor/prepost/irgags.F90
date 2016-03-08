@@ -13,7 +13,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
 !                 ASTER
 !-----------------------------------------------------------------------
     integer :: nbdepl, nbtemp, nbvari, nbsigm , nbepsm,  nbflu, nbpres
-    integer :: i, icmas,  ient, iflu , ires, iva, ivar,j
+    integer :: i, icmas,  ient, ires, iva, ivar,j
     integer, pointer :: videpl(:) => null()
     integer, pointer :: viepsm(:) => null()
     integer, pointer :: vitemp(:) => null()
