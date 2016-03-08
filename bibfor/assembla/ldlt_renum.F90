@@ -6,6 +6,9 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/infniv.h"
+#include "asterfort/infbav.h"
+#include "asterfort/infmue.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -79,25 +82,40 @@ implicit none
     character(len=8) :: nogd
     character(len=1) :: bas1
     integer :: nb_ligr,k,neq2,ncmp1,ncmp2,nbno1,nbno2,iad1,iad2,icmp,ieq1,ieq2,nbec
-    integer :: nec1,nec2,n1,n2,ino,neq,iexi
+    integer :: nec1,nec2,n1,n2,ino,neq,iexi,ifm,niv
     character(len=24), pointer :: list_ligr(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=19) :: nomligr
     character(len=8) :: modelo, nomres
     character(len=16) :: nomcom, typres
-    logical :: non_renum
+    logical :: non_renum, limpr
     integer, pointer :: prno1(:) => null()
     integer, pointer :: prno2(:) => null()
     integer, pointer :: nueq1(:) => null()
     integer, pointer :: nueq2(:) => null()
     integer, pointer :: m2lc(:) => null()
     integer, pointer :: lc2m(:) => null()
+    character(len=16), SAVE :: nomcom_sav=' ', nomres_sav=' '
+    integer, SAVE :: neq_sav=0
 
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     nu1=nu1z
     call dismoi('NB_EQUA', nu1, 'NUME_DDL', repi=neq)
     call getres(nomres, typres, nomcom)
+
+!   -- On ne veut pas ecrire les informations de numerotation (RCMK, ...)
+!      a chaque resolution (si INFO=1).
+    limpr=.true.
+    call infniv(ifm, niv)
+    if (nomcom.eq.nomcom_sav .and. nomres.eq.nomres_sav) then
+        if (neq.eq.neq_sav .and. niv.eq.1) limpr=.false.
+    endif
+    neq_sav=neq
+    nomres_sav=nomres
+    nomcom_sav=nomcom
+
+    if (.not.limpr) call infmue()
 
     if (.not.present(nu2z)) then
         call jelira(nu1//'.SMOS.SMDE', 'CLAS', cval=bas1)
@@ -235,5 +253,6 @@ implicit none
 
 999 continue
 
+    if (.not.limpr) call infbav()
     call jedema()
 end subroutine
