@@ -91,7 +91,7 @@ implicit none
     integer :: ngrel, igrel, te, te1, mode, long, jceld, ncmpv, debgrl
     integer :: gd, jcelk, iopt, iprem, nel, iel, lgcata, nbspt
     integer :: ncdyn, lgchel,numc
-    integer :: ibid, modmx, iamolo, itych, itych1, neltot
+    integer :: ibid, modmx, iamolo, itych, itych1
     integer :: illiel, jdcesd, jdcesl
     integer :: ima, ncmpv2, kk, ityplo, nbpoin
     aster_logical :: letendu
@@ -187,12 +187,16 @@ implicit none
 
 !   4- objet .CELD :
 !   -------------------
-    neltot = 0
+    long = 4 + ngrel + 4*ngrel
     do igrel = 1, ngrel
-        neltot = neltot + nbelem(ligrel,igrel)
+        nel = nbelem(ligrel,igrel)
+        te = typele(ligrel,igrel)
+        mode = modat2(iopt,te,nompar)
+        if (mode .gt. 0) then
+            long=long+4*nel
+        endif
     end do
 
-    long = 4 + ngrel + 4*ngrel + 4*neltot
     call wkvect(cel//'.CELD', base//' V I', long, jceld)
     call jeecra(cel//'.CELD', 'DOCU', cval='CHML')
 
@@ -319,7 +323,11 @@ implicit none
         endif
 
         zi(jceld-1+debgrl+4) = ncmpv - ncmpv2
-        debgrl = debgrl + 4 + 4*nel
+        if (mode .gt. 0) then
+            debgrl = debgrl + 4 + 4*nel
+        else
+            debgrl = debgrl + 4
+        endif
     end do
 
 
