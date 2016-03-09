@@ -124,12 +124,12 @@ class Coeur(object):
         return self.dAxeGrace
 
 
-    def init_from_table(self, tab):
+    def init_from_table(self, tab, mater=True):
         """Initialise le coeur à partir d'une table."""
         self.nbac = len(tab)
         for rows in tab:
             idAC = rows['idAC'].strip()
-            print 'idAC = ',idAC
+            # print 'idAC = ',idAC
             typeAC = rows['Milieu'].strip()
             nameAC = rows['Repere'].strip()
             ac = self.factory.get(typeAC)(self.typ_coeur)

@@ -380,7 +380,7 @@ def post_mac3coeur_ops(self, **args):
 # et on renomme la colonne qui identifie les assemblages
     _table.Renomme(name, 'idAC')
     _coeur = coeur_factory.get(_typ_coeur)(name, _typ_coeur, self, datg)
-    _coeur.init_from_table(_table)
+    _coeur.init_from_table(_table,mater=False)
 
     # "
     #                                          MOT-CLE FACTEUR LAME
