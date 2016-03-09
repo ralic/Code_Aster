@@ -518,7 +518,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
-        if self.keyw['TYPE_COEUR'] == "MONO":
+        if self.keyw['TYPE_COEUR'][:4] == "MONO":
             self.subdivis = 5
         self.use_archimede = self.mcf['ARCHIMEDE']
         super(Mac3CoeurDeformation, self)._prepare_data(noresu)
@@ -608,7 +608,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         from Cata.cata import STAT_NON_LINE 
         
         coeur = self.coeur
-        if self.keyw['TYPE_COEUR'] == "MONO":
+        if self.keyw['TYPE_COEUR'][:4] == "MONO":
             chmat_contact = self.cham_mater_free
         else:
             chmat_contact = self.cham_mater_contact
@@ -1053,7 +1053,7 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
     def _prepare_data(self,noresu):
         """Prepare the data for the calculation"""
         self.niv_fluence = self.mcf['NIVE_FLUENCE']
-        if self.keyw['TYPE_COEUR'] == "MONO":
+        if self.keyw['TYPE_COEUR'][:4] == "MONO":
             assert(False)
         super(Mac3CoeurEtatInitial, self)._prepare_data(noresu)
 

@@ -20,7 +20,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        UIinfo={"groupes":("Outils-métier",)},
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
 
-           TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","TEST","900","1300","N4","LIGNE900","LIGNE1300","LIGNEN4")),
+           TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","MONO_FROID","TEST","900","1300","N4","LIGNE900","LIGNE1300","LIGNEN4")),
            RESULTAT     = SIMP(statut='o',typ=evol_noli),                             # SD_RESULTAT
            TABLE        = SIMP(statut='o',typ=table_sdaster),                         # TABLE DES DAMAC A L INSTANT N
            INST         = SIMP(statut='o',typ='R', max=1),                            # INSTANT
