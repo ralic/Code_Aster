@@ -6,9 +6,10 @@ implicit none
 #include "asterfort/aptgno.h"
 #include "asterfort/apverl.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/sdmpic.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,9 +59,17 @@ implicit none
 !
     call aptgen(sdappa, mesh, sdcont_defi, newgeo)
 !
-! - Compute tangents at each node (average)
+! - All-reduce for tangents field by element
+!
+    call sdmpic('SD_APPA_TGEL',sdappa)
+!
+! - Compute 
 !
     call aptgno(sdappa, mesh, sdcont_defi)
+!
+! - All-reduce for tangents at each node field
+!
+    call sdmpic('SD_APPA_TGNO',sdappa)    
 !
 ! - Check normals discontinuity
 !

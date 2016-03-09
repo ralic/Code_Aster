@@ -5,6 +5,8 @@ subroutine aptgem(sdappa , mesh     , newgeo   , sdcont_defi, model_ndim,&
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/r8maem.h"
 #include "asterfort/apcoma.h"
 #include "asterfort/apcond.h"
@@ -23,8 +25,11 @@ implicit none
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
 !
+#include "mpif.h"
+#include "asterf_mpi.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,9 +83,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elem_type, elem_name, node_name, valk(2)
-    integer :: node_nume(9), longc
+    mpi_int :: i_proc, nb_proc, mpicou
+    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer :: node_nume(9), longc 
     integer :: elem_nbnode, niverr
-    aster_logical :: l_beam, l_poi1
+    aster_logical :: l_beam, l_poi1, one_proc
     integer :: i_node, i_elem, elem_ndim
     integer :: elem_indx, elem_nume
     real(kind=8) :: tau1(3), tau2(3)
@@ -92,14 +99,28 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    one_proc=.false.
 !
 ! - Acces to pairing datastructure
 !
     sdappa_tgel = sdappa(1:19)//'.TGEL'
+    
+!
+! ----- Mpi informations
+!
+        call asmpi_comm('GET', mpicou)
+        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+        if(one_proc)then
+            nb_proc = 1
+        endif
+        nb_elem_mpi  = nb_elem/nb_proc
+        nbr_elem_mpi = nb_elem-nb_elem_mpi*nb_proc
+        idx_start   = 1+(i_proc)*nb_elem_mpi
+        idx_end     = idx_start+nb_elem_mpi-1+(nbr_elem_mpi*(i_proc+1)/nb_proc)
 !
 ! - Loop on elements
 !
-    do i_elem = 1, nb_elem
+    do i_elem = idx_start, idx_end
 !
 ! ----- Current element
 !

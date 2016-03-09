@@ -13,7 +13,7 @@ subroutine sdmpic(typesd, nomsd)
     character(len=*) :: nomsd, typesd
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,6 +48,7 @@ subroutine sdmpic(typesd, nomsd)
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: celk(:) => null()
+    character(len=16), pointer :: valk(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()
@@ -87,6 +88,32 @@ subroutine sdmpic(typesd, nomsd)
 !
         call jeveuo(k19//'.REFA', 'E', vk24=refa)
         refa(11)='MPI_COMPLET'
+!
+    else if (types2 .eq. 'SD_APPA') then
+!     ----------------------------------
+        call jeveuo(k19//'.MPIA', 'E', vk16=valk)
+        if (valk(1) .eq. 'MPI_COMPLET') goto 999
+        call asmpi_comm_jev('MPI_SUM', k19//'.APPA')
+        call asmpi_comm_jev('MPI_SUM', k19//'.DIST')
+        call asmpi_comm_jev('MPI_SUM', k19//'.TAU1')
+        call asmpi_comm_jev('MPI_SUM', k19//'.TAU2')
+        call asmpi_comm_jev('MPI_SUM', k19//'.PROJ')     
+        valk(1)='MPI_COMPLET'
+!
+    else if (types2 .eq. 'SD_APPA_TGEL') then
+!     ----------------------------------
+        call jeveuo(k19//'.MPIB', 'E', vk16=valk)
+        if (valk(1) .eq. 'MPI_COMPLET') goto 999
+        call asmpi_comm_jev('MPI_SUM', k19//'.TGEL')  
+        valk(1)='MPI_COMPLET'
+!
+    else if (types2 .eq. 'SD_APPA_TGNO') then
+!     ----------------------------------
+        call jeveuo(k19//'.MPIC', 'E', vk16=valk)
+        if (valk(1) .eq. 'MPI_COMPLET') goto 999
+        call asmpi_comm_jev('MPI_SUM', k19//'.TGNO')  
+        valk(1)='MPI_COMPLET'       
+!
 !
     else
         ASSERT(.false.)

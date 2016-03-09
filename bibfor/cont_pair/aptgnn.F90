@@ -3,6 +3,9 @@ subroutine aptgnn(sdappa , mesh     , sdcont_defi, model_ndim, jdecno,&
 !
 implicit none
 !
+#include "asterf_types.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterc/r8prem.h"
 #include "asterfort/cfinvm.h"
 #include "asterfort/cfnben.h"
@@ -22,8 +25,11 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
+#include "mpif.h"
+#include "asterf_mpi.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,11 +75,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: node_name, elem_name, valk(2)
+    mpi_int :: i_proc, nb_proc, mpicou 
+    integer :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
     integer :: elem_indx, elem_nume, node_indx(1), node_nume(1)
     integer :: node_nbelem, elem_nbnode
     integer :: jdeciv
     integer :: i_node, i_elem, i_node_curr, i_elem_node
     integer :: niverr
+    aster_logical :: one_proc
     real(kind=8) :: tau1(3), tau2(3), normal(3), normn
     real(kind=8) :: tau1_node(3), tau2_node(3)
     real(kind=8) :: vnorm(3), noor
@@ -85,6 +94,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
+    one_proc=.false.
 !
 ! - Acces to pairing datastructure
 !
@@ -92,9 +102,21 @@ implicit none
     sdappa_tgno = sdappa(1:19)//'.TGNO'
     call jeveuo(sdappa_tgno, 'E', vr = v_sdappa_tgno)
 !
+! - Mpi informations
+!
+    call asmpi_comm('GET', mpicou)
+    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+    if(one_proc)then
+            nb_proc = 1
+    endif
+    nb_poin_mpi  = nb_node/nb_proc
+    nbr_poin_mpi = nb_node-nb_poin_mpi*nb_proc
+    idx_start   = 1+(i_proc)*nb_poin_mpi
+    idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*(i_proc+1)/nb_proc)
+!
 ! - Loop on nodes
 !
-    do i_node = 1, nb_node
+    do  i_node= idx_start, idx_end
 !
         normal(1:3) = 0.d0
         tau1_node(1:3) = 0.d0

@@ -2,6 +2,8 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
 !
 implicit none
 !
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
 #include "asterc/r8prem.h"
@@ -14,8 +16,11 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "blas/dcopy.h"
 !
+#include "mpif.h"
+#include "asterf_mpi.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +56,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    mpi_int :: i_proc, nb_proc, mpicou
+    integer :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
     integer :: i_node_mast, i_zone, i, i_poin
     integer :: nb_cont_zone, nt_poin
     integer :: nb_node_mast, nb_poin
@@ -60,7 +67,7 @@ implicit none
     real(kind=8) :: vect_pm(3), vect_pm_mini(3)
     integer :: jdecnm, node_mast_nume, node_mast_indx
     integer :: node_mini_indx, pair_type
-    aster_logical :: l_pair_dire, l_proj_tole, l_poin_excl
+    aster_logical :: l_pair_dire, l_proj_tole, l_poin_excl, one_proc
     character(len=24) :: sdappa_infp, sdcont_noeuco, newgeo_vale
     integer, pointer :: v_sdappa_infp(:) => null()
     integer, pointer :: v_sdcont_noeuco(:) => null()
@@ -72,6 +79,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('APPARIEMENT', ifm, niv)
+    one_proc=.false.
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> RECH. NOEUD PLUS PROCHE'
     endif
@@ -102,7 +110,7 @@ implicit none
 !
 ! - Loop on contact zones
 !
-    i_poin = 1
+    i_poin = 0
     do i_zone = 1, nb_cont_zone
 !
 ! ----- Parameters on current zone
@@ -117,11 +125,22 @@ implicit none
             pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
             pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)            
         endif
-
+!
+! ----- Mpi informations
+!
+        call asmpi_comm('GET', mpicou)
+        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+        if(one_proc)then
+            nb_proc = 1
+        endif
+        nb_poin_mpi  = nb_poin/nb_proc
+        nbr_poin_mpi = nb_poin-nb_poin_mpi*nb_proc
+        idx_start   = 1+(i_proc)*nb_poin_mpi
+        idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*(i_proc+1)/nb_proc)
 !
 ! ----- Loop on points
 !
-        do i = 1, nb_poin
+        do i = idx_start, idx_end
 !
             dist_mini      = r8gaem()
             l_proj_tole    = .false.
@@ -131,11 +150,11 @@ implicit none
 !
 ! --------- Coordinates of point
 !
-            call apcopt(sdappa, i_poin, poin_coor)
+            call apcopt(sdappa, i_poin+i, poin_coor)
 !
 ! --------- Excluded point ?
 !
-            l_poin_excl = v_sdappa_infp(i_poin) .eq. 1
+            l_poin_excl = v_sdappa_infp(i_poin+i) .eq. 1
 !
 ! --------- Loop on master nodes
 !
@@ -213,20 +232,21 @@ implicit none
 !
 ! --------- Save
 !
-            v_sdappa_appa(4*(i_poin-1)+1) = pair_type
-            v_sdappa_appa(4*(i_poin-1)+2) = node_mini_indx
-            v_sdappa_appa(4*(i_poin-1)+3) = i_zone
-            v_sdappa_dist(4*(i_poin-1)+1) = dist_mini
-            v_sdappa_dist(4*(i_poin-1)+2) = vect_pm_mini(1)
-            v_sdappa_dist(4*(i_poin-1)+3) = vect_pm_mini(2)
-            v_sdappa_dist(4*(i_poin-1)+4) = vect_pm_mini(3)
-!
-! --------- Next point
-!
-            i_poin = i_poin + 1
+            v_sdappa_appa(4*(i_poin+i-1)+1) = pair_type
+            v_sdappa_appa(4*(i_poin+i-1)+2) = node_mini_indx
+            v_sdappa_appa(4*(i_poin+i-1)+3) = i_zone
+            v_sdappa_dist(4*(i_poin+i-1)+1) = dist_mini
+            v_sdappa_dist(4*(i_poin+i-1)+2) = vect_pm_mini(1)
+            v_sdappa_dist(4*(i_poin+i-1)+3) = vect_pm_mini(2)
+            v_sdappa_dist(4*(i_poin+i-1)+4) = vect_pm_mini(3)
+
         end do
+!
+! ----- Next zone
+!
+            i_poin = i_poin + nb_poin
     end do
 !
-    ASSERT((i_poin-1).eq.nt_poin)
+    ASSERT((i_poin).eq.nt_poin)
 !
 end subroutine

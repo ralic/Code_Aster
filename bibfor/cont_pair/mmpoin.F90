@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mcomce.h"
 #include "asterfort/mmelin.h"
@@ -19,9 +20,12 @@ implicit none
 #include "asterfort/mmnpoi.h"
 #include "asterfort/mmnumn.h"
 #include "asterfort/mmvalp.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeexin.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,11 +62,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer :: ifm, niv, iret
     character(len=24) :: sdappa_poin, sdappa_infp, sdappa_noms
+    character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
+    character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel    
+    character(len=24) :: sdappa_mpia, sdappa_mpib, sdappa_mpic
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
     integer, pointer :: v_sdappa_infp(:) => null()
     character(len=16), pointer :: v_sdappa_noms(:) => null()
+    character(len=16), pointer :: valk(:) => null()
     integer :: i_node_escl, i_poin, i_poin_elem, i_zone, i_elem_slav
     integer :: nb_elem_slav, nb_poin_elem, elem_slav_nbnode, nt_poin
     integer :: elem_slav_indx, elem_slav_nume, node_slav_nume
@@ -72,7 +80,7 @@ implicit none
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: elem_slav_type, elem_slav_name
     character(len=16) :: poin_name
-    integer :: model_ndim, nb_cont_zone
+    integer :: model_ndim, nb_cont_zone, length
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,6 +174,46 @@ implicit none
             end do
         end do
     end do
+!
+! ------------- Pairing mpi data sutructure initialisation
+!
+    sdappa_appa = sdappa(1:19)//'.APPA'
+    sdappa_dist = sdappa(1:19)//'.DIST'
+    sdappa_tau1 = sdappa(1:19)//'.TAU1'
+    sdappa_tau2 = sdappa(1:19)//'.TAU2'
+    sdappa_proj = sdappa(1:19)//'.PROJ'
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
+    sdappa_tgno = sdappa(1:19)//'.TGNO'
+    call jerazo(sdappa_appa,4*nt_poin,1)
+    call jerazo(sdappa_dist,4*nt_poin,1)
+    call jerazo(sdappa_tau1,3*nt_poin,1)
+    call jerazo(sdappa_tau2,3*nt_poin,1)
+    call jerazo(sdappa_proj,2*nt_poin,1)
+    length=cfdisi(ds_contact%sdcont_defi,'NNOCO' )
+    call jerazo(sdappa_tgno,6*length,1)
+    length=0
+    call jelira(sdappa_tgel, 'LONT', length)
+    call jerazo(sdappa_tgel, length ,1)
+
+    sdappa_mpia = sdappa(1:19)//'.MPIA'
+    sdappa_mpib = sdappa(1:19)//'.MPIB'
+    sdappa_mpic = sdappa(1:19)//'.MPIC'
+    call jeexin(sdappa_mpia,iret)
+    if (iret .eq. 0) then
+        call wkvect(sdappa_mpia,'V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa_mpib,'V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+    else 
+        call jeveuo(sdappa_mpia, 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call jeveuo(sdappa_mpib, 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call jeveuo(sdappa_mpic, 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+    endif   
 !
     ASSERT(nt_poin.eq.cfdisi(ds_contact%sdcont_defi, 'NTPT'))
 !
