@@ -125,6 +125,7 @@ class Mac3CoeurCalcul(object):
         self._cham_mater_contact = NULL
         self._cham_mater_free = NULL
         self._times = NULL
+        self._times_woSubd = NULL
         self._evol_temp = NULL
         self._evol_fluence = NULL
         self._rigid_load = NULL
@@ -265,6 +266,12 @@ class Mac3CoeurCalcul(object):
 
     @property
     @cached_property
+    def times_woSubd(self):
+        """Return the list of the time steps"""
+        return self.coeur.definition_time(self.niv_fluence, self.subdivis,1)
+
+    @property
+    @cached_property
     def evol_temp(self):
         """Return the evolution of temperature"""
         return self.coeur.definition_champ_temperature(self.mesh)
@@ -290,6 +297,12 @@ class Mac3CoeurCalcul(object):
         return self.coeur.definition_materiau(
             self.mesh, self.geofib, self.evol_fluence,
             self.evol_temp, CONTACT='OUI')
+
+    def cham_mater_contact_progressif(self,ratio):
+        """Return the field of material (with contact enabled)"""
+        return self.coeur.definition_materiau(
+            self.mesh, self.geofib, self.evol_fluence,
+            self.evol_temp, CONTACT='OUI',RATIO=ratio)
 
     # loadings
     @property
@@ -468,6 +481,7 @@ class Mac3CoeurCalcul(object):
                                 GROUP_MA='MAINTIEN',
                                 DEFORMATION='PETIT'),),
             'SUIVI_DDL':_F(NOM_CHAM='DEPL',EVAL_CHAM='MAXI_ABS',GROUP_NO='CR_BAS',NOM_CMP=('DX',)),
+            # 'CONVERGENCE' : _F(ITER_GLOB_MAXI=100),
             'NEWTON': _F(MATRICE='TANGENTE',
                          #PREDICTION='ELASTIQUE',
                          REAC_ITER=1,),
@@ -640,13 +654,68 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else :
 	                 
             constant_load += self.periodic_cond + self.rigid_load
+            loads = constant_load \
+                    + self.vessel_head_load \
+                    + self.thyc_load[0] + self.thyc_load[1]
+            keywords=[]
+            mater=[]
+            ratio = 1.
+            mater.append(self.cham_mater_contact_progressif(ratio))
+            keywords.append(self.snl(CHAM_MATER=mater[-1],
+                                INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                             INST_FIN=coeur.temps_simu['T0b']),
+                                EXCIT=loads,
+                                ETAT_INIT=self.etat_init,
+                               ))
+            nb_test = 0
+            while nb_test < 5 :
+                try :
+                    nb = len(keywords)
+                    __res_int = [None]*nb
+                    for i in xrange(nb) :
+                        k = keywords[::-1][i]
+                        if i>0 :
+                            kwds = {
+                                'NEWTON': _F(MATRICE='TANGENTE',
+                                 PREDICTION='DEPL_CALCULE',
+                                 EVOL_NOLI = __res_int[i-1],
+                                 REAC_ITER=1,),
+                                }
+                            k.update(kwds)
+                        __res_int[i]=STAT_NON_LINE(**k)
+                    break
+                except aster.NonConvergenceError,e :
+                    ratio = ratio/10.
+                    mater.append(self.cham_mater_contact_progressif(ratio))
+                    keywords.append(self.snl(CHAM_MATER=mater[-1],
+                                    INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                                 INST_FIN=coeur.temps_simu['T0b']),
+                                    EXCIT=loads,
+                                    ETAT_INIT=self.etat_init,
+                                   ))
+                nb_test+=1
+            else :
+                raise 'no convergence'
+            keywords = self.snl(
+                                NEWTON= _F(MATRICE='TANGENTE',
+                                    PREDICTION='DEPL_CALCULE',
+                                    EVOL_NOLI = __res_int[-1],
+                                    REAC_ITER=1,),
+                                CHAM_MATER=self.cham_mater_contact,
+                                INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                             INST_FIN=coeur.temps_simu['T0b']),
+                                EXCIT=loads,
+                                ETAT_INIT=self.etat_init,
+                                )
+            __RESULT = STAT_NON_LINE(**keywords)
+
             __RESULT = STAT_NON_LINE(**self.snl(
+                                  reuse=__RESULT,
                                   CHAM_MATER=chmat_contact,
                                   INCREMENT=_F(LIST_INST=self.times,
                                                 INST_FIN=coeur.temps_simu['T8']),
-                                  EXCIT=constant_load + self.vessel_head_load + \
-                                      self.thyc_load[0] + self.thyc_load[1],
-                                  ETAT_INIT=self.etat_init,
+                                  EXCIT=loads,
+                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                   ))
 
             (LI2,F_EMB2)=self.dechargePSC(__RESULT)
@@ -658,13 +727,55 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                   EXCIT=constant_load+[_F(CHARGE=F_EMB2,FONC_MULT=LI2),],
                                   INCREMENT=_F(LIST_INST=self.times,INST_FIN=coeur.temps_simu['T8b']),
                                   ))
-            __RESULT = STAT_NON_LINE(**self.snl(
-                                  reuse=__RESULT,
-                                  CHAM_MATER=self.cham_mater_free,
-                                  ETAT_INIT=_F(EVOL_NOLI=__RESULT),
-                                  EXCIT=constant_load,
-                                  INCREMENT=_F(LIST_INST=self.times),
-                                  ))
+
+            keywords=[]
+            mater=[]
+            ratio = 1.e-8
+            mater.append(self.cham_mater_contact_progressif(ratio))
+            keywords.append(self.snl(CHAM_MATER=mater[-1],
+                                INCREMENT=_F(LIST_INST=self.times_woSubd,),
+                                EXCIT=constant_load,
+                                ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                               ))
+            nb_test = 0
+            while nb_test < 7 :
+                try :
+                    nb = len(keywords)
+                    __res_int = [None]*nb
+                    for i in xrange(nb) :
+                        k = keywords[::-1][i]
+                        if i>0 :
+                            kwds = {
+                                'NEWTON': _F(MATRICE='TANGENTE',
+                                 PREDICTION='DEPL_CALCULE',
+                                 EVOL_NOLI = __res_int[i-1],
+                                 REAC_ITER=1,),
+                                }
+                            k.update(kwds)
+                        __res_int[i]=STAT_NON_LINE(**k)
+                    break
+                except aster.NonConvergenceError,e :
+                    ratio = ratio*10.
+                    mater.append(self.cham_mater_contact_progressif(ratio))
+                    keywords.append(self.snl(CHAM_MATER=mater[-1],
+                                    INCREMENT=_F(LIST_INST=self.times_woSubd,),
+                                    EXCIT=constant_load,
+                                    ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                   ))
+                nb_test+=1
+            else :
+                raise 'no convergence'
+            keywords = self.snl(reuse = __RESULT,
+                                NEWTON= _F(MATRICE='TANGENTE',
+                                    PREDICTION='DEPL_CALCULE',
+                                    EVOL_NOLI = __res_int[-1],
+                                    REAC_ITER=1,),
+                                CHAM_MATER=self.cham_mater_free,
+                                INCREMENT=_F(LIST_INST=self.times_woSubd,),
+                                EXCIT=constant_load,
+                                ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                                )
+            __RESULT = STAT_NON_LINE(**keywords)
 
 class Mac3CoeurLame(Mac3CoeurCalcul):
 
@@ -799,9 +910,10 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR
+        from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR, DETRUIRE
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
+
         _snl_lame = STAT_NON_LINE(**self.snl(
                                   INCREMENT=_F(LIST_INST=self.times,
                                                INST_FIN=coeur.temps_simu[
@@ -822,7 +934,86 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         self.update_coeur(__resuf, self.mcf['TABLE_NP1'])
         # WARNING: element characteristics and the most of the loadings must be
         # computed on the initial (not deformed) mesh
-        keywords = self.snl(CHAM_MATER=self.cham_mater_contact,
+        # please keep the call to deform_mesh after the computation of keywords
+        keywords=[]
+        mater=[]
+        ratio = 1.
+        mater.append(self.cham_mater_contact_progressif(ratio))
+        keywords.append(self.snl(CHAM_MATER=mater[-1],
+                            INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                         INST_FIN=coeur.temps_simu['T0b']),
+                            EXCIT=self.rigid_load + self.archimede_load +
+                            self.vessel_head_load +
+                            self.vessel_dilatation_load +
+                            self.gravity_load +
+                            self.symetric_cond + self.periodic_cond +
+                            self.thyc_load[0] + self.thyc_load[1],
+                           ))
+        depl_deformed = self.deform_mesh(__resuf)
+        nb_test = 0
+        while nb_test < 5 :
+            try :
+                nb = len(keywords)
+                __res_int = [None]*nb
+                for i in xrange(nb) :
+                    k = keywords[::-1][i]
+                    if i>0 :
+                        kwds = {
+                            'NEWTON': _F(MATRICE='TANGENTE',
+                             PREDICTION='DEPL_CALCULE',
+                             EVOL_NOLI = __res_int[i-1],
+                             REAC_ITER=1,),
+                            }
+                        k.update(kwds)
+                    print 
+                    # if i == nb-1 :
+                    #     __RESULT = STAT_NON_LINE(**k)
+                    # else :
+                    __res_int[i]=STAT_NON_LINE(**k)
+                break
+            except aster.NonConvergenceError,e :
+                # print 'erreur : %s'%e
+                # try :
+                # DETRUIRE(CONCEPT=_F(NOM=__RESULT))
+                # except :
+                #     print 'pas possible de detruire'
+                ratio = ratio/10.
+                mater.append(self.cham_mater_contact_progressif(ratio))
+                keywords.append(self.snl(CHAM_MATER=mater[-1],
+                                INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                             INST_FIN=coeur.temps_simu['T0b']),
+                                EXCIT=self.rigid_load + self.archimede_load +
+                                self.vessel_head_load +
+                                self.vessel_dilatation_load +
+                                self.gravity_load +
+                                self.symetric_cond + self.periodic_cond +
+                                self.thyc_load[0] + self.thyc_load[1],
+                               ))
+            nb_test+=1
+        else :
+            raise 'no convergence'
+
+
+        keywords = self.snl(
+                            NEWTON= _F(MATRICE='TANGENTE',
+                                PREDICTION='DEPL_CALCULE',
+                                EVOL_NOLI = __res_int[-1],
+                                REAC_ITER=1,),
+                            CHAM_MATER=self.cham_mater_contact,
+                            INCREMENT=_F(LIST_INST=self.times_woSubd,
+                                         INST_FIN=coeur.temps_simu['T0b']),
+                            EXCIT=self.rigid_load + self.archimede_load +
+                            self.vessel_head_load +
+                            self.vessel_dilatation_load +
+                            self.gravity_load +
+                            self.symetric_cond + self.periodic_cond +
+                            self.thyc_load[0] + self.thyc_load[1],
+                            )
+        __RESULT = STAT_NON_LINE(**keywords)
+        keywords = self.snl(
+                            reuse = __RESULT,
+                            ETAT_INIT=_F(EVOL_NOLI=__RESULT),
+                            CHAM_MATER=self.cham_mater_contact,
                             INCREMENT=_F(LIST_INST=self.times,
                                          INST_FIN=coeur.temps_simu['T4']),
                             EXCIT=self.rigid_load + self.archimede_load +
@@ -832,7 +1023,6 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             self.symetric_cond + self.periodic_cond +
                             self.thyc_load[0] + self.thyc_load[1],
                             )
-        depl_deformed = self.deform_mesh(__resuf)
         __RESULT = STAT_NON_LINE(**keywords)
         _debug(__RESULT, "result STAT_NON_LINE 2")
         

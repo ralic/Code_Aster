@@ -634,7 +634,7 @@ class Coeur(object):
 
         return _MODELE
 
-    def definition_time(self, fluence, subdivis):
+    def definition_time(self, fluence, subdivis, nbSubdEchec=10):
         """Return the list of timesteps"""
         from Accas import _F
         DEFI_LIST_REEL = self.macro.get_cmd('DEFI_LIST_REEL')
@@ -653,10 +653,13 @@ class Coeur(object):
 
         _LI = DEFI_LIST_REEL(DEBUT=self.temps_simu['T0'], INTERVALLE=_list,)
 
-        _TE = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=_LI,),
-                             ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=10,),)
-
-        return _TE
+        
+        if nbSubdEchec == 1 :
+            return _LI
+        else :
+            _TE = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=_LI,),
+                             ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=nbSubdEchec,),)
+            return _TE
 
     def init_temps_simu(self, fluence, subdivis):
         """Initialise les temps caracteristiques"""
@@ -932,7 +935,7 @@ class Coeur(object):
 
         return _CHTH_1
 
-    def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON'):
+    def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON',RATIO=1.):
         from Accas import _F
         DEFI_COMPOR = self.macro.get_cmd('DEFI_COMPOR')
         DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
@@ -941,7 +944,7 @@ class Coeur(object):
         # TP_REF = 20. ;
 
         if CONTACT == 'OUI':
-            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E9))
+            _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E9*RATIO+1.E1*(1.-RATIO)))
         else:
             _M_RES = DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1.E1))
 
