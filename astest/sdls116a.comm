@@ -134,6 +134,15 @@ RESU1 = DYNA_NON_LINE(
                        MASS_DIAG = 'OUI',
                      );
 
+#--------------------------------------------------------------------
+RESU1=CALC_CHAMP(reuse = RESU1,
+               FORCE='FORC_NODA',
+               PRECISION=1.E-3,
+               RESULTAT=RESU1,
+               );
+RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('EFGE_ELGA','SIGM_ELGA'),DEFORMATION=('DEGE_ELGA','EPSI_ELGA'),RESULTAT=RESU1)
+#IMPR_RESU(FORMAT='RESULTAT', UNITE=6, RESU=_F(RESULTAT=RESU1),)
+
 TEST_RESU(RESU=(_F(INST=1.2E-3,
                    REFERENCE='SOURCE_EXTERNE',
                    RESULTAT=RESU1,
@@ -155,4 +164,35 @@ TEST_RESU(RESU=(_F(INST=1.2E-3,
                 ),
           )
 
+
+                                   
+# TEST OF SIXZ,SIYZ  DYNA_NON_LINE 
+TEST_RESU(RESU=(
+               
+                  
+               _F(INST=TMAX,
+                  MAILLE='M1',
+                  POINT=1,
+                  SOUS_POINT=2,
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIXZ',
+                  VALE_CALC= 28317132.8214 ,
+                  ),
+                  
+               _F(INST=TMAX,
+                  MAILLE='M1',
+                  POINT=1,
+                  SOUS_POINT=2,
+                  RESULTAT=RESU1,
+                  NOM_CHAM='SIGM_ELGA',
+                  NOM_CMP='SIYZ',
+                  VALE_CALC= 4247900.92854 ,
+                  ),                    
+                  
+                  ),
+          )
+          
+
 FIN();
+
