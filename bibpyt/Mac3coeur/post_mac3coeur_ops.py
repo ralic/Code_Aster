@@ -686,8 +686,8 @@ def post_mac3coeur_ops(self, **args):
                     XG6 = valdirYac[name_AC_aster][6 - 1]
                     XG7 = valdirYac[name_AC_aster][7 - 1]
                     XG8 = valdirYac[name_AC_aster][8 - 1]
-                    XG9 = valdirYac[name_AC_aster][9 - 1]
-                    XG10 = valdirYac[name_AC_aster][10 - 1]
+                    # XG9 = valdirYac[name_AC_aster][9 - 1]
+                    # XG10 = valdirYac[name_AC_aster][10 - 1]
                     YG1 = valdirZac[name_AC_aster][1 - 1]
                     YG2 = valdirZac[name_AC_aster][2 - 1]
                     YG3 = valdirZac[name_AC_aster][3 - 1]
@@ -696,8 +696,18 @@ def post_mac3coeur_ops(self, **args):
                     YG6 = valdirZac[name_AC_aster][6 - 1]
                     YG7 = valdirZac[name_AC_aster][7 - 1]
                     YG8 = valdirZac[name_AC_aster][8 - 1]
-                    YG9 = valdirZac[name_AC_aster][9 - 1]
-                    YG10 = valdirZac[name_AC_aster][10 - 1]
+                    # YG9 = valdirZac[name_AC_aster][9 - 1]
+                    # YG10 = valdirZac[name_AC_aster][10 - 1]
+                    if (_typ_coeur == '900'):
+                        XG9 = 0.
+                        XG10 = 0.
+                        YG9 = 0.
+                        YG10 = 0.
+                    else :
+                        XG9 = valdirYac[name_AC_aster][9 - 1]
+                        XG10 = valdirYac[name_AC_aster][10 - 1]
+                        YG9 = valdirZac[name_AC_aster][9 - 1]
+                        YG10 = valdirZac[name_AC_aster][10 - 1]
                     Milieu = AC.typeAC
                     MinX = min(valdirYac[name_AC_aster])
                     MaxX = max(valdirYac[name_AC_aster])
