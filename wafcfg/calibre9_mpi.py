@@ -20,12 +20,12 @@ def configure(self):
     self.env['ADDMEM'] = 400
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/MPI/lib',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/MPI/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/MPI/include',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/include',
     ])
 

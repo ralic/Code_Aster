@@ -23,8 +23,8 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-308/lib',
         YAMMROOT + '/prerequisites/Metis-40/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/lib',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/lib',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
     ])
 
     self.env.append_value('INCLUDES', [
@@ -32,9 +32,9 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-308/include',
         YAMMROOT + '/prerequisites/Metis-40/Lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster3/SEQ/include_seq',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include_seq',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/include',
     ])
 
     # to fail if not found
