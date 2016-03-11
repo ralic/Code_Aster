@@ -153,7 +153,9 @@ Conseil :
 """),
 
     27 : _(u"""
- CHAM_ELEM à combiner incompatible
+Erreur d'utilisation (ou de programmation) :
+   On cherche à combiner deux champs par éléments qui n'ont pas la même "structure".
+   La programmation ne le permet pas actuellement.
 """),
 
     28 : _(u"""
