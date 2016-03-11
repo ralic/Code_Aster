@@ -71,9 +71,10 @@ subroutine detrsd(typesd, nomsd)
 !
     mpi_int :: mrank, msize
     integer :: iret, iad, long, i, nbch, ibid, nbproc, num
-    integer :: ityobj, inomsd, nblg, nbpa, nblp, n1
+    integer :: ityobj, inomsd, nblg, nbpa, nblp, n1, nbjoin
     integer :: iexi
-    character(len=8) :: metres, k8, chnbjo
+    character(len=8) :: metres, k8
+    character(len=4) :: chnbjo
     character(len=12) :: vge
     character(len=14) :: nu, com
     character(len=16) :: typ2sd, corres
@@ -464,14 +465,18 @@ subroutine detrsd(typesd, nomsd)
         call jedetr(k19//'.NUEQ')
         call jedetr(k19//'.NULG')
         call jedetr(k19//'.NUGL')
-        call jedetr(k19//'.JOIN')
         call jedetr(k19//'.NLGP')
         call jedetr(k19//'.PDDL')
-        do num=1,nbproc
-            call codent(num, 'G', chnbjo)
-            nojoin=k19//'.'//chnbjo
-            call jedetr(nojoin)
-        enddo
+        call jeexin(k19//'.JOIN', iexi)
+        if (iexi.gt.0) then
+            call jelira(k19//'.JOIN', 'LONMAX', nbjoin)
+            call jedetr(k19//'.JOIN')
+            do num=1,nbjoin
+                call codent(num, 'G', chnbjo)
+                nojoin=k19//'.'//chnbjo
+                call jedetr(nojoin)
+            enddo
+        endif
 !
 !     ------------------------------------------------------------------
     else if (typ2sd.eq.'CHAM_ELEM') then
