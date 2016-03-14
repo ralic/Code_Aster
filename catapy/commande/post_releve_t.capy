@@ -98,9 +98,9 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
               INVARIANT       =SIMP(statut='f',typ='TXM',into=("OUI",)),
               ELEM_PRINCIPAUX =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-              RESULTANTE      =SIMP(statut='f',typ='TXM',max='**'),
+              RESULTANTE      =SIMP(statut='f',typ='TXM',max='**',into=("DX","DY","DZ")),
 
-              MOMENT          =SIMP(statut='f',typ='TXM',max='**'),
+              MOMENT          =SIMP(statut='f',typ='TXM',max='**',into=("DRX","DRY","DRZ")),
               POINT           =SIMP(statut='f',typ='R',max='**'),
 
               REPERE          =SIMP(statut='f',typ='TXM',defaut="GLOBAL",

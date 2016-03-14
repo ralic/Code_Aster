@@ -215,7 +215,7 @@ TABLEAU1=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
                                  MOMENT=('DRX','DRY','DRZ',),
                                  POINT=(0.0,0.0,0.0,),
                                  REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+                                 OPERATION='EXTRACTION',),);
 
 TABLEAU2=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
                                  GROUP_NO='GRNO2',
@@ -225,7 +225,7 @@ TABLEAU2=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
                                  MOMENT=('DRX','DRY','DRZ',),
                                  POINT=(10.0,0.0,0.0,),
                                  REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+                                 OPERATION='EXTRACTION',),);
 
 TABLEAU3=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
                                  GROUP_NO='GRNO3',
@@ -235,7 +235,7 @@ TABLEAU3=POST_RELEVE_T(ACTION=_F(INTITULE='MOMENT',
                                  MOMENT=('DRX','DRY','DRZ',),
                                  POINT=(20.0,0.0,0.0,),
                                  REPERE='GLOBAL',
-                                 OPERATION='MOYENNE',),);
+                                 OPERATION='EXTRACTION',),);
 
 
 

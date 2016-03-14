@@ -31,34 +31,34 @@ MA = DEFI_GROUP(
                                   _F( GROUP_MA = 'FC_BAS',),
                                  ),)
 
- 
+
 MA = DEFI_GROUP ( reuse        = MA, INFO=1,
-                           MAILLAGE        = MA, 
-                           CREA_GROUP_MA = ( 
-                           _F( NOM    = 'LINEAIRE', 
-                               UNION  = ('SINGU_H','SINGU_B'), 
-                              ), 
-                           _F( NOM    = 'NON_LIN', 
-                               DIFFE  = ('SPECIMEN','LINEAIRE'), 
-                              ) 
-), 
-                        )  
+                           MAILLAGE        = MA,
+                           CREA_GROUP_MA = (
+                           _F( NOM    = 'LINEAIRE',
+                               UNION  = ('SINGU_H','SINGU_B'),
+                              ),
+                           _F( NOM    = 'NON_LIN',
+                               DIFFE  = ('SPECIMEN','LINEAIRE'),
+                              )
+),
+                        )
 MO = AFFE_MODELE(
                   MAILLAGE = MA,
-                  AFFE     = ( 
+                  AFFE     = (
                               _F( TOUT     = 'OUI',
                                   PHENOMENE    = 'MECANIQUE',
                                   MODELISATION = 'D_PLAN_GRAD_VARI',
                                 ),
                              ),
                 )
-                
+
 #--------------------------------------------------------------
 # 2- DEFINITION DES PARAMETRES MATERIAUX
 #--------------------------------------------------------------
 # echel =1 (m); 10 (dm); 100 (cm); 1000 (mm)
 echel=1000
-EE=21000.e6/echel**2 ; NU=0.2 ; DD=3.e-3*echel 
+EE=21000.e6/echel**2 ; NU=0.2 ; DD=3.e-3*echel
 
 Gf      = 100./echel
 ft      = 3.9e6/echel**2
@@ -66,7 +66,7 @@ fc      = 28.5e6/echel**2
 
 pp   = 1.5
 
-# DEFINITION DU BETON 
+# DEFINITION DU BETON
 BETON = DEFI_MATER_GC(
   ENDO_FISS_EXP = _F(
     E  = EE,
@@ -78,8 +78,8 @@ BETON = DEFI_MATER_GC(
     LARG_BANDE = DD,
     ),
   )
-  
-# DEFINITION DU BETON 
+
+# DEFINITION DU BETON
 BET_RIG = DEFI_MATER_GC(
   ENDO_FISS_EXP = _F(
     E  = EE,
@@ -91,7 +91,7 @@ BET_RIG = DEFI_MATER_GC(
     LARG_BANDE = DD/1000.,
     ),
   )
-  
+
 CHMAT = AFFE_MATERIAU(
                        MAILLAGE = MA,
                        AFFE     = (_F(
@@ -101,10 +101,10 @@ CHMAT = AFFE_MATERIAU(
                                    _F(
                                       GROUP_MA = 'LINEAIRE',
                                       MATER    =  BET_RIG,
-                                    ), 
+                                    ),
                                     ),
                      )
-                                 
+
 
 
 #--------------------------------------------------------------
@@ -127,7 +127,7 @@ pas_calcul = 5
 inst2do = [inst_init,inst_fix] + range(inst_fix+1,inst_2_reach+1,pas_calcul)
 inst2do = inst2do + [80]
 inst2do.sort()
-# FONCTIONS DEPLACEMENTS 
+# FONCTIONS DEPLACEMENTS
 XHA = [None]*(nr_img+1)
 YHA = [None]*(nr_img+1)
 XBA = [None]*(nr_img+1)
@@ -167,7 +167,7 @@ F_D = [None]*(nr_img+1)
 #  !! ATTENTION !! , notations X et Y inversees par rapport a celle issue de la correlation ! Ydic->Xef et Xdic->Yef
 
 for i in inst2do: #range(inst_fix,nr_img+1) :
-    
+
     UXH[i] = LIRE_FONCTION(FORMAT = 'LIBRE',
                               UNITE = 23,
                               NOM_PARA = 'X',
@@ -204,36 +204,36 @@ for i in inst2do: #range(inst_fix,nr_img+1) :
                               PROL_DROITE = 'CONSTANT',
                               PROL_GAUCHE = 'CONSTANT',);
 
-   
-# INCREMENT DE LA NAPPE DE DEPLACEMENT  
+
+# INCREMENT DE LA NAPPE DE DEPLACEMENT
 
 inst_old=inst_fix
 for i in inst2do :
     if i<inst_fix : continue
-    if i>inst_2_reach : break  
+    if i>inst_2_reach : break
     if i == inst_fix :
-       DXH[i] = UXH[i],    
+       DXH[i] = UXH[i],
        DYH[i] = UYH[i]
-       DXB[i] = UXB[i]  
-       DYB[i] = UYB[i]     
-    else : 
+       DXB[i] = UXB[i]
+       DYB[i] = UYB[i]
+    else :
        DXH[i] = CALC_FONCTION(COMB=(
                         _F(FONCTION=UXH[i]  ,COEF=1.0,),
                         _F(FONCTION=UXH[inst_old],COEF=-1.0,),)
-                        ,);       
+                        ,);
        DYH[i] = CALC_FONCTION(COMB=(
                         _F(FONCTION=UYH[i]  ,COEF=1.0,),
                         _F(FONCTION=UYH[inst_old],COEF=-1.0,),)
-                        ,);  
+                        ,);
        DXB[i] = CALC_FONCTION(COMB=(
                         _F(FONCTION=UXB[i]  ,COEF=1.0,),
                         _F(FONCTION=UXB[inst_old],COEF=-1.0,),)
-                        ,);  
+                        ,);
        DYB[i] = CALC_FONCTION(COMB=(
                         _F(FONCTION=UYB[i]  ,COEF=1.0,),
                         _F(FONCTION=UYB[inst_old],COEF=-1.0,),)
-                        ,);  
-                                                  
+                        ,);
+
     DEP[i] = AFFE_CHAR_MECA_F(
                 MODELE   = MO,
                 FACE_IMPO = (
@@ -241,7 +241,7 @@ for i in inst2do :
                             _F( GROUP_MA ='FC_BAS' , DX = DXB[i], DY = DYB[i], ),
                             ),)
     inst_old=i
-    
+
 
 INST_LIN = DEFI_LIST_REEL(
                            VALE=inst2do,
@@ -251,13 +251,13 @@ TEMPS_LI = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = INST_LIN),
                                           SUBD_METHODE='MANUEL',
                                           SUBD_NIVEAU=4,
                                           SUBD_PAS=5,
-                                          )                          
-                           );                          
+                                          )
+                           );
 
-             
+
 # calcul dans elasticite avec DEPL impose
 RAMPEFIX = DEFI_FONCTION(NOM_PARA  = 'INST',
-                       VALE = (0,0.,inst_fix,1.),    
+                       VALE = (0,0.,inst_fix,1.),
                        PROL_DROITE = 'LINEAIRE',
                       )
 
@@ -265,14 +265,14 @@ EVOL = STAT_NON_LINE(
       MODELE     = MO,
       CHAM_MATER = CHMAT,
       EXCIT      = (
-                     _F( CHARGE = DEP[inst_fix],TYPE_CHARGE='DIDI',FONC_MULT=RAMPEFIX,),       
+                     _F( CHARGE = DEP[inst_fix],TYPE_CHARGE='DIDI',FONC_MULT=RAMPEFIX,),
                    ),
       COMPORTEMENT = (
                     _F( RELATION = 'ENDO_FISS_EXP',
                         GROUP_MA = ('NON_LIN','LINEAIRE'),
                       ),
                    ),
-      INCREMENT = _F( 
+      INCREMENT = _F(
                       LIST_INST= TEMPS_LI, INST_INIT = inst_init, INST_FIN= inst_fix,
                     ),
       NEWTON    = _F( MATRICE   = 'TANGENTE',
@@ -287,9 +287,9 @@ EVOL = STAT_NON_LINE(
               ),
       SOLVEUR  =  _F( METHODE='MUMPS',
                       PCENT_PIVOT=30,
-            ),  
-      ARCHIVAGE   = _F( LIST_INST=INSTANTS,),      
-      
+            ),
+      ARCHIVAGE   = _F( LIST_INST=INSTANTS,),
+
      )
 
 inst_old=inst_fix
@@ -298,7 +298,7 @@ for i in inst2do :
     if i<=inst_fix : continue
     if i>inst_2_reach : break
     RAMPE = DEFI_FONCTION(NOM_PARA  = 'INST',
-                       VALE = (inst_old,0.,i,1.),    
+                       VALE = (inst_old,0.,i,1.),
                        PROL_DROITE = 'LINEAIRE',
                       )
     EVOL = STAT_NON_LINE(
@@ -314,7 +314,7 @@ for i in inst2do :
                             GROUP_MA = ('NON_LIN','LINEAIRE'),
                           ),
                        ),
-          INCREMENT = _F( 
+          INCREMENT = _F(
                           LIST_INST= TEMPS_LI, INST_INIT = inst_old, INST_FIN= i,
                         ),
           NEWTON    = _F( MATRICE   = 'TANGENTE',
@@ -329,11 +329,11 @@ for i in inst2do :
                   ),
           SOLVEUR  =  _F( METHODE='MUMPS',
                           PCENT_PIVOT=30,
-                ),  
-          ARCHIVAGE   = _F( LIST_INST=INSTANTS,), 
+                ),
+          ARCHIVAGE   = _F( LIST_INST=INSTANTS,),
          )
     inst_old=i
-    DETRUIRE (CONCEPT= _F(NOM = RAMPE,),); 
+    DETRUIRE (CONCEPT= _F(NOM = RAMPE,),);
 
 EVOL = CALC_CHAMP(reuse = EVOL,
 MODELE = MO,
@@ -344,33 +344,31 @@ VARI_INTERNE = 'VARI_NOEU',
     )
 
 # FORCE RESULTANTE:
-FPILO = POST_RELEVE_T( 
+FPILO = POST_RELEVE_T(
                       ACTION = _F(
                                    INTITULE     = 'F_PILOTE',
-                                   OPERATION    = 'MOYENNE',   
+                                   OPERATION    = 'EXTRACTION',
                                    GROUP_NO     = 'FC_HAUT',
                                    NOM_CHAM     = 'FORC_NODA',
                                    RESULTANTE   =  ('DX','DY'),
                                    RESULTAT     =  EVOL,
                                    TOUT_ORDRE   = 'OUI',),);
-    
+
 # DEPLACEMENT DU NOEUD P_HAUT
 U_HT = POST_RELEVE_T( ACTION = _F(
                                           INTITULE     = 'DEPL',
-                                          OPERATION    = 'MOYENNE_ARITH', 
+                                          OPERATION    = 'MOYENNE_ARITH',
                                           GROUP_NO     = 'FC_HAUT',
                                           NOM_CHAM     = 'DEPL',
                                           NOM_CMP     = ('DX','DY'),
-                                          #RESULTANTE     =  ('DX','DY'),
                                           RESULTAT     =  EVOL,
                                           TOUT_ORDRE   = 'OUI',),);
 
 U_BT = POST_RELEVE_T(ACTION = _F(INTITULE     = 'DEPL',
-                                          OPERATION    = 'MOYENNE_ARITH', 
+                                          OPERATION    = 'MOYENNE_ARITH',
                                           GROUP_NO     = 'FC_BAS',
                                           NOM_CHAM     = 'DEPL',
                                           NOM_CMP     = ('DX','DY'),
-                                          #RESULTANTE     =  ('DX','DY'),
                                           RESULTAT     =  EVOL,
                                           TOUT_ORDRE   = 'OUI',),);
 #IMPR_TABLE(TABLE=FPILO)
@@ -427,20 +425,20 @@ TUBY=CALC_TABLE(TABLE=TUBY,reuse=TUBY,
 T_UX=CALC_TABLE(TABLE=TUHX,
                ACTION=_F(OPERATION='COMB',
                          TABLE=TUBX,
-                         NOM_PARA='NUME_ORDRE',),);  
+                         NOM_PARA='NUME_ORDRE',),);
 
 T_UY=CALC_TABLE(TABLE=TUHY,
                 ACTION=_F(OPERATION='COMB',
-                         TABLE=TUBY, NOM_PARA='NUME_ORDRE',),);  
+                         TABLE=TUBY, NOM_PARA='NUME_ORDRE',),);
 
 #IMPR_TABLE(TABLE=T_UX)
 #IMPR_TABLE(TABLE=T_UY)
 
 DIFFX = FORMULE(NOM_PARA=('DEPLXH', 'DEPLXB'),
-                VALE='DEPLXH-DEPLXB');  
+                VALE='DEPLXH-DEPLXB');
 
 DIFFY = FORMULE(NOM_PARA=('DEPLYH', 'DEPLYB'),
-                VALE='DEPLYH-DEPLYB'); 
+                VALE='DEPLYH-DEPLYB');
 
 
 T_UX=CALC_TABLE(TABLE=T_UX,reuse=T_UX,
@@ -453,19 +451,19 @@ T_UY=CALC_TABLE(TABLE=T_UY,reuse=T_UY,
 
 T_U=CALC_TABLE(TABLE=T_UX,
                ACTION=_F(OPERATION='COMB',
-                         TABLE=T_UY, NOM_PARA='NUME_ORDRE',),);  
-     
+                         TABLE=T_UY, NOM_PARA='NUME_ORDRE',),);
+
 #IMPR_TABLE(TABLE=T_U)
-                   
-# CREATION DE LA COLONNE AVEC LES FORCES                           
+
+# CREATION DE LA COLONNE AVEC LES FORCES
 T_F=CALC_TABLE(TABLE=FPILO,
                  ACTION=(
                          _F(OPERATION='EXTR',
                             NOM_PARA=('NUME_ORDRE','DX','DY',),
                             ),
                         ),
-                    ); 
-#IMPR_TABLE(TABLE=T_F) 
+                    );
+#IMPR_TABLE(TABLE=T_F)
 # RESCALE LES EFFORTS POUR UNE EPASSEUR DE 50 mm
 SCALE_FX=FORMULE(NOM_PARA = ('DX'), VALE = 'DX*50./1000')
 SCALE_FY=FORMULE(NOM_PARA = ('DY'), VALE = 'DY*50./1000')
@@ -477,15 +475,15 @@ T_F=CALC_TABLE(TABLE = T_F,reuse = T_F,
                ACTION =_F(OPERATION='OPER',
                FORMULE=SCALE_FY , NOM_PARA='FORCEY'))
 #IMPR_TABLE(TABLE=T_F)
-                
+
 # CREATION DE INST_FORCE_DEPL
 T_FU=CALC_TABLE(
           TABLE=T_F,
           ACTION=_F(OPERATION='COMB',
                     TABLE=T_U,
-                    NOM_PARA='NUME_ORDRE',),); 
+                    NOM_PARA='NUME_ORDRE',),);
 
-#IMPR_TABLE(TABLE=T_FU) 
+#IMPR_TABLE(TABLE=T_FU)
 
 # CREATION DU TABLEAU FORCES-DEPL AVEC LES DEPLACEMENTS
 T_FUX=CALC_TABLE(TABLE=T_FU,
@@ -503,8 +501,8 @@ T_FUY=CALC_TABLE(TABLE=T_FU,
                         ),
                     );
 
-IMPR_TABLE(TABLE=T_FUX) 
-IMPR_TABLE(TABLE=T_FUY) 
+IMPR_TABLE(TABLE=T_FUX)
+IMPR_TABLE(TABLE=T_FUY)
 
 ###########################################
 # COURBE FORCE-DEPLACEMENT EXPERIMENTALE
@@ -513,12 +511,12 @@ IMPR_TABLE(TABLE=T_FUY)
 FUX_EXP = LIRE_TABLE(UNITE=29,
                       FORMAT='ASTER',SEPARATEUR=' ',
                       )
-# TRACTION 
+# TRACTION
 FUY_EXP = LIRE_TABLE(UNITE=30,
                       FORMAT='ASTER',SEPARATEUR=' ',
-                      )                    
-IMPR_TABLE(TABLE=FUX_EXP)                       
-IMPR_TABLE(TABLE=FUY_EXP) 
+                      )
+IMPR_TABLE(TABLE=FUX_EXP)
+IMPR_TABLE(TABLE=FUY_EXP)
 
 
 ################### TESTS FU COMPARAISON THESE A.CARPIUC #############
@@ -532,7 +530,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='DEPLX',
                      VALE=6.25548E-03,),
            )
-           
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.07,
            VALE_CALC=3.25381346308,
@@ -541,8 +539,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            TABLE=T_FUX,
            FILTRE=_F(NOM_PARA='DEPLX',
                      VALE=9.45903E-03,),
-           ) 
-                     
+           )
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.26,
            VALE_CALC=5.49620369349,
@@ -551,7 +549,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            TABLE=T_FUX,
            FILTRE=_F(NOM_PARA='DEPLX',
                      VALE=1.98916E-02,),
-           ) 
+           )
 ############# TRACTION ###########################
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.05,
@@ -562,7 +560,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            FILTRE=_F(NOM_PARA='DEPLY',
                      VALE=4.78648E-03,),
            )
-             
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.02,
            VALE_CALC=10.0163079958,
@@ -571,8 +569,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            TABLE=T_FUY,
            FILTRE=_F(NOM_PARA='DEPLY',
                      VALE=7.70062E-03,),
-           )   
-           
+           )
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.12,
            VALE_CALC=14.223261617,
@@ -581,8 +579,8 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            TABLE=T_FUY,
            FILTRE=_F(NOM_PARA='DEPLY',
                      VALE=1.58947E-02,),
-           )            
-                                             
+           )
+
 ################### TESTS U_F  NON REGRESSION #######################
 
 TEST_TABLE(
@@ -592,6 +590,6 @@ TEST_TABLE(
            FILTRE=_F(NOM_PARA='DEPLX',
                      VALE=4.29562E-03,),
            )
-              
+
 
 FIN();

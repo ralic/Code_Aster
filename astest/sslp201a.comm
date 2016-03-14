@@ -1316,7 +1316,7 @@ TABLE3B=MACR_LIGN_COUPE(CHAM_GD = CHAMNO1, MODELE=MO, NOM_CHAM='DEPL',
                      LIGN_COUPE=(
                         _F(INTITULE='TABLE_3B',
                            RESULTANTE = ('DY', 'DX',),
-                           OPERATION = 'MOYENNE',
+                           OPERATION = 'EXTRACTION',  
                            TYPE='GROUP_NO',GROUP_NO='CHEM1',),
                        ))
 

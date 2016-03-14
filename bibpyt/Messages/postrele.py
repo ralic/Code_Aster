@@ -378,9 +378,10 @@ Dans le cas d'un champ de type ELEM, l'utilisation des mots clés NOEUD, GROUP_N
 n'a pas de sens, seul le mot clé MAILLE ou GROUP_MA est autorisé.
 """),
 
- 
-
-
+    67 : _(u"""
+Erreur utilisateur dans la commande POST_RELEVE_T :
+   Le mot clé RESULTANTE n'est autorisé que pour OPERATION='EXTRACTION'.
+"""),
 
     68 : _(u"""
 Erreur utilisateur dans la commande POST_RELEVE_T :
