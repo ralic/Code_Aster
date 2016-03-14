@@ -366,7 +366,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                             COULOMB       =SIMP(statut='o',typ='R',),
                                                             COEF_MATR_FROT=SIMP(statut='f',typ='R',defaut=0.E+0),
                                                             ALGO_FROT     =SIMP(statut='o',typ='TXM',defaut="PENALISATION",
-                                                                                into=("PENALISATION"),),
+                                                                                into=("PENALISATION",),),
                                                             E_T           =SIMP(statut='o',typ='R'),
                                                            ),
                                           ), #fin mot-clé facteur ZONE
