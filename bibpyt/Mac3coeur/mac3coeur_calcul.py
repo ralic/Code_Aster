@@ -806,7 +806,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
     def deform_mesh_inverse(self, depl):
         """Use the displacement of the result to deform the mesh"""
         from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
-        _depl_inv = CREA_CHAMP(OPERATION='COMB',
+        _depl_inv = CREA_CHAMP(OPERATION='COMB',                          
                           TYPE_CHAM='NOEU_DEPL_R',
                           COMB=_F(CHAM_GD=depl,COEF_R=-1.))
 
@@ -822,6 +822,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         """Use the displacement of the result to deform the mesh"""
         from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
         _depl = CREA_CHAMP(OPERATION='EXTR',
+                           INST = self.coeur.temps_simu['T1'],
                            TYPE_CHAM='NOEU_DEPL_R',
                            NOM_CHAM='DEPL',
                            RESULTAT=resu)
@@ -918,22 +919,23 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                                   INCREMENT=_F(LIST_INST=self.times,
                                                INST_FIN=coeur.temps_simu[
                                                    'T1']),
+                                  ARCHIVAGE=_F(INST=coeur.temps_simu['T1']),
                                   EXCIT=self.archimede_load + self.vessel_head_load +
                                   self.vessel_dilatation_load + self.gravity_load +
                                   self.layer_load + self.periodic_cond,
                                   ))
         _debug(_snl_lame, "result STAT_NON_LINE 1")
         # updated coeur
-        __resuf = PERM_MAC3COEUR(TYPE_COEUR_N=self.keyw['TYPE_COEUR'],
-                                 TYPE_COEUR_P=self.keyw['TYPE_COEUR'],
-                                 RESU_N=_snl_lame,
-                                 TABLE_N=self.keyw['TABLE_N'],
-                                 TABLE_NP1=self.mcf['TABLE_NP1'],
-                                 MAILLAGE_NP1=self.mcf['MAILLAGE_NP1'])
-        _debug(__resuf, "result PERM_MAC3COEUR")
-        self.update_coeur(__resuf, self.mcf['TABLE_NP1'])
+        # __resuf = PERM_MAC3COEUR(TYPE_COEUR_N=self.keyw['TYPE_COEUR'],
+        #                          TYPE_COEUR_P=self.keyw['TYPE_COEUR'],
+        #                          RESU_N=_snl_lame,
+        #                          TABLE_N=self.keyw['TABLE_N'],
+        #                          TABLE_NP1=self.mcf['TABLE_NP1'],
+        #                          MAILLAGE_NP1=self.mcf['MAILLAGE_NP1'])
+        # _debug(__resuf, "result PERM_MAC3COEUR")
+        self.update_coeur(_snl_lame, self.keyw['TABLE_N'])
         # WARNING: element characteristics and the most of the loadings must be
-        # computed on the initial (not deformed) mesh
+        # computed on the initial (not deformed) meshhg st
         # please keep the call to deform_mesh after the computation of keywords
         keywords=[]
         mater=[]
@@ -949,7 +951,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             self.symetric_cond + self.periodic_cond +
                             self.thyc_load[0] + self.thyc_load[1],
                            ))
-        depl_deformed = self.deform_mesh(__resuf)
+        depl_deformed = self.deform_mesh(_snl_lame)
         nb_test = 0
         while nb_test < 5 :
             try :
