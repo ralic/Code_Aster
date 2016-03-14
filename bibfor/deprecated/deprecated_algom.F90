@@ -41,11 +41,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (algo .eq. 'DEPL_CALCULE') then
-        vali = 13
-        valk    = "PREDICTION='DEPL_CALCULE'"
-!
-    else if (algo .eq. 'CASTEM') then
+    if (algo .eq. 'CASTEM') then
         vali = 13
         valk    = "IMPR_RESU/FORMAT='CASTEM'"
 !

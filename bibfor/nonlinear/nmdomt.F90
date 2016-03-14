@@ -8,7 +8,6 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/deprecated_algom.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -17,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +82,6 @@ implicit none
         ds_algopara%matrix_pred = matrix_pred
         ds_algopara%matrix_corr = matrix_corr
         if (matrix_pred .eq. 'DEPL_CALCULE') then
-            call deprecated_algom(matrix_pred)
             call utmess('A', 'MECANONLINE5_57')
             call getvid(keywf, 'EVOL_NOLI', iocc=1, scal=result_prev_disp, nbret=iret)
             if (iret .le. 0) then
