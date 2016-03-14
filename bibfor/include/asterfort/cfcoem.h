@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,20 +18,20 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfcoem(resoco, lctfd, lctf3d, posnoe, iliai,&
-                      nbddlt, nbnom, posnsm, ddl, coef,&
-                      cofx, cofy)
-        character(len=24) :: resoco
-        aster_logical :: lctfd
-        aster_logical :: lctf3d
-        integer :: posnoe
-        integer :: iliai
-        integer :: nbddlt
-        integer :: nbnom
-        integer :: posnsm(9)
-        integer :: ddl(30)
-        real(kind=8) :: coef(30)
-        real(kind=8) :: cofx(30)
-        real(kind=8) :: cofy(30)
+    subroutine cfcoem(ds_contact, l_frot      , node_slav_indx, i_cont_link,&
+                      nb_dof_tot, nb_node_mast, nods_mast_indx, dof_indx   ,&
+                      coef_cont , coef_fric_x , coef_fric_y)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: node_slav_indx
+        integer, intent(in) :: i_cont_link
+        integer, intent(in) :: nb_dof_tot
+        integer, intent(in) :: nb_node_mast
+        integer, intent(in) :: nods_mast_indx(9)
+        integer, intent(in) :: dof_indx(30)
+        real(kind=8), intent(in) :: coef_cont(30)
+        real(kind=8), intent(in) :: coef_fric_x(30)
+        real(kind=8), intent(in) :: coef_fric_y(30)
+        aster_logical, intent(in) :: l_frot
     end subroutine cfcoem
 end interface

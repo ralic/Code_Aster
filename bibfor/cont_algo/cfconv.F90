@@ -10,7 +10,6 @@ implicit none
 #include "asterfort/cfcgeo.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmcrel.h"
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
@@ -63,12 +62,11 @@ implicit none
     character(len=16) :: loop_geom_node
     integer :: nb_cont_iter
     real(kind=8) :: loop_geom_vale
-    aster_logical :: l_resi_conv, l_wait_conv
+    aster_logical :: l_resi_conv
     aster_logical :: l_all_verif, l_eval_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_wait_conv    = .false.
     l_eval_geom    = .false.
     loop_geom_node = ' '
     loop_geom_vale = r8vide()
@@ -91,14 +89,10 @@ implicit none
 !
     if (.not.l_all_verif) then
 !
-! ----- Wait contact algorithm convergence
-!
-        l_wait_conv = ds_contact%l_wait_conv
-!
 ! ----- Evaluate geometry loop
 !
         l_eval_geom = .false.
-        if (l_resi_conv .and. (.not.l_wait_conv)) then
+        if (l_resi_conv) then
             call cfcgeo(mesh, hval_algo, ds_contact)
             l_eval_geom = .true.
         endif
@@ -113,9 +107,5 @@ implicit none
         call nmimcr(ds_print, 'BOUC_VALE', loop_geom_vale, .true._1)
     endif
     call nmimci(ds_print, 'CTCD_NBIT', nb_cont_iter, .true._1)
-!
-! - Save events
-!
-    call nmcrel(sderro, 'DIVE_PFIX', l_wait_conv)
 !
 end subroutine

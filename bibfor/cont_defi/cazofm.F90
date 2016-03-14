@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,14 +53,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: noc
-    character(len=16) :: s_algo_cont, s_algo_frot, s_formul, s_frott
+    character(len=16) :: s_algo_cont, s_formul, s_frott
     integer :: algo_cont, algo_frot, izone
     aster_logical :: l_frot, lmunul
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
-    character(len=16) :: valk(3)
     real(kind=8) :: coefff
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,7 +73,6 @@ implicit none
     s_formul    = ' '
     s_frott     = ' '
     s_algo_cont = ' '
-    s_algo_frot = ' '
     if (cont_form.eq.1) then
         s_formul = 'DISCRETE'
     else if (cont_form.eq.2) then
@@ -104,36 +101,14 @@ implicit none
 ! - Get methods
 !
     call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
-    valk(1) = s_formul
-    valk(2) = s_algo_cont
-    if (l_frot) then
-        call getvtx(keywf, 'ALGO_FROT', iocc=1, scal=s_algo_frot, nbret=noc)
-        valk(3) = s_algo_frot
-    endif
-!
     if (cont_form .eq. 1) then
         call cazouu(keywf, cont_nbzone, 'ALGO_CONT')
         if (l_frot) then
-            call cazouu(keywf, cont_nbzone, 'ALGO_FROT')
-            if (s_algo_frot .eq. 'PENALISATION') then
-                algo_frot = 1
-                if (s_algo_cont .eq. 'PENALISATION') then
-                    algo_cont = 4
-                else if (s_algo_cont .eq. 'LAGRANGIEN') then
-                    algo_cont = 5
-                else
-                    call utmess('F', 'CONTACT3_3', nk=3, valk=valk)
-                endif
-            else if (s_algo_frot .eq. 'LAGRANGIEN') then
-                algo_frot = 2
-                call deprecated_algom('LAGR_FROT')
-                if (s_algo_cont .eq. 'LAGRANGIEN') then
-                    algo_cont = 5
-                else
-                    call utmess('F', 'CONTACT3_3', nk=3, valk=valk)
-                endif
+            algo_frot = 1
+            if (s_algo_cont .eq. 'PENALISATION') then
+                algo_cont = 4
             else
-                ASSERT(.false.)
+                call utmess('F', 'CONTACT3_3')
             endif
         else
             algo_frot = 0
@@ -143,14 +118,11 @@ implicit none
                 algo_cont = 1
             else if (s_algo_cont .eq. 'PENALISATION') then
                 algo_cont = 4
-            else if (s_algo_cont .eq. 'LAGRANGIEN') then
-                algo_cont = 5
-                call deprecated_algom('LAGR_CONT')
             else
                 ASSERT(.false.)
             endif
         endif
-    else if (cont_form.eq.2) then
+    else if (cont_form .eq. 2) then
         algo_cont = 6
         if (l_frot) then
             lmunul = .false.
@@ -168,7 +140,7 @@ implicit none
         else
             algo_frot = 0
         endif
-    else if (cont_form.eq.3) then
+    else if (cont_form .eq. 3) then
         algo_cont = 7
         if (l_frot) then
             algo_frot = 7

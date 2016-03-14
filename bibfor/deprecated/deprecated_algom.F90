@@ -45,14 +45,6 @@ implicit none
         vali = 13
         valk    = "PREDICTION='DEPL_CALCULE'"
 !
-    else if (algo .eq. 'LAGR_CONT') then
-        vali = 13
-        valk    = "ALGO_CONT='LAGRANGIEN'"
-!
-    else if (algo .eq. 'LAGR_FROT') then
-        vali = 13
-        valk    = "ALGO_CONT/ALGO_FROT='LAGRANGIEN'"
-!
     else if (algo .eq. 'CASTEM') then
         vali = 13
         valk    = "IMPR_RESU/FORMAT='CASTEM'"

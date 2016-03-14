@@ -293,8 +293,6 @@ implicit none
         aster_logical     :: l_first_geom
 ! ----- Flag for pairing
         aster_logical     :: l_pair
-! ----- Wait for contact sub-iterations convergence
-        aster_logical     :: l_wait_conv
     end type NL_DS_Contact
 !
 ! - Type: timer management

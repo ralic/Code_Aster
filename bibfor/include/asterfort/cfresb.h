@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,10 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfresb(ndim, lag2d, typlia, fctf, tau1, tau2,&
+    subroutine cfresb(ndim, typlia, fctf, tau1, tau2,&
                       rtx, rty, rtz)
         integer :: ndim
-        aster_logical :: lag2d
         character(len=2) :: typlia
         real(kind=8) :: fctf(3)
         real(kind=8) :: tau1(3), tau2(3)

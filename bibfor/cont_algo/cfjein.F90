@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ implicit none
     character(len=24) :: apcofr
     integer :: japcof
     integer :: nbliai, neq, ndimg, nesmax
-    aster_logical :: lgliss, lctfd, llagrf, l_first_geom
+    aster_logical :: lgliss, lctfd, l_first_geom
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini
     real(kind=8) :: val1, val2, val
@@ -86,7 +86,6 @@ implicit none
     neq = cfdisd(ds_contact%sdcont_solv,'NEQ' )
     nesmax = cfdisd(ds_contact%sdcont_solv,'NESMAX')
     lctfd = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    llagrf = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
     lgliss = cfdisl(ds_contact%sdcont_defi,'CONT_DISC_GLIS')
     aljeu = cfdisr(ds_contact%sdcont_defi,'ALARME_JEU' )
 !
@@ -171,10 +170,6 @@ implicit none
 !
             jexini = val1 + val2
 !
-            if ((ndimg.eq.2) .and. llagrf .and. l_first_geom) then
-                zr(jjeuit+3*(iliai-1)+2-1) = 0.d0
-            endif
-!
             zr(jjeux+3*(iliai-1)+2-1) = jexini
 !
             if (ndimg .eq. 3) then
@@ -208,7 +203,7 @@ implicit none
                 if (ialarm .eq. 1) then
                     call utmess('A', 'CONTACT_9')
                 endif
-                call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, mesh, iliai, 'C0',&
+                call cfimp2(ds_contact%sdcont_defi, ds_contact%sdcont_solv, mesh, iliai, &
                             'ALJ')
             endif
         endif

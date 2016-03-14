@@ -209,7 +209,7 @@ implicit none
                 list_func_acti(10) = 1
                 list_func_acti(27) = 1
             endif
-        else if (i_cont_form.eq.3) then
+        else if (i_cont_form .eq. 3) then
             list_func_acti(9) = 1
             list_func_acti(26) = 1
             l_frot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
@@ -218,7 +218,7 @@ implicit none
                 list_func_acti(27) = 1
             endif
             list_func_acti(27) = 1
-        else if (i_cont_form.eq.1) then
+        else if (i_cont_form .eq. 1) then
             list_func_acti(4) = 1
             l_frot = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
             if (l_frot) then

@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,8 +67,7 @@ implicit none
     real(kind=8), pointer :: v_sdcont_mu(:) => null()
     real(kind=8), pointer :: v_sdcont_copo(:) => null()
     aster_logical :: l_pena_cont, l_frot, l_pena_frot
-    aster_logical :: l_lagr_cont, l_lagr_frot, l_first_geom, l_pair
-    real(kind=8) :: vdiagm
+    aster_logical :: l_first_geom, l_pair
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,8 +83,6 @@ implicit none
     nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
     l_pena_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
     l_pena_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
-    l_lagr_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_LAGR' )
-    l_lagr_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
     l_frot       = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
 ! - Access to contact datastructures
@@ -108,36 +105,13 @@ implicit none
 !
 ! - Null pivot detection
 !
-    if (l_lagr_cont) then
-        if (l_pair) then
-            do iliai = 1, nt_cont_poin
-                v_sdcont_liot(0*nt_cont_poin+iliai) = 0
-                v_sdcont_liot(1*nt_cont_poin+iliai) = 0
-                v_sdcont_liot(2*nt_cont_poin+iliai) = 0
-                v_sdcont_liot(3*nt_cont_poin+iliai) = 0
-            end do
-            v_sdcont_liot(4*nt_cont_poin+1) = 0
-            v_sdcont_liot(4*nt_cont_poin+2) = 0
-            v_sdcont_liot(4*nt_cont_poin+3) = 0
-            v_sdcont_liot(4*nt_cont_poin+4) = 0
-        endif
-    else
-        v_sdcont_liot(4*nt_cont_poin+1) = 0
-        v_sdcont_liot(4*nt_cont_poin+2) = 0
-        v_sdcont_liot(4*nt_cont_poin+3) = 0
-        v_sdcont_liot(4*nt_cont_poin+4) = 0
-    endif
+    v_sdcont_liot(4*nt_cont_poin+1) = 0
+    v_sdcont_liot(4*nt_cont_poin+2) = 0
+    v_sdcont_liot(4*nt_cont_poin+3) = 0
+    v_sdcont_liot(4*nt_cont_poin+4) = 0
 !
 ! - Lagrange multipliers
 !
-    if (l_lagr_cont .and. l_frot .and. l_pair) then
-        do iliai = 1, nt_cont_poin
-            v_sdcont_mu(3*nt_cont_poin+iliai) = 0.d0
-            v_sdcont_mu(2*nt_cont_poin+iliai) = 0.d0
-            v_sdcont_mu(nt_cont_poin+iliai) = 0.d0
-            v_sdcont_mu(iliai) = 0.d0
-        end do
-    endif
     if (l_pena_cont .and. l_pena_frot .and. l_first_geom) then
         do iliai = 1, nt_cont_poin
             v_sdcont_mu(2*nt_cont_poin+iliai) = 0.d0
@@ -163,13 +137,6 @@ implicit none
 ! - Prepare algorithm fields
 !
     call cfprch(ds_contact, disp_iter, disp_cumu_inst)
-!
-! - Save maximum value from matrix
-!
-    if (l_lagr_frot .and. (model_ndim.eq.3) .and. l_first_geom) then
-        call cfdiag(lmat, vdiagm)
-        v_sdcont_copo(1) = vdiagm ** 0.25d0
-    endif
 !
 ! - Compute initial gaps
 !

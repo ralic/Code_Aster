@@ -16,12 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine algogl(ds_measure, defico, resoco, solveu, matass,&
+    subroutine algogl(ds_measure  , sdcont_defi, sdcont_solv, solveu, matass,&
                       noma, ctccvg)
         use NonLin_Datastructure_type
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=8) :: noma

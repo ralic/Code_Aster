@@ -24,7 +24,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ implicit none
     character(len=24) :: sdcont_rea1, sdcont_rea2
     character(len=24) :: sdcont_tacfin, sdcont_tangco
     integer :: jv_sdcont_tacfin, jv_sdcont_tangco
-    aster_logical :: l_frot, l_pena_cont, l_pena_frot, l_matr_cont, l_gcp, l_frot_3d, l_pre_cond
+    aster_logical :: l_frot, l_pena_cont, l_pena_frot, l_matr_cont, l_gcp, l_pre_cond
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,7 +103,6 @@ implicit none
     l_pena_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_PENA')
     l_matr_cont  = cfdisl(ds_contact%sdcont_defi,'MATR_CONT')
     l_gcp        = cfdisl(ds_contact%sdcont_defi,'CONT_GCP')
-    l_frot_3d    = cfdisl(ds_contact%sdcont_defi,'FROT_3D')
     l_pre_cond   = cfdisl(ds_contact%sdcont_defi,'PRE_COND_DIRICHLET')
 !
 ! - For geometric loop
@@ -269,7 +268,7 @@ implicit none
                 call jecroc(jexnum(sdcont_cm1a, ii))
             end do
         endif
-        if (l_frot_3d) then
+        if (l_frot) then
             sdcont_fro1 = ds_contact%sdcont_solv(1:14)//'.FRO1'
             sdcont_fro2 = ds_contact%sdcont_solv(1:14)//'.FRO2'
             call jecrec(sdcont_fro1, 'V V R', 'NU', 'DISPERSE', 'CONSTANT', nbfro1)

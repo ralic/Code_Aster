@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfimp1(phase, noma, defico, resoco, ifm)
+    subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
         character(len=3) :: phase
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
         integer :: ifm
     end subroutine cfimp1
 end interface

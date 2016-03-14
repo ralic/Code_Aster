@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai,&
-                      spavan, noma, defico, resoco)
+                      spavan, noma, sdcont_defi, sdcont_solv)
         real(kind=8) :: xjvmax
         integer :: indic
         integer :: nbliac
@@ -25,7 +25,7 @@ interface
         integer :: spliai
         integer :: spavan
         character(len=8) :: noma
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
     end subroutine elpiv1
 end interface

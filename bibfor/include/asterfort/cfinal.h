@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,15 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfinal(ds_contact, l_first_geom, l_pair, nbliac,&
-                      llf, llf1, llf2)
+    subroutine cfinal(ds_contact, nbliac)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        aster_logical, intent(in) :: l_first_geom
-        aster_logical, intent(in) :: l_pair
         integer :: nbliac
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
     end subroutine cfinal
 end interface

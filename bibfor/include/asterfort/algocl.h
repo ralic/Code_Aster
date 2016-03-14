@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine algocl(ds_measure, defico, resoco, solveu, matass,&
+    subroutine algocl(ds_measure, sdcont_defi, sdcont_solv, solveu, matass,&
                       noma, ctccvg, ctcfix)
         use NonLin_Datastructure_type
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=8) :: noma

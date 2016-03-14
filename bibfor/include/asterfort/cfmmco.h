@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmco(ds_contact, izone, nomcoz, action, valr)
+    subroutine cfmmco(ds_contact, i_zone, coef_type_, action, valr)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: izone
-        character(len=*) :: nomcoz
-        character(len=1) :: action
-        real(kind=8) :: valr
+        character(len=*), intent(in) :: coef_type_
+        character(len=1), intent(in) :: action
+        integer, intent(in) :: i_zone
+        real(kind=8), intent(inout) :: valr
     end subroutine cfmmco
 end interface

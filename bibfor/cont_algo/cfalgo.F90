@@ -18,10 +18,7 @@ implicit none
 #include "asterfort/cfeven.h"
 #include "asterfort/cfpost.h"
 #include "asterfort/cfprep.h"
-#include "asterfort/fro2gd.h"
 #include "asterfort/frogdp.h"
-#include "asterfort/frolgd.h"
-#include "asterfort/fropgd.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
@@ -81,8 +78,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: algo_cont, algo_frot, model_ndim
-    aster_logical :: l_gliss, l_first_geom, l_wait_conv
+    integer :: algo_cont, algo_frot
+    aster_logical :: l_gliss, l_first_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,14 +91,12 @@ implicit none
 ! - Initializations
 !
     ctccvg      = 0
-    l_wait_conv = .false._1
 !
 ! - Get contact parameters
 !
     algo_cont  = cfdisi(ds_contact%sdcont_defi, 'ALGO_CONT')
     algo_frot  = cfdisi(ds_contact%sdcont_defi, 'ALGO_FROT')
     l_gliss    = cfdisl(ds_contact%sdcont_defi, 'CONT_DISC_GLIS')
-    model_ndim = cfdisi(ds_contact%sdcont_defi, 'NDIM' )
 !
 ! - First geometric loop
 !    
@@ -122,12 +117,12 @@ implicit none
     if (algo_cont .eq. 4) then
         if (algo_frot .eq. 0) then
             call algocp(ds_measure, ds_contact%sdcont_solv, nume_dof, matr_asse)
-        else if (algo_frot.eq.1) then
+        else if (algo_frot .eq. 1) then
             call frogdp(ds_measure, ds_contact%sdcont_solv, nume_dof, matr_asse, resi_glob_rela)
         else
             ASSERT(.false.)
         endif
-    else if (algo_cont.eq.1) then
+    else if (algo_cont .eq. 1) then
         if (l_gliss) then
             call algogl(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , mesh                  ,&
@@ -137,36 +132,10 @@ implicit none
                         solver, matr_asse             , mesh                  ,&
                         ctccvg)
         endif
-    else if (algo_cont.eq.2) then
+    else if (algo_cont .eq. 2) then
         if (algo_frot .eq. 0) then
             call algocg(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
                         solver, matr_asse             , ctccvg)
-        else
-            ASSERT(.false.)
-        endif
-    else if (algo_cont.eq.5) then
-        if (algo_frot .eq. 0) then
-            call algocl(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                        solver, matr_asse             , mesh                  ,&
-                        ctccvg, l_wait_conv)
-        else if (algo_frot.eq.1) then
-            call fropgd(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                        solver, nume_dof              , matr_asse             ,&
-                        mesh  , resi_glob_rela        , disp_cumu_inst        ,&
-                        ctccvg, l_wait_conv)
-        else if (algo_frot.eq.2) then
-            if (model_ndim .eq. 2) then
-                call fro2gd(ds_measure, ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                            solver, matr_asse             , mesh                  ,&
-                            ctccvg)
-            else if (model_ndim.eq.3) then
-                call frolgd(ds_measure  , ds_contact%sdcont_defi, ds_contact%sdcont_solv,&
-                            solver      , nume_dof              , matr_asse             ,&
-                            mesh        , resi_glob_rela        , disp_cumu_inst        ,&
-                            l_first_geom, ctccvg)
-            else
-                ASSERT(.false.)
-            endif
         else
             ASSERT(.false.)
         endif
@@ -197,9 +166,6 @@ implicit none
         write (ifm,*) '<CONTACT> ... FIN DE LA RESOLUTION DU CONTACT'
     endif
 !
-! - Wait contact convergence
-!
-    ds_contact%l_wait_conv = l_wait_conv
     ASSERT(ctccvg.ge.0)
 !
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine cfapma(noma, newgeo, ds_contact, lctfd,&
-                      lctf3d, ndimg, izone, posnoe, numnoe,&
+                      ndimg, izone, posnoe, numnoe,&
                       coorne, posmam, ksipr1, ksipr2, tau1m,&
                       tau2m, iliai)
         use NonLin_Datastructure_type
@@ -27,7 +27,6 @@ interface
         character(len=19) :: newgeo
         type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical :: lctfd
-        aster_logical :: lctf3d
         integer :: ndimg
         integer :: izone
         integer :: posnoe

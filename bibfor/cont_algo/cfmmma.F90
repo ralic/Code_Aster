@@ -4,7 +4,9 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/cfdisi.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfmmci.h"
 #include "asterfort/infdbg.h"
@@ -12,7 +14,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +47,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: nb_cont_poin, nb_cont_node_c, nb_cont_zone
+    aster_logical :: l_cont_disc
     integer :: zeven, ztaco
     character(len=24) :: sdcont_evenco
     real(kind=8), pointer :: v_sdcont_evenco(:) => null()
@@ -64,6 +67,7 @@ implicit none
 !
 ! - Get parameters
 !
+    l_cont_disc    = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
     nb_cont_poin   = cfdisi(ds_contact%sdcont_defi,'NTPC' )
     nb_cont_node_c = cfdisi(ds_contact%sdcont_defi,'NTNOEC')
     nb_cont_zone   = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
@@ -91,8 +95,10 @@ implicit none
     sdcont_tabcof = ds_contact%sdcont_solv(1:14)//'.TABL.COEF'
     call wkvect(sdcont_tabcof, 'V V R', nb_cont_zone*ztaco, vr = v_sdcont_tabcof)
 !
-! - Init coefficients
+! - Fill datastructure for coefficients
 !
-    call cfmmci(ds_contact)
+    if (l_cont_disc) then
+        call cfmmci(ds_contact)
+    endif
 !
 end subroutine

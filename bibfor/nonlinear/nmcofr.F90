@@ -1,6 +1,6 @@
-subroutine nmcofr(mesh      , disp_curr, disp_cumu_inst, disp_iter, solver        ,&
-                  nume_dof  , matr_asse, iter_newt     , time_curr, resi_glob_rela,&
-                  ds_measure, ds_contact    , ctccvg)
+subroutine nmcofr(mesh      , disp_curr , disp_cumu_inst, disp_iter, solver        ,&
+                  nume_dof  , matr_asse , iter_newt     , time_curr, resi_glob_rela,&
+                  ds_measure, ds_contact, ctccvg)
 !
 use NonLin_Datastructure_type
 !

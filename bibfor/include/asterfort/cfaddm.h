@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,23 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cfaddm(ds_contact, lctfd, lctf3d, posnoe, iliai,&
-                      ndimg, nbnom, posnsm, coefno, tau1,&
+    subroutine cfaddm(ds_contact, l_frot      , node_slav_indx, i_cont_link,&
+                      model_ndim, nb_node_mast, nods_mast_indx, coef_node  , tau1,&
                       tau2, norm, jeu, coornp)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        aster_logical :: lctfd
-        aster_logical :: lctf3d
-        integer :: posnoe
-        integer :: iliai
-        integer :: ndimg
-        integer :: nbnom
-        integer :: posnsm(*)
-        real(kind=8) :: coefno(*)
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
-        real(kind=8) :: norm(3)
-        real(kind=8) :: jeu
-        real(kind=8) :: coornp(3)
+        integer :: node_slav_indx, i_cont_link
+        integer :: nb_node_mast, model_ndim
+        integer :: nods_mast_indx(*)
+        real(kind=8) :: coef_node(*)
+        real(kind=8) :: jeu, coornp(3)
+        real(kind=8) :: norm(3), tau1(3), tau2(3)
+        aster_logical :: l_frot
     end subroutine cfaddm
 end interface

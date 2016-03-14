@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/cfdisr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,7 +100,7 @@ implicit none
         write (unit_msg,*) '<CONTACT> ... ALGO. GEOMETRIQUE - POINT FIXE'
         if (geom_nbiter .eq. 0) then
             write (unit_msg,*) '<CONTACT> ...... PAS DE REAC. GEOM.'
-        else if (geom_nbiter.eq.-1) then
+        else if (geom_nbiter .eq. -1) then
             write (unit_msg,*) '<CONTACT> ...... REAC. GEOM. AUTO.'
         else
             write (unit_msg,*) '<CONTACT> ...... REAC. GEOM. MANUEL: ',geom_nbiter
@@ -108,7 +108,7 @@ implicit none
         write (unit_msg,170) 'ITER_GEOM_MAXI  ',geom_maxi
         write (unit_msg,171) 'RESI_GEOM       ',geom_resi
         write (unit_msg,170) 'NB_ITER_GEOM    ',geom_nbiter
-    else if (algo_reso_geom.eq.1) then
+    else if (algo_reso_geom .eq. 1) then
         write (unit_msg,*) '<CONTACT> ... ALGO. GEOMETRIQUE - NEWTON'
         write (unit_msg,171) 'RESI_GEOM       ',geom_resi
     else
@@ -121,7 +121,7 @@ implicit none
         write (unit_msg,*) '<CONTACT> ... ALGO. FROTTEMENT - POINT FIXE'
         write (unit_msg,170) 'ITER_FROT_MAXI  ',frot_maxi
         write (unit_msg,171) 'RESI_FROT       ',frot_resi
-    else if (algo_reso_frot.eq.1) then
+    else if (algo_reso_frot .eq. 1) then
         write (unit_msg,*) '<CONTACT> ... ALGO. FROTTEMENT - NEWTON'
         write (unit_msg,171) 'RESI_FROT       ',frot_resi
     else
@@ -134,7 +134,7 @@ implicit none
         write (unit_msg,*) '<CONTACT> ... ALGO. CONTACT - POINT FIXE'
         write (unit_msg,170) 'ITER_CONT_MULT  ',cont_mult
         write (unit_msg,170) 'ITER_CONT_MAXI  ',cont_maxi
-    else if (algo_reso_cont.eq.1) then
+    else if (algo_reso_cont .eq. 1) then
         write (unit_msg,*) '<CONTACT> ... ALGO. CONTACT - NEWTON'
     else
         ASSERT(.false.)

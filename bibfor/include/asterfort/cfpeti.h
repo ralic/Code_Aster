@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfpeti(resoco, neq, nbliai, nbliac, llf,&
-                      llf1, llf2, rho, llliai, llliac)
-        character(len=24) :: resoco
+    subroutine cfpeti(sdcont_solv, neq, nbliai, nbliac,&
+                      rho, llliai, llliac)
+        character(len=24) :: sdcont_solv
         integer :: neq
         integer :: nbliai
         integer :: nbliac
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
         real(kind=8) :: rho
         integer :: llliai
         integer :: llliac

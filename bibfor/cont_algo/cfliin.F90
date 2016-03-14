@@ -8,12 +8,11 @@ implicit none
 #include "asterfort/cfecrd.h"
 #include "asterfort/cfimp1.h"
 #include "asterfort/cfinal.h"
-#include "asterfort/cfinnl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,8 +46,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    aster_logical :: l_pair, l_first_geom
-    integer :: nbliac, llf, llf1, llf2
+    integer :: nbliac
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,27 +55,17 @@ implicit none
         write (ifm,*) '<CONTACT> ......... DETECTION DES LIAISONS INITIALES'
     endif
 !
-! - Get geometric loop state
-!
-    l_pair       = ds_contact%l_pair
-    l_first_geom = ds_contact%l_first_geom
-!
 ! - Get total number of initial links
 !
-    call cfinnl(ds_contact, l_pair, nbliac, llf,&
-                llf1, llf2)
+    nbliac = 0
 !
 ! - Set initial links
 !
-    call cfinal(ds_contact, l_first_geom, l_pair, nbliac,&
-                llf, llf1, llf2)
+    call cfinal(ds_contact, nbliac)
 !
 ! - Save initial links
 !
     call cfecrd(ds_contact%sdcont_solv, 'NBLIAC', nbliac)
-    call cfecrd(ds_contact%sdcont_solv, 'LLF', llf)
-    call cfecrd(ds_contact%sdcont_solv, 'LLF1', llf1)
-    call cfecrd(ds_contact%sdcont_solv, 'LLF2', llf2)
 !
 ! - Print
 !

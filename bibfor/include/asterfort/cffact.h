@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,15 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cffact(ldscon, ndim, isto, nbliac, llf,&
-                      llf1, llf2, indfac, lechec)
+    subroutine cffact(ldscon, isto, nbliac, &
+                      indfac, lechec)
         integer :: ldscon
-        integer :: ndim
         integer :: isto
         integer :: nbliac
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
         integer :: indfac
         aster_logical :: lechec
     end subroutine cffact

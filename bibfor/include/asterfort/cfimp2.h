@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfimp2(defico, resoco, noma, iliai, typlia,&
-                      typeou)
-        character(len=24) :: defico
-        character(len=24) :: resoco
-        character(len=8) :: noma
+    subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
+        character(len=8) :: mesh
+        character(len=24) :: sdcont_defi, sdcont_solv
         integer :: iliai
-        character(len=2) :: typlia
         character(len=3) :: typeou
     end subroutine cfimp2
 end interface

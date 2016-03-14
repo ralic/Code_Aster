@@ -7,7 +7,7 @@ implicit none
 #include "asterfort/cfdisi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ implicit none
 !
     character(len=24) :: sdcont_defi, question
     integer :: cont_form
-    integer :: algo_cont, algo_frot, model_ndim
+    integer :: algo_cont, algo_frot
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,26 +58,13 @@ implicit none
         cont_form = cfdisi(sdcont_defi,'FORMULATION')
         if (cont_form .eq. 1) then
             algo_cont  = cfdisi(sdcont_defi,'ALGO_CONT')
-            algo_frot  = cfdisi(sdcont_defi,'ALGO_FROT')
-            model_ndim = cfdisi(sdcont_defi,'NDIM')
             if (algo_cont .eq. 4) then
                 cfdisl = .true.
-            endif
-            if (algo_frot .ne. 0) then
-                if (algo_frot .eq. 2) then
-                    if (model_ndim .eq. 2) then
-                        cfdisl = .false.
-                    else
-                        cfdisl = .true.
-                    endif
-                else
-                    cfdisl = .true.
-                endif
             endif
         endif
     else if (question .eq.'MATR_CONT') then
         algo_cont = cfdisi(sdcont_defi,'ALGO_CONT')
-        cfdisl = ((algo_cont.eq.1).or.(algo_cont.eq.5))
+        cfdisl = (algo_cont .eq. 1)
     else if (question .eq.'LISSAGE') then
         cfdisl = cfdisi(sdcont_defi,'LISSAGE').eq.1
     else if (question .eq.'COEF_ADAPT') then
@@ -123,28 +110,13 @@ implicit none
         cfdisl = algo_frot.ne.0
     else if (question.eq.'FROT_DISCRET') then
         algo_frot = cfdisi(sdcont_defi,'ALGO_FROT')
-        cfdisl = ((algo_frot.eq.1).or.(algo_frot.eq.2))
+        cfdisl = algo_frot.eq.1
     else if (question.eq.'FROT_PENA') then
         algo_frot = cfdisi(sdcont_defi,'ALGO_FROT')
         cfdisl = algo_frot.eq.1
-    else if (question.eq.'FROT_LAGR') then
-        algo_frot = cfdisi(sdcont_defi,'ALGO_FROT')
-        cfdisl = algo_frot.eq.2
-    else if (question.eq.'FROT_LAGR_2D') then
-        algo_cont  = cfdisi(sdcont_defi,'ALGO_CONT')
-        algo_frot  = cfdisi(sdcont_defi,'ALGO_FROT')
-        model_ndim = cfdisi(sdcont_defi,'NDIM' )
-        if ((algo_cont.eq.5) .and. (algo_frot.eq.2) .and. (model_ndim.eq.2)) then
-            cfdisl = .true.
-        else
-            cfdisl = .false.
-        endif
     else if (question.eq.'CONT_PENA') then
         algo_cont = cfdisi(sdcont_defi,'ALGO_CONT')
         cfdisl = algo_cont.eq.4
-    else if (question.eq.'CONT_LAGR') then
-        algo_cont = cfdisi(sdcont_defi,'ALGO_CONT')
-        cfdisl = algo_cont.eq.5
     else if (question.eq.'CONT_ACTI') then
         algo_cont = cfdisi(sdcont_defi,'ALGO_CONT')
         cfdisl = algo_cont.eq.1
@@ -153,18 +125,6 @@ implicit none
         cfdisl = algo_cont.eq.2
     else if (question.eq.'PRE_COND_DIRICHLET') then
         cfdisl = cfdisi(sdcont_defi,'PRE_COND').eq.1
-    else if (question.eq.'FROT_3D') then
-        algo_frot  = cfdisi(sdcont_defi,'ALGO_FROT')
-        model_ndim = cfdisi(sdcont_defi,'NDIM' )
-        if (algo_frot .eq. 1) then
-            cfdisl = .true.
-        else if (algo_frot.eq.2) then
-            cfdisl = model_ndim.eq.3
-        else if (algo_frot.eq.0) then
-            cfdisl = .false.
-        else
-            ASSERT(.false.)
-        endif
     else if (question.eq.'GEOM_NEWTON') then
         cfdisl = cfdisi(sdcont_defi,'ALGO_RESO_GEOM').eq.1
     else if (question.eq.'FROT_NEWTON') then

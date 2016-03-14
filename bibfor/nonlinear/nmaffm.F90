@@ -53,7 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: dvrela, dvmaxi, dvrefe, dvcomp
-    aster_logical :: dvpfix, dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
+    aster_logical :: dvfixc, dvfixf, dvfixg, dvfrot, dvcont, dvgeom
     aster_logical :: dvdebo, cvpilo
     aster_logical :: cvnewt, lerrne
     aster_logical :: erctcg, erctcf, erctcc
@@ -78,7 +78,6 @@ implicit none
     call nmerge(sderro, 'DIVE_COMP', dvcomp)
     call nmerge(sderro, 'DIVE_FROT', dvfrot)
     call nmerge(sderro, 'DIVE_GEOM', dvgeom)
-    call nmerge(sderro, 'DIVE_PFIX', dvpfix)
     call nmerge(sderro, 'DIVE_FIXG', dvfixg)
     call nmerge(sderro, 'DIVE_FIXF', dvfixf)
     call nmerge(sderro, 'DIVE_FIXC', dvfixc)
@@ -125,9 +124,6 @@ implicit none
         endif
         if (cvpilo) then
             call SetTableColumn(table_cvg, name_ = 'PILO_COEF', mark_ = 'B')
-        endif
-        if (dvpfix) then
-            call SetTableColumn(table_cvg, name_ = 'CTCD_NBIT', mark_ = 'X')
         endif
         call SetTableColumn(table_cvg, name_ = 'ITER_NUME', mark_ = 'X')
         if (cvnewt) then

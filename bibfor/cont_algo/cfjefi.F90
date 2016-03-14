@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,8 +54,7 @@ implicit none
     integer :: ifm, niv
     integer :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
-    real(kind=8) :: jexnew, jexold, jexinc
-    aster_logical :: l_pena_cont, l_lagr_frot, l_frot
+    aster_logical :: l_pena_cont, l_frot
     character(len=24) :: sdcont_apcoef, sdcont_apddl, sdcont_appoin
     integer :: japcoe, japddl, japptr
     character(len=24) :: sdcont_apcofr
@@ -79,7 +78,6 @@ implicit none
     nb_equa     = cfdisd(ds_contact%sdcont_solv,'NEQ' )
     model_ndim  = cfdisd(ds_contact%sdcont_solv,'NDIM' )
     l_pena_cont = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    l_lagr_frot = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR' )
     l_frot      = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
 !
 ! - Access to contact datastructures
@@ -116,13 +114,6 @@ implicit none
                         jeuinc)
             jeuold = zr(jjeuit+3*(iliai-1)+1-1)
             zr(jjeuit+3*(iliai-1)+1-1) = jeuold - jeuinc
-            if (l_lagr_frot .and. model_ndim .eq. 2) then
-                jexold = zr(jjeuit+3*(iliai-1)+2-1)
-                call caladu(nb_equa, nbddl, zr(japcof+jdecal), zi(japddl+ jdecal), vale,&
-                            jexinc)
-                jexnew = jexold + jexinc
-                zr(jjeuit+3*(iliai-1)+2-1) = jexnew
-            endif
         endif
     end do
 !

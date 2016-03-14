@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,20 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfaca2(ndim, nbliac, spliai, llf, llf1,&
-                      llf2, indfac, nesmax, resoco, lmat,&
-                      nbliai, xjvmax)
-        integer :: ndim
+    subroutine cfaca2(nbliac, spliai, &
+                      indfac, sdcont_solv, lmat,&
+                      xjvmax)
         integer :: nbliac
         integer :: spliai
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
         integer :: indfac
-        integer :: nesmax
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_solv
         integer :: lmat
-        integer :: nbliai
         real(kind=8) :: xjvmax
     end subroutine cfaca2
 end interface

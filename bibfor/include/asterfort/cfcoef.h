@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,22 +16,23 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfcoef(ndimg, resoco, nbnom, posnsm, coefno,&
-                      posnoe, norm, tau1, tau2, coef,&
-                      cofx, cofy, nbddlt, ddl)
-        integer :: ndimg
-        character(len=24) :: resoco
-        integer :: nbnom
-        integer :: posnsm(9)
-        real(kind=8) :: coefno(9)
-        integer :: posnoe
-        real(kind=8) :: norm(3)
-        real(kind=8) :: tau1(3)
-        real(kind=8) :: tau2(3)
-        real(kind=8) :: coef(30)
-        real(kind=8) :: cofx(30)
-        real(kind=8) :: cofy(30)
-        integer :: nbddlt
-        integer :: ddl(30)
+    subroutine cfcoef(ds_contact    , model_ndim , nb_node_mast, nods_mast_indx, coef_node,&
+                      node_slav_indx, norm       , tau1        , tau2          , coef_cont,&
+                      coef_fric_x   , coef_fric_y, nb_dof_tot  , dof_indx)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        integer, intent(in) :: model_ndim
+        integer, intent(in) :: nb_node_mast
+        integer, intent(in) :: nods_mast_indx(9)
+        integer, intent(in) :: node_slav_indx
+        real(kind=8), intent(in) :: coef_node(9)
+        real(kind=8), intent(in) :: norm(3)
+        real(kind=8), intent(in) :: tau1(3)
+        real(kind=8), intent(in) :: tau2(3)
+        real(kind=8), intent(out) :: coef_cont(30)
+        real(kind=8), intent(out) :: coef_fric_x(30)
+        real(kind=8), intent(out) :: coef_fric_y(30)
+        integer, intent(out) :: dof_indx(30)
+        integer, intent(out) :: nb_dof_tot
     end subroutine cfcoef
 end interface

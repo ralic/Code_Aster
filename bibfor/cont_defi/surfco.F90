@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/surfcp.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,10 +69,10 @@ implicit none
         if (cont_form .eq. 1) then
             call surfcl(sdcont, mesh, unit_msg)
             call surfc1(sdcont, unit_msg)
-        else if (cont_form.eq.2) then
+        else if (cont_form .eq. 2) then
             call surfcl(sdcont, mesh, unit_msg)
             call surfc2(sdcont, mesh)
-        else if (cont_form.eq.3) then
+        else if (cont_form .eq. 3) then
             call surfc3(sdcont, mesh, unit_msg)
         else
             ASSERT(.false.)

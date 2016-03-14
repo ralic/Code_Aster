@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,13 +66,13 @@ implicit none
     integer :: jv_sdcont_coco
     character(len=24) :: sdcont_appoin, sdcont_numlia
     integer :: jv_sdcont_appoin, jv_sdcont_numlia
-    character(len=19) :: sdcont_stf0, sdcont_stfr, sdcont_liac, sdcont_liot, sdcont_typl
-    integer :: jv_sdcont_stf0, jv_sdcont_stfr, jv_sdcont_liac, jv_sdcont_liot, jv_sdcont_typl
+    character(len=19) :: sdcont_liac, sdcont_liot
+    integer :: jv_sdcont_liac, jv_sdcont_liot
     integer :: dof_nume, node_nume
     integer :: i_node, i_dof, node_indx
     character(len=8) :: node_name
     integer :: nb_equa, nt_slav_nmax, nb_dof
-    aster_logical :: l_frot, l_lagr_frot
+    aster_logical :: l_frot
     integer :: zcoco
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,7 +90,6 @@ implicit none
 !
     zcoco        = cfmmvd('ZCOCO')
     l_frot       = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
-    l_lagr_frot  = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR')
     nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO' )
     model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
     nt_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC' )
@@ -149,31 +148,13 @@ implicit none
     sdcont_numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     call wkvect(sdcont_numlia, 'V V I', 4*nt_cont_poin, jv_sdcont_numlia)
 !
-! - Managemetn of relations
+! - Management of relations
 !
     sdcont_coco = ds_contact%sdcont_solv(1:14)//'.COCO'
     call wkvect(sdcont_coco, 'V V I', zcoco, jv_sdcont_coco)
     call cfecrd(ds_contact%sdcont_solv, 'NDIM'  , model_ndim)
     call cfecrd(ds_contact%sdcont_solv, 'NEQ'   , nb_equa)
     call cfecrd(ds_contact%sdcont_solv, 'NESMAX', nt_slav_nmax)
-!
-! - Relation type
-! ---        VAUT C0 : LIAISON DE CONTACT
-! ---        VAUT F0 : LIAISON DE FROTTEMENT ADHERENT (DEUX DIRECTIONS)
-! ---        VAUT F1 : LIAISON DE FROTTEMENT ADHERENT (1ERE DIRECTION )
-! ---        VAUT F2 : LIAISON DE FROTTEMENT ADHERENT (2EME DIRECTION )
-!
-    sdcont_typl = ds_contact%sdcont_solv(1:14)//'.TYPL'
-    call wkvect(sdcont_typl, 'V V K8', 2*nt_cont_poin, jv_sdcont_typl)
-!
-! - State saving for lagrangian
-!
-    if (l_lagr_frot) then
-        sdcont_stf0 = ds_contact%sdcont_solv(1:14)//'.STF0'
-        call wkvect(sdcont_stf0, 'V V K8', nb_cont_node, jv_sdcont_stf0)
-        sdcont_stfr = ds_contact%sdcont_solv(1:14)//'.STFR'
-        call wkvect(sdcont_stfr, 'V V K8', nb_cont_node, jv_sdcont_stfr)   
-    endif
 !
 ! - PIVOT NULS
 !

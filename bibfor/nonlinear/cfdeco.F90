@@ -4,12 +4,11 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/cfsvfr.h"
 #include "asterfort/cfsvmu.h"
 #include "asterfort/jedupo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,9 +67,5 @@ implicit none
 ! --- SAUVEGARDE DU LAGRANGE DE CONTACT POUR ALGO_CONT='GCP'
 !
     call cfsvmu(ds_contact, .true._1)
-!
-! --- SAUVEGARDE DU STATUT DE FROTTEMENT POUR ALGO_FROT='LAGRANGIEN'
-!
-    call cfsvfr(ds_contact, .true._1)
 !
 end subroutine

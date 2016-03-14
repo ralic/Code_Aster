@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -346,7 +346,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                             ),
 # -- Résolution
                                           ALGO_CONT       =SIMP(statut='o',typ='TXM',defaut="CONTRAINTE",
-                                                                into=("CONTRAINTE","LAGRANGIEN","PENALISATION","GCP"),),
+                                                                into=("CONTRAINTE","PENALISATION","GCP"),),
 
                                           b_active=BLOC(condition = "ALGO_CONT == 'CONTRAINTE' ",
                                                         fr=tr("Paramètres de la méthode des contraintes actives (contact uniquement)"),
@@ -366,12 +366,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                             COULOMB       =SIMP(statut='o',typ='R',),
                                                             COEF_MATR_FROT=SIMP(statut='f',typ='R',defaut=0.E+0),
                                                             ALGO_FROT     =SIMP(statut='o',typ='TXM',defaut="PENALISATION",
-                                                                                into=("PENALISATION","LAGRANGIEN"),),
-#
-                                                            b_penal_frot=BLOC(condition = "ALGO_FROT == 'PENALISATION' ",
-                                                                              fr=tr("Paramètres de la méthode pénalisée (frottement)"),
-                                                                              E_T=SIMP(statut='o',typ='R'),
-                                                                              ),
+                                                                                into=("PENALISATION"),),
+                                                            E_T           =SIMP(statut='o',typ='R'),
                                                            ),
                                           ), #fin mot-clé facteur ZONE
                                 ), #fin bloc b_affe_discret

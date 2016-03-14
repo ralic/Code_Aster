@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,20 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cftabl(indic, nbliac, ajliai, spliai, llf,&
-                      llf1, llf2, resoco, typope, posit,&
-                      iliai, typlia)
+    subroutine cftabl(indic, nbliac, ajliai, spliai, &
+                      sdcont_solv, typope, posit,&
+                      iliai)
         integer :: indic
         integer :: nbliac
         integer :: ajliai
         integer :: spliai
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_solv
         character(len=1) :: typope
         integer :: posit
         integer :: iliai
-        character(len=2) :: typlia
     end subroutine cftabl
 end interface

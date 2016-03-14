@@ -336,7 +336,7 @@ CHCONT=DEFI_CONTACT(MODELE      = MO,
 CHDEP1B=STAT_NON_LINE(SOLVEUR=_F(
                                  METHODE= 'MUMPS',),
                       MODELE=MO,
-                      CHAM_MATER=CHMTB1,
+                      CHAM_MATER=CHMTB1,INFO=2,
                       EXCIT=_F( CHARGE = CH1B),
                       CONTACT = CHCONT,
                       COMPORTEMENT=_F(RELATION = 'ELAS'),

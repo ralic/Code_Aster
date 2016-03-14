@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/xxmxme.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,7 +102,7 @@ implicit none
 !
 ! ----- Create datastructures for DISCRETE/CONTINUE methods
 !
-        if (l_cont_cont.or.l_cont_disc) then
+        if (l_cont_cont .or. l_cont_disc) then
             call cfmmma(ds_contact)
         endif
 !

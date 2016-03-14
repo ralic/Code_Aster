@@ -70,9 +70,9 @@ implicit none
 !
     real(kind=8), parameter :: eps=1.d-6
     integer :: zresu, zperc, ztacf
-    integer :: node_slav_nume, iliac, kk, icmp, iliai
+    integer :: node_slav_nume, iliac, icmp, iliai
     integer :: model_ndim, nbliai, nb_dof, nb_equa
-    integer :: btotal, nbliac, llf, llf1, llf2
+    integer :: nbliac
     integer :: jdecal, lliac
     integer :: nesmax, pair_type
     real(kind=8) :: glix, gliy, glit
@@ -82,17 +82,16 @@ implicit none
     real(kind=8) :: rn, rnx, rny, rnz, hn
     real(kind=8) :: rtax, rtay, rtaz, rtgx, rtgy, rtgz
     real(kind=8) :: tau1(3), tau2(3), norm(3), proj(3)
-    character(len=2) :: typec0, typlia
     character(len=19) :: sdappa
-    character(len=19) :: sdcont_liac, sdcont_atmu, sdcont_afmu, sdcont_mu, sdcont_typl
+    character(len=19) :: sdcont_liac, sdcont_atmu, sdcont_afmu, sdcont_mu
     integer :: jatmu, jafmu
     character(len=24) :: sdcont_apddl, sdcont_apcofr
     integer :: japddl, japcof
     character(len=24) :: sdcont_tangco, sdcont_tacfin
     character(len=24) :: sdcont_appoin, sdcont_numlia, sdcont_approj
     character(len=24) :: sdcont_jeuite
-    aster_logical :: l_cont_pena, l_frot, l_frot_pena
-    aster_logical :: l_lagr_2d, lcolli, laffle
+    aster_logical :: l_cont_pena, l_frot
+    aster_logical :: lcolli, laffle
     real(kind=8) :: imp, impx, impy, impz
     real(kind=8) :: valras
     real(kind=8), pointer :: v_disp_iter(:) => null()
@@ -105,7 +104,6 @@ implicit none
     real(kind=8), pointer :: v_sdcont_tacfin(:) => null()
     real(kind=8), pointer :: v_sdcont_mu(:) => null()
     real(kind=8), pointer :: v_sdcont_approj(:) => null()
-    character(len=8), pointer :: v_sdcont_typl(:) => null()
     real(kind=8), pointer :: v_cnsper_cnsv(:) => null()
     real(kind=8), pointer :: v_cnsinr_cnsv(:) => null()
     aster_logical, pointer :: v_cnsper_cnsl(:) => null()
@@ -117,23 +115,16 @@ implicit none
 !
 ! - Initializations
 !
-    typec0 = 'C0'
 !
 ! - Parameters
 !
     l_frot      = cfdisl(ds_contact%sdcont_defi,'FROT_DISCRET')
     l_cont_pena = cfdisl(ds_contact%sdcont_defi,'CONT_PENA' )
-    l_frot_pena = cfdisl(ds_contact%sdcont_defi,'FROT_PENA' )
-    l_lagr_2d   = cfdisl(ds_contact%sdcont_defi,'FROT_LAGR_2D')
     nbliai      = cfdisd(ds_contact%sdcont_solv,'NBLIAI')
     nbliac      = cfdisd(ds_contact%sdcont_solv,'NBLIAC')
-    llf         = cfdisd(ds_contact%sdcont_solv,'LLF' )
-    llf1        = cfdisd(ds_contact%sdcont_solv,'LLF1' )
-    llf2        = cfdisd(ds_contact%sdcont_solv,'LLF2' )
     model_ndim  = cfdisd(ds_contact%sdcont_solv,'NDIM' )
     nb_equa     = cfdisd(ds_contact%sdcont_solv,'NEQ' )
     nesmax      = cfdisd(ds_contact%sdcont_solv,'NESMAX')
-    btotal      = nbliac+llf+llf1+llf2
 !
 ! - Collision
 !
@@ -152,7 +143,6 @@ implicit none
     sdcont_appoin = ds_contact%sdcont_solv(1:14)//'.APPOIN'
     sdcont_numlia = ds_contact%sdcont_solv(1:14)//'.NUMLIA'
     sdcont_atmu   = ds_contact%sdcont_solv(1:14)//'.ATMU'
-    sdcont_typl   = ds_contact%sdcont_solv(1:14)//'.TYPL'
     sdcont_liac   = ds_contact%sdcont_solv(1:14)//'.LIAC'
     sdcont_mu     = ds_contact%sdcont_solv(1:14)//'.MU'
     sdcont_tangco = ds_contact%sdcont_solv(1:14)//'.TANGCO'
@@ -171,7 +161,6 @@ implicit none
     if (l_cont_pena) then
         call jeveuo(sdcont_afmu, 'L', jafmu)
     endif
-    call jeveuo(sdcont_typl  , 'L', vk8 = v_sdcont_typl)
     call jeveuo(sdcont_liac  , 'L', vi  = v_sdcont_liac)
     call jeveuo(sdcont_mu    , 'L', vr  = v_sdcont_mu)
     call jeveuo(sdcont_tangco, 'L', vr  = v_sdcont_tangco)
@@ -205,7 +194,7 @@ implicit none
 !
 ! - Set fields
 !
-    do iliac = 1, btotal
+    do iliac = 1, nbliac
 !
         node_status = 2.d0
         rtax = 0.d0
@@ -295,51 +284,27 @@ implicit none
 !
 ! --------- Compute tangential forces
 !
-            if (l_frot_pena) then
-                call cfresb(model_ndim, l_lagr_2d, 'GL', zr(jafmu+zi(japddl+jdecal)-1),&
-                            tau1, tau2, rtgx, rtgy, rtgz)
-                testmu = v_sdcont_mu(3*nbliai+lliac)
-                coefpt = v_sdcont_tacfin(ztacf*(lliac-1)+3)
-                testcf = sqrt(coefpt)
-                if (testcf .gt. r8miem()) then
-                    if (abs((testmu-testcf)/testcf) .gt. r8prem()) then
-                        node_status = 1.d0
-                        rtax = rtgx
-                        rtay = rtgy
-                        rtaz = rtgz
-                        rtgx = 0.d0
-                        rtgy = 0.d0
-                        rtgz = 0.d0
-                        hn = 0.d0
-                    else
-                        node_status = 2.d0
-                        rtax = 0.d0
-                        rtay = 0.d0
-                        rtaz = 0.d0
-                        hn = 0.d0
-                    endif
-                endif
-            else
-                if (v_sdcont_typl(iliac) .eq. typec0) then
-                    do kk = iliac+1, btotal
-                        if (v_sdcont_liac(kk) .eq. lliac) then
-                            node_status = 1.d0
-                            if (l_lagr_2d) then
-                                typlia = '  '
-                            else
-                                typlia = v_sdcont_typl(kk)(1:2)
-                            endif
-                        call cfresb(model_ndim, l_lagr_2d, typlia, zr(jatmu+ zi(japddl+jdecal)-1),&
-                                    tau1, tau2, rtax, rtay, rtaz)
-                            goto 100
-                        endif
-                    end do
-                    node_status = 2.d0
-                    call cfresb(model_ndim, l_lagr_2d, 'GL', zr(jafmu+zi(japddl+ jdecal)-1),&
-                                tau1, tau2, rtgx, rtgy, rtgz)
-100                 continue
+            call cfresb(model_ndim, 'GL', zr(jafmu+zi(japddl+jdecal)-1),&
+                        tau1, tau2, rtgx, rtgy, rtgz)
+            testmu = v_sdcont_mu(3*nbliai+lliac)
+            coefpt = v_sdcont_tacfin(ztacf*(lliac-1)+3)
+            testcf = sqrt(coefpt)
+            if (testcf .gt. r8miem()) then
+                if (abs((testmu-testcf)/testcf) .gt. r8prem()) then
+                    node_status = 1.d0
+                    rtax = rtgx
+                    rtay = rtgy
+                    rtaz = rtgz
+                    rtgx = 0.d0
+                    rtgy = 0.d0
+                    rtgz = 0.d0
+                    hn = 0.d0
                 else
-                    goto 150
+                    node_status = 2.d0
+                    rtax = 0.d0
+                    rtay = 0.d0
+                    rtaz = 0.d0
+                    hn = 0.d0
                 endif
             endif
         endif
@@ -404,7 +369,6 @@ implicit none
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+28) = proj(1)
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+29) = proj(2)
         v_cnsinr_cnsv(zresu*(node_slav_nume-1)+30) = proj(3)
-150     continue
     end do
 !
 ! - Alarm for COLLISION

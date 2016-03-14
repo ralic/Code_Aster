@@ -1,7 +1,7 @@
 subroutine nmcrga(sderro)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ subroutine nmcrga(sderro)
 ! ----------------------------------------------------------------------
 !
     integer :: zeven
-    parameter   (zeven = 33)
+    parameter   (zeven = 32)
     character(len=16) :: neven(zeven)
     character(len=8) :: ncret(zeven)
     integer :: vcret(zeven)
@@ -64,7 +64,7 @@ subroutine nmcrga(sderro)
      &              'ERRE_TIMN','ERRE_TIMP','ERRE_EXCP',&
      &              'ITER_MAXI',&
      &              'DIVE_RESI','RESI_MAXR','RESI_MAXN',&
-     &              'DIVE_PFIX','CRIT_STAB','DIVE_FIXG',&
+     &              'CRIT_STAB','DIVE_FIXG',&
      &              'DIVE_FIXF','DIVE_FIXC','ERRE_CTCG',&
      &              'ERRE_CTCF','ERRE_CTCC','DIVE_FROT',&
      &              'DIVE_GEOM','DIVE_RELA','DIVE_MAXI',&
@@ -80,7 +80,7 @@ subroutine nmcrga(sderro)
      &              'XXX','XXX','XXX',&
      &              'XXX',&
      &              'XXX','XXX','XXX',&
-     &              'XXX','XXX','XXX',&
+     &              'XXX','XXX',&
      &              'XXX','XXX','XXX',&
      &              'XXX','XXX','XXX',&
      &              'XXX','XXX','XXX',&
@@ -96,7 +96,7 @@ subroutine nmcrga(sderro)
      &               99,99,99,&
      &               99,&
      &               99,99,99,&
-     &               99,99,99,&
+     &               99,99,&
      &               99,99,99,&
      &               99,99,99,&
      &               99,99,99,&
@@ -119,7 +119,7 @@ subroutine nmcrga(sderro)
      &              'ERRI_CALC','ERRI_CALC','ERRI_CALC',&
      &              'ERRI_NEWT',&
      &              'EVEN'     ,'EVEN'     ,'EVEN'     ,&
-     &              'CONV_NEWT','EVEN'     ,'CONV_FIXE',&
+     &              'EVEN'     ,'CONV_FIXE',&
      &              'CONV_FIXE','CONV_FIXE','ERRI_FIXE',&
      &              'ERRI_FIXE','ERRI_FIXE','CONV_RESI',&
      &              'CONV_NEWT','CONV_RESI','CONV_RESI',&
@@ -135,7 +135,7 @@ subroutine nmcrga(sderro)
      &              ' ',' '       ,' ',&
      &              ' ',&
      &              ' ',' '       ,' ',&
-     &              ' ',' '       ,' ',&
+     &              ' '       ,' ',&
      &              ' ',' '       ,' ',&
      &              ' ',' '       ,' ',&
      &              ' ',' '       ,' ',&
@@ -152,7 +152,7 @@ subroutine nmcrga(sderro)
      &        'MECANONLINE10_7' ,'MECANONLINE10_5' ,'MECANONLINE10_8' ,&
      &        'MECANONLINE10_3' ,&
      &        ' '               ,' '               ,' '               ,&
-     &        ' '               ,'MECANONLINE10_20',' '               ,&
+     &        'MECANONLINE10_20',' '               ,&
      &        ' '               ,' '               ,'MECANONLINE10_9' ,&
      &        'MECANONLINE10_10','MECANONLINE10_11',' '               ,&
      &        ' '               ,' '               ,' '               ,&
@@ -197,14 +197,14 @@ subroutine nmcrga(sderro)
     call wkvect(errevt, 'V V K16', 2, jeeevt)
     call wkvect(errmsg, 'V V K24', zeven, jeemsg)
 !
-    do 10 ieven = 1, zeven
+    do ieven = 1, zeven
         zk16(jeenom-1+ieven) = neven(ieven)
         zk8 (jeecon-1+ieven) = ncret(ieven)
         zi (jeecov-1+ieven) = vcret(ieven)
         zk16(jeeniv-1+ieven) = teven(ieven)
         zk24(jeefct-1+ieven) = feven(ieven)
         zk24(jeemsg-1+ieven) = meven(ieven)
-10  end do
+    end do
 !
     call jedema()
 end subroutine

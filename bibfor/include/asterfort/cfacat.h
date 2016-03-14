@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,25 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfacat(ndim, indic, nbliac, ajliai, spliai,&
-                      llf, llf1, llf2, indfac, nesmax,&
-                      defico, resoco, solveu, lmat, nbliai,&
+    subroutine cfacat(indic, nbliac, ajliai, spliai,&
+                      indfac,&
+                      sdcont_defi, sdcont_solv, solveu, lmat, &
                       xjvmax)
-        integer :: ndim
         integer :: indic
         integer :: nbliac
         integer :: ajliai
         integer :: spliai
-        integer :: llf
-        integer :: llf1
-        integer :: llf2
         integer :: indfac
-        integer :: nesmax
-        character(len=24) :: defico
-        character(len=24) :: resoco
+        character(len=24) :: sdcont_defi
+        character(len=24) :: sdcont_solv
         character(len=19) :: solveu
         integer :: lmat
-        integer :: nbliai
         real(kind=8) :: xjvmax
     end subroutine cfacat
 end interface
