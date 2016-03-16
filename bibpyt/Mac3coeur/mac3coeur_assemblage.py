@@ -429,21 +429,6 @@ class Assemblage(object):
         )
         return mcf
 
-    def chargement_transverse_crayons(self, FYCR, FZCR):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
-           dans la prise en compte des efforts transverses."""
-        from Cata.cata import _F
-        mcf = (_F(GROUP_MA='CR_' + self.idAST, FY=FYCR, FZ=FZCR,),)
-        return mcf
-
-    def chargement_fct_hydro_axiale(self, FXCR, FXTG):
-        """Retourne les mots-clés facteurs pour AFFE_CHAR_MECA_F/FORCE_POUTRE
-           dans la prise en compte des efforts hydrodynamiques axiaux."""
-        from Cata.cata import _F
-        mcf = (_F(GROUP_MA='CR_' + self.idAST, FX=FXCR,),
-               _F(GROUP_MA='TG_' + self.idAST, FX=FXTG,),)
-        return mcf
-
 
 class AssemblageAFAXL(Assemblage):
 
