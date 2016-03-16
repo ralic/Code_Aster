@@ -44,7 +44,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
 
          LAME = FACT(statut='f',max=1,
                      fr=tr("Estimation des lames d'eau entre AC"),
-               UNITE_THYC   = SIMP(statut='f',typ='I', max=1),            # Unite Logique du fichier THYC
+               UNITE_THYC   = SIMP(statut='o',typ='I', max=1),            # Unite Logique du fichier THYC
                      ),
 
          DEFORMATION  = FACT(statut='f',max=1,

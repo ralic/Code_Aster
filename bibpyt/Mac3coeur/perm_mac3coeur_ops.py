@@ -106,12 +106,6 @@ def perm_mac3coeur_ops(self, **args):
         _F(TOUT='OUI', DX=0.0, DY=0.0, DZ=0.0, DRX=0.0, DRY=0.0, DRZ=0.0,),))
 
     tran_x = 0.0
-    _coe = [None] * _coeurp1.nbac
-    _dep = [None] * _coeurp1.nbac
-    _var = [None] * _coeurp1.nbac
-    lisdep = []
-    lisvar = []
-    lisdet = []
 
     indice = 0
 
