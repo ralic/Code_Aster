@@ -20,6 +20,8 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,11 +70,15 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nt_patch, i_zone, nb_cont_zone
+    integer :: nt_patch, nb_cont_zone, nb_elem, nb_elem_patch
+    integer :: i_elem, i_zone, i_cont_elem
     character(len=24) :: pair_method
-    integer :: i_cont_elem, longt, elem_indx, longc, elem_nbnode
+    integer :: longt, elem_indx, longc, elem_nbnode, patch_indx, elem_nume
+    integer, pointer :: v_mesh_comapa(:) => null()
     character(len=24) :: sdappa_poin
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
+    character(len=24) :: sdappa_info
+    integer, pointer :: v_sdappa_info(:) => null()
     character(len=24) :: sdappa_infp
     integer, pointer :: v_sdappa_infp(:) => null()
     character(len=24) :: sdappa_noms
@@ -116,6 +122,11 @@ implicit none
     nt_patch     = ds_contact%nt_patch
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
     pair_method  = 'PANG_ROBUSTE'
+!
+! - Access to mesh
+!
+    call jeveuo(mesh//'.COMAPA', 'L' , vi = v_mesh_comapa)
+    call jelira(mesh//'.COMAPA', 'LONMAX', nb_elem)
 !
 ! - Datastructure for pairing results
 !
@@ -218,6 +229,24 @@ implicit none
 !
     sdappa_norl = sdappa(1:19)//'.NORL'
     call wkvect(sdappa_norl, 'V V R', 3*nb_cont_node, vr = v_sdappa_norl)
+!
+! - Datastructures for informations (from mesh to patch)
+!
+    sdappa_info = sdappa(1:19)//'.INFO'
+    call wkvect(sdappa_info, 'V V I', 6*nt_patch, vi = v_sdappa_info)
+    do i_elem = 1, nb_elem
+        elem_nume  = i_elem
+        patch_indx = v_mesh_comapa(elem_nume)
+        ASSERT(patch_indx .le. nt_patch)
+        if (patch_indx .ne. 0) then
+            nb_elem_patch = v_sdappa_info(6*(patch_indx-1)+1)
+            ASSERT(nb_elem_patch .le. 4)
+            nb_elem_patch = nb_elem_patch + 1
+            ASSERT(v_sdappa_info(6*(patch_indx-1)+1+nb_elem_patch) .eq. 0)
+            v_sdappa_info(6*(patch_indx-1)+1+nb_elem_patch) = elem_nume
+            v_sdappa_info(6*(patch_indx-1)+1) = nb_elem_patch
+        endif
+    end do
 !
     call jedema()
 !

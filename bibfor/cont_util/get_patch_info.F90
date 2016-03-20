@@ -1,13 +1,10 @@
-subroutine apntos(mesh, ds_contact)
-!
-use NonLin_Datastructure_type
+subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
 !
 implicit none
 !
-#include "asterfort/apcaln.h"
-#include "asterfort/apforc.h"
-#include "asterfort/apvepa.h"
-#include "asterfort/infdbg.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,41 +24,45 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: patch_indx
+    integer, intent(out) :: nb_elem_patch
+    integer, intent(out) :: list_elem(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Pairing
 !
-! Pairing - Node to segment
+! Segment to segment - Information from patch
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! In  sdappa           : name of pairing datastructure
+! In  patch_indx       : index of patch
+! Out nb_elem_patch    : number of elements in patch
+! Out list_elem        : list of elements in patch
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer :: i_elem_patch
+    character(len=24) :: sdappa_info
+    integer, pointer :: v_sdappa_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('APPARIEMENT', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<Pairing> Node-to-segment pairing'
-    endif
+    nb_elem_patch  = 0
+    list_elem(1:5) = 0
 !
-! - Compute tangents
+! - Access to datastructure
 !
-    call apcaln(mesh, ds_contact)
+    sdappa_info = sdappa(1:19)//'.INFO'
+    call jeveuo(sdappa_info, 'L', vi = v_sdappa_info)
 !
-! - Pairing by "brute" force
+! - Get parameters
 !
-    call apforc(mesh, ds_contact)
-!
-! - Check pairing
-!
-    call apvepa(ds_contact)
+    nb_elem_patch = v_sdappa_info(6*(patch_indx-1)+1)
+    do i_elem_patch = 1, nb_elem_patch
+        list_elem(i_elem_patch) = v_sdappa_info(6*(patch_indx-1)+1+i_elem_patch)
+    end do
 !
 end subroutine

@@ -15,12 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine apimpr(pair_category, ifm, mesh, ds_contact)
-        use NonLin_Datastructure_type
-        character(len=6), intent(in) :: pair_category
-        integer, intent(in) :: ifm
-        character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
-    end subroutine apimpr
+    subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: patch_indx
+        integer, intent(out) :: nb_elem_patch
+        integer, intent(out) :: list_elem(5)
+    end subroutine get_patch_info
 end interface

@@ -98,7 +98,7 @@ implicit none
 !
 ! - Access to pairing datastructures
 !
-    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+    sdappa      = ds_contact%sdcont_solv(1:14)//'.APPA'
     sdappa_gapi = sdappa(1:19)//'.GAPI'
     call jerazo(sdappa_gapi, nt_patch, 1)
 !
@@ -108,7 +108,7 @@ implicit none
 !
 ! ----- Get parameters
 !
-        pair_tole    = mminfr(ds_contact%sdcont_defi, 'TOLE_APPA', i_zone)
+        pair_tole     = mminfr(ds_contact%sdcont_defi, 'TOLE_APPA', i_zone)
         sdcont_methco = ds_contact%sdcont_defi(1:16)//'.METHCO'
         call jeveuo(sdcont_methco, 'L', vi = v_sdcont_methco)
         if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 2) then

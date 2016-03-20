@@ -4,8 +4,10 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterfort/infdbg.h"
 #include "asterfort/apstos.h"
 #include "asterfort/apntos.h"
+#include "asterfort/apimpr.h"
 #include "asterfort/assert.h"
 !
 ! ======================================================================
@@ -44,12 +46,29 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (pair_category.eq.'N_To_S') then
+    integer :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infdbg('APPARIEMENT', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<Pairing> Compute ...'
+    endif
+!
+! - Pairing
+!
+    if (pair_category .eq. 'N_To_S') then
         call apntos(mesh, ds_contact)
-    elseif (pair_category.eq.'S_To_S') then
+    elseif (pair_category .eq. 'S_To_S') then
         call apstos(mesh, ds_contact)
     else
         ASSERT(.false.)
+    endif
+!
+! - Debug print
+!
+    if (niv .ge. 2) then
+        call apimpr(pair_category, ifm, mesh, ds_contact)
     endif
 !
 end subroutine

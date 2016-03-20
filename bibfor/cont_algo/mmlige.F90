@@ -86,8 +86,8 @@ implicit none
     integer :: typg_cont_nume, elem_indx, typf_cont_nume, typf_frot_nume, typf_slav_nume
     character(len=19) :: ligrel_elem_slav
     integer :: typg_slav_nume, typg_mast_nume
-    character(len=8) :: typg_slav_name, typg_mast_name
-    character(len=16) :: typf_slav_name
+    character(len=8) :: typg_slav_name, typg_mast_name, elem_slav_name, elem_mast_name
+    character(len=16) :: typf_slav_name, typg_cont_name,typf_cont_name
     character(len=24) :: linuma = '&&MMLIGE.LINUMA'
     integer, pointer :: v_linuma(:) => null()
     character(len=24) :: linute = '&&MMLIGE.LINUTE'
@@ -193,6 +193,8 @@ implicit none
         typg_mast_nume = v_mesh_typmail(elem_mast_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', typg_slav_nume), typg_slav_name)
         call jenuno(jexnum('&CATA.TM.NOMTM', typg_mast_nume), typg_mast_name)
+        call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+        call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
 !
 ! ----- Identify contact element
 !
@@ -223,6 +225,15 @@ implicit none
                                typg_cont_nume_ = typg_cont_nume,&
                                typf_cont_nume_ = typf_cont_nume,&
                                get_elem_indx_  = elem_indx)
+            call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
+            call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
+        endif
+        if (niv .ge. 2) then
+            WRITE(6,*) 'MMLIGE: ',i_cont_pair
+            WRITE(6,*) 'MMLIGE - Master  : ',elem_mast_nume,elem_mast_name,typg_mast_name
+            WRITE(6,*) 'MMLIGE - Slave   : ',elem_slav_nume,elem_slav_name,&
+                                             typg_slav_name,typf_slav_name
+            WRITE(6,*) 'MMLIGE - Contact : ',nb_node_elem, typg_cont_name,typf_cont_name
         endif
 !
 ! ----- Save contact/friction element geometry parameters

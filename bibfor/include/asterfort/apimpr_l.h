@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apimpr(pair_category, ifm, mesh, ds_contact)
+    subroutine apimpr_l(ifm, mesh, ds_contact)
         use NonLin_Datastructure_type
-        character(len=6), intent(in) :: pair_category
         integer, intent(in) :: ifm
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-    end subroutine apimpr
+    end subroutine apimpr_l
 end interface
