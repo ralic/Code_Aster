@@ -1,6 +1,6 @@
 subroutine lcsees(elem_dime  , nb_node_slav    , nb_lagr  ,&
                   norm_smooth, norm            , indi_lagc, lagrc,&
-                  poidpg     , shape_slav_func , jaco_upda,&
+                  poidpg     , shape_slav_func , jacobian ,&
                   vtmp )
 !
 implicit none
@@ -35,7 +35,7 @@ implicit none
     real(kind=8), intent(in) :: lagrc
     real(kind=8), intent(in) :: poidpg
     real(kind=8), intent(in) :: shape_slav_func(9)
-    real(kind=8), intent(in) :: jaco_upda
+    real(kind=8), intent(in) :: jacobian
     real(kind=8), intent(inout) :: vtmp(55)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ implicit none
 ! In  lagrc            : value of contact pressure (lagrangian)
 ! In  poidspg          : weight at integration point
 ! In  shape_slav_func  : shape functions at integration point
-! in  jaco_upda        : updated jacobian at integration point
+! in  jacobian         : jacobian at integration point
 ! IO  vtmp             : vector
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ implicit none
                 jj=(i_node_slav-1)*elem_dime+shift+i_dime
                 vtmp(jj)= vtmp(jj)+&
                             (zr(jv_norm+(i_node_slav-1)*elem_dime+i_dime-1))*&
-                            jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
+                            jacobian*poidpg*shape_slav_func(i_node_slav)*lagrc
             end do
         end do
     else if (norm_smooth .eq. 0) then
@@ -88,7 +88,7 @@ implicit none
                 jj=(i_node_slav-1)*elem_dime+shift+i_dime
                 vtmp(jj)= vtmp(jj)+&
                             norm(i_dime)*&
-                            jaco_upda*poidpg*shape_slav_func(i_node_slav)*lagrc
+                            jacobian*poidpg*shape_slav_func(i_node_slav)*lagrc
             end do
         end do    
     else

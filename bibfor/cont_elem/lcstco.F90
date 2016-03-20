@@ -1,4 +1,4 @@
-subroutine lcstco(algo_reso_geom, indi_cont, lagrc_)
+subroutine lcstco(algo_reso_geom, indi_cont, l_upda_jaco, lagrc_)
 !
 implicit none
 !
@@ -25,6 +25,7 @@ implicit none
 ! 
     integer, intent(out) :: algo_reso_geom
     integer, intent(out) :: indi_cont
+    aster_logical, intent(out) :: l_upda_jaco
     real(kind=8), optional, intent(out) :: lagrc_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,6 +43,8 @@ implicit none
 ! Out algo_reso_geom   : algorithm for geometry loop
 !                         0 - fixed point
 !                         1 - Newton
+! Out l_upda_jaco      : .true. to use updated jacobian
+! Out lagrc            : value of contact lagrangian
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,6 +57,7 @@ implicit none
     algo_reso_geom = nint(zr(jpcf-1+25))
     indi_cont      = nint(zr(jpcf-1+12))
     lagrc          =     (zr(jpcf-1+13))
+    l_upda_jaco    = nint(zr(jpcf-1+2 )).eq.1
     if (present(lagrc_)) then
         lagrc_ = lagrc
     endif

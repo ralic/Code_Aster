@@ -19,7 +19,7 @@ interface
     subroutine lcsegp(elem_dime   , nb_lagr       , indi_lagc     ,&
                       nb_node_mast, elin_mast_coor, elin_mast_code,&
                       nb_node_slav, elin_slav_coor, elin_slav_code,&
-                      poidspg     , gauss_coot    , jaco_upda,&
+                      poidspg     , gauss_coot    , jacobian      ,&
                       vtmp)
         integer, intent(in) :: elem_dime
         integer, intent(in) :: nb_lagr
@@ -32,7 +32,7 @@ interface
         character(len=8), intent(in) :: elin_slav_code
         real(kind=8), intent(in) :: poidspg
         real(kind=8), intent(in) :: gauss_coot(2)
-        real(kind=8), intent(in) :: jaco_upda
+        real(kind=8), intent(in) :: jacobian
         real(kind=8), intent(inout) :: vtmp(55)
     end subroutine lcsegp
 end interface

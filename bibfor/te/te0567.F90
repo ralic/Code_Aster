@@ -63,7 +63,7 @@ implicit none
     integer :: i_tria, i_dime, i_elin_mast, i_elin_slav, i_node, i_gauss
     real(kind=8) :: proj_tole
     integer :: algo_reso_geom, indi_cont, norm_smooth
-    aster_logical :: l_axis, l_elem_frot, loptf, debug        
+    aster_logical :: l_axis, l_elem_frot, loptf, debug, l_upda_jaco        
     real(kind=8) :: norm(3)
     character(len=8) :: elem_slav_code, elem_mast_code
     real(kind=8) :: elem_mast_coor(27),elem_slav_coor(27)
@@ -78,7 +78,7 @@ implicit none
     real(kind=8) :: inte_weight
     real(kind=8) :: gauss_weight(12), gauss_coor(2,12), gauss_coot(2)
     character(len=8) :: elga_fami_slav, elga_fami_mast 
-    real(kind=8) :: poidpg, jaco_init, jaco_upda
+    real(kind=8) :: poidpg, jaco_init, jaco_upda, jacobian
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9)
     real(kind=8) :: mmat(55, 55)
 !
@@ -107,7 +107,7 @@ implicit none
 !
 ! - Get indicators
 !
-    call lcstco(algo_reso_geom, indi_cont)
+    call lcstco(algo_reso_geom, indi_cont, l_upda_jaco)
 !
 ! - Compute updated geometry
 !
@@ -275,12 +275,17 @@ implicit none
                                         nb_node_slav, elem_slav_coor, elem_slav_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
                                         jaco_init   , jaco_upda     , norm)
+                            if (l_upda_jaco) then
+                                jacobian = jaco_upda
+                            else
+                                jacobian = jaco_init
+                            endif
 !
 ! ------------------------- Compute contact matrix (slave side)
 !
                             call lccoes(elem_dime  , nb_node_slav, nb_lagr  ,&
                                         norm_smooth, norm        , indi_lagc,&
-                                        poidpg     , shape_func  , jaco_upda,&
+                                        poidpg     , shape_func  , jacobian ,&
                                         mmat )          
                         end do             
 !
@@ -315,12 +320,17 @@ implicit none
                                         nb_node_mast, elem_mast_coor, elem_mast_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
                                         jaco_init   , jaco_upda     , norm)
+                            if (l_upda_jaco) then
+                                jacobian = jaco_upda
+                            else
+                                jacobian = jaco_init
+                            endif
 !
 ! ------------------------- Compute contact matrix (master side)
 !
                             call lccoma(elem_dime  , nb_node_mast, nb_node_slav, nb_lagr,&
                                         norm_smooth, norm        , indi_lagc   ,&
-                                        poidpg     , shape_func  , jaco_upda   ,&
+                                        poidpg     , shape_func  , jacobian    ,&
                                         mmat       )
                        end do
                     end do

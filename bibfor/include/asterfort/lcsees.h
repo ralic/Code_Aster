@@ -18,7 +18,7 @@
 interface
     subroutine lcsees(elem_dime  , nb_node_slav    , nb_lagr  ,&
                       norm_smooth, norm            , indi_lagc, lagrc,&
-                      poidpg     , shape_slav_func , jaco_upda,&
+                      poidpg     , shape_slav_func , jacobian ,&
                       vtmp )
         integer, intent(in) :: elem_dime
         integer, intent(in) :: nb_node_slav
@@ -29,7 +29,7 @@ interface
         real(kind=8), intent(in) :: lagrc
         real(kind=8), intent(in) :: poidpg
         real(kind=8), intent(in) :: shape_slav_func(9)
-        real(kind=8), intent(in) :: jaco_upda
+        real(kind=8), intent(in) :: jacobian
         real(kind=8), intent(inout) :: vtmp(55)
     end subroutine lcsees
 end interface

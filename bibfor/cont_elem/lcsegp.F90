@@ -1,7 +1,7 @@
 subroutine lcsegp(elem_dime   , nb_lagr       , indi_lagc     ,&
                   nb_node_mast, elin_mast_coor, elin_mast_code,&
                   nb_node_slav, elin_slav_coor, elin_slav_code,&
-                  poidspg     , gauss_coot    , jaco_upda,&
+                  poidspg     , gauss_coot    , jacobian      ,&
                   vtmp)
 !
 implicit none
@@ -42,7 +42,7 @@ implicit none
     character(len=8), intent(in) :: elin_slav_code
     real(kind=8), intent(in) :: poidspg
     real(kind=8), intent(in) :: gauss_coot(2)
-    real(kind=8), intent(in) :: jaco_upda
+    real(kind=8), intent(in) :: jacobian
     real(kind=8), intent(inout) :: vtmp(55)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -64,7 +64,7 @@ implicit none
 ! In  elin_slav_code   : code of all sub-elements in slave element
 ! In  poidspg          : weight at integration point
 ! In  gauss_coot       : coordiantes of current integration point
-! In  jaco_upda        : updated jacobian at integration point
+! In  jacobian         : jacobian at integration point
 ! IO  vtmp             : vector
 !
 ! --------------------------------------------------------------------------------------------------
@@ -115,8 +115,7 @@ implicit none
     call mmtang(elem_dime, nb_node_slav, slav_coor, dff, tau1,&
                 tau2)
     call mmnorm(elem_dime, tau1, tau2, dir)
-
-    pdgr=jaco_upda*poidspg
+    pdgr=jacobian*poidspg
 !
 ! - Projection of slave point on master element
    

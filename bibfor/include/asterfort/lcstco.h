@@ -18,9 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine lcstco(algo_reso_geom, indi_cont, lagrc_)
+    subroutine lcstco(algo_reso_geom, indi_cont, l_upda_jaco, lagrc_)
         integer, intent(out) :: algo_reso_geom
         integer, intent(out) :: indi_cont
+        aster_logical, intent(out) :: l_upda_jaco
         real(kind=8), optional, intent(out) :: lagrc_
     end subroutine lcstco
 end interface
