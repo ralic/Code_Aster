@@ -3,7 +3,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -63,6 +63,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 #include "asterfort/csmbgg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/filter_smd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -82,7 +83,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 !
 !     VARIABLES LOCALES
     integer :: ifm, niv, ierd, nmaxit, ptserr
-    integer :: lmat, idvalc
+    integer :: lmat, idvalc, icode
     integer, dimension(:), pointer :: slvi => null()
     mpi_int :: rang, nbproc
     mpi_int :: mpicomm
@@ -129,10 +130,18 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
     nonu = nonu_courant
     nosolv = nosols(kptsc)
 !
-    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
-    precon = slvk(2)
-    call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
-    lmd = matd.eq.'OUI'
+    call exisd('MATR_ASSE', nomat, icode)
+    if (icode == 0 ) then
+!   si la matrice n'existe pas, on peut quand meme
+!   vouloir la detruire, mais c'est la seule action
+!   autorisee
+       ASSERT( action == 'DETR_MAT' )
+    else
+        call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+        precon = slvk(2)
+        call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
+        lmd = matd.eq.'OUI'
+    endif
 !
 !
     if (action .eq. 'PRERES') then
@@ -315,9 +324,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
-!            
+!
             else if (indic.eq.KSP_DIVERGED_NANORINF) then
-!               NANORINF 
+!               NANORINF
                 if ( istop == 0 ) then
 !                  ERREUR <F>
                    call utmess('F', 'PETSC_8')

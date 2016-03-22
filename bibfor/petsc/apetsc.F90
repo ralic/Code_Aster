@@ -1,7 +1,7 @@
 subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
                   nbsol, istop, iret)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -207,11 +207,15 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
             endif
         endif
     enddo
-
+!
+    if ( action == 'DETR_MAT' ) then
+! La matrice n'est pas stockée dans le tableau ap()
+! On ne fait rien   
+       goto 999
+    endif 
     ASSERT(action.ne.'RESOUD')
 
-    if (action .eq. 'DETR_MAT') goto 999
-
+ 
 
 !   Y-a-t-il encore une place libre dans le common ? Calcul de kptsc :
 !   ------------------------------------------------------------------
@@ -223,6 +227,13 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
     end do
     call utmess('F', 'PETSC_3')
  1  continue
+
+   if (action .eq. 'DETR_MAT') then
+! La matrice est stockée dans le tableau ap, à l'indice kptsc
+! on la détruit 
+      call apmain( action, kptsc, rsolu, vcine, istop, iret )  
+      goto 999
+    endif
 
 
 !   3. Quelques verifications et petites actions :
