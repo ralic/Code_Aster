@@ -36,6 +36,7 @@ mot-clef facteur vide dans l'opérateur AFFE_CHAR_MECA, AFFE_CHAR_THER ou AFFE_C
 La charge %(k1)s n'est pas compatible avec FONC_MULT.
 """),
 
+
     21 : _(u"""
 La charge %(k1)s n'est pas thermique.
 """),
@@ -82,6 +83,10 @@ Erreur utilisateur :
 
     31 : _(u"""
 La charge %(k1)s est un chargement de type force ou flux et ne peut donc pas utiliser DIDI.
+"""),
+
+    32 : _(u"""
+La charge %(k1)s contient une condition de type ECHANGE et elle n'est pas compatible avec FONC_MULT. Pour appliquer une fonction (y compris en fonction du temps), il faut utiliser AFFE_CHAR_THER_F.
 """),
 
     34 : _(u"""

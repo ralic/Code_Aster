@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -206,6 +206,11 @@ implicit none
                     cart_name  = load_name(1:8)//'.CHTH'//load_obje(1)
                     if ((load_opti_f.eq.'No_load') .and. l_func_mult) then
                         call utmess('F', 'CHARGES_20', sk=load_name)
+                    endif
+                    if (load_keyw.eq.'ECHANGE') then
+                        if (l_func_mult) then
+                            call utmess('F', 'CHARGES_32', sk=load_name)
+                        endif
                     endif
                     if (load_keyw.eq.'EVOL_CHAR') then
                         ASSERT (load_type(5:7) .ne. '_FO')
