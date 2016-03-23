@@ -27,7 +27,7 @@ subroutine rc32t()
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,8 +63,9 @@ subroutine rc32t()
     real(kind=8) :: sigtot(1000*6), tminsn(2), tmaxsn(2), tminsp(2)
     real(kind=8) :: tmaxsp(2), tresc(2), trescb(2), r3(2), r3b(2)
     real(kind=8) :: tremin(2), treminb(2), tremax(2), tremaxb(2)
-    real(kind=8) :: vale(2), momen0, momen1, siglin(1000*6)
-    integer :: ibid, iret, kk, l
+    real(kind=8) :: vale(2), momen0, momen1, siglin(1000*6), momen0ther, momen1ther
+    real(kind=8) :: momen0pres, momen1pres, momen0mec, momen1mec
+    integer :: ibid, iret, kk
     complex(kind=8) :: cbid
     real(kind=8), pointer :: contraintesth(:) => null()
     real(kind=8), pointer :: contraintespr(:) => null()
@@ -196,19 +197,21 @@ subroutine rc32t()
         endif
 !
 !---------------------------------------------------------------
-! ------ CREATION DES 2*5 TABLES A 6 composantes de contraintes
-! ------ (totales+ mécaniques en tminsp et tmaxsp)
-! ------ (linéarisées + M_0 + M_1 en tminsn et tmaxsn)
+! ------ CREATION DES 2*7 TABLES A 6 composantes de contraintes
+! ------ (totales et mécaniques en tminsp et tmaxsp)
+! ------ (linéarisées totales + M_0 en tminsn et tmaxsn)
+! ------ (lin. ther. + lin. pres. + lin. meca en tminsn et tmaxsn)
+! ------ tminsn et tmaxsn
 !---------------------------------------------------------------
 !
         AS_ALLOCATE(vr=contraintesth,  size=nbabsc)
         AS_ALLOCATE(vr=contraintespr,  size=nbabsc)
         AS_ALLOCATE(vr=contraintesmec, size=nbabsc)
         AS_ALLOCATE(vr=contraintestot, size=nbabsc)
-        AS_ALLOCATE(vr=contraintesm,   size=nbabsc)
+        AS_ALLOCATE(vr=contraintesm, size=nbabsc)
 !
         ncmp=6
-        ndim = 2 * 5 * ncmp
+        ndim = 2 * 7 * ncmp + 4
         call jecroc(jexnom(jvorig, knume))
         call jeecra(jexnom(jvorig, knume), 'LONMAX', ndim)
         call jeecra(jexnom(jvorig, knume), 'LONUTI', ndim)
@@ -223,7 +226,7 @@ subroutine rc32t()
             sigtot(k) = 0.d0
 116     continue
 !
-        do 1116 k = 1, 2
+        do 117 k = 1, 2
             tminsn(k) = 0.d0
             tmaxsn(k) = 0.d0
             tminsp(k) = 0.d0
@@ -236,10 +239,10 @@ subroutine rc32t()
             treminb(k) = 0.d0
             tremax(k) = 0.d0
             tremaxb(k) = 0.d0
-1116    continue
-!
-! --------- ETAPE 1 : Déterminer tminsp, tmaxsp, tminsn, tmasxn
-!
+117    continue
+!------------------------------------------------------------------
+!        ETAPE 1 : Déterminer tminsp, tmaxsp, tminsn, tmasxn
+!------------------------------------------------------------------
         do 12 i = 1, nbinst
 !
             vale(1) = zr(jinst+i-1)
@@ -361,9 +364,9 @@ subroutine rc32t()
 !
  12     continue
 !
-!
-! --------- ETAPE 2 : Remplir les vecteurs 
-!
+!------------------------------------------------------------------
+!                 ETAPE 2 : Remplir les vecteurs 
+!------------------------------------------------------------------
 ! --------- pour tminsp a l'origine    
         do 66 j = 1, ncmp
             vale(1) = tminsp(1)
@@ -386,16 +389,40 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(1), cbid, k8b,&
                             iret)
             endif
-            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
             contraintesm(1)=contraintespr(1)+contraintesmec(1)
+            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
 !
             zr(jorig-1+j) = contraintestot(1)
+            zr(jorig-1+72+j) = contraintesm(1)
 !
-            l = ncmp*8 + j
-            zr(jorig-1+l) = contraintesm(1)
+! --------- pour tmaxsp a l'origine 
+            vale(1) = tmaxsp(1)
+            vale(2) = zr(jabsc)
+            if (n1 .ne. 0) then
+                call tbliva(tabther, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintesth(1), cbid, k8b,&
+                            iret)
+            endif
+            if (n2 .ne. 0) then
+                call tbliva(tabpres, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintespr(1), cbid, k8b,&
+                            iret)
+            endif
+            if (n3 .ne. 0) then
+                call tbliva(tabmeca, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintesmec(1), cbid, k8b,&
+                            iret)
+            endif
+            contraintesm(1)=contraintespr(1)+contraintesmec(1)
+            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
+!
+            zr(jorig-1+6+j) = contraintestot(1)
+            zr(jorig-1+78+j) = contraintesm(1)
 !
 ! --------- pour tminsn a l'origine
-!
             vale(1) = tminsn(1)
             do 167 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
@@ -421,112 +448,15 @@ subroutine rc32t()
  167        continue
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
+            call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
+            call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            l = ncmp*2 + j
-            zr(jorig-1+l) = momen0 - 0.5d0*momen1
-!
-            l = ncmp*4 + j
-            zr(jorig-1+l) = momen0
-!
-            l = ncmp*6 + j
-            zr(jorig-1+l) = 0.5d0*momen1
-!
-! --------- pour tminsp a l'extremite 
-            vale(1) = tminsp(2)
-            vale(2) = zr(jabsc+nbabsc-1)
-            if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(nbabsc), cbid, k8b,&
-                            iret)
-            endif
-            if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(nbabsc), cbid, k8b,&
-                            iret)
-            endif
-            if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
-                            iret)
-            endif
-            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+contraintesmec(nbabsc)
-            contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
-!
-            zr(jextr-1+j) = contraintestot(nbabsc)
-!
-            l = ncmp*8 + j
-            zr(jextr-1+l) = contraintesm(nbabsc)
-!
-! --------- pour tminsn a l'extremite 
-            vale(1) = tminsn(2)
-            do 267 k = 1, nbabsc
-                vale(2) = zr(jabsc+k-1)
-!
-                if (n1 .ne. 0) then
-                    call tbliva(tabther, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesth(k), cbid, k8b,&
-                                iret)
-                endif
-                if (n2 .ne. 0) then
-                    call tbliva(tabpres, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintespr(k), cbid, k8b,&
-                                iret)
-                endif
-                if (n3 .ne. 0) then
-                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                                [cbid], k8b, crit, prec, nocmp(j),&
-                                k8b, ibid, contraintesmec(k), cbid, k8b,&
-                                iret)
-                endif
-            contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
- 267        continue
-!
-            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
-!
-            l = ncmp*2 + j
-            zr(jextr-1+l) = momen0 + 0.5d0*momen1
-!
-            l = ncmp*4 + j
-            zr(jextr-1+l) = momen0
-!
-            l = ncmp*6 + j
-            zr(jextr-1+l) = 0.5d0*momen1
-!
-!
-! --------- pour tmaxsp a l'origine 
-            vale(1) = tmaxsp(1)
-            vale(2) = zr(jabsc)
-            if (n1 .ne. 0) then
-                call tbliva(tabther, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesth(1), cbid, k8b,&
-                            iret)
-            endif
-            if (n2 .ne. 0) then
-                call tbliva(tabpres, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintespr(1), cbid, k8b,&
-                            iret)
-            endif
-            if (n3 .ne. 0) then
-                call tbliva(tabmeca, 2, valek, [ibid], vale,&
-                            [cbid], k8b, crit, prec, nocmp(j),&
-                            k8b, ibid, contraintesmec(1), cbid, k8b,&
-                            iret)
-            endif
-            contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
-            contraintesm(1)=contraintespr(1)+contraintesmec(1)
-!
-            l = ncmp + j
-            zr(jorig-1+l) = contraintestot(1)
-!
-            l = ncmp*9 + j
-            zr(jorig-1+l) = contraintesm(1)
+            zr(jorig-1+12+j) = momen0 - 0.5d0*momen1
+            zr(jorig-1+24+j) = momen0
+            zr(jorig-1+36+j) = momen0ther - 0.5d0*momen1ther
+            zr(jorig-1+48+j) = momen0pres - 0.5d0*momen1pres
+            zr(jorig-1+60+j) = momen0mec - 0.5d0*momen1mec
 !
 ! --------- pour tmaxsn a l'origine 
             vale(1) = tmaxsn(1)
@@ -555,18 +485,49 @@ subroutine rc32t()
  367        continue
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
+            call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
+            call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            l = ncmp*3 + j
-            zr(jorig-1+l) = momen0 - 0.5d0*momen1
+            zr(jorig-1+18+j) = momen0 - 0.5d0*momen1
+            zr(jorig-1+30+j) = momen0
+            zr(jorig-1+42+j) = momen0ther - 0.5d0*momen1ther
+            zr(jorig-1+54+j) = momen0pres - 0.5d0*momen1pres
+            zr(jorig-1+66+j) = momen0mec - 0.5d0*momen1mec
+            zr(jorig+84)     = tminsn(1)
+            zr(jorig+85)     = tmaxsn(1)
+            zr(jorig+86)     = tminsp(1)
+            zr(jorig+87)     = tmaxsp(1)
 !
-            l = ncmp*5 + j
-            zr(jorig-1+l) = momen0
+! --------- pour tminsp a l'extremite 
+            vale(1) = tminsp(2)
+            vale(2) = zr(jabsc+nbabsc-1)
+            if (n1 .ne. 0) then
+                call tbliva(tabther, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintesth(nbabsc), cbid, k8b,&
+                            iret)
+            endif
+            if (n2 .ne. 0) then
+                call tbliva(tabpres, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintespr(nbabsc), cbid, k8b,&
+                            iret)
+            endif
+            if (n3 .ne. 0) then
+                call tbliva(tabmeca, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, nocmp(j),&
+                            k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
+                            iret)
+            endif
+            contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
+            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
+                                   contraintesmec(nbabsc)
 !
-            l = ncmp*7 + j
-            zr(jorig-1+l) = 0.5d0*momen1
+            zr(jextr-1+j) = contraintestot(nbabsc)
+            zr(jextr-1+72+j) = contraintesm(nbabsc)
 !
 ! --------- pour tmaxsp a l'extremite
-!
             vale(1) = tmaxsp(2)
             vale(2) = zr(jabsc+nbabsc-1)
             if (n1 .ne. 0) then
@@ -587,21 +548,53 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
                             iret)
             endif
-            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+contraintesmec(nbabsc)
             contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
+            contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
+                                   contraintesmec(nbabsc)
 !
-            l = ncmp + j
-            zr(jextr-1+l) = contraintestot(nbabsc)
+            zr(jextr-1+6+j) = contraintestot(nbabsc)
+            zr(jextr-1+78+j) = contraintesm(nbabsc)
+
+! --------- pour tminsn a l'extremite 
+            vale(1) = tminsn(2)
+            do 267 k = 1, nbabsc
+                vale(2) = zr(jabsc+k-1)
+                if (n1 .ne. 0) then
+                    call tbliva(tabther, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesth(k), cbid, k8b,&
+                                iret)
+                endif
+                if (n2 .ne. 0) then
+                    call tbliva(tabpres, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintespr(k), cbid, k8b,&
+                                iret)
+                endif
+                if (n3 .ne. 0) then
+                    call tbliva(tabmeca, 2, valek, [ibid], vale,&
+                                [cbid], k8b, crit, prec, nocmp(j),&
+                                k8b, ibid, contraintesmec(k), cbid, k8b,&
+                                iret)
+                endif
+            contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
+ 267        continue
 !
-            l = ncmp*9 + j
-            zr(jextr-1+l) = contraintesm(nbabsc)
+            call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
+            call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
+            call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
+!
+            zr(jextr-1+12+j) = momen0 + 0.5d0*momen1
+            zr(jextr-1+24+j) = momen0
+            zr(jextr-1+36+j) = momen0ther + 0.5d0*momen1ther
+            zr(jextr-1+48+j) = momen0pres + 0.5d0*momen1pres
+            zr(jextr-1+60+j) = momen0mec + 0.5d0*momen1mec
 !
 ! --------- pour tmaxsn a l'extremite
-!
             vale(1) = tmaxsn(2)
             do 467 k = 1, nbabsc
                 vale(2) = zr(jabsc+k-1)
-!
                 if (n1 .ne. 0) then
                     call tbliva(tabther, 2, valek, [ibid], vale,&
                                 [cbid], k8b, crit, prec, nocmp(j),&
@@ -624,28 +617,31 @@ subroutine rc32t()
  467        continue
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
+            call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
+            call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
+            call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
-            l = ncmp*3 + j
-            zr(jextr-1+l) = momen0 + 0.5d0*momen1
-!
-            l = ncmp*5 + j
-            zr(jextr-1+l) = momen0
-!
-            l = ncmp*7 + j
-            zr(jextr-1+l) = 0.5d0*momen1
+            zr(jextr-1+18+j) = momen0 + 0.5d0*momen1
+            zr(jextr-1+30+j) = momen0
+            zr(jextr-1+42+j) = momen0ther + 0.5d0*momen1ther
+            zr(jextr-1+54+j) = momen0pres + 0.5d0*momen1pres
+            zr(jextr-1+66+j) = momen0mec + 0.5d0*momen1mec
+            zr(jextr+84)     = tminsn(2)
+            zr(jextr+85)     = tmaxsn(2)
+            zr(jextr+86)     = tminsp(2)
+            zr(jextr+87)     = tmaxsp(2)
 !
  66     continue
         call jedetr('RC.INSTANT')
         call jedetr('RC.ABSC')
+        AS_DEALLOCATE(vr=contraintesm)
         AS_DEALLOCATE(vr=contraintesmec)
         AS_DEALLOCATE(vr=contraintesth)
         AS_DEALLOCATE(vr=contraintespr)
         AS_DEALLOCATE(vr=contraintestot)
-        AS_DEALLOCATE(vr=contraintesm)
 !
  888    continue
-!
- 10 end do
+ 10 continue
 !  
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,10 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine rcZ2s2(sijm, sijth, sn)
-        real(kind=8) :: sijm
-        real(kind=8) :: sijth(6)
-        real(kind=8) :: sn(2)
+    subroutine rcZ2s2(typ, pi, mi, pj, mj, s2)
+        character(len=2) :: typ
+        real(kind=8) :: pi
+        real(kind=8) :: mi(*)
+        real(kind=8) :: pj
+        real(kind=8) :: mj(*)
+        real(kind=8) :: s2
     end subroutine rcZ2s2
 end interface

@@ -12,7 +12,7 @@ subroutine rcZ2r1(nomres)
     character(len=8) :: nomres
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ subroutine rcZ2r1(nomres)
     integer :: valei(3),   jnsg, jvale, jpmpb, nbgr, ioc, numgr
     integer :: is1, is2, jreas, jress, n1,  jcombi, ioc1, ioc2, iocs, ii
     integer :: npar0
-    parameter    ( npar0 = 28, npar2 = 7, npar1 = 11, npar4 = 12,&
+    parameter    ( npar0 = 35, npar2 = 7, npar1 = 18, npar4 = 12,&
      &               npar6 = 9 )
     real(kind=8) :: utot, valer(2)
     complex(kind=8) :: c16b
@@ -59,14 +59,17 @@ subroutine rcZ2r1(nomres)
      &              'SN', 'SN*', 'SP', 'KE_MECA',&
      &              'KE_THER', 'SALT', 'NUME_SITU_K', 'NUME_SITU_L',&
      &              'FACT_USAGE',  '%_FACT_USAGE' ,&
-     &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
+     &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ',&
+     &              'INST_SN_1', 'INST_SN_2', 'INST_SP1_1', 'INST_SP1_2',&
+     &              'INST_SP2_1', 'INST_SP2_2', 'FU_UNIT' /
     data typar0 / 'K8', 'K8', 'I', 'K8',&
      &            'R', 'R', 'R', 'R',&
      &            'R', 'R', 'R',&
      &            'I', 'I', 'I',&
      &            'R', 'R', 'R', 'R',&
      &            'R', 'R', 'K8', 'K8',&
-     &            'R', 'R', 'R', 'R', 'R', 'R'  /
+     &            'R', 'R', 'R', 'R', 'R', 'R',&
+     &            'R', 'R', 'R', 'R', 'R', 'R', 'R'  /
 !
 ! --- PARAMETRES FACTEUR D'USAGE
 !
@@ -77,7 +80,9 @@ subroutine rcZ2r1(nomres)
 !
     data nopar1 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU',&
      &              'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,&
-     &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ' /
+     &              'SP1_IJ', 'SP2_IJ', 'SALT1_IJ', 'SALT2_IJ',&
+     &              'INST_SN_1', 'INST_SN_2', 'INST_SP1_1', 'INST_SP1_2',&
+     &              'INST_SP2_1', 'INST_SP2_2', 'FU_UNIT' /
 !
 ! --- PARAMETRES POUR CHAQUE SITUATION
 !
@@ -127,9 +132,9 @@ subroutine rcZ2r1(nomres)
         call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale+4),&
                     [c16b], valek, 0)
 !
-110  end do
+110  continue
 !
-    if (typtab .eq. 'VALE_MAX') goto 9999
+    if (typtab .eq. 'VALE_MAX') goto 999
 !
 !     -----------------------------------------------------------------
 !
@@ -198,7 +203,7 @@ subroutine rcZ2r1(nomres)
                     call tbajli(nomres, npar1, nopar1, valei, zr(jress+ii),&
                                 [c16b], valek, 0)
 !
-                    ii = ii + 5
+                    ii = ii + 12
 124              continue
 !
 122          continue
@@ -241,6 +246,6 @@ subroutine rcZ2r1(nomres)
 112      continue
 100  continue
 !
-9999  continue
+999  continue
 !
 end subroutine

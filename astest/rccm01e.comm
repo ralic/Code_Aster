@@ -72,9 +72,15 @@ T_TEMP2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 #  MODULE D'YOUNG FONCTION DE LA TEMPERATURE                
 T_YOUNG = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=9,)
-     
+
+#  CONTRAINTES DUES AU SEISME                
+TABLS = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=10,)
+
+# CALCULS AVEC LA METHODE DU TRESCA SIGNE      
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES, DE PRESSION ET MECANIQUES
 SN1 = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='B3200_T',
                  OPTION='SN',
@@ -112,8 +118,61 @@ SN1 = POST_RCCM( MATER=MAT,
 
 IMPR_TABLE(    TABLE=SN1,)
 
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES, DE PRESSION ET MECANIQUES
+# AVEC SEISME
+SN1s = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200_T',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA', 
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T_PRES, ), 
+                            _F(NUME_RESU_PRES=2,
+                            TABL_RESU_PRES=T_PRES2, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T_MEC, ), 
+                            _F(NUME_RESU_MECA=2,
+                            TABL_RESU_MECA=T_MEC2, ), ),
+                  SEISME =_F(NB_OCCUR =2,
+                             NB_CYCL_SEISME =10,
+                             NUME_SITU =3,
+                             NUME_GROUPE=1,
+                             TABL_FX=TABLS,
+                             TABL_FY=TABLS,
+                             TABL_FZ=TABLS,
+                             TABL_MX=TABLS,
+                             TABL_MY=TABLS,
+                             TABL_MZ=TABLS,
+                             ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     NUME_RESU_PRES = 2,
+                     NUME_RESU_MECA = 2,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1s,)
+
 # VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT 
 FAT = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='B3200_T',
                  OPTION='EFAT',
@@ -172,10 +231,167 @@ FAT = POST_RCCM( MATER=MAT,
                      TABL_TEMP        =T_TEMP2,
                         ),),);
 
-IMPR_TABLE(    TABLE=FAT,)   
+IMPR_TABLE(    TABLE=FAT,) 
+
+# CALCULS AVEC LA METHODE QUI TESTE TOUS LES INSTANTS      
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES, DE PRESSION ET MECANIQUES
+SN1b = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200_T',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA', 
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T_PRES, ), 
+                            _F(NUME_RESU_PRES=2,
+                            TABL_RESU_PRES=T_PRES2, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T_MEC, ), 
+                            _F(NUME_RESU_MECA=2,
+                            TABL_RESU_MECA=T_MEC2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     NUME_RESU_PRES = 2,
+                     NUME_RESU_MECA = 2,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1b,)
+
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES, DE PRESSION ET MECANIQUES
+# AVEC SEISME
+SN1bs = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200_T',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA', 
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T_PRES, ), 
+                            _F(NUME_RESU_PRES=2,
+                            TABL_RESU_PRES=T_PRES2, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T_MEC, ), 
+                            _F(NUME_RESU_MECA=2,
+                            TABL_RESU_MECA=T_MEC2, ), ),
+                  SEISME =_F(NB_OCCUR =2,
+                             NB_CYCL_SEISME =10,
+                             NUME_SITU =3,
+                             NUME_GROUPE=1,
+                             TABL_FX=TABLS,
+                             TABL_FY=TABLS,
+                             TABL_FZ=TABLS,
+                             TABL_MX=TABLS,
+                             TABL_MY=TABLS,
+                             TABL_MZ=TABLS,
+                             ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     NUME_RESU_PRES = 2,
+                     NUME_RESU_MECA = 2,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1bs,)
+
+# VALIDATION DU CALCUL DE EFAT AVEC EFFET D'ENVIRONNEMENT 
+FATb = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200_T',
+                 OPTION='EFAT',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 FACT_SIGM=(_F(KT_SN=2,
+                              KT_SP=3,),), 
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T_PRES, ), 
+                            _F(NUME_RESU_PRES=2,
+                            TABL_RESU_PRES=T_PRES2, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T_MEC, ), 
+                            _F(NUME_RESU_MECA=2,
+                            TABL_RESU_MECA=T_MEC2, ), ),
+                 ENVIRONNEMENT=(_F(
+                     TABL_YOUNG       =T_YOUNG,
+                     FEN_INTEGRE      =50.0,
+                     CRIT_EPSI        =0.01,
+                     S_ETOILE         =1.0,
+                     SEUIL_EPSI_INF   =1.0,
+                     SEUIL_EPSI_SUP   =2.0,
+                     A_ENV            =0.0,
+                     B_ENV            =1.0,
+                     C_ENV            =0.0,
+                     SEUIL_T_INF      =100.0,
+                     SEUIL_T_SUP      =250.0,
+                     VALE_T_INF        =50.0,
+                     VALE_T_SUP        =300.0,
+                     VALE_T_MOY_NUM    =40.0,
+                     VALE_T_MOY_DEN    =50.0,
+                    ),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,
+                     O_ETOILE         =1.0,
+                     TABL_TEMP        =T_TEMP,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     NUME_RESU_PRES = 2,
+                     NUME_RESU_MECA = 2,
+                     O_ETOILE         =1.0,
+                     TABL_TEMP        =T_TEMP2,
+                        ),),);
+
+IMPR_TABLE(    TABLE=FATb,)   
 
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#   MEMES RESULTATS AVEC LES DEUX METHODES
 #--------------------------------------------------------------------------------
 
 # SN1 - SITUATIONS 1, 2
@@ -197,12 +413,39 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=95.000000000,
+           VALE_REFE=95.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=235.000000000,
+           VALE_REFE=235.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 # FAT - SITUATIONS 1, 2
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=0.108818820412,
            VALE_REFE=0.1088,
            NOM_PARA='FACT_ENV',
            TABLE=FAT,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.108818820412,
+           VALE_REFE=0.1088,
+           NOM_PARA='FACT_ENV',
+           TABLE=FATb,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='ORIG',),
            )

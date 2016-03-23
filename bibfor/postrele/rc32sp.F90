@@ -20,7 +20,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     character(len=*) :: typz
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
     do 8 i1 = 1, 6
         sqma(i1) = 0.d0
         sqmi(i1) = 0.d0
-  8 end do
+  8 continue
 !
 ! --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 !
@@ -86,7 +86,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !
     do 10 icmp = 1, 12
         mij(icmp) = mi(icmp) - mj(icmp)
- 10 end do
+ 10 continue
 !
 ! --- CALCUL DES CONTRAINTES EN PEAU PAR COMBINAISON LINEAIRE
 !     POUR LE CHARGEMENT PIJ, MIJ
@@ -100,7 +100,7 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 ! ----- PRESSION
         sigu = zr(jsigu-1+72+icmps)
         sij(icmps) = sij(icmps) + pij*sigu
- 30 end do
+ 30 continue
 !
 !
 ! CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)

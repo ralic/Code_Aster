@@ -14,7 +14,7 @@ subroutine rcZ2r1env(nomres)
     character(len=8) :: nomres
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -139,9 +139,9 @@ subroutine rcZ2r1env(nomres)
         call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale+4),&
                     [c16b], valek, 0)
 !
-110  end do
+110  continue
 !
-    if (typtab .eq. 'VALE_MAX') goto 9999
+    if (typtab .eq. 'VALE_MAX') goto 999
 !
 !     -----------------------------------------------------------------
 !
@@ -262,7 +262,7 @@ subroutine rcZ2r1env(nomres)
 112      continue
 100  continue
 !
-9999  continue
+999  continue
 !
 end subroutine
 

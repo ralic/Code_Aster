@@ -21,7 +21,7 @@ subroutine rc32si()
 #include "asterfort/as_deallocate.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -277,7 +277,7 @@ subroutine rc32si()
             call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, nbval=nbmec, scal=zi(jmec),&
                         nbret=n1)
         endif
- 10 end do
+ 10 continue
 !
 !-----------------------------------------------
 !------- BOUCLE SUR LE MOT CLE SEISME
@@ -311,16 +311,18 @@ subroutine rc32si()
         call getvis('SEISME', 'NB_CYCL_SEISME', iocc=iocc, scal=nscy, nbret=n1)
         zi(jnbocc+2*(nbsitu+iocc)-1) = nscy
 !
-! ------ TRANSITOIRES MECANIQUES ASSOCIES AU SEISME:
+! ------ EFFORTS MECANIQUES ASSOCIES AU SEISME:
 !        ---------------------------------------------
         call getvis('SEISME', 'CHAR_ETAT', iocc=iocc, nbval=0, nbret=n1)
         nbchar = -n1
         call jecroc(jexnom('&&RC3200.SITU_ETAT_A', knume))
         call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONMAX', nbchar)
         call jeecra(jexnom('&&RC3200.SITU_ETAT_A', knume), 'LONUTI', nbchar)
-        call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchara)
-        call getvis('SEISME', 'CHAR_ETAT', iocc=iocc, nbval=nbchar, vect=zi(jchara),&
-                    nbret=n1)
+        if (nbchar .ne. 0) then
+            call jeveuo(jexnom('&&RC3200.SITU_ETAT_A', knume), 'E', jchara)
+            call getvis('SEISME', 'CHAR_ETAT', iocc=iocc, nbval=nbchar, vect=zi(jchara),&
+                        nbret=n1)
+        endif
 !
 ! ------ PAS DE TRANSITOIRE THERMIQUE NI DE PRESSION
 !        ---------------------------------------------
@@ -332,7 +334,10 @@ subroutine rc32si()
         call jeecra(jexnom('&&RC3200.SITU_PRES', knume), 'LONMAX', 0)
         call jeecra(jexnom('&&RC3200.SITU_PRES', knume), 'LONUTI', 0)     
 !
-110 end do
+        call jecroc(jexnom('&&RC3200.SITU_MECA', knume))
+        call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONMAX', 0)
+        call jeecra(jexnom('&&RC3200.SITU_MECA', knume), 'LONUTI', 0)  
+110 continue
 !
 !-----------------------------------------------
 !------- DEFINITION DES GROUPES
@@ -445,7 +450,7 @@ subroutine rc32si()
             endif
  38     continue
 !
- 30 end do
+ 30 continue
 !
 !-----------------------------------------------
 !------- TRAITEMENT DES SITUATIONS DE PASSAGE

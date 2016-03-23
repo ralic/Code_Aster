@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,15 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine rcZ2s0(option, mm, pr, mse,&
-                      nbinst, sth, snp)
-        character(len=4) :: option
-        integer :: nbinst
-        real(kind=8) :: mm(*)
-        real(kind=8) :: pr
+    subroutine rcZ2s0(typ, pi, mi, pj, mj, mse, s2)
+        character(len=2) :: typ
+        real(kind=8) :: pi
+        real(kind=8) :: mi(*)
+        real(kind=8) :: pj
+        real(kind=8) :: mj(*)
         real(kind=8) :: mse(*)
-        real(kind=8) :: sth(6)
-        real(kind=8) :: snp
+        real(kind=8) :: s2
     end subroutine rcZ2s0
 end interface

@@ -13,7 +13,7 @@ subroutine rcmo02(etat, numsit, vale)
     character(len=1) :: etat
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ subroutine rcmo02(etat, numsit, vale)
 !
     do 10 i = 1, 12
         vale(i) = 0.d0
-10  end do
+10  continue
 !
     knumes = 'S       '
     call codent(numsit, 'D0', knumes(2:8))
@@ -67,7 +67,7 @@ subroutine rcmo02(etat, numsit, vale)
 !
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
 !
-    if (typmec .eq. 'B3200_T') goto 8888
+    if (typmec .eq. 'B3200_T') goto 888
 !
     if ((etat.eq.'S') .or. (etat.eq.'A')) then
         etats = 'A'
@@ -76,7 +76,7 @@ subroutine rcmo02(etat, numsit, vale)
     endif
 !
     call jeexin(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), iret)
-    if (iret .eq. 0) goto 9999
+    if (iret .eq. 0) goto 999
 !
     call jelira(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'LONUTI', nbchar)
     call jeveuo(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'L', jlcha)
@@ -100,7 +100,7 @@ subroutine rcmo02(etat, numsit, vale)
 104          continue
         endif
 !
-100 end do
+100 continue
 !
     if (etat .eq. 'S') then
         do 106 j = 1, 12
@@ -108,8 +108,8 @@ subroutine rcmo02(etat, numsit, vale)
 106      continue
     endif
 !
-9999    continue
+999    continue
 !
-8888 continue
+888 continue
 !
 end subroutine

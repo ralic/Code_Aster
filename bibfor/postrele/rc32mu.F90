@@ -2,7 +2,7 @@ subroutine rc32mu()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,7 +41,7 @@ subroutine rc32mu()
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
-    integer :: ncmp, jcorp
+    integer :: ncmp
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
@@ -195,7 +195,7 @@ subroutine rc32mu()
 !
  12     continue
 !
- 10 end do
+ 10 continue
 !
     call jedetr(abscur)
     AS_DEALLOCATE(vr=contraintes)

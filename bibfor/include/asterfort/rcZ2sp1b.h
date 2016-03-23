@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,19 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ2sn(typz, lieu, numsip, pi, mi,&
-                      numsiq, pj, mj, seisme, mse,&
-                      snij)
-        character(len=*) :: typz
+    subroutine rcZ2sp1b(lieu, numsip, numsiq,&
+                        seismeb32, instsp, sp1, spmeca1)
         character(len=4) :: lieu
         integer :: numsip
-        real(kind=8) :: pi
-        real(kind=8) :: mi(*)
         integer :: numsiq
-        real(kind=8) :: pj
-        real(kind=8) :: mj(*)
-        aster_logical :: seisme
-        real(kind=8) :: mse(*)
-        real(kind=8) :: snij
-    end subroutine rcZ2sn
+        aster_logical :: seismeb32
+        real(kind=8) :: instsp(4)
+        real(kind=8) :: sp1(2)
+        real(kind=8) :: spmeca1(2)
+    end subroutine rcZ2sp1b
 end interface

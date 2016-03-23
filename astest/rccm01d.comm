@@ -48,9 +48,11 @@ T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 #  CONTRAINTES DE PRESSION (SITUATION 1)                 
 T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
                       NUME_TABLE=3,)
-      
+
+# CALCULS AVEC LA METHODE DU TRESCA SIGNE         
 # VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES NI DE PRESSION
 SN1 = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='ZE200b',
                  OPTION='SN',
@@ -98,8 +100,65 @@ SN1 = POST_RCCM( MATER=MAT,
 
 IMPR_TABLE(    TABLE=SN1,)
 
+
+SN1s = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200b',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                  SEISME =_F(NB_OCCUR =2,
+                             NB_CYCL_SEISME =10,
+                             NUME_SITU =3,
+                             NUME_GROUPE=1,
+                             CHAR_ETAT=1,
+                             ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1s,)
+
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES MAIS PAS DE PRESSION
 SN2 = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='ZE200b',
                  OPTION='SN',
@@ -155,6 +214,7 @@ IMPR_TABLE(    TABLE=SN2,)
 
 # VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES ET DE PRESSION
 SN3 = POST_RCCM( MATER=MAT,
+                 METHODE='TRESCA',
                  TYPE_RESU='DETAILS',
                  TYPE_RESU_MECA='ZE200b',
                  OPTION='SN',
@@ -211,8 +271,174 @@ SN3 = POST_RCCM( MATER=MAT,
 
 IMPR_TABLE(    TABLE=SN3,)
 
+# CALCULS AVEC LA METHODE QUI TESTE TOUS LES INSTANTS     
+# VALIDATION DU CALCUL DE SN SANS CONTRAINTES THERMIQUES NI DE PRESSION
+SN1b = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200b',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN1b,)
+
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES MAIS PAS DE PRESSION
+SN2b = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200b',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN2b,)  
+
+# VALIDATION DU CALCUL DE SN AVEC CONTRAINTES THERMIQUES ET DE PRESSION
+SN3b = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='ZE200b',
+                 OPTION='SN',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T_PRES, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation 1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation 2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                        ),),);
+
+IMPR_TABLE(    TABLE=SN3b,)
 #-------------------------------------------------------------------------------
 #   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#   MEMES RESULTATS AVEC LES DEUX METHODES
 #--------------------------------------------------------------------------------
 
 # SN - SITUATIONS 1 ET 2
@@ -230,6 +456,24 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=60.0,
            NOM_PARA='SN_MAX',
            TABLE=SN1,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=60.000000000,
+           VALE_REFE=60.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=60.000000000,
+           VALE_REFE=60.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN1b,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )
@@ -253,6 +497,24 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=155.000000000,
+           VALE_REFE=155.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN2b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=280.000000000,
+           VALE_REFE=280.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN2b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
 # SN3 - SITUATION 1 ET 2
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=200.000000000,
@@ -268,6 +530,24 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=490.0,
            NOM_PARA='SN_MAX',
            TABLE=SN3,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN3b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=490.000000000,
+           VALE_REFE=490.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN3b,
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )

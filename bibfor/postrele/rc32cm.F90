@@ -16,7 +16,7 @@ subroutine rc32cm()
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ subroutine rc32cm()
 !
     call getfac('CHAR_MECA', nbchar)
 !-- si on est en B3200_T
-    if (nbchar .eq. 0) goto 9999
+    if (nbchar .eq. 0) goto 999
 !-- sinon
     call jecrec('&&RC3200.VALE_CHAR', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbchar)
@@ -63,7 +63,7 @@ subroutine rc32cm()
 !-- cas simple ou cas corps/tubulure ?
         do 30 i=1,12
             zr(jchar-1+i)=0.d0
- 30 end do
+ 30 continue
 !
         call getvr8('CHAR_MECA', 'MX', iocc=iocc, nbval=0, nbret=n2)
 !
@@ -91,7 +91,7 @@ subroutine rc32cm()
             call getvr8('CHAR_MECA', 'MZ_CORP', iocc=iocc, scal=zr(jchar-1+12), nbret=n1)
         endif
 !
-    20 end do
+    20 continue
 !
     call wkvect('&&RC3200.CORPS', 'V V L', 1, jcorp)
     if (n2 .ne. 0) then
@@ -100,6 +100,6 @@ subroutine rc32cm()
         zl(jcorp) = .true.
     endif
 !
-9999 continue
+999 continue
     call jedema()
 end subroutine

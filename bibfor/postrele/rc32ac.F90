@@ -20,11 +20,12 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 #include "asterfort/rcmo02.h"
 #include "asterfort/rc32pm.h"
 #include "asterfort/rc32sn.h"
-#include "asterfort/rcZ2sn.h"
+#include "asterfort/rcZ2sn1.h"
+#include "asterfort/rcZ2s2.h"
 #include "asterfort/rc32rt.h"
 #include "asterfort/rcZ2rt.h"
 #include "asterfort/rc32sp.h"
-#include "asterfort/rcZ2sp.h"
+#include "asterfort/rcZ2sp1.h"
 #include "asterfort/rc32sa.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/rcZ2env.h"
@@ -34,7 +35,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,11 +80,12 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
     aster_logical :: yapass, seisme, cfait
     integer :: ioc1, iret, j, nsitup, nsituq, nocc, nb, jresu3, ll
     real(kind=8) :: matpj(7), mpi(12), mpj(12), pm, pb, pmpb, sn, snet
-    real(kind=8) :: simpij, sp(2), spmeca(2), kemeca, kether, saltij(2) 
-    real(kind=8) :: smm, fuij(2), upart, ke, feni
+    real(kind=8) :: simpij, sp(2), sp1(2), sp2, spmeca(2), kemeca
+    real(kind=8) :: kether, saltij(2), smm, fuij(2), upart, ke, feni
+    real(kind=8) :: sn1, snet1, sn2, snet2, spmeca1(2), sp3, sp3bid
     character(len=8) :: typeke
-
     integer :: jresu
+    real(kind=8) :: spmeca3, spmeca3bid, instsn(2), instsp(4)
 !
 ! DEB ------------------------------------------------------------------
     data lieu / 'ORIG' , 'EXTR' /  
@@ -126,6 +128,13 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 !         3  : SP2
 !         4  : SALT1
 !         5  : SALT2
+!         6   : INST SN 1
+!         7   : INST SN 2
+!         8   : INST SP1 1
+!         9   : INST SP1 2
+!         10   : INST SP2 1
+!         11   : INST SP2 2
+!         12  : FU ELEMENTAIRE
 !
         k24as = '&&RC3200.AVEC_SEISME'//lieu(im)
         call jecrec(k24as, 'V V R', 'NU', 'DISPERSE', 'VARIABLE',&
@@ -184,8 +193,8 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
-                write (ifm,3000) numgr,nbsigr
-                write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
+                write (ifm,300) numgr,nbsigr
+                write (ifm,302) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
                 nbsigr)
             endif
 !------------- on dimensionne les vecteurs en fonction du nombre 
@@ -198,7 +207,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24ss, ig), 'E', jress)
 !
-            ndim = max(5,int(5*nbsigr*(nbsigr-1)/2))
+            ndim = max(12,int(12*nbsigr*(nbsigr-1)/2))
             call jecroc(jexnum(k24ca, ig))
             call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24ca, ig), 'E', jreca)
@@ -247,6 +256,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 ! ----------------------------------------------------------------------
 !
         seisme = .false.
+        iocs =0
         do 220 i = 1, 12
             mse(i) = 0.d0
 220     continue
@@ -257,10 +267,10 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
  40     continue
 !
         cfait = .false.
-        do 200 ig = 1, nbgr
+        do 20 ig = 1, nbgr
 !
             numgr = situ_nume_group(ig)
-            if (numgr .lt. 0) goto 200
+            if (numgr .lt. 0) goto 20
 !
             call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
@@ -292,7 +302,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                     write(ifm,*)&
      &   '=> ON TRAITE LES SITUATIONS NON COMBINABLES DANS LEUR GROUPE'
                 endif
-                if (niv .ge. 2) write (ifm,2000) ig, ioc1
+                if (niv .ge. 2) write (ifm,200) ig, ioc1
 !
                 nsitup = situ_numero(ioc1)
                 nsituq = 0
@@ -317,7 +327,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                     zr(jress-1+10*(is1-1)+2) = pb
                     zr(jress-1+10*(is1-1)+3) = pmpb
                     if (niv .ge. 2) then
-                        write (ifm,2020) nsitup, pm, pb, pmpb
+                        write (ifm,202) nsitup, pm, pb, pmpb
                     endif
                     zr(jresu2)=pm
                     zr(jresu2+1)=pb
@@ -327,16 +337,22 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 ! ----------- CALCUL DU SN
                 if (lsn) then
                     sn = 0.d0
+                    sn1 = 0.d0
+                    sn2 = 0.d0
+                    sp3 = 0.d0
+                    spmeca3 = 0.d0
                     if (b3200)then
                         call rc32sn('SN_SITU', lieu(im), nsitup, ppi, mpi,&
                                     nsituq, ppj, mpj, seisme, mse, sn)
                     else
-                        call rcZ2sn('SN_SITU', lieu(im), nsitup, ppi, mpi,&
-                                    nsituq, ppj, mpj, seisme, mse, sn)
+                        call rcZ2sn1(lieu(im), nsitup, nsitup, iocs,&
+                                     instsn, sn1, sp3, spmeca3)
+                        call rcZ2s2('SN', ppi, mpi, ppj, mpj, sn2)
+                        sn=sn1+sn2
                     endif
                     zr(jress-1+10*(is1-1)+4) = sn
                     if (niv .ge. 2) then
-                        write (ifm,2030) nsitup, sn
+                        write (ifm,203) nsitup, sn
                     endif
                     zr(jresu2+4)=sn
                 endif
@@ -348,12 +364,14 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                         call rc32sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
                                     nsituq, ppj, mpj, seisme, mse, snet)
                     else
-                        call rcZ2sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
-                                    nsituq, ppj, mpj, seisme, mse, snet)
+                        call rcZ2sn1(lieu(im), nsitup, nsitup, iocs,&
+                                     instsn, snet1, sp3bid, spmeca3bid)
+                        call rcZ2s2('SN', ppi, mpi, ppj, mpj, snet2)
+                        snet = snet1+snet2
                     endif
                     zr(jress-1+10*(is1-1)+5) = snet
                     if (niv .ge. 2) then
-                        write (ifm,2032) nsitup, snet
+                        write (ifm,232) nsitup, snet
                     endif
                     zr(jresu2+5)=snet
                 endif
@@ -365,7 +383,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                     else
                         call rcZ2rt(ppi, ppj, simpij)
                     endif
-                    write (ifm,2034) nsitup, simpij
+                    write (ifm,234) nsitup, simpij
                     zr(jresu2+9)=simpij
                 endif
                 if (.not.lfat) goto 210
@@ -373,16 +391,22 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 ! ----------- CALCUL DU SP
                 sp(1) = 0.d0
                 sp(2) = 0.d0
+                spmeca(1) = 0.d0
+                spmeca(2) = 0.d0
+                spmeca1(1) = 0.d0
+                spmeca1(2) = 0.d0
                 if (b3200)then
                     call rc32sp('SP_SITU', lieu(im), nsitup, ppi, mpi,&
                                 nsituq, ppj, mpj, seisme, mse,&
                                 sp, spmeca)
                 else
-                    call rcZ2sp('SP_SITU', lieu(im), nsitup, ppi, mpi,&
-                                nsituq, ppj, mpj, seisme, mse, sn,&
-                                sp, spmeca)
+                    call rcZ2sp1(lieu(im), nsitup, nsitup, iocs,&
+                                 instsp, sp1, spmeca1)
+                    call rcZ2s2('SP', ppi, mpi, ppj, mpj, sp2)
+                    sp(1)=sp1(1)+sp2+sp3
+                    spmeca(1)=spmeca1(1)+sp2+spmeca3
                 endif
-                if (niv .ge. 2) write (ifm,2040) nsitup, sp(1)
+                if (niv .ge. 2) write (ifm,240) nsitup, sp(1)
                 zr(jress-1+10*(is1-1)+6) = sp(1)
                 zr(jresu2+6) = sp(1)
                 zr(jresu2+10) = max(0.0,sp(1)-spmeca(1))
@@ -391,7 +415,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                 call rc32sa('SITU', mater, matpi, matpj, sn, sp, spmeca,&
                             kemeca, kether, saltij, smm, fuij)
                 if (niv .ge. 2) then
-                    write (ifm,2050) nsitup, saltij(1)
+                    write (ifm,250) nsitup, saltij(1)
                 endif
                 zr(jress-1+10*(is1-1)+7) = kemeca
                 zr(jress-1+10*(is1-1)+8) = kether
@@ -405,7 +429,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                 upart = dble(nocc) * fuij(1)
                 zr(jress-1+10*(is1-1)+10) = upart
                 if (niv .ge. 2) then
-                    write (ifm,2060) nsitup, upart
+                    write (ifm,260) nsitup, upart
                 endif
 !
                 if (lefat) then
@@ -421,7 +445,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                 utot = utot + upart
 !
 210         continue
-200     continue
+20     continue
 !
 ! ----------------------------------------------------------------------
 !                           E T A P E   3
@@ -448,8 +472,8 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             call jelira(jexnum('&&RC3200.LES_GROUPES', numgr), 'LONUTI', nbsigr)
             call jeveuo(jexnum('&&RC3200.LES_GROUPES', numgr), 'L', jnsg)
             if (niv .ge. 2) then
-                write (ifm,3004)
-                write (ifm,3002) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
+                write (ifm,304)
+                write (ifm,302) (situ_numero(1+zi(jnsg+i1-1)-1),i1=1,&
                 nbsigr)
             endif
 !
@@ -461,7 +485,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             call jeecra(jexnum(k24ss, ig), 'LONMAX', 10*nbsigr)
             call jeveuo(jexnum(k24ss, ig), 'E', jress)
 !
-            ndim = max(5,5*nbsigr*(nbsigr-1)/2)
+            ndim = max(12,12*nbsigr*(nbsigr-1)/2)
             call jecroc(jexnum(k24ca, ig))
             call jeecra(jexnum(k24ca, ig), 'LONMAX', ndim)
             call jeveuo(jexnum(k24ca, ig), 'E', jreca)
@@ -489,7 +513,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             endif
 !
 310     continue
-        if (lfat) write (ifm,2070) utot
+        if (lfat) write (ifm,270) utot
 !
 ! ----------------------------------------------------------------------
 !               ON STOCKE LES RESULTATS TYPE MAXI :
@@ -523,9 +547,9 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 !------ ROCHET THERMIQUE SPTHER
         zr(jresu+13) = max(zr(jresu1+10), zr(jresu2+10), zr(jresu3+10))
 !------ SM en fonction du SALT MAX
-        if (zr(jresu+9) .eq. zr(jresu1+9)) then
+        if (zr(jresu+9) .eq. zr(jresu1+8)) then
             zr(jresu+3) = zr(jresu1+3)
-        else if(zr(jresu+9) .eq.  zr(jresu2+9)) then
+        else if(zr(jresu+9) .eq.  zr(jresu2+8)) then
             zr(jresu+3) = zr(jresu2+3)
         else
             zr(jresu+3) = zr(jresu3+3)
@@ -537,21 +561,21 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
             zr(jresu+4) = zr(jresu+5) / ( 3 * zr(jresu+3))
         endif
 !
- 10 end do
+ 10 continue
 !
-    3000 format (/,'=> GROUPE: ',i4,' , NOMBRE DE SITUATIONS: ',i4)
-    3002 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))
-    3004 format (/,'=> SITUATION DE PASSAGE')
-    2000 format ('=> GROUPE: ',i4,' , SITUATION: ',i4)
-    2020 format (1p,' SITUATION ',i4,' PM =',e12.5,&
+    300 format (/,'=> GROUPE: ',i4,' , NOMBRE DE SITUATIONS: ',i4)
+    302 format ('=> LISTE DES NUMEROS DE SITUATION: ',100 (i4,1x))
+    304 format (/,'=> SITUATION DE PASSAGE')
+    200 format ('=> GROUPE: ',i4,' , SITUATION: ',i4)
+    202 format (1p,' SITUATION ',i4,' PM =',e12.5,&
      &                            ' PB =',e12.5,' PMPB =',e12.5)
-    2030 format (1p,' SITUATION ',i4,' SN =',e12.5 )
-    2032 format (1p,' SITUATION ',i4,' SN* =',e12.5 )
-    2034 format (1p,' SITUATION ',i4,' ROCHET THERMIQUE =',e12.5 )
-    2040 format (1p,' SITUATION ',i4,' SP =',e12.5)
-    2050 format (1p,' SITUATION ',i4,' SALT =',e12.5)
-    2060 format (1p,' SITUATION ',i4,' FACT_USAGE =',e12.5)
-    2070 format (1p,' SOMME(FACT_USAGE) =',e12.5)
+    203 format (1p,' SITUATION ',i4,' SN =',e12.5 )
+    232 format (1p,' SITUATION ',i4,' SN* =',e12.5 )
+    234 format (1p,' SITUATION ',i4,' ROCHET THERMIQUE =',e12.5 )
+    240 format (1p,' SITUATION ',i4,' SP =',e12.5)
+    250 format (1p,' SITUATION ',i4,' SALT =',e12.5)
+    260 format (1p,' SITUATION ',i4,' FACT_USAGE =',e12.5)
+    270 format (1p,' SOMME(FACT_USAGE) =',e12.5)
 !
     call jedema()
 end subroutine

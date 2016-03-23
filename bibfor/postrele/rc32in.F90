@@ -5,10 +5,11 @@ subroutine rc32in()
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,12 +32,14 @@ subroutine rc32in()
 !          DE  KT_SN, KT_SP                SOUS FACT_SIGM
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, jvalin, n1, ktsn, ktsp
+    integer :: ndim, jvalin, n1, ktsn, ktsp, n2, n2a, n2b, n2c, n2d
+    real(kind=8) :: bid
+    integer :: n2e, n2f, n2g, n2h, i, j
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    ndim = 11
+    ndim = 19
     call wkvect('&&RC3200.INDI', 'V V R', ndim, jvalin)
 !
 ! --- indices de contrainte et carac. géométriques de la tuyauterie
@@ -53,17 +56,33 @@ subroutine rc32in()
         call getvr8('TUYAU', 'R', scal=zr(jvalin+6),iocc=1, nbret=n1)
         call getvr8('TUYAU', 'EP', scal=zr(jvalin+7),iocc=1, nbret=n1)
         call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1)
+        do 20 i =1,8
+            zr(jvalin+i+10) = 1
+ 20     continue
+        zr(jvalin+15) =0
+        zr(jvalin+17) =0
+!------ cas corps-tubulure
+        call getvr8('CHAR_MECA', 'MX_TUBU', iocc=1, scal=bid, nbret=n2)
+        if (n2 .ne. 0) then
+            call getvr8('INDI_SIGM', 'K2_TUBU', scal=zr(jvalin+11), iocc=1, nbret=n2a)  
+            call getvr8('INDI_SIGM', 'C2_TUBU', scal=zr(jvalin+12), iocc=1, nbret=n2b)
+            call getvr8('INDI_SIGM', 'K2_CORP', scal=zr(jvalin+13), iocc=1, nbret=n2c)  
+            call getvr8('INDI_SIGM', 'C2_CORP', scal=zr(jvalin+14), iocc=1, nbret=n2d)
+            call getvr8('TUYAU', 'R_TUBU', scal=zr(jvalin+15),iocc=1, nbret=n2e)
+            call getvr8('TUYAU', 'I_TUBU', scal=zr(jvalin+16),iocc=1, nbret=n2f)
+            call getvr8('TUYAU', 'R_CORP', scal=zr(jvalin+17),iocc=1, nbret=n2g)
+            call getvr8('TUYAU', 'I_CORP', scal=zr(jvalin+18),iocc=1, nbret=n2h)
+            if (n2a*n2b*n2c*n2d*n2e*n2f*n2g*n2h .eq. 0) then
+                call utmess('F', 'POSTRCCM_46')
+            endif
+        endif
 ! ----- cas du b3200
     else
-        zr(jvalin) = 0
-        zr(jvalin+1) = 0
-        zr(jvalin+2) = 0
-        zr(jvalin+3) = 0
-        zr(jvalin+4) = 0
-        zr(jvalin+5) = 0
-        zr(jvalin+6) = 1
-        zr(jvalin+7) = 1
-        zr(jvalin+8) = 1
+        do 10 j =1,19
+            zr(jvalin+j-1) = 1
+ 10     continue
+        zr(jvalin+15) =0
+        zr(jvalin+17) =0
     endif
 !
 ! --- facteur de concentration de contrainte (b3200 uniquement)

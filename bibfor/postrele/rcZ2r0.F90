@@ -14,7 +14,7 @@ subroutine rcZ2r0(nomres, sn, snet)
     aster_logical :: sn, snet
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,9 +102,9 @@ subroutine rcZ2r0(nomres, sn, snet)
 !
         call tbajli(nomres, npar1, nopar1, [ibid], valer,&
                     [c16b], valek, 0)
-130 end do
+130 continue
 !
-    if (typtab .eq. 'VALE_MAX') goto 9999
+    if (typtab .eq. 'VALE_MAX') goto 999
 !
 !     -----------------------------------------------------------------
 !
@@ -144,6 +144,6 @@ subroutine rcZ2r0(nomres, sn, snet)
 202     continue
 200 continue
 !
-9999 continue
+999 continue
 !
 end subroutine

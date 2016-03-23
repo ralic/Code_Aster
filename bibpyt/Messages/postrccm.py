@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -250,6 +250,14 @@ cata_msg = {
     44: _(u"""
  problème pour récupérer dans la table %(k1)s la valeur du paramètre %(k2)s
  pour le paramètre %(k3)s de valeur %(r1)12.5E.
+"""),
+
+    45: _(u"""
+ Les tables en entrée ne sont pas définies sur les mêmes abscisses.
+"""),
+
+    46: _(u"""
+ Les données sous CHAR_MECA et TUYAU/INDI_SIGM ne sont pas cohérentes (cas corps/tubulure).
 """),
 
 }
