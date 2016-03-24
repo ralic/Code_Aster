@@ -438,11 +438,6 @@ NINFORR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 
 # Modes locaux de type ELNO :
 #----------------------------------
-DDL_NLOC = LocatedComponents(phys=PHY.VANL_R, type='ELNO', diff=True,
-                             components=(
-                             ('EN1', ('VANL',)),
-                             ('EN2', ()),))
-
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type='ELNO',
                              components=('SIZZ',))
 
