@@ -27,7 +27,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     character(len=19), intent(in) :: carte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,7 +69,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
 !     "out"     : ecrire dans carte si les conditions sont reunies
 !
 ! ----------------------------------------------------------------------
-    integer :: iret, nfiss, nbmx, jmax
+    integer :: iret, nfiss, nbmx, jmax, ndim
     integer :: ibid, nbord, iord, icode_ini
     character(len=8) :: modein, modevo, noma
     character(len=19) :: chamel, resu19
@@ -159,8 +159,12 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     ASSERT(p_mod_ther(1) .eq. modevo)
 !
 ! ----------------------------------------------------------------------
-! --- recuperation des mailles portant des EF enrichis
+! --- recuperation des mailles portant des EF (principaux) enrichis
 ! ----------------------------------------------------------------------
+!
+!   recup de la dimension du probleme
+    call dismoi('DIM_GEOM', modein, 'MODELE', repi=ndim)
+    ASSERT( (ndim .eq. 2) .or. (ndim .eq. 3) )
 !
     lismai = '&&XVARCT.NUM_MAILLES'
     mesmai = '&&XVARCT.MES_MAILLES'
@@ -169,7 +173,7 @@ subroutine xvarc_temp(novarc, evouch, evol, prolga, proldr, finst,&
     call dismoi('NB_FISS_XFEM', modein, 'MODELE', repi=nfiss)
     call jeveuo(modein//'.FISS', 'L', vk8=fiss)
 !
-    call xtmafi(0, fiss, nfiss, lismai, mesmai, nbmx, model=modein)
+    call xtmafi(ndim, fiss, nfiss, lismai, mesmai, nbmx, model=modein)
     call jeveuo(lismai, 'L', jadr=jmax)
 !
 ! ----------------------------------------------------------------------
