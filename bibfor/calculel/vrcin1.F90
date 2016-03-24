@@ -1,6 +1,6 @@
-subroutine vrcin1(modele, chmat, carele, inst, codret)
+subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,11 +45,13 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 #include "asterfort/manopg.h"
 #include "asterfort/rsinch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vrcin_elno.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xvrcin.h"
 
     character(len=2) :: codret
     character(len=8) :: modele, chmat, carele
+    character(len=*), intent(in) :: nompar
     real(kind=8) :: inst
 ! ======================================================================
 !   BUT : FAIRE L'INTERPOLATION AU TEMPS INST DES DIFFERENTS CHAMPS
@@ -62,10 +64,14 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 !     CHMAT  (K8)  IN/JXIN : SD CHAM_MATER
 !     CARELE  (K8)  IN/JXIN : SD CARA_ELEM
 !     INST   (R)   IN      : VALEUR DE L'INSTANT
+!     nompar (k8)  in      : nom du parametre parmi (PVARCPR, PVARCNO)
+!                            servant a  allouer le cham_elem "chvarc"
+!                            PVARCPR => LISTE_CH(i) = cham_elem_s/ELGA
+!                            PVARCNO => LISTE_CH(i) = cham_elem_s/ELNO
 !
 !   OUT :
 !       - CREATION DE CHMAT//'.LISTE_CH' V V K24  LONG=NBCHS
-!          .LISTE_CH(I) : IEME CHAM_ELEM_S / ELGA PARTICIPANT A
+!          .LISTE_CH(I) : IEME CHAM_ELEM_S / EL** PARTICIPANT A
 !                         LA CREATION DU CHAMP DE CVRC
 !       - CREATION DE CHMAT//'.LISTE_SD' V V K16  LONG=7*NBCHS
 !          .LISTE_SD(7*(I-1)+1) : /'EVOL' /'CHAMP' :
@@ -92,7 +98,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
     integer :: n1, ibid, nbma, jcesd1, jcesl1,  iad, lonk80
     integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
     integer :: nbcvrc,  jlisch, nval1
-    aster_logical :: l_xfem
+    aster_logical :: l_xfem, l_elga
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2
     character(len=8) :: nomgd, nomgd2, tych, nomsd
@@ -109,7 +115,16 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
 
     call jemarq()
     call infmaj()
-
+!
+!   nom du parametre "nompar" servant a allouer le cham_elem "celmod" :
+!   PVARCPR <-> ELGA (par defaut dans vrcins)
+!   PVARCNO <-> ELNO
+    ASSERT( (nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO') )
+    l_elga = .true.
+    if (nompar .eq. 'PVARCNO') then
+        l_elga = .false.
+    endif
+!
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mailla)
     call dismoi('NB_MA_MAILLA', mailla, 'MAILLAGE', repi=nbma)
     ligrmo=modele//'.MODELE'
@@ -220,7 +235,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         celmod='&&VRCIN1.CELMOD'
         dceli='&&VRCIN1.DCELI'
         call cesvar(carele, ' ', ligrmo, dceli)
-        call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
+        call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod,&
                     iret, dceli)
         ASSERT(iret.eq.0)
         call detrsd('CHAMP', dceli)
@@ -281,8 +296,6 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
             call utmess('F', 'CALCULEL4_13', nk=2, valk=valk)
         endif
 
-!       2.2 PASSAGE AUX POINTS DE GAUSS => CHS
-!       --------------------------------------
 !       -- VERIFICATION DE NOMCH :
         itrou=indik8(cvrcvarc,varc,1,nbcvrc)
         ASSERT(itrou.gt.0)
@@ -296,7 +309,16 @@ subroutine vrcin1(modele, chmat, carele, inst, codret)
         endif
         call dismoi('TYPE_CHAMP', nomch, 'CHAMP', repk=tych)
 
+!       2.2.1 Cas particulier ou l'on ne souhaite pas ELGA mais ELNO
+!       --------------------------------------
+        if (.not. l_elga) then
+            call vrcin_elno(nomch, cesmod, chs)
+!           on passe a l'iteration suivante de la boucle sur LISTE_CH
+            cycle
+        endif
 
+!       2.2.2 PASSAGE AUX POINTS DE GAUSS => CHS (cas general ELGA)
+!       --------------------------------------
         if (tych .eq. 'CART') then
             call carces(nomch, 'ELGA', cesmod, 'V', chs, 'A', iret)
             ASSERT(iret.eq.0)

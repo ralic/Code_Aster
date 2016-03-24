@@ -36,8 +36,6 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
          b_fond_fiss   =BLOC (condition="FOND_FISS!= None",
 
               b_no_mod =BLOC (condition="AsType(RESULTAT)!= mode_meca",
-                        
-                        EVOL_THER   = SIMP(statut='f',typ=(evol_ther),fr=tr("Température sur le fond de fissure")),
                         TYPE_MAILLAGE = SIMP(statut='f',typ='TXM',into=("LIBRE","REGLE"),defaut="REGLE"),
                              ),
               b_mod    =BLOC (condition="AsType(RESULTAT)== mode_meca",

@@ -1,6 +1,6 @@
-subroutine vrcin2(modele, chmat, carele, chvars)
+subroutine vrcin2(modele, chmat, carele, chvars, nompar)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 #include "asterfort/wkvect.h"
     character(len=8) :: modele, chmat, carele
     character(len=19) :: chvars
+    character(len=*), intent(in) :: nompar
 ! ======================================================================
 !   BUT : ALLOUER LE CHAM_ELEM_S RESULTAT (CHVARS)
 !         ET CREER UN OBJET CHMAT.CESVI QUI EST UN OBJET DE MEME
@@ -41,6 +42,10 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 !     MODELE (K8)  IN/JXIN : SD MODELE
 !     CHMAT  (K8)  IN/JXIN : SD CHAM_MATER
 !     CARELE (K8)  IN/JXIN : SD CARA_ELEM (SOUS-POINTS)
+!     nompar (k8)  in      : nom du parametre parmi (PVARCPR, PVARCNO)
+!                            servant a  allouer le cham_elem "chvarc"
+!                            PVARCPR => chvars = cham_elem_s/ELGA
+!                            PVARCNO => chvars = cham_elem_s/ELNO
 !
 !   OUT :
 !     + CHVARS (K19) IN/JXOUT: SD CHAM_ELEM_S ELGA (VARI_R) A ALLOUER
@@ -69,6 +74,11 @@ subroutine vrcin2(modele, chmat, carele, chvars)
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+!   nom du parametre "nompar" servant a allouer le cham_elem "celmod" :
+!   PVARCPR <-> ELGA (par defaut)
+!   PVARCNO <-> ELNO
+    ASSERT( (nompar .eq. 'PVARCPR') .or. (nompar .eq. 'PVARCNO') )
 !
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
@@ -106,7 +116,7 @@ subroutine vrcin2(modele, chmat, carele, chvars)
         if (iad .gt. 0) dclv(iad)=nbcvrc
     170 end do
 !
-    call alchml(ligrmo, 'INIT_VARC', 'PVARCPR', 'V', celmod,&
+    call alchml(ligrmo, 'INIT_VARC', nompar, 'V', celmod,&
                 iret, dceli)
     ASSERT(iret.eq.0)
     call detrsd('CHAMP', dceli)

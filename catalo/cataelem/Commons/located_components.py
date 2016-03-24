@@ -643,6 +643,9 @@ G27NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='RIGI',
 GGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
                             components=('X', 'Y', 'Z',))
 
+ZVARCNO = LocatedComponents(phys=PHY.VARI_R, type='ELNO',
+                            components=('VARI',))
+
 ZVARCPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='MATER',
                             components=('VARI',))
 

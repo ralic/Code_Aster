@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vrcin2(modele, chmat, carele, chvars)
+    subroutine vrcin2(modele, chmat, carele, chvars, nompar)
         character(len=8) :: modele
         character(len=8) :: chmat
         character(len=8) :: carele
         character(len=19) :: chvars
+        character(len=*), intent(in) :: nompar
     end subroutine vrcin2
 end interface

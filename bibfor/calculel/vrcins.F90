@@ -1,7 +1,7 @@
 subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
-                  codret)
+                  codret, nompaz)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     character(len=2) :: codret
     character(len=19) :: chvarc
     character(len=*) :: chmatz, carelz, modelz
+    character(len=*), intent(in), optional :: nompaz
     real(kind=8) :: inst
 ! ======================================================================
 !   BUT : FABRIQUER LE CHAMP DE VARIABLES DE COMMANDE CORRESPONDANT A
@@ -49,10 +50,13 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   CHMATZ (K8)  IN/JXIN : SD CHAM_MATER
 !   CARELZ (K8)  IN/JXIN : SD CARA_ELEM (SOUS-POINTS)
 !   INST   (R)   IN      : VALEUR DE L'INSTANT
-!   CHVARC (K19) IN/JXOUT: SD CHAM_ELEM/ELGA CONTENANT LES VARC
+!   CHVARC (K19) IN/JXOUT: SD CHAM_ELEM/EL** CONTENANT LES VARC
 !   CODRET (K2)  OUT : POUR CHAQUE RESULTAT, 'OK' SI ON A TROUVE,
 !                                            'NO' SINON
-!
+!   nompaz (k8)  in (optional) : nom du parametre parmi (PVARCPR, PVARCNO)
+!                                servant a  allouer le cham_elem "chvarc"
+!                        PVARCPR => chvarc = cham_elem/ELGA (par defaut)
+!                        PVARCNO => chvarc = cham_elem/ELNO
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,6 +72,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
     aster_logical :: avrc, dbg
     integer :: ibid, nbcvrc, nute, jmaille, vali(2)
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2, noma, nomail
+    character(len=8) :: nompar
     character(len=8), pointer :: cvrcvarc(:) => null()
     character(len=24), pointer :: liste_ch(:) => null()
     character(len=8), pointer :: cesc(:) => null()
@@ -80,6 +85,15 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 ! ----------------------------------------------------------------------
 !
     call jemarq()
+!
+!   nom du parametre "nompar" servant a allouer le cham_elem "chvarc" :
+!   PVARCPR <-> ELGA (par defaut)
+!   PVARCNO <-> ELNO
+    nompar = 'PVARCPR'
+    if (present(nompaz)) then
+        ASSERT( (nompaz .eq. 'PVARCPR') .or. (nompaz .eq. 'PVARCNO') )
+        nompar = nompaz
+    endif
 !
     chmat=chmatz
     carele=carelz
@@ -98,7 +112,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !      contenant les vrc a l'instant inst
 !      calcul de  chmat.liste_ch(:) et chmat.liste_sd(:)
 !   -----------------------------------------------------
-    call vrcin1(modele, chmat, carele, inst, codret)
+    call vrcin1(modele, chmat, carele, inst, codret, nompar)
 
 !   1.1 si il n'y a pas vraiment de variables de commande
 !       (par exemple il existe temp/vale_ref mais pas de temp
@@ -112,7 +126,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   -------------------------------------------------------------
     chvars=chmat//'.CHVARS'
     call jeexin(chmat//'.CESVI', iret)
-    if (iret .eq. 0) call vrcin2(modele, chmat, carele, chvars)
+    if (iret .eq. 0) call vrcin2(modele, chmat, carele, chvars, nompar)
 !
 !
 !   3. concatenation des champs de .liste_ch  dans chvars :
@@ -239,7 +253,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
 !   4. recopie du champ simple dans le champ chvarc
 !   -----------------------------------------------------
     ligrmo=modele//'.MODELE'
-    call cescel(chvars, ligrmo, 'INIT_VARC', 'PVARCPR', 'NAN',&
+    call cescel(chvars, ligrmo, 'INIT_VARC', nompar, 'NAN',&
                 nncp, 'V', chvarc, 'F', ibid)
 
     dbg=.false.

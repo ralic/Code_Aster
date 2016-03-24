@@ -1083,26 +1083,79 @@ def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabi
 #-------------------------------------------------------------------------
 
 
-def get_propmat_tempe(MATER, tabtemp, Lnofon, ino, inst, PRECISION):
-    """retourne les proprietes materiaux en fonction de la temperature à l'instant demandé"""
+def get_propmat_varc(self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst):
+    """retourne les proprietes materiaux en fonction de la variable de commande à l'instant demandé"""
+    from Accas import _F
+    import aster
     import numpy as NP
     from math import pi
+    from Internal.post_k_varc import POST_K_VARC
 
-    tempeno = tabtemp.NOEUD == Lnofon[ino]
-    tempeno = tempeno.INST.__eq__(
-        VALE=inst, CRITERE='ABSOLU', PRECISION=PRECISION)
-    nompar = ('TEMP',)
-    valpar = (tempeno.TEMP.values()[0],)
+    POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
+    DETRUIRE = self.get_cmd('DETRUIRE')
+
+    # extraction du cham_no de varc a l'instant considere
+    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst)
+
+    # seules les varc TEMP et NEUT1 sont autorisees
+    nomgd_2_nompar  = {'TEMP_R' : 'TEMP' ,
+                       'NEUT_R' : 'NEUT1',}
+    nomgd_2_nomcmp  = {'TEMP_R' : 'TEMP' ,
+                       'NEUT_R' : 'X1'   ,}
+    iret, ibid, nomgd = aster.dismoi('NOM_GD', __CHNOVRC.nom, 'CHAM_NO', 'F')
+    assert nomgd in nomgd_2_nompar.keys()
+
+    # extraction d'une table contenant les valeurs de la varc en fond de fissure
+    __VARC = POST_RELEVE_T(
+             ACTION=_F(INTITULE='varc en fond de fissure',
+                       NOEUD=Lnofon,
+                       TOUT_CMP='OUI',
+                       CHAM_GD=__CHNOVRC,
+                       OPERATION='EXTRACTION',),)
+    tabvarc = __VARC.EXTR_TABLE()
+    DETRUIRE(CONCEPT=_F(NOM=__CHNOVRC))
+    DETRUIRE(CONCEPT=_F(NOM=__VARC))
+
+    # valeur de la varc en ino
+    nompar = nomgd_2_nompar[nomgd]
+    nomcmp = nomgd_2_nomcmp[nomgd]
+    varcno = tabvarc.NOEUD == Lnofon[ino]
+    varcno = varcno.values()
+    valpar = varcno[nomcmp][0]
+    assert type(valpar) is float 
+
+    # valeur des parametres elastiques fonctions de la varc
+    nompar = (nompar)
+    valpar = (valpar)
     nomres = ['E', 'NU']
     valres, codret = MATER.RCVALE('ELAS', nompar, valpar, nomres, 2)
     e = valres[0]
     nu = valres[1]
-    coefd = e * NP.sqrt(2. * pi) / (8.0 * (1. - nu ** 2))
-    coefd3 = e * NP.sqrt(2 * pi) / (8.0 * (1. + nu))
-    coefg = (1. - nu ** 2) / e
-    coefg3 = (1. + nu) / e
+
+    coefd3 = 0.
+    coefd = e * NP.sqrt(2. * pi)
+    unmnu2 = 1. - nu ** 2
+    unpnu = 1. + nu
+    if MODELISATION == '3D':
+        coefd = coefd / (8.0 * unmnu2)
+        coefd3 = e * NP.sqrt(2 * pi) / (8.0 * unpnu)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'AXIS':
+        coefd = coefd / (8. * unmnu2)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'D_PLAN':
+        coefd = coefd / (8. * unmnu2)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'C_PLAN':
+        coefd = coefd / 8.
+        coefg = 1. / e
+        coefg3 = unpnu / e
 
     return (e, nu, coefd, coefd3, coefg, coefg3)
+
 #-------------------------------------------------------------------------
 
 
@@ -1640,6 +1693,21 @@ def get_tabout(
 
     return tabout
 
+#-------------------------------------------------------------------------
+
+
+def is_present_varc(RESULTAT):
+    """
+    retourne true si presence de variables de commande dans la sd_cham_mater
+    contenue dans la sd_resultat RESULTAT, retourne false sinon.
+    """
+    import aster
+
+    iret, ibid, nom_chamat = aster.dismoi('CHAM_MATER', RESULTAT.nom, 'RESULTAT', 'F')
+    assert not ( nom_chamat in ['#AUCUN', '#PLUSIEURS'] )
+    nom_jvx = nom_chamat.ljust(8)+'.CVRCVARC'
+
+    return aster.jeveux_exists(nom_jvx.ljust(24))
 
 #---------------------------------------------------------------------------------------------------------------
 #                 CORPS DE LA MACRO POST_K1_K2_K3
@@ -1681,7 +1749,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
     DETRUIRE = self.get_cmd('DETRUIRE')
 
-    # On recupere "le" materiau et le "nom" de la modelisation
+    # On recupere le materiau et le nom de la modelisation
     nom_fiss = ''
     if FOND_FISS != None:
         nom_fiss = FOND_FISS.nom
@@ -1691,18 +1759,24 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     MATER, MODELISATION = aster.postkutil(RESULTAT.nom, nom_fiss)
     MATER = self.get_concept(MATER)
 
-    EVOL_THER = None
+    # Affectation de ndim selon le type de modelisation
+    assert MODELISATION in ["3D", "AXIS", "D_PLAN", "C_PLAN"]
+    if MODELISATION == '3D':
+        ndim = 3
+    else:
+        ndim = 2
 
-#  on masque cette alarme, voire explication fiche 18070
+    # presence / absence de variables de commande
+    present_varc = is_present_varc(RESULTAT)
+
+    #  on masque cette alarme, voire explication fiche 18070
     MasquerAlarme('CALCULEL4_9')
-
-    if args.has_key('EVOL_THER'):
-        if args['EVOL_THER'] != None:
-            EVOL_THER = args['EVOL_THER']
 
 #   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
+    mater_fonc = False
+
     matph = MATER.sdj.NOMRC.get()
     phenom = None
     ind = 0
@@ -1715,26 +1789,26 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         UTMESS('F', 'RUPTURE0_5')
     ns = '{:06d}'.format(ind)
 
-#  RECHERCHE SI LE MATERIAU DEPEND DE LA TEMPERATURE:
-
     compor = sd_compor1('%-8s.CPT.%s' % (MATER.nom, ns))
     valk = [s.strip() for s in compor.VALK.get()]
     valr = compor.VALR.get()
     dicmat = dict(zip(valk, valr))
 
-#  PROPRIETES MATERIAUX INDEPENDANTES DE LA TEMPERATURE
     e = dicmat['E']
     nu = dicmat['NU']
 
-#  PROPRIETES MATERIAUX DEPENDANTES DE LA TEMPERATURE
-    Tempe3D = False
-
+#   ---
+#   Si E et NU sont nuls, on verifie qu'il s'agit bien d'un materiau fonction
+#   ---
     if e == 0.0 and nu == 0.0:
+
+        mater_fonc = True
+
+#       valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
+#       et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une
+#       une seconde partie
         list_oper = valk[: len(valk) / 2]
         list_fonc = valk[len(valk) / 2:]
-#     valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
-#     et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une
-#     une seconde partie
 
         try:
             list_oper.remove("B_ENDOGE")
@@ -1762,38 +1836,23 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         nom_fonc_e_prol = nom_fonc_e.sdj.PROL.get()[0].strip()
         nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
 
-#        on verifie que les fonctions dependent bien que de la temperature
-        if ((nom_fonc_e.Parametres()['NOM_PARA'] != 'TEMP' and nom_fonc_e_prol != 'CONSTANT') or
-                (nom_fonc_nu.Parametres()['NOM_PARA'] != 'TEMP' and nom_fonc_nu_prol != 'CONSTANT')):
+#       on verifie que les fonctions ne dependent bien que de TEMP ou NEUT1
+        authorized_varc = ['TEMP','NEUT1']
+        if (( not( nom_fonc_e.Parametres()['NOM_PARA']  in authorized_varc ) and nom_fonc_e_prol  != 'CONSTANT') or
+            ( not( nom_fonc_nu.Parametres()['NOM_PARA'] in authorized_varc ) and nom_fonc_nu_prol != 'CONSTANT')):
             UTMESS('F', 'RUPTURE1_67')
 
-        if dicmat.has_key('TEMP_DEF_ALPHA') and not EVOL_THER:
-            nompar = ('TEMP',)
-            valpar = (dicmat['TEMP_DEF_ALPHA'],)
-            UTMESS('A', 'RUPTURE0_6', valr=valpar)
-            nomres = ['E', 'NU']
-            valres, codret = MATER.RCVALE('ELAS', nompar, valpar, nomres, 2)
-            if (nom_fonc_e_prol == 'CONSTANT'):
-                e = nom_fonc_e.Ordo()[0]
-            else:
-                e = valres[0]
+#       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter 
+#       en amont dans STAT_NON_LINE / MECA_STATIQUE (rcvalb))
+        assert present_varc
 
-            if (nom_fonc_nu_prol == 'CONSTANT'):
-                nu = nom_fonc_nu.Ordo()[0]
-            else:
-                nu = valres[1]
+#       le cas x-fem n'est pas developpe
+        assert FOND_FISS
 
-        if not dicmat.has_key('TEMP_DEF_ALPHA') and not EVOL_THER:
-            UTMESS('F', 'RUPTURE0_52')
-
-    if FOND_FISS and EVOL_THER:
-# on recupere juste le nom du resultat thermique (la température est
-# variable de commande)
-        ndim = 3
-        Tempe3D = True
-        resuth = S.ljust(EVOL_THER.nom, 8).rstrip()
-
-    if not Tempe3D:
+#   ---
+#   Sinon il s'agit d'un materiau constant
+#   ---
+    else:
 
         if e == 0.0:
             UTMESS('F', 'RUPTURE0_53')
@@ -1803,33 +1862,22 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         unmnu2 = 1. - nu ** 2
         unpnu = 1. + nu
         if MODELISATION == '3D':
-            coefk = 'K1 K2 K3'
-            ndim = 3
             coefd = coefd / (8.0 * unmnu2)
             coefd3 = e * NP.sqrt(2 * pi) / (8.0 * unpnu)
             coefg = unmnu2 / e
             coefg3 = unpnu / e
         elif MODELISATION == 'AXIS':
-            ndim = 2
             coefd = coefd / (8. * unmnu2)
             coefg = unmnu2 / e
             coefg3 = unpnu / e
         elif MODELISATION == 'D_PLAN':
-            coefk = 'K1 K2'
-            ndim = 2
             coefd = coefd / (8. * unmnu2)
             coefg = unmnu2 / e
             coefg3 = unpnu / e
         elif MODELISATION == 'C_PLAN':
-            coefk = 'K1 K2'
-            ndim = 2
             coefd = coefd / 8.
             coefg = 1. / e
             coefg3 = unpnu / e
-        else:
-            UTMESS('F', 'RUPTURE0_10')
-
-    assert (ndim == 2 or ndim == 3)
 
     try:
         TYPE_MAILLAGE = args['TYPE_MAILLAGE']
@@ -2066,24 +2114,6 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         syme_char = 'NON'
 
 #  ------------------------------------------------------------------
-#  IV. RECUPERATION DE LA TEMPERATURE AU FOND
-#  ------------------------------------------------------------------
-    if Tempe3D:
-        Rth = self.get_concept(resuth)
-
-        __TEMP = POST_RELEVE_T(
-            ACTION=_F(INTITULE='Temperature fond de fissure',
-                              NOEUD=Lnofon,
-                              TOUT_CMP='OUI',
-                                       RESULTAT=Rth,
-                                       NOM_CHAM='TEMP',
-                                       TOUT_ORDRE='OUI',
-                                       OPERATION='EXTRACTION',),)
-
-        tabtemp = __TEMP.EXTR_TABLE()
-        DETRUIRE(CONCEPT=_F(NOM=__TEMP), INFO=1)
-
-#  ------------------------------------------------------------------
 #  V. BOUCLE SUR NOEUDS DU FOND
 #  ------------------------------------------------------------------
 
@@ -2136,10 +2166,10 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             (absci, di) = get_depl_inf(FOND_FISS, tabinfi, ndim,
                                        Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE)
 
-#        récupération des propriétés materiau avec temperature
-            if Tempe3D:
-                (e, nu, coefd, coefd3, coefg, coefg3) = get_propmat_tempe(
-                    MATER, tabtemp, Lnofon, ino, inst, PRECISION)
+#        récupération des valeurs des propriétés materiau fonctions des variables de commande
+            if mater_fonc :
+                (e, nu, coefd, coefd3, coefg, coefg3) = get_propmat_varc(
+                    self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst)
 
 #        TESTS NOMBRE DE NOEUDS
             nbval = len(abscs)

@@ -400,7 +400,7 @@ L'opération %(k1)s nécessite une seule table sous le mot-clé TABLE, or il y e
 """),
 
     67: _(u"""
-Les caractéristiques du matériau ne peuvent dépendre que de la température.
+Les caractéristiques du matériau ne peuvent dépendre que des variables de commande TEMP et NEUT1.
 -> Conseil :
 Veuillez revoir les données du matériau.
 """),

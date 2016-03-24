@@ -47,17 +47,6 @@ doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.
 Il faut définir ELAS dans DEFI_MATERIAU.
 """),
 
-    6: _(u"""
-La température en fond de fissure, nécessaire pour le calcul des propriétés
-matériaux et donc des facteurs d'intensité des contraintes, n'est pas connue.
-Le calcul se poursuite en prenant la température de référence du matériau
-(TEMP = %(r1)f).
--> Risque et Conseil :
-Quand les propriétés matériau dépendent de la température, il faut fournir
-en entrée de POST_K1_K2_K3 le champ de température utilisé pour le calcul
-mécanique, sous le mot clé EVOL_THER.
-"""),
-
     7: _(u"""
 L'entité %(k1)s renseignée au mot-clé %(k2)s n'est pas dans le maillage.
 -> Risque et Conseil :
@@ -76,10 +65,6 @@ Dans le cas symétrique (SYME='OUI') il faut :
 Dans le cas d'une SD RESULTAT de type DYNA_TRANS,
 le mot-clé EXCIT est obligatoire.
 Veuillez le renseigner.
-"""),
-
-    10: _(u"""
-Modélisation non implantée.
 """),
 
     11: _(u"""
@@ -321,14 +306,6 @@ et %(k1)s : on prend le minimum des deux %(i1)d.
 
     51: _(u"""
 Le numéro d'ordre %(i1)d n'appartient pas au résultat %(k1)s.
-"""),
-
-    52: _(u"""
-Vous avez utilisé des paramètres matériaux dépendant de la température.
-Cependant, 'TEMP_DEF_ALPHA' dans DEFI_MATERIAU n'est pas renseigné.
--> Conseil :
-Renseignez une température pour 'TEMP_DEF_ALPHA',
-ou utilisez l'option 'EVOL_THER' de POST_K1_K2_K3.
 """),
 
     53: _(u"""

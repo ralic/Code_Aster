@@ -1,0 +1,336 @@
+# TITRE : VALIDATION INFORMATIQUE DE POST_K1_K2_K3
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+# MODELIDATION D : FEM 2D
+#
+# test identique a forma05a pour la modelisation D_PLAN
+
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED')
+
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_PEAU_2D=_F(GROUP_MA='CD'))
+
+# Barsoum
+MAIL=MODI_MAILLAGE(reuse=MAIL,
+                   MAILLAGE=MAIL,
+                   MODI_MAILLE=_F(OPTION='NOEUD_QUART',
+                                  GROUP_NO_FOND='O'))
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+#---
+# 1. materiau constant
+#---
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=210000e6,
+                          NU=0.3))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT))
+
+#---
+# 2. materiau fonction de TEMP
+#---
+
+# les modules elastiques sont en pratique des fonctions constantes,
+# le but etant de reproduire strictement la solution obtenue avec
+# un materiau constant
+
+EFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VALE=(0., 210000e6,
+                           1., 210000e6),);
+
+NUFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      VALE=(0., 0.3,
+                            1., 0.3),);
+
+# alpha est la fonction nulle, afin de ne pas generer de deformations thermiques
+
+ALPFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
+                       PROL_DROITE='CONSTANT',
+                       PROL_GAUCHE='CONSTANT',
+                       VALE=(0., 0.,
+                             1., 0.),);
+
+MATTEMP=DEFI_MATERIAU(ELAS_FO=_F(E=EFTEMP,
+                                 NU=NUFTEMP,
+                                 ALPHA=ALPFTEMP,
+                                 TEMP_DEF_ALPHA=20.0,))
+
+CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  MAILLAGE=MAIL,
+                  OPERATION='AFFE',
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=100.0),)
+
+CHMATEMP=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATTEMP),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    CHAM_GD=CHTEMP,
+                                    NOM_VARC='TEMP',
+                                    VALE_REF=20,))
+
+#---
+# 3. materiau fonction de NEUT1
+#---
+
+# les modules elastiques sont en pratique des fonctions constantes,
+# le but etant de reproduire strictement la solution obtenue avec
+# un materiau constant
+
+EFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VALE=(0., 210000e6,
+                           1., 210000e6),);
+
+NUFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      VALE=(0., 0.3,
+                            1., 0.3),);
+
+MATNEUT=DEFI_MATERIAU(ELAS_FO=_F(E=EFNEUT,
+                                 NU=NUFNEUT))
+
+CHNEUT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  MAILLAGE=MAIL,
+                  OPERATION='AFFE',
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='X1',
+                          VALE=100.0),)
+
+CHMANEUT=AFFE_MATERIAU(MAILLAGE=MAIL,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATNEUT),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    CHAM_GD=CHNEUT,
+                                    NOM_VARC='NEUT1'))
+
+#----------------------------------------------
+#                   MODELES 
+#----------------------------------------------
+
+MODDP=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION= 'D_PLAN'))
+
+MODCP=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION= 'C_PLAN'))
+
+MODAX=AFFE_MODELE(MAILLAGE=MAIL,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION= 'AXIS'))
+
+#----------------------------------------------
+#                   CHARGEMENTS 
+#----------------------------------------------
+
+CHARDP=AFFE_CHAR_MECA(MODELE=MODDP,
+                      DDL_IMPO=(_F(GROUP_MA='OE',DY=0.),
+                                _F(GROUP_NO='E', DX=0.)),
+                      FORCE_CONTOUR=_F(GROUP_MA='CD',FY=10e6))
+
+CHARCP=AFFE_CHAR_MECA(MODELE=MODCP,
+                      DDL_IMPO=(_F(GROUP_MA='OE',DY=0.),
+                                _F(GROUP_NO='E', DX=0.)),
+                      FORCE_CONTOUR=_F(GROUP_MA='CD',FY=10e6))
+
+CHARAX=AFFE_CHAR_MECA(MODELE=MODAX,
+                      DDL_IMPO=_F(GROUP_MA='OE',DY=0.),
+                      FORCE_CONTOUR=_F(GROUP_MA='CD',FY=10e6))
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+#---
+# 1. sans variables de commande et avec un materiau constant
+#---
+
+REDP=MECA_STATIQUE(MODELE=MODDP,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARDP))
+
+RECP=MECA_STATIQUE(MODELE=MODCP,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARCP))
+
+REAX=MECA_STATIQUE(MODELE=MODAX,
+                   CHAM_MATER=CHMAT,
+                   EXCIT=_F(CHARGE=CHARAX))
+
+#---
+# 2. avec la variable de commande TEMP et le materiau fonction associe
+#---
+
+REDPTEMP=MECA_STATIQUE(MODELE=MODDP,
+                       CHAM_MATER=CHMATEMP,
+                       EXCIT=_F(CHARGE=CHARDP))
+
+RECPTEMP=MECA_STATIQUE(MODELE=MODCP,
+                       CHAM_MATER=CHMATEMP,
+                       EXCIT=_F(CHARGE=CHARCP))
+
+REAXTEMP=MECA_STATIQUE(MODELE=MODAX,
+                       CHAM_MATER=CHMATEMP,
+                       EXCIT=_F(CHARGE=CHARAX))
+
+#---
+# 3. avec la variable de commande NEUT1 et le materiau fonction associe
+#---
+
+REDPNEUT=MECA_STATIQUE(MODELE=MODDP,
+                       CHAM_MATER=CHMANEUT,
+                       EXCIT=_F(CHARGE=CHARDP))
+
+RECPNEUT=MECA_STATIQUE(MODELE=MODCP,
+                       CHAM_MATER=CHMANEUT,
+                       EXCIT=_F(CHARGE=CHARCP))
+
+REAXNEUT=MECA_STATIQUE(MODELE=MODAX,
+                       CHAM_MATER=CHMANEUT,
+                       EXCIT=_F(CHARGE=CHARAX))
+
+#----------------------------------------------
+#                   POST-TRAITEMENT
+#----------------------------------------------
+
+FISS=DEFI_FOND_FISS(MAILLAGE=MAIL,
+                    SYME='OUI',
+                    FOND_FISS=_F(GROUP_NO='O'),
+                    LEVRE_SUP=_F(GROUP_MA='GO'))
+
+#---
+# 1. sans variables de commande
+#---
+
+KDP=POST_K1_K2_K3(RESULTAT=REDP,
+                  FOND_FISS=FISS,)
+
+KCP=POST_K1_K2_K3(RESULTAT=RECP,
+                  FOND_FISS=FISS,)
+
+KAX=POST_K1_K2_K3(RESULTAT=REAX,
+                  FOND_FISS=FISS,)
+
+#---
+# 2. avec la variable de commande TEMP
+#---
+
+KDPTEMP=POST_K1_K2_K3(RESULTAT=REDPTEMP,
+                      FOND_FISS=FISS,)
+
+KCPTEMP=POST_K1_K2_K3(RESULTAT=RECPTEMP,
+                      FOND_FISS=FISS,)
+
+KAXTEMP=POST_K1_K2_K3(RESULTAT=REAXTEMP,
+                      FOND_FISS=FISS,)
+
+#---
+# 3. avec la variable de commande NEUT1
+#---
+
+KDPNEUT=POST_K1_K2_K3(RESULTAT=REDPNEUT,
+                      FOND_FISS=FISS,)
+
+KCPNEUT=POST_K1_K2_K3(RESULTAT=RECPNEUT,
+                      FOND_FISS=FISS,)
+
+KAXNEUT=POST_K1_K2_K3(RESULTAT=REAXNEUT,
+                      FOND_FISS=FISS,)
+
+#----------------------------------------------
+#                   TEST
+#----------------------------------------------
+
+# rq : pour une modelisation donnee, on doit avoir strictement les meme valeurs
+#      de non regression sans variable de commande, avec TEMP et avec NEUT1.
+
+#---
+# 1. sans variables de commande
+#---
+
+# valeur de non regression de forma05a
+TEST_TABLE(VALE_CALC=6673866.14366,
+           NOM_PARA='K1',
+           TABLE=KDP,)
+
+TEST_TABLE(VALE_CALC=6668828.86281,
+           NOM_PARA='K1',
+           TABLE=KCP,)
+
+TEST_TABLE(VALE_CALC=3576791.89009,
+           NOM_PARA='K1',
+           TABLE=KAX,)
+
+#---
+# 2. avec la variable de commande TEMP
+#---
+
+# valeur de non regression de forma05a
+TEST_TABLE(VALE_CALC=6673866.14366,
+           NOM_PARA='K1',
+           TABLE=KDPTEMP,)
+
+TEST_TABLE(VALE_CALC=6668828.86281,
+           NOM_PARA='K1',
+           TABLE=KCPTEMP,)
+
+TEST_TABLE(VALE_CALC=3576791.89009,
+           NOM_PARA='K1',
+           TABLE=KAXTEMP,)
+
+#---
+# 3. avec la variable de commande NEUT1
+#---
+
+# valeur de non regression de forma05a
+TEST_TABLE(VALE_CALC=6673866.14366,
+           NOM_PARA='K1',
+           TABLE=KDPNEUT,)
+
+TEST_TABLE(VALE_CALC=6668828.86281,
+           NOM_PARA='K1',
+           TABLE=KCPNEUT,)
+
+TEST_TABLE(VALE_CALC=3576791.89009,
+           NOM_PARA='K1',
+           TABLE=KAXNEUT,)
+
+FIN()

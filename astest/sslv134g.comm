@@ -578,7 +578,6 @@ DEPL9=MECA_STATIQUE( MODELE=MO0,
 
 TABL_K9=POST_K1_K2_K3(  FOND_FISS=FISS0,
                         INST=(0.0,0.5),
-                        EVOL_THER=RESTH,
                         RESULTAT=DEPL9,
                         ABSC_CURV_MAXI=0.3,
                       )

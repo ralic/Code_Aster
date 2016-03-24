@@ -21,6 +21,13 @@
 
 cata_msg = {
 
+    1: _(u"""
+  -> Lors de la définition du champ de matériaux %(k1)s, vous avez renseigné le mot-clé 
+     EVOL de AFFE_MATERIAU / AFFE_VARC avec un résultat thermique X-FEM.
+     Cette fonctionnalité n'est pas compatible avec l'opérateur POST_K1_K2_K3 lorsque le
+     matériau dépend de la température.
+"""),
+
     2: _(u"""
   -> Le calcul de la distance d'un noeud à l'ellipse n'a pas convergé
      avec le nombre d'itérations maximal fixé (10). Cela est dû à une

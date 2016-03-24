@@ -16,14 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine vrcins(modelz, chmatz, carelz, inst, chvarc,&
-                      codret, nompaz)
-        character(len=*) :: modelz
-        character(len=*) :: chmatz
-        character(len=*) :: carelz
-        real(kind=8) :: inst
-        character(len=19) :: chvarc
-        character(len=2) :: codret
-        character(len=*), intent(in), optional :: nompaz
-    end subroutine vrcins
+    subroutine vrcin_elno(nomch, cesmod, chs)
+        character(len=19), intent(in) :: nomch
+        character(len=19), intent(in) :: cesmod
+        character(len=19), intent(in) :: chs
+    end subroutine vrcin_elno
 end interface

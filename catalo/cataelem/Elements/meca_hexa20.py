@@ -801,7 +801,7 @@ class MECA_HEXA20(Element):
         ),
 
         OP.INIT_VARC(te=99,
-            para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), ),
+            para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), (OP.INIT_VARC.PVARCNO, LC.ZVARCNO),),
         ),
 
         OP.MASS_INER(te=65,
