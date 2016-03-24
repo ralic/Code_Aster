@@ -170,7 +170,7 @@ class PhysicalQuantity(BaseCataEntity):
         a_creer_seulement_dans(self, ['physical_quantities'])
         assert type in ('R', 'I', 'C', 'K8', 'K16', 'K24'), type
         lcmp2 = expandComponents(components)
-        assert noduplicates(lcmp2), "PhysicalQuantity: duplicated components"
+        assert noduplicates(lcmp2), "PhysicalQuantity: duplicated components: {0}".format(lcmp2)
         for cmp in lcmp2:
             verif_identificateur(cmp, 8)
         self._type = type
@@ -292,7 +292,7 @@ class LocatedComponents(BaseCataEntity):
             assert location is None, location
         if not diff:
             lcmp2 = expandComponents(components)
-            assert noduplicates(lcmp2), "LocatedComponents: duplicated components"
+            assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(lcmp2)
             for cmp in lcmp2:
                 verif_identificateur(cmp, 8)
                 assert phys.hasComponent(cmp), (phys.name, cmp)
@@ -302,12 +302,16 @@ class LocatedComponents(BaseCataEntity):
             for setNodes, cmps in components:
                 check_type([setNodes], str)
                 lcmp2 = list(expandComponents(cmps))
-                assert noduplicates(lcmp2), "LocatedComponents: duplicated components"
+                assert noduplicates(lcmp2), "LocatedComponents: duplicated components: {0}".format(lcmp2)
                 for cmp in lcmp2:
                     verif_identificateur(cmp, 8)
                     assert phys.hasComponent(cmp), (phys.name, cmp)
                 lcmp2.insert(0, setNodes)
                 self._components.append(tuple(lcmp2))
+            # checkings
+            setNodesNames = [cmp[0] for cmp in self._components]
+            assert noduplicates(setNodesNames), \
+                "LocatedComponents: duplicated SetOfNodes names"
         self._phys = phys
         self._type = type
         self._diff = diff
