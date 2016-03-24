@@ -73,7 +73,7 @@ class BaseCataEntity(object):
         self._comment = None
 
     def __getIndex(self):
-        """Return the number of nodes"""
+        """Return the object index"""
         return self._idx
     idx = property(__getIndex)
 
@@ -170,7 +170,7 @@ class PhysicalQuantity(BaseCataEntity):
         a_creer_seulement_dans(self, ['physical_quantities'])
         assert type in ('R', 'I', 'C', 'K8', 'K16', 'K24'), type
         lcmp2 = expandComponents(components)
-        assert sans_doublon(lcmp2), lcmp2
+        assert noduplicates(lcmp2), "PhysicalQuantity: duplicated components"
         for cmp in lcmp2:
             verif_identificateur(cmp, 8)
         self._type = type
@@ -265,6 +265,7 @@ class SetOfNodes(BaseCataEntity):
         self._nodes = check_type(force_tuple(nodes), int)
         for node in nodes:
             assert node > 0 and node <= 54, node
+        assert noduplicates(nodes), "SetOfNodes: duplicated node id"
 
     def __getNodes(self):
         """Return the list of nodes"""
@@ -291,7 +292,7 @@ class LocatedComponents(BaseCataEntity):
             assert location is None, location
         if not diff:
             lcmp2 = expandComponents(components)
-            assert sans_doublon(lcmp2), lcmp2
+            assert noduplicates(lcmp2), "LocatedComponents: duplicated components"
             for cmp in lcmp2:
                 verif_identificateur(cmp, 8)
                 assert phys.hasComponent(cmp), (phys.name, cmp)
@@ -301,7 +302,7 @@ class LocatedComponents(BaseCataEntity):
             for setNodes, cmps in components:
                 check_type([setNodes], str)
                 lcmp2 = list(expandComponents(cmps))
-                assert sans_doublon(lcmp2), lcmp2
+                assert noduplicates(lcmp2), "LocatedComponents: duplicated components"
                 for cmp in lcmp2:
                     verif_identificateur(cmp, 8)
                     assert phys.hasComponent(cmp), (phys.name, cmp)
@@ -991,10 +992,9 @@ def expandComponents(lcmp):
     return tuple(lcmp_resu)
 
 
-def sans_doublon(liste):
-#    -- retourne true si la liste n'a pas de doublons
-    s1 = set(liste)
-    return len(s1) == len(liste)
+def noduplicates(values):
+    """Tell if there are not duplicated values"""
+    return len(values) == len(set(values))
 
 
 def a_creer_seulement_dans(obj, l_autorises):
