@@ -654,12 +654,12 @@ class Calcul(object):
 
     def __getParaIn(self):
         """Return the list of the couples input parameters, components"""
-        return self._para_in
+        return list(self._para_in)
     para_in = property(__getParaIn)
 
     def __getParaOut(self):
         """Return the list of the couples output parameters, components"""
-        return self._para_out
+        return list(self._para_out)
     para_out = property(__getParaOut)
 
     def setParaIn(self, para):
@@ -780,13 +780,15 @@ class Element(BaseCataEntity):
 
     def usedLocatedComponents(self):
         """Return the LocatedComponents used by this element"""
-        loco = set()
+        loco = OrderedDict()
         for calc in self._calculs.values():
-            for _, loc_i in list(calc.para_in) + list(calc.para_out):
-                loco.add(loc_i)
+            for _, loc_i in calc.para_in + calc.para_out:
+                loco[id(loc_i)] = loc_i
                 if type(loc_i) is ArrayOfComponents:
-                    loco.update(loc_i.locatedComponents)
-        return list(loco)
+                    arr = loc_i
+                    for loc_i in arr.locatedComponents:
+                        loco[id(loc_i)] = loc_i
+        return loco.values()
 
     def changeComponents(self, locCmpName, components):
         """Modify the components of a LocatedComponents used in the element.
