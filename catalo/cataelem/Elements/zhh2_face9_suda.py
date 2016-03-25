@@ -32,7 +32,8 @@ from cataelem.Options.options import OP
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
-    ('EN4',('PRE[2]',)),))
+        ('EN1', ()),
+        ('EN2',('PRE[2]',)),))
 
 
 CFLUXF   = LocatedComponents(phys=PHY.FTHM_F, type='ELEM',
@@ -63,10 +64,8 @@ class ZHH2_FACE9_SUDA(Element):
     """Please document this element"""
     meshType = MT.QUAD9
     nodes = (
-            SetOfNodes('EN3', (5,6,7,8,9,)),
-            SetOfNodes('EN2', (5,6,7,8,)),
-            SetOfNodes('EN1', (1,2,3,4,)),
-            SetOfNodes('EN4', (9,)),
+            SetOfNodes('EN1', (1,2,3,4,5,6,7,8)),
+            SetOfNodes('EN2', (9,)),
         )
     elrefe =(
             ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG1',),),

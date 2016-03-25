@@ -47,7 +47,8 @@ CCOMPOR = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              components=(
-                             ('EN3', ('PRE[2]',)),))
+                                ('EN1', ()),
+                                ('EN2', ('PRE[2]',)),))
 
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -95,9 +96,8 @@ class DHH2Q9_SUDA(Element):
     """Please document this element"""
     meshType = MT.QUAD9
     nodes = (
-        SetOfNodes('EN3', (5, 6, 7, 8, 9,)),
-        SetOfNodes('EN2', (5, 6, 7, 8,)),
         SetOfNodes('EN1', (1, 2, 3, 4,)),
+        SetOfNodes('EN2', (5, 6, 7, 8, 9,)),
     )
     elrefe = (
         ElrefeLoc(
@@ -196,9 +196,8 @@ class DHH2T7_SUDA(DHH2Q9_SUDA):
     """Please document this element"""
     meshType = MT.TRIA7
     nodes = (
-        SetOfNodes('EN3', (4, 5, 6, 7,)),
-        SetOfNodes('EN2', (4, 5, 6,)),
         SetOfNodes('EN1', (1, 2, 3,)),
+        SetOfNodes('EN2', (4, 5, 6, 7,)),
     )
     elrefe = (
         ElrefeLoc(

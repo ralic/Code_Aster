@@ -705,6 +705,17 @@ class Element(BaseCataEntity):
         if self.nodes:
             self.nodes = force_tuple(self.nodes)
             check_type(self.nodes, SetOfNodes)
+            names = [setNodes.name for setNodes in self.nodes]
+            assert noduplicates(names), "Element: duplicated SetOfNodes names: {0}".format(names)
+            ids = []
+            for setNodes in self.nodes:
+                ids.extend(setNodes.nodes)
+            assert noduplicates(ids), "Element: duplicated nodes ids between SetOfNodes"
+            allNodes = set(range(1, self.meshType.nbNodes + 1))
+            notUsed = allNodes.difference(ids)
+            assert not notUsed, "Element: nodes not in a SetOfNodes: {0}".format(tuple(notUsed))
+            tooMuch = set(ids).difference(allNodes)
+            assert not tooMuch, "Element: nodes do not belong to the Element: {0}".format(tuple(tooMuch))
         check_type(self.elrefe, ElrefeLoc)
         # check attributes
         assign = []
@@ -899,7 +910,7 @@ class AbstractEntityStore(object):
                 mod = __import__('cataelem.%s.%s' %
                                  (package, modname), globals(), locals(), [modname])
             except:
-                print("ERROR during import of {0}".format(modname))
+                error("ERROR during import of {0}".format(modname))
                 raise
             # store the entities and name the parameters
             for name in dir(mod):
@@ -914,7 +925,11 @@ class AbstractEntityStore(object):
             self._entities[name] = obj
         elif (type(obj) is type and obj not in self.entityType
               and issubclass(obj, self.entityType)):
-            self._entities[name] = obj()
+            try:
+                self._entities[name] = obj()
+            except AssertionError, exc:
+                error("ERROR during initialisation of {0}".format(name))
+                raise
         elif type(obj) in self.subTypes:
             obj.setName(name)
         elif type(obj) is dict:
@@ -962,6 +977,10 @@ def checkAttr(attr, value):
                                  .format(attr.name, value))
     return attr
 
+def error(message):
+    """Print on stderr"""
+    sys.stderr.write(message)
+    sys.stderr.write(os.linesep)
 
 #===============================================================================================
 # utilitaires:

@@ -113,8 +113,8 @@ class CFT3T3(CFP2P2):
     """Please document this element"""
     meshType = MT.TRIA33
     nodes = (
-            SetOfNodes('EN1', (4,5,6,)),
             SetOfNodes('EN2', (1,2,3,)),
+            SetOfNodes('EN1', (4,5,6,)),
         )
 
 
@@ -404,7 +404,7 @@ class CFS3T3(CFP2P2):
     meshType = MT.SE3TR3
     nodes = (
             SetOfNodes('EN2', (1,2,3,)),
-            SetOfNodes('EN1', (3,4,5,)),
+            SetOfNodes('EN1', (4,5,6)),
         )
 
 
@@ -414,7 +414,7 @@ class CFS3T6(CFP2P2):
     meshType = MT.SE3TR6
     nodes = (
             SetOfNodes('EN2', (1,2,3,)),
-            SetOfNodes('EN1', (3,4,5,6,7,8,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9)),
         )
 
 
@@ -424,7 +424,7 @@ class CFS3Q4(CFP2P2):
     meshType = MT.SE3QU4
     nodes = (
             SetOfNodes('EN2', (1,2,3,)),
-            SetOfNodes('EN1', (3,4,5,6,)),
+            SetOfNodes('EN1', (4,5,6,7)),
         )
 
 
@@ -434,7 +434,7 @@ class CFS3Q8(CFP2P2):
     meshType = MT.SE3QU8
     nodes = (
             SetOfNodes('EN2', (1,2,3,)),
-            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9,10,11)),
         )
 
 
@@ -444,5 +444,5 @@ class CFS3Q9(CFP2P2):
     meshType = MT.SE3QU9
     nodes = (
             SetOfNodes('EN2', (1,2,3,)),
-            SetOfNodes('EN1', (3,4,5,6,7,8,9,10,11,)),
+            SetOfNodes('EN1', (4,5,6,7,8,9,10,11,12)),
         )

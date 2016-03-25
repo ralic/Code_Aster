@@ -45,7 +45,8 @@ CCOMPOR  = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
-    ('EN3',('PRE[2]',)),))
+        ('EN1', ()),
+        ('EN2',('PRE[2]',)),))
 
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -91,8 +92,8 @@ class ZHH2_HEXA27_SUDA(Element):
     """Please document this element"""
     meshType = MT.HEXA27
     nodes = (
-            SetOfNodes('EN1', (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,)),
-            SetOfNodes('EN3', (21,22,23,24,25,26,27,)),
+            SetOfNodes('EN1', (1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20)),
+            SetOfNodes('EN2', (21,22,23,24,25,26,27,)),
         )
     elrefe =(
             ElrefeLoc(MT.H27, gauss = ('RIGI=NOEU_S','FPGVARI=FPG7','FPGCONT=FPG7','FPG1=FPG1',), mater=('FPG1',),),
