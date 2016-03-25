@@ -6,6 +6,7 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/nmctcg.h"
@@ -63,7 +64,7 @@ implicit none
 !
     integer :: loop_geom_count, loop_cont_count, loop_fric_count
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
-    aster_logical :: l_pair
+    aster_logical :: l_pair, l_geom_sans
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,9 +77,10 @@ implicit none
     call mmbouc(ds_contact, 'Geom', 'Read_Counter', loop_geom_count)
     call nmimci(ds_print  , 'BOUC_GEOM', loop_geom_count, .true._1)
 !
-! - No pairing at first iteration (see mminit/xminit)
+! - Update pairing ?
 !
-    l_pair = (loop_geom_count .gt. 1)
+    l_geom_sans = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
+    l_pair      = (loop_geom_count .gt. 1) .and. (.not.l_geom_sans)
 !
 ! - Contact loops
 !

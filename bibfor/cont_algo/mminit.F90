@@ -1,5 +1,5 @@
 subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, ds_measure,&
-                  sdnume, nume_dof, nume_inst)
+                  sdnume, nume_dof  , nume_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -65,7 +65,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_dyna, l_cont_allv, l_step_first
+    aster_logical :: l_dyna, l_cont_allv, l_step_first, l_geom_sans, l_pair
     character(len=19) :: sdcont_depgeo, sdcont_deplam, sdcont_depini
     character(len=19) :: sdcont_vitini, sdcont_accini
     character(len=19) :: disp_prev, acce_curr, vite_curr
@@ -79,6 +79,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    l_geom_sans  = cfdisl(ds_contact%sdcont_defi, 'REAC_GEOM_SANS')
     l_dyna       = ndynlo(sddyna,'DYNAMIQUE')
     ztabf        = cfmmvd('ZTABF')
     zetat        = cfmmvd('ZETAT')
@@ -143,9 +144,15 @@ implicit none
     sdcont_deplam = ds_contact%sdcont_solv(1:14)//'.DEPF'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_deplam)
 !
+! - Update pairing ?
+!
+    l_pair = .not.l_geom_sans .or. (l_geom_sans.and.l_step_first)
+!
 ! - Initial pairing
 !
-    call mmapin(mesh, ds_contact, nume_dof, ds_measure)
+    if (l_pair) then
+        call mmapin(mesh, ds_contact, nume_dof, ds_measure)
+    endif
 !
 ! - Initial options
 !
