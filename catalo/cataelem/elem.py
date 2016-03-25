@@ -200,6 +200,7 @@ class CataElem(object):
         from cataelem.Commons.located_components import MODES
         from cataelem.Commons.parameters import INPUTS, OUTPUTS
         from cataelem.Options.options import OP
+        from cataelem import __DEBUG_ELEMENTS__
         # for registering in Jeveux
         self.registerAll(ATTRS)
         self.registerAll(ELREFS)
@@ -213,6 +214,8 @@ class CataElem(object):
         # subobjects must have been named
         from cataelem.Elements.elements import EL
         self.registerAll(EL.getDict())
+        if __DEBUG_ELEMENTS__:
+            return
         from cataelem.Commons.phenomenons_modelisations import PHEN
         self.registerAll(PHEN)
         # summary

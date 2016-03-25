@@ -19,6 +19,7 @@
 
 from cataelem.Tools.base_objects import AbstractEntityStore, Element
 from cataelem.Tools.base_objects import LocatedComponents, ArrayOfComponents
+from cataelem import __DEBUG_ELEMENTS__
 
 
 class ElementStore(AbstractEntityStore):
@@ -27,4 +28,5 @@ class ElementStore(AbstractEntityStore):
     subTypes = (LocatedComponents, ArrayOfComponents)
 
 
-EL = ElementStore("Elements", ignore_names=['ele', ])
+EL = ElementStore("Elements", ignore_names=['ele', ],
+                  only_mods=__DEBUG_ELEMENTS__)

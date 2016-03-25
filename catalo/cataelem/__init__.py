@@ -35,3 +35,5 @@ Options/* -> parameters
 parameters -> physical_quantities
 located_components -> physical_quantities
 """
+
+__DEBUG_ELEMENTS__ = []
