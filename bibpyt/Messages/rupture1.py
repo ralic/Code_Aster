@@ -434,10 +434,8 @@ d'intensité des contraintes K par CALC_K_G n'est plus valable.
     72: _(u"""
 CALC_G :
 La variable de commande %(k1)s est présente dans le champ de matériau %(k2)s.
-Seule la variable de commande TEMP est autorisée pour CALC_G
--> Conseil :
-Veuillez revoir l'affectation des variables de commandes dans le champ de matériau %(k2)s.
-(commande AFFE_MATERIAU, mot clé facteur AFFE_VARC)
+L'opérateur CALC_G n'est normalement prévu que pour traiter un matériau fonction de
+la variable de commande TEMP.
 """),
 
     73: _(u"""
