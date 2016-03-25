@@ -25,8 +25,10 @@ implicit none
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 !
+#ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,7 +77,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: node_name, elem_name, valk(2)
-    mpi_int :: i_proc, nb_proc, mpicou 
+    mpi_int :: i_proc, nb_proc, mpicou
     integer :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
     integer :: elem_indx, elem_nume, node_indx(1), node_nume(1)
     integer :: node_nbelem, elem_nbnode
@@ -153,7 +155,7 @@ implicit none
 !
 ! --------- Number of nodes
 !
-            call cfnben(sdcont_defi, elem_indx, 'CONNEX', elem_nbnode)   
+            call cfnben(sdcont_defi, elem_indx, 'CONNEX', elem_nbnode)
 !
 ! --------- Get current index of node
 !

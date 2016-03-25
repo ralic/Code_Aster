@@ -17,8 +17,10 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 !
+#ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -119,7 +121,7 @@ implicit none
         if (l_pair_dire) then
             pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
             pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
-            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)            
+            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
         endif
         tole_proj_ext = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
 !
@@ -134,7 +136,7 @@ implicit none
         nbr_poin_mpi = nb_poin-nb_poin_mpi*nb_proc
         idx_start   = 1+(i_proc)*nb_poin_mpi
         idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*(i_proc+1)/nb_proc)
-                
+
 !
 ! ----- Loop on points
 !

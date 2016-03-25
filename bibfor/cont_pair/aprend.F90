@@ -16,8 +16,10 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "blas/dcopy.h"
 !
+#ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -123,7 +125,7 @@ implicit none
         if (l_pair_dire) then
             pair_vect(1) = mminfr(sdcont_defi, 'TYPE_APPA_DIRX', i_zone)
             pair_vect(2) = mminfr(sdcont_defi, 'TYPE_APPA_DIRY', i_zone)
-            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)            
+            pair_vect(3) = mminfr(sdcont_defi, 'TYPE_APPA_DIRZ', i_zone)
         endif
 !
 ! ----- Mpi informations

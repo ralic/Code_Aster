@@ -25,8 +25,10 @@ implicit none
 #include "asterfort/mmtann.h"
 #include "asterfort/utmess.h"
 !
+#ifdef _USE_MPI
 #include "mpif.h"
 #include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,8 +53,8 @@ implicit none
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
     integer, intent(in) :: model_ndim
-    integer, intent(in) :: i_zone   
-    integer, intent(in) :: jdecma    
+    integer, intent(in) :: i_zone
+    integer, intent(in) :: jdecma
     integer, intent(in) :: nb_elem
     character(len=4), intent(in) :: zone_type
     integer, intent(in) :: iter_maxi
@@ -85,7 +87,7 @@ implicit none
     character(len=8) :: elem_type, elem_name, node_name, valk(2)
     mpi_int :: i_proc, nb_proc, mpicou
     integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
-    integer :: node_nume(9), longc 
+    integer :: node_nume(9), longc
     integer :: elem_nbnode, niverr
     aster_logical :: l_beam, l_poi1, one_proc
     integer :: i_node, i_elem, elem_ndim
@@ -104,7 +106,7 @@ implicit none
 ! - Acces to pairing datastructure
 !
     sdappa_tgel = sdappa(1:19)//'.TGEL'
-    
+
 !
 ! ----- Mpi informations
 !
