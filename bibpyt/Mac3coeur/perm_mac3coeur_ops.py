@@ -45,7 +45,7 @@ def perm_mac3coeur_ops(self, **args):
     coeur_factory = CoeurFactory(datg)
 
     _typ_coeur_N = self['TYPE_COEUR_N']
-    _typ_coeur_P = self['TYPE_COEUR_P']
+    _typ_coeur_P = self['TYPE_COEUR_NP1']
     _TAB_N = self['TABLE_N']
     _l_tabn1 = []
     for el in _TAB_N :
