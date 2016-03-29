@@ -309,7 +309,7 @@ class LocatedComponents(BaseCataEntity):
                 lcmp2.insert(0, setNodes)
                 self._components.append(tuple(lcmp2))
             # checkings
-            setNodesNames = [cmp[0] for cmp in self._components]
+            setNodesNames = self.getSetOfNodesNames()
             assert noduplicates(setNodesNames), \
                 "LocatedComponents: duplicated SetOfNodes names"
         self._phys = phys
@@ -341,6 +341,10 @@ class LocatedComponents(BaseCataEntity):
         """Return the location of integration for this mode"""
         return self._location
     location = property(__getLocation)
+
+    def getSetOfNodesNames(self):
+        """Return the names of the SetOfNodes"""
+        return [cmp[0] for cmp in self._components]
 
     def copy(self, components=None):
         """Return a new LocatedComponents object, allow to change the list of
@@ -383,7 +387,7 @@ class ArrayOfComponents(BaseCataEntity):
     physicalQuantity = property(__getPhys)
 
     def __getLocatedComponents(self):
-        """Return the underlying local mode"""
+        """Return the underlying located components"""
         return self._locCmp
     locatedComponents = property(__getLocatedComponents)
 
@@ -702,11 +706,12 @@ class Element(BaseCataEntity):
         super(Element, self).__init__()
         self.elrefe = force_tuple(self.elrefe)
         check_type([self.meshType], MeshType)
+        setNames = []
         if self.nodes:
             self.nodes = force_tuple(self.nodes)
             check_type(self.nodes, SetOfNodes)
-            names = [setNodes.name for setNodes in self.nodes]
-            assert noduplicates(names), "Element: duplicated SetOfNodes names: {0}".format(names)
+            setNames = [setNodes.name for setNodes in self.nodes]
+            assert noduplicates(setNames), "Element: duplicated SetOfNodes names: {0}".format(setNames)
             ids = []
             for setNodes in self.nodes:
                 ids.extend(setNodes.nodes)
@@ -736,6 +741,7 @@ class Element(BaseCataEntity):
                     else:
                         self.modifyCalcul(calc)
         self.postInit()
+        self.checkSetOfNodes()
 
     def postInit(self):
         """Elements can define a post-initialization function to change its
@@ -777,6 +783,26 @@ class Element(BaseCataEntity):
                 para_out = orig.para_out
             self._calculs[optname] = Calcul(calc.option, calc.te,
                                             para_in, para_out)
+
+    def checkSetOfNodes(self):
+        """Check the set of nodes usage in the LocatedComponents"""
+        def _getNodes(name):
+            """Return the nodes belonging to the set 'name'"""
+            for setN in self.nodes:
+                if setN.name == name:
+                    return setN.nodes
+            # assert False, "set {0!r} not defined in this element".format(name)
+            return []
+        allNodes = set(range(1, self.meshType.nbNodes + 1))
+        for locCmp in self.usedLocatedComponents():
+            if type(locCmp) is ArrayOfComponents or not locCmp.diff:
+                continue
+            defNodes = []
+            for name in locCmp.getSetOfNodesNames():
+                defNodes.extend(_getNodes(name))
+            notUsed = tuple(allNodes.difference(defNodes))
+            assert len(notUsed) == 0, "Element: components not defined on these nodes " \
+                "(located components! {1}): {0}".format(notUsed, locCmp.name)
 
     def usedLocatedComponents(self):
         """Return the LocatedComponents used by this element"""
