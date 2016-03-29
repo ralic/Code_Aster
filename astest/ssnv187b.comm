@@ -1,6 +1,6 @@
 # TITRE VALIDATION DE LA LOI HYPER-ELASTIQUE SUR UN CUBE - D_PLAN
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +113,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=-0.034072487756090002,
-                  VALE_REFE=-0.0340091,
+                  VALE_REFE=-0.034009,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
           )
@@ -163,7 +163,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=-0.078330877884584,
-                  VALE_REFE=-0.078174999999999994,
+                  VALE_REFE=-0.078180,
                   CRITERE='RELATIF',
                   PRECISION=2.E-3,),
           )
@@ -223,9 +223,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=20,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
                   VALE_CALC=-0.071058425921551996,
-                  VALE_REFE=-0.066199999999999995,
+                  VALE_REFE=-0.070936,
                   CRITERE='RELATIF',
-                  PRECISION=0.075,),
+                  PRECISION=2.E-3,),
           )
 
 TAB3 = POST_RELEVE_T(ACTION=_F(INTITULE='RET3',
