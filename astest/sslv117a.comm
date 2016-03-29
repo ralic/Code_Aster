@@ -114,7 +114,7 @@ INSTANTS=DEFI_LIST_REEL(DEBUT=0,
                         INTERVALLE=_F(JUSQU_A=1,
                                       NOMBRE=1,),);
 
-EVOL=STAT_NON_LINE(MODELE=MO,
+EVOL1=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMAT,NEWTON=_F(REAC_ITER=0),
                    EXCIT=(_F(CHARGE=DEPL_IMP,),
                           _F(CHARGE=FORC_IMP,),),
@@ -122,16 +122,36 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=INSTANTS,),
                    SOLVEUR=_F(METHODE='MUMPS',),);
 
-EVOL=CALC_CHAMP(reuse =EVOL,
-                RESULTAT=EVOL,
+EVOL1=CALC_CHAMP(reuse =EVOL1,
+                RESULTAT=EVOL1,
                 DEFORMATION='EPSI_ELGA',);
 
 GAUSS=CALC_CHAM_ELEM(MODELE=MO,
                      OPTION='COOR_ELGA',);
 
-EPSI=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+EPSI1=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
                 OPERATION='EXTR',
-                RESULTAT=EVOL,
+                RESULTAT=EVOL1,
+                NOM_CHAM='EPSI_ELGA',
+                INST=1,);
+
+# For testing FULL_MECA
+EVOL2=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CHMAT,NEWTON=_F(REAC_ITER=1),
+                   EXCIT=(_F(CHARGE=DEPL_IMP,),
+                          _F(CHARGE=FORC_IMP,),),
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   INCREMENT=_F(LIST_INST=INSTANTS,),
+                   SOLVEUR=_F(METHODE='MUMPS',),);
+
+EVOL2=CALC_CHAMP(reuse =EVOL2,
+                RESULTAT=EVOL2,
+                DEFORMATION='EPSI_ELGA',);
+
+
+EPSI2=CREA_CHAMP(TYPE_CHAM='ELGA_EPSI_R',
+                OPERATION='EXTR',
+                RESULTAT=EVOL2,
                 NOM_CHAM='EPSI_ELGA',
                 INST=1,);
 

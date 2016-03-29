@@ -243,4 +243,57 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-2,),
           )
 
+################### Calcul for test FULL_MECA
+
+U2=STAT_NON_LINE(ETAT_INIT = _F(SIGM=SIGINIT,
+                                DEPL=DEPINIT),
+                 MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F( CHARGE    = CLIM ),
+                        _F( CHARGE    = CHIMP ),
+                        _F( CHARGE    = FLUX ,
+                            FONC_MULT = cofl ,) ,
+                        ),
+                 COMPORTEMENT=_F( RELATION = 'KIT_HM',
+                                  RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
+                                  ITER_INTE_MAXI=300,
+                                  ),
+                 NEWTON=_F( MATRICE='TANGENTE',REAC_ITER=1,
+                            ),
+                 INCREMENT=_F( INST_INIT = 0.,
+                               LIST_INST = LI,
+                               INST_FIN=TFIN,
+                               ),
+                 CONVERGENCE=_F( ITER_GLOB_MAXI=100,
+                                 RESI_GLOB_RELA=1.0E-6,
+                                 ),
+                 );
+
+
+#Pression du liquide
+
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N3',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1099446.54669,
+                  VALE_REFE=1.1E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),)
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='N4',
+                  NOM_CMP='PRE1',
+                  VALE_CALC=1104919.91348 ,
+                  VALE_REFE=1.1E6,
+                  CRITERE='RELATIF',
+                  PRECISION=1.E-2,),
+          )
+
 FIN () ;
