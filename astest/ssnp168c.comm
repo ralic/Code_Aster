@@ -1,0 +1,601 @@
+# TITRE ENDOMMAGEMENT EPROUVETTE TYPE NOORU-MOHAMED AVEC ENDO_SCALAIRE
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',DEBUG=_F(SDVERI='OUI'))
+
+#--------------------------------------------------------------
+# 1 - MAILLAGE ET MODELE
+#--------------------------------------------------------------
+
+# LECTURE DU MAILLAGE
+MAIL = LIRE_MAILLAGE( FORMAT='MED',)
+
+# DEFINITION DES GROUPES DE NOEUDS DES INTERFACES
+MAIL = DEFI_GROUP( reuse = MAIL,
+                   MAILLAGE = MAIL,
+                   CREA_GROUP_NO = (_F( GROUP_MA = 'FC_HAUT',),
+                                    _F( GROUP_MA = 'FC_BAS',),),);
+
+# DEFINITION DES GROUPES DE MAILLES
+MAIL = DEFI_GROUP( reuse = MAIL,
+		   INFO = 1,
+                   MAILLAGE = MAIL, 
+                   CREA_GROUP_MA = (_F( NOM = 'LINEAIRE', 
+                                        UNION = ('SINGU_H','SINGU_B'),),
+                                    _F( NOM    = 'NON_LIN', 
+                                        DIFFE  = ('DEDANS','LINEAIRE'),),),);
+
+# AFFECTATION DU MODELE
+MODEMECA = AFFE_MODELE( MAILLAGE = MAIL,
+                        AFFE = (_F( TOUT = 'OUI',
+                                    PHENOMENE = 'MECANIQUE',
+                                    MODELISATION = 'D_PLAN_GRAD_VARI',),),);
+
+#--------------------------------------------------------------
+# 2- DEFINITION ET AFFECTATION DES PARAMETRES MATERIAUX
+#--------------------------------------------------------------
+
+# DEFINITION DE L'ECHELLE
+# Si echel = 1 (m); 10 (dm); 100 (cm); 1000 (mm)
+echel = 1000
+
+# DEFINITION DES PROPRIETES MATERIAU
+EE = 21000.e6/echel**2
+NU = 0.2
+DD = 3.e-3*echel 
+
+Gf      = 100./echel
+#resistances bitrac=1.7
+#ft      = 3.9e6/echel**2
+#fc      = 80.e6/echel**2
+#tau     = 11.e6/echel**2
+
+#resistances bitrac=2.9
+ft      = 3.9e6/echel**2
+fc      = 8.5e6/echel**2
+tau     = 3.25e6/echel**2
+
+pp   = 1.5
+wy   = 0.5*ft**2/EE
+kk   = 0.75*Gf/DD
+mm   = kk/wy
+CC   = 0.375*Gf*DD
+pena = 1.E3 * kk
+comp = (fc-ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1-2*NU))
+coef = (fc+ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1+NU))
+volu = (coef**2-1)*2*(1+NU)/(1-2*NU)
+
+# DEFINITION DU BETON AU CENTRE DE L4EPROUVETTE
+BETON = DEFI_MATERIAU( ELAS = _F( E = EE, NU = NU),
+                       ENDO_SCALAIRE = _F( M = mm, P = pp, K = kk, C_VOLU = volu, C_COMP = comp),
+                       NON_LOCAL = _F( C_GRAD_VARI = CC, PENA_LAGR = pena),);
+
+# DEFINITION DU BETON AUX EXTREMITES DE L'EPROUVETTE
+BET_RIG = DEFI_MATERIAU( ELAS = _F(E = EE, NU = NU),
+                         ENDO_SCALAIRE = _F( M = mm/1000, P = pp, K = kk, C_VOLU = volu, C_COMP = comp),
+                         NON_LOCAL = _F( C_GRAD_VARI = CC, PENA_LAGR = pena),);
+
+# AFFECTATION DES MATERIAUX
+CHMAT = AFFE_MATERIAU( MAILLAGE = MAIL,
+                       AFFE = (_F( GROUP_MA = 'NON_LIN',
+                                   MATER =  BETON,),
+                               _F( GROUP_MA = 'LINEAIRE',
+                                   MATER =  BET_RIG,),),);
+
+#--------------------------------------------------------------
+# 3- DEFINITION ET AFFECTATION DES CHARGEMENTS
+#--------------------------------------------------------------
+
+# NOMBRE D'IMAGES (max = 565)
+nr_img = inst_2_reach = 565
+
+# SELECTION DES IMAGES A PRENDRE EN COMPTE
+inst_init = 0
+#inst_fix = pas_calcul = 1     # Environ 9 min de calcul
+#inst_fix = pas_calcul = 2     # Environ 5 min de calcul
+#inst_fix = pas_calcul = 4     # Environ 3 min de calcul
+#inst_fix = pas_calcul = 6     # Environ 2 min de calcul
+inst_fix = pas_calcul = 8     # Environ 1 min 30 de calcul
+
+# LISTE DES IAMGES PRISES EN COMPTE
+inst2do = [inst_init,inst_fix] + range(inst_fix+pas_calcul,inst_2_reach+1,pas_calcul)
+
+# LISTES DES INCREMENTS DE DEPLACEMENTS 
+XHA = [None]*(nr_img+1)
+YHA = [None]*(nr_img+1)
+XBA = [None]*(nr_img+1)
+YBA = [None]*(nr_img+1)
+XHC = [None]*(nr_img+1)
+YHC = [None]*(nr_img+1)
+XBC = [None]*(nr_img+1)
+YBC = [None]*(nr_img+1)
+XHZ = [None]*(nr_img+1)
+YHZ = [None]*(nr_img+1)
+XBZ = [None]*(nr_img+1)
+YBZ = [None]*(nr_img+1)
+DEP = [None]*(nr_img+1)
+F_D = [None]*(nr_img+1)
+# INCREMENT DE LA NAPPE DE DEPLACEMENT
+DXHZ = [None]*(nr_img+1)
+DYHZ = [None]*(nr_img+1)
+DXBZ = [None]*(nr_img+1)
+DYBZ = [None]*(nr_img+1)
+DEPF = [None]*(nr_img+1)
+
+DZ_F = DEFI_CONSTANTE(VALE = 0.);
+
+#  !! ATTENTION !!
+#  Notations X et Y inversees par rapport a celle issue de la correlation ! Ydic->Xef et Xdic->Yef
+
+UXH = [None]*(nr_img+1)
+UYH = [None]*(nr_img+1)
+UXB = [None]*(nr_img+1)
+UYB = [None]*(nr_img+1)
+DXH = [None]*(nr_img+1)
+DYH = [None]*(nr_img+1)
+DXB = [None]*(nr_img+1)
+DYB = [None]*(nr_img+1)
+DEP = [None]*(nr_img+1)
+F_D = [None]*(nr_img+1)
+
+#  !! ATTENTION !!
+#  Notations X et Y inversees par rapport a celle issue de la correlation ! Ydic->Xef et Xdic->Yef
+
+# RECUPERATION DES INCREMENTS DE DEPLACEMENT
+for i in inst2do :
+    UXH[i] = LIRE_FONCTION( FORMAT = 'LIBRE',
+                            UNITE = 23,
+                            NOM_PARA = 'X',
+                            INDIC_PARA = [i,1],
+                            INDIC_RESU = [i,2],
+                            INTERPOL = 'LIN',
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'CONSTANT');
+      
+    UYH[i] = LIRE_FONCTION( FORMAT = 'LIBRE',
+                            UNITE = 23,
+                            NOM_PARA = 'X',
+                            INDIC_PARA = [i,1],
+                            INDIC_RESU = [i,3],
+                            INTERPOL = 'LIN',
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'CONSTANT');
+      
+    UXB[i] = LIRE_FONCTION( FORMAT = 'LIBRE',
+                            UNITE = 24,
+                            NOM_PARA = 'X',
+                            INDIC_PARA = [i,1],
+                            INDIC_RESU = [i,2],
+                            INTERPOL = 'LIN',
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'CONSTANT');
+
+    UYB[i] = LIRE_FONCTION( FORMAT = 'LIBRE',
+                            UNITE = 24,
+                            NOM_PARA = 'X',
+                            INDIC_PARA = [i,1],
+                            INDIC_RESU = [i,3],
+                            INTERPOL = 'LIN',
+                            PROL_DROITE = 'CONSTANT',
+                            PROL_GAUCHE = 'CONSTANT');
+
+# AFFECTATION DES INCREMENTS DE LA NAPPE DE DEPLACEMENT
+inst_old = inst_fix
+for i in inst2do :
+    if i < inst_fix : continue
+    if i > inst_2_reach : break  
+    if i == inst_fix :
+        DXH[i] = UXH[i]
+        DYH[i] = UYH[i]
+        DXB[i] = UXB[i]
+        DYB[i] = UYB[i]
+    else : 
+        DXH[i] = CALC_FONCTION( COMB = (_F( FONCTION = UXH[i], COEF = 1.0),
+                                        _F( FONCTION = UXH[inst_old], COEF = -1.0),),);
+   
+        DYH[i] = CALC_FONCTION(COMB = (_F( FONCTION = UYH[i], COEF = 1.0),
+                                       _F( FONCTION = UYH[inst_old], COEF = -1.0),),);
+
+        DXB[i] = CALC_FONCTION(COMB = (_F( FONCTION = UXB[i], COEF = 1.0),
+                                       _F( FONCTION = UXB[inst_old], COEF = -1.0),),);
+
+        DYB[i] = CALC_FONCTION(COMB = (_F( FONCTION = UYB[i], COEF = 1.0),
+                                       _F( FONCTION = UYB[inst_old], COEF = -1.0),),);
+                                                  
+    DEP[i] = AFFE_CHAR_MECA_F( MODELE = MODEMECA,
+                               FACE_IMPO = (_F( GROUP_MA ='FC_HAUT', DX = DXH[i], DY = DYH[i]),
+                                            _F( GROUP_MA ='FC_BAS', DX = DXB[i], DY = DYB[i]),),);
+
+    inst_old = i
+
+# DEFINITION DE LA LISTE D'INSTANT + METHODE DE DECOUPE
+INST_LIN = DEFI_LIST_REEL( VALE = inst2do,);
+
+TEMPS_LI = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = INST_LIN),
+                           ECHEC = _F( ACTION = 'DECOUPE',
+                                       SUBD_METHODE = 'MANUEL',
+                                       SUBD_NIVEAU = 4,
+                                       SUBD_PAS = 5),);
+ 
+#--------------------------------------------------------------
+# 4- RESOLUTION NON-LINEAIRE
+#--------------------------------------------------------------
+
+# CREATION DE LA FONCTION MULTIPLICATRICE DU CHARGEMENT
+RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
+                       VALE = (inst_init,  0.,
+                               inst_fix,   1.),    
+                       PROL_DROITE = 'LINEAIRE');
+
+# RESOLUTION PREMIER INSTANT DE CALCUL
+EVOL = STAT_NON_LINE( MODELE = MODEMECA,
+                      CHAM_MATER = CHMAT,
+                      EXCIT = _F( CHARGE = DEP[inst_fix], TYPE_CHARGE= 'DIDI', FONC_MULT = RAMPE),
+                      COMPORTEMENT = _F( RELATION = 'ENDO_SCALAIRE',
+                                         GROUP_MA = ('NON_LIN','LINEAIRE'),),
+                      INCREMENT = _F( LIST_INST = TEMPS_LI, INST_INIT = inst_init, INST_FIN = inst_fix),
+                      NEWTON = _F( MATRICE = 'TANGENTE',
+                                   REAC_ITER = 1,
+                                   PAS_MINI_ELAS = 0),
+                      CONVERGENCE = _F( RESI_REFE_RELA = 1.e-5,
+                                        SIGM_REFE = ft,
+                                        LAGR_REFE = kk,
+                                        VARI_REFE = 1,
+                                        ITER_GLOB_MAXI = 10),
+                      SOLVEUR =_F( METHODE = 'MUMPS',
+                                   PCENT_PIVOT = 30),
+                      ARCHIVAGE =_F( PAS_ARCH = 5.),);
+
+# DESTRUCTION DE LA RAMPE POUR REUTILISATION
+DETRUIRE( CONCEPT=_F( NOM = RAMPE,),); 
+
+inst_old = inst_fix
+
+# RESOLUTION POUR TOUS LES AUTRES INSTANT DE CALCUL
+for i in inst2do :
+
+    if i <= inst_fix : continue
+    if i > inst_2_reach : break
+  
+    RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
+                           VALE = (inst_old,  0.,
+				   i,         1.),    
+                           PROL_DROITE = 'LINEAIRE');
+
+    EVOL = STAT_NON_LINE( reuse = EVOL,
+			  ETAT_INIT = _F( EVOL_NOLI = EVOL,),
+                          MODELE = MODEMECA,
+                          CHAM_MATER = CHMAT,
+                          EXCIT = _F( CHARGE = DEP[i], TYPE_CHARGE= 'DIDI', FONC_MULT = RAMPE),
+                          COMPORTEMENT = _F( RELATION = 'ENDO_SCALAIRE',
+                                              GROUP_MA = ('NON_LIN','LINEAIRE'),),
+                          INCREMENT = _F( LIST_INST = TEMPS_LI, INST_INIT = inst_old, INST_FIN = i),
+                          NEWTON = _F( MATRICE = 'TANGENTE',
+                                       REAC_ITER = 1,
+                                       PAS_MINI_ELAS = 0),
+                          CONVERGENCE = _F( RESI_REFE_RELA = 1.e-5,
+                                            SIGM_REFE = ft,
+                                            LAGR_REFE = kk,
+                                            VARI_REFE = 1,
+                                            ITER_GLOB_MAXI = 20),
+                          SOLVEUR =_F( METHODE = 'MUMPS',
+                                       PCENT_PIVOT = 30),
+                          ARCHIVAGE =_F( PAS_ARCH = 5.),);
+
+    inst_old = i
+    DETRUIRE( CONCEPT=_F( NOM = RAMPE),); 
+
+# CALCUL DES FORCES NODALES + CHAMP D'ENDOMMAGEMENT
+EVOL = CALC_CHAMP( reuse = EVOL,
+                   MODELE = MODEMECA,
+                   CHAM_MATER = CHMAT,
+                   RESULTAT = EVOL,
+                   TOUT_ORDRE = 'OUI',
+                   TOUT = 'OUI',
+                   FORCE = 'FORC_NODA',
+                   VARI_INTERNE = 'VARI_NOEU')
+
+'''
+#--------------------------------------------------------------
+# 5-POST-TRAITEMENT DES RESULTATS + TESTS
+#--------------------------------------------------------------
+
+# RECUPERATION DU CHEMIN DE FISSURATION
+MA_FISS = POST_ENDO_FISS( TABLE = CO('TAB_FISS'),
+			  RESULTAT = EVOL,
+			  INST = inst_old,
+			  NOM_CHAM = 'VARI_NOEU',
+			  NOM_CMP = 'V1',
+			  OUVERTURE = 'NON',
+			  RECHERCHE = _F( GROUP_MA = 'DEDANS',
+		                          LONG_ORTH = 50,
+		                          LONG_REG = 1,
+		                          PAS = 1,
+		                          ANGL_MAX = 180,),);
+
+# IMPRESSION DE LA TABLE DU CHEMIN DE FISSURATION
+IMPR_TABLE( UNITE = 8, TABLE = TAB_FISS, FORMAT='TABLEAU', SEPARATEUR = ';', TITRE ='')
+
+# IMPRESSION DU MAILLAGE DU CHEMIN DE FISSURATION
+IMPR_RESU( FORMAT = 'MED',
+           UNITE = 80,
+           RESU = _F( MAILLAGE = MA_FISS),);
+'''
+
+##############################################
+#   CREATION DE LA TABLE FORCE-DEPLACEMENT   #
+##############################################
+
+# FORCES RESULTANTES SUR 'FC_HAUT'
+FPILO = POST_RELEVE_T( ACTION = _F( INTITULE = 'F_PILOTE',
+                                    OPERATION = 'EXTRACTION',   
+                                    GROUP_NO = 'FC_HAUT',
+                                    NOM_CHAM = 'FORC_NODA',
+                                    RESULTANTE = ('DX','DY'),
+                                    RESULTAT =  EVOL,
+                                    TOUT_ORDRE = 'OUI'),);
+
+# DEPLACEMENT DES FACES 'FC_HAUT' ET 'FC_BAS'
+U_HT = POST_RELEVE_T( ACTION = _F( INTITULE = 'DEPL',
+                                   OPERATION = 'MOYENNE_ARITH',
+                                   GROUP_NO = 'FC_HAUT',
+                                   NOM_CHAM = 'DEPL',
+                                   NOM_CMP = ('DX','DY'),
+                                   RESULTAT =  EVOL,
+                                   TOUT_ORDRE = 'OUI'),);
+
+U_BT = POST_RELEVE_T(ACTION = _F( INTITULE = 'DEPL',
+                                  OPERATION = 'MOYENNE_ARITH', 
+                                  GROUP_NO = 'FC_BAS',
+                                  NOM_CHAM = 'DEPL',
+                                  NOM_CMP = ('DX','DY'),
+                                  RESULTAT =  EVOL,
+                                  TOUT_ORDRE = 'OUI'),);
+
+#IMPR_TABLE( UNITE = 8, TABLE = FPILO)
+#IMPR_TABLE( UNITE = 8, TABLE = U_HT)
+#IMPR_TABLE( UNITE = 8, TABLE = U_BT)
+
+# CREATION DES TABLES DE DEPLACEMENTS X ET Y
+UHX = CALC_TABLE( TABLE = U_HT,
+                  ACTION = _F( OPERATION = 'FILTRE',
+                               NOM_PARA = 'CMP', VALE_K = 'DX'),);
+
+UHY = CALC_TABLE( TABLE = U_HT,
+                  ACTION = _F( OPERATION = 'FILTRE',
+                               NOM_PARA = 'CMP', VALE_K = 'DY'),);
+
+UBX = CALC_TABLE( TABLE = U_BT,
+                  ACTION = _F( OPERATION = 'FILTRE',
+                               NOM_PARA = 'CMP', VALE_K = 'DX'),);
+
+UBY = CALC_TABLE( TABLE = U_BT,
+                  ACTION = _F( OPERATION = 'FILTRE',
+                               NOM_PARA = 'CMP', VALE_K = 'DY'),);
+
+TUHX = CALC_TABLE( TABLE = UHX,
+                   ACTION = (_F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
+
+TUHX = CALC_TABLE( TABLE = TUHX,
+		   reuse = TUHX,
+                   ACTION = _F( OPERATION = 'RENOMME',
+                                NOM_PARA = ('MOYENNE','DEPLXH'),),);
+TUHY = CALC_TABLE( TABLE = UHY,
+                   ACTION = (_F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
+
+TUHY = CALC_TABLE( TABLE = TUHY,
+		   reuse = TUHY,
+                   ACTION = _F( OPERATION = 'RENOMME',
+                                NOM_PARA = ('MOYENNE','DEPLYH'),),);
+
+TUBX = CALC_TABLE( TABLE = UBX,
+                   ACTION = (_F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
+
+TUBX = CALC_TABLE( TABLE = TUBX,
+		   reuse = TUBX,
+                   ACTION = _F( OPERATION = 'RENOMME',
+                                NOM_PARA = ('MOYENNE','DEPLXB'),),);
+TUBY = CALC_TABLE( TABLE = UBY,
+                   ACTION = (_F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
+
+TUBY = CALC_TABLE( TABLE = TUBY,
+		   reuse = TUBY,
+                   ACTION = _F( OPERATION = 'RENOMME',
+                                NOM_PARA = ('MOYENNE','DEPLYB'),),);
+
+T_UX = CALC_TABLE( TABLE = TUHX,
+                   ACTION = _F( OPERATION = 'COMB',
+                                TABLE = TUBX,
+                                NOM_PARA = 'NUME_ORDRE'),);  
+
+T_UY = CALC_TABLE( TABLE = TUHY,
+                   ACTION = _F( OPERATION = 'COMB',
+                                TABLE = TUBY,
+                                NOM_PARA = 'NUME_ORDRE'),);
+
+#IMPR_TABLE(UNITE = 8, TABLE = T_UX)
+#IMPR_TABLE(UNITE = 8, TABLE = T_UY)
+
+# CREATION DE LA TABLE DE DEPLACEMENT
+DIFFX = FORMULE( NOM_PARA = ('DEPLXH', 'DEPLXB'),
+                 VALE = 'DEPLXH-DEPLXB');  
+
+DIFFY = FORMULE( NOM_PARA = ('DEPLYH', 'DEPLYB'),
+                 VALE = 'DEPLYH-DEPLYB'); 
+
+T_UX = CALC_TABLE( TABLE = T_UX,
+		   reuse = T_UX,
+                   ACTION = _F( OPERATION = 'OPER',
+                                FORMULE = DIFFX,
+                                NOM_PARA = 'DEPLX'),);
+
+T_UY = CALC_TABLE( TABLE = T_UY,
+		   reuse = T_UY,
+                   ACTION = _F( OPERATION = 'OPER',
+                                FORMULE = DIFFY,
+                                NOM_PARA = 'DEPLY'),);
+
+T_U = CALC_TABLE( TABLE = T_UX,
+                  ACTION = _F( OPERATION = 'COMB',
+                               TABLE = T_UY,
+                               NOM_PARA = 'NUME_ORDRE'),);
+
+#IMPR_TABLE(UNITE = 8, TABLE = T_U)
+
+# CREATION DE LA COLONNE DES FORCES                           
+T_F = CALC_TABLE( TABLE = FPILO,
+                  ACTION = _F( OPERATION = 'EXTR',
+                               NOM_PARA = ('NUME_ORDRE','DX','DY',),),); 
+
+#IMPR_TABLE(UNITE = 8, TABLE = T_F) 
+
+# RECALAGE DES EFFORTS POUR UNE EPASSEUR DE 50 mm (POUR COMPARAISON A L'EXPERIMENTAL)
+SCALE_FX = FORMULE( NOM_PARA = ('DX'), VALE = 'DX*50./1000')
+SCALE_FY = FORMULE( NOM_PARA = ('DY'), VALE = 'DY*50./1000')
+
+T_F = CALC_TABLE( TABLE = T_F,
+		  reuse = T_F,
+                  ACTION = _F( OPERATION = 'OPER',
+                               FORMULE = SCALE_FX,
+                               NOM_PARA = 'FORCEX'),);
+
+T_F = CALC_TABLE( TABLE = T_F,
+		  reuse = T_F,
+                  ACTION = _F( OPERATION = 'OPER',
+                               FORMULE = SCALE_FY,
+                               NOM_PARA = 'FORCEY'),);
+
+#IMPR_TABLE(UNITE = 8, TABLE = T_F)
+
+# CREATION DE INST_FORCE_DEPL
+T_FU = CALC_TABLE( TABLE = T_F,
+                   ACTION = _F( OPERATION = 'COMB',
+                                TABLE = T_U,
+                                NOM_PARA = 'NUME_ORDRE'),);
+
+#IMPR_TABLE(UNITE = 8, TABLE = T_FU) 
+
+# CREATION DES TABLES FORCES-DEPL EN CISAILLEMENT ET EN TRACTION
+T_FUX = CALC_TABLE( TABLE = T_FU,
+                    ACTION = _F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('DEPLX','FORCEX'),),);
+T_FUY = CALC_TABLE( TABLE = T_FU,
+                    ACTION = _F( OPERATION = 'EXTR',
+                                 NOM_PARA = ('DEPLY','FORCEY',),),);
+
+# IMPRESSION DES TABLES FORCE-DEPLACEMENT
+#IMPR_TABLE(UNITE = 8, TABLE = T_FUX, FORMAT_R = 'E13.6') 
+#IMPR_TABLE(UNITE = 8, TABLE = T_FUY, FORMAT_R = 'E13.6')
+
+# RECUPERATION DES FORCES OBTENUES EXPERIMENTALEMENT
+F_EXP = LIRE_TABLE( UNITE = 29, FORMAT = 'ASTER', SEPARATEUR = ' ')
+#IMPR_TABLE( TABLE = F_EXP)
+
+#######################################################
+#   TESTS DE COMPARAISON AVEC LA THESE DE A.CARPIUC   #
+#######################################################
+
+# !! ATTENTION !! TESTS VALABLE POUR inst_fix = pas_calcul = 8 UNIQUEMENT !
+
+# CISAILLEMENT 
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.02,
+            VALE_CALC = 1.905322E+00,
+            VALE_REFE = 1.87961E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -1.091707E-02,),);
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.04,
+            VALE_CALC = 2.779776E+00,
+            VALE_REFE = 2.86711E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -2.882857E-02),); 
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.06,
+            VALE_CALC = 4.152941E+00,
+            VALE_REFE = 3.92885E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -3.521950E-02),); 
+
+# TRACTION
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.09,
+            VALE_CALC = -1.069311E+01,
+            VALE_REFE = -9.8967E+00,
+            NOM_PARA = 'FORCEY',
+            TABLE = T_FUY,
+            FILTRE =_F( NOM_PARA = 'DEPLY',
+                        VALE = -4.723722E-03),);
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.01,
+            VALE_CALC = -1.100455E+01,
+            VALE_REFE = -1.1032E+01,
+            NOM_PARA = 'FORCEY',
+            TABLE = T_FUY,
+            FILTRE =_F( NOM_PARA = 'DEPLY',
+                        VALE = -3.986515E-03),);   
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.02,
+            VALE_CALC = -1.097263E+01,
+            VALE_REFE = -1.0857E+01,
+            NOM_PARA = 'FORCEY',
+            TABLE = T_FUY,
+            FILTRE =_F( NOM_PARA = 'DEPLY',
+                        VALE = -3.443790E-03),);   
+
+###################################
+#   TESTS U_F DE NON REGRESSION   #
+###################################
+
+TEST_TABLE( VALE_CALC = 1.122425E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -4.796433E-03),);
+
+'''
+#############################################
+#   IMPRESSION DES RESULTATS AU FORMAT MED  #
+#############################################
+
+IMPR_RESU( FORMAT = 'MED',
+           UNITE = 81,
+           RESU = (_F( MAILLAGE = MAIL,
+	               RESULTAT = EVOL,
+	               NOM_CHAM = 'DEPL',
+	               TOUT_ORDRE = 'OUI',),
+	           _F( RESULTAT = EVOL,
+                       NOM_CHAM = 'VARI_ELGA',
+                       NOM_CMP = ('V1','V3',),),),);
+'''
+
+FIN();
