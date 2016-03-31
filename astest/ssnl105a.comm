@@ -1,7 +1,7 @@
 #
 # TITRE CADRE DE BARRES HAUBANE.
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,88 +21,130 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
-MA=LIRE_MAILLAGE(  )
+MA=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=20)
 
-MO=AFFE_MODELE(  MAILLAGE=MA,AFFE=(
-#           GROUPE DE  MAILLE : MODELE CABLE
-                    _F(  GROUP_MA = 'GXXXXXX_CABLE',
-                           PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'CABLE'),
-#           GROUPE DE  MAILLE : MODELE POUTRE
-                         _F(  GROUP_MA = 'GXXXXXX_CADRE',
-                           PHENOMENE = 'MECANIQUE',
-                           MODELISATION = 'BARRE'))   )
+MO=AFFE_MODELE(
+    MAILLAGE=MA,
+    AFFE=(
+        #   GROUPE DE  MAILLE : MODELE CABLE
+        _F(GROUP_MA = 'GXXXXXX_CABLE', PHENOMENE = 'MECANIQUE', MODELISATION = 'CABLE'),
+        # GROUPE DE  MAILLE : MODELE BARRE
+        _F(GROUP_MA = 'GBARRE_CADRE', PHENOMENE = 'MECANIQUE', MODELISATION = 'BARRE'),
+        # GROUPE DE  MAILLE : MODELE BARRE
+        _F(GROUP_MA = 'GPOUTRE_CADRE', PHENOMENE = 'MECANIQUE', MODELISATION = 'POU_D_TGM'),
+    ),
+)
 
-CARELEM=AFFE_CARA_ELEM(   MODELE=MO,
-#     GROUPE DE MAILLE : MODELE CABLE
-                      CABLE=_F(  GROUP_MA = 'GXXXXXX_CABLE',
-                              SECTION = 1.00E-04,N_INIT=5000.0),
-#     GROUPE DE MAILLE : MODELE BARRE
-                      BARRE=_F(  GROUP_MA = 'GXXXXXX_CADRE',
-                              SECTION = 'GENERALE',
-                              CARA = 'A',
-                              VALE = 1.00E-04)   )
+MASEC=LIRE_MAILLAGE(FORMAT='MED',UNITE=22)
 
-MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 2.10E+11,  NU = 0.3)   )
+GF=DEFI_GEOM_FIBRE(
+    SECTION=_F(
+        GROUP_FIBRE='SECTR', TOUT_SECT="OUI", MAILLAGE_SECT=MASEC, COOR_AXE_POUTRE=(0.,0.0),
+    ),
+)
 
-MAT2=DEFI_MATERIAU(   ELAS=_F(E = 2.10E+11,NU=0.E0),
-                      CABLE=_F(EC_SUR_E = 0.E0),
-                  )
 
-CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,AFFE=(
-                          _F(  GROUP_MA = 'GXXXXXX_CADRE', MATER = MAT1),
-                          _F(  GROUP_MA = 'GXXXXXX_CABLE', MATER = MAT2))  )
+CARELEM=AFFE_CARA_ELEM(
+    MODELE=MO,
+    # GROUPE DE MAILLE : MODELE CABLE
+    CABLE=_F(GROUP_MA = 'GXXXXXX_CABLE', SECTION = 1.00E-04,N_INIT=5000.0),
+    # GROUPE DE MAILLE : MODELE BARRE
+    BARRE=_F(GROUP_MA = 'GBARRE_CADRE', SECTION = 'GENERALE', CARA = 'A', VALE = 1.00E-04),
+    # GROUPE DE MAILLE : MODELE POUTRE
+    POUTRE=_F(SECTION= 'GENERALE', GROUP_MA=('GPOUTRE_CADRE',),
+           CARA= ( 'A','IY','IZ','AY', 'AZ','EY','EZ','JX', 'JG','IYR2','IZR2'),
+           VALE= ( 1.000000E-04, 8.333333E-10, 8.333333E-10, 1.190080E+00, 1.190080E+00,
+                   0.000000e+00, 0.000000e+00, 1.384951E-09,
+                   7.435549E-15,0.000000e+00,0.000000e+00 ),
+    ),
+    GEOM_FIBRE=GF,
+    MULTIFIBRE=_F(GROUP_MA='GPOUTRE_CADRE',GROUP_FIBRE='SECTR',
+                  PREC_AIRE=1.0E-06, PREC_INERTIE=1.0E-02,),
+)
 
-FORCE=AFFE_CHAR_MECA(  MODELE=MO,DDL_IMPO=(
-                   _F(  NOEUD = ('N01', 'N02', 'N03', 'N04',), DZ = 0.0),
-                            _F(  NOEUD = ('N01', 'N04',),         DY = 0.0),
-                            _F(  NOEUD = ('N01',),             DX = 0.0)),
-                   FORCE_NODALE=_F(  NOEUD = 'N03', FX = 1000.)
-                        )
+MAT1=DEFI_MATERIAU( ELAS=_F( E = 2.10E+11,  NU = 0.3)  )
 
-LISNT=DEFI_LIST_REEL(     DEBUT=0.,
-                          INTERVALLE=_F(  JUSQU_A = 5., PAS = 1.)  )
+MAT2=DEFI_MATERIAU(
+    ELAS=_F(E = 2.10E+11,NU=0.E0),
+    CABLE=_F(EC_SUR_E = 0.E0),
+)
 
-FCTMUL=DEFI_FONCTION(   NOM_PARA='INST',
-                           VALE=( 0.0,   0.0,
-                                  1.0,   0.5,
-                                  2.0,   1.0,  )   )
+COMPF=DEFI_COMPOR(
+    GEOM_FIBRE=GF,MATER_SECT=MAT1,
+    MULTIFIBRE=(
+        _F(GROUP_FIBRE=('SECTR',), MATER=MAT1, RELATION='ELAS'),
+    )
+)
+
+CHMAT = AFFE_MATERIAU( MAILLAGE= MA, MODELE= MO,
+    AFFE=(
+        _F( GROUP_MA= ('GXXXXXX_CABLE'), MATER= MAT2 ),
+        _F( GROUP_MA= ('GBARRE_CADRE'),  MATER= MAT1 ),
+        _F( GROUP_MA= ('GPOUTRE_CADRE'), MATER= MAT1 ),
+    ),
+    AFFE_COMPOR=_F(GROUP_MA=('GPOUTRE_CADRE'),COMPOR=COMPF)
+)
+
+
+FORCE=AFFE_CHAR_MECA(
+    MODELE=MO,
+    DDL_IMPO=(
+        _F(DZ = 0.0,          NOEUD = ('N01', 'N02', 'N03', 'N04',),),
+        _F(DY = 0.0,          NOEUD = ('N01', 'N04',),),
+        _F(DX = 0.0, DRY=0.0, NOEUD = ('N01',),)
+    ),
+    FORCE_NODALE=_F(  NOEUD = 'N03', FX = 1000.)
+)
+
+LISNT=DEFI_LIST_REEL(
+    DEBUT=0.,
+    INTERVALLE=_F(  JUSQU_A = 5., PAS = 1.)
+)
+
+LLISNT=DEFI_LIST_INST(
+    DEFI_LIST=_F(LIST_INST=LISNT ),
+)
+
+FCTMUL=DEFI_FONCTION(
+    NOM_PARA='INST',
+    VALE=(  0.0,   0.0,
+            1.0,   0.5,
+            2.0,   1.0,  )
+)
 
 RESU1=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CHMAT,
-                         CARA_ELEM=CARELEM,
-                             EXCIT=_F(
-                CHARGE = FORCE,
-                FONC_MULT = FCTMUL),
-                         INCREMENT=_F(
-                LIST_INST = LISNT,
-                NUME_INST_FIN = 2),
-                         COMPORTEMENT=(
-                         _F(
-                GROUP_MA = ( 'GXXXXXX_CABLE',  ),
-                RELATION = 'CABLE',
-                DEFORMATION = 'GROT_GDEP'),
-                         _F(
-                GROUP_MA = ( 'GXXXXXX_CADRE',  ),
-                RELATION = 'ELAS'),
-                                     ),
-                            NEWTON=_F(
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                ITER_GLOB_MAXI = 10,
-                RESI_GLOB_RELA = 1.E-6),
-                             TITRE=(
-                  ' STRUCTURE A HAUBAN ',  ),
-                     RECH_LINEAIRE=_F(
-                ITER_LINE_MAXI = 2)
-              )
+    MODELE=MO,
+    CHAM_MATER=CHMAT,
+    CARA_ELEM=CARELEM,
+    EXCIT=_F(CHARGE = FORCE,FONC_MULT = FCTMUL),
+    INCREMENT=_F(LIST_INST = LLISNT, NUME_INST_FIN = 2),
+    COMPORTEMENT=(
+        _F(GROUP_MA = ( 'GXXXXXX_CABLE',  ), RELATION = 'CABLE', DEFORMATION = 'GROT_GDEP'),
+        _F(RELATION= 'MULTIFIBRE', DEFORMATION= 'PETIT', GROUP_MA=('GPOUTRE_CADRE',)),
+        _F(GROUP_MA = ( 'GBARRE_CADRE',  ), RELATION = 'ELAS'),
+    ),
+    NEWTON=_F(REAC_ITER = 1),
+    CONVERGENCE=_F(ITER_GLOB_MAXI = 10,RESI_GLOB_RELA = 1.E-6),
+    TITRE=(' STRUCTURE A HAUBAN ',  ),
+    RECH_LINEAIRE=_F(ITER_LINE_MAXI = 2)
+)
 
-RESU1=CALC_CHAMP(reuse=RESU1,CONTRAINTE=('SIEF_ELNO'),RESULTAT=RESU1)
+RESU1=CALC_CHAMP(reuse=RESU1, CONTRAINTE=('SIEF_ELNO'),RESULTAT=RESU1)
 
+RESU1=CALC_CHAMP(reuse=RESU1, FORCE=('FORC_NODA'), RESULTAT=RESU1,
+    CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,)
 
-RESU1=CALC_CHAMP(reuse=RESU1,  FORCE='FORC_NODA',
-                        RESULTAT=RESU1)
+RESU1=CALC_CHAMP(reuse=RESU1, CONTRAINTE=('EFGE_ELNO'),RESULTAT=RESU1,
+    CHAM_MATER=CHMAT, CARA_ELEM=CARELEM,)
+
+# Pour tester les repères locaux
+IMPR_RESU(FORMAT='MED',
+    UNITE=82,
+    CONCEPT=_F(CARA_ELEM=CARELEM, REPERE_LOCAL='ELNO',MODELE=MO,)
+)
+
+#IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=RESU1))
+
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    PARA='INST',
@@ -138,12 +180,12 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    PRECISION=3.E-4,
                    MAILLE='N03N04',),
                 _F(NUME_ORDRE=2,
-                   POINT=1,
+                   POINT=1, SOUS_POINT=20,
                    RESULTAT=RESU1,
                    NOM_CHAM='SIEF_ELGA',
-                   NOM_CMP='N',
+                   NOM_CMP='SIXX',
                    VALE_REFE=0.0,
-                   VALE_CALC=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
@@ -154,7 +196,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
                    VALE_REFE=0.0,
-                   VALE_CALC=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
@@ -165,7 +207,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
                    VALE_REFE=0.0,
-                   VALE_CALC=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
@@ -176,11 +218,73 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    NOM_CHAM='SIEF_ELGA',
                    NOM_CMP='N',
                    VALE_REFE=0.0,
-                   VALE_CALC=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
                    REFERENCE='ANALYTIQUE',
                    PRECISION=1.E-3,
                    CRITERE='ABSOLU',
                    MAILLE='N04N02',),
+                ),
+          )
+
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=1414.2,
+                   VALE_CALC=1413.9558649235,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=3.E-4,
+                   MAILLE='N01N03',NOEUD='N01',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=-1000.0,
+                   VALE_CALC=-999.7701809567,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=3.E-4,
+                   MAILLE='N03N04',NOEUD='N03',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N01N02',NOEUD='N01',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N02N03',NOEUD='N02',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N04N01',NOEUD='N04',),
+                _F(NUME_ORDRE=2,
+                   RESULTAT=RESU1,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOM_CMP='N',
+                   VALE_REFE=0.0,
+                   VALE_CALC=0.0, ORDRE_GRANDEUR=1.0,
+                   REFERENCE='ANALYTIQUE',
+                   PRECISION=1.E-3,
+                   CRITERE='ABSOLU',
+                   MAILLE='N04N02',NOEUD='N04',),
                 ),
           )
 
@@ -195,6 +299,5 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PRECISION=3.E-4,
                   ),
           )
-
 FIN( )
 #
