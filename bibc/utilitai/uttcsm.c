@@ -46,6 +46,8 @@
 #endif
 
 
+static DOUBLE _cache_t0 = -1.;
+
 void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 {
     DOUBLE elaps;
@@ -65,12 +67,16 @@ void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
    Une implémentation : http://www.suacommunity.com/dictionary/gettimeofday-entry.php
 */
     time_t t1, t0, *pt1 ;
-    t0=0;
-    t1=time(NULL);
-    elaps=difftime(t1,t0);
+    t0 = 0;
+    t1 = time(NULL);
+    elaps = difftime(t1,t0);
 #endif
 
-    t_csm[2]=elaps;
+    /* first call, store t0 */
+    if ( _cache_t0 < 0. ) {
+        _cache_t0 = elaps;
+    }
+    t_csm[2] = elaps - _cache_t0;
 
 
 #ifdef _POSIX
