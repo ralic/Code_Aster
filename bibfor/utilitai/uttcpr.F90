@@ -1,7 +1,7 @@
 subroutine uttcpr(nommes, nbv, temps)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,11 +19,11 @@ subroutine uttcpr(nommes, nbv, temps)
 ! person_in_charge: jacques.pellet at edf.fr
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
+!
     character(len=*) :: nommes
     integer :: nbv
     real(kind=8) :: temps(nbv)
@@ -36,10 +36,10 @@ subroutine uttcpr(nommes, nbv, temps)
 ! IN  NBV       : DIMENSION DU TABLEAU TEMPS
 ! OUT TEMPS     : TABLEAU CONTENANT LES MESURES
 ! ----------------------------------------------------------------------
-!    TEMPS(1) TEMPS CPU RESTANT EN SECONDES
+!    TEMPS(1) TEMPS RESTANT EN SECONDES
 !    TEMPS(2) NOMBRE D'APPEL A DEBUT/FIN
 !    TEMPS(3) TEMPS CPU TOTAL
-!    TEMPS(4) TEMPS CPU MOYEN
+!    TEMPS(4) TEMPS ELAPSED MOYEN
 !    TEMPS(5) TEMPS CPU USER TOTAL
 !    TEMPS(6) TEMPS CPU SYSTEME
 !    TEMPS(7) TEMPS ELAPSED
@@ -71,7 +71,7 @@ subroutine uttcpr(nommes, nbv, temps)
     else
         ljev=.true.
         call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
-        if (indi .eq. 0) goto 9999
+        if (indi .eq. 0) goto 999
         goto 9998
     endif
     ASSERT(indi.le.indmax)
@@ -83,15 +83,15 @@ subroutine uttcpr(nommes, nbv, temps)
 9998 continue
     if (ljev) then
         call jeveuo('&&UTTCPU.VALMES', 'L', jvalms)
-        do 1 k = 1, nbv
+        do k = 1, nbv
             temps(k)= zr(jvalms-1+7*(indi-1)+k)
-  1     continue
+        end do
     else
-        do 2 k = 1, nbv
+        do k = 1, nbv
             temps(k)= valmes(7*(indi-1)+k)
-  2     continue
+        end do
     endif
 !
 !
-9999 continue
+999 continue
 end subroutine
