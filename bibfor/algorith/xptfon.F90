@@ -3,7 +3,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                   jbas, jtail, fiss, goinop, listpt,&
                   orient, typdis, nbmai, operation_opt)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -341,6 +341,8 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln,&
                     zr(jbas-1+2*ndim*(ipt-1)+k+ndim)= glt(k)
                 endif
             end do
+!           l'ecriture des numeros des sommets de la face contenant M dans zr(jfon) est
+!           indispensable pour le remplissage du vecteur .NOFACPTFON dans xffcr et xlmail
             do k = 1, 3
                 zr(jfon-1+11*(ipt-1)+4+k) = zi( jconx1-1+zi(jconx2+ nmaabs-1)+fa(ifq,k)-1 )
                 zr(jfon-1+11*(ipt-1)+8+k) = indptf(k)

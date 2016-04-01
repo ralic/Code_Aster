@@ -1,9 +1,9 @@
 subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
-                  nmafon, listpt, goinop, jfon, jbas,&
+                  nmafon, listpt, goinop, jfon, jnofaf, jbas,&
                   jtail, fonmul, nbfond)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 #include "asterfort/xffcr.h"
 #include "asterfort/xffext.h"
     integer :: nfon, jfono, jbaso, jtailo, nmafon, jfon, jbas, jtail
-    integer :: nbfond
+    integer :: jnofaf, nbfond
     character(len=19) :: info, listpt
     character(len=24) :: fonmul
     aster_logical :: goinop
@@ -54,6 +54,9 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
 !  SORTIES :
 !     JFON  :  ADRESSE DES POINTS DU FOND DE FISSURE ORDONNÉS
+!     JNOFAF:  ADRESSE DES NUMERO DES NOEUDS DES FACES DES ELEMENTS 
+!              PARENTS QUI CONTIENNENT LES POINTS DU FOND DE FISSURE
+!              ORDONNES
 !     JBAS  :  ADRESSE DES DIRECTIONS DE PROPAGATION ORDONNÉES
 !     JTAIL :  ADRESSE DES TAILLES MAXIMALES DE MAILLES ORDONNÉES
 !     FONMUL:  VECTEUR CONTENANT LE DEBUT ET L'ARRIVEE DE
@@ -206,9 +209,10 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
 !
     call utmess('I', 'XFEM_34', si=nbfond)
 !
-!     ORDONNANCEMENT DE FONDFISS, DE BASEFOND ET DE FOND.TAILLE_R
+!     ORDONNANCEMENT DE FONDFISS, DE NOFACPTFON, DE BASEFOND 
+!     ET DE FOND.TAILLE_R
     call xffcr(nfon, jfono, jbaso, jtailo, jtabpt,&
-               typfon, jfon, jbas, jtail)
+               typfon, jfon, jnofaf, jbas, jtail)
 !
     if (goinop) then
         call jedetr(ptextr)

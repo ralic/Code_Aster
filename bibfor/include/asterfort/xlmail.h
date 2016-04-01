@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                       jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                      jfon, nbfond, jbas, jtail, jfonmu,&
+                      jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
                       ndim, goinop)
         character(len=8) :: fiss
         integer :: nmaen1
@@ -33,6 +33,7 @@ interface
         integer :: jmafon
         integer :: nfon
         integer :: jfon
+        integer :: jnofaf
         integer :: nbfond
         integer :: jbas
         integer :: jtail

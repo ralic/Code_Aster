@@ -3,7 +3,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                   lismae, lisnoe, operation_opt)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
     integer :: nxmafi, nxptff
 !
-    integer :: nbno, ino, imae, nmafon, jfon, jtail, nfon
+    integer :: nbno, ino, imae, nmafon, jfon, jtail, nfon, jnofaf
     integer :: jfono, jbaso, jtailo
     integer :: jcoor, jstano, jfonmu
     integer :: jensv, jensl, nbma, nbmai
@@ -291,6 +291,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !     VECTEURS TEMPORAIRES DIMENSIONNES A NFON+1 AU CAS OU ON A UN
 !     FOND FERME
     call wkvect('&&XENRCH.FONFI', 'V V R', 4*(nfon+1), jfon)
+    call wkvect('&&XENRCH.NOFACPTFON', 'V V I', 4*(nfon+1), jnofaf)
     call wkvect('&&XENRCH.BASFO', 'V V R', 2*ndim*(nfon+1), jbas)
     call wkvect('&&XENRCH.TAILR', 'V V R', nfon+1, jtail)
 !
@@ -307,12 +308,12 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
         if(operation.eq.'RIEN'.and.typdis.eq.'COHESIF') then
             call xoriff(info, nfon, jfono, jbaso, jtailo,&
-                        nbmai, listpt, goinop, jfon, jbas,&
+                        nbmai, listpt, goinop, jfon, jnofaf, jbas,&
                         jtail, fonmul, nbfond)
             nmafon = nbmai
         else
             call xoriff(info, nfon, jfono, jbaso, jtailo,&
-                        nmafon, listpt, goinop, jfon, jbas,&
+                        nmafon, listpt, goinop, jfon, jnofaf, jbas,&
                         jtail, fonmul, nbfond)
         endif
 !
@@ -320,7 +321,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !   SI LE FOND EST FERME
     if (nfono .eq. (nfon-1)) call utmess('I', 'XFEM_60')
 !
-!     REMPLISSAGE DE FONDFISS ET DE BASEFOND
+!     REMPLISSAGE DE FONDFISS, DE BASEFOND ET DE NOFACPTFON
 !     STOCKAGE DES FONDS MULTIPLES EN 2D
 !       EN 2D, CHAQUE POINT DE FOND DE FISSURE EST UN FOND A LUI SEUL
 !       IL Y A DONC AUTANT DE FONDS MULTIPLES QUE DE POINTS (1 OU 2)
@@ -335,6 +336,9 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
                 zr(jfon-1+4*(i-1)+k) = zr(jfono-1+11*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k) = zr(jbaso-1+4*(i-1)+k)
                 zr(jbas-1+4*(i-1)+k+2) = zr(jbaso-1+4*(i-1)+k+2)
+            end do
+            do k = 1, 4
+                zi(jnofaf-1+4*(i-1)+k) = int( zr(jfono-1+11*(i-1)+4+k) )
             end do
             zr(jtail-1+i) = zr(jtailo-1+i)
             zi(jfonmu-1+2*(i-1)+1)=i
@@ -381,7 +385,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
     call xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                 jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                jfon, nbfond, jbas, jtail, jfonmu,&
+                jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
                 ndim, goinop)
 !
     if (.not.goinop) then
@@ -395,6 +399,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj,&
 !
     call jedetr(cnxinv)
     call jedetr('&&XENRCH.FONFIS')
+    call jedetr('&&XENRCH.NOFACPTFON')
     call jedetr('&&XENRCH.MAFOND')
     call jedetr('&&XENRCH.MAENR1')
     call jedetr('&&XENRCH.MAENR2')

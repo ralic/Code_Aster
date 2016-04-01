@@ -39,7 +39,6 @@ subroutine op0139()
 #include "asterfort/wkvect.h"
 #include "asterfort/xchavi.h"
 #include "asterfort/xdetfo.h"
-#include "asterfort/xoriff.h"
 #include "asterfort/xptfon.h"
 #include "asterfort/rs_getfirst.h"
 #include "jeveux.h"

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine xoriff(info, nfon, jfono, jbaso, jtailo,&
-                      nmafon, listpt, goinop, jfon, jbas,&
+                      nmafon, listpt, goinop, jfon, jnofaf, jbas,&
                       jtail, fonmul, nbfond)
         character(len=19) :: info
         integer :: nfon
@@ -30,6 +30,7 @@ interface
         character(len=19) :: listpt
         aster_logical :: goinop
         integer :: jfon
+        integer :: jnofaf
         integer :: jbas
         integer :: jtail
         character(len=24) :: fonmul

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
-                     typfon, jfon, jbas, jtail)
+                     typfon, jfon, jnofaf, jbas, jtail)
         integer :: nfon
         integer :: jfono
         integer :: jbaso
@@ -25,6 +25,7 @@ interface
         integer :: jindpt
         character(len=19) :: typfon
         integer :: jfon
+        integer :: jnofaf
         integer :: jbas
         integer :: jtail
     end subroutine xffcr

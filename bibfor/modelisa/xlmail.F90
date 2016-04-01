@@ -1,10 +1,10 @@
 subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                   jmaen1, jmaen2, jmaen3, jmafon, nfon,&
-                  jfon, nbfond, jbas, jtail, jfonmu,&
+                  jfon, jnofaf, nbfond, jbas, jtail, jfonmu,&
                   ndim, goinop)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
     integer :: nmaen1, nmaen2, nmaen3, nmafon
     integer :: jmaen1, jmaen2, jmaen3, jmafon
     integer :: nfon
-    integer :: jfon, jbas, jtail, jfonmu
+    integer :: jfon, jnofaf, jbas, jtail, jfonmu
     integer :: nbfond, ndim
     aster_logical :: goinop
 !
@@ -56,6 +56,8 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 ! IN  JMAFON : POINTEUR SUR MAILLES CONTENANT LE FOND DE FISSURE
 ! IN  NFON   : NOMBRE DE POINTS DE FOND DE FISSURE
 ! IN  JFON   : POINTEUR SUR POINTS DE FOND DE FISSURE
+! IN  JNOFAF : POINTEUR SUR NUMERO DES NOEUDS DES FACES DES ELEMENTS 
+!              PARENTS QUI CONTIENNENT LES POINTS DU FOND DE FISSURE
 ! IN  JBAS   : POINTEUR SUR DIRECTION DE PROPAGATION
 ! IN  JTAIL  : POINTEUR SUR TAILLES MAXIMALES DE MAILLES
 ! IN  NBFOND : NOMBRE DE FONDS DE FISSURES DETECTES
@@ -64,10 +66,10 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
 !              .FALSE. SINON
 !
     character(len=24) :: xheav, xctip, xhect, xmafon, xfonfi, xbasfo, xfonmu
-    character(len=24) :: xtailr
+    character(len=24) :: xtailr, xnofaf
     character(len=24) :: xfonfg
 !
-    integer :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta
+    integer :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta, jnf
     integer :: i, k
 !
 ! ----------------------------------------------------------------------
@@ -82,6 +84,7 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
         xhect = fiss(1:8)//'.MAILFISS.HECT'
         xmafon = fiss(1:8)//'.MAILFISS.MAFOND'
         xfonfi = fiss(1:8)//'.FONDFISS'
+        xnofaf = fiss(1:8)//'.NOFACPTFON'
         xbasfo = fiss(1:8)//'.BASEFOND'
         xtailr = fiss(1:8)//'.FOND.TAILLE_R'
         xfonmu = fiss(1:8)//'.FONDMULT'
@@ -131,6 +134,13 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon,&
                     zr(jfo-1+4*(i-1)+k) = zr(jfon-1+4*(i-1)+k)
 850             continue
 860         continue
+!
+            call wkvect(xnofaf, 'G V I', 4*nfon, jnf)
+            do i = 1, nfon
+                do k = 1, 4
+                    zi(jnf-1+4*(i-1)+k) = zi(jnofaf-1+4*(i-1)+k)
+                enddo
+            enddo
 !
             call wkvect(xbasfo, 'G V R', 2*ndim*nfon, jba)
             do 940 i = 1, nfon

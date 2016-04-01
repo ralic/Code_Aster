@@ -1,8 +1,8 @@
 subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
-                 typfon, jfon, jbas, jtail)
+                 typfon, jfon, jnofaf, jbas, jtail)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
     integer :: nfon, jfono, jbaso, jtailo, jindpt, jfon, jbas, jtail
+    integer :: jnofaf
     character(len=19) :: typfon
 !
 ! ----------------------------------------------------------------------
@@ -33,6 +34,8 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 !
 !              ORDONNANCEMENT DES VECTEURS BASEFOND, FONDFISS ET
 !              FOND.TAILLE_R
+!
+!              REMPLISSAGE ET ORDONNANCEMENT DU VECTEUR NOFACPTFON
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,6 +48,9 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 !     TYPFON:  TYPE DU FOND DE FISSURE (OUVERT OU FERME)
 !
 ! OUT JFON  :  ADRESSE DES POINTS DU FOND DE FISSURE ORDONNÉS
+!     JNOFAF:  ADRESSE DES NUMERO DES NOEUDS DES FACES DES ELEMENTS 
+!              PARENTS QUI CONTIENNENT LES POINTS DU FOND DE FISSURE
+!              ORDONNES (VECTEUR NOFACPTFON)
 !     JBAS  :  ADRESSE DES DIRECTIONS DE PROPAGATION ORDONNÉES
 !     JTAIL :  ADRESSE DES TAILLES MAXIMALES DE MAILLES ORDONNÉES
 !
@@ -63,12 +69,14 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
         do 11 k = 1, 3
 !
             zr(jfon-1+4*(ipt-1)+k) = zr(jfono-1+11*(indipt-1)+k)
+            zi(jnofaf-1+4*(ipt-1)+k) = int( zr(jfono-1+11*(indipt-1)+4+k) )
             zr(jbas-1+6*(ipt-1)+k) = zr(jbaso-1+6*(indipt-1)+k)
             zr(jbas-1+6*(ipt-1)+k+3) = zr(jbaso-1+6*(indipt-1)+3+k)
 !
 11      continue
 !
         zr(jfon-1+4*(ipt-1)+4) = zr(jfono-1+11*(indipt-1)+4)
+        zi(jnofaf-1+4*(ipt-1)+4) = int( zr(jfono-1+11*(indipt-1)+8) )
         zr(jtail-1+ipt) = zr(jtailo-1+indipt)
 !
 10  continue
@@ -81,6 +89,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
         do 20 k = 1, 3
 !
             zr(jfon-1+4*(nfon-1)+k) = zr(jfon-1+4*(1-1)+k)
+            zi(jnofaf-1+4*(nfon-1)+k) = zi(jnofaf-1+4*(1-1)+k)
             zr(jbas-1+6*(nfon-1)+k) = zr(jbas-1+6*(1-1)+k)
             zr(jbas-1+6*(nfon-1)+k+3) = zr(jbas-1+6*(1-1)+3+k)
 !
@@ -91,6 +100,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
 !
         zr(jfon-1+4*(nfon-1)+4)= zr(jfon-1+4*(nfon-2)+4) + padist(3,m,&
         p)
+        zi(jnofaf-1+4*(nfon-1)+4) = zi(jnofaf-1+4*(1-1)+4)
         zr(jtail-1+nfon) = zr(jtail-1+1)
 !
     endif
