@@ -1,0 +1,8 @@
+TEST
+TEST
+C101	Cycle			Repere	Ro			XG1	XG2	XG3	XG4	XG5	XG6	XG7	XG8	XG9	XG10	YG1	YG2	YG3	YG4	YG5	YG6	YG7	YG8	YG9	YG10		Milieu	Min X	Max X	CC X	Min Y	Max Y	CC Y	Forme X	Forme Y	Forme
+A02	1			FX0V0X	2.1			0	0.	0	0.	2.	0	0.	0	0.	0	0	0.	0	0.	0.			0	0.	0	0.						0		AF3G		-1.1		0.4		1.6		-2.1		0		2.1		C		C		2C
+B01	1			FX0V0Y	3.3			0	0.	0	0.	0.	0	0.	0	0.	0	0	0.	0	0.	-2.			0	0.	0	0.					0		AF3G		-1		0.5		1.5		-3.1		0		3.1		S		C		CS
+B02	2			FX0V0N	3.6			0	0.	0	0.	0.	0	0.	0	0.	0	0	0.	0	0.	0.			0	0.	0	0.					0		AFA		-2.4		0.4		2.7		-3.3		0		3.3		C		C		2C
+B03	2			FX0V0M	3.3			0	0.	0	0.	0.	0	0.	0	0.	0	0	0.	0	0.	2.			0	0.	0	0.					0		AFA		-2.6		0.3		2.9		-2.4		0		2.4		C		C		2C
+C02	2			FX0RH3	3.6			0	0.	0	0.	-2.	0	0.	0	0.	0	0	0.	0	0.	0.			0	0.	0	0.					0		AF3G		-2		0		2		-3.1		0		3.1		C		C		2C

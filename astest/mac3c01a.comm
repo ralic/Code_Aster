@@ -1,0 +1,116 @@
+# TITRE  - VALIDATION DES COMMANDES CALC_MAC3COEUR POUR LE CALCUL DE LA DEFORMATION DES AC
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2013  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+#
+# COMMENTAIRE SUR LES ASPECTS SOLVEURS LINEAIRES DE CE CAS-TEST
+# (APPELES VIA STAT_NON_LINE)
+# CE CAS TEST ILLUSTRE L'INTERET DE LA VALEUR 'NON' DE l'OPTION 
+# SOLVEUR/ELIM_LAGR. DANS LES CAS DE FIGURES (COMME ICI) COMPORTANT
+# BEAUCOUP DE LAGRANGES (> 25% DDLS TOTAL). ON A SOUVENT INTERET A 
+# PASSER CETTE OPTION DE 'OUI' A 'NON'. A GAGNE EN CPU (ICI 35%).
+# ATTENTION, CELA PEUT OBLIGER PARFOIS A AUGMENTER LE PARAMETRE
+# SOLVEUR/PCENT_PIVOT.
+# person_in_charge: romeo.fernandes at edf.fr
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',PAR_LOT='NON')
+
+tabn = LIRE_TABLE(UNITE      = 38,
+                  FORMAT     = 'LIBRE',
+                  SEPARATEUR = '\t')
+
+MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+
+RESU_C1 = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
+                      TABLE_N     =  tabn,
+                      MAILLAGE_N  =  MA1,
+                      DEFORMATION = _F(UNITE_THYC   = 32,
+                                       NIVE_FLUENCE = 33))
+
+post_i = RESU_C1.LIST_PARA()['INST'][-1]
+
+TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=post_i,NOM_CMP=('DX','DY'),
+                         GROUP_MA=('CR_B_B', 'TG_B_B')))
+
+IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(
+           VALE_CALC=0.00721470094435,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N430',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.00325554867914,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TABLE=TAB,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N465',),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.00724015177262,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DX',
+           TYPE_TEST='MAX',
+           TABLE=TAB,
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.00325556014635,
+           TOLE_MACHINE=1.E-3,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=TAB,
+           )
+
+TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=0.004,NOM_CMP=('DX','DY','DZ'),
+                         GROUP_NO=('P_CUV','FIX'),))
+
+#IMPR_TABLE(TABLE=TAB2)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.023437033514875,
+           VALE_REFE=-0.023437034,
+           NOM_PARA='DX',
+           TABLE=TAB2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N509',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC= 1.0512849914717E-03,
+           VALE_REFE=1.05129E-03,
+           NOM_PARA='DY',
+           TABLE=TAB2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N509',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=-0.023389403207481,
+           VALE_REFE=-0.0233894,
+           NOM_PARA='DX',
+           TABLE=TAB2,
+           FILTRE=_F(NOM_PARA='NOEUD',
+                     VALE_K='N568',),
+           )
+
+FIN()

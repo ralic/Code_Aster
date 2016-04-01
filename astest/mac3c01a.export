@@ -1,0 +1,14 @@
+P time_limit 400
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist validation sequential fuel_assembly
+
+F comm mac3c01a.comm D 1
+F comm mac3c01a.com1 D 1
+F comm mac3c01a.com2 D 1
+F mmed mac3c01a.mmed D 20
+F libr mac3c01a.32 D 32
+F libr mac3c01a.38 D 38
+
