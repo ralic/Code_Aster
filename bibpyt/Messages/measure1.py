@@ -30,21 +30,21 @@ cata_msg = {
 
     3  : _(u"""    dont temps CPU "perdu" dans les découpes            : %(k1)s"""),
 
-    6  : _(u"""    * Temps total factorisation matrice                 : %(k1)s ( %(i1)d factorisations )"""),
+    6  : _(u"""    * Temps total factorisation matrice                 : %(k1)s (%(i1)d factorisations)"""),
 
-    7  : _(u"""    * Temps total intégration comportement              : %(k1)s ( %(i1)d intégrations   )"""),
+    7  : _(u"""    * Temps total intégration comportement              : %(k1)s (%(i1)d intégrations)"""),
 
-    8  : _(u"""    * Temps total résolution K.U=F                      : %(k1)s ( %(i1)d résolutions    )"""),
+    8  : _(u"""    * Temps total résolution K.U=F                      : %(k1)s (%(i1)d résolutions)"""),
 
-    9  : _(u"""    * Temps résolution contact                          : %(k1)s ( %(i1)d itérations     )"""),
+    9  : _(u"""    * Temps résolution contact                          : %(k1)s (%(i1)d itérations)"""),
 
-    10 : _(u"""    * Temps appariement contact                         : %(k1)s ( %(i1)d appariements   )"""),
+    10 : _(u"""    * Temps appariement contact                         : %(k1)s (%(i1)d appariements)"""),
 
     11 : _(u"""    * Temps construction second membre                  : %(k1)s"""),
 
     12 : _(u"""    * Temps assemblage matrice                          : %(k1)s"""),
 
-    13 : _(u"""    * Temps préparation données contact                 : %(k1)s ( %(i1)d préparations   )"""),
+    13 : _(u"""    * Temps préparation données contact                 : %(k1)s (%(i1)d préparations)"""),
 
     14 : _(u"""    * Temps calculs élémentaires contact                : %(k1)s"""),
 

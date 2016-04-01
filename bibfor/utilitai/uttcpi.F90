@@ -1,6 +1,6 @@
 subroutine uttcpi(nommes, ifm, typimp)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ subroutine uttcpi(nommes, ifm, typimp)
     else
         ljev=.true.
         call jenonu(jexnom('&&UTTCPU.NOMMES', nommes), indi)
-        if (indi .eq. 0) goto 9999
+        if (indi .eq. 0) goto 999
         goto 9998
     endif
     ASSERT(indi.le.indmax)
@@ -123,19 +123,19 @@ subroutine uttcpi(nommes, ifm, typimp)
                 xsyst = xsyst - zr(jvalmi-1+7*(indi-1)+6)
                 xelap = xelap - zr(jvalmi-1+7*(indi-1)+7)
 !
-                do 2 k = 1, 7
+                do k = 1, 7
                     zr(jvalmi-1+7*(indi-1)+k)=zr(jvalms-1+7*(indi-1)+&
                     k)
-  2             continue
+                end do
             else
                 call jeveuo('&&UTTCPU.VALMEI', 'E', jvalmi)
                 xuser = xuser - valmei(7*(indi-1)+5)
                 xsyst = xsyst - valmei(7*(indi-1)+6)
                 xelap = xelap - valmei(7*(indi-1)+7)
 !
-                do 3 k = 1, 7
+                do k = 1, 7
                     valmei(7*(indi-1)+k)=valmes(7*(indi-1)+k)
-  3             continue
+                end do
             endif
         else
             xuser=0.d0
@@ -177,11 +177,11 @@ subroutine uttcpi(nommes, ifm, typimp)
         nbproc = to_aster_int(msize)
         ASSERT(nbproc.le.npromx)
         if (nbproc .gt. 1) then
-            do 11 k = 1, nbproc
+            do k = 1, nbproc
                 xtotap(k)=0.d0
                 xsystp(k)=0.d0
                 xelapp(k)=0.d0
- 11         continue
+            end do
             xtotap(rang+1)=xtota
             xsystp(rang+1)=xsyst
             xelapp(rang+1)=xelap
@@ -202,7 +202,7 @@ subroutine uttcpi(nommes, ifm, typimp)
         endif
     endif
 !
-9999 continue
+999 continue
 !
-    1003 format (a8,a50,'CPU (USER+SYST/SYST/ELAPS):',3(f10.2))
+1003 format (a8,a50,'CPU (USER+SYST/SYST/ELAPS):',3(f10.2))
 end subroutine

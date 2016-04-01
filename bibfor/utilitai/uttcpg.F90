@@ -6,7 +6,7 @@ subroutine uttcpg(action, typimp)
 #include "asterfort/uttcpu.h"
     character(len=*) :: action, typimp
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,30 +56,30 @@ subroutine uttcpg(action, typimp)
     call uttcpl(ndim, nbmesu, nomc, noml, prpal)
 !
     if (action .eq. 'INIT') then
-        do 1, k=1,nbmesu
-        call uttcpu(nomc(k), 'INIT', noml(k))
- 1      continue
+        do k = 1, nbmesu
+            call uttcpu(nomc(k), 'INIT', noml(k))
+        end do
 !
     else if (action.eq.'IMPR') then
         ifm=6
 !
         if (mtpniv .eq. 1) then
-            do 2, k=1,nbmesu
-            if (prpal(k) .eq. 'S') goto 2
-            if (typimp .eq. 'INCR') goto 2
-            call uttcpi(nomc(k), ifm, typimp)
- 2          continue
+            do k = 1, nbmesu
+                if (prpal(k) .eq. 'S') cycle
+                if (typimp .eq. 'INCR') cycle
+                call uttcpi(nomc(k), ifm, typimp)
+            end do
 !
         else if (mtpniv.eq.2) then
-            do 3, k=1,nbmesu
-            if (typimp .eq. 'INCR') goto 3
-            call uttcpi(nomc(k), ifm, typimp)
- 3          continue
+            do k = 1, nbmesu
+                if (typimp .eq. 'INCR') cycle
+                call uttcpi(nomc(k), ifm, typimp)
+            end do
 !
         else if (mtpniv.eq.3) then
-            do 4, k=1,nbmesu
-            call uttcpi(nomc(k), ifm, typimp)
- 4          continue
+            do k = 1, nbmesu
+                call uttcpi(nomc(k), ifm, typimp)
+            end do
 !
         endif
 !

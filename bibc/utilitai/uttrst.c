@@ -20,11 +20,12 @@
 #include "aster_fort.h"
 #include "aster_core_module.h"
 
+
 /*! Temps(sec) total restant pour ce processus */
 void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
 {
-  DOUBLE t_csm[3] , t_lim;
-  CALL_UTTCSM(t_csm);
-  t_lim = get_tpmax();
-  *t_rst = t_lim - t_csm[0] - t_csm[1];
+    DOUBLE t_csm[3], t_lim;
+    CALL_UTTCSM(t_csm);
+    t_lim = get_tpmax();
+    *t_rst = t_lim - t_csm[2];
 }

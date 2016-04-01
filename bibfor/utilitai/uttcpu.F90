@@ -2,7 +2,7 @@ subroutine uttcpu(nommes, action, nomlon)
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ subroutine uttcpu(nommes, action, nomlon)
 !              CE NOM SERA EVENTUELLENT IMPRIME PAR UTTCPI
 ! ----------------------------------------------------------------------
 ! ON ACCUMULE 7 VALEURS MESUREES POUR CHAQUE MESURE (NOMMES) :
-!    TEMPS(1) TEMPS CPU RESTANT EN SECONDES
+!    TEMPS(1) TEMPS RESTANT EN SECONDES
 !    TEMPS(2) NOMBRE D'APPEL A DEBUT/FIN
 !    TEMPS(3) TEMPS CPU TOTAL
 !    TEMPS(4) TEMPS CPU MOYEN
@@ -78,10 +78,10 @@ subroutine uttcpu(nommes, action, nomlon)
     if (action .eq. 'INIT') then
         snolon(indi)=nomlon
 !       -- IL FAUT REMETTRE LES COMMON A ZERO :
-        do 3, k=1,7
-        valmes(k)=0.d0
-        valmei(k)=0.d0
- 3      continue
+        do k=1,7
+            valmes(k)=0.d0
+            valmei(k)=0.d0
+        end do
     endif
 !
     call uttcp0(indi, action, 7, valmes(7*(indi-1)+1))

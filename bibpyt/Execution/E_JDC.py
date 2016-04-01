@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -186,18 +186,18 @@ class JDC:
 
         tpmax = aster_core.get_option("tpmax")
         if tpmax != None:
-            cpu_restant = tpmax - cpu_total_syst - cpu_total_user
+            cpu_restant = tpmax - elapsed_total
         else:
             cpu_restant = 0.
 
         texte_final = _(u"""
 
   <I> Informations sur les temps d'exécution
-      Temps cpu total                   %10.2f s
       Temps cpu user total              %10.2f s
       Temps cpu systeme total           %10.2f s
-      Temps cpu restant                 %10.2f s
-""") % (cpu_total_user + cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
+      Temps elapsed total               %10.2f s
+      Temps restant                     %10.2f s
+""") % (cpu_total_user, cpu_total_syst, elapsed_total, cpu_restant)
 
         aster.affiche('MESSAGE', convert(texte_final))
 
@@ -216,7 +216,7 @@ class JDC:
         aster.fclose(6)
         # fichier d'info
         txt = "%10.2f %10.2f %10.2f %10.2f\n" \
-            % (cpu_total_user + cpu_total_syst, cpu_total_user, cpu_total_syst, cpu_restant)
+            % (elapsed_total, cpu_total_user, cpu_total_syst, cpu_restant)
         open('info_cpu', 'w').write(txt)
 
     def traiter_fin_exec(self, mode, etape=None):

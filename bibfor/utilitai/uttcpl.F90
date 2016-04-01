@@ -6,7 +6,7 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     character(len=24) :: nomc(dim)
     character(len=80) :: noml(dim)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
 !     -- SI L'UTILISATEUR NE VEUT PAS DE MESURE, NBMESU=0
     if (mtpniv .eq. 0) then
         nbmesu=0
-        goto 9999
+        goto 999
     endif
 !
 !     ON ECRIT LES DONNEES DANS LE TABLEAU D1 :
@@ -83,16 +83,16 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
 !
 !     ON "SPLITE" D1 DANS NOMC, NOML ET PRPAL :
 !     -----------------------------------------------------
-    do 1, k=1,nbmesu
-    i1= index(d1(k),'|')
-    nomc(k)=d1(k)(1:i1-1)
-    i2= index(d1(k)(i1+1:),'|')
-    ASSERT(i2.eq.2)
-    prpal(k)=d1(k)(i1+1:i1+2)
-    ASSERT(prpal(k).eq.'P'.or.prpal(k).eq.'S')
-    noml(k)=d1(k)(i1+i2+1:)
+    do k = 1, nbmesu
+        i1= index(d1(k),'|')
+        nomc(k)=d1(k)(1:i1-1)
+        i2= index(d1(k)(i1+1:),'|')
+        ASSERT(i2.eq.2)
+        prpal(k)=d1(k)(i1+1:i1+2)
+        ASSERT(prpal(k).eq.'P'.or.prpal(k).eq.'S')
+        noml(k)=d1(k)(i1+i2+1:)
 !
-    1 end do
+    end do
 !
-9999  continue
+999 continue
 end subroutine
