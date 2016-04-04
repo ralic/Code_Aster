@@ -2,7 +2,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 ! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmcalc : Main subroutine for the integration of the dynamic equations of motion
-!           of a system in generalized coordinates (reduced -modal- basis). 
+!           of a system in generalized coordinates (reduced -modal- basis).
 !
 #include "jeveux.h"
 #include "asterc/etausr.h"
@@ -69,7 +69,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     integer           :: nltreat, nr, nbsauv, iarch_sd, i_nbar
     integer           :: perc, last_prperc, freqpr, ifm, niv
     integer           :: oldarch, i_nbarf
-    integer           :: jranc, jnoec, nbdisvi   
+    integer           :: jranc, jnoec, nbdisvi
     real(kind=8)      :: tinit, dt, tps1(4), rint1, rint2
     real(kind=8)      :: time, lastarch, tfin, epsi, newdt
     real(kind=8)      :: dt0
@@ -86,7 +86,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !   0 - Initializations
     call jemarq()
     call infniv(ifm, niv)
-!   
+!
     sd_dtm = sd_dtm_
     sd_int = sd_int_
     epsi = 100.d0*r8prem()
@@ -101,9 +101,9 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     call dtmget(sd_dtm, _AR_LINST, vr=archlst)
     call dtmget(sd_dtm, _ARCH_PER, iscal=pasarch)
     call dtmget(sd_dtm, _ADAPT   , iscal=adapt)
-    call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)   
+    call dtmget(sd_dtm, _IARCH_SD, iscal=iarch_sd)
 !
-    call intget(sd_int, STEP, iocc=1, rscal=dt0)   
+    call intget(sd_int, STEP, iocc=1, rscal=dt0)
     time = tinit
     lastarch = tinit
 
@@ -123,7 +123,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     call dtmget(sd_dtm, _NL_TREAT, iscal=nltreat)
 !
 !   -> Should we mesure and check the remaining cpu time
-    checkcpu = .false. 
+    checkcpu = .false.
 
     call dtmget(sd_dtm, _ARCH_NB  ,iscal=nbsauv)
 
@@ -154,7 +154,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     if (niv.eq.2) freqpr = 1
 !
     dt = dt0
-!   --- Loop until the simulated time reaches tfin with a cumulated numerical error 
+!   --- Loop until the simulated time reaches tfin with a cumulated numerical error
 !       proportional to the number of steps
     do while ((tfin-time).gt.(i*epsi))
 !
@@ -173,7 +173,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         if (checkcpu) then
 !           --- Start recording the integration time required per step
             if (mod(i,n100) .eq. 0) call uttcpu('CPU.DTMCALC', 'DEBUT', ' ')
-        end if 
+        end if
 !
 !       -- Matrices update (Gyroscopy)
         if (upmat) call dtmupmat(sd_dtm, sd_int, buffdtm, buffint)
@@ -199,7 +199,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         call intget(sd_int, STEP, iocc=1, rscal=dt)
         if ((time+dt-archlst(iarch)).gt.(i*epsi)) then
             newdt = archlst(iarch)-time
-            call intsav(sd_int, STEP, 1, iocc=1, rscal=newdt)  
+            call intsav(sd_int, STEP, 1, iocc=1, rscal=newdt)
             force_arch = 1
         else if (abs(time+dt-archlst(iarch)).lt.(i*epsi)) then
             newdt = dt
@@ -262,14 +262,14 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                 call uttcpu('CPU.DTMCALC', 'FIN', ' ')
                 call uttcpr('CPU.DTMCALC', 4, tps1)
 !               --- 1) tps1(4) is the elapsed time (for 1 step)
-!                   2) tps1(1) is the remaining cpu time
+!                   2) tps1(1) is the remaining time
                 rint1 = 5.d0
                 rint2 = 0.90d0
 !               --- The remaining cpu-time should allow to integrate a chunk of 1% of the
 !                   integration steps, if not, resize and finalize the result data structure
 !                   then raise an exception
                 if (max(rint1,n100*tps1(4)) .gt. (rint2*tps1(1))) then
-    
+
                     call dtmget(sd_dtm, _CALC_SD ,kscal=calcres, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_MODES,iscal=nbmode, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli, buffer=buffdtm)
@@ -281,14 +281,14 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                                 nbrevi)
 
 !                   --- Concatenate results in the case of an adaptative integration scheme
-                    if (adapt.gt.0) then 
+                    if (adapt.gt.0) then
                         call dtmconc(sd_dtm)
                     end if
 !                   --- Append to an existing result in the case of "reuse"
                     if (append.gt.0) then
                         call resu74(nomres, calcres)
                     end if
-    
+
 !                   --- Alert the user, raise exceptions and stop the calculation
                     call utmess('Z', 'ALGORITH16_77', ni=2, vali=[i, isto(1)], nr=3,&
                                 valr=[lastarch, tps1(4), tps1(1)], num_except=28)
@@ -303,7 +303,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     if (last_prperc.ne.100) then
         perc = 100
         call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, i_nbar],&
-                                         nr=2, valr=[tfin, lastarch])    
+                                         nr=2, valr=[tfin, lastarch])
     end if
 
 

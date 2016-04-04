@@ -14,7 +14,7 @@ subroutine ibcata(ier)
     integer :: ier
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ subroutine ibcata(ier)
 !         GETRES GETFAC GETVXX
 !         IBOPER
 !     ------------------------------------------------------------------
-    real(kind=8) :: temps(6)
+    real(kind=8) :: temps(7)
     real(kind=8) :: valr
     character(len=8) :: nomres
     character(len=16) :: concep, nomcmd, motfac
@@ -115,8 +115,8 @@ subroutine ibcata(ier)
         ier = ier + ier1
     endif
     call uttcpu('CPU.IBCATA', 'FIN', ' ')
-    call uttcpr('CPU.IBCATA', 6, temps)
-    valr = temps(5)
+    call uttcpr('CPU.IBCATA', 7, temps)
+    valr = temps(7)
     valk = ' '
     call utmess('I', 'SUPERVIS_52', sk=valk, sr=valr)
 !

@@ -45,7 +45,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ implicit none
     integer :: iocc, n1, n2
     integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
     real(kind=8) :: tpsthe(6), tpsnp1, testn, testr
-    real(kind=8) :: tps1(4), tps2(4), tpex
+    real(kind=8) :: tps1(7), tps2(4), tpex
     real(kind=8) :: parcrr(9), testi, epsr, epsl
     real(kind=8) :: r8aux(1)
     character(len=1) :: ci1, ci2, creas, ce1, ce2
@@ -206,8 +206,8 @@ implicit none
 !
     call uttcpu('CPU.OP0171.1', 'INIT', ' ')
     call uttcpu('CPU.OP0171.1', 'DEBUT', ' ')
-    call uttcpr('CPU.OP0171.1', 4, tps1)
-    tpex = tps1(3)
+    call uttcpr('CPU.OP0171.1', 7, tps1)
+    tpex = tps1(7)
     call uttcpu('CPU.OP0171.2', 'INIT', ' ')
 !
     tpsthe(1) = tpsnp1
@@ -343,10 +343,10 @@ implicit none
 ! --- FIN DES ITERATIONS
 !
     call uttcpu('CPU.OP0171.1', 'FIN', ' ')
-    call uttcpr('CPU.OP0171.1', 4, tps1)
+    call uttcpr('CPU.OP0171.1', 7, tps1)
     write(ifm,fmt)
     write(ifm,'(A,21X,A,1PE10.2,21X,A)')&
-     &                                 '*','DUREE:',tps1(3)-tpex,'*'
+     &                                 '*','DUREE:',tps1(7)-tpex,'*'
     write(ifm,fmt)
     write(ifm,'(/)')
 !

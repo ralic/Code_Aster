@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -236,7 +236,7 @@ cata_msg = {
  Arrêt par manque de temps CPU au numéro d'ordre %(i1)d
 
    - Temps moyen par incrément de temps : %(r1)f
-   - Temps CPU restant :                  %(r2)f
+   - Temps restant                      : %(r2)f
 
  La base globale est sauvegardée, elle contient les pas archivés avant l'arrêt
 
@@ -264,14 +264,14 @@ Risques & conseils :
      - Dernier instant archivé :      %(r1)f
      - Numéro d'ordre correspondant : %(i2)d
      - Temps moyen par pas de temps : %(r2)f
-     - Temps CPU restant :            %(r3)f
+     - Temps restant     :            %(r3)f
   """),
 
     88 : _(u"""
    Arrêt par manque de temps CPU au pas de temps : %(i1)d
      - A l'instant  :                %(r1)f
      - Temps moyen par pas :         %(r2)f
-     - Temps CPU restant :           %(r3)f
+     - Temps restant     :           %(r3)f
   """),
 
     89 : _(u"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ cata_msg = {
     79 : _(u"""
    Arrêt par manque de temps CPU pendant les itérations de Newton, au numéro d'instant < %(i1)d >
       - Temps moyen par itération de Newton : %(r1)f
-      - Temps CPU restant                   : %(r2)f
+      - Temps restant                       : %(r2)f
 
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
@@ -30,7 +30,7 @@ cata_msg = {
     80 : _(u"""
    Arrêt par manque de temps CPU au numéro d'instant < %(i1)d >
       - Temps moyen par pas de temps        : %(r1)f
-      - Temps CPU restant                   : %(r2)f
+      - Temps restant                       : %(r2)f
 
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),

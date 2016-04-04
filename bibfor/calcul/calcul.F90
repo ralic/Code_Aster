@@ -69,7 +69,6 @@ implicit none
 #include "asterfort/typele.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
-#include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/vrcdec.h"
 #include "asterfort/wkvect.h"

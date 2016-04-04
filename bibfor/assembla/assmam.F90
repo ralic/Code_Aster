@@ -103,7 +103,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     character(len=19) :: matdev, mat19, resu, matel, ligre1
     character(len=1) :: matsym
     character(len=3) :: matd
-    real(kind=8) :: c1, temps(6)
+    real(kind=8) :: c1, temps(7)
 
     aster_logical :: acreer, cumul, dbg, ldistme, lmatd
     aster_logical :: lmasym, lmesym, ldgrel
@@ -548,10 +548,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'FIN', ' ')
-        call uttcpr('CPU.ASSMAM', 6, temps)
-        if (niv .ge. 2) write (ifm, '(A44,D11.4,D11.4)'&
-                        ) 'TEMPS CPU/SYS ASSEMBLAGE M                : ',&
-                        temps(5), temps(6)
+        call uttcpr('CPU.ASSMAM', 7, temps)
+        write (ifm, '(A44,D11.4,D11.4)') &
+            'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE M        : ',&
+            temps(5), temps(6), temps(7)
     endif
 
 

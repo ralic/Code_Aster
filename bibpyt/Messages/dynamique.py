@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ cata_msg = {
    Arrêt par manque de temps CPU au groupe de pas de temps : %(i1)d
                                  au "petit" pas de temps   : %(i2)d
       - Temps moyen par "petit" pas : %(r1)f
-      - Temps CPU restant           : %(r2)f
+      - Temps restant               : %(r2)f
 
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
@@ -75,13 +75,13 @@ cata_msg = {
       - Dernier instant archivé : %(r1)f
       - Numéro d'ordre correspondant : %(i2)d
       - Temps moyen pour les %(i3)d pas de temps : %(r2)f
-      - Temps CPU restant            : %(r3)f
+      - Temps restant                : %(r3)f
 
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
 
     12: _(u"""
- Dans l\'intervalle : %(i2)d
+ Dans l'intervalle : %(i2)d
  Le pas de temps est trop grand : %(r1)f
  le pas de temps maximal est    : %(r2)f
 
@@ -91,7 +91,7 @@ cata_msg = {
     13: _(u"""
    Arrêt par manque de temps CPU à la fréquence : %(i1)d
       - Temps moyen par pas fréquence : %(r1)f
-      - Temps CPU restant             : %(r2)f
+      - Temps restant                 : %(r2)f
 
    La base globale est sauvegardée. Elle contient les pas archivés avant l'arrêt.
 """),
@@ -200,15 +200,15 @@ La condition de stabilité n'a pas pu être calculée car il s'agit d'élasticit
 """),
 
     33 : _(u"""
-Il y a une incohérence dans les type de résultats, le résultat selon X n'est pas le même que celui selon Y. 
+Il y a une incohérence dans les type de résultats, le résultat selon X n'est pas le même que celui selon Y.
 """),
 
     34 : _(u"""
-Il y a une incohérence dans les type de résultats, le résultat selon X et Y n'est pas le même que celui selon Z.  
+Il y a une incohérence dans les type de résultats, le résultat selon X et Y n'est pas le même que celui selon Z.
 """),
 
     35 : _(u"""
-Il semble que vos calculs dynamiques ont été réalisés sur des listes de fréquences ou d'instants différentes. 
+Il semble que vos calculs dynamiques ont été réalisés sur des listes de fréquences ou d'instants différentes.
 L'utilisation de la macro-commande nécessite d'avoir réalisé les calculs dynamiques sur une unique liste de fréquences ou d'instants.
 """),
 
@@ -218,7 +218,7 @@ Les signaux d'entraînements ont une fréquence finale inférieure à celle du c
 
     37 : _(u"""
 Les signaux d'entraînements ont un instant final inférieur à celui du calcul dynamique.
-"""), 
+"""),
 
     38 : _(u"""
 Les signaux servant de supports à la détermination des signaux d'entraînement ont une fréquence finale inférieure à celle du calcul dynamique.
@@ -226,41 +226,41 @@ Les signaux servant de supports à la détermination des signaux d'entraînement
 
     39 : _(u"""
 Les signaux servant de supports à la détermination des signaux d'entraînement ont un instant final inférieur à  celui du calcul dynamique.
-"""), 
+"""),
 
     40 : _(u"""
 Les signaux d'entraînements ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
-"""), 
+"""),
 
     41 : _(u"""
 Les signaux servant de supports à la détermination des signaux d'entraînement ne sont pas discrétisés de la même manière. Vérifier le pas de chaque signaux ainsi que leur longueur.
-"""),  
+"""),
 
     50 : _(u"""
 Schéma multi-pas
 On n'a pas trouvé l'instant précédent dans la structure de données résultat du mot-clef ETAT_INIT.
 C'est probablement parce qu'il n'y a pas assez d'instants archivés.
 On ignore donc le calcul du second membre pour cet instant.
-"""),  
+"""),
 
     51 : _(u"""
 Schéma multi-pas
 On n'a pas trouvé l'instant précédent dans la structure de données résultat du mot-clef ETAT_INIT.
 C'est probablement parce que la structure de données vient d'un calcul statique (STAT_NON_LINE) ou d'une lecture directe (LIRE_RESU).
 On ignore donc le calcul du second membre pour cet instant.
-"""), 
+"""),
 
     52 : _(u"""
 Schéma multi-pas
 L'instant précédent et l'instant initial sont presque confondus.
 On ignore donc le calcul du second membre pour cet instant.
-"""), 
+"""),
 
     53 : _(u"""
 Schéma multi-pas
 On n'a pas de structure de données résultat dans le mot-clef ETAT_INIT parce que l'état initial est entré champ par champ.
 On ignore donc le calcul du second membre pour cet instant.
-"""), 
+"""),
 
     55 : _(u"""
 --------------------------------------------------------------------------------------
@@ -269,51 +269,51 @@ On ignore donc le calcul du second membre pour cet instant.
 =====================================================================================
                      Calcul %(k2)s sur base %(k3)s
 =====================================================================================
-"""), 
+"""),
 
     56 : _(u"""
 Superposition modale classique
 --------------------------------------------------------------------------------------
     >> base modale de projection : %(k1)s
-    >> nombre de DDL avant projection (physiques) : %(i1)d"""), 
+    >> nombre de DDL avant projection (physiques) : %(i1)d"""),
 
     57 : _(u"""
 Modèle de sous-structuration dynamique
 --------------------------------------------------------------------------------------
     >> modèle généralisé : %(k1)s
-    >> numérotation généralisée : %(k2)s"""), 
+    >> numérotation généralisée : %(k2)s"""),
 
     58 : _(u"""
 Modèle sous interaction fluide-structure
 --------------------------------------------------------------------------------------
     >> base de couplage fluide-élastique : %(k1)s
-    >> vitesse du fluide  :%(r1)12.5e"""), 
+    >> vitesse du fluide  :%(r1)12.5e"""),
 
     59 : _(u"""    >> nombre de modes    : %(i1)d
     >> fréquence minimale :%(r1)12.5e
     >> fréquence maximale :%(r2)12.5e
-"""), 
+"""),
 
     60 : _(u"""
 Matrices dynamiques pour la résolution
---------------------------------------------------------------------------------------"""), 
+--------------------------------------------------------------------------------------"""),
 
     61 : _(u"""    >> matrice de masse        : %(k1)s
-    >> matrice de rigidité     : %(k2)s"""), 
+    >> matrice de rigidité     : %(k2)s"""),
 
     62 : _(u"""    >> matrice d'amortissement : %(k1)s
-"""), 
+"""),
 
     63 : _(u"""    >> amortissement modal diagonal
-"""), 
+"""),
 
     64 : _(u"""    >> système conservatif, sans amortissement.
-"""), 
+"""),
 
     65 : _(u"""    >> masse diagonale extraite de la base de couplage fluide-élastique
     >> rigidité diagonale extraite de la base de couplage fluide-élastique
     >> amortissement modal diagonal, extrait de la base de couplage fluide-élastique
-"""), 
+"""),
 
     66 : _(u"""
 Schéma d'intégration %(k1)s à pas adaptatif
@@ -321,11 +321,11 @@ Schéma d'intégration %(k1)s à pas adaptatif
     >> type de schéma                 : explicite
     >> pas d'intégration initial      :%(r1)12.5e
     >> pas d'intégration minimal      :%(r2)12.5e  (arrêt du calcul si inférieur)
-    >> pas d'intégration maximal      :%(r3)12.5e  (plafond maximal du pas d'intégration)"""), 
+    >> pas d'intégration maximal      :%(r3)12.5e  (plafond maximal du pas d'intégration)"""),
 
-    67 : _(u"""    >> tolérance                      :%(r1)12.5e"""), 
+    67 : _(u"""    >> tolérance                      :%(r1)12.5e"""),
 
-    68 : _(u"""    >> coefficient de division du pas :%(r1)12.5e"""), 
+    68 : _(u"""    >> coefficient de division du pas :%(r1)12.5e"""),
 
     69 : _(u"""    >> nombre minimum de pas calculés : %(i1)d
     >> nombre maximum de pas calculés : %(i2)d"""),
@@ -336,7 +336,7 @@ Schéma d'intégration %(k1)s à pas constant
     >> type de schéma         : %(k2)s
     >> pas d'intégration      :%(r1)12.5e
     >> nombre de pas calculés : %(i1)d"""),
-  
+
     71 : _(u"""
 Non-linéarités localisées
 --------------------------------------------------------------------------------------"""),
@@ -372,7 +372,7 @@ Durée de la simulation
     >> instant initial :%(r1)12.5e
     >> instant final   :%(r2)12.5e"""),
 
-    81 : _(u"""  
+    81 : _(u"""
 Archivage
 --------------------------------------------------------------------------------------
     >> fréquence d'archivage         : tous les %(i1)d pas calculés
@@ -390,28 +390,28 @@ Modèle physique
 --------------------------------------------------------------------------------------
     >> modèle mécanique : %(k1)s
     >> nombre de DDL physiques : %(i1)d
-"""), 
+"""),
 
     83 : _(u"""
 La méthode intégrale (ITMI) est uniquement disponible si les matrices dynamiques sont
-diagonales. Vérifiez que le stockage diagonal a été choisi lors de la numérotation des 
+diagonales. Vérifiez que le stockage diagonal a été choisi lors de la numérotation des
 DDL généralisés.
-"""),     
+"""),
     84 : _(u"""    >> accélération : %(k1)s"""),
 
-    85 : _(u"""  
+    85 : _(u"""
 Archivage
 --------------------------------------------------------------------------------------
     >> fréquence d'archivage : tous les %(i1)d pas calculés"""),
 
-    86 : _(u"""  
+    86 : _(u"""
 Archivage
 --------------------------------------------------------------------------------------
     >> nombre d'instants d'archivage : %(i1)d instants"""),
 
     87 : _(u"""    >> matrice d'impédance     : %(k1)s"""),
 
-    88 : _(u"""  
+    88 : _(u"""
 Résolution
 --------------------------------------------------------------------------------------
     >> fréquence minimale :%(r1)12.5e
@@ -447,7 +447,7 @@ Entrée/Changement d'état de choc détecté à l'instant %(r1)12.5e
 
 """),
 
-    94 : _(u"""    >> Premier passage dans cet état, mise à jour des matrices dynamiques et calcul d'une 
+    94 : _(u"""    >> Premier passage dans cet état, mise à jour des matrices dynamiques et calcul d'une
        nouvelle base de modes propres :
        """),
     95 : _(u"""[%(i1)3d%%] Fréquence calculée :%(r1)12.5e, archivée au numéro d'ordre : %(i2)5d"""),
@@ -471,5 +471,3 @@ Avancement du calcul
     99 : _(u"""    >> nombre de modélisations de palier : %(i1)d"""),
 
 }
-
-

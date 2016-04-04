@@ -53,12 +53,12 @@ implicit none
     integer :: i_timer, timer_indx, nb_timer
     type(NL_DS_Timer) :: timer
     character(len=24) :: operation, cpu_name
-    real(kind=8) :: time, list_time(4)
+    real(kind=8) :: time, list_time(7)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     operation      = operation_
-    list_time(1:4) = 0.d0
+    list_time(1:7) = 0.d0
 !
 ! - Get current device
 !
@@ -92,9 +92,9 @@ implicit none
         call uttcpu(cpu_name, 'DEBUT', ' ')
     elseif (operation .eq. 'Stop') then
         call uttcpu(cpu_name, 'FIN', ' ')
-        call uttcpr(cpu_name, 4, list_time)
-        time = list_time(3) - timer%time_init
-        timer%time_init = list_time(3)
+        call uttcpr(cpu_name, 7, list_time)
+        time = list_time(7) - timer%time_init
+        timer%time_init = list_time(7)
         if (timer_type.eq.'Store') then
             ds_measure%store_mean_time = list_time(4)
         endif

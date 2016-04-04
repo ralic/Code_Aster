@@ -1,7 +1,7 @@
 subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,7 +68,7 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 ! DECLARATION VARIABLES LOCALES
     integer :: id1, i, maxi, err, isd, nbma, ima, nbre, idma, jvg, jgg, ifm, niv
     integer :: nbgma
-    real(kind=8) :: tmps(3)
+    real(kind=8) :: tmps(7)
     character(len=8) :: ktmp
     character(len=24) :: nom, grpmav, grpma, gpptnm, grpema
 !----------------------------------------------------------------------
@@ -176,8 +176,8 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 !
     if (niv .ge. 2) then
         call uttcpu('CPU.CREAGM', 'FIN', ' ')
-        call uttcpr('CPU.CREAGM', 3, tmps)
-        write(ifm,*)'--- CREATION DES GRPMA :',tmps(3)
+        call uttcpr('CPU.CREAGM', 7, tmps)
+        write(ifm,*)'--- CREATION DES GRPMA :',tmps(7)
         write(ifm,*)'  '
     endif
 !

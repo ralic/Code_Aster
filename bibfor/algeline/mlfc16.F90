@@ -90,7 +90,7 @@ use superv_module
     integer :: lonmat, nbsn
     integer :: lgpile, nbloc, mxmate, ln, adbl1
     integer :: ib, desc, it(5), mxbloc, ltempr, nb
-    real(kind=8) :: temps(6)
+    real(kind=8) :: temps(7)
     integer :: nproc, ifm, niv, lpmax
 !     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
 !     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
@@ -282,10 +282,10 @@ use superv_module
 !
 !
     call uttcpu('CPU.MLFC16', 'FIN', ' ')
-    call uttcpr('CPU.MLFC16', 6, temps)
     if (niv .eq. 2) then
+        call uttcpr('CPU.MLFC16', 7, temps)
         write (ifm,*) ' FACTORISATION DE LA MATRICE.'//'TEMPS CPU',&
-        temps(3),' + TEMPS CPU SYSTEME ',temps(6)
+            temps(3),' + TEMPS CPU SYSTEME ',temps(6), ' TEMPS ELAPSED ',temps(7)
     endif
     call jedetr(nomdia)
     call jedetr(nmprt1)

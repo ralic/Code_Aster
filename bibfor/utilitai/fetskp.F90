@@ -1,7 +1,7 @@
 subroutine fetskp()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ subroutine fetskp()
     integer :: iulm1, iocc, nocc, ifm, niv, nblien, nbpart, renum3, idma, iulm2
     integer :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
     integer :: vali(2), iret
-    real(kind=8) :: tmps(6)
+    real(kind=8) :: tmps(7)
     character(len=8) :: ma, ktmp, mod, ktmp2, meth, k8nb
     character(len=8) :: kersco
     character(len=24) :: k24b
@@ -205,8 +205,8 @@ subroutine fetskp()
         write(kersco(7:8),'(I2)')n3
         if (niv .ge. 2) then
             call uttcpu('CPU.FETSKP', 'FIN', ' ')
-            call uttcpr('CPU.FETSKP', 6, tmps)
-            write(ifm,*) ' * TEMPS DE PARTITIONNEMENT  :',tmps(3)
+            call uttcpr('CPU.FETSKP', 7, tmps)
+            write(ifm,*) ' * TEMPS DE PARTITIONNEMENT  :',tmps(7)
             write(ifm,*) ' '
         endif
         write(ifm,*) '********** FIN SCOTCH ',kersco,' *********'

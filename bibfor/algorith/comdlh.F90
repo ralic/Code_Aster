@@ -1,7 +1,7 @@
 subroutine comdlh()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -415,7 +415,7 @@ subroutine comdlh()
             call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=nddlphys)
             call jeveuo(nddlphys(1:14)//'.NUME.NEQU', 'L', vi=nequ)
             nbpheq = nequ(1)
-        else 
+        else
             sstruct = 1
         endif
 
@@ -479,7 +479,7 @@ subroutine comdlh()
         freq = zr(lfreq-1+i)
         if (freq.lt.fcal_min) fcal_min = freq
         if (freq.gt.fcal_max) fcal_max = freq
-    enddo 
+    enddo
 !
 ! --- IMPRESSIONS RECAPITULATIVES POUR L'UTILISATEUR
     print_type             = 'PHYSique'
@@ -493,7 +493,7 @@ subroutine comdlh()
         if (sstruct.eq.0) then
             call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo],&
                                              ni=1, vali=[nbpheq])
-        else 
+        else
             call utmess('I', 'DYNAMIQUE_57', nk=2, valk=[basemo, numddl])
         end if
 !       2 - Minimum and max frequencies
@@ -609,7 +609,7 @@ subroutine comdlh()
 ! ----------------------------------------------------------------
 !
 
-        if (.not.calgen) then       
+        if (.not.calgen) then
 !       --- SI CALCUL SUR BASE PHYSIQUE
 !         - CREER UN CHAM_NO DANS LA SD_RESULTAT
             do inom = 1, nbsym

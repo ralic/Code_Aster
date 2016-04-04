@@ -1,7 +1,7 @@
 subroutine creaco(nbmato, ma, nblien)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ subroutine creaco(nbmato, ma, nblien)
     integer :: nbmano, idcoi, id1, typma, idno, nbno, idnoeu, nbnoeu, ima, i, j
     integer :: mail, ino, id, nbre, id2, temp, temp1, maxi, ifm, niv, coi
     integer :: numno,  nbnoto
-    real(kind=8) :: tmps(6)
+    real(kind=8) :: tmps(7)
     character(len=8) :: nom, typma1, typma2
     integer, pointer :: typmail(:) => null()
 !
@@ -423,8 +423,8 @@ subroutine creaco(nbmato, ma, nblien)
 !
     if (niv .ge. 2) then
         call uttcpu('CPU.CREACO', 'FIN', ' ')
-        call uttcpr('CPU.CREACO', 6, tmps)
-        write(ifm,*)'--- CONNECTIVITE DES MAILLES:',tmps(3)
+        call uttcpr('CPU.CREACO', 7, tmps)
+        write(ifm,*)'--- CONNECTIVITE DES MAILLES:',tmps(7)
         write(ifm,*)'  '
     endif
 !

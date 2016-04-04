@@ -69,8 +69,6 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
 #include "asterfort/tldlg3.h"
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"
-#include "asterfort/uttcpr.h"
-#include "asterfort/uttcpu.h"
 !
     integer :: npvneg, istop, iret
     character(len=1) :: base
@@ -122,7 +120,7 @@ subroutine prere1(solvez, base, iret, matpre, matass,&
     call dismoi('MATR_DISTR', matas, 'MATR_ASSE', repk=kmatd)
     if ( niv == 2 ) then
         call dismoi('TYPE_MATRICE', matas, 'MATR_ASSE', repk=ksym)
-        select case( ksym(1:7) ) 
+        select case( ksym(1:7) )
         case( 'SYMETRI' )
             call utmess( 'I', 'ALGELINE5_2' )
         case( 'NON_SYM' )

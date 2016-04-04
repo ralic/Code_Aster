@@ -43,7 +43,7 @@ implicit none
 #include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,7 @@ implicit none
     integer :: ther_para_i(2), ther_crit_i(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
     integer :: itab(2)
-    real(kind=8) :: ther_para_r(2), tpsthe(6), deltat, timet, timtdt, tps1(4)
+    real(kind=8) :: ther_para_r(2), tpsthe(6), deltat, timet, timtdt, tps1(7)
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), theta, khi, rho, testr
     real(kind=8) :: testm, para(2), instap, tconso
     real(kind=8) :: rtab(2)
@@ -173,7 +173,7 @@ implicit none
     vtempp='&&NXLECTVAR_T_MO'
     vtempm='&&NXLECTVAR_T_PL'
     vtempr='&&NXLECTVAR_INIT'
-    
+
 
     if (lostat) then
         call vtcreb(vtempm, 'V', 'R', nume_ddlz = nume_dof)
@@ -203,8 +203,8 @@ implicit none
 ! **********************************************************************
 !
     call uttcpu('CPU.OP0186.1', 'INIT', ' ')
-    call uttcpr('CPU.OP0186.1', 4, tps1)
-    tpex = tps1(3)
+    call uttcpr('CPU.OP0186.1', 7, tps1)
+    tpex = tps1(7)
     call uttcpu('CPU.OP0186.2', 'INIT', ' ')
     call uttcpu('CPU.OP0186.3', 'INIT', ' ')
     call uttcpr('CPU.OP0186.3', 4, tps3)
@@ -306,7 +306,7 @@ implicit none
                 vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
                 vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
                 cnchci, mediri, compor)
-    
+
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -324,7 +324,7 @@ implicit none
                 neq   , maprec, varc_curr, vtemp    , vtempm  ,&
                 cn2mbr, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
                 compor, cndirp, cnchci   , vec2nd   , vec2ni  )
-    
+
 !
 ! ======================================================================
 !              ITERATIONS DE LA METHODE DE NEWTON-RAPHSON
@@ -463,7 +463,7 @@ implicit none
     call jeveuo(vtemp(1:19)//'.VALE', 'E', jtemp)
 ! VTEMPM --> VTEMP
     do k = 1, neq
-        zr(jtemp+k-1) = zr(jtempp+k-1) 
+        zr(jtemp+k-1) = zr(jtempp+k-1)
     end do
     call uttcpu('CPU.OP0186.3', 'FIN', ' ')
     call uttcpr('CPU.OP0186.3', 4, tps3)
@@ -493,12 +493,12 @@ implicit none
 ! ------- TEMPS DISPONIBLE POUR CONTINUER ?
 !
     call uttcpu('CPU.OP0186.1', 'FIN', ' ')
-    call uttcpr('CPU.OP0186.1', 4, tps1)
-    tconso=tps1(3) - tpex
+    call uttcpr('CPU.OP0186.1', 7, tps1)
+    tconso = tps1(7) - tpex
     call impfot(tconso, tpscvt)
     call utmess('I', 'MECANONLINE7_1', sk=tpscvt)
     write (ifm,'(/)')
-    tpex = tps1(3)
+    tpex = tps1(7)
     if (tps1(4) .gt. 0.48d0*tps1(1)) then
         itab(1) = numins
         rtab(1) = tps2(4)
