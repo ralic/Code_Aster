@@ -1,6 +1,6 @@
 # TITRE ENDOMMAGEMENT EPROUVETTE TYPE NOORU-MOHAMED AVEC ENDO_SCALAIRE
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ MAIL = DEFI_GROUP( reuse = MAIL,
 
 # DEFINITION DES GROUPES DE MAILLES
 MAIL = DEFI_GROUP( reuse = MAIL,
-		   INFO = 1,
+                   INFO = 1,
                    MAILLAGE = MAIL, 
                    CREA_GROUP_MA = (_F( NOM = 'LINEAIRE', 
                                         UNION = ('SINGU_H','SINGU_B'),),
@@ -251,7 +251,7 @@ for i in inst2do :
   
     RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
                            VALE = (inst_old,  0.,
-				   i,         1.),    
+                                   i,         1.),    
                            PROL_DROITE = 'LINEAIRE');
 
     EVOL = STAT_NON_LINE( reuse = EVOL,
@@ -294,16 +294,16 @@ EVOL = CALC_CHAMP( reuse = EVOL,
 '''
 # RECUPERATION DU CHEMIN DE FISSURATION
 MA_FISS = POST_ENDO_FISS( TABLE = CO('TAB_FISS'),
-			  RESULTAT = EVOL,
-			  INST = inst_old,
-			  NOM_CHAM = 'VARI_NOEU',
-			  NOM_CMP = 'V1',
-			  OUVERTURE = 'NON',
-			  RECHERCHE = _F( GROUP_MA = 'DEDANS',
-		                          LONG_ORTH = 50,
-		                          LONG_REG = 1,
-		                          PAS = 1,
-		                          ANGL_MAX = 180,),);
+                          RESULTAT = EVOL,
+                          INST = inst_old,
+                          NOM_CHAM = 'VARI_NOEU',
+                          NOM_CMP = 'V1',
+                          OUVERTURE = 'NON',
+                          RECHERCHE = _F( GROUP_MA = 'DEDANS',
+                                          LONG_ORTH = 50,
+                                          LONG_REG = 1,
+                                          PAS = 1,
+                                          ANGL_MAX = 180,),);
 
 # IMPRESSION DE LA TABLE DU CHEMIN DE FISSURATION
 IMPR_TABLE( UNITE = 8, TABLE = TAB_FISS, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE = '')
@@ -368,7 +368,7 @@ TUHX = CALC_TABLE( TABLE = UHX,
                                  NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
 
 TUHX = CALC_TABLE( TABLE = TUHX,
-		   reuse = TUHX,
+                   reuse = TUHX,
                    ACTION = _F( OPERATION = 'RENOMME',
                                 NOM_PARA = ('MOYENNE','DEPLXH'),),);
 TUHY = CALC_TABLE( TABLE = UHY,
@@ -376,7 +376,7 @@ TUHY = CALC_TABLE( TABLE = UHY,
                                  NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
 
 TUHY = CALC_TABLE( TABLE = TUHY,
-		   reuse = TUHY,
+                   reuse = TUHY,
                    ACTION = _F( OPERATION = 'RENOMME',
                                 NOM_PARA = ('MOYENNE','DEPLYH'),),);
 
@@ -385,7 +385,7 @@ TUBX = CALC_TABLE( TABLE = UBX,
                                  NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
 
 TUBX = CALC_TABLE( TABLE = TUBX,
-		   reuse = TUBX,
+                   reuse = TUBX,
                    ACTION = _F( OPERATION = 'RENOMME',
                                 NOM_PARA = ('MOYENNE','DEPLXB'),),);
 TUBY = CALC_TABLE( TABLE = UBY,
@@ -393,7 +393,7 @@ TUBY = CALC_TABLE( TABLE = UBY,
                                  NOM_PARA = ('NUME_ORDRE','MOYENNE'),),),);
 
 TUBY = CALC_TABLE( TABLE = TUBY,
-		   reuse = TUBY,
+                   reuse = TUBY,
                    ACTION = _F( OPERATION = 'RENOMME',
                                 NOM_PARA = ('MOYENNE','DEPLYB'),),);
 
@@ -418,13 +418,13 @@ DIFFY = FORMULE( NOM_PARA = ('DEPLYH', 'DEPLYB'),
                  VALE = 'DEPLYH-DEPLYB'); 
 
 T_UX = CALC_TABLE( TABLE = T_UX,
-		   reuse = T_UX,
+                   reuse = T_UX,
                    ACTION = _F( OPERATION = 'OPER',
                                 FORMULE = DIFFX,
                                 NOM_PARA = 'DEPLX'),);
 
 T_UY = CALC_TABLE( TABLE = T_UY,
-		   reuse = T_UY,
+                   reuse = T_UY,
                    ACTION = _F( OPERATION = 'OPER',
                                 FORMULE = DIFFY,
                                 NOM_PARA = 'DEPLY'),);
@@ -448,13 +448,13 @@ SCALE_FX = FORMULE( NOM_PARA = ('DX'), VALE = 'DX*50./1000')
 SCALE_FY = FORMULE( NOM_PARA = ('DY'), VALE = 'DY*50./1000')
 
 T_F = CALC_TABLE( TABLE = T_F,
-		  reuse = T_F,
+                  reuse = T_F,
                   ACTION = _F( OPERATION = 'OPER',
                                FORMULE = SCALE_FX,
                                NOM_PARA = 'FORCEX'),);
 
 T_F = CALC_TABLE( TABLE = T_F,
-		  reuse = T_F,
+                  reuse = T_F,
                   ACTION = _F( OPERATION = 'OPER',
                                FORMULE = SCALE_FY,
                                NOM_PARA = 'FORCEY'),);
@@ -483,7 +483,7 @@ T_FUY = CALC_TABLE( TABLE = T_FU,
 
 # RECUPERATION DES FORCES OBTENUES EXPERIMENTALEMENT
 F_EXP = LIRE_TABLE( UNITE = 29, FORMAT = 'ASTER', SEPARATEUR = ' ')
-#IMPR_TABLE(UNITE = 8, TABLE = F_EXP)
+#IMPR_TABLE( TABLE = F_EXP)
 
 #######################################################
 #   TESTS DE COMPARAISON AVEC LA THESE DE A.CARPIUC   #
@@ -565,10 +565,10 @@ TEST_TABLE( VALE_CALC = 1.12238812407,
 IMPR_RESU( FORMAT = 'MED',
            UNITE = 81,
            RESU = (_F( MAILLAGE = MAIL,
-	               RESULTAT = EVOL,
-	               NOM_CHAM = 'DEPL',
-	               TOUT_ORDRE = 'OUI',),
-	           _F( RESULTAT = EVOL,
+                       RESULTAT = EVOL,
+                       NOM_CHAM = 'DEPL',
+                       TOUT_ORDRE = 'OUI',),
+                   _F( RESULTAT = EVOL,
                        NOM_CHAM = 'VARI_ELGA',
                        NOM_CMP = ('V1','V3',),),),);
 '''
