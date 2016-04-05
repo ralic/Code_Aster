@@ -22,166 +22,73 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+for partition in ('GROUP_ELEM', 'GROUP_ELEM+', 'MAIL_CONTIGU', 'MAIL_DISPERSE', 'CENTRALISE') :
+    MO=AFFE_MODELE(MAILLAGE=MA,
+                   AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
+                   PARTITION=_F(PARALLELISME=partition,))
 
-MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
+    MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
 
-AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
-                    AFFE=_F(TOUT='OUI',
-                            MATER=MAT1,));
+    AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
+                        AFFE=_F(TOUT='OUI',  MATER=MAT1,));
 
-AFCIN=AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=_F(GROUP_NO='Cote_inferieur',
-                                  DX=0,DY=0,DZ=0,),);
+    AFCIN=AFFE_CHAR_CINE(MODELE=MO,
+                         MECA_IMPO=_F(GROUP_NO='Cote_inferieur',
+                                      DX=0,DY=0,DZ=0,),);
 
-AFMEC=AFFE_CHAR_MECA(MODELE=MO,
-                     DDL_IMPO=_F(GROUP_NO='Cote_superieur',
-                                  DZ=1,),);
-# DISTRIBUTION PAR GREL
+    AFMEC=AFFE_CHAR_MECA(MODELE=MO,
+                         DDL_IMPO=_F(GROUP_NO='Cote_superieur',
+                                      DZ=1,),);
 
-MESTAT1=MECA_STATIQUE(MODELE=MO,
-                      CHAM_MATER=AFMAT,
-                      EXCIT=(_F(CHARGE=AFMEC,),
-                             _F(CHARGE=AFCIN,),),
-                      SOLVEUR=_F(METHODE='PETSC',
-                                 ALGORITHME='FGMRES',
-                                 PRE_COND='LDLT_SP',
-                                 RESI_RELA=1.0E-12,
-                                 MATR_DISTRIBUEE='OUI',),
-                      INFO=2,);
+    MESTAT1=MECA_STATIQUE(MODELE=MO,
+                          CHAM_MATER=AFMAT,
+                          EXCIT=(_F(CHARGE=AFMEC,),
+                                 _F(CHARGE=AFCIN,),),
+                          SOLVEUR=_F(METHODE='PETSC',
+                                     ALGORITHME='FGMRES',
+                                     PRE_COND='LDLT_SP',
+                                     RESI_RELA=1.0E-12,
+                                     MATR_DISTRIBUEE='OUI',),
+                          INFO=2,);
 
-IMPR_RESU(RESU=_F(RESULTAT=MESTAT1,
-                  NOM_CHAM='DEPL',),);
+    INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
+                                    NOM_CMP='DZ',
+                                    NOM_CHAM='DEPL',
+                                    TYPE_MAILLE='2D',),
+                       CHAM_MATER=AFMAT,
+                       RESULTAT=MESTAT1,
+                       );
 
-INT_DZ=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
-                                NOM_CMP='DZ',
-                                NOM_CHAM='DEPL',
-                                TYPE_MAILLE='2D',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,
-                   );
+    INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
+                                    NOM_CMP='DX',
+                                    NOM_CHAM='DEPL',
+                                    TYPE_MAILLE='1D',),
+                       CHAM_MATER=AFMAT,
+                       RESULTAT=MESTAT1,);
 
-INT_DEPX=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_y',
-                                NOM_CMP='DX',
-                                NOM_CHAM='DEPL',
-                                TYPE_MAILLE='1D',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,);
+    INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
+                                    NOM_CMP='DY',
+                                    NOM_CHAM='DEPL',
+                                    TYPE_MAILLE='1D',),
+                       CHAM_MATER=AFMAT,
+                       RESULTAT=MESTAT1,);
 
-INT_DEPY=POST_ELEM(INTEGRALE=_F(GROUP_MA='Arete_superieure_x',
-                                NOM_CMP='DY',
-                                NOM_CHAM='DEPL',
-                                TYPE_MAILLE='1D',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT1,);
+    TEST_TABLE(TABLE=INT_DZ,
+               NOM_PARA='MOYE_DZ',
+               VALE_CALC=0.465087319232,
+               )
 
-IMPR_TABLE(TABLE=INT_DZ)
-IMPR_TABLE(TABLE=INT_DEPX)
-IMPR_TABLE(TABLE=INT_DEPY)
+    TEST_TABLE(TABLE=INT_DEPX,
+               NOM_PARA='MOYE_DX',
+               VALE_CALC=0.162925804684,
+               )
 
-TEST_TABLE(TABLE=INT_DZ,
-           NOM_PARA='MOYE_DZ',
-           VALE_CALC=0.465087319232,
-           )
+    TEST_TABLE(TABLE=INT_DEPY,
+               NOM_PARA='MOYE_DY',
+               VALE_CALC=0.162925932138,
+               )
 
-TEST_TABLE(TABLE=INT_DEPX,
-           NOM_PARA='MOYE_DX',
-           VALE_CALC=0.162925804684,
-           )
+    DETRUIRE(CONCEPT=_F(NOM=(MO, MAT1, AFMAT, AFCIN, AFMEC, MESTAT1, INT_DZ, INT_DEPX, INT_DEPY)),INFO=1)
 
-TEST_TABLE(TABLE=INT_DEPY,
-           NOM_PARA='MOYE_DY',
-           VALE_CALC=0.162925932138,
-           )
-
-# DISTRIBUTION PAR MAILLE
-
-MO=MODI_MODELE(reuse=MO,
-               MODELE=MO,
-               PARTITION=_F(PARALLELISME='MAIL_DISPERSE',),);
-
-MESTAT2=MECA_STATIQUE(MODELE=MO,
-                      CHAM_MATER=AFMAT,
-                      EXCIT=(_F(CHARGE=AFMEC,),
-                             _F(CHARGE=AFCIN,),),
-                      SOLVEUR=_F(METHODE='PETSC',
-                                 ALGORITHME='FGMRES',
-                                 PRE_COND='LDLT_SP',
-                                 RESI_RELA=1.0E-12,
-                                 MATR_DISTRIBUEE='OUI',),
-                      INFO=2,);
-
-IMPR_RESU(RESU=_F(RESULTAT=MESTAT2,
-                  NOM_CHAM='DEPL',),);
-
-INT_DZ2=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
-                                NOM_CMP='DZ',
-                                NOM_CHAM='DEPL',
-                                TYPE_MAILLE='2D',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT2,
-                   );
-
-IMPR_TABLE(TABLE=INT_DZ2)
-
-TEST_TABLE(TABLE=INT_DZ2,
-           NOM_PARA='MOYE_DZ',
-           VALE_CALC=0.46508732926,
-           )
-
-TEST_RESU(RESU=_F(RESULTAT=MESTAT2,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  NOEUD='N9',
-                  VALE_CALC=0.167785278478,),);
-
-# DISTRIBUTION PAR SOUS-DOMAINES
-
-PART=DEFI_PARTITION(NB_PART=4, MODELE=MO, METHODE='PMETIS', );
-
-MO=MODI_MODELE(reuse=MO,
-               MODELE=MO,
-               PARTITION=_F(PARALLELISME='SOUS_DOMAINE',
-                            PARTITION=PART,),);
-
-MESTAT3=MECA_STATIQUE(MODELE=MO,
-                      CHAM_MATER=AFMAT,
-                      EXCIT=(_F(CHARGE=AFMEC,),
-                             _F(CHARGE=AFCIN,),),
-                      SOLVEUR=_F(METHODE='PETSC',
-                                 ALGORITHME='FGMRES',
-                                 PRE_COND='LDLT_SP',
-                                 RESI_RELA=1.0E-12,
-                                 MATR_DISTRIBUEE='OUI',),
-                      INFO=2,);
-
-IMPR_RESU(RESU=_F(RESULTAT=MESTAT3,
-                  NOM_CHAM='DEPL',),);
-
-INT_DZ3=POST_ELEM(INTEGRALE=_F(GROUP_MA='Face_i',
-                                NOM_CMP='DZ',
-                                NOM_CHAM='DEPL',
-                                TYPE_MAILLE='2D',),
-                   CHAM_MATER=AFMAT,
-                   RESULTAT=MESTAT3,
-                   );
-
-IMPR_TABLE(TABLE=INT_DZ3)
-
-TEST_TABLE(TABLE=INT_DZ3,
-           NOM_PARA='MOYE_DZ',
-           VALE_CALC=0.465087300718,
-           )
-
-TEST_RESU(RESU=_F(RESULTAT=MESTAT3,
-                  NUME_ORDRE=1,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  NOEUD='N9',
-                  VALE_CALC=0.167785204723,),);
 
 FIN();

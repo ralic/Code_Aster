@@ -140,7 +140,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 !         -- CALCUL DISTRIBUE :
 !
             call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-            ldgrel=prtk(1).eq.'GROUP_ELEM'
+            ldgrel=prtk(1)(1:10).eq.'GROUP_ELEM'
             if (.not.ldgrel) then
                 call jeveuo(partit//'.PRTI', 'L', vi=prti)
                 if (prti(1) .gt. nbproc) then

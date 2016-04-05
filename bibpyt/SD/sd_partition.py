@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,7 @@ class sd_partition(AsBase):
     PRTI = AsVI(lonmax=1)
     PRTK = AsVK24(lonmax=2)
 
-    # si PRTK(1) /= 'GROUP_ELEM' :
+    # si PRTK(1) in ('MAIL_DISPERSE', 'MAIL_CONTIGU') :
     NUPROC_MAILLE = Facultatif(AsVI(SDNom(nomj='.NUPROC.MAILLE')))
 
     def check_1(self, checker):
@@ -35,29 +35,24 @@ class sd_partition(AsBase):
 
         prtk = self.PRTK.get_stripped()
         assert prtk[0] in (
-            'SOUS_DOMAINE', 'GROUP_ELEM', 'MAIL_DISPERSE', 'MAIL_CONTIGU'), prtk
+            'SOUS_DOMAINE', 'GROUP_ELEM', 'GROUP_ELEM+', 'MAIL_DISPERSE', 'MAIL_CONTIGU'), prtk
 
-        if prtk[0] == 'SOUS_DOMAINE':
+        if prtk[0] in ( 'SOUS_DOMAINE', 'GROUP_ELEM+' ):
             assert prtk[1] != '', prtk
+            sd2 = sd_partit(prtk[1])
+            sd2.check(checker)
         else:
             assert prtk[1] == '', prtk
 
-        if prtk[0] != 'GROUP_ELEM':
+        if prtk[0] in ('MAIL_DISPERSE', 'MAIL_CONTIGU'):
             assert self.NUPROC_MAILLE.exists
 
 
-# sd_partit (cree par la commande DEFI_PARTITION :
+# sd_partit :
 #----------------------------------------------------
-# AJACOT_PB en attendant la correction de la fiche 10475 :
-# on dédouble la SD pour la rendre facultative.
-class sd_partit1(AsBase):
+class sd_partit(AsBase):
     nomj = SDNom(fin=19)
     FDIM = AsVI(lonmax=1, )
     FREF = AsVK8(lonmax=1, )
     FETA = AsColl(acces='NO', stockage='DISPERSE',
                   modelong='VARIABLE', type='I', )
-
-
-class sd_partit(AsBase):
-    nomj = SDNom(fin=19)
-    sd1 = Facultatif(sd_partit1(SDNom('')))

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ajlipa(modelz, base)
-        character(len=*) :: modelz
-        character(len=1) :: base
+    subroutine ajlipa(modelz, base, kdis, sd_partit1z)
+        character(len=*), intent(in) :: modelz
+        character(len=1), intent(in) :: base
+        character(len=24), intent(in):: kdis
+        character(len=*), intent(in) :: sd_partit1z
     end subroutine ajlipa
 end interface

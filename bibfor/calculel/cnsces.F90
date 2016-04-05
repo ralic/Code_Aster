@@ -1,7 +1,7 @@
 subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
                   cesz)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,6 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! A_UTIL
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -37,46 +36,45 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
     character(len=*) :: cnsz, cesz, base, cesmoz, typces, mnogaz
 ! ------------------------------------------------------------------
-! BUT: TRANSFORMER UN CHAM_NO_S EN CHAM_ELEM_S
+! But: transformer un cham_no_s en cham_elem_s
 ! ------------------------------------------------------------------
-!     ARGUMENTS:
-! CNSZ  IN/JXIN  K19 : SD CHAM_NO_S A TRANSFORMER
-! TYPCES IN       K4  : TYPE VOULU POUR LE CHAM_ELEM_S
+! Arguments:
+! cnsz  in/jxin  k19 : sd cham_no_s a transformer
+! typces in       k4  : type voulu pour le cham_elem_s
 !                      /'ELEM' /'ELGA' /'ELNO'
-! CESMOZ IN/JXIN  K19 :  SD CHAM_ELEM_S "MODELE" POUR CESZ
-!       SI TYPCES = 'ELEM' : CESMOZ N'EST PAS UTILISE
-!       SI TYPCES  ='ELGA' ON SE SERT DE CESMOZ POUR DETERMINER
-!          LE NOMBRE DE POINTS ET DE SOUS-POINTS  DU CHAM_ELEM _S
-!       SI TYPCES  ='ELNO' ON SE SERT DE CESMOZ POUR DETERMINER
-!          LE NOMBRE DE SOUS-POINTS  DU CHAM_ELEM_S
+! cesmoz in/jxin  k19 :  sd cham_elem_s "modele" pour cesz
+!       si typces = 'ELEM' : cesmoz n'est pas utilise
+!       si typces  ='ELGA' on se sert de cesmoz pour determiner
+!          le nombre de points et de sous-points  du cham_elem_s
+!       si typces  ='ELNO' on se sert de cesmoz pour determiner
+!          le nombre de sous-points  du cham_elem_s
 !
-! MNOGAZ IN/JXIN  K19 : SD CHAM_ELEM_S CONTENANT LES MATRICES
-!                       DE PASSAGE NOEUD -> GAUSS.
-!                       MNOGAZ N'EST UTILISE QUE SI ELNO->ELGA
-! ATTENTION :  MNOGAZ EST UN CHAM_ELEM_S AVEC UNE CONVENTION
-!              TRES PARTICULIERE  (MAILLE DE REFERENCE)
-!              (VOIR ROUTINE MANOPG.F)
+! mnogaz in/jxin  k19 : sd cham_elem_s contenant les matrices
+!                       de passage noeud -> gauss.
+!                       mnogaz n'est utilise que si elno->elga
+! attention :  mnogaz est un cham_elem_s avec une convention
+!              tres particuliere  (maille de reference)
+!              (voir routine manopg.f)
 !
-! CESZ   IN/JXOUT K19 : SD CHAM_ELEM_S RESULTAT
-! BASE    IN      K1  : BASE DE CREATION POUR CESZ : G/V/L
+! cesz   in/jxout k19 : sd cham_elem_s resultat
+! base    in      k1  : base de creation pour cesz : g/v/l
 !-----------------------------------------------------------------------
 !
-!  PRINCIPES RETENUS POUR LA CONVERSION :
+!  Principes retenus pour la conversion :
+!  --------------------------------------
 !
-!  1) ON NE TRAITE QUE LES CHAM_NO_S REELS (R8)
+!  1) On ne traite que les cham_no_s reels (r8)
 !  2)
-!    SI  TYPCES='ELEM'
-!       ON AFFECTE A LA MAILLE LA MOYENNE ARITHMETIQUE DES NOEUDS
-!    SI  TYPCES='ELNO'
-!       ON RECOPIE LA VALEUR DU NOEUD GLOBAL SUR LE NOEUD LOCAL
-!    SI  TYPCES='ELGA'
-!       ON UTILISE LA MATRICE DE PASSAGE NOEUD -> GAUSS.
+!    si  typces='ELEM'
+!       on affecte a la maille la moyenne arithmetique des noeuds
+!    si  typces='ELNO'
+!       on recopie la valeur du noeud global sur le noeud local
+!    si  typces='ELGA'
+!       on utilise la matrice de passage noeud -> gauss.
 !
-!  3) LES EVENTUELS SOUS-POINTS PORTENT TOUS LES MEMES VALEURS
+!  3) les eventuels sous-points portent tous les memes valeurs
 !
 !-----------------------------------------------------------------------
-!
-!     ------------------------------------------------------------------
     integer :: ima, ncmp, icmp,  jcnsl
     integer :: jcesd,  jcesl, nbma, iret, nbsp, nbno, ico
     integer :: iad,  nbpt, ipt, ino, nuno, isp, nbpg2, nbno2, iad1
@@ -96,7 +94,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     real(kind=8), pointer :: cnsv(:) => null()
     integer, pointer :: vnbpt(:) => null()
     integer, pointer :: vnbsp(:) => null()
-!     ------------------------------------------------------------------
+!------------------------------------------------------------------
     call jemarq()
 !
 !
@@ -105,11 +103,11 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     cns = cnsz
 !
 !
-!     1- RECUPERATION D'INFORMATIONS DANS CNS :
-!        MA    : NOM DU MAILLAGE
-!        NOMGD : NOM DE LA GRANDEUR
-!        NCMP  : NOMBRE DE CMPS DANS CNS
-!     ------------------------------------------
+!   1- Recuperation d'informations dans cns :
+!      ma    : nom du maillage
+!      nomgd : nom de la grandeur
+!      ncmp  : nombre de cmps dans cns
+!   ------------------------------------------
     call jeveuo(cns//'.CNSK', 'L', vk8=cnsk)
     call jeveuo(cns//'.CNSC', 'L', vk8=cnsc)
     call jeveuo(cns//'.CNSV', 'L', vr=cnsv)
@@ -125,13 +123,13 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     call jelira(cns//'.CNSC', 'LONMAX', ncmp)
 !
 !
-!     2. CALCUL DES OBJETS  '&&CNSCES.NBPT','&CNSCES.NBSP'
-!     -----------------------------------------------------------------
+!   2. CALCUL DES OBJETS  '&&CNSCES.NBPT','&CNSCES.NBSP'
+!   -----------------------------------------------------------------
     AS_ALLOCATE(vi=vnbpt, size=nbma)
     AS_ALLOCATE(vi=vnbsp, size=nbma)
 !
 !
-!     -- PAR DEFAUT : NBSP=1
+!   -- PAR DEFAUT : NBSP=1
     do ima = 1, nbma
         vnbsp(ima) = 1
     end do
@@ -162,8 +160,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
     endif
 !
 !
-!     5- CREATION DE CES :
-!     ---------------------------------------
+!   5- CREATION DE CES :
+!   ---------------------------------------
     call cescre(base, ces, typces, ma, nomgd,&
                 ncmp, cnsc, vnbpt, vnbsp, [-ncmp])
 !
@@ -173,8 +171,8 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !
 !
-!     6- REMPLISSAGE DES OBJETS .CESL ET .CESV :
-!     ------------------------------------------
+!   6- REMPLISSAGE DES OBJETS .CESL ET .CESV :
+!   ------------------------------------------
 !
 !
     if (typces .eq. 'ELEM') then
@@ -219,7 +217,7 @@ subroutine cnsces(cnsz, typces, cesmoz, mnogaz, base,&
 !
 !
     else if (typces.eq.'ELNO') then
-!     --------------------------
+!   --------------------------------
         do ima = 1, nbma
             nbpt = zi(jcesd-1+5+4* (ima-1)+1)
             nbsp = zi(jcesd-1+5+4* (ima-1)+2)

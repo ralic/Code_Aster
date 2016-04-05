@@ -196,8 +196,8 @@ subroutine creaco(nbmato, ma, nblien)
 ! ------------------------ JEVEUX ------------------------------------
 !
     call jedetr('&&FETSKP.NBMAMA')
-    call wkvect('&&FETSKP.TEMP', 'V V I', maxi, temp)
-    call wkvect('&&FETSKP.TEMP1', 'V V I', maxi, temp1)
+    call wkvect('&&FETSKP.TEMP', 'V V I', max(1,maxi), temp)
+    call wkvect('&&FETSKP.TEMP1', 'V V I', max(1,maxi), temp1)
 !
 
     call wkvect('&&FETSKP.RENUM2', 'V V I', nbmato, renum2)
@@ -315,7 +315,7 @@ subroutine creaco(nbmato, ma, nblien)
 !
 ! ------ CREATION DES CONNECTIVITES DES MAILLES ( CO ) ---------------
 !
-    call wkvect('&&FETSKP.CO', 'V V S', nblien, co)
+    call wkvect('&&FETSKP.CO', 'V V S', max(1,nblien), co)
 !
     do ima = 1, nbmato
         nbre=0

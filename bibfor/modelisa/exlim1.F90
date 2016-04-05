@@ -27,7 +27,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     character(len=*) :: modelz, basez, ligrez
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,13 +42,16 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! But : Creer le ligrel "reduit" correspondant au ligrel d'un modele
+!       mais en ne conservant que certaines mailles.
+!
 ! in  : lismai : liste des numeros de mailles constituant le
 !                ligrel a creer.
 !                Remarque : les mailles de numero 0 sont ignorees.
 ! in  : nbmail : longueur de la liste des mailles
 ! in  : modelz : nom du modele referencant les mailles de lismai
 !                des grels
-! in  : basez  : base sur-laquelle on cree le ligrel
+! in  : basez  : base sur laquelle on cree le ligrel
 ! out : ligrez : ligrel a creer
 !----------------------------------------------------------------------
 !
@@ -78,13 +81,13 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
     call jeveuo(ligrmo//'.LIEL', 'L', vi=liel)
 
 
-!   -- objet nbno
+!   -- objet .NBNO
 !   --------------
     call wkvect(ligrel//'.NBNO', base//' V I', 1, jdnb)
     zi(jdnb) = 0
 
 
-!   -- objet .lgrf
+!   -- objet .LGRF
 !   --------------
     call jedupo(ligrmo//'.LGRF', base, ligrel//'.LGRF', .false._1)
 
@@ -110,11 +113,14 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 
 
 
-!   -- on compte les types d'element et le nombre de mailles par type
+!   -- On compte les types d'element et le nombre de mailles par type.
+!      En realite, on ne "groupe" dans un grel que les mailles successives
+!      portant des elements de meme type.
+!      Mais le ligrel sera optimise plus tard (appel a adalig).
 !   -------------------------------------------------------------------
     call wkvect('&&EXLIM1.TYPE_NOMBRE', 'V V I', 2*nbmail_nz, jtyp)
     jnel = jtyp + nbmail_nz
-!
+
     typel1 = 0
     nbtyel = 0
     itype = 0
@@ -134,15 +140,15 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
             zi(jtyp-1+nbtyel) = typele
         endif
     end do
-!
+
     nbmam = 0
     do i = 1, nbtyel
         nbmam = max ( nbmam, zi(jnel-1+i) )
     end do
 
 
-!   -- objet liel
-!   =============
+!   -- objet .LIEL
+!   ==============
     cptlie = ligrel//'.LIEL'
     lont = nbtyel * (nbmam+1)
     call jecrec(cptlie, base//' V I', 'NU', 'CONTIG', 'VARIABLE',&

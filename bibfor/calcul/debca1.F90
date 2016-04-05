@@ -68,7 +68,7 @@ implicit none
     character(len=16) :: nomop2, nomte
     character(len=3) :: bevois, exiele
     character(len=12) :: vge
-    character(len=19) :: partit
+    character(len=8) :: partit
     real(kind=8) :: rundef
     integer, pointer :: nbligcol(:) => null()
     character(len=16), pointer :: nvge(:) => null()
@@ -226,7 +226,7 @@ implicit none
     endif
 
 
-!   -- Paralelisme :
+!   -- Parallelisme :
 !   =================
     ca_ldist_=.false.
     ca_ldgrel_=.false.
@@ -240,9 +240,9 @@ implicit none
         ca_nbproc_ = to_aster_int(msize)
 
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ca_ldgrel_=prtk(1).eq.'GROUP_ELEM'
+        ca_ldgrel_= prtk(1).eq.'GROUP_ELEM+' .or. prtk(1).eq.'GROUP_ELEM' 
         if (.not.ca_ldgrel_) then
-        call jeveuo(partit//'.PRTI', 'L', vi=prti)
+            call jeveuo(partit//'.PRTI', 'L', vi=prti)
             if (prti(1) .ne. ca_nbproc_) then
                 vali(1)=prti(1)
                 vali(2)=ca_nbproc_

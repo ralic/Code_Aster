@@ -1,4 +1,4 @@
-subroutine fetskp()
+subroutine fetskp(mod,meth,nbpart)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,6 +24,8 @@ subroutine fetskp()
 ! person_in_charge: jacques.pellet at edf.fr
 !
     implicit none
+    character(len=8), intent(in) :: mod,meth
+    integer, intent(in) :: nbpart
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -36,14 +38,12 @@ subroutine fetskp()
 #include "asterfort/creaco.h"
 #include "asterfort/creagm.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -62,11 +62,11 @@ subroutine fetskp()
     integer :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
     integer :: nbmasd, id,  err, co, renum
     integer ::    numsdm, nmap, i, ima, lrep
-    integer :: iulm1, iocc, nocc, ifm, niv, nblien, nbpart, renum3, idma, iulm2
+    integer :: iulm1, iocc, nocc, ifm, niv, nblien, renum3, idma, iulm2
     integer :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
-    integer :: vali(2), iret
+    integer :: vali(2), iret, iexi
     real(kind=8) :: tmps(7)
-    character(len=8) :: ma, ktmp, mod, ktmp2, meth, k8nb
+    character(len=8) :: ma, ktmp, ktmp2, k8nb
     character(len=8) :: kersco
     character(len=24) :: k24b
     character(len=256) :: jnom(4)
@@ -91,14 +91,16 @@ subroutine fetskp()
 !
 ! ------- ON RECUPERE LES DONNEES DU MAILLAGE OU DU MODELE
 !
-    call getvid(' ', 'MODELE', scal=mod, nbret=err)
-    ASSERT(err.eq.1)
     call dismoi('NOM_MAILLA', mod, 'MODELE', repk=ma)
 
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     AS_ALLOCATE(vi=vrenum1, size=nbmato)
 
     nbmato=0
+    call jeexin(mod//'.MODELE    .LIEL', iexi)
+    if (iexi.eq.0) then
+        call utmess('F', 'PARTITION_2')
+    endif
     call jelira(mod//'.MODELE    .LIEL', 'NMAXOC', nocc)
     do iocc = 1, nocc
         call jelira(jexnum(mod//'.MODELE    .LIEL', iocc), 'LONMAX', nbma)
@@ -132,11 +134,6 @@ subroutine fetskp()
     call jeveuo('&&FETSKP.CO', 'L', co)
     call jeveuo('&&FETSKP.IDCO', 'L', idco)
     call jeveuo('&&FETSKP.NBMAMA', 'L', nbmama)
-!
-! ------- ON RECUPERE LE NBRE DE SD ET LE PARTITONNEUR
-!
-    call getvis(' ', 'NB_PART', scal=nbpart, nbret=err)
-    call getvtx(' ', 'METHODE', scal=meth, nbret=err)
 !
 ! -------  UTILISATION DE CONTRAINTES
 !
@@ -235,7 +232,7 @@ subroutine fetskp()
          else if (meth .eq. 'KMETIS  ') then
              jnom(1)=rep(1:lrep)//'/kmetis'
          endif
-        call aplext(niv, 3, jnom, err)
+         call aplext(niv, 3, jnom, err)
     endif
 !
     AS_DEALLOCATE(vi4=vedlo)

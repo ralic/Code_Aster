@@ -1,6 +1,6 @@
 subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,6 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
-! A_UTIL
     implicit none
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -31,44 +30,44 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
 !
     character(len=*) :: ligrel, option, param, obnbpt, obnbno
 ! ------------------------------------------------------------------
-! BUT: CREER L'OBJET OBNBPT QUI CONTIENDRA LE NOMBRE DE POINTS
-!      DE DISCRETISATION (POUR LES MAILLES D'UN LIGREL)
-!      POUR LE CHAMP ASSOCIE A UN PARAMETRE D'UNE OPTION
+! But: Creer l'objet obnbpt qui contiendra le nombre de points
+!      de discretisation (pour les mailles d'un ligrel)
+!      pour le cham_elem associe a un parametre d'une option.
+!      Calcule egalement un objet contenant le nombre de noeuds des
+!      mailles du ligrel.
 ! ------------------------------------------------------------------
-!     ARGUMENTS:
-! LIGREL  IN/JXIN  K19 : LIGREL
-! OPTION  IN       K16 : NOM D'UNE OPTION DE CALCUL
-! PARAM   IN       K8  : NOM D'UN PARAMETRE DE OPTION
-! OBNBPT  IN/JXOUT K24 : OBJET QUI CONTIENDRA LES NOMBRES DE POINTS
-! OBNBNO  IN/JXOUT K24 : OBJET QUI CONTIENDRA LES NOMBRES DE NOEUDS
+!     arguments:
+! ligrel  in/jxin  k19 : ligrel
+! option  in       k16 : nom d'une option de calcul
+! param   in       k8  : nom d'un parametre de option
+! obnbpt  in/jxout k24 : objet qui contiendra les nombres de points
+! obnbno  in/jxout k24 : objet qui contiendra les nombres de noeuds
 ! ------------------------------------------------------------------
-! REMARQUES :
-!  CETTE ROUTINE PEUT ETRE UTILISEE PAR EXEMPLE POUR DETERMINER LES
-!  NOMBRE DE POINTS DE GAUSS D'UN MODELE MECANIQUE NON-LINEAIRE:
-!  OPTION = 'RAPH_MECA' + PARAM='PCONTMR'
+! remarques :
+!  cette routine peut etre utilisee par exemple pour determiner les
+!  nombre de points de gauss d'un modele mecanique non-lineaire:
+!  option = 'raph_meca' + param='pcontmr'
 !
-!  L'OBJET CREE EST UN VECTEUR D'ENTIERS DIMENSIONNE AU NOMBRE DE
-!  MAILLES DU MAILLAGE : V(IMA) : NBPT(MAILLE_IMA)
-!  LES MAILLES TARDIVES SONT IGNOREES.
+!  l'objet cree est un vecteur d'entiers dimensionne au nombre de
+!  mailles du maillage : v(ima) : nbpt(maille_ima)
+!  les mailles tardives sont ignorees.
 !-----------------------------------------------------------------------
-!
-!     ------------------------------------------------------------------
     integer :: iret, nbma, ima,  jnbpt, jnbno, iacnx1, ilcnx1, nbno
     character(len=8) :: ma
     character(len=19) :: cel, ces
     integer, pointer :: cesd(:) => null()
-!     ------------------------------------------------------------------
+!------------------------------------------------------------------
     call jemarq()
     cel = '&&NBPTCA.CEL'
     ces = '&&NBPTCA.CES'
-!
+
     call dismoi('NOM_MAILLA', ligrel, 'LIGREL', repk=ma)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbma)
     call wkvect(obnbpt, 'V V I', nbma, jnbpt)
     call wkvect(obnbno, 'V V I', nbma, jnbno)
     call jeveuo(ma//'.CONNEX', 'L', iacnx1)
     call jeveuo(jexatr(ma//'.CONNEX', 'LONCUM'), 'L', ilcnx1)
-!
+
     call alchml(ligrel, option, param, 'V', cel,&
                 iret, ' ')
     if (iret .ne. 0) then
@@ -81,12 +80,12 @@ subroutine nbptca(ligrel, option, param, obnbpt, obnbno)
             nbno = zi(ilcnx1+ima) - zi(ilcnx1-1+ima)
             zi(jnbno-1+ima) = nbno
         end do
-!
+
     endif
-!
-!
+
+
     call detrsd('CHAM_ELEM', cel)
     call detrsd('CHAM_ELEM_S', ces)
-!
+
     call jedema()
 end subroutine

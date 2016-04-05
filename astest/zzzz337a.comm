@@ -76,6 +76,7 @@ modele=AFFE_MODELE( MAILLAGE= mail,
                                 PHENOMENE = 'MECANIQUE',
                                 MODELISATION = 'DIS_TR'),
                            ),
+                      PARTITION=_F(PARALLELISME='GROUP_ELEM',),
                       );
 mat1= DEFI_MATERIAU( ELAS=_F( E= 3.6E+10,
                               RHO= 2400.,

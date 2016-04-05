@@ -1,4 +1,4 @@
-subroutine ajlipa(modelz, base)
+subroutine ajlipa(modelz, base, kdis, sd_partit1z)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -8,6 +8,9 @@ subroutine ajlipa(modelz, base)
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gcncon.h"
+#include "asterc/getres.h"
+#include "asterfort/fetcrf.h"
+#include "asterfort/fetskp.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -22,9 +25,11 @@ subroutine ajlipa(modelz, base)
 #include "asterfort/sdpart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-!
-    character(len=*) :: modelz
-    character(len=1) :: base
+
+    character(len=*), intent(in) :: modelz
+    character(len=1), intent(in) :: base
+    character(len=24), intent(in) :: kdis
+    character(len=*), intent(in) :: sd_partit1z
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -43,59 +48,50 @@ subroutine ajlipa(modelz, base)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
-!  BUT :
-!     CREATION (OU MODIFICATION) DE LA SD_PARTITION D'UN MODELE
-!  REMARQUES :
-!     * LA SD N'EST CREEE QUE DANS LE CAS DU PARALLELISME MPI DISTRIBUE
-!     * IL FAUT APPELER CETTE ROUTINE APRES ADALIG SI CETTE DERNIERE
-!       EST APPELEE (CAS DE OP0018)
+!  But :
+!     Creation (ou modification) de la sd_partition d'un modele
+!     (Commandes AFFE_MODELE et MODI_MODELE)
+!  Remarques :
+!     * la sd n'est creee que dans le cas du parallelisme mpi distribue
+!     * il faut appeler cette routine apres adalig si cette derniere
+!       est appelee (cas de op0018)
 ! ----------------------------------------------------------------------
-!
-!
-    character(len=8) :: modele, partit, mopart, valk(3)
-    character(len=19) :: ligrmo, partit1
-    character(len=24) :: k24b, kdis
-!
+    character(len=8) :: modele, partit, mopart, valk(3), nomres, methode
+    character(len=16) :: typres, nomcom
+    character(len=19) :: ligrmo, sd_partit1
+    character(len=24) :: k24b
     integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
-    integer :: iexi
+    integer :: iexi, nbpart
     integer :: icobis, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
     integer :: nbgrel, jrepe, jprti, jprtk
-!
-    aster_logical :: plein0
+    aster_logical :: plein0, exi_sdpart1
     integer, pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
     integer, pointer :: maille(:) => null()
-!
     mpi_int :: mrank, msize
     data k24b /' '/
-!
+
 !-----------------------------------------------------------------------
-!
     call jemarq()
     call infniv(ifm, niv)
-!
+
 ! ----------------------------------------------------------------------
-!
-!     VERIFICATIONS ET INITIALISATIONS
-!
+!   --  Verifications et initialisations
 ! ----------------------------------------------------------------------
-!
     modele = modelz
     ligrmo = modele//'.MODELE'
-!
-!     -- S'IL N'Y A PAS D'ELEMENTS FINIS DANS LE MODELE :
-!     ---------------------------------------------------
-    call jeexin(ligrmo//'.LIEL', iexi)
-    if (iexi .eq. 0) goto 99
-!
-    call jelira(ligrmo//'.LIEL', 'NUTIOC', nbgrel)
-    call jeveuo(ligrmo//'.REPE', 'L', jrepe)
-!
-!     -- S'IL EXISTE DEJA UNE PARTITION, ON LA DETRUIT :
-!     --------------------------------------------------
+    sd_partit1=sd_partit1z
+
+    call getres(nomres, typres, nomcom)
+    ASSERT(nomres.eq.modele)
+    ASSERT(nomcom.eq.'AFFE_MODELE' .or. nomcom.eq.'MODI_MODELE')
+
+!   -- s'il existe deja une partition, on la detruit :
+!   --------------------------------------------------
     call jeexin(modele//'.PARTIT', iexi)
     if (iexi .gt. 0) then
+        ASSERT(nomcom.eq.'MODI_MODELE')
         call jeveuo(modele//'.PARTIT', 'E', jpart)
         partit = zk8(jpart-1+1)
         call detrsd('PARTITION', partit)
@@ -103,91 +99,108 @@ subroutine ajlipa(modelz, base)
     else
         call wkvect(modele//'.PARTIT', base//' V K8', 1, jpart)
     endif
-!
-!     -- S'IL N'A QU'UN SEUL PROC, IL N'Y A RIEN A FAIRE :
-!     ----------------------------------------------------
+
+!   -- s'il n'y a pas d'elements finis dans le modele :
+!   ---------------------------------------------------
+    call jeexin(ligrmo//'.LIEL', iexi)
+    if (iexi .eq. 0) goto 999
+
+!   -- s'il n'a qu'un seul proc, il n'y a rien a faire :
+!   ----------------------------------------------------
     nbproc = 1
     rang = 0
     call asmpi_info(rank=mrank, size=msize)
     rang = to_aster_int(mrank)
     nbproc = to_aster_int(msize)
-    if (nbproc .le. 1) goto 99
-!
-!     -- SI LE MODELE N'A PAS DE MAILLES, IL N'Y A RIEN A FAIRE :
-!     -----------------------------------------------------------
+    if (nbproc .le. 1) goto 999
+
+!   -- si le modele n'a pas de mailles, il n'y a rien a faire :
+!   -----------------------------------------------------------
     call jeexin(modele//'.MAILLE', iexi)
-    if (iexi .eq. 0) goto 99
-!
-!     -- SI L'UTILISATEUR NE VEUT PAS DE DISTRIBUTION DES CALCULS,
-!        IL N'Y A RIEN A FAIRE :
-!     ------------------------------------------------------------
-    call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=ibid)
-    if (kdis .eq. 'CENTRALISE') goto 99
-!
+    if (iexi .eq. 0) goto 999
+
+!   -- si l'utilisateur ne veut pas de distribution des calculs,
+!      il n'y a rien a faire :
+!   ------------------------------------------------------------
+    if (kdis .eq. 'CENTRALISE') goto 999
+
+
+!   -- la sd_partit1 est a fournir si 'SOUS_DOMAINE' ou 'GROUP_ELEM+'
+!   -------------------------------------------------------------------
+    exi_sdpart1=(kdis .eq. 'GROUP_ELEM+' .or. kdis .eq. 'SOUS_DOMAINE')
+    if (exi_sdpart1) then
+        ASSERT(sd_partit1.ne.' ')
+    else
+        ASSERT(sd_partit1.eq.' ')
+    endif
+
+
 ! ----------------------------------------------------------------------
-!
-!     LECTURE DES MOT-CLES ET VERIFICATIONS SUPPLEMENTAIRES
-!     CREATION DE LA SD
-!
+!   Lecture des mot-cles et verifications supplementaires
+!   Creation de la sd_partit1
 ! ----------------------------------------------------------------------
-!
     dist0 = 0
-    partit1 = ' '
+
     call gcncon('_', partit)
     zk8(jpart-1+1) = partit
-!
-!
-!     CREATION DE LA PARTITION :
-!     ----------------------------------------------------
+
+
+!   -- Creation de la sd_partition :
+!   ----------------------------------------------------
     call jeveuo(modele//'.MAILLE', 'L', vi=maille)
     call jelira(modele//'.MAILLE', 'LONMAX', nbma)
     call wkvect(partit//'.PRTI', base//' V I', 1, jprti)
     zi(jprti-1+1)=nbproc
     call wkvect(partit//'.PRTK', base//' V K24', 2, jprtk)
     zk24(jprtk-1+1)= kdis
-    if (kdis .ne. 'GROUP_ELEM') then
+    if (kdis(1:5) .eq. 'MAIL_'.or. kdis .eq. 'SOUS_DOMAINE') then
         call wkvect(partit//'.NUPROC.MAILLE', base//' V I', nbma+1, jnumsd)
         zi(jnumsd-1+nbma+1) = nbproc
-!
-!       NBMAMO : NBRE DE MAILLES DU MODELE
+
+!       nbmamo : nbre de mailles du modele
         nbmamo = 0
         do ima = 1, nbma
             zi(jnumsd-1+ima) = -999
             if (maille(ima) .ne. 0) nbmamo = nbmamo+1
         end do
     endif
-!
-!     -- RECUPERATIONS DES MOT-CLES :
-!     -------------------------------
-!
-    if (kdis .eq. 'SOUS_DOMAINE') then
+
+
+!   -- Recuperations des mot-cles :
+!   -------------------------------
+    if (exi_sdpart1) then
         call getvis('PARTITION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
-        call getvid('PARTITION', 'PARTITION', iocc=1, scal=partit1, nbret=ibid)
-        if (ibid .eq. 1) zk24(jprtk-1+2)= partit1
-    else if (kdis(1:4).eq.'MAIL') then
+        if (ibid.eq.0) dist0=0
+        ASSERT(sd_partit1.ne.' ')
+        zk24(jprtk-1+2)= sd_partit1
+
+    else if (kdis(1:5).eq.'MAIL_') then
         call getvis('PARTITION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
+        ASSERT(sd_partit1.eq.' ')
     endif
-!
-!     -- VERIFICATION POUR LE CAS DU PARTITIONNEMENT EN SOUS-DOMAINES :
-!     -----------------------------------------------------------------
-    if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(partit1//'.FREF', 'L', vk8=fref)
+
+
+!   -- Verification pour le cas du partitionnement avec sd_partit1 :
+!   -----------------------------------------------------------------
+    if (exi_sdpart1) then
+        call jeveuo(sd_partit1//'.FREF', 'L', vk8=fref)
         mopart = fref(1)
         if (modele .ne. mopart) then
-            valk(1) = partit1(1:8)
+            valk(1) = sd_partit1(1:8)
             valk(2) = modele
             valk(3) = mopart
             call utmess('F', 'PARTITION1_17', nk=3, valk=valk)
         endif
     endif
-!
-!     -- VERIFICATIONS SUR LE NOMBRE DE MAILLES OU DE SOUS-DOMAINES :
-!        PAR RAPPORT AU NOMBRE DE PROCESSEURS
-!     ---------------------------------------------------------------
-    if (kdis .eq. 'SOUS_DOMAINE') then
-        call jeveuo(partit1//'.FDIM', 'L', vi=fdim)
+
+
+!   -- Verifications sur le nombre de mailles ou de sous-domaines :
+!      par rapport au nombre de processeurs
+!   ---------------------------------------------------------------
+    if (exi_sdpart1) then
+        call jeveuo(sd_partit1//'.FDIM', 'L', vi=fdim)
         nbsd = fdim(1)
-!       IL FAUT AU MOINS UN SD PAR PROC HORS PROC0
+!       il faut au moins un sd par proc hors proc0
         if (((nbsd-dist0).lt.(nbproc-1)) .and. (dist0.gt.0)) then
             call utmess('F', 'PARTITION1_99')
         endif
@@ -196,38 +209,32 @@ subroutine ajlipa(modelz, base)
             vali(2) = nbproc
             call utmess('F', 'PARTITION1_1', ni=2, vali=vali)
         endif
-    else if (kdis(1:4).eq.'MAIL') then
-!       IL FAUT AU MOINS UNE MAILLE PAR PROC
+    else if (kdis(1:5).eq.'MAIL_') then
+!       il faut au moins une maille par proc
         if (nbmamo .lt. nbproc) then
             vali(1) = nbmamo
             vali(2) = nbproc
             call utmess('F', 'PARTITION1_93', ni=2, vali=vali)
         endif
-    else if (kdis.eq.'GROUP_ELEM') then
-!       pas de contrainte particuliere ...
-    else
-        ASSERT(.false.)
     endif
-!
+
+
 ! ----------------------------------------------------------------------
-!
-!     REMPLISSAGE DE LA SD
-!
+!   Remplissage de la sd
 ! ----------------------------------------------------------------------
-!
-!
+
     if (kdis .eq. 'SOUS_DOMAINE') then
-!     --------------------------------
+!   ----------------------------------
         call wkvect('&&AJLIPA.PARTITION.SD', 'V V I', nbsd, jparsd)
         call sdpart(nbsd, dist0, zi(jparsd))
         do idd = 1, nbsd
             if (zi(jparsd-1+idd) .eq. 1) then
-                call jeveuo(jexnum(partit1//'.FETA', idd), 'L', jfeta)
-                call jelira(jexnum(partit1//'.FETA', idd), 'LONMAX', nbmasd)
+                call jeveuo(jexnum(sd_partit1//'.FETA', idd), 'L', jfeta)
+                call jelira(jexnum(sd_partit1//'.FETA', idd), 'LONMAX', nbmasd)
                 do i = 1, nbmasd
                     i2 = zi(jfeta-1+i)
                     if (zi(jnumsd-1+i2) .ne. -999) then
-!               -- MAILLE COMMUNE A PLUSIEURS SOUS-DOMAINES
+!                       -- maille commune a plusieurs sous-domaines
                         vali(1) = i2
                         call utmess('F', 'PARTITION1_98', si=vali(1))
                     else
@@ -238,17 +245,17 @@ subroutine ajlipa(modelz, base)
         end do
         call asmpi_comm_vect('MPI_MAX', 'I', nbval=nbma, vi=zi(jnumsd))
         call jedetr('&&AJLIPA.PARTITION.SD')
-!
-!
+
+
     else if (kdis.eq.'MAIL_DISPERSE') then
-!     -------------------------------------
-!       -- LE PROC 0 A UNE CHARGE DIFFERENTE DES AUTRES (DIST0) :
-!       NMPP NBRE DE MAILLES PAR PROC (A LA LOUCHE)
+!   ---------------------------------------
+!       -- le proc 0 a une charge differente des autres (dist0) :
+!       nmpp nbre de mailles par proc (a la louche)
         nmpp = max(1,nbmamo/nbproc)
-!       NMP0 NBRE DE MAILLES AFFECTEES AU PROC0 (A LA LOUCHE)
+!       nmp0 nbre de mailles affectees au proc0 (a la louche)
         nmp0 = (dist0*nmpp)/100
-!
-!       -- AFFECTATION DES MAILLES AUX DIFFERENTS PROCS :
+
+!       -- affectation des mailles aux differents procs :
         nmp0af = 0
         ico = 0
         nbpro1 = nbproc
@@ -266,25 +273,25 @@ subroutine ajlipa(modelz, base)
             endif
  40         continue
         end do
-!
-!
+
+
     else if (kdis.eq.'MAIL_CONTIGU') then
-!       ----------------------------------
-!       NMP0 NBRE DE MAILLES AFFECTEES AU PROC0 :
+!   --------------------------------------
+!       nmp0 nbre de mailles affectees au proc0 :
         nmpp = max(1,nbmamo/nbproc)
         nmp0 = (dist0*nmpp)/100
         nmp1 = ((nbmamo-nmp0)/(nbproc-1))+1
-!
-!       -- AFFECTATION DES MAILLES AUX DIFFERENTS PROCS :
-!          ON AFFECTE LES 1ERES MAILLES AU PROC0 PUIS LES AUTRES
-!          AUX AUTRES PROCS.
+
+!       -- affectation des mailles aux differents procs :
+!          on affecte les 1eres mailles au proc0 puis les autres
+!          aux autres procs.
         nmpp = nmp0
         krang = 0
         ico = 0
         do ima = 1, nbma
             if (maille(ima) .eq. 0) goto 50
             ico = ico+1
-!         -- ON CHANGE DE PROC :
+!         -- on change de proc :
             if (ico .gt. nmpp) then
                 ico = 1
                 nmpp = nmp1
@@ -293,8 +300,8 @@ subroutine ajlipa(modelz, base)
             zi(jnumsd-1+ima) = krang
  50         continue
         end do
-!
-!       -- ON VERIFIE QUE TOUTES LES MAILLES SONT DISTRIBUEES :
+
+!       -- on verifie que toutes les mailles sont distribuees :
         ico = 0
         icobis = 0
         do i = 1, nbma
@@ -302,23 +309,22 @@ subroutine ajlipa(modelz, base)
             if (zi(jnumsd-1+i) .eq. rang) icobis = icobis+1
         end do
         ASSERT(ico.eq.nbmamo)
-!
-!
-    else if (kdis.eq.'GROUP_ELEM') then
-!     ----------------------------------
-!       -- IL N'Y A RIEN A FAIRE !
-!       SI KDIS='GROUP_ELEM', LA REGLE POUR LES CALCULS ELEMENTAIRES
-!       ET LES ASSEMBLAGES EST :
-!       QUELQUE SOIT LE LIGREL (MODELE, CHARGE, ....) :
-!       LE GREL IGREL EST TRAITE PAR LE PROCESSEUR
-!       DE RANG=MOD(IGREL,NBPROC)
-!
+
+
+    else if (kdis.eq.'GROUP_ELEM' .or. kdis.eq.'GROUP_ELEM+') then
+!   ----------------------------------------------------------------
+!       -- il n'y a rien a faire !
+!       La regle pour les calculs elementaires et les assemblages est :
+!       quelque soit le ligrel (modele, charge, ....) :
+!       le grel igrel est traite par le processeur
+!       de rang=mod(igrel,nbproc)
+
     else
         ASSERT(.false.)
     endif
-!
-!
- 99 continue
-!
+
+
+999 continue
+
     call jedema()
 end subroutine

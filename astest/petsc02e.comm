@@ -23,9 +23,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),);
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               AFFE=_F(TOUT='OUI',
-                       PHENOMENE='MECANIQUE',
-                       MODELISATION='3D',),);
+               AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),);
 
 MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,NU=0.3,),);
 
@@ -34,10 +32,8 @@ AFMAT=AFFE_MATERIAU(MAILLAGE=MA,
                             MATER=MAT1,));
 
 AFCIN=AFFE_CHAR_CINE(MODELE=MO,
-                     MECA_IMPO=(_F(GROUP_NO='Cote_inferieur',
-                                   DX=0,DY=0,DZ=0,),
-                                _F(GROUP_NO='Cote_superieur',
-                                   DZ=1,),),);
+                     MECA_IMPO=(_F(GROUP_NO='Cote_inferieur', DX=0,DY=0,DZ=0,),
+                                _F(GROUP_NO='Cote_superieur', DZ=1,),),);
 
 # DISTRIBUTION PAR GREL
 
@@ -138,19 +134,18 @@ TEST_RESU(RESU=_F(RESULTAT=MESTAT2,
 
 # DISTRIBUTION PAR SOUS-DOMAINES
 
-PART=DEFI_PARTITION(NB_PART=4,
-                    MODELE=MO,
-                    METHODE='PMETIS',
-                    );
 
-MO=MODI_MODELE(reuse=MO,
-               MODELE=MO,
-               PARTITION=_F(PARALLELISME='SOUS_DOMAINE',
-                            PARTITION=PART,),);
+MO3=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
+               PARTITION=_F(PARALLELISME='GROUP_ELEM+', METHODE='PMETIS', NB_PART=4,),);
+               
+AFCIN3=AFFE_CHAR_CINE(MODELE=MO3,
+                     MECA_IMPO=(_F(GROUP_NO='Cote_inferieur', DX=0,DY=0,DZ=0,),
+                                _F(GROUP_NO='Cote_superieur', DZ=1,),),);
 
-MESTAT3=MECA_STATIQUE(MODELE=MO,
+MESTAT3=MECA_STATIQUE(MODELE=MO3,
                       CHAM_MATER=AFMAT,
-                      EXCIT=_F(CHARGE=AFCIN,),
+                      EXCIT=_F(CHARGE=AFCIN3,),
                       SOLVEUR=_F(METHODE='PETSC',
                                  ALGORITHME='GCR',
                                  PRE_COND='GAMG',

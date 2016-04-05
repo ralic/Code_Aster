@@ -1,6 +1,6 @@
 subroutine manopg(ligrez, optioz, paramz, mnogaz)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -140,8 +140,8 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jeveuo('&CATA.TE.NOLOCFPG', 'L', vi=nolocfpg)
 !
 !
-!     0.1 CALCUL DE '&&MANOPG.ECONO' ET '&&MANOPG.CHSGEO'
-!     ------------------------------------------------------------------
+!   0.1 CALCUL DE '&&MANOPG.ECONO' ET '&&MANOPG.CHSGEO'
+!   ------------------------------------------------------------------
 !     '.ECONO': V(IGR) = 1 => LE GREL IGR EST STOCKE 'ECONOMIQUE'
     kecono='&&MANOPG.ECONO'
     chsgeo='&&MANOPG.CHSGEO'
@@ -155,12 +155,12 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     endif
 !
 !
-!     0.2 ON FABRIQUE UN "FAUX" LIGREL (LIGRE1) N'AYANT QUE LE NOMBRE
-!        NECESSAIRE D'ELEMENTS PAR GREL POUR DIMINUER LA TAILLE DE MNOGA
-!     ------------------------------------------------------------------
+!   0.2 ON FABRIQUE UN "FAUX" LIGREL (LIGRE1) N'AYANT QUE LE NOMBRE
+!      NECESSAIRE D'ELEMENTS PAR GREL POUR DIMINUER LA TAILLE DE MNOGA
+!   ------------------------------------------------------------------
 !
-!     '&&MANOPG.MAILREF': OBJET DONNANT POUR CHAQUE MAILLE SA MAILLE
-!         DE REFERENCE
+!   '&&MANOPG.MAILREF': OBJET DONNANT POUR CHAQUE MAILLE SA MAILLE
+!                       DE REFERENCE
     AS_ALLOCATE(vi=mailref, size=nbma)
 !
     ligre1='&&MANOPG.LIGRE1'
@@ -224,15 +224,15 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
 !
 !
 !
-!     1. ON RECUPERE LES NOMBRES DE POINTS DE GAUSS ET DE NOEUDS :
-!     ------------------------------------------------------------
+!   1. ON RECUPERE LES NOMBRES DE POINTS DE GAUSS ET DE NOEUDS :
+!   ------------------------------------------------------------
     call nbptca(ligre1, option, param, obnbpg, obnbno)
     call jeveuo(obnbpg, 'L', jnbpg)
     call jeveuo(obnbno, 'L', jnbno)
 !
 !
-!     2. ALLOCATION DU CHAM_ELEM_S MNOGA :
-!     ---------------------------------------------------------------
+!   2. ALLOCATION DU CHAM_ELEM_S MNOGA :
+!   ---------------------------------------------------------------
     call wkvect(obdime, 'V V I', nbma, jdime)
     ncpmax=0
     do ima = 1, nbma
@@ -243,9 +243,9 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
                 -ncpmax, ' ', [-1], [-1], zi(jdime))
 !
 !
-!     3. ALLOCATION D'UN CHAMP MODELE POUR DETERMINER LES FAMILLES
-!        DE POINTS DE GAUSS UTILISEES.
-!     ---------------------------------------------------------------
+!   3. ALLOCATION D'UN CHAMP MODELE POUR DETERMINER LES FAMILLES
+!      DE POINTS DE GAUSS UTILISEES.
+!   ---------------------------------------------------------------
     celmod='&&MANOPG.CELMOD'
     call alchml(ligre1, option, param, 'V', celmod,&
                 iret, ' ')
@@ -257,8 +257,8 @@ subroutine manopg(ligrez, optioz, paramz, mnogaz)
     call jeveuo(celmod//'.CELD', 'L', vi=celd)
 !
 !
-!     4. REMPLISSAGE DE MNOGA :
-!     ---------------------------------------------------------------
+!   4. REMPLISSAGE DE MNOGA :
+!   ---------------------------------------------------------------
     call jeveuo(mnoga//'.CESD', 'L', jcesd)
     call jeveuo(mnoga//'.CESL', 'E', jcesl)
     call jeveuo(mnoga//'.CESV', 'E', vr=cesv)

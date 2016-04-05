@@ -19,7 +19,7 @@ subroutine cpclma(nomain, nomaou, typcol, base)
     character(len=8) :: nomain, nomaou, typcol
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,12 +38,13 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
 #include "jeveux.h"
 !
+!   But :  Recopie des collections .GROUPEMA ET .GROUPENO
+!
     integer :: nbgmai, igroup, jnuma1, jnuma2, nbmail, jmaill
     integer :: codret
 !
     character(len=24) :: grmain, grmaou, ptnmou, nomgrp
-!
-!     RECOPIE DES COLLECTIONS .GROUPEMA ET .GROUPENO
+!------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -63,7 +64,8 @@ subroutine cpclma(nomain, nomaou, typcol, base)
     call jedetr(ptnmou)
 !
     call jeexin(grmain, codret)
-    if (codret .eq. 0) goto 9999
+    if (codret .eq. 0) goto 999
+
     call jelira(grmain, 'NOMUTI', nbgmai)
     call jecreo(ptnmou, base//' N K24')
     call jeecra(ptnmou, 'NOMMAX', nbgmai)
@@ -83,7 +85,7 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 20      continue
 10  end do
 !
-9999  continue
+999  continue
 !
     call jedema()
 !

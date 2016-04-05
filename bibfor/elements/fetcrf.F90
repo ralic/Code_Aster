@@ -1,6 +1,6 @@
-subroutine fetcrf(sdpart1)
+subroutine fetcrf(sdpart1,nomo,nbsd)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,11 +17,7 @@ subroutine fetcrf(sdpart1)
 ! ======================================================================
 ! person_in_charge: jacques.pellet at edf.fr
 !-----------------------------------------------------------------------
-!    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES SD_PARTIT.
-!
-! IN sdpart   : NOM DU CONCEPT PRODUIT
-! OUT sdpart  : LE CONCEPT EST CREE ET INSTANCIE
-!
+!    - FONCTION REALISEE:  CREATION DE LA STRUCTURE DE DONNEES SD_PART1.
 !----------------------------------------------------------------------
     implicit none
 !
@@ -32,9 +28,6 @@ subroutine fetcrf(sdpart1)
 #include "asterfort/cfdisi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
-#include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/gmgnre.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
@@ -57,12 +50,13 @@ subroutine fetcrf(sdpart1)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    character(len=8) :: sdpart1
+    character(len=8),intent(in) :: sdpart1,nomo
+    integer,intent(in) :: nbsd
 !
 !
 ! DECLARATION VARIABLES LOCALES
     integer :: nbno, lstgma, nomsd, jadr, i
-    integer :: j, nbsd, intbuf, nec30
+    integer :: j, intbuf, nec30
     integer :: nbnot2, iret, ier, nbnoto, ialino, jtrav, ianbno
     integer :: nbmail, ialima, nbnosd, nb, ianbma, is9, incrs, l, xt
     integer :: yt, zt, k, nbma, linoma,  jprnm
@@ -71,13 +65,12 @@ subroutine fetcrf(sdpart1)
     integer :: nbmama
     integer ::  nbmatr
     integer :: vali(5), iafeta, ial, ials, itma, nber, lil, lils
-    integer :: iao, iaos
-    integer :: maxi
-    character(len=8) :: k8bid, ma, nomo,nom
+    integer :: iao, iaos, iexi
+    character(len=8) :: k8bid, ma
     character(len=19) :: sdpart, ligrmo
     character(len=24) :: nomsda, nomsdm
 
-    character(len=24) ::  nomgma, nomref, grpma
+    character(len=24) ::  nomgma, nomref
     character(len=24) ::  k24buf
     character(len=8), pointer :: lgrf(:) => null()
 !
@@ -94,14 +87,9 @@ subroutine fetcrf(sdpart1)
     nomsda=sdpart//'.FETA'
 !
 !
-    call getvid(' ', 'MODELE', scal=nomo)
-!
 !   ligrel du modele
     ligrmo = nomo(1:8)//'.MODELE'
 
-
-!   nbsd: nbre de sous-domaines
-    call getvis(' ', 'NB_PART', scal=nbsd)
 
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NBNO     ', 'V V I', nbsd, nbno)
@@ -121,22 +109,16 @@ subroutine fetcrf(sdpart1)
     call dismoi('NB_NO_MAILLA', ma, 'MAILLAGE', repi=nbnoto)
     call dismoi('NB_MA_MAILLA', ma, 'MAILLAGE', repi=nbmato)
     nbmatr=nbmato
-    grpma = ma//'.GROUPEMA       '
     call jeveuo(ligrmo//'.PRNM', 'L', jprnm)
     call jelira(ligrmo//'.PRNM', 'LONMAX', n)
     nec = n/nbnoto
     nec30=30*nec
 
-!   -- noms des group_ma crees dans la routine fetskp.F90 :
-    call getvtx(' ', 'NOM_GROUP_MA', scal=nom)
-    maxi=0
-    do i = 1, len(nom)
-        if (nom(i:i) .ne. ' ') maxi=maxi+1
-    end do
+!   -- noms des group_ma crees dans la routine creagm.F90 :
     do i = 1, nbsd
         write(k8bid,'(I4)') i-1
         call lxcadr(k8bid)
-        zk24(lstgma-1+i)= nom(1:maxi)//k8bid
+        zk24(lstgma-1+i)= 'SD'//k8bid
     end do
 
 !   noms des sous-domaines : "SDD" + on ajoute le numero
@@ -146,18 +128,6 @@ subroutine fetcrf(sdpart1)
         zk24(nomsd-1+i) = 'SDD'//k8bid
     end do
 
-! TEST POUR VERFIFIER LA COHERENCE DES
-! GROUP_MA CREES EFFECTIVEMENT DANS LE MAILLAGE
-    ier = 0
-    do i = 1, nbsd
-        nomgma=zk24(lstgma-1+i)
-        call jeexin(jexnom(grpma, nomgma), iret)
-        if (iret .eq. 0) then
-            ier = ier + 1
-            call utmess('E', 'ELEMENTS_62', sk=nomgma)
-        endif
-    end do
-    ASSERT(ier.eq.0)
 !
 !     VECTEUR DES NBRE DE NOEUDS
     call wkvect('&&FETCRF.NB_NO    ', 'V V I', nbsd, ianbno)
@@ -182,13 +152,18 @@ subroutine fetcrf(sdpart1)
     call wkvect('&&FETCRF.TMP  ', 'V V I', nbnot2, jtmp)
     do i = 1, nbsd
         nomgma=zk24(lstgma-1+i)
-        call jelira(jexnom(grpma, nomgma), 'LONUTI', nbmail)
-        call jeveuo(jexnom(grpma, nomgma), 'L', ialima)
+        call jeexin(jexnom('&&FETCRF.GROUPEMA', nomgma), iexi)
+        if (iexi.gt.0) then
+            call jelira(jexnom('&&FETCRF.GROUPEMA', nomgma), 'LONUTI', nbmail)
+            call jeveuo(jexnom('&&FETCRF.GROUPEMA', nomgma), 'L', ialima)
+        else
+            call utmess('F','PARTITION1_2')
+        endif
         zi(iafeta+i-1)=ialima
         zi(ianbma-1+i)=nbmail
         nbmato=nbmato+nbmail
-!
-!       GMGNRE : donne la liste des noeuds ZI(JTMP) d'une liste de
+
+!       gmgnre : donne la liste des noeuds ZI(JTMP) d'une liste de
 !                mailles ZI(IALIMA)
 !                sortie : liste des noeuds = ZI(JTMP)
 !                         nombre de noeuds = ZI(IANBNO-1+I)
@@ -214,8 +189,9 @@ subroutine fetcrf(sdpart1)
     nb=0
     do i = 1, nbsd
 !       ON REFAIT UN COUP POUR CETTE FOIS REMPLIR IALINO
-        ialima= zi(iafeta+i-1)
         nbmail=zi(ianbma-1+i)
+        if (nbmail.eq.0) cycle
+        ialima= zi(iafeta+i-1)
         call jerazo('&&FETCRF.TMP  ', nbnot2, 1)
         call gmgnre(ma, nbnoto, zi(jtrav), zi(ialima), nbmail,&
                     zi(jtmp), nbnosd, 'TOUS')
@@ -259,14 +235,14 @@ subroutine fetcrf(sdpart1)
     do i = 1, nbsd
         k24buf=zk24(nomsd-1+i)
         call jecroc(jexnom(nomsda, k24buf))
-!
+
 !       NB MAILLES/ADDRESSE DE LEURS NUMEROS
         nbmail=zi(ianbma-1+i)
         ialima=zi(iafeta+i-1)
 
 !       NB MAILLES TOTALES DU SD I
 !       REMPLISSAGE EFFECTIF DE FETA
-        call jeecra(jexnom(nomsda, k24buf), 'LONMAX', nbmail)
+        call jeecra(jexnom(nomsda, k24buf), 'LONMAX', max(nbmail,1))
         call jeveuo(jexnom(nomsda, k24buf), 'E', jadr)
 !       MAILLES VOLUMIQUES
         do j = 1, nbmail
@@ -277,8 +253,8 @@ subroutine fetcrf(sdpart1)
     end do
 !
 ! **** TEST NBRE DE MAILLES MODELE = SOMME DES MAILLES DES GROUP_MA
-    call jelira(nomo(1:8)//'.MAILLE', 'LONMAX', nbma)
-    call jeveuo(nomo(1:8)//'.MAILLE', 'L', ial)
+    call jelira(nomo//'.MAILLE', 'LONMAX', nbma)
+    call jeveuo(nomo//'.MAILLE', 'L', ial)
     nbmama=0
     nber=0
     do i = 1, nbma
@@ -392,5 +368,6 @@ subroutine fetcrf(sdpart1)
     call jedetr('&&FETCRF.TESTMA')
     call jedetr('&&FETCRF.TMP')
     call jedetr('&&FETCRF.TRAV')
+    call jedetr('&&FETCRF.GROUPEMA')
     call jedema()
 end subroutine

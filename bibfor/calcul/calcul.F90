@@ -331,6 +331,7 @@ implicit none
 !           -- Si calcul distribue par element on renseigne ca_paral_ :
             if (ca_lparal_) then
                 do ca_iel_ = 1, ca_nbelgr_
+                    ca_paral_(ca_iel_)=.false.
                     ima=numail(ca_igr_,ca_iel_)
                     if (ima .lt. 0) then
                         if (ca_rang_ .eq. 0) then

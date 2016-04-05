@@ -66,8 +66,8 @@ subroutine creagm(nbmato, nbpart, ma, masd)
     character(len=8) :: ma
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: id1, i, maxi, err, isd, nbma, ima, nbre, idma, jvg, jgg, ifm, niv
-    integer :: nbgma
+    integer :: id1, i, err, isd, nbma, ima, nbre, idma, jvg, jgg, ifm, niv
+    integer :: nbgma, nbgrsd
     real(kind=8) :: tmps(7)
     character(len=8) :: ktmp
     character(len=24) :: nom, grpmav, grpma, gpptnm, grpema
@@ -92,16 +92,10 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 !
 ! ------- On RECUPERE LE NOM DES SOUS DOMAINES
 !
-    call getvtx(' ', 'NOM_GROUP_MA', scal=nom, nbret=err)
-    maxi=0
-    do 50 i = 1, len(nom)
-        if (nom(i:i) .ne. ' ') maxi=maxi+1
-50  end do
-!
     do 51 isd = 1, nbpart
         write(ktmp,'(I4)')isd-1
         call lxcadr(ktmp)
-        zk24(nomsdm-1+isd) = nom(1:maxi)//ktmp
+        zk24(nomsdm-1+isd) = 'SD'//ktmp
 51  end do
 !
 !
@@ -119,59 +113,30 @@ subroutine creagm(nbmato, nbpart, ma, masd)
         zi(masd-1+zi(idmasd-1+nbre)+zi(id1-1+nbre)) = zi(renum-1+ima)
         zi(id1-1+nbre) = zi(id1-1+nbre)+1
 36  end do
+
 !
-! ------- ON AGRANDIT LA COLLECTION GROUPE-MAILLE
-!
-    grpma = ma//'.GROUPEMA       '
-    grpmav = '&&OP0029'//'.GROUPEMA       '
-    gpptnm = ma//'.PTRNOMMAI      '
-    call jeexin(grpma, err)
-    if (err .eq. 0) then
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbpart)
-        call jecrec(grpma, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                    nbpart)
-    else
-        call jelira(ma//'.GROUPEMA', 'NMAXOC', nbre)
-        call jelira(grpma, 'NOMUTI', nbgma)
-        nbre = nbgma + nbpart
-        call cpclma(ma, '&&OP0029', 'GROUPEMA', 'V')
-        call jedetr(grpma)
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nbre)
-        call jecrec(grpma, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE',&
-                    nbre)
-        do 100 i = 1, nbgma
-            call jenuno(jexnum(grpmav, i), nom)
-            call jecroc(jexnom(grpma, nom))
-            call jeveuo(jexnum(grpmav, i), 'L', jvg)
-            call jelira(jexnum(grpmav, i), 'LONUTI', nbma)
-            call jeecra(jexnom(grpma, nom), 'LONMAX', max(1, nbma))
-            call jeecra(jexnom(grpma, nom), 'LONUTI', nbma)
-            call jeveuo(jexnom(grpma, nom), 'E', jgg)
-            do 102 ima = 0, nbma-1
-                zi(jgg+ima) = zi(jvg+ima)
-102          continue
-100      continue
-    endif
-!
-! ------- ON RAJOUTE LES SD DANS LES GROUPES DE MAILLES
-!
+!   -- on cree un "GROUPEMA" par sous-domaine :
+    nbgrsd=0
+    do isd = 1, nbpart
+        nbma=zi(nbmasd-1+isd)
+        if (nbma.gt.0) nbgrsd=nbgrsd+1
+    enddo
+    call jecrec('&&FETCRF.GROUPEMA', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',nbgrsd)
+
     do 38 isd = 1, nbpart
         grpema=zk24(nomsdm-1+isd)
         nbma=zi(nbmasd-1+isd)
-        if (nbma .ne. 0) then
-            call jecroc(jexnom(ma//'.GROUPEMA', grpema))
-            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONMAX', max(1, nbma))
-            call jeecra(jexnom(ma//'.GROUPEMA', grpema), 'LONUTI', nbma)
-            call jeveuo(jexnom(ma//'.GROUPEMA', grpema), 'E', idma)
+        if (nbma .gt. 0) then
+            call jecroc(jexnom('&&FETCRF.GROUPEMA', grpema))
+            call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONMAX', nbma)
+            call jeecra(jexnom('&&FETCRF.GROUPEMA', grpema), 'LONUTI', nbma)
+            call jeveuo(jexnom('&&FETCRF.GROUPEMA', grpema), 'E', idma)
             do 41 ima = 0, nbma - 1
                 zi(idma+ima) = zi(masd+zi(idmasd-1+isd)-1+ima)
 41          continue
         endif
 38  end do
-!
+
     call jedetr('&&FETSKP.ID1')
 !
     if (niv .ge. 2) then

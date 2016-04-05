@@ -24,16 +24,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
-               PARTITION=_F(PARALLELISME='CENTRALISE',),
-               );
-
-PART=DEFI_PARTITION(MODELE=MO,
-                    NB_PART=4,);
-
-MO=MODI_MODELE(reuse=MO,
-               MODELE=MO,
-               PARTITION=_F(PARALLELISME='SOUS_DOMAINE',
-                            PARTITION=PART,),
+               PARTITION=_F(PARALLELISME='GROUP_ELEM+', NB_PART=4,),
                );
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,

@@ -35,8 +35,9 @@ implicit none
 !     Entrees:
 !       ligrel (o) : nom d'1 ligrel
 !       igrel  (o) : numero d'1 grel
-!       icalc  (f) : / 1 :  on est "sous" calcul => on va plus vite
-!                    / None :  => on va moins vite
+!       icalc  (f) : / 1 :  on est "sous" calcul (et apres appel debca1) 
+!                           => on va plus vite
+!                    / absent :  => on va moins vite
 !     Sorties:
 !       nbelem : nombre d'elements du grel igrel
 !-----------------------------------------------------------------------

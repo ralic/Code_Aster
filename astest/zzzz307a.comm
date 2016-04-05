@@ -21,7 +21,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 #===========================================================================================
 # Ce test valide le parallelisme des calculs elementaires et des assemblages.
 # Il teste TOUTES les combinaisons de :
-#   * PARTITION/PARALLELISME='CENTRALISE'/'GROUP_ELEM'/'MAIL_CONTIGU'/'MAIL_DISPERSE'
+#   * PARTITION/PARALLELISME=/'CENTRALISE'/'MAIL_CONTIGU'/'MAIL_DISPERSE'
+#                            /'GROUP_ELEM'/'GROUP_ELEM+'/'SOUS_DOMAINE'/
 #   * MATR_DISTRIBUE='OUI'/'NON'
 #   * ELIM_LAGR='LAGR2'/'NON'
 #   * conditions cinematiques : dualisees / eliminees / "a cheval" sur plusieurs processeurs
@@ -31,33 +32,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 
 PRE_GIBI()
 MA=LIRE_MAILLAGE()
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,  AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
 
-for nopartit in ('SOUS_DOMAINE', 'CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 'GROUP_ELEM', 'GROUP_ELEM+PARTITION') :
-    if nopartit == 'SOUS_DOMAINE' :
-        MO=AFFE_MODELE(  MAILLAGE=MA,
-                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
-        SDPART=DEFI_PARTITION(MODELE=MO, NB_PART=6,);
-        MODI_MODELE(  reuse=MO, MODELE=MO,
-                      PARTITION=_F(PARALLELISME='SOUS_DOMAINE', PARTITION=SDPART))
-    elif nopartit == 'GROUP_ELEM+PARTITION' :
-        MO_0=AFFE_MODELE(MAILLAGE=MA,
-                         AFFE=_F(TOUT='OUI',  PHENOMENE='MECANIQUE', MODELISATION='DKT',))
-        DETRUIRE(CONCEPT=_F(NOM=(SDPART)))
-        # a cause d'un effet de bord de DEFI_PARTTION, il faut detruire certains groupes :
-        DEFI_GROUP(reuse=MA, MAILLAGE = MA, DETR_GROUP_MA =_F( NOM=('SD0','SD1','SD2','SD3','SD4','SD5',)))
-        SDPART=DEFI_PARTITION(MODELE=MO_0, NB_PART=6,);
-        MO=AFFE_MODELE(  MAILLAGE=MA,
-                      PARTITION=_F(PARALLELISME='GROUP_ELEM', PARTITION=SDPART),
-                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
-    else :
-        MO=AFFE_MODELE(  MAILLAGE=MA,
-                      PARTITION=_F(PARALLELISME=nopartit),
-                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT') )
+lparallel= ('CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 'SOUS_DOMAINE', 'GROUP_ELEM', 'GROUP_ELEM+')
+
+for nopartit in lparallel :
+    MO=AFFE_MODELE(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+                      PARTITION=_F(PARALLELISME=nopartit),)
 
     CARELEM=AFFE_CARA_ELEM(  MODELE=MO, COQUE=_F(  GROUP_MA = 'CARRE', EPAIS = 1.) )
-    MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
-    CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,  AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
     CL2=AFFE_CHAR_MECA(  MODELE=MO, FORCE_NODALE=_F(GROUP_NO='C', FX=3.5))
 
     for typ_CL in ('dualise','elimine','transverse') :
@@ -79,13 +65,12 @@ for nopartit in ('SOUS_DOMAINE', 'CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 
                         LIAISON_UNIF= _F(GROUP_MA='CARRE', DDL='DZ'),
                         )
 
-        for matr_distrib in ('OUI','NON') :
-           for elim_lagr in ('LAGR2','NON') :
+        for matr_distrib in ('NON','OUI') :
+           for elim_lagr in ('NON','LAGR2') :
               RESU1=MECA_STATIQUE(  MODELE=MO,  CHAM_MATER=CHMAT, CARA_ELEM =CARELEM,
                                     SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE=matr_distrib,
-                                    ELIM_LAGR=elim_lagr),
+                                    ELIM_LAGR=elim_lagr ),
                                     EXCIT=(_F(  CHARGE = CL1), _F(  CHARGE = CL2))  )
-              #IMPR_RESU(RESU=_F(RESULTAT=RESU1))
 
               TEST_RESU(RESU=( _F( RESULTAT = RESU1, NOM_CHAM = 'DEPL', REFERENCE = 'ANALYTIQUE',
                        CRITERE = 'ABSOLU',PRECISION = 1.E-10, NUME_ORDRE = 1, GROUP_NO = 'C', NOM_CMP='DX',
@@ -94,6 +79,8 @@ for nopartit in ('SOUS_DOMAINE', 'CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 
               if typ_CL=="dualise" :
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
                              VALE_CALC=115.957868591, ))
+                  TEST_RESU(OBJET=_F(NOM='RESU1   .012.000000.CELV',
+                             VALE_CALC=926.59471201, ))
               elif typ_CL=="elimine":
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
                              VALE_CALC=112.457868591, ))
@@ -101,8 +88,42 @@ for nopartit in ('SOUS_DOMAINE', 'CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 
                   TEST_RESU(OBJET=_F(NOM='RESU1   .001.000000.VALE',
                              VALE_CALC=478.957868591, ))
 
-              DETRUIRE(CONCEPT=_F(NOM=(RESU1)))
-        DETRUIRE(CONCEPT=_F(NOM=(CL1)))
-    DETRUIRE(CONCEPT=_F(NOM=(MO,MAT,CARELEM,CHMAT,CL2)))
+              DETRUIRE(CONCEPT=_F(NOM=(RESU1)),INFO=1)
+        DETRUIRE(CONCEPT=_F(NOM=(CL1)),INFO=1)
+    DETRUIRE(CONCEPT=_F(NOM=(MO, CARELEM, CL2)),INFO=1)
+
+
+
+# Pour tester la possibilite de modifier la partition pendant un post-traitement :
+#--------------------------------------------------------------------------------------
+for nopartit in lparallel :
+    MO=AFFE_MODELE(  MAILLAGE=MA,
+                      AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
+                      PARTITION=_F(PARALLELISME=nopartit),)
+
+    CARELEM=AFFE_CARA_ELEM(  MODELE=MO, COQUE=_F(  GROUP_MA = 'CARRE', EPAIS = 1.) )
+    CL2=AFFE_CHAR_MECA(  MODELE=MO, FORCE_NODALE=_F(GROUP_NO='C', FX=3.5))
+    CL1=AFFE_CHAR_MECA(  MODELE=MO,
+                        DDL_IMPO=( _F(  GROUP_MA = 'CARRE', DRX = 0., DRY = 0., DRZ = 0.),
+                                   _F(  GROUP_MA = 'BORD1', DX = 0., DY = 0.),
+                                   _F(  GROUP_NO = 'C', DX = 2., DY = 1., DZ=3.)),
+                        LIAISON_UNIF= _F(GROUP_MA='CARRE', DDL='DZ'),
+                        )
+
+    RESU1=MECA_STATIQUE(  MODELE=MO,  CHAM_MATER=CHMAT, CARA_ELEM =CARELEM,
+                          SOLVEUR=_F(METHODE='MUMPS',MATR_DISTRIBUEE='OUI',
+                          ELIM_LAGR='LAGR2' ),
+                          EXCIT=(_F(  CHARGE = CL1), _F(  CHARGE = CL2))  )
+
+    for nopartit2 in lparallel :
+        MODI_MODELE(  reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME=nopartit2),)
+        RESU2=CALC_CHAMP(RESULTAT = RESU1, DEFORMATION = ('EPSI_ELGA',),)
+        TEST_RESU(OBJET=_F(NOM='RESU2   .009.000000.CELV', VALE_CALC=577.172255332, ))
+        DETRUIRE(CONCEPT=_F(NOM=(RESU2)),INFO=1)
+
+#   -- on remet la partition en etat pour la boucle principale :
+    MODI_MODELE(  reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME=nopartit),)
+
+    DETRUIRE(CONCEPT=_F(NOM=(MO, CARELEM, CL2, CL1, RESU1)),INFO=1)
 
 FIN()

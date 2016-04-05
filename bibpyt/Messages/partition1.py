@@ -27,6 +27,16 @@ cata_msg = {
    - diminuez le nombre de processeurs du calcul
 """),
 
+    2: _(u"""
+ Le partitionnement des mailles du maillage conduit à un sous-domaine ayant 0 maille.
+ Le code ne sait pas traiter ce cas de figure.
+ Conseils :
+   - diminuez le nombre de processeurs du calcul.
+   - diminuez le nombre de sous-domaines de la partition du mot-clé PARTITION.
+   - n'utilisez pas le parallélisme (trop peu d'éléments).
+ 
+"""),
+
     17 : _(u"""
   La partition %(k1)s que vous utilisez pour partitionner le modèle %(k2)s en sous-domaines a été construite sur un autre modèle (%(k3)s).
 

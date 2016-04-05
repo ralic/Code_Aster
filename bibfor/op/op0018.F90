@@ -7,6 +7,7 @@ subroutine op0018()
 #include "asterc/getres.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/asmpi_info.h"
 #include "asterfort/adalig.h"
 #include "asterfort/ajlipa.h"
 #include "asterfort/assert.h"
@@ -16,6 +17,7 @@ subroutine op0018()
 #include "asterfort/deprecated_model.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getelem.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
@@ -38,6 +40,9 @@ subroutine op0018()
 #include "asterfort/model_check.h"
 #include "asterfort/model_print.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/gcncon.h"
+#include "asterfort/fetcrf.h"
+#include "asterfort/fetskp.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -73,12 +78,12 @@ subroutine op0018()
 !
     integer :: dim_topo_curr, dim_topo_init
     integer :: ifm, niv
-    character(len=8) :: mesh, model, sdpart
-    character(len=8) :: name_elem, z_quasi_zero
+    character(len=8) :: mesh, model, sd_partit1
+    character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
     character(len=16) :: phenom, modeli, list_modelisa(10), keywordfact
     character(len=19) :: ligrel
-    character(len=24) :: mesh_name_elem
+    character(len=24) :: mesh_name_elem, kdis
     character(len=32) :: phemod
     character(len=24) :: list_elem
     integer, pointer :: p_list_elem(:) => null()
@@ -101,10 +106,11 @@ subroutine op0018()
     character(len=8), pointer :: p_model_lgrf(:) => null()
     integer, pointer :: p_model_nbno(:) => null()
     integer :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
-    integer :: nb_elem_naffe
+    integer :: nb_elem_naffe, nbproc, nbpart
     integer :: nb_affe, nb_affe_ss, nbocc, n1
     integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
     integer :: nume_elem, idx_in_grel, nume_type_model, nume_type_geom
+    mpi_int :: mrank, msize
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -402,19 +408,6 @@ subroutine op0018()
         call ssafmo(model)
     endif
 !
-! - Automatic GREL size adaptation
-!
-    call getvid('PARTITION', 'PARTITION',iocc=1, scal=sdpart, nbret=n1)
-    if (n1.eq.0) then
-        call adalig(ligrel)
-    else
-        call adalig(ligrel,sdpart)
-    endif
-!
-! - Set element/(IGREL,IM) object
-!
-    call cormgi('G', ligrel)
-!
 ! - Init elements for this LIGREL
 !
     call initel(ligrel, l_calc_rigi)
@@ -422,19 +415,50 @@ subroutine op0018()
         call utmess('A', 'MODELE1_64', sk=model)
     endif
 !
-! - Check model
-!
-    call model_check(model, l_veri_elem)
-!
 ! - Print model information
 !
     if (nb_affe .gt. 0) then
         call model_print(model)
     endif
 !
-! - SD_PARTITION
+! - Automatic GREL size adaptation
 !
-    call ajlipa(model, 'G')
+!   -- Danger : on ne peut pas appeler les differentes routines
+!      dans n'importe quel ordre :
+!        * cormgi doit etre appelee apres adalig
+!        * fetcrf doit etre appelee apres initel
+    sd_partit1=' '
+    call asmpi_info(rank=mrank, size=msize)
+    nbproc = to_aster_int(msize)
+    call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=n1)
+    ASSERT(n1.eq.1)
+    if (nbproc.eq.1) kdis='CENTRALISE'
+    if (kdis.eq.'SOUS_DOMAINE' .or. kdis.eq.'GROUP_ELEM+') then
+        call gcncon('_', sd_partit1)
+        call getvtx('PARTITION', 'METHODE', iocc=1, scal=methode, nbret=n1)
+        ASSERT(n1.eq.1)
+        call getvis('PARTITION', 'NB_PART', iocc=1, scal=nbpart, nbret=n1)
+        if (n1.eq.0) nbpart=nbproc
+        call fetskp(model,methode,nbpart)
+        call fetcrf(sd_partit1,model,nbpart)
+    endif
+    if (kdis.eq.'GROUP_ELEM+') then
+        call adalig(ligrel,sd_partit1)
+    else
+        call adalig(ligrel)
+    endif
+!
+! - Set element/(IGREL,IM) object
+!
+    call cormgi('G', ligrel)
+!
+! - Creation de la partition :
+!
+    call ajlipa(model, 'G', kdis, sd_partit1)
+!
+! - Check model
+!
+    call model_check(model, l_veri_elem)
 !
 ! - Create grandeurs caracteristiques
 !

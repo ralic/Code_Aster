@@ -1,4 +1,4 @@
-subroutine adalig(ligrz,sdpart)
+subroutine adalig(ligrz,sd_partit1)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,21 +39,21 @@ subroutine adalig(ligrz,sdpart)
 #include "asterfort/as_allocate.h"
 !
     character(len=*), intent(in) :: ligrz
-    character(len=8), intent(in), optional :: sdpart
+    character(len=8), intent(in), optional :: sd_partit1
 !----------------------------------------------------------------------
 ! But: Reorganiser la collection .LIEL de ligrz afin de regrouper
 !      les elements de meme TYPE_ELEM dans un meme GREL.
 !
-! De plus, on veut :
+! On veut :
 !   * Limiter la taille des GRELS (pas plus de nelmx elements)
 !   * Faire en sorte que l'equilibrage soit bon pour le PARALLELISME='GROUP_ELEM' :
 !     * Pour chaque TYPE_ELEM :
 !       On decoupe le paquet d'elements en un nombre de grels multiple de nbproc.
-!     * Si sdpart est n'est pas fourni :
+!     * Si sd_partit1 est n'est pas fourni :
 !       L'equilibrage est presque parfait :
 !       Les GRELS ont tous le meme nombre d'elements (a 1 pres)
 !
-!     * Si sdpart est fourni:
+!     * Si sd_partit1 est fourni:
 !       * On ajoute une nouvelle contrainte pour les GRELS :
 !         * le GREL kgrel ne contient que des elements des sous-domaines affectes au
 !           processeur kproc [0, ..., nbproc-1] avec : mod(kgrel,nbproc)=kproc
@@ -61,7 +61,7 @@ subroutine adalig(ligrz,sdpart)
 !
 ! Arguments d'entree:
 !     ligrz  (o) : nom du ligrel
-!     sdpart (f) : nom de la sd_partition
+!     sd_partit1 (f) : nom de la sd_partit1
 !----------------------------------------------------------------------
 
     character(len=19) :: ligr
@@ -136,10 +136,10 @@ subroutine adalig(ligrz,sdpart)
     end do
 
 
-!   -- si sdpart est fourni, il faut utiliser un autre algorithme :
+!   -- si sd_partit1 est fourni, il faut utiliser un autre algorithme :
 !   ---------------------------------------------------------------
-    if (present(sdpart)) then
-        call adalig_sd(ligr,sdpart,tliel,nbtype,clas,teut,nteut)
+    if (present(sd_partit1)) then
+        call adalig_sd(ligr,sd_partit1,tliel,nbtype,clas,teut,nteut)
         goto 998
     endif
 

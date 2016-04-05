@@ -1,4 +1,4 @@
-subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
+subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -41,7 +41,7 @@ subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
 #include "asterfort/as_allocate.h"
 !
     character(len=19), intent(in) :: ligr
-    character(len=8), intent(in) :: part8
+    character(len=8), intent(in) :: sd_partit1
     character(len=24),intent(in) :: ntliel
     integer, intent(in) :: nbtype
     character(len=1), intent(in) :: clas
@@ -50,11 +50,11 @@ subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
 !----------------------------------------------------------------------
 ! But: Reorganiser la collection .LIEL de ligrz afin de regrouper
 !      les elements de meme TYPE_ELEM dans un meme GREL
-!      et en respectant la partition part8.
+!      et en respectant la partition sd_partit1.
 !
 ! De plus, on veut :
 !   * Limiter la taille des GRELS (pas plus de nelmx elements)
-!   * Faire en sorte que les GRELS respectent PARTITION=part8 :
+!   * Faire en sorte que les GRELS respectent sd_partit1 :
 !     (tous les elements d'un GREL appartiennent aux sous-domaines traites par le
 !      processeur qui traitera ce GREL)
 !     * Pour chaque TYPE_ELEM :
@@ -70,8 +70,8 @@ subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
 !
 !
 ! Arguments d'entree:
-!     ligrz  (o) : nom du ligrel
-!     part9 (o) : nom de la sd_partition
+!     ligr       (o) : nom du ligrel
+!     sd_partit1 (o) : nom de la sd_partit1
 !----------------------------------------------------------------------
     character(len=24) :: liel
     character(len=19) :: part19
@@ -102,7 +102,7 @@ subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
     call jemarq()
 
     liel=ligr//'.LIEL'
-    part19=part8
+    part19=sd_partit1
     call dismoi('NOM_MAILLA', ligr, 'LIGREL', repk=noma)
     call dismoi('NB_MA_MAILLA', noma, 'MAILLAGE', repi=nbma)
     call jelira(ntliel, 'NMAXOC', nbgrel_av)
@@ -281,8 +281,6 @@ subroutine adalig_sd(ligr,part8,ntliel,nbtype,clas,teut,nteut)
                 ordre_stockage(utilise_2(kproc+1)+utilise_1(kproc+1))=numa
             enddo
         enddo
-
-
 
         do ipaq = 1, npaq
             do kproc = 0, nbproc-1
