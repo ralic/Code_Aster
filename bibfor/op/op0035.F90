@@ -1,7 +1,7 @@
 subroutine op0035()
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ subroutine op0035()
 !
     call getvtx(' ', 'LISTE_INFO', nbval=nbval, vect=zk16(jkval), nbret=ibid)
     do 20 k = 1, nbval
-        if (zk16(jkval+k-1) .eq. 'CPU_RESTANT') then
+        if (zk16(jkval+k-1) .eq. 'TEMPS_RESTANT') then
             zk8(jtval+k-1) = 'R'
         else if (zk16(jkval+k-1) .eq. 'UNITE_LIBRE') then
             zk8(jtval+k-1) = 'I'
@@ -79,7 +79,7 @@ subroutine op0035()
     call tbajpa(result, nbval, zk16(jkval), zk8(jtval))
 !
     do 100 k = 1, nbval
-        if (zk16(jkval+k-1) .eq. 'CPU_RESTANT') then
+        if (zk16(jkval+k-1) .eq. 'TEMPS_RESTANT') then
 !         -- TEMPS CPU RESTANT :
             call uttrst(rval)
             call tbajli(result, nbval, zk16(jkval+k-1), [ibid], [rval],&

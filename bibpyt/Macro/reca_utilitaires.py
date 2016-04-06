@@ -125,8 +125,8 @@ def temps_CPU(restant_old, temps_iter_old):
     """
        Fonction controlant le temps restant
     """
-    __cpu = INFO_EXEC_ASTER(LISTE_INFO=("CPU_RESTANT",))
-    TEMPS = __cpu['CPU_RESTANT', 1]
+    __cpu = INFO_EXEC_ASTER(LISTE_INFO=("TEMPS_RESTANT",))
+    TEMPS = __cpu['TEMPS_RESTANT', 1]
     DETRUIRE(CONCEPT=_F(NOM=__cpu), INFO=1)
     err = 0
     # Indique une execution interactive
