@@ -110,6 +110,29 @@ def InterpolBaseFiss(s0, Basefo, Coorfo):
 #-------------------------------------------------------------------------
 
 
+def InterpolScalFiss(s0, Scalfo, Coorfo):
+# Interpolation d'une variable scalaire en fond de fissure
+# s0     = abscisse curviligne du point considere
+# Coorfo = Coordonnees et abscisses du fond (extrait de la sd fiss_xfem)
+# Scalfo = liste des valeurs de la variable scalaire selon les points de Coorfo
+# en sortie : Vale = valeur de la variable scalaire au point considere
+    n = len(Coorfo) / 4
+    if (s0 < Coorfo[3]):
+        Vale = Scalfo[0]
+        return Vale
+    if (s0 > Coorfo[-1]):
+        Vale = Scalfo[-1]
+        return Vale
+    i = 1
+    while s0 > Coorfo[4 * i + 3]:
+        i = i + 1
+    Vale = (s0 - Coorfo[4 * (i - 1) + 3]) * (Scalfo[i] - Scalfo[i - 1]) / (
+        Coorfo[4 * i + 3] - Coorfo[4 * (i - 1) + 3]) + Scalfo[i - 1]
+    return Vale
+
+#-------------------------------------------------------------------------
+
+
 def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 # Lorsqu'il n'y a pas suffisament de noeud pour le calcul des KJ, on extrapole
 # attention cela n'est valable que pour une seule fissure a la fois
@@ -1083,8 +1106,8 @@ def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabi
 #-------------------------------------------------------------------------
 
 
-def get_propmat_varc(self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst):
-    """retourne les proprietes materiaux en fonction de la variable de commande à l'instant demandé"""
+def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst):
+    """cas fem : retourne les proprietes materiaux en fonction de la variable de commande au noeud ino à l'instant demandé"""
     from Accas import _F
     import aster
     import numpy as NP
@@ -1104,6 +1127,16 @@ def get_propmat_varc(self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst):
                        'NEUT_R' : 'X1'   ,}
     iret, ibid, nomgd = aster.dismoi('NOM_GD', __CHNOVRC.nom, 'CHAM_NO', 'F')
     assert nomgd in nomgd_2_nompar.keys()
+    ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
+    ChnoVrcNoeu = ChnoVrcExtr.noeud
+    ChnoVrcComp = ChnoVrcExtr.comp
+    assert list(set(ChnoVrcComp)) in [['TEMP    '], ['X1      ']]
+
+    # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
+    # -> permet de se premunir de l'oubli du couple (OP.INIT_VARC.PVARCNO, LC.ZVARCNO)
+    #    en para_out de l'option INIT_VARC d'un catalogue EF
+    NbNoMa = MAILLAGE.sdj.DIME.get()[0]
+    assert len(ChnoVrcNoeu) == NbNoMa
 
     # extraction d'une table contenant les valeurs de la varc en fond de fissure
     __VARC = POST_RELEVE_T(
@@ -1154,7 +1187,127 @@ def get_propmat_varc(self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst):
         coefg = 1. / e
         coefg3 = unpnu / e
 
-    return (e, nu, coefd, coefd3, coefg, coefg3)
+    return (coefd, coefd3, coefg, coefg3)
+
+#-------------------------------------------------------------------------
+
+
+def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE, ndim, ipt, inst):
+    """cas xfem : retourne les proprietes materiaux en fonction de la variable de commande au point ipt à l'instant demandé"""
+
+    from Utilitai.Utmess import UTMESS
+    from Accas import _F
+    import numpy as NP
+    from math import pi
+    from Internal.post_k_varc import POST_K_VARC
+    import aster
+
+    DETRUIRE = self.get_cmd('DETRUIRE')
+
+    # extraction du cham_no de varc a l'instant considere
+    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst)
+
+    # seules les varc TEMP et NEUT1 sont autorisees
+    nomgd_2_nompar  = {'TEMP_R' : 'TEMP' ,
+                       'NEUT_R' : 'NEUT1',}
+    iret, ibid, nomgd = aster.dismoi('NOM_GD', __CHNOVRC.nom, 'CHAM_NO', 'F')
+    assert nomgd in nomgd_2_nompar.keys()
+    ChnoVrcExtr = __CHNOVRC.EXTR_COMP(topo=1)
+    DETRUIRE(CONCEPT=_F(NOM=__CHNOVRC))
+    ChnoVrcVale = ChnoVrcExtr.valeurs
+    ChnoVrcNoeu = ChnoVrcExtr.noeud
+    ChnoVrcComp = ChnoVrcExtr.comp
+    assert list(set(ChnoVrcComp)) in [['TEMP    '], ['X1      ']]
+
+    # blindage sur le nombre de noeuds du champ / nombre de noeuds du maillage
+    # -> permet de se premunir de l'oubli du couple (OP.INIT_VARC.PVARCNO, LC.ZVARCNO)
+    #    en para_out de l'option INIT_VARC d'un catalogue EF
+    NbNoMa = MAILLAGE.sdj.DIME.get()[0]
+    assert len(ChnoVrcNoeu) == NbNoMa
+
+    # extraction des vecteurs :
+    #  - FISSURE.FONDFISS (coords des points du fond)
+    #  - FISSURE.NOFACPTFON (numeros des noeuds des faces des elements 
+    #    parents qui contiennent les points du fond de fissure
+    Listfo = FISSURE.sdj.FONDFISS.get()
+    L_NoFacPtFon = FISSURE.sdj.NOFACPTFON.get()
+    assert len(Listfo)%4 == 0
+    assert len(Listfo) == len(L_NoFacPtFon)
+
+    # calcul de ValeVrc_Listfo : valeur de la varc en tous les points de Listfo
+    # -> moyenne arithmetique des valeurs nodales sur la face contenant le point
+    ValeVrc_Listfo = []
+    for i in range(0,len(Listfo)/4) :
+        vale = 0.
+        NbNoFa = 3
+        for k in xrange(NbNoFa):
+            vale += ChnoVrcVale[L_NoFacPtFon[k+4*i]-1]
+        # si la face est quadrangulaire
+        if L_NoFacPtFon[3+4*i] > 0 : 
+            NbNoFa = 4
+            vale += ChnoVrcVale[L_NoFacPtFon[3+4*i]-1]
+        vale = vale/float(NbNoFa)
+        ValeVrc_Listfo.append(vale)
+
+    # Traitement des fonds fermés
+    TypeFond = FISSURE.sdj.INFO.get()[2]
+
+    # Traitement du cas fond multiple
+    Fissmult = FISSURE.sdj.FONDMULT.get()
+    Nbfiss = len(Fissmult) / 2
+    Numfiss = args['NUME_FOND']
+    if Numfiss <= Nbfiss and (Nbfiss > 1 or TypeFond == 'FERME'):
+        Ptinit = Fissmult[2 * (Numfiss - 1)]
+        Ptfin = Fissmult[2 * (Numfiss - 1) + 1]
+        ValeVrc_Listfo2 = ValeVrc_Listfo[Ptinit-1:Ptfin]
+        ValeVrc_Listfo = ValeVrc_Listfo2
+    elif Numfiss > Nbfiss:
+        UTMESS('F', 'RUPTURE1_38', vali=[Nbfiss, Numfiss])
+
+    # Si NB_POINT_FOND est renseigne : interpolation de la varc
+    NB_POINT_FOND = args['NB_POINT_FOND']
+    if NB_POINT_FOND != None and ndim == 3:
+        Nnoff = NB_POINT_FOND
+        absmax = Listfo[-1]
+        ValeVrc = [None] * Nnoff
+        for i in xrange(Nnoff):
+            absci = i * absmax / (Nnoff - 1)
+            ValeVrc[i] = InterpolScalFiss(absci, ValeVrc_Listfo, Listfo)
+    # Sinon : on utilise directement ValeVrc_Listfo 
+    else:
+        ValeVrc  = ValeVrc_Listfo
+
+    # valeur des parametres elastiques fonctions de la varc en ipt
+    nompar = (nomgd_2_nompar[nomgd])
+    valpar = (ValeVrc[ipt])
+    nomres = ['E', 'NU']
+    valres, codret = MATER.RCVALE('ELAS', nompar, valpar, nomres, 2)
+    e = valres[0]
+    nu = valres[1]
+
+    coefd3 = 0.
+    coefd = e * NP.sqrt(2. * pi)
+    unmnu2 = 1. - nu ** 2
+    unpnu = 1. + nu
+    if MODELISATION == '3D':
+        coefd = coefd / (8.0 * unmnu2)
+        coefd3 = e * NP.sqrt(2 * pi) / (8.0 * unpnu)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'AXIS':
+        coefd = coefd / (8. * unmnu2)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'D_PLAN':
+        coefd = coefd / (8. * unmnu2)
+        coefg = unmnu2 / e
+        coefg3 = unpnu / e
+    elif MODELISATION == 'C_PLAN':
+        coefd = coefd / 8.
+        coefg = 1. / e
+        coefg3 = unpnu / e
+
+    return (coefd, coefd3, coefg, coefg3)
 
 #-------------------------------------------------------------------------
 
@@ -1773,6 +1926,14 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     MasquerAlarme('CALCULEL4_9')
 
 #   ------------------------------------------------------------------
+#                               MAILLAGE
+#   ------------------------------------------------------------------
+
+    iret, ibid, nom_ma = aster.dismoi(
+        'NOM_MAILLA', RESULTAT.nom, 'RESULTAT', 'F')
+    MAILLAGE = self.get_concept(nom_ma.strip())
+
+#   ------------------------------------------------------------------
 #                         CARACTERISTIQUES MATERIAUX
 #   ------------------------------------------------------------------
     mater_fonc = False
@@ -1837,17 +1998,14 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         nom_fonc_nu_prol = nom_fonc_nu.sdj.PROL.get()[0].strip()
 
 #       on verifie que les fonctions ne dependent bien que de TEMP ou NEUT1
-        authorized_varc = ['TEMP','NEUT1']
-        if (( not( nom_fonc_e.Parametres()['NOM_PARA']  in authorized_varc ) and nom_fonc_e_prol  != 'CONSTANT') or
-            ( not( nom_fonc_nu.Parametres()['NOM_PARA'] in authorized_varc ) and nom_fonc_nu_prol != 'CONSTANT')):
+        authorized_para = ['TEMP','NEUT1']
+        if (( not( nom_fonc_e.Parametres()['NOM_PARA']  in authorized_para ) and nom_fonc_e_prol  != 'CONSTANT') or
+            ( not( nom_fonc_nu.Parametres()['NOM_PARA'] in authorized_para ) and nom_fonc_nu_prol != 'CONSTANT')):
             UTMESS('F', 'RUPTURE1_67')
 
 #       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter 
 #       en amont dans STAT_NON_LINE / MECA_STATIQUE (rcvalb))
         assert present_varc
-
-#       le cas x-fem n'est pas developpe
-        assert FOND_FISS
 
 #   ---
 #   Sinon il s'agit d'un materiau constant
@@ -1893,10 +2051,6 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
 #  I. CAS FOND_FISS
 #  ------------------------------------------------------------------
     if FOND_FISS:
-
-        iret, ibid, nom_ma = aster.dismoi(
-            'NOM_MAILLA', RESULTAT.nom, 'RESULTAT', 'F')
-        MAILLAGE = self.get_concept(nom_ma.strip())
 
         NB_NOEUD_COUPE = args['NB_NOEUD_COUPE']
 
@@ -2031,10 +2185,6 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
 
     elif FISSURE:
 
-        iret, ibid, nom_ma = aster.dismoi(
-            'NOM_MAILLA', RESULTAT.nom, 'RESULTAT', 'F')
-        MAILLAGE = self.get_concept(nom_ma.strip())
-
 #     Recuperation de la liste des tailles de maille en chaque noeud du fond
         if not ABSC_CURV_MAXI:
             list_tail = FISSURE.sdj.FOND_TAILLE_R.get()
@@ -2166,11 +2316,6 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             (absci, di) = get_depl_inf(FOND_FISS, tabinfi, ndim,
                                        Lnofon, syme_char, d_coor, ino, TYPE_MAILLAGE)
 
-#        récupération des valeurs des propriétés materiau fonctions des variables de commande
-            if mater_fonc :
-                (e, nu, coefd, coefd3, coefg, coefg3) = get_propmat_varc(
-                    self, RESULTAT, MATER, MODELISATION, Lnofon, ino, inst)
-
 #        TESTS NOMBRE DE NOEUDS
             nbval = len(abscs)
 
@@ -2190,6 +2335,16 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             else:
 
 #           SI NBVAL >= 3 :
+
+#            récupération des valeurs des propriétés materiau fonctions des variables de commande
+                if mater_fonc :
+                    if FOND_FISS:
+                        (coefd, coefd3, coefg, coefg3) = get_propmat_varc_fem(
+                            self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst)
+                    elif FISSURE:
+                        (coefd, coefd3, coefg, coefg3) = get_propmat_varc_xfem(
+                            self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE,
+                            ndim, ino, inst)
 
 #           calcul du saut de déplacements dans le nouveau repère
                 saut = get_saut(

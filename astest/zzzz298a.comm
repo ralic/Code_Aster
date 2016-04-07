@@ -48,7 +48,6 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=205000.E6,
                             NU=0.))
 
 CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                      MODELE=MODELE,
                       AFFE=_F(TOUT='OUI',
                               MATER=ACIER))
 

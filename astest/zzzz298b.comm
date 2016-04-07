@@ -35,14 +35,14 @@ MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
 #                   MODELE 
 #----------------------------------------------
 
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFINF','SURFSUP',),),);
+
 MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAGE,
                      AFFE=_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
                              PHENOMENE='MECANIQUE',
                              MODELISATION='3D',),);
-
-MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
-                       MAILLAGE=MAILLAGE,
-                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFINF','SURFSUP',),),);
 
 #----------------------------------------------
 #                   FISSURE 
@@ -63,16 +63,87 @@ MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
 #                   MATERIAU
 #----------------------------------------------
 
-E=205000.E6
-nu=0.
+#---
+# 1. materiau constant
+#---
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
-                            NU=nu,),);
+ACIER=DEFI_MATERIAU(ELAS=_F(E=205000.E6,
+                            NU=0.))
 
 CHAMPMA=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                      MODELE=MODELEK,
-                      AFFE=(_F(GROUP_MA=('VOL','SURFINF','SURFSUP',),
-                               MATER=ACIER,),),);
+                      AFFE=_F(TOUT='OUI',
+                              MATER=ACIER))
+
+#---
+# 2. materiau fonction de TEMP
+#---
+
+EFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VALE=(90. , 204000.E6,
+                           110., 206000.E6),);
+
+NUFTEMP=DEFI_FONCTION(NOM_PARA='TEMP',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      VALE=(0., 0.,
+                            1., 0.),);
+
+ALPHA=DEFI_CONSTANTE(VALE=0.);
+
+MATTEMP=DEFI_MATERIAU(ELAS_FO=_F(E=EFTEMP,
+                                 NU=NUFTEMP,
+                                 ALPHA=ALPHA,
+                                 TEMP_DEF_ALPHA=20.0,))
+
+CHTEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
+                  MAILLAGE=MAILLAGE,
+                  OPERATION='AFFE',
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE=100.0),)
+
+CHMATEMP=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATTEMP),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    CHAM_GD=CHTEMP,
+                                    NOM_VARC='TEMP',
+                                    VALE_REF=20,))
+
+#---
+# 3. materiau fonction de NEUT1
+#---
+
+EFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
+                     PROL_DROITE='CONSTANT',
+                     PROL_GAUCHE='CONSTANT',
+                     VALE=(90. , 204000.E6,
+                           110., 206000.E6),);
+
+NUFNEUT=DEFI_FONCTION(NOM_PARA='NEUT1',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      VALE=(0., 0.,
+                            1., 0.),);
+
+MATNEUT=DEFI_MATERIAU(ELAS_FO=_F(E=EFNEUT,
+                                 NU=NUFNEUT))
+
+CHNEUT=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
+                  MAILLAGE=MAILLAGE,
+                  OPERATION='AFFE',
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='X1',
+                          VALE=100.0),)
+
+CHMANEUT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MATNEUT),
+                       AFFE_VARC=_F(TOUT='OUI',
+                                    CHAM_GD=CHNEUT,
+                                    NOM_VARC='NEUT1'))
 
 #----------------------------------------------
 #                   CHARGEMENTS 
@@ -92,25 +163,87 @@ CHA2=AFFE_CHAR_MECA(MODELE=MODELEK,
 #                   RESOLUTIONS
 #----------------------------------------------
 
-UTOT1x=MECA_STATIQUE(MODELE=MODELEK,
-                     CHAM_MATER=CHAMPMA,
-                     EXCIT=(
-                            _F(CHARGE=CHA1),
-                            _F(CHARGE=CHA2),),); 
+L_INST=DEFI_LIST_REEL(DEBUT=0,INTERVALLE=(_F(JUSQU_A=1,PAS=1,),),)
+
+DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST,),)
+
+#---
+# 1. sans variables de commande
+#---
+
+RESx=MECA_STATIQUE(MODELE=MODELEK,
+                   CHAM_MATER=CHAMPMA,
+                   EXCIT=(_F(CHARGE=CHA1),
+                          _F(CHARGE=CHA2),),); 
+
+#---
+# 2. avec la variable de commande TEMP
+#---
+
+RExTEMP=STAT_NON_LINE(MODELE=MODELEK,
+                      CHAM_MATER=CHMATEMP,
+                      EXCIT=(_F(CHARGE=CHA1),
+                             _F(CHARGE=CHA2)),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
+                      INCREMENT=_F(LIST_INST=DEFLIST,),)
+
+#---
+# 3. avec la variable de commande NEUT1
+#---
+
+RExNEUT=STAT_NON_LINE(MODELE=MODELEK,
+                      CHAM_MATER=CHMANEUT,
+                      EXCIT=(_F(CHARGE=CHA1),
+                             _F(CHARGE=CHA2)),
+                      COMPORTEMENT=_F(RELATION='ELAS',),
+                      INCREMENT=_F(LIST_INST=DEFLIST,),)
                    
 #----------------------------------------------
 #                   POST-TRAITEMENT
 #----------------------------------------------
 
+#---
+# 1. sans variables de commande
+#---
+
 TABK = POST_K1_K2_K3(FISSURE=FISS,
-                     RESULTAT=UTOT1x,
+                     RESULTAT=RESx,
                      ABSC_CURV_MAXI = 0.066,)
 
 IMPR_TABLE(TABLE=TABK)
 
+#---
+# 2. avec la variable de commande TEMP
+#---
+
+TABKTEMP = POST_K1_K2_K3(FISSURE=FISS,
+                         RESULTAT=RExTEMP,
+                         INST=1.,
+                         ABSC_CURV_MAXI = 0.066,)
+
+IMPR_TABLE(TABLE=TABKTEMP)
+
+#---
+# 3. avec la variable de commande NEUT1
+#---
+
+TABKNEUT = POST_K1_K2_K3(FISSURE=FISS,
+                         RESULTAT=RExNEUT,
+                         INST=1.,
+                         ABSC_CURV_MAXI = 0.066,)
+
+IMPR_TABLE(TABLE=TABKNEUT)
+
 #----------------------------------------------
 #                   TEST
 #----------------------------------------------
+
+# rq : on doit avoir strictement les memes valeurs de non regression
+#      avec TABK, TABKTEMP et TABKNEUT.
+
+#---
+# 1. sans variables de commande
+#---
 
 TEST_TABLE(
            VALE_CALC=851382.586304,
@@ -140,6 +273,78 @@ TEST_TABLE(
            VALE_CALC=1324885.20838,
            NOM_PARA='K1',
            TABLE=TABK,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
+
+#---
+# 2. avec la variable de commande TEMP
+#---
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKTEMP,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKTEMP,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=23,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKTEMP,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=22,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1324885.20838,
+           NOM_PARA='K1',
+           TABLE=TABKTEMP,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=2,),
+           )
+
+#---
+# 3. avec la variable de commande NEUT1
+#---
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKNEUT,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=24,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKNEUT,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=23,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=851382.586304,
+           NOM_PARA='K1',
+           TABLE=TABKNEUT,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=22,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1324885.20838,
+           NOM_PARA='K1',
+           TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',
                      VALE_I=2,),
            )
