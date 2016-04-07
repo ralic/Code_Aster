@@ -18,6 +18,10 @@
 
 cata_msg = {
 
+    1: _(u"""
+Vous avez renseigné le mot clé simple MATER de la commande POST_K1_K2_K3.
+Le matériau %(k1)s présent dans la sd_resultat va être surchargé par le matériau %(k2)s .
+"""),
 
     2: _(u"""
 Erreur dans la récupération de la dimension (du maillage ou du modèle).
@@ -45,6 +49,13 @@ doit être un modèle X-FEM provenant de la commande MODI_MODELE_XFEM.
 
     5: _(u"""
 Il faut définir ELAS dans DEFI_MATERIAU.
+"""),
+
+    6: _(u"""
+Vous avez renseigné le mot clé simple MATER de la commande POST_K1_K2_K3 avec le matériau %(k1)s qui est un
+matériau fonction (ELAS_FO). Ce mot-clé ne peut être renseigné qu'avec un matériau constant (ELAS).
+-> Risque et Conseil :
+   Veuillez vérifier la définition du matériau %(k1)s.
 """),
 
     7: _(u"""

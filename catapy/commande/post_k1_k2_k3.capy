@@ -30,6 +30,8 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
          FISSURE       =SIMP(statut='f',typ=fiss_xfem),
          RESULTAT      =SIMP(statut='o',typ=(evol_elas,evol_noli,mode_meca),position='global',
                              fr=tr("Déplacement des noeuds de la lèvre supérieure et inférieure")),
+         MATER         =SIMP(statut='f',typ=mater_sdaster,
+                             fr=tr("Matériau homogène et isotrope")),
          NB_NOEUD_COUPE=SIMP(statut='f',typ='I',defaut=5,val_min = 3),
 
 #        bloc correspondant a la donnee du fond de fissure pour les fissures maillees

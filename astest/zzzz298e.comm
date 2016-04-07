@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('RUPTURE0_1',),)
 
 # MODELIDATION E : X-FEM 2D
 #
@@ -245,6 +245,21 @@ KNEUT=POST_K1_K2_K3(RESULTAT=RESUNEUT,
 
 IMPR_TABLE(TABLE=KNEUT)
 
+#---
+# 4. sans variables de commande et en ecrasant le materiau 
+#    avec un materiau constant identique
+#---
+
+MAT2=DEFI_MATERIAU(ELAS=_F(E=210E9,
+                           NU=0.3))
+
+KMAT2=POST_K1_K2_K3(RESULTAT=RESU,
+                    MATER=MAT2,
+                    FISSURE=FISS,
+                    NUME_FOND=2)
+
+IMPR_TABLE(TABLE=KMAT2)
+
 #----------------------------------------------
 #                   TEST
 #----------------------------------------------
@@ -275,5 +290,13 @@ TEST_TABLE(VALE_CALC=760045.177343,
 TEST_TABLE(VALE_CALC=760045.177343,
            NOM_PARA='K1',
            TABLE=KNEUT,)
+
+#---
+# 4. sans variables de commande et en ecrasant le materiau
+#---
+
+TEST_TABLE(VALE_CALC=760045.177343,
+           NOM_PARA='K1',
+           TABLE=KMAT2,)
 
 FIN()

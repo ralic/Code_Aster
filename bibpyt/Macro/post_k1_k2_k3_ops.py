@@ -1909,8 +1909,16 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     if FISSURE != None:
         nom_fiss = FISSURE.nom
     assert nom_fiss != ''
-    MATER, MODELISATION = aster.postkutil(RESULTAT.nom, nom_fiss)
-    MATER = self.get_concept(MATER)
+    mater, MODELISATION = aster.postkutil(RESULTAT.nom, nom_fiss)
+
+    # si le MCS MATER n'est pas renseigne, on considere le materiau
+    # present dans la sd_resultat. Si MATER est renseigne, on ecrase
+    # le materiau et on emet une alarme.
+    MATER = args['MATER']
+    if MATER == None:
+        MATER = self.get_concept(mater)
+    else:
+        UTMESS('A', 'RUPTURE0_1', valk=[mater, MATER.nom])
 
     # Affectation de ndim selon le type de modelisation
     assert MODELISATION in ["3D", "AXIS", "D_PLAN", "C_PLAN"]
@@ -1964,6 +1972,11 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     if e == 0.0 and nu == 0.0:
 
         mater_fonc = True
+
+        # erreur fatale si le MCS MATER est renseigne car on n'autorise que la 
+        # surcharge par un materiau constant
+        if args['MATER'] != None:
+            UTMESS('F', 'RUPTURE0_6', valk=MATER.nom)
 
 #       valk contient les noms des operandes mis dans defi_materiau dans une premiere partie et
 #       et les noms des concepts de type [fonction] (ecrits derriere les operandes) dans une
