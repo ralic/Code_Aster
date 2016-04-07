@@ -1,11 +1,11 @@
 subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
                   its)
+    use petsc_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-
 !
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY

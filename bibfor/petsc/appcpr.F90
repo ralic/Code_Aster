@@ -16,8 +16,10 @@ subroutine appcpr(kptsc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-    implicit none
 ! person_in_charge: natacha.bereux at edf.fr
+use petsc_data_module
+
+    implicit none
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -39,7 +41,6 @@ subroutine appcpr(kptsc)
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
 !----------------------------------------------------------------

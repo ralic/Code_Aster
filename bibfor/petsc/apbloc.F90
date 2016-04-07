@@ -1,6 +1,6 @@
 subroutine apbloc(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,12 @@ subroutine apbloc(kptsc)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! person_in_charge: natacha.bereux at edf.fr
+!
+use petsc_data_module
+!
     implicit none
     integer :: kptsc
-! person_in_charge: natacha.bereux at edf.fr
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 #include "asterf.h"

@@ -16,10 +16,12 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-
+!
+! person_in_charge: natacha.bereux at edf.fr
+!
+use petsc_data_module
 !
     implicit none
-! person_in_charge: natacha.bereux at edf.fr
 !
 #include "asterf_types.h"
 #include "asterf.h"
@@ -81,7 +83,6 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 !
 #ifdef _HAVE_PETSC
 #include "asterf_petsc.h"
-
 !
 !----------------------------------------------------------------
 !

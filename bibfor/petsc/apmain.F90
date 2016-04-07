@@ -1,5 +1,6 @@
 subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                   iret)
+use petsc_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 !
@@ -18,6 +19,9 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!
+! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 !
     character(len=*) :: action
     integer :: kptsc
@@ -324,9 +328,13 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
-!
+!  
+#ifdef ASTER_PETSC_VERSION_LEQ_33
+            else if (indic.eq.KSP_DIVERGED_NAN) then
+#else          
             else if (indic.eq.KSP_DIVERGED_NANORINF) then
-!               NANORINF
+#endif
+!               NANORINF 
                 if ( istop == 0 ) then
 !                  ERREUR <F>
                    call utmess('F', 'PETSC_8')

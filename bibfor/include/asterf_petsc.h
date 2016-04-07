@@ -1,6 +1,6 @@
 #ifndef ASTERF_PETSC_H
 #define ASTERF_PETSC_H
-# ifdef _HAVE_PETSC
+#ifdef _HAVE_PETSC
 !
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -19,12 +19,14 @@
 !----------------------------------------------------------------
 !    include necessaire a la gestion des instances PETSC
 !----------------------------------------------------------------
-
-# include "petsc/finclude/petsc.h"
 !
+#include <petscversion.h>
 ! Gestion des versions de PETSc
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2
 #   define ASTER_PETSC_VERSION_LEQ_32
+#endif
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 3
+#   define ASTER_PETSC_VERSION_LEQ_33
 #endif
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 4
 #   define ASTER_PETSC_VERSION_LEQ_34
@@ -32,39 +34,29 @@
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 5
 #   define ASTER_PETSC_VERSION_LEQ_35
 #endif
+! Inclusion des interfaces Fortran de PETSc définies
+! dans la librairie  
+#ifdef ASTER_PETSC_VERSION_LEQ_35
+#include <finclude/petscsys.h>
+#include <finclude/petscvec.h>
+#include <finclude/petscvec.h90>
+#include <finclude/petscmat.h>
+#include <finclude/petscmat.h90>
+#include <finclude/petscpc.h>
+#include <finclude/petscpc.h90>
+#include <finclude/petscksp.h>
+#include <finclude/petscksp.h90>
+#else
+#include <petsc/finclude/petscsys.h>
+#include <petsc/finclude/petscvec.h>
+#include <petsc/finclude/petscvec.h90>
+#include <petsc/finclude/petscmat.h>
+#include <petsc/finclude/petscmat.h90>
+#include <petsc/finclude/petscpc.h>
+#include <petsc/finclude/petscpc.h90>
+#include <petsc/finclude/petscksp.h>
+#include <petsc/finclude/petscksp.h90>
+#endif
 !
-# include "petsc_interfaces.h"
-
-
-!----------------------------------------------------------------
-!   spetsc : common pour les instances PETSC
-
-! On ne peut pas creer directement un tableau de pointer,
-! il faut passer par un artifice (type derive) :
-type p_int4
-sequence
-    integer(kind=4), pointer :: pi4(:)
-end type
-
-integer, parameter :: nmxins=5
-character(len=19)  :: nomats(nmxins), nosols(nmxins), nomat_courant
-character(len=14)  :: nonus(nmxins),nonu_courant
-Mat :: ap(nmxins)
-KSP :: kp(nmxins)
-Vec :: b, x
-
-! Les variables suivantes sont utilisees par les preconditionneurs multigrille
-integer(kind=4) :: tblocs(nmxins),fictifs(nmxins)
-type(p_int4), target :: new_ieqs(nmxins), old_ieqs(nmxins)
-common /spetsc/ap, kp, b, x, tblocs,fictifs, new_ieqs, old_ieqs, &
-       nomats, nomat_courant, nosols, nonus, nonu_courant
-!
-!----------------------------------------------------------------
-!   ldltsp : common pour le preconditionneur simple precision ldlt_sp
-character(len=19) :: spsomu, spmat, spsolv
-Vec :: xlocal, xglobal
-VecScatter :: xscatt
-common /ldltsp/xlocal, xscatt, xglobal, spsomu, spmat, spsolv
-!----------------------------------------------------------------
 #endif
 #endif

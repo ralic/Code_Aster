@@ -1,19 +1,7 @@
 subroutine filter_smd(nommat, vsmb)
-    implicit none
-! person_in_charge: natacha.bereux at edf.fr
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/asmpi_comm.h"
-#include "asterfort/asmpi_info.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-    character(len=*) :: nommat
-    real(kind=8) :: vsmb(*)
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+!
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+!
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +14,24 @@ subroutine filter_smd(nommat, vsmb)
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
+! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! 
+! person_in_charge: natacha.bereux at edf.fr
+use petsc_data_module
+
+    implicit none
+
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+    character(len=*) :: nommat
+    real(kind=8) :: vsmb(*)
 !-----------------------------------------------------------------------
 ! BUT : ON MET A ZERO LES TERMES DU SECOND MEMBRE QUI N'APPARTIENNENT PAS
 !       DE FACON EXCLUSIVE (AU SENS PETSC) AU PROCESSEUR COURANT. 
