@@ -191,7 +191,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                   )
         if COMMAND == 'STAT_NON_LINE':
             opts['b_anneal'] = BLOC(condition =
-                    "RELATION in ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC',)",
+                    "RELATION in ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB',\
+                                   'VMIS_CIN2_CHAB')",
                                    fr=tr("Restauration d'écrouissage"),
                     POST_INCR    =SIMP(statut='f',typ='TXM',into=("REST_ECRO",), ),
                                   )

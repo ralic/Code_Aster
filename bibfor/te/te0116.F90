@@ -116,7 +116,7 @@ implicit none
                 end do
                 zr(j_vari_out-1+nb_vari*(ipg-1)+7) = zr(j_vari_in-1+nb_vari*(ipg-1)+7)
             end do
-        elseif (rela_comp.eq.'VMIS_ECMI_LINE') then
+        elseif ((rela_comp.eq.'VMIS_ECMI_LINE').or.(rela_comp.eq.'VMIS_CIN1_CHAB')) then
             do ipg = 1, npg
 !
 !             - Evaluate annealing function
@@ -133,6 +133,28 @@ implicit none
 !
                 zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
                 do ivari = 3, 8
+                    zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
+                                                             *valres(1)
+                end do
+                zr(j_vari_out-1+nb_vari*(ipg-1)+2) = zr(j_vari_in-1+nb_vari*(ipg-1)+2)
+            end do
+        elseif (rela_comp.eq.'VMIS_CIN2_CHAB') then
+            do ipg = 1, npg
+!
+!             - Evaluate annealing function
+!                                   
+                call rcvalb('RIGI', ipg, ispg, '+', zi(jmate),&
+                            ' '   , 'REST_ECRO', 1, 'INST', [vvalres],&
+                            nb_res_mx, 'FONC_MULT', valres, codret, 2)
+!             
+!             - Annealing function bound's checking
+!             
+                if ((valres(1).gt. 1.d0) .or. (valres(1).lt. 0.d0)) then
+                    call utmess('F', 'COMPOR1_91', nr=2,valr=valres(1))
+                endif
+!
+                zr(j_vari_out-1+nb_vari*(ipg-1)+1) = zr(j_vari_in-1+nb_vari*(ipg-1)+1)*valres(1)
+                do ivari = 3, 14
                     zr(j_vari_out-1+nb_vari*(ipg-1)+ivari) = zr(j_vari_in-1+nb_vari*(ipg-1)+ivari)&
                                                              *valres(1)
                 end do
