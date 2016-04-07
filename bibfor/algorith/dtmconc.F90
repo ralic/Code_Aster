@@ -2,7 +2,7 @@ subroutine dtmconc(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,7 @@ subroutine dtmconc(sd_dtm_)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/mdlibe.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/as_deallocate.h"
@@ -84,9 +85,15 @@ subroutine dtmconc(sd_dtm_)
         if (i.eq.iarch_sd) nbsauv = nbsauv + isto(1) - sizres(i)
     end do
 
+!   2 - Free up the memory used by the last temporary result structure
+    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnoli)
+    call dtmget(sd_dtm, _FX_NUMB ,iscal=nbrede)
+    call dtmget(sd_dtm, _FV_NUMB ,iscal=nbrevi)
+    call mdlibe(nomres(iarch_sd), nbnoli, nbrede, nbrevi)
+
     call dtmget(sd_dtm, _CALC_SD ,kscal=result)
 
-!   2 - Allocate the final result using dtmallo, set the iarch_sd flag to 0 and the size
+!   3 - Allocate the final result using dtmallo, set the iarch_sd flag to 0 and the size
 !       of the allocation vectors to the cumulated value
     call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=0)
     call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)
@@ -94,18 +101,21 @@ subroutine dtmconc(sd_dtm_)
 
     call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
 
-    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnoli)
-    call dtmget(sd_dtm, _FX_NUMB,iscal=nbrede)
-    call dtmget(sd_dtm, _FV_NUMB,iscal=nbrevi)
-
     if (nbnoli .ne. 0) call jeveuo(result//'           .VINT', 'E', jvir)
 
-!   [jordr, jdisc, jptem, jdepl , jvite, jacce,  
-!    jfcho, jdcho, jvcho, jadcho, jredc, jredd,
-!    jrevc, jrevv                                 ]
+!   ----------------------------------
+!   decal : Array index-sliders
+!   1 : ORDR, DISC, PTEM 
+!   2 : DEPL, VITE, ACCE
+!   3 : FCHO, DCHO, VCHO
+!   4 : ICHO 
+!   5 : REDC, REDD
+!   6 : REVC, REVV 
+!   7 : VINT
     decal = [0, 0, 0, 0, 0, 0, 0]
+!   ------------------------------------
 !
-!   3 - Copying all information from &&ADXXXX to the result container (CALC_SD)
+!   4 - Copying all information from &&ADXXXX to the result container (CALC_SD)
 
     call refdcp(nomres(1), result)
 
