@@ -29,62 +29,13 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 MAIL=LIRE_MAILLAGE();
 
 #
-# Calcul thermique
+# Chargement thermique
 #
-
-MOTH = AFFE_MODELE ( MAILLAGE = MAIL,
-                     AFFE     =_F(TOUT         = 'OUI',
-                                  PHENOMENE    = 'THERMIQUE',
-                                  MODELISATION = 'PLAN',
-                                 ),  
-                   )
-
-LAMBC  = DEFI_FONCTION (NOM_PARA  = 'TEMP',
-                        VALE      = ( 20., 14.,
-                                     100., 15.2,
-                                     200., 16.6,
-                                     300., 17.9,
-                                     400., 19.00,
-                                     500., 20.6,
-                                     600., 21.8,
-                                     700., 23.1,
-                                     800., 24.3,
-                                     900., 26.,
-                                    1000., 27.3,
-                                    1200., 29.9,
-                                    1450., 35.,
-                                    1500., 70.,
-                                      ),
-                        PROL_DROITE = 'LINEAIRE',
-                        PROL_GAUCHE = 'LINEAIRE', 
-                       ) 
-
-RHOCPA    = DEFI_FONCTION (NOM_PARA    = 'TEMP',
-                           VALE        = (  20., 3900000.0,
-                                           400., 3900000.0,
-                                          1402., 3900000.0,
-                                         ),
-                           PROL_DROITE = 'LINEAIRE',
-                           PROL_GAUCHE = 'LINEAIRE', 
-                          ) 
-
-ACIERC   = DEFI_MATERIAU (THER_NL = _F(RHO_CP   = RHOCPA,
-                                       LAMBDA   = LAMBC,
-                                      ),    
-                         )
-
-
-MATC  = AFFE_MATERIAU ( MAILLAGE = MAIL,
-                        AFFE     = _F(TOUT  = 'OUI',
-                                      MATER = ACIERC 
-                                     ), 
-                      )
-
 
 TEMP1 = DEFI_FONCTION (NOM_PARA    = 'INST',
                        VALE        = (
                                     # cycle 1
-                                    0. ,   20.,
+                                    0.,    20.,
                                     100, 1125.,
                                     200,   21.,
                                     # cycle 2
@@ -100,33 +51,24 @@ TEMP1 = DEFI_FONCTION (NOM_PARA    = 'INST',
                        PROL_GAUCHE = 'CONSTANT',
                        PROL_DROITE = 'CONSTANT',);
 
-CHAR_C = AFFE_CHAR_THER_F (MODELE    = MOTH,
-                           TEMP_IMPO = (_F(TOUT = 'OUI',
-                                           TEMP = TEMP1,
-                                          ),
-                                       ),
-                          );
-
 LLPAS = DEFI_LIST_REEL (DEBUT      = 0.0,
-                        INTERVALLE =(_F(JUSQU_A = 100., NOMBRE = 100,),
-                                     _F(JUSQU_A = 200., NOMBRE = 100,),
-                                     _F(JUSQU_A = 800., NOMBRE = 600,),
-                                    ),
+                        INTERVALLE = _F(JUSQU_A=800., NOMBRE= 800,),
                        )
-
-THER1 = THER_NON_LINE (MODELE         = MOTH,
-                       CHAM_MATER     = MATC,
-                       EXCIT          = _F(CHARGE    = CHAR_C, ),
-                       INCREMENT      = _F(LIST_INST      = LLPAS,
-                                           NUME_INST_FIN  = 800,
-                                          ),
-                       ETAT_INIT      = _F(VALE = 20.0,),
-                       NEWTON         = _F(ITER_LINE_MAXI = 3,),
-                       CONVERGENCE    = _F(RESI_GLOB_RELA = 5.E-5,
-                                           ITER_GLOB_MAXI = 50,
-                                          ), 
-                      )
-
+L_INST1 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = LLPAS))
+#
+CHTH = CREA_CHAMP(OPERATION = 'AFFE', 
+				  TYPE_CHAM = 'NOEU_TEMP_F',
+				  MAILLAGE  = MAIL,
+				  AFFE      = _F( TOUT = 'OUI',
+								 NOM_CMP = 'TEMP',
+								 VALE_F = TEMP1)
+				  )
+#
+THER1 = CREA_RESU(OPERATION = 'AFFE', 
+				  TYPE_RESU = 'EVOL_THER',
+				  NOM_CHAM  = 'TEMP',
+				  AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
+				 )
 #
 # Calcul Mecanique
 #
@@ -265,7 +207,7 @@ U1 =  STAT_NON_LINE (MODELE       = MOMECA1,
                                        TOUT        = 'OUI',
                                        POST_INCR   = 'REST_ECRO',
                                       ),
-                     INCREMENT    = _F(LIST_INST     = LLPAS,
+                     INCREMENT    = _F(LIST_INST     = L_INST1,
                                        NUME_INST_FIN = 800
                                       ),
                      NEWTON       = _F(REAC_INCR=1,
