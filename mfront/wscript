@@ -46,11 +46,6 @@ INCLUDES = (
 def build(self):
     env = self.all_envs[self.variant]
     if env.BUILD_MFRONT:
-        # POST_LAZY: Groups are processed sequentially: all tasks from previous
-        # groups are executed before the task generators from the next group
-        # are processed
-        self.post_mode = Build.POST_LAZY
-
         # build mfront_request
         self(
             features = 'c cxx cxxprogram',
@@ -68,28 +63,20 @@ def build(self):
 
         get_srcs = self.path.get_src().ant_glob
         lmfront = get_srcs('**/*.mfront', excl=INCLUDES)
-
-        self(
-                name = 'mfront_convert',
-              source = lmfront,
-                 env = env.derive(),
-                 use = ('MFRONT', ),
-        )
-
-        # wait mfront conversion before creating the list of cxx source files
-        self.add_group()
+        lst = [i.name for i in lmfront]
 
         self(
             features = 'cxx cxxshlib',
                 name = 'asterbehaviour',
-      dynamic_source = '**/*.cxx',
-    dynamic_incpaths = '../include',
+              source = lmfront,
+            includes = [osp.join(osp.splitext(i)[0], "include") for i in lst],
               target = env['_ASTERBEHAVIOUR'],
         install_path = env.ASTERLIBDIR,
                  env = env.derive(),
                  use = ('MFRONT', 'MFRONT_ONLY'),
         )
-        lst = [i.name for i in lmfront]
+
+        self.add_group()
         self(
             features = 'mfront_mater',
                 name = 'mfront_mater',
@@ -200,7 +187,22 @@ def check_mfront_obsolete_source(self):
 
 @TaskGen.extension('.mfront')
 def process_mfront(self, node):
-    tsk = self.create_task('mfront2cxx', node)
+    name = osp.splitext(node.name)[0]
+    wrkdir = node.parent.find_or_declare(name)
+    # print "DEBUG: node:", node, "wkrdir:", wrkdir.abspath()
+    wrkdir.mkdir()
+    files = [name, "aster" + name] + getAdditionalOutputs(node.abspath())
+    outputs = [wrkdir.find_or_declare(osp.join("src", i + ".cxx")) for i in files]
+    tsk = self.create_task('mfront2cxx', node, outputs)
+    self.source.extend(tsk.outputs)
+
+import re
+RE_OUTPUT = re.compile('^//output *(.*?) *$', re.M)
+
+def getAdditionalOutputs(filename):
+    """Search additional outputs in a MFront file"""
+    found = RE_OUTPUT.findall(open(filename, 'r').read())
+    return found
 
 class mfront2cxx(Task.Task):
     """Convert a MFront source file into C++"""
@@ -212,8 +214,6 @@ class mfront2cxx(Task.Task):
         name = osp.splitext(self.inputs[0].name)[0]
         mfrdir = self.inputs[0].parent
         wrknode = mfrdir.get_bld().find_or_declare(name)
-        wrknode.delete()
-        wrknode.mkdir()
         if len(name) > 16:
             msg = "The behaviour name is too long, max. 16 characters: " \
                   "'%s'" % name
@@ -309,7 +309,7 @@ def _capy_comport(comport, properties, typ, indent):
 capy_header = """#
 # Automatically-generated file. Do not edit!
 #
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 #
 def C_MFRONT_OFFICIAL():
     keywords = {

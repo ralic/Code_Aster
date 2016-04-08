@@ -1,3 +1,4 @@
+//output Acier_ElasticYield-mfront
 @Parser IsotropicPlasticMisesFlow;
 @Behaviour PlasticityTH;
 @Author Helfer Thomas;
