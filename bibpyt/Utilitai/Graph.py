@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -877,7 +877,7 @@ class TraceXmgrace(TraceGraph):
         le format et ferme le fichier.
         """
         g = self.Graph
-        if self.PILOTE == 'INTERACTIF':
+        if self.PILOTE.startswith('INTERACTIF'):
             self.NomFich[0] = 'Trace_%s.dat' % time.strftime(
                 '%y%m%d%H%M%S', time.localtime())
             self.Fich[0] = open(self.NomFich[0], 'w')
@@ -958,13 +958,16 @@ class TraceXmgrace(TraceGraph):
             open(nfwrk, 'w').write('\n'.join(content))
             nfhard = self.NomFich[0] + '.hardcopy'
             # nom exact du pilote
+            bg = pilo == 'INTERACTIF_BG'
             if pilo == 'POSTSCRIPT':
                 pilo = 'PostScript'
-            elif pilo == 'INTERACTIF':
+            elif pilo.startswith('INTERACTIF'):
                 pilo = 'X11'
             # ligne de commande
             if pilo == 'X11':
                 lcmde = '%s %s' % (xmgr, nfwrk)
+                if bg:
+                    lcmde += ' &'
                 if not os.environ.has_key('DISPLAY') or os.environ['DISPLAY'] == '':
                     os.environ['DISPLAY'] = ':0.0'
                     UTMESS('I', 'GRAPH0_7')
@@ -987,7 +990,7 @@ class TraceXmgrace(TraceGraph):
             else:
                 UTMESS('A', 'GRAPH0_9', valk=pilo)
         # menage
-        if self.PILOTE == 'INTERACTIF':
+        if self.PILOTE.startswith('INTERACTIF'):
             os.remove(self.NomFich[0])
         return
 
