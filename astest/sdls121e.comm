@@ -353,6 +353,7 @@ for i in range(nbmodes_base):
                     'MODELE':MODEL,
                     'CHAM_MATER':MAT,
                     'NUME_MODE': l_modes_base[i],
+                    'FREQ' : 1.,
                      })
 
 BASER = CREA_RESU(OPERATION='AFFE',
@@ -362,6 +363,20 @@ BASER = CREA_RESU(OPERATION='AFFE',
                   MATR_MASS =M_AS_MAS,
                   NOM_CHAM='DEPL',)
 
+unite =80       
+DEFI_FICHIER( UNITE = unite, FICHIER = 'REPE_OUT/mode.pos')
+IMPR_RESU(FORMAT='GMSH',
+        RESU=_F(RESULTAT=BASER,
+                NOM_CMP=('DX','DY','DZ' ),
+                TYPE_CHAM='VECT_3D',
+                NOM_CHAM=('DEPL', ),
+                NUME_MODE=(1,2),),
+        UNITE=unite,
+        VERSION=1.2,
+        INFO=1,)
+DEFI_FICHIER( UNITE = unite, ACTION = 'LIBERER',)
+
+
 champi = []
 for i in range(nbmodes_base):
     champi.append({ 'CHAM_GD':VI[i],
@@ -369,6 +384,7 @@ for i in range(nbmodes_base):
                     'MODELE':MODEL,
                     'CHAM_MATER':MAT,
                     'NUME_MODE': l_modes_base[i],
+                    'FREQ' : 1.,
                     })
 
 BASEI = CREA_RESU(OPERATION='AFFE',

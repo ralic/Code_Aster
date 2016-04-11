@@ -30,7 +30,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
     character(len=8) :: tycha
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -132,7 +132,7 @@ subroutine irgmsh(nomcon, partie, ifi, nbcham, cham,&
             if (iret .ne. 0) then
                 do ior = 1, nbordr
                     call rsadpa(nomcon, 'L', 1, 'FREQ', ordr(ior),&
-                                0, sjv=iad, styp=k8b)
+                                0, sjv=iad, styp=k8b, istop=0)
                     zr(jpara+ior-1) = zr(iad)
                 end do
             endif
