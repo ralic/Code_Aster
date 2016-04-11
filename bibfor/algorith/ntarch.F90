@@ -6,20 +6,18 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/didern.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
 #include "asterfort/nmarce.h"
 #include "asterfort/ntarc0.h"
-#include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,14 +52,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: instam, instan
+    real(kind=8) :: instan
     integer :: iret
-    integer :: numarc
-    integer :: jinst
+    integer :: nume_store
     character(len=19) :: k19bid, list_load_resu
     character(len=8) :: result
-    integer :: ibid
-    character(len=24) :: k24bla
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,7 +66,6 @@ implicit none
 ! - Print timer
 !
     call uttcpg('IMPR', 'INCR')
-    k24bla = ' '
 !
 ! - Last step => storing
 !
@@ -81,7 +75,8 @@ implicit none
 !
 ! - Get index for storing
 !
-    call dinuar(sddisc, numins, force, numarc, ibid)
+    call dinuar(result    , sddisc    , numins, force,&
+                nume_store)
 !
 ! - Current time
 !
@@ -89,18 +84,7 @@ implicit none
 !
 ! - Storing
 !
-    if (numarc .ge. 0) then
-!
-! ----- Already stored ?
-!
-        if (numarc .ge. 2) then
-            call rsadpa(result, 'L', 1, 'INST', numarc-1,&
-                        0, sjv=jinst)
-            instam = zr(jinst)
-            if (instan .le. instam) then
-                goto 999
-            endif
-        endif
+    if (nume_store .ge. 0) then
 !
 ! ----- Print head
 !
@@ -108,7 +92,7 @@ implicit none
 !
 ! ----- Increased result datastructure if necessary
 !
-        call rsexch(' ', result, 'TEMP', numarc, k19bid,&
+        call rsexch(' ', result, 'TEMP', nume_store, k19bid,&
                     iret)
         if (iret .eq. 110) then
             call rsagsd(result, 0)
@@ -117,14 +101,12 @@ implicit none
 ! ----- Storing parameters
 !
         call ntarc0(result        , modele, mate, carele, sdcrit,&
-                    list_load_resu, lnonl , para, numarc, instan)
+                    list_load_resu, lnonl , para, nume_store, instan)
 !
 ! ----- Stroring fields
 !
-        call nmarce(ds_inout, result, sddisc, instan, numarc,&
+        call nmarce(ds_inout, result, sddisc, instan, nume_store,&
                     force)
     endif
-!
-999 continue
 !
 end subroutine

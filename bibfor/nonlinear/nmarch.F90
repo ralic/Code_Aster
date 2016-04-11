@@ -8,7 +8,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dinuar.h"
 #include "asterfort/nmarc0.h"
@@ -18,7 +17,6 @@ implicit none
 #include "asterfort/nmleeb.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
-#include "asterfort/rsadpa.h"
 #include "asterfort/rsagsd.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
@@ -82,13 +80,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jinst, iret, numarc
-    real(kind=8) :: instam, instan
+    integer :: iret, nume_store
+    real(kind=8) :: instan
     character(len=8) :: result
     aster_logical :: force, lprint
     character(len=19) :: k19bid, list_load_resu
     character(len=4) :: etcalc
-    integer :: numrep
+    integer :: nume_reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -119,7 +117,8 @@ implicit none
 !
 ! - Get index for storing
 !
-    call dinuar(sddisc, numins, force, numarc, numrep)
+    call dinuar(result    , sddisc    , numins, force,&
+                nume_store, nume_reuse)
 !
 ! - Current time
 !
@@ -127,7 +126,7 @@ implicit none
 !
 ! - Save energy parameters in output table
 !
-    call nmarpc(ds_energy, numrep, instan)
+    call nmarpc(ds_energy, nume_reuse, instan)
 !
 ! - Print or not ?
 !
@@ -135,18 +134,7 @@ implicit none
 !
 ! - Storing
 !
-    if (numarc .ge. 0) then
-!
-! ----- Already stored ?
-!
-        if (numarc .ge. 2) then
-            call rsadpa(result, 'L', 1, 'INST', numarc-1,&
-                        0, sjv=jinst)
-            instam = zr(jinst)
-            if (instan .le. instam) then
-                goto 999
-            endif
-        endif
+    if (nume_store .ge. 0) then
 !
 ! ----- Begin timer
 !
@@ -160,7 +148,7 @@ implicit none
 !
 ! ----- Increased result datastructure if necessary
 !
-        call rsexch(' ', result, 'DEPL', numarc, k19bid,&
+        call rsexch(' ', result, 'DEPL', nume_store, k19bid,&
                     iret)
         if (iret .eq. 110) then
             call rsagsd(result, 0)
@@ -170,11 +158,11 @@ implicit none
 !
         call nmarc0(result, modele        , mate  , carele, fonact,&
                     sdcrit, sddyna        , sdpost, carcri, sdcriq,&
-                    sdpilo, list_load_resu, numarc, instan)
+                    sdpilo, list_load_resu, nume_store, instan)
 !
 ! ----- Stroring fields
 !
-        call nmarce(ds_inout, result  , sddisc, instan, numarc,&
+        call nmarce(ds_inout, result  , sddisc, instan, nume_store,&
                     force   , ds_print)
 !
 ! ----- End timer
@@ -182,7 +170,5 @@ implicit none
         call nmtime(ds_measure, 'Stop', 'Store')
         call nmrinc(ds_measure, 'Store')
     endif
-!
-999 continue
 !
 end subroutine

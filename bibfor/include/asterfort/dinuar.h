@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dinuar(sddisc, numins, force, numarc, numrep)
-        character(len=19) :: sddisc
-        integer :: numins
-        aster_logical :: force
-        integer :: numarc
-        integer :: numrep
+    subroutine dinuar(result    , sddisc     , nume_inst, force,&
+                      nume_store, nume_reuse_)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: result
+        character(len=19), intent(in) :: sddisc
+        integer, intent(in) :: nume_inst
+        aster_logical, intent(in) :: force
+        integer, intent(out) :: nume_store
+        integer, optional, intent(out) :: nume_reuse_
     end subroutine dinuar
 end interface
