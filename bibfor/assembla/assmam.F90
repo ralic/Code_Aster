@@ -549,7 +549,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSMAM', 'FIN', ' ')
         call uttcpr('CPU.ASSMAM', 7, temps)
-        write (ifm, '(A44,D11.4,D11.4)') &
+        write (ifm, '(A44,D11.4,D11.4,D11.4)') &
             'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE M        : ',&
             temps(5), temps(6), temps(7)
     endif
