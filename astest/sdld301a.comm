@@ -26,6 +26,11 @@ MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
     ),
 )
 
+DEFI_GROUP(reuse=MAILLAGE, MAILLAGE = MAILLAGE,
+           CREA_GROUP_NO=_F(NOM = 'P1P4',
+                            NOEUD = ('P1', 'P4')
+                            ))
+
 MODELE=AFFE_MODELE(    MAILLAGE=MAILLAGE,AFFE=(
 
                                   _F(  GROUP_MA = ( 'RESK', 'RES2K',),
@@ -235,12 +240,15 @@ TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
 #
 #-----------------------------------------------------------------------
 #
-
 MODE_CO2=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
                           MATR_MASS=MATRMASS,
                           PSEUDO_MODE=_F(  NOEUD = ( 'P1', 'P4', ),
-                                           AVEC_CMP = ( 'DX', ))
+                                           AVEC_CMP = ( 'DX',),
+                                           #AVEC_CMP = ( 'DX','DY','DZ' ),
+                                           )
                           )
+IMPR_RESU(RESU=_F(RESULTAT = MODE_CO2))
+
 
 #
 MODE_CO2=CALC_CHAMP(reuse=MODE_CO2,RESULTAT=MODE_CO2,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
@@ -291,6 +299,82 @@ TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
                    NOEUD_CMP=('P4', 'DX'),),
                 ),
           )
+#
+# DUPLICATION DU CALCUL POUR COUVERTURE DE CODE
+#
+
+MODE_CB2=MODE_STATIQUE(   MATR_RIGI=MATRRIGI,
+                          MATR_MASS=MATRMASS,
+                          PSEUDO_MODE=_F(  GROUP_NO = 'P1P4',
+                                           #AVEC_CMP = ( 'DX', ),
+                                           SANS_CMP = ('DY', 'DZ')
+                                           #TOUT_CMP = 'OUI'
+                                           )
+                          )
+IMPR_RESU(RESU=_F(RESULTAT = MODE_CB2))
+
+
+#
+MODE_CB2=CALC_CHAMP(reuse=MODE_CB2,RESULTAT=MODE_CB2,CONTRAINTE=('SIEF_ELGA','EFGE_ELNO'))
+
+
+MODE_CB2=CALC_CHAMP(  reuse=MODE_CB2,
+                           RESULTAT=MODE_CB2,
+                             FORCE='FORC_NODA'
+                     )
+
+MODE_CB2=CALC_CHAMP(  reuse=MODE_CB2,
+                           RESULTAT=MODE_CB2,
+                             FORCE='REAC_NODA'
+                     )
+
+#
+TEST_RESU(RESU=(_F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CB2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.013171600,
+                   VALE_REFE=0.013169999999999999,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CB2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012158400,
+                   VALE_REFE=0.012160000000000001,
+                   NOEUD_CMP=('P1', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CB2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012158400,
+                   VALE_REFE=0.012160000000000001,
+                   NOEUD_CMP=('P4', 'DX'),),
+                _F(REFERENCE='ANALYTIQUE',
+                   RESULTAT=MODE_CB2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P3',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.013171600,
+                   VALE_REFE=0.013169999999999999,
+                   NOEUD_CMP=('P4', 'DX'),),
+                ),
+          )
+
+# Ajout de ce test pour discriminer les cas SANS_CMP = ('DY',),
+# SANS_CMP = ('DZ',) et TOUT_CMP = 'OUI'
+TEST_RESU(RESU=(_F(
+                   RESULTAT=MODE_CB2,
+                   NOM_CHAM='DEPL',
+                   NOEUD='P2',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.012158400,
+                   NUME_ORDRE = 2),)
+          )
+
 
 #
 # -------------------------------
