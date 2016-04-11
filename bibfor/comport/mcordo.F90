@@ -1,12 +1,32 @@
-subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
-                  apex, codret)
+subroutine mcordo(dpstrs, pstrs, pstra, dirprj, &
+                  edge, apex, codret)
+!***********************************************************************
 !
+! OBJECT: RE-ORDER MATRICEX AND VECTORS ACOORDING TO:
+!
+!   . PSTRA1 > PSTRA2 > PSTRA3   => EDGE=0 APEX=0
+!   . PSTRA1!= PSTRA2 = PSTRA3   => EDGE=1 APEX=0
+!   . PSTRA1 = PSTRA2 = PSTRA3   => EDGE=0 APEX=1
+! ----------------------------------------------------------------------
+!
+!     LOI DE COMPORTEMENT DE MOHR-COULOMB
+!
+! IN  DPSTRS  : D Y_PRIN / D X_PRIN (3,3)-MATRIX
+! IN  PSTRS   : VALEURS PRINCIPALES DE SIGMA (3)
+! IN  PSTRA   : VALEURS PRINCIPALES DE EPSILON (3)
+! IN  DIRPRJ  : DIRECTIONS PRINCIPALES
+!
+! OUT EDGE    : MATRICE TANGENTE COHERENTE REACTUALISEE
+! OUT APEX    : MATRICE TANGENTE COHERENTE REACTUALISEE
+! OUT CODRET  : CODE RETOUR
+!               = | 0: OK
+!                 | 1: NOOK
+!
+! ----------------------------------------------------------------------
     implicit none
 #include "asterf_types.h"
-! Declaration of real type variables
-!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -34,10 +54,10 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
     integer :: i, j, mdim, ndim
 !
 ! Declaration of integer type variables
-    aster_logical :: lorder, epflag
+!     aster_logical :: epflag
+    aster_logical :: lorder
 !
-    parameter&
-     &(   mdim=3     ,ndim=6     )
+    parameter (   mdim=3     ,ndim=6     )
 !
 ! Declaration of vector and matrix type variables
     integer :: iorder(mdim)
@@ -45,27 +65,12 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
     real(kind=8) :: r3, r4, small, tol, dmax1, pstmin, pstmax
 !
 !
-    data&
-     &    r0    ,r1    ,r2    ,r3    ,r4    ,small ,tol   /&
+    data  r0    ,r1    ,r2    ,r3    ,r4    ,small ,tol   /&
      &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,4.0d0 ,1.d-06,1.d-10/
 !
 ! Declaration of Common space variables
-    common / debug / epflag
-!***********************************************************************
-! RE-ORDER MATRICEX AND VECTORS ACOORDING TO:
-!   . PSTRA1>PSTRA2>PSTRA3   => EDGE=0 APEX=0
-!   . PSTRA1!=PSTRA2=PSTRA3  => EDGE=1 APEX=0
-!   . PSTRA1=PSTRA2=PSTRA3   => EDGE=0 APEX=1
-! ----------------------------------------------------------------------
-!     LOI DE COMPORTEMENT DE MOHR-COULOMB
-! IN  DPSTRS  : D Y_PRIN / D X_PRIN (3,3)-MATRIX
-! IN  PSTRS   : VALEURS PRINCIPALES DE SIGMA (3)
-! IN  PSTRA   : VALEURS PRINCIPALES DE EPSILON (3)
-! IN  DIRPRJ  : DIRECTIONS PRINCIPALES
+!     common / debug / epflag
 !
-! OUT EDGE    : MATRICE TANGENTE COHERENTE REACTUALISEE
-! OUT APEX    : MATRICE TANGENTE COHERENTE REACTUALISEE
-! ----------------------------------------------------------------------
     lorder=.false.
     pst1=pstra(1)
     pst2=pstra(2)
@@ -120,13 +125,7 @@ subroutine mcordo(dpstrs, pstrs, pstra, dirprj, edge,&
         apex=r0
     else
         codret=1
-        write(6,'(A)')'> IN MCORDO: !!!PB -> AUCUN CAS DETECTE!!!'
         goto 999
-    endif
-!
-    if (epflag) then
-        write(6,'(2(A,E10.3),A,L4)') '> IN MCORDO :: EDGE=',edge,' APEX=',apex,' LORDER=',lorder
-        write(6,'(A,3(I2))') '> IN MCORDO :: IORDER =',(iorder(i),i=1, 3)
     endif
 !
 !

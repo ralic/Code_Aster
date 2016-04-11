@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,8 +15,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mctg3d(stress, strain, rprops, dsidep, edge,&
-                      right, apex, codret)
+    subroutine mctg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
+                      edge, right, apex, codret)
         real(kind=8) :: stress(6)
         real(kind=8) :: strain(6)
         real(kind=8) :: rprops(6)
@@ -24,6 +24,9 @@ interface
         real(kind=8) :: edge
         real(kind=8) :: right
         real(kind=8) :: apex
-        integer :: codret
+        integer      :: ii
+        integer      :: jj
+        integer      :: mm
+        integer      :: codret
     end subroutine mctg3d
 end interface

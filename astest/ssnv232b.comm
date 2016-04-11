@@ -97,8 +97,12 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #***********************************************************************
 #    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
 #***********************************************************************
+# CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+#                        PRES_REP=_F(GROUP_MA='COTE',PRES = 1.));
+
 CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
-                       PRES_REP=_F(GROUP_MA='COTE',PRES = 1.));
+                       PRES_REP=(_F(GROUP_MA='DROIT',PRES = 1.),
+                                 _F(GROUP_MA='ARRIERE',PRES = 1.001),),);
 
 CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='APPUI',PRES = 1.));
@@ -163,7 +167,7 @@ U1=STAT_NON_LINE(INFO=1,MODELE=MODELE,
                                 ARRET='OUI',),
                  ARCHIVAGE =_F(LIST_INST=T_ARCH,),
                  SOLVEUR=_F(METHODE='MUMPS',
-                            NPREC=12,),
+                            NPREC=8,),
                  INCREMENT=_F(LIST_INST = DEFLIST,
                               INST_INIT=0.0,
                               INST_FIN =30.));

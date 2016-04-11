@@ -2,7 +2,7 @@ subroutine nmtstm(compor, imatri, matsym)
 ! ======================================================================
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,10 @@ subroutine nmtstm(compor, imatri, matsym)
         if (compor(8)(1:13) .eq. 'BETON_UMLV_FP') then
             matsym = .false.
         endif
+    endif
+!
+    if (compor(1)(1:12) .eq. 'MOHR_COULOMB') then
+        matsym = .false.
     endif
 !
     if (compor(1)(1:16) .eq. 'ENDO_ORTH_BETON') then

@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,8 +17,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
-                      right, apex, outofp)
+    subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
+                      edge, right, apex, outofp)
         real(kind=8) :: stress(6)
         real(kind=8) :: strain(6)
         real(kind=8) :: rprops(6)
@@ -26,6 +26,9 @@ interface
         real(kind=8) :: edge
         real(kind=8) :: right
         real(kind=8) :: apex
+        integer      :: ii
+        integer      :: jj
+        integer      :: mm
         aster_logical :: outofp
     end subroutine mctg2d
 end interface

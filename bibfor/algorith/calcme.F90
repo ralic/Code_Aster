@@ -6,10 +6,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                   dsde, deps, p1, p2, t,&
                   dt, retcom, dp1, dp2, sat,&
                   tbiot, ang2, aniso, phenom)
-! aslint: disable=W1504, W1501
+! aslint: disable=W1504
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

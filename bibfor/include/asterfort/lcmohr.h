@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,19 +17,19 @@
 !
 interface
     subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
-                      dstrai, stresm, stres, vim, vip, &
+                      dstrai0, stresm0, stres, vim, vip, &
                       dsidep, codret)
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: option
         real(kind=8) :: tmpp
-        real(kind=8) :: dstrai(6)
-        real(kind=8) :: stresm(6)
+        real(kind=8) :: dstrai0(6)
+        real(kind=8) :: stresm0(6)
         real(kind=8) :: stres(6)
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
-        real(kind=8) :: dsidep(*)
+        real(kind=8) :: dsidep(6,6)
         integer :: codret
     end subroutine lcmohr
 end interface

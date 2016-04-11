@@ -1,10 +1,23 @@
 subroutine mcbnvi(typmod, ndt, ndi)
+!  ----------------------------------------------------------------
+!
+!  OBJECT: RENVOIE LA DIMENSION DU PB POUR LA LOI DE MOHR-COULOMB
+!
+!  ----------------------------------------------------------------
+!
+!     LOI DE COMPORTEMENT DE MOHR-COULOMB
+!
+!  IN
+!      TYPMOD  :  TYPE DE MODELISATION
+!  OUT
+!      NDT     :  NB TOTAL DE COMPOSANTES TENSEURS
+!      NDI     :  NB DE COMPOSANTES DIRECTES TENSEURS
+!
+!  ----------------------------------------------------------------
     implicit none
 #include "asterfort/utmess.h"
-!
-!       ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,21 +32,9 @@ subroutine mcbnvi(typmod, ndt, ndi)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!  ----------------------------------------------------------------
-!
-!  MOHR-COULOMB: RENVOIE LA DIMENSION DU PB POUR LA LOI DE MOHR-COULOMB
-!
-!  ----------------------------------------------------------------
-!  IN
-!      TYPMOD  :  TYPE DE MODELISATION
-!  OUT
-!      NDT     :  NB TOTAL DE COMPOSANTES TENSEURS
-!      NDI     :  NB DE COMPOSANTES DIRECTES TENSEURS
-!  ----------------------------------------------------------------
     integer :: ndt, ndi
     integer :: ndtloc, ndiloc
     character(len=8) :: typmod(*)
-!
 !
 ! - 3D
     if (typmod(1)(1:2).eq.'3D') then
@@ -58,7 +59,8 @@ subroutine mcbnvi(typmod, ndt, ndi)
     else
         call utmess('F', 'ALGORITH2_20')
     endif
-    
+!
     ndt = ndtloc
     ndi = ndiloc
+!
 end subroutine

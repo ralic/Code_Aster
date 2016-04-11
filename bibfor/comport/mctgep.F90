@@ -1,11 +1,31 @@
-subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
-                  direig, edge, apex)
+subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
+! ----------------------------------------------------------------------
 !
+! OBJECT: COMPUTE THE DERIVATIVE OF A GENERAL ISOTROPIC 3D TENSOR
+!
+! ----------------------------------------------------------------------
+!
+!     LOI DE COMPORTEMENT DE MOHR-COULOMB
+!
+! IN  DEIGY   : D Y_PRIN / D X_PRIN (3,3)-MATRIX
+! IN  DIREIG  : DIRECTIONS PRINCIPALES DE Y_PRIN:
+!                  DIREIG_1 = DIREIG(I=1-3,1)
+!                  DIREIG_2 = DIREIG(I=1-3,2)
+!                  DIREIG_3 = DIREIG(I=1-3,3)
+! IN  EIGX    : VALEURS PRINCIPALES DE X (3)
+! IN  EIGY    : VALEURS PRINCIPALES DE Y (3)
+! IN  VECX    : VECTEUR X DANS LA BASE CARTESIENNE
+!                  VECX=(EPXX         EPYY         EPZZ
+!                        Sqrt(2)*EPXY Sqrt(2)*EPXZ Sqrt(2)*EPYZ)
+! IN  EDGE    : Y-A-T-IL DEUX  MECANISMES ACTIFS?
+! IN  APEX    : Y-A-T-IL TROIS MECANISMES ACTIFS?
+!
+! OUT DYDX    : MATRICE TANGENTE COHERENTE REACTUALISEE
+!
+! ----------------------------------------------------------------------
     implicit none
-! Declaration of real type variables
-!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -37,41 +57,31 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 ! Declaration of integer type variables
     integer :: i, j, ia, ib, ic, mcomp, mdim
 !
-    aster_logical :: epflag
+!     aster_logical :: epflag
 !
     parameter ( mcomp=6    ,mdim=3 )
 !
-    real(kind=8) :: dx2dx(mcomp, mcomp), eigprj(mcomp, mdim), foid(mcomp, mcomp), sopid(mcomp), s1
-    real(kind=8) :: s2
-    real(kind=8) :: s3, s4, s5, s6, xi, xj, a1
+    real(kind=8) :: dx2dx(mcomp, mcomp), eigprj(mcomp, mdim)
+    real(kind=8) :: foid(mcomp, mcomp), sopid(mcomp)
+    real(kind=8) :: s1, s2, s3, s4, s5, s6, xi, xj, a1
     real(kind=8) :: r0, r1, r2, r3, dr5, small, tol, sqr
-    data&
-     &    r0    ,r1    ,r2    ,r3    ,dr5   ,small ,tol   ,sqr/&
+!
+    data  r0    ,r1    ,r2    ,r3    ,dr5   ,small ,tol   ,sqr/&
      &    0.0d0 ,1.0d0 ,2.0d0 ,3.0d0 ,0.5d0 ,1.d-06,1.d-10,&
      &    1.4142135623730951d0/
 !
 ! Declaration of Common space variables
-    common / debug / epflag
+!     common / debug / epflag
 !
-!***********************************************************************
-! COMPUTE THE DERIVATIVE OF A GENERAL ISOTROPIC 3D TENSOR
-! ----------------------------------------------------------------------
-!     LOI DE COMPORTEMENT DE MOHR-COULOMB
-! IN  DEIGY   : D Y_PRIN / D X_PRIN (3,3)-MATRIX
-! IN  DIREIG  : DIRECTIONS PRINCIPALES DE Y_PRIN:
-!                  DIREIG_1 = DIREIG(I=1-3,1)
-!                  DIREIG_2 = DIREIG(I=1-3,2)
-!                  DIREIG_3 = DIREIG(I=1-3,3)
-! IN  EIGX    : VALEURS PRINCIPALES DE X (3)
-! IN  EIGY    : VALEURS PRINCIPALES DE Y (3)
-! IN  VECX    : VECTEUR X DANS LA BASE CARTESIENNE
-!                  VECX=(EPXX         EPYY         EPZZ
-!                        Sqrt(2)*EPXY Sqrt(2)*EPXZ Sqrt(2)*EPYZ)
-! IN  EDGE    : Y-A-T-IL DEUX  MECANISMES ACTIFS
-! IN  APEX    : Y-A-T-IL TROIS MECANISMES ACTIFS
-!
-! OUT DYDX    : MATRICE TANGENTE COHERENTE REACTUALISEE
-! ----------------------------------------------------------------------
+!     if (epflag) then
+!         write(6,'(A)')'!'
+!         write(6,'(A)')'!-----------------------------------------!'
+!         write(6,'(A)')'!                                         !'
+!         write(6,'(A)')'!              ENTER MCTGEP               !'
+!         write(6,'(A)')'!                                         !'
+!         write(6,'(A)')'!-----------------------------------------!'
+!         write(6,'(A)')'!'
+!     endif
     call matini(mcomp, mcomp, r0, foid)
     call matini(mcomp, mcomp, r0, dx2dx)
     call matini(mcomp, mcomp, r0, dydx)
@@ -79,9 +89,9 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 !
 ! 4th-order symetric unit tensor
     do i = 1, 3
-        foid(i,i) =r1
+        foid(i,i)    =r1
         foid(i+3,i+3)=dr5
-        sopid(i) =r1
+        sopid(i)     =r1
     end do
 !
 ! Calculation of the eigenvectors EIGPRJ_1(6) EIGPRJ_2(6) EIGPRJ_3(6)
@@ -124,6 +134,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
     dx2dx(4,5) =dr5*vecx(6)
     dx2dx(4,6) =dr5*vecx(5)
     dx2dx(5,6) =dr5*vecx(4)
+!
 ! Symetrization
     do i = 2, mcomp
         do j = 1, i-1
@@ -133,7 +144,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 !
     if (apex .eq. r1) then
 !
-        if (epflag) write(6,'(A)')'> IN MCTGEP :: APEX'
+!         if (epflag) write(6,'(A)')'! * PROJECTION TO APEX'
 !
 ! Derivative dY/dX for 3 repeated in-plane eigenvalues of X
 ! ---------------------------------------------------------
@@ -146,7 +157,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
 !
     else if (edge.eq.r1) then
 !
-        if (epflag) write(6,'(A)')'> IN MCTGEP :: EDGE'
+!         if (epflag) write(6,'(A)')'! * PROJECTION TO EDGE'
 !
 ! Derivative dY/dX for 2 repeated in-plane eigenvalues of X
 ! ---------------------------------------------------------
@@ -182,7 +193,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
         end do
 !
     else
-        if (epflag) write(6,'(A)')'> IN MCTGEP :: PLANE'
+!         if (epflag) write(6,'(A)')'! * PROJECTION TO PLANE'
 !
         do ia = 1, mdim
 !
@@ -221,16 +232,10 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx,&
     endif
 !
 ! Projection to the so-called "tensor base"
-    do i = 1, mdim
+    do i = 1, mcomp
         do j = mdim+1, mcomp
             dydx(i,j)=sqr*dydx(i,j)
             dydx(j,i)=sqr*dydx(j,i)
-        end do
-    end do
-!
-    do i = mdim+1, mcomp
-        do j = mdim+1, mcomp
-            dydx(i,j)=r2*dydx(i,j)
         end do
     end do
 !

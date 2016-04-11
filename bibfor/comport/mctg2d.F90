@@ -1,11 +1,34 @@
-subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
-                  right, apex, outofp)
+subroutine mctg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
+                  edge, right, apex, outofp)
+!***********************************************************************
 !
+!   OBJECT:
+!   COMPUTE THE CONSISTENT TANGENT MATRIX FOR MOHR-COULOMB LAW
+!   IN THE 2 DIMENSIONNAL CASE
+!
+! ----------------------------------------------------------------------
+!
+!     LOI DE COMPORTEMENT DE MOHR-COULOMB
+!
+! IN  STRESS  : VECTEUR CONTRAINTE REACTUALISEE
+! IN  STRAIN  : VECTEUR DEFORMATION A LA PREDICTION ELASTIQUE
+! IN  RPROPS  : PROPIETES MECANIQUES (3)
+! IN  II      : COMPOSANTE DE LA CONTRAINTE PRINCIPALE MINEURE
+! IN  JJ      : COMPOSANTE DE LA CONTRAINTE PRINCIPALE MAJEURE
+! IN  MM      : COMPOSANTE DE LA CONTRAINTE PRINCIPALE INTERMEDIAIRE
+! IN  EDGE    : INDICATEUR D'ACTIVATION (1) DE 2 MECANISMES
+! IN  RIGHT   : INDICATEUR DE PROJECTION A DROITE (1)
+!               QUAND 2 MECANISMES SONT ACITFS
+! IN  APEX    : INDICATEUR D'ACTIVATION (1) DE 3 MECANISMES
+! IN  OUTOFP  : COMPOSANTE HORS PLAN = | TRUE :  D_PLAN
+!                                      | FALSE:  C_PLAN
+!
+! OUT DSIDEP  : MATRICE TANGENTE COHERENTE REACTUALISEE
+!
+!***********************************************************************
     implicit none
-! Declaration of real type variables
-!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -28,63 +51,34 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 #include "asterfort/matini.h"
 #include "asterfort/mctanp.h"
 #include "asterfort/mctge2.h"
+#include "asterfort/mcpstr.h"
 #include "asterfort/vecini.h"
 !
-    real(kind=8) :: stress(6)
-    real(kind=8) :: strain(6)
-    real(kind=8) :: rprops(6)
-    real(kind=8) :: dsidep(6, 6)
-    real(kind=8) :: edge
-    real(kind=8) :: right
-    real(kind=8) :: apex
+    real(kind=8) :: stress(6), strain(6)
+    real(kind=8) :: rprops(6), dsidep(6, 6)
+    real(kind=8) :: edge, right, apex
     aster_logical :: outofp
 !
 ! Declaration of integer type variables
-    integer :: itri, iorder, mmax, nmax, mxiter, i, j, itjac1
+    integer :: itri, iorder, mmax, nmax, mxiter
+    integer :: ii, jj, mm, itjac1
 !
 ! Declaration of integer type variables
-    aster_logical :: epflag
+!     aster_logical :: epflag
 !
-    parameter&
-     &(   mmax=3     ,nmax=6     )
+    parameter (mmax=3, nmax=6)
 !
 ! Declaration of vector and matrix type variables
-    real(kind=8) :: dpstrs(mmax, mmax), pstra(mmax), pstrs(mmax), r0, r1, r2, r3, r4
+    real(kind=8) :: dpstrs(mmax, mmax), pstra(mmax), pstrs(mmax)
     real(kind=8) :: eigprj(mmax, mmax), eigxpr(mmax, mmax)
-    real(kind=8) :: small, vaux(mmax), sqr, tol, tu(nmax), tr(nmax), t1(nmax), refe
-    real(kind=8) :: dmax1
+    real(kind=8) :: small, vaux(mmax), tu(nmax), tr(nmax), t1(nmax)
+    real(kind=8) :: r0, r1, r2, r3, r4, sqr, dmax1, tol, refe
 !
 ! Declaration of constant variables
-    data&
-     &    r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr   /&
+    data  r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr   /&
      &    0.0d0,1.0d0,2.0d0,3.0d0,4.0d0,1.d-06,1.d-10,&
      &    1.4142135623730951d0                              /
-    data&
-     &    mxiter / 50 /
-!
-! Declaration of Common space variables
-    common / debug / epflag
-!***********************************************************************
-!
-!   COMPUTE THE CONSISTENT TANGENT MATRIX FOR MOHR-COULOMB LAW
-!   IN THE 2 DIMENSIONNAL CASE
-!
-! ----------------------------------------------------------------------
-!
-!     LOI DE COMPORTEMENT DE MOHR-COULOMB
-! IN  STRESS  : VECTEUR CONTRAINTE REACTUALISEE
-! IN  STRAIN  : VECTEUR DEFORMATION A LA PREDICTION ELASTIQUE
-! IN  RPROPS  : PROPIETES MECANIQUES (3)
-! IN  EDGE    : INDICATEUR D'ACTIVATION (1) DE 2 MECANISMES
-! IN  RIGHT   : INDICATEUR DE PROJECTION A DROITE (1)
-!               QUAND 2 MECANISMES SONT ACITFS
-! IN  APEX    : INDICATEUR D'ACTIVATION (1) DE 3 MECANISMES
-! IN  OUTOFP  : TRUE = DEFORMATION PLANE ET AXIS
-!               FALSE= CONTRAINTE PLANE
-!
-! OUT DSIDEP  : MATRICE TANGENTE COHERENTE REACTUALISEE
-!
-!***********************************************************************
+    data  mxiter / 50 /
 !
 ! Spectral decomposition of the trial stress
 !
@@ -103,8 +97,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     t1(4)=r1
     t1(6)=r1
 !
-!CALL MATINI(MMAX  ,MMAX  ,R0    ,EIGPRJ)
-    call matini(mmax, mmax, r0, eigxpr)
+    call matini(mmax, mmax, r0, eigprj)
 ! Matrix  TR = (SIXX SIXY SIYY) for Jacobi
 ! Produce EIGPRJ: Base Projection Matrix from initial base
 !                 to principal directions base
@@ -115,6 +108,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     tr(4)=stress(2)
     tr(5)=r0
     tr(6)=r0
+!
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     call lceqvn(nmax, t1, tu)
 !
@@ -124,6 +118,7 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
 !
     pstrs(3)         =stress(3)
     eigprj(mmax,mmax)=r1
+!
 !
 ! Matrix  TR = (EPXX EPXY EPYY) for Jacobi
 ! Produce EIGXPR: Base Projection Matrix from initial base
@@ -135,63 +130,25 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     tr(3)=r0
     tr(5)=r0
     tr(6)=r0
+!
 ! Unit matrix = (1 0 0 1 0 1) for Jacobi
     call lceqvn(nmax, t1, tu)
+    call matini(mmax, mmax, r0, eigxpr)
 !
     call jacobi(mmax, mxiter, tol, small, tr,&
                 tu, eigxpr, pstra, vaux, itjac1,&
                 itri, iorder)
 !
-    pstra(3)         =r0
+    pstra(3)         =strain(3)
     eigxpr(mmax,mmax)=r1
 !
-    if (epflag) write(6,'(A,3(1X,E12.5))') '> AFTER JACOBI :: PSTRA =',(pstra(i),i=1,3)
 !
 ! Compute Consistent Plastic Jacobian Matrix in the eigenbasis
 ! Inputs: PSTRA ,RPROPS,EDGE  ,RIGHT ,APEX
 ! Output: DPSTRS
 ! ------------------------------------------------------------------
-    call mctanp(dpstrs, rprops, pstra, edge, right,&
-                apex)
+    call mctanp(dpstrs, rprops, ii, jj, mm, edge, right, apex)
 !
-    if (epflag) then
-! Print stress information
-        write(6,'(A,3(1X,E12.5))') '> AFTER MCTANP :: PSTRS =',(pstrs(&
-        i),i=1,3)
-!
-        write(6,'(A)')'> STRESS :: DIRPRJ='
-        do i = 1, 3
-            write(6,'(I3,3(1X,E12.5))')i,(eigprj(i,j),j=1,3)
-        enddo
-!
-        write(6,'(A)')'> STRESS :: EIGPRJ='
-        do i = 1, 3
-            write(6,'(3(1X,E12.5))') eigprj(i,1)*eigprj(i,1),eigprj(i,2)*&
-        eigprj(i,2)
-        enddo
-        write(6,'(3(1X,E12.5))') eigprj(1,1)*eigprj(2,1),eigprj(1,2)*&
-        eigprj(2,2)
-! Print strain information
-        write(6,'(A,3(1X,E12.5))')'> PSTRA =',(pstra(i),i=1,3)
-!
-        write(6,'(A)')'> STRAIN :: DIRPRJ='
-        do i = 1, 3
-            write(6,'(I3,3(1X,E12.5))')i,(eigxpr(i,j),j=1,3)
-        enddo
-!
-        write(6,'(A)')'> STRAIN :: EIGPRJ='
-        do i = 1, 3
-            write(6,'(3(1X,E12.5))') eigxpr(i,1)*eigxpr(i,1),eigxpr(i,2)*&
-        eigxpr(i,2)
-        enddo
-        write(6,'(3(1X,E12.5))') eigxpr(1,1)*eigxpr(2,1),eigxpr(1,2)*&
-        eigxpr(2,2)
-! Print derivative tensor
-        write(6,'(A)')'> DPSTRS='
-        do i = 1, 3
-            write(6,'(I3,3(1X,E12.5))')i,(dpstrs(i,j),j=1,3)
-        enddo
-    endif
 ! Check for repeated eigenvalues of strain
     refe=dmax1(abs(pstra(1)),abs(pstra(2)))*small
     if (abs(pstra(1)-pstra(2)) .lt. refe) then
@@ -199,23 +156,19 @@ subroutine mctg2d(stress, strain, rprops, dsidep, edge,&
     else
         edge=r0
     endif
+!
 ! Inputs:
+!
 !   DPSTRS : DSIGMA/DEPSI in the eigenbasis
 !   PSTRA  : Strain eigenvalues vector
 !   PSTRS  : Stress eigenvalues vector
 !   EIGPRJ : Eigen directions Matrix (3x3)
 !   EDGE   : Indicator of projection to an edge
+!
 ! Output:
+!
 !   DSIDEP : Consistent Plastic Jacobian Matrix in the cartesian basis
 ! --------------------------------------------------------------------
-    call mctge2(dpstrs, dsidep, eigxpr, pstra, pstrs,&
-                edge, outofp)
-!
-    if (epflag) then
-        write(6,'(A)')'> AFTER MCTGE2 :: DSDE ='
-        do i = 1, 6
-            write(6,'(6(1X,E12.5))')(dsidep(i,j),j=1,6)
-        enddo
-    endif
+    call mctge2(dpstrs, dsidep, eigxpr, pstra, pstrs, edge, outofp)
 !
 end subroutine

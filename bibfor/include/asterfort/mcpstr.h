@@ -1,3 +1,4 @@
+!
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,16 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
 interface
-    subroutine mctanp(dpstrs, rprops, ii, jj, mm, &
-                      edge, right, apex)
-        real(kind=8) :: dpstrs(3,3)
-        real(kind=8) :: rprops(*)
-        real(kind=8) :: edge
-        real(kind=8) :: right
-        real(kind=8) :: apex
-        integer      :: ii
-        integer      :: jj
-        integer      :: mm
-    end subroutine mctanp
+    subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
+                      jj, mm, codret)
+        aster_logical :: tridim
+        real(kind=8)  :: stress(6)
+        real(kind=8)  :: pstrs(3)
+        real(kind=8)  :: eigprj(3,3)
+        integer       :: codret
+        integer       :: ii
+        integer       :: jj
+        integer       :: mm
+    end subroutine mcpstr
 end interface
