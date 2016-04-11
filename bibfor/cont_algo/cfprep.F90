@@ -5,7 +5,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/cfdiag.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"

@@ -8,7 +8,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/algocg.h"
-#include "asterfort/algocl.h"
 #include "asterfort/algoco.h"
 #include "asterfort/algocp.h"
 #include "asterfort/algogl.h"
