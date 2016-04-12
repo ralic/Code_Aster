@@ -57,19 +57,18 @@ LLPAS = DEFI_LIST_REEL (DEBUT      = 0.0,
 L_INST1 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = LLPAS))
 #
 CHTH = CREA_CHAMP(OPERATION = 'AFFE', 
-				  TYPE_CHAM = 'NOEU_TEMP_F',
-				  MAILLAGE  = MAIL,
-				  AFFE      = _F( TOUT = 'OUI',
-								 NOM_CMP = 'TEMP',
-								 VALE_F = TEMP1)
-				  )
+                  TYPE_CHAM = 'NOEU_TEMP_F',
+                  MAILLAGE  = MAIL,
+                  AFFE      = _F(TOUT = 'OUI',
+                                 NOM_CMP = 'TEMP',
+                                 VALE_F = TEMP1)
+                  )
 #
 THER1 = CREA_RESU(OPERATION = 'AFFE', 
-				  TYPE_RESU = 'EVOL_THER',
-				  NOM_CHAM  = 'TEMP',
-				  AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
-				 )
-
+                  TYPE_RESU = 'EVOL_THER',
+                  NOM_CHAM  = 'TEMP',
+                  AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
+                 )
 #
 # Calcul Mecanique
 #

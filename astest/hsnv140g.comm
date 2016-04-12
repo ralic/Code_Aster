@@ -57,18 +57,18 @@ LLPAS = DEFI_LIST_REEL (DEBUT      = 0.0,
 L_INST1 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = LLPAS))
 #
 CHTH = CREA_CHAMP(OPERATION = 'AFFE', 
-                                  TYPE_CHAM = 'NOEU_TEMP_F',
-                                  MAILLAGE  = MAIL,
-                                  AFFE      = _F( TOUT = 'OUI',
-                                                                 NOM_CMP = 'TEMP',
-                                                                 VALE_F = TEMP1)
-                                  )
+                  TYPE_CHAM = 'NOEU_TEMP_F',
+                  MAILLAGE  = MAIL,
+                  AFFE      = _F(TOUT = 'OUI',
+                                 NOM_CMP = 'TEMP',
+                                 VALE_F = TEMP1)
+                  )
 #
 THER1 = CREA_RESU(OPERATION = 'AFFE', 
-                                  TYPE_RESU = 'EVOL_THER',
-                                  NOM_CHAM  = 'TEMP',
-                                  AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
-                                 )
+                  TYPE_RESU = 'EVOL_THER',
+                  NOM_CHAM  = 'TEMP',
+                  AFFE      = _F( CHAM_GD = CHTH, LIST_INST = LLPAS)
+                 )
 #
 # Calcul Mecanique
 #
@@ -208,17 +208,17 @@ ACIERME0 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
                                             ALPHA          = ALPHA,
                                             TEMP_DEF_ALPHA = 20.00,
                                            ),
-                                                  CIN2_CHAB_FO=_F(R_0 = R0,
-                                                                                  R_I = RINF,
-                                                                                  B   = B1,
-                                                                                   C1_I = C1,
-                                                                                   C2_I = C2,
-                                                                                   K   = UN,
-                                                                                   W   = ZERO,
-                                                                                   G1_0 = G1,
-                                                                                   G2_0 = G2,
-                                                                                   A_I = ZERO,
-                                                                                 ),
+                          CIN2_CHAB_FO = _F(R_0 = R0,
+                                            R_I = RINF,
+                                            B   = B1,
+                                            C1_I = C1,
+                                            C2_I = C2,
+                                            K   = UN,
+                                            W   = ZERO,
+                                            G1_0 = G1,
+                                            G2_0 = G2,
+                                            A_I = ZERO,
+                                           ),
                           REST_ECRO    = _F(FONC_MULT = REST1), 
                          ) 
 
