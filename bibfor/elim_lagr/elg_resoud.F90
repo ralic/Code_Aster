@@ -1,6 +1,7 @@
 subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
                       chsolu, base, rsolu, csolu, criter,&
                       prepos, istop, iret)
+use elim_lagr_data_module
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -9,7 +10,6 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
 #include "asterfort/dismoi.h"
 #include "asterfort/elg_calc_rhs_red.h"
 #include "asterfort/elg_calc_solu.h"
-#include "asterfort/elg_gest_common.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
@@ -37,7 +37,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
     integer, intent(in) :: istop
     integer, intent(out) :: iret
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,7 @@ subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
 !
 !   -- mise a  jour du COMMON ELIMLG :
 !   ---------------------------------------------
-    call elg_gest_common('CHERCHE', matas1, matas2, ' ')
+    call elg_gest_data('CHERCHE', matas1, matas2, ' ')
 !
 !
 !   -- Second-membre(s) : passage complet -> reduit :

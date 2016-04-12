@@ -1,9 +1,10 @@
 subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
+use elim_lagr_data_module
     implicit none
-! aslint: disable=W0104
+! aslint: disable=W0104,C1308
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +48,7 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 #include "asterfort/elg_calcx0.h"
 #include "asterfort/elg_allocvr.h"
 !
@@ -84,23 +85,23 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
     ASSERT(nsecm.eq.1)
 !
 !     -- dimensions n1, n2, n3 :
-    call MatGetSize(melim(ke)%tfinal, n1, n3, ierr)
-    call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
+    call MatGetSize(elg_context(ke)%tfinal, n1, n3, ierr)
+    call MatGetSize(elg_context(ke)%ctrans, n1, n2, ierr)
     ASSERT(neq2.eq.n3)
     ASSERT(neq1.eq.n1+2*n2)
 !
 !
 !     -- allocation de VecB, VecC, VecB2 :
 !     ---------------------------------------------
-    call elg_allocvr(melim(ke)%vecb, int(n1))
-    call elg_allocvr(melim(ke)%vecc, int(n2))
+    call elg_allocvr(elg_context(ke)%vecb, int(n1))
+    call elg_allocvr(elg_context(ke)%vecc, int(n2))
     call elg_allocvr(vecb2, int(n3))
 !
 !
 !     -- calcul de VecB et VecC (extraits de SECM) :
 !     ------------------------------------------------
-    call VecGetArray(melim(ke)%vecb, xx, xidxb, ierr)
-    call VecGetArray(melim(ke)%vecc, xx, xidxc, ierr)
+    call VecGetArray(elg_context(ke)%vecb, xx, xidxb, ierr)
+    call VecGetArray(elg_context(ke)%vecc, xx, xidxc, ierr)
     call jeveuo(nu1//'.NUME.DELG', 'L', vi=delg)
     call jeveuo(matas1//'.CONL', 'L', vr=conl)
 !
@@ -115,28 +116,28 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
             xx(xidxc+icoc)=secm(ieq1)*conl(ieq1)
         endif
     end do
-    call VecRestoreArray(melim(ke)%vecb, xx, xidxb, ierr)
-    call VecRestoreArray(melim(ke)%vecc, xx, xidxc, ierr)
+    call VecRestoreArray(elg_context(ke)%vecb, xx, xidxb, ierr)
+    call VecRestoreArray(elg_context(ke)%vecc, xx, xidxc, ierr)
 !
 !
 !     -- calcul de Vx0 = A \ VecC
-    call VecDuplicate(melim(ke)%vecb, melim(ke)%vx0, ierr)
+    call VecDuplicate(elg_context(ke)%vecb, elg_context(ke)%vx0, ierr)
 !
     call elg_calcx0()
 !
 !     -- calcul de BX0 = B*Vx0 :
-    call VecDuplicate(melim(ke)%vecb, bx0, ierr)
-    call MatMult(melim(ke)%matb, melim(ke)%vx0, bx0, ierr)
+    call VecDuplicate(elg_context(ke)%vecb, bx0, ierr)
+    call MatMult(elg_context(ke)%matb, elg_context(ke)%vx0, bx0, ierr)
 !
 !
 !     -- calcul de VecTmp = b - B*Vx0 :
     m1=-1.d0
-    call VecDuplicate(melim(ke)%vecb, vectmp, ierr)
-    call VecCopy(melim(ke)%vecb, vectmp, ierr)
+    call VecDuplicate(elg_context(ke)%vecb, vectmp, ierr)
+    call VecCopy(elg_context(ke)%vecb, vectmp, ierr)
     call VecAXPY(vectmp, m1, bx0, ierr)
 !
 !     -- calcul de VecB2 = T'*(b - B*Vx0) :
-    call MatMultTranspose(melim(ke)%tfinal, vectmp, vecb2, ierr)
+    call MatMultTranspose(elg_context(ke)%tfinal, vectmp, vecb2, ierr)
 !
 !     -- recopie de VecB2 dans SOLU2 :
     call wkvect(solu2, 'V V R', neq2, jsolu2)

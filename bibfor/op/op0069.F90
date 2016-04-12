@@ -1,4 +1,5 @@
 subroutine op0069()
+use elim_lagr_data_module
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -8,7 +9,6 @@ subroutine op0069()
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elg_calc_matk_red.h"
-#include "asterfort/elg_gest_common.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"
@@ -19,7 +19,7 @@ subroutine op0069()
 #include "asterfort/utmess.h"
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,7 +89,7 @@ subroutine op0069()
     zk24(jslvk-1+13)='OUI'
 
 !   -- Calcul de la matrice reduite (matred) :
-    call elg_gest_common('NOTE', matass, matred, krigi)
+    call elg_gest_data('NOTE', matass, matred, krigi)
     call elg_calc_matk_red(matass, solv1, matred, 'G')
 
 !   -- On retablit la valeur de ELIM_LAGR :

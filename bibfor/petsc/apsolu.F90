@@ -16,12 +16,13 @@ subroutine apsolu(kptsc, lmd, rsolu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=C1513
+! aslint: disable=C1513,C1308
 ! cf. issue23375
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
 use petsc_data_module
+use saddle_point_module, only : update_double_lagrange
 
     implicit none
 #include "asterf_types.h"
@@ -56,7 +57,9 @@ use petsc_data_module
     integer(kind=4), pointer :: old_ieq(:) => null()
 !
     character(len=14) :: nonu
-    character(len=19) :: nomat
+    character(len=19) :: nomat, nosolv
+    character(len=24) :: precon
+    character(len=24), dimension(:), pointer :: slvk => null()
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -73,8 +76,15 @@ use petsc_data_module
 !     -- LECTURE DU COMMUN
     nomat = nomat_courant
     nonu = nonu_courant
+    nosolv = nosols(kptsc)
     bs = tblocs(kptsc)
     fictif = fictifs(kptsc)
+!
+    call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+    precon = slvk(2)
+    if ( precon == 'BLOC_LAGR' ) then 
+            call update_double_lagrange( x )
+    endif
 !
     call jeveuo(nonu//'.NUME.NEQU', 'L', jnequ)
     neqg = zi(jnequ)

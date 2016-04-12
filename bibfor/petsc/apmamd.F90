@@ -20,6 +20,7 @@ use petsc_data_module
 
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
+! aslint:disable=C1308
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"

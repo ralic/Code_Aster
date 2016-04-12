@@ -17,7 +17,10 @@ subroutine appcpr(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 use petsc_data_module
+use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
+    augmented_lagrangian_setup, augmented_lagrangian_destroy
 
     implicit none
 #include "asterf_types.h"
@@ -276,6 +279,22 @@ use petsc_data_module
         call PCFactorSetFill(pc, fillp, ierr)
         ASSERT(ierr.eq.0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
+        ASSERT(ierr.eq.0)
+    !-----------------------------------------------------------------------
+    else if (precon.eq.'BLOC_LAGR') then
+        call KSPGetPC(ksp,pc,ierr)
+        ASSERT(ierr.eq.0)
+        call PCSetType(pc,PCSHELL,ierr)
+        ASSERT(ierr.eq.0)
+        call PCShellSetSetUp(pc,augmented_lagrangian_setup, ierr ) 
+        ASSERT(ierr.eq.0)
+        call PCShellSetApply(pc,augmented_lagrangian_apply,ierr)
+        ASSERT(ierr.eq.0)
+        call PCShellSetContext(pc,kptsc,ierr)
+        ASSERT(ierr.eq.0)
+        call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr )
+        ASSERT( ierr == 0 ) 
+        call KSPSetPCSide(ksp,PC_LEFT,ierr)
         ASSERT(ierr.eq.0)
 !-----------------------------------------------------------------------
     else if (precon.eq.'LDLT_SP') then

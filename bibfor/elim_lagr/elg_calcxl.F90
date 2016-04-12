@@ -1,8 +1,10 @@
 subroutine elg_calcxl(x1, vlag)
+use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +48,7 @@ subroutine elg_calcxl(x1, vlag)
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 #include "asterfort/elg_allocvr.h"
 !
     Vec :: x1, vlag
@@ -89,7 +91,7 @@ subroutine elg_calcxl(x1, vlag)
 !       n1 : # ddls physiques
 !       n2 : # lagranges "1"
 !     ----------------------------------------------------------
-    call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
+    call MatGetSize(elg_context(ke)%ctrans, n1, n2, ierr)
 !   le système est-il bien  sur-déterminé ?      
     ASSERT( n1 > n2 ) 
 !
@@ -103,12 +105,12 @@ subroutine elg_calcxl(x1, vlag)
 !
 !     -- calcul de BX = B*x :
     call VecDuplicate(x1, bx, ierr)
-    call MatMult(melim(ke)%matb, x1, bx, ierr)
+    call MatMult(elg_context(ke)%matb, x1, bx, ierr)
 !
 !
 !     -- calcul de Y = b - B*x :
-    call VecDuplicate(melim(ke)%vecb, y, ierr)
-    call VecCopy(melim(ke)%vecb, y, ierr)
+    call VecDuplicate(elg_context(ke)%vecb, y, ierr)
+    call VecCopy(elg_context(ke)%vecb, y, ierr)
     call VecAXPY(y, neg_rone, bx, ierr)
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,10 +122,10 @@ subroutine elg_calcxl(x1, vlag)
 !   Calcul de A*A' 
 
 #ifdef ASTER_PETSC_VERSION_LEQ_32
-    call MatMatMultTranspose(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+    call MatMatMultTranspose(elg_context(ke)%ctrans, elg_context(ke)%ctrans, MAT_INITIAL_MATRIX, &
          PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
 #else
-    call MatTransposeMatMult(melim(ke)%ctrans, melim(ke)%ctrans, MAT_INITIAL_MATRIX, &
+    call MatTransposeMatMult(elg_context(ke)%ctrans, elg_context(ke)%ctrans, MAT_INITIAL_MATRIX, &
          aster_petsc_default_real, cct, ierr)
 #endif
     ASSERT( ierr==0 )
@@ -139,7 +141,7 @@ subroutine elg_calcxl(x1, vlag)
 !   -- Compute AY = A*Y
 !
       call elg_allocvr(ay, int(n2))
-      call MatMultTranspose(melim(ke)%ctrans, y, ay, ierr)
+      call MatMultTranspose(elg_context(ke)%ctrans, y, ay, ierr)
 !     
 !   -- Set linear solver (CG) 
 !
@@ -178,7 +180,7 @@ subroutine elg_calcxl(x1, vlag)
 !     
     if (info) then
       call VecDuplicate(y, xtmp , ierr)
-      call MatMult(melim(ke)%ctrans, vlag, xtmp, ierr)
+      call MatMult(elg_context(ke)%ctrans, vlag, xtmp, ierr)
       call VecAXPY(xtmp,neg_rone,y ,ierr)
       call VecNorm(xtmp,norm_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)

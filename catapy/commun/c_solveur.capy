@@ -182,6 +182,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
    _BlocPE_ML={}
    _BlocPE_BOOMER={}
    _BlocPE_GAMG={}
+   _BlocPE_LAGAUG={}
    _BlocXX_Autres={}
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -320,9 +321,9 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocGC['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", ), )
+   _BlocGC['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_INC", into=("LDLT_INC", "LDLT_SP", "BLOC_LAGR" ), )
    _BlocPE['PRE_COND'] = SIMP(statut='f', typ='TXM', defaut="LDLT_SP" ,
-                              into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "SANS", ), )
+                              into=("LDLT_INC", "LDLT_SP", "JACOBI", "SOR", "ML", "BOOMER", "GAMG", "BLOC_LAGR", "SANS", ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
@@ -375,7 +376,11 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocXX_Autres['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS", ), )
+   _BlocPE_LAGAUG['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS",), )
+
+# ----------------------------------------------------------------------------------------------------------------------------------
+
+   _BlocXX_Autres['RENUM'] = SIMP(statut='f', typ='TXM', defaut="SANS", into=("SANS","RCMK", ), )
 
 
 # ----------------------------------------------------------------------------------------------------------------------------------
@@ -430,6 +435,10 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                      b_gamg        = BLOC(condition = "PRE_COND == 'GAMG' ",
                                                          fr=tr("Paramètres du multigrille algébrique GAMG"),
                                                          **_BlocPE_GAMG
+                                                         ),
+                                     b_lagaug     = BLOC(condition = "PRE_COND == 'BLOC_LAGR' ",
+                                                         fr=tr("Paramètres du préconditionneur Lagrangien Augmenté BLOC_LAGR"),
+                                                         **_BlocPE_LAGAUG
                                                          ),
                                      b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \
                                                                       PRE_COND == 'SOR'    or \

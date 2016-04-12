@@ -1,4 +1,5 @@
 subroutine detrsd(typesd, nomsd)
+use elim_lagr_data_module
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -8,7 +9,6 @@ subroutine detrsd(typesd, nomsd)
 #include "asterfort/assert.h"
 #include "asterfort/detrs2.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/elg_gest_common.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
@@ -386,7 +386,7 @@ subroutine detrsd(typesd, nomsd)
                 call apetsc('DETR_MAT', ' ', matas, [0.d0], ' ',&
                             0, ibid, iret)
             endif
-            call elg_gest_common('EFFACE', ' ', matas, ' ')
+            call elg_gest_data('EFFACE', ' ', matas, ' ')
         endif
 !
         call jedetr(matas//'.CCID')

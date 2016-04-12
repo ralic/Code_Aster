@@ -133,9 +133,6 @@ Solveur PETSc :
 """),
 
 
-
-
-
 18 : _(u"""
 Solveur PETSc :
   Les préconditionneurs 'ML', 'BOOMER' et 'GAMG' ne doivent pas être utilisés lorsque:
@@ -158,7 +155,13 @@ Solveur PETSc :
   - utilisez un autre préconditionneur (comme 'LDLT_SP' par exemple)
 """),
 
-
+20 : _(u"""
+ Erreur d'utilisation :
+   On veut utiliser le préconditionneur SOLVEUR / PRE_COND='BLOC_LAGR'
+   Il y a plusieurs processeurs actifs.
+ Risques & conseils :
+   Il faut utiliser la version MPI avec un seul processeur.
+"""),
 
 
 

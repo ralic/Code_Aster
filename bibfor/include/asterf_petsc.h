@@ -56,6 +56,7 @@
 #include <petsc/finclude/petscpc.h90>
 #include <petsc/finclude/petscksp.h>
 #include <petsc/finclude/petscksp.h90>
+!
 #endif
 !
 #endif

@@ -17,6 +17,7 @@ subroutine apksp(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 use petsc_data_module
 !
     implicit none
@@ -121,7 +122,7 @@ use petsc_data_module
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
 !
-!     - pour suivre les itérations de Krylov
+!     - pour suivre les itérations de Krylov-TODO 
 !     --------------------------------------
     if (niv .ge. 2) then
         call KSPMonitorSet(ksp, KSPMonitorTrueResidualNorm, PETSC_NULL_OBJECT,&

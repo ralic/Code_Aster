@@ -19,6 +19,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 use petsc_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 !
 #include "asterf.h"
 #include "asterfort/amumph.h"

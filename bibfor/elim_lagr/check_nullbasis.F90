@@ -3,6 +3,7 @@ function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok )
 implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +31,7 @@ implicit none
 !
 ! ---------------------------------------------------------------
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 ! Dummy arguments
    Vec, intent(in)                    :: vec_c
    Mat, intent(in)                    :: mat_z
@@ -76,4 +77,4 @@ implicit none
     aster_logical               :: is_ok
     is_ok = .false.
 #endif
-end function
+end function check_nullbasis

@@ -1,8 +1,10 @@
 subroutine elg_calcx0()
+use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +59,7 @@ subroutine elg_calcx0()
 !       Vx0 utilisé est ELIMLG/Vx0
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 !================================================================
     Vec :: vy, y0
     Mat :: c, cct
@@ -87,7 +89,7 @@ subroutine elg_calcx0()
     call asmpi_info(rank=rang, size=nbproc)
 !
 !   -- Le système est-il bien sous-déterminé ? 
-    call MatGetSize( melim(ke)%ctrans, mm, nn , ierr)
+    call MatGetSize( elg_context(ke)%ctrans, mm, nn , ierr)
     ASSERT( mm > nn ) 
 !   -- Calcul de CCT = C * transpose(C)
 
@@ -95,7 +97,7 @@ subroutine elg_calcx0()
 !   TODO
     ASSERT(.false.)
 #else 
-    call MatTransposeMatMult(melim(ke)%ctrans, melim(ke)%ctrans,&
+    call MatTransposeMatMult(elg_context(ke)%ctrans, elg_context(ke)%ctrans,&
         MAT_INITIAL_MATRIX, aster_petsc_default_real, cct, ierr)
 #endif 
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -123,8 +125,8 @@ subroutine elg_calcx0()
 ! 
 !    y0 = ( A * A' )  \ c
 ! 
-    call VecDuplicate( melim(ke)%vecc, y0, ierr)
-    call KSPSolve( ksp, melim(ke)%vecc, y0, ierr)
+    call VecDuplicate( elg_context(ke)%vecc, y0, ierr)
+    call KSPSolve( ksp, elg_context(ke)%vecc, y0, ierr)
 !
 !  Check the reason why KSP solver ended 
     call KSPGetConvergedReason(ksp, reason, ierr)
@@ -134,7 +136,7 @@ subroutine elg_calcx0()
     endif
 !
 !   x0 = A' * y0  
-    call MatMult( melim(ke)%ctrans, y0, melim(ke)%vx0, ierr)
+    call MatMult( elg_context(ke)%ctrans, y0, elg_context(ke)%vx0, ierr)
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !                     Check solution and clean up
@@ -143,9 +145,9 @@ subroutine elg_calcx0()
 !  Check the error ||A*x0 - c||
 !     
       if (info) then 
-      call VecDuplicate(melim(ke)%vecc ,vy,ierr) 
-      call MatMultTranspose(melim(ke)%ctrans,  melim(ke)%vx0, vy, ierr)  
-      call VecAXPY(vy,neg_rone,melim(ke)%vecc ,ierr)
+      call VecDuplicate(elg_context(ke)%vecc ,vy,ierr) 
+      call MatMultTranspose(elg_context(ke)%ctrans,  elg_context(ke)%vx0, vy, ierr)  
+      call VecAXPY(vy,neg_rone,elg_context(ke)%vecc ,ierr)
       call VecNorm(vy,norm_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)
 

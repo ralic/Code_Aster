@@ -18,7 +18,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
     character(len=16) :: motfac
     character(len=19) :: solveu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
 !
     integer :: ibid, niremp, nmaxit, reacpr, pcpiv
     real(kind=8) :: fillin, epsmax, resipc
-    character(len=8) :: kalgo, kprec, renum
+    character(len=24) :: kalgo, kprec, renum
     character(len=19) :: solvbd
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
@@ -108,6 +108,8 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
 !
 !   PARAMETRES OPTIONNELS LIES AU MULTIGRILLE ALGEBRIQUE BOOMERAMG
     else if (kprec.eq.'GAMG') then
+!   PARAMETRES OPTIONNELS LIES AU PRECONDITIONNEUR LAGRANGIEN AUGMENTE
+    else if (kprec.eq.'BLOC_LAGR') then
 
 !   PAS DE PARAMETRES POUR LES AUTRES PRECONDITIONNEURS
     else if (kprec.eq.'JACOBI' .or.&

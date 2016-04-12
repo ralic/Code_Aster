@@ -1,4 +1,6 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+module saddle_point_data_module
+!
+! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -14,10 +16,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
 !
-interface 
-    subroutine elg_apelim(kptsc)
-        integer :: kptsc
-    end subroutine elg_apelim
-end interface 
+use saddle_point_context_class
+use augmented_lagrangian_context_class
+!
+implicit none 
+!
+type(saddle_point_context_type), target :: sp_context
+type(augmented_lagrangian_context_type) :: sp_pc_context
+!
+end module saddle_point_data_module

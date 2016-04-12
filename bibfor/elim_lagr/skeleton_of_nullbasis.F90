@@ -2,8 +2,9 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
     implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,8 +30,8 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
 ! Préallocation et initialisation de la matrice mat_z 
 ! destinée à contenir la base du noyau de la matrice mat_c 
 ! ---------------------------------------------------------------
-#ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#ifdef HAVE_PETSC
+#include "asterf_petsc.h" 
 !
     Mat, intent(in)                               :: mat_c
     Mat, intent(out)                              :: mat_z
@@ -209,8 +210,7 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
 ! rencontrés. 
 ! Z_free_elim contient au plus nelim termes sur la ligne maxloc_free_c
          nelim = count( is_constrained(:))
-         nnz_of_row( maxloc_free_c +1 ) = nnz_of_row( maxloc_free_c +1 ) + nelim
-!         print*, " nnz_of_row( ",  maxloc_free_c +1 ,")=", nnz_of_row( maxloc_free_c +1 )     
+         nnz_of_row( maxloc_free_c +1 ) = nnz_of_row( maxloc_free_c +1 ) + nelim 
          if ( passe == 2 ) then
             do ii = 1, nc
                 if ( is_constrained(ii) ) then  
@@ -236,7 +236,6 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
     do ii=1,nc 
         call MatSetValues( mat_z, ione, [to_petsc_int(ii-1)], ione, [to_petsc_int(ii-1)], &
                 [rone], INSERT_VALUES, ierr )
-!        print*, " z(",to_petsc_int(ii-1)," , ", to_petsc_int(ii-1),") = ", rone
     enddo
   endif 
 ! Fin de la boucle sur les passes       

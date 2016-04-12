@@ -1,8 +1,10 @@
 subroutine elg_calc_matm_red(matas1, matas2, bas1)
+use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +54,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 !
 !================================================================
     character(len=1) :: kbid
@@ -65,7 +67,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     integer :: nbnom,  jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
     integer :: k1ec, k2ec, k3ec, k3ecav
     integer, allocatable :: nbddl(:), nueq(:), dejavu(:)
-    PetscInt :: n1, nterm
+    PetscInt :: n1, nterm, mm, nn 
     PetscErrorCode :: ierr
     PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:)
@@ -109,7 +111,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 !     -- calcul de :
 !       neq2 : nombre de ddls de MATAS2
 !       nnz2 : nombre de termes dans .VALM(1)
-    neq2=size(melim(ke)%indred)
+    neq2=size(elg_context(ke)%indred)
     if (neq2 .eq. 0) call utmess('F', 'ELIMLAGR_7')
 !
 !     -- on parcourt la matrice Kproj pour repérer ses termes non nuls
@@ -118,9 +120,11 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call wkvect('&&ELG_CALC_MATM_RED.NZCO', 'V V I', neq2, jnzcol)
     ndiag=0
     nnz2=0
+       call MatGetSize( elg_context(ke)%kproj, mm, nn, ierr)
     do ilig = 0, neq2-1
-        call MatGetRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
+        call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                        ierr)
+        ASSERT( ierr == 0 ) 
         do k = 1, nterm
             jcol=irow(k)
             if (jcol .eq. ilig) ndiag=ndiag+1
@@ -129,8 +133,9 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 zi(jnzcol-1+jcol+1)=zi(jnzcol-1+jcol+1)+1
             endif
         enddo
-        call MatRestoreRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
+        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                            ierr)
+        ASSERT( ierr == 0 ) 
     enddo
     ASSERT(ndiag.eq.neq2)
 !
@@ -160,7 +165,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call wkvect(nu2//'.SMOS.SMHC', bas1//' V S', nnz2, jsmhc2)
     call jerazo('&&ELG_CALC_MATM_RED.NZCO', neq2, 1)
     do ilig = 0, neq2-1
-        call MatGetRow(melim(ke)%kproj,to_petsc_int(ilig), nterm, irow(1), vrow(1),&
+        call MatGetRow(elg_context(ke)%kproj,to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                        ierr)
         do k = 1, nterm
             jcol=irow(k)
@@ -176,7 +181,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
                 zi(jnzcol-1+jcol+1)=n1
             endif
         enddo
-        call MatRestoreRow(melim(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
+        call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                            ierr)
     enddo
 !
@@ -239,7 +244,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
     call jedetr(nu2//'.NUME.DEEQ')
     call wkvect(nu2//'.NUME.DEEQ', bas1//' V I', 2*neq2, jdeeq2)
     do ieq2 = 1, neq2
-        ieq1=melim(ke)%indred(ieq2)
+        ieq1=elg_context(ke)%indred(ieq2)
         ASSERT(deeq(2*(ieq1-1)+1).gt.0)
         zi(jdeeq2-1+2*(ieq2-1)+1)=deeq(2*(ieq1-1)+1)
         zi(jdeeq2-1+2*(ieq2-1)+2)=deeq(2*(ieq1-1)+2)
@@ -304,9 +309,6 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
         k3ec=ior(2**k2ec,k3ecav)
         zi(jprno2-1+(2+nec)*(ino-1)+2+k1ec+1)=k3ec
     enddo
-!
-!
-!
 !
 !
     deallocate(irow,vrow,nbddl,nueq,dejavu)

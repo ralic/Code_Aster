@@ -18,6 +18,7 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
 !
 use petsc_data_module
     implicit none
+!
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint: disable=W0104
 ! W0104 because of ifdef PETSc

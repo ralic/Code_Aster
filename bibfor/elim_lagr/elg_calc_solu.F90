@@ -1,9 +1,10 @@
 subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
+use elim_lagr_data_module
     implicit none
-! aslint: disable=W0104
+! aslint: disable=W0104,C1308
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +48,7 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "elim_lagr.h"
+#include "asterf_petsc.h"
 #include "asterfort/elg_allocvr.h"
 #include "asterfort/elg_calcxl.h"
 !
@@ -89,8 +90,8 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
     ASSERT(nsecm.eq.1)
 !
 !     -- dimensions n1, n2, n3 :
-    call MatGetSize(melim(ke)%tfinal, n1, n3, ierr)
-    call MatGetSize(melim(ke)%ctrans, n1, n2, ierr)
+    call MatGetSize(elg_context(ke)%tfinal, n1, n3, ierr)
+    call MatGetSize(elg_context(ke)%ctrans, n1, n2, ierr)
     ASSERT(neq2.eq.n3)
     ASSERT(neq1.eq.n1+2*n2)
 !
@@ -106,11 +107,11 @@ subroutine elg_calc_solu(matas1, nsecm, rsolu2, rsolu1)
 !
 !     Calcul de TMP1 =  T*Y :
     call elg_allocvr(tmp1, to_aster_int(n1))
-    call MatMult(melim(ke)%tfinal, y, tmp1, ierr)
+    call MatMult(elg_context(ke)%tfinal, y, tmp1, ierr)
 !
 !     Calcul de X1= x0 + T*Y :
     call elg_allocvr(x1, int(n1))
-    call VecCopy(melim(ke)%vx0, x1, ierr)
+    call VecCopy(elg_context(ke)%vx0, x1, ierr)
     p1=1.
     call VecAXPY(x1, p1, tmp1, ierr)
 !

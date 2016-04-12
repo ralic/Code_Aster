@@ -3,6 +3,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
     use petsc_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
+! aslint:disable=C1308s
 !
 !
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG

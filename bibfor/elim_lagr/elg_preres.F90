@@ -1,13 +1,13 @@
 subroutine elg_preres(solve1, base, iret, matpre, matas1,&
                       npvneg, istop)
 !
+use elim_lagr_data_module
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/elg_calc_matk_red.h"
-#include "asterfort/elg_gest_common.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -22,7 +22,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
     character(len=*) :: base, matpre
     integer :: istop, iret
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1,&
 !
 !   -- ON CREE LA MATRICE (REDUITE) MATAS2
     call gcncon('_', matas2)
-    call elg_gest_common('NOTE', matas1, matas2, ' ')
+    call elg_gest_data('NOTE', matas1, matas2, ' ')
     call elg_calc_matk_red(matas1, solve1, matas2, 'V')
 !
 !   -- ON DUPLIQUE SOLVE1 EN CHANGEANT ELIM_LAGR: OUI -> NON
