@@ -1,6 +1,7 @@
 subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
                   valpar, nbres, nomres, valres, icodre,&
                   iarret,nan)
+use calcul_module, only : ca_iactif_
     implicit none
 #include "jeveux.h"
 #include "asterfort/fointa.h"
@@ -110,11 +111,18 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
         call utmess('F', 'CALCUL_45', sk=nomat)
     else
         if (nbmat.gt.1) then
-            call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3)(1:8)
-            valk(1) = nomail
-            valk(2) = nomres(1)
-            call utmess('A', 'MODELISA9_3', nk=2, valk=valk)
+            if ( ca_iactif_.eq.2 ) then
+                valk(1) = nomres(1)
+                call utmess('A', 'MODELISA9_4', nk=1, valk=valk)
+            elseif( ca_iactif_.eq.1.or.ca_iactif_.eq.3 ) then
+                call tecael(iadzi, iazk24)
+                nomail = zk24(iazk24-1+3)(1:8)
+                valk(1) = nomail
+                valk(2) = nomres(1)
+                call utmess('A', 'MODELISA9_3', nk=2, valk=valk)
+            else
+                ASSERT(.false.)
+            endif
         endif
         imat = jmat+zi(jmat+nbmat+1)
     endif
@@ -136,10 +144,16 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar,&
     if (iarret .ge. 1) then
         valk(1)=nomphe
         if (iarret .eq. 1) then
-            call tecael(iadzi, iazk24)
-            nomail = zk24(iazk24-1+3)(1:8)
-            valk(2) = nomail
-            call utmess('F', 'MODELISA9_75', nk=2, valk=valk)
+            if ( ca_iactif_.eq.2 ) then
+                call utmess('F', 'MODELISA9_73', nk=1, valk=valk)
+            elseif( ca_iactif_.eq.1.or.ca_iactif_.eq.3 ) then
+                call tecael(iadzi, iazk24)
+                nomail = zk24(iazk24-1+3)(1:8)
+                valk(2) = nomail
+                call utmess('F', 'MODELISA9_75', nk=2, valk=valk)
+            else
+                ASSERT(.false.)
+            endif
         else
             call utmess('F', 'MODELISA9_74', sk=valk(1))
         endif
