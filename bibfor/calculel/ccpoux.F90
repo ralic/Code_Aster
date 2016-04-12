@@ -108,8 +108,6 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
                     0, sjv=ltymo, styp=k8b)
         typemo=zk16(ltymo)
     endif
-    call rsexch('F', resuin, 'DEPL', nordre, chdepl,&
-                ier)
 !
     ligrmo = modele//'.MODELE'
 !
@@ -118,6 +116,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
     calpha = czero
     chdynr = '&&MECALM.M.GAMMA'
     if ((typesd.eq.'MODE_MECA'.and.typemo(1:8).eq.'MODE_DYN' ) .or. (typesd.eq.'MODE_ACOU')) then
+        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
         call dismoi('NOM_GD', chdynr, 'CHAMP', repk=nomgd)
         call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
         call jeveuo(chdynr//'.VALE', 'E', lvale)
@@ -141,6 +140,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
         endif
         call jelibe(chamgd(1:19)//'.VALE')
     else if (typesd.eq.'DYNA_TRANS') then
+        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
         call jeveuo(chdynr//'.VALE', 'E', lvale)
         call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch(' ', resuin, 'ACCE', nordre, chacce,&
@@ -158,6 +158,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             end do
         endif
     else if (typesd.eq.'DYNA_HARMO') then
+        call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
         call jeveuo(chdynr//'.VALE', 'E', lvale)
         call jelira(chdepl(1:19)//'.VALE', 'LONMAX', neq)
         call rsexch(' ', resuin, 'ACCE', nordre, chacce,&
@@ -373,6 +374,7 @@ subroutine ccpoux(resuin, typesd, nordre, nbchre, ioccur,&
             if (ier .eq. 0) then
                 call codent(ipara, 'D0', ch5(2:5))
                 nochin = '&&MECHPO'//ch5//'.PCHDY'
+                call rsexch('F', resuin, 'DEPL', nordre, chdepl, ier)
                 call copisd('CHAMP_GD', 'V', chdepl, nochin)
             endif
             lichin(ipara) = nochin
