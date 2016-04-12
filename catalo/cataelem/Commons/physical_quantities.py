@@ -3432,7 +3432,7 @@ VALO_R   = PhysicalQuantity(type='R',
 
 VAR2_R   = PhysicalQuantity(type='R',
     components=(
-       'V[100]',
+       'V[200]',
     ),
     comment="""  VAR2_R Type:R Composantes du CHAM_NO de type variables internes
     (passage d'un CHAM_ELEM a un CHAM_NO )
