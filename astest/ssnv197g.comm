@@ -1,0 +1,902 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# PRESSION DE CONSOLITDATION P0 = 200KPA
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON')
+
+# modules mecaniques [kPa]
+K=516.2E6
+G=238.2E6
+# =>
+YOUNG = 9.*K*G /(3.*K+G)
+POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+print 'young=',YOUNG,' /// nu=',POISSON
+
+# pression de preconsolidation [en kPa]
+P0=200.E3
+
+
+#***********************************************************************
+#    MAILLAGE + MODELE
+#***********************************************************************
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', );
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = '3D'));
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('DEVANT','DROIT','ARRIERE','GAUCHE','BAS','HAUT','APPUI','COTE')),
+                       INFO=1);
+
+
+#***********************************************************************
+#    INCREMENTS DE TEMPS
+#***********************************************************************
+TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
+                      INTERVALLE=(_F(JUSQU_A = 0., NOMBRE = 1),));
+
+TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A =  1., NOMBRE = 10),
+                                  _F(JUSQU_A =  7., NOMBRE = 60),
+                                  _F(JUSQU_A = 10., NOMBRE = 30)));
+
+#***********************************************************************
+#    MATERIAU : SOL
+#***********************************************************************
+SOL0=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0,));
+
+SOL=DEFI_MATERIAU(ELAS=_F(E = YOUNG, NU = POISSON),
+                  HUJEUX=_F(N        = 0.4,
+                            BETA     = 24.,
+                            D        = 2.5,
+                            B        = .2,
+                            PHI      = 33.,
+                            ANGDIL   = 33.,
+                            PCO      = -1.E6,
+                            PREF     = -1.E6,
+                            AMON     = 0.008,
+                            ACYC     = 0.0001,
+                            CMON     = 0.2,
+                            CCYC     = 0.1,
+                            RD_ELA   = 0.005,
+                            RI_ELA   = 0.001,
+                            RHYS     = 0.05,
+                            RMOB     = 0.9,
+                            XM       = 1.,
+                            RD_CYC   = 0.005,
+                            RI_CYC   = 0.001,
+                            DILA     = 1.0,));
+
+CHMAT0=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                     AFFE=_F(TOUT='OUI', MATER=SOL0));
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL));
+
+
+#***********************************************************************
+#    CHARGEMENT MECANIQUE : FORCE DE COMPRESSION + DDL IMPOSES
+#***********************************************************************
+CHAR_U1=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='COTE',
+                                   PRES = 1.));
+
+CHAR_U2=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA='APPUI',
+                                   PRES = 1.));
+
+CHAR_U3=AFFE_CHAR_MECA(MODELE=MODELE,
+                       FACE_IMPO=_F(GROUP_MA='APPUI',DZ = -1.));
+
+DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
+                FACE_IMPO=(_F(GROUP_MA='BAS',DZ = 0.),
+                           _F(GROUP_MA='GAUCHE',DX = 0.),
+                           _F(GROUP_MA='DEVANT',DY = 0.)));
+
+COEF0=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(-1.0, 0.0,
+                           0. , P0 ));
+
+COEF3=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=( 0.0, 0.0,
+                          10.0, .2));
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = TEMPS1),
+                        ECHEC=_F(ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_PAS=10,
+                                 SUBD_PAS_MINI =0.00001 ),)
+
+#***********************************************************************
+#    PRECONSOLIDATION ELASTIQUE JUSQU'A 200KPA
+#***********************************************************************
+U0M=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT0,
+                 EXCIT=(_F(CHARGE    = CHAR_U1,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = CHAR_U2,
+                           FONC_MULT = COEF0),
+                        _F(CHARGE    = DEPL_1)),
+                 COMPORTEMENT=_F(RELATION = 'ELAS'),
+                 NEWTON=_F(MATRICE = 'ELASTIQUE'),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 20),
+                 INCREMENT=_F(LIST_INST = TEMPS0, INST_FIN = 0.));
+# ----------- FIN
+
+SIG0=CREA_CHAMP(INFO=2,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='EXTR',
+                RESULTAT=U0M,
+                NOM_CHAM='SIEF_ELGA',
+                INST=0.0,);
+
+
+
+#***********************************************************************
+#    PASSAGE DES CONTRAINTES VERS LE TENSEUR T EN VARIABLE INTERNE
+#***********************************************************************
+
+
+ZERO      = 0.0   ;
+vari = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
+        ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
+        ZERO,ZERO,ZERO,ZERO,ZERO,
+        ] ;   
+
+CART = CREA_CHAMP(INFO = 1,
+       TYPE_CHAM='ELGA_NEUT_R',
+       OPERATION='AFFE',
+       MODELE=MODELE,
+       PROL_ZERO='OUI',
+       AFFE=_F(TOUT='OUI',
+               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',
+                         'X11','X12','X13','X14','X15','X16','X17','X18','X19','X20',
+                         'X21','X22','X23','X24','X25',),
+               VALE    =vari),);
+                 
+VARI0=CREA_CHAMP(OPERATION='ASSE', 
+                  TYPE_CHAM='ELGA_VARI_R',
+                  MODELE=MODELE,
+                  PROL_ZERO='OUI',
+                  ASSE=(_F(TOUT='OUI', 
+                            CHAM_GD=CART, 
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',
+                                     'X11','X12','X13','X14','X15','X16','X17','X18','X19','X20',
+                                     'X21','X22','X23','X24','X25',),
+                            NOM_CMP_RESU=('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10',
+                                     'V11','V12','V13','V14','V15','V16','V17','V18','V19','V20',
+                                     'V21','V22','V23','V24','V25',),
+                            CUMUL='OUI',
+                            COEF_R=1.0),
+                        _F(TOUT='OUI', 
+                            CHAM_GD=CART, 
+                            NOM_CMP=('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10',
+                                     'X11','X12','X13','X14','X15','X16','X17','X18','X19','X20',
+                                     'X21','X22','X23','X24','X25',),
+                            NOM_CMP_RESU=('V26','V27','V28','V29','V30',
+                                     'V31','V32','V33','V34','V13','V36','V37','V38','V39','V40',
+                                     'V41','V42','V43','V44','V45','V46','V47','V48','V49','V50',),
+                            CUMUL='OUI',
+                            COEF_R=1.0),
+                        _F(TOUT='OUI', 
+                            CHAM_GD=SIG0, 
+                            NOM_CMP=('SIXX','SIYY','SIZZ'), 
+                            NOM_CMP_RESU=('V51','V52','V53'),
+                            CUMUL='OUI'),
+                        _F(TOUT='OUI', 
+                            CHAM_GD=CART, 
+                            NOM_CMP=('X1','X2','X3'), 
+                            NOM_CMP_RESU=('V54','V55','V56'),
+                            CUMUL='OUI'),
+                  ),)
+
+
+#***********************************************************************
+#    ESSAI TRIAXIAL
+#***********************************************************************
+U1=STAT_NON_LINE(MODELE=MODELE,
+                 CHAM_MATER=CHMAT,
+                 EXCIT=(_F(CHARGE      = CHAR_U1,
+                           FONC_MULT   = COEF0,
+                           TYPE_CHARGE = 'SUIV',),
+                        _F(CHARGE      = CHAR_U3,
+                           TYPE_CHARGE ='DIDI',
+                           FONC_MULT   = COEF3),
+                        _F(CHARGE      = DEPL_1)),
+                 ETAT_INIT=_F(SIGM=SIG0,
+                              VARI=VARI0),
+                 COMPORTEMENT=_F(RELATION = 'HUJEUX',
+                              DEFORMATION='GDEF_LOG',
+                              ALGO_INTE='SPECIFIQUE',
+                              RESI_INTE_RELA = 1.E-8,
+                              #ITER_INTE_PAS = 10,
+                              ITER_INTE_MAXI = 20,),
+                 NEWTON=_F(MATRICE = 'TANGENTE',REAC_ITER=1),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10),
+                 ARCHIVAGE =_F(LIST_INST=TEMPS1,),
+                 INCREMENT=_F(LIST_INST = DEFLIST,
+                              INST_INIT=0.0,
+                              INST_FIN =10.));
+
+
+#-------------------------
+#    TEST_RESU AU POINT C
+#-------------------------
+U1=CALC_CHAMP(reuse=U1,CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),DEFORMATION=('EPSG_ELNO'),RESULTAT=U1)
+
+
+U1=CALC_CHAMP(reuse=U1,
+
+           CONTRAINTE='SIGM_NOEU',VARI_INTERNE='VARI_NOEU',DEFORMATION='EPSG_NOEU',
+           RESULTAT=U1);
+
+
+TAB_SIG=POST_RELEVE_T(ACTION=_F(INTITULE='EQUI_NOEU_DEPL',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='SIGM_NOEU',
+                                INVARIANT='OUI',
+                                OPERATION='EXTRACTION'));
+
+TAB_VARI=POST_RELEVE_T(ACTION=_F(INTITULE='VARI_NOEU',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='VARI_NOEU',
+                                NOM_CMP=('V1','V2','V3','V4','V5','V6','V7','V8','V23','V32'),
+                                OPERATION='EXTRACTION'));
+
+TAB_EPS=POST_RELEVE_T(ACTION=_F(INTITULE='EPSG_NOEU',
+                                GROUP_NO='C',
+                                RESULTAT=U1,
+                                NOM_CHAM='EPSG_NOEU',
+                                NOM_CMP=('EPXX','EPYY','EPZZ',),
+                                OPERATION='EXTRACTION'));
+
+
+# CALCUL DE LA MESURE DE DEFORMATIONS LOGARITHMIQUES ET J=DET(F)
+
+from numpy import sqrt, log, interp, array
+
+EPXL = FORMULE(NOM_PARA=('EPXX'),
+                VALE='log(1+2*EPXX)/2.')
+
+
+TAB_EPS=CALC_TABLE(TABLE=TAB_EPS,
+                    reuse=TAB_EPS,
+                    ACTION=_F(OPERATION='OPER',
+                            FORMULE=EPXL,NOM_PARA='EPXXL'),)
+
+EPYL = FORMULE(NOM_PARA=('EPYY'),
+                VALE='log(1+2*EPYY)/2.')
+
+TAB_EPS=CALC_TABLE(TABLE=TAB_EPS,
+                    reuse=TAB_EPS,
+                    ACTION=_F(OPERATION='OPER',
+                            FORMULE=EPYL,NOM_PARA='EPYYL'),)
+
+EPZL = FORMULE(NOM_PARA=('EPZZ'),
+                VALE='log(1+2*EPZZ)/2.')
+
+
+TAB_EPS=CALC_TABLE(TABLE=TAB_EPS,
+                    reuse=TAB_EPS,
+                    ACTION=_F(OPERATION='OPER',
+                            FORMULE=EPZL,NOM_PARA='EPZZL'),)
+
+EPVL=FORMULE(NOM_PARA=('EPXX','EPYY','EPZZ'),
+            VALE='(sqrt(1+2*EPXX))*(sqrt(1+2*EPYY))*(sqrt(1+2*EPZZ))-1')
+
+TAB_EPS=CALC_TABLE(TABLE=TAB_EPS,
+                    reuse=TAB_EPS,
+                    ACTION=_F(OPERATION='OPER',
+                            FORMULE=EPVL,NOM_PARA='EPVL'),)
+
+TAB_SIG=CALC_TABLE(reuse=TAB_SIG,
+                   TABLE=TAB_SIG,
+                   ACTION=_F(OPERATION='COMB',
+                             TABLE=TAB_EPS,
+                             NOM_PARA='INST'));
+
+TAB_VARI=CALC_TABLE(reuse=TAB_VARI,
+                    TABLE=TAB_VARI,
+                    ACTION=_F(OPERATION='COMB',
+                              TABLE=TAB_EPS,
+                              NOM_PARA='INST'));
+
+IMPR_TABLE(TABLE=TAB_SIG,
+           FORMAT='TABLEAU',
+            UNITE=29);
+
+
+tab=TAB_SIG.EXTR_TABLE().values();
+
+values_EPZL=array([-0.01,-0.02,-0.05,-0.1,-0.2])
+
+values_VMIS=interp(values_EPZL,array(tab['EPZZL'][::-1]),array(tab['VMIS'][::-1]))
+values_EPVL=interp(values_EPZL,array(tab['EPZZL'][::-1]),array(tab['EPVL'][::-1]))
+
+tab=TAB_VARI.EXTR_TABLE().values();
+
+values_V1=interp(values_EPZL,array(tab['EPZZL'][::-1]),array(tab['V1'][::-1]))
+values_V4=interp(values_EPZL,array(tab['EPZZL'][::-1]),array(tab['V4'][::-1]))
+
+
+TAB_TEST=CREA_TABLE(LISTE=(_F(LISTE_R=values_EPZL,PARA='EPZZL'),
+                          _F(LISTE_R=values_VMIS,PARA='VMIS'),
+                          _F(LISTE_R=values_EPVL,PARA='EPVL'),
+                          _F(LISTE_R=values_V1,PARA='V1'),
+                          _F(LISTE_R=values_V4,PARA='V4'),
+                            ),)
+
+#IMPR_TABLE(TABLE=TAB_TEST,
+#           FORMAT='TABLEAU',
+#            UNITE=29);
+
+# TEST DE LA NORME DU DEVIATEUR DES CONTRAINTES PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.02,
+           VALE_CALC= 307810.858315,
+           VALE_REFE=311459,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC= 307810.858315,
+           VALE_REFE=3.0477829712701E+05,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.01,
+           VALE_CALC= 414492.902596 ,
+           VALE_REFE=416832,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.01,
+           VALE_CALC= 414492.902596 ,
+           VALE_REFE=4.1197988127317E+05,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 545019.359607,
+           VALE_REFE=545338,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 545019.359607,
+           VALE_REFE=5.4320028272685E+05,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 606137.786866 ,
+           VALE_REFE=605666,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 606137.786866 ,
+           VALE_REFE=6.0505306072228E+05,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC= 616650.287308 ,
+           VALE_REFE=616946,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC= 616650.287308 ,
+           VALE_REFE=6.1671117991142E+05,
+           NOM_PARA='VMIS',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+# TEST DE LA DEFORMATION VOLUMIQUE TOTALE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=0.03,
+           VALE_CALC=-0.00725081738914 ,
+           VALE_REFE=-7.4700000000000001E-3,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.03,
+           VALE_CALC=-0.00725081738914 ,
+           VALE_REFE=-7.3540481077012E-03,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=3.E-2,
+           VALE_CALC=-0.00979152841459 ,
+           VALE_REFE=-0.01005,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=3.E-2,
+           VALE_CALC=-0.00979152841459 ,
+           VALE_REFE=-9.9969566248629E-03,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=3.E-2,
+           VALE_CALC=-0.0119697235656 ,
+           VALE_REFE=-0.01227,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=3.E-2,
+           VALE_CALC=-0.0119697235656 ,
+           VALE_REFE=-0.012305725566388,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=3.E-2,
+           VALE_CALC=-0.0106280803904,
+           VALE_REFE=-0.010919999999999999,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=4.E-2,
+           VALE_CALC=-0.0106280803904,
+           VALE_REFE=-0.010986573460115,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=5.E-2,
+           VALE_CALC=-0.00466699934648,
+           VALE_REFE=-4.8799999999999998E-3,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=5.E-2,
+           VALE_CALC=-0.00466699934648,
+           VALE_REFE=-4.909606227402E-03,
+           NOM_PARA='EPVL',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+# TEST DU COEF D ECROUISSAGE DEVIATOIRE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.642587592673,
+           VALE_REFE=0.64800000000000002,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.642587592673,
+           VALE_REFE=0.63916205147210,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.761651691996 ,
+           VALE_REFE=0.76500000000000001,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.761651691996,
+           VALE_REFE=0.75979378550699,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.877005271134,
+           VALE_REFE=0.878,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.877005271134,
+           VALE_REFE=0.87635671142043,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.931223769959 ,
+           VALE_REFE=0.93200000000000005,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=0.931223769959 ,
+           VALE_REFE=0.93097552262281,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.963697011638 ,
+           VALE_REFE=0.96399999999999997,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-3,
+           VALE_CALC=0.963697011638 ,
+           VALE_REFE=0.96362167538096,
+           NOM_PARA='V1',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+# TEST DU COEF D ECROUISSAGE ISOTROPE PAR RAPPORT AUX REFERENCES LAWYER
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.101731588844 ,
+           VALE_REFE=0.10199999999999999,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.101731588844 ,
+           VALE_REFE=0.10195347896966,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-1.E-2,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.5E-2,
+           VALE_CALC=0.106902650148 ,
+           VALE_REFE=0.108,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.106902650148 ,
+           VALE_REFE=0.10730583000636,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.02,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.114534342076,
+           VALE_REFE=0.115,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.114534342076,
+           VALE_REFE=0.11503830268843,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.050000000000000003,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.124986073048 ,
+           VALE_REFE=0.126,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.124986073048 ,
+           VALE_REFE=0.12533914180264,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.10000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='SOURCE_EXTERNE',
+           PRECISION=1.E-2,
+           VALE_CALC=0.146562414641,
+           VALE_REFE=0.14699999999999999,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=1.E-2,
+           VALE_CALC=0.146562414641,
+           VALE_REFE=0.14646132026938,
+           NOM_PARA='V4',
+           TABLE=TAB_TEST,
+           FILTRE=_F(CRITERE='ABSOLU',
+                     PRECISION=9.0000000000000006E-05,
+                     NOM_PARA='EPZZL',
+                     VALE=-0.20000000000000001,),
+           )
+
+FIN();
