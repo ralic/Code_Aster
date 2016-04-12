@@ -11,7 +11,7 @@ use calcul_module, only : ca_caindz_, ca_calvoi_, ca_iadsgd_,&
      ca_nbobj_, ca_nbobmx_, ca_nbobtr_, ca_nbsav_, ca_nparin_, ca_npario_,&
      ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_,&
      ca_ldist_, ca_ldgrel_, ca_rang_, ca_nbproc_, ca_numsd_, ca_nbelmx_,&
-     ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbelgr_, ca_nbgr_
+     ca_option_, ca_ligrel_, ca_lparal_, ca_paral_, ca_nbgr_
 
 
 implicit none
@@ -87,7 +87,7 @@ implicit none
     ca_nbgr_=nbgrel(ca_ligrel_)
     ca_nbelmx_=0
     do j = 1, ca_nbgr_
-        ca_nbelmx_=max(nbelem(ca_ligrel_,j,1),ca_nbelmx_)
+        ca_nbelmx_=max(nbelem(ca_ligrel_,j),ca_nbelmx_)
     enddo
 
     call jenonu(jexnom('&CATA.OP.NOMOPT', ca_option_), opt)
