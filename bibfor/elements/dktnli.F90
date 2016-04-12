@@ -161,7 +161,7 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
     integer :: iinstp, imate, ino, ipg, iret, isp, ivarim, ivarip, ivarix, ivpg
     integer :: j, k, nbcon, nbsp, nbvar, ndimv
     real(kind=8) :: deux, rac2, qsi, eta, cara(25), jacob(5)
-    real(kind=8) :: ctor, coehsd
+    real(kind=8) :: ctor, coehsd, zmax, quotient, a, b, c
     aster_logical :: vecteu, matric, dkt, dkq, leul
     real(kind=8) :: dvt(2),vt(2)
 !    real(kind=8) ::  lambda(4)
@@ -310,6 +310,12 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
         call jevech('PVARIMP', 'L', ivarix)
         call dcopy(ndimv, zr(ivarix), 1, zr(ivarip), 1)
     endif
+!   coefficients pour calcul de sixz et siyz
+    zmax = distn + h/2.d0
+    quotient = 1.d0*zmax**3-3*zmax**2*zmin + 3*zmax*zmin**2-1.d0*zmin**3
+    a = -6.d0/quotient
+    b = 6.d0*(zmin+zmax)/quotient
+    c = -6.d0*zmax*zmin/quotient 
 !
 !===============================================================
 !
@@ -460,7 +466,7 @@ subroutine dktnli(nomte, opt, xyzl, pgl, ul, dul,&
 !                  -- MONOCOUCHE
 !                  -- COTE DES POINTS D'INTEGRATION
 !                  --------------------------------
-                     d1iel(1,1) = 3.d0/ (2.d0*h) - zic*zic*6.d0/ ( h*h*h)
+                     d1iel(1,1) = a*zic*zic + b*zic + c
                      d1iel(2,2) = d1iel(1,1)
                      d1iel(1,2) = 0.d0
                      d1iel(2,1) = 0.d0

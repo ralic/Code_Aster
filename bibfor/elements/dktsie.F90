@@ -19,7 +19,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)
     integer :: nbcou
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
     real(kind=8) :: sm(3), sf(3), hft2(2, 6), hlt2(4, 6)
     real(kind=8) :: eps(3), sig(3), cist(2), dcis(2)
     real(kind=8) :: qsi, eta, carat3(21), t2iu(4), t2ui(4), t1ve(9)
-    real(kind=8) :: hicou
+    real(kind=8) :: hicou, zmin, zmax, quotient, a, b, c
     aster_logical :: coupmf, lcalct
 !     ------------------------------------------------------------------
 !
@@ -88,31 +88,31 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
         epais = zr(jcaco)
         hicou = epais/nbcou
         excen = zr(jcaco-1+5)
-        do 10 k = 1, 9
+        do k = 1, 9
             h(k,1) = dm(k,1)/epais
- 10     continue
+        end do
     endif
 !
 !     ----- COMPOSANTES DEPLACEMENT MEMBRANE ET FLEXION ----------------
-    do 30 j = 1, nnomai
-        do 20 i = 1, nddlme
+    do j = 1, nnomai
+        do i = 1, nddlme
             depm(i+2* (j-1)) = depl(i+6* (j-1))
- 20     continue
+        end do
         depf(1+3* (j-1)) = depl(1+2+6* (j-1))
         depf(2+3* (j-1)) = depl(3+2+6* (j-1))
         depf(3+3* (j-1)) = -depl(2+2+6* (j-1))
- 30 end do
+    end do
 !     ------ CALCUL DE LA MATRICE BM -----------------------------------
     call dxtbm(carat3(9), bm)
 !     ------ SM = BM.DEPM ----------------------------------------------
-    do 40 i = 1, 3
+    do i = 1, 3
         sm(i) = 0.d0
- 40 end do
-    do 60 i = 1, 3
-        do 50 j = 1, nddlme*nnomai
+    end do
+    do i = 1, 3
+        do j = 1, nddlme*nnomai
             sm(i) = sm(i) + bm(i,j)*depm(j)
- 50     continue
- 60 end do
+        end do
+    end do
 !
 !     ------- CALCUL DU PRODUIT HF.T2 ----------------------------------
     call dsxhft(df, carat3(9), hft2)
@@ -135,28 +135,39 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
     else
         lcalct=.true.
     endif
-    do 300 ie = 1, npg
+
+!   coefficients pour calcul de sixz et siyz
+    if (multic .eq. 0) then
+        zmin = excen - epais/2.d0
+        zmax = excen + epais/2.d0
+        quotient = 1.d0*zmax**3-3*zmax**2*zmin + 3*zmax*zmin**2-1.d0*zmin**3
+        a = -6.d0/quotient
+        b = 6.d0*(zmin+zmax)/quotient
+        c = -6.d0*zmax*zmin/quotient
+    endif
+       
+    do ie = 1, npg
         qsi = zr(icoopg-1+ndim*(ie-1)+1)
         eta = zr(icoopg-1+ndim*(ie-1)+2)
 !         ----- CALCUL DE LA MATRICE BF AU POINT QSI ETA ------------
         call dktbf(qsi, eta, carat3, bf)
 !         ------ SF = BF.DEPF ---------------------------------------
-        do 340 i = 1, 3
+        do i = 1, 3
             sf(i) = 0.d0
-340     continue
-        do 360 i = 1, 3
-            do 350 j = 1, nddlfl*nnomai
+        end do
+        do i = 1, 3
+            do j = 1, nddlfl*nnomai
                 sf(i) = sf(i) + bf(i,j)*depf(j)
-350         continue
-360     continue
+            end do
+        end do
 !
 !  BOUCLE SUR LES COUCHES
 !
-        do 400 icou = 1, nbcou
+        do icou = 1, nbcou
 !
 !  BOUCLE SUR LES POINTS D'INTEGRATION DANS L'EPAISSEUR DE LA COUCHE
 !
-            do 500 ig = 1, 3
+            do ig = 1, 3
 !
 !           INDICE DANS LE CHAMP DE CONTRAINTES A ECRIRE
                 icpg = 6*3*nbcou*(ie-1) + 6*3*(icou-1) + 6*(ig-1)
@@ -173,7 +184,7 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
                     else
                         zic = zic + hicou
                     endif
-                    d1i(1,1) = 3.d0/ (2.d0*epais) - zic*zic*6.d0/ ( epais*epais*epais)
+                    d1i(1,1) = a*zic*zic + b*zic + c
                     d1i(2,2) = d1i(1,1)
                     d1i(1,2) = 0.d0
                     d1i(2,1) = 0.d0
@@ -185,10 +196,10 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
                                 h, d1i, d2i, zic, hicou)
                 endif
 !
-                do 370 i = 1, 3
+                do i = 1, 3
                     eps(i) = sm(i) + zic*sf(i)
                     sig(i) = 0.d0
-370             continue
+                end do
 !
                 if (option .eq. 'EPSI_ELGA') then
 !           ------ DCIS = DCI.VT --------------------------------------
@@ -204,19 +215,19 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
 !
                 else
 !             SIEF_ELGA
-                    do 390 i = 1, 3
-                        do 380 j = 1, 3
+                    do i = 1, 3
+                        do j = 1, 3
                             sig(i) = sig(i) + h(i,j)*eps(j)
-380                     continue
-390                 continue
+                        end do
+                    end do
 !             ---- CIST = D1I.VT ( + D2I.LAMBDA SI MULTICOUCHES ) -----
                     cist(1) = d1i(1,1)*vt(1) + d1i(1,2)*vt(2)
                     cist(2) = d1i(2,1)*vt(1) + d1i(2,2)*vt(2)
                     if (multic .gt. 0) then
-                        do 395 j = 1, 4
+                        do j = 1, 4
                             cist(1) = cist(1) + d2i(1,j)*lambda(j)
                             cist(2) = cist(2) + d2i(2,j)*lambda(j)
-395                     continue
+                        end do
                     endif
 !
                     cdl(icpg+1) = sig(1)
@@ -226,8 +237,8 @@ subroutine dktsie(option, fami, xyzl, pgl, depl,&
                     cdl(icpg+5) = cist(1)
                     cdl(icpg+6) = cist(2)
                 endif
-500         continue
-400     continue
-300 end do
+            end do
+        end do
+    end do
 !
 end subroutine
