@@ -34,22 +34,21 @@ def configure(self):
         YAMMROOT + '/prerequisites/Python-273/lib',
         YAMMROOT + '/prerequisites/Hdf5-1810/lib',
         YAMMROOT + '/tools/Medfichier-308/lib',
-        YAMMROOT + '/prerequisites/Metis-40/lib',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203-1/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/lib',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
     ])
 
     self.env.append_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Python-273/include/python2.7',
         YAMMROOT + '/prerequisites/Hdf5-1810/include',
         YAMMROOT + '/tools/Medfichier-308/include',
-        YAMMROOT + '/prerequisites/Metis-40/Lib',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203-1/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include_seq',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/include',
-    ])
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include_seq',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/include',    ])
 
     self.env.append_value('LIB', ('pthread', 'util'))
 

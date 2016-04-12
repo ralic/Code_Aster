@@ -315,7 +315,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=11,
                    NOEUD='N1',
                    NOM_CMP='SIXX',
                    TOLE_MACHINE=2.E-4,                # TODO TOLE_MACHINE
-                   VALE_CALC=150.00003923433,  #150.00022348983
+                   VALE_CALC=150.000247487,  #150.00022348983
                    VALE_REFE=150.0,
                    REFERENCE='SOURCE_EXTERNE',
                    PRECISION=1.5E-3,

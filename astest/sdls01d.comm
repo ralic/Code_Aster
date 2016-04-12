@@ -84,7 +84,7 @@ MATASSM1=ASSE_MATRICE(MATR_ELEM=MELM1,NUME_DDL=NUM1)
 #====================================================================
 #                CALCUL MODAL
 MODE1=CALC_MODES(MATR_RIGI=MATASSR1,
-                 OPTION='BANDE',
+                 OPTION='BANDE',SOLVEUR=_F(RENUM='MDA'),
                  CALC_FREQ=_F(FREQ=( 8.,140.,),
                               ),
                  MATR_MASS=MATASSM1,

@@ -122,7 +122,7 @@ RESUIN =MECA_STATIQUE(MODELE=MODELE,
                       EXCIT=(
                              _F(CHARGE=CHIN,),),
                       INST=1.0,
-                      SOLVEUR=_F(METHODE='MULT_FRONT',
+                      SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA',
                                  NPREC=12,),
                       INFO=1,);
 

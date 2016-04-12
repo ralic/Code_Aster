@@ -768,7 +768,7 @@ TEST_TABLE(TABLE=TAB_SRO,
                       VALE_K='MAXI',),
                    ),);
 TEST_TABLE(TABLE=TAB_SROR,
-           VALE_CALC=0.0563364563463,
+           VALE_CALC=0.0563341843051,
            NOM_PARA='ACCELERATION',
            FILTRE=(_F(NOM_PARA='FONCTION',
                       VALE_K='FD_SROR',),

@@ -272,7 +272,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC=310.137886846,
+                  VALE_CALC=310.138451481,
                   VALE_REFE=310.13299999999998,
                   TOLE_MACHINE=5.E-5,           # ajustement pour clap0f0q
                   CRITERE='RELATIF',),

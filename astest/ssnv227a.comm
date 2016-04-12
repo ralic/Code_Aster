@@ -115,7 +115,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 # PRESSION APPLIQUEE = 6MPa
 
 res=STAT_NON_LINE(MODELE=Mod3d,
-                   CHAM_MATER=MatRub,
+                   CHAM_MATER=MatRub,SOLVEUR=_F(NPREC=9),
                    EXCIT=(_F(CHARGE=FORCE,FONC_MULT=RAMPE,TYPE_CHARGE='SUIV'),
                           _F(CHARGE=DEPL,),),
                    NEWTON=(_F(REAC_INCR=1,

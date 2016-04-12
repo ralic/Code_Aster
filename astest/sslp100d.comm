@@ -244,7 +244,7 @@ U=STAT_NON_LINE(
                         ),
             CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
                          ITER_GLOB_MAXI = 10,),
-               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', RENUM='MDA')
                    )
 
 U1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
@@ -385,7 +385,7 @@ U=DYNA_NON_LINE( reuse=U,
                         ),
             CONVERGENCE=_F( RESI_GLOB_RELA = 1.0E-8,
                          ITER_GLOB_MAXI = 10,),
-               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON', )
+               SOLVEUR=_F( METHODE = 'MULT_FRONT', STOP_SINGULIER='NON',RENUM='MDA')
                    )
 
 U2=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',

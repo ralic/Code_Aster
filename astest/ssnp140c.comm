@@ -225,7 +225,7 @@ TINT=CREA_TABLE(FONCTION= _F(FONCTION = DIFF,
                              PARA = ('INST','DY')),);
 
 TEST_TABLE(
-           VALE_CALC=15.206978510095,
+           VALE_CALC=15.207103264,
            NOM_PARA='DY',
            TYPE_TEST='SOMM_ABS',
            TABLE=TINT,

@@ -93,7 +93,7 @@ int main(void){
         mat5 = re.search('METISVER: *(?P<vers>[0-9]+\.[0-9]+\.\w+)', ret)
         vers = (mat4 and mat4.group('vers')) or (mat5 and mat5.group('vers'))
         major = int(vers.split('.')[0])
-        if major != 4:
+        if major != 5:
             self.end_msg('unsupported metis version: %s' % vers, 'RED')
             raise Errors.ConfigurationError
     except:

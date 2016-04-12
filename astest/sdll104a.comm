@@ -582,7 +582,7 @@ REP3=RECU_FONCTION(    INTE_SPEC=INTERRE3,
                             NOM_CMP_I = 'DY',
                       )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.69133738274,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.691346679753,
                         VALE_REFE=3.6913,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=5.0,
@@ -598,7 +598,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=75.4391373345,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.67768742802,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.677697469259,
                         VALE_REFE=1.6776,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=15.0,
@@ -606,7 +606,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.67768742802,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=1.13666257476,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=1.136675356122,
                         VALE_REFE=1.1367,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=20.0,
@@ -614,7 +614,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.13666257476,
                         FONCTION=REP1,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.292691263715,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.29269259525658,
                         VALE_REFE=0.29260000000000003,
                         REFERENCE='AUTRE_ASTER',
                         VALE_PARA=25.0,

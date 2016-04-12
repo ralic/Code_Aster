@@ -113,6 +113,7 @@ EVOL = DYNA_NON_LINE(
                    EXCIT=(_F(CHARGE=CHARSY),
                           _F(CHARGE=EFFORT,FONC_MULT = F_EFFORT,),),
                    COMPORTEMENT=_F(RELATION='ENDO_SCALAIRE',
+                                       ITER_INTE_MAXI=25,
                                    TOUT='OUI'),
                    INCREMENT=_F(LIST_INST=TEMPS),
                    NEWTON=_F(MATRICE='TANGENTE',

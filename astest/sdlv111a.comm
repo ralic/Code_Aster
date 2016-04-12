@@ -252,7 +252,7 @@ MASRB=ASSE_MATRICE(  MATR_ELEM=MRB,    NUME_DDL=NUMB  )
 MASMB=ASSE_MATRICE(  MATR_ELEM=MMB,    NUME_DDL=NUMB  )
 
 RESA=CALC_MODES(MATR_RIGI=MASRA,
-                VERI_MODE=_F(SEUIL=4.E-6,
+                VERI_MODE=_F(SEUIL=1.E-5,
                              ),
                 OPTION='BANDE',
                 CALC_FREQ=_F(FREQ=( 3.0,9.3,),

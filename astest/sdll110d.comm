@@ -437,7 +437,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.000640342435104,
+           VALE_CALC=0.000640340831202,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_150,
@@ -449,7 +449,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.000786932168158,
+           VALE_CALC=0.000786930196926,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_175,
@@ -461,7 +461,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.000946266667642,
+           VALE_CALC=0.000946264297291,
            TOLE_MACHINE=5.E-4,               # ajustement pour clap0f0q
            NOM_PARA='ECART',
            TABLE=DYN0_200,
