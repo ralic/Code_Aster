@@ -25,10 +25,10 @@ def configure(self):
         YAMMROOT + '/prerequisites/Python-2710/lib',
         YAMMROOT + '/prerequisites/Hdf5-1810/lib',
         YAMMROOT + '/tools/Medfichier-308/lib',
-        YAMMROOT + '/prerequisites/Metis-40/lib',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/lib',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
         # for openblas
         ASTER_ROOT + '/public/lib',
     ])
@@ -37,11 +37,11 @@ def configure(self):
         YAMMROOT + '/prerequisites/Python-2710/include/python2.7',
         YAMMROOT + '/prerequisites/Hdf5-1810/include',
         YAMMROOT + '/tools/Medfichier-308/include',
-        YAMMROOT + '/prerequisites/Metis-40/Lib',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include_seq',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include_seq',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/include',
     ])
 
     # openblas from $ASTER_ROOT/public/lib embeds lapack

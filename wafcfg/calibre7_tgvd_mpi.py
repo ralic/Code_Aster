@@ -32,12 +32,12 @@ def configure(self):
         '-Wl,--end-group']
 
     self.env.prepend_value('LIBPATH', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/MPI/lib',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/MPI/lib',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc-3.6.3_aster/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/MPI/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/MPI/include',
         YAMMROOT + '/prerequisites/Petsc_mpi-petsc-3.6.3_aster/include',
     ])
 
