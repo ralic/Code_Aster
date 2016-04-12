@@ -1,6 +1,3 @@
-# TITRE Pour tester l'emission de messages d'erreur lies a :
-#     * un mauvais usage des variables de commande
-#     * l'affectation d'un chargement sur une maille ne faisant pas partie du maillage.
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY

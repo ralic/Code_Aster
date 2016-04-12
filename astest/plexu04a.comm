@@ -1,4 +1,3 @@
-# TITRE CYLINDRE AVEC CABLES DE PRECONTRAINTE SOUS PRESSION INTERNE EN DYNAMIQUE TRANSITOIRE
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -359,8 +358,7 @@ U = CALC_EUROPLEXUS(ETAT_INIT=_F(RESULTAT=RES1,CONTRAINTE='OUI',EQUILIBRE='OUI')
               # LEGENDE_Y = 'DY (m)',
               # COURBE = (_F(FONCTION = dy_RES2,
                          # LEGENDE = 'DY',),),
-              # TITRE = 'Deplacement DY en fonction du temps',);
-
+              
 
 TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   GROUP_NO='NREF_CYL',
@@ -526,8 +524,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
               # LEGENDE_Y = 'DY (m)',
               # COURBE = (_F(FONCTION = dy_U,
                          # LEGENDE = 'DY',),),
-              # TITRE = 'Deplacement DY en fonction du temps',);
-
+              
 
 TEST_RESU(RESU=_F(NUME_ORDRE=0,
                   GROUP_NO='NREF_CYL',
