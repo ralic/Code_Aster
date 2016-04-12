@@ -47,12 +47,12 @@ MAILCT45=LIRE_MAILLAGE(UNITE=20,
 
 MAILCT45=DEFI_GROUP(reuse =MAILCT45,
                     MAILLAGE=MAILCT45,
-                    CREA_GROUP_NO=_F(GROUP_MA='LIG',),);
+                    CREA_GROUP_NO=_F(GROUP_MA='LSYCTY',),);
 
 #----------------  AFFECTATION MODELE MECANIQUE    --------------------
 
 MO_MEC45=AFFE_MODELE(MAILLAGE=MAILCT45,
-                     AFFE=_F(GROUP_MA=('SEPROUV','SGOUP',),
+                     AFFE=_F(GROUP_MA=('CT','GOUP',),
                              PHENOMENE='MECANIQUE',
                              MODELISATION='D_PLAN',),);
 
@@ -62,8 +62,8 @@ ECR245=LIRE_FONCTION(UNITE=31,
                      NOM_PARA='EPSI',
                      PROL_DROITE='LINEAIRE',);
 
-IMPR_FONCTION(FORMAT='XMGRACE',
-              COURBE=_F(FONCTION=ECR245,),);
+#IMPR_FONCTION(FORMAT='XMGRACE',
+#              COURBE=_F(FONCTION=ECR245,),);
 
 ECR245G=DEFI_FONCTION(NOM_PARA='EPSI',VALE=(0.002720,54400.,
                             0.16,56000.,
@@ -87,9 +87,9 @@ MAGOUP45=DEFI_MATERIAU(ELAS=_F(E=2.E6,
 #---------    AFFECTATION CARACTERISTIQUES MECANIQUES     -----------
 
 CM245=AFFE_MATERIAU(MAILLAGE=MAILCT45,
-                    AFFE=(_F(GROUP_MA='SEPROUV',
+                    AFFE=(_F(GROUP_MA='CT',
                              MATER=MA_EP245,),
-                          _F(GROUP_MA='SGOUP',
+                          _F(GROUP_MA='GOUP',
                              MATER=MAGOUP45,),),);
 TMAX = 49.993923025;
 
@@ -107,13 +107,13 @@ L_INST45=DEFI_LIST_REEL(DEBUT=0.0,
                                       NOMBRE=NPAS,),);
 
 CO_LIM45=AFFE_CHAR_CINE(MODELE=MO_MEC45,
-                        MECA_IMPO=(_F(GROUP_NO='LIG',
+                        MECA_IMPO=(_F(GROUP_NO='LSYCTY',
                                       DY=0.0,),
-                                   _F(GROUP_NO='PLOAD',
+                                   _F(GROUP_NO='CHA',
                                       DX=0.0,),),);
 
 CHAR45=AFFE_CHAR_MECA_F(MODELE=MO_MEC45,
-                        FORCE_NODALE=_F(GROUP_NO='PLOAD',
+                        FORCE_NODALE=_F(GROUP_NO='CHA',
                                         FY=F_T45,),);
 
 # RESOLUTION
@@ -132,7 +132,7 @@ UP245=STAT_NON_LINE(MODELE=MO_MEC45,
                            _F(CHARGE=CHAR45,),),
                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
                                  DEFORMATION='SIMO_MIEHE',
-                                 GROUP_MA=('SEPROUV','SGOUP',)),
+                                 GROUP_MA=('CT','GOUP',)),
                     INCREMENT=_F(LIST_INST=DEFLIST,
                                  INST_FIN=TFIN,
                                  ),
@@ -162,7 +162,7 @@ DLC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                             INTITULE='U_LDC',
                             RESULTAT=UP245,
                             NOM_CHAM='DEPL',
-                            GROUP_NO='PLOAD',
+                            GROUP_NO='CHA',
                             TOUT_CMP='OUI',),);
 
 # get the applied force
@@ -171,7 +171,7 @@ FG45=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                              INTITULE='Force Goupille',
                              RESULTAT=UP245,
                              NOM_CHAM='FORC_NODA',
-                             GROUP_NO='PLOAD',
+                             GROUP_NO='CHA',
                              TOUT_CMP='OUI',),);
 
 # largeur de la CT
@@ -207,12 +207,12 @@ FODEP=CALC_TABLE(reuse =FODEP,
                            TABLE=DLC,
                            NOM_PARA='INST',),);
 
-IMPR_TABLE(TABLE=FODEP,
-           NOM_PARA=('INST','DY','FG_EXT',),
-           TITRE='CT : Courbe Force Deplacement',);
+#IMPR_TABLE(TABLE=FODEP,
+           #NOM_PARA=('INST','DY','FG_EXT',),
+           #TITRE='CT : Courbe Force Deplacement',);
 
 TEST_TABLE(
-           VALE_CALC=74040.9999989,
+           VALE_CALC=74040.9989521,
            NOM_PARA='FG_EXT',
            TABLE=FODEP,
            FILTRE=_F(NOM_PARA='INST',
@@ -220,7 +220,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.38221454633,
+           VALE_CALC=2.9973457362,
            NOM_PARA='DY',
            TABLE=FODEP,
            FILTRE=_F(NOM_PARA='INST',

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ UP245B=LIRE_RESU(
           UNITE=80,
                     COMPORTEMENT=_F(RELATION='VMIS_ISOT_TRAC',
                                  DEFORMATION='SIMO_MIEHE',
-                                 GROUP_MA=('SEPROUV','SGOUP',),),
+                                 GROUP_MA=('CT','GOUP',),),
           TOUT_ORDRE='OUI',);
 
 #IMPR_RESU(RESU=_F(RESULTAT=UP245B, NOM_CHAM='VARI_ELGA',VALE_MAX='OUI'))
@@ -55,7 +55,7 @@ UP245B=CALC_CHAMP(reuse =UP245B,
 
 # Weibull post-processing
 
-TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='SEPROUV',
+TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='CT',
                              OPTION='SIGM_ELMOY',
                              CORR_PLAST='OUI',
                              COEF_MULT=50.8,),
@@ -67,8 +67,8 @@ TWEIB45=POST_ELEM(WEIBULL=_F(GROUP_MA='SEPROUV',
 ### for the user
 
 
-IMPR_TABLE(TABLE=TWEIB45,
-           FORMAT='TABLEAU',);
+#IMPR_TABLE(TABLE=TWEIB45,
+           #FORMAT='TABLEAU',);
 
 # ### after we just extract the list of instants and the failure probabilities
 # weibull_tab = TWEIB45.EXTR_TABLE()
@@ -87,7 +87,7 @@ IMPR_TABLE(TABLE=TWEIB45,
            TITRE='CT : failure probabilities',);
 
 TEST_TABLE(
-           VALE_CALC=0.786642592131,
+           VALE_CALC=0.783372368758,
            NOM_PARA='PROBA_WEIBULL',
            TABLE=TWEIB45,
            FILTRE=_F(NOM_PARA='INST',
