@@ -1,6 +1,6 @@
 subroutine teattr(kstop, noattr, vattr, iret, typel)
 
-use calcul_module, only : ca_iactif_, ca_jcteat_, ca_lcteat_, ca_nomte_
+use calcul_module, only : calcul_status, ca_jcteat_, ca_lcteat_, ca_nomte_
 
 implicit none
 ! ======================================================================
@@ -71,12 +71,12 @@ implicit none
     noatt2=noattr
 
     if (nomt2 .eq. ' ') then
-        ASSERT(ca_iactif_.eq.1)
+        ASSERT(calcul_status().eq.3)
         nomt2=ca_nomte_
     endif
 
     apelje=.true.
-    if (ca_iactif_ .eq. 1) then
+    if (calcul_status() .eq. 3) then
         if (nomt2 .eq. ca_nomte_) apelje=.false.
     endif
 

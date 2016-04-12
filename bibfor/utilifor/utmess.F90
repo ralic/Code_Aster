@@ -135,7 +135,7 @@ use calcul_module, only : calcul_status
 !  1. Faut-il completer le message (si on est dans un calcul elementaire) ?
 !  ------------------------------------------------------------------------
     typ2=typ
-    if (calcul_status().ne.0 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
+    if (calcul_status().eq.3 .and. (typ2(1:1).eq.'F' .or. typ2(1:1).eq.'E')) then
         under_te0000=.true.
         if (typ2(2:2).eq.'+') under_te0000=.false.
     else

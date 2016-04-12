@@ -232,10 +232,12 @@ implicit none
 !     ca_nuop_ : numero de l'option ca_option_.
 !     ca_jnbelr_ : adresse dans zi  de '&CATA.TE.NBELREFE'
 !     ca_jnoelr_ : adresse dans zk8 de '&CATA.TE.NOELREFE'
-!     ca_iactif_ :  1 : la routine calcul est active
-!                   0 : la routine calcul est inactive.
-!                   2 : la routine op0033 est active.
-!         Ce "booleen" (ternaire !) permet d'arreter les utilisations des
+!     ca_iactif_ :
+!                   1 : on est en "dessous" de la routine calcul
+!                   2 : on est en "dessous" de la routine op0033 (CALC_POINT_MAT)
+!                   3 : on est en "dessous" de la routine te0000
+!                   0 : on n'est ni "sous" calcul ni "sous" op0033
+!         Ce "booleen" (quaternaire !) permet par exemple d'arreter les utilisations des
 !         routines qui ne doivent etre appellees que "sous" la routine te0000 :
 !           jevech, tecach, tecael, elref1, ...
 !         Il permet egalement une programmation differente de certains utilitaires :
@@ -320,7 +322,7 @@ contains
         ca_iactif_ = 0
     end subroutine
 
-!>  Dit si on se trouve sous *calcul*
+!>  Dit si on se trouve sous *calcul*  (ou SIMU_POINT_MAT)
     function calcul_status()
         integer :: calcul_status
         calcul_status = ca_iactif_

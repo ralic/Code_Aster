@@ -371,7 +371,9 @@ implicit none
 !           6.6 On realise les calculs elementaires:
             if (dbg) write (6,*)'&&CALCUL OPTION= ',ca_option_,' ',ca_nomte_, ' ',numc
             call vrcdec()
+            ca_iactif_=3
             call te0000(numc, ca_nuop_, ca_nute_)
+            ca_iactif_=1
 
 !           6.7 On verifie la valeur "undef" des champs locaux "out" :
             call caundf('VERIF', ca_nuop_, ca_nute_)

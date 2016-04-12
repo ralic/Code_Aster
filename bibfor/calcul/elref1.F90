@@ -1,5 +1,5 @@
 subroutine elref1(elrefe)
-use calcul_module, only : ca_iactif_, ca_jnbelr_, ca_jnoelr_, ca_nute_
+use calcul_module, only : calcul_status, ca_jnbelr_, ca_jnoelr_, ca_nute_
 implicit none
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,7 +31,7 @@ implicit none
 !     - si le type_elem n'a pas d'elrefe :  elrefe='XXXXXXXX'
 !----------------------------------------------------------------------
 
-    ASSERT(ca_iactif_.eq.1)
+    ASSERT(calcul_status().eq.3)
     if (zi(ca_jnbelr_-1+2* (ca_nute_-1)+2) .eq. 0) then
         elrefe = 'XXXXXXXX'
     else

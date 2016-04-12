@@ -2,7 +2,7 @@ subroutine elrefe_info(elrefe, fami, ndim, nno,&
                   nnos, npg, jpoids, jcoopg, jvf,&
                   jdfde, jdfd2, jgano)
 
-use calcul_module, only : ca_iactif_, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_, ca_nomte_
+use calcul_module, only : calcul_status, ca_jnolfp_, ca_jpnlfp_, ca_nblfpg_, ca_nbsav_, ca_nomte_
 
 implicit none
 ! ======================================================================
@@ -91,7 +91,7 @@ implicit none
 ! ------------------------------------------------------------------
 
 !   -- pour etre sur que elrefe est appele "sous" te0000
-    ASSERT(ca_iactif_.eq.1)
+    ASSERT(calcul_status().eq.3)
 
     if (.not.present(elrefe)) then
         call elref1(elrf)
@@ -143,7 +143,7 @@ implicit none
     call jeveuo('&INEL.'//elrf//'.ELRA_R', 'L', jvr)
 
     decal = 0
-    do 10,ifam = 1,nufpg - 1
+    do ifam = 1,nufpg - 1
     npgl = nbpg(ifam)
 
     lonfam = npgl
@@ -154,7 +154,7 @@ implicit none
     lonfam = lonfam + 2 + npgl*nnol
 
     decal = decal + lonfam
-    10 end do
+    end do
 
     npgl = nbpg(nufpg)
 

@@ -244,7 +244,7 @@ implicit none
 !
 !     NUMLC doit etre compris entre 1 et 100
 !
-    if (calcul_status() .ne. 2) then
+    if (calcul_status() .eq. 3) then
         if (option(1:9) .ne. 'RIGI_MECA') then
 !           DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
 !           COMMANDE PTOT. CE CALCUL N'EST POSSIBLE QUE :

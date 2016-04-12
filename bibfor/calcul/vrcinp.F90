@@ -39,8 +39,8 @@ implicit none
 !   But : fabriquer le champ de variables de commande correspondant a
 !         un instant donne pour calc_point_mat / op0033
 !   Arguments :
-!     ind      (i)   in  : 0 => iactif=0 (fin de op0033)
-!     ind      (i)   in  : 1 => iactif=1 initialisations (debut op0033)
+!     ind      (i)   in  : 0 => ca_iactif_=0 (fin de op0033)
+!     ind      (i)   in  : 1 => ca_iactif_=2 initialisations (debut op0033)
 !     ind      (i)   in  : 2 => interpolation en cours de op0033
 !     instam   (r)   in  : valeur de l'instant -
 !     instap   (r)   in  : valeur de l'instant +
