@@ -861,3 +861,4 @@ def __fake__():
     UTMESS('I', 'TABLE0_43')
     # dans TestResult.py
     UTMESS('I', 'TEST0_12')
+    UTMESS('I', 'TEST0_19')

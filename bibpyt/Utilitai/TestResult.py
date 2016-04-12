@@ -20,8 +20,10 @@
 This module defines objects for the testing feature.
 """
 
+import re
 from functools import partial
 from string import maketrans
+from glob import glob
 
 
 _trans = maketrans('e', 'E')
@@ -40,7 +42,6 @@ class TestResult(object):
 
     def __init__(self):
         """Initialization"""
-        self._isVerif = True
         try:
             import aster
             from Utilitai.Utmess import UTMESS
@@ -49,6 +50,9 @@ class TestResult(object):
         except ImportError:
             self._printLine = _internal_print
             self._utmess = _internal_mess
+        self._isVerif = self._checkVerif()
+        if not self._isVerif:
+            self._utmess('I', 'TEST0_19')
 
     def _print(self, wid, *args):
         """shortcut to print in the RESULTAT file"""
@@ -74,6 +78,9 @@ class TestResult(object):
         val : computed value (same type as ref)
         compare : order of magnitude
         """
+        # ignore NON_REGRESSION tests for validation testcases
+        isNonRegr = type_ref.strip() == "NON_REGRESSION"
+        isValidIgn = isNonRegr and not self._isVerif
         lines = []
         # compute
         diag = 'SKIP'
@@ -95,7 +102,9 @@ class TestResult(object):
                 ok = error <= tole
             diag = ' OK ' if ok else 'NOOK'
         else:
-            self._utmess('A', 'TEST0_12')
+            # do not warn if validation testcase
+            if not isValidIgn:
+                self._utmess('A', 'TEST0_12')
         # formatting
         sref = '%s' % ref
         sval = '%s' % val
@@ -116,8 +125,25 @@ class TestResult(object):
         if label:
             lines.append(self._print(wid, ' ', 'REFERENCE', 'LEGENDE',
                                      'VALE_REFE', 'VALE_CALC', 'ERREUR', 'TOLE'))
-        lines.append(self._print(wid, diag, type_ref, legend, sref, sval, serr, stol))
+        if isValidIgn:
+            lines.append(self._print(wid, "-", type_ref, legend, sref,
+                                     sval, serr, "-"))
+        else:
+            lines.append(self._print(wid, diag, type_ref, legend, sref,
+                                     sval, serr, stol))
         return lines
+
+    def _checkVerif(self):
+        """Check if the current execution is for a verification testcase
+        (and not a validation one)."""
+        exports = glob("*.export")
+        if not exports:
+            # export file not found, return "verification" that is more strict!
+            return True
+        text = open(exports[0], "rb").read()
+        expr = re.compile("^P +testlist.*validation", re.M)
+        isVerif = expr.search(text) is None
+        return isVerif
 
 
 def testresu_print(type_ref, legend, label, skip, relative,
