@@ -194,8 +194,6 @@ def configure(self):
     self.write_config_headers()
 
 def build(self):
-    self.post_mode = Build.POST_LAZY
-    
     self.env.install_tests = self.options.install_tests or self.env.install_tests
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
