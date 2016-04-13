@@ -1,4 +1,3 @@
-# AUTEUR : F. LEBOUVIER (DeltaCAD)
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -91,7 +90,7 @@ DYNA_AMO = DYNA_NON_LINE( MODELE=MODEL,
                       MASS_DIAG='OUI',
                       COMPORTEMENT=_F(RELATION ='ELAS',),
                       INCREMENT=_F(LIST_INST = LIST,),
-                      EXCIT=(_F(CHARGE=PRES,),
+                      EXCIT=(_F(CHARGE=PRES,FONC_MULT=F_PRES),
                              _F(CHARGE=CINE,),),
                       NEWTON=_F(MATRICE='TANGENTE',
                                 REAC_ITER=1,
@@ -134,10 +133,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='DEPL',
                   NOEUD='N9',
                   NOM_CMP='DZ',
-                  VALE_CALC=-1.98656151E-05,
+                  VALE_CALC=-1.79509456099E-05,
                   VALE_REFE=-1.795079E-05,
                   CRITERE='RELATIF',
-                  PRECISION=0.12,),
+                  ),
           )
 
 # --------------------------
@@ -152,10 +151,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='VITE',
                   NOEUD='N9',
                   NOM_CMP='DZ',
-                  VALE_CALC=-0.039585448,
+                  VALE_CALC=-0.0376274299738,
                   VALE_REFE=-0.037308800000000003,
                   CRITERE='RELATIF',
-                  PRECISION=0.074999999999999997,),
+                  PRECISION = 9E-3),
           )
 
 # -------------------------------
@@ -170,10 +169,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=100,
                   NOM_CHAM='ACCE',
                   NOEUD='N9',
                   NOM_CMP='DZ',
-                  VALE_CALC=-39.135401716,
+                  VALE_CALC=-39.1745768096,
                   VALE_REFE=-39.173400000000001,
                   CRITERE='RELATIF',
-                  PRECISION=1.E-2,),
+                  ),
           )
 
 FIN()
