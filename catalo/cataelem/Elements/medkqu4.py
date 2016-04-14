@@ -155,8 +155,6 @@ EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
                              components=('X', 'Y', 'Z', 'W',))
 
 
-CGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-                            components=('X', 'Y', 'Z',))
 
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -314,7 +312,7 @@ class MEDKQU4(Element):
 
         OP.CARA_SECT_POUT4(te=513,
                            para_in=(
-                               (SP.PGEOMER, NGEOMER), (SP.PORIGIN, CGEOMER),
+                               (SP.PGEOMER, NGEOMER), (SP.PORIGIN, LC.CGEOM3D),
                            ),
                            para_out=(
                                (SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
@@ -777,8 +775,8 @@ class MEDKQU4(Element):
                                  ),
                         para_out=(
                         (OP.REPERE_LOCAL.PMATPASS, ECHGREP), (
-                            SP.PREPLO1, CGEOMER),
-                        (SP.PREPLO2, CGEOMER), (SP.PREPLO3, CGEOMER),
+                            SP.PREPLO1, LC.CGEOM3D),
+                        (SP.PREPLO2, LC.CGEOM3D), (SP.PREPLO3, LC.CGEOM3D),
                         ),
                         ),
 
@@ -945,7 +943,7 @@ class MEDKQU4(Element):
 
         OP.TOU_INI_ELEM(te=99,
                         para_out=(
-                        (OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), (
+                        (OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (
                         OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
                         (OP.TOU_INI_ELEM.PPRES_R, CPRES_R), ),
                         ),

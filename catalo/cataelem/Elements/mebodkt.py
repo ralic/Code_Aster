@@ -49,8 +49,6 @@ MFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELEM',
           'MZ',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
 
 
 MGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -78,23 +76,23 @@ class MEBODKT(Element):
     calculs = (
 
         OP.CARA_SECT_POUT3(te=570,
-            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT3.PCAORIE, CGEOMER),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT3.PCAORIE, LC.CGEOM3D),
                      (SP.PGEOMER, MGEOMER), ),
             para_out=((SP.PCASECT, ECASECT), ),
         ),
 
         OP.CARA_SECT_POUT4(te=570,
-            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT4.PCAORIE, CGEOMER),
-                     (SP.PGEOMER, MGEOMER), (SP.PORIGIN, CGEOMER),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT4.PCAORIE, LC.CGEOM3D),
+                     (SP.PGEOMER, MGEOMER), (SP.PORIGIN, LC.CGEOM3D),
                      ),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
                      ),
         ),
 
         OP.CARA_SECT_POUT5(te=570,
-            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT5.PCAORIE, CGEOMER),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CARA_SECT_POUT5.PCAORIE, LC.CGEOM3D),
                      (SP.PGEOMER, MGEOMER), (SP.PNUMMOD, LC.CNUMMOD),
-                     (SP.PORIGFI, CGEOMER), (SP.PORIGIN, CGEOMER),
+                     (SP.PORIGFI, LC.CGEOM3D), (SP.PORIGIN, LC.CGEOM3D),
                      ),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
                      (SP.PVECTU3, MVECTUR), ),
@@ -113,7 +111,7 @@ class MEBODKT(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
         ),
 
         OP.TOU_INI_ELGA(te=99,

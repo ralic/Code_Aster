@@ -105,8 +105,6 @@ ENGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                              components=('X', 'Y', 'Z',))
 
 
-CGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-                            components=('X', 'Y', 'Z',))
 
 
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
@@ -587,7 +585,7 @@ class HM_HEXA20_XH1(Element):
                   ),
 
         OP.TOU_INI_ELEM(te=99,
-                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
                         ),
 
         OP.TOU_INI_ELGA(te=99,

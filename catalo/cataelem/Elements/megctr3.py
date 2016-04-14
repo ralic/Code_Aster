@@ -88,8 +88,6 @@ NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
 
 
 CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
@@ -383,8 +381,8 @@ class MEGCTR3(Element):
         OP.REPERE_LOCAL(te=134,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
                      ),
-            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-                     (SP.PREPLO3, CGEOMER), ),
+            para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D),
+                     (SP.PREPLO3, LC.CGEOM3D), ),
         ),
 
         OP.RIGI_MECA(te=431,
@@ -453,7 +451,7 @@ class MEGCTR3(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
         ),
 
         OP.TOU_INI_ELGA(te=99,

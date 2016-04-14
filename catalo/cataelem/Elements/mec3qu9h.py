@@ -127,8 +127,6 @@ NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='MASS',
@@ -543,8 +541,8 @@ class TemplateElement(Element):
         OP.REPERE_LOCAL(te=134,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
                      ),
-            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-                     (SP.PREPLO3, CGEOMER), ),
+            para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D),
+                     (SP.PREPLO3, LC.CGEOM3D), ),
         ),
 
         OP.REPE_GENE(te=443,
@@ -694,7 +692,7 @@ class TemplateElement(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
                      ),
         ),
 

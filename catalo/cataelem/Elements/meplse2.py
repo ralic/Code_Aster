@@ -65,8 +65,6 @@ EGGEOM_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
     components=('X','Y',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
@@ -181,7 +179,7 @@ class MEPLSE2(Element):
         ),
 
         OP.CARA_SECT_POUT4(te=564,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, CGEOMER),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, LC.CGEOM2D),
                      ),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
                      ),

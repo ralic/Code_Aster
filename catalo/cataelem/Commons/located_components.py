@@ -24,6 +24,12 @@ import cataelem.Commons.physical_quantities as PHY
 # Modes locaux de type ELEM :
 #----------------------------------
 
+CGEOM2D = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
+                            components=('X', 'Y',))
+
+CGEOM3D = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
+                            components=('X', 'Y', 'Z',))
+
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type='ELEM',
                             components=('A0', 'A1',))
 

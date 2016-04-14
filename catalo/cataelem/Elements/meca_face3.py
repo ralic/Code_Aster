@@ -71,8 +71,6 @@ EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
     components=('GTHETA','FIC[3]','K[3]','BETA',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
 
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -235,7 +233,7 @@ class MECA_FACE3(Element):
         ),
 
         OP.CARA_SECT_POU3R(te=337,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, CGEOMER),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, LC.CGEOM3D),
                      ),
             para_out=((SP.PRAYONM, ERAYONM), ),
         ),
@@ -246,16 +244,16 @@ class MECA_FACE3(Element):
         ),
 
         OP.CARA_SECT_POUT4(te=337,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, CGEOMER),
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PORIGIN, LC.CGEOM3D),
                      ),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
                      ),
         ),
 
         OP.CARA_SECT_POUT5(te=337,
-            para_in=((OP.CARA_SECT_POUT5.PCAORIE, CGEOMER), (SP.PGEOMER, NGEOMER),
-                     (SP.PNUMMOD, LC.CNUMMOD), (SP.PORIGFI, CGEOMER),
-                     (SP.PORIGIN, CGEOMER), ),
+            para_in=((OP.CARA_SECT_POUT5.PCAORIE, LC.CGEOM3D), (SP.PGEOMER, NGEOMER),
+                     (SP.PNUMMOD, LC.CNUMMOD), (SP.PORIGFI, LC.CGEOM3D),
+                     (SP.PORIGIN, LC.CGEOM3D), ),
             para_out=((SP.PVECTU1, MVECTUR), (SP.PVECTU2, MVECTUR),
                      (SP.PVECTU3, MVECTUR), (SP.PVECTU4, MVECTUR),
                      (SP.PVECTU5, MVECTUR), (SP.PVECTU6, MVECTUR),

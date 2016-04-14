@@ -57,8 +57,6 @@ NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                             components=('X', 'Y', 'Z',))
 
 
-CGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-                            components=('X', 'Y', 'Z',))
 
 
 MMATUUR = ArrayOfComponents(
@@ -82,8 +80,8 @@ class MEFS_POU_D_T(Element):
 
         OP.REPERE_LOCAL(te=135,
                         para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
-                        para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-                                  (SP.PREPLO3, CGEOMER), ),
+                        para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D),
+                                  (SP.PREPLO3, LC.CGEOM3D), ),
                         ),
 
         OP.RIGI_MECA(te=240,
@@ -96,7 +94,7 @@ class MEFS_POU_D_T(Element):
                      ),
 
         OP.TOU_INI_ELEM(te=99,
-                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
                         ),
 
         OP.TOU_INI_ELNO(te=99,

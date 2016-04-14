@@ -49,8 +49,6 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
                              components=('PHI', 'DH',))
 
 
-CGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-                            components=('X', 'Y', 'Z',))
 
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -154,7 +152,7 @@ class MEFP_FACE3(Element):
                           ),
 
         OP.TOU_INI_ELEM(te=99,
-                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), ),
+                        para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
                         ),
 
         OP.TOU_INI_ELGA(te=99,

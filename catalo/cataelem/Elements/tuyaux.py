@@ -106,8 +106,6 @@ NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y','Z',))
 
 
-CGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELEM',
-    components=('X','Y','Z',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
@@ -492,8 +490,8 @@ class MET3SEG3(Element):
 
         OP.REPERE_LOCAL(te=135,
             para_in=((OP.REPERE_LOCAL.PCAORIE, CCAORIE), ),
-            para_out=((SP.PREPLO1, CGEOMER), (SP.PREPLO2, CGEOMER),
-                     (SP.PREPLO3, CGEOMER), ),
+            para_out=((SP.PREPLO1, LC.CGEOM3D), (SP.PREPLO2, LC.CGEOM3D),
+                     (SP.PREPLO3, LC.CGEOM3D), ),
         ),
 
         OP.RIGI_MECA(te=582,
@@ -565,7 +563,7 @@ class MET3SEG3(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PGEOM_R, CGEOMER), (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), (OP.TOU_INI_ELEM.PNBSP_I, ENBSP_I),
                      ),
         ),
 
@@ -649,3 +647,4 @@ class MET6SEG3(MET3SEG3):
              'VO3','WO3','UO4','VO4','WO4',
              'UO5','VO5','WO5','UO6','VO6',
              'WO6','WO','WI1','WO1'))
+                             
