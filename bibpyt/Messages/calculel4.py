@@ -302,7 +302,14 @@ Risques et conseils :
    par un chargement en "force" non nul.
 """),
 
+    75 : _(u"""
+Erreur utilisateur dans la commande PROJ_CHAMP :
+  Le programme ne trouve aucun champ à projeter dans %(k1)s.
 
+Conseils :
+  Les champs dont vous demandez la projection (mot clé NOM_CHAM)
+  ont-ils été calculés ?
+"""),
 
 
     78 : _(u"""
