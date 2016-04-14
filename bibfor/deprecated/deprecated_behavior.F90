@@ -41,9 +41,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (rela_comp .eq. 'GATT_MONERIE') then
+    if (rela_comp .eq. 'MON_COMPORTEMENT') then
         vali = 13
-        valk    = "RELATION='GATT_MONERIE'"
+        valk    = "RELATION='MON_COMPORTEMENT'"
 !
     else
         goto 999
