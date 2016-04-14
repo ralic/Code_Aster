@@ -674,7 +674,7 @@ subroutine assvec(base, vec, nbvec, tlivec, licoef,&
     if (niv .ge. 2) then
         call uttcpu('CPU.ASSVEC', 'FIN', ' ')
         call uttcpr('CPU.ASSVEC', 7, temps)
-        write (ifm, '(A44,D11.4,D11.4)') &
+        write (ifm, '(A44,D11.4,D11.4,D11.4)') &
             'TEMPS CPU/SYS/ELAPSED ASSEMBLAGE V        : ',&
             temps(5), temps(6), temps(7)
     endif
