@@ -3,21 +3,15 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
                   epsm, deps, nsig, sigm, vim,&
                   option, sigp, vip, typmod, ndsde,&
                   dsidep, codret)
-! aslint: disable=W1504
-    implicit none
+!
+implicit none
+!
 #include "asterfort/lcpivm.h"
 #include "asterfort/nmisex.h"
 #include "asterfort/nmisot.h"
-    integer :: imate, ndim, kpg, ksp, codret, neps, nsig, ndsde
-    real(kind=8) :: crit(*), instam, instap, vim(*), vip(*), dsidep(ndsde)
-    real(kind=8) :: r8bid
-    real(kind=8) :: epsm(neps), deps(neps), sigm(nsig), sigp(nsig)
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +26,15 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+! aslint: disable=W15044
+!
+    integer :: imate, ndim, kpg, ksp, codret, neps, nsig, ndsde
+    real(kind=8) :: crit(*), instam, instap, vim(*), vip(*), dsidep(ndsde)
+    real(kind=8) :: epsm(neps), deps(neps), sigm(nsig), sigp(nsig)
+    character(len=16) :: compor(*), option
+    character(len=8) :: typmod(*)
+    character(len=*) :: fami
+!
 ! ======================================================================
 !.......................................................................
 !
@@ -116,7 +118,7 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
             call nmisot(fami, kpg, ksp, ndim, typmod,&
                         imate, compor(1), crit, deps, sigm,&
                         vim, option, sigp, vip, dsidep,&
-                        r8bid, r8bid, codret)
+                        codret)
         else
 !              IMPLEX
             call nmisex(fami, kpg, ksp, ndim, imate,&

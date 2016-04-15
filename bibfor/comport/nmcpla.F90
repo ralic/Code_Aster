@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,7 +125,7 @@ implicit none
     character(len=8) :: elem_model, nomc(5)
     character(len=16) :: rela_flua, rela_plas
     character(len=16) :: compor_creep(3), compor_plas(3)
-    real(kind=8) :: rbid, nu, angmas(3)
+    real(kind=8) :: nu, angmas(3)
     real(kind=8) :: espi_creep(6), epsfld(6), epsflf(6), depsfl(6)
     real(kind=8) :: deps(6), kooh(6, 6)
     real(kind=8) :: materd(5), materf(5), depst2(6), depsel(6)
@@ -286,7 +286,7 @@ implicit none
         call nmisot(fami             , kpg      , ksp , ndim             , typmod,&
                     imat             , rela_plas, crit, deps             , sigd  ,&
                     vind(idx_vi_plas), option   , sigf, vinf(idx_vi_plas), dsde  ,&
-                    rbid             , rbid     , iret)
+                    iret)
     else if (rela_plas(1:8).eq. 'ROUSS_PR' .or. rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
         call redece(fami             , kpg              , ksp   , ndim , typmod,&
                     imat             , compor_plas      , crit  , timed, timef ,&

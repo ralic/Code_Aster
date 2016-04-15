@@ -1,10 +1,10 @@
 subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, deps, sigm,&
                   vim, option, sigp, vip, dsidep,&
-                  demu, cinco, iret)
+                  iret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
     character(len=8) :: typmod(*)
     character(len=16) :: compor, option
     real(kind=8) :: crit(*), line, radi
-    real(kind=8) :: deps(6), dx, deuxmu, demu, cinco
+    real(kind=8) :: deps(6), dx, deuxmu
     real(kind=8) :: sigm(6), vim(*), sigp(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !     REALISE LA LOI DE VON MISES ISOTROPE ET ELASTIQUE POUR LES
@@ -67,7 +67,6 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
 !
 !               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
-! OUT DEUXMU,CINCO : POUR ELEMEMTS INCOMPRESSIBLES
 ! OUT IRET    : CODE RETOUR DE L'INTEGRATION DE LA LOI DE VOM MISES
 !               = 1  => PAS DE PROBLEME
 !               = 0  => ECHEC DANS L'INTEGRATION DE LA LOI
@@ -366,10 +365,6 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
             deuxmu = e/(1.d0+nu)
             troisk = e/(1.d0-2.d0*nu)
         endif
-    endif
-    demu = deuxmu
-    if (inco) then
-        cinco =(1.d0-2.d0*nu)/nu
     endif
 !
 !     -- 4 CALCUL DE DEPSMO ET DEPSDV :
