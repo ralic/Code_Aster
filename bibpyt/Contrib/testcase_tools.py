@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,11 @@ def change_test_resu():
         print i, val
     for i, kw in enumerate(keywords):
         print i, kw
-    assert len(results) == len(keywords), (len(results), len(keywords))
+    if len(results) == 0:
+        # suppose it's a validation testcase: set value to 1.0
+        results = [["VALID"] * 4] * len(keywords)
+    else:
+        assert len(results) == len(keywords), (len(results), len(keywords))
 
     changed = fort1
     while len(results) > 0:
@@ -67,6 +71,13 @@ def change_test_resu():
         newval = res[3]
         if newval == '-':   # null value skipped
             newval = '0.'
+        elif newval == "VALID":
+            if dico['key'] == 'VALE_CALC_I':
+                newval = '1'
+            elif dico['key'] == 'VALE_CALC_K':
+                newval = 'IGNORE'
+            else:
+                newval = '1.0'
         changed = changed[:start] + dico['key'] + '=' + newval + changed[end:]
     append_to_file('fort.6', howto, stdout=True)
     append_to_file('fort.6', changed, delimiter=DELIMITER, stdout=True)
