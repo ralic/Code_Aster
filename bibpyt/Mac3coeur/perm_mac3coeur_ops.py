@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,7 +97,7 @@ def perm_mac3coeur_ops(self, **args):
 
     _fluence = 0.0
     _timep1 = _coeurp1.definition_time(_fluence, 1.)
-    _FLU_NP1 = _coeurp1.definition_fluence(_fluence, _MA_NP1)
+    _FLU_NP1 = _coeurp1.definition_fluence(_fluence, _MA_NP1,0.)
     _CHTHNP1 = _coeurp1.definition_champ_temperature(_MA_NP1)
     _AFSCNP1 = _coeurp1.definition_materiau(
         _MA_NP1, _GFF_NP1, _FLU_NP1, _CHTHNP1, CONTACT='NON')

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -648,10 +648,10 @@ class Coeur(object):
         self.init_temps_simu(fluence, subdivis)
 
         _list = []
-        for _time in range(1, len(self._time)):
+        for _time in range(len(self._time)):
             _list.extend(m_time(_time))
 
-        _LI = DEFI_LIST_REEL(DEBUT=self.temps_simu['T0'], INTERVALLE=_list,)
+        _LI = DEFI_LIST_REEL(DEBUT=-1, INTERVALLE=_list,)
 
         
         if nbSubdEchec == 1 :
@@ -677,7 +677,7 @@ class Coeur(object):
         self.temps_simu['T8b'] = self.temps_simu['T8'] + Dt / 2
         self.temps_simu['T9'] = self.temps_simu['T8'] + Dt
 
-        self.sub_temps_simu['N0'] = 2
+        self.sub_temps_simu['N0'] = 1
         self.sub_temps_simu['N0b'] = 1
         self.sub_temps_simu['N1'] = 2 * subdivis
         self.sub_temps_simu['N2'] = 2
@@ -690,7 +690,7 @@ class Coeur(object):
         self.sub_temps_simu['N8b'] = 2 * subdivis * 2
         self.sub_temps_simu['N9'] = 1
 
-    def definition_fluence(self, fluence, MAILLAGE):
+    def definition_fluence(self, fluence, MAILLAGE, fluence_cycle):
         """Return the time evolution of the field of fluence"""
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
@@ -766,10 +766,35 @@ class Coeur(object):
         #-----------------------------------------------------
         # CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
         #-----------------------------------------------------
+        mcfm=[]
+        mcf0=[]
+        mcf1=[]
+        for ac in self.collAC.values():
+            (lgma,cyc) = ac.liste_gma_fluence()
+            mtmpm = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=0.)
+            mtmp0 = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=(cyc-1)*fluence_cycle)
+            mtmp1 = _F(GROUP_MA=lgma,NOM_CMP='INST', VALE=(cyc-1)*fluence_cycle+fluence)
+            mcfm.append(mtmpm)
+            mcf0.append(mtmp0)
+            mcf1.append(mtmp1)
+            
+        _INST_M = CREA_CHAMP(
+            OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
+            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
+            AFFE=mcfm)
+
+        _REST_M = CREA_CHAMP(
+            OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
+            CHAM_PARA=(_CH_FAXR, _CH_FRDR, _INST_M,))
+
+        _RES_M = CREA_CHAMP(
+            OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=MAILLAGE,
+            ASSE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), CHAM_GD=_REST_M, NOM_CMP='X1', NOM_CMP_RESU='IRRA',),),)
 
         _INST_0 = CREA_CHAMP(
             OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
-            AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
+            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=0.0),),)
+            AFFE=mcf0)
 
         _REST_0 = CREA_CHAMP(
             OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
@@ -781,7 +806,8 @@ class Coeur(object):
 
         _INST_1 = CREA_CHAMP(
             OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=MAILLAGE,
-            AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=fluence),),)
+            #AFFE=(_F(GROUP_MA=('T_GUIDE', 'CRAYON', 'ELA', 'MAINTIEN',), NOM_CMP='INST', VALE=fluence),),)
+            AFFE=mcf1)
 
         _REST_1 = CREA_CHAMP(
             OPERATION='EVAL', TYPE_CHAM='NOEU_NEUT_R', CHAM_F=_CHRES,
@@ -794,6 +820,7 @@ class Coeur(object):
         _FLUENC = CREA_RESU(
             TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA', OPERATION='AFFE',
             AFFE=(
+                _F(CHAM_GD=_RES_M, INST=-1, PRECISION=1.E-6),
                 _F(CHAM_GD=_RES_0, INST=self.temps_simu[
                    'T0'], PRECISION=1.E-6),
                 _F(CHAM_GD=_RES_0, INST=self.temps_simu[
@@ -913,8 +940,7 @@ class Coeur(object):
         _CHTH_1 = CREA_RESU(
             TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP', OPERATION='AFFE',
             AFFE=(
-                _F(CHAM_GD=_CHTEM11, INST=self.temps_simu[
-                   'T0'], PRECISION=1.E-6),
+                _F(CHAM_GD=_CHTEM11, INST=-1, PRECISION=1.E-6),
                 _F(CHAM_GD=_CHTEM11, INST=self.temps_simu[
                    'T1'], PRECISION=1.E-6),
                 _F(CHAM_GD=_CHTEM21, INST=self.temps_simu[

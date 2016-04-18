@@ -1,0 +1,152 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
+
+# UTILISATION : COMPARAISON DE LA SIMULATION NUMERIQUE D'UN ASSEMBLAGE
+#               COMBUSTIBLE EN FLEXION AVEC LES RESULTATS EXPERIMENTAUX
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'),IMPR_MACRO='OUI',PAR_LOT='NON')
+
+tabn = LIRE_TABLE(UNITE      = 38,
+                  FORMAT     = 'LIBRE',
+                  SEPARATEUR = '\t')
+
+MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+# "cuisson" d'un assemblage pendant un cycle
+CUIS = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
+                      TABLE_N     =  tabn,
+                      MAILLAGE_N  =  MA1,
+                      DEFORMATION = _F(UNITE_THYC   = 33,
+                                       NIVE_FLUENCE = 33.,
+                                       TYPE_MAINTIEN = 'FORCE',
+                                       FORCE_MAINTIEN =9000.,
+                                       ARCHIMEDE      = 'NON',
+                                       ),)
+# essai de flexion apres cuisson d'un cycle
+INI_C = PERM_MAC3COEUR( TYPE_COEUR_N   = 'MONO',
+                        TYPE_COEUR_NP1   = 'MONO',
+                         RESU_N       = CUIS,
+                         TABLE_N      = tabn,
+                         TABLE_NP1    = tabn,
+                         MAILLAGE_NP1 = MA1,)
+FLEX = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
+                      TABLE_N     =  tabn,
+                      #MAILLAGE_N  =  MA1,
+                      DEFORMATION = _F(UNITE_THYC   = 32,
+                                       NIVE_FLUENCE = 0.,
+                                       RESU_INIT    = INI_C,
+                                       TYPE_MAINTIEN = 'FORCE',
+                                       FORCE_MAINTIEN =9000.,
+                                       ARCHIMEDE      = 'NON',
+                                       ),)
+#essai de flexion d'un assemblage 2e cycle
+tabp = LIRE_TABLE(UNITE      = 39,
+                  FORMAT     = 'LIBRE',
+                  SEPARATEUR = '\t')
+FLEX2 = CALC_MAC3COEUR(TYPE_COEUR  = 'MONO',
+                      TABLE_N     =  tabp,
+                      MAILLAGE_N  =  MA1,
+                      FLUENCE_CYCLE = 33.,
+                      DEFORMATION = _F(UNITE_THYC   = 32,
+                                       NIVE_FLUENCE = 0.,
+                                       TYPE_MAINTIEN = 'FORCE',
+                                       FORCE_MAINTIEN =9000.,
+                                       ARCHIMEDE      = 'NON',
+                                       ),)
+
+# POST_MAC3COEUR(RESULTAT    =  FLEX,
+#                TYPE_COEUR  = 'MONO',
+#                INST        =  0.005,
+#                LAME        = ( _F( TYPE_RESU   = 'MINI', FORMAT = 'GRACE', UNITE = 51,),
+#                                _F( FORMAT = 'TABLE', UNITE = 50,),),
+#                DEFORMATION = ( _F( TYPE_RESU   = 'MAXI', FORMAT = 'GRACE', UNITE = 52, TYPE_VISU = 'AMPLITUDE',),
+#                                _F( TYPE_RESU   = 'MAXI', FORMAT = 'GRACE', UNITE = 53, TYPE_VISU = 'MODULE',), 
+#                                _F( TYPE_RESU   = 'MAXI', FORMAT = 'GRACE', UNITE = 54, TYPE_VISU = 'VECTEUR',), 
+#                                _F( FORMAT     = 'GRACE', POSITION = 'A_A', CONCEPTION = 'AFA', UNITE = 55, TYPE_VISU = 'DEFORME',),
+#                                _F( FORMAT = 'TABLE', NOM_SITE='BIDON', UNITE = 56, )))
+
+
+
+FLEX=CALC_CHAMP(reuse =FLEX,
+             RESULTAT=FLEX,
+             FORCE=('FORC_NODA',),)
+FLEX2=CALC_CHAMP(reuse =FLEX2,
+             RESULTAT=FLEX2,
+             FORCE=('FORC_NODA',),)
+
+POST1=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                        INTITULE='DY',
+                        RESULTAT =FLEX,
+                        NOM_CHAM ='DEPL',
+                        NOM_CMP = 'DY',
+                        GROUP_NO='P_A_A_6',),)
+POST12=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                        INTITULE='DY',
+                        RESULTAT =FLEX2,
+                        NOM_CHAM ='DEPL',
+                        NOM_CMP = 'DY',
+                        GROUP_NO='P_A_A_6',),)
+                        
+                       
+DEPLF=RECU_FONCTION(TABLE=POST1,PARA_X='INST',PARA_Y='DY',)
+DEPLF2=RECU_FONCTION(TABLE=POST12,PARA_X='INST',PARA_Y='DY',)
+
+POST2=POST_RELEVE_T(
+   ACTION=_F(INTITULE='FORCE',
+             GROUP_NO=('GRIL_6'),
+             RESULTAT=FLEX,
+             NOM_CHAM='FORC_NODA',
+             RESULTANTE=('DX','DY','DZ'),
+             REPERE='GLOBAL',
+             OPERATION='EXTRACTION',),)
+POST22=POST_RELEVE_T(
+   ACTION=_F(INTITULE='FORCE',
+             GROUP_NO=('GRIL_6'),
+             RESULTAT=FLEX2,
+             NOM_CHAM='FORC_NODA',
+             RESULTANTE=('DX','DY','DZ'),
+             REPERE='GLOBAL',
+             OPERATION='EXTRACTION',),)
+             
+             
+FORCF=RECU_FONCTION(TABLE=POST2,PARA_X='INST',PARA_Y='DY',)
+FORCF2=RECU_FONCTION(TABLE=POST22,PARA_X='INST',PARA_Y='DY',)
+# 
+# #l'activation des commandes suivantes permet
+# #de tracer la courbe force-deplacement
+# IMPR_FONCTION(FORMAT='XMGRACE',UNITE=29,
+#               COURBE=(_F(FONC_X=DEPLF,FONC_Y=FORCF,LEGENDE='Calcul avec cuisson',MARQUEUR =   0,COULEUR =    3,STYLE = 1,),
+#                       _F(FONC_X=DEPLF2,FONC_Y=FORCF2,LEGENDE='Calcul avec dcpt',MARQUEUR =   0,COULEUR =    4,STYLE = 1,),
+#                       ),
+#               BORNE_X=(0.,0.02),BORNE_Y=(0.,1200.),ECHELLE_X='LIN',ECHELLE_Y='LIN',GRILLE_X=0.002,GRILLE_Y=100.,LEGENDE_X='DY(m)',LEGENDE_Y='effort (N)',
+#               TITRE='comparaison cuisson puis flexion et flexion avec irradiation initiale',)
+
+TEST_TABLE(VALE_CALC=0.035194367257, NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.004,),)
+TEST_TABLE(VALE_CALC=0.00119643685924 , NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.007,),)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',PRECISION=1.e-2,VALE_CALC=0.0351447269286,  VALE_REFE=0.035194367257,NOM_PARA='DY',TABLE=POST12,FILTRE=_F(NOM_PARA='INST',VALE=0.004,),)
+TEST_TABLE(REFERENCE='AUTRE_ASTER',PRECISION=1.e-2,VALE_CALC=0.00119838874047, VALE_REFE=0.00119643685924,NOM_PARA='DY',TABLE=POST12,FILTRE=_F(NOM_PARA='INST',VALE=0.007,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.772613E-02,  VALE_REFE=0.0169076390399 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0038,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=2.047192E-02,  VALE_REFE=0.0196543999999 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.004 ,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.93978E-02,   VALE_REFE=0.0187401422331  ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0052,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.7249435E-02,   VALE_REFE=0.0168890686772 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0056,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.456393E-02,  VALE_REFE=0.0139267591864 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0061,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.402696E-02,   VALE_REFE=0.0133069778623 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0062,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=1.264583E-02,   VALE_REFE=0.0118844748128 ,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0064,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=8.19628E-03,  VALE_REFE=0.00844384945751,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.0068,),)
+#TEST_TABLE(CRITERE='RELATIF',REFERENCE='SOURCE_EXTERNE',PRECISION=0.175,VALE_CALC=5.65269E-03,  VALE_REFE=0.00636247000007,NOM_PARA='DY',TABLE=POST1,FILTRE=_F(NOM_PARA='INST',VALE=0.007 ,),)
+
+
+FIN()

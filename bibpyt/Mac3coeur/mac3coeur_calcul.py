@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -111,6 +111,7 @@ class Mac3CoeurCalcul(object):
         self._subdivis = 1
         self._use_archimede = None
         self.char_init = None
+        self.etat_init = None
 
         # cached properties
         self._init_properties()
@@ -149,7 +150,8 @@ class Mac3CoeurCalcul(object):
         # force the computation of the times to ensure it is done first
         # Note that times depends on niv_fluence and subdivis.
         self.times
-
+        self.fluence_cycle = self.keyw['FLUENCE_CYCLE']
+        
     def _run(self):
         """Run the calculation itself"""
         raise NotImplementedError('must be defined in a subclass')
@@ -280,7 +282,9 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def evol_fluence(self):
         """Return the evolution of the fluence fields"""
-        return self.coeur.definition_fluence(self.niv_fluence, self.mesh)
+        if self.etat_init :
+            assert (self.fluence_cycle == 0.)
+        return self.coeur.definition_fluence(self.niv_fluence, self.mesh,self.fluence_cycle)
 
     @property
     @cached_property
@@ -512,7 +516,6 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
     def __init__(self, macro, args,char_init=None):
         """Initialization"""
         super(Mac3CoeurDeformation, self).__init__(macro, args)
-        self.etat_init = None
         self.char_init=char_init
 
     def _prepare_data(self,noresu):
@@ -652,7 +655,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                   ))
 
         else :
-	                 
+                 
             constant_load += self.periodic_cond + self.rigid_load
             loads = constant_load \
                     + self.vessel_head_load \
@@ -661,6 +664,15 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             mater=[]
             ratio = 1.
             mater.append(self.cham_mater_contact_progressif(ratio))
+            print 'self.etat_init : ',self.etat_init
+            __RESULT = None
+            if (not self.etat_init) :
+                __RESULT = STAT_NON_LINE(**self.snl(CHAM_MATER=mater[-1],
+                                INCREMENT=_F(LIST_INST=self.times,
+                                             INST_FIN=0.),
+                                EXCIT=loads,
+                               ))
+                self.etat_init = _F(EVOL_NOLI=__RESULT,)
             keywords.append(self.snl(CHAM_MATER=mater[-1],
                                 INCREMENT=_F(LIST_INST=self.times_woSubd,
                                              INST_FIN=coeur.temps_simu['T0b']),
@@ -697,6 +709,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             else :
                 raise 'no convergence'
             keywords = self.snl(
+                                reuse=__RESULT,
                                 NEWTON= _F(MATRICE='TANGENTE',
                                     PREDICTION='DEPL_CALCULE',
                                     EVOL_NOLI = __res_int[-1],
@@ -942,8 +955,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         ratio = 1.
         mater.append(self.cham_mater_contact_progressif(ratio))
         keywords.append(self.snl(CHAM_MATER=mater[-1],
-                            INCREMENT=_F(LIST_INST=self.times_woSubd,
-                                         INST_FIN=coeur.temps_simu['T0b']),
+                            INCREMENT=_F(LIST_INST=self.times,
+                                         INST_FIN=0.),
                             EXCIT=self.rigid_load + self.archimede_load +
                             self.vessel_head_load +
                             self.vessel_dilatation_load +
@@ -952,6 +965,14 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             self.thyc_load[0] + self.thyc_load[1],
                            ))
         depl_deformed = self.deform_mesh(_snl_lame)
+        __RESULT = STAT_NON_LINE(**keywords[-1])
+        kwds = {
+                    'ETAT_INIT' : _F(EVOL_NOLI=__RESULT),
+                    'INCREMENT' : _F(LIST_INST=self.times_woSubd,
+                             INST_FIN=coeur.temps_simu['T0b']),
+
+            }
+        keywords[-1].update(kwds)
         nb_test = 0
         while nb_test < 5 :
             try :
@@ -997,6 +1018,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
 
         keywords = self.snl(
+                            reuse = __RESULT,
+                            ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                             NEWTON= _F(MATRICE='TANGENTE',
                                 PREDICTION='DEPL_CALCULE',
                                 EVOL_NOLI = __res_int[-1],
