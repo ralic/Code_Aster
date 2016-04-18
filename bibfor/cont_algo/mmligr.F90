@@ -24,14 +24,13 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmelem_data_c.h"
-#include "asterfort/mmelem_data_l.h"
 #include "asterfort/mmimp2.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mmlige.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,6 +124,7 @@ implicit none
         call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
         ztabf = cfmmvd('ZTABF')
     else if (l_cont_lac) then
+        ASSERT(.false.)
 !       sdcont_aplist = ds_contact%sdcont_solv(1:14)//'.APLIST'
 !       call jeveuo(sdcont_aplist, 'L', vi = v_sdcont_aplist)
     endif
@@ -163,6 +163,7 @@ implicit none
             elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
+            ASSERT(.false.)
 !           elem_slav_nume = v_sdcont_aplist(3*(i_cont_elem-1)+1)
 !           elem_mast_nume = v_sdcont_aplist(3*(i_cont_elem-1)+2)   
         endif
@@ -225,6 +226,7 @@ implicit none
                                    cont_geom_name_ = cont_geom_name,&
                                    cont_elem_name_ = cont_elem_name)
             else
+                ASSERT(.false.)
 !               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
 !                                  cont_geom_name_ = cont_geom_name,&
 !                                  cont_elem_name_ = cont_elem_name)
@@ -246,6 +248,7 @@ implicit none
                         i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
+                        ASSERT(.false.)
 !                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
 !                       l_frot = .false._1 
                     endif
@@ -273,6 +276,7 @@ implicit none
                                    cont_geom_name_ = cont_geom_name,&
                                    frot_elem_name_ = frot_elem_name)
             else
+                ASSERT(.false.)
 !               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
 !                                  cont_geom_name_ = cont_geom_name,&
 !                                  frot_elem_name_ = frot_elem_name)
@@ -294,6 +298,7 @@ implicit none
                         i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
+                        ASSERT(.false.)
 !                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
 !                       l_frot = .false._1 
                     endif

@@ -12,10 +12,9 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/mmchml_c.h"
-#include "asterfort/mmchml_l.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,6 +97,7 @@ implicit none
     if (l_cont_cont) then
         call mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     else if (l_cont_lac) then
+        ASSERT(.false.)
 !       call mmchml_l(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     endif
 !
