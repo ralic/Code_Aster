@@ -1,6 +1,6 @@
 subroutine b3d_valp33(x33, x3, v33)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,6 @@ subroutine b3d_valp33(x33, x3, v33)
 !     on affiche un message non bloquant
 !=====================================================================
     implicit none
-#include "asterfort/affiche33.h"
 #include "asterfort/assert.h"
 #include "asterfort/b3d_jacob3.h"
 #include "asterfort/matini.h"
@@ -167,40 +166,41 @@ subroutine b3d_valp33(x33, x3, v33)
 !     affichage des variables en cas de pb de diagonalisation
 !10    continue
     10 if(erreur)then
-    print*,'_______________________________'
-    print*,'pb vecteur propre ds b3d_valp33'
-    print*,'matrice deja digonale :',diago
-    print*,'ordre :',ordre
-    print*,'vp multiple :',vpmultiple
-    print*,'matrice a diagonaliser :'
-    call affiche33(x33)
-    print*,'valeurs propres:',x3(1),x3(2),x3(3)
-    print*,'x1-x2',x3(1)-x3(2)
-    print*,'x2-x3',x3(2)-x3(3)
-    print*,'|',epsv,'*x(1)|',abs(epsv * x3(1))
-    print*,'|',epsv,'*x(2)|',abs(epsv * x3(2))
-    print*,'matrice de passage:'
-    call affiche33(v33)
-    print*,'image matrice identite:'
-    call affiche33(u33)
-    print*,'Augmenter epsv dans b3d_valp33.eso'
+        ASSERT(.false.)
+!        print*,'_______________________________'
+!        print*,'pb vecteur propre ds b3d_valp33'
+!        print*,'matrice deja digonale :',diago
+!        print*,'ordre :',ordre
+!        print*,'vp multiple :',vpmultiple
+!        print*,'matrice a diagonaliser :'
+!        call affiche33(x33)
+!        print*,'valeurs propres:',x3(1),x3(2),x3(3)
+!        print*,'x1-x2',x3(1)-x3(2)
+!        print*,'x2-x3',x3(2)-x3(3)
+!        print*,'|',epsv,'*x(1)|',abs(epsv * x3(1))
+!        print*,'|',epsv,'*x(2)|',abs(epsv * x3(2))
+!        print*,'matrice de passage:'
+!        call affiche33(v33)
+!        print*,'image matrice identite:'
+!        call affiche33(u33)
+!        print*,'Augmenter epsv dans b3d_valp33.eso'
 !      pour poursuivre le calcul on suppose la base principale
 !      confondu avec la base fixe
-    do i = 1, 3
-        do j = i, 3
-            if (i .eq. j) then
-                v33(i,i)=1.d0
-            else
-                v33(i,j)=0.d0
-                v33(j,i)=0.d0
-            end if
-        end do
-        x3(i)=x33(i,i)
-    end do
-    print*,'on impose la base principale=la base fixe'
-    call affiche33(x33)
-    print*,'valeurs propres:',x3(1),x3(2),x3(3)
-    print*,'matrice de passage:'
-    call affiche33(v33)
-end if
+!        do i = 1, 3
+!            do j = i, 3
+!                if (i .eq. j) then
+!                    v33(i,i)=1.d0
+!                else
+!                    v33(i,j)=0.d0
+!                    v33(j,i)=0.d0
+!                end if
+!            end do
+!            x3(i)=x33(i,i)
+!        end do
+!        print*,'on impose la base principale=la base fixe'
+!        call affiche33(x33)
+!        print*,'valeurs propres:',x3(1),x3(2),x3(3)
+!        print*,'matrice de passage:'
+!        call affiche33(v33)
+    end if
 end subroutine

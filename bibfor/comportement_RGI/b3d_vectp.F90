@@ -1,6 +1,6 @@
 subroutine b3d_vectp(aa, vp, x, n)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ subroutine b3d_vectp(aa, vp, x, n)
 !     n : multiplicite de la valeur propre
 !=====================================================================
     implicit none
-#include "asterfort/affiche33.h"
+#include "asterfort/assert.h"
     real(kind=8) :: aa(3, 3)
     real(kind=8) :: vp, a, b, c, d, e, f, det1, det2, det3, xn, xsc
     real(kind=8) :: x(*)
@@ -59,9 +59,9 @@ subroutine b3d_vectp(aa, vp, x, n)
             x(2)=x(2)/xn
             x(3)=x(3)/xn
         else
-            print*,'norme nulle ds b3d_vectp',n
-            print*,'matrice a diagonaliser :'
-            call affiche33(aa)
+!            print*,'norme nulle ds b3d_vectp',n
+!            print*,'matrice a diagonaliser :'
+            ASSERT(.false.)
         end if
     else if (n.eq.2) then
         if (abs(a) .ge. abs(d) .and. abs(a) .ge. abs(f)) then
