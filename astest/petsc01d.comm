@@ -24,19 +24,19 @@ for matr_distribuee in ('OUI', 'NON') :
          if  type_partition == 1 :
              MO=AFFE_MODELE(MAILLAGE=MA,
                         AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
-                        PARTITION=_F(PARALLELISME='GROUP_ELEM+', NB_PART=3))
+                        DISTRIBUTION=_F(METHODE='SOUS_DOMAINE', NB_SOUS_DOMAINE=3))
          elif  type_partition == 2 :
              MO=AFFE_MODELE(MAILLAGE=MA,
                         AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
-                        PARTITION=_F(PARALLELISME='GROUP_ELEM'))
+                        DISTRIBUTION=_F(METHODE='GROUP_ELEM'))
          elif  type_partition == 3 :
              MO=AFFE_MODELE(MAILLAGE=MA,
                         AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
-                        PARTITION=_F(PARALLELISME='MAIL_CONTIGU'))
+                        DISTRIBUTION=_F(METHODE='MAIL_CONTIGU'))
          elif  type_partition == 4 :
              MO=AFFE_MODELE(MAILLAGE=MA,
                         AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),
-                        PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+                        DISTRIBUTION=_F(METHODE='MAIL_DISPERSE'))
          else :
              assert 0, type_partition
 

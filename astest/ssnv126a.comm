@@ -138,7 +138,7 @@ CTHER=CREA_RESU(OPERATION='AFFE',
                    INST=3000000.0)));
 
 EPD3=AFFE_MODELE(MAILLAGE=EPROU,
-                 PARTITION=_F(PARALLELISME='CENTRALISE'),
+                 DISTRIBUTION=_F(METHODE='CENTRALISE'),
                  AFFE=_F(MAILLE='MA1',
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D'));

@@ -23,7 +23,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='3D',),
-               PARTITION=_F(PARALLELISME='GROUP_ELEM+', NB_PART=4,),
+               DISTRIBUTION=_F(METHODE='SOUS_DOMAINE', NB_SOUS_DOMAINE=4,),
                );
 
 MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,

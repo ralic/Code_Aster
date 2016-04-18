@@ -93,7 +93,7 @@ TPS=DEFI_LIST_REEL(DEBUT=0.0,
 # 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE
 #----------------------------------------------------------
 
-MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='CENTRALISE'))
+MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='CENTRALISE'))
 MECAC=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,
@@ -129,7 +129,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #       EQUILIBRAGE DE CHARGE AUTOMATIQUE
 #----------------------------------------------------------
 
-X="""MODI_MODELE(reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+X="""MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='MAIL_DISPERSE'))
 MECAD1=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
                      CHAM_MATER=CHAM_MAT,

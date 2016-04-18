@@ -36,7 +36,7 @@ STRUCTUR=AFFE_MODELE(    MAILLAGE=MAYA,
                                AFFE=_F(  TOUT = 'OUI',
                                       MODELISATION = '3D',
                                       PHENOMENE = 'MECANIQUE'),
-                           PARTITION=_F(PARALLELISME='CENTRALISE'),
+                           DISTRIBUTION=_F(METHODE='CENTRALISE'),
                             )
 
 # CALCUL DES MATRICES ELEMENTAIRES DE RIGIDITE ET DE MASSE

@@ -140,7 +140,7 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef,&
     if (partit .ne. ' ') then
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1)(1:10).eq.'GROUP_ELEM'
+        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         call asmpi_info(rank=mrank, size=msize)
         rang = to_aster_int(mrank)
         nbproc = to_aster_int(msize)

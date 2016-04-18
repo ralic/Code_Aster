@@ -23,7 +23,7 @@ MO=AFFE_MODELE(   MAILLAGE=MA,
                   AFFE=_F(  MAILLE = 'D1',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = 'DIS_TR'),
-                  PARTITION=_F(PARALLELISME='CENTRALISE'))
+                  DISTRIBUTION=_F(METHODE='CENTRALISE'))
 
 F1=DEFI_FONCTION(   NOM_PARA='INST',
                       VALE=(0., 0., 4., 4., 6., 2., 10., 6., 12., 4.),

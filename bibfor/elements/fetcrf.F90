@@ -57,7 +57,7 @@ subroutine fetcrf(sdpart1,nomo,nbsd)
 ! DECLARATION VARIABLES LOCALES
     integer :: nbno, lstgma, nomsd, jadr, i
     integer :: j, intbuf, nec30
-    integer :: nbnot2, iret, ier, nbnoto, ialino, jtrav, ianbno
+    integer :: nbnot2, nbnoto, ialino, jtrav, ianbno
     integer :: nbmail, ialima, nbnosd, nb, ianbma, is9, incrs, l, xt
     integer :: yt, zt, k, nbma, linoma,  jprnm
     integer :: nec, n, ino, ialsk, ialspo, ipos, jtmp

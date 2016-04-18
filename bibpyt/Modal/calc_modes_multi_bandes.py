@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,7 +129,7 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
             motdimo = {}
             motdimo['reuse'] = sd_modele
             motdimo['MODELE'] = sd_modele
-            motdimo['PARTITION'] = _F(PARALLELISME='CENTRALISE')
+            motdimo['DISTRIBUTION'] = _F(METHODE='CENTRALISE')
             __modimo = MODI_MODELE(**motdimo)
 
     # INFO_MODE global sur la liste de frequences
@@ -419,7 +419,7 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
             motdimo = {}
             motdimo['reuse'] = sd_modele
             motdimo['MODELE'] = sd_modele
-            motdimo['PARTITION'] = _F(PARALLELISME=old_prtk1)
+            motdimo['DISTRIBUTION'] = _F(METHODE=old_prtk1)
             __modimo = MODI_MODELE(**motdimo)
 
     return modes

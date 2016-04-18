@@ -240,7 +240,7 @@ implicit none
         ca_nbproc_ = to_aster_int(msize)
 
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ca_ldgrel_= prtk(1).eq.'GROUP_ELEM+' .or. prtk(1).eq.'GROUP_ELEM' 
+        ca_ldgrel_= prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM' 
         if (.not.ca_ldgrel_) then
             call jeveuo(partit//'.PRTI', 'L', vi=prti)
             if (prti(1) .ne. ca_nbproc_) then

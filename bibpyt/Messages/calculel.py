@@ -137,11 +137,11 @@ Risques & Conseils :
 
     25 : _(u"""
 Erreur utilisateur dans PROJ_SPEC_BASE :
- La commande n'accepte que le parallélisme de type PARTITION='CENTRALISE'.
+ La commande n'accepte que le parallélisme de type METHODE='CENTRALISE'.
  Modèle impliqué : %(k1)s
 
 Conseil :
- Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser PARTITION='CENTRALISE'
+ Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser METHODE='CENTRALISE'
 """),
 
     26 : _(u"""

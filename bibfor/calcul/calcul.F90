@@ -305,7 +305,7 @@ implicit none
     loop_grel : &
     do ca_igr_ = 1, ca_nbgr_
 
-!       -- si parallelisme='group_elem' : on peut parfois tout "sauter"
+!       -- si methode='GROUP_ELEM' ou 'SOUS_DOMAINE' : on peut tout "sauter"
         if (ca_ldgrel_ .and. mod(ca_igr_,ca_nbproc_) .ne. ca_rang_) cycle loop_grel
 
 !       -- si le grel est vide, il faut "sauter" :

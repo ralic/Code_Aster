@@ -21,8 +21,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 #===========================================================================================
 # Ce test valide le parallelisme des calculs elementaires et des assemblages.
 # Il teste TOUTES les combinaisons de :
-#   * PARTITION/PARALLELISME=/'CENTRALISE'/'MAIL_CONTIGU'/'MAIL_DISPERSE'
-#                            /'GROUP_ELEM'/'GROUP_ELEM+'/'SOUS_DOMAINE'/
+#   * DISTRIBUTION/METHODE=  /'CENTRALISE'/'MAIL_CONTIGU'/'MAIL_DISPERSE'
+#                            /'GROUP_ELEM'/'SOUS_DOMAINE'/'SOUS_DOM.OLD'/
 #   * MATR_DISTRIBUE='OUI'/'NON'
 #   * ELIM_LAGR='LAGR2'/'NON'
 #   * conditions cinematiques : dualisees / eliminees / "a cheval" sur plusieurs processeurs
@@ -36,12 +36,12 @@ MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,  NU = 0.3) )
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,  AFFE=_F(  TOUT = 'OUI',  MATER = MAT) )
 
 
-lparallel= ('CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 'SOUS_DOMAINE', 'GROUP_ELEM', 'GROUP_ELEM+')
+lparallel= ('CENTRALISE', 'MAIL_DISPERSE', 'MAIL_CONTIGU', 'SOUS_DOM.OLD', 'GROUP_ELEM', 'SOUS_DOMAINE')
 
 for nopartit in lparallel :
     MO=AFFE_MODELE(  MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
-                      PARTITION=_F(PARALLELISME=nopartit),)
+                      DISTRIBUTION=_F(METHODE=nopartit),)
 
     CARELEM=AFFE_CARA_ELEM(  MODELE=MO, COQUE=_F(  GROUP_MA = 'CARRE', EPAIS = 1.) )
     CL2=AFFE_CHAR_MECA(  MODELE=MO, FORCE_NODALE=_F(GROUP_NO='C', FX=3.5))
@@ -99,7 +99,7 @@ for nopartit in lparallel :
 for nopartit in lparallel :
     MO=AFFE_MODELE(  MAILLAGE=MA,
                       AFFE=_F(  TOUT = 'OUI', PHENOMENE = 'MECANIQUE', MODELISATION = 'DKT'),
-                      PARTITION=_F(PARALLELISME=nopartit),)
+                      DISTRIBUTION=_F(METHODE=nopartit),)
 
     CARELEM=AFFE_CARA_ELEM(  MODELE=MO, COQUE=_F(  GROUP_MA = 'CARRE', EPAIS = 1.) )
     CL2=AFFE_CHAR_MECA(  MODELE=MO, FORCE_NODALE=_F(GROUP_NO='C', FX=3.5))
@@ -116,13 +116,13 @@ for nopartit in lparallel :
                           EXCIT=(_F(  CHARGE = CL1), _F(  CHARGE = CL2))  )
 
     for nopartit2 in lparallel :
-        MODI_MODELE(  reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME=nopartit2),)
+        MODI_MODELE(  reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE=nopartit2),)
         RESU2=CALC_CHAMP(RESULTAT = RESU1, DEFORMATION = ('EPSI_ELGA',),)
         TEST_RESU(OBJET=_F(NOM='RESU2   .009.000000.CELV', VALE_CALC=577.172255332, ))
         DETRUIRE(CONCEPT=_F(NOM=(RESU2)),INFO=1)
 
 #   -- on remet la partition en etat pour la boucle principale :
-    MODI_MODELE(  reuse=MO, MODELE=MO, PARTITION=_F(PARALLELISME=nopartit),)
+    MODI_MODELE(  reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE=nopartit),)
 
     DETRUIRE(CONCEPT=_F(NOM=(MO, CARELEM, CL2, CL1, RESU1)),INFO=1)
 

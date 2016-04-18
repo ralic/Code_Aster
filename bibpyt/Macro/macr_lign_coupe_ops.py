@@ -914,7 +914,7 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
                               AFFE=_F(TOUT='OUI',
                                       PHENOMENE='MECANIQUE',
                                       MODELISATION='BARRE',),
-                              PARTITION=_F(PARALLELISME='CENTRALISE'),
+                              DISTRIBUTION=_F(METHODE='CENTRALISE'),
                               )
     elif AsType(RESULTAT).__name__ in ('evol_ther', 'evol_varc',):
         __mocou = AFFE_MODELE(MAILLAGE=__macou,

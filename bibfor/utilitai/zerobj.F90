@@ -14,7 +14,7 @@ function zerobj(obj)
     character(len=*) :: obj
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,7 +85,7 @@ function zerobj(obj)
             call jeexin(jexnum(obj2, i), iret)
             if (iret .eq. 0) goto 10
 !         -- SI UN OBJET N'A PAS D'ADRESSE DISQUE, C'EST QU'IL EST NUL :
-!            (CELA PEUT ARRIVER SI PARALLELISME='GROUP_ELEM')
+!            (CELA PEUT ARRIVER SI METHODE='GROUP_ELEM')
             call jaexin(jexnum(obj2, i), iexi)
             if (iexi .eq. 0) goto 10
             call jeveuo(jexnum(obj2, i), 'L', jval)

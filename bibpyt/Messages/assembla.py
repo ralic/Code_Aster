@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ cata_msg = {
  Ici, le processeur %(i1)d ne s'est vu attribué aucun ddl.
 
  Conseil : Modifiez le partitionnement des mailles de votre modèle dans
-           AFFE_MODELE/PARTITION/PARALLELISME ou diminuez le nombre de processeurs.
+           AFFE_MODELE/DISTRIBUTION/METHODE ou diminuez le nombre de processeurs.
 """),
 
     5 : _(u"""

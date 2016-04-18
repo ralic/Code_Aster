@@ -56,15 +56,15 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 !     * il faut appeler cette routine apres adalig si cette derniere
 !       est appelee (cas de op0018)
 ! ----------------------------------------------------------------------
-    character(len=8) :: modele, partit, mopart, valk(3), nomres, methode
+    character(len=8) :: modele, partit, mopart, valk(3), nomres
     character(len=16) :: typres, nomcom
     character(len=19) :: ligrmo, sd_partit1
     character(len=24) :: k24b
     integer :: i, rang, nbproc, ifm, niv, ibid, jpart, nbsd, nbma
     integer :: idd, nbmasd, i2, nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
-    integer :: iexi, nbpart
+    integer :: iexi
     integer :: icobis, dist0, jnumsd, jparsd, jfeta, vali(3), nbmamo, ima
-    integer :: nbgrel, jrepe, jprti, jprtk
+    integer ::  jprti, jprtk
     aster_logical :: plein0, exi_sdpart1
     integer, pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
@@ -125,9 +125,9 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
     if (kdis .eq. 'CENTRALISE') goto 999
 
 
-!   -- la sd_partit1 est a fournir si 'SOUS_DOMAINE' ou 'GROUP_ELEM+'
+!   -- la sd_partit1 est a fournir si 'SOUS_DOM.OLD' ou 'SOUS_DOMAINE'
 !   -------------------------------------------------------------------
-    exi_sdpart1=(kdis .eq. 'GROUP_ELEM+' .or. kdis .eq. 'SOUS_DOMAINE')
+    exi_sdpart1=(kdis .eq. 'SOUS_DOMAINE' .or. kdis .eq. 'SOUS_DOM.OLD')
     if (exi_sdpart1) then
         ASSERT(sd_partit1.ne.' ')
     else
@@ -153,7 +153,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
     zi(jprti-1+1)=nbproc
     call wkvect(partit//'.PRTK', base//' V K24', 2, jprtk)
     zk24(jprtk-1+1)= kdis
-    if (kdis(1:5) .eq. 'MAIL_'.or. kdis .eq. 'SOUS_DOMAINE') then
+    if (kdis(1:5) .eq. 'MAIL_'.or. kdis .eq. 'SOUS_DOM.OLD') then
         call wkvect(partit//'.NUPROC.MAILLE', base//' V I', nbma+1, jnumsd)
         zi(jnumsd-1+nbma+1) = nbproc
 
@@ -169,13 +169,13 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 !   -- Recuperations des mot-cles :
 !   -------------------------------
     if (exi_sdpart1) then
-        call getvis('PARTITION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
+        call getvis('DISTRIBUTION', 'CHARGE_PROC0_SD', iocc=1, scal=dist0, nbret=ibid)
         if (ibid.eq.0) dist0=0
         ASSERT(sd_partit1.ne.' ')
         zk24(jprtk-1+2)= sd_partit1
 
     else if (kdis(1:5).eq.'MAIL_') then
-        call getvis('PARTITION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
+        call getvis('DISTRIBUTION', 'CHARGE_PROC0_MA', iocc=1, scal=dist0, nbret=ibid)
         ASSERT(sd_partit1.eq.' ')
     endif
 
@@ -223,7 +223,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
 !   Remplissage de la sd
 ! ----------------------------------------------------------------------
 
-    if (kdis .eq. 'SOUS_DOMAINE') then
+    if (kdis .eq. 'SOUS_DOM.OLD') then
 !   ----------------------------------
         call wkvect('&&AJLIPA.PARTITION.SD', 'V V I', nbsd, jparsd)
         call sdpart(nbsd, dist0, zi(jparsd))
@@ -311,7 +311,7 @@ subroutine ajlipa(modelz, base, kdis, sd_partit1z)
         ASSERT(ico.eq.nbmamo)
 
 
-    else if (kdis.eq.'GROUP_ELEM' .or. kdis.eq.'GROUP_ELEM+') then
+    else if (kdis.eq.'GROUP_ELEM' .or. kdis.eq.'SOUS_DOMAINE') then
 !   ----------------------------------------------------------------
 !       -- il n'y a rien a faire !
 !       La regle pour les calculs elementaires et les assemblages est :

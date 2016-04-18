@@ -613,7 +613,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DKT',),
                            ),
-                   PARTITION=_F(PARALLELISME='CENTRALISE',),
+                   DISTRIBUTION=_F(METHODE='CENTRALISE',),
                      );
 
 ELEMB=AFFE_CARA_ELEM(MODELE=MODELB,

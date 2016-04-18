@@ -430,19 +430,19 @@ subroutine op0018()
     sd_partit1=' '
     call asmpi_info(rank=mrank, size=msize)
     nbproc = to_aster_int(msize)
-    call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=n1)
+    call getvtx('DISTRIBUTION', 'METHODE', iocc=1, scal=kdis, nbret=n1)
     ASSERT(n1.eq.1)
     if (nbproc.eq.1) kdis='CENTRALISE'
-    if (kdis.eq.'SOUS_DOMAINE' .or. kdis.eq.'GROUP_ELEM+') then
+    if (kdis.eq.'SOUS_DOM.OLD' .or. kdis.eq.'SOUS_DOMAINE') then
         call gcncon('_', sd_partit1)
-        call getvtx('PARTITION', 'METHODE', iocc=1, scal=methode, nbret=n1)
+        call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)
         ASSERT(n1.eq.1)
-        call getvis('PARTITION', 'NB_PART', iocc=1, scal=nbpart, nbret=n1)
+        call getvis('DISTRIBUTION', 'NB_SOUS_DOMAINE', iocc=1, scal=nbpart, nbret=n1)
         if (n1.eq.0) nbpart=nbproc
         call fetskp(model,methode,nbpart)
         call fetcrf(sd_partit1,model,nbpart)
     endif
-    if (kdis.eq.'GROUP_ELEM+') then
+    if (kdis.eq.'SOUS_DOMAINE') then
         call adalig(ligrel,sd_partit1)
     else
         call adalig(ligrel)

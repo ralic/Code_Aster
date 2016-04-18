@@ -180,7 +180,7 @@ subroutine nugllo(nu, base)
         ASSERT(nbproc.gt.1)
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1)(1:10).eq.'GROUP_ELEM'
+        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif

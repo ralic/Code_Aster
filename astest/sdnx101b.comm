@@ -41,7 +41,7 @@ MODELE=AFFE_MODELE(MAILLAGE=MAIL,
                          _F(GROUP_MA='LIGRAD',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_T',),),
-                    PARTITION=_F(PARALLELISME='GROUP_ELEM'),
+                    DISTRIBUTION=_F(METHODE='GROUP_ELEM'),
                             );
 
 MODELE1=AFFE_MODELE(MAILLAGE=MAIL,
@@ -51,7 +51,7 @@ MODELE1=AFFE_MODELE(MAILLAGE=MAIL,
                          _F(GROUP_MA='PSI0',
                             PHENOMENE='MECANIQUE',
                             MODELISATION='DIS_TR',),),
-                    PARTITION=_F(PARALLELISME='GROUP_ELEM'),
+                    DISTRIBUTION=_F(METHODE='GROUP_ELEM'),
                     );
 
 #
@@ -434,7 +434,7 @@ MODELB=AFFE_MODELE(MAILLAGE=MAILB,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='DIS_TR',),
                         ),
-                    PARTITION=_F(PARALLELISME='GROUP_ELEM'),
+                    DISTRIBUTION=_F(METHODE='GROUP_ELEM'),
                   );
 #
 # ----------------------------------------------------------------------

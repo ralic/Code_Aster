@@ -330,7 +330,7 @@ PRE_SEISME_NONL(
                               PHENOMENE='MECANIQUE',
                               MODELISATION='DKT',),
                            ),
-                   PARTITION=_F(PARALLELISME='CENTRALISE'),
+                   DISTRIBUTION=_F(METHODE='CENTRALISE'),
                                ),
 
             AFFE_CARA_ELEM = _F(

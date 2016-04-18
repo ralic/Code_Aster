@@ -66,11 +66,11 @@ subroutine creagm(nbmato, nbpart, ma, masd)
     character(len=8) :: ma
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: id1, i, err, isd, nbma, ima, nbre, idma, jvg, jgg, ifm, niv
-    integer :: nbgma, nbgrsd
+    integer :: id1, isd, nbma, ima, nbre, idma, ifm, niv
+    integer ::  nbgrsd
     real(kind=8) :: tmps(7)
     character(len=8) :: ktmp
-    character(len=24) :: nom, grpmav, grpma, gpptnm, grpema
+    character(len=24) ::  grpema
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME
     call jemarq()

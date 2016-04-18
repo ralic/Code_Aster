@@ -34,7 +34,7 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT')),
 # ce test n'a qu'un seul GREL, 'GROUP_ELEM' n'est pas possible
-               PARTITION=_F(PARALLELISME='MAIL_DISPERSE'));
+               DISTRIBUTION=_F(METHODE='MAIL_DISPERSE'));
 
 MA=DEFI_GROUP(reuse =MA,
               MAILLAGE=MA,

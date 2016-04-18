@@ -46,7 +46,7 @@ subroutine adalig(ligrz,sd_partit1)
 !
 ! On veut :
 !   * Limiter la taille des GRELS (pas plus de nelmx elements)
-!   * Faire en sorte que l'equilibrage soit bon pour le PARALLELISME='GROUP_ELEM' :
+!   * Faire en sorte que l'equilibrage soit bon pour DISTRIBUTION / METHODE='GROUP_ELEM' :
 !     * Pour chaque TYPE_ELEM :
 !       On decoupe le paquet d'elements en un nombre de grels multiple de nbproc.
 !     * Si sd_partit1 est n'est pas fourni :

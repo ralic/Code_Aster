@@ -23,7 +23,7 @@ cata_msg = {
  Il y a moins de sous-domaines (%(i1)d) que de processeurs participant au calcul (%(i2)d).
 
  Conseils :
-   - augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
+   - augmentez le nombre de sous-domaines de la partition du mot-clé DISTRIBUTION
    - diminuez le nombre de processeurs du calcul
 """),
 
@@ -32,7 +32,7 @@ cata_msg = {
  Le code ne sait pas traiter ce cas de figure.
  Conseils :
    - diminuez le nombre de processeurs du calcul.
-   - diminuez le nombre de sous-domaines de la partition du mot-clé PARTITION.
+   - diminuez le nombre de sous-domaines de la partition du mot-clé DISTRIBUTION
    - n'utilisez pas le parallélisme (trop peu d'éléments).
  
 """),
@@ -60,12 +60,12 @@ cata_msg = {
 """),
 
     99 : _(u"""
- Le paramètre CHARGE_PROC0_SD du mot-clé facteur PARTITION est mal renseigné.
+ Le paramètre CHARGE_PROC0_SD du mot-clé facteur DISTRIBUTION est mal renseigné.
  Il faut qu'il reste au moins un sous domaine par processeur une fois affectés tous les sous-domaines du processeur 0.
 
  Conseils :
    - laissez le mot-clé CHARGE_PROC0_SD à sa valeur par défaut
-   - diminuez le nombre de processeurs du calcul ou bien augmentez le nombre de sous-domaines de la partition du mot-clé PARTITION
+   - diminuez le nombre de processeurs du calcul ou bien augmentez le nombre de sous-domaines de la partition du mot-clé DISTRIBUTION
 """),
 
 }

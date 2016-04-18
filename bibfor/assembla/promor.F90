@@ -155,7 +155,7 @@ subroutine promor(nuz, base)
 !
 !---- QUEL TYPE DE PARTITION ?
 !     LDIST=.TRUE.  : LES CALCULS ELEMENTAIRES SONT DISTRIBUES
-!     LDGREL=.TRUE. : PARTITION DE TYPE 'GROUP_ELEM'
+!     LDGREL=.TRUE. : DISTRIBUTION DE TYPE 'GROUP_ELEM'
     call dismoi('NOM_LIGREL', mo, 'MODELE', repk=nomlig)
     call dismoi('PARTITION', nomlig, 'LIGREL', repk=partit)
     call asmpi_info(rank=mrank, size=msize)
@@ -166,7 +166,7 @@ subroutine promor(nuz, base)
     if (partit .ne. ' ') then
         ldist=.true.
         call jeveuo(partit//'.PRTK', 'L', vk24=prtk)
-        ldgrel=prtk(1)(1:10).eq.'GROUP_ELEM'
+        ldgrel=prtk(1).eq.'SOUS_DOMAINE' .or. prtk(1).eq.'GROUP_ELEM'
         if (.not.ldgrel) then
             call jeveuo(partit//'.NUPROC.MAILLE', 'L', vi=maille)
         endif

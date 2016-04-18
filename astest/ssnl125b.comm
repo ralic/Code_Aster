@@ -70,7 +70,7 @@ MO = AFFE_MODELE(MAILLAGE = MA,
                  AFFE     = _F(GROUP_MA     = 'MATIERE',
                                PHENOMENE    = 'MECANIQUE',
                                MODELISATION = 'AXIS_GRAD_VARI'),
-                 PARTITION=_F(PARALLELISME='MAIL_DISPERSE'))
+                 DISTRIBUTION=_F(METHODE='MAIL_DISPERSE'))
 
 # -----------------------------------------------------
 #                  PARAMETRES MATERIAU

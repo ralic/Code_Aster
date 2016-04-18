@@ -118,7 +118,7 @@ subroutine adalig_sd(ligr,sd_partit1,ntliel,nbtype,clas,teut,nteut)
 !   -- Calcul du vecteur traite_par:
 !      traite_par(ima) = kproc
 !   -----------------------------------------------
-!   -- on repartit les sous-domaines comme on le fait pour PARALLELISME='SOUS_DOMAINE' :
+!   -- on repartit les sous-domaines comme on le fait pour DISTRIBUTION / METHODE='SOUS_DOM.OLD' :
     call wkvect('&&ADALIG_SD.PART.SD', 'V V I', nbsd, vi=partsd)
     call sdpart(nbsd, 0, partsd)
 

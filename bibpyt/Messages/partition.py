@@ -25,7 +25,7 @@ cata_msg = {
     2: _(u"""
 Le modèle ne contient aucun élément fini. On ne peut pas le partitionner.
 
-Conseil : il faut utiliser PARTITION / PARALLELISME='CENTRALISE'
+Conseil : il faut utiliser DISTRIBUTION / METHODE='CENTRALISE'
 """),
 
     3: _(u"""

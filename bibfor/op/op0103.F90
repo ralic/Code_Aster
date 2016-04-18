@@ -46,19 +46,19 @@ subroutine op0103()
     ASSERT(ib.eq.1)
     call asmpi_info(rank=mrank, size=msize)
     nbproc = to_aster_int(msize)
-    call getvtx('PARTITION', 'PARALLELISME', iocc=1, scal=kdis, nbret=n1)
+    call getvtx('DISTRIBUTION', 'METHODE', iocc=1, scal=kdis, nbret=n1)
     ASSERT(n1.eq.1)
     if (nbproc.eq.1) kdis='CENTRALISE'
 
-!   -- pour MODI_MODELE : 'GROUP_ELEM+' == 'GROUP_ELEM'
-    if (kdis.eq.'GROUP_ELEM+') kdis='GROUP_ELEM'
+!   -- pour MODI_MODELE : 'SOUS_DOMAINE' == 'GROUP_ELEM'
+    if (kdis.eq.'SOUS_DOMAINE') kdis='GROUP_ELEM'
 
     sd_partit1=' '
-    if (kdis.eq.'SOUS_DOMAINE') then
+    if (kdis.eq.'SOUS_DOM.OLD') then
         call gcncon('_', sd_partit1)
-        call getvtx('PARTITION', 'METHODE', iocc=1, scal=methode, nbret=n1)
+        call getvtx('DISTRIBUTION', 'PARTITIONNEUR', iocc=1, scal=methode, nbret=n1)
         ASSERT(n1.eq.1)
-        call getvis('PARTITION', 'NB_PART', iocc=1, scal=nbpart, nbret=n1)
+        call getvis('DISTRIBUTION', 'NB_SOUS_DOMAINE', iocc=1, scal=nbpart, nbret=n1)
         if (n1.eq.0) nbpart=nbproc
         call fetskp(model,methode,nbpart)
         call fetcrf(sd_partit1,model,nbpart)
