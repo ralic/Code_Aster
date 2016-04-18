@@ -1,4 +1,5 @@
-P time_limit 300
+# time_limit increased of distribution of sub-computations
+P time_limit 600
 P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
