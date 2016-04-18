@@ -227,10 +227,8 @@ subroutine fetskp(mod,meth,nbpart)
              call utmess('F', 'EXECLOGICIEL0_24', si=vali(1))
          endif
          lrep = lxlgut(rep)
-         if (meth .eq. 'PMETIS  ') then
-             jnom(1)=rep(1:lrep)//'/pmetis'
-         else if (meth .eq. 'KMETIS  ') then
-             jnom(1)=rep(1:lrep)//'/kmetis'
+         if (meth .eq. 'METIS  ') then
+             jnom(1)=rep(1:lrep)//'/gpmetis'
          endif
          call aplext(niv, 3, jnom, err)
     endif

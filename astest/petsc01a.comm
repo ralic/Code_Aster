@@ -109,7 +109,7 @@ TEST_RESU(RESU=(_F(RESULTAT=VECAS,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
                    NOEUD='NO2974',
-                   VALE_CALC=-2.91750127119E-05,
+                   VALE_CALC=-2.91749793803E-05,
                    VALE_REFE=-2.9173e-05,
                    PRECISION=0.00015,
                    REFERENCE='AUTRE_ASTER',),),);

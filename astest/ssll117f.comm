@@ -52,6 +52,8 @@ MODELE   = AFFE_MODELE( MAILLAGE = MAILLAGE,
                                     _F( GROUP_MA     = 'ROCHE_RE',
                                         PHENOMENE    = 'MECANIQUE',
                                         MODELISATION = 'D_PLAN_2DG'),),
+                        # Si PARTITIONNEUR='METIS' : le programme METIS se plante (issue25116) :
+                        DISTRIBUTION=_F(METHODE='SOUS_DOMAINE', PARTITIONNEUR='SCOTCH',),
                         );
 
 SOL1  = DEFI_MATERIAU( ELAS      = _F( E           = 1000.0,
