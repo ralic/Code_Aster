@@ -647,4 +647,4 @@ class MET6SEG3(MET3SEG3):
              'VO3','WO3','UO4','VO4','WO4',
              'UO5','VO5','WO5','UO6','VO6',
              'WO6','WO','WI1','WO1'))
-                             
+

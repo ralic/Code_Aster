@@ -2,7 +2,7 @@
 # CATALOGUES DES ELEMENTS X-FEM HEAVISIDE AVEC CONTACT GRANDS GLISSEMENTS
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,6 +123,11 @@ class ME3DH8HH8H_XH(Element):
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
                      ),
         ),
+
+        OP.TOU_INI_ELEM(te=99,
+            para_out=((OP.TOU_INI_ELEM.PGEOM_R, LC.CGEOM3D), ),
+        ),
+
 
         OP.TOU_INI_ELNO(te=99,
             para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
