@@ -1,5 +1,5 @@
 subroutine focrr2(nomfon, resu, base, nomcha, maille,&
-                  noeud, cmp, npoint, nusp, ivari,&
+                  noeud, cmp, npoint, nusp, ivari, nomvari,&
                   ier)
     implicit none
 #include "asterf_types.h"
@@ -31,13 +31,12 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=1) :: base
-    character(len=8) :: maille, noeud, cmp
-    character(len=16) :: nomcha
-    character(len=19) :: nomfon, resu
-!     ------------------------------------------------------------------
+    character(len=1),intent(in) :: base
+    character(len=8),intent(in) :: maille, noeud, cmp
+    character(len=16),intent(in) :: nomcha, nomvari
+    character(len=19),intent(in) :: nomfon, resu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +63,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
 ! IN  : NPOINT : NUMERO DU POINT ( CAS DES CHAM_ELEMS )
 ! IN  : NUSP   : NUMERO DU SOUS-POINT ( CAS DES CHAM_ELEMS )
 ! IN  : IVARI   : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : NOMVARI : NOM DE LA CMP (POUR VARI_R)
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
     character(len=1) :: type
@@ -76,9 +76,6 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
     real(kind=8) :: valr(2)
     complex(kind=8) :: valc1, valc2
     integer :: npoinz, nuspz
-!     ------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
     integer :: i, i1, i2, iacces, iatach, iatava
     integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
     integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
@@ -109,7 +106,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         endif
         if (n3+n4 .eq. 0) then
             call focrrs(nomfon, resu, base, nomcha, maille,&
-                        noeud, cmp, npoint, nusp, ivari,&
+                        noeud, cmp, npoint, nusp, ivari, nomvari,&
                         ier)
             goto 40
         endif
@@ -129,7 +126,7 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille,&
         endif
         if (n1+n2 .eq. 0) then
             call focrrs(nomfon, resu, base, nomcha, maille,&
-                        noeud, cmp, npoint, nusp, ivari,&
+                        noeud, cmp, npoint, nusp, ivari,nomvari,&
                         ier)
             goto 40
         endif

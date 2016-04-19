@@ -1,9 +1,10 @@
 subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
-                  nkcmp, nbcmp, ndim, chpgs, noma,&
+                  nkcmp, nkvari, nbcmp, ndim, chpgs, noma,&
                   nbno, nbma, nbval, tsca)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesvar.h"
@@ -12,6 +13,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 #include "asterfort/exlim1.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -19,16 +21,18 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 #include "asterfort/megeom.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+#include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
+
     integer :: nbcmp, ndim, nbno, nbma, nbval
     character(len=1) :: tsca
     character(len=4) :: tych
     character(len=8) :: noma
-    character(len=24) :: mesnoe, mesmai, nkcha, nkcmp
+    character(len=24) :: mesnoe, mesmai, nkcha, nkvari, nkcmp
     character(len=19) :: chpgs
     aster_logical :: toucmp
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +56,8 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !                 NBVAL (I)    : NOMBRE DE VALEURS D'ACCES
 !        IN/OUT : MESNOE (K24) : OBJET DES NOMS DE NOEUD
 !                 MESMAI (K24) : OBJET DES NOMS DE MAILLE
-!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES
+!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES  (NOM_CMP)
+!                 NKVARI (K24) : OBJET DES NOMS DE VAR. INTERNES (NOM_VARI)
 !                 NCHSPG (K24) : NOM DU CHAM_ELEM_S DES COORDONNES DES
 !                                POINTS DE GAUSS (REMPLI SI TYCH='ELGA')
 !        OUT    : TYCH   (K4)  : TYPE DE CHAMP (=NOEU,ELXX,CART)
@@ -67,11 +72,11 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !
 ! ----------------------------------------------------------------------
     integer :: jkcha, i, ibid, iret, jlno, jcmp, n1, jlma, n2, n3, nchi, n0, n4
-    integer :: n5, igrel
+    integer :: n5, igrel,jcmp16
     integer, pointer :: repe(:) => null()
     character(len=8) :: nomo, nomgd, noca
-    character(len=8) :: typmcl(4), lpain(6), lpaout(1)
-    character(len=16) :: motcle(4)
+    character(len=8) :: typmcl(4), lpain(6), lpaout(1),sdresu=' '
+    character(len=16) :: motcle(4),nocham
     character(len=19) :: ligrel, ligrmo
     character(len=24) :: chgeom, lchin(6), lchout(1)
     aster_logical :: exicar
@@ -88,7 +93,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
     nomo=' '
     tsca=' '
     exicar=.false.
-    call getvid('RESU', 'RESULTAT', iocc=1, nbval=0, nbret=n0)
+    call getvid('RESU', 'RESULTAT', iocc=1, scal=sdresu, nbret=n0)
     call getvid('RESU', 'CHAM_GD', iocc=1, nbval=0, nbret=n4)
     do i = 1, nbval
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
@@ -240,18 +245,38 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
 !
 !  --- 3. RECUPERATION DES COMPOSANTES
 !
-    call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=0, nbret=n1)
-    if (n1 .ne. 0) then
-        nbcmp=-n1
-        toucmp=.false.
-        call wkvect(nkcmp, 'V V K8', nbcmp, jcmp)
-        call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=nbcmp, vect=zk8(jcmp),&
-                    nbret=n1)
-    else
+    call getvtx('RESU', 'TOUT_CMP', iocc=1, nbval=0, nbret=n1)
+    if (n1.ne.0) then
         nbcmp=0
         toucmp=.true.
         call wkvect(nkcmp, 'V V K8', 1, jcmp)
         zk8(jcmp)=' '
+    else
+        toucmp=.false.
+        call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=0, nbret=n1)
+        if (n1 .ne. 0) then
+            nbcmp=-n1
+            call wkvect(nkcmp, 'V V K8', nbcmp, jcmp)
+            call getvtx('RESU', 'NOM_CMP', iocc=1, nbval=nbcmp, vect=zk8(jcmp),&
+                        nbret=n1)
+        else
+            call getvtx('RESU', 'NOM_VARI', iocc=1, nbval=0, nbret=n1)
+            nbcmp=-n1
+            ASSERT(nbcmp.gt.0)
+            call wkvect(nkcmp, 'V V K8', nbcmp, jcmp)
+            call wkvect(nkvari, 'V V K16', nbcmp, jcmp16)
+            call getvtx('RESU', 'NOM_VARI', iocc=1, nbval=nbcmp, vect=zk16(jcmp16),&
+                         nbret=n1)
+            if (sdresu.eq.' ') then
+                call utmess('F', 'EXTRACTION_24')
+            endif
+            call getvtx('RESU', 'NOM_CHAM', iocc=1, scal=nocham, nbret=n1)
+            if (nocham(1:7).ne.'VARI_EL') then
+                call utmess('F', 'EXTRACTION_25',sk=nocham)
+            endif
+            ASSERT(nbma.gt.0)
+            call varinonu(' ', sdresu, nbma, zi(jlma), nbcmp, zk16(jcmp16), zk8(jcmp))
+        endif
     endif
 !
     call jedema()

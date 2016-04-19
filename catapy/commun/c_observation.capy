@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,8 @@ def C_OBSERVATION(PHYSIQUE) :
         _Keywords['OBSE_ETAT_INIT'] = SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut='OUI' )
         _Keywords['EVAL_CHAM']      = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
                                                 into=("MIN","MAX","MOY","MAXI_ABS","MINI_ABS","VALE",),)
-        _Keywords['NOM_CMP']        = SIMP(statut='o',typ='TXM',max=20)
+        _Keywords['NOM_CMP']        = SIMP(statut='f',typ='TXM',max=20)
+        _Keywords['NOM_VARI']       = SIMP(statut='f',typ='TXM',max=20)
         _Keywords['EVAL_CMP']       = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
                                                  into=("VALE","FORMULE",),)
         _Keywords['INST']           = SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' )
@@ -63,6 +64,8 @@ def C_OBSERVATION(PHYSIQUE) :
                                    into=("TEMP",))
 
         mcfact = FACT(statut='f', max=99,
+            regles   =(UN_PARMI('NOM_CMP','NOM_VARI',),),
+
 
             b_formule       =BLOC(condition="(EVAL_CMP=='FORMULE')",
                                    FORMULE = SIMP(statut='o',typ=formule,max=1),),

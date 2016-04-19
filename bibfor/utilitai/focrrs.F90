@@ -1,6 +1,5 @@
 subroutine focrrs(nomfon, resu, base, nomcha, maille,&
-                  noeud, cmp, npoint, nusp, ivari,&
-                  ier)
+                  noeud, cmp, npoint, nusp, ivari, nomvari, ier)
     implicit   none
 #include "jeveux.h"
 #include "asterfort/focrr0.h"
@@ -9,14 +8,15 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsutn2.h"
-    integer :: npoint, nusp, ivari, ier
-    character(len=1) :: base
-    character(len=8) :: maille, noeud, cmp
-    character(len=16) :: nomcha
-    character(len=19) :: nomfon, resu
-!     ------------------------------------------------------------------
+    integer, intent(in) :: npoint, nusp, ivari
+    character(len=1), intent(in) :: base
+    character(len=8), intent(in) :: maille, noeud, cmp
+    character(len=16), intent(in) :: nomcha
+    character(len=16), intent(in) :: nomvari
+    character(len=19), intent(in) :: nomfon, resu
+    integer, intent(out) :: ier
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,11 +38,12 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille,&
 ! IN  : BASE   : BASE OU L'ON CREE LA FONCTION
 ! IN  : NOMCHA : NOM DU CHAMP
 ! IN  : NOEUD  : NOEUD
-! IN  : MAILLE : MAILE
+! IN  : MAILLE : MAILLE
 ! IN  : CMP    : COMPOSANTE
 ! IN  : NPOINT : NUMERO DU POINT ( CAS DES CHAM_ELEMS )
 ! IN  : NUSP   : NUMERO DU SOUS-POINT ( CAS DES CHAM_ELEMS )
-! IN  : IVARI   : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : IVARI  : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : NOMVARI: NOM DE LA CMP (POUR VARI_R)
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
     integer :: nbordr, lordr
@@ -64,7 +65,7 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille,&
 !
     call focrr0(nomfon, interp, base, resu, nomcha,&
                 maille, noeud, cmp, npoint, nusp,&
-                ivari, nbordr, zi(lordr))
+                ivari, nomvari, nbordr, zi(lordr))
 !
     call jedetr(knume)
 !

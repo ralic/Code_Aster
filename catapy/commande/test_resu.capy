@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,13 +63,11 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
          RESU            =FACT(statut='f',max='**',
            regles=(UN_PARMI('NUME_ORDRE','INST','FREQ','NUME_MODE','NOEUD_CMP','NOM_CAS','ANGLE'),
                    UN_PARMI('NOM_CHAM','PARA'),
-                   PRESENT_ABSENT('PARA','NOEUD','GROUP_NO','POINT','NOM_CMP',),
-                   PRESENT_PRESENT('NOM_CMP','NOM_CHAM'),
+                   PRESENT_ABSENT('PARA','MAILLE','GROUP_MA','NOEUD','GROUP_NO','POINT','NOM_CMP','NOM_VARI'),
                    EXCLUS('NOEUD','GROUP_NO','POINT'),  # EXCLUS avec 'TYPE_TEST' dans trresu.f
                    EXCLUS('MAILLE','GROUP_MA'),
-                   PRESENT_PRESENT('NOEUD','NOM_CMP'),
-                   PRESENT_PRESENT('GROUP_NO','NOM_CMP'),
-                   PRESENT_PRESENT('POINT','NOM_CMP'),),
+                   EXCLUS('NOM_CMP','NOM_VARI'),
+                   ),
            RESULTAT        =SIMP(statut='o',typ=resultat_sdaster),
            NUME_ORDRE      =SIMP(statut='f',typ='I'),
            INST            =SIMP(statut='f',typ='R'),
@@ -81,6 +79,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
            PARA            =SIMP(statut='f',typ='TXM'),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            NOM_CMP         =SIMP(statut='f',typ='TXM',max=1),
+           NOM_VARI        =SIMP(statut='f',typ='TXM',max=1),
            GROUP_MA        =SIMP(statut='f',typ=grma),
            MAILLE          =SIMP(statut='f',typ=ma),
            NOEUD           =SIMP(statut='f',typ=no   ,max='**'),

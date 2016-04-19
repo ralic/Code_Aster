@@ -1,7 +1,7 @@
 subroutine w155mx(nomres, resu, nbordr, liordr)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,29 +26,35 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/exlima.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/varinonu.h"
 #include "asterfort/w155m2.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
 !
-    integer :: ifm, niv, ico
+    integer :: ifm, niv, ico, n1, jlismai, nbma
     integer :: iret, i, nuordr, ibid, nocc, iocc, nchout
-    character(len=8) :: modele, carele, mate
+    character(len=8) :: modele, carele, mate, noma
     character(len=8) :: modeav, nocmp, tymaxi
     character(len=4) :: tych
-    character(len=16) :: motfac, nomsym, nomsy2
+    character(len=16) :: motfac, nomsym, nomsy2, novari
+    character(len=16) :: motcle(2), typmcl(2)
     character(len=19) :: chin, chextr, excit, ligrel, resu19
-    character(len=24) :: nompar
+    character(len=24) :: nompar,lismai
 !     ------------------------------------------------------------------
 !
     call jemarq()
@@ -72,10 +78,28 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 !     --------------------------------------------------
     motfac='MIN_MAX_SP'
     call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
-    call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=ibid)
     call getvtx(motfac, 'TYPE_MAXI', iocc=iocc, scal=tymaxi, nbret=ibid)
     tych=nomsym(6:9)
     ASSERT(tych.eq.'ELNO' .or. tych.eq.'ELGA')
+    call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=n1)
+    if (n1.eq.0) then
+        ASSERT(nomsym(1:7).eq.'VARI_EL')
+        call getvtx(motfac, 'NOM_VARI', iocc=iocc, scal=novari, nbret=n1)
+        ASSERT(n1.eq.1)
+        motcle(1) = 'GROUP_MA'
+        motcle(2) = 'MAILLE'
+        typmcl(1) = 'GROUP_MA'
+        typmcl(2) = 'MAILLE'
+        lismai='&&w155mx.LISMAI'
+        call rslesd(resu, liordr(1), modele, mate, carele,&
+                    excit, ibid)
+        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+        call reliem(' ', noma, 'NU_MAILLE', ' ', 0,&
+                2, motcle(1), typmcl(1), lismai, nbma)
+        call jeveuo(lismai,'L',jlismai)
+        call varinonu(' ', resu19, nbma, zi(jlismai), 1, novari, nocmp)
+        call jedetr(lismai)
+    endif
 !
 !
 !     -- 3. : BOUCLE SUR LES NUME_ORDRE

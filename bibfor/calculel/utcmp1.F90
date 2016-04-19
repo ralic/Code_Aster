@@ -9,7 +9,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
     character(len=*) :: mcfac
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,43 +25,54 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-!  BUT : SCRUTER LE MOT CLE NOM_CMP ET RENDRE LE NOM DE LA CMP
-!        SI LA GRANDEUR EST VARI_R, RENDRE EGALEMENT LE NUMERO (N) DE VN
-!  ATTENTION : IL NE FAUT UTILISER CETTE ROUTINE QUE SI LE MOT CLE
-!              NOM_CMP N'ATTEND QU'UNE SEULE VALEUR.
+!  but : Scruter le mot cle NOM_CMP et rendre le nom de la cmp
+!        Si la grandeur est VARI_R, rendre egalement le numero (n) de vn
+!  attention : il ne faut utiliser cette routine que si le mot cle
+!              NOM_CMP n'attend qu'une seule valeur.
 !
-!  ARGUMENTS :
+!  arguments :
 !  -----------
-!  NOMGD  IN  K8 : NOM DE LA GRANDEUR CONCERNEE
-!  MCFAC  IN  K* : NOM DU MOT CLE FACTEUR A SCRUTER
-!  IOCC   IN  I  : NUMERO DE L'OCCURRENCE DE MCFAC
-!  NOMCMP OUT K8 : NOM DE LA COMPOSANTE TROUVEE DERRIERE MCFAC/NOM_CMP
-!  IVARI  OUT I  : NUMERO DE LA VARIABLE INTERNE SI NOMGD='VARI_R'
-!                  0 SINON
+!  nomgd  in  k8 : nom de la grandeur concernee
+!  mcfac  in  k* : nom du mot cle facteur a scruter
+!  iocc   in  i  : numero de l'occurrence de mcfac
+!  nomcmp out k8 : nom de la composante trouvee derriere mcfac/nom_cmp
+!  ivari  out i  : numero de la variable interne si nomgd='VARI_R'
+!                   0 Si nomgd /= 'VARI_R'
+!                  -1 si nomgd='VARI_R' + motcle NOM_VARI.
+!                     Dans ce cas, nomcmp=NOM_VARI
 !
 ! ----------------------------------------------------------------------
     integer :: ibid, n2, iret, ivari
+    character(len=16) :: nomvari
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
 !
-    call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
-    ASSERT(n2.eq.1)
 !
 !
     if (nomgd .eq. 'VARI_R') then
 !     ------------------------------
-        call lxliis(nomcmp(2:8), ibid, iret)
-        ivari=ibid
-!
-        if ((nomcmp(1:1).ne.'V') .or. (iret.ne.0)) then
-            valk (1) = nomcmp
-            valk (2) = 'VARI_R'
-            call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
+        call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
+        ASSERT(n2.eq.1 .or. n2.eq.0)
+        if (n2.eq.0) then
+            call getvtx(mcfac, 'NOM_VARI', iocc=iocc, scal=nomvari, nbret=n2)
+            ASSERT(n2.eq.1)
+            ivari=-1
+            nomcmp=nomvari
+        else
+            call lxliis(nomcmp(2:8), ibid, iret)
+            ivari=ibid
+            if ((nomcmp(1:1).ne.'V') .or. (iret.ne.0)) then
+                valk (1) = nomcmp
+                valk (2) = 'VARI_R'
+                call utmess('F', 'CALCULEL6_49', nk=2, valk=valk)
+            endif
         endif
 !
 !     -- SI GRANDEUR /= VARI_R :
 !     --------------------------
     else
+        call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
+        ASSERT(n2.eq.1)
         ivari=0
     endif
 !

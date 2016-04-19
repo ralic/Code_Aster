@@ -1,7 +1,7 @@
 subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field    , field_type,&
                   field_s  , field_disc, list_node  , list_elem, list_poin ,&
                   list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
-                  list_cmp , nb_cmp)
+                  compor   , list_cmp  , nb_cmp)
 !
 implicit none
 !
@@ -9,16 +9,18 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
+#include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,12 +52,13 @@ implicit none
     character(len=24), intent(in) :: list_elem
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
+    character(len=19), optional, intent(in) :: compor
     integer, intent(out) :: nb_cmp
     character(len=24), intent(in) :: list_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities 
+! *_NON_LINE - Extraction (OBSERVATION/SUIVI_DDL) utilities
 !
 ! Get component(s)
 !
@@ -76,6 +79,7 @@ implicit none
 ! In  nb_poin          : number of points (Gauss)
 ! In  list_spoi        : name of object contains list of subpoints
 ! In  nb_spoi          : number of subpoints
+! In  compor           : name of <CARTE> COMPOR
 ! In  list_cmp         : name of object contains list of components
 ! Out nb_cmp           : number of components
 !
@@ -97,6 +101,7 @@ implicit none
     integer :: vali(4)
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: v_list_cmp(:) => null()
+    character(len=16), pointer :: v_list_vari(:) => null()
     integer, pointer :: v_list_node(:) => null()
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_list_poin(:) => null()
@@ -116,21 +121,33 @@ implicit none
         nb_cmp_maxi = zi(jcesd+4)
     endif
 !
-! - Number of components
+! - Number and name of components
 !
     call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=0, nbret=n1)
-    nb_cmp = -n1
-    if ((nb_cmp.lt.1) .or. (nb_cmp.gt.nb_para_maxi)) then
-        vali(1) = nb_para_maxi
-        vali(2) = nb_cmp
-        call utmess('F', 'EXTRACTION_12', ni=2, vali=vali)
+    if (n1.lt.0) then
+        nb_cmp = -n1
+        if ((nb_cmp.lt.1) .or. (nb_cmp.gt.nb_para_maxi)) then
+            vali(1) = nb_para_maxi
+            vali(2) = nb_cmp
+            call utmess('F', 'EXTRACTION_12', ni=2, vali=vali)
+        endif
+
+        call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
+        call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp,&
+                    nbret=iret)
+    else
+        call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=0, nbret=n1)
+        ASSERT(n1.lt.0)
+        ASSERT(field_type.eq.'VARI_ELGA')
+        nb_cmp = -n1
+        call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
+        call wkvect('&&NMEXTK.LVARI', 'V V K16', nb_cmp, vk16 = v_list_vari)
+        call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari,&
+                    nbret=iret)
+        call jeveuo(list_elem, 'L', vi = v_list_elem)
+        call varinonu(compor, ' ', nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
+        call jedetr('&&NMEXTK.LVARI')
     endif
-!
-! - Get components
-!
-    call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
-    call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp,&
-                nbret=iret)
 !
 ! - Check components
 !
@@ -191,10 +208,13 @@ implicit none
                 if (field_type(1:4) .eq. 'VARI') then
                     cmp_vari_name = cmp_name(2:8)//' '
                     call lxliis(cmp_vari_name, i_vari, iret)
+                    if (iret.ne.0) then
+                        call utmess('F', 'EXTRACTION_22', sk=cmp_name)
+                    endif
                 else
                     i_vari = 0
                 endif
-                
+
                 if (field_type(1:4) .eq. 'VARI') then
                     i_cmp = i_vari
                 else

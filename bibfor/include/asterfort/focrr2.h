@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,20 +15,20 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine focrr2(nomfon, resu, base, nomcha, maille,&
-                      noeud, cmp, npoint, nusp, ivari,&
-                      ier)
-        character(len=19) :: nomfon
-        character(len=19) :: resu
-        character(len=1) :: base
-        character(len=16) :: nomcha
-        character(len=8) :: maille
-        character(len=8) :: noeud
-        character(len=8) :: cmp
-        integer :: npoint
-        integer :: nusp
-        integer :: ivari
-        integer :: ier
-    end subroutine focrr2
-end interface
+          interface 
+            subroutine focrr2(nomfon,resu,base,nomcha,maille,noeud,cmp, &
+     &npoint,nusp,ivari,nomvari,ier)
+              character(len=19), intent(in) :: nomfon
+              character(len=19), intent(in) :: resu
+              character(len=1), intent(in) :: base
+              character(len=16), intent(in) :: nomcha
+              character(len=8), intent(in) :: maille
+              character(len=8), intent(in) :: noeud
+              character(len=8), intent(in) :: cmp
+              integer :: npoint
+              integer :: nusp
+              integer :: ivari
+              character(len=16), intent(in) :: nomvari
+              integer :: ier
+            end subroutine focrr2
+          end interface 

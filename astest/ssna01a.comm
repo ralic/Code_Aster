@@ -253,30 +253,49 @@ L_ARCH=DEFI_LIST_REEL(  DEBUT=40.0,
              INTERVALLE=_F( JUSQU_A = 60.0,       NOMBRE = 1)
            )
 
-U=STAT_NON_LINE(
-                            MODELE=MO,
-                        CHAM_MATER=CM,EXCIT=(
-                             _F(
-                CHARGE = CH1), _F(
-                CHARGE = CH2)),
-                         COMPORTEMENT=_F( PARM_THETA = 0.5,
-                RELATION = 'LEMAITRE',
-                ITER_INTE_MAXI = 1000),
-                         INCREMENT=_F(
-                LIST_INST = L_INST,
-                NUME_INST_FIN = 5),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 1),
-                       CONVERGENCE=_F(
-                RESI_GLOB_MAXI = 1.E-6,
-                ITER_GLOB_MAXI = 25),
-                         ARCHIVAGE=_F(
-                INST = 20.),
-                           SOLVEUR=_F(
-                METHODE = 'LDLT',
-               )
+U=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CM,
+                EXCIT=(
+                    _F( CHARGE = CH1),
+                    _F( CHARGE = CH2)),
+                COMPORTEMENT=_F( PARM_THETA = 0.5,
+                                 RELATION = 'LEMAITRE',
+                                 ITER_INTE_MAXI = 1000),
+                INCREMENT=_F(
+                              LIST_INST = L_INST,
+                              NUME_INST_FIN = 5),
+                NEWTON=_F(
+                       MATRICE = 'TANGENTE',
+                       REAC_ITER = 1),
+                CONVERGENCE=_F(
+                       RESI_GLOB_MAXI = 1.E-6,
+                       ITER_GLOB_MAXI = 25),
+                ARCHIVAGE=_F( INST = 20.),
+                SOLVEUR=_F( METHODE = 'LDLT',),
+                # Pour tester SUIVI_DDL / NOM_VARI
+                SUIVI_DDL=  _F( 
+                                          # NOM_CMP    ='V7',
+                                            NOM_VARI    ='VIDE',
+                                            NOM_CHAM   ='VARI_ELGA',
+                                            MAILLE=('M1','M2'),
+                                            EVAL_ELGA  ='MAX',
+                                            EVAL_CHAM ='MAX',),
+              
+              
+                # Pour tester OBSERVATION / NOM_VARI
+                OBSERVATION= _F(
+                                           # NOM_CMP    ='V2',
+                                             NOM_VARI    ='EPSPEQ',
+                                                   NOM_CHAM='VARI_ELGA',
+                                                   EVAL_ELGA='VALE',
+                                                   POINT=1,
+                                                   EVAL_CHAM='MIN',
+                                                   MAILLE = ('M1','M2'),
+                                                   ), 
+                          
               )
+TAB_OBS=RECU_TABLE(CO=U,   NOM_TABLE='OBSERVATION',);
+IMPR_TABLE(TABLE=TAB_OBS, UNITE=6)
+
 
 U=STAT_NON_LINE( reuse=U,
                             MODELE=MO,

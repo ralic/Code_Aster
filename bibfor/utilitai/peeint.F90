@@ -37,6 +37,7 @@ subroutine peeint(resu, modele, nbocc)
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utflmd.h"
+#include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -45,7 +46,7 @@ subroutine peeint(resu, modele, nbocc)
     character(len=8) :: modele
     character(len=19) :: resu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +67,7 @@ subroutine peeint(resu, modele, nbocc)
 !     ------------------------------------------------------------------
 !
     integer :: iret, nbcmp, nzero, ibid, nbordr, iocc, jnuma, nbma, ncmpm
-    integer :: jcmp, n1, numa, nr, np, nc, im, ni, no, jno, jin, numo, i
+    integer :: jcmp, n1, numa, nr, np, nc, im, ni, no, jno, jin, numo, i, ivari
     integer :: nbgma, jgma, nma, jma, igm, nbpa1, nbpa2, nn, inum, nli, nlo
     integer :: nd, ib, nucmp, tord(1)
     parameter(nzero=0,nbpa1=4,nbpa2=2)
@@ -83,7 +84,7 @@ subroutine peeint(resu, modele, nbocc)
     character(len=24) :: nomcha, valk2(5)
     logical :: exiord, toneut
 
-    integer :: jmesma, nbmai,nbmaf,indma,iresma,vali
+    integer :: jmesma, nbmai,nbmaf,indma,iresma,vali,jvari
     character(len=8) :: typmcl(3), infoma
     character(len=16) :: motcle(3)
     character(len=24) :: mesmai, mesmaf,mesma2
@@ -234,6 +235,35 @@ subroutine peeint(resu, modele, nbocc)
         if (exirdm .eq. 'OUI') then
             call utmess('F', 'UTILITAI8_60')
         endif
+!
+!       -- COMPOSANTES DU POST-TRAITEMENT
+        call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=0, vect=k8b, nbret=nbcmp)
+        nbcmp=-nbcmp
+        if (nbcmp.eq.0) then
+            ivari=1
+            call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=0, vect=k8b, nbret=nbcmp)
+            nbcmp=-nbcmp
+            ASSERT(nbcmp.gt.0)
+            call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
+            call wkvect('&&PEEINT.NVARI', 'V V K16', nbcmp, jvari)
+            call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=nbcmp, vect=zk16(jvari),&
+                    nbret=iret)
+            call varinonu(' ', resuco, nbmai, zi(jmesma), nbcmp, zk16(jvari), zk8(jcmp))
+        else
+            ivari=0
+            call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
+            call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
+                    nbret=iret)
+        endif
+!
+        AS_ALLOCATE(vk8=cmp_init, size=nbcmp)
+        do i = 1, nbcmp
+            if (ivari.eq.0) then
+                cmp_init(i)=zk8(jcmp+i-1)
+            else
+                cmp_init(i)=zk16(jvari+i-1)(1:8)
+            endif
+        end do
 
 
 !     --- BOUCLE SUR LES NUMEROS D'ORDRE:
@@ -331,20 +361,6 @@ subroutine peeint(resu, modele, nbocc)
             call dismoi('TYPE_CHAMP', cham, 'CHAMP', repk=tych, arret='C',&
                         ier=iret)
 !
-!         --- COMPOSANTES DU POST-TRAITEMENT
-            call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nzero, vect=k8b,&
-                        nbret=nbcmp)
-            nbcmp=-nbcmp
-            call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
-            call getvtx('INTEGRALE', 'NOM_CMP', iocc=iocc, nbval=nbcmp, vect=zk8(jcmp),&
-                        nbret=iret)
-!
-!         COMPOSANTES A AFFICHER DANS LA TABLE: ZK8(JCPINI)
-            AS_ALLOCATE(vk8=cmp_init, size=nbcmp)
-            do i = 1, nbcmp
-                cmp_init(i)=zk8(jcmp+i-1)
-            end do
-!
             if (toneut) then
                 do i = 1, nbcmp
                     nucmp=indik8(cmp1,cmp_init(i),1,ncmpm)
@@ -397,8 +413,6 @@ subroutine peeint(resu, modele, nbocc)
                 call jedetr('&&PEEINT_MAIL')
             endif
 !
-            call jedetr('&&PEEINT.CMP')
-            AS_DEALLOCATE(vk8=cmp_init)
             AS_DEALLOCATE(vk8=cmp1)
             AS_DEALLOCATE(vk8=cmp2)
 !
@@ -411,6 +425,8 @@ subroutine peeint(resu, modele, nbocc)
         call jedetr(cespoi//'.PDSM')
         call jedetr('&&PEEINT.MES_MAILLES')
         call jedetr('&&PEEINT.MAILLES_FILTRE')
+        call jedetr('&&PEEINT.CMP')
+        AS_DEALLOCATE(vk8=cmp_init)
     end do
 !
     if (nr .eq. 0) then

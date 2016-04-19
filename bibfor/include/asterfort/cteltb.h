@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,30 +15,28 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
-                      nkcmp, toucmp, nbcmp, typac, ndim,&
-                      nrval, resu, nomtb, nsymb, chpgs,&
-                      tych, nival, niord)
-        integer :: nbma
-        character(len=24) :: mesmai
-        character(len=8) :: noma
-        integer :: nbval
-        character(len=24) :: nkcha
-        character(len=24) :: nkcmp
-        aster_logical :: toucmp
-        integer :: nbcmp
-        character(len=8) :: typac
-        integer :: ndim
-        character(len=24) :: nrval
-        character(len=8) :: resu
-        character(len=8) :: nomtb
-        character(len=16) :: nsymb
-        character(len=19) :: chpgs
-        character(len=4) :: tych
-        character(len=24) :: nival
-        character(len=24) :: niord
-    end subroutine cteltb
-end interface
+          interface 
+            subroutine cteltb(nbma,mesmai,noma,nbval,nkcha,nkcmp,nkvari,&
+     &toucmp,nbcmp,typac,ndim,nrval,resu,nomtb,nsymb,chpgs,tych,nival,  &
+     &niord)
+              integer :: nbma
+              character(len=24) :: mesmai
+              character(len=8) :: noma
+              integer :: nbval
+              character(len=24) :: nkcha
+              character(len=24) :: nkcmp
+              character(len=24) :: nkvari
+              aster_logical :: toucmp
+              integer :: nbcmp
+              character(len=8) :: typac
+              integer :: ndim
+              character(len=24) :: nrval
+              character(len=8) :: resu
+              character(len=8) :: nomtb
+              character(len=16) :: nsymb
+              character(len=19) :: chpgs
+              character(len=4) :: tych
+              character(len=24) :: nival
+              character(len=24) :: niord
+            end subroutine cteltb
+          end interface 

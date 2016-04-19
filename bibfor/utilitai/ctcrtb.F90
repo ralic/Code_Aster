@@ -1,5 +1,5 @@
 subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
-                  toucmp, nbcmp, nbval, nkcmp, ndim)
+                  toucmp, nbcmp, nbval, nkcmp, nkvari, ndim)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -8,6 +8,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 #include "asterfort/celces.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -18,10 +19,10 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     integer :: nbcmp, ndim, nbval
     character(len=4) :: tych
     character(len=8) :: nomtb, typac, resu
-    character(len=24) :: nkcha, nkcmp
+    character(len=24) :: nkcha, nkcmp, nkvari
     aster_logical :: toucmp
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +44,8 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 !        IN     : TYCH   (K4)  : TYPE DE CHAMP (=NOEU,ELNO,ELGA)
 !                 NKCHA (K24)  : OBJET DES NOMS DE CHAMP
 !                 RESU  (K8)   : NOM DU RESULTAT (SI RESULTAT,SINON ' ')
-!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES
+!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES  (NOM_CMP)
+!                 NKVARI (K24) : OBJET DES NOMS DE VAR. INTERNES (NOM_VARI)
 !                 TOUCMP (L)   : INDIQUE SI TOUT_CMP EST RENSEIGNE
 !                 NBCMP (I)    : NOMBRE DE COMPOSANTES LORSQUE
 !                                NOM_CMP EST RENSEIGNE, 0 SINON
@@ -55,7 +57,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 ! ----------------------------------------------------------------------
 !
     integer :: nbpara, n, jkcha, jcesd, jcesc
-    integer :: kk, i, j, jcmp, iret
+    integer :: kk, i, j, jcmp, iret, jvari,iexi
     character(len=19) :: chamns, chames
     character(len=16), pointer :: table_parak(:) => null()
     character(len=8), pointer :: table_typek(:) => null()
@@ -71,6 +73,12 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     chamns='&&CTCRTB.CHAM_NO_S'
     chames='&&CTCRTB.CHAM_EL_S'
     call jeveuo(nkcmp, 'L', jcmp)
+    call jeexin(nkvari, iexi)
+    if (iexi.gt.0) then
+        call jeveuo(nkvari, 'L', jvari)
+    else
+        jvari=0
+    endif
 !
 !
 !     ----------------------------------------------------
@@ -243,7 +251,11 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
         endif
     else
         do 95 j = 1, n
-            table_parak(kk+1)=zk8(jcmp+j-1)
+            if (jvari.eq.0) then
+                table_parak(kk+1)=zk8(jcmp+j-1)
+            else
+                table_parak(kk+1)=zk16(jvari+j-1)
+            endif
             table_typek(kk+1)='R'
             kk=kk+1
  95     continue

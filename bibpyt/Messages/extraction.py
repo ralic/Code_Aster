@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,6 +58,35 @@ Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de
     21 : _(u"""
  La composante %(k2)s sur la maille %(k1)s sur le point d'intégration %(i1)d et le SOUS_POINT %(i2)d n'existe pas.
 """),
+
+    22 : _(u"""
+ La variable interne nommée %(k1)s n'existe pas sur les mailles concernées.
+"""),
+
+    23 : _(u"""
+Erreur utilisateur :
+  On veut désigner une variable interne en utilisant le mot clé NOM_VARI.
+  Mais les mailles concernées ne sont pas toutes affectées par le même comportement.
+  On trouve des éléments affectés par :
+     RELATION = %(k1)s DEFORMATION = %(k2)s
+  et d'autres éléments affectés par :
+     RELATION = %(k3)s DEFORMATION = %(k4)s
+  
+"""),
+
+    24 : _(u"""
+Erreur utilisateur commande RECU_TABLE / RESU :
+  On veut désigner des variables internes en utilisant le mot clé NOM_VARI.
+  Le mot clé RESU / RESULTAT est obligatoire. 
+"""),
+
+    25 : _(u"""
+Erreur utilisateur commande RECU_TABLE / RESU :
+  On veut désigner des variables internes en utilisant le mot clé NOM_VARI.
+  Le champ concerné doit être un champ par élément de VARI_R.
+  Ici, NOM_CHAM = %(k1)s 
+"""),
+
 
     99: _(u"""
  Le champ %(k1)s que l'on veut extraire est incompatible avec la commande ou les fonctionnalités actives.

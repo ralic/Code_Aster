@@ -1,6 +1,6 @@
 subroutine focrr0(nomfon, interp, base, resu, nomcha,&
                   maille, noeud, cmp, npoint, nusp,&
-                  ivari, nbordr, lordr)
+                  ivari, nomvari, nbordr, lordr)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -20,14 +20,14 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 #include "asterfort/utch19.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbordr, lordr(*), npoint, ivari
-    character(len=1) :: base
-    character(len=8) :: interp, maille, noeud, cmp
-    character(len=16) :: nomcha
-    character(len=19) :: nomfon, resu
-!     ------------------------------------------------------------------
+    integer,intent(in) :: nbordr, lordr(*), npoint, nusp, ivari
+    character(len=1),intent(in) :: base
+    character(len=8),intent(in) :: interp, maille, noeud, cmp
+    character(len=16), intent(in) :: nomcha
+    character(len=16), intent(in) :: nomvari
+    character(len=19),intent(in) :: nomfon, resu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 !     RECUPERATION D'UNE FONCTION DANS UNE STRUCTURE "RESULTAT"
 !                  POUR TOUS LES NUMEROS D'ORDRE
 !     ------------------------------------------------------------------
-! VAR : NOMFON : NOM DE LA FONCTION
+! IN : NOMFON : NOM DE LA FONCTION
 ! IN  : INTERP : TYPE D'INTERPOLATION DE LA FONCTION
 ! IN  : BASE   : BASE OU L'ON CREE LA FONCTION
 ! IN  : RESU   : NOM DE LA STRUCTURE RESULTAT
@@ -55,7 +55,8 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
 ! IN  : CMP    : COMPOSANTE
 ! IN  : NPOINT : NUMERO DU POINT ( CAS DES CHAM_ELEMS )
 ! IN  : NUSP   : NUMERO DU SOUS-POINT ( CAS DES CHAM_ELEMS )
-! IN  : IVARI   : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : IVARI  : NUMERO DE LA CMP (POUR VARI_R)
+! IN  : NOMVARI: NOM DE LA CMP (POUR VARI_R)
 !     ------------------------------------------------------------------
     character(len=1) :: type
     character(len=24) :: valk(2)
@@ -65,12 +66,9 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     character(len=19) :: profch, profc2, cham19
     complex(kind=8) :: valc
     integer :: npoinz, nuspz
-!     ------------------------------------------------------------------
-!
-!-----------------------------------------------------------------------
     integer :: ibid, iddl, ie, ii, inoeud, iordr
     integer :: iret, lacce, lfon, lg1, lg2, lpro
-    integer :: lvale, lvar, nbacc, nusp, vali
+    integer :: lvale, lvar, nbacc, vali
     real(kind=8) :: valr
     character(len=16), pointer :: acces(:) => null()
 !-----------------------------------------------------------------------
@@ -99,7 +97,12 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha,&
     endif
     zk24(lpro+1) = interp
     zk24(lpro+2) = nomacc
-    zk24(lpro+3) = cmp
+    if (nomvari.ne.' ') then
+        ASSERT(ivari.gt.0)
+        zk24(lpro+3) = nomvari
+    else
+        zk24(lpro+3) = cmp
+    endif
     zk24(lpro+4) = 'EE      '
     zk24(lpro+5) = nomfon
 !

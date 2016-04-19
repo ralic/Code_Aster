@@ -1,8 +1,7 @@
 subroutine rfresu()
     implicit none
-!     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +20,7 @@ subroutine rfresu()
 !     ------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterc/getres.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/foattr.h"
 #include "asterfort/focrr2.h"
@@ -33,21 +33,25 @@ subroutine rfresu()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/lxliis.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/rsutnc.h"
 #include "asterfort/titre.h"
 #include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
+#include "asterfort/varinonu.h"
     integer :: nbtrou, numer1(1), l, n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn, npr, ngn
-    integer :: nres, ifm, niv, nusp
+    integer :: nres, ifm, niv, nusp, numa
     real(kind=8) :: epsi
     character(len=8) :: k8b, crit, maille, noma, intres
     character(len=8) :: noeud, cmp, nomgd
-    character(len=16) :: nomcmd, typcon, nomcha, npresu
+    character(len=16) :: nomcmd, typcon, nomcha, npresu, nomvari
     character(len=19) :: nomfon, cham19, resu
     character(len=24) :: valk(3), nogma, nogno
 !
@@ -127,13 +131,25 @@ subroutine rfresu()
             endif
         endif
         call utcmp1(nomgd, ' ', 1, cmp, ivari)
+        if (ivari.eq.-1) then
+            ASSERT(nomcha(1:7).eq.'VARI_EL')
+            call jenonu(jexnom(noma//'.NOMMAI', maille), numa)
+            nomvari=cmp
+            call varinonu(' ', resu, 1, [numa], 1, nomvari, cmp)
+            call lxliis(cmp(2:8), ivari, iret)
+            ASSERT(iret.eq.0)
+            ASSERT(cmp(1:1).eq.'V')
+        else
+            nomvari=' '
+        endif
+
         if (intres(1:3) .eq. 'NON') then
             call focrrs(nomfon, resu, 'G', nomcha, maille,&
-                        noeud, cmp, npoint, nusp, ivari,&
+                        noeud, cmp, npoint, nusp, ivari, nomvari,&
                         iret)
         else
             call focrr2(nomfon, resu, 'G', nomcha, maille,&
-                        noeud, cmp, npoint, nusp, ivari,&
+                        noeud, cmp, npoint, nusp, ivari, nomvari,&
                         iret)
         endif
         goto 10

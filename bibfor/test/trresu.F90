@@ -16,7 +16,10 @@ subroutine trresu(ific, nocc)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/lxlgut.h"
+#include "asterfort/lxliis.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsutnu.h"
@@ -31,6 +34,7 @@ subroutine trresu(ific, nocc)
 #include "asterfort/tresu_read_refe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
+#include "asterfort/varinonu.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -38,7 +42,7 @@ subroutine trresu(ific, nocc)
     integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +65,7 @@ subroutine trresu(ific, nocc)
 !
     integer :: vali, iocc, iret, ivari, jlue, jordr, n1, n2, n3, n4
     integer :: nbordr, numord, nupo, nbcmp
-    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b
+    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, n1a, n1b, numa
     integer :: nusp, irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22
     real(kind=8) :: valr, epsi, epsir, prec, ordgrd
     complex(kind=8) :: valc
@@ -72,7 +76,7 @@ subroutine trresu(ific, nocc)
     character(len=8) :: noresu, typtes, nomgd
     character(len=8) :: leresu
     character(len=11) :: motcle
-    character(len=16) :: nopara, k16b, tbtxt(2), tbref(2)
+    character(len=16) :: nopara, k16b, tbtxt(2), tbref(2),nomcha,cmp16
     character(len=19) :: cham19, knum
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
@@ -266,17 +270,17 @@ subroutine trresu(ific, nocc)
             endif
         endif
 !
-        call getvtx('RESU', 'NOM_CHAM', iocc=iocc, scal=nopara, nbret=n1)
+        call getvtx('RESU', 'NOM_CHAM', iocc=iocc, scal=nomcha, nbret=n1)
 !
         if (n1 .ne. 0) then
 !
-            call rsexch('F', leresu, nopara, numord, cham19,&
+            call rsexch('F', leresu, nomcha, numord, cham19,&
                         iret)
 !
             nl1 = lxlgut(lign1)
             nl2 = lxlgut(lign2)
             lign1(1:nl1+16)=lign1(1:nl1-1)//' NOM_CHAM'
-            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nopara
+            lign2(1:nl2+16)=lign2(1:nl2-1)//' '//nomcha
             lign1(nl1+17:nl1+17)='.'
             lign2(nl2+17:nl2+17)='.'
 !
@@ -400,7 +404,9 @@ subroutine trresu(ific, nocc)
                 call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
                 call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
                 call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
+
                 call utcmp1(nomgd, 'RESU', iocc, noddl, ivari)
+
                 call getvis('RESU', 'SOUS_POINT', iocc=iocc, scal=nusp, nbret=n2)
                 if (n2 .eq. 0) nusp = 0
                 nupo=0
@@ -408,7 +414,7 @@ subroutine trresu(ific, nocc)
                 if (typch .eq. 'NOEU') then
                     if (n2 .ne. 0) then
                         valk(1) = noresu
-                        valk(2) = nopara
+                        valk(2) = nomcha
                         valk(3) = titres
                         call utmess('F', 'CALCULEL6_97', nk=3, valk=valk, si=numord)
                     endif
@@ -455,6 +461,16 @@ subroutine trresu(ific, nocc)
                         call getvem(nomma, 'MAILLE', 'RESU', 'GROUP_MA', iocc,&
                                 iarg, 1, nomail, n1b)
                         if (n1b .eq. 0) call utmess('F', 'CALCULEL5_8')
+                    endif
+
+                    if (ivari.eq.-1) then
+                        ASSERT(nomcha(1:7).eq.'VARI_EL')
+                        call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
+                        cmp16=noddl
+                        call varinonu(' ', leresu, 1, [numa], 1, cmp16, noddl)
+                        call lxliis(noddl(2:8), ivari, iret)
+                        ASSERT(iret.eq.0)
+                        ASSERT(noddl(1:1).eq.'V')
                     endif
 !
                     nl1 = lxlgut(lign1)

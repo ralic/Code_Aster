@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,20 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
-                      toucmp, nbcmp, nbval, nkcmp, ndim)
-        character(len=8) :: nomtb
-        character(len=4) :: tych
-        character(len=8) :: resu
-        character(len=24) :: nkcha
-        character(len=8) :: typac
-        aster_logical :: toucmp
-        integer :: nbcmp
-        integer :: nbval
-        character(len=24) :: nkcmp
-        integer :: ndim
-    end subroutine ctcrtb
-end interface
+          interface 
+            subroutine ctcrtb(nomtb,tych,resu,nkcha,typac,toucmp,nbcmp, &
+     &nbval,nkcmp,nkvari,ndim)
+              character(len=8) :: nomtb
+              character(len=4) :: tych
+              character(len=8) :: resu
+              character(len=24) :: nkcha
+              character(len=8) :: typac
+              aster_logical :: toucmp
+              integer :: nbcmp
+              integer :: nbval
+              character(len=24) :: nkcmp
+              character(len=24) :: nkvari
+              integer :: ndim
+            end subroutine ctcrtb
+          end interface 

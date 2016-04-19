@@ -1,7 +1,7 @@
 subroutine getvtx(motfac, motcle, iocc, nbval, vect,&
                   scal, nbret, isdefault)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect,&
     integer, intent(out), optional :: isdefault
 #include "asterc/getvtx_wrap.h"
 #include "asterfort/assert.h"
+#include "asterfort/trabck.h"
 !
 !   really used variables
     integer :: uioc, uisdef, unbret, umax
@@ -39,6 +40,10 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect,&
     integer, parameter :: maxlen=255
     character(len=maxlen) :: uvect(1)
     character(len=1) :: vdummy(1)
+
+
+
+
 !
 !   motfac + iocc
     if (present(iocc)) then
@@ -47,6 +52,11 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect,&
         uioc = 0
     endif
     ASSERT(motfac == ' ' .or. uioc > 0)
+
+
+
+
+
 !   vect + nbval
     ASSERT(AU_MOINS_UN3(nbret,scal,vect))
     ASSERT(EXCLUS2(vect,scal))
@@ -70,6 +80,21 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect,&
         call getvtx_wrap(motfac, motcle, uioc, uisdef, umax,&
                          vdummy, unbret)
     endif
+
+
+
+    if (unbret.gt.0) then
+ !  if (motfac.eq.'SUIVI_DDL' .or. motfac.eq.'OBSERVATION') then
+    if (motcle.eq.'NOM_CMP' .or. motcle.eq.'MAILLE' ) then
+    endif
+!   endif
+    endif
+
+
+
+
+
+
 !   if the ".capy" can not ensure the at least 'umax' are provided, you must check
 !   the number of values really read using the 'nbret' argument
 !    ASSERT(present(nbret) .or. (umax .eq. unbret) .or. (unbret < 0))

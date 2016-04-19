@@ -11,7 +11,7 @@ subroutine ctresu(nomtb)
 #include "asterfort/jemarq.h"
     character(len=8) :: nomtb
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ subroutine ctresu(nomtb)
     character(len=8) :: typac, sdres, noma
     character(len=16) :: nsymb
     character(len=19) :: chpgs
-    character(len=24) :: nival, nrval, niord, nkcha, nkcmp, mesnoe, mesmai
+    character(len=24) :: nival, nrval, niord, nkcha, nkcmp, nkvari, mesnoe, mesmai
 !     ------------------------------------------------------------------
     call jemarq()
 !
@@ -52,6 +52,7 @@ subroutine ctresu(nomtb)
     nkcha = '&&CTRESU.SD_CHAM'
     niord = '&&CTRESU.ORDRE'
     nkcmp = '&&CTRESU.CMP_USER'
+    nkvari = '&&CTRESU.VARI_USER'
     mesmai = '&&CTRESU.MES_MAILLES'
     mesnoe = '&&CTRESU.MES_NOEUDS'
 !
@@ -63,13 +64,13 @@ subroutine ctresu(nomtb)
 !  -- 3.RECUPERATION DES NOEUDS,MAILLES,COMPOSANTES
 !     ---------------------------------------------
     call ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
-                nkcmp, nbcmp, ndim, chpgs, noma,&
+                nkcmp, nkvari, nbcmp, ndim, chpgs, noma,&
                 nbno, nbma, nbval, tygd)
 !
 !  -- 4.CREATION DE LA TABLE
 !     ----------------------
     call ctcrtb(nomtb, tych, sdres, nkcha, typac,&
-                toucmp, nbcmp, nbval, nkcmp, ndim)
+                toucmp, nbcmp, nbval, nkcmp, nkvari, ndim)
 !
 !  -- 5.REMPLISSAGE DE LA TABLE
 !     ----------------------
@@ -83,7 +84,7 @@ subroutine ctresu(nomtb)
     else if (tych(1:2).eq.'EL'.or.tych.eq.'CART') then
 !
         call cteltb(nbma, mesmai, noma, nbval, nkcha,&
-                    nkcmp, toucmp, nbcmp, typac, ndim,&
+                    nkcmp, nkvari, toucmp, nbcmp, typac, ndim,&
                     nrval, sdres, nomtb, nsymb, chpgs,&
                     tych, nival, niord)
 !
@@ -97,6 +98,7 @@ subroutine ctresu(nomtb)
     call jedetr(nkcha)
     call jedetr(niord)
     call jedetr(nkcmp)
+    call jedetr(nkvari)
     call jedetr(mesmai)
     call jedetr(mesnoe)
 !

@@ -187,6 +187,16 @@ INT_VI=POST_ELEM(MODELE=TROISD,
 
 IMPR_TABLE(TABLE=INT_VI)
 
+# Pour tester POST_ELEM / INTEGRALE / NOM_VARI :
+INT_VI2=POST_ELEM(MODELE=TROISD,
+                   RESULTAT=SOLNL,
+                   INTEGRALE=_F(NOM_CHAM='VARI_ELGA',
+                                NOM_VARI=('SM5','INDIPLAS',),
+                                TOUT='OUI',
+                                TYPE_MAILLE='3D'),)
+
+IMPR_TABLE(TABLE=INT_VI2)
+
 
 
 IMPR_FONCTION(

@@ -1,5 +1,5 @@
 subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
-                  nkcmp, toucmp, nbcmp, typac, ndim,&
+                  nkcmp, nkvari, toucmp, nbcmp, typac, ndim,&
                   nrval, resu, nomtb, nsymb, chpgs,&
                   tych, nival, niord)
     implicit none
@@ -14,8 +14,10 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 #include "asterfort/indiis.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
@@ -28,10 +30,10 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
     character(len=19) :: chpgs
-    character(len=24) :: nkcha, nkcmp, mesmai, nival, nrval, niord
+    character(len=24) :: nkcha, nkcmp, nkvari, mesmai, nival, nrval, niord
     aster_logical :: toucmp
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +54,8 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 !
 !        IN     : NKCHA (K24)  : OBJET DES NOMS DE CHAMP
 !                 RESU  (K8)   : NOM DU RESULTAT (SI RESULTAT,SINON ' ')
-!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES
+!                 NKCMP  (K24) : OBJET DES NOMS DE COMPOSANTES  (NOM_CMP)
+!                 NKVARI (K24) : OBJET DES NOMS DE VAR. INTERNES (NOM_VARI)
 !                 TOUCMP (L)   : INDIQUE SI TOUT_CMP EST RENSEIGNE
 !                 NBCMP (I)    : NOMBRE DE COMPOSANTES LORSQUE
 !                                NOM_CMP EST RENSEIGNE, 0 SINON
@@ -77,11 +80,11 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     integer :: nbcmpx
     integer :: n, ima, ipt, ispt, icmp, indma, nbpt, kk
     integer :: nbcmpt, nbspt, inot, kcp, indcmp, iad, ni, nk, nr
-    integer :: nbpara, iret
+    integer :: nbpara, iret, jvari, iexi, nbvari
     character(len=8) :: kma, kno
     complex(kind=8) :: cbid
     character(len=19) :: chames
-    character(len=8), pointer :: nom_cmp(:) => null()
+    character(len=16), pointer :: nom_cmp(:) => null()
     character(len=16), pointer :: table_parak(:) => null()
     integer, pointer :: table_vali(:) => null()
     character(len=16), pointer :: table_valk(:) => null()
@@ -105,6 +108,16 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
     cbid=(0.d0,0.d0)
     chames = '&&CTELTB.CES       '
     call jeveuo(nkcmp, 'L', jcmp)
+    call jeexin(nkvari, iexi)
+    if (iexi.gt.0) then
+        call jeveuo(nkvari, 'L', jvari)
+        call jelira(nkvari, 'LONMAX', nbvari)
+        ASSERT(nbvari.eq.nbcmp)
+        ASSERT(.not.toucmp)
+    else
+        jvari=0
+        nbvari=0
+    endif
     call jeveuo(nkcha, 'L', jkcha)
     call jeveuo(mesmai, 'L', jlma)
     call jeveuo(nrval, 'L', jrval)
@@ -130,7 +143,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 ! --- 1. LECTURE DES CHAMPS ET REMPLISSAGE DE LA TABLE
 !      -----------------------------------------------
 !
-    do 100 i = 1, nbval
+    do i = 1, nbval
 !     -- JE NE COMPRENDS PAS LA BOUCLE I=1,NBVAL (J. PELLET)
 !
         if (zk24(jkcha+i-1)(1:18) .ne. '&&CHAMP_INEXISTANT') then
@@ -168,7 +181,7 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
             AS_ALLOCATE(vr=val_cmp, size=n)
 !
 !             TABLEAU DES NOMS DE COMPOSANTES DESIREES : ZK8(JKVAL)
-            AS_ALLOCATE(vk8=nom_cmp, size=n)
+            AS_ALLOCATE(vk16=nom_cmp, size=n)
 !
 !            -- ON PARCOURT LES MAILLES
             do 210 ima = 1, nbmax
@@ -203,22 +216,27 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
                         do 230 icmp = 1, nbcmpt
 !
                             if (.not.toucmp) then
-!                        -SI LA COMPOSANTE FAIT PARTIE DES
-!                         COMPOSANTES DESIREES, ON POURSUIT,
-!                         SINON ON VA A LA COMPOSANTE SUIVANTE
-                                indcmp=indik8(zk8(jcmp),cesc(1+&
-                                icmp-1), 1,nbcmp)
+                                indcmp=indik8(zk8(jcmp),cesc(icmp), 1,nbcmp)
+!                               -- si la composante fait partie des
+!                                  composantes desirees, on poursuit,
+!                                  sinon on va a la composante suivante
                                 if (indcmp .eq. 0) goto 230
                             endif
 !
-!                      VALEUR DE LA COMPOSANTE ICMP AU POINT IPT DE
-!                      LA MAILLE IMA: ZR(JCESV+IAD-1)
+!                           -- valeur de la composante icmp au point ipt de
+!                              la maille ima: zr(jcesv+iad-1)
                             call cesexi('C', jcesd, jcesl, ima, ipt,&
                                         ispt, icmp, iad)
                             if (iad .gt. 0) then
                                 kcp=kcp+1
                                 val_cmp(kcp)=cesv(iad)
-                                nom_cmp(kcp)=cesc(icmp)
+                                if (jvari.eq.0) then
+                                    nom_cmp(kcp)=cesc(icmp)
+                                else
+                                    ASSERT(.not.toucmp)
+                                    ASSERT(indcmp.gt.0 .and. indcmp.le.nbvari)
+                                    nom_cmp(kcp)=zk16(jvari-1+indcmp)
+                                endif
                             endif
 !
 230                     continue
@@ -391,12 +409,12 @@ subroutine cteltb(nbma, mesmai, noma, nbval, nkcha,&
 220             continue
 !
 210         continue
-            AS_DEALLOCATE(vk8=nom_cmp)
+            AS_DEALLOCATE(vk16=nom_cmp)
             AS_DEALLOCATE(vr=val_cmp)
 !
         endif
 !
-100 end do
+    end do
 !
     AS_DEALLOCATE(vr=table_valr)
     AS_DEALLOCATE(vi=table_vali)

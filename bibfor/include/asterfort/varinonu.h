@@ -16,19 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine focrrs(nomfon,resu,base,nomcha,maille,noeud,cmp, &
-     &npoint,nusp,ivari,nomvari,ier)
-              character(len=19), intent(in) :: nomfon
-              character(len=19), intent(in) :: resu
-              character(len=1), intent(in) :: base
-              character(len=16), intent(in) :: nomcha
-              character(len=8), intent(in) :: maille
-              character(len=8), intent(in) :: noeud
-              character(len=8), intent(in) :: cmp
-              integer, intent(in) :: npoint
-              integer, intent(in) :: nusp
-              integer, intent(in) :: ivari
-              character(len=16), intent(in) :: nomvari
-              integer, intent(out) :: ier
-            end subroutine focrrs
+            subroutine varinonu(compor_,sdresu_,nbma,lima,nbvari,novari,&
+     &nuvari)
+              integer, intent(in) :: nbvari
+              character(len=*), intent(in) :: compor_
+              character(len=*), intent(in) :: sdresu_
+              integer, intent(in) :: nbma
+              integer, intent(in) :: lima(nbma)
+              character(len=16), intent(in) :: novari(nbvari)
+              character(len=8), intent(out) :: nuvari(nbvari)
+            end subroutine varinonu
           end interface 

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,25 +15,23 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
-interface
-    subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
-                      nkcmp, nbcmp, ndim, chpgs, noma,&
-                      nbno, nbma, nbval, tsca)
-        character(len=24) :: mesnoe
-        character(len=24) :: mesmai
-        character(len=24) :: nkcha
-        character(len=4) :: tych
-        aster_logical :: toucmp
-        character(len=24) :: nkcmp
-        integer :: nbcmp
-        integer :: ndim
-        character(len=19) :: chpgs
-        character(len=8) :: noma
-        integer :: nbno
-        integer :: nbma
-        integer :: nbval
-        character(len=1) :: tsca
-    end subroutine ctdata
-end interface
+          interface 
+            subroutine ctdata(mesnoe,mesmai,nkcha,tych,toucmp,nkcmp,    &
+     &nkvari,nbcmp,ndim,chpgs,noma,nbno,nbma,nbval,tsca)
+              character(len=24) :: mesnoe
+              character(len=24) :: mesmai
+              character(len=24) :: nkcha
+              character(len=4) :: tych
+              aster_logical :: toucmp
+              character(len=24) :: nkcmp
+              character(len=24) :: nkvari
+              integer :: nbcmp
+              integer :: ndim
+              character(len=19) :: chpgs
+              character(len=8) :: noma
+              integer :: nbno
+              integer :: nbma
+              integer :: nbval
+              character(len=1) :: tsca
+            end subroutine ctdata
+          end interface 

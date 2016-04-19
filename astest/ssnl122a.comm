@@ -528,7 +528,14 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
                    MAILLE='E00200',),
                 ),
           )
-
+# Pour valider POST_CHAMP / MIN_MAX_SP / NOM_VARI :
+XXX2=POST_CHAMP(  RESULTAT=STNL, MAILLE='E00200',
+              NUME_ORDRE=(1,2),
+              MIN_MAX_SP=(
+                _F( NOM_CHAM='VARI_ELGA', NOM_VARI='EPSPEQ', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1),
+                _F( NOM_CHAM='VARI_ELGA', NOM_VARI='EPSPEQ', TYPE_MAXI='MINI', NUME_CHAM_RESU=2),
+             ))
+IMPR_RESU(UNITE=6, RESU=_F(RESULTAT=XXX2)) 
 
 
 FIN()

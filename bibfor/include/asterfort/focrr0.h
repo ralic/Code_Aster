@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,22 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine focrr0(nomfon, interp, base, resu, nomcha,&
-                      maille, noeud, cmp, npoint, nusp,&
-                      ivari, nbordr, lordr)
-        character(len=19) :: nomfon
-        character(len=8) :: interp
-        character(len=1) :: base
-        character(len=19) :: resu
-        character(len=16) :: nomcha
-        character(len=8) :: maille
-        character(len=8) :: noeud
-        character(len=8) :: cmp
-        integer :: npoint
-        integer :: nusp
-        integer :: ivari
-        integer :: nbordr
-        integer :: lordr(*)
-    end subroutine focrr0
-end interface
+          interface 
+            subroutine focrr0(nomfon,interp,base,resu,nomcha,maille,    &
+     &noeud,cmp,npoint,nusp,ivari,nomvari,nbordr,lordr)
+              character(len=19), intent(in) :: nomfon
+              character(len=8), intent(in) :: interp
+              character(len=1), intent(in) :: base
+              character(len=19), intent(in) :: resu
+              character(len=16), intent(in) :: nomcha
+              character(len=8), intent(in) :: maille
+              character(len=8), intent(in) :: noeud
+              character(len=8), intent(in) :: cmp
+              integer, intent(in) :: npoint
+              integer, intent(in) :: nusp
+              integer, intent(in) :: ivari
+              character(len=16), intent(in) :: nomvari
+              integer, intent(in) :: nbordr
+              integer, intent(in) :: lordr(*)
+            end subroutine focrr0
+          end interface 

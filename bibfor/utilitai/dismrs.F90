@@ -1,6 +1,6 @@
 subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,7 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsdocu.h"
 #include "asterfort/rslipa.h"
+#include "asterfort/rsexch.h"
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 !
@@ -61,10 +62,11 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
     complex(kind=8) :: cbid
     integer :: ibid
     real(kind=8) :: rbid
+    integer, pointer :: ordr(:) => null()
 !
 !-----------------------------------------------------------------------
     integer :: i, iad, iatach, ico, iexi, iret, j
-    integer :: jlipar, k, n1, nbch, nbdyn, nbmod(1), nbstat
+    integer :: jlipar, k, n1, nbch, nbdyn, nbmod(1), nbstat,icode
     integer :: nbsy
 !-----------------------------------------------------------------------
     call jemarq()
@@ -97,13 +99,31 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
         else
             repk = 'CHAMP'
         endif
-!
-!
-!
-        else if ((questi.eq.'NOM_MODELE').or. (questi.eq.'MODELE').or.&
-    (questi.eq.'MODELE_1').or. (questi.eq.'CHAM_MATER').or. (&
-    questi.eq.'CHAM_MATER_1').or. (questi.eq.'CARA_ELEM').or. (&
-    questi.eq.'CARA_ELEM_1')) then
+
+
+
+    else if (questi.eq.'COMPOR_1') then
+!   ----------------------------------
+        call jeveuo(nomob//'.ORDR', 'L', vi=ordr)
+        call jelira(nomob//'.ORDR', 'LONUTI', n1)
+
+        repk=' '
+        do k = 1, n1
+            call rsexch(' ', nomob, 'COMPORTEMENT', ordr(k), nomch, icode)
+            if (icode.ne.0) cycle
+            if (nomch.ne.' ') then
+                if (repk.eq.' ') then
+                    repk=nomch
+                    exit
+                endif
+            endif
+        enddo
+
+
+    else if ((questi.eq.'NOM_MODELE').or. (questi.eq.'MODELE').or.&
+             (questi.eq.'MODELE_1').or. (questi.eq.'CHAM_MATER').or.&
+             (questi.eq.'CHAM_MATER_1').or. (questi.eq.'CARA_ELEM').or.&
+             (questi.eq.'CARA_ELEM_1')) then
 !     ------------------------------------------
         if ((questi.eq.'NOM_MODELE') .or. (questi(1:6).eq.'MODELE')) then
             call rslipa(nomob, 'MODELE', '&&DISMRS.LIPAR', jlipar, n1)
@@ -133,9 +153,9 @@ subroutine dismrs(questi, nomobz, repi, repkz, ierd)
             endif
         endif
         call jedetr('&&DISMRS.LIPAR')
-!
-!
-!
+
+
+
     else if (questi.eq.'NOM_MAILLA') then
 !     ------------------------------------------
         call jelira(jexnum(nomob//'.TACH', 1), 'LONMAX', nbch)

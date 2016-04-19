@@ -11,10 +11,11 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
+#include "asterfort/trabck.h"
     integer :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,6 +83,8 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
         call jeveuo(nomtab//'.TBLP', 'E', jtblp)
 !
         do 10 i = 1, nbpar
+    if (nompar(i).eq.'COOR_X' ) then
+    endif
             zk24(jtblp+4*(i-1) ) = nompar(i)
             zk24(jtblp+4*(i-1)+1) = typpar(i)
             call codent(i, 'D0', knume)
