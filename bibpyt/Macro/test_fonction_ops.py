@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,6 +20,7 @@
 import os
 
 from Noyau.N_types import is_complex, is_str, is_sequence
+from Utilitai.TestResult import testPrinter
 
 from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
 
@@ -321,6 +322,9 @@ def AfficherResultat(dicoValeur, nomPara, ref, legende, crit, res, valPu, txt, l
                'erreur': str(errr) + pourcent + (16 - len(str(errr) + pourcent)) * ' ',
                'tole': str(curEpsr) + pourcent + (16 - len(str(curEpsr) + pourcent)) * ' ',
                }
+    if ref == "NON_REGRESSION" and not testPrinter.isVerif():
+        current['testOk'] = "  - "
+        current['tole'] = "-"
     txt.append(ligne_fct_4 % current)
 
 

@@ -54,9 +54,13 @@ class TestResult(object):
         if not self._isVerif:
             self._utmess('I', 'TEST0_19')
 
-    def _print(self, wid, *args):
+    def isVerif(self):
+        """Tell if the testcase is a verification one"""
+        return self._isVerif
+
+    def write(self, width, *args):
         """shortcut to print in the RESULTAT file"""
-        fmtval = '%%-%ds' % wid
+        fmtval = '%%-%ds' % width
         fmtcols = ['%-4s ', '%-16s', '%-16s', fmtval, fmtval, '%-16s', '%-16s']
         assert len(args) <= 7, args
         fmt = ' '.join(fmtcols[:len(args)])
@@ -81,7 +85,7 @@ class TestResult(object):
         # ignore NON_REGRESSION tests for validation testcases
         isNonRegr = type_ref.strip() == "NON_REGRESSION"
         isValidIgn = isNonRegr and not self._isVerif
-        lines = []
+        lines = ['pass in showResult']
         # compute
         diag = 'SKIP'
         error = '-'
@@ -108,7 +112,7 @@ class TestResult(object):
         # formatting
         sref = '%s' % ref
         sval = '%s' % val
-        wid = max([16, len(sref), len(sval)]) + 2
+        width = max([16, len(sref), len(sval)]) + 2
         serr = '%s' % error
         if len(serr) > 15:
             serr = '%13.6e' % error
@@ -121,16 +125,16 @@ class TestResult(object):
             legend = sref = sval = serr = stol = '-'
         # printing
         if compare != 1.:
-            lines.append(self._print(wid, ' ', 'ORDRE DE GRANDEUR :', compare))
+            lines.append(self.write(width, ' ', 'ORDRE DE GRANDEUR :', compare))
         if label:
-            lines.append(self._print(wid, ' ', 'REFERENCE', 'LEGENDE',
-                                     'VALE_REFE', 'VALE_CALC', 'ERREUR', 'TOLE'))
+            lines.append(self.write(width, ' ', 'REFERENCE', 'LEGENDE',
+                                    'VALE_REFE', 'VALE_CALC', 'ERREUR', 'TOLE'))
         if isValidIgn:
-            lines.append(self._print(wid, "-", type_ref, legend, sref,
-                                     sval, serr, "-"))
+            lines.append(self.write(width, "-", type_ref, legend, sref,
+                                    sval, serr, "-"))
         else:
-            lines.append(self._print(wid, diag, type_ref, legend, sref,
-                                     sval, serr, stol))
+            lines.append(self.write(width, diag, type_ref, legend, sref,
+                                    sval, serr, stol))
         return lines
 
     def _checkVerif(self):
