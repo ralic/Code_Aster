@@ -79,7 +79,7 @@ end =1.2
 
 TEMPS0=DEFI_LIST_REEL(DEBUT=-1.,
                       INTERVALLE=_F(JUSQU_A =  0., NOMBRE = 1),);
-                      
+
 TEMPS1=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 20., NOMBRE = 200,),),);
 
@@ -101,7 +101,7 @@ DEFLIST2=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,),
                                  SUBD_METHODE = 'MANUEL',
                                  SUBD_PAS     = 4,
                                  SUBD_NIVEAU  = 10,),);
-                                 
+
 #*******************************************************************
 #
 #               DEFI_MATERIAU : SOL MOHR-COULOMB + EAU
@@ -145,7 +145,7 @@ CHAR_UD=AFFE_CHAR_MECA(MODELE=MODELE,
 
 CHAR_UA=AFFE_CHAR_MECA(MODELE=MODELE,
                        PRES_REP=_F(GROUP_MA='ARRIERE', PRES = 1.),);
-                       
+
 DEPL_1=AFFE_CHAR_MECA(MODELE=MODELE,
                       FACE_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.),
                                  _F(GROUP_MA='GAUCHE',DX = 0.),
@@ -171,7 +171,7 @@ COEF00=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(-1., 0.0,
                            0., PCO*(1.+epsilon),));
-                           
+
 # ---- premier chargement isotrope en elastique jusqu'a 50kPa
 U0M=STAT_NON_LINE(MODELE    = MODELE,
                  CHAM_MATER = CHMAT,
@@ -193,12 +193,12 @@ SIG0=CREA_CHAMP(INFO=2,
                 RESULTAT=U0M,
                 NOM_CHAM='SIEF_ELGA',
                 INST=0.0,);
-                           
+
 #***********************************************************************
 #
 #                     SIMU_POINT_MAT (REFERENCE)
 #
-#***********************************************************************  
+#***********************************************************************
 COEF2=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0.0, -PCO,
@@ -208,7 +208,7 @@ COEF3=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=( 0.0, 0.0,
                            10.*end,-0.0001*end,),);
-                           
+
 SPM=SIMU_POINT_MAT(INFO=2,
                   COMPORTEMENT=_F(RELATION='MOHR_COULOMB',),
                   MATER=SOL,
@@ -258,7 +258,7 @@ SPM=CALC_TABLE(reuse=SPM,
                ACTION=_F(OPERATION='OPER',
                          FORMULE=pressure,
                          NOM_PARA='SIP_0D',),);
-                         
+
 SPM_SIG=CALC_TABLE(TABLE=SPM,
                ACTION=(_F(OPERATION='EXTR',
                          NOM_PARA=('EPZZ','SIXX','SIYY','SIZZ','SIP_0D',),),
@@ -268,7 +268,7 @@ SPM_SIG=CALC_TABLE(TABLE=SPM,
                          NOM_PARA=('SIYY','SIYY_0D',),),
                        _F(OPERATION='RENOMME',
                          NOM_PARA=('SIZZ','SIZZ_0D',),),),);
-                                
+
 SPM_VARI=CALC_TABLE(TABLE=SPM,
                ACTION=(_F(OPERATION='EXTR',
                          NOM_PARA=('EPZZ','V1','V2','V3',),),
@@ -278,7 +278,7 @@ SPM_VARI=CALC_TABLE(TABLE=SPM,
                          NOM_PARA=('V2','V2_0D',),),
                        _F(OPERATION='RENOMME',
                          NOM_PARA=('V3','V3_0D',),),),);
-                         
+
 IMPR_TABLE(TABLE=SPM_SIG,);
 IMPR_TABLE(TABLE=SPM_VARI,);
 
@@ -313,12 +313,12 @@ COEF1=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0., PCO,
                           10.*end, PCO,));
-                          
+
 COEF11=DEFI_FONCTION(NOM_PARA    = 'INST',
                     PROL_DROITE = 'CONSTANT',
                     VALE=( 0., PCO*(1.+epsilon),
                           10.*end, PCO*(1.+epsilon),));
-                          
+
 SNL=STAT_NON_LINE(MODELE=MODELE,
                  INFO=1,
                  CHAM_MATER=CHMAT,
@@ -416,7 +416,7 @@ TAB_VARI=CALC_TABLE(TABLE=SNL_VARI,
                              FORMAT_R=fmt,
                              NOM_PARA=('EPZZ','EPZZ'),),);
 
-                         
+
 IMPR_TABLE(TABLE=TAB_SIG);
 IMPR_TABLE(TABLE=TAB_VARI);
 
@@ -425,23 +425,43 @@ IMPR_TABLE(TABLE=TAB_VARI);
 #------------------------------------------
 
 TEST_TABLE ( TABLE    =TAB_SIG,
-             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
-             NOM_PARA ='SIXX', VALE_REFE=-30777.314632,  REFERENCE='AUTRE_ASTER', PRECISION=2.e-4,
-             VALE_CALC=-30772.508601,);
+             FILTRE=_F(NOM_PARA ='EPZZ',
+                       VALE =-1.2E-04,),
+             NOM_PARA ='SIXX',
+             VALE_REFE=-30777.314632,
+             REFERENCE='AUTRE_ASTER',
+             PRECISION=2.e-4,
+             VALE_CALC=-30772.508601,
+             TOLE_MACHINE=1.e-4);
 
 TEST_TABLE ( TABLE    =TAB_SIG,
-             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
-             NOM_PARA ='SIPXX', VALE_REFE=-19226.5841711,  REFERENCE='AUTRE_ASTER', PRECISION=4.e-4,
-             VALE_CALC=-19227.2530126,);
+             FILTRE=_F(NOM_PARA ='EPZZ',
+                       VALE =-1.2E-04,),
+             NOM_PARA ='SIPXX',
+             VALE_REFE=-19226.5841711,
+             REFERENCE='AUTRE_ASTER',
+             PRECISION=4.e-4,
+             VALE_CALC=-19227.2530126,
+             TOLE_MACHINE=4.e-4);
 
 TEST_TABLE ( TABLE    =TAB_VARI,
-             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
-             NOM_PARA ='V1', VALE_REFE=1.2623784436E-05,  REFERENCE='AUTRE_ASTER', PRECISION=3.e-3,
-             VALE_CALC=1.26577113668E-05,);
+             FILTRE=_F(NOM_PARA ='EPZZ',
+                       VALE =-1.2E-04,),
+             NOM_PARA ='V1',
+             VALE_REFE=1.2623784436E-05,
+             REFERENCE='AUTRE_ASTER',
+             PRECISION=3.e-3,
+             VALE_CALC=1.26577113668E-05,
+             TOLE_MACHINE=1.e-3);
 
 TEST_TABLE ( TABLE    =TAB_VARI,
-             FILTRE=_F(NOM_PARA ='EPZZ', VALE =-1.2E-04,),
-             NOM_PARA ='V2', VALE_REFE=2.48944101698E-05,  REFERENCE='AUTRE_ASTER', PRECISION=3.e-3,
-             VALE_CALC=2.49613149029E-05,);
+             FILTRE=_F(NOM_PARA ='EPZZ',
+                       VALE =-1.2E-04,),
+             NOM_PARA ='V2',
+             VALE_REFE=2.48944101698E-05,
+             REFERENCE='AUTRE_ASTER',
+             PRECISION=3.e-3,
+             VALE_CALC=2.49613149029E-05,
+             TOLE_MACHINE=4.e-4);
 
 FIN();
