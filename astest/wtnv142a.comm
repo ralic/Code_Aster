@@ -431,7 +431,7 @@ TEST_TABLE ( TABLE    =TAB_SIG,
              VALE_REFE=-30777.314632,
              REFERENCE='AUTRE_ASTER',
              PRECISION=2.e-4,
-             VALE_CALC=-30772.508601,
+             VALE_CALC=-30771.9950872,
              TOLE_MACHINE=1.e-4);
 
 TEST_TABLE ( TABLE    =TAB_SIG,
@@ -441,7 +441,7 @@ TEST_TABLE ( TABLE    =TAB_SIG,
              VALE_REFE=-19226.5841711,
              REFERENCE='AUTRE_ASTER',
              PRECISION=4.e-4,
-             VALE_CALC=-19227.2530126,
+             VALE_CALC=-19227.2858783,
              TOLE_MACHINE=4.e-4);
 
 TEST_TABLE ( TABLE    =TAB_VARI,
@@ -451,7 +451,7 @@ TEST_TABLE ( TABLE    =TAB_VARI,
              VALE_REFE=1.2623784436E-05,
              REFERENCE='AUTRE_ASTER',
              PRECISION=3.e-3,
-             VALE_CALC=1.26577113668E-05,
+             VALE_CALC=1.26587231587E-05,
              TOLE_MACHINE=1.e-3);
 
 TEST_TABLE ( TABLE    =TAB_VARI,
@@ -461,7 +461,7 @@ TEST_TABLE ( TABLE    =TAB_VARI,
              VALE_REFE=2.48944101698E-05,
              REFERENCE='AUTRE_ASTER',
              PRECISION=3.e-3,
-             VALE_CALC=2.49613149029E-05,
+             VALE_CALC=2.49633101812E-05,
              TOLE_MACHINE=4.e-4);
 
 FIN();
