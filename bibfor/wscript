@@ -4,6 +4,7 @@ from functools import partial
 
 from waflib import Configure, Utils, Logs, Errors
 
+import sys
 
 def options(self):
     self.load('compiler_fc')
@@ -37,13 +38,57 @@ def build(self):
     get_srcs = self.path.get_src().ant_glob
 
     uses = env['all_dependencies']
-    self(
-        features = 'fc',
-            name = 'asterbibfor',
-          source = get_srcs('**/*.F90'),
-             env = env.derive(),
-             use = uses,
-    )
+
+    if sys.platform != 'darwin':
+        # Use only one archive on Linux
+        self(
+            features = 'fc',
+                name = 'asterbibfor',
+              source = get_srcs('**/*.F90'),
+                 env = env.derive(),
+                 use = uses,
+        )
+    else:
+        # On OS X, we need to split the archive so that the shell does not raise
+        # 'argument list too long' error
+        # 3000 objects is currently OK with OS X hardcoded ARG_MAX argument
+        allF90 = get_srcs('**/*.F90')
+        if len(allF90) > 9000:
+            raise Errors.WafError(
+                'There are more than 9000 object files in the Fortran library, '
+                'this is not supported currently when building on OS X, '
+                'please report this error at '
+                'https://bitbucket.org/code_aster/codeaster-src/issues',
+                len(allF90))
+        third = len(allF90) / 3
+        libF90_1 = allF90[:third]
+        libF90_2 = allF90[third:2 * third]
+        libF90_3 = allF90[2 * third:]
+        # Use the split archives on OS X
+        self(
+             features = 'fc fcstlib',
+                 name = 'asterbibfor1',
+               target = 'bibfor1',
+               source = libF90_1,
+                  env = env.derive(),
+                  use = uses,
+        )
+        self(
+             features = 'fc fcstlib',
+                 name = 'asterbibfor2',
+               target = 'bibfor2',
+               source = libF90_2,
+                  env = env.derive(),
+                  use = uses,
+        )
+        self(
+             features = 'fc fcstlib',
+                 name = 'asterbibfor3',
+               target = 'bibfor3',
+               source = libF90_3,
+                  env = env.derive(),
+                  use = uses,
+        )
 
 ###############################################################################
 MAIN = "      program main\n      end program main\n"

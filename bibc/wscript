@@ -3,7 +3,7 @@
 import os.path as osp
 import sys
 
-from waflib import TaskGen, Configure, Logs, Utils
+from waflib import TaskGen, Configure, Logs, Utils, Errors
 
 def options(self):
     self.load('compiler_c')
@@ -89,6 +89,8 @@ def process_h(self, node):
     pass
 
 def build_as_shared(self, shenv):
+    if sys.platform == 'darwin':
+        raise Errors.WafError("OS X / Darwin not yet supported")
     get_srcs = self.path.get_src().ant_glob
     uses = shenv['all_dependencies']
     if shenv.BUILD_MFRONT:
@@ -162,6 +164,12 @@ def build_as_embeded(self, stenv):
     main = 'main' if stenv.FC_MAIN == -1 or 'ifort' in stenv.FC_NAME.lower() else stenv.FC_MAIN
 
     tgt = (self.variant == 'release' and stenv.ASTERBINOPT) or stenv.ASTERBINDBG
+    if sys.platform != 'darwin':
+        libasterfor = ['asterbibfor']
+    else:
+        # OS X does not support more than 262144 bytes on a single command line (getconf ARG_MAX)
+        # To prevent "argument list too long" error (more than 7000 object files from Fortran), we need to split the archive
+        libasterfor = ['asterbibfor1' , 'asterbibfor2' , 'asterbibfor3']
     self(
         features = 'c fcprogram pyembed',
           target = tgt,
@@ -169,7 +177,7 @@ def build_as_embeded(self, stenv):
           source = get_srcs(['**/*.c'], excl=excl),
          defines = ['_MAIN_=%s' % main],
              env = stenv.derive(),
-             use = ['NUMPY', 'asterbibfor', 'asterbibcxx'] + uses + ['CXX'],
+             use = ['NUMPY'] + libasterfor + ['asterbibcxx'] + uses + ['CXX'],
         )
 
 @Configure.conf
