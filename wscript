@@ -301,7 +301,7 @@ def check_platform(self):
     self.start_msg('Getting platform')
     # convert to Code_Aster terminology
     os_name = self.env.DEST_OS
-    if os_name.startswith(('darwin', 'cygwin')):
+    if os_name == 'cygwin':
         os_name = 'linux'
     elif os_name == 'sunos':
         os_name = 'solaris'

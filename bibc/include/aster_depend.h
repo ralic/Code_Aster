@@ -18,35 +18,43 @@
 #ifndef ASTER_DEPEND_H
 #define ASTER_DEPEND_H
 
-/* 
+/*
  * Exactly one of _POSIX and _WINDOWS must be defined, they are exclusive.
- * 
+ *
  * In the source code, only use _POSIX or _WINDOWS and, when required, _USE_64_BITS.
- * 
+ *
  * The only platform name used is SOLARIS in the signal features.
- * 
+ *
  */
 
 #include "asterc_config.h"
 
 /* test required value */
-#if ! defined _POSIX && ! defined _WINDOWS
+#if (! defined _POSIX) && (! defined _WINDOWS)
 #   error ERROR _POSIX or _WINDOWS is required
 #endif
-#if defined _POSIX && defined _WINDOWS
+#if (defined _POSIX) && (defined _WINDOWS)
 #   error ERROR only one of _POSIX or _WINDOWS, not both
 #endif
 
-#if defined LINUX || LINUX64
+#if (defined LINUX) || (defined LINUX64)
 #   define GNU_LINUX
 #endif
 
-#if defined SOLARIS64
+#if defined DARWIN64
+#   define DARWIN
+#endif
+
+#if (defined FREEBSD64) || (defined __FreeBSD__)
+#   define FREEBSD
+#endif
+
+#if (defined SOLARIS64)
 #   define SOLARIS
 #endif
 
 /* MS Windows platforms */
-#if defined _WINDOWS
+#if (defined _WINDOWS)
 
 /* win64 - use LLP64 model */
 #   ifdef _USE_64_BITS
@@ -79,7 +87,7 @@
 #define INTEGER4            ASTERC_FORTRAN_INT4
 #define INTEGER             ASTERC_FORTRAN_INT
 #define DOUBLE              ASTERC_FORTRAN_REAL8
-#define REAL4               ASTERC_FORTRAN_REAL4                
+#define REAL4               ASTERC_FORTRAN_REAL4
 
 /* flags d'optimisation */
 /* taille de bloc dans MULT_FRONT */
@@ -97,7 +105,7 @@
 #ifndef _ENABLE_MATHLIB_FPE
 #   ifndef _DISABLE_MATHLIB_FPE
 #       define _DISABLE_MATHLIB_FPE
-#   endif    
+#   endif
 #else
 #   undef _DISABLE_MATHLIB_FPE
 #endif
