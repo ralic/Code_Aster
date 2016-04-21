@@ -2,7 +2,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,10 +45,10 @@ for cmp in ('TEMP', 'TEMP_INF', 'TEMP_MIL', 'TEMP_SUP', 'E1', 'H1',):
                                  ('EN2', (cmp,)),))
 
     MVECTTR = ArrayOfComponents(
-        phys=PHY.VTEM_R, locatedComponents=(DDL_THER,))
+        phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
     MMATTTR = ArrayOfComponents(
-        phys=PHY.MTEM_R, locatedComponents=(DDL_THER, DDL_THER))
+        phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 #     Attention : il faut nommer explicitement TOUS les modes locaux crees dans la boucle
 #     --------------------------------------------------------------------

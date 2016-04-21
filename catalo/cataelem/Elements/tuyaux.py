@@ -206,10 +206,10 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
           'UO3','VO3','WO3','WO','WI1',
           'WO1',))
 
-MVECTUC  = ArrayOfComponents(phys=PHY.VDEP_C, locatedComponents=(NDEPLAC,))
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
-MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=(NDEPLAC,NDEPLAC))
-MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=(DDL_MECA,DDL_MECA))
+MVECTUC  = ArrayOfComponents(phys=PHY.VDEP_C, locatedComponents=NDEPLAC)
+MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
+MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 CABSCUR.setName('CABSCUR')
 CCAORIE.setName('CCAORIE')
@@ -647,4 +647,3 @@ class MET6SEG3(MET3SEG3):
              'VO3','WO3','UO4','VO4','WO4',
              'UO5','VO5','WO5','UO6','VO6',
              'WO6','WO','WI1','WO1'))
-

@@ -99,9 +99,9 @@ EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
     components=('PRES','CISA',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=(DDL_MECA,DDL_MECA))
+MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

@@ -60,7 +60,7 @@ NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
 
 
 MMATUUR = ArrayOfComponents(
-    phys=PHY.MDEP_R, locatedComponents=(DDL_MECA, DDL_MECA))
+    phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

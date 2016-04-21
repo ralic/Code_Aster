@@ -47,7 +47,7 @@ DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type='ELNO',
     components=('PRES',))
 
 
-MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU,DDL_ACOU))
+MMATTTC  = ArrayOfComponents(phys=PHY.MPRE_C, locatedComponents=DDL_ACOU)
 
 
 #------------------------------------------------------------

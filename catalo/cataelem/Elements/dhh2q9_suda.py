@@ -84,10 +84,10 @@ ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='FPGVARI',
                             components=('VARI',))
 
 
-MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUNS = ArrayOfComponents(
-    phys=PHY.MDNS_R, locatedComponents=(DDL_MECA, DDL_MECA))
+    phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

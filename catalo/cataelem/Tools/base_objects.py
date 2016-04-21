@@ -371,12 +371,9 @@ class ArrayOfComponents(BaseCataEntity):
         a_creer_seulement_dans(self, ['located_components', 'Elements'])
         check_type([phys], ArrayOfQuantities)
         self._phys = phys
-        locatedComponents = force_tuple(locatedComponents)
-        check_type(locatedComponents, LocatedComponents)
-        size = len(locatedComponents)
-        assert size in (1, 2), locatedComponents
+        check_type([locatedComponents], LocatedComponents)
         self._locCmp = locatedComponents
-        if size == 1:
+        if phys.dim == 'V':
             self._type = 'VEC'
         else:
             self._type = 'MAT'
@@ -397,7 +394,7 @@ class ArrayOfComponents(BaseCataEntity):
     type = property(__getType)
 
     def copy(self, locatedComponents=None):
-        """Return a new ArrayOfComponents object, allow to change the list of
+        """Return a new ArrayOfComponents object, allow to change
         the located components"""
         new = ArrayOfComponents(self._phys,
                                 locatedComponents or self._locCmp[:])
@@ -811,9 +808,8 @@ class Element(BaseCataEntity):
             for _, loc_i in calc.para_in + calc.para_out:
                 loco[id(loc_i)] = loc_i
                 if type(loc_i) is ArrayOfComponents:
-                    arr = loc_i
-                    for loc_i in arr.locatedComponents:
-                        loco[id(loc_i)] = loc_i
+                    loc_i = loc_i.locatedComponents
+                    loco[id(loc_i)] = loc_i
         return loco.values()
 
     def changeComponents(self, locCmpName, components):

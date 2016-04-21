@@ -183,18 +183,18 @@ ZVARIPG = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
                             components=('VARI',))
 
 
-MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
-VVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(NDEPLAR,))
+VVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=NDEPLAR)
 
 MMATUUR = ArrayOfComponents(
-    phys=PHY.MDEP_R, locatedComponents=(DDL_MECA, DDL_MECA))
+    phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
 VMATUUR = ArrayOfComponents(
-    phys=PHY.MDEP_R, locatedComponents=(NDEPLAR, NDEPLAR))
+    phys=PHY.MDEP_R, locatedComponents=NDEPLAR)
 
 MMATUNS = ArrayOfComponents(
-    phys=PHY.MDNS_R, locatedComponents=(DDL_MECA, DDL_MECA))
+    phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

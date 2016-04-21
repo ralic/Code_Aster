@@ -63,7 +63,7 @@ ECASECT  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
     components=('X[10]',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

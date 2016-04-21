@@ -2,7 +2,7 @@
 # CATALOGUES DES ELEMENTS 2D X-FEM HEAVISIDE-CRACKTIP DE BORD SANS CONTACT (LINEAIRES ET QUADRATIQUES)
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,7 +73,7 @@ CPRES_R  = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
     components=('PRES','CISA',))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

@@ -2,7 +2,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,10 +48,10 @@ DDL_ACOU = LocatedComponents(phys=PHY.PRES_C, type='ELNO', diff=True,
                              ('EN2', ('PRES',)),))
 
 
-MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=(DDL_ACOU,))
+MVECTTC = ArrayOfComponents(phys=PHY.VPRE_C, locatedComponents=DDL_ACOU)
 
 MMATTTC = ArrayOfComponents(
-    phys=PHY.MPRE_C, locatedComponents=(DDL_ACOU, DDL_ACOU))
+    phys=PHY.MPRE_C, locatedComponents=DDL_ACOU)
 
 #------------------------------------------------------------
 

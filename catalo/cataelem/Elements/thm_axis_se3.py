@@ -75,7 +75,7 @@ NSIEF_R  = LocatedComponents(phys=PHY.SIEF_R, type='ELNO', diff=True,
     ('EN2',()),))
 
 
-MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=(DDL_MECA,))
+MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------

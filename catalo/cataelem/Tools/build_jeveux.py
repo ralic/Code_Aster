@@ -634,7 +634,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
             nomolo = moloc.name
             assert nomolo != None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
             nogd = moloc.physicalQuantity.name
-            molo1 = moloc.locatedComponents[0].name
+            molo1 = moloc.locatedComponents.name
             nomolo2 = note2 + nomolo
             igd = NOMGD.jenonu(nogd)
             NOMMOLOC.ajout_nom(nomolo2)
@@ -657,8 +657,9 @@ def imprime_ojb(cel, file, timer, dbgdir):
             nomolo = moloc.name
             assert nomolo != None, 'Il faut nommer explicitement tous les modes locaux crees dans les boucles.'
             nogd = moloc.physicalQuantity.name
-            molo1 = moloc.locatedComponents[0].name
-            molo2 = moloc.locatedComponents[1].name
+            molo1 = moloc.locatedComponents.name
+            # forcément les mêmes LocatedComponents pour une matrice
+            molo2 = molo1
             nomolo2 = note2 + nomolo
             igd = NOMGD.jenonu(nogd)
             type_matrice = DESCRIGD.lit_co(nom=nogd, indice=1)

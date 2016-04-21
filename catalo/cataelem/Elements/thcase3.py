@@ -70,9 +70,9 @@ DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type='ELNO',
     components=('TEMP_MIL','TEMP_INF','TEMP_SUP',))
 
 
-MVECTTR  = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=(DDL_THER,))
+MVECTTR  = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
-MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=(DDL_THER,DDL_THER))
+MMATTTR  = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 
 #------------------------------------------------------------
