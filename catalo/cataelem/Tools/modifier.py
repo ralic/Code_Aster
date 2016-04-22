@@ -114,17 +114,10 @@ class ChangeComponentsVisitor(CataElemVisitor):
         if created:
             array = created
         else:
-            # locCmp = array.locatedComponents
-            # new = locCmp.accept(self)
-            # if new != locCmp:
-            #     self._newObjects[array.name] = array.copy(new)
-            new = []
-            changed = False
-            for locCmp in [array.locatedComponents]:
-                new.append( locCmp.accept(self) )
-                changed = changed or new[-1] != locCmp
-            if changed:
-                array = array.copy(new[0])
+            locCmp = array.locatedComponents
+            new = locCmp.accept(self)
+            if new != locCmp:
+                array = array.copy(new)
                 self._newObjects[array.name] = array
         return array
 
