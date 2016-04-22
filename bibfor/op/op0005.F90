@@ -2,7 +2,7 @@ subroutine op0005()
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,7 @@ subroutine op0005()
 #include "asterfort/lxlgut.h"
 #include "asterfort/rcstoc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/verif_loi_mater.h"
 #include "asterfort/wkvect.h"
 !
     integer :: nbobm, jnbobj, niv, n1
@@ -60,7 +61,7 @@ subroutine op0005()
     character(len=8) :: matout, matin, schout
     character(len=16) :: typmat, materi, k16bid
     character(len=19) :: noobrc
-    character(len=24) :: valk(4)
+    character(len=32) :: valk(4)
     character(len=32) :: nomrc
     character(len=32), allocatable :: motcle(:)
 ! ----------------------------------------------------------------------
@@ -199,6 +200,9 @@ subroutine op0005()
 200      continue
     endif
 !
+!   Vérification que les paramètres matériaux de certaines lois sont corrects
+    call verif_loi_mater(matout)
+!   Calcul des valeurs propres de la matrice de hooke pour s'assurer de sa posivité
     call aniver(matout)
 !
     deallocate(motcle)
