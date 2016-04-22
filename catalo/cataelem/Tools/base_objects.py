@@ -990,7 +990,10 @@ def check_type(sequence, types):
     of one of the given types"""
     types = force_tuple(types)
     for value in sequence:
-        assert isinstance(value, types), type(value)
+        if not isinstance(value, types):
+            accepted = ' or '.join([t.__name__ for t in types])
+            have = type(value).__name__
+            raise TypeError("expected {0}, got {1}".format(accepted, have))
     return sequence
 
 def checkAttr(attr, value):
