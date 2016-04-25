@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,9 +47,9 @@ class ProlongementError(FonctionError):
 def interp(typ_i, val, x1, x2, y1, y2, tol=1.e-6):
     """Interpolation linéaire/logarithmique entre un couple de valeurs
     """
-    if abs(val - x1) < tol * abs(x1):
+    if abs(val - x1) < tol * abs(x2 - x1):
         return y1
-    if abs(val - x2) < tol * abs(x2):
+    if abs(val - x2) < tol * abs(x2 - x1):
         return y2
     if typ_i[0] == 'LOG' and (x1 <= 0. or x2 <= 0.):
         raise InterpolationError(
@@ -212,8 +212,7 @@ class t_fonction:
                     raise ParametreError('valeur inattendue, para=%f' % val)
         # i = n, val > val_max
         elif i == n:
-            eps_d = (val - self.vale_x[-1]) / (
-                self.vale_x[-1] - self.vale_x[-2])
+            eps_d = (val - self.vale_x[-1]) / (self.vale_x[-1] - self.vale_x[-2])
             if abs(eps_d) <= tol:
                 return self.vale_y[-1]
             else:

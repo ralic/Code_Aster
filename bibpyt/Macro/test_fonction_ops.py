@@ -412,6 +412,7 @@ def test_fonction_ops(self, TEST_NOOK, VALEUR, ATTRIBUT, **args):
             # - "fonction" ou "nappe"
             if (type(lafonc) == fonction_sdaster) and intervalle != None:
                 # XXX il faut utiliser lafonc.Parametres() !
+                # XXX ne sert à rien, CALC_FONCTION prend les paramètres de la fonction normalement
                 fctProl = lafonc.sdj.PROL.get()
                 prolG = 'rien'
                 if fctProl[4][0:1] == 'C':
