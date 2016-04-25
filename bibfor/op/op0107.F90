@@ -2,7 +2,7 @@ subroutine op0107()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -217,6 +217,14 @@ subroutine op0107()
         call peingl(resu, modele, mate, carele, nh,&
                     nbocc, 'ENER_ELAS')
     endif
+!
+    call getfac('ENER_ELTR', nbocc)
+    if (nbocc .ne. 0) then
+        call medomp(resuco, modele, mate, carele, nh)
+        call peingl(resu, modele, mate, carele, nh,&
+                    nbocc, 'ENER_ELTR')
+    endif
+
 !
     call getfac('ENER_TOTALE', nbocc)
     if (nbocc .ne. 0) then

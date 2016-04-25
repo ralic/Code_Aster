@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -357,7 +357,7 @@ def calc_gp_ops(self, **args):
             __enertemp = POST_ELEM(MODELE=__model,
                                    RESULTAT=__RESU,
                                    LIST_INST=__linstr8,
-                                   ENER_ELAS=_F(GROUP_MA=lgroupma)
+                                   ENER_ELTR=_F(GROUP_MA=lgroupma)
                                    )
             enerel = __enertemp.EXTR_TABLE()
             tabenel = [mult * x for x in enerel.TOTALE.values()]
@@ -533,8 +533,8 @@ def calc_gp_ops(self, **args):
         __enertemp = POST_ELEM(MODELE=__model,
                                RESULTAT=__RESU,
                                LIST_INST=__linstr8,
-                               ENER_ELAS=_F(GROUP_MA=l_copo_tot),
-                               TITRE='Energie elastique',)
+                               ENER_ELTR=_F(GROUP_MA=l_copo_tot),
+                               TITRE='Energie elastique de traction',)
 
         enerel = __enertemp.EXTR_TABLE()
         tabcop = enerel.LIEU.values()

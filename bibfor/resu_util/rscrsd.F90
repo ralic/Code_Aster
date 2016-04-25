@@ -53,7 +53,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !                      C H A M P _ M E C A N I Q U E
 !     ------------------------------------------------------------------
     parameter (ncmec1=35)
-    parameter (ncmec2=49)
+    parameter (ncmec2=50)
     parameter (ncmec3=34)
     parameter (ncmuti=40)
     parameter (ncmeca=ncmec1+ncmec2+ncmec3+ncmuti)
@@ -116,7 +116,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
      & 'DERA_NOEU',       'PRME_ELNO',       'EPME_NOEU',&
      & 'EPME_ELNO',       'EPME_ELGA',       'EPMG_ELNO',&
      & 'EPMG_ELGA',       'ENEL_ELGA',       'ENEL_ELNO',&
-     & 'ENEL_NOEU',       'ENEL_ELEM',&
+     & 'ENEL_NOEU',       'ENEL_ELEM',       'ENTR_ELEM',&
      & 'EPMG_NOEU',       'SING_ELEM',       'SING_ELNO',&
      & 'DISS_ELGA',       'DISS_ELNO',       'DISS_NOEU',&
      & 'DISS_ELEM'/

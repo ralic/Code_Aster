@@ -76,6 +76,17 @@ subroutine te0490(option, nomte)
 !            .D         EST LE TENSEUR DE HOOKE
 ! -----------------------------------------------------------------
 !
+!  OPTION ENTR_ELEM : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+!  =================   MODIFIEE DETERMINEE PAR L'EXPRESSION SUIVANTE :
+!
+!   ENELAS =  0.5*Lame*H(tr(EPS))*tr(EPS)**2+mu*SUM(H(Ei)*Ei**2)
+!
+!        OU  .EPS      EST LE TENSEUR DES DEFORMATIONS ELASTIQUES
+!            .Ei       SONT (pour i=1..3) LES DEFORMATIONS PROPRES
+!            .H        LA FONCTION D'HEAVISIDE
+!
+! -----------------------------------------------------------------
+!
 !  OPTION ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
 !  ==================   DETERMINEE PAR LES EXPRESSIONS SUIVANTES :
 !
@@ -135,6 +146,8 @@ subroutine te0490(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+#include "asterfort/diago3.h"
+#include "asterfort/r8inir.h"
 !-----------------------------------------------------------------------
     integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
     integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, itemps
@@ -144,7 +157,9 @@ subroutine te0490(option, nomte)
     parameter (mxcmel = 162)
     parameter (nbsgm  =   6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e
+    real(kind=8) :: lame, mu, vecp(3,3), epm(3)
     real(kind=8) :: enelas, eneldv, enelsp, enelto, eplaeq, eplast, epseq
+    real(kind=8) :: enelastr, enelpart1, enelpart2, trepstraction,  welastr
     real(kind=8) :: epsthe, omega, p, poids, psi, rp
     real(kind=8) :: rprim, sigeq, sigy, tempg, trepsm, trois, trsig
     real(kind=8) :: un, undemi, untier, volume, welas, wtotal
@@ -177,8 +192,10 @@ subroutine te0490(option, nomte)
     volume = zero
     indigl = zero
     enelas = zero
+    enelastr = zero
     eplast = zero
     welas = zero
+    welastr = zero
     wtotal = zero
     instan = zero
 !
@@ -331,12 +348,13 @@ subroutine te0490(option, nomte)
 !                      =                         =
 !                      = OPTION   "INDIC_ENER"   =
 !                      = OPTION   "ENEL_ELEM"    =
+!                      = OPTION   "ENTR_ELEM"    =
 !                      = OPTION   "ENER_TOTALE"  =
 !                      =                         =
 !                      ===========================
 !
     if (option .eq. 'INDIC_ENER' .or. option .eq. 'ENEL_ELEM' .or. option .eq.&
-        'ENER_TOTALE') then
+        'ENER_TOTALE'.or. option .eq. 'ENTR_ELEM') then
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !
@@ -347,6 +365,9 @@ subroutine te0490(option, nomte)
 !
 ! --- TENSEUR DES CONTRAINTES AU POINT D'INTEGRATION COURANT :
 !
+!-----------Initialisation contrainte 6 composantes pour diago3.h
+            call r8inir(nbsgm, zero, sigma, 1)
+
             do 20 i = 1, nbsig
                 sigma(i) = zr(idsig+(igau-1)*nbsig+i-1)
  20         continue
@@ -374,6 +395,106 @@ subroutine te0490(option, nomte)
 !  = FIN TRAITEMENT DE L'OPTION ENEL_ELEM        =
 !  ===============================================
 !
+!
+            endif
+!
+            nomres(1) = 'E'
+            nomres(2) = 'NU'
+!
+            call rcvalb(fami, igau, 1, '+', zi(imate),&
+                        ' ', 'ELAS', 0, ' ', [0.d0],&
+                        2, nomres, valres, icodre, 2)
+!
+!
+            e = valres(1)
+            nu = valres(2)
+!
+
+            deuxmu = e/(un+nu)
+            k = untier*e/(un - deux*nu)
+            lame = (e*nu)/((1+nu)*(1-2*nu))
+            mu = e/(2*(1+nu))
+!
+! --- CALCUL DES DEFORMATIONS ELASTIQUES EN CONSIDERANT LE MATERIAU ISOTROPE :
+! --- EPS_ELAS    = 1/D*SIGMA
+! ---             = ((1+NU)/E)*SIGMA-(NU/E)*TRACE(SIGMA) :
+!
+            c1 = (un + nu)/e
+            c2 = nu/e
+!
+! --- CAS DES CONTRAINTES PLANES :
+!
+            if (lteatt('C_PLAN','OUI')) then
+                trsig = sigma(1) + sigma(2)
+                epsel(1) = c1*sigma(1)-c2*trsig
+                epsel(2) = c1*sigma(2)-c2*trsig
+                epsel(3) = -c2*trsig
+                epsel(4) = c1*sigma(4)
+                epsel(5) = c1*sigma(5)
+                epsel(6) = c1*sigma(6)
+!
+! --- CAS AXI ET DEFORMATIONS PLANES :
+!
+            else
+                trsig = sigma(1) + sigma(2) + sigma(3)
+                epsel(1) = c1*sigma(1)-c2*trsig
+                epsel(2) = c1*sigma(2)-c2*trsig
+                epsel(3) = c1*sigma(3)-c2*trsig
+                epsel(4) = c1*sigma(4)
+                epsel(5) = c1*sigma(5)
+                epsel(6) = c1*sigma(6)
+
+            endif
+
+!
+! --- PARTIE SPHERIQUE DE L'ENERGIE DE DEFORMATION ELASTIQUE POSITIVE OU NULLE:
+!
+
+            trepstraction = epsel(1) + epsel(2) + epsel(3)
+            if (trepstraction .le. zero) then 
+                     trepstraction = zero
+            endif
+
+            enelpart1 = undemi*lame*trepstraction*trepstraction
+
+!
+! --- CALCUL DES DEFORMATIONS ELASTIQUES PRINCIPALES POSITIVES OU NULLES:
+            call diago3(epsel,vecp,epm)
+
+            if (epm(1) .le. zero) then 
+                  epm(1) = zero
+            endif
+            if (epm(2) .le. zero) then 
+                  epm(2) = zero
+            endif
+            if (epm(3) .le. zero) then 
+                  epm(3) = zero
+            endif 
+
+!
+! --- PARTIE DE L'ENERGIE DE DEFORMATION ELASTIQUE (DIRECTIONS PRINCIPALES) POSITIVE OU NULLE:
+!
+
+            enelpart2 = mu*(epm(1)*epm(1)+&
+                     &epm(2)*epm(2)+&
+                     &epm(3)*epm(3))
+
+!
+! --- ENERGIE DE DEFORMATION ELASTIQUE DE TRACTION:
+!
+            enelastr = enelpart1 + enelpart2
+
+! --- TRAITEMENT DE L'OPTION ENEL_ELTR :
+
+            if (option .eq. 'ENTR_ELEM') then
+!
+                welastr = welastr + enelastr*poids
+!
+                goto 10
+!
+!  ===============================================
+!  = FIN TRAITEMENT DE L'OPTION ENEL_ELTR        =
+!  ===============================================
 !
             endif
 !
@@ -723,6 +844,9 @@ subroutine te0490(option, nomte)
         else if (option.eq.'ENEL_ELEM') then
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = welas
+        else if (option.eq.'ENTR_ELEM') then
+            call jevech('PENTRD1', 'E', idene1)
+            zr(idene1) = welastr
         else if (option.eq.'ENER_TOTALE') then
             call jevech('PENERD1', 'E', idene1)
             zr(idene1) = wtotal

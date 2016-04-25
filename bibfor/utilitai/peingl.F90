@@ -44,7 +44,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
     integer :: nh, nbocc
     character(len=*) :: resu, modele, mate, cara, motfaz
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,6 +107,17 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
 ! -----------------------------------------------------------------
 !
+!  MOT-CLE ENER_ELTR : CALCUL DE L'ENERGIE DE DEFORMATION ELASTIQUE
+!  =================   MODIFIEE DETERMINEE PAR L'EXPRESSION SUIVANTE :
+!
+!   ENELAS =  0.5*Lame*H(tr(EPS))*tr(EPS)**2+mu*SUM(H(Ei)*Ei**2)
+!
+!        OU  .EPS      EST LE TENSEUR DES DEFORMATIONS ELASTIQUES
+!            .Ei       SONT (pour i=1..3) LES DEFORMATIONS PROPRES
+!            .H        LA FONCTION D'HEAVISIDE
+!
+! -----------------------------------------------------------------
+!
 !  MOT-CLE ENER_TOTALE : CALCUL DE L'ENERGIE DE DEFORMATION TOTALE
 !  ===================   DETERMINEE PAR L'EXPRESSION SUIVANTE :
 !
@@ -157,6 +168,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !    MOTFAZ         IN     K*      NOM DU MOT-CLE FACTEUR "INDIC_ENER"
 !                                                     OU  "INDIC_SEUIL"
 !                                                     OU  "ENER_ELAS"
+!                                                     OU  "ENER_ELTR"
 !                                                     OU  "ENER_TOTALE"
 !                                                     OU  "ENER_DISS"
 !
@@ -223,6 +235,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             noparr(8) = 'CISAILLE'
             noparr(9) = 'COUPL_MF'
             nbparr = 9
+        else if (motfac.eq.'ENER_ELTR') then
+            option='ENTR_ELEM'
         else if (motfac.eq.'ENER_TOTALE') then
             option='ENER_TOTALE'
         endif
@@ -399,9 +413,9 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         endif
 !
 ! ---  RECUPERATION DU CHAMP DE CONTRAINTES ASSOCIE AU
-! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS ET ENER_TOTALE:
+! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS, ENER_ELTR ET ENER_TOTALE:
 !      -----------------------------------------------------
-        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS'&
+        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR'&
        .or. motfac(1:6).eq.'INDIC_') then
             call rsexch('F', resul, 'SIEF_ELGA', numord, chsig, iret)
 !
@@ -422,7 +436,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             call rsexch(' ', resul, 'VARI_ELGA', numord, chvari, iret)
             ivari=1
             if (iret .gt. 0) then
-                if (motfac .ne. 'ENER_ELAS') then
+                if ( motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR' ) then
                     vk24(1) = resul
                     vk24(2) = kiord
                     call utmess('F', 'UTILITAI3_79', nk=2, valk=vk24)
@@ -436,9 +450,9 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         endif
 !
 ! ---  RECUPERATION DU CHAMP DES DEPLACEMENTS ASSOCIE AU
-! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS ET ENER_TOTALE:
+! ---  NUMERO D'ORDRE COURANT POUR ENER_ELAS, ENER_ELTR ET ENER_TOTALE:
 !      -----------------------------------------------------
-        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS'&
+        if (motfac.eq.'ENER_TOTALE' .or. motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR'&
        .or. motfac(1:6).eq.'INDIC_') then
             call rsexch('F', resul, 'DEPL', numord, chdepl, iret)
 !
@@ -487,7 +501,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
             endif
         endif
         if (option .eq. 'ENER_TOTALE' .or. option .eq. 'ENEL_ELEM'&
-       .or. motfac(1:6).eq.'INDIC_') then
+    &   .or. option .eq.'ENTR_ELEM' .or. motfac(1:6).eq.'INDIC_') then
             lpain(9) = 'PDEPLR'
             lchin(9) = chdepl
             lpain(10) = 'PCONTPR'
@@ -516,6 +530,10 @@ subroutine peingl(resu, modele, mate, cara, nh,&
         then
             nbout = 1
             lpaout(1) = 'PENERD1'
+            lchout(1) = '&&PEINGL.INDIC'
+        else if (option .eq. 'ENTR_ELEM') then
+            nbout = 1
+            lpaout(1) = 'PENTRD1'
             lchout(1) = '&&PEINGL.INDIC'
         else if (option.eq.'DISS_ELEM') then
             nbout = 1
@@ -570,6 +588,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     vk8(2) = 'TOUT'
 !
                 else if (motfac.eq.'ENER_ELAS'  .or.&
+     &                   motfac.eq.'ENER_ELTR'  .or.&
      &                   motfac.eq.'ENER_TOTALE'.or.&
      &                   motfac.eq.'ENER_DISS') then
 !
@@ -584,7 +603,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---  BOUCLE SUR LES PAS DE TEMPS ON SOMME LES TERMES DE
 ! ---  L ENERGIE TOTAL
                     if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt(1:4) .ne.'ELAS') .and.&
-                        (motfac.ne.'ENER_ELAS') .and. (motfac.ne.'ENER_DISS')) then
+                        (motfac .ne. 'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and. &
+                        (motfac.ne.'ENER_DISS')) then
                         energi = energi + work(1)
                     else
                         energi = work(1)
@@ -593,7 +613,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                     vk8(1) = noma
                     vk8(2) = 'TOUT'
                     valr(2) = energi
-                    if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                    if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
+                        motfac.eq.'ENER_TOTALE') then
                         valr(3) = work(2)
                         valr(4) = work(3)
                         if (motfac .eq. 'ENER_ELAS') then
@@ -665,6 +686,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         vk24(1) = nomgrm
 !
                     else if (motfac.eq.'ENER_ELAS' .or.&
+     &                       motfac.eq.'ENER_ELTR' .or.&
      &                       motfac.eq.'ENER_TOTALE' .or.&
      &                       motfac.eq.'ENER_DISS') then
 !
@@ -681,8 +703,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 ! ---  L ENERGIE TOTAL
 !
                         if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&
-                            (motfac.ne.'ENER_ELAS') .and. (motfac.ne.'ENER_DISS')) then
-!
+                            (motfac .ne.'ENER_ELAS' .and. motfac .ne. 'ENER_ELTR') .and.&
+                            (motfac.ne.'ENER_DISS')) then
 !
                             energi = energi + work(1)
                         else
@@ -691,7 +713,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
                         vk24(1) = nomgrm
                         valr(2) = energi
-                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
+                            motfac.eq.'ENER_TOTALE') then
                             valr(3) = work(2)
                             valr(4) = work(3)
                             if (motfac .eq. 'ENER_ELAS') then
@@ -764,6 +787,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         vk8(1) = nommai
 !
                     else if (motfac.eq.'ENER_ELAS' .or.&
+     &                       motfac.eq.'ENER_ELTR' .or.&
      &                       motfac.eq.'ENER_TOTALE' .or.&
      &                       motfac.eq.'ENER_DISS') then
 !
@@ -777,7 +801,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
                         endif
 !
                         if ((compt(1:9).ne.'VMIS_ISOT') .and. (compt( 1:4).ne.'ELAS') .and.&
-                            (motfac.ne.'ENER_ELAS')) then
+                            (motfac .ne.'ENER_ELAS' .and. motfac.ne.'ENER_ELTR')) then
 !
                             energi = energi + work(1)
                         else
@@ -786,7 +810,8 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 !
                         valr(2) = energi
                         vk8(1) = nommai
-                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_TOTALE') then
+                        if (motfac.eq.'ENER_ELAS' .or. motfac.eq.'ENER_ELTR' .or.&
+                            motfac.eq.'ENER_TOTALE') then
                             valr(3) = work(2)
                             valr(4) = work(3)
                             if (motfac .eq. 'ENER_ELAS') then

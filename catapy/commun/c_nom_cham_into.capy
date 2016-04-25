@@ -130,6 +130,8 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Densité d'énergie élastique aux noeuds par élément"), ),
             "ENEL_NOEU":        ( ("lin", "nonlin",),
                                  _(u"Densité d'énergie élastique aux noeuds"), ),
+            "ENTR_ELEM":        ( ("lin", "nonlin",),
+                                 _(u"Énergie élastique modifiée (seulement traction) utilisée par Gp"), ),
             "EPOT_ELEM":        ( ("lin",),
                                  _(u"Énergie potentielle de déformation élastique par élément"), ),
             "ETOT_ELEM":        ( ("lin", "nonlin",),
