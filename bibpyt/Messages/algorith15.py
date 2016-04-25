@@ -41,7 +41,11 @@ cata_msg = {
   nom du noeud -->  %(k2)s
 """),
 
-
+    5 : _(u"""
+  un ddl interdit a été activé dans l'interface de répétitivité cyclique
+  type du DDL  -->  %(k1)s
+  nom du noeud -->  %(k2)s
+"""),
 
     6 : _(u"""
   il manque un DDL sur un noeud droite
@@ -57,8 +61,10 @@ cata_msg = {
  la composante : %(k1)s  est une composante indéfinie
 """),
 
-
-
+    9 : _(u"""
+  arrêt pour cause de ddls interdits :
+  seules les composantes DX, DY, DZ, DRX, DRY, DRZ sont autorisées 
+"""),
 
     10 : _(u"""
  arrêt sur type de DDL non défini

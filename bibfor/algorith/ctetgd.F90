@@ -53,6 +53,7 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
@@ -65,17 +66,15 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !-----------------------------------------------------------------------
     parameter   (nbcpmx=300)
     character(len=24) :: valk(2)
-    character(len=8) :: basmod, mailla, typddl(10), nomnoe, tyd, intf, kbid
+    character(len=8) :: basmod, mailla, nomnoe, tyd, intf, kbid
     real(kind=8) :: xd(10), xg(10), xtd(10), xtg(10), tet0(10, 10)
     real(kind=8) :: teta(nbtet, nbtet)
     aster_logical :: nook
     integer :: idecd(nbcpmx), idecg(nbcpmx)
-    integer :: vali(2)
+    integer :: vali(2), jnocmp
 !
 !-----------------------------------------------------------------------
 !
-    data typddl /'DX','DY','DZ','DRX','DRY','DRZ',&
-     &              '?','?','PRES','PHI'/
     data nook /.false./
 !
 !-----------------------------------------------------------------------
@@ -156,14 +155,15 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !
     nbdcou=0
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'DEPL_R'), 'L', jnocmp)
     do i = 1, nbnod
         inod=zi(llnod+i-1)
 !******************************************************************
 !        ICODD=ZI(LLDESC+2*NBNOT+INOD-1)
         inog=zi(llnog+i-1)
 !        ICODG=ZI(LLDESC+2*NBNOT+INOG-1)
-        call isdeco(zi(lldesc+2*nbnot+(inod-1)*nbec+1-1), idecd, 10)
-        call isdeco(zi(lldesc+2*nbnot+(inog-1)*nbec+1-1), idecg, 10)
+        call isdeco(zi(lldesc+2*nbnot+(inod-1)*nbec+1-1), idecd, nbcmp)
+        call isdeco(zi(lldesc+2*nbnot+(inog-1)*nbec+1-1), idecg, nbcmp)
 !******************************************************************
         do j = 1, 10
             if (idecd(j) .eq. 1) then
@@ -192,11 +192,12 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
 !
 !    VERIFICATION SUR COHERENCE DES DDL INTERFACES
 !
-        do j = 1, 10
+        do j = 1, 6
+        
             if (xtd(j) .gt. 0.d0 .and. xg(j) .eq. 0.d0) then
                 noer=zi(lldesc+inog-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=typddl(j)
+                tyd=zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
                 valk (1) = tyd
                 valk (2) = nomnoe
@@ -206,18 +207,42 @@ subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
             if (xtg(j) .gt. 0.d0 .and. xd(j) .eq. 0.d0) then
                 noer=zi(lldesc+inod-1)
                 call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
-                tyd=typddl(j)
+                tyd=zk8(jnocmp-1+j)
                 call utmess('E', 'ALGORITH15_3')
                 valk (1) = tyd
                 valk (2) = nomnoe
                 call utmess('E', 'ALGORITH15_6', nk=2, valk=valk)
                 nook=.true.
             endif
-!
-        end do
+        enddo
 !
         if (nook) then
             call utmess('F', 'ALGORITH15_7')
+        endif
+        
+        do j = 7, nbcmp
+            if (idecd(j).eq. 1.d0) then
+                noer=zi(lldesc+inod-1)
+                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                tyd=zk8(jnocmp-1+j)
+                valk (1) = tyd
+                valk (2) = nomnoe
+                call utmess('E', 'ALGORITH15_5', nk=2, valk=valk)
+                nook=.true.
+            endif
+            if (idecg(j).eq. 1.d0) then
+                noer=zi(lldesc+inog-1)
+                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                tyd=zk8(jnocmp-1+j)
+                valk (1) = tyd
+                valk (2) = nomnoe
+                call utmess('E', 'ALGORITH15_5', nk=2, valk=valk)
+                nook=.true.
+            endif
+        enddo
+!
+        if (nook) then
+            call utmess('F', 'ALGORITH15_9')
         endif
 !
         iloci=0
