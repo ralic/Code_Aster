@@ -5,7 +5,7 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
                   lmin, lresu, formr, nive)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,8 +92,10 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !
     if ((tych(1:4).eq.'NOEU') .or. (tych(1:2).eq.'EL')) then
     else if (tych(1:4).eq. 'CART') then
-        call utmess('A', 'PREPOST_92')
-        goto 999
+        if ( .not. lresu ) then
+            call utmess('A', 'PREPOST_92')
+            goto 999
+        endif
     else
         valk(1) = tych
         valk(2) = ch19
