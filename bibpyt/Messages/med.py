@@ -458,8 +458,9 @@ cata_msg = {
 """),
 
     83 : _(u"""
-Le nombre de valeurs lues dans le fichier MED est différent du nombre de valeurs réellement
- affectées dans le champ :
+Le nombre de valeurs lues dans le fichier MED pour le champ  %(k1)s est différent du
+ nombre de valeurs réellement affectées dans le champ dans la structure de données
+ résultat :
   - valeurs lues dans le fichier        : %(i1)d
   - valeurs non affectées dans le champ : %(i2)d
 
