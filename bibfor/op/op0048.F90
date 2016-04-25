@@ -110,9 +110,12 @@ subroutine op0048()
     call jeexin(chmat//'.CVRCVARC', iret)
     ASSERT( iret .gt. 0 )
 !
-!   pas de CARA_ELEM
+!   verif sur la presence de CARA_ELEM
     call dismoi('CARA_ELEM', resu, 'RESULTAT', repk=carael)
-    ASSERT( carael .eq. '#AUCUN' )
+    ASSERT( carael .ne. '#PLUSIEURS' )
+    if (carael .eq. '#AUCUN') then
+        carael = ' '
+    endif
 !
 !   verif que une et une seule varc est presente parmi nomvrc()
     call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
@@ -154,7 +157,7 @@ subroutine op0048()
 !-----------------------------------------------------------------------
 !
     celvrc = '&&'//nompro//'.CELVRC'
-    call vrcins(model, chmat, ' ', inst, celvrc, codret, nompaz='PVARCNO')
+    call vrcins(model, chmat, carael, inst, celvrc, codret, nompaz='PVARCNO')
     ASSERT( codret .eq. 'OK' )
     call exisd('CHAM_ELEM', celvrc, iret)
     ASSERT( iret .eq. 1 )
