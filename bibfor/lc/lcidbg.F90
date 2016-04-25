@@ -1,3 +1,4 @@
+!NECS_EVOL= 77
 subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm, vim, option)
 use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
@@ -11,6 +12,7 @@ implicit none
 #include "asterfort/lxlgut.h"
 #include "asterfort/codree.h"
 #include "asterfort/utlcal.h"
+#include "asterfort/assert.h"
 
     integer :: kpg, ksp, neps, nsig, iv, nbvari, iadzi, iazk24
     integer :: nval,nimp,   ier, nbvrc, iref(10), ier2, nl1
@@ -18,7 +20,7 @@ implicit none
     character(len=8) ::  typmod(*),nomail,novrc,nomvrc(10)
     character(len=16)::  compor(*), option, algo
     character(len=64)::  file
-    real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig), epsp(neps)
+    real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig)
     real(kind=8) :: crit(*), lvalr(20), vref(10), vrcm(10),vrcp(10), valvrc
     real(kind=8) :: instam, instap,rac2
     data nimp / 0/
@@ -26,7 +28,7 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -87,6 +89,7 @@ implicit none
 !               angmas
 !       OUT     un fichier
 !
+    real(kind=8) :: epslm(12),eps(12),sig(6)
 
     nimp=nimp+1
     if (nimp>5) goto 999
@@ -102,6 +105,7 @@ implicit none
           call rcvarc(' ', novrc, '-', fami, kpg,ksp, valvrc , ier)
           if (ier .eq. 0) then
               nbvrc=nbvrc+1
+              ASSERT(nbvrc.le.10)
               nomvrc(nbvrc)=novrc
               vrcm(nbvrc)=valvrc
               call rcvarc(' ', novrc, '+',   fami, kpg, ksp, vrcp(nbvrc), ier)
@@ -136,17 +140,20 @@ implicit none
     endif
 
     do iv=1,neps
-       epsp(iv)=epsm(iv)+deps(iv)
+       eps(iv)=epsm(iv)+deps(iv)
+    enddo
+    do iv=1,nsig
+       sig(iv)=sigm(iv)
     enddo
     do iv=4,neps
-       epsm(iv)=epsm(iv)/rac2
-       epsp(iv)=epsp(iv)/rac2
+       epslm(iv)=epsm(iv)/rac2
+       eps(iv)=eps(iv)/rac2
     enddo
     if (nval<3) then
-       epsm(5)=0.d0
-       epsm(6)=0.d0
-       sigm(5)=0.d0
-       sigm(6)=0.d0
+       epslm(5)=0.d0
+       epslm(6)=0.d0
+       sig(5)=0.d0
+       sig(6)=0.d0
     endif
 
     lvalr(1)=instam
@@ -158,13 +165,13 @@ implicit none
     call codree(instap, 'E', file(nl1+7:64))
 
     call utmess('I','COMPOR2_70',sk=nomail,si=kpg, nr=2, valr=lvalr,fname=file)
-    call utmess('I','COMPOR2_71',sk='EXX', nr=4, valr=[instam,epsm(1),instap,epsp(1)],fname=file)
-    call utmess('I','COMPOR2_71',sk='EYY', nr=4, valr=[instam,epsm(2),instap,epsp(2)],fname=file)
-    call utmess('I','COMPOR2_71',sk='EZZ', nr=4, valr=[instam,epsm(3),instap,epsp(3)],fname=file)
-    call utmess('I','COMPOR2_71',sk='EXY', nr=4, valr=[instam,epsm(4),instap,epsp(4)],fname=file)
+    call utmess('I','COMPOR2_71',sk='EXX', nr=4, valr=[instam,epslm(1),instap,eps(1)],fname=file)
+    call utmess('I','COMPOR2_71',sk='EYY', nr=4, valr=[instam,epslm(2),instap,eps(2)],fname=file)
+    call utmess('I','COMPOR2_71',sk='EZZ', nr=4, valr=[instam,epslm(3),instap,eps(3)],fname=file)
+    call utmess('I','COMPOR2_71',sk='EXY', nr=4, valr=[instam,epslm(4),instap,eps(4)],fname=file)
     if (nval.eq.3) then
-       call utmess('I','COMPOR2_71',sk='EXZ', nr=4, valr=[instam,epsm(5),instap,epsp(5)],fname=file)
-       call utmess('I','COMPOR2_71',sk='EYZ', nr=4, valr=[instam,epsm(6),instap,epsp(6)],fname=file)
+       call utmess('I','COMPOR2_71',sk='EXZ', nr=4, valr=[instam,epslm(5),instap,eps(5)],fname=file)
+       call utmess('I','COMPOR2_71',sk='EYZ', nr=4, valr=[instam,epslm(6),instap,eps(6)],fname=file)
     endif
 
     if (nbvrc .gt. 0) then
@@ -185,8 +192,8 @@ implicit none
        call utmess('I','COMPOR2_74',fname=file)
     endif
 
-    call utmess('I','COMPOR2_75',nr=6, valr=epsm,fname=file)
-    call utmess('I','COMPOR2_76',nr=6, valr=sigm,fname=file)
+    call utmess('I','COMPOR2_75',nr=6, valr=epslm,fname=file)
+    call utmess('I','COMPOR2_76',nr=6, valr=sig,fname=file)
     do iv=1,nbvari
        call utmess('I','COMPOR2_77',nr=1, valr=vim(iv),fname=file)
     enddo
