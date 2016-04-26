@@ -339,7 +339,7 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
         goto 9
     endif
 !
-    ASSERT(.false.)
+    call utmess('F', 'MODELISA_1')
 
 
 !

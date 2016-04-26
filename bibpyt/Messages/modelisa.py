@@ -19,10 +19,12 @@
 
 cata_msg = {
 
+    1 : _(u"""
+Problème à la relecture du fichier de maillage.
 
-
-
-
+Conseil : Il se peut que votre fichier de maillage ne soit pas au format Aster.
+ Vérifiez que le format de relecture est bien cohérent avec le format du fichier.
+"""),
 
     2 : _(u"""
 Erreur utilisateur dans MODI_MAILLAGE / ABSC_CURV :
