@@ -1,8 +1,22 @@
 subroutine cormgi(basez, ligrez)
-    implicit none
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jedup1.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,19 +32,6 @@ subroutine cormgi(basez, ligrez)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-!
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jedup1.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/wkvect.h"
     character(len=*) :: basez, ligrez
     character(len=1) :: base
     character(len=19) :: ligrel
@@ -77,6 +78,10 @@ subroutine cormgi(basez, ligrez)
     endif
 !
     call jelira(nmaila//'.CONNEX', 'NMAXOC', nbmail)
+    call jeexin(ligrel//'.LIEL', iret)
+    if (iret .eq. 0) then
+        call utmess('F', 'MODELE1_5')
+    endif
     call jelira(ligrel//'.LIEL', 'NUTIOC', nbgrel)
     if (nbmail*nbgrel .eq. 0) then
         goto 999

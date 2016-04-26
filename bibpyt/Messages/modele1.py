@@ -39,7 +39,11 @@ Sur les %(i1)d mailles du maillage %(k1)s, on a demandé l'affectation de %(i2)d
 """),
 
 
-
+    5 : _(u"""
+Votre modèle doit contenir au moins un élément fini car il n'est pas possible de n'avoir que des macro-éléments si le maillage est lu par LIRE_MAILLAGE.
+  -> Risque & Conseil :
+Si vous voulez définir entièrement un modèle avec des macro-éléments, il faut définir ces derniers avec DEFI_MAILLAGE.
+"""),
 
     6 : _(u"""
 Aucune maille du maillage %(k1)s n'a été affectée par des éléments finis.
