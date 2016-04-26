@@ -242,7 +242,8 @@ TRAN_GE3=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                                  DIST_1=0.0995,
                                  DIST_2=0.0995,
                                  RIGI_NOR=1.E+8,),
-                         VERI_CHOC=_F(STOP_CRITERE='NON',),);
+                         VERI_CHOC=_F(STOP_CRITERE='NON',),
+                         INFO=2);
 
 #
 
