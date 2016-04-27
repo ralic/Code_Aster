@@ -137,7 +137,7 @@ subroutine iremed(nomcon, ifichi, nocham, novcmp, partie,&
         endif
         sdcarm = '&&IREMED'
 
-        call exisd('CARTE', carael//'.CANBSP', iret)
+        call exisd('CHAMP', carael//'.CANBSP', iret)
         if (iret .ne. 0) then
             call celces(carael//'.CANBSP', 'V', cesnsp)
         endif
