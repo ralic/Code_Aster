@@ -27,8 +27,12 @@ class cxxprogram(cxx.cxxprogram):
 def customize_configure_output():
     """Customize the output of configure"""
     from waflib.Context import Context
-    def start_msg40(self, msg):
+    def start_msg40(self, *k, **kw):
         """Force output on 40 columns. See :py:meth:`waflib.Context.Context.msg`"""
+        if kw.get('quiet', None):
+            return
+
+        msg = kw.get('msg', None) or k[0]
         try:
             if self.in_msg:
                 self.in_msg += 1
@@ -43,50 +47,31 @@ def customize_configure_output():
         Logs.pprint('NORMAL', "%s :" % msg.ljust(self.line_just), sep='')
     Context.start_msg = start_msg40
 
-SRCWIDTH = 120
-def customize_task_output():
-    """Customize the output of the tasks"""
-    from waflib.Task import Task, CRASHED, MISSING
-    def display(self):
-        """Limit source list. See :py:meth:`waflib.Task.Task.__str__`"""
-        src_str = ' '.join([a.nice_path() for a in self.inputs])
-        tgt_str = ' '.join([a.nice_path() for a in self.outputs])
-        if self.outputs: sep = ' -> '
-        else: sep = ''
-        if len(src_str) > SRCWIDTH:
-            src_str = src_str[:SRCWIDTH - 3] + '...'
-        return '%s: %s%s%s\n' % (self.__class__.__name__.replace('_task', ''), src_str, sep, tgt_str)
-    Task.__str__ = display
+customize_configure_output()
+###############################################################################
+from waflib.Task import Task, CRASHED, MISSING
 
-    def format_error(self):
-        """Write full report into a file. See :py:meth:`waflib.Task.Task.format_error`"""
+SRCWIDTH = 120
+def format_error(self):
+    """Write task details into a file. Print only the first line in console.
+    See :py:meth:`waflib.Task.Task.format_error`"""
+    text = Task.format_error(self)
+    if self.hasrun == CRASHED:
         msg = getattr(self, 'last_cmd', '')
         name = getattr(self.generator, 'name', '')
-        if getattr(self, "err_msg", None):
-            return self.err_msg
-        elif not self.hasrun:
-            return 'task in %r was not executed for some reason: %r' % (name, self)
-        elif self.hasrun == CRASHED:
-            bldlog = osp.join(self.generator.bld.cwd, '%s.log' % name)
-            slog = ''
-            try:
-                open(bldlog, 'wb').write('task %r:\n%r\n\nlast command:\n%r\n' % (name, self, msg))
-            except (OSError, IOError), exc:
-                slog = '\ncan not write the log file: %s' % str(exc)
-            try:
-                return ' -> task in %r failed (exit status %r):\n' \
-                       '    full report in: %s%s' % (name, self.err_code, bldlog, slog)
-            except AttributeError:
-                return ' -> task in %r failed:\n' \
-                       '    full report in: %s%s' % (name, bldlog, slog)
-        elif self.hasrun == MISSING:
-            return ' -> missing files in %r: %r\n%r' % (name, self, msg)
-        else:
-            return 'invalid status for task in %r: %r' % (name, self.hasrun)
-    Task.format_error = format_error
+        bldlog = osp.join(self.generator.bld.cwd, '%s.log' % name)
+        slog = ''
+        try:
+            open(bldlog, 'wb').write('task: %r\nlast command:\n%r\n' % (self, msg))
+        except (OSError, IOError), exc:
+            slog = '\ncan not write the log file: %s' % str(exc)
+        text = text.splitlines()[0] \
+             + '\n    task details in: {0}{1}'.format(bldlog, slog)
+    return text
 
-# customize_configure_output()
-# customize_task_output()
+cprogram.format_error = format_error
+cxxprogram.format_error = format_error
+fcprogram.format_error = format_error
 
 ###############################################################################
 # support for the "dynamic_source" attribute
