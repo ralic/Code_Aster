@@ -89,6 +89,8 @@ U1=STAT_NON_LINE(MODELE=MOMEC1,  CHAM_MATER=CHMAT,
                  NEWTON=_F(REAC_ITER=2,),
                  )
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=U1,),);
 
 # 2. CALCUL SUR LE MODELE MOMEC2 (TOUTES LES MAILLES SAUF M2) :
 #--------------------------------------------------------------------
