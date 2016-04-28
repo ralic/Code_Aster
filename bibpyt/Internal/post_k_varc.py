@@ -26,4 +26,5 @@ POST_K_VARC = OPER(
 
     RESULTAT=SIMP(statut='o', typ=(evol_elas,evol_noli)),
     INST=SIMP(statut='o',typ='R'),
+    NOM_VARC=SIMP(statut='o',typ='TXM',into=("TEMP","NEUT1")),
 )

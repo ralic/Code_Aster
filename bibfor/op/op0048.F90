@@ -15,6 +15,7 @@ subroutine op0048()
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
@@ -55,20 +56,21 @@ subroutine op0048()
 !
     integer :: nvrcmx
     parameter ( nvrcmx = 2 )
-    character(len=8) :: nomvrc(nvrcmx), nomgrd(nvrcmx), nomcmp(nvrcmx)
-    data nomvrc/ 'TEMP'  , 'NEUT1'  /
-    data nomgrd/ 'TEMP_R', 'NEUT_R' /
-    data nomcmp/ 'TEMP'  , 'X1'     /
+    character(len=8) :: tab_nomvrc(nvrcmx), tab_nomgrd(nvrcmx)
+    character(len=8) :: tab_nomcmp(nvrcmx)
+    data tab_nomvrc/ 'TEMP'  , 'NEUT1'  /
+    data tab_nomgrd/ 'TEMP_R', 'NEUT_R' /
+    data tab_nomcmp/ 'TEMP'  , 'X1'     /
 !
     character(len=6) :: nompro
     parameter (nompro='OP0048')
 !
-    integer :: ier, iret, ibid, nbno, ino, k, nbcvrc, jcesd1, jcesl1
-    integer :: nbma, ima, iad, itrou
+    integer :: ier, iret, ibid, nbno, ino, k, l, nbvarc, jcesd1, jcesl1
+    integer :: nbma, ima, iad, itrou, nbcmp, itest, nucmp, cpt_dbl, ind
     real(kind=8) :: inst
     character(len=2) :: codret
     character(len=8) :: chnout, resu, model, chmat, carael, tych, mesh
-    character(len=8) :: nomvarc, varc
+    character(len=8) :: nomvarc, varc, k8_k, k8_l
     character(len=16) :: nomsym, k16bi1, k16bi2
     character(len=19) :: celvrc, cnovrc, cnsvrc, cnsvr2, ces1
     character(len=19) :: cart2
@@ -76,6 +78,7 @@ subroutine op0048()
     real(kind=8), pointer :: cnsvrc_v(:) => null()
     real(kind=8), pointer :: cnsvr2_v(:) => null()
     character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=8), pointer :: cnsvrc_c(:) => null()
     character(len=16), pointer :: cesv(:) => null()
     aster_logical, pointer :: cnsvrc_l(:) => null()
     aster_logical, pointer :: cnsvr2_l(:) => null()
@@ -91,6 +94,7 @@ subroutine op0048()
 !   recup des entrees / sortie de l'operateur
     call getvid(' ', 'RESULTAT', scal=resu, nbret=ier)
     call getvr8(' ', 'INST', scal=inst, nbret=ier)
+    call getvtx(' ', 'NOM_VARC', scal=nomvarc, nbret=ier)
     call getres(chnout, k16bi1, k16bi2)
 !
 !   recup du modele
@@ -117,19 +121,44 @@ subroutine op0048()
         carael = ' '
     endif
 !
-!   verif que une et une seule varc est presente parmi nomvrc()
-    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbcvrc)
+!   recup de chmat//'.CVRCVARC'
+    call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
     call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
-    nomvarc=cvrcvarc(1)
-    itrou = indik8(nomvrc, nomvarc, 1, nvrcmx)
-    ASSERT( itrou .gt. 0 )
-    do k = 1, nbcvrc
-        ASSERT( nomvarc .eq. cvrcvarc(k) )
+    ASSERT( nbvarc .le. nvrcmx )
+!
+!   pas de doublons dans '.CVRCVARC' (est-ce d'ailleurs possible?)
+    cpt_dbl = 0
+    do k = 1, nbvarc
+        k8_k = cvrcvarc(k)
+        do l = k+1, nbvarc
+            k8_l = cvrcvarc(l)
+            if ( k8_k .eq. k8_l ) then
+                cpt_dbl = cpt_dbl + 1
+            endif
+        enddo
     enddo
+    ASSERT( cpt_dbl .eq. 0 )
+!
+!   recup de nucmp et itrou
+!     nucmp  : numero de la cmp qui correspond a nomvarc dans le champ
+!             out de vrcins, l'ordre est celui de '.CVRCVARC'
+!     itrou : position de nomvarc dans tab_nomvrc
+    nucmp = 0
+    itrou = 0
+    do k = 1, nbvarc
+        itest = indik8(tab_nomvrc, cvrcvarc(k), 1, nvrcmx)
+        ASSERT( itest .gt. 0 )
+        if ( cvrcvarc(k) .eq. nomvarc ) then
+            nucmp = k
+            itrou = itest
+        endif
+    enddo
+    ASSERT( nucmp .gt. 0 )
+    ASSERT( itrou .gt. 0 )
 !
 !   verif pour interdire le cas particulier de la VARC TEMP aux points
 !   de Gauss xfem (cas du chainage thermo mecanique complet avec xfem)
-    do k = 1, nbcvrc
+    do k = 1, nbvarc
         varc=cvrcvarc(k)
         cart2 = chmat//'.'//varc//'.2'
         ces1='&&'//nompro//'.CES1'
@@ -165,8 +194,7 @@ subroutine op0048()
     ASSERT( tych .eq. 'ELNO' )
 !
 !-----------------------------------------------------------------------
-!   transformation en un cham_no de varc a l'instant inst, dont
-!   le type de grandeur depend de la variable de commande :
+!   transformation en cham_no. Le nom de la grandeur depend de nomvarc :
 !   TEMP  -> TEMP_R
 !   NEUT1 -> NEUT_R
 !-----------------------------------------------------------------------
@@ -175,29 +203,34 @@ subroutine op0048()
     cnovrc = '&&'//nompro//'.CNOVRC'
     call chpchd(celvrc, 'NOEU', ' ', 'NON', 'V', cnovrc)
     call detrsd('CHAM_ELEM', celvrc)
-
+!
 !   transformation cham_no -> cham_no_s : cnovrc -> cnsvrc
     cnsvrc = '&&'//nompro//'.CNSVRC'
     call cnocns(cnovrc, 'V', cnsvrc)
-    call jeveuo(cnsvrc//'.CNSD', 'L', vi=cnsvrc_d)
-!       on s'assure qu'il n'y a qu'une seule cmp
-    ASSERT( cnsvrc_d(2) .eq. 1 )
     call detrsd('CHAM_NO', cnovrc)
+!
+!   recup du nombre de cmp dans cnsvrc
+    call jeveuo(cnsvrc//'.CNSD', 'L', vi=cnsvrc_d)
+    call jeveuo(cnsvrc//'.CNSC', 'L', vk8=cnsvrc_c)
+    nbcmp = cnsvrc_d(2)
+    ASSERT( nbcmp .eq. nbvarc )
+    ASSERT( nbcmp .ge. nucmp )
 !
 !   creation d'un cham_no_s cnsvr2 dont le type de la grandeur depend
 !   de nomvarc
     cnsvr2 = '&&'//nompro//'.CNSVR2'
-    call cnscre(mesh, nomgrd(itrou), 1, [nomcmp(itrou)], 'V', cnsvr2)
+    call cnscre(mesh, tab_nomgrd(itrou), 1, [tab_nomcmp(itrou)], 'V', cnsvr2)
 !
-!   copie de cnsvrc dans cnsvr2
+!   copie de la nucmp-ieme cmp de cnsvrc dans cnsvr2
     call jeveuo(cnsvrc//'.CNSL', 'L', vl=cnsvrc_l)
     call jeveuo(cnsvrc//'.CNSV', 'L', vr=cnsvrc_v)
     call jeveuo(cnsvr2//'.CNSL', 'E', vl=cnsvr2_l)
     call jeveuo(cnsvr2//'.CNSV', 'E', vr=cnsvr2_v)
     do ino = 1, nbno
-        if ( cnsvrc_l(ino) ) then
+        ind = nbcmp*(ino-1)+nucmp
+        if ( cnsvrc_l(ind) ) then
             cnsvr2_l(ino) = .true.
-            cnsvr2_v(ino) = cnsvrc_v(ino)
+            cnsvr2_v(ino) = cnsvrc_v(ind)
         endif
     enddo
     call detrsd('CHAM_NO_S', cnsvrc)

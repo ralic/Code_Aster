@@ -1106,7 +1106,7 @@ def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabi
 #-------------------------------------------------------------------------
 
 
-def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst):
+def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst, para_fonc):
     """cas fem : retourne les proprietes materiaux en fonction de la variable de commande au noeud ino à l'instant demandé"""
     from Accas import _F
     import aster
@@ -1118,7 +1118,7 @@ def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, 
     DETRUIRE = self.get_cmd('DETRUIRE')
 
     # extraction du cham_no de varc a l'instant considere
-    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst)
+    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst, NOM_VARC=para_fonc)
 
     # seules les varc TEMP et NEUT1 sont autorisees
     nomgd_2_nompar  = {'TEMP_R' : 'TEMP' ,
@@ -1192,7 +1192,7 @@ def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, 
 #-------------------------------------------------------------------------
 
 
-def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE, ndim, ipt, inst):
+def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE, ndim, ipt, inst, para_fonc):
     """cas xfem : retourne les proprietes materiaux en fonction de la variable de commande au point ipt à l'instant demandé"""
 
     from Utilitai.Utmess import UTMESS
@@ -1205,7 +1205,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
     DETRUIRE = self.get_cmd('DETRUIRE')
 
     # extraction du cham_no de varc a l'instant considere
-    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst)
+    __CHNOVRC = POST_K_VARC(RESULTAT=RESULTAT, INST=inst, NOM_VARC=para_fonc)
 
     # seules les varc TEMP et NEUT1 sont autorisees
     nomgd_2_nompar  = {'TEMP_R' : 'TEMP' ,
@@ -2016,6 +2016,10 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             ( not( nom_fonc_nu.Parametres()['NOM_PARA'] in authorized_para ) and nom_fonc_nu_prol != 'CONSTANT')):
             UTMESS('F', 'RUPTURE1_67')
 
+#       on verifie que le nom de parametre est le meme pour e et nu
+        assert nom_fonc_e.Parametres()['NOM_PARA'] == nom_fonc_e.Parametres()['NOM_PARA']
+        para_fonc = nom_fonc_e.Parametres()['NOM_PARA']
+
 #       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter 
 #       en amont dans STAT_NON_LINE / MECA_STATIQUE (rcvalb))
         assert present_varc
@@ -2353,11 +2357,11 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
                 if mater_fonc :
                     if FOND_FISS:
                         (coefd, coefd3, coefg, coefg3) = get_propmat_varc_fem(
-                            self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst)
+                            self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst, para_fonc)
                     elif FISSURE:
                         (coefd, coefd3, coefg, coefg3) = get_propmat_varc_xfem(
                             self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, FISSURE,
-                            ndim, ino, inst)
+                            ndim, ino, inst, para_fonc)
 
 #           calcul du saut de déplacements dans le nouveau repère
                 saut = get_saut(
