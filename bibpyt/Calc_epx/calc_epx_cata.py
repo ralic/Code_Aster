@@ -455,6 +455,20 @@ cata_modelisa = {
         'RESU_ELEM': True,
         'CONT_ASTER': ['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIYZ', 'SIXZ', ],
     },
+    '3D_SI': {
+        'MODE_EPX': {
+            #'TETRA4': [''],
+            'HEXA8': ['CUBE'],
+             # pour chargement pression
+            'QUAD4'  : [],
+            #'TRIA3'  : [],
+            # pour passer TOUT='OUI' dans AFFE_MODELE
+            'SEG2'   : [],  
+        },
+        'ETAT_INIT': True,
+        'RESU_ELEM': True,
+        'CONT_ASTER': ['SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIYZ', 'SIXZ', ],
+    },
 }
 
 # liste des modélisations EPX qui doivent être déclarées après les autres
