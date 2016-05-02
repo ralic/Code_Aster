@@ -1,7 +1,7 @@
 subroutine mxmoam(sddyna, nbmodp)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -134,6 +134,11 @@ subroutine mxmoam(sddyna, nbmodp)
 ! --- NOMBRE DE MODES
 !
     call getvis('PROJ_MODAL', 'NB_MODE', iocc=1, scal=nbmax, nbret=ibid)
+
+    if (ibid .eq. 0) then
+        nbmax = nbmodp
+    endif
+
     if (nbmax .ne. nbmodp) then
         vali(1) = nbmodp
         vali(2) = nbmax

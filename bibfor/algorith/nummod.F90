@@ -11,7 +11,7 @@ subroutine nummod(nugene, modmec)
     character(len=14) :: nugene
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,7 @@ subroutine nummod(nugene, modmec)
 ! MODMEC /I/ : NOM K8 DU MODE_MECA OU DU MODE_GENE
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbvect, nbmode, tmod(1)
+    integer :: ibid, n1, nbvect, nbmode, tmod(1), n2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, typrof
@@ -47,7 +47,7 @@ subroutine nummod(nugene, modmec)
 !
     call jemarq()
 !
-    call getvis(' ', 'NB_VECT', scal=nbvect, nbret=n1)
+    call getvis(' ', 'NB_VECT', scal=nbvect, nbret=n2)
     call getvtx(' ', 'STOCKAGE', scal=typrof, nbret=n1)
 !
 !-----RECUPERATION DU NB DE MODES DU CONCEPT MODE_MECA OU MODE_GENE
@@ -59,11 +59,19 @@ subroutine nummod(nugene, modmec)
 !
 !-----TEST NBVECT A UTILISER / NBMODE
 !
-    if (nbvect .le. nbmode) then
+    if (n2 .eq. 0) then
+        nbvect = nbmode
+    endif
+    if (nbvect .lt. nbmode) then
         nbmode = nbvect
         call utmess('A', 'ALGORITH9_8')
-    else
+    elseif (nbvect .gt. nbmode) then
         call utmess('A', 'ALGORITH9_10')
+    else
+        nbmode = nbvect
+    endif
+    if (nbmode .eq. 0) then
+        call utmess('F', 'ALGORITH12_81')
     endif
 !
     call nummo1(nugene, modmec, nbmode, typrof)

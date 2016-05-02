@@ -1,7 +1,7 @@
 subroutine nmmoam(sdammz, nbmoda)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,6 +116,11 @@ subroutine nmmoam(sdammz, nbmoda)
 ! --- NOMBRE DE MODES
 !
     call getvis('AMOR_MODAL', 'NB_MODE', iocc=1, scal=nbmax, nbret=nm)
+
+    if (nm .eq. 0) then
+        nbmax = nbmoda
+    endif
+
     if (nbmax .ne. nbmoda) then
         vali(1) = nbmoda
         vali(2) = nbmax

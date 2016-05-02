@@ -1,6 +1,6 @@
 subroutine desccy(nomres)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ subroutine desccy(nomres)
     integer :: ibid(1),  ldnoea, ldnoed, ldnoeg, ldnumg
     integer :: lldesc,  nba, nbd, nbda, nbdd, nbdg
     integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
-    integer :: nbtemp, numa, numd, numg
+    integer :: nbtemp, numa, numd, numg, n1
     integer, pointer :: cycl_nuin(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
@@ -133,17 +133,21 @@ subroutine desccy(nomres)
 !
 !  NOMBRE DE MODES DEMANDES
 !
-    call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=ibid(1))
+    call getvis('   ', 'NB_MODE', iocc=1, scal=nbmod1, nbret=n1)
 !
 !  NOMBRE DE MODES EXISTANTS
     call dismoi('NB_MODES_DYN', basmod, 'RESULTAT', repi=nbmod2)
 !
 !  TEST
 !
-    if (nbmod2 .eq. 0) then
+    if (n1 .eq. 0) then
+        nbmod1 = nbmod2
+    endif
+
+    nbmod=min(nbmod1,nbmod2)
+    if (nbmod .eq. 0) then
         call utmess('F', 'ALGORITH12_81')
     endif
-    nbmod=min(nbmod1,nbmod2)
 !
 !---------DETERMINATION DU NOMBRE DE MODES PROPRES A CALCULER-----------
 !

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -41,7 +41,7 @@ PROJ_BASE=MACRO(nom="PROJ_BASE",
                 sd_prod=proj_base_prod,
          fr=tr("Projection des matrices et/ou vecteurs assembles sur une base (modale ou de RITZ)"),
          BASE            =SIMP(statut='o',typ=(mode_meca,mode_gene) ),
-         NB_VECT         =SIMP(statut='f',typ='I',defaut= 9999),
+         NB_VECT         =SIMP(statut='f',typ='I'),
          STOCKAGE        =SIMP(statut='f',typ='TXM',defaut="PLEIN",into=("PLEIN","DIAG") ),
          NUME_DDL_GENE   =SIMP(statut='f',typ=(nume_ddl_gene,CO),defaut=None),
          MATR_ASSE_GENE  =FACT(statut='f',max='**',
