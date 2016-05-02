@@ -1,6 +1,6 @@
 subroutine te0553(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ subroutine te0553(option, nomte)
     character(len=8) ::  fami, poum
     integer :: icodre(5), kpg, spt
     real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu
-    real(kind=8) :: rhocp, rhocs, l0, usl0
+    real(kind=8) :: rhocp, rhocs, l0, usl0, depla(6)
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
@@ -48,13 +48,13 @@ subroutine te0553(option, nomte)
 !
 !-----------------------------------------------------------------------
     integer :: ij, imate, imatuu, j, jgano, ll, ndim
+    integer :: ideplm, ideplp, ivectu
     integer :: nnos
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PMATUUR', 'E', imatuu)
 !
 !      WRITE(6,*) 'MARC KHAM ---> TE0553  OPTION=',OPTION
 !
@@ -163,11 +163,28 @@ subroutine te0553(option, nomte)
 !
 !       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 !
-    do 100 i = 1, 2*nno
+    if (option .ne. 'FORC_NODA' .and. option .ne. 'RAPH_MECA') then
+      call jevech('PMATUUR', 'E', imatuu)
+      do 100 i = 1, 2*nno
         do 101 j = 1, i
             ij = (i-1)*i/2 + j
             zr(imatuu+ij-1) = matr(i,j)
 101     continue
-100 continue
+100   continue
+    endif
+    if (option(1:9) .ne. 'RIGI_MECA' .and. option .ne. 'AMOR_MECA') then
+      call jevech('PVECTUR', 'E', ivectu)
+      call jevech('PDEPLMR', 'L', ideplm)
+      call jevech('PDEPLPR', 'L', ideplp)
+      do 102 i = 1, 2*nno
+         depla(i) = zr(ideplm+i-1) + zr(ideplp+i-1)
+         zr(ivectu+i-1) = 0.d0
+102   continue
+      do 103 i = 1, 2*nno
+        do 104 j = 1, 2*nno
+            zr(ivectu+i-1) = zr(ivectu+i-1) + matr(i,j)*depla(j)
+104     continue
+103   continue
+    endif
 !
 end subroutine

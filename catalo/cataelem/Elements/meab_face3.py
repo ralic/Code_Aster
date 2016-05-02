@@ -71,6 +71,20 @@ class MEAB_FACE3(Element):
             para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R), ),
         ),
 
+        OP.FORC_NODA(te=569,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.FULL_MECA(te=569,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     ),
+            para_out=((SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR), ),
+        ),
+
         OP.ONDE_PLAN(te=498,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      (SP.PONDPLA, LC.CONDPLA), (SP.PONDPLR, LC.CONDPLR),
@@ -78,7 +92,20 @@ class MEAB_FACE3(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
+        OP.RAPH_MECA(te=569,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
         OP.RIGI_MECA(te=569,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     ),
+            para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
+
+        OP.RIGI_MECA_TANG(te=569,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      ),
             para_out=((SP.PMATUUR, MMATUUR), ),

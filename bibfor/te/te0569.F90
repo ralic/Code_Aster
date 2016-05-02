@@ -1,6 +1,6 @@
 subroutine te0569(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,13 +27,14 @@ subroutine te0569(option, nomte)
     integer :: ndim, nno, ipg, npg1, ino, jno, ij, kpg, spt
     integer :: idec, jdec, kdec, ldec, imate, imatuu
     integer :: mater, ll, k, l, nnos, jgano
+    integer :: ideplm, ideplp, ivectu
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: valres(5), e, nu, lambda, mu, rho
     real(kind=8) :: rhocp, rhocs, l0, usl0
     real(kind=8) :: taux, tauy, tauz
     real(kind=8) :: nux, nuy, nuz, scal, vnx, vny, vnz
     real(kind=8) :: vituni(3, 3), vect(9, 3, 27)
-    real(kind=8) :: matr(27, 27)
+    real(kind=8) :: matr(27, 27), depla(27)
     real(kind=8) :: vtx, vty, vtz
     integer :: icodre(5)
     character(len=8) :: fami, poum
@@ -46,7 +47,6 @@ subroutine te0569(option, nomte)
 !
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PMATERC', 'L', imate)
-    call jevech('PMATUUR', 'E', imatuu)
 !
     mater=zi(imate)
     nomres(1)='E'
@@ -198,11 +198,29 @@ subroutine te0569(option, nomte)
 !
 !       --- PASSAGE AU STOCKAGE TRIANGULAIRE
 !
-    do 210 i = 1, 3*nno
+
+    if (option .ne. 'FORC_NODA' .and. option .ne. 'RAPH_MECA') then
+      call jevech('PMATUUR', 'E', imatuu)
+      do 210 i = 1, 3*nno
         do 211 j = 1, i
             ij = (i-1)*i/2+j
             zr(imatuu+ij-1) = matr(i,j)
 211     continue
-210 continue
+210   continue
+    endif
+    if (option(1:9) .ne. 'RIGI_MECA' .and. option .ne. 'AMOR_MECA') then
+      call jevech('PVECTUR', 'E', ivectu)
+      call jevech('PDEPLMR', 'L', ideplm)
+      call jevech('PDEPLPR', 'L', ideplp)
+      do 212 i = 1, 3*nno
+         depla(i) = zr(ideplm+i-1) + zr(ideplp+i-1)
+         zr(ivectu+i-1) = 0.d0
+212   continue
+      do 213 i = 1, 3*nno
+        do 214 j = 1, 3*nno
+            zr(ivectu+i-1) = zr(ivectu+i-1) + matr(i,j)*depla(j)
+214     continue
+213   continue
+    endif
 !
 end subroutine
