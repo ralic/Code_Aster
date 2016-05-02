@@ -157,17 +157,6 @@ for i in range(0,nbc) :
 
    IMPR_TABLE(TABLE=SIF[i],);
 
-   SIF2[i]=CALC_G(RESULTAT=UTOT1,
-                 OPTION='CALC_K_G',
-                 THETA=_F(FISSURE=FISS,
-                          R_INF=RI[i],
-                          R_SUP=RS[i],),
-                 LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                            LISSAGE_G='LAGRANGE_REGU',),
-                 INFO=2,);
-
-   IMPR_TABLE(TABLE=SIF2[i],);
-
 SIF[nbc]=CALC_G(     RESULTAT=UTOT1,
                      OPTION='CALC_K_G',
                      THETA=_F(FISSURE=FISS,
@@ -178,17 +167,6 @@ SIF[nbc]=CALC_G(     RESULTAT=UTOT1,
                      INFO=2,);
 
 IMPR_TABLE(TABLE=SIF[nbc],);
-
-SIF2[nbc]=CALC_G(    RESULTAT=UTOT1,
-                     OPTION='CALC_K_G',
-                     THETA=_F(FISSURE=FISS,
-                              R_INF=RI[0],
-                              R_SUP=RS[0],),
-                     LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                                LISSAGE_G='LAGRANGE_REGU',),
-                     INFO=2,);
-
-IMPR_TABLE(TABLE=SIF2[nbc],);
 
 # SOLUTION ANALYTIQUE (chaboche p.53)
 a=5
@@ -242,22 +220,6 @@ for i in range(0,nbc+1) :
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE');
-
-   TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[4*i+2], VALE_REFE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.01,
-              REFERENCE='ANALYTIQUE',);
-
-   TEST_TABLE(TABLE=SIF2[i],
-              NOM_PARA='K1',
-              TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[4*i+3], VALE_REFE=K1REF,
-              CRITERE='RELATIF',
-              PRECISION=0.02,
-              REFERENCE='ANALYTIQUE',);
 
 
 #------------------------------------------------------------------------

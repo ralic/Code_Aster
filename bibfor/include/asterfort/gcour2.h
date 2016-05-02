@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
     subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                       nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon, &
                       nomfiss, connex, stok4, liss,&
-                      nbre, milieu, ndimte, pair, norfon)
+                      nbre, milieu, ndimte, norfon)
         character(len=8)  :: resu
         character(len=8)  :: noma
         character(len=8)  :: nomo
@@ -41,7 +41,6 @@ interface
         integer           :: nbre
         aster_logical     :: milieu
         integer           :: ndimte
-        aster_logical     :: pair
         character(len=24) :: norfon
     end subroutine gcour2
 end interface

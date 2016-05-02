@@ -5,7 +5,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
 #include "asterf_types.h"
 ! ......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,8 +57,6 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
         write(unit,557)
     else if (numero.eq.4) then
         write(unit,558)
-    else if (numero.eq.5) then
-        write(unit,559)
     endif
 !
     write(unit,666)
@@ -70,13 +68,13 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
         write(unit,*) ' NOEUD    GELEM(THETAI)'
         write(unit,*)
         if (numero .eq. 5) then
-            do 20 i = 1, ndimte
+            do i = 1, ndimte
                 write(unit,110) i,gthi(i)
- 20         continue
+            end do
         else
-            do 21 i = 1, nnoff
+            do i = 1, nnoff
                 write(unit,110) i,gthi(i)
- 21         continue
+            end do
         endif
         write(unit,*)
     endif
@@ -84,10 +82,10 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
     if ((numero.eq.1) .or. (numero.eq.2)) then
         write(unit,777)
         write(unit,*)
-        do 10 i = 1, ndeg+1
+        do i = 1, ndeg+1
             i1 = i-1
             write(unit,*) 'DEGRE ',i1,' : ',gi(i)
- 10     continue
+        end do
         write(unit,*)
     endif
 !
@@ -103,9 +101,9 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
     write(unit,*)
     write(unit,*)  ' ABSC_CURV       G(S)'
     write(unit,*)
-    do 30 i = 1, nnoff
+    do i = 1, nnoff
         write(unit,111) absc(i), gs(i)
- 30 end do
+    end do
     write(unit,*)
 !
     110 format(1x,i2,6x,1pd12.5)
@@ -114,7 +112,6 @@ subroutine gimpgs(result, nnoff, absc, gs, numero,&
     556 format('THETA_LAGRANGE  G_LEGENDRE (DEGRE ',i2,')')
     557 format('THETA_LAGRANGE  G_LAGRANGE')
     558 format('THETA_LAGRANGE  G_LAGRANGE_NO_NO')
-    559 format('THETA_LAGRANGE_REGU  G_LAGRANGE_REGU')
     666 format(37('*'))
     770 format('VALEURS DE G ELEMENTAIRES AVANT LISSAGE :')
     777 format('COEF DE G(S) DANS LA BASE DE POLYNOMES DE LEGENDRE :')

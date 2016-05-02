@@ -296,17 +296,6 @@ CGla15=CALC_G(RESULTAT=RESU,
                          FISSURE=l_fiss,
                          NB_POINT_FOND = 15,),);
 
-
-# LISSAGE LAGRANGE_REGU + REPARTITION UNIFORME DE 15 POINTS
-CGregu=CALC_G(RESULTAT=RESU,
-              OPTION='CALC_G',
-              LISSAGE = _F(LISSAGE_THETA='LAGRANGE_REGU',
-                           LISSAGE_G='LAGRANGE_REGU',),
-              THETA = _F(R_INF=rinf,
-                         R_SUP=rsup,
-                         FISSURE=l_fiss,
-                         NB_POINT_FOND = 15,),);
-
 #----------------------------------------------------------------------
 #               passage des FICs en MPa rac(m)
 #----------------------------------------------------------------------
@@ -337,13 +326,11 @@ CGKleg2=CALC_TABLE(reuse=CGKleg2,
 #IMPR_TABLE(TABLE=CGleg , FORMAT_R='E12.10')
 #IMPR_TABLE(TABLE=CGleg2, FORMAT_R='E12.10')
 #IMPR_TABLE(TABLE=CGla15, FORMAT_R='E12.10')
-#IMPR_TABLE(TABLE=CGregu, FORMAT_R='E12.10')
 
 FCGleg  = RECU_FONCTION(TABLE=CGleg , PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGleg2 = RECU_FONCTION(TABLE=CGleg2, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGKleg = RECU_FONCTION(TABLE=CGKleg, PARA_X='ABSC_CURV', PARA_Y='G',)
 FCGla15 = RECU_FONCTION(TABLE=CGla15, PARA_X='ABSC_CURV', PARA_Y='G',)
-FCGregu = RECU_FONCTION(TABLE=CGregu, PARA_X='ABSC_CURV', PARA_Y='G',)
 
 FK1leg  = RECU_FONCTION(TABLE=CGKleg , PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
 FK1leg2 = RECU_FONCTION(TABLE=CGKleg2, PARA_X='ABSC_CURV', PARA_Y='K1_MPA',)
@@ -381,15 +368,11 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='LAGRANGE / nb_pt_fond = 15 / couronne 1',
                          MARQUEUR=4,
                          COULEUR=4),
-                      _F(FONCTION=FCGregu,
-                         LEGENDE='LAGRANGE_REGU / nb_pt_fond = 15 / couronne 1',
-                         MARQUEUR=5,
-                         COULEUR=5),
                       _F(ABSCISSE=s_Mur,
                          ORDONNEE=G_Mur,
                          LEGENDE='Reference Murakami',
                          MARQUEUR=0,
-                         COULEUR=6),
+                         COULEUR=5),
                        ),
               TITRE='sslv322c / taux de restitution d energie',
               LEGENDE_X='s',
@@ -562,31 +545,6 @@ TEST_TABLE(TABLE=CGla15,
            REFERENCE='AUTRE_ASTER',
            VALE_REFE=7.61774576541,
            VALE_CALC=7.28402205001,
-           )
-
-#----------------------------------------------------------------------
-# LAGRANGE_REGU avec la couronne 1 + repartition uniforme de 15 points
-#----------------------------------------------------------------------
-
-TEST_TABLE(TABLE=CGregu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     CRITERE='ABSOLU',
-                     PRECISION=1.E-11,
-                     VALE=0.0,),
-           NOM_PARA='G',
-           PRECISION=4.E-2,
-           REFERENCE='AUTRE_ASTER',
-           VALE_REFE=9.21683395221,
-           VALE_CALC=8.85720482668,
-           )
-TEST_TABLE(TABLE=CGregu,
-           FILTRE=_F(NOM_PARA='ABSC_CURV',
-                     VALE=0.35451327605,),
-           NOM_PARA='G',
-           PRECISION=4.E-2,
-           REFERENCE='AUTRE_ASTER',
-           VALE_REFE=7.61774576541,
-           VALE_CALC=7.36455100415,
            )
 
 FIN()

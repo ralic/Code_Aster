@@ -212,15 +212,6 @@ GLOC0M=CALC_G(         RESULTAT=CHAMDEPL,
                        )
 
 
-GLOC0M1=CALC_G(       RESULTAT=CHAMDEPL,
-                      THETA=_F(FOND_FISS=FISS1,
-                               R_SUP_FO=RSUP0,
-                               R_INF_FO=RINF0,),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                                 LISSAGE_G='LAGRANGE_REGU',),
-                )
-
-
 #----------------------------------------------------------------------
 #                           COURONNE 2
 #----------------------------------------------------------------------
@@ -261,15 +252,6 @@ GLOC1M=CALC_G(    RESULTAT=CHAMDEPL,
                      )
 
 
-GLOC1M1=CALC_G(    RESULTAT=CHAMDEPL,
-                        THETA=_F(FOND_FISS=FISS1,
-                                 R_SUP_FO=RSUP1,
-                                 R_INF_FO=RINF1,),
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                                 LISSAGE_G='LAGRANGE_REGU',),
-                     )
-
-
 #----------------------------------------------------------------------
 #                           COURONNE 3
 #----------------------------------------------------------------------
@@ -301,13 +283,6 @@ G2M=CALC_G(  RESULTAT=CHAMDEPL,
 
 GLOC2M=CALC_G(   RESULTAT=CHAMDEPL,
                        LISSAGE=_F(DEGRE=7),
-                       THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
-                       )
-
-
-GLOC2M1=CALC_G(  RESULTAT=CHAMDEPL,
-                      LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                                 LISSAGE_G='LAGRANGE_REGU',),
                        THETA=_F(FOND_FISS=FISS1,R_SUP_FO=RSUP2,  R_INF_FO=RINF2),
                        )
 
@@ -438,36 +413,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=7.1710000000000003E-05,
            NOM_PARA='G',
            TABLE=GLOC2M,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1099',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.080000000000000002,
-           VALE_CALC= 6.61578826392E-05,
-           VALE_REFE=7.1710000000000003E-05,
-           NOM_PARA='G',
-           TABLE=GLOC0M1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1099',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
-           VALE_CALC= 6.93239285276E-05,
-           VALE_REFE=7.1710000000000003E-05,
-           NOM_PARA='G',
-           TABLE=GLOC1M1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1099',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.050000000000000003,
-           VALE_CALC= 6.86111116216E-05,
-           VALE_REFE=7.1710000000000003E-05,
-           NOM_PARA='G',
-           TABLE=GLOC2M1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1099',),
            )
@@ -608,36 +553,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=5.215E-05,
            NOM_PARA='G',
            TABLE=GLOC2M,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1179',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.040000000000000001,
-           VALE_CALC= 5.0193419517E-05,
-           VALE_REFE=5.215E-05,
-           NOM_PARA='G',
-           TABLE=GLOC0M1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1179',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.5E-2,
-           VALE_CALC= 5.15233096021E-05,
-           VALE_REFE=5.215E-05,
-           NOM_PARA='G',
-           TABLE=GLOC1M1,
-           FILTRE=_F(NOM_PARA='NOEUD',
-                     VALE_K='NO1179',),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.029999999999999999,
-           VALE_CALC= 5.08043429042E-05,
-           VALE_REFE=5.215E-05,
-           NOM_PARA='G',
-           TABLE=GLOC2M1,
            FILTRE=_F(NOM_PARA='NOEUD',
                      VALE_K='NO1179',),
            )

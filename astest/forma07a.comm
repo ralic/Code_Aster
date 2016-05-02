@@ -121,18 +121,6 @@ G_LAG=CALC_G(RESULTAT=CHAMDEPL,
 IMPR_TABLE(TABLE=G_LAG)
 
 
-# lissage de Lagrange regularise
-G_LAGR=CALC_G(RESULTAT=CHAMDEPL,
-             OPTION='CALC_G',
-               THETA=_F(FOND_FISS=FISS,
-                       R_SUP=RSUP,
-                       R_INF=RINF,),
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=G_LAGR)
-
-
 # lissage de Lagrange noeud-noeud
 G_LAGN=CALC_G(RESULTAT=CHAMDEPL,
               OPTION='CALC_G',
@@ -164,10 +152,6 @@ C_G_LAG=RECU_FONCTION(TABLE=G_LAG,
                       PARA_X='ABSC_CURV',
                       PARA_Y='G',)
 
-C_G_LAGR=RECU_FONCTION(TABLE=G_LAGR,
-                       PARA_X='ABSC_CURV',
-                       PARA_Y='G',)
-
 C_G_LAGN=RECU_FONCTION(TABLE=G_LAGN,
                        PARA_X='ABSC_CURV',
                        PARA_Y='G',)
@@ -183,14 +167,10 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                          LEGENDE='lissage LAGRANGE',
                          MARQUEUR=0,
                          COULEUR=2),
-                      _F(FONCTION=C_G_LAGR,
-                         LEGENDE='lissage LAGRANGE_REGU',
-                         MARQUEUR=0,
-                         COULEUR=3),
                       _F(FONCTION=C_G_LAGN,
                          LEGENDE='lissage LAGRANGE_NO_NO',
                          MARQUEUR=0,
-                         COULEUR=4),
+                         COULEUR=3),
                        ),
               TITRE='Taux de restitution d energie',
               BORNE_X=(0.0,3.14,),

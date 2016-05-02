@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
     subroutine mecagl(option, result, modele, depla, thetai,&
                       mate, compor, lischa, symech, chfond, &
                       nnoff, iord, ndeg, liss, &
-                      milieu, ndimte, pair, extim, &
+                      milieu, ndimte, extim, &
                       time, nbprup, noprup, chvite, chacce, &
                       lmelas, nomcas, kcalc, fonoeu, lincr, coor, &
                       norfon, connex)
@@ -43,7 +43,6 @@ interface
         character(len=24) :: liss
         aster_logical     :: milieu
         integer           :: ndimte
-        aster_logical     :: pair
         aster_logical     :: extim
         real(kind=8)      :: time
         integer           :: nbprup

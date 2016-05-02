@@ -98,16 +98,37 @@ GLOC=CALC_G(RESULTAT=RESU,
             INST = 0,
             OPTION='CALC_K_G',
             THETA=_F(FISSURE=FF,R_INF=0.3,
-                                R_SUP=0.8),
-                     LISSAGE=_F(LISSAGE_G='LAGRANGE_REGU',
-                                LISSAGE_THETA='LAGRANGE_REGU'),
+                                R_SUP=0.8,
+                                NB_POINT_FOND = 16),
+                     LISSAGE=_F(LISSAGE_G='LAGRANGE',
+                                LISSAGE_THETA='LAGRANGE'),
                      INFO = 2);
 
 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC= 11.5222595385,
+           PRECISION=0.05,
+           VALE_CALC=12.0581276361,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=3,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=11.5204677867,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=8,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.04,
+           VALE_CALC=11.1568973861,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
@@ -116,8 +137,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-           VALE_CALC= 11.3038004468,
+           PRECISION=0.02,
+           VALE_CALC=11.7705308472 ,
            VALE_REFE=11.58648,
            NOM_PARA='G',
            TABLE=GLOC,
@@ -125,33 +146,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_I=15,),
            )
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.08,
-           VALE_CALC= 10.7676186203,
-           VALE_REFE=11.58648,
-           NOM_PARA='G',
-           TABLE=GLOC,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=22,),
-           )
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-           VALE_CALC= 11.3376731862 ,
-           VALE_REFE=11.58648,
-           NOM_PARA='G',
-           TABLE=GLOC,
-           FILTRE=_F(NOM_PARA='NUM_PT',
-                     VALE_I=31,),
-           )
-
-TEST_TABLE(VALE_CALC= 11.5222595385,
+TEST_TABLE(VALE_CALC= 12.0581276361,
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=GLOC,
            )
 
-TEST_TABLE(VALE_CALC= 10.1380680763,           
+TEST_TABLE(VALE_CALC= 9.94070888562,
            NOM_PARA='G',
            TYPE_TEST='MIN',
            TABLE=GLOC,

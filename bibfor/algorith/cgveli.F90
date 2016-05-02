@@ -55,7 +55,6 @@ subroutine cgveli(typfis, typdis, cas, lnoff, liss,&
 !     LEGENDRE        +  LAGRANGE         ->   MIXTE
 !     LAGRANGE        +  LAGRANGE         ->   LAGRANGE
 !     LAGRANGE_NO_NO  +  LAGRANGE         ->   LAGRANGE_NO_NO
-!     LAGRANGE_REGU   +  LAGRANGE_REGU    ->   LAGRANGE_REGU
 !     ----------------------------------------------------------
 !     TOUTES LES AUTRES COMBINAISONS SONT INTERDITES
 !     ----------------------------------------------------------
@@ -96,9 +95,6 @@ subroutine cgveli(typfis, typdis, cas, lnoff, liss,&
             elseif (lissg.eq.'LAGRANGE_NO_NO'.and.lissth.eq.'LAGRANGE')&
         then
             liss='LAGRANGE_NO_NO'
-            elseif (lissg .eq.'LAGRANGE_REGU'.and.&
-     &          lissth.eq.'LAGRANGE_REGU') then
-            liss='LAGRANGE_REGU'
         else
             call utmess('F', 'RUPTURE0_86')
         endif
@@ -109,8 +105,7 @@ subroutine cgveli(typfis, typdis, cas, lnoff, liss,&
         endif
 !
 !       COMPATIBILITE ENTRE LISSAGE ET OPTION
-        if(liss.eq.'MIXTE'.or.liss.eq.'LEGENDRE'&
-           .or.liss.eq.'LAGRANGE_REGU') then
+        if(liss.eq.'MIXTE'.or.liss.eq.'LEGENDRE') then
             if(typdis.eq.'COHESIF') then
                 call utmess('F', 'RUPTURE2_5')
             endif

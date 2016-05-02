@@ -1,11 +1,11 @@
 subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                   nbnoeu, trav1, trav2, trav3, fonoeu, chfond, basfon,&
                   nomfiss, connex, stok4, liss,&
-                  nbre, milieu, ndimte, pair, norfon)
+                  nbre, milieu, ndimte, norfon)
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,7 +91,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     character(len=24) :: trav1, trav2, trav3, objor, objex, fonoeu, repk
     character(len=24) :: obj3, norm, numgam, chamno, chfond, basfon
     character(len=24) :: stok4, dire4, coorn, nomno, dire5, indicg
-    character(len=24) :: absgam, liss, norfon
+    character(len=24) :: liss, norfon
     character(len=16) :: k16b, nomcmd
     character(len=8) :: nomfiss, resu, noma, nomo, k8b
     character(len=6) :: kiord
@@ -100,26 +100,24 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
     integer :: in2, iadrco, jmin, ielinf, iadnum, jvect
     integer :: iadrno, num, indic, iadrtt, nbre, nbr8, nbptfd
     integer :: iret, numa, ndimte, iaorig, iebas
-    integer :: itanex, itanor, nbnos, iadabs, kno, iaextr, jnorm
+    integer :: itanex, itanor, iaextr, jnorm
 !
     real(kind=8) :: dirx, diry, dirz, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, eps, d, tei, tej, dir(3)
     real(kind=8) :: xm, ym, zm, xim, yim, zim, s, dmin, smin, xn, yn, zn
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2, psca
-    real(kind=8) :: norme, vecx, vecy, vecz, xl, tmpv(3)
+    real(kind=8) :: norme, vecx, vecy, vecz, tmpv(3)
 !
-    aster_logical :: milieu, connex, pair
+    aster_logical :: milieu, connex
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, idesc, idiri, idirs, ielsup, inorfon
+    integer :: i, idesc, idiri, idirs, ielsup, inorfon
     integer :: ienorm, irefe, j, jresu, k, nbel
-    real(kind=8) :: s0, s1
 !-----------------------------------------------------------------------
     call jemarq()
 !
     call getres(k8b, k16b, nomcmd)
 !
-    pair=.false.
     eps = 1.d-06
     call jeveuo(trav1, 'L', iadrt1)
     call jeveuo(trav2, 'L', iadrt2)
@@ -148,13 +146,12 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
         milieu = .false.
     endif
 !
-! INTERDICTION D AVOIR NB_POINT_FOND AVEC LISSAGES LAGRANGE_REGU,
+! INTERDICTION D AVOIR NB_POINT_FOND AVEC LISSAGES
 ! LAGRANGE_NO_NO, MIXTE OU LEGENDRE
 !
     if (nbptfd .ne. 0) then
         if ((liss.eq.'LEGENDRE').or.(liss.eq.'MIXTE')&
-           .or.(liss.eq.'LAGRANGE_NO_NO')&
-           .or.(liss.eq.'LAGRANGE_REGU')) then
+           .or.(liss.eq.'LAGRANGE_NO_NO')) then
             call utmess('F', 'RUPTURE1_73')
         endif
     endif
@@ -370,19 +367,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 ! TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 !
-    if (liss.eq.'LAGRANGE_REGU') then
-        pair = .false.
-        nbnos = nbnoeu
-        if (milieu) nbnos = (nbnoeu+1)/2
-        if (mod(nbnos,2) .eq. 1) ndimte = (nbnos+1)/2
-        if (mod(nbnos,2) .eq. 0) then
-            ndimte = 1+nbnos/2
-            pair = .true.
-            if (connex) then
-                call utmess('F', 'RUPTURE1_1')
-            endif
-        endif
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nbnoeu
     else
         ndimte = nbre + 1
@@ -426,145 +411,7 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
 !
         if (k .ne. (ndimte+1)) then
 !
-            if (liss.eq.'LAGRANGE_REGU') then
-!
-                do i = 1, nbnoeu
-                    num = zi(iadnum+i-1)
-                    zr(itheta+(num-1)*3+1-1) = 0.d0
-                    zr(itheta+(num-1)*3+2-1) = 0.d0
-                    zr(itheta+(num-1)*3+3-1) = 0.d0
-                    zi(indic+num-1) = 1
-                end do
-                call gabscu(nbnoeu, coorn, nomno, fonoeu, xl,&
-                            absgam)
-                call jeveuo(absgam, 'L', iadabs)
-                if (milieu) then
-                    kno = 4*k-3
-                else
-                    kno = 2*k-1
-                endif
-                if ((k.eq. ndimte) .and. pair) then
-                    kno = nbnoeu
-                endif
-                iadrtt = iadrt3 + (k-1)*nbnoeu + kno - 1
-                zr(iadrtt) = 1.d0
-                if (k .ne. 1) then
-                    if (milieu) then
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1-4)
-                        zr(iadrtt-1) = (zr(iadabs+kno-1-1)-s1)/(s0-s1)
-                        zr(iadrtt-2) = (zr(iadabs+kno-1-2)-s1)/(s0-s1)
-                        zr(iadrtt-3) = (zr(iadabs+kno-1-3)-s1)/(s0-s1)
-                        zr(iadrtt-4) = (zr(iadabs+kno-1-4)-s1)/(s0-s1)
-                    else
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1-2)
-                        zr(iadrtt-1) = (zr(iadabs+kno-1-1)-s1)/(s0-s1)
-                    endif
-                endif
-                if ((k.lt. ndimte) .or. (k.eq. (ndimte-1) .and. .not. pair)) then
-                    if (milieu) then
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1+4)
-                        zr(iadrtt+1) = (zr(iadabs+kno-1+1)-s1)/(s0-s1)
-                        zr(iadrtt+2) = (zr(iadabs+kno-1+2)-s1)/(s0-s1)
-                        zr(iadrtt+3) = (zr(iadabs+kno-1+3)-s1)/(s0-s1)
-                        zr(iadrtt+4) = (zr(iadabs+kno-1+4)-s1)/(s0-s1)
-                    else
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1+2)
-                        zr(iadrtt+1) = (zr(iadabs+kno-1+1)-s1)/(s0-s1)
-                    endif
-                endif
-                if (k .eq. (ndimte-1) .and. pair) then
-                    if (milieu) then
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1+2)
-                        zr(iadrtt+2) = 0.5d0
-                        zr(iadrtt+1) =0.5d0*(1+(zr(iadabs+kno-1+1)-s1)&
-                        /(s0-s1))
-                    else
-                        zr(iadrtt+1) = 0.5d0
-                    endif
-                endif
-                if ((k.eq. ndimte) .and. pair) then
-                    if (milieu) then
-                        s0 = zr(iadabs+kno-1)
-                        s1 = zr(iadabs+kno-1-2)
-                        zr(iadrtt) = 0.5d0
-                        zr(iadrtt-1) =0.5d0*(zr(iadabs+kno-1-1)-s1)/(&
-                        s0-s1)
-                        zr(iadrtt-2) = 0.d0
-                        zr(iadrtt-3) = 0.d0
-                    else
-                        zr(iadrtt) = 0.5d0
-                        zr(iadrtt-1) = 0.d0
-                    endif
-                endif
-                if ((k .eq. 1) .and. connex) then
-                    iadrtt = iadrt3 + (k-1)*nbnoeu + nbnoeu - 1
-                    if (milieu) then
-                        s0 = zr(iadabs+nbnoeu-1)
-                        s1 = zr(iadabs+nbnoeu-1-4)
-                        zr(iadrtt) = (zr(iadabs+nbnoeu-1)-s1)/(s0-s1)
-                        zr(iadrtt-1) = (zr(iadabs+nbnoeu-1-1)-s1)/(s0- s1)
-                        zr(iadrtt-2) = (zr(iadabs+nbnoeu-1-2)-s1)/(s0- s1)
-                        zr(iadrtt-3) = (zr(iadabs+nbnoeu-1-3)-s1)/(s0- s1)
-                    else
-                        s0 = zr(iadabs+nbnoeu-1)
-                        s1 = zr(iadabs+nbnoeu-1-2)
-                        zr(iadrtt) = (zr(iadabs+nbnoeu-1)-s1)/(s0- s1)
-                        zr(iadrtt-1) = (zr(iadabs+nbnoeu-1-1)-s1)/(s0- s1)
-                    endif
-                endif
-                if ((k .eq. ndimte) .and. connex) then
-                    iadrtt = iadrt3 + (k-1)*nbnoeu + 1 - 1
-                    if (milieu) then
-                        s0 = zr(iadabs+1-1)
-                        s1 = zr(iadabs+1-1+4)
-                        zr(iadrtt) = (zr(iadabs+1-1) -s1)/(s0-s1)
-                        zr(iadrtt+1) = (zr(iadabs+1-1+1)-s1)/(s0-s1)
-                        zr(iadrtt+2) = (zr(iadabs+1-1+2)-s1)/(s0-s1)
-                        zr(iadrtt+3) = (zr(iadabs+1-1+3)-s1)/(s0-s1)
-                    else
-                        s0 = zr(iadabs+1-1)
-                        s1 = zr(iadabs+1-1+2)
-                        zr(iadrtt) = (zr(iadabs+1-1)-s1)/(s0-s1)
-                        zr(iadrtt+1) = (zr(iadabs+1-1+1)-s1)/(s0-s1)
-                    endif
-                endif
-                i1 = 1
-                if (milieu) i1 = 3
-                do i = (-1*i1), i1
-                    if (.not. (&
-                        ((k.eq. 1) .and. (i.lt. 0)) .or. ((k.eq. ndimte) .and. (i.gt. 0))&
-                        .or. ((k.eq. ( ndimte-1)) .and. (i.gt. 2) .and. pair)&
-                        )) then
-                        num = zi(iadnum+kno-1+i)
-                        iadrtt = iadrt3 + (k-1)*nbnoeu + kno-1 +i
-                        zr(itheta+(num-1)*3+1-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+1-1)
-                        zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+2-1)
-                        zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+ (kno-1+i)*3+3-1)
-                    endif
-                end do
-                if (connex .and. ((k.eq. 1) .or. (k.eq. ndimte))) then
-                    if (k .eq. 1) kno = nbnoeu
-                    if (k .eq. ndimte) kno = 1
-                    do i = (-1*i1), i1
-                        if (.not. (&
-                            ((k.eq. 1) .and. (i.gt. 0)) .or.&
-                            ((k.eq. ndimte) .and. (i.lt. 0))&
-                            )) then
-                            num = zi(iadnum+kno-1+i)
-                            iadrtt = iadrt3 + (k-1)*nbnoeu + kno-1 +i
-                            zr(itheta+(num-1)*3+1-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+1-1)
-                            zr(itheta+(num-1)*3+2-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+2-1)
-                            zr(itheta+(num-1)*3+3-1) = zr(iadrtt) *zr(in2+(kno-1+i)*3+3-1)
-                        endif
-                    end do
-                endif
-!
-            else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')&
+            if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')&
             .or.(liss.eq.'MIXTE')) then
                 if (nbptfd.eq.0) then
                     do i = 1, nbnoeu

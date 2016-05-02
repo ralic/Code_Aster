@@ -66,8 +66,6 @@ subroutine gksimp(result, nnoff, absc, numero,&
         write(unit,557)
     else if (numero.eq.4) then
         write(unit,558)
-    else if (numero.eq.5) then
-        write(unit,559)
     endif
     write(unit,666)
     write(unit,*)
@@ -94,13 +92,13 @@ subroutine gksimp(result, nnoff, absc, numero,&
         write(unit,*) ' NOEUD    GELEM(THETAI)'
         write(unit,*)
         if (numero .eq. 5) then
-            do 20 i = 1, ndimte
+            do i = 1, ndimte
                 write(unit,110) i,zr(iadgki-1+(i-1)*5+1)
- 20         continue
+            end do
         else
-            do 21 i = 1, nnoff
+            do i = 1, nnoff
                 write(unit,110) i,zr(iadgki-1+(i-1)*5+1)
- 21         continue
+            end do
         endif
         write(unit,*)
     endif
@@ -108,25 +106,25 @@ subroutine gksimp(result, nnoff, absc, numero,&
     if ((numero.eq.1) .or. (numero.eq.2)) then
         write(unit,771)
         write(unit,*)
-        do 10 i = 1, ndeg+1
+        do i = 1, ndeg+1
             i1 = i-1
             write(unit,*) 'DEGRE ',i1,' : ',zr(iadgki-1+i1*5+1)
- 10     continue
+      end do
         write(unit,*)
     endif
 !
     write(unit,*) 'VALEUR DE G AUX POINTS DE FOND DE FISSURE'
     write(unit,*)  ' ABSC_CURV       G(S)'
     write(unit,*)
-    do 30 i = 1, nnoff
+    do i = 1, nnoff
         write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+1)
- 30 end do
+    end do
     write(unit,*)
 !
 !
 !- IMPRESSION DES FACTEURS D INTENSITE DE CONTRAINTE K
 !
-    do 40 imod = 1, 3
+    do imod = 1, 3
         write(unit,750) imod
         write(unit,667)
         if (numero .ne. 1) then
@@ -135,48 +133,35 @@ subroutine gksimp(result, nnoff, absc, numero,&
             write(unit,773) imod
             write(unit,*)
             if (numero .eq. 5) then
-                do 401 i = 1, ndimte
+                do i = 1, ndimte
                     write(unit,110) i,zr(iadgki-1+(i-1)*5+imod+1)
-401             continue
+                end do
             else
-                do 402 i = 1, nnoff
+                do i = 1, nnoff
                     write(unit,110) i,zr(iadgki-1+(i-1)*5+imod+1)
-402             continue
+                end do
             endif
             write(unit,*)
         endif
         if ((numero.eq.1) .or. (numero.eq.2)) then
             write(unit,751) imod
             write(unit,*)
-            do 41 i = 1, ndeg+1
+            do i = 1, ndeg+1
                 i1 = i-1
                 write(unit,*) 'DEGRE ',i1,' : ',zr(iadgki-1+i1*5+&
                 imod+1)
- 41         continue
+            end do
             write(unit,*)
         endif
 !
         write(unit,752) imod
         write(unit,753) imod
         write(unit,*)
-        do 42 i = 1, nnoff
+        do i = 1, nnoff
             write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+imod+1)
- 42     continue
+        end do
         write(unit,*)
- 40 end do
-!!
-!!- IMPRESSION DE L'ANGLE DE PROPAGATION DE FISSURE BETA
-!!
-!    write(unit,*) 'ANGLE DE PROPAGATION DE FISSURE BETA'
-!    write(unit,667)
-!!
-!    write(unit,*) 'VALEUR DE BETA AUX POINTS DE FOND DE FISSURE'
-!    write(unit,*)  ' ABSC_CURV       BETA(S)'
-!    write(unit,*)
-!    do 50 i = 1, nnoff
-!        write(unit,111) absc(i), zr(iadgks-1+(i-1)*6+6)
-! 50 end do
-!    write(unit,*)
+    end do
 !
 !- IMPRESSION DE G_IRWIN
 !
@@ -186,9 +171,9 @@ subroutine gksimp(result, nnoff, absc, numero,&
     write(unit,*) 'VALEUR DE G_IRWIN AUX POINTS DE FOND DE FISSURE'
     write(unit,*)  ' ABSC_CURV       G_IRWIN(S)'
     write(unit,*)
-    do 60 i = 1, nnoff
+    do i = 1, nnoff
         write(unit,111) absc(i), zr(iadgks-1+(i-1)*5+5)
- 60 end do
+    end do
     write(unit,*)
 !
     110 format(1x,i2,6x,1pd12.5)
@@ -197,7 +182,6 @@ subroutine gksimp(result, nnoff, absc, numero,&
     556 format('THETA_LAGRANGE  G_LEGENDRE (DEGRE ',i2,')')
     557 format('THETA_LAGRANGE  G_LAGRANGE')
     558 format('THETA_LAGRANGE  G_LAGRANGE_NO_NO')
-    559 format('THETA_LAGRANGE_REGU  G_LAGRANGE_REGU')
     666 format(37('*'))
     667 format(37('+'))
 !

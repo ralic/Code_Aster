@@ -19,14 +19,6 @@
 # person_in_charge: josselin.delmas at edf.fr
 
 cata_msg = {
-    1: _(u"""
-L'option de lissage 'LAGRANGE_REGU' n'a pas été développée lorsque
-le nombre de noeuds d'un fond de fissure fermé est pair.
--> Risque et Conseil :
-Veuillez utiliser une autre option de lissage
-(par exemple, le lissage 'LAGRANGE' pour le champ thêta)
-"""),
-
     2: _(u"""
 Formalisme de déformation différents au moins pour la maille %(k3)s :
  - type de déformation extrait de la SD Résultat   : %(k1)s
@@ -440,8 +432,8 @@ la variable de commande TEMP.
 
     73: _(u"""
 CALC_G :
-Il est interdit d'utiliser NB_POINT_FOND avec les lissages LEGENDRE, LAGRANGE_REGU,
-LAGRANGE_NO_NO et MIXTE
+Il est interdit d'utiliser NB_POINT_FOND avec les lissages LEGENDRE, LAGRANGE_NO_NO
+et MIXTE
 -> Conseil :
 Veuillez revoir le type de lissage utilisé
 """),

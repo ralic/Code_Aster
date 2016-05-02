@@ -1,12 +1,12 @@
 subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
                   trav2, trav3, chfond, connex, grlt,&
                   liss, basfon, nbre, milieu,&
-                  pair, ndimte, typdis, nomfis)
+                  ndimte, typdis, nomfis)
     implicit none
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,11 +103,10 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
     integer :: jcnsl, jstn, jstnl, stano
     data  licmp /'DX','DY','DZ'/
 !
-    aster_logical :: milieu, debug, pair, connex
+    aster_logical :: milieu, debug, connex
 !
 !-----------------------------------------------------------------------
-    integer :: iadrtt, jbas, kno
-    real(kind=8) :: s0, s1
+    integer :: iadrtt, jbas
     real(kind=8), pointer :: cnsv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -146,15 +145,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 ! ALLOCATION DES OBJETS POUR STOCKER LE CHAMP_NO THETA ET LA DIRECTION
 ! TYPE CHAM_NO ( DEPL_R) AVEC PROFIL NOEUD CONSTANT (3 DDL)
 !
-    if (liss .eq. 'LAGRANGE_REGU') then
-        pair = .false.
-        if (mod(lnoff,2) .eq. 1) ndimte = (lnoff+1)/2
-        if (mod(lnoff,2) .eq. 0) then
-            ndimte = 1+lnoff/2
-            pair = .true.
-            if (connex) call utmess('F', 'RUPTURE1_1')
-        endif
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = lnoff
     else
         ndimte = nbre + 1
@@ -182,46 +173,7 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1,&
 !       VOIR RÉFÉRENCE BOOK I (05/01/2004)
         if (k .ne. (ndimte+1)) then
 !
-            if (liss .eq. 'LAGRANGE_REGU') then
-                kno = 2*k-1
-                if ((k.eq. ndimte) .and. pair) then
-                    kno = lnoff
-                endif
-                iadrtt = iadrt3 + (k-1)*lnoff + kno - 1
-                zr(iadrtt) = 1.d0
-                if (k .ne. 1) then
-                    s0 = zr(ifon-1+4*(kno-1)+4)
-                    s1 = zr(ifon-1+4*(kno-1-2)+4)
-                    zr(iadrtt-1) = (zr(ifon-1+4*(kno-1-1)+4)-s1)/(s0- s1)
-                endif
-                if ((k.lt. (ndimte-1)) .or. (k.eq. (ndimte-1) .and. .not. pair)) then
-                    s0 = zr(ifon-1+4*(kno-1)+4)
-                    s1 = zr(ifon-1+4*(kno-1+2)+4)
-                    zr(iadrtt+1) = (zr(ifon-1+4*(kno-1+1)+4)-s1)/(s0- s1)
-                endif
-                if (k .eq. (ndimte-1) .and. pair) then
-                    zr(iadrtt+1) = 0.5d0
-                endif
-                if ((k.eq. ndimte) .and. pair) then
-                    zr(iadrtt) = 0.5d0
-                    zr(iadrtt-1) = 0.d0
-                endif
-                if ((k .eq. 1) .and. connex) then
-                    iadrtt = iadrt3 + (k-1)*lnoff + lnoff - 1
-                    s0 = zr(ifon-1+4*(lnoff-1)+4)
-                    s1 = zr(ifon-1+4*(lnoff-1-2)+4)
-                    zr(iadrtt) = (zr(ifon-1+4*(lnoff-1)+4)-s1)/(s0- s1)
-                    zr(iadrtt-1) = (zr(ifon-1+4*(lnoff-1-1)+4)-s1)/(s0- s1)
-                endif
-                if ((k .eq. ndimte) .and. connex) then
-                    iadrtt = iadrt3 + (k-1)*lnoff + 1 - 1
-                    s0 = zr(ifon-1+4*(1-1)+4)
-                    s1 = zr(ifon-1+4*(1-1+2)+4)
-                    zr(iadrtt) = (zr(ifon-1+4*(1-1)+4)-s1)/(s0- s1)
-                    zr(iadrtt+1) = (zr(ifon-1+4*(1-1+1)+4)-s1)/(s0- s1)
-                endif
-!
-            else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+            if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
                 zr(iadrt3-1+(k-1)*lnoff+k) = 1.d0
                 if ((k .eq. 1) .and. connex) then
                     iadrtt = iadrt3 + (k-1)*lnoff + lnoff - 1

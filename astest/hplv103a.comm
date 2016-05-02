@@ -281,16 +281,6 @@ GLOC1d=CALC_G(THETA=_F(FOND_FISS=FF,
 
 IMPR_TABLE(TABLE=GLOC1d)
 
-# Couronne 1, lissage Lag_REGU
-GLOC1e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.07,
-                       R_SUP=0.2),
-              RESULTAT=MEST,
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GLOC1e)
-
 # Couronne 2, lissage par defaut (Leg-Leg)
 GLOC2a=CALC_G(THETA=_F(FOND_FISS=FF,
                       R_INF=0.2,
@@ -328,16 +318,6 @@ GLOC2d=CALC_G(THETA=_F(FOND_FISS=FF,
                          LISSAGE_G='LAGRANGE_NO_NO'))
 
 IMPR_TABLE(TABLE=GLOC2d)
-
-# Couronne 2, lissage Lag_REGU
-GLOC2e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.2,
-                       R_SUP=0.4),
-              RESULTAT=MEST,
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GLOC2e)
 
 # Couronne 3, lissage par defaut (Leg-Leg)
 GLOC3a=CALC_G(THETA=_F(FOND_FISS=FF,
@@ -377,16 +357,6 @@ GLOC3d=CALC_G(THETA=_F(FOND_FISS=FF,
 
 IMPR_TABLE(TABLE=GLOC3d)
 
-# Couronne 3, lissage Lag_REGU
-GLOC3e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.4,
-                       R_SUP=0.6),
-              RESULTAT=MEST,
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GLOC3e)
-
 # Couronne 4, lissage par defaut (Leg-Leg)
 GLOC4a=CALC_G(THETA=_F(FOND_FISS=FF,
                       R_INF=0.07,
@@ -425,16 +395,6 @@ GLOC4d=CALC_G(THETA=_F(FOND_FISS=FF,
 
 IMPR_TABLE(TABLE=GLOC4d)
 
-# Couronne 4, lissage Lag_REGU
-GLOC4e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.07,
-                       R_SUP=0.6),
-              RESULTAT=MEST,
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GLOC4e)
-
 # Couronne 5, lissage par defaut (Leg-Leg)
 GLOC5a=CALC_G(THETA=_F(FOND_FISS=FF,),
              RESULTAT=MEST,
@@ -464,14 +424,6 @@ GLOC5d=CALC_G(THETA=_F(FOND_FISS=FF,),
                          LISSAGE_G='LAGRANGE_NO_NO'))
 
 IMPR_TABLE(TABLE=GLOC5d)
-
-# Couronne 5, lissage Lag_REGU
-GLOC5e=CALC_G(THETA=_F(FOND_FISS=FF,),
-              RESULTAT=MEST,
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GLOC5e)
 
 
 #--------------------------------------------------------------------
@@ -557,24 +509,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
 
-           VALE_CALC=0.11128175387228,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=GLOC1e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-
-           VALE_CALC=0.11109904518510,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=GLOC1e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-
            VALE_CALC=0.11201588227954,
            VALE_REFE=Gloc_ref,
            NOM_PARA='G',
@@ -643,24 +577,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
            TYPE_TEST='MIN',
            TABLE=GLOC2d)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-
-           VALE_CALC=0.11195778883915,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=GLOC2e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-
-           VALE_CALC=0.11115063208439,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=GLOC2e)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
@@ -737,24 +653,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
 
-           VALE_CALC=0.11447436149143,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=GLOC3e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-
-           VALE_CALC=0.11041718606777,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=GLOC3e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-
            VALE_CALC=0.11271696221185,
            VALE_REFE=Gloc_ref,
            NOM_PARA='G',
@@ -823,24 +721,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='G',
            TYPE_TEST='MIN',
            TABLE=GLOC4d)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=1.E-2,
-
-           VALE_CALC=0.11274161899908,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=GLOC4e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-
-           VALE_CALC=0.11089878933731,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=GLOC4e)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
@@ -914,24 +794,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MIN',
            TABLE=GLOC5d)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=2.E-2,
-
-           VALE_CALC=0.11140299807419,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MAX',
-           TABLE=GLOC5e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-
-           VALE_CALC=0.11106549755200,
-           VALE_REFE=Gloc_ref,
-           NOM_PARA='G',
-           TYPE_TEST='MIN',
-           TABLE=GLOC5e)
-
 
 #--------------------------------------------------------------------
 #               CALCUL DES K (LOCAUX) sur 3 COURONNES
@@ -971,17 +833,6 @@ GKLOC1d=CALC_G(THETA=_F(FOND_FISS=FF,
 
 IMPR_TABLE(TABLE=GKLOC1d)
 
-# Couronne 1, lissage Lag_REGU
-GKLOC1e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.07,
-                       R_SUP=0.2),
-              RESULTAT=MEST,
-              OPTION='CALC_K_G',
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GKLOC1e)
-
 # Couronne 2, lissage par defaut (Leg-Leg)
 GKLOC2a=CALC_G(THETA=_F(FOND_FISS=FF,
                        R_INF=0.2,
@@ -1015,17 +866,6 @@ GKLOC2d=CALC_G(THETA=_F(FOND_FISS=FF,
                          LISSAGE_G='LAGRANGE_NO_NO'))
 
 IMPR_TABLE(TABLE=GKLOC2d)
-
-# Couronne 2, lissage Lag_REGU
-GKLOC2e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.2,
-                       R_SUP=0.4),
-              RESULTAT=MEST,
-              OPTION='CALC_K_G',
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GKLOC2e)
 
 # Couronne 3, lissage par defaut (Leg-Leg)
 GKLOC3a=CALC_G(THETA=_F(FOND_FISS=FF,
@@ -1061,17 +901,6 @@ GKLOC3d=CALC_G(THETA=_F(FOND_FISS=FF,
 
 IMPR_TABLE(TABLE=GKLOC3d)
 
-# Couronne 3, lissage Lag_REGU
-GKLOC3e=CALC_G(THETA=_F(FOND_FISS=FF,
-                       R_INF=0.4,
-                       R_SUP=0.6),
-              RESULTAT=MEST,
-              OPTION='CALC_K_G',
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GKLOC3e)
-
 # Couronne 5, lissage par defaut (Leg-Leg)
 GKLOC5a=CALC_G(THETA=_F(FOND_FISS=FF,),
               RESULTAT=MEST,
@@ -1099,15 +928,6 @@ GKLOC5d=CALC_G(THETA=_F(FOND_FISS=FF,),
                          LISSAGE_G='LAGRANGE_NO_NO'))
 
 IMPR_TABLE(TABLE=GKLOC5d)
-
-# Couronne 5, lissage Lag_REGU
-GKLOC5e=CALC_G(THETA=_F(FOND_FISS=FF,),
-              RESULTAT=MEST,
-              OPTION='CALC_K_G',
-              LISSAGE=_F(LISSAGE_THETA='LAGRANGE_REGU',
-                         LISSAGE_G='LAGRANGE_REGU'))
-
-IMPR_TABLE(TABLE=GKLOC5e)
 
 #
 #--------------------------------------------------------------------
@@ -1164,22 +984,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MIN',
            TABLE=GKLOC1d)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=1.6319797343235E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MAX',
-           TABLE=GKLOC1e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.03,
-           VALE_CALC=1.6099161001424E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MIN',
-           TABLE=GKLOC1e)
-
 # couronne 2 : fortes oscillations avec lagrange et lag_no_no
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.07,
@@ -1228,22 +1032,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=GKLOC2d)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.07,
-           VALE_CALC=1.6726560806071E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MAX',
-           TABLE=GKLOC2e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.055,
-           VALE_CALC=1.6565255144091E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MIN',
-           TABLE=GKLOC2e)
 
 # couronne 3 : TRES fortes oscillations avec lagrange et lag_no_no
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -1294,22 +1082,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MIN',
            TABLE=GKLOC3d)
 
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.09,
-           VALE_CALC=168604.207717,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MAX',
-           TABLE=GKLOC3e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-           VALE_CALC=163095.479868,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MIN',
-           TABLE=GKLOC3e)
-
 
 # couronne 5 :
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -1359,23 +1131,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='K1',
            TYPE_TEST='MIN',
            TABLE=GKLOC5d)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.09,
-           VALE_CALC=1.6601167462083E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MAX',
-           TABLE=GKLOC5e)
-
-TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.04,
-
-           VALE_CALC=1.6306897865703E+05,
-           VALE_REFE=K1_ref,
-           NOM_PARA='K1',
-           TYPE_TEST='MIN',
-           TABLE=GKLOC5e)
 
 FIN()
 #

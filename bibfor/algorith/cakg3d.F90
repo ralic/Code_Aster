@@ -1,7 +1,7 @@
 subroutine cakg3d(option, result, modele, depla, thetai,&
                   mate, compor, lischa, symech, chfond,&
                   nnoff, basloc, courb, iord, ndeg,&
-                  liss, pair, ndimte,&
+                  liss, ndimte,&
                   extim, time, nbprup, noprup, fiss,&
                   lmelas, nomcas, lmoda, puls, milieu,&
                   connex, coor, iadnoe, typdis)
@@ -25,7 +25,6 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 #include "asterfort/getvis.h"
 #include "asterfort/gkmet1.h"
 #include "asterfort/gkmet3.h"
-#include "asterfort/gkmet4.h"
 #include "asterfort/gksimp.h"
 #include "asterfort/infniv.h"
 #include "asterfort/inical.h"
@@ -54,7 +53,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=16), intent(in), optional :: typdis
     character(len=19) :: lischa
     character(len=24) :: depla, chfond, mate, compor, basloc, courb, chpuls, liss
-    aster_logical :: extim, pair, lmelas, lmoda, milieu, connex
+    aster_logical :: extim, lmelas, lmoda, milieu, connex
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -314,9 +313,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !     NDIMTE = NDEG+1 SI TH-LEGENDRE
 !
 !   pourquoi modifier NDIMTE (argument d'entree)
-    if (liss .eq. 'LAGRANGE_REGU') then
-        ndimte = ndimte
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nnoff
     else
         ndimte = ndeg + 1
@@ -473,12 +470,8 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !
     call wkvect('&&CAKG3D.VALGK_S', 'V V R8', nnoff*5, iadgks)
 !
-    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
-        if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
-            call wkvect('&&CAKG3D.VALGKI', 'V V R8', nnoff*5, iadgki)
-        else if (liss .eq. 'LAGRANGE_REGU') then
-            call wkvect('&&CAKG3D.VALGKI', 'V V R8', ndimte*5, iadgki)
-        endif
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
+        call wkvect('&&CAKG3D.VALGKI', 'V V R8', nnoff*5, iadgki)
     else
         call wkvect('&&CAKG3D.VALGKI', 'V V R8', (ndeg+1)*5, iadgki)
     endif
@@ -492,12 +485,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
 !                       (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
 !
 !
-    if (liss.eq.'LAGRANGE_REGU') then
-        num = 5
-        call gkmet4(nnoff, ndimte, chfond, pair, iadrgk,&
-                    milieu, connex, iadgks, iadgki, abscur,&
-                    num)
-    else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
+    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks,&
                     iadgki, abscur)

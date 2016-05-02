@@ -3,7 +3,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
                   typdis)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
 !
 ! FONCTION REALISEE:     DANS LE CADRE DE X-FEM et FEM
 !
-!     - METHODES THETA_LAGRANGE,THETA_LAGRANGE_REGU
+!     - METHODES THETA_LAGRANGE
 !
 !         POUR CHAQUE NOEUD DU FOND DE FISSURE GAMM0 ON RECUPERE
 !         LE DOUBLET (RINF, RSUP )
@@ -76,9 +76,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
 !
     call jemarq()
 !
-    if (liss.eq.'LAGRANGE_REGU') then
-        nbre = 1+lnoff/2 - 1
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         nbre = lnoff - 1
     else
         nbre = ndeg
@@ -113,10 +111,10 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
         call jeveuo(taillr, 'L', iatmno)
         maxtai = 0.d0
         mintai = zr(iatmno)
-        do 1 j = 1, lnoff
+        do j = 1, lnoff
             maxtai = max(maxtai,zr(iatmno-1+j))
             mintai = min(mintai,zr(iatmno-1+j))
-  1     continue
+        end do
         rinf = 2*maxtai
         rsup = 4*maxtai
         valr(1) = rinf
@@ -132,17 +130,16 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
     call jeveuo(chfond, 'L', ifon)
     absgam='&&GVERI3.TEMP     .ABSCU'
     call wkvect(absgam, 'V V R', lnoff, iadabs)
-    do 10 i = 1, lnoff
+    do i = 1, lnoff
         zr(iadabs-1+(i-1)+1)=zr(ifon-1+4*(i-1)+4)
- 10 end do
+    end do
     xl=zr(iadabs-1+(lnoff-1)+1)
 !
-    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')&
-         .and.(liss.ne.'LAGRANGE_REGU')) then
+    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
 !
 ! METHODE THETA_LEGENDRE
 !
-        do 50 j = 1, lnoff
+        do j = 1, lnoff
             zk8(iadrt0 + j - 1) = 'PTFONFIS'
             if (nrf .ne. 0) then
                 nbpar = 1
@@ -161,16 +158,16 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
                 zr(iadrt1 + j - 1) = rinf
                 zr(iadrt2 + j - 1) = rsup
             endif
- 50     continue
+        end do
 !
         call glegen(nbre, lnoff, xl, absgam, zr(iadrt3))
 !
     else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')&
-              .or.(liss.eq.'MIXTE').or.(liss.eq.'LAGRANGE_REGU')) then
+              .or.(liss.eq.'MIXTE')) then
 !
-! METHODES THETA_LAGRANGE,THETA_LAGRANGE_REGU
+! METHODES THETA_LAGRANGE
 !
-        do 60 j = 1, lnoff
+        do j = 1, lnoff
             zk8(iadrt0 + j - 1) = 'PTFONFIS'
             if (nrf .ne. 0) then
                 nbpar = 1
@@ -189,7 +186,7 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss,&
                 zr(iadrt1 + j - 1) = rinf
                 zr(iadrt2 + j - 1) = rsup
             endif
- 60     continue
+        end do
 !
     endif
 !

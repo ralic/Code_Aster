@@ -258,66 +258,6 @@ for i in range(2) :
            REFERENCE='ANALYTIQUE'       )
 
 
-
-   GLOC3[i]=CALC_G(        RESULTAT=RESU[i],
-                     INST = 1,
-                     THETA=_F(FOND_FISS=FF,),
-                     LISSAGE=_F(LISSAGE_G='LAGRANGE_REGU',
-                                LISSAGE_THETA='LAGRANGE_REGU'),
-                     )
-
-   TEST_TABLE(TABLE=GLOC3[i],
-           NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'NOEUD',
-                     VALE_K = 'N403'),
-           VALE_CALC=11.703019735575,
-           VALE_REFE=1.158648E+01,
-           PRECISION=0.02,
-           REFERENCE='ANALYTIQUE')
-
-   TEST_TABLE(TABLE=GLOC3[i],
-              NOM_PARA='G',
-              FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N2862',      ),
-              VALE_CALC=11.689526458664,
-              VALE_REFE=1.158648E+01,
-              PRECISION=0.02,
-              REFERENCE='ANALYTIQUE'  )
-
-   TEST_TABLE(TABLE=GLOC3[i],
-              NOM_PARA='G',
-              FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N375',      ),
-              VALE_CALC=11.681915859696,
-              VALE_REFE=1.158648E+01,
-              PRECISION=0.02,
-              REFERENCE='ANALYTIQUE')
-
-   TEST_TABLE(TABLE=GLOC3[i],
-              NOM_PARA='G',
-              FILTRE=_F(  NOM_PARA = 'NOEUD',
-                          VALE_K = 'N292',      ),
-              VALE_CALC=11.697575801961,
-              VALE_REFE=1.158648E+01,
-              PRECISION=0.03,
-              REFERENCE='ANALYTIQUE')
-
-   TEST_TABLE(TABLE=GLOC3[i],
-           NOM_PARA='G',
-           TYPE_TEST = 'MAX',
-           VALE_CALC=11.704970466321,
-           VALE_REFE=1.1714999753978E+01,
-           PRECISION=0.02,
-           REFERENCE='ANALYTIQUE' )
-
-   TEST_TABLE(TABLE=GLOC3[i],
-           NOM_PARA='G',
-           TYPE_TEST = 'MIN',
-           VALE_CALC=11.681508182927,
-           VALE_REFE=1.1575479415611E+01,
-           PRECISION=0.02,
-           REFERENCE='ANALYTIQUE' )
-
 FIN( )
 #
 #

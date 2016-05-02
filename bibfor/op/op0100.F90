@@ -98,8 +98,8 @@ subroutine op0100()
     character(len=24) :: norfon
     parameter  ( resuc2 = '&&MECALG' )
 !
-    aster_logical :: exitim, thlagr, connex, glagr, milieu, direc
-    aster_logical :: thlag2, pair, lncas, lmelas, incr, lmoda
+    aster_logical :: exitim, connex, milieu, direc
+    aster_logical :: lncas, lmelas, incr, lmoda
     integer, pointer :: ordr(:) => null()
 !
 !     ==============
@@ -240,30 +240,6 @@ subroutine op0100()
 !
     endif
 !
-!     BIDOUILLE POUR EVITER DE MODIFIER LES ARGUMENTS DE
-!     GVERI3, GCOUR3, COUR2, MBILGL, CAKG3D, MMAXKL, CAKGMO, MECAGL
-    if (liss .eq. 'LEGENDRE') then
-        glagr =.false.
-        thlagr=.false.
-        thlag2=.false.
-    else if (liss.eq.'MIXTE') then
-        glagr =.false.
-        thlagr=.true.
-        thlag2=.false.
-    else if (liss.eq.'LAGRANGE') then
-        glagr =.true.
-        thlagr=.true.
-        thlag2=.false.
-    else if (liss.eq.'LAGRANGE_NO_NO') then
-        glagr =.true.
-        thlagr=.true.
-        thlag2=.false.
-    else if (liss.eq.'LAGRANGE_REGU') then
-        glagr =.false.
-        thlagr=.false.
-        thlag2=.true.
-    endif
-!
 !     DETERMINATION AUTOMATIQUE DE THETA (CAS 3D LOCAL)
     if (cas .eq. '3D_LOCAL' .and. typfis .eq. 'FISSURE') then
 !
@@ -287,7 +263,7 @@ subroutine op0100()
         call gcour3(thetai, noma, coorn, lnoff, trav1,&
                     trav2, trav3, chfond, connex, grlt,&
                     liss, basfon, ndeg, milieu,&
-                    pair, ndimte, typdis, nomfis)
+                    ndimte, typdis, nomfis)
 !
     else if (cas.eq.'3D_LOCAL'.and.typfis.eq.'FONDFISS') then
 !
@@ -312,7 +288,7 @@ subroutine op0100()
         call gcour2(thetai, noma, modele, nomno, coorn,&
                     lnoff, trav1, trav2, trav3, fonoeu, chfond, basfon,&
                     nomfis, connex, stok4, liss,&
-                    ndeg, milieu, ndimte, pair, norfon)
+                    ndeg, milieu, ndimte, norfon)
 !
     endif
 !
@@ -384,7 +360,7 @@ subroutine op0100()
             call cakg3d(option, table, modele, depla, thetai,&
                         mate, compor, lischa, symech, chfond,&
                         lnoff, basloc, courb, iord, ndeg,&
-                        liss, pair, ndimte,&
+                        liss, ndimte,&
                         exitim, time, nbpara, linopa, nomfis,&
                         lmelas, nomcas, lmoda, puls, milieu,&
                         connex, iadfis, iadnoe, typdis)
@@ -461,7 +437,7 @@ subroutine op0100()
                 call mecagl(option, table, modele, depla, thetai,&
                             mate, compor, lischa, symech, chfond,&
                             lnoff, iord, ndeg, liss,&
-                            milieu, ndimte, pair, exitim,&
+                            milieu, ndimte, exitim,&
                             time, nbpara, linopa, chvite, chacce,&
                             lmelas, nomcas, calsig, fonoeu, incr, iadfis, &
                             norfon, connex)

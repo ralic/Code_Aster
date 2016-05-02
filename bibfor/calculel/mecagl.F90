@@ -1,7 +1,7 @@
 subroutine mecagl(option, result, modele, depla, thetai,&
                   mate, compor, lischa, symech, chfond,&
                   nnoff, iord, ndeg, liss,&
-                  milieu, ndimte, pair, extim,&
+                  milieu, ndimte, extim,&
                   time, nbprup, noprup, chvite, chacce,&
                   lmelas, nomcas, kcalc, fonoeu, lincr, coor,&
                   norfon, connex)
@@ -25,7 +25,6 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/gmeth1.h"
 #include "asterfort/gmeth2.h"
 #include "asterfort/gmeth3.h"
-#include "asterfort/gmeth4.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -57,7 +56,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=24) :: depla, chfond, mate, compor
     character(len=24) :: chvite, chacce, fonoeu, liss, norfon
 !
-    aster_logical :: extim, milieu, pair, lmelas, lincr, connex
+    aster_logical :: extim, milieu, lmelas, lincr, connex
 ! ......................................................................
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -233,9 +232,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
 !- CALCUL DES G(THETA_I) AVEC I=1,NDIMTE  NDIMTE = NNOFF  SI TH-LAGRANGE
 !                                         NDIMTE = NDEG+1 SI TH-LEGENDRE
-    if (liss .eq. 'LAGRANGE_REGU') then
-        ndimte = ndimte
-    else if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'MIXTE')) then
         ndimte = nnoff
     else
         ndimte = ndeg + 1
@@ -397,10 +394,9 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !- DEUXIEME METHODE : G_LEGENDRE ET THETA_LAGRANGE
 !- TROISIEME METHODE: G_LAGRANGE ET THETA_LAGRANGE
 !    (OU G_LAGRANGE_NO_NO ET THETA_LAGRANGE)
-!- QUATRIEME METHODE: G_LAGRANGE_REGU ET THETA_LAGRANGE_REGU
 !
     AS_ALLOCATE(vr=valg_s, size=nnoff)
-    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO').or.(liss.eq.'LAGRANGE_REGU')) then
+    if ((liss.eq.'LAGRANGE').or.(liss.eq.'LAGRANGE_NO_NO')) then
         call wkvect('&&MECAGL.VALGI', 'V V R8', nnoff, iadgi)
     else
         call wkvect('&&MECAGL.VALGI', 'V V R8', ndeg+1, iadgi)
@@ -417,11 +413,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 ! NOM DES NOEUDS DU FOND
     if (.not.lxfem) call jeveuo(fonoeu, 'L', iadrno)
 !
-    if (liss .eq. 'LAGRANGE_REGU') then
-        num = 5
-        call gmeth4(nnoff, ndimte, zr(iadrg), milieu, pair, &
-                    valg_s, objcur, zr(iadgi), connex)
-    else if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
+    if ((liss.ne.'LAGRANGE').and.(liss.ne.'LAGRANGE_NO_NO').and.(liss.ne.'MIXTE')) then
         num = 1
         call gmeth1(nnoff, ndeg, zr(iadrg), valg_s, objcur,&
                     xl, zr( iadgi))
