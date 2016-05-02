@@ -5,7 +5,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
     integer :: invsup(*), seq(*), nbsn
     integer :: sni, sn, sn0, vois, m, vali(2), i
     aster_logical :: trouv
-    do 1 i = 1, nbsn
+    do i = 1, nbsn
         sni=seq(i)
         m = lfront(sni)
 !
@@ -45,8 +45,8 @@ subroutine prnchk(nbsn, adress, global, fils, frere,&
             if (.not.trouv) then
                 vali(1)=sni
                 vali(2)=sn0
-                call utmess('A', 'ALGELINE5_59', ni=2, vali=vali)
+                call utmess('F', 'ALGELINE5_59', ni=2, vali=vali)
             endif
         endif
-  1 end do
+    end do
 end subroutine
