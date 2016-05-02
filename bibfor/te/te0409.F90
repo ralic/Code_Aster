@@ -17,6 +17,7 @@ subroutine te0409(option, nomte)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: sebastien.fayolle at edf.fr
+!
     implicit none
 !
 #include "asterf_types.h"
@@ -63,9 +64,14 @@ subroutine te0409(option, nomte)
 #include "asterfort/utpvlg.h"
 #include "asterfort/utmess.h"
 !
+! TOUTES LES VARIABLES EN DEHORS 
+! DE LA BOUCLE SUR LES POINTS DE GAUSS PEUVENT ETRE
+! INITIALISES AU MOMENT DE LA DECLARATION
+! matloc et vecloc SONT INITIALISES EN FONCTION DE 
+! L OPTION FULL_MECA, RIGI_MECA_*
     integer :: codret
-    real(kind=8) :: pgl(3, 3), xyzl(3, 4)
-    real(kind=8) :: ul(6, 4)=0.d0, dul(6, 4)=0.d0, angmas(3)
+    real(kind=8) :: pgl(3, 3)=0.0, xyzl(3, 4)=0.0d0
+    real(kind=8) :: ul(6, 4)=0.d0, dul(6, 4)=0.d0, angmas(3)=0.0d0
     real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6, 4)
     character(len=16) :: option, nomte, compor
 !
@@ -127,7 +133,8 @@ subroutine te0409(option, nomte)
 !            DC:     MATRICE DE RIGIDITE ELASTIQUE MATERIELLE
 !                                                         (CISAILLEMENT)
 !
-    real(kind=8) :: dff(3, 3), dmm(3, 3), dmff(3, 3), dcc(2, 2), dci(2, 2), dmc(3, 2), dfc(3, 2)
+    real(kind=8) :: dff(3, 3) = 0.0d0, dmm(3, 3) = 0.0d0, dmff(3, 3) = 0.0d0
+    real(kind=8) :: dcc(2, 2) = 0.0d0, dci(2, 2) = 0.0d0, dmc(3, 2) = 0.0d0, dfc(3, 2) = 0.0d0
 !
     real(kind=8) :: bf(3, 3*4)=0.d0, bm(3, 2*4)=0.d0, bmq(2, 3)=0.d0, bc(2, 3*4)=0.d0
 !            BF :    MATRICE "B" (FLEXION)
@@ -141,13 +148,13 @@ subroutine te0409(option, nomte)
 !           MEFL:    MATRICE DE COUPLAGE MEMBRANE-FLEXION
 !           LE MATERIAU EST SUPPOSE HOMOGENE
 !
-    real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), c, s
+    real(kind=8) :: t2iu(4)=0.0d0, t2ui(4)=0.0d0, t1ve(9), c, s
 !
     aster_logical :: t3g, q4g
     aster_logical :: leul, lrgm
     aster_logical :: lbid, resi, rigi
     aster_logical :: q4gg
-    aster_logical :: coupmf
+    aster_logical :: coupmf  = .false.
 !
     integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx
     integer :: idfd2, jgano
@@ -157,7 +164,7 @@ subroutine te0409(option, nomte)
     integer :: i, i1, i2, j, k, l
     integer :: icpg, icpv
     integer :: jtab(7), nbsig
-    integer :: multic
+    integer :: multic = -1
 !
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
@@ -304,17 +311,22 @@ subroutine te0409(option, nomte)
             call r8inir((3*nno)*(3*nno), 0.d0, flex, 1)
             call r8inir((2*nno)*(2*nno), 0.d0, memb, 1)
             call r8inir((2*nno)*(3*nno), 0.d0, mefl, 1)
+            call r8inir((6*4)*(6*4+1)/2, 0.d0, matloc, 1)
         endif
 !
         if (resi) then
             call r8inir(6*nno, 0.d0, vecloc, 1)
-            call r8inir(32, 0.d0, effint, 1)
-            call r8inir(32, 0.d0, efforp, 1)
         endif
+        call r8inir(32, 0.d0, effint, 1)
+        call r8inir(32, 0.d0, efforp, 1)
 !
         call r8inir(36, 0.d0, delas, 1)
         call r8inir(32, 0.d0, sigmam, 1)
         call r8inir(32, 0.d0, efform, 1)
+        call r8inir(2*4, 0.d0, um, 1)
+        call r8inir(3*4, 0.d0, uf, 1)
+        call r8inir(2*4, 0.d0, dum, 1)
+        call r8inir(3*4, 0.d0, duf, 1)
 !
 !       -- PARTITION DU DEPLACEMENT EN MEMBRANE/FLEXION :
         do ino = 1, nno
@@ -392,12 +404,19 @@ subroutine te0409(option, nomte)
                 poids = carat3(8)
             endif
 !
+  
+            call r8inir(3, 0.d0, eps, 1)
+            call r8inir(3, 0.d0, deps, 1)
+            call r8inir(3, 0.d0, khi, 1)
+            call r8inir(3, 0.d0, dkhi, 1)
             call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
             call pmrvec('ZERO', 3, 2*nno, bm, dum,deps)
             call pmrvec('ZERO', 3, 3*nno, bf, uf, khi)
             call pmrvec('ZERO', 3, 3*nno, bf, duf,dkhi)
 !
             if (q4gg) then
+            call r8inir(2, 0.d0, gam, 1)
+            call r8inir(2, 0.d0, dgam, 1)
                 call pmrvec('ZERO', 2, 3*nno, bc, uf, gam)
                 call pmrvec('ZERO', 2, 3*nno, bc, duf, dgam)
             endif
@@ -439,6 +458,14 @@ subroutine te0409(option, nomte)
             endif
 !
             if (compor(1:4) .eq. 'ELAS') then
+  
+                call r8inir(3*3, 0.d0, dff, 1)
+                call r8inir(3*3, 0.d0, dmm, 1)
+                call r8inir(3*3, 0.d0, dmff, 1)
+                call r8inir(2*2, 0.d0, dcc, 1)
+                call r8inir(2*2, 0.d0, dci, 1)
+                call r8inir(3*2, 0.d0, dmc, 1)
+                call r8inir(3*2, 0.d0, dfc, 1)
                 call dxmate('RIGI', dff, dmm, dmff, dcc,&
                             dci, dmc, dfc, nno, pgl,&
                             multic, coupmf, t2iu, t2ui, t1ve)
