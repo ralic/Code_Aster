@@ -410,6 +410,145 @@ MODE=CALC_MODES(CALC_FREQ=_F(NMAX_FREQ=10, ),
 
 MODE=NORM_MODE(reuse=MODE,  MODE=MODE,    NORME='TRAN_ROTA',)
 
+EPOT=POST_ELEM( MODELE=STICKMOD, 
+                CHAM_MATER=CHAMPMAT, CARA_ELEM=CARA_ELE, 
+                         ENER_POT=(_F(
+                                    GROUP_MA = ( 'POU_D_T', 
+                                                 'MASSES',  
+                                                 'LIAI_NOE',
+                                                 'VRADIER',
+                                                 'SRADIER',
+                                                ),),
+                                    _F(TOUT = 'OUI'),),
+                         RESULTAT=MODE,
+                         NUME_ORDRE=(
+                                                      1,
+                                                      2,
+                                                      3,
+                                                      4,
+                                                      5,
+                                  )
+                   )
+                   
+IMPR_TABLE(TABLE=EPOT);
+                   
+ATX=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     2.0,
+
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+ATY=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     2.0,
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+ATZ=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     2.0,
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+ARX=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     2.0,
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+ARY=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     2.0,
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+#ATTETION : ARZ BIDON
+
+
+ARZ=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+    0.00,     0.0000,
+    30.0,     2.0,
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+#
+#  CALC_AMOR_MODAL AVEC RIGI_PARASOL ET SEUIL A 30#
+
+
+L_AMOR=CALC_AMOR_MODAL(
+                                   ENER_SOL=_F(
+                                       MODE_MECA = MODE,
+                                       METHODE = 'RIGI_PARASOL',
+                                       GROUP_MA_RADIER = 'SRADIER',
+                                       GROUP_NO_CENTRE = 'P1',
+                                       COEF_GROUP = 1.,
+                                       KX = 6.295E11,
+                                       KY = 6.295E11,
+                                       KZ = 6.864E11,
+                                       KRX = 3.188E14,
+                                       KRY = 3.188E14,
+                                       KRZ = 3.2E14,),
+                               AMOR_INTERNE=_F(
+                                              ENER_POT = EPOT,
+                                              GROUP_MA = (
+                                                 'POU_D_T', 
+                                                 'MASSES',  
+                                                 'LIAI_NOE',
+                                                 'VRADIER',
+                                                 'SRADIER',
+                                                            ),
+                                              AMOR_REDUIT = (
+                                                              0.05,
+                                                              0.05,
+                                                              0.05,
+                                                              0.05,
+                                                              0.05,
+                                                            )),
+                                   AMOR_SOL=_F(
+                                              AMOR_REDUIT = 0.08,
+                                              FONC_AMOR_GEO = (
+                                                                ATX,
+                                                                ATY,
+                                                                ATZ,
+                                                                ARX,
+                                                                ARY,
+                                                                ARZ,
+                                                              ),
+                                              HOMOGENE = 'OUI',
+                                              SEUIL = 0.3)
+                           )
+
+
 # VALEUR DE REFERENCE : VALEURS OBTENUES EN VERSION 3.06.26
 
 
@@ -475,6 +614,58 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    ),
                 ),
           )
+                               
+#
+# TESTS SUR LES VALEURS OBTENUES DE CALC_AMOR_MODAL
+#
+
+LISTE=DEFI_LIST_REEL(    VALE=(1.,  2.,  3.,  4.,  5., ) )
+
+F_AMOR=DEFI_FONCTION(    NOM_PARA='AMOR',
+                              VALE_PARA=LISTE,
+                              VALE_FONC=L_AMOR)
+                              
+#
+####################################
+#  CALC_AMOR_MODAL AVEC RIGI_PARASOL ET SEUIL A 30#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.09401520430882,
+                        VALE_PARA=1.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.09402521989264,
+                        VALE_PARA=2.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05082280836340,
+                        VALE_PARA=3.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.05077925669892,
+                        VALE_PARA=4.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06159355428799,
+                        VALE_PARA=5.0,
+                        FONCTION=F_AMOR,
+                        ),
+              )
 
 FIN( )
 #
