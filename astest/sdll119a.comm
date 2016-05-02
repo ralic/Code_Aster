@@ -245,6 +245,7 @@ TENSION=AFFE_CHAR_MECA(
 RESU=MECA_STATIQUE(MODELE=MODELE,
                    CHAM_MATER=CHMAT,
                    CARA_ELEM=CARA,
+                   SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
                    EXCIT=(_F(CHARGE=TENSION,),
                           _F(CHARGE=CHARG,),),);
 
@@ -298,8 +299,8 @@ MATRC=COMB_MATR_ASSE( COMB_R=(
 
 MODES=CALC_MODES(MATR_RIGI=MATRC,
                  OPTION='PLUS_PETITE',
-                 CALC_FREQ=_F(NMAX_FREQ=2,
-                              ),
+                   SOLVEUR=_F(METHODE='MULT_FRONT',RENUM='MDA'),
+                 CALC_FREQ=_F(NMAX_FREQ=2,),
                  MATR_MASS=MATM,
                  )
 
@@ -419,11 +420,13 @@ AMOR_1=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647378296686,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.22647640601868,
                         VALE_REFE=0.19,
                         VALE_PARA=4.0,
                         REFERENCE='SOURCE_EXTERNE',
                         PRECISION=0.2,
+                        TOLE_MACHINE=3.E-6,          # VARIABILITE
+                                                     # EXPLIQUEE PAR FICHE 25115
                         FONCTION=AMOR_1,),
               )
 
@@ -461,10 +464,11 @@ AMOR_2=RECU_FONCTION(
 
 #
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415340171324,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.21415060438340,
                         VALE_PARA=4.0,
-                        FONCTION=AMOR_2,
-                        ),
+                        TOLE_MACHINE=3.E-6,          # VARIABILITE
+                                                     # EXPLIQUEE PAR FICHE 25115
+                        FONCTION=AMOR_2,),
               )
 
 #
