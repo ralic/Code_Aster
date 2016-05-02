@@ -430,7 +430,6 @@ TEST_TABLE ( TABLE    =TAB_SIG,
              NOM_PARA ='SIXX',
              VALE_REFE=-30777.314632,
              REFERENCE='AUTRE_ASTER',
-             PRECISION=2.e-4,
              VALE_CALC=-30771.9950872,
              TOLE_MACHINE=1.e-4);
 
@@ -440,7 +439,6 @@ TEST_TABLE ( TABLE    =TAB_SIG,
              NOM_PARA ='SIPXX',
              VALE_REFE=-19226.5841711,
              REFERENCE='AUTRE_ASTER',
-             PRECISION=4.e-4,
              VALE_CALC=-19227.2858783,
              TOLE_MACHINE=4.e-4);
 
