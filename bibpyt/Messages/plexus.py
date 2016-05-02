@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -341,6 +341,10 @@ Dans une occurrence du mot-clé facteur %(k1)s de AFFE_CARA_ELEM, on de trouve p
 le mot-clé %(k2)s qui est obligatoire.
 """),
 
-
+    57 : _(u"""
+Échec de la transformation des variables internes d'EPX vers Code_Aster pour la loi %(k1)s.
+Des mailles de bord sont certainement présentes parmi les mailles renseignées dans le 
+mot-clé COMPORTEMENT pour cette loi.
+"""),
 
 }

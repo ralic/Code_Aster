@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -613,6 +613,7 @@ présentes%s""" % compo)
                 else:
                     nb_champ_transfo = len(dic_champ_var_int[compo].keys())
                     dicDetr_transfo = []
+                    print 'etienne',compo
                     if nb_champ_transfo == 1:
                         champ = dic_champ_var_int[compo].keys()[0]
                         loi = dic_champ_var_int[compo][champ]
@@ -655,13 +656,17 @@ présentes%s""" % compo)
                     dicDetr_transfo.append({'NOM': __ECR_AS})
                     cham_para = __ECR_AS
                     cham_fonc = dic_transfo[compo]['CH_FONC']
-                    # EVAL : passage des contraintes aux efforts
-                    __ECR1[j] = CREA_CHAMP(OPERATION='EVAL',
-                                           TYPE_CHAM='ELGA_NEUT_R',
-                                           CHAM_F=cham_fonc,
-                                           CHAM_PARA=cham_para,
-                                           )
-                    dicDetr.append({'NOM': __ECR1[j]})
+                    # EVAL : transormation EPX -> Aster
+                    try:
+                        __ECR1[j] = CREA_CHAMP(OPERATION='EVAL',
+                                    TYPE_CHAM='ELGA_NEUT_R',
+                                    CHAM_F=cham_fonc,
+                                    CHAM_PARA=cham_para,
+                                    )
+                        dicDetr.append({'NOM': __ECR1[j]})
+                    except:
+                        compor_aster = self.info_comp_epx[compo]['COMPOR_ASTER']
+                        UTMESS('F','PLEXUS_57', valk=compor_aster)
                     nom_cmp = dic_transfo[compo]['NOM_CMP']
                     nom_cmp_f = dic_transfo[compo]['NOM_CMP_F']
                     dicAsse3.append({'TOUT': 'OUI', 'CHAM_GD': __ECR1[j],
@@ -821,6 +826,7 @@ retrouver les variables internes Aster""" % nom_comp)
                 'VAR_ASTER': var_aster,
                 'VAR_EPX': var_epx,
                 'TRANSFO': comp_aster['TRANSFO'],
+                'COMPOR_ASTER' : nom_comp
             }
             info_comp_epx[nom_epx] = dic
         else:
