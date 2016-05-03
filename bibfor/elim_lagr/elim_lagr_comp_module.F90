@@ -65,6 +65,10 @@ subroutine build_elim_lagr_context( full_matas )
     type(saddle_point_context_type)    :: sp_ctxt
     type(elim_lagr_context_type), pointer :: elg_ctxt => null()
     PetscErrorCode :: ierr  
+    logical :: k_mat_to_free
+    character(len=19) :: nomat_save
+    !
+    k_mat_to_free = .false.    
     !    
     ! Retrouve l'identifiant de l'objet elim_lagr_context associe 
     ! a la matrice full_matas 
@@ -100,7 +104,33 @@ subroutine build_elim_lagr_context( full_matas )
     kptscr = kptsc 
     if ( elg_ctxt%k_matas /= " ") then  
        kptscr = get_mat_id( elg_ctxt%k_matas ) 
-    ASSERT( kptscr /= 0 )  
+    !  S'il n'existe pas encore (ou deja plus) un clone PETSc de cette matrice
+       if ( kptscr == 0 ) then
+    ! on le crée
+    ! il faudra donc le détruire : on met à jour le flag k_mat_to_free  
+        k_mat_to_free = .true.
+        call mat_record(  elg_ctxt%k_matas, nosols(kptsc) , kptscr )  
+        ASSERT( kptscr /= 0 ) 
+    ! on met à jour (temporairement) le nom de la matrice courante
+    ! en effet, il est utilise dans les routines apalmc et apmamc 
+    ! pour recuperer les valeurs de la matr_asse que l'on est 
+    ! en train de cloner. On n'a pas besoin de mettre à jour 
+    ! le nom du nume_ddl: c'est le meme que pour la matrice sur laquelle
+    ! on est en train de proceder a l'elimination des lagranges.
+        nomat_save = nomat_courant 
+        nomat_courant = elg_ctxt%k_matas
+    ! On prealloue la matrice PETSc correspondante
+        call apalmc(kptscr)
+    ! On copie les valeurs de la matr_asse dans la matrice PETSc
+        call apmamc(kptscr)
+    ! et on assemble 
+        call MatAssemblyBegin(ap(kptscr), MAT_FINAL_ASSEMBLY, ierr)
+        ASSERT(ierr==0)
+        call MatAssemblyEnd(ap(kptscr), MAT_FINAL_ASSEMBLY, ierr)
+        ASSERT(ierr==0)
+     ! On retablit le nom de la matrice courante 
+        nomat_courant  = nomat_save
+       endif
     endif
     !
     ! -------------------------------------------------------------------
@@ -111,6 +141,10 @@ subroutine build_elim_lagr_context( full_matas )
     !  et on libere le clone PETSc de full_matas 
     kbid = repeat(" ",19)
     call  apmain('DETR_MAT', kptsc, [0.d0], kbid, 0, iret)
+    ! ainsi que celui de k_matas 
+    if ( k_mat_to_free ) then 
+      call  apmain('DETR_MAT', kptscr, [0.d0], kbid, 0, iret)
+    endif 
     ! -------------------------------------------------------------------
     ! Remplissage de elg_ctxt
     ! -------------------------------------------------------------------
