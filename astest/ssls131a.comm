@@ -216,7 +216,7 @@ for k in range(1,10):
 # Verification de la valeur de VMIS obtenue (test de non-regression)
 
 TEST_TABLE(
-           VALE_CALC=1.9669824189084001E9,
+           VALE_CALC=1959874357.0,
            NOM_PARA='VMIS',
            TABLE=RELV_5,
            FILTRE=_F(NOM_PARA='QUANTITE',
