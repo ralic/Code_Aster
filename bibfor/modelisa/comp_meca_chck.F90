@@ -1,4 +1,4 @@
-subroutine comp_meca_chck(model      , mesh          , full_elem_s, l_etat_init, info_comp_valk,&
+subroutine comp_meca_chck(model  , mesh , full_elem_s, l_etat_init, info_comp_valk,&
                           l_auto_elas, l_auto_deborst, l_comp_erre)
 !
 implicit none
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -165,7 +165,8 @@ implicit none
 !
 ! ----- Check deformation with Comportement.py
 !
-        call nmdovd(model    , l_affe_all  , list_elem_affe, nb_elem_affe, full_elem_s,&
+        call nmdovd(model    , l_affe_all  , l_auto_deborst ,&
+                    list_elem_affe,  nb_elem_affe, full_elem_s,&
                     defo_comp, defo_comp_py)
 
 !

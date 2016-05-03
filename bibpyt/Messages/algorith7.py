@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,8 @@ cata_msg = {
 """),
 
     9 : _(u"""
- C_PLAN méthode DEBORST et grandes déformations sont incompatibles
+ C_PLAN méthode DEBORST et grandes déformations GDEF_LOG sont incompatibles. 
+Seules VMIS_ISOT_XXX ne nécessitant pas la méthode Deborst est utilisable en C_PLAN avec GDEF_LOG. 
 """),
 
     10 : _(u"""

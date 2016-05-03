@@ -5,7 +5,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
                   deplm, depld, sigm, vim, sigp,&
                   vip, fint, matuu, codret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,7 +94,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !     TEST SUR LE NOMBRE DE NOEUDS SI TEST NON VERIFIE MESSAGE ERREUR
     ASSERT(nno.le.27)
     if (compor(5)(1:7) .eq. 'DEBORST') then
-        call utmess('F', 'ALGORITH7_9')
+        ASSERT(.false.)
     endif
 !
 ! -----------------------------DECLARATION-----------------------------
@@ -114,9 +114,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
 !--------------------------INITIALISATION------------------------
 !
-    do 9 i = 1, 27
+    do i = 1, 27
         cod(i)=0
-  9 end do
+    end do
     lintbo = .false.
 !
 !------------------------------DEPLACEMENT ET GEOMETRIE-------------
@@ -138,7 +138,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !****************************BOUCLE SUR LES POINTS DE GAUSS************
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
-    do 10 g = 1, npg
+    do g = 1, npg
 !
 !---     CALCUL DE F_N, F_N+1 PAR RAPPORT A GEOMI GEOM INITIAL
         call dfdmip(ndim, nno, axi, geomi, g,&
@@ -167,7 +167,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 !
 !        TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
 !
-        if (cod(g) .eq. 1) goto 9999
+        if (cod(g) .eq. 1) goto 999
         if (cod(g) .eq. 4) lintbo= .true.
 !
         call poslog(resi, rigi, tn, tp, fm,&
@@ -176,7 +176,7 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
                     instp, angmas, gn, lamb, logl,&
                     sigp(1, g), dsidep, pk2m, pk2, cod(g))
 !
-        if (cod(g) .eq. 1) goto 9999
+        if (cod(g) .eq. 1) goto 999
         if (cod(g) .eq. 4) lintbo= .true.
 !
 !     CALCUL DE LA MATRICE DE RIGIDITE ET DE LA FORCE INTERIEURE
@@ -186,9 +186,10 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
                     r, fm, fp, dsidep, pk2m,&
                     pk2, matsym, matuu, fint)
 !
- 10 end do
+10  continue
+    end do
     if (lintbo) cod(1) = 4
-9999 continue
+999 continue
 ! - SYNTHESE DES CODES RETOURS
 !
     call codere(cod, npg, codret)

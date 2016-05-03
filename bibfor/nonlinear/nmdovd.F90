@@ -1,4 +1,4 @@
-subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
+subroutine nmdovd(model, l_affe_all, l_auto_deborst , list_elem_affe, nb_elem_affe, full_elem_s,&
                   defo_comp, defo_comp_py)
 !
     implicit none
@@ -6,6 +6,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lctest.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -18,7 +19,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +37,7 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_affe
-    aster_logical, intent(in) :: l_affe_all
+    aster_logical, intent(in) :: l_affe_all, l_auto_deborst
     integer, intent(in) :: nb_elem_affe
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(in) :: defo_comp
@@ -97,6 +98,21 @@ subroutine nmdovd(model, l_affe_all, list_elem_affe, nb_elem_affe, full_elem_s,&
         call jeveuo(list_elem_affe, 'L', j_elem_affe)
         nb_elem = nb_elem_affe
     endif
+
+!
+!     TEST SUR DEBORST + GDEF_LOG
+!
+    if (l_auto_deborst .and. defo_comp .eq. 'GDEF_LOG') then
+        call utmess('F', 'ALGORITH7_9')
+    endif
+
+!
+!     TEST SUR DEBORST + SIMO_MIEHE
+!
+    if (l_auto_deborst .and. defo_comp .eq. 'SIMO_IEHE') then
+        call utmess('F', 'ALGORITH7_9')
+    endif
+
 !
 ! - Loop on elements
 !

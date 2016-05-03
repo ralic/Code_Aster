@@ -1,7 +1,7 @@
 subroutine nmcpl1(compor, typmod, option, vimp, deps,&
                   optio2, cp, nvv)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,6 +18,7 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
 ! ======================================================================
     implicit none
 #include "asterfort/utmess.h"
+#include "asterfort/assert.h"
 ! ----------------------------------------------------------------------
 !     CONTRAINTES PLANES PAR LA METHODE DE BORST / CONDENSATION STATIQUE
 !     POUR LES COMPORTEMENTS QUI N'INTEGRENT PAS LES CONTRAINTES PLANES
@@ -51,12 +52,12 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
     nvv=0
     rac2 = sqrt(2.d0)
 !
-    if (compor(1)(1:4) .eq. 'SANS') goto 9999
+    if (compor(1)(1:4) .eq. 'SANS') goto 999
 !
     if (typmod(1) .eq. 'C_PLAN') then
         if (compor(5)(1:7) .eq. 'DEBORST') then
             if (compor(3) .eq. 'SIMO_MIEHE') then
-                call utmess('F', 'ALGORITH7_9')
+                ASSERT(.false.)
             endif
             read (compor(2),'(I16)') nbvari
             nvv=nbvari-4
@@ -102,5 +103,5 @@ subroutine nmcpl1(compor, typmod, option, vimp, deps,&
             deps(3)=depz
         endif
     endif
-9999  continue
+999 continue
 end subroutine
