@@ -147,6 +147,7 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     /* MFRONT Wrapper
     */
     char *libname, *symbol, *model, *symbname=NULL;
+    char * name1;
     int retour = 0;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
@@ -167,7 +168,12 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
     mfront_name(libname, symbol, model, "_ExternalStateVariables", &symbname);
     if ( symbname == NULL )
     {
-        error_symbol_not_found(libname, symbname);
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)\
+                               + strlen("_ExternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_ExternalStateVariables");
+        error_symbol_not_found(libname, name1);
     }
 
 //     char** test_char = libsymb_get_symbol(DLL_DICT, libname, symbname);
@@ -175,7 +181,12 @@ void DEFSSSPPPPP(MFRONT_GET_POINTERS,
 
     mfront_name(libname, symbol, model, "_nExternalStateVariables", &symbname);
     if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbname);
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)\
+                               + strlen("_ExternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_ExternalStateVariables");
+        error_symbol_not_found(libname, name1);
     }
 //     int* test_int = libsymb_get_symbol(DLL_DICT, libname, symbname);
     *pnbesv = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbname);
@@ -203,7 +214,7 @@ void DEFSSSP(MFRONT_SET_OUTOFBOUNDS_POLICY,
     char* nommod, STRING_SIZE lnommod, INTEGER* value)
 {
 #ifdef _POSIX
-    char *libname, *symbol, *model, *symbname=NULL;
+    char *libname, *symbol, *model, *symbname=NULL, *name1;
     int retour = 0;
     FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(f_mfront) = NULL;
     PyObject* DLL_DICT;
@@ -216,7 +227,12 @@ void DEFSSSP(MFRONT_SET_OUTOFBOUNDS_POLICY,
     mfront_name(libname, symbol, model, "_setOutOfBoundsPolicy", &symbname);
     if ( symbname == NULL )
     {
-        error_symbol_not_found(libname, symbname);
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)\
+                               + strlen("_setOutOfBoundsPolicy") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_setOutOfBoundsPolicy");
+        error_symbol_not_found(libname, name1);
     }
 
     f_mfront = (FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY())libsymb_get_symbol(DLL_DICT,libname,symbname);
@@ -240,7 +256,7 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 #ifdef _POSIX
     /* MFRONT Wrapper
     */
-    char *libname, *symbol, *model, *symbname=NULL;
+    char *libname, *symbol, *model, *symbname=NULL, *name1;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
 
@@ -250,14 +266,24 @@ void DEFSSSPP(MFRONT_GET_NBVARI, mfront_get_nbvari,
 
     mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
     if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbol);
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)
+                               + strlen("_InternalStateVariablesTypes") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_InternalStateVariablesTypes");
+        error_symbol_not_found(libname, name1);
     }
 
     int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
     mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
     if ( symbname == NULL ) {
-        error_symbol_not_found(libname, symbol);
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)
+                               + strlen("_nInternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_nInternalStateVariables");
+        error_symbol_not_found(libname, name1);
     }
     unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
 
