@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcmohr(ndim, typmod, imate, option, tmpp, &
+    subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp, &
                       dstrai0, stresm0, stres, vim, vip, &
                       dsidep, codret)
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: option
+        real(kind=8) :: crit(*)
         real(kind=8) :: tmpp
         real(kind=8) :: dstrai0(6)
         real(kind=8) :: stresm0(6)

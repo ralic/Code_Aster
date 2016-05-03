@@ -1,12 +1,26 @@
-subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
+subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
                   dstrai0, stresm0, stres, vim, vip,&
                   dsidep, codret)
 ! ----------------------------------------------------------------------
 !
-!     LOI DE COMPORTEMENT DE MOHR-COULOMB
+! OBJET:    LOI DE COMPORTEMENT DE MOHR-COULOMB
 !
 ! IN  NDIM    : DIMENSION DE L'ESPACE
 ! IN  TYPMOD  : TYPE DE MODELISATION
+! IN  CRIT    : CRITERES  LOCAUX
+!                 CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
+!                           (ITER_INTE_MAXI == ITECREL)
+!                 CRIT(2) = TYPE DE JACOBIEN A T+DT
+!                           (TYPE_MATR_COMP == MACOMP)
+!                           0 = EN VITESSE     > SYMETRIQUE
+!                           1 = EN INCREMENTAL > NON-SYMETRIQUE
+!                 CRIT(3) = VALEUR DE LA TOLERANCE DE CONVERGENCE
+!                           (RESI_INTE_RELA == RESCREL)
+!                 CRIT(5) = NOMBRE D'INCREMENTS POUR LE
+!                           REDECOUPAGE LOCAL DU PAS DE TEMPS
+!                           (ITER_INTE_PAS == ITEDEC)
+!                           0 = PAS DE REDECOUPAGE
+!                           N = NOMBRE DE PALIERS
 ! IN  IMATE   : NATURE DU MATERIAU
 ! IN  DSTRAI0 : INCREMENT DE DEFORMATION
 ! IN  STRESM0 : CONTRAINTE EN T-
@@ -49,12 +63,13 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 ! ======================================================================
     character(len=8)  :: typmod(*)
     character(len=16) :: option
-    integer      :: ndim, imate, codret
-    real(kind=8) :: tmpp
-    real(kind=8) :: dstrai(6), dstrai0(6)
-    real(kind=8) :: stresm(6), stresm0(6), stres(6)
-    real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6)
+    integer           :: ndim, imate, codret
+    real(kind=8)      :: crit(*)
+    real(kind=8)      :: tmpp
+    real(kind=8)      :: dstrai(6), dstrai0(6)
+    real(kind=8)      :: stresm(6), stresm0(6), stres(6)
+    real(kind=8)      :: vim(*), vip(*)
+    real(kind=8)      :: dsidep(6, 6)
 !
 #include "asterf_types.h"
 #include "asterfort/bptobg.h"
@@ -77,20 +92,20 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 ! Declaration of real type variables
     real(kind=8) :: rprops(nmax), strait(nmax)
     real(kind=8) :: strest(nmax), young, poiss
-    real(kind=8) :: sinphi, cosphi, sinpsi
+    real(kind=8) :: sinphi, cosphi, sinpsi, phi(mmax)
     real(kind=8) :: cohe, eigprj(mmax, mmax), pstrs(mmax)
-    real(kind=8) :: gmodu, bulk, r2g, r4g
+    real(kind=8) :: gmodu, bulk, r2g, r4g, mat(mmax, mmax)
     real(kind=8) :: r2bulk, r2cphi, r2spsi, r1d3, eetv
-    real(kind=8) :: pt, eetvd3, pstrs1, pstrs2, pstrs3, smct
-    real(kind=8) :: phia, phib, res, scaprd, sphsps
+    real(kind=8) :: pt, eetvd3, pstrs1, pstrs2, pstrs3
+    real(kind=8) :: phia, phib, phic, res, scaprd, sphsps
     real(kind=8) :: consta, r4c2ph, ddgama, dgama, delta, dmax1
-    real(kind=8) :: smcta, smctb, constb, drvaa
+    real(kind=8) :: smcta, smctb, smctc, constb, drvaa, dgamc
     real(kind=8) :: drvab, drvba, drvbb, r1ddet, ddgamb, dgamb
     real(kind=8) :: resnor, factor, aux1, aux2, aux3
     real(kind=8) :: cotphi, ddepv, s1, s2, s3, sttv
     real(kind=8) :: r0, r1, r2, r3, r4, small, tol, sqr
     real(kind=8) :: apex, edge, ifplas, right, sufail
-    real(kind=8) :: tr(nmax), p, r1nu, r1ny
+    real(kind=8) :: tr(nmax), p, r1nu, r1ny, tolcv
 !
 ! Declaration of integer type variables
     integer :: icode(nmax), ndt, ndi, ii, jj, mm
@@ -105,9 +120,9 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
     character(len=16) :: nomres(3)
 !
 ! Declaration of constant variables
-    data  r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr   /&
-     &    0.0d0,1.0d0,2.0d0,3.0d0,4.0d0,1.d-06,1.d-10, &
-     &    1.4142135623730951d0                              /
+    data  r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr /&
+          0.0d0,1.0d0,2.0d0,3.0d0,4.0d0,1.d-06,1.d-10,     &
+          1.4142135623730951d0                            /
     data  mxiter / 50 /
 !
 ! Declaration of Common space variables
@@ -146,7 +161,8 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
     endif
 !
 ! Reading material linear elastic properties
-    nomres(1)= 'ALPHA   '
+!    nomres(1)= 'ALPHA   '
+    nomres(1)= 'E       '
     nomres(2)= 'E       '
     nomres(3)= 'NU      '
     call rcvala(imate, ' ', 'ELAS', 0, '   ', &
@@ -162,10 +178,12 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 ! Initialize some algorithmic and internal variables
     dgama =r0
     dgamb =r0
+    dgamc =r0
     ifplas=r0
     sufail=r0
     edge  =r0
     apex  =r0
+    tolcv =crit(3)
 !
 ! Set some material properties
     young =rprops(2)
@@ -236,9 +254,9 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 !
 ! Compute trial yield function and check for plastic consistency
 ! --------------------------------------------------------------
-    smct=pstrs1-pstrs3+(pstrs1+pstrs3)*sinphi
-    phia=smct-r2cphi*cohe
-    res =phia
+    smcta=pstrs1-pstrs3+(pstrs1+pstrs3)*sinphi
+    phia =smcta-r2cphi*cohe
+    res  =phia
     if (cohe .ne. r0) res=res/abs(cohe)
 !
     if (res .gt. tol) then
@@ -266,7 +284,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 !
 ! Compute Newton-Raphson increment and update variable DGAMA
         ddgama=phia/consta
-        dgama=dgama+ddgama
+        dgama =dgama+ddgama
 !
 ! Check validity of 1-vector return (check sextant of converged stress)
         s1=pstrs1-(r2g*(r1+r1d3*sinpsi)+r2bulk*sinpsi)*dgama
@@ -275,8 +293,15 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
         delta=dmax1(abs(s1),abs(s2),abs(s3))*small
 !
 ! Compute new residual
-        phia=smct-consta*dgama-r2cphi*cohe
-        if (s1+delta .ge. s2 .and. s2+delta .ge. s3) then
+        phia=smcta-consta*dgama-r2cphi*cohe
+!
+! Check convergence
+        resnor=abs(phia)
+        factor=abs(smcta)
+        if (factor .ne. r0) resnor=resnor/factor
+!
+        if ( (s1+delta.ge.s2) .and. (s2+delta.ge.s3) &
+             .and.(resnor.le.tolcv) ) then
 !
 ! converged stress is in the same sextant as trial stress -> 1-vector
 ! return is valid.
@@ -284,6 +309,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
             p=(s1+s2+s3)*r1d3
             goto 70
         else
+!
 ! converged stress is not in the same sextant -> 1-vector result is
 ! not valid. Go to two-vector return map to edge
             goto 30
@@ -303,6 +329,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
         ifplas = r2
 !
         dgama=r0
+        dgamb=r0
         smcta=pstrs1-pstrs3+(pstrs1+pstrs3)*sinphi
         if (right .eq. r1) then
             smctb=pstrs1-pstrs2+(pstrs1+pstrs2)*sinphi
@@ -339,7 +366,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
         factor=(abs(smcta)+abs(smctb))
         if (factor .ne. r0) resnor=resnor/factor
 !
-        if (resnor .le. tol) then
+        if (resnor .le. tolcv) then
 ! Check validity of 2-vector return to edge
             aux1=r2g*(r1+r1d3*sinpsi)+r2bulk*sinpsi
             aux2=(r4g*r1d3-r2bulk)*sinpsi
@@ -354,6 +381,7 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
                 s3=pstrs3+aux3*(dgama+dgamb)
             endif
             delta=dmax1(abs(s1),abs(s2),abs(s3))*small
+!
             if (s1+delta .ge. s2 .and. s2+delta .ge. s3) then
 !
 ! converged stress is in the same sextant as trial stress -> 2-vector
@@ -365,18 +393,13 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
             else
 !
 ! converged stress is not in the same sextant -> 2-vector return to edge
-! is not valid. Go to two-vector return map to APEX
-!                 if (epflag) write(6, '(4(A,E12.5))') &
-!                 '!!! RETURN TO EDGE NOOK : S1=',s1,' S2=',s2,' S3=',&
-!                 s3,' DELTA=', delta
-!
+! is not valid. Go to three-vector return map to APEX
                 goto 50
             endif
         endif
 ! failure of stress update procedure
         sufail=r2
         codret=1
-!        if (epflag) write(6,'(A)')'LCMOHR :: Projection Failure on edge'
 !
 ! (-_-) goto 999 if a problem occured
         goto 999
@@ -388,50 +411,95 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 ! ==================================================================
         ifplas = r3
 !
-! Set initial guess for volumetric plastic strain increment DEPV
-        cotphi=cosphi/sinphi
-        res   =cotphi*cohe-pt
-! volumetric plastic strain
-        ddepv =-res/bulk
-! final volumetric stress
-        p     =pt-bulk*ddepv
-! residual
-        res   =cotphi*cohe-p
-!
 ! Check conditions for which return to apex does not make sense
         if (sinphi .eq. r0) then
-!            write(6,'(A)') '!(@_@)   ECHEC DANS LCMOHR :: SINPHI = 0  (@_@)'
             codret=1
             goto 999
         endif
 !
         if (sinpsi .eq. r0) then
-!            write(6,'(A)') '!(@_@)   ECHEC DANS LCMOHR :: SINPSI = 0  (@_@)'
             codret=1
             goto 999
         endif
 !
-! check for convergence
-        resnor=abs(res)
-        if (abs(pt) .gt. r1) resnor=resnor/abs(pt)
+        smcta =pstrs1-pstrs3+(pstrs1+pstrs3)*sinphi
+        smctb =pstrs1-pstrs2+(pstrs1+pstrs2)*sinphi
+        smctc =pstrs2-pstrs3+(pstrs2+pstrs3)*sinphi
+        phi(1)  =(smcta-r2cphi*cohe)/r2
+        phi(2)  =(smctb-r2cphi*cohe)/r2
+        phi(3)  =(smctc-r2cphi*cohe)/r2
+!  C =
+        consta=gmodu*r1d3+bulk
+!  B =
+        constb=-r2g*r1d3+bulk
+!  D =
+        drvaa=(consta+constb)*sinphi*sinpsi
+!  E =
+        drvbb=r2*(gmodu+consta*sinphi*sinpsi)
 !
-        if (resnor .le. small) then
-            apex =r1
-            dgama=ddepv
-            dgamb=r0
+        mat(1,1)=drvbb
+        mat(2,2)=drvbb
+        mat(3,3)=drvbb
+        mat(1,2)=drvaa+gmodu*(r1+sinpsi+sinphi)
+        mat(1,3)=drvaa+gmodu*(r1-sinpsi-sinphi)
+        mat(2,3)=drvaa+gmodu*(-r1-sinpsi+sinphi)
+        mat(2,1)=drvaa+gmodu*(r1+sinpsi+sinphi)
+        mat(3,1)=drvaa+gmodu*(r1-sinpsi-sinphi)
+        mat(3,2)=drvaa+gmodu*(-r1+sinpsi-sinphi)
+!
+! Compute Plastic Multipliers
+        call mgauss('NFSP', mat, phi, 3, 3, 1, r1ddet, codret)
+        
+        if (codret .eq. 1) then
+            goto 999
+        endif
+!
+        dgama=phi(1)
+        dgamb=phi(2)
+        dgamc=phi(3)
+!
+! Compute new residual   
+        phia  =smcta- r2cphi*cohe &
+               - r2*drvbb*dgama &
+               - r2*(drvaa+gmodu*(r1+sinpsi+sinphi))*dgamb &
+               - r2*(drvaa+gmodu*(r1-sinpsi-sinphi))*dgamc
+!
+        phib  =smctb- r2cphi*cohe &
+               - r2*drvbb*dgamb &
+               - r2*(drvaa+gmodu*(r1+sinpsi+sinphi))*dgama &
+               - r2*(drvaa+gmodu*(-r1-sinpsi+sinphi))*dgamc
+!
+        phic  =smctc- r2cphi*cohe &
+               - r2*drvbb*dgamc &
+               - r2*(drvaa+gmodu*(r1-sinpsi-sinphi))*dgama &
+               - r2*(drvaa+gmodu*(-r1+sinpsi-sinphi))*dgamb
+!
+! Check convergence
+        resnor=(abs(phia)+abs(phib)+abs(phic))
+        factor=(abs(smcta)+abs(smctb)+abs(smctc))
+        if (factor .ne. r0) resnor=resnor/factor
+!
+        if (resnor .le. tolcv) then
+!
+! Set initial guess for volumetric plastic strain increment DEPV
+            cotphi=cosphi/sinphi
+            res   =cotphi*cohe-pt
+! volumetric plastic strain
+            ddepv =-res/bulk
+! final volumetric stress
+            p     =pt-bulk*ddepv
 !
 ! update principal stresses
-            s1=p
-            s2=p
-            s3=p
-!
+            s1  =p
+            s2  =p
+            s3  =p
+            apex=r1
 !
             goto 70
         endif
 ! Projection to apex failure
         sufail=r3
         codret=1
-!        if (epflag) write (6,'(A)') 'LCMOHR :: Projection Failure on apex'
 !
 ! (-_-) goto 999 if a problem occured
         goto 999
@@ -459,11 +527,54 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 !
 ! Update internal variables
         if (apex .eq. r1) then
-            vip(1)=vim(1)+p/bulk
-            vip(2)=vim(2)
-        else
+! return to apex
+            vip(1)=vim(1)+r2spsi*(dgama+dgamb+dgamc)
+!
+            aux1=r1d3*sinpsi+r1
+            aux2=r2*r1d3*sinpsi
+            aux3=r1d3*sinpsi-r1
+!
+            smcta =dgama*aux1+dgamb*aux1+dgamc*aux2
+            smctb =dgama*aux2+dgamb*aux3+dgamc*aux1
+            smctc =dgama*aux3+dgamb*aux2+dgamc*aux3
+!
+            vip(2)=vim(2)+ sqrt(r3/r2*(smcta*smcta+ &
+                           smctb*smctb+smctc*smctc))
+!
+        else if ((edge.eq.r1) .and. (right.eq.r1)) then
+! return to the right edge
             vip(1)=vim(1)+r2spsi*(dgama+dgamb)
-            vip(2)=vim(2)+sqrt(sinpsi*sinpsi+r3)*(dgama+dgamb)
+!
+            aux1=r1d3*sinpsi+r1
+            aux2=r2*r1d3*sinpsi
+            aux3=r1d3*sinpsi-r1
+!
+            smcta =dgama*aux1+dgamb*aux1
+            smctb =dgama*aux2+dgamb*aux3
+            smctc =dgama*aux3+dgamb*aux2
+!
+            vip(2)=vim(2)+ &
+            sqrt(r3/r2*(smcta*smcta+smctb*smctb+smctc*smctc))
+!
+        else if (edge.eq.r1) then
+! return to the left edge
+            vip(1)=vim(1)+r2spsi*(dgama+dgamb)
+!
+            aux1=r1d3*sinpsi+r1
+            aux2=r2*r1d3*sinpsi
+            aux3=r1d3*sinpsi-r1
+!
+            smcta =dgama*aux1+dgamb*aux2
+            smctb =dgama*aux2+dgamb*aux1
+            smctc =dgama*aux3+dgamb*aux3
+!
+            vip(2)=vim(2)+ &
+            sqrt(r3/r2*(smcta*smcta+smctb*smctb+smctc*smctc))
+!
+        else
+! return to plane
+            vip(1)=vim(1)+r2spsi*dgama
+            vip(2)=vim(2)+sqrt(sinpsi*sinpsi+r3)*dgama
         endif
 ! ------------------------------------------------------
 !
@@ -488,27 +599,6 @@ subroutine lcmohr(ndim, typmod, imate, option, tmpp,&
 !
 ! ------------------------------------------------------
     vip(3)=ifplas
-!
-! recalcul du seuil en sortie
-! ---------------------------
-    if (ifplas.gt.r0) then
-        res=s1-s3+(s1+s3)*sinphi-r2cphi*cohe
-    else
-        res=pstrs1-pstrs3+(pstrs1+pstrs3)*sinphi-r2cphi*cohe
-    endif
-!
-!
-    if (cohe .ne. r0) res=res/abs(cohe)
-!
-    if (res .gt. tol) then
-!
-!
-        sufail=r4
-        codret=1
-        goto 999
-!
-    endif
-!
 !
 ! ================================================================
 !

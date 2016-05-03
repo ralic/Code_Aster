@@ -256,7 +256,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !
         else
 !
-            call lcmohr(ndim, typmod, imate, option, tini,&
+            call lcmohr(ndim, typmod, imate, crit, option, tini,&
                         deps, congem(adcome), congep(adcome), vintm, vintp,&
                         dsdeme, retcom)
 ! --OK

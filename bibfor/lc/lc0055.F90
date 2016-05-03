@@ -8,7 +8,7 @@ subroutine lc0055(fami, kpg, ksp, ndim, imate,&
 ! aslint: disable=W1504,W0104
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -124,22 +124,16 @@ subroutine lc0055(fami, kpg, ksp, ndim, imate,&
 !
     if (option(1:14) .eq. 'RIGI_MECA_TANG') then
 !
-!       write(6,'(A)')
-!       write(6,'(A)')'> LC0055 :: RIGI_MECA_TANG -> Elastic Matrix'
-!
-        nomres(1)= 'ALPHA   '
-        nomres(2)= 'E       '
-        nomres(3)= 'NU      '
+        nomres(1)= 'E       '
+        nomres(2)= 'NU      '
         call rcvala(imate, ' ', 'ELAS', 0, '   ',&
-                    [tp], 3, nomres, rprops, icode,2)
+                    [tp], 2, nomres, rprops(2), icode,2)
 !
         call mctgel(dsidep, rprops)
 !
     else
 !
-!       write(6,'(A)')
-!       write(6,'(A)')'> LC0055 :: entering LCMOHR'
-        call lcmohr(ndim, typmod, imate,  option, tm,&
+        call lcmohr(ndim, typmod, imate, crit, option, tm,&
                     deps, sigm, sigp, vim, vip,&
                     dsidep, codret)
 !
