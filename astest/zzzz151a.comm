@@ -45,7 +45,7 @@ TEST_RESU(MAILLAGE=(
        CRITERE='ABSOLU',
        VALE_REFE_I=458,     # entre 458 (2.5) et 605 (2.8) mailles
        PRECISION=200,
-       VALE_CALC_I=458,
+       VALE_CALC_I=605,
        TOLE_MACHINE=200,
       ),
     _F(MAILLAGE=magmsh,
@@ -54,7 +54,7 @@ TEST_RESU(MAILLAGE=(
        CRITERE='ABSOLU',
        VALE_REFE_I=96,     # entre 96 (2.5) et 130 (2.8) noeuds
        PRECISION=50,
-       VALE_CALC_I=96,
+       VALE_CALC_I=131,
        TOLE_MACHINE=50,
       ),
 ))
