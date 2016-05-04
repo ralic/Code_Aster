@@ -268,6 +268,69 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TYPE_TEST='MIN',
            TABLE=GLOC2,)
 
+GLOC3=CALC_G(        RESULTAT=RESU,
+                     THETA=_F(
+                              FOND_FISS=FF,
+                              R_INF=0.24,
+                              R_SUP=0.53,
+                              NB_POINT_FOND=33,),
+                     LISSAGE=_F(LISSAGE_G='LAGRANGE',
+                                LISSAGE_THETA='LAGRANGE'),
+                     )
+
+# on s'assure que la valeur de non regression reste identique
+# au premier (VALE_I=1) et dernier (VALE_I=33) point du fond
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=11.6918322698,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=1,),
+           )
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=11.6918322698,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=33,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=11.6837361665,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=13,),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=0.01,
+           VALE_CALC=11.6837381482,
+           VALE_REFE=11.58648,
+           NOM_PARA='G',
+           TABLE=GLOC3,
+           FILTRE=_F(NOM_PARA='NUM_PT',
+                     VALE_I=21,),
+           )
+
+TEST_TABLE(VALE_CALC=11.701071255,
+           NOM_PARA='G',
+           TYPE_TEST='MAX',
+           TABLE=GLOC3,
+           )
+
+TEST_TABLE(VALE_CALC=11.6836726693,
+           NOM_PARA='G',
+           TYPE_TEST='MIN',
+           TABLE=GLOC3,
+           )
+
 #
 #Calcul de K avec POST_K1_K2_K3
 #

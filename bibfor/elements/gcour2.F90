@@ -448,6 +448,14 @@ subroutine gcour2(resu, noma, nomo, nomno, coorn,&
                     endif
                 else
                     zr(iadrt3-1+(k-1)*nbnoeu+k) = 1.d0
+                    if (connex .and. (k.eq.1)) then
+                        iadrtt = iadrt3 + (k-1)*nbnoeu + ndimte - 1
+                        zr(iadrtt) = 1.d0
+                    endif
+                    if (connex .and. (k.eq.ndimte)) then
+                        iadrtt = iadrt3 + (k-1)*nbnoeu + 1 - 1
+                        zr(iadrtt) = 1.d0
+                    endif
                 endif
             else
                 if (nbptfd.eq.0) then
