@@ -71,7 +71,7 @@ CHXN =CREA_CHAMP(OPERATION='EXTR', TYPE_CHAM='NOEU_GEOM_R',
       NOM_CHAM='GEOMETRIE', MAILLAGE=MA_XFEM );
 
 POSX1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMP',
+                             NOEUD= 'NMJ',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
@@ -88,7 +88,7 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=POSX1,);
 
 POSY1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMP',
+                             NOEUD= 'NMJ',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
@@ -105,7 +105,7 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=POSY1,);
 
 POSZ1=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMP',
+                             NOEUD= 'NMJ',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
@@ -326,7 +326,7 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=POSZ5,);
 
 POSX6=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMQ',
+                             NOEUD= 'NMM',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
@@ -343,7 +343,7 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=POSX6,);
 
 POSY6=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMQ',
+                             NOEUD= 'NMM',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',
@@ -360,7 +360,7 @@ TEST_TABLE(CRITERE='RELATIF',
            TABLE=POSY6,);
 
 POSZ6=POST_RELEVE_T(ACTION=_F(INTITULE='POSITION',
-                             NOEUD= 'NMQ',
+                             NOEUD= 'NMM',
                              CHAM_GD= CHXN ,
                              TOUT_CMP='OUI',
                              OPERATION='EXTRACTION',

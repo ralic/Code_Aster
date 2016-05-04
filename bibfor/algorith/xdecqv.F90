@@ -734,10 +734,10 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
 ! ----- ON TRAITE LA FISSURE COURANTE
         call vecini(nfisc+1, 0.d0, somlsn)
         call vecini(nnose, 0.d0, lsno)
+        call vecini(3, 0.d0, bary)
         abslsn=0.d0
         do in = 1, nnose
             inh=cnse(ise,in)
-            call vecini(3, 0.d0, bary)
             if (inh .le. nnop) then
                 do i = 1, nfisc
                     somlsn(i) = somlsn(i)+lsn((inh-1)*nfiss+fisco(2*i- 1))
