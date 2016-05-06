@@ -81,7 +81,7 @@ implicit none
     character(len=8) :: typmcl(2), repons
     character(len=16) :: motcle(2)
     integer :: nt
-    aster_logical :: l_kit_thm, l_one_elem, l_elem_bound
+    aster_logical :: l_kit_thm, l_one_elem, l_elem_bound, l_mfront
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,6 +121,7 @@ implicit none
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+        call comp_meca_l(rela_comp, 'MFRONT' , l_mfront)
 !
 ! ----- Warning if ELASTIC comportment and initial state
 !
@@ -148,6 +149,14 @@ implicit none
         endif
         info_comp_valk(16*(iocc-1) + 4) = type_cpla
 !
+! ----- No DeBorst with MFront
+!
+        if (l_mfront) then
+            if (l_auto_deborst) then
+                call utmess('F', 'COMPOR1_15')
+            endif
+        endif    
+!
 ! ----- Check comportment/deformation with Comportement.py
 !
         call lctest(rela_comp_py, 'DEFORMATION', defo_comp, iret)
@@ -165,10 +174,9 @@ implicit none
 !
 ! ----- Check deformation with Comportement.py
 !
-        call nmdovd(model    , l_affe_all  , l_auto_deborst ,&
-                    list_elem_affe,  nb_elem_affe, full_elem_s,&
-                    defo_comp, defo_comp_py)
-
+        call nmdovd(model         , l_affe_all  , l_auto_deborst,&
+                    list_elem_affe, nb_elem_affe, full_elem_s   ,&
+                    defo_comp     , defo_comp_py)
 !
 ! ----- Check if COQUE_3D+GROT_GDEP is activated
 !

@@ -1,7 +1,8 @@
-subroutine nmdovd(model, l_affe_all, l_auto_deborst , list_elem_affe, nb_elem_affe, full_elem_s,&
-                  defo_comp, defo_comp_py)
+subroutine nmdovd(model         , l_affe_all  , l_auto_deborst,&
+                  list_elem_affe, nb_elem_affe, full_elem_s   ,&
+                  defo_comp     , defo_comp_py)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -37,7 +38,8 @@ subroutine nmdovd(model, l_affe_all, l_auto_deborst , list_elem_affe, nb_elem_af
 !
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_affe
-    aster_logical, intent(in) :: l_affe_all, l_auto_deborst
+    aster_logical, intent(in) :: l_affe_all
+    aster_logical, intent(in) :: l_auto_deborst
     integer, intent(in) :: nb_elem_affe
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(in) :: defo_comp
@@ -54,6 +56,7 @@ subroutine nmdovd(model, l_affe_all, l_auto_deborst , list_elem_affe, nb_elem_af
 ! In  model          : name of model
 ! In  full_elem_s    :  <CHELEM_S> of FULL_MECA option
 ! In  l_affe_all     : .true. if affect on all elements of model
+! In  l_auto_deborst   : .true. if at least one element swap to Deborst algorithm
 ! In  nb_elem_affe   : number of elements where comportment affected
 ! In  list_elem_affe : list of elements where comportment affected
 ! In  defo_comp      : comportement DEFORMATION
@@ -100,19 +103,14 @@ subroutine nmdovd(model, l_affe_all, l_auto_deborst , list_elem_affe, nb_elem_af
     endif
 
 !
-!     TEST SUR DEBORST + GDEF_LOG
+! - No Deborst allowed with large strains models
 !
     if (l_auto_deborst .and. defo_comp .eq. 'GDEF_LOG') then
-        call utmess('F', 'ALGORITH7_9')
+        call utmess('F', 'COMPOR1_13')
     endif
-
-!
-!     TEST SUR DEBORST + SIMO_MIEHE
-!
-    if (l_auto_deborst .and. defo_comp .eq. 'SIMO_IEHE') then
-        call utmess('F', 'ALGORITH7_9')
+    if (l_auto_deborst .and. defo_comp .eq. 'SIMO_MIEHE') then
+        call utmess('F', 'COMPOR1_13')
     endif
-
 !
 ! - Loop on elements
 !

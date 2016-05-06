@@ -90,8 +90,17 @@ localement via ITER_INTE_PAS.
            on ne peut pas trouver le zéro de la fonction.
 """),
 
+   13 : _(u"""
+Les contraintes planes ou les modèles unidimensionnels avec la méthode DEBORST et les grandes déformations GDEF_LOG ou SIMO_MIEHE sont incompatibles. 
+Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst sont utilisables en grandes déformations. 
+"""),
+
     14: _(u"""
  HUJEUX : erreur dans le calcul de la matrice tangente
+"""),
+
+   15 : _(u"""
+Les contraintes planes ou les modèles unidimensionnels avec la méthode DEBORST ne sont pas utilisables avec MFront.
 """),
 
     16 : _(u"""

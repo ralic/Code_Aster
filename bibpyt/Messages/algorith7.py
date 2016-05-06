@@ -39,10 +39,6 @@ cata_msg = {
  loi de comportement hyper-élastique non prévue
 """),
 
-    9 : _(u"""
- C_PLAN méthode DEBORST et grandes déformations GDEF_LOG sont incompatibles. 
-Seules VMIS_ISOT_XXX ne nécessitant pas la méthode Deborst est utilisable en C_PLAN avec GDEF_LOG. 
-"""),
 
     10 : _(u"""
  COMP1D et SIMO_MIEHE incompatibles
