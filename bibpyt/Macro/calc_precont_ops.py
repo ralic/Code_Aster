@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,8 +90,6 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
         for i in dEtatInit.keys():
             if dEtatInit[i] == None:
                 del dEtatInit[i]
-
-        __EVINIT = dEtatInit['EVOL_NOLI']
     else:
         dEtatInit = None
 
@@ -100,7 +98,7 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
         if self.reuse == None:
             __TMIN = __L1[0]
         else:
-            __dico = __EVINIT.LIST_VARI_ACCES()
+            __dico = self.reuse.LIST_VARI_ACCES()
             __TMIN = __dico['INST'][-1]
     else:
         __TMIN = dIncrement['INST_INIT']
@@ -121,6 +119,8 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
     for m in __L1:
         if m >= __TMIN and m <= __TMAX:
             __L2.append(m)
+    if len(__L2 ) < 2:
+        UTMESS('F','CABLE0_4')
 
     __TINT = (9. * __L2[-1] + __L2[-2]) / 10.
     __TINT2 = (9.5 * __L2[-1] + .5 * __L2[-2]) / 10.

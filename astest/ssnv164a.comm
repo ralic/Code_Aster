@@ -221,10 +221,34 @@ RES1 =  CALC_PRECONT( reuse=RES1,
                             INCREMENT=_F(LIST_INST = LINST,
                                            INST_FIN  = 300., ),)
 
+
+DEP_INI = CREA_CHAMP( OPERATION = 'EXTR',
+                      TYPE_CHAM = 'NOEU_DEPL_R',
+                      NOM_CHAM  = 'DEPL',
+                      RESULTAT  = RES1,
+                      INST      = 300.,
+                    )
+SIG_INI = CREA_CHAMP( OPERATION = 'EXTR',
+                      TYPE_CHAM = 'ELGA_SIEF_R',
+                      NOM_CHAM  = 'SIEF_ELGA',
+                      RESULTAT  = RES1,
+                      INST      = 300.,
+                    )
+
+VAR_INI = CREA_CHAMP( OPERATION = 'EXTR',
+                      TYPE_CHAM = 'ELGA_VARI_R',
+                      NOM_CHAM  = 'VARI_ELGA',
+                      RESULTAT  = RES1,
+                      INST      = 300.
+                    )
+
 # chargement 3 : cables 3 et 4
 #--------------------------------------------------------
 RES1 =  CALC_PRECONT( reuse=RES1,
-                            ETAT_INIT=_F(EVOL_NOLI=RES1),
+                            ETAT_INIT=_F(DEPL = DEP_INI,
+                                         SIGM = SIG_INI,
+                                         VARI = VAR_INI,
+                                        ),
                             MODELE=MO,
                             CHAM_MATER=CMAT,
                             CARA_ELEM=CE,
