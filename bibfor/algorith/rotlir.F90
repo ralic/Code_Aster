@@ -60,17 +60,20 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
+#include "asterfort/idensd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mgutdm.h"
 #include "asterfort/rotati.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
 !
@@ -81,18 +84,19 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !
     character(len=8) :: nomres
     character(len=1) :: k1bid
-    character(len=24) :: int1, indin1, lino1, maint1, restmo, tramo1, ordol
-    character(len=19) :: kint
+    character(len=24) :: int1, indin1, lino1, maint1, restmo, tramo1, ordol, valk(2)
+    character(len=19) :: kint, prchn1, prchn2
     character(len=8) :: sst1, intf1, lint1, bamo1, kbid, nmacr1, temp
-    character(len=8) :: sst2
+    character(len=8) :: sst2, mailla, nomnoe
     character(len=4) :: nliai
     integer :: ibid, nbno1, llint1, nbeq1, lmod1, numlia, lonmod, i1, j1, k1, l1
     integer :: m1, n1, lindi1, lnoeu1, nbnoe, nbec, ipos1, ipos2, lmain1, nbcmpm
     integer :: leuler, lresmo, codret, lmacr1, nbddl1, imast, ddla1, lact1, iret
-    integer :: lmarot, length
-    parameter      (nbcmpm=10)
+    integer :: lmarot, length, nbcmp, jnocmp, noer 
+    parameter      (nbcmpm=300)
     integer :: deco(nbcmpm)
     real(kind=8) :: euler(3), rota(3, 3), norme, nortot
+    logical :: nook
 !
 !-----------C
 !--       --C
@@ -124,6 +128,10 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     int1=lint1//'.IDC_LINO'
     call jenonu(jexnom(int1(1:13)//'NOMS', intf1), ibid)
     call jelira(jexnum(int1, ibid), 'LONMAX', nbno1)
+!
+!-- nombre max de composantes et noms des composantes
+    call jelira(jexnom('&CATA.GD.NOMCMP', 'DEPL_R'), 'LONMAX', nbcmp)
+    call jeveuo(jexnom('&CATA.GD.NOMCMP', 'DEPL_R'), 'L', jnocmp)
 !
 !-- LISTE DES NUMEROS DES NOEUDS DE L'INTERFACE
     call jenonu(jexnom(lint1 //'.IDC_NOMS', intf1), ibid)
@@ -169,9 +177,14 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- DANS LA NUMEROTATION DES MAILLAGES INITIAUX
     call mgutdm(nomres, sst1, ibid, 'NOM_MACR_ELEM', ibid,&
                 nmacr1)
+!-- recuperation du prof_chno
+    call dismoi('PROF_CHNO', nmacr1, 'NUME_DDL', repk=prchn1)
+!
+!-- recuperation du maillage
+    call dismoi('NOM_MAILLA', nmacr1, 'NUME_DDL', repk=mailla)
 !
 !-- RECUPERATION DE LA NUMEROTATION DES EQUATIONS
-    call jeveuo(jexnum(nmacr1//'      .NUME.PRNO', 1), 'L', lmacr1)
+    call jeveuo(jexnum(prchn1//'.PRNO', 1), 'L', lmacr1)
 !
 !-- REMPLISSAGE DES VECTEURS D'INDICES POUR REPERER LES DDL  D'INTEFACE
     nbddl1=6*nbno1
@@ -183,11 +196,11 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
     endif
 !
 !-- ON NE TRAITE QUE LES DDL DX DY DZ DRX DRY ET DRZ
-!-- RENVOYER UNE ERREUR OU UN WARNING SINON
+!-- on renvoit des alarmes si d'autres ddls sont présents
     ddla1=0
     do i1 = 1, nbno1
         ipos1=zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec))
-        call isdeco(zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec)+2), deco, nbcmpm)
+        call isdeco(zi(lmacr1+(zi(lnoeu1+i1-1)-1)*(2+nbec)+2), deco, nbcmp)
         ipos2=0
         do k1 = 1, 6
             if (iret .eq. 0) then
@@ -196,6 +209,15 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
             ipos2=ipos2+deco(k1)
             ddla1=ddla1+deco(k1)
         end do
+        do k1 = 7, nbcmp
+            if (deco(k1).eq.1) then
+                noer=zi(lnoeu1+i1-1)
+                call jenuno(jexnum(mailla//'.NOMNOE', noer), nomnoe)
+                valk(1) = zk8(jnocmp-1+k1)
+                valk(2) = nomnoe
+                call utmess('A', 'ALGORITH12_35', nk=2, valk=valk)
+            endif
+        enddo
     end do
 !
 !-- ALLOCATION DE LA PLACE POUR LES MATRICES TEMPORAIRES
@@ -304,6 +326,22 @@ subroutine rotlir(nomres, sst1, intf1, lino1, codret,&
 !-- EXTRACTION ET ROTATION DE LA TRACE DES MODES SUR L'INTERFACE
 !
         call jeveuo(jexnum(bamo1//'           .TACH', 1), 'L', lmod1)
+        
+! -- verification que les prof_chno des modes correspondent bien a celui du nume_ddl
+        nook = .false.
+        do i1 = 1, nbeq1
+            kint = zk24(lmod1+i1-1)(1:19)
+            call dismoi('PROF_CHNO', kint, 'CHAM_NO', repk=prchn2)
+            if (.not.idensd('PROF_CHNO', prchn1, prchn2)) then
+                call utmess('E', 'ALGORITH12_36', nk=1, valk=[bamo1],&
+                            ni=1, vali=[i1])
+                nook=.true.
+            endif
+        enddo
+        if (nook) then
+            call utmess('F', 'ALGORITH12_37')
+        endif
+!
         do i1 = 1, nbeq1
             kint = zk24(lmod1+i1-1)(1:19)
             call jeveuo(kint//'.VALE', 'L', ibid)
