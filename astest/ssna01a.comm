@@ -404,5 +404,28 @@ TEST_TABLE(VALE_CALC=3.769910E6,
                      VALE_K='M',),
            )
 
+# Test NOM_VARI for CREA_TABLE
+TB=CREA_TABLE(RESU=_F(RESULTAT=U,TOUT='OUI',NOM_CHAM='VARI_ELGA',NOM_VARI='EPSPEQ',INST=60.))
+
+vale_test = 1.29767E-04
+
+TEST_TABLE(VALE_CALC=vale_test,
+           NOM_PARA='EPSPEQ',
+           TABLE=TB,
+           FILTRE=(_F(NOM_PARA='INST',VALE=60.,),
+                   _F(NOM_PARA='MAILLE',VALE_K='M1',),
+                   _F(NOM_PARA='POINT' ,VALE_I=1.,),
+
+                   )
+           )
+
+TEST_RESU(RESU=(_F(RESULTAT=U,
+                   INST=60.0,
+                   MAILLE='M1',
+                   POINT=1,
+                   NOM_CHAM='VARI_ELGA',
+                   NOM_CMP = 'V1',
+                   VALE_CALC=vale_test,),),)
+
 FIN( )
 #
