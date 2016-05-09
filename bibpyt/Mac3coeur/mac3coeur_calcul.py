@@ -951,10 +951,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         # computed on the initial (not deformed) meshhg st
         # please keep the call to deform_mesh after the computation of keywords
         keywords=[]
-        mater=[]
-        ratio = 1.
-        mater.append(self.cham_mater_contact_progressif(ratio))
-        keywords.append(self.snl(CHAM_MATER=mater[-1],
+        keywords.append(self.snl(CHAM_MATER=self.cham_mater_free,
                             INCREMENT=_F(LIST_INST=self.times,
                                          INST_FIN=0.),
                             EXCIT=self.rigid_load + self.archimede_load +
@@ -966,7 +963,10 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                            ))
         depl_deformed = self.deform_mesh(_snl_lame)
         __RESULT = STAT_NON_LINE(**keywords[-1])
-        kwds = {
+        mater=[]
+        ratio = 1.
+        mater.append(self.cham_mater_contact_progressif(ratio))
+        kwds = {    'CHAM_MATER' : mater[-1],
                     'ETAT_INIT' : _F(EVOL_NOLI=__RESULT),
                     'INCREMENT' : _F(LIST_INST=self.times_woSubd,
                              INST_FIN=coeur.temps_simu['T0b']),
