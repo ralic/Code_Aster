@@ -249,6 +249,7 @@ for i in range(nbV):
                             TYPE_RESU='DYNAMIQUE',
                             CALC_FREQ=_F(NMAX_FREQ=15,
                                          FREQ=(500.,),
+                                         SEUIL_FREQ=5.E-3,  #par defaut : 1.e-2
                                          ),
                             SOLVEUR=_F(RENUM='METIS',
                                        METHODE='MULT_FRONT',
