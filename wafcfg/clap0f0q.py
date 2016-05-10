@@ -23,8 +23,8 @@ def configure(self):
 
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Python-2710/lib',
-        YAMMROOT + '/prerequisites/Hdf5-1810/lib',
-        YAMMROOT + '/tools/Medfichier-308/lib',
+        YAMMROOT + '/prerequisites/Hdf5-1814/lib',
+        YAMMROOT + '/tools/Medfichier-320/lib',
         YAMMROOT + '/prerequisites/Metis_aster-510_aster/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
         YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
@@ -35,8 +35,8 @@ def configure(self):
 
     self.env.append_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Python-2710/include/python2.7',
-        YAMMROOT + '/prerequisites/Hdf5-1810/include',
-        YAMMROOT + '/tools/Medfichier-308/include',
+        YAMMROOT + '/prerequisites/Hdf5-1814/include',
+        YAMMROOT + '/tools/Medfichier-320/include',
         YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
         YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',

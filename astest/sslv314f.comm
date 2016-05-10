@@ -100,7 +100,7 @@ for i_raff in range(nb_raff+1) :
 
       MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
                      GROUP_MA           = 'VOL',
-                     VERSION_HOMARD     = 'V11_4',
+                     VERSION_HOMARD     = 'V11_7',
                      NIVE_MAX           = nb_raff,
                      CHAM_GD            = CHERR,
                      CRIT_RAFF_ABS      = -2*h,
