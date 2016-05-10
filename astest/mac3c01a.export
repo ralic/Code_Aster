@@ -3,7 +3,7 @@ P memory_limit 512
 P ncpus 1
 P mpi_nbcpu 1
 P mpi_nbnoeud 1
-P testlist validation sequential fuel_assembly
+P testlist verification sequential
 
 F comm mac3c01a.comm D 1
 F comm mac3c01a.com1 D 1
