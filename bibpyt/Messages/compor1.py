@@ -457,6 +457,12 @@ La donnée de l'énergie de fissuration initiale G_INIT est trop élevée. Elle 
     94 : _(u"""
 La largeur de bande est trop grande par rapport à la longueur de la zone cohésive si bien que
 m=%(r1)f et p=%(r2)f ne respectent pas la contrainte m>p+2.
-"""),
+"""),     
+
+    95 : _(u"""
+ITER_INTE_PAS ne peut admettre qu'une valeur positive pour un comportement MFRONT. 
+ """),
+
+
 
 }

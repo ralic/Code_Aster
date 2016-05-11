@@ -29,7 +29,7 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,6 +135,18 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
         iter_inte_pas = 0
         call getvis(keywordfact, 'ITER_INTE_PAS', iocc = iocc, scal = iter_inte_pas)
+
+!
+! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
+!
+        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
+        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
+
+        if (iter_inte_pas .lt. 0.d0) then
+            if (l_mfront_offi .or. l_mfront) then
+                call utmess('F', 'COMPOR1_95')
+            end if
+        end if
 !
 ! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
 !
