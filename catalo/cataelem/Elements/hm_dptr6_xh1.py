@@ -226,7 +226,7 @@ class HM_DPTR6_XH1(Element):
     )
     elrefe = (
         ElrefeLoc(MT.TR6, gauss=('RIGI=FPG6', 'MASS=FPG6',
-                                 'XINT=FPG12', 'XFEM=XFEM72', 'FPG1=FPG1',), mater=('XFEM',),),
+                                 'XINT=FPG12', 'XFEM=XFEM36', 'FPG1=FPG1',), mater=('XFEM',),),
         ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6', 'MASS=FPG6',),),
         ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
         ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
@@ -720,7 +720,7 @@ class HM_DPQ8_XH1(HM_DPTR6_XH1):
     elrefe = (
         ElrefeLoc(
             MT.QU8, gauss=(
-                'RIGI=FPG9', 'MASS=FPG9', 'XFEM=XFEM144', 'FPG1=FPG1',), mater=('XFEM',),),
+                'RIGI=FPG9', 'MASS=FPG9', 'XFEM=XFEM72', 'FPG1=FPG1',), mater=('XFEM',),),
         ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6', 'XINT=FPG12',),),
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),

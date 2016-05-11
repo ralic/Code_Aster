@@ -389,6 +389,17 @@ Utilisez ELIM_ARETE='DUAL'.
      Raffinez le maillage afin de n'avoir qu'une seule jonction de fissure par élément.
 """),
 
+    56: _(u"""
+  -> L'élément X-FEM de type %(k1)s porté par la maille %(k2)s ne
+     possède pas suffisamment de points de Gauss pour stocker les
+     informations aux points de Gauss de ses sous-éléments. Le nombre
+     de points de Gauss de la famille XFEM pour cet élément est %(i1)d,
+     alors que le nombre de points de Gauss nécessaire est %(i2)d.
+  -> Conseil:
+     Vous pouvez essayer de raffiner le maillage afin d'obtenir une
+     découpe mettant en jeu moins de sous-éléments.
+"""),
+
     57: _(u"""
   -> La fissure (ou l'interface) définie dans DEFI_FISS_XFEM ne coupe aucune des mailles
      du maillage. La fissure (ou l'interface) se trouve donc en dehors de la structure ou

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,6 +129,7 @@ TR3.addLocation('FPG12', 12)
 TR3.addLocation('FPG13', 13)
 TR3.addLocation('FPG16', 16)
 TR3.addLocation('XFEM36', 36)
+TR3.addLocation('XFEM72', 72)
 TR3.addLocation('SIMP', 6)
 TRIA3.addElrefe(TR3)
 
@@ -152,6 +153,7 @@ TR6.addLocation('FPG7', 7)
 TR6.addLocation('FPG12', 12)
 TR6.addLocation('FPG13', 13)
 TR6.addLocation('FPG16', 16)
+TR6.addLocation('XFEM36', 36)
 TR6.addLocation('XFEM72', 72)
 TR6.addLocation('SIMP', 6)
 TRIA6.addElrefe(TR6)
@@ -194,6 +196,7 @@ QU4.addLocation('FPG4NOS', 8)
 QU4.addLocation('FPG9', 9)
 QU4.addLocation('FPG9COQ', 9)
 QU4.addLocation('XFEM72', 72)
+QU4.addLocation('XFEM144', 144)
 QU4.addLocation('SIMP', 9)
 QUAD4.addElrefe(QU4)
 
@@ -213,6 +216,7 @@ QU8.addLocation('FPG4', 4)
 QU8.addLocation('FPG4NOS', 8)
 QU8.addLocation('FPG9', 9)
 QU8.addLocation('FPG9COQ', 9)
+QU8.addLocation('XFEM72', 72)
 QU8.addLocation('XFEM144', 144)
 QUAD8.addElrefe(QU8)
 
@@ -256,6 +260,8 @@ TE4.addLocation('FPG5', 5)
 TE4.addLocation('FPG15', 15)
 TE4.addLocation('XFEM90', 90)
 TE4.addLocation('XFEM180', 180)
+TE4.addLocation('XFEM270', 270)
+TE4.addLocation('XFEM360', 360)
 TETRA4.addElrefe(TE4)
 
 
@@ -271,6 +277,9 @@ T10.addLocation('FPG4NOS', 8)
 T10.addLocation('FPG5', 5)
 T10.addLocation('FPG15', 15)
 T10.addLocation('XFEM90', 90)
+T10.addLocation('XFEM270', 270)
+T10.addLocation('XFEM540', 540)
+T10.addLocation('XFEM810', 810)
 TETRA10.addElrefe(T10)
 
 
@@ -288,6 +297,8 @@ PE6.addLocation('FPG21', 21)
 PE6.addLocation('XFEM72', 72)
 PE6.addLocation('XFEM240', 240)
 PE6.addLocation('XFEM480', 480)
+PE6.addLocation('XFEM720', 720)
+PE6.addLocation('XFEM960', 960)
 PE6.addLocation('SHB6', 5)
 PENTA6.addElrefe(PE6)
 
@@ -304,6 +315,9 @@ P15.addLocation('FPG6NOS', 12)
 P15.addLocation('FPG8', 8)
 P15.addLocation('FPG21', 21)
 P15.addLocation('XFEM240', 240)
+P15.addLocation('XFEM720', 720)
+P15.addLocation('XFEM1440', 1440)
+P15.addLocation('XFEM2160', 2160)
 P15.addLocation('SHB15', 15)
 PENTA15.addElrefe(P15)
 
@@ -334,6 +348,8 @@ PY5.addLocation('FPG6', 6)
 PY5.addLocation('FPG27', 27)
 PY5.addLocation('XFEM180', 180)
 PY5.addLocation('XFEM360', 360)
+PY5.addLocation('XFEM540', 540)
+PY5.addLocation('XFEM720', 720)
 PYRAM5.addElrefe(PY5)
 
 
@@ -348,6 +364,9 @@ P13.addLocation('FPG5', 5)
 P13.addLocation('FPG6', 6)
 P13.addLocation('FPG27', 27)
 P13.addLocation('XFEM180', 180)
+P13.addLocation('XFEM540', 540)
+P13.addLocation('XFEM1080', 1080)
+P13.addLocation('XFEM1620', 1620)
 PYRAM13.addElrefe(P13)
 
 
@@ -365,6 +384,8 @@ HE8.addLocation('FPG64', 64)
 HE8.addLocation('SHB5', 5)
 HE8.addLocation('XFEM480', 480)
 HE8.addLocation('XFEM960', 960)
+HE8.addLocation('XFEM1440', 1440)
+HE8.addLocation('XFEM1920', 1920)
 HEXA8.addElrefe(HE8)
 
 POHOH8 = Elrefe()
@@ -384,6 +405,9 @@ H20.addLocation('FPG8NOS', 16)
 H20.addLocation('FPG27', 27)
 H20.addLocation('FPG64', 64)
 H20.addLocation('XFEM480', 480)
+H20.addLocation('XFEM1440', 1440)
+H20.addLocation('XFEM2880', 2880)
+H20.addLocation('XFEM4320', 4320)
 H20.addLocation('SHB20', 20)
 HEXA20.addElrefe(H20)
 

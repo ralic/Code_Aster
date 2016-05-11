@@ -686,7 +686,7 @@ class MEAXTR6_XHC(MEAXTR3_XHC):
     elrefe = (
         ElrefeLoc(
             MT.TR6, gauss=('RIGI=FPG3', 'XINT=FPG12', 'NOEU_S=NOEU_S',
-                           'NOEU=NOEU', 'XFEM=XFEM72', 'FPG1=FPG1',), mater=('RIGI', 'XFEM',),),
+                           'NOEU=NOEU', 'XFEM=XFEM36', 'FPG1=FPG1',), mater=('RIGI', 'XFEM',),),
         ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4', 'MASS=FPG4', 'FPG2=FPG2',
                                    'FPG3=FPG3', 'FPG4=FPG4', 'NOEU=NOEU', 'GAUSS=FPG3',),),
     )
@@ -704,7 +704,7 @@ class MEAXQU8_XHC(MEAXTR3_XHC):
     elrefe = (
         ElrefeLoc(
             MT.QU8, gauss=('RIGI=FPG9', 'NOEU_S=NOEU_S', 'NOEU=NOEU',
-                           'XFEM=XFEM144', 'FPG1=FPG1',), mater=('RIGI', 'XFEM',),),
+                           'XFEM=XFEM72', 'FPG1=FPG1',), mater=('RIGI', 'XFEM',),),
         ElrefeLoc(
             MT.TR6, gauss = (
                 'RIGI=FPG3', 'XINT=FPG12', 'NOEU_S=NOEU_S', 'NOEU=NOEU',),),

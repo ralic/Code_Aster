@@ -730,7 +730,7 @@ class MEDPTR6_XHC(TemplateElement):
             SetOfNodes('EN1', (1,2,3,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','XINT=FPG12','NOEU_S=NOEU_S','FPG1=FPG1','NOEU=NOEU','XFEM=XFEM72',), mater=('RIGI','XFEM',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','XINT=FPG12','NOEU_S=NOEU_S','FPG1=FPG1','NOEU=NOEU','XFEM=XFEM36',), mater=('RIGI','XFEM',),),
             ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','MASS=NOEU','FPG2=FPG2','FPG3=FPG3','FPG4=FPG4','NOEU=NOEU','GAUSS=FPG3','SIMP=SIMP','COTES=COTES','SIMP1=SIMP1','COTES1=COTES1','COTES2=COTES2',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3','FPG2=FPG2','FPG3=FPG3','FPG4=FPG4','NOEU=NOEU','GAUSS=FPG3','SIMP=SIMP','COTES=COTES','SIMP1=SIMP1','COTES1=COTES1','COTES2=COTES2',),),
         )
@@ -755,7 +755,7 @@ class MEDPQU8_XHC(TemplateElement):
             SetOfNodes('EN1', (1,2,3,4,)),
         )
     elrefe =(
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','NOEU_S=NOEU_S','FPG1=FPG1','NOEU=NOEU','XFEM=XFEM144',), mater=('RIGI','XFEM',),),
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','NOEU_S=NOEU_S','FPG1=FPG1','NOEU=NOEU','XFEM=XFEM72',), mater=('RIGI','XFEM',),),
             ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','XINT=FPG12',),),
             ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','MASS=NOEU','FPG2=FPG2','FPG3=FPG3','FPG4=FPG4','NOEU=NOEU','GAUSS=FPG3','SIMP=SIMP','COTES=COTES','SIMP1=SIMP1','COTES1=COTES1','COTES2=COTES2',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3','FPG2=FPG2','FPG3=FPG3','FPG4=FPG4','NOEU=NOEU','GAUSS=FPG3','SIMP=SIMP','COTES=COTES','SIMP1=SIMP1','COTES1=COTES1','COTES2=COTES2',),),

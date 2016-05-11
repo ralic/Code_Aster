@@ -1,7 +1,7 @@
 subroutine xtopoi(noma, modele)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,6 +31,7 @@ subroutine xtopoi(noma, modele)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/xchkgp.h"
     character(len=8) :: noma, modele
 !
 ! ----------------------------------------------------------------------
@@ -53,6 +54,7 @@ subroutine xtopoi(noma, modele)
     integer :: nbout, nbin
     parameter    (nbout=6, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
+    character(len=16) :: option
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=19) :: ligrel, chgeom, painto
@@ -60,7 +62,6 @@ subroutine xtopoi(noma, modele)
     aster_logical :: debug
     integer :: ifm, niv, ifmdbg, nivdbg, ima, nbma
     integer :: jcesd, jcesl, iad
-    character(len=16) :: option
     integer, pointer :: nbsp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: cesv(:) => null()
@@ -154,6 +155,11 @@ subroutine xtopoi(noma, modele)
         call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
                     nbout, lpaout, lchout)
     endif
+!
+!   vérification de la cohérence entre le nombre de points de Gauss générés
+!   par la découpe en sous-éléments et le nombre maximal de points de Gauss
+!   défini par la famille XFEM de l'élément parent
+    call xchkgp(modele) 
 !
     call jedema()
 end subroutine

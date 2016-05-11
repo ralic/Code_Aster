@@ -28,7 +28,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
     aster_logical :: cut
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
     integer :: d, e, f, g, h, l, ip1
     integer :: nnop
     integer :: zxain
-    character(len=8) :: typma, noma, elrese(3)
+    character(len=8) :: typma, elrese(3)
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 ! --------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop)
     zxain = xxmmvd('ZXAIN')
     call tecael(iadzi, iazk24, noms=0)
-    noma=zk24(iazk24)
+
     nse=0
     do 10 in = 1, 6
         do 20 j = 1, 10

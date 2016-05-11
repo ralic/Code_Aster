@@ -566,7 +566,7 @@ class MECPTR3_XH2(MECPTR3_XH1):
             SetOfNodes('EN2', (1,2,3,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM36','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
 
@@ -579,7 +579,7 @@ class MECPTR3_XH3(MECPTR3_XH1):
             SetOfNodes('EN3', (1,2,3,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM36','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
 
@@ -592,7 +592,7 @@ class MECPTR3_XH4(MECPTR3_XH1):
             SetOfNodes('EN4', (1,2,3,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM36','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
 
@@ -619,7 +619,7 @@ class MECPQU4_XH2(MECPTR3_XH1):
             SetOfNodes('EN2', (1,2,3,4,)),
         )
     elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM144','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
@@ -633,7 +633,7 @@ class MECPQU4_XH3(MECPTR3_XH1):
             SetOfNodes('EN3', (1,2,3,4,)),
         )
     elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM144','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
@@ -647,7 +647,7 @@ class MECPQU4_XH4(MECPTR3_XH1):
             SetOfNodes('EN4', (1,2,3,4,)),
         )
     elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM72','FPG1=FPG1',), mater=('XFEM',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','NOEU_S=NOEU_S','NOEU=NOEU','XFEM=XFEM144','FPG1=FPG1',), mater=('XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3','XINT=FPG4',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG3',),),
         )
