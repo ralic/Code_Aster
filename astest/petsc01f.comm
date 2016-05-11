@@ -16,7 +16,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(
-              NIV_PUB_WEB='INTERNET',),);
+              NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
@@ -46,6 +46,14 @@ CHA2=AFFE_CHAR_CINE(MODELE=MO,
                     MECA_IMPO=_F(GROUP_NO='GRNO7',
                                  DX=0.0,
                                  DY=0.01,),);
+#Calcul de référence 
+RESREF=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,),),
+                    SOLVEUR=_F(METHODE='MUMPS',),);
+TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', NOEUD =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
+                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = ('DX','DY'), ));
 
 MEL=CALC_MATR_ELEM(OPTION='RIGI_MECA',
                    MODELE=MO,
@@ -75,34 +83,27 @@ VECAS=RESOUDRE(reuse =VECAS,
                MATR=MATAS,
                CHAM_NO=VECAS,
                CHAM_CINE=VCINE,
-               ALGORITHME='CR',);
-# En présence d'un AFFE_CHAR_MECA,
-# le solveur CR donne des résultats corrects mais
-# variables d'une exécution à l'autre. On supprime
-# le test pour éviter les NOOK de non-régression
+               ALGORITHME='GCR',);
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECAS,
                       NOEUD='NO2958',
                       NOM_CMP='DY',
-                      VALE_CALC=0.00999999977684,
-                      VALE_REFE=0.01,
-                      TOLE_MACHINE=0.00015,
-                      PRECISION=0.00015,
+                      VALE_CALC=0.01,
+                      VALE_REFE=TREF['DY',1],
+                      PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=VECAS,
                       NOEUD='NO2974',
                       NOM_CMP='DX',
-                      VALE_CALC=0.00430058036361,
-                      VALE_REFE=0.0043006,
-                      TOLE_MACHINE=0.00015,
-                      PRECISION=0.00015,
+                      VALE_CALC=0.00430057955025,
+                      VALE_REFE=TREF['DX',2],
+                      PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
                    _F(CHAM_GD=VECAS,
                       NOEUD='NO2974',
                       NOM_CMP='DY',
-                      VALE_CALC=0.00928897411001,
-                      VALE_REFE=0.009289,
-                      TOLE_MACHINE=0.00015,
-                      PRECISION=0.00015,
+                      VALE_CALC=0.00928897503726,
+                      VALE_REFE=TREF['DY',2],
+                      PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',),
                        ),);
 
@@ -119,17 +120,12 @@ VECA2=RESOUDRE(MATR=MATAS2, MATR_PREC=MATAS2,
                CHAM_CINE=VCINE,
                ALGORITHME='GMRES',);
 
-# En présence d'un AFFE_CHAR_MECA,
-# le solveur CR donne des résultats corrects mais
-# variables d'une exécution à l'autre. On supprime
-# le test pour éviter les NOOK de non-régression
 TEST_RESU(CHAM_NO=(_F(CHAM_GD=VECA2,
                       NOEUD='NO2958',
                       NOM_CMP='DY',
-                      VALE_CALC=0.00999999989436,
-                      VALE_REFE=0.01,
-                      TOLE_MACHINE=0.00015,
-                      PRECISION=0.00015,
+                      VALE_CALC=0.0099999998941,
+                      VALE_REFE=TREF['DY',1],
+                      PRECISION=1.E-06,
                       REFERENCE='AUTRE_ASTER',)))
 
 FIN();
