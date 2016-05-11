@@ -15,10 +15,48 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',),PAR_LOT='NON');
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
+MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,  NU=0.3,),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI', MATER=MAT,),);
+
+#RESULTAT DE REFERENCE : CALCUL AVEC UN SOLVEUR DIRECT (MUMPS)
+MO=AFFE_MODELE(MAILLAGE=MA,
+               AFFE=_F(TOUT='OUI', PHENOMENE='MECANIQUE', MODELISATION='3D',),)
+CHA1=AFFE_CHAR_MECA(MODELE=MO,
+                    DDL_IMPO=(_F(GROUP_NO='GRNO1',
+                                          DZ=0.0,),
+                              _F(GROUP_NO='GRNO8',
+                                          DY=0.0,),),);
+
+CHA2=AFFE_CHAR_CINE(MODELE=MO,
+                    MECA_IMPO=_F(GROUP_NO='GRNO7',
+                                          DX=0.0,
+                                          DY=0.01,),);
+
+RESREF=MECA_STATIQUE(MODELE=MO,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE=CHA1,),
+                           _F(CHARGE=CHA2,),),
+                    SOLVEUR=_F(METHODE='MUMPS',),);
+TREF=POST_RELEVE_T(  ACTION=_F(  INTITULE = 'UREF', NOEUD =('NO2958','NO2974'), OPERATION = 'EXTRACTION',
+                     RESULTAT = RESREF, NUME_ORDRE=1, NOM_CHAM='DEPL', NOM_CMP = 'DY', ));
+
+DETRUIRE(CONCEPT=_F(NOM=(MO,CHA1,CHA2,)),INFO=1,);
+# VALEURS DE NON-REGRESSION 
+vcalc=[ 0.01,   0.00928897503835, 
+        0.00999999999995, 0.00928897503615,
+        0.01,       0.00928897503593,
+        0.00999999999999,  0.00928897503686, 
+        0.00999999999999, 0.00928897503879,
+        0.01,    0.00928897503775, 
+        0.00999999999999, 0.00928897503765,
+        0.01,  0.00928897503746 ]
+ico=-2
 for matr_distribuee in ('OUI', 'NON') :
     for type_partition in (1,2,3,4) :
          if  type_partition == 1 :
@@ -41,9 +79,6 @@ for matr_distribuee in ('OUI', 'NON') :
              assert 0, type_partition
 
 
-         MAT=DEFI_MATERIAU(ELAS=_F(E=202702.7,  NU=0.3,),);
-
-         CHMAT=AFFE_MATERIAU(MAILLAGE=MA, AFFE=_F(TOUT='OUI', MATER=MAT,),);
 
          CHA1=AFFE_CHAR_MECA(MODELE=MO,
                              DDL_IMPO=(_F(GROUP_NO='GRNO1',
@@ -62,23 +97,21 @@ for matr_distribuee in ('OUI', 'NON') :
                                     _F(CHARGE=CHA2,),
                                     ),
                              SOLVEUR=_F(METHODE='PETSC',  MATR_DISTRIBUEE=matr_distribuee,
-                                        ALGORITHME='CR',
-                                        PRE_COND='LDLT_SP',),
+                                        ALGORITHME='GCR',
+                                        PRE_COND='LDLT_SP',
+                                        RESI_RELA=1.E-06, 
+                                        ),
                              );
 
-         # En présence d'un AFFE_CHAR_MECA,
-         # le solveur CR donne des résultats corrects mais
-         # variables d'une exécution à l'autre. On supprime
-         # les tests qui posent probleme pour éviter les NOOK de non-régression
+         ico+=2
          TEST_RESU(RESU=(_F(RESULTAT=MESTAT,
                             NUME_ORDRE=1,
                             NOM_CHAM='DEPL',
                             NOM_CMP='DY',
                             NOEUD='NO2958',
-                            VALE_CALC=0.0099999997769,
-                            VALE_REFE=0.01,
-                            TOLE_MACHINE=1.e-5,
-                            PRECISION=0.00015,
+                            VALE_CALC=vcalc[ico],
+                            VALE_REFE=TREF['DY',1],
+                            PRECISION=1.E-06,
                             REFERENCE='AUTRE_ASTER',),
 
                          _F(RESULTAT=MESTAT,
@@ -86,12 +119,11 @@ for matr_distribuee in ('OUI', 'NON') :
                             NOM_CHAM='DEPL',
                             NOM_CMP='DY',
                             NOEUD='NO2974',
-                            VALE_CALC=0.00928897690092,
-                            VALE_REFE=0.009289,
-                            TOLE_MACHINE=1.e-5,
-                            PRECISION=0.00015,
+                            VALE_CALC=vcalc[ico+1],
+                            VALE_REFE=TREF['DY',2],
+                            PRECISION=1.E-06,
                             REFERENCE='AUTRE_ASTER',),
                         ),);
-         DETRUIRE(CONCEPT=_F(NOM=(MO,MAT,CHMAT,CHA1,CHA2,MESTAT,)),INFO=1,)
+         DETRUIRE(CONCEPT=_F(NOM=(MO,CHA1,CHA2,MESTAT)),INFO=1,)
 
 FIN();
