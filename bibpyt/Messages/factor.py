@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -359,17 +359,13 @@ Conseils :
 
     73: _(u"""
 Solveur MUMPS :
-  Lors de la factorisation numérique, le pourcentage de pivots, %(r1).0f %%, a dépassé le
-  pourcentage prévu par le paramètre SOLVEUR/PCENT_PIVOT= %(r2).0f %%.
-  Cela peut engendrer un résultat de mauvaise qualité. Vérifiez bien la qualité de celui-ci
-  en fin de résolution via la mot-clé RESI_RELA.
+   Lors de son étape de factorisation, MUMPS a rencontré un nombre anormalement élevé de difficultés
+   numériques. Cela peut impacter la qualité du résultat et les performances du calcul.
 
-Conseils :
-  Pour améliorer la qualité de la solution vous pouvez activez les options de pré et
-  post-traitements (PRETRAITEMENTS='AUTO' et POSTTRAITEMENTS='FORCE' ou 'AUTO'), durcir le critère
-  de qualité RESI_RELA ou, si vous avez beaucoup de Lagrange (>10%% de la taille du problème),
-  désactivez l'option ELIM_LAGR='LAGR2' (ELIM_LAGR='NON').
-  Sinon, contactez l'équipe de développement.
+Conseils:
+   Vérifier que l'option de SOLVEUR/PRETRAITEMENTS a bien été activée.
+   Vérifier les paramètres de contrôle de la qualité: SOLVEUR/POSTTRAITEMENTS et SOLVEUR/RESI_RELA.
+   Si le modèle comporte beaucoup de conditions limites et de liaisons, paramétrer SOLVEUR/ELIM_LAGR='NON'.
 """),
 
     74: _(u"""

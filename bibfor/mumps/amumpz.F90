@@ -1,7 +1,7 @@
 subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
                   iret, impr, ifmump, prepos, pcentp)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -390,10 +390,9 @@ subroutine amumpz(action, kxmps, csolu, vcine, nbsol,&
 !           TRAITEE EN AMONT):
 !       ------------------------------------------------
         valr(1)=(zmpsk%infog(13)*100.d0)/zmpsk%n
-        valr(2)=zmpsk%icntl(14)*1.d0
-        if ((valr(1).ge.valr(2)) .and. (.not.lpreco)) then
-            if (niv .ge. 2) then
-                call utmess('I', 'FACTOR_73', nr=2, valr=valr)
+        if (valr(1) .gt. 10.0) then
+            if ((niv.ge.2) .and. (.not.lpreco)) then
+                call utmess('I', 'FACTOR_73')
             endif
         endif
         if (zmpsk%infog(1) .eq. 0) then
