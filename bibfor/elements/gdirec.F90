@@ -4,7 +4,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,6 +64,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/gdire3.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -113,13 +114,39 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
 !
 ! ALLOCATION D'OBJETS DE TRAVAIL
 !
+!   comptage du nombre de mailles de la levre connectees aux noeuds du
+!   fond de fissure pour dimensionner les vecteurs dire1 et numno
+    compta = 0
+    do i = 1, nbnoeu
+        do j = 1, lobj3
+            call jenonu(jexnom(noma//'.NOMMAI', zk8(iadrlv+j-1)), ibid)
+            call jeveuo(jexnum(conex, ibid), 'L', iamase)
+            iadtyp=iatyma-1+ibid
+            call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), type)
+            if (type(1:4) .eq. 'QUAD') then
+                nn = 4
+            else if (type(1:4).eq.'TRIA') then
+                nn = 3
+            else
+                call utmess('F', 'ELEMENTS_83')
+            endif
+            do k = 1, nn
+                call jenuno(jexnum(nomobj, zi(iamase+k-1)), noeug)
+                if (noeug .eq. nomnoe(i)) then
+                    compta = compta + 1
+                endif
+            enddo
+        enddo
+    enddo
+    ASSERT( compta .gt. 1 )
+!
     dire1 = '&&DIRECT.MAIL1'//'          '
     dire2 = '&&DIRECT.MAIL2'//'          '
     numno = '&&NUME        '//'          '
-    call wkvect(dire1, 'V V K8', 3*nbnoeu, iadma1)
+    call wkvect(dire1, 'V V K8', compta, iadma1)
     call wkvect(dire2, 'V V K8', nbnoeu-1, iadma3)    
     call wkvect(dire3, 'V V R', 3*nbnoeu, in2)
-    call wkvect(numno, 'V V I', 2*lobj3, inumno)
+    call wkvect(numno, 'V V I', compta, inumno)
 !
 ! ON RECUPERE LES MAILLES DE LA LEVRE QUI CONTIENNENT
 ! UN NOEUD DE GAMM0
@@ -158,6 +185,7 @@ subroutine gdirec(noma, fond, chaine, nomobj, nomnoe,&
                         zk8(iadma3+comptc+1-1) = zk8(iadma1+j-1)
                         zk8(iadma1+j -1) = '0'
                         comptc = comptc + 1
+                        ASSERT(comptc .le. nbnoeu-1)
                     endif
                 endif
 451         continue
