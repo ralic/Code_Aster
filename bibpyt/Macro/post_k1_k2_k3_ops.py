@@ -2342,7 +2342,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
                 if FOND_FISS:
                     UTMESS('A+', 'RUPTURE0_47', valk=Lnofon[ino])
                 if FISSURE:
-                    UTMESS('A+', 'RUPTURE0_99', vali=ino)
+                    UTMESS('A+', 'RUPTURE0_99', vali=ino+1)
                 UTMESS('A', 'RUPTURE0_25')
                 kg1 = [0.] * 8
                 kg2 = [0.] * 8
