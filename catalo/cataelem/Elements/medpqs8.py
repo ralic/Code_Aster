@@ -1067,6 +1067,10 @@ class MEDPQU4(MEDPQS8):
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
         )
 
+    calculs = (
+        OP.ENTR_ELEM(te=-1),
+    )
+
 
 #------------------------------------------------------------
 class MDDPQU4(MEDPQS8):

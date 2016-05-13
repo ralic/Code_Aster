@@ -1048,11 +1048,15 @@ class MEAXQU4(Element):
 
 #------------------------------------------------------------
 class MDAXQU4(MEAXQU4):
-    """Please document this element"""
+    """QUAD4 AXIS_ELDI element"""
     meshType = MT.QUAD4
     elrefe =(
             ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','FPG1=FPG1','MASS=FPG4','NOEU_S=NOEU_S','NOEU=NOEU',), mater=('RIGI','NOEU','FPG1',),),
         )
+
+    calculs = (
+        OP.ENTR_ELEM(te=-1),
+    )
 
 
 #------------------------------------------------------------
