@@ -1,6 +1,6 @@
 subroutine defint(mailla, nomres)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ subroutine defint(mailla, nomres)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/defdda.h"
 #include "asterfort/dismoi.h"
@@ -44,12 +45,13 @@ subroutine defint(mailla, nomres)
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/recuno.h"
+#include "asterfort/utlisi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -70,11 +72,12 @@ subroutine defint(mailla, nomres)
     character(len=9) :: nom, no, grno
     character(len=14) :: int
     character(len=24) :: nomint, notint, typint, noeint, ddlact
-    character(len=24) :: valk
+    character(len=24) :: valk(2)
     character(len=24) :: temgui, temlno, temlgr, temmas
     character(len=80) :: kar80
     integer :: icodma(nbecmx), icodac(nbecmx)
-    integer :: vali
+    integer :: vali, ign, ii, nbis, ntrou, nuno
+    integer :: iagm1, iagm2, ialii1, ialii2, ign1, ign2, ili1, ili2
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -154,8 +157,8 @@ subroutine defint(mailla, nomres)
             call jeexin(jexnom(notint, nomcou), iret)
             if (iret .ne. 0) then
                 vali = i
-                valk = nomcou
-                call utmess('F', 'ALGORITH12_78', sk=valk, si=vali)
+                valk(1) = nomcou
+                call utmess('F', 'ALGORITH12_78', sk=valk(1), si=vali)
             endif
             call getvtx(int, no, iocc=i, nbval=0, nbret=nbvan)
             call getvtx(int, grno, iocc=i, nbval=0, nbret=nbvag)
@@ -242,13 +245,64 @@ subroutine defint(mailla, nomres)
 !---------SOUS-BOUCLE COMPTAGE NOMBRE DE NOEUDS DE CHAQUE INTERFACE-----
 !
         nbno=0
-        do j = ideb, ifin
-            call getvtx(int, no, iocc=j, nbval=0, nbret=nbvan)
-            call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
-                        nbret=nbvag)
-            call compno(mailla, nbvag, zk24(ltlgr), nbuf)
-            nbno=nbno-nbvan+nbuf
-        end do
+        ASSERT(ideb.eq.ifin)
+        
+        call getvtx(int, grno, iocc=ideb, nbval=maxgr, vect=zk24(ltlgr),&
+                    nbret=nbvag)
+        nbgr = nbvag
+        if (nbgr.gt.0) then
+            ! cas des groupes de no
+            call jenonu(jexnom(mailla//'.GROUPENO', zk24(ltlgr+1-1)), ign1)
+            call jelira(jexnum(mailla//'.GROUPENO', ign1), 'LONUTI', ili1)
+            call jeveuo(jexnum(mailla//'.GROUPENO', ign1), 'L', iagm1)
+            nbis = 2*ili1
+            call wkvect('&&DEFINT.LII1', 'V V I', nbis, ialii1)
+            call wkvect('&&DEFINT.LII2', 'V V I', nbis, ialii2)
+            
+            nbno = ili1
+            do ii = 1, nbno
+                zi(ialii1-1+ii) = zi(iagm1-1+ii)
+            enddo
+!       
+            do ign = 2, nbgr
+                call jenonu(jexnom(mailla//'.GROUPENO', zk24(ltlgr+ign-1)), ign2)
+                call jelira(jexnum(mailla//'.GROUPENO', ign2), 'LONUTI', ili2)
+                call jeveuo(jexnum(mailla//'.GROUPENO', ign2), 'L', iagm2)
+                call utlisi('UNION', zi(ialii1), nbno, zi(iagm2), ili2,&
+                            zi( ialii2), nbis, ntrou)
+!       
+                if (ntrou .lt. 0) then
+                    nbis = -2*ntrou
+                    call jedetr('&&DEFINT.LII2')
+                    call wkvect('&&DEFINT.LII2', 'V V I', nbis, ialii2)
+                    call utlisi('UNION', zi(ialii1), nbno, zi(iagm2), ili2,&
+                                zi(ialii2), nbis, ntrou)
+                    call jedetr('&&DEFINT.LII1')
+                    call wkvect('&&DEFINT.LII1', 'V V I', nbis, ialii1)
+                endif
+                nbno = ntrou
+                do ii = 1, nbno
+                    zi(ialii1-1+ii) = zi(ialii2-1+ii)
+                enddo
+            enddo
+            call jedetr('&&DEFINT.LII2')
+        else
+            ! cas des noeuds
+            call getvtx(int, no, iocc=ideb, nbval=maxno, vect=zk8(ltlno),&
+                        nbret=nbvan)
+            nbno = nbvan
+            print*, nbno
+            call wkvect('&&DEFINT.LII1', 'V V I', nbno, ialii1)
+            do  ii = 1, nbno
+                call jenonu(jexnom(mailla//'.NOMNOE', zk8(ltlno+ii-1)), nuno)
+                if (nuno .eq. 0) then
+                    valk(1) = mailla
+                    valk(2) = zk8(ltlno+ii-1)
+                    call utmess('F', 'ALGORITH14_11', nk=2, valk=valk)
+                endif
+                zi(ialii1+ii-1) = nuno
+            enddo
+        endif
 !
 !-------ALLOCATION DES VECTEURS NUMERO NOEUDS INTERFACES----------------
 !                     MASQUE,DDL ACTIFS
@@ -267,31 +321,25 @@ subroutine defint(mailla, nomres)
         call jeecra(jexnum(temmas, ibid), 'LONMAX', nbno*nbec)
         call jeveuo(jexnum(temmas, ibid), 'E', ltmas)
 !
-!------SOUS-BOUCLE DETERMINATION NUMERO NOEUDS INTERFACE COURANTE-------
+!------SOUS-BOUCLE COPIE DES NUMERO DE NOEUDS INTERFACE COURANTE-------
 !        ET STOCKAGES DES MASQUES ET DDL ACTIFS POUR INTERFACES
 !
-        nbpre=0
-        do j = ideb, ifin
-            call getvtx(int, no, iocc=j, nbval=maxno, vect=zk8(ltlno),&
-                        nbret=nbvan)
-            call getvtx(int, grno, iocc=j, nbval=maxgr, vect=zk24(ltlgr),&
-                        nbret=nbvag)
-            call recuno(mailla, nbvan, nbvag, zk8(ltlno), zk24(ltlgr),&
-                        nbcou, zi(llnin+nbpre))
+        do ii = 1, nbno
+            zi(llnin-1+ii) = zi(ialii1-1+ii)
+        enddo
+        call jedetr('&&DEFINT.LII1')
 !
-!--------RECUPERATION DES MASQUES ET DDL ACTIFS INTERFACE---------------
+!----RECUPERATION DES MASQUES ET DDL ACTIFS INTERFACE---------------
 !
-            call defdda(nbec, nbcmp, numgd, j, 'MASQUE',&
-                        0, icodma)
-            call defdda(nbec, nbcmp, numgd, ideb, 'DDL_ACTIF',&
-                        1, icodac)
-            do k = 1, nbcou
-                do iec = 1, nbec
-                    zi(ldact+nbpre+(k-1)*nbec+iec-1) = icodac(iec)
-                    zi(ltmas+nbpre+(k-1)*nbec+iec-1) = icodma(iec)
-                end do
+        call defdda(nbec, nbcmp, numgd, ideb, 'MASQUE',&
+                    0, icodma)
+        call defdda(nbec, nbcmp, numgd, ideb, 'DDL_ACTIF',&
+                    1, icodac)
+        do k = 1, nbno
+            do iec = 1, nbec
+                zi(ldact+(k-1)*nbec+iec-1) = icodac(iec)
+                zi(ltmas+(k-1)*nbec+iec-1) = icodma(iec)
             end do
-            nbpre=nbpre+nbcou*nbec
         end do
     end do
 !
