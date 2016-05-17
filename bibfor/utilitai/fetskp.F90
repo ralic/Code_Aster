@@ -33,6 +33,7 @@ subroutine fetskp(mod,meth,nbpart)
 #include "asterc/fetsco.h"
 #include "asterc/getfac.h"
 #include "asterc/gtoptk.h"
+#include "asterc/rmfile.h"
 #include "asterfort/asmpi_comm_jev.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/creaco.h"
@@ -230,7 +231,7 @@ subroutine fetskp(mod,meth,nbpart)
          if (meth .eq. 'METIS  ') then
              jnom(1)=rep(1:lrep)//'/gpmetis'
          endif
-         call aplext(niv, 3, jnom, err)
+         call aplext(niv-1, 3, jnom, err)
     endif
 !
     AS_DEALLOCATE(vi4=vedlo)
@@ -261,7 +262,9 @@ subroutine fetskp(mod,meth,nbpart)
             do ima = 1, nbmato
                 read(iulm2,'(I4)')zi(numsdm-1+zi(renum2-1+ima))
             end do
+! -- destruction du fichier temporaire genere par METIS
             call ulopen(-iulm2, ' ', ' ', ' ', ' ')
+            call rmfile(jnom(1),niv-1)
         endif
         k24b='&&FETSKP.NUMSDM'
         call asmpi_comm_jev('BCAST', k24b)
@@ -286,10 +289,12 @@ subroutine fetskp(mod,meth,nbpart)
     call creagm(nbmato, nbpart, ma, masd)
 !
     call jeveuo('&&FETSKP.NOMSDM', 'L', nomsdm)
-    do i = 1, nbpart
-        write(ifm,*)'LE SOUS DOMAINE ',zk24(nomsdm-1+i),' CONTIENT '&
-                       ,zi(nbmasd-1+i),' MAILLES '
-    end do
+    if (niv.gt.1) then
+        do i = 1, nbpart
+            write(ifm,*)'LE SOUS DOMAINE ',zk24(nomsdm-1+i),' CONTIENT '&
+                           ,zi(nbmasd-1+i),' MAILLES '
+        enddo
+    endif
 
     call jedetr('&&FETSKP.TEMP')
     call jedetr('&&FETSKP.RENUM2')

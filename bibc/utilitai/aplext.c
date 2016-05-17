@@ -110,6 +110,7 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
 /*
    Appel de l'application externe
 */
+       if (*niv < 1) {close(1);}
        execv(nomcmd,args);
        perror("\ncode retour execv");
        _exit(127);
@@ -179,7 +180,6 @@ void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE 
    ipid = _spawnv( _P_WAIT, nomcmd , args );
    perror("\ncode retour spawnv");
 #endif
-
    if (*niv > 0){
       fprintf(stdout,"\nRetour au Code_Aster \n\n");
    }
