@@ -21,7 +21,7 @@
 #             CONTACT : SEG3
 # UNITES   : NEWTON , METRE , SECONDE (N,M,S)
 #
-
+# Ce test est sensible : SOLVEUR=MUMPS avec RENUM='AUTO'
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       IGNORE_ALARM='CONTACT3_16',
       DEBUG=_F(SDVERI='OUI'))
@@ -186,6 +186,10 @@ U=STAT_NON_LINE(MODELE=MO,
                 COMPORTEMENT=_F(RELATION='ELAS',
                              TOUT='OUI',),
                 INCREMENT=_F(LIST_INST=L_INST,),
+                SOLVEUR=_F(
+                           RENUM='AUTO',
+                           METHODE='MUMPS',
+                               ),
                 NEWTON=_F(MATRICE='TANGENTE',
                           REAC_ITER=1,),
                 ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
