@@ -18,7 +18,7 @@
 #---------------------------------------------------------------------
 #  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE TOLE EN LIBRE-LIBRE
 #
-#  - MODELISATION AVEC DES ELEMENTS 'D_PLAN'
+#  - MODELISATION AVEC DES ELEMENTS 'DKT'
 #---------------------------------------------------------------------
 #
 #
@@ -31,16 +31,18 @@ MAILLAGE=DEFI_GROUP( reuse=MAILLAGE,   MAILLAGE=MAILLAGE,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
 
 MA=CREA_MAILLAGE(MAILLAGE=MAILLAGE,
-                 MODI_MAILLE=_F(TOUT='OUI',OPTION='QUAD8_9'),)
+                 QUAD_LINE=_F(TOUT='OUI'),)
 
 MODELE=AFFE_MODELE(MAILLAGE=MA,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION='COQUE_3D',),);
+                           MODELISATION='DKT',),);
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
+#
+CARA=AFFE_CARA_ELEM(MODELE=MODELE,COQUE=_F(GROUP_MA='TOUT',EPAIS=0.05),)
 #
 #---------------------------------------------------------------------
 #                     CARACTERISTIQUES MATERIAUX
@@ -60,8 +62,7 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=200000000000.0,
 AFF_MAT=AFFE_MATERIAU(MAILLAGE=MA,
                       AFFE=_F(TOUT='OUI',
                               MATER=ACIER,),);
-#
-CARA=AFFE_CARA_ELEM(MODELE=MODELE,COQUE=_F(GROUP_MA='TOUT',EPAIS=0.05),)
+
 
 #---------------------------------------------------------------------
 #                     RESOLUTION
@@ -158,27 +159,27 @@ ELAS=CALC_CHAMP(reuse=ELAS,RESULTAT=ELAS,
 TEST_RESU(RESU=(_F(PARA='FREQ',
                    NUME_MODE=7,
                    RESULTAT=MODE,
-                   VALE_CALC=628.354834568,
+                   VALE_CALC=680.726756805,
                    VALE_REFE=628.354,
-                   REFERENCE='NON_DEFINI',
+                   REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   PRECISION=1.E-2,),
+                   PRECISION=10.E-2,),
+                _F(PARA='FREQ',
+                   NUME_MODE=8,
+                   RESULTAT=MODE,
+                   VALE_CALC= 7.64686E+02,
+                   VALE_REFE=693.21,
+                   REFERENCE='AUTRE_ASTER',
+                   CRITERE='RELATIF',
+                   PRECISION=11.E-2,),
                 _F(PARA='FREQ',
                    NUME_MODE=9,
                    RESULTAT=MODE,
-                   VALE_CALC= 1672.82678476,
-                   VALE_REFE=1672.826,
-                   REFERENCE='NON_DEFINI',
+                   VALE_CALC= 1.789207E+03,
+                   VALE_REFE=1672.83,
+                   REFERENCE='AUTRE_ASTER',
                    CRITERE='RELATIF',
-                   PRECISION=1.E-2,),
-                _F(PARA='FREQ',
-                   NUME_MODE=12,
-                   RESULTAT=MODE,
-                   VALE_CALC= 3090.35205089,
-                   VALE_REFE=3090.352,
-                   REFERENCE='NON_DEFINI',
-                   CRITERE='RELATIF',
-                   PRECISION=1.E-2,),
+                   PRECISION=10.E-2,),
                 ),
           )
 
