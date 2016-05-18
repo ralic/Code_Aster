@@ -554,8 +554,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
 
             if nbpt == -999:
                 ERR.mess(
-                    'E', "Utilisation d'un nombre de points de Gauss indefini pour le mode_local: " + nomolo)
-                assert 0
+                    'F', "Utilisation d'un nombre de points de Gauss indefini pour le mode_local: " + nomolo)
 
             if not diff:
                 nbpt2 = nbpt
@@ -755,8 +754,7 @@ def imprime_ojb(cel, file, timer, dbgdir):
             if noop in opt_contrainte:
                 if noop not in opt_a_calculer[note]:
                     ERR.mess(
-                        'E', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
-                    raise
+                        'F', "L'option: " + noop + " NE DOIT PAS etre calculee par le TYPE_ELEM: " + note)
 
         timer.Stop('T7.8')
         timer.Start('T7.9')

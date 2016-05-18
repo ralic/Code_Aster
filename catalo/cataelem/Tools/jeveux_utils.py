@@ -88,7 +88,8 @@ class ERREUR:
             raise StandardError
 
     def contexte(self, texte, statut="RAZ"):
-        # pour definir le contexte d'un message d'erreur:
+        """pour definir le contexte d'un message d'erreur"""
+        self.fini()
         if statut == 'RAZ':
             self.contxt = []
             if len(texte) > 0:
