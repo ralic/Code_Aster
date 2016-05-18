@@ -1,6 +1,6 @@
 subroutine lcmfra(vp, itemax, precvg, chi, iret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,6 +16,7 @@ subroutine lcmfra(vp, itemax, precvg, chi, iret)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     implicit none
+#include "asterc/r8prem.h"
     integer,intent(in)      :: itemax
     real(kind=8),intent(in) :: vp(3), precvg
     integer,intent(out)     :: iret
@@ -45,7 +46,7 @@ subroutine lcmfra(vp, itemax, precvg, chi, iret)
 !
 !  NORMALISATION
     nors = sqrt((vp(1)**2+vp(2)**2+vp(3)**2))
-    if (nors .eq. 0.d0) then
+    if (nors .lt. sig0 * r8prem()) then
         chi = 0
         goto 999
     endif
