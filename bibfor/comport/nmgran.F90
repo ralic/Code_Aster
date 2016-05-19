@@ -3,7 +3,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
                   depst, sigm, vim, option, sigp,&
                   vip, dsidep)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,9 +82,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     character(len=8) :: nompar, mod
     real(kind=8) :: valpam, valpap
     real(kind=8) :: bendom, bendop, kdessm, kdessp
-    real(kind=8) :: j(8), taux(8), hygrm, hygrp, qsrt, qsrv, vieil
+    real(kind=8) :: j(8), taux(8), hygrm, hygrp, vieil
     real(kind=8) :: amdv(6, 9), apdv(6, 9), ammo(9), apmo(9), ap(6, 9), am(6, 9)
-    real(kind=8) :: ther, coefa(9), coefc(9), coeff(9), coefb, coefd, coeft
+    real(kind=8) :: ther, coefa(9), coefc(9), coeff(9), coefb, coefd
     real(kind=8) :: coefg, coefh, coefi, coefj, coefv, coefk(9), epsthp, epsthm
     aster_logical :: cplan
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -264,42 +264,48 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     end do
 !
 !  ------- CARACTERISTIQUES EFFET DE LA TEMPERATURE
+! Eliminee la dependance a la temperature le 19 mai 2016
+    dteqt=delta
 !
-    if (compor(1) (1:15) .eq. 'GRANGER_FP_INDT') then
-        dteqt=delta
-!
-        tmprim=1.d0
-        tpprim=1.d0
-    else
-        nomres(1)='QSR_K'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
-                    1, nomres(1), valres(1), icodre(1), 0)
-        if (icodre(1) .ne. 0) valres(1)=0.d0
-        qsrt=valres(1)
-        coeft=(-qsrt)*(1/temp-1/tkref)
-        coeft=exp(coeft)
-        dteqt=coeft*delta
-!
-        tmprim=ftprim(tkm, tkref)
-        tpprim=ftprim(tkp,tkref)
-    endif
+    tmprim=1.d0
+    tpprim=1.d0
+        
+!~     if (compor(1) (1:15) .eq. 'GRANGER_FP_INDT') then
+!~         dteqt=delta
+!~ !
+!~         tmprim=1.d0
+!~         tpprim=1.d0
+!~     else
+!~         nomres(1)='QSR_K'
+!~         call rcvalb(fami, kpg, ksp, '+', imate,&
+!~                     ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
+!~                     1, nomres(1), valres(1), icodre(1), 0)
+!~         if (icodre(1) .ne. 0) valres(1)=0.d0
+!~         qsrt=valres(1)
+!~         coeft=(-qsrt)*(1/temp-1/tkref)
+!~         coeft=exp(coeft)
+!~         dteqt=coeft*delta
+!~ !
+!~         tmprim=ftprim(tkm, tkref)
+!~         tpprim=ftprim(tkp,tkref)
+!~     endif
 !
 !  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
 !
     if (compor(1) (1:14) .eq. 'GRANGER_FP_V') then
-        nomres(1)='QSR_VEIL'
-        call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'V_GRANGER_FP', 0, ' ', [0.d0],&
-                    1, nomres(1), valres(1), icodre(1), 0)
-        if (icodre(1) .ne. 0) valres(1)=0.d0
-        qsrv=valres(1)
+!~         nomres(1)='QSR_VEIL'
+!~         call rcvalb(fami, kpg, ksp, '+', imate,&
+!~                     ' ', 'V_GRANGER_FP', 0, ' ', [0.d0],&
+!~                     1, nomres(1), valres(1), icodre(1), 0)
+!~         if (icodre(1) .ne. 0) valres(1)=0.d0
+!~         qsrv=valres(1)
 !
 !  -------- FONCTION MULTIPLICATIVE - VIEILLISSEMENT K
 !
 !  ------------ AGE EQUIVALENT DU BETON : AGE
-        coefv=(-qsrv)*(1/temp-1/tkref)
-        coefv=exp(coefv)
+!~         coefv=(-qsrv)*(1/temp-1/tkref)
+!~         coefv=exp(coefv)
+        coefv= 1.d0
         dage = coefv*delta
         agep = agem+dage
         tceq = (agem+agep)/2
@@ -311,8 +317,8 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         vieil = valres(1)
     else
         vieil = 1.d0
-        dage = delta
-        agep=agem+dage
+        dage  = delta
+        agep  = agem+dage
     endif
 !
 !  ------- CARACTERISTIQUES HYGROMETRIE H

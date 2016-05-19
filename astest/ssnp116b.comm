@@ -76,6 +76,8 @@ BETA = DEFI_CONSTANTE(VALE = 1.16)
 
 GC = DEFI_CONSTANTE(VALE = 10.)
 
+FoncV = DEFI_CONSTANTE(VALE = 1.)
+
 # VALEUR NON PHYSIQUE DE GT POUR MODELISER UN ECROUISSAGE QUASI NUL
 # VALEUR USUELLE : GT = 0.1
 GT = DEFI_CONSTANTE(VALE = 10000.)
@@ -90,7 +92,9 @@ BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
                                             FONC_DESORP = DESORP, ),
                                 GRANGER_FP=_F( J1 = 0.2,
                                             TAUX_1 = 4320000.,
-                                            QSR_K = 0.0),
+                                            ),
+                              V_GRANGER_FP=_F(FONC_V   = FoncV,
+                                              ),
                            BETON_DOUBLE_DP=_F( F_C = FC,
                                             F_T = FT,
                                             COEF_BIAX = BETA,
@@ -179,12 +183,13 @@ TRAC=AFFE_CHAR_MECA( MODELE=MO,
                      DDL_IMPO=_F(  GROUP_NO = 'LF',  DX = 0.006)
                             )
 
-LINST=DEFI_LIST_REEL( DEBUT=0.,
+L_INST=DEFI_LIST_REEL( DEBUT=0.,
                       INTERVALLE=(
                            _F(  JUSQU_A = 10.,        NOMBRE = 4),
                            _F(  JUSQU_A = 13.0242,    NOMBRE = 3),
                            _F(  JUSQU_A = 100.,       NOMBRE = 1))
                          )
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
 
 COEF_TR=DEFI_FONCTION( NOM_PARA='INST',
                        VALE=(        0.,     0.,
@@ -202,13 +207,13 @@ COUPLA=STAT_NON_LINE(
                                  _F(  CHARGE = COND_LIM),
                                  _F(  CHARGE = TRAC,
                                       FONC_MULT = COEF_TR)),
-                  INCREMENT=_F(  LIST_INST = LINST),
+                  INCREMENT=_F(  LIST_INST = DEFLIST),
                   CHAM_MATER=CM,
                   COMPORTEMENT=_F(  RELATION = 'KIT_DDI',
                                  ITER_INTE_MAXI = 20,
                                  ITER_INTE_PAS = 0,
                                  RESI_INTE_RELA = 1.E-6,
-                                 RELATION_KIT = ('GRANGER_FP',
+                                 RELATION_KIT = ('GRANGER_FP_V',
                                              'BETON_DOUBLE_DP',),
                                  DEFORMATION = 'PETIT',
                                  TOUT = 'OUI'),
@@ -228,7 +233,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIGM_ELNO',
                             NOM_CMP = 'SIXX',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),
@@ -236,7 +241,7 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSP',
                             NOM_CHAM = 'EPSP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),
@@ -244,14 +249,14 @@ RELEVE_1=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSF',
                             NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),)
                        )
 
 TEST_TABLE(
-           VALE_CALC=3.2054051583296,
+           VALE_CALC=3.20610651828,
            NOM_PARA='SIXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -262,7 +267,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3584025807964E-07,
+           VALE_CALC=7.1412072411E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -273,7 +278,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.3825549811244,
+           VALE_CALC=4.389126778,
            NOM_PARA='SIXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -284,7 +289,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.3078334024645E-05,
+           VALE_CALC=1.83318133394E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -295,7 +300,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.2170445420861E-4,
+           VALE_CALC=0.000825903130353,
            NOM_PARA='EPXX',
            TABLE=RELEVE_1,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -310,7 +315,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIGM_ELNO',
                             NOM_CMP = 'SIXX',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'C1',
                             OPERATION = 'EXTRACTION'),
@@ -318,7 +323,7 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSP',
                             NOM_CHAM = 'EPSP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'C1',
                             OPERATION = 'EXTRACTION'),
@@ -326,13 +331,13 @@ RELEVE_2=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSF',
                             NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'C1',
                             OPERATION = 'EXTRACTION'),)
                        )
 TEST_TABLE(
-           VALE_CALC=3.2054051583277,
+           VALE_CALC=3.20610651829,
            NOM_PARA='SIXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -343,7 +348,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3584025827023E-07,
+           VALE_CALC=7.14120723944E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -354,7 +359,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.3825550891595,
+           VALE_CALC=4.38912688716,
            NOM_PARA='SIXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -365,7 +370,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.3078333560905E-05,
+           VALE_CALC=1.83318130105E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -376,7 +381,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.2170380450757E-4,
+           VALE_CALC=0.000825902473557,
            NOM_PARA='EPXX',
            TABLE=RELEVE_2,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -396,13 +401,13 @@ COUPLA2=STAT_NON_LINE(
                  EXCIT=(_F(  CHARGE = COND_LIM),
                         _F(  CHARGE = TRAC,
                              FONC_MULT = COEF_TR)),
-                INCREMENT=_F(  LIST_INST = LINST),
+                INCREMENT=_F(  LIST_INST = DEFLIST),
                 CHAM_MATER=CM,
                 COMPORTEMENT=_F(  RELATION = 'KIT_DDI',
                                ITER_INTE_MAXI = 20,
                                ITER_INTE_PAS = 0,
                                RESI_INTE_RELA = 1.E-6,
-                               RELATION_KIT = ('GRANGER_FP',
+                               RELATION_KIT = ('GRANGER_FP_V',
                                                'VMIS_ISOT_LINE',),
                                DEFORMATION = 'PETIT',
                                TOUT = 'OUI'),
@@ -421,7 +426,7 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                             INTITULE = 'SIEF',
                             NOM_CHAM = 'SIGM_ELNO',
                             NOM_CMP = 'SIXX',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),
@@ -429,7 +434,7 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSP',
                             NOM_CHAM = 'EPSP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),
@@ -437,14 +442,14 @@ RELEVE_3=POST_RELEVE_T(ACTION=(
                             INTITULE = 'EPSF',
                             NOM_CHAM = 'EPFP_ELNO',
                             TOUT_CMP = 'OUI',
-                            LIST_INST = LINST,
+                            LIST_INST = L_INST,
                             PRECISION = 1.E-8,
                             GROUP_NO = 'F1',
                             OPERATION = 'EXTRACTION'),)
                        )
 
 TEST_TABLE(
-           VALE_CALC=3.2054051583249,
+           VALE_CALC=3.20610651829,
            NOM_PARA='SIXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -455,7 +460,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=7.3584025825912E-07,
+           VALE_CALC=7.14120723923E-07,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -466,7 +471,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.6142088846345,
+           VALE_CALC=4.61445498198,
            NOM_PARA='SIXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -477,7 +482,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.1953642980033E-05,
+           VALE_CALC=1.76940976855E-05,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',
@@ -488,7 +493,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=8.4293343565466E-4,
+           VALE_CALC=0.000847216990995,
            NOM_PARA='EPXX',
            TABLE=RELEVE_3,
            FILTRE=(_F(NOM_PARA='INTITULE',

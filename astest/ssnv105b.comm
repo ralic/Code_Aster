@@ -1,0 +1,173 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
+
+# ==================================================== #
+# 
+#~ GRANGER_FP_V CONSTITUTIVE LAW FOR CREEP OF CONCRETE :
+#     EFFECT OF AGING AT CONSTANT TEMPERATURE
+# 
+# ==================================================== #
+
+# ---------------------------------------------------- #
+# MATERIAL PROPRIETES AND LOADING
+# ---------------------------------------------------- #
+import numpy as np
+
+def agingGranger(inst):
+  # Evolution of the aging coefficient
+  #~ inst : time in days
+  K = (28**0.2 + 0.1) / (inst**0.2 + 0.1)
+  return K
+
+def creepStrainGrangerConst(fv,Time,h0,sigma0,JS, TAUS) :
+  # JS, TAUS : np.array (1D) of the 8 creep compliances and retardation times of each Kelvin chain
+  # Time: np.array
+  # fv : aging coefficient
+  JS    = np.reshape(JS, (np.size(JS),1) )
+  TAUS  = np.reshape(TAUS, (np.size(TAUS),1) )
+  Time  = np.reshape(Time, (1, np.size(Time)) )
+  EPSFS = JS * (1.-np.exp(-Time/TAUS) )
+  Epsf  = np.sum(EPSFS, axis = 0)
+  Epsf  = sigma0 * h0 * fv * Epsf
+  return Epsf
+
+# UNITS
+MPa = 1000000.0
+day = 86400.0
+
+# MATERIAL PROPERTIES 
+young  = 30000.0 * MPa
+YOUNG  = DEFI_CONSTANTE(VALE=(young),)
+NU     = DEFI_CONSTANTE(VALE=0.2,)
+ALPHA  = DEFI_CONSTANTE(VALE=1e-05,)
+TAUS   = [2.e-3, 2.e-2, 2.e-1, 2., 2.e1, 2.e2, 2.e3, 2.e4] #days
+JS     = [1.2e-13, 2.6e-13, 2.7e-12, 2.71e-12, 8.08e-12, 1.808e-11, 1.901e-11, 1.139e-11]
+foncV  = FORMULE(VALE='agingGranger(INST/day)', NOM_PARA='INST',);
+FONC_D = DEFI_CONSTANTE(VALE=1.0,) # Desorption function ( C --> h )
+
+
+BET = DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
+                                  NU=NU,
+                                  TEMP_DEF_ALPHA=20.0,
+                                  ALPHA=ALPHA,
+                                  FONC_DESORP=FONC_D,),
+                    GRANGER_FP=_F(
+                                  J1=JS[0],
+                                  J2=JS[1],
+                                  J3=JS[2],
+                                  J4=JS[3],
+                                  J5=JS[4],
+                                  J6=JS[5],
+                                  J7=JS[6],
+                                  J8=JS[7],
+                                  TAUX_1=TAUS[0]*day,
+                                  TAUX_2=TAUS[1]*day,
+                                  TAUX_3=TAUS[2]*day,
+                                  TAUX_4=TAUS[3]*day,
+                                  TAUX_5=TAUS[4]*day,
+                                  TAUX_6=TAUS[5]*day,
+                                  TAUX_7=TAUS[6]*day,
+                                  TAUX_8=TAUS[7]*day,
+                                  ),
+                    V_GRANGER_FP=_F(FONC_V  =foncV,),)
+
+# LOADING INSTANTS (IN DAYS) AND FINAL TIME
+AGES = [2., 10., 28.]
+instFin = 365. #days
+
+# LOADING
+sigma0 = 10.*MPa
+SIGZZ  = DEFI_CONSTANTE(VALE = sigma0)  # Costant applied stress
+FONC_S = DEFI_CONSTANTE(VALE = 100.0,)  # Constant water content
+FONC_T = DEFI_CONSTANTE(VALE = 20.0,)   # Constant temperature equal to the reference value
+
+
+# ----------------------------------------- #
+# COMPUTATION
+# ----------------------------------------- #
+ 
+L_INST=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=(_F(JUSQU_A=2.*day,
+                                   NOMBRE=1000.,),
+                                _F(JUSQU_A=instFin*day,
+                                   NOMBRE=1000.,),
+                                   ),)
+
+DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),)
+
+ValeCalc = [0.000864698048601, 0.000727164106291, 0.000657454170955]
+ValeAnalytique = [1.e-3*0.864747297817, 1.e-3*0.727171795167, 1.e-3*0.65745660346]
+T_RE0 = [0]*len(AGES)
+
+for i in range(len(AGES)) :
+
+  age = AGES[i]
+  vari = 55 * [0.]
+  vari[-1] = age *day
+  T_RE0[i] = SIMU_POINT_MAT(VARI_INIT    = _F(VALE = vari),
+                            COMPORTEMENT = _F(RELATION='GRANGER_FP_V',
+                                              DEFORMATION='PETIT',),
+                            MATER        = BET,
+                            INCREMENT    = _F(LIST_INST = DEFLIST,),
+                            NEWTON       = _F(PREDICTION='TANGENTE',
+                                              MATRICE='TANGENTE',
+                                              REAC_ITER=1,),
+                            CONVERGENCE  = _F(RESI_GLOB_RELA=1e-06,),
+                            AFFE_VARC    = (
+                                          _F(NOM_VARC='SECH',
+                                              VALE_FONC=FONC_S,
+                                              VALE_REF=100.0,),
+                                          _F(NOM_VARC='TEMP',
+                                              VALE_FONC=FONC_T,
+                                              VALE_REF=20.0,),),
+                            SIGM_IMPOSE  = _F(SIZZ=SIGZZ,),)
+
+  fv = agingGranger(age)
+  Epsf_ana = creepStrainGrangerConst(fv, np.array([instFin]), 1., sigma0, np.array(JS), np.array(TAUS) )
+  Eps_ana  = sigma0/young + Epsf_ana[0]
+  
+  TEST_TABLE(CRITERE   = 'RELATIF',
+             REFERENCE = 'ANALYTIQUE',
+             VALE_CALC = ValeCalc[i],
+             #~ VALE_REFE = ValeAnalytique[i],
+             VALE_REFE = Eps_ana,
+             NOM_PARA  = 'EPZZ',
+             TABLE     = T_RE0[i],
+             FILTRE    = _F(NOM_PARA='INST',VALE=3.15360E+07,PRECISION=1.E-6),)
+
+
+  # PRINT OF RESULTS
+  #
+  #~ IMPR_TABLE(TABLE=T_RE0[i],
+             #~ UNITE=8,)
+
+  #~ IMPR_TABLE( TABLE=T_RE0[i],
+              #~ FORMAT='XMGRACE',
+              #~ UNITE=25,
+              #~ NOM_PARA=('INST','EPZZ',),
+              #~ LEGENDE='Age='+str(AGES[i]),
+              #~ STYLE=1,
+              #~ COULEUR=i+1,
+              #~ MARQUEUR=0,
+              #~ BORNE_X=(0.,instFin*day,),
+              #~ BORNE_Y=(0.,1.E-3,),
+              #~ LEGENDE_X='Temps [secondes]',
+              #~ LEGENDE_Y='Epszz',)
+
+FIN();
