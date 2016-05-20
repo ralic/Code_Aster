@@ -44,11 +44,9 @@ post_i = RESU_C1.LIST_PARA()['INST'][-1]
 TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=post_i,NOM_CMP=('DX','DY'),
                          GROUP_MA=('CR_B_B', 'TG_B_B')))
 
-IMPR_TABLE(TABLE=TAB)
-
+#IMPR_TABLE(TABLE=TAB)
 TEST_TABLE(
-           VALE_CALC=0.00721470094435,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.00721740005482,
            NOM_PARA='DX',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -56,8 +54,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00325554867914,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.00325555906633,
            NOM_PARA='DY',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -65,20 +62,19 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00724015177262,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.00724283432906,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            TABLE=TAB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00325556014635,
-           TOLE_MACHINE=1.E-3,
+           VALE_CALC=0.00325556996024,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB,
            )
+
 
 TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=0.004,NOM_CMP=('DX','DY','DZ'),
                          GROUP_NO=('P_CUV','FIX'),))
