@@ -5,13 +5,16 @@ import os.path as osp
 import re
 from time import localtime, strftime
 from pprint import pformat
+from subprocess import Popen, PIPE
 
-from waflib import TaskGen, Utils
+from waflib import TaskGen, Utils, Errors
 
 
 def configure(self):
     self.start_msg('Getting Code_Aster version')
     values = check_aster_version(self)
+    if values[0] == "?":
+        raise Errors.ConfigurationError("can not find official parent revision")
     self.env.append_value('ASTER_VERSION', values)
     self.end_msg(self.env.ASTER_VERSION[:-1])
 
@@ -57,29 +60,97 @@ def check_aster_version(self):
         d = {}
         execfile(pkginfo[0].abspath(), d)
         return d['pkginfo']
-    d = {}
-    vers, ids, br, date, frbr, chg, loc = ['?'] * 7
+    # add revision id if hg is available
+    return get_version_id()
+
+def get_version_id():
+    """Return details about changes on the current revision"""
+    # vers, node, branch, date, from_branch, changes, uncommitted
+    res = ['?'] * 7
+    try:
+        import mercurial
+        res = get_version_id_py()
+    except ImportError:
+        res = get_revision_info()
+    return res
+
+def get_version_id_py():
+    """Return details about changes on the current revision"""
     def revid(ctx):
         """how to show the revision id"""
         return ctx.hex()
-    # add revision id if hg is available
-    try:
-        from mercurial import hg, ui as UI
-        ui = UI.ui()
-        repo = hg.repository(ui, os.getcwd())
-        wctx = repo[None]
-        parent = wctx.parents()[0]
-        ids = '+'.join([revid(p) for p in wctx.parents()])
-        br = parent.branch()
-        date = strftime('%d/%m/%Y', localtime(parent.date()[0]))
-        tag, chg = get_parent_info(parent, get_tag_in_branch)
-        frbr, lvl = get_parent_info(parent, get_branch)
-        loc = local_changes(ui, repo)
-        if tag and version2tuple(tag) > vers:
-            vers = version2tuple(tag)
-    except:
-        pass
+
+    from mercurial import hg, ui as UI
+    ui = UI.ui()
+    repo = hg.repository(ui, os.getcwd())
+    wctx = repo[None]
+    parent = wctx.parents()[0]
+    ids = '+'.join([revid(p) for p in wctx.parents()])
+    br = parent.branch()
+    date = strftime('%d/%m/%Y', localtime(parent.date()[0]))
+    tag, chg = get_parent_info(parent, get_tag_in_branch)
+    frbr, lvl = get_parent_info(parent, get_branch)
+    loc = local_changes(ui, repo)
+    if tag:
+        vers = version2tuple(tag)
     return [vers, ids, br, date, frbr, chg, loc]
+
+MAXLEVEL = 25
+
+def get_revision_info_cmd(from_rev=None, rev="."):
+    """Return details about changes on `rev` or the current revision
+    between last official tagged revision"""
+    def exec_cmd(cmd):
+        return Popen(cmd, stdout=PIPE).communicate()[0].strip()
+
+    if not from_rev:
+        from_rev = "({0})~{1}".format(rev, MAXLEVEL)
+    ancestors = "({0})::({1})".format(from_rev, rev)
+    BR = ['default'] + ['v%d' % i for i in range(10, 20)]
+    loc = exec_cmd(["hg", "status", "-namrdu"]).split()
+    logs = exec_cmd(["hg", "log", "-r", ancestors,
+                     "--template", "{rev}:{node}:{tags}:{branch}:"
+                                   "{date|shortdate}:{files}\n"]).splitlines()
+    if not logs:
+        raise ValueError("empty revs range: {0}".format(ancestors))
+    last = logs[-1].split(":")
+    # print "\n".join(logs)
+    _revn, revid, _tag, branch, date, _files = last
+    Y, m, d = date.strip().split('-')
+    date = '/'.join([d, m, Y])
+    brs = [i.split(":")[3] for i in logs]
+    # search official branch
+    frbr = "?"
+    while brs:
+        if brs[-1] in BR:
+            frbr = brs[-1]
+            break
+    # search last tag
+    vers = "?"
+    chg = 0
+    for info in reversed(logs):
+        rev, node, tag, br, idat, files = info.split(":")
+        # ignore revs that just add tags
+        if files.strip() == ".hgtags":
+            continue
+        # ignore non official branches
+        if br not in BR:
+            continue
+        if tag not in ("", "tip"):
+            vers = version2tuple(tag)
+            break
+        chg += 1
+    return [vers, revid, branch, date, frbr, chg, loc]
+
+def get_revision_info(from_rev=None, rev="."):
+    """Return details about changes on `rev` or the current revision
+    between last official tagged revision"""
+    # quick search on last revisions
+    infos = get_revision_info_cmd(from_rev, rev)
+    if infos[0] == "?":
+        from_rev = "ancestors({0}) and testing or stable".format(rev)
+        infos = get_revision_info_cmd(from_rev, rev)
+    return infos
 
 def version2tuple(vers_string):
     """1.7.9alpha --> (1, 7, 9, 'alpha')"""
