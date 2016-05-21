@@ -11,7 +11,6 @@ import sys
 import os
 import os.path as osp
 from itertools import chain
-from subprocess import Popen, PIPE
 import cPickle
 
 from waflib import Configure, Utils, Logs, Errors

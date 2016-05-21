@@ -24,16 +24,24 @@ IF(DEFINED ENV{USER})
 ENDIF()
 SET(RESUTEST_DIR "@ASRUN_TMPDIR@/${USER}_resutest")
 
-# SET(GOOD_TESTS forma02a
-# )
-
+# build the testlist GOOD_TESTS as ASTER_xxxx
 execute_process(COMMAND as_run "--silent" "--list" "--all" "--filter" "'sequential' in testlist" OUTPUT_VARIABLE STR_TESTS OUTPUT_STRIP_TRAILING_WHITESPACE)
 
 separate_arguments(GOOD_TESTS UNIX_COMMAND ${STR_TESTS})
 
 FOREACH(testname ${GOOD_TESTS})
-       SET(TEST_NAME ASTER_${testname})
-       SET(TEST_DIR ${RESUTEST_DIR}/${testname})
-       ADD_TEST(${TEST_NAME} as_run --vers=@ASTERDATADIR@ --test ${testname} ${TEST_DIR} --run_params=facmtps=3)
-       SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES LABELS "${COMPONENT_NAME}")
+   SET(TEST_NAME ASTER_${testname})
+   SET(TEST_DIR ${RESUTEST_DIR}/${testname})
+   ADD_TEST(${TEST_NAME} as_run --vers=@ASTERDATADIR@ --test ${testname} ${TEST_DIR} --run_params=facmtps=3)
+   SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES LABELS "${COMPONENT_NAME}")
+ENDFOREACH()
+
+# build the testlist for SMECA_INTEGR
+SET(GOOD_TESTS forma02a)
+
+FOREACH(testname ${GOOD_TESTS})
+    SET(TEST_NAME ASTER_${testname})
+    SET(TEST_DIR ${RESUTEST_DIR}/${testname})
+    ADD_TEST(${TEST_NAME} as_run --vers=@ASTERDATADIR@ --test ${testname} ${TEST_DIR} --run_params=facmtps=3)
+    SET_TESTS_PROPERTIES(${TEST_NAME} PROPERTIES LABELS "SMECA_INTEGR")
 ENDFOREACH()
