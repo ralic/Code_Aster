@@ -12,7 +12,10 @@ from waflib import TaskGen, Utils, Errors
 
 def configure(self):
     self.start_msg('Getting Code_Aster version')
-    values = check_aster_version(self)
+    try:
+        values = check_aster_version(self)
+    except Exception, exc:
+        raise Errors.ConfigurationError(str(exc))
     if values[0] == "?":
         raise Errors.ConfigurationError("can not find official parent revision")
     self.env.append_value('ASTER_VERSION', values)
@@ -60,40 +63,9 @@ def check_aster_version(self):
         d = {}
         execfile(pkginfo[0].abspath(), d)
         return d['pkginfo']
-    # add revision id if hg is available
-    return get_version_id()
+    # get revision informations
+    return get_revision_info()
 
-def get_version_id():
-    """Return details about changes on the current revision"""
-    # vers, node, branch, date, from_branch, changes, uncommitted
-    res = ['?'] * 7
-    try:
-        import mercurial
-        res = get_version_id_py()
-    except ImportError:
-        res = get_revision_info()
-    return res
-
-def get_version_id_py():
-    """Return details about changes on the current revision"""
-    def revid(ctx):
-        """how to show the revision id"""
-        return ctx.hex()
-
-    from mercurial import hg, ui as UI
-    ui = UI.ui()
-    repo = hg.repository(ui, os.getcwd())
-    wctx = repo[None]
-    parent = wctx.parents()[0]
-    ids = '+'.join([revid(p) for p in wctx.parents()])
-    br = parent.branch()
-    date = strftime('%d/%m/%Y', localtime(parent.date()[0]))
-    tag, chg = get_parent_info(parent, get_tag_in_branch)
-    frbr, lvl = get_parent_info(parent, get_branch)
-    loc = local_changes(ui, repo)
-    if tag:
-        vers = version2tuple(tag)
-    return [vers, ids, br, date, frbr, chg, loc]
 
 MAXLEVEL = 25
 
@@ -166,73 +138,3 @@ def version2tuple(vers_string):
             val.append(v)
     val.extend([0]*(3-len(val)))
     return tuple(val)
-
-def local_changes(ui, repo):
-    """Return the output of `hg status`."""
-    from mercurial import commands
-    cmd = commands.status
-    # count added, modified and removed files
-    ui.pushbuffer()
-    cmd(ui, repo, no_status=True, added=True, modified=True, removed=True, deleted=True)
-    fchg = ui.popbuffer().split()
-    ui.pushbuffer()
-    # count unknown files if not waf files
-    cmd(ui, repo, unknown=True, no_status=True)
-    unknown = ui.popbuffer().split()
-    unknown = [p for p in unknown if not p.startswith('waf')]
-    fchg.extend(unknown)
-    return fchg
-
-def get_tag(ctx):
-    """Return a valid tag version (digits)."""
-    tag = ctx.tags()
-    if tag and tag[0].split('.')[0].isdigit():
-        return tag[0]
-    return None
-
-def get_branch(ctx):
-    """Return an official branch name"""
-    BR = ['default'] + ['v%d' % i for i in range(10, 20)]
-    return ctx.branch() in BR and ctx.branch() or None
-
-def get_tag_in_branch(ctx):
-    """Return the tag in an official branch"""
-    branch = get_branch(ctx)
-    tag = get_tag(ctx)
-    if branch and tag:
-        return tag
-    return None
-
-def get_parent_info(ctx, get_info):
-    """Return the first not None info found in 'ctx' or its parents."""
-    info = get_info(ctx)
-    if info:
-        return info, 0
-    try:
-        info, level = _get_parent_info(ctx, get_info, init=0)
-    except RuntimeError:
-        level = -1
-    return info, level
-
-def _get_parent_info(ctx, get_info, init=0):
-    """Recursive function to walk along the parents of 'ctx'."""
-    if init > 1500:
-        raise RuntimeError
-    info = None
-    for ctxi in ctx.parents():
-        info = get_info(ctxi)
-        if info:
-            #print 'found %s in parents' % branch[0], init, ctxi, ctxi.rev()
-            return info, init
-    init += 1
-    level = 9e9
-    for ctxi in ctx.parents():
-        try:
-            info_i, lvi = _get_parent_info(ctxi, get_info, init)
-        except RuntimeError:
-            info_i, lvi = None, 9e9
-        #print 'parent return', info_i, lvi, level
-        if info_i and lvi < level:
-            info = info_i
-            level = lvi
-    return info, level
