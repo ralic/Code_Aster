@@ -172,14 +172,6 @@ TEST_TABLE(
                      VALE=0.6,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.00157552512197,
-           TOLE_MACHINE=1.E-3,                 # NORMAL QUE CELA CHANGE, MESURE UNE ERREUR NUMERIQUE DE SCHEMA
-           NOM_PARA='DISS_SCH',
-           TABLE=ENER1,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           )
 
 TEST_TABLE(
            VALE_CALC=25960.4323845,
@@ -223,14 +215,7 @@ TEST_TABLE(
                      VALE=1.2,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.00217727993855,
-           NOM_PARA='DISS_SCH',
-           TABLE=ENER1,
-           TOLE_MACHINE=4.E-3,                 # TODO TOLE_MACHINE
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.2,),
-           )
+
 
 # TESTS DE NON REGRESSION SUPPLEMENTAIRES
 
@@ -393,13 +378,6 @@ TEST_TABLE(
                      VALE=0.6,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=-0.332745455707,
-           NOM_PARA='DISS_SCH',
-           TABLE=ENER,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=0.6,),
-           )
 
 TEST_TABLE(
            VALE_CALC=25878.0513871,
@@ -441,13 +419,7 @@ TEST_TABLE(
                      VALE=1.2,),
            )
 
-TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=0.147130284175,
-           NOM_PARA='DISS_SCH',
-           TABLE=ENER,
-           FILTRE=_F(NOM_PARA='INST',
-                     VALE=1.2,),
-           )
+
 
 # --- FIN TEST SUR LES ENERGIES -----------------------------------------------
 
