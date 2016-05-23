@@ -4,7 +4,7 @@ subroutine rsinfo(nomcon, ifi)
 !     * *        ****
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,6 +114,10 @@ subroutine rsinfo(nomcon, ifi)
                 c16b, r8b, k8b, tord, 1,&
                 ibid)
     nbordt=tord(1)
+    if (nbordt .eq. 0) then
+       write (ifi,103) nomd2(1:8)
+       goto 999
+    endif
 !
     if (nbordt .eq. 1) then
         write (ifi,101) nomd2(1:8)
@@ -125,6 +129,7 @@ subroutine rsinfo(nomcon, ifi)
            ' NUMERO D''ORDRE')
 102 format(/,1x,'STRUCTURE DU CONCEPT ',a,' CALCULE POUR ',i10,&
            ' NUMEROS D''ORDRE')
+103 format(/,1x,'STRUCTURE DU CONCEPT ',a,' VIDE, NE CONTENANT AUCUN NUMERO D''ORDRE')
 !
     call wkvect('&&'//nompro//'.NUME_ORDRE', 'V V I', nbordt, lres)
     call rsorac(nomd2, 'TOUT_ORDRE', 0, r8b, k8b,&
