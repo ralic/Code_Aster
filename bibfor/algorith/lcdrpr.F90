@@ -3,7 +3,7 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
                   vip, sig, dsidep, iret)
 ! =====================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
 #include "asterfort/dpvpdi.h"
 #include "asterfort/lcdpli.h"
 #include "asterfort/lcdppa.h"
+#include "asterfort/utmess.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), td, tf, tr
@@ -71,6 +72,9 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
 ! ======================================================================
 ! --- CAS LINEAIRE -----------------------------------------------------
 ! ======================================================================
+        if (compor(1).eq.'DRUCK_PRAG_N_A') then
+            call utmess('F', 'COMPOR5_7', sk=compor(1))
+        endif
         call lcdpli(mod, nvi, option, materf, sigm,&
                     deps, vim, vip, sig, dsidep,&
                     iret)
