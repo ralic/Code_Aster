@@ -22,6 +22,7 @@
 import sys
 import traceback
 import numpy as NP
+from math import pi
 from Utilitai.Utmess import UTMESS
 from Utilitai.Table import Table
 from Miss.calc_miss_vari import (calc_miss_vari, compute_force_vari )
@@ -231,18 +232,49 @@ class GeneratorTRANS(Generator):
         # si tous les point on été calculés: pas d'interpolation
         vale_fre, vale_re, vale_im = self.calc_params['FONC_SIGNAL'].Valeurs()
         if self.calc_params['FREQ_MAX'] == None:
+            inul = 0
             for k, freqk in enumerate(self.liste_freq_sig):
+                omegk = 2.0 * pi * freqk
                 coef_a = (vale_re[k] + vale_im[k] * 1.j)
                 VEC_comp = VEC[k] * coef_a
-                tup_re = tuple(VEC_comp.real)
-                tup_im = tuple(VEC_comp.imag)
+                tup_re = VEC_comp.real
+                tup_im = VEC_comp.imag
+                if freqk > 1.e-6 :
+                  tup_re1 = (-1.0)*tup_re/(omegk*omegk)
+                  tup_im1 = (-1.0)*tup_im/(omegk*omegk)
+                  tup_re2 = tup_im/omegk
+                  tup_im2 = (-1.0)*tup_re/omegk
                 #                                     1         2         3
                 #                                   8901234567890123456789012
+                  aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
+                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re1), tuple(tup_im1), 1)
+                  aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
+                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2), tuple(tup_im2), 1)
+                  if inul == 1 :
+                    tup_re1a = tup_re1
+                    tup_im1a = tup_im1
+                    tup_re2a = tup_re2
+                    tup_im2a = tup_im2
+                    inul = 2
+                  elif inul == 2 :
+                    tup_re1b = (2.0)*tup_re1a-tup_re1
+                    tup_im1b = (2.0)*tup_im1a-tup_im1
+                    tup_re2b = (2.0)*tup_re2a-tup_re2
+                    tup_im2b = (2.0)*tup_im2a-tup_im2
+                    aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
+                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re1b), tuple(tup_im1b), 1)
+                    aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
+                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re2b), tuple(tup_im2b), 1)
+                    inul = 0
+                else:
+                  inul = 1
                 aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tup_re, tup_im, 1)
+                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re), tuple(tup_im), 1)
         else:
+            inul = 0
             for k, freqk in enumerate(self.liste_freq_sig):
                 coef_a = (vale_re[k] + vale_im[k] * 1.j)
+                omegk = 2.0 * pi * freqk
                 if freqk >= self.calc_params['FREQ_MAX']:   
                 # interpolation du vecteur POD VEC(NB_FREQ, nbmodt)
                     tup_re = VEC[-1].real * 0.0
@@ -260,15 +292,44 @@ class GeneratorTRANS(Generator):
                                          dfp * (VEC[vale_i] - VEC[vale_i - 1])) 
                         tup_re = VEC_comp.real
                         tup_im = VEC_comp.imag
+                if freqk > 1.e-6 :
+                  tup_re1 = (-1.0)*tup_re/(omegk*omegk)
+                  tup_im1 = (-1.0)*tup_im/(omegk*omegk)
+                  tup_re2 = tup_im/omegk
+                  tup_im2 = (-1.0)*tup_re/omegk
                 #                                     1         2         3
                 #                                   8901234567890123456789012
+                  aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
+                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re1), tuple(tup_im1), 1)
+                  aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
+                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2), tuple(tup_im2), 1)
+                  if inul == 1 :
+                    tup_re1a = tup_re1
+                    tup_im1a = tup_im1
+                    tup_re2a = tup_re2
+                    tup_im2a = tup_im2
+                    inul = 2
+                  elif inul == 2 :
+                    tup_re1b = (2.0)*tup_re1a-tup_re1
+                    tup_im1b = (2.0)*tup_im1a-tup_im1
+                    tup_re2b = (2.0)*tup_re2a-tup_re2
+                    tup_im2b = (2.0)*tup_im2a-tup_im2
+                    aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
+                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re1b), tuple(tup_im1b), 1)
+                    aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
+                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re2b), tuple(tup_im2b), 1)
+                    inul = 0
+                else:
+                  inul = 1
                 aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
                     range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re), tuple(tup_im), 1)
 
         aster.affiche('MESSAGE','START REST_SPEC_TEMP' )
         dyha = REST_SPEC_TEMP(RESU_GENE = __dyge0, SYMETRIE='NON',
                               #METHODE = 'PROL_ZERO' ,
-                              NOM_CHAM='ACCE')
+                              TOUT_CHAM='OUI',
+                              #NOM_CHAM='ACCE'
+                              )
         return dyha
 
     def create_host_sd(self):
@@ -295,6 +356,7 @@ class GeneratorTRANS(Generator):
                   TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
+                  TOUT_CHAM='OUI',
                   FREQ = self.liste_freq_sig, 
                   EXCIT=_F(VECT_ASSE_GENE = __fosi,
                            COEF_MULT_C = 1.,),)

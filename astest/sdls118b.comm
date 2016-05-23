@@ -269,13 +269,19 @@ ssi_1=RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOEUD=( 'N11'  ),
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
-
+                       
+DX11_1a = RECU_FONCTION(RESU_GENE=ssi_1_a,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DX',
+                       NOEUD=( 'N11'  ),
+                       INTERPOL='LIN',
+                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);                       
 
 ##Sans variabilite spatiale, la reponse en acceleration
 ##est egale au signal d'entree (le filtre h(w) vaut 1)
 
 test_1=CALC_FONCTION(COMB=(_F(FONCTION=ssi_1, COEF=1.0, ),        #calcul de l'erreur
-                                                    _F(FONCTION=ACCE_X2, COEF=-1.0, ),)
+                           _F(FONCTION=ACCE_X2, COEF=-1.0, ),)
                                                                          );
 testr_1=INFO_FONCTION(ECART_TYPE=_F(FONCTION=test_1 ),);
 
@@ -327,7 +333,22 @@ ssi_1b=RECU_FONCTION(RESU_GENE=ssi_1_b,
                        INTERPOL='LIN',
                        TITRE='ACCELERATION AU CENTRE BAS DU RADIER',);
 
+                      
+DX11_1b = RECU_FONCTION(RESU_GENE=ssi_1_b,
+                       NOM_CHAM='DEPL',
+                       NOM_CMP='DX',
+                       NOEUD=( 'N11'  ),
+                       INTERPOL='LIN',
+                       TITRE='DEPLACEMENT AU CENTRE BAS DU RADIER',);
 
+                       
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02794363058252,
+                        CRITERE='RELATIF',
+                        VALE_PARA=13.685672,
+                        NOM_PARA='INST',
+                        FONCTION=DX11_1b,
+                        ),
+              )
 
 ##Sans variabilite spatiale, la reponse en acceleration
 ##est egale au signal d'entree (le filtre h(w) vaut 1)
