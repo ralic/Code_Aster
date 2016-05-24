@@ -5,7 +5,7 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
     implicit none
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -207,7 +207,7 @@ subroutine d2cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl,&
         goto 100
     endif
 !
-    if (nbroot .gt. 1) then
+    if (nbroot .ge. 1) then
         do 85, i=1,nbroot
         normxy(i)=abs(x(i))+abs(y(i))
 85      continue

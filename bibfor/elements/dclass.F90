@@ -3,7 +3,7 @@ subroutine dclass(n, tab, iran)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,28 +20,23 @@ subroutine dclass(n, tab, iran)
 !======================================================================
 !
 !     EVALUE L ORDRE DES RACINES DANS IRAN
+!     TRI PAR UNE METHODE SOMMAIRE
+!     A NE PAS UTILISER AVEC DE GROS TABLEAUX
 !
 ! IN  N : NOMBRE DE RACINE DU POLYNOME
 ! IN  TAB : TABLEAU DES RACINES DU POLYNOME
 !
 ! OUT IRAN : RANG DE LA RACINE
 !
-#include "asterfort/dclhoa.h"
 #include "asterfort/dclsma.h"
-    integer :: n, iran(*), lim
+    integer :: n, iran(*)
 !
     real(kind=8) :: tab(*)
-!
-    lim = 8
 !
     if (n .le. 1) then
         iran(1) = 1
     else
-        if (n .ge. lim) then
-            call dclhoa(n, tab, iran)
-        else
-            call dclsma(n, tab, iran)
-        endif
+        call dclsma(n, tab, iran)
     endif
 !
 end subroutine
