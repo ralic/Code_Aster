@@ -7,3 +7,4 @@ P testlist verification sequential
 
 F comm ssnp140c.comm D 1
 F mmed ssnp140b.mmed D 20
+F libr ssnp140c.25   D 25

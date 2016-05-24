@@ -65,45 +65,12 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = L_INST,),);
 
-IARCH = DEFI_LIST_REEL(
-  DEBUT = 0.,
-  INTERVALLE = (
-    _F(JUSQU_A =  TFIN, NOMBRE = 25),
-    )
-  )
 
-# RESOLUTION AVEC LA METHODE ITERATIVE DE NEWTON-RAPHSON
-RESUNL=STAT_NON_LINE(MODELE=MODE,
-                     CHAM_MATER=MATE,
-                     EXCIT=(_F(CHARGE=CHAR,),
-                            _F(CHARGE=CHAR2,
-                               FONC_MULT=F_DEPL,),),
-                     COMPORTEMENT=_F(RELATION='ENDO_FRAGILE',),
-                     INCREMENT=_F(LIST_INST=DEFLIST,
-                                  INST_FIN=TFIN,),
-                     NEWTON=_F(REAC_ITER=1,
-                               MATRICE='TANGENTE',
-                               REAC_INCR=1,),
-                     CONVERGENCE=_F(ITER_GLOB_MAXI=25,),);
+# Result from Newton-Raphson method
+FX=LIRE_FONCTION(     UNITE=25,NOM_PARA        ='INST',PROL_DROITE='CONSTANT',
+                 PROL_GAUCHE='CONSTANT')
 
-# EXTRACTION DE LA COURBE FORCE APPLIQUEE EN FONCTION DU TEMPS
-RESUNL=CALC_CHAMP(reuse =RESUNL,
-               RESULTAT=RESUNL,
-               FORCE='FORC_NODA');
 
-FORC=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
-                             INTITULE='FORCE',
-                             RESULTAT=RESUNL,
-                             NOM_CHAM='FORC_NODA',
-                             GROUP_NO='34',
-                             RESULTANTE='DY',),);
-
-FX=RECU_FONCTION(TABLE=FORC,
-                 PARA_X='INST',
-                 PARA_Y='DY',
-                 INTERPOL='LIN',
-                 PROL_DROITE='CONSTANT',
-                 PROL_GAUCHE='CONSTANT');
 
 # RESOLUTION AVEC LA METHODE IMPL-EX
 RESUIE=STAT_NON_LINE(MODELE=MODE,
@@ -147,70 +114,63 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=2.0000000000000002E-05,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=4.0000000000000003E-05,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=6.0000000000000002E-05,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=8.0000000000000007E-05,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=1.E-4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=1.6000000000000001E-4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=0.0,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=2.0000000000000001E-4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=2.22044604925e-16,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=2.9999999999999997E-4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       _F(VALE_CALC=-4.4408920985e-16,
                          VALE_REFE=0.0,
                          CRITERE='ABSOLU',
                          VALE_PARA=4.0000000000000002E-4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=9.9999999999999998E-13,
-                         FONCTION=DIFF,),
-                      _F(VALE_CALC=-4.15846402416e-05,
-                         VALE_REFE=0.0,
-                         CRITERE='ABSOLU',
-                         VALE_PARA=5.0000000000000001E-3,
-                         REFERENCE='AUTRE_ASTER',
-                         PRECISION=5.0000000000000002E-05,
+                         PRECISION=1.E-6,
                          FONCTION=DIFF,),
                       ),
               )
@@ -221,14 +181,16 @@ INT=CALC_FONCTION(INTEGRE=(
                           _F( FONCTION = DIFF,),
                           ) );
 
-TINT=CREA_TABLE(FONCTION= _F(FONCTION = DIFF,
+TEST_FONCTION(VALEUR=_F(FONCTION=INT,
+                        VALE_PARA=5.e-3,
+                        VALE_CALC=1.33957649E-03))
+
+TINT=CREA_TABLE(FONCTION= _F(FONCTION = INT,
                              PARA = ('INST','DY')),);
 
-TEST_TABLE(
-           VALE_CALC=15.207103264,
+TEST_TABLE(TABLE=TINT,
+           VALE_CALC=1.3611918E-03,
            NOM_PARA='DY',
-           TYPE_TEST='SOMM_ABS',
-           TABLE=TINT,
-           )
+           TYPE_TEST='MAX',)
 
 FIN();
