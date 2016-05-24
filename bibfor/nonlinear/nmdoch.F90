@@ -187,6 +187,10 @@ implicit none
 !
         do i_load = 1, nb_load
 !
+            if (.not.l_load_user) then
+                if ( v_llresu_name(i_load).eq.' ' ) goto 10
+            endif
+!
 ! --------- Get parameters for construct list of loads
 !
             call load_list_getp('MECA'      , l_load_user , v_llresu_info, v_llresu_name,&
@@ -449,6 +453,7 @@ implicit none
                 call liscad('MECA'      , list_load     , i_load_new, load_name, nomfct, &
                             nb_info_type, list_info_type, i_neum_laplz = i_neum_lapl)
             endif
+ 10         continue
 !
         end do
 !
