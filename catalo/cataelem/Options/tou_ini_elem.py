@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,6 +42,9 @@ PSOUR_R  = OutputParameter(phys=PHY.SOUR_R, type='ELEM')
 PGEOM_R  = OutputParameter(phys=PHY.GEOM_R, type='ELEM')
 
 
+PCOEH_R  = OutputParameter(phys=PHY.COEH_R, type='ELEM')
+
+
 TOU_INI_ELEM = Option(
     para_in=(
     ),
@@ -54,6 +57,7 @@ TOU_INI_ELEM = Option(
         SP.PNEU1_R,
            PPRES_R,
            PSOUR_R,
+           PCOEH_R,
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),)),
