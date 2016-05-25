@@ -127,6 +127,9 @@ class CoreOptions(object):
         parser.add_option(
             '--syntax', dest='syntax', action='store_true', default=False,
             help="only check the syntax of the command file is done")
+        parser.add_option(
+            '--ORBInitRef', dest='ORBInitRef', action='store', default=None,
+            help="store the SALOME session to connect")
 
     def parse_args(self, argv):
         """Analyse les arguments de la ligne de commmande."""
@@ -201,7 +204,7 @@ class CoreOptions(object):
         if type(value) in (str, unicode):
             value = convert(value)
         if self._dbg:
-            print "<CoreOptions.get_option> option=%r value=%r" % (option, value)
+            print("<CoreOptions.get_option> option={0!r} value={1!r}".format(option, value))
         return value
 
 
@@ -226,7 +229,7 @@ def _bwc_arguments(argv):
     long_opts = (
         'commandes', 'num_job', 'mode',
         'rep_outils', 'rep_mat', 'rep_dex', 'rep_vola', 'rep_glob',
-        'memjeveux', 'tpmax', 'memory', 'max_base',
+        'memjeveux', 'tpmax', 'memory', 'max_base', 'ORBInitRef',
     )
     # boolean options
     long_opts_sw = (
@@ -235,7 +238,7 @@ def _bwc_arguments(argv):
     # removed options
     long_opts_rm = ('rep', 'mem', 'mxmemdy', 'memory_stat', 'memjeveux_stat',
                     'type_alloc', 'taille', 'partition',
-                    'origine', 'ORBInitRef', 'eficas_path')
+                    'origine', 'eficas_path')
     # renamed options
     long_opts_mv = {
         'verif': 'syntax',
