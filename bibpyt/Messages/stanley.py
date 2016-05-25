@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,11 @@ Si STANLEY est bien lancé, vous pouvez essayer d'activer le module VISU.
 Exécution terminée.
 """),
 
-    # 21 : _(u""" """),
+    21 : _(u"""
+La session SALOME est inconnue (non disponible dans les arguments).
+Le mode GMSH va être activé.
+Utilisez le menu si vous souhaitez vous connecter à une session SALOME existante.
+ """),
 
     22 : _(u"""
 Impossible d'affecter la variable [%(k1)s / %(k2)s].
@@ -158,6 +162,11 @@ Nouveaux paramètres sauvegardés dans : %(k1)s
 
     29 : _(u"""
 Impossible de sauvegarder les paramètres dans : %(k1)s
+"""),
+
+    30 : _(u"""
+Démarrage en mode SALOME sur la machine %(k1)s sur le port %(k2)s.
+Remarque : il est nécessaire que cette session soit en cours d'exécution.
 """),
 
     31 : _(u"""

@@ -194,10 +194,10 @@ class PARAMETRES:
                 machine_salome_port = ns.split(':')[-1]
                 self.dparam['machine_salome']['val'] = machine_salome
                 self.dparam['machine_salome_port']['val'] = machine_salome_port
-                print "Salome detecte, on fixe a : %s:%s" % (machine_salome, machine_salome_port)
+                UTMESS('I', 'STANLEY_30', valk=(machine_salome, machine_salome_port))
                 from_salome = True
             except Exception, e:
-                print "Salome non detecte..."
+                UTMESS('I', 'STANLEY_21')
                 # print e
 
         # Parametres utilises par la suite dans Stanley
