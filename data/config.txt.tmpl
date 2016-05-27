@@ -1,7 +1,9 @@
 # Configuration file created by waf using data/wscript
 # Libraries, compilers are not relevant
 #
-BUILD_TYPE     | env     | -     | waf nocopy use_numthreads
+# orbinitref: tells to asrun that the option `--ORBInitRef=value` is supported
+#
+BUILD_TYPE     | env     | -     | waf nocopy use_numthreads orbinitref
 ENV_SH         | env     | -     | profile.sh
 ADDMEM         | memory  | -     | @ADDMEM@
 DEFS           | defined | -     | @DEFINES@
