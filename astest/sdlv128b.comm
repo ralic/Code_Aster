@@ -34,10 +34,10 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'));
 
 # Pour casser la symetrie du probleme, on rajoute une masse ponctuelle au noeud N303
 #noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
-noeu3D = ('N353', 'N402','N461','N482','N204','N154','N105','N46',
-'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
+#'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
 
-noedis = ('N303',)
+noedis1 = ('N303',)
+noedis2 = ('N353',)
 
 MAINtemp    = LIRE_MAILLAGE( FORMAT  = 'MED',
                              UNITE   = 20,
@@ -51,13 +51,15 @@ MAINtemp    = DEFI_GROUP( reuse           = MAINtemp,
 
 # Creation de mailles ponctuelles au niveau des soufflets.
 #noeu3D = ('N303', 'N353', 'N402','N461','N482','N204','N154','N105','N46',
-noeu3D = ( 'N353', 'N402','N461','N482','N204','N154','N105','N46',
+noeu3D = ( 'N402','N461','N482','N204','N154','N105','N46',
 'N25','N1410','N1460','N1509','N1784','N1805','N5543','N5993','N6443','N6974','N7163');
 MAINUM = CREA_MAILLAGE(  MAILLAGE  = MAINtemp,
                          CREA_POI1 = (_F( NOEUD        = noeu3D,
                                          NOM_GROUP_MA = 'SOU_MA3D' ),
-                                      _F( NOEUD        = noedis,
-                                         NOM_GROUP_MA = 'SOU_DIS' ),
+                                      _F( NOEUD        = noedis1,
+                                         NOM_GROUP_MA = 'SOU_DIS1' ),
+                                      _F( NOEUD        = noedis2,
+                                         NOM_GROUP_MA = 'SOU_DIS2' ),
                                      ),
                         );
 
@@ -68,7 +70,7 @@ MODELNUM = AFFE_MODELE( MAILLAGE = MAINUM,
                         AFFE  = ( _F( GROUP_MA        = 'TUBE_MA',
                                       PHENOMENE       = 'MECANIQUE',
                                       MODELISATION    = '3D' ),
-                                  _F( GROUP_MA        = ('SOU_MA3D','SOU_DIS',),
+                                  _F( GROUP_MA        = ('SOU_MA3D','SOU_DIS1','SOU_DIS2',),
                                       PHENOMENE       = 'MECANIQUE',
                                       MODELISATION    = 'DIS_T'),
                                 ),
@@ -84,18 +86,34 @@ MATCRAY = DEFI_MATERIAU( ELAS = _F( E   = 210.E9,
 K1 = 2.1E7/4
 K2 = 1.8E6/4
 
+dsym1 = 1.05
+dsym2 = 0.95
+
 CARANUM = AFFE_CARA_ELEM( MODELE  = MODELNUM,
-                          DISCRET = (_F( GROUP_MA = ('SOU_MA3D','SOU_DIS',),
+                          DISCRET = (_F( GROUP_MA = ('SOU_MA3D',),
                                         CARA = 'K_T_D_N',
                                         VALE = (K2, K1, K2),
                                        ),
+                                    _F( GROUP_MA = ('SOU_DIS1',),
+                                        CARA = 'K_T_D_N',
+                                        VALE = (dsym1*K2, K1, K2),
+                                       ),
+                                    _F( GROUP_MA = ('SOU_DIS2',),
+                                        CARA = 'K_T_D_N',
+                                        VALE = (K2, K1, dsym2*K2),
+                                       ),
+
                                        _F( GROUP_MA = 'SOU_MA3D',
                                         CARA = 'M_T_D_N',
                                         VALE = (0.,),
                                        ),
-                                       _F( GROUP_MA = 'SOU_DIS',
+                                       _F( GROUP_MA = ('SOU_DIS1',),
                                         CARA = 'M_T_D_N',
                                         VALE = (1.e-4,),
+                                       ),
+                                       _F( GROUP_MA = ('SOU_DIS2',),
+                                        CARA = 'M_T_D_N',
+                                        VALE = (0.,),
                                        ),
                                    ),
                           );
@@ -128,7 +146,8 @@ MASNUM      = ASSE_MATRICE( MATR_ELEM = MELNUM,
 masse = 0
 #pour casser la symetrie, je rajoute une masse ponctuelle egale au quart de la masse des elements autour du noeud N303
 # soit 0.01% de la masse totale 
-# noeud N303 == group_ma SOU_DIS
+# noeud N303 == group_ma SOU_DIS1
+# noeud N353 == group_ma SOU_DIS2
 if masse:
     MASSE=POST_ELEM(MASS_INER=(_F(TOUT='OUI',),
                                _F(MAILLE='M10594'),
@@ -257,8 +276,8 @@ REGEN = PROJ_MESU_MODAL( MODELE_CALCUL = _F( BASE   = MODEAIR,
                          MODELE_MESURE = _F( MESURE   = MODESEXP,
                                              MODELE   = MODELEXP,
                                              NOM_CHAM = 'EPSI_NOEU'),
-                         RESOLUTION    = _F( METHODE = 'SVD',
-                                             EPS    = 1.0E-5,),
+                      #   RESOLUTION    = _F( METHODE = 'SVD',
+                      #                       EPS    = 1.0E-5,),
                          NOM_PARA      = ('AMOR_GENE','MASS_GENE','AMOR_REDUIT')
                        );
 
@@ -300,8 +319,8 @@ MAC = MAC_MODES( BASE_1 = RESET, BASE_2 = MODEAIR, INFO = 2 );
 # Test du resultat : on verifie (non regression) que l'auto-mac est superieur
 # a 99%
 #vale_calc : valeur calculee sur aster5
-vale_calc = (0.999996052746, 0.999996052746, 0.999893920434,
-            0.999893920364, 0.997765623265, 0.997765622411)
+vale_calc = (0.999996054045, 0.99999605235, 0.9998939495,
+            0.999893936651, 0.997765781308, 0.997764547042)
 
 for ind in range(6):
     TEST_TABLE(REFERENCE='ANALYTIQUE',
