@@ -1,6 +1,6 @@
 subroutine te0056(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ subroutine te0056(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/fointe.h"
+#include "asterfort/fointe_varc.h"
 #include "asterfort/jevech.h"
 !
     character(len=16) :: option, nomte
@@ -85,12 +85,21 @@ subroutine te0056(option, nomte)
         valpar(2) = yy
         valpar(3) = zz
         valpar(4) = zr(itemps)
-        call fointe('FM', zk8(isour), 4, nompar, valpar,&
-                    sounp1, ier)
+        
+!       EC : je voulais mettre fami = RIGI et kpg = kp 
+!       mais il n'y a que FPG1 dans MATER pour cet élément
+        call fointe_varc('FM', 'FPG1', 1, 1, '+',&
+                         zk8(isour), 4, nompar, valpar,&
+                         sounp1, ier)
+!        call fointe('FM', zk8(isour), 4, nompar, valpar,&
+!                    sounp1, ier)
         if (theta .ne. 1.0d0) then
             valpar(4) = zr(itemps) - zr(itemps+1)
-            call fointe('FM', zk8(isour), 4, nompar, valpar,&
-                        soun, ier)
+            call fointe_varc('FM', 'FPG1', 1, 1, '+',&
+                             zk8(isour), 4, nompar, valpar,&
+                             soun, ier)
+!            call fointe('FM', zk8(isour), 4, nompar, valpar,&
+!                        soun, ier)
         else
             soun = 0.d0
         endif

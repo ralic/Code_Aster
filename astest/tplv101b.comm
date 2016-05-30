@@ -29,9 +29,17 @@ MO=AFFE_MODELE(MAILLAGE=MA,
 MAT=DEFI_MATERIAU(THER=_F(LAMBDA=1.000,
                           RHO_CP=0.,),);
 
+NEUT1  = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='AFFE', MAILLAGE=MA,
+                     AFFE=_F(MAILLE=('MB1','MB2','MB3',), NOM_CMP='X1', VALE=1.,))
+
 CHMAT=AFFE_MATERIAU(MAILLAGE=MA,
                     AFFE=_F(TOUT='OUI',
-                            MATER=MAT,),);
+                            MATER=MAT,),
+                    AFFE_VARC = _F(
+                                   MAILLE=('MB1','MB2','MB3',),
+                                     NOM_VARC  = 'NEUT1',
+                                     CHAM_GD   = NEUT1),
+                    );
 
 CH=AFFE_CHAR_THER(MODELE=MO,
                   TEMP_IMPO=(_F(NOEUD='A1',
@@ -51,7 +59,11 @@ H1=DEFI_CONSTANTE(VALE=-1.,);
 
 H2=DEFI_CONSTANTE(VALE=1.,);
 
-S1=DEFI_CONSTANTE(VALE=-5.,);
+#S1=DEFI_CONSTANTE(VALE=-5.,);
+S1=FORMULE(NOM_PARA = ('NEUT1',),
+               VALE     = '-5.*NEUT1',
+                       )
+
 
 CHF1=AFFE_CHAR_THER_F(MODELE=MO,
                      ECHANGE_PAROI=_F(GROUP_MA_1='PAROI_1',

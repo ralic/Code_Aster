@@ -34,7 +34,13 @@ MAIL=LIRE_MAILLAGE(FORMAT='MED', )
 
 TEMP_IMP=DEFI_CONSTANTE(   VALE=0.E0)
 
-SOURCE=DEFI_CONSTANTE(   VALE=1.E6)
+#SOURCE=DEFI_CONSTANTE(   VALE=1.E6)
+
+
+
+SOURCE=FORMULE(NOM_PARA = ('NEUT1',),
+               VALE     = 'NEUT1*1E6',
+                       );    
 
 #
 
@@ -45,8 +51,16 @@ MATE=DEFI_MATERIAU( THER=_F(  LAMBDA = 100.E0,
 # AFFECTATIONS: MATERIAU, MODELE, CHARGEMENT ----------------------
 #
 
+NEUT1  = CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R', OPERATION='AFFE', MAILLAGE=MAIL,
+                     AFFE=_F(TOUT='OUI', NOM_CMP='X1', VALE=1.,))
+
+
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAIL,
-                 AFFE=_F(  TOUT = 'OUI', MATER = MATE) )
+                      AFFE=_F(  TOUT = 'OUI', MATER = MATE),
+                      AFFE_VARC = _F(TOUT = 'OUI',
+                                     NOM_VARC  = 'NEUT1',
+                                     CHAM_GD   = NEUT1),
+                   )
 
 MOTH=AFFE_MODELE(  MAILLAGE=MAIL,
                AFFE=_F( TOUT = 'OUI', MODELISATION = 'PLAN',
