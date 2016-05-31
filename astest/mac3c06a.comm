@@ -32,8 +32,7 @@ MA1=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
 RESU_C1D = CALC_MAC3COEUR(TYPE_COEUR  = 'TEST',
                           TABLE_N     =  DAMAC1,
                           MAILLAGE_N  =  MA1, 
-                          ETAT_INITIAL = _F(TABLE_NP1    =  DAMAC1,
-                                            MAILLAGE_NP1 =  MA1,
+                          ETAT_INITIAL = _F(
                                            UNITE_THYC   = 32, 
                                            NIVE_FLUENCE = 33))
 

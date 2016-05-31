@@ -35,8 +35,6 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
 
          ETAT_INITIAL = FACT(statut='f',max=1,
                           fr=tr("Estimation d'un etat initial a partir d un DAMAC"),
-               TABLE_NP1    = SIMP(statut='o',typ=table_sdaster),         # TABLE INITIALE DES DAMAC A L INSTANT N+1
-               MAILLAGE_NP1 = SIMP(statut='o',typ=maillage_sdaster),      # MAILLAGE EN ATTENDANT MIEUX ???
                UNITE_THYC   = SIMP(statut='f',typ='I', max=1),            # Unite Logique du fichier THYC
                NIVE_FLUENCE =  SIMP(statut='o',typ='R',validators=NoRepeat(),max=1), # FLUENCE MAXIMALE DANS LE COEUR
                TYPE_MAINTIEN = SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),
