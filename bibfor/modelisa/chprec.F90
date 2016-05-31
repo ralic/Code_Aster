@@ -1,7 +1,7 @@
 subroutine chprec(chou)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,7 +102,7 @@ subroutine chprec(chou)
         call dismoi('TYPE_CHAMP', ma//'.COORDO', 'CHAMP', repk=tych)
         call dismoi('NOM_GD', ma//'.COORDO', 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
@@ -126,7 +126,7 @@ subroutine chprec(chou)
         call dismoi('TYPE_CHAMP', ma//'.ABSC_CURV', 'CHAMP', repk=tych)
         call dismoi('NOM_GD', ma//'.ABSC_CURV', 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
@@ -185,7 +185,7 @@ subroutine chprec(chou)
         call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
         call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+        if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
             valk(1) = tychlu
             valk(2) = tych(1:4)
             valk(3) = nomgd
@@ -298,7 +298,7 @@ subroutine chprec(chou)
                 call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
                 call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-                if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+                if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
                     valk(1) = tychlu
                     valk(2) = tych(1:4)
                     valk(3) = nomgd
@@ -331,7 +331,7 @@ subroutine chprec(chou)
             call dismoi('TYPE_CHAMP', chextr, 'CHAMP', repk=tych)
             call dismoi('NOM_GD', chextr, 'CHAMP', repk=nomgd)
 !
-            if ((tychlu(1:4).ne.tych) .or. (tychlu(6:12).ne.nomgd)) then
+            if ((tychlu(1:4).ne.tych) .or. (tychlu(6:).ne.nomgd)) then
                 valk(1) = tychlu
                 valk(2) = tych(1:4)
                 valk(3) = nomgd

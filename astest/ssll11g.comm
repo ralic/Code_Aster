@@ -328,6 +328,28 @@ TEST_TABLE(
            )
 
 #---------------------------------------------------------------------
+simax=CREA_CHAMP(TYPE_CHAM='ELNO_SIEFMX_R',
+                 OPERATION='EXTR',
+                 RESULTAT=RESU1,
+                 NOM_CHAM='SIPM_ELNO')
+
+TEST_RESU(CHAM_ELEM=(
+              _F(REFERENCE='ANALYTIQUE',
+                 CHAM_GD=simax,
+                 NOEUD='A',
+                 NOM_CMP='SIXXMAX',
+                 VALE_CALC=6.93640998346864E+07,
+                 VALE_REFE=6.9364100E7,
+                 MAILLE='AC'),
+              _F(REFERENCE='ANALYTIQUE',
+                 CHAM_GD=simax,
+                 NOEUD='B',
+                 NOM_CMP='SIXXMIN',
+                 VALE_CALC=-3.80666682819326E+07,
+                 VALE_REFE=-3.8066700E7,
+                 MAILLE='BC'),
+                ),
+)
 
 FIN( )
 #

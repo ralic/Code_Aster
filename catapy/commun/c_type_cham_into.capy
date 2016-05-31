@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,28 +14,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: gerald.nicolas at edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 #
-# ce fichier contient la liste des "into" possibles pour le mot cle TYPE_CHAM
-def C_TYPE_CHAM_INTO( type_cham=None ) : #COMMUN#
-# Si aucun argument n'est passe, on utilise tous les types de champs possibles
-  if ( type_cham is None ) :
-    l_cham = ["ELEM", "ELNO", "ELGA", "CART", "NOEU"]
-# Sinon, on n'utilise que les types passes en argument
-  else :
-    l_cham = []
-    for typ in type_cham :
-      l_cham.append(typ)
 
-  l = []
-  for gd in C_NOM_GRANDEUR() :
-    if gd != "VARI_R" :
-       for typ in l_cham :
-          l.append(typ+"_"+gd)
-    else :
-       # il ne peut pas exister NOEU_VARI_R ni CART_VARI_R (il faut utiliser VAR2_R):
-       for typ in l_cham :
-          if typ not in ("CART", "NOEU") :
-             l.append(typ+"_"+gd)
+def C_TYPE_CHAM_INTO( type_cham=None ):
+    """Retourne la liste des valeurs possibles pour le mot-clef TYPE_CHAM"""
+    type_cham = type_cham or ["ELEM", "ELNO", "ELGA", "CART", "NOEU"]
 
-  return tuple(l)
+    types = []
+    for phys in C_NOM_GRANDEUR() :
+        if phys != "VARI_R" :
+            for typ in type_cham :
+                types.append(typ + "_" + phys)
+        else :
+            # il ne peut pas exister NOEU_VARI_R ni CART_VARI_R (il faut utiliser VAR2_R):
+            for typ in type_cham :
+                if typ not in ("CART", "NOEU") :
+                    types.append(typ + "_" + phys)
+    return tuple(types)
