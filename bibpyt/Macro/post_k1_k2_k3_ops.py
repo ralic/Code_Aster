@@ -173,15 +173,16 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
                         k_retenu.append(k + i)
                         trouve = 1
                     k = k + 1 * sign
-            if len(k_retenu) > 1:
+            assert len(k_retenu) <= 2
+            if len(k_retenu) == 2:
                 distance_gauche = abs(
                     abscisses_expand[i] - abscisses_expand[k_retenu[0]])
                 distance_droite = abs(
                     abscisses_expand[i] - abscisses_expand[k_retenu[1]])
                 if (distance_gauche < distance_droite):
-                    k_retenu.remove[1]
+                    k_retenu = [k_retenu[0]]
                 else:
-                    k_retenu.remove[0]
+                    k_retenu = [k_retenu[1]]
 
             K1[i] = K1[k_retenu[0]]
             ERR_K1[i] = ERR_K1[k_retenu[0]]
