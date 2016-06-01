@@ -394,8 +394,8 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         sigmp(k)=deuxmu/deumum*(sigm(k)-sigmmo*kron(k)) + troisk/troikm*sigmmo*kron(k)
     end do
 !
-!     -- 6 CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ ET SEUIL :
-!     -------------------------------------------------------
+!     -- 6-a CALCUL DE SIGMMO, SIGMDV, SIGEL, SIELEQ
+!     --------------------------------------------
     sigmmo = 0.d0
     do k = 1, 3
         sigmmo = sigmmo + sigmp(k)
@@ -408,6 +408,12 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod,&
         sieleq = sieleq + sigel(k)**2
     end do
     sieleq = sqrt(1.5d0*sieleq)
+!
+!     -- 6-b CALCUL DU SEUIL ET TRAITEMENT DU CAS DE LA QUASI-EGALITE
+!     ---------------------------------------------------------------
+    if (abs(sieleq-rp) .le. r8prem()*rp) then
+        sieleq = rp
+    endif
     seuil = sieleq - rp
 !
 !     -- 7 CALCUL DE SIGP,SIGPDV,VIP,DP,RP:
