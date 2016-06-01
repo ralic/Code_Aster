@@ -1,7 +1,7 @@
 subroutine getvid(motfac, motcle, iocc, nbval, vect,&
                   scal, nbret, isdefault)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,10 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect,&
     integer, intent(out), optional :: isdefault
 #include "asterc/getvid_wrap.h"
 #include "asterfort/assert.h"
+#include "asterc/getres.h"
+    character(len=16) :: result
+    character(len=16) :: concep
+    character(len=16) :: nomcmd
 !
 !   really used variables
     integer :: uioc, uisdef, unbret, umax
@@ -68,7 +72,11 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect,&
     endif
 !   if the ".capy" can not ensure the at least 'umax' are provided, you must check
 !   the number of values really read using the 'nbret' argument
-!    ASSERT(present(nbret) .or. (umax .eq. unbret) .or. (unbret < 0))
+    ! ASSERT(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))
+    if (.not.(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))) then
+        call getres(result, concep, nomcmd)
+        write(6,*) "ERROR|getvid|",nomcmd,"|",motfac,"|",motcle,"|",umax,"|",unbret
+    endif
 !
     if (present(isdefault)) then
         isdefault = uisdef
