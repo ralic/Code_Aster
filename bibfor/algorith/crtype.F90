@@ -2,7 +2,7 @@ subroutine crtype()
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,12 +82,12 @@ subroutine crtype()
 !
     aster_logical :: lncas, lfonc, lcopy
 !
-    real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq, amor_red
+    real(kind=8) :: valpu(mxpara), rbid, tps, prec, valrr(3), freq, amor_red, coef(3)
     complex(kind=8) :: cbid
 !
     character(len=4) :: typabs
     character(len=6) :: typegd
-    character(len=8) :: k8b, resu, nomf, noma, typmod, criter, matr, nogdsi
+    character(len=8) :: k8b, resu, nomf, noma, typmod, criter, matr, nogdsi, axe
     character(len=8) :: modele, materi, carele, blan8, noma2
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
@@ -326,6 +326,40 @@ subroutine crtype()
                 call rsadpa(resu, 'E', 1, 'TYPE_DEFO', numini,&
                             0, sjv=iad, styp=k8b)
                 zk16(iad) = 'PROPRE'
+            endif
+!           pour COMB_SISM_MODAL/MODE_CORR
+            call getvtx('AFFE', 'AXE', iocc=iocc, scal=axe, nbret=n0)
+            if (n0 .ne. 0) then
+                call rsadpa(resu, 'E', 1, 'NOEUD_CMP', numini,&
+                            0, sjv=iad, styp=k8b)
+                if (axe(1:1).eq.'X')then
+                    zk16(iad) = 'ACCE    X       '
+                    coef(1) = 1.d0
+                    coef(2) = 0.d0
+                    coef(3) = 0.d0
+                else if (axe(1:1).eq.'Y')then
+                    zk16(iad) = 'ACCE    Y       '
+                    coef(1) = 0.d0
+                    coef(2) = 1.d0
+                    coef(3) = 0.d0
+                else if (axe(1:1).eq.'Z')then
+                    zk16(iad) = 'ACCE    Z       '
+                    coef(1) = 0.d0
+                    coef(2) = 0.d0
+                    coef(3) = 1.d0
+                endif
+                call rsadpa(resu, 'E', 1, 'COEF_X', numini,&
+                            0, sjv=iad, styp=k8b)
+                zr(iad) = coef(1)
+                call rsadpa(resu, 'E', 1, 'COEF_Y', numini,&
+                            0, sjv=iad, styp=k8b)
+                zr(iad) = coef(2)
+                call rsadpa(resu, 'E', 1, 'COEF_Z', numini,&
+                            0, sjv=iad, styp=k8b)
+                zr(iad) = coef(3)
+                call rsadpa(resu, 'E', 1, 'TYPE_DEFO', numini,&
+                            0, sjv=iad, styp=k8b)
+                zk16(iad) = 'ACCE_IMPO'
             endif
 !
             call getvr8('AFFE', 'AMOR_REDUIT', iocc=iocc, scal=amor_red, nbret=n0)
