@@ -1,4 +1,4 @@
-subroutine cazocp(sdcont)
+subroutine cazocp(sdcont, model)
 !
 implicit none
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,11 +54,13 @@ implicit none
     real(kind=8) :: geom_resi, frot_resi
     aster_logical :: l_cont_gcp, l_newt_fr
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_mesh
+    aster_logical :: l_mortar
     character(len=16) :: lissage, coef_adap
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
+    integer, pointer :: xfem_cont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -317,10 +320,16 @@ implicit none
 ! - XFEM formulation
 !
     if (l_cont_xfem) then
+!       Is the mortar formulation in use ?
+        call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
+        l_mortar = xfem_cont(1).eq.2
+!
         call getvtx(' ', 'ELIM_ARETE', scal=elim_edge)
         if (elim_edge .eq. 'DUAL') then
             v_sdcont_paraci(29) = 0
         else if (elim_edge .eq. 'ELIM') then
+!           ELIM_ARETE='ELIM' is incompatiple with mortar formulation
+            if (l_mortar) call utmess('F', 'XFEM_62')
             v_sdcont_paraci(29) = 1
         else
             ASSERT(.false.)

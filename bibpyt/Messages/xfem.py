@@ -449,6 +449,12 @@ Utilisez ELIM_ARETE='DUAL'.
      par CALC_G a sens physique pour le problème à résoudre.
 """),
 
+    62: _(u"""
+Le modèle X-FEM utilise la formulation mortier pour le contact (CONTACT='MORTAR').
+Il est interdit d'utiliser ELIM_ARETE='ELIM' avec cette formulation.
+Utilisez ELIM_ARETE='DUAL'.
+"""),
+
     63: _(u"""
   -> ---Éléments XFEM quadratiques 2D---
        Un sous élément est découpé par la courbe d'isovaleur zéro de la level-set normale en deux endroits
