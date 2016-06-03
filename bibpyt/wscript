@@ -94,8 +94,9 @@ def get_revision_info_cmd(from_rev=None, rev="."):
     # search official branch
     frbr = "?"
     while brs:
-        if brs[-1] in BR:
-            frbr = brs[-1]
+        br_i = brs.pop()
+        if br_i in BR:
+            frbr = br_i
             break
     # search last tag
     vers = "?"
