@@ -24,6 +24,7 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmelem_data_c.h"
+#include "asterfort/mmelem_data_l.h"
 #include "asterfort/mmimp2.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mmlige.h"
@@ -73,7 +74,7 @@ implicit none
     integer :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
     aster_logical :: l_cont_cont, l_cont_lac
     character(len=8) :: cont_geom_name, cont_elem_name, frot_elem_name
-    character(len=19) :: ligrcf
+    character(len=19) :: ligrcf, sdappa
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_cnt_cont(:) => null()
     integer, pointer :: v_cnt_frot(:) => null()
@@ -86,8 +87,8 @@ implicit none
     integer, pointer :: v_ligrcf_nbno(:) => null()
     integer, pointer :: v_ligrcf_nema(:) => null()
     integer, pointer :: v_ligrcf_liel(:) => null()
-!   character(len=24) :: sdcont_aplist
-!   integer, pointer :: v_sdcont_aplist(:) => null()
+    character(len=24) :: sdappa_apli
+    integer, pointer :: v_sdappa_apli(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,12 +98,15 @@ implicit none
 !
     l_renumber   = ds_contact%l_renumber
 !
+! - Get pairing datastructure
+!
+    sdappa       = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
 ! - Get parameters
 !
     l_axi        = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = .false._1
-!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Print
 !
@@ -124,9 +128,8 @@ implicit none
         call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
         ztabf = cfmmvd('ZTABF')
     else if (l_cont_lac) then
-        ASSERT(.false.)
-!       sdcont_aplist = ds_contact%sdcont_solv(1:14)//'.APLIST'
-!       call jeveuo(sdcont_aplist, 'L', vi = v_sdcont_aplist)
+        sdappa_apli = sdappa(1:19)//'.APLI'
+        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
     endif
 !
 ! - <LIGREL> for contact elements
@@ -163,9 +166,8 @@ implicit none
             elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
-            ASSERT(.false.)
-!           elem_slav_nume = v_sdcont_aplist(3*(i_cont_elem-1)+1)
-!           elem_mast_nume = v_sdcont_aplist(3*(i_cont_elem-1)+2)   
+            elem_slav_nume = v_sdappa_apli(3*(i_cont_elem-1)+1)
+            elem_mast_nume = v_sdappa_apli(3*(i_cont_elem-1)+2)   
         endif
 !
 ! ----- Check number of nodes
@@ -226,10 +228,9 @@ implicit none
                                    cont_geom_name_ = cont_geom_name,&
                                    cont_elem_name_ = cont_elem_name)
             else
-                ASSERT(.false.)
-!               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
-!                                  cont_geom_name_ = cont_geom_name,&
-!                                  cont_elem_name_ = cont_elem_name)
+                call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
+                                   cont_geom_name_ = cont_geom_name,&
+                                   cont_elem_name_ = cont_elem_name)
             endif
 !
 ! --------- Index of contact element in catalog
@@ -248,9 +249,8 @@ implicit none
                         i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        ASSERT(.false.)
-!                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
-!                       l_frot = .false._1 
+                        i_zone = v_sdappa_apli(3*(i_cont_elem-1)+3)
+                        l_frot = .false._1 
                     endif
                     if (.not.l_frot) then
                         jco = jco + 1
@@ -276,10 +276,9 @@ implicit none
                                    cont_geom_name_ = cont_geom_name,&
                                    frot_elem_name_ = frot_elem_name)
             else
-                ASSERT(.false.)
-!               call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
-!                                  cont_geom_name_ = cont_geom_name,&
-!                                  frot_elem_name_ = frot_elem_name)
+                call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
+                                   cont_geom_name_ = cont_geom_name,&
+                                   frot_elem_name_ = frot_elem_name)
             endif
 !
 ! --------- Index of friction element in catalog
@@ -298,9 +297,8 @@ implicit none
                         i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
                         l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        ASSERT(.false.)
-!                       i_zone = v_sdcont_aplist(3*(i_cont_elem-1)+3)
-!                       l_frot = .false._1 
+                        i_zone = v_sdappa_apli(3*(i_cont_elem-1)+3)
+                        l_frot = .false._1 
                     endif
                     if (l_frot) then
                         jco = jco + 1

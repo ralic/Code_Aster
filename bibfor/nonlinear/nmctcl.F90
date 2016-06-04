@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/xmligr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ implicit none
 !
 ! - Create elements for contact
 !
-    if (cont_form .eq. 2) then
+    if (cont_form .eq. 2 .or. cont_form .eq. 5) then
         call mmligr(mesh, model, ds_contact)
     elseif  (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
