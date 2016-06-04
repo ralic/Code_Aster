@@ -1,16 +1,15 @@
-subroutine mmappa(mesh, ds_contact)
+subroutine mminit_lac(mesh, ds_contact, nume_inst, ds_measure)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/apcalc.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/mmapre.h"
-#include "asterfort/mmpoin.h"
+#include "asterfort/mmbouc.h"
+#include "asterfort/mmapin.h"
+!#include "asterfort/mmopti_lac.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,62 +27,54 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer, intent(in) :: nume_inst
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Pairing 
+! LAC method - Initializations
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
+! In  nume_inst        : index of current step time
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    aster_logical :: l_cont_lac, l_cont_cont
+    aster_logical :: l_cont_allv, l_step_first
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('CONTACT', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
-    endif
+    l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
+    ASSERT(.not.l_cont_allv)
 !
-! - Get parameters
+! - Using *_INIT options (like SEUIL_INIT)
 !
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-!    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_lac   = .false._1
+    l_step_first = nume_inst .eq. 1
 !
-! - Pairing
+! - Geometric loop counter initialization
 !
-    if (l_cont_cont) then
+    call mmbouc(ds_contact, 'Geom', 'Init_Counter')
 !
-! ----- Set pairing datastructure
+! - First geometric loop counter
 !
-        call mmpoin(mesh, ds_contact)
+    call mmbouc(ds_contact, 'Geom', 'Incr_Counter')
 !
-! ----- Pairing
+! - Initial pairing
 !
-        call apcalc('N_To_S', mesh, ds_contact)
+    call mmapin(mesh, ds_contact, ds_measure)
 !
-! ----- Save pairing in contact datastructures
+! - Initial options
 !
-        call mmapre(mesh, ds_contact)
-    elseif (l_cont_lac) then
-!
-! ----- Pairing
-!
-!       call apcalc('S_To_S', mesh, ds_contact)
-    else
-        ASSERT(.false.)
+    if (.not.l_cont_allv .and. l_step_first) then
+!       call mmopti_lac()
     endif
 !
 end subroutine

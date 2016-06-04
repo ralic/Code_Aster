@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/xminit.h"
 #include "asterfort/mminit.h"
+#include "asterfort/mminit_lac.h"
 #include "asterfort/cfinit.h"
 !
 ! ======================================================================
@@ -59,13 +60,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_xfem
+    aster_logical :: l_cont_disc, l_cont_allv, l_cont_cont, l_cont_xfem, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_disc = isfonc(list_func_acti,'CONT_DISCRET')
     l_cont_cont = isfonc(list_func_acti,'CONT_CONTINU')
     l_cont_xfem = isfonc(list_func_acti,'CONT_XFEM')
+    !l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
+    l_cont_lac  = .false._1
     l_cont_allv = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !    
     if (.not.l_cont_allv) then
@@ -81,6 +84,12 @@ implicit none
         if (l_cont_cont) then
             call mminit(mesh  , ds_contact, sddyna, hat_valinc, ds_measure,&
                         sdnume, nume_inst)
+        endif
+!
+! ----- For continue contact (LAC methoe)
+!
+        if (l_cont_lac) then
+!            call mminit_lac(mesh, ds_contact, nume_inst, ds_measure)
         endif
 !
 ! ----- For XFEM contact
