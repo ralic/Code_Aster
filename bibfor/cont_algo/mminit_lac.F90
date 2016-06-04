@@ -1,4 +1,5 @@
-subroutine mminit_lac(mesh, ds_contact, nume_inst, ds_measure)
+subroutine mminit_lac(mesh     , ds_contact, hat_valinc, ds_measure, sdnume,&
+                      nume_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -9,7 +10,10 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mmapin.h"
-!#include "asterfort/mmopti_lac.h"
+#include "asterfort/misazl.h"
+#include "asterfort/copisd.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/mmopti_lac.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,8 +34,10 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    character(len=19), intent(in) :: hat_valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    character(len=19), intent(in) :: sdnume
+    integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,21 +49,39 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
-! In  nume_inst        : index of current step time
+! In  hat_valinc       : hat variable for algorithm fields
 ! IO  ds_measure       : datastructure for measure and statistics management
+! In  sdnume           : name of dof positions datastructure
+! In  nume_inst        : index of current step time
 !
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_allv, l_step_first
+    character(len=19) :: sdcont_depgeo, disp_prev, sdcont_depini
 !
 ! --------------------------------------------------------------------------------------------------
-!
+!    
     l_cont_allv  = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     ASSERT(.not.l_cont_allv)
 !
 ! - Using *_INIT options (like SEUIL_INIT)
 !
     l_step_first = nume_inst .eq. 1
+!
+! - Get field names in hat-variables
+!
+    call nmchex(hat_valinc, 'VALINC', 'DEPMOI', disp_prev)
+!
+! - Lagrangians initialized (LAMBDA TOTAUX)
+!
+    sdcont_depini = ds_contact%sdcont_solv(1:14)//'.INIT'
+    call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depini)
+    call misazl(sdnume, disp_prev)
+!
+! - Save displacements for geometric loop
+!
+    sdcont_depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
+    call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depgeo)
 !
 ! - Geometric loop counter initialization
 !
@@ -74,7 +98,7 @@ implicit none
 ! - Initial options
 !
     if (.not.l_cont_allv .and. l_step_first) then
-!       call mmopti_lac()
+       call mmopti_lac(mesh, ds_contact)
     endif
 !
 end subroutine

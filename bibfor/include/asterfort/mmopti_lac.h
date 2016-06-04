@@ -15,15 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine mminit_lac(mesh     , ds_contact, hat_valinc, ds_measure, sdnume,&
-                          nume_inst)
+    subroutine mmopti_lac(mesh, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19), intent(in) :: hat_valinc(*)
-        type(NL_DS_Measure), intent(inout) :: ds_measure
-        character(len=19), intent(in) :: sdnume
-        integer, intent(in) :: nume_inst
-    end subroutine mminit_lac
+        type(NL_DS_Contact), intent(in) :: ds_contact
+    end subroutine mmopti_lac
 end interface
