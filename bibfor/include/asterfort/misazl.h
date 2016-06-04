@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine misazl(sdnume, vecinc)
+    subroutine misazl(ds_contact, sdnume, vector)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sdnume
-        character(len=19), intent(in) :: vecinc
+        character(len=19), intent(in) :: vector
     end subroutine misazl
 end interface

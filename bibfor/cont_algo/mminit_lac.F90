@@ -76,7 +76,7 @@ implicit none
 !
     sdcont_depini = ds_contact%sdcont_solv(1:14)//'.INIT'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depini)
-    call misazl(sdnume, disp_prev)
+    call misazl(ds_contact, sdnume, disp_prev)
 !
 ! - Save displacements for geometric loop
 !

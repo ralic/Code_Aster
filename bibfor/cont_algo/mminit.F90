@@ -105,10 +105,10 @@ implicit none
 !
     sdcont_depini = ds_contact%sdcont_solv(1:14)//'.INIT'
     call copisd('CHAMP_GD', 'V', disp_prev, sdcont_depini)
-    call misazl(sdnume, disp_prev)
+    call misazl(ds_contact, sdnume, disp_prev)
     if (l_dyna) then
-        call misazl(sdnume, acce_curr)
-        call misazl(sdnume, vite_curr)
+        call misazl(ds_contact, sdnume, acce_curr)
+        call misazl(ds_contact, sdnume, vite_curr)
     endif
 !
 ! - Management of status for time cut

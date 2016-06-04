@@ -1,15 +1,11 @@
-subroutine nmnume(model   , result, compor, list_load, ds_contact,&
-                  nume_dof, sdnume)
+subroutine misazl(ds_contact, sdnume, vector)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/nmprof.h"
-#include "asterfort/nuendo.h"
-#include "asterfort/nunuco.h"
-#include "asterfort/nurota.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,62 +21,54 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=24), intent(in) :: model
-    character(len=8), intent(in) :: result
-    character(len=24), intent(in) :: compor
-    character(len=19), intent(in) :: list_load
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24), intent(out) :: nume_dof
     character(len=19), intent(in) :: sdnume
+    character(len=19), intent(in) :: vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Non-linear algorithm - Initializations
+! Contact - Solve
 !
-! Create information about numbering
+! Continue method - Set Lagrangians to zero in unknowns vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model            : name of model datastructure
-! In  result           : name of result datastructure (EVOL_NOLI)
-! In  compor           : name of <CARTE> COMPOR
-! In  list_load        : list of loads
 ! In  ds_contact       : datastructure for contact management
-! Out nume_dof         : name of numbering object (NUME_DDL)
-! In  sdnume           : name of dof positions datastructure
+! In  sdnume           : datastructure for dof positions
+! In  vector           : name of vector to modify
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: sdnuro, sdnuen, sdnuco
+    integer :: i_equa, nb_equa, nt_patch
+    character(len=24) :: sdnuco
+    integer, pointer :: p_nuco(:) => null()
+    real(kind=8), pointer :: p_vale(:) => null()
+    character(len=24) :: sdcont_lagc
+    real(kind=8), pointer :: v_sdcont_lagc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-!
-! - Create numbering 
-!
-    call nmprof(model               , result, list_load, nume_dof,&
-                ds_contact%iden_rela)
-!
-! - Get position of large rotation dof
-!
-    sdnuro = sdnume(1:19)//'.NDRO'
-    call nurota(model, nume_dof, compor, sdnuro)
-!
-! - Get position of damaged dof 
-!
-    sdnuen = sdnume(1:19)//'.ENDO'
-    call nuendo(model, nume_dof, sdnuen)
-!
-! - Get position of contact dof 
-!
+    call jeveuo(vector//'.VALE', 'E', vr = p_vale)
+    call jelira(vector//'.VALE', 'LONMAX', nb_equa)
     sdnuco = sdnume(1:19)//'.NUCO'
-    if (ds_contact%l_form_cont .or. ds_contact%l_form_lac) then
-        call nunuco(nume_dof, sdnuco)
-    endif  
+    call jeveuo(sdnuco, 'L', vi = p_nuco)
+    do i_equa = 1, nb_equa
+        if (p_nuco(i_equa) .eq. 1) then
+            p_vale(i_equa) = 0.d0
+        endif
+    end do
+!
+! - For LAC method
+!
+    if (ds_contact%l_form_lac) then
+        nt_patch    = ds_contact%nt_patch
+        sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
+        call jeveuo(sdcont_lagc, 'E', vr = v_sdcont_lagc)
+        v_sdcont_lagc(1:nt_patch) = 0.d0
+    endif
 !
 end subroutine
