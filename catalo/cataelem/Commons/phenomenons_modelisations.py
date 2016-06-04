@@ -1841,7 +1841,45 @@ phen.add('CABLE_POULIE', Modelisation(dim=(1,3), code='CAP',
 # Modelisations sous-terraines pour le contact/frottement en methode "continue" :
 #------------------------------------------------------------------------------------
 
-phen.add('CF_CONT1', Modelisation(dim=(2,3), code='CC1',
+#-- Define SLAVE elements for CONTINUE method (in DEFI_CONTACT) - Contact
+
+phen.add('CONT_SL_2D', Modelisation(dim=(1,2), code='CT2',
+    elements=(
+        (MT.SEG2      , EL.COS2E2D),
+        (MT.SEG3      , EL.COS3E2D),
+    )))
+
+phen.add('CONT_SL_3D', Modelisation(dim=(2,3), code='CT3',
+    elements=(
+        (MT.TRIA3     , EL.COT3E3D),
+        (MT.QUAD4     , EL.COQ4E3D),
+        (MT.QUAD8     , EL.COQ8E3D),
+        (MT.TRIA6     , EL.COT6E3D),
+        (MT.QUAD9     , EL.COQ9E3D),
+        (MT.SEG2      , EL.COP2E3D),
+    )))
+
+#-- Define SLAVE elements for CONTINUE method (in DEFI_CONTACT) - Friction
+
+phen.add('FRIC_SL_2D', Modelisation(dim=(1,2), code='CF2',
+    elements=(
+        (MT.SEG2      , EL.CFS2E2D),
+        (MT.SEG3      , EL.CFS3E2D),
+    )))
+
+phen.add('FRIC_SL_3D', Modelisation(dim=(2,3), code='CF3',
+    elements=(
+        (MT.TRIA3     , EL.CFT3E3D),
+        (MT.QUAD4     , EL.CFQ4E3D),
+        (MT.QUAD8     , EL.CFQ8E3D),
+        (MT.TRIA6     , EL.CFT6E3D),
+        (MT.QUAD9     , EL.CFQ9E3D),
+        (MT.SEG2      , EL.CFP2E3D),
+    )))
+
+#-- Define CONTACT elements for CONTINUE method (in STAT_NON_LINE) - Contact
+
+phen.add('CONT_EL_3D1', Modelisation(dim=(2,3), code='CC1',
     attrs=(
         (AT.CONTACT,'OUI'),
     ),
@@ -1883,7 +1921,15 @@ phen.add('CF_CONT1', Modelisation(dim=(2,3), code='CC1',
         (MT.TRIA66    , EL.COT6T6),
     )))
 
-phen.add('CF_CONT2', Modelisation(dim=(1,2), code='CC2',
+phen.add('CONT_EL_3D2', Modelisation(dim=(1,2), code='CC4',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22     , EL.COP2P2),
+    )))
+
+phen.add('CONT_EL_2D1', Modelisation(dim=(1,2), code='CC2',
     attrs=(
         (AT.CONTACT,'OUI'),
     ),
@@ -1894,7 +1940,7 @@ phen.add('CF_CONT2', Modelisation(dim=(1,2), code='CC2',
         (MT.SEG33     , EL.COS3S3),
     )))
 
-phen.add('CF_CONT3', Modelisation(dim=(1,2), code='CC3',
+phen.add('CONT_EL_2D2', Modelisation(dim=(1,2), code='CC3',
     attrs=(
         (AT.CONTACT,'OUI'),
         (AT.AXIS,'OUI'),
@@ -1906,15 +1952,9 @@ phen.add('CF_CONT3', Modelisation(dim=(1,2), code='CC3',
         (MT.SEG33     , EL.COS3S3A),
     )))
 
-phen.add('CF_CONT4', Modelisation(dim=(1,2), code='CC4',
-    attrs=(
-        (AT.CONTACT,'OUI'),
-    ),
-    elements=(
-        (MT.SEG22     , EL.COP2P2),
-    )))
+#-- Define CONTACT elements for CONTINUE method (in STAT_NON_LINE) - Friction
 
-phen.add('CF_CONT5', Modelisation(dim=(2,3), code='CC5',
+phen.add('FRIC_EL_3D1', Modelisation(dim=(2,3), code='CC5',
     attrs=(
         (AT.CONTACT,'OUI'),
         (AT.FROTTEMENT,'OUI'),
@@ -1957,7 +1997,16 @@ phen.add('CF_CONT5', Modelisation(dim=(2,3), code='CC5',
         (MT.TRIA66    , EL.CFT6T6),
     )))
 
-phen.add('CF_CONT6', Modelisation(dim=(1,2), code='CC6',
+phen.add('FRIC_EL_3D2', Modelisation(dim=(1,2), code='CC8',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+        (AT.FROTTEMENT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22     , EL.CFP2P2),
+    )))
+
+phen.add('FRIC_EL_2D1', Modelisation(dim=(1,2), code='CC6',
     attrs=(
         (AT.CONTACT,'OUI'),
         (AT.FROTTEMENT,'OUI'),
@@ -1969,7 +2018,7 @@ phen.add('CF_CONT6', Modelisation(dim=(1,2), code='CC6',
         (MT.SEG33     , EL.CFS3S3),
     )))
 
-phen.add('CF_CONT7', Modelisation(dim=(1,2), code='CC7',
+phen.add('FRIC_EL_2D2', Modelisation(dim=(1,2), code='CC7',
     attrs=(
         (AT.CONTACT,'OUI'),
         (AT.FROTTEMENT,'OUI'),
@@ -1980,15 +2029,6 @@ phen.add('CF_CONT7', Modelisation(dim=(1,2), code='CC7',
         (MT.SEG23     , EL.CFS2S3A),
         (MT.SEG32     , EL.CFS3S2A),
         (MT.SEG33     , EL.CFS3S3A),
-    )))
-
-phen.add('CF_CONT8', Modelisation(dim=(1,2), code='CC8',
-    attrs=(
-        (AT.CONTACT,'OUI'),
-        (AT.FROTTEMENT,'OUI'),
-    ),
-    elements=(
-        (MT.SEG22     , EL.CFP2P2),
     )))
 
 #------------------------------------------------------------------------------------
@@ -2015,23 +2055,7 @@ phen.add('CL_FNODCQ2', Modelisation(dim=(0,2), code='CL6',
     elements=(
         (MT.POI1      , EL.FORCE_NOD_COQ2D),
     )))
-#------------------------------------------------------------------------------------
 
-phen.add('CONT_2D', Modelisation(dim=(1,2), code='CT2',
-    elements=(
-        (MT.SEG2      , EL.COS2E2D),
-        (MT.SEG3      , EL.COS3E2D),
-    )))
-
-phen.add('CONT_3D', Modelisation(dim=(2,3), code='CT3',
-    elements=(
-        (MT.TRIA3     , EL.COT3E3D),
-        (MT.QUAD4     , EL.COQ4E3D),
-        (MT.QUAD8     , EL.COQ8E3D),
-        (MT.TRIA6     , EL.COT6E3D),
-        (MT.QUAD9     , EL.COQ9E3D),
-        (MT.SEG2      , EL.COP2E3D),
-    )))
 #------------------------------------------------------------------------------------
 
 phen.add('COQUE_3D', Modelisation(dim=(2,3), code='CQ3',
@@ -3330,22 +3354,6 @@ phen.add('FLUI_STRU', Modelisation(dim=(3,3), code='FLS',
         (MT.TRIA6     , EL.MEFS_FACE6),
         (MT.QUAD8     , EL.MEFS_FACE8),
         (MT.QUAD9     , EL.MEFS_FACE9),
-    )))
-
-phen.add('FROT_2D', Modelisation(dim=(1,2), code='CF2',
-    elements=(
-        (MT.SEG2      , EL.CFS2E2D),
-        (MT.SEG3      , EL.CFS3E2D),
-    )))
-
-phen.add('FROT_3D', Modelisation(dim=(2,3), code='CF3',
-    elements=(
-        (MT.TRIA3     , EL.CFT3E3D),
-        (MT.QUAD4     , EL.CFQ4E3D),
-        (MT.QUAD8     , EL.CFQ8E3D),
-        (MT.TRIA6     , EL.CFT6E3D),
-        (MT.QUAD9     , EL.CFQ9E3D),
-        (MT.SEG2      , EL.CFP2E3D),
     )))
 
 phen.add('GRILLE_EXCENTRE', Modelisation(dim=(2,3), code='GRC',

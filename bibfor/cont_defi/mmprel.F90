@@ -102,15 +102,15 @@ implicit none
             l_veri = mminfl(sdcont_defi,'VERIF',i_zone)
             if (model_ndim .eq. 2) then
                 if (l_frot_zone) then
-                    modeli = 'FROT_2D'
+                    modeli = 'FRIC_SL_2D'
                 else
-                    modeli = 'CONT_2D'
+                    modeli = 'CONT_SL_2D'
                 endif
             else if (model_ndim.eq. 3) then
                 if (l_frot_zone) then
-                    modeli = 'FROT_3D'
+                    modeli = 'FRIC_SL_3D'
                 else
-                    modeli = 'CONT_3D'
+                    modeli = 'CONT_SL_3D'
                 endif
             else
                 ASSERT(.false.)
