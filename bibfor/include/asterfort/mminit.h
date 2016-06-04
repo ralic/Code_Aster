@@ -17,15 +17,14 @@
 !
 interface
     subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, ds_measure,&
-                      sdnume, nume_dof  , nume_inst)
+                      sdnume, nume_inst)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19), intent(in) :: hat_valinc(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddyna
-        character(len=19), intent(in) :: sdnume    
-        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(in) :: sdnume
         integer, intent(in) :: nume_inst
     end subroutine mminit
 end interface

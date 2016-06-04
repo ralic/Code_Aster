@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmmcv(mesh     , model_   , nume_dof  , list_func_acti, iter_newt ,&
-                      nume_inst, sddyna   , ds_measure, sddisc        ,&
-                      sderro   , hval_incr, hval_algo , ds_print      , ds_contact)
+    subroutine cfmmcv(mesh     , model_    , list_func_acti, iter_newt, nume_inst,&
+                      sddyna   , ds_measure, sddisc       , sderro   , hval_incr,&
+                      hval_algo, ds_print  , ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model_
-        character(len=24), intent(in) :: nume_dof
         integer, intent(in) :: list_func_acti(*)
         integer, intent(in) :: iter_newt
         integer, intent(in) :: nume_inst 

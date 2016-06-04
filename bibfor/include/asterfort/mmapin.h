@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmapin(mesh, ds_contact, nume_dof, ds_measure)
+    subroutine mmapin(mesh, ds_contact, ds_measure)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        type(NL_DS_Measure), intent(inout) :: ds_measure   
-        character(len=24), intent(in) :: nume_dof
+        type(NL_DS_Measure), intent(inout) :: ds_measure
     end subroutine mmapin
 end interface

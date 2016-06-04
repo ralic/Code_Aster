@@ -1,6 +1,5 @@
-subroutine mmbclc(mesh     , model     , nume_dof  , iter_newt, nume_inst,&
-                  sddisc   , sddyna    , ds_measure, hval_incr,&
-                  hval_algo, ds_contact)
+subroutine mmbclc(mesh  , model , iter_newt, nume_inst, ds_measure,&
+                  sddisc, sddyna, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -38,7 +37,6 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: iter_newt
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
@@ -58,7 +56,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  iter_newt        : index of current Newton iteration
 ! In  nume_inst        : index of current time step
 ! In  sddisc           : datastructure for time discretization
@@ -101,7 +98,7 @@ implicit none
 !
         if (l_newt_geom) then
             call copisd('CHAMP_GD', 'V', disp_curr, sdcont_depgeo)
-            call mmctcg(mesh, ds_contact, nume_dof, ds_measure)
+            call mmctcg(mesh, ds_contact, ds_measure)
         endif
 !
 ! ----- Start timer for preparation of contact

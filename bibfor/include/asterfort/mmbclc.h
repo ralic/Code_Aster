@@ -18,13 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmbclc(mesh     , model     , nume_dof  , iter_newt, nume_inst,&
-                      sddisc   , sddyna    , ds_measure, hval_incr,&
-                      hval_algo, ds_contact)
+    subroutine mmbclc(mesh  , model , iter_newt, nume_inst, ds_measure,&
+                      sddisc, sddyna, hval_incr, hval_algo, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: nume_dof
         integer, intent(in) :: iter_newt
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: sddisc

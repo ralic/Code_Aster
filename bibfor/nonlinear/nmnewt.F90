@@ -199,7 +199,7 @@ implicit none
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
     call nmible(niveau, modele, noma      , ds_contact,&
-                fonact, numedd, ds_measure, ds_print)
+                fonact, ds_measure, ds_print)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
 !

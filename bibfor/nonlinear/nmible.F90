@@ -1,5 +1,5 @@
-subroutine nmible(cont_loop     , model   , mesh      , ds_contact,&
-                  list_func_acti, nume_dof, ds_measure, ds_print)
+subroutine nmible(cont_loop     , model     , mesh      , ds_contact,&
+                  list_func_acti, ds_measure, ds_print)
 !
 use NonLin_Datastructure_type
 !
@@ -35,7 +35,6 @@ implicit none
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
     integer, intent(in):: list_func_acti(*)
-    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
 !
@@ -56,7 +55,6 @@ implicit none
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
 ! In  list_func_acti   : list of active functionnalities
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IO  ds_print         : datastructure for printing parameters
 !
@@ -94,7 +92,7 @@ implicit none
         if (l_loop_geom) then
             cont_loop = 3
             if (l_pair) then
-                call nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
+                call nmctcg(model, mesh, ds_contact, ds_measure)
             endif
         endif
         call mmbouc(ds_contact, 'Fric', 'Init_Counter')

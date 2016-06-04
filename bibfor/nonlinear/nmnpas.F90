@@ -193,7 +193,7 @@ implicit none
 !
     if (l_cont) then
         call cont_init(noma  , modele, ds_contact, numins, ds_measure,&
-                       sddyna, valinc, sdnume    , numedd, fonact)
+                       sddyna, valinc, sdnume    , fonact)
     endif
 !
 ! - Initializations of reduced coordinates (ROM)

@@ -17,7 +17,7 @@
 !
 interface
     subroutine cont_init(mesh  , model     , ds_contact, nume_inst, ds_measure,&
-                         sddyna, hat_valinc, sdnume    , nume_dof , list_func_acti)
+                         sddyna, hat_valinc, sdnume    , list_func_acti)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
@@ -28,6 +28,5 @@ interface
         character(len=19), intent(in) :: sddyna
         integer, intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sdnume
-        character(len=24), intent(in) :: nume_dof 
     end subroutine cont_init
 end interface

@@ -1,6 +1,6 @@
-subroutine cfmmcv(mesh     , model_   , nume_dof , list_func_acti, iter_newt ,&
-                  nume_inst, sddyna   , ds_measure, sddisc       , &
-                  sderro   , hval_incr, hval_algo, ds_print      , ds_contact)
+subroutine cfmmcv(mesh     , model_    , list_func_acti, iter_newt, nume_inst,&
+                  sddyna   , ds_measure, sddisc       , sderro   , hval_incr,&
+                  hval_algo, ds_print  , ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -40,7 +40,6 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model_
-    character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: list_func_acti(*)
     integer, intent(in) :: iter_newt
     integer, intent(in) :: nume_inst 
@@ -63,7 +62,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  iter_newt        : index of current Newton iteration
 ! In  nume_inst        : index of current time step
 ! In  sddisc           : datastructure for time discretization
@@ -110,9 +108,8 @@ implicit none
 ! - Applying generalized Newton method at Newton's iteration
 !
     if (l_newt_cont) then
-        call mmbclc(mesh  , model     , nume_dof  , iter_newt, nume_inst,&
-                    sddisc, sddyna    , ds_measure, hval_incr,&
-                    hval_algo, ds_contact)
+        call mmbclc(mesh  , model , iter_newt, nume_inst, ds_measure,&
+                    sddisc, sddyna, hval_incr, hval_algo, ds_contact)
         call mmbouc(ds_contact, 'Cont', 'Get_Vale'      , loop_vale_  = loop_cont_vale)
         call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
         loop_cont_vali = nint(loop_cont_vale)

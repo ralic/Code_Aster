@@ -1,4 +1,4 @@
-subroutine mmappa(mesh, nume_dof, ds_contact)
+subroutine mmappa(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -29,7 +29,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,7 +40,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -65,6 +63,6 @@ implicit none
 !
 ! - Save pairing in contact datastructures
 !
-    call mmapre(mesh, nume_dof, ds_contact)
+    call mmapre(mesh, ds_contact)
 !
 end subroutine

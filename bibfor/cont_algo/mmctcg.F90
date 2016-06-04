@@ -1,4 +1,4 @@
-subroutine mmctcg(mesh, ds_contact, nume_dof, ds_measure)
+subroutine mmctcg(mesh, ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -31,7 +31,6 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +43,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,7 +71,7 @@ implicit none
 !
 ! - Pairing
 !
-    call mmappa(mesh, nume_dof, ds_contact)
+    call mmappa(mesh, ds_contact)
 !
 ! - Geometric loop: end timer
 !

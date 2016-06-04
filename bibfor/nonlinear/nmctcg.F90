@@ -1,4 +1,4 @@
-subroutine nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
+subroutine nmctcg(model, mesh, ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -31,7 +31,6 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +44,6 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! IO  ds_contact       : datastructure for contact management
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,7 +60,7 @@ implicit none
 !
     if (.not.l_cont_allv) then
         if (cont_form .eq. 2) then
-            call mmctcg(mesh , ds_contact, nume_dof, ds_measure)
+            call mmctcg(mesh , ds_contact, ds_measure)
         elseif (cont_form .eq. 3) then
             call xmctcg(model, mesh, ds_contact, ds_measure)
         endif

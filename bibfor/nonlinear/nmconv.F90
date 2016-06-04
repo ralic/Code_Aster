@@ -207,9 +207,9 @@ implicit none
 ! ----- Evaluate convergence of contact
 !
         if (lcont) then
-            call cfmmcv(noma  , modele, numedd, fonact  , iterat    ,&
-                        numins, sddyna, ds_measure, sddisc  ,&
-                        sderro, valinc, solalg, ds_print, ds_contact)
+            call cfmmcv(noma  , modele    , fonact    , iterat, numins,&
+                        sddyna, ds_measure, sddisc    , sderro, valinc,&
+                        solalg, ds_print  , ds_contact)
         endif
 !
 ! ----- Set value of informations in convergence table (residuals are in nmimre)

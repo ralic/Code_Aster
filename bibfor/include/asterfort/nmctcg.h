@@ -18,12 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcg(model, mesh, ds_contact, ds_measure, nume_dof)
+    subroutine nmctcg(model, mesh, ds_contact, ds_measure)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=24), intent(in) :: nume_dof
         type(NL_DS_Measure), intent(inout) :: ds_measure
     end subroutine nmctcg
 end interface

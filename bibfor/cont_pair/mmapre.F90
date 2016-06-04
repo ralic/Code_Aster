@@ -1,4 +1,4 @@
-subroutine mmapre(mesh, nume_dof, ds_contact)
+subroutine mmapre(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -14,7 +14,6 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnumm.h"
 #include "asterfort/cfmmvd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -54,7 +53,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: nume_dof
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +64,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -78,7 +75,7 @@ implicit none
     integer :: jtabf
     integer :: izone, ip, imae, iptm, ztabf
     integer :: iptc
-    integer :: ntpc, nbpt, nbmae, nptm, neq, nnomae
+    integer :: ntpc, nbpt, nbmae, nptm, nnomae
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     real(kind=8) :: ksipr1, ksipr2
     character(len=8) :: aliase, nommam
@@ -105,7 +102,6 @@ implicit none
 !
     iptc = 1
     ntpc = 0
-    call dismoi('NB_EQUA', nume_dof, 'NUME_DDL', repi=neq)
 !
 ! --- NOUVEL APPARIEMENT
 !

@@ -1,4 +1,4 @@
-subroutine mmapin(mesh, ds_contact, nume_dof, ds_measure)
+subroutine mmapin(mesh, ds_contact, ds_measure)
 !
 use NonLin_Datastructure_type
 !
@@ -28,8 +28,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    type(NL_DS_Measure), intent(inout) :: ds_measure  
-    character(len=24), intent(in) :: nume_dof
+    type(NL_DS_Measure), intent(inout) :: ds_measure
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +40,6 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +53,7 @@ implicit none
 ! - Geometric actualisation and pairing 
 !
     if (.not.l_cont_allv) then
-        call mmctcg(mesh, ds_contact, nume_dof, ds_measure)
+        call mmctcg(mesh, ds_contact, ds_measure)
     endif
 !
 end subroutine

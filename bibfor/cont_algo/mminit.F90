@@ -1,5 +1,5 @@
 subroutine mminit(mesh  , ds_contact, sddyna  , hat_valinc, ds_measure,&
-                  sdnume, nume_dof  , nume_inst)
+                  sdnume, nume_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -42,8 +42,7 @@ implicit none
     character(len=19), intent(in) :: hat_valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna
-    character(len=19), intent(in) :: sdnume    
-    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: sdnume
     integer, intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,7 +56,6 @@ implicit none
 ! In  mesh             : name of mesh
 ! IO  ds_contact       : datastructure for contact management
 ! In  hat_valinc       : hat variable for algorithm fields
-! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddyna           : datastructure for dynamic
 ! In  sdnume           : name of dof positions datastructure
@@ -151,7 +149,7 @@ implicit none
 ! - Initial pairing
 !
     if (l_pair) then
-        call mmapin(mesh, ds_contact, nume_dof, ds_measure)
+        call mmapin(mesh, ds_contact, ds_measure)
     endif
 !
 ! - Initial options

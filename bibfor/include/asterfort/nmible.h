@@ -17,14 +17,13 @@
 !
 interface
     subroutine nmible(cont_loop     , model   , mesh      , ds_contact,&
-                      list_func_acti, nume_dof, ds_measure, ds_print)
+                      list_func_acti, ds_measure, ds_print)
         use NonLin_Datastructure_type        
         integer, intent(inout) :: cont_loop
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in):: list_func_acti(*)
-        character(len=24), intent(in) :: nume_dof
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine nmible
