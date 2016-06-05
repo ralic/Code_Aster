@@ -95,6 +95,7 @@ CHAR_MECA_CONT = Option(
         SP.PDONCO,
         PFISNO,
         SP.PGEOMER,
+        SP.PSNO,
         SP.PHEAVNO,
         PHEA_FA,
         PHEA_NO,

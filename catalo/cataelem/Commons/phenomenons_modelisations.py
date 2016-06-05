@@ -2079,6 +2079,91 @@ phen.add('FRIC_EL_2D2', Modelisation(dim=(1,2), code='CC7',
         (MT.SEG33     , EL.CFS3S3A),
     )))
 
+#-- Define CONTACT elements for LAC method (in STAT_NON_LINE) - Contact
+
+phen.add('CONT_LAC_EL_2DC', Modelisation(dim=(1,2), code='L2C',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LACS2S2C),
+        (MT.SEG33    , EL.LACS3S3C),
+        (MT.SEG23    , EL.LACS2S3C),
+        (MT.SEG32    , EL.LACS3S2C),
+    )))
+    
+
+phen.add('CONT_LAC_EL_2DD', Modelisation(dim=(1,2), code='L2D',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LACS2S2D),
+        (MT.SEG23    , EL.LACS2S3D),
+    )))
+    
+
+phen.add('CONT_LAC_EL_2DE', Modelisation(dim=(1,2), code='L2E',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LACS2S2E),
+        (MT.SEG23    , EL.LACS2S3E),
+    )))
+      
+     
+
+phen.add('CONT_LAC_EL_3DD', Modelisation(dim=(2,3), code='L3D',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD44    , EL.LACQ4Q4D),
+        (MT.QU4TR3    , EL.LACQ4T3D),
+        (MT.QU4TR6    , EL.LACQ4T6D),
+        (MT.QU4QU8    , EL.LACQ4Q8D),
+        (MT.QU4QU9    , EL.LACQ4Q9D),
+        (MT.QUAD88    , EL.LACQ8Q8D),
+        (MT.QU8TR6    , EL.LACQ8T6D),
+        (MT.QU8TR3    , EL.LACQ8T3D),
+        (MT.QU8QU4    , EL.LACQ8Q4D),
+        (MT.QU8QU9    , EL.LACQ8Q9D),
+        (MT.TRIA33    , EL.LACT3T3D),
+        (MT.TR3TR6    , EL.LACT3T6D),
+        (MT.TR3QU4    , EL.LACT3Q4D),
+        (MT.TR3QU8    , EL.LACT3Q8D),
+        (MT.TR3QU9    , EL.LACT3Q9D),
+        (MT.TRIA66    , EL.LACT6T6D),
+        (MT.TR6TR3    , EL.LACT6T3D),
+        (MT.TR6QU4    , EL.LACT6Q4D),
+        (MT.TR6QU8    , EL.LACT6Q8D),
+        (MT.TR6QU9    , EL.LACT6Q9D),
+        (MT.QUAD99    , EL.LACQ9Q9D),
+        (MT.QU9TR3    , EL.LACQ9T3D),
+        (MT.QU9TR6    , EL.LACQ9T6D),
+        (MT.QU9QU4    , EL.LACQ9Q4D),
+        (MT.QU9QU8    , EL.LACQ9Q8D),
+    )))
+
+
+phen.add('CONT_LAC_EL_3DE', Modelisation(dim=(2,3), code='L3E',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD44    , EL.LACQ4Q4E),
+        (MT.QU4TR3    , EL.LACQ4T3E),
+        (MT.QU4TR6    , EL.LACQ4T6E),
+        (MT.QU4QU8    , EL.LACQ4Q8E),
+        (MT.QU4QU9    , EL.LACQ4Q9E),
+        (MT.QUAD88    , EL.LACQ8Q8E),
+        (MT.QU8TR6    , EL.LACQ8T6E),
+        (MT.QU8TR3    , EL.LACQ8T3E),
+        (MT.QU8QU4    , EL.LACQ8Q4E),
+        (MT.QU8QU9    , EL.LACQ8Q9E),
+    )))
+
 #------------------------------------------------------------------------------------
 # Modelisations sous-terraines pour :
 #  * Forces nodales

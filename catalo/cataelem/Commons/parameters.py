@@ -923,6 +923,10 @@ PSOURNL = InputParameter(phys=PHY.SOUR_F,
 PSOUSOP = InputParameter(phys=PHY.NEUT_K24,
                          comment="""""")
 
+PSNO = InputParameter(phys=PHY.GEOM_R, container='MAIL!.COORDO',
+                         comment="""  PSNO : Smooth normals at nodes for contact
+""")
+
 PSTADYN = InputParameter(phys=PHY.STAOUDYN,
                          comment=""" CHAMP POUR DYNAMIQUE NEWMARK (POU_D_TGD)
 """)
