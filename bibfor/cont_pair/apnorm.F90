@@ -57,12 +57,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     elem_norm(1:3) = 0.d0
+    tau1(1:3)      = 0.d0
+    tau2(1:3)      = 0.d0
 !
     call mmdonf(elem_dime, elem_nbnode, elem_code, ksi1, ksi2,&
                 dff)
     call mmtang(elem_dime, elem_nbnode, elem_coor, dff , tau1,&
                 tau2)
-    call mmnorm(elem_dime, tau1       , tau2     , elem_norm, noor)
+    call mmnorm(elem_dime, tau1, tau2, elem_norm, noor)
 !
     elem_norm(1:3) = -elem_norm(1:3)
 !

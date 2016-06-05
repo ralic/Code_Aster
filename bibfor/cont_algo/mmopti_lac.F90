@@ -119,7 +119,7 @@ implicit none
 !
 ! --------- Compute new status
 !
-            if (gap .ne. gap ) then
+            if (isnan( gap)) then
                 indi_cont_curr = -1
             else
                 if (gap .le. pair_init .and.&

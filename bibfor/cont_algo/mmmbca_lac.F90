@@ -161,7 +161,7 @@ implicit none
 !
 ! --------- Compute new status
 !
-            if (gap .ne. gap ) then
+            if (isnan(gap)) then
                 indi_cont_curr = -1
             else
                 if ((lagc+gap) .le. r8prem() .and.&

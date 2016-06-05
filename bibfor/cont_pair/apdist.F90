@@ -62,7 +62,7 @@ implicit none
     poin_proj_coor(1:3) = zero
     ksi(1)              = ksi1
     ksi(2)              = ksi2
-    dist                = 0
+    dist                = 0.d0
 !
 ! - Shape function
 !

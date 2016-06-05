@@ -103,7 +103,7 @@ implicit none
     integer :: ifm=0, niv=0
     integer :: neq=0
     character(len=8) :: noddlm=' '
-    aster_logical :: ldyna, lstat, lcine, lctcc, l_rom
+    aster_logical :: ldyna, lstat, lcine, l_cont_cont, l_cont_lac, l_rom
     character(len=19) :: profch=' ', foiner=' '
     character(len=19) :: commoi=' ', depmoi=' '
     character(len=19) :: cndiri=' ', cnbudi=' ', cnvcfo=' ', cnfext=' '
@@ -166,7 +166,8 @@ implicit none
     lcmp = isfonc(fonact,'RESI_COMP')
     lpilo = isfonc(fonact,'PILOTAGE')
     lcine = isfonc(fonact,'DIRI_CINE')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    l_cont_cont = isfonc(fonact,'CONT_CONTINU')
+    l_cont_lac  = isfonc(fonact,'CONT_LAC')
     l_rom = isfonc(fonact,'ROM')
     linit = (numins.eq.1).and.(.not.ds_inout%l_state_init)
 !
@@ -208,7 +209,7 @@ implicit none
 !
 ! --- REPERAGE DDL LAGRANGE DE CONTACT
 !
-    if (lctcc) then
+    if (l_cont_cont .or. l_cont_lac) then
         sdnuco = sdnume(1:19)//'.NUCO'
         call jeveuo(sdnuco, 'L', jnuco)
     endif
@@ -275,7 +276,7 @@ implicit none
 !
 ! ----- SI LAGRANGIEN DE CONTACT/FROT: ON IGNORE LA VALEUR DU RESIDU
 !
-        if (lctcc) then
+        if (l_cont_cont .or. l_cont_lac) then
             if (zi(jnuco+ieq-1) .eq. 1) then
                 goto 20
             endif
@@ -343,7 +344,7 @@ implicit none
 !
 ! --- RESIDUS SPECIFIQUES POUR NEWTON GENERALISE
 !
-    if (lctcc) then
+    if (l_cont_cont .or. l_cont_lac) then
         call mmconv(noma , ds_contact, valinc, solalg, vfrot,&
                     nfrot, vgeom     , ngeom)
     endif

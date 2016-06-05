@@ -3,7 +3,7 @@ subroutine nmrede(sdnume, fonact, sddyna, matass,&
                   vchar, ichar)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ subroutine nmrede(sdnume, fonact, sddyna, matass,&
 !
     integer :: jccid
     integer :: ifm, niv
-    aster_logical :: ldyna, lcine, lctcc
+    aster_logical :: ldyna, lcine, l_cont_cont, l_cont_lac
     character(len=19) :: cndiri, cnvcfo
     integer :: ieq
     real(kind=8) :: val2, val3, appui, fext
@@ -93,7 +93,8 @@ subroutine nmrede(sdnume, fonact, sddyna, matass,&
 !
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
     lcine = isfonc(fonact,'DIRI_CINE')
-    lctcc = isfonc(fonact,'CONT_CONTINU')
+    l_cont_cont = isfonc(fonact,'CONT_CONTINU')
+    l_cont_lac  = isfonc(fonact,'CONT_LAC')
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -108,7 +109,7 @@ subroutine nmrede(sdnume, fonact, sddyna, matass,&
 !
 ! --- REPERAGE DDL LAGRANGE DE CONTACT
 !
-    if (lctcc) then
+    if (l_cont_cont .or. l_cont_lac) then
         sdnuco = sdnume(1:19)//'.NUCO'
         call jeveuo(sdnuco, 'L', jnuco)
     endif
@@ -149,7 +150,7 @@ subroutine nmrede(sdnume, fonact, sddyna, matass,&
 !
 ! ----- SI LAGRANGIEN DE CONTACT/FROT: ON IGNORE LA VALEUR DU RESIDU
 !
-        if (lctcc) then
+        if (l_cont_cont .or. l_cont_lac) then
             if (zi(jnuco+ieq-1) .eq. 1) then
                 goto 20
             endif
