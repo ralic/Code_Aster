@@ -112,6 +112,10 @@ implicit none
     ds_contact%fields_cont_node = ' '
     ds_contact%field_cont_perc  = ' '
 !
+! - Field for CONT_ELEM
+!
+    ds_contact%field_cont_elem  = ' '
+!
 ! - Flag for (re) numbering
 !
     ds_contact%l_renumber   = .false._1

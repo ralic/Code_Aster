@@ -106,12 +106,19 @@ implicit none
         l_edge_elim    = cfdisl(sdcont_defi, 'ELIM_ARETE')
         l_all_verif    = cfdisl(sdcont_defi, 'ALL_VERIF')  
 !
-! ----- Field for CONT_NODE
+! ----- Fields for CONT_NODE
 !
         if (l_form_cont .or. l_form_disc .or. l_form_xfem) then
             ds_contact%field_cont_node  = '&&CFMXR0.CNOINR'
             ds_contact%fields_cont_node = '&&CFMXR0.CNSINR'
             ds_contact%field_cont_perc  = '&&CFMXR0.CNSPER'
+        endif
+!
+! ----- Fields for CONT_ELEM
+!
+        if (l_form_lac) then
+            ds_contact%field_cont_elem  = '&&CFMXR0.CEOINR'
+            ds_contact%fields_cont_elem = '&&CFMXR0.CESINR'
         endif
 !
 ! ----- Special for discrete contact

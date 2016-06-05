@@ -13,6 +13,7 @@ implicit none
 #include "asterfort/cfmmma.h"
 #include "asterfort/cfmxme.h"
 #include "asterfort/cfmxr0.h"
+#include "asterfort/cfmxr0_lac.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/lac_crsd.h"
 #include "asterfort/wkvect.h"
@@ -90,6 +91,12 @@ implicit none
 !
     if (l_cont_cont .or. l_cont_disc .or. l_cont_xfem) then
         call cfmxr0(mesh, ds_contact)
+    endif
+!
+! - Create CONT_ELEM datastructure
+!
+    if (l_cont_lac) then
+        call cfmxr0_lac(mesh, ds_contact)
     endif
 !
 ! - Create pairing datastructure

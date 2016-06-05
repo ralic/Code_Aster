@@ -62,15 +62,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_cont_cont, l_cont_disc, l_cont_xfem, l_all_verif, l_cont_lac
+    aster_logical :: l_cont_cont, l_cont_disc, l_cont_xfem, l_all_verif
 !
 ! --------------------------------------------------------------------------------------------------
 !
     l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    l_cont_lac  = .false._1
-!   l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF') 
 !
 ! - Time step cut management
@@ -82,8 +80,6 @@ implicit none
             call mmdeco(ds_contact)
         else if (l_cont_xfem) then
             call xmdeco(ds_contact)
-        else if (l_cont_lac) then
-            ASSERT(.false.)
         endif
     endif
 !

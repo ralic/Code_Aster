@@ -209,12 +209,12 @@ implicit none
         character(len=8)  :: result
         aster_logical     :: l_temp_nonl
         integer           :: nb_field
-        integer           :: nb_field_maxi = 21
-        type(NL_DS_Field) :: field(21)
+        integer           :: nb_field_maxi = 22
+        type(NL_DS_Field) :: field(22)
         character(len=8)  :: stin_evol
         aster_logical     :: l_stin_evol
-        aster_logical     :: l_field_acti(21)
-        aster_logical     :: l_field_read(21)
+        aster_logical     :: l_field_acti(22)
+        aster_logical     :: l_field_read(22)
         aster_logical     :: l_state_init
         aster_logical     :: l_reuse
         integer           :: didi_nume
@@ -276,10 +276,13 @@ implicit none
         character(len=19) :: field_input
 ! ----- NUME_DOF for discrete friction methods 
         character(len=14) :: nume_dof_frot
-! ----- Field for CONT_NODE 
+! ----- Fields for CONT_NODE 
         character(len=19) :: field_cont_node
         character(len=19) :: fields_cont_node
         character(len=19) :: field_cont_perc
+! ----- Fields for CONT_ELEM 
+        character(len=19) :: field_cont_elem
+        character(len=19) :: fields_cont_elem
 ! ----- Loops
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3

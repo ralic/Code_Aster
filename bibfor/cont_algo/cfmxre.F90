@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmve.h"
 #include "asterfort/cfresu.h"
+#include "asterfort/cfmxr0_lac.h"
 #include "asterfort/cnscno.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
@@ -85,8 +86,7 @@ implicit none
     l_cont_cont = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_disc = cfdisl(ds_contact%sdcont_defi,'FORMUL_DISCRETE')
     l_cont_xfem = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    l_cont_lac  = .false._1
-!   l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_lac  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
     l_cont_exiv = cfdisl(ds_contact%sdcont_defi,'EXIS_VERIF')
     l_all_verif = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF') 
     l_inte_node = cfdisl(ds_contact%sdcont_defi,'ALL_INTEG_NOEUD')
@@ -126,7 +126,7 @@ implicit none
             call cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
                         cnsinr   , cnsper)
         else if (l_cont_lac) then   
-            ASSERT(.false.)
+            call cfmxr0_lac(mesh, ds_contact)
         else
             ASSERT(.false.)
         endif
@@ -144,9 +144,11 @@ implicit none
         call cfmmve(mesh, ds_contact, hval_incr, time_curr)
     endif
 !
-! - Transform fields
+! - Transform CHAM_NO_S field
 !
-    call dismoi('PROF_CHNO', cnoinr, 'CHAM_NO', repk=prno, arret='C')
-    call cnscno(cnsinr, prno, 'NON', 'V', cnoinr, 'F', ibid)
+    if (.not. l_cont_lac) then
+        call dismoi('PROF_CHNO', cnoinr, 'CHAM_NO', repk=prno, arret='C')
+        call cnscno(cnsinr, prno, 'NON', 'V', cnoinr, 'F', ibid)
+    endif
 !
 end subroutine

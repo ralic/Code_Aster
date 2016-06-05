@@ -59,7 +59,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     ------------------------------------------------------------------
     parameter (ncmec1=35)
     parameter (ncmec2=50)
-    parameter (ncmec3=34)
+    parameter (ncmec3=35)
     parameter (ncmuti=40)
     parameter (ncmeca=ncmec1+ncmec2+ncmec3+ncmuti)
     character(len=16) :: chmec1(ncmec1)
@@ -139,7 +139,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
      & 'EPFD_ELNO',       'EPFD_ELGA',&
      & 'EPVC_ELNO',       'EPVC_ELGA',       'CONT_NOEU',&
      & 'ETOT_ELGA',       'ETOT_ELNO',       'ETOT_ELEM',&
-     & 'MODE_FLAMB',      'ETOT_NOEU',&
+     & 'MODE_FLAMB',      'ETOT_NOEU',       'CONT_ELEM',&
      & 'ENDO_ELGA',       'ENDO_ELNO',       'ENDO_NOEU',&
      & 'INDL_ELGA',       'VAEX_ELGA',       'VAEX_ELNO',&
      & 'VAEX_NOEU',       'DEPL_VIBR',       'SISE_ELNO',&

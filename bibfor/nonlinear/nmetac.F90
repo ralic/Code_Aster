@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/SetIOField.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,9 +107,12 @@ implicit none
 ! - Contact
 !
     if (l_cont) then
-        l_inte_node = cfdisl(sdcont_defi,'ALL_INTEG_NOEUD')
+        l_inte_node = cfdisl(sdcont_defi, 'ALL_INTEG_NOEUD')
         if (l_inte_node) then
             call SetIOField(ds_inout, 'CONT_NOEU', l_acti_ = .true._1)
+        endif
+        if (ds_contact%l_form_lac) then
+            call SetIOField(ds_inout, 'CONT_ELEM', l_acti_ = .true._1)
         endif
     endif
 !
