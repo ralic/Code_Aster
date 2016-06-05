@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/xmcart.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,8 +73,8 @@ implicit none
 !
 ! - Create input fields for contact
 !
-    if (cont_form .eq. 2) then
-        call mmchml(ds_contact, sddisc, sddyna, nume_inst)
+    if (cont_form .eq. 2 .or. cont_form .eq. 5) then
+        call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
     elseif  (cont_form .eq. 3) then
         if (l_cont_xfem_gg) then
             call xmcart(mesh, model, ds_contact)

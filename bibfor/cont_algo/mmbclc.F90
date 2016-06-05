@@ -123,7 +123,7 @@ implicit none
 ! ----- Update input field
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call mmchml(ds_contact, sddisc, sddyna, nume_inst)
+            call mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
         endif
 !
 ! ----- Stop timer for preparation of contact

@@ -1,4 +1,4 @@
-subroutine mmchml(ds_contact, sddisc, sddyna, nume_inst)
+subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
 !
 use NonLin_Datastructure_type
 !
@@ -12,6 +12,7 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/mmchml_c.h"
+#include "asterfort/mmchml_l.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,6 +31,7 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
@@ -43,6 +45,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 ! In  sddisc           : datastructure for time discretization
 ! In  sddyna           : datastructure for dynamic
@@ -74,8 +77,7 @@ implicit none
 ! - Get parameters
 !
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
-    l_cont_lac   = .false._1
-!   l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
+    l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
 ! - Get time parameters
 !
@@ -97,8 +99,7 @@ implicit none
     if (l_cont_cont) then
         call mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
     else if (l_cont_lac) then
-        ASSERT(.false.)
-!       call mmchml_l(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
+        call mmchml_l(mesh, ds_contact, ligrcf, chmlcf)
     endif
 !
 end subroutine
