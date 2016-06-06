@@ -336,7 +336,8 @@ class MECA_XT_HEXA8(Element):
                      (OP.CHAR_MECA_PESA_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PESA_R.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (OP.CHAR_MECA_PESA_R.PPINTTO, E33NEUTR), (OP.CHAR_MECA_PESA_R.PSTANO, STANO_I),
-                     (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), ),
+                     (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), (OP.CHAR_MECA_PESA_R.PPMILTO, LC.E198NEUT),
+                     ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
