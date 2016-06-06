@@ -200,7 +200,12 @@ Risques et conseils :
 """),
 
     55 : _(u"""
- pas de mailles a projeter.
+ Pas de mailles à projeter ou en correspondance.
+
+ Dans le cas de l'utilisation de AFFE_CHAR_MECA / LIAISON_MAIL, les mailles maîtres
+ doivent avoir la même dimension que l'espace de modélisation :
+ - mailles volumiques pour un modèle 3D
+ - mailles surfaciques pour un modèle 2D
 """),
 
     56 : _(u"""
@@ -208,7 +213,7 @@ Risques et conseils :
 """),
 
     57 : _(u"""
- il n'y a pas de mailles a projeter.
+ Il n'y a pas de mailles a projeter.
 """),
 
     58 : _(u"""
