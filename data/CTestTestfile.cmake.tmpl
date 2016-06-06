@@ -22,7 +22,7 @@ SET(USER "salometest")
 IF(DEFINED ENV{USER})
     SET(USER "$ENV{USER}")
 ENDIF()
-SET(RESUTEST_DIR "@ASRUN_TMPDIR@/${USER}_resutest")
+SET(RESUTEST_DIR "@ASRUN_TMPDIR@/${USER}_resutest@ASTER_TAG@")
 
 # build the testlist GOOD_TESTS as ASTER_xxxx
 EXECUTE_PROCESS(COMMAND as_run "--vers=@ASTERDATADIR@" "--silent" "--list" "--all" "--filter" "'sequential' in testlist" OUTPUT_VARIABLE STR_TESTS OUTPUT_STRIP_TRAILING_WHITESPACE)
