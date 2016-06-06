@@ -7,6 +7,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/cnocns.h"
+#include "asterfort/indk16.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"
@@ -60,6 +61,7 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     integer :: kk, i, j, jcmp, iret, jvari,iexi
     character(len=19) :: chamns, chames
     character(len=16), pointer :: table_parak(:) => null()
+    character(len=16) :: nomcmp
     character(len=8), pointer :: table_typek(:) => null()
     integer, pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -252,12 +254,17 @@ subroutine ctcrtb(nomtb, tych, resu, nkcha, typac,&
     else
         do 95 j = 1, n
             if (jvari.eq.0) then
-                table_parak(kk+1)=zk8(jcmp+j-1)
+                nomcmp = zk8(jcmp+j-1)
             else
-                table_parak(kk+1)=zk16(jvari+j-1)
+                nomcmp = zk16(jvari+j-1)
             endif
-            table_typek(kk+1)='R'
-            kk=kk+1
+            if ( indk16(table_parak, nomcmp, 1, kk) .eq. 0 ) then
+                table_parak(kk+1) = nomcmp
+                table_typek(kk+1) = 'R'
+                kk=kk+1
+            else
+                nbpara = nbpara - 1
+            endif
  95     continue
     endif
 !

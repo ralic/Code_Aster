@@ -25,8 +25,9 @@ INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
 {
     long i,j=0;
     char *p,m[8];
-    
-        if ( lm < 8 ) {
+
+    // m = mot[1:8] to allow fast comparisons
+    if ( lm < 8 ) {
         for (i=0; i<lm;i++) m[i] = mot[i];
         for (i=lm;i<8 ;i++) m[i] = ' ';
     } else if ( lm == 8 ) {
@@ -34,7 +35,7 @@ INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
     } else {
       return 0;
     }
-    
+
     if ( *n == 1 ) {
        for (i=0;i<*nmot;i++){
           p = lstmot+8*i;
@@ -43,10 +44,10 @@ INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
     } else {
        for (i=0;i<*nmot;i++){
           p = lstmot+8*i;
-          if (! strncmp(m,p,8)) 
+          if (! strncmp(m,p,8))
              if ( ++j == *n ) return (i+1);
        }
     }
-    
+
     return 0;
 }

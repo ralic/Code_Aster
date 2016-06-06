@@ -4,6 +4,7 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 #include "jeveux.h"
 #include "asterc/ismaem.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
@@ -20,7 +21,7 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
     character(len=*) :: nomta, nompar(*), vk(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +38,7 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 ! ======================================================================
 !   Check if an optimized table is input and duplicate if necessary
 !   the mask objects in order to allow for tbajli to work
-!   correctly. The entry parameters are exactly the same as those 
+!   correctly. The entry parameters are exactly the same as those
 !   of tbajli.
 ! ----------------------------------------------------------------------
     integer :: nbpara, nblign, add_c, noadd_c, save_ind
@@ -80,9 +81,9 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
     add_c = 0
     noadd_c = 0
 
-!   This loops fills up two chain arrays, /add/ and /noadd/, as well as two 
-!   integer arrays /add_i/ and /noadd_i/. Chain arrays contain the names of the 
-!   jeveux object representing the masks for each parameter. The index of the 
+!   This loops fills up two chain arrays, /add/ and /noadd/, as well as two
+!   integer arrays /add_i/ and /noadd_i/. Chain arrays contain the names of the
+!   jeveux object representing the masks for each parameter. The index of the
 !   parameter is saved in the XXadd_i array.
 
 !   A to-be-added parameter is defined as a parameter whose value is to be included
@@ -107,22 +108,26 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
                 else if (type(1:1) .eq. 'K') then
                     kk = kk + 1
                     if (vk(kk)(1:7) .eq. '???????') goto 10
+                else
+                    ASSERT( .false. )
                 endif
 
 !               Parameter of index /i/ is not empty, it needs to be saved
                 nomjvl = tblp(1+4*(i-1)+3)
 
                 add_c = add_c + 1
+                ASSERT( add_c .le. nbpar )
                 add(add_c) = nomjvl
                 add_i(add_c) = i
-                goto 20 
+                goto 20
             end if
-10          continue            
+10          continue
         end do
 
 !       Parameter of index /i/ is not to be saved
         nomjvl = tblp(1+4*(i-1)+3)
         noadd_c = noadd_c + 1
+        ASSERT( noadd_c .le. nbpara )
         noadd(noadd_c) = nomjvl
         noadd_i(noadd_c) = i
 20      continue
@@ -147,16 +152,16 @@ subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
 !               Conflict detected, compare the parameter indices
                 read (nomjvl1(21:24),'(I16)') save_ind
                 if (add_i(i) .eq. save_ind) then
-!                   The index of the paramater to be added is that of the reference  
-!                   parameter, then duplicate its existing logicals and create 
+!                   The index of the paramater to be added is that of the reference
+!                   parameter, then duplicate its existing logicals and create
 !                   a new object for parameter of index noadd(j)
                     call codent(noadd_i(j), 'D0', knume)
                     nomjvl2 = nomtab(1:17)//'LG.'//knume
                     call jedup1(nomjvl1,base,nomjvl2)
                     tblp(1+4*(noadd_i(j)-1)+3) = nomjvl2
                 else if (noadd_i(j) .eq. save_ind) then
-!                   The index of the paramater to be added is not that of the reference  
-!                   parameter, then duplicate the existing logicals and create 
+!                   The index of the paramater to be added is not that of the reference
+!                   parameter, then duplicate the existing logicals and create
 !                   a new object for parameter of index add(j)
                     call codent(add_i(i), 'D0', knume)
                     nomjvl2 = nomtab(1:17)//'LG.'//knume
