@@ -23,6 +23,7 @@ implicit none
 #include "asterfort/isfonc.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/matdis.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmcpqu.h"
 #include "asterfort/nmlssv.h"
@@ -96,7 +97,7 @@ implicit none
     integer :: ixfem, i_buckl, i_vibr_mode, i_stab
     aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
-    character(len=16) :: command, k16bid, matdis
+    character(len=16) :: command, k16bid, matr_distr
     character(len=19) :: compor
     character(len=24) :: solv_type, solv_precond, sdcriq_errt
     aster_logical :: l_stat, l_dyna
@@ -168,9 +169,8 @@ implicit none
 !
 ! - Distributed matrix (parallel computaing)
 !
-    matdis='NON'
-    call getvtx('SOLVEUR', 'MATR_DISTRIBUEE', iocc=1, scal=matdis)
-    if (matdis .eq. 'OUI') list_func_acti(52) = 1
+    call matdis(matr_distr)
+    if (matr_distr .eq. 'OUI') list_func_acti(52) = 1
 !
 ! - Deborst algorithm
 !
