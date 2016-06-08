@@ -131,8 +131,10 @@ implicit none
     nomgd = tychr1(6:13)
     call dismoi('TYPE_SCA', nomgd, 'GRANDEUR', repk=tsca)
 !
-    prol0=' '
-    call getvtx(' ', 'PROL_ZERO', scal=prol0)
+    call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=iret)
+    if (iret .eq. 0) then
+        prol0 = ' '
+    endif
     if ((prol0.eq.'NON') .and. (tsca.eq.'R')) prol0='NAN'
 !
     call getvtx(' ', 'OPTION', scal=option, nbret=n1)
@@ -360,8 +362,10 @@ implicit none
                 cns1 = '&&OP0195.CNS1'
                 call cnocns(chou, 'V', cns1)
                 if (prchn2(1:8) .eq. chou(1:8)) call detrsd('PROF_CHNO', prchn2)
-                prol0='NON'
-                call getvtx(' ', 'PROL_ZERO', scal=prol0)
+                call getvtx(' ', 'PROL_ZERO', scal=prol0, nbret=iret)
+                if (iret .eq. 0) then
+                    prol0 = 'NON'
+                endif
                 call cnscno(cns1, prchn1, prol0, 'G', chou,&
                             'F', ibid)
                 call detrsd('CHAM_NO_S', cns1)

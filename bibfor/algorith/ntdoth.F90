@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/rslesd.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ implicit none
 !
     character(len=16) :: k16bid, nomcmd
     character(len=19) :: list_load_resu
-    integer :: i_load, nb_load, iexcit
+    integer :: i_load, nb_load, iexcit, iret
     character(len=8) :: k8bid, repk, materi
     aster_logical :: l_load_user
     aster_logical :: matcst, coecst
@@ -86,7 +86,11 @@ implicit none
     else
         call getvid(' ', 'MODELE'    , scal=model)
         call getvid(' ', 'CHAM_MATER', scal=materi)
-        call getvid(' ', 'CARA_ELEM' , scal=cara_elem)
+        call getvid(' ', 'CARA_ELEM' , scal=cara_elem, nbret=iret)
+!       CARA_ELEM is optional in THER_LINEAIRE
+        if (iret .eq. 0) then
+            cara_elem = ' '
+        endif
     endif
 !
 ! - Coding material parameters
