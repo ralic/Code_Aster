@@ -2,7 +2,7 @@ subroutine op0148()
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,9 +55,10 @@ subroutine op0148()
     integer :: iv, ivale, ivale1, ivite, jnuor, nbfo1, nbm
     integer :: nbmr, nbn, nbp, nbpf, nnn, nplace
     integer :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
-    integer :: ioptch, nbmcl
+    integer :: ioptch, nbmcl, nbcmp
     aster_logical :: intmod, intphy
     character(len=8) :: nomu, table, nommai, nomcmp, cmp1, depla(3)
+    ! character(len=8) :: veccmp(1)
     character(len=8) :: limocl(2), typem, maillage, modmec
     character(len=16) :: concep, cmd, optcal, optcha
     character(len=19) :: base, typflu, nomcha
@@ -77,7 +78,8 @@ subroutine op0148()
 !
     call getres(nomu, concep, cmd)
     call getvtx(' ', 'NOM_CHAM', scal=optcha)
-    call getvtx(' ', 'NOM_CMP', scal=nomcmp)
+!   seule la 1ere semble utile, nbcmp est ignoré, les autres seront lues par speph0
+    call getvtx(' ', 'NOM_CMP', scal=nomcmp, nbret=nbcmp)
 !
 ! --- 3.RECUPERATION DU NOM DE LA TABLE
 !       VERIFICATION DES PARAMETRES ---
