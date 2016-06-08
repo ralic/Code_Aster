@@ -133,8 +133,10 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 !
 ! ----- Get ITER_INTE_PAS
 !
-        iter_inte_pas = 0
-        call getvis(keywordfact, 'ITER_INTE_PAS', iocc = iocc, scal = iter_inte_pas)
+        call getvis(keywordfact, 'ITER_INTE_PAS', iocc=iocc, scal=iter_inte_pas, nbret=iret)
+        if (iret .eq. 0) then
+            iter_inte_pas = 0
+        endif
 
 !
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative

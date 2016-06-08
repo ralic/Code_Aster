@@ -61,7 +61,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, nbocc, ndim
+    integer :: iocc, nbocc, ndim, iret
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
     character(len=16) :: type_matg, post_iter, nom_mod_mfront
@@ -103,13 +103,19 @@ implicit none
 ! ----- Modified matrix
 !
         if (getexm(keywordfact,'TYPE_MATR_TANG') .eq. 1) then
-            call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc = iocc, scal = type_matg)
+            call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc=iocc, scal=type_matg, nbret=iret)
+            if (iret .eq. 0) then
+                type_matg = ' '
+            endif
         endif
 !
 ! ----- Damage post-treatment
 !
         if (getexm(keywordfact,'POST_ITER') .eq. 1) then
-            call getvtx(keywordfact, 'POST_ITER', iocc = iocc, scal = post_iter)
+            call getvtx(keywordfact, 'POST_ITER', iocc=iocc, scal=post_iter, nbret=iret)
+            if (iret .eq. 0) then
+                post_iter = ' '
+            endif
         endif
 !
 ! ----- Detection of specific cases
