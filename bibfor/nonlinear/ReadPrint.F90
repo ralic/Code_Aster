@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,10 +66,14 @@ implicit none
 !
 ! - Read parameters
 !
-    call getvtx(keywf, 'INFO_RESIDU', iocc=1, scal=repk)
-    l_info_resi = repk .eq. 'OUI'
-    call getvtx(keywf, 'INFO_TEMPS', iocc=1, scal=repk)
-    l_info_time = repk .eq. 'OUI'
+    call getvtx(keywf, 'INFO_RESIDU', iocc=1, scal=repk, nbret=noc)
+    if (noc .ne. 0) then
+        l_info_resi = repk .eq. 'OUI'
+    endif
+    call getvtx(keywf, 'INFO_TEMPS', iocc=1, scal=repk, nbret=noc)
+    if (noc .ne. 0) then
+        l_info_time = repk .eq. 'OUI'
+    endif
     call getvis(keywf, 'UNITE', iocc=1, scal=unit_csv, nbret=noc)
     if (noc .eq. 0) then
         l_csv = .false.
