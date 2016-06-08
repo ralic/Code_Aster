@@ -2,7 +2,7 @@ subroutine ibdbgs()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,26 +65,17 @@ subroutine ibdbgs()
     endif
 !
 !     -- DEBUG / JXVERI :
-    repons = 'NON'
-    call getvtx('DEBUG', 'JXVERI', iocc=1, scal=repons, nbret=l)
-    if (l .eq. 0) then
-        if (repons .eq. 'OUI') then
-            call utmess('I', 'SUPERVIS_23')
-!           LE "FLAG" JXVERI=OUI EST POSTIONNE DANS LE JDC
-!           VOIR ROUTINE EXPASS.F
-        endif
+    call getvtx('DEBUG', 'JXVERI', iocc=1, scal=repons)
+    if (repons .eq. 'OUI') then
+        call utmess('I', 'SUPERVIS_23')
+        ! lu dans ops.py, puis transmis en argument à expass.F90
     endif
 !
 !     -- DEBUG / SDVERI :
-    repons = 'NON'
-    call getvtx('DEBUG', 'SDVERI', iocc=1, scal=repons, nbret=l)
-    if (l .eq. 0) then
-        if (ncode .gt. 0) then
-!          UN JOUR, ON METTRA 'OUI' PAR DEFAUT ...
-            repons='NON'
-        else
-            repons='NON'
-        endif
+    call getvtx('DEBUG', 'SDVERI', iocc=1, scal=repons)
+    if (ncode .gt. 0) then
+        ! Un jour, on mettra 'OUI' par defaut...
+        repons='NON'
     endif
 !
     if (repons .eq. 'OUI') then
@@ -97,9 +88,7 @@ subroutine ibdbgs()
 !
 !     -- DEBUG / JEVEUX :
 !     -----------------------------------------------------
-    repons = 'NON'
     call getvtx('DEBUG', 'JEVEUX', iocc=1, scal=repons)
-    ASSERT(repons.eq.'OUI' .or. repons.eq.'NON')
     if (repons .eq. 'OUI') then
         call utmess('I', 'SUPERVIS_12')
         idebug = 1
@@ -108,9 +97,9 @@ subroutine ibdbgs()
 !
 !     -- DEBUG / ENVIMA :
 !     -----------------------------------------------------
-    repons = 'NON'
-    call getvtx('DEBUG', 'ENVIMA', iocc=1, scal=repons)
-    if (repons .eq. 'TES') then
+    repons = ' '
+    call getvtx('DEBUG', 'ENVIMA', iocc=1, scal=repons, nbret=l)
+    if (l .eq. 1 .and. repons .eq. 'TES') then
         ifi = iunifi ( 'RESULTAT' )
         call impvem(ifi)
     endif

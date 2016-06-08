@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,11 +55,11 @@ POURSUITE=MACRO(nom="POURSUITE",
          ),
 
          DEBUG           =FACT(fr=tr("option de déboggage reservée aux développeurs"),
-                               statut='f',min=1,max=1,
+                               statut='d',min=1,max=1,
            JXVERI          =SIMP(fr=tr("vérifie l intégrité de la segmentation mémoire"),
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            SDVERI          =SIMP(fr=tr("vérifie la conformité des SD produites par les commandes"),
-                                 statut='f',typ='TXM',into=('OUI','NON')),
+                                 statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            JEVEUX          =SIMP(fr=tr("force les déchargement sur disque"),
                                  statut='f',typ='TXM',into=('OUI','NON'),defaut='NON'),
            ENVIMA          =SIMP(fr=tr("imprime les valeurs définies dans ENVIMA"),
