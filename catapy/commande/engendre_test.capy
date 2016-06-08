@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,11 +19,11 @@ ENGENDRE_TEST=PROC(nom="ENGENDRE_TEST",op=178,
                    UIinfo={"groupes":("Impression","Utilitaires",)},
                    fr=tr("Engendre des tests pour la non régression du code (pour développeurs)"),
          UNITE           =SIMP(statut='f',typ='I',defaut=8),
-         FORMAT          =SIMP(statut='f',typ='TXM',into=("OBJET",) ),
+         FORMAT          =SIMP(statut='f',typ='TXM',into=("ASTER", "OBJET"), defaut="ASTER" ),
          FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE20.13"),
          PREC_R          =SIMP(statut='f',typ='TXM',defaut="1.E-10"),
 #============================================================================
-         b_aster     =BLOC( condition = "FORMAT==None",
+         b_aster     =BLOC( condition = "FORMAT=='ASTER'",
             CO              =SIMP(statut='o',typ=(cham_gd_sdaster,resultat_sdaster,table_sdaster),
                                   validators=NoRepeat(),max='**'),
             TYPE_TEST       =SIMP(statut='f',typ='TXM',defaut="SOMM_ABS",into=("SOMME","SOMM_ABS","MAX","MIN") ),
