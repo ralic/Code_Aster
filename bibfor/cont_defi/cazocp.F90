@@ -214,7 +214,6 @@ implicit none
 !
     if (algo_reso_cont .eq. 'POINT_FIXE') then
         if (l_cont_xfem .or. l_cont_cont) then
-            call getvis(' ', 'ITER_CONT_MULT', scal=cont_mult)
             call getvtx(' ', 'ITER_CONT_TYPE', scal=cont_type)
             if (cont_type .eq. 'MULT') then
                 cont_mult = 4
