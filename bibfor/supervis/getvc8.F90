@@ -67,13 +67,9 @@ subroutine getvc8(motfac, motcle, iocc, nbval, vect,&
         call getvc8_wrap(motfac, motcle, uioc, uisdef, umax,&
                          vdummy, unbret)
     endif
-!   if the ".capy" can not ensure the at least 'umax' are provided, you must check
+!   if the ".capy" can not ensure that at least 'umax' are provided, you must check
 !   the number of values really read using the 'nbret' argument
-    ! ASSERT(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))
-    if (.not.(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))) then
-        call getres(result, concep, nomcmd)
-        write(6,*) "ERROR|getvc8|",nomcmd,"|",motfac,"|",motcle,"|",umax,"|",unbret
-    endif
+    ASSERT(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))
 !
     if (present(isdefault)) then
         isdefault = uisdef
