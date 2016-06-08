@@ -126,13 +126,13 @@ subroutine dtmprep(sd_dtm_)
     epsi   = r8prem()
 !
 !   --------------------------------------------------------------------------------------
-!   1 - Start with verifications of the command syntax which are not possible 
+!   1 - Start with verifications of the command syntax which are not possible
 !       within the catalogue
 !   --------------------------------------------------------------------------------------
     call mdveri()
 !
 !   --------------------------------------------------------------------------------------
-!   2 - Determine the integration method, whether a new calculation is requested or 
+!   2 - Determine the integration method, whether a new calculation is requested or
 !       a continue of a preceding one, and initialize a linear solver
 !   --------------------------------------------------------------------------------------
 !
@@ -145,14 +145,14 @@ subroutine dtmprep(sd_dtm_)
 !        --- Identical output result name to that considered as initial state
 !            The integration results will have to be saved in a temporary location
 !            and then appended at the end of the command.
-        if (tran .eq. nomres) then 
+        if (tran .eq. nomres) then
             calcres = '&&OP0029'
             append = 1
         endif
     endif
     call dtmget(sd_dtm, _SOLVER, savejv=solver)
     call cresol(solver)
-!    
+!
     call dtmsav(sd_dtm, _RESU_SD ,1, kscal=nomres)
     call dtmsav(sd_dtm, _CALC_SD ,1, kscal=calcres)
     call dtmsav(sd_dtm, _APPND_SD,1, iscal=append)
@@ -199,7 +199,7 @@ subroutine dtmprep(sd_dtm_)
         call dismoi('NOM_NUME_DDL', matass, 'MATR_ASSE', repk=numddl)
         call jeveuo(numddl(1:14)//'.NUME.NEQU', 'L', vi=nequ)
         neq = nequ(1)
-    else 
+    else
 !       --- Substructuring case, basis vectors can not be retrieved
         goto 10
     endif
@@ -222,7 +222,7 @@ subroutine dtmprep(sd_dtm_)
     call jeveuo(nume24(1:14)//'.NUME.REFN', 'L', jrefe)
     call gettco(zk24(jrefe), typrep)
     substruc = 0
-    if (typrep(1:11).eq.'MODELE_GENE') then 
+    if (typrep(1:11).eq.'MODELE_GENE') then
         substruc = 1
         modgen = zk24(jrefe)(1:8)
         call jelira(modgen//'      .MODG.SSNO', 'NOMMAX', nbsst)
@@ -266,7 +266,7 @@ subroutine dtmprep(sd_dtm_)
     endif
     call dtmsav(sd_dtm, _MASS_MAT,1, kscal=masgen)
     call dtmsav(sd_dtm, _BASE_MOD,1, kscal=basemo)
-    call dtmsav(sd_dtm, _NB_MODES,1, iscal=nbmode)   
+    call dtmsav(sd_dtm, _NB_MODES,1, iscal=nbmode)
 !
 !
 !   -------------------------------------------------------------------------------------
@@ -324,7 +324,7 @@ subroutine dtmprep(sd_dtm_)
             call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
             nbmodi = nbmodi + nbbas
         end do
-!       --- Substructuing : saved is the modal basis corresponding to the last 
+!       --- Substructuing : saved is the modal basis corresponding to the last
 !           dynamic substructure (??? Special care should be taken thereafter ???)
 !           NB_MOD_D represents the number of dynamic modes across all substructures
         call dtmsav(sd_dtm, _BASE_MOD,1,kscal=basemo)
@@ -339,7 +339,7 @@ subroutine dtmprep(sd_dtm_)
 !
 !   --- 4.3 - Extraction of the damping C-matrix, full and diagonal
     lamor = 0
-!   --- lamor signifies that damping is read from a list : AMOR_REDUIT / LIST_AMOR and 
+!   --- lamor signifies that damping is read from a list : AMOR_REDUIT / LIST_AMOR and
 !       no damping matrix is used
     call getvid(' ', 'MATR_AMOR', scal=amogen, nbret = iret)
     if (iret.eq.0) lamor = 1
@@ -378,7 +378,7 @@ subroutine dtmprep(sd_dtm_)
                 call jeveuo(amotem//'           .CONL', 'E', vr=conl)
                 do i = 1, nbmode
                     conl(i) = conl(i)/2.0d0
-                end do               
+                end do
             else
                 call copmat(amogen, zr(jamo2))
             end if
@@ -398,9 +398,9 @@ subroutine dtmprep(sd_dtm_)
 !   -------------------------------------------------------------------------------------
 !
 !   --- 4.4 - Case of substructuring, saving matrices description pointers
-!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT 
-!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN 
-!          THE SUBSEQUENT CALCULATION ROUTINES 
+!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT
+!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN
+!          THE SUBSEQUENT CALCULATION ROUTINES
     if (substruc.eq.1) then
         call mtdscr(riggen//'           ')
         call jeveut(riggen//'           .&INT', 'E', descr)
@@ -463,7 +463,7 @@ subroutine dtmprep(sd_dtm_)
         enddo
     else
         nexcir = 0
-    end if 
+    end if
 !
 !   --- 6.3 - Additional excitation parameters
     ntotex = nexcit + nexcir*nbmode
@@ -471,7 +471,7 @@ subroutine dtmprep(sd_dtm_)
     if (ntotex .ne. 0) then
 !       --- Function multiplicatory coefficient
         call dtminivec(sd_dtm, _COEF_MLT, ntotex, address=jcoefm)
-!       --- Generalized vector .VALE jeveux address 
+!       --- Generalized vector .VALE jeveux address
         call dtminivec(sd_dtm, _ADRES_VC, ntotex, address=jiadve)
 !       --- Excited mode number (number of order)
         call dtminivec(sd_dtm, _N_ORD_VC, ntotex, address=jinumo)
@@ -499,7 +499,7 @@ subroutine dtmprep(sd_dtm_)
 
 !   --------------------------------------------------------------------------------------
 !   7 - Nonlinearities : (1) Chocs               / CHOC
-!           <A>          (2) Anti sismic devices / ANTI_SISM 
+!           <A>          (2) Anti sismic devices / ANTI_SISM
 !                        (3) Viscous dampers     / DIS_VISC
 !                        (4) Buckling            / FLAMBAGE
 !                        (5) Cracked rotor       / ROTOR_FISS
@@ -520,7 +520,10 @@ subroutine dtmprep(sd_dtm_)
         call dtminivec(sd_dtm, _GYRO_FUL, nbmode*nbmode, address=jgyog)
         call getvid(' ', 'VITE_ROTA', scal=foncv)
         call getvid(' ', 'MATR_GYRO', scal=gyogen)
-        call getvid(' ', 'ACCE_ROTA', scal=fonca)
+        call getvid(' ', 'ACCE_ROTA', scal=fonca, nbret=ng2)
+        if (ng2 .eq. 0) then
+            fonca = ' '
+        endif
         call getvid(' ', 'MATR_RIGY', scal=rgygen, nbret=ng2)
         call jeveuo(gyogen//'           .REFA', 'L', vk24=refag)
         numgeg = refag(2)(1:14)
@@ -536,7 +539,7 @@ subroutine dtmprep(sd_dtm_)
             fonca = ' '
         endif
         call dtmsav(sd_dtm, _V_ROT_F, 1, kscal=foncv)
-        call dtmsav(sd_dtm, _A_ROT_F, 1, kscal=fonca)       
+        call dtmsav(sd_dtm, _A_ROT_F, 1, kscal=fonca)
     else
         call getvr8(' ', 'VITE_ROTA', scal=vrotat)
     endif
@@ -583,7 +586,7 @@ subroutine dtmprep(sd_dtm_)
         call mdptem(nbmode, zr(jmas1), puls, nbnli, chodep,&
                     chopar, chonoe, dt, dtmax, dtmin,&
                     tinit, tfin, nbpas, iret, lisins)
-    else 
+    else
         call mdptem(nbmode, zr(jmas1), puls, nbnli, [0.d0],&
                     [0.d0], [' '], dt, dtmax, dtmin,&
                     tinit, tfin, nbpas, iret, lisins)
