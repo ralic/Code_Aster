@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,13 +37,6 @@ cata_msg = {
  mot-clef "AMOR_MECA" interdit :
  le résultat :  %(k1)s  existe déjà.
 """),
-
-    6: _(u"""
- -> Utilisation d'une fonctionnalité qui va disparaître (APPUI_LACHE)
- -> Risque & Conseil:
-    Utilisez  CREA_GROUP_MA / OPTION = 'APPUI', TYPE_APPUI='AU_MOINS_UN'.
-"""),
-
 
     7: _(u"""
  -> Le groupe de mailles %(k1)s est vide. On ne le crée donc pas !

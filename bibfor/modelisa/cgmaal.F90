@@ -17,7 +17,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
     integer :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,21 +110,20 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
     do i = 1, nbmat
         if (zi(idlima+i-1) .eq. 1) nbma = nbma + 1
     end do
-    if (nbma .eq. 0) then
-        call utmess('F', 'MODELISA3_66')
-    endif
 !
 ! --- ALLOCATION DU VECTEUR DES NOMS DES MAILLES CONTENANT
 !     LES NOEUDS LISTES :
 !     -----------------
-    call wkvect(lismai, 'V V I', nbma, idlist)
-    nbma = 0
-    do i = 1, nbmat
-        if (zi(idlima+i-1) .eq. 1) then
-            nbma = nbma + 1
-            zi(idlist+nbma-1) = i
-        endif
-    end do
+    if (nbma .gt. 0) then
+        call wkvect(lismai, 'V V I', nbma, idlist)
+        nbma = 0
+        do i = 1, nbmat
+            if (zi(idlima+i-1) .eq. 1) then
+                nbma = nbma + 1
+                zi(idlist+nbma-1) = i
+            endif
+        end do
+    end if
 !
     call jedetr(listrv)
     call jedetr(mesnoe)

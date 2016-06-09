@@ -2,7 +2,7 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,6 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
-#include "asterfort/cgmaal.h"
 #include "asterfort/cgmaap.h"
 #include "asterfort/cgmaba.h"
 #include "asterfort/cgmacy.h"
@@ -431,12 +430,6 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 !               ----------------------------
             else if (option(1:5).eq.'BANDE') then
                 call cgmaba('CREA_GROUP_MA', iocc, ma, lisma, nbma)
-!
-!            -- TRAITEMENT DE L'OPTION APPUI_LACHE :
-!               ----------------------------------
-            else if (option(1:11).eq.'APPUI_LACHE') then
-                call utmess('A', 'SOUSTRUC2_6')
-                call cgmaal('CREA_GROUP_MA', iocc, ma, lisma, nbma)
 !
 !            -- TRAITEMENT DE L'OPTION APPUI_STRICT :
 !               ----------------------------------
