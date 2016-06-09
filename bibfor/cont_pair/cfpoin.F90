@@ -155,7 +155,7 @@ implicit none
     call jerazo(sdappa_tau1,3*(i_poin-1),1)
     call jerazo(sdappa_tau2,3*(i_poin-1),1)
     call jerazo(sdappa_proj,2*(i_poin-1),1)
-    call jerazo(sdappa_tgno,6*(i_poin-1)-1,1)
+    call jerazo(sdappa_tgno,6*(i_poin-1),1)
     call jelira(sdappa_tgel, 'LONT', length)
     call jerazo(sdappa_tgel, length ,1)
 

@@ -110,11 +110,12 @@ implicit none
     call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
     if(one_proc)then
             nb_proc = 1
+            i_proc= 0
     endif
-    nb_poin_mpi  = nb_node/nb_proc
+    nb_poin_mpi  = int(nb_node/nb_proc)
     nbr_poin_mpi = nb_node-nb_poin_mpi*nb_proc
-    idx_start   = 1+(i_proc)*nb_poin_mpi
-    idx_end     = idx_start+nb_poin_mpi-1+(nbr_poin_mpi*(i_proc+1)/nb_proc)
+    idx_start    = 1+(i_proc)*nb_poin_mpi
+    idx_end      = idx_start+nb_poin_mpi-1+nbr_poin_mpi*int((i_proc+1)/nb_proc)
 !
 ! - Loop on nodes
 !

@@ -110,15 +110,16 @@ implicit none
 !
 ! ----- Mpi informations
 !
-        call asmpi_comm('GET', mpicou)
-        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-        if(one_proc)then
-            nb_proc = 1
-        endif
-        nb_elem_mpi  = nb_elem/nb_proc
-        nbr_elem_mpi = nb_elem-nb_elem_mpi*nb_proc
-        idx_start   = 1+(i_proc)*nb_elem_mpi
-        idx_end     = idx_start+nb_elem_mpi-1+(nbr_elem_mpi*(i_proc+1)/nb_proc)
+    call asmpi_comm('GET', mpicou)
+    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+    if(one_proc)then
+        nb_proc = 1
+        i_proc= 0
+    endif
+    nb_elem_mpi  = int(nb_elem/nb_proc)
+    nbr_elem_mpi = nb_elem-nb_elem_mpi*nb_proc
+    idx_start    = 1+(i_proc)*nb_elem_mpi
+    idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
 !
 ! - Loop on elements
 !

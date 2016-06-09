@@ -2,6 +2,7 @@ subroutine apcaln(sdappa, mesh, sdcont_defi, newgeo)
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/aptgen.h"
 #include "asterfort/aptgno.h"
 #include "asterfort/apverl.h"
@@ -47,6 +48,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    aster_logical :: one_proc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,6 +56,7 @@ implicit none
     if (niv .ge. 2) then
         write (ifm,*) '<APPARIEMENT> ... CALCUL DES TANGENTES SUR TOUS LES NOEUDS'
     endif
+    one_proc=.false.
 !
 ! - Compute tangents at each node for each element
 !
@@ -61,18 +64,24 @@ implicit none
 !
 ! - All-reduce for tangents field by element
 !
-    call sdmpic('SD_APPA_TGEL',sdappa)
+    if (.not. one_proc) then
+        call sdmpic('SD_APPA_TGEL',sdappa)
+    endif
 !
 ! - Compute 
 !
     call aptgno(sdappa, mesh, sdcont_defi)
 !
 ! - All-reduce for tangents at each node field
-!
-    call sdmpic('SD_APPA_TGNO',sdappa)    
+!   
+    if (.not. one_proc) then
+        call sdmpic('SD_APPA_TGNO',sdappa)   
+    endif 
 !
 ! - Check normals discontinuity
 !
+    
     call apverl(sdappa, mesh, sdcont_defi)
+    
 !
 end subroutine
