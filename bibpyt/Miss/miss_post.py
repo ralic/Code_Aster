@@ -104,38 +104,53 @@ class PostMiss(object):
         # interpolation des accéléros si présents (à supprimer sauf si TABLE)
         self.excit_kw = self.param['EXCIT_HARMO']
         if self.excit_kw is None:
-            tmax = self.param['INST_FIN']
-            pasdt = self.param['PAS_INST']
-            __linst = DEFI_LIST_REEL(DEBUT=0.,
-                                     INTERVALLE=_F(JUSQU_A=tmax - pasdt,
-                                                   PAS=pasdt),)
-            linst = __linst.Valeurs()
-            UTMESS('I', 'MISS0_10', valr=(min(linst), max(linst), pasdt), vali=len(linst))
-            if self.param['ACCE_X']:
-                _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_X'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.acce_x = _acx
-            if self.param['ACCE_Y']:
-                _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Y'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.acce_y = _acy
-            if self.param['ACCE_Z']:
-                _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Z'], COEF=1.0,),
-                                     LIST_PARA=__linst)
-                self.acce_z = _acz
-            if self.param.get('GROUP_NO') is None:
-                if self.param.get('DEPL_X'):
-                    _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
+            if self.param['INST_FIN'] is not None:
+                tmax = self.param['INST_FIN']
+                pasdt = self.param['PAS_INST']
+                __linst = DEFI_LIST_REEL(DEBUT=0.,
+                                         INTERVALLE=_F(JUSQU_A=tmax - pasdt,
+                                                       PAS=pasdt),)
+                linst = __linst.Valeurs()
+                UTMESS('I', 'MISS0_10', valr=(min(linst), max(linst), pasdt), vali=len(linst))
+                if self.param['ACCE_X']:
+                    _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_X'], COEF=1.0,),
                                          LIST_PARA=__linst)
-                    self.depl_x = _acx
-                if self.param.get('DEPL_Y'):
-                    _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
+                    self.acce_x = _acx
+                if self.param['ACCE_Y']:
+                    _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Y'], COEF=1.0,),
                                          LIST_PARA=__linst)
-                    self.depl_y = _acy
-                if self.param.get('DEPL_Z'):
-                    _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
+                    self.acce_y = _acy
+                if self.param['ACCE_Z']:
+                    _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['ACCE_Z'], COEF=1.0,),
                                          LIST_PARA=__linst)
-                    self.depl_z = _acz
+                    self.acce_z = _acz
+                if self.param.get('GROUP_NO') is None:
+                    if self.param.get('DEPL_X'):
+                        _acx = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_X'], COEF=1.0,),
+                                             LIST_PARA=__linst)
+                        self.depl_x = _acx
+                    if self.param.get('DEPL_Y'):
+                        _acy = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Y'], COEF=1.0,),
+                                             LIST_PARA=__linst)
+                        self.depl_y = _acy
+                    if self.param.get('DEPL_Z'):
+                        _acz = CALC_FONCTION(COMB=_F(FONCTION=self.param['DEPL_Z'], COEF=1.0,),
+                                             LIST_PARA=__linst)
+                        self.depl_z = _acz
+            else:
+                if self.param['ACCE_X']:
+                    self.acce_x = self.param['ACCE_X']
+                if self.param['ACCE_Y']:
+                    self.acce_y = self.param['ACCE_Y']
+                if self.param['ACCE_Z']:
+                    self.acce_z = self.param['ACCE_Z']
+                if self.param.get('GROUP_NO') is None:
+                    if self.param.get('DEPL_X'):
+                        self.depl_x = self.param.get('DEPL_X')
+                    if self.param.get('DEPL_Y'):
+                        self.depl_y = self.param.get('DEPL_Y')
+                    if self.param.get('DEPL_Z'):
+                        self.depl_z = self.param.get('DEPL_Z')
 
     def execute(self):
         """Lance le post-traitement"""
@@ -168,26 +183,40 @@ class PostMiss(object):
         self.set_freq_dlh()
 
     def set_fft_accelero(self):
-        """Calcul des FFT des accélérogrammes."""
-        if self.acce_x:
-            _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft,),)
-            self.xff = _xff
-        if self.acce_y:
-            _yff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_y, METHODE=self.methode_fft,),)
-            self.yff = _yff
-        if self.acce_z:
-            _zff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_z, METHODE=self.methode_fft,),)
-            self.zff = _zff
-
-        if self.depl_x:
-            _xff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_x, METHODE=self.methode_fft,),)
-            self.xff = _xff
-        if self.depl_y:
-            _yff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_y, METHODE=self.methode_fft,),)
-            self.yff = _yff
-        if self.depl_z:
-            _zff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_z, METHODE=self.methode_fft,),)
-            self.zff = _zff
+        """Calcul des FFT des accélérogrammes si fonctions temporelles."""
+        
+        if self.param['INST_FIN'] is not None:
+            if self.acce_x:
+                _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft,),)
+                self.xff = _xff
+            if self.acce_y:
+                _yff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_y, METHODE=self.methode_fft,),)
+                self.yff = _yff
+            if self.acce_z:
+                _zff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_z, METHODE=self.methode_fft,),)
+                self.zff = _zff
+            if self.depl_x:
+                _xff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_x, METHODE=self.methode_fft,),)
+                self.xff = _xff
+            if self.depl_y:
+                _yff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_y, METHODE=self.methode_fft,),)
+                self.yff = _yff
+            if self.depl_z:
+                _zff = CALC_FONCTION(FFT=_F(FONCTION=self.depl_z, METHODE=self.methode_fft,),)
+                self.zff = _zff
+        else:
+            if self.acce_x:
+                self.xff = self.acce_x
+            if self.acce_y:
+                self.yff = self.acce_y
+            if self.acce_z:
+                self.zff = self.acce_z
+            if self.depl_x:
+                self.xff = self.depl_x
+            if self.depl_y:
+                self.yff = self.depl_y
+            if self.depl_z:
+                self.zff = self.depl_z
 
     def set_freq_dlh(self):
         """Déterminer les fréquences du calcul harmonique."""
@@ -214,11 +243,12 @@ class PostMiss(object):
 
     def suppr_acce_fft(self):
         """Marque pour suppression les accéléros interpolés et leur FFT."""
-        for co in (self.acce_x, self.acce_y, self.acce_z,
-                   self.depl_x, self.depl_y, self.depl_z,
-                   self.xff, self.yff, self.zff):
-            if co:
-                self._to_delete.append(co)
+        if self.param['INST_FIN'] is not None:
+            for co in (self.acce_x, self.acce_y, self.acce_z,
+                       self.depl_x, self.depl_y, self.depl_z,
+                       self.xff, self.yff, self.zff):
+                if co:
+                    self._to_delete.append(co)
 
     def initco(self):
         """Deux fonctions :

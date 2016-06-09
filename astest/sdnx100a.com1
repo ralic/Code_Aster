@@ -105,4 +105,72 @@ tabmis = CALC_MISS(
 )
 
 
+
+# même calcul avec signaux d'entrée en fréquence
+
+
+tmax = 18. # INST_FIN
+pasdt = 0.02 # PAS_INST
+
+# interpolation
+
+linst = DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=_F(JUSQU_A=tmax - pasdt,
+                                     PAS=pasdt),)
+
+ACXCO = CALC_FONCTION(COMB=_F(FONCTION=ACCE1, COEF=1.0,),
+                      LIST_PARA=linst)
+
+ACYCO = CALC_FONCTION(COMB=_F(FONCTION=ACCE2, COEF=1.0,),
+                      LIST_PARA=linst)
+
+ACZCO = CALC_FONCTION(COMB=_F(FONCTION=ACCE3, COEF=1.0,),
+                     LIST_PARA=linst)
+
+
+ACCE1FR = CALC_FONCTION(FFT=_F(FONCTION=ACXCO, METHODE='COMPLET',),)
+
+ACCE2FR = CALC_FONCTION(FFT=_F(FONCTION=ACYCO, METHODE='COMPLET',),)
+
+ACCE3FR = CALC_FONCTION(FFT=_F(FONCTION=ACZCO, METHODE='COMPLET',),)
+
+tabmisfr = CALC_MISS(
+    TYPE_RESU = 'TABLE',
+    VERSION='V6.6',
+
+    TABLE_SOL = TBSOL,
+    BASE_MODALE = BAMO,
+    MATR_RIGI = MATRRIGI,
+    MATR_MASS = MATRMASS,
+    AMOR_REDUIT = (0.07,),
+    GROUP_MA_INTERF = 'RADIER',
+
+    UNITE_IMPR_ASTER=26,
+    PARAMETRE=_F(
+        FREQ_MIN = 0.1,
+        FREQ_MAX = 20.,
+        FREQ_PAS = 0.2,
+        TYPE='BINAIRE',
+        Z0= -5.80,
+        SURF='OUI',
+        ALGO = 'DEPL',
+        OFFSET_MAX=40,
+        OFFSET_NB=400,
+        SPEC_MAX=0.075,
+        SPEC_NB=16384,
+    ),
+
+    MODELE         = STICKMOD,
+    GROUP_NO       = ('CENT_RAD', 'SOMMET'),
+    ACCE_X         = ACCE1FR,
+    ACCE_Y         = ACCE2FR,
+    ACCE_Z         = ACCE3FR,
+
+    NORME          = 9.81,
+    AMOR_SPEC_OSCI = (0.02, 0.05, 0.07),
+    LIST_FREQ_SPEC_OSCI     = L_FREQ ,
+
+    INFO        = 2,
+)
+
 FIN()

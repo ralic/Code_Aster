@@ -140,4 +140,120 @@ IMPR_FONCTION(
               _F(FONCTION = SAX2, MARQUEUR=0, LEGENDE='SOMMET'),),
 )
 
+
+# tests sur table avec signaux en frequence
+
+SAX1FR = EXTR_TABLE(
+    TABLE     = tabmisfr,
+    TYPE_RESU = 'NAPPE_SDASTER',
+    NOM_PARA  = 'FONC_X',
+    FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                 VALE_K   = 'CENT_RAD'),
+              _F(NOM_PARA = 'NOM_CHAM',
+                 VALE_K   = 'ACCE'),
+              _F(NOM_PARA = 'NOM_PARA',
+                 VALE_K   = 'SPEC_OSCI'),),)
+
+SAY1FR = EXTR_TABLE(
+    TABLE     = tabmisfr,
+    TYPE_RESU = 'NAPPE_SDASTER',
+    NOM_PARA  = 'FONC_Y',
+    FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                 VALE_K   = 'CENT_RAD'),
+              _F(NOM_PARA = 'NOM_CHAM',
+                 VALE_K   = 'ACCE'),
+              _F(NOM_PARA = 'NOM_PARA',
+                 VALE_K   = 'SPEC_OSCI'),),)
+
+SAX2FR = EXTR_TABLE(
+    TABLE     = tabmisfr,
+    TYPE_RESU = 'NAPPE_SDASTER',
+    NOM_PARA  = 'FONC_X',
+    FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                 VALE_K   = 'SOMMET'),
+              _F(NOM_PARA = 'NOM_CHAM',
+                 VALE_K   = 'ACCE'),
+              _F(NOM_PARA = 'NOM_PARA',
+                 VALE_K   = 'SPEC_OSCI'),),)
+
+SAY2FR = EXTR_TABLE(
+    TABLE     = tabmisfr,
+    TYPE_RESU = 'NAPPE_SDASTER',
+    NOM_PARA  = 'FONC_Y',
+    FILTRE = (_F(NOM_PARA = 'GROUP_NO',
+                 VALE_K   = 'SOMMET'),
+              _F(NOM_PARA = 'NOM_CHAM',
+                 VALE_K   = 'ACCE'),
+              _F(NOM_PARA = 'NOM_PARA',
+                 VALE_K   = 'SPEC_OSCI'),),)
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.69592632310870,
+                         VALE_REFE=0.69592632310870,
+                         VALE_PARA=(0.050000000000000003, 1.6499999999999999),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAX1FR,
+                         ),
+                      _F(VALE_CALC=0.59618245111477 ,
+                         VALE_REFE=0.59618245111477 ,
+                         VALE_PARA=(0.050000000000000003, 3.23),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAX1FR,
+                         ),
+                      _F(VALE_CALC=0.44257132042327,
+                         VALE_REFE=0.44257132042327,
+                         VALE_PARA=(0.050000000000000003, 5.5599999999999996),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAX1FR,
+                         ),
+                      _F(VALE_CALC=0.85312599388396,
+                         VALE_REFE=0.85312599388396,
+                         VALE_PARA=(0.050000000000000003, 1.5900000000000001),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAY1FR,
+                         ),
+                      _F(VALE_CALC=0.69926863755692,
+                         VALE_REFE=0.69926863755692,
+                         VALE_PARA=(0.050000000000000003, 3.0),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAY1FR,
+                         ),
+                      _F(VALE_CALC=0.54860399359373,
+                         VALE_REFE=0.54860399359373,
+                         VALE_PARA=(0.050000000000000003, 4.5800000000000001),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAY1FR,
+                         ),
+                      _F(VALE_CALC=2.626469593876,
+                         VALE_REFE=2.626469593876,
+                         VALE_PARA=(0.050000000000000003, 1.74),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAX2FR,
+                         ),
+                      _F(VALE_CALC=1.646125355712,
+                         VALE_REFE=1.646125355712,
+                         VALE_PARA=(0.050000000000000003, 2.4399999999999999),
+                         REFERENCE='AUTRE_ASTER',
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAX2FR,
+                         ),
+                      _F(VALE_CALC=4.235456990133,
+                         VALE_REFE=4.235456990133,
+                         VALE_PARA=(0.050000000000000003, 1.6499999999999999),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SAY2FR,
+                         REFERENCE='AUTRE_ASTER',
+                         ),
+                      ),
+              )
+
+
+
 FIN()
