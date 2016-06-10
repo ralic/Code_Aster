@@ -1,4 +1,4 @@
-subroutine ntcrli(inst_init, list_inst, sddisc, lostat, l_nonline)
+subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
 !
 implicit none
 !
@@ -25,7 +25,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,6 @@ implicit none
     character(len=19), intent(in) :: list_inst
     real(kind=8), intent(in) :: inst_init
     aster_logical, intent(in) :: lostat
-    aster_logical, intent(in) :: l_nonline
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +59,6 @@ implicit none
 ! In  inst_init        : initial time if ETAT_INIT
 ! In  list_inst        : list of times from INCREMENT/LIST_INST
 ! In  lostat           : .true. for initial stationnary computation
-! In  l_nonline        : .true. for nonlinear thermics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +67,9 @@ implicit none
     integer :: nb_inst_new, nb_inst
     real(kind=8) :: tole
     real(kind=8) :: dtmin, dt0
-    aster_logical :: l_init_noexist, l_inst_init
+    character(len=8) :: k8bid
+    character(len=16) :: k16bid, command
+    aster_logical :: l_init_noexist, l_inst_init, l_nonline
     character(len=24) :: list_inst_info
     character(len=24) :: list_inst_ditr
     character(len=16) :: list_inst_type, keywf
@@ -107,6 +107,11 @@ implicit none
 ! - Type of list_inst
 !
     call gettco(list_inst, list_inst_type)
+!
+! - Non-linear operator ?
+!
+    call getres(k8bid, k16bid, command)
+    l_nonline = command .eq. 'THER_NON_LINE'
 !
 ! - Create list of times and information vector
 !

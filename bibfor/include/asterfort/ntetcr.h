@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntetcr(nume_dof  , l_temp_nonl, ds_inout  ,&
-                      list_load_, compor_    , hydr_     , hydr_init_)
+    subroutine ntetcr(nume_dof  , ds_inout,&
+                      list_load_, compor_ , hydr_, hydr_init_)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: nume_dof
-        aster_logical, intent(in) :: l_temp_nonl
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=19), optional, intent(in) :: list_load_
         character(len=*), optional, intent(in) :: compor_

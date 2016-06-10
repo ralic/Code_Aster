@@ -1,5 +1,5 @@
-subroutine ntetcr(nume_dof  , l_temp_nonl, ds_inout  ,&
-                  list_load_, compor_    , hydr_     , hydr_init_)
+subroutine ntetcr(nume_dof  , ds_inout,&
+                  list_load_, compor_ , hydr_, hydr_init_)
 !
 use NonLin_Datastructure_type
 !
@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/GetIOField.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,6 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: nume_dof
-    aster_logical, intent(in) :: l_temp_nonl
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=19), optional, intent(in) :: list_load_
     character(len=*), optional, intent(in) :: compor_
@@ -51,7 +50,6 @@ implicit none
 !
 ! In  nume_dof         : name of nume_dof object (numbering equation)
 ! In  compor           : name of <CARTE> COMPOR
-! In  l_temp_nonl      : .true. if THER_NON_LINE
 ! In  list_load        : name of datastructure for list of loads
 ! In  hydr             : name of field for hydratation
 ! In  hydr_init        : name of field for initialhydratation
@@ -60,7 +58,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_field, i_field
-    aster_logical :: l_hydr
+    aster_logical :: l_hydr, l_temp_nonl
     character(len=24) :: temp_init
     character(len=24) :: field_type, algo_name, init_name
     character(len=19) :: compor, list_load_resu
@@ -83,6 +81,7 @@ implicit none
     nb_field       = ds_inout%nb_field
     list_load_resu = ds_inout%list_load_resu
     temp_init      = '&&NTETCR.TEMP0'
+    l_temp_nonl    = ds_inout%l_temp_nonl
 !
 ! - Copy of list of loads for save in results datastructure
 !

@@ -1,4 +1,4 @@
-subroutine CreateInOutDS_T(ds_inout)
+subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
 !
 use NonLin_Datastructure_type
 !
@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/infniv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
+    aster_logical, intent(in) :: l_temp_nonl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,6 +39,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_inout         : datastructure for input/output management
+! In  l_temp_nonl      : flag for THER_NON_LINE
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +86,8 @@ implicit none
 !
 ! - Check
 !
-    ds_inout%nb_field = nb_field_defi
+    ds_inout%l_temp_nonl = l_temp_nonl
+    ds_inout%nb_field    = nb_field_defi
     ASSERT(ds_inout%nb_field.le.ds_inout%nb_field_maxi)
 !
 ! - Set list of fields

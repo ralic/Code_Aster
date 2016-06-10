@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,14 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarch(numins, modele, mate  , carele  , lnonl,&
-                      para  , sddisc, sdcrit, ds_inout, force)
+    subroutine ntarch(numins, modele  , mate , carele      , para,&
+                      sddisc, ds_inout, force, sdcrit_nonl_)
         use NonLin_Datastructure_type
+        integer, intent(in) :: numins
+        character(len=24), intent(in) :: modele
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: carele
+        real(kind=8), intent(in) :: para(*)
+        character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer :: numins
-        real(kind=8) :: para(*)
-        aster_logical :: lnonl, force
-        character(len=19) :: sddisc, sdcrit
-        character(len=24) :: modele, mate, carele
+        aster_logical, intent(inout) :: force
+        character(len=19), optional, intent(in) :: sdcrit_nonl_
     end subroutine ntarch
 end interface

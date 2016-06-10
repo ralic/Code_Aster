@@ -1,5 +1,5 @@
-subroutine nxnoli(modele, mate  , carele, lostat  , levol,&
-                  para  , sddisc, sdcrit, ds_inout)
+subroutine ntnoli(modele, mate  , carele  , lostat, levol,&
+                  para  , sddisc, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -32,25 +32,28 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    character(len=24), intent(in) :: modele
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: carele
+    aster_logical, intent(in) :: lostat
+    aster_logical, intent(in) :: levol
+    real(kind=8), intent(in) :: para(*)
+    character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
-    real(kind=8) :: para(*)
-    aster_logical :: lostat, levol
-    character(len=19) :: sddisc, sdcrit
-    character(len=24) :: modele, mate, carele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_* - Init
+! THER_LINEAIRE - Init
 !
 ! Prepare storing
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: ifm, niv
     character(len=19) :: sdarch
     character(len=24) :: sdarch_ainf
     integer, pointer :: v_sdarch_ainf(:) => null()
     integer :: numarc, numins
-    integer :: ifm, niv
     aster_logical :: force, lreuse
     character(len=8) :: result
 !
@@ -96,7 +99,7 @@ implicit none
     if ((.not.lreuse) .and. (.not.lostat) .and. levol) then
         call utmess('I', 'ARCHIVAGE_4')
         call ntarch(numins, modele  , mate , carele, para,&
-                    sddisc, ds_inout, force, sdcrit)
+                    sddisc, ds_inout, force)
     endif
 !
 end subroutine

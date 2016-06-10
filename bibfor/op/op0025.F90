@@ -28,7 +28,7 @@ implicit none
 #include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ implicit none
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
     character(len=1) :: creas
     character(len=8) :: result, result_dry, mesh
-    character(len=19) :: maprec, solver, sddisc, sdcrit, list_load
+    character(len=19) :: maprec, solver, sddisc, list_load
     character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof
     character(len=24) :: mediri, matass
@@ -91,7 +91,6 @@ implicit none
     vec2nd      = '&&OP0025.2ND_MEMBRE'
     matass      = '&&OP0025.MATR_ASSEM'
     result      = ' '
-    sdcrit      = '&&OP0025.CRIT.'
     mediri      = ' '
     cndirp      = ' '
     cnchci      = ' '
@@ -114,8 +113,8 @@ implicit none
 ! - Initial state and some parameters
 !
     call ntinit(model , mate    , cara_elem, list_load,&
-                para  , nume_dof, lostat   , levol    , l_ther_nonl,&
-                sddisc, ds_inout, mesh     , sdcrit   , time)
+                para  , nume_dof, lostat   , levol    ,&
+                sddisc, ds_inout, mesh     , time)
 !
 ! - Elementary matrix for Dirichlet BC
 !
@@ -217,8 +216,8 @@ implicit none
     else
         force = .false.
     endif
-    call ntarch(nume_inst, model , mate  , cara_elem, l_ther_nonl,&
-                para     , sddisc, sdcrit, ds_inout , force)
+    call ntarch(nume_inst, model    , mate , cara_elem, para,&
+                sddisc   , ds_inout , force)
 !
 ! ------- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
 !

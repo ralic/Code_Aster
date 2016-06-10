@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,23 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine ntinit(modele,mate,carele,lischa,para,numedd,    &
-     &lostat,l_evol,lnonl,sddisc,ds_inout,mailla,sdcrit,time)
-              use nonlin_datastructure_type
-              character(len=24) :: modele
-              character(len=24) :: mate
-              character(len=24) :: carele
-              character(len=19) :: lischa
-              real(kind=8) :: para(*)
-              character(len=24) :: numedd
-              aster_logical :: lostat
-              aster_logical :: l_evol
-              aster_logical :: lnonl
-              character(len=19) :: sddisc
-              type (NL_DS_InOut), intent(inout) :: ds_inout
-              character(len=8) :: mailla
-              character(len=19) :: sdcrit
-              character(len=24) :: time
-            end subroutine ntinit
-          end interface 
+interface 
+    subroutine ntinit(modele,mate,carele,lischa,para,numedd,    &
+                      lostat,l_evol,sddisc,ds_inout,mailla,time)
+          use nonlin_datastructure_type
+          character(len=24) :: modele
+          character(len=24) :: mate
+          character(len=24) :: carele
+          character(len=19) :: lischa
+          real(kind=8) :: para(*)
+          character(len=24) :: numedd
+          aster_logical :: lostat
+          aster_logical :: l_evol
+          character(len=19) :: sddisc
+          type (NL_DS_InOut), intent(inout) :: ds_inout
+          character(len=8) :: mailla
+          character(len=24) :: time
+    end subroutine ntinit
+end interface 

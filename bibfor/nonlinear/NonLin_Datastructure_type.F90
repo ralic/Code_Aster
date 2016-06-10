@@ -207,6 +207,7 @@ implicit none
 ! 
     type NL_DS_InOut
         character(len=8)  :: result
+        aster_logical     :: l_temp_nonl
         integer           :: nb_field
         integer           :: nb_field_maxi = 21
         type(NL_DS_Field) :: field(21)

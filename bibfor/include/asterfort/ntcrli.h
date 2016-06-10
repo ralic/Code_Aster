@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntcrli(inst_init, list_inst, sddisc, lostat, l_nonline)
+    subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: list_inst
         real(kind=8), intent(in) :: inst_init
         aster_logical, intent(in) :: lostat
-        aster_logical, intent(in) :: l_nonline
     end subroutine ntcrli
 end interface

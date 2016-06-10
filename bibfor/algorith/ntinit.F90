@@ -1,6 +1,6 @@
 subroutine ntinit(modele, mate    , carele, lischa,&
-                  para  , numedd  , lostat, l_evol, lnonl ,&
-                  sddisc, ds_inout, mailla, sdcrit, time)
+                  para  , numedd  , lostat, l_evol,&
+                  sddisc, ds_inout, mailla, time)
 !
 use NonLin_Datastructure_type
 !
@@ -10,17 +10,16 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/ntcrch.h"
-#include "asterfort/ntcrcv.h"
 #include "asterfort/ntetcr.h"
 #include "asterfort/numero.h"
 #include "asterfort/nxdoet.h"
-#include "asterfort/nxnoli.h"
+#include "asterfort/ntnoli.h"
 #include "asterfort/rsnume.h"
 #include "asterfort/tiinit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +36,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical :: lostat, l_evol, lnonl
+    aster_logical :: lostat, l_evol
     character(len=19) :: lischa
-    character(len=19) :: sddisc, sdcrit
+    character(len=19) :: sddisc
     character(len=24) :: modele, mate, carele
     character(len=24) :: numedd, time
     type(NL_DS_InOut), intent(inout) :: ds_inout
@@ -82,7 +81,7 @@ implicit none
 !
 ! - Create input/output datastructure
 !
-    call ntetcr(numedd, lnonl, ds_inout,&
+    call ntetcr(numedd, ds_inout,&
                 list_load_ = lischa)
 !
 ! - Read initial state
@@ -92,15 +91,11 @@ implicit none
 !
 ! - Time discretization and storing datastructures
 !
-    call tiinit(ds_inout, sddisc, lostat, lnonl, l_evol)
+    call tiinit(ds_inout, sddisc, lostat, l_evol)
 !
 ! - Prepare storing
 !
-    call nxnoli(modele, mate, carele, lostat, lnonl   ,&
-                l_evol, para, sddisc, sdcrit, ds_inout)
-!
-! --- CREATION DE LA SD POUR ARCHIVAGE DES INFORMATIONS DE CONVERGENCE
-!
-    call ntcrcv(sdcrit)
+    call ntnoli(modele, mate  , carele, lostat, l_evol,&
+                para  , sddisc, ds_inout)
 !
 end subroutine

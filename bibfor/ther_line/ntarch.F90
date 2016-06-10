@@ -1,5 +1,5 @@
-subroutine ntarch(numins, modele, mate  , carele  , lnonl,&
-                  para  , sddisc, sdcrit, ds_inout, force)
+subroutine ntarch(numins, modele  , mate , carele      , para,&
+                  sddisc, ds_inout, force, sdcrit_nonl_)
 !
 use NonLin_Datastructure_type
 !
@@ -33,12 +33,15 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+    integer, intent(in) :: numins
+    character(len=24), intent(in) :: modele
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: carele
+    real(kind=8), intent(in) :: para(*)
+    character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer :: numins
-    real(kind=8) :: para(*)
-    aster_logical :: lnonl, force
-    character(len=19) :: sddisc, sdcrit
-    character(len=24) :: modele, mate, carele
+    aster_logical, intent(inout) :: force
+    character(len=19), optional, intent(in) :: sdcrit_nonl_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,8 +103,13 @@ implicit none
 !
 ! ----- Storing parameters
 !
-        call ntarc0(result        , modele, mate, carele, sdcrit,&
-                    list_load_resu, lnonl , para, nume_store, instan)
+        if (present(sdcrit_nonl_)) then
+            call ntarc0(result, modele    , mate  , carele      , list_load_resu,&
+                        para  , nume_store, instan, sdcrit_nonl_)
+        else
+            call ntarc0(result, modele    , mate  , carele, list_load_resu,&
+                        para  , nume_store, instan)
+        endif
 !
 ! ----- Stroring fields
 !

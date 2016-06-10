@@ -24,7 +24,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntetcr.h"
-#include "asterfort/nxnoli.h"
+#include "asterfort/ntnoli.h"
 #include "asterfort/prstoc.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/resoud.h"
@@ -38,7 +38,7 @@ implicit none
 #include "asterfort/ReadInOut.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,14 +59,14 @@ implicit none
 ! HYPOTHESES D'UN ECOULEMENT POTENTIEL
 !
 
-    aster_logical :: ltrans, lbid
+    aster_logical :: ltrans, force
     integer :: i, ib, imod,  nbmod, j1, jdisc, dim, icor(2), iadx, iady 
     integer :: nbdesc, nbrefe, nbvale, nbcoefs, icoef, jcoef
     real(kind=8) :: r8b, pi, freq, para(2), constant,  epstol
     character(len=2) :: modelisa(2), modelis
     character(len=8) :: mater, rigthe, modmec, nomres, potentiel
     character(len=8) :: mailla, maflui, nume
-    character(len=19) :: k19b, chamno, vectas, solve1, solve2, resuas, nomch(3)
+    character(len=19) :: chamno, vectas, solve1, solve2, resuas, nomch(3)
     character(len=19) :: tmpmod
     character(len=24) :: typres, nomcom, mate, metres, arcinf, inflis
     character(len=24) :: chcmb2, vesolx, vesoly, vesolz, vect2
@@ -213,8 +213,7 @@ implicit none
 !
             if (i .eq. 1) then
                 ltrans = .false.
-                k19b = '                   '
-                call ntetcr(nuddl, .false._1, ds_inout)
+                call ntetcr(nuddl, ds_inout)
 !
                 inflis = '&&OP0116.SDDIS.ARCH.INFL'
                 call wkvect(inflis, 'V V R', 3, j1)
@@ -230,11 +229,9 @@ implicit none
                 call wkvect(liditr, 'V V R', nbmod, jdisc)
                 zr(jdisc+1-1) = freq
 !
-                call nxnoli(modele, mate, bl24, .false._1, .false._1,&
-                            ltrans,  para, arcinf(1:19), k19b, ds_inout)
+                call ntnoli(modele, mate, bl24, .false._1, ltrans,&
+                            para, arcinf(1:19), ds_inout)
             endif
-            
-            k19b = '                   '
 !           --- Pour les modes doubles, assurer la qualite monotone de la discretisation
 !               en frequence (indispensable pour un stockage evol_ther)
             if (i.gt.1) then
@@ -243,9 +240,9 @@ implicit none
                 end if
             end if
             zr(jdisc+i-1) = freq
-
-            call ntarch(i-1, modele, mate, bl24, .false._1,&
-                        para, arcinf(1:19), k19b, ds_inout, lbid)
+            force = .false._1
+            call ntarch(i-1         , modele  , mate   , bl24, para, &
+                        arcinf(1:19), ds_inout, force)
 !
 10      continue
     endif

@@ -126,7 +126,7 @@ implicit none
 !
 ! - Create input/output management datastructure
 !
-    call CreateInOutDS('THER', ds_inout)
+    call CreateInOutDS('THNL', ds_inout)
 !
 ! - Read parameters
 !
@@ -156,10 +156,10 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
-    call nxinit(model      , mate  , cara_elem, compor, list_load,&
-                para       , nume_dof , lostat, levol    ,&
-                l_ther_nonl, sddisc, ds_inout , vhydr , sdobse   ,&
-                mailla     , sdcrit, time  )
+    call nxinit(model   , mate  , cara_elem, compor, list_load,&
+                para    , nume_dof, lostat, levol    ,sddisc,&
+                ds_inout, vhydr   , sdobse   ,mailla     , sdcrit,&
+                 time  )
 !
     if (lostat) then
         numins=0
@@ -475,8 +475,8 @@ implicit none
     else
         force = .false.
     endif
-    call ntarch(numins, model , mate  , cara_elem, l_ther_nonl,&
-                para  , sddisc, sdcrit, ds_inout , force)
+    call ntarch(numins, model   , mate , cara_elem, para,&
+                sddisc, ds_inout, force, sdcrit)
 !
 ! - Make observation
 !

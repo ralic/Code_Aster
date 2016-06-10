@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/CreateInOutDS_T.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  phenom           : phenomenon (MECA/THER/ACOU)
+! In  phenom           : phenomenon (MECA/THER/THNL)
 ! Out ds_inout         : datastructure for input/output management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,6 +51,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     ds_inout%result            = ' '
+    ds_inout%l_temp_nonl       = .false.
     ds_inout%stin_evol         = ' '
     ds_inout%l_stin_evol       = .false._1
     ds_inout%l_state_init      = .false._1
@@ -82,7 +83,9 @@ implicit none
     if (phenom.eq.'MECA') then
         call CreateInOutDS_M(ds_inout)
     elseif (phenom.eq.'THER') then
-        call CreateInOutDS_T(ds_inout)
+        call CreateInOutDS_T(ds_inout, .false._1)
+    elseif (phenom.eq.'THNL') then
+        call CreateInOutDS_T(ds_inout, .true._1)
     else
         ASSERT(.false.)
     endif

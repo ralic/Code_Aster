@@ -1,6 +1,6 @@
 subroutine nxinit(modele, mate  , carele  , compor, lischa,&
-                  para  , numedd  , lostat, l_evol,&
-                  lnonl , sddisc, ds_inout, vhydr , sdobse,&
+                  para  , numedd, lostat, l_evol,&
+                  sddisc, ds_inout, vhydr , sdobse,&
                   mailla, sdcrit, time)
 !
 use NonLin_Datastructure_type
@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical :: lostat, l_evol, lnonl
+    aster_logical :: lostat, l_evol
     character(len=19) :: lischa
     character(len=19) :: sddisc, sdcrit, sdobse
     character(len=24) :: modele, mate, carele
@@ -64,7 +64,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     lostat = .false.
-    lnonl  = .true.
     l_evol = .false.
     result = ds_inout%result
     time   = result(1:8)//'.CHTPS'
@@ -91,7 +90,7 @@ implicit none
 !
 ! - Create input/output datastructure
 !
-    call ntetcr(numedd, lnonl, ds_inout,&
+    call ntetcr(numedd, ds_inout,&
                 lischa, compor, vhydr, hydr0)
 !
 ! - Read initial state
@@ -100,7 +99,7 @@ implicit none
 !
 ! - Time discretization and storing datastructures
 !
-    call tiinit(ds_inout, sddisc, lostat, lnonl, l_evol)
+    call tiinit(ds_inout, sddisc, lostat, l_evol)
 !
 ! - Create observation datastructure
 !
@@ -109,7 +108,7 @@ implicit none
 !
 ! - Prepare storing
 !
-    call nxnoli(modele, mate, carele, lostat, lnonl   ,&
-                l_evol, para, sddisc, sdcrit, ds_inout)
+    call nxnoli(modele, mate  , carele, lostat  , l_evol,&
+                para  , sddisc, sdcrit, ds_inout)
 !
 end subroutine

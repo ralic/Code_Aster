@@ -18,16 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarc0(result, model     , mate     , cara_elem   , list_load_resu,&
-                      para  , nume_store, time_curr, sdcrit_nonl_)
-        character(len=8), intent(in) :: result
-        integer, intent(in) :: nume_store
-        real(kind=8), intent(in) :: time_curr
-        real(kind=8), intent(in) :: para(*)
-        character(len=19), intent(in) :: list_load_resu
-        character(len=24), intent(in) :: model
+    subroutine ntnoli(modele, mate  , carele  , lostat, levol,&
+                      para  , sddisc, ds_inout)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: cara_elem
-        character(len=19), optional, intent(in) :: sdcrit_nonl_
-    end subroutine ntarc0
+        character(len=24), intent(in) :: carele
+        aster_logical, intent(in) :: lostat
+        aster_logical, intent(in) :: levol
+        real(kind=8), intent(in) :: para(*)
+        character(len=19), intent(in) :: sddisc
+        type(NL_DS_InOut), intent(inout) :: ds_inout
+    end subroutine ntnoli
 end interface
