@@ -87,9 +87,9 @@ implicit none
         type(ROM_DS_LineicNumb) :: ds_lineic
     end type ROM_DS_Empi
 !
-! - Parameters for CALC_POD operator
+! - Parameters for DEFI_BASE_REDUITE operator
 !
-    type ROM_DS_ParaCPOD
+    type ROM_DS_ParaDBR
 ! ----- Tolerance for SVD
         real(kind=8)            :: tole_svd
 ! ----- Maximum number of modes
@@ -98,38 +98,6 @@ implicit none
         type(ROM_DS_Empi)       :: ds_empi
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)       :: ds_snap
-    end type ROM_DS_ParaCPOD
-!
-! - Parameters for CALC_EIM operator
-!
-    type ROM_DS_ParaCEIM
-! ----- Mesh
-        character(len=8)  :: mesh
-! ----- Datastructure for empiric modes (primal)
-        type(ROM_DS_Empi) :: empi_prim
-! ----- Datastructure for empiric modes (dual)
-        type(ROM_DS_Empi) :: empi_dual
-! ----- Name of group of elements for RID
-        character(len=24) :: grelem_rid
-! ----- Name of group of nodes for interface
-        character(len=24) :: grnode_int
-    end type ROM_DS_ParaCEIM
-!
-! - Parameters for THER_NON_LINE operator
-!
-    type ROM_DS_ParaHROM
-! ----- Empiric modes    
-        type(ROM_DS_Empi) :: base_empi
-! ----- Test of hyper-reduced calculus        
-        aster_logical     :: rom_test
-        aster_logical     :: hrom_test
-! ----- Informations of RID        
-        character(len=24) :: l_equa_inf
-! ----- Empiric base on RID
-        type(ROM_DS_Empi) :: base_rid
-! ----- Structure of result
-        character(len=24) :: nametb_prim
-        character(len=24) :: gamma_prim
-    end type ROM_DS_ParaHROM
+    end type ROM_DS_ParaDBR
 !     
 end module
