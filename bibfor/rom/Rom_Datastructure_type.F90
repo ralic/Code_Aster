@@ -99,5 +99,20 @@ implicit none
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)       :: ds_snap
     end type ROM_DS_ParaDBR
+!
+! - Parameters for DEFI_DOMAINE_REDUIT operator
+!
+    type ROM_DS_ParaDDR
+! ----- Mesh
+        character(len=8)  :: mesh
+! ----- Datastructure for empiric modes (primal)
+        type(ROM_DS_Empi) :: ds_empi_prim
+! ----- Datastructure for empiric modes (dual)
+        type(ROM_DS_Empi) :: ds_empi_dual
+! ----- Name of group of elements for RID
+        character(len=24) :: grelem_rid
+! ----- Name of group of nodes for interface
+        character(len=24) :: grnode_int
+    end type ROM_DS_ParaDDR
 !     
 end module
