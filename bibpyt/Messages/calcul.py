@@ -269,7 +269,7 @@ Erreur utilisateur concernant le parallélisme des calculs élémentaires :
   Mais maintenant, le nombre de processeurs disponibles est de %(i2)d.
 
 Conseil :
-  Lors de la poursuite du calcul, il faut utiliser la commande MODI_MODELE 
+  Lors de la poursuite du calcul, il faut utiliser la commande MODI_MODELE
   pour modifier la partition du modèle afin qu'elle soit cohérente avec le nombre
   de processeurs disponibles.
 """),
@@ -354,11 +354,17 @@ Conseils :
 """),
 
     46 : _(u"""
- Comportement non trouvé : %(k1)s
+ Il y a une incohérence entre les paramètres matériaux et la loi de comportement.
+ On ne trouve pas les paramètres matériaux associés à la relation %(k1)s
 """),
 
     47 : _(u"""
- pour la maille  %(k1)s
+ pour la maille %(k1)s.
+
+ Conseils :
+    Vérifiez la mise en données de la commande DEFI_MATERIAU : il faut définir
+    les paramètres matériau pour la relation utilisée.
+    Vérifiez que la maille %(k1)s est bien affectée par le matériau.
 """),
 
 
