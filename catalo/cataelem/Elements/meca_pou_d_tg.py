@@ -78,7 +78,11 @@ NVITER = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
 
 CEPSINR = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
                             components=('EPX', 'KY', 'KZ',))
-
+                            
+                            
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+                             components=('EPX', 'KY', 'KZ',))
+                             
 
 EDEFGNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
                             components=('EPXX', 'GAXY', 'GAXZ', 'GAT', 'KY',
@@ -207,7 +211,19 @@ class MECA_POU_D_TG(Element):
                             ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
-
+                            
+        OP.CHAR_MECA_EPSI_F(te=20,
+                            para_in=(
+                            (SP.PCAGNPO, CCAGNPO), (
+                                OP.CHAR_MECA_EPSI_F.PCAORIE, CCAORIE),
+                            (SP.PEPSINF, CEPSINF), (SP.PGEOMER, NGEOMER),
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
+                            (SP.PTEMPSR, CTEMPSR),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
+                               
         OP.CHAR_MECA_FC1D1D(te=150,
                             para_in=(
                             (SP.PCAGNPO, CCAGNPO), (

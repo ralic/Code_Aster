@@ -1,0 +1,587 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA=LIRE_MAILLAGE(FORMAT='MED')
+
+
+BETON=DEFI_MATERIAU(ELAS=_F(E = 1.E9,NU = 0.3,),)
+
+MATAF=AFFE_MATERIAU(MAILLAGE=MA,
+                    AFFE=(_F(TOUT = 'OUI',
+                             MATER = BETON,)))
+
+#-----------------------------------------------------------------------
+
+MODX=AFFE_MODELE(MAILLAGE=MA,     
+                  AFFE=(_F(GROUP_MA = 'COQ_X',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT',)))
+
+MODY=AFFE_MODELE(MAILLAGE=MA,     
+                  AFFE=(_F(GROUP_MA = 'COQ_Y',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT',)))
+
+MODZ=AFFE_MODELE(MAILLAGE=MA,     
+                  AFFE=(_F(GROUP_MA = 'COQ_Z',
+                           PHENOMENE = 'MECANIQUE',
+                           MODELISATION = 'DKT',)))
+
+#-----------------------------------------------------------------------
+
+CARX=AFFE_CARA_ELEM(MODELE=MODX,
+                    COQUE=(_F(GROUP_MA = 'COQ_X',
+                              EPAIS = .2,
+                              ANGL_REP = (0.0, 0.0,),
+                              #EXCENTREMENT = 0.5,
+                              #INER_ROTA = 'OUI'
+                              ),),)
+
+CARY=AFFE_CARA_ELEM(MODELE=MODY,
+                    COQUE=(_F(GROUP_MA = 'COQ_Y',
+                              EPAIS = .2,
+                              ANGL_REP = (0.0, 0.0,),),),)
+
+CARZ=AFFE_CARA_ELEM(MODELE=MODZ,
+                    COQUE=(_F(GROUP_MA = 'COQ_Z',
+                              EPAIS = .2,
+                              ANGL_REP = (45.0, 0.0,),),),)
+
+#-----------------------------------------------------------------------
+
+def escalier(x):
+    if x< 0.:
+        return 0.
+    if x<=1.:
+        return 1.
+    elif x<=2.:
+        return 2.
+    elif x<=3.:
+        return 3
+    else:
+        return 0.
+
+EXX_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '1.E-3*escalier(X)*INST',)
+
+EYY_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '2.E-3*escalier(X)*INST',)
+            
+EXY_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '3.E-3*escalier(X)*INST',)
+            
+KXX_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '4.E-3*escalier(X)*INST',)
+
+KYY_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '5.E-3*escalier(X)*INST',)
+            
+KXY_X=FORMULE(NOM_PARA = ('X','INST'),
+            VALE     = '6.E-3*escalier(X)*INST',)
+
+
+EXX_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '1.E-3*escalier(Y)*INST',)
+
+EYY_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '2.E-3*escalier(Y)*INST',)
+            
+EXY_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '3.E-3*escalier(Y)*INST',)
+            
+KXX_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '4.E-3*escalier(Y)*INST',)
+
+KYY_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '5.E-3*escalier(Y)*INST',)
+            
+KXY_Y=FORMULE(NOM_PARA = ('Y','INST'),
+            VALE     = '6.E-3*escalier(Y)*INST',)
+            
+            
+EXX_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '1.E-3*escalier(Z)*INST',)
+
+EYY_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '2.E-3*escalier(Z)*INST',)
+            
+EXY_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '3.E-3*escalier(Z)*INST',)
+            
+KXX_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '4.E-3*escalier(Z)*INST',)
+
+KYY_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '5.E-3*escalier(Z)*INST',)
+            
+KXY_Z=FORMULE(NOM_PARA = ('Z','INST'),
+            VALE     = '6.E-3*escalier(Z)*INST',)     
+
+#-----------------------------------------------------------------------
+
+BLOCX=AFFE_CHAR_MECA(MODELE=MODX,
+                    DDL_IMPO=(_F(GROUP_NO = ('ENCX',),
+                                 DX = 0., DY=0., DZ = 0., 
+                                 DRX = 0., DRY=0., DRZ = 0., 
+                                 ),
+                             ),
+            )
+
+PEPSIRX=AFFE_CHAR_MECA(MODELE=MODX,
+                      PRE_EPSI = (_F(GROUP_MA = 'G1X',
+                                  EXX     = 1E-3,
+                                  EYY     = 2E-3,
+                                  EXY     = 3E-3,
+                                  KXX     = 4E-3,
+                                  KYY     = 5E-3,
+                                  KXY     = 6E-3,),
+                                  _F(GROUP_MA = 'G2X',
+                                  EXX     = 1E-3*2,
+                                  EYY     = 2E-3*2,
+                                  EXY     = 3E-3*2,
+                                  KXX     = 4E-3*2,
+                                  KYY     = 5E-3*2,
+                                  KXY     = 6E-3*2,),
+                                  _F(GROUP_MA = 'G3X',
+                                  EXX     = 1E-3*3,
+                                  EYY     = 2E-3*3,
+                                  EXY     = 3E-3*3,
+                                  KXX     = 4E-3*3,
+                                  KYY     = 5E-3*3,
+                                  KXY     = 6E-3*3,),
+                                  )
+            )
+
+PEPSIFX=AFFE_CHAR_MECA_F(MODELE=MODX,
+                      PRE_EPSI = _F(GROUP_MA = 'COQ_X',
+                                  EXX     = EXX_X,
+                                  EYY     = EYY_X,
+                                  EXY     = EXY_X,
+                                  KXX     = KXX_X,
+                                  KYY     = KYY_X,
+                                  KXY     = KXY_X,
+                                  )
+
+            )
+
+
+BLOCY=AFFE_CHAR_MECA(MODELE=MODY,
+                    DDL_IMPO=(_F(GROUP_NO = ('ENCY',),
+                                 DX = 0., DY=0., DZ = 0., 
+                                 DRX = 0., DRY=0., DRZ = 0., 
+                                 ),
+                             ),
+            )
+
+PEPSIRY=AFFE_CHAR_MECA(MODELE=MODY,
+                      PRE_EPSI = (_F(GROUP_MA = 'G1Y',
+                                  EXX     = 1E-3,
+                                  EYY     = 2E-3,
+                                  EXY     = 3E-3,
+                                  KXX     = 4E-3,
+                                  KYY     = 5E-3,
+                                  KXY     = 6E-3,),
+                                  _F(GROUP_MA = 'G2Y',
+                                  EXX     = 1E-3*2,
+                                  EYY     = 2E-3*2,
+                                  EXY     = 3E-3*2,
+                                  KXX     = 4E-3*2,
+                                  KYY     = 5E-3*2,
+                                  KXY     = 6E-3*2,),
+                                  _F(GROUP_MA = 'G3Y',
+                                  EXX     = 1E-3*3,
+                                  EYY     = 2E-3*3,
+                                  EXY     = 3E-3*3,
+                                  KXX     = 4E-3*3,
+                                  KYY     = 5E-3*3,
+                                  KXY     = 6E-3*3,),
+                                  )
+            )
+
+PEPSIFY=AFFE_CHAR_MECA_F(MODELE=MODY,
+                      PRE_EPSI = _F(GROUP_MA = 'COQ_Y',
+                                  EXX     = EXX_Y,
+                                  EYY     = EYY_Y,
+                                  EXY     = EXY_Y,
+                                  KXX     = KXX_Y,
+                                  KYY     = KYY_Y,
+                                  KXY     = KXY_Y,
+                                  )
+
+            )
+            
+            
+BLOCZ=AFFE_CHAR_MECA(MODELE=MODZ,
+                    DDL_IMPO=(_F(GROUP_NO = ('ENCZ',),
+                                 DX = 0., DY=0., DZ = 0., 
+                                 DRX = 0., DRY=0., DRZ = 0., 
+                                 ),
+                             ),
+            )
+
+PEPSIRZ=AFFE_CHAR_MECA(MODELE=MODZ,
+                      PRE_EPSI = (_F(GROUP_MA = 'G1Z',
+                                  EXX     = 1E-3,
+                                  EYY     = 2E-3,
+                                  EXY     = 3E-3,
+                                  KXX     = 4E-3,
+                                  KYY     = 5E-3,
+                                  KXY     = 6E-3,),
+                                  _F(GROUP_MA = 'G2Z',
+                                  EXX     = 1E-3*2,
+                                  EYY     = 2E-3*2,
+                                  EXY     = 3E-3*2,
+                                  KXX     = 4E-3*2,
+                                  KYY     = 5E-3*2,
+                                  KXY     = 6E-3*2,),
+                                  _F(GROUP_MA = 'G3Z',
+                                  EXX     = 1E-3*3,
+                                  EYY     = 2E-3*3,
+                                  EXY     = 3E-3*3,
+                                  KXX     = 4E-3*3,
+                                  KYY     = 5E-3*3,
+                                  KXY     = 6E-3*3,),
+                                  )
+            )
+
+PEPSIFZ=AFFE_CHAR_MECA_F(MODELE=MODZ,
+                      PRE_EPSI = _F(GROUP_MA = 'COQ_Z',
+                                  EXX     = EXX_Z,
+                                  EYY     = EYY_Z,
+                                  EXY     = EXY_Z,
+                                  KXX     = KXX_Z,
+                                  KYY     = KYY_Z,
+                                  KXY     = KXY_Z,
+                                  )
+
+            )
+#-----------------------------------------------------------------------
+
+ZLIST=DEFI_LIST_REEL(   DEBUT=0.,
+             INTERVALLE=_F( JUSQU_A = 2.0,  NOMBRE = 2, )
+           )
+FF=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0.0,
+                           2.,   2.),
+                     )
+
+#-----------------------------------------------------------------------
+CALC_R_X=STAT_NON_LINE(MODELE=MODX,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARX,
+                       EXCIT=(_F(CHARGE = BLOCX,),
+                              _F(CHARGE = PEPSIRX, FONC_MULT=FF),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+CALC_F_X=STAT_NON_LINE(MODELE=MODX,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARX,
+                       EXCIT=(_F(CHARGE = BLOCX,),
+                              _F(CHARGE = PEPSIFX,),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+
+
+CALC_R_Y=STAT_NON_LINE(MODELE=MODY,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARY,
+                       EXCIT=(_F(CHARGE = BLOCY,),
+                              _F(CHARGE = PEPSIRY, FONC_MULT=FF),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+CALC_F_Y=STAT_NON_LINE(MODELE=MODY,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARY,
+                       EXCIT=(_F(CHARGE = BLOCY,),
+                              _F(CHARGE = PEPSIFY,),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+
+CALC_R_Z=STAT_NON_LINE(MODELE=MODZ,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARZ,
+                       EXCIT=(_F(CHARGE = BLOCZ,),
+                              _F(CHARGE = PEPSIRZ, FONC_MULT=FF),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+CALC_F_Z=STAT_NON_LINE(MODELE=MODZ,
+                       CHAM_MATER=MATAF,
+                       CARA_ELEM=CARZ,
+                       EXCIT=(_F(CHARGE = BLOCZ,),
+                              _F(CHARGE = PEPSIFZ,),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+#-----------------------------------------------------------------------
+TEST_RESU(RESU=(_F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0327934215069,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.011685267293,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.01262074168,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0655868430138,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_R_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.023370534587,
+                   ),
+               ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   VALE_REFE=0.00631037083998,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0327934215069,
+                   VALE_REFE=0.0327934215069,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.011685267293,
+                   VALE_REFE=-0.011685267293,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.01262074168,
+                   VALE_REFE=0.01262074168,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0655868430138,
+                   VALE_REFE=0.0655868430138,
+                   ),
+                _F(GROUP_NO='FLX',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_F_X,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.023370534587,
+                   VALE_REFE=-0.023370534587,
+                   ),
+               ),
+          )
+
+
+
+TEST_RESU(RESU=(_F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_R_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.0392065784931,
+                   ),
+                _F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_R_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   ),
+                _F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_R_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.0468734663462,
+                   ),
+               ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_F_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.0392065784931,
+                   VALE_REFE=-0.0392065784931,
+                   ),
+                _F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_F_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   VALE_REFE=0.00631037083998,
+                   ),
+                _F(GROUP_NO='FLY',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_F_Y,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=-0.0468734663462,
+                   VALE_REFE=-0.0468734663462,
+                   ),
+               ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_R_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0116852672935,
+                   ),
+                _F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_R_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0327934215069,
+                   ),
+                _F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_R_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   ),
+               ),
+          )
+
+TEST_RESU(RESU=(_F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_F_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0116852672935,
+                   VALE_REFE=0.0116852672935,
+                   ),
+                _F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_F_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0327934215069,
+                   VALE_REFE=0.0327934215069,
+                   ),
+                _F(GROUP_NO='FLZ',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DZ',
+                   RESULTAT=CALC_F_Z,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.00631037083998,
+                   VALE_REFE=0.00631037083998,
+                   ),
+               ),
+          )
+
+
+FIN()
+#

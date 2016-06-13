@@ -1,6 +1,6 @@
 subroutine te0434(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@ subroutine te0434(option, nomte)
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mbcine.h"
 #include "asterfort/mbrigi.h"
@@ -48,11 +49,14 @@ subroutine te0434(option, nomte)
     character(len=4) :: fami
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: i, n, kpg, c, cc
-    integer :: ipoids, ivf, idfde, jgano
+    integer :: ipoids, ivf, idfde, jgano, itemps, ier
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta, rho(1), rig(3, 3)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)
+    character(len=8) :: nompar(4)
+    real(kind=8) :: valpar(4)
+    real(kind=8) :: xgau, ygau, zgau, epsinif(3)
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -79,6 +83,11 @@ subroutine te0434(option, nomte)
     else if (option.eq.'CHAR_MECA_EPSI_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINR', 'L', iepsin)
+!
+    else if (option.eq.'CHAR_MECA_EPSI_F') then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PEPSINF', 'L', iepsin)
+        call jevech('PTEMPSR', 'L', itemps)
 !
     else if (option.eq.'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
@@ -120,7 +129,7 @@ subroutine te0434(option, nomte)
 ! - BRANCHEMENT DES DIFFERENTES OPTIONS
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-            (option.eq.'CHAR_MECA_EPSI_R')) then
+            (option(1:15).eq.'CHAR_MECA_EPSI_')) then
 !
 ! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
@@ -139,6 +148,41 @@ subroutine te0434(option, nomte)
                 do c = 1, ncomp
                     do cc = 1, ncomp
                         sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
+                    end do
+                end do
+!
+            else if (option.eq.'CHAR_MECA_EPSI_F') then
+!
+                call mbrigi(fami, kpg, imate, rig)
+!
+                call r8inir(3, 0.d0, sig, 1)
+                
+                nompar(1) = 'X'
+                nompar(2) = 'Y'
+                nompar(3) = 'Z'
+                nompar(4) = 'INST'
+                valpar(4) = zr(itemps)
+                xgau = 0.d0
+                ygau = 0.d0
+                zgau = 0.d0
+!
+                do i = 1, nno
+                    xgau = xgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+1+3*(i-1))
+                    ygau = ygau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+2+3*(i-1))
+                    zgau = zgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+3+3*(i-1))
+                enddo
+!
+                valpar(1) = xgau
+                valpar(2) = ygau
+                valpar(3) = zgau
+!
+                call fointe('FM', zk8(iepsin), 4, nompar, valpar, epsinif(1), ier)
+                call fointe('FM', zk8(iepsin+1), 4, nompar, valpar, epsinif(2), ier)
+                call fointe('FM', zk8(iepsin+2), 4, nompar, valpar, epsinif(3), ier)
+!
+                do c = 1, ncomp
+                    do cc = 1, ncomp
+                        sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
                     end do
                 end do
 !

@@ -82,6 +82,9 @@ EENERR = LocatedComponents(phys=PHY.ENER_R, type='ELEM',
 
 CEPSINR = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
                             components=('EPX', 'KY', 'KZ',))
+                            
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+                             components=('EPX', 'KY', 'KZ',))
 
 
 EDEFGNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
@@ -207,6 +210,18 @@ class MECA_POU_D_E(Element):
                             (SP.PEPSINR, CEPSINR), (SP.PGEOMER, NGEOMER),
                             (SP.PMATERC, LC.CMATERC), (
                             OP.CHAR_MECA_EPSI_R.PVARCPR, LC.ZVARCPG),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
+                            
+        OP.CHAR_MECA_EPSI_F(te=20,
+                            para_in=(
+                            (SP.PCAGNPO, CCAGNPO), (
+                                OP.CHAR_MECA_EPSI_F.PCAORIE, CCAORIE),
+                            (SP.PEPSINF, CEPSINF), (SP.PGEOMER, NGEOMER),
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
+                            (SP.PTEMPSR, CTEMPSR),
                             ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),

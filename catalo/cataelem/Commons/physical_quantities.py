@@ -1011,6 +1011,15 @@ EPSI_F   = PhysicalQuantity(type='K8',
        'EPXZ',
        'EPYZ',
        'DIVU',
+       'EXX',
+       'EYY',
+       'EXY',
+       'KXX',
+       'KYY',
+       'KXY',
+       'EPX',
+       'KY',
+       'KZ',
     ),
     comment="""  EPSI_F Type:K8 Deformation (fonction)
        EPXX : epsilon_xx deformation d'un milieu continu
@@ -1020,6 +1029,15 @@ EPSI_F   = PhysicalQuantity(type='K8',
        EPXZ : epsilon_xz deformation d'un milieu continu
        EPYZ : epsilon_yz deformation d'un milieu continu
        DIVU    : dilatation volumique (chainage HM)
+       EXX coque : deformations generalisees
+       EYY coque : deformations generalisees
+       EXY coque : deformations generalisees
+       KXX coque : deformations generalisees
+       KYY coque : deformations generalisees
+       KXY coque : deformations generalisees
+       EPX Poutre: elongation selon l'axe de la poutre
+       KY Poutre: courbure selon l'axe Y
+       KZ Poutre: courbure selon l'axe Z
 """)
 
 

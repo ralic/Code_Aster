@@ -24,6 +24,7 @@ subroutine te0430(option, nomte)
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgrib.h"
 #include "asterfort/rcvalb.h"
@@ -50,12 +51,15 @@ subroutine te0430(option, nomte)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
     integer :: nddl, nno, npg, i, kpg, n, ndim, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret
-    integer :: ipesa, iepsin, iadzi, iazk24
+    integer :: ipoids, ivf, idfde, igeom, imate, icontm, ivectu, iret, ier
+    integer :: ipesa, iepsin, iadzi, iazk24, itemps
     real(kind=8) :: dff(2, 8), vff(8), b(6, 8), p(3, 6), jac, epsthe, epsref
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: sig, rho(1), valres(2), b_max_rot
     aster_logical :: lexc
+    character(len=8) :: nompar(4)
+    real(kind=8) :: valpar(4)
+    real(kind=8) :: xgau, ygau, zgau, exx
 !
 ! - BOOLEEN POUR LES GRILLES EXCENTREES
 !
@@ -80,6 +84,10 @@ subroutine te0430(option, nomte)
     else if (option.eq.'CHAR_MECA_EPSI_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINR', 'L', iepsin)
+    else if (option.eq.'CHAR_MECA_EPSI_F') then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PEPSINF', 'L', iepsin)
+        call jevech('PTEMPSR', 'L', itemps)
 !
     else if (option.eq.'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
@@ -139,14 +147,14 @@ subroutine te0430(option, nomte)
 ! - BRANCHEMENT DES DIFFERENTES OPTIONS
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-            (option.eq.'CHAR_MECA_EPSI_R')) then
+            (option(1:15).eq.'CHAR_MECA_EPSI_')) then
 !
 ! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
             if (option .eq. 'FORC_NODA') then
                 sig = zr(icontm+kpg-1)
 !
-! - CHAR_MECA_EPSI_R : SIG = E*EPSIN
+! - CHAR_MECA_EPSI_* : SIG = E*EPSIN
 !
             else if (option.eq.'CHAR_MECA_EPSI_R') then
                 nomres(1) = 'E'
@@ -154,6 +162,35 @@ subroutine te0430(option, nomte)
                             ' ', 'ELAS', 0, ' ', [0.d0],&
                             1, nomres, valres, codres, 1)
                 sig=valres(1)*zr(iepsin)
+
+            else if (option.eq.'CHAR_MECA_EPSI_F') then
+                nomres(1) = 'E'
+                call rcvalb(fami, kpg, 1, '+', zi(imate),&
+                            ' ', 'ELAS', 0, ' ', [0.d0],&
+                            1, nomres, valres, codres, 1)
+                
+                nompar(1) = 'X'
+                nompar(2) = 'Y'
+                nompar(3) = 'Z'
+                nompar(4) = 'INST'
+                valpar(4) = zr(itemps)
+                xgau = 0.d0
+                ygau = 0.d0
+                zgau = 0.d0
+!
+                do i = 1, nno
+                    xgau = xgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+1+3*(i-1))
+                    ygau = ygau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+2+3*(i-1))
+                    zgau = zgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+3+3*(i-1))
+                enddo
+!
+                valpar(1) = xgau
+                valpar(2) = ygau
+                valpar(3) = zgau
+                
+                call fointe('FM', zk8(iepsin), 4, nompar, valpar, exx, ier)
+                
+                sig=valres(1)*exx
 !
 ! - CHAR_MECA_TEMP_R : SIG = E*EPSTHE
 !

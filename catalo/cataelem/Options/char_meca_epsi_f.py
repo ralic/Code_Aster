@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,16 @@ import cataelem.Commons.attributes as AT
 PVARCPR = InputParameter(phys=PHY.VARI_R)
 
 
+PCAORIE = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
+                         comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
+
+
+PNBSP_I = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
+                         comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
+
+
+PCOMPOR = InputParameter(phys=PHY.COMPOR)
+
 CHAR_MECA_EPSI_F = Option(
     para_in=(
         SP.PCAMASS,
@@ -36,7 +46,14 @@ CHAR_MECA_EPSI_F = Option(
         SP.PHARMON,
         SP.PMATERC,
         SP.PTEMPSR,
+        SP.PCAGNPO,
+        SP.PFIBRES,
+        SP.PCACOQU,
         PVARCPR,
+        PCAORIE,
+        PNBSP_I,
+        PCOMPOR,
+        SP.PCAGNBA,
     ),
     para_out=(
         SP.PVECTUR,

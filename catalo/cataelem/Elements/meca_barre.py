@@ -82,6 +82,10 @@ CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
     components=('EPXX',))
 
 
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+    components=('EPXX',))
+
+
 EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EPTHER_L',))
 
@@ -186,10 +190,20 @@ class MECA_BARRE(Element):
                      (OP.AMOR_MECA.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
-
-#       -- te0580 : ne resout que le cas trivial : EPXX=0.
-        OP.CHAR_MECA_EPSI_R(te=580,
-            para_in=((SP.PEPSINR, CEPSINR), ),
+        
+        OP.CHAR_MECA_EPSI_R(te=155,
+            para_in=((SP.PCAGNBA, LC.CCAGNBA), (OP.CHAR_MECA_HYDR_R.PCAORIE, CCAORIE),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                     (SP.PEPSINR, CEPSINR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+        
+        OP.CHAR_MECA_EPSI_F(te=155,
+            para_in=((SP.PCAGNBA, LC.CCAGNBA), (OP.CHAR_MECA_HYDR_R.PCAORIE, CCAORIE),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                     (SP.PEPSINF, CEPSINF), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 

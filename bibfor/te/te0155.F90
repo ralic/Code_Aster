@@ -22,7 +22,7 @@ subroutine te0155(option, nomte)
     character(len=*) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,8 @@ subroutine te0155(option, nomte)
 !        'CHAR_MECA_FF1D1D' : FORCES LINEIQUES (FONCTION)
 !        'CHAR_MECA_SR1D1D' : FORCES LINEIQUES SUIVEUSES (FONCTION)
 !        'CHAR_MECA_TEMP_R' : ELEVATION DE TEMPERATURE
+!        'CHAR_MECA_EPSI_R' : DEFORMATION INITIALE
+!        'CHAR_MECA_EPSI_F' : DEFORMATION INITIALE
 ! IN  NOMTE  : K16 : NOM DU TYPE ELEMENT
 !        'MECA_BARRE'       : BARRE
 !        'MECA_2D_BARRE'       : BARRE
@@ -57,9 +59,9 @@ subroutine te0155(option, nomte)
     character(len=8) :: nompar(4), poum
     real(kind=8) :: a, e(1), rho(1), xl, temp, xdep, xrig, w(6), w2(3)
     real(kind=8) :: pgl(3, 3), fl(6), qg(6), ql(6), valpa1(4), valpa2(4)
-    real(kind=8) :: r8min, s, s2, s3, s4, s5, r1, vect(6)
+    real(kind=8) :: r8min, s, s2, s3, s4, s5, r1, vect(6), epsini
     integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect, lsect
-    integer :: lmater, lpesa, lforc, itemps, nbpar, iret
+    integer :: lmater, lpesa, lforc, itemps, nbpar, iret, iepsini
     integer :: ifcx, iadzi, iazk24, kpg, spt
     character(len=8) :: nompav(1), nomail
     real(kind=8) :: valpav(1), fcx, vite2, vp(3), ang1(3), u(3), v(3), instan
@@ -614,6 +616,48 @@ subroutine te0155(option, nomte)
             zr(lvect+2) = vect(4)
             zr(lvect+3) = vect(5)
         endif
+!
+    else if (option(1:15).eq.'CHAR_MECA_EPSI_') then
+!     --- RECUPERATION DES CARACTERISTIQUES GENERALES DES SECTIONS ---
+        call jevech('PCAGNBA', 'L', lsect)
+        a = zr(lsect)
+!        --- RECUPERATION DES CARACTERISTIQUES MATERIAUX ---
+        call jevech('PMATERC', 'L', lmater)
+        call rcvalb(fami, 1, 1, '+', zi(lmater),&
+                    ' ', 'ELAS', 0, ' ', [0.d0],&
+                    1, 'E', e, codres, 1)
+!        --- RECUPERATION DE LA DEFORMATION
+        if (option(15:16).eq.'_R')then
+            call jevech('PEPSINR', 'L', iepsini)
+            epsini = zr(iepsini)
+        else
+            call jevech('PEPSINF', 'L', iepsini)
+            call jevech('PTEMPSR', 'L', itemps)
+            valpa1(1) = (w(1)+w(4))/2.d0
+            valpa1(2) = (w(2)+w(5))/2.d0
+            valpa1(3) = (w(3)+w(6))/2.d0
+            valpa1(4) = zr(itemps)
+            call fointe('FM', zk8(iepsini), 4, nompar, valpa1,&
+                        epsini, iret)
+        endif
+!        --- CALCUL DES FORCES INDUITES ---
+        fl(1) = - e(1) * a * epsini
+        fl(4) = e(1) * a * epsini
+        call utpvlg(nno, nc, pgl, fl(1), vect)
+!
+! ECRITURE DANS LE VECTEUR PVECTUR SUIVANT L'ELEMENT
+!
+        if (nomte .eq. 'MECA_BARRE') then
+            do i = 1, 6
+                zr(lvect+i-1) = vect(i)
+            end do
+        else if (nomte.eq.'MECA_2D_BARRE') then
+            zr(lvect) = vect(1)
+            zr(lvect+1) = vect(2)
+            zr(lvect+2) = vect(4)
+            zr(lvect+3) = vect(5)
+        endif
+!
 !
     endif
 !

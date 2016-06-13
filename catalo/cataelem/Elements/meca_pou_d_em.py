@@ -105,6 +105,10 @@ EDFEQPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
 
 CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
     components=('EPX','KY','KZ',))
+    
+    
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+                             components=('EPX', 'KY', 'KZ',))
 
 
 EDFVCPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
@@ -253,7 +257,17 @@ class MECA_POU_D_EM(Element):
                      (OP.CHAR_MECA_EPSI_R.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
-
+        
+        OP.CHAR_MECA_EPSI_F(te=20,
+            para_in=((SP.PCAGNPO, CCAGNPO), (OP.CHAR_MECA_EPSI_F.PCAORIE, CCAORIE),
+                     (OP.CHAR_MECA_EPSI_F.PCOMPOR, CCOMPOR), (SP.PEPSINF, CEPSINF),
+                     (SP.PFIBRES, LC.ECAFIEL), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_EPSI_F.PNBSP_I, ENBSP_I),
+                     (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
+                     (SP.PTEMPSR, CTEMPSR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+        
         OP.CHAR_MECA_FC1D1D(te=150,
             para_in=((SP.PCAGNPO, CCAGNPO), (OP.CHAR_MECA_FC1D1D.PCAORIE, CCAORIE),
                      (SP.PFC1D1D, LC.CFORCEC), (SP.PGEOMER, NGEOMER),

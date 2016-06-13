@@ -3,6 +3,7 @@ subroutine te0035(option, nomte)
 #include "jeveux.h"
 #include "asterfort/dxbsig.h"
 #include "asterfort/dxefgi.h"
+#include "asterfort/dxefgi_fonc.h"
 #include "asterfort/dxefgt.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"
@@ -11,7 +12,7 @@ subroutine te0035(option, nomte)
 #include "asterfort/utpvgl.h"
     character(len=16) :: option, nomte
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,6 +42,7 @@ subroutine te0035(option, nomte)
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: epsini(6)
     real(kind=8) :: bsigma(24), sigt(32)
+    character(len=8) :: epsinif(6)
     character(len=16) :: optio2
 ! ----------------------------------------------------------------------
 !
@@ -85,6 +87,19 @@ subroutine te0035(option, nomte)
         epsini(6) = zr(idefi+6-1)
 !
         call dxefgi(nomte, pgl, epsini, sigt)
+!
+    else if (option .eq.'CHAR_MECA_EPSI_F') then
+!
+        call jevech('PEPSINF', 'L', idefi)
+!
+        epsinif(1) = zk8(idefi+1-1)
+        epsinif(2) = zk8(idefi+2-1)
+        epsinif(3) = zk8(idefi+3-1)
+        epsinif(4) = zk8(idefi+4-1)
+        epsinif(5) = zk8(idefi+5-1)
+        epsinif(6) = zk8(idefi+6-1)
+!
+        call dxefgi_fonc(nomte, pgl, epsinif, zr(jgeom), zr(ivf), sigt)
 !
     endif
 !

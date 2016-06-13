@@ -90,6 +90,10 @@ CEPSINR = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
                             components=('EPX', 'KY', 'KZ',))
 
 
+CEPSINF  = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+                             components=('EPX', 'KY', 'KZ',))
+
+
 EDEFGNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
                             components=('EPXX', 'GAXY', 'GAXZ', 'GAT', 'KY',
                                         'KZ', 'GAX',))
@@ -253,6 +257,20 @@ class MECA_POU_D_TGM(Element):
                             (SP.PMATERC, LC.CMATERC), (
                             OP.CHAR_MECA_EPSI_R.PNBSP_I, ENBSP_I),
                             (OP.CHAR_MECA_EPSI_R.PVARCPR, LC.ZVARCPG), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
+                            
+        OP.CHAR_MECA_EPSI_F(te=20,
+                            para_in=(
+                            (SP.PCAGNPO, CCAGNPO), (
+                                OP.CHAR_MECA_EPSI_F.PCAORIE, CCAORIE),
+                            (OP.CHAR_MECA_EPSI_F.PCOMPOR, CCOMPOR), (
+                            SP.PEPSINF, CEPSINF),
+                            (SP.PFIBRES, LC.ECAFIEL), (SP.PGEOMER, NGEOMER),
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_EPSI_F.PNBSP_I, ENBSP_I),
+                            (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
+                            (SP.PTEMPSR, CTEMPSR), ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 

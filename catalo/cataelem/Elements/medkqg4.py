@@ -100,6 +100,11 @@ CEPSINR = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
                                         'KXY',))
 
 
+CEPSINF = LocatedComponents(phys=PHY.EPSI_F, type='ELEM',
+                            components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
+                                        'KXY',))
+
+
 EDEFGNO = LocatedComponents(phys=PHY.EPSI_R, type='ELNO',
                             components=('EXX', 'EYY', 'EXY', 'KXX', 'KYY',
                                         'KXY', 'GAX', 'GAY',))
@@ -257,6 +262,16 @@ class MEDKQG4(Element):
                                 (SP.PCACOQU, CCACOQU), (SP.PEPSINR, CEPSINR),
                             (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                                 (OP.CHAR_MECA_EPSI_R.PVARCPR, LC.ZVARCPG), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
+
+        OP.CHAR_MECA_EPSI_F(te=35,
+                            para_in=(
+                                (SP.PCACOQU, CCACOQU), (SP.PEPSINF, CEPSINF),
+                            (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                                 (OP.CHAR_MECA_EPSI_F.PVARCPR, LC.ZVARCPG),
+                             (SP.PTEMPSR, CTEMPSR),
+                            ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 

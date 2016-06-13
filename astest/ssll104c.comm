@@ -1,0 +1,262 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# MODELISATION POU_D_E : 10 MAILLES SEG2
+# MODELISATION BARRE   : 10 MAILLES SEG2
+# POINTS   A=N1     B=N11
+# TOUTES LES CARACTERISTIQUES DE LA POUTRE SONT PRISES EGALES A 1
+# LA LONGUEUR DE LA POUTRE EST EGALE A 100
+#----------------------------------------------------------------------
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+MA0=LIRE_MAILLAGE( )
+
+MA0=DEFI_GROUP( reuse=MA0,   MAILLAGE=MA0,
+  CREA_GROUP_MA=_F(  NOM = 'POUTRE', TOUT = 'OUI'))
+
+
+MA=CREA_MAILLAGE(
+               MAILLAGE=MA0,
+               CREA_MAILLE=(_F(NOM = 'BARRE',
+                               GROUP_MA = 'POUTRE',
+                               PREF_MAILLE = 'B',
+                              ),
+                            ),
+                           )
+
+MO1=AFFE_MODELE(  MAILLAGE=MA,
+                  AFFE=(_F(  GROUP_MA = 'POUTRE',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'POU_D_E'),
+                        _F(  GROUP_MA = 'BARRE',    PHENOMENE = 'MECANIQUE',
+                         MODELISATION = 'BARRE'),
+                        ),
+               )
+
+MAT=DEFI_MATERIAU( ELAS=_F(  E = 1., NU = 0.))
+
+
+CHMAT=AFFE_MATERIAU(  MAILLAGE=MA,
+                       AFFE=_F(  TOUT = 'OUI',  MATER = MAT),
+                    )
+
+# --------- PB PLAN + NOEUDS 'A ET B' ENCASTRES
+#
+CL1=AFFE_CHAR_MECA(  MODELE=MO1,
+          DDL_IMPO=_F(
+                    NOEUD = ( 'N1',),  DX = 0.,  DY = 0.,  DZ = 0.,
+                                DRX = 0., DRY = 0., DRZ = 0.),
+                    )
+
+
+EPSPOU=AFFE_CHAR_MECA(  MODELE=MO1,
+                        PRE_EPSI=_F( GROUP_MA = 'POUTRE',  EPX = 1.E-3,
+                                   )
+                    )
+
+EPSBA=AFFE_CHAR_MECA(  MODELE=MO1,
+                        PRE_EPSI=_F( GROUP_MA = 'BARRE',  EPXX = 1.E-3,
+                                   )
+                    )
+
+
+#  -----------------------------------------------------------------
+#  DEFINITION DES SECTIONS
+#  -----------------------------------------------------------------
+
+
+CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
+                         VERIF=( 'MAILLE',  ),
+            POUTRE=
+               _F(  GROUP_MA = 'POUTRE',
+                    SECTION = 'CERCLE',
+                    CARA = ( 'R',),
+                    VALE = (  1.,),
+                 ),
+            BARRE=
+               _F(  GROUP_MA = 'BARRE',
+                    SECTION = 'CERCLE',
+                    CARA = ( 'R',),
+                    VALE = (  1.,),
+                 ),
+            
+                     )
+
+
+ZLIST=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F( JUSQU_A = 2.0,  NOMBRE = 2, )
+                    )
+
+FF=DEFI_FONCTION(NOM_PARA='INST',
+                     VALE=(0.0,    0.0,
+                           2.,   2.),
+                     )
+# VALIDATION DE AFFE_CHAR_MECA/PRE_EPSI POUR LES BARRES 
+
+CALC_POU=STAT_NON_LINE(MODELE=MO1,
+                    CARA_ELEM=CELEM1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE = CL1,),
+                           _F(CHARGE = EPSPOU, FONC_MULT=FF 
+                            ),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST, INST_FIN = 1.0),
+                   )
+
+CALC_BA=STAT_NON_LINE(MODELE=MO1,
+                    CARA_ELEM=CELEM1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE = CL1,),
+                           _F(CHARGE = EPSBA, FONC_MULT=FF 
+                            ),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST, INST_FIN = 1.0),
+                   )
+
+TEST_RESU(RESU=(_F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_POU,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0288675134603,
+                   ),
+               ),
+          )
+TEST_RESU(RESU=(_F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_BA,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0288675134603,
+                   VALE_REFE=0.0288675134603,),
+               ),
+          )
+
+# VALIDATION DE AFFE_CHAR_MECA_F/PRE_EPSI POUR LES BARRES 
+
+EPXX=FORMULE(NOM_PARA = ('X','Y','Z','INST'),
+               VALE     = '1.E-5*(X+Y+Z)*INST',
+                       )
+xyz = [
+0.0000000000E+00,
+5.7735026919E+00,
+1.1547005384E+01,
+1.7320508076E+01,
+2.3094010768E+01,
+2.8867513459E+01,
+3.4641016151E+01,
+4.0414518843E+01,
+4.6188021535E+01,
+5.1961524227E+01,
+5.7735026919E+01,]
+
+xyzg = [(xyz[i]+xyz[i+1])/2. for i in range(10)]
+
+epxx_val = [EPXX(x,x,x,1.) for x in xyzg]
+
+EPSBA2R=AFFE_CHAR_MECA( MODELE=MO1,
+                        PRE_EPSI=(_F(MAILLE = 'BE1', EPXX = epxx_val[0],),
+                                  _F(MAILLE = 'BE2', EPXX = epxx_val[1],),
+                                  _F(MAILLE = 'BE3', EPXX = epxx_val[2],),
+                                  _F(MAILLE = 'BE4', EPXX = epxx_val[3],),
+                                  _F(MAILLE = 'BE5', EPXX = epxx_val[4],),
+                                  _F(MAILLE = 'BE6', EPXX = epxx_val[5],),
+                                  _F(MAILLE = 'BE7', EPXX = epxx_val[6],),
+                                  _F(MAILLE = 'BE8', EPXX = epxx_val[7],),
+                                  _F(MAILLE = 'BE9', EPXX = epxx_val[8],),
+                                  _F(MAILLE = 'BE10', EPXX = epxx_val[9],),
+                                 )
+                    )
+
+EPSBA2F=AFFE_CHAR_MECA_F(  MODELE=MO1,
+                        PRE_EPSI=_F( GROUP_MA = 'BARRE',  EPXX = EPXX,
+                                   )
+                    )
+
+
+CALC_BAR=STAT_NON_LINE(MODELE=MO1,
+                    CARA_ELEM=CELEM1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE = CL1,),
+                           _F(CHARGE = EPSBA2R, FONC_MULT=FF 
+                            ),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+CALC_BAF=STAT_NON_LINE(MODELE=MO1,
+                    CARA_ELEM=CELEM1,
+                    CHAM_MATER=CHMAT,
+                    EXCIT=(_F(CHARGE = CL1,),
+                           _F(CHARGE = EPSBA2F,
+                            ),
+                          ),
+                    COMPORTEMENT=_F(RELATION = 'ELAS',),
+                    INCREMENT=_F(LIST_INST = ZLIST,),
+                   )
+
+TEST_RESU(RESU=(_F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_BAR,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0250000000004,
+                   ),
+                _F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_BAR,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0499999999999,
+                   ),
+               ),
+          )
+TEST_RESU(RESU=(_F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 1.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DX',
+                   RESULTAT=CALC_BAF,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0250000000004,
+                   VALE_REFE=0.0250000000004,),
+                _F(NOEUD='N11',
+                   CRITERE='RELATIF',
+                   INST = 2.0,
+                   REFERENCE='AUTRE_ASTER',
+                   NOM_CMP='DY',
+                   RESULTAT=CALC_BAF,
+                   NOM_CHAM='DEPL',
+                   VALE_CALC=0.0499999999999,
+                   VALE_REFE=0.0499999999999,),
+               ),
+          )
+
+
+
+
+FIN()
+#
