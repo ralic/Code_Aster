@@ -2,3 +2,4 @@ P time_limit 60
 P memory_limit 256
 P testlist verification sequential
 F comm comp012b.comm D 1
+P ncpus 1

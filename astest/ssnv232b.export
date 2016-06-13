@@ -3,3 +3,4 @@ P memory_limit 256
 P testlist verification sequential
 F comm ssnv232b.comm D 1
 F mail ssnv232b.mail D 20
+P ncpus 1
