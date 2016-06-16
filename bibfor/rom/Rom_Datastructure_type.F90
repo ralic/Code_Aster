@@ -114,5 +114,26 @@ implicit none
 ! ----- Name of group of nodes for interface
         character(len=24) :: grnode_int
     end type ROM_DS_ParaDDR
+!
+! - Parameters for non_linear operator
+!
+    type ROM_DS_AlgoPara
+! ----- Empiric modes
+        type(ROM_DS_Empi) :: ds_empi
+! ----- Empiric modes (on RID)
+        type(ROM_DS_Empi) :: ds_empi_rid
+! ----- Pointer to list of equations for interface nodes
+        integer, pointer  :: v_equa_int(:)
+! ----- Flag for reduced model
+        aster_logical     :: l_rom
+! ----- Flag for hyper-reduced model
+        aster_logical     :: l_hrom
+! ----- Name of GROUP_NO
+        character(len=24) :: grnode_int
+! ----- Table for reduced coordinates
+        character(len=24) :: tabl_name
+! ----- Object to save reduced coordinates
+        character(len=24) :: gamma
+    end type ROM_DS_AlgoPara
 !     
 end module
