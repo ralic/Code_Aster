@@ -110,7 +110,7 @@ def get_revision_info_cmd(from_rev=None, rev="."):
         if br not in BR:
             continue
         if tag not in ("", "tip"):
-            vers = version2tuple(tag)
+            vers = version2tuple(tag)[:3]
             break
         chg += 1
     return [vers, revid, branch, date, frbr, chg, loc]
