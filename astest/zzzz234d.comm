@@ -45,7 +45,8 @@ CL_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
                     DX=0., DY=0., DZ=0.,))
 
 CH_DISTL = AFFE_CHAR_MECA(MODELE=MO_DISTL,
-                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),
+                        PRE_EPSI=_F(GROUP_MA ='TOUT', EPXX=0.))
 
 RE_DISTL=STAT_NON_LINE(MODELE  = MO_DISTL,
                      CHAM_MATER = CHMAT,
@@ -263,7 +264,8 @@ CA_DISTN = AFFE_CARA_ELEM(   MODELE=MO_DISTN,
 
 CH_DISTN = AFFE_CHAR_MECA(MODELE=MO_DISTN,
                         DDL_IMPO=_F(NOEUD='N1',DRX=0.,DRY=0.,DRZ=0.),
-                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FY=-1000.,),
+                        PRE_EPSI=_F(GROUP_MA ='POI_A', EPXX=0.))
 
 RE_DISTN=STAT_NON_LINE(MODELE  = MO_DISTN,
                      CHAM_MATER = CHMAT_D,
@@ -447,7 +449,8 @@ CL_DITRL = AFFE_CHAR_MECA(MODELE=MO_DITRL,
     DRX=0., DRY=0., DRZ=0.,))
 
 CH_DITRL = AFFE_CHAR_MECA(MODELE=MO_DITRL,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.,),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.,),
+                        PRE_EPSI=_F(GROUP_MA ='TOUT', EPXX=0.))
 
 RE_DITRL=STAT_NON_LINE(MODELE  = MO_DITRL,
                      CHAM_MATER = CHMAT,
@@ -652,7 +655,8 @@ CA_DITRN = AFFE_CARA_ELEM(   MODELE=MO_DITRN,
 
 
 CH_DITRN = AFFE_CHAR_MECA(MODELE=MO_DITRN,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=1000.,FY=1100.,FZ=1200.,MX=1300.,MY=1400.,MZ=1500.),
+                        PRE_EPSI=_F(GROUP_MA ='POI_A', EPXX=0.))
 
 RE_DITRN=STAT_NON_LINE(MODELE  = MO_DITRN,
                      CHAM_MATER = CHMAT_D,

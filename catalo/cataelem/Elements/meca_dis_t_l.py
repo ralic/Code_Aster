@@ -119,6 +119,10 @@ ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
 
 
+CEPSINR  = LocatedComponents(phys=PHY.EPSI_R, type='ELEM',
+    components=('EPXX',))
+
+
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
@@ -141,6 +145,12 @@ class MECA_DIS_T_L(Element):
             para_in=((SP.PEPCON1, EEFGEGA), (SP.PEPCON2, EEFGEGA),
                      ),
             para_out=((SP.PEPCON3, EEFGEGA), ),
+        ),
+
+#       -- te0580 : ne resout que le cas trivial : EPXX=0.
+        OP.CHAR_MECA_EPSI_R(te=580,
+            para_in=((SP.PEPSINR, CEPSINR), ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.AMOR_MECA(te=41,

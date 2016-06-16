@@ -50,7 +50,8 @@ CL_2DITL = AFFE_CHAR_MECA(MODELE=MO_2DITL,
     ))
 
 CH_2DITL = AFFE_CHAR_MECA(MODELE=MO_2DITL,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,FY=-1100.),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,FY=-1100.),
+                        PRE_EPSI=_F(GROUP_MA ='TOUT', EPXX=0.))
 
 RE_2DITL=STAT_NON_LINE(MODELE  = MO_2DITL,
                      CHAM_MATER = CHMAT,
@@ -236,7 +237,8 @@ CL_2DTRL = AFFE_CHAR_MECA(MODELE=MO_2DTRL,
     ))
 
 CH_2DTRL = AFFE_CHAR_MECA(MODELE=MO_2DTRL,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,FY=-1100.),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,FY=-1100.),
+                        PRE_EPSI=_F(GROUP_MA ='TOUT', EPXX=0.))
 
 RE_2DTRL=STAT_NON_LINE(MODELE  = MO_2DTRL,
                      CHAM_MATER = CHMAT,
@@ -434,7 +436,8 @@ CA_2DITN = AFFE_CARA_ELEM(   MODELE=MO_2DITN,
                            ))
 
 CH_2DITN = AFFE_CHAR_MECA(MODELE=MO_2DITN,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,),
+                        PRE_EPSI=_F(GROUP_MA ='POI_A', EPXX=0.))
 
 RE_2DITN=STAT_NON_LINE(MODELE  = MO_2DITN,
                      CHAM_MATER = CHMAT_DI,
@@ -621,7 +624,8 @@ CA_2DTRN = AFFE_CARA_ELEM(   MODELE=MO_2DTRN,
 )
 
 CH_2DTRN = AFFE_CHAR_MECA(MODELE=MO_2DTRN,
-                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,),)
+                        FORCE_NODALE=_F(GROUP_NO='B',FX=-1000.,),
+                        PRE_EPSI=_F(GROUP_MA ='POI_A', EPXX=0.))
 
 RE_2DTRN=STAT_NON_LINE(MODELE  = MO_2DTRN,
                      CHAM_MATER = CHMAT_DI,
