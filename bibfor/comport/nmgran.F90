@@ -22,7 +22,6 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8t0.h"
-#include "asterfort/ftprim.h"
 #include "asterfort/granvi.h"
 #include "asterfort/matini.h"
 #include "asterfort/rcvalb.h"
@@ -269,26 +268,6 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
     tmprim=1.d0
     tpprim=1.d0
-        
-!~     if (compor(1) (1:15) .eq. 'GRANGER_FP_INDT') then
-!~         dteqt=delta
-!~ !
-!~         tmprim=1.d0
-!~         tpprim=1.d0
-!~     else
-!~         nomres(1)='QSR_K'
-!~         call rcvalb(fami, kpg, ksp, '+', imate,&
-!~                     ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
-!~                     1, nomres(1), valres(1), icodre(1), 0)
-!~         if (icodre(1) .ne. 0) valres(1)=0.d0
-!~         qsrt=valres(1)
-!~         coeft=(-qsrt)*(1/temp-1/tkref)
-!~         coeft=exp(coeft)
-!~         dteqt=coeft*delta
-!~ !
-!~         tmprim=ftprim(tkm, tkref)
-!~         tpprim=ftprim(tkp,tkref)
-!~     endif
 !
 !  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
 !
