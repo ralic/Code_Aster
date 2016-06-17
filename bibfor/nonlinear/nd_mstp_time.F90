@@ -109,7 +109,7 @@ implicit none
     if (l_reuse) then
         call rs_getlast(result, nume_last)
         call rsadpa(result, 'L', 1, 'INST_PREC', nume_last,&
-                    0, sjv=jv_para)
+                    0, sjv=jv_para, istop = 0)
         time_prev_step = zr(jv_para) 
         if (time_prev_step .eq. r8vide()) then
             call utmess('I','DYNAMIQUE_51')
