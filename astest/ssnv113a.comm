@@ -17,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'),)
 
 #......................................................................
 # PLAQUE CARREE EN TRACTION CISAILLEMENT CALCUL 3D
@@ -37,16 +37,80 @@ TEMPE=CREA_CHAMP( OPERATION='AFFE', TYPE_CHAM='NOEU_TEMP_R', MAILLAGE=M,
                                  VALE = 350.)
                        )
 
+
+L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
+             _F( JUSQU_A = 0.00001,    NOMBRE = 1),
+             _F( JUSQU_A = 100.0,      NOMBRE = 9),
+             _F( JUSQU_A = 500.0,      NOMBRE = 10))
+           )
+
+t1 = 0.00001
+list_inst = [0.0, t1]
+for i in range(9):
+    list_inst.append(t1+(100-t1)/9*(i+1))
+for i in range(10):
+    list_inst.append(100+(500-100)/10*(i+1))
+
+MULT = FORMULE(NOM_PARA=('INST'),VALE='1E-4*INST')
+
+CHRES=CREA_CHAMP(
+    OPERATION='AFFE', TYPE_CHAM='NOEU_NEUT_F', MAILLAGE=M,
+    AFFE=_F( TOUT = 'OUI', NOM_CMP = 'X1', VALE_F = MULT),
+)
+
+#-----------------------------------------------------
+# CREATION DU CHAMP FLUENC1 ASSOCIE A LA LISTE LINST
+#-----------------------------------------------------
+
+CHFLU=[None]*len(list_inst)
+affe=[]
+for i,inst in enumerate(list_inst):
+
+    INST0_1=CREA_CHAMP(
+        OPERATION='AFFE', TYPE_CHAM='NOEU_INST_R', MAILLAGE=M,
+        AFFE=_F( TOUT = 'OUI', NOM_CMP = 'INST', VALE = inst),
+    )
+
+    NEUT=CREA_CHAMP(
+        OPERATION='EVAL',
+        TYPE_CHAM='NOEU_NEUT_R', CHAM_F=CHRES,
+        CHAM_PARA=(INST0_1,),
+    )
+    
+    CHFLU[i]=CREA_CHAMP(
+        OPERATION='ASSE', TYPE_CHAM='NOEU_IRRA_R', MAILLAGE=M,
+        ASSE=   _F( TOUT = 'OUI', CHAM_GD =NEUT,
+                    NOM_CMP = ('X1',),  NOM_CMP_RESU = ('IRRA',)),
+    )
+    
+    
+    affe.append({'CHAM_GD' : CHFLU[i],
+                 'INST'    : inst,
+               })
+    
+    DETRUIRE(CONCEPT=_F(NOM=(INST0_1,NEUT)))
+
+FLUX1=CREA_RESU(
+    OPERATION='AFFE', TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA',
+    AFFE=affe
+)
+
 INCLUDE(DONNEE='ssnv113a.mater.datg')
 
 
 CM=AFFE_MATERIAU(
             MAILLAGE=M,
            AFFE=_F( TOUT = 'OUI',MATER = ACIER,),
-           AFFE_VARC=_F( TOUT='OUI',
+           AFFE_VARC=(_F( TOUT='OUI',
                          CHAM_GD=TEMPE,
                          NOM_VARC='TEMP',
-                         VALE_REF=20.),)
+                         VALE_REF=20.),
+                      _F( TOUT='OUI',
+                         EVOL=FLUX1,
+                         NOM_VARC='IRRA',
+                         ),
+                         )
+                         )
 
 P23=DEFI_FONCTION(
            NOM_PARA='INST',PROL_DROITE='CONSTANT',PROL_GAUCHE='LINEAIRE',
@@ -83,11 +147,6 @@ CH2=AFFE_CHAR_MECA_F(
                         _F( NOEUD = ('NO2', 'NO6',),  FY = P23),
                         _F( NOEUD = ('NO3', 'NO7',),  FX = M37M23,  FY = M23)))
 
-L_INST=DEFI_LIST_REEL(  DEBUT=0.0,INTERVALLE=(
-             _F( JUSQU_A = 0.00001,    NOMBRE = 1),
-             _F( JUSQU_A = 100.0,      NOMBRE = 9),
-             _F( JUSQU_A = 500.0,      NOMBRE = 10))
-           )
 
 U=STAT_NON_LINE(
                             MODELE=MO,

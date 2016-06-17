@@ -75,7 +75,6 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                      VISC_IRRA_LOG=_F( A        = 1.28E-1,
                                        B        = 0.01159,
                                        CSTE_TPS = 0.3540,
-                                       FLUX_PHI = 1.E-4,
                                        ENER_ACT=5000.)
                       );
 
@@ -153,7 +152,6 @@ for i in range(NCAL):
                      VISC_IRRA_LOG=_F( A        = 1.28E-1,
                                        B        = 0.01159,
                                        CSTE_TPS = 0.3540,
-                                       FLUX_PHI = 1.E-4,
                                        ENER_ACT=5000.)
                                  );
 

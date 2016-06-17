@@ -4,7 +4,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
                   defam, defap, angmas, sigp, vip,&
                   dsidep, iret, compo, nbvalc)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,10 +77,8 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
     common / nmpavp / dpc,sieleq,deuxmu,deltat,tschem,prec,theta,niter
     real(kind=8) :: dpc, sieleq, deuxmu, deltat, tschem, prec, theta, niter
 !     COMMON POUR LES PARAMETRES DES LOIS DE FLUAGE SOUS IRRADIATION
-!     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
-    common / nmpair / fluphi,&
-     &                  a,b,ctps,ener
-    real(kind=8) :: fluphi
+!     VISC_IRRA_LOG: A      B      CTPS    ENER
+    common / nmpair / a,b,ctps,ener
     real(kind=8) :: a, b, ctps, ener
 ! PARAMETRES MATERIAUX
 ! ELASTIQUES
@@ -88,14 +86,15 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
     integer :: nbcgil, iret2
-    parameter  (nbcgil=5)
+    parameter  (nbcgil=4)
     real(kind=8) :: coegil(nbcgil)
     character(len=8) :: nomgil(nbcgil)
     integer :: codgil(nbcgil)
     real(kind=8) :: t1, t2
     real(kind=8) :: degran, depsan, depsim, depsgr
     real(kind=8) :: coef1, coefb, expqt
-    data nomgil /'A','B','CSTE_TPS','ENER_ACT','FLUX_PHI'/
+    real(kind=8) :: fluphi
+    data nomgil /'A','B','CSTE_TPS','ENER_ACT'/
 !
     iret = 0
 !     PARAMETRE THETA D'INTEGRATION
@@ -149,9 +148,6 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
         ctps = coegil(3)
         ener = coegil(4)
 !
-        if (coegil(5) .ne. 1.d0) then
-            call utmess('A', 'ALGORITH6_56')
-        endif
         if (fluphi .lt. -prec) then
             call utmess('F', 'ALGORITH6_57')
         endif

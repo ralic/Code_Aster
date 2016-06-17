@@ -170,10 +170,6 @@ cata_msg = {
  THETA = 1 ou 0.5
 """),
 
-    56 : _(u"""
- fluence commandée et FLUX_PHI différent de 1
-"""),
-
     57 : _(u"""
  fluence décroissante (PHI<0)
 """),

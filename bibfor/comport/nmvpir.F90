@@ -85,9 +85,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !     COMMON POUR LES PARAMETRES DES LOIS DE FLUAGE SOUS IRRADIATION
 !     VISC_IRRA_LOG: FLUPHI A      B      CTPS    ENER
 ! -------------------------------------------------------------
-    common / nmpair / fluphi,&
-     &                  a,b,ctps,ener
-    real(kind=8) :: fluphi, tm, tp
+    common / nmpair / a,b,ctps,ener
+    real(kind=8) :: tm, tp
     real(kind=8) :: a, b, ctps, ener
 !     COMMON POUR LES PARAMETRES DE LA LOI DE LEMAITRE (NON IRRADIEE)
     common / nmpale / unsurk,unsurm,valden
@@ -98,7 +97,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
     integer :: nbclem, nbcvil, nbcint
-    parameter (nbclem=7, nbcvil=5, nbcint=2)
+    parameter (nbclem=7, nbcvil=4, nbcint=2)
     real(kind=8) :: coelem(nbclem), coevil(nbcvil)
     real(kind=8) :: coeint(nbcint)
     character(len=16) :: nomlem(nbclem), nomvil(nbcvil)
@@ -106,7 +105,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     integer :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
     character(len=*) :: fami
 !
-    real(kind=8) :: t1, t2, defam(6), defap(6)
+    real(kind=8) :: t1, t2, defam(6), defap(6), fluphi
     integer :: iulmes,  iret2, iret3, ibid
     real(kind=8) :: rac2, tabs
     integer :: k, l
@@ -128,7 +127,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
     data              kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
     data nomlem / 'N', 'UN_SUR_K', 'UN_SUR_M', 'QSR_K',&
      &              'BETA','PHI_ZERO','L'/
-    data nomvil / 'A', 'B', 'CSTE_TPS', 'ENER_ACT', 'FLUX_PHI'/
+    data nomvil / 'A', 'B', 'CSTE_TPS', 'ENER_ACT'/
     data nomint / 'A',         'S'/
     data epsa   / 'EPSAXX','EPSAYY','EPSAZZ','EPSAXY','EPSAXZ',&
      &              'EPSAYZ'/
@@ -277,19 +276,13 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'VISC_IRRA_LOG', 1, 'TEMP', [tschem],&
-                    5, nomvil(1), coevil(1), codvil, 1)
+                    nbcvil, nomvil(1), coevil(1), codvil, 1)
         a = coevil(1)
         b = coevil(2)
         ctps = coevil(3)
         ener = coevil(4)
-        if (coevil(5) .ne. 1.d0) then
-            fluphi=coevil(5)
-            irrap = fluphi*instap
-            irram = fluphi*instam
-        else
-            irrap = irrap - irram + vim(2)
-            irram = vim(2)
-        endif
+        irrap = irrap - irram + vim(2)
+        irram = vim(2)
         if (irrap .lt. irram) then
             call utmess('F', 'ALGORITH8_88')
         endif
@@ -298,15 +291,9 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
 !        PARAMETRES DE LA LOI DE FLUAGE
         call rcvalb(fami, 1, 1, '+', imate,&
                     ' ', 'GRAN_IRRA_LOG', 1, ' ', [0.d0],&
-                    5, nomvil(1), coevil(1), codvil, 1)
-        if (coevil(5) .ne. 1.d0) then
-            fluphi=coevil(5)
-            irrap = fluphi*instap
-            irram = fluphi*instam
-        else
-            irrap = irrap - irram + vim(2)
-            irram = vim(2)
-        endif
+                    nbcvil, nomvil(1), coevil(1), codvil, 1)
+        irrap = irrap - irram + vim(2)
+        irram = vim(2)
         if (irrap .lt. irram) then
             call utmess('F', 'ALGORITH8_88')
         endif
@@ -496,6 +483,8 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod,&
             if (compor(1)(1:10) .eq. 'GRAN_IRRA_') then
                 vip(2) = irrap
                 vip(3) = vim(3) + depsgr
+            elseif (compor(1)(1:10) .eq. 'VISC_IRRA_') then
+                vip(2) = irrap
             endif
         else
             vip(1) = vim(1) + sqrt(2.d0*deltp2/3.d0)
