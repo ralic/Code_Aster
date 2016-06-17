@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
            TOUT_CMP        =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            AVEC_CMP        =SIMP(statut='f',typ='TXM',max='**'),
            SANS_CMP        =SIMP(statut='f',typ='TXM',max='**'),
-           NBMOD           =SIMP(statut='o',typ='I',defaut= 1),
+           NB_MODE         =SIMP(statut='o',typ='I',defaut= 1),
            SHIFT           =SIMP(statut='o',typ='R',defaut= 1.0),
 
          ),

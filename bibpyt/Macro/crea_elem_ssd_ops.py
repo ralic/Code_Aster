@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -181,7 +181,7 @@ def crea_elem_ssd_ops(self,  NUME_DDL, INTERFACE, BASE_MODALE,
                 arg_int['NOEUD'] = arg_no
             if arg_grno:
                 arg_int['GROUP_NO'] = arg_grno
-            arg_int['NBMOD'] = BASE_MODALE[0]['NMAX_MODE_INTF']
+            arg_int['NB_MODE'] = BASE_MODALE[0]['NMAX_MODE_INTF']
             arg_int['TOUT_CMP'] = 'OUI'
             mcfacti.append(_F(**arg_int))
             modstati['MODE_INTERF'] = mcfacti

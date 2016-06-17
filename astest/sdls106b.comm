@@ -199,14 +199,14 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID_1,
                         MATR_MASS=MASS_1,
                         MODE_INTERF=_F(GROUP_NO = 'GAUCHE',
                                      TOUT_CMP='OUI',
-                                     NBMOD=20,
+                                     NB_MODE=20,
                                      SHIFT=1.,),);
 
 MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID_2,
                         MATR_MASS=MASS_2,
                         MODE_INTERF=_F(GROUP_NO = 'BLOQUE',
                                      TOUT_CMP='OUI',
-                                     NBMOD=20,
+                                     NB_MODE=20,
                                      SHIFT=1.,),);
 #
 #  CALCUL DE LA BASE MODALE DES SOUS-STRUCTURES

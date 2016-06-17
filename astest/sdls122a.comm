@@ -257,7 +257,7 @@ MODESTA1=MODE_STATIQUE(MATR_RIGI=RAID1,
                        MATR_MASS=MASS1,
                        MODE_INTERF=_F(GROUP_NO=('INTF1'),
                                       TOUT_CMP='OUI',
-                                      NBMOD=15,
+                                      NB_MODE=15,
                                       ),
                       );
 
@@ -282,7 +282,7 @@ MODESTA2=MODE_STATIQUE(MATR_RIGI=RAID2,
                        MATR_MASS=MASS2,
                        MODE_INTERF=_F(GROUP_NO=('INTF2'),
                                       TOUT_CMP='OUI',
-                                      NBMOD=15,
+                                      NB_MODE=15,
                                       ),
                       );
 
