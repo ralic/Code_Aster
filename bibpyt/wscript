@@ -16,8 +16,26 @@ def configure(self):
         values = check_aster_version(self)
     except Exception, exc:
         raise Errors.ConfigurationError(str(exc))
-    if values[0] == "?":
-        raise Errors.ConfigurationError("can not find official parent revision")
+    # check values
+    try:
+        assert type(values) in (list, tuple), (1, values)
+        assert len(values) == 7, (2, values)
+        vers, revid, branch, date, frbr, chg, loc = values
+        assert len(vers) == 3, (3, values)
+        assert [type(i) for i in vers] == [int, int, int], (4, values)
+        assert type(revid) is str, (5, values)
+        assert type(branch) is str, (6, values)
+        assert type(date) is str, (7, values)
+        assert type(frbr) is str, (8, values)
+        assert type(chg) is int, (9, values)
+        assert type(loc) in (list, tuple), (10, values)
+        if loc:
+            types = list(set([type(i) for i in loc]))
+            assert len(types) == 1, (11, types)
+            assert types[0] is str, (12, values)
+    except AssertionError, exc:
+        raise Errors.ConfigurationError("Can not find official parent "
+            "revision. Unexpected values: {0}".format(str(exc)))
     self.env.append_value('ASTER_VERSION', values)
     self.end_msg(self.env.ASTER_VERSION[:-1])
 
