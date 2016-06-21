@@ -29,9 +29,6 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect,&
 #include "asterc/getvid_wrap.h"
 #include "asterfort/assert.h"
 #include "asterc/getres.h"
-    character(len=16) :: result
-    character(len=16) :: concep
-    character(len=16) :: nomcmd
 !
 !   really used variables
     integer :: uioc, uisdef, unbret, umax
@@ -72,7 +69,7 @@ subroutine getvid(motfac, motcle, iocc, nbval, vect,&
     endif
 !   if the ".capy" can not ensure that at least 'umax' are provided, you must check
 !   the number of values really read using the 'nbret' argument
-    ASSERT(present(nbret) .or. (umax .eq. unbret .or. unbret < 0))
+    ASSERT(present(nbret) .or. umax .eq. unbret)
 !
     if (present(isdefault)) then
         isdefault = uisdef
