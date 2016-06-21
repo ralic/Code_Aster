@@ -1,3 +1,3 @@
 #!/bin/bash
-suffix=`basename $0 | sed 's/^waf_//'`
-export WAFLOCK=.lock-${suffix}_build && ./waf --out=build/${suffix} $*
+export WAF_SUFFIX=`basename $0 | sed 's/^waf_//'`
+export WAFLOCK=.lock-${WAF_SUFFIX}_build && ./waf --out=build/${WAF_SUFFIX} $*
