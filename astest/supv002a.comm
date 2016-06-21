@@ -18,12 +18,20 @@
 
 # Note: aspell and relevant dictionnaries are required to pass this testcase.
 #       If this message is emitted: No word lists can be found for the language "XX",
-#       you must also install the dictionnary for the language "XX" (*.per).
+#       you must also install the dictionnary for the language "XX" (*.per)
+#       from your package manager.
+#       Example: apt-get install aspell-fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 
 # Que faire en cas d'erreur avec ce test ?
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#
+# Le fichier contenant les mots-clés du catalogue de commandes doit être
+# installé dans <INSTALL_PREFIX>/share/aster/code_aster_cata.aspell.per
+#
+# Le dictionnaire des mots autorisés (en plus du dictionnaire français de aspell)
+# est cherché dans le dépôt 'devtools' qui doit donc être présent et à jour.
 #
 # Dans l'output de l'exécution, on trouvera des lignes d'impression lors de la vérification
 # de chaque catalogue de messages :

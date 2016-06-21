@@ -21,6 +21,7 @@ from Execution.i18n import localization as LO
 from Execution.strfunc import ufmt, convert
 import Messages
 
+
 ENCODING = "utf-8"
 VALUES = MessageLog.default_args.copy()
 VALUES['ktout'] = 'xxxxxx'
@@ -42,6 +43,7 @@ except ImportError:
     def loginfo(msg):
         print msg
 logdbg = None
+
 
 class Checker(object):
     """A simple checker object."""
@@ -116,12 +118,14 @@ class Checker(object):
         lmod.sort()
         return lmod
 
+
 def read_file(stream, queue):
     """Read on stream and put lines into queue"""
     while True:
         line = stream.readline().strip()
         logdbg and logdbg("aspell outputs: %r" % line)
         queue.put(line)
+
 
 class AspellCall(object):
     """A pipe to call aspell"""
@@ -195,6 +199,7 @@ class AspellCall(object):
         unknown = [w for w, r in zip(words, resp) if r.strip() != '*']
         return unknown
 
+
 def get_cata_msg(catamess):
     """Import a messages file"""
     cata_msg = {}
@@ -213,6 +218,7 @@ def get_cata_msg(catamess):
                      traceback.format_exc()))
     return cata_msg
 
+
 def check_format(checker, catamess, idmess, msg, typ):
     """Check the format used for the given type 'typ'."""
     dre = {
@@ -227,6 +233,7 @@ def check_format(checker, catamess, idmess, msg, typ):
     unauth = set(arg).difference(l_auth)
     if len(unauth) > 0:
         checker.error("%s : invalid format for type '%s' : %s" % (idmess, typ, tuple(unauth)))
+
 
 def check_msg(checker, catamess, msg, key, lang):
     """Check a message."""
@@ -263,29 +270,36 @@ def check_msg(checker, catamess, msg, key, lang):
             unknown = [convert(word) for word in unknown]
             checker.warning_spell(idmess, unknown)
 
+
 _pws = None
-def get_personal_dict(name='dict'):
+def get_personal_dict():
     """Build the dictionnary for Code_Aster : keywords + personal dict."""
     global _pws
     if _pws:
         return _pws
-    fd, fname = tempfile.mkstemp(dir=os.getcwd())
+    fd, _pws = tempfile.mkstemp(dir=os.getcwd())
     fobj = os.fdopen(fd, 'w')
     cnt = ['personal_ws-1.1 fr 0 %s' % ENCODING, ]
-    templ = osp.join(os.environ['ASTER_ROOT'], 'share', 'codeaster', 'code_aster_%s.aspell.per')
-    cata = templ % 'cata'
+    dictdir = osp.join(os.environ['HOME'], 'dev', 'codeaster', 'devtools',
+                       'share', 'spell')
+    cata = osp.join(dictdir, 'code_aster_cata.aspell.per')
     if osp.exists(cata):
         # ignore the first line
         cnt.extend(open(cata, 'r').read().splitlines()[1:])
-        _pws = fname
-    cawl = templ % 'dict'
+    else:
+        raise IOError("no such file: {0}\nAn updated devtools repository is "
+                      "required!".format(cata))
+    cawl = osp.join(dictdir, 'code_aster_dict.aspell.per')
     if osp.exists(cawl):
         # ignore the first line
         cnt.extend(open(cawl, 'r').read().splitlines()[1:])
-        _pws = fname
+    else:
+        raise IOError("no such file: {0}\nAn updated devtools repository is "
+                      "required!".format(cawl))
     fobj.write(os.linesep.join([line for line in cnt if line.strip()]))
     fobj.close()
     return _pws
+
 
 def check_catamess(checker, lang, l_cata):
     """Check all the messages files"""
@@ -310,6 +324,7 @@ def check_catamess(checker, lang, l_cata):
                 msg  = msg['message']
             check_msg(checker, catamess, msg, key, lang)
 
+
 def timekeeper(pid, delay):
     """Kill 'pid' if it times out"""
     time.sleep(delay)
@@ -321,6 +336,7 @@ It probably blocks reading the response of aspell on its stdout...
 Try run with INFO=2 to have all the details.
 """ % (pid, delay), """Interruption : kill the main process!"""))
     os.kill(pid, signal.SIGTERM)
+
 
 def supv002_ops(self, ERREUR, **kwargs):
     """Fake macro-command to check messages"""
@@ -424,6 +440,7 @@ def supv002_ops(self, ERREUR, **kwargs):
                TABLE=__tabw,
                )
     return 0
+
 
 if __name__ != '__main__':
     SUPV002 = MACRO(nom='SUPV002', op=supv002_ops,
