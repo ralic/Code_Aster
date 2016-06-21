@@ -217,7 +217,7 @@ int main(void){
     self.code_checker('MED_INT_SIZE', self.check_cc, fragment,
                       'Checking size of med_int integers',
                       'unexpected value for sizeof(med_int): %s',
-                      into=(4, 8))
+                      into=(4, 8), use='MED HDF5')
     #XXX compatibility
     if self.env['MED_INT_SIZE'] == 4 and self.is_defined('_USE_64_BITS'):
         self.define('_USE_MED_SHORT_INT', 1)

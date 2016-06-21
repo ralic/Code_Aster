@@ -20,12 +20,14 @@ def build(self):
     sources += get_srcs('commun/*.capy')
     sources += get_srcs('commande/*.capy')
 
+    cata = self.path.find_or_declare('cata.py')
     self(
-       features = 'catapy py',
-           name = 'catapy',
-         target = 'cata.py',
-         source = sources,
-   install_path = osp.join(env.ASTERLIBDIR, 'Cata'),
+        features = 'catapy py',
+            name = 'catapy',
+          target = cata,
+          source = sources,
+    install_path = osp.join(env.ASTERLIBDIR, 'Cata'),
+    install_from = self.path.get_bld(),
     )
 
 ###############################################################################
@@ -38,9 +40,8 @@ def capy(self, node):
 @TaskGen.feature('catapy')
 def make_cata(self):
     """Create the cata.py"""
-    target = self.bld.bldnode.make_node(self.target)
-    tsk = self.create_task('make_capy', src=self.source, tgt=target)
-    self.process_py(target)
+    self.create_task('make_capy', src=self.source, tgt=self.target)
+    self.process_py(self.target)
 
 class make_capy(Task.Task):
     color   = 'PINK'

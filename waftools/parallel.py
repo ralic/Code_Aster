@@ -20,16 +20,14 @@ def options(self):
                      help='Disable OpenMP')
 
 def configure(self):
-    if self.options.parallel:
-        default = ['mpicc', 'mpicxx', 'mpif90']
-    else:
-        default = [''] * 3
-    for var in ('CC', 'CXX', 'FC'):
-        if not self.env[var]:
-            self.add_os_flags(var)
-        val = Utils.to_list(self.env[var])
-        os.environ[var] = (val and val[0]) or default.pop(0)
+    opts = self.options
+    if opts.parallel:
+        # Configure.find_program uses first self.environ, then os.environ
+        self.environ.setdefault('CC', 'mpicc')
+        self.environ.setdefault('CXX', 'mpicxx')
+        self.environ.setdefault('FC', 'mpif90')
     self.load_compilers()
+    self.check_compilers_version()
     self.check_fortran_verbose_flag()
     self.check_openmp()
     self.check_fortran_clib()
@@ -37,15 +35,7 @@ def configure(self):
 ###############################################################################
 
 @Configure.conf
-def load_compilers(self):
-    self.env.stash()                    # Store a snapshot of the environment
-    self.load_compilers_mpi()           #   |
-    if not self.get_define('HAVE_MPI'): #   |
-        self.env.revert()               # <-'
-        self.load('compiler_cc')
-        self.load('compiler_cxx')
-        self.load('compiler_fc')
-    # print compilers version
+def check_compilers_version(self):
     self.start_msg('Checking for C compiler version')
     self.end_msg(self.env.CC_NAME.lower() + ' ' + \
                  '.'.join(Utils.to_list(self.env.CC_VERSION)))
@@ -55,23 +45,26 @@ def load_compilers(self):
                  '.'.join(Utils.to_list(self.env.FC_VERSION)))
 
 @Configure.conf
-def load_compilers_mpi(self):
-    check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
-                    package='', uselib_store='MPI', mandatory=False)
-    cc = os.environ.get('CC')
-    cxx = os.environ.get('CXX')
-    fc = os.environ.get('FC')
-    if (cc and check(path=cc)) and (fc and check(path=fc)):
-        self.check_mpi()
-    elif self.options.parallel:
-        self.fatal("Unable to configure the parallel environment")
+def load_compilers(self):
+    self.load('compiler_c')
+    self.load('compiler_cxx')
+    self.load('compiler_fc')
+    if self.options.parallel:
+        cc = self.env.CC[0]
+        cxx = self.env.CXX[0]
+        fc = self.env.FC[0]
+        check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
+                        package='', uselib_store='MPI', mandatory=False)
+        if check(path=cc) and check(path=cxx) and check(path=fc):
+            self.check_mpi()
+        if not self.get_define('HAVE_MPI'):
+            self.fatal("Unable to configure the parallel environment")
 
 @Configure.conf
 def check_mpi(self):
-    self.load('compiler_cc')
-    self.load('compiler_cxx')
-    self.load('compiler_fc')
     self.check_cc(header_name='mpi.h', use='MPI', define_name='_USE_MPI')
+    if self.get_define('_USE_MPI'):
+        self.define('HAVE_MPI', 1)
 
 @Configure.conf
 def check_openmp(self):
@@ -106,4 +99,4 @@ def check_sizeof_mpi_int(self):
         self.code_checker('MPI_INT_SIZE', self.check_cc, fragment,
                           'Checking size of MPI_Fint integers',
                           'unexpected value for sizeof(MPI_Fint): %(size)s',
-                          into=(4, 8))
+                          into=(4, 8), use='MPI')

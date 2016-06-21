@@ -232,7 +232,7 @@ def get_mathlib_from_numpy(self):
 
     self.find_program('ldd')
     ldd_env = {'LD_LIBRARY_PATH': ':'.join(self.env.LIBPATH)}
-    cmd = [self.env.LDD, pymodule_path]
+    cmd = self.env.LDD + [pymodule_path]
     out = Popen(cmd, stdout=PIPE, env=ldd_env).communicate()[0]
 
     for line in out.split('\n'):

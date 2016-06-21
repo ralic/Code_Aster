@@ -129,7 +129,7 @@ def check_mfront_version(self, minver=None):
     minver should be a tuple, eg. to check for mfront >= 2.0 pass (2,0,0) as minver.
     """
     assert isinstance(minver, tuple)
-    cmd = [self.env['MFRONT'], '--version']
+    cmd = self.env.MFRONT + ['--version']
     res = self.cmd_and_log(cmd)
     mfrver = '0.0.0'
     regexp = re.compile('version *: *([0-9]+\.[0-9]+\..*) *', re.I | re.M)
@@ -220,7 +220,7 @@ class mfront2cxx(Task.Task):
             raise Errors.WafError(msg)
         wrkdir = wrknode.abspath()
         cmd = '%s --interface=aster --search-path=%s %s' % (
-            self.env.MFRONT,
+            self.env.MFRONT[0],
             mfrdir.get_src().abspath(),
             self.inputs[0].abspath()
         )

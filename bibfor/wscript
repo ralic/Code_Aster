@@ -186,13 +186,13 @@ def check_fortran_preprocessor(self):
 
 @Configure.conf
 def code_checker(self, define, check, fragment, start_msg, error_msg,
-                 into=None, mandatory=True, setbool=False):
+                 into=None, mandatory=True, setbool=False, use=''):
     """Check the size of a type compiling 'fragment' code with 'check',
     add 'define' macro."""
     self.start_msg(start_msg)
     try:
         size = check(fragment=fragment,
-                     mandatory=mandatory, execute=True, define_ret=True)
+                     mandatory=mandatory, execute=True, define_ret=True, use=use)
         try:
             size = size.strip() # raise AttributeError if size is None
             if size.isdigit():

@@ -58,15 +58,16 @@ def options(self):
         '',))
     self.parser.get_usage = _usage
 
-    self.load('use_config', tooldir='waftools')
+    self.load('use_config')
     self.load('gnu_dirs')
 
     # change default value for '--prefix'
     default_prefix = '../install/std'
     # see waflib/Tools/gnu_dirs.py for the group name
-    group = self.get_option_group('Installation directories')
+    group = self.get_option_group('Installation prefix')
+    descr = group.get_description() or ""
     # replace path in description
-    new_descr = group.get_description().replace('/usr/local', default_prefix)
+    new_descr = descr.replace('/usr/local', default_prefix)
     new_descr += ". Using 'waf_variant', 'std' will be automatically replaced "\
                  "by 'variant'."
     group.set_description(new_descr)
@@ -125,7 +126,7 @@ def configure(self):
         if suffix:
             suffix = '_' + suffix
         self.options.use_config = os.environ['DEVTOOLS_COMPUTER_ID'] + suffix
-    self.load('use_config', tooldir='waftools')
+    self.load('use_config')
     self.load('gnu_dirs')
     self.env['BIBPYTPATH'] = self.path.find_dir('bibpyt').abspath()
 
@@ -342,6 +343,7 @@ def check_variant_vars(self):
 
 # same idea than waflib.Tools.c_config.write_config_header
 # but defines are not removed from `env`
+# XXX see write_config_header(remove=True/False) + format Fortran ?
 from waflib.Tools.c_config import DEFKEYS
 CMT = { 'C' : '/* %s */', 'Fortran' : '! %s' }
 

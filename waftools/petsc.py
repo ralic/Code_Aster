@@ -29,7 +29,7 @@ def configure(self):
         self.env.revert()
         self.define('_DISABLE_PETSC', 1)
         self.undefine('HAVE_PETSC')
-        if self.options.enable_petsc == True:
+        if self.options.enable_petsc:
             raise
     else:
         self.define('_HAVE_PETSC', 1)
@@ -39,7 +39,7 @@ def configure(self):
 @Configure.conf
 def check_petsc(self):
     opts = self.options
-    if opts.enable_petsc == False:
+    if opts.enable_petsc is False:
         raise Errors.ConfigurationError('PETSC disabled')
 
     optlibs = None
@@ -64,7 +64,7 @@ def check_petsc_libs(self, optlibs):
 
 @Configure.conf
 def check_petsc_headers(self):
-    check = partial(self.check, header_name='petsc.h', uselib='PETSC',
+    check = partial(self.check, header_name='petsc.h', use='MPI', uselib='PETSC',
                     uselib_store='PETSC')
 
     self.start_msg('Checking for header petsc.h')
@@ -93,7 +93,7 @@ int main(void){
 }'''
     self.start_msg('Checking petsc version')
     try:
-        ret = self.check_cc(fragment=fragment, use='PETSC',
+        ret = self.check_cc(fragment=fragment, use='PETSC MPI',
                             mandatory=True, execute=True, define_ret=True)
         mat = re.search('PETSCVER: *(?P<vers>[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+)', ret)
         vers = mat and mat.group('vers')

@@ -76,7 +76,7 @@ def env2dict(self, src):
     dico['LD_LIBRARY_PATH'] = sep.join(ld_path)
     dico['CFG_PYTHONPATH'] = sep.join(py_path)
     dico['SRC'] = src
-    dico['FC'] = env['FC']
+    dico['FC'] = env.FC[0]
     flags = [' '.join(env[i]) for i in env.keys() if i.startswith('FCFLAGS')]
     dico['FCFLAGS'] = ' '.join(flags)
     dico['OPT_ENV'] = env['OPT_ENV'] and os.linesep.join(env['OPT_ENV']) or ''
@@ -93,7 +93,7 @@ def env2dict(self, src):
         SRCTEST_TMPL % '%(SRC)s/../validation/astest' % dico])
     text = ""
     if env['MFRONT']:
-        tfel = osp.dirname( osp.dirname(env['MFRONT']) )
+        tfel = osp.dirname( osp.dirname(env['MFRONT'][0]) )
         text += os.linesep.join([
             "# MFront specific",
             "export TFELHOME={}".format( tfel ),

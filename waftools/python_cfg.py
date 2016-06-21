@@ -10,7 +10,7 @@ from distutils.version import LooseVersion
 from waflib import Options, Configure, Errors, Utils
 
 def options(self):
-    #self.load('python')    # only --nopyc/--nopyo, always disabled below
+    self.load('python')    # --nopyc/--nopyo are enabled below
     group = self.add_option_group('Code_Aster options')
     group.add_option('--embed-python', dest='embed_python',
                     default=False, action='store_true',

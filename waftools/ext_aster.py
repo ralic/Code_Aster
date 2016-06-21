@@ -85,8 +85,8 @@ def customize_task_output():
             return 'invalid status for task in %r: %r' % (name, self.hasrun)
     Task.format_error = format_error
 
-customize_configure_output()
-customize_task_output()
+# customize_configure_output()
+# customize_task_output()
 
 ###############################################################################
 # support for the "dynamic_source" attribute
