@@ -43,7 +43,7 @@ implicit none
 #include "asterfort/coppat.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -640,6 +640,7 @@ implicit none
       if (ntrou .eq. 1) then
           call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+macou-1)), typmail_trait)                 
           select case (typmail_trait)
+! NTROU : MAILLES DE PEAU
            case ('SEG2')
                call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+zi(jcivax+incc-1)-1)), typmail)
                if (typmail .eq. 'TRIA3' ) then
@@ -659,7 +660,8 @@ implicit none
     elseif (ntrou1 .eq. 1) then
         call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+macou-1)), typmail_trait)   
         select case (typmail_trait)
-            case ('SEG2') 
+! NTROU1 : MAILLES DE CORPS
+            case ('TRIA3') 
                 nbnwma = 2
             case ('TRIA6', 'QUAD8', 'HEXA27') 
                 nbnwma =  1
