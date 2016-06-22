@@ -6,7 +6,7 @@
 printf "checking environment... "
 if [ -z "$DEVTOOLS_COMPUTER_ID" ]; then
     env='unstable'
-    [ `hg branch | egrep -c 'v[0-9]+'` -eq 1 ] && env='stable-updates'
+    [ `hg branch 2> /dev/null | egrep -c 'v[0-9]+'` -eq 1 ] && env='stable-updates'
     [ "${WAF_SUFFIX}" = "mpi" ] && env=${env}_${WAF_SUFFIX}
     fenv=$HOME/dev/codeaster/devtools/etc/env_${env}.sh
     if [ -e ${fenv} ]; then
