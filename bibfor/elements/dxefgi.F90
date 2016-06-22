@@ -1,6 +1,6 @@
 subroutine dxefgi(nomte, pgl, epsini, sigt)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -86,10 +86,10 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
 !     ---------
     epxx = epsini(1)
     epyy = epsini(2)
-    epxy = epsini(3)
+    epxy = 2.d0*epsini(3)
     kxx = epsini(4)
     kyy = epsini(5)
-    kxy = epsini(6)
+    kxy = 2.d0*epsini(6)
 !
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION
 !     -----------------------------------
