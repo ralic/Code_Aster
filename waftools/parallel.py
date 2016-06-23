@@ -55,7 +55,8 @@ def load_compilers(self):
         fc = self.env.FC[0]
         check = partial(self.check_cfg, args='--showme:compile --showme:link -show',
                         package='', uselib_store='MPI', mandatory=False)
-        if check(path=cc) and check(path=cxx) and check(path=fc):
+        # do not add flags given by cxx linker
+        if check(path=cc) and check(path=fc):
             self.check_mpi()
         if not self.get_define('HAVE_MPI'):
             self.fatal("Unable to configure the parallel environment")
