@@ -3,7 +3,7 @@ subroutine op0056()
     implicit none
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,7 @@ subroutine op0056()
     integer :: ifr, nbcou, icou, n, jepor, jrela, k, lonobj, jmate, jobme
     integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
     integer :: nv, n1
-    real(kind=8) :: laml, lamt, lamn, cp, qt(31), valres(9)
+    real(kind=8) :: laml, lamt, lamn, cp, qt(31), valres(12)
     real(kind=8) :: epais, orien, eptot, epi, ordi, rhohom
     real(kind=8) :: el, et, nult, glt, qll, qtt, qlt, gln, gtn
     real(kind=8) :: q11, q12, q13, q22, q23, q33, qm(56)
@@ -95,13 +95,13 @@ subroutine op0056()
     real(kind=8) :: l11, l22, l12
     real(kind=8) :: rzkp, rzkm, dif3, dif4, dif5
     real(kind=8) :: r8bid, h, h2, h3, h4, epsi
-    integer :: icodre(9)
+    integer :: icodre(12)
     character(len=2) :: val
     character(len=6) :: k6
     character(len=24) :: valk(2)
     character(len=3) :: num
     character(len=8) :: k8b, multic, mater
-    character(len=16) :: type, nomcmd, fichie, nomres(9)
+    character(len=16) :: type, nomcmd, fichie, nomres(12)
     aster_logical :: elas, ther
     character(len=32), pointer :: nomrc(:) => null()
     parameter (nv=83)
@@ -205,12 +205,23 @@ subroutine op0056()
             nomres(7) = 'RHO'
             nomres(8) = 'G_LN'
             nomres(9) = 'G_TN'
+            nomres(10) = 'AMOR_ALPHA'
+            nomres(11) = 'AMOR_BETA'
+            nomres(12) = 'AMOR_HYST'
 !         EN PRINCIPE G_LN = G_LT CF BATOZ
             k8b = ' '
             call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         6, nomres, valres, icodre, 2)
             call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
                         3, nomres(7), valres(7), icodre(7), 0)
+            call rcvale(zk32(jrela+i+1) (1:8), 'ELAS_ORTH', 0, k8b, [r8bid],&
+                        3, nomres(10), valres(10), icodre(10), 0)
+            do j = 10,12
+                if (icodre(j) .eq. 0 ) then
+                    call utmess('A','MODELISA8_16',sk=nomres(j), si=i)
+                endif
+            enddo
+            
             el = valres(1)
             et = valres(2)
             nult = valres(3)

@@ -95,7 +95,10 @@ cata_msg = {
     Rapport entre le plus petit côté et le plus grand = %(r1)f, type de maille : %(k2)s
 """),
 
-
+    16 : _(u"""
+ Le matériau ELAS_ORTH affecté sur la couche %(i1)d comporte le paramètre d'amortissement %(k1)s.
+ Ce paramètre n'est pas pris en compte par DEFI_COMPOSITE.
+"""),
 
     17 : _(u"""
  La première colonne de la table %(k1)s doit contenir des chaînes K8 ou K24.

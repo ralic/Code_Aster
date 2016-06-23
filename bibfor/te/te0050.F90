@@ -1,6 +1,6 @@
 subroutine te0050(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,7 +106,8 @@ subroutine te0050(option, nomte)
     mater=zi(imate)
     call rccoma(mater, 'ELAS', 0, phenom, icodre(1))
     if(.not.(phenom .eq. 'ELAS'       .or. phenom .eq. 'ELAS_COQMU' .or. &
-             phenom .eq. 'ELAS_GLRC'  .or. phenom .eq. 'ELAS_DHRC')) then
+             phenom .eq. 'ELAS_GLRC'  .or. phenom .eq. 'ELAS_DHRC'  .or. &
+             phenom .eq. 'ELAS_ORTH')) then
         call utmess('F', 'MODELISA10_3', nk=2, valk=[option, phenom])
     endif
 

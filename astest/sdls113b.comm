@@ -1,0 +1,457 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+import numpy as NP
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
+      DEBUG=_F(SDVERI='OUI'),
+      PAR_LOT='NON',);
+
+# Definition des parametres de l'excitation sinusoidale
+freq=1500.0
+periode=1.0/freq
+pas=periode/100.0
+
+# definition du sinus
+SINOMEGT = FORMULE(NOM_PARA='INST',VALE='sin(2*pi*freq*INST)')
+
+# construction de l'excitation
+LIEXCIT=DEFI_LIST_REEL(DEBUT=0.,
+                       INTERVALLE=_F(JUSQU_A = 102.0*periode, PAS = pas) )
+
+
+#######################################################
+# DEBUT CLASSIQUE D'UNE ETUDE
+#######################################################
+
+MAYA=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAYA=DEFI_GROUP(reuse=MAYA,
+                MAILLAGE=MAYA,
+                CREA_GROUP_NO=_F(NOEUD='N433',
+                                 NOM='TOTO',),);
+
+MODEL=AFFE_MODELE(MAILLAGE=MAYA,
+                  AFFE=_F(TOUT='OUI',
+                          PHENOMENE='MECANIQUE',
+                          MODELISATION='D_PLAN',),);
+
+# faux elas_orth pour valider l'amortissement ce materiau
+g = 180000000000.0/(2.*(1.+0.3))
+ACIER=DEFI_MATERIAU(ELAS_ORTH=_F(E_L=180000000000.0,
+                                 E_T=180000000000.0,
+                                 E_N=180000000000.0,
+                                 NU_LT=0.3,
+                                 NU_LN=0.3,
+                                 NU_TN=0.3,
+                                 G_LT=g,
+                                 G_LN=g,
+                                 G_TN=g,
+                                 RHO=7800.0,
+                                 AMOR_ALPHA=3.E-5,
+                                 AMOR_BETA=0.001,
+                                ),);
+
+
+E  = DEFI_CONSTANTE(VALE=180000000000.0)
+NU = DEFI_CONSTANTE(VALE=0.3)
+G  = DEFI_CONSTANTE(VALE=g)
+RHO = DEFI_CONSTANTE(VALE=7800.0)
+AMOR_ALP = DEFI_CONSTANTE(VALE=3.E-5)
+AMOR_BET  = DEFI_CONSTANTE(VALE=0.001)
+
+ACIERFO=DEFI_MATERIAU(ELAS_ORTH_FO=_F(E_L=E,
+                                 E_T=E,
+                                 E_N=E,
+                                 NU_LT=NU,
+                                 NU_LN=NU,
+                                 NU_TN=NU,
+                                 G_LT=G,
+                                 G_LN=G,
+                                 G_TN=G,
+                                 RHO=RHO,
+                                 AMOR_ALPHA=AMOR_ALP,
+                                 AMOR_BETA=AMOR_BET,
+                                ),);
+
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAYA,
+                    AFFE=(_F(GROUP_MA=('GM5',),
+                            MATER=ACIER,),
+                          _F(MAILLE=('M194','M461','M87'),
+                            MATER=ACIERFO,),
+                        ));
+
+CHARLAGR=AFFE_CHAR_MECA(MODELE=MODEL,
+                      DDL_IMPO=_F(GROUP_MA=('GM3',),
+                                  DX=0.0,
+                                  DY=0.0,),);
+
+PRES=AFFE_CHAR_MECA(MODELE=MODEL,
+                     PRES_REP=_F(GROUP_MA=('GM4'),
+                                 PRES=1.0E5,),);
+
+KELEM=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MODEL,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=CHARLAGR,
+                     );
+
+MELEM=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MODEL,
+                     CHARGE=CHARLAGR,
+                     CHAM_MATER=CHMAT,);
+
+CELEM=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                     MODELE=MODEL,
+                     CHAM_MATER=CHMAT,
+                     CHARGE=CHARLAGR,
+                     RIGI_MECA=KELEM,
+                     MASS_MECA=MELEM);
+
+FELEM=CALC_VECT_ELEM(OPTION='CHAR_MECA',
+                     CHARGE=PRES,);
+
+NUME=NUME_DDL(MATR_RIGI=KELEM,
+
+              );
+
+KASS=ASSE_MATRICE(MATR_ELEM=KELEM,
+                  NUME_DDL=NUME,
+                  );
+
+MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
+                  NUME_DDL=NUME,
+                  );
+
+CASS=ASSE_MATRICE(MATR_ELEM=CELEM,
+                  NUME_DDL=NUME,
+                  );
+
+FASS=ASSE_VECTEUR(VECT_ELEM=FELEM,
+                  NUME_DDL=NUME,);
+
+#MODES=CALC_MODES(MATR_RIGI=KASS,
+#                       MATR_MASS=MASS,
+#                       CALC_FREQ=_F(
+#                       NMAX_FREQ=15,),
+#                       VERI_MODE=_F(STOP_ERREUR='OUI',
+#                                    STURM='OUI',),);
+
+
+
+#######################################################
+# DEFINITION DES LISTES D'INSTANTS POUR CALCUL TEMPOREL
+#######################################################
+LISTTM=DEFI_LIST_REEL(DEBUT=0.0*periode,
+                       INTERVALLE=_F(JUSQU_A=100.0*periode,
+                                     PAS=pas,),);
+
+LISTRD=DEFI_LIST_REEL(DEBUT=(98.0)*periode+pas,
+                       INTERVALLE=_F(JUSQU_A=(100.0)*periode,
+                                     PAS=pas,),);
+
+# Creation de la liste des pas d'archivage
+archsize=NP.size(LISTRD.Valeurs())
+archfin=NP.size(LISTTM.Valeurs())
+archinit=archfin-archsize
+
+LISTARCH=DEFI_LIST_ENTI(DEBUT=archinit,
+                       INTERVALLE=_F(JUSQU_A=archfin,
+                                     PAS=1,),);
+
+#######################################################
+# CALCUL DYNAMIQUE TEMPOREL SUR BASE PHYSIQUE
+#######################################################
+
+DYNATRAN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='PHYS',
+                       SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+                       MATR_MASS=MASS,
+                       MATR_RIGI=KASS,
+                       MATR_AMOR=CASS,
+                       EXCIT=_F(VECT_ASSE=FASS,
+                                    FONC_MULT = SINOMEGT,
+                        ),
+                       INCREMENT=_F(LIST_INST = LISTTM),
+                       ARCHIVAGE=_F(LIST_INST=LISTRD,
+                                    ),
+                                    );
+
+DYNATRAN=CALC_CHAMP(reuse=DYNATRAN,RESULTAT=DYNATRAN,MAILLE=('M194','M461','M87'),LIST_INST=LISTRD,PRECISION=1.E-6,CRITERE='ABSOLU',
+   CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
+   DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
+   #ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO')
+   ENERGIE=('EPOT_ELEM','ECIN_ELEM',)
+   )
+
+
+
+#######################################################
+# CALCUL HARMONIQUE SUR BASE PHYSIQUE
+#######################################################
+DYNHASS=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
+                    MATR_MASS=MASS,
+                    MATR_RIGI=KASS,
+                    MATR_AMOR=CASS,
+                    FREQ=freq,
+                    EXCIT=_F(VECT_ASSE=FASS,
+                             COEF_MULT=1.,),
+                             );
+
+DYNHASS=CALC_CHAMP(reuse=DYNHASS,MAILLE=('M194','M461','M87'),RESULTAT=DYNHASS,CRITERE='ABSOLU',PRECISION=1.E-3,
+   CONTRAINTE=('SIEF_ELGA','SIGM_ELNO'),
+   DEFORMATION=('EPSI_ELNO','EPSI_ELGA'),
+   #ENERGIE=('EPOT_ELEM','ECIN_ELEM','ENEL_ELGA','ENEL_ELNO')
+   ENERGIE=('EPOT_ELEM','ECIN_ELEM',)
+   )
+
+
+IMPR_RESU(RESU=_F(RESULTAT=DYNHASS, NOM_CHAM=('ECIN_ELEM'),),)
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=DYNATRAN,
+                   NOM_CHAM='ECIN_ELEM',
+                   NOM_CMP='TOTALE',
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_REFE=1.7891506766472E-06,
+                   VALE_CALC=1.7891506766472E-06,
+                   PRECISION = 1E-6,
+                   CRITERE='RELATIF',
+                   MAILLE='M194',),
+                _F(NUME_ORDRE=1,
+                   POINT=1,
+                   RESULTAT=DYNHASS,
+                   NOM_CHAM='ECIN_ELEM',
+                   NOM_CMP='TOTALE',
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_REFE=1.9159851376498E-06,
+                   VALE_CALC=1.9159851376498E-06,
+                   PRECISION = 1E-6,
+                   CRITERE='RELATIF',
+                   MAILLE='M194',),
+                ),
+          )
+
+#########################################################
+# RECUPERATION DES DEPLACEMENTS EN UN POINT DES RESULTATS
+# PHYSIQUES
+#########################################################
+
+# resultats temporels
+
+DTX1=RECU_FONCTION (RESULTAT = DYNATRAN,
+                    NOM_CMP = 'DX',
+                    NOEUD = 'N433',
+                    NOM_CHAM = 'DEPL',
+                    TOUT_ORDRE = 'OUI',
+                    );
+
+# resultats harmonique
+DHX1=RECU_FONCTION (   RESULTAT = DYNHASS,
+                      NOM_CMP = 'DX',
+                      NOEUD = 'N433',
+                      NOM_CHAM = 'DEPL',
+                      TOUT_ORDRE = 'OUI');
+
+
+# CALCUL DE LA VALEUR MAX SUR N PERIODE
+DHX11=CALC_FONCTION(EXTRACTION=_F(FONCTION=DHX1,PARTIE='MODULE'),);
+
+DTX11=CALC_FONCTION(ABS=_F(FONCTION=DTX1),);
+
+DTX111=INFO_FONCTION(MAX=_F(FONCTION=DTX11));
+
+valtmp1=DTX111.EXTR_TABLE();
+
+test1=valtmp1.Array('INST','DX')[1][1]
+
+# TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.99011179996e-08,
+                        VALE_REFE=3.99011179996e-08,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-6,
+                        NOM_PARA='FREQ',
+                        FONCTION=DHX11,),
+              )
+
+#########################################################
+# RECUPERATION DES CONTRAINTES AUX POINTS DE GAUSS
+# EN UNE MAILLE DES RESULTATS PHYSIQUES
+#########################################################
+
+SIT1=RECU_FONCTION (RESULTAT = DYNATRAN,
+                    NOM_CMP = 'SIXX',
+                    NOM_CHAM = 'SIEF_ELGA',
+                    MAILLE = 'M194',
+                    POINT=1,
+                    NUME_ORDRE=range(1,archsize),
+                          );
+
+SIH1=RECU_FONCTION (RESULTAT = DYNHASS,
+                    NOM_CMP = 'SIXX',
+                    MAILLE = 'M194',
+                    POINT=1,
+                    NOM_CHAM = 'SIEF_ELGA',
+                    NUME_ORDRE=1,
+                      );
+
+# CALCUL DE LA VALEUR MAX SUR N PERIODE
+SIH11=CALC_FONCTION(EXTRACTION=_F(FONCTION=SIH1,PARTIE='MODULE'),);
+
+SIT11=CALC_FONCTION(ABS=_F(FONCTION=SIT1),);
+SIT111=INFO_FONCTION(MAX=_F(FONCTION=SIT11));
+
+valtmp3=SIT111.EXTR_TABLE();
+
+test3=valtmp3.Array('INST','SIXX')[1][1]
+
+# TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=98510.5400395,
+                        VALE_REFE=98510.5400395,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-6,
+                        NOM_PARA='FREQ',
+                        FONCTION=SIH11,),
+              )
+
+#########################################################
+# RECUPERATION DES CONTRAINTES AUX NOEUD
+# EN UNE MAILLE DES RESULTATS PHYSIQUES
+#########################################################
+
+SET1=RECU_FONCTION (RESULTAT = DYNATRAN,
+                    NOM_CMP = 'SIXX',
+                    NOM_CHAM = 'SIGM_ELNO',
+                    MAILLE = 'M194',
+                    NOEUD='N1328',
+                    NUME_ORDRE=range(1,archsize),
+                          );
+
+SEH1=RECU_FONCTION (RESULTAT = DYNHASS,
+                    NOM_CMP = 'SIXX',
+                    MAILLE = 'M194',
+                    NOEUD='N1328',
+                    NOM_CHAM = 'SIGM_ELNO',
+                    NUME_ORDRE=1,
+                      );
+
+# CALCUL DE LA VALEUR MAX SUR N PERIODE
+SEH11=CALC_FONCTION(EXTRACTION=_F(FONCTION=SEH1,PARTIE='MODULE'),);
+
+SET11=CALC_FONCTION(ABS=_F(FONCTION=SET1),);
+SET111=INFO_FONCTION(MAX=_F(FONCTION=SET11));
+
+valtmp4=SET111.EXTR_TABLE();
+
+test4=valtmp4.Array('INST','SIXX')[1][1]
+
+# TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=98149.5819288,
+                        VALE_REFE=98149.5819288,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-6,
+                        NOM_PARA='FREQ',
+                        FONCTION=SEH11,),
+              )
+
+#########################################################
+# RECUPERATION DES DEFORMATIONS AUX NOEUD
+# EN UNE MAILLE DES RESULTATS PHYSIQUES
+#########################################################
+
+EPT1=RECU_FONCTION (RESULTAT = DYNATRAN,
+                    NOM_CMP = 'EPXX',
+                    NOM_CHAM = 'EPSI_ELNO',
+                    MAILLE = 'M194',
+                    NOEUD='N1328',
+                    NUME_ORDRE=range(1,archsize),
+                          );
+
+EPH1=RECU_FONCTION (RESULTAT = DYNHASS,
+                    NOM_CMP = 'EPXX',
+                    MAILLE = 'M194',
+                    NOEUD='N1328',
+                    NOM_CHAM = 'EPSI_ELNO',
+                    NUME_ORDRE=1,
+                      );
+
+# CALCUL DE LA VALEUR MAX SUR N PERIODE
+EPH11=CALC_FONCTION(EXTRACTION=_F(FONCTION=EPH1,PARTIE='MODULE'),);
+
+EPT11=CALC_FONCTION(ABS=_F(FONCTION=EPT1),);
+EPT111=INFO_FONCTION(MAX=_F(FONCTION=EPT11));
+
+valtmp5=EPT111.EXTR_TABLE();
+
+test5=valtmp5.Array('INST','EPXX')[1][1]
+
+# TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.27795672536e-07,
+                        VALE_REFE=5.27795672536e-07,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-6,
+                        NOM_PARA='FREQ',
+                        FONCTION=EPH11,),
+              )
+
+#########################################################
+# RECUPERATION DES DEFORMATIONS AUX POINTS DE GAUSS
+# EN UNE MAILLE DES RESULTATS PHYSIQUES
+#########################################################
+
+EGT1=RECU_FONCTION (RESULTAT = DYNATRAN,
+                    NOM_CMP = 'EPXX',
+                    NOM_CHAM = 'EPSI_ELGA',
+                    MAILLE = 'M194',
+                    POINT=1,
+                    NUME_ORDRE=range(1,archsize),
+                          );
+
+EGH1=RECU_FONCTION (RESULTAT = DYNHASS,
+                    NOM_CMP = 'EPXX',
+                    MAILLE = 'M194',
+                    POINT=1,
+                    NOM_CHAM = 'EPSI_ELGA',
+                    NUME_ORDRE=1,
+                      );
+
+# CALCUL DE LA VALEUR MAX SUR N PERIODE
+EGH11=CALC_FONCTION(EXTRACTION=_F(FONCTION=EGH1,PARTIE='MODULE'),);
+
+EGT11=CALC_FONCTION(ABS=_F(FONCTION=EGT1),);
+EGT111=INFO_FONCTION(MAX=_F(FONCTION=EGT11));
+
+valtmp6=EGT111.EXTR_TABLE();
+
+test6=valtmp6.Array('INST','EPXX')[1][1]
+
+# TEST DE LA VALEUR HARMONIQUE / VALEUR TEMPORELLE
+TEST_FONCTION(VALEUR=_F(VALE_CALC=5.27546476125e-07,
+                        VALE_REFE=5.27546476125e-07,
+                        VALE_PARA=1500.0,
+                        REFERENCE='AUTRE_ASTER',
+                        PRECISION=1.E-6,
+                        NOM_PARA='FREQ',
+                        FONCTION=EGH11,),
+              )
+
+FIN();
