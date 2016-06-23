@@ -9,6 +9,7 @@ Use automatically MPI wrappers if opt.parallel was previously set.
 def configure(self):
     opts = self.options
     mpi = 'mpi' if opts.parallel else ''
-    self.env['FC'] = mpi + 'ifort'
-    self.env['CC'] = mpi + 'icc'
-    self.env['CXX'] = mpi + 'icpc'
+    # Configure.find_program uses first self.environ, then os.environ
+    self.environ['FC'] = mpi + 'ifort'
+    self.environ['CC'] = mpi + 'icc'
+    self.environ['CXX'] = mpi + 'icpc'
