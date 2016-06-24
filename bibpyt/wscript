@@ -7,7 +7,7 @@ from time import localtime, strftime
 from pprint import pformat
 from subprocess import Popen, PIPE
 
-from waflib import TaskGen, Utils, Errors
+from waflib import TaskGen, Utils, Errors, Logs
 
 
 def configure(self):
@@ -139,7 +139,11 @@ def get_revision_info(from_rev=None, rev="."):
     # quick search on last revisions
     infos = get_revision_info_cmd(from_rev, rev)
     if infos[0] == "?":
-        infos = get_revision_info_cmd("testing or stable", rev)
+        try:
+            infos = get_revision_info_cmd("testing or stable", rev)
+        except ValueError:
+            Logs.pprint("YELLOW", "'testing/stable' not found, search in all ancestors...", sep="")
+            infos = get_revision_info_cmd("0", rev)
     return infos
 
 def version2tuple(vers_string):
