@@ -85,6 +85,62 @@ TEST_TABLE(
                      VALE=8.0,),
            )
 
+# On compare HARM_GENE et TRAN_GENE
+TAB0=MACR_SPECTRE(
+        MAILLAGE  = MAIL,
+        PLANCHER  = (_F(NOM = 'SOMMET',
+                        GROUP_NO = ('GTOP1',),),),
+        NOM_CHAM = 'ACCE',
+        CALCUL = 'ABSOLU',
+        AMOR_SPEC = L_AMOR_S,
+        FREQ = L_FREQ,
+        NORME = 9.81,
+        RESU=(_F(RESU_GENE = resgen0,),),
+        IMPRESSION =_F(
+                  FORMAT ='TABLEAU',
+                  UNITE = 16,)
+                );
+
+TEST_TABLE(
+           VALE_CALC=0.64712672600502,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB0,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=1.3999999999999999,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.47514139535580,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB0,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=3.7999999999999998,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.35422339690871,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB0,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=6.125,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.38583607467578,
+           NOM_PARA='eH_0_SOMMET',CRITERE='ABSOLU',
+           TABLE=TAB0,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=7.25,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=0.34254337015258,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB0,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=8.0,),
+           )
+
 
 
 FIN();

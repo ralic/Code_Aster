@@ -445,12 +445,12 @@ class PostMissHarm(PostMissTran):
         """Vérification des arguments d'entrée."""
         super(PostMissHarm, self).argument()
         self.parent.DeclareOut('trangene', self.parent.sd)
-        self.suppr_acce_fft()
 
     def concepts_communs(self):
         """Construction des concepts spécifiques au cas HARMO."""
         super(PostMissHarm, self).concepts_communs()
-        for excit_i in self.excit_kw:
+        if self.excit_kw is not None:
+          for excit_i in self.excit_kw:
             dExc = excit_i.cree_dict_valeurs(excit_i.mc_liste)
             for mc in dExc.keys():
                 if dExc[mc] is None:

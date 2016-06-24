@@ -54,4 +54,45 @@ resgen = CALC_MISS(
     INFO=2,
 )
 
+# On va comparer HARM_GENE et TRAN_GENE
+resgenh = CALC_MISS(
+    TYPE_RESU = 'HARM_GENE',
+    VERSION = 'V6.6',
+    TABLE_SOL = tabsol,
+    BASE_MODALE = BASMO,
+    MATR_RIGI = MATRIGI,
+    MATR_MASS = MATMASS,
+    AMOR_REDUIT = l_amor,
+    GROUP_MA_INTERF = 'SRADIER',
+
+    PARAMETRE=_F(
+        FREQ_MIN=dfc,
+        FREQ_MAX=fmaxc,
+        FREQ_PAS=dfc,
+        TYPE='BINAIRE',
+        Z0= -11.60,
+        SURF='OUI',
+        ALGO = 'DEPL',
+        OFFSET_MAX=110,
+        OFFSET_NB=400,
+        SPEC_MAX=0.12,
+        SPEC_NB=16384,
+    ),
+    UNITE_RESU_IMPE=38,
+    UNITE_RESU_FORC=28,
+
+    MODELE         = MODELE,
+    ACCE_X         = ACCE_X,
+    ACCE_Y         = ACCE_Y,
+    ACCE_Z         = ACCE_Z,
+    INST_FIN = 10.24,
+    PAS_INST = 0.02,
+
+    INFO=2,
+)
+resgen0 = REST_SPEC_TEMP(RESU_GENE = resgenh,
+                                  METHODE = 'TRONCATURE',
+                                  SYMETRIE = 'NON',
+                                  TOUT_CHAM = 'OUI')
+
 FIN()

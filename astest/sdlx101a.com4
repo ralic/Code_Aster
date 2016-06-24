@@ -160,5 +160,101 @@ TEST_TABLE(
                      VALE=8.0,),
            )
 
+# On compare HARM_GENE et TRAN_GENE
+resge3 = CALC_MISS(
+    TYPE_RESU = 'HARM_GENE',
+    VERSION = 'V6.6',
+    TABLE_SOL = tabsol,
+    BASE_MODALE = BASMO,
+    MATR_RIGI = MATRIGI,
+    MATR_MASS = MATMASS,
+    MATR_AMOR = MATAMOR,
+    GROUP_MA_INTERF = 'SRADIER',
+
+    PARAMETRE=_F(
+        FREQ_MIN=dfc,
+        FREQ_MAX=fmaxc,
+        FREQ_PAS=dfc,
+        TYPE='BINAIRE',
+        Z0= -11.60,
+        SURF='OUI',
+        ALGO = 'DEPL',
+        OFFSET_MAX=110,
+        OFFSET_NB=400,
+        SPEC_MAX=0.12,
+        SPEC_NB=16384,
+    ),
+    UNITE_RESU_IMPE=38,
+    UNITE_RESU_FORC=28,
+
+    MODELE         = MODELE,
+    DEPL_X         = DEPL_X,
+    DEPL_Y         = DEPL_Y,
+    DEPL_Z         = DEPL_Z,
+    INST_FIN = 10.24,
+    PAS_INST = 0.02,
+
+    INFO=2,
+)
+resge4 = REST_SPEC_TEMP(RESU_GENE = resge3,
+                                  METHODE = 'TRONCATURE',
+                                  SYMETRIE = 'NON',
+                                  TOUT_CHAM = 'OUI')
+
+
+TAB3=MACR_SPECTRE(
+        MAILLAGE  = MAIL,
+        PLANCHER  = (_F(NOM = 'SOMMET',
+                        GROUP_NO = ('GTOP1',),),),
+        NOM_CHAM = 'ACCE',
+        CALCUL = 'ABSOLU',
+        AMOR_SPEC = L_AMOR_S,
+        FREQ = L_FREQ,
+        NORME = 9.81,
+        RESU=(_F(RESU_GENE = resge4,),),
+        IMPRESSION =_F(
+                  FORMAT ='TABLEAU',
+                  UNITE = 16,)
+                );
+
+TEST_TABLE(
+           VALE_CALC=0.75644033538400,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=1.3999999999999999,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=1.9643743648183,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=3.7999999999999998,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.3016463851582,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=6.125,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=4.7834986859623,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=7.25,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=5.0728221793034,
+           NOM_PARA='eH_0_SOMMET',
+           TABLE=TAB3,
+           FILTRE=_F(NOM_PARA='FREQ',
+                     VALE=8.0,),
+           )
 
 FIN()
