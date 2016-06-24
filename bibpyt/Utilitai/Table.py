@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -960,24 +960,7 @@ def merge(tab1, tab2, labels=[], restrict=False, format_r=None):
        Si format_r est fourni, on "arrondi" les réels selon ce format lors de la
        comparaison.
     """
-    if format_r:
-        fmtr = fmtF2PY(format_r)
-
-        def _reformat(values):
-            """Convertit les réels en utilisant format_r"""
-            conv = []
-            for i in values:
-                try:
-                    vali = fmtr % i
-                except TypeError:
-                    vali = i
-                conv.append(vali)
-            return tuple(conv)
-    else:
-        def _reformat(values):
-            """no change"""
-            return tuple(values)
-
+    _reformat = _reformat_func(format_r)
     tb1 = tab1.copy()
     tb2 = tab2.copy()
     if not is_sequence(labels):
@@ -995,23 +978,8 @@ def merge(tab1, tab2, labels=[], restrict=False, format_r=None):
             n_para.append(i)
             n_type.append(tb2.type[tb2.para.index(i)])
     # restriction des lignes aux labels communs (peu cher en cpu)
-    rows1 = tb1.rows
-    dlab1 = {}
-    for i1 in range(len(rows1)):
-        tu1 = _reformat(map(rows1[i1].__getitem__, labels))
-        if dlab1.get(tu1, '') == '':
-            dlab1[tu1] = i1
-        else:
-            dlab1[tu1] = None
-    # restriction des lignes aux labels communs (peu cher en cpu)
-    rows2 = tb2.rows
-    dlab2 = {}
-    for i2 in range(len(rows2)):
-        tu2 = _reformat(map(rows2[i2].__getitem__, labels))
-        if dlab2.get(tu2, '') == '':
-            dlab2[tu2] = i2
-        else:
-            dlab2[tu2] = None
+    dlab1 = _unique_values(tb1, labels, format_r)
+    dlab2 = _unique_values(tb2, labels, format_r)
     # creation de dic1 : dictionnaire de correspondance entre les
     # lignes a merger dans les deux tableaux
     dic1 = {}
@@ -1027,6 +995,8 @@ def merge(tab1, tab2, labels=[], restrict=False, format_r=None):
     # insertion des valeurs de tb2 dans tb1 quand les labels sont communs
     # (et uniques dans chaque table)
     # OU ajout de la ligne de tb2 dans tb1 (si restrict == False)
+    rows1 = tab1.rows
+    rows2 = tab2.rows
     if restrict:
         def func_append_r2(row):
             pass
@@ -1044,6 +1014,15 @@ def merge(tab1, tab2, labels=[], restrict=False, format_r=None):
     tit = '\n'.join(
         [tb1.titr, tb2.titr, 'MERGE avec labels=%s' % repr(labels)])
     return Table(rows1, n_para, n_type, tit)
+
+
+def remove_twins(tab, labels=[], format_r=None):
+    """Remove lines if the values of `labels` have already been seen"""
+    kept = _unique_values(tab, labels, format_r, keep_first=True)
+    removed = set(range(len(tab))).difference(kept.values())
+    todel = reversed(sorted(list(removed)))
+    for i in todel:
+        del tab.rows[i]
 
 
 def typaster(obj, prev=None, strict=False):
@@ -1082,7 +1061,46 @@ def typaster(obj, prev=None, strict=False):
         raise TypeError, 'Une table ne peut contenir que des entiers, réels ' \
                          'ou chaines de caractères.'
 
+
+def _unique_values(tab, params, format_r, keep_first=False):
+    """Return a dict where:
+    - the keys are tuples of values restricted to some columns
+    - the values are the line_index
+    index is set to None if several lines have the same values
+    or, if keep_first is True, index is the first line index found.
+    """
+    _reformat = _reformat_func(format_r)
+    rows = tab.rows
+    dlab = {}
+    for i in range(len(rows)):
+        tup = _reformat(map(rows[i].__getitem__, params))
+        if dlab.get(tup, '') == '':
+            dlab[tup] = i
+        elif not keep_first:
+            dlab[tup] = None
+    return dlab
+
+
 # fonctions utilitaires
+def _reformat_func(format_r):
+    """Return a function to format a list of values"""
+    if format_r:
+        fmtr = fmtF2PY(format_r)
+        def _func(values):
+            """Convertit les réels en utilisant format_r"""
+            conv = []
+            for i in values:
+                try:
+                    vali = fmtr % i
+                except TypeError:
+                    vali = i
+                conv.append(vali)
+            return tuple(conv)
+    else:
+        def _func(values):
+            """no change"""
+            return tuple(values)
+    return _func
 
 
 def _func_test_abs(v, VALE, PRECISION):

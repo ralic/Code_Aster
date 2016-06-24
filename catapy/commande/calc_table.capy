@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,8 +41,9 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
    ACTION = FACT(statut='o', max='**',
                     fr = tr("Suite des opérations à effectuer sur la table"),
       OPERATION = SIMP(statut='o', typ='TXM',
-                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB', 'AJOUT_LIGNE',
-                        'OPER', 'SUPPRIME', 'AJOUT_COLONNE', 'STATISTIQUES')),
+                  into=('FILTRE', 'EXTR', 'RENOMME', 'TRI', 'COMB',
+                        'AJOUT_LIGNE', 'OPER', 'SUPPRIME', 'UNIQUE', 'AJOUT_COLONNE',
+                        'STATISTIQUES')),
 
       b_filtre = BLOC(condition="OPERATION == 'FILTRE'",
                       fr=tr("Sélectionne les lignes de la table vérifiant un critère"),
@@ -76,6 +77,14 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
                     fr=tr("Supprime une ou plusieurs colonnes de la table"),
          NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
                          fr=tr("Noms des colonnes à supprimer")),
+      ),
+
+      b_supdbl = BLOC(condition="OPERATION == 'UNIQUE'",
+                    fr=tr("Supprime les lignes si les valeurs des paramètres "
+                          "ont déjà été vues."),
+         NOM_PARA = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',
+                         fr=tr("Noms des paramètres à tester pour supprimer les lignes")),
+         FORMAT_R = SIMP(statut='f',typ='TXM'),
       ),
 
       b_renomme = BLOC(condition="OPERATION == 'RENOMME'",

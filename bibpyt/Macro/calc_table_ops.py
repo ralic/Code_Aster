@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -166,6 +166,13 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
                 for para, value in zip(lpar, lval):
                     nval = [value, ] * len(tab)
                     tab[para] = nval
+
+        # 10. Suppression des doublons
+        if occ['OPERATION'] == 'UNIQUE':
+            from Utilitai.Table import remove_twins
+            format_r = occ.get('FORMAT_R')
+            lpar = force_list(occ['NOM_PARA'])
+            remove_twins(tab, lpar, format_r)
 
         # Traitement de STATISTIQUES
         if occ['OPERATION'] == 'STATISTIQUES':
