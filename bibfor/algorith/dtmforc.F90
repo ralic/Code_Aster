@@ -2,7 +2,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,10 +43,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 #include "asterfort/uttcpu.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/vecini.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 
 !
 !   -0.1- Input/output arguments
@@ -71,10 +68,11 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     integer         , pointer :: idescf(:)  => null()
     integer         , pointer :: liad(:)    => null()
     integer         , pointer :: inumor(:)  => null()
-    integer         , pointer :: nbsconv(:) => null()   
+    integer         , pointer :: nbsconv(:) => null()
     integer         , pointer :: rangcho(:) => null()
     integer         , pointer :: saredi(:)  => null()
     integer         , pointer :: sarevi(:)  => null()
+    integer         , pointer :: paincho(:) => null()
     real(kind=8)    , pointer :: depl0(:)   => null()
     real(kind=8)    , pointer :: vite0(:)   => null()
     real(kind=8)    , pointer :: acce0(:)   => null()
@@ -157,12 +155,12 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     call dtmget(sd_dtm, _NL_CASE, iscal=nlcase, buffer=buffdtm)
 
     if (nlcase.eq.0) then
-!       --- No implicit treatment of chocs or free state (vol), simply use the 
+!       --- No implicit treatment of chocs or free state (vol), simply use the
 !           integration displacements, velocities, and accelerations
         call intget(sd_int, DEPL , iocc=index, vr=depl, buffer=buffint)
         call intget(sd_int, VITE , iocc=index, vr=vite, buffer=buffint)
 !       --- The acceleration at the preceding step is required
-        call intget(sd_int, ACCE , iocc=1    , vr=acce, buffer=buffint)       
+        call intget(sd_int, ACCE , iocc=1    , vr=acce, buffer=buffint)
     else
 !       --- Implicit treatment of chocs, project these vectors back to the original
 !           basis by calculating : [Phi] x DEPL, [Phi] x VITE, [Phi] x ACCE
@@ -200,8 +198,9 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     end if
 
     if (nbnli.ne.0) then
-        call dtmget(sd_dtm, _CHO_DEPL,vr =deplcho, buffer=buffdtm)
-        call dtmget(sd_dtm, _CHO_PARA,vr =paracho, buffer=buffdtm)
+        call dtmget(sd_dtm, _CHO_DEPL, vr=deplcho, buffer=buffdtm)
+        call dtmget(sd_dtm, _CHO_PARA, vr=paracho, buffer=buffdtm)
+        call dtmget(sd_dtm, _CHO_PAIN, vi=paincho, buffer=buffdtm)
 
         if (nbrfis .eq. 0) then
 
@@ -209,7 +208,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
             call dtmget(sd_dtm, _F_TAN_WK,vr =fext_tgt, buffer=buffdtm)
             call vecini(nbmode,0.d0,fext_nl)
             call vecini(nbmode,0.d0,fext_tgt)
-            
+
             call dtmget(sd_dtm, _CALC_SD ,kscal=nomres, buffer=buffdtm)
             call dtmget(sd_dtm, _CHO_RANK,vi =rangcho, buffer=buffdtm)
             call dtmget(sd_dtm, _CHO_NOEU,vk8=noeucho, buffer=buffdtm)
@@ -229,7 +228,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
             call dtmget(sd_dtm, _MULTI_AP, kscal=monmot, buffer=buffdtm)
 
             call mdfcho(nbmode, depl, vite, acce, fext_nl,&
-                        nbnli, rangcho, deplcho, paracho, noeucho,&
+                        nbnli, rangcho, deplcho, paracho, paincho, noeucho,&
                         saucho, [temps,dt], nofdep, nofvit, nofacc,&
                         ntotex, psidel, monmot(1:8), fext_tgt)
 
@@ -313,7 +312,7 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
         if (nlacc.eq.0) then
             call dtmget(sd_dtm, _F_NL_ADD, vr =fadd_nl, buffer=buffdtm)
             do i=1, nbmode
-                fext0(i) = fext0(i) + fadd_nl(i)            
+                fext0(i) = fext0(i) + fadd_nl(i)
             end do
         end if
     end if

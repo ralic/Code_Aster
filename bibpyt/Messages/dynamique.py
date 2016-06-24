@@ -352,7 +352,7 @@ Non-linéarités localisées
 
     76 : _(u"""    >> nombre de relations effort-vitesse       : %(i1)d"""),
 
-    77 : _(u"""    >> nombre de couplages dissipatifs visqueux : %(i1)d"""),
+    77 : _(u"""    >> nombre de couplages de type %(k1)s     : %(i1)d"""),
 
     78 : _(u"""
 État initial
@@ -471,3 +471,5 @@ Avancement du calcul
     99 : _(u"""    >> nombre de modélisations de palier : %(i1)d"""),
 
 }
+
+

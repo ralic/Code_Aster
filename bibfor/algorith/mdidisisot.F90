@@ -1,5 +1,4 @@
-subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
-                      temps)
+subroutine mdidisisot(nomres, nbchoc, logcho, noecho, nbsauv, temps)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,8 +23,8 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
     character(len=8) :: noecho(nbchoc,*)
     real(kind=8) :: temps(*)
 !
-#include "dtmdef.h"
 #include "jeveux.h"
+#include "dtmdef.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
@@ -38,14 +37,14 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!                       IMPRESSION DES RESULTATS SUR LES DIS_VISC
+!                       IMPRESSION DES RESULTATS SUR LES DIS_ECRO_TRAC
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! IN
 !   nomres  : nom du concept résultat
 !   nbchoc  : nombre de liaison non-linéaire
-!   logcho  : type de liaison : DIS_VISC => logcho(i,6) = _NB_DIS_VISC
+!   logcho  : type de liaison : DIS_ECRO_TRAC => logcho(i,6) = _NB_DIS_ECRO_TRAC
 !   noecho  : noms des noeuds de choc
 !   nbsauv  : nombre de pas sauvegardé
 !   temps   : instant de sauvegarde
@@ -53,6 +52,7 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ific, nbocc, iocc, iret, ii, nbvint, nbvdisc, it, indx, jvint, vv
+    integer :: imprredir(8)
     character(len=8) :: noeud1,noeud2
 !
     call jemarq()
@@ -63,33 +63,38 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
 !   Récupération des variables internes
 !   Longueur maximum d'un bloc de variables internes
     nbvint  = nbchoc*mdtr74grd('MAXVINT')
-!   Nombre de variables internes sur les DIS_VISC
-    nbvdisc = mdtr74grd('DIS_VISC')
-    ASSERT( nbvdisc .eq. 4 )
+!   Nombre de variables internes sur les DIS_ECRO_TRAC
+    nbvdisc = mdtr74grd('DIS_ECRO_TRAC')
+    ASSERT( nbvdisc .eq. 5 )
     call jeveuo(nomres//'           .VINT', 'E', jvint)
 !
+    imprredir(1:5) = [1,3,4,2,5]
+!
     do iocc = 1, nbocc
-        call getvis('IMPRESSION', 'UNITE_DIS_VISC', iocc=iocc, scal=ific, nbret=iret)
+        call getvis('IMPRESSION', 'UNITE_DIS_ECRO_TRAC', iocc=iocc, scal=ific, nbret=iret)
         if ( iret.ne.1 ) cycle
-!       Impression des informations sur les DIS_VISC
+!       Impression des informations sur les DIS_ECRO_TRAC
         if (.not. ulexis( ific )) then
             call ulopen(ific, ' ', ' ', 'NEW', 'O')
         endif
 !
         do ii = 1 , nbchoc
-            if ( logcho(ii,6).ne._NB_DIS_VISC ) cycle
+            if ( logcho(ii,6).ne._NB_DIS_ECRO_TRAC ) cycle
 !           Noeuds du discret
             noeud1 = noecho(ii,1)
             noeud2 = noecho(ii,5)
-!           Impressions des variables internes dans l'ordre de stockage
+!           Impressions des variables internes
+!               variables internes   : 1        2       3       4       5
+!                               vari : force    Up      U       puiss   ip
+!               Ordre d'impression   : 1 3 4 2 5
             write(ific,100) '#'
             write(ific,100) '#--------------------------------------------------'
             write(ific,100) '#RESULTAT '//nomres
-            write(ific,101) '#DIS_VISC ',ii,' '//noeud1//' '//noeud2
-            write(ific,102) 'INST','FORCE','DEPLVISC','DEPL','PUISS'
+            write(ific,101) '#DIS_ECRO_TRAC ',ii,' '//noeud1//' '//noeud2
+            write(ific,102) 'INST','FORCE','U','PUISS','UP','PCUM'
             do it = 1 , nbsauv
                 indx = jvint-1 + ii + (it-1)*nbvint
-                write(ific,103) temps(it), (zr(indx+(vv-1)*nbchoc),vv=1,nbvdisc)
+                write(ific,103) temps(it), (zr(indx+(imprredir(vv)-1)*nbchoc),vv=1,nbvdisc)
             enddo
         enddo
 !       On ferme le fichier pour être sûr que le flush soit fait
@@ -97,8 +102,8 @@ subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
     enddo
 100 format(A)
 101 format(A,I5,A)
-102 format(5(1X,A18))
-103 format(5(1X,1pE18.10E3))
+102 format(6(1X,A18))
+103 format(6(1X,1pE18.10E3))
 !
 999 continue
     call jedema()

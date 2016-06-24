@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine mdfcho(nbmode, depgen, vitgen, accgen, fexgen,&
-                      nbchoc, logcho, dplmod, parcho, noecho,&
+                      nbchoc, logcho, dplmod, parcho, paincho, noecho,&
                       saucho, ltemps, nofdep, nofvit, nofacc,&
                       nbexci, psidel, nonmot, fextgt)
         integer :: nbexci
@@ -27,17 +27,18 @@ interface
         real(kind=8) :: vitgen(nbmode)
         real(kind=8) :: accgen(nbmode)
         real(kind=8) :: fexgen(nbmode)
-        integer :: logcho(nbchoc, *)
-        real(kind=8) :: dplmod(nbchoc, nbmode, *)
-        real(kind=8) :: parcho(nbchoc, *)
-        character(len=8) :: noecho(nbchoc, *)
-        real(kind=8) :: saucho(nbchoc, *)
-        real(kind=8) :: ltemps(2)
-        character(len=8) :: nofdep(nbexci)
-        character(len=8) :: nofvit(nbexci)
-        character(len=8) :: nofacc(nbexci)
-        real(kind=8) :: psidel(nbchoc, nbexci, *)
-        character(len=8) :: nonmot
+        integer             :: logcho(nbchoc, *)
+        real(kind=8)        :: dplmod(nbchoc, nbmode, *)
+        real(kind=8)        :: parcho(nbchoc, *)
+        integer             :: paincho(nbchoc, *)
+        character(len=8)    :: noecho(nbchoc, *)
+        real(kind=8)        :: saucho(nbchoc, *)
+        real(kind=8)        :: ltemps(2)
+        character(len=8)    :: nofdep(nbexci)
+        character(len=8)    :: nofvit(nbexci)
+        character(len=8)    :: nofacc(nbexci)
+        real(kind=8)        :: psidel(nbchoc, nbexci, *)
+        character(len=8)    :: nonmot
         real(kind=8), optional, intent(out) :: fextgt(nbmode)
     end subroutine mdfcho
 end interface

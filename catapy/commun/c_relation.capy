@@ -84,6 +84,7 @@ def C_RELATION( COMMAND ):
                                         "DIS_GOUJ2E_PLAS",
                                         "DIS_GRICRA",
                                         "DIS_VISC",
+                                        "DIS_ECRO_TRAC",
                                         "DRUCK_PRAGER",
                                         "DRUCK_PRAG_N_A",
                                         "ELAS_GONF",

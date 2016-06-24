@@ -1,5 +1,5 @@
 subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
-                  nbpal, logcho, dplmod, parcho, noecho,&
+                  nbpal, logcho, dplmod, parcho, paincho, noecho,&
                   intitu, ps1del, ps2del, numddl, nbmode,&
                   pulsat, masgen, lamor, amogen, bmodal,&
                   neq, nexcit, info, monmot, ier)
@@ -10,7 +10,6 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 #include "asterc/gettco.h"
 #include "asterfort/gloloc.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdchge.h"
@@ -18,12 +17,12 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbnli, nbchoc, nbflam, nbsism(2), nbmode, neq
+!
+    integer :: nbnli, nbchoc, nbflam, nbsism(3), nbmode, neq
     integer :: nbrfis, nbpal
-    integer :: logcho(nbnli, *), ier, nexcit, info
+    integer :: logcho(nbnli, *), ier, nexcit, info, paincho(nbnli, *)
     real(kind=8) :: parcho(nbnli, *), pulsat(*), masgen(*), amogen(*)
     real(kind=8) :: dplmod(nbnli, nbmode, *), bmodal(neq, *)
     real(kind=8) :: ps1del(neq, nexcit), ps2del(nbnli, nexcit, *)
@@ -32,7 +31,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     aster_logical :: lamor
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +56,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : LOGCHO : LOGIQUE CHOC: LOGCHO(I,1) = SI ADHERENCE    OU NON=0
 !                              LOGCHO(I,4) = SI DISPO ANTI_S OU NON=0
 !                              LOGCHO(I,5) = SI FLAMBEMENT   OU NON=0
-!                              LOGCHO(I,6) = SI DISC_VIS=1   OU NON=0
+!                              LOGCHO(I,6) = SI DISC_VISC       = _NB_DIS_VISC
+!                              LOGCHO(I,6) = SI DIS_ECRO_TRAC   = _NB_DIS_ECRO_TRAC
 !
 ! OUT : DPLMOD : DEPL MODAUX AUX NOEUDS DE CHOC APRES ORIENTATION
 !                DPLMOD(I,J,1) = DEPL DX DU NOEUD_1 DE CHOC I - MODE J
@@ -66,7 +66,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !                DPLMOD(I,J,4) = DEPL DX DU NOEUD_2 DE CHOC I - MODE J
 !                DPLMOD(I,J,5) = DEPL DY
 !                DPLMOD(I,J,6) = DEPL DZ
-! OUT : PARCHO : PARAMETRE DE CHOC:
+! OUT : PARCHO : PARAMETRE DE CHOC
 !                PARCHO(I, 1)= JEU AU NOEUD DE CHOC I
 !                PARCHO(I, 2)= RIGI NORMALE
 !                PARCHO(I, 3)= AMOR NORMAL
@@ -129,6 +129,23 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !                PARCHO(I,59)   = RESI_INTE_RELA
 !                PARCHO(I,60:63)= Variables internes
 !
+!   DISC_ISOT
+!                PARCHO(I,53)   = Seuil Limite
+!                PARCHO(I,54)   = Déplacement correspondant au seuil
+!                PARCHO(I,55)   =
+!                PARCHO(I,56)   =
+!                PARCHO(I,57)   =
+!                PARCHO(I,58)   = ITER_INTE_MAXI
+!                PARCHO(I,59)   = RESI_INTE_RELA
+!                PARCHO(I,60:64)= Variables internes
+!
+! OUT : PAINCHO : PARAMETRES DE TYPE ENTIER POUR LES COMPORTEMENTS NONLINÉAIRES
+!   DISC_ISOT
+!                PAINCHO(I,1)   = fonction : adresse jprol : zk24
+!                PAINCHO(I,2)   = fonction : nbvale
+!                PAINCHO(I,3)   = fonction : adresse jvale : zr
+!
+!
 ! OUT : NOECHO : NOEUD DE CHOC: NOECHO(I,1) = NOEUD_1
 !                               NOECHO(I,2) = SOUS_STRUC_1
 !                               NOECHO(I,3) = NUME_1
@@ -159,7 +176,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 ! OUT : IER    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: imode, iamor, im, i, j, nbparcho, nblogcho
+    integer :: imode, iamor, im, i, j, nbparcho, nblogcho, nbpaincho
     integer :: vali
     real(kind=8) :: dpiloc(6), dpiglo(6), ddpilo(3), origob(3), un
     real(kind=8) :: valr(10)
@@ -180,7 +197,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     mdgene = ' '
     call gettco(numddl, typnum)
     if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
-        if (nbsism(1)+nbsism(2)+nbflam .gt. 0) then
+        if (nbsism(1)+nbsism(2)+nbsism(3)+nbflam .gt. 0) then
             call utmess('F', 'ALGORITH5_36')
         endif
     endif
@@ -201,12 +218,14 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
         iamor = imode + nbmode*( imode - 1 )
     endif
 !
-    nbparcho = mdtr74grd('PARCHO')
-    nblogcho = mdtr74grd('LOGCHO')
+    nbparcho  = mdtr74grd('PARCHO')
+    nblogcho  = mdtr74grd('LOGCHO')
+    nbpaincho = mdtr74grd('PAINCHO')
     do i = 1, nbnli
         logcho(i,1:nblogcho) = 0
         noecho(i,1:9) = ' '
         parcho(i,1:nbparcho) = 0.d0
+        paincho(i,1:nbpaincho) = 0
     enddo
 !
     AS_ALLOCATE(vi=ddlcho, size=nbnli*6)
@@ -215,7 +234,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
     if (typnum .eq. 'NUME_DDL_SDASTER') then
         call mdchst(numddl, typnum, imode, iamor, pulsat,&
                     masgen, amogen, nbnli, nbpal, noecho,&
-                    nbrfis, logcho, parcho, intitu, ddlcho,&
+                    nbrfis, logcho, parcho, paincho, intitu, ddlcho,&
                     ier)
 !
 !   CALCUL PAR SOUS-STRUCTURATION
@@ -273,10 +292,8 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
             valr (10)= parcho(i,22)
             call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
             if (noecho(i,9)(1:2) .eq. 'BI') then
-                xjeu = (&
-                       parcho(i,11) - parcho(i,8))**2 + (parcho(i,12) - parcho(i,9))**2 + (parcho&
-                       &(i,13) - parcho(i,10)&
-                       )**2
+                xjeu = (parcho(i,11) - parcho(i, 8))**2 + (parcho(i,12) - parcho(i,9))**2 + &
+                       (parcho(i,13) - parcho(i,10))**2
                 if (i .le. nbchoc) then
                     xjeu = sqrt(xjeu) - (parcho(i,30)+parcho(i,31))
                 else
@@ -443,7 +460,7 @@ subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
 !
     if (nbchoc .ne. 0 .and. nbflam .ne. 0) then
         do i = 1, nbchoc
-            j = nbchoc+nbsism(1)+nbsism(2)
+            j = nbchoc+nbsism(1)+nbsism(2)+nbsism(3)
 130         continue
             j = j + 1
             if (j .le. nbnli - nbpal) then

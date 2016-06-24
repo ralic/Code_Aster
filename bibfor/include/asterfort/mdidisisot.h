@@ -15,16 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
-        integer :: nbeq
-        real(kind=8) :: pp(*)
-        real(kind=8) :: yy0(nbeq)
-        real(kind=8) :: dy0(nbeq)
-        real(kind=8) :: dyy(nbeq)
-        aster_logical :: decoup
-        integer, optional :: pf(*)
-    end subroutine zengen
+    subroutine mdidisisot(nomres, nbchoc, logcho, noecho, nbsauv, temps)
+        character(len=8) :: nomres
+        integer :: nbchoc
+        integer :: logcho(nbchoc, *)
+        character(len=8) :: noecho(nbchoc, *)
+        integer :: nbsauv
+        real(kind=8) :: temps(*)
+    end subroutine mdidisisot
 end interface

@@ -1,24 +1,25 @@
 subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
-                  rkfct, solu, decoup)
+                  rkfct, solu, decoup, fonction)
     implicit none
 #include "asterf_types.h"
     integer :: nbeq
     real(kind=8) :: vparam(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
     aster_logical :: decoup
+    integer, optional :: fonction(*)
     interface
-        subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
-                         decoup)
+        subroutine rkfct(pp, nbeq, yy0, dy0, dyy, decoup, pf)
             integer :: nbeq
             real(kind=8) :: pp(*)
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
             aster_logical :: decoup
+            integer, optional :: pf(*)
         end subroutine rkfct
     end interface
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,17 +85,29 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
                     /110592.0d0, 253.0d0/4096.0d0 /)
 !
 !   niveaux de RK
-    do niv = 1, nivrk
-        do ii = 1, nbeq
-            yy(ii) = yinit(ii)
-            do nn = 1, niv - 1
-                yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
+    if ( present(fonction) ) then
+        do niv = 1, nivrk
+            do ii = 1, nbeq
+                yy(ii) = yinit(ii)
+                do nn = 1, niv - 1
+                    yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
+                enddo
             enddo
+            call rkfct(vparam, nbeq, yy, dyinit, rr(1, niv), decoup, pf=fonction)
+            if (decoup) goto 999
         enddo
-        call rkfct(vparam, nbeq, yy, dyinit, rr(1, niv),&
-                   decoup)
-        if (decoup) goto 999
-    enddo
+    else
+        do niv = 1, nivrk
+            do ii = 1, nbeq
+                yy(ii) = yinit(ii)
+                do nn = 1, niv - 1
+                    yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
+                enddo
+            enddo
+            call rkfct(vparam, nbeq, yy, dyinit, rr(1, niv), decoup)
+            if (decoup) goto 999
+        enddo
+    endif
 !
     do ii = 1, nbeq
 !       intégration
@@ -105,7 +118,7 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
         solu(2*nbeq+ii) = 0.0d0
         do niv = 1, nivrk
             solu(ii) = solu(ii) + tabc(niv) * rr(ii,niv)*dtemps
-            solu(2*nbeq+ii) = solu(2*nbeq+ii) + (tabc(niv)- tabe(niv))*rr(ii,niv)* dtemps
+            solu(2*nbeq+ii) = solu(2*nbeq+ii) + (tabc(niv)- tabe(niv))*rr(ii,niv)*dtemps
         enddo
     enddo
 !

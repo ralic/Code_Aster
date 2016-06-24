@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                       errmax, y0, dy0, rkfct, resu,&
-                      iret)
+                      iret, fonction)
         integer :: nbeq
         real(kind=8) :: param(*)
         real(kind=8) :: t0
@@ -31,16 +31,20 @@ interface
         real(kind=8) :: dy0(nbeq)
         real(kind=8) :: resu(2*nbeq)
         integer :: iret
+        integer, optional :: fonction(*)
+!
         interface
             subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
-                             decoup)
+                             decoup, pf)
                 integer :: nbeq
                 real(kind=8) :: pp(*)
                 real(kind=8) :: yy0(nbeq)
                 real(kind=8) :: dy0(nbeq)
                 real(kind=8) :: dyy(nbeq)
                 aster_logical :: decoup
+                integer, optional :: pf(*)
             end subroutine rkfct
         end interface
+!
     end subroutine rk5adp
 end interface

@@ -27,7 +27,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/dtmarch.h"
 #include "asterfort/dtmbuff.h"
 #include "asterfort/dtmconc.h"
@@ -41,21 +40,15 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/intget.h"
 #include "asterfort/intsav.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mdidisvisc.h"
+#include "asterfort/mdidisisot.h"
 #include "asterfort/mdsize.h"
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
-#include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpu.h"
 #include "asterfort/uttcpr.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
     character(len=*)          , intent(in) :: sd_dtm_
@@ -69,7 +62,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     integer           :: nltreat, nr, nbsauv, iarch_sd, i_nbar
     integer           :: perc, last_prperc, freqpr, ifm, niv
     integer           :: oldarch, i_nbarf
-    integer           :: jranc, jnoec, nbdisvi
+    integer           :: jranc, jnoec, nbdiscret
     real(kind=8)      :: tinit, dt, tps1(4), rint1, rint2
     real(kind=8)      :: time, lastarch, tfin, epsi, newdt
     real(kind=8)      :: dt0
@@ -164,8 +157,8 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                 call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, i_nbar],&
                                                  nr=2, valr=[time, lastarch])
                 last_prperc = perc
-            end if
-        end if
+            endif
+        endif
 !
 !
         if (((i_nbar-oldarch+1).eq.nbsauv).and. (iarch_sd.eq.0)) goto 30
@@ -173,7 +166,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         if (checkcpu) then
 !           --- Start recording the integration time required per step
             if (mod(i,n100) .eq. 0) call uttcpu('CPU.DTMCALC', 'DEBUT', ' ')
-        end if
+        endif
 !
 !       -- Matrices update (Gyroscopy)
         if (upmat) call dtmupmat(sd_dtm, sd_int, buffdtm, buffint)
@@ -181,20 +174,20 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         ! if (time .gt. 0.0277257d0) then
         !     write(*,*) 'SOMETHING IS OCCURRING HERE'
         !     continue
-        ! end if
+        ! endif
 
         if (nltreat.eq.1) then
             call intbackup(sd_int, '&&INTBAK')
             call dtmget(sd_dtm, _NL_SAVE0, vr=chosav0, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_SAVES, rvect=chosav0, buffer=buffdtm)
-        end if
+        endif
 !
         nr = 0
 10      continue
         nr = nr + 1
         if (nr.gt.100) then
             ASSERT(.false.)
-        end if
+        endif
 
         call intget(sd_int, STEP, iocc=1, rscal=dt)
         if ((time+dt-archlst(iarch)).gt.(i*epsi)) then
@@ -204,7 +197,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         else if (abs(time+dt-archlst(iarch)).lt.(i*epsi)) then
             newdt = dt
             force_arch = 1
-        end if
+        endif
 
 !       --- Actual integration scheme
         call dtmintg(sd_dtm, sd_int, buffdtm, buffint)
@@ -223,8 +216,8 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
             if (adapt.eq.0) then
                 call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
                 force_arch = 0
-            end if
-        end if
+            endif
+        endif
 
         if (force_arch.eq.1) then
            if (abs(time-archlst(iarch)).le.(i*epsi)) then
@@ -239,15 +232,15 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                     force_arch = 2
                 else if (adapt.eq.0) then
                     call intsav(sd_int, STEP, 1, iocc=1, rscal=dt0)
-                end if
-           end if
+                endif
+           endif
         else
             if (mod(i-i_nbarf,pasarch).eq.0) then
                 i_nbar = i_nbar +1
                 call dtmarch(sd_dtm, sd_int, buffdtm, buffint)
                 lastarch = time
-            end if
-        end if
+            endif
+        endif
 
         i = i + 1
 
@@ -269,7 +262,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !                   integration steps, if not, resize and finalize the result data structure
 !                   then raise an exception
                 if (max(rint1,n100*tps1(4)) .gt. (rint2*tps1(1))) then
-
                     call dtmget(sd_dtm, _CALC_SD ,kscal=calcres, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_MODES,iscal=nbmode, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli, buffer=buffdtm)
@@ -277,25 +269,23 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                     call dtmget(sd_dtm, _FV_NUMB,iscal=nbrevi, buffer=buffdtm)
                     call dtmget(sd_dtm, _ARCH_STO,vi=isto, buffer=buffdtm)
 !                   --- resize according to the last archived step, isto(1)
-                    call mdsize(calcres, isto(1), nbmode, nbnli, nbrede,&
-                                nbrevi)
-
+                    call mdsize(calcres, isto(1), nbmode, nbnli, nbrede, nbrevi)
 !                   --- Concatenate results in the case of an adaptative integration scheme
                     if (adapt.gt.0) then
                         call dtmconc(sd_dtm)
-                    end if
+                    endif
 !                   --- Append to an existing result in the case of "reuse"
                     if (append.gt.0) then
                         call resu74(nomres, calcres)
-                    end if
+                    endif
 
 !                   --- Alert the user, raise exceptions and stop the calculation
                     call utmess('Z', 'ALGORITH16_77', ni=2, vali=[i, isto(1)], nr=3,&
                                 valr=[lastarch, tps1(4), tps1(1)], num_except=28)
                     call utmess('F', 'ALGORITH5_24')
-                end if
-            end if
-        end if
+                endif
+            endif
+        endif
     enddo
 
 30  continue
@@ -304,7 +294,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         perc = 100
         call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, i_nbar],&
                                          nr=2, valr=[tfin, lastarch])
-    end if
+    endif
 
 
 !   --- Concatenate the results if needed
@@ -314,23 +304,31 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     if (append.gt.0) then
         call dtmget(sd_dtm, _CALC_SD ,kscal=calcres)
         call resu74(nomres, calcres)
-    end if
+    endif
 
-    call dtmget(sd_dtm, _NB_DISVI, iscal=nbdisvi, buffer=buffdtm)
-    if (nbdisvi .ne. 0) then
+    call dtmget(sd_dtm, _NB_DIS_VISC, iscal=nbdiscret, buffer=buffdtm)
+    if (nbdiscret .ne. 0) then
         call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli, buffer=buffdtm)
         call dtmget(sd_dtm, _IND_ALOC, vi=allocs, buffer=buffdtm)
         call dtmget(sd_dtm, _CHO_RANK, address=jranc)
         call dtmget(sd_dtm, _CHO_NOEU, address=jnoec)
-        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), i_nbar+1,&
-                        zr(allocs(2)))
+        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), i_nbar+1,zr(allocs(2)))
+    endif
+
+    call dtmget(sd_dtm, _NB_DIS_ECRO_TRAC, iscal=nbdiscret, buffer=buffdtm)
+    if (nbdiscret .ne. 0) then
+        call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli, buffer=buffdtm)
+        call dtmget(sd_dtm, _IND_ALOC, vi=allocs, buffer=buffdtm)
+        call dtmget(sd_dtm, _CHO_RANK, address=jranc)
+        call dtmget(sd_dtm, _CHO_NOEU, address=jnoec)
+        call mdidisisot(nomres, nbnli, zi(jranc), zk8(jnoec), i_nbar+1,zr(allocs(2)))
     endif
 
 !   --- Cleanup extra objects
     if (nltreat.eq.1) then
         call detrsd(' ','&&DTMMOD')
         call detrsd(' ','&&DTMNUG')
-    end if
+    endif
 !
     call jedema()
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D  WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@
     integer :: parind(_DTM_NBPAR)
     character(len=3)  :: partyp(_DTM_NBPAR)
     character(len=8)  :: params(_DTM_NBPAR)
-    
+
     data  params /'AMOR_MAT', 'APPND_SD', 'BASE_MOD', 'CALC_SD ', 'FV_NUMB ',&
                   'FX_NUMB ', 'MASS_MAT', 'NB_ANTSI', 'NB_CHOC ', 'NB_DISVI',&
                   'NB_EXC_T', 'NB_FLAMB', 'NB_MODES', 'NB_NONLI', 'NB_PALIE',&
@@ -52,7 +52,7 @@
                   'FSI_BASE', 'FSI_TYPF', 'FSI_IVIT', 'FSI_CASE', 'FSI_VGAP',&
                   'FSI_CPLD', 'FSI_IRES', 'FSI_PRVI', 'FSI_RHOE', 'FSI_BASF',&
                   'FSI_PHIE', 'FSI_ABSC', 'FSI_CODM', 'FSI_POID', 'FSI_NUOR',&
-                  'FSI_ITYP', 'FSI_ZET0'/
+                  'FSI_ITYP', 'FSI_ZET0', 'NB_DISIS', 'CHO_PAIN'/
 
 
     data  partyp /'K24', 'I  ', 'K24', 'K24', 'I  ',&
@@ -84,10 +84,10 @@
                   'K24', 'K24', 'I  ', 'I  ', 'R  ',&
                   'I  ', 'I  ', 'R  ', 'R  ', 'R  ',&
                   'R  ', 'R  ', 'R  ', 'R  ', 'I  ',&
-                  'I  ', 'R  '/
-                  
+                  'I  ', 'R  ', 'I  ', 'I  '/
+
 ! -------------------------------------------------------------------------
-!   parind = -2 : vector global        ; = -1 : scalar global ; 
+!   parind = -2 : vector global        ; = -1 : scalar global ;
 !          =  2 : vector per occurence ; =  1 : scalar per occurence
 ! -------------------------------------------------------------------------
 
@@ -120,4 +120,4 @@
                   -1, -1, -1, -1, -1,&
                   -2, -2, -2, -2, -2,&
                   -2, -2, -2, -2, -2,&
-                  -2, -2/
+                  -2, -2, -1, -2/

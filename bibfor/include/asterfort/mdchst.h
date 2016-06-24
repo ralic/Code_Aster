@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine mdchst(numddl, typnum, imode, iamor, pulsat,&
                       masgen, amogen, nbnli, nbpal, noecho,&
-                      nbrfis, logcho, parcho, intitu, ddlcho,&
+                      nbrfis, logcho, parcho, paincho, intitu, ddlcho,&
                       ier)
         integer :: nbnli
         character(len=14) :: numddl
@@ -29,12 +29,13 @@ interface
         real(kind=8) :: masgen(*)
         real(kind=8) :: amogen(*)
         integer :: nbpal
-        character(len=8) :: noecho(nbnli, *)
-        integer :: nbrfis
-        integer :: logcho(nbnli, *)
-        real(kind=8) :: parcho(nbnli, *)
-        character(len=8) :: intitu(*)
-        integer :: ddlcho(*)
-        integer :: ier
+        character(len=8)    :: noecho(nbnli, *)
+        integer             :: nbrfis
+        integer             :: logcho(nbnli, *)
+        real(kind=8)        :: parcho(nbnli, *)
+        integer             :: paincho(nbnli, *)
+        character(len=8)    :: intitu(*)
+        integer             :: ddlcho(*)
+        integer             :: ier
     end subroutine mdchst
 end interface

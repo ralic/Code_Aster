@@ -20,13 +20,14 @@ subroutine dtmprep_noli(sd_dtm_)
 ! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmprep_noli : Retreives information regarding 6 types of nonlinearities for a
-!                DYNA_VIBRA//TRAN/GENE calculation : 
-!                (1) Chocs               / CHOC
-!                (2) Anti sismic devices / ANTI_SISM 
-!                (3) Viscous dampers     / DIS_VISC
-!                (4) Buckling            / FLAMBAGE
-!                (5) Cracked rotor       / ROTOR_FISS
-!                (6) Lubrication         / COUPLAGE_EDYOS
+!                DYNA_VIBRA//TRAN/GENE calculation :
+!                (1)    Chocs                               / CHOC
+!                (2)    Anti sismic devices                 / ANTI_SISM
+!                (3.1)  Viscous dampers                     / DIS_VISC
+!                (3.2)  Springs with isotropic behavior     / DIS_ECRO_TRAC
+!                (4)    Buckling                            / FLAMBAGE
+!                (5)    Cracked rotor                       / ROTOR_FISS
+!                (6)    Lubrication                         / COUPLAGE_EDYOS
 !
 !   Note : Information about these 6 nonlinearity types are read using mdchoc
 !
@@ -67,10 +68,10 @@ subroutine dtmprep_noli(sd_dtm_)
 !   -0.2- Local variables
     aster_logical    :: okschema, prdeff, lamor
     integer          :: nbcho1, ioc, nbchoc, n1, n2
-    integer          :: ngr, nbmg, nbsism(2), nbflam, nbrfis
+    integer          :: ngr, nbmg, nbsism(3), nbflam, nbrfis
     integer          :: jfk, jdfk, lprol, nbedyo, nbpal
     integer          :: unitpa, iadri, nbnli, jranc, jdepl
-    integer          :: jparc, jinti, jnoec, ntotex, nbexcit
+    integer          :: jparc, jinti, jnoec, ntotex, nbexcit, jpain
     integer          :: jpsid, iret, info, neq, ifm
     integer          :: ig, iadrk, palmax, i, jpsdel
     integer          :: nbmode, ivchoc, nbschor, j, nlcase
@@ -118,7 +119,7 @@ subroutine dtmprep_noli(sd_dtm_)
 !
 !   -0.4- Retrieval of the necessary information
     call dtmget(sd_dtm, _AMOR_FUL, lonvec=iret)
-    if (iret.eq.0) then 
+    if (iret.eq.0) then
         lamor = .true.
         call dtmget(sd_dtm, _AMOR_DIA, vr=amogen)
     else
@@ -161,10 +162,10 @@ subroutine dtmprep_noli(sd_dtm_)
         endif
     enddo
     call dtmsav(sd_dtm, _NB_CHOC ,1, iscal=nbchoc)
-    
+
 !
 !   --- 2 - ANTI_SISM
-    nbsism(1:2)= 0
+    nbsism(1:3)= 0
     call getfac('ANTI_SISM', nbsism(1))
     if (nbsism(1) .ne. 0) then
         okschema =     (schema(1:11).eq.'DIFF_CENTRE').or.(schema(1:6).eq.'DEVOGE')&
@@ -177,7 +178,7 @@ subroutine dtmprep_noli(sd_dtm_)
     endif
     call dtmsav(sd_dtm, _NB_ANTSI,1,iscal=nbsism(1))
 !
-!   --- 3 - DIS_VISC
+!   --- 3.1 - DIS_VISC
     call getfac('DIS_VISC', nbsism(2))
     if (nbsism(2) .ne. 0) then
         okschema = (schema(1:11).eq.'DIFF_CENTRE').or.(schema(1:5).eq.'RUNGE')
@@ -187,7 +188,19 @@ subroutine dtmprep_noli(sd_dtm_)
             call utmess('A', 'ALGORITH5_81', nk=2, valk=valk)
         endif
     endif
-    call dtmsav(sd_dtm, _NB_DISVI,1,iscal=nbsism(2))
+    call dtmsav(sd_dtm, _NB_DIS_VISC,1,iscal=nbsism(2))
+!
+!   --- 3.2 - DIS_ECRO_TRAC
+    call getfac('DIS_ECRO_TRAC', nbsism(3))
+    if (nbsism(3) .ne. 0) then
+        okschema = (schema(1:11).eq.'DIFF_CENTRE').or.(schema(1:5).eq.'RUNGE')
+        if (.not. okschema) then
+            valk(1) = 'DIS_ECRO_TRAC'
+            valk(2) = schema
+            call utmess('A', 'ALGORITH5_81', nk=2, valk=valk)
+        endif
+    endif
+    call dtmsav(sd_dtm, _NB_DIS_ECRO_TRAC,1,iscal=nbsism(3))
 !
 !   --- 4 - FLAMBAGE
     call getfac('FLAMBAGE', nbflam)
@@ -248,7 +261,7 @@ subroutine dtmprep_noli(sd_dtm_)
         call dtmsav(sd_dtm, _DT_EDYOS,1,rscal=dtsto)
 
         call jeveuo('N_PAL', 'L', iadri)
-        nbpal=zi(iadri)       
+        nbpal=zi(iadri)
 
         call jeveuo('C_PAL', 'L', iadrk)
         palmax = 20
@@ -269,7 +282,7 @@ subroutine dtmprep_noli(sd_dtm_)
     call dtmsav(sd_dtm, _NB_PALIE,1,iscal=nbpal)
 !
 !   --- Total number of nonlinearities
-    nbnli = nbchoc + nbsism(1) + nbsism(2) + nbflam + nbrfis + nbpal
+    nbnli = nbchoc + nbsism(1) + nbsism(2) + nbsism(3) + nbflam + nbrfis + nbpal
     call dtmsav(sd_dtm, _NB_NONLI, 1, iscal=nbnli)
 
 !   Reading and processing information for these nonlinearities <A> (1-6)
@@ -310,7 +323,8 @@ subroutine dtmprep_noli(sd_dtm_)
         call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)
         call dtminivec(sd_dtm, _CHO_RANK, nbnli*mdtr74grd('LOGCHO'), address=jranc)
         call dtminivec(sd_dtm, _CHO_DEPL, nbnli*6*nbmode, address=jdepl)
-        call dtminivec(sd_dtm, _CHO_PARA, nbnli*mdtr74grd('PARCHO'), address=jparc)
+        call dtminivec(sd_dtm, _CHO_PARA, nbnli*mdtr74grd('PARCHO'),  address=jparc)
+        call dtminivec(sd_dtm, _CHO_PAIN, nbnli*mdtr74grd('PAINCHO'), address=jpain)
         call dtminivec(sd_dtm, _CHO_NAME, nbnli, address=jinti)
         call dtminivec(sd_dtm, _CHO_NOEU, nbnli*9, address=jnoec)
         call dtminivec(sd_dtm, _F_TOT_WK, nbmode, address=jbid)
@@ -344,7 +358,7 @@ subroutine dtmprep_noli(sd_dtm_)
             end do
         end if
         call mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
-                    nbpal, zi(jranc), zr(jdepl), zr(jparc), zk8(jnoec),&
+                    nbpal, zi(jranc), zr(jdepl), zr(jparc), zi(jpain), zk8(jnoec),&
                     zk8(jinti), zr(jpsdel), zr(jpsid), numddl, nbmode,&
                     puls, masgen, lamor, amored, basvec,&
                     neq, nbexcit, info, monmot(1:8), iret)

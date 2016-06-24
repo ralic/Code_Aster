@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
-                rkfct, solu, decoup)
+                rkfct, solu, decoup, fonction)
         integer :: nbeq
         real(kind=8) :: vparam(*)
         real(kind=8) :: dtemps
@@ -27,15 +27,16 @@ interface
         real(kind=8) :: dyinit(nbeq)
         real(kind=8) :: solu(3*nbeq)
         aster_logical :: decoup
+        integer, optional :: fonction(*)
         interface
-            subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
-                             decoup)
+            subroutine rkfct(pp, nbeq, yy0, dy0, dyy, decoup, pf)
                 integer :: nbeq
                 real(kind=8) :: pp(*)
                 real(kind=8) :: yy0(nbeq)
                 real(kind=8) :: dy0(nbeq)
                 real(kind=8) :: dyy(nbeq)
                 aster_logical :: decoup
+                integer, optional :: pf(*)
             end subroutine rkfct
         end interface
     end subroutine rk5app

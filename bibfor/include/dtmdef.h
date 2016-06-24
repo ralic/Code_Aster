@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 ! sd_dtm data structure : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
-#define _DTM_NBPAR 127
+#define _DTM_NBPAR 129
 
 #define _AMOR_MAT 1
 #define _APPND_SD 2
@@ -30,7 +30,7 @@
 #define _MASS_MAT 7
 #define _NB_ANTSI 8
 #define _NB_CHOC  9
-#define _NB_DISVI 10
+#define _NB_DIS_VISC 10
 #define _NB_EXC_T 11
 #define _NB_FLAMB 12
 #define _NB_MODES 13
@@ -148,6 +148,8 @@
 #define _FSI_NUOR 125
 #define _FSI_ITYP 126
 #define _FSI_ZET0 127
+#define _NB_DIS_ECRO_TRAC 128
+#define _CHO_PAIN 129
 
 ! For fast dispatching of the integration scheme (method)
 #define _DTM_NB_SCHEMAS     8

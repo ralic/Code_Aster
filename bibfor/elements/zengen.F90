@@ -1,13 +1,13 @@
-subroutine zengen(pp, nbeq, yy0, dy0, dyy,&
-                  decoup)
+subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
     implicit none
 #include "asterf_types.h"
     integer :: nbeq
     real(kind=8) :: pp(*), yy0(nbeq), dy0(nbeq), dyy(nbeq)
     aster_logical :: decoup
+    integer, optional :: pf(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ subroutine zengen(pp, nbeq, yy0, dy0, dyy,&
 !     nbeq     : nombre d'équations
 !     yy0      : valeurs initiales
 !     dy0      : dérivées initiales
+!     pf       : adresse des fonctions
 !
 !  OUT
 !     dyy      : dérivées calculées
@@ -42,7 +43,7 @@ subroutine zengen(pp, nbeq, yy0, dy0, dyy,&
     real(kind=8) :: seuil, xx
     parameter (seuil=1.0e+10)
 !
-!   système de 4 équations : contrainte, epsivisq, epsi , dissipation
+!   système d'équations : contrainte, epsivisq, epsi , dissipation
     integer :: isig, iepvis, iepsi, idissi
     parameter (isig=1,iepvis=2,iepsi=3,idissi=4)
 !   paramètres du modèle : s1, e2, s3, nu3, alpha3

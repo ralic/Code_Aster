@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine mdchoc(nbnli, nbchoc, nbflam, nbsism, nbrfis,&
-                      nbpal, logcho, dplmod, parcho, noecho,&
+                      nbpal, logcho, dplmod, parcho, paincho, noecho,&
                       intitu, ps1del, ps2del, numddl, nbmode,&
                       pulsat, masgen, lamor, amogen, bmodal,&
                       neq, nexcit, info, monmot, ier)
@@ -29,24 +29,25 @@ interface
         integer :: nbnli
         integer :: nbchoc
         integer :: nbflam
-        integer :: nbsism(2)
+        integer :: nbsism(3)
         integer :: nbrfis
         integer :: nbpal
         integer :: logcho(nbnli, *)
-        real(kind=8) :: dplmod(nbnli, nbmode, *)
-        real(kind=8) :: parcho(nbnli, *)
-        character(len=8) :: noecho(nbnli, *)
-        character(len=8) :: intitu(*)
-        real(kind=8) :: ps1del(neq, nexcit)
-        real(kind=8) :: ps2del(nbnli, nexcit, *)
-        character(len=14) :: numddl
-        real(kind=8) :: pulsat(*)
-        real(kind=8) :: masgen(*)
-        aster_logical :: lamor
-        real(kind=8) :: amogen(*)
-        real(kind=8) :: bmodal(neq, *)
-        integer :: info
-        character(len=8) :: monmot
-        integer :: ier
+        real(kind=8)        :: dplmod(nbnli, nbmode, *)
+        real(kind=8)        :: parcho(nbnli, *)
+        integer             :: paincho(nbnli, *)
+        character(len=8)    :: noecho(nbnli, *)
+        character(len=8)    :: intitu(*)
+        real(kind=8)        :: ps1del(neq, nexcit)
+        real(kind=8)        :: ps2del(nbnli, nexcit, *)
+        character(len=14)   :: numddl
+        real(kind=8)        :: pulsat(*)
+        real(kind=8)        :: masgen(*)
+        aster_logical       :: lamor
+        real(kind=8)        :: amogen(*)
+        real(kind=8)        :: bmodal(neq, *)
+        integer             :: info
+        character(len=8)    :: monmot
+        integer             :: ier
     end subroutine mdchoc
 end interface

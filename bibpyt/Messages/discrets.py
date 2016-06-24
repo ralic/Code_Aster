@@ -204,7 +204,7 @@ La raideur tangente : 1/K1 + 1/K3 + K2/(K1*K3) ne doit pas être nulle ou trop p
 """),
 
     42: _(u"""
-DYNA_VIBRA : Pour l'élément discret de type DIS_VISC.
+DYNA_VIBRA : Pour l'élément discret de type DIS_VISC ou DIS_ECRO_TRAC
 
 L'intégration de la loi de comportement du discret pose problème.
 L'erreur est supérieure à RESI_INTE_RELA=%(r1)12.5E pour un nombre
@@ -217,7 +217,7 @@ Conseils :
 """),
 
     43: _(u"""
-DYNA_VIBRA : Pour l'élément discret de type DIS_VISC.
+DYNA_VIBRA : Pour l'élément discret de type DIS_VISC ou DIS_ECRO_TRAC.
 
 Sa longueur est nulle ou trop petite.
 Il n'est pas possible de calculer le vecteur directeur de l'élément.
@@ -257,5 +257,25 @@ TABLE = CALC_TABLE(reuse=TABLE, TABLE=TABLE,
 
 """),
 
+    61 : _(u"""
+Le prolongement à droite étant exclu pour la fonction %(k1)s, il n'est pas
+possible d'extrapoler la fonction au delà de %(r1)f
+"""),
+
+    62 : _(u"""
+Le Comportement <%(k1)s> est non valide.
+La définition de la fonction <%(k2)s> est incorrecte.
+    - elle doit être définie avec DEFI_FONCTION
+    - le premier point doit être (0.0, 0.0)
+    - définie par au moins 3 points
+    - le nom du paramètre est DX
+    - interpolation linéaire entre les points
+    - une fonction monotone croissante
+    - dérivée de la fonction <= raideur initiale
+Elle ne peut pas être :
+    - une constante
+    - une nappe
+    - prolongée à gauche ou à droite
+"""),
 
 }

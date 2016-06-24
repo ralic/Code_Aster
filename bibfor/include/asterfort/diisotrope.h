@@ -15,16 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
-        integer :: nbeq
-        real(kind=8) :: pp(*)
-        real(kind=8) :: yy0(nbeq)
-        real(kind=8) :: dy0(nbeq)
-        real(kind=8) :: dyy(nbeq)
-        aster_logical :: decoup
-        integer, optional :: pf(*)
-    end subroutine zengen
+    subroutine diisotrope(option, nomte, ndim, nbt, nno,&
+                      nc, ulm, dul, pgl, iret)
+        character(len=*) :: option
+        character(len=*) :: nomte
+        integer :: ndim
+        integer :: nbt
+        integer :: nno
+        integer :: nc
+        real(kind=8) :: ulm(12)
+        real(kind=8) :: dul(12)
+        real(kind=8) :: pgl(3, 3)
+        integer :: iret
+    end subroutine diisotrope
 end interface

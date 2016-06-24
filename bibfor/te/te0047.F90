@@ -9,6 +9,7 @@ subroutine te0047(optioz, nomtez)
 #include "asterfort/dielas.h"
 #include "asterfort/digou2.h"
 #include "asterfort/digric.h"
+#include "asterfort/diisotrope.h"
 #include "asterfort/dizeng.h"
 #include "asterfort/infdis.h"
 #include "asterfort/infted.h"
@@ -25,7 +26,7 @@ subroutine te0047(optioz, nomtez)
     character(len=*) :: optioz, nomtez
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -195,6 +196,10 @@ subroutine te0047(optioz, nomtez)
 !       comportement DIS_ZENER
         call dizeng(option, nomte, ndim, nbt, nno,&
                     nc, ulm, dul, pgl, iret)
+    else if (zk16(icompo).eq.'DIS_ECRO_TRAC') then
+!       comportement ISOTROPE
+        call diisotrope(option, nomte, ndim, nbt, nno,&
+                        nc, ulm, dul, pgl, iret)
     else if (zk16(icompo)(1:10).eq.'DIS_GOUJ2E') then
 !       comportement DIS_GOUJON : application : gouj2ech
         call digou2(option, nomte, ndim, nbt, nno,&

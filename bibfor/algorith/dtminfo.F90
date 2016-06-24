@@ -2,7 +2,7 @@ subroutine dtminfo(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ subroutine dtminfo(sd_dtm_)
 !
 ! dtminfo : Prints out general information about the transient calculation to
 !           be undertaken, before any integration taking place, but after all
-!           preliminary verifications are carried out. 
+!           preliminary verifications are carried out.
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
@@ -36,7 +36,7 @@ subroutine dtminfo(sd_dtm_)
     character(len=*)          , intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer               :: nbnli, nbchoc, nbants, nbdvis, nbflam
+    integer               :: nbnli, nbchoc, nbants, nbdiscret, nbflam
     integer               :: nbrede, nbrevi, nbpas, nbpas_min, nbpas_max
     integer               :: substruct, fsicase, nbpheq, adapt, nltreat
     integer               :: nbmode, append, nbsav_forc, iparch
@@ -47,7 +47,7 @@ subroutine dtminfo(sd_dtm_)
     real(kind=8)          :: fmin, fmax, freq, nbpas_max_r
     character(len=8)      :: sd_dtm, basemo, modgen, fsibase
     character(len=8)      :: dep0, vit0, contres, matmas, matrig
-    character(len=8)      :: matamo   
+    character(len=8)      :: matamo
     character(len=16)     :: numddl, schema, schtyp, nltreat_k
     character(len=18)     :: nomres
 !
@@ -70,22 +70,20 @@ subroutine dtminfo(sd_dtm_)
     if ((substruct+fsicase).eq.0) then
         call dtmget(sd_dtm, _BASE_MOD, kscal=basemo)
         call dtmget(sd_dtm, _NB_PHYEQ, iscal=nbpheq)
-        call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo],&
-                                         ni=1, vali=[nbpheq])
-    end if
+        call utmess('I', 'DYNAMIQUE_56', nk=1, valk=[basemo], ni=1, vali=[nbpheq])
+    endif
 
     if (substruct.eq.1) then
         call dtmget(sd_dtm, _BASE_MOD, kscal=modgen)
         call dtmget(sd_dtm, _NUM_DDL , kscal=numddl)
         call utmess('I', 'DYNAMIQUE_57', nk=2, valk=[modgen, numddl])
-    end if
+    endif
 
     if (fsicase.eq.1) then
         call dtmget(sd_dtm, _FSI_BASE, kscal=fsibase)
         call dtmget(sd_dtm, _FSI_VGAP, rscal=fsivgap)
-        call utmess('I', 'DYNAMIQUE_58', nk=1, valk=[fsibase],&
-                                         nr=1, valr=[fsivgap])
-    end if
+        call utmess('I', 'DYNAMIQUE_58', nk=1, valk=[fsibase], nr=1, valr=[fsivgap])
+    endif
 
 !   2 - Minimum and max frequencies
     call dtmget(sd_dtm, _OMEGA, vr=puls, lonvec=nbfreq)
@@ -95,9 +93,8 @@ subroutine dtminfo(sd_dtm_)
         freq = puls(i)/(deuxpi)
         if (freq.lt.fmin) fmin = freq
         if (freq.gt.fmax) fmax = freq
-    end do
-    call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode],&
-                                     nr=2, valr=[fmin, fmax])
+    enddo
+    call utmess('I', 'DYNAMIQUE_59', ni=1, vali=[nbmode], nr=2, valr=[fmin, fmax])
 
 !   3 - Dynamic matrices
     call utmess('I', 'DYNAMIQUE_60')
@@ -110,7 +107,7 @@ subroutine dtminfo(sd_dtm_)
         call utmess('I', 'DYNAMIQUE_61', nk=2, valk=[matmas, matrig])
 
         call dtmget(sd_dtm, _AMOR_MAT, lonvec=iret)
-        if (iret.gt.0) then 
+        if (iret.gt.0) then
             call dtmget(sd_dtm, _AMOR_MAT, kscal=matamo)
             call utmess('I', 'DYNAMIQUE_62', nk=1, valk=[matamo])
         else
@@ -119,12 +116,12 @@ subroutine dtminfo(sd_dtm_)
                 if (abs(amogen(i)).gt.epsi) then
                     call utmess('I', 'DYNAMIQUE_63')
                     goto 10
-                end if
-            end do
+                endif
+            enddo
             call utmess('I', 'DYNAMIQUE_64')
-10          continue            
-        end if
-    end if
+10          continue
+        endif
+    endif
 
 !   4 - Integration scheme, type, timestep, principal numerical parameters
     call dtmget(sd_dtm, _SCHEMA  , kscal=schema)
@@ -136,7 +133,7 @@ subroutine dtminfo(sd_dtm_)
     schtyp = 'explicite'
     if (schema(1:7).eq.'NEWMARK') then
         schtyp = 'implicite'
-    end if
+    endif
     if (adapt.eq.1) then
         call dtmget(sd_dtm, _DT_MIN  , rscal=dtmin)
         call dtmget(sd_dtm, _DT_MAX  , rscal=dtmax)
@@ -148,13 +145,13 @@ subroutine dtminfo(sd_dtm_)
         else
             call getvr8('SCHEMA_TEMPS', 'TOLERANCE', iocc=1, scal=toler)
             call utmess('I', 'DYNAMIQUE_67', nr=1, valr=[toler])
-        end if
+        endif
         nbpas_min = nint((tfin-tinit)/dtmax)
         nbpas_max = 1000000000
-        if (dtmin.gt.epsi) then     
+        if (dtmin.gt.epsi) then
             nbpas_max_r = min(1.d0*nbpas_max,(tfin-tinit-epsi)/dtmin)
             nbpas_max   = int(nbpas_max_r) + 1
-        end if
+        endif
 
         call utmess('I', 'DYNAMIQUE_69', ni=2, vali=[nbpas_min, nbpas_max])
     else
@@ -162,7 +159,7 @@ subroutine dtminfo(sd_dtm_)
         call utmess('I', 'DYNAMIQUE_70', nk=2, valk=[schema, schtyp],&
                                          nr=1, valr=[dt],&
                                          ni=1, vali=[nbpas])
-    end if
+    endif
 
 !   5 - Localized non linearities
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
@@ -176,10 +173,9 @@ subroutine dtminfo(sd_dtm_)
             nltreat_k = 'explicite'
             if (nltreat.eq.1) then
                 nltreat_k = 'implicite'
-            end if
-            call utmess('I', 'DYNAMIQUE_72', nk=1, valk=[nltreat_k],&
-                                             ni=1, vali=[nbchoc])
-        end if
+            endif
+            call utmess('I', 'DYNAMIQUE_72', nk=1, valk=[nltreat_k], ni=1, vali=[nbchoc])
+        endif
 
         call dtmget(sd_dtm, _NB_ANTSI, iscal=nbants)
         if (nbants.gt.0) call utmess('I', 'DYNAMIQUE_73', ni=1, vali=[nbants])
@@ -191,8 +187,15 @@ subroutine dtminfo(sd_dtm_)
 
         if (nbrevi.gt.0) call utmess('I', 'DYNAMIQUE_76', ni=1, vali=[nbrevi])
 
-        call dtmget(sd_dtm, _NB_DISVI, iscal=nbdvis)
-        if (nbdvis.gt.0) call utmess('I', 'DYNAMIQUE_77', ni=1, vali=[nbdvis])
+        call dtmget(sd_dtm, _NB_DIS_VISC, iscal=nbdiscret)
+        if (nbdiscret.gt.0) then
+            call utmess('I', 'DYNAMIQUE_77', ni=1, vali=[nbdiscret], nk=1, valk=['DIS_VISC'])
+        endif
+
+        call dtmget(sd_dtm, _NB_DIS_ECRO_TRAC, iscal=nbdiscret)
+        if (nbdiscret.gt.0) then
+            call utmess('I', 'DYNAMIQUE_77', ni=1, vali=[nbdiscret], nk=1, valk=['DIS_ECRO_TRAC'])
+        endif
 
         call dtmget(sd_dtm, _NB_R_FIS, iscal=nbrfis)
         if (nbrfis.gt.0) call utmess('I', 'DYNAMIQUE_98', ni=1, vali=[nbrfis])
@@ -200,7 +203,7 @@ subroutine dtminfo(sd_dtm_)
         call dtmget(sd_dtm, _NB_PALIE, iscal=nbpal)
         if (nbpal.gt.0) call utmess('I', 'DYNAMIQUE_99', ni=1, vali=[nbpal])
 
-    end if
+    endif
 
 !   6 - Initial state, continue case ?
     call dtmget(sd_dtm, _APPND_SD, iscal=append)
@@ -215,7 +218,7 @@ subroutine dtminfo(sd_dtm_)
             vit0 = 'nul'
             call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep0, vit0])
             call utmess('I', 'DYNAMIQUE_84', nk=1, valk=['calculee'])
-        else 
+        else
             call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=contres, nbret=iret)
             if (iret.ne.0) then
                 call utmess('I', 'DYNAMIQUE_78', nk=1, valk=[contres])
@@ -226,9 +229,9 @@ subroutine dtminfo(sd_dtm_)
                 if (iret2.eq.0) vit0 = 'nul'
                 call utmess('I', 'DYNAMIQUE_79', nk=2, valk=[dep0, vit0])
                 call utmess('I', 'DYNAMIQUE_84', nk=1, valk=['calculee'])
-            end if
-        end if
-    end if
+            endif
+        endif
+    endif
 
 !   7 - Simulation duration
     call utmess('I', 'DYNAMIQUE_80', nr=2, valr=[tinit, tfin])

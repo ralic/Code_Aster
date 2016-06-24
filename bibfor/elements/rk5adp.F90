@@ -1,6 +1,6 @@
 subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
                   errmax, y0, dy0, rkfct, resu,&
-                  iret)
+                  iret, fonction )
     implicit none
 #include "asterf_types.h"
 #include "asterfort/rk5app.h"
@@ -14,20 +14,23 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
     real(kind=8) :: dy0(nbeq)
     real(kind=8) :: resu(2*nbeq)
     integer :: iret
+    integer, optional :: fonction(*)
+!
     interface
-        subroutine rkfct(pp, nbeq, yy0, dy0, dyy,&
-                         decoup)
-            integer :: nbeq
+        subroutine rkfct(pp, nbeq, yy0, dy0, dyy, decoup, pf)
             real(kind=8) :: pp(*)
+            integer :: nbeq
             real(kind=8) :: yy0(nbeq)
             real(kind=8) :: dy0(nbeq)
             real(kind=8) :: dyy(nbeq)
             aster_logical :: decoup
+            integer, optional :: pf(*)
         end subroutine rkfct
     end interface
+
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,8 +107,11 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
         goto 999
     endif
     decoup = .false.
-    call rk5app(nbeq, param, dt9, y9, dy0,&
-                rkfct, solu, decoup)
+    if ( present(fonction) ) then
+        call rk5app(nbeq, param, dt9, y9, dy0, rkfct, solu, decoup, fonction=fonction)
+    else
+        call rk5app(nbeq, param, dt9, y9, dy0, rkfct, solu, decoup)
+    endif
     nbbou = nbbou + 1
 !   découpage forcé
     if (decoup) then

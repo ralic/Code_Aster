@@ -45,7 +45,6 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/dtmsav.h"
 #include "asterfort/extdia.h"
 #include "asterfort/getvid.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/inicou.h"
@@ -53,7 +52,6 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -159,11 +157,11 @@ subroutine dtmprep(sd_dtm_)
 
     do i = 1, _DTM_NB_SCHEMAS
         if (method.eq.methods(i)) goto 5
-    end do
+    enddo
 5   continue
     if (i.gt._DTM_NB_SCHEMAS) then
         ASSERT(.false.)
-    end if
+    endif
     call dtmsav(sd_dtm, _SCHEMA_I  ,1, iscal=i)
     call dtmsav(sd_dtm, _SCHEMA  ,1, kscal=method)
 
@@ -178,7 +176,7 @@ subroutine dtmprep(sd_dtm_)
     if (iret.eq.0) then
         ! write(*,*) "No mass matrix has been found as an input"
         ASSERT(.false.)
-    end if
+    endif
     call jeveuo(masgen//'           .REFA', 'L', vk24=refa)
     basemo = refa(1)(1:8)
     call jeveuo(masgen//'           .DESC', 'L', vi=desc)
@@ -260,8 +258,8 @@ subroutine dtmprep(sd_dtm_)
             if (piv.ne.0) then
                 write(*,*) 'Substructuring case, zero pivot on mass matrix line ', piv
                 ASSERT(.false.)
-            end if
-        end if
+            endif
+        endif
         typbas = 'BASE_MODA'
     endif
     call dtmsav(sd_dtm, _MASS_MAT,1, kscal=masgen)
@@ -297,7 +295,7 @@ subroutine dtmprep(sd_dtm_)
     do i = 1, nbmode
         puls (i) = 0.d0
         puls2(i) = 0.d0
-    end do
+    enddo
     if (substruc.eq.0) then
 !       --- Direct calculation case, all modes can be supposed dynamic and some
 !           frequency can hereafter be associated to each generalized dof
@@ -319,11 +317,11 @@ subroutine dtmprep(sd_dtm_)
                 omeg2 = abs(zr(jrig1+nbmodi+j-1)/zr(jmas1+nbmodi+j-1))
                 puls (nbmodi+j) = sqrt(omeg2)
                 puls2(nbmodi+j) = omeg2
-            end do
+            enddo
             nbmody = nbmody + nbbas
             call dismoi('NB_MODES_TOT', basemo, 'RESULTAT', repi=nbbas)
             nbmodi = nbmodi + nbbas
-        end do
+        enddo
 !       --- Substructuing : saved is the modal basis corresponding to the last
 !           dynamic substructure (??? Special care should be taken thereafter ???)
 !           NB_MOD_D represents the number of dynamic modes across all substructures
@@ -378,16 +376,16 @@ subroutine dtmprep(sd_dtm_)
                 call jeveuo(amotem//'           .CONL', 'E', vr=conl)
                 do i = 1, nbmode
                     conl(i) = conl(i)/2.0d0
-                end do
+                enddo
             else
                 call copmat(amogen, zr(jamo2))
-            end if
+            endif
         else
 !           --- Diagonal matrix, multiply by the inverse of M
             do i=1, nbmode
                 zr(jamo1+i-1) = zr(jamo1+i-1)/zr(jmas1+i-1)
-            end do
-        end if
+            enddo
+        endif
         call dtmsav(sd_dtm, _AMOR_MAT,1, kscal=amogen)
 !
     else
@@ -398,9 +396,9 @@ subroutine dtmprep(sd_dtm_)
 !   -------------------------------------------------------------------------------------
 !
 !   --- 4.4 - Case of substructuring, saving matrices description pointers
-!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT
-!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN
-!          THE SUBSEQUENT CALCULATION ROUTINES
+!   NOTE : EXCEPTIONAL USAGE OF JEVEUT SO THAT THE MATRIX DESCRIPTORS ARE NOT 
+!          INVALIDATED UPON EXIT OF DTMPREP AND REMAIN THUS ACCESSIBLE IN 
+!          THE SUBSEQUENT CALCULATION ROUTINES 
     if (substruc.eq.1) then
         call mtdscr(riggen//'           ')
         call jeveut(riggen//'           .&INT', 'E', descr)
@@ -417,7 +415,7 @@ subroutine dtmprep(sd_dtm_)
         call dtmsav(sd_dtm, _MAT_DESC,3,ivect=[descm,descr,desca])
     else
         call dtmsav(sd_dtm, _MAT_DESC,3,ivect=[0,0,0])
-    end if
+    endif
 
 !
 !   --------------------------------------------------------------------------------------
@@ -444,7 +442,7 @@ subroutine dtmprep(sd_dtm_)
         continue
     else
         nexcit = 0
-    end if
+    endif
 
 !
 !   --- 6.2 - Charging from an existing result : EXCIT_RESU -> RESULTAT
@@ -463,7 +461,7 @@ subroutine dtmprep(sd_dtm_)
         enddo
     else
         nexcir = 0
-    end if
+    endif
 !
 !   --- 6.3 - Additional excitation parameters
     ntotex = nexcit + nexcir*nbmode
@@ -498,12 +496,13 @@ subroutine dtmprep(sd_dtm_)
     call dtmsav(sd_dtm, _MULTI_AP,1,kscal=monmot)
 
 !   --------------------------------------------------------------------------------------
-!   7 - Nonlinearities : (1) Chocs               / CHOC
-!           <A>          (2) Anti sismic devices / ANTI_SISM
-!                        (3) Viscous dampers     / DIS_VISC
-!                        (4) Buckling            / FLAMBAGE
-!                        (5) Cracked rotor       / ROTOR_FISS
-!                        (6) Lubrication         / COUPLAGE_EDYOS
+!   7 - Nonlinearities : (1)    Chocs               / CHOC
+!           <A>          (2)    Anti sismic devices / ANTI_SISM
+!                        (3.1)  Viscous dampers     / DIS_VISC
+!                        (3.2)  Nonlinear springs   / DIS_ECRO_TRAC
+!                        (4)    Buckling            / FLAMBAGE
+!                        (5)    Cracked rotor       / ROTOR_FISS
+!                        (6)    Lubrication         / COUPLAGE_EDYOS
 !   --------------------------------------------------------------------------------------
     call dtmprep_noli(sd_dtm)
 !
@@ -555,7 +554,7 @@ subroutine dtmprep(sd_dtm_)
         if (iret .ne. 0) call utmess('F', 'ALGORITH5_24')
     else
         nbrede = 0
-    end if
+    endif
     call dtmsav(sd_dtm, _FX_NUMB, 1, iscal=nbrede)
 !
 !   --- 7.3 - RELA_EFFO_VITE
@@ -568,7 +567,7 @@ subroutine dtmprep(sd_dtm_)
         if (iret .ne. 0) call utmess('F', 'ALGORITH5_24')
     else
         nbrevi = 0
-    end if
+    endif
     call dtmsav(sd_dtm, _FV_NUMB, 1, iscal=nbrevi)
 !
 !   --------------------------------------------------------------------------------------

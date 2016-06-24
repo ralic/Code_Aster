@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
+    subroutine disc_isotr(pp, nbeq, yy0, dy0, dyy, decoup, pf)
         integer :: nbeq
         real(kind=8) :: pp(*)
         real(kind=8) :: yy0(nbeq)
@@ -26,5 +26,5 @@ interface
         real(kind=8) :: dyy(nbeq)
         aster_logical :: decoup
         integer, optional :: pf(*)
-    end subroutine zengen
+    end subroutine disc_isotr
 end interface
