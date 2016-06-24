@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jacques.pellet@edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 
 from cataelem.Tools.base_objects import Phenomenon, Modelisation, objects_from_context
 import cataelem.Commons.mesh_types as MT
@@ -3292,14 +3292,13 @@ phen.add('D_PLAN_XT', Modelisation(dim=(2,2), code='DX2',
         (MT.SEG3      , EL.MEPLSE2_XT),
     )))
 
-phen.add('FLUI_STRU', Modelisation(dim=(1,2), code='FLS',
+phen.add('FLUI_STRU', Modelisation(dim=(3,3), code='FLS',
     elements=(
         (MT.TRIA3     , EL.MEFS_FACE3),
         (MT.QUAD4     , EL.MEFS_FACE4),
         (MT.TRIA6     , EL.MEFS_FACE6),
         (MT.QUAD8     , EL.MEFS_FACE8),
         (MT.QUAD9     , EL.MEFS_FACE9),
-        (MT.SEG2      , EL.MEFS_POU_D_T),
     )))
 
 phen.add('FROT_2D', Modelisation(dim=(1,2), code='CF2',
@@ -3485,6 +3484,11 @@ phen.add('POU_D_T_GD', Modelisation(dim=(1,3), code='PGD',
     ),
     elements=(
         (MT.SEG2      , EL.MECA_POU_D_T_GD),
+    )))
+
+phen.add('POU_FLUI_STRU', Modelisation(dim=(1,3), code='FS1',
+    elements=(
+        (MT.SEG2      , EL.MEFS_POU_D_T),
     )))
 
 phen.add('Q4G', Modelisation(dim=(2,3), code='Q4G',

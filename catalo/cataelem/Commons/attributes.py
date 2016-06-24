@@ -16,6 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: mathieu.courtois@edf.fr
 
 from cataelem.Tools.base_objects import Attribute, objects_from_context
 
@@ -144,7 +145,6 @@ PRINCIPAL = Attribute(auto=True, value=('OUI',),
 
 
 BORD = Attribute(auto=True, value=(
-                 '+1',
                  '0',
                  '-1',
                  '-2',
@@ -154,7 +154,6 @@ BORD = Attribute(auto=True, value=(
   / '-1' : l'element est tel que   : DIM_TOPO_MAILLE = DIM_TOPO_MODELI - 1
   / '-2' : l'element est tel que   : DIM_TOPO_MAILLE = DIM_TOPO_MODELI - 2
   / '-3' : l'element est tel que   : DIM_TOPO_MAILLE = DIM_TOPO_MODELI - 3
-  / '+1' : l'element est tel que   : DIM_TOPO_MAILLE = DIM_TOPO_MODELI + 1
 
   Un element de "bord" ('-1' et '-2') sert en general a appliquer des efforts sur l'element principal qu'il
   borde. Il fait partie de la meme modelisation que l'element principal.

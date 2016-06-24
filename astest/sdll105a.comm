@@ -47,7 +47,7 @@ COLONNE=AFFE_MODELE(
                            MODELISATION = 'DIS_T',
                            PHENOMENE = 'MECANIQUE'),
                      _F( GROUP_MA = ('GRMAA', 'GRMAAM',),
-                           MODELISATION = 'FLUI_STRU',
+                           MODELISATION = 'POU_FLUI_STRU',
                            PHENOMENE = 'MECANIQUE'))
                           )
 

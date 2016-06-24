@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jacques.pellet@edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 
 # --------------------------------------------------------------------------------
 #       impression des catalogues d'elements au format "jeveux" (ojb)
@@ -914,17 +914,14 @@ def get_liattr(cel, cata):
                 if dimtma == d1:
                     dicattr[AT.PRINCIPAL] = 'OUI'
                     dicattr[AT.BORD] = '0'
+                elif dimtma == d1 - 1:
+                    dicattr[AT.BORD] = '-1'
+                elif dimtma == d1 - 2:
+                    dicattr[AT.BORD] = '-2'
+                elif dimtma == d1 - 3:
+                    dicattr[AT.BORD] = '-3'
                 else:
-                    if dimtma == d1 - 1:
-                        dicattr[AT.BORD] = '-1'
-                    elif dimtma == d1 - 2:
-                        dicattr[AT.BORD] = '-2'
-                    elif dimtma == d1 - 3:
-                        dicattr[AT.BORD] = '-3'
-                    elif dimtma == d1 + 1:
-                        dicattr[AT.BORD] = '+1'
-                    else:
-                        assert False, (mod, d1, dimtma)
+                    assert False, (modeli, modeli.code, d1, dimtma)
 
             for attr, val_attr in modeli.attrs or []:
                 if attr in lattr_AUTO:
