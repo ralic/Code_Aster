@@ -15,9 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine te0568(nomopt, nomte)
-        character(len=16), intent(in)  :: nomopt
-        character(len=16), intent(in)  :: nomte
-    end subroutine te0568
+    subroutine lcstco(algo_reso_geom, indi_cont, lagrc_)
+        integer, intent(out) :: algo_reso_geom
+        integer, intent(out) :: indi_cont
+        real(kind=8), optional, intent(out) :: lagrc_
+    end subroutine lcstco
 end interface

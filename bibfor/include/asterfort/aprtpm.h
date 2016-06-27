@@ -16,8 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0568(nomopt, nomte)
-        character(len=16), intent(in)  :: nomopt
-        character(len=16), intent(in)  :: nomte
-    end subroutine te0568
+    subroutine aprtpm(corint, nbpint,typmaa,corinp,ndim, nudec)
+!
+        real(kind=8), intent(in) :: corint(ndim-1,16)
+        integer, intent(in) :: nbpint
+        character(len=8), intent(in) :: typmaa
+        real(kind=8), intent(out) :: corinp(ndim-1,16)
+        integer, intent(in) :: ndim
+        integer, intent(in), optional :: nudec
+!        
+    end subroutine aprtpm
 end interface

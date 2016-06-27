@@ -1,6 +1,6 @@
-subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
-                  xp1         , yp1      , xp2       , yp2      ,&
-                  nb_poin_inte, poin_inte, inte_neigh)
+subroutine insema(elem_nbnode , elem_dime, elem_coor  , pair_tole,&
+                  xp1         , yp1      , xp2        , yp2      ,&
+                  nb_poin_inte, poin_inte, inte_neigh_)
 !
 implicit none
 !
@@ -34,7 +34,7 @@ implicit none
     real(kind=8), intent(in) :: yp2
     integer, intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-    integer, intent(inout) :: inte_neigh(4)
+    integer, optional, intent(inout) :: inte_neigh_(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,7 +115,9 @@ implicit none
             ASSERT(nb_poin_inte.le.16)
             poin_inte(1,nb_poin_inte) = (t2*c+x2+t1*a+x1)/2.d0
             poin_inte(2,nb_poin_inte) = (t2*d+y2+t1*b+y1)/2.d0
-            inte_neigh(i_node)        = 1
+            if (present(inte_neigh_)) then
+                inte_neigh_(i_node) = 1
+            endif
         endif
     end do
 end subroutine

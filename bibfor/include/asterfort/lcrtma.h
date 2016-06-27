@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
-                      xp1         , yp1      , xp2       , yp2      ,&
-                      nb_poin_inte, poin_inte, inte_neigh_)
-        integer, intent(in) :: elem_nbnode
+    subroutine lcrtma(elem_dime       , proj_tole,&
+                      tria_coor       , &
+                      elin_slav_nbnode, elin_slav_coor, elin_slav_code,&
+                      elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
+                      tria_coot)
         integer, intent(in) :: elem_dime
-        real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
-        real(kind=8) :: pair_tole
-        real(kind=8), intent(in) :: xp1
-        real(kind=8), intent(in) :: yp1
-        real(kind=8), intent(in) :: xp2
-        real(kind=8), intent(in) :: yp2
-        integer, intent(inout) :: nb_poin_inte
-        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-        integer, optional, intent(inout) :: inte_neigh_(4)
-    end subroutine insema
+        real(kind=8), intent(in) :: proj_tole
+        real(kind=8), intent(in) :: tria_coor(elem_dime-1,3)
+        integer, intent(in) :: elin_slav_nbnode
+        real(kind=8), intent(in) :: elin_slav_coor(elem_dime,elin_slav_nbnode)
+        character(len=8), intent(in) :: elin_slav_code
+        integer, intent(in) :: elem_mast_nbnode
+        real(kind=8), intent(in) :: elem_mast_coor(elem_dime,elem_mast_nbnode)
+        character(len=8), intent(in) :: elem_mast_code
+        real(kind=8), intent(out) :: tria_coot(2,3)
+    end subroutine lcrtma
 end interface

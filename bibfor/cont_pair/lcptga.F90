@@ -116,6 +116,8 @@ implicit none
             gauss_weight(i_gauss)=2*area*gauxx_weight(i_gauss)
         elseif (eleref .eq. 'SE2') then
             gauss_weight(i_gauss)=1/2.d0*area*gauxx_weight(i_gauss)
+        else
+            ASSERT(.false.)
         end if
     end do
 !

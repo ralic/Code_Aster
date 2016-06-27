@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
-                      xp1         , yp1      , xp2       , yp2      ,&
-                      nb_poin_inte, poin_inte, inte_neigh_)
-        integer, intent(in) :: elem_nbnode
+    subroutine lcreac(nb_lagr       , indi_lagc      , elem_dime   , coef_upda_geom,&
+                      nb_node_slav  , nb_node_mast   ,&
+                      jv_geom       , jv_disp        , jv_disp_incr,&
+                      elem_slav_coor, elem_mast_coor)
         integer, intent(in) :: elem_dime
-        real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
-        real(kind=8) :: pair_tole
-        real(kind=8), intent(in) :: xp1
-        real(kind=8), intent(in) :: yp1
-        real(kind=8), intent(in) :: xp2
-        real(kind=8), intent(in) :: yp2
-        integer, intent(inout) :: nb_poin_inte
-        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-        integer, optional, intent(inout) :: inte_neigh_(4)
-    end subroutine insema
+        integer, intent(in) :: nb_lagr
+        integer, intent(in) :: indi_lagc(10)
+        integer, intent(in) :: nb_node_slav
+        integer, intent(in) :: nb_node_mast
+        real(kind=8), intent(in) :: coef_upda_geom     
+        integer, intent(in) :: jv_geom
+        integer, intent(in) :: jv_disp
+        integer, intent(in) :: jv_disp_incr
+        real(kind=8), intent(inout) :: elem_slav_coor(elem_dime, nb_node_slav)
+        real(kind=8), intent(inout) :: elem_mast_coor(elem_dime, nb_node_mast)
+    end subroutine lcreac
 end interface

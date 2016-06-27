@@ -16,8 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0568(nomopt, nomte)
-        character(len=16), intent(in)  :: nomopt
-        character(len=16), intent(in)  :: nomte
-    end subroutine te0568
+    subroutine lclaze(elem_dime, nb_lagr, nb_node_slav, indi_lagc,&
+                      mmat)
+        integer, intent(in) :: elem_dime
+        integer, intent(in) :: nb_node_slav
+        integer, intent(in) :: nb_lagr
+        integer, intent(in) :: indi_lagc(10)
+        real(kind=8), intent(inout) :: mmat(55,55)
+    end subroutine lclaze
 end interface

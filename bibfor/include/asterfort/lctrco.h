@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine te0568(nomopt, nomte)
-        character(len=16), intent(in)  :: nomopt
-        character(len=16), intent(in)  :: nomte
-    end subroutine te0568
+    subroutine lctrco(i_tria, tria_node, poin_inte, tria_coor)        
+        integer, intent(in) :: i_tria
+        integer, intent(in) :: tria_node(6,3)
+        real(kind=8), intent(in) :: poin_inte(2,16)
+        real(kind=8), intent(out) :: tria_coor(2,3)
+    end subroutine lctrco
 end interface

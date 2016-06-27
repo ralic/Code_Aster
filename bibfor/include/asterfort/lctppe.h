@@ -15,20 +15,24 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
-                      xp1         , yp1      , xp2       , yp2      ,&
-                      nb_poin_inte, poin_inte, inte_neigh_)
-        integer, intent(in) :: elem_nbnode
+    subroutine lctppe(side      , elem_dime , l_axis     ,&
+                      nb_node   , elem_coor , elem_code  ,&
+                      gauss_coor, shape_func, shape_dfunc,&
+                      jaco_init , jaco_upda , norm)
+        character(len=*), intent(in) :: side
         integer, intent(in) :: elem_dime
-        real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
-        real(kind=8) :: pair_tole
-        real(kind=8), intent(in) :: xp1
-        real(kind=8), intent(in) :: yp1
-        real(kind=8), intent(in) :: xp2
-        real(kind=8), intent(in) :: yp2
-        integer, intent(inout) :: nb_poin_inte
-        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-        integer, optional, intent(inout) :: inte_neigh_(4)
-    end subroutine insema
+        aster_logical, intent(in) :: l_axis
+        integer, intent(in) :: nb_node
+        real(kind=8), intent(in) :: elem_coor(elem_dime,nb_node)
+        character(len=8), intent(in) :: elem_code   
+        real(kind=8), intent(in) :: gauss_coor(2)
+        real(kind=8), intent(out) :: shape_func(9)
+        real(kind=8), intent(out) :: shape_dfunc(2, 9)
+        real(kind=8), intent(out) :: jaco_init 
+        real(kind=8), intent(out) :: jaco_upda
+        real(kind=8), intent(out) :: norm(3)
+    end subroutine lctppe
 end interface
