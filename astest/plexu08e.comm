@@ -25,11 +25,13 @@ MPa = 1000000.0;
 
 MAILLAGE=LIRE_MAILLAGE(FORMAT='MED', UNITE=20 )
 
+
 #
 
 MODELE=AFFE_MODELE(INFO=1,
                  MAILLAGE=MAILLAGE,AFFE=(
-                     _F(  GROUP_MA = ('CUBE','FACE_SUP','FACE_COTE'),
+                     _F(  #GROUP_MA = ('CUBE','FACE_SUP','FACE_COTE'),
+                            TOUT = 'OUI',
                             PHENOMENE = 'MECANIQUE',
                             MODELISATION = '3D'),
                             ) )

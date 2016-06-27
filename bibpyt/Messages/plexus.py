@@ -27,9 +27,10 @@ Remarque : CALC_EUROPLEXUS ne fonctionne pas en POURSUITE"""),
     2:  _(u"""Le mot-clé %(k1)s n'existe pas"""),
 
     3 : _(u"""
-La modélisation %(k1)s est affecté à une partie du modèle fourni à CALC_EUROPLEXUS.
-Cependant CALC_EUROPLEXUS ne peut fonctionner que si on n'utilise pas le mot-clé GROUP_MA
-dans AFFE_MODELE pour affecter cette modélisation aux éléments concernés.
+CALC_EUROPLEXUS tente de créer le groupe de mailles 'TOUT' dans le maillage car
+TOUT='OUI' est activé dans AFFE_MODELE, or ce groupe de mailles existe déjà.
+
+Conseil : détruisez le ou vérifiez qu'il contient bien toutes les mailles du modèle. 
 """),
 
     4 : _(u"""

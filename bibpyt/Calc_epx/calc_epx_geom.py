@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,11 +61,18 @@ def export_modele(epx, MAILLAGE, MODELE, gmaInterfaces, info_mode_compl):
             UTMESS('A', 'PLEXUS_24', valk=phenomene)
         if modelisation not in cata_modelisa.keys():
             UTMESS('A', 'PLEXUS_6', valk=modelisation)
-        if not affe.has_key('GROUP_MA'):
-            UTMESS('A', 'PLEXUS_3', valk=modelisation)
+        if affe.has_key('TOUT'):
+            if not MApyt.gma.has_key(string.rstrip('TOUT')):
+                DEFI_GROUP(reuse=MAILLAGE, MAILLAGE=MAILLAGE,
+                           CREA_GROUP_MA=(_F(NOM='TOUT', TOUT='OUI',),
+                           ))
+            else:
+                UTMESS('A', 'PLEXUS_3')
+            group_ma = ['TOUT']
+        else:
+            group_ma = get_group_ma(affe)
         if not cata_modelisa[modelisation]['ETAT_INIT']:
             etat_init_cont.append(modelisation)
-        group_ma = get_group_ma(affe)
         if cata_modelisa[modelisation].has_key('MODI_REPERE'):
             type_modi = cata_modelisa[modelisation]['MODI_REPERE']
             modi_repere[type_modi] = True

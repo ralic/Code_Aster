@@ -613,7 +613,6 @@ présentes%s""" % compo)
                 else:
                     nb_champ_transfo = len(dic_champ_var_int[compo].keys())
                     dicDetr_transfo = []
-                    print 'etienne',compo
                     if nb_champ_transfo == 1:
                         champ = dic_champ_var_int[compo].keys()[0]
                         loi = dic_champ_var_int[compo][champ]
