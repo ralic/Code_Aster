@@ -2086,10 +2086,10 @@ phen.add('CONT_LAC_EL_2DC', Modelisation(dim=(1,2), code='L2C',
         (AT.CONTACT,'OUI'),
     ),
     elements=(
-        (MT.SEG22    , EL.LACS2S2C),
-        (MT.SEG33    , EL.LACS3S3C),
-        (MT.SEG23    , EL.LACS2S3C),
-        (MT.SEG32    , EL.LACS3S2C),
+        (MT.SEG22    , EL.LCS2S2C),
+        (MT.SEG33    , EL.LCS3S3C),
+        (MT.SEG23    , EL.LCS2S3C),
+        (MT.SEG32    , EL.LCS3S2C),
     )))
     
 
@@ -2098,8 +2098,8 @@ phen.add('CONT_LAC_EL_2DD', Modelisation(dim=(1,2), code='L2D',
         (AT.CONTACT,'OUI'),
     ),
     elements=(
-        (MT.SEG22    , EL.LACS2S2D),
-        (MT.SEG23    , EL.LACS2S3D),
+        (MT.SEG22    , EL.LCS2S2D),
+        (MT.SEG23    , EL.LCS2S3D),
     )))
     
 
@@ -2108,11 +2108,43 @@ phen.add('CONT_LAC_EL_2DE', Modelisation(dim=(1,2), code='L2E',
         (AT.CONTACT,'OUI'),
     ),
     elements=(
-        (MT.SEG22    , EL.LACS2S2E),
-        (MT.SEG23    , EL.LACS2S3E),
+        (MT.SEG22    , EL.LCS2S2E),
+        (MT.SEG23    , EL.LCS2S3E),
     )))
       
-     
+phen.add('CONT_LAC_EL_2DF', Modelisation(dim=(1,2), code='L2F',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+        (AT.AXIS,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LCS2S2CA),
+        (MT.SEG33    , EL.LCS3S3CA),
+        (MT.SEG23    , EL.LCS2S3CA),
+        (MT.SEG32    , EL.LCS3S2CA),
+    )))
+    
+
+phen.add('CONT_LAC_EL_2DG', Modelisation(dim=(1,2), code='L2G',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+        (AT.AXIS,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LCS2S2DA),
+        (MT.SEG23    , EL.LCS2S3DA),
+    )))
+    
+
+phen.add('CONT_LAC_EL_2DH', Modelisation(dim=(1,2), code='L2H',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+        (AT.AXIS,'OUI'),
+    ),
+    elements=(
+        (MT.SEG22    , EL.LCS2S2EA),
+        (MT.SEG23    , EL.LCS2S3EA),
+    ))) 
 
 phen.add('CONT_LAC_EL_3DD', Modelisation(dim=(2,3), code='L3D',
     attrs=(

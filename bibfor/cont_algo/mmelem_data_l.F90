@@ -1,4 +1,5 @@
-subroutine mmelem_data_l(typg_slav_name_, typg_mast_name_,&
+subroutine mmelem_data_l(l_axi_         ,&
+                         typg_slav_name_, typg_mast_name_,&
                          typf_slav_name_,&
                          nb_cont_type_  , nb_node_elem_  ,&
                          typg_cont_nume_,&
@@ -32,6 +33,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    aster_logical, intent(in), optional :: l_axi_
     character(len=8), intent(in), optional :: typg_slav_name_
     character(len=8), intent(in), optional :: typg_mast_name_
     character(len=16), intent(in), optional :: typf_slav_name_
@@ -50,6 +52,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  l_axi            : .true. for axi-symetric model
 ! In  typg_slav_name   : name of geometric type of slave element
 ! In  typg_mast_name   : name of geometric type of master element
 ! In  typf_slav_name   : name of geometric type of slave element
@@ -151,8 +154,8 @@ implicit none
         'LACT6Q8D','LACQ8T3D','LACQ8T3E','LACT3Q8D','LACQ4Q9D',&
         'LACQ4Q9E','LACQ9Q4D','LACT3Q9D','LACQ9Q9D','LACQ8Q9D',&
         'LACQ8Q9E','LACQ9Q8D','LACT6Q9D','LACQ9T3D','LACQ9T6D',&
-        'LACS2S2C','LACS2S2D','LACS2S2E','LACS3S3C','LACS2S3C',&
-        'LACS2S3D','LACS2S3E','LACS3S2C'/)
+        'LCS2S2C ','LCS2S2D ','LCS2S2E ','LCS3S3C ','LCS2S3C ',&
+        'LCS2S3D ','LCS2S3E ','LCS3S2C '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -216,6 +219,9 @@ implicit none
 10      continue
         ASSERT(elem_indx .ne. 0)
         typf_cont_name = lypf_cont_name(elem_indx)
+        if (l_axi_) then
+            typf_cont_name(8:8) = 'A'
+        endif
         call jenonu(jexnom('&CATA.TE.NOMTE', typf_cont_name), typf_cont_nume_)
         ASSERT(typf_cont_nume_ .ne. 0)
     endif

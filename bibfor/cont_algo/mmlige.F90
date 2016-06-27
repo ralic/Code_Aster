@@ -219,7 +219,8 @@ implicit none
                 end if
             end do
             ASSERT(typf_slav_nume .ne. 0)
-            call mmelem_data_l(typg_slav_name_ = typg_slav_name, typg_mast_name_ = typg_mast_name,&
+            call mmelem_data_l(l_axi_          = l_axi         ,&
+                               typg_slav_name_ = typg_slav_name, typg_mast_name_ = typg_mast_name,&
                                typf_slav_name_ = typf_slav_name,&
                                nb_node_elem_   = nb_node_elem  ,&
                                typg_cont_nume_ = typg_cont_nume,&

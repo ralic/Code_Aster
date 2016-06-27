@@ -47,7 +47,7 @@ MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 #---------------------------------------------------------------------------------------------------
-class LACS2S2C(Element):
+class LCS2S2C(Element):
     """
       The main 2D class element for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   :
@@ -88,7 +88,7 @@ class LACS2S2C(Element):
         ),
     )
 #---------------------------------------------------------------------------------------------------
-class LACS3S3C(LACS2S2C):
+class LCS3S3C(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -105,7 +105,7 @@ class LACS3S3C(LACS2S2C):
             SetOfNodes('EN1', (3,)),
         )
 #---------------------------------------------------------------------------------------------------
-class LACS2S3C(LACS2S2C):
+class LCS2S3C(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -123,7 +123,7 @@ class LACS2S3C(LACS2S2C):
             SetOfNodes('EN2', (1,3,4,5,)),      
         )
 #---------------------------------------------------------------------------------------------------
-class LACS3S2C(LACS2S2C):
+class LCS3S2C(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -141,7 +141,7 @@ class LACS3S2C(LACS2S2C):
             SetOfNodes('EN2', (1,2,4,5,)),      
         )
 #---------------------------------------------------------------------------------------------------
-class LACS2S2D(LACS2S2C):
+class LCS2S2D(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -158,7 +158,7 @@ class LACS2S2D(LACS2S2C):
             SetOfNodes('EN2', (2,3,4,)),     
         )
 #---------------------------------------------------------------------------------------------------
-class LACS2S3D(LACS2S2C):
+class LCS2S3D(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -175,7 +175,7 @@ class LACS2S3D(LACS2S2C):
             SetOfNodes('EN2', (2,3,4,5,)),     
         )
 #---------------------------------------------------------------------------------------------------
-class LACS2S2E(LACS2S2C):
+class LCS2S2E(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               
@@ -192,7 +192,145 @@ class LACS2S2E(LACS2S2C):
             SetOfNodes('EN2', (3,4,)),     
         )
 #---------------------------------------------------------------------------------------------------
-class LACS2S3E(LACS2S2C):
+class LCS2S3E(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element    
+      Geometry           : SEG23 (SEG2 with SEG3)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 1,2       (DX,DY,LAGS_C) - Geom. Slave: LACS22DT
+          SEG3 MASTER ELEMENT : 3,4,5     (DX,DY)   
+    """
+    meshType = MT.SEG23
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,5,)),    
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S2CA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element 
+      Geometry           : SEG22 (SEG2 with SEG2)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 2     (DX,DY,LAGS_C) - Geom. Slave: LACS22D
+          SEG2 MASTER ELEMENT : 1-3-4 (DX,DY)
+    """
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN1', (2,)),
+            SetOfNodes('EN2', (1,3,4,)),
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS3S3CA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element 
+      Geometry           : SEG33 (SEG3 with SEG3)
+      Local Numerotation :
+          SEG3 SLAVE  ELEMENT : 3         (DX,DY,LAGS_C) - Geom. Slave: LACS32D
+          SEG3 MASTER ELEMENT : 1-2-4-5-6 (DX,DY)
+    """
+    meshType = MT.SEG33
+    nodes = (
+            SetOfNodes('EN2', (1,2,4,5,6,)),
+            SetOfNodes('EN1', (3,)),
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S3CA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element
+      Geometry           : SEG23 (SEG2 with SEG3)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 2         (DX,DY,LAGS_C) - Geom. Slave: LACS22D
+          SEG3 MASTER ELEMENT : 1-3-4-5   (DX,DY)              
+      
+    """
+    meshType = MT.SEG23
+    nodes = (
+            SetOfNodes('EN1', (2,)),
+            SetOfNodes('EN2', (1,3,4,5,)),      
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS3S2CA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element
+      Geometry           : SEG32 (SEG3 with SEG2)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 3         (DX,DY,LAGS_C) - Geom. Slave: LACS22D
+          SEG3 MASTER ELEMENT : 1-2-4-5   (DX,DY)     
+      
+    """
+    meshType = MT.SEG32
+    nodes = (
+            SetOfNodes('EN1', (3,)),
+            SetOfNodes('EN2', (1,2,4,5,)),      
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S2DA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element    
+      Geometry           : SEG22 (SEG2 with SEG2)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 1         (DX,DY,LAGS_C) - Geom. Slave: LACS22DB
+          SEG2 MASTER ELEMENT : 2,3,4     (DX,DY)   
+    """
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN1', (1,)),            
+            SetOfNodes('EN2', (2,3,4,)),     
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S3DA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element    
+      Geometry           : SEG23 (SEG2 with SEG3)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 1         (DX,DY,LAGS_C) - Geom. Slave: LACS22DB
+          SEG3 MASTER ELEMENT : 2,3,4,5   (DX,DY)   
+    """
+    meshType = MT.SEG23
+    nodes = (
+            SetOfNodes('EN1', (1,)),
+            SetOfNodes('EN2', (2,3,4,5,)),     
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S2EA(LCS2S2C):
+    """
+      Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
+      Input parameters   : same as the parent element               
+      Output parameters  : same as the parent element 
+      Options            : same as the parent element    
+      Geometry           : SEG22 (SEG2 with SEG2)
+      Local Numerotation :
+          SEG2 SLAVE  ELEMENT : 1,2       (DX,DY,LAGS_C) - Geom. Slave: LACS22DT
+          SEG2 MASTER ELEMENT : 3,4       (DX,DY)   
+    """
+    meshType = MT.SEG22
+    nodes = (
+            SetOfNodes('EN1', (1,2,)),
+            SetOfNodes('EN2', (3,4,)),     
+        )
+#---------------------------------------------------------------------------------------------------
+class LCS2S3EA(LCS2S2C):
     """
       Derived from the main 2D class element LACS2S2C for DEFI_CONTACT/LAC - Frictionless 
       Input parameters   : same as the parent element               

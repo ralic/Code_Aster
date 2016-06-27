@@ -18,12 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmelem_data_l(typg_slav_name_, typg_mast_name_,&
+    subroutine mmelem_data_l(l_axi_         ,&
+                             typg_slav_name_, typg_mast_name_,&
                              typf_slav_name_,&
                              nb_cont_type_  , nb_node_elem_  ,&
                              typg_cont_nume_,&
                              typf_cont_nume_,&
                              set_elem_indx_ , get_elem_indx_)
+        aster_logical, intent(in), optional :: l_axi_        
         character(len=8), intent(in), optional :: typg_slav_name_
         character(len=8), intent(in), optional :: typg_mast_name_
         character(len=16), intent(in), optional :: typf_slav_name_

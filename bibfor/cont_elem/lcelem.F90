@@ -82,7 +82,7 @@ implicit none
 !
 ! - 2D / SEG2
 !
-    if (nomte .eq. 'LACS2S2C') then
+    if (nomte(1:7) .eq. 'LCS2S2C') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -93,7 +93,7 @@ implicit none
         indi_lagc(3)   = 1    
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
-    elseif (nomte .eq. 'LACS2S3C') then
+    elseif (nomte(1:7) .eq. 'LCS2S3C') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -104,7 +104,7 @@ implicit none
         indi_lagc(3)   = 1    
         elga_fami_slav = 'FPG4'
         elga_fami_mast = 'FPG4'
-    else if (nomte .eq. 'LACS2S2D') then
+    else if (nomte(1:7) .eq. 'LCS2S2D') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -115,7 +115,7 @@ implicit none
         indi_lagc(2)   = 1  
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3'
-    else if (nomte .eq. 'LACS2S3D') then
+    else if (nomte(1:7) .eq. 'LCS2S3D') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -126,7 +126,7 @@ implicit none
         indi_lagc(2)   = 1  
         elga_fami_slav = 'FPG4'
         elga_fami_mast = 'FPG4' 
-    else if (nomte .eq. 'LACS2S2E') then
+    else if (nomte(1:7) .eq. 'LCS2S2E') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -138,7 +138,7 @@ implicit none
         indi_lagc(3)   = 1    
         elga_fami_slav = 'FPG3'
         elga_fami_mast = 'FPG3' 
-    else if (nomte .eq. 'LACS2S3E') then
+    else if (nomte(1:7) .eq. 'LCS2S3E') then
         elem_dime      = 2
         elem_slav_code = 'SE2'
         nb_node_slav   = 2
@@ -153,7 +153,7 @@ implicit none
 !
 ! - 2D / SEG3
 !
-    else if (nomte .eq. 'LACS3S2C') then
+    else if (nomte(1:7) .eq. 'LCS3S2C') then
         elem_dime      = 2
         elem_slav_code = 'SE3'
         nb_node_slav   = 3
@@ -164,7 +164,7 @@ implicit none
         indi_lagc(4)   = 1    
         elga_fami_slav = 'FPG4'
         elga_fami_mast = 'FPG4'
-    else if (nomte .eq. 'LACS3S3C') then
+    else if (nomte(1:7) .eq. 'LCS3S3C') then
         elem_dime      = 2
         elem_slav_code = 'SE3'
         nb_node_slav   = 3
