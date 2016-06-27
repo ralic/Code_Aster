@@ -1,17 +1,15 @@
-subroutine mmappa(mesh, ds_contact)
+subroutine mmptch(ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/apcalc.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/mmapre.h"
-#include "asterfort/mmpoin.h"
-#include "asterfort/mmptch.h"
+#include "asterfort/jerazo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/cfdisi.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,67 +29,48 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Contact - Solve
 !
-! Continue method - Pairing 
+! Continue method - Fill pairing datastructure (MPI management)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : name of mesh
-! IO  ds_contact       : datastructure for contact management
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    aster_logical :: l_cont_lac, l_cont_cont
+    character(len=19) :: sdappa
+    character(len=24) :: sdappa_tgno, sdappa_tgel    
+    character(len=24) :: sdappa_mpib, sdappa_mpic
+    integer :: iret, length
+    character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('CONTACT', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+    sdappa_tgel = sdappa(1:19)//'.TGEL'
+    sdappa_tgno = sdappa(1:19)//'.TGNO'
+    length=cfdisi(ds_contact%sdcont_defi,'NNOCO' )
+    call jerazo(sdappa_tgno,6*length,1)
+    length=0
+    call jelira(sdappa_tgel, 'LONT', length)
+    call jerazo(sdappa_tgel, length ,1)
+    sdappa_mpib = sdappa(1:19)//'.MPIB'
+    sdappa_mpic = sdappa(1:19)//'.MPIC'
+    call jeexin(sdappa_mpib,iret)
+    if (iret .eq. 0) then
+        call wkvect(sdappa_mpib,'V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa_mpic,'V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+    else 
+        call jeveuo(sdappa_mpib, 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call jeveuo(sdappa_mpic, 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
     endif
-!
-! - Get parameters
-!
-    l_cont_cont  = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_lac   = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-!
-! - Pairing
-!
-    if (l_cont_cont) then
-!
-! ----- Set pairing datastructure
-!
-        call mmpoin(mesh, ds_contact)
-!
-! ----- Pairing
-!
-        call apcalc('N_To_S', mesh, ds_contact)
-!
-! ----- Save pairing in contact datastructures
-!
-        call mmapre(mesh, ds_contact)
-    elseif (l_cont_lac) then
-!
-! ----- Set pairing datastructure (MPI)
-!
-        call mmptch(ds_contact)    
-!
-! ----- Pairing
-!
-        call apcalc('S_To_S', mesh, ds_contact)
-!
-! ----- Need new contact elements
-!
-        ds_contact%l_renumber = .true.
-    else
-        ASSERT(.false.)
-    endif
-!
 end subroutine

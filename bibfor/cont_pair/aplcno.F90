@@ -15,6 +15,7 @@ implicit none
 #include "asterfort/aptgem.h"
 #include "asterfort/aptnol.h"
 #include "asterfort/apsvnl.h"
+#include "asterfort/sdmpic.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -104,6 +105,7 @@ implicit none
         call aptgem(sdappa      , mesh     , newgeo   , sdcont_defi, model_ndim,&
                     i_zone      , zone_type, iter_maxi, epsi_maxi  , jdecme    ,&
                     nb_elem_slav)
+        call sdmpic('SD_APPA_TGEL',sdappa)
 !
 ! ----- Compute tangents at each node by smoothing
 !
@@ -111,6 +113,7 @@ implicit none
                     nb_node_mast, norm_type, norm_vect  )
         call aptgnn(sdappa      , mesh     , sdcont_defi, model_ndim, jdecne,&
                     nb_node_slav, norm_type, norm_vect  )
+        call sdmpic('SD_APPA_TGNO',sdappa) 
 !
 ! ----- Compute normals at nodes
 !   
