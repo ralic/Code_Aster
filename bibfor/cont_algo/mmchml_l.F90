@@ -10,7 +10,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfi.h"
@@ -81,8 +80,9 @@ implicit none
 !
 ! - Get parameters
 !
-    r_smooth =real(cfdisi(ds_contact%sdcont_defi,'LISSAGE'),kind=8)
-    r_axi    =real(cfdisi(ds_contact%sdcont_defi,'AXISYMETRIQUE'),kind=8)
+    r_smooth     = real(cfdisi(ds_contact%sdcont_defi,'LISSAGE'),kind=8)
+    r_axi        = real(cfdisi(ds_contact%sdcont_defi,'AXISYMETRIQUE'),kind=8)
+    nb_cont_pair = ds_contact%nb_cont_pair
 !
 ! - Access to input field
 !
@@ -110,8 +110,6 @@ implicit none
     sdappa_apli = sdappa(1:19)//'.APLI'
     call jeveuo(sdappa_coef, 'L', vr = v_sdappa_coef)
     call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
-    call jelira(sdappa_apli, 'LONUTI', nb_cont_pair)
-    nb_cont_pair = nb_cont_pair/3
 !
 ! - Fill input field
 !

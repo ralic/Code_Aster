@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apstoc(sdappa, nb_pair, list_pair)
-        character(len=19), intent(in) :: sdappa
+    subroutine apstoc(ds_contact, nb_pair, list_pair)
+        use NonLin_Datastructure_type
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in):: nb_pair
         integer, pointer, intent(inout) :: list_pair(:)
     end subroutine apstoc

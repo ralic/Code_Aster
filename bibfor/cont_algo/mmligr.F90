@@ -67,18 +67,17 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nb_cont_type, nb_cont_elem
-    integer :: ico, jco, i_cont_poin, i_cont_type, i_node, i_zone, jtabf, i_cont_elem
-    integer :: elem_mast_nume, elem_slav_nume, cont_indx
-    integer :: ligrcf_liel_lont, cont_elem_nume, cont_geom_nume, frot_elem_nume
+    integer :: nb_type, nb_cont_pair, nb_cont, nb_frot
     integer :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
+    integer :: jv_liel, jtabf
+    integer :: i_elem, i_cont_poin, i_cont_type, i_node, i_zone, i_cont_pair
+    integer :: elem_mast_nume, elem_slav_nume, elem_indx
+    integer :: ligrcf_liel_lont, typf_cont_nume, typg_cont_nume, typf_frot_nume  
     aster_logical :: l_cont_cont, l_cont_lac
-    character(len=8) :: cont_geom_name, cont_elem_name, frot_elem_name
     character(len=19) :: ligrcf, sdappa
-    integer, pointer :: v_list_elem(:) => null()
-    integer, pointer :: v_cnt_cont(:) => null()
-    integer, pointer :: v_cnt_frot(:) => null()
-    aster_logical :: l_renumber, l_axi, l_frot
+    integer, pointer :: v_list_pair(:) => null()
+    integer, pointer :: v_list_type(:) => null()
+    aster_logical :: l_renumber, l_frot
     integer, pointer :: v_connex(:) => null()
     integer, pointer :: v_connex_lcum(:) => null()
     integer :: ztabf
@@ -104,7 +103,6 @@ implicit none
 !
 ! - Get parameters
 !
-    l_axi        = cfdisl(ds_contact%sdcont_defi, 'AXISYMETRIQUE')
     l_cont_cont  = cfdisl(ds_contact%sdcont_defi, 'FORMUL_CONTINUE')
     l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
@@ -121,31 +119,33 @@ implicit none
         goto 999
     endif
 !
-! - Access to contact elements
-!
-    if (l_cont_cont) then
-        sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
-        call jeveuo(sdcont_tabfin, 'L', vr   = v_sdcont_tabfin)
-        ztabf = cfmmvd('ZTABF')
-    else if (l_cont_lac) then
-        sdappa_apli = sdappa(1:19)//'.APLI'
-        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
-    endif
-!
-! - <LIGREL> for contact elements
-!
-    ligrcf = ds_contact%ligrel_elem_cont
-    call detrsd('LIGREL', ligrcf)
-!
 ! - Acces to mesh
 !
     call jeveuo(mesh//'.CONNEX', 'L', vi = v_connex)
     call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
 !
+! - Access to datastructure for contact solving
+!
+    if (l_cont_cont) then
+        sdcont_tabfin = ds_contact%sdcont_solv(1:14)//'.TABFIN'
+        call jeveuo(sdcont_tabfin, 'L', vr = v_sdcont_tabfin)
+        ztabf = cfmmvd('ZTABF')
+    else
+        sdappa_apli = ds_contact%sdcont_solv(1:14)//'.APPA.APLI'
+        call jeveuo(sdappa_apli, 'L', vi = v_sdappa_apli)
+    endif
+!
+! - Get <LIGREL> for contact elements
+!
+    ligrcf = ds_contact%ligrel_elem_cont
+    call detrsd('LIGREL', ligrcf)
+!
 ! - Create list of late elements for contact
 !
-    call mmlige(mesh      , ds_contact, v_list_elem, nb_cont_type, v_cnt_cont,&
-                v_cnt_frot, nt_node   , nb_grel    , nb_cont_elem)
+    call mmlige(mesh        , ds_contact, &
+                nb_cont_pair, v_list_pair,&
+                nb_type     , v_list_type,&
+                nt_node     , nb_grel    )
 !
 ! - No late nodes
 !
@@ -154,35 +154,38 @@ implicit none
 !
 ! - Create object NEMA
 !
-    call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE',&
-                nb_cont_elem)
-    call jeecra(ligrcf//'.NEMA', 'LONT', nt_node)
-    do i_cont_elem = 1, nb_cont_elem
+    call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_cont_pair)
+    call jeecra(ligrcf//'.NEMA', 'LONT', nt_node + nb_cont_pair)
+    do i_cont_pair = 1, nb_cont_pair
 !
 ! ----- Get parameters
 !
         if (l_cont_cont) then
-            i_cont_poin    = i_cont_elem
+            i_cont_poin    = i_cont_pair
             elem_slav_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+2))
             elem_mast_nume = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+3))
         else
-            elem_slav_nume = v_sdappa_apli(3*(i_cont_elem-1)+1)
-            elem_mast_nume = v_sdappa_apli(3*(i_cont_elem-1)+2)   
+            elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
+            elem_mast_nume = v_sdappa_apli(3*(i_cont_pair-1)+2)   
         endif
+!
+! ----- Get parameters for current contact element
+!
+        typg_cont_nume = v_list_pair(2*(i_cont_pair-1)+1)
+        nb_node_elem   = v_list_pair(2*(i_cont_pair-1)+2)
 !
 ! ----- Check number of nodes
 !
-        nb_node_elem   = v_list_elem(2*(i_cont_elem-1)+2)
         nb_node_slav   = v_connex_lcum(elem_slav_nume+1) - v_connex_lcum(elem_slav_nume)
         nb_node_mast   = v_connex_lcum(elem_mast_nume+1) - v_connex_lcum(elem_mast_nume)
         ASSERT(nb_node_elem .eq. (nb_node_mast+nb_node_slav))
 !
 ! ----- Create contact element in LIGREL
 !
-        call jecroc(jexnum(ligrcf//'.NEMA', i_cont_elem))
-        call jeecra(jexnum(ligrcf//'.NEMA', i_cont_elem), 'LONMAX', nb_node_elem+1)
-        call jeveuo(jexnum(ligrcf//'.NEMA', i_cont_elem), 'E', vi = v_ligrcf_nema)
-        v_ligrcf_nema(nb_node_elem+1) = v_list_elem(2*(i_cont_elem-1)+1)
+        call jecroc(jexnum(ligrcf//'.NEMA', i_cont_pair))
+        call jeecra(jexnum(ligrcf//'.NEMA', i_cont_pair), 'LONMAX', nb_node_elem+1)
+        call jeveuo(jexnum(ligrcf//'.NEMA', i_cont_pair), 'E', vi = v_ligrcf_nema)
+        v_ligrcf_nema(nb_node_elem+1) = typg_cont_nume
 !
 ! ----- Copy slave nodes
 !
@@ -200,116 +203,89 @@ implicit none
 ! - Size of LIEL object
 !
     ligrcf_liel_lont = nb_grel
-    do i_cont_type = 1, nb_cont_type
-        ligrcf_liel_lont = ligrcf_liel_lont + v_cnt_cont(i_cont_type) + v_cnt_frot(i_cont_type)
+    do i_cont_type = 1, nb_type
+        elem_indx        = i_cont_type
+        nb_cont          = v_list_type(5*(elem_indx-1)+1)
+        nb_frot          = v_list_type(5*(elem_indx-1)+2)
+        ligrcf_liel_lont = ligrcf_liel_lont + nb_cont + nb_frot
     end do
-    ASSERT(nb_grel.gt.0)
+    ASSERT(nb_grel .gt. 0)
 !
 ! - Create LIEL object
 !
-    call jecrec(ligrcf//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE',nb_grel)
+    call jecrec(ligrcf//'.LIEL', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_grel)
     call jeecra(ligrcf//'.LIEL', 'LONT', ligrcf_liel_lont)
-    ico = 0
-    do i_cont_type = 1, nb_cont_type
-        cont_indx = i_cont_type
-        if (v_cnt_cont(i_cont_type) .ne. 0) then
+    i_elem = 0
+    do i_cont_type = 1, nb_type
+        elem_indx      = i_cont_type
+        nb_cont        = v_list_type(5*(elem_indx-1)+1)
+        nb_frot        = v_list_type(5*(elem_indx-1)+2)
+        typf_cont_nume = v_list_type(5*(elem_indx-1)+3)
+        typf_frot_nume = v_list_type(5*(elem_indx-1)+4)
+        typg_cont_nume = v_list_type(5*(elem_indx-1)+5)
+
+        if (nb_cont .ne. 0) then
 !
 ! --------- Create new element
 !
-            ico = ico + 1
-            call jecroc(jexnum(ligrcf//'.LIEL', ico))
-            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', v_cnt_cont(i_cont_type)+1)
-            call jeveuo(jexnum(ligrcf//'.LIEL', ico), 'E', vi = v_ligrcf_liel)
-!
-! --------- Current contact element
-!
-            if (l_cont_cont) then
-                call mmelem_data_c(set_cont_indx_  = cont_indx     , l_axi_ = l_axi,&
-                                   cont_geom_name_ = cont_geom_name,&
-                                   cont_elem_name_ = cont_elem_name)
-            else
-                call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
-                                   cont_geom_name_ = cont_geom_name,&
-                                   cont_elem_name_ = cont_elem_name)
-            endif
-!
-! --------- Index of contact element in catalog
-!
-            call jenonu(jexnom('&CATA.TE.NOMTE', cont_elem_name), cont_elem_nume)
-            call jenonu(jexnom('&CATA.TM.NOMTM', cont_geom_name), cont_geom_nume)
+            i_elem = i_elem + 1
+            call jecroc(jexnum(ligrcf//'.LIEL', i_elem))
+            call jeecra(jexnum(ligrcf//'.LIEL', i_elem), 'LONMAX', nb_cont+1)
+            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi = v_ligrcf_liel)
 !
 ! --------- Add contact element
 !
-            v_ligrcf_liel(v_cnt_cont(i_cont_type)+1) = cont_elem_nume
-            jco = 0
-            do i_cont_elem = 1, nb_cont_elem
-                if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
+            v_ligrcf_liel(nb_cont+1) = typf_cont_nume
+            jv_liel = 0
+            do i_cont_pair = 1, nb_cont_pair
+                if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typf_cont_nume) then
                     if (l_cont_cont) then
-                        i_cont_poin    = i_cont_elem
-                        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                        i_cont_poin = i_cont_pair
+                        i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        i_zone = v_sdappa_apli(3*(i_cont_elem-1)+3)
-                        l_frot = .false._1 
+                        l_frot      = .false._1 
                     endif
-                    if (.not.l_frot) then
-                        jco = jco + 1
-                        v_ligrcf_liel(jco) = -i_cont_elem
+                    if (.not. l_frot) then
+                        jv_liel                = jv_liel + 1
+                        v_ligrcf_liel(jv_liel) = -i_cont_pair
                     endif
                 endif
             end do
-            ASSERT(jco.eq.v_cnt_cont(i_cont_type))
+            ASSERT(jv_liel.eq.nb_cont)
         endif
-        if (v_cnt_frot(i_cont_type) .ne. 0) then
+        if (nb_frot .ne. 0) then
 !
 ! --------- Create new element
 !
-            ico = ico + 1
-            call jecroc(jexnum(ligrcf//'.LIEL', ico))
-            call jeecra(jexnum(ligrcf//'.LIEL', ico), 'LONMAX', v_cnt_frot( i_cont_type)+1)
-            call jeveuo(jexnum(ligrcf//'.LIEL', ico), 'E', vi = v_ligrcf_liel)
+            i_elem = i_elem + 1
+            call jecroc(jexnum(ligrcf//'.LIEL', i_elem))
+            call jeecra(jexnum(ligrcf//'.LIEL', i_elem), 'LONMAX', nb_frot+1)
+            call jeveuo(jexnum(ligrcf//'.LIEL', i_elem), 'E', vi = v_ligrcf_liel)
 !
-! --------- Current friction element
+! --------- Add friction element
 !
-            if (l_cont_cont) then
-                call mmelem_data_c(set_cont_indx_  = cont_indx     , l_axi_ = l_axi,&
-                                   cont_geom_name_ = cont_geom_name,&
-                                   frot_elem_name_ = frot_elem_name)
-            else
-                call mmelem_data_l(set_cont_indx_  = cont_indx     ,&
-                                   cont_geom_name_ = cont_geom_name,&
-                                   frot_elem_name_ = frot_elem_name)
-            endif
-!
-! --------- Index of friction element in catalog
-!
-            call jenonu(jexnom('&CATA.TE.NOMTE', frot_elem_name), frot_elem_nume)
-            call jenonu(jexnom('&CATA.TM.NOMTM', cont_geom_name), cont_geom_nume)
-!
-! --------- Add contact element
-!
-            v_ligrcf_liel(v_cnt_frot(i_cont_type)+1) = frot_elem_nume
-            jco = 0
-            do i_cont_elem = 1, nb_cont_elem
-                if (v_list_elem(2*(i_cont_elem-1)+1) .eq. cont_geom_nume) then
+            v_ligrcf_liel(nb_frot+1) = typf_frot_nume
+            jv_liel = 0
+            do i_cont_pair = 1, nb_cont_pair
+                if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typg_cont_nume) then
                     if (l_cont_cont) then
-                        i_cont_poin    = i_cont_elem
-                        i_zone         = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
-                        l_frot         = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
+                        i_cont_poin = i_cont_pair
+                        i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))
+                        l_frot      = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE', i_zone )
                     else
-                        i_zone = v_sdappa_apli(3*(i_cont_elem-1)+3)
-                        l_frot = .false._1 
+                        l_frot      = .false._1 
                     endif
                     if (l_frot) then
-                        jco = jco + 1
-                        v_ligrcf_liel(jco) = -i_cont_elem
+                        jv_liel                = jv_liel + 1
+                        v_ligrcf_liel(jv_liel) = -i_cont_pair
                     endif
                 endif
             end do
-            ASSERT(jco.eq.v_cnt_frot(i_cont_type))
+            ASSERT(jv_liel.eq.nb_frot)
         endif
     end do
-    ASSERT(ico.eq.nb_grel)
+    ASSERT(i_elem .eq. nb_grel)
 !
 ! - Initialization of LIGREL
 !
@@ -320,15 +296,16 @@ implicit none
 ! - Print
 !
     if (niv .ge. 2) then
-        call jeveuo(sdcont_tabfin, 'L', jtabf)
-        call mmimp2(ifm, mesh, ligrcf, jtabf)
+        if (l_cont_cont) then
+            call jeveuo(sdcont_tabfin, 'L', jtabf)
+            call mmimp2(ifm, mesh, ligrcf, jtabf)
+        endif
     endif
 !
 ! - Clean
 !
-    AS_DEALLOCATE(vi = v_cnt_cont)
-    AS_DEALLOCATE(vi = v_cnt_frot)
-    AS_DEALLOCATE(vi = v_list_elem)
+    AS_DEALLOCATE(vi = v_list_type)
+    AS_DEALLOCATE(vi = v_list_pair)
 !
 999 continue
 !

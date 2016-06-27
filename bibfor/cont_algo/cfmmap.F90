@@ -32,7 +32,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,14 +43,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdappa
     integer :: ifm, niv
     integer :: nb_cont_zone, nt_poin, model_ndim, nt_elem_node, nb_cont_elem, nb_cont_node
-    integer :: nb_node_mesh
+    integer :: nb_node_mesh, nb_cont_poin
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------
@@ -71,6 +71,7 @@ implicit none
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
     nb_cont_node = cfdisi(ds_contact%sdcont_defi,'NNOCO' )
     nt_poin      = cfdisi(ds_contact%sdcont_defi,'NTPT'  )
+    nb_cont_poin = cfdisi(ds_contact%sdcont_defi,'NTPC'  )
     model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM'  )
     nb_cont_elem = cfdisi(ds_contact%sdcont_defi,'NMACO' )
     nt_elem_node = cfdisi(ds_contact%sdcont_defi,'NTMANO')
@@ -90,6 +91,16 @@ implicit none
         call apcrsd_lac(ds_contact  , sdappa      , mesh,&
                         nt_poin     , nb_cont_elem, nb_cont_node,&
                         nt_elem_node, nb_node_mesh)
+    else
+        ASSERT(.false.)
+    endif
+!
+! - Number of contact pairs
+!
+    if (l_cont_cont .or. l_cont_disc) then
+        ds_contact%nb_cont_pair = nb_cont_poin
+    elseif (l_cont_lac) then
+        ds_contact%nb_cont_pair = 0
     else
         ASSERT(.false.)
     endif

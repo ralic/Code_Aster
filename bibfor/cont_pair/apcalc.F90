@@ -28,7 +28,7 @@ implicit none
 !
     character(len=6), intent(in) :: pair_category
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,7 +40,7 @@ implicit none
 !
 ! In  pair_category    : type of pairing Segment_To_Segment or Node_To_Segment
 ! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -36,7 +36,7 @@ implicit none
     integer, intent(in) :: iter_newt
     character(len=8), intent(in) :: mesh
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: disp_curr
     real(kind=8), intent(in) :: time_curr
 !
@@ -51,7 +51,7 @@ implicit none
 ! In  iter_newt        : index of current Newton iteration
 ! In  mesh             : name of mesh
 ! IO  ds_measure       : datastructure for measure and statistics management
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  disp_curr        : current displacements
 ! In  time_curr        : current time
 !

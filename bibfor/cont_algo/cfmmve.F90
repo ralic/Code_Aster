@@ -38,7 +38,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19), intent(in) :: hval_incr(*)
     real(kind=8), intent(in) :: time_curr
 !
@@ -51,7 +51,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  time_curr        : current time
 !

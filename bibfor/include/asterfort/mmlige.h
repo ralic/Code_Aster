@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,17 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmlige(mesh      , ds_contact, v_list_elem, nb_cont_type, v_cnt_cont,&
-                      v_cnt_frot, nt_node   , nb_grel    , nb_cont_elem)
+    subroutine mmlige(mesh        , ds_contact, &
+                      nb_cont_pair, v_list_pair,&
+                      nb_type     , v_list_type,&
+                      nt_node     , nb_grel    )
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(out), pointer :: v_list_elem(:)
-        integer, intent(out) :: nb_cont_type
-        integer, intent(out), pointer :: v_cnt_cont(:)
-        integer, intent(out), pointer :: v_cnt_frot(:)
+        integer, intent(out) :: nb_cont_pair
+        integer, intent(out), pointer :: v_list_pair(:)
+        integer, intent(out) :: nb_type
+        integer, intent(out), pointer :: v_list_type(:)
         integer, intent(out) :: nt_node
         integer, intent(out) :: nb_grel
-        integer, intent(out) :: nb_cont_elem
     end subroutine mmlige
 end interface

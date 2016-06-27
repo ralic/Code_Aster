@@ -22,7 +22,7 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=*), intent(in) :: model_
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: hval_algo(*)

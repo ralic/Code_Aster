@@ -299,6 +299,8 @@ implicit none
         aster_logical     :: l_pair
 ! ----- Total number of patches (for LAC method)
         integer           :: nt_patch
+! ----- Total number of contact pairs
+        integer           :: nb_cont_pair
     end type NL_DS_Contact
 !
 ! - Type: timer management

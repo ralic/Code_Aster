@@ -140,4 +140,8 @@ implicit none
 !
     ds_contact%nt_patch     = 0
 !
+! - Total number of contact pairs
+!
+    ds_contact%nb_cont_pair = 0
+!
 end subroutine

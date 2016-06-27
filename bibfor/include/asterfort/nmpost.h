@@ -35,7 +35,7 @@ interface
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)

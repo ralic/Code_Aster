@@ -24,7 +24,7 @@ interface
         integer, intent(in) :: iter_newt
         character(len=8), intent(in) :: mesh
         type(NL_DS_Measure), intent(inout) :: ds_measure
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19), intent(in) :: disp_curr
         real(kind=8), intent(in) :: time_curr
     end subroutine cfgeom

@@ -42,7 +42,7 @@ implicit none
     character(len=24), intent(in) :: nume_dof
     integer, intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +57,7 @@ implicit none
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! In  list_func_acti   : list of active functionnalities
 ! In  sddyna           : name of dynamic solving datastructure
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !

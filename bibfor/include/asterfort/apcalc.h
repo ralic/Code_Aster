@@ -20,6 +20,6 @@ interface
         use NonLin_Datastructure_type        
         character(len=6), intent(in) :: pair_category
         character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine apcalc
 end interface

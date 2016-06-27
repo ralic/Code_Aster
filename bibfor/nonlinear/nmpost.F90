@@ -49,7 +49,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: meelem(*)
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=19) :: lischa
     character(len=19) :: sddisc, sddyna, sdpost
@@ -81,7 +81,7 @@ implicit none
 ! IN  COMPOR : COMPORTEMENT
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
-! In  ds_contact       : datastructure for contact management
+! IO  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_energy        : datastructure for energy management
@@ -167,7 +167,7 @@ implicit none
                     comref, veelem, ds_inout)
     endif
 !
-! - Post-treatment for behavior laws
+! - Post-treatment for behavior laws.
 !
     if (l_post_incr) then
         call nmrest_ecro(modele, mate, compor, valinc, carcri)
