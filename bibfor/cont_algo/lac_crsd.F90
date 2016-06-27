@@ -10,8 +10,8 @@ implicit none
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/assert.h"
-!#include "asterfort/apcinv.h"
-!#include "asterfort/gtlima.h"
+#include "asterfort/apcinv.h"
+#include "asterfort/gtlima.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
@@ -49,11 +49,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_zone, nb_cont_zone, nb_elem_mast, nb_elem_slav
-    integer :: jv_elem_mast, jv_elem_slav
+    integer :: i_zone, nb_cont_zone
     character(len=19) :: sdappa
-    character(len=24) :: list_elem_mast, list_elem_slav, pair_method
-    character(len=24) :: elem_slav_neigh, elem_mast_neigh 
+    character(len=24) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,12 +75,12 @@ implicit none
 !
 ! ----- Create list of elements for current contact zone
 !
-!        call gtlima(sdappa, ds_contact%sdcont_defi, i_zone)
+        call gtlima(sdappa, ds_contact%sdcont_defi, i_zone)
 !
 ! ----- Create objects for inverse connectivity
 !
         if (pair_method(1:4).eq.'PANG') then
-!            call apcinv(mesh, sdappa, i_zone)
+            call apcinv(mesh, sdappa, i_zone)
         endif
     end do
 !

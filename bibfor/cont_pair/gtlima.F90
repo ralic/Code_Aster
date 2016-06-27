@@ -1,5 +1,14 @@
-subroutine gtlima(defico, izone, nbmma, nbmes, limama, limaes)
-   
+subroutine gtlima(sdappa, sdcont_defi, i_zone)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/cfnbsf.h"
+#include "asterfort/cfnumm.h"
+#include "asterfort/cfzone.h"
+#include "asterfort/codent.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,60 +26,69 @@ subroutine gtlima(defico, izone, nbmma, nbmes, limama, limaes)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/wkvect.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jedema.h"
-#include "asterfort/cfzone.h"
-#include "asterfort/cfnbsf.h"
-#include "asterfort/cfnumm.h"
 !
-    integer :: nbmes, nbmma
-    integer :: izone
-    character(len=24) :: limama, limaes, defico
-! ----------------------------------------------------------------------
-!     RECUPERATION DES LISTES DE MAILLE ASSOCI A UNE ZONE DE CONTACT
-! ----------------------------------------------------------------------
-!   IN        MAIL       MAILLAGE
-!   IN        DEFICO     SD DEFINITION CONTACT
-!   IN        IZONE      NUMERO ZONE DE CONTACT
-!   OUT       NBMES      NOMBRE DE MAILLES ESCLAVES
-!   OUT       NBMMA      NOMBRE DE MAILLES MAITRES   
-!   OUT       LIMAMA     LISTE DES MAILLES MAITRES
-!   OUT       LIMAES     LISTE DES MAILLES ESCLAVES      
-! ----------------------------------------------------------------------
+    character(len=19), intent(in) :: sdappa
+    character(len=24), intent(in) :: sdcont_defi
+    integer, intent(in) :: i_zone  
 !
-    integer :: nsurfe, nsurfm, jcmmal, jcmesl
-    integer :: jcmama, jcmaes, jmaco 
-    integer :: ind
-    character(len=24) :: contma
-
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-! --- Recuperation des numeros de surface locaux (DEFICO) --------------    
+! Contact - Pairing segment to segment
 !
-    call cfzone(defico, izone, 'MAIT', nsurfm)
-    call cfzone(defico, izone, 'ESCL', nsurfe)
-! --- liste maille locale ----------------------------------------------
+! Create list of elements for current contact zone
 !
-    call cfnbsf(defico, nsurfm, 'MAIL', nbmma, jcmmal)
-    call cfnbsf(defico, nsurfe, 'MAIL', nbmes, jcmesl)
-! --- Liste maille numerotation globale --------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    call wkvect(limama, 'V V I', nbmma, jcmama)
-    call wkvect(limaes, 'V V I', nbmes, jcmaes)
-    contma = defico(1:16)//'.MAILCO'
-    call jeveuo(contma, 'L', jmaco)
-    do ind=1, nbmma
-        zi(jcmama+ind-1) = zi(jmaco+jcmmal+ind-1)
+! In  sdappa           : name of pairing datastructure
+! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  i_zone           : index of contact zone
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: knuzo
+    integer :: jcmmal, jcmesl
+    integer :: i_elem, i_surf_mast, i_surf_slav
+    integer :: nb_elem_mast, nb_elem_slav
+    character(len=24) :: sdappa_mast, sdappa_slav 
+    character(len=24) :: sdcont_mailco
+    integer, pointer  :: v_sdcont_mailco(:) => null()
+    integer, pointer  :: v_list_mast(:) => null()
+    integer, pointer  :: v_list_slav(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! - Generate name of objects
+!
+    ASSERT(i_zone .le. 9)
+    call codent(i_zone, 'G', knuzo)
+    sdappa_mast = sdappa(1:19)//'.MAS'//knuzo(1:1)
+    sdappa_slav = sdappa(1:19)//'.ESC'//knuzo(1:1)
+!
+! - Access to contact datastructures
+!
+    sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+!
+! - Access to current contact zone
+!
+    call cfzone(sdcont_defi, i_zone, 'MAIT', i_surf_mast)
+    call cfzone(sdcont_defi, i_zone, 'ESCL', i_surf_slav)
+    call cfnbsf(sdcont_defi, i_surf_mast, 'MAIL', nb_elem_mast, jcmmal)
+    call cfnbsf(sdcont_defi, i_surf_slav, 'MAIL', nb_elem_slav, jcmesl)
+!
+! - Create objects
+!
+    call wkvect(sdappa_mast, 'V V I', nb_elem_mast, vi = v_list_mast)
+    call wkvect(sdappa_slav, 'V V I', nb_elem_slav, vi = v_list_slav)
+!
+! - Fill objects
+!
+    do i_elem = 1, nb_elem_mast
+        v_list_mast(i_elem) = v_sdcont_mailco(jcmmal+i_elem)
     end do
-    do ind=1, nbmes    
-        zi(jcmaes+ind-1) = zi(jmaco+jcmesl+ind-1)
+    do i_elem = 1, nb_elem_slav    
+        v_list_slav(i_elem) = v_sdcont_mailco(jcmesl+i_elem)
     end do
 !
-    call jedema()
-end subroutine    
-    
+end subroutine

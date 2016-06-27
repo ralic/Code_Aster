@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dctest(typma, lissma, nbnsma, nbssma,typesm)
-!
-        character(len=8), intent(in) :: typma
-        integer, intent(out) :: lissma(8,4)
-        integer, intent(out) :: nbnsma(8)
-        integer, intent(out) :: nbssma
-        character(len=8), intent(out) :: typesm
-!        
+    subroutine dctest(elem_code, elin_sub, elin_nbnode, elin_nbsub, elin_code)
+        character(len=8), intent(in) :: elem_code
+        integer, intent(out) :: elin_sub(8,4)
+        integer, intent(out) :: elin_nbnode(8)
+        integer, intent(out) :: elin_nbsub
+        character(len=8),intent(out) :: elin_code    
     end subroutine dctest
 end interface

@@ -11,7 +11,7 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
 #include "asterfort/mmtang.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -146,15 +146,17 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
 !
 ! - Local curvatures
 !
-    do idim = 1, nb_dim
-        do ino = 1, nb_node
-            par11(idim) = elem_coor(3*(ino-1)+idim)*ddff(1,ino) + par11(idim)
-            if (nb_dim .eq. 3) then
-                par22(idim) = elem_coor(3*(ino-1)+idim)*ddff(2,ino) + par22(idim)
-                par12(idim) = elem_coor(3*(ino-1)+idim)*ddff(3,ino) + par12(idim)
-            endif
+    if(type_elem.ne.'QU4' .and. type_elem.ne.'QU8') then
+        do idim = 1, nb_dim
+            do ino = 1, nb_node
+                par11(idim) = elem_coor(3*(ino-1)+idim)*ddff(1,ino) + par11(idim)
+                if (nb_dim .eq. 3) then
+                    par22(idim) = elem_coor(3*(ino-1)+idim)*ddff(2,ino) + par22(idim)
+                    par12(idim) = elem_coor(3*(ino-1)+idim)*ddff(3,ino) + par12(idim)
+                endif
+            end do
         end do
-    end do
+    endif
 !
 ! - Tangent matrix (Newton)
 !

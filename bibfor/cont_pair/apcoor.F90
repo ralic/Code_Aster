@@ -1,6 +1,13 @@
-subroutine apcoor(mail, jcoor, jtypma, numa, coorma,&
-                  nbma, typma, ndim  )
-   
+subroutine apcoor(mesh       , jv_geom  , elem_type, elem_nume, elem_coor,&
+                  elem_nbnode, elem_code, elem_dime)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,77 +25,90 @@ subroutine apcoor(mail, jcoor, jtypma, numa, coorma,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 !
-    integer, intent(in) :: numa
-    integer, intent(out) :: nbma
-    integer, intent(in) :: jcoor
-    integer, intent(in) :: jtypma
-    character(len=8), intent(in) :: mail
-    character(len=8), intent(out) :: typma
-    real(kind=8), intent(out) :: coorma(27)
-    integer, intent(out) :: ndim
-! ----------------------------------------------------------------------
-!     Récuparation des coordonnées actualisées d'une maille à partir
-!     de son numero (Traitement du contact)  
-! ----------------------------------------------------------------------
-! 
-!    
-! ----------------------------------------------------------------------
+    character(len=8), intent(in) :: mesh
+    integer, intent(in) :: jv_geom
+    character(len=8), intent(in) :: elem_type
+    integer, intent(in) :: elem_nume
+    real(kind=8), intent(out) :: elem_coor(27)
+    integer, intent(out) :: elem_nbnode
+    character(len=8), intent(out) :: elem_code
+    integer, intent(out) :: elem_dime
 !
-    integer ::jmaco, ndco
-    integer ::ind1,ind2
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-   
-
-    coorma(1:27)=0.d0
-    call jeveuo(jexnum(mail//'.CONNEX',numa),'L',jmaco)
-! --- CAS 2D
-    if (zi(jtypma+numa-1) .eq. 2) then
-        typma = 'SE2'
-        nbma = 2
-        ndim = 2  
-    elseif (zi(jtypma+numa-1) .eq. 4) then
-        typma = 'SE3'
-        nbma = 3
-        ndim = 2      
-! --- CAS 3D
-    elseif (zi(jtypma+numa-1).eq. 7) then
-        typma = 'TR3'
-        nbma = 3
-        ndim = 3
-    elseif (zi(jtypma+numa-1).eq. 9) then
-        typma = 'TR6'
-        nbma = 6
-        ndim = 3
-    elseif (zi(jtypma+numa-1).eq. 12) then
-        typma = 'QU4'
-        nbma = 4
-        ndim = 3
-    elseif (zi(jtypma+numa-1).eq. 14) then
-        typma = 'QU8'
-        nbma = 8
-        ndim = 3  
-    elseif (zi(jtypma+numa-1).eq. 16) then
-        typma = 'QU9'
-        nbma = 9
-        ndim = 3
-    else
-        ASSERT(.false.)
-    endif
-! --- Recopie ---------------------------------------------------------
-    do ind1=1, nbma
-        ndco=zi(jmaco+ind1-1)
-        do ind2=1,ndim
-            coorma((ind1-1)*3+ind2) = zr(jcoor+(ndco-1)*3+ind2-1)
+! Contact - Pairing segment to segment
+!
+! Get informations about element
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  mesh             : name of mesh
+! In  jv_geom          : JEVEUX adress to updated geometry
+! In  elem_type        : geometric type of element
+! In  elem_nume        : index in mesh datastructure of current element
+! Out elem_coor        : coordinates of nodes for current element
+! Out elem_nbnode      : number of node for current element
+! Out elem_code        : code of current element
+! Out elem_dime        : dimension of current element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: node_nume
+    integer :: i_node, i_dime
+    integer, pointer :: v_mesh_connex(:) => null()
+    aster_logical:: debug
+!
+! --------------------------------------------------------------------------------------------------
+!
+    debug=.false.
+    elem_coor(1:27) = 0.d0
+    call jeveuo(jexnum(mesh//'.CONNEX',elem_nume),'L', vi = v_mesh_connex)
+!
+    select case (elem_type)
+        case('SEG2')
+            elem_code   = 'SE2'
+            elem_nbnode = 2
+            elem_dime   = 2
+        case('SEG3')
+            elem_code   = 'SE3'
+            elem_nbnode = 3
+            elem_dime   = 2
+        case('TRIA3')
+            elem_code   = 'TR3'
+            elem_nbnode = 3
+            elem_dime   = 3
+        case('TRIA6')
+            elem_code   = 'TR6'
+            elem_nbnode = 6
+            elem_dime   = 3
+        case('QUAD4')
+            elem_code   = 'QU4'
+            elem_nbnode = 4
+            elem_dime   = 3
+        case('QUAD8')
+            elem_code   = 'QU8'
+            elem_nbnode = 8
+            elem_dime   = 3
+        case('QUAD9')
+            elem_code   = 'QU9'
+            elem_nbnode = 9
+            elem_dime   = 3
+        case default
+            ASSERT(.false.)
+    end select
+!
+    do i_node = 1, elem_nbnode
+        node_nume = v_mesh_connex(i_node)
+        if (debug) then
+            write(*,*)"noeud", node_nume
+        end if
+        do i_dime = 1, elem_dime
+            elem_coor(3*(i_node-1)+i_dime) = zr(jv_geom+3*(node_nume-1)+i_dime-1)
+            if (debug) then
+                write(*,*) i_dime, elem_coor(3*(i_node-1)+i_dime)
+            endif
         end do
     end do
-    
+!
 end subroutine

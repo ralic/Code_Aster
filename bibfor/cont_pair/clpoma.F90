@@ -1,5 +1,12 @@
-subroutine clpoma(ndim  ,typma , coorma, nbnd  , poidma)
-   
+subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
+!
+implicit none
+!
+#include "asterfort/elraga.h"
+#include "asterfort/subaco.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/sumetr.h"
+#include "asterfort/assert.h" 
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,84 +24,92 @@ subroutine clpoma(ndim  ,typma , coorma, nbnd  , poidma)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterfort/elraga.h"
-#include "asterfort/subaco.h"
-#include "asterfort/mmdonf.h"
-#include "asterfort/sumetr.h"
-#include "asterfort/assert.h"
-
-    integer, intent(in) :: ndim
-    character(len=8), intent(in) :: typma
-    integer, intent(in) :: nbnd
-    real(kind=8), intent(in) :: coorma(3,nbnd)
-    real(kind=8), intent(out) :: poidma
-
-! ======================================================================
 !
-!   ROUTINE UTILITAIRE CALCUL DU POIDS D'UNE MAILLE DONNEE
+    integer, intent(in) :: elem_dime
+    character(len=8), intent(in) :: elem_code
+    real(kind=8), intent(in) :: elem_coor(3,9)
+    integer, intent(in) :: elem_nbnode
+    real(kind=8), intent(out) :: elem_weight
 !
-! ======================================================================
-
-    integer :: iptga, nbptga, ino
-    character(len=8) :: fpg
-    real(kind=8) :: poipg(12), coopg(12*2) 
+! --------------------------------------------------------------------------------------------------
+!
+! Contact - Pairing segment to segment
+!
+! Compute weight of element
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  elem_dime        : dimension of current element
+! In  elem_code        : code of current element
+! In  elem_coor        : coordinates of nodes for current element
+! In  elem_nbnode      : number of node for current element
+! Out elem_weight      : weight of current element
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i_gauss, nb_gauss, ino
+    character(len=8) :: gauss_family
+    real(kind=8) :: gauss_weight(12), gauss_coor(12*2) 
     real(kind=8) :: dff(2, 9), dxdk, dydk, dzdk
     real(kind=8) :: coptg1, coptg2
     real(kind=8) :: cova(3, 3), metr(2, 2), jacobi
 !
-! --- INITIALISATION 
-    poidma=0
-
-! --- SCHEMA D'INTEGRATION
-    if (typma.eq. 'SE2') then
-        fpg='FPG3'
-    elseif (typma.eq. 'SE3') then
-        fpg='FPG3'
-    elseif (typma.eq. 'TR3') then
-        fpg='FPG3'
-    elseif (typma.eq. 'TR6') then
-        fpg='FPG6'
-    elseif (typma.eq. 'QU4') then 
-        fpg='FPG9'  
-    elseif (typma.eq. 'QU8') then 
-        fpg='FPG9'  
-    elseif (typma.eq. 'QU9') then 
-        fpg='FPG9'
+! --------------------------------------------------------------------------------------------------
+!
+    elem_weight = 0.d0
+!
+! - Select integration scheme
+!
+    if (elem_code.eq. 'SE2') then
+        gauss_family = 'FPG3'
+    elseif (elem_code.eq. 'SE3') then
+        gauss_family = 'FPG3'
+    elseif (elem_code.eq. 'TR3') then
+        gauss_family = 'FPG3'
+    elseif (elem_code.eq. 'TR6') then
+        gauss_family = 'FPG6'
+    elseif (elem_code.eq. 'QU4') then 
+        gauss_family = 'FPG9'  
+    elseif (elem_code.eq. 'QU8') then 
+        gauss_family = 'FPG9'  
+    elseif (elem_code.eq. 'QU9') then 
+        gauss_family = 'FPG9'
     else
         ASSERT(.false.)
     end if
-    call elraga(typma, fpg, ndim-1, nbptga, coopg,&
-                  poipg)
-! --- BOUCLE SUR LES POINTS DE GAUSS
-
-    do iptga=1, nbptga
-! ------ INITIALISATION
-        jacobi=0.d0
-        coptg1=coopg((ndim-1)*(iptga-1)+1)
-        coptg2=coopg((ndim-1)*(iptga-1)+2)
-! ------ JACOBIENNE AU POINT DE GAUSS  COURANT
-        call mmdonf(ndim, nbnd, typma, coptg1, coptg2,&
+!
+! - Get integration scheme
+!
+    call elraga(elem_code   , gauss_family, elem_dime-1, nb_gauss, gauss_coor,&
+                gauss_weight)
+!
+! - Loop on integration points
+!
+    do i_gauss = 1, nb_gauss
+        jacobi = 0.d0
+        coptg1 = gauss_coor((elem_dime-1)*(i_gauss-1)+1)
+        coptg2 = gauss_coor((elem_dime-1)*(i_gauss-1)+2)
+        call mmdonf(elem_dime, elem_nbnode, elem_code, coptg1, coptg2,&
                     dff)
-        if ((ndim-1) .eq. 2) then
-            call subaco(nbnd, dff, coorma, cova)
+        if ((elem_dime-1) .eq. 2) then
+            call subaco(elem_nbnode, dff, elem_coor, cova)
             call sumetr(cova, metr, jacobi)
-        else if ((ndim-1) .eq. 1) then
+        else if ((elem_dime-1) .eq. 1) then
             dxdk=0.d0
             dydk=0.d0
             dzdk=0.d0
-            do ino = 1, nbnd
-                dxdk = dxdk + coorma(1,ino)*dff(1,ino)
-                dydk = dydk + coorma(2,ino)*dff(1,ino)
-                if (ndim .eq. 3) then
-                    dzdk = dzdk + coorma(3,ino)*dff(1,ino)
+            do ino = 1, elem_nbnode
+                dxdk = dxdk + elem_coor(1,ino)*dff(1,ino)
+                dydk = dydk + elem_coor(2,ino)*dff(1,ino)
+                if (elem_dime .eq. 3) then
+                    dzdk = dzdk + elem_coor(3,ino)*dff(1,ino)
                 end if
             end do
-!       JACOBIEN 1D == DERIVEE DE L'ABSCISSE CURVILIGNE
             jacobi = sqrt(dxdk**2+dydk**2+dzdk**2)
+        else
+            ASSERT(.false.)
         end if
-! ------ CONTRIBUTION
-        poidma=poidma+poipg(iptga)*jacobi
+        elem_weight = elem_weight+gauss_weight(i_gauss)*jacobi
     end do
-
+!
 end subroutine

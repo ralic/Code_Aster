@@ -1,6 +1,10 @@
-subroutine insema(coorma,nbnma,xp1,yp1,xp2,&
-                  yp2,corres,nbpint,tole, itvois)
-   
+subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
+                  xp1         , yp1      , xp2       , yp2      ,&
+                  nb_poin_inte, poin_inte, inte_neigh)
+!
+implicit none
+!
+#include "asterfort/assert.h"  
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,89 +24,98 @@ subroutine insema(coorma,nbnma,xp1,yp1,xp2,&
 ! ======================================================================
 ! aslint: disable=W1306
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
+    integer, intent(in) :: elem_nbnode
+    integer, intent(in) :: elem_dime
+    real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
+    real(kind=8) :: pair_tole
+    real(kind=8), intent(in) :: xp1
+    real(kind=8), intent(in) :: yp1
+    real(kind=8), intent(in) :: xp2
+    real(kind=8), intent(in) :: yp2
+    integer, intent(inout) :: nb_poin_inte
+    real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+    integer, intent(inout) :: inte_neigh(4)
 !
-    integer :: nbnma, nbpint, itvois(4)
-    real(kind=8) :: coorma(2,nbnma), xp1, yp1, xp2, yp2 
-    real(kind=8) :: corres(3,3), tole
-! ----------------------------------------------------------------------
-!         TEST D'INTERSECTION ENTRE UN SEGMENT et UNE MAILLE
-! ----------------------------------------------------------------------
-! IN         COORMA     COORDONNÉE DES POINT DE LA MAILLE
-! IN         NBNMA       NOMBRE DE POINT CONSTITUANT LA MAILLE
-! IN         XP1         ABSCISSE DU POINT 1 TESTER 
-! IN         YP1         ORDONNEE DU POINT 1 TESTER
-! IN         XP2         ABSCISSE DU POINT 2 TESTER 
-! IN         YP2         ORDONNEE DU POINT 2 TESTER
-! OUT        CORRES      COORDONNEE DU/DES POINTS D'INTERSECTION
-! OUT        NBPINT      NOMBRE DE POINTS D'INTERSECTION
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Contact - Pairing segment to segment
+!
+! Compute intersection between segment and element
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  elem_dime        : dimension of elements
+! In  elem_nbnode      : number of nodes of element
+! In  elem_coor        : coordinates of nodes for current element
+! In  pair_tole        : tolerance for pairing
+! In  xp1              : coordinate (xp1,yp1) - (xp2,yp2) of segment
+! In  yp1              : coordinate (xp1,yp1) - (xp2,yp2) of segment
+! In  xp2              : coordinate (xp1,yp1) - (xp2,yp2) of segment
+! In  yp2              : coordinate (xp1,yp1) - (xp2,yp2) of segment
+! IO  nb_poin_inte     : number of intersection points
+! IO  poin_inte        : list of intersection points
+! IO  inte_neigh       : activation of neighbours of intersection
+!
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: a, b, c, d, x1, y1, x2, y2
     real(kind=8) :: t1, t2, det, norm, aux(2)
-    integer :: k, indsu(nbnma)
+    integer :: i_node, list_node_next(elem_nbnode)
 !
+! --------------------------------------------------------------------------------------------------
 !
-! --- Initialisation
+    ASSERT(elem_nbnode .le. 4)
 !
-    nbpint=0
+! - Initialization of parametric equation of segment
 !
-! --- Equation paramétrique du segment----------------------------------
-! 
-    x1=xp1
-    y1=yp1
+    x1 = xp1
+    y1 = yp1
+    a  = xp2-xp1
+    b  = yp2-yp1
 !
-    a=xp2-xp1
-    b=yp2-yp1
+! - Set index of next nodes
 !
-! --- Vecteur indice suivant
-!
-    do k=2, nbnma
-        indsu(k-1)=k
+    do i_node=2, elem_nbnode
+        list_node_next(i_node-1) = i_node
     end do
-    indsu(nbnma)=1
-
+    list_node_next(elem_nbnode) = 1   
 !
-! --- Boucle sur les arêtes de la maille -------------------------------
-!     
-    do k=1, nbnma
-! ------- Equation paramétrique du segment courant de la maille --------
-
-! 
-        x2=coorma(1,k)
-        y2=coorma(2,k)
+! - Loop on edges of element
 !
-        c=coorma(1,indsu(k))-coorma(1,k)
-        d=coorma(2,indsu(k))-coorma(2,k)     
-! ------- Résolution de l'intersection si les droites sont sécantes ----
-        
+    do i_node = 1, elem_nbnode
+!
+! ----- Parametric equation of segment
+!
+        x2 = elem_coor(1,i_node)
+        y2 = elem_coor(2,i_node)
+        c  = elem_coor(1,list_node_next(i_node))-elem_coor(1,i_node)
+        d  = elem_coor(2,list_node_next(i_node))-elem_coor(2,i_node)
+!
+! ----- Compute intersection
+!
         det=b*c-a*d
-        if (sqrt(det**2).gt. tole) then
-            t1=1/det*(d*(x1-x2)-c*(y1-y2))
-            t2=1/det*(b*(x1-x2)-a*(y1-y2)) 
-            aux(1)=(-t1*a-t2*c)-(x1-x2)
-            aux(2)=( t1*b+t2*d)-(y1-y2)
-            norm=sqrt(aux(1)**2+aux(2)**2)
+        if (sqrt(det**2) .gt. pair_tole) then
+            t1     = 1/det*(d*(x1-x2)-c*(y1-y2))
+            t2     = 1/det*(b*(x1-x2)-a*(y1-y2)) 
+            aux(1) = (-t1*a-t2*c)-(x1-x2)
+            aux(2) = ( t1*b+t2*d)-(y1-y2)
+            norm   = sqrt(aux(1)**2+aux(2)**2)
         else
-            t1=-1.d0
-            t2=-1.d0    
+            t1     = -1.d0
+            t2     = -1.d0    
         endif
-       
-! ------- Test sur l'intersection
-        if (t1.lt. 1.d0+tole .and. t1.gt. 0.d0-tole .and. t2.lt. 1.d0+tole .and.&
-            t2.gt. 0.d0-tole) then
-            nbpint=nbpint+1
-            !write(*,*)nbpint
-            !write(*,*)     t2*c+x2, t2*d+y2
-            ASSERT(nbpint.le.4)
-! ------- On recopie le point d'intersection 
-            corres(1,nbpint)=(t2*c+x2+t1*a+x1)/2.d0
-            corres(2,nbpint)=(t2*d+y2+t1*b+y1)/2.d0
-! ------- On renseigne le test d'intersection avec voisin
-            itvois(k)=1
+!
+! ----- Test intersection
+!
+        if (t1.lt. 1.d0+pair_tole .and.&
+            t1.gt. 0.d0-pair_tole .and.&
+            t2.lt. 1.d0+pair_tole .and.&
+            t2.gt. 0.d0-pair_tole) then
+            nb_poin_inte = nb_poin_inte+1
+            ASSERT(nb_poin_inte.le.16)
+            poin_inte(1,nb_poin_inte) = (t2*c+x2+t1*a+x1)/2.d0
+            poin_inte(2,nb_poin_inte) = (t2*d+y2+t1*b+y1)/2.d0
+            inte_neigh(i_node)        = 1
         endif
     end do
 end subroutine
-

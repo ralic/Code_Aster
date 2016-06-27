@@ -16,14 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcptga(ndim,cortri,fpgcal ,nbptga,cpga,&
-                      pdga)
-    
-        integer, intent(in) ::ndim
-        real(kind=8), intent(in) :: cortri(2,3)
-        character(len=8) :: fpgcal
-        integer, intent(out) :: nbptga
-        real(kind=8), intent(out) :: cpga(2,12)
-        real(kind=8), intent(out) :: pdga(12) 
+    subroutine lcptga(elem_dime, tria_coor , gauss_family,&
+                      nb_gauss , gauss_coor, gauss_weight)
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: tria_coor(2,3)
+        character(len=8) :: gauss_family
+        integer, intent(out) :: nb_gauss
+        real(kind=8), intent(out) :: gauss_coor(2,12)
+        real(kind=8), intent(out) :: gauss_weight(12)
     end subroutine lcptga
 end interface

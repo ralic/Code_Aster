@@ -15,16 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
 !
 interface
-    subroutine apalac(lnewtg, mail, defico, resoco, tole, loptin)
-!
-        aster_logical :: lnewtg
-        character(len=8) :: mail
-        character(len=24) :: defico
-        character(len=24) :: resoco 
-        real(kind=8) :: tole
-        aster_logical :: loptin
+    subroutine apalac(mesh, newgeo, ds_contact, sdappa)
+        use NonLin_Datastructure_type
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: newgeo
+        type(NL_DS_Contact), intent(in) :: ds_contact
+        character(len=19), intent(in) :: sdappa
     end subroutine apalac
 end interface

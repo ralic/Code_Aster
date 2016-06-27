@@ -4,7 +4,7 @@ use NonLin_Datastructure_type
 !
 implicit none
 !
-!#include "asterfort/apalac.h"
+#include "asterfort/apalac.h"
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
@@ -42,7 +42,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: newgeo
+    character(len=19) :: newgeo, sdappa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,8 +55,12 @@ implicit none
 !
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
+! - Get pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
 ! - Pairing
 !
-!    call apalac(mesh, ds_contact, newgeo)
+    call apalac(mesh, newgeo, ds_contact, sdappa)
 !
 end subroutine

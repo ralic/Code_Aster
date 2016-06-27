@@ -1,6 +1,30 @@
-subroutine aplcfb(mail, lima, nbmma, lies, nbmes, resoco,&
-                  izone, lnewtg, tole, nbmact, vectap)
-   
+subroutine aplcfb(mesh        , newgeo        , sdappa      , i_zone        , pair_tole,&
+                  nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, &
+                  nb_pair_zone, list_pair_zone)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/apcoor.h"
+#include "asterfort/prjint.h"
+#include "asterfort/gapint.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/clpoma.h"
+#include "asterfort/assert.h"
+#include "asterfort/apdcma.h"
+#include "asterfort/aprtpe.h"
+#include "asterfort/apsave_pair.h"
+#include "asterfort/apsave_patch.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,232 +44,242 @@ subroutine aplcfb(mail, lima, nbmma, lies, nbmes, resoco,&
 ! ======================================================================
 ! aslint: disable=W1306
 !
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8nnem.h"
-#include "asterfort/jecrec.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeecra.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/apcoor.h"
-#include "asterfort/prjint.h"
-#include "asterfort/gapint.h"
-#include "asterfort/jecroc.h"
-#include "asterfort/clpoma.h"
-#include "asterfort/assert.h"
-#include "asterfort/apdcma.h"
-#include "asterfort/aprtpe.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "asterf_types.h"
-
+    character(len=8), intent(in) :: mesh
+    character(len=19), intent(in) :: newgeo
+    character(len=19), intent(in) :: sdappa
+    integer, intent(in) :: i_zone
+    real(kind=8), intent(in) :: pair_tole
+    integer, intent(in) :: nb_elem_mast
+    integer, intent(in) :: list_elem_mast(nb_elem_mast)
+    integer, intent(in) :: nb_elem_slav
+    integer, intent(in) :: list_elem_slav(nb_elem_slav)
+    integer, intent(inout) :: nb_pair_zone
+    integer, pointer, intent(inout) :: list_pair_zone(:)
 !
-    integer :: nbmes, nbmma, lima(nbmma), lies(nbmes), nbmact, izone
-    character(len=8) :: mail
-    character(len=24) :: resoco
-    real(kind=8) :: tole
-    aster_logical :: lnewtg
-    integer, pointer :: vectap(:)
-! ----------------------------------------------------------------------
-!     ROUTINE APPARIEMENT MAITRE-ESCLAVE LAC
-! ----------------------------------------------------------------------
-!   IN        LIMA       LISTE DES MAILLES MAITRES
-!   IN        NBMMA      NOMBRE DE MAILLES MAITRES
-!   IN        LIES       LISTE DES MAILLES ESCLAVES
-!   IN        NBMES      NOMBRE DE MAILLES ESCLAVES
-!   IN        RESOCO     SD RESOLUTION DU CONTACT
-!   IN        IZONE      ZONE DE CONTACT
-!   IN        LNEWTG     LOGICAL FORMULATION NEWTON GENERALISE
-!   IN        TOLE       TOLE APPARIEMENT   
-!   OUT       VECTAP     VECTEUR APPARIEMENT 
-!   OUT       NBMACT     NOMBRE DE MAILLES DE CONTACT      
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer ::tmp(nbmma), nbaptp, nbnes, nbnma, numaco, nuesco, ndim, idim
-    integer :: nbpint, jgpint, jpatch, jcoein, jcmapa
-    integer :: ind1, ind2, ind3, ind4, ind5, nupatch, idrfpa, nbpatch, idpatc
-    character(len=8) :: typma, types
-    character(len=24) ::  gpint, coeint
-    real(kind=8) :: poids, gpin, pmi(nbmes), pmt(nbmes), poidin, aux, crsses(27)
-    real(kind=8) :: crssma(27), poitt, corint(32), corinp(32), comama(27) , comaes(27)
-    integer :: nbssma, lissma(8,4), nbnsma(8),inut(4)
-    integer :: nbsses, lisses(8,4), nbnses(8)
-    character(len=8) :: tpssma, tpsses 
-    integer :: jtypma, jcoor
-    character(len=19) ::newgeo
-    integer, pointer :: vectmp(:) => null()     
-! -----------------------------------------------------------------------------------------------
+! Contact - Pairing segment to segment
 !
-    call jemarq()
-! 
-! --- INITIALISATION ----------------------------------------------------------------------------
+! Pairing by "brute" force
 !
-
-    gpint=resoco(1:14)//'.GAPINT'
-    coeint=resoco(1:14)//'.COEINT'
-    inut(1:4)=0
-    pmi(1:nbmes)=0.d0
-    pmt(1:nbmes)=0.d0
-    call jeveuo(gpint,'E',jgpint)
-    call jeveuo(coeint, 'E', jcoein) 
+! --------------------------------------------------------------------------------------------------
 !
-! --- INITIALISATION ADRESSE DU VARIABLE LIEES AU MAILLAGE ---------------------------------------
+! In  mesh             : name of mesh
+! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  sdappa           : name of pairing datastructure
+! In  i_zone           : index of contact zone
+! In  pair_tole        : tolerance for pairing
+! In  nb_elem_mast     : number of master elements on current zone
+! In  nb_elem_slav     : number of slave elements on current zone
+! In  list_elem_mast   : name of datastructure for list of master elements on current zone
+! In  list_elem_slav   : name of datastructure for list of slave elements on current zone
+! IO  nb_pair_zone     : number of contact elements
+! IO  list_pair_zone   : list of contact elements
 !
-    call jeveuo(mail//'.TYPMAIL','L',jtypma)
-    newgeo = resoco(1:14)//'.NEWG'
-    call jeveuo(newgeo(1:19)//'.VALE', 'L', jcoor)
+! --------------------------------------------------------------------------------------------------
 !
-! --- Initialisation du patch
+    integer :: list_pair(nb_elem_mast)
+    integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime
+    integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime
+    integer :: nb_pair, nb_poin_inte
+    integer :: i_elem_slav, i_elem_mast, i_elin_mast, i_node, i_elin_slav, i_dime
+    integer :: patch_indx, patch_jdec, patch_nume
+    character(len=8) :: elem_mast_code, elem_slav_code
+    character(len=24) :: sdappa_gapi, sdappa_coef
+    real(kind=8), pointer :: v_sdappa_gapi(:) => null()
+    real(kind=8), pointer :: v_sdappa_coef(:) => null()
+    real(kind=8) :: inte_weight, gap_moy, patch_weight_c(nb_elem_mast), patch_weight_t(nb_elem_mast)
+    real(kind=8) :: total_weight, elem_slav_weight, poin_inte(32)
+    real(kind=8) :: elin_mast_coor(27), elin_slav_coor(27)
+    real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
+    integer :: elin_mast_nbsub, elin_mast_sub(8,4), elin_mast_nbnode(8)
+    integer :: elin_slav_nbsub, elin_slav_sub(8,4), elin_slav_nbnode(8)
+    character(len=8) :: elin_mast_code, elin_slav_code, elem_slav_type, elem_mast_type
+    integer :: jv_geom, elem_type_nume
+    integer, pointer :: v_mesh_comapa(:) => null()
+    integer, pointer :: v_mesh_patch(:) => null()
+    integer, pointer :: v_mesh_typmail(:) => null()
 !
-    call jeveuo(jexnum(mail//'.PATCH',1),'L',jpatch)
-    nbpatch = zi(jpatch-1+(izone-1)*2+2) 
-    idrfpa = zi(jpatch-1+(izone-1)*2+1)-1
-    call jeveuo(mail//'.COMAPA','L',jcmapa)
+! --------------------------------------------------------------------------------------------------
 !
-! --- BOUCLE SUR LES MAILLES ESCLAVES ------------------------------------------------------------
+    patch_weight_c(1:nb_elem_mast) = 0.d0
+    patch_weight_t(1:nb_elem_mast) = 0.d0
 !
-    do ind1=1, nbmes
-! --- Récuparation coordonnée maille esclave courante --------------------------------------------
-        nuesco=lies(ind1)
-        call apcoor(mail, jcoor, jtypma, nuesco, comaes,&
-                    nbnes, types,ndim)
-! --- Récupération du nouveau patch courant ------------------------------------------------------
-        nupatch = zi(jcmapa-1+nuesco)
-        idpatc = nupatch+1-idrfpa
-! --- Poids maille esclave courante et contribution au poids du patch ----------------------------
-        call clpoma(ndim,types,comaes,nbnes,aux)
-        pmt(idpatc)=pmt(idpatc)+aux
-! ---- Approximation geometrie esclave ------------------------------------------------------------
-        call apdcma(types, lisses, nbnses, nbsses)
-! -------- BOUCLE SUR LES MAILLES MAITRE ----------------------------------
-! ------------ Initialisation ---------------------------------------------
-            do ind3=1, nbmma
-                tmp(ind3)=0
-            end do
-            nbaptp=0 
-            do ind2=1, nbmma
-            poitt=0.d0 
-! ------------ Récuparation coordonnée maille maitre courante -------------
-            numaco=lima(ind2)    
-            call apcoor(mail, jcoor, jtypma, numaco, comama,&
-                        nbnma, typma,ndim)
-! ------------ Approximation geometrie maitre -----------------------------
-            call apdcma(typma, lissma, nbnsma, nbssma)
-! ------------ Boucle sur les sous-mailles --------------------------------
-            do ind3=1, nbssma
-                if (nbnsma(ind3) .eq. 2) then
-                    tpssma=  'SE2' 
-                elseif (nbnsma(ind3) .eq. 3) then
-                    tpssma='TR3'
-                elseif (nbnsma(ind3) .eq. 4) then
-                    tpssma='QU4'
+! - Access to pairing datastructures
+!
+    sdappa_gapi = sdappa(1:19)//'.GAPI'
+    sdappa_coef = sdappa(1:19)//'.COEF'
+    call jeveuo(sdappa_gapi, 'E', vr = v_sdappa_gapi)
+    call jeveuo(sdappa_coef, 'E', vr = v_sdappa_coef)
+!
+! - Access to updated geometry
+!
+    call jeveuo(newgeo(1:19)//'.VALE', 'L', jv_geom)
+!
+! - Access to mesh
+!
+    call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_patch)
+    call jeveuo(mesh//'.COMAPA','L', vi = v_mesh_comapa)
+    patch_jdec = v_mesh_patch(2*(i_zone-1)+1)-1
+!
+! - Loop on slave elements
+!
+    do i_elem_slav = 1, nb_elem_slav
+!
+! ----- Current slave element
+!
+        elem_slav_nume = list_elem_slav(i_elem_slav)
+        elem_type_nume = v_mesh_typmail(elem_slav_nume)
+        call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
+!
+! ----- Get informations about element
+!
+        call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
+                    elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
+                    elem_slav_code, elem_slav_dime)
+!
+! ----- Get current patch
+!
+        patch_indx = v_mesh_comapa(elem_slav_nume)
+        patch_nume = patch_indx+1-patch_jdec
+!
+! ----- Compute weight of element
+!
+        call clpoma(elem_slav_dime  , elem_slav_code, elem_slav_coor, elem_slav_nbnode,&
+                    elem_slav_weight)
+!
+! ----- Total weight for patch
+!                    
+        patch_weight_t(patch_nume) = patch_weight_t(patch_nume) + elem_slav_weight
+!
+! ----- Cut element in linearized sub-elements
+!
+        call apdcma(elem_slav_code, elin_slav_sub, elin_slav_nbnode, elin_slav_nbsub)
+!
+! ----- Loop on master elements
+!
+        nb_pair = 0
+        do i_elem_mast = 1, nb_elem_mast
+!
+            total_weight=0.d0 
+!
+! --------- Current master element
+!
+            elem_mast_nume = list_elem_mast(i_elem_mast)
+            elem_type_nume = v_mesh_typmail(elem_mast_nume)
+            call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
+!
+! --------- Get informations about element
+!
+            call apcoor(mesh          , jv_geom       , elem_mast_type  ,&
+                        elem_mast_nume, elem_mast_coor, elem_mast_nbnode,&
+                        elem_mast_code, elem_mast_dime)
+!
+! --------- Cut element in linearized sub-elements
+!
+            call apdcma(elem_mast_code, elin_mast_sub, elin_mast_nbnode, elin_mast_nbsub)
+!
+! --------- Loop on linearized master sub-elements
+!
+            do i_elin_mast = 1, elin_mast_nbsub
+!
+! ------------- Code for current linearized master sub-element
+!
+                if (elin_mast_nbnode(i_elin_mast) .eq. 2) then
+                    elin_mast_code = 'SE2' 
+                elseif (elin_mast_nbnode(i_elin_mast) .eq. 3) then
+                    elin_mast_code = 'TR3'
                 else
                     ASSERT(.false.)
-                end if 
-                do ind4=1, nbnsma(ind3)
-                    do idim=1,ndim
-                         crssma((ind4-1)*3+idim) = comama((lissma(ind3,ind4)-1)*3+idim)
-                    end do 
-                end do 
-                do ind5=1, nbsses
-                    if (nbnses(ind5) .eq. 2) then
-                        tpsses=  'SE2'
-                    elseif (nbnses(ind5) .eq. 3) then
-                        tpsses='TR3'
-                    elseif (nbnses(ind5) .eq. 4) then
-                        tpsses='QU4'
+                end if
+!
+! ------------- Get coordinates for current linearized master sub-element
+!
+                do i_node = 1, elin_mast_nbnode(i_elin_mast)
+                    do i_dime = 1,elem_slav_dime
+                         elin_mast_coor(3*(i_node-1)+i_dime) = &
+                            elem_mast_coor(3*(elin_mast_sub(i_elin_mast,i_node)-1)+i_dime)
+                    end do
+                end do
+!
+! ------------- Loop on linearized slave sub-elements
+!
+                do i_elin_slav=1, elin_slav_nbsub
+!
+! ----------------- Code for current linearized slave sub-element
+!
+                    if (elin_slav_nbnode(i_elin_slav) .eq. 2) then
+                        elin_slav_code = 'SE2'
+                    elseif (elin_slav_nbnode(i_elin_slav) .eq. 3) then
+                        elin_slav_code = 'TR3'
                     else
                         ASSERT(.false.)
-                    endif                
-                    do ind4=1, nbnses(ind5)
-                        do idim=1, ndim
-                            crsses((ind4-1)*3+idim) = comaes((lisses(ind5,ind4)-1)*3+idim)
+                    endif
+!
+! ----------------- Coordinates for current linearized slave sub-element
+!
+                    do i_node = 1, elin_slav_nbnode(i_elin_slav)
+                        do i_dime = 1, elem_slav_dime
+                            elin_slav_coor(3*(i_node-1)+i_dime) =&
+                                elem_slav_coor(3*(elin_slav_sub(i_elin_slav,i_node)-1)+i_dime)
                         end do
-                    end do             
-! ------------ Projection Intersection -----------------------------------------------------------
-                    call prjint(crsses,nbnses(ind5),tpsses,crssma,nbnsma(ind3),tpssma,&
-                                corint,poids,nbpint, inut, tole, ndim)
-! ------------ Test du poids ---------------------------------------------------------------------
-                    if (poids .gt. tole) then
-                    poitt=poitt+poids 
-! --------------- On calcul le gapint (Newtg) -----------------------------
-                        if (lnewtg) then
-                            call aprtpe(corint, nbpint, types,corinp,ndim, nudec=ind5)
-                            call gapint(comaes, nbnes, comama, nbnma, corinp, nbpint,&
-                                        types, typma, gpin, poidin, tole, ndim)
-                            zr(jgpint+nupatch-1)=zr(jgpint+nupatch-1)+gpin
-                            pmi(idpatc)=pmi(idpatc)+poidin
-                        end if
+                    end do
+!
+! ----------------- Projection/intersection of elements in slave parametric space     
+!
+                    call prjint(pair_tole     , elem_slav_dime,&
+                                elin_slav_coor, elin_slav_nbnode(i_elin_slav), elin_slav_code,&
+                                elin_mast_coor, elin_mast_nbnode(i_elin_mast), elin_mast_code,&
+                                poin_inte     , inte_weight                  , nb_poin_inte  )
+!
+! ----------------- Non-void intersection  
+!
+                    if (inte_weight .gt. pair_tole) then
+!
+                        total_weight = total_weight+inte_weight
+!
+! --------------------- Projection from para. space of element into sub-element para. space
+!
+                        call aprtpe(elem_slav_dime, poin_inte  , nb_poin_inte,&
+                                    elem_slav_code, i_elin_slav)
+!
+! --------------------- Compute mean square gap and weight of intersection
+!
+                        call gapint(pair_tole     , elem_slav_dime  ,&
+                                    elem_slav_code, elem_slav_nbnode, elem_slav_coor,&
+                                    elem_mast_code, elem_mast_nbnode, elem_mast_coor,&
+                                    nb_poin_inte  , poin_inte       ,&
+                                    gap_moy       , inte_weight     )
+!   
+! --------------------- Save values
+!
+                        v_sdappa_gapi(patch_indx) = v_sdappa_gapi(patch_indx)+gap_moy
+                        patch_weight_c(patch_nume)  = patch_weight_c(patch_nume)+inte_weight
                     end if
                 end do
             end do
-            if (poitt .gt. tole) then     
-! --------------- On remplie le vecteur temporaire d'appariement ----------
-                nbaptp=nbaptp+1
-                tmp(nbaptp)=numaco
-            end if 
-                               
+!
+! --------- Add element paired
+!
+            if (total_weight .gt. pair_tole) then
+                nb_pair            = nb_pair+1
+                list_pair(nb_pair) = elem_mast_nume
+            end if       
         end do
-! ------- On remplie le vect VECTAP
-        if (nbaptp.ne.0) then
-            if (nbmact .eq. 0) then
-                AS_DEALLOCATE(vi=vectap)
-                AS_ALLOCATE(vi=vectap, size = 3*nbaptp)
-                do ind2=1, nbaptp
-                    vectap((ind2-1)*3+1) = nuesco    
-                    vectap((ind2-1)*3+2) = tmp(ind2)
-                    vectap((ind2-1)*3+3) = izone
-                end do
-            else
-                AS_ALLOCATE(vi=vectmp, size = 3*nbmact)
-                do ind2=1, 3*nbmact
-                    vectmp(ind2) = vectap(ind2)    
-                end do
-                AS_DEALLOCATE(vi=vectap)
-                AS_ALLOCATE(vi=vectap, size = 3*nbmact+3*nbaptp)
-                do ind2=1, 3*nbmact
-                    vectap(ind2) = vectmp(ind2)    
-                end do
-                do ind2=1, nbaptp
-                    vectap(3*nbmact+(ind2-1)*3+1) = nuesco    
-                    vectap(3*nbmact+(ind2-1)*3+2) = tmp(ind2)
-                    vectap(3*nbmact+(ind2-1)*3+3) = izone
-                end do
-                AS_DEALLOCATE(vi=vectmp)
-            end if 
-        nbmact=nbmact+nbaptp           
-        else
- 
-        end if
-! ------- Menage ----------------------------------------------------------
-    end do
-! -----------------------------------------------------------------------------------------------
-! ------- Gestion des Patchs non apparié --------------------------------------------------------
-    do ind1=1, nbpatch
-        if (pmi(ind1) .le. tole) then
-            nupatch=ind1-1+idrfpa
-            zr(jgpint+nupatch-1)=r8nnem()
-            zr(jcoein+nupatch-1)=0.d0   
+!
+! ----- Save pairing informations (contact pair)
+!
+        if (nb_pair .ne. 0) then
+            call apsave_pair(i_zone      , elem_slav_nume,&
+                             nb_pair     , list_pair     ,&
+                             nb_pair_zone, list_pair_zone)
         end if
     end do
-! ------- GAP moyen -----------------------------------------------------------------------------
-    
-    if (lnewtg) then
-        do ind1=1, nbpatch
-            nupatch=idrfpa-1+ind1
-            if (.not.isnan(zr(jgpint+nupatch-1))) then
-                zr(jgpint+nupatch-1)=zr(jgpint+nupatch-1)/pmi(ind1)
-                zr(jcoein+nupatch-1)=pmi(ind1)/pmt(ind1)
-            end if          
-        end do
-    end if
-! -----------------------------------------------------------------------------------------------
-    call jedema()
-end subroutine    
-        
-
-        
+!
+! - Save values for patch
+!
+    call apsave_patch(mesh          , sdappa        , i_zone, pair_tole,&
+                      patch_weight_c, patch_weight_t)
+!
+end subroutine       

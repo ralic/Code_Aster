@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine clpoma(ndim, typma , coorma, nbnd  , poidma)
-   
-!
-        integer, intent(in) :: ndim
-        character(len=8), intent(in) :: typma
-        real(kind=8), intent(in) :: coorma(3,nbnd)
-        integer, intent(in) :: nbnd
-        real(kind=8), intent(out) :: poidma
+    subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
+        integer, intent(in) :: elem_dime
+        character(len=8), intent(in) :: elem_code
+        real(kind=8), intent(in) :: elem_coor(3,9)
+        integer, intent(in) :: elem_nbnode
+        real(kind=8), intent(out) :: elem_weight
     end subroutine clpoma
 end interface

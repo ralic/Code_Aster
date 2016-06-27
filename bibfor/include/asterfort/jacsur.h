@@ -16,16 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine jacsur(coorma, nbnma, typma, ndim, ksi1, ksi2,&
-                      jac, ndir)
-!
-        real(kind=8) :: coorma(3,9)
-        integer :: nbnma       
-        character(len=8) :: typma      
-        integer :: ndim
-        real(kind=8) :: ksi1
-        real(kind=8) :: ksi2
-        real(kind=8) :: jac          
-        real(kind=8) :: ndir(3)
+    subroutine jacsur(elem_coor, elem_nbnode, elem_code, elem_dime,&
+                      ksi1     , ksi2       , jacobian , dire_norm)
+        real(kind=8), intent(in) :: elem_coor(3,9)
+        integer, intent(in) :: elem_nbnode
+        character(len=8), intent(in) :: elem_code
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: ksi1
+        real(kind=8), intent(in) :: ksi2
+        real(kind=8), intent(out) :: jacobian
+        real(kind=8), intent(out) :: dire_norm(3)
     end subroutine jacsur
 end interface

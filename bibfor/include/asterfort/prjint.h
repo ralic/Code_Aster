@@ -16,19 +16,22 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine prjint(coores,nbnes,types,coorma,nbnma,typma,&
-                  resu,poids,nbpint, itvois, tole, ndim)
-        real(kind=8) :: coorma(3,9)
-        integer :: nbnma       
-        character(len=8) :: typma
-        real(kind=8) :: coores(3,9)
-        integer :: nbnes       
-        character(len=8) :: types
-        real(kind=8) :: resu(ndim-1,16)
-        real(kind=8) :: poids           
-        integer :: nbpint
-        integer :: itvois(4)
-        real(kind=8) :: tole
-        integer :: ndim
+    subroutine prjint(pair_tole     , elem_dime       ,&
+                      elin_slav_coor, elin_slav_nbnode, elin_slav_code,&
+                      elin_mast_coor, elin_mast_nbnode, elin_mast_code,&
+                      poin_inte     , inte_weight     , nb_poin_inte  ,&
+                      inte_neigh_)
+        real(kind=8), intent(in) :: pair_tole
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: elin_slav_coor(3,9)
+        integer, intent(in) :: elin_slav_nbnode
+        character(len=8), intent(in) :: elin_slav_code
+        real(kind=8), intent(in) :: elin_mast_coor(3,9)
+        integer, intent(in) :: elin_mast_nbnode
+        character(len=8), intent(in) :: elin_mast_code
+        real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
+        real(kind=8), intent(out) :: inte_weight
+        integer, intent(out) :: nb_poin_inte
+        integer, optional, intent(inout) :: inte_neigh_(4)
     end subroutine prjint
 end interface

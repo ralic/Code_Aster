@@ -16,12 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apdmae(typma, lissma, nbnsma, nbssma)
-!
-        character(len=8), intent(in) :: typma
-        integer, intent(out) :: lissma(8,9)
-        integer, intent(out) :: nbnsma(8)
-        integer, intent(out) :: nbssma
-!        
+    subroutine apdmae(elem_code, elin_sub, elin_nbnode, elin_nbsub)
+        character(len=8), intent(in) :: elem_code
+        integer, intent(out) :: elin_sub(8,9)
+        integer, intent(out) :: elin_nbnode(8)
+        integer, intent(out) :: elin_nbsub
     end subroutine apdmae
 end interface

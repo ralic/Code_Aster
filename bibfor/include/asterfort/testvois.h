@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
   interface
-    subroutine testvois(mail,jcoor,jtypma,coorma,typma,nuesco,&
-                        tole,ndim,poidstt)
-        character(len=8), intent(in) :: mail
-        integer,intent(in) :: nuesco
-        integer,intent(in) :: jcoor
-        integer,intent(in) :: jtypma
-        integer,intent(in) :: ndim
-        real(kind=8),intent(in) :: coorma(27)
-        real(kind=8),intent(in) :: tole
-        character(len=8),intent(in) :: typma
-        real(kind=8), intent(out) :: poidstt
+    subroutine testvois(mesh          , jv_geom       , elem_slav_type,&
+                        elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                        pair_tole     , inte_weight)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: jv_geom
+        character(len=8), intent(in) :: elem_slav_type
+        real(kind=8),intent(in) :: elem_mast_coor(27)
+        character(len=8),intent(in) :: elem_mast_code
+        integer,intent(in) :: elem_slav_nume
+        real(kind=8),intent(in) :: pair_tole
+        real(kind=8),intent(out) :: inte_weight
    end subroutine testvois
 end interface

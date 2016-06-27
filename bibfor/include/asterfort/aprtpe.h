@@ -16,15 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine aprtpe(corint, nbpint,& 
-                      typmaa,corinp,ndim, nudec)
-!
-        real(kind=8), intent(in) :: corint(ndim-1,16)
-        integer, intent(in) :: nbpint
-        character(len=8), intent(in) :: typmaa
-        real(kind=8), intent(out) :: corinp(ndim-1,16)
-        integer, intent(in) :: ndim
-        integer, intent(in), optional :: nudec
-!        
+    subroutine aprtpe(elin_dime, poin_inte, nb_poin_inte,& 
+                      elem_code, elin_nume)
+        integer, intent(in) :: elin_dime
+        real(kind=8), intent(inout) :: poin_inte(elin_dime-1,16)
+        integer, intent(in) :: nb_poin_inte
+        character(len=8), intent(in) :: elem_code
+        integer, intent(in), optional :: elin_nume
     end subroutine aprtpe
 end interface

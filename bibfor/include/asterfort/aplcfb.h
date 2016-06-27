@@ -18,20 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine aplcfb(mail, lima, nbmma, lies, nbmes, resoco,&
-                      izone, lnewtg, tole, nbmact, vectap)
-!
-        character(len=8) :: mail
-        integer :: lima(nbmma)
-        integer :: nbmma  
-        integer :: lies(nbmes)   
-        integer :: nbmes 
-        character(len=24) :: resoco
-        integer :: izone
-        aster_logical :: lnewtg
-        real(kind=8) :: tole           
-        integer :: nbmact
-        integer, pointer :: vectap(:)
-        
+    subroutine aplcfb(mesh        , newgeo        , sdappa      , i_zone        , pair_tole,&
+                      nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, &
+                      nb_pair_zone, list_pair_zone)
+        character(len=8), intent(in) :: mesh
+        character(len=19), intent(in) :: newgeo
+        character(len=19), intent(in) :: sdappa
+        integer, intent(in) :: i_zone
+        real(kind=8), intent(in) :: pair_tole
+        integer, intent(in) :: nb_elem_mast
+        integer, intent(in) :: list_elem_mast(nb_elem_mast)
+        integer, intent(in) :: nb_elem_slav
+        integer, intent(in) :: list_elem_slav(nb_elem_slav)
+        integer, intent(inout) :: nb_pair_zone
+        integer, pointer, intent(inout) :: list_pair_zone(:)
     end subroutine aplcfb
 end interface

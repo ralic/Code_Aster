@@ -1,6 +1,27 @@
-subroutine prjint(coores,nbnes,types,coorma,nbnma,typma,&
-                  resu,poids,nbpint, itvois, tole, ndim)
-    
+subroutine prjint(pair_tole     , elem_dime       ,&
+                  elin_slav_coor, elin_slav_nbnode, elin_slav_code,&
+                  elin_mast_coor, elin_mast_nbnode, elin_mast_code,&
+                  poin_inte     , inte_weight     , nb_poin_inte  ,&
+                  inte_neigh_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/lcodrm.h"
+#include "asterfort/insema.h"
+#include "asterfort/ptinma.h"
+#include "asterfort/mmnewt.h"
+#include "asterfort/mmtang.h"
+#include "asterfort/mmnorm.h"
+#include "asterfort/mmdonf.h"
+#include "asterfort/apdist.h"
+#include "asterfort/apnorm.h"
+#include "asterfort/apelem_getcenter.h"
+#include "asterfort/apelem_getvertex.h"
+#include "asterfort/apelem_inside.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,325 +39,315 @@ subroutine prjint(coores,nbnes,types,coorma,nbnma,typma,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/lcodrm.h"
-#include "asterfort/insema.h"
-#include "asterfort/ptinma.h"
-#include "asterfort/mmnewt.h"
-#include "asterfort/mmtang.h"
-#include "asterfort/mmnorm.h"
-#include "asterfort/mmdonf.h"
-#include "asterfort/apdist.h"
 !
-    integer :: nbnma, nbnes, nbpint, itvois(4), ndim
-    real(kind=8) :: coorma(3,9), coores(3,9), poids, tole
-    character(len=8) :: typma, types 
-    real(kind=8) :: resu(ndim-1,16)
-! ----------------------------------------------------------------------
-!         Projection intersection d'une maille maitre et esclave 
-!         dans l'espace paramétrique esclave
-! ----------------------------------------------------------------------
-! IN         COORMA      COORDONNÉE DES POINT DE LA MAILLE MAITRE
-! IN         NBNMA       NOMBRE DE POINT CONSTITUANT LA MAILLE MAITRE
-! IN         TYPMA       TYPE DE MAILLE MAITRE
-! IN         COORES      COORDONNÉE DES POINT DE LA MAILLE ESCLAVE
-! IN         NBNES       NOMBRE DE POINT CONSTITUANT LA MAILLE ESCLAVE
-! IN         TYPES       TYPE DE MAILLE ESCLAVE
-! IN/OUT     RESU        OBJET JEVEUX RESULTAT 
-!                        Coordonnée des points d'intersection 
-!                        dans l'espace paramétrique maitre
-! OUT        POIDS       AIRE DE L'INTERSECTION
-! OUT        NBPINT      NOMBRE DE POINT D'INTERSECTION
-! IN         TOLE        TOLERANCE
-! ----------------------------------------------------------------------
+    real(kind=8), intent(in) :: pair_tole
+    integer, intent(in) :: elem_dime
+    real(kind=8), intent(in) :: elin_slav_coor(3,9)
+    integer, intent(in) :: elin_slav_nbnode
+    character(len=8), intent(in) :: elin_slav_code
+    real(kind=8), intent(in) :: elin_mast_coor(3,9)
+    integer, intent(in) :: elin_mast_nbnode
+    character(len=8), intent(in) :: elin_mast_code
+    real(kind=8), intent(out) :: poin_inte(elem_dime-1,16)
+    real(kind=8), intent(out) :: inte_weight
+    integer, intent(out) :: nb_poin_inte
+    integer, optional, intent(inout) :: inte_neigh_(4)
 !
-    real(kind=8) :: corint(ndim-1,16), coresp(ndim-1,4), cormap(ndim-1,4), tevapr
-    real(kind=8) :: aux1,aux2, tau1(3), tau2(3), coorno(3), xpt, ypt, inut, d, auxv(3), auxvec(3,3)
-    real(kind=8) :: xp1, yp1, xp2, yp2 ,auxinse(3,3), normma(3), normes(3), dff(2,9),sig, dist(3)
-    integer :: ind, ind2, idim, niverr, test, indsu(16),nbints, nbnesp, indpr(4)
-    integer :: nbnaux
-    character(len=8) :: typaux
+! --------------------------------------------------------------------------------------------------
 !
-! --- Initialisation ---------------------------------------------------
+! Contact - Pairing segment to segment
 !
-    nbpint=0
-    poids=0.d0
-    test=0
-    niverr=0
-    resu(1:ndim-1,1:16)=0.d0
-    if (typma .eq. 'TR3') then
-        aux1=0.d0
-        aux2=0.d0
-    elseif (typma .eq. 'SE2') then
-        aux1=0.d0 
-    end if
-    call mmdonf(ndim,nbnma,typma,aux1,aux2,&
-                 dff)
-    tau1(1:3)=0.d0
-    tau2(1:3)=0.d0
-    call mmtang(ndim,nbnma,coorma,dff,tau1,tau2)
-    call mmnorm(ndim, tau1, tau2, normma, inut)
-    normma(1:3)=-normma(1:3)
-    tau1(1:3)=0.d0
-    tau2(1:3)=0.d0
-    if (types .eq. 'TR3'.or. types .eq. 'TR6') then
-        aux1=1.d0/3.d0
-        aux2=1.d0/3.d0
-        typaux = 'TR3'
-        nbnaux = 3 
-    elseif (types .eq. 'QU4'.or. types .eq. 'QU8'.or. types .eq. 'QU9') then
-        aux1=0.d0
-        aux2=0.d0
-        typaux = 'QU4'
-        nbnaux = 4  
-    elseif (types .eq. 'SE2'.or. types .eq. 'SE3') then
-        aux1=0.d0
-        typaux = 'SE2'
-        nbnaux = 2   
-    end if
-    call mmdonf(ndim,nbnaux,typaux,aux1,aux2,&
-                 dff)
-    tau1(1:3)=0.d0
-    tau2(1:3)=0.d0
-    call mmtang(ndim,nbnaux,coores,dff,tau1,tau2)
-    call mmnorm(ndim, tau1, tau2, normes, inut)
-    normes(1:3)=-normes(1:3)
-    tau1(1:3)=0.d0
-    tau2(1:3)=0.d0
-!  
-! --- Verificatuion type de maille maitre
+! Projection/intersection of elements in slave parametric space
 !
-    if (typma .eq. 'TR6' .or. typma .eq. 'SE3') then
-        ASSERT(.false.)
-    else if (typma .eq. 'QU8' .or. typma .eq. 'QU9') then
-        ASSERT(.false.)
+! --------------------------------------------------------------------------------------------------
+!
+! In  pair_tole        : tolerance for pairing
+! In  elem_dime        : dimension of elements
+! In  elin_slav_coor   : coordinates of sub-elements in slave element
+! In  elin_slav_nbnode : number of nodes for each sub-element in slave element
+! In  elin_slav_code   : code of all sub-elements in slave element
+! In  elin_mast_coor   : coordinates of sub-elements in master element
+! In  elin_mast_nbnode : number of nodes for each sub-element in master element
+! In  elin_mast_code   : code of all sub-elements in master element
+! Out poin_inte        : list (sorted) of intersection points
+! Out inte_weight      : total weight of intersection
+! Out nb_poin_inte     : number of intersection points
+! IO  inte_neigh       : activation of neighbours of intersection
+!
+! --------------------------------------------------------------------------------------------------
+!
+    aster_logical :: debug
+    real(kind=8) :: slav_para_coor(elem_dime-1,4)
+    real(kind=8) :: mast_para_coor(elem_dime-1,4)
+    real(kind=8) :: tevapr, dist_sign, sig
+    real(kind=8) :: ksi1_cent, ksi2_cent
+    real(kind=8) :: ksi1, ksi2, dist, vect_pm(3)
+    real(kind=8) :: tau1(3), tau2(3), node_coor(3)
+    real(kind=8) :: xp1, yp1, xp2, yp2, xpt, ypt
+    real(kind=8) :: elin_mast_norm(3), elin_slav_norm(3)
+    integer :: i_node, i_inte_poin, i_dime, niverr, test
+    integer :: list_node_next(16), list_poin_next(16), list_node_prev(4)
+    integer :: elem_auxi_nbnode, slav_para_nb, inte_neigh(4)
+    character(len=8) :: elem_auxi_code, slav_para_code
+!
+! --------------------------------------------------------------------------------------------------
+!
+    nb_poin_inte = 0
+    inte_neigh(1:4) = 0
+    if (present(inte_neigh_)) then
+        inte_neigh(:) = inte_neigh_(:)
+    endif
+    inte_weight     = 0.d0
+    poin_inte(1:elem_dime-1,1:16) = 0.d0
+    debug = .false.
+    if (debug) then
+        write(*,*) ". Projection/intersection"
+    endif
+!
+! - Compute master element normal (at center)
+!
+    ASSERT(elin_mast_code .eq. 'SE2' .or. elin_mast_code .eq. 'TR3')
+    call apelem_getcenter(elin_mast_code, ksi1_cent, ksi2_cent)
+    call apnorm(elin_mast_nbnode, elin_mast_code, elem_dime     , elin_mast_coor,&
+                ksi1_cent       , ksi2_cent     , elin_mast_norm)
+    if (debug) then
+        write(*,*) ".. Master/Norm: ", elin_mast_norm
+    endif
+!
+! - Linearization of reference element for slave element
+!
+    if (elin_slav_code .eq. 'TR3' .or.&
+        elin_slav_code .eq. 'TR6') then
+        elem_auxi_code   = 'TR3'
+        elem_auxi_nbnode = 3 
+    elseif (elin_slav_code .eq. 'QU4' .or.&
+            elin_slav_code .eq. 'QU8' .or. &
+            elin_slav_code .eq. 'QU9') then
+        elem_auxi_code   = 'QU4'
+        elem_auxi_nbnode = 4  
+    elseif (elin_slav_code .eq. 'SE2' .or.&
+            elin_slav_code .eq. 'SE3') then
+        elem_auxi_code   = 'SE2'
+        elem_auxi_nbnode = 2
+    else
+        ASSERT(.false.) 
     end if
 !
-! --- Projection des noeuds maitres dans l'espace paramétrique esclave -
+! - Compute slave element normal (at center)
 !
-    do ind=1, nbnma
-        coorno(1:3)=0.d0
-        do idim=1, ndim
-            coorno(idim)=coorma(idim,ind)
-        end do     
-        call mmnewt(types,nbnes,ndim,coores,coorno,200,&
-                    tole,aux1,aux2,tau1,tau2,niverr)
-        if (niverr.eq.0) then
-            cormap(1,ind) = aux1
-            if ((ndim-1) .eq. 2) then
-                cormap(2,ind) = aux2
+    call apelem_getcenter(elem_auxi_code, ksi1_cent, ksi2_cent)
+    call apnorm(elem_auxi_nbnode, elem_auxi_code, elem_dime     , elin_slav_coor,&
+                ksi1_cent       , ksi2_cent     , elin_slav_norm)
+    if (debug) then
+        write(*,*) ".. Slave/Norm: ", elin_slav_norm
+    endif 
+!
+! - Project master nodes in slave element parametric space
+!
+    if (debug) then
+        write(*,*) ".. Project master nodes in slave element parametric space"
+    endif 
+    do i_node = 1, elin_mast_nbnode
+!
+! ----- Current coordinates of master node
+!
+        node_coor(1:3) = 0.d0
+        do i_dime = 1, elem_dime
+            node_coor(i_dime) = elin_mast_coor(i_dime, i_node)
+        end do
+!
+! ----- Project current master node on slave linearized element
+!
+        call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
+                    elin_slav_coor, node_coor       , 200      ,&
+                    pair_tole     , ksi1            , ksi2     ,&
+                    tau1          , tau2            , niverr)
+        if (niverr .eq. 0) then
+            mast_para_coor(1, i_node) = ksi1 
+            if (elem_dime .eq. 3) then
+                mast_para_coor(2, i_node) = ksi2
             end if
         else
-           write(*,*)"mmnewt failed"
            ASSERT(.false.)
         endif
-! --- Test validité de la projection (premier)    à retravailler!   
-        call apdist(types, coores, nbnes, aux1, aux2,&
-                    coorno, d, auxv)
-        !call mmnorm(ndim, tau1, tau2, normes, inut)
-        !normes(1:3)=-normes(1:3)
-        auxvec(ind,1:3)=auxv(1:3)            
-        if (ndim .eq. 3) then
-            sig=auxvec(ind,1)*normes(1)+auxvec(ind,2)*normes(2)+auxvec(ind,3)*normes(3)
-        elseif (ndim .eq. 2) then
-            sig=auxvec(ind,1)*normes(1)+auxvec(ind,2)*normes(2)
+!
+! ----- Compute distance from point to its orthogonal projection
+!
+        dist = 0.d0
+        call apdist(elin_slav_code, elin_slav_coor, elin_slav_nbnode, ksi1, ksi2,&
+                    node_coor     , dist          , vect_pm)
+!
+! ----- Sign of colinear product VECT_PM . NORMAL(slave)
+!
+        sig = 0.d0
+        if (elem_dime .eq. 3) then
+            sig = vect_pm(1)*elin_slav_norm(1)+&
+                  vect_pm(2)*elin_slav_norm(2)+&
+                  vect_pm(3)*elin_slav_norm(3)
+        elseif (elem_dime .eq. 2) then
+            sig = vect_pm(1)*elin_slav_norm(1)+&
+                  vect_pm(2)*elin_slav_norm(2)
+        else
+            ASSERT(.false.)
         end if       
-        dist(ind)=-sign(d,sig)
-        if (ndim .eq. 3) then
-            tevapr=auxvec(ind,1)*normma(1)+auxvec(ind,2)*normma(2)+auxvec(ind,3)*normma(3)
-        elseif (ndim.eq.2) then
-            tevapr=auxvec(ind,1)*normma(1)+auxvec(ind,2)*normma(2)
+        dist_sign = -sign(dist,sig)
+!
+! ----- Sign of colinear product VECT_PM . NORMAL(master)
+!
+        if (elem_dime .eq. 3) then
+            tevapr = vect_pm(1)*elin_mast_norm(1)+&
+                     vect_pm(2)*elin_mast_norm(2)+&
+                     vect_pm(3)*elin_mast_norm(3)
+        elseif (elem_dime .eq. 2) then
+            tevapr = vect_pm(1)*elin_mast_norm(1)+&
+                     vect_pm(2)*elin_mast_norm(2)
+        else
+            ASSERT(.false.)
         end if
-        if (dist(ind) .lt. 0.d0-tole) then
-            if (tevapr .gt. 0.d0-tole) then
-                 !WRITE(*,*)'error'
-                 go to 110
+        if (debug) then
+            write(*,*) "... Node: ",i_node,' - Coord: ', node_coor
+            write(*,*) " => Distance: ",dist,' - Distance signée: ', dist_sign
+            write(*,*) " => VECT_PM . NORMAL: ", tevapr
+        endif 
+!
+! ----- No change of sign => no intersection
+!
+        if (dist_sign .lt. 0.d0-pair_tole) then
+            if (tevapr .gt. 0.d0-pair_tole) then
+                if (debug) then
+                    write(*,*) "... Pas d'intersection: ", dist_sign, tevapr
+                endif
+                goto 99
             end if
-        elseif (dist(ind) .gt. 0.d0+tole) then
-            if (tevapr .lt. 0.d0+tole) then
-                !WRITE(*,*)'error'
-                go to 110
+        elseif (dist_sign .gt. 0.d0+pair_tole) then
+            if (tevapr .lt. 0.d0+pair_tole) then
+                if (debug) then
+                    write(*,*) "... Pas d'intersection: ", dist_sign, tevapr
+                endif
+                goto 99
             end if
         end if     
     end do
-! --- Test validité de projection (deuxième)     
-!    do ind=1,nbnma-1
-!        write(*,*)'auxvec1',auxvec(ind,1:3)
-!        write(*,*)'auxvec2',auxvec(ind+1,1:3)
-!        if (ndim.eq.3) then
-!            tevapr=auxvec(ind,1)*auxvec(ind+1,1)+&
-!                   auxvec(ind,2)*auxvec(ind+1,2)+&
-!                   auxvec(ind,3)*auxvec(ind+1,3)
-!        elseif (ndim.eq.2) then
-!            tevapr=auxvec(ind,1)*auxvec(ind+1,1)+&
-!                   auxvec(ind,2)*auxvec(ind+1,2)
-!        end if
-!        if ((dist(ind) .lt. 0.d0-tole .and. dist(ind+1) .lt. 0.d0-tole) .or.&
-!            &(dist(ind).gt. 0.d0+tole .and. dist(ind+1) .gt. 0.d0+tole)) then
-!            if (tevapr .lt. 0.d0) then
-!                write(*,*) "error4"
-!                go to 110
-!            end if
-!        end if
-!    end do
-    
 !
-! --- Coordonnées paramétriques des noeuds esclaves ----------------------
+! - Parametric coordinates of slave nodes after linearization
 !
-! --- CAS 2D
-    if (types .eq. 'SE2' .or. types .eq. 'SE3') then
-        coresp(1,1) = -1.d0
-        coresp(1,2) =  1.d0
-        nbnesp = 2
-! --- CAS 3D
-    elseif (types .eq. 'TR3' .or. types .eq. 'TR6') then
-        coresp(1,1)=0.d0
-        coresp(2,1)=0.d0
-        coresp(1,2)=1.d0
-        coresp(2,2)=0.d0
-        coresp(1,3)=0.d0
-        coresp(2,3)=1.d0
-        nbnesp = 3
-    else if (types .eq. 'QU4' .or. types .eq. 'QU8' .or. types .eq. 'QU9') then
-        coresp(1,1)=-1.d0
-        coresp(2,1)=-1.d0
-        coresp(1,2)=1.d0
-        coresp(2,2)=-1.d0
-        coresp(1,3)=1.d0
-        coresp(2,3)=1.d0
-        coresp(1,4)=-1.d0
-        coresp(2,4)=1.d0
-        nbnesp = 4
-    else
-        ASSERT(.false.)
-    end if
-    indpr(1)=nbnesp
-    do ind=2,nbnesp
-        indpr(ind)=ind-1
+    call apelem_getvertex(elem_dime     , elin_slav_code, .true._1,&
+                          slav_para_coor, slav_para_nb  , slav_para_code)
+!
+! - Set index of previous nodes
+!  
+    do i_node = 2, slav_para_nb
+        list_node_prev(i_node) = i_node-1
     end do
-
+    list_node_prev(1) = slav_para_nb
 !
-! --- Noeuds maitres appartenant à l'intersection ---------------------
+! - Save projection of master nodes on slave element in list of intersection points
 !
-! --- CAS 2D SURFACE 1D SEG   
-    if (nbnesp .eq. 2) then
-        do ind=1, nbnma
-            xpt=cormap(1,ind)
-            if (xpt .ge. (-1.d0-tole) .and. xpt .le. (1.d0+tole)) then       
-                nbpint=nbpint+1
-                corint(1,nbpint)=xpt
-            endif
-        end do
-! --- CAS 3D SURFACE 2D TRIA
-    elseif (nbnesp .eq. 3) then
-        do ind=1, nbnma
-            xpt=cormap(1,ind)
-            ypt=cormap(2,ind)
-            if (xpt.ge.-tole .and. ypt.ge.-tole .and. (ypt+xpt).le.(1.d0+tole)) then       
-                nbpint=nbpint+1
-                corint(1,nbpint)=xpt
-                corint(2,nbpint)=ypt
-            endif
-        end do
-! --- CAS 3D SURFACE 2D QUAD
-    elseif (nbnesp .eq. 4) then
-        do ind=1, nbnma
-            xpt=cormap(1,ind)
-            ypt=cormap(2,ind)
-            if (xpt.ge. -1.d0-tole .and. ypt.ge. -1.d0-tole .and. ypt.le.(1.d0+tole) .and.&
-                xpt.le.(1.d0+tole)) then       
-                nbpint=nbpint+1
-                corint(1,nbpint)=xpt
-                corint(2,nbpint)=ypt
-            endif
-        end do
-    else
-        ASSERT(.false.)
-    end if
-    
+    call apelem_inside(pair_tole       , elem_dime, slav_para_code,&
+                       elin_mast_nbnode, mast_para_coor,&
+                       nb_poin_inte    , poin_inte)
 !
-! --- Noeuds esclaves appartenant à l'intersection ---------------------
-!    
-    do ind=1, nbnesp
-        xpt=coresp(1,ind)
-        if ((ndim-1) .eq. 2) then    
-            ypt=coresp(2,ind)
-        elseif ((ndim-1).eq.1) then
-            ypt =0.d0
+! - Add slave nodes in list of intersection points
+!
+    do i_node = 1, slav_para_nb
+!
+! ----- Current coordinates of slave node
+!
+        xpt = slav_para_coor(1, i_node)
+        ypt = 0.d0
+        if (elem_dime .eq. 3) then    
+            ypt = slav_para_coor(2, i_node)
         end if
-        call ptinma(cormap,nbnma,typma,xpt,ypt,test,tole, ndim)
-        if (test.eq.1) then    
-            nbpint=nbpint+1
-            corint(1,nbpint)=xpt
-            if ((ndim-1) .eq. 2) then
-                corint(2,nbpint)=ypt
+!
+! ----- Test if point is inside element
+!
+        call ptinma(elin_mast_nbnode, elem_dime, elin_mast_code, mast_para_coor, pair_tole,&
+                    xpt             , ypt      , test)
+        if (test .eq. 1) then    
+            nb_poin_inte              = nb_poin_inte+1
+            poin_inte(1,nb_poin_inte) = xpt
+            if (elem_dime .eq. 3) then
+                poin_inte(2,nb_poin_inte) = ypt
             end if
-! --- On renseigne le test intersection avec voisins -------------------
-            if ((ndim-1) .eq. 2) then
-                itvois(ind)=1
-                itvois(indpr(ind))=1
-            else if ((ndim-1) .eq. 1) then
-                itvois(ind)=1
+            if (elem_dime .eq. 3) then
+                inte_neigh(i_node)                 = 1
+                inte_neigh(list_node_prev(i_node)) = 1
+            else if (elem_dime .eq. 2) then
+                inte_neigh(i_node)                 = 1
+            else
+                ASSERT(.false.)
             endif
-!-------- Erreur intersection dans ptinma----------------            
-        else if(test.eq. -1) then
-            !write(*,*),'error intersection'
-            poids=0.d0
-            nbpint=0
-            itvois(1:4)=0
-            resu(ndim-1,16)=0.d0
-            go to 110   
+        else if (test .eq. -1) then
+            nb_poin_inte                  = 0
+            poin_inte(1:elem_dime-1,1:16) = 0.d0
+            inte_neigh(1:4)               = 0
+            goto 99   
         endif
     end do
 !
-! --- Intersection des arêtes (CAS 3D) ------------------------------------------------------------
+! - Set index of next nodes
+!  
+    do i_node = 2, elin_mast_nbnode
+        list_node_next(i_node-1) = i_node
+    end do
+    list_node_next(elin_mast_nbnode) = 1
 !
-    if (ndim .eq. 3 ) then
-! --- Vecteur indice suivant
-        do ind=2, nbnma
-            indsu(ind-1)=ind
+! - Intersection of edges
+!
+    if (elem_dime .eq. 3) then  
+        do i_node = 1, elin_mast_nbnode
+!
+! --------- Segment from edge of master element
+!
+            xp1 = mast_para_coor(1,i_node)
+            yp1 = mast_para_coor(2,i_node)
+            xp2 = mast_para_coor(1,list_node_next(i_node))
+            yp2 = mast_para_coor(2,list_node_next(i_node))
+!
+! --------- Compute intersection between edge of master and slave element
+!
+            call insema(slav_para_nb, elem_dime, slav_para_coor, pair_tole,&
+                        xp1         , yp1      , xp2           , yp2      ,&
+                        nb_poin_inte, poin_inte, inte_neigh)
         end do
-        indsu(nbnma)=1
-! --- Boucle sur les segments de la maille maitre projetée -------------   
-        do ind=1, nbnma
-            xp1=cormap(1,ind)
-            yp1=cormap(2,ind)
-            xp2=cormap(1,indsu(ind))
-            yp2=cormap(2,indsu(ind))
-            call insema(coresp,nbnesp,xp1,yp1,xp2,yp2,auxinse,nbints,tole, itvois)
-            if (nbints.gt.0) then
-                do ind2=1,nbints
-                    nbpint=nbpint+1
-                    corint(1,nbpint)=auxinse(1,ind2)
-                    corint(2,nbpint)=auxinse(2,ind2)
-                end do
-            endif
-        end do
-        ASSERT(nbpint.le.16)
+        ASSERT(nb_poin_inte.le.16)
     end if
-    if ((nbpint.gt.2 .and. ndim .eq. 3 ).or. (nbpint .ge. 2 .and. ndim.eq.2) ) then
-     
-! ---- On ordonne dans le sens trigo et supprime les doublons ----------
-        call lcodrm(corint,nbpint,tole,resu, ndim)
-! ---- On calcule le poids ---------------------------------------------
-        if ((ndim-1) .eq. 2) then
-            do ind=2, nbpint
-                indsu(ind-1)=ind
+!
+! - Sort list of intersection points
+!
+    if ((nb_poin_inte .gt. 2 .and. elem_dime .eq. 3) .or.&
+        (nb_poin_inte .ge. 2 .and. elem_dime .eq. 2)) then
+        call lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte)
+    endif
+!
+! - Compute weight of intersection
+!
+    if ((nb_poin_inte .gt. 2 .and. elem_dime .eq. 3) .or.&
+        (nb_poin_inte .ge. 2 .and. elem_dime .eq. 2)) then
+        if ((elem_dime-1) .eq. 2) then
+            do i_inte_poin = 2, nb_poin_inte
+                list_poin_next(i_inte_poin-1) = i_inte_poin
             end do
-            indsu(nbpint)=1
-            do ind=1,nbpint
-                poids=poids+resu(1,ind)*resu(2,indsu(ind))-resu(1,indsu(ind))*resu(2,ind)
+            list_poin_next(nb_poin_inte)=1
+            do i_inte_poin = 1,nb_poin_inte
+                inte_weight = inte_weight + &
+                        poin_inte(1,i_inte_poin)*&
+                        poin_inte(2,list_poin_next(i_inte_poin))-&
+                        poin_inte(1,list_poin_next(i_inte_poin))*&
+                        poin_inte(2,i_inte_poin)
             end do
-            poids=1.d0/2.d0*poids
-            poids=sqrt(poids**2)
+            inte_weight = 1.d0/2.d0*inte_weight
+            inte_weight = sqrt(inte_weight**2)
         else
-            poids=sqrt((resu(1,2)-resu(1,1))**2)
+            inte_weight = sqrt((poin_inte(1,2)-poin_inte(1,1))**2)
         end if
     endif
-110 continue 
+99  continue
+!
+! - Copy
+!
+    if (present(inte_neigh_)) then
+        inte_neigh_(1:4) = inte_neigh(1:4)
+    endif
 !
 end subroutine

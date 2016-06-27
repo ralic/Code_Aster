@@ -16,16 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gtvois(mail  , lima  , nbma  , numa, typma,&
-                      cninv , nbvois, voisin)
-
-        character(len=8), intent(in) :: mail
-        character(len=24), intent(in) :: cninv
-        integer, intent(in) :: nbma
-        integer, intent(in) :: lima(nbma)
-        integer, intent(in) :: numa
-        character(len=8), intent(in) :: typma
-        integer, intent(in) :: nbvois
-        integer, intent(out) :: voisin(4)
+    subroutine gtvois(mesh     , list_elem, nb_elem   , elem_nume, elem_code,&
+                      conx_inve, nb_neigh , list_neigh)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: conx_inve
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: list_elem(nb_elem)
+        integer, intent(in) :: elem_nume
+        character(len=8), intent(in) :: elem_code
+        integer, intent(in) :: nb_neigh
+        integer, intent(out) :: list_neigh(4)
     end subroutine gtvois
 end interface

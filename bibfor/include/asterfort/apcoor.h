@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcoor(mail, jcoor, jtypma, numa, coorma,&
-                      nbma, typma, ndim  )
-        integer, intent(in) :: numa
-        integer, intent(out) :: nbma
-        integer, intent(in) :: jcoor
-        integer, intent(in) :: jtypma
-        character(len=8), intent(in) :: mail
-        character(len=8), intent(out) :: typma
-        real(kind=8), intent(out) :: coorma(27)
-        integer,intent(out) :: ndim
+    subroutine apcoor(mesh       , jv_geom  , elem_type, elem_nume, elem_coor,&
+                      elem_nbnode, elem_code, elem_dime)
+        character(len=8), intent(in) :: mesh
+        integer, intent(in) :: jv_geom
+        character(len=8), intent(in) :: elem_type
+        integer, intent(in) :: elem_nume
+        real(kind=8), intent(out) :: elem_coor(27)
+        integer, intent(out) :: elem_nbnode
+        character(len=8), intent(out) :: elem_code
+        integer, intent(out) :: elem_dime
     end subroutine apcoor
 end interface

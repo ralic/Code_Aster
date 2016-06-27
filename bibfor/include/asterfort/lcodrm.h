@@ -16,11 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcodrm(cordin,nbpint,tole,resu, ndim)
-        integer :: nbpint
-        real(kind=8), intent(in) :: cordin(ndim-1,nbpint)
-        real(kind=8), intent(in) :: tole
-        real(kind=8), intent(out) :: resu(ndim-1,16)
-        integer, intent(in) :: ndim
+    subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte)
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: pair_tole
+        integer, intent(inout) :: nb_poin_inte
+        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,nb_poin_inte)
     end subroutine lcodrm
 end interface

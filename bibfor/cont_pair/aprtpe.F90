@@ -1,5 +1,10 @@
-subroutine aprtpe(corint, nbpint,& 
-                  typmaa,corinp, ndim, nudec)
+subroutine aprtpe(elin_dime, poin_inte, nb_poin_inte,& 
+                  elem_code, elin_nume)
+!
+implicit none
+!
+#include "asterfort/reerel.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -18,274 +23,251 @@ subroutine aprtpe(corint, nbpint,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/reerel.h"
-#include "asterfort/assert.h"
+    integer, intent(in) :: elin_dime
+    real(kind=8), intent(inout) :: poin_inte(elin_dime-1,16)
+    integer, intent(in) :: nb_poin_inte
+    character(len=8), intent(in) :: elem_code
+    integer, intent(in), optional :: elin_nume
 !
-    integer, intent(in) :: ndim
-    real(kind=8), intent(in) :: corint(ndim-1,16)
-    integer, intent(in) :: nbpint
-    character(len=8), intent(in) :: typmaa
-    real(kind=8), intent(out) :: corinp(ndim-1,16)
-    integer, intent(in), optional :: nudec
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Contact - Pairing segment to segment
 !
-! ROUTINE CONTACT (METHODE LAC - UTILITAIRE)
+! Projection from parametric space of element into sub-element parametric space
 !
-! RETOUR DANS L'ESPACE PARAMETRIQUE d'une maille
-! D'UN TRIANGLE D'INTEGRATION depuis l'espace parametrique 
-! d'une autre maille (pour un triangle)
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-! IN  CORTRI : COORDONEES DU TRIANGLE
-! IN  GEOMD  : COORDONEE DE LA MAILLE DE DEPART
-! IN  TYPMAD : TYPE DE MAILLE DU DEPART
-! IN  GEOMA  : COORDONEE DE LA MAILLE DESTINATION 
-! IN  TYPMAA : TYPE DE MAILLE DE LA DESTINATION
-! IN  NNDA    : NOMBRE DE NOEUD
-! OUT TRIPAM : COORDONEES PARAMETRIQUE
+! In  elin_dime        : dimension of elements
+! In  poin_inte        : list (sorted) of intersection points (parametric space)
+! In  nb_poin_inte     : number of intersection points
+! In  elem_code        : code of element
+! In  poin_inte_real   : list (sorted) of intersection points (real space)
+! In  elin_nume        : index of sub-element in elements
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ind1
-    real(kind=8) :: aux(3), xd(2)
+    real(kind=8) :: poin_inte_real(elin_dime-1,16)
+    integer :: i_poin_inte
+    real(kind=8) :: node_real(3), ksi(2)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3), noor
-    real(kind=8) :: geoax3(3,3), geoax2(2,2)
-    character(len=8) :: typmax
+    real(kind=8) :: node_para(3,3), node_para_2(2,2)
+    character(len=8) :: elin_code
 !
-! ----------------------------------------------------------------------
-! Initialisation
-    do ind1=1, nbpint
-        corinp(1,ind1)=0.d0
-        corinp(2,ind1)=0.d0
+! --------------------------------------------------------------------------------------------------
+!
+    do i_poin_inte = 1, nb_poin_inte
+        poin_inte_real(1,i_poin_inte) = 0.d0
+        poin_inte_real(2,i_poin_inte) = 0.d0
     end do
     tau1(1:3) = 0.d0
     tau2(1:3) = 0.d0
     norm(1:3) = 0.d0
-    noor=0.d0
+    noor      = 0.d0
 !
-    do ind1=1, nbpint
+! - Loop on integration points
+!
+    do i_poin_inte=1, nb_poin_inte
         tau1(1:3) = 0.d0
         tau2(1:3) = 0.d0
         norm(1:3) = 0.d0
-        noor=0.d0
-        xd(1)=corint(1,ind1)
-        if ((ndim-1) .eq. 2) then
-            xd(2)=corint(2,ind1)
+        noor      = 0.d0
+        ksi(1) = poin_inte (1,i_poin_inte)
+        if (elin_dime .eq. 3) then
+            ksi(2) = poin_inte (2,i_poin_inte)
         end if
-! ---- CAS QUAD 8 et QUAD 4 et SE3 et TRIA6
-        if ((typmaa.eq.'QU4' ) .and. present(nudec)) then
-            if (nudec .eq. 1) then
-                geoax3(1,1) = -1.d0
-                geoax3(2,1) = -1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) =  1.d0
-                geoax3(2,2) = -1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) =  1.d0
-                geoax3(2,3) =  1.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 2) then
-                geoax3(1,1) =  1.d0
-                geoax3(2,1) =  1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) = -1.d0
-                geoax3(2,2) =  1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) = -1.d0
-                geoax3(2,3) = -1.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
+!
+        if ((elem_code.eq.'QU4' ) .and. present(elin_nume)) then
+            if (elin_nume .eq. 1) then
+                node_para(1,1) = -1.d0
+                node_para(2,1) = -1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) =  1.d0
+                node_para(2,2) = -1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) =  1.d0
+                node_para(2,3) =  1.d0
+                node_para(3,3) =  0.d0
+                elin_code   = 'TR3'
+                call reerel(elin_code, 3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 2) then
+                node_para(1,1) =  1.d0
+                node_para(2,1) =  1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) = -1.d0
+                node_para(2,2) =  1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) = -1.d0
+                node_para(2,3) = -1.d0
+                node_para(3,3) =  0.d0
+                elin_code      = 'TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
             else
                 ASSERT(.false.)
             endif
-! =================================================================================================
-        elseif (typmaa.eq.'SE3' .and. present(nudec)) then
-            if (nudec .eq. 1) then
-                geoax2(1,1) = -1.d0
-                geoax2(2,1) = 0.d0
-                geoax2(1,2) =  0.d0
-                geoax2(2,2) = 0.d0
-                typmax='SE2'
-                call reerel(typmax,2, 2, geoax2, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 2) then
-                geoax2(1,1) = 0.d0
-                geoax2(2,1) = 0.d0
-                geoax2(1,2) =  1.d0
-                geoax2(2,2) = 0.d0
-                typmax='SE2'
-                call reerel(typmax,2, 2, geoax2, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            else
-                ASSERT(.false.)
-            endif
-! =================================================================================================
-        elseif (typmaa.eq.'TR6' .and. present(nudec)) then
-            if (nudec .eq. 1) then
-                geoax3(1,1) = 0.d0
-                geoax3(2,1) = 0.d0
-                geoax3(3,1) = 0.d0
-                geoax3(1,2) = 5.d-1
-                geoax3(2,2) = 0.d0
-                geoax3(3,2) = 0.d0
-                geoax3(1,3) = 0.d0
-                geoax3(2,3) = 5.d-1
-                geoax3(3,3) = 0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)            
-            elseif (nudec .eq. 2) then
-                geoax3(1,1) = 5.d-1
-                geoax3(2,1) = 0.d0
-                geoax3(3,1) = 0.d0
-                geoax3(1,2) = 1.d0
-                geoax3(2,2) = 0.d0
-                geoax3(3,2) = 0.d0
-                geoax3(1,3) = 5.d-1
-                geoax3(2,3) = 5.d-1
-                geoax3(3,3) = 0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 3) then
-                geoax3(1,1) = 5.d-1
-                geoax3(2,1) = 0.d0
-                geoax3(3,1) = 0.d0
-                geoax3(1,2) = 5.d-1
-                geoax3(2,2) = 5.d-1
-                geoax3(3,2) = 0.d0
-                geoax3(1,3) = 0.d0
-                geoax3(2,3) = 5.d-1
-                geoax3(3,3) = 0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 4) then
-                geoax3(1,1) = 5.d-1
-                geoax3(2,1) = 5.d-1
-                geoax3(3,1) = 0.d0
-                geoax3(1,2) = 0.d0
-                geoax3(2,2) = 1.d0
-                geoax3(3,2) = 0.d0
-                geoax3(1,3) = 0.d0
-                geoax3(2,3) = 5.d-1
-                geoax3(3,3) = 0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
+        elseif (elem_code.eq.'TR6' .and. present(elin_nume)) then
+            if (elin_nume .eq. 1) then
+                node_para(1,1) = 0.d0
+                node_para(2,1) = 0.d0
+                node_para(3,1) = 0.d0
+                node_para(1,2) = 5.d-1
+                node_para(2,2) = 0.d0
+                node_para(3,2) = 0.d0
+                node_para(1,3) = 0.d0
+                node_para(2,3) = 5.d-1
+                node_para(3,3) = 0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)            
+            elseif (elin_nume .eq. 2) then
+                node_para(1,1) = 5.d-1
+                node_para(2,1) = 0.d0
+                node_para(3,1) = 0.d0
+                node_para(1,2) = 1.d0
+                node_para(2,2) = 0.d0
+                node_para(3,2) = 0.d0
+                node_para(1,3) = 5.d-1
+                node_para(2,3) = 5.d-1
+                node_para(3,3) = 0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 3) then
+                node_para(1,1) = 5.d-1
+                node_para(2,1) = 0.d0
+                node_para(3,1) = 0.d0
+                node_para(1,2) = 5.d-1
+                node_para(2,2) = 5.d-1
+                node_para(3,2) = 0.d0
+                node_para(1,3) = 0.d0
+                node_para(2,3) = 5.d-1
+                node_para(3,3) = 0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 4) then
+                node_para(1,1) = 5.d-1
+                node_para(2,1) = 5.d-1
+                node_para(3,1) = 0.d0
+                node_para(1,2) = 0.d0
+                node_para(2,2) = 1.d0
+                node_para(3,2) = 0.d0
+                node_para(1,3) = 0.d0
+                node_para(2,3) = 5.d-1
+                node_para(3,3) = 0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
             end if
-! =================================================================================================
-        elseif (typmaa.eq.'QU8' .and. present(nudec)) then
-            if (nudec .eq. 1) then
-                geoax3(1,1) = -1.d0
-                geoax3(2,1) = -1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) =  0.d0
-                geoax3(2,2) = -1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) = -1.d0
-                geoax3(2,3) =  0.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 2) then
-                geoax3(1,1) =  0.d0
-                geoax3(2,1) = -1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) =  1.d0
-                geoax3(2,2) = -1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) =  1.d0
-                geoax3(2,3) =  0.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)                      
-            elseif (nudec .eq. 3) then
-                geoax3(1,1) =  1.d0
-                geoax3(2,1) =  0.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) =  1.d0
-                geoax3(2,2) =  1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) =  0.d0
-                geoax3(2,3) =  1.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 4) then
-                geoax3(1,1) =  0.d0
-                geoax3(2,1) =  1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) = -1.d0
-                geoax3(2,2) =  1.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) = -1.d0
-                geoax3(2,3) =  0.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 5) then
-                geoax3(1,1) =  0.d0
-                geoax3(2,1) = -1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) =  1.d0
-                geoax3(2,2) =  0.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) =  0.d0
-                geoax3(2,3) =  1.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)
-            elseif (nudec .eq. 6) then
-                geoax3(1,1) =  0.d0
-                geoax3(2,1) =  1.d0
-                geoax3(3,1) =  0.d0
-                geoax3(1,2) = -1.d0
-                geoax3(2,2) =  0.d0
-                geoax3(3,2) =  0.d0
-                geoax3(1,3) =  0.d0
-                geoax3(2,3) = -1.d0
-                geoax3(3,3) =  0.d0
-                typmax='TR3'
-                call reerel(typmax,3, 3, geoax3, xd, aux)
-                corinp(1,ind1) = aux(1)
-                corinp(2,ind1) = aux(2)                     
+        elseif (elem_code.eq.'QU8' .and. present(elin_nume)) then
+            if (elin_nume .eq. 1) then
+                node_para(1,1) = -1.d0
+                node_para(2,1) = -1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) =  0.d0
+                node_para(2,2) = -1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) = -1.d0
+                node_para(2,3) =  0.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 2) then
+                node_para(1,1) =  0.d0
+                node_para(2,1) = -1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) =  1.d0
+                node_para(2,2) = -1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) =  1.d0
+                node_para(2,3) =  0.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)                      
+            elseif (elin_nume .eq. 3) then
+                node_para(1,1) =  1.d0
+                node_para(2,1) =  0.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) =  1.d0
+                node_para(2,2) =  1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) =  0.d0
+                node_para(2,3) =  1.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 4) then
+                node_para(1,1) =  0.d0
+                node_para(2,1) =  1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) = -1.d0
+                node_para(2,2) =  1.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) = -1.d0
+                node_para(2,3) =  0.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 5) then
+                node_para(1,1) =  0.d0
+                node_para(2,1) = -1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) =  1.d0
+                node_para(2,2) =  0.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) =  0.d0
+                node_para(2,3) =  1.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)
+            elseif (elin_nume .eq. 6) then
+                node_para(1,1) =  0.d0
+                node_para(2,1) =  1.d0
+                node_para(3,1) =  0.d0
+                node_para(1,2) = -1.d0
+                node_para(2,2) =  0.d0
+                node_para(3,2) =  0.d0
+                node_para(1,3) =  0.d0
+                node_para(2,3) = -1.d0
+                node_para(3,3) =  0.d0
+                elin_code='TR3'
+                call reerel(elin_code,3, 3, node_para, ksi, node_real)
+                poin_inte_real(1,i_poin_inte) = node_real(1)
+                poin_inte_real(2,i_poin_inte) = node_real(2)                     
             else
                 ASSERT(.false.)
             end if
         else
-! ----- STOCKAGE RESULTAT (pas d'espace para support)----------------------
-            corinp(1,ind1) = xd(1)
-            if ((ndim-1) .eq. 2) then
-                corinp(2,ind1) = xd(2)
+            poin_inte_real(1,i_poin_inte) = ksi(1)
+            if ((elin_dime-1) .eq. 2) then
+                poin_inte_real(2,i_poin_inte) = ksi(2)
             end if
         end if
     end do
-
+!
+! - Copy
+!
+    do i_poin_inte = 1, nb_poin_inte
+        poin_inte(1, i_poin_inte) = poin_inte_real(1, i_poin_inte)
+        poin_inte(2, i_poin_inte) = poin_inte_real(2, i_poin_inte)
+    end do
+!
 end subroutine

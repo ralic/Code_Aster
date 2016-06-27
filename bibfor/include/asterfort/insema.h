@@ -16,17 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine insema(coorma,nbnma,xp1,yp1,xp2,&
-                  yp2,corres,nbpint,tole, itvois)
-        real(kind=8) :: coorma(2,nbnma)
-        integer :: nbnma       
-        real(kind=8) :: xp1
-        real(kind=8) :: yp1
-        real(kind=8) :: xp2
-        real(kind=8) :: yp2      
-        real(kind=8) :: corres(3,3)        
-        integer :: nbpint
-        real(kind=8) :: tole
-        integer :: itvois(4)
+    subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
+                      xp1         , yp1      , xp2       , yp2      ,&
+                      nb_poin_inte, poin_inte, inte_neigh)
+        integer, intent(in) :: elem_nbnode
+        integer, intent(in) :: elem_dime
+        real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
+        real(kind=8) :: pair_tole
+        real(kind=8), intent(in) :: xp1
+        real(kind=8), intent(in) :: yp1
+        real(kind=8), intent(in) :: xp2
+        real(kind=8), intent(in) :: yp2
+        integer, intent(inout) :: nb_poin_inte
+        real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
+        integer, intent(inout) :: inte_neigh(4)
     end subroutine insema
 end interface

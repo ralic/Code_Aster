@@ -16,15 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cnvois(mail  , lima  , nbma  , idrfma, idmxma,&
-                  cninv , jtypma, conect)
-        character(len=8), intent(in) :: mail
-        character(len=24), intent(in) :: cninv
-        integer, intent(in) :: nbma
-        integer, intent(in) :: lima(nbma)
-        integer, intent(in) :: idrfma
-        integer, intent(in) :: idmxma
-        integer, intent(in) :: jtypma
-        character(len=24), intent(in) :: conect
+    subroutine cnvois(mesh      , list_elem , nb_elem, elem_indx_mini, elem_indx_maxi,&
+                      conx_inve , elem_neigh)
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: conx_inve
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: list_elem(nb_elem)
+        integer, intent(in) :: elem_indx_mini
+        integer, intent(in) :: elem_indx_maxi
+        character(len=24), intent(in) :: elem_neigh
     end subroutine cnvois
 end interface

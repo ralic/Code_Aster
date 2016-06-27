@@ -1,5 +1,8 @@
-subroutine lctria(nbpint,nbtri,resu)
-    
+subroutine lctria(nb_inte_poin, nb_tria, tria_node)
+!
+implicit none
+!
+#include "asterfort/assert.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -17,116 +20,106 @@ subroutine lctria(nbpint,nbtri,resu)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "asterfort/assert.h"
 !
-    integer, intent(in) :: nbpint
-    integer, intent(out) :: nbtri
-    integer, intent(out) :: resu(6,3)
-! ----------------------------------------------------------------------
-!         TRIANGULATION D'UN POLYGONE CONVEXE DE 3 A 8 NOEUDS
-! ----------------------------------------------------------------------
-! IN         NBPINT       NOMBRE DE POINT CONSTITUANT L'INTERSECTION
-! OUT        NBTRI        NOMBRE DE TRIANGLE DU DECOUPAGE
-! OUT        RESU         NON L'OBJET JEVEUX RESULTAT (connectivité)
-! ----------------------------------------------------------------------
+    integer, intent(in) :: nb_inte_poin
+    integer, intent(out) :: nb_tria
+    integer, intent(out) :: tria_node(6,3)
 !
-! ----------------------------------------------------------------------
-!  
-! --- Nombre de triangle dans le découpage -----------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    if (nbpint.ge.3) then
-        nbtri=nbpint-2
+! Contact - Pairing segment to segment
+!
+! Triangulation of convex polygon
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  nb_poin_inte     : number of intersection points
+! Out nb_tria          : number of triangles
+! Out tria_node        : list of triangles (defined by index of intersection points)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    tria_node(1:6,1:3) = 0
+    ASSERT(nb_inte_poin.ge.3)
+    ASSERT(nb_inte_poin.le.8)
+!
+! - Total number of triangles
+!
+    nb_tria=nb_inte_poin-2
+!
+! - Cut
+!
+    if (nb_tria.eq.1) then    
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+    else if (nb_tria.eq.2) then
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+        tria_node(2,1) =3
+        tria_node(2,2) =4
+        tria_node(2,3) =1
+    else if (nb_tria.eq.3) then
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+        tria_node(2,1) =3
+        tria_node(2,2) =4
+        tria_node(2,3) =5
+        tria_node(3,1) =5
+        tria_node(3,2) =1
+        tria_node(3,3) =3
+    else if (nb_tria.eq.4) then
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+        tria_node(2,1) =3
+        tria_node(2,2) =4
+        tria_node(2,3) =5
+        tria_node(3,1) =5
+        tria_node(3,2) =6
+        tria_node(3,3) =1
+        tria_node(4,1) =1
+        tria_node(4,2) =3
+        tria_node(4,3) =5
+    else if (nb_tria.eq.5) then
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+        tria_node(2,1) =3
+        tria_node(2,2) =4
+        tria_node(2,3) =5
+        tria_node(3,1) =5
+        tria_node(3,2) =6
+        tria_node(3,3) =7
+        tria_node(4,1) =7
+        tria_node(4,2) =1
+        tria_node(4,3) =3
+        tria_node(5,1) =3
+        tria_node(5,2) =5
+        tria_node(5,3) =7
+    else if (nb_tria.eq.6) then
+        tria_node(1,1) =1
+        tria_node(1,2) =2
+        tria_node(1,3) =3
+        tria_node(2,1) =3
+        tria_node(2,2) =4
+        tria_node(2,3) =5
+        tria_node(3,1) =5
+        tria_node(3,2) =6
+        tria_node(3,3) =7  
+        tria_node(4,1) =7
+        tria_node(4,2) =8
+        tria_node(4,3) =1
+        tria_node(5,1) =1
+        tria_node(5,2) =3
+        tria_node(5,3) =5
+        tria_node(6,1) =5
+        tria_node(6,2) =7
+        tria_node(6,3) =1
     else
         ASSERT(.false.)
-    endif
-!
-    ASSERT(nbpint.le.8)
-! --- DECOUPAGE
-    if (nbtri.eq.1) then    
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    else if (nbtri.eq.2) then
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    
-        resu(2,1) =3
-        resu(2,2) =4
-        resu(2,3) =1
-    else if (nbtri.eq.3) then
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    
-        resu(2,1) =3
-        resu(2,2) =4
-        resu(2,3) =5
-
-        resu(3,1) =5
-        resu(3,2) =1
-        resu(3,3) =3
-    else if (nbtri.eq.4) then
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    
-        resu(2,1) =3
-        resu(2,2) =4
-        resu(2,3) =5
-
-        resu(3,1) =5
-        resu(3,2) =6
-        resu(3,3) =1
-        
-        resu(4,1) =1
-        resu(4,2) =3
-        resu(4,3) =5
-    else if (nbtri.eq.5) then
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    
-        resu(2,1) =3
-        resu(2,2) =4
-        resu(2,3) =5
-
-        resu(3,1) =5
-        resu(3,2) =6
-        resu(3,3) =7
-        
-        resu(4,1) =7
-        resu(4,2) =1
-        resu(4,3) =3
-    
-        resu(5,1) =3
-        resu(5,2) =5
-        resu(5,3) =7
-    else if (nbtri.eq.6) then
-        resu(1,1) =1
-        resu(1,2) =2
-        resu(1,3) =3
-    
-        resu(2,1) =3
-        resu(2,2) =4
-        resu(2,3) =5
-
-        resu(3,1) =5
-        resu(3,2) =6
-        resu(3,3) =7
-        
-        resu(4,1) =7
-        resu(4,2) =8
-        resu(4,3) =1
-    
-        resu(5,1) =1
-        resu(5,2) =3
-        resu(5,3) =5
-
-        resu(6,1) =5
-        resu(6,2) =7
-        resu(6,3) =1
     end if
 
 end subroutine

@@ -16,13 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine gtlima(defico, izone, nbmma, nbmes, limama, limaes)
-!
-        character(len=24) :: defico
-        integer :: izone
-        integer :: nbmma
-        integer :: nbmes
-        character(len=24) :: limama
-        character(len=24) :: limaes 
+    subroutine gtlima(sdappa      , sdcont_defi, i_zone)
+        character(len=19), intent(in) :: sdappa
+        character(len=24), intent(in) :: sdcont_defi
+        integer, intent(in) :: i_zone
     end subroutine gtlima
 end interface

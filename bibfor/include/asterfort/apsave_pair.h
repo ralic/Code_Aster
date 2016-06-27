@@ -15,10 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine apsave(vectap, resoco, nmactt)
-        integer, pointer :: vectap(:)    
-        character(len=24) :: resoco
-        integer :: nmactt
-    end subroutine apsave
+    subroutine apsave_pair(i_zone      , elem_slav_nume,&
+                           nb_pair     , list_pair     ,&
+                           nb_pair_zone, list_pair_zone)
+        integer, intent(in) :: i_zone
+        integer, intent(in) :: elem_slav_nume
+        integer, intent(in) :: nb_pair
+        integer, intent(in) :: list_pair(:)
+        integer, intent(inout) :: nb_pair_zone
+        integer, pointer, intent(inout) :: list_pair_zone(:)
+    end subroutine apsave_pair
 end interface

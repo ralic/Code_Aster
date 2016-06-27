@@ -1,5 +1,9 @@
-subroutine lcodrm(cordin,nbpint,tole ,resu, ndim)
-   
+subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/ordr8.h"
 
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -19,83 +23,100 @@ subroutine lcodrm(cordin,nbpint,tole ,resu, ndim)
 ! ======================================================================
 ! aslint: disable=W1306
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/ordr8.h"
+    integer, intent(in) :: elem_dime
+    real(kind=8), intent(in) :: pair_tole
+    integer, intent(inout) :: nb_poin_inte
+    real(kind=8), intent(inout) :: poin_inte(elem_dime-1,nb_poin_inte)
 !
-    integer :: nbpint
-    integer, intent(in) :: ndim
-    real(kind=8), intent(in) :: cordin(ndim-1,nbpint)
-    real(kind=8), intent(in) :: tole
-    real(kind=8), intent(out) :: resu(ndim-1,16)
-! -------------------------------------------------------------------------------
-!        Suppression des doublons et classement des noeuds d'intersections
-! -------------------------------------------------------------------------------
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: a(nbpint), b(2)
-    real(kind=8) :: v(2), norm, auxp
-    integer :: k, ord(nbpint), indsu(nbpint), nbptr
+! Contact - Pairing segment to segment
 !
-! --- Initialisation ---------------------------------------------------
+! Suppression des doublons et classement des noeuds d'intersections
 !
-    if ((ndim-1) .eq. 2) then
-        b(1)=0.d0
-        b(2)=0.d0
-        v(1)=0.d0
-        v(2)=0.d0
-        nbptr=0
-        auxp=real(nbpint)
+! --------------------------------------------------------------------------------------------------
 !
-! --- Coordonées du barycentre de l'intesection ------------------------
-!      
-        do k=1,nbpint
-            b(1)=b(1)+cordin(1,k)/auxp
-            b(2)=b(2)+cordin(2,k)/auxp
+! In  elem_dime        : dimension of current element
+! In  pair_tole        : tolerance for pairing
+! IO  nb_poin_inte     : number of intersection points
+! IO  poin_inte        : list of intersection points
+!
+! --------------------------------------------------------------------------------------------------
+!
+    real(kind=8) :: poin_inte_sort(elem_dime-1,16)
+    real(kind=8) :: angle(nb_poin_inte), bary(2)
+    real(kind=8) :: v(2), norm
+    integer :: i_poin_inte, angle_sorted(nb_poin_inte), list_poin_next(nb_poin_inte), nb_inte_new
+!
+! --------------------------------------------------------------------------------------------------
+!
+    bary(1:2) = 0.d0
+    v(1:2)    = 0.d0
+    nb_inte_new     = 0
+    if ((elem_dime-1) .eq. 2) then
+!
+! ----- Coordinates of barycenter
+!
+        do i_poin_inte = 1,nb_poin_inte
+            bary(1) = bary(1) + poin_inte(1, i_poin_inte)/real(nb_poin_inte)
+            bary(2) = bary(2) + poin_inte(2, i_poin_inte)/real(nb_poin_inte)
         end do
 !   
-! --- Liste des angles -------------------------------------------------
+! ----- Compute angles
 !
-        do k=1, nbpint
-            v(1)=cordin(1,k)-b(1)
-            v(2)=cordin(2,k)-b(2)
-            a(k)=atan2(v(1),v(2))
+        do i_poin_inte = 1, nb_poin_inte
+            v(1) = poin_inte(1,i_poin_inte)-bary(1)
+            v(2) = poin_inte(2,i_poin_inte)-bary(2)
+            angle(i_poin_inte) = atan2(v(1),v(2))
         end do
 !
-! --- On ordonne les points dans le sens trigonométrique ---------------
+! ----- Sort angles
 !
-        call ordr8(a,nbpint,ord)  
-! --- On supprime les doublons ------------------------------------------
+        call ordr8(angle, nb_poin_inte, angle_sorted)
 !
-! --- Vecteur indice suivant --------------------------------------------
-        do k=2, nbpint
-            indsu(k-1)=k
+! ----- Set index of next points
+!
+        do i_poin_inte = 2, nb_poin_inte
+            list_poin_next(i_poin_inte-1) = i_poin_inte
         end do
-        indsu(nbpint)=1
-! --- Initialisation
-        nbptr=0
+        list_poin_next(nb_poin_inte) = 1    
 !
-        do k=1, nbpint
-            norm=sqrt((a(ord(k))-a(ord(indsu(k))))**2)
-            if (norm.gt.10*tole) then
-                nbptr=nbptr+1
-                resu(1,nbptr) = cordin(1,ord(k))
-                resu(2,nbptr) = cordin(2,ord(k))     
+! ----- Sort
+!
+        nb_inte_new=0
+        do i_poin_inte = 1, nb_poin_inte
+            norm=sqrt((angle(angle_sorted(i_poin_inte))-&
+                       angle(angle_sorted(list_poin_next(i_poin_inte))))**2)
+            if (norm .gt. 10*pair_tole) then
+                nb_inte_new = nb_inte_new+1
+                poin_inte_sort(1,nb_inte_new) = poin_inte(1,angle_sorted(i_poin_inte))
+                poin_inte_sort(2,nb_inte_new) = poin_inte(2,angle_sorted(i_poin_inte))     
             endif
         end do
-        nbpint=nbptr
-    elseif ((ndim-1) .eq. 1) then
-        resu(1,1) = cordin(1,1)
-        resu(1,2) = cordin(1,1)
-        do k=2, nbpint
-            if (cordin(1,k) .le. resu(1,1) .and.  cordin(1,k) .ge. -1.d0) then
-                resu(1,1) =  cordin(1,k)
-            elseif (cordin(1,k) .ge. resu(1,2) .and.  cordin(1,k) .le. 1.d0) then
-                resu(1,2) =  cordin(1,k)
+        nb_poin_inte = nb_inte_new
+    elseif ((elem_dime-1) .eq. 1) then
+        poin_inte_sort(1,1) = poin_inte(1,1)
+        poin_inte_sort(1,2) = poin_inte(1,1)
+        do i_poin_inte=2, nb_poin_inte
+            if (poin_inte(1,i_poin_inte) .le. poin_inte_sort(1,1) .and. &
+                poin_inte(1,i_poin_inte) .ge. -1.d0) then
+                poin_inte_sort(1,1) =  poin_inte(1,i_poin_inte)
+            elseif (poin_inte(1,i_poin_inte) .ge. poin_inte_sort(1,2) .and.&
+                    poin_inte(1,i_poin_inte) .le. 1.d0) then
+                poin_inte_sort(1,2) =  poin_inte(1,i_poin_inte)
             end if
         end do        
-        nbpint = 2 
+        nb_poin_inte = 2
+    else
+        ASSERT(.false.)
     end if
+!
+! - Copy
+!
+    poin_inte(:,:) = 0.d0
+    do i_poin_inte = 1, nb_poin_inte
+        poin_inte(1, i_poin_inte) = poin_inte_sort(1, i_poin_inte)
+        poin_inte(2, i_poin_inte) = poin_inte_sort(2, i_poin_inte)
+    end do
 !
 end subroutine

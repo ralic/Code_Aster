@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lctria(nbpint,nbtri,resu)
-    
-        integer, intent(in) :: nbpint
-        integer, intent(out) :: nbtri
-        integer, intent(out) :: resu(6,3)
+    subroutine lctria(nb_inte_poin, nb_tria, tria_node)
+        integer, intent(in) :: nb_inte_poin
+        integer, intent(out) :: nb_tria
+        integer, intent(out) :: tria_node(6,3)
     end subroutine lctria
 end interface

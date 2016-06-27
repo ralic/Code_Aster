@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ptinma(coorma,nbnma,typma,xpt,ypt,tres,tole, ndim)
-
-        real(kind=8) :: coorma(ndim-1,nbnma)
-        integer :: nbnma       
-        character(len=8) :: typma
-        real(kind=8) :: xpt          
-        real(kind=8) :: ypt
-        integer :: tres
-        real(kind=8) :: tole
-        integer :: ndim
+    subroutine ptinma(elem_nbnode, elem_dime , elem_code, elem_coor, pair_tole,&
+                      poin_coorx , poin_coory, test)
+        integer, intent(in) :: elem_nbnode
+        integer, intent(in) :: elem_dime
+        character(len=8), intent(in) :: elem_code
+        real(kind=8), intent(in) :: elem_coor(elem_dime-1,elem_nbnode)
+        real(kind=8), intent(in) :: pair_tole
+        real(kind=8), intent(in) :: poin_coorx
+        real(kind=8), intent(in) :: poin_coory
+        integer, intent(out) :: test
     end subroutine ptinma
 end interface

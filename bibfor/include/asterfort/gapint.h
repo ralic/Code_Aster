@@ -18,20 +18,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine gapint(coores, nbnes, coorma, nbnma, coorin, nbpint,&
-                     types, typma, gmoy, poidin, tole , ndim)
-!
-        real(kind=8), intent(in) :: coorma(3,nbnma)
-        integer :: nbnma       
-        real(kind=8) :: coorin(ndim-1,nbpint)
-        integer :: nbpint 
-        real(kind=8), intent(in) :: coores(3,nbnes)
-        integer :: nbnes
-        character(len=8) :: typma      
-        character(len=8) :: types        
-        real(kind=8) :: gmoy
-        real(kind=8) :: poidin
-        real(kind=8) :: tole
-        integer :: ndim
+    subroutine gapint(pair_tole     , elem_dime       ,&
+                      elem_slav_code, elem_slav_nbnode, elem_slav_coor,&
+                      elem_mast_code, elem_mast_nbnode, elem_mast_coor,&
+                      nb_poin_inte  , poin_inte       ,&
+                      gap_moy       , inte_weight     )
+        real(kind=8), intent(in) :: pair_tole
+        integer, intent(in) :: elem_dime
+        character(len=8), intent(in) :: elem_slav_code
+        integer, intent(in) :: elem_slav_nbnode
+        real(kind=8), intent(in) :: elem_slav_coor(3,elem_slav_nbnode)
+        character(len=8), intent(in) :: elem_mast_code
+        integer, intent(in) :: elem_mast_nbnode
+        real(kind=8), intent(in) :: elem_mast_coor(3,elem_mast_nbnode)
+        integer, intent(in) :: nb_poin_inte
+        real(kind=8), intent(in) :: poin_inte(elem_dime-1,nb_poin_inte)
+        real(kind=8), intent(out) :: gap_moy
+        real(kind=8), intent(out) :: inte_weight
     end subroutine gapint
 end interface
