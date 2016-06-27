@@ -1859,6 +1859,54 @@ phen.add('CONT_SL_3D', Modelisation(dim=(2,3), code='CT3',
         (MT.SEG2      , EL.COP2E3D),
     )))
 
+#-- Define SLAVE elements for LAC method (in DEFI_CONTACT) - Contact
+
+phen.add('CONT_LAC_SL_2D', Modelisation(dim=(1,2), code='LC2',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG2    , EL.LACS22D),
+        (MT.SEG3    , EL.LACS32D),
+    )))
+
+phen.add('CONT_LAC_SL_2DB', Modelisation(dim=(1,2), code='L2B',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG2    , EL.LACS22DB),
+    )))
+
+phen.add('CONT_LAC_SL_2DT', Modelisation(dim=(1,2), code='L2T',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.SEG2    , EL.LACS22DT),
+    )))
+
+phen.add('CONT_LAC_SL_3D', Modelisation(dim=(2,3), code='LC3',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TRIA3    , EL.LACT33D),
+        (MT.TRIA6    , EL.LACT63D),
+        (MT.QUAD9    , EL.LACQ93D),
+        (MT.QUAD8    , EL.LACQ83D),
+        (MT.QUAD4    , EL.LACQ43D),
+    )))
+
+phen.add('CONT_LAC_SL_3DB', Modelisation(dim=(2,3), code='L3B',
+    attrs=(
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8    , EL.LACQ83DB),
+        (MT.QUAD4    , EL.LACQ43DB),
+    )))
+
 #-- Define SLAVE elements for CONTINUE method (in DEFI_CONTACT) - Friction
 
 phen.add('FRIC_SL_2D', Modelisation(dim=(1,2), code='CF2',
