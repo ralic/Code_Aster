@@ -177,12 +177,13 @@ class MECA_2D_BARRE(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_HYDR_R(te=155,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+        OP.CHAR_MECA_HYDR_R(te=312,
+                            para_in=(
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PESA_R(te=155,
             para_in=((SP.PCAGNBA, LC.CCAGNBA), (OP.CHAR_MECA_PESA_R.PCAORIE, CCAORIE),
@@ -192,13 +193,13 @@ class MECA_2D_BARRE(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_SECH_R(te=155,
-            para_in=((SP.PCAGNBA, LC.CCAGNBA), (OP.CHAR_MECA_SECH_R.PCAORIE, CCAORIE),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
+        OP.CHAR_MECA_SECH_R(te=312,
+                            para_in=(
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_SF1D1D(te=155,
             para_in=((OP.CHAR_MECA_SF1D1D.PCAORIE, CCAORIE), (SP.PDEPLMR, DDL_MECA),

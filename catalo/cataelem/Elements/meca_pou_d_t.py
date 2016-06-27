@@ -286,13 +286,11 @@ class MECA_POU_D_T(Element):
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
-        OP.CHAR_MECA_HYDR_R(te=150,
+        OP.CHAR_MECA_HYDR_R(te=312,
                             para_in=(
-                                (SP.PGEOMER, NGEOMER), (
-                                    SP.PMATERC, LC.CMATERC),
-                            (SP.PTEMPSR, CTEMPSR), (
+                            (SP.PMATERC, LC.CMATERC), (
                             OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
-                                (SP.PVARCRR, LC.ZVARCPG), ),
+                            ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
@@ -316,15 +314,10 @@ class MECA_POU_D_T(Element):
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
-        OP.CHAR_MECA_SECH_R(te=150,
+        OP.CHAR_MECA_SECH_R(te=312,
                             para_in=(
-                            (SP.PCAGNPO, CCAGNPO), (
-                                OP.CHAR_MECA_SECH_R.PCAORIE, CCAORIE),
-                            (OP.CHAR_MECA_SECH_R.PCOMPOR, CCOMPOR), (
-                            SP.PGEOMER, NGEOMER),
-                            (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
-                            (OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG), (
-                            SP.PVARCRR, LC.ZVARCPG),
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
                             ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
