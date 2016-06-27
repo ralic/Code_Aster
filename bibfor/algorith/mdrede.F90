@@ -3,6 +3,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
     implicit none
 #include "jeveux.h"
 #include "asterc/gettco.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvid.h"
@@ -31,7 +32,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
     character(len=24) :: nomgr1
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,7 +74,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iret, j
-    integer :: ns, gno
+    integer :: ns, gno, ino
     real(kind=8), pointer :: dplcho(:) => null()
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
@@ -90,12 +91,13 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
     do 10 i = 1, nbrede
 !
-        call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu)
+        call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu, nbret=ino)
         call getvtx('RELA_EFFO_DEPL', 'GROUP_NO', iocc=i, scal=grno, nbret=gno)
         call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=comp)
         call getvid('RELA_EFFO_DEPL', 'RELATION', iocc=i, scal=fonc)
         call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', iocc=i, scal=sst, nbret=ns)
 !
+        ASSERT(ino.gt.0 .or. gno.gt.0)
         if (gno .ne. 0) then
             call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=maillage)
             call getvem(maillage, 'GROUP_NO', 'RELA_EFFO_DEPL', 'GROUP_NO', i,&

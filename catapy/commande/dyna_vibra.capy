@@ -433,7 +433,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 #       C.2.7 Force displacement relationship non linearity
         RELA_EFFO_DEPL  = FACT(statut='f',max='**',
-            regles=(UN_PARMI('NOEUD','GROUP_NO'), EXCLUS('NOEUD','GROUP_NO'),),
+            regles=(UN_PARMI('NOEUD','GROUP_NO'),),
             NOEUD       =     SIMP(statut='f',typ=no),
             GROUP_NO    =     SIMP(statut='f',typ=grno),
             SOUS_STRUC  =     SIMP(statut='f',typ='TXM'),
@@ -442,7 +442,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 #       C.2.8 Force velocity relationship non linearity
         RELA_EFFO_VITE  = FACT(statut='f',max='**',
-            regles=(UN_PARMI('NOEUD','GROUP_NO'), EXCLUS('NOEUD','GROUP_NO'),),
+            regles=(UN_PARMI('NOEUD','GROUP_NO'),),
             NOEUD       =     SIMP(statut='f',typ=no),
             GROUP_NO    =     SIMP(statut='f',typ=grno),
             SOUS_STRUC  =     SIMP(statut='f',typ='TXM'),
