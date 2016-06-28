@@ -228,6 +228,8 @@ def calc_phase_delay(t, Xt, phase_data):
         Xtv = list(Xt)
         coord  = NP.array(line) - noe_refe 
         delay = 1. / Vs * NP.dot(NP.array(direction), coord)
+        if delay < 0.0 :
+            UTMESS('F', 'SEISME_78')
         if delay < dt:
             pass
         elif delay < DUREE:

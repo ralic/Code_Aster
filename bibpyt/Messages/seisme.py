@@ -374,8 +374,11 @@ Conseil:
     76: _(u"""                       %(k1)s    %(r1)12.5e   %(r2)12.5e
 """),
 
-    77: _(u"""  Les coordonnées du noeud de référence COORD_REFE sont : ( %(r1).2f   %(r2).2f   %(r3).2f )              
+    77: _(u"""  Les coordonnées du noeud de référence COOR_REFE sont : ( %(r1).2f   %(r2).2f   %(r3).2f )              
 """),
 
+    78: _(u"""  Le temps d'arrivée est négatif: 
+                il faut changer les coordonnées du noeud de référence COOR_REFE.            
+"""),
 
 }
