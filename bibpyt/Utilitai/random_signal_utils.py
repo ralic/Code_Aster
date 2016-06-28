@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -203,6 +203,46 @@ def dsp_filtre_CP(f_in, fcorner, amoc=1.0):
     dsp_out = vale_freq ** 4 * vale_dsp * HW
     f_out = t_fonction(vale_freq, dsp_out, para=f_in.para)
     return f_out
+
+
+# ------------------------------------------------------------------------
+
+def calc_phase_delay(t, Xt, phase_data):
+    # ---------------------------------------------------------
+    # IN : 1D signal Xt, phase delay data dt =dx/Vs, coordinates of N points 
+    # OUT: ND signal with delay
+    # ---------------------------------------------------------
+    noe_interf = phase_data['NOEUDS_INTERF']
+    noe_refe = phase_data['COOR_REFE']
+    direction =  phase_data['DIRECTION']
+    Vs = phase_data['VITE_ONDE']
+
+ #   if len(noe_interf[0])== 2:
+#        z = NP.zeros((len(noe_interf[:,0]),1))
+#        noe_interf = NP.append(noe_interf, z, axis=1)
+#        #noe_interf = interf3d
+    dt = t[1]-t[0]
+    DUREE = t[-1]
+    X_out = []
+    for line  in noe_interf:
+        Xtv = list(Xt)
+        coord  = NP.array(line) - noe_refe 
+        delay = 1. / Vs * NP.dot(NP.array(direction), coord)
+        if delay < dt:
+            pass
+        elif delay < DUREE:
+            Nphase = int(delay/dt)
+            for ii in range(Nphase):
+                Xtv.insert(0, 0.0)
+                Xtv.pop()            
+        else :
+            Xtv = [0.0] * len(Xtv)
+            print 'ATTENTION : le délai de phase est supérieur à la durée du signal'
+
+        X_out.append(Xtv)
+   
+    return X_out
+
 
 #------------------------------------------------------------------
 #     PSD models

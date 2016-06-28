@@ -34,10 +34,11 @@ from Utilitai.random_signal_utils import (
     DSP2ACCE1D, itersim_SRO, gene_traj_gauss_evol1D, Rice2,
     peak, SRO2DSP, DSP2FR, corrcoefmodel, RAND_DSP, RAND_VEC,
     calc_dsp_KT, f_ARIAS, f_ARIAS_TSM, fonctm_gam, dsp_filtre_CP,
-    fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2
+    fonctm_JetH, acce_filtre_CP, f_opta, f_opt1, f_opt2, calc_phase_delay,
 )
 from Utilitai.signal_correlation_utils import (CALC_CORRE,
-              itersimcor_SRO, itersimcortir_SRO, get_group_nom_coord,
+              itersimcor_SRO, itersimcortir_SRO, get_group_nom_coord, 
+              get_no_refe,
               DSP2ACCE_ND, gene_traj_gauss_evol_ND)
 
 
@@ -94,6 +95,7 @@ class GeneAcceParameters(object):
         others.remove('MODULATION')
         others.remove('COEF_CORR')
         others.remove('MATR_COHE')
+        others.remove('PHASE')
  #  # SimulationKeys and MethodKeys
         if kwargs['COEF_CORR'] != None:
             corr_keys = {}
@@ -103,13 +105,17 @@ class GeneAcceParameters(object):
             if kwargs.get('SPEC_FRACTILE')!= None:
                 corr_keys['RATIO_HV'] = kwargs.get('RATIO_HV')
         elif kwargs['MATR_COHE'] != None:
- #            corr_keys['TYPE'] = 'VECTOR'
              ckeys = kwargs.get('MATR_COHE')[0]
              corr_keys = ckeys.cree_dict_valeurs(ckeys.mc_liste)
+        elif kwargs['PHASE'] != None:
+             ckeys = kwargs.get('PHASE')[0]
+             corr_keys = ckeys.cree_dict_valeurs(ckeys.mc_liste)
+             corr_keys['TYPE'] = 'PHASE'
         else:
            corr_keys = {}
            corr_keys['TYPE'] = 'SCALAR'
         self.simulation_keys = {'CORR_KEYS': corr_keys}
+
         if kwargs.get('DSP'):
             self.cas = 'DSP'
             GeneratorKeys = kwargs.get('DSP')[0]
@@ -336,6 +342,7 @@ class GeneratorSpectrum(Generator):
         if self.sampler.FREQ_COUP > l_freq_sro[-1]:
             sro_ref.append(ZPA)
             l_freq_sro.append(FREQ_COUP)
+#            l_freq_sro.append(self.sampler.FREQ_COUP)
         f_spec = t_fonction(l_freq_sro, sro_ref, para=self.para_sro)
         self.SRO_args.update({'FONC_SPEC': f_spec,
                               'FMIN': F_MIN,
@@ -629,19 +636,23 @@ class Simulator(object):
     def factory(simu_params):
         """create an instance of the simulator"""
         if simu_params['CAS'] == 'DSP':
-            if simu_params['CORR_KEYS']['TYPE'] != 'SCALAR':
-                 return SimulatorDSPVector(simu_params)
+            if simu_params['CORR_KEYS']['TYPE'] == 'PHASE':
+                return SimulatorDSPPhase(simu_params)
             elif simu_params['CORR_KEYS']['TYPE'] == 'SCALAR':
                 return SimulatorDSPScalar(simu_params)
-            else:
-                raise ValueError('unknown configuration')
+            else :
+                 return SimulatorDSPVector(simu_params)
+#            else:
+#                raise ValueError('unknown configuration')
         elif simu_params['CAS'] == 'SPECTRE':
-            if simu_params['CORR_KEYS']['TYPE'] != 'SCALAR':
-                 return SimulatorSPECVector(simu_params)
+            if simu_params['CORR_KEYS']['TYPE'] == 'PHASE':
+                return SimulatorSPECPhase(simu_params)
             elif simu_params['CORR_KEYS']['TYPE'] == 'SCALAR':
                 return SimulatorSPECScalar(simu_params)
-            else:
-                raise ValueError('unknown configuration')
+            else :
+                return SimulatorSPECVector(simu_params)
+#            else:
+#                raise ValueError('unknown configuration')
         else:
             raise ValueError('unknown configuration')
 
@@ -768,6 +779,7 @@ class SimulatorSPECVector(Simulator):
                            self.DEFI_COHE['MAILLAGE']) 
             self.DEFI_COHE.update({ 'DIM' : len(self.liste_nom)})
             self.DEFI_COHE.update({ 'NOEUDS_INTERF' : l2})
+
         if self.simu_params['SPEC_METHODE'] == 'SPEC_MEDIANE' and 'NB_ITER' in self.simu_params:
             self.build_TimeHistories(generator)
         else:
@@ -844,6 +856,7 @@ class SimulatorSPECVector(Simulator):
                     Xt = gene_traj_gauss_evol_ND(generator, Data_cohe, **DSP_args)
                 else:
                     Xt = DSP2ACCE_ND(DSP_args['FONC_DSP'], Data_cohe) 
+
         if specmethode == 'SPEC_FRACTILE':
             if 'FREQ_PENTE' in DSP_args:
                 alpha2 = RAND_VEC(DSP_args['MAT_COVC'],
@@ -925,6 +938,7 @@ class SimulatorSPECVector(Simulator):
                                  'FONCTION': _f_out.nom ,'NOEUD': nom_no})
                     nba = nba + 1
                 self.ntir = self.ntir + 1
+
 
 
 class SimulatorSPECScalar(Simulator):
@@ -1033,3 +1047,193 @@ class SimulatorSPECScalar(Simulator):
                 generator.tab.append({'NUME_ORDRE': self.ntir + 1,
                                     'FONCTION': _f_out.nom})
                 self.ntir = self.ntir + 1
+
+
+
+
+
+
+
+
+
+class SimulatorSPECPhase(Simulator):
+
+    """Construct vector valued signal with phase delay for SPEC class""" 
+
+    def run(self, generator):
+        """build result for phase SPEC class"""
+        macr = generator.macro
+        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        self.liste_nom, l2 = get_group_nom_coord(
+                           self.DEFI_COHE['GROUP_NO_INTERF'], 
+                           self.DEFI_COHE['MAILLAGE']) 
+        self.DEFI_COHE.update({ 'NOEUDS_INTERF' : l2})
+        if self.DEFI_COHE['COOR_REFE'] ==  None:
+            coord_ref = get_no_refe(self.DEFI_COHE)
+            self.DEFI_COHE.update({ 'COOR_REFE' : coord_ref})
+            UTMESS('I', 'SEISME_77', valr=(coord_ref[0], coord_ref[1], coord_ref[2] ))
+
+        if self.simu_params['SPEC_METHODE'] == 'SPEC_MEDIANE' and 'NB_ITER' in self.simu_params:
+            self.build_TimeHistories(generator)
+#            raise NotImplementedError('must be implemented later on')
+        else:
+            for iii in range(self.nbtirage):
+                Xt = self.build_TimeHistory(generator)
+                nba = 1
+                for accef in Xt:
+                    _f_out = DEFI_FONCTION(
+                          ABSCISSE = tuple(generator.sampler.liste_temps),
+                          ORDONNEE = tuple(accef), **self.para_fonc_traj)
+                    nom_no = self.liste_nom[nba-1]
+                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                  'FONCTION': _f_out.nom ,'NOEUD': nom_no})
+                    nba = nba + 1
+                self.ntir = self.ntir + 1
+
+    def build_TimeHistory(self, generator):
+        """build series of phase delayed Time History for Spectrum class"""
+        specmethode = self.simu_params['SPEC_METHODE'] 
+        DSP_args = generator.DSP_args
+        Data_phase = self.DEFI_COHE
+        if self.INFO == 2:
+            UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
+
+        if specmethode == 'SPEC_UNIQUE':
+            if 'NB_ITER' not in self.simu_params:
+                if 'FREQ_PENTE' in DSP_args:
+                    Xt = gene_traj_gauss_evol1D(generator, **DSP_args)
+                else:
+                    Xt = DSP2ACCE1D(DSP_args['FONC_DSP'])
+            else:#'NB_ITER' in self.method_params
+                if 'FREQ_PENTE' in DSP_args:
+                    fonc_dsp_opt, rv0 = itersim_SRO(
+                        generator, DSP_args['FONC_DSP'],
+                        NB_TIRAGE=1, **generator.SRO_args)
+                    vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt,
+                                                     DSP_args['FC'])
+                    DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
+                                          'para_R0': R0, 'para_R2': R2,
+                                          'fonc_FIT': f_FIT})
+                    Xt = gene_traj_gauss_evol1D(generator, 
+                                         rv=rv0[0], **DSP_args)
+                else:
+                    fonc_dsp_opt, rv0 = itersim_SRO(
+                         generator, DSP_args['FONC_DSP'],
+                         NB_TIRAGE=1, **generator.SRO_args)
+                    Xt = DSP2ACCE1D(fonc_dsp_opt, rv0[0])
+        if specmethode == 'SPEC_FRACTILE':
+            if 'FREQ_PENTE' in DSP_args:
+                alpha2 = RAND_VEC(DSP_args['MAT_COVC'],
+                                  len(generator.sampler.liste_w2), para=2.0)
+                DSP_args.update({'ALEA_DSP': alpha2})
+                Xt = gene_traj_gauss_evol1D(generator, **DSP_args)
+            else:
+                fonc_dsp_rv = RAND_DSP(DSP_args['MAT_COVC'],
+                                       len(generator.sampler.liste_w2),
+                                       DSP_args['FONC_DSP'])
+                Xt = DSP2ACCE1D(fonc_dsp_rv)
+        if specmethode == 'SPEC_MEDIANE':
+            if 'NB_ITER' not in self.simu_params:
+                if 'FREQ_PENTE' in DSP_args:
+                    Xt = gene_traj_gauss_evol1D(generator, **DSP_args)
+                else:
+                    Xt = DSP2ACCE1D(DSP_args['FONC_DSP'])
+        Xt = self.process_TimeHistory(generator, Xt)
+        Xtl = calc_phase_delay(generator.sampler.liste_temps, Xt, Data_phase)
+        return Xtl
+
+
+
+    def build_TimeHistories(self, generator):
+        """build Time Histories for iterated median spec case"""
+        DEFI_FONCTION = generator.macro.get_cmd('DEFI_FONCTION')
+        DSP_args = generator.DSP_args
+        Data_phase = self.DEFI_COHE
+        if 'FREQ_PENTE' in DSP_args:
+            fonc_dsp_opt, liste_rv = itersim_SRO(generator,
+                        DSP_args['FONC_DSP'], NB_TIRAGE=self.nbtirage,
+                        **generator.SRO_args)
+            vop, amo, R0, R2, f_FIT = DSP2FR(fonc_dsp_opt, DSP_args['FC'])
+            DSP_args.update({'FREQ_FOND': vop, 'AMORT': amo,
+                             'para_R0': R0, 'para_R2': R2,
+                             'fonc_FIT': f_FIT})
+            for (ntir, rvtir) in enumerate(liste_rv):
+                Xt = gene_traj_gauss_evol1D(generator, rv=rvtir, **DSP_args)
+                Xt = self.process_TimeHistory(generator, Xt)
+                Xtl = calc_phase_delay(generator.sampler.liste_temps, Xt, Data_phase)
+                nba = 1
+                for accef in Xtl:
+                    _f_out = DEFI_FONCTION(
+                         ABSCISSE=tuple(generator.sampler.liste_temps),
+                         ORDONNEE=tuple(accef), **self.para_fonc_traj)
+                    nom_no = self.liste_nom[nba-1]
+                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom ,'NOEUD':nom_no})
+                    nba = nba + 1
+                self.ntir = self.ntir + 1
+        else:
+            fonc_dsp_opt, liste_rv = itersim_SRO(generator,
+                                     DSP_args['FONC_DSP'],
+                                     NB_TIRAGE=self.nbtirage,
+                                        **generator.SRO_args)
+            for (ntir, rvtir) in enumerate(liste_rv):
+                Xt = DSP2ACCE1D(fonc_dsp_opt, rv=rvtir)
+                Xt = self.process_TimeHistory(generator, Xt)                
+                Xtl = calc_phase_delay(generator.sampler.liste_temps, Xt, Data_phase)
+                nba=1
+                for acce in Xtl:
+                    _f_out = DEFI_FONCTION(
+                         ABSCISSE=tuple(generator.sampler.liste_temps),
+                         ORDONNEE=tuple(acce), **self.para_fonc_traj)
+                    nom_no = self.liste_nom[nba-1]
+                    generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                                 'FONCTION': _f_out.nom ,'NOEUD': nom_no})
+                    nba = nba + 1
+                self.ntir = self.ntir + 1
+
+
+
+class SimulatorDSPPhase(Simulator):
+    """Construct series of signals with phase delay for DSP class""" 
+
+    def run(self, generator):
+        """build result for vector DSP class"""
+        macr = generator.macro
+        DEFI_FONCTION = macr.get_cmd('DEFI_FONCTION')
+        liste_nom, l2 = get_group_nom_coord(
+                             self.DEFI_COHE['GROUP_NO_INTERF'], 
+                             self.DEFI_COHE['MAILLAGE']) 
+        self.DEFI_COHE.update({ 'NOEUDS_INTERF' : l2})
+        if self.DEFI_COHE['COOR_REFE'] ==  None:
+            coord_ref = get_no_refe(self.DEFI_COHE)
+            UTMESS('I', 'SEISME_77', valr=(coord_ref[0], coord_ref[1], coord_ref[2] ))
+
+        for iii in range(self.nbtirage):
+            Xt = self.build_TimeHistory(generator)
+            nba = 1
+            for accef in Xt:
+                _f_out = DEFI_FONCTION(
+                          ABSCISSE = tuple(generator.sampler.liste_temps),
+                          ORDONNEE = tuple(accef), **self.para_fonc_traj)
+                nom_no = liste_nom[nba-1]
+                generator.tab.append({'NUME_ORDRE': self.ntir + 1,
+                         'FONCTION': _f_out.nom ,'NOEUD': nom_no})
+                nba = nba + 1
+            self.ntir = self.ntir + 1
+
+
+    def build_TimeHistory(self, generator):
+        """build series of delayed Time History for DSP class"""
+        Data_phase = self.DEFI_COHE
+        if self.INFO == 2:
+            UTMESS('I', 'PROBA0_13', vali=self.ntir + 1)
+        if 'FREQ_PENTE' in generator.DSP_args:
+            Xt = gene_traj_gauss_evol1D(generator, **generator.DSP_args)
+        else:
+            Xt = DSP2ACCE1D(generator.DSP_args['FONC_DSP'])        
+        Xt = self.process_TimeHistory(generator, Xt)
+        Xtl = calc_phase_delay(generator.sampler.liste_temps, Xt, Data_phase)
+        return Xtl
+
+
+

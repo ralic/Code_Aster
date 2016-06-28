@@ -128,7 +128,22 @@ def get_group_nom_coord(group_inter, nom_mail):
     liste_nom_no_int = tuple([ nom.strip() for nom in  nom_no_interf    ])
     COORD_3D = mm.cn
     coord_no_interf = COORD_3D[liste_no_interf]
+    if len(coord_no_interf[0])== 2:
+        z = NP.zeros((len(coord_no_interf[:,0]),1))
+        coord_no_interf = NP.append(coord_no_interf, z, axis=1)
     return liste_nom_no_int, coord_no_interf
+
+def get_no_refe(PHASE_DATA):
+    nom_mail = PHASE_DATA['MAILLAGE']
+    group_inter = PHASE_DATA['GROUP_NO_INTERF']
+    direction = PHASE_DATA['DIRECTION']
+    l_nom, coord_no = get_group_nom_coord(group_inter, nom_mail)
+    ldir = NP.dot(NP.array(coord_no), NP.array(direction))
+    index_min = ldir.argmin()
+    coord_refe =  coord_no[index_min]
+    return coord_refe
+
+
 
 def calc_dist2(noe_interf):
     XX = noe_interf[:,0]

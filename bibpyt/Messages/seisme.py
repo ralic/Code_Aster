@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -373,5 +373,9 @@ Conseil:
 
     76: _(u"""                       %(k1)s    %(r1)12.5e   %(r2)12.5e
 """),
+
+    77: _(u"""  Les coordonnées du noeud de référence COORD_REFE sont : ( %(r1).2f   %(r2).2f   %(r3).2f )              
+"""),
+
 
 }
