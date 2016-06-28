@@ -21,20 +21,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI',),PAR_LOT='NON')
 
-#******************************************************************************
-#DONNEES GENERALES
-#******************************************************************************
-
-
 DIR = (1.0, 0.0, 0.)
 GROUP_NO_INTER='GNOE'
 
 MAILLAGE=LIRE_MAILLAGE( FORMAT = 'ASTER', VERI_MAIL=_F(VERIF='OUI',),)
 nom_mail= 'MAILLAGE'
-
-#*************************************************************************************
-# --------------- PARAMETRES -------------------------
-#*************************************************************************************
 
 DT=0.01
 frr=6.3
@@ -45,9 +36,6 @@ TSM = 8.
 tini=0.1
 
 
-#*************************************************************************************
-# --------------- SPECTRE cible et DSP -------------------------
-#*************************************************************************************
 ZPA= 0.16
 
 SRO_NGA=DEFI_FONCTION(  NOM_PARA='FREQ',  INTERPOL='LIN',PROL_DROITE='CONSTANT',
@@ -80,19 +68,12 @@ INTKTJ0= DEFI_INTE_SPEC( DIMENSION = 1,
 POST_DSP = POST_DYNA_ALEA( INTERSPECTRE=_F( INTE_SPEC = INTKTJ0,
                                             NUME_ORDRE_J = 1,NUME_ORDRE_I = 1,
                                             DUREE = TSM, ) ,),
-#IMPR_TABLE(  TABLE =  POST_DSP )
-#table_dsp = POST_DSP.EXTR_TABLE()
-#print  table_dsp.FREQ_APPAR, table_dsp.FACT_IRRE
-
 
 L_FREQ = DEFI_LIST_REEL(DEBUT=10.,
               INTERVALLE=(_F(JUSQU_A=30., PAS=10,),),
                       );
 
 
-#*************************************************************************************
-# --------------- ACCELEROGRAMMES-------------------------
-#*************************************************************************************
 alea = 100000
 
 
@@ -268,9 +249,6 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= -0.01772116967817 ,
                         _F(VALE_CALC= -0.01772116967817  ,
                         NOM_PARA=('INST', ), VALE_PARA=(5.1),
                          FONCTION=FONC2_2,),
-#                        _F(VALE_CALC= 0.05077808111976 ,
-#                         NOM_PARA=('INST', ), VALE_PARA=(5.0),
-#                         FONCTION=FONC2_3,),
                          ),)
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.0,

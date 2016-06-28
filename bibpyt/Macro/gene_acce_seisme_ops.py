@@ -341,8 +341,8 @@ class GeneratorSpectrum(Generator):
         F_MIN = l_freq_sro[0]
         if self.sampler.FREQ_COUP > l_freq_sro[-1]:
             sro_ref.append(ZPA)
-            l_freq_sro.append(FREQ_COUP)
-#            l_freq_sro.append(self.sampler.FREQ_COUP)
+#            l_freq_sro.append(FREQ_COUP)
+            l_freq_sro.append(self.sampler.FREQ_COUP)
         f_spec = t_fonction(l_freq_sro, sro_ref, para=self.para_sro)
         self.SRO_args.update({'FONC_SPEC': f_spec,
                               'FMIN': F_MIN,
