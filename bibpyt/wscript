@@ -76,7 +76,7 @@ def check_aster_version(self):
     """
     get_srcs = self.path.get_src().ant_glob
     # just use the file if it is already in the source tree
-    pkginfo = get_srcs('*/pkginfo.py')
+    pkginfo = get_srcs('**/pkginfo.py')
     if pkginfo:
         d = {}
         execfile(pkginfo[0].abspath(), d)
