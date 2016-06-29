@@ -142,7 +142,6 @@ U1 = STAT_NON_LINE(
                                  NOM_ROUTINE='asterdruckpragecrolin',
                                  LIBRAIRIE='druckprag.so',
                                       RESI_INTE_RELA = 1.E-6,
-                                      ITER_INTE_PAS  = -10,
                                       ITER_INTE_MAXI = 100),
                      NEWTON      = _F( MATRICE  = 'TANGENTE',
                                       REAC_ITER = 1, ),

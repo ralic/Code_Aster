@@ -71,12 +71,12 @@ implicit none
     integer, parameter :: carsiz=21
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe, ndim
+    integer :: nb_elem_affe, model_dim
     integer, pointer :: v_elem_affe(:) => null()
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     real(kind=8), pointer :: p_carc_valv(:) => null()
-    character(len=16) :: algo_inte, rela_comp, nom_mod_mfront
+    character(len=16) :: algo_inte, rela_comp, model_mfront
     character(len=255) :: libr_name, subr_name
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
@@ -158,16 +158,17 @@ implicit none
 !
         call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
         if (l_mfront) then
-            if (l_mfront_offi) then
+            if (l_mfront_offi .or. l_kit_thm) then
                 call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
             else
                 call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             endif
-            call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
-            call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
-            call mfront_set_double_parameter(libr_name, subr_name, nom_mod_mfront,&
+            call comp_meca_mod(mesh       , model       ,&
+                               keywordfact, iocc        , rela_comp,&
+                               model_dim  , model_mfront)
+            call mfront_set_double_parameter(libr_name, subr_name, model_mfront,&
                                              "epsilon", resi_inte_rela)
-            call mfront_set_integer_parameter(libr_name, subr_name, nom_mod_mfront,&
+            call mfront_set_integer_parameter(libr_name, subr_name, model_mfront,&
                                               "iterMax", int(iter_inte_maxi))
         else
             call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)

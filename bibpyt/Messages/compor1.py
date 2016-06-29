@@ -99,10 +99,6 @@ Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst
  HUJEUX : erreur dans le calcul de la matrice tangente
 """),
 
-   15 : _(u"""
-Les contraintes planes ou les modèles unidimensionnels avec la méthode DEBORST ne sont pas utilisables avec MFront.
-"""),
-
     16 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 

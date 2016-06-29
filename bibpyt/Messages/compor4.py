@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,6 +62,11 @@ Comportement - Occurrence  %(i1)d"""),
   puis une occurrence pour les groupes de mailles contenant des éléments discrets (et comportement ELAS).
 
   Les types de modélisation rencontrés à l'occurrence numéro %(i1)d sont : %(k1)s et %(k2)s.
+"""),
+
+
+    14: _(u"""
+  Une modélisation dans le modèle n'est pas utilisable avec MFront.
 """),
 
     20: _(u"""         V%(i1)d : %(k1)s"""),

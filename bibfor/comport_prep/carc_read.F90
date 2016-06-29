@@ -65,7 +65,7 @@ implicit none
 !
     integer, parameter :: carsiz=21
     character(len=16) :: keywordfact=' '
-    integer :: iocc=0, iret=0, nbocc=0, ndim=0
+    integer :: iocc=0, iret=0, nbocc=0, model_dim=0
     integer :: cptr_nbvarext=0, cptr_namevarext=0, cptr_fct_ldc=0
     integer :: cptr_matprop=0, cptr_nbprop=0, nbval = 0
     character(len=16) :: algo_inte=' ', type_matr_tang=' ', method=' ', post_iter=' ', post_incr=' '
@@ -74,13 +74,14 @@ implicit none
     real(kind=8) :: parm_alpha=0.d0, resi_radi_rela=0.d0
     integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0
     real(kind=8) :: ipostiter=0.d0, ipostincr=0.d0
+    character(len=8) :: mesh = ' '
     character(len=16) :: rela_comp=' ', rela_comp_py=' '
     character(len=16) :: veri_b=' '
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
     aster_logical :: l_kit_thm=.false._1, l_mfront=.false._1
     aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1
-    character(len=16) :: texte(3)=(/ ' ',' ',' '/), nom_mod_mfront=' '
+    character(len=16) :: texte(3)=(/ ' ',' ',' '/), model_mfront=' '
     character(len=255) :: libr_name=' ', subr_name=' '
 !
 ! --------------------------------------------------------------------------------------------------
@@ -281,32 +282,34 @@ implicit none
         cptr_namevarext = 0
         cptr_fct_ldc    = 0
         if ( l_mfront ) then
-            if ( .not. present(model) ) then
-! ------------- CALC_POINT_MAT case
-                ndim = 3
-                nom_mod_mfront = '_Tridimensional'
-            else
+            if ( present(model) ) then
+                call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 ! ------------- STAT_NON_LINE case
-                call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
-                call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
+                call comp_meca_mod(mesh       , model       ,&
+                                   keywordfact, iocc        , rela_comp,&
+                                   model_dim  , model_mfront)
+            else
+! ------------- CALC_POINT_MAT case
+                model_dim    = 3
+                model_mfront = '_Tridimensional'
             endif
 !           The keywords in DEFI_MATERIAU are those for Tridimensional hypothesis
-!FIXME      ASSERT(nom_mod_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
-            call mfront_get_pointers(libr_name, subr_name, nom_mod_mfront,&
+!FIXME      ASSERT(model_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
+            call mfront_get_pointers(libr_name, subr_name, model_mfront,&
                                      cptr_nbvarext, cptr_namevarext,&
                                      cptr_fct_ldc,&
                                      cptr_matprop, cptr_nbprop)
             call getvtx(keywordfact, 'VERI_BORNE', iocc = iocc,&
                         scal = veri_b, nbret = nbval )
             if ( nbval.eq.0 ) then
-                call mfront_set_outofbounds_policy(libr_name, subr_name, nom_mod_mfront, 2)
+                call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, 2)
             else
                 if ( veri_b.eq.'ARRET' ) then
-                    call mfront_set_outofbounds_policy(libr_name, subr_name, nom_mod_mfront, 2)
+                    call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, 2)
                 elseif ( veri_b.eq.'MESSAGE' ) then
-                    call mfront_set_outofbounds_policy(libr_name, subr_name, nom_mod_mfront, 1)
+                    call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, 1)
                 else
-                    call mfront_set_outofbounds_policy(libr_name, subr_name, nom_mod_mfront, 0)
+                    call mfront_set_outofbounds_policy(libr_name, subr_name, model_mfront, 0)
                 endif
             endif
         elseif ( l_umat ) then

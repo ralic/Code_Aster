@@ -1,4 +1,6 @@
-subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
+subroutine comp_meca_mod(mesh       , model       ,&
+                         keywordfact, iocc        , rela_comp,&
+                         model_dim  , model_mfront)
 !
 implicit none
 !
@@ -11,6 +13,9 @@ implicit none
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
+#include "asterc/lccree.h"
+#include "asterc/lcdiscard.h"
+#include "asterc/lctest.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,53 +33,59 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: nicolas.sellenet at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), intent(in) :: keywordfact
-    integer :: iocc, ndime_model
     character(len=8), intent(in) :: model
-    character(len=16), intent(out) :: nom_mod_mfront
+    character(len=8), intent(in) :: mesh
+    character(len=16), intent(in) :: keywordfact
+    integer, intent(in) :: iocc
+    character(len=16), intent(in) :: rela_comp
+    integer, intent(out) :: model_dim
+    character(len=16), intent(out) :: model_mfront
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Recherche de l'hypothese de modelisation associe a une occurence
-! du mot cle facteur keywordfact
+! Find dimension and type of modelisation for MFront
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywordfact    : nom du mot cle facteur
-! In  iocc           : occurence du mot cle facteur
-! In  model          : nom du modele
-! In  mesh           : nom du maillage
-! Out nom_mod_mfront : type de modelisation
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  keywordfact      : factor keyword to read (COMPORTEMENT)
+! In  iocc             : factor keyword index
+! In  rela_comp        : RELATION comportment
+! Out model_dim        : dimension of modelisation (2D or 3D)
+! Out model_mfront     : type of modelisation MFrront
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_affe, nb_elem, ielem, nume_elem
-    integer :: nutyel, iret
-    aster_logical :: l_affe_all
+    integer :: nb_elem_affe, nb_elem, i_elem, elem_nume
+    integer :: elem_type_nume, iret
+    aster_logical :: l_affe_all, l_mfront_cp
     character(len=24) :: list_elem_affe
-    character(len=16) :: notype, type_elem, type_elem_save, principal
-    character(len=8) :: mesh
+    character(len=16) :: elem_type_name, model_type, model_type_save, principal, model_thm
+    character(len=16) :: rela_comp_py
     character(len=1) :: d1
-    integer, pointer :: maille(:) => null()
+    integer, pointer :: v_model_elem(:) => null()
     integer, pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jeveuo(model//'.MAILLE', 'L', vi=maille)
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+    model_mfront    = ' '
+    model_dim       = 0
+    model_type_save = ' '
+    list_elem_affe  = '&&COMPMECASAVE.LIST'
 !
-    list_elem_affe = '&&COMPMECASAVE.LIST'
+! - Access to model
 !
+    call jeveuo(model//'.MAILLE', 'L', vi = v_model_elem)
 !
 ! - Get list of elements where comportment is defined
 !
     call comp_read_mesh(mesh          , keywordfact, iocc        ,&
                         list_elem_affe, l_affe_all , nb_elem_affe)
-!
     if (l_affe_all) then
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
     else
@@ -82,58 +93,72 @@ implicit none
         nb_elem = nb_elem_affe
     endif
 !
-    type_elem_save = ' '
-    do ielem = 1, nb_elem
+! - Coding comportment
 !
-! ----- Element courant
+    call lccree(1, rela_comp, rela_comp_py)
+    call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', iret)
+    l_mfront_cp = iret .ne. 0
+!
+! - Loop on elements
+!
+    do i_elem = 1, nb_elem
+!
+! ----- Current element
 !
         if (l_affe_all) then
-            nume_elem = ielem
+            elem_nume = i_elem
         else
-            nume_elem = v_elem_affe(ielem)
+            elem_nume = v_elem_affe(i_elem)
         endif
 !
-! --------- Recherche du type d'element
+! ----- Type of finite element
 !
-        nutyel = maille(nume_elem)
-        if (nutyel.ne.0) then
-            call jenuno(jexnum('&CATA.TE.NOMTE', nutyel), notype)
+        elem_type_nume = v_model_elem(elem_nume)
+        if (elem_type_nume .ne. 0) then
+            call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
 !
-! --------- Type de modelisation
+! --------- Get parameters
 !
-            call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
-            call teattr('C', 'PRINCIPAL', principal, iret, typel=notype)
-            call teattr('C', 'DIM_TOPO_MODELI', d1, iret, typel=notype)
-            read(d1,'(I1)') ndime_model
-
-            if (principal(1:3) .eq. 'OUI') then
-!
-                if ( type_elem_save.eq.' ' ) type_elem_save = type_elem
-
-                if (type_elem_save.ne.type_elem) then
-                  call utmess('F','COMPOR4_13', si=iocc, nk=2, &
-                              valk=[type_elem_save, type_elem])
+            call teattr('C', 'TYPMOD'         , model_type, iret, typel=elem_type_name)
+            call teattr('C', 'PRINCIPAL'      , principal , iret, typel=elem_type_name)
+            call teattr('C', 'THM'            , model_thm , iret, typel=elem_type_name)
+            call teattr('C', 'DIM_TOPO_MODELI', d1        , iret, typel=elem_type_name)
+            read(d1,'(I1)') model_dim
+            if (principal .eq. 'OUI') then
+                if (model_type_save .eq. ' ') then
+                    model_type_save = model_type
                 endif
-!
-                if ( type_elem.eq.'COMP3D' ) then
-                    nom_mod_mfront = '_Tridimensional'
-                elseif ( type_elem.eq.'C_PLAN' ) then
-                    nom_mod_mfront = '_PlaneStress'
-                elseif ( type_elem.eq.'D_PLAN' ) then
-                    nom_mod_mfront = '_PlaneStrain'
-                elseif ( type_elem.eq.'AXIS' ) then
-                    nom_mod_mfront = '_Axisymmetrical'
-                elseif ( type_elem.eq.'NON_DEFINI' ) then
-! dans phenomene_modelisation.cata, il manque l'attribut TYPMOD pour la THM
-                    nom_mod_mfront = '_Tridimensional'
+                if (model_type_save .ne. model_type) then
+                    call utmess('F','COMPOR4_13', si=iocc, nk=2, &
+                                valk=[model_type_save, model_type])
+                endif
+                if ( model_type .eq. 'COMP3D' ) then
+                    model_mfront = '_Tridimensional'
+                elseif ( model_type .eq. 'C_PLAN' ) then
+! Deborst algorithm
+                    if (l_mfront_cp) then
+                        model_mfront = '_PlaneStress'
+                    else
+                        model_mfront = '_Axisymmetrical'
+                        model_dim    = 2
+                    endif
+                elseif ( model_type .eq. 'D_PLAN' ) then
+                    model_mfront = '_PlaneStrain'
+                elseif ( model_type .eq. 'AXIS' ) then
+                    model_mfront = '_Axisymmetrical'
+                elseif ( model_type .eq. 'COMP1D' ) then
+! Deborst algorithm
+                    model_mfront = '_Axisymmetrical'
+                    model_dim    = 2
+                elseif ( model_thm .eq. 'OUI' ) then
+                    model_mfront = '_Tridimensional'
                 else
-                    ASSERT(.false.)
+                    call utmess('F','COMPOR4_14')
                 endif
             endif
-
         endif
+    end do
 !
-    enddo
-!
+    call lcdiscard(rela_comp_py)
 !
 end subroutine

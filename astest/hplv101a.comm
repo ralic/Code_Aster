@@ -37,8 +37,18 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,      NU = 0.3, ALPHA = 0.),
                           THER=_F(  LAMBDA = 1.0,   RHO_CP = 0.0) )
 
+#MAT2=DEFI_MATERIAU(      ELAS=_F( E = 1.0,  NU = 0.3),
+#           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 10000.) )
+
 MAT2=DEFI_MATERIAU(      ELAS=_F( E = 1.0,  NU = 0.3),
-           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 10000.) )
+                         Plasticity=_F(
+                                YoungModulus = 1.0,
+                                PoissonRatio = 0.3,
+                                ThermalExpansion = 0.,
+                                s0 = 10000.,
+                                ET = 0.,
+                         ),
+                   )
 
 MAILL=LIRE_MAILLAGE(   )
 
@@ -135,7 +145,8 @@ DEPLD2=STAT_NON_LINE(
                 CHARGE = CHARMM,
                 FONC_MULT = RAMPE),
                          COMPORTEMENT=_F(
-                RELATION = 'VMIS_ISOT_LINE',
+                #RELATION = 'VMIS_ISOT_LINE',
+                RELATION='Plasticity',
                 ITER_INTE_MAXI = 30,
                 RESI_INTE_RELA = 1.E-8),
                          INCREMENT=_F(

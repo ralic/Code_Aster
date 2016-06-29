@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
-        character(len=16), intent(in) :: keywordfact
-        integer :: iocc, ndime_model
+    subroutine comp_meca_mod(mesh       , model       ,&
+                             keywordfact, iocc        , rela_comp,&
+                             model_dim  , model_mfront)
         character(len=8), intent(in) :: model
-        character(len=16), intent(out) :: nom_mod_mfront
+        character(len=8), intent(in) :: mesh
+        character(len=16), intent(in) :: keywordfact
+        integer, intent(in) :: iocc
+        character(len=16), intent(in) :: rela_comp
+        integer, intent(out) :: model_dim
+        character(len=16), intent(out) :: model_mfront
     end subroutine comp_meca_mod
 end interface

@@ -77,7 +77,7 @@ implicit none
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
     character(len=8) :: repons
-    aster_logical :: l_kit_thm, l_one_elem, l_elem_bound, l_mfront
+    aster_logical :: l_kit_thm, l_one_elem, l_elem_bound
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,7 +106,6 @@ implicit none
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
-        call comp_meca_l(rela_comp, 'MFRONT' , l_mfront)
 !
 ! ----- Warning if ELASTIC comportment and initial state
 !
@@ -133,14 +132,6 @@ implicit none
             endif
         endif
         info_comp_valk(16*(iocc-1) + 4) = type_cpla
-!
-! ----- No DeBorst with MFront
-!
-        if (l_mfront) then
-            if (l_auto_deborst) then
-                call utmess('F', 'COMPOR1_15')
-            endif
-        endif    
 !
 ! ----- Check comportment/deformation with Comportement.py
 !

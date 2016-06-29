@@ -101,9 +101,20 @@ CAREL=AFFE_CARA_ELEM(   MODELE=MO,
           ORIENTATION=_F( GROUP_NO = 'D', CARA = 'GENE_TUYAU', VALE = (0., 0., 1.,))
                               )
 
-MAT=DEFI_MATERIAU(    ELAS=_F( E = YOUNG, NU = POISSON),
-                         ECRO_LINE=_F( D_SIGM_EPSI = H, SY = SIGY)
-                        )
+#MAT=DEFI_MATERIAU(    ELAS=_F( E = YOUNG, NU = POISSON),
+#                         ECRO_LINE=_F( D_SIGM_EPSI = H, SY = SIGY)
+ #                       )
+
+
+MAT=DEFI_MATERIAU(      ELAS=_F( E = YOUNG, NU = POISSON),
+                         Plasticity=_F(
+                                YoungModulus = YOUNG,
+                                PoissonRatio = POISSON,
+                                ThermalExpansion = 0.,
+                                s0 = SIGY,
+                                ET = H,
+                         ),
+                   )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
                        AFFE=_F( TOUT = 'OUI', MATER = MAT))
@@ -141,8 +152,8 @@ U1=STAT_NON_LINE(
                 LIST_INST = LINST,
                 NUME_INST_FIN = 8
                 ),COMPORTEMENT=(
-                         _F( GROUP_MA = 'BC',  RELATION = 'VMIS_ISOT_LINE',
-                             RESI_INTE_RELA = 1.E-6 ),
+                         _F( GROUP_MA = 'BC',  RELATION = 'Plasticity',
+                             RESI_INTE_RELA = 1.E-6,ITER_CPLAN_MAXI=3 ),
                          _F( GROUP_MA = ( 'AB',  'CD',), RELATION = 'ELAS', )),
                             NEWTON=_F(
                 MATRICE = 'TANGENTE',
@@ -324,8 +335,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=U1,
                    NOM_CHAM='EPEQ_ELGA',
                    NOM_CMP='INVA_2',
-                   VALE_CALC= 1.76927936E-04,
-                   VALE_REFE=1.7692793619999999E-4,
+                   VALE_CALC=0.000176929293231,
+                   VALE_REFE=0.000176929293231,
                    PRECISION=1.E-2,
                    MAILLE='M1',),
                 _F(NUME_ORDRE=8,
@@ -409,7 +420,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=-3.0799566322653E-10,
+           VALE_CALC=-3.07995101682E-10,
            NOM_PARA='EFY',
            TABLE=TAB1,
            FILTRE=_F(NOM_PARA='INST',
@@ -483,7 +494,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=6.2923993762427E-07,
+           VALE_CALC=6.2923275702E-07,
            NOM_PARA='EFY',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='INST',
@@ -491,7 +502,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=4.0685773087769E-4,
+           VALE_CALC=0.000406858709095,
            NOM_PARA='EFZ',
            TABLE=TAB2,
            FILTRE=_F(NOM_PARA='INST',
@@ -527,7 +538,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='VAL',
                   VALE_CALC= 1.070086736E+08,
                   VALE_REFE=1.0700867361796001E8,
-                  PRECISION=1.0E-09,
+                  PRECISION=2.0E-06,
                   MAILLE='M3',),
           )
 
@@ -537,9 +548,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=U1C,
                   NOM_CHAM='UT02_ELGA',
                   NOM_CMP='VAL',
-                  VALE_CALC= 8.387566162E+06,
+                  VALE_CALC=8387575.6029,
                   VALE_REFE=8.3875661619263999E6,
-                  PRECISION=1.0E-09,
+                  PRECISION=2.0E-06,
                   MAILLE='M3',),
           )
 
@@ -551,19 +562,16 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   NOM_CMP='VAL',
                   VALE_CALC= 8.393803524E+07,
                   VALE_REFE=8.3938035236909002E7,
-                  PRECISION=1.0E-09,
+                  PRECISION=2.0E-06,
                   MAILLE='M3',),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='AUTRE_ASTER',
                   POINT=2,
                   RESULTAT=U1C,
                   NOM_CHAM='UT04_ELGA',
                   NOM_CMP='VAL',
-                  VALE_CALC= 7.004623928E+04,
-                  VALE_REFE=7.0046239281736998E4,
-                  PRECISION=1.0E-09,
+                  VALE_CALC= 70047.6053304,
                   MAILLE='M3',),
           )
 
@@ -734,7 +742,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=U1C,
                    NOM_CHAM='UT02_ELGA',
                    NOM_CMP='VAL',
-                   VALE_CALC=2.20754509E+07,
+                   VALE_CALC=22075666.2425,
                    VALE_REFE=2.2075500E7,
                    PRECISION=1.E-2,
                    MAILLE='M5',),
@@ -769,20 +777,18 @@ TEST_RESU(CHAM_ELEM=(_F(
 #-------------------------------------------------------------------
 U1D=POST_CHAMP(RESULTAT=U1, MAILLE='M5', NUME_ORDRE=1,
                MIN_MAX_SP =(
-                 _F(NOM_CHAM='VARI_ELNO', NOM_CMP='V2', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1 ),
+                 _F(NOM_CHAM='VARI_ELNO', NOM_CMP='V5', TYPE_MAXI='MAXI', NUME_CHAM_RESU=1 ),
                ))
 # verification des valeurs min/max relevees :
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  REFERENCE='AUTRE_ASTER',
                   RESULTAT=U1D,
                   NOM_CHAM='UT01_ELNO',
                   NOEUD='N13',
                   NOM_CMP='VAL',
-                  VALE_CALC=0.3333333333,
-                  VALE_REFE=0.3333333333,
-                  PRECISION=1.0E-09,
+                  VALE_CALC=1.703622787E-05,
                   MAILLE='M5',),
           )
+
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   REFERENCE='AUTRE_ASTER',

@@ -35,14 +35,31 @@ MOD=AFFE_MODELE(MAILLAGE=MAIL,
 
 #
 
-MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
-                            NU=0.3,
-                            RHO=1.,
-                            ALPHA=1.E-5,),
-                    ECRO_LINE=_F(D_SIGM_EPSI=2.E9,
-                                 SY=2.E8,),);
+#MATER=DEFI_MATERIAU(ELAS=_F(E=2.E11,
+#                            NU=0.3,
+#                            RHO=1.,
+#                            ALPHA=1.E-5,),
+#                    ECRO_LINE=_F(D_SIGM_EPSI=2.E9,
+#                                 SY=2.E8,),);
 
 #
+
+MATER=DEFI_MATERIAU(
+
+
+                ELAS=_F(
+                E = 2.E11,
+                NU = 0.30,RHO=1.,
+                ALPHA = 1.E-5),
+
+                 Plasticity=_F(
+                                YoungModulus = 2.E11,
+                                PoissonRatio = 0.30,
+                                ThermalExpansion = 1.E-5,
+                                s0 = 2.E8,
+                                ET = 2.E9,
+                         ),
+              )
 
 TABCAR=LIRE_TABLE(UNITE=38,FORMAT='LIBRE')
 
@@ -131,7 +148,10 @@ U=STAT_NON_LINE(MODELE=MOD,
                 CHAM_MATER=CHMTM,
                 CARA_ELEM=CARBA,
                 EXCIT=_F(CHARGE=LIAISON,),
-                COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),
+                COMPORTEMENT=_F(
+RELATION='Plasticity',
+#RELATION='VMIS_ISOT_LINE',
+),
                 INCREMENT=_F(LIST_INST=LINST,
                              NUME_INST_INIT=0,
                              NUME_INST_FIN=7,),

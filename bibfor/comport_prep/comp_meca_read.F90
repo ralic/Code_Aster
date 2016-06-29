@@ -61,11 +61,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=8) :: mesh = ' '
     character(len=16) :: keywordfact
-    integer :: iocc, nbocc, ndim, iret
+    integer :: iocc, nbocc, model_dim, iret
     integer :: nb_vari_all
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
-    character(len=16) :: type_matg, post_iter, nom_mod_mfront
+    character(len=16) :: type_matg, post_iter, model_mfront
     character(len=16) :: kit_comp(4)
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_exte
@@ -161,18 +162,22 @@ implicit none
 ! ----- Get external program - MFRONT
 !
         if (l_mfront) then
-            if ( .not. present(model) ) then
-! ------------- CALC_POINT_MAT case
-                ndim = 3
-                nom_mod_mfront = '_Tridimensional'
-            else
+            if ( present(model) ) then
+                call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 ! ------------- STAT_NON_LINE case
-                call comp_meca_mod(keywordfact, iocc, model, ndim, nom_mod_mfront)
+                call comp_meca_mod(mesh       , model       ,&
+                                   keywordfact, iocc        , rela_comp,&
+                                   model_dim  , model_mfront)
+            else
+! ------------- CALC_POINT_MAT case
+                model_dim    = 3
+                model_mfront = '_Tridimensional'
             endif
-            call mfront_get_nbvari(libr_name, subr_name, nom_mod_mfront, ndim, nb_vari_exte)
-            if ( nb_vari_exte.eq.0 ) then
+            call mfront_get_nbvari(libr_name, subr_name, model_mfront, model_dim, nb_vari_exte)
+            if ( nb_vari_exte .eq. 0 ) then
                 nb_vari_exte = 1
             endif
+            WRITE(6,*) 'NBVARI: ',nb_vari_exte
         endif
 !
 ! ----- Select type of comportment (incremental or total)
