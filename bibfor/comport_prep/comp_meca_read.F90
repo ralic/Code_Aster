@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/comp_meca_incr.h"
 #include "asterfort/comp_meca_mod.h"
 #include "asterfort/comp_meca_rkit.h"
+#include "asterfort/comp_read_exte.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/mfront_get_libname.h"
 #include "asterfort/mfront_get_function.h"
@@ -68,7 +69,7 @@ implicit none
     character(len=16) :: kit_comp(4)
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_exte
-    aster_logical :: l_cristal, l_umat, l_mfront, l_mfront_offi, l_kit
+    aster_logical :: l_cristal, l_umat, l_mfront, l_mfront_offi, l_kit_thm, l_kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,6 +97,12 @@ implicit none
         call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = rela_comp)
         call deprecated_behavior(rela_comp)
 !
+! ----- Detection of specific cases
+!
+        call comp_meca_l(rela_comp, 'KIT'    , l_kit)
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
+!
 ! ----- Get DEFORMATION from command file
 !
         call getvtx(keywordfact, 'DEFORMATION', iocc = iocc, scal = defo_comp)
@@ -118,15 +125,25 @@ implicit none
             endif
         endif
 !
-! ----- Detection of specific cases
+! ----- For KIT
 !
-        call comp_meca_l(rela_comp, 'CRISTAL'    , l_cristal)
-        call comp_meca_l(rela_comp, 'KIT'        , l_kit)
-        call comp_meca_l(rela_comp, 'UMAT'       , l_umat)
-        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
-        l_mfront = l_mfront_offi
-        if (.not. l_mfront) then
-            call comp_meca_l(rela_comp, 'MFRONT'     , l_mfront)
+        if (l_kit) then
+            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+        endif
+!
+! ----- Get parameters for external programs (MFRONT/UMAT)
+!
+        if (l_kit_thm) then
+            call comp_read_exte(keywordfact, iocc     , kit_comp(4)  ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
+            if (l_mfront) then
+                ASSERT(.not. l_mfront_offi)
+            endif
+        else
+            call comp_read_exte(keywordfact, iocc     , rela_comp    ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
         endif
 !
 ! ----- Get multi-comportment *CRISTAL
@@ -135,33 +152,15 @@ implicit none
             call getvid(keywordfact, 'COMPOR', iocc = iocc, scal = mult_comp)
         endif
 !
-! ----- Get KIT
-!
-        if (l_kit) then
-            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
-            if (kit_comp(4).eq.'MFRONT') then
-                l_mfront = .true.
-            endif
-        endif
-!
 ! ----- Get external program - UMAT
 !
         if (l_umat) then
             call getvis(keywordfact, 'NB_VARI', iocc = iocc, scal = nb_vari_exte)
-            call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
         endif
 !
 ! ----- Get external program - MFRONT
 !
         if (l_mfront) then
-            if (l_mfront_offi) then
-                call mfront_get_libname(libr_name)
-                call mfront_get_function(rela_comp, subr_name)
-            else
-                call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-                call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
-            endif
             if ( .not. present(model) ) then
 ! ------------- CALC_POINT_MAT case
                 ndim = 3

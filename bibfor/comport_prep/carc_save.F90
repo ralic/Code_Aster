@@ -19,6 +19,8 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdocv.h"
 #include "asterfort/nocart.h"
+#include "asterfort/comp_meca_rkit.h"
+#include "asterfort/comp_read_exte.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/utlcal.h"
 #include "asterc/mfront_set_double_parameter.h"
@@ -61,8 +63,8 @@ implicit none
 ! In  model            : name of model
 ! In  carcri           : name of <CARTE> CARCRI
 ! In  nb_cmp           : number of components in <CARTE> CARCRI
-! In  info_carc_valk : carcri informations (character)
-! In  info_carc_valr : carcri informations (real)
+! In  info_carc_valk   : carcri informations (character)
+! In  info_carc_valr   : carcri informations (real)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,8 +81,9 @@ implicit none
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
     real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
     real(kind=8) :: post_iter, post_incr
+    character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    aster_logical :: plane_stress, l_mfront, l_mfront_offi
+    aster_logical :: plane_stress, l_mfront, l_mfront_offi, l_umat, l_kit_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,6 +118,10 @@ implicit none
         rela_comp        = info_carc_valk(2*(iocc-1) + 1)
         algo_inte        = info_carc_valk(2*(iocc-1) + 2)
 !
+! ----- Detection of specific cases
+!
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+!
 ! ----- Get list of elements where comportment is defined
 !
         call comp_read_mesh(mesh          , keywordfact, iocc        ,&
@@ -131,22 +138,29 @@ implicit none
         endif
         call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
+! ----- Get parameters for external programs (MFRONT/UMAT)
+!
+        if (l_kit_thm) then
+            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+            call comp_read_exte(keywordfact, iocc     , kit_comp(4)  ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
+            if (l_mfront) then
+                ASSERT(.not. l_mfront_offi)
+            endif
+        else
+            call comp_read_exte(keywordfact, iocc     , rela_comp    ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
+        endif
+!
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
         call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
-        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
-        l_mfront = l_mfront_offi
-        if (.not. l_mfront) then
-            call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
-        endif
         if (l_mfront) then
             if (l_mfront_offi) then
-                call mfront_get_libname(libr_name)
-                call mfront_get_function(rela_comp, subr_name)
                 call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
             else
-                call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-                call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
                 call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             endif
             call dismoi('DIM_GEOM', model, 'MODELE', repi = ndim)
@@ -185,7 +199,6 @@ implicit none
 !       exte_comp UMAT / MFRONT
         p_carc_valv(19) = info_carc_valr(carsiz*(iocc-1) + 19)
         p_carc_valv(20) = info_carc_valr(carsiz*(iocc-1) + 20)
-
 !
 ! ----- Affect in <CARTE>
 !

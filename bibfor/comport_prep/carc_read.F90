@@ -3,11 +3,11 @@ subroutine carc_read(info_carc_valk, info_carc_valr, model)
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_mod.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -19,8 +19,9 @@ implicit none
 #include "asterc/umat_get_function.h"
 #include "asterc/mfront_get_pointers.h"
 #include "asterc/mfront_set_outofbounds_policy.h"
-#include "asterfort/assert.h"
+#include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
+#include "asterfort/comp_read_exte.h"
 #include "asterfort/mfront_get_libname.h"
 #include "asterfort/mfront_get_function.h"
 #include "asterfort/jedema.h"
@@ -99,7 +100,10 @@ implicit none
 ! ----- Get RELATION
 !
         call getvtx(keywordfact, 'RELATION', iocc = iocc, scal = rela_comp)
-        l_kit_thm = ((rela_comp(1:5).eq.'KIT_H') .or. (rela_comp(1:6).eq.'KIT_TH'))
+!
+! ----- Detection of specific cases
+!
+        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
 ! ----- Coding comportment (Python)
 !
@@ -137,18 +141,6 @@ implicit none
         if (iret .eq. 0) then
             iter_inte_pas = 0
         endif
-
-!
-! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
-!
-        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
-        call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
-
-        if (iter_inte_pas .lt. 0.d0) then
-            if (l_mfront_offi .or. l_mfront) then
-                call utmess('F', 'COMPOR1_95')
-            end if
-        end if
 !
 ! ----- Get ITER_CPLAN_MAXI/RESI_CPLAN_MAXI/RESI_CPLAN_RELA (Deborst method)
 !
@@ -267,31 +259,28 @@ implicit none
             endif
         endif
 !
-! ----- Get function pointers for mfront
+! ----- Get parameters for external programs (MFRONT/UMAT)
 !
-        cptr_nbvarext = 0
-        cptr_namevarext = 0
-        cptr_fct_ldc = 0
-        call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_mfront_offi)
-        l_mfront = l_mfront_offi
-        if (.not. l_mfront) then
-            call comp_meca_l(rela_comp, 'MFRONT', l_mfront)
-        endif
         if (l_kit_thm) then
             call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
-            if (.not. l_mfront) then
-                call comp_meca_l(kit_comp(4), 'MFRONT', l_mfront)
+            call comp_read_exte(keywordfact, iocc     , kit_comp(4)  ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
+            if (l_mfront) then
+                ASSERT(.not. l_mfront_offi)
             endif
+        else
+            call comp_read_exte(keywordfact, iocc     , rela_comp    ,&
+                                l_umat     , l_mfront , l_mfront_offi,&
+                                libr_name  , subr_name)
         endif
-        call comp_meca_l(rela_comp, 'UMAT', l_umat)
+!
+! ----- Get function pointers for external programs (MFRONT/UMAT)
+!
+        cptr_nbvarext   = 0
+        cptr_namevarext = 0
+        cptr_fct_ldc    = 0
         if ( l_mfront ) then
-            if (l_mfront_offi) then
-                call mfront_get_libname(libr_name)
-                call mfront_get_function(rela_comp, subr_name)
-            else
-                call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-                call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
-            endif
             if ( .not. present(model) ) then
 ! ------------- CALC_POINT_MAT case
                 ndim = 3
@@ -321,10 +310,16 @@ implicit none
                 endif
             endif
         elseif ( l_umat ) then
-            call getvtx(keywordfact, 'LIBRAIRIE', iocc = iocc, scal = libr_name)
-            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
             call umat_get_function(libr_name, subr_name, cptr_fct_ldc)
         endif
+!
+! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
+!
+        if (iter_inte_pas .lt. 0.d0) then
+            if (l_mfront_offi .or. l_mfront) then
+                call utmess('F', 'COMPOR1_95')
+            end if
+        end if
 !
         call lcdiscard(rela_comp_py)
 !
