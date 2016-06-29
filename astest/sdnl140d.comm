@@ -14,21 +14,13 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
-# DATE   : 05/12/2014
-# AUTEUR : Francis LEBOUVIER (DeltaCAD)
-# 
 # MODELISATION : 3D
-# MAILLE       : HEXA27
+# MAILLE       : HEXA8
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-ma=LIRE_MAILLAGE(FORMAT='MED');
-
-
-mail=CREA_MAILLAGE(MAILLAGE=ma,
-                   HEXA20_27=_F(TOUT='OUI'))
+mail=LIRE_MAILLAGE(FORMAT='MED');
 
 mail=MODI_MAILLAGE(reuse =mail,
                    MAILLAGE=mail,
@@ -74,7 +66,7 @@ contact=DEFI_CONTACT(MODELE=modele,
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
                              COEF_FROT=1.E7,COEF_CONT=1.E9,
-                             SANS_NOEUD = ('N91','N434','N94'), 
+                             SANS_NOEUD = ('N11','N12'), 
                              COULOMB=0.2),);
 
 #contact2 = NEWTON_PARTIEL
@@ -88,7 +80,7 @@ contact2=DEFI_CONTACT(MODELE=modele,
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
                              COEF_FROT=1.E7,COEF_CONT=1.E9,
-                             SANS_NOEUD = ('N91','N434','N94'),  
+                             SANS_NOEUD = ('N11','N12'),  
                              COULOMB=0.2),);
 
 #contact3 = PENALISE+NEWTON_PARTIEL
@@ -98,27 +90,29 @@ contact3=DEFI_CONTACT(MODELE=modele,
                      ALGO_RESO_GEOM='POINT_FIXE',
                      ALGO_RESO_CONT='NEWTON',
                      ALGO_RESO_FROT='NEWTON',
+                     REAC_GEOM = 'CONTROLE',NB_ITER_GEOM = 4, 
                      ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
                              GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
-                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
-                             SANS_NOEUD = ('N91','N434','N94'), 
+                             COEF_PENA_FROT=1.E2,COEF_PENA_CONT=1.E3,
+                             SANS_NOEUD = ('N11','N12'), 
                              COULOMB=0.2),);
 
-#contact4 = PENALISE+POINT_FIXE
+#contact4 = PENALISE+NEWTON_GENERALISE
 contact4=DEFI_CONTACT(MODELE=modele,
                      FORMULATION='CONTINUE',
                      FROTTEMENT='COULOMB',
-                     ALGO_RESO_GEOM='POINT_FIXE',
-                     ALGO_RESO_CONT='POINT_FIXE',
+                     ALGO_RESO_GEOM='NEWTON',
+                     ALGO_RESO_CONT='NEWTON',
                      ALGO_RESO_FROT='POINT_FIXE',
+                     #REAC_GEOM = 'CONTROLE',NB_ITER_GEOM = 4, 
                      ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
                              GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
-                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
-                             SANS_NOEUD = ('N91','N434','N94'),  
+                             COEF_PENA_FROT=1.E2,COEF_PENA_CONT=1.E3,
+                             SANS_NOEUD = ('N11','N12'), 
                              COULOMB=0.2),);
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 1.,
@@ -152,14 +146,35 @@ evol1=DYNA_NON_LINE(MODELE=modele,
 TEST_RESU(RESU=_F(INST      =  lfin2,
                   NOM_CHAM  =  'DEPL',
                   NOM_CMP   =  'DY',
-                  NOEUD     =  'N50',
-                  REFERENCE =  'SOURCE_EXTERNE',
+                  NOEUD     =  'N7',
                   RESULTAT  =  evol1,
-                  VALE_CALC = -0.0117212903502,
-                  VALE_REFE = -0.03,
-                  CRITERE   =  'RELATIF',
-                  PRECISION =  65.E-2,),)
+                  VALE_CALC = -0.0112465263392,
+                  CRITERE   =  'RELATIF',),)
 
+#evol4 = PENALISE+POINT_FIXE en FROTTEMENT
+evol4=DYNA_NON_LINE(MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   EXCIT=(_F(CHARGE=clim,),
+                          _F(CHARGE=force,
+                             FONC_MULT=rampe),),
+                   CONTACT=contact4,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
+                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-6,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.1, MODI_EQUI='NON',
+                                   FORMULATION='DEPLACEMENT',),);
 
+TEST_RESU(RESU=_F(INST      =  lfin2,
+                                    NOM_CHAM  =  'DEPL',
+                                    NOM_CMP   =  'DY',
+                                    NOEUD     =  'N90',
+                                    RESULTAT  =  evol4,
+                                    REFERENCE =  'AUTRE_ASTER',
+                                    VALE_CALC = -0.00908909037404,
+                                    VALE_REFE = -0.0117338528073,
+                                    PRECISION =  0.3,
+                                    CRITERE   =  'RELATIF'),)
 FIN();
 #CHECKSUM:2af6539f8f0ef1542b8f866eb84ee269  -:FIN CHECKSUM

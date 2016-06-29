@@ -14,9 +14,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
-# DATE   : 05/12/2014
-# AUTEUR : Francis LEBOUVIER (DeltaCAD)
 # 
 # MODELISATION : 3D
 # MAILLE       : TETRA4
@@ -78,6 +75,7 @@ contact2=DEFI_CONTACT(MODELE=modele,
                      FORMULATION='CONTINUE',
                      FROTTEMENT='COULOMB',
                      ALGO_RESO_GEOM='POINT_FIXE',
+                     REAC_GEOM = 'CONTROLE',NB_ITER_GEOM = 1, 
                      ALGO_RESO_CONT='NEWTON',
                      ALGO_RESO_FROT='NEWTON',
                      ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
@@ -140,7 +138,7 @@ evol1=DYNA_NON_LINE(MODELE=modele,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
                    INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
-                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-4,),
+                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-2,),
                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),);
@@ -150,10 +148,34 @@ TEST_RESU(RESU=_F(INST      =  lfin2,
                                     NOM_CMP   =  'DY',
                                     NOEUD     =  'N90',
                                     RESULTAT  =  evol1,
-                                    REFERENCE =  'AUTRE_ASTER',
                                     VALE_CALC = -0.0117338528073,
-                                    VALE_REFE = -0.03,
-                                    PRECISION =  0.7,
+                                    CRITERE   =  'RELATIF'),)
+
+
+#evol2 = Newton_PARTIEL
+evol2=DYNA_NON_LINE(MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   EXCIT=(_F(CHARGE=clim,),
+                          _F(CHARGE=force,
+                             FONC_MULT=rampe),),
+                   CONTACT=contact2,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
+                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-2,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
+                                   FORMULATION='DEPLACEMENT',),);
+
+TEST_RESU(RESU=_F(INST      =  lfin2,
+                                    NOM_CHAM  =  'DEPL',
+                                    NOM_CMP   =  'DY',
+                                    NOEUD     =  'N90',
+                                    RESULTAT  =  evol2,
+                                    REFERENCE =  'AUTRE_ASTER',
+                                    VALE_CALC = -0.0118488036118,
+                                    VALE_REFE = -0.0117338528073,
+                                    PRECISION =  0.1,
                                     CRITERE   =  'RELATIF'),)
 
 FIN();

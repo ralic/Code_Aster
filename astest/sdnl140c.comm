@@ -14,10 +14,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#
-# DATE   : 05/12/2014
-# AUTEUR : Francis LEBOUVIER (DeltaCAD)
-# 
 # MODELISATION : 3D
 # MAILLE       : HEXA8
 # ======================================================================
@@ -94,11 +90,12 @@ contact3=DEFI_CONTACT(MODELE=modele,
                      ALGO_RESO_GEOM='POINT_FIXE',
                      ALGO_RESO_CONT='NEWTON',
                      ALGO_RESO_FROT='NEWTON',
+                     REAC_GEOM = 'CONTROLE',NB_ITER_GEOM = 4, 
                      ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
                              GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
-                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
+                             COEF_PENA_FROT=1.E2,COEF_PENA_CONT=1.E3,
                              SANS_NOEUD = ('N11','N12'), 
                              COULOMB=0.2),);
 
@@ -149,13 +146,34 @@ TEST_RESU(RESU=_F(INST      =  lfin2,
                   NOM_CHAM  =  'DEPL',
                   NOM_CMP   =  'DY',
                   NOEUD     =  'N7',
-                  REFERENCE =  'SOURCE_EXTERNE',
                   RESULTAT  =  evol1,
                   VALE_CALC = -0.0112465263392,
-                  VALE_REFE = -0.03,
-                  CRITERE   =  'RELATIF',
-                  PRECISION =  65.E-2,),)
+                  CRITERE   =  'RELATIF',),)
 
+#evol3 = PENALISE+NEWTON_PARTIEL
+evol3=DYNA_NON_LINE(MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   EXCIT=(_F(CHARGE=clim,),
+                          _F(CHARGE=force,
+                             FONC_MULT=rampe),),
+                   CONTACT=contact3,
+                   COMPORTEMENT=_F(RELATION='ELAS',),
+                   NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
+                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-6,),
+                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
+                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.1, MODI_EQUI='NON',
+                                   FORMULATION='DEPLACEMENT',),);
 
+TEST_RESU(RESU=_F(INST      =  lfin2,
+                                    NOM_CHAM  =  'DEPL',
+                                    NOM_CMP   =  'DY',
+                                    NOEUD     =  'N90',
+                                    RESULTAT  =  evol3,
+                                    REFERENCE =  'AUTRE_ASTER',
+                                    VALE_CALC = -0.00908909037404,
+                                    VALE_REFE = -0.0117338528073,
+                                    PRECISION =  0.3,
+                                    CRITERE   =  'RELATIF'),)
 FIN();
 #CHECKSUM:2af6539f8f0ef1542b8f866eb84ee269  -:FIN CHECKSUM
