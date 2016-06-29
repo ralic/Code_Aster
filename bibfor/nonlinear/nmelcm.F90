@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,19 +138,16 @@ implicit none
 !
 ! ----- Prepare output fields
 !
-        if (l_cont_pena) then
-            lpaout(1) = 'PMATUNS'
-            lchout(1) = matr_elem(1:15)//'.M01'
-        else
-            lpaout(1) = 'PMATUUR'
-            lchout(1) = matr_elem(1:15)//'.M01'
-            if (phase .eq. 'FROT') then
-                lpaout(2) = 'PMATUNS'
-                lchout(2) = matr_elem(1:15)//'.M02'
-            else if (phase .eq. 'CONT' .and. l_xfem_czm) then
-                lpaout(3) = 'PCOHESO'
-                lchout(3) = ccohes
-            endif
+
+        lpaout(1) = 'PMATUNS'
+        lchout(1) = matr_elem(1:15)//'.M01'
+
+        lpaout(2) = 'PMATUUR'
+        lchout(2) = matr_elem(1:15)//'.M02'
+
+        if (phase .eq. 'CONT' .and. l_xfem_czm) then
+           lpaout(3) = 'PCOHESO'
+           lchout(3) = ccohes
         endif
 !
 ! ----- Computation
@@ -162,9 +159,7 @@ implicit none
 ! ----- Copy output fields
 !
         call reajre(matr_elem, lchout(1), base)
-        if ((phase .eq. 'FROT') .and. (l_xfem_czm.or.(.not.l_cont_pena))) then
-            call reajre(matr_elem, lchout(2), base)
-        endif
+        call reajre(matr_elem, lchout(2), base)
         if (l_xfem_czm .and. phase .eq. 'CONT') then
             call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
         endif

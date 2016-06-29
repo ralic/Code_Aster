@@ -22,11 +22,11 @@ cata_msg = {
     1 : _(u"""
 Contact méthodes discrètes.
  -> Les méthodes de contact discrètes supposent la symétrie de la matrice obtenue après assemblage.
-    Si votre modélisation produit une matrice non-symétrique, cela peut conduire à des difficultés 
+    Si votre modélisation produit une matrice non-symétrique, cela peut conduire à des difficultés
     de convergence dans le processus de Newton mais en aucun cas il ne produit des résultats faux.
 
     Si la matrice de rigidité de votre structure est symétrique, vous pouvez ignorer ce qui précède.
-    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant 
+    Enfin, il est possible de supprimer l'affichage de cette alarme en renseignant
     MATR_RIGI_SYME  ='OUI' sous le mot-clé facteur NEWTON.
 """),
 
@@ -82,14 +82,20 @@ Contact méthode continue.
 
     21 : _(u"""
 Contact méthode continue.
-  La méthode de Newton généralisée a été activé pour la méthode de  pénalisation. Pour éviter des pénétrations trop grandes,la valeur de 
-  COEF_PENA_CONT doit être au moins égal au module d'YOUNG du corps le plus rigide. 
+  La méthode de Newton généralisée a été activé pour la méthode de  pénalisation. Pour éviter des pénétrations trop grandes,la valeur de
+  COEF_PENA_CONT doit être au moins égal au module d'YOUNG du corps le plus rigide.
 """),
+
     22 : _(u"""
 Contact méthode continue.
-  Le jeu calculé dépasse de %(r1)f pour cent la plus petite longueur de la maille. On vous conseille d'augmenter la valeur de COEF_PENA_CONT et de COEF_PENA_FROT.
-  - On conseille que COEF_PENA_CONT soit  supérieure ou égal au module d'YOUNG du corps le plus mou.
-  - On conseille que COEF_PENA_FROT soit supérieure ou égale à 1.E-3*COEF_PENA_CONT. 
+  La méthode ALGO_CONT='PENALISATION  autorise une pénétration des zones de contact. On estime cette pénétration à %(r1)f pour cent par rapport à la plus petite maille du maillage.
+  COEF_PENA_CONT doit être suffisamment grand pour empêcher une trop grande pénétration. Il faut donc augmenter la valeur de COEF_PENA_CONT (et de COEF_PENA_FROT )
+  de sorte à inférieur à cinq pour cent de pénétration.
+  Conseils :
+  -------
+  Il n'y a pas de méthode de référence pour le choix des coefficients de pénalisation.
+  - une estimation empirique serait de multiplier COEF_PENA_CONT par (1+%(r1)f)/100*module d'Young du corps le plus dur
+  - Il n'y a pas d'estimation empirique pour COEF_PENA_FROT.
 """),
 
     60 : _(u"""
