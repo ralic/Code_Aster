@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -60,8 +61,8 @@ implicit none
 ! In  chmate           : name of material field
 ! In  compor           : name of <CARTE> COMPOR
 ! In  nb_cmp           : number of components in <CARTE> COMPOR
-! In  info_comp_valk : comportment informations (character)
-! In  info_comp_nvar : comportment informations (int. vari. count)
+! In  info_comp_valk   : comportment informations (character)
+! In  info_comp_nvar   : comportment informations (int. vari. count)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,9 +75,6 @@ implicit none
     character(len=19) :: ligrmo
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
-    integer :: nt
     character(len=16), pointer :: v_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(4), type_matg, post_iter
@@ -90,10 +88,6 @@ implicit none
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
     list_elem_affe = '&&COMPMECASAVE.LIST'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
     l_is_pmf  = .false.
     ligrmo    =  model//'.MODELE'
 !
@@ -147,16 +141,8 @@ implicit none
 !
 ! ----- Get elements
 !
-        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
-        if (nt .ne. 0) then
-            nb_elem_affe = 0
-            l_affe_all = .true.
-        else
-            l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
-                        2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            l_affe_all = nb_elem_affe .eq. 0
-        endif
+        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+                            list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Check if elements belong to model
 !

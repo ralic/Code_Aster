@@ -6,9 +6,9 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_mod.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdocv.h"
 #include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/utlcal.h"
 #include "asterc/mfront_set_double_parameter.h"
 #include "asterc/mfront_set_integer_parameter.h"
@@ -70,12 +70,9 @@ implicit none
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe, ndim
-    integer, pointer :: p_elem_affe(:) => null()
+    integer, pointer :: v_elem_affe(:) => null()
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
-    integer :: nt
     real(kind=8), pointer :: p_carc_valv(:) => null()
     character(len=16) :: algo_inte, rela_comp, nom_mod_mfront
     character(len=255) :: libr_name, subr_name
@@ -91,10 +88,6 @@ implicit none
     keywordfact = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc)
     list_elem_affe = '&&CARCSAVE.LIST'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
 !
 ! - Access to <CARTE>
 !
@@ -122,17 +115,10 @@ implicit none
         rela_comp        = info_carc_valk(2*(iocc-1) + 1)
         algo_inte        = info_carc_valk(2*(iocc-1) + 2)
 !
-! ----- Get mesh
+! ----- Get list of elements where comportment is defined
 !
-        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
-        if (nt .ne. 0) then
-            l_affe_all = .true.
-        else
-            l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
-                        2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe .eq. 0) l_affe_all = .true.
-        endif
+        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+                            list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Get ALGO_INTE - Plane stress
 !
@@ -206,9 +192,9 @@ implicit none
         if (l_affe_all) then
             call nocart(carcri, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', vi = p_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
             call nocart(carcri, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = p_elem_affe)
+                        limanu = v_elem_affe)
             call jedetr(list_elem_affe)
         endif
     enddo

@@ -4,7 +4,6 @@ subroutine comp_meca_chck(model  , mesh , full_elem_s, l_etat_init, info_comp_va
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
@@ -12,13 +11,12 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_full.h"
 #include "asterfort/comp_meca_l.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/nmdovd.h"
 #include "asterfort/nmdovm.h"
 #include "asterfort/thm_kit_chck.h"
-#include "asterfort/reliem.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -78,9 +76,7 @@ implicit none
     integer :: iret
     character(len=16) :: keywordfact
     integer :: iocc, nbocc
-    character(len=8) :: typmcl(2), repons
-    character(len=16) :: motcle(2)
-    integer :: nt
+    character(len=8) :: repons
     aster_logical :: l_kit_thm, l_one_elem, l_elem_bound, l_mfront
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,26 +86,15 @@ implicit none
     call getfac(keywordfact, nbocc)
 !
     list_elem_affe = '&&COMPMECASAVE.LIST'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
     do iocc = 1, nbocc
 !
-! ----- Get mesh
+! ----- Get list of elements where comportment is defined
 !
-        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
-        if (nt .ne. 0) then
-            l_affe_all = .true.
-        else
-            l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
-                        2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe .eq. 0) l_affe_all = .true.
-        endif
+        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+                            list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Get infos
 !

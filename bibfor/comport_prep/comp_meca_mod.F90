@@ -2,16 +2,13 @@ subroutine comp_meca_mod(keywordfact, iocc, model, ndime_model, nom_mod_mfront)
 !
 implicit none
 !
-#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvtx.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/reliem.h"
+#include "asterfort/comp_read_mesh.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
 !
@@ -31,6 +28,8 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: nicolas.sellenet at edf.fr
+!
     character(len=16), intent(in) :: keywordfact
     integer :: iocc, ndime_model
     character(len=8), intent(in) :: model
@@ -52,42 +51,34 @@ implicit none
 ! Out nom_mod_mfront : type de modelisation
 !
 ! --------------------------------------------------------------------------------------------------
-! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: nt, nb_elem_affe, nb_elem, j_elem_affe, ielem, nume_elem
+    integer :: nb_elem_affe, nb_elem, ielem, nume_elem
     integer :: nutyel, iret
-    logical :: l_affe_all
+    aster_logical :: l_affe_all
     character(len=24) :: list_elem_affe
-    character(len=16) :: motcle(2), notype, type_elem, type_elem_save,principal
-    character(len=8) :: typmcl(2), mesh
+    character(len=16) :: notype, type_elem, type_elem_save, principal
+    character(len=8) :: mesh
     character(len=1) :: d1
     integer, pointer :: maille(:) => null()
-
-    call jemarq()
+    integer, pointer :: v_elem_affe(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jeveuo(model//'.MAILLE', 'L', vi=maille)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
     list_elem_affe = '&&COMPMECASAVE.LIST'
-    motcle(1)   = 'GROUP_MA'
-    motcle(2)   = 'MAILLE'
-    typmcl(1)   = 'GROUP_MA'
-    typmcl(2)   = 'MAILLE'
 !
-    call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
-    if (nt .ne. 0) then
-        l_affe_all = .true.
-    else
-        l_affe_all = .false.
-        call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc, &
-                    2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-        if (nb_elem_affe .eq. 0) l_affe_all = .true.
-    endif
+!
+! - Get list of elements where comportment is defined
+!
+    call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+                        list_elem_affe, l_affe_all , nb_elem_affe)
 !
     if (l_affe_all) then
         call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', repi=nb_elem)
     else
-        call jeveuo(list_elem_affe, 'L', j_elem_affe)
+        call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
         nb_elem = nb_elem_affe
     endif
 !
@@ -99,7 +90,7 @@ implicit none
         if (l_affe_all) then
             nume_elem = ielem
         else
-            nume_elem = zi(j_elem_affe-1+ielem)
+            nume_elem = v_elem_affe(ielem)
         endif
 !
 ! --------- Recherche du type d'element
@@ -144,6 +135,5 @@ implicit none
 !
     enddo
 !
-    call jedema()
 !
 end subroutine

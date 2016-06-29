@@ -3,14 +3,12 @@ subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
-#include "asterfort/reliem.h"
+#include "asterfort/comp_read_mesh.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -53,26 +51,19 @@ implicit none
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
-    integer :: j_elem_affe
-    character(len=8) :: typmcl(2)
-    character(len=16) :: motcle(2)
-    integer :: iocc
-    integer :: nocc, nt
+    integer :: iocc, nocc
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp
     integer :: nb_vari, nume_comp, nb_vari_exte, unit_comp
     character(len=16) :: keywordfact
     character(len=16), pointer :: valv(:) => null()
     integer, pointer :: vali(:) => null()
     character(len=24), pointer :: valk(:) => null()
+    integer, pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     list_elem_affe = '&&COMPCOMPSAVE.LIST'
-    motcle(1) = 'GROUP_MA'
-    motcle(2) = 'MAILLE'
-    typmcl(1) = 'GROUP_MA'
-    typmcl(2) = 'MAILLE'
-!
+
     keywordfact = 'AFFE_COMPOR'
     call getfac(keywordfact, nocc)
 !
@@ -111,26 +102,19 @@ implicit none
         write (valv(6),'(I16)') nume_comp
         valv(7) = mult_comp
 !
-! ----- Get mesh
+! ----- Get list of elements where comportment is defined
 !
-        call getvtx(keywordfact, 'TOUT', iocc = iocc, nbret = nt)
-        if (nt .ne. 0) then
-            l_affe_all = .true.
-        else
-            l_affe_all = .false.
-            call reliem(' ', mesh, 'NU_MAILLE', keywordfact, iocc,&
-                        2, motcle, typmcl, list_elem_affe, nb_elem_affe)
-            if (nb_elem_affe .eq. 0) l_affe_all = .true.
-        endif
+        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+                            list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Affect in COMPOR <CARTE>
 !
         if (l_affe_all) then
             call nocart(compor, 1, nb_cmp)
         else
-            call jeveuo(list_elem_affe, 'L', j_elem_affe)
+            call jeveuo(list_elem_affe, 'L', vi = v_elem_affe)
             call nocart(compor, 3, nb_cmp, mode = 'NUM', nma = nb_elem_affe,&
-                        limanu = zi(j_elem_affe))
+                        limanu = v_elem_affe)
             call jedetr(list_elem_affe)
         endif
     end do
