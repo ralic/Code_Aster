@@ -1,7 +1,7 @@
 subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
                   typei, lt, lonoi, mess)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
 !
 ! IN  UNIT   : UNITE LOGIQUE D'IMPRESSION
 ! IN  IADMI  : ADRESSE DU PREMIER MOT DU SEGMENT DE VALEUR
-! IN  IDECI  : DECALLAGE PAR RAPPORT A IADMI (EN OCTETS)
+! IN  IDECI  : DECALAGE PAR RAPPORT A IADMI (EN OCTETS)
 ! IN  IDATOC : IDENTIFICATEUR DE L'OBJET
 ! IN  GENRI  : GENRE DE L'OBJET
 ! IN  TYPEI  : TYPE DE L'OBJET
@@ -143,7 +143,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
      &                     r8zon(ji+4*(l-1)+1),')'
             endif
         else if (typei .eq. 'L') then
-            ji = jiszon + kadm + ideci/lois
+            ji = 1 +  (jiszon +kadm - 1)*lois +ideci +ladm
             nl = lonoi / (20*lols)
             nd = mod( lonoi , (20*lols) ) / lols
             write ( unit , '((I7,'' - '',20(L1,1X)))') (20*(l-1)+1,(&
