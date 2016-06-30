@@ -93,6 +93,7 @@ class SIMP(N_ENTITE.ENTITE):
         """
             Cette methode sert à valider les attributs de l'objet de définition
             de la classe SIMP
+            La vérification est réalisée dans le test vocab01a
         """
         self.check_min_max()
         self.check_fr()
@@ -102,6 +103,7 @@ class SIMP(N_ENTITE.ENTITE):
         self.check_position()
         self.check_validators()
         self.check_defaut()
+        self.check_inout()
 
     def __call__(self, val, nom, parent=None):
         """

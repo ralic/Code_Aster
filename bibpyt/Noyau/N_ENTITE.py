@@ -273,3 +273,12 @@ class ENTITE:
                     self.cr.fatal(
                         _(u"La valeur de l'attribut 'defaut' n'est pas cohérente " \
                           u"avec le type %r : %r"), self.type, val)
+
+    def check_inout(self):
+        """Vérifie l'attribut inout."""
+        if self.inout not in ('in', 'out', 'inout'):
+            self.cr.fatal(
+                _(u"L'attribut 'inout' doit valoir 'in','out' ou 'inout' : %r"),
+                self.inout)
+
+
