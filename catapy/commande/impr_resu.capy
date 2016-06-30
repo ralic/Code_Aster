@@ -27,29 +27,29 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
          ),
 
          b_format_resultat  =BLOC(condition="FORMAT=='RESULTAT'",fr=tr("unité logique d'impression au format RESULTAT"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=8),
+           UNITE           =SIMP(statut='f',typ='I',defaut=8, inout='out'),
          ),
 
          b_format_ideas  =BLOC(condition="FORMAT=='IDEAS'",fr=tr("unité logique d'impression et version IDEAS"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=30),
+           UNITE           =SIMP(statut='f',typ='I',defaut=30, inout='out'),
            VERSION         =SIMP(statut='f',typ='I',defaut=5,into=(4,5)),
          ),
 
          b_format_aster  =BLOC(condition="FORMAT=='ASTER'",fr=tr("unité logique d'impression au format ASTER"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=26),
+           UNITE           =SIMP(statut='f',typ='I',defaut=26, inout='out'),
          ),
 
          b_format_castem =BLOC(condition="FORMAT=='CASTEM'",fr=tr("unité logique d'impression et version CASTEM"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=37),
+           UNITE           =SIMP(statut='f',typ='I',defaut=37, inout='out'),
            NIVE_GIBI       =SIMP(statut='f',typ='I',defaut=10,into=(3,10)),
          ),
 
          b_format_med  =BLOC(condition="FORMAT=='MED'",fr=tr("unité logique d'impression au format MED"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=80),
+           UNITE           =SIMP(statut='f',typ='I',defaut=80, inout='out'),
          ),
 
          b_format_gmsh  =BLOC(condition="FORMAT=='GMSH'",fr=tr("unité logique d'impression et version GMSH"),
-           UNITE           =SIMP(statut='f',typ='I',defaut=37),
+           UNITE           =SIMP(statut='f',typ='I',defaut=37, inout='out'),
            VERSION         =SIMP(statut='f',typ='R',defaut=1.2,into=(1.0,1.2)),
          ),
 

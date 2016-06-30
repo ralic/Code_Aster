@@ -94,7 +94,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 1-1 ideas dataset-58 :
 # ----------------------
          b_dataset_58 = BLOC(condition="FORMAT=='IDEAS_DS58'",
-           UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+           UNITE           =SIMP(statut='f',typ='I',defaut= 19 , inout='in'),
          ),
          b_dataset_58_b = BLOC(condition="(FORMAT=='IDEAS_DS58') and ((TYPE_RESU=='DYNA_TRANS') or\
                                         (TYPE_RESU=='DYNA_HARMO'))",
@@ -109,7 +109,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 1-2 ideas  :
 # ---------
          b_ideas         =BLOC(condition="FORMAT=='IDEAS'",
-           UNITE           =SIMP(statut='f',typ='I',defaut= 19 ),
+           UNITE           =SIMP(statut='f',typ='I',defaut= 19 , inout='in'),
 #           TEST            =SIMP(statut='f',typ='TXM',into=("OUI","NON"),defaut="NON" ),
            NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=l_nom_cham_pas_elga()),
            PROL_ZERO       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON",),
@@ -140,7 +140,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 # 1-4 med :
 # ---------
          b_med           =BLOC(condition = "FORMAT == 'MED'",fr=tr("Nom du champ dans le fichier MED"),
-           UNITE           =SIMP(statut='f',typ='I',defaut= 81, fr=tr("Le fichier est : fort.n."),),
+           UNITE           =SIMP(statut='f',typ='I',defaut= 81, inout='in', fr=tr("Le fichier est : fort.n."),),
            FORMAT_MED      =FACT(statut='o',max='**',
              regles=(ENSEMBLE('NOM_CMP','NOM_CMP_MED'),UN_PARMI('NOM_CHAM_MED','NOM_RESU'),),
              NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),

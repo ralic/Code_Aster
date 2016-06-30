@@ -51,7 +51,7 @@ class SIMP(N_ENTITE.ENTITE):
     def __init__(self, typ, fr="", statut='f', into=None, defaut=None,
                  min=1, max=1, homo=1, position='local',
                  val_min='**', val_max='**', docu="", validators=None,
-                 sug=None):
+                 sug=None, inout='in'):
         """
             Un mot-clé simple est caractérisé par les attributs suivants :
             - type : cet attribut est obligatoire et indique le type de valeur attendue
@@ -67,6 +67,7 @@ class SIMP(N_ENTITE.ENTITE):
             - val_max : valeur maximale autorisée
             - docu : ?
             - sug : ?
+            - inout : statut de l'unité logique pour un fichier in ou out
         """
         N_ENTITE.ENTITE.__init__(self, validators)
         # Initialisation des attributs
@@ -86,6 +87,7 @@ class SIMP(N_ENTITE.ENTITE):
         self.val_max = val_max
         self.docu = docu
         self.sug = sug
+        self.inout = inout
 
     def verif_cata(self):
         """

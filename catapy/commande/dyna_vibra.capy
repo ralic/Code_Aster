@@ -362,14 +362,13 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 #       C.2.3 Code coupling with EDYOS
         PALIER_EDYOS    = FACT(statut='f',max='**', regles=(PRESENT_ABSENT('UNITE','GROUP_NO'), PRESENT_ABSENT('UNITE','TYPE_EDYOS'),
                                                              EXCLUS('GROUP_NO','NOEUD'),),
-            UNITE       =     SIMP(statut='f',typ='I',),
+            UNITE       =     SIMP(statut='f',typ='I', inout='in'),
             GROUP_NO    =     SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
             NOEUD       =     SIMP(statut='f',typ=no),
             TYPE_EDYOS  =     SIMP(statut='f',typ='TXM',into=("PAPANL","PAFINL","PACONL","PAHYNL",),),),
 
 #       C.2.4 Buckling
-        FLAMBAGE        = FACT(statut='f',max='**',
-                               regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'), EXCLUS('NOEUD_2','GROUP_NO_2'),),
+        FLAMBAGE        = FACT(statut='f',max='**', regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'), EXCLUS('NOEUD_2','GROUP_NO_2'),),
             NOEUD_1     =     SIMP(statut='f',typ=no),
             NOEUD_2     =     SIMP(statut='f',typ=no),
             GROUP_NO_1  =     SIMP(statut='f',typ=grno),
@@ -388,8 +387,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RIGI_NOR_POST_FL= SIMP(statut='f',typ='R'),),
 
 #       C.2.5 Anti-sismic disposition non linearity
-        ANTI_SISM       = FACT(statut='f',max='**',
-            regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'), UN_PARMI('NOEUD_2','GROUP_NO_2'),),
+        ANTI_SISM       = FACT(statut='f',max='**', regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'), UN_PARMI('NOEUD_2','GROUP_NO_2'),),
             NOEUD_1     =     SIMP(statut='f',typ=no),
             NOEUD_2     =     SIMP(statut='f',typ=no),
             GROUP_NO_1  =     SIMP(statut='f',typ=grno),

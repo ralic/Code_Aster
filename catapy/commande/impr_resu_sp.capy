@@ -39,6 +39,6 @@ IMPR_RESU_SP=MACRO(nom="IMPR_RESU_SP",
         NOM_CHAM =SIMP(statut='o',typ='TXM',into=("SIEF_ELGA","VARI_ELGA","SIGM_ELGA","SIEQ_ELGA")),
         NOM_CMP  =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',),
     ),
-    UNITE =SIMP(statut='o',typ='I',max=1,min=1,fr=tr("Unité du fichier d'archive.")),
+    UNITE =SIMP(statut='o',typ='I',max=1,min=1, inout='out', fr=tr("Unité du fichier d'archive.")),
 )
 

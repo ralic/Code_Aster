@@ -29,7 +29,7 @@ POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                           fr=tr("Post-traitement des lames d'eau, par grille ou valeurs min/max"),
 
                  FORMAT       = SIMP(statut='o',typ='TXM',into=("GRACE","TABLE")),
-                 UNITE        = SIMP(statut='o',typ='I', max=1),                   # NUMERO DE L'UNITE LOGIQUE POUR LE POST
+                 UNITE        = SIMP(statut='o',typ='I', max=1, inout='out'),                   # NUMERO DE L'UNITE LOGIQUE POUR LE POST
 
                  b_lame_grace  = BLOC(condition = "FORMAT == 'GRACE' ",fr=tr("Paramètres pour le format GRACE"),
                        regles = UN_PARMI('NUME_GRILLE','TYPE_RESU',),

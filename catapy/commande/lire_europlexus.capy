@@ -23,7 +23,7 @@ LIRE_EUROPLEXUS = MACRO(nom="LIRE_EUROPLEXUS",
                         UIinfo={"groupes":("Outils-métier","Dynamique",)},
                         fr="Chainage Code_Aster-Europlexus",
 
-        UNITE_MED = SIMP(statut='o', typ='I',),
+        UNITE_MED = SIMP(statut='o', typ='I', inout='in',),
         MODELE      = SIMP(statut='o',typ=modele_sdaster),
         CARA_ELEM   = SIMP(statut='f',typ=cara_elem),
         CHAM_MATER  = SIMP(statut='f',typ=cham_mater),

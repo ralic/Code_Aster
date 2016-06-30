@@ -26,6 +26,6 @@ DEFI_COMPOSITE=OPER(nom="DEFI_COMPOSITE",op=56,sd_prod=mater_sdaster,reentrant='
                                  val_min=-90.E+0,val_max=90.E+0   ),
          ),
          IMPRESSION      =FACT(statut='f',
-           UNITE           =SIMP(statut='f',typ='I',defaut=8),
+           UNITE           =SIMP(statut='f',typ='I',defaut=8, inout='out'),
          ),
 )  ;

@@ -26,6 +26,6 @@ LIRE_FORC_MISS=OPER(nom="LIRE_FORC_MISS",op= 179,sd_prod=vect_asse_gene,
          NOM_CHAM        =SIMP(statut='f',typ='TXM',into=("DEPL","VITE","ACCE"),defaut="DEPL"),
          NUME_CHAR       =SIMP(statut='f',typ='I' ),
          ISSF            =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
-         UNITE_RESU_FORC =SIMP(statut='f',typ='I',defaut=30),         
+         UNITE_RESU_FORC =SIMP(statut='f',typ='I',defaut=30, inout='in',),         
          NOM_RESU_FORC   =SIMP(statut='f',typ='TXM' ),         
 )  ;

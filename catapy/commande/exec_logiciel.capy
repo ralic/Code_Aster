@@ -46,7 +46,7 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
 
       MAILLAGE = FACT(statut='f',
          FORMAT     = SIMP(statut='o', typ='TXM', into=("GMSH", "GIBI", "SALOME")),
-         UNITE_GEOM = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=16,
+         UNITE_GEOM = SIMP(statut='f', typ='I', val_min=10, val_max=90, defaut=16, inout='in',
                            fr=tr("Unité logique définissant le fichier (fort.N) "
                                  "contenant les données géométriques (datg)")),
       ),
