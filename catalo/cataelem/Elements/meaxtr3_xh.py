@@ -400,6 +400,12 @@ class MEAXTR3_XH(Element):
             para_out=((SP.PENERD1, EENERR), ),
         ),
 
+        OP.EPSI_ELGA(te=-2),
+
+        OP.EPSP_ELGA(te=-2),
+
+        OP.EPSP_ELNO(te=-2),
+
         OP.ERME_ELEM(te=382,
             para_in=((OP.ERME_ELEM.PCNSETO, LC.E36NEUI), (SP.PCONTNO, ECONTNO),
                      (OP.ERME_ELEM.PCONTSER, ECONTSE), (OP.ERME_ELEM.PCVOISX, LC.E18NEUI),
@@ -627,6 +633,8 @@ class MEAXTR3_XH(Element):
         OP.TOU_INI_ELNO(te=99,
             para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), ),
         ),
+
+        OP.VARI_ELNO(te=-2),
 
         OP.XFEM_XPG(te=46,
             para_in=((OP.XFEM_XPG.PCNSETO, LC.E36NEUI), (SP.PGEOMER, NGEOMER),
