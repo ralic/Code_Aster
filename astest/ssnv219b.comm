@@ -574,8 +574,8 @@ TEST_RESU(CHAM_NO=_F(REFERENCE='ANALYTIQUE',
                      PRECISION=1.0E-10,
                      TYPE_TEST='MAX',
                      CHAM_GD=DIFFUN,
-                     VALE_CALC= 4.13935026117E-05,
-                     VALE_REFE= 4.13935026178E-05,),
+                     VALE_CALC= 4.13935271431E-05,
+                     VALE_REFE= 4.13935271431E-05,),
           )
 
 # On cree une liste bidon pour pouvoir
@@ -584,7 +584,7 @@ BIDONU=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2U));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.986115378754,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.986100582660,
                         VALE_REFE=3.0,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
@@ -601,7 +601,7 @@ BIDONP=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0., 1.,
                            1., PenteL2P));
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534025066727,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534001467953,
                         VALE_REFE=2.5,
                         VALE_PARA=1.0,
                         REFERENCE='ANALYTIQUE',
@@ -609,7 +609,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534025066727,
                         FONCTION=BIDONP,),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534025066727,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.534001467953,
                         VALE_PARA=1.0,
                         FONCTION=BIDONP,
                         ),

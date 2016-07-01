@@ -179,7 +179,7 @@ implicit none
             call utmess('F', 'CONTACT_96', nk=2, valk=valk)
         endif
 ! ----- For beam elements
-        if (elem_indx .eq. 1) then
+        if (elem_indx .eq. 1 .or. elem_indx .eq. 30) then
             if (model_ndim_ .eq. 2) then
                 elem_indx = 1
             else

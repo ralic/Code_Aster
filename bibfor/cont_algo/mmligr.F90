@@ -268,7 +268,7 @@ implicit none
             v_ligrcf_liel(nb_frot+1) = typf_frot_nume
             jv_liel = 0
             do i_cont_pair = 1, nb_cont_pair
-                if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typg_cont_nume) then
+                if (v_list_pair(2*(i_cont_pair-1)+1) .eq. typf_cont_nume) then
                     if (l_cont_cont) then
                         i_cont_poin = i_cont_pair
                         i_zone      = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+14))

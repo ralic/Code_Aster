@@ -146,6 +146,9 @@ implicit none
             ASSERT(.false.)
         endif
     endif
+    if (s_algo_cont .eq. 'LAC' ) then 
+        call getvtx(keywf, 'TYPE_JACOBIEN', iocc=i_zone, scal=type_jacobian)
+    endif
 !
 ! - Get DIST_POUTRE/DIST_COQUE
 !

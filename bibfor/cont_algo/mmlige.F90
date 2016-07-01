@@ -226,31 +226,27 @@ implicit none
                                typg_cont_nume_ = typg_cont_nume,&
                                typf_cont_nume_ = typf_cont_nume,&
                                get_elem_indx_  = elem_indx)
-            call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
-            call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
+
         endif
+        call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
+        call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
         if (niv .ge. 2) then
             WRITE(6,*) 'MMLIGE: ',i_cont_pair
-            WRITE(6,*) 'MMLIGE - Master  : ',elem_mast_nume,elem_mast_name,typg_mast_name
-            WRITE(6,*) 'MMLIGE - Slave   : ',elem_slav_nume,elem_slav_name,&
-                                             typg_slav_name,typf_slav_name
-            WRITE(6,*) 'MMLIGE - Contact : ',nb_node_elem, typg_cont_name,typf_cont_name
+            WRITE(6,*) 'MMLIGE - Master  : ',elem_mast_nume, elem_mast_name, typg_mast_name
+            WRITE(6,*) 'MMLIGE - Slave   : ',elem_slav_nume, elem_slav_name, typg_slav_name
+            WRITE(6,*) 'MMLIGE - Contact : ',nb_node_elem  , typg_cont_name, typf_cont_name
         endif
 !
 ! ----- Save contact/friction element geometry parameters
 !
-        if (l_cont_cont) then
-            v_list_pair(2*(i_cont_pair-1)+1) = typg_cont_nume
-            v_list_pair(2*(i_cont_pair-1)+2) = nb_node_elem
-        else
-            v_list_pair(2*(i_cont_pair-1)+1) = typf_cont_nume
-            v_list_pair(2*(i_cont_pair-1)+2) = nb_node_elem
-        endif
+        v_list_pair(2*(i_cont_pair-1)+1) = typf_cont_nume
+        v_list_pair(2*(i_cont_pair-1)+2) = nb_node_elem
 !
 ! ----- Save contact/friction element FE parameters
 !  
         if (l_frot) then
             v_list_type(5*(elem_indx-1)+2) = v_list_type(5*(elem_indx-1)+2) + 1
+            v_list_type(5*(elem_indx-1)+3) = typf_cont_nume
             v_list_type(5*(elem_indx-1)+4) = typf_frot_nume
         else
             v_list_type(5*(elem_indx-1)+1) = v_list_type(5*(elem_indx-1)+1) + 1
