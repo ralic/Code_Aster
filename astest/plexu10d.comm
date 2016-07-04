@@ -353,6 +353,8 @@ U_EPX = CALC_EUROPLEXUS(
    AMORTISSEMENT= _F(TYPE_AMOR='QUASI_STATIQUE',
                      FREQUENCE = 65.,
                      COEF_AMOR = 1.,
+                     INST_DEB_AMOR = 0.,
+                     INST_FIN_AMOR = 0.12,
                     ),
 
    ARCHIVAGE   = _F(PAS_NBRE=3020,),
