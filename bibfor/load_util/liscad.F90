@@ -140,6 +140,9 @@ implicit none
                 v_load_info(4*nb_load+5) = 99
             else if (info_type.eq.'NEUM_PILO') then
                 v_load_info(nb_load+i_load+1) = 5
+                v_load_info(4*nb_load+5) = 99
+            else if (info_type.eq.'NEUM_PILO_F') then
+                v_load_info(nb_load+i_load+1) = 8
             else if (info_type.eq.'NEUM_SUIV') then
                 v_load_info(nb_load+i_load+1) = 4
             else if (info_type.eq.'NEUM_FO') then

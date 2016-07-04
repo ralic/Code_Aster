@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -147,7 +147,7 @@ implicit none
     do i_load = 1, nb_load
         load_name = v_load_name(i_load)(1:8)
         load_nume = v_load_info(nb_load+i_load+1)
-        if (load_nume .eq. 5) then
+        if ((load_nume .eq. 5).or.(load_nume .eq. 8)) then
             call load_neum_comp(stop       , i_load    , load_name , load_nume, 'Pilo',&
                                 ligrel_calc, nb_in_maxi, nb_in_prep, lpain    , lchin ,&
                                 base       , resu_elem , vect_elem)

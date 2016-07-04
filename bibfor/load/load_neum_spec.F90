@@ -232,6 +232,8 @@ subroutine load_neum_spec(load_name    , load_nume  , load_type  , ligrel_calc, 
             l_constant = .true.
         elseif (load_nume .eq. 5) then
             l_constant = .true.
+        elseif (load_nume .eq. 8) then
+            l_fonct_0  = .true.
         else if (load_nume .eq. 2) then
             l_fonct_0  = .true.
         else if (load_nume .eq. 3) then

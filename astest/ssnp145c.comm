@@ -80,11 +80,13 @@ SYMETRIE = AFFE_CHAR_MECA(
     )
   )
 
-PRESSION = AFFE_CHAR_MECA(
+PRES_1 = DEFI_FONCTION(NOM_PARA='X',VALE=(-1000,1.,+1000,1.))
+
+PRESSION = AFFE_CHAR_MECA_F(
   MODELE = MO,
   PRES_REP = _F(
     GROUP_MA = 'PEAU_INT',
-    PRES     = 1.
+    PRES     = PRES_1,
     )
         )
 
