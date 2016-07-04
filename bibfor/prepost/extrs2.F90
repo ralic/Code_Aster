@@ -32,7 +32,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
     aster_logical :: lrest
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -159,6 +159,7 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla,&
                 endif
                 call rdtchp(corrn, corrm, chamin(1:19), chamou(1:19), 'G',&
                             noma1, noma2, ligrel, cret)
+                if (cret.ne.0) goto 20
             else
                 call copisd('CHAMP_GD', 'G', chamin, chamou)
             endif

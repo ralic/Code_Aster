@@ -200,6 +200,38 @@ CALC_CHAMP(reuse=RESU,
            DEFORMATION=('EPSI_ELGA', 'EPSI_NOEU'),
            GROUP_MA='RENF_H');
 
+
+MA2=CREA_MAILLAGE(MAILLAGE=MA,  RESTREINT=_F(GROUP_MA='POUTRE',),);
+IMPR_CO(CONCEPT=_F(NOM=MA2))
+
+
+MO2=AFFE_MODELE(MAILLAGE=MA2,
+               AFFE=(_F(GROUP_MA=('POUTRE'),
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKTG',),
+                     ));
+
+
+MATER2=AFFE_MATERIAU(MAILLAGE=MA2,
+                    AFFE=(_F(GROUP_MA='POUTRE',
+                             MATER=MAT_T,),
+                          ),);
+
+
+CAEL2=AFFE_CARA_ELEM(MODELE=MO2,
+                    COQUE=_F(GROUP_MA='POUTRE',
+                             EPAIS=ep_beton,
+                             ANGL_REP=(0.0,0.0,),
+                             INER_ROTA='OUI',),
+                    );
+
+
+
+U1B=EXTR_RESU(RESULTAT=RESU, RESTREINT=_F(MODELE=MO2, 
+),);
+IMPR_RESU(RESU=_F(RESULTAT=U1B, NUME_ORDRE = 1))
+
+
 #-----------------------------------------------
 # CALCUL DES TEST_RESU
 #-----------------------------------------------
