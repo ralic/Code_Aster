@@ -234,6 +234,14 @@ def caract_mater(self, mater):
                 list_oper.remove("K_DESSIC")
             except ValueError:
                 pass
+            try:
+                list_oper.remove("COEF_AMOR")
+            except ValueError:
+                pass
+            try:
+                list_oper.remove("LONG_CARA")
+            except ValueError:
+                pass
 
             nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
             nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])

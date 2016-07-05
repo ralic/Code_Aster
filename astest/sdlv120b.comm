@@ -35,6 +35,15 @@ MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
                              AMOR_ALPHA=0., AMOR_BETA=0.,)
                     )
 
+NU = DEFI_CONSTANTE(VALE=0.2)
+RHO = DEFI_CONSTANTE(VALE=2400)
+# X vaut 50 sur les segments abso.
+EX = FORMULE(NOM_PARA=('X',), VALE="3.6E+10*X/50" )
+MAT2=DEFI_MATERIAU( ELAS_FO=_F(  E = EX, RHO = RHO,  NU = NU,
+                             #AMOR_ALPHA=0., AMOR_BETA=0.,
+                             )
+                    )
+
 MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                          _F(  GROUP_MA = 'SOLIDE',
                                 PHENOMENE = 'MECANIQUE',
@@ -45,8 +54,11 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                         )
 
 CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                   AFFE=_F(  GROUP_MA = ('SOLIDE', 'IABSO',),
-                          MATER = MAT1)
+                   AFFE=(_F(  GROUP_MA = ('SOLIDE', ),
+                             MATER = MAT1),
+                         _F(  GROUP_MA = ( 'IABSO',),
+                             MATER = MAT2),
+                        ),
                            )
 
 COND_LIM=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(

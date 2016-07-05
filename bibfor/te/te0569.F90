@@ -36,9 +36,11 @@ subroutine te0569(option, nomte)
     real(kind=8) :: vituni(3, 3), vect(9, 3, 27)
     real(kind=8) :: matr(27, 27), depla(27)
     real(kind=8) :: vtx, vty, vtz
-    integer :: icodre(5)
+    integer :: icodre(5), ndim2
     character(len=8) :: fami, poum
     character(len=16) :: nomres(5)
+    character(len=8) :: nompar(3)
+    real(kind=8) :: valpar(3)
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
@@ -58,9 +60,23 @@ subroutine te0569(option, nomte)
     kpg=1
     spt=1
     poum='+'
+!
+    nompar(1) = 'X'
+    nompar(2) = 'Y'
+    nompar(3) = 'Z'
+    ndim2 = 3
+!   coordonnées du barycentre de l'élément
+    valpar(:) = 0.d0
+    do i = 1, nnos
+        do j = 1, ndim2
+            valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
+        enddo
+    enddo
+!
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+                ' ', 'ELAS', 3, nompar, valpar,&
                 5, nomres, valres, icodre, 1)
+!
     e = valres(1)
     nu = valres(2)
     rho = valres(3)

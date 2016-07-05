@@ -12,7 +12,7 @@ subroutine te0499(option, nomte)
 #include "asterfort/vff2dn.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,8 +55,10 @@ subroutine te0499(option, nomte)
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
-    integer :: j, jgano, jinst, ndim, nnos
+    integer :: j, jgano, jinst, ndim, nnos, ndim2
     real(kind=8) :: coedir, typer, valfon, coedi2
+    character(len=8) :: nompar(2)
+    real(kind=8) :: valpar(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,8 +95,20 @@ subroutine te0499(option, nomte)
     kpg=1
     spt=1
     poum='+'
+    ndim2 = 2
+!
+    nompar(1) = 'X'
+    nompar(2) = 'Y'
+!   coordonnées du barycentre de l'élément
+    valpar(:) = 0.d0
+    do i = 1, nnos
+        do j = 1, ndim2
+            valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
+        enddo
+    enddo
+!    
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+                ' ', 'ELAS', 2, nompar, valpar,&
                 5, nomres, valres, icodre, 1)
 !
     e = valres(1)

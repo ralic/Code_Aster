@@ -11,7 +11,7 @@ subroutine te0498(option, nomte)
 #include "asterfort/rcvalb.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,10 +55,12 @@ subroutine te0498(option, nomte)
     real(kind=8) :: param, h, instd, ris, rip, l0, usl0
     real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon
     real(kind=8) :: xgg(9), ygg(9), zgg(9), vondn(3), vondt(3), uondn(3), uondt(3)
-    integer :: icodre(5), kpg, spt
+    integer :: icodre(5), kpg, spt, ndim2
     character(len=2) :: type
     character(len=8) :: fami, poum
     character(len=16) :: nomres(5)
+    character(len=8) :: nompar(3)
+    real(kind=8) :: valpar(3)
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'ONDE_PLAN')
@@ -93,8 +95,21 @@ subroutine te0498(option, nomte)
     kpg=1
     spt=1
     poum='+'
+    ndim2 = 3
+!
+    nompar(1) = 'X'
+    nompar(2) = 'Y'
+    nompar(3) = 'Z'
+!   coordonnées du barycentre de l'élément
+    valpar(:) = 0.d0
+    do i = 1, nnos
+        do j = 1, ndim2
+            valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
+        enddo
+    enddo
+!
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+                ' ', 'ELAS', 3, nompar, valpar,&
                 5, nomres, valres, icodre, 1)
     e = valres(1)
     nu = valres(2)

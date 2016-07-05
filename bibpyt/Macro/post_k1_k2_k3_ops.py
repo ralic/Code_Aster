@@ -2005,7 +2005,15 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             list_oper.remove("TEMP_DEF_ALPHA")
         except ValueError:
             pass
-
+        try:
+            list_oper.remove("COEF_AMOR")
+        except ValueError:
+            pass
+        try:
+            list_oper.remove("LONG_CARA")
+        except ValueError:
+            pass
+        
         nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
         nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
         nom_fonc_e_prol = nom_fonc_e.sdj.PROL.get()[0].strip()

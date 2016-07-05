@@ -44,7 +44,9 @@ subroutine te0553(option, nomte)
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: k, i, l, mater
+    integer :: k, i, l, mater, ndim2
+    character(len=8) :: nompar(2)
+    real(kind=8) :: valpar(2)
 !
 !-----------------------------------------------------------------------
     integer :: ij, imate, imatuu, j, jgano, ll, ndim
@@ -68,9 +70,22 @@ subroutine te0553(option, nomte)
     kpg=1
     spt=1
     poum='+'
+    ndim2 = 2
+!
+    nompar(1) = 'X'
+    nompar(2) = 'Y'
+!   coordonnées du barycentre de l'élément
+    valpar(:) = 0.d0
+    do i = 1, nnos
+        do j = 1, ndim2
+            valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
+        enddo
+    enddo
+!    
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 0, ' ', [0.d0],&
+                ' ', 'ELAS', 2, nompar, valpar,&
                 5, nomres, valres, icodre, 1)
+
 !
     e = valres(1)
     nu = valres(2)

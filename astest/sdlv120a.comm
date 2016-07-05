@@ -30,7 +30,22 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,
                        CREA_GROUP_NO=_F(  GROUP_MA = 'IIMPO')
                      )
 
-MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
+E = DEFI_CONSTANTE(VALE=3.6E+10)
+NU = DEFI_CONSTANTE(VALE=0.2)
+RHO = DEFI_CONSTANTE(VALE=2400)
+
+#MAT1=DEFI_MATERIAU( ELAS=_F(  E = 3.6E+10, RHO = 2400.,  NU = 0.2,
+                             #AMOR_ALPHA=0., AMOR_BETA=0.,
+                             #)
+                    #)
+
+MAT1=DEFI_MATERIAU( ELAS_FO=_F(  E = E, RHO = RHO,  NU = NU,
+                             #AMOR_ALPHA=0., AMOR_BETA=0.,
+                             )
+                    )
+# X vaut 200 sur les faces abso.
+EX = FORMULE(NOM_PARA=('X',), VALE="3.6E+10*X/200" )
+MAT2=DEFI_MATERIAU( ELAS_FO=_F(  E = EX, RHO = RHO,  NU = NU,
                              #AMOR_ALPHA=0., AMOR_BETA=0.,
                              )
                     )
@@ -46,8 +61,11 @@ MODELE=AFFE_MODELE(    MAILLAGE=MAIL,AFFE=(
                         )
 
 CHAMPMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
-                   AFFE=_F(  GROUP_MA = ('SOLIDE', 'IABSO',),
-                          MATER = MAT1)
+                   AFFE=(_F(  GROUP_MA = ('SOLIDE', ),
+                             MATER = MAT1),
+                         _F(  GROUP_MA = ( 'IABSO',),
+                             MATER = MAT2),
+                        ),
                            )
 
 
