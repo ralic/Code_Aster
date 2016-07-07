@@ -363,7 +363,7 @@ subroutine rcZ2sp1b(lieu, numsip, numsiq,&
                 if (j .eq. ncmp) then
                     call rctres(diffsig, tresca)
                     call rctres(diffsime, tresme)
-                    if (tresca .gt. trescapq) then
+                    if (tresca .gt. trescapp) then
                         trescapp=tresca
                         tresmepp=tresme
                         instp1 = i
@@ -486,7 +486,7 @@ subroutine rcZ2sp1b(lieu, numsip, numsiq,&
                 if (j .eq. ncmp) then
                     call rctres(diffsig, tresca)
                     call rctres(diffsime, tresme)
-                    if (tresca .gt. trescapq) then
+                    if (tresca .gt. trescaqq) then
                         trescaqq=tresca
                         tresmeqq=tresme
                         instq1 = i
