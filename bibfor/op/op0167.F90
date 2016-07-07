@@ -2,7 +2,7 @@ subroutine op0167()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1087,10 +1087,11 @@ subroutine op0167()
         ligrma='&&OP0167.LIMA'
         nbgrma = 0
 ! ------ GROUPE MAILLE A TRAITER ------------------------------------------------------------------
-        call getvtx('DECOUPE_LAC', 'GROUP_MA' , iocc=1, nbval=0, nbret=nbgrma)
+        call getvtx('DECOUPE_LAC', 'GROUP_MA_ESCL' , iocc=1, nbval=0, nbret=nbgrma)
         nbgrma = -nbgrma
         call wkvect(ligrma, 'V V K24', nbgrma, jlgrma)
-        call getvtx('DECOUPE_LAC', 'GROUP_MA' , iocc=1, nbval=nbgrma,vect=zk24(jlgrma),nbret=n1b)
+        call getvtx('DECOUPE_LAC', 'GROUP_MA_ESCL' , &
+                    iocc=1, nbval=nbgrma,vect=zk24(jlgrma),nbret=n1b)
         ASSERT(n1b.eq.nbgrma)
 ! ------ INITIALISATION ---------------------------------------------------------------------------
         call copisd('MAILLAGE', 'V', nomain, nomaax)

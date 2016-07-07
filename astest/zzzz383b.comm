@@ -24,7 +24,7 @@ Mail=LIRE_MAILLAGE(UNITE=20,
 
 
 Mail1=CREA_MAILLAGE(MAILLAGE=Mail,
-                   DECOUPE_LAC=_F(GROUP_MA='Edge_1',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mail1),)
@@ -54,7 +54,7 @@ Mailt6=CREA_MAILLAGE(MAILLAGE=Mail,
                    LINE_QUAD=_F(TOUT='OUI',),);
 
 Mailt61=CREA_MAILLAGE(MAILLAGE=Mailt6,
-                   DECOUPE_LAC=_F(GROUP_MA='Edge_1',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Edge_1',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mailt61),)

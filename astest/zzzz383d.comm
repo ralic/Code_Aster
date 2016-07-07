@@ -26,7 +26,7 @@ Mail=LIRE_MAILLAGE(UNITE=20,
 ###TEST TETRA4/Face
 
 Mail81=CREA_MAILLAGE(MAILLAGE=Mail,
-                   DECOUPE_LAC=_F(GROUP_MA='Face_2',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Face_2',),);
 
 
 TEST_RESU(MAILLAGE=(
@@ -48,7 +48,7 @@ TEST_RESU(MAILLAGE=(
 
 ###TEST TETRA10 :DECOUPE_LAC
 Mail83=CREA_MAILLAGE(MAILLAGE=Mail82,
-                   DECOUPE_LAC=_F(GROUP_MA='Face_2',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Face_2',),);
                    
 
 

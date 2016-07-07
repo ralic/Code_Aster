@@ -31,7 +31,7 @@ Mailh8=CREA_MAILLAGE(MAILLAGE=Mail,
 ###TEST HEXA8/Face
 
 Mail12=CREA_MAILLAGE(MAILLAGE=Mail,
-                   DECOUPE_LAC=_F(GROUP_MA='Face_2',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Face_2',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mail12),)
@@ -48,7 +48,7 @@ TEST_RESU(MAILLAGE=(
 ### TEST HEXA20/Face
 
 Mailh20=CREA_MAILLAGE(MAILLAGE=Mailh8,
-                   DECOUPE_LAC=_F(GROUP_MA='Face_2',),);
+                   DECOUPE_LAC=_F(GROUP_MA_ESCL='Face_2',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mailh20),)
@@ -72,7 +72,7 @@ Mailh27=CREA_MAILLAGE(MAILLAGE=Mailh8,
                     );
  
 Mailh82=CREA_MAILLAGE(MAILLAGE=Mailh27,
-                    DECOUPE_LAC=_F(GROUP_MA='Face_2',),);
+                    DECOUPE_LAC=_F(GROUP_MA_ESCL='Face_2',),);
 
 
 IMPR_RESU(FORMAT='MED', UNITE=80, RESU=_F(MAILLAGE=Mailh82),)
