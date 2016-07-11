@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,12 +57,7 @@ AMOR_MECA = Option(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FSA'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD  ,'0'  ),)),
+      CondCalcul('-', ((AT.FLUIDE,'OUI'),)),
     ),
 )

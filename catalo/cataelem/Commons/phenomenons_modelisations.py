@@ -64,6 +64,9 @@ phen.add('2D_DIS_TR', Modelisation(dim=(-1,2), code='2TR',
     )))
 
 phen.add('2D_FLUIDE', Modelisation(dim=(2,2), code='2FL',
+    attrs=(
+        (AT.FLUIDE,'OUI'),
+    ),
     elements=(
         (MT.TRIA3     , EL.MEFLTR3),
         (MT.QUAD4     , EL.MEFLQU4),
@@ -76,6 +79,7 @@ phen.add('2D_FLUIDE', Modelisation(dim=(2,2), code='2FL',
 
 phen.add('2D_FLUI_ABSO', Modelisation(dim=(1,2), code='2FA',
     attrs=(
+        (AT.FLUIDE,'OUI'),
         (AT.ABSO,'OUI'),
     ),
     elements=(
@@ -84,6 +88,10 @@ phen.add('2D_FLUI_ABSO', Modelisation(dim=(1,2), code='2FA',
     )))
 
 phen.add('2D_FLUI_PESA', Modelisation(dim=(2,2), code='2FP',
+    attrs=(
+        (AT.FLUIDE,'OUI'),
+        (AT.PESA,'OUI'),
+    ),
     elements=(
         (MT.TRIA3     , EL.MEFP_FACE3),
         (MT.QUAD4     , EL.MEFP_FACE4),
@@ -93,6 +101,10 @@ phen.add('2D_FLUI_PESA', Modelisation(dim=(2,2), code='2FP',
     )))
 
 phen.add('2D_FLUI_STRU', Modelisation(dim=(1,2), code='FS2',
+    attrs=(
+        (AT.FLUIDE,'OUI'),
+        (AT.FSI,'OUI'),
+    ),
     elements=(
         (MT.SEG2      , EL.MEFSSE2),
         (MT.SEG3      , EL.MEFSSE3),
@@ -427,6 +439,9 @@ phen.add('3D_FAISCEAU', Modelisation(dim=(3,3), code='3DF',
     )))
 
 phen.add('3D_FLUIDE', Modelisation(dim=(3,3), code='3FL',
+    attrs=(
+        (AT.FLUIDE,'OUI'),
+    ),
     elements=(
         (MT.HEXA8     , EL.MEFL_HEXA8),
         (MT.HEXA20    , EL.MEFL_HEXA20),
@@ -444,6 +459,7 @@ phen.add('3D_FLUIDE', Modelisation(dim=(3,3), code='3FL',
 
 phen.add('3D_FLUI_ABSO', Modelisation(dim=(2,3), code='3FA',
     attrs=(
+        (AT.FLUIDE,'OUI'),
         (AT.ABSO,'OUI'),
     ),
     elements=(
@@ -1180,6 +1196,7 @@ phen.add('AXIS_ELDI', Modelisation(dim=(2,2), code='ADI',
 
 phen.add('AXIS_FLUIDE', Modelisation(dim=(2,2), code='AXF',
     attrs=(
+        (AT.FLUIDE,'OUI'),
         (AT.AXIS,'OUI'),
     ),
     elements=(
@@ -1194,7 +1211,9 @@ phen.add('AXIS_FLUIDE', Modelisation(dim=(2,2), code='AXF',
 
 phen.add('AXIS_FLUI_STRU', Modelisation(dim=(1,2), code='FSA',
     attrs=(
+        (AT.FLUIDE,'OUI'),
         (AT.AXIS,'OUI'),
+        (AT.FSI,'OUI'),
     ),
     elements=(
         (MT.SEG2      , EL.MEAXFSS2),
@@ -3293,6 +3312,10 @@ phen.add('D_PLAN_XT', Modelisation(dim=(2,2), code='DX2',
     )))
 
 phen.add('FLUI_STRU', Modelisation(dim=(3,3), code='FLS',
+    attrs=(
+        (AT.FLUIDE,'OUI'),
+        (AT.FSI,'OUI'),
+    ),
     elements=(
         (MT.TRIA3     , EL.MEFS_FACE3),
         (MT.QUAD4     , EL.MEFS_FACE4),
@@ -3487,6 +3510,11 @@ phen.add('POU_D_T_GD', Modelisation(dim=(1,3), code='PGD',
     )))
 
 phen.add('POU_FLUI_STRU', Modelisation(dim=(1,3), code='FS1',
+    attrs=(
+        (AT.POUTRE,'OUI'),
+        (AT.FLUIDE,'OUI'),
+        (AT.FSI,'OUI'),
+    ),
     elements=(
         (MT.SEG2      , EL.MEFS_POU_D_T),
     )))

@@ -44,15 +44,8 @@ INIT_VARC = Option(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD_ISO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FLS'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FL'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3DA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'DPA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FP'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.FLUIDE,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO  ,'OUI'),)),
     ),
     comment=""" OPTION NE CALCULANT RIEN.
    ELLE SERT A ALLOUER LES CHAMPS DE VARIABLES DE COMMANDE POUR LE MATERIAU.

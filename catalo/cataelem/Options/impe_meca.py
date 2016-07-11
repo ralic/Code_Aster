@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,10 +37,8 @@ IMPE_MECA = Option(
         SP.PMATUUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.MODELI,'3FA'),)),
-      CondCalcul('+', ((AT.MODELI,'2FA'),)),
-      CondCalcul('+', ((AT.MODELI,'3FL'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.MODELI,'2FL'),(AT.BORD,'-1'),)),
-      CondCalcul('+', ((AT.MODELI,'AXF'),(AT.BORD,'-1'),)),
+      CondCalcul('+', ((AT.FLUIDE,'OUI'),(AT.ABSO,'OUI'),)),
+      CondCalcul('+', ((AT.FLUIDE,'OUI'),(AT.BORD,'-1'),)),
+      CondCalcul('-', ((AT.FSI,'OUI'),)),
     ),
 )

@@ -276,6 +276,13 @@ FOURIER = Attribute(value=(
 
 """)
 
+FLUIDE = Attribute(value=(
+                    'OUI',
+                    ),
+                    comment="""
+  FLUIDE =  'OUI' : l'element est destine a une etude d'un fluide
+""")
+
 
 FROTTEMENT = Attribute(value=(
                        'OUI',
@@ -284,6 +291,12 @@ FROTTEMENT = Attribute(value=(
   FROTTEMENT = 'OUI' => l'element est utilise pour traiter le frottement.
 """)
 
+FSI = Attribute(value=(
+                    'OUI',
+                    ),
+                    comment="""
+  FSI =  'OUI' : l'element est destine a une etude IFS
+""")
 
 GRAND_GLIS = Attribute(value=(
                        'OUI',
@@ -413,6 +426,12 @@ NBSIGM = Attribute(value=(
         En general : '6' pour les elements 3D, '4' pour certains elements 2D
 """)
 
+PESA = Attribute(value=(
+                    'OUI',
+                    ),
+                    comment="""
+  PESA =  'OUI' : l'element est destine a une etude fluide à surface libre
+""")
 
 POUTRE = Attribute(value=(
                    'OUI',

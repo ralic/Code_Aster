@@ -149,8 +149,6 @@ RIGI_MECA_TANG = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
-      #CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),  #G. Devesa
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),  #G. Devesa
+      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.ABSO,'OUI'),)),
     ),
 )

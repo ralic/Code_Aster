@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,12 +47,8 @@ NSPG_NBVA = Option(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'TH'),(AT.BORD,'0'),)),
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD_ISO,'OUI'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FLS'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'FS2'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3DA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'DPA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'3FA'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'2FA'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.FSI   ,'OUI'),)),
+      CondCalcul('-', ((AT.PHENO,'ME'),(AT.ABSO  ,'OUI'),)),
     ),
     comment=""" OPTION SERVANT A CALCULER LES 2 NOMBRES :
    NPG_DYN  : NOMBRE DE SOUS-POINTS (POUR LES ELEMENTS DE STRUCTURE EN GENERAL)
