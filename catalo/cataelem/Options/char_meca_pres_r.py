@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,9 +129,11 @@ CHAR_MECA_PRES_R = Option(
 
 #     Les 3 modelisations suivantes (grilles et membranes) sont affectees sur des mailles
 #     duppliquees. Il ne faut pas que le chargement soit pris en compte plusieurs fois :
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
-      CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+      #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
+      #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
+      #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+#     => l'option est ajoutée sur ces éléments, elle pointe sur te580 afin de
+#        vérifier que le chargement est nul
 
 #     Ce chargement concerne les elements XFEM "massifs" :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),

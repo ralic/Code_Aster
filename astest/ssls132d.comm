@@ -55,8 +55,11 @@ MAILTOT = DEFI_GROUP(
 # -----------------------------------------------------
 #
 
+E = DEFI_CONSTANTE(VALE = 2.E11)
+NU = DEFI_CONSTANTE(VALE = 0.)
+RHO = DEFI_CONSTANTE(VALE = 7800.)
 ACIER=DEFI_MATERIAU(
-            ELAS=_F(  E = 2.E11,   NU = 0.0, RHO = 7800.),
+            ELAS_FO=_F(  E = E,   NU = NU, RHO=RHO, K_DESSIC=0., B_ENDOGE=0.),
                           )
 BETON=DEFI_MATERIAU(
             ELAS=_F(  E = 3.E10,   NU = 0.0, RHO = 2500.),
@@ -67,6 +70,24 @@ BETON=DEFI_MATERIAU(
 # AFFECTATION DES MATERIAUX
 # -------------------------------------------------
 #
+HYDR=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_HYDR_R',
+                 MAILLAGE=MAILTOT,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('HYDR',),
+                          VALE = (0.,)
+                         )
+                )
+
+SECH=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_TEMP_R',
+                 MAILLAGE=MAILTOT,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('TEMP',),
+                          VALE = (0.,)
+                         )
+                )
+
 MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
                           AFFE=(
                           _F(  GROUP_MA = ('ACPLUS','ACMOINS'),
@@ -75,7 +96,10 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
                           _F(  GROUP_MA = ('CONSOLE'),
                                  MATER = BETON,
                                )
-                               )
+                               ),
+                          AFFE_VARC = (_F( GROUP_MA = ('ACPLUS','ACMOINS'), NOM_VARC = 'HYDR', CHAM_GD=HYDR),
+                                       _F( GROUP_MA = ('ACPLUS','ACMOINS'), NOM_VARC = 'SECH', CHAM_GD=SECH, VALE_REF=0.),
+                                      )
                       )
 
 #
@@ -129,6 +153,10 @@ ZCHM=AFFE_CHAR_MECA(
                 ),
             PESANTEUR = _F(GRAVITE=9.81,
                            DIRECTION=(0.,0.,-1.),),
+            # chargement nul pour tester le bon fonctionnement de l'option
+            PRES_REP = _F(
+                   GROUP_MA = ('ACPLUS','ACMOINS'),
+                   PRES     = 0.,),
             )
 #
 # ----------------------------------------------

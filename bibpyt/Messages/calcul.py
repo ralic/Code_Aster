@@ -367,5 +367,9 @@ Conseils :
     Vérifiez que la maille %(k1)s est bien affectée par le matériau.
 """),
 
+    48 : _(u"""
+  Les chargements de pression sont interdits pour les modélisations 
+  GRILLE_EXCENTRE, GRILLE_MEMBRANE et MEMBRANE.
+"""),
 
 }

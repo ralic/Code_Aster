@@ -62,9 +62,30 @@ ACIER=DEFI_MATERIAU(ELAS_MEMBRANE =_F(M_LLLL = E_A*section_l,
                                       M_TTLT = 0.,
                                       M_LTLT = 0.,),)
 
+
+E = DEFI_CONSTANTE(VALE = 1E4)
+NU = DEFI_CONSTANTE(VALE = 0.)
 BETON=DEFI_MATERIAU(
-            ELAS=_F(  E = 1.E4,   NU = 0.0,),
+            ELAS_FO=_F(  E = E,   NU = NU, K_DESSIC=0., B_ENDOGE=0.),
                           )
+
+HYDR=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_HYDR_R',
+                 MAILLAGE=MAILTOT,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('HYDR',),
+                          VALE = (0.,)
+                         )
+                )
+
+SECH=CREA_CHAMP(OPERATION='AFFE',
+                 TYPE_CHAM='NOEU_TEMP_R',
+                 MAILLAGE=MAILTOT,
+                 AFFE=_F( TOUT = 'OUI',
+                          NOM_CMP = ('TEMP',),
+                          VALE = (0.,)
+                         )
+                )
 
 # -------------------------------------------------
 # AFFECTATION DES MATERIAUX
@@ -78,7 +99,11 @@ MATAF=AFFE_MATERIAU(    MAILLAGE=MAILTOT,
                           _F(  GROUP_MA = ('CONSOLE'),
                                  MATER = BETON,
                                )
-                               )
+                               ),
+                          AFFE_VARC = (_F( GROUP_MA = ('CONSOLE'), NOM_VARC = 'HYDR', CHAM_GD=HYDR),
+                                       _F( GROUP_MA = ('CONSOLE'), NOM_VARC = 'SECH', CHAM_GD=SECH, VALE_REF=0.),
+                                      )
+                                 
                       )
 
 # -------------------------------------------------
@@ -129,7 +154,11 @@ ZCHM=AFFE_CHAR_MECA(
                   ),
             PRE_EPSI = _F(
                    GROUP_MA = ('ACPLUS','ACMOINS'),
-                   EXX     = 1.E-3,)
+                   EXX     = 1.E-3,),
+            # chargement nul pour tester le bon fonctionnement de l'option
+            PRES_REP = _F(
+                   GROUP_MA = ('ACPLUS','ACMOINS'),
+                   PRES     = 0.,),
 
             )
 

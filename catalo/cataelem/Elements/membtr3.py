@@ -74,6 +74,8 @@ EDEFOPG  = LocatedComponents(phys=PHY.EPSI_R, type='ELGA', location='RIGI',
     components=('EXX','EYY','EXY',))
 
 
+EPRESNO = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+                            components=('PRES',))
 
 
 EGGEOP_R = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
@@ -133,7 +135,8 @@ class MEMBTR3(Element):
     """Please document this element"""
     meshType = MT.TRIA3
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','MASS=FPG3',), mater=('RIGI','MASS',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','MASS=FPG3','FPG1=FPG1'), 
+                              mater=('RIGI','MASS','FPG1'),),
         )
     calculs = (
 
@@ -164,6 +167,14 @@ class MEMBTR3(Element):
                      (SP.PTEMPSR, CTEMPSR),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
+        
+        OP.CHAR_MECA_HYDR_R(te=312,
+                            para_in=(
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_HYDR_R.PVARCPR, LC.ZVARCPG),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_PESA_R(te=434,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
@@ -171,6 +182,19 @@ class MEMBTR3(Element):
                      (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
+        
+        OP.CHAR_MECA_PRES_R(te=580,
+                            para_in=((SP.PPRESSR, EPRESNO), ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
+        
+        OP.CHAR_MECA_SECH_R(te=312,
+                            para_in=(
+                            (SP.PMATERC, LC.CMATERC), (
+                            OP.CHAR_MECA_SECH_R.PVARCPR, LC.ZVARCPG),
+                            ),
+                            para_out=((SP.PVECTUR, MVECTUR), ),
+                            ),
 
         OP.CHAR_MECA_TEMP_R(te=434,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
@@ -410,7 +434,8 @@ class MEMBTR6(MEMBTR3):
     """Please document this element"""
     meshType = MT.TRIA6
     elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','MASS=FPG6',), mater=('RIGI','MASS',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','MASS=FPG6','FPG1=FPG1'), 
+                              mater=('RIGI','MASS','FPG1'),),
         )
 
 
@@ -419,7 +444,8 @@ class MEMBQU4(MEMBTR3):
     """Please document this element"""
     meshType = MT.QUAD4
     elrefe =(
-            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','MASS=FPG4',), mater=('RIGI','MASS',),),
+            ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4','MASS=FPG4','FPG1=FPG1'), 
+                              mater=('RIGI','MASS','FPG1'),),
         )
 
 
@@ -428,5 +454,6 @@ class MEMBQU8(MEMBTR3):
     """Please document this element"""
     meshType = MT.QUAD8
     elrefe =(
-            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9',), mater=('RIGI','MASS',),),
+            ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9','FPG1=FPG1'), 
+                              mater=('RIGI','MASS','FPG1'),),
         )
