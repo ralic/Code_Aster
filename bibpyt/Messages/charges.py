@@ -100,6 +100,12 @@ La charge %(k1)s est un chargement de type force ou flux et ne peut donc pas uti
 La charge %(k1)s contient une condition de type ECHANGE et elle n'est pas compatible avec FONC_MULT. Pour appliquer une fonction (y compris en fonction du temps), il faut utiliser AFFE_CHAR_THER_F.
 """),
 
+    33 : _(u"""
+Le modèle de la charge %(k1)s est différent du modèle de l'opérateur de calcul.
+- modèle de la charge : %(k2)s
+- modèle du calcul    : %(k3)s
+"""),
+
     34 : _(u"""
 La charge %(k1)s ne peut pas être pilotée.
 """),

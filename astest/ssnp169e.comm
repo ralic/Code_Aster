@@ -675,7 +675,7 @@ CH1=AFFE_CHAR_MECA_F(MODELE=MODELEK1,
                                ),
                     INFO=1,);
 
-CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK1,
+CH2=AFFE_CHAR_MECA_F(MODELE=MODELEK2,
                      DDL_IMPO=(_F(GROUP_MA='LIG1',
                                           DX=ux1s,
                                           DY=uy1s,),

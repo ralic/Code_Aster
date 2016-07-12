@@ -207,6 +207,23 @@ COND_1=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='A2A4',
                                   DY=DCIS,),);
 
+COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
+                      DDL_IMPO=(_F(GROUP_NO='A1',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_MA='A3A1',
+                                   DX=0.0,
+                                   DY=0.0,),),);
+
+COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
+                      DDL_IMPO=_F(GROUP_MA='A2A4',
+                                  DY=DCIS,),);
+
+
 chf1=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
                          t1,1.,
                          t2,-1.,
@@ -239,9 +256,9 @@ RESU1=CALC_CHAMP(reuse =RESU1,RESULTAT=RESU1,PRECISION=1.E-3,
 RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER,
                      CARA_ELEM=CAEL_G,
-                     EXCIT=(_F(CHARGE=COND_0,
+                     EXCIT=(_F(CHARGE=COND_0G,
                                FONC_MULT=chf1,),
-                            _F(CHARGE=COND_1,
+                            _F(CHARGE=COND_1G,
                                FONC_MULT=chf1,),),
                      COMPORTEMENT=_F(RELATION='KIT_DDI',
                                   RELATION_KIT=('GLRC_DM','VMIS_ISOT_LINE',),

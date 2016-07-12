@@ -296,6 +296,9 @@ REANODA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 CH3=AFFE_CHAR_MECA(MODELE=MO1,
                    VECT_ASSE=REANODA,);
+                   
+CH3_2=AFFE_CHAR_MECA(MODELE=MO2,
+                   VECT_ASSE=REANODA,);
 
 ##########################################################
 #        3EME PHASE = REINJECTION DE LA REACTION
@@ -339,7 +342,7 @@ DEP1=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 INST=500.,);
 
 
-CHBID = AFFE_CHAR_MECA(MODELE=MO1,
+CHBID = AFFE_CHAR_MECA(MODELE=MO2,
                    DDL_IMPO=(_F(GROUP_NO='NO_DROIT',
                                  DX=0.0,),
                               _F(GROUP_NO='NO_LEFT2',
@@ -417,7 +420,7 @@ SIGINI=CREA_CHAMP(TYPE_CHAM='ELGA_SIEF_R',
 RESU1=STAT_NON_LINE(reuse=RESU1,
                  MODELE=MO2,
                  CHAM_MATER=CHMAT3,
-                 EXCIT=(_F(CHARGE=CH3,
+                 EXCIT=(_F(CHARGE=CH3_2,
                            FONC_MULT=F0,),
                         _F(CHARGE=CH51,),),
                  COMPORTEMENT=(_F(RELATION='ELAS',

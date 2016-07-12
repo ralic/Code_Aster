@@ -401,7 +401,7 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
                                     CHAM_GD=__REA,
                                     COEF_R=-1.), )
 
-        _F_CA = AFFE_CHAR_MECA(MODELE=__M_CA,
+        _F_CA = AFFE_CHAR_MECA(MODELE=MODELE,
                                VECT_ASSE=__REAC)
 
         #-----------------------------------------------------------------------

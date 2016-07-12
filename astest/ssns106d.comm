@@ -188,7 +188,25 @@ COND_0=AFFE_CHAR_MECA(MODELE=MO,
                                   DRY=0.0,
                                   DRZ=0.0,),);
 
+
+COND_0GG=AFFE_CHAR_MECA(MODELE=MO_G,
+                      DDL_IMPO=_F(GROUP_NO='A1',
+                                  DX=0.0,
+                                  DY=0.0,
+                                  DZ=0.0,
+                                  DRX=0.0,
+                                  DRY=0.0,
+                                  DRZ=0.0,),);
+
+
+
 COND_1=AFFE_CHAR_MECA_F(MODELE=MO,
+                        DDL_IMPO=_F(GROUP_NO='CL_IMPOS',
+                                    DX=UX_IMPOS,
+                                    DY=UY_IMPOS,),);
+                                    
+                                    
+COND_1GG=AFFE_CHAR_MECA_F(MODELE=MO_G,
                         DDL_IMPO=_F(GROUP_NO='CL_IMPOS',
                                     DX=UX_IMPOS,
                                     DY=UY_IMPOS,),);
@@ -232,9 +250,9 @@ RESU_R=CALC_CHAMP(reuse =RESU_R,RESULTAT=RESU_R,PRECISION=1.E-3,
 RESU_G=STAT_NON_LINE(MODELE=MO_G,
                      CHAM_MATER=MATER,
                      CARA_ELEM=CAEL_G,
-                     EXCIT=(_F(CHARGE=COND_0,
+                     EXCIT=(_F(CHARGE=COND_0GG,
                                FONC_MULT=chf1,),
-                            _F(CHARGE=COND_1,
+                            _F(CHARGE=COND_1GG,
                                FONC_MULT=chf1,),),
                      COMPORTEMENT=_F(RELATION='GLRC_DM',),
                      INCREMENT=_F(LIST_INST=DEFLIST,

@@ -304,6 +304,24 @@ PHASE1=AFFE_MODELE(MAILLAGE=MAIL,
              PHENOMENE = 'MECANIQUE',
              MODELISATION ='AXIS_HMS',),
         );
+
+CH_PREYP=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(_F(GROUP_MA='HAUT', DY=1.,),),
+                      );
+
+CH_PREXP=AFFE_CHAR_MECA(MODELE=PHASE1,
+                      PRES_REP=(_F(GROUP_MA='DROITE', PRES=PRESREPX,),),
+                      );
+
+
+CH_SYM2P=AFFE_CHAR_CINE(MODELE=PHASE1,
+                      MECA_IMPO=(
+                                 _F(GROUP_MA='GAUCHE', DX=0.0,   ),
+                                 _F(GROUP_MA='BAS',    DY=0.0,   ),
+                                ),
+                      );
+
+
 # CI
 
 SIGINI=CREA_CHAMP(TYPE_CHAM='CART_SIEF_R',
@@ -350,9 +368,9 @@ U0=STAT_NON_LINE(MODELE=PHASE1,
     CHAM_MATER=CHMAT1,
                  CARA_ELEM=ORIREP,
    EXCIT=(
-                        _F(CHARGE = CH_SYM2,),
-                        _F(CHARGE = CH_PREY,FONC_MULT =COEF ),
-                        _F(CHARGE = CH_PREX,),
+                        _F(CHARGE = CH_SYM2P,),
+                        _F(CHARGE = CH_PREYP,FONC_MULT =COEF ),
+                        _F(CHARGE = CH_PREXP,),
                         _F(CHARGE = CH_P,),
                        ),
                  ETAT_INIT=_F(SIGM=SIGINI,

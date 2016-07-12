@@ -420,6 +420,14 @@ MODELE2=AFFE_MODELE(MAILLAGE=MAIL,
                            PHENOMENE='MECANIQUE',
                            MODELISATION='D_PLAN_THHMS',),);
 
+
+CL_MECA2=AFFE_CHAR_MECA(MODELE=MODELE2,
+                       DDL_IMPO=_F(GROUP_NO='BO',
+                                       DX = 0.,
+                                       DY = 0. ,
+                                       ),
+                                      );
+
 INST2=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(
                       JUSQU_A=10000.,NOMBRE=2,),);
@@ -443,7 +451,7 @@ U2=STAT_NON_LINE(MODELE=MODELE2,
                  CHAM_MATER=CHMAT0,
                  EXCIT=(
                  _F(CHARGE=FLUTH2,),
-                 _F(CHARGE=CL_MECA,),
+                 _F(CHARGE=CL_MECA2,),
                                           ),
                  COMPORTEMENT=_F(RELATION='KIT_THH',PARM_THETA=0.57,
                               RELATION_KIT=('LIQU_VAPE_GAZ','HYDR_UTIL'),

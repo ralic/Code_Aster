@@ -193,10 +193,32 @@ COND_0=AFFE_CHAR_MECA(MODELE=MO,
                                    DX=0.0,
                                    DRY=0.0,),),);
 
+COND_0G=AFFE_CHAR_MECA(MODELE=MO_G,
+                      DDL_IMPO=(_F(GROUP_NO='A1',
+                                   DX=0.0,
+                                   DY=0.0,
+                                   DZ=0.0,
+                                   DRX=0.0,
+                                   DRY=0.0,
+                                   DRZ=0.0,),
+                                _F(GROUP_MA='A3A1',
+                                   DX=0.0,
+                                   DRY=0.0,),),);
+
+
+
+
 COND_1=AFFE_CHAR_MECA(MODELE=MO,
                       DDL_IMPO=_F(GROUP_MA='A2A4',
                                   DX=DEP0,
                                   DRY=DR0,),);
+
+COND_1G=AFFE_CHAR_MECA(MODELE=MO_G,
+                      DDL_IMPO=_F(GROUP_MA='A2A4',
+                                  DX=DEP0,
+                                  DRY=DR0,),);
+
+
 
 COND_2_M=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=_F(GROUP_MA='A2A4',
@@ -205,6 +227,16 @@ COND_2_M=AFFE_CHAR_MECA(MODELE=MO,
 COND_2_F=AFFE_CHAR_MECA(MODELE=MO,
                         DDL_IMPO=_F(GROUP_MA='A2A4',
                                     DRY=DR0,),);
+
+COND_2MG=AFFE_CHAR_MECA(MODELE=MO_G,
+                        DDL_IMPO=_F(GROUP_MA='A2A4',
+                                    DX=DEP0,),);
+
+COND_2FG=AFFE_CHAR_MECA(MODELE=MO_G,
+                        DDL_IMPO=_F(GROUP_MA='A2A4',
+                                    DRY=DR0,),);
+
+
 
 chf1=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.,0.,
@@ -263,9 +295,9 @@ RESU_R1=CALC_CHAMP(reuse=RESU_R1,
 RESU_G1=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1,
+                             _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='GLRC_DM',
                                    RESI_INTE_RELA=1e-16,),
@@ -1085,11 +1117,11 @@ RESU_R2=CALC_CHAMP(reuse =RESU_R2,RESULTAT=RESU_R2,PRECISION=1.E-3,
 RESU_G2=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATER,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_2_M,
+                             _F(CHARGE=COND_2MG,
                                 FONC_MULT=chf2,),
-                             _F(CHARGE=COND_2_F,
+                             _F(CHARGE=COND_2FG,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='GLRC_DM',
                                    RESI_INTE_RELA=1e-16,),
@@ -1874,9 +1906,9 @@ MATERE=AFFE_MATERIAU(MAILLAGE=MA,
 RESU_G3=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERE,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1,
+                             _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='GLRC_DM',
                                       RESI_INTE_RELA=1e-16,),
@@ -1895,9 +1927,9 @@ IMPR_TABLE(TABLE=TRESU_G3,);
 RESU_G4=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERE,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1,
+                             _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=DEFLIST,
@@ -1913,8 +1945,8 @@ TRESU_G4=CREA_TABLE(RESU=_F(RESULTAT=RESU_G4,
 RESU_G5=MECA_STATIQUE(MODELE=MO_G,
                       CHAM_MATER=MATERE,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,),
-                             _F(CHARGE=COND_1,),),);
+                      EXCIT=(_F(CHARGE=COND_0G,),
+                             _F(CHARGE=COND_1G,),),);
 
 TRESU_G5=CREA_TABLE(RESU=_F(RESULTAT=RESU_G5,
                             NOM_CHAM='SIEF_ELGA',
@@ -1994,9 +2026,9 @@ MATERD=AFFE_MATERIAU(MAILLAGE=MA,
 RESU_G6=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1,
+                             _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='DHRC',
                                       RESI_INTE_RELA=1e-16,),
@@ -2016,9 +2048,9 @@ IMPR_TABLE(TABLE=TRESU_G6,);
 RESU_G7=STAT_NON_LINE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,
+                      EXCIT=(_F(CHARGE=COND_0G,
                                 FONC_MULT=chf1,),
-                             _F(CHARGE=COND_1,
+                             _F(CHARGE=COND_1G,
                                 FONC_MULT=chf1,),),
                       COMPORTEMENT=_F(RELATION='ELAS',),
                       INCREMENT=_F(LIST_INST=DEFLIST,
@@ -2034,8 +2066,8 @@ TRESU_G7=CREA_TABLE(RESU=_F(RESULTAT=RESU_G7,
 RESU_G8=MECA_STATIQUE(MODELE=MO_G,
                       CHAM_MATER=MATERD,
                       CARA_ELEM=CAEL_G,
-                      EXCIT=(_F(CHARGE=COND_0,),
-                             _F(CHARGE=COND_1,),),);
+                      EXCIT=(_F(CHARGE=COND_0G,),
+                             _F(CHARGE=COND_1G,),),);
 
 TRESU_G8=CREA_TABLE(RESU=_F(RESULTAT=RESU_G8,
                             NOM_CHAM='SIEF_ELGA',

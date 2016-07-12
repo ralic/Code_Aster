@@ -83,7 +83,7 @@ implicit none
     character(len=8) :: k8bid, load_type, parcha
     character(len=8) :: fctcsr
     character(len=16) :: nomcmd, typesd, load_apply
-    character(len=8) :: load_name, nomfct
+    character(len=8) :: load_name, nomfct, model, load_model
     character(len=24) :: info_type
     character(len=19) :: lisdbl
     character(len=24) :: ligrch, lchin
@@ -121,6 +121,14 @@ implicit none
     i_load_new     = 0
     i_diri_suiv    = 0
     l_diri_undead = .false.
+
+!
+! -  on recupere le modele si on peut
+!
+    model=' '
+    if (nomcmd.ne.'CREA_RESU')then
+        call getvid(' ', 'MODELE', scal=model, nbret=n1)
+    endif
 !
 ! - Is applying load option by user ?
 !
@@ -197,6 +205,15 @@ implicit none
                                 v_list_dble , l_apply_user, i_load       , nb_load      ,&
                                 i_excit     , load_name   , load_type    , ligrch       ,&
                                 load_apply)
+!
+! ---------  verification du modele associe a la charge
+!            
+            if (n1.eq.1 .and. model.ne.' ') then
+                call dismoi('NOM_MODELE', load_name, 'CHARGE', repk=load_model)
+                if (load_model .ne. model) then
+                    call utmess('F', 'CHARGES_33', nk=3, valk=[load_name, load_model, model])
+                endif
+            endif
 !
 ! --------- FONCTIONS MULTIPLICATIVES DES CHARGES
 !
