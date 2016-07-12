@@ -457,6 +457,13 @@ subroutine te0409(option, nomte)
                 end do
             endif
 !
+!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
+             if (compor(1:4) .ne. 'ELAS' .and. excen .gt. 0.0d0) then 
+                do i = 1, 3
+                    epsm(i) = epsm(i)+excen*khi(i)
+                    deps(i) = deps(i)+excen*khi(i)
+                end do
+            endif
             if (compor(1:4) .eq. 'ELAS') then
   
                 call r8inir(3*3, 0.d0, dff, 1)
@@ -524,13 +531,6 @@ subroutine te0409(option, nomte)
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
-!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-                do i = 1, 3
-!                     deps(i) = deps(i)+excen*dkhi(i)
-                    deps(i+3) = deps(i+3)+excen*dkhi(i)
-                    epsm(i) = epsm(i)+excen*khi(i)
-                    epsm(i+3) = epsm(i+3)+excen*khi(i)
-                end do
                 do i = 1, 6
                     epst(i) = epsm(i) + deps(i)
                 end do
@@ -569,13 +569,7 @@ subroutine te0409(option, nomte)
                                      deuxmu=deuxmu, lamf=lamf, deumuf=deumuf, &
                                      gt=gt, gc=gc, gf=gf, seuil=seuil,&
                                      alpha=alphaf, alfmc=alfmc)
-!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-                do i = 1, 3
-!                     deps(i) = deps(i)+excen*dkhi(i)
-                    deps(i+3) = deps(i+3)+excen*dkhi(i)
-                    epsm(i) = epsm(i)+excen*khi(i)
-                    epsm(i+3) = epsm(i+3)+excen*khi(i)
-                end do
+
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
@@ -598,13 +592,7 @@ subroutine te0409(option, nomte)
                 call dhrc_recup_mate(zi(imate), compor, a0, c0,&
                                      aa_t, ga_t, ab_, gb_, ac_,&
                                      gc_, aa_c, ga_c, cstseu)
-!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-                do i = 1, 3
-!                     deps(i) = deps(i)+excen*dkhi(i)
-                    deps(i+3) = deps(i+3)+excen*dkhi(i)
-                    epsm(i) = epsm(i)+excen*khi(i)
-                    epsm(i+3) = epsm(i+3)+excen*khi(i)
-                end do
+
 !
 !               --  prise en compte de la dilatation thermique
                 call coqgth(zi(imate), compor, 'RIGI', ipg, ep, epsm, deps)
@@ -634,13 +622,7 @@ subroutine te0409(option, nomte)
                         ecr(i) = zr(ivarim-1 + icpv + i)
                     end do
                 endif
-!EXCENTREMENT RAJOUTE UN COUPLAGE MEMBRANE_FLEXION : EPSI = EPSI+EXCENT*KHI
-                do i = 1, 3
-!                     deps(i) = deps(i)+excen*dkhi(i)
-                    deps(i+3) = deps(i+3)+excen*dkhi(i)
-                    epsm(i) = epsm(i)+excen*khi(i)
-                    epsm(i+3) = epsm(i+3)+excen*khi(i)
-                end do
+
 !
 !               --  Prise en compte de la dilatation thermique
 !                   En realite, on ne sait pas encore faire ...
@@ -674,13 +656,15 @@ subroutine te0409(option, nomte)
                     m(i) = sig(i+3)
                 end do
 !               -- PRISE EN COMPTE DE L'EXCENTREMENT DANS LE TERME DE FLEXION (VOIR AUSSI DKTNLI)
-!                 do i = 1, 3
-!                     m(i) = m(i)+excen*n(i)
-!                 end do
-
-                do i = 1, 2
-                    q(i) = sig(i+6)
-                end do
+             if (compor(1:4) .ne. 'ELAS' .and. excen .gt. 0.0d0) then 
+                    do i = 1, 3
+                        m(i) =   m(i) + excen*n(i)
+                    end do
+            endif
+                    
+                    do i = 1, 2
+                        q(i) = sig(i+6)
+                    end do
 !
 !               -- CALCUL DE DIV(SIGMA) ET RECOPIE DE N ET M DANS 'PCONTPR'
 !                  BTSIG = BTSIG + BFT*M + BMT*N + BCT*Q
@@ -728,14 +712,7 @@ subroutine te0409(option, nomte)
                         df(l) = df(l) + poids*dsidep(j+3,i+3)
                     end do
                 end do
-!               -- PRISE EN COMPTE DE L'EXCENTREMENT (VOIR AUSSI DKTNLI)
-!                 do i = 1, 3
-!                     do j = 1, 3
-!                         l = l + 1
-!                         dmf(l)= dmf(l) + excen*dm(l)
-!                         df(l) = df(l)  + excen*excen*dm(l)
-!                     end do
-!                 end do
+
 !
                 if (q4gg) then
                     dc(1,1) = poids*dcc(1,1)

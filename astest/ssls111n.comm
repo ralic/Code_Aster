@@ -201,7 +201,7 @@ vref3=fz*L/(G*h*5/6)             # du a l'effort tranchant de la force fx
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A3', RESULTAT=RESU1A, NOM_CHAM='DEPL', NOM_CMP='DZ',
                   REFERENCE='ANALYTIQUE', VALE_REFE=(vref1+vref2+vref3), PRECISION=7.e-2,
-                  VALE_CALC=-2.79017737306E-05))
+                  VALE_CALC=-2.96875000002E-05))
 
 
 # validation de la densité d'effort sur le bord A1 A4
