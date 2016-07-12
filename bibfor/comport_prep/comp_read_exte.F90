@@ -1,6 +1,7 @@
-subroutine comp_read_exte(keywordfact, iocc    , rela_comp    ,&
-                          l_umat     , l_mfront, l_mfront_offi,&
-                          libr_name  , subr_name)
+subroutine comp_read_exte(rela_comp_  , kit_comp ,&
+                          l_umat      , l_mfront , l_mfront_offi,&
+                          libr_name   , subr_name,&
+                          keywordfact_, iocc_    )
 !
 implicit none
 !
@@ -29,14 +30,15 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    character(len=16), intent(in) :: rela_comp
+    character(len=16), intent(in) :: rela_comp_
+    character(len=16), intent(in) :: kit_comp(4)
     aster_logical, intent(out) :: l_umat
     aster_logical, intent(out) :: l_mfront
     aster_logical, intent(out) :: l_mfront_offi
     character(len=255), intent(out) :: libr_name
     character(len=255), intent(out) :: subr_name
+    character(len=16), optional, intent(in) :: keywordfact_
+    integer, optional, intent(in) :: iocc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,14 +48,20 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywordfact      : factor keyword to read (COMPORTEMENT)
-! In  iocc             : factor keyword index
 ! In  rela_comp        : RELATION comportment
+! In  kit_comp         : KIT comportment
 ! Out l_umat           : .true. if UMAT
 ! Out l_mfront         : .true. if MFront
 ! Out l_mfront_offi    : .true. if MFront official
 ! Out libr_name        : name of library if UMAT or MFront
 ! Out subr_name        : name of comportement in library if UMAT or MFront
+! In  keywordfact      : factor keyword to read (COMPORTEMENT)
+! In  iocc             : factor keyword index
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: rela_comp
+    aster_logical :: l_kit_thm = .false._1
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +70,15 @@ implicit none
     l_mfront_offi = .false._1
     libr_name     = ' '
     subr_name     = ' '
+!
+! - Select comportement
+!
+    call comp_meca_l(rela_comp_, 'KIT_THM', l_kit_thm)
+    if (l_kit_thm) then
+        rela_comp = kit_comp(4)
+    else
+        rela_comp = rela_comp_
+    endif
 !
 ! - Detect type
 !
@@ -76,15 +93,20 @@ implicit none
 !
     if ( l_mfront ) then
         if (l_mfront_offi) then
+            ASSERT(.not.l_kit_thm)
             call mfront_get_libname(libr_name)
             call mfront_get_function(rela_comp, subr_name)
         else
-            call getvtx(keywordfact, 'LIBRAIRIE'  , iocc = iocc, scal = libr_name)
-            call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+            if (present(keywordfact_)) then
+                call getvtx(keywordfact_, 'LIBRAIRIE'  , iocc = iocc_, scal = libr_name)
+                call getvtx(keywordfact_, 'NOM_ROUTINE', iocc = iocc_, scal = subr_name)
+            endif
         endif
     elseif ( l_umat ) then
-        call getvtx(keywordfact, 'LIBRAIRIE'  , iocc = iocc, scal = libr_name)
-        call getvtx(keywordfact, 'NOM_ROUTINE', iocc = iocc, scal = subr_name)
+        if (present(keywordfact_)) then
+            call getvtx(keywordfact_, 'LIBRAIRIE'  , iocc = iocc_, scal = libr_name)
+            call getvtx(keywordfact_, 'NOM_ROUTINE', iocc = iocc_, scal = subr_name)
+        endif
     endif
 !
 end subroutine

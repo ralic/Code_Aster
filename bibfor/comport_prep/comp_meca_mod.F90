@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/comp_read_mesh.h"
-#include "asterfort/teattr.h"
+#include "asterfort/comp_mfront_modelem.h"
 #include "asterfort/utmess.h"
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
@@ -62,20 +62,20 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_elem_affe, nb_elem, i_elem, elem_nume
-    integer :: elem_type_nume, iret
-    aster_logical :: l_affe_all, l_mfront_cp
+    integer :: elem_type_nume, iret, codret
+    aster_logical :: l_affe_all, l_mfront_cp, l_check
     character(len=24) :: list_elem_affe
-    character(len=16) :: elem_type_name, model_type, model_type_save, principal, model_thm
+    character(len=16) :: elem_type_name, model_type_save
     character(len=16) :: rela_comp_py
-    character(len=1) :: d1
     integer, pointer :: v_model_elem(:) => null()
     integer, pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    l_check         = .true._1
+    model_type_save = ' '
     model_mfront    = ' '
     model_dim       = 0
-    model_type_save = ' '
     list_elem_affe  = '&&COMPMECASAVE.LIST'
 !
 ! - Access to model
@@ -111,50 +111,20 @@ implicit none
             elem_nume = v_elem_affe(i_elem)
         endif
 !
-! ----- Type of finite element
+! ----- Select type of modelisation for MFront
 !
         elem_type_nume = v_model_elem(elem_nume)
         if (elem_type_nume .ne. 0) then
             call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
-!
-! --------- Get parameters
-!
-            call teattr('C', 'TYPMOD'         , model_type, iret, typel=elem_type_name)
-            call teattr('C', 'PRINCIPAL'      , principal , iret, typel=elem_type_name)
-            call teattr('C', 'THM'            , model_thm , iret, typel=elem_type_name)
-            call teattr('C', 'DIM_TOPO_MODELI', d1        , iret, typel=elem_type_name)
-            read(d1,'(I1)') model_dim
-            if (principal .eq. 'OUI') then
-                if (model_type_save .eq. ' ') then
-                    model_type_save = model_type
-                endif
-                if (model_type_save .ne. model_type) then
-                    call utmess('F','COMPOR4_13', si=iocc, nk=2, &
-                                valk=[model_type_save, model_type])
-                endif
-                if ( model_type .eq. 'COMP3D' ) then
-                    model_mfront = '_Tridimensional'
-                elseif ( model_type .eq. 'C_PLAN' ) then
-! Deborst algorithm
-                    if (l_mfront_cp) then
-                        model_mfront = '_PlaneStress'
-                    else
-                        model_mfront = '_Axisymmetrical'
-                        model_dim    = 2
-                    endif
-                elseif ( model_type .eq. 'D_PLAN' ) then
-                    model_mfront = '_PlaneStrain'
-                elseif ( model_type .eq. 'AXIS' ) then
-                    model_mfront = '_Axisymmetrical'
-                elseif ( model_type .eq. 'COMP1D' ) then
-! Deborst algorithm
-                    model_mfront = '_Axisymmetrical'
-                    model_dim    = 2
-                elseif ( model_thm .eq. 'OUI' ) then
-                    model_mfront = '_Tridimensional'
-                else
-                    call utmess('F','COMPOR4_14')
-                endif
+            call comp_mfront_modelem(elem_type_name, l_mfront_cp    ,&
+                                     model_dim     , model_mfront   ,&
+                                     l_check       , model_type_save, codret)
+            if (codret .eq. 1) then
+                call utmess('F','COMPOR4_13', nk=2, &
+                            valk=[model_type_save, model_mfront])
+            endif
+            if (codret .eq. 2) then
+                call utmess('F','COMPOR4_14', sk = model_mfront)
             endif
         endif
     end do

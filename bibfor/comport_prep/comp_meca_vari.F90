@@ -49,7 +49,7 @@ implicit none
 !
 ! Preparation of comportment (mechanics)
 !
-! Count internal variables
+! Count internal variables - By comportment
 !
 ! --------------------------------------------------------------------------------------------------
 !

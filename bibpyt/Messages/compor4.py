@@ -61,12 +61,12 @@ Comportement - Occurrence  %(i1)d"""),
   Par exemple, une occurrence pour les groupes de mailles contenant des éléments 3D (et comportement MFRONT),
   puis une occurrence pour les groupes de mailles contenant des éléments discrets (et comportement ELAS).
 
-  Les types de modélisation rencontrés à l'occurrence numéro %(i1)d sont : %(k1)s et %(k2)s.
+  Les types de modélisation rencontrés sont : %(k1)s et %(k2)s.
 """),
 
 
     14: _(u"""
-  Une modélisation dans le modèle n'est pas utilisable avec MFront.
+  La modélisation %(k1)s dans le modèle n'est pas utilisable avec MFront.
 """),
 
     20: _(u"""         V%(i1)d : %(k1)s"""),

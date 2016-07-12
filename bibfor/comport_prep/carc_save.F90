@@ -83,7 +83,7 @@ implicit none
     real(kind=8) :: post_iter, post_incr
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    aster_logical :: plane_stress, l_mfront, l_mfront_offi, l_umat, l_kit_thm
+    aster_logical :: plane_stress, l_mfront, l_mfront_offi, l_umat, l_kit_thm, l_kit
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,6 +120,7 @@ implicit none
 !
 ! ----- Detection of specific cases
 !
+        call comp_meca_l(rela_comp, 'KIT'    , l_kit)
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
 !
 ! ----- Get list of elements where comportment is defined
@@ -138,21 +139,18 @@ implicit none
         endif
         call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
+! ----- For KIT
+!
+        if (l_kit) then
+            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+        endif
+!
 ! ----- Get parameters for external programs (MFRONT/UMAT)
 !
-        if (l_kit_thm) then
-            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
-            call comp_read_exte(keywordfact, iocc     , kit_comp(4)  ,&
-                                l_umat     , l_mfront , l_mfront_offi,&
-                                libr_name  , subr_name)
-            if (l_mfront) then
-                ASSERT(.not. l_mfront_offi)
-            endif
-        else
-            call comp_read_exte(keywordfact, iocc     , rela_comp    ,&
-                                l_umat     , l_mfront , l_mfront_offi,&
-                                libr_name  , subr_name)
-        endif
+        call comp_read_exte(rela_comp  , kit_comp ,&
+                            l_umat     , l_mfront , l_mfront_offi,&
+                            libr_name  , subr_name,&
+                            keywordfact, iocc   )
 !
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !

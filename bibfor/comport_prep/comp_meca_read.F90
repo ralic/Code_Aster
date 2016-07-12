@@ -134,18 +134,10 @@ implicit none
 !
 ! ----- Get parameters for external programs (MFRONT/UMAT)
 !
-        if (l_kit_thm) then
-            call comp_read_exte(keywordfact, iocc     , kit_comp(4)  ,&
-                                l_umat     , l_mfront , l_mfront_offi,&
-                                libr_name  , subr_name)
-            if (l_mfront) then
-                ASSERT(.not. l_mfront_offi)
-            endif
-        else
-            call comp_read_exte(keywordfact, iocc     , rela_comp    ,&
-                                l_umat     , l_mfront , l_mfront_offi,&
-                                libr_name  , subr_name)
-        endif
+        call comp_read_exte(rela_comp  , kit_comp ,&
+                            l_umat     , l_mfront , l_mfront_offi,&
+                            libr_name  , subr_name,&
+                            keywordfact, iocc   )
 !
 ! ----- Get multi-comportment *CRISTAL
 !
@@ -177,7 +169,6 @@ implicit none
             if ( nb_vari_exte .eq. 0 ) then
                 nb_vari_exte = 1
             endif
-            WRITE(6,*) 'NBVARI: ',nb_vari_exte
         endif
 !
 ! ----- Select type of comportment (incremental or total)

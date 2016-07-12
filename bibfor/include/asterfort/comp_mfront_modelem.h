@@ -15,19 +15,18 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine comp_read_exte(rela_comp_  , kit_comp ,&
-                              l_umat      , l_mfront , l_mfront_offi,&
-                              libr_name   , subr_name,&
-                              keywordfact_, iocc_    )
-        character(len=16), intent(in) :: rela_comp_
-        character(len=16), intent(in) :: kit_comp(4)
-        aster_logical, intent(out) :: l_umat
-        aster_logical, intent(out) :: l_mfront
-        aster_logical, intent(out) :: l_mfront_offi
-        character(len=255), intent(out) :: libr_name
-        character(len=255), intent(out) :: subr_name
-        character(len=16), optional, intent(in) :: keywordfact_
-        integer, optional, intent(in) :: iocc_
-    end subroutine comp_read_exte
+    subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp     ,&
+                                   model_dim     , model_mfront    ,&
+                                   l_check_      , model_type_save_, codret_)
+        character(len=16), intent(in) :: elem_type_name
+        aster_logical, intent(in) :: l_mfront_cp
+        integer, intent(out) :: model_dim
+        character(len=16), intent(out) :: model_mfront
+        aster_logical, optional, intent(in) :: l_check_
+        character(len=16), optional, intent(inout) :: model_type_save_
+        integer, optional, intent(out) :: codret_
+    end subroutine comp_mfront_modelem
 end interface
