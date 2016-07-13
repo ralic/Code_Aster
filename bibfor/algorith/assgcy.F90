@@ -1,6 +1,6 @@
 subroutine assgcy(nomres, nugene)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,26 +59,24 @@ subroutine assgcy(nomres, nugene)
 !
     character(len=8) :: nomres, modgen
     character(len=14) :: nugene
-    character(len=19) :: stolci, resu
+    character(len=19) :: stomor, resu
 !
     integer :: iblo, ldlim, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
-    integer ::   ldblo, n1bloc, n2bloc, i, j
+    integer ::   ldblo, n1bloc, n2bloc, i, j, hc
 !
 !-----------------------------------------------------------------------
 !
 !--------------------------CREATION DU .REFA----------------------------
 !
 !-----------------------------------------------------------------------
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scdi(:) => null()
+    integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: schc(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer, pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
     resu = nomres
-    stolci=nugene//'.SLCS'
+    stomor=nugene//'.SMOS'
 !
 !--------------------RECUPERATION DU MODE_GENE AMONT--------------------
 !
@@ -93,12 +91,12 @@ subroutine assgcy(nomres, nugene)
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
-    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
-    neq=scde(1)
-    ntbloc=scde(2)
-    nbloc=scde(3)
+    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
+    ntbloc=smde(2)
+    nbloc=smde(3)
 !
-    call jelibe(stolci//'.SCDE')
+    call jelibe(stomor//'.SMDE')
 !
     call jecrec(resu//'.UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
@@ -124,9 +122,7 @@ subroutine assgcy(nomres, nugene)
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 !
-    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
-    call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
-    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
 !
     do iblo = 1, nbloc
 !
@@ -135,12 +131,14 @@ subroutine assgcy(nomres, nugene)
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc = scbl(iblo)+1
-        n2bloc = scbl(iblo+1)
+        n1bloc = 1
+        n2bloc = neq
 !    INITIALISATION DE LA MATRICE GENERALISEE
         do i = n1bloc, n2bloc
-            do j = (i-schc(i)+1), i
-                zr(ldblo+scdi(i)+j-i-1) = 0.d0
+            hc = smdi(i)
+            if (i .gt. 1) hc = hc - smdi(i-1)
+            do j = (i-hc+1), i
+                zr(ldblo+smdi(i)+j-i-1) = 0.d0
             end do
         end do
 !

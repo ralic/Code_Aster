@@ -73,7 +73,7 @@ subroutine assgen(nomres, option, nugene)
 !
     character(len=8) :: nomres, modgen, nomprn, kbid, nommcl
     character(len=14) :: nugene
-    character(len=19) :: prgene, stolci
+    character(len=19) :: prgene, stomor
     character(len=9) :: rigopt, ksst, lsst,masopt, amoopt
     character(len=24) :: tmadbl, tmnobl, tminbl, tmnomb, tmnumb, tmrep, tmconl
     character(len=11) :: ricopt, option
@@ -92,7 +92,7 @@ subroutine assgen(nomres, option, nugene)
     integer :: ntprno, numblo, nusst, ntria, ntualf
     real(kind=8) :: epsi, ssconl, ssmax, xcon, xmaxbl
     aster_logical :: lsym
-    integer, pointer :: scde(:) => null()
+    integer, pointer :: smde(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
@@ -108,7 +108,7 @@ subroutine assgen(nomres, option, nugene)
 !
     call jemarq()
     prgene=nugene//'.NUME'
-    stolci=nugene//'.SLCS'
+    stomor=nugene//'.SMOS'
 !
     call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
@@ -182,11 +182,12 @@ subroutine assgen(nomres, option, nugene)
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
 !
-    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
-    neq=scde(1)
-    ntbloc=scde(2)
-    nbloc=scde(3)
-    call jelibe(stolci//'.SCDE')
+    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
+    ntbloc=smde(2)
+    nbloc=smde(3)
+    call jelibe(stomor//'.SMDE')
+!
     if (lsym) then 
        ntualf = nbloc
     else

@@ -1,7 +1,7 @@
 subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
                   tmnobl, tmadbl, knombl, inumbl, ssmax)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 201666666  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,7 +80,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
     character(len=8) :: modgen, nomprn, nommcl, kbid
     character(len=14) :: nugene
-    character(len=19) :: prgene, stolci
+    character(len=19) :: prgene, stomor
     character(len=9) :: rigopt, masopt, amoopt
     character(len=11) :: option, ricopt
     character(len=24) :: tmadbl, tmnobl, tminbl, knombl(*)
@@ -96,8 +96,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     integer :: ntail, ntprno, nusst, ntria
     real(kind=8) :: ssmax
     integer, pointer :: nueq(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: scdi(:) => null()
+    integer, pointer :: smdi(:) => null() 
 !-----------------------------------------------------------------------
     data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
      &                                 'MASS_GENE','AMOR_GENE'/
@@ -111,7 +110,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
     prgene=nugene//'.NUME'
     call nueq_chck(prgene)
-    stolci=nugene//'.SLCS'
+    stomor=nugene//'.SMOS'
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
     call jelira(jexnum(prgene//'.PRNO', i_ligr_ss), 'LONMAX', nbsst)
     nbsst=nbsst/2
@@ -134,8 +133,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !
 !
     call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
-    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
-    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
@@ -208,9 +206,9 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
                 iad=(lc-1)*lc/2+ll
 !    NUMERO D'EQUATION DU TERME COURANT
                 ieqc=nueq(1+(inuc-1)+(lc-1))
+                 zi(ltnobl+iad-1)=1
+                 zi(ltadbl+iad-1)=smdi(ieqc)-(lc-ll)
 !
-                zi(ltnobl+iad-1)=scib(ieqc)
-                zi(ltadbl+iad-1)=scdi(ieqc)-(lc-ll)
             end do
         end do
         call jelibe(jexnum(tmnobl, ibl1))

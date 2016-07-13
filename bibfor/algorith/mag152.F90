@@ -3,7 +3,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     implicit none
 !---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,9 +20,9 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 ! ======================================================================
 !---------------------------------------------------------------------
 ! AUTEUR : G.ROUSSEAU
-! CREATION DE LA MATRICE ASSEMBLEE GENERALISEE AU FORMAT LDLT :
+! CREATION DE LA MATRICE ASSEMBLEE GENERALISEE :
 !      - OBJET    .UALF
-!      - STOCKAGE .SLCS
+!      - STOCKAGE .SMOS
 ! ET REMPLISSAGE DE SES OBJETS AUTRES QUE LE .UALF
 !---------------------------------------------------------------------
 #include "jeveux.h"
@@ -38,16 +38,16 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
     integer :: jrefa, i,  iaconl, iadesc
     integer :: ialime, iblo
     integer :: somme
-    integer :: jscde, n1bloc, n2bloc
+    integer :: jsmde, n1bloc, n2bloc
     integer :: nbid, nbloc, ntbloc, nueq, nhmax
-    integer :: n9, n10
+    integer :: n9, n10, hc
     character(len=8) :: nomres, modmec, nummod
     character(len=8) :: modgen
     character(len=14) :: num14, nugene
     character(len=19) :: nomsto
-    integer, pointer :: schc(:) => null()
+    integer(kind=4), pointer :: smhc(:) => null()
+    integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: scbl(:) => null()
 ! -----------------------------------------------------------------
 !
 !        CAS NUME_DDL_GENE  PRESENT
@@ -56,14 +56,21 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
     call wkvect(nomres//'           .REFA', 'G V K24', 20, jrefa)
     zk24(jrefa-1+11)='MPI_COMPLET'
-    nomsto=nugene//'.SLCS'
+    nomsto=nugene//'.SMOS'
 !
     if ((n9.gt.0)) then
-        call jeveuo(nomsto//'.SCDE', 'L', jscde)
-        nueq = zi(jscde-1+1)
-        ntbloc = zi(jscde-1+2)
-        nbloc = zi(jscde-1+3)
-        nhmax = zi(jscde-1+4)
+        call jeveuo(nomsto//'.SMDE', 'L', jsmde)
+        nueq = zi(jsmde-1+1)
+        ntbloc = zi(jsmde-1+2)
+        nbloc = zi(jsmde-1+3)
+!       nhmax = zi(jscde-1+4)
+        call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
+        nhmax=0
+        do i= 1,nueq
+          hc = smdi(i)
+          if (i .gt. 1) hc = hc - smdi(i-1)
+          nhmax= max(nhmax,hc)
+        end do
 !
 !
 ! TEST SUR LE MODE DE STOCKAGE : SI ON N EST PAS EN STOCKAGE
@@ -79,8 +86,7 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
 ! CALCUL DU NOMBRE DE TERME PAR BLOC ET TOTAL
 !
-        call jeveuo(nomsto//'.SCBL', 'L', vi=scbl)
-        call jeveuo(nomsto//'.SCHC', 'L', vi=schc)
+        call jeveuo(nomsto//'.SMHC', 'L', vi4=smhc)
 !
         somme = 0
 !
@@ -90,12 +96,14 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-            n1bloc = scbl(iblo) + 1
-            n2bloc = scbl(iblo+1)
+            n1bloc = 1
+            n2bloc = nueq
 !
 !
             do i = n1bloc, n2bloc
-                somme = somme + schc(i)
+                hc = smdi(i)
+                if (i .gt. 1) hc = hc - smdi(i-1)
+                somme = somme + hc
             end do
         end do
 !
@@ -118,8 +126,8 @@ subroutine mag152(n9, n10, nomres, nugene, modmec,&
 !
     else
 !
-        call jeveuo(nomsto//'.SCDE', 'L', jscde)
-        nueq = zi(jscde-1+1)
+        call jeveuo(nomsto//'.SMDE', 'L', jsmde)
+        nueq = zi(jsmde-1+1)
         nbloc = 1
         ntbloc = nueq* (nueq+1)/2
 !

@@ -30,7 +30,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     character(len=19) :: nomsto
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
     integer :: nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
     integer :: i, j, imatra, iblo, ldblo, n1bloc, n2bloc
-    integer :: idbase, nbj, ldblo1, ldblo2
+    integer :: idbase, nbj, ldblo1, ldblo2, hc
     real(kind=8) :: pij
     complex(kind=8) :: cbid
     character(len=16) :: typbas
@@ -62,10 +62,9 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     aster_logical :: lsym
     real(kind=8), pointer :: vectass2(:) => null()
     integer, pointer :: deeq(:) => null()
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: schc(:) => null()
-    integer, pointer :: scdi(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer(kind=4), pointer :: smhc(:) => null()
+    integer, pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -76,11 +75,11 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
     call gettco(basemo, typbas)
     call jeveuo(nu//'.NUME.DEEQ', 'L', vi=deeq)
 !
-    nomsto=nugene//'.SLCS'
-    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
-    nueq=scde(1)
-    ntbloc=scde(2)
-    nbloc=scde(3)
+    nomsto=nugene//'.SMOS'
+    call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
+    nueq=smde(1)
+    ntbloc=smde(2)
+    nbloc=smde(3)
 !
     call jeveuo(matr//'.REFA', 'L', jrefa)
     lsym=zk24(jrefa-1+9) .eq. 'MS'
@@ -119,7 +118,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
 !     -- ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
 !     SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (scde(4) .eq. 1) then
+    if (smde(2) .eq. smde(1)) then
         zi(iadesc+2)=1
 !        ASSERT(.NOT.LSYM)
     else
@@ -136,9 +135,8 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 !
-    call jeveuo(nomsto//'.SCDI', 'L', vi=scdi)
-    call jeveuo(nomsto//'.SCBL', 'L', vi=scbl)
-    call jeveuo(nomsto//'.SCHC', 'L', vi=schc)
+    call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
+    call jeveuo(nomsto//'.SMHC', 'L', vi4=smhc)
 !
 !
 !     -- CAS DES MATRICES SYMETRIQUES :
@@ -153,11 +151,13 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-            n1bloc=scbl(iblo)+1
-            n2bloc=scbl(iblo+1)
+            n1bloc=1
+            n2bloc=smde(1)
 !
             do i = n1bloc, n2bloc
-                nbj=i-schc(i)+1
+                hc = smdi(i)
+                if (i .gt. 1) hc = hc - smdi(i-1)
+                nbj=i-hc+1
                 ASSERT(nbj.eq.1 .or. nbj.eq.i)
 !
 ! --------- CALCUL PRODUIT MATRICE*MODE I
@@ -172,7 +172,7 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
                     pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)
 !
 ! ------------ STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
-                    zr(ldblo+scdi(i)+j-i-1)=pij
+                    zr(ldblo+smdi(i)+j-i-1)=pij
 !
                 end do
             end do
@@ -188,13 +188,15 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
         call jecroc(jexnum(resu//'.UALF', 2))
         call jeveuo(jexnum(resu//'.UALF', 1), 'E', ldblo1)
         call jeveuo(jexnum(resu//'.UALF', 2), 'E', ldblo2)
-        n1bloc=scbl(1)+1
-        n2bloc=scbl(2)
+        n1bloc=1
+        n2bloc=smde(1)
         ASSERT(n1bloc.eq.1)
         ASSERT(n2bloc.eq.nueq)
 !
         do i = 1, nueq
-            nbj=i-schc(i)+1
+            hc = smdi(i)
+            if (i .gt. 1) hc = hc - smdi(i-1)
+            nbj=i-hc+1
             ASSERT(nbj.eq.1)
             call mrmult('ZERO', imatra, zr(idbase+(i-1)*neq), vectass2, 1,&
                         .true._1)
@@ -202,10 +204,10 @@ subroutine projmr(matras, nomres, basemo, nugene, nu,&
             do j = 1, nueq
                 pij=ddot(neq,zr(idbase+(j-1)*neq),1,vectass2,1)
                 if (j .ge. i) then
-                    zr(ldblo1+scdi(j)+i-j-1)=pij
+                    zr(ldblo1+smdi(j)+i-j-1)=pij
                 endif
                 if (j .le. i) then
-                    zr(ldblo2+scdi(i)+j-i-1)=pij
+                    zr(ldblo2+smdi(i)+j-i-1)=pij
                 endif
             end do
         end do

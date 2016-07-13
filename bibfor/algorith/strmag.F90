@@ -1,6 +1,6 @@
 subroutine strmag(nugene, typrof)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ subroutine strmag(nugene, typrof)
 !
 !
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/crsmos.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -39,8 +40,6 @@ subroutine strmag(nugene, typrof)
 #include "asterfort/jevtbl.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/slismo.h"
-#include "asterfort/smosli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/nueq_chck.h"
@@ -50,7 +49,7 @@ subroutine strmag(nugene, typrof)
 !
 !
     character(len=8) :: nomprn, modgen, sst(2)
-    character(len=19) :: stomor, stolci, prgene
+    character(len=19) :: stomor, prgene
     character(len=14) :: nugene
     character(len=24) :: typrof
 !
@@ -58,12 +57,12 @@ subroutine strmag(nugene, typrof)
 !
 !-----------------------------------------------------------------------
     integer :: i, iad1, iad1c, iad1l, iad2l, iadc, iadcou
-    integer :: iadl, ibid, ifimes, j, jscbl, jscde
-    integer :: jscdi, jschc, jscib, k, l, lc, lcolmx
-    integer :: lcomoy, lh, ll, lldefl,   llorl
+    integer :: iadl, ibid, ieq, ifimes, ilig, j, jschc, jsmde
+    integer :: jsmdi, jsmhc, k, kterm, l, lc, lcolmx
+    integer :: lcomoy, lh, ll, lldefl, llorl
     integer :: llors, llprl, llprs,  nbcol, nblig, nbloc
-    integer :: nbprno, nbsst, neq, nsstar, ntbloc, nterbl, nterm
-    integer :: ntermx, ntprno, nuant, nulia, nusst
+    integer :: nbprno, nbsst, neq, nsstar, ntbloc, nterm
+    integer :: ntprno, nuant, nulia, nusst, hcol
     real(kind=8) :: rtbloc
     integer, pointer :: nueq(:) => null()
     integer, pointer :: nequ(:) => null()
@@ -72,17 +71,13 @@ subroutine strmag(nugene, typrof)
     call jemarq()
     ifimes=iunifi('MESSAGE')
     stomor=nugene//'.SMOS'
-    stolci=nugene//'.SLCS'
     prgene=nugene//'.NUME'
     call jeveuo(prgene//'.NEQU', 'L', vi=nequ)
     neq=nequ(1)
 !
 !
     if (typrof .eq. 'PLEIN' .or. typrof .eq. 'DIAG') then
-!        CREATION DES STOCKAGES MORSE ET L_CIEL :
         call crsmos(stomor, typrof, neq)
-        rtbloc=jevtbl('TAILLE_BLOC')
-        call smosli(stomor, stolci, 'G', rtbloc)
         goto 999
     endif
 !
@@ -100,11 +95,12 @@ subroutine strmag(nugene, typrof)
 !
 !
 !---------------DETERMINATION DU PROFIL(LIGNE DE CIEL)------------------
-    call wkvect(stolci//'.SCHC', 'G V I', neq, jschc)
+    call wkvect('&&STRMAG.SCHC', 'V V I', neq, jschc)
 !
     call nueq_chck(prgene)
     call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
     call jelira(prgene//'.PRNO', 'NMAXOC', nbprno)
+    nterm = 0
     if (typrof .eq. 'LIGN_CIEL') then
 !
 !  BOUCLE SUR LIGRELS DU PRNO
@@ -190,7 +186,6 @@ subroutine strmag(nugene, typrof)
         end do
     endif
 !
-!
 !---------------DETERMINATION DE LA TAILLE MAX D'UNE COLONNE------------
     lcomoy=0
     lcolmx=0
@@ -211,63 +206,38 @@ subroutine strmag(nugene, typrof)
     write(ifimes,*)'+++ HAUTEUR MAXIMUM D''UNE COLONNE: ',lcolmx
     write(ifimes,*)'+++ HAUTEUR MOYENNE D''UNE COLONNE: ',lcomoy
 !
+!----------------DETERMINATION DU NOMBRE DE TERMES-----------------------
+!----------------STOCKAGE OBJETS .SMDI .SMHC      -----------------------
 !
-!----------------DETERMINATION DU NOMBRE DE BLOCS-----------------------
+    call wkvect(stomor//'.SMDI', 'G V I', neq, jsmdi)
     nbloc=1
-    nterbl=0
-    ntermx=0
-    call wkvect(stolci//'.SCIB', 'G V I', neq, jscib)
-    do i = 1, neq
-        nterm=nterbl+zi(jschc+i-1)
-        if (nterm .gt. ntbloc) then
-            nbloc=nbloc+1
-            nterbl=zi(jschc+i-1)
-            ntermx=max(ntermx,nterbl)
-        else
-            nterbl=nterm
-            ntermx=max(ntermx,nterbl)
-        endif
-        zi(jscib+i-1)=nbloc
+    nterm=0
+    do ieq = 1, neq
+        hcol = zi(jschc+ieq-1)
+        nterm=nterm+hcol
+        zi(jsmdi-1+ieq)=nterm    
     end do
-!
+! 
     write(ifimes,*)'+++ NOMBRE DE BLOCS DU STOCKAGE: ',nbloc
-!
-!
-!-------------DERNIERE BOUCLE SUR LES BLOCS POUR  SCDI ET SCBL----------
-!  ON REDUIT LA TAILLE DES BLOCS A LA TAILLE UTILE MAX (GAIN DE PLACE)
-!
-    ntbloc=ntermx
-    call wkvect(stolci//'.SCBL', 'G V I', nbloc+1, jscbl)
-    call wkvect(stolci//'.SCDI', 'G V I', neq, jscdi)
-!
-    nterbl=0
-    nbloc=1
-    zi(jscbl)=0
-!
-    do i = 1, neq
-        nterm=nterbl+zi(jschc+i-1)
-        if (nterm .gt. ntbloc) then
-            nterbl=zi(jschc+i-1)
-            nbloc=nbloc+1
-        else
-            nterbl=nterm
-        endif
-        zi(jscbl+nbloc)=i
-        zi(jscdi+i-1)=nterbl
+    write(ifimes,*)'+++ NOMBRE DE TERMES DU STOCKAGE: ',nterm
+!   
+    call wkvect(stomor//'.SMHC', 'G V S', nterm, jsmhc)
+    kterm=0
+    do ieq = 1, neq
+        hcol = zi(jschc+ieq-1)
+        ASSERT(hcol.le.ieq)
+        do ilig=ieq-hcol+1,ieq
+           kterm=kterm+1
+           zi4(jsmhc-1+kterm)=ilig
+        end do 
     end do
 !
+!     -- .SMDE
 !
-!     -- .SCDE
-    call wkvect(stolci//'.SCDE', 'G V I', 6, jscde)
-    zi(jscde-1+1)=neq
-    zi(jscde-1+2)=ntbloc
-    zi(jscde-1+3)=nbloc
-    zi(jscde-1+4)=lcolmx
-!
-!
-!     -- ON TRANSFORME LE STOCKAGE LIGNE_CIEL EN STOCKAGE MORSE :
-    call slismo(stolci, stomor, 'G')
-!
+    call wkvect(stomor//'.SMDE', 'G V I', 6, jsmde)
+    zi(jsmde-1+1)=neq
+    zi(jsmde-1+2)=nterm
+    zi(jsmde-1+3)=1
 !
 999 continue
     call jedema()

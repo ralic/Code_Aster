@@ -19,7 +19,7 @@ subroutine ualfva(mataz, basz)
     character(len=*) :: mataz, basz
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,19 +54,14 @@ subroutine ualfva(mataz, basz)
 !     VARIABLES LOCALES
     character(len=1) :: base, tyrc
     character(len=14) :: nu
-    character(len=19) :: stomor, stolci, matas
-    aster_logical :: ldiag, lplein
+    character(len=19) :: stomor, matas
     integer :: neq, nbloc, nblocm, iret
     integer :: jsmhc
     integer :: itbloc, ieq, ibloc, jualf, jvale, kterm, nbterm, ilig
     integer :: ismdi, ismdi0, ibloav, iscdi, kblocm, nblocl
-    integer, pointer :: scdi(:) => null()
     integer, pointer :: smde(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: schc(:) => null()
     integer, pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: scde(:) => null()
 !   ------------------------------------------------------------------
 
 
@@ -82,42 +77,15 @@ subroutine ualfva(mataz, basz)
     call jeveuo(matas//'.REFA', 'L', vk24=refa)
     nu=refa(2)(1:14)
     stomor=nu//'.SMOS'
-    stolci=nu//'.SLCS'
 
 !   -- On ne sait traiter que les matrices generalisees :
     ASSERT(refa(10).eq.'GENE')
 
-    call jeveuo(stolci//'.SCDE', 'L', vi=scde)
-    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
-    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
-    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
-    neq=scde(1)
-    nbloc= scde(3)
-
-!   -- si stomor n'existe pas, on le cree :
-    call jeexin(stomor//'.SMDI', iret)
-    if (iret .eq. 0) then
-!        -- on ne sait traiter que les matrices diagonales ou pleines :
-        ldiag=.true.
-        lplein=.true.
-        do 5 ieq = 1, neq
-            if (schc(ieq) .ne. 1) ldiag=.false.
-            if (schc(ieq) .ne. ieq) lplein=.false.
-  5     continue
-        if (ldiag) then
-            call crsmos(stomor, 'DIAG', neq)
-        else
-            if (lplein) then
-                call crsmos(stomor, 'PLEIN', neq)
-            else
-                ASSERT(.false.)
-            endif
-        endif
-    endif
-
+    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
+    nbloc= smde(3)
     call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
     call jeveuo(stomor//'.SMHC', 'L', jsmhc)
-    call jeveuo(stomor//'.SMDE', 'L', vi=smde)
     itbloc= smde(2)
 
     call jelira(matas//'.UALF', 'NMAXOC', nblocl)
@@ -142,13 +110,13 @@ subroutine ualfva(mataz, basz)
 
 !     2. Remplissage de .VALM :
 !     ----------------------------------------
-    do 10 kblocm = 1, nblocm
+    do kblocm = 1, nblocm
         call jeveuo(jexnum(matas//'.VALM', kblocm), 'E', jvale)
         ibloav=0+nbloc*(kblocm-1)
         ismdi0=0
         do 1 ieq = 1, neq
-            iscdi=scdi(ieq)
-            ibloc=scib(ieq)+nbloc*(kblocm-1)
+            iscdi=smdi(ieq)         
+            ibloc=1+nbloc*(kblocm-1)
 
 !          -- on ramene le bloc en memoire si necessaire:
             if (ibloc .ne. ibloav) then
@@ -176,7 +144,7 @@ subroutine ualfva(mataz, basz)
 
             ismdi0=ismdi
   1     continue
- 10 end do
+    end do
 
 
 

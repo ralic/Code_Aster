@@ -28,7 +28,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     character(len=14) :: nugene
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !-----------------------------------------------------------------------
 !
     integer :: iddeeq,  nueq, ntbloc, nbloc, ialime, iaconl, jrefa, iadesc
-    integer :: i, j, k, imatra,    iblo, ldblo, n1bloc, n2bloc
+    integer :: i, j, k, imatra,    iblo, ldblo, n1bloc, n2bloc, hc
 
     complex(kind=8) :: pij
     character(len=16) :: typbas
@@ -60,10 +60,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     real(kind=8), pointer :: vbasemo(:) => null()
     complex(kind=8), pointer :: vectass2(:) => null()
     complex(kind=8), pointer :: vectass3(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: schc(:) => null()
-    integer, pointer :: scdi(:) => null()
-    integer, pointer :: scbl(:) => null()
+    integer, pointer :: smde(:) => null()
+    integer(kind=4), pointer :: smhc(:) => null()
+    integer, pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !
@@ -75,11 +74,11 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     call gettco(basemo, typbas)
     call jeveuo(nu//'.NUME.DEEQ', 'L', iddeeq)
 !
-    nomsto=nugene//'.SLCS'
-    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
-    nueq = scde(1)
-    ntbloc = scde(2)
-    nbloc = scde(3)
+    nomsto=nugene//'.SMOS'
+    call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
+    nueq = smde(1)
+    ntbloc = smde(2)
+    nbloc = smde(3)
 !
     call jecrec(resu//'.UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
                 nbloc)
@@ -105,7 +104,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
     zi(iadesc+1) = nueq
 !   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
 !   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (scde(4) .eq. 1) then
+    if (smde(2) .eq. smde(1)) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2
@@ -122,9 +121,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! --- RECUPERATION DE LA STRUCTURE DE LA MATR_ASSE_GENE
 !
-    call jeveuo(nomsto//'.SCDI', 'L', vi=scdi)
-    call jeveuo(nomsto//'.SCBL', 'L', vi=scbl)
-    call jeveuo(nomsto//'.SCHC', 'L', vi=schc)
+    call jeveuo(nomsto//'.SMDI', 'L', vi=smdi)
+    call jeveuo(nomsto//'.SMHC', 'L', vi4=smhc)
 !
     do iblo = 1, nbloc
 !
@@ -135,8 +133,8 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc = scbl(iblo)+1
-        n2bloc = scbl(iblo+1)
+        n1bloc = 1
+        n2bloc = smde(1)
 !
         do i = n1bloc, n2bloc
 !
@@ -152,7 +150,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! --------- BOUCLE SUR LES INDICES VALIDES DE LA COLONNE I
 !
-            do j = (i-schc(i)+1), i
+            hc = smdi(i)
+            if (i .gt. 1) hc = hc - smdi(i-1)
+            do j = (i-hc+1), i
 !
 ! ----------- PRODUIT SCALAIRE VECTASS * MODE
 !
@@ -163,7 +163,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
 !
 ! ----------- STOCKAGE DANS LE .UALF A LA BONNE PLACE (1 BLOC)
 !
-                zc(ldblo+scdi(i)+j-i-1) = pij
+                zc(ldblo+smdi(i)+j-i-1) = pij
 !
             end do
         end do

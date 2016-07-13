@@ -1,7 +1,7 @@
 subroutine vecgcy(nomres, numeg)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,19 +45,19 @@ subroutine vecgcy(nomres, numeg)
 !
 !-----------------------------------------------------------------------
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer, pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !
 !     1/ LECTURE ET STOCKAGE DES INFORMATIONS
 !     =======================================
     nomnum = numeg//'      .NUME'
-    nomsto = numeg//'      .SLCS'
+    nomsto = numeg//'      .SMOS'
     call jeveuo(nomnum//'.REFN', 'L', vk24=refn)
     modgen=refn(1)(1:8)
 !
-    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
-    neq=scde(1)
+    call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
+    neq=smde(1)
 !
     call wkvect(nomres//'           .VALE', 'G V R', neq, iavale)
     call wkvect(nomres//'           .REFE', 'G V K24', 2, iarefe)

@@ -101,7 +101,7 @@ subroutine dtmprep(sd_dtm_)
     character(len=24):: solver, lisins
 !
     integer, pointer           :: desc(:)  => null()
-    integer, pointer           :: scde(:)  => null()
+    integer, pointer           :: smde(:)  => null()
     integer, pointer           :: nequ(:)  => null()
     real(kind=8), pointer      :: chodep(:)=> null()
     real(kind=8), pointer      :: chopar(:)=> null()
@@ -230,9 +230,9 @@ subroutine dtmprep(sd_dtm_)
     lagrcorr = 0
 
 !   --- 4.1 - Extraction of the mass M-matrix, full and diagonal
-    nomstr = nume24(1:14)//'.SLCS'
-    call jeveuo(nomstr(1:19)//'.SCDE', 'L', vi=scde)
-    nbstor = scde(1)*scde(4)
+    nomstr = nume24(1:14)//'.SMOS'
+    call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
+    nbstor = smde(2)
 !   --- Diagonal terms extraction and saving
     call dtminivec(sd_dtm, _MASS_DIA, nbmode, address=jmas1)
     call extdia(masgen, nume24, substruc, zr(jmas1))
@@ -273,9 +273,9 @@ subroutine dtmprep(sd_dtm_)
     call getvid(' ', 'MATR_RIGI', scal=riggen)
     call jeveuo(riggen//'           .REFA', 'L', vk24=refa)
     nume24(1:14) = refa(2)(1:14)
-    nomstr = nume24(1:14)//'.SLCS'
-    call jeveuo(nomstr(1:19)//'.SCDE', 'L', vi=scde)
-    nbstor = scde(1)*scde(4)
+    nomstr = nume24(1:14)//'.SMOS'
+    call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
+    nbstor = smde(2)
 !   --- Diagonal terms extraction and saving
     call dtminivec(sd_dtm, _RIGI_DIA, nbmode, address=jrig1)
     call extdia(riggen, nume24, substruc, zr(jrig1))
@@ -362,9 +362,9 @@ subroutine dtmprep(sd_dtm_)
             endif
         enddo
 !
-        nomstr = nume24(1:14)//'.SLCS'
-        call jeveuo(nomstr(1:19)//'.SCDE', 'L', vi=scde)
-        nbstor = scde(1)*scde(4)
+        nomstr = nume24(1:14)//'.SMOS'
+        call jeveuo(nomstr(1:19)//'.SMDE', 'L', vi=smde)
+        nbstor = smde(2)
         if (nbstor.gt.nbmode) then
 !           --- Full matrix extraction and saving
             call dtminivec(sd_dtm, _AMOR_FUL, nbmode*nbmode, address=jamo2)
@@ -526,8 +526,8 @@ subroutine dtmprep(sd_dtm_)
         call getvid(' ', 'MATR_RIGY', scal=rgygen, nbret=ng2)
         call jeveuo(gyogen//'           .REFA', 'L', vk24=refag)
         numgeg = refag(2)(1:14)
-        nomstg = numgeg//'.SLCS'
-        call jeveuo(nomstg//'.SCDE', 'L', jscdeg)
+        nomstg = numgeg//'.SMOS'
+        call jeveuo(nomstg//'.SMDE', 'L', jscdeg)
         call copmat(gyogen, zr(jgyog))
         if (ng2 .ne. 0) then
             call dtminivec(sd_dtm, _RIGY_FUL, nbmode*nbmode, address=jrgyg)

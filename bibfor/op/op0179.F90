@@ -2,7 +2,7 @@ subroutine op0179()
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ subroutine op0179()
     integer :: nbmodd, nbmods, nbmodt, nc, nf, nfr, nfreq
     integer :: nsau0, nsaut
     real(kind=8) :: freq
-    integer, pointer :: scde(:) => null()
+    integer, pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()
@@ -99,7 +99,7 @@ subroutine op0179()
     call gettco(basemo, typbas)
 !
     nomnum = numgen//'      .NUME'
-    nomsto = numgen//'      .SLCS'
+    nomsto = numgen//'      .SMOS'
     dpi = 8.d0*atan2(1.d0,1.d0)
 !
 !==================================================
@@ -107,7 +107,7 @@ subroutine op0179()
 !
 ! RECUPERATION DU NOMBRE DE MODES REDUIT,
 ! NB_VECT DONNE PAR NUME_DDL_GENE
-!      NBMODE   = ZI(JSCDE-1+1)
+!      NBMODE   = ZI(JSMDE-1+1)
 !
     call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
@@ -189,7 +189,7 @@ subroutine op0179()
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
 !
-    call jeveuo(nomsto//'.SCDE', 'L', vi=scde)
+    call jeveuo(nomsto//'.SMDE', 'L', vi=smde)
 !
     resu = ' '
     resu(1:8) = nomres
@@ -208,9 +208,9 @@ subroutine op0179()
     zk24(iarefe+1) = nomnum
     zi(iadesc) = 1
     zi(iadesc+1) = nbmodt
-!   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
-!   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (scde(4) .eq. 1) then
+!   ON TESTE LE NOMBRE DE TERMES STOCKES DE LA MATRICE
+!   SI IL VAUT NUEQ, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
+    if (smde(1) .eq. smde(2)) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2

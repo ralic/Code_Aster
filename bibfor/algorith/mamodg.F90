@@ -4,7 +4,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     implicit none
 !---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,10 +58,10 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 #include "blas/ddot.h"
 !
     integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto
-    integer ::      iprsto,   imatz
+    integer ::  iprsto,   imatz
     integer ::  irang, jrang, i, j, iblo, ldblo,   iadirg
     integer :: iblodi,  nbloc, n1bloc, n2bloc, nbmo, nn
-    integer :: ifm, niv, iret1
+    integer :: ifm, niv, iret1, hc
     real(kind=8) :: mij, rx, ry, rz
     character(len=2) :: model
     character(len=8) :: repon
@@ -70,11 +70,10 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()
     real(kind=8), pointer :: vectz(:) => null()
-    integer, pointer :: scdi(:) => null()
-    integer, pointer :: scbl(:) => null()
+    integer, pointer :: smdi(:) => null()
+    integer, pointer :: smde(:) => null()
     integer, pointer :: indic(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: schc(:) => null()
+    integer(kind=4), pointer :: smhc(:) => null()
     real(kind=8), pointer :: pres(:) => null()
     real(kind=8), pointer :: tpx(:) => null()
     real(kind=8), pointer :: tpy(:) => null()
@@ -88,12 +87,11 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
     call getvtx(' ', 'AVEC_MODE_STAT', scal=repon, nbret=nn)
     if (repon(1:3) .eq. 'NON') call jeveuo('&&DELAT.INDIC', 'L', vi=indic)
 !
-    call jeexin(stolci//'.SCHC', iret1)
+    call jeexin(stolci//'.SMHC', iret1)
     ASSERT(iret1.gt.0)
-    call jeveuo(stolci//'.SCHC', 'L', vi=schc)
-    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
-    call jeveuo(stolci//'.SCBL', 'L', vi=scbl)
-    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
+    call jeveuo(stolci//'.SMHC', 'L', vi4=smhc)
+    call jeveuo(stolci//'.SMDI', 'L', vi=smdi)
+    call jeveuo(stolci//'.SMDE', 'L', vi=smde)
 !
     call jelira(zk24(iprsto)(1:19)//'.VALE', 'LONMAX', nbpres)
     AS_ALLOCATE(vr=vectx, size=nbpres)
@@ -114,7 +112,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
 !     BOUCLE SUR LES BLOCS DE LA MATRICE ASSEMBLEE GENE
 !
-    do 40 iblo = 1, nbloc
+    do iblo = 1, nbloc
 !
         call jecroc(jexnum(nomres//'           .UALF', iblo))
         call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
@@ -122,8 +120,8 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-        n1bloc=scbl(iblo)+1
-        n2bloc=scbl(iblo+1)
+        n1bloc=1
+        n2bloc=smde(1)
 !
 !
         do 10 i = n1bloc, n2bloc
@@ -150,8 +148,10 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 ! RANG GENERALISE DU TERME DE MASSE CALCULEE : LIGNE
 !
             irang=zi(iadirg+i-1)
+            hc = smdi(i)
+            if (i .gt. 1) hc = hc - smdi(i-1)
 !
-            do 30 j = (i-schc(i)+1), i
+            do 30 j = (i-hc+1), i
 !
 !----------------------------------------------------------------
 ! ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE
@@ -181,7 +181,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 ! RANG GENERALISE DU TERME DE MASSE: COLONNE
 !
                 jrang=zi(iadirg+j-1)
-                iblodi = scib(irang)
+                iblodi = 1
 !
                 if (iblodi .ne. iblo) then
 !
@@ -189,7 +189,7 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
 !
                     call jelibe(jexnum(nomres//'           .UALF', iblo))
                     call jeveuo(jexnum(nomres//'           .UALF', iblodi), 'E', ldblo)
-                    zr(ldblo+scdi(irang)+jrang-irang-1) = mij
+                    zr(ldblo+smdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
                         write(ifm,350) irang,jrang,mij
                     endif
@@ -197,14 +197,14 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto,&
                     call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
 !
                 else
-                    zr(ldblo+scdi(irang)+jrang-irang-1) = mij
+                    zr(ldblo+smdi(irang)+jrang-irang-1) = mij
                     if (niv .eq. 2) then
                         write(ifm,350) irang,jrang,mij
                     endif
                 endif
 30          continue
 10      continue
-40  end do
+    end do
 !
     350 format(18x,'M',2 i 4,1x,'=',1x, d 12.5)
 !

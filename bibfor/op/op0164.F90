@@ -1,7 +1,7 @@
 subroutine op0164()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,11 +48,11 @@ subroutine op0164()
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: n1, n2, n4, jscde
+    integer :: n1, n2, n4, jsmde
     real(kind=8) :: partr, parti, inst
     character(len=8) :: nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, typbin, tissf, tsym
-    character(len=19) :: resu, stolci
+    character(len=19) :: resu, stomor
     character(len=14) :: nugene
     character(len=24) :: tabrig, tabfrq, tabri2, tabrit
     character(len=72) :: texte
@@ -92,14 +92,14 @@ subroutine op0164()
     call gettco(basemo, typbas)
 !
     nugene = numgen
-    stolci = numgen//'      .SLCS'
+    stomor = numgen//'      .SMOS'
 !
 !==================================================
 !
 !
 ! RECUPERATION DU NOMBRE DE MODES REDUIT,
 ! NB_VECT DONNE PAR NUME_DDL_GENE
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
+    call jeveuo(stomor//'.SMDE', 'L', jsmde)
 !
     call dismoi('NB_MODES_DYN', basemo, 'RESULTAT', repi=nbmodd)
     call dismoi('NB_MODES_STA', basemo, 'RESULTAT', repi=nbmods)
@@ -238,10 +238,8 @@ subroutine op0164()
 ! ----- RECUPERATION DU NOMBRE D'EQUATIONS DU SYSTEME PHYSIQUE
 !
 !
-    call jeveuo(stolci//'.SCDE', 'L', jscde)
-    nueq = zi(jscde-1+1)
-!      NTBLOC = ZI(JSCDE-1+2)
-!      NBLOC  = ZI(JSCDE-1+3)
+    call jeveuo(stomor//'.SMDE', 'L', jsMde)
+    nueq = zi(jsmde-1+1)
     nterm = nueq*(nueq+1)/2
 !
     resu = ' '
@@ -277,9 +275,10 @@ subroutine op0164()
     call wkvect(resu//'.DESC', 'G V I', 3, iadesc)
     zi(iadesc) = 2
     zi(iadesc+1) = nueq
-!   ON TESTE LA HAUTEUR MAXIMALE DES COLONNES DE LA MATRICE
-!   SI CETTE HAUTEUR VAUT 1, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
-    if (zi(jscde-1+4) .eq. 1) then
+!   ON TESTE LE NOMBRE DE TERMES STOCKES DE LA MATRICE
+!   SI IL VAUT NUEQ, ON SUPPOSE QUE LE STOCKAGE EST DIAGONAL
+!    if (zi(jscde-1+4) .eq. 1) then
+    if (zi(jsmde-1+2) .eq. nueq) then
         zi(iadesc+2) = 1
     else
         zi(iadesc+2) = 2

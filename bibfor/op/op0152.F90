@@ -2,7 +2,7 @@ subroutine op0152()
     implicit none
 !---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,14 +59,14 @@ subroutine op0152()
 #include "asterfort/jelira.h"
 !
     aster_logical :: vrai
-    integer :: ldblo, ibid
+    integer :: ldblo, hc, ibid
     integer :: nbmo, nbmode, ndble, indice, tabad(5)
     integer :: i, j, jdesc
     integer :: iadirg, iblo, ierd
     integer :: imade
     integer :: iphi1, iphi2, iprsto, iret, itxsto
-    integer :: itysto, itzsto, ivalk, jscbl
-    integer :: jscdi, jscde, jschc, jscib, n1bloc, n2bloc
+    integer :: itysto, itzsto, ivalk, kterm
+    integer :: jsmdi, jsmde, jsmhc, n1bloc, n2bloc
     integer :: nbid, nbloc, nterm
     integer :: n1, n2, n3, n4, n5, n6, n7, n9, n10, n12, n13, n14
     integer :: ifm, niv, tmod(1)
@@ -81,7 +81,7 @@ subroutine op0152()
     character(len=14) :: nu, num, nugene
     character(len=16) :: typres, nomcom
     character(len=19) :: max, may, maz, chamno
-    character(len=19) :: stolci, solveu, nomr19
+    character(len=19) :: stomor, solveu, nomr19
     character(len=24) :: nomcha, time, nocham
     character(len=24) :: mate, phib24
     complex(kind=8) :: cbid
@@ -141,42 +141,38 @@ subroutine op0152()
 !     ------------------------------------
     if (n9 .ne. 0) then
         nugene = numgen
-        stolci = nugene//'.SLCS'
+        stomor = nugene//'.SMOS'
 !
     else
 !       CREATION D UN NUME_DDL_GENE
 !       ------------------------------------
         nugene = nomres
-        stolci = nugene//'.SLCS'
+        stomor = nugene//'.SMOS'
 !
         nbmode = -n6
-        call wkvect(stolci//'.SCHC', 'G V I', nbmode, jschc)
-        do 200 i = 1, nbmode
-            zi(jschc+i-1)=i
-200     continue
-!
         nbloc=1
-        call wkvect(stolci//'.SCIB', 'G V I', nbmode, jscib)
-        do 110 i = 1, nbmode
-            zi(jscib+i-1)=nbloc
-110     continue
 !
-        call wkvect(stolci//'.SCBL', 'G V I', nbloc+1, jscbl)
-        zi(jscbl)=0
-        zi(jscbl+1)=nbmode
-!
-        call wkvect(stolci//'.SCDI', 'G V I', nbmode, jscdi)
+        call wkvect(stomor//'.SMDI', 'G V I', nbmode, jsmdi)
         nterm=0
         do 120 i = 1, nbmode
-            nterm=nterm+zi(jschc+i-1)
-            zi(jscdi+i-1)=nterm
+            nterm=nterm+i
+            zi(jsmdi+i-1)=nterm
 120     continue
 !
-        call wkvect(stolci//'.SCDE', 'G V I', 6, jscde)
-        zi(jscde-1+1)=nbmode
-        zi(jscde-1+2)=nterm
-        zi(jscde-1+3)=nbloc
-        zi(jscde-1+4)=nbmode
+        call wkvect(stomor//'.SMHC', 'G V S', nterm, jsmhc)
+        kterm=0
+        do 200 i = 1, nbmode
+            do j=1,i
+              kterm=kterm+1
+              zi4(jsmhc-1+kterm)=j
+            end do
+200     continue
+
+        call wkvect(stomor//'.SMDE', 'G V I', 6, jsmde)
+        zi(jsmde-1+1)=nbmode
+        zi(jsmde-1+2)=nterm
+        zi(jsmde-1+3)=nbloc
+!
     endif
 !
 !
@@ -340,17 +336,16 @@ subroutine op0152()
             nbmo=nbmode
         endif
 !
-        call mamodg(model, stolci, nomres, itxsto, itysto,&
+        call mamodg(model, stomor, nomres, itxsto, itysto,&
                     itzsto, iprsto, iadirg, nbmo, max,&
                     may, maz, nbloc)
     else
 !
 ! CAS CLASSIQUE
 !
-        call jeveuo(stolci//'.SCDI', 'L', jscdi)
-        call jeveuo(stolci//'.SCBL', 'L', jscbl)
-        call jeveuo(stolci//'.SCHC', 'L', jschc)
-        call jeveuo(stolci//'.SCIB', 'L', jscib)
+        call jeveuo(stomor//'.SMDI', 'L', jsmdi)
+        call jeveuo(stomor//'.SMDE', 'L', jsmde)
+        call jeveuo(stomor//'.SMHC', 'L', jsmhc)
 !
 !     BOUCLE SUR LES BLOCS DE LA MATRICE ASSEMBLEE GENE
 !
@@ -361,12 +356,15 @@ subroutine op0152()
 !
 !         BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE
 !
-            n1bloc=zi(jscbl+iblo-1)+1
-            n2bloc=zi(jscbl+iblo)
-!
+            n1bloc=1
+            n2bloc=zi(jsmde)
 !
             do 10 i = n1bloc, n2bloc
-                do 30 j = (i-zi(jschc+i-1)+1), i
+!
+                hc = zi(jsmdi-1+i)
+                if (i .gt. 1) hc = hc - zi(jsmdi-1+i-1)
+!
+                do 30 j = (i-hc+1), i
 !
 !----------------------------------------------------------------
 ! ICI ON CALCULE LA MASSE AJOUTEE SUR UN MODELE GENERALISE
@@ -394,13 +392,13 @@ subroutine op0152()
 !
 !
                     if (option .eq. 'MASS_AJOU') then
-                        zr(ldblo+zi(jscdi+i-1)+j-i-1) = mij
+                        zr(ldblo+zi(jsmdi+i-1)+j-i-1) = mij
                     endif
                     if (option .eq. 'AMOR_AJOU') then
-                        zr(ldblo+zi(jscdi+i-1)+j-i-1) = cij
+                        zr(ldblo+zi(jsmdi+i-1)+j-i-1) = cij
                     endif
                     if (option .eq. 'RIGI_AJOU') then
-                        zr(ldblo+zi(jscdi+i-1)+j-i-1) = kij
+                        zr(ldblo+zi(jsmdi+i-1)+j-i-1) = kij
                     endif
 !
 !===============================================================

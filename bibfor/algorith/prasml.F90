@@ -2,7 +2,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
                   tmnobl, tmadbl, knombl, inumbl, conleq,&
                   conlbl)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,7 +85,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !
     character(len=8) :: modgen, sst(2), nomprn
     character(len=14) :: nugene
-    character(len=19) :: prgene, stolci
+    character(len=19) :: prgene, stomor
     character(len=9) :: rigopt
     character(len=11) :: option, ricopt
     character(len=24) :: tmadbl, tmnobl, tminbl
@@ -104,8 +104,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
     real(kind=8) :: sconl
     integer, pointer :: nueq(:) => null()
     integer, pointer :: lipr(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: scdi(:) => null()
+    integer, pointer :: smdi(:) => null() 
 !-----------------------------------------------------------------------
     data rigopt,ricopt/'RIGI_GENE','RIGI_GENE_C'/
     data zero / 0.0d+00 /
@@ -121,8 +120,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !
 !------------------RECUPERATION DU NOMBRE DE SOUS-STRUCTURE-------------
     prgene=nugene//'.NUME'
-    stolci=nugene//'.SLCS'
-
+    stomor=nugene//'.SMOS'
     call nueq_chck(prgene)
 !
     call jenonu(jexnom(prgene//'.LILI', '&SOUSSTR'), i_ligr_ss)
@@ -135,8 +133,7 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 !---------------------REMPLISSAGE DES OBJETS DE TRAVAIL-----------------
 !
     call jeveuo(prgene//'.NUEQ', 'L', vi=nueq)
-    call jeveuo(stolci//'.SCDI', 'L', vi=scdi)
-    call jeveuo(stolci//'.SCIB', 'L', vi=scib)
+    call jeveuo(stomor//'.SMDI', 'L', vi=smdi)
 !
     call jenonu(jexnom('&&ASSGEN.REP.NOM.PROF', nomprn), ibid)
     call jeveuo(jexnum(tminbl, ibid), 'L', ltinbl)
@@ -220,9 +217,8 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
 ! QUI DU TERME OU DE SON TRANSPOSE ARRIVE DANS LE TRIANGLE SUP ?
                     ivl=min(ieql,ieqc)
                     ivc=max(ieql,ieqc)
-!
-                    zi(ltnobl+iad-1)=scib(ivc)
-                    zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
+                    zi(ltnobl+iad-1)=1
+                    zi(ltadbl+iad-1)=smdi(ivc)-(ivc-ivl)
                 end do
             end do
             call jelibe(jexnum(tmadbl, iblc))
@@ -256,23 +252,22 @@ subroutine prasml(option, nugene, tminbl, nomprn, modgen,&
             ieqc=nueq(1+(inuc-1)+(k-1))
             conleq(ieql)=max(conleq(ieql),sconl)
             iad=k
-            zi(ltnobl+iad-1)=scib(ieql)
-            zi(ltadbl+iad-1)=scdi(ieql)
+            zi(ltnobl+iad-1)=1
+            zi(ltadbl+iad-1)=smdi(ieql)
 ! QUI DU TERME OU DE SON TRANSPOSE ARRIVE DANS LE TRIANGLE SUP ?
             ivl=min(ieql,ieqc)
             ivc=max(ieql,ieqc)
 !
             iad=nblig+k
-            zi(ltnobl+iad-1)=scib(ivc)
-            zi(ltadbl+iad-1)=scdi(ivc)-(ivc-ivl)
+            zi(ltnobl+iad-1)=1
+            zi(ltadbl+iad-1)=smdi(ivc)-(ivc-ivl)
         end do
         call jelibe(jexnum(tmadbl, iblc))
         call jelibe(jexnum(tmnobl, iblc))
     end do
 !
     call jelibe(prgene//'.NUEQ')
-    call jelibe(stolci//'.SCDI')
-    call jelibe(stolci//'.SCIB')
+    call jelibe(stomor//'.SMDI')
     call jelibe(modgen//'      .MODG.LIPR')
 !
 999 continue
