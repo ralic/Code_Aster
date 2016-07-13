@@ -1,7 +1,7 @@
 subroutine ssvalm(statut, option, mo, ma, isma,&
                   jresl, nbvel)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/ssrone.h"
 #include "asterfort/ssvaro.h"
@@ -139,7 +140,8 @@ subroutine ssvalm(statut, option, mo, ma, isma,&
             ASSERT(.false.)
         endif
 !
-        call jeveuo(nomob, 'L', iavmat)
+!       call jeveuo(nomob, 'L', iavmat)
+        call jeveuo(jexnum(nomob, 1), 'L', iavmat)
         nbvel=nddle*(nddle+1)/2
 !
 !

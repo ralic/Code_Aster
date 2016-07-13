@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,13 +26,15 @@ class sd_macr_elem_dyna_m(AsBase):
     nomj = SDNom(fin=18)
     DESC = AsVI(SDNom(nomj='_DESC'), lonmax=3)
     REFE = AsVK24(SDNom(nomj='_REFE'), lonmax=2)
-    VALE = AsObject(SDNom(nomj='_VALE'), type=Parmi('C', 'R',),)
+#   VALE = AsObject(SDNom(nomj='_VALE'), type=Parmi('C', 'R',),)
+    VALE = AsColl(SDNom(nomj='_VALE'),acces='NU', stockage='DISPERSE',
+                  modelong='CONSTANT', type=Parmi('C', 'R'))
 
     def check_macr_elem_dyna_m_1(self, checker):
         vale = self.VALE.get()
         if not vale:
             return  # si Facultatif()
-
+        vale = self.VALE.get()[1]
         sdu_tous_compris(self.DESC, checker, vmin=1)
         nbdef = self.DESC.get()[1]
         sdu_compare(self.VALE, checker, len(vale),

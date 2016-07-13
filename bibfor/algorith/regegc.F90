@@ -35,7 +35,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
     character(len=19) :: profno
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -317,7 +317,7 @@ subroutine regegc(nomres, resgen, mailsk, profno)
                 endif
                 call mgutdm(model_gene, kbid, k, 'NOM_MACR_ELEM', ibid,&
                             macrel)
-                call jeveuo(macrel//'.MAEL_MASS_VALE', 'L', llmass)
+                call jeveuo(jexnum(macrel//'.MAEL_MASS_VALE', 1), 'L', llmass)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONMAX', nbmax)
                 call jelira(macrel//'.MAEL_MASS_VALE', 'LONUTI', nbmas)
                 call jeveuo(macrel//'.MAEL_INER_VALE', 'L', vr=mael_iner_vale)

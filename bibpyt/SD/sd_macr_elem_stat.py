@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,16 +38,22 @@ class sd_macr_elem_stat(AsBase):
 
     # rigidité condensée :
     rigimeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.RIGIMECA', fin=19)))
-    MAEL_RAID_VALE = Facultatif(AsVR())
+#   MAEL_RAID_VALE = Facultatif(AsVR())
+    MAEL_RAID_VALE = Facultatif(
+        AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
     PHI_IE = Facultatif(
         AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
 
     # masse condensée :
     massmeca = Facultatif(sd_matr_asse_gd(SDNom(nomj='.MASSMECA', fin=19)))
-    MAEL_MASS_VALE = Facultatif(AsVR())
-
+#   MAEL_MASS_VALE = Facultatif(AsVR())
+    MAEL_MASS_VALE = Facultatif(
+        AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
+ 
     # amortissement condensé :
-    MAEL_AMOR_VALE = Facultatif(AsVR())
+#   MAEL_AMOR_VALE = Facultatif(AsVR())
+    MAEL_AMOR_VALE = Facultatif(
+        AsColl(acces='NU', stockage='DISPERSE', modelong='CONSTANT', type='R', ltyp=8))
 
     # chargements condensés :
     LICA = Facultatif(
@@ -89,8 +95,8 @@ class sd_macr_elem_stat(AsBase):
 
         # rigidité condensée :
         if self.MAEL_RAID_VALE.exists:
-            assert self.MAEL_RAID_VALE.lonmax == (nddle * (nddle + 1)) / 2
-
+#           assert self.MAEL_RAID_VALE.lonmax == (nddle * (nddle + 1)) / 2
+            assert len(self.MAEL_RAID_VALE.get()[1]) == (nddle * (nddle + 1)) / 2
             assert self.PHI_IE.exists
             phi_ie = self.PHI_IE.get()
                                      # on ne sait pas faire autrement que
@@ -105,12 +111,15 @@ class sd_macr_elem_stat(AsBase):
 
         # masse condensée :
         if self.MAEL_MASS_VALE.exists:
-            assert self.MAEL_MASS_VALE.lonmax == (nddle * (nddle + 1)) / 2
+            assert len(self.MAEL_MASS_VALE.get()[1]) == (nddle * (nddle + 1)) / 2
+#           assert self.MAEL_MASS_VALE.lonmax == (nddle * (nddle + 1)) / 2
             assert refm[6] == 'OUI_MASS'
 
         # amortissement condensé : (JP : je ne sais pas si ca peut exister ?)
         if self.MAEL_AMOR_VALE.exists:
-            assert self.MAEL_AMOR_VALE.lonmax == (nddle * (nddle + 1)) / 2
+            assert len(self.MAEL_AMOR_VALE.get()[1]) == (nddle * (nddle + 1)) / 2
+#           assert self.MAEL_AMOR_VALE.lonmax == (nddle * (nddle + 1)) / 2
+
             assert refm[7] == 'OUI_AMOR'
 
         # chargements condensés :

@@ -1,7 +1,7 @@
 subroutine op0027()
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -163,8 +163,9 @@ subroutine op0027()
         if (delta .gt. 0.d0) then
 ! GENRRATION RAIDEUR
 !
-            call jeveuo(nommat//'.MAEL_RAID_VALE', 'L', iak)
-            call jeveuo(nomres//'.MAEL_RAID_VALE', 'E', iadr)
+
+            call jeveuo(jexnum(nommat//'.MAEL_RAID_VALE', 1), 'L', iak)
+            call jeveuo(jexnum(nomres//'.MAEL_RAID_VALE', 1), 'E', iadr)
             do i = 1, m
                 zr(iadr-1+i) = 0.d0
             end do
@@ -175,8 +176,8 @@ subroutine op0027()
         else
 ! COPIE VALEURS RAIDEUR
             if (iret .ne. 0) then
-                call jeveuo(nommat//'.MAEL_RAID_VALE', 'L', iak)
-                call jeveuo(nomres//'.MAEL_RAID_VALE', 'E', iadr)
+                call jeveuo(jexnum(nommat//'.MAEL_RAID_VALE', 1), 'L', iak)
+                call jeveuo(jexnum(nomres//'.MAEL_RAID_VALE', 1), 'E', iadr)
                 do i = 1, m
                     zr(iadr-1+i) = zr(iak-1+i)
                 end do
@@ -190,8 +191,8 @@ subroutine op0027()
         if (delta .gt. 0.d0) then
 ! GENRRATION MASSE
 !
-            call jeveuo(nommat//'.MAEL_MASS_VALE', 'L', iak)
-            call jeveuo(nomres//'.MAEL_MASS_VALE', 'E', iadr)
+            call jeveuo(jexnum(nommat//'.MAEL_MASS_VALE', 1), 'L', iak)
+            call jeveuo(jexnum(nomres//'.MAEL_MASS_VALE', 1), 'E', iadr)
             do i = 1, m
                 zr(iadr-1+i) = 0.d0
             end do
@@ -202,8 +203,8 @@ subroutine op0027()
         else
 ! COPIE VALEURS MASSE
             if (iret .ne. 0) then
-                call jeveuo(nommat//'.MAEL_MASS_VALE', 'L', iak)
-                call jeveuo(nomres//'.MAEL_MASS_VALE', 'E', iadr)
+                call jeveuo(jexnum(nommat//'.MAEL_MASS_VALE', 1), 'L', iak)
+                call jeveuo(jexnum(nomres//'.MAEL_MASS_VALE', 1), 'E', iadr)
                 do i = 1, m
                     zr(iadr-1+i) = zr(iak-1+i)
                 end do
@@ -221,8 +222,8 @@ subroutine op0027()
                 call utmess('A', 'ALGORITH9_19')
             else
 !
-                call jeveuo(nommat//'.MAEL_AMOR_VALE', 'L', iak)
-                call jeveuo(nomres//'.MAEL_AMOR_VALE', 'E', iadr)
+                call jeveuo(jexnum(nommat//'.MAEL_AMOR_VALE', 1), 'L', iak)
+                call jeveuo(jexnum(nomres//'.MAEL_AMOR_VALE', 1), 'E', iadr)
                 do i = 1, m
                     zr(iadr-1+i) = 0.d0
                 end do
@@ -237,8 +238,8 @@ subroutine op0027()
             if (iret .ne. 0) then
                 call jeexin(nommat//'.MAEL_AMOR_VALE', iret)
                 if (iret .ne. 0) then
-                    call jeveuo(nommat//'.MAEL_AMOR_VALE', 'L', iak)
-                    call jeveuo(nomres//'.MAEL_AMOR_VALE', 'E', iadr)
+                    call jeveuo(jexnum(nommat//'.MAEL_AMOR_VALE',1), 'L', iak)
+                    call jeveuo(jexnum(nomres//'.MAEL_AMOR_VALE',1), 'E', iadr)
                     do i = 1, m
                         zr(iadr-1+i) = zr(iak-1+i)
                     end do

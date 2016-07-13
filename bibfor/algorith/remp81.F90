@@ -1,7 +1,7 @@
 subroutine remp81(nomres, lpar, basmod, nbmod)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,12 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 #include "jeveux.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: basmod, blanc
     character(len=18) :: nomres
@@ -56,17 +61,22 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 ! --- CREATION ET REMPLISSAGE DU _VALE
 !
-    ntail=nbmod*(nbmod+1)/2
-    call wkvect(nomres//'_VALE', 'G V R', ntail, ldres)
+    ntail=nbmod*(nbmod+1)/2     
+    call jecrec(nomres//'_VALE', 'G V R', 'NU', 'DISPERSE', & 
+                   'CONSTANT',1)   
+    call jeecra(nomres//'_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres//'_VALE', 1))
+    call jeveuo(jexnum(nomres//'_VALE', 1), 'E', ldres)
+!   call wkvect(nomres//'_VALE', 'G V R', ntail, ldres)
 !
-    do 10 i = 1, ntail
+    do  i = 1, ntail
         zr(ldres+i-1)=0.0d0
-10  end do
-    do 20 imod = 1, nbmod
+    end do
+    do  imod = 1, nbmod
         iad=imod*(imod+1)/2
 !
         zr(ldres+iad-1)=zr(lpar+imod-1)
-20  end do
+    end do
 !
 !
 ! --- CREATION ET REMPLISSAGE DU .DESC

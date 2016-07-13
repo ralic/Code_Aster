@@ -1,0 +1,11 @@
+P time_limit 120 
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential 
+
+F comm sdlv132c.comm D 1
+F mail sdlv132c.mail D 20
+F libr sdlv132c.21 D 21
+F libr sdlv132c.38 D 38

@@ -1,6 +1,6 @@
 subroutine assgen(nomres, option, nugene)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,6 +62,7 @@ subroutine assgen(nomres, option, nugene)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/mgutdm.h"
 #include "asterfort/prasml.h"
 #include "asterfort/prasmp.h"
 #include "asterfort/ualfva.h"
@@ -70,12 +71,13 @@ subroutine assgen(nomres, option, nugene)
 !
 !
 !
-    character(len=8) :: nomres, modgen, nomprn
+    character(len=8) :: nomres, modgen, nomprn, kbid, nommcl
     character(len=14) :: nugene
     character(len=19) :: prgene, stolci
-    character(len=9) :: rigopt, ksst, lsst
+    character(len=9) :: rigopt, ksst, lsst,masopt, amoopt
     character(len=24) :: tmadbl, tmnobl, tminbl, tmnomb, tmnumb, tmrep, tmconl
     character(len=11) :: ricopt, option
+    character(len=10) :: adnom
     character(len=24) :: nomblo
     real(kind=8) :: zero, un
     real(kind=8) :: valr
@@ -84,15 +86,17 @@ subroutine assgen(nomres, option, nugene)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
-    integer ::  ldblo, ldconl, ldlim, llorl, llprof
+    integer ::  ldblo, ldconl, ldlim, llorl, llprof, llors
     integer :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
     integer :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
-    integer :: ntprno, numblo
+    integer :: ntprno, numblo, nusst, ntria, ntualf
     real(kind=8) :: epsi, ssconl, ssmax, xcon, xmaxbl
+    aster_logical :: lsym
     integer, pointer :: scde(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
-    data rigopt,ricopt/'RIGI_GENE','RIGI_GENE_C'/
+    data rigopt,ricopt,masopt,amoopt/'RIGI_GENE','RIGI_GENE_C',&
+     &                                 'MASS_GENE','AMOR_GENE'/
     data ksst /'&SOUSSTR'/
     data lsst /'LIAISONS'/
     data zero , un / 0.0d+00 , 1.0d+00 /
@@ -142,7 +146,9 @@ subroutine assgen(nomres, option, nugene)
 !
     call jenonu(jexnom(prgene//'.LILI', ksst), ibid)
     call jelira(jexnum(prgene//'.PRNO', ibid), 'LONMAX', nbsst)
+    call jeveuo(jexnum(prgene//'.ORIG', ibid), 'L', llors)
     nbsst=nbsst/2
+!
 !------------------RECUPERATION DU NOMBRE DE LIAISON-------------
 !
     call jenonu(jexnom(prgene//'.LILI', lsst), ibid)
@@ -150,6 +156,28 @@ subroutine assgen(nomres, option, nugene)
     if (nblia .eq. 1) then
         call utmess('F', 'ALGORITH_32')
     endif
+!
+!------------------RECHERCHE DE MATRICES NON SYMETRIQUES-------------
+!
+    if ((option.eq.rigopt) .or. (option.eq.ricopt)) then
+        adnom='.MAEL_RAID'
+    else if (option.eq.masopt) then
+        adnom='.MAEL_MASS'
+    else if (option.eq.amoopt) then
+        adnom='.MAEL_AMOR'
+    endif
+    lsym = .true.
+    do j=1, nbsst
+       nusst=zi(llors+j-1)
+       kbid='   '
+       call mgutdm(modgen, kbid, nusst, 'NOM_MACR_ELEM', ibid,&
+                    nommcl)
+       call jelira(nommcl//adnom//'_VALE','NMAXOC',ntria)
+       if (ntria.eq.2) then
+        lsym = .false.
+        zk24(jrefa-1+9) = 'MR'
+       end if
+    end do
 !
 !
 !--------------------RECUPERATION DES CARACTERISTIQUES BLOCS------------
@@ -159,12 +187,17 @@ subroutine assgen(nomres, option, nugene)
     ntbloc=scde(2)
     nbloc=scde(3)
     call jelibe(stolci//'.SCDE')
+    if (lsym) then 
+       ntualf = nbloc
+    else
+       ntualf = 2*nbloc
+    end if
     if (option .eq. ricopt) then
         call jecrec(nomres//'           .UALF', 'G V C', 'NU', 'DISPERSE', 'CONSTANT',&
-                    nbloc)
+                    ntualf)
     else
         call jecrec(nomres//'           .UALF', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
-                    nbloc)
+                    ntualf)
     endif
     call jeecra(nomres//'           .UALF', 'LONMAX', ntbloc)
 !
@@ -361,8 +394,7 @@ subroutine assgen(nomres, option, nugene)
 !
 !    BOUCLE SUR LES BLOCS RESULTATS
 !
-    do iblo = 1, nbloc
-!
+     do iblo = 1, ntualf
         call jecroc(jexnum(nomres//'           .UALF', iblo))
         call jeveuo(jexnum(nomres//'           .UALF', iblo), 'E', ldblo)
 !
@@ -379,11 +411,11 @@ subroutine assgen(nomres, option, nugene)
             numblo=zi(ltnumb+iblel-1)
             call jelira(jexnum(tmnobl, iblel), 'LONMAX', nbterm)
             if (option .eq. 'RIGI_GENE_C') then
-                call asgnbc(iblo, zc(ldblo), nbterm, zi(ltnobl), zi( ltadbl),&
+                call asgnbc(iblo, nbloc, zc(ldblo), nbterm, zi(ltnobl), zi( ltadbl),&
                             nomblo, numblo, xcon)
 !
             else
-                call asgnbn(iblo, zr(ldblo), nbterm, zi(ltnobl), zi( ltadbl),&
+                call asgnbn(iblo, nbloc, zr(ldblo), nbterm, zi(ltnobl), zi( ltadbl),&
                             nomblo, numblo, xcon)
 !
             endif
@@ -392,10 +424,11 @@ subroutine assgen(nomres, option, nugene)
 !
         end do
 !
+
         call jelibe(jexnum(nomres//'           .UALF', iblo))
 !
     end do
-!
+!        
     call ualfva(nomres, 'G')
 !
     call jedetr(tmadbl)

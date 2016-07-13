@@ -2,7 +2,7 @@ subroutine calamo(nomres, classe, basmod)
 ! aslint: disable=
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +37,14 @@ subroutine calamo(nomres, classe, basmod)
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -90,7 +95,12 @@ subroutine calamo(nomres, classe, basmod)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     ntail = nbdef* (nbdef+1)/2
-    call wkvect(nomres(1:18)//'_VALE', classe//' V R', ntail, ldres)
+    call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
+                   'CONSTANT',1)   
+    call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
+    call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)
+!   call wkvect(nomres(1:18)//'_VALE', classe//' V R', ntail, ldres)
 !
 ! --- REMPLISSAGE DES VALEURS DIAGONALES
 !

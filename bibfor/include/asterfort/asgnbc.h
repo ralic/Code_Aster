@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine asgnbc(ibla, bloca, nbterm, inobl, iadbl,&
+    subroutine asgnbc(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
                       nomblo, numblo, fact)
         integer :: nbterm
         integer :: ibla
@@ -24,7 +24,7 @@ interface
         integer :: inobl(nbterm)
         integer :: iadbl(nbterm)
         character(len=24) :: nomblo
-        integer :: numblo
+        integer :: numblo, nbloc
         real(kind=8) :: fact
     end subroutine asgnbc
 end interface

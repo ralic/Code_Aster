@@ -1,7 +1,7 @@
 subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
                   tmnobl, tmadbl, knombl, inumbl, ssmax)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
 !               DANS LE  BLOC ASSEMBLE
 ! KNOMBL   /M/: VECTEUR DES NOM K24 DES OBJETS OU FAMILLE CONTENANT
 !               LES BLOCS ELEMENTAIRES
-! INUMBL   /M/: VECTEUR NUMERO  BLOCS ELEMNTAIRE DANS LEUR FAMILLE OU 0
+! INUMBL   /M/: VECTEUR NUMERO  BLOCS ELEMENTAIRE DANS LEUR FAMILLE OU 0
 !               LES BLOCS ELEMENTAIRES
 ! SSMAX    /M/: MAXIMUM DE LA VALEURS ABSOLUE DES TERMES TRAITES
 !
@@ -93,7 +93,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
     integer :: iad, ibid, ibl1, ieqc, inuc, inul, iret, i_ligr_ss
     integer :: j, lc, ll, llors, llprs, i_ligr
     integer :: ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
-    integer :: ntail, ntprno, nusst
+    integer :: ntail, ntprno, nusst, ntria
     real(kind=8) :: ssmax
     integer, pointer :: nueq(:) => null()
     integer, pointer :: scib(:) => null()
@@ -163,6 +163,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         call mgutdm(modgen, kbid, nusst, 'NOM_MACR_ELEM', ibid,&
                     nommcl)
         knombl(ibl1)=nommcl//adnom//'_VALE'
+        call jelira(knombl(ibl1),'NMAXOC',ntria)
 !
 ! VERIFICATION DE L'EXISTENCE DE LA MATRICE D'AMORTISSEMENT ASSOCIEE
 ! AU MACRO-ELEMENT
@@ -178,9 +179,9 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         inumbl(ibl1)=0
 ! TYPE DE LA MATRICE DU MACRO ELEMENT (IE REELLE OU COMPLEXE)
         if (option .eq. ricopt) then
-            call maxblc(nommcl//adnom//'_VALE           ', ssmax)
+            call maxblc(jexnum(nommcl//adnom//'_VALE           ', 1), ssmax)
         else
-            call maxblo(nommcl//adnom//'_VALE           ', ssmax)
+            call maxblo(jexnum(nommcl//adnom//'_VALE           ', 1), ssmax)
         endif
 !  RECUPERATION DIMENSIONS ET NUMERO PREMIERE EQUATION DANS NUEQ
         nblig=zi(llprs+(j-1)*2+1)
@@ -188,7 +189,7 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen,&
         inul=zi(llprs+(j-1)*2)
         inuc=inul
 !
-! TAILLE BLOC MATRICE PROJETEE (STOCKAGE TRAINGLE SUPERIEUR)
+! TAILLE BLOC MATRICE PROJETEE (STOCKAGE TRIANGLE SUPERIEUR)
 !
         ntail=nbcol*(nbcol+1)/2
 !

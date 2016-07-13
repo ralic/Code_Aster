@@ -2,7 +2,7 @@ subroutine asgeel(nomres, option, nugene)
 !
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,21 +59,27 @@ subroutine asgeel(nomres, option, nugene)
 !
 !
     character(len=8) :: nomres, modgen
+    character(len=9) :: rigopt ,masopt, amoopt
     character(len=14) :: nugene
     character(len=19) :: prgene
+    character(len=10) :: adnom
     character(len=11) :: option
     character(len=24) :: k24bid, seliai, sizlia, sst, nomsst
     real(kind=8) :: temp
 !
     integer :: ibid, i1, j1, k1, l1, n1, lres, neq, lneq, lproj, nbddl, indsst
-    integer :: lsst, llref, nbmacr, exist,   lmacr,  indmcr
+    integer :: lsst, llref, nbmacr, exist,   lmacr,  indmcr, lresi
     integer :: decal, ddlcp, lselia, nlt, ind, ldconl, iret, nmaddl, ltemp
-    integer :: jrefa, ldlim, nbsst, lsilia, iadesc
+    integer :: jrefa, ldlim, nbsst, lsilia, iadesc, ntria, lmacri
     character(len=8) :: kbid, k8bid
-    character(len=1) :: k1bid
     integer, pointer :: indices_macro(:) => null()
     character(len=8), pointer :: noms_macro(:) => null()
     integer, pointer :: pointeurs_macro(:) => null()
+    integer, pointer :: pointeurs_macroi(:) => null()
+    aster_logical :: lsym
+    aster_logical, pointer ::  syme_macro(:) => null() 
+    data rigopt,masopt,amoopt/'RIGI_GENE',&
+     &                        'MASS_GENE','AMOR_GENE'/
 !-----------C
 !--       --C
 !-- DEBUT --C
@@ -98,6 +104,7 @@ subroutine asgeel(nomres, option, nugene)
     zk24(jrefa-1+8) = 'ASSE'
     zk24(jrefa-1+9) = 'MS'
     zk24(jrefa-1+10) = 'GENE'
+    lsym = .true.
 !
 !--------------------RECUPERATION DU MODE_GENE AMONT--------------------
 !
@@ -139,8 +146,17 @@ subroutine asgeel(nomres, option, nugene)
 !
 !-- RECUPERATION DES DIFFERENTS MACRO ELEMENTS
 !
+    if (option.eq.rigopt) then
+        adnom='.MAEL_RAID'
+    else if (option.eq.masopt) then
+        adnom='.MAEL_MASS'
+    else if (option.eq.amoopt) then
+        adnom='.MAEL_AMOR'
+    endif
+!
     AS_ALLOCATE(vk8=noms_macro, size=nbsst)
     AS_ALLOCATE(vi=indices_macro, size=nbsst*3)
+    AS_ALLOCATE(vl=syme_macro, size=nbsst)
 !
     call jeveuo(sizlia, 'L', lsilia)
     call jeveuo(sst, 'L', lsst)
@@ -160,6 +176,13 @@ subroutine asgeel(nomres, option, nugene)
         call jenonu(jexnom(nomsst, zk8(lsst+i1-1)), indsst)
         call mgutdm(modgen, kbid, indsst, 'NOM_MACR_ELEM', ibid,&
                     k8bid)
+        call jelira(k8bid//adnom//'_VALE','NMAXOC',ntria)
+        syme_macro(i1)= .true.
+        if (ntria.gt.1) then
+         syme_macro(i1)= .false.
+         lsym = .false.
+         zk24(jrefa-1+9) = 'MR'
+        end if
 !
         if (i1 .eq. 1) then
             nbmacr=1
@@ -191,17 +214,16 @@ subroutine asgeel(nomres, option, nugene)
 !-- RECUPERATION DES MATRICES DES DIFERENTS MACROS ELEMENTS
 !
     AS_ALLOCATE(vi=pointeurs_macro, size=nbmacr)
+    AS_ALLOCATE(vi=pointeurs_macroi, size=nbmacr)
     do i1 = 1, nbmacr
-        if (option .eq. 'RIGI_GENE') then
-            call jeveuo(noms_macro(i1)//'.MAEL_RAID_VALE', 'L', lmacr)
-            k1bid='K'
-        else if (option .eq. 'MASS_GENE') then
-            call jeveuo(noms_macro(i1)//'.MAEL_MASS_VALE', 'L', lmacr)
-            k1bid='M'
-        else if (option .eq. 'AMOR_GENE') then
-            call jeveuo(noms_macro(i1)//'.MAEL_AMOR_VALE', 'L', lmacr)
-        endif
-        pointeurs_macro(i1)=lmacr
+          call jeveuo(jexnum(noms_macro(i1)//adnom//'_VALE', 1), 'L', lmacr)
+          pointeurs_macro(i1)=lmacr          
+          if (syme_macro(i1)) then           
+           pointeurs_macroi(i1)=lmacr
+          else
+           call jeveuo(jexnum(noms_macro(i1)//adnom//'_VALE', 2), 'L', lmacri)
+           pointeurs_macroi(i1)=lmacri
+          end if                     
     end do
 !
 ! ----------- CREATION ET REMPLISSAGE DU .DESC ---------------
@@ -216,10 +238,15 @@ subroutine asgeel(nomres, option, nugene)
 !
 !-- ALLOCATION DE LA MATRICE PROJETEE
     call jecrec(nomres//'           .VALM', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
-                1)
+                ntria)
+    call jeecra(nomres//'           .VALM', 'LONMAX', int((neq*(neq+1))/2))
+
     call jecroc(jexnum(nomres//'           .VALM', 1))
-    call jeecra(jexnum(nomres//'           .VALM', 1), 'LONMAX', int((neq*(neq+1))/2), ' ')
     call jeveuo(jexnum(nomres//'           .VALM', 1), 'E', lres)
+    if (.not.lsym) then
+      call jecroc(jexnum(nomres//'           .VALM', 2))
+      call jeveuo(jexnum(nomres//'           .VALM', 2), 'E', lresi)
+    end if
 !
 !----------------------------------------C
 !--                                    --C
@@ -237,6 +264,7 @@ subroutine asgeel(nomres, option, nugene)
         nbddl=indices_macro(1+nbsst+n1-1)
         decal=indices_macro(1+2*nbsst+n1-1)
         lmacr=pointeurs_macro(indmcr)
+        lmacri=pointeurs_macroi(indmcr)
 !
 !-- ON RECOPIE LA MATRICE DU MACRO ELEMENT (STOCKAGE PLEIN)
         do j1 = 1, int(nbddl*(nbddl+1)/2)
@@ -247,7 +275,7 @@ subroutine asgeel(nomres, option, nugene)
             endif
             k1=j1-int(l1*(l1-1)/2)
             zr(ltemp+nbddl*(k1-1)+l1-1)=zr(lmacr+j1-1)
-            zr(ltemp+nbddl*(l1-1)+k1-1)=zr(lmacr+j1-1)
+            zr(ltemp+nbddl*(l1-1)+k1-1)=zr(lmacri+j1-1)
         end do
 !
 !-- ON FAIT K*T
@@ -264,14 +292,20 @@ subroutine asgeel(nomres, option, nugene)
                 ind=int(((j1-1)*j1)/2)+i1-1
                 zr(lres+ind)=zr(lres+ind)+ddot(nbddl, zr(lproj+(j1-1)*&
                 nbddl),1, zr(lselia+(i1-1)*nlt+decal),1)
+                if (.not.lsym) then
+                  zr(lresi+ind)=zr(lresi+ind)+ddot(nbddl, zr(lproj+(i1-1)*&
+                  nbddl),1, zr(lselia+(j1-1)*nlt+decal),1)
+                end if                  
             end do
         end do
 !
     end do
 !
     AS_DEALLOCATE(vi=pointeurs_macro)
+    AS_DEALLOCATE(vi=pointeurs_macroi) 
     AS_DEALLOCATE(vk8=noms_macro)
     AS_DEALLOCATE(vi=indices_macro)
+    AS_DEALLOCATE(vl=syme_macro)
     call jedetr('&&ASGEEL.MATR_TEMP')
     call jedetr('&&ASGEEL.PROJ_TEMP')
 !

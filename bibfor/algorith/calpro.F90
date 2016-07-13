@@ -1,7 +1,7 @@
 subroutine calpro(nomres, classe, basmod, nommat)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,10 @@ subroutine calpro(nomres, classe, basmod, nommat)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jeecra.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtexis.h"
@@ -64,15 +68,16 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, idbase,  ier, iret
-    integer :: j, lddes, ldref, ldres, lmat, ltvec1, nbdef
+    integer :: i, iad, idbase,  ier, iret, jrefa, jdeb
+    integer :: j, lddes, ldref, ldres, ldres2, lmat, ltvec1, nbdef
     integer :: neq, ntail
+    aster_logical :: lsym
     real(kind=8) :: xprod
     complex(kind=8) :: cbid
     integer, pointer :: deeq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
-    data pgc/'CALPRO'/
+    pgc='CALPRO'
 !-----------------------------------------------------------------------
 !
 ! --- CREATION DU .REFE
@@ -98,8 +103,24 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
-    ntail = nbdef* (nbdef+1)/2
-    call wkvect(nomres(1:18)//'_VALE', classe//' V R', ntail, ldres)
+    call jeveuo(nommat(1:19)//'.REFA', 'L', jrefa)
+    ntail = nbdef* (nbdef+1)/2    
+    if (zk24(jrefa-1+9) .eq. 'MS') then
+       lsym = .true.
+       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
+                   'CONSTANT',1)   
+    else
+       lsym = .false.
+       call jecrec(nomres(1:18)//'_VALE', classe//' V R', 'NU', 'DISPERSE', & 
+                   'CONSTANT',2)   
+    endif
+    call jeecra(nomres(1:18)//'_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres(1:18)//'_VALE', 1))
+    call jeveuo(jexnum(nomres(1:18)//'_VALE', 1), 'E', ldres)
+    if (.not.lsym) then
+        call jecroc(jexnum(nomres(1:18)//'_VALE', 2))
+        call jeveuo(jexnum(nomres(1:18)//'_VALE', 2), 'E', ldres2)
+    endif
 !
 ! --- CONTROLE D'EXISTENCE DE LA MATRICE
 !
@@ -140,19 +161,30 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 ! ----- PRODUIT AVEC LA DEFORMEE COURANTE
 !
-        xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(i-1)*neq),1)
-        iad = i*(i+1)/2
-        zr(ldres+iad-1) = xprod
+         xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(i-1)*neq),1)
+         iad = i*(i+1)/2
+         zr(ldres+iad-1) = xprod
+         if (.not.lsym) zr(ldres2+iad-1) = xprod
+         if (lsym) then 
+          jdeb = i+1
+         else 
+          jdeb=1
+         endif
 !
 ! ----- PRODUIT AVEC DEFORMEES D'ORDRE SUPERIEURE
 !
-        if (i .lt. nbdef) then
-            do j = i+1, nbdef
+!       if (i .lt. nbdef) then
+            do j = jdeb, nbdef               
                 xprod= ddot(neq,zr(ltvec1),1,zr(idbase+(j-1)*neq),1)
-                iad = i+(j-1)*j/2
-                zr(ldres+iad-1) = xprod
+                if (j.gt.i) then
+                  iad = i+(j-1)*j/2                   
+                  zr(ldres+iad-1) = xprod
+                else
+                  iad = j+(i-1)*i/2                                     
+                  zr(ldres2+iad-1) = xprod  
+                end if                   
             end do
-        endif
+!       endif
 !
     end do
 !

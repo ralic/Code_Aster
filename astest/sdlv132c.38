@@ -1,0 +1,129 @@
+#MA1=LIRE_MAILLAGE(UNITE=22);
+#--------------------------------------------------------------------
+
+MO1=AFFE_MODELE(MAILLAGE=MA1,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='POU_D_T',),);
+#--------------------------------------------------------------------
+
+CARELEM1=AFFE_CARA_ELEM(MODELE=MO1,
+                        POUTRE=_F(GROUP_MA='MASSIF',
+                                  SECTION='CERCLE',
+                                  CARA=('R',),
+                                  VALE=(0.4,),),);
+#--------------------------------------------------------------------
+
+MAT1=DEFI_MATERIAU(ELAS=_F(E=2.1E11,
+                          NU=0.,
+                          RHO=7800.,
+                          ),);
+# ---------------------------------------------------------------------
+
+CHMAT1=AFFE_MATERIAU(MAILLAGE=MA1,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=MAT1,),);
+
+CH1_CB=AFFE_CHAR_MECA(MODELE=MO1,
+                   DDL_IMPO=(_F(GROUP_NO='BLOC',
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                            _F(GROUP_NO=('NOPAL1','NOPAL2'),
+                               DX=0.0,
+                               DY=0.0,
+                               DZ=0.0,
+                               DRX=0.0,
+                               DRY=0.0,
+                               DRZ=0.0,),
+                             ),
+                             );
+
+#CH1_MN=AFFE_CHAR_MECA(MODELE=MO1,
+#                   DDL_IMPO=(_F(GROUP_NO='BLOC',
+#                               DX=0.0,
+#                               DY=0.0,
+#                               DZ=0.0,
+#                               DRX=0.0,
+#                               DRY=0.0,
+#                               DRZ=0.0,),
+#                             ),
+#                             );
+# ------------------------------------------------------------------
+# CALCULS DES MATRICES
+#----------------------------------------------------------------
+
+MELR1_CB=CALC_MATR_ELEM(OPTION='RIGI_MECA',
+                     MODELE=MO1,
+                     CHAM_MATER=CHMAT1,
+                     CARA_ELEM=CARELEM1,
+                     CHARGE=CH1_CB,);
+
+MELM1_CB=CALC_MATR_ELEM(OPTION='MASS_MECA',
+                     MODELE=MO1,
+                     CHAM_MATER=CHMAT1,
+                     CARA_ELEM=CARELEM1,
+                     CHARGE=CH1_CB,);
+
+MELA1_CB=CALC_MATR_ELEM(OPTION='AMOR_MECA',
+                     MODELE=MO1,
+                     CHAM_MATER=CHMAT1,
+                     CARA_ELEM=CARELEM1,
+                     RIGI_MECA=MELR1_CB,
+                     MASS_MECA=MELM1_CB,);
+
+NUM1_CB=NUME_DDL(MATR_RIGI=MELR1_CB,
+#              METHODE='LDLT',
+);
+
+ASSR1_CB=ASSE_MATRICE(MATR_ELEM=MELR1_CB,
+                      NUME_DDL=NUM1_CB,);
+
+ASSM1_CB=ASSE_MATRICE(MATR_ELEM=MELM1_CB,
+                      NUME_DDL=NUM1_CB,);
+
+ASSA1_CB=ASSE_MATRICE(MATR_ELEM=MELA1_CB,
+                      NUME_DDL=NUM1_CB,);
+
+#--------------------------------------------------------------------
+#                      CALCUL MODAL
+#--------------------------------------------------------------------
+
+MODE1_CB=CALC_MODES(
+                    MATR_RIGI=ASSR1_CB,
+                    MATR_MASS=ASSM1_CB,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 SEUIL=9.9999999999999995E-07,
+                                 ),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(200.,4000.),),
+                    );
+
+MODE1N=NORM_MODE(MODE=MODE1_CB,NORME='MASS_GENE',);
+
+#-------------------------------------------------------------------
+# CALCUL DU MACRO-ELEMENT DYNAMIQUE
+#-------------------------------------------------------------------
+
+INTERF1=DEFI_INTERF_DYNA(NUME_DDL=NUM1_CB,
+                        INTERFACE=(_F(NOM='PALIER_S',
+                                      TYPE='CRAIGB',
+                                      NOEUD=('N31','N32'),
+                                      #MASQUE=('DX','DRX','DRY','DRZ',),
+                                      ),),);
+
+BAMO1=DEFI_BASE_MODALE(CLASSIQUE=_F(INTERF_DYNA=INTERF1,
+                                   MODE_MECA=MODE1N,
+#                                   NMAX_MODE=10,
+                                   NMAX_MODE=100,
+                                   ),);
+
+MACR1=MACR_ELEM_DYNA(BASE_MODALE=BAMO1,
+                     MATR_RIGI=ASSR1_CB,
+                     MATR_MASS=ASSM1_CB,
+		     MATR_AMOR=ASSA1_CB,
+                      );
+

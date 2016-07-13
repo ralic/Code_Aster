@@ -13,6 +13,7 @@ subroutine iredmi(macr)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/rslipa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -20,7 +21,7 @@ subroutine iredmi(macr)
     character(len=*) :: macr
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,10 +49,12 @@ subroutine iredmi(macr)
     integer :: iret, isamor, ismass, isrigi,   ival3
     integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
     integer :: jrefe, jrigi, k, lamor, n1, n2
-    integer :: nbamor, nbmode, nbmods, nbmodt
+    integer :: nbamor, nbmode, nbmods, nbmodt, ntriam, ntriar
     real(kind=8) :: petir8, pi
     real(kind=8), pointer :: mael_raid_vale(:) => null()
+    real(kind=8), pointer :: mael_raid_vali(:) => null() 
     real(kind=8), pointer :: mael_mass_vale(:) => null()
+    real(kind=8), pointer :: mael_mass_vali(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mael = macr
@@ -107,8 +110,22 @@ subroutine iredmi(macr)
         call wkvect('&&IREDMI.CAMOR', 'V V R', nbmode*nbmods, icamor)
     endif
 !
-    call jeveuo(mael//'.MAEL_MASS_VALE', 'L', vr=mael_mass_vale)
-    call jeveuo(mael//'.MAEL_RAID_VALE', 'L', vr=mael_raid_vale)
+    call jelira(mael//'.MAEL_MASS_VALE','NMAXOC',ntriam)
+    call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vale)
+    if (ntriam.gt.1) then
+     call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 2), 'L', vr=mael_mass_vali)
+    else
+     call jeveuo(jexnum(mael//'.MAEL_MASS_VALE', 1), 'L', vr=mael_mass_vali)
+    end if
+!
+    call jelira(mael//'.MAEL_RAID_VALE','NMAXOC',ntriar)
+    call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vale) 
+    if (ntriar.gt.1) then 
+     call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 2), 'L', vr=mael_raid_vali)
+    else
+     call jeveuo(jexnum(mael//'.MAEL_RAID_VALE', 1), 'L', vr=mael_raid_vali)
+    end if
+!
     do j = 1, nbmode
         do i = 1, j
             k =j*(j-1)/2 + i

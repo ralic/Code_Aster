@@ -1,0 +1,165 @@
+% fichier de maillage du cas test dlra03
+TITRE 
+%MAILLAGE
+FINSF
+%
+% Coordonnees des points du maillage suivant x et y
+    COOR_3D
+    N1   0.00  -0.25  0.00
+    N2   0.00  -0.25  0.25
+    N3   0.00  -0.25  0.50
+    N4   0.00  -0.25  0.75
+    N5   0.00  -0.25  1.00
+%
+    N6   0.00  0.25  0.00
+    N7   0.00  0.25  0.25
+    N8   0.00  0.25  0.50
+    N9   0.00  0.25  0.75
+    N10  0.00  0.25  1.00
+%
+    N11  0.00  0.125 1.00
+    N12  0.00 -0.125 1.00
+%
+    N13  2.00 -0.25  0.00
+    N14  2.00 -0.25  0.25
+    N15  2.00 -0.25  0.50
+    N16  2.00 -0.25  0.70
+    N17  2.00 -0.25  1.00
+%
+    N18  2.00  0.25  0.00
+    N19  2.00  0.25  0.25
+    N20  2.00  0.25  0.50
+    N21  2.00  0.25  0.70
+    N22  2.00  0.25  1.00
+%
+    N23  2.00  0.125 1.00
+    N24  2.00 -0.125 1.00
+%
+    N25  0.50  0.25  1.00
+    N26  1.00  0.25  1.00
+    N27  1.50  0.25  1.00
+%
+    N28  0.50 -0.25  1.00
+    N29  1.00 -0.25  1.00
+    N30  1.50 -0.25  1.00
+%
+    N31  0.00  0.00001 1.00
+    N32  2.00  0.00001  1.00
+%
+    FINSF
+%
+% Definition des mailles
+%
+    SEG2
+% poteau vertical 1
+    MA1  N1  N2
+    MA2  N2  N3
+    MA3  N3  N4
+    MA4  N4  N5
+%
+% poteau vertical 2
+    MA5  N6  N7
+    MA6  N7  N8
+    MA7  N8  N9
+    MA8  N9  N10
+%
+% poteau vertical 3
+    MA9  N13 N14
+    MA10 N14 N15
+    MA11 N15 N16
+    MA12 N16 N17
+%
+% poteau vertical 4
+    MA13 N18 N19
+    MA14 N19 N20
+    MA15 N20 N21
+    MA16 N21 N22
+%
+% petite traverse horizontale 1
+    MA17 N10 N11
+    MA18 N11 N31
+    MA19 N31 N12
+    MA20 N12 N5 
+%
+% petite traverse horizontale 2
+    MA21 N22 N23
+    MA22 N23 N32
+    MA23 N32 N24
+    MA24 N24 N17
+%
+% grand longeron horizontal 1
+    MA25 N5  N28
+    MA26 N28 N29
+    MA27 N29 N30
+    MA28 N30 N17
+%
+% grand longeron horizontal 2
+    MA29 N10 N25
+    MA30 N25 N26
+    MA31 N26 N27
+    MA32 N27 N22
+%
+    FINSF
+%
+%
+% Definition des groupes de mailles
+%
+% groupe de tous les elements du massif
+    GROUP_MA NOM = MASSIF
+    MA1 
+    MA2 
+    MA3 
+    MA4 
+    MA5 
+    MA6 
+    MA7 
+    MA8 
+    MA9 
+    MA10 
+    MA11 
+    MA12 
+    MA13 
+    MA14 
+    MA15 
+    MA16 
+    MA17 
+    MA18 
+    MA19 
+    MA20 
+    MA21 
+    MA22 
+    MA23 
+    MA24 
+    MA25 
+    MA26 
+    MA27 
+    MA28 
+    MA29 
+    MA30 
+    MA31 
+    MA32 
+    FINSF
+%
+%
+% Definition des groupes de noeuds
+%
+% groupe des noeuds a encaster
+    GROUP_NO NOM = BLOC
+    N1 
+    N6 
+    N13 
+    N18
+    FINSF
+%
+% groupe des noeuds a encaster
+    GROUP_NO NOM = NOPAL1
+    N31
+    FINSF
+%
+% groupe des noeuds a encaster
+    GROUP_NO NOM = NOPAL2
+    N32
+    FINSF
+%
+%
+FIN

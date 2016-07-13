@@ -7,7 +7,10 @@ subroutine impe81(nomres, impe, basemo)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"
+#include "asterfort/jecrec.h"
+#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -17,7 +20,7 @@ subroutine impe81(nomres, impe, basemo)
     character(len=19) :: impe
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,9 +115,27 @@ subroutine impe81(nomres, impe, basemo)
 ! --- ALLOCATION DE LA MATRICE RESULTAT
 !
     ntail = nbdef* (nbdef+1)/2
-    call wkvect(nomres//'.MAEL_RAID_VALE', 'G V R', ntail, ldresr)
-    call wkvect(nomres//'.MAEL_MASS_VALE', 'G V R', ntail, ldresm)
-    call wkvect(nomres//'.MAEL_AMOR_VALE', 'G V R', ntail, ldresa)
+    call jecrec(nomres//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', & 
+                'CONSTANT',1)   
+    call jeecra(nomres//'.MAEL_RAID_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres//'.MAEL_RAID_VALE', 1))
+    call jeveuo(jexnum(nomres//'.MAEL_RAID_VALE', 1), 'E', ldresr)
+!
+    call jecrec(nomres//'.MAEL_MASS_VALE', 'G V R', 'NU', 'DISPERSE', & 
+                'CONSTANT',1)   
+    call jeecra(nomres//'.MAEL_MASS_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres//'.MAEL_MASS_VALE', 1))
+    call jeveuo(jexnum(nomres//'.MAEL_MASS_VALE', 1), 'E', ldresm)
+!
+    call jecrec(nomres//'.MAEL_AMOR_VALE', 'G V R', 'NU', 'DISPERSE', & 
+                'CONSTANT',1)   
+    call jeecra(nomres//'.MAEL_AMOR_VALE', 'LONMAX', ntail)
+    call jecroc(jexnum(nomres//'.MAEL_AMOR_VALE', 1))
+    call jeveuo(jexnum(nomres//'.MAEL_AMOR_VALE', 1), 'E', ldresa)
+!
+!   call wkvect(nomres//'.MAEL_RAID_VALE', 'G V R', ntail, ldresr)
+!   call wkvect(nomres//'.MAEL_MASS_VALE', 'G V R', ntail, ldresm)
+!   call wkvect(nomres//'.MAEL_AMOR_VALE', 'G V R', ntail, ldresa)
 !
 !
 !        BOUCLE SUR LES COLONNES DE LA MATRICE ASSEMBLEE

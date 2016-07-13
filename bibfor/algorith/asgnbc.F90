@@ -1,7 +1,7 @@
-subroutine asgnbc(ibla, bloca, nbterm, inobl, iadbl,&
+subroutine asgnbc(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
                   nomblo, numblo, fact)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,11 +20,12 @@ subroutine asgnbc(ibla, bloca, nbterm, inobl, iadbl,&
 #include "jeveux.h"
 !
 #include "asterfort/jedema.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
     character(len=24) :: nomblo
-    integer :: nbterm, inobl(nbterm), iadbl(nbterm), ibla, numblo
+    integer :: nbterm, inobl(nbterm), iadbl(nbterm), ibla, numblo, nbloc
     real(kind=8) :: fact
     complex(kind=8) :: bloca(*)
 !
@@ -52,7 +53,7 @@ subroutine asgnbc(ibla, bloca, nbterm, inobl, iadbl,&
 !
 !
 !
-    integer :: llblo, i
+    integer :: llblo, i, ntria, iblo
     complex(kind=8) :: dcmplx
 !
 !
@@ -61,16 +62,28 @@ subroutine asgnbc(ibla, bloca, nbterm, inobl, iadbl,&
 !
     call jemarq()
     if (numblo .eq. 0) then
-        call jeveuo(nomblo, 'L', llblo)
+        if (ibla.gt.nbloc) then
+            iblo = ibla - nbloc
+            call jelira(nomblo,'NMAXOC',ntria)
+            call jeveuo(jexnum(nomblo,ntria), 'L', llblo)
+        else
+            iblo = ibla
+            call jeveuo(jexnum(nomblo,1), 'L', llblo)
+        end if
         do 10 i = 1, nbterm
-            if (inobl(i) .eq. ibla) then
+            if (inobl(i) .eq. iblo) then
                 bloca(iadbl(i))=bloca(iadbl(i))+(fact*zc(llblo+i-1))
             endif
 10      continue
     else
+        if (ibla.gt.nbloc) then
+            iblo = ibla - nbloc   
+        else       
+            iblo = ibla
+        end if
         call jeveuo(jexnum(nomblo, numblo), 'L', llblo)
         do 20 i = 1, nbterm
-            if (inobl(i) .eq. ibla) then
+            if (inobl(i) .eq. iblo) then
                 bloca(iadbl(i))=bloca(iadbl(i))+ dcmplx(fact*zr(llblo+&
                 i-1),0.d0)
             endif

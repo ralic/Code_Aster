@@ -1,6 +1,6 @@
 subroutine ssriu2(nomu)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -131,8 +131,14 @@ subroutine ssriu2(nomu)
     call jecrec(nomu//'.PHI_IE', 'G V R', 'NU', 'DISPERSE', 'CONSTANT',&
                 nblph)
     call jeecra(nomu//'.PHI_IE', 'LONMAX', lgblph)
-!
-    call wkvect(nomu//'.MAEL_RAID_VALE', 'G V R', (nddle*(nddle+1)/2), iakpee)
+!  
+    call jecrec(nomu//'.MAEL_RAID_VALE', 'G V R', 'NU', 'DISPERSE', & 
+                   'CONSTANT',1)   
+    call jeecra(nomu//'.MAEL_RAID_VALE', 'LONMAX', (nddle*(nddle+1)/2))
+    call jecroc(jexnum(nomu//'.MAEL_RAID_VALE', 1))
+    call jeveuo(jexnum(nomu//'.MAEL_RAID_VALE', 1), 'E', iakpee)
+
+!   call wkvect(nomu//'.MAEL_RAID_VALE', 'G V R', (nddle*(nddle+1)/2), iakpee)
 !
     iblold = 0
     j = 0
