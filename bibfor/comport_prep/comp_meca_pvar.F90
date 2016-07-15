@@ -1,30 +1,31 @@
-subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
+subroutine comp_meca_pvar(model_      , compor_cart_, compor_list_, compor_info,&
+                          l_list_elem_, l_info_full_)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcvari.h"
-#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
-#include "asterfort/carces.h"
-#include "asterfort/comp_meca_code.h"
-#include "asterfort/comp_meca_exc2.h"
-#include "asterfort/comp_meca_l.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/comp_meca_name.h"
+#include "asterfort/comp_meca_nbvari.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/etenca.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/cesexi.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
+#include "asterc/lcdiscard.h"
+#include "asterfort/comp_meca_code.h"
+#include "asterfort/comp_meca_exc2.h"
+#include "asterfort/comp_meca_l.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,9 +45,12 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: list_vari_name
-    character(len=19), optional, intent(in) :: compor_cart
-    character(len=16), optional, intent(in) :: compor_list(20)
+    character(len=8), optional, intent(in) :: model_
+    character(len=19), optional, intent(in) :: compor_cart_
+    character(len=16), optional, intent(in) :: compor_list_(20)
+    character(len=19), intent(in) :: compor_info
+    aster_logical, optional, intent(in) :: l_list_elem_
+    aster_logical, optional, intent(in) :: l_info_full_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,28 +60,52 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  list_vari_name : object (collection) to save information about internal variables
-! In  compor_cart    : name of <CARTE> COMPOR
-! In  compor_list    : name of list of COMPOR (for SIMU_POINT_MAT)
+! In  model            : name of model
+! In  compor_info      : name of object for information about internal variables and comportement
+! In  compor_cart      : name of <CARTE> COMPOR
+! In  compor_list      : name of list of COMPOR (for SIMU_POINT_MAT)
+! In  l_list_elem      : produce INFO.ZONE
+! In  l_info_full      : produce INFO.RELA
+!
+!    Objects:
+!       INFO.INFO = global parameters
+!         v_info(1) = nb_elem_mesh
+!          => total number of elements in mesh
+!         v_info(2) = nb_zone
+!          => total number of zone in CARTE
+!         v_info(3) = nb_vari_maxi
+!          => maximum number of internal variables
+!         v_info(4) = nt_vari    
+!          => total number of internal variables
+!       INFO.VARI = Collection of nb_zone (from CARTE) x Vecteur_Info
+!       For each zone   : Vector_Info is list of nb_vari name of internal variables (K16)
+!       INFO.ZONE = list on nb_zone (from CARTE)
+!       For each zone   : number of elements with this comportement
+!       INFO.RELA = list on nb_zone (from CARTE) * 8
+!       For each zone   : some information from comprotement (name of RELATION, DEFORMATION, ...)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: list_occ
-    integer :: j_list_occ, j_vari_name, j_vari_link
-    character(len=19) :: compor_s
-    character(len=16) :: vari_excl, prev_rela_comp
-    character(len=16) :: rela_comp, defo_comp, type_cpla, type_matg, post_iter
-    character(len=16) :: kit_comp(4)
-    character(len=16) :: comp_elem_py, rela_comp_py, rela_meta_py
-    integer :: j_comp_d, j_comp_l, iadc
-    aster_logical :: l_kit_meta, l_affe
-    aster_logical :: l_cristal, l_exte_comp, l_pmf
-    aster_logical :: l_excl, l_kit_thm, prev_exte_comp, prev_pmf
-    integer :: nb_elem, nocc, nb_vari, nb_vari_all
-    integer :: i_elem, iocc, i_kit
-    integer :: idummy
-    integer :: nume_elem, old_nume
-    character(len=16), pointer :: cesv(:) => null()
+    aster_logical :: l_excl, l_kit_meta, l_mult_comp, l_exte_comp, l_kit_thm
+    aster_logical :: l_list_elem, l_info_full, l_zone_read
+    character(len=8) :: mesh
+    character(len=19) :: ligrmo
+    integer, pointer :: v_info(:) => null()
+    integer, pointer :: v_zone(:) => null()
+    integer, pointer :: v_zone_read(:) => null()
+    integer, pointer :: v_model_elem(:) => null()
+    character(len=16), pointer :: v_vari(:) => null()
+    character(len=16), pointer :: v_rela(:) => null()
+    character(len=16), pointer :: v_compor_vale(:) => null()
+    integer, pointer :: v_compor_desc(:) => null()
+    integer, pointer :: v_compor_lima(:) => null()
+    integer, pointer :: v_compor_lima_lc(:) => null()
+    integer, pointer :: v_compor_ptma(:) => null()
+    integer :: nb_vale, nb_cmp_max, nb_zone, nb_vari, nt_vari, nb_vari_maxi, nb_zone_acti
+    integer :: i_zone, i_elem, nb_elem_mesh, iret
+    character(len=16) :: type_matg, post_iter, vari_excl
+    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp, mult_comp
+    character(len=16) :: comp_code_py, rela_code_py, meta_code_py
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,196 +113,208 @@ implicit none
 !
 ! - Initializations
 !
-    compor_s    = '&&COMPOR.CARCES'
-    list_occ    = '&&COMPMECA.LISTOCC'
-    nocc        = 0
-    nb_vari_all = 0
-!
-! - Transform COMPOR in CHAM_ELEM_S
-!
-    if (present(compor_cart)) then
-        ASSERT(.not.present(compor_list))
-        call carces(compor_cart, 'ELEM', ' ', 'V', compor_s,&
-                    'A', idummy)
-        call jeveuo(compor_s//'.CESD', 'L', j_comp_d)
-        call jeveuo(compor_s//'.CESV', 'L', vk16=cesv)
-        call jeveuo(compor_s//'.CESL', 'L', j_comp_l)
+    nb_zone_acti = 0
+    l_list_elem  = .false._1
+    l_info_full  = .false._1
+    if (present(l_list_elem_)) then
+        l_list_elem = l_list_elem_
+    endif
+    if (present(l_info_full_)) then
+        l_info_full = l_info_full_
     endif
 !
-! - Number of elements
+! - Access to COMPOR
 !
-    if (present(compor_list)) then
-        ASSERT(.not.present(compor_cart))
-        nb_elem = 1
-    else if (present(compor_cart)) then
-        ASSERT(.not.present(compor_list))
-        nb_elem = zi(j_comp_d)
+    if (present(compor_cart_)) then
+        call jeveuo(compor_cart_//'.DESC', 'L', vi   = v_compor_desc)
+        call jeveuo(compor_cart_//'.VALE', 'L', vk16 = v_compor_vale)
+        call jelira(compor_cart_//'.VALE', 'LONMAX', nb_vale)
+        call jeveuo(jexnum(compor_cart_//'.LIMA', 1), 'L', vi = v_compor_lima)
+        call jeveuo(jexatr(compor_cart_//'.LIMA', 'LONCUM'), 'L', vi = v_compor_lima_lc)
+        nb_zone    = v_compor_desc(3)
+        nb_cmp_max = nb_vale/v_compor_desc(2)
+        call dismoi('NOM_MAILLA'  , compor_cart_, 'CARTE', repk=mesh)
+        call dismoi('NB_MA_MAILLA', mesh        , 'MAILLAGE', repi=nb_elem_mesh)
+        ligrmo = model_(1:8)//'.MODELE'
+        call jeveuo(model_//'.MAILLE', 'L', vi = v_model_elem)
+        call etenca(compor_cart_, ligrmo, iret)
+        call jeveuo(compor_cart_//'.PTMA', 'L', vi = v_compor_ptma)
+    else if (present(compor_list_)) then
+        nb_zone      = 1
+        nb_cmp_max   = 0
+        nb_elem_mesh = 1
+    else
+        ASSERT(.false.)
     endif
 !
-! - Object to define reference element
+! - Count internal variables
 !
-    call wkvect(list_occ, 'V V I', nb_elem, j_list_occ)
-!
-! - Get element on which comportment has been defined
-!
-    prev_rela_comp = " "
-    prev_exte_comp = .false.
-    prev_pmf = .false.
-    do i_elem = 1, nb_elem
-        nume_elem = i_elem
-        if (present(compor_cart)) then
-            call cesexi('C', j_comp_d, j_comp_l, nume_elem, 1,&
-                        1, 1, iadc)
-            if (iadc .gt. 0) then
-                rela_comp = cesv(1+iadc-2+1)
-                if (rela_comp .ne. prev_rela_comp) then
-                    call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-                    call comp_meca_l(rela_comp, 'PMF', l_pmf)
-                    prev_rela_comp = rela_comp
-                    prev_exte_comp = l_exte_comp
-                    prev_pmf = l_pmf
-                else
-                    l_exte_comp = prev_exte_comp
-                    l_pmf = prev_pmf
-                endif
-!
-                if (.not.l_exte_comp .and. .not. l_pmf) then
-                    read (cesv(1+iadc-2+12),'(I16)') iocc
-                    l_affe = (iocc.ne.99999)
-                    read (cesv(1+iadc-2+2 ),'(I16)') nb_vari
-                    if (l_affe) then
-                        old_nume = zi(j_list_occ-1+iocc)
-                        if (old_nume .eq. 0) then
-                            nocc = nocc + 1
-                            zi(j_list_occ-1+iocc) = nume_elem
-                            nb_vari_all = nb_vari_all + nb_vari
-                        endif
-                    endif
-                else
-                    nb_vari = 1
-                    nb_vari_all = nb_vari_all + nb_vari
-                endif
-            endif
-        else if (present(compor_list)) then
-            rela_comp = compor_list(1)
-            call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-            if (.not.l_exte_comp) then
-                iocc = 1
-                nocc = 1
-                read (compor_list(2),'(I16)') nb_vari
-                zi(j_list_occ-1+iocc) = nume_elem
-                nb_vari_all = nb_vari_all + nb_vari
-            endif
-        endif
-    enddo
+    if (present(compor_cart_)) then
+        call comp_meca_nbvari(model_ = model_, compor_cart_ = compor_cart_,&
+                              nt_vari = nt_vari, nb_vari_maxi = nb_vari_maxi)
+    elseif (present(compor_list_)) then
+        call comp_meca_nbvari(compor_list_ = compor_list_,&
+                              nt_vari = nt_vari, nb_vari_maxi = nb_vari_maxi)
+    else
+        ASSERT(.false.)
+    endif
+    AS_ALLOCATE(vi = v_zone_read, size = nb_zone)
 !
 ! - No internal variables names
 !
-    if (nocc .eq. 0) goto 99
+    if (nt_vari .eq. 0) then
+        goto 99
+    endif
+!
+! - Create list of zones: for each zone (in CARTE), how many elements 
+!
+    if (l_list_elem) then
+        call wkvect(compor_info(1:19)//'.ZONE', 'V V I', nb_zone, vi = v_zone)
+    endif
+!
+! - Create list of comportment information (RELATION, DEFORMATION, etc.)
+!
+    if (l_info_full) then
+        call wkvect(compor_info(1:19)//'.RELA', 'V V K16', 9*nb_zone, vk16 = v_rela)
+    endif
 !
 ! - Create list of internal variables names
 !
-    call jecrec(list_vari_name(1:19)//'.NAME', 'V V K16', 'NU', 'CONTIG', 'VARIABLE',&
-                nocc)
-    call jeecra(list_vari_name(1:19)//'.NAME', 'LONT', nb_vari_all)
+    call jecrec(compor_info(1:19)//'.VARI', 'V V K16', 'NU', 'DISPERSE', 'VARIABLE',&
+                nb_zone)
+    do i_zone = 1, nb_zone
+        call jecroc(jexnum(compor_info(1:19)//'.VARI', i_zone))
+    end do
+! 
+    do i_elem = 1, nb_elem_mesh
 !
-! - Create link between COMPOR and internal variable names
+! ----- Get current zone
 !
-    call wkvect(list_vari_name(1:19)//'.LINK', 'V V I', nocc, j_vari_link)
-!
-    do iocc = 1, nocc
-!
-! ----- Get reference element
-!
-        nume_elem = zi(j_list_occ-1+iocc)
-        zi(j_vari_link-1+iocc) = nume_elem
-!
-! ----- No reference element (external comportment) -> exit
-!
-        if (nume_elem .eq. 0) then
-            call jecroc(jexnum(list_vari_name(1:19)//'.NAME', iocc))
-            nb_vari = 1
-            call jeecra(jexnum(list_vari_name(1:19)//'.NAME', iocc), 'LONMAX', nb_vari)
-            goto 10
-        endif
-!
-! ----- Get info
-!
-        if (present(compor_cart)) then
-            call cesexi('C', j_comp_d, j_comp_l, nume_elem, 1,&
-                        1, 1, iadc)
-            if (iadc .gt. 0) then
-                rela_comp = cesv(1+iadc-2+1)
-                read (cesv(1+iadc-2+2 ),'(I16)') nb_vari
-                defo_comp = cesv(1+iadc-2+3)
-                type_cpla = cesv(1+iadc-2+5)
-                type_matg = cesv(1+iadc-2+13)
-                post_iter = cesv(1+iadc-2+14)
-                call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-                do i_kit = 1, 4
-                    kit_comp(i_kit) = cesv(1+iadc-2+7+i_kit)
-                end do
-                if (kit_comp(4).eq.'MFRONT') then
-                    l_exte_comp = .true.
-                endif
+        if (present(compor_cart_)) then
+            i_zone = v_compor_ptma(i_elem)
+            if (i_zone .eq. 0) then
+                l_zone_read = .true.
+            else
+                ASSERT(i_zone .ne. 0)
+                l_zone_read = v_zone_read(i_zone) .eq. 1
             endif
-        else if (present(compor_list)) then
-            rela_comp = compor_list(1)
-            read (compor_list(2),'(I16)') nb_vari
-            defo_comp = compor_list(3)
-            type_cpla = compor_list(5)
-            type_matg = compor_list(13)
-            post_iter = compor_list(14)
+        else
+            i_zone      = 1
+            l_zone_read = .false._1
+        endif
+        if (.not. l_zone_read) then
+!
+! --------- Get parameters
+!
+            if (present(compor_cart_)) then
+                rela_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+1)
+                defo_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+3)
+                type_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+4)
+                type_cpla   = v_compor_vale(nb_cmp_max*(i_zone-1)+5)
+                mult_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+7)
+                kit_comp(1) = v_compor_vale(nb_cmp_max*(i_zone-1)+8)
+                kit_comp(2) = v_compor_vale(nb_cmp_max*(i_zone-1)+9)
+                kit_comp(3) = v_compor_vale(nb_cmp_max*(i_zone-1)+10)
+                kit_comp(4) = v_compor_vale(nb_cmp_max*(i_zone-1)+11)
+                type_matg   = v_compor_vale(nb_cmp_max*(i_zone-1)+13)
+                post_iter   = v_compor_vale(nb_cmp_max*(i_zone-1)+14)
+                read (v_compor_vale(nb_cmp_max*(i_zone-1)+2),'(I16)') nb_vari
+            else
+                rela_comp   = compor_list_(1)
+                defo_comp   = compor_list_(3)
+                type_comp   = compor_list_(4)
+                type_cpla   = compor_list_(5)
+                mult_comp   = compor_list_(7)
+                kit_comp(1) = compor_list_(8)
+                kit_comp(2) = compor_list_(9)
+                kit_comp(3) = compor_list_(10)
+                kit_comp(4) = compor_list_(11)
+                type_matg   = compor_list_(13)
+                post_iter   = compor_list_(14)
+                read (compor_list_(2),'(I16)') nb_vari
+            endif
+!
+! --------- Detection of specific cases
+!
+            call comp_meca_l(rela_comp, 'KIT_META' , l_kit_meta)
+            call comp_meca_l(rela_comp, 'KIT_THM'  , l_kit_thm)
             call comp_meca_l(rela_comp, 'EXTE_COMP', l_exte_comp)
-            do i_kit = 1, 4
-                kit_comp(i_kit) = compor_list(7+i_kit)
-            end do
-            if (kit_comp(4).eq.'MFRONT') then
-                l_exte_comp = .true.
+            if (l_kit_thm) then
+                call comp_meca_l(kit_comp(4), 'EXTE_COMP', l_exte_comp)
             endif
+            l_mult_comp = mult_comp .ne. ' ' .and. mult_comp .ne. 'VIDE'
+!
+! --------- Coding composite comportment
+!
+            call comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
+                                post_iter, comp_code_py, rela_code_py, meta_code_py)
+!
+! --------- Exception for name of internal variables
+!
+            call comp_meca_exc2(defo_comp, l_kit_meta, l_mult_comp, l_exte_comp,&
+                                l_excl   , vari_excl)
+!
+! --------- Save names of relation
+!
+            if (l_info_full) then
+                v_rela(9*(i_zone-1) + 1) = rela_comp
+                v_rela(9*(i_zone-1) + 2) = defo_comp
+                v_rela(9*(i_zone-1) + 3) = type_comp
+                v_rela(9*(i_zone-1) + 4) = type_cpla
+                v_rela(9*(i_zone-1) + 5) = kit_comp(1)
+                v_rela(9*(i_zone-1) + 6) = kit_comp(2)
+                v_rela(9*(i_zone-1) + 7) = kit_comp(3)
+                v_rela(9*(i_zone-1) + 8) = kit_comp(4)
+                v_rela(9*(i_zone-1) + 9) = mult_comp
+            endif
+!
+! --------- Save name of internal variables
+!
+            call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
+            call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = v_vari)
+            call comp_meca_name(nb_vari     , l_excl      , vari_excl   , l_kit_meta,&
+                                comp_code_py, rela_code_py, meta_code_py,&
+                                v_vari)
+!
+! --------- Save current zone
+!
+            v_zone_read(i_zone) = 1
+            nb_zone_acti        = nb_zone_acti + 1
+!
+            call lcdiscard(comp_code_py)
+            call lcdiscard(rela_code_py)
+            call lcdiscard(meta_code_py)
         endif
+    end do
 !
-! ----- Detection of specific cases
+! - Count number of elements by zone (in CARTE)
 !
-        call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
-        call comp_meca_l(rela_comp, 'KIT_META', l_kit_meta)
-        call comp_meca_l(rela_comp, 'PMF', l_pmf)
-!
-! ----- Coding composite comportment
-!
-        call comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
-                            post_iter, comp_elem_py, rela_comp_py, rela_meta_py)
-!
-! ----- Exception for name of internal variables
-!
-        call comp_meca_exc2(defo_comp, l_kit_meta, l_cristal, l_pmf, l_excl,&
-                            vari_excl)
-        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
-        if (l_kit_thm.and.l_exte_comp) then
-            l_excl=.true.
+    if (l_list_elem) then
+        if (present(compor_cart_)) then
+            do i_elem = 1, nb_elem_mesh
+                i_zone = v_compor_ptma(i_elem)
+                if (i_zone .ne. 0 .and. v_model_elem(i_elem) .ne. 0) then
+                    v_zone(i_zone) = v_zone(i_zone)+1
+                endif
+            end do
+        else
+            v_zone(1) = 1
         endif
-!
-! ----- Save name of internal variables
-!
-        call jecroc(jexnum(list_vari_name(1:19)//'.NAME', iocc))
-        call jeecra(jexnum(list_vari_name(1:19)//'.NAME', iocc), 'LONMAX', nb_vari)
-        call jeveuo(jexnum(list_vari_name(1:19)//'.NAME', iocc), 'E', j_vari_name)
-        call comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, comp_elem_py,&
-                            rela_comp_py, rela_meta_py, zk16(j_vari_name))
-!
- 10     continue
-!
-        call lcdiscard(comp_elem_py)
-        call lcdiscard(rela_comp_py)
-        call lcdiscard(rela_meta_py)
-!
-    enddo
+    endif
 !
  99 continue
-    if (present(compor_cart)) then
-        call detrsd('CHAMP', compor_s)
-    endif
-    call jedetr(list_occ)
+!
+! - Save general information
+!
+    call wkvect(compor_info(1:19)//'.INFO', 'V V I', 5, vi = v_info)
+    v_info(1) = nb_elem_mesh
+    v_info(2) = nb_zone
+    v_info(3) = nb_vari_maxi
+    v_info(4) = nt_vari
+    v_info(5) = nb_zone_acti
+!
+    AS_DEALLOCATE(vi = v_zone_read)
+!
     call jedema()
 !
 end subroutine

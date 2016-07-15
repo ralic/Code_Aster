@@ -26,14 +26,9 @@ Liste des comportements
     2: _(u"""
 Comportement - Occurrence  %(i1)d"""),
 
-    3: _(u"""
-  C'est un comportement de type PMF, un comportement externe (UMAT ou MFRONT) ou aucune maille n'est affectée.
-  On ne peut afficher aucune information.
-"""),
+    4: _(u"""Affecté sur %(i1)d éléments"""),
 
-    4: _(u"""  Relation                             : %(k1)s (comportement incrémental)"""),
-
-    5: _(u"""  Relation                             : %(k1)s (comportement total)"""),
+    5: _(u"""  Relation                             : %(k1)s"""),
 
     6: _(u"""  Déformation                          : %(k1)s"""),
 
@@ -41,18 +36,9 @@ Comportement - Occurrence  %(i1)d"""),
 
     9: _(u"""  Nombre total de variables internes   : %(i1)d"""),
 
-    10: _(u"""
-  Pour les noms des variables internes de MONOCRISTAL et POLYCRISTAL, voir DEFI_COMPOR."""),
-
-    11: _(u"""
-  Pour le comportement MONOCRISTAL en grandes déformations (SIMO_MIEHE), il y a 18 variables internes supplémentaires.
-  Le tableau des variables internes comporte, avant les trois dernières variables internes habituelles :
-    partie élastique : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
-    partie plastique : (1,1),(1,2),(1,3),(2,1),(2,2),(2,3),(3,1),(3,2),(3,3),
-"""),
 
     12: _(u"""
-  Pour les kits métallurgiques en grandes déformations, on n'affiche pas d'informations sur le nom des variables internes.
+  Pour les kits métallurgiques KIT_META en grandes déformations, on n'a pas d'informations sur le nom des variables internes.
 """),
 
     13: _(u"""
@@ -69,34 +55,15 @@ Comportement - Occurrence  %(i1)d"""),
   La modélisation %(k1)s dans le modèle n'est pas utilisable avec MFront.
 """),
 
+    15: _(u"""
+  Pour les comportements multiples (définis par DEFI_COMPOR), on n'a pas d'informations sur le nom des variables internes.
+"""),
+
+    16: _(u"""
+  Pour les comportements externes (MFRONT ou UMAT), on n'a pas d'informations sur le nom des variables internes.
+"""),
+
     20: _(u"""         V%(i1)d : %(k1)s"""),
-
-    30: _(u"""  Détails du kit THM"""),
-
-    31: _(u"""    Loi de couplage :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    32: _(u"""    Loi thermique   :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    33: _(u"""    Loi hydraulique :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    34: _(u"""    Loi mécanique   :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    40: _(u"""  Détails du kit DDI"""),
-
-    41: _(u"""    Loi de fluage          :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    42: _(u"""    Loi élastoplastique    :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    43: _(u"""    Loi de couplage        :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    44: _(u"""    Loi contraintes planes :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    50: _(u"""  Détails du kit CG"""),
-
-    51: _(u"""    Loi de couplage 1      :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
-    52: _(u"""    Loi de couplage 2      :  %(k1)s (Nombre de variables internes : %(i1)d)"""),
-
 
     53: _(u"""
 Comportement POLYCRISTAL
@@ -109,9 +76,6 @@ Comportement POLYCRISTAL
     55: _(u""" Dernière variable interne V%(i1)d : %(k1)s"""),
 
     56: _(u""" ... jusqu'à V%(i1)d """),
-
-
-
 
 
     62 : _(u"""

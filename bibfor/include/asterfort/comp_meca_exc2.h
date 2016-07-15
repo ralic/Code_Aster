@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,12 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_pmf ,l_excl, &
-                              vari_excl)
+    subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_exte_comp,&
+                              l_excl   , vari_excl)
         character(len=16), intent(in) :: defo_comp
         aster_logical, intent(in) :: l_kit_meta
         aster_logical, intent(in) :: l_mult_comp
-        aster_logical, intent(in) :: l_pmf
+        aster_logical, intent(in) :: l_exte_comp
         aster_logical, intent(out) :: l_excl
         character(len=16), intent(out) :: vari_excl
     end subroutine comp_meca_exc2

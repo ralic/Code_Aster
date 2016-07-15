@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_pvar(list_vari_name, compor_cart, compor_list)
-        character(len=19), intent(in) :: list_vari_name
-        character(len=19), optional, intent(in) :: compor_cart
-        character(len=16), optional, intent(in) :: compor_list(20)
+    subroutine comp_meca_pvar(model_      , compor_cart_, compor_list_, compor_info,&
+                              l_list_elem_, l_info_full_)
+        character(len=8), optional, intent(in) :: model_
+        character(len=19), optional, intent(in) :: compor_cart_
+        character(len=16), optional, intent(in) :: compor_list_(20)
+        character(len=19), intent(in) :: compor_info
+        aster_logical, optional, intent(in) :: l_list_elem_
+        aster_logical, optional, intent(in) :: l_info_full_
     end subroutine comp_meca_pvar
 end interface

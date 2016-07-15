@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,8 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl, l_kit_meta, comp_code_py,&
-                              rela_code_py, meta_code_py, name_vari)
+    subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl   , l_kit_meta,&
+                              comp_code_py, rela_code_py, meta_code_py,&
+                              v_vari_name)
         integer, intent(in) :: nb_vari
         aster_logical, intent(in) :: l_excl
         character(len=16), intent(in) :: vari_excl
@@ -27,6 +28,6 @@ interface
         character(len=16), intent(in) :: comp_code_py
         character(len=16), intent(in) :: rela_code_py
         character(len=16), intent(in) :: meta_code_py
-        character(len=16), intent(inout) :: name_vari(nb_vari)
+        character(len=16), pointer, intent(in) :: v_vari_name(:)
     end subroutine comp_meca_name
 end interface

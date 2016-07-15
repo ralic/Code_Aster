@@ -1,7 +1,7 @@
 subroutine dc_monocristal(nboccm, sdcomp)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -229,7 +229,7 @@ subroutine dc_monocristal(nboccm, sdcomp)
     nums(2)=nvi
     call utmess('I', 'COMPOR4_1')
     call utmess('I', 'COMPOR4_2', si = nboccm)
-    call utmess('I', 'COMPOR4_4', sk = 'MONOCRISTAL')
+    call utmess('I', 'COMPOR4_5', sk = 'MONOCRISTAL')
     call utmess('I', 'COMPOR4_6', sk = ecoule)
     call utmess('I', 'COMPOR4_9', si = nvi)
 !

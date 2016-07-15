@@ -60,17 +60,17 @@ implicit none
     integer :: nb_cmp, nbocc_compor
     character(len=8) :: mesh
     character(len=19) :: comp_elas, full_elem_s
-    character(len=19) :: list_vari_name
+    character(len=19) :: compor_info
     character(len=16), pointer :: p_info_comp_valk(:) => null()
     integer, pointer :: p_info_comp_vali(:) => null()
     integer, pointer :: p_info_comp_nvar(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor = '&&NMDOCC.COMPOR'
-    comp_elas = '&&NMDOCC.COMP_ELAS'
+    compor      = '&&NMDOCC.COMPOR'
+    comp_elas   = '&&NMDOCC.COMP_ELAS'
     full_elem_s = '&&NMDOCC.FULL_ELEM'
-    list_vari_name = '&&NMDOCC.LIST_VARI'
+    compor_info = '&&NMDOCC.INFO'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - Create comportment informations objects
@@ -128,11 +128,12 @@ implicit none
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(list_vari_name, compor_cart = compor)
+    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info,&
+                        l_list_elem_ = .true._1, l_info_full_ = .true._1)
 !
 ! - Print informations about internal variables
 !
-    call imvari(list_vari_name, compor_cart = compor)
+    call imvari(compor_info)
 !
     AS_DEALLOCATE(vk16 = p_info_comp_valk)
     AS_DEALLOCATE(vi   = p_info_comp_vali)

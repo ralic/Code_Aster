@@ -61,7 +61,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: carsiz=20
-    character(len=19) :: list_vari_name
+    character(len=19) :: compor_info
     integer :: iocc, nume_comp(4), nbocc_compor, nbocc_carcri, nb_vari_comp(4)
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
@@ -79,9 +79,9 @@ implicit none
 !
     call jemarq()
 !
-    list_vari_name = '&&PMDORC.LIST_VARI'
-    keywordfact    = 'COMPORTEMENT'
-    compor(1:20)   = 'VIDE'
+    compor_info  = '&&PMDORC.LIST_VARI'
+    keywordfact  = 'COMPORTEMENT'
+    compor(1:20) = 'VIDE'
 !
 ! - Initial state
 !
@@ -162,11 +162,12 @@ implicit none
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(list_vari_name, compor_list = compor)
+    call comp_meca_pvar(compor_list_ = compor, compor_info = compor_info,&
+                        l_list_elem_ = .true._1, l_info_full_ = .true._1)
 !
 ! - Print informations about internal variables
 !
-    call imvari(list_vari_name, compor_list = compor)
+    call imvari(compor_info)
 !
 ! - Create carcri informations objects
 !

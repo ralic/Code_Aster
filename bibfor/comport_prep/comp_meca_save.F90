@@ -177,7 +177,6 @@ implicit none
         v_compor_valv(9) = kit_comp(2)
         v_compor_valv(10) = kit_comp(3)
         v_compor_valv(11) = kit_comp(4)
-        write (v_compor_valv(12),'(I16)') iocc
         v_compor_valv(13) = type_matg
         v_compor_valv(14) = post_iter
         write (v_compor_valv(15),'(I16)') nume_comp(2)

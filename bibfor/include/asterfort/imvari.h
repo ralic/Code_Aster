@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine imvari(list_vari_name, compor_cart, compor_list)
-        character(len=19), intent(in) :: list_vari_name
-        character(len=19), optional, intent(in) :: compor_cart
-        character(len=16), optional, intent(in) :: compor_list(20)
+    subroutine imvari(compor_info)
+        character(len=19), intent(in) :: compor_info
     end subroutine imvari
 end interface
