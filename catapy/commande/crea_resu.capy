@@ -66,7 +66,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
          b_affe       =BLOC(condition = "OPERATION == 'AFFE'",
 
            b_type_resu    =BLOC(condition = "TYPE_RESU == 'EVOL_CHAR'",
-             NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("PRES",
+             NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=("PRES","FORC_NODA",
                                     "FSUR_2D","FSUR_3D","FVOL_2D","FVOL_3D","VITE_VENT","T_EXT","COEF_H")),
            ),
 

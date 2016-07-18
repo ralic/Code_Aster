@@ -13,11 +13,16 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsinch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/copisd.h"
+#include "asterfort/exisd.h"
+#include "asterfort/reajre.h"
+#include "asterfort/gcnco2.h"
+#include "asterfort/corich.h"
 #include "asterfort/load_neum_comp.h"
 #include "asterfort/load_neum_prep.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,9 +75,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ier, nb_cham
+    integer :: ier, nb_cham, iexist, ibid
     integer :: load_nume_evol
-    character(len=8) :: evol_char
+    character(len=8) :: evol_char, newnom
     character(len=16) :: type_sd, option
     character(len=19) :: load_name_evol, iden_direct
     character(len=4) :: load_type
@@ -130,7 +135,6 @@ implicit none
 !
 ! - Compute volumic forces (CHAR_MECA_FR2D2D / CHAR_MECA_FR3D3D)
 !
-
     if (option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq. 'CHAR_MECA_FR2D2D') then
         if (option .eq. 'CHAR_MECA_FR3D3D') then
             iden_direct = '.F3D3D'
@@ -206,6 +210,31 @@ implicit none
                             ligrel_calc, nb_in_maxi, nb_in_prep, lpain         , lchin    ,&
                             base       , resu_elem , vect_elem , iden_direct = iden_direct,&
                             name_inputz = load_name_evol)
+    endif
+!
+! - Get nodal force (VECT_ASSE)
+!
+    call rsinch(evol_char, 'FORC_NODA', 'INST', inst_curr, load_name_evol,&
+                'EXCLU', 'EXCLU', 0, 'V', ier)
+    if (ier .le. 2) then
+        option = 'Copy_Load'
+        goto 40
+    else if (ier.eq.11 .or. ier.eq.12 .or. ier.eq.20) then
+        call utmess('F', 'CHARGES3_8', sk=evol_char, sr=inst_curr)
+    endif
+ 40 continue
+!
+! - Compute nodal force (VECT_ASSE)
+!
+    if (option .eq. 'Copy_Load') then
+        newnom = resu_elem(10:16)
+        call gcnco2(newnom)
+        resu_elem(10:16) = newnom(2:8)
+        call corich('E', resu_elem, i_load, ibid)
+        call copisd('CHAMP_GD', base, load_name_evol, resu_elem)
+        call exisd('CHAMP_GD', resu_elem, iexist)
+        ASSERT((iexist.gt.0).or.(stop.eq.'C'))
+        call reajre(vect_elem, resu_elem, base)
     endif
 !
  99 continue

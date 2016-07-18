@@ -233,7 +233,6 @@ BIDDEP0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 INFO=1);
 
 UBID=CALC_CHAMP(reuse=UBID,FORCE='FORC_NODA',
-            #INST=0.2,
             RESULTAT=UBID,
             GROUP_MA='RESBAS',
             );
@@ -262,11 +261,27 @@ CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 
 VFORCE0 = AFFE_CHAR_MECA(MODELE=MODELE,VECT_ASSE=CHFORCE0,INFO=1);
 
+
+RESU_EV=CREA_RESU(OPERATION='AFFE',
+                   TYPE_RESU='EVOL_CHAR',
+                   NOM_CHAM='FORC_NODA',
+                   AFFE=(_F(CHAM_GD=CHFORCE0,
+                            MODELE=MODELE,
+                            INST=-1.,),
+                         _F(CHAM_GD=CHFORCE0,
+                            MODELE=MODELE,
+                            INST=1.,),
+                        ),);
+
+
+EVOL_CH=AFFE_CHAR_MECA(MODELE=MODELE,
+                        EVOL_CHAR=RESU_EV,);
+
 DYNB=STAT_NON_LINE(MODELE=MODELE,
                  CHAM_MATER=CHAMPMAT,
                  CARA_ELEM=CARA1,
                  EXCIT=(_F(CHARGE = BLOQ_HAU,TYPE_CHARGE='DIDI'),
-                        _F(CHARGE = VFORCE0),
+                        _F(CHARGE = EVOL_CH),
                         _F(CHARGE = LIAISON0),
                         _F(CHARGE = PES)),
                  COMPORTEMENT=(
@@ -274,10 +289,6 @@ DYNB=STAT_NON_LINE(MODELE=MODELE,
                              _F(RELATION = 'KIT_HM',
                                 RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
                                 GROUP_MA=list_group_ma),
-                              #_F(RELATION='ELAS',
-                              # DEFORMATION='PETIT',
-                              # GROUP_MA=Paraxia,
-                              # PARM_THETA=0.57)
                               ),
                  INCREMENT=_F(LIST_INST=TANBID),
                  NEWTON=_F(MATRICE='TANGENTE',
