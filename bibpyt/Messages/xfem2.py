@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -187,6 +187,11 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
   -> Risque & Conseil:
      Veuillez utiliser deux modèles avec la même dimension (les deux 2D
      ou les deux 3D).
+  """),
+
+    59 : _(u"""
+Il y a au moins une maille qui porte des sous-éléments de peau et qui
+ne borde pourtant aucune maille principale.
   """),
 
     60 : _(u"""

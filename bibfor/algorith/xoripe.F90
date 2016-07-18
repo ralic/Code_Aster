@@ -22,6 +22,7 @@ subroutine xoripe(modele)
 #include "asterfort/panbno.h"
 #include "asterfort/provec.h"
 #include "asterfort/utmasu.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vdiff.h"
 #include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
@@ -32,7 +33,7 @@ subroutine xoripe(modele)
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -181,6 +182,12 @@ subroutine xoripe(modele)
     call utmasu(noma, kdim, nbmail, zi(jmail), nomob,&
                 vale, 0, mailvo, .false._1)
     call jeveuo(nomob, 'L', jm3d)
+!
+    do ima = 1, nbmail
+        if ( zi(jm3d-1+ima) .eq. 0 ) then
+            call utmess('F', 'XFEM2_59')
+        endif
+    enddo
 !
 !     ------------------------------------------------------------------
 !     III°) CREATION DU VECTEUR DES NORMALES SORTANTES
