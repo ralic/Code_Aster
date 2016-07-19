@@ -1,40 +1,31 @@
-subroutine irvari(ifi, nochmd, chanom, typech, modele,&
-                  nbcmp, nomcmp, partie, numpt, instan,&
-                  numord, nbmaec, limaec, noresu, carael,&
+subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
+                  nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
+                  nume_store , nbmaec       , limaec   , result    , cara_elem,&
                   codret)
-    implicit none
+!
+implicit none
 !
 #include "jeveux.h"
-!
-#include "asterc/lccree.h"
-#include "asterc/lcinfo.h"
-#include "asterc/lcvari.h"
-#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
+#include "asterfort/comp_meca_pvar.h"
+#include "asterfort/comp_meca_uvar.h"
 #include "asterfort/celces.h"
-#include "asterfort/cescel.h"
-#include "asterfort/cescrm.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/codent.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/irceme.h"
-#include "asterfort/jedema.h"
+#include "asterfort/cescrm.h"
+#include "asterfort/cescel.h"
+#include "asterfort/jedetc.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-    integer :: nbcmp, numpt, numord, nbmaec, ifi, limaec(*), codret
-!
-    character(len=8) :: typech, modele, noresu, carael
-    character(len=19) :: chanom
-    character(len=64) :: nochmd
-    character(len=*) :: nomcmp(*), partie
-!
-    real(kind=8) :: instan
+#include "asterfort/detrsd.h"
+#include "asterfort/codent.h"
+#include "asterfort/jedema.h"
+#include "asterfort/irceme.h"
+#include "asterfort/rsexch.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jexatr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,242 +43,254 @@ subroutine irvari(ifi, nochmd, chanom, typech, modele,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: nicolas.sellenet at edf.fr
-! -------------------------------------------------------------------
-!        IMPRESSION DU CHAMP CHANOM ELEMENT ENTIER/REEL
-!        AU FORMAT MED CAS D'UN CHAMP DE VARIABLES INTERNES
-!     ENTREES:
+! person_in_charge: mickael.abbas at edf.fr
+!
+    integer, intent(in) :: ifi
+    character(len=64), intent(in) :: field_med
+    character(len=19), intent(in) :: vari_elga
+    character(len=8), intent(in) :: field_loca
+    character(len=8), intent(in) :: model
+    integer, intent(in) :: nb_cmp_sele
+    character(len=*), intent(in) :: cmp_name_sele(*)
+    character(len=*), intent(in) :: partie
+    integer, intent(in) :: numpt
+    real(kind=8), intent(in) :: instan
+    integer, intent(in) :: nume_store
+    integer, intent(in) :: nbmaec
+    integer, intent(in) :: limaec(*)
+    character(len=8), intent(in) :: result
+    character(len=8), intent(in) :: cara_elem
+    integer, intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Post-treatment (IMPR_RESU)
+!
+! Create VARI_ELGA_NOMME for name of internal variables
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  nume_store       : index to store in results
+! In  field_med        : name of MED field
+! In  field_loca       : localization of field
+!                        /'ELNO'/'ELGA'/'ELEM'
+! In  result           : name of results datastructure
+! In  model            : name of model                    
 !       IFI    : UNITE LOGIQUE D'IMPRESSION DU CHAMP
-!       NOCHMD : NOM MED DU CHAM A ECRIRE
 !       PARTIE : IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
 !                UN CHAMP COMPLEXE
-!       CHANOM : NOM ASTER DU CHAM A ECRIRE
-!       TYPECH : TYPE DU CHAMP
-!       MODELE : MODELE ASSOCIE AU CHAMP
-!       NBCMP  : NOMBRE DE COMPOSANTES A ECRIRE
-!       NOMCMP : NOMS DES COMPOSANTES A ECRIRE
+!       nb_cmp_sele  : NOMBRE DE COMPOSANTES A ECRIRE
+!       cmp_name_sele : NOMS DES COMPOSANTES A ECRIRE
 !       NUMPT  : NUMERO DE PAS DE TEMPS
 !       INSTAN : VALEUR DE L'INSTANT A ARCHIVER
 !       NUMORD : NUMERO D'ORDRE DU CHAMP
 !       NBMAEC : NOMBRE DE MAILLES A ECRIRE (0, SI TOUTES LES MAILLES)
 !       LIMAEC : LISTE DES MAILLES A ECRIRE SI EXTRAIT
-!       NORESU : NOM DU RESULTAT D'OU PROVIENT LE CHAMP A IMPRIMER.
-!    SORTIES:
 !       CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
-! -------------------------------------------------------------------
 !
-    integer :: nbmax,  inum, nbre, iret,  nbcomp
-    integer :: lon3, numlc, nbvari, ntvari, mxnbva, jnovar, jmnova
-    integer :: nredva, inum2, inum3, jcorva, jcesd, posit, nbvar2
-    integer :: jconi1, jconi2, typaff, nbzone, nbmail, ima2, jnocmp
-    integer :: jcesl,  jcesdb, jceslb,  ima, ipt, icmp
-    integer :: nbcmpc, isp, nbpt, nbsp, iad, iad2, icmp2, nbma2, jnocm2
+! --------------------------------------------------------------------------------------------------
 !
+    integer :: i_zone, i_elem, i_pt, i_vari, i_vari_redu, i_spt
+    integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
+    integer :: nb_vari_redu, nb_zone, nb_elem, nb_vari_maxi, nb_elem_mesh, nb_elem_zone
+    integer :: nt_vari
+    integer :: posit, iret, affe_type, affe_indx, nume_elem
+    integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
     character(len=7) :: saux07
-    character(len=8) :: base, saux08
-    parameter ( base = '&&IRVARI' )
-    character(len=16) :: compor, nomtmp, lcompo(2), comco2
-    character(len=19) :: noch19, ligrel, chamns, chnova, chmano, chcorr, chabis
-    character(len=19) :: chater, noetcm
-    parameter ( chamns = '&&IRVARI.CH_EL_S_TM' )
-    parameter ( chnova = '&&IRVARI.CH_NOM_VAR' )
-    parameter ( chmano = '&&IRVARI.CH_TOT_NOM' )
-    parameter ( chabis = '&&IRVARI.CH_EL_S_BI' )
-    parameter ( chater = '&&IRVARI.CH_EL_S_TE' )
+    character(len=8) :: saux08
+    character(len=8), parameter :: base_name = '&&IRVARI'
+    character(len=19) :: compor, ligrel
+    character(len=19), parameter :: vari_elga_s = '&&IRVARI.VARIELGA_S'
+    character(len=19), parameter :: vari_elgr   = '&&IRVARI.VARIELGR'
+    character(len=19), parameter :: vari_elgr_s = '&&IRVARI.VARIELGR_S'
+    character(len=19) :: vari_link
+    character(len=19), parameter :: vari_redu = '&&IRVARI.VARIREDU'
+    integer, pointer :: v_vari_link(:) => null()
+    character(len=16), pointer :: v_vari_redu(:) => null() 
+    character(len=19), parameter :: label_med = '&&IRVARI.LABELMED'
+    character(len=19), parameter :: label_vxx = '&&IRVARI.LABELVXX'
+    character(len=8), pointer :: v_label_vxx(:) => null()
+    character(len=16), pointer :: v_label_med(:) => null() 
     character(len=64) :: nomres
-    real(kind=8), pointer :: cesvb(:) => null()
-    real(kind=8), pointer :: cesv(:) => null()
-    character(len=16), pointer :: vale(:) => null()
-    integer, pointer :: desc(:) => null()
+    real(kind=8), pointer :: v_elgr_cesv(:) => null()
+    real(kind=8), pointer :: v_elga_cesv(:) => null()
+    character(len=16), pointer :: v_compor_vale(:) => null()
+    integer, pointer :: v_compor_desc(:) => null()
+    integer, pointer :: v_compor_lima(:) => null()
+    integer, pointer :: v_compor_lima_lc(:) => null()
+    character(len=19), parameter :: compor_info = '&&IRVARI.INFO'
+    integer, pointer :: v_info(:) => null()
+    integer, pointer :: v_zone(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-!   RECHERCHE DE LA CARTE DE COMPORTEMENT
-    call rsexch('F', noresu, 'COMPORTEMENT', numord, noch19,&
+    ASSERT(field_loca .eq. 'ELGA')
+    codret = 0
+    ligrel = model//'.MODELE'
+!
+! - Get name of <CARTE> COMPOR
+!
+    call rsexch('F', result, 'COMPORTEMENT', nume_store, compor,&
                 iret)
-    call jeveuo(noch19//'.DESC', 'L', vi=desc)
-    call jeveuo(noch19//'.VALE', 'L', vk16=vale)
-    call jelira(noch19//'.VALE', 'LONMAX', lon3)
-    ligrel=modele//'.MODELE'
 !
-!   NOMBRE DE COMPORTEMENT
-    nbre=desc(3)
-    nbmax=desc(2)
-    nbcomp=lon3/nbmax
+! - Prepare informations about internal variables
 !
-    call jeveuo(jexnum(noch19//'.LIMA', 1), 'L', jconi1)
-    call jeveuo(jexatr(noch19//'.LIMA', 'LONCUM'), 'L', jconi2)
+    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info,&
+                        l_list_elem_ = .true._1, l_info_full_ = .false._1)
 !
-    ntvari=0
-    mxnbva=0
-    nredva=0
+! - Access to informations
 !
-!   PARCOUR DE LA CARTE POUR CALCULER LE NOMBRE TOTAL DE VARI_INTERNE
-    do inum = 2,nbre
+    call jeveuo(compor_info(1:19)//'.INFO', 'L', vi = v_info)
+    nb_elem_mesh = v_info(1)
+    nb_zone      = v_info(2)
+    nb_vari_maxi = v_info(3)
+    nt_vari      = v_info(4)
 !
-!       NOM DU COMPORTEMENT
-        compor=vale(1+nbcomp*(inum-1))
-        if (compor .eq. 'ELAS') goto 10
+    if ( nt_vari .eq. 0 ) then
+        codret = 200
+        goto 999
+    endif
+    call jeveuo(compor_info(1:19)//'.ZONE', 'L', vi = v_zone)
+! 
+! - Create list of internal variables and link to zone in <CARTE> COMPOR
 !
-        nomtmp=vale(1+nbcomp*(inum-1)+1)
-        read(nomtmp,'(I16)') nbvari
-        ntvari=ntvari+nbvari
-        mxnbva=max(mxnbva,nbvari)
-10  end do
+    call comp_meca_uvar(compor_info, base_name, vari_redu, nb_vari_redu, codret)
+    call jeveuo(vari_redu, 'L', vk16 = v_vari_redu)
+    if ( nb_vari_redu .eq. 0 .or. codret .eq. 200) then
+        codret = 200
+        goto 999
+    endif
 !
-    if ( ntvari.eq.0 ) goto 9999
-    call wkvect(chnova, 'V V K16', ntvari, jnovar)
-    call wkvect(chmano, 'V V K16', mxnbva, jmnova)
+! - Access to <CARTE> COMPOR
 !
-!   ON TRI LES COMPOSANTES POUR LES REUNIR
-    do inum = 2,nbre
+    call jeveuo(compor//'.DESC', 'L', vi   = v_compor_desc)
+    call jeveuo(compor//'.VALE', 'L', vk16 = v_compor_vale)
+    call jeveuo(jexnum(compor//'.LIMA', 1), 'L', vi = v_compor_lima)
+    call jeveuo(jexatr(compor//'.LIMA', 'LONCUM'), 'L', vi = v_compor_lima_lc)
 !
-        compor=vale(1+nbcomp*(inum-1))
-        if (compor .eq. 'ELAS') goto 20
+! - Transform VARI_ELGA in VARI_ELGA_S
 !
-        call lcinfo(compor, numlc, nbvari)
-        nomtmp=vale(1+nbcomp*(inum-1)+1)
-        read(nomtmp,'(I16)') nbvar2
-        if (nbvari .ne. nbvar2) then
-            lcompo(1)=compor
-            lcompo(2)=vale(1+nbcomp*(inum-1)+2)
-            call lccree(2, lcompo, comco2)
-            call lcinfo(comco2, numlc, nbvari)
-            call lcdiscard(comco2)
-            if (nbvari .ne. nbvar2) then
-                codret = 200
-                exit
-            endif
+    call celces(vari_elga, 'V', vari_elga_s)
+    call jeveuo(vari_elga_s//'.CESD', 'L', jv_elga_cesd)
+    call jeveuo(vari_elga_s//'.CESL', 'L', jv_elga_cesl)
+    call jeveuo(vari_elga_s//'.CESV', 'L', vr=v_elga_cesv)
 !
-        else
-            comco2=compor
-        endif
-        call lcvari(comco2, nbvari, zk16(jmnova))
-        call codent(inum, 'G', saux08)
-        chcorr=base//saux08
-        call wkvect(chcorr, 'V V I', nbvari, jcorva)
+! - Prepare objects to reduced list of internal variables
 !
-!       TRI A PROPREMENT PARLER
-        do inum3 = 1,nbvari
-            do inum2 = 1,nredva
-                if (zk16(jmnova+inum3-1) .eq. zk16(jnovar+inum2-1)) goto 50
-            end do
-            zk16(jnovar+nredva)=zk16(jmnova+inum3-1)
-            nredva=nredva+1
-50          continue
-            zi(jcorva+inum3-1)=inum2
-        end do
-        call lcdiscard(comco2)
-20  end do
-    if ( codret.eq.200 ) goto 9999
-!
-    call celces(chanom, 'V', chamns)
-    call jeveuo(chamns//'.CESD', 'L', jcesd)
-    call jeveuo(chamns//'.CESL', 'L', jcesl)
-    call jeveuo(chamns//'.CESV', 'L', vr=cesv)
-    nbma2 = zi(jcesd)
-!
-    noetcm=base//'.NOCMP'
-    call wkvect(base//'.NOCMPTMP', 'V V K8', nredva, jnocmp)
-    call wkvect(noetcm, 'V V K16', 2*nredva, jnocm2)
-    do inum = 1,nredva
-        call codent(inum, 'G', saux07)
-        zk8(jnocmp-1+inum) = 'V'//saux07
-        zk16(jnocm2+2*(inum-1)) = 'V'//saux07
-        zk16(jnocm2+2*(inum-1)+1) = zk16(jnovar+inum-1)
+    call wkvect(label_vxx, 'V V K8', nb_vari_redu, vk8 = v_label_vxx)
+    call wkvect(label_med, 'V V K16', 2*nb_vari_redu, vk16 = v_label_med)
+    do i_vari_redu = 1, nb_vari_redu
+        call codent(i_vari_redu, 'G', saux07)
+        v_label_vxx(i_vari_redu)         = 'V'//saux07
+        v_label_med(2*(i_vari_redu-1)+1) = 'V'//saux07
+        v_label_med(2*(i_vari_redu-1)+2) = v_vari_redu(i_vari_redu)
     end do
-    call cescrm('V', chabis, typech, 'VARI_R', nredva,&
-                zk8(jnocmp), chamns)
-    call jeveuo(chabis//'.CESD', 'L', jcesdb)
-    call jeveuo(chabis//'.CESL', 'L', jceslb)
-    call jeveuo(chabis//'.CESV', 'L', vr=cesvb)
 !
-!   CREATION DU CHAMP A IMPRIMER
-    do 60, inum = 2,nbre
-        typaff=desc(1+3+(inum-1)*2)
-        nbzone=desc(1+4+(inum-1)*2)
+! - Create VARI_ELGR_S on reduced list of internal variables
 !
-        compor=vale(1+nbcomp*(inum-1))
-        if (compor .eq. 'ELAS') goto 60
+    call cescrm('V', vari_elgr_s, field_loca, 'VARI_R', nb_vari_redu,&
+                v_label_vxx, vari_elga_s)
+    call jeveuo(vari_elgr_s//'.CESD', 'L', jv_elgr_cesd)
+    call jeveuo(vari_elgr_s//'.CESL', 'L', jv_elgr_cesl)
+    call jeveuo(vari_elgr_s//'.CESV', 'L', vr=v_elgr_cesv)
 !
-        call lcinfo(compor, numlc, nbvari)
-        nomtmp=vale(1+nbcomp*(inum-1)+1)
-        read(nomtmp,'(I16)') nbvar2
-        if (nbvari .ne. nbvar2) then
-            lcompo(1)=compor
-            lcompo(2)=vale(1+nbcomp*(inum-1)+2)
-            call lccree(2, lcompo, comco2)
-            call lcinfo(comco2, numlc, nbvari)
+! - Fill VARI_ELGR_S on reduced list of internal variables
 !
-        else
-            comco2=compor
-        endif
+    do i_zone = 1, nb_zone
+        nb_elem_zone = v_zone(i_zone)
+        if (nb_elem_zone .ne. 0) then
 !
-        call lcvari(comco2, nbvari, zk16(jmnova))
-        call codent(inum, 'G', saux08)
-        chcorr=base//saux08
-        call jeveuo(chcorr, 'L', jcorva)
+! --------- Get object to link zone to internal variables
 !
-        if (typaff .ne. 1) then
+            call codent(i_zone, 'G', saux08)
+            vari_link = base_name//saux08
+            call jeveuo(vari_link, 'L', vi = v_vari_link)
 !
-!           NOMBRE DE MAILLES POUR LE COMPORTEMENT CONSIDERE
-            nbmail=zi(jconi2+nbzone)-zi(jconi2+nbzone-1)
-            posit = zi(jconi2+nbzone-1)
-        else
-            nbmail=nbma2
-            posit=0
-        endif
+! --------- Access to current zone in CARTE
 !
-        do ima = 1,nbmail
-            if (typaff .ne. 1) then
-                ima2=zi(jconi1+posit+ima-2)
+            affe_type = v_compor_desc(1+3+(i_zone-1)*2)
+            affe_indx = v_compor_desc(1+4+(i_zone-1)*2)
+            if (affe_type .eq. 3) then
+                nb_elem = v_compor_lima_lc(1+affe_indx)-v_compor_lima_lc(affe_indx)
+                posit   = v_compor_lima_lc(affe_indx)
+            elseif (affe_type .eq. 1) then
+                nb_elem = nb_elem_mesh
+                posit   = 0
             else
-                ima2=ima
+                ASSERT(.false.)
             endif
-            nbpt = zi(jcesd-1+5+4* (ima2-1)+1)
-            nbsp = zi(jcesd-1+5+4* (ima2-1)+2)
-            nbcmpc = zi(jcesd-1+5+4* (ima2-1)+3)
-            do ipt = 1,nbpt
-                do isp = 1,nbsp
-                    do icmp = 1,nbcmpc
-                        call cesexi('C', jcesd, jcesl, ima2, ipt,&
-                                    isp, icmp, iad)
-                        if (iad .gt. 0) then
-                            icmp2=zi(jcorva+icmp-1)
-                            call cesexi('C', jcesdb, jceslb, ima2, ipt,&
-                                        isp, icmp2, iad2)
-                            ASSERT(iad2.lt.0)
-                            cesvb(1-1-iad2)=cesv(iad)
-                            zl(jceslb-1-iad2)=.true.
-                        endif
+            call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari_zone)
+!
+! --------- Loop on elements in zone of CARTE
+!
+            do i_elem = 1, nb_elem
+                if (affe_type .eq. 3) then
+                    nume_elem = v_compor_lima(posit+i_elem-1)
+                elseif (affe_type .eq. 1) then
+                    nume_elem = i_elem
+                else
+                    ASSERT(.false.)
+                endif
+                nb_pt   = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+1)
+                nb_spt  = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+2)
+                nb_vari = zi(jv_elga_cesd-1+5+4*(nume_elem-1)+3)
+                do i_pt = 1, nb_pt
+                    do i_spt = 1, nb_spt
+                        do i_vari = 1, nb_vari
+                            call cesexi('C'  , jv_elga_cesd, jv_elga_cesl, nume_elem, i_pt,&
+                                        i_spt, i_vari      , jv_elga)
+                            if (jv_elga .gt. 0 .and. i_vari .le. nb_vari_zone) then
+                                i_vari_redu = v_vari_link(i_vari)
+                                if (i_vari_redu .ne. 0) then
+                                    call cesexi('C'  , jv_elgr_cesd, jv_elgr_cesl, nume_elem, i_pt,&
+                                                i_spt, i_vari_redu , jv_elgr)
+                                    ASSERT(jv_elgr .ne. 0)
+                                    jv_elgr = abs(jv_elgr)
+                                    v_elgr_cesv(jv_elgr)      = v_elga_cesv(jv_elga)
+                                    zl(jv_elgr_cesl-1+jv_elgr) = .true.
+                                endif
+                            endif
+                        end do
                     end do
                 end do
             end do
-        end do
-        call lcdiscard(comco2)
-60  continue
+        endif
+    end do
 !
-    nomres=nochmd(1:8)//'VARI_ELGA_NOMME'
-    call cescel(chabis, ligrel, ' ', ' ', 'OUI',&
-                ima2, 'V', chater, 'F', codret)
-    call irceme(ifi, nomres, chater, typech, modele,&
-                nbcmp, nomcmp, noetcm, partie, numpt,&
-                instan, numord, nbmaec, limaec, carael,&
+! - Transform VARI_ELGR_S in VARI_ELGR
+!
+    nomres = field_med(1:8)//'VARI_ELGA_NOMME'
+    call cescel(vari_elgr_s, ligrel, ' ', ' ', 'OUI',&
+                nume_elem, 'V', vari_elgr, 'F', codret)
+!
+! - Write in MED file
+!
+    call irceme(ifi, nomres, vari_elgr, field_loca, model,&
+                nb_cmp_sele, cmp_name_sele, label_med, partie, numpt,&
+                instan, nume_store, nbmaec, limaec, cara_elem,&
                 codret)
 !
-9999  continue
+999 continue
 !
-! --- MENAGE
-    call detrsd('CHAM_ELEM_S', chamns)
-    call detrsd('CHAM_ELEM_S', chabis)
-    call detrsd('CHAM_ELEM_S', chater)
-    call jedetr(chnova)
-    call jedetr(chmano)
-    call jedetr(base//'.NOCMPTMP')
-    call jedetr(base//'.NOCMP')
-    do inum = 2,nbre
-        call codent(inum, 'G', saux08)
-        call jedetr(base//saux08)
+! - Cleaning
+!
+    call detrsd('CHAM_ELEM_S', vari_elga_s)
+    call detrsd('CHAM_ELEM_S', vari_elgr_s)
+    call detrsd('CHAM_ELEM_S', vari_elgr)
+    call jedetr(compor_info(1:19)//'.ZONE')
+    call jedetr(compor_info(1:19)//'.INFO')
+    call jedetr(compor_info(1:19)//'.ELEM')
+    call jedetr(compor_info(1:19)//'.RELA')
+    call jedetc('V', compor_info(1:19)//'.VARI', 1)
+    call jedetr(vari_redu)
+    call jedetr(label_vxx)
+    call jedetr(label_med)
+    do i_zone = 1,nb_zone
+        call codent(i_zone, 'G', saux08)
+         vari_link = base_name//saux08
+        call jedetr(vari_link)
     end do
 !
     call jedema()

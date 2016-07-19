@@ -5,7 +5,7 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -250,17 +250,19 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu,&
 !         SI ON EST DANS LE CAS VARI ET QU'ON A DEMANDE L'EXPLOSION
 !         DU CHAMP SUIVANT LE COMPORTEMENT, ON DOIT RAJOUTER
 !         CERTAINS TRAITEMENT
-            if ((nomsym(1:5).eq.'VARI_') .and. lvarie) then
+            if ((nomsym.eq.'VARI_ELGA') .and. lvarie) then
                 call irvari(ifichi, nochmd, chanom, typech, modele,&
                             nbrcmp, nomcmp, partie, numpt, instan,&
                             numord, nbmaec, limaec, noresu, sdcarm,&
                             codret)
-            else
-                call irceme(ifichi, nochmd, chanom, typech, modele,&
-                            nbrcmp, nomcmp, ' ', partie, numpt,&
-                            instan, numord, nbmaec, limaec, sdcarm,&
-                            codret)
+                if (codret .ne. 0) then
+                    call utmess('A', 'MED2_7', sk=nomsym)
+                endif
             endif
+            call irceme(ifichi, nochmd, chanom, typech, modele,&
+                        nbrcmp, nomcmp, ' ', partie, numpt,&
+                        instan, numord, nbmaec, limaec, sdcarm,&
+                        codret)
         else if (typech(1:4).eq.'CART') then
 !
             call irceme(ifichi, nochmd, chanom, typech, modele,&

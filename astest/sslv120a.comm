@@ -280,6 +280,8 @@ RESUNL0=STAT_NON_LINE(MODELE=MO,
 
 RESUNL0=CALC_CHAMP(reuse=RESUNL0,RESULTAT=RESUNL0,CONTRAINTE=('SIGM_ELNO'))
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL0,IMPR_NOM_VARI='NON'),)
 
 #
 #---------------------------------------------------------------------
@@ -551,6 +553,8 @@ RESUMM0=STAT_NON_LINE(MODELE=MO,
 
 RESUMM0=CALC_CHAMP(reuse=RESUMM0,RESULTAT=RESUMM0,CONTRAINTE=('SIGM_ELNO'))
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUMM0,IMPR_NOM_VARI='NON'),)
 
 #
 #---------------------------------------------------------------------
@@ -926,7 +930,8 @@ RESUNL1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUNL1=CALC_CHAMP(reuse=RESUNL1,RESULTAT=RESUNL1,CONTRAINTE=('SIGM_ELNO'))
-
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUNL1,IMPR_NOM_VARI='NON'),)
 
 #
 #---------------------------------------------------------------------
@@ -1129,7 +1134,8 @@ RESUMI1=STAT_NON_LINE(MODELE=MO,
                                      );
 
 RESUMI1=CALC_CHAMP(reuse=RESUMI1,RESULTAT=RESUMI1,CONTRAINTE=('SIGM_ELNO'))
-
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUMI1,IMPR_NOM_VARI='NON'),)
 
 #
 #---------------------------------------------------------------------
@@ -1327,6 +1333,8 @@ RESUMM1=STAT_NON_LINE(MODELE=MO,
 
 RESUMM1=CALC_CHAMP(reuse=RESUMM1,RESULTAT=RESUMM1,CONTRAINTE=('SIGM_ELNO'))
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUMM1,IMPR_NOM_VARI='NON'),)
 
 #
 #---------------------------------------------------------------------
@@ -1528,7 +1536,8 @@ RESUMP1=STAT_NON_LINE(MODELE=MO,
 
 RESUMP1=CALC_CHAMP(reuse=RESUMP1,RESULTAT=RESUMP1,CONTRAINTE=('SIGM_ELNO'))
 
-
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=RESUMP1,IMPR_NOM_VARI='NON'),)
 #
 #---------------------------------------------------------------------
 

@@ -349,6 +349,9 @@ IMPR_RESU(
                   NOM_CHAM=('DEPL','SIEF_ELGA','VARI_ELGA'),GROUP_MA = ('CABLE'),NUME_ORDRE=(1,2,3)))
 
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=EVOLNOL3,),)
+
 # test des calculs de tension BPEL
 #
 # pour la maille 59 :  N1 - N2  - pg1

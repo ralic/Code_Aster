@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,25 +16,25 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine irvari(ifi, nochmd, chanom, typech, modele,&
-                      nbcmp, nomcmp, partie, numpt, instan,&
-                      numord, nbmaec, limaec, noresu, carael,&
+    subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
+                      nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
+                      nume_store , nbmaec       , limaec   , result    , cara_elem,&
                       codret)
-        integer :: ifi
-        character(len=64) :: nochmd
-        character(len=19) :: chanom
-        character(len=8) :: typech
-        character(len=8) :: modele
-        integer :: nbcmp
-        character(len=*) :: nomcmp(*)
-        character(len=*) :: partie
-        integer :: numpt
-        real(kind=8) :: instan
-        integer :: numord
-        integer :: nbmaec
-        integer :: limaec(*)
-        character(len=8) :: noresu
-        character(len=8) :: carael
-        integer :: codret
+        integer, intent(in) :: ifi
+        character(len=64), intent(in) :: field_med
+        character(len=19), intent(in) :: vari_elga
+        character(len=8), intent(in) :: field_loca
+        character(len=8), intent(in) :: model
+        integer, intent(in) :: nb_cmp_sele
+        character(len=*), intent(in) :: cmp_name_sele(*)
+        character(len=*), intent(in) :: partie
+        integer, intent(in) :: numpt
+        real(kind=8), intent(in) :: instan
+        integer, intent(in) :: nume_store
+        integer, intent(in) :: nbmaec
+        integer, intent(in) :: limaec(*)
+        character(len=8), intent(in) :: result
+        character(len=8), intent(in) :: cara_elem
+        integer, intent(out) :: codret
     end subroutine irvari
 end interface

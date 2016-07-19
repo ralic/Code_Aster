@@ -424,4 +424,7 @@ TEST_RESU(RESU=_F(INST=0.8,
                   ),
           )
 
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=U2,),);
+
 FIN()

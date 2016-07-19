@@ -446,6 +446,11 @@ U2=CALC_CHAMP(reuse =U2,
              GROUP_MA=('P1',),
              FORCE='FORC_NODA',);
 
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=U,IMPR_NOM_VARI='NON'),)
+
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=U2,IMPR_NOM_VARI='NON'),)
+
 TABL=CREA_TABLE(RESU=_F(RESULTAT=U,
                         NOM_CHAM='FORC_NODA',
                         TOUT_CMP='OUI',
