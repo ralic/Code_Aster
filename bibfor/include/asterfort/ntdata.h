@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,14 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine nxdoet(model, nume_dof, l_stat, ds_inout)
+    subroutine ntdata(list_load, solver, matcst   , coecst  , result,&
+                      model    , mate  , cara_elem, ds_inout, theta )
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: nume_dof
+        character(len=19), intent(inout) :: list_load
+        character(len=19), intent(in) :: solver
+        aster_logical, intent(out) :: matcst
+        aster_logical, intent(out) :: coecst
+        character(len=8), intent(out) :: result
+        character(len=24), intent(out) :: model
+        character(len=24), intent(out) :: mate
+        character(len=24), intent(out) :: cara_elem
         type(NL_DS_InOut), intent(inout) :: ds_inout
-        aster_logical, intent(out) :: l_stat
-    end subroutine nxdoet
+        real(kind=8), intent(out) :: theta
+    end subroutine ntdata
 end interface

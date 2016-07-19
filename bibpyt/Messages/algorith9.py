@@ -29,10 +29,6 @@ cata_msg = {
  le paramètre BETA ne doit pas être nul.
  """),
 
-    4 : _(u"""
- valeur de THETA illicite
-"""),
-
     8 : _(u"""
  nombre de vecteurs demandé inférieur au nombre de modes du concept MODE_MECA
  on tronque la base modale

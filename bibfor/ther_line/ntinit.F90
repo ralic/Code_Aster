@@ -1,17 +1,19 @@
-subroutine ntnoli(model, mate  , cara_elem, l_stat  , l_evol,&
-                  para , sddisc, ds_inout)
+subroutine ntinit(model   , mate  , cara_elem, list_load, para    ,&
+                  nume_dof, l_stat, l_evol   , sddisc   , ds_inout,&
+                  mesh    , time)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/ntarch.h"
-#include "asterfort/rscrsd.h"
-#include "asterfort/rsrusd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/ntcrch.h"
+#include "asterfort/ntetcr.h"
+#include "asterfort/ntdoet.h"
+#include "asterfort/ntnoli.h"
+#include "asterfort/ntnume.h"
+#include "asterfort/tiinit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -28,91 +30,81 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
-    aster_logical, intent(in) :: l_stat
-    aster_logical, intent(in) :: l_evol
+    character(len=19), intent(in) :: list_load
     real(kind=8), intent(in) :: para(*)
     character(len=19), intent(in) :: sddisc
     type(NL_DS_InOut), intent(inout) :: ds_inout
+    character(len=24), intent(out) :: nume_dof
+    aster_logical, intent(out) :: l_stat
+    aster_logical, intent(out) :: l_evol
+    character(len=8), intent(out) :: mesh
+    character(len=24), intent(out) :: time
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_LINEAIRE - Init
+! THER_LINEAIRE - Algorithm
 !
-! Prepare storing
+! Initializations
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  model            : name of model
 ! In  mate             : name of material characteristics (field)
 ! In  cara_elem        : name of elementary characteristics (field)
-! In  l_stat           : .true. is stationnary
-! In  l_evol           : .true. if transient
+! In  list_load        : name of datastructure for list of loads
 ! In  para             : parameters for time
 !                            (1) THETA
 !                            (2) DELTAT
 ! In  sddisc           : datastructure for time discretization
 ! IO  ds_inout         : datastructure for input/output management
+! Out nume_dof         : name of numbering object (NUME_DDL)
+! Out l_stat           : .true. is stationnary
+! Out l_evol           : .true. if transient
+! Out mesh             : name of mesh
+! Out time             : name of field to save time parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    character(len=19) :: sdarch
-    character(len=24) :: sdarch_ainf
-    integer, pointer :: v_sdarch_ainf(:) => null()
-    integer :: nume_store, nume_inst
-    aster_logical :: force, lreuse
     character(len=8) :: result
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<THERMIQUE> PREPARATION DE LA SD EVOL_THER'
-    endif
-!
-! - INSTANT INITIAL
-!
-    nume_inst = 0
-    force     = .true.
-!
-! - Get parameters in input/ouput management datastructure
-!
+    l_stat = .false.
     result = ds_inout%result
-    lreuse = ds_inout%l_reuse
+    time   = result(1:8)//'.CHTPS'
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
-! --- ACCES SD ARCHIVAGE
+! - Create numbering
 !
-    sdarch      = sddisc(1:14)//'.ARCH'
-    sdarch_ainf = sdarch(1:19)//'.AINF'
+    call ntnume(model, list_load, result, nume_dof)
 !
-! - Current storing index
+! - Create unknowns
 !
-    call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
-    nume_store = v_sdarch_ainf(1)
+    call ntcrch(model, nume_dof)
 !
-! --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
+! - Create input/output datastructure
 !
-    if (lreuse) then
-        ASSERT(nume_store.ne.0)
-        call rsrusd(result, nume_store)
-    else
-        ASSERT(nume_store.eq.0)
-        call rscrsd('G', result, 'EVOL_THER', 100)
-    endif
+    call ntetcr(nume_dof, ds_inout,&
+                list_load_ = list_load)
 !
-! - Stroing initial state
+! - Read initial state
 !
-    if ((.not.lreuse) .and. (.not.l_stat) .and. l_evol) then
-        call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(nume_inst, model   , mate , cara_elem, para,&
-                    sddisc   , ds_inout, force)
-    endif
+    call ntdoet(model, nume_dof, l_stat, ds_inout)
+!
+! - Time discretization and storing datastructures
+!
+    call tiinit(ds_inout, sddisc, l_stat, l_evol)
+!
+! - Prepare storing
+!
+    call ntnoli(model, mate  , cara_elem, l_stat, l_evol,&
+                para , sddisc, ds_inout)
 !
 end subroutine

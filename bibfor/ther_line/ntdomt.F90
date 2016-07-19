@@ -1,13 +1,13 @@
-subroutine nxreso(matass, maprec, solver, cnchci, cn2mbr,&
-                  chsolu)
+subroutine ntdomt(theta)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/resoud.h"
+#include "asterfort/getvr8.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,35 +24,20 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: maprec
-    character(len=24), intent(in) :: matass
-    character(len=19), intent(in) :: solver
-    character(len=24), intent(in) :: cnchci
-    character(len=24), intent(in) :: cn2mbr
-    character(len=19), intent(in) :: chsolu
+    real(kind=8), intent(out) :: theta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_NON_LINE
+! Thermics - Initializations
 !
-! Solve linear system
-!
-! --------------------------------------------------------------------------------------------------
-!
+! Read parameters for algorithm management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    complex(kind=8), parameter :: cbid = dcmplx(0.d0, 0.d0)
-    integer :: iret
-    character(len=24) :: criter
+! Out theta            : value for PARM_THETA
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    criter = '&&RESGRA_GCPC'
-
-    call resoud(matass, maprec, solver, cnchci, 0,&
-                cn2mbr, chsolu, 'V', [0.d0], [cbid],&
-                criter, .true._1, 0, iret)
+    call getvr8(' ', 'PARM_THETA', scal=theta)
 !
-
 end subroutine

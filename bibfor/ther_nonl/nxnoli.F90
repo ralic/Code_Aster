@@ -1,5 +1,5 @@
-subroutine nxnoli(modele, mate  , carele, lostat  , levol,&
-                  para  , sddisc, sdcrit, ds_inout)
+subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol,&
+                  para , sddisc, sdcrit   , ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -32,25 +32,43 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    aster_logical, intent(in) :: l_stat
+    aster_logical, intent(in) :: l_evol
+    real(kind=8), intent(in) :: para(*)
+    character(len=19), intent(in) :: sddisc
+    character(len=19), intent(in) :: sdcrit
     type(NL_DS_InOut), intent(inout) :: ds_inout
-    real(kind=8) :: para(*)
-    aster_logical :: lostat, levol
-    character(len=19) :: sddisc, sdcrit
-    character(len=24) :: modele, mate, carele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_* - Init
+! THER_NON_LINE - Init
 !
 ! Prepare storing
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  l_stat           : .true. is stationnary
+! In  l_evol           : .true. if transient
+! In  para             : parameters for time
+!                            (1) THETA
+!                            (2) DELTAT
+! In  sddisc           : datastructure for time discretization
+! In  sdcrit           : name of datastructure to save convergence parameters
+! IO  ds_inout         : datastructure for input/output management
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
     character(len=19) :: sdarch
     character(len=24) :: sdarch_ainf
     integer, pointer :: v_sdarch_ainf(:) => null()
-    integer :: numarc, numins
-    integer :: ifm, niv
+    integer :: nume_store, nume_inst
     aster_logical :: force, lreuse
     character(len=8) :: result
 !
@@ -63,8 +81,8 @@ implicit none
 !
 ! - INSTANT INITIAL
 !
-    numins = 0
-    force = .true.
+    nume_inst = 0
+    force     = .true.
 !
 ! - Get parameters in input/ouput management datastructure
 !
@@ -79,24 +97,24 @@ implicit none
 ! - Current storing index
 !
     call jeveuo(sdarch_ainf, 'L', vi = v_sdarch_ainf)
-    numarc = v_sdarch_ainf(1)
+    nume_store = v_sdarch_ainf(1)
 !
 ! --- CREATION DE LA SD EVOL_THER OU NETTOYAGE DES ANCIENS NUMEROS
 !
     if (lreuse) then
-        ASSERT(numarc.ne.0)
-        call rsrusd(result, numarc)
+        ASSERT(nume_store.ne.0)
+        call rsrusd(result, nume_store)
     else
-        ASSERT(numarc.eq.0)
+        ASSERT(nume_store.eq.0)
         call rscrsd('G', result, 'EVOL_THER', 100)
     endif
 !
-! --- ARCHIVAGE ETAT INITIAL
+! - Stroing initial state
 !
-    if ((.not.lreuse) .and. (.not.lostat) .and. levol) then
+    if ((.not.lreuse) .and. (.not.l_stat) .and. l_evol) then
         call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(numins, modele  , mate , carele, para,&
-                    sddisc, ds_inout, force, sdcrit)
+        call ntarch(nume_inst, model   , mate , cara_elem, para,&
+                    sddisc   , ds_inout, force, sdcrit)
     endif
 !
 end subroutine

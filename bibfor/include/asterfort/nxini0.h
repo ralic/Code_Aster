@@ -15,9 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine  nxdomt(ds_algopara)
-        use NonLin_Datastructure_type
-        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-    end subroutine nxdomt
-end interface
+interface 
+    subroutine nxini0(ds_algopara, ds_inout)
+        use nonlin_datastructure_type
+        type(NL_DS_AlgoPara), intent(out) :: ds_algopara
+        type(NL_DS_InOut), intent(out) :: ds_inout
+    end subroutine nxini0
+end interface 

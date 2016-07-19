@@ -18,14 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntnoli(modele, mate  , carele  , lostat, levol,&
-                      para  , sddisc, ds_inout)
+    subroutine ntnoli(model, mate  , cara_elem, l_stat  , l_evol,&
+                      para , sddisc, ds_inout)
         use NonLin_Datastructure_type
-        character(len=24), intent(in) :: modele
+        character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: carele
-        aster_logical, intent(in) :: lostat
-        aster_logical, intent(in) :: levol
+        character(len=24), intent(in) :: cara_elem
+        aster_logical, intent(in) :: l_stat
+        aster_logical, intent(in) :: l_evol
         real(kind=8), intent(in) :: para(*)
         character(len=19), intent(in) :: sddisc
         type(NL_DS_InOut), intent(inout) :: ds_inout

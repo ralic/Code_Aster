@@ -16,21 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine ntinit(model   , mate  , cara_elem, list_load, para    ,&
-                      nume_dof, l_stat, l_evol   , sddisc   , ds_inout,&
-                      mesh    , time)
+    subroutine ntnume(model, list_load, result, nume_dof)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
-        character(len=24), intent(in) :: mate
-        character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
-        real(kind=8), intent(in) :: para(*)
-        character(len=19), intent(in) :: sddisc
-        type(NL_DS_InOut), intent(inout) :: ds_inout
+        character(len=8), intent(in) :: result
         character(len=24), intent(out) :: nume_dof
-        aster_logical, intent(out) :: l_stat
-        aster_logical, intent(out) :: l_evol
-        character(len=8), intent(out) :: mesh
-        character(len=24), intent(out) :: time
-    end subroutine ntinit
+    end subroutine ntnume
 end interface 

@@ -18,17 +18,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnoli(modele, mate  , carele, lostat  , levol,&
-                      para  , sddisc, sdcrit, ds_inout)
+    subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol,&
+                      para , sddisc, sdcrit   , ds_inout)
         use NonLin_Datastructure_type
-        character(len=24) :: modele
-        character(len=24) :: mate
-        character(len=24) :: carele
-        aster_logical :: lostat
-        aster_logical :: levol
-        real(kind=8) :: para(*)
-        character(len=19) :: sddisc
-        character(len=19) :: sdcrit
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        aster_logical, intent(in) :: l_stat
+        aster_logical, intent(in) :: l_evol
+        real(kind=8), intent(in) :: para(*)
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sdcrit
         type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nxnoli
 end interface

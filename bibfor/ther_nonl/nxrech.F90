@@ -2,7 +2,9 @@ subroutine nxrech(model    , mate    , cara_elem, list_load  , nume_dof   ,&
                   tpsthe   , time    , lonch    , compor     , varc_curr  ,&
                   temp_iter, vtempp  , vtempr   , temp_prev  , hydr_prev  ,&
                   hydr_curr, dry_prev, dry_curr , vec2nd     , cnvabt     ,&
-                  cnresi   , rho     , iterho   , ther_para_r, ther_para_i)
+                  cnresi   , rho     , iterho   , ds_algopara)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -17,7 +19,7 @@ implicit none
 #include "asterfort/vethbt.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,11 +42,12 @@ implicit none
     character(len=24), intent(in) :: cara_elem
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
+    type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     real(kind=8) :: tpsthe(6)
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
-    integer :: ther_para_i(*), lonch
-    real(kind=8) :: ther_para_r(*), rho
+    integer :: lonch
+    real(kind=8) :: rho
     character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
 !
@@ -52,6 +55,10 @@ implicit none
 !
 ! COMMANDE THER_NON_LINE : RECHERCHE LINEAIRE
 ! DANS LA DIRECTION DONNEE PAR NEWTON (ON CHERCHE RHO).
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  ds_algopara      : datastructure for algorithm parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -100,7 +107,7 @@ implicit none
 !
     rho0 = 0.d0
     rho = 1.d0
-    itrmax = ther_para_i(2)+1
+    itrmax = ds_algopara%line_search%iter_maxi + 1
     do iterho = 1, itrmax
         do i = 1, lonch
             tempr(i) = tempm(i) + rho * tempp(i)
@@ -136,7 +143,7 @@ implicit none
         do k = 1, lonch
             testm = max( testm, abs(zr(j2nd+k-1)-zr(jvare+k-1)-zr( jbtla+k-1)))
         end do
-        if (testm .lt. ther_para_r(2)) then
+        if (testm .lt. ds_algopara%line_search%resi_rela) then
             goto 999
         endif
 !

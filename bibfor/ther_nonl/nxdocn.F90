@@ -1,6 +1,6 @@
-subroutine nxdomt(parmei, parmer)
+subroutine nxdocn(parcri, parcrr)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,40 +17,36 @@ subroutine nxdomt(parmei, parmer)
 ! ======================================================================
     implicit none
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-#include "asterfort/utmess.h"
-    integer :: parmei(2)
-    real(kind=8) :: parmer(2)
+    integer :: parcri(3)
+    real(kind=8) :: parcrr(2)
 ! ----------------------------------------------------------------------
-!     SAISIE DES DONNEES DE LA METHODE DE RESOLUTION
+!     SAISIE DES CRITERES DE CONVERGENCE
 !
-! OUT PARMEI  : PARAMETRES ENTIERS DE LA METHODE
-!               PARMEI(1) = REAC_ITER
-!               PARMEI(2) = ITER_LINE_MAXI
-! OUT PARMER  : PARAMETRES REELS DE LA METHODE
-!               PARMER(1) = PARM_THETA
-!               PARMER(2) = RESI_LINE_RELA
+! OUT PARCRI  : PARAMETRES ENTIERS DU CRITERE
+!               PARCRI(1) = 1 TEST EN ABSOLU  SUR LE RESIDU
+!               PARCRI(2) = 1 TEST EN RELATIF SUR LE RESIDU
+!               PARCRI(3) = NB MAXIMUM D'ITERATION
+! OUT PARCRR  : PARAMETRES REELS DU CRITERE
 !
 ! ----------------------------------------------------------------------
-    integer :: iocc, n1
-    real(kind=8) :: theta
-! DEB ------------------------------------------------------------------
+    character(len=16) :: nomcvg
+    integer :: n1, iocc
+! ----------------------------------------------------------------------
+! --- RECUPERATION DES CRITERES DE CONVERGENCE
 !
-    call getvr8(' ', 'PARM_THETA', scal=theta, nbret=n1)
-    if ((theta.lt.0.0d0) .or. (theta.gt.1.0d0)) then
-        call utmess('F', 'ALGORITH9_4')
-    endif
-    parmer(1) = theta
-!
-    call getfac('NEWTON', iocc)
+    nomcvg = 'CONVERGENCE'
+    call getfac(nomcvg, iocc)
     if (iocc .eq. 1) then
-        call getvis('NEWTON', 'REAC_ITER', iocc=1, scal=parmei(1), nbret=n1)
-        ASSERT(parmei(1).ge.0)
+        call getvr8(nomcvg, 'RESI_GLOB_MAXI', iocc=1, scal=parcrr(1), nbret=parcri(1))
+        call getvr8(nomcvg, 'RESI_GLOB_RELA', iocc=1, scal=parcrr(2), nbret=parcri(2))
+        if (parcri(1)+parcri(2) .eq. 0) then
+            parcri(2) = 1
+            parcrr(2) = 1.d-6
+        endif
 !
-        call getvr8('NEWTON', 'RESI_LINE_RELA', iocc=1, scal=parmer(2), nbret=n1)
-        call getvis('NEWTON', 'ITER_LINE_MAXI', iocc=1, scal=parmei(2), nbret=n1)
+        call getvis(nomcvg, 'ITER_GLOB_MAXI', iocc=1, scal=parcri(3), nbret=n1)
     endif
 ! FIN ------------------------------------------------------------------
 end subroutine

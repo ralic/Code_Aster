@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ntcrch(modele, numedd, hydr0, vhydr)
-        character(len=24) :: modele
-        character(len=24) :: numedd
-        character(len=24) :: hydr0
-        character(len=24) :: vhydr
+    subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: nume_dof
+        character(len=24), optional, intent(in) :: vhydr_
+        character(len=24), optional, intent(out) :: hydr_init_
     end subroutine ntcrch
 end interface

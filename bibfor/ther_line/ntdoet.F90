@@ -1,4 +1,4 @@
-subroutine nxdoet(model, nume_dof, l_stat, ds_inout)
+subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
 !
 use NonLin_Datastructure_type
 !
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! THER_* - Init
+! Thermics - Init
 !
 ! Read initial state
 !
@@ -93,7 +93,7 @@ implicit none
 !
     if (l_state_init) then
         if (niv .ge. 2) then
-            write (ifm,*) '<THERNONLINE> LECTURE ETAT INITIAL'
+            write (ifm,*) '<THER> LECTURE ETAT INITIAL'
         endif
     else
         if (l_reuse) then
@@ -117,12 +117,12 @@ implicit none
 ! - Print
 !
     if (niv .ge. 2) then
-        write (ifm,*) '<THERNONLINE> ... INSTANT INITIAL'
+        write (ifm,*) '<THER> ... INSTANT INITIAL'
         if (init_nume.eq.-1) then
-            write (ifm,*) '<THERNONLINE> ...... NON DEFINI PAR ETAT_INIT'
+            write (ifm,*) '<THER> ...... NON DEFINI PAR ETAT_INIT'
         else
-            write (ifm,*) '<THERNONLINE> ...... VALEUR    : ',init_time
-            write (ifm,*) '<THERNONLINE> ...... NUME_ORDRE: ',init_nume
+            write (ifm,*) '<THER> ...... VALEUR    : ',init_time
+            write (ifm,*) '<THER> ...... NUME_ORDRE: ',init_nume
         endif
     endif
 !

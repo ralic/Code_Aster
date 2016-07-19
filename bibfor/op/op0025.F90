@@ -17,7 +17,8 @@ implicit none
 #include "asterfort/ntarch.h"
 #include "asterfort/ntinit.h"
 #include "asterfort/ntreso.h"
-#include "asterfort/nxlect.h"
+#include "asterfort/ntini0.h"
+#include "asterfort/ntdata.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
@@ -25,7 +26,6 @@ implicit none
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/xthpos.h"
-#include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,14 +57,13 @@ implicit none
     integer :: vali
     integer :: ifm, niv, iret
     integer :: nume_inst
-    integer :: ther_para_i(2), ther_crit_i(3)
-    real(kind=8) :: ther_para_r(2), ther_crit_r(2), para(2), valr(2)
+    real(kind=8) :: para(2), valr(2)
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
-    real(kind=8) :: theta, instap
-    aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas, l_ther_nonl
+    real(kind=8) :: theta, instap, theta_read
+    aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas
     aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
     character(len=1) :: creas
-    character(len=8) :: result, result_dry, mesh
+    character(len=8) :: result,  mesh
     character(len=19) :: maprec, solver, sddisc, list_load
     character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof
@@ -73,7 +72,9 @@ implicit none
     character(len=24) :: mate
     character(len=24) :: vec2nd
     character(len=24) :: compor
-    type(NL_DS_InOut) :: ds_inout
+!
+    type(NL_DS_AlgoPara) :: ds_algopara
+    type(NL_DS_InOut)    :: ds_inout
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,20 +95,18 @@ implicit none
     mediri      = ' '
     cndirp      = ' '
     cnchci      = ' '
+    compor      = ' '
     sddisc      = '&&OP0025.SDDISC'
 !
-! - Create input/output management datastructure
+! - Creation of datastructures
 !
-    call CreateInOutDS('THER', ds_inout)
+    call ntini0(ds_algopara, ds_inout)
 !
-! - Read parameters
+! - Read parameters (linear)
 !
-    l_ther_nonl = .false.
-    call nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
-                ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
-                result     , model      , mate      , cara_elem  , compor     ,&
-                ds_inout)
-    para(1) = ther_para_r(1)
+    call ntdata(list_load, solver, matcst   , coecst  , result   ,&
+                model    , mate  , cara_elem, ds_inout, theta_read)
+    para(1) = theta_read
     para(2) = 0.d0
 !
 ! - Initial state and some parameters
@@ -178,7 +177,7 @@ implicit none
         instap = diinst(sddisc, nume_inst)
         deltam=deltat
         deltat = instap-diinst(sddisc, nume_inst-1)
-        theta=ther_para_r(1)
+        theta=theta_read
     endif
     para(2) = deltat
 ! --- MATRICE TANGENTE REACTUALISEE POUR UN NOUVEAU DT

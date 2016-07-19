@@ -16,26 +16,26 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine nxinit(modele  , mate  , carele, compor, lischa,&
-                      para    , numedd, lostat, l_evol, sddisc,&
-                      ds_inout, vhydr , sdobse, mailla, sdcrit,&
-                      time)
-              use nonlin_datastructure_type
-              character(len=24) :: modele
-              character(len=24) :: mate
-              character(len=24) :: carele
-              character(len=24) :: compor
-              character(len=19) :: lischa
-              real(kind=8) :: para(*)
-              character(len=24) :: numedd
-              aster_logical :: lostat
-              aster_logical :: l_evol
-              character(len=19) :: sddisc
-              type (NL_DS_InOut), intent(inout) :: ds_inout
-              character(len=24) :: vhydr
-              character(len=19) :: sdobse
-              character(len=8) :: mailla
-              character(len=19) :: sdcrit
-              character(len=24) :: time
+    subroutine nxinit(model   , mate    , cara_elem, compor, list_load,&
+                      para    , vhydr   , sdobse   , sddisc, sdcrit   ,&
+                      ds_inout, nume_dof, l_stat   , l_evol, mesh     ,&
+                      time    )
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=24), intent(in) :: compor
+        character(len=19), intent(in) :: list_load
+        real(kind=8), intent(in) :: para(*)
+        character(len=24), intent(in) :: vhydr
+        character(len=19), intent(out) :: sdobse
+        character(len=19), intent(in) :: sddisc
+        character(len=19), intent(in) :: sdcrit
+        type(NL_DS_InOut), intent(inout) :: ds_inout
+        character(len=24), intent(out) :: nume_dof
+        aster_logical, intent(out) :: l_stat
+        aster_logical, intent(out) :: l_evol
+        character(len=8), intent(out) :: mesh
+        character(len=24), intent(out) :: time
     end subroutine nxinit
 end interface 

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,8 @@ interface
                       tpsthe   , time    , lonch    , compor     , varc_curr  ,&
                       temp_iter, vtempp  , vtempr   , temp_prev  , hydr_prev  ,&
                       hydr_curr, dry_prev, dry_curr , vec2nd     , cnvabt     ,&
-                      cnresi   , rho     , iterho   , ther_para_r, ther_para_i)
+                      cnresi   , rho     , iterho   , ds_algopara)
+        use NonLin_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -31,6 +32,7 @@ interface
         real(kind=8) :: tpsthe(6)
         character(len=24), intent(in) :: time
         character(len=19), intent(in) :: varc_curr
+        type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: lonch
         character(len=24) :: compor
         character(len=24) :: vtempp
@@ -46,7 +48,5 @@ interface
         character(len=24) :: cnresi
         real(kind=8) :: rho
         integer :: iterho
-        real(kind=8) :: ther_para_r(*)
-        integer :: ther_para_i(*)
     end subroutine nxrech
 end interface

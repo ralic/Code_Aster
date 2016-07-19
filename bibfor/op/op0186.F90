@@ -24,8 +24,10 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/medith.h"
+#include "asterfort/ntdata.h"
 #include "asterfort/ntarch.h"
 #include "asterfort/ntobsv.h"
+#include "asterfort/nxini0.h"
 #include "asterfort/nxacmv.h"
 #include "asterfort/nxinit.h"
 #include "asterfort/nxlect.h"
@@ -40,7 +42,6 @@ implicit none
 #include "asterfort/uttcpu.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/vtzero.h"
-#include "asterfort/CreateInOutDS.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,19 +69,19 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: lostat, matcst, coecst, reasma, arret, conver, itemax, reasvc
-    aster_logical :: reasvt, reasmt, reasrg, reasms, lsecha, rechli, finpas, levol
-    aster_logical :: force, l_ther_nonl
-    integer :: ther_para_i(2), ther_crit_i(3), numins, k, icoret, nbcham, iterho
+    aster_logical :: l_stat, matcst, coecst, reasma, arret, conver, itemax, reasvc
+    aster_logical :: reasvt, reasmt, reasrg, reasms, l_dry, l_line_search, finpas, l_evol
+    aster_logical :: force
+    integer :: ther_crit_i(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
     integer :: itab(2)
-    real(kind=8) :: ther_para_r(2), tpsthe(6), deltat, timet, timtdt, tps1(7)
+    real(kind=8) :: tpsthe(6), deltat, timet, timtdt, tps1(7)
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), theta, khi, rho, testr
     real(kind=8) :: testm, para(2), instap, tconso
-    real(kind=8) :: rtab(2)
+    real(kind=8) :: rtab(2), theta_read
     character(len=1) :: creas, base
     character(len=3) :: kreas
-    character(len=8) :: result, result_dry, mailla
+    character(len=8) :: result, result_dry, mesh
     character(len=19) :: sdobse
     character(len=16) :: tysd
     character(len=19) :: solver, maprec, sddisc, sdcrit, varc_curr, list_load
@@ -93,7 +94,9 @@ implicit none
     character(len=85) :: fmt1
     real(kind=8), pointer :: crtr(:) => null()
     real(kind=8), pointer :: tempm(:) => null()
-    type(NL_DS_InOut) :: ds_inout
+!
+    type(NL_DS_InOut)     :: ds_inout
+    type(NL_DS_AlgoPara)  :: ds_algopara
 !
     data sdcrit/'&&OP0186.CRITERE'/
     data maprec/'&&OP0186.MAPREC'/
@@ -112,7 +115,6 @@ implicit none
     data fmt3/'(A,16X,A,8X,A,6X,A,3X,A,6X,A,4X,A)'/
     data fmt4/'(A,12X,A,2X,A,17X,A,9X,A,4X,A)'/
     data sddisc            /'&&OP0186.PARTPS'/
-    data sdobse            /'&&OP0186.OBSER'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,48 +122,39 @@ implicit none
     call infmaj()
     call infniv(ifm, niv)
 !
+! - Initializations
+!
     solver    = '&&OP0186.SOLVER'
     list_load = '&&OP0186.LISCHA'
     varc_curr = '&&OP0186.CHVARC'
-!
-! - Create input/output management datastructure
-!
-    call CreateInOutDS('THNL', ds_inout)
-!
-! - Read parameters
-!
-    l_ther_nonl = .true.
-    call nxlect(l_ther_nonl, list_load  , solver    , ther_para_i, ther_para_r,&
-                ther_crit_i, ther_crit_r, result_dry, matcst     , coecst     ,&
-                result     , model      , mate      , cara_elem  , compor     ,&
-                ds_inout)
-    para(1)    = ther_para_r(1)
-    itmax      = ther_crit_i(3)
-    rechli     = .false.
-!
-! EST-ON DANS UN CALCUL DE SECHAGE ?
-    if (result_dry(1:1) .ne. ' ') then
-        lsecha = .true.
-    else
-        lsecha = .false.
-    endif
 ! --- CE BOOLEEN ARRET EST DESTINE AUX DEVELOPPEUR QUI VOUDRAIENT
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
     arret = .false.
-    if (ther_para_i(2) .gt. 0) rechli = .true.
 !
-! **********************************************************************
-!    INITIALISATIONS ET DUPLICATION DES STRUCTURES DE DONNEES
-! **********************************************************************
+! - Creation of datastructures
 !
-! --- INITIALISATIONS
+    call nxini0(ds_algopara, ds_inout)
 !
-    call nxinit(model   , mate  , cara_elem, compor, list_load,&
-                para    , nume_dof, lostat, levol    ,sddisc,&
-                ds_inout, vhydr   , sdobse   ,mailla     , sdcrit,&
-                 time  )
+! - Read parameters (linear)
 !
-    if (lostat) then
+    call ntdata(list_load, solver, matcst   , coecst  , result    ,&
+                model    , mate  , cara_elem, ds_inout, theta_read)
+    para(1)    = theta_read
+!
+! - Read parameters (non-linear)
+!
+    call nxlect(result     , model     , ther_crit_i, ther_crit_r, ds_inout     ,&
+                ds_algopara, result_dry, compor     , l_dry      , l_line_search)
+    itmax      = ther_crit_i(3)
+!
+! - Initializations
+!
+    call nxinit(model   , mate    , cara_elem, compor, list_load,&
+                para    , vhydr   , sdobse   , sddisc, sdcrit   ,&
+                ds_inout, nume_dof, l_stat   , l_evol, mesh     ,&
+                time    )
+!
+    if (l_stat) then
         numins=0
     else
         numins=1
@@ -175,7 +168,7 @@ implicit none
     vtempr='&&NXLECTVAR_INIT'
 
 
-    if (lostat) then
+    if (l_stat) then
         call vtcreb(vtempm, 'V', 'R', nume_ddlz = nume_dof)
         call vtcreb(vtempp, 'V', 'R', nume_ddlz = nume_dof)
         call vtcreb(vtempr, 'V', 'R', nume_ddlz = nume_dof)
@@ -213,8 +206,8 @@ implicit none
 200 continue
 ! --- RECUPERATION DU PAS DE TEMPS ET DES PARAMETRES DE RESOLUTION
 !
-    if (lostat) then
-        if (.not.levol) then
+    if (l_stat) then
+        if (.not.l_evol) then
             instap=0.d0
             deltat=-1.d150
             theta=1.d0
@@ -228,7 +221,7 @@ implicit none
     else
         instap = diinst(sddisc, numins)
         deltat = instap-diinst(sddisc, numins-1)
-        theta=ther_para_r(1)
+        theta=theta_read
         khi=1.d0
     endif
     para(2) = deltat
@@ -262,7 +255,7 @@ implicit none
 !
 ! --- RECUPERATION DU CHAMP DE TEMPERATURE A T ET T+DT POUR LE SECHAGE
 !     LOIS SECH_GRANGER ET SECH_NAPPE
-    if (lsecha) then
+    if (l_dry) then
         call gettco(result_dry, tysd)
         if (tysd(1:9) .eq. 'EVOL_THER') then
             call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
@@ -301,7 +294,7 @@ implicit none
 ! CHAR_THER_EVOLNI EN BETA DANS VEC2ND (IDEM EN RHO_CP DANS VEC2NI)
 ! ON ASSEMBLE LA MATRICE A = TANGENTE (MTAN_*) + DIRICHLET
     call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
-                solver, lostat, time     , tpsthe   , reasvc  ,&
+                solver, l_stat, time     , tpsthe   , reasvc  ,&
                 reasvt, reasmt, reasrg   , reasms   , creas   ,&
                 vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
                 vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
@@ -320,7 +313,7 @@ implicit none
 ! SOLUTION: VTEMP= T- ET VTEMPM = T+,1
 !
     call nxpred(model , mate  , cara_elem, list_load, nume_dof,&
-                solver, lostat, tpsthe   , time     , matass  ,&
+                solver, l_stat, tpsthe   , time     , matass  ,&
                 neq   , maprec, varc_curr, vtemp    , vtempm  ,&
                 cn2mbr, vhydr , vhydrp   , tmpchi   , tmpchf  ,&
                 compor, cndirp, cnchci   , vec2nd   , vec2ni  )
@@ -345,8 +338,8 @@ implicit none
     reasma = .false.
     kreas = 'NON'
     if (iterat .ge. itmax) itemax = .true.
-    if ((ther_para_i(1).ne.0)) then
-        if (mod(iterat,ther_para_i(1)) .eq. 0) then
+    if ((ds_algopara%reac_iter.ne.0)) then
+        if (mod(iterat,ds_algopara%reac_iter) .eq. 0) then
             reasma = .true.
             kreas = 'OUI'
         endif
@@ -372,7 +365,7 @@ implicit none
     rho = 0.d0
     iterho = 0
     if (.not.conver) then
-        if (rechli) then
+        if (l_line_search) then
 !
 ! ON CALCULE LE RHO/ VTEMPR = T+,I+1BIS = T+,1 + RHO * (T+,I+1 - T+,I)
 ! MINIMISE VEC2ND - RESI_THER(T+,I+1BIS) - (BT)*LAGRANGE
@@ -380,7 +373,7 @@ implicit none
                         tpsthe, time  , neq      , compor     , varc_curr  ,&
                         vtempm, vtempp, vtempr   , vtemp      , vhydr      ,&
                         vhydrp, tmpchi, tmpchf   , vec2nd     , vabtla     ,&
-                        cnresi, rho   , iterho   , ther_para_r, ther_para_i)
+                        cnresi, rho   , iterho   , ds_algopara)
         else
             rho = 1.d0
         endif
@@ -470,7 +463,7 @@ implicit none
 !
 ! ------- ARCHIVAGE
 !
-    if (.not.levol) then
+    if (.not.l_evol) then
         force = .true.
     else
         force = .false.
@@ -480,8 +473,8 @@ implicit none
 !
 ! - Make observation
 !
-    if (levol) then
-        call ntobsv(mailla, sdobse, numins, instap)
+    if (l_evol) then
+        call ntobsv(mesh, sdobse, numins, instap)
     endif
 !
 ! ------- VERIFICATION SI INTERRUPTION DEMANDEE PAR SIGNAL USR1
@@ -510,8 +503,8 @@ implicit none
     if (finpas) goto 500
 !
 !----- NOUVEAU PAS DE TEMPS
-    if (lostat) then
-        lostat=.false.
+    if (l_stat) then
+        l_stat=.false.
     endif
     numins = numins + 1
     goto 200
