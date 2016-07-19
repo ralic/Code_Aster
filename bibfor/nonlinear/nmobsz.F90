@@ -1,5 +1,5 @@
-subroutine nmobsz(sd_obsv  , tabl_name    , title         , field_type, field_disc,&
-                  type_extr, type_extr_cmp, type_extr_elem, cmp_name,&
+subroutine nmobsz(sd_obsv  , tabl_name    , title         , field_type   , field_disc,&
+                  type_extr, type_extr_cmp, type_extr_elem, type_sele_cmp, cmp_name  ,&
                   time     , valr,&
                   node_namez,&
                   elem_namez, poin_numez, spoi_numez)
@@ -36,7 +36,8 @@ implicit none
     character(len=8), intent(in) :: type_extr
     character(len=8), intent(in) :: type_extr_cmp
     character(len=8), intent(in) :: type_extr_elem
-    character(len=8), intent(in) :: cmp_name
+    character(len=8), intent(in) :: type_sele_cmp
+    character(len=16), intent(in) :: cmp_name
     real(kind=8), intent(in) :: time
     real(kind=8), intent(in) :: valr
     character(len=8), optional, intent(in) :: node_namez
@@ -60,6 +61,7 @@ implicit none
 ! In  type_extr        : type of extraction
 ! In  type_extr_elem   : type of extraction by element
 ! In  type_extr_cmp    : type of extraction for components
+! In  type_sele_cmp    : type of selection for components NOM_CMP or NOM_VARI
 ! In  cmp_name         : name of components
 ! In  time             : current time
 ! In  valr             : value to save
@@ -70,8 +72,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para
-    parameter   (nb_para=15)
+    integer, parameter :: nb_para = 16
     character(len=16) :: para_name(nb_para)
     real(kind=8) :: tabl_vale_r(nb_para)
     integer :: tabl_vale_i(nb_para)
@@ -90,7 +91,7 @@ implicit none
 !
     data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,&
                     'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
-                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
+                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP', 'NOM_VARI',&
                     'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
                     'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
                     'VALE'           /
@@ -158,12 +159,21 @@ implicit none
 ! - Type of extraction for components
 !
     if (type_extr_cmp .eq. ' ') then
-        para_name_add(i_para_add) = para_name(8)
-        i_para_add = i_para_add + 1
-        tabl_vale_k(nb_vale_k) = cmp_name
-        nb_vale_k = nb_vale_k + 1
+        if (type_sele_cmp .eq. 'NOM_CMP') then
+            para_name_add(i_para_add) = para_name(8)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = cmp_name
+            nb_vale_k = nb_vale_k + 1
+        elseif (type_sele_cmp .eq. 'NOM_VARI') then
+            para_name_add(i_para_add) = para_name(9)
+            i_para_add = i_para_add + 1
+            tabl_vale_k(nb_vale_k) = cmp_name
+            nb_vale_k = nb_vale_k + 1
+        else
+            ASSERT(.false.)
+        endif
     else
-        para_name_add(i_para_add) = para_name(9)
+        para_name_add(i_para_add) = para_name(10)
         i_para_add = i_para_add + 1
         tabl_vale_k(nb_vale_k) = type_extr_cmp
         nb_vale_k = nb_vale_k + 1
@@ -173,7 +183,7 @@ implicit none
 !
     if (field_disc .eq. 'NOEU') then
         if (type_extr .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(10)
+            para_name_add(i_para_add) = para_name(11)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = node_namez
             nb_vale_k = nb_vale_k + 1
@@ -183,13 +193,13 @@ implicit none
             tabl_vale_k(nb_vale_k) = type_extr
             nb_vale_k = nb_vale_k + 1
         endif
-        para_name_add(i_para_add) = para_name(15)
+        para_name_add(i_para_add) = para_name(16)
         i_para_add = i_para_add + 1
         tabl_vale_r(nb_vale_r) = valr
         nb_vale_r = nb_vale_r + 1
     else if (field_disc.eq.'ELGA') then
         if (type_extr .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(11)
+            para_name_add(i_para_add) = para_name(12)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = elem_namez
             nb_vale_k = nb_vale_k + 1
@@ -200,24 +210,24 @@ implicit none
             nb_vale_k = nb_vale_k + 1
         endif
         if (type_extr_elem .eq. 'VALE') then
-            para_name_add(i_para_add) = para_name(13)
+            para_name_add(i_para_add) = para_name(14)
             i_para_add = i_para_add + 1
             tabl_vale_i(nb_vale_i) = poin_numez
             nb_vale_i = nb_vale_i + 1
-            para_name_add(i_para_add) = para_name(14)
+            para_name_add(i_para_add) = para_name(15)
             i_para_add = i_para_add + 1
             tabl_vale_i(nb_vale_i) = spoi_numez
             nb_vale_i = nb_vale_i + 1
-            para_name_add(i_para_add) = para_name(15)
+            para_name_add(i_para_add) = para_name(16)
             i_para_add = i_para_add + 1
             tabl_vale_r(nb_vale_r) = valr
             nb_vale_r = nb_vale_r + 1
         else
-            para_name_add(i_para_add) = para_name(12)
+            para_name_add(i_para_add) = para_name(13)
             i_para_add = i_para_add + 1
             tabl_vale_k(nb_vale_k) = type_extr_elem
             nb_vale_k = nb_vale_k + 1
-            para_name_add(i_para_add) = para_name(15)
+            para_name_add(i_para_add) = para_name(16)
             i_para_add = i_para_add + 1
             tabl_vale_r(nb_vale_r) = valr
             nb_vale_r = nb_vale_r + 1

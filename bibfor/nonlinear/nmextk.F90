@@ -1,7 +1,7 @@
-subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field    , field_type,&
-                  field_s  , field_disc, list_node  , list_elem, list_poin ,&
-                  list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
-                  compor   , list_cmp  , nb_cmp)
+subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field        , field_type,&
+                  field_s  , field_disc, list_node  , list_elem    , list_poin ,&
+                  list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
+                  compor   , list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
 !
 implicit none
 !
@@ -53,8 +53,10 @@ implicit none
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
     character(len=19), optional, intent(in) :: compor
-    integer, intent(out) :: nb_cmp
     character(len=24), intent(in) :: list_cmp
+    character(len=24), intent(in) :: list_vari
+    integer, intent(out) :: nb_cmp
+    character(len=8), intent(out) :: type_sele_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,8 +82,10 @@ implicit none
 ! In  list_spoi        : name of object contains list of subpoints
 ! In  nb_spoi          : number of subpoints
 ! In  compor           : name of <CARTE> COMPOR
-! In  list_cmp         : name of object contains list of components
+! In  list_cmp         : name of object contains list of components (NOM_CMP)
+! In  list_vari        : name of object contains list of components (NOM_VARI)
 ! Out nb_cmp           : number of components
+! Out type_sele_cmp    : type of selection for components NOM_CMP or NOM_VARI
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,7 +113,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_cmp = 0
+    nb_cmp        = 0
+    type_sele_cmp = ' '
 !
 ! - Get reduced field (CHAM_ELEM_S)
 !
@@ -135,18 +140,19 @@ implicit none
         call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
         call getvtx(keyw_fact, 'NOM_CMP', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_cmp,&
                     nbret=iret)
+        type_sele_cmp = 'NOM_CMP'
     else
         call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=0, nbret=n1)
         ASSERT(n1.lt.0)
         ASSERT(field_type.eq.'VARI_ELGA')
         nb_cmp = -n1
-        call wkvect(list_cmp, 'V V K8', nb_cmp, vk8 = v_list_cmp)
-        call wkvect('&&NMEXTK.LVARI', 'V V K16', nb_cmp, vk16 = v_list_vari)
+        call wkvect(list_cmp , 'V V K8', nb_cmp, vk8 = v_list_cmp)
+        call wkvect(list_vari, 'V V K16', nb_cmp, vk16 = v_list_vari)
         call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari,&
                     nbret=iret)
         call jeveuo(list_elem, 'L', vi = v_list_elem)
         call varinonu(compor, ' ', nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
-        call jedetr('&&NMEXTK.LVARI')
+        type_sele_cmp = 'NOM_VARI'
     endif
 !
 ! - Check components

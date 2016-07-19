@@ -44,8 +44,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para
-    parameter   (nb_para=15)
+    integer, parameter :: nb_para = 16
     character(len=8) :: para_type(nb_para)
     character(len=16) :: para_name(nb_para)
 !
@@ -58,13 +57,13 @@ implicit none
 !
     data para_name /'NOM_OBSERVATION','TYPE_OBJET'  ,&
                     'NUME_REUSE'     ,'NUME_OBSE'   ,'INST'   ,&
-                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP',&
+                    'NOM_CHAM'       ,'EVAL_CHAM'   ,'NOM_CMP', 'NOM_VARI',&
                     'EVAL_CMP'       ,'NOEUD'       ,'MAILLE' ,&
                     'EVAL_ELGA'      ,'POINT'       ,'SOUS_POINT',&
                     'VALE'           /
     data para_type /'K16','K16',&
                     'I'  ,'I'  ,'R'  ,&
-                    'K16','K8' ,'K8' ,&
+                    'K16','K8' ,'K8' ,'K16',&
                     'K8' ,'K8' ,'K8' ,&
                     'K8' ,'I'  ,'I'  ,&
                     'R' /

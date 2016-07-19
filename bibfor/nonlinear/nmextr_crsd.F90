@@ -5,7 +5,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ implicit none
 ! ----- Create extraction type vector
 !
         extr_type = sdextr(1:14)//'     .EXTR'
-        call wkvect(extr_type, 'V V K8', 3*nb_keyw_fact, vk8 = v_extr_type)
+        call wkvect(extr_type, 'V V K8', 4*nb_keyw_fact, vk8 = v_extr_type)
 !
 ! ----- Create extraction flag vector
 !

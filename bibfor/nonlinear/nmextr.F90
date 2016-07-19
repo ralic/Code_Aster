@@ -97,9 +97,9 @@ implicit none
     character(len=2) :: chaine
     character(len=24) :: field_type, field_s, field_comp
     character(len=4) :: field_disc
-    character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp
+    character(len=24) :: list_node, list_elem, list_poin, list_spoi, list_cmp, list_vari
     character(len=19) :: field
-    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem
+    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, type_sele_cmp
     character(len=14) :: sdextr
     character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
     integer, pointer :: v_extr_info(:) => null()
@@ -168,6 +168,7 @@ implicit none
         nb_extr_keyw   = 0
         type_extr_elem = 'NONE'
         type_extr_cmp  = 'NONE'
+        type_sele_cmp  = 'NONE'
         type_extr      = 'NONE'
 !
 ! ----- Datastructure name generation
@@ -178,6 +179,7 @@ implicit none
         list_poin = sdextr(1:14)//chaine(1:2)//'   .POIN'
         list_spoi = sdextr(1:14)//chaine(1:2)//'   .SSPI'
         list_cmp  = sdextr(1:14)//chaine(1:2)//'   .CMP '
+        list_vari = sdextr(1:14)//chaine(1:2)//'   .VARI'
 !
 ! ----- Get field index
 !
@@ -219,10 +221,10 @@ implicit none
 !
 ! --------- Get component(s)
 !
-            call nmextk(meshz    , keyw_fact , i_keyw_fact, field    , field_type,&
-                        field_s  , field_disc, list_node  , list_elem, list_poin ,&
-                        list_spoi, nb_node   , nb_elem    , nb_poin  , nb_spoi   ,&
-                        compor   , list_cmp  , nb_cmp)
+            call nmextk(meshz    , keyw_fact , i_keyw_fact, field        , field_type,&
+                        field_s  , field_disc, list_node  , list_elem    , list_poin ,&
+                        list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
+                        compor   , list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
 !
 ! --------- Get type of extraction for components
 !
@@ -239,9 +241,10 @@ implicit none
             v_extr_field(4*(i_field-1)+2) = field_s
             v_extr_field(4*(i_field-1)+3) = field_disc
             v_extr_field(4*(i_field-1)+4) = field
-            v_extr_type(3*(i_keyw_fact-1)+1) = type_extr
-            v_extr_type(3*(i_keyw_fact-1)+2) = type_extr_elem
-            v_extr_type(3*(i_keyw_fact-1)+3) = type_extr_cmp
+            v_extr_type(4*(i_keyw_fact-1)+1) = type_extr
+            v_extr_type(4*(i_keyw_fact-1)+2) = type_extr_elem
+            v_extr_type(4*(i_keyw_fact-1)+3) = type_extr_cmp
+            v_extr_type(4*(i_keyw_fact-1)+4) = type_sele_cmp
             v_extr_info(7+7*(i_keyw_fact-1)+1) = nb_cmp
             v_extr_info(7+7*(i_keyw_fact-1)+2) = nb_node
             v_extr_info(7+7*(i_keyw_fact-1)+3) = nb_elem
