@@ -1,4 +1,4 @@
-subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
+subroutine comp_comp_save(mesh, compor, nb_cmp, v_info_valk, v_info_vali)
 !
 implicit none
 !
@@ -31,7 +31,8 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: compor
     integer, intent(in) :: nb_cmp
-    character(len=19), intent(in) :: list_vale
+    character(len=16), intent(in) :: v_info_valk(:)
+    integer          , intent(in) :: v_info_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,10 +42,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh        : name of mesh
-! In  compor      : name of <CARTE> COMPOR
-! In  nb_cmp      : number of components in <CARTE> COMPOR
-! In  list_vale   : list of informations to save
+! In  mesh             : name of mesh
+! In  compor           : name of <CARTE> COMPOR
+! In  nb_cmp           : number of components in <CARTE> COMPOR
+! In  v_info_valk      : comportment informations (character)
+! In  v_info_vali      : comportment informations (integer)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,29 +54,22 @@ implicit none
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
     integer :: iocc, nocc
-    character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp
-    integer :: nb_vari, nume_comp, nb_vari_exte, unit_comp
+    character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp, kit_comp(4)
+    character(len=16) :: post_iter, type_matg
+    integer :: nb_vari, nume_comp(4), nb_vari_exte, unit_comp, nb_vari_comp(4)
     character(len=16) :: keywordfact
-    character(len=16), pointer :: valv(:) => null()
-    integer, pointer :: vali(:) => null()
-    character(len=24), pointer :: valk(:) => null()
+    character(len=16), pointer :: v_compor_valv(:) => null()
     integer, pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     list_elem_affe = '&&COMPCOMPSAVE.LIST'
-
-    keywordfact = 'AFFE_COMPOR'
+    keywordfact    = 'AFFE_COMPOR'
     call getfac(keywordfact, nocc)
 !
 ! - Access to COMPOR <CARTE>
 !
-    call jeveuo(compor//'.VALV', 'E', vk16=valv)
-!
-! - Access to list
-!
-    call jeveuo(list_vale(1:19)//'.VALI', 'L', vi=vali)
-    call jeveuo(list_vale(1:19)//'.VALK', 'L', vk24=valk)
+    call jeveuo(compor//'.VALV', 'E', vk16=v_compor_valv)
 !
 ! - Read list
 !
@@ -82,25 +77,45 @@ implicit none
 !
 ! ----- Get options
 !
-        nb_vari_exte = vali(1+4*(iocc-1) -1 + 1)
-        unit_comp = vali(1+4*(iocc-1) -1 + 2)
-        nb_vari = vali(1+4*(iocc-1) -1 + 3)
-        nume_comp = vali(1+4*(iocc-1) -1 + 4)
-        rela_comp = valk(1+16*(iocc-1) -1 + 1)(1:16)
-        defo_comp = valk(1+16*(iocc-1) -1 + 2)(1:16)
-        type_comp = valk(1+16*(iocc-1) -1 + 3)(1:16)
-        type_cpla = valk(1+16*(iocc-1) -1 + 4)(1:16)
-        mult_comp = valk(1+16*(iocc-1) -1 + 14)(1:16)
+        nume_comp(:)    = 0
+        nb_vari_comp(:) = 0
+        nb_vari_exte = v_info_vali(4*(iocc-1)+ 1)
+        unit_comp    = v_info_vali(4*(iocc-1)+ 2)
+        nb_vari      = v_info_vali(4*(iocc-1)+ 3)
+        nume_comp(1) = v_info_vali(4*(iocc-1)+ 4)
+        rela_comp    = v_info_valk(16*(iocc-1)+ 1)
+        defo_comp    = v_info_valk(16*(iocc-1)+ 2)
+        type_comp    = v_info_valk(16*(iocc-1)+ 3)
+        type_cpla    = v_info_valk(16*(iocc-1)+ 4)
+        kit_comp(1)  = v_info_valk(16*(iocc-1)+ 5)
+        kit_comp(2)  = v_info_valk(16*(iocc-1)+ 6)
+        kit_comp(3)  = v_info_valk(16*(iocc-1)+ 7)
+        kit_comp(4)  = v_info_valk(16*(iocc-1)+ 8)
+        mult_comp    = v_info_valk(16*(iocc-1)+ 14) 
+        type_matg    = v_info_valk(16*(iocc-1)+ 15)
+        post_iter    = v_info_valk(16*(iocc-1)+ 16)
 !
 ! ----- Set options in COMPOR <CARTE>
 !
-        valv(1) = rela_comp
-        write (valv(2),'(I16)') nb_vari
-        valv(3) = defo_comp
-        valv(4) = type_comp
-        valv(5) = type_cpla
-        write (valv(6),'(I16)') nume_comp
-        valv(7) = mult_comp
+        v_compor_valv(1) = rela_comp
+        write (v_compor_valv(2),'(I16)') nb_vari
+        v_compor_valv(3) = defo_comp
+        v_compor_valv(4) = type_comp
+        v_compor_valv(5) = type_cpla
+        write (v_compor_valv(6),'(I16)') nume_comp(1)
+        v_compor_valv(7) = mult_comp
+        v_compor_valv(8) = kit_comp(1)
+        v_compor_valv(9) = kit_comp(2)
+        v_compor_valv(10) = kit_comp(3)
+        v_compor_valv(11) = kit_comp(4)
+        v_compor_valv(13) = type_matg
+        v_compor_valv(14) = post_iter
+        write (v_compor_valv(15),'(I16)') nume_comp(2)
+        write (v_compor_valv(16),'(I16)') nume_comp(3)
+        write (v_compor_valv(17),'(I16)') nb_vari_comp(1)
+        write (v_compor_valv(18),'(I16)') nb_vari_comp(2)
+        write (v_compor_valv(19),'(I16)') nb_vari_comp(3)
+        write (v_compor_valv(20),'(I16)') nb_vari_comp(4)
 !
 ! ----- Get list of elements where comportment is defined
 !

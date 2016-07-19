@@ -212,11 +212,11 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/CHMAT.concept",
-             NB_VALE_I=96,
+             NB_VALE_I=102,
              VALE_CALC_I=2107665,
              NB_VALE=0,
              VALE_CALC=0.0000000000,
-             VALE_CALC_K="70984a02efafe0ab9fe9ec7d79c6e11d",
+             VALE_CALC_K="5613b7c2ed1dfc141b185a6811bdaefd",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 

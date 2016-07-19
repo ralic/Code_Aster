@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_comp_save(mesh, compor, nb_cmp, list_vale)
+    subroutine comp_comp_save(mesh, compor, nb_cmp, v_info_valk, v_info_vali)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: compor
         integer, intent(in) :: nb_cmp
-        character(len=19), intent(in) :: list_vale
+        character(len=16), intent(in) :: v_info_valk(:)
+        integer          , intent(in) :: v_info_vali(:)
     end subroutine comp_comp_save
 end interface
