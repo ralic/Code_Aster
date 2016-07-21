@@ -1,21 +1,20 @@
-subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
-                  solver, lostat, time     , tpsthe   , reasvc  ,&
-                  reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                  vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
-                  vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
-                  cnchci, mediri, compor)
+subroutine nxacmv(model      , mate     , cara_elem, list_load, nume_dof   ,&
+                  solver     , l_stat   , time     , tpsthe   , vtemp      ,&
+                  vhydr      , varc_curr, dry_prev , dry_curr , cn2mbr_stat,&
+                  cn2mbr_tran, matass   , maprec   , cndiri   , cncine     ,&
+                  mediri     , compor)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
+#include "asterfort/vtaxpy.h"
+#include "asterfort/vtzero.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
-#include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -60,364 +59,215 @@ implicit none
     character(len=19), intent(in) :: solver
     character(len=24), intent(in) :: time
     character(len=19), intent(in) :: varc_curr
-    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
-    real(kind=8) :: tpsthe(6)
-    character(len=1) :: creas
-    character(len=19) :: maprec
-    character(len=24) :: vtemp, vec2nd, vec2ni, vhydr, compor, dry_prev
-    character(len=24) :: dry_curr, matass, cndirp, cnchci, cnchtp, cntntp, cntnti
-    character(len=24) :: cnchnl
+    aster_logical, intent(in) :: l_stat
+    real(kind=8), intent(in) :: tpsthe(6)
+    character(len=24), intent(in) :: vtemp
+    character(len=24), intent(in) :: vhydr
+    character(len=24), intent(in) :: dry_prev
+    character(len=24), intent(in) :: dry_curr
+    character(len=24), intent(in) :: cn2mbr_stat
+    character(len=24), intent(in) :: cn2mbr_tran
+    character(len=24), intent(in) :: matass
+    character(len=19), intent(in) :: maprec
+    character(len=24), intent(in) :: cndiri
+    character(len=24), intent(out) :: cncine
+    character(len=24), intent(in) :: mediri
+    character(len=24), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! COMMANDE THER_LINEAIRE : ACTUALISATION EVENTUELLE
-!   - DES VECTEURS CONTRIBUANT AU SECOND MEMBRE
-!   - DE LA MATRICE ASSEMBLEE
-! COMMANDE THER_NON_LINE : ACTUALISATION EVENTUELLE
-!   - DES VECTEURS CONTRIBUANT AU SECOND MEMBRE (RESIDU)
-!   - DE LA MATRICE TANGENTE ASSEMBLEE
+! THER_NON_LINE - Algorithm
 !
-! OUT VEC2ND  : VECTEUR ASSEMBLE SECOND MEMBRE = L1(V,T-)
-! OUT VEC2NI  : VECTEUR ASSEMBLE SECOND MEMBRE = L1(V,T-)
-!                         AVEC RHOCP.T- ET NON PLUS H(T-)
-! OUT MATASS,MAPREC  MATRICE DE RIGIDITE ASSEMBLEE
-! OUT CNDIRP  : VECTEUR ASSEMBLE DES DIRICHLETS
-! OUT CNCHCI  : ????????
-! IN  VTEMP   : CHAMP DE LA TEMPERATURE A L'INSTANT PRECEDENT
+! Compute second members and tangent matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=6) :: nompro
-    parameter ( nompro = 'NXACMV' )
-    integer :: ibid, k, ierr, nbmat, lonch, loncm1, jmer, jmed, jmem, jtn, jtni
-    integer :: jnchtp, jndirp, jnchnl, jntntp, jntnti, j2nd, j2nd1, j2nd2, j2nd3
-    integer :: j2ni, j2ni1, j2ni2, j2ni3, iret, typcum, ifm, niv
-    character(len=1) :: typres
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  list_load        : name of datastructure for list of loads
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ibid, ierr, iret
+    integer :: jtn, i_vect
     character(len=2) :: codret
     real(kind=8) :: time_curr
-    character(len=8) :: k8bid, nomcmp(6)
-    character(len=16) :: k16bid, option, nomcmd
-    character(len=19) :: memass
-    character(len=24) :: ligrmo, merigi, mediri, tlimat(3), bidon
-    character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
-    character(len=24) :: vachtn, vtemp2
-    aster_logical :: llin
+    character(len=8), parameter :: nomcmp(6) = (/'INST    ','DELTAT  ',&
+                                                 'THETA   ','KHI     ',&
+                                                 'R       ','RHO     '/)
+    character(len=16) :: option
+    character(len=24) :: ligrmo
+    character(len=24) :: vadiri, vachtp, vatntp, vatnti, vachtn
+    character(len=24) :: merigi = '&&METRIG           .RELR'
+    character(len=24) :: memass = '&&METMAS           .RELR'
+    character(len=24) :: vediri = '&&VEDIRI           .RELR'
+    character(len=24) :: vechtp = '&&VECHTP           .RELR'
+    character(len=24) :: vetntp = '&&VETNTP           .RELR'
+    character(len=24) :: vetnti = '&&VETNTI           .RELR'
+    character(len=24) :: vechtn = '&&VECHTN           .RELR'
+    character(len=24) :: cntntp = ' '
+    character(len=24) :: cnchtp = ' '
+    character(len=24) :: cnchnl = ' '
+    character(len=24) :: cntnti = ' '
+
     character(len=24) :: lload_name, lload_info, lload_func
-!
-    data typres /'R'/
-    data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
-     &             'R       ','RHO     '/
-    data memass /'&&METMAS'/
-    data merigi /'&&METRIG           .RELR'/
-    data vediri /'&&VETDIR           .RELR'/
-    data vechtp /'&&VETCHA           .RELR'/
-    data vechtn /'&&VENCHA           .RELR'/
-    data vetnti,vetntp /'&&VETNTI           .RELR',&
-     &                    '&&VETNTH           .RELR'/
-    data cnchtp,cntntp,cntnti,cnchnl  /4*' '/
-    data bidon  /' '/
+    character(len=24), pointer :: v_resu_elem(:) => null()
+    integer, parameter :: nb_max = 9
+    integer :: nb_vect, nb_matr
+    real(kind=8) :: vect_coef(nb_max)
+    character(len=19) :: vect_name(nb_max), matr_name(nb_max)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infniv(ifm, niv)
 !
-!====
-! 1. PREALABLE
-!====
-! RECUPERATION DU NOM DE LA CMD
-    call getres(k8bid, k16bid, nomcmd)
-    vadirp = '&&'//nompro//'VATDIR'
-    vachtp = '&&'//nompro//'VATCHA'
-    vachtn = '&&'//nompro//'VANCHA'
-    creas = ' '
-    time_curr = tpsthe(1)
-    lload_name = list_load(1:19)//'.LCHA'
-    lload_info = list_load(1:19)//'.INFC'
-    lload_func = list_load(1:19)//'.FCHA'
+! - Initializations
 !
-! DETERMINATION DU TYPE DE CALCUL (LINEAIRE OU NON)
-    if (nomcmd(1:13) .eq. 'THER_LINEAIRE') then
-        llin = .true.
-    else
-        llin = .false.
-    endif
+    vect_coef(:) = 0.d0
+    vect_name(:) = ' '
+    matr_name(:) = ' '
+    ligrmo       = model(1:8)//'.MODELE'
+    vadiri       = '&&NTACMV.VADIRI'
+    vachtp       = '&&NTACMV.VACHTP'
+    vatntp       = '&&NTACMV.VATNTP'
+    vatnti       = '&&NTACMV.VATNTI'
+    vachtn       = '&&NTACMV.VACHTN'
+    time_curr    = tpsthe(1)
+    lload_name   = list_load(1:19)//'.LCHA'
+    lload_info   = list_load(1:19)//'.INFC'
+    lload_func   = list_load(1:19)//'.FCHA'
 !
-    if (niv .eq. 2) then
-        write(ifm,*)
-        write(ifm,*)'*******************************************'
-        write(ifm,*)' CALCUL DE SECOND MEMBRE THERMIQUE: NXACMV'
-        write(ifm,*)
-        write(ifm,*)' INST                 :',tpsthe(1)
-        write(ifm,*)' CALCUL LINEAIRE      :',llin
-        write(ifm,*)' REASVT/REASVC        :',reasvt,reasvc
-        write(ifm,*)' REASMT/REASRG/REASMS :',reasmt,reasrg,reasms
-        write(ifm,*)' VTEMP                :',vtemp
-        write(ifm,*)
-    endif
-! ======================================================================
-! 1.      VECTEURS (CHARGEMENTS) CONTRIBUANT AU SECOND MEMBRE
-!            REACTUALISES AU DEBUT DE CHAQUE PAS DE TEMPS
-! ======================================================================
+! - Construct command variables fields
 !
-!     VARIABLES DE COMMANDE
-    call vrcins(model, mate, cara_elem, tpsthe(1), varc_curr,&
+    call vrcins(model , mate, cara_elem, tpsthe(1), varc_curr,&
                 codret)
 !
-    if (reasvt) then
+! - Update <CARTE> for time
+!  
+    call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
+                ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
 !
-! 1.1. ==> (RE)ACTUALISATION DU CHAMP CONSTANT EN ESPACE : TIME
+! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
-        ligrmo = model(1:8)//'.MODELE'
-        call mecact('V', time, 'MODELE', ligrmo, 'INST_R',&
-                    ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
+    call vedith(model, list_load, time, vediri)
+    call asasve(vediri, nume_dof, 'R', vadiri)
+    call ascova('D', vadiri, lload_func, 'INST', tpsthe(1),&
+                'R', cndiri)
 !
-! 1.2. ==> TEMPERATURES IMPOSEES (DIRICHLET)                 ---& CNDIRP
-        call vedith(model, list_load, time, vediri)
-        call asasve(vediri, nume_dof, typres, vadirp)
-        call ascova('D', vadirp, lload_func, 'INST', tpsthe(1),&
-                    typres, cndirp)
-        call jeveuo(cndirp(1:19)//'.VALE', 'L', jndirp)
+! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
-! 1.3. ==> CHARGES CINEMATIQUES                              ---& CNCHCI
+    cncine = ' '
+    call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1),&
+                cncine)
 !
-        cnchci = ' '
-        call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1),&
-                    cnchci)
+! - Compute CHAR_THER_EVOLNI
 !
-! 1.4. ==> CONTRIBUTION DU CHAMP A L'INSTANT PRECEDENT       ---& CNTNTP
-! --- IDEM AVEC RHOCP ET NON ENTHALPIE                       ---& CNTNTI
-!
-        if (.not.lostat) then
-            if (llin) then
-! THERMIQUE LINEAIRE -------------------------------------
-                option = 'CHAR_THER_EVOL  '
-            else
-! THERMIQUE NON LINEAIRE -----------------------------------
-                option = 'CHAR_THER_EVOLNI'
-            endif
-!
-! CALCULS ELEMENTAIRES ET SOMMATION DANS LES VECT_ELEM VETNTP
-            call vetnth(option, model, cara_elem, mate, time,&
-                        vtemp, compor, dry_prev, dry_curr, vhydr,&
-                        vetntp, vetnti, varc_curr)
-!
-            call asasve(vetntp, nume_dof, typres, cntntp)
-            call jeveuo(cntntp, 'L', jtn)
-            call jeveuo(zk24(jtn)(1:19)//'.VALE', 'L', jntntp)
-!
-            if (.not.llin) then
-                call asasve(vetnti, nume_dof, typres, cntnti)
-                call jeveuo(cntnti, 'L', jtni)
-                call jeveuo(zk24(jtni)(1:19)//'.VALE', 'L', jntnti)
-            endif
-!
-        endif
-! FIN DU IF REASVT
+    if (.not.l_stat) then
+        option = 'CHAR_THER_EVOLNI'
+        call vetnth(option, model , cara_elem, mate    , time ,&
+                    vtemp , compor, dry_prev , dry_curr, vhydr,&
+                    vetntp, vetnti, varc_curr)
+        call asasve(vetntp, nume_dof, 'R', vatntp)
+        call jeveuo(vatntp, 'L', jtn)
+        cntntp = zk24(jtn)
+        call asasve(vetnti, nume_dof, 'R', vatnti)
+        call jeveuo(vatnti, 'L', jtn)
+        cntnti = zk24(jtn)
     endif
 !
-! ======================================================================
-! 2.      VECTEURS (CHARGEMENTS) CONTRIBUANT AU SECOND MEMBRE
-!        REACTUALISES AU DEBUT DE CHAQUE ITERATION DE COUPLAGE
-!                  ET SOMMATION DES SECONDS MEMBRES
-! ======================================================================
+! - Compute Neumann loads (second member) - Linear part
 !
-    if (reasvc) then
-!
-! ----- Neumann loads elementary vectors (second member)
-!
-        call vechth('STAT', model    , lload_name, lload_info, cara_elem,&
-                    mate  , time_curr, time      , vtemp     , vechtp,&
-                    varc_curr_ = varc_curr)
-!
-! ----- Neumann loads assembled vector (second member)
-!
-        call asasve(vechtp, nume_dof, typres, vachtp)
-        call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
-                    typres, cnchtp)
-        call jeveuo(cnchtp(1:19)//'.VALE', 'L', jnchtp)
-!
-! 2.2. ==> CHARGEMENTS THERMIQUES NON LINEAIRES EN TEMPERATURE -& CNCHNL
-        if (.not.llin) then
-            call vechnl(model, lload_name, lload_info, cara_elem, time,&
-                        vtemp, vechtn)
-            call asasve(vechtn, nume_dof, typres, vachtn)
-            call ascova('D', vachtn, bidon, 'INST', tpsthe(1),&
-                        typres, cnchnl)
-            call jeveuo(cnchnl(1:19)//'.VALE', 'L', jnchnl)
-        endif
-!
-        if (lostat) then
-            call jedetr(vechtp)
-            call jedetr(vechtn)
-        endif
-!
-! 2.3. ==> SECOND MEMBRE COMPLET
-!
-! 2.3.1. ==> RECHERCHE DU TYPE DE CUMUL
-!            ON DISTINGUE LE GROS PAS DE TEMPS NUMERO 0 ET LES SUIVANTS
-!
-        if (lostat) then
-!
-! 2.3.1.1. ==> THERMIQUE LINEAIRE AU GROS PAS DE TEMPS NUMERO 0
-!
-            if (llin) then
-!
-! CALCUL STATIONNAIRE:
-! ==> ON ASSEMBLE LES SECONDS MEMBRES DE DIRICHLET ET DE CHARGE
-                typcum = 2
-                j2nd1 = jnchtp
-                j2nd2 = jndirp
-!
-! 2.3.1.2. ==> THERMIQUE NON LINEAIRE AU GROS PAS DE TEMPS NUMERO 0
-            else
-! ==> ON ASSEMBLE LES SECONDS MEMBRES DE CHARGE LINEAIRE ET NON-LINEAIRE
-                typcum = 2
-                j2nd1 = jnchtp
-                j2nd2 = jnchnl
-            endif
-!
-        else
-!
-! 2.3.1.3. ==> THERMIQUE LINEAIRE AUX GROS PAS DE TEMPS SUIVANTS
-!
-            if (llin) then
-!
-! CALCUL TRANSITOIRE:
-! ==> ON ASSEMBLE LES SECONDS MEMBRES DE DIRICHLET, D'IMPLICITATION
-!     ET DE CHARGE
-                typcum = 3
-                j2nd1 = jnchtp
-                j2nd2 = jndirp
-                j2nd3 = jntntp
-!
-! 2.3.1.4. ==> THERMIQUE NON LINEAIRE AUX GROS PAS DE TEMPS SUIVANTS
-!
-            else
-! CALCUL TRANSITOIRE
-!  ==> ON ASSEMBLE LES SECONDS MEMBRES DE CHARGE LINEAIRE, NON-LINEAIRE
-!      ET D'IMPLICITATION (EN RHO_CP DANS J2NI POUR PRE-ITERATION DE
-!      PREDICTION ET EN BETA DANS J2ND POUR ITERATIONS DE NEWTON)
-                typcum = 33
-                j2nd1 = jnchtp
-                j2nd2 = jnchnl
-                j2nd3 = jntntp
-                j2ni1 = jnchtp
-                j2ni2 = jnchnl
-                j2ni3 = jntnti
-            endif
-! FIN IF LOSTAT
-        endif
-!
-! --- SECOND MEMBRE COMPLET                                  ---& VEC2ND
-! --- SECOND MEMBRE COMPLET                                  ---& VEC2NI
-!
-! 2.3.2. ==> ADRESSES ET LONGUEURS DU/DES SECOND(S) MEMBRE(S)
-!
-        call jeveuo(vec2nd(1:19)//'.VALE', 'E', j2nd)
-        if (.not.llin) call jeveuo(vec2ni(1:19)//'.VALE', 'E', j2ni)
-        call jelira(vec2nd(1:19)//'.VALE', 'LONMAX', lonch)
-        loncm1 = lonch - 1
-!
-! 2.3.3. ==> CUMUL DES DIFFERENTS TERMES
-!
-        if (typcum .eq. 2) then
-            do k = 0, loncm1
-                zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k)
-            end do
-        else if (typcum.eq.3) then
-            do k = 0, loncm1
-                zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k) + zr(j2nd3+k)
-            end do
-        else if (typcum.eq.33) then
-            do k = 0, loncm1
-                zr(j2nd+k) = zr(j2nd1+k) + zr(j2nd2+k) + zr(j2nd3+k)
-                zr(j2ni+k) = zr(j2ni1+k) + zr(j2ni2+k) + zr(j2ni3+k)
-            end do
-        else
-            ASSERT(.false.)
-        endif
-! FIN IF REASVC
+    call vechth('STAT', model    , lload_name, lload_info, cara_elem,&
+                mate  , time_curr, time      , vtemp     , vechtp,&
+                varc_curr_ = varc_curr)
+    call asasve(vechtp, nume_dof, 'R', vachtp)
+    call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
+                'R', cnchtp)
+    if (l_stat) then
+        call jedetr(vechtp)
     endif
 !
-! ======================================================================
-! 3.            MATRICE ASSEMBLEE
-! ======================================================================
+! - Compute Neumann loads (second member) - Nonlinear part
 !
-    if (reasmt .or. reasrg .or. reasms) then
-!
-! 3.1. ==> (RE)CALCUL DES MATRICES ELEMENTAIRES
-!
-! 3.1.1. ==> (RE)CALCUL DE LA MATRICE TANGENTE EN NON-LINEAIRE
-!
-        if (.not.llin) then
-!
-            creas = 'M'
-            vtemp2 = vtemp
-!
-! -------- Tangent matrix (non-linear) - Volumic and surfacic terms
-!
-            call merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
-                        time_curr, time      , vtemp2    , compor   , varc_curr,&
-                        dry_prev , dry_curr  , merigi)
-!
-! 3.1.2. ==> (RE)CALCUL DES MATRICES DE MASSE ET DE RIGIDITE EN LINEAIRE
-!
-        else
-!
-            if (reasms) then
-                call memsth(model    , cara_elem, mate, time, memass, 'V',&
-                            varc_curr)
-            endif
-!
-            if (reasrg) then
-                call mergth(model    , lload_name, lload_info, cara_elem, mate,&
-                            time_curr, time      , varc_curr , merigi)
-            endif
-!
-        endif
-!
-! 3.2. ==> ASSEMBLAGE DE LA MATRICE
-!
-        nbmat = 0
-!
-        call jeexin(merigi, iret)
-        if (iret .gt. 0) then
-            call jeveuo(merigi, 'L', jmer)
-            if (zk24(jmer)(1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) = merigi
-            endif
-        endif
-!
-        call jeexin(mediri, iret)
-        if (iret .gt. 0) then
-            call jeveuo(mediri, 'L', jmed)
-            if (zk24(jmed)(1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) = mediri
-            endif
-        endif
-!
-        call jeexin(memass//'.RELR', iret)
-        if (iret .gt. 0) then
-            call jeveuo(memass//'.RELR', 'L', jmem)
-            if (zk24(jmem) (1:8) .ne. '        ') then
-                nbmat = nbmat + 1
-                tlimat(nbmat) = memass//'.RELR'
-            endif
-        endif
-!
-        call asmatr(nbmat, tlimat, ' ', nume_dof, &
-                    lload_info, 'ZERO', 'V', 1, matass)
-!
-! 3.3. ==> DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
-!
-        call preres(solver, 'V', ierr, maprec, matass,&
-                    ibid, -9999)
-!
+    call vechnl(model, lload_name, lload_info, cara_elem, time,&
+                vtemp, vechtn)
+    call asasve(vechtn, nume_dof, 'R', vachtn)
+    call ascova('D', vachtn, ' ', 'INST', tpsthe(1),&
+                'R', cnchnl)
+    if (l_stat) then
+        call jedetr(vechtn)
     endif
 !
-!-----------------------------------------------------------------------
+! - Compute second members
+!
+    call vtzero(cn2mbr_stat)
+    call vtzero(cn2mbr_tran)
+    if (l_stat) then
+        nb_vect      = 2
+        vect_coef(1) = 1.d0
+        vect_coef(2) = 1.d0
+        vect_name(1) = cnchtp(1:19)
+        vect_name(2) = cnchnl(1:19)
+        do i_vect = 1, nb_vect
+            call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_stat)
+        end do
+    else
+        nb_vect      = 3
+        vect_coef(1) = 1.d0
+        vect_coef(2) = 1.d0
+        vect_coef(3) = 1.d0
+        vect_name(1) = cnchtp(1:19)
+        vect_name(2) = cnchnl(1:19)
+        vect_name(3) = cntntp(1:19)
+        do i_vect = 1, nb_vect
+            call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_stat)
+        end do
+        vect_name(1) = cnchtp(1:19)
+        vect_name(2) = cnchnl(1:19)
+        vect_name(3) = cntnti(1:19)
+        do i_vect = 1, nb_vect
+            call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_tran)
+        end do
+    endif
+!
+! - Tangent matrix (non-linear) - Volumic and surfacic terms
+!
+    call merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
+                time_curr, time      , vtemp     , compor   , varc_curr,&
+                dry_prev , dry_curr  , merigi)
+    nb_matr = 0
+    call jeexin(merigi(1:8)//'           .RELR', iret)
+    if (iret .gt. 0) then
+        call jeveuo(merigi(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        if (v_resu_elem(1) .ne. ' ') then
+            nb_matr = nb_matr + 1
+            matr_name(nb_matr) = merigi(1:19)
+        endif
+    endif
+    call jeexin(mediri(1:8)//'           .RELR', iret)
+    if (iret .gt. 0) then
+        call jeveuo(mediri(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        if (v_resu_elem(1) .ne. ' ') then
+            nb_matr = nb_matr + 1
+            matr_name(nb_matr) = mediri(1:19)
+        endif
+    endif
+    call jeexin(memass(1:8)//'           .RELR', iret)
+    if (iret .gt. 0) then
+        call jeveuo(memass(1:8)//'           .RELR', 'L', vk24 = v_resu_elem)
+        if (v_resu_elem(1) .ne. ' ') then
+            nb_matr = nb_matr + 1
+            matr_name(nb_matr) = memass(1:19)
+        endif
+    endif
+    call asmatr(nb_matr, matr_name, ' ', nume_dof, &
+                lload_info, 'ZERO', 'V', 1, matass)
+!
+! - Factorization of matrix
+!
+    call preres(solver, 'V', ierr, maprec, matass,&
+                ibid, -9999)
+!
     call jedema()
 end subroutine

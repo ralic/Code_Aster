@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,12 +20,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
-                      solver, lostat, time     , tpsthe   , reasvc  ,&
-                      reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                      vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
-                      vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
-                      cnchci, mediri, compor)
+    subroutine nxacmv(model      , mate     , cara_elem, list_load, nume_dof   ,&
+                      solver     , l_stat   , time     , tpsthe   , vtemp      ,&
+                      vhydr      , varc_curr, dry_prev , dry_curr , cn2mbr_stat,&
+                      cn2mbr_tran, matass   , maprec   , cndiri   , cncine     ,&
+                      mediri     , compor)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -34,25 +33,19 @@ interface
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: time
         character(len=19), intent(in) :: varc_curr
-        aster_logical :: lostat
-        real(kind=8) :: tpsthe(6)
-        aster_logical :: reasvc
-        aster_logical :: reasvt
-        aster_logical :: reasmt
-        aster_logical :: reasrg
-        aster_logical :: reasms
-        character(len=1) :: creas
-        character(len=24) :: vtemp
-        character(len=24) :: vhydr
-        character(len=24) :: dry_prev
-        character(len=24) :: dry_curr
-        character(len=24) :: vec2nd
-        character(len=24) :: vec2ni
-        character(len=24) :: matass
-        character(len=19) :: maprec
-        character(len=24) :: cndirp
-        character(len=24) :: cnchci
-        character(len=24) :: mediri
-        character(len=24) :: compor
+        aster_logical, intent(in) :: l_stat
+        real(kind=8), intent(in) :: tpsthe(6)
+        character(len=24), intent(in) :: vtemp
+        character(len=24), intent(in) :: vhydr
+        character(len=24), intent(in) :: dry_prev
+        character(len=24), intent(in) :: dry_curr
+        character(len=24), intent(in) :: cn2mbr_stat
+        character(len=24), intent(in) :: cn2mbr_tran
+        character(len=24), intent(in) :: matass
+        character(len=19), intent(in) :: maprec
+        character(len=24), intent(in) :: cndiri
+        character(len=24), intent(out) :: cncine
+        character(len=24), intent(in) :: mediri
+        character(len=24), intent(in) :: compor
     end subroutine nxacmv
 end interface
