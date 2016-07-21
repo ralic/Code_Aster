@@ -88,7 +88,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: list_pair(nb_elem_mast)
+    integer :: list_pair(nb_elem_mast), nbpatch_t
     integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
     integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
     character(len=8) :: elem_mast_code, elem_slav_code
@@ -97,17 +97,16 @@ implicit none
     integer :: nb_pair, nb_poin_inte
     integer :: i_mast_neigh, i_elin_mast, i_elin_slav, i_slav_start, i_mast_start, i_find_mast
     integer :: i_node, i_dime, i_slav_neigh, i_neigh
-    integer :: patch_indx, patch_nume, patch_jdec
+    integer :: patch_indx
     real(kind=8) :: total_weight, inte_weight, gap_moy, elem_slav_weight
-    real(kind=8) :: patch_weight_c(nb_elem_slav), patch_weight_t(nb_elem_slav)
     real(kind=8) :: poin_inte(32)
     integer :: elin_mast_nbsub, elin_mast_sub(8,4), elin_mast_nbnode(8)
     integer :: elin_slav_nbsub, elin_slav_sub(8,9), elin_slav_nbnode(8)
     real(kind=8) :: elin_mast_coor(27), elin_slav_coor(27)
-    character(len=8) :: elin_mast_code, elin_slav_code
+    character(len=8) :: elin_mast_code, elin_slav_code, elem_slav_name, elem_mast_name, elem_name
     integer :: nb_slav_start, nb_find_mast, nb_mast_start
     integer :: list_find_mast(nb_elem_mast)
-    integer :: elem_start, elem_slav_start(nb_elem_slav), elem_mast_start(nb_elem_slav)
+    integer :: elem_start, elem_slav_start(nb_elem_slav), elem_mast_start(nb_elem_slav), elem_nume
     integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
     integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
     aster_logical :: l_recup, debug, l_not_memory
@@ -122,12 +121,13 @@ implicit none
     integer :: nb_mast_neigh, nb_slav_neigh
     integer :: inte_neigh(4), inte_neigh_aux(4)
     integer :: jv_geom, elem_type_nume
-    real(kind=8) :: list_slav_weight(4), weight_test
+    real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
     character(len=24) :: sdappa_gapi, sdappa_coef
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
+    real(kind=8), pointer :: patch_weight_t(:) => null()
+    real(kind=8), pointer :: patch_weight_c(:) => null()
     integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_patch(:) => null()
     integer, pointer :: v_mesh_typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -140,8 +140,10 @@ implicit none
     inte_neigh(1:4)                = 0
     list_slav_master(1:4)          = 0
     list_slav_weight(1:4)          = 0.d0
-    patch_weight_c(1:nb_elem_slav) = 0.d0
-    patch_weight_t(1:nb_elem_slav) = 0.d0
+    call jelira(mesh//'.PATCH','NUTIOC', nbpatch_t)
+    nbpatch_t= nbpatch_t-1
+    AS_ALLOCATE(vr=patch_weight_c, size= nbpatch_t)
+    AS_ALLOCATE(vr=patch_weight_t, size= nbpatch_t)
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
     mast_indx_mini = minval(list_elem_mast)
@@ -161,18 +163,13 @@ implicit none
 ! - Access to mesh
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
-    call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_patch)
     call jeveuo(mesh//'.COMAPA','L', vi = v_mesh_comapa)
-    patch_jdec = v_mesh_patch(2*(i_zone-1)+1)-1
 !
 ! - Objects for flags
 !
     AS_ALLOCATE(vi=elem_slav_flag, size= slav_indx_maxi+1-slav_indx_mini)
     AS_ALLOCATE(vi=mast_find_flag, size= mast_indx_maxi+1-mast_indx_mini)
     AS_ALLOCATE(vi=elem_mast_flag, size= mast_indx_maxi+1-mast_indx_mini)
-    elem_slav_flag(1:slav_indx_maxi+1-slav_indx_mini) = 0
-    mast_find_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0
-    elem_mast_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0
     list_find_mast(1:nb_elem_mast) = 0
 !
 ! - Object for neighbours (inverse connectivity)
@@ -206,24 +203,31 @@ implicit none
         elem_slav_indx = elem_slav_nume +1 - slav_indx_mini
         elem_type_nume = v_mesh_typmail(elem_slav_nume)
         call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
+        call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
 !
 ! ----- Shift list of slave element start
 !
-        do i_slav_start = 1, nb_slav_start-1
+        do i_slav_start = 1, nb_slav_start - 1
             elem_slav_start(i_slav_start) = elem_slav_start(i_slav_start+1)
         end do
-        nb_slav_start = nb_slav_start-1
+        nb_slav_start = nb_slav_start - 1
 !
 ! ----- Get current patch
 !
         patch_indx = v_mesh_comapa(elem_slav_nume)
-        patch_nume = patch_indx+1-patch_jdec
+        if (debug) then
+            write(*,*) "Current patch: ", patch_indx
+        endif
 !
 ! ----- Get informations about slave element
 !
         call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
                     elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
                     elem_slav_code, elem_slav_dime)
+        if (debug) then 
+            write(*,*) "Current slave element: ", elem_slav_nume, elem_slav_name,&
+                       '(type : ', elem_slav_code, ')' 
+        endif
 !
 ! ----- Cut element in linearized sub-elements
 !
@@ -233,10 +237,14 @@ implicit none
 !
         call clpoma(elem_slav_dime  , elem_slav_code, elem_slav_coor, elem_slav_nbnode,&
                     elem_slav_weight)
+        if (debug) then
+            write(*,*) "Current slave element is cut: ", elin_slav_nbsub,&
+                       "- Weight: ", elem_slav_weight
+        endif
 !
 ! ----- Total weight for patch
 !                    
-        patch_weight_t(patch_nume) = patch_weight_t(patch_nume) + elem_slav_weight
+        patch_weight_t(patch_indx) = patch_weight_t(patch_indx) + elem_slav_weight
 !
 ! ----- Number of neighbours
 !
@@ -256,6 +264,17 @@ implicit none
 ! ----- Access to neighbours
 !
         call jeveuo(jexnum(sdappa_slne, elem_slav_indx), 'L', vi = v_sdappa_slne)
+        if (debug) then
+            do i_slav_neigh = 1, nb_slav_neigh
+                elem_nume = v_sdappa_slne(i_slav_neigh)
+                if (elem_nume .ne. 0) then
+                    call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+                else
+                    elem_name = 'None'
+                endif
+                write(*,*) "Current slave element neighbours: ", elem_name
+            end do
+        endif
         list_slav_master(1:nb_slav_neigh) = 0 
         list_slav_weight(1:4)             = 0.d0   
 !
@@ -297,12 +316,28 @@ implicit none
             elem_mast_indx = elem_mast_nume+1-mast_indx_mini
             elem_type_nume = v_mesh_typmail(elem_mast_nume)
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
+            if (debug) then 
+                write(*,*) "Current master element: ", elem_mast_nume, elem_mast_name,&
+                           '(type : ', elem_mast_type, ')' 
+            endif
 !
 ! --------- Access to neighbours
 !        
             call jeveuo(jexnum(sdappa_mane, elem_mast_indx), 'L', vi = v_sdappa_mane)
+            if (debug) then
+                do i_mast_neigh = 1, 4
+                    elem_nume = v_sdappa_mane(i_mast_neigh)
+                    if (elem_nume .ne. 0) then
+                        call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
+                    else
+                        elem_name = 'None'
+                    endif
+                    write(*,*) "Current master element neighbours: ", elem_name
+                end do
+            endif
 !
-! --------- Shift list of master elements
+! --------- Shift list of master elements (on supprime de la liste)
 !
             do i_find_mast = 1, nb_find_mast-1
                 list_find_mast(i_find_mast) = list_find_mast(i_find_mast+1)
@@ -318,13 +353,16 @@ implicit none
 ! --------- Cut master element in linearized sub-elements
 !
             call apdcma(elem_mast_code, elin_mast_sub, elin_mast_nbnode, elin_mast_nbsub)
+            if (debug) then
+                write(*,*) "Current slave element is cut: ", elin_mast_nbsub
+            endif
 !
 ! --------- Loop on linearized slave sub-elements
 !
-            inte_neigh(1:nb_slav_neigh) = 0
+            inte_neigh(1:4) = 0
             do i_elin_slav = 1, elin_slav_nbsub
 !
-                inte_neigh_aux(1:nb_slav_neigh) = 0
+                inte_neigh_aux(1:4) = 0
 !
 ! ------------- Code for current linearized slave sub-element
 !
@@ -352,12 +390,13 @@ implicit none
 !
 ! ------------- Coordinates for current linearized slave sub-element
 !
+                elin_slav_coor(:) = 0.d0
                 do i_node = 1, elin_slav_nbnode(i_elin_slav)
                     do i_dime = 1, elem_slav_dime
                         elin_slav_coor(3*(i_node-1)+i_dime) =&
                             elem_slav_coor(3*(elin_slav_sub(i_elin_slav,i_node)-1)+i_dime)
                     end do
-                end do           
+                end do
 !
 ! ------------- Loop on linearized master sub-elements
 !
@@ -377,8 +416,9 @@ implicit none
 !
 ! ----------------- Get coordinates for current linearized master sub-element
 !
+                    elin_mast_coor(:) = 0.d0
                     do i_node = 1, elin_mast_nbnode(i_elin_mast)
-                        do i_dime=1,elem_slav_dime
+                        do i_dime = 1,elem_slav_dime
                              elin_mast_coor(3*(i_node-1)+i_dime) = &
                                 elem_mast_coor(3*(elin_mast_sub(i_elin_mast,i_node)-1)+i_dime)
                         end do
@@ -391,6 +431,13 @@ implicit none
                                 elin_mast_coor, elin_mast_nbnode(i_elin_mast), elin_mast_code,&
                                 poin_inte     , inte_weight                  , nb_poin_inte  ,&
                                 inte_neigh_ = inte_neigh_aux)
+                    if (debug) then
+                        write(*,*) "Intersection - Master: ", elem_mast_name, i_elin_mast
+                        write(*,*) "Intersection - Slave : ", elem_slav_name, i_elin_slav
+                        write(*,*) "Intersection - Poids : ", inte_weight
+                        write(*,*) "Intersection - Nb    : ", nb_poin_inte
+                        write(*,*) "Intersection - Points: ", poin_inte
+                    endif
 !
 ! ----------------- Non-void intersection  
 !            
@@ -400,30 +447,32 @@ implicit none
 !
                         if (elin_slav_code .ne. elem_slav_code .and.&
                             elem_slav_code .eq. 'QU4' ) then
-                            if (i_elin_slav.eq.1) then
+                            if (i_elin_slav .eq. 1) then
                                 inte_neigh(1) = inte_neigh_aux(1)
                                 inte_neigh(2) = inte_neigh_aux(2)
-                            elseif (i_elin_slav.eq.2) then 
+                            elseif (i_elin_slav .eq. 2) then 
                                 inte_neigh(3) = inte_neigh_aux(1)
                                 inte_neigh(4) = inte_neigh_aux(2)
+                            else 
+                                ASSERT(.false.)
                             end if
                         elseif (elin_slav_code .ne. elem_slav_code .and.&
                                 elem_slav_code .eq. 'QU8') then
-                            if (i_elin_slav.eq.1) then
+                            if (i_elin_slav .eq. 1) then
                                 inte_neigh(1) = inte_neigh_aux(2)
                                 inte_neigh(4) = inte_neigh_aux(3)
-                            elseif (i_elin_slav.eq.2) then 
+                            elseif (i_elin_slav .eq. 2) then 
                                 inte_neigh(1) = inte_neigh_aux(1)
                                 inte_neigh(2) = inte_neigh_aux(2)
-                            elseif (i_elin_slav.eq.3) then 
+                            elseif (i_elin_slav .eq. 3) then 
                                 inte_neigh(2) = inte_neigh_aux(1)
                                 inte_neigh(3) = inte_neigh_aux(2)
-                            elseif (i_elin_slav.eq.4) then 
+                            elseif (i_elin_slav .eq. 4) then 
                                 inte_neigh(3) = inte_neigh_aux(1)
                                 inte_neigh(4) = inte_neigh_aux(2)
                             end if
                         else
-                            do i_neigh=1,nb_slav_neigh
+                            do i_neigh = 1,nb_slav_neigh
                                 if (inte_neigh_aux(i_neigh).ne.0) then
                                     inte_neigh(i_neigh) = inte_neigh_aux(i_neigh)
                                 endif
@@ -440,15 +489,15 @@ implicit none
 ! --------------------- Compute mean square gap and weight of intersection
 !
                         call gapint(pair_tole     , elem_slav_dime,&
-                                    elem_slav_code, elin_slav_nbnode(i_elin_slav), elem_slav_coor,&
-                                    elem_mast_code, elin_mast_nbnode(i_elin_mast), elem_mast_coor,&
+                                    elem_slav_code, elem_slav_nbnode, elem_slav_coor,&
+                                    elem_mast_code, elem_mast_nbnode, elem_mast_coor,&
                                     nb_poin_inte  , poin_inte                    , &
                                     gap_moy       , inte_weight                  )
 !
 ! --------------------- Save values
 !
-                        v_sdappa_gapi(patch_indx)  = v_sdappa_gapi(patch_indx)+gap_moy
-                        patch_weight_c(patch_nume) = patch_weight_c(patch_nume)+inte_weight
+                        v_sdappa_gapi(patch_indx)  = v_sdappa_gapi(patch_indx)-gap_moy
+                        patch_weight_c(patch_indx) = patch_weight_c(patch_indx)+inte_weight
                     end if
                 end do
             end do
@@ -458,6 +507,7 @@ implicit none
             if (total_weight .gt. pair_tole) then
                 nb_pair                        = nb_pair+1
                 list_pair(nb_pair)             = elem_mast_nume
+                elem_mast_flag(elem_mast_indx) = 1
             end if
 !
 ! --------- Find neighbour of current master element
@@ -468,11 +518,14 @@ implicit none
 !
                 if (elem_mast_code .eq. 'SE2' .or. elem_mast_code .eq. 'SE3') then
                     nb_mast_neigh = 2
+                    tole_weight   = 0.2
                 elseif (elem_mast_code .eq. 'TR3' .or. elem_mast_code .eq. 'TR6') then
                     nb_mast_neigh = 3
+                    tole_weight   = 0.05
                 elseif (elem_mast_code .eq. 'QU4' .or. elem_mast_code .eq. 'QU8' .or.&
                         elem_mast_code .eq. 'QU9') then
                     nb_mast_neigh = 4
+                    tole_weight   = 0.1
                 else
                     ASSERT(.false.)
                 endif
@@ -496,16 +549,18 @@ implicit none
                     elem_slav_neigh = v_sdappa_slne(i_slav_neigh) 
                     elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
                     if ( elem_slav_neigh .ne. 0 .and.&
-                         inte_neigh(i_slav_neigh) .eq. 1 .and.&
-                         elem_slav_flag(elem_neigh_indx) .eq. 0) then
+                         inte_neigh(i_slav_neigh) .eq. 1 &
+                        .and.elem_slav_flag(elem_neigh_indx) .eq. 0 &
+                        .and. list_slav_weight(i_slav_neigh) .lt. tole_weight ) then
                         weight_test=0.d0
-                        call testvois(mesh          , jv_geom       , elem_slav_type,&
-                                      elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                                      pair_tole     , weight_test)
-                        if (weight_test .gt. list_slav_weight(i_slav_neigh)) then
+                        !call testvois(mesh          , jv_geom       , elem_slav_type,&
+                        !              elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                        !              pair_tole     , weight_test)
+                        !if (weight_test .gt. list_slav_weight(i_slav_neigh).and.&
+                        !    weight_test .gt. pair_tole) then
                             list_slav_master(i_slav_neigh) = elem_mast_nume
                             list_slav_weight(i_slav_neigh) = weight_test
-                        end if    
+                        !end if
                     end if
                 end do
                 l_recup = .false.
@@ -518,18 +573,24 @@ implicit none
             call apsave_pair(i_zone      , elem_slav_nume,&
                              nb_pair     , list_pair     ,&
                              nb_pair_zone, list_pair_zone)
-            elem_slav_flag(elem_slav_nume+1-slav_indx_mini) = 0
         end if
 !
 ! ----- Next elements
 !
+        if (debug) then 
+            write(*,*)'Next elements - Nb: ',nb_slav_neigh
+        endif
         do i_slav_neigh = 1, nb_slav_neigh
             elem_slav_neigh = v_sdappa_slne(i_slav_neigh)
             elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
-            if (elem_mast_neigh .ne. 0  .and.&
+            if (debug) then 
+                write(*,*)'Next elements - Current: ',i_slav_neigh,elem_slav_neigh,&
+                   list_slav_master(i_slav_neigh), elem_slav_flag(elem_neigh_indx)
+            end if  
+            if (elem_slav_neigh .ne. 0  .and.&
                 list_slav_master(i_slav_neigh).ne. 0 .and.&
                 elem_slav_flag(elem_neigh_indx) .eq. 0 ) then
-                elem_slav_start(nb_slav_start+1) = elem_mast_neigh
+                elem_slav_start(nb_slav_start+1) = elem_slav_neigh
                 nb_slav_start                    = nb_slav_start+1
                 elem_slav_flag(elem_neigh_indx)  = 1
                 elem_mast_start(nb_mast_start+1) = list_slav_master(i_slav_neigh)
@@ -539,8 +600,13 @@ implicit none
         mast_find_flag(1:mast_indx_maxi+1-mast_indx_mini) = 0
     end do
     if (debug) then 
-        write(*,*)'Fin appariement PANG ROBUSTE'
+        write(*,*)'Fin boucle appariement PANG'
+        write(*,*)'maille contact trouvee',nb_pair_zone
     end if
+110 continue
+    if (debug) then 
+        write(*,*)'Fin appariement PANG RAPIDE'
+    end if 
 !
 ! - Save values for patch
 !
@@ -550,5 +616,7 @@ implicit none
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
     AS_DEALLOCATE(vi=elem_mast_flag)
+    AS_DEALLOCATE(vr=patch_weight_t)
+    AS_DEALLOCATE(vr=patch_weight_c)
     call jedema() 
 end subroutine

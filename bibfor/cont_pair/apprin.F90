@@ -120,9 +120,8 @@ implicit none
         elem_slav_nume = list_elem_slav(i_elem_slav)
         elem_slav_indx = elem_slav_nume + 1 - slav_indx_mini
         elem_type_nume = v_mesh_typmail(elem_slav_nume)
-        call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
-        call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
         if (debug) then
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_nume), elem_slav_name)
             write(*,*) "Slave element", i_elem_slav, elem_slav_nume, elem_slav_name
         end if
 !
@@ -135,6 +134,7 @@ implicit none
 !
 ! --------- Get informations about slave element
 !
+            call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
             call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
                         elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
                         elem_slav_code, elem_slav_dime)
@@ -155,9 +155,8 @@ implicit none
                 elem_mast_nume = list_elem_mast(i_elem_mast)
                 elem_mast_indx = elem_mast_nume + 1 - mast_indx_mini
                 elem_type_nume = v_mesh_typmail(elem_mast_nume)
-                call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
-                call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
                 if (debug) then
+                    call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), elem_mast_name)
                     write(*,*) "Master element", i_elem_mast, elem_mast_nume, elem_mast_name
                 end if
 !
@@ -170,6 +169,7 @@ implicit none
 !
 ! ----------------- Get informations about master element
 !
+                    call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
                     call apcoor(mesh          , jv_geom       , elem_mast_type  ,&
                                 elem_mast_nume, elem_mast_coor, elem_mast_nbnode,&
                                 elem_mast_code, elem_mast_dime)
