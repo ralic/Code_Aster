@@ -4,7 +4,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
                   c1, c2, c3, k3a, alpha, coef, rho,&
                   puls, g)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +38,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     real(kind=8) :: divv, divu, ttt1u, ttt1v, tini1, tini2, tini3
     real(kind=8) :: somm1u, somm2u, somm1v, somm2v, prod,siginv(3,3)
     real(kind=8) :: s2th1u, s2th2u, s2th3u, s2th1v, s2th2v, s2th3v
-    real(kind=8) :: s1th, s2th, tther, tfor, tdyn
+    real(kind=8) :: s1th, s2th, tther, tfor, tdyn, r8tmp33(3,3)
     integer :: i, j, k, p, l, m
 !
     divt = dtdm(1,1) + dtdm(2,2) + dtdm(3,3)
@@ -303,7 +303,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
 
 !si coef =2, on calcule G
 !si coef = 1, on calcule K
-    tini1 =0
+    tini1 =0.d0
     do 601 j=1,6
        do 602 i=1,3
           temp1(j)=temp1(j)+dsigin(j,i)*dtdm(i,4)
@@ -327,31 +327,23 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     tini1=tini1*poids
 !
 !   TINI2 : TERME DU A LA MODIFICATION DE LA CONTRAINTE SIGIN: GRAD(U).GRAD(THETA)
-    tini2 =0
-! ce terme ne s'exprime pas en notation de Voigt, on doit le calculer terme a terme (trop cool)
+    tini2 =0.d0
     if (coef.gt.1.9) then
-!        temp2(1)=dudm(1,1)*dtdm(1,1)+dudm(1,2)*dtdm(2,1)+dudm(1,3)*dtdm(3,1)
-!        temp2(2)=dudm(2,1)*dtdm(1,2)+dudm(2,2)*dtdm(2,2)+dudm(2,3)*dtdm(3,2)
-!        temp2(3)=dudm(3,1)*dtdm(1,3)+dudm(3,2)*dtdm(2,3)+dudm(3,3)*dtdm(3,3)
-
-!        temp2(4)=(dudm(1,1)*dtdm(1,2)+dudm(1,2)*dtdm(2,2)+dudm(1,3)*dtdm(3,2)+&
-!        dudm(2,1)*dtdm(1,1)+dudm(2,2)*dtdm(2,1)+dudm(2,3)*dtdm(3,1))/rac2
-
-
-!        temp2(5)=(dudm(1,1)*dtdm(1,3)+dudm(1,2)*dtdm(2,3)+dudm(1,3)*dtdm(3,3)+&
-!        dudm(3,1)*dtdm(1,1)+dudm(3,2)*dtdm(2,1)+dudm(3,3)*dtdm(3,1))/rac2
-       
-!        temp2(6)=(dudm(2,1)*dtdm(1,3)+dudm(2,2)*dtdm(2,3)+dudm(2,3)*dtdm(3,3)+&
-!        dudm(3,1)*dtdm(1,2)+dudm(3,2)*dtdm(2,2)+dudm(3,3)*dtdm(3,2))/rac2 
-        do 551 i = 1, 3
-            do 540 j = 1, 3
-                do 530 k = 1, 3
-                    do 520 m = 1, 3
-                        tini2 = tini2 + siginv(j,k)*dudm(i,m)*dtdm(m, k)
-520                  continue
-530              continue
-540          continue
-551      continue        
+!       calcul de GRAD(U).GRAD(THETA)
+        do i = 1, 3
+            do j = 1, 3
+                r8tmp33(i,j) = 0.d0
+                do k = 1, 3
+                    r8tmp33(i,j) = r8tmp33(i,j) + dudm(i,k)*dtdm(k,j)
+                enddo
+            enddo
+        enddo
+!       calcul du produit doublement contracte
+        do i = 1, 3
+            do j = 1, 3
+                tini2 = tini2 + siginv(i,j)*r8tmp33(j,i)
+            enddo
+        enddo
     else if (coef.lt.1.1) then
         temp2(1)=0.5d0*(dvdm(1,1)*dtdm(1,1)+dvdm(1,2)*dtdm(2,1)+dvdm(1,3)*dtdm(3,1))
         temp2(2)=0.5d0*(dvdm(2,1)*dtdm(1,2)+dvdm(2,2)*dtdm(2,2)+dvdm(2,3)*dtdm(3,2))
@@ -386,7 +378,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm,&
     tini2=tini2*poids
 !
 !   TINI3:TERME DU A LA MODIFICATION DE L'ENERGIE LIBRE:-1/2*(2*(EPS-EPSTH)-EPSREF):SIGIN divTheta
-    tini3 =0
+    tini3 =0.d0
     if (coef.gt.1.9) then
        do 505 i=1,3
              tini3=tini3-(epsu(i)-epsthe-0.5d0*epsref(i))*sigin(i)*divt
