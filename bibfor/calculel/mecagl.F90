@@ -42,6 +42,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/xelgano.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -110,7 +111,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     parameter (nbmxpa = 20)
 !
     integer :: i, ibid, iadrg, iret, jresu, nchin
-    integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga
+    integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga, pbtype
     integer :: ndeg, livi(nbmxpa), numfon
     integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
@@ -118,7 +119,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     aster_logical :: fonc, lxfem
     character(len=2) :: codret
     character(len=8) :: resu, fiss
-    character(len=8) :: lpain(31), lpaout(1)
+    character(len=8) :: lpain(50), lpaout(1)
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref
@@ -126,8 +127,8 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=19) :: pmilto, hea_no
     character(len=19) :: longco, pinter, ainter, cface, baseco
     character(len=24) :: ligrmo, chgeom, chgthi
-    character(len=24) :: chsigi, sigout, celmod
-    character(len=24) :: lchin(40), lchout(1), chthet, chtime
+    character(len=24) :: chsigi, sigelno, sigseno, celmod
+    character(len=24) :: lchin(50), lchout(1), chthet, chtime
     character(len=24) :: objcur, normff, pavolu, papres, pa2d3d
     character(len=24) :: chsig, chepsp, chvari, type, pepsin, livk(nbmxpa)
     real(kind=8), pointer :: valg_s(:) => null()
@@ -137,15 +138,19 @@ subroutine mecagl(option, result, modele, depla, thetai,&
 !
     call infniv(ifm, niv)
 !
-    chvarc = '&&MECAGL.VARC'
-    chvref = '&&MECAGL.VARC.REF'
-    chsigi = '&&MECALG.CHSIGI'
-    celmod = '&&MECALG.CELMOD'
-    sigout = '&&MECALG.SIGOUT'
+    chvarc  = '&&MECAGL.VARC'
+    chvref  = '&&MECAGL.VARC.REF'
+    chsigi  = '&&MECALG.CHSIGI'
+    celmod  = '&&MECALG.CELMOD'
+    sigelno = '&&MECALG.SIGELNO'
+    sigseno = '&&MECALG.SIGSENO'
 !- RECUPERATION DU CHAMP GEOMETRIQUE
 !
     call megeom(modele, chgeom)
 !
+!   Recuperation du LIGREL
+    ligrmo = modele//'.MODELE'
+
     call getvid('THETA', 'FISSURE', iocc=1, scal=fiss, nbret=ibid)
     lxfem = .false.
     if (ibid .ne. 0) lxfem = .true.  
@@ -171,29 +176,57 @@ subroutine mecagl(option, result, modele, depla, thetai,&
                     iret)
     endif
 !
-!- RECUPERATION DE L'ETAT INITIAL
+!   Recuperation de l'etat initial
+!   ------------------------------
+
     if (incr .ne. 0) then
+
         call getvid('ETAT_INIT', 'SIGM', iocc=1, scal=chsigi, nbret=nsig)
-!- VERIFICATION DU TYPE DE CHAMP + TRANSFO, SI NECESSAIRE, EN CHAMP ELNO
+
+!       Verification du type de champ + transfo, si necessaire en champ elno
         if (nsig .ne. 0) then
-            call chpver('C', chsigi, 'ELNO', 'SIEF_R', ino1)
-            call chpver('C', chsigi, 'NOEU', 'SIEF_R', ino2)
-            call chpver('C', chsigi, 'ELGA', 'SIEF_R', inga)
-            if ((ino1.eq.1) .and. (ino2.eq.1) .and. (inga.eq.1)) then
-                call utmess('F', 'RUPTURE1_12')
-            else if (inga.eq.0) then
-                ligrmo = modele//'.MODELE'
+
+!           chpver renvoit 0 si OK et 1 si PB
+            call chpver('C', chsigi(1:19), 'ELNO', 'SIEF_R', ino1)
+            call chpver('C', chsigi(1:19), 'NOEU', 'SIEF_R', ino2)
+            call chpver('C', chsigi(1:19), 'ELGA', 'SIEF_R', inga)
+
+!           Verification du type de champ
+            pbtype=0
+            if (.not.lxfem) then
+!             cas FEM : verif que le champ est soit ELNO, soit NOEU, soit ELGA
+              if (ino1.eq.1 .and. ino2.eq.1 .and. inga.eq.1) pbtype=1
+            elseif (lxfem) then
+!             cas X-FEM : verif que le champ est ELGA (seul cas autorise)
+              if (inga.eq.1) pbtype=1
+            endif
+            if (pbtype.eq.1) call utmess('F', 'RUPTURE1_12')
+
+!           transformation si champ ELGA
+            if (inga.eq.0) then
+
+!               traitement du champ pour les elements finis classiques
                 call detrsd('CHAMP', celmod)
                 call alchml(ligrmo, 'CALC_G', 'PSIGINR', 'V', celmod,&
                             iret, ' ')
-                call chpchd(chsigi, 'ELNO', celmod, 'OUI', 'V',&
-                            sigout)
-                call chpver('C', sigout, 'ELNO', 'SIEF_R', ino1)
+                call chpchd(chsigi(1:19), 'ELNO', celmod, 'OUI', 'V',&
+                            sigelno)
+                call chpver('F', sigelno(1:19), 'ELNO', 'SIEF_R', ibid)
+
+!               calcul d'un champ supplementaire aux noeuds des sous-elements si X-FEM
+                if (lxfem) call xelgano(modele,chsigi,sigseno)
+!                call imprsd('CHAMP',chsigi,6,'chsigi')
+
             endif
+
         endif
+
     else
+
         nsig=0
+
     endif
+
 !
 !- RECUPERATION (S'ILS EXISTENT) DES CHAMP DE TEMPERATURES (T,TREF)
     call vrcins(modele, mate, ' ', time, chvarc,&
@@ -294,7 +327,6 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         lpain(13) = 'PCOMPOR'
         lchin(13) = compor
 !
-        ligrmo = modele//'.MODELE'
         nchin = 13
 !
         if (lxfem) then
@@ -352,11 +384,17 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             if (nsig .ne. 0) then
                 if (inga .eq. 0) then
                     lpain(nchin+1) = 'PSIGINR'
-                    lchin(nchin+1)=sigout
+                    lchin(nchin+1)=sigelno
                     nchin = nchin + 1
                     lpain(nchin+1) = 'PSIGING'
                     lchin(nchin+1)= chsigi
                     nchin = nchin + 1
+!                   si X-FEM : champ de contrainte initiale transforme en SE-ELNO
+                    if (lxfem) then
+                        lpain(nchin+1) = 'PSIGISE'
+                        lchin(nchin+1) = sigseno
+                        nchin = nchin + 1
+                    endif
                 else
                     lpain(nchin+1) = 'PSIGINR'
                     lchin(nchin+1) = chsigi
