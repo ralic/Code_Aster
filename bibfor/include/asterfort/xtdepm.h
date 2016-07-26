@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,8 +17,8 @@
 !
 interface
     subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
-                      nsingm, ffe, ffm, jdepde, rre,&
-                      rrm, jddle, jddlm, nfhe, nfhm, lmulti,&
+                      nsingm, ffe, ffm, jdepde, fk_escl,&
+                      fk_mait, jddle, jddlm, nfhe, nfhm, lmulti,&
                       heavn, heavfa, ddeple, ddeplm)
         integer :: ndim
         integer :: jnnm(3)
@@ -29,8 +29,8 @@ interface
         real(kind=8) :: ffe(20)
         real(kind=8) :: ffm(20)
         integer :: jdepde
-        real(kind=8) :: rre
-        real(kind=8) :: rrm
+        real(kind=8) :: fk_escl(27,3,3)
+        real(kind=8) :: fk_mait(27,3,3)
         integer :: jddle(2)
         integer :: jddlm(2)
         integer :: nfhe

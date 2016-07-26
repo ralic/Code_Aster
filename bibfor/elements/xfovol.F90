@@ -1,10 +1,10 @@
 subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
-                  ddlh, ddlc, nfe, nnop, jlsn,&
+                  ddlh, ddlc, singu, nnop, jlsn,&
                   jlst, heavn, iforc, itemps, ivectu, fonc,&
-                  fono)
+                  fono, imate, jbaslo, jstno)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,13 +32,15 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xdeffe.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
-    integer :: igeom, ndim, ddlh, ddlc, nfe, nnop
+    integer :: igeom, ndim, ddlh, ddlc, singu, nnop
     integer :: iforc, itemps, ivectu, jlsn, jlst, heavn(27,5)
+    integer :: imate, jbaslo, jstno
     real(kind=8) :: he
     aster_logical :: fonc, fono
 !-----------------------------------------------------------------------
@@ -58,7 +60,7 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 ! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
 ! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
-! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
+! IN  singu     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  JLSN    : INDICE DE LA LEVEL SET NORMALE AUX NOEUDS PARENTS
 ! IN  JLST    : INDICE DE LA LEVEL SET TANGENTE AUX NOEUDS PARENTS
@@ -72,10 +74,11 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !
     integer :: i, ino, ig, ier, j, n, mxstac
     integer :: ndimb, nno, nnos, nnops, npgbis, pos, irese, nfh
-    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg, hea_se
-    real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
+    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg, hea_se, alp
+    real(kind=8) :: xe(ndim), xg(ndim), ff(nnop)
+    real(kind=8) :: fk(27,3,3), ka, mu
     real(kind=8) :: forvol(ndim)
-    real(kind=8) :: valpar(ndim+1), fe(4), poids
+    real(kind=8) :: valpar(ndim+1), poids
     character(len=8) :: elrese(6), fami(6), nompar(ndim+1)
     aster_logical :: grdepl, axi
     parameter      (mxstac=1000)
@@ -140,22 +143,10 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
 !       CALCUL DES FONCTIONS D'ENRICHISSEMENT
 !       -------------------------------------
 !
-        if (nfe .gt. 0) then
-!         LEVEL SETS AU POINT DE GAUSS
-            lsng = 0.d0
-            lstg = 0.d0
-            do ino = 1, nnop
-                lsng = lsng + zr(jlsn-1+ino) * ff(ino)
-                lstg = lstg + zr(jlst-1+ino) * ff(ino)
-            end do
-!
-!         COORDONNÉES POLAIRES DU POINT
-            rg=sqrt(lsng**2+lstg**2)
-            tg = he * abs(atan2(lsng,lstg))
-!
-!         FONCTIONS D'ENRICHISSEMENT
-            call xdeffe(rg, tg, fe)
-!
+        if (singu .gt. 0) then
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), he,&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
         endif
 !
 !       CALCUL DE LA FORCE VOLUMIQUE AU PG COURANT
@@ -232,11 +223,11 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
             end do
 !
 !         TERME SINGULIER
-            do ig = 1, nfe
-                do j = 1, ndim
-                    pos=pos+1
-                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + fe(ig)* forvol(j)*poids*ff(ino)
-                end do
+            do alp = 1, singu*ndim
+              pos=pos+1
+              do j = 1, ndim
+                zr(ivectu-1+pos) = zr(ivectu-1+pos) + fk(ino,alp,j)* forvol(j)*poids
+              end do
             end do
 !
 !         ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT

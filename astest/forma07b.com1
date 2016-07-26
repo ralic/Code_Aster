@@ -1,4 +1,3 @@
-
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -38,7 +37,7 @@ MOD=AFFE_MODELE(MAILLAGE=MAIL,
                         MODELISATION = '3D') )
 
 # fissure X-FEM
-FISSX=DEFI_FISS_XFEM(MAILLAGE=MAIL,  
+FISSX=DEFI_FISS_XFEM(MAILLAGE=MAIL, NB_COUCHES=8,  
                      DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                   DEMI_GRAND_AXE = 2.,
                                   DEMI_PETIT_AXE = 2.,
@@ -61,8 +60,8 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                             MATER = MAT) )
 
 SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
-                      DDL_IMPO= (_F(GROUP_MA='FACE_AV', DY=0.0),
-                                 _F(GROUP_MA='FACE_LAT',DX=0.0),
+                      DDL_IMPO= (_F(GROUP_MA='FACE_AV', DY=0.0, H1Y=0.),
+                                 _F(GROUP_MA='FACE_LAT',DX=0.0, H1X=0.),
                                  _F(GROUP_NO='D',DZ=0.0,),)
                       )           
 

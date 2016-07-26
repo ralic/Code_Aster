@@ -1,10 +1,10 @@
 subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
-                  nsingm, ffe, ffm, jdepde, rre,&
-                  rrm, jddle, jddlm, nfhe, nfhm, lmulti,&
+                  nsingm, ffe, ffm, jdepde, fk_escl,&
+                  fk_mait, jddle, jddlm, nfhe, nfhm, lmulti,&
                   heavn, heavfa, ddeple, ddeplm)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,10 +29,10 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 #include "asterfort/xcalc_heav.h"
     integer :: ndim, jnnm(3), jnne(3), nfhe, nfhm
     integer :: nsinge, nsingm, heavn(*), heavfa(*)
-    real(kind=8) :: rre, rrm
     integer :: jdepde, ndeple, jddle(2), jddlm(2)
     real(kind=8) :: ffm(20), ffe(20)
     real(kind=8) :: ddeple(3), ddeplm(3)
+    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -51,8 +51,6 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 ! IN  NSINGE : NOMBRE DE FONCTIONS SINGULIERE ESCLAVES
 ! IN  NSINGM : NOMBRE DE FONCTIONS SINGULIERE MAIT RES
 ! IN  DDLES : NOMBRE DE DDLS D'UN NOEUD SOMMET ESCLAVE
-! IN  RRE    : SQRT LSN PT ESCLAVE
-! IN  RRM    : SQRT LSN PT MAITRE
 ! IN  JDEPDE : POINTEUR JEVEUX POUR DEPDEL
 ! IN  FFE    : FONCTIONS DE FORMES ESCLAVE
 ! IN  FFM    : FONCTIONS DE FORMES MAITRE
@@ -63,7 +61,7 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 !
 !
     integer :: idim, inoe, inom, pl, in, iddl, hea_fa(2), nddle, nnem
-    integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm, ifh
+    integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm, ifh, alp
     real(kind=8) :: iescl(6), imait(6)
 !
 ! ----------------------------------------------------------------------
@@ -89,10 +87,8 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
 !
     iescl(1) = 1
     iescl(2) = -1
-    iescl(2+nfhe)=-rre
     imait(1) = 1
     imait(2) = 1
-    imait(2+nfhm)= rrm
     if (.not.lmulti) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])
       hea_fa(2)=xcalc_code(1,he_inte=[+1])
@@ -119,10 +115,10 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                     ddeple(idim) = ddeple(idim)+ ffe(inoe)*iescl(iddl)*zr(jdepde-1+ pl)
  40             continue
             endif
-            do 215 iddl = 1+nfhe+1, 1+nfhe+nsinge
-                pl = in + (iddl-1)*ndim + idim
-                ddeple(idim) = ddeple(idim) +ffe(inoe)*iescl(2+nfhe)*zr(jdepde-1+pl)
-215          continue
+            do alp = 1,ndim*nsinge
+                pl = in + (1+nfhe+nsinge-1)*ndim + alp
+                ddeple(idim) = ddeple(idim) -fk_escl(inoe,alp,idim)*zr(jdepde-1+pl)
+            enddo
 210      continue
 200  end do
 !
@@ -141,10 +137,14 @@ subroutine xtdepm(ndim, jnnm, jnne, ndeple, nsinge,&
                                         hea_fa(2),&
                                         heavn((1+nfhe)*nne+nfhm*nnm+inom)) 
             endif
-            do 80 iddl = 1, 1+nfhm+nsingm
+            do 80 iddl = 1, 1+nfhm
                 pl = in + (iddl-1)*ndim + idim
                 ddeplm(idim) = ddeplm(idim) + ffm(inom)*imait(iddl)*zr(jdepde-1+pl)
  80         continue
+            do alp = 1,ndim*nsingm
+                pl = in + (1+nfhm+nsingm-1)*ndim + alp
+                ddeplm(idim) = ddeplm(idim) +fk_mait(inom,alp,idim)*zr(jdepde-1+pl)
+            enddo
 220      continue
 201  end do
 !

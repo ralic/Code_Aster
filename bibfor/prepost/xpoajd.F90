@@ -4,7 +4,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
                   ndim, cmp, nbcmp, nfh, nfe,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                  nnn, contac, lmeca, pre1)
+                  nnn, contac, lmeca, pre1, jbaslo,&
+                  jlsn, jlst, jstno, ka, mu)
 ! aslint: disable=W1306,W1504
     implicit none
 !
@@ -23,18 +24,21 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/xpoffo.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/ismali.h"
+#include "asterfort/iselli.h"
 !
     integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
-    integer :: nbcmp, cmp(nbcmp), nfe, ima, jconx1, jconx2, jcnsv1
+    integer :: nbcmp, cmp(*), nfe, ima, jconx1, jconx2, jcnsv1
     integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
     integer :: nfiss, he(nfiss), nfh, inn, nnn, ninter, jheavn, ncompn
+    integer :: jbaslo, jlsn, jlst, jstno
     aster_logical :: lmeca
     character(len=8) :: elrefp, typma
-    real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
+    real(kind=8) :: co(3), lsn(nfiss), lst(nfiss), ka, mu
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,9 +106,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     real(kind=8) :: ff(nnop), ffc(nnop), fe(4), crilsn, minlsn
     real(kind=8) :: r, theta, chpri(3), lagrs(9)
     real(kind=8) :: ff2(8), press
+    real(kind=8) :: fk(27,3,3)
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
     integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
-    integer :: lact(8), nlact, hea_se
+    integer :: lact(8), nlact, hea_se, alp
     aster_logical :: lpint, lcont, pre1
     parameter    (crilsn = 1.d-6)
 !
@@ -161,7 +166,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     call xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                 co, ff)
 !
-    if (pre1) then
+    if (pre1.or.(nfe.gt.0.and.lmeca.and..not.iselli(elrefp))) then
 !       ON RECUPERE L'ELEMENT LINEAIRE ASSOCIE A L'ELEMENT PARENT
 !       QUADRATIQUE ET LE NOMBRE DE NOEUDS SOMMETS
         call elelin(3, elrefp, elref2, ibid, nnops)
@@ -182,9 +187,11 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         ndimc = 1
     endif
     call vecini(ndimc, 0.d0, chpri)
+    fk(:,:,:)=0.
+    fe(:)=0.
 !
-    if (nfe .ne. 0) then
-!       FE : FONCTIONS D'ENRICHISSEMENT
+!   FK : FONCTIONS D'ENRICHISSEMENT
+    if (nfe.gt.0 .and. ndimc.eq.1) then
         r = sqrt(lsn(1)**2+lst(1)**2)
         if (r .gt. r8prem()) then
 !         LE POINT N'EST PAS SUR LE FOND DE FISSURE
@@ -196,6 +203,22 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         endif
 !
         call xdeffe(r, theta, fe)
+    elseif (nfe.gt.0 .and. lmeca) then
+        if (abs(lsn(1)).lt.crilsn .and. lst(1).le.0) then
+          if(he(1).gt.0) then
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
+                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='MAIT',&
+                     elref=elrefp, nnop2=nnops, ff2=ff2)
+          else
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
+                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='ESCL',&
+                     elref=elrefp, nnop2=nnops, ff2=ff2)
+          endif
+        else
+          call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
+                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk,&
+                     elref=elrefp, nnop2=nnops,ff2=ff2)
+        endif
     endif
 !
 !   CALCUL DE L IDENTIFIANT SOUS ELEMENT
@@ -280,10 +303,17 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !         DDL ENRICHIS EN FOND DE FISSURE
             do 140 ig = 1, nfe
-                do 150 i = 1, ndimc
-                    ipos=ipos+1
-                    chpri(i) = chpri(i) + fe(ig) * ff(j) * zr(iad+cmp( ipos))
-150             continue
+              if (ndimc.eq.1) then
+                ipos=ipos+1
+                chpri(i) = chpri(i) + fe(1)* ff(j) * zr(iad+cmp(ipos))
+              elseif (ndimc.gt.1) then
+                do 145 alp = 1, ndimc
+                  ipos=ipos+1
+                  do 150 i = 1, ndimc
+                    chpri(i) = chpri(i) + fk(j,alp,i) * zr(iad+cmp(ipos))
+150               continue
+145             continue
+              endif
 140         continue
 100     continue
     endif

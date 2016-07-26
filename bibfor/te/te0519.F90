@@ -1,7 +1,7 @@
 subroutine te0519(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@ subroutine te0519(option, nomte)
 !
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -31,6 +32,9 @@ subroutine te0519(option, nomte)
 #include "asterfort/xteini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/xkamat.h"
 !
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -52,7 +56,10 @@ subroutine te0519(option, nomte)
     integer :: ibid, ndim, nno, nfh, singu, ddls, ninter
     integer :: i, j, ipt, nfe, ddlc, nnom, nddl, ddlm, nnos, in
     integer :: jheafa, jeu(2), jheavn, ncompn
-    real(kind=8) :: ptref(3), deple(3), deplm(3), ff(20), lst, r
+    integer :: jstno, jlsn, igeom, jbaslo, alp, imate
+    real(kind=8) :: ptref(3), deple(3), deplm(3), ff(20)
+    real(kind=8) :: fk_mait(27,3,3), fk_escl(27,3,3), ka, mu
+    aster_logical :: axi
 !
 ! ---------------------------------------------------------------------
 !
@@ -81,6 +88,14 @@ subroutine te0519(option, nomte)
         call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
         ncompn = jtab(2)/jtab(3)
+    endif
+    if (nfe .gt. 0) then
+        call jevech('PBASLOR', 'L', jbaslo)
+        call jevech('PLSN', 'L', jlsn)
+        call jevech('PSTANO', 'L', jstno)
+        call jevech('PGEOMER', 'L', igeom)
+        call jevech('PMATERC', 'L', imate)
+        axi=lteatt('AXIS','OUI')
     endif
 ! --- LES GEOMETRIES MAITRES ET ESCLAVES INITIALES SONT
 ! --- ET RESTENT LES MEMES
@@ -128,13 +143,14 @@ subroutine te0519(option, nomte)
 !
             call elrfvf(elref, ptref, nno, ff, nno)
 !
-            if (singu .eq. 1) then
-! --- CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-                lst=0.d0
-                do 200 i = 1, nno
-                    lst=lst+zr(jlst-1+i)*ff(i)
-200              continue
-                r=sqrt(abs(lst))
+            if (nfe .gt. 0) then
+              call xkamat(zi(imate), ndim, axi, ka, mu)
+              call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), +1.d0,&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff,&
+                           fk_mait, face='MAIT')
+              call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), -1.d0,&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff,&
+                           fk_escl, face='ESCL')
             endif
 !
 ! --- CALCUL DES DEPLACEMENTS MAITRES ET ESCLAVES
@@ -160,11 +176,13 @@ subroutine te0519(option, nomte)
                                          *ff(i)*zr(jdepl-1+in+ndim*ifh+j)
 250                  continue
 230              continue
-                do 240 j = 1, singu*ndim
-                    deplm(j)=deplm(j)+r*ff(i)*zr(jdepl-1+in+ndim*(1+&
-                    nfh)+j)
-                    deple(j)=deple(j)-r*ff(i)*zr(jdepl-1+in+ndim*(1+&
-                    nfh)+j)
+                do 240 alp = 1, nfe*ndim
+                  do j = 1, ndim
+                    deplm(j)=deplm(j)+fk_mait(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
+                    nfh)+alp)
+                    deple(j)=deple(j)+fk_escl(i,alp,j)*zr(jdepl-1+in+ndim*(1+&
+                    nfh)+alp)
+                  enddo   
 240              continue
 210          continue
 !

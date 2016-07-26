@@ -120,7 +120,7 @@ MOD=AFFE_MODELE(MAILLAGE=MA[nb_raff],
                         PHENOMENE='MECANIQUE',
                         MODELISATION='3D'))
 
-fiss_1=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff],
+fiss_1=DEFI_FISS_XFEM(MAILLAGE=MA[nb_raff], NB_COUCHES=5,
                       DEFI_FISS=_F(
                                    FORM_FISS      = 'ELLIPSE',
                                    DEMI_GRAND_AXE = ray,
@@ -143,9 +143,9 @@ MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_raff],
                            MATER=ACIER))
 
 CHAR=AFFE_CHAR_MECA(MODELE=MODX,
-                    DDL_IMPO=(_F(GROUP_MA='PEAUEXT' ,DX=0.),
+                    DDL_IMPO=(_F(GROUP_MA='PEAUEXT' ,DX=0.,H1X=0.),
                               _F(GROUP_MA='EXTUBE_I',DZ=0.),
-                              _F(GROUP_MA='BORD1'   ,DY=0.),
+                              _F(GROUP_MA='BORD1'   ,DY=0.,H1Y=0.),
                               ),
                     PRES_REP=_F(GROUP_MA='EXTUBE_S',PRES=-1.E6,),
                     )
@@ -208,7 +208,7 @@ for i in range(nb_fond) :
 K1ref = 1.595E+6
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1632906.01024,
+           VALE_CALC=1639334.24114,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -216,7 +216,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1624794.41296,
+           VALE_CALC=1622364.01077,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
@@ -225,7 +225,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 #  sans R_INF et R_SUP
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1626348.12745,
+           VALE_CALC=1633937.14443,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -233,7 +233,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.029999999999999999,
-           VALE_CALC=1619478.88514,
+           VALE_CALC=1615632.37953,
            VALE_REFE=1.595000E6,
            NOM_PARA='K1',
            TYPE_TEST='MIN',

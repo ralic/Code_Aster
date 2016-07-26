@@ -124,6 +124,6 @@ MAILLE=vol et SURFINF et SURFSUP et SURFDRO et SURFGAU;
 trac MAILLE;
 trac cach MAILLE;
 
-opti sauv format '/home/massin/TOURRET/castest/ssnv192a/ssnv192a.mgib' ;
+opti sauv format '/home/G31256/dev/codeaster/src/astest/ssnv192a.mgib' ;
 sauv format maille ;
 fin ;

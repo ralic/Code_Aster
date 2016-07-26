@@ -1,7 +1,7 @@
 subroutine te0441(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,7 @@ subroutine te0441(option, nomte)
     integer :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno, jpmilt, jheavn
     integer :: ivectu, igeom, irota, ipesa, imate
+    integer :: jbaslo
     integer :: irese, nfiss, jfisno, kpg, spt
     integer :: ncompn, ncomp, heavn(27,5), iret, jtab(7), ig
     real(kind=8) :: fno(81), rho(1), om, omo, coorse(81)
@@ -97,6 +98,9 @@ subroutine te0441(option, nomte)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSTANO', 'L', jstno)
     call jevech('PMATERC', 'L', imate)
+    if (nfe.gt.0) then
+        call jevech('PBASLOR', 'L', jbaslo)
+    endif
     call teattr('S', 'XFEM', enr, ibid)
     if (enr(1:2).eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
@@ -193,7 +197,7 @@ subroutine te0441(option, nomte)
         call xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
                     heavn, nfh, ddlc, nfe, nfiss,&
                     ise, nnop, jlsn, jlst, ivectu,&
-                    fno)
+                    fno, zi(imate), jbaslo, jstno)
 !
 !
     end do

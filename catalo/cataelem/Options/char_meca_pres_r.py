@@ -48,6 +48,7 @@ PHEAVTO  = InputParameter(phys=PHY.N512_I)
 PLONCHA  = InputParameter(phys=PHY.N120_I, container='MODL!.TOPOSE.LON',
 comment="""  XFEM - NBRE DE TETRAEDRES ET DE SOUS-ELEMENTS  """)
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
 
 PLSN     = InputParameter(phys=PHY.NEUT_R)
 
@@ -114,6 +115,8 @@ CHAR_MECA_PRES_R = Option(
         SP.PPRESSR,
            PSTANO,
         SP.PTEMPSR,
+        SP.PMATERC,
+           PBASLOR,
     ),
     para_out=(
         SP.PVECTUR,

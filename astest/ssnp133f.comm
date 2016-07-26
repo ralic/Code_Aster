@@ -245,7 +245,7 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 # TESTS SUR LA REPONSE GLOBALE
 #-------------------------------------------------------------
 TEST_TABLE(
-           VALE_CALC=3.341439771124E-03,
+           VALE_CALC=0.00334143977112,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -253,7 +253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.2604217328951E+07,
+           VALE_CALC=42604217.329,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -261,7 +261,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.2879530857362E-03,
+           VALE_CALC=0.00228795308574,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -269,7 +269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.8610097299342E+06,
+           VALE_CALC=4861009.72993,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -277,7 +277,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.8154866981316E-03,
+           VALE_CALC=0.00681548669813,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -285,7 +285,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=6.8789553246935E+06,
+           VALE_CALC=6878955.32469,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',

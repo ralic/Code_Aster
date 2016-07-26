@@ -4,7 +4,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
                   nmaen1, nmaen2, nmaen3, typdis)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -162,7 +162,7 @@ subroutine xstama(noma, nbma, nmafis, jmafis,&
         call jeveuo(lisnoe, 'L', jdlino)
         do ino = 1, nbnoe
             nabs=zi(jdlino-1+(ino-1)+1)
-            if (stano(nabs) .le. 1) then
+            if (abs(stano(nabs)) .le. 1) then
                 lsn=lnsv((nabs-1)+1)
                 lst=ltsv((nabs-1)+1)
                 if (sqrt(lsn**2+lst**2) .le. rayon) then

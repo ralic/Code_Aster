@@ -2,10 +2,10 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                   prefno, nogrfi, maxfem, cns1, cns2,&
                   ces1, ces2, cesvi1, cesvi2, listgr,&
                   dirgrm, nivgrm, resuco, ngfon, comps1,&
-                  comps2, pre1)
+                  comps2, pre1, iord)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterc/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
+#include "asterfort/codent.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
@@ -57,8 +58,13 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterfort/xpoajm.h"
 #include "asterfort/xpocmp.h"
 #include "asterfort/xpocox.h"
+#include "asterfort/res2mat.h"
+#include "asterfort/fointe.h"
+#include "asterfort/rccome.h"
+#include "asterfort/indk32.h"
+#include "asterfort/rsadpa.h"
 !
-    integer :: nbnoc, nbmac, ngfon
+    integer :: nbnoc, nbmac, ngfon, iord
     character(len=2) :: prefno(4)
     character(len=8) :: mo, malini, maxfem, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
@@ -102,22 +108,29 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !
 !
-    integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in
-    integer :: jcesd(12), jcesv(12), jcesl(12), iad, jconx1, jconx2
+    integer :: nbch, ddlmax
+    parameter (nbch=14,ddlmax=27)
+!
+    integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in, l, jbaslo, ncmp
+    integer :: jcesd(nbch), jcesv(nbch), jcesl(nbch), iad, jconx1, jconx2
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
     integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm
     integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv
     integer :: jcnse, iad4, iad3, itypel, nbelr, jhea
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(50), jlst, jheavn
+    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn
     integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi
     integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2
     integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter
     integer :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg
-    character(len=8) :: k8b, typese(6), elrefp, lirefe(10)
-    character(len=8) :: typma, noma
+    integer :: jstno
+    integer :: nuflpg, nblfpg, nufgpg
+    character(len=1) :: kbid
+    character(len=8) :: k8b, typese(6), elrefp, lirefe(10), elrese(6)
+    character(len=8) :: typma, noma, chmat
     character(len=16) :: tysd, k16b, nomcmd, notype
-    character(len=19) :: chs(12)
-    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, hea, nogno, heavn
+    character(len=19) :: chs(nbch), varcns
+    character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, hea, nogno, heavn, basloc, stano
+    character(len=32) :: noflpg
     aster_logical :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp, ncompn, ncompn_tmp
     integer :: iviex, iret, jconq1, jconq2, jxc
@@ -128,8 +141,22 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=8), pointer :: cnsk(:) => null()
     integer, pointer :: typm1(:) => null()
     integer, pointer :: vtypma(:) => null()
+    character(len=32), pointer :: pnlocfpg(:) => null()
+    integer, pointer :: tmfpg(:) => null()
+    integer, pointer :: nolocfpg(:) => null()
+    real(kind=8) :: ka, mu, inst
+    aster_logical :: cplan, lvarc, young, poiss
+    integer :: jinst1
+    character(len=8) :: nommat
+    character(len=11) :: k11
+    real(kind=8) :: varc(2), e, nu
+    character(len=8), pointer :: cvrcvarc(:) => null()
+    character(len=16), pointer :: valk(:) => null()
+    integer :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk
+
 !
     data  typese /'SEG2','TRIA3','TETRA4','SEG3','TRIA6','TETRA10'/
+    data  elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data  tabse  /   2  ,   3   ,   4    ,   3  ,   6   ,   10    /
 !
     call jemarq()
@@ -165,6 +192,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     chs(10) = '&&XPOMAX.PLONCH'
     chs(11) = '&&XPOMAX.PAIN'
     chs(12) = '&&XPOMAX.FHEAVN'
+    chs(13) = '&&XPOMAX.BASLOC'
+    chs(14) = '&&XPOMAX.STANO'
 !
 !
     call celces(mo//'.TOPOSE.PIN', 'V', chs(1))
@@ -210,6 +239,18 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     call jeveuo(chs(12)//'.CESD', 'L', jcesd(12))
     call jeveuo(chs(12)//'.CESV', 'E', jcesv(12))
     call jeveuo(chs(12)//'.CESL', 'L', jcesl(12))
+!
+!    call imprsd('CHAMP',mo//'.BASLOC',8,'VERIF :: BASLOC')
+    call celces(mo//'.BASLOC', 'V', chs(13))
+    call jeveuo(chs(13)//'.CESD', 'L', jcesd(13))
+    call jeveuo(chs(13)//'.CESV', 'L', jcesv(13))
+    call jeveuo(chs(13)//'.CESL', 'L', jcesl(13))
+!
+!    call imprsd('CHAMP',mo//'.STNO',8,'VERIF :: STNO')
+    call celces(mo//'.STNO', 'V', chs(14))
+    call jeveuo(chs(14)//'.CESD', 'L', jcesd(14))
+    call jeveuo(chs(14)//'.CESV', 'L', jcesv(14))
+    call jeveuo(chs(14)//'.CESL', 'L', jcesl(14))
 !
     do ich = 1, 4
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
@@ -303,7 +344,40 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
             nbcmpc = 0
         endif
 !
+        if (tysd(1:4) .eq. 'EVOL') then
+            call rsadpa(resuco, 'L', 1, 'INST', iord,&
+                        0, sjv=jinst1, styp=kbid)
+            inst = zr(jinst1)
+        else
+            inst=0.
+        endif
+        varcns='&&XPOMAX.VARC'
+        call res2mat(resuco, inst, chmat, mu=mu, ka=ka,&
+                     nommat=nommat, lvarc=lvarc, varcns=varcns,&
+                     cplan=cplan)
+        if (lvarc) then
+          call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
+          call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
+          call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
+          call rccome(nommat, 'ELAS', iret, k11_ind_nomrc=k11)  
+          call jeexin(nommat//k11//'.VALR', iret)
+          call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
+          call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
+          call jeveuo(nommat//k11//'.VALK', 'L', vk16=valk)
+          call jelira(nommat//k11//'.VALK', 'LONUTI', nbk)
+          nbf = (nbk-nbr-nbc)/2
+          call jelira(chmat//'.CVRCVARC', 'LONMAX', nbvarc)
+          ASSERT(nbvarc.le.2)
+          call jeveuo(chmat//'.CVRCVARC', 'L', vk8=cvrcvarc)
+        endif
+!
     endif
+!
+!     RECUP DES POINTS DE GAUSS
+    call jeveuo('&CATA.TE.PNLOCFPG', 'L', vk32=pnlocfpg)
+    call jelira('&CATA.TE.NOLOCFPG', 'LONMAX', nblfpg)
+    call jeveuo('&CATA.TM.TMFPG', 'L', vi=tmfpg)
+    call jeveuo('&CATA.TE.NOLOCFPG', 'L', vi=nolocfpg)
 !
 !     RECUP DES NUMEROS DES TYPE DE MAILLES DES SOUS-ELEMENTS
     call jenonu(jexnom('&CATA.TM.NOMTM', typese(1)), itypse(1))
@@ -406,20 +480,20 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call elref2(notype, 10, lirefe, nbelr)
         elrefp= lirefe(1)
 !       NOMBRE DE POINT DE GAUSS
-        if (ndim .eq. 2) then
-            if (nfiss .eq. 1) then
-                npg = 12
-            else
-                npg = 4
-            endif
-        else if (ndim.eq.3) then
-            if (nfiss .eq. 1) then
-                npg = 15
-            else
-                npg = 5
-            endif
+        if (.not.iselli(elrefp)) then
+            irese=3
+        else
+            irese=0
         endif
-!
+        if (ndime.eq.ndim) then
+           noflpg = notype//elrese(ndime+irese)//'XINT'
+        else
+           noflpg = notype//elrese(ndime+irese)//'RIGI'
+        endif
+        nuflpg = indk32(pnlocfpg,noflpg,1,nblfpg)
+        ASSERT(nuflpg.ne.0)
+        nufgpg = nolocfpg(nuflpg)
+        npg=tmfpg(nufgpg)
 !
 !       CREATION DE VECTEUR DES COORDONNÉES DE LA MAILLE IMA
 !       AVEC DES VALEURS CONTIGUES
@@ -448,6 +522,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !       ET RECUPERATION DES CONTRAINTES 1
         if (.not.opmail) then
             nbcmp = cnsd(2)
+            ASSERT(nbcmp.le.ddlmax)
             call xpocmp(elrefp, cns1, ima, n, jconx1,&
                         jconx2, ndim, nfh, nfe, ddlc,&
                         nbcmp, cmp, lmeca, pre1)
@@ -564,13 +639,81 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
           ASSERT(ncompn.eq.5)
         endif
 !
+!       RECUPERATION DE LA BASE LOCALE EN FOND DE FISSURE ET DU STATUT DES NOEUDS
+        if (.not.opmail .and. (nfh+nfe) .gt. 0) then
+          ncmp = zi(jcesd(14)-1+5+4*(ima-1)+3)
+          stano='&&XPOAJD.STANO'
+          call wkvect(stano, 'V V I', n, jstno)
+          if (ncmp.gt.0) then
+            do j = 1, n
+              call cesexi('C', jcesd(14), jcesl(14), ima, j,&
+                           1, 1, iad)
+              ASSERT(iad.gt.0)
+              zi(jstno-1+j)=zi(jcesv(14)-1+iad)
+            enddo
+          else
+             zi(jstno:(jstno-1+n))=-99
+          endif
+        endif
+        if (.not.opmail .and. nfe .gt. 0) then
+          ncmp = zi(jcesd(13)-1+5+4*(ima-1)+3)
+          basloc='&&XPOAJD.BASLOC'
+          call wkvect(basloc, 'V V R', 3*ndim*n, jbaslo)
+          if (ncmp.gt.0) then
+            do j = 1, n
+              do l = 1, 3*ndim
+                 call cesexi('C', jcesd(13), jcesl(13), ima, j,&
+                              1, l, iad)
+                 ASSERT(iad.gt.0)
+                 zr(jbaslo-1+(j-1)*3*ndim+l)=zr(jcesv(13)-1+iad)
+              enddo
+            enddo
+          else
+             zr(jbaslo:(jbaslo-1+n*3*ndim))=0.d0
+          endif
+        endif
+!       CALCUL DES PARAMETRES MATERIAUX
+!         INTERPOLATION DES VARC
+        if (.not.opmail .and. lvarc) then
+          ncmp = zi(jcesd_varc-1+5+4*(ima-1)+3)
+          if (ncmp.eq.0) then
+            mu=1.
+            ka=3.
+            goto 15
+          endif
+          varc(:)=0.
+          do j = 1, n
+            do k = 1, nbvarc
+              call cesexi('C', jcesd_varc, jcesl_varc, ima, j,&
+                           1, k, iad)
+              ASSERT(iad.gt.0)
+              varc(k)=varc(k)+zr(jcesv_varc-1+iad)/n
+            enddo
+          enddo
+          poiss=.false.
+          young=.false.
+          do ik = 1, nbf
+            if (valk(nbr+nbc+ik).eq.'NU') then
+              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
+                          nu, ier)
+              if (ier.eq.0) poiss=.true.
+            endif
+            if (valk(nbr+nbc+ik).eq.'E') then
+              call fointe('C', valk(nbr+nbc+nbf+ik), nbvarc, cvrcvarc(1:nbvarc), varc(1:nbvarc),&
+                           e, ier)
+              if (ier.eq.0) young=.true.
+            endif
+          enddo
+          if (poiss) then 
+            ka = 3.d0-4.d0*nu
+            if (cplan) ka = (3.d0-nu)/(1.d0+nu)
+            if (young) mu = e/(2.d0*(1.d0+nu))
+          endif
+15        continue
+        endif
+!
 ! ----- ON AJOUTE LES NOUVELLES MAILLES ET LES NOUVEAUX NOEUDS
 !
-        if (.not.iselli(elrefp)) then
-            irese = 3
-        else
-            irese = 0
-        endif
         nnose = tabse(ndime+irese)
 !
 !         BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
@@ -590,7 +733,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                         jlsn, jlst, typma, igeom, jheavn, ncompn, &
                         zi(jxc), cmp, nbcmp, nfh, nfe,&
                         ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                        pre1)
+                        pre1, jbaslo, jstno, ka, mu)
             if (.not.opmail) then
                 if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
 !
@@ -619,6 +762,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call jedetr(lst)
         call jedetr(hea)
         if (.not.opmail .and. nfh .gt. 0) call jedetr(heavn)
+        if (.not.opmail .and. nfe .gt. 0) call jedetr(basloc)
+        if (.not.opmail .and. (nfh+nfe) .gt. 0) call jedetr(stano)
 !
 100     continue
     end do
@@ -657,6 +802,8 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     do ich = 6, 11
         call detrsd('CHAM_ELEM_S', chs(ich))
     end do
+!
+    if (lvarc) call detrsd('CHAM_NO_S', varcns)
 !
     if (opmail) call jedetr(mailx)
     if (opmail) call jedetr(linofi)

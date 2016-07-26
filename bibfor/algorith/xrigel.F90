@@ -1,7 +1,7 @@
 subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                   igeom, jpintt, cnset, heavt, lonch,&
                   basloc, lsn, lst, sig, matuu,&
-                  jpmilt, heavn)
+                  jpmilt, heavn, jstno, imate)
 !
     implicit none
 #include "jeveux.h"
@@ -14,12 +14,12 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
 #include "asterfort/xrige3.h"
     integer :: nnop, igeom
     integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
-    integer :: jpintt, jpmilt, heavn(27,5)
+    integer :: jpintt, jpmilt, heavn(27,5), jstno, imate
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,14 +137,14 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc,&
             call xrige3(elrefp, ndim, coorse, igeom, he,&
                         heavn, ddlh, ddlc, nfe, basloc,&
                         nnop, npg, lsn, lst, sig(idebs+1),&
-                        matuu)
+                        matuu, jstno, imate)
 !
         else if (ndim.eq.2) then
             ASSERT(nbsig.eq.4)
             call xrige2(elrefp, elrese(ndim+irese), ndim, coorse, igeom,&
                         he, heavn, ddlh, ddlc, nfe,&
                         basloc, nnop, npg, lsn, lst,&
-                        sig( idebs+1), matuu)
+                        sig( idebs+1), matuu, jstno, imate)
 !
         endif
 !

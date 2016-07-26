@@ -385,7 +385,7 @@ class MEAXTR3_XH(Element):
                      (OP.DEPL_XPG.PHEAVTO, E6NEUTI), (OP.DEPL_XPG.PHEA_NO, LC.N5NEUTI),
                      (OP.DEPL_XPG.PLONCHA, LC.E10NEUTI), (OP.DEPL_XPG.PLSN, LC.N1NEUT_R),
                      (OP.DEPL_XPG.PLST, LC.N1NEUT_R), (OP.DEPL_XPG.PXFGEOM, XFGEOM_R),
-                     ),
+                     (SP.PGEOMER, NGEOMER),),
             para_out=((SP.PDEPLPG, EDEPLPG), ),
         ),
 

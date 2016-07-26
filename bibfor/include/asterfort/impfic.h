@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
     subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
         real(kind=8) :: vale(5)
         character(len=8) :: nomnoe
-        real(kind=8) :: rcmp(4)
+        real(kind=8) :: rcmp(6)
         integer :: unit
         aster_logical :: lxfem
     end subroutine impfic

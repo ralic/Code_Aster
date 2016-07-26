@@ -180,28 +180,28 @@ TEMCINF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
 # TESTS SUR LE RESULTAT XFEM
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
+           VALE_CALC=20.0,
            VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=5.,
+           VALE_CALC=5.0,
            VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MAX',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
+           VALE_CALC=10.0,
            VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMXINF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=5.,
+           VALE_CALC=5.0,
            VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MAX',
@@ -210,28 +210,28 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # -- 
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
+           VALE_CALC=20.0,
            VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=5.,
+           VALE_CALC=5.0,
            VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MIN',
            TABLE=TEMXSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
+           VALE_CALC=10.0,
            VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMXINF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=5.,
+           VALE_CALC=5.0,
            VALE_REFE=5.,
            NOM_PARA='H1',
            TYPE_TEST='MIN',
@@ -240,14 +240,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # TESTS SUR LE RESULTAT VISU
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
+           VALE_CALC=20.0,
            VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
            TABLE=TEMCSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
+           VALE_CALC=10.0,
            VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
@@ -256,14 +256,14 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # --
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=20.,
+           VALE_CALC=20.0,
            VALE_REFE=20.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMCSUP,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=10.,
+           VALE_CALC=10.0,
            VALE_REFE=10.,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
@@ -288,7 +288,7 @@ TEST_RESU(RESU=(
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC=10.,),
+                   VALE_CALC=10.0,),
                 _F(RESULTAT=TEMPE,
                    NOM_CHAM='TEMP_ELGA',
                    NOM_CMP='TEMP',
@@ -297,7 +297,7 @@ TEST_RESU(RESU=(
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=20.,
-                   VALE_CALC=20.,),
+                   VALE_CALC=20.0,),
                 ),
           )
 

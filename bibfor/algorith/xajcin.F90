@@ -6,7 +6,7 @@ implicit none
 #include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,7 +91,7 @@ implicit none
 !
     elseif (option.eq.'CHAR_MECA_NEUM') then
 !
-        nbadd = 17
+        nbadd = 18
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -127,6 +127,8 @@ implicit none
         lchin(nchin + 16) = model(1:8)// '.TOPONO.HSE'
         lpain(nchin + 17) = 'PHEA_FA'
         lchin(nchin + 17) = model(1:8)// '.TOPONO.HFA'
+        lpain(nchin + 18) = 'PBASLOR'
+        lchin(nchin + 18) = model(1:8)//'.BASLOC'
         nchin = nchin+nbadd
 !
     elseif (option.eq.'REFE_FORC_NODA') then

@@ -160,7 +160,7 @@ G4=CALC_G(        RESULTAT=RESU,
 
 
 TEST_TABLE(
-           VALE_CALC=0.36030594743662,
+           VALE_CALC=0.360305947437,
 
            NOM_PARA='G',
            TABLE=G1,
@@ -169,7 +169,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.36024062057934,
+           VALE_CALC=0.360240620579,
 
            NOM_PARA='G',
            TABLE=G2,
@@ -178,7 +178,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.36022087398746,
+           VALE_CALC=0.360220873988,
 
            NOM_PARA='G',
            TABLE=G3,
@@ -187,7 +187,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.36021835942526,
+           VALE_CALC=0.360218359425,
 
            NOM_PARA='G',
            TABLE=G4,

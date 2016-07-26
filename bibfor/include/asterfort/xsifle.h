@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xsifle(ndim, ifa, jptint, cface,&
                       igeom, nfh, jheavn, singu, nfe, ddlc,&
-                      ddlm, jlst, ipres, ipref, itemps,&
+                      ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
                       idepl, nnop, valres, basloc, ithet,&
                       nompar, option, igthet, jbasec,&
                       contac)
@@ -39,6 +39,8 @@ interface
         integer :: ipref
         integer :: itemps
         integer :: idepl
+        integer :: jstno
+        integer :: jlsn
         real(kind=8) :: valres(3)
         real(kind=8) :: basloc(9*nnop)
         integer :: ithet

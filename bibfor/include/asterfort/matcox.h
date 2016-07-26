@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
                       ddt4, p, nno, ddlh, ddls,&
-                      jac, ffp, singu, rr, mmat)
+                      jac, ffp, singu, fk, mmat)
         integer :: ndim
         real(kind=8) :: pp(3, 3)
         real(kind=8) :: ddt1(3, 3)
@@ -32,7 +32,7 @@ interface
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)
         integer :: singu
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: mmat(216, 216)
     end subroutine matcox
 end interface

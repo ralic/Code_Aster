@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,7 @@ PSTANO = InputParameter(phys=PHY.N120_I)
 
 PPMILTO = InputParameter(phys=PHY.N792_R)
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
 
 CHAR_MECA_FR3D3D = Option(
     para_in=(
@@ -67,6 +68,8 @@ CHAR_MECA_FR3D3D = Option(
         PPINTTO,
         PPMILTO,
         PSTANO,
+        PBASLOR,
+        SP.PMATERC,
     ),
     para_out=(
         SP.PVECTUR,

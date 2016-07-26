@@ -41,7 +41,7 @@ MODTHIN=AFFE_MODELE(MAILLAGE=MA,
                             PHENOMENE='THERMIQUE',
                             MODELISATION='PLAN',),);
 
-FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA,
+FISSTH=DEFI_FISS_XFEM(MAILLAGE=MA, TYPE_ENRI_FOND='TOPOLOGIQUE',
                       DEFI_FISS=_F(FORM_FISS='DEMI_DROITE',
                                    PFON=( 0.5*L, 0.5*L, 0.,),
                                    DTAN=(   -1.,    0., 0.,),),
@@ -198,26 +198,26 @@ TEMPFONF=POST_RELEVE_T(ACTION=_F(INTITULE='TEMPE',
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000001,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TABLE=TEMPSUPR,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000001,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TABLE=TEMPINFR,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000002,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMPFONR,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000002,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
@@ -226,26 +226,26 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000001,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TABLE=TEMPSUPF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000001,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TABLE=TEMPINFF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000002,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TYPE_TEST='MIN',
            TABLE=TEMPFONF,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=15.000000000002,
+           VALE_CALC=15.0,
            VALE_REFE=15.0,
            NOM_PARA='TEMP',
            TYPE_TEST='MAX',
@@ -263,7 +263,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC= 1.2221335055074E-12    ,
+                   VALE_CALC=-6.25277607469E-13    ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -274,7 +274,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=  1.8507980178006E-13 ,
+                   VALE_CALC=-4.54736345055E-13 ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC= -1.2747013044807E-13  ,
+                   VALE_CALC=2.27373675443E-13  ,
                    CRITERE='ABSOLU',),),);
 
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC= 1.2221335055074E-12  ,
+                   VALE_CALC=-6.25277607469E-13  ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -310,7 +310,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC= -1.2583419151406E-13 ,
+                   VALE_CALC=1.45430681622E-13 ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC= 1.8507980178006E-13  ,
+                   VALE_CALC=-4.54736345055E-13  ,
                    CRITERE='ABSOLU',),),);
 
 # TEST SUR LE GRADIENT DE TEMPERATURE SELON Y
@@ -335,7 +335,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC=  9.9999999999998,
+                   VALE_CALC=10.0,
                    CRITERE='RELATIF',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -345,7 +345,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC= 10.000000000001,
+                   VALE_CALC=10.0,
                    CRITERE='RELATIF',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -355,7 +355,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC= 10.000000000001 ,
+                   VALE_CALC=10.0 ,
                    CRITERE='RELATIF',),),);
 
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
@@ -368,7 +368,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC= 9.9999999999998  ,
+                   VALE_CALC=10.0  ,
                    CRITERE='RELATIF',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -378,7 +378,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC=10.000000000001  ,
+                   VALE_CALC=10.0  ,
                    CRITERE='RELATIF',), ),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -388,7 +388,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    POINT=1,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=10.,
-                   VALE_CALC= 10.000000000001  ,
+                   VALE_CALC=10.0  ,
                    CRITERE='RELATIF',),),);
 
 #----------------------------------------------
@@ -405,6 +405,7 @@ IMPR_TABLE(TABLE=TEMPFONF)
 
 IMPR_RESU(FORMAT='MED',UNITE=83,RESU=_F(MAILLAGE=MA))
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(MAILLAGE=MA_VISU))
+IMPR_RESU(FORMAT='GMSH',RESU=_F(RESULTAT=TEMPEXR))
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RES_VISR))
 
 FIN();

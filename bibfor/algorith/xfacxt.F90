@@ -23,6 +23,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/xassfa.h"
 #include "asterfort/xdecfa.h"
 #include "asterfort/xnewto.h"
+#include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
@@ -68,8 +69,8 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
     real(kind=8) :: minlsn, maxlsn, newpt(ndim), p(ndim), lonref, rainter(3,4)
     real(kind=8) :: ff(20), ptref(ndim), ptree(ndim), cooree(6,ndim), cooref(6,ndim)
-    real(kind=8) :: maxlst, minlst, lst(6), m(ndim), miref(ndim), pinref(34*ndim), mref(ndim)
-    real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(1)
+    real(kind=8) :: maxlst, minlst, lst(6), m(ndim), miref(ndim), pinref(43*ndim), mref(ndim)
+    real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(ndim), norme
     real(kind=8) :: ptreem(ndim), ptrefm(ndim), epsmax, ls(20), det, cridist, a, b, c
     real(kind=8) :: ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim), lsn(ndim)
     integer :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
@@ -122,7 +123,6 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
 !      INITIALISATION DU SIGNE POUR LA RECHERCHE DANS LES SOUS ELEMENTS
     signe = -1
-
 !      NOMBRE TOTAL DE SOUS SOUS ELEMENTS
     nelttot = zi(jnit-1+1)
 !      COMPTEUR DU NOMBRE D'ELEMENTS QUI CONSTITUENT LA LEVRE
@@ -229,7 +229,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                            do ino = 1, nno
                               lst(k) = lst(k)+ zr(jlst-1+ino)*ff(ino)
                            end do
-                           if (abs(lst(k)).le.1.d-4) lst(k) = 0.d0
+                           if (abs(lst(k)).le.1.d-8) lst(k) = 0.d0
                            minlst= min(minlst,lst(k))
                            maxlst= max(maxlst,lst(k))
                         end do
@@ -381,15 +381,15 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                        zr(igeom), ls, ibid, ibid, itemax, epsmax, ksi)
                            call vecini(ndim, 0.d0, mref)
                            do ii = 1, ndim
-                              mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
-                                        (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
-                                        ptxx(j+ndim)
+                              mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*&
+                                        (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                                        ptxx(ii+ndim)
                            end do
                            call elrfvf(elp, mref, nbnomx, ff, nno)
                            call vecini(ndim, 0.d0, m)
                            do ii = 1, ndim
                               do ino = 1, nno
-                                 m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(k)
+                                 m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(ino)
                               end do
                            end do
                            npi = npi+1
@@ -449,15 +449,15 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      RECHERCHE DU POINT MILIEU
                                  ksi(1) = ksi(1)/2.d0
                                  do ii = 1, ndim
-                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+&
-                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(j+2*ndim)+&
-                                               2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndim)
+                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+&
+                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(ii+2*ndim)+&
+                                               2.d0*ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
                                  call elrfvf(elp, mref, nbnomx, ff, nno)
                                  call vecini(ndim, 0.d0, m)
                                  do ii = 1, ndim
                                     do ino = 1, nno
-                                       m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(k)
+                                       m(ii) = m(ii) + zr(igeom-1+ndim*(ino-1)+ii) * ff(ino)
                                     end do
                                  end do
 !      ON ARCHIVE POUR LE POINT MILIEU
@@ -515,9 +515,9 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      RECHERCHE DU POINT MILIEU
                                  ksi(1) = (1.d0+ksi(1))/2.d0
                                  do ii = 1, ndim
-                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+&
-                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*&
-                                               ksi(1)*(ksi(1)-5.d-1)*ptxx(j+ndim)
+                                    mref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+&
+                                               4.d0*ksi(1)*(1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*&
+                                               ksi(1)*(ksi(1)-5.d-1)*ptxx(ii+ndim)
                                  end do
                                  call elrfvf(elp, mref, nbnomx, ff, nno)
                                  call vecini(ndim, 0.d0, m)
@@ -644,7 +644,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                            do ino = 1, nno
                               lst(k) = lst(k)+ zr(jlst-1+ino)*ff(ino)
                            end do
-                           if (abs(lst(k)).le.1.d-4) lst(k) = 0.d0
+                           if (abs(lst(k)).le.1.d-8) lst(k) = 0.d0
                            minlst= min(minlst,lst(k))
                            maxlst= max(maxlst,lst(k))
                         end do
@@ -677,7 +677,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                               do ino = 1, nno
                                  lst(k) = lst(k)+ zr(jlst-1+ino)*ff(ino)
                               end do
-                              if (lst(k).lt.1.d-4) mipos = .false.
+                              if (lst(k).lt.1.d-8) mipos = .false.
                            end do
                         endif
 !      SI MAXLST<=0
@@ -716,28 +716,6 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                   cface(nface,k)=ni
                               endif
                            end do
-!       NECESSITE D'INVERSER LA CONNECTIVITE? (ON SOUHAITE TOUJOURS GARDER LA
-!       MEME CONVENTION NORMALE DIRIGEE SELON GRADLSN)
-                           do jj = 1, ndim
-                              ab(jj) = pinter(ndim*(cface(nface,2)-1)+jj) -&
-                                       pinter(ndim*(cface(nface,1)-1)+jj)
-                              bc(jj) = pinter(ndim*(cface(nface,3)-1)+jj) -&
-                                       pinter(ndim*(cface(nface,2)-1)+jj)
-                              gradlsn(jj) = zr(jgrlsn-1+jj)
-                              normfa(jj) = 0.d0
-                           end do
-                           call provec(ab,bc,normfa)
-                           det = ddot(ndim, gradlsn, 1, normfa, 1)
-                           if (det.lt.0.d0) then
-                              tempo = cface(nface,2)
-                              cface(nface,2) = cface(nface,3)
-                              cface(nface,3) = tempo
-                              if (.not. iselli(elp)) then
-                                 tempo = cface(nface,4)
-                                 cface(nface,4) = cface(nface,6)
-                                 cface(nface,6) = tempo
-                              endif
-                           endif
 !      DANS LE CAS QUADRATIQUE ON PREND EGALEMENT LES POINTS MILIEUX
                            if (.not. iselli(elp)) then
                               do k = 4, 6
@@ -785,16 +763,40 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                                  endif
                               end do
                            endif
+!       NECESSITE D'INVERSER LA CONNECTIVITE? (ON SOUHAITE TOUJOURS GARDER LA
+!       MEME CONVENTION NORMALE DIRIGEE SELON GRADLSN)
+                           do jj = 1, ndim
+                              ab(jj) = pinter(ndim*(cface(nface,2)-1)+jj) -&
+                                       pinter(ndim*(cface(nface,1)-1)+jj)
+                              bc(jj) = pinter(ndim*(cface(nface,3)-1)+jj) -&
+                                       pinter(ndim*(cface(nface,2)-1)+jj)
+                              gradlsn(jj) = zr(jgrlsn-1+jj)
+                              normfa(jj) = 0.d0
+                           end do
+                           call provec(ab,bc,normfa)
+                           call xnormv(ndim, normfa, norme)
+                           call xnormv(ndim, gradlsn, norme)
+                           det = ddot(ndim, gradlsn, 1, normfa, 1)
+                           if (det.lt.0.d0) then
+                              tempo = cface(nface,2)
+                              cface(nface,2) = cface(nface,3)
+                              cface(nface,3) = tempo
+                              if (.not. iselli(elp)) then
+                                 tempo = cface(nface,4)
+                                 cface(nface,4) = cface(nface,6)
+                                 cface(nface,6) = tempo
+                              endif
+                           endif
 !      SI MINLST>=0
                         else if (minlst.ge.0.d0) then
 !      ON NE PREND PAS CETTE FACE
                            goto 99
                         else
 !      C'EST LE CAS OU LA FACE EST TRAVERSEE PAR LST STRICTEMENT
-                           call xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
-                                       pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
+                           call xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis,&
+                                       pinter, pinref, ainter, cooree, cooref, rainter,&
                                        noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                                       i, j , nnose, jmilt, f, mipos)
+                                       nnose, jgrlsn, mipos)
                            call xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
                         endif
                      endif

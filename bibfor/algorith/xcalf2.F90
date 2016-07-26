@@ -2,7 +2,7 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
                   dgdgl, iret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
 #include "asterfort/assert.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
+#include "asterfort/xbasgl.h"
     real(kind=8) :: he, lsng, lstg, baslog(6), fe(4), dgdgl(4, 2)
     integer :: iret
 !
@@ -51,48 +52,12 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe,&
 !----------------------------------------------------------------
 !
     integer :: i, j, k
-    real(kind=8) :: e1(2), e2(2), p(2, 2), invp(2, 2), norme
-    real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 2), det
+    real(kind=8) :: p(2, 2), invp(2, 2)
+    real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 2)
 !
 !     RECUPERATION DE LA BASE LOCALE ASSOCIEE AU PT
 !     (E1=GRLT,E2=GRLN)
-    do 123 i = 1, 2
-        e1(i) = baslog(i+2)
-        e2(i) = baslog(i+4)
-123  end do
-!     NORMALISATION DE LA BASE
-    norme = e1(1)*e1(1)+e1(2)*e1(2)
-    if (norme .ne. 0.0d0) then
-        norme = sqrt(norme)
-        e1(1) = e1(1)/norme
-        e1(2) = e1(2)/norme
-    endif
-    norme = e2(1)*e2(1)+e2(2)*e2(2)
-    if (norme .ne. 0.0d0) then
-        norme = sqrt(norme)
-        e2(1) = e2(1)/norme
-        e2(2) = e2(2)/norme
-    endif
-!
-!     CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-    do 124 i = 1, 2
-        p(i,1)=e1(i)
-        p(i,2)=e2(i)
-124  end do
-!
-!     VERIFICATION QUE LE DETERMINANT DE P VAUT BIEN 1
-    det = p(1,1)*p(2,2) - p(2,1)*p(1,2)
-!
-!     LA BASE LOCALE SEMBLE FAUSSE
-    ASSERT((abs(det)-1.d0).le.1.d-5)
-!
-!     CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-    do 125 i = 1, 2
-        do 126 j = 1, 2
-            invp(i,j)=p(j,i)
-126      continue
-125  end do
-!
+    call xbasgl(2, baslog, 1, p, invp)
 !
 !     COORDONNÉES POLAIRES DU POINT
     rg=sqrt(lsng**2+lstg**2)

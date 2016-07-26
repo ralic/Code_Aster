@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,6 +74,8 @@ comment=""" SPECIFIQUE X-FEM """)
 PPMILTO  = InputParameter(phys=PHY.N792_R,
 comment=""" SPECIFIQUE X-FEM """)
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+
 
 CHAR_MECA_ROTA_R = Option(
     para_in=(
@@ -98,6 +100,7 @@ CHAR_MECA_ROTA_R = Option(
            PPMILTO,
         SP.PROTATR,
            PSTANO,
+           PBASLOR,
     ),
     para_out=(
         SP.PVECTUR,

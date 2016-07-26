@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,8 +22,8 @@ interface
                       ffm, jacobi, dlagrc, dlagrf,&
                       coeffr, lpenaf, coefff, tau1,&
                       tau2, rese, mproj, coefcr,&
-                      jeu, nsinge, nsingm, rre,&
-                      rrm, nvit, nconta, jddle, jddlm,&
+                      jeu, nsinge, nsingm, fk_escl, fk_mait,&
+                      nvit, nconta, jddle, jddlm,&
                       nfhe, nfhm, lmulti, heavn, heavfa,&
                       vtmp)
         integer :: ndim
@@ -49,8 +49,8 @@ interface
         real(kind=8) :: jeu
         integer :: nsinge
         integer :: nsingm
-        real(kind=8) :: rre
-        real(kind=8) :: rrm
+        real(kind=8) :: fk_escl(27,3,3)
+        real(kind=8) :: fk_mait(27,3,3)
         integer :: nvit
         integer :: nconta
         integer :: jddle(2)

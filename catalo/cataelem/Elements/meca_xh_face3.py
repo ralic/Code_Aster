@@ -96,7 +96,7 @@ class MECA_XH_FACE3(Element):
     """Please document this element"""
     meshType = MT.TRIA3
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG12','XCON=FPG12',),),
         )
     calculs = (
 
@@ -126,7 +126,7 @@ class MECA_XH_FACE3(Element):
                      (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
                      (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),
                      (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     ),
+                     (OP.CALC_K_G.PPMILTO, E33NEUTR),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
@@ -223,7 +223,7 @@ class MECA_XH_FACE4(MECA_XH_FACE3):
     meshType = MT.QUAD4
     elrefe =(
             ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG4','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG12','XCON=FPG12',),),
         )
 
 
@@ -232,7 +232,7 @@ class MECA_XH_FACE6(MECA_XH_FACE3):
     """Please document this element"""
     meshType = MT.TRIA6
     elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','XCON=FPG12',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG12','XCON=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6','XCON=FPG12',),),
         )
 
@@ -243,6 +243,6 @@ class MECA_XH_FACE8(MECA_XH_FACE3):
     meshType = MT.QUAD8
     elrefe =(
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','XCON=FPG12',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG12','XCON=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6','XCON=FPG12',),),
         )

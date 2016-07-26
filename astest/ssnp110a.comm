@@ -86,7 +86,7 @@ IMPR_TABLE(TABLE=TABDEP,);
 DEPREF=9.8756898959655e-02;
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.098756898959655004,
+           VALE_CALC=0.0987568989717,
            NOM_PARA='DY',
            TABLE=TABDEP,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
@@ -144,7 +144,7 @@ IMPR_TABLE(TABLE=G_2,);
 #
 # TEST
 TEST_TABLE(
-           VALE_CALC=3.2908090218925001,
+           VALE_CALC=3.29080902189,
 
            NOM_PARA='G',
            TABLE=G_0,
@@ -153,7 +153,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=13.603188101422001,
+           VALE_CALC=13.6031881014,
 
            NOM_PARA='G',
            TABLE=G_0,
@@ -162,7 +162,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.970374749379999,
+           VALE_CALC=31.9703747494,
 
            NOM_PARA='G',
            TABLE=G_0,
@@ -171,7 +171,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=58.993613915841003,
+           VALE_CALC=58.9936139158,
 
            NOM_PARA='G',
            TABLE=G_0,
@@ -180,7 +180,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=91.415076304037001,
+           VALE_CALC=91.415076304,
 
            NOM_PARA='G',
            TABLE=G_0,
@@ -189,7 +189,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.2013930606905001,
+           VALE_CALC=3.20139306069,
 
            NOM_PARA='G',
            TABLE=G_1,
@@ -198,7 +198,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=13.237527356542,
+           VALE_CALC=13.2375273565,
 
            NOM_PARA='G',
            TABLE=G_1,
@@ -207,7 +207,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.227047674314001,
+           VALE_CALC=31.2270476743,
 
            NOM_PARA='G',
            TABLE=G_1,
@@ -216,7 +216,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=57.745644672712999,
+           VALE_CALC=57.7456446727,
 
            NOM_PARA='G',
            TABLE=G_1,
@@ -225,7 +225,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=89.637167577271995,
+           VALE_CALC=89.6371675773,
 
            NOM_PARA='G',
            TABLE=G_1,
@@ -234,7 +234,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.2017793873037999,
+           VALE_CALC=3.2017793873,
 
            NOM_PARA='G',
            TABLE=G_2,
@@ -243,7 +243,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=13.241393129831,
+           VALE_CALC=13.2413931298,
 
            NOM_PARA='G',
            TABLE=G_2,
@@ -252,7 +252,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=31.236316620385001,
+           VALE_CALC=31.2363166204,
 
            NOM_PARA='G',
            TABLE=G_2,
@@ -261,7 +261,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=57.767467919559998,
+           VALE_CALC=57.7674679196,
 
            NOM_PARA='G',
            TABLE=G_2,
@@ -270,7 +270,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=89.708336760251996,
+           VALE_CALC=89.7083367603,
 
            NOM_PARA='G',
            TABLE=G_2,

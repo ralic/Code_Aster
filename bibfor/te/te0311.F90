@@ -12,12 +12,14 @@ subroutine te0311(option, nomte)
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/rcvad2.h"
+#include "asterfort/coor_cyl.h"
+#include "asterfort/xdeffk.h"
 #include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,23 +61,23 @@ subroutine te0311(option, nomte)
 !                                NNO      3*NNO
     real(kind=8) :: presg, forcg(3), presn(9), forcn(27)
 !
-    real(kind=8) :: depi, norme, ff
+    real(kind=8) :: depi
 !
     real(kind=8) :: tcla1, tcla2, tcla3
-    real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3)
+    real(kind=8) :: p(3, 3), invp(3, 3), ffp(27), fkpo(3, 3)
     real(kind=8) :: phig, rg, valres(3), devres(3)
     real(kind=8) :: e, nu, mu
-    real(kind=8) :: cr2, ka, coeff, coeff3
-    real(kind=8) :: u1l(3), u1g(3), u2l(3), u2g(3), u3l(3), u3g(3)
+    real(kind=8) :: ka, coeff, coeff3
+    real(kind=8) :: u1g(3), u2g(3), u3g(3)
     real(kind=8) :: g, k1, k2, k3, prsc
-    integer :: ibalo, imate, iret
+    integer :: ibalo, imate
     character(len=16) :: nomres(3)
     integer :: icodre(3)
 !
     character(len=8) :: nompar(4)
     character(len=4) :: fami
 !
-    aster_logical :: fonc
+    aster_logical :: fonc, l_not_zero
 !.......................................................................
 !
 !
@@ -219,50 +221,20 @@ subroutine te0311(option, nomte)
 830         continue
 820     continue
 !
-!       BASE LOCALE ASSOCIEE AU POINT DE GAUSS KP
-!       (E1=GRLT,E2=GRLN,E3=E1^E2)
-        do 123 i = 1, 3
-            e1(i) = 0.d0
-            e2(i) = 0.d0
-            do 321 ino = 1, nno
-                ff = zr(ivf-1+nno*(kp-1)+ino)
-                e1(i) = e1(i) + zr(ibalo-1+9*(ino-1)+i+3)*ff
-                e2(i) = e2(i) + zr(ibalo-1+9*(ino-1)+i+6)*ff
-321         continue
-123     continue
-!
-!       NORMALISATION DE LA BASE
-        call normev(e1, norme)
-        call normev(e2, norme)
-        call provec(e1, e2, e3)
-!
-!       CALCUL DE LA MATRICE DE PASSAGE P TELLE QUE
-!       'GLOBAL' = P * 'LOCAL'
-!
-        do 124 i = 1, 3
-            p(i,1) = e1(i)
-            p(i,2) = e2(i)
-            p(i,3) = e3(i)
-124     continue
-!
-!       COORDONNÉES POLAIRES DU POINT
-        rg=sqrt(lsng**2+lstg**2)
-!
-        if (rg .gt. r8prem()) then
-!         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            phig = sign(1.d0,lsng) * abs(atan2(lsng,lstg))
-            iret=1
-        else
-!         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-            phig=0.d0
-            iret=0
-        endif
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    CALCUL DES COOR. CYL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         p(:,:)=0.d0
+         invp(:,:)=0.d0
+         do ino = 1, nno
+           ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
+         enddo
+         call coor_cyl(3, nno, zr(ibalo), zr(igeom), ffp,&
+                       p, invp, rg, phig, l_not_zero)
 !
 !       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
 !       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        ASSERT(iret.ne.0)
+        ASSERT(l_not_zero)
 !
 !
         if ((abs(lsng) .lt. 1.0d-8) .and. (lstg .lt. 0.0d0)) then
@@ -273,7 +245,7 @@ subroutine te0311(option, nomte)
 !         PRODUIT SCALAIRE E2 (AXE X2) * A3 (NORMALE DE L'ELEMENT)
             prsc = 0.0d0
             do 1111 i = 1, 3
-                prsc = prsc + e2(i)*a3(i)
+                prsc = prsc + p(i,2)*a3(i)
 1111         continue
             if (prsc .gt. 0.0d0) then
 !            ON EST SUR LA LEVRE X2 < 0
@@ -307,7 +279,6 @@ subroutine te0311(option, nomte)
         mu = e / (2.d0*(1.d0+nu))
 !
 !       COEFFICIENTS DE CALCUL
-        cr2 = sqrt(rg) / (2.d0*mu*sqrt(depi))
         ka = 3.d0 - 4.d0*nu
 !
         coeff = e / (1.d0-nu*nu)
@@ -316,50 +287,21 @@ subroutine te0311(option, nomte)
 !-----------------------------------------------------------------------
 !       DEFINITION DU CHAMP SINGULIER AUXILIAIRE U1
 !-----------------------------------------------------------------------
-!       CHAMP SINGULIER AUXILIAIRE U1 DANS LA BASE LOCALE
-        u1l(1) = cr2 * cos(phig*0.5d0) * (ka-cos(phig))
-        u1l(2) = cr2 * sin(phig*0.5d0) * (ka-cos(phig))
-        u1l(3) = 0.d0
 !
-!       CHAMP SINGULIER U1 DANS LA BASE GLOBALE
+! --------- champs singuliers
+        call xdeffk(ka, mu, rg, phig, 3, fkpo)
+!
+        u1g(:)=0.
+        u2g(:)=0.
+        u3g(:)=0.
         do 5090 i = 1, 3
-            u1g(i) = 0.0d0
             do 5190 ind = 1, 3
-                u1g(i) = u1g(i) + p(i,ind)*u1l(ind)
+                u1g(i) = u1g(i) + p(i,ind)*fkpo(1,ind)
+                u2g(i) = u2g(i) + p(i,ind)*fkpo(2,ind)
+                u3g(i) = u3g(i) + p(i,ind)*fkpo(3,ind)
 5190         continue
 5090     continue
 !
-!-----------------------------------------------------------------------
-!       DEFINITION DU CHAMP SINGULIER AUXILIAIRE U2
-!-----------------------------------------------------------------------
-!       CHAMP SINGULIER AUXILIAIRE U2 DANS LA BASE LOCALE
-        u2l(1) = cr2 * sin(phig*0.5d0) * (ka + 2.d0 + cos(phig))
-        u2l(2) = cr2 * cos(phig*0.5d0) * (2.d0 - 1.d0 * (ka+cos(phig)) )
-        u2l(3) = 0.d0
-!
-!       CHAMP SINGULIER U2 DANS LA BASE GLOBALE
-        do 6090 i = 1, 3
-            u2g(i) = 0.0d0
-            do 6190 ind = 1, 3
-                u2g(i) = u2g(i) + p(i,ind)*u2l(ind)
-6190         continue
-6090     continue
-!
-!-----------------------------------------------------------------------
-!       DEFINITION DU CHAMP SINGULIER AUXILIAIRE U3
-!-----------------------------------------------------------------------
-!       CHAMP SINGULIER AUXILIAIRE U3 DANS LA BASE LOCALE
-        u3l(1) = 0.d0
-        u3l(2) = 0.d0
-        u3l(3) = 4.d0 * cr2 * sin(phig*0.5d0)
-!
-!       CHAMP SINGULIER U3 DANS LA BASE GLOBALE
-        do 7090 i = 1, 3
-            u3g(i) = 0.0d0
-            do 7190 ind = 1, 3
-                u3g(i) = u3g(i) + p(i,ind)*u3l(ind)
-7190         continue
-7090     continue
 !
         call dfdm2d(nno, kp, ipoids, idfde, coor,&
                     poids, dfdx, dfdy)

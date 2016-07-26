@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       prefno, nogrfi, maxfem, cns1, cns2,&
                       ces1, ces2, cesvi1, cesvi2, listgr,&
                       dirgrm, nivgrm, resuco, ngfon, comps1,&
-                      comps2, pre1)
+                      comps2, pre1, iord)
         character(len=8) :: mo
         character(len=8) :: malini
         character(len=24) :: mailx
@@ -42,6 +42,7 @@ interface
         character(len=24) :: nivgrm
         character(len=8) :: resuco
         integer :: ngfon
+        integer :: iord
         character(len=19) :: comps1
         character(len=19) :: comps2
         aster_logical :: pre1

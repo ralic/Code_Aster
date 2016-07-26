@@ -123,7 +123,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
     character(len=16) :: opti
     character(len=19) :: chrota, chpesa, cf2d3d, chpres, chvolu, cf1d2d, chepsi
     character(len=19) :: chvarc, chvref
-    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno
+    character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno, stano
     character(len=19) :: pmilto, hea_no
     character(len=19) :: longco, pinter, ainter, cface, baseco
     character(len=24) :: ligrmo, chgeom, chgthi
@@ -293,6 +293,7 @@ subroutine mecagl(option, result, modele, depla, thetai,&
         ainter = modele//'.TOPOFAC.AI'
         cface = modele//'.TOPOFAC.CF'
         baseco = modele//'.TOPOFAC.BA'
+        stano = modele//'.STNO'
     endif
 !
     do i = 1, ndimte
@@ -359,8 +360,10 @@ subroutine mecagl(option, result, modele, depla, thetai,&
             lchin(26) = baseco
             lpain(27) = 'PHEA_NO'
             lchin(27) = hea_no
+            lpain(28) = 'PSTANO'
+            lchin(28) = stano
 !
-            nchin = 27
+            nchin = 28
         endif
 !
         if ((opti.eq.'CALC_G_F') .or. (opti.eq.'G_LAGR_F')) then

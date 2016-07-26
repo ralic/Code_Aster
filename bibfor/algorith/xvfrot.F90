@@ -3,13 +3,13 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
                   ifiss, indco, jac, jheavn, ncompn, jheafa,&
                   lact, mu, ncomph, nd, nddl,&
                   ndim, nfh, nfiss, nno, nnol,&
-                  nnos, nvit, pla, reac12, rr,&
-                  seuil, singu, tau1, tau2, vtmp)
+                  nnos, nvit, pla, reac12,&
+                  seuil, singu, fk, tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,6 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 ! IN NOEUD  : FORMULATION AUX NOEUDS
 ! IN NVIT   : ARETE VITALE OU NON
 ! IN PLA    : PLACE DES DDLS DE LAGRANGE
-! IN RR     : RACINE RAYON A LA POINTE DE FISSURE
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
@@ -69,8 +68,9 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
     integer :: nddl, ndim, nfh, nfiss, nno
     integer :: nnol, nnos, nvec, nvit
     integer :: pla(27), singu
+    real(kind=8) :: fk(27,3,3)
     real(kind=8) :: coeffp, coeffr, ffc(8), ffp(27), jac
-    real(kind=8) :: mu, nd(3), pb(3), reac12(3), rr, saut(3), seuil
+    real(kind=8) :: mu, nd(3), pb(3), reac12(3), saut(3), seuil
     real(kind=8) :: tau1(3), tau2(3), vtmp(400)
 !
     if (mu .eq. 0.d0) indco = 0
@@ -82,7 +82,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -101,7 +101,7 @@ subroutine xvfrot(algofr, coeffp, coeffr, ddlm, ddls,&
 ! --- CALCUL DU VECTEUR LN1
 !
         call xmvef2(ndim, nno, nnos, ffp, jac,&
-                    seuil, reac12, singu, nfh, rr,&
+                    seuil, reac12, singu, fk, nfh,&
                     coeffp, coeffr, mu, algofr, nd,&
                     ddls, ddlm, idepl, pb, vtmp)
 !

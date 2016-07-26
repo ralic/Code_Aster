@@ -354,6 +354,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                                                    "SIEF_ELGA","SIEF_ELNO","SIEF_NOEU")),
                        CHAM_GD        = SIMP(statut='f',typ=(cham_no_sdaster,cham_elem) ),
                        MODELE         = SIMP(statut='f',typ=modele_sdaster),
+                       FISSURE         =SIMP(statut='f',typ=(fiss_xfem)),
 
                        b_norme_GD = BLOC(condition = "( CHAM_GD != None )",
                               COEF_MULT      = SIMP(statut='f',typ='R',max=30),

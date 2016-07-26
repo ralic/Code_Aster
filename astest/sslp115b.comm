@@ -110,14 +110,8 @@ BLOCFISS=AFFE_CHAR_MECA(MODELE=ModX,
                        DDL_IMPO=_F(TOUT ='OUI',
                                    H1X = 0,
                                    H1Y = 0,
-                                   E1X = 0,
-                                   E1Y = 0,
-                                   E2X = 0,
-                                   E2Y = 0,
-                                   E3X = 0,
-                                   E3Y = 0,
-                                   E4X = 0,
-                                   E4Y = 0,
+                                   K1 = 0,
+                                   K2 = 0,
                                     )  ,);
 
 ##Calcul thermomecanique avec fissure fermee pour extraction des contraintes
@@ -313,21 +307,21 @@ vale_calc_g_3 = 53.4924548957
 
 # 1) le G de CALC_G
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=vale_calc_g_1,
+           VALE_CALC=55.3603553817,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA1)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=vale_calc_g_2,
+           VALE_CALC=54.9573978001,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGA2)
 
 TEST_TABLE(PRECISION=0.035,
-           VALE_CALC=vale_calc_g_3,
+           VALE_CALC=53.8818062974,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
@@ -335,21 +329,21 @@ TEST_TABLE(PRECISION=0.035,
 
 # 2) le G de CALC_K_G
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=vale_calc_g_1,
+           VALE_CALC=55.3603553817,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.02,
-           VALE_CALC=vale_calc_g_2,
+           VALE_CALC=54.9573978001,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
            TABLE=GINGAK2,)
 
 TEST_TABLE(PRECISION=0.035,
-           VALE_CALC=vale_calc_g_3,
+           VALE_CALC=53.8818062974,
            VALE_REFE=Gref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='G',
@@ -357,21 +351,21 @@ TEST_TABLE(PRECISION=0.035,
 
 # 3) le K de CALC_K_G
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3570.68198957,
+           VALE_CALC=3576.64957282,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=GINGAK1,)
 
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3560.82981086,
+           VALE_CALC=3567.8203332,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=GINGAK2,)
 
 TEST_TABLE(PRECISION=0.01,
-           VALE_CALC=3539.66359637,
+           VALE_CALC=3546.54316116,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
@@ -379,14 +373,14 @@ TEST_TABLE(PRECISION=0.01,
 
 # 4) le K avec POST_K1_K2_K3 : 5% d'ecart, c'est bizarre
 TEST_TABLE(PRECISION=0.05,
-           VALE_CALC=3620.51791372,
+           VALE_CALC=3595.16383349,
            VALE_REFE=KIref,
            REFERENCE='AUTRE_ASTER',
            NOM_PARA='K1',
            TABLE=PKMECA,)
 
 # 5) le G suite au calcul thermique
-TEST_TABLE(VALE_CALC=55.0681758782,
+TEST_TABLE(VALE_CALC=55.3187145469,
            NOM_PARA='G',
            TABLE=GTHER3,
            FILTRE=_F(NOM_PARA='INST',

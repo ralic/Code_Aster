@@ -1,8 +1,8 @@
 subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
                   ddt4, p, nno, ddlh, ddls,&
-                  jac, ffp, singu, rr, mmat)
+                  jac, ffp, singu, fk, mmat)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,9 +19,11 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
 ! ======================================================================
     implicit none
 #include "asterfort/matini.h"
+#include "asterfort/assert.h"
     real(kind=8) :: ddt1(3, 3), ddt2(3, 3), ddt3(3, 3), ddt4(3, 3), pp(3, 3)
     real(kind=8) :: p(3, 3), mmat(216, 216)
-    real(kind=8) :: jac, ffp(27), rr
+    real(kind=8) :: jac, ffp(27)
+    real(kind=8) :: fk(27,3,3)
     integer :: ndim, ddlh, ddls, nno, singu
 !.......................................................................
 !
@@ -31,16 +33,20 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
 !
 !
 !
-!  ENTREES  --->  PP,P,JAC,FFP,RR,NDIM,DDLH,DDLS,NNO
+!  ENTREES  --->  PP,P,JAC,FFP,FK, NDIM,DDLH,DDLS,NNO
 !           --->  SINGU,DDT1,DDT2,DDT3,DDT4
 !  SORTIES  --->  MMAT
 !
 !.......................................................................
     real(kind=8) :: ddt11(3, 3), ddt21(3, 3), ddt31(3, 3), ddt41(3, 3)
     real(kind=8) :: ddt111(3, 3), ddt211(3, 3), ddt311(3, 3), ddt411(3, 3)
-    integer :: i, j, k, l
+    integer :: i, j, k, l, alpi, alpj
 !
 !.......................................................................
+!
+!   D'APRES LE DIMENSIONNMENT DE DDT* LE MULTI-HEAVISIDE EST EXCLUS
+!   PAR PRECAUTION ON MET UN ASSERT
+    ASSERT(ddlh.eq.ndim)
 !
     call matini(3, 3, 0.d0, ddt11)
     call matini(3, 3, 0.d0, ddt21)
@@ -87,36 +93,40 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3,&
 !
 10              continue
 !
-                do 11 l = 1, singu*ndim
-                    mmat(ddls*(i-1)+ndim+k,ddls*(j-1)+ndim+ddlh+l) =&
-                    mmat(ddls*(i-1)+ndim+k,ddls*(j-1)+ndim+ddlh+l)+&
-                    4.d0*ffp(i)*ddt111(k,l)*ffp(j)*jac*rr +4.d0*ffp(i)&
-                    *ddt211(k,l)*ffp(j)*jac*rr +4.d0*ffp(i)*ddt311(k,&
-                    l)*ffp(j)*jac*rr +4.d0*ffp(i)*ddt411(k,l)*ffp(j)*&
-                    jac*rr
+                do 11 alpj = 1, singu*ndim
+                 do l = 1, ndim
+                    mmat(ddls*(i-1)+ndim+k,ddls*(j-1)+ndim+ddlh+alpj) =&
+                    mmat(ddls*(i-1)+ndim+k,ddls*(j-1)+ndim+ddlh+alpj)+&
+                    4.d0*ffp(i)*ddt111(k,l)*jac*fk(j,alpj,l) +4.d0*ffp(i)&
+                    *ddt211(k,l)*jac**fk(j,alpj,l) +4.d0*ffp(i)*ddt311(k,&
+                    l)*jac*fk(j,alpj,l) +4.d0*ffp(i)*ddt411(k,l)*&
+                    jac*fk(j,alpj,l)
+                  enddo
 11              continue
 !
  9          continue
-            do 12 k = 1, singu*ndim
+            do 12 alpi = 1, singu*ndim
+              do k = 1, ndim
                 do 13 l = 1, ddlh
-                    mmat(ddls*(i-1)+ndim+ddlh+k,ddls*(j-1)+ndim+l) =&
-                    mmat(ddls*(i-1)+ndim+ddlh+k,ddls*(j-1)+ndim+l)+&
-                    4.d0*ffp(i)*ddt111(k,l)*ffp(j)*jac*rr +4.d0*ffp(i)&
-                    *ddt211(k,l)*ffp(j)*jac*rr +4.d0*ffp(i)*ddt311(k,&
-                    l)*ffp(j)*jac*rr +4.d0*ffp(i)*ddt411(k,l)*ffp(j)*&
-                    jac*rr
+                    mmat(ddls*(i-1)+ndim+ddlh+alpi,ddls*(j-1)+ndim+l) =&
+                    mmat(ddls*(i-1)+ndim+ddlh+alpi,ddls*(j-1)+ndim+l)+&
+                    4.d0*ddt111(k,l)*ffp(j)*jac*fk(i,alpi,k) +4.d0&
+                    *ddt211(k,l)*ffp(j)*jac*fk(i,alpi,k) +4.d0*ddt311(k,&
+                    l)*ffp(j)*jac*fk(i,alpi,k) +4.d0*ddt411(k,l)*ffp(j)*&
+                    jac*fk(i,alpi,k)
 13              continue
 !
-                do 14 l = 1, singu*ndim
-!
-                    mmat(ddls*(i-1)+ndim+ddlh+k,ddls*(j-1)+ndim+ddlh+&
-                    l) = mmat(ddls*(i-1)+ndim+ddlh+k,ddls*(j-1)+ndim+&
-                    ddlh+l)+ 4.d0*ffp(i)*ddt111(k,l)*ffp(j)*jac*rr*rr&
-                    +4.d0*ffp(i)*ddt211(k,l)*ffp(j)*jac*rr*rr +4.d0*&
-                    ffp(i)*ddt311(k,l)*ffp(j)*jac*rr*rr +4.d0*ffp(i)*&
-                    ddt411(k,l)*ffp(j)*jac*rr*rr
-!
+                do 14 alpj = 1, singu*ndim
+                 do l = 1, ndim
+                    mmat(ddls*(i-1)+ndim+ddlh+alpi,ddls*(j-1)+ndim+ddlh+&
+                    alpj) = mmat(ddls*(i-1)+ndim+ddlh+alpi,ddls*(j-1)+ndim+&
+                    ddlh+alpj)+ 4.d0*ddt111(k,l)*jac*fk(i,alpi,k)*fk(j,alpj,l)&
+                    +4.d0*ddt211(k,l)*jac*fk(i,alpi,k)*fk(j,alpj,l) +4.d0*&
+                    ddt311(k,l)*jac*fk(i,alpi,k)*fk(j,alpj,l) +4.d0*&
+                    ddt411(k,l)*jac*fk(i,alpi,k)*fk(j,alpj,l)
+                  enddo
 14              continue
+              enddo
 12          continue
 !
 !

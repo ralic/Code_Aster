@@ -61,7 +61,7 @@ alphaf = [ 30.]
 
 # DEFINITION DES COURONNES POUR LE CALCUL DES SIF
 RI=[0.2*A,   eps]
-RS=[0.4*A, 4*eps]
+RS=[0.4*A, 3*eps]
 
 #----------------------------------------------
 #                MAILLAGE, MODELE INITIAL
@@ -109,20 +109,21 @@ SIF_1 = [None]*(nbc*nbcalc)
 SIF_2 = [None]*(nbc*nbcalc)
 TG_1 = [None]*(nbc*nbcalc)
 
-VALE_CALC=[ 1.934548872162E+05,
- 1.9336719098151E+05,
- 0.21394795390851,
- 1.096905678833E+05,
- 1.0958408257203E+05,
- 1.93142434379E+05,
- 1.932071319725E+05,
- 0.21396246063800,
- 1.1000680316856E+05,
- 1.09879761719E+05,
- 1.9298262136663E+05,
- 1.0966433272661E+05,
- 1.9307350709856E+05,
- 1.1043532175666E+05,]
+VALE_CALC=[
+193535.384152,
+193549.779991,
+0.214872834903,
+109709.078486,
+109736.748608,
+193537.102152,
+193547.003263,
+0.214876544533,
+109709.22553,
+109745.682462,
+194023.657158,
+111194.727173,
+194107.110566,
+111193.097429,]
 ct = -1
 for i in range(nbcalc) :
 
@@ -135,6 +136,7 @@ for i in range(nbcalc) :
                                        PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),
                                        PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
                                        ),
+                          TYPE_ENRI_FOND='GEOMETRIQUE',NB_COUCHES=4
                           )
 
    MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i])
@@ -250,7 +252,7 @@ for i in range(nbcalc) :
    # K1 SUR LE 1er FOND
    PK1[i]=POST_K1_K2_K3(FISSURE = FISS[i],
                         NUME_FOND = 1,
-                        RESULTAT  = RESU[i],
+                        RESULTAT  = RESU[i],NB_NOEUD_COUPE=4,
                        )
 
    IMPR_TABLE(TABLE = PK1[i])
@@ -287,7 +289,7 @@ for i in range(nbcalc) :
    # K1 SUR LE 2EME FOND
    PK2[i]=POST_K1_K2_K3(FISSURE = FISS[i],
                         NUME_FOND = 2,
-                        RESULTAT  = RESU[i],
+                        RESULTAT  = RESU[i],NB_NOEUD_COUPE=4,
                        )
 
    IMPR_TABLE(TABLE = PK2[i])

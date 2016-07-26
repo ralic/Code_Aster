@@ -142,13 +142,13 @@ TAB = POST_RELEVE_T(ACTION=_F(INTITULE='Table pour coordonnees du fond',
                                OPERATION='EXTRACTION',),);
 
 TEST_TABLE(
-           VALE_CALC=42.077649370836,
+           VALE_CALC=42.1270132385,
            NOM_PARA='COOR_X',
            TABLE=TAB,
            )
 
 TEST_TABLE(
-           VALE_CALC=20.616845352176,
+           VALE_CALC=20.6052755042,
            NOM_PARA='COOR_Y',
            TABLE=TAB,
            )

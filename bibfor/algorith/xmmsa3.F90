@@ -1,6 +1,6 @@
 subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
                   nvec, v1, v2, v3, nfh,&
-                  singu, rr, ddls, ddlm, jheavn, ncompn,&
+                  singu, fk, ddls, ddlm, jheavn, ncompn,&
                   nfiss, ifiss, jheafa, ncomph, ifa,&
                   saut)
 !
@@ -16,11 +16,12 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
     integer :: ndim, nno, nnos
     integer :: nfh, ddls, ddlm
     integer :: singu, nvec, nddl, nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
-    real(kind=8) :: saut(3), rr, ffp(27)
+    real(kind=8) :: saut(3), ffp(27)
     real(kind=8) :: v1(nddl), v2(*), v3(*)
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +55,6 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 ! IN  VEC3   : TROISIEME VECTEUR
 ! IN  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 ! IN  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
 ! I/O SAUT   : SAUT
@@ -63,6 +63,7 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 !
 !
     integer :: i, j, in, ifh, hea_fa(2)
+    integer :: alpi
     real(kind=8) :: coefi
     aster_logical :: lmultc
 !
@@ -97,9 +98,11 @@ subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
 162         continue
 164     continue
         do 163 j = 1, singu*ndim
-            saut(j) = saut(j)-2.d0*ffp(i)*rr*v1(in+ndim*(1+nfh)+j)
-            if (nvec .ge. 2) saut(j) = saut(j)-2.d0*ffp(i)*rr*v2(in+ ndim*(1+nfh)+j)
-            if (nvec .eq. 3) saut(j) = saut(j)-2.d0*ffp(i)*rr*v3(in+ ndim*(1+nfh)+j)
+          do alpi = 1, ndim
+            saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v1(in+ndim*(1+nfh)+alpi)
+            if (nvec .ge. 2) saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v2(in+ ndim*(1+nfh)+alpi)
+            if (nvec .eq. 3) saut(j) = saut(j)-2.d0*fk(i,alpi,j)*v3(in+ ndim*(1+nfh)+alpi)
+          enddo
 163     continue
 161 end do
 !

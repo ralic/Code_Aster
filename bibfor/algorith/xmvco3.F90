@@ -2,7 +2,7 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
                   nnos, pla, lact, nfh, ddls,&
                   ddlm, nfiss, ifiss, jheafa, ifa,&
                   ncomph, jheavn, ncompn, jac, ffc, ffp,&
-                  singu, rr, vtmp)
+                  singu, fk, vtmp)
 !
 ! aslint: disable=W1504
     implicit none
@@ -14,11 +14,11 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
     integer :: nfh, ddls, pla(27), lact(8)
     integer :: singu, jheavn, ncompn
     real(kind=8) :: vtmp(400)
-    real(kind=8) :: ffp(27), jac, depref, sigref
-    real(kind=8) :: rr, ffc(8)
+    real(kind=8) :: ffp(27), jac, depref, sigref, fk(27,3,3)
+    real(kind=8) :: ffc(8)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,12 +48,12 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
 ! IN  JAC    : PRODUIT DU JACOBIEN ET DU POIDS
 ! IN  FFP    : FONCTIONS DE FORME DE L'ELEMENT PARENT
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
+! IN  FK     : FONCTION VECTORIELLE EN FOND DE FISSURE
 ! I/O VTMP   : VECTEUR ELEMENTAIRE DE CONTACT/FROTTEMENT
 !
 !
     integer :: i, j, k, pli, nli, ddlm, ifa, ifh, ifiss
-    integer :: in, jheafa, ncomph, nfiss, nnos
+    integer :: in, jheafa, ncomph, nfiss, nnos, alp
     real(kind=8) :: ffi, coefi
     aster_logical :: lmultc
 !
@@ -73,8 +73,11 @@ subroutine xmvco3(sigref, depref, ndim, nno, nnol,&
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) + abs(coefi* ffp(i)*sigref*jac)
  12         continue
  11     continue
-        do 13 j = 1, singu*ndim
-            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) + abs(2.d0*ffp(i)*rr*sigref*jac )
+        do 13 alp = 1, singu*ndim
+          do j = 1, ndim
+            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) + abs(2.d0*ffp(i)*&
+                                        fk(i,alp,j)*sigref*jac )
+          enddo
  13     continue
  10 continue
 !

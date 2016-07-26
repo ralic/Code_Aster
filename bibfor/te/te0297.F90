@@ -7,6 +7,7 @@ subroutine te0297(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
@@ -24,7 +25,7 @@ subroutine te0297(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +58,7 @@ subroutine te0297(option, nomte)
     integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate
     integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
     integer :: nface, cface(30, 6), ifa, singu, jpmilt, ipuls, iret, jtab(7)
-    integer :: irese, ddlm, jbasec, nptf, nfiss, jheavn
+    integer :: irese, ddlm, jbasec, nptf, nfiss, jheavn, jstno
     integer :: contac
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81), puls
@@ -111,7 +112,6 @@ subroutine te0297(option, nomte)
         call jevech('PCNSETO', 'L', jcnset)
         call jevech('PHEAVTO', 'L', jheavt)
         call jevech('PLONCHA', 'L', jlonch)
-        call jevech('PLSN', 'L', jlsn)
     endif
     call jevech('PBASLOR', 'L', jbaslo)
     call jevech('PLST'   , 'L', jlst)
@@ -122,11 +122,11 @@ subroutine te0297(option, nomte)
     call teattr('S', 'XFEM', enr, ier)
     if (nfh.gt.0) call jevech('PHEA_NO', 'L', jheavn)
 !   Propre aux elements 1d et 2d (quadratiques)
-    if ((ier.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHC'.or.enr.eq.'XHT'.or.enr.eq.'XT')&
-         .and..not.iselli(elrefp))&
+    if ((ier.eq.0) .and. ltequa(elrefp,enr))&
     call jevech('PPMILTO', 'L', jpmilt)
+    if (nfe.gt.0) call jevech('PSTANO', 'L', jstno)
     if(option.eq.'CALC_K_G_COHE') goto 98
+    call jevech('PLSN'   , 'L', jlsn)
 !
 !   VERIFS DE COHERENCE RHO <-> PESANTEUR, ROTATION, PULSATION
     if ( .not. cgverho(imate) ) call utmess('F', 'RUPTURE1_26')
@@ -176,7 +176,7 @@ subroutine te0297(option, nomte)
                     ise, nfh, ddlc, ddlm, nfe,&
                     puls, zr(jbaslo), nnop,&
                     idepl, zr(jlsn), zr( jlst), idecpg, igthet,&
-                    fno, nfiss, jheavn)
+                    fno, nfiss, jheavn, jstno)
 !
 110  continue
 !
@@ -259,7 +259,7 @@ subroutine te0297(option, nomte)
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, cface,&
                     igeom, nfh, jheavn, singu, nfe, ddlc,&
-                    ddlm, jlst, ipres, ipref, itemps,&
+                    ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, option, igthet, jbasec,&
                     contac)

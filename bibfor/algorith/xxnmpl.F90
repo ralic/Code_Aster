@@ -4,7 +4,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                   basloc, nnop, npg, typmod, option,&
                   imate, compor, lgpg, crit, idepl,&
                   lsn, lst, idecpg, sig, vi,&
-                  matuu, ivectu, codret, nfiss, heavn)
+                  matuu, ivectu, codret, nfiss, heavn, jstno)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -20,14 +20,18 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/r8inir.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf2.h"
-#include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/iimatu.h"
+#include "asterfort/xnbddl.h"
+#include "asterfort/iselli.h"
     integer :: ndim, igeom, imate, lgpg, codret, nnop, npg
     integer :: nfh, ddlc, ddlm, nfe, idepl, ivectu, ideplp
     integer :: nfiss, heavn(nnop, 5), idecpg
+    integer :: jstno
     character(len=8) :: elrefp, typmod(*)
     character(len=8) :: elrese
     character(len=16) :: option, compor(4)
@@ -37,7 +41,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
     real(kind=8) :: instam, instap, sigm(2*ndim, npg), sign(6)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,16 +93,18 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 ! OUT IVECTU  : VECTEUR FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !......................................................................
 !
-    integer :: i, ig, iret, j, j1, kkd, kl, kpg, l, m, n, nn, mn
+    integer :: i, ig, j, j1, kkd, kl, kpg, l, m, n, nn, mn
     integer :: ddls, ddld, cpt, idfde, ipoids, ivf, dec(nnop)
     integer :: jcoopg, jdfd2, jgano, ndimb, nno, nnops, nnos, npgbis, hea_se
+    integer :: singu, alp, ii, jj
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), sigma(6), ftf, detf
-    real(kind=8) :: tmp1, tmp2, sigp(6), fe(4), baslog(3*ndim)
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
+    real(kind=8) :: tmp1, tmp2, sigp(6)
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: rbid33(3, 3), rbid1(1)
-    real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop), dgdgl(4, 3)
-    real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), r
+    real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, nnop)
+    real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe*ndim)), r
     real(kind=8) :: elgeom(10, 27), dfdib(27, 3), deplb1(3, 27), deplb2(3, 27)
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
     aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
@@ -115,12 +121,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld = ndim*(1+nfh+nfe)
-!
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls = ddld+ddlc
-!
+!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !     RECUPERATION DU NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT PARENT
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
@@ -158,34 +160,16 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
             end do
         end do
 !
-!             JUSTE POUR CALCULER LES FF
+!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+!       ET CALCUL DE FF ET DFDI
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
+                    xe, ff, dfdi=dfdi)
 !
-        if (nfe .gt. 0) then
-!         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
-            call vecini(3*ndim, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do n = 1, nnop
-                lsng = lsng + lsn(n) * ff(n)
-                lstg = lstg + lst(n) * ff(n)
-                do i = 1, 3*ndim
-                    baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-                end do
-            end do
-!
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-            if (ndim .eq. 2) then
-                call xcalf2(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            else if (ndim.eq.3) then
-                call xcalfe(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            endif
-!         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (singu .gt. 0) then
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi=dfdi, dkdgl=dkdgl)
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -201,31 +185,29 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !          CE SERA FAIT PLUS TARD AVEC JAC = JAC X R
         endif
 !
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
-!       ET CALCUL DE FF ET DFDI
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff, dfdi=dfdi)
-!
 ! -     CALCUL DE DEPS
         call xcinem(axi, igeom, nnop, nnops, ideplp, grdepl,&
                     ndim, he,&
-                    nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f,&
+                    nfiss, nfh, singu, ddls, ddlm,&
+                    fk, dkdgl, ff, dfdi, f,&
                     deps, rbid33, heavn)
 !
 ! -     CALCUL DE EPS
         call xcinem(axi, igeom, nnop, nnops, idepl, grdepl,&
                     ndim, he,&
-                    nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f,&
+                    nfiss, nfh, singu, ddls, ddlm,&
+                    fk, dkdgl, ff, dfdi, f,&
                     eps, rbid33, heavn)
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !       CALCUL DES PRODUITS SYMETR. DE F PAR N,
+        def(:,:,:)=0.d0
         do n = 1, nnop
+            cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
             do i = 1, ndim
+                cpt = cpt+1
                 def(1,n,i) = f(i,1)*dfdi(n,1)
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
@@ -245,7 +227,7 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !         ENRICHISSEMENT PAR HEAVYSIDE
             do ig = 1, nfh
                 do i = 1, ndim
-                    cpt=ndim*(1+ig-1)+i
+                    cpt = cpt+1
                     do m = 1, 2*ndim
                         def(m,n,cpt) = def(m,n,i) * xcalc_heav(heavn(n,ig),hea_se,heavn(n,5))
                     end do
@@ -261,36 +243,41 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do ig = 1, nfe
+            do ig = 1, singu
+              do alp = 1, ndim
                 do i = 1, ndim
-                    cpt = ndim*(1+nfh+ig-1)+i
-                    def(1,n,cpt) = f(i,1) * (dfdi(n,1) * fe(ig) + ff( n)*dgdgl(ig,1))
+                    cpt=cpt+1
+                    def(1,n,cpt) = f(i,1)* dkdgl(n,alp,i,1)
 !
-                    def(2,n,cpt) = f(i,2) * (dfdi(n,2) * fe(ig) + ff( n)*dgdgl(ig,2))
+                    def(2,n,cpt) = f(i,2)* dkdgl(n,alp,i,2)
 !
                     def(3,n,cpt) = 0.d0
 !
                     def(4,n,cpt) = (&
-                                   f(i,1)* (dfdi(n,2)*fe(ig)+ff(n)* dgdgl(ig,2)) + f(i,2)* (dfdi(&
-                                   &n,1)*fe(ig)+ff(n)* dgdgl(ig,1))&
+                                   f(i,1)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,1)&
                                    )/rac2
+!
                     if (ndim .eq. 3) then
-                        def(3,n,cpt) = f(i,3) * (dfdi(n,3) * fe(ig) + ff(n)*dgdgl(ig,3))
+                        def(3,n,cpt) = f(i,3)* dkdgl(n,alp,i,3)
                         def(5,n,cpt) = (&
-                                       f(i,1)* (dfdi(n,3)*fe(ig)+ff( n)*dgdgl(ig,3)) + f(i,3)* (d&
-                                       &fdi(n,1)*fe(ig)+ ff(n)*dgdgl(ig,1))&
+                                       f(i,1)* dkdgl(n,alp,i,3) + f(i,3)* dkdgl(n,alp,i,1)&
                                        )/rac2
                         def(6,n,cpt) = (&
-                                       f(i,3)* (dfdi(n,2)*fe(ig)+ff( n)*dgdgl(ig,2)) + f(i,2)* (d&
-                                       &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
+                                       f(i,3)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,3)&
                                        )/rac2
                     endif
                 end do
 !
-!   ATTENTION:TERME DE CORRECTION (3,3) AXI LE DDL 1+NDIM*(NFH+IG)
+              end do
+!
+!   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+ALP)
+!      EN AXI: ON PROJETTE L ENRICHISSEMENT VECTORIEL SUIVANT X
                 if (axi) then
-                    def(3,n,(1+ndim*(nfh+ig))) = f(3,3)* ff(n)/r * fe( ig)
+                  do alp = 1, ndim
+                    def(3,n,(1+ndim*(nfh+alp))) = f(3,3)* fk(n,alp,1)/r
+                  end do
                 endif
+!
             end do
 !
             ASSERT(cpt.eq.ddld)
@@ -361,7 +348,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                 nn=dec(n)
 !
                 do i = 1, ddld
-                    kkd = (nn+i-1) * (nn+i) /2
+                    ii=iimatu(i,ndim,nfh,nfe)
+                    kkd = (nn+ii-1) * (nn+ii) /2
                     do kl = 1, 2*ndim
                         sigp(kl) = 0.d0
                         do l = 1, 2*ndim
@@ -369,18 +357,19 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                         end do
                     end do
                     do j = 1, ddld
+                        jj=iimatu(j,ndim,nfh,nfe)
                         do m = 1, n
                             mn=dec(m)
 !
                             if (m .eq. n) then
-                                j1 = i
+                                j1 = ii
                             else
                                 j1 = ddld
                             endif
 !
 !                 RIGIDITE GEOMETRIQUE
                             tmp1 = 0.d0
-                            if (grdepl .and. i .eq. j) then
+                            if (grdepl .and. ii .eq. jj) then
                                 tmp1 = 0.d0
                                 do l = 1, 2*ndim
                                     tmp1 = tmp1+pff(l,n,m)*sigma(l)
@@ -400,8 +389,8 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
                             end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                            if (j .le. j1) then
-                                matuu(kkd+mn+j) = matuu(kkd+mn+j) + ( tmp1+tmp2)*jac
+                            if (jj .le. j1) then
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj) + ( tmp1+tmp2)*jac
                             endif
 !
                         end do
@@ -417,9 +406,11 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom,&
 !
             do n = 1, nnop
                 nn=dec(n)
+!
                 do i = 1, ddld
+                    ii=iimatu(i,ndim,nfh,nfe)
                     do l = 1, 2*ndim
-                        zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(l,&
+                        zr(ivectu-1+nn+ii)= zr(ivectu-1+nn+ii) + def(l,&
                         n,i)*sigma(l)*jac
                     end do
                 end do

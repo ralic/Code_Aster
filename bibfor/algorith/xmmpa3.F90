@@ -1,6 +1,6 @@
 subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, jac, nfh, nd,&
-                  cpenco, singu, rr, ddls, ddlm,&
+                  cpenco, singu, fk, ddls, ddlm,&
                   jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                   ifa, mmat)
 !
@@ -16,10 +16,11 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
     integer :: singu, pla(27), nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: mmat(216, 216), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac
-    real(kind=8) :: cpenco, rr
+    real(kind=8) :: cpenco
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,6 +67,7 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
     integer :: i, j, l, jn, jfh
     integer :: pli, plj, hea_fa(2)
+    integer :: alpj
     real(kind=8) :: ffi, ffj, coefj
     aster_logical :: lmultc
 !
@@ -110,14 +112,17 @@ subroutine xmmpa3(ndim, nno, nnos, nnol, pla,&
 !
 134         continue
             do 133 l = 1, singu*ndim
-                mmat(pli,jn+ndim*(1+nfh)+l) = mmat(&
+              do alpj = 1 , ndim
+                mmat(pli,jn+ndim*(1+nfh)+alpj) = mmat(&
                                               pli,&
-                                              jn+ndim*(1+nfh) +l) + 2.d0 * ffi * ffp(j) * rr * n&
+                                              jn+ndim*(1+nfh) +alpj) + 2.d0 * ffi * &
+                                              fk(j,alpj,l) * n&
                                               &d(l&
                                               ) * jac
 !
-                mmat(jn+ndim*(1+nfh)+l,pli)= mmat(jn+ndim*(1+nfh)+l,&
-                pli) + 2.d0 * ffi * ffp(j) * rr * nd(l) * jac
+                mmat(jn+ndim*(1+nfh)+alpj,pli)= mmat(jn+ndim*(1+nfh)+alpj,&
+                pli) + 2.d0 * ffi * fk(j,alpj,l) * nd(l) * jac
+              enddo
 133         continue
 !
 131     continue

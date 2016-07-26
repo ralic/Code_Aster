@@ -168,13 +168,13 @@ IMPR_TABLE(TABLE=TEMPINF)
 #----------------------------------------------
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=23.55476056925 ,
+           VALE_CALC=23.5581253801 ,
            VALE_REFE=23.559884847913,
            NOM_PARA='TEMP',
            TABLE=TEMPSUP,)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=15.59737566079 ,
+           VALE_CALC=15.5940111257 ,
            VALE_REFE=15.592470476233,
            NOM_PARA='TEMP',
            TABLE=TEMPINF,)

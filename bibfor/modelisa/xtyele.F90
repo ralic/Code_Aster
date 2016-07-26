@@ -1,7 +1,7 @@
 subroutine xtyele(model, trav, nfiss, fiss, contac,&
                   ndim, linter)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -278,6 +278,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 ! --- ON REGARDE SI LE NOMBRE DE NOEUDS COUPÉES NBCOUP DEFINIT UNE FACE
                             if (ndim .eq. 2) then
                                 if (nbcoup .eq. 2) lcont=.true.
+                                if (nbcoup .eq. 3 .and. .not.ismali(typma)) lcont=.true.
                             else
                                 call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
                                 if (typma(1:5) .eq. 'TETRA') then

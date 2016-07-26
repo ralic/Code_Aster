@@ -2,7 +2,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
                  ddlc, ddlm, igeom, compor, jpintt,&
                  cnset, heavt, lonch, basloc, sigma,&
                  nbsig, idepl, lsn, lst, ivectu,&
-                 jpmilt, nfiss, jheavn)
+                 jpmilt, nfiss, jheavn, jstno, imate)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -15,14 +15,14 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
 #include "asterfort/tecach.h"
 #include "asterfort/xxbsig.h"
     integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
-    integer :: nfiss
+    integer :: nfiss, jstno, imate
     integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt, jheavn
     real(kind=8) :: basloc(*), sigma(*), lsn(nnop), lst(nnop)
     character(len=16) :: compor(*)
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,7 +96,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
     call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,npg=npg)
 !
 !   RECUPERATION DE LA DEFINITION DES FONCTIONS HEAVISIDES
-    if (nfh.gt.0 .or. nfe.gt.0) then
+    if (nfh.gt.0) then
       call tecach('OOO', 'PHEA_NO', 'L', iret, nval=7,&
                 itab=jtab)
       ncompn = jtab(2)/jtab(3)
@@ -153,7 +153,7 @@ subroutine xbsig(ndim, nnop, nfh, nfe,&
                     igeom, he, nfh, ddlc, ddlm,&
                     nfe, basloc, nnop, npg, sigma(idebs+1),&
                     compor, idepl, lsn, lst, nfiss,&
-                    heavn, codopt, ivectu)
+                    heavn, jstno, codopt, ivectu, imate)
 !
     end do
 !

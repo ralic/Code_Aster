@@ -1,7 +1,7 @@
 subroutine xcodec(noma, modelx, k8condi, linter, decou)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,10 +35,11 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 #include "asterfort/xtopoc.h"
 #include "asterfort/xtopoh.h"
 #include "asterfort/xtopoi.h"
+#include "asterfort/exi_fiss.h"
     character(len=8) :: noma, modelx, k8condi, decou
     character(len=19) :: ligre1, maxfem
     integer :: jcond
-    aster_logical :: linter
+    aster_logical :: linter, lfiss
 !
 ! ----------------------------------------------------------------------
 !
@@ -114,13 +115,22 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 ! --- ON MODIFIE MODELX(1:8)//'.PRE_COND' POUR L ACTIVATION DU PRE CONDITIONNEUR XFEM
 ! --- ON MODIFIE MODELX(1:8)//'.STNO' POUR LE CONDITIONNEMENT HEAVISIDE
     call wkvect(modelx//'.PRE_COND', 'G V K8', 1, jcond)
+! --- ON DURCIT LE CRITERE POUR LES FISSURES :
+!        * DANS CE CAS LA PRECISION SUR L INTERFACE EST NEGLIGEABLE
+!            DEVANT L INCERTITUDE EN FOND DE FISSURE
+    lfiss=exi_fiss(modelx)        
     if ( k8condi .eq. 'AUTO' ) then
        call dismoi('NOM_LIGREL', modelx, 'MODELE', repk=ligre1)
        call dismoi('LINE_QUAD', ligre1, 'LIGREL', repk=maxfem)
        if (maxfem .ne. 'LINE') then
+         if (lfiss) then
+          crit2(1)=1.d-6
+          crit2(2)=1.d-4
+         else
           crit2(1)=1.d-6
           crit2(2)=1.d-5
-          zk8(jcond)='OUI'
+         endif
+          zk8(jcond)='OUI'        
        else
           crit2(1)=1.d-8
           crit2(2)=1.d-5
@@ -142,7 +152,7 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 !   CRIT2(1) => POUR LES NOEUDS SOMMETS
 !   CRIT2(2) => POUR LES NOEUDS MILIEUX
 !
-    call xstan2(noma, modelx, crit2)
+    call xstan2(noma, modelx, crit2, lfiss)
 !
 ! --- ORIENTATION DES FACETTES DE PEAU X-FEM (COMME ORIE_PEAU)
 !

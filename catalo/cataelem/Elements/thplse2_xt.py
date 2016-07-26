@@ -59,7 +59,7 @@ class THPLSE2_XT(Element):
 
         OP.INI_XFEM_ELNO(te=99,
             para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
+                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), (OP.INI_XFEM_ELNO.PBASLOR, LC.N6NEUT_R),),
         ),
 
         OP.TOPONO(te=120,

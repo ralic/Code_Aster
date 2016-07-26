@@ -2,7 +2,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
                               nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
        nuno=deeq(2*(ieq-1)+1)
        nucmp=deeq(2*(ieq-1)+2)
        nocmp=k8cmp(nucmp)
-!       write(6,*) ieq, nuno, nocmp
+!       write(6,*) ieq,'|', nuno,'|', nocmp
        if(nuno .lt. 1) goto 20
        if(.not. is_xfem(nuno)) goto 20
        if(.not. xfem_cmps(nocmp,'OUI')) goto 20

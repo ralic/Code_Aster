@@ -4,7 +4,7 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
                   typdis, cnslt)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,7 +112,7 @@ subroutine xstam1(noma, nbma, nmafis, mafis,&
         do 311 in = 1, nno
             if(in.gt.1) nunop = nuno
             nuno = connex(zi(jconx2+nmaabs-1)+in-1)
-            en = stano(nuno)
+            en = abs(stano(nuno))
             if (en .eq. 1 .or. en .eq. 3) em1=em1+1
             if (en .eq. 2 .or. en .eq. 3) em2=em2+1
             if(in.gt.1.and.cnslt(3:8).eq.'OP0010') lstch = &

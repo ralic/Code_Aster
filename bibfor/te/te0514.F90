@@ -25,11 +25,12 @@ subroutine te0514(option, nomte)
 #include "asterfort/xdivte.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
 !
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -117,8 +118,7 @@ subroutine te0514(option, nomte)
 !
     call teattr('S', 'XFEM', enr, ibid)
 !
-    if ((ibid.eq.0) .and. (enr(1:2).eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'&
-        .or.enr.eq.'XHC') .and. .not.iselli(elp)) then
+    if ((ibid.eq.0) .and. ltequa(elp,enr)) then
          call jevech('PPMILTO', 'E', jpmilt)
          call tecach('OOO', 'PPMILTO', 'E', iret, nval=2,&
                      itab=jtab2)

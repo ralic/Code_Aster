@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,9 @@ import cataelem.Commons.attributes as AT
 
 
 PLST = InputParameter(phys=PHY.NEUT_R,
+                      comment=""" XFEM """)
+
+PLSN = InputParameter(phys=PHY.NEUT_R,
                       comment=""" XFEM """)
 
 
@@ -68,6 +71,12 @@ PHEA_NO = InputParameter(phys=PHY.N120_I,
 PHEA_FA = InputParameter(phys=PHY.N240_I,
                          comment=""" XFEM """)
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+
+PBASLOC  = InputParameter(phys=PHY.N480_R)
+
+PLSNGG     = InputParameter(phys=PHY.NEUT_R,
+comment=""" XFEM """)
 
 CHAR_MECA_CONT = Option(
     para_in=(
@@ -92,12 +101,16 @@ CHAR_MECA_CONT = Option(
         SP.PINDCOI,
         PLONGCO,
         PLST,
+        PLSN,
         SP.PMATERC,
         PPINTER,
         PSEUIL,
         PSTANO,
         SP.PVITE_M,
         SP.PVITE_P,
+        PBASLOR,
+        PBASLOC,
+        PLSNGG,
     ),
     para_out=(
         SP.PVECTUR,

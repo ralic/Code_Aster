@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
                      lgpg, crit, jpintt, cnset, heavt,&
                      lonch, basloc, idepl, lsn, lst,&
                      nfiss, jheavn, sig, vi, matuu,&
-                     ivectu, codret, jpmilt)
+                     ivectu, codret, jpmilt, jstno)
         integer :: nfiss
         integer :: nnop
         integer :: nfh
@@ -55,5 +55,6 @@ interface
         integer :: codret
         integer :: jpmilt
         integer :: jheavn
+        integer :: jstno
     end subroutine xnmgr
 end interface

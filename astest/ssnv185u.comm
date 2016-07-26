@@ -197,7 +197,7 @@ PK=POST_K1_K2_K3(FISSURE=FISS,
 IMPR_TABLE(TABLE=PK)
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=4.73691208061E-09,
+           VALE_CALC=8.49686022277E-08,
            NOM_PARA='G',
            TABLE=PK,
            )
@@ -248,6 +248,7 @@ tabL2=POST_ERREUR(OPTION='DEPL_RELA',
                   CHAM_GD=Ucal,
                   MODELE=MODELEK,
                   GROUP_MA='VOL',
+                  CHAM_MATER=CHAMPMA1,
                   DY=UY)
 
 IMPR_TABLE(TABLE=tabL2)
@@ -263,7 +264,7 @@ TEST_TABLE(CRITERE='RELATIF',
            );
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=0.000356471568301,
+           VALE_CALC=8.74962009694E-05,
            NOM_PARA='ERREUR RELATIVE',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),
@@ -281,7 +282,7 @@ TEST_TABLE(CRITERE='RELATIF',
            );
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=4.69373996572E-06,
+           VALE_CALC=1.33151310157E-05,
            NOM_PARA='ERREUR RELATIVE',
            FILTRE=_F(NOM_PARA='GROUP_MA',
                      VALE_K='TOTAL'),

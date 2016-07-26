@@ -1,8 +1,8 @@
 subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
                   he, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, npg, sigma, compor,&
-                  idepl, lsn, lst, nfiss, heavn,&
-                  codopt, ivectu)
+                  idepl, lsn, lst, nfiss, heavn, jstno,&
+                  codopt, ivectu, imate)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -17,13 +17,16 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 #include "asterfort/matini.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf2.h"
-#include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/iimatu.h"
+#include "asterfort/xnbddl.h"
     integer :: ndim, nfe, nfh, nfiss, nnop, npg
-    integer :: ddlc, ddlm, heavn(nnop, 5)
+    integer :: ddlc, ddlm, heavn(nnop, 5), jstno
+    integer, optional :: imate
     integer :: codopt, idepl, igeom, ivectu
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
@@ -32,7 +35,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
     character(len=16) :: compor(4)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,14 +82,15 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
 !......................................................................
     integer :: kpg, i, ig, n, nn, m, dec(nnop)
-    integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt, iret
+    integer :: ddld, ddls, nno, nnops, nnos, npgbis, cpt
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se, i_dim
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
+    integer :: singu, alp, ii
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: rbid6(6), rbid33(3, 3)
-    real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
-    real(kind=8) :: dgdgl(4, 3)
-    real(kind=8) :: def(6, nnop, ndim*(1+nfh+nfe)), sign(2*ndim)
+    real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
+    real(kind=8) :: def(6, nnop, ndim*(1+nfh+ndim)), voigt(2*ndim)
     real(kind=8) :: r
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
     aster_logical :: grdepl, axi
 !
     real(kind=8) :: rac2
@@ -97,11 +101,8 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld = ndim*(1+nfh+nfe)
-!
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls = ddld+ddlc
+!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !
 !     MODELE H.P.P ou GROT_GDEP ?
     grdepl = compor(3) .eq. 'GROT_GDEP'
@@ -142,35 +143,19 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !       JUSTE POUR CALCULER LES FF
 !
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
-!
-!
-        if (nfe .gt. 0) then
-!         BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-            call vecini(3*ndim, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do n = 1, nnop
-                lsng = lsng + lsn(n) * ff(n)
-                lstg = lstg + lst(n) * ff(n)
-                do i = 1, 3*ndim
-                    baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-                end do
-            end do
+                    xe, ff, dfdi=dfdi)
 !
 !         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-            if (ndim .eq. 2) then
-                call xcalf2(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            else if (ndim.eq.3) then
-                call xcalfe(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            endif
-!
-!         PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
-!
+        if (nfe .gt. 0) then
+          if (codopt .eq. 1) then
+            ASSERT(present(imate))
+            call xkamat(zi(imate), ndim, axi, ka, mu)
+          else
+            ka=3.d0
+            mu=sigma(1,1)
+          endif
+          call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                       lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -187,13 +172,11 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
 !       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
 !       ET CALCUL DE FF, DFDI, ET EPS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff, dfdi=dfdi)
         if (grdepl) then
             call xcinem(axi, igeom, nnop, nnops, idepl, .true._1,&
                         ndim, he,&
                         nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f,&
+                        fk, dkdgl, ff, dfdi, f,&
                         rbid6, rbid33, heavn)
         else
 !           cas H.P.P (en particulier pour le calcul de CHAR_MECA_TEMP_R,
@@ -208,6 +191,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
+        def(:,:,:)=0.d0
         do n = 1, nnop
             cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
@@ -249,39 +233,38 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
             end do
 !
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do ig = 1, nfe
+            do alp = 1, ndim*nfe
                 do i = 1, ndim
                     cpt=cpt+1
-                    def(1,n,cpt) = f(i,1)* (dfdi(n,1) * fe(ig) + ff(n) *dgdgl(ig,1))
+                    def(1,n,cpt) = f(i,1)* dkdgl(n,alp,i,1)
 !
-                    def(2,n,cpt) = f(i,2)* (dfdi(n,2) * fe(ig) + ff(n) *dgdgl(ig,2))
+                    def(2,n,cpt) = f(i,2)* dkdgl(n,alp,i,2)
 !
                     def(3,n,cpt) = 0.d0
 !
                     def(4,n,cpt) = (&
-                                   f(i,1)* (dfdi(n,2)*fe(ig)+ff(n)* dgdgl(ig,2)) + f(i,2)* (dfdi(&
-                                   &n,1)*fe(ig)+ff(n)* dgdgl(ig,1))&
+                                   f(i,1)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,1)&
                                    )/rac2
 !
                     if (ndim .eq. 3) then
-                        def(3,n,cpt) = f(i,3)* (dfdi(n,3) * fe(ig) + ff(n)*dgdgl(ig,3))
+                        def(3,n,cpt) = f(i,3)* dkdgl(n,alp,i,3)
                         def(5,n,cpt) = (&
-                                       f(i,1)* (dfdi(n,3)*fe(ig)+ff( n)*dgdgl(ig,3)) + f(i,3)* (d&
-                                       &fdi(n,1)*fe(ig)+ ff(n)*dgdgl(ig,1))&
+                                       f(i,1)* dkdgl(n,alp,i,3) + f(i,3)* dkdgl(n,alp,i,1)&
                                        )/rac2
                         def(6,n,cpt) = (&
-                                       f(i,3)* (dfdi(n,2)*fe(ig)+ff( n)*dgdgl(ig,2)) + f(i,2)* (d&
-                                       &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
+                                       f(i,3)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,3)&
                                        )/rac2
                     endif
-                end do
-!
-!   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+IG)
-                if (axi) then
-                    def(3,n,1+ndim*(nfh+ig)) = f(3,3) * ff(n)/r * fe( ig)
-                endif
-!
+              end do
             end do
+!
+!   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+ALP)
+!      EN AXI: ON PROJETTE L ENRICHISSEMENT VECTORIEL SUIVANT X
+            if (axi) then
+               do alp = 1, ndim*nfe
+                  def(3,n,1+ndim*(nfh+alp)) = f(3,3)* fk(n,alp,1)/r
+               end do
+            endif
 !
             ASSERT(cpt.eq.ddld)
 !
@@ -304,12 +287,12 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !
         if (codopt .eq. 1) then
             do n = 1, 3
-                sign(n) = sigma(n ,kpg)
+                voigt(n) = sigma(n ,kpg)
             end do
-            sign(4) = sigma(4,kpg) * rac2
+            voigt(4) = sigma(4,kpg) * rac2
             if (ndim .eq. 3) then
-                sign(5) = sigma(5,kpg) * rac2
-                sign(6) = sigma(6,kpg) * rac2
+                voigt(5) = sigma(5,kpg) * rac2
+                voigt(6) = sigma(6,kpg) * rac2
             endif
         endif
 !
@@ -317,12 +300,13 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
             nn=dec(n)
 !
             do i = 1, ddld
+                ii=iimatu(i,ndim,nfh,nfe)
                 do m = 1, 2*ndim
                     if (codopt .eq. 1) then
-                        zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(m,&
-                        n,i)*sign(m)*jac
+                        zr(ivectu-1+nn+ii)= zr(ivectu-1+nn+ii) + def(m,&
+                        n,i)*voigt(m)*jac
                     else if (codopt.eq.0) then
-                        zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + abs(&
+                        zr(ivectu-1+nn+ii)= zr(ivectu-1+nn+ii) + abs(&
                         def(m,n,i)*sigma(1,1)*jac)
                     else
                         ASSERT(.false.)
@@ -333,9 +317,7 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom,&
 !    ON REMPLACE LA VALEUR AU DDL HEAVISIDE I PAR LA VALEUR AU DDL PHYSIQUE I_DIM DU MEME NOEUD
                 if (i.ge.(ndim+1) .and. i.le.(ndim+nfh*ndim) .and. codopt.eq.0) then
                   i_dim=i-ndim*int((i-1)/ndim)
-!                  if(abs(zr(ivectu-1+nn+i)).lt.abs(1.d-6*zr(ivectu-1+nn+i_dim))) then 
-                    zr(ivectu-1+nn+i)=zr(ivectu-1+nn+i_dim)
-!                  endif
+                  zr(ivectu-1+nn+i)=zr(ivectu-1+nn+i_dim)
                 endif
             end do
 !

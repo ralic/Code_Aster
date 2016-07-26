@@ -1,10 +1,10 @@
 subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
                   heavn, nfh, ddlc, nfe, nfiss,&
                   ise, nnop, jlsn, jlst, ivectu,&
-                  fno)
+                  fno, imate, jbaslo, jstno)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,13 +31,14 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xdeffe.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
     integer :: igeom, ndim, ddlc, nfe, nnop
-    integer :: ivectu, jlsn, jlst
+    integer :: ivectu, jlsn, jlst, imate, jbaslo, jstno
     integer :: jheavt, nfh, nfiss, ise, heavn(27,5), ncomp
     real(kind=8) :: fno(ndim*nnop)
 !-----------------------------------------------------------------------
@@ -70,9 +71,11 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     integer :: i, ino, ig, j, n
     integer :: ndimb, nno, nnos, nnops, npgbis, pos, ifiz, he(nfiss), hea_se
     integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
-    real(kind=8) :: xe(ndim), xg(ndim), ff(nnop), lsng, lstg, rg, tg
+    real(kind=8) :: xe(ndim), xg(ndim), ff(nnop)
+    real(kind=8) :: fk(27,3,3), ka, mu
+    integer :: alp, singu
     real(kind=8) :: forvol(ndim)
-    real(kind=8) :: fe(4), poids, r
+    real(kind=8) :: poids, r
     character(len=8) :: elrese(6), fami(6)
     aster_logical :: grdepl, axi
     integer :: irese
@@ -84,6 +87,7 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
     grdepl=.false.
 !
     axi = lteatt('AXIS','OUI')
+    singu=min(1,nfe)
 !
     call elrefe_info(fami='RIGI', nnos=nnops)
 !
@@ -151,21 +155,9 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
 !       -------------------------------------
 !
         if (nfe .gt. 0) then
-!         LEVEL SETS AU POINT DE GAUSS
-            lsng = 0.d0
-            lstg = 0.d0
-            do ino = 1, nnop
-                lsng = lsng + zr(jlsn-1+ino) * ff(ino)
-                lstg = lstg + zr(jlst-1+ino) * ff(ino)
-            end do
-!
-!         COORDONNÉES POLAIRES DU POINT
-            rg=sqrt(lsng**2+lstg**2)
-            tg = zi(jheavt-1+ise) * abs(atan2(lsng,lstg))
-!
-!         FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE -> FE
-            call xdeffe(rg, tg, fe)
-!
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
+                         zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
         endif
 !
 !
@@ -203,10 +195,10 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
             end do
 !
 !         TERME SINGULIER
-            do ig = 1, nfe
+            do alp = 1, ndim*singu
+                pos=pos+1
                 do j = 1, ndim
-                    pos=pos+1
-                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + fe(ig)* forvol(j)*poids*ff(ino)
+                    zr(ivectu-1+pos) = zr(ivectu-1+pos) + fk(ino,alp,j)*forvol(j)*poids
                 end do
             end do
 !

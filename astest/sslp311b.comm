@@ -113,7 +113,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=CHAMDEPL,
                   NOM_CHAM='DEPL',
-                  VALE_CALC=4.0000002676292998E5,
+                  VALE_CALC=400000.026764,
                   ),
           )
 
@@ -121,7 +121,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=CHAMDEPL,
                   NOM_CHAM='SIEF_ELGA',
-                  VALE_CALC=3.6201732221381001E12,
+                  VALE_CALC=3.62017322214E+12,
                   ),
           )
 
@@ -133,7 +133,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=CHDEPL,
                   NOM_CHAM='DEPL',
-                  VALE_CALC= 4.00000027E+05,
+                  VALE_CALC=400000.026764,
                   VALE_REFE=4.0000002676292998E5,),
           )
 
@@ -142,7 +142,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   TYPE_TEST='SOMM_ABS',
                   RESULTAT=CHDEPL,
                   NOM_CHAM='SIEF_ELGA',
-                  VALE_CALC= 3.62017322E+12,
+                  VALE_CALC=3.62017322214E+12,
                   VALE_REFE=3.6201732221381001E12,
                   CRITERE='RELATIF',),
           )
@@ -167,7 +167,7 @@ G01A=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.050000000000000003,
-           VALE_CALC=81.082988094,
+           VALE_CALC=81.0829880943,
            VALE_REFE=84.841769999999997,
            NOM_PARA='G',
            TABLE=G01A,)
@@ -186,7 +186,7 @@ G01B=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=84.583131829,
+           VALE_CALC=84.5831318296,
            VALE_REFE=84.841769999999997,
            NOM_PARA='G',
            TABLE=G01B,)
@@ -205,7 +205,7 @@ G01C=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=84.598823968,
+           VALE_CALC=84.5988239683,
            VALE_REFE=84.841769999999997,
            NOM_PARA='G',
            TABLE=G01C,)
@@ -223,7 +223,7 @@ G01D=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=84.602380539,
+           VALE_CALC=84.6023805396,
            VALE_REFE=84.841769999999997,
            NOM_PARA='G',
            TABLE=G01D,)
@@ -267,7 +267,7 @@ G02B=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=79.708299832,
+           VALE_CALC=79.7082998326,
            VALE_REFE=80.017070000000004,
            NOM_PARA='G',
            TABLE=G02B,)
@@ -286,7 +286,7 @@ G02C=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=79.731473203,
+           VALE_CALC=79.7314732031,
            VALE_REFE=80.017070000000004,
            NOM_PARA='G',
            TABLE=G02C,)
@@ -305,7 +305,7 @@ G02D=CALC_G(THETA=_F(
 #
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=5.0000000000000001E-3,
-           VALE_CALC=79.735069554,
+           VALE_CALC=79.7350695545,
            VALE_REFE=80.017070000000004,
            NOM_PARA='G',
            TABLE=G02D,)

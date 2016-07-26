@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,9 +17,9 @@
 !
 interface
     subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
-                      pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
+                      pinter, pinref, ainter, cooree, cooref, rainter,&
                       noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                      i, face, nnose, jmilt, f, mipos)
+                      nnose, jgrlsn, mipos)
         integer :: ndim
         integer :: jlsn
         integer :: jlst
@@ -27,18 +27,13 @@ interface
         integer :: nno
         integer :: npi
         integer :: npis
-        integer :: jcnset
         integer :: noeud(9)
         integer :: npts
         integer :: nintar
         integer :: zxain
-        integer :: i
         integer :: nnose
-        integer :: jmilt
-        integer :: f(6,8)
-        integer :: face
         real(kind=8) :: pinter(*)
-        real(kind=8) :: pinref(34*ndim)
+        real(kind=8) :: pinref(43*ndim)
         real(kind=8) :: ainter(*)
         real(kind=8) :: cooree(6, ndim)
         real(kind=8) :: cooref(6, ndim)
@@ -46,6 +41,7 @@ interface
         real(kind=8) :: lst(6)
         real(kind=8) :: lonref
         character(len=8) :: elp
+        integer :: jgrlsn
         aster_logical :: mipos
     end subroutine xdecfa
 end interface

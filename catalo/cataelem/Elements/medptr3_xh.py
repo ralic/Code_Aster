@@ -485,7 +485,7 @@ class MEDPTR3_XH(Element):
                      (OP.MASS_MECA.PLSN, LC.N1NEUT_R), (OP.MASS_MECA.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA.PPINTTO, LC.E6NEUTR),
                      (OP.MASS_MECA.PPMILTO, LC.E22NEUTR), (OP.MASS_MECA.PSTANO, STANO_I),
-                     (OP.MASS_MECA.PVARCPR, LC.ZVARCPG), ),
+                     (OP.MASS_MECA.PVARCPR, LC.ZVARCPG),),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 

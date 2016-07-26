@@ -138,7 +138,7 @@ MO_SAIN=AFFE_MODELE(MAILLAGE=MA[nb_iter],
 
 # PARAMETRES DE LA FISSURE
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter], NB_COUCHES=3,
                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
                                  DEMI_GRAND_AXE = a,
                                  DEMI_PETIT_AXE = b,
@@ -157,8 +157,11 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                                MATER=MAT))
 
 CH_BLO=AFFE_CHAR_MECA(MODELE=MODX,
-                      FACE_IMPO=_F(GROUP_MA=('SYM_X','SYM_Y'),DNOR=0.),   
-                      DDL_IMPO=_F(GROUP_NO='P1',DZ=0.))
+                      DDL_IMPO=(_F(GROUP_MA=('SYM_X',),DX=0.,H1X=0.),   
+                                _F(GROUP_MA=('SYM_Y',),DY=0.,H1Y=0.),   
+                                _F(GROUP_NO='P1',DZ=0.)
+                               )
+                     )
 
 CH_PRE=AFFE_CHAR_MECA(MODELE=MODX,
                       PRES_REP=_F(GROUP_MA=('M_HAUT','M_BAS'),
@@ -214,7 +217,7 @@ s_max = 26.7
 # calc_g
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=4.02177028724,
+           VALE_CALC=4.0339850621,
            VALE_REFE=4.068,
            NOM_PARA='K1',
            TABLE=CG,
@@ -223,8 +226,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.02,
-           VALE_CALC=2.00031982417,
+           PRECISION=0.05,
+           VALE_CALC=2.07430738345,
            VALE_REFE=1.9929,
            NOM_PARA='K1',
            TABLE=CG,
@@ -234,8 +237,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 # post_k1_k2_k3                                      
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.06,
-           VALE_CALC=4.28012825644,
+           PRECISION=0.02,
+           VALE_CALC=4.02045466647,
            VALE_REFE=4.068,
            NOM_PARA='K1',
            TABLE=PK,
@@ -244,8 +247,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.06,
-           VALE_CALC=2.09477936931,
+           PRECISION=0.02,
+           VALE_CALC=1.95806203637,
            VALE_REFE=1.9929,
            NOM_PARA='K1',
            TABLE=PK,

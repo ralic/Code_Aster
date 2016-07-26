@@ -22,10 +22,15 @@ subroutine te0048(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
-#include "asterfort/xdeffe.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnormv.h"
+#include "asterfort/ltequa.h"
+#include "asterfort/indent.h"
+#include "asterfort/coor_cyl.h"
+#include "asterfort/xdeffk.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -70,23 +75,26 @@ subroutine te0048(option, nomte)
     integer :: jlsn, jlst, jpintt, jcnset, jheavt, jlonch, ibalo
     integer :: jpmilt, jheavn, iforc, imate
     integer :: ino, j, ise, ifiss, in, inop, kpg, ig, k
-    integer :: nlong_ddl, ddld, ddls, ddlm, ddli, nnoi, indeni
+    integer :: nlong_ddl, ddld, ddls, ddlm, indeni
     integer :: ithet, igthet
     integer :: ier, iret, irese, jtab(7), icodre(3)
     real(kind=8) :: th1, th2, dth1d1, dth2d2, divt, pres, tcla
     real(kind=8) :: tcla1, tcla2, tcla3, g, k1, k2, k3
     real(kind=8) :: r8pre, sum_teth, sum_forc, r8bit2(2)
-    real(kind=8) :: poids, norme, vf, lsng, lstg, rg, phig, fe(4)
-    real(kind=8) :: e, nu, mu, cr2, depi, ka, coeff, coeff3
+    real(kind=8) :: poids, norme, vf, rg, phig
+    real(kind=8) :: fk(27,3,3)
+    integer :: alp, jstno
+    real(kind=8) :: e, nu, mu, depi, ka, coeff, coeff3
     real(kind=8) :: coorse(3*nno_se_max), geoloc(2*nno_par_max)
     real(kind=8) :: td1(3), td2(3), nd(3), xg(3), xg_loc(2), he(1), oprim(3)
     real(kind=8) :: depla(3), ff(nno_par_max), coorse_loc(2*nno_par_max)
     real(kind=8) :: dford1(3), dford2(3), forcg(3), dfor(3), forc
-    real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3), valres(3), devres(3)
-    real(kind=8) :: u1l(3), u1g(3), u2l(3), u2g(3), u3l(3), u3g(3)
-    real(kind=8), allocatable :: dfdi_loc(:,:)
+    real(kind=8) :: p(3, 3), invp(3, 3), valres(3), devres(3)
+    real(kind=8) :: u1g(3), u2g(3), u3g(3), fkpo(3, 3)
+    real(kind=8) :: dfdi_loc(nno_par_max,2)
     character(len=8) :: elrefp, elrese(4), elref, enr, noma
     character(len=16) :: nomres(3)
+    aster_logical :: l_not_zero
     data          elrese /'SE2','TR3','SE3','TR6'/
 !
 ! ----------------------------------------------------------------------
@@ -100,12 +108,6 @@ subroutine te0048(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop, nnos=nnops)
     ASSERT(nnop .le. nno_par_max)
     ASSERT(ndime .eq. 2)
-!
-! - pour le moment on interdit les elements quadratiques
-    ASSERT(iselli(elrefp))
-!
-! - allocate pour passer un tableau 2d correctement dimensionne a reeref
-    allocate(dfdi_loc(nnop,ndime))
 !
 ! - dimension de l'espace
     call tecael(iadzi, iazk24, noms=0)
@@ -139,7 +141,7 @@ subroutine te0048(option, nomte)
         nfh = 1
     endif
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
-        nfe = 4
+        nfe = 1
     endif
     ASSERT((nfe .gt. 0) .or. (nfh .gt. 0))
 !
@@ -215,6 +217,7 @@ subroutine te0048(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PBASLOR', 'L', ibalo)
+    if (nfe.gt.0) call jevech('PSTANO', 'L', jstno)
 !
 ! - donnees topologiques des fonction Heaviside
     if (enr(1:2).eq.'XH') then
@@ -224,7 +227,7 @@ subroutine te0048(option, nomte)
     endif
 !
 ! - parametres propres aux elements xfem quadratiques
-    if (.not.iselli(elref)) then
+    if (ier.eq.0 .and. ltequa(elref, enr)) then
         call jevech('PPMILTO', 'L', jpmilt)
     endif
 !
@@ -379,87 +382,42 @@ subroutine te0048(option, nomte)
 !
 ! --------- derivees des fonctions de formes dans le repere local
             call reeref(elrefp, nnop, geoloc, xg_loc, ndime,&
-                        r8bit2, ff, dfdi=dfdi_loc)
+                        r8bit2, ff, dfdi=dfdi_loc(1:nnop,1:ndime))
 !
-! --------- level sets et base locale au point de Gauss
-            lsng = 0.d0
-            lstg = 0.d0
-            call vecini(3, 0.d0, e1)
-            call vecini(3, 0.d0, e2)
-            do inop = 1, nnop
-                lsng = lsng + zr(jlsn-1+inop) * ff(inop)
-                lstg = lstg + zr(jlst-1+inop) * ff(inop)
-                do j = 1, ndim
-                    e1(j) = e1(j) + zr(ibalo-1+3*ndim*(inop-1)+j+1*ndim) * ff(inop)
-                    e2(j) = e2(j) + zr(ibalo-1+3*ndim*(inop-1)+j+2*ndim) * ff(inop)
-                enddo
-            enddo
-!           normalisation de la base
-            call xnormv(ndim, e1, norme)
-            ASSERT(norme .gt. r8pre)
-            call xnormv(ndim, e2, norme)
-            ASSERT(norme .gt. r8pre)
-            call provec(e1, e2, e3)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    CALCUL DES COOR. CYL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+             p(:,:)=0.d0
+             invp(:,:)=0.d0
+             call coor_cyl(ndim, nnop, zr(ibalo), zr(igeom), ff,&
+                           p(1:ndim,1:ndim), invp(1:ndim,1:ndim), rg, phig,&
+                           l_not_zero)
 !
-! --------- coordonnees polaires du point (rg, phig)
-            rg = sqrt(lsng**2.d0+lstg**2.d0)
-            ASSERT(rg .gt. r8pre)
-            phig = he(1) * abs(atan2(lsng,lstg))
-!
-! --------- calcul de la matrice de passage p telle 'global' = p * 'local'
-            do j = 1, ndim
-                p(j,1) = e1(j)
-                p(j,2) = e2(j)
-                p(j,3) = e3(j)
-            enddo
-!
-! --------- 
-            call vecini(3, 0.d0, u1l)
-            call vecini(3, 0.d0, u1g)
-            call vecini(3, 0.d0, u2l)
-            call vecini(3, 0.d0, u2g)
-            call vecini(3, 0.d0, u3l)
-            call vecini(3, 0.d0, u3g)
-!
-! --------- champ singulier u1 dans la base locale
-            cr2 = sqrt(rg) / (2.d0*mu*sqrt(depi))
-            u1l(1) = cr2 * cos(phig*0.5d0) * (ka-cos(phig))
-            u1l(2) = cr2 * sin(phig*0.5d0) * (ka-cos(phig))
-!
-! --------- champ singulier u2 dans la base locale
-            call vecini(3, 0.d0, u2l)
-            u2l(1) = cr2 * sin(phig*0.5d0) * (ka + 2.d0 + cos(phig))
-            u2l(2) = cr2 * cos(phig*0.5d0) * (2.d0 - 1.d0 * (ka+cos(phig)) )
-!
-! --------- champ singulier u3 dans la base locale
-            call vecini(3, 0.d0, u3l)
-            u3l(3) = 4.d0 * cr2 * sin(phig*0.5d0)
+! --------- champs singuliers
+             call xdeffk(ka, mu, rg, phig, 3, fkpo)
 !
 ! --------- champs singuliers dans la base globale
+            u1g(:)=0.
+            u2g(:)=0.
+            u3g(:)=0.
             do j = 1, ndim
                 do k = 1, ndim
-                    u1g(j) = u1g(j) + p(j,k)*u1l(k)
-                    u2g(j) = u2g(j) + p(j,k)*u2l(k)
-                    u3g(j) = u3g(j) + p(j,k)*u3l(k)
+                    u1g(j) = u1g(j) + p(j,k)*fkpo(1,k)
+                    u2g(j) = u2g(j) + p(j,k)*fkpo(2,k)
+                    u3g(j) = u3g(j) + p(j,k)*fkpo(3,k)
                 enddo
             enddo
 !
 ! --------- calcul des fonctions d'enrichissement
             if (nfe .gt. 0) then
-                call xdeffe(rg, phig, fe)
+              call xcalfev_wrap(ndim, nnop, zr(ibalo), zi(jstno), he(1),&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
             endif
 !
 ! --------- calcul de l'approximation du deplacement
             call vecini(ndim, 0.d0, depla)
             do inop = 1, nnop
-                if (inop .le. nnops) then
-                    nnoi = 0
-                    ddli = ddls
-                else if (inop.gt.nnops) then
-                    nnoi = nnops
-                    ddli = ddlm
-                endif
-                indeni = ddls*nnoi+ddli*(inop-nnoi-1)
+                call indent(inop, ddls, ddlm, nnos, indeni)
                 cpt = 0
 !               ddls classiques
                 do j = 1, ndim
@@ -477,10 +435,10 @@ subroutine te0048(option, nomte)
                     end do
                 end do
 !               ddls enrichis en fond de fissure
-                do ig = 1, nfe
+                do alp = 1, nfe*ndim
+                    cpt = cpt + 1
                     do j = 1, ndim
-                        cpt = cpt + 1
-                        depla(j) = depla(j) + fe(ig) * ff(inop) * zr(idepl-1+indeni+cpt)
+                        depla(j) = depla(j) + fk(inop,alp,j) * zr(idepl-1+indeni+cpt)
                     end do
                 end do
             end do
@@ -553,7 +511,5 @@ subroutine te0048(option, nomte)
     zr(igthet+4) = k1
     zr(igthet+5) = k2
     zr(igthet+6) = k3
-!
-    deallocate(dfdi_loc)
 !
 end subroutine

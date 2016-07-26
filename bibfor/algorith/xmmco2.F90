@@ -2,7 +2,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                   ddlm, dsidep, p, r, nfh,&
                   jac, ffp, ffc, pla, singu,&
                   nfiss, jheafa, jheavn, ncompn, ifa, ncomph,&
-                  ifiss, rr, mmat)
+                  ifiss, fk, mmat)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
@@ -16,9 +16,10 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
     integer :: ndim, nno, nfh, ddls, singu, jheavn, ncompn
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac
-    real(kind=8) :: p(3, 3), rr
+    real(kind=8) :: p(3, 3)
+    real(kind=8) :: fk(27,3,3)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +53,6 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 ! IN  JAC    : PRODUIT DU JACOBIEN ET DU POIDS
 ! IN  FFP    : FONCTIONS DE FORME DE L'ELEMENT PARENT
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  TAU1   : PREMIERE DIRECTION TANGENTE
 ! IN  AM     :
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
@@ -60,6 +60,7 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
 !
     integer :: i, j, ddlm, ifa, ifh, ifiss, in, jfh, jheafa, jn, hea_fa(2)
     integer :: k, l, ncomph, nfiss, nnol, nnos, pla(27), pli, plj
+    integer :: alpj, alpi
     real(kind=8) :: au(3, 3), coefi, coefj, dside2(3, 3), ffc(8), pdotal(3, 3)
     real(kind=8) :: ffi, ffj, r, temp(3, 3), unity(3, 3), ptr(3, 3)
     real(kind=8) :: alocal(3, 3)
@@ -153,17 +154,19 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
  22                 continue
 !
  21             continue
-                do 23 l = 1, singu*ndim
-                    mmat(pli-1+k,jn+ndim*(1+nfh)+l) = mmat(&
+                do 23 alpj = 1, singu*ndim
+                  do l = 1, ndim
+                    mmat(pli-1+k,jn+ndim*(1+nfh)+alpj) = mmat(&
                                                       pli-1+k,&
-                                                      jn+ ndim*(1+nfh)+l) - 2.d0 * ffi * ffp(j) &
-                                                      &* rr * pdotal(l,&
+                                                      jn+ ndim*(1+nfh)+alpj) - 2.d0 * ffi * &
+                                                      &fk(j,alpj,l) * pdotal(l,&
                                                       k&
                                                       ) * jac
 !
-                    mmat(jn+ndim*(1+nfh)+l,pli-1+k)= mmat(jn+ndim*(1+&
-                    nfh)+l,pli-1+k) - coefj * ffi * ffp(j) * rr *&
+                    mmat(jn+ndim*(1+nfh)+alpj,pli-1+k)= mmat(jn+ndim*(1+&
+                    nfh)+alpj,pli-1+k) - coefj * ffi * fk(j,alpj,l) *&
                     pdotal(l,k) * jac
+                  enddo
  23             continue
 !
  20         continue
@@ -207,16 +210,19 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                             coefi*coefj*r*au(k,l)*ffp(i)*ffp(j)*jac
 143                     continue
 !
-                        do 144 l = 1, singu*ndim
-                            mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
-                            mmat(in+ndim+k,jn+ndim*(1+nfh)+l) -&
-                            coefi*2.d0*ffp(i)*ffp(j)*rr*r*au(k,l)*jac
+                        do 144 alpj = 1, singu*ndim
+                          do l = 1, ndim
+                            mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) =&
+                            mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) -&
+                            coefi*2.d0*ffp(i)*fk(j,alpj,l)*r*au(k,l)*jac
+                          enddo
 144                     continue
 142                 continue
 149             continue
 148         continue
 !
-            do 145 k = 1, singu*ndim
+            do 145 alpi = 1, singu*ndim
+              do k = 1, ndim
                 do jfh = 1, nfh
                     if (lmultc) then
                         coefj = xcalc_saut(zi(jheavn-1+ncompn*(j-1)+jfh),&
@@ -230,17 +236,20 @@ subroutine xmmco2(ndim, nno, nnos, nnol, ddls,&
                                        zi(jheavn-1+ncompn*(j-1)+ncompn))
                     endif
                     do 146 l = 1, ndim
-                        mmat(in+ndim*(1+nfh)+k,jn+ndim*jfh+l) = &
-                        mmat(in+ndim*(1+nfh)+k,jn+ndim*jfh+l) - &
-                        coefj*2.d0*ffp(i)*ffp(j)*rr*r*au(k,l)*jac
+                        mmat(in+ndim*(1+nfh)+alpi,jn+ndim*jfh+l) = &
+                        mmat(in+ndim*(1+nfh)+alpi,jn+ndim*jfh+l) - &
+                        coefj*2.d0*fk(i,alpi,k)*ffp(j)*r*au(k,l)*jac
 146               continue
                 enddo
 !
-                do 147 l = 1, singu*ndim
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) =&
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) -&
-                    4.d0*ffp(i)*ffp(j)*rr*rr*r*au(k,l) *jac
+                do 147 alpj = 1, singu*ndim
+                  do l = 1, ndim
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) =&
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) -&
+                    4.d0*fk(i,alpi,k)*fk(j,alpj,l)*r*au(k,l) *jac
+                  enddo
 147             continue
+              enddo
 145         continue
 !
 141     continue

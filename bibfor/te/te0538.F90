@@ -9,10 +9,12 @@ subroutine te0538(option, nomte)
 #include "asterfort/xmasel.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
+#include "asterfort/elref1.h"
+#include "asterfort/iselli.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,11 +38,13 @@ subroutine te0538(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     character(len=8) :: lag
+    character(len=16) :: elref
     integer :: jgano, nno, npg, imatuu, ndim
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
     integer :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27,5), jtab(7), ino, ig, iret
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
+    integer :: jpmilt
 !
 !
 !
@@ -68,6 +72,9 @@ subroutine te0538(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
 !
+    call elref1(elref)
+    if (.not.iselli(elref)) call jevech('PPMILTTO', 'L', jpmilt)
+!
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
     if (nfh.gt.0) then
       call jevech('PHEA_NO', 'L', jheavn)
@@ -86,9 +93,10 @@ subroutine te0538(option, nomte)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
-    call xmasel(nno, nfh*ndim, nfe, ddlc, igeom,&
+    call xmasel(nno, nfh, nfe, ddlc, igeom,&
                 zi(imate), zr(jpintt), zi(jcnset), zi(jheavt), zi(jlonch),&
-                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu), heavn)
+                zr(jbaslo), zr(jlsn), zr(jlst), zr(imatuu), heavn, jpmilt,&
+                jstno, nnos, ddlm)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS

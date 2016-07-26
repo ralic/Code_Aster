@@ -11,10 +11,11 @@ subroutine te0046(option, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xteini.h"
+#include "asterfort/ltequa.h"
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,9 +104,7 @@ subroutine te0046(option, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if ((ibid.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and..not.iselli(elrefp)) &
+    if ((ibid.eq.0) .and. ltequa(elrefp,enr)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PXFGEOM', 'E', jout)

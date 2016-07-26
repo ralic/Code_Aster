@@ -1,7 +1,7 @@
 subroutine xdeffe(r, theta, fe)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,7 @@ subroutine xdeffe(r, theta, fe)
 ! person_in_charge: samuel.geniaut at edf.fr
 !
     implicit none
+!#include "asterfort/assert.h"
 !
     real(kind=8) :: r, theta, fe(4)
 !
@@ -32,6 +33,7 @@ subroutine xdeffe(r, theta, fe)
 !----------------------------------------------------------------
 !
 !     FONCTIONS D'ENRICHISSEMENT
+!    ASSERT(.false.)
     fe(1) = sqrt(r) * sin(theta/2.d0)
     fe(2) = sqrt(r) * cos(theta/2.d0)
     fe(3) = sqrt(r) * sin(theta/2.d0) * sin(theta)

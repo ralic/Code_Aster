@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand, ndim, he,&
                       nfiss, nfh, nfe, ddls, ddlm,&
-                      fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
+                      fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
         aster_logical, intent(in) :: axi
         integer, intent(in) :: igeom
         integer, intent(in) :: nnop
@@ -34,8 +34,8 @@ interface
         integer, intent(in) :: nfe
         integer, intent(in) :: ddls
         integer, intent(in) :: ddlm
-        real(kind=8), intent(in) :: fe(4)
-        real(kind=8), intent(in) :: dgdgl(4, ndim)
+        real(kind=8), intent(in)::  fk(27,3,3)
+        real(kind=8), intent(in)::  dkdgl(27,3,3,3)
         real(kind=8), intent(in) :: ff(nnop)
         real(kind=8), intent(in) :: dfdi(nnop, ndim)
         real(kind=8), intent(out) :: f(3, 3)

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xmmco1(ndim, nno, dsidep, pp, p,&
                       nd, nfh, ddls, jac, ffp,&
-                      singu, rr, tau1, tau2, mmat)
+                      singu, fk, tau1, tau2, mmat)
         integer :: ndim
         integer :: nno
         real(kind=8) :: dsidep(6, 6)
@@ -33,6 +33,7 @@ interface
         real(kind=8) :: rr
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: mmat(216, 216)
     end subroutine xmmco1
 end interface

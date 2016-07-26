@@ -1,13 +1,13 @@
-subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
+subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
                   ddls, dfdi, ff, he, heavn, idepl,&
                   igthet, ipref, ipres, ithet, jac,&
-                  jlst, ka, mu, nd,&
+                  jlsn, jlst, jstno, ka, mu, nd,&
                   ndim, nfh, nnop, nnops, itemps,&
                   nompar, option, singu, xg, igeom)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,74 +25,52 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/chauxi.h"
+#include "asterfort/xdeffk.h"
 #include "asterfort/fointe.h"
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
+#include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/iselli.h"
+#include "asterfort/coor_cyl.h"
 #include "jeveux.h"
 !
 ! Calcul de G avec forces de pression XFEM sur les levres
 !   de la fissure
 !
-    integer :: igeom
+    character(len=8) :: elrefp
     integer :: nnop, ndim, heavn(nnop,5)
+    integer :: jstno, jlsn
     real(kind=8) :: angl(2), basloc(9*nnop), cisa, coeff, coeff3
     integer :: cpt, ddlm, ddls
     real(kind=8) :: depla(3), dfdi(nnop, ndim), dfor(3), divt
-    real(kind=8) :: dtdm(3, 3), e1(3), e2(3), e3(3), ff(27)
+    real(kind=8) :: dtdm(3, 3), ff(27)
     real(kind=8) :: forrep(3, 2), g, he(2)
     integer :: i, idepl, ier, igthet, ilev, indi, ino, ig, hea_fa(2)
     integer :: ipref, ipres, ithet, j
     real(kind=8) :: jac
     integer :: jlst
     real(kind=8) :: jm, var(ndim+1)
-    real(kind=8) :: k1, k2, k3, ka, lsn, lst, mu, nd(3)
+    real(kind=8) :: k1, k2, k3, ka, mu, nd(3)
     integer :: nfh, nnops, itemps
     character(len=8) :: nompar(4)
-    real(kind=8) :: norme
     character(len=16) :: option
-    real(kind=8) :: p(3, 3), pres, rb9(3, 3), rr(2)
+    real(kind=8) :: p(3, 3), pres, invp(3, 3)
     real(kind=8) :: pres_test, cisa_test, r8pre
     integer :: singu
-    real(kind=8) :: theta(3), u1(3), u1l(3), u2(3), u2l(3), u3(3)
-    real(kind=8) :: u3l(3), xg(3), rb33(3,3,3), r
-    aster_logical :: axi, l_pres_var, l_cisa_var
-    call vecini(3, 0.d0, e1)
-    call vecini(3, 0.d0, e2)
-    lsn=0.d0
-    lst=0.d0
-    do 100 ino = 1, nnop
-        lsn = lsn + zr(jlst-1+ino)*ff(ino)
-        lst = lst + zr(jlst-1+ino)*ff(ino)
-        do 110 i = 1, ndim
-            e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff(ino)
-            e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff(ino)
-110      continue
-100  continue
+    real(kind=8) :: theta(3), u1(3), u2(3), u3(3)
+    real(kind=8) :: xg(3), r
+    aster_logical :: axi, l_pres_var, l_cisa_var, l_not_zero
+    real(kind=8) :: fk(27,3,3), fkpo(3, 3)
+    integer :: alp, igeom
+    real(kind=8) :: rg, tg
 !
-!     NORMALISATION DE LA BASE
-    call normev(e1, norme)
-    call normev(e2, norme)
-    call provec(e1, e2, e3)
-!
-!     CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-    call vecini(9, 0.d0, p)
-    do 120 i = 1, ndim
-        p(i,1)=e1(i)
-        p(i,2)=e2(i)
-        p(i,3)=e3(i)
-120  continue
-!
-!     CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-    ASSERT(lst.lt.0.d0)
-    rr(1)=-sqrt(-lst)
-    rr(2)= sqrt(-lst)
 !
 ! CALCUL DE L IDENTIFIANT DE FACETTES MAITRE/ESCLAVE
     do ilev=1,2
@@ -193,6 +171,20 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 !     BOUCLE SUR LES DEUX LEVRES
     do 300 ilev = 1, 2
 !
+!
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS
+         if (singu.gt.0) then
+            if (he(ilev).gt.0) then
+              call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(ilev),&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='MAIT')
+            else
+              call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(ilev),&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='ESCL')
+            endif
+         endif
+!       CALCUL DES COORDONNEES CYLINDRIQUES
+         call coor_cyl(ndim, nnop, basloc, zr(igeom), ff,&
+                       p(1:ndim,1:ndim), invp(1:ndim,1:ndim), rg, tg, l_not_zero)
 !       ---------------------------------------------
 !       3) CALCUL DU DEPLACEMENT
 !       ---------------------------------------------
@@ -214,10 +206,12 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
               enddo
 202          continue
 !         DDL ENRICHIS EN FOND DE FISSURE
-            do 204 i = 1, singu*ndim
-                cpt=cpt+1
-                depla(i) = depla(i) + rr(ilev) * ff(ino) * zr(idepl-1+ indi+cpt)
-204          continue
+            do 204 alp = 1, singu*ndim
+              cpt=cpt+1
+              do i = 1, ndim
+                depla(i) = depla(i) + fk(ino,alp,i) * zr(idepl-1+ indi+cpt)
+              enddo
+204         continue
 200      continue
 !
 !       --------------------------------
@@ -225,11 +219,9 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
 !       --------------------------------
 !
         if (option(1:8) .eq. 'CALC_K_G') then
-!         CHAMPS AUXILIARES DANS LA BASE LOCALE : U1L,U2L,U3L
-            call vecini(9, 0.d0, rb9)
-            call chauxi(ndim, mu, ka, -lst, angl(ilev),&
-                        rb9, .false._1, rb33, rb9, rb9,&
-                        rb9, u1l, u2l, u3l)
+!
+! --------- champs singuliers
+            call xdeffk(ka, mu, rg, angl(ilev), ndim, fkpo(1:ndim,1:ndim))
 !
 !         CHAMPS AUXILIARES DANS LA BASE GLOBALE : U1,U2,U3
             call vecini(ndim, 0.d0, u1)
@@ -237,9 +229,9 @@ subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
             call vecini(ndim, 0.d0, u3)
             do 510 i = 1, ndim
                 do 511 j = 1, ndim
-                    u1(i) = u1(i) + p(i,j) * u1l(j)
-                    u2(i) = u2(i) + p(i,j) * u2l(j)
-                    if (ndim .eq. 3) u3(i) = u3(i) + p(i,j) * u3l(j)
+                    u1(i) = u1(i) + p(i,j) * fkpo(1,j)
+                    u2(i) = u2(i) + p(i,j) * fkpo(2,j)
+                    if (ndim .eq. 3) u3(i) = u3(i) + p(i,j) * fkpo(3,j)
 511              continue
 510          continue
         endif

@@ -3,6 +3,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
                   nno, arete, milieu, lsno, voisin)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/conare.h"
 #include "asterfort/ismali.h"
@@ -23,7 +24,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
     aster_logical :: coupee, milieu
 ! ---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,6 +70,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
 !
     call jemarq()
 !
+    nbno=0
     call jeveuo(ch2//'.CESV', 'L', vr=lsnv)
 ! --- RECUPERATION DE LA LISTE DES NOEUDS AFFECTES PAR LA CONDITION
     call jeexin('&&CADDLI.LIST_NODE', ier)
@@ -86,6 +88,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
         call jeveuo('&&CAAREI.LIST_NODE', 'L', vi=nunotmp)
         call jelira('&&CAAREI.LIST_NODE', 'LONMAX', nbno)
     endif
+    ASSERT(nbno.gt.0)
 ! --- RECUPERATION DES MAILLES CONTENANT LE NOEUD
     call jeveuo(noma//'.CONNEX', 'L', vi=connex)
 !     INDICATEUR POUR LES NOEUDS MILIEUX

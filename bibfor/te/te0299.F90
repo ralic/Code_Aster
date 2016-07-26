@@ -3,7 +3,7 @@ subroutine te0299(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,6 +37,7 @@ subroutine te0299(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/cgverho.h"
 #include "asterfort/chauxi.h"
+#include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/gbilin.h"
@@ -48,7 +49,9 @@ subroutine te0299(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/coor_cyl.h"
 #include "asterfort/vecini.h"
+#include "asterfort/provec.h"
 !
     integer :: icodre(3),matcod,ncmp, i1, ij
     integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano, icomp
@@ -61,20 +64,20 @@ subroutine te0299(option, nomte)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), epsref(6)
     real(kind=8) :: rhocst, rho, om, omo, rbid=0.d0, e, nu, rbid2(3, 3, 3)
     real(kind=8) :: thet, tno(20), tgdm(3),rac2
-    real(kind=8) :: xag, yag, xg, yg, xa, ya, norm, a, b
+    real(kind=8) :: xg, yg, e1(3), e2(3), e3(3)
     real(kind=8) :: c1, c2, c3, cs, u1(2), u2(2)
-    real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3), invp(3, 3), rg, phig
+    real(kind=8) :: basloc(9*6), p(3, 3), invp(3, 3), rg, phig, ffp(9)
     real(kind=8) :: u1l(3), u2l(3), rbid3(3), mu, ka, rbid4(3, 4)
     real(kind=8) :: th, val(1), valres(3), valpar(4)
     real(kind=8) :: coefk
     real(kind=8) :: guv, guv1, guv2, k1, k2, g, poids, ray, puls
 !
     character(len=4) :: fami
-    character(len=8) :: nompar(4)
+    character(len=8) :: nompar(4), elrefp
     character(len=16) :: nomres(3), compor(4)
     character(len=32) :: phenom
 !
-    aster_logical :: lcour, fonc, lpesa, lrota
+    aster_logical :: lcour, fonc, lpesa, lrota, l_not_zero
     aster_logical :: axi
 !
 ! ----------------------------------------------------------------------
@@ -83,6 +86,7 @@ subroutine te0299(option, nomte)
 !
 
     fami = 'RIGI'
+    call elref1(elrefp)
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
@@ -410,61 +414,26 @@ subroutine te0299(option, nomte)
 !
 ! ----- CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
 !
-        norm = sqrt(zr(ifond-1+3)**2+zr(ifond-1+4)**2)
-        a = zr(ifond-1+4)/norm
-        b = -zr(ifond-1+3)/norm
-        xa = zr(ifond-1+1)
-        ya = zr(ifond-1+2)
-!
-!       COORDONNEES POLAIRES DU POINT
-        xag = a*(xg-xa)+b*(yg-ya)
-        yag = -b*(xg-xa)+a*(yg-ya)
-        rg = sqrt(xag*xag+yag*yag)
-!
-        if (rg .gt. r8prem()) then
-!         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            phig = atan2(yag,xag)
-            iret=1
-        else
-!         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-            phig=0.d0
-            iret=0
-        endif
-!
-! ----- ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-! ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        ASSERT(iret.ne.0)
 !
 ! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
 !
-        e1(1) = a
-        e1(2) = b
-        e1(3) = 0
-        e2(1) = -b
-        e2(2) = a
-        e2(3) = 0
-        e3(1) = 0
-        e3(2) = 0
-        e3(3) = 0
-!
-!
-! ----- CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-!
-        do i = 1, 3
-            p(i,1)=e1(i)
-            p(i,2)=e2(i)
-            p(i,3)=e3(i)
-        end do
-!
-! ----- CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-!
-        do i = 1, 3
-            do j = 1, 3
-                invp(i,j)=p(j,i)
-            end do
-        end do
+        p(:,:)=0.d0
+        invp(:,:)=0.d0
+        do ino = 1, nno
+          ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
+          basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
+        enddo
+        call coor_cyl(ndim, nno, basloc, zr(igeom), ffp,&
+                      p(1:ndim,1:ndim), invp(1:ndim,1:ndim), rg, phig,&
+                      l_not_zero)
+! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
+        e1(:)=0.d0
+        e1(1:ndim)=p(1:ndim,1)
+        e2(:)=0.d0
+        e2(1:ndim)=p(1:ndim,2)
+        call provec(e1, e2, e3)
+        p(3,3)=e3(3)
+        invp(3,3)=e3(3)
 !
 !       PRISE EN COMPTE DE LA COURBURE : NON
 !
@@ -533,6 +502,7 @@ subroutine te0299(option, nomte)
 !
     k1 = k1 * coefk
     k2 = k2 * coefk
+    if (e3(3) .lt. 0) k2=-k2
 !
 
 

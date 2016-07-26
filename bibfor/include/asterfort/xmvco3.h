@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       nnos, pla, lact, nfh, ddls,&
                       ddlm, nfiss, ifiss, jheafa, ifa,&
                       ncomph, jheavn, ncompn, jac, ffc, ffp,&
-                      singu, rr, vtmp)
+                      singu, fk, vtmp)
         real(kind=8) :: sigref
         real(kind=8) :: depref
         integer :: ndim
@@ -43,7 +43,7 @@ interface
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)
         integer :: singu
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: vtmp(400)
     end subroutine xmvco3
 end interface

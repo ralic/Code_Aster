@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       basloc, nnop, npg, typmod, option,&
                       imate, compor, lgpg, idecpg, crit,&
                       idepl, lsn, lst, nfiss, heavn,&
-                      sigp, vi, matuu, ivectu, codret)
+                      sigp, vi, matuu, ivectu, codret, jstno)
         integer :: nfiss
         integer :: lgpg
         integer :: npg
@@ -58,5 +58,6 @@ interface
         real(kind=8) :: matuu(*)
         integer :: ivectu
         integer :: codret
+        integer :: jstno
     end subroutine xxnmgr
 end interface

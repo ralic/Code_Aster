@@ -169,8 +169,8 @@ TEST_TABLE(TABLE=GLO1,
                      VALE=0.,),
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(0.),
-           PRECISION=0.10,
-           VALE_CALC=54962924.9725,
+           PRECISION=0.11,
+           VALE_CALC=54736810.9974,
            )
 
 # a l'abscisse curviligne 5.34881e-3 (point 8)
@@ -181,7 +181,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.34881e-3),
            PRECISION=0.02,
-           VALE_CALC=74492334.7542,
+           VALE_CALC=74416259.3999,
            )
 
 # a l'abscisse curviligne 3.44482e-2 (point 25)
@@ -192,7 +192,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(3.44482e-2),
            PRECISION=0.01,
-           VALE_CALC=101906126.573,
+           VALE_CALC=101903303.976,
            )
 
 # a l'abscisse curviligne 5.36143e-2 (point 33)
@@ -203,7 +203,7 @@ TEST_TABLE(TABLE=GLO1,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.36143e-2),
            PRECISION=0.07,
-           VALE_CALC=96992933.3587,
+           VALE_CALC=96993430.7196,
            )
 
 
@@ -215,7 +215,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_REFE=0.,
            PRECISION=1e-16,
            CRITERE='ABSOLU',
-           VALE_CALC=0.,
+           VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
 
@@ -226,7 +226,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_REFE=0.,
            PRECISION=1e-16,
            CRITERE='ABSOLU',
-           VALE_CALC=0.,
+           VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
 
@@ -237,7 +237,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_REFE=0.,
            PRECISION=1e-16,
            CRITERE='ABSOLU',
-           VALE_CALC=0.,
+           VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
            
@@ -248,7 +248,7 @@ TEST_TABLE(TABLE=GLO1,
            VALE_REFE=0.,
            PRECISION=1e-16,
            CRITERE='ABSOLU',
-           VALE_CALC=0.,
+           VALE_CALC=0.0,
            ORDRE_GRANDEUR=1e-16,
            )
            
@@ -294,7 +294,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(0.),
            PRECISION=0.24,
-           VALE_CALC=54962924.9725,
+           VALE_CALC=54736810.9974,
            )
 
 # a l'abscisse curviligne 5.34881e-3 (point 8)
@@ -305,7 +305,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.34881e-3),
            PRECISION=0.08,
-           VALE_CALC=74492334.7542,
+           VALE_CALC=74416259.3999,
            )
 
 # a l'abscisse curviligne 3.44482e-2 (point 25)
@@ -316,7 +316,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(3.44482e-2),
            PRECISION=0.02,
-           VALE_CALC=101906126.573,
+           VALE_CALC=101903303.976,
            )
 
 # a l'abscisse curviligne 5.36143e-2 (point 33)
@@ -327,7 +327,7 @@ TEST_TABLE(TABLE=GK2leg,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.36143e-2),
            PRECISION=0.07,
-           VALE_CALC=96992933.3587,
+           VALE_CALC=96993430.7196,
            )
 
 
@@ -362,7 +362,7 @@ TEST_TABLE(TABLE=GK2lagno,
            REFERENCE='SOURCE_EXTERNE',
            VALE_REFE=K1ref(5.36143e-2),
            PRECISION=0.01,
-           VALE_CALC=104086238.289,
+           VALE_CALC=104081096.502,
            )
 
 FIN()

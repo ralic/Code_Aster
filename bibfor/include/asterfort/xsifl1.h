@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,12 +15,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xsifl1(angl, basloc, coeff, coeff3, ddlm,&
+    subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
                       ddls, dfdi, ff, he, heavn, idepl,&
                       igthet, ipref, ipres, ithet, jac,&
-                      jlst, ka, mu, nd,&
+                      jlsn, jlst, jstno, ka, mu, nd,&
                       ndim, nfh, nnop, nnops, itemps,&
                       nompar, option, singu, xg, igeom)
+        character(len=8) :: elrefp
         integer :: nnop
         integer :: ndim
         real(kind=8) :: angl(2)
@@ -40,6 +41,8 @@ interface
         integer :: ithet
         real(kind=8) :: jac
         integer :: jlst
+        integer :: jlsn
+        integer :: jstno
         real(kind=8) :: ka
         real(kind=8) :: mu
         real(kind=8) :: nd(3)

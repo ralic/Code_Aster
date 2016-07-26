@@ -3,7 +3,7 @@ subroutine xasdpl(celmod, prol0, chou)
 
     character(len=*) :: chou, celmod, prol0
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,9 +64,10 @@ subroutine xasdpl(celmod, prol0, chou)
 #include "asterfort/typele.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xnpgxx.h"
+#include "asterfort/rcmfmc.h"
 !
     integer :: nboumx, nbinmx
-    parameter   (nboumx=1, nbinmx=8)
+    parameter   (nboumx=1, nbinmx=11)
     character(len=8) :: lpaout(nboumx), lpain(nbinmx)
     character(len=19) :: lchout(nboumx), lchin(nbinmx)
 !
@@ -76,20 +77,21 @@ subroutine xasdpl(celmod, prol0, chou)
     integer :: nel, jliel
     integer :: jcesd, jcesl, jcesddpl, jcesldpl
     integer :: jcesddpx, jcesldpx, jcesdnpg, jceslnpg
-    integer :: nfismo, ndime, ndim, npg
+    integer :: jmofis, jnfiss
+    integer :: nfismo, ndime, ndim, npg, nfiss
     integer :: ima, iadnpg, iaddpx, iaddpl, iad
     integer :: iel, kpg
-    integer :: k
+    integer :: k, ifiss
     character(len=3) :: exixfm
     character(len=4) :: tychi
     character(len=8) :: ma, ma2, nomgd, param, mo
-    character(len=8) :: noma
+    character(len=8) :: noma, chmat, nomfis
     character(len=8), pointer :: typma(:) => null()
-    character(len=16) :: option, nomte, enr
-    character(len=19) :: chin, cns, mnoga, ligrel, cesout, cesdpl
+    character(len=16) :: option, nomte, enr, typdis
+    character(len=19) :: chin, cns, mnoga, ligrel, cesout, cesdpl, mate
     character(len=19) :: chhno, chxpg, chdpx, chsdpx, chsnpg
     character(len=24) :: valk(4)
-    aster_logical :: lxfem, ok, yathm, perman
+    aster_logical :: lxfem, ok, yathm, perman, lfiss
     integer, pointer :: cesvnpg(:) => null()
     real(kind=8), pointer :: cesvdpl(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
@@ -144,6 +146,34 @@ subroutine xasdpl(celmod, prol0, chou)
     call exithm(mo, yathm, perman)
 
     if (yathm) call utmess('F', 'XFEM_89')
+!
+!   Le modèle comporte-t-il au moins une fissure et pas seulement des interfaces
+    call jeveuo(mo//'.FISS','L',jmofis)
+    call jeveuo(mo//'.NFIS','L',jnfiss)
+    nfiss = zi(jnfiss)
+!
+    lfiss=.false.
+    do ifiss = 1,nfiss
+        nomfis = zk8(jmofis-1+ifiss)
+        call dismoi('TYPE_DISCONTINUITE', nomfis, 'FISS_XFEM', repk=typdis)
+!       
+        if(typdis.eq.'FISSURE') then
+            lfiss=.true.
+            exit
+        endif
+    enddo
+!
+    mate=' '
+    if (lfiss) then
+       !   -- recuperation du champ de matériau
+       call getvid(' ', 'CHAM_MATER', scal=chmat, nbret=iret)
+       ! Assertion : si on a une fissure, le champ de matériau est fourni
+       if (iret.eq.0) then 
+         call utmess('F', 'XFEM_100')
+       else
+         call rcmfmc(chmat, mate)
+       endif
+    endif
 !
 !   creation du CHAM_ELEM_S pour stocker les deplacements recomposes
 !   a partir du CHAM_ELEM modele
@@ -250,6 +280,13 @@ subroutine xasdpl(celmod, prol0, chou)
        lchin(8) = chhno
        nbin=8
     endif
+    lpain(9) = 'PSTANO'
+    lchin(9) = mo//'.STNO'
+    lpain(10) = 'PMATERC'
+    lchin(10) = mate
+    lpain(11) = 'PGEOMER'
+    lchin(11) = ma//'.COORDO'
+    nbin=11
     lpaout(1) = 'PDEPLPG'
     lchout(1) = chdpx
     nbout=1

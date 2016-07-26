@@ -1,7 +1,7 @@
 subroutine op0187()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,7 +138,7 @@ subroutine op0187()
                 prefno, nogrfi, maxfem, k19b, k19b,&
                 k19b, k19b, k19b, k19b, listgr,&
                 dirgrm, nivgrm, k8b, ngfon, k19b,&
-                k19b, pre1)
+                k19b, pre1, 0)
 !
 !     ------------------------------------------------------------------
 !     6. TRAITEMENT DES FONDS DE FISSURE

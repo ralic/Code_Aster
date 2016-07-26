@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -24,7 +24,8 @@ interface
                       ndim, cmp, nbcmp, nfh, nfe,&
                       ddlc, ima, jconx1, jconx2, jcnsv1,&
                       jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                      nnn, contac, lmeca, pre1)
+                      nnn, contac, lmeca, pre1, jbaslo, &
+                      jlsn, jlst, jstno, ka, mu)
         integer :: nbcmp
         integer :: nfiss
         integer :: nnop
@@ -44,7 +45,7 @@ interface
         integer :: he(nfiss)
         integer :: ndime
         integer :: ndim
-        integer :: cmp(nbcmp)
+        integer :: cmp(*)
         integer :: nfh
         integer :: nfe
         integer :: ddlc
@@ -61,5 +62,11 @@ interface
         integer :: contac
         aster_logical :: lmeca
         aster_logical :: pre1
+        integer :: jbaslo
+        integer :: jlsn
+        integer :: jlst
+        integer :: jstno
+        real(kind=8) :: ka
+        real(kind=8) :: mu
     end subroutine xpoajd
 end interface 

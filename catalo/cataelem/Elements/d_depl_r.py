@@ -35,8 +35,8 @@ components=(
 
 
 for cmp in (
-    'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'E1X', 'E1Y', 'E1Z', 'E2X', 'E2Y', 'E2Z',
-    'E3X', 'E3Y', 'E3Z', 'E4X', 'E4Y', 'E4Z', 'GLIS', 'GONF', 'GRX', 'H1PRE1', 'H1X', 'H1Y',
+    'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
+    'GLIS', 'GONF', 'GRX', 'H1PRE1', 'H1X', 'H1Y',
     'H1Z', 'H2PRE1', 'H2X', 'H2Y', 'H2Z', 'H3PRE1', 'H3X', 'H3Y', 'H3Z', 'H4X', 'H4Y', 'H4Z',
     'LAG2_C', 'LAG2_F1', 'LAG2_F2', 'LAG3_C', 'LAG3_F1', 'LAG3_F2', 'LAG4_C', 'LAG4_F1',
     'LAG4_F2', 'LAGS_C', 'LAGS_F1', 'LAGS_F2', 'LH1', 'PHI', 'PRE1', 'PRE2', 'PRES', 'PRES11',

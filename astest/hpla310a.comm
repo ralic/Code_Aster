@@ -662,7 +662,7 @@ TEST_RESU(CHAM_ELEM=_F(NOEUD='N4526',
                        CHAM_GD=SIGM3A,
                        REFERENCE='ANALYTIQUE',
                        VALE_REFE=8.200300E5,
-                       VALE_CALC=823997.368051,
+                       VALE_CALC=823997.367892,
                        PRECISION=5.E-3,),
           )
 
@@ -740,7 +740,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.31,
-           VALE_CALC=295.590651087,
+           VALE_CALC=295.590651088,
            VALE_REFE=227.4999,
            NOM_PARA='G',
            TABLE=G01B1,)
@@ -822,7 +822,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=12547.7048986,
+           VALE_CALC=12547.7048987,
            VALE_REFE=1.051959E4,
            NOM_PARA='G',
            TABLE=G02B1,)
@@ -895,7 +895,7 @@ G03B3=CALC_G(        RESULTAT=CHDEP3B,
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.23145127214,
+           VALE_CALC=1.23145127881,
            VALE_REFE=1.0519590000000001,
            NOM_PARA='G',
            TABLE=G03B,)
@@ -904,7 +904,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.23580825172,
+           VALE_CALC=1.23580825519,
            VALE_REFE=1.0519590000000001,
            NOM_PARA='G',
            TABLE=G03B1,)
@@ -913,7 +913,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.23562428073,
+           VALE_CALC=1.23562428386,
            VALE_REFE=1.0519590000000001,
            NOM_PARA='G',
            TABLE=G03B2,)
@@ -922,7 +922,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.2,
-           VALE_CALC=1.23522641637,
+           VALE_CALC=1.23522641706,
            VALE_REFE=1.0519590000000001,
            NOM_PARA='G',
            TABLE=G03B3,)
@@ -945,7 +945,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=295.590651087,
+           VALE_CALC=295.590651088,
            NOM_PARA='G',
            TABLE=G01B1,
            )
@@ -979,7 +979,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=12547.7048986,
+           VALE_CALC=12547.7048987,
            NOM_PARA='G',
            TABLE=G02B1,
            )
@@ -1005,7 +1005,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.23145127214,
+           VALE_CALC=1.23145127881,
            NOM_PARA='G',
            TABLE=G03B,
            )
@@ -1013,7 +1013,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.23580825172,
+           VALE_CALC=1.23580825519,
            NOM_PARA='G',
            TABLE=G03B1,
            )
@@ -1021,7 +1021,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.23562428073,
+           VALE_CALC=1.23562428386,
            NOM_PARA='G',
            TABLE=G03B2,
            )
@@ -1029,7 +1029,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=1.23522641637,
+           VALE_CALC=1.23522641706,
            NOM_PARA='G',
            TABLE=G03B3,
            )

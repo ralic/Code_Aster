@@ -86,7 +86,7 @@ for i in range(0,len(basefond0)/4):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VNORY',
-              VALE_CALC=-1.,
+              VALE_CALC=-0.99999982,
               VALE_REFE=-1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -95,7 +95,7 @@ for i in range(0,len(basefond0)/4):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VDIRX',
-              VALE_CALC=1.,
+              VALE_CALC=0.99999982,
               VALE_REFE=1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -122,7 +122,7 @@ for i in range(0,len(basefond0)/4):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VNORY',
-              VALE_CALC=1.,
+              VALE_CALC=0.99999982,
               VALE_REFE=1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )
@@ -131,7 +131,7 @@ for i in range(0,len(basefond0)/4):
               FILTRE=_F(  NOM_PARA = 'ND_FOND',
                           VALE_I = i+1),
               NOM_PARA='VDIRX',
-              VALE_CALC=1.,
+              VALE_CALC=1.0,
               VALE_REFE=1.,
               CRITERE='ABSOLU',
               REFERENCE='ANALYTIQUE' )

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                      jconx2, clsm, typdis)
+                      jconx2, clsm, typdis, critlst)
         character(len=8) :: noma
         integer :: nbma
         character(len=19) :: cnslt
@@ -26,5 +26,6 @@ interface
         integer :: jconx2
         integer :: clsm
         character(len=16) :: typdis
+        real(kind=8), optional :: critlst
     end subroutine xajuls
 end interface

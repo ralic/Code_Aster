@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine xmmjeu(ndim, jnnm, jnne, ndeple, nsinge,&
                       nsingm, ffe, ffm, norm, jgeom,&
-                      jdepde, jdepm, rre, rrm, jddle,&
+                      jdepde, jdepm, fk_escl, fk_mait, jddle,&
                       jddlm, nfhe, nfhm, lmulti, heavn, heavfa,&
                       jeu)
         integer :: ndim
@@ -35,8 +35,8 @@ interface
         integer :: jgeom
         integer :: jdepde
         integer :: jdepm
-        real(kind=8) :: rre
-        real(kind=8) :: rrm
+        real(kind=8) :: fk_escl(27,3,3)
+        real(kind=8) :: fk_mait(27,3,3)
         integer :: jddle(2)
         integer :: jddlm(2)
         integer :: nfhe

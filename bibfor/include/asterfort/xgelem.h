@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
     subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                       ise, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, idepl, lsn, lst,&
-                      igthet, fno, nfiss, jheavn, incr)
+                      igthet, fno, nfiss, jheavn, jstno, incr)
         integer :: nfiss
         integer :: nnop
         integer :: ndim
@@ -41,6 +41,7 @@ interface
         integer :: igthet
         real(kind=8) :: fno(ndim*nnop)
         integer :: jheavn
+        integer :: jstno
         aster_logical :: incr
     end subroutine xgelem
 end interface

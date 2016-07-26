@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -134,6 +134,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
          b_xfem          =BLOC(condition = "OPERATION == 'ASSE_DEPL'",
              CHAM_GD          =SIMP(statut='o',typ=cham_gd_sdaster),
              MODELE           =SIMP(statut='o',typ=(modele_sdaster) ),
+             CHAM_MATER       =SIMP(statut='f',typ=cham_mater),
                              ),
 #        ------------------------------------------------------------------
          b_r2c           =BLOC(condition = "OPERATION == 'R2C'",

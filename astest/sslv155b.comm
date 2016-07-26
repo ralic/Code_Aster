@@ -44,7 +44,7 @@ h0 = 1.
 # taille cible des mailles apres raffinement 
 # on prend des mailles 2 fois plus petites que celles
 # de la modelisation A (car ici mailles lineaires)
-hc = 0.025/2
+hc = 0.01/2
 
 # nombre de raffinements
 # attention, en python log = ln (logarithme neperien)
@@ -119,14 +119,15 @@ MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
 
 FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                      DEFI_FISS=_F(FONC_LT=LT,
-                                  FONC_LN=LN,))
+                                  FONC_LN=LN,),
+                     RAYON_ENRI=R/4.,)
 
 MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,
                       FISSURE=FISSX,
                       DECOUPE_FACETTE='SOUS_ELEMENTS')
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
-                            NU=0.3))
+                            NU=0.22))
 
 MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                    AFFE=_F(TOUT='OUI',
@@ -153,6 +154,7 @@ RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
                        RESULTAT=RESU)
 
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RE_VISU))
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=(_F(RESULTAT=RESU,)),);
 
 CGX=CALC_G(THETA=_F(FISSURE=FISSX,
                     R_INF=Rinf,
@@ -173,28 +175,28 @@ K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1.15401609E+06,
+           VALE_CALC=1180797.18446,
            VALE_REFE=1.176825720257336E6,
            NOM_PARA='K1',
            TABLE=CGX,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.070000000000000007,
-           VALE_CALC= 3.37084917E+05,
+           VALE_CALC=304019.722964,
            VALE_REFE=3.1534098547374451E5,
            NOM_PARA='K2',
            TABLE=CGX,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.059999999999999998,
-           VALE_CALC= 1.10783408E+06,
+           VALE_CALC=1187829.61169,
            VALE_REFE=1.176825720257336E6,
            NOM_PARA='K1',
            TABLE=PK,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.080000000000000002,
-           VALE_CALC= 3.39447845E+05,
+           VALE_CALC=308990.745938,
            VALE_REFE=3.1534098547374451E5,
            NOM_PARA='K2',
            TABLE=PK,)

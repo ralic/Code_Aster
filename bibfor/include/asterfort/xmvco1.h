@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                       lact, dtang, nfh, ddls, jac,&
-                      ffc, ffp, singu, rr, cstaco,&
+                      ffc, ffp, singu, fk, cstaco,&
                       nd, tau1, tau2, jheavn, ncompn,&
                       nfiss, ifiss, jheafa, ncomph, ifa,&
                       vtmp)
@@ -42,7 +42,7 @@ interface
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)
         integer :: singu
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: cstaco
         real(kind=8) :: nd(3)
         real(kind=8) :: tau1(3)

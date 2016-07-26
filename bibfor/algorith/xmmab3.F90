@@ -1,10 +1,10 @@
 subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, jac, knp, nfh,&
                   seuil, tau1, tau2, mu, singu,&
-                  rr, lact, ddls, ddlm, mmat)
+                  fk, lact, ddls, ddlm, mmat)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,8 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
     integer :: singu, pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), ffp(27), jac, tau1(3), tau2(3)
-    real(kind=8) :: rr, seuil, knp(3, 3), mu
+    real(kind=8) :: seuil, knp(3, 3), mu
+    real(kind=8) :: fk(27,3,3)
 ! ROUTINE CONTACT (METHODE XFEM HPP - CALCUL ELEM.)
 !
 ! --- CALCUL DE B, BT
@@ -66,6 +67,7 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
 !
 !
     integer :: i, j, k, l, jn, nli, pli
+    integer :: alpj
     real(kind=8) :: ffi, tauknp(2, 3), coefj
 !
 ! ----------------------------------------------------------------------
@@ -113,24 +115,25 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
 167              continue
 !
                 do 168 l = 1, singu*ndim
-!
-                    mmat(pli+k,jn+ndim*(1+nfh)+l) = mmat(&
+                  do alpj = 1, ndim
+                    mmat(pli+k,jn+ndim*(1+nfh)+alpj) = mmat(&
                                                     pli+k,&
-                                                    jn+ ndim*(1+nfh)+l) + 2.d0*rr*mu*seuil*ffi*ff&
-                                                    &p(j)* tauknp(k,&
+                                                    jn+ ndim*(1+nfh)+alpj) + 2.d0*fk(j,alpj,l)*&
+                                              mu*seuil*ffi*&
+                                                    tauknp(k,&
                                                     l&
                                                     )*jac
 !
-                    mmat(jn+ndim*(1+nfh)+l,pli+k) = mmat(&
-                                                    jn+ndim*(1+ nfh)+l,&
-                                                    pli+k) + 2.d0*rr*mu*seuil*ffi*ffp(j&
-                                                    )* tauknp(k,&
+                    mmat(jn+ndim*(1+nfh)+alpj,pli+k) = mmat(&
+                                                    jn+ndim*(1+ nfh)+alpj,&
+                                                    pli+k) + 2.d0*fk(j,alpj,l)*mu*seuil*ffi*&
+                                                    tauknp(k,&
                                                     l&
                                                     )*jac
-!
+                   enddo
 168              continue
 166          continue
-165      end do
-160  end do
+165      continue
+160  continue
 !
 end subroutine

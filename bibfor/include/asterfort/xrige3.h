@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                       heavn, ddlh, ddlc, nfe, basloc,&
                       nnop, npg, lsn, lst, sig,&
-                      matuu)
+                      matuu, jstno, imate)
         integer :: nnop
         integer :: ndim
         character(len=8) :: elrefp
@@ -30,6 +30,8 @@ interface
         integer :: ddlh
         integer :: ddlc
         integer :: nfe
+        integer :: jstno
+        integer :: imate
         real(kind=8) :: basloc(9*nnop)
         integer :: npg
         real(kind=8) :: lsn(nnop)

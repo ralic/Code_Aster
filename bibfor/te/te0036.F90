@@ -2,7 +2,7 @@ subroutine te0036(option, nomte)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,8 @@ subroutine te0036(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/tefrep.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xdeffe.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnormv.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xteddl.h"
@@ -68,15 +69,18 @@ subroutine te0036(option, nomte)
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, k
     integer :: jpmilt, irese, nfiss, jfisno, jtab(7), ncomp, jheavn, jheavs, ncompn
+    integer :: jbaslo, imate
+    integer :: alp
     integer :: ibid, ier, ndim, nno, nnop, nnops, npg, nnos, kpg
     integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
     integer :: nfh, nfe, nse, ise
     integer :: in, ino, iadzi, iazk24, jstno
     integer :: iforc, iret, ig, pos, ndime, nddl, ddls
-    real(kind=8) :: xg(4), fe(4), lsng, lstg, rg, tg, r
+    real(kind=8) :: xg(4), r
     real(kind=8) :: pres, ff(27), coorse(18), cosa, sina
     real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
     real(kind=8) :: poids, forrep(3), vf, td(3), rbid(1)
+    real(kind=8) :: fk(27,3,3), ka, mu
     aster_logical :: lbid, axi, pre1
     integer :: kk, ddlm, nnopm
     data          elrese /'SE2','TR3','SE3','TR6'/
@@ -143,7 +147,7 @@ subroutine te0036(option, nomte)
     endif
 !
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
-        nfe = 4
+        nfe = 1
     endif
 !
     ASSERT(nfe.gt.0.or.nfh.gt.0)
@@ -192,6 +196,10 @@ subroutine te0036(option, nomte)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PSTANO', 'L', jstno)
+    if (nfe.gt.0) then
+      call jevech('PBASLOR', 'L', jbaslo)
+      call jevech('PMATERC', 'L', imate)
+    endif
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ier)
     if (ier .eq. 0 .and. .not.iselli(elref)) call jevech('PPMILTO', 'L', jpmilt)
@@ -309,22 +317,12 @@ subroutine te0036(option, nomte)
 !           -------------------------------------
 !
             call reeref(elrefp, nnop, zr(igeom), xg, ndim, rb2, ff)
+!
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
             if (nfe .gt. 0) then
-!           LEVEL SETS AU POINT DE GAUSS
-                lsng = 0.d0
-                lstg = 0.d0
-                do ino = 1, nnop
-                    lsng = lsng + zr(jlsn-1+ino) * ff(ino)
-                    lstg = lstg + zr(jlst-1+ino) * ff(ino)
-                end do
-!
-!           COORDONNÉES POLAIRES DU POINT
-                rg=sqrt(lsng**2+lstg**2)
-                tg = zi(jheavt-1+ise) * abs(atan2(lsng,lstg))
-!
-!           FONCTIONS D'ENRICHISSEMENT
-                call xdeffe(rg, tg, fe)
-!
+              call xkamat(zi(imate), ndim, axi, ka, mu)
+              call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(zi(jheavt-1+ise),8),&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
             endif
 !
 !         CALCUL DES FORCES REPARTIES SUIVANT LES OPTIONS
@@ -458,13 +456,12 @@ subroutine te0036(option, nomte)
                        end do
                    end do
 !           TERME SINGULIER
-                do ig = 1, nfe
-                    do j = 1, ndim
-                        pos=pos+1
-                        zr(ires-1+pos) = zr(ires-1+pos) + fe(ig) * forrep(j) * poids *&
-                                         ff(ino)
-                    end do
-                end do
+                   do alp = 1, ndim*nfe
+                     pos=pos+1
+                     do j = 1, ndim
+                       zr(ires-1+pos) = zr(ires-1+pos) + fk(ino,alp,j) * forrep(j) * poids
+                     end do
+                   end do
                end do
             endif
         end do

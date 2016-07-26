@@ -38,6 +38,7 @@ MA=LIRE_MAILLAGE(FORMAT='MED')
  
 MA=DEFI_GROUP( reuse=MA,
                MAILLAGE=MA,
+               CREA_GROUP_NO=_F(GROUP_MA='FACE_AV',),
                CREA_GROUP_MA=_F(  NOM = 'CUBE',
                                   TOUT = 'OUI',
                                   TYPE_MAILLE='3D',
@@ -53,7 +54,9 @@ MO=AFFE_MODELE(MAILLAGE=MA,
                        MODELISATION='3D',),)
 
 # fissure X-FEM
-FISS=DEFI_FISS_XFEM(MAILLAGE=MA,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MA, 
+                    #TYPE_ENRI_FOND='TOPOLOGIQUE',
+                    NB_COUCHES=5,
                     DEFI_FISS=_F(FORM_FISS='ELLIPSE',
                                  DEMI_GRAND_AXE=a,
                                  DEMI_PETIT_AXE=a,
@@ -82,9 +85,12 @@ SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
                                    DX=0,
                                    DZ=0,),
                                 _F(GROUP_NO='D2',
-                                   DZ=0,),),
-                      FACE_IMPO=_F(GROUP_MA='FACE_AV',
-                                   DY=0.,),);
+                                   DZ=0,),
+                                _F(GROUP_NO='FACE_AV',
+                                   DY=0.,H1Y=0.),
+                                  ),
+                      #FACE_IMPO=_F(GROUP_MA='FACE_AV',DY=0.,),
+                      );
 
 PRESSION=AFFE_CHAR_MECA(MODELE=MOX,
                         FORCE_FACE=(_F(GROUP_MA='FACE_SUP', FX= cos(alpha)*sin(alpha)*sig, FZ= sin(alpha)*sin(alpha)*sig ),
@@ -130,7 +136,7 @@ CG=CALC_G(THETA=_F(FISSURE=FISS,
 PK=POST_K1_K2_K3(FISSURE=FISS,
                  NB_POINT_FOND=21,
                  RESULTAT=RESU,
-                 ABSC_CURV_MAXI=0.35,
+                 ABSC_CURV_MAXI=0.5,
                  INST=1.)
                 
 # formule pour le calcul de l'angle en degre
@@ -153,6 +159,76 @@ PK=CALC_TABLE(TABLE=PK,
 IMPR_TABLE(TABLE=CG)
 IMPR_TABLE(TABLE=PK)
 
+PK_K1 = RECU_FONCTION(TABLE=PK, PARA_X='ABSC_CURV', PARA_Y='K1',)
+PK_K2 = RECU_FONCTION(TABLE=PK, PARA_X='ABSC_CURV', PARA_Y='K2',)
+PK_K3 = RECU_FONCTION(TABLE=PK, PARA_X='ABSC_CURV', PARA_Y='K3',)
+
+def K1_ana(x):
+   return 7.9788456080286519E5
+
+def K2_ana(x):
+   return cos(x/a)*9.3868771859160636E5
+
+def K3_ana(x):
+   return -sin(x/a)*6.5708140301412437E5
+
+s_deb = 0.
+s_fin = 6.28278
+npt_s = 20
+s_tab = [s_deb + ipt*(s_fin-s_deb)/npt_s for ipt in xrange(npt_s+1)]
+K1_tab = [K1_ana(s) for s in s_tab]
+K2_tab = [K2_ana(s) for s in s_tab]
+K3_tab = [K3_ana(s) for s in s_tab]
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=31,
+              COURBE=(_F(FONCTION=PK_K1,
+                         LEGENDE='K1 / POST_K1_K2_K3',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(ABSCISSE=s_tab,
+                         ORDONNEE=K1_tab,
+                         LEGENDE='Reference K1',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                     ),
+              TITRE='sslv154b / stress intensity factor',
+              LEGENDE_X='s',
+              LEGENDE_Y='K1',
+             )
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=32,
+              COURBE=(_F(FONCTION=PK_K2,
+                         LEGENDE='K2 / POST_K1_K2_K3 / SGFEM',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(ABSCISSE=s_tab,
+                         ORDONNEE=K2_tab,
+                         LEGENDE='Reference K2',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                     ),
+              TITRE='sslv154b / stress intensity factor',
+              LEGENDE_X='s',
+              LEGENDE_Y='K2',
+             )
+
+IMPR_FONCTION(FORMAT='XMGRACE',
+              UNITE=33,
+              COURBE=(_F(FONCTION=PK_K3,
+                         LEGENDE='K3 / POST_K1_K2_K3 / SGFEM',
+                         MARQUEUR=1,
+                         COULEUR=1),
+                      _F(ABSCISSE=s_tab,
+                         ORDONNEE=K3_tab,
+                         LEGENDE='Reference K3',
+                         MARQUEUR=0,
+                         COULEUR=2),
+                     ),
+              TITRE='sslv154b / stress intensity factor',
+              LEGENDE_X='s',
+              LEGENDE_Y='K3',
+             )
 
 # TEST DE CALC_G
 #---------------
@@ -161,7 +237,7 @@ IMPR_TABLE(TABLE=PK)
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.059999999999999998,
-           VALE_CALC=838704.790037,
+           VALE_CALC=835136.934399,
            VALE_REFE=7.9788456080286519E5,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -170,7 +246,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.E-2,
-           VALE_CALC=794228.74795,
+           VALE_CALC=797590.108314,
            VALE_REFE=7.9788456080286519E5,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
@@ -180,7 +256,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.14000000000000001,
-           VALE_CALC=814934.818732,
+           VALE_CALC=811648.822597,
            VALE_REFE=9.3868771859160636E5,
            NOM_PARA='K2',
            TABLE=CG,
@@ -194,7 +270,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.1,
-           VALE_CALC=598160.841399,
+           VALE_CALC=597692.057232,
            VALE_REFE=6.5708140301412437E5,
            NOM_PARA='K3',
            TABLE=CG,
@@ -209,7 +285,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=807048.100338,
+           VALE_CALC=795157.215458,
            VALE_REFE=7.9788456080286519E5,
            NOM_PARA='K1',
            TYPE_TEST='MAX',
@@ -218,7 +294,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.11,
-           VALE_CALC=718139.477802,
+           VALE_CALC=780015.639928,
            VALE_REFE=7.9788456080286519E5,
            NOM_PARA='K1',
            TYPE_TEST='MIN',
@@ -228,7 +304,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.070000000000000007,
-           VALE_CALC=880242.939768,
+           VALE_CALC=936507.954036,
            VALE_REFE=9.3868771859160636E5,
            NOM_PARA='K2',
            TABLE=PK,
@@ -242,7 +318,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=-650085.714383,
+           VALE_CALC=-649549.897014,
            VALE_REFE=-6.5708140301412437E5,
            NOM_PARA='K3',
            TABLE=PK,

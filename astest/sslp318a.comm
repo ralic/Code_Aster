@@ -191,7 +191,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(22914396.4269, ),
+           VALE_CALC=22870811.7146,
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -202,7 +202,7 @@ TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K2',
            CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(0 ),
+           VALE_CALC=0.,
            TYPE_TEST='MAX',
            VALE_REFE=(0.0, ),
            PRECISION=TOL_K2,)
@@ -211,13 +211,12 @@ IMPR_TABLE(TABLE=SIF_1,
            FORMAT_R='E20.13');
 
 #TEST DE NON-REGRESSION sur KII
+#TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
 TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(7488.16410372, ),
-           TYPE_TEST='MAX',
-           VALE_REFE=(7488.16410372, ),)
+           VALE_CALC=7477.34472695,
+           TYPE_TEST='MAX',)
 #==================================
 #Propa 2
 #==================================
@@ -230,7 +229,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_2,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(25803533.9607, ),
+           VALE_CALC=25790005.9644,
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -241,7 +240,7 @@ TEST_TABLE(TABLE=SIF_2,
            NOM_PARA='K2',
            CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(0 ),
+           VALE_CALC=0.,
            TYPE_TEST='MAX',
            VALE_REFE=(0.0, ),
            PRECISION=TOL_K2,)
@@ -250,13 +249,12 @@ IMPR_TABLE(TABLE=SIF_2,
            FORMAT_R='E20.13');
 
 #TEST DE NON-REGRSSION sur KII
+#TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
 TEST_TABLE(TABLE=SIF_2,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(4028.3252732, ),
-           TYPE_TEST='MAX',
-           VALE_REFE=(4028.3252732,),)
+           VALE_CALC=14476.6038007,
+           TYPE_TEST='MAX',)
 #==================================
 #Propa 3
 #==================================
@@ -269,7 +267,7 @@ TOL_K2=0.01*KI_broek
 TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K1',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(28809289.8662,),
+           VALE_CALC=28796125.8387,
            TYPE_TEST='MAX',
            VALE_REFE=KI_broek,
            PRECISION=0.05,
@@ -280,7 +278,7 @@ TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K2',
            CRITERE='ABSOLU',
            REFERENCE='ANALYTIQUE',
-           VALE_CALC=(0 ),
+           VALE_CALC=0.,
            TYPE_TEST='MAX',
            VALE_REFE=(0.0, ),
            PRECISION=TOL_K2,)
@@ -289,13 +287,12 @@ IMPR_TABLE(TABLE=SIF_3,
            FORMAT_R='E20.13');
 
 #TEST DE NON-REGRESSION sur KII
+#TEST EN NON_REGRESSION PURE LE LABEL AUTRE_ATER EST ERRONE
 TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           REFERENCE='AUTRE_ASTER',
-           VALE_CALC=(20639.8846506, ),
-           TYPE_TEST='MAX',
-           VALE_REFE=(20639.8846506,),)
+           VALE_CALC=23335.4267981,
+           TYPE_TEST='MAX',)
 #----------------------------------------------
 #         EDITION DE FICHIERS MED
 #----------------------------------------------

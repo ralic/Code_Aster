@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,7 +23,7 @@ interface
                       ipgf, jac, jheavn, ncompn, jheafa, mmat,&
                       lact, ncomph, nd, nddl, ndim,&
                       nfh, nfiss, nno, nnol, nnos,&
-                      nvit, pla, rela, rr, singu,&
+                      nvit, pla, rela, singu, fk,&
                       tau1, tau2)
         integer :: algocr
         real(kind=8) :: coefcr
@@ -62,9 +62,9 @@ interface
         integer :: nvit
         integer :: pla(27)
         real(kind=8) :: rela
-        real(kind=8) :: rr
         integer :: singu
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
+        real(kind=8) :: fk(27,3,3)
     end subroutine xmcont
 end interface

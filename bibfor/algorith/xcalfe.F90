@@ -2,7 +2,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
                   dgdgl, iret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,8 +23,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
+#include "asterfort/xbasgl.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
     real(kind=8) :: he, lsng, lstg, baslog(3*3), fe(4), dgdgl(4, 3)
@@ -52,33 +51,12 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe,&
 !----------------------------------------------------------------
 !
     integer :: i, j, k
-    real(kind=8) :: e1(3), e2(3), e3(3), p(3, 3), invp(3, 3), norme
+    real(kind=8) ::p(3, 3), invp(3, 3)
     real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 3)
 !
 !     RECUPERATION DE LA BASE LOCALE ASSOCIÉE AU PT
 !     (E1=GRLT,E2=GRLN,E3=E1^E2)
-    do 123 i = 1, 3
-        e1(i) = baslog(i+3)
-        e2(i) = baslog(i+6)
-123  end do
-!     NORMALISATION DE LA BASE
-    call normev(e1, norme)
-    call normev(e2, norme)
-    call provec(e1, e2, e3)
-!
-!     CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-    do 124 i = 1, 3
-        p(i,1)=e1(i)
-        p(i,2)=e2(i)
-        p(i,3)=e3(i)
-124  end do
-!
-!     CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-    do 125 i = 1, 3
-        do 126 j = 1, 3
-            invp(i,j)=p(j,i)
-126      continue
-125  end do
+    call xbasgl(3, baslog, 1, p, invp)
 !
 !     COORDONNÉES POLAIRES DU POINT
     rg=sqrt(lsng**2+lstg**2)

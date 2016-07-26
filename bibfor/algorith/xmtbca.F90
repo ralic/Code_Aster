@@ -1,4 +1,4 @@
-subroutine xmtbca(mesh, hval_incr, ds_contact)
+subroutine xmtbca(mesh, hval_incr, mate, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/nmchex.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,6 +38,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: hval_incr(*)
+    character(len=24), intent(in) :: mate
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,7 +56,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin  = 7
+    integer, parameter :: nbin  = 11
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -67,6 +68,7 @@ implicit none
     character(len=19) :: ligrxf, cindco
     character(len=19) :: cpoint, cainte, heavno, hea_fa, hea_no
     character(len=19) :: oldgeo, depplu
+    character(len=19) :: basefo, lnno, stano
     character(len=16) :: option
     aster_logical :: debug
     integer :: ifm, niv, ifmdbg, nivdbg
@@ -90,6 +92,9 @@ implicit none
     heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
     hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
     hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
+    basefo  = ds_contact%sdcont_solv(1:14)//'.XFBS'
+    lnno  = ds_contact%sdcont_solv(1:14)//'.XFLN'
+    stano  = ds_contact%sdcont_solv(1:14)//'.XFST'
     option = 'XCVBCA'
     if (nivdbg .ge. 2) then
         debug = .true.
@@ -142,6 +147,15 @@ implicit none
     lchin(6) = hea_no
     lpain(7) = 'PHEA_FA'
     lchin(7) = hea_fa
+    lpain(8) = 'PBASLOC'
+    lchin(8) =  basefo   
+    lpain(9) = 'PLSNGG'
+    lchin(9) =  lnno
+    lpain(10) = 'PSTANO'
+    lchin(10) =  stano
+    lpain(11)  = 'PMATERC'
+    lchin(11)  = mate(1:19)
+
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

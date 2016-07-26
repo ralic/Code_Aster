@@ -163,7 +163,7 @@ IMPR_TABLE(TABLE=TABG,);
 
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=393366.055819,
+           VALE_CALC=389179.141346,
            NOM_PARA='G',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -172,7 +172,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=-310148521.794,
+           VALE_CALC=-308056434.213,
            NOM_PARA='K1',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -181,7 +181,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=-16044.9748463,
+           VALE_CALC=-25474.6968459,
            NOM_PARA='K2',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -190,7 +190,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=884808.766742,
+           VALE_CALC=1555421.78096,
            NOM_PARA='K3',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -199,7 +199,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=393366.055819,
+           VALE_CALC=389179.141346,
            NOM_PARA='G',
            TABLE=TABG,
            FILTRE=(_F(NOM_PARA='NUM_PT',

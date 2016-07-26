@@ -8,6 +8,7 @@ subroutine te0532(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterc/r8prem.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/vecini.h"
@@ -23,11 +24,12 @@ subroutine te0532(option, nomte)
 #include "asterfort/xxlan5.h"
 #include "asterfort/xxlag2.h"
 #include "asterfort/xxlagm.h"
+#include "asterfort/xkamat.h"
 !
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,8 +80,11 @@ subroutine te0532(option, nomte)
     real(kind=8) :: p(3, 3), pp(3, 3), dsidep(6, 6), tau1(3), lamb(3)
     real(kind=8) :: tau2(3), alpha(3), dnor(3), dtang(3), am3(3), sigma(6)
     real(kind=8) :: cohes(3), mat3bd(3, 3), mat6bd(6, 6)
+    real(kind=8) :: ka, mu, fk(27,3,3)
+    integer :: jbaslo, jlsn, jstno
     parameter    (prec=1.d-16)
     aster_logical :: imprim, lbid
+    aster_logical :: axi
     integer :: zxain
 !......................................................................
 !
@@ -157,6 +162,22 @@ subroutine te0532(option, nomte)
     call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
                 itab=jtab)
     ncompc = jtab(2)
+    if (nfe.gt.0) then
+       call jevech('PMATERC', 'L', jmate)
+       call jevech('PBASLOR', 'L', jbaslo)
+       call jevech('PLSN', 'L', jlsn)
+       call jevech('PSTANO', 'L', jstno)
+       axi=lteatt('AXIS','OUI')
+       call xkamat(zi(jmate), ndim, axi, ka, mu)
+    else
+       ka=3.d0
+       mu=1.d0
+       axi=.false._1
+       jmate=0
+       jbaslo=0
+       jlsn=0
+       jstno=0
+    endif
 !
     call jevech('PINCOCA', 'E', jout1)
     call jevech('PINDCOO', 'E', jout2)
@@ -273,14 +294,15 @@ subroutine te0532(option, nomte)
                                 jptint, ifa, igeom, ipgf, jac,&
                                 jlst, lact, nd, ndim, ninter,&
                                 nlact, nno, nnos, nptf, nvit,&
-                                rr, singu, tau1, tau2)
+                                rr, singu, tau1, tau2, ka, mu,&
+                                jbaslo, jstno, jlsn, fk)
 !
 !            CALCUL COMPOSANTE NORMALE SAUT DE DEPLACEMENT
 !
                     nvec=1
                     call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                                 nvec, zr(idepl), zr(idepl), zr(idepl), nfh,&
-                                singu, rr, ddls, ddlm, jheavn, ncompn,&
+                                singu, fk, ddls, ddlm, jheavn, ncompn,&
                                 nfiss, ifiss, jheafa, ncomph, ifa,&
                                 saut)
 !

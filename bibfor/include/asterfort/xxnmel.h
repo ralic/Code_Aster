@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
                       typmod, option, imate, compor, lgpg,&
                       crit, idepl, lsn, lst, idecpg,&
                       sig, vi, matuu, ivectu, codret,&
-                      nfiss, heavn)
+                      nfiss, heavn, jstno)
         integer :: nfiss
         integer :: lgpg
         integer :: npg
@@ -54,5 +54,6 @@ interface
         integer :: ivectu
         integer :: codret
         integer :: heavn(nnop, 5)
+        integer :: jstno
     end subroutine xxnmel
 end interface

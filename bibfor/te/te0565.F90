@@ -82,6 +82,7 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/verift.h"
+#include "asterfort/ltequa.h"
 !-----------------------------------------------------------------------
     integer :: idene1
     integer :: idfde, idsig, idvari, igeom, imate, itemps
@@ -166,8 +167,7 @@ subroutine te0565(nomopt, nomte)
     call jevech('PLONCHA', 'L', jlonch)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, iret)
-    if ((iret.eq.0) .and. (.not. axi) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
+    if ((iret.eq.0) .and. ltequa(elrefp, enr)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :

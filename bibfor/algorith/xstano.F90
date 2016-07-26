@@ -32,7 +32,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
     character(len=24) :: lisno, stano
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -402,7 +402,10 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
             else
                 if ((minlsn*maxlsn.lt.0.d0) .and. (maxlst.le.r8prem())) enr1=1
                 if ((minlsn*maxlsn.le.r8prem()) .and.&
-                (minlst* maxlst.le.r8prem())) enr2=2
+                (minlst* maxlst.le.r8prem())) then
+                  enr2=-2
+!                  enr2=+2
+                endif
             endif
             if (ljonc) then
 !       CORRECTION DU STATUT SI ON EST DU MAUVAIS COTÉ DE LA JONCTION
@@ -412,7 +415,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                         enr2=0
                     endif
 !       CORRECTION DU STATUT SI ON EST SUR LA JONCTION
-                    if (enr2 .eq. 2 .and. minlsj(ifiss,1)*maxlsj(ifiss) .le. r8prem() .and.&
+                    if (abs(enr2) .eq. 2 .and. minlsj(ifiss,1)*maxlsj(ifiss) .le. r8prem() .and.&
                         minlsj(ifiss,2) .lt. 0) then
                         enr2=0
                         if (minlsn*maxlsn .lt. 0.d0) enr1 = 1
@@ -425,13 +428,18 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
         if (rayon .gt. 0.d0 .and. typdis.ne.'COHESIF') then
             lsn=lnsv((ino-1)+1)
             lst=ltsv((ino-1)+1)
-            if (sqrt(lsn**2+lst**2) .le. rayon) enr2=2
+            if (sqrt(lsn**2+lst**2) .le. rayon .and. enr2.ne.-2) enr2=2
         endif
 !
 !       ATTENTION, LE TRAITEMENT EVENTUEL DE NB_COUCHES N'EST PAS FAIT
 !       ICI CAR ON NE CONNAIT PAS LA TAILLE DES MAILLES DU FOND DE FISS
 !       CE TRAITEMENT SERA EFFECTUE APRES DANS XENRCH, DONC STANO SERA
 !       PEUT ETRE MODIFIE
+!
+!  --- DEFINITION D UN NOUVEAU STATUT POUR LES NOEUDS EN FOND DE FISSURE
+        if(enr2.eq.-2 .and. enr1.eq.1) enr2=2
+!
+!        if(abs(enr2).eq.2 .and. enr1.eq.1) enr2=0
 !
         enr=enr1+enr2
 !

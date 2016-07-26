@@ -4,13 +4,14 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                   typmod, option, imate, compor, lgpg,&
                   crit, idepl, lsn, lst, idecpg,&
                   sig, vi, matuu, ivectu, codret,&
-                  nfiss, heavn)
+                  nfiss, heavn, jstno)
 !
 ! aslint: disable=W1306,W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/iselli.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elrefe_info.h"
@@ -20,14 +21,17 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf2.h"
-#include "asterfort/xcalfe.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/iimatu.h"
+#include "asterfort/xnbddl.h"
     integer :: nnop, nfiss, codret, ddlc, ddlm
     integer :: idecpg, idepl, igeom, imate, ivectu, nnops
     integer :: lgpg, ndim, nfe, nfh, npg, heavn(nnop, 5)
+    integer :: jstno
     real(kind=8) :: basloc(3*ndim*nnop), coorse(*), crit(*), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)
@@ -36,7 +40,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     character(len=16) :: option, compor(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,16 +96,18 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !......................................................................
 !
     character(len=16) :: compo2(4)
-    integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg, iret
+    integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
     integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se
+    integer :: singu, alp, ii, jj
     real(kind=8) :: dsidep(6, 6), eps(6), sigma(6), ftf, detf
-    real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfe+nfh)), rbid33(3, 3)
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: dfdi(nnop, ndim), f(3, 3), fe(4), baslog(3*ndim)
-    real(kind=8) :: dgdgl(4, 3), pff(6, nnop, nnop)
-    real(kind=8) :: def(6, ndim*(1+nfh+nfe), nnop)
+    real(kind=8) :: tmp1, tmp2, sigp(6, 3*(1+nfh+nfe*ndim)), rbid33(3, 3)
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
+    real(kind=8) :: dfdi(nnop, ndim), f(3, 3)
+    real(kind=8) :: pff(6, nnop, nnop)
+    real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
     aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
@@ -118,11 +124,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !     TELLE SORTE QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES
 !     NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld = ndim*(1+nfh+nfe)
-!
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls = ddld+ddlc
+!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !
 ! - INITIALISATION
     grdepl = compor(3) .eq. 'GROT_GDEP'
@@ -161,38 +164,16 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             end do
         end do
 !
-!       JUSTE POUR CALCULER LES FF
-!
+!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
+!       ET CALCUL DE FF ET DFDI
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
+                    xe, ff, dfdi=dfdi)
 !
-!
-        if (nfe .gt. 0) then
-!         BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-            call vecini(3*ndim, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do n = 1, nnop
-                lsng = lsng + lsn(n) * ff(n)
-                lstg = lstg + lst(n) * ff(n)
-                do i = 1, 3*ndim
-                    baslog(i) = baslog(i) + basloc(3*ndim*(n-1)+i) * ff(n)
-                end do
-            end do
-!
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-            if (ndim .eq. 2) then
-                call xcalf2(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            else if (ndim.eq.3) then
-                call xcalfe(he(1), lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-            endif
-!
-!         PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
-!
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (singu .gt. 0) then
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi=dfdi, dkdgl=dkdgl)
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):
@@ -211,16 +192,12 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !       ET CALCUL DE FF, DFDI, ET EPS
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA' .or.&
             option(1: 9) .eq. 'RAPH_MECA') then
-!
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
             call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
-                        nfiss, nfh, nfe, ddls, ddlm,&
-                        fe, dgdgl, ff, dfdi, f, eps, rbid33, heavn)
+                        nfiss, nfh, singu, ddls, ddlm,&
+                        fk, dkdgl, ff, dfdi, f, eps, rbid33, heavn)
 !
 !       SI OPTION 'RIGI_MECA', ON INITIALISE À 0 LES DEPL
         else if (option .eq. 'RIGI_MECA') then
-            call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                        xe, ff, dfdi=dfdi)
             call matini(3, 3, 0.d0, f)
             do i = 1, 3
                 f(i,i) = 1.d0
@@ -232,6 +209,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
+        def(:,:,:)=0.d0
         do n = 1, nnop
             cpt = 0
 !         FONCTIONS DE FORME CLASSIQUES
@@ -273,39 +251,39 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
             end do
 !
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do ig = 1, nfe
+            do alp = 1, ndim*nfe
                 do i = 1, ndim
                     cpt=cpt+1
-                    def(1,cpt,n) = f(i,1)* (dfdi(n,1) * fe(ig) + ff(n) *dgdgl(ig,1))
+                    def(1,cpt,n) = f(i,1)* dkdgl(n,alp,i,1)
 !
-                    def(2,cpt,n) = f(i,2)* (dfdi(n,2) * fe(ig) + ff(n) *dgdgl(ig,2))
+                    def(2,cpt,n) = f(i,2)* dkdgl(n,alp,i,2)
 !
                     def(3,cpt,n) = 0.d0
 !
                     def(4,cpt,n) = (&
-                                   f(i,1)* (dfdi(n,2)*fe(ig)+ff(n)* dgdgl(ig,2)) + f(i,2)* (dfdi(&
-                                   &n,1)*fe(ig)+ff(n)* dgdgl(ig,1))&
+                                   f(i,1)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,1)&
                                    )/rac2
 !
                     if (ndim .eq. 3) then
-                        def(3,cpt,n) = f(i,3)* (dfdi(n,3) * fe(ig) + ff(n)*dgdgl(ig,3))
+                        def(3,cpt,n) = f(i,3)* dkdgl(n,alp,i,3)
                         def(5,cpt,n) = (&
-                                       f(i,1)* (dfdi(n,3)*fe(ig)+ff( n)*dgdgl(ig,3)) + f(i,3)* (d&
-                                       &fdi(n,1)*fe(ig)+ ff(n)*dgdgl(ig,1))&
+                                       f(i,1)* dkdgl(n,alp,i,3) + f(i,3)* dkdgl(n,alp,i,1)&
                                        )/rac2
                         def(6,cpt,n) = (&
-                                       f(i,3)* (dfdi(n,2)*fe(ig)+ff( n)*dgdgl(ig,2)) + f(i,2)* (d&
-                                       &fdi(n,3)*fe(ig)+ ff(n)*dgdgl(ig,3))&
+                                       f(i,3)* dkdgl(n,alp,i,2) + f(i,2)* dkdgl(n,alp,i,3)&
                                        )/rac2
                     endif
-                end do
+                enddo
 !
-!   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+IG)
-                if (axi) then
-                    def(3,1+ndim*(nfh+ig),n) = f(3,3) * ff(n)/r * fe( ig)
-                endif
+            enddo
 !
-            end do
+!   TERME DE CORRECTION (3,3) AXI PORTE SUR LE DDL 1+NDIM*(NFH+ALP)
+!      EN AXI: ON PROJETTE L ENRICHISSEMENT VECTORIEL SUIVANT X
+            if (axi) then
+               do alp = 1, ndim*nfe
+                  def(3,1+ndim*(nfh+alp),n) = f(3,3)* fk(n,alp,1)/r
+               end do
+             endif
 !
             ASSERT(cpt.eq.ddld)
 !
@@ -386,14 +364,17 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 do m = 1, n
                     mn=dec(m)
                     do i = 1, ddld
-                        kkd = (nn+i-1) * (nn+i) /2
+                        ii=iimatu(i,ndim,nfh,nfe)
+                        kkd = (nn+ii-1) * (nn+ii) /2
                         if (m .eq. n) then
-                            j1 = i
+                            j1 = ii
                         else
                             j1 = ddld
                         endif
 !
                         do j = 1, ddld
+!
+                            jj=iimatu(j,ndim,nfh,nfe)
 !
 !                 RIGIDITE ELASTIQUE
                             tmp2 = 0.d0
@@ -402,8 +383,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                             end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                            if (j .le. j1) then
-                                matuu(kkd+mn+j) = matuu(kkd+mn+j) + tmp2*jac
+                            if (jj .le. j1) then
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj) + tmp2*jac
                             endif
 !
                         end do
@@ -435,7 +416,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 nn=dec(n)
 !
                 do i = 1, ddld
-                    kkd = (nn+i-1) * (nn+i) /2
+                    ii=iimatu(i,ndim,nfh,nfe)
+                    kkd = (nn+ii-1) * (nn+ii) /2
                     do kl = 1, 2*ndim
                         sigp(kl,i) = 0.d0
                         do l = 1, 2*ndim
@@ -443,11 +425,12 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                         end do
                     end do
                     do j = 1, ddld
+                        jj=iimatu(j,ndim,nfh,nfe)
                         do m = 1, n
                             mn=dec(m)
 !
                             if (m .eq. n) then
-                                j1 = i
+                                j1 = ii
                             else
                                 j1 = ddld
                             endif
@@ -474,8 +457,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                             end do
 !
 !                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                            if (j .le. j1) then
-                                matuu(kkd+mn+j) = matuu(kkd+mn+j) + ( tmp1+tmp2)*jac
+                            if (jj .le. j1) then
+                                matuu(kkd+mn+jj) = matuu(kkd+mn+jj) + ( tmp1+tmp2)*jac
                             endif
 !
                         end do
@@ -493,8 +476,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
                 nn=dec(n)
 !
                 do i = 1, ddld
+                    ii=iimatu(i,ndim,nfh,nfe)
                     do m = 1, 2*ndim
-                        zr(ivectu-1+nn+i)= zr(ivectu-1+nn+i) + def(m,&
+                        zr(ivectu-1+nn+ii)= zr(ivectu-1+nn+ii) + def(m,&
                         i,n)*sigma(m)*jac
                     end do
                 end do

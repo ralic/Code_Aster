@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
                       ptknp, nfh, seuil, mu, singu,&
-                      rr, coefbu, ddls, ddlm, mmat)
+                      fk, coefbu, ddls, ddlm, mmat)
         integer :: ndim
         integer :: nno
         integer :: nnos
@@ -29,7 +29,7 @@ interface
         real(kind=8) :: seuil
         real(kind=8) :: mu
         integer :: singu
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: coefbu
         integer :: ddls
         integer :: ddlm

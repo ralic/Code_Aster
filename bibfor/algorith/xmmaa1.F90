@@ -2,7 +2,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                   hpg, ffc, ffe,&
                   ffm, jacobi, coefcr, coefcp,&
                   lpenac, norm, nsinge, nsingm,&
-                  rre, rrm, jddle, jddlm,&
+                  fk_escl, fk_mait, jddle, jddlm,&
                   nfhe, nfhm, lmulti, heavno, heavn, heavfa,&
                   mmat)
 ! aslint: disable=W1504
@@ -17,12 +17,13 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
     integer :: nfhe, nfhm, heavno(8), heavfa(*), heavn(*)
     real(kind=8) :: mmat(336, 336), norm(3)
     real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi
-    real(kind=8) :: coefcr, coefcp, rre, rrm
+    real(kind=8) :: coefcr, coefcp
+    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
     integer :: ndeple, nnc, jddle(2), jddlm(2)
     aster_logical :: lpenac, lmulti
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,8 +73,6 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  MAILLE : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
 ! IN  NSINGE : NOMBRE DE FONCTION SINGULIERE ESCLAVE
 ! IN  NSINGM : NOMBRE DE FONCTION SINGULIERE MAITRE
-! IN  RRE    : SQRT LST ESCLAVE
-! IN  RRM    : SQRT LST MAITRE
 ! IN  NCONTA : TYPE DE CONTACT (1=P1P1, 2=P1P1A, 3=P2P1)
 ! IN  JDDLE  : MAILLE ESCL : (1) DDLS D'UN NOEUD SOMMET
 !                            (2) DDLS D'UN NOEUD MILIEU
@@ -85,7 +84,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 !
     integer :: i, j, k, l, ii, jj, pl, jjn, iin, nddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: pli, plj, ifh, iddl, jddl, hea_fa(2)
+    integer :: pli, plj, ifh, iddl, jddl, hea_fa(2), alpi, alpj
     real(kind=8) :: mm, iescl(6), jescl(6), imait(6), jmait(6)
 !
 ! ----------------------------------------------------------------------
@@ -95,16 +94,12 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
 !
     iescl(1) = 1
     iescl(2) = -1
-    iescl(2+nfhe)=-rre
     jescl(1) = 1
     jescl(2) = -1
-    jescl(2+nfhe)=-rre
     imait(1) = 1
     imait(2) = 1
-    imait(2+nfhm)= rrm
     jmait(1) = 1
     jmait(2) = 1
-    jmait(2+nfhm)= rrm
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
     if (.not.lmulti) then
       hea_fa(1)=xcalc_code(1,he_inte=[-1])
@@ -130,7 +125,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                             nfhe, pl)
                 if (lmulti) pl = pl + (heavno(i)-1)*ndim
                 do 30 j = 1, ndeple
-                    mm = hpg*ffc(i)*ffe(j)*jacobi*norm(k)
+                    mm = hpg*ffc(i)*jacobi*norm(k)
                     call indent(j, ddles, ddlem, nnes, jjn)
                     if (lmulti) then
                         do 35 ifh = 1, nfhe
@@ -143,14 +138,19 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                                 hea_fa(1),&
                                                 heavn(nfhe*nne+nfhm*nnm+j))
                     endif
-                    do 40 jddl = 1, 1+nfhe+nsinge
+                    do 40 jddl = 1, 1+nfhe
                         jj = jjn + (jddl-1)*ndim + k
-                        mmat(pl,jj) = -jescl(jddl)*mm
-                        mmat(jj,pl) = -jescl(jddl)*mm
+                        mmat(pl,jj) = mmat(pl,jj)-jescl(jddl)*mm*ffe(j)
+                        mmat(jj,pl) = mmat(jj,pl)-jescl(jddl)*mm*ffe(j)
  40                 continue
+                    do alpj = 1, nsinge*ndim
+                        jj = jjn + (1+nfhe+1-1)*ndim + alpj
+                        mmat(pl,jj) = mmat(pl,jj)+mm*fk_escl(j,alpj,k)
+                        mmat(jj,pl) = mmat(jj,pl)+mm*fk_escl(j,alpj,k)
+                    enddo
  30             continue
                 do 50 j = 1, nnm
-                    mm = hpg*ffc(i)*ffm(j)*jacobi*norm(k)
+                    mm = hpg*ffc(i)*jacobi*norm(k)
                     call indent(j, ddlms, ddlmm, nnms, jjn)
                     jjn = jjn + nddle
                     if (lmulti) then
@@ -164,11 +164,16 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                                 hea_fa(2),&
                                                 heavn((1+nfhe)*nne+nfhm*nnm+j))
                     endif
-                    do 60 jddl = 1, 1+nfhm+nsingm
+                    do 60 jddl = 1, 1+nfhm
                         jj = jjn + (jddl-1)*ndim + k
-                        mmat(pl,jj) = jmait(jddl)*mm
-                        mmat(jj,pl) = jmait(jddl)*mm
+                        mmat(pl,jj) = mmat(pl,jj)+jmait(jddl)*mm*ffm(j)
+                        mmat(jj,pl) = mmat(jj,pl)+jmait(jddl)*mm*ffm(j)
  60                 continue
+                    do alpj = 1, nsingm*ndim
+                        jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                        mmat(pl,jj) = mmat(pl,jj)+mm*fk_mait(j,alpj,k)
+                        mmat(jj,pl) = mmat(jj,pl)+mm*fk_mait(j,alpj,k)
+                    enddo
  50             continue
  20         continue
  10     continue
@@ -184,7 +189,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         if (lpenac) then
                             mm = 0.d0
                         else
-                            mm = hpg*coefcr*ffe(i)*norm(l)*ffe(j)* jacobi*norm(k)
+                            mm = hpg*coefcr*norm(l)* jacobi*norm(k)
                         endif
                         if (lmulti) then
                             do 220 ifh = 1, nfhe
@@ -203,13 +208,32 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                                     hea_fa(1),&
                                                     heavn(nfhe*nne+nfhm*nnm+j))
                         endif
-                        do 230 iddl = 1, 1+nfhe+nsinge
+                        do 230 iddl = 1, 1+nfhe
                             ii = iin + (iddl-1)*ndim + l
-                            do 240 jddl = 1, 1+nfhe+nsinge
+                            do 240 jddl = 1, 1+nfhe
                                 jj = jjn + (jddl-1)*ndim + k
-                                mmat(ii,jj) = iescl(iddl)*jescl(jddl)* mm
+                                mmat(ii,jj) = mmat(ii,jj)+iescl(iddl)*jescl(jddl)&
+                                           * mm *ffe(j) *ffe(i)
 240                         continue
+                            do alpj = 1, nsinge*ndim
+                                jj = jjn + (1+nfhe+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)+iescl(iddl)* mm *ffe(i)&
+                                         * fk_escl(j,alpj,k)
+                            enddo
 230                     continue
+                        do alpi = 1, nsinge*ndim
+                            ii = iin + (1+nfhe+1-1)*ndim + alpi
+                            do jddl = 1, 1+nfhe
+                                jj = jjn + (jddl-1)*ndim + k
+                                mmat(ii,jj) = mmat(ii,jj)-jescl(jddl)* mm *ffe(j)&
+                                    * fk_escl(i,alpi,l)
+                            enddo
+                            do alpj = 1, nsinge*ndim
+                                jj = jjn + (1+nfhe+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)-mm * fk_escl(i,alpi,l)&
+                                   * fk_escl(j,alpj,k)
+                            enddo
+                        enddo
 210                 continue
                     do 250 j = 1, nnm
                         call indent(j, ddlms, ddlmm, nnms, jjn)
@@ -217,7 +241,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         if (lpenac) then
                             mm = 0.d0
                         else
-                            mm = hpg*coefcr*ffe(i)*norm(l)*ffm(j)* jacobi*norm(k)
+                            mm = hpg*coefcr*norm(l)* jacobi*norm(k)
                         endif
                         if (lmulti) then
                             do 260 ifh = 1, nfhe
@@ -238,14 +262,40 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                                    hea_fa(2),&
                                                    heavn((1+nfhe)*nne+nfhm*nnm+j))
                         endif
-                        do 280 iddl = 1, 1+nfhe+nsinge
+                        do 280 iddl = 1, 1+nfhe
                             ii = iin + (iddl-1)*ndim + l
-                            do 290 jddl = 1, 1+nfhm+nsingm
+                            do 290 jddl = 1, 1+nfhm
                                 jj = jjn + (jddl-1)*ndim + k
-                                mmat(ii,jj) = -iescl(iddl)*jmait(jddl) *mm
-                                mmat(jj,ii) = -iescl(iddl)*jmait(jddl) *mm
+                                mmat(ii,jj) = mmat(ii,jj)-iescl(iddl)*jmait(jddl) &
+                                        *mm*ffm(j)*ffe(i)
+                                mmat(jj,ii) = mmat(jj,ii)-iescl(iddl)*jmait(jddl) &
+                                     *mm*ffm(j)*ffe(i)
 290                         continue
+                            do alpj = 1, nsingm*ndim
+                                jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)-iescl(iddl)* mm *ffe(i) &
+                                                  * fk_mait(j,alpj,k)
+                                mmat(jj,ii) = mmat(jj,ii)-iescl(iddl)* mm *ffe(i) &
+                                                  * fk_mait(j,alpj,k)
+                            enddo
 280                     continue
+                        do alpi = 1, nsinge*ndim
+                            ii = iin + (1+nfhe+1-1)*ndim + alpi
+                            do jddl = 1, 1+nfhm
+                                jj = jjn + (jddl-1)*ndim + k
+                                mmat(ii,jj) = mmat(ii,jj)+jmait(jddl)* mm *ffm(j) &
+                                        * fk_escl(i,alpi,l)
+                                mmat(jj,ii) = mmat(jj,ii)+jmait(jddl)* mm *ffm(j) &
+                                        * fk_escl(i,alpi,l)
+                            enddo
+                            do alpj = 1, nsingm*ndim
+                                jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)+mm * fk_escl(i,alpi,l) &
+                                            * fk_mait(j,alpj,k)
+                                mmat(jj,ii) = mmat(jj,ii)+mm * fk_escl(i,alpi,l) &
+                                                * fk_mait(j,alpj,k)
+                            enddo
+                        enddo
 250                 continue
 200             continue
                 do 300 i = 1, nnm
@@ -257,7 +307,7 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         if (lpenac) then
                             mm = 0.d0
                         else
-                            mm = hpg*coefcr*ffm(i)*norm(l)*ffm(j)* jacobi*norm(k)
+                            mm = hpg*coefcr*norm(l)* jacobi*norm(k)
                         endif
                         if (lmulti) then
                             do 330 ifh = 1, nfhm
@@ -276,13 +326,33 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                                                     hea_fa(2),&
                                                     heavn((1+nfhe)*nne+nfhm*nnm+j))  
                         endif
-                        do 340 iddl = 1, 1+nfhm+nsingm
+                        do 340 iddl = 1, 1+nfhm
                             ii = iin + (iddl-1)*ndim + l
-                            do 350 jddl = 1, 1+nfhm+nsingm
+                            do 350 jddl = 1, 1+nfhm
                                 jj = jjn + (jddl-1)*ndim + k
-                                mmat(ii,jj) = imait(iddl)*jmait(jddl)* mm
+                                mmat(ii,jj) = mmat(ii,jj)+imait(iddl)*jmait(jddl)* &
+                                       mm*ffm(i)*ffm(j)
 350                         continue
+                            ii = iin + (iddl-1)*ndim + l
+                            do alpj = 1, nsingm*ndim
+                                jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)+imait(iddl)* mm *ffm(i) * &
+                                      fk_mait(j,alpj,k)
+                            enddo
 340                     continue
+                        do alpi = 1, nsingm*ndim
+                            ii = iin + (1+nfhm+1-1)*ndim + alpi
+                            do jddl = 1, 1+nfhm
+                                jj = jjn + (jddl-1)*ndim + k
+                                mmat(ii,jj) = mmat(ii,jj)+jmait(jddl)* mm *ffm(j) * &
+                                          fk_mait(i,alpi,l)
+                            enddo
+                            do alpj = 1, nsingm*ndim
+                                jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                                mmat(ii,jj) = mmat(ii,jj)+mm * fk_mait(i,alpi,l) * &
+                                              fk_mait(j,alpj,k)
+                            enddo
+                        enddo
 320                 continue
 300             continue
 !
@@ -300,10 +370,12 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                 do 530 j = 1, ndeple
 ! --- BLOCS ES:CONT, CONT:ES
                     call indent(j, ddles, ddlem, nnes, jjn)
-                    jj = jjn + k
-                    mm = hpg*ffc(i)*ffe(j)*jacobi*norm(k)
-                    mmat(pl,jj) = rre * mm
-                    mmat(jj,pl) = rre * mm
+                    mm = hpg*ffc(i)*jacobi*norm(k)
+                    do alpj = 1, ndim*nsinge
+                      jj = jjn + alpj
+                      mmat(pl,jj) = mmat(pl,jj)+fk_escl(j,alpj,k) * mm
+                      mmat(jj,pl) = mmat(jj,pl)+fk_escl(j,alpj,k) * mm
+                    enddo
 530             continue
 520         continue
 510     continue
@@ -318,13 +390,17 @@ subroutine xmmaa1(ndim, jnne, ndeple, nnc, jnnm,&
                         if (lpenac) then
                             mm = 0.d0
                         else
-                            mm = hpg*coefcr*ffe(i)*norm(l)*ffe(j)* jacobi*norm(k)
+                            mm = hpg*coefcr*norm(l)* jacobi*norm(k)
                         endif
                         call indent(i, ddles, ddlem, nnes, iin)
                         call indent(j, ddles, ddlem, nnes, jjn)
-                        ii = iin + l
-                        jj = jjn + k
-                        mmat(ii,jj) = rre * rre * mm
+                        do alpi = 1, ndim*nsinge
+                          ii = iin + alpi
+                          do alpj = 1, ndim*nsinge
+                            jj = jjn + alpj
+                            mmat(ii,jj) = mmat(ii,jj)+fk_escl(j,alpj,k) *fk_escl(i,alpi,l)* mm
+                          enddo
+                        enddo
 630                 continue
 620             continue
 610         continue

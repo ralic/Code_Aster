@@ -1,7 +1,7 @@
 subroutine te0541(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ subroutine te0541(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/iselli.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/teattr.h"
@@ -45,7 +45,7 @@ subroutine te0541(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
     integer :: jpmilt, ddlm, nfiss, jfisno, icontt
-    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, jheavn
+    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, jheavn, imate
     integer :: contac, nnom, singu, itab(1)
     integer :: iret, k, itemps
     aster_logical :: lbid
@@ -94,11 +94,11 @@ subroutine te0541(option, nomte)
     call jevech('PSTANO', 'L', jstno)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH' .or. enr(1:2).eq.'XT') call jevech('PHEA_NO', 'L', jheavn)
-    if ((ibid.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if ((ibid.eq.0) .and. ltequa(elref,enr))&
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+    if (nfe.gt.0) call jevech('PMATERC', 'L', imate)
 !
 !     CALCUL DES CONTRAINTES THERMIQUES
     call xsigth(ndim, zi(jlonch), zr(itemps), nbsig, zr(icontt))
@@ -108,7 +108,7 @@ subroutine te0541(option, nomte)
                ddlm, igeom, compor, jpintt, zi(jcnset),&
                zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontt), nbsig,&
                ibid, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-               nfiss, jheavn)
+               nfiss, jheavn, jstno, imate)
 !
 !     POUR LES DDLS HEAVISIDE ENRICHIS A TORT
     call xteddl(ndim, nfh, nfe, ddls, nddl,&

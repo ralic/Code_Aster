@@ -54,7 +54,7 @@ MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
 # PARAMETRES DE LA FISSURE : 0 < a < 6.5 -> influt sur le choix Rsup !
 a=5.
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,TYPE_ENRI_FOND='TOPOLOGIQUE',
                     DEFI_FISS=_F(FORM_FISS = 'DEMI_PLAN',
                                  PFON      =(0. , a ,15.),
                                  NORMALE   =(0. , 0. , 1.),
@@ -175,12 +175,12 @@ G2=CALC_G(RESULTAT=UTOT2,
 IMPR_TABLE(TABLE=G2)
 
 # on compare au G donne par l'option CALC_K_G
-Gref = 8.26143E+02
+Gref = 796.7
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=826.73665276416,
-           VALE_REFE=826.73665276418,
+           VALE_CALC=797.319989056,
+           VALE_REFE=796.7,
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=G1,)
@@ -188,8 +188,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-3,
-           VALE_CALC=826.736653199,
-           VALE_REFE=826.14300000000003,
+           VALE_CALC=797.319989056,
+           VALE_REFE=796.7,
            NOM_PARA='G',
            TYPE_TEST='MAX',
            TABLE=G2,)
@@ -235,30 +235,30 @@ for i in range(0,nbc) :
 
 # TEST PAR RAPPORT A LA MODELISATION O AVEC FISSURE MAILLEE
 
-VAL_CALC = [1.2996921883357E+07 ,
-            1.2985490477179E+07 ,
-            1.2996921883357E+07 ,
-            1.2985490477179E+07 ,
-            1.3006676259068E+07 ,
-            1.2995190722909E+07 ,
-            1.3006676259068E+07 ,
-            1.2995190722909E+07 ,
-            1.3001357032542E+07 ,
-            1.2989981365079E+07 ,
-            1.3001357032542E+07 ,
-            1.2989981365079E+07 ,
-            1.2998842406166E+07 ,
-            1.2987436674432E+07 ,
-            1.2998842406167E+07 ,
-            1.2987436674432E+07 ,
-            1.2998400266419E+07 ,
-            1.2986987439813E+07 ,
-            1.2998400266419E+07 ,
-            1.2986987439812E+07 ,
-            1.2996903040002E+07 ,
-            1.2985472462835E+07 ,
-            1.2996903040002E+07 ,
-            1.2985472462835E+07 ]
+VAL_CALC = [12717489.9304,
+            12715793.0757,
+            12717489.9304,
+            12715793.0757,
+            12666356.4657,
+            12664677.59,
+            12666356.4657,
+            12664677.59,
+            12700871.6804,
+            12699172.3712,
+            12700871.6804,
+            12699172.3712,
+            12708853.2336,
+            12707156.3227,
+            12708853.2336,
+            12707156.3227,
+            12711950.5137,
+            12710252.8409,
+            12711950.5137,
+            12710252.8409,
+            12717451.3589,
+            12715754.3393,
+            12717451.3589,
+            12715754.3393 ]
 
 for i in range(0,nbc) :
    TEST_TABLE(TABLE=SIF1[i],
@@ -306,7 +306,7 @@ PK=POST_K1_K2_K3(FISSURE = FISS,
 IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(
-           VALE_CALC=1.3416086726783E+07,
+           VALE_CALC=1.21476036826E+07,
 
            NOM_PARA='K1',
            TABLE=PK,
@@ -384,7 +384,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=3.8871722013805997E-4,
+                   VALE_CALC=0.000136405773632,
 
                    CRITERE='ABSOLU',
                    ),
@@ -393,7 +393,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=2.3488575278017998,
+                   VALE_CALC=2.27994847227,
 
                    CRITERE='ABSOLU',
                    ),
@@ -402,7 +402,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=2.3103081507324998,
+                   VALE_CALC=2.27517346786,
 
                    CRITERE='ABSOLU',
                    ),

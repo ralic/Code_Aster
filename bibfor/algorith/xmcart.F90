@@ -27,9 +27,12 @@ implicit none
 #include "asterfort/xmimp3.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/exi_fiss.h"
+#include "asterfort/cnocns.h"
+#include "asterfort/cnsces.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,7 +95,7 @@ implicit none
 ! 23 NFAMA  : NUMEROS DE LA FACETTES MAITRE
 !
 
-    integer, parameter :: nbch = 8
+    integer, parameter :: nbch = 10
     integer :: ncmp(nbch)
     integer :: nummae, nummam, nnoe, nnom, ifise, ifism, jfiss
     integer :: i, j, ipc, k, ntpc, ndim, izone, nface, npte
@@ -102,8 +105,8 @@ implicit none
     character(len=3) :: ch3
     character(len=8) :: nomgd
     character(len=19) :: ligrxf, chs(nbch), carte(nbch)
-    integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier
-    aster_logical :: lmulti
+    integer :: zxain, ifm, niv, jconx, ninter, nbpi, ier, nbch_allo
+    aster_logical :: lmulti, lfiss
 !
 ! ----------------------------------------------------------------------
 !
@@ -115,6 +118,7 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
+    nbch_allo = nbch
     ndim = cfdisi(ds_contact%sdcont_defi,'NDIM')
     ntpc = cfdisi(ds_contact%sdcont_defi,'NTPC')
     ncmp(1) = 34
@@ -126,6 +130,8 @@ implicit none
         ncmp(6) = 8
         ncmp(7) = 4
         ncmp(8) = 40
+        ncmp(9) = 16*3*ndim
+        ncmp(10) = 16
     else if (ndim.eq.3) then
         ncmp(2) = 64
         ncmp(3) = 102
@@ -134,6 +140,8 @@ implicit none
         ncmp(6) = 24
         ncmp(7) = 8
         ncmp(8) = 80
+        ncmp(9) = 16*3*ndim
+        ncmp(10) = 16
     endif
 !
     ztabf = cfmmvd('ZTABF')
@@ -155,11 +163,21 @@ implicit none
     chs(6) = '&&XMCART.CHS6'
     chs(7) = '&&XMCART.CHS7'
     chs(8) = '&&XMCART.CHS8'
+    chs(9) = '&&XMCART.CHS9'
+    chs(10) = '&&XMCART.CHS10'
 !
     call celces(model//'.STNO', 'V', chs(1))
     call celces(model//'.TOPOFAC.OE', 'V', chs(2))
     call celces(model//'.TOPOFAC.AI', 'V', chs(3))
     call celces(model//'.TOPOFAC.CF', 'V', chs(4))
+    lfiss=exi_fiss(model)
+    if (lfiss) then
+      ASSERT(nbch_allo.eq.10)
+      call celces(model//'.BASLOC', 'V', chs(9))
+      call celces(model//'.LNNO', 'V', chs(10))
+    else
+      nbch_allo=8
+    endif
 !
     do i = 1, 4
         call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
@@ -190,6 +208,16 @@ implicit none
     call jeveuo(chs(8)//'.CESV', 'L', jcesv(8))
     call jeveuo(chs(8)//'.CESL', 'L', jcesl(8))
 !
+! --- CHAMPS ELEM POUR LES FCTS SINGULIERES
+!
+    if (lfiss) then
+      do i = 9, 10
+        call jeveuo(chs(i)//'.CESD', 'L', jcesd(i))
+        call jeveuo(chs(i)//'.CESV', 'L', jcesv(i))
+        call jeveuo(chs(i)//'.CESL', 'L', jcesl(i))
+      enddo
+    endif
+!
 ! - <LIGREL> for contact elements
 !
     ligrxf = ds_contact%ligrel_elem_cont
@@ -204,11 +232,17 @@ implicit none
     carte(6) = ds_contact%sdcont_solv(1:14)//'.XFHF'
     carte(7) = ds_contact%sdcont_solv(1:14)//'.XFPL'
     carte(8) = ds_contact%sdcont_solv(1:14)//'.XFHN'
+    carte(9) = ds_contact%sdcont_solv(1:14)//'.XFBS'
+    carte(10) = ds_contact%sdcont_solv(1:14)//'.XFLN'
 !
-    do i = 1, nbch
+    do i = 1, nbch_allo
         call detrsd('CARTE', carte(i))
         if (i .eq. 1 .or. i .eq. 3) then
             nomgd = 'N120_R'
+        else if (i .eq. 10) then
+            nomgd = 'NEUT_R'
+        else if (i .eq. 9) then
+            nomgd = 'N480_R'
         else if (i .eq. 2 .or. i .eq. 8) then
             nomgd = 'N120_I'
         else if (i .eq. 4) then
@@ -331,6 +365,48 @@ implicit none
         end do
         call nocart(carte(2), -3, ncmp(2), ligrel=ligrxf, nma=1,&
                     limanu=[-ipc])
+!
+! ----- REMPLISSAGE DE LA CARTE CARTCF.BASLOC
+!
+        if (lfiss) then
+        do i = 1, nnoe
+            do j = 1, 3*ndim
+                call cesexi('S', jcesd(9), jcesl(9), nummae, i,&
+                            1, j, iad)
+                ASSERT(iad.gt.0)
+                zr(jvalv(9)-1+3*ndim*(i-1)+j)=zr(jcesv(9)-1+iad)
+            enddo
+        end do
+        do i = 1, nnom
+            do j = 1, 3*ndim
+                call cesexi('S', jcesd(9), jcesl(9), nummam, i,&
+                            1, j, iad)
+                ASSERT(iad.gt.0)
+                zr(jvalv(9)-1+3*ndim*nnoe+3*ndim*(i-1)+j)=zr(jcesv(9)-1+iad)
+            enddo
+        end do
+        call nocart(carte(9), -3, ncmp(9), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
+        endif
+!
+! ----- REMPLISSAGE DE LA CARTE CARTCF.LNNO
+!
+        if (lfiss) then
+        do i = 1, nnoe
+            call cesexi('S', jcesd(10), jcesl(10), nummae, i,&
+                        1, 1, iad)
+            ASSERT(iad.gt.0)
+            zr(jvalv(10)-1+i)=zr(jcesv(10)-1+iad)
+        end do
+        do i = 1, nnom
+            call cesexi('S', jcesd(10), jcesl(10), nummam, i,&
+                        1, 1, iad)
+            ASSERT(iad.gt.0)
+            zr(jvalv(10)-1+i+nnoe)=zr(jcesv(10)-1+iad)
+        end do
+        call nocart(carte(10), -3, ncmp(10), ligrel=ligrxf, nma=1,&
+                    limanu=[-ipc])
+        endif
 !
 ! ----- REMPLISSAGE DE LA CARTE CARTCF.PINTER
 !
@@ -460,7 +536,7 @@ implicit none
 !
 ! --- MENAGE
 !
-    do i = 1, nbch
+    do i = 1, nbch_allo
         call detrsd('CHAM_ELEM_S', chs(i))
         call jedetr(carte(i)//'.NCMP')
         call jedetr(carte(i)//'.VALV')

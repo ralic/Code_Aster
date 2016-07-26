@@ -8,6 +8,7 @@ subroutine te0288(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/iselli.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rcvad2.h"
@@ -22,7 +23,7 @@ subroutine te0288(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +63,7 @@ subroutine te0288(option, nomte)
     integer :: ninter, nface, cface(30, 6), ifa, singu, jpmilt, irese, ddlm
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
-    integer :: icodre(3), contac, iadzi, iazk24
+    integer :: icodre(3), contac, iadzi, iazk24, jstno
     character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
     character(len=16) :: compor(4), nomres(3)
     aster_logical :: grand, incr
@@ -136,15 +137,14 @@ subroutine te0288(option, nomte)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PBASLOR', 'L', jbaslo)
+    if(nfe.gt.0) call jevech('PSTANO', 'L', jstno)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     call teattr('S', 'XFEM', enr, ibid)
     if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
 !
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if (ibid .eq. 0 .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-        .and. .not.iselli(elrefp)) &
+    if (ibid .eq. 0  .and. ltequa(elrefp,enr)) &
     call jevech('PPMILTO', 'L', jpmilt)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
@@ -178,7 +178,7 @@ subroutine te0288(option, nomte)
         call xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                     ise, nfh, ddlc, ddlm, nfe,&
                     zr(jbaslo), nnop, idepl, zr(jlsn), zr(jlst),&
-                    igthet, fno, nfiss, jheavn, incr)
+                    igthet, fno, nfiss, jheavn, jstno, incr)
 !
 !
 110  continue
@@ -255,7 +255,7 @@ subroutine te0288(option, nomte)
     do 200 ifa = 1, nface
         call xsifle(ndim, ifa, jptint, cface,&
                     igeom, nfh, jheavn, singu, nfe, ddlc,&
-                    ddlm, jlst, ipres, ipref, itemps,&
+                    ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
                     idepl, nnop, valres, zr( jbaslo), ithet,&
                     nompar, option, igthet, jbasec,&
                     contac)

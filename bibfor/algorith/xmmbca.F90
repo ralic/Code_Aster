@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/xmchex.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 4
-    integer, parameter :: nbin  = 20
+    integer, parameter :: nbin  = 23
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -71,6 +71,7 @@ implicit none
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
     character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
     character(len=19) :: fissno, heavno, heavfa, hea_no, hea_fa
+    character(len=19) :: lnno, baslo, stano
     aster_logical :: debug, lcontx
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
@@ -147,6 +148,9 @@ implicit none
     heavfa = model(1:8)//'.TOPOFAC.HE'
     hea_no = model(1:8)//'.TOPONO.HNO'
     hea_fa = model(1:8)//'.TOPONO.HFA'
+    lnno = model(1:8)//'.LNNO'
+    baslo = model(1:8)//'.BASLOC'
+    stano = model(1:8)//'.STNO'
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE  INDIC. CONTACT ET MEMOIRE CONTACT
 !
@@ -198,6 +202,12 @@ implicit none
     lchin(19) = hea_no
     lpain(20) = 'PHEA_FA'
     lchin(20) = hea_fa
+    lpain(21) = 'PLSN'
+    lchin(21) = lnno
+    lpain(22) = 'PBASLOR'
+    lchin(22) = baslo
+    lpain(23) = 'PSTANO'
+    lchin(23) = stano
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

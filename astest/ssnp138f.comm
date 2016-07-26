@@ -110,20 +110,20 @@ SIF_2 = [None]*(nbc*nbcalc)
 TG_1 = [None]*(nbc*nbcalc)
 
 VAL_CALC = [
-   2.5602007310303E+05  ,
-   2.5602007310303E+05  ,
-   0.278993942096       ,
-   244.30855512747      ,
-   -244.30855512795     ,
-   2.5608409925131E+05  ,
-   2.5608409925131E+05  ,
-   0.278964513742       ,
-   -122.9298220835      ,
-   122.92982208325      ,
-   2.491948361951E+05   ,
-   430.54681664567      ,
-   2.491948361951E+05   ,
-   -430.54681664678     ,    
+   2.5646930550303E+05  ,
+   2.5646930550303E+05  ,
+   0.284954091096       ,
+   -100.3492252747      ,
+   --100.3492252795     ,
+   2.5625235045131E+05  ,
+   2.5625235045131E+05  ,
+   0.283946487742       ,
+   -22.42286520835      ,
+   22.422865258325      ,
+   2.573890404951E+05   ,
+   652.39950444567      ,
+   2.573890404951E+05   ,
+   -652.39950444678     ,    
 ]
 ct = -1
 for i in range(nbcalc) :
@@ -137,6 +137,7 @@ for i in range(nbcalc) :
                                        PFON_ORIG  = (-A*cos(eval(alpha))/2,-A*sin(eval(alpha))/2, 0.),
                                        PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
                                        ),
+                          TYPE_ENRI_FOND='GEOMETRIQUE',NB_COUCHES=4
                           )
 
    MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i])
@@ -228,20 +229,20 @@ for i in range(nbcalc) :
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/500., 
+                    PRECISION=K1REF/200., 
                     REFERENCE='ANALYTIQUE')
          ct = ct +1
          TEST_TABLE(TABLE=SIF_2[k],
                     NOM_PARA='K2',
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                     CRITERE='ABSOLU',
-                    PRECISION=K1REF/500., 
+                    PRECISION=K1REF/200., 
                     REFERENCE='ANALYTIQUE')
 
    # K1 SUR LE 1er FOND
    PK1[i]=POST_K1_K2_K3(FISSURE = FISS[i],
                         NUME_FOND = 1,
-                        ABSC_CURV_MAXI = 4*eps,
+                        NB_NOEUD_COUPE=4,
                         RESULTAT  = RESU[i],
                        )
 
@@ -269,14 +270,14 @@ for i in range(nbcalc) :
                  NOM_PARA='K2',
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                  CRITERE='ABSOLU',
-                 PRECISION=K1REF/500., 
+                 PRECISION=K1REF/200., 
                  REFERENCE='ANALYTIQUE')
 
 
    # K1 SUR LE 2EME FOND
    PK2[i]=POST_K1_K2_K3(FISSURE = FISS[i],
                         NUME_FOND = 2,
-                        ABSC_CURV_MAXI = 4*eps,
+                        NB_NOEUD_COUPE=4,
                         RESULTAT  = RESU[i],
                        )
 
@@ -304,7 +305,7 @@ for i in range(nbcalc) :
                 NOM_PARA='K2',
                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K2REF,
                 CRITERE='ABSOLU',
-                PRECISION=K1REF/500., 
+                PRECISION=K1REF/200., 
                 REFERENCE='ANALYTIQUE')
 
 

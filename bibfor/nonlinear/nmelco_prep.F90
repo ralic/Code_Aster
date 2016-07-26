@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/xmchex.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,7 +84,7 @@ implicit none
     character(len=19) :: lnno  =' ', ltno  =' ', stano =' ', fissno=' '
     character(len=19) :: heavno=' ', hea_no=' ', hea_fa=' '
     character(len=19) :: pinter=' ', ainter=' ', cface =' ', faclon=' ', baseco=' '
-    character(len=19) :: xdonco=' ', xindco=' ', xseuco=' ', xcohes=' '
+    character(len=19) :: xdonco=' ', xindco=' ', xseuco=' ', xcohes=' ', basefo=' '
     aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac, l_xfem_czm
     integer, pointer :: v_model_xfemcont(:) => null()
 !
@@ -187,6 +187,7 @@ implicit none
         heavno = model(1:8)//'.HEAVNO'
         hea_no = model(1:8)//'.TOPONO.HNO'
         hea_fa = model(1:8)//'.TOPONO.HFA'
+        basefo = model(1:8)//'.BASLOC'
         if (l_cont_xfem_gg) then
             cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
             stano  = ds_contact%sdcont_solv(1:14)//'.XFST'
@@ -196,6 +197,8 @@ implicit none
             heavno = ds_contact%sdcont_solv(1:14)//'.XFPL'
             hea_fa = ds_contact%sdcont_solv(1:14)//'.XFHF'
             hea_no = ds_contact%sdcont_solv(1:14)//'.XFHN'
+            basefo  = ds_contact%sdcont_solv(1:14)//'.XFBS'
+            lnno  = ds_contact%sdcont_solv(1:14)//'.XFLN'
         endif
     endif
 !
@@ -229,8 +232,6 @@ implicit none
     lchin(13) = xindco
     lpain(14) = 'PDONCO'
     lchin(14) = xdonco
-    lpain(15) = 'PLSN'
-    lchin(15) = lnno
     lpain(16) = 'PLST'
     lchin(16) = ltno
     lpain(17) = 'PPINTER'
@@ -257,6 +258,18 @@ implicit none
     lchin(27) = hea_no
     lpain(28) = 'PHEA_FA'
     lchin(28) = hea_fa
+    if (l_cont_xfem .and. l_cont_xfem_gg) then
+      lpain(15) = 'PLSNGG'
+      lchin(15) = lnno
+      lpain(29) = 'PBASLOC'
+      lchin(29) =  basefo   
+    else
+      lpain(15) = 'PLSN'
+      lchin(15) = lnno
+      lpain(29) = 'PBASLOR'
+      lchin(29) =  basefo
+    endif
+    ASSERT(29.le.nbin)
 !
 ! - Prepare output field for XFEM/CZM
 !

@@ -49,13 +49,11 @@ CCOMPOR  = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
-    ('EN1',('DX','DY','E1X','E1Y','E2X',
-          'E2Y','E3X','E3Y','E4X','E4Y',)),))
+    ('EN1',('DX','DY','K1','K2',)),))
 
 
 EDEPLPG  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='XFEM',
-    components=('DX','DY','E1X','E1Y','E2X',
-          'E2Y','E3X','E3Y','E4X','E4Y',))
+    components=('DX','DY','K1','K2',))
 
 
 DDL_MECC = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
@@ -201,6 +199,7 @@ class MEAXTR3_XT(Element):
                      (SP.PPRESSR, EPRESNO), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTHETAR, DDL_MECC),
                      (OP.CALC_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALC_G.PSTANO, STANO_I),
                      ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
@@ -272,6 +271,7 @@ class MEAXTR3_XT(Element):
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTHETAR, DDL_MECC),
                      (OP.CALC_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     (OP.CALC_K_G.PSTANO, STANO_I),
                      ),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
@@ -290,7 +290,7 @@ class MEAXTR3_XT(Element):
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTEMPSR, CTEMPSR),
                      (SP.PTHETAR, DDL_MECC), (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALC_K_G_F.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
@@ -306,6 +306,7 @@ class MEAXTR3_XT(Element):
                      (OP.CHAR_MECA_FR2D2D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FR2D2D.PLSN, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FR2D2D.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FR2D2D.PPINTTO, LC.E6NEUTR),
                      (OP.CHAR_MECA_FR2D2D.PPMILTO, LC.E22NEUTR), (OP.CHAR_MECA_FR2D2D.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_FR2D2D.PBASLOR, LC.N6NEUT_R),
                      ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
@@ -317,7 +318,7 @@ class MEAXTR3_XT(Element):
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
                      (OP.CHAR_MECA_PESA_R.PPINTTO, LC.E6NEUTR), (OP.CHAR_MECA_PESA_R.PPMILTO, LC.E22NEUTR),
                      (OP.CHAR_MECA_PESA_R.PSTANO, STANO_I), (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG),
-                     ),
+                     (OP.CHAR_MECA_PESA_R.PBASLOR, LC.N6NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -327,7 +328,8 @@ class MEAXTR3_XT(Element):
                      (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_F.PPINTER, LC.E14NEUTR), (SP.PPRESSF, CPRESSF),
-                     (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
+                     (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
+                     (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N6NEUT_R),
                      ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
@@ -338,7 +340,9 @@ class MEAXTR3_XT(Element):
                      (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_R.PPINTER, LC.E14NEUTR), (SP.PPRESSR, EPRESNO),
-                     (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), ),
+                     (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), (SP.PMATERC, LC.CMATERC),
+                     (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N6NEUT_R),
+                     ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -348,7 +352,7 @@ class MEAXTR3_XT(Element):
                      (OP.CHAR_MECA_ROTA_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_ROTA_R.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_ROTA_R.PPINTTO, LC.E6NEUTR),
                      (OP.CHAR_MECA_ROTA_R.PPMILTO, LC.E22NEUTR), (SP.PROTATR, LC.CROTATR),
-                     (OP.CHAR_MECA_ROTA_R.PSTANO, STANO_I), ),
+                     (OP.CHAR_MECA_ROTA_R.PSTANO, STANO_I), (OP.CHAR_MECA_ROTA_R.PBASLOR, LC.N6NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -383,7 +387,8 @@ class MEAXTR3_XT(Element):
             para_in=((OP.DEPL_XPG.PBASLOR, LC.N6NEUT_R), (SP.PDEPLNO, DDL_MECA),
                      (OP.DEPL_XPG.PHEAVTO, E6NEUTI), (OP.DEPL_XPG.PLONCHA, LC.E10NEUTI),
                      (OP.DEPL_XPG.PLSN, LC.N1NEUT_R), (OP.DEPL_XPG.PLST, LC.N1NEUT_R),
-                     (OP.DEPL_XPG.PXFGEOM, XFGEOM_R), ),
+                     (OP.DEPL_XPG.PXFGEOM, XFGEOM_R), (OP.DEPL_XPG.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (SP.PGEOMER, NGEOMER),),
             para_out=((SP.PDEPLPG, EDEPLPG), ),
         ),
 
@@ -425,7 +430,7 @@ class MEAXTR3_XT(Element):
                      (OP.FORC_NODA.PLONCHA, LC.E10NEUTI), (OP.FORC_NODA.PLSN, LC.N1NEUT_R),
                      (OP.FORC_NODA.PLST, LC.N1NEUT_R), (OP.FORC_NODA.PPINTTO, LC.E6NEUTR),
                      (OP.FORC_NODA.PPMILTO, LC.E22NEUTR), (OP.FORC_NODA.PSTANO, STANO_I),
-                     (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), ),
+                     (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 

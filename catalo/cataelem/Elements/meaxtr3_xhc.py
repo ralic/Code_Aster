@@ -278,7 +278,7 @@ class MEAXTR3_XHC(Element):
                     (OP.DEPL_XPG.PLONCHA, LC.E10NEUTI), (
                     OP.DEPL_XPG.PLSN, LC.N1NEUT_R),
                     (OP.DEPL_XPG.PLST, LC.N1NEUT_R), (
-                    OP.DEPL_XPG.PXFGEOM, XFGEOM_R),
+                    OP.DEPL_XPG.PXFGEOM, XFGEOM_R), (SP.PGEOMER, NGEOMER),
                     ),
                     para_out=((SP.PDEPLPG, EDEPLPG), ),
                     ),

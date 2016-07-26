@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -29,7 +29,7 @@ interface
                       jlsn, jlst, typma, igeom, jheavn, ncompn,&
                       contac, cmp, nbcmp, nfh, nfe,&
                       ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                      pre1)
+                      pre1, jbaslo, jstno, ka, mu)
         integer :: nfiss
         character(len=8) :: maxfem
         integer :: jtypm2
@@ -85,7 +85,11 @@ interface
         integer :: jcnsv1
         integer :: jcnsv2
         integer :: jcnsl2
+        integer :: jstno
         aster_logical :: lmeca
         aster_logical :: pre1
+        integer :: jbaslo
+        real(kind=8) :: ka
+        real(kind=8) :: mu
     end subroutine xpoajm
 end interface 

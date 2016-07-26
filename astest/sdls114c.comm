@@ -182,13 +182,13 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='K1',
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                      VALE_I = 5),
-           VALE_CALC=2.09061360952E+11,);
+           VALE_CALC=1.99675511112E+11,);
 
 TEST_TABLE(TABLE=PK,
            NOM_PARA='G',
-           FILTRE=_F(NOM_PARA = 'FREQ',
-                     VALE = 4.30732E+04),
-           VALE_CALC=56770897865.4,);
+           FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
+                     VALE_I = 5),
+           VALE_CALC=3.67195387146E+11,);
 
 ##############################################
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES
@@ -231,14 +231,14 @@ KT1 = POST_K_TRANS(RESU_TRANS = RES_DYNA,
                    );
 IMPR_TABLE(TABLE=KT1)
 
-TEST_TABLE(VALE_CALC= 2.41503149213E+06,
+TEST_TABLE(VALE_CALC=2405102.57606,
            NOM_PARA='K1',
            TABLE=KT1,
            FILTRE=_F(NOM_PARA='INST',
                      VALE=2.E-3,),
            )
 
-TEST_TABLE(VALE_CALC= 3.56417612482E+05,
+TEST_TABLE(VALE_CALC=354514.221664,
            NOM_PARA='K2',
            TABLE=KT1,
            FILTRE=_F(NOM_PARA='INST',

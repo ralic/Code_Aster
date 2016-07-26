@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,6 +74,8 @@ PPMILTO = InputParameter(phys=PHY.N792_R)
 
 PBASECO = InputParameter(phys=PHY.N2448R)
 
+PSTANO   = InputParameter(phys=PHY.N120_I)
+
 
 CALC_K_G_F = Option(
     para_in=(
@@ -112,6 +114,7 @@ CALC_K_G_F = Option(
         SP.PTHETAR,
         PVARCPR,
         SP.PVARCRR,
+        PSTANO,
     ),
     para_out=(
         SP.PGTHETA,

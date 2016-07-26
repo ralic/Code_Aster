@@ -4,7 +4,6 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/iselli.h"
-#include "asterfort/provec.h"
 #include "blas/ddot.h"
 !
     integer :: npts, nintar, noeud(9), cface(30,6), nface, jgrlsn
@@ -14,7 +13,7 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,10 +43,6 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 !       CFACE   : CONNECTIVITE DES NOEUDS DES FACETTES
 !
 !     ----------------------------------------------------------------
-!
-    integer :: tempo, jj
-    real(kind=8) ::  ab(3), bc(3), normfa(3), gradlsn(3), det
-!
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !      3 CAS SONT POSSIBLES:
@@ -141,7 +136,16 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
 !   TROISIEME CAS
     else if (npts.eq.2.and.nintar.eq.1) then
        nface = nface+1
-       if (lst(1).gt.0.d0.or.lst(3).gt.0.d0) then
+       if ((lst(1).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(2).eq.0.d0.or.lst(1).gt.0.d0)) then
+          cface(nface,1) = noeud(1)
+          cface(nface,2) = noeud(2)
+          cface(nface,3) = noeud(3)
+          if (.not.iselli(elp)) then
+             cface(nface,4) = noeud(7)
+             cface(nface,5) = noeud(5)
+             cface(nface,6) = noeud(8)
+          endif
+       else if ((lst(2).eq.0.d0.or.lst(3).gt.0.d0) .or. (lst(3).eq.0.d0.or.lst(1).gt.0.d0)) then
           cface(nface,1) = noeud(1)
           cface(nface,2) = noeud(2)
           cface(nface,3) = noeud(3)
@@ -150,7 +154,7 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
              cface(nface,5) = noeud(8)
              cface(nface,6) = noeud(5)
           endif
-       else if (lst(2).gt.0.d0) then
+       else if (lst(1).eq.0.d0.or.lst(2).gt.0.d0) then
           cface(nface,1) = noeud(1)
           cface(nface,2) = noeud(3)
           cface(nface,3) = noeud(2)
@@ -159,53 +163,20 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
              cface(nface,5) = noeud(5)
              cface(nface,6) = noeud(7)
           endif
+       else if (lst(3).eq.0.d0.or.lst(2).gt.0.d0) then
+          cface(nface,1) = noeud(1)
+          cface(nface,2) = noeud(3)
+          cface(nface,3) = noeud(2)
+          if (.not.iselli(elp)) then
+             cface(nface,4) = noeud(5)
+             cface(nface,5) = noeud(8)
+             cface(nface,6) = noeud(7)
+          endif
        else
           ASSERT(.false.)
        endif
     else
        ASSERT(.false.)
     endif
-!
-!       NECESSITE D'INVERSER LA CONNECTIVITE? (ON SOUHAITE TOUJOURS GARDER LA
-!       MEME CONVENTION NORMALE DIRIGEE SELON GRADLSN)
-    do jj = 1, 3
-       ab(jj) = pinter(3*(cface(nface,2)-1)+jj)-pinter(3*(cface(nface,1)-1)+jj)
-       bc(jj) = pinter(3*(cface(nface,3)-1)+jj)-pinter(3*(cface(nface,2)-1)+jj)
-       gradlsn(jj) = zr(jgrlsn-1+jj)
-       normfa(jj) = 0.d0
-    end do
-    call provec(ab,bc,normfa)
-    det = ddot(3, gradlsn, 1, normfa, 1)
-    if (det.lt.0.d0) then
-       tempo = cface(nface,2)
-       cface(nface,2) = cface(nface,3)
-       cface(nface,3) = tempo
-       if (.not. iselli(elp)) then
-          tempo = cface(nface,4)
-          cface(nface,4) = cface(nface,6)
-          cface(nface,6) = tempo
-       endif
-    endif
-!
-    if (npts.eq.2.and.nintar.eq.2) then
-       do jj = 1, 3
-          ab(jj) =pinter(3*(cface(nface-1,2)-1)+jj)-pinter(3*(cface(nface-1,1)-1)+jj)
-          bc(jj) =pinter(3*(cface(nface-1,3)-1)+jj)-pinter(3*(cface(nface-1,2)-1)+jj)
-          normfa(jj) = 0.d0
-       end do
-       call provec(ab,bc,normfa)
-       det = ddot(3, gradlsn, 1, normfa, 1)
-       if (det.lt.0.d0) then
-          tempo = cface(nface-1,2)
-          cface(nface-1,2) = cface(nface-1,3)
-          cface(nface-1,3) = tempo
-          if (.not. iselli(elp)) then
-             tempo = cface(nface-1,4)
-             cface(nface-1,4) = cface(nface-1,6)
-             cface(nface-1,6) = tempo
-          endif
-       endif
-    endif
-!
 !
 end subroutine

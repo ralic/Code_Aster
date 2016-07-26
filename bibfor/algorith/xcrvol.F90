@@ -1,10 +1,10 @@
 subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                   igeom, elrefp, inoloc, nbnoma, jcesd3,&
                   jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
-                  jcesd8, jcesl8, jcesv8, vtot)
+                  jcesd8, jcesl8, jcesv8, lfiss, vtot)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/iselli.h"
@@ -34,6 +35,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
     character(len=8) :: elrefp
     integer :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, jcesd8, jcesl8, jcesv8
     real(kind=8) :: vhea, vtot
+    aster_logical :: lfiss
 !
 !  BUT: ESTIMATION CRITERE DE RIGIDITE
 !
@@ -111,6 +113,11 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
 200          continue
         endif
         vse = vse*deriv**2
+!
+!  EN QUADRATIQUE :: MULTIPLICATION PAR UN TERME CORRECTIF CAR L INTEGRATION EST IMPRECISE
+!    ASYMPTOTIQUEMENT DFDI EST PROCHE DE EPS=VSE**1/NDIM
+!    L INTEGRALE DE DFDI**2 VARIE EN EPS**3 
+        if (.not.iselli(elrefp).and.lfiss) vse = vse*vse**(3/ndim)
 !       DETERMINATION DU SIGNE DU SOUS ELEMENT
         do i = 1, nfiss
            call cesexi('S', jcesd3, jcesl3, numa2, 1,&

@@ -132,7 +132,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     character(len=24) :: chthet, chtime
     character(len=24) :: abscur, pavolu, papres, pa2d3d
     character(len=24) :: pepsin, livk(nbmxpa)
-    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto, hea_no
+    character(len=19) :: pintto, cnseto, heavto, loncha, lnno, ltno, pmilto, hea_no, stano
 !
 ! ----------------------------------------------------------------------
 !
@@ -177,6 +177,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     loncha = ' '
     pmilto = ' '
     chpres = ' '
+    stano  = ' '
 !
 !   RECUPERATION DU COMPORTEMENT (dans cakg2d, on recupere pas incr
 !    call getfac('COMPORTEMENT', incr)
@@ -298,6 +299,7 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
     hea_no = modele(1:8)//'.TOPONO.HNO'
     loncha = modele(1:8)//'.TOPOSE.LON'
     pmilto = modele(1:8)//'.TOPOSE.PMI'
+    stano = modele(1:8)//'.STNO'
 !     ON NE PREND PAS LES LSN ET LST DU MODELE
 !     CAR LES CHAMPS DU MODELE SONT DEFINIS QUE AUTOUR DE LA FISSURE
 !     OR ON A BESOIN DE LSN ET LST MEME POUR LES
@@ -391,8 +393,10 @@ subroutine cakg3d(option, result, modele, depla, thetai,&
         lchin(27) = pmilto
         lpain(28) = 'PHEA_NO'
         lchin(28) = hea_no
+        lpain(29) = 'PSTANO'
+        lchin(29) = stano
 !
-        nchin = 28
+        nchin = 29
 !
 
 !

@@ -2,7 +2,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
                   am, delta, pla, lact, nfh,&
                   ddls, ddlm, nfiss, ifiss, jheafa,&
                   ifa, ncomph, jheavn, ncompn, jac, ffc,&
-                  ffp, singu, r, rr, vtmp,&
+                  ffp, singu, r, fk, vtmp,&
                   p)
 !
 ! aslint: disable=W1504
@@ -21,10 +21,11 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
     integer :: singu
     real(kind=8) :: vtmp(400), delta(6)
     real(kind=8) :: ffp(27), jac
-    real(kind=8) :: rr, ffc(8)
+    real(kind=8) :: ffc(8)
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +60,7 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
 !
 !
     integer :: i, j, k, pli, nli, ddlm, ier, ifa, ifh, ifiss
-    integer :: in, jheafa, ncomph, nfiss, nnos, hea_fa(2)
+    integer :: in, jheafa, ncomph, nfiss, nnos, hea_fa(2), alp
     real(kind=8) :: ffi, am(3), coefi, hfix(3), h(3), lamb(3), r
     real(kind=8) :: p(3, 3), ptr(3, 3)
     aster_logical :: lmultc
@@ -114,8 +115,11 @@ subroutine xmvco2(ndim, nno, nnol, nnos, lamb,&
                 vtmp(in+ndim*ifh+j) = vtmp(in+ndim*ifh+j) - coefi*ffp( i)*hfix(j)*jac
  12         continue
  11     continue
-        do 13 j = 1, singu*ndim
-            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) - 2.d0*ffp(i)*rr*hfix(j )*jac
+        do 13 alp = 1, singu*ndim
+            do j = 1, ndim
+                vtmp(in+ndim*(1+nfh)+alp) = vtmp( in+ndim*(1+nfh)+alp) - 2.d0&
+                                             *fk(i,alp,j)*hfix(j)*jac
+            enddo
  13     continue
  10 continue
 !

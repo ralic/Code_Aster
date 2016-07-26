@@ -1,0 +1,468 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='OUI');              
+#----------------------------------------------
+#                   PARAMETRES
+#----------------------------------------------
+
+#**********************************************
+#    GEOMETRIE (A modifier avec le maillage)
+#
+# EPAISSEUR DE L EPROUVETTE SELON X
+B = 1. ;
+# DEMI-LONGUEUR DE L EPROUVETTE SELON Y
+W = 5. ;
+# DEMI-LONGUEUR DE L EPROUVETTE SELON Z
+L = 10. ;
+#**********************************************
+
+#*********************************************************
+#          BLOCAGE DES MODES RIGIDES ET SYMETRIE
+#
+# PRECISION POUR LES CREA_GROUP_NO
+PRECIS = 1.E-5;
+#
+# LONGUEUR D ARETE AUTOUR DES NOEUDS A BLOQUER
+#  (inutile si blocage = 1)
+LAR = 2.;
+#
+blocage = 1;
+#
+# blocage=1 :
+#  Le nombre d elements exterieur selon z est pair
+#  On bloque les ddls sur trois noeuds
+#
+# blocage=2 :
+#  Le nombre d elements exterieur selon z est impair
+#  On bloque trois noeuds par rapport a leurs symetriques
+#*********************************************************
+
+# DEMI-LONGUEUR DE LA FISSURE CENTRALE
+A = 1. ;
+
+# ANGLE D INCLINAISON DE LA FISSURE CENTRALE
+ALPHA = 0.*pi/180. ;
+
+# COURONNES POUR LE CALCUL DES SIF
+RI = [ 0.1 , 0.2 , 0.1];
+RS = [ 0.2 , 0.3 , 0.3];
+
+# PROPRIETES DE L ACIER UTILISE
+E   = 1.E6;
+nu  = 0.;
+rho = 7800.0;
+
+# ACTIVATION DU CONTACT
+contact = True ;
+
+# COEFFICIENT DE FROTTEMENT
+COULOM = 0. ;
+
+# ACTIVATION DE L ALGO_LAGR DE DEFI_FISS_XFEM
+ALGOLAG='VERSION1' ;
+
+# K1 ANALYTIQUES DU TEST DE BUI
+if not contact : 
+   K1REF = 0.8862925 * A**(3/2.)
+else :
+   K1REF = 0.9648017 * A**(3/2.)
+
+GREF=(1-nu**2)/E*K1REF**2
+
+
+#************************************************************
+#  PRESSION APPLIQUEE SUR LES FACES INFERIEURE ET SUPERIEURE
+#
+fonction = 1;
+# fonction=0 : la pression PRES est constante
+# fonction=1 : la pression PRES est une fonction de l espace
+#
+PRES = -1.;
+FCTPRES = FORMULE(NOM_PARA=('X','Y','Z'),VALE='PRES*Y'); 
+#************************************************************
+
+
+#----------------------------------------------
+#                   MAILLAGE
+#----------------------------------------------
+
+MAILLAG1=LIRE_MAILLAGE(FORMAT='MED')
+
+if blocage == 1 :
+   PT1 = [ 0. , -W , 0. ]
+   PT2 = [ 0. ,  W , 0. ]
+   PT3 = [ B  , -W , 0. ]
+elif blocage == 2 :
+   PT1 = [ 0. , -W , -LAR/2 ]
+   PT2 = [ 0. ,  W , -LAR/2 ]
+   PT3 = [ B  , -W , -LAR/2 ]
+   PT1S = [ 0. , -W , LAR/2 ]
+   PT2S = [ 0. ,  W , LAR/2 ]
+   PT3S = [ B  , -W , LAR/2 ]
+
+MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
+                     MAILLAGE=MAILLAG1,
+                     CREA_GROUP_NO=( _F(NOM='NOEUD1',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT1,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='NOEUD2',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT2,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                     _F(NOM='NOEUD3',
+                                        OPTION='ENV_SPHERE',
+                                        POINT=PT3,
+                                        PRECISION=PRECIS,
+                                        RAYON=PRECIS),
+                                    ),
+                      INFO=1, );
+                      
+if blocage == 2 :
+   MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
+                        MAILLAGE=MAILLAG1,
+                        CREA_GROUP_NO=( _F(NOM='NOEUD1S',
+                                           OPTION='ENV_SPHERE',
+                                           POINT=(PT1S[0],PT1S[1],PT1S[2]),
+                                           PRECISION=PRECIS,
+                                           RAYON=PRECIS),
+                                        _F(NOM='NOEUD2S',
+                                           OPTION='ENV_SPHERE',
+                                           POINT=(PT2S[0],PT2S[1],PT2S[2]),
+                                           PRECISION=PRECIS,
+                                           RAYON=PRECIS),
+                                        _F(NOM='NOEUD3S',
+                                           OPTION='ENV_SPHERE',
+                                           POINT=(PT3S[0],PT3S[1],PT3S[2]),
+                                           PRECISION=PRECIS,
+                                           RAYON=PRECIS),
+                                       ),
+                      INFO=1, );
+
+                   
+MAILLAG1=DEFI_GROUP( reuse =MAILLAG1,
+                     MAILLAGE=MAILLAG1,
+                     CREA_GROUP_NO=(_F(NOM='NFISSU',
+                                       OPTION='PLAN',
+                                       POINT=(0.,0.,0.),
+                                       VECT_NORMALE=(0.,-sin(ALPHA),cos(ALPHA)),
+                                       PRECISION=PRECIS),
+                                    ),
+                     INFO=2,);
+
+#----------------------------------------------
+#                   MODELE
+#----------------------------------------------
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                     AFFE=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),
+                           ),
+                     );
+
+MAILLAG1=MODI_MAILLAGE(reuse =MAILLAG1,
+                       MAILLAGE=MAILLAG1,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('SURFSUP','SURFINF'))
+                       );
+
+#----------------------------------------------
+#                   FISSURE
+#----------------------------------------------
+
+LN = FORMULE(VALE='Z*cos(ALPHA)-Y*sin(ALPHA)',
+             NOM_PARA=('X','Y','Z'));
+LT = FORMULE(VALE='abs(Z*sin(ALPHA)+Y*cos(ALPHA))-A',
+             NOM_PARA=('X','Y','Z'));
+
+XFONI = 0. ;
+YFONI = -A*cos(ALPHA) ;
+ZFONI = -A*sin(ALPHA) ;
+XORI = B/2. ;
+YORI = 0. ;
+ZORI = 0. ;
+XVECT = 0. ;
+YVECT = -sin(ALPHA) ;
+ZVECT = cos(ALPHA) ;
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+                    DEFI_FISS=_F(FONC_LT=LT,
+                                 FONC_LN=LN),
+                            TYPE_ENRI_FOND='GEOMETRIQUE',
+                            )
+
+#----------------------------------------------
+#               MODELE FISSURE
+#----------------------------------------------
+
+         
+if not contact :
+   MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         INFO=1,);
+else :
+   MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS,
+                         CONTACT='STANDARD',DECOUPE_FACETTE='SOUS_ELEMENTS',
+                         INFO=1,);
+   CTXFEM = DEFI_CONTACT(MODELE  = MODELEK,
+                          FORMULATION    = 'XFEM', 
+                          #ELIM_ARETE = 'ELIM',
+                          ZONE = (_F(INTEGRATION   = 'NOEUD',
+                                     FISS_MAIT     = FISS,
+                                     #ALGO_LAGR     = 'VERSION2',
+                                     ),));
+                         
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK,);
+                    
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+ACIER=DEFI_MATERIAU(ELAS=_F(E=E,
+                            NU=nu,
+                            RHO=rho,),);
+
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=ACIER,
+                               ),);
+                               
+#----------------------------------------------
+#         BLOCAGE DES MODES RIGIDES
+#----------------------------------------------
+
+if blocage == 1 :
+   CHRIGI=AFFE_CHAR_MECA(MODELE=MODELEK,
+                         DDL_IMPO=( _F(GROUP_NO='NOEUD1',
+                                       DX=0.0,
+                                       DY=0.0,
+                                       DZ=0.0,),
+                                    _F(GROUP_NO='NOEUD2',
+                                       DX=0.0,
+                                       DZ=0.0,),
+                                    _F(GROUP_NO='NOEUD3',
+                                       DZ=0.0,),   ), );
+
+elif blocage == 2 :
+   CHRIGI=AFFE_CHAR_MECA(MODELE=MODELEK,
+                         LIAISON_DDL=(_F(GROUP_NO=('NOEUD1','NOEUD1S',),
+                                         DDL=('DX','DX',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,),
+                                      _F(GROUP_NO=('NOEUD1','NOEUD1S',),
+                                         DDL=('DY','DY',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,),
+                                      _F(GROUP_NO=('NOEUD1','NOEUD1S',),
+                                         DDL=('DZ','DZ',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,),
+                                     
+                                      _F(GROUP_NO=('NOEUD2','NOEUD2S',),
+                                         DDL=('DX','DX',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,),
+                                      _F(GROUP_NO=('NOEUD2','NOEUD2S',),
+                                         DDL=('DZ','DZ',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,),
+                                     
+                                      _F(GROUP_NO=('NOEUD3','NOEUD3S',),
+                                         DDL=('DZ','DZ',),
+                                         COEF_MULT=(1.0,1.0),
+                                         COEF_IMPO=0.0,), ), );
+
+#----------------------------------------------
+#              CHARGEMENT
+#----------------------------------------------
+if fonction == 0 :
+   CHPRES=AFFE_CHAR_MECA(MODELE=MODELEK,
+                         PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
+                                     PRES=PRES,),
+                         );
+elif fonction == 1 :
+   CHPRES=AFFE_CHAR_MECA_F(MODELE=MODELEK,
+                           PRES_REP=_F(GROUP_MA=('SURFSUP','SURFINF',),
+                                       PRES=FCTPRES,),
+                           );
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+
+if not contact :
+  RESU1=MECA_STATIQUE(MODELE=MODELEK,
+                    CHAM_MATER=CHAMPMA1,
+                    EXCIT=(_F(CHARGE=CHRIGI,),
+                           _F(CHARGE=CHPRES,),),
+                    SOLVEUR=_F(METHODE='MULT_FRONT',
+                               ),
+                    INFO=1,);
+else :
+  L_INS1=DEFI_LIST_REEL(DEBUT=0.0,
+                     INTERVALLE=_F(JUSQU_A=3.0,
+                                    NOMBRE=3,),);
+
+  RESU1=STAT_NON_LINE(MODELE=MODELEK,
+                    CHAM_MATER=CHAMPMA1,
+                    CONTACT = CTXFEM,
+                    EXCIT=(_F(CHARGE=CHRIGI,),
+                           _F(CHARGE=CHPRES,),),
+                    INCREMENT=_F(LIST_INST=L_INS1,
+                                 INST_FIN=1.0,),
+                    NEWTON=_F(REAC_ITER=1,),
+                    SOLVEUR=_F(METHODE='MULT_FRONT',
+                               ),
+                    ARCHIVAGE=_F(CHAM_EXCLU='VARI_ELGA',),
+                    INFO=1,);
+                    
+ 
+#----------------------------------------------
+#         EDITION DE FICHIER XMGRACE
+#----------------------------------------------
+
+if False and contact :
+  TABLAG=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLE',
+                               GROUP_NO='NFISSU',
+                               RESULTAT=RESU1,
+                               NOM_CHAM='DEPL',
+                               NUME_ORDRE=1,
+                               TOUT_CMP='OUI',
+                               OPERATION='EXTRACTION',),);
+
+  #IMPR_TABLE(TABLE=TABLAG,FORMAT_R='E14.7',);
+  tab1 = TABLAG.EXTR_TABLE()
+  tab2 = (tab1.COOR_X > -1.1*cos(ALPHA))
+  tab3 = (tab2.COOR_X < 1.1*cos(ALPHA))
+  tab3.sort('COOR_X')
+  tab4 = (tab3.LAGS_C != None).values()
+  X    = tab4['COOR_X']
+  LAGS = tab4['LAGS_C']
+  f=open('/home/G31256/courbe_lag.dat','w')
+  f.write("# Trace de Lag_C en fonction de x\n")
+  f.write("""@    xaxis  label "x"\n""")
+  f.write("""@    yaxis  label "LAG_C"\n""")
+  for i in range(0,len(X)):
+    f.write(str(X[i]))
+    f.write(" ")
+    f.write(str(LAGS[i]))
+    f.write(" \n")
+  f.write("&\n")
+  f.close()
+
+#----------------------------------------------
+#           EDITION DE FICHIERS GMSH
+#----------------------------------------------
+
+VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=(_F(GROUP_MA=('VOL','SURFSUP','SURFINF',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='3D',),
+                           ),
+                     );
+
+RES_XFEM=POST_CHAM_XFEM(RESULTAT=RESU1,MODELE_VISU=VISU);
+
+RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
+                   RESULTAT=RES_XFEM,
+                   CRITERES=('SIEQ_ELGA','SIEQ_ELNO'),
+                   INFO=2,
+                   );
+                   
+RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
+                 RESULTAT=RES_XFEM,);
+
+IMPR_RESU(FORMAT='GMSH',
+#          UNITE=37,
+          RESU=_F(RESULTAT=RES_XFEM,
+                  NOM_CHAM=('DEPL'),
+                  TYPE_CHAM='VECT_3D',
+                  NOM_CMP=('DX','DY','DZ'),),);
+
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : CALCUL DES SIFS PAR LA METHODE ENERGETIQUE AVEC X-FEM
+#------------------------------------------------------------------------
+
+n=len(RI)
+SIF1 = [None]*n
+SIF2 = [None]*n
+
+for i in range(0,n) :
+   SIF1[i]=CALC_G(
+               RESULTAT=RESU1,
+               OPTION='CALC_K_G',
+               THETA=_F( FISSURE=FISS,
+                         R_INF=RI[i],
+                         R_SUP=RS[i],NUME_FOND=1,
+                        ),
+               LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE',),
+               INFO=1,);
+
+   #IMPR_TABLE(TABLE=SIF1[i],);
+   
+   SIF2[i]=CALC_G(
+               RESULTAT=RESU1,
+               OPTION='CALC_K_G',
+               THETA=_F( FISSURE=FISS,
+                         R_INF=RI[i],
+                         R_SUP=RS[i],NUME_FOND=2,
+                        ),
+               LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
+                           LISSAGE_G='LAGRANGE',),
+               INFO=1,);
+
+   IMPR_TABLE(TABLE=SIF2[i],);   
+
+#
+#tests exhaustifs sur le fond en ouverture
+#
+K1_CALC =[0.950421233616, 0.951203414461, 0.950812324039];
+K2_CALC =[0.00177909258581, 0.00186234197127, 0.00182071727854];
+G_CALC =[9.0214120976E-07, 9.03514441817E-07, 9.02827825789E-07];
+
+
+for i in range(0,n) :
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K1',
+              VALE_REFE=K1REF,
+              VALE_CALC=K1_CALC[i],
+              CRITERE='RELATIF',TYPE_TEST='MAX',
+              PRECISION=0.02,
+              REFERENCE='ANALYTIQUE',);
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='K2',
+              VALE_REFE=0.,
+                   VALE_CALC=K2_CALC[i],
+              CRITERE='ABSOLU',TYPE_TEST='MAX',
+              PRECISION=0.004,
+              REFERENCE='ANALYTIQUE',);              
+   TEST_TABLE(TABLE=SIF2[i],
+              NOM_PARA='G',
+              VALE_REFE=GREF,
+              VALE_CALC=G_CALC[i],
+              CRITERE='RELATIF',TYPE_TEST='MAX',
+              PRECISION=0.04,
+              REFERENCE='ANALYTIQUE',);
+
+FIN();

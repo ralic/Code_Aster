@@ -183,7 +183,7 @@ FETA_OUV=RECU_FONCTION( RESULTAT=U_OUV,
 TETA_OUV=CREA_TABLE(FONCTION=_F(FONCTION=FETA_OUV));
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=1.795229356,
+           VALE_CALC=1.79522935553,
            VALE_REFE=1.79523E+00,
            NOM_PARA='DX',
            TABLE=TDX_OUV,
@@ -192,7 +192,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=8.29181E-01,
+           VALE_CALC=0.829180921336,
            VALE_REFE=8.29181E-01,
            NOM_PARA='ETA_PILO',
            TABLE=TETA_OUV,
@@ -205,7 +205,7 @@ TEST_RESU(RESU=_F(INST=0,
                   RESULTAT=U_OUV,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=2.1650635094611E-08,
+                  VALE_CALC=2.16506350946E-08,
                   VALE_REFE=2.16506E-08),
           )
 
@@ -215,7 +215,7 @@ TEST_RESU(RESU=_F(INST      = 2.00008E+00,
                   RESULTAT=U_OUV,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIXX',
-                  VALE_CALC=7.37899E-01,
+                  VALE_CALC=0.737898743054,
                   VALE_REFE=7.37899E-01,
                   MAILLE='M32',),
           )
@@ -228,7 +228,7 @@ TEST_RESU(RESU=_F(INST=9.00001,
                   NOM_CHAM='DEPL',
                   NOEUD='N9',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC=0.347848803,
+                  VALE_CALC=0.347848803363,
                   VALE_REFE=0.34784900000000002,),
           )
 
@@ -238,7 +238,7 @@ TEST_RESU(RESU=_F(INST=8.00002,
                   NOM_CHAM='DEPL',
                   NOEUD='N9',
                   NOM_CMP='LAGS_F1',
-                  VALE_CALC=-1.80080444E-15,
+                  VALE_CALC=8.25396611147E-16,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',),
           )

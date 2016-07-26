@@ -1,6 +1,6 @@
 subroutine xtempc(nfiss, fiss, fonree, char)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -94,7 +94,7 @@ subroutine xtempc(nfiss, fiss, fonree, char)
 !       -------------------------------------
 !
         do ino = 1, nbno
-            istan = vale(ino)
+            istan = abs(vale(ino))
             if (istan .gt. 0) then
                 call jenuno(jexnum(noma(1:8)//'.NOMNOE', ino), nomnoe(1))
 !

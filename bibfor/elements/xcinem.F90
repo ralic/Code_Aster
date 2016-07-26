@@ -1,11 +1,11 @@
 subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
                   ndim, he,&
                   nfiss, nfh, nfe, ddls, ddlm,&
-                  fe, dgdgl, ff, dfdi, f,&
+                  fk, dkdgl, ff, dfdi, f,&
                   eps, grad, heavn)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,12 +25,12 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: axi
     integer, intent(in) :: igeom
@@ -46,8 +46,8 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
     integer, intent(in) :: ddls
     integer, intent(in) :: ddlm
     integer, intent(in) :: heavn(nnop, 5)
-    real(kind=8), intent(in) :: fe(4)
-    real(kind=8), intent(in) :: dgdgl(4, ndim)
+    real(kind=8), intent(in)::  fk(27,3,3)
+    real(kind=8), intent(in)::  dkdgl(27,3,3,3)
     real(kind=8), intent(in) :: ff(nnop)
     real(kind=8), intent(in) :: dfdi(nnop, ndim)
     real(kind=8), intent(out) :: f(3, 3)
@@ -73,11 +73,12 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 !                --> DEFORMATION EPS PETITES
 ! IN  NDIM   : DIMENSION DE L'ESPACE
 ! IN  HE     : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ÉLT
+! IN  R      : RADIUS POUR CALCULER EPSILON_33 POUR AXI
+! IN UR      : DEPLACEMNET RADIAL POUR CALCULER EPSILON_33 POUR AXI
 ! IN  NFH    : NOMBRE DE FONCTIONS HEAVYSIDE (PAR NOEUD)
 ! IN  NFE    : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  DDLT   : NOMBRE DE DDLS TOTAL PAR NOEUD
-! IN  FE     : VALEURS AUX NOEUDS DES FONCTIONS D'ENRICHISSEMENT
-! IN  DGDGL  : DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT
+! IN  DKDGL  : DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT
 ! IN  FF     : FONCTIONS DE FORMES EN XE
 ! IN  DFDI   : DÉRIVÉES DES FONCTIONS DE FORMES EN XE
 ! OUT F      : GRADIENT DE LA TRANSFORMATION
@@ -86,7 +87,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 ! IN  HEAVN  : DEFINITION DES DOMAINES DES FONCTIONS HEAVISIDES
 !
     real(kind=8) :: zero, un, rac2, r, ur
-    integer :: i, j, k, n, p, ig, cpt, nn, hea_se
+    integer :: i, j, k, n, p, ig, cpt, nn, hea_se, alp
     real(kind=8) :: kron(3, 3), tmp, epstab(3, 3)
     aster_logical :: ldec
 !
@@ -99,6 +100,7 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
     un = 1.d0
     rac2 = sqrt(2.d0)
     hea_se=xcalc_code(nfiss, he_real=[he])
+    ASSERT(nfe.le.1)
     r = 0.d0
     ur = 0.d0
 !
@@ -167,17 +169,19 @@ subroutine xcinem(axi, igeom, nnop, nnos, idepl, grand,&
 !
 ! -- DDL ENRICHIS EN FOND DE FISSURE
         do 408 ig = 1, nfe
-            do 409 i = 1, ndim
+            do 409 alp = 1, ndim
                 cpt = cpt+1
-                do 410 j = 1, ndim
-                    grad(i,j) = grad(i,j) + zr(idepl-1+nn+cpt) * (dfdi(n,j) * fe(ig) + ff(n) * dg&
-                                &dgl(ig,j))
+                do 410 i = 1, ndim
+                  do 411 j = 1, ndim
+                    grad(i,j) = grad(i,j) + zr(idepl-1+nn+cpt) * dkdgl(n,alp,i,j)
+411               continue
 410             continue
+                if(axi) then
+                    ur = ur + zr(idepl-1+nn+cpt) * fk(n,alp,1)
+                endif
 409         continue
-            if(axi) then
-                ur = ur + ff(n) * zr(idepl-1+nn+ndim*(nfh+ig)+1) * fe(ig)
-            endif
 408     continue
+!
 402 continue
 !
     if(axi) then

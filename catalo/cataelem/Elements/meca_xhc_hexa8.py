@@ -306,7 +306,7 @@ class TemplateElement(Element):
                      (OP.CALC_K_G_F.PPINTER, LC.E102NEUT), (OP.CALC_K_G_F.PPINTTO, E33NEUTR),
                      (OP.CALC_K_G_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
-                     (SP.PTEMPSR, CTEMPSR), (SP.PTHETAR, DDL_MECC),
+                     (SP.PTEMPSR, CTEMPSR), (SP.PTHETAR, DDL_MECC), (SP.PSIGISE, ECONTSE),
                      (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
                      ),
             para_out=((SP.PGTHETA, EKTHETA), ),

@@ -1,5 +1,5 @@
 subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
-                  seuil, reac12, singu, nfh, rr,&
+                  seuil, reac12, singu, fk, nfh,&
                   coeffp, coeffr, mu, algofr, nd,&
                   ddls, ddlm, idepl, pb, vtmp)
 !
@@ -13,12 +13,13 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 #include "asterfort/xcalc_saut.h"
     integer :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
     integer :: algofr
-    real(kind=8) :: vtmp(400), rr, nd(3)
+    real(kind=8) :: vtmp(400), nd(3)
     real(kind=8) :: ffp(27), jac, pb(3), reac12(3)
     real(kind=8) :: coeffp, coeffr, seuil, mu
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,6 +78,7 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
 !
 !
     integer :: i, j, k, in, ino, ig
+    integer :: alpi
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
     real(kind=8) :: r3bid(3, 3), coefj
@@ -99,7 +101,10 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
           enddo
 176     continue
         do 177 j = 1, singu*ndim
-            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepl-1+in+ndim*(1+nfh)+j)
+          do alpi = 1, ndim
+            saut(j) = saut(j) - 2.d0 * fk(ino,alpi,j) * &
+                                        zr(idepl-1+in+ndim*(1+nfh)+alpi)
+          enddo
 !
 177     continue
 175 end do
@@ -142,8 +147,10 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
           enddo
 186     continue
         do 187 j = 1, singu*ndim
-            vtmp(in+ndim*(1+nfh)+j) = vtmp(in+ndim*(1+nfh)+j) + 2.d0*rr*mu*seuil* ptpb(j)*ffp(i&
-                                      )*jac
+          do alpi = 1, ndim
+            vtmp(in+ndim*(1+nfh)+alpi) = vtmp(in+ndim*(1+nfh)+alpi) + 2.d0*fk(i,alpi,j)*&
+                                                    mu*seuil* ptpb(j)*jac
+          enddo
 187     continue
 185 end do
 !

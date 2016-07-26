@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine xrigel(nnop, ddlh, nfe, ddlc,&
                       igeom, jpintt, cnset, heavt, lonch,&
                       basloc, lsn, lst, sig, matuu,&
-                      jpmilt, heavn)
+                      jpmilt, heavn, jstno, imate)
         integer :: nnop
         integer :: ddlh
         integer :: nfe
@@ -30,6 +30,8 @@ interface
         integer :: heavt(36)
         integer :: lonch(10)
         integer :: heavn(27,5)
+        integer :: jstno
+        integer :: imate
         real(kind=8) :: basloc(*)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)

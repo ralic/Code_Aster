@@ -7,6 +7,7 @@ subroutine te0533(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/matini.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -18,11 +19,12 @@ subroutine te0533(option, nomte)
 #include "asterfort/xmulco.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
+#include "asterfort/xkamat.h"
 !
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,9 +69,12 @@ subroutine te0533(option, nomte)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: nd(3), seuil, cohes(3), coheo(3)
     real(kind=8) :: rr
+    real(kind=8) :: ka, fk(27,3,3), mu2
     integer :: jheano, ifiss, jheafa, ncomph,jta2(3)
     integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
+    integer :: jbaslo
     aster_logical :: matsym, lelim
+    aster_logical :: axi
     character(len=8) :: elref, elrefc, typma
     character(len=8) :: elc, fpg
 !......................................................................
@@ -154,6 +159,21 @@ subroutine te0533(option, nomte)
     call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
                 itab=jtab)
     ncompc = jtab(2)
+    if (nfe.gt.0) then
+       call jevech('PMATERC', 'L', jmate)
+       call jevech('PBASLOR', 'L', jbaslo)
+       call jevech('PSTANO', 'L', jstno)
+       axi=lteatt('AXIS','OUI')
+       call xkamat(zi(jmate), ndim, axi, ka, mu2)
+    else
+       ka=3.d0
+       mu2=1.d0
+       axi=.false._1
+       jmate=0
+       jbaslo=0
+       jlsn=0
+       jstno=0
+    endif
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
     do i = 1, max(1, nfh)*nnos
@@ -226,7 +246,8 @@ subroutine te0533(option, nomte)
                             jptint, ifa, igeom, ipgf, jac,&
                             jlst, lact, nd, ndim, ninter,&
                             nlact, nno, nnos, nptf, nvit,&
-                            rr, singu, tau1, tau2)
+                            rr, singu, tau1, tau2, ka, mu2,&
+                            jbaslo, jstno, jlsn, fk)
 !
 ! --- CALCUL DES MATRICES DE CONTACT
 !     ..............................
@@ -240,7 +261,7 @@ subroutine te0533(option, nomte)
                                 ipgf, jac, jheavn, ncompn, jheafa, mmat,&
                                 lact, ncomph, nd, nddl, ndim,&
                                 nfh, nfiss, nno, nnol, nnos,&
-                                nvit, pla, rela, rr, singu,&
+                                nvit, pla, rela, singu, fk,&
                                 tau1, tau2)
 !
 ! --- SI COHESIF CLASSIQUE ON ACTUALISE LA VARIABLE INTERNE
@@ -257,8 +278,8 @@ subroutine te0533(option, nomte)
                                 ffc, ffp, idepd, idepm, indco,&
                                 jac, lact, mmat, mu, nd,&
                                 ndim, nfh, nfiss, nno, nnol,&
-                                nnos, nvit, pla, rr, seuil,&
-                                singu, tau1, tau2)
+                                nnos, nvit, pla, seuil,&
+                                singu, fk, tau1, tau2)
 !
                 endif
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS

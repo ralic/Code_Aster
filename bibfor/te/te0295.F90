@@ -11,17 +11,16 @@ subroutine te0295(option, nomte)
 #include "asterfort/gbil3d.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nmgeom.h"
-#include "asterfort/normev.h"
-#include "asterfort/provec.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
+#include "asterfort/coor_cyl.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +58,7 @@ subroutine te0295(option, nomte)
 !
 !
     real(kind=8) :: r8bid,rac2
-    real(kind=8) :: dfdi(60), f(3, 3), eps(6), fno(81), e1(3), e2(3), e3(3)
+    real(kind=8) :: dfdi(60), f(3, 3), eps(6), fno(81)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), dfvdm(3, 4),epsref(6)
     real(kind=8) :: du1dm(3, 4), du2dm(3, 4), du3dm(3, 4)
@@ -67,20 +66,20 @@ subroutine te0295(option, nomte)
     real(kind=8) :: courb(3, 3, 3)
     real(kind=8) :: rhocst, rho, om, omo, rbid, e, nu, alpha, tref
     real(kind=8) :: thet, tpg(27), tno(20), tgdm(3), ttrg, la, mu, ka
-    real(kind=8) :: xg, yg, zg, ff
+    real(kind=8) :: xg, yg, zg
     real(kind=8) :: c1, c2, c3, rg, phig
     real(kind=8) :: val(1), valres(4)
     real(kind=8) :: coeff, coeff3
     real(kind=8) :: guv, guv1, guv2, guv3, k1, k2, k3, g, poids
-    real(kind=8) :: norme, k3a, ttrgv, tgvdm(3)
-    real(kind=8) :: valpar(4), lsng, lstg, puls, coef
+    real(kind=8) :: k3a, ttrgv, tgvdm(3)
+    real(kind=8) :: valpar(4), lsng, lstg, puls, coef, ffp(27)
 !
     character(len=4) :: fami
     character(len=8) :: nompar(4)
     character(len=16) :: nomres(4), compor(4)
     character(len=32) :: phenom
 !
-    aster_logical :: lcour, fonc, lpesa, lrota
+    aster_logical :: lcour, fonc, lpesa, lrota, l_not_zero
 !
 ! ----------------------------------------------------------------------
 !
@@ -438,58 +437,19 @@ subroutine te0295(option, nomte)
 
 ! ----- CALCUL DES CHAMPS AUXILIAIRES ET DE LEURS DERIVEES
 !
-!       COORDONNEES POLAIRES DU POINT
-        rg = sqrt(lsng**2+lstg**2)
+        do ino = 1, nno
+            ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
+        enddo
+        p(:,:)=0.d0
+        invp(:,:)=0.d0
 !
-        if (rg .gt. r8prem()) then
-!         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            phig = sign(1.d0,lsng) * abs(atan2(lsng,lstg))
-            iret=1
-        else
-!         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-            phig=0.d0
-            iret=0
-        endif
-!
-! ----- ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-! ----- CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        ASSERT(iret.ne.0)
-!
-! ----- BASE LOCALE ASSOCIÉE AU POINT DE GAUSS KP
-!       (E1=GRLT,E2=GRLN,E3=E1^E2)
-        do 124 i = 1, 3
-            e1(i)=0.d0
-            e2(i)=0.d0
-            do 125 ino = 1, nno
-                ff=zr(ivf-1+nno*(kp-1)+ino)
-                e1(i) = e1(i)+zr(ibalo-1+9*(ino-1)+i+3)* ff
-                e2(i) = e2(i)+zr(ibalo-1+9*(ino-1)+i+6)* ff
-125         continue
-124     continue
-!
-!       NORMALISATION DE LA BASE
-        call normev(e1, norme)
-        call normev(e2, norme)
-        call provec(e1, e2, e3)
-!
-! ----- CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-!
-        do 120 i = 1, 3
-            p(i,1)=e1(i)
-            p(i,2)=e2(i)
-            p(i,3)=e3(i)
-120     continue
-!
-! ----- CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-!
-        do 130 i = 1, 3
-            do 131 j = 1, 3
-                invp(i,j)=p(j,i)
-131         continue
-130     continue
-!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    CALCUL DES COOR. CYL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        call coor_cyl(ndim, nno, zr(ibalo), zr(igeom), ffp,&
+                      p(1:ndim,1:ndim), invp(1:ndim,1:ndim), rg, phig,&
+                      l_not_zero)
+!        
 !       PRISE EN COMPTE DE LA COURBURE : OUI
 !
         lcour=.true.

@@ -1,7 +1,7 @@
 subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                   heavn, ddlh, ddlc, nfe, basloc,&
                   nnop, npg, lsn, lst, sig,&
-                  matuu)
+                  matuu, jstno, imate)
 !
 ! aslint: disable=W1306
     implicit none
@@ -11,16 +11,20 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/elrefe_info.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalfe.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xnbddl.h"
+#include "asterfort/iimatu.h"
     integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27,5)
+    integer :: jstno, imate
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(90), matuu(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,26 +72,26 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
 !
 !
 !
-    integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret, ij
+    integer :: kpg, kk, n, i, m, j, j1, kkd, ij
     integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
     integer :: nnops
-    real(kind=8) :: tmp1, fe(4), baslog(9)
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: dfdi(nnop, ndim), pff(6, nnop, ndim), dgdgl(4, 3)
+    integer :: alp, ii, jj, k, nfh
+    real(kind=8) :: tmp1
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
+    real(kind=8) :: dfdi(nnop, ndim), pff(1+ddlh+nfe*ndim**2, nnop, ndim)
     real(kind=8) :: rac2
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
     data    rac2 / 1.4142135623731d0 /
 !--------------------------------------------------------------------
 !
 !     ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
 !     QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld=ndim+ddlh+ndim*nfe
-    ddldn = ddld/ndim
-!
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls=ddld+ddlc
+!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    nfh=int(ddlh/ndim)
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, nfe)
+    ddldn = 1+nfh+nfe*ndim**2
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NNOPS
     call elrefe_info(fami='RIGI',nnos=nnops)
 !
@@ -115,34 +119,16 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
         end do
 !
 !       JUSTE POUR CALCULER LES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
         if (nfe .gt. 0) then
-!         BASE LOCALE  ET LEVEL SETS AU POINT DE GAUSS
-            call vecini(9, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do ino = 1, nnop
-                lsng = lsng + lsn(ino) * ff(ino)
-                lstg = lstg + lst(ino) * ff(ino)
-                do i = 1, 9
-                    baslog(i) = baslog(i) + basloc(9*(ino-1)+i) * ff( ino)
-                end do
-            end do
-!
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-            call xcalfe(he, lsng, lstg, baslog, fe,&
-                        dgdgl, iret)
-!         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
-!
+!            call xkamat(imate, ndim, .false._1, ka, mu)
+            imate=imate
+            ka=3.
+            mu=sum(abs(sig(((kpg-1)*6+1):((kpg-1)*6+3))))/3.
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he,&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi=dfdi, dkdgl=dkdgl)
         endif
-!
-!       COORDONNÉES DU POINT DE GAUSS DANS L'ÉLÉMENT DE RÉF PARENT : XE
-!       ET CALCUL DE FF, DFDI, ET EPS
-!
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SSTET->SSTET REF
 !       ET LES DERIVEES DES FONCTIONS DE FORME,
@@ -160,9 +146,11 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                     pff(cpt,n,i) = dfdi(n,i)*xcalc_heav(heavn(n,1),hea_se,heavn(n,5))
                 endif
 !----------LA PARTIE CORRESPONDANTE A L'ENRICHEMENT CRACK-TIP
-                do ig = 1, nfe
+                do alp = 1, nfe*ndim
+                  do k = 1, ndim
                     cpt =cpt+1
-                    pff(cpt,n,i) = dfdi(n,i)*fe(ig)+ff(n)*dgdgl(ig,i)
+                    pff(cpt,n,i) = dkdgl(n,alp,i,k)
+                  enddo
                 end do
                 ASSERT(cpt.eq.ddldn)
             end do
@@ -183,19 +171,21 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he,&
                                )&
                                )/rac2
 !              STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
-                        if (m .eq. n) then
-                            j1 = i
-                        else
-                            j1 = ddldn
-                        endif
-                        if (j .le. j1) then
-                            do ij = 1, ndim
-                                kkd = (ddls*(n-1)+(i-1)*ndim+ij-1) * (ddls*(n-1)+(i-1)*ndim+ij&
-                                      ) /2
-                                kk = kkd + ddls*(m-1)+(j-1)*ndim+ij
+                        do ij = 1, ndim
+                            ii=iimatu((i-1)*ndim+ij,ndim,nfh,nfe)
+                            jj=iimatu((j-1)*ndim+ij,ndim,nfh,nfe)
+                            if (m .eq. n) then
+                                j1 = ii
+                            else
+                                j1 = ddldn
+                            endif
+                            if (jj .le. j1) then
+                                kkd = (ddls*(n-1)+ii-1) * (ddls*(n-1)+ii) /2
+                                kk = kkd + ddls*(m-1)+jj
                                 matuu(kk) = matuu(kk) + tmp1*jac
-                            end do
-                        endif
+                            endif
+                        end do
+!
                     end do
                 end do
             end do

@@ -1,6 +1,6 @@
 subroutine te0261(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,7 @@ subroutine te0261(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/teattr.h"
 #include "asterfort/xsidep.h"
 #include "asterfort/xteini.h"
@@ -108,9 +109,7 @@ subroutine te0261(option, nomte)
     call teattr('S', 'XFEM', enr, ibid)
     if (enr(1:2).eq.'XH' .or. enr(1:2).eq.'XT') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if ((ibid.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC')&
-         .and..not.iselli(elrefp))&
+    if ((ibid.eq.0) .and. ltequa(elrefp,enr))&
     call jevech('PPMILTO', 'L', jpmilt)
 !
     call jevech('PCONTRR', 'E', icont)
@@ -119,5 +118,5 @@ subroutine te0261(option, nomte)
                 igeom, typmod, zi(imate), compor, jpintt,&
                 zi(jcnset), zi(jheavt), zi(jlonch), zr(jbaslo), idepl,&
                 zr(jlsn), zr(jlst), zr(icont), jpmilt, nfiss,&
-                jheavn)
+                jheavn, jstno)
 end subroutine

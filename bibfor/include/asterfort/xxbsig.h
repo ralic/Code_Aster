@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,13 +20,14 @@ interface
                       igeom, he, nfh, ddlc, ddlm,&
                       nfe, basloc, nnop, npg, sigma,&
                       compor, idepl, lsn, lst, nfiss,&
-                      heavn, codopt, ivectu)
+                      heavn, jstno, codopt, ivectu, imate)
         integer :: codopt
         integer :: nfiss
         integer :: npg
         integer :: nnop
         integer :: nfe
         integer :: nfh
+        integer, optional :: imate
         integer :: ndim
         character(len=8) :: elrefp
         character(len=8) :: elrese
@@ -43,5 +44,6 @@ interface
         real(kind=8) :: lst(nnop)
         integer :: heavn(nnop, 5)
         integer :: ivectu
+        integer :: jstno
     end subroutine xxbsig
 end interface

@@ -91,7 +91,7 @@ class MEPLSE2_XH(Element):
     """Please document this element"""
     meshType = MT.SEG2
     elrefe =(
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
         )
     calculs = (
 
@@ -166,7 +166,7 @@ class MEPLSE2_XH(Element):
 
         OP.INI_XFEM_ELNO(te=99,
             para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
+                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), (OP.INI_XFEM_ELNO.PBASLOR, LC.N6NEUT_R),),
         ),
 
         OP.TOPONO(te=120,
@@ -208,5 +208,5 @@ class MEPLSE3_XH(MEPLSE2_XH):
     meshType = MT.SEG3
     elrefe =(
             ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
         )

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,13 +17,17 @@
 !
 interface
     subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
-                      ddlh, ddlc, nfe, basloc, nnop,&
-                      npg, imate, lsn, lst, matuu, heavn)
+                      nfh, ddlc, nfe, basloc, nnop,&
+                      npg, imate, lsn, lst, matuu, heavn,&
+                      jstno, nnops, ddlm)
         integer :: nnop
         integer :: nfe
         integer :: ddlc
-        integer :: ddlh
+        integer :: nfh
         integer :: ndim
+        integer :: jstno
+        integer :: ddlm
+        integer :: nnops
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
         integer :: igeom

@@ -2,14 +2,14 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
                   ffc, ffp, idepd, idepm, indco,&
                   jac, lact, mmat, mu, nd,&
                   ndim, nfh, nfiss, nno, nnol,&
-                  nnos, nvit, pla, rr, seuil,&
-                  singu, tau1, tau2)
+                  nnos, nvit, pla, seuil,&
+                  singu, fk, tau1, tau2)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,6 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
 ! IN NOEUD  : FORMULATION AUX NOEUDS
 ! IN NVIT   : ARETE VITALE OU NON
 ! IN PLA    : PLACE DES DDLS DE LAGRANGE
-! IN RR     : RACINE RAYON A LA POINTE DE FISSURE
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
@@ -71,7 +70,8 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
     integer :: pla(27), singu
     real(kind=8) :: coeffp, coeffr, ik(3, 3), jac, knp(3, 3)
     real(kind=8) :: mmat(216, 216), mu, nd(3), p(3, 3), ffc(8), ffp(27)
-    real(kind=8) :: ptknp(3, 3), rr, seuil, tau1(3), tau2(3)
+    real(kind=8) :: ptknp(3, 3), seuil, tau1(3), tau2(3)
+    real(kind=8) :: fk(27,3,3)
     aster_logical :: adher
 !
     if (mu .eq. 0.d0 .or. seuil .eq. 0.d0) indco = 0
@@ -94,7 +94,7 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
         call xmmsa1(algofr, ndim, nno, nnos, nnol,&
                     pla, ffc, ffp, idepd, idepm,&
                     nfh, nd, tau1, tau2, singu,&
-                    rr, lact, ddls, ddlm, coeffr,&
+                    fk, lact, ddls, ddlm, coeffr,&
                     coeffp, p, adher, knp, ptknp,&
                     ik)
 !
@@ -104,13 +104,13 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
             call xmmab3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, knp, nfh,&
                         seuil, tau1, tau2, mu, singu,&
-                        rr, lact, ddls, ddlm, mmat)
+                        fk, lact, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE B_U
 !
             call xmmab4(ndim, nno, nnos, ffp, jac,&
                         ptknp, nfh, seuil, mu, singu,&
-                        rr, coeffr, ddls, ddlm, mmat)
+                        fk, coeffr, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE F (NULLE EN ADHERENCE)
 !
@@ -123,13 +123,13 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls,&
             call xmmbp3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, knp, nfh,&
                         seuil, tau1, tau2, mu, singu,&
-                        rr, lact, ddls, ddlm, mmat)
+                        fk, lact, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE B_U
 !
             call xmmab4(ndim, nno, nnos, ffp, jac,&
                         ptknp, nfh, seuil, mu, singu,&
-                        rr, coeffp, ddls, ddlm, mmat)
+                        fk, coeffp, ddls, ddlm, mmat)
 !
 ! --- CALCUL DE F - CAS GLISSANT OU PENALISATION (NON SEULE)
 !

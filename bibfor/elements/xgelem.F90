@@ -1,7 +1,7 @@
 subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, idepl, lsn, lst,&
-                  igthet, fno, nfiss, jheavn, incr)
+                  igthet, fno, nfiss, jheavn, jstno, incr)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,14 +42,15 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/tecach.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xdeffe.h"
-#include "asterfort/xderfe.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xnbddl.h"
 !
     character(len=8) :: elrefp
     integer :: igeom, ndim, nfh, ddlc, nfe, nnop, ddlm, jheavn
-    integer :: idepl, nfiss, jheavt, ise
+    integer :: idepl, nfiss, jheavt, ise, jstno
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop)
     real(kind=8) :: fno(ndim*nnop), coorse(*)
 !
@@ -83,13 +84,12 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: i, j, k, kpg, n, ino, iret, cpt, ig, in, mxstac, isigi, isigm
     integer :: ndimb, nno, nnos, npgbis, ddld, ddls, matcod, m, irett
     integer :: ncompn, heavn(nnop, 5), hea_se
-    real(kind=8) :: xg(ndim), fe(4), he(nfiss)
-    real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
-    real(kind=8) :: eps(6), e1(3), e2(3), norme, e3(3), p(3, 3)
-    real(kind=8) :: invp(3, 3), rg, tg
-    real(kind=8) :: dgdpo(4, 2), dgdlo(4, 3)
+    integer :: singu, alp
+    real(kind=8) :: xg(ndim), he(nfiss)
+    real(kind=8) :: xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
+    real(kind=8) :: eps(6)
     real(kind=8) :: grad(ndim, ndim), dudm(3, 4), poids
-    real(kind=8) :: dtdm(3, 4), lsng, lstg
+    real(kind=8) :: dtdm(3, 4)
     real(kind=8) :: rbid
     real(kind=8) :: tthe, r, rp, ppg
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref
@@ -97,6 +97,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: dtx, dty, dtz
     real(kind=8) :: energi(2), sigl(6), prod, prod2, rac2, sr(3, 3), tcla, divt
     real(kind=8) :: tfor, dsidep(6, 6),sigse(6*27)
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu2
     character(len=8) :: elrese(6), fami(6), typmod(2)
     character(len=16) :: compor(4), oprupt
     aster_logical :: grdepl, cp, axi, l_temp_noeu
@@ -149,11 +150,8 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
         typmod(1) = 'D_PLAN'
     endif
 !
-!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld=ndim*(1+nfh+nfe)
-!
-!   NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls=ddld+ddlc
+!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !
 !   NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
@@ -282,7 +280,7 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
 !       CALCUL DES FF
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
+                    xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       AINSI QUE LES DERIVEES DES FONCTIONS DE FORMES DU SS-ELT
@@ -305,68 +303,29 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
 !
         endif
 !
-!       --------------------------------------
-!       1) COORDONNÉES POLAIRES ET BASE LOCALE
-!       --------------------------------------
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
 !
-!       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-        call vecini(3, 0.d0, e1)
-        call vecini(3, 0.d0, e2)
-        lsng=0.d0
-        lstg=0.d0
-        do ino = 1, nnop
-            lsng = lsng + lsn(ino) * ff(ino)
-            lstg = lstg + lst(ino) * ff(ino)
-            do i = 1, ndim
-                e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff( ino)
-                e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff( ino)
-            end do
-        end do
-!
-!       NORMALISATION DE LA BASE
-        call normev(e1, norme)
-        call normev(e2, norme)
-        call provec(e1, e2, e3)
-!
-!       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        call vecini(9, 0.d0, p)
-        do i = 1, ndim
-            p(i,1)=e1(i)
-            p(i,2)=e2(i)
-            p(i,3)=e3(i)
-        end do
-!
-!       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-        do i = 1, 3
-            do j = 1, 3
-                invp(i,j)=p(j,i)
-            end do
-        end do
-!
-!       COORDONNÉES POLAIRES DU POINT
-        rg=sqrt(lsng**2+lstg**2)
-!
-        if (rg .gt. r8prem()) then
-!         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            tg = he(1) * abs(atan2(lsng,lstg))
-            iret=1
-        else
-!         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-            tg=0.d0
-            iret=0
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (singu .gt. 0) then
+            if (isigi .eq. 0) then
+              call xkamat(matcod, ndim, axi, ka, mu2)
+            else
+              call rccoma(matcod, 'ELAS', 1, phenom, icodre(1))
+              call rcvala(matcod, ' ', phenom, 1, ' ',&
+                          [rbid], 1, 'NU', nu(1), icodre(1), 1)
+              call rcvala(matcod, ' ', phenom, 1, ' ',&
+                          [rbid], 1, 'E', e(1), icodre(1), 1)
+              mu2 = e(1)/(2.d0*(1.d0+nu(1)))
+              ka  = 3.d0-4.d0*nu(1)
+              if (lteatt('C_PLAN','OUI')) ka = (3.d0-nu(1))/(1.d0+nu(1))
+            endif
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                         lsn, lst, zr(igeom), ka, mu2, ff, fk, dfdi, dkdgl)
         endif
-!       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        ASSERT(iret.ne.0)
 !
 !       ---------------------------------------------
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
 !       ---------------------------------------------
-!
-!       FONCTIONS D'ENRICHISSEMENT
-        call xdeffe(rg, tg, fe)
 !
         call vecini(ndim, 0.d0, depla)
 !
@@ -396,41 +355,20 @@ subroutine xgelem(elrefp, ndim, coorse, igeom, jheavt,&
                 end do
             end do
 !         DDL ENRICHIS EN FOND DE FISSURE
-            do ig = 1, nfe
+            do alp = 1, ndim*singu
+                cpt=cpt+1
                 do i = 1, ndim
-                    cpt=cpt+1
-                    depla(i) = depla(i) + fe(ig) * ff(in) * zr(idepl- 1+indeni+cpt)
+                    depla(i) = depla(i) + fk(in,alp,i) * zr(idepl- 1+indeni+cpt)
                 end do
             end do
-        end do
 !
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
-        call xderfe(rg, tg, dgdpo)
-!
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-        do i = 1, 4
-            dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
-            dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
-            dgdlo(i,3)=0.d0
-        end do
-!
-!       DÉRIVÉES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-        do i = 1, 4
-            do j = 1, 3
-                dgdgl(i,j)=0.d0
-                do k = 1, 3
-                    dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
-                end do
-            end do
         end do
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff, dfdi=dfdi)
         call xcinem(axi, igeom, nnop, nnos, idepl, grdepl,&
                     ndim, he,&
-                    nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f,&
+                    nfiss, nfh, singu, ddls, ddlm,&
+                    fk, dkdgl, ff, dfdi, f,&
                     eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)

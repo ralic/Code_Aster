@@ -1,6 +1,6 @@
 subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, jac, nfh, nd,&
-                  cstaco, singu, rr, ddls, ddlm,&
+                  cstaco, singu, fk, ddls, ddlm,&
                   jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                   ifa, mmat)
 !
@@ -16,10 +16,11 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
     integer :: singu, pla(27), nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: mmat(216, 216), nd(3)
     real(kind=8) :: ffc(8), ffp(27), jac
-    real(kind=8) :: cstaco, rr
+    real(kind=8) :: cstaco
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +59,6 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 ! IN  ND     : NORMALE À LA FACETTE ORIENTÉE DE ESCL -> MAIT
 !                 AU POINT DE GAUSS
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  DDLS   : NOMBRE DE DDL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
 ! IN  DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
@@ -67,6 +67,7 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
     integer :: i, j, k, l, jn, in, ifh, jfh
     integer :: pli, hea_fa(2)
+    integer :: alpi, alpj
     real(kind=8) :: ffi, coefi, coefj
     aster_logical :: lmultc
 !
@@ -111,14 +112,17 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 !
 134         continue
             do 133 l = 1, singu*ndim
-                mmat(pli,jn+ndim*(1+nfh)+l) = mmat(&
+              do alpj = 1 , ndim
+                mmat(pli,jn+ndim*(1+nfh)+alpj) = mmat(&
                                               pli,&
-                                              jn+ndim*(1+nfh) +l) + coefj * ffi * ffp(j) * rr * n&
+                                              jn+ndim*(1+nfh) +alpj) + coefj * ffi * &
+                                              fk(j,alpj,l) * n&
                                               &d(l&
                                               ) * jac
 !
-                mmat(jn+ndim*(1+nfh)+l,pli)= mmat(jn+ndim*(1+nfh)+l,&
-                pli) + coefj * ffi * ffp(j) * rr * nd(l) * jac
+                mmat(jn+ndim*(1+nfh)+alpj,pli)= mmat(jn+ndim*(1+nfh)+alpj,&
+                pli) + 2.d0 * ffi * fk(j,alpj,l) * nd(l) * jac
+              enddo
 133         continue
 !
 131     continue
@@ -164,30 +168,37 @@ subroutine xmmaa3(ndim, nno, nnos, nnol, pla,&
 143                     continue
 !
                         do 144 l = 1, singu*ndim
-                            mmat(in+ndim+k,jn+ndim*(1+nfh)+l) =&
-                            mmat(in+ndim+k,jn+ndim*(1+nfh)+l) +&
-                            coefi*2.d0*cstaco*ffp(i)*ffp(j)*rr*nd(k)*nd(l)*&
+                          do alpj = 1 , ndim
+                            mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) =&
+                            mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) +&
+                            coefi*2.d0*cstaco*ffp(i)*fk(j,alpj,l)*nd(k)*nd(l)*&
                             jac
+                          enddo
 144                     continue
 142                 continue
 149             continue
 148         continue
 !
             do 145 k = 1, singu*ndim
+              do alpi = 1 , ndim
                 do 146 l = 1, nfh*ndim
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
-                                                        in+ndim*(1+nfh)+k,&
-                                                   jn+ndim+l) + coefj*2.d0*cstaco*ffp(i)*ffp(j)* r&
-                                                        &r*nd(k)*nd(l&
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim+l) = mmat(&
+                                                        in+ndim*(1+nfh)+alpi,&
+                                                   jn+ndim+l) + coefj*2.d0*cstaco*fk(i,alpi,k)&
+                                              *ffp(j)*&
+                                                        &nd(k)*nd(l&
                                                         )*jac
 146             continue
 !
                 do 147 l = 1, singu*ndim
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) =&
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) +&
-                    4.d0*cstaco*ffp(i)*ffp(j)*rr*rr*nd(k)*nd(l)&
+                  do alpj = 1 , ndim
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) =&
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) +&
+                    4.d0*cstaco*fk(i,alpi,k)*fk(j,alpj,l)*nd(k)*nd(l)&
                     *jac
+                  enddo
 147             continue
+              enddo
 145         continue
 !
 141     continue

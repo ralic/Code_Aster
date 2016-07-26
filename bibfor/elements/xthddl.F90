@@ -1,7 +1,7 @@
 subroutine xthddl(nfh, nddlno, nno, stano, option,&
                   nomte, mat, vect)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,7 +120,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !         1) CAS DES MAILLES 'ROND'
 !         -------------------------
 !         STATUT DES NOEUDS ENRICHIS
-            istatu = stano(ino)
+            istatu = abs(stano(ino))
             ASSERT(istatu.le.1)
             if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL H
@@ -132,7 +132,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !         2) CAS DES MAILLES 'CARRÉ'
 !         --------------------------
 !         STATUT DES NOEUDS ENRICHIS
-            istatu = stano(ino)
+            istatu = abs(stano(ino))
             ASSERT(istatu.le.2 .and. istatu.ne.1)
             if (istatu .eq. 0) then
 !           ON SUPPRIME LES DDL E
@@ -144,7 +144,7 @@ subroutine xthddl(nfh, nddlno, nno, stano, option,&
 !         3) CAS DES MAILLES 'ROND-CARRÉ'
 !         ------------------------------
 !         STATUT DES NOEUDS ENRICHIS
-            istatu = stano(ino)
+            istatu = abs(stano(ino))
             ASSERT(istatu.le.3)
             if (istatu .eq. 2) then
 !           ON SUPPRIME LES DDL H

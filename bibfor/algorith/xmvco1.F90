@@ -1,6 +1,6 @@
 subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
                   lact, dtang, nfh, ddls, jac,&
-                  ffc, ffp, singu, rr, cstaco,&
+                  ffc, ffp, singu, fk, cstaco,&
                   nd, tau1, tau2, jheavn, ncompn,&
                   nfiss, ifiss, jheafa, ncomph, ifa,&
                   vtmp)
@@ -21,10 +21,10 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
     real(kind=8) :: ffp(27), jac
 !
     real(kind=8) :: dtang(3), nd(3), tau1(3), tau2(3)
-    real(kind=8) :: rr, ffc(8), cstaco
+    real(kind=8) :: fk(27,3,3), ffc(8), cstaco
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
 !
 !
-    integer :: i, j, k, pli, nli, ifh, hea_fa(2)
+    integer :: i, j, k, pli, nli, ifh, hea_fa(2), alp
     real(kind=8) :: tau(3), coefi
     real(kind=8) :: ffi, ttx(3), eps, sqrtan, sqttan
     aster_logical :: lmultc
@@ -114,19 +114,21 @@ subroutine xmvco1(ndim, nno, nnol, sigma, pla,&
 !
           enddo
 451      continue
-        do 452 j = 1, singu*ndim
-            vtmp(ddls*(i-1)+ndim*(1+nfh)+j) = vtmp(&
-                                              ddls*(i-1)+ndim*(1+ nfh)+j)+ (2.d0*sigma(1)*nd(j)*f&
-                                              &fp(i)*jac*rr)+ (2.d0*sigma( 2)*tau1(j)*ffp(i)*jac*&
-                                              &rr&
+        do 452 alp = 1, singu*ndim
+          do j = 1, ndim
+            vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp(&
+                                              ddls*(i-1)+ndim*(1+ nfh)+alp)+ (2.d0*sigma(1)*nd(j)&
+                                              &*jac*fk(i,alp,j))+ (2.d0*sigma( 2)*tau1(j)*jac*&
+                                              &fk(i,alp,j)&
                                               )
             if (ndim .eq. 3) then
-                vtmp(ddls*(i-1)+ndim*(1+nfh)+j) = vtmp(&
-                                                  ddls*(i-1)+ ndim*(1+nfh)+j)+ (2.d0*sigma(3)*tau&
-                                                  &2(j)*ffp(i)*jac*rr&
+                vtmp(ddls*(i-1)+ndim*(1+nfh)+alp) = vtmp(&
+                                                  ddls*(i-1)+ ndim*(1+nfh)+alp)+ (2.d0*sigma(3)*tau&
+                                                  &2(j)*fk(i,alp,j)*jac&
                                                   )
             endif
-452      continue
+          enddo
+452     continue
 450  end do
 !
     call vecini(3, 0.d0, ttx)

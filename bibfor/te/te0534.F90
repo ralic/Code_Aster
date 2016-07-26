@@ -7,6 +7,7 @@ subroutine te0534(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -19,11 +20,12 @@ subroutine te0534(option, nomte)
 #include "asterfort/xvcont.h"
 #include "asterfort/xvfrot.h"
 #include "asterfort/xxlagm.h"
+#include "asterfort/xkamat.h"
 !
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,11 +70,14 @@ subroutine te0534(option, nomte)
     integer :: jheano, ifiss, ncomph, ncompv, vstnc(32)
     integer :: jtab(7), iret, ncompd, ncompp, ncompa, ncompb, ncompc, ncompn
     integer :: jheafa, nptf, jta2(3)
+    integer :: jbaslo, jlsn
     real(kind=8) :: vtmp(400), reac, reac12(3), jac
     real(kind=8) :: nd(3), ffp(27), ffc(8), seuil, coefcp, coefcr, coeffp
     real(kind=8) :: mu, tau1(3), tau2(3), coeffr
     real(kind=8) :: rr, cohes(3), rela
+    real(kind=8) :: ka, mu2, fk(27,3,3)
     aster_logical :: lbid, lelim
+    aster_logical :: axi
     character(len=8) :: elref, typma, elrefc
     character(len=8) :: elc, fpg
     character(len=16) :: enr
@@ -161,6 +166,21 @@ subroutine te0534(option, nomte)
     call tecach('OOO', 'PCFACE', 'L', iret, nval=2,&
                 itab=jtab)
     ncompc = jtab(2)
+    if (nfe.gt.0) then
+       call jevech('PMATERC', 'L', jmate)
+       call jevech('PBASLOR', 'L', jbaslo)
+       call jevech('PLSN', 'L', jlsn)
+       call jevech('PSTANO', 'L', jstno)
+       axi=lteatt('AXIS','OUI')
+    else
+       ka=3.d0
+       mu2=1.d0
+       axi=.false._1
+       jmate=0
+       jbaslo=0
+       jlsn=0
+       jstno=0
+    endif
 !
 !     STATUT POUR L'ÉLIMINATION DES DDLS DE CONTACT
     do i = 1, max(1, nfh)*nnos
@@ -185,7 +205,6 @@ subroutine te0534(option, nomte)
 !
 ! --- RECUPERATION MATERIAU ET VARIABLES INTERNES COHESIF
 !
-        jmate=1
         if (algocr .eq. 3) then
             call jevech('PMATERC', 'L', jmate)
             call jevech('PCOHES', 'L', jcohes)
@@ -230,12 +249,16 @@ subroutine te0534(option, nomte)
 !
 ! --- PREPARATION DU CALCUL
 !
+!       ---- PREPARATION DU MATERIAU POUR L ENRICHISSEMENT VECTORIEL EN FOND
+                if (nfe.gt.0) call xkamat(zi(jmate), ndim, axi, ka, mu2)
+!
                 call xmprep(cface, contac, elref, elrefc, elc,&
                             ffc, ffp, fpg, jaint, jbasec,&
                             jptint, ifa, igeom, ipgf, jac,&
                             jlst, lact, nd, ndim, ninter,&
                             nlact, nno, nnos, nptf, nvit,&
-                            rr, singu, tau1, tau2)
+                            rr, singu, tau1, tau2, ka, mu2,&
+                            jbaslo, jstno, jlsn, fk)
 !
 ! --- CALCUL REACTION DE CONTACT ET DE FROTTEMENT
 !
@@ -255,7 +278,7 @@ subroutine te0534(option, nomte)
                                 jac, jheavn, ncompn, jheafa, lact, ncomph,&
                                 nd, nddl, ndim, nfh, nfiss,&
                                 nno, nnol, nnos, nvit, pla,&
-                                rela, reac, rr, singu, tau1,&
+                                rela, reac, singu, fk, tau1,&
                                 tau2, vtmp)
 !
 ! --- CALCUL DES SECONDS MEMBRES DE FROTTEMENT
@@ -268,8 +291,8 @@ subroutine te0534(option, nomte)
                                 ifiss, indco, jac, jheavn, ncompn, jheafa,&
                                 lact, mu, ncomph, nd, nddl,&
                                 ndim, nfh, nfiss, nno, nnol,&
-                                nnos, nvit, pla, reac12, rr,&
-                                seuil, singu, tau1, tau2, vtmp)
+                                nnos, nvit, pla, reac12,&
+                                seuil, singu, fk, tau1, tau2, vtmp)
 !
                 else
                     ASSERT(option .eq. 'CHAR_MECA_FROT' .or. option(1:14) .eq. 'CHAR_MECA_CONT')

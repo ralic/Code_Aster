@@ -1,7 +1,7 @@
 subroutine te0440(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,7 @@ subroutine te0440(option, nomte)
     integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno
     integer :: ivectu, iforc, itemps, igeom, jpmilt, irese
     integer :: nfiss, jfisno, jheavn
+    integer :: imate, jbaslo
     integer :: ncompn, heavn(27,5), iret, jtab(7), ig
     real(kind=8) :: he, coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
@@ -95,6 +96,10 @@ subroutine te0440(option, nomte)
     call jevech('PLST', 'L', jlst)
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PSTANO', 'L', jstno)
+    if (nfe.gt.0) then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PBASLOR', 'L', jbaslo)
+    endif
     call teattr('S', 'XFEM', enr, ibid)
 !     RECUPERATION DE LA DEFINITION DES DDL HEAVISIDES
     if (nfh.gt.0) then 
@@ -163,9 +168,9 @@ subroutine te0440(option, nomte)
         he = zi(jheavt-1+ise)
 !
         call xfovol(elrefp, ndim, coorse, igeom, he,&
-                    nfh*ndim, ddlc, nfe, nnop, jlsn,&
+                    nfh*ndim, ddlc, singu, nnop, jlsn,&
                     jlst, heavn, iforc, itemps, ivectu, fonc,&
-                    .true._1)
+                    .true._1, zi(imate), jbaslo, jstno)
 !
     end do
 !

@@ -74,6 +74,8 @@ comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
 
 PHEA_NO  = InputParameter(phys=PHY.N120_I)
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+
 
 CHAR_MECA_PESA_R = Option(
     para_in=(
@@ -104,6 +106,7 @@ CHAR_MECA_PESA_R = Option(
            PPMILTO,
            PSTANO,
            PVARCPR,
+           PBASLOR,
     ),
     para_out=(
         SP.PVECTUR,

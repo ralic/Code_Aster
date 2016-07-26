@@ -1,8 +1,10 @@
 subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
-                  ddlh, ddlc, nfe, basloc, nnop,&
-                  npg, imate, lsn, lst, matuu, heavn)
+                  nfh, ddlc, nfe, basloc, nnop,&
+                  npg, imate, lsn, lst, matuu, heavn,&
+                  jstno, nnops, ddlm)
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
@@ -10,16 +12,23 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf2.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
-    integer :: ndim, igeom, imate, nnop, npg, ddlh, ddlc, nfe, heavn(27,5)
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/iselli.h"
+#include "asterfort/xnbddl.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/iimatu.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/indent.h"
+    integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27,5)
+    integer :: jstno, nnops, ddlm
     character(len=8) :: elrefp
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), matuu(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +53,7 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 ! IN  COORSE  : COORDONNEES DES SOMMETS DU SOUS-ELEMENT
 ! IN  IGEOM   : COORDONNEES DES NOEUDS DE L'ELEMENT PARENT
 ! IN  HE      : VALEUR DE LA FONCTION HEAVISIDE SUR LE SOUS-ELT
-! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
+! IN  nfh    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  BASLOC  : BASE LOCALE AU FOND DE FISSURE AUX NOEUDS
@@ -66,32 +75,52 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
 !
     integer :: retour(1)
-    integer :: kpg, kk, n, i, m, j, j1, kkd, ino, ig, iret
-    integer :: nno, nnos, npgbis, ddlt, ddld, cpt, ndimb
+    integer :: kpg, kk, n, i, m, j, j1, kkd
+    integer :: nno, nnos, npgbis, ddls, ddld, cpt, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se
 !
     real(kind=8) :: rho(1)
-    real(kind=8) :: fe(4), baslog(6)
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac, lsng, lstg
-    real(kind=8) :: dgdgl(4, 3)
-    real(kind=8) :: enr(nnop, ndim+ddlh+ndim*nfe)
-    real(kind=8) :: depl0(ndim+ddlh+ndim*nfe+ddlc, nnop)
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
+    real(kind=8) :: enr(ndim, nnop, 1+nfh+ndim*nfe)
+    real(kind=8) :: fk(27,3,3), ka, mu
+    integer :: alp, dec(nnop), nn, mn, ii, jj, irese, singu
+    integer :: ddln, ij, kddl(ndim, 1+nfh+ndim*nfe)
 !
     character(len=16) :: phenom
+    aster_logical :: axi
+    character(len=8) :: elrese(6), fami(6)
+!
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
+    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 !--------------------------------------------------------------------
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld=ndim+ddlh+ndim*nfe
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
+    ddln=int(ddld/ndim)
+    axi=lteatt('AXIS','OUI')
+    enr(:,:,:)=0.d0
+    kddl(:,:)=0
 !
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddlt=ddld+ddlc
+! DECALAGES CALCULES EN AMONT: PERF
+    do n = 1, nnop
+        call indent(n, ddls, ddlm, nnops, dec(n))
+    end do
+!
 ! CALCUL DE L IDENTIFIANT DU SS ELEMENT
     hea_se=xcalc_code(1, he_real=[he])
 !
-    call elrefe_info(elrefe='TR3',fami='XINT',ndim=ndimb,nno=nno,nnos=nnos,&
-  npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
-  jdfd2=jdfd2,jgano=jgano)
+    if (.not.iselli(elrefp)) then
+        irese=3
+    else
+        irese=0
+    endif
+!
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),&
+                     ndim=ndimb,nno=nno,nnos=nnos,&
+                     npg=npgbis,jpoids=ipoids,jcoopg=jcoopg,jvf=ivf,jdfde=idfde,&
+                     jdfd2=jdfd2,jgano=jgano)
+!
     ASSERT(npg.eq.npgbis.and.ndim.eq.ndimb)
 !
 !
@@ -107,57 +136,40 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
             end do
         end do
 !
-        do i = 1, nnop
-            do j = 1, ddlt
-                depl0(j,i)=0.d0
-            end do
-        end do
-!
 !       JUSTE POUR CALCULER LES FF
         call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff)
 !
         if (nfe .gt. 0) then
-!         BASE LOCALE AU POINT DE GAUSS
-            call vecini(6, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do ino = 1, nnop
-                lsng = lsng + lsn(ino) * ff(ino)
-                lstg = lstg + lst(ino) * ff(ino)
-                do i = 1, 6
-                    baslog(i) = baslog(i) + basloc(6*(ino-1)+i) * ff( ino)
-                end do
-            end do
-!
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DERIVEES
-            call xcalf2(he, lsng, lstg, baslog, fe,&
-                        dgdgl, iret)
-!         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
-!
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he,&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk)
         endif
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !--------CALCUL DES FONCTIONS ENRICHIES--------------------------
         do n = 1, nnop
-            cpt=0
 !         FONCTIONS DE FORME CLASSIQUES
+            cpt=0
             do i = 1, ndim
                 cpt=cpt+1
-                enr(n,i) = ff(n)
+                enr(i,n,1) = ff(n)
+                kddl(i,1)=cpt
             end do
 !         ENRICHISSEMENT PAR HEAVYSIDE
-            do i = 1, ddlh
+            do i = 1, ndim
+              do j = 1, nfh
                 cpt=cpt+1
-                enr(n,cpt) = enr(n,i) * xcalc_heav(heavn(n,i),hea_se,heavn(n,5))
+                enr(i,n,1+j) = ff(n) * xcalc_heav(heavn(n,j),hea_se,heavn(n,5))
+                kddl(i,1+j)=cpt
+              enddo
             end do
 !         ENRICHISSEMENT PAR LES NFE FONTIONS SINGULIÈRES
-            do ig = 1, nfe
+            do alp = 1, nfe*ndim
                 do i = 1, ndim
                     cpt=cpt+1
-                    enr(n,cpt)=ff(n)*fe(ig)
+                    enr(i,n,1+nfh+alp)=fk(n,alp,i)
+                    kddl(i,1+nfh+alp)=cpt
                 end do
             end do
 !
@@ -180,23 +192,28 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he,&
 !
 !
         do n = 1, nnop
-            do i = 1, ddld
-                kkd = (ddlt*(n-1)+i-1) * (ddlt*(n-1)+i) /2
-                do j = 1, ddld
+          nn=dec(n)
+          do ij = 1, ndim
+            do i = 1, ddln
+                ii=iimatu(kddl(ij,i),ndim,nfh,nfe)
+                kkd = (nn+ii-1) * (nn+ii) /2
+                do j = 1, ddln
+                    jj=iimatu(kddl(ij,j),ndim,nfh,nfe)
                     do m = 1, n
+                        mn=dec(m)
                         if (m .eq. n) then
-                            j1 = i
+                            j1 = kddl(ij,i)
                         else
                             j1 = ddld
                         endif
-                        if (j .le. j1) then
-                            kk = kkd + ddlt*(m-1)+j
-                            matuu(kk) = matuu(kk)+enr(n,i)*enr(m,j)* jac*rho(1)
+                        if (jj .le. j1) then
+                            kk = kkd + mn + jj
+                            matuu(kk) = matuu(kk)+enr(ij,n,i)*enr(ij,m,j)* jac*rho(1)
                         endif
-!
                     end do
                 end do
             end do
+          end do
         end do
 !
     end do

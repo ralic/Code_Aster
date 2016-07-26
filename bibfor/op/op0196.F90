@@ -1,7 +1,7 @@
 subroutine op0196()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -158,7 +158,7 @@ subroutine op0196()
                     k2b, k24b, maxfem, cns1, cns2,&
                     ces1, ces2, cesvi1, cesvi2, listgr,&
                     k24, k24, resuco, ibid, comps1,&
-                    comps2, pre1)
+                    comps2, pre1, iord)
 !
 !       ----------------------------------------------------------------
 !       6. ENREGISTREMENT DES CHAMPS DE SORTIES

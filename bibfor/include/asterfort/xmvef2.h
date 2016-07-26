@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine xmvef2(ndim, nno, nnos, ffp, jac,&
-                      seuil, reac12, singu, nfh, rr,&
+                      seuil, reac12, singu, fk, nfh,&
                       coeffp, coeffr, mu, algofr, nd,&
                       ddls, ddlm, idepl, pb, vtmp)
         integer :: ndim
@@ -29,7 +29,6 @@ interface
         real(kind=8) :: reac12(3)
         integer :: singu
         integer :: nfh
-        real(kind=8) :: rr
         real(kind=8) :: coeffp
         real(kind=8) :: coeffr
         real(kind=8) :: mu
@@ -40,5 +39,6 @@ interface
         integer :: idepl
         real(kind=8) :: pb(3)
         real(kind=8) :: vtmp(400)
+        real(kind=8) :: fk(27,3,3)
     end subroutine xmvef2
 end interface

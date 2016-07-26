@@ -32,9 +32,7 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','DZ','E1X','E1Y',
-          'E1Z','E2X','E2Y','E2Z','E3X',
-          'E3Y','E3Z','E4X','E4Y','E4Z',))
+    components=('DX','DY','DZ','K1','K2','K3',))
 
 
 NTHETAR  = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
@@ -97,7 +95,7 @@ class MECA_XT_FACE3(Element):
     """Please document this element"""
     meshType = MT.TRIA3
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','FPG3=FPG3','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG12','FPG3=FPG3','XCON=FPG12',),),
         )
     calculs = (
 
@@ -107,7 +105,9 @@ class MECA_XT_FACE3(Element):
                      (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PLONCHA, LC.E10NEUTI),
                      (OP.CALC_G.PLSN, LC.N1NEUT_R), (OP.CALC_G.PLST, LC.N1NEUT_R),
                      (OP.CALC_G.PPINTTO, LC.E12NEUTR), (SP.PPRESSR, EPRESNO),
-                     (SP.PTHETAR, NTHETAR), ),
+                     (SP.PTHETAR, NTHETAR), (OP.CALC_G.PPMILTO, E33NEUTR),
+                     (SP.PMATERC, LC.CMATERC), (OP.CALC_G.PBASLOR, LC.N9NEUT_R),
+                     (OP.CALC_G.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
@@ -125,8 +125,8 @@ class MECA_XT_FACE3(Element):
                      (OP.CALC_G.PLSN, LC.N1NEUT_R), (OP.CALC_G.PLST, LC.N1NEUT_R),
                      (OP.CALC_G.PPINTTO, LC.E12NEUTR), (SP.PPRESSR, EPRESNO),
                      (SP.PTHETAR, NTHETAR), (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R),
-                     (SP.PMATERC, LC.CMATERC),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.CALC_K_G.PSTANO, STANO_I),
+                     (OP.CALC_K_G.PPMILTO, E33NEUTR),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
@@ -143,7 +143,7 @@ class MECA_XT_FACE3(Element):
                      (OP.CHAR_MECA_FF2D3D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FF2D3D.PLSN, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FF2D3D.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FF2D3D.PPINTTO, LC.E12NEUTR),
                      (OP.CHAR_MECA_FF2D3D.PPMILTO, E33NEUTR), (OP.CHAR_MECA_FF2D3D.PSTANO, STANO_I),
-                     (SP.PTEMPSR, CTEMPSR), ),
+                     (SP.PTEMPSR, CTEMPSR), (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_FF2D3D.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -154,7 +154,7 @@ class MECA_XT_FACE3(Element):
                      (OP.CHAR_MECA_FR2D3D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FR2D3D.PLSN, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FR2D3D.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FR2D3D.PPINTTO, LC.E12NEUTR),
                      (OP.CHAR_MECA_FR2D3D.PPMILTO, E33NEUTR), (OP.CHAR_MECA_FR2D3D.PSTANO, STANO_I),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_FR2D3D.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -165,7 +165,8 @@ class MECA_XT_FACE3(Element):
                      (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_F.PPINTTO, LC.E12NEUTR), (OP.CHAR_MECA_PRES_F.PPMILTO, E33NEUTR),
                      (SP.PPRESSF, CPRESSF), (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                     (SP.PTEMPSR, CTEMPSR), ),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N9NEUT_R),
+                     (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -176,13 +177,13 @@ class MECA_XT_FACE3(Element):
                      (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_R.PPINTTO, LC.E12NEUTR), (OP.CHAR_MECA_PRES_R.PPMILTO, E33NEUTR),
                      (SP.PPRESSR, EPRESNO), (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I),
-                     ),
+                     (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.INI_XFEM_ELNO(te=99,
             para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
+                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), (OP.INI_XFEM_ELNO.PBASLOR, LC.N9NEUT_R),),
         ),
 
         OP.TOPONO(te=120,
@@ -223,7 +224,7 @@ class MECA_XT_FACE4(MECA_XT_FACE3):
     meshType = MT.QUAD4
     elrefe =(
             ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=COT3','FPG3=FPG3','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG12','FPG3=FPG3','XCON=FPG12',),),
         )
 
 
@@ -232,7 +233,7 @@ class MECA_XT_FACE6(MECA_XT_FACE3):
     """Please document this element"""
     meshType = MT.TRIA6
     elrefe =(
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','XCON=FPG12',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG12','XCON=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6','XCON=FPG12',),),
         )
 
@@ -243,6 +244,6 @@ class MECA_XT_FACE8(MECA_XT_FACE3):
     meshType = MT.QUAD8
     elrefe =(
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9',),),
-            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6','XCON=FPG12',),),
+            ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG12','XCON=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG6','XCON=FPG12',),),
         )

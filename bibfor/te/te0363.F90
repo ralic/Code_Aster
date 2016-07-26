@@ -1,7 +1,7 @@
 subroutine te0363(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,8 @@ subroutine te0363(option, nomte)
 #include "asterfort/xtform.h"
 #include "asterfort/xtlagc.h"
 #include "asterfort/tecach.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -66,6 +68,8 @@ subroutine te0363(option, nomte)
     real(kind=8) :: rre, rrm, ffec(8)
     parameter    (prec=1.d-16)
     integer :: contac, ddle(2), ddlm(2), ibid, ndeple
+    integer :: imate, jbaslo, jlsn, jstno
+    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3), ka, mu
     aster_logical :: lmulti
 !
 ! ----------------------------------------------------------------------
@@ -160,6 +164,31 @@ subroutine te0363(option, nomte)
                 nnm(1), nnc, coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
+! --- CALCUL DES FCTS SINGULIERES
+!
+    call jevech('PSTANO', 'L', jstno)
+    if (nsinge.eq.1 .and. nne(1).gt. 0) then
+      call jevech('PLSNGG', 'L', jlsn)
+      call jevech('PBASLOC', 'L', jbaslo)
+      call jevech('PMATERC', 'L', imate)
+      call xkamat(zi(imate), ndim, .false._1, ka, mu)
+      call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0,&
+                   zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
+    endif
+!
+! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE 
+    fk_escl=-1.d0*fk_escl
+    if (nnm(1) .eq. 0) fk_escl=2.d0*fk_escl
+    if (nsingm.eq.1 .and. nnm(1).gt.0) then
+      call jevech('PLSNGG', 'L', jlsn)
+      call jevech('PBASLOC', 'L', jbaslo)
+      call jevech('PMATERC', 'L', imate)
+      call xkamat(zi(imate), ndim, .false._1, ka, mu)
+      call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0,&
+                   zr(jlsn+nne(1)), zr(jlsn+nne(1)),zr(jgeom+nne(1)*ndim), &
+                   ka, mu, ffm, fk_mait, face='MAIT')
+    endif
+!
 ! --- FONCTION DE FORMES POUR LES LAGRANGIENS
 ! --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
 ! --- ET LES FFS LAGRANGES DE CONTACT SONT IDENTIQUES A CEUX
@@ -201,7 +230,7 @@ subroutine te0363(option, nomte)
 !
     call xmmjec(ndim, nnm, nne, ndeple, nsinge,&
                 nsingm, ffe, ffm, norm, jgeom,&
-                jdepde, rre, rrm, ddle, ddlm,&
+                jdepde, fk_escl, fk_mait, ddle, ddlm,&
                 nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa), jeuca)
 !
 !

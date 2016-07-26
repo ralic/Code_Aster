@@ -1,7 +1,7 @@
 subroutine te0542(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ subroutine te0542(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/iselli.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/jevech.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/teattr.h"
@@ -46,7 +46,7 @@ subroutine te0542(option, nomte)
     integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, icontm, jlsn, jlst
     integer :: jpmilt, ddlm, nfiss, jfisno, ideplm, icompo, jheavn
-    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno
+    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, imate
     integer :: contac, nnom, singu
     aster_logical :: lbid
     real(kind=8) :: sigref(1), depref
@@ -84,9 +84,8 @@ subroutine te0542(option, nomte)
     call jevech('PLST', 'L', jlst)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (enr(1:2).eq.'XH'.or. enr(1:2).eq.'XT') call jevech('PHEA_NO', 'L', jheavn)
-    if ((ibid.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
+    if (enr(1:2).eq.'XH') call jevech('PHEA_NO', 'L', jheavn)
+    if ((ibid.eq.0) .and. ltequa(elref,enr))&
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -95,12 +94,15 @@ subroutine te0542(option, nomte)
 ! VECTEUR SECOND MEMBRE DONNE EN ENTREE
         call jevech('PCONTMR', 'L', icontm)
         call jevech('PSTANO', 'L', jstno)
+        if (nfe.gt.0) then
+           call jevech('PMATERC', 'L', imate)
+        endif
 !       CALCUL DU VECTEUR DES FORCES INTERNES (BT*SIGMA)
         call xbsig(ndim, nno, nfh, nfe, ddlc,&
                    ddlm, igeom, zk16( icompo), jpintt, zi(jcnset),&
                    zi(jheavt), zi(jlonch), zr(jbaslo), zr(icontm), nbsig,&
                    ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-                   nfiss, jheavn)
+                   nfiss, jheavn, jstno, imate)
 !
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
                     nno, nnos, zi(jstno), .false._1, lbid,&
@@ -113,6 +115,9 @@ subroutine te0542(option, nomte)
 !
         call terefe('SIGM_REFE', 'MECA_INTERFACE', sigref(1))
         call terefe('DEPL_REFE', 'MECA_INTERFACE', depref)
+        if (nfe.gt.0) then
+           call jevech('PSTANO', 'L', jstno)
+        endif
 !
 ! --- ON COMMENCE PAR CALCULER LES CONTRIBUTIONS VOLUMIQUES
 !
@@ -120,16 +125,17 @@ subroutine te0542(option, nomte)
                    ddlm, igeom, zk16(icompo), jpintt, zi(jcnset),&
                    zi(jheavt), zi(jlonch), zr(jbaslo), sigref, nbsig,&
                    ideplm, zr(jlsn), zr(jlst), ivectu, jpmilt,&
-                   nfiss, jheavn)
+                   nfiss, jheavn, jstno)
 !
 ! --- SI ELEMENT DE CONTACT, ON Y AJOUTE LES CONTRIBUTIONS SURFACIQUES
 ! --- NOTAMMENT CELLE POUR LES EQUATIONS DUALES
 !
-        if (enr .eq. 'XHC') then
+        if (enr .eq. 'XHC' .or. enr .eq. 'XHTC') then
             call xbsir2(elref, contac, ddlc, ddlm, ddls,&
                         igeom, jheavn, jlst, ivectu, singu,&
                         nddl, ndim, nfe, nfh, nfiss,&
-                        nno, nnom, nnos, depref, sigref(1))
+                        nno, nnom, nnos, depref, sigref(1),&
+                        jbaslo, jstno, jlsn)
         endif
     else
         ASSERT(.false.)

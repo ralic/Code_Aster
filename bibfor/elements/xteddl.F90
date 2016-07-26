@@ -4,7 +4,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
                   mat, vect)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
 #include "asterfort/teattr.h"
+#include "asterfort/is_enr_line.h"
     integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
     aster_logical, intent(in) :: matsym, lcontx
     character(len=16), intent(in) :: option, nomte
@@ -66,7 +67,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
     parameter    (ddlmax=1053)
     integer :: posddl(ddlmax), ddlc, nlag
     character(len=8) :: tyenel
-    aster_logical :: lelim, lmultc, lmat, lvec
+    aster_logical :: lelim, lmultc, lmat, lvec, lctlin
     real(kind=8) :: dmax, dmin, codia
 !
 !-------------------------------------------------------------
@@ -78,6 +79,7 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !
     lmat = .false.
     lvec = .false.
+    lctlin = is_enr_line()
 !
 !   OPTIONS RELATIVES A UNE MATRICE
     if (option .eq. 'FULL_MECA' .or. option .eq. 'RIGI_MECA_GE' .or. option .eq.&
@@ -179,11 +181,17 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         --------------------------
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
-            istatu = stano(ino)
+            istatu = abs(stano(ino))
             ASSERT(istatu.le.2 .and. istatu.ne.1)
             if (istatu .eq. 2) then
-!           ON NE SUPPRIME AUCUN DDL
-            else if (istatu.eq.0) then
+!           ON SUPPRIME LES DDLS VECTORIELS DES NOEUDS MILIEUX
+                if (ino.gt.nnos.and.lctlin) then
+                do k = 1, ndim
+                    posddl(in+ndim*(1+nfh)+k)=1
+                enddo
+                endif
+                lelim=.true.
+            elseif (istatu.eq.0) then
 !           ON SUPPRIME LES DDL E
                 do k = 1, nfe*ndim
                     posddl(in+ndim*(1+nfh)+k)=1
@@ -197,15 +205,27 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl,&
 !         ------------------------------
 !
 !         PB DE STATUT DES NOEUDS ENRICHIS
-            istatu = stano(ino)
+            istatu = abs(stano(ino))
             ASSERT(istatu.le.3)
             if (istatu .eq. 3) then
-!           ON NE SUPPRIME AUCUN DDL
-            else if (istatu.eq.2) then
+!           ON SUPPRIME LES DDLS VECTORIELS DES NOEUDS MILIEUX
+                if (ino.gt.nnos.and.lctlin) then
+                do k = 1, ndim
+                    posddl(in+ndim*(1+nfh)+k)=1
+                enddo
+                endif
+                lelim=.true.
+            elseif (istatu.eq.2) then
 !           ON SUPPRIME LES DDL H
                 do k = 1, ndim
                     posddl(in+ndim+k)=1
                 enddo
+!           ON SUPPRIME LES DDLS VECTORIELS DES NOEUDS MILIEUX
+                if (ino.gt.nnos.and.lctlin) then
+                do k = 1, ndim
+                    posddl(in+ndim*(1+nfh)+k)=1
+                enddo
+                endif
                 lelim=.true.
             else if (istatu.eq.1) then
 !           ON SUPPRIME LES DDL E

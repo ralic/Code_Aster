@@ -155,10 +155,10 @@ k2ref_0 = 8.6435469393827E+05
 k3ref_90 = 6.7469786391964E+05
 
 # valeurs de ref calcule abtenus avec aster4
-k1calmax = 8.5656320339502E+05
-k1calmin = 8.4012855590544E+05
-k2calc = 8.3533060485032E+05
-k3calc = 6.8411187662648E+05
+k1calmax = 855621.125752
+k1calmin = 838924.763522
+k2calc = 834730.86792
+k3calc = 683680.778171
 
 # ajout des colonnes 'angle' et valeurs de ref dans les tables
 

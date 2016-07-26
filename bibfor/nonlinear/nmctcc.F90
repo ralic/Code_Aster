@@ -120,7 +120,7 @@ implicit none
     call mmbouc(ds_contact, 'Cont', 'Set_Vale' , loop_vale_ = loop_cont_vale)
     if (l_cont_xfem) then
         if (l_cont_xfem_gg) then
-            call xmtbca(mesh, hval_incr, ds_contact)
+            call xmtbca(mesh, hval_incr, mate, ds_contact)
         else
             call xmmbca(mesh, model, mate, hval_incr, ds_contact)
         endif

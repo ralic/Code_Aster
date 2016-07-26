@@ -3,7 +3,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
 #include "asterf_types.h"
 ! ......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
 ! ......................................................................
 !
     integer :: i, k1phi, k2phi, gphi, unit
-    real(kind=8) :: g, fic1, fic2, k1, k2, girwin, rcmp(4), vale(5)
+    real(kind=8) :: g, fic1, fic2, k1, k2, girwin, rcmp(6), vale(5)
     real(kind=8) :: k11(10), k21(10), k12(10), k22(10), k1max, k1min
     real(kind=8) :: k2min, k2sup, gmax, k1dev, k2dev, gdev, fic1d, fic2d
     character(len=8) :: nomnoe
@@ -161,7 +161,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
      &              rcmp(1),' ',rcmp(2)
     write(unit,*)
     write(unit,*) 'COORDONNEES DE LA NORMALE A LA FISSURE :  ',&
-     &              rcmp(3),' ',rcmp(4)
+     &              rcmp(5),' ',rcmp(6)
     write(unit,*)
 !
     write(unit,*) '       K1                K2         '//&

@@ -157,7 +157,7 @@ class MECPT3HT32_XH(Element):
             para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_PT, LC.CCONPT),
                      (SP.PDEPL_P, DDL_MECA), (SP.PGEOMER, NGEOMER),
                      (SP.PHEAVNO, PLALA_I), (OP.XCVBCA.PHEA_FA, CCONHE),
-                     (OP.XCVBCA.PHEA_NO, LC.N40NEUI), ),
+                     (OP.XCVBCA.PHEA_NO, LC.N40NEUI), (OP.XCVBCA.PSTANO, STANO_I),),
             para_out=((SP.PINDCOO, LC.I3NEUT_I), ),
         ),
 

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
+    subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
                       imate, pintt, cnset, heavt, lonch,&
-                      basloc, lsn, lst, matuu, heavn)
+                      basloc, lsn, lst, matuu, heavn, jpmilt,&
+                      jstno, nnops, ddlm)
         integer :: nnop
-        integer :: ddlh
+        integer :: nfh
         integer :: nfe
         integer :: ddlc
         integer :: igeom
         integer :: imate
+        integer :: jpmilt
+        integer :: jstno
+        integer :: ddlm
+        integer :: nnops
         real(kind=8) :: pintt(33)
         integer :: cnset(128)
         integer :: heavt(36)

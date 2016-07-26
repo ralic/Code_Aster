@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
     subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
                       pla, ffc, ffp, idepd, idepm,&
                       nfh, nd, tau1, tau2, singu,&
-                      rr, lact, ddls, ddlm, coeffr,&
+                      fk, lact, ddls, ddlm, coeffr,&
                       coeffp, p, adher, knp, ptknp,&
                       ik)
         integer :: algofr
@@ -50,5 +50,6 @@ interface
         real(kind=8) :: knp(3, 3)
         real(kind=8) :: ptknp(3, 3)
         real(kind=8) :: ik(3, 3)
+        real(kind=8) :: fk(27,3,3)
     end subroutine xmmsa1
 end interface

@@ -1,7 +1,7 @@
 subroutine op0166()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,11 +47,12 @@ subroutine op0166()
 #include "asterfort/pjxxpr.h"
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
+#include "asterfort/exi_fiss.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret, ie, n1, n2, n3, nbocc
-    aster_logical :: isole, lnoeu, lelno, lelem, lelga
+    aster_logical :: isole, lnoeu, lelno, lelem, lelga, lxfem
     character(len=4) :: tychv, typcal
     character(len=8) :: k8b, noma1, noma2, noma3, resuin, prol0, projon, norein
     character(len=8) :: nomo1, nomo2, moa1, moa2, cnref, nomare, noca
@@ -66,6 +67,7 @@ subroutine op0166()
     call infmaj()
     call titre()
     lelga = .false.
+    lxfem=.false._1
 !
 ! --------------------------------------------------------------------------------------------------
 !   calcul de typcal :
@@ -99,6 +101,7 @@ subroutine op0166()
     call getres(resuou, typres, nomcmd)
     call getvtx(' ', 'METHODE', scal=method, nbret=n1)
     if (n1 .eq. 0) method=' '
+    lxfem=lxfem.and.method.eq.'COLLOCATION'
     if (projon .eq. 'OUI') then
         call getvid(' ', 'RESULTAT', scal=resuin, nbret=n2)
         if (n2 .eq. 1) then
@@ -119,6 +122,7 @@ subroutine op0166()
         resuin=' '
         nomare=' '
     endif
+    lxfem=lxfem.and.n2.eq.1
 ! --------------------------------------------------------------------------------------------------
 !   limitation de la méthode ECLA_PG :
 !       il n'est pas possible de projeter une SD_RESULTAT
@@ -140,6 +144,7 @@ subroutine op0166()
         if (n1 .eq. 1) then
             call dismoi('NOM_MAILLA', nomo1, 'MODELE', repk=noma1)
             moa1=nomo1
+            lxfem=exi_fiss(nomo1)
         else
             nomo1=' '
             call getvid(' ', 'MAILLAGE_1', scal=noma1, nbret=n2)
@@ -403,7 +408,7 @@ subroutine op0166()
 !   cas SD_RESULTAT :
     else
         call pjxxpr(resuin, resuou(1:8), moa1, moa2, lcorre(1),&
-                    'G', noca, method)
+                    'G', noca, method, xfem=lxfem)
     endif
 !
 999 continue

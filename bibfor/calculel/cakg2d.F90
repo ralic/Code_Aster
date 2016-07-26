@@ -106,20 +106,20 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     integer :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
     integer :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
     integer :: iret, livi(nbmxpa), nbchar, pbtype
-    real(kind=8) :: fic(5), rcmp(4), livr(nbmxpa), girwin
+    real(kind=8) :: fic(5), rcmp(6), livr(nbmxpa), girwin
     integer :: mxstac
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: lfonc, lxfem
     parameter   (mxstac=1000)
     character(len=2) :: codret
-    character(len=8) :: noma, fond, licmp(4), typmo, fiss, mosain
+    character(len=8) :: noma, fond, licmp(6), typmo, fiss, mosain
     character(len=16) :: option, optio2
     character(len=19) :: ch1d2d, chpres, chrota, chpesa, chvolu, ch2d3d, chepsi
     character(len=19) :: chvref, chvarc
     character(len=19) :: basefo
     character(len=19) :: basloc, pintto, cnseto, heavto, loncha, lnno, ltno, hea_no
     character(len=19) :: pmilto
-    character(len=19) :: pinter, ainter, cface, longco, baseco
+    character(len=19) :: pinter, ainter, cface, longco, baseco, stano
     character(len=24) :: chgeom, chfond, celmod, sigelno, sigseno
     character(len=24) :: ligrmo, nomno, norma
     character(len=24) :: obj1, obj2, coord, coorn, chtime
@@ -279,13 +279,17 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
             call jeveuo(norma, 'L', inorma)
             rcmp(3) = zr(inorma-1+1)
             rcmp(4) = zr(inorma-1+2)
+            rcmp(5) = -zr(inorma-1+2)
+            rcmp(6) = zr(inorma-1+1)
         else if (iret.eq.0) then
             basefo = fond//'.BASEFOND'
             call jeveuo(basefo, 'L', jbasfo)
 !           ATTENTION, ON NE SE SERT PAS DU VECTEUR NORMAL DE BASEFOND
 !           MAIS ON FAIT TOURNER DE 90 DEGRES LE VECTEUR DE PROPA
-            rcmp(3) = -zr(jbasfo-1+4)
-            rcmp(4) = zr(jbasfo-1+3)
+            rcmp(3) = zr(jbasfo-1+3)
+            rcmp(4) = zr(jbasfo-1+4)
+            rcmp(5) = zr(jbasfo-1+1)
+            rcmp(6) = zr(jbasfo-1+2)
         endif
     endif
 !
@@ -293,12 +297,14 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
 !   CREATION OBJET CONTENANT COORDONNEES DU NOEUD DE FOND
 !   DE FISSURE ET LA NORMALE A LA FISSURE
     chfond = '&&CAKG2D.FOND'
-    call wkvect(chfond, 'V V R8', 4, iadrff)
+    call wkvect(chfond, 'V V R8', 6, iadrff)
 !
     licmp(1) = 'XA'
     licmp(2) = 'YA'
-    licmp(3) = 'XNORM'
-    licmp(4) = 'YNORM'
+    licmp(3) = 'XTAN'
+    licmp(4) = 'YTAN'
+    licmp(5) = 'XNORM'
+    licmp(6) = 'YNORM'
 
 !Recuperation du numero du fond de fissure pour FEM et XFEM
     call getvis('THETA', 'NUME_FOND', iocc=1, scal=numfon, nbret=ibid)
@@ -313,22 +319,26 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
         rcmp(1) = zr(jfond-1+4*(numfon-1)+1)
         rcmp(2) = zr(jfond-1+4*(numfon-1)+2)
         call jeveuo(fiss//'.BASEFOND', 'L', jnor)
-        rcmp(3) = -zr(jnor-1+4*(numfon-1)+4)
-        rcmp(4) = zr(jnor-1+4*(numfon-1)+3)
+        rcmp(3) = zr(jnor-1+4*(numfon-1)+3)
+        rcmp(4) = zr(jnor-1+4*(numfon-1)+4)
+        rcmp(5) = zr(jnor-1+4*(numfon-1)+1)
+        rcmp(6) = zr(jnor-1+4*(numfon-1)+2)
         write(ifm,*)'   '
         write(ifm,*)'    TRAITEMENT DU FOND DE FISSURE NUMERO ',numfon
         write(ifm,*)'    NOMME ',noeud
         write(ifm,*)'    DE COORDONNEES',rcmp(1),rcmp(2)
         write(ifm,*)'    LA NORMALE A LA FISSURE EN CE POINT EST ',&
-     &                                              rcmp(3),rcmp(4)
+     &                                              rcmp(5),rcmp(6)
     endif
     zr(iadrff) = rcmp(1)
     zr(iadrff+1) = rcmp(2)
     zr(iadrff+2) = rcmp(3)
     zr(iadrff+3) = rcmp(4)
+    zr(iadrff+4) = rcmp(5)
+    zr(iadrff+5) = rcmp(6)
 !
     call mecact('V', chfond, 'MAILLA', noma, 'FISS_R',&
-                ncmp=4, lnomcmp=licmp, vr=rcmp)
+                ncmp=6, lnomcmp=licmp, vr=rcmp)
 !
 !
 !   RECUPERATION DES DONNEES XFEM (TOPOSE)
@@ -350,6 +360,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     cface = modele//'.TOPOFAC.CF'
     longco = modele//'.TOPOFAC.LO'
     baseco = modele//'.TOPOFAC.BA'
+    stano = modele//'.STNO'
 !
 !   RECUPERATION DES DONNEES XFEM (TOPONO)
     hea_no = modele//'.TOPONO.HNO'
@@ -417,8 +428,10 @@ subroutine cakg2d(optioz, result, modele, depla, theta,&
     lchin(26) = baseco
     lpain(27) = 'PHEA_NO'
     lchin(27) = hea_no
+    lpain(28) = 'PSTANO'
+    lchin(28) = stano
 !
-    nchin = 27
+    nchin = 28
 !
     chtime = '&&CAKG2D.CH_INST_R'
     if (option .eq. 'CALC_K_G_F') then

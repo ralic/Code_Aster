@@ -33,7 +33,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
     character(len=19) :: lisrel, ch1, ch2, ch3, cnxinv, hea_no
 ! ---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -317,7 +317,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
        call utmess('A', 'XFEM_22', sk=nomn)
     endif
 !
-    if (fonree.eq.'FONC' .and. nfiss .eq.1 .and. stano(1) .eq. 1) then
+    if (fonree.eq.'FONC' .and. nfiss .eq.1 .and. (stano(1) .eq. 1&
+                                             .or. stano(1) .eq. 3)) then
 ! --- SI LA RELATION CINEMATIQUE EST IMPOSEE PAR UNE FONCTION DE L'ESPACE
        call xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                     ch2, ndim, lsn, lst, valimr, valimf, valimc,&
@@ -325,7 +326,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     hea_no)
     endif
 !     IMPOSITION DES CONDITIONS CINEMATIQUE "TOTALES" (DDL_CLASS +/- DDL_ENR)
-    if ((fonree.eq.'REEL') .or. (nfiss.gt.1) .or. class .or. (stano(1).ne.1)) then
+    if ((fonree.eq.'REEL') .or. (nfiss.gt.1) .or. class .or. (stano(1).ne.1 &
+                                                        .and. stano(1).ne.3)) then
        do i = 1, nbxcmp
            dimens(i)= 0
            noeud(i) = nomn
@@ -357,21 +359,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                         ddl(i) = 'H1'//axes(j)
                         coef(i)=xcalc_heav(heavn(1),hea_se,heavn(5))*direct(j)
                     endif
-!
-                    if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
-                        i = i+1
-                        ddl(i) = 'E1'//axes(j)
-                        coef(i)=sqrt(r)*sin(t/2.d0)*direct(j)
-                        i = i+1
-                        ddl(i) = 'E2'//axes(j)
-                        coef(i)=sqrt(r)*cos(t/2.d0)*direct(j)
-                        i = i+1
-                        ddl(i) = 'E3'//axes(j)
-                        coef(i)=sqrt(r)*sin(t/2.d0)*sin(t)*direct(j)
-                        i = i+1
-                        ddl(i) = 'E4'//axes(j)
-                        coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)*direct(j)
-                    endif
+!   AVEC L ENRICHISSEMENT SHIFTED [FRIES] LES FONCTIONS D ENRICHISSIMENT SINGULIERES
+!      S ANNULENT AU NOEUD => RIEN A FAIRE
                 endif
             end do
 !       CAS DDL_IMPO DX DY DZ (ET/OU PRE1 => POUR HM-XFEM ONLY)
@@ -386,20 +375,8 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
                     ddl(i) = 'H1'//motcle(2:2)
                     coef(i)=xcalc_heav(heavn(1),hea_se,heavn(5))
                 endif
-                if (stano(1) .eq. 2 .or. stano(1) .eq. 3) then
-                    i = i+1
-                    ddl(i) = 'E1'//motcle(2:2)
-                    coef(i)=sqrt(r)*sin(t/2.d0)
-                    i = i+1
-                    ddl(i) = 'E2'//motcle(2:2)
-                    coef(i)=sqrt(r)*cos(t/2.d0)
-                    i = i+1
-                    ddl(i) = 'E3'//motcle(2:2)
-                    coef(i)=sqrt(r)*sin(t/2.d0)*sin(t)
-                    i = i+1
-                    ddl(i) = 'E4'//motcle(2:2)
-                    coef(i)=sqrt(r)*cos(t/2.d0)*sin(t)
-                endif
+!   AVEC L ENRICHISSEMENT SHIFTED [FRIES] LES FONCTIONS D ENRICHISSIMENT SINGULIERES
+!      S ANNULENT AU NOEUD => RIEN A FAIRE
               endif
         elseif (motcle.eq.'PRE1') then
 !           COEFFICIENTS ET DDLS DE LA RELATION
@@ -415,9 +392,9 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr,&
               endif
         endif
         nterm = i
-           call afrela(coef, [cbid], ddl, noeud, dimens,&
-                       [0.d0], nterm, valimr, valimc, valimf,&
-                       'REEL', fonree, '12', 0.d0, lisrel)
+        call afrela(coef, [cbid], ddl, noeud, dimens,&
+                    [0.d0], nterm, valimr, valimc, valimf,&
+                    'REEL', fonree, '12', 0.d0, lisrel)
        end do
 !
     endif

@@ -9,9 +9,9 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   jlsn, jlst, typma, igeom, jheavn, ncompn,&
                   contac, cmp, nbcmp, nfh, nfe,&
                   ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                  pre1)
+                  pre1, jbaslo, jstno, ka, mu)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +57,8 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
     character(len=8) :: maxfem, elrefp, typma
     integer :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
     integer :: jcnse, im, n, nnose, jdirno, he(nfiss), jnivgr, iagma, ngrm
+    integer :: jbaslo, jstno
+    real(kind=8) :: ka, mu
     aster_logical :: opmail, lmeca, pre1
 !
 !   IN
@@ -209,7 +211,8 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                         ndim, cmp, nbcmp, nfh, nfe,&
                         ddlc, ima, jconq1, jconq2, jcnsv1,&
                         jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca, pre1)
+                        nnn, contac, lmeca, pre1, jbaslo,&
+                        jlsn, jlst, jstno, ka, mu)
         endif
 !
 410 continue

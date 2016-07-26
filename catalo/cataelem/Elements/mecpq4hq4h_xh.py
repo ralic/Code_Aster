@@ -36,11 +36,9 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     ('EN1',('DX','DY','H1X','H1Y','LAGS_C',
           'LAGS_F1',)),
     ('EN2',('DX','DY','H1X','H1Y',)),
-    ('EN3',('DX','DY','H1X','H1Y','E1X',
-          'E1Y','LAGS_C','LAGS_F1',)),
-    ('EN4',('DX','DY','H1X','H1Y','E1X',
-          'E1Y',)),
-    ('EN5',('E1X','E1Y','LAGS_C','LAGS_F1',)),))
+    ('EN3',('DX','DY','H1X','H1Y','K1','K2','LAGS_C','LAGS_F1',)),
+    ('EN4',('DX','DY','H1X','H1Y','K1','K2',)),
+    ('EN5',('K1','K2','LAGS_C','LAGS_F1',)),))
 
 
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -134,7 +132,7 @@ class MECPQ4HQ4H_XH(Element):
         OP.XCVBCA(te=363,
             para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_PT, LC.CCONPT),
                      (SP.PDEPL_P, DDL_MECA), (SP.PGEOMER, NGEOMER),
-                     (OP.XCVBCA.PHEA_NO, LC.N40NEUI), ),
+                     (OP.XCVBCA.PHEA_NO, LC.N40NEUI), (OP.XCVBCA.PSTANO, STANO_I),),
             para_out=((SP.PINDCOO, LC.I3NEUT_I), ),
         ),
 

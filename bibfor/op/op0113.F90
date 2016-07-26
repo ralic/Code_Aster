@@ -235,9 +235,12 @@ subroutine op0113()
 !
     mail2 = modelx//'.MAILLE'
     call wkvect(mail2, 'G V I', nbma, jmail2)
+!        write(6,*)'****** KORUPTION : VERIFICATION DU MODEL.MAILLE ******'
     do ima = 1, nbma
+!        write(6,*)ima,':',zi(jtab-1+5*(ima-1)+4),zi(jtab-1+5*(ima-1)+5)
         zi(jmail2-1+ima)=zi(jtab-1+5*(ima-1)+5)
     end do
+!        write(6,*)'******************************************************'
 !
 !-----------------------------------------------------------------------
 !     5) DUPLICATION DU .NOMA, .NBNO

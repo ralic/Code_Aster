@@ -2,7 +2,7 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
                  ddlm, igeom, compor, jpintt, cnset,&
                  heavt, lonch, basloc, sigref, nbsig,&
                  idepl, lsn, lst, ivectu, jpmilt,&
-                 nfiss, jheavn)
+                 nfiss, jheavn, jstno)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -15,14 +15,14 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
 #include "asterfort/xxbsig.h"
 !
     integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
-    integer :: nfiss
-    integer :: cnset(4*32), heavt(*), lonch(10), idepl, jpintt, jpmilt, jheavn
-    real(kind=8) :: basloc(*), sigref(*), lsn(nnop), lst(nnop)
+    integer :: nfiss, jstno
+    integer :: cnset(*), heavt(*), lonch(*), idepl, jpintt, jpmilt, jheavn
+    real(kind=8) :: basloc(*), sigref(*), lsn(*), lst(*)
     character(len=16) :: compor(*)
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,7 +148,7 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc,&
                     igeom, he, nfh, ddlc, ddlm,&
                     nfe, basloc, nnop, npg, sigref,&
                     compor, idepl, lsn, lst, nfiss,&
-                    heavn, codopt, ivectu)
+                    heavn, jstno, codopt, ivectu)
 !
     end do
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       ddlm, dsidep, p, r, nfh,&
                       jac, ffp, ffc, pla, singu,&
                       nfiss, jheafa, jheavn, ncompn, ifa, ncomph,&
-                      ifiss, rr, mmat)
+                      ifiss, fk, mmat)
         integer :: ndim
         integer :: nno
         integer :: nnos
@@ -43,7 +43,7 @@ interface
         integer :: ifa
         integer :: ncomph
         integer :: ifiss
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: mmat(216, 216)
     end subroutine xmmco2
 end interface

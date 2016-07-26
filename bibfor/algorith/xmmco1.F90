@@ -1,6 +1,6 @@
 subroutine xmmco1(ndim, nno, dsidep, pp, p,&
                   nd, nfh, ddls, jac, ffp,&
-                  singu, rr, tau1, tau2, mmat)
+                  singu, fk, tau1, tau2, mmat)
     implicit none
 #include "jeveux.h"
 #include "asterfort/matcox.h"
@@ -8,10 +8,11 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
     integer :: ndim, nno, nfh, ddls, singu
     real(kind=8) :: mmat(216, 216), dsidep(6, 6)
     real(kind=8) :: ffp(27), jac, nd(3)
-    real(kind=8) :: pp(3, 3), p(3, 3), rr
+    real(kind=8) :: pp(3, 3), p(3, 3)
+    real(kind=8) :: fk(27,3,3)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +45,6 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
 ! IN  JAC    : PRODUIT DU JACOBIEN ET DU POIDS
 ! IN  FFP    : FONCTIONS DE FORME DE L'ELEMENT PARENT
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  TAU1   : PREMIERE DIRECTION TANGENTE
 ! IN  AM     :
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
@@ -91,6 +91,6 @@ subroutine xmmco1(ndim, nno, dsidep, pp, p,&
 !
     call matcox(ndim, pp, ddt1, ddt2, ddt3,&
                 ddt4, p, nno, nfh*ndim, ddls,&
-                jac, ffp, singu, rr, mmat)
+                jac, ffp, singu, fk, mmat)
 !
 end subroutine

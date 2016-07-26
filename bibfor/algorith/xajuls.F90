@@ -1,5 +1,5 @@
 subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                  jconx2, clsm, typdis)
+                  jconx2, clsm, typdis, critlst)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -18,6 +18,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     character(len=8) :: noma
     character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln
+    real(kind=8), optional :: critlst
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -61,7 +62,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     integer :: jma, ima, itypma, ar(12, 3), nbar, ia
     integer :: na, nb, nm, nunoa, nunob, nunom
     integer :: nmaabs, ndime, ndim
-    real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2, r8pre
+    real(kind=8) :: d1, lsna, lsnb, crilsn, lsta, lstb, crilst, d2, r8pre, crlst
     real(kind=8) :: lsnm, lstm, lsnmax, lstmax, penal, d3, fit_to_vertex(2)
     character(len=19) :: mai
     character(len=8) :: typma
@@ -69,7 +70,7 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
     real(kind=8), pointer :: ltsv(:) => null()
     aster_logical :: ajust
 !
-    parameter     (fit_to_vertex=(/1.d-6,1d-6/), crilst=1.d-3, penal=0.01)
+    parameter     (fit_to_vertex=(/1.d-6,1d-6/), crlst=1.d-6, penal=0.01)
 !
 !-----------------------------------------------------------------------
 !     DEBUT
@@ -81,6 +82,11 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !
     r8pre=r8prem()
     d2=999.d0
+    if (present(critlst)) then 
+      crilst=critlst
+    else
+      crilst=crlst
+    endif
 !
 !     COMPTEUR DES LSN ET LST MODIFIÉES
     clsm=0

@@ -36,11 +36,11 @@ DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
                              ('EN1', ('DX', 'DY', 'H1X', 'H1Y', 'LAGS_C',
                                       'LAGS_F1',)),
                              ('EN2', ('DX', 'DY', 'H1X', 'H1Y',)),
-                                 ('EN3', ('DX', 'DY', 'H1X', 'H1Y', 'E1X',
-                                          'E1Y', 'LAGS_C', 'LAGS_F1',)),
-                                 ('EN4', ('DX', 'DY', 'H1X', 'H1Y', 'E1X',
-                                          'E1Y',)),
-                                 ('EN5', ('E1X', 'E1Y', 'LAGS_C', 'LAGS_F1',)),))
+                                 ('EN3', ('DX', 'DY', 'H1X', 'H1Y', 'K1',
+                                          'K2', 'LAGS_C', 'LAGS_F1',)),
+                                 ('EN4', ('DX', 'DY', 'H1X', 'H1Y', 'K1',
+                                          'K2',)),
+                                 ('EN5', ('K1', 'K2', 'LAGS_C', 'LAGS_F1',)),))
 
 
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
@@ -62,6 +62,11 @@ CCONPI = LocatedComponents(phys=PHY.N120_R, type='ELEM',
 CCONAI = LocatedComponents(phys=PHY.N480_R, type='ELEM',
                            components=('X[35]',))
 
+BASLO_R  = LocatedComponents(phys=PHY.N480_R, type='ELEM',
+    components=('X[96]',))
+
+LSN_R  = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+    components=('X[16]',))
 
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
@@ -95,7 +100,9 @@ class MEDPQ4HQ4H_XH(Element):
                                        SP.PDEPL_P, DDL_MECA),
                                    (SP.PGEOMER, NGEOMER), (
                                    OP.CHAR_MECA_CONT.PHEA_NO, LC.N40NEUI),
-                                   (OP.CHAR_MECA_CONT.PSTANO, STANO_I), ),
+                                   (OP.CHAR_MECA_CONT.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_CONT.PLSNGG, LSN_R),
+                     (OP.CHAR_MECA_CONT.PBASLOC, BASLO_R),),
                           para_out=((SP.PVECTUR, MVECTUR), ),
                           ),
 
@@ -107,7 +114,9 @@ class MEDPQ4HQ4H_XH(Element):
                                        SP.PDEPL_P, DDL_MECA),
                                    (SP.PGEOMER, NGEOMER), (
                                    OP.CHAR_MECA_FROT.PHEA_NO, LC.N40NEUI),
-                                   (OP.CHAR_MECA_FROT.PSTANO, STANO_I), ),
+                                   (OP.CHAR_MECA_FROT.PSTANO, STANO_I), 
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_FROT.PLSNGG, LSN_R),
+                     (OP.CHAR_MECA_FROT.PBASLOC, BASLO_R),),
                           para_out=((SP.PVECTUR, MVECTUR), ),
                           ),
 
@@ -115,9 +124,10 @@ class MEDPQ4HQ4H_XH(Element):
                      para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
                               (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
                          (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-                         (SP.PGEOMER, NGEOMER), (
-                             OP.RIGI_CONT.PHEA_NO, LC.N40NEUI),
-                         (OP.RIGI_CONT.PSTANO, STANO_I), ),
+                         (SP.PGEOMER, NGEOMER), (OP.RIGI_CONT.PHEA_NO, LC.N40NEUI),
+                         (OP.RIGI_CONT.PSTANO, STANO_I), (OP.RIGI_CONT.PLSNGG, LSN_R),
+                     (SP.PMATERC, LC.CMATERC), (OP.RIGI_CONT.PBASLOC, BASLO_R),
+                     ),
                      para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
                                ),
                      ),
@@ -126,9 +136,10 @@ class MEDPQ4HQ4H_XH(Element):
                      para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_CF, CCONCF),
                               (SP.PCAR_PI, CCONPI), (SP.PCAR_PT, LC.CCONPT),
                               (SP.PDEPL_M, DDL_MECA), (SP.PDEPL_P, DDL_MECA),
-                              (SP.PGEOMER, NGEOMER), (
-                              OP.RIGI_FROT.PHEA_NO, LC.N40NEUI),
-                              (OP.RIGI_FROT.PSTANO, STANO_I), ),
+                              (SP.PGEOMER, NGEOMER), (OP.RIGI_FROT.PHEA_NO, LC.N40NEUI),
+                              (OP.RIGI_FROT.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (OP.RIGI_FROT.PLSNGG, LSN_R),
+                     (OP.RIGI_FROT.PBASLOC, BASLO_R),),
                      para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
                                ),
                      ),
@@ -145,7 +156,10 @@ class MEDPQ4HQ4H_XH(Element):
         OP.XCVBCA(te=363,
                   para_in=((SP.PCAR_AI, CCONAI), (SP.PCAR_PT, LC.CCONPT),
                            (SP.PDEPL_P, DDL_MECA), (SP.PGEOMER, NGEOMER),
-                           (OP.XCVBCA.PHEA_NO, LC.N40NEUI), ),
+                           (OP.XCVBCA.PHEA_NO, LC.N40NEUI),
+                     (OP.XCVBCA.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (OP.XCVBCA.PLSNGG, LSN_R),
+                     (OP.XCVBCA.PBASLOC, BASLO_R),),
                   para_out=((SP.PINDCOO, LC.I3NEUT_I), ),
                   ),
 

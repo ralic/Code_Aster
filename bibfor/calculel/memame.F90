@@ -4,7 +4,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -186,7 +186,7 @@ subroutine memame(option, modele, nchar, lchar, mate,&
         lpaout(1) = 'PMATUUR'
         lchout(1) = matele(1:15)//'.M01'
 !
-        call calcul('S', option, ligrmo, 11, lchin,&
+        call calcul('S', option, ligrmo, 12, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matelz, lchout(1), base)

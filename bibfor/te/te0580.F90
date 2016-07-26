@@ -237,7 +237,9 @@ subroutine te0580(nomopt, nomte)
 !   -- le bloc if suivant sera a retirer apres la correction de issue23504
     if (nomopt.eq.'CALC_K_G_F') then
         if (nomte.eq.'MECA_XH_FACE4' .or. nomte.eq.'MECA_XHT_FACE4' &
-            .or. nomte.eq.'MECA_XT_FACE4') code='A'
+            .or. nomte.eq.'MECA_XT_FACE4' .or.&
+            nomte.eq.'MECA_XH_FACE8' .or. nomte.eq.'MECA_XHT_FACE8' &
+            .or. nomte.eq.'MECA_XT_FACE8') code='A'
     endif
     
     if (nomopt(1:14).eq.'CHAR_MECA_PRES' .and. &

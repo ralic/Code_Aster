@@ -1,6 +1,6 @@
 subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
                   ptknp, nfh, seuil, mu, singu,&
-                  rr, coefbu, ddls, ddlm, mmat)
+                  fk, coefbu, ddls, ddlm, mmat)
 !
     implicit none
 #include "jeveux.h"
@@ -11,10 +11,11 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
     integer :: singu
     real(kind=8) :: mmat(216, 216), ptknp(3, 3)
     real(kind=8) :: ffp(27), jac
-    real(kind=8) :: rr, seuil, mu, coefbu
+    real(kind=8) :: seuil, mu, coefbu
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,6 +57,7 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
 !
 !
     real(kind=8) :: coefj, coefi
+    integer :: alpi, alpj
     integer :: i, j, k, l, jn, in
 !
 ! ----------------------------------------------------------------------
@@ -77,36 +79,38 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
 173              continue
 !
                 do 174 l = 1, singu*ndim
-!
-                    mmat(in+ndim+k,jn+ndim*(1+nfh)+l) = mmat(&
+                  do alpj = 1, ndim
+                    mmat(in+ndim+k,jn+ndim*(1+nfh)+alpj) = mmat(&
                                                         in+ndim+ k,&
-                                                   jn+ndim*(1+nfh)+l) - coefj*2.d0*rr*mu*seuil*coe&
-                                                        &fbu* ffp(i)*ffp(j)* ptknp(k,&
+                                                   jn+ndim*(1+nfh)+alpj) - coefi*2.d0*mu*seuil*coe&
+                                                        &fbu* ffp(i)*fk(j,alpj,l)* ptknp(k,&
                                                         l&
                                                         )*jac
-!
+                   enddo
 174              continue
 172          continue
 !
             do 175 k = 1, singu*ndim
+              do alpi = 1, ndim
                 do 176 l = 1, nfh*ndim
 !
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim+l) = mmat(&
-                                                        in+ndim*(1+nfh)+k,&
-                                                   jn+ndim+l) - coefj*2.d0*rr*mu*seuil*coefbu*ffp(&
-                                                        & i)*ffp(j)* ptknp(k,&
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim+l) = mmat(&
+                                                        in+ndim*(1+nfh)+alpi,&
+                                                   jn+ndim+l) - coefj*2.d0*mu*seuil*coefbu*&
+                                                        fk(i,alpi,k)*ffp(j)* ptknp(k,&
                                                         l&
                                                         )*jac
 !
-176              continue
+176             continue
                 do 177 l = 1, singu*ndim
-!
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) =&
-                    mmat(in+ndim*(1+nfh)+k,jn+ndim*(1+nfh)+l) -&
-                    4.d0*rr*rr*mu*seuil*coefbu*ffp(i)*ffp(j)* ptknp(k,&
+                  do alpj = 1, ndim
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) =&
+                    mmat(in+ndim*(1+nfh)+alpi,jn+ndim*(1+nfh)+alpj) -&
+                    4.d0*mu*seuil*coefbu*fk(i,alpi,k)*fk(j,alpj,l)* ptknp(k,&
                     l)*jac
-!
+                   enddo
 177              continue
+              enddo
 175          continue
 !
 171      continue

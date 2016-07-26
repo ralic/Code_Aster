@@ -4,11 +4,11 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                   dvitet, coeffr, jeu,&
                   coeffp, coefff, lpenaf, tau1, tau2,&
                   rese, mproj, norm, nsinge,&
-                  nsingm, rre, rrm, nvit, nconta,&
+                  nsingm, fk_escl, fk_mait, nvit, nconta,&
                   jddle, jddlm, nfhe, nfhm, heavn, mmat)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,9 +37,10 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
     integer :: nvit, ndeple, nfhe
     integer :: nfhm, heavn(*)
     real(kind=8) :: hpg, ffc(8), ffe(20), ffm(20), jacobi, norm(3), coeffp
-    real(kind=8) :: lambda, coefff, coeffr, rre, rrm, coefcr, dvitet(3)
+    real(kind=8) :: lambda, coefff, coeffr, coefcr, dvitet(3)
     real(kind=8) :: tau1(3), tau2(3), rese(3), mmat(336, 336), mproj(3, 3)
     real(kind=8) :: jeu
+    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3)
     aster_logical :: lpenaf
 !
 ! ----------------------------------------------------------------------
@@ -76,34 +77,28 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
 ! IN  TYPMAI : NOM DE LA MAILLE ESCLAVE D'ORIGINE (QUADRATIQUE)
 ! IN  NSINGE : NOMBRE DE FONCTION SINGULIERE ESCLAVE
 ! IN  NSINGM : NOMBRE DE FONCTION SINGULIERE MAITRE
-! IN  RRE    : SQRT LST ESCLAVE
-! IN  RRM    : SQRT LST MAITRE
 ! IN  NVIT   : POINT VITAL OU PAS
 ! I/O MMAT   : MATRICE ELEMENTAIRE DE CONTACT/FROTTEMENT
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l, m, ii, jj, pli, plj
+    integer :: i, j, k, l, ii, jj, pli, plj
     integer :: jjn, iin, ddle
     integer :: nne, nnes, nnm, nnms, ddles, ddlem, ddlms, ddlmm
-    integer :: hea_fa(2)
+    integer :: hea_fa(2), alpj, alpi
     real(kind=8) :: e(3, 3), a(3, 3), c(3, 3), mp, mb, mbt, mm, mmt
     real(kind=8) :: tt(3, 3), v(2)
-    real(kind=8) :: iescl(3), jescl(3), imait(3), jmait(3)
+    real(kind=8) :: iescl(2), jescl(2), imait(2), jmait(2)
 ! ----------------------------------------------------------------------
 !
 ! --- INITIALISATIONS
 !
     iescl(1) = 1
     iescl(2) = -1
-    iescl(3)=-rre
     jescl(1) = 1
     jescl(2) = -1
-    jescl(3)=-rre
     imait(1) = 1
     imait(2) = 1
-    imait(3)= rrm
     jmait(1) = 1
     jmait(2) = 1
-    jmait(3)= rrm
 !    DEFINITION A LA MAIN DE LA TOPOLOGIE DE SOUS-DOMAINE PAR FACETTE (SI NFISS=1)
     hea_fa(1)=xcalc_code(1,he_inte=[-1])
     hea_fa(2)=xcalc_code(1,he_inte=[+1])
@@ -204,7 +199,8 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                                 nfhe, pli)
                     ii = pli+l-1
                     do 30 j = 1, ndeple
-                        mm = mb *ffc(i)*ffe(j)
+! --- BLOCS ES:CONT, CONT:ES
+                        mm = mb*ffc(i)*ffe(j)
                         mmt= mbt*ffc(i)*ffe(j)
                         call indent(j, ddles, ddlem, nnes, jjn)
                         jj = jjn+k
@@ -216,10 +212,10 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         jj = jj + ndim
                         mmat(ii,jj) = -jescl(2)*mm
                         mmat(jj,ii) = -jescl(2)*mmt
-                        do 40 m = 1, nsinge
-                            jj = jj + ndim
-                            mmat(ii,jj) = -jescl(3)*mm
-                            mmat(jj,ii) = -jescl(3)*mmt
+                        do 40 alpj = 1, nsinge*ndim
+                            jj = jjn + (1+nfhe+1-1)*ndim + alpj
+                            mmat(ii,jj) = mmat(ii,jj)+mb*ffc(i)*fk_escl(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)+mbt*ffc(i)*fk_escl(j,alpj,k)
  40                     continue
  30                 continue
                     do 50 j = 1, nnm
@@ -236,10 +232,10 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         jj = jj + ndim
                         mmat(ii,jj) = jmait(2)*mm
                         if (.not.lpenaf) mmat(jj,ii) = jmait(2)*mmt
-                        do 60 m = 1, nsingm
-                            jj = jj + ndim
-                            mmat(ii,jj) = jmait(3)*mm
-                            mmat(jj,ii) = jmait(3)*mmt
+                        do 60 alpj = 1, nsingm*ndim
+                            jj = jjn + (1+nfhm+1-1)*ndim + alpj
+                            mmat(ii,jj) = mmat(ii,jj)+mb*ffc(i)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)+mbt*ffc(i)*fk_mait(j,alpj,k)
  60                     continue
  50                 continue
  20             continue
@@ -283,16 +279,18 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         mmat(jj,ii) = iescl(1)*jescl(2)*mmt
                         ii = ii + ndim
                         mmat(ii,jj) = iescl(2)*jescl(2)*mm
-                        do 215 m = 1, nsinge
-                            jj = jj + ndim
-                            ii = ii - ndim
-                            mmat(ii,jj) = iescl(1)*jescl(3)*mm
-                            mmat(jj,ii) = iescl(1)*jescl(3)*mmt
+                        do 215 alpj = 1, nsinge*ndim
+                            jj = jjn + (1+nfhe+1-1)*ndim + alpj
+                            ii = iin + l
+                            mmat(ii,jj) = mmat(ii,jj)-iescl(1)*mb*ffe(i)*fk_escl(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)-iescl(1)*mbt*ffe(i)*fk_escl(j,alpj,k)
                             ii = ii + ndim
-                            mmat(ii,jj) = iescl(2)*jescl(3)*mm
-                            mmat(jj,ii) = iescl(2)*jescl(3)*mmt
-                            ii = ii + ndim
-                            mmat(ii,jj) = iescl(3)*jescl(3)*mm
+                            mmat(ii,jj) = mmat(ii,jj)-iescl(2)*mb*ffe(i)*fk_escl(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)-iescl(2)*mbt*ffe(i)*fk_escl(j,alpj,k)
+                            do alpi = 1, nsinge*ndim 
+                            ii = iin + (1+nfhe+1-1)*ndim + alpi
+                            mmat(ii,jj) = mmat(ii,jj)+mb*fk_escl(i,alpi,l)*fk_escl(j,alpj,k)
+                            enddo
 215                     continue
 210                 continue
                     do 220 j = 1, nnm
@@ -318,31 +316,31 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         jj = jj + ndim
                         mmat(ii,jj) = -iescl(2)*jmait(2)*mm
                         mmat(jj,ii) = -iescl(2)*jmait(2)*mmt
-                        do 230 m = 1, nsingm
-                            ii = ii - ndim
-                            jj = jj + ndim
-                            mmat(ii,jj) = -iescl(1)*jmait(3)*mm
-                            mmat(jj,ii) = -iescl(1)*jmait(3)*mmt
+                        do 230 alpj = 1, nsingm*ndim
+                            ii = iin + l
+                            jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
+                            mmat(ii,jj) = mmat(ii,jj)-iescl(1)*mb*ffe(i)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)-iescl(1)*mbt*ffe(i)*fk_mait(j,alpj,k)
                             ii = ii + ndim
-                            mmat(ii,jj) = -iescl(2)*jmait(3)*mm
-                            mmat(jj,ii) = -iescl(2)*jmait(3)*mmt
-                            jj = jj - ndim
+                            mmat(ii,jj) = mmat(ii,jj)-iescl(2)*mb*ffe(i)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)-iescl(2)*mbt*ffe(i)*fk_mait(j,alpj,k)
 230                     continue
-                        do 240 m = 1, nsinge
-                            ii = ii + ndim
-                            jj = jj - ndim
-                            mmat(ii,jj) = -iescl(3)*jmait(1)*mm
-                            mmat(jj,ii) = -iescl(3)*jmait(1)*mmt
+                        do 240 alpi = 1, nsinge*ndim
+                            ii = iin + (1+nfhm+1-1)*ndim + alpi
+                            jj = ddle + jjn + k
+                            mmat(ii,jj) = mmat(ii,jj)+jmait(1)*mb*ffm(j)*fk_escl(i,alpi,l)
+                            mmat(jj,ii) = mmat(jj,ii)+jmait(1)*mbt*ffm(j)*fk_escl(i,alpi,l)
                             jj = jj + ndim
-                            mmat(ii,jj) = -iescl(3)*jmait(2)*mm
-                            mmat(jj,ii) = -iescl(3)*jmait(2)*mmt
-                            ii = ii - ndim
+                            mmat(ii,jj) = mmat(ii,jj)+jmait(2)*mb*ffm(j)*fk_escl(i,alpi,l)
+                            mmat(jj,ii) = mmat(jj,ii)+jmait(2)*mbt*ffm(j)*fk_escl(i,alpi,l)
 240                     continue
-                        do 250 m = 1, nsinge*nsingm
-                            ii = ii + ndim
-                            jj = jj + ndim
-                            mmat(ii,jj) = -iescl(3)*jmait(3)*mm
-                            mmat(jj,ii) = -iescl(3)*jmait(3)*mmt
+                        do 250 alpi = 1, nsinge*ndim
+                          do alpj = 1, nsingm*ndim
+                            ii = iin + (1+nfhm+1-1)*ndim + alpi
+                            jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
+                            mmat(ii,jj) = mmat(ii,jj)+mb*fk_escl(i,alpi,l)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)+mbt*fk_escl(i,alpi,l)*fk_mait(j,alpj,k)
+                          enddo
 250                     continue
 220                 continue
 200             continue
@@ -367,16 +365,18 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         mmat(jj,ii) = imait(1)*jmait(2)*mmt
                         ii = ii + ndim
                         mmat(ii,jj) = imait(2)*jmait(2)*mm
-                        do 330 m = 1, nsingm
-                            jj = jj + ndim
-                            ii = ii - ndim
-                            mmat(ii,jj) = imait(1)*jmait(3)*mm
-                            mmat(jj,ii) = imait(1)*jmait(3)*mmt
+                        do 330 alpj = 1, nsingm*ndim
+                            jj = ddle + jjn + (1+nfhm+1-1)*ndim + alpj
+                            ii = ddle + iin + l
+                            mmat(ii,jj) = mmat(ii,jj)+imait(1)*mb*ffm(i)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = mmat(jj,ii)+imait(1)*mbt*ffm(i)*fk_mait(j,alpj,k)
                             ii = ii + ndim
-                            mmat(ii,jj) = imait(2)*jmait(3)*mm
-                            mmat(jj,ii) = imait(2)*jmait(3)*mmt
-                            ii = ii + ndim
-                            mmat(ii,jj) = imait(3)*jmait(3)*mm
+                            mmat(ii,jj) = imait(2)*mb*ffm(i)*fk_mait(j,alpj,k)
+                            mmat(jj,ii) = imait(2)*mbt*ffm(i)*fk_mait(j,alpj,k)
+                            do alpi = 1, nsingm*ndim 
+                            ii = ddle + iin + (1+nfhm+1-1)*ndim + alpi
+                            mmat(ii,jj) = mmat(ii,jj)+mb*fk_mait(i,alpi,l)*fk_mait(j,alpj,k)
+                            enddo
 330                     continue
 320                 continue
 300             continue
@@ -410,12 +410,14 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                     ii = pli+l-1
                     do 530 j = 1, ndeple
 ! --- BLOCS ES:CONT, CONT:ES
-                        mm = mb *ffc(i)*ffe(j)
-                        mmt= mbt*ffc(i)*ffe(j)
+                        mm = mb *ffc(i)
+                        mmt= mbt*ffc(i)
                         call indent(j, ddles, ddlem, nnes, jjn)
-                        jj = jjn + k
-                        mmat(ii,jj) = -jescl(3)*mm
-                        if (.not.lpenaf) mmat(jj,ii) = -jescl(3)*mmt
+                        do alpj = 1, nsinge*ndim
+                           jj = jjn + alpj
+                           mmat(ii,jj) = mmat(ii,jj)+mm*fk_escl(j,alpj,k)
+                           if (.not.lpenaf) mmat(jj,ii) = mmat(jj,ii)+mmt*fk_escl(j,alpj,k)
+                        enddo
 530                 continue
 520             continue
 510         continue
@@ -440,9 +442,13 @@ subroutine xmmab1(ndim, jnne, ndeple, nnc, jnnm,&
                         mm = mb *ffe(i)*ffe(j)
                         call indent(i, ddles, ddlem, nnes, iin)
                         call indent(j, ddles, ddlem, nnes, jjn)
-                        ii = iin + l
-                        jj = jjn + k
-                        mmat(ii,jj) = jescl(3)*jescl(3)*mm
+                        do alpj = 1, nsinge*ndim
+                          do alpi = 1, nsinge*ndim
+                            ii = iin + alpi
+                            jj = jjn + alpj
+                            mmat(ii,jj) = mmat(ii,jj)+mb * fk_escl(i,alpi,l)*fk_escl(j,alpj,k)
+                          enddo
+                        enddo
 630                 continue
 620             continue
 610         continue

@@ -2,10 +2,10 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
                   ise, nfh, ddlc, ddlm, nfe,&
                   puls, basloc, nnop, idepl, lsn,&
                   lst, idecpg, igthet, fno, nfiss,&
-                  jheavn)
+                  jheavn, jstno)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/chauxi.h"
 #include "asterfort/dfdm2d.h"
@@ -48,14 +47,18 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcinem.h"
-#include "asterfort/xdeffe.h"
-#include "asterfort/xderfe.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/indent.h"
+#include "asterfort/xnbddl.h"
+#include "asterfort/coor_cyl.h"
+#include "blas/ddot.h"
 !
     character(len=8) :: elrefp
     integer :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl, jheavn
-    integer :: nfiss, jheavt, ise
+    integer :: nfiss, jheavt, ise, jstno
     real(kind=8) :: fno(ndim*nnop), coorse(*)
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop), puls
 !
@@ -91,27 +94,29 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     integer :: ifiss, isigi, ncmp
     integer :: heavn(nnop, 5), ncompn, hea_se
     integer :: iret1, iret2, iret3
+    integer :: singu, alp
     real(kind=8) :: g, k1, k2, k3, coefk, coeff3, valres(4), alpha, he(nfiss)
     real(kind=8) :: devres(4), e, nu, lambda, mu, ka, c1, c2, c3, xg(ndim)
-    real(kind=8) :: fe(4), k3a
-    real(kind=8) :: dgdgl(4, 3), xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
-    real(kind=8) :: eps(6), e1(3), e2(3), norme, e3(3), p(3, 3)
+    real(kind=8) :: k3a
+    real(kind=8) :: xe(ndim), ff(nnop), dfdi(nnop, ndim), f(3, 3)
+    real(kind=8) :: eps(6), e1(3), e2(3), e3(3), p(3, 3)
     real(kind=8) :: invp(3, 3), rg, tg
-    real(kind=8) :: dgdpo(4, 2), dgdlo(4, 3), courb(3, 3, 3), du1dm(3, 3)
+    real(kind=8) :: courb(3, 3, 3), du1dm(3, 3)
     real(kind=8) :: du2dm(3, 3), sigin(6), dsigin(6,3),epsref(6)
     real(kind=8) :: du3dm(3, 3), grad(ndim, ndim), dudm(3, 3), poids
-    real(kind=8) :: dtdm(3, 3), tzero(3), dzero(3, 4), lsng, lstg, th
+    real(kind=8) :: dtdm(3, 3), tzero(3), dzero(3, 4), th
     real(kind=8) :: dudme(3, 4), dtdme(3, 4), du1dme(3, 4), du2dme(3, 4)
     real(kind=8) :: du3dme(3, 4),sigse(6*27), dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: u1l(3), u2l(3), u3l(3), u1(3), u2(3), u3(3), r
     real(kind=8) :: depla(3), theta(3), tgudm(3), tpn(27), tref, tempg
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho, rac2
     real(kind=8) :: dtx, dty, dtz
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
     integer :: icodre(4)
     character(len=16) :: nomres(4)
     character(len=8) :: elrese(6), fami(6)
-    aster_logical :: lcour, grdepl, axi, l_temp_noeu
-    integer :: irese, nnops, ddln, nnon, indenn, mxstac
+    aster_logical :: lcour, grdepl, axi, l_temp_noeu, l_not_zero
+    integer :: irese, nnops, indenn, mxstac
     parameter      (mxstac=1000)
 !
     data     nomres /'E','NU','ALPHA','RHO'/
@@ -131,11 +136,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !   ATTENTION, DEPL ET VECTU SONT ICI DIMENSIONNÉS DE TELLE SORTE
 !   QU'ILS NE PRENNENT PAS EN COMPTE LES DDL SUR LES NOEUDS MILIEU
 !
-!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld=ndim*(1+nfh+nfe)
-!
-!   NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls=ddld+ddlc
+!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !
 !   NOMBRE DE COMPOSANTES DE PHEAVTO (DANS LE CATALOGUE)
     call tecach('OOO', 'PHEAVTO', 'L', iret, nval=2,&
@@ -304,8 +306,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 101     continue
 !
 !       CALCUL DES FF
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
+        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
 !
 !       POUR CALCULER LE JACOBIEN DE LA TRANSFO SS-ELT -> SS-ELT REF
 !       AINSI QUE LES DERIVEES DES FONCTIONS DE FORMES DU SS-ELT
@@ -319,21 +320,14 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       1) COORDONNÉES POLAIRES ET BASE LOCALE
 !       --------------------------------------
 !
-!       BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-        call vecini(3, 0.d0, e1)
-        call vecini(3, 0.d0, e2)
-        lsng=0.d0
-        lstg=0.d0
-        do 100 ino = 1, nnop
-            lsng = lsng + lsn(ino) * ff(ino)
-            lstg = lstg + lst(ino) * ff(ino)
-            do 110 i = 1, ndim
-                e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff( ino)
-                e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff( ino)
-110         continue
-100     continue
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (singu .gt. 0) then
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
+        endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
+!       ET DU DEPL. RADIAL
         if (axi) then
             r = 0.d0
             do 114 ino = 1, nnop
@@ -348,64 +342,35 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
             ASSERT(r.gt.0d0)
         endif
 !
-!       NORMALISATION DE LA BASE
-        call normev(e1, norme)
-        call normev(e2, norme)
-        call provec(e1, e2, e3)
-!
-!       CALCUL DE LA MATRICE DE PASSAGE P TQ 'GLOBAL' = P * 'LOCAL'
-        call vecini(9, 0.d0, p)
-        do 120 i = 1, ndim
-            p(i,1)=e1(i)
-            p(i,2)=e2(i)
-            p(i,3)=e3(i)
-120     continue
-!
-!       CALCUL DE L'INVERSE DE LA MATRICE DE PASSAGE : INV=TRANSPOSE(P)
-        do 130 i = 1, 3
-            do 131 j = 1, 3
-                invp(i,j)=p(j,i)
-131         continue
-130     continue
-!
-!       COORDONNÉES POLAIRES DU POINT
-        rg=sqrt(lsng**2+lstg**2)
-!
-        if (rg .gt. r8prem()) then
-!         LE POINT N'EST PAS SUR LE FOND DE FISSURE
-            tg = he(1) * abs(atan2(lsng,lstg))
-            iret=1
-        else
-!         LE POINT EST SUR LE FOND DE FISSURE :
-!         L'ANGLE N'EST PAS DÉFINI, ON LE MET À ZÉRO
-!         ON NE FERA PAS LE CALCUL DES DÉRIVÉES
-            tg=0.d0
-            iret=0
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    CALCUL DES COOR. CYL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        p(:,:)=0.d0
+        invp(:,:)=0.d0
+        call coor_cyl(ndim, nnop, basloc, zr(igeom), ff,&
+                      p(1:ndim,1:ndim), invp(1:ndim,1:ndim), rg, tg,&
+                      l_not_zero)
+! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
+        if (ndim.eq.2) then
+          e1(:)=0.d0
+          e1(1:ndim)=p(1:ndim,1)
+          e2(:)=0.d0
+          e2(1:ndim)=p(1:ndim,2)
+          call provec(e1, e2, e3)
+          p(3,3)=e3(3)
+          invp(3,3)=e3(3)
         endif
-!       ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!       CAR ON SE TROUVE SUR LE FOND DE FISSURE
-        ASSERT(iret.ne.0)
 !
 !       ---------------------------------------------
 !       2) CALCUL DU DEPLACEMENT ET DE SA DERIVEE (DUDM)
 !       ---------------------------------------------
 !
-!       FONCTIONS D'ENRICHISSEMENT
-        call xdeffe(rg, tg, fe)
-!
         call vecini(ndim, 0.d0, depla)
 !
 !       CALCUL DE L'APPROXIMATION DU DEPLACEMENT
         do 200 in = 1, nnop
-            if (in .le. nnops) then
-                nnon=0
-                ddln=ddls
-            else if (in.gt.nnops) then
-                nnon=nnops
-                ddln=ddlm
-            endif
-            indenn = ddls*nnon+ddln*(in-nnon-1)
 !
+            call indent(in, ddls, ddlm, nnops, indenn)
             cpt=0
 !           DDLS CLASSIQUES
             do 201 i = 1, ndim
@@ -421,40 +386,22 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 203              continue
 202         continue
 !           DDL ENRICHIS EN FOND DE FISSURE
-            do 204 ig = 1, nfe
-                do 205 i = 1, ndim
+            do 204 ig = 1, singu
+                do 205 alp = 1, ndim
                     cpt=cpt+1
-                    depla(i) = depla(i) + fe(ig) * ff(in) * zr(idepl- 1+indenn+cpt)
+                    do i = 1, ndim
+                      depla(i) = depla(i) + fk(in,alp,i) * zr(idepl- 1+indenn+cpt)
+                    enddo
 205             continue
 204         continue
+!
 200     continue
-!
-!       DERIVEESS DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
-        call xderfe(rg, tg, dgdpo)
-!
-!       DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE LOCALE
-        do 210 i = 1, 4
-            dgdlo(i,1)=dgdpo(i,1)*cos(tg)-dgdpo(i,2)*sin(tg)/rg
-            dgdlo(i,2)=dgdpo(i,1)*sin(tg)+dgdpo(i,2)*cos(tg)/rg
-            dgdlo(i,3)=0.d0
-210     continue
-!
-!       DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE GLOBALE
-        do 220 i = 1, 4
-            do 221 j = 1, 3
-                dgdgl(i,j)=0.d0
-                do 222 k = 1, 3
-                    dgdgl(i,j)=dgdgl(i,j)+dgdlo(i,k)*invp(k,j)
-222             continue
-221         continue
-220      continue
 !
 !       CALCUL DU GRAD DE U AU POINT DE GAUSS
 !
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim, xe, ff, dfdi=dfdi)
         call xcinem(axi, igeom, nnop, nnops, idepl, grdepl, ndim, he,&
-                    nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f, eps, grad, heavn)
+                    nfiss, nfh, singu, ddls, ddlm,&
+                    fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
 !
 !       ON RECOPIE GRAD DANS DUDM (CAR PB DE DIMENSIONNEMENT SI 2D)
         call vecini(9, 0.d0, dudm)

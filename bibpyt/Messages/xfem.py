@@ -707,4 +707,12 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
      sur les lèvres d'une fissure X-FEM. Seul le cas d'une pression constante en espace et en temps est prévu.
      Veuillez utiliser l'opérateur POST_K1_K2_K3.
 """),
+
+    100: _(u"""
+  -> Le champ matériau est absent de la liste des arguments de l'opérateur
+     POST_ERREUR, pour une fissure XFEM, avec fond de fissure. L'assemblage
+     du champ de déplacement X-FEM est impossible.
+  -> Conseil:
+     Rajouter le CHAM_MATER en entrée de la commande POST_ERREUR.
+"""),
 }

@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +49,9 @@ PLST     = InputParameter(phys=PHY.NEUT_R)
 PHEA_NO  = InputParameter(phys=PHY.N120_I,
 comment="""  XFEM - IDENTIFIANT HEAVISIDE AU NOEUD XFEM  """)
 
+PSTANO   = InputParameter(phys=PHY.N120_I)
+
+
 
 DEPL_XPG = Option(
     para_in=(
@@ -60,6 +63,9 @@ DEPL_XPG = Option(
            PLSN,
            PLST,
            PXFGEOM,
+           PSTANO,
+        SP.PMATERC,
+        SP.PGEOMER,
     ),
     para_out=(
         SP.PDEPLPG,

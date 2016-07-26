@@ -1,6 +1,6 @@
 subroutine xsifle(ndim, ifa, jptint, cface,&
                   igeom, nfh, jheavn, singu, nfe, ddlc,&
-                  ddlm, jlst, ipres, ipref, itemps,&
+                  ddlm, jlsn, jlst, jstno, ipres, ipref, itemps,&
                   idepl, nnop, valres, basloc, ithet,&
                   nompar, option, igthet, jbasec,&
                   contac)
@@ -26,6 +26,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
 ! aslint: disable=W1306,W1504
     implicit none
 #include "asterfort/assert.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
@@ -44,6 +45,7 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     integer :: ndim, ifa, cface(30, 6), igeom, nfh, singu, jlst, ipres
     integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
     integer :: ddlm, jbasec, contac, jheavn
+    integer :: jstno, jlsn
     real(kind=8) :: valres(3)
     real(kind=8) :: basloc(9*nnop)
 !
@@ -143,8 +145,12 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
     nu = valres(2)
     mu = e / (2.d0*(1.d0+nu))
 !
-!   DEFINITION DEFORMATIONS PLANES!
-    ka = 3.d0 - 4.d0*nu
+!   DEFINITION DE KAPPA
+    if (ndim.eq.2.and.lteatt('C_PLAN','OUI')) then
+      ka = (3.d0-nu)/(1.d0+nu)
+    else
+      ka = 3.d0 - 4.d0*nu
+    endif
     coeff = e / (1.d0-nu*nu)
     coeff3 = 2.d0 * mu
 !
@@ -173,10 +179,10 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
                         ff, r27bid, dfdi, nd, tau1)
         endif
         if (option .ne. 'CALC_K_G_COHE') then
-            call xsifl1(angl, basloc, coeff, coeff3, ddlm,&
+            call xsifl1(elref, angl, basloc, coeff, coeff3, ddlm,&
                         ddls, dfdi, ff, he, heavn, idepl,&
                         igthet, ipref, ipres, ithet, jac,&
-                        jlst, ka, mu, nd,&
+                        jlsn, jlst, jstno, ka, mu, nd,&
                         ndim, nfh, nnop, nnos, itemps,&
                         nompar, option, singu, xg, igeom)
         endif

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,8 @@ interface
                       iptint, ifa, igeom, ipgf, jac,&
                       jlst, lact, nd, ndim, ninter,&
                       nlact, nno, nnos, nptf, nvit,&
-                      rr, singu, tau1, tau2)
+                      rr, singu, tau1, tau2, ka, mu,&
+                      jbaslo, jstno, jlsn, fk)
         integer :: cface(30, 6)
         integer :: contac
         character(len=8) :: elref
@@ -48,7 +49,13 @@ interface
         integer :: nptf
         integer :: nvit
         real(kind=8) :: rr
+        real(kind=8), optional :: ka
+        real(kind=8), optional :: mu
+        real(kind=8), optional :: fk(27,3,3)
         integer :: singu
+        integer, optional :: jbaslo
+        integer, optional :: jlsn
+        integer, optional :: jstno
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
     end subroutine xmprep

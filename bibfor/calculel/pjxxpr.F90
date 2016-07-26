@@ -1,8 +1,8 @@
 subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
-                  base, noca, method)
+                  base, noca, method, xfem)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,10 +37,6 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-    character(len=1) :: base
-    character(len=8) :: resu1, resu2, moa1, moa2, noca
-    character(len=16) :: corres
-    character(len=19) :: method
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -73,7 +69,14 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/pjxfem.h"
 !
+! --------------------------------------------------------------------------------------------------
+    character(len=1) :: base
+    character(len=8) :: resu1, resu2, moa1, moa2, noca
+    character(len=16) :: corres
+    character(len=19) :: method
+    aster_logical, optional :: xfem
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
@@ -81,11 +84,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     integer :: iexi, jpara, ier, inume
     parameter (nbmax=50)
     integer :: ipar, ipar1, ipar2
-    aster_logical :: acceno
-    real(kind=8) :: r8b, prec
+    aster_logical :: acceno, lxfem, lpjxfem
+    real(kind=8) :: r8b, prec, inst
     complex(kind=8) :: c16b
     character(len= 1) :: typerr
-    character(len= 4) :: tychv
+    character(len= 4) :: tychv, tych
     character(len= 8) :: kb, ma1, ma2, nume, prol0, k8b, typ1, typ2, crit, mo2
     character(len=16) :: nomsym(200), k16b, nomcmd, typres
     character(len=19) :: ch1, ch2, prfchn, ligrel, prfch2, noms2, kpar(nbmax)
@@ -99,6 +102,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
     k8b = ' '
     tychv = ' '
     call getres(k8b, k16b, nomcmd)
+    if (present(xfem)) then
+      lxfem=xfem
+    else
+      lxfem=.false._1
+    endif
 !     -- CALCUL DE MA1, MA2, LIGREL :
     call jeexin(moa1//'.MODELE    .REPE', iexi)
     if (iexi .gt. 0) then
@@ -219,12 +227,31 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 !           PROJECTION DU CHAMP SI POSSIBLE :
             call rsexch(' ', resu2, nomsym(isym), iordr, ch2,&
                         iret)
+!           VERIF ULTIME DANS LE CAS XFEM SI LE CHAMP EST NODAL :
+            lpjxfem=.false._1
+            if (lxfem) then
+               call dismoi('TYPE_CHAMP', ch1, 'CHAMP', repk=tych)
+               if (tych.eq.'NOEU'.and.nomsym(isym).eq.'DEPL') lpjxfem=.true._1
+            endif
             if (method(1:10) .eq. 'SOUS_POINT') then
                 call pjspma(corres, ch1, ch2, prol0, ligrel,&
                             noca, base, iret)
             else
-                call pjxxch(corres, ch1, ch2, tychv, prfchn,&
-                            prol0, ligrel, base, iret)
+                if (.not.lpjxfem) then
+                  call pjxxch(corres, ch1, ch2, tychv, prfchn,&
+                              prol0, ligrel, base, iret)
+                else
+                  if ((typres(1:4).eq.'EVOL') .or. (typres(1:4).eq.'DYNA')) then
+                    call rsadpa(resu1, 'L', 1, 'INST', iordr,&
+                                0, sjv=iains1, styp=kb, istop=0)
+                    inst=zr(iains1)
+                  else
+                    inst=0.
+                  endif
+                  call pjxfem(corres, ch1, ch2, tychv, prfchn,&
+                               prol0, ligrel, base, moa1, inst,&
+                               iret)
+                endif
             endif
             ASSERT(iret.eq.0.or.iret.eq.1.or.iret.eq.10)
 !           ELGA ET CART : ON NE FAIT RIEN :

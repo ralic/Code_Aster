@@ -324,12 +324,115 @@ subroutine xdecoupe(elp, cnset, nse, nnose)
         connec(1,1)=1
         connec(1,2)=2
         connec(1,3)=3
-        
+    
         nse=1
         nnose=3
+
+!       My added quadratic triangle !!!!!!!!!!!!!!!!!
+    else if (elp.eq.'TR6') then
+
+        connec(1,1)=1
+        connec(1,2)=4
+        connec(1,3)=6
+
+           connec(2,1)=4
+        connec(2,2)=2
+        connec(2,3)=5
+
+           connec(3,1)=6
+        connec(3,2)=5
+        connec(3,3)=3       
+
+        connec(4,1)=4
+        connec(4,2)=5
+        connec(4,3)=6
+
+        nse=4
+        nnose=3
+
+!        My added quadratic quad !!!!!!!!!!!!!!!!!!!!!
+    else if (elp.eq.'QU8') then
+      
+        connec(1,1)=1
+        connec(1,2)=5
+        connec(1,3)=8
+        
+        connec(2,1)=5
+        connec(2,2)=2
+        connec(2,3)=6
+        
+        connec(3,1)=6
+        connec(3,2)=3
+        connec(3,3)=7
+        
+        connec(4,1)=7
+        connec(4,2)=4
+        connec(4,3)=8
+
+           connec(5,1)=5
+        connec(5,2)=6
+        connec(5,3)=8
+        
+            connec(6,1)=6
+        connec(6,2)=7
+        connec(6,3)=5
+        
+        connec(7,1)=6
+        connec(7,2)=7
+        connec(7,3)=8
+        
+        connec(8,1)=7
+        connec(8,2)=8
+        connec(8,3)=5
+       
+        nse=8
+        nnose=3
+!        My added quadratic tetrahedra !!!!!!!!!!!!!!!!!!!!!
+    else if (elp.eq.'TE10') then
+        
+        connec(1,1)=1
+        connec(1,2)=5
+        connec(1,3)=7
+        connec(1,4)=8
+
+        connec(2,1)=5
+        connec(2,2)=2
+        connec(2,3)=6
+        connec(2,4)=9
+
+        connec(3,1)=8
+        connec(3,2)=9
+        connec(3,3)=10
+        connec(3,4)=4
+
+        connec(4,1)=7
+        connec(4,2)=5
+        connec(4,3)=3
+        connec(4,4)=8
+
+        connec(5,1)=5
+        connec(5,2)=6
+        connec(5,3)=3
+        connec(5,4)=9
+
+        connec(6,1)=8
+        connec(6,2)=9
+        connec(6,3)=10
+        connec(6,4)=3
+
+        connec(7,1)=5
+        connec(7,2)=9
+        connec(7,3)=8
+        connec(7,4)=3
+        
+        nse=7
+        nnose=4
+
+
     else
 !       TYPE D'ELEMENT FINI PAS TRAITE
         ASSERT(.false.)
+
     endif
 !
     do  ise = 1, nse

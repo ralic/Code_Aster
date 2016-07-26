@@ -11,11 +11,15 @@ subroutine te0300(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/utmess.h"
+#include "asterfort/xdeffk.h"
+#include "asterfort/provec.h"
+#include "asterfort/coor_cyl.h"
+#include "blas/ddot.h"
 !
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,25 +51,27 @@ subroutine te0300(option, nomte)
     integer :: nno, nnos, jgano, ndim, npg, kp, compt, i, j, k
     integer :: idepl, ific, ifond, iforc, imate, ipres, ithet
     integer :: ipoids, ivf, idfdk, igeom, itemps
-    integer :: iforf, ipref, icode
+    integer :: iforf, ipref, icode, ino, ind
 !
     real(kind=8) :: depi, eps, valres(3), devres(3), valpar(3)
-    real(kind=8) :: tcla, tcla1, tcla2, u1s(2), u2s(2), v1s(2), v2s(2), ux, uy
+    real(kind=8) :: tcla, tcla1, tcla2, u1s(2), u2s(2), ux, uy
     real(kind=8) :: vf, dfde, dxde, dyde, dsde, poids, dthxde, dthyde, thx, thy
-    real(kind=8) :: g, k1, k2, fx, fy, pres, cisa, divthe, cphi, cphi2
-    real(kind=8) :: xa, ya, xga, yga, xg, yg, rpol, xnorm, ynorm, norm, phi
-    real(kind=8) :: cpk, dpk, ck, coefk, dcoefk, ccoefk, cform, cr2, sphi2
-    real(kind=8) :: the, dfxde, dfyde, presno, cisano, fxno, fyno, xxg
+    real(kind=8) :: g, k1, k2, fx, fy, pres, cisa, divthe
+    real(kind=8) :: xg, yg, rpol, phi
+    real(kind=8) :: cpk, dpk, ck, coefk, dcoefk, ccoefk, cform
+    real(kind=8) :: the, dfxde, dfyde, presno, cisano, fxno, fyno
 !                                            2*NNO     2*NNO
     real(kind=8) :: presg(2), forcg(2), presn(6), forcn(6)
-    real(kind=8) :: xno1, yno1, xno2, yno2, d1, d2
+    real(kind=8) :: basloc(9*6), p(3, 3), invp(3,3), e1(3), e2(3), e3(3)
+    real(kind=8) :: fkpo(3,3), ffp(9), mu, pt_ree(2), pt_loc(2)
+    real(kind=8) :: xno1, xno2, yno1, yno2, d1, d2
 !
     integer :: icodre(3)
     character(len=4) :: fami
     character(len=8) :: nompar(3), elrefe
     character(len=16) :: nomres(3)
 !
-    aster_logical :: fonc, axi
+    aster_logical :: fonc, axi, l_not_zero
 !.......................................................................
 !
     call elref1(elrefe)
@@ -119,12 +125,6 @@ subroutine te0300(option, nomte)
     nomres(2) = 'NU'
     nomres(3) = 'ALPHA'
 !
-!
-    xa = zr(ifond)
-    ya = zr(ifond+1)
-    xnorm = zr(ifond+2)
-    ynorm = zr(ifond+3)
-    norm = sqrt(xnorm*xnorm+ynorm*ynorm)
 !
 ! - SI CHARGE FONCTION RECUPERATION DES VALEURS AUX PG ET NOEUDS
 !
@@ -213,6 +213,7 @@ subroutine te0300(option, nomte)
         cform = (1.d0+valres(2))/ (sqrt(depi)*valres(1))
         dcoefk = valres(1)/ (1.d0-valres(2)*valres(2))
         ccoefk = valres(1)
+        mu = valres(1)/(2.d0*(1.d0+valres(2)))
 !
         if (axi) then
             ck = dpk
@@ -222,24 +223,36 @@ subroutine te0300(option, nomte)
             coefk = ccoefk
         endif
 !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!    CALCUL DES COOR. CYL.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!
+         p(:,:)=0.d0
+         invp(:,:)=0.d0
+         do ino = 1, nno
+           ffp(ino)=zr(ivf-1+nno*(kp-1)+ino)
+           basloc((6*(ino-1)+1):(6*(ino-1)+6))=zr((ifond-1+1):(ifond-1+6))
+         enddo
+         call coor_cyl(2, nno, basloc, zr(igeom), ffp,&
+                       p(1:2,1:2), invp(1:2,1:2), rpol, phi, l_not_zero)
+! BRICOLAGE POUR CALCULER LE SIGNE DE K2 QUAND NDIM=2
+        e1(:)=0.d0
+        e1(1:2)=p(1:2,1)
+        e2(:)=0.d0
+        e2(1:2)=p(1:2,2)
+        call provec(e1, e2, e3)
+        p(3,3)=e3(3)
+        invp(3,3)=e3(3)
+! BRICOLAGE POUR DETERMINER LE SIGNE DE LA PHI
+        pt_ree=[xg,yg]-zr((ifond-1+1):(ifond-1+2))
 !
-!   INTRODUCTION DES DEPLACEMENTS SINGULIERS ET DE LEURS DERIVEES
-!   A        POINT EN FOND DE FISSURE
-!   RPOL,PHI COORDONNEES POLAIRES DU POINT DE GAUSS
+        pt_loc(:)=0.d0
+        do i = 1, 2
+            do ind = 1, 2
+                pt_loc(i)=pt_loc(i)+invp(i,ind)*pt_ree(i)
+            enddo
+        enddo
 !
-        xga = xg - xa
-        yga = yg - ya
-        xxg = xg
-        if (axi .and. (xxg .lt. r8prem())) then
-            call utmess('F', 'RUPTURE0_56')
-        endif
-        xg = (ynorm*xga-xnorm*yga)/norm
-        yg = (xnorm*xga+ynorm*yga)/norm
-!
-        rpol = sqrt(xg*xg+yg*yg)
-        phi = atan2(yg,xg)
-!
-        if ((abs(yg) .lt. 1.0d-8) .and. (xg .lt. 0.0d0)) then
+        if ((abs(pt_loc(2)) .lt. 1.0d-8) .and. (pt_loc(1) .lt. 0.0d0)) then
 !
 ! ON DETERMINE SI ON EST SUR LA LEVRE X2 > 0 OU
 ! SUR LA LEVRE X2 < 0
@@ -248,8 +261,10 @@ subroutine te0300(option, nomte)
             yno1 = zr(igeom + 1)
             xno2 = zr(igeom + 2)
             yno2 = zr(igeom + 3)
-            d1 = ((xno1-xa) * (xno1-xa)) + ((yno1-ya) * (yno1-ya))
-            d2 = ((xno2-xa) * (xno2-xa)) + ((yno2-ya) * (yno2-ya))
+            d1 = ((xno1-zr(ifond-1+1)) * (xno1-zr(ifond-1+1))) + &
+                 ((yno1-zr(ifond-1+2)) * (yno1-zr(ifond-1+2)))
+            d2 = ((xno2-zr(ifond-1+1)) * (xno2-zr(ifond-1+1))) + &
+                 ((yno2-zr(ifond-1+2)) * (yno2-zr(ifond-1+2)))
             if (d2 .gt. d1) then
                 phi = -1.0d0 * phi
             else
@@ -257,25 +272,29 @@ subroutine te0300(option, nomte)
             endif
         endif
 !
-        cphi = cos(phi)
-        cphi2 = cos(0.5d0*phi)
-        sphi2 = sin(0.5d0*phi)
-        cr2 = cform*sqrt(rpol)
+        if (axi .and. (xg .lt. r8prem())) then
+            call utmess('F', 'RUPTURE0_56')
+        endif
 !
-!    U1 SINGULIER POUR LE CALCUL DE K1
+! --------- champs singuliers
+        call xdeffk(ck, mu, rpol, phi, 2, fkpo(1:2,1:2))
 !
-        v1s(1) = cr2* (ck-cphi)*cphi2
-        v1s(2) = cr2* (ck-cphi)*sphi2
-        u1s(1) = (ynorm*v1s(1)+xnorm*v1s(2))/norm
-        u1s(2) = (-xnorm*v1s(1)+ynorm*v1s(2))/norm
-!
-!
-!    U2 SINGULIER POUR LE CALCUL DE K2
-!
-        v2s(1) = cr2* (2.d0+ck+cphi)*sphi2
-        v2s(2) = cr2* (2.d0-ck-cphi)*cphi2
-        u2s(1) = (ynorm*v2s(1)+xnorm*v2s(2))/norm
-        u2s(2) = (-xnorm*v2s(1)+ynorm*v2s(2))/norm
+        u1s(:)=0.d0
+        u2s(:)=0.d0
+        do i = 1, 2
+            do ind = 1, 2
+                u1s(i) = u1s(i) + p(i,ind)*fkpo(1,ind)
+                u2s(i) = u2s(i) + p(i,ind)*fkpo(2,ind)
+            enddo
+        enddo
+!        print*,' *** KOR ***'
+!        print*,'  - rg, phig',rpol, phi
+!        print*,'  - ori',zr((ifond-1+1):(ifond-1+2))
+!        print*,'  - e1=',e1
+!        print*,'  - e2=',e2
+!        print*,'  - u1s',u1s
+!        print*,'  - u2s',u2s
+!        print*,' ***********'
 !
         dsde = sqrt(dxde**2+dyde**2)
 !
@@ -297,10 +316,10 @@ subroutine te0300(option, nomte)
         endif
 !
         poids = zr(ipoids+kp-1)
-        if (axi) poids = poids*xxg
+        if (axi) poids = poids*xg
         the = (thx*dxde+thy*dyde)/dsde
         divthe = (dthxde*dxde+dthyde*dyde)/dsde
-        if (axi) divthe = divthe+(thx*dsde/xxg)
+        if (axi) divthe = divthe+(thx*dsde/xg)
 !
         tcla1 = tcla1 + poids* ( (divthe*fx+dfxde*the)*u1s(1)+ (divthe* fy+dfyde*the)*u1s(2))
         tcla2 = tcla2 + poids* ( (divthe*fx+dfxde*the)*u2s(1)+ (divthe* fy+dfyde*the)*u2s(2))
@@ -311,6 +330,7 @@ subroutine te0300(option, nomte)
     g = tcla
     k1 = tcla1*coefk/2.d0
     k2 = tcla2*coefk/2.d0
+!    if (e3(3) .lt. 0) k2=-k2
 !
     zr(ific) = g
     zr(ific+1) = k1/sqrt(coefk)

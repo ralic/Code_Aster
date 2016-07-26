@@ -33,7 +33,7 @@ alpha = pi / 4.
 sig = 1000000.
 
 # rayon de la fissure
-R = 2
+R = 2.
 
 # rayon circulaire de la lentille
 a = R * sin(alpha)
@@ -126,15 +126,14 @@ MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
 FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
                      DEFI_FISS=_F(FONC_LT=LT,
                                   FONC_LN=LN,),
-                    )
-                                      
+                     NB_COUCHES=5,)
 
 MODX=MODI_MODELE_XFEM(MODELE_IN=MODE,
                       DECOUPE_FACETTE='SOUS_ELEMENTS',
                       FISSURE=FISSX)
 
 ACIER=DEFI_MATERIAU(ELAS=_F(E=210000e6,
-                            NU=0.3))
+                            NU=0.22))
 
 MATE=AFFE_MATERIAU(MAILLAGE=MA[nb_iter],
                    AFFE=_F(TOUT='OUI',
@@ -161,6 +160,9 @@ MO_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
 RE_VISU=POST_CHAM_XFEM(MODELE_VISU=MO_VISU,
                        RESULTAT=RESU)
 
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=(_F(RESULTAT=RE_VISU,)),);
+IMPR_RESU(FORMAT='GMSH',UNITE=37,RESU=(_F(RESULTAT=RESU,NOM_CHAM=('DEPL'))),); 
+
 CGX=CALC_G(THETA=_F(FISSURE=FISSX,
                     R_INF=Rinf,
                     R_SUP=Rsup,),
@@ -180,29 +182,29 @@ K1ref = 0.877*(2/pi)*sig*sqrt(pi*a)
 K2ref = 0.235*(2/pi)*sig*sqrt(pi*a)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.004,
-           VALE_CALC= 1180384.44041,
+           PRECISION=0.02,
+           VALE_CALC=1196305.2361,
            VALE_REFE=1.176825720257336E6,
            NOM_PARA='K1',
            TABLE=CGX,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.003,
-           VALE_CALC= 316072.688239,
+           PRECISION=0.05,
+           VALE_CALC=327976.214187,
            VALE_REFE=3.1534098547374451E5,
            NOM_PARA='K2',
            TABLE=CGX,)        
            
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC= 1197307.93343,
+           VALE_CALC=1193587.42482,
            VALE_REFE=1.176825720257336E6,
            NOM_PARA='K1',
            TABLE=PK,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=0.23,
-           VALE_CALC= 385029.272871,
+           PRECISION=0.05,
+           VALE_CALC=330882.05966,
            VALE_REFE=3.1534098547374451E5,
            NOM_PARA='K2',
            TABLE=PK,)            

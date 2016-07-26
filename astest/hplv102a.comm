@@ -182,28 +182,28 @@ G4=CALC_G(        THETA=_F(
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=2.91879655878e-06,
+           VALE_CALC=2.91879655878E-06,
            VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G1,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=2.91869623326e-06,
+           VALE_CALC=2.91869623327E-06,
            VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G2,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=2.9185635229e-06,
+           VALE_CALC=2.9185635229E-06,
            VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G3,)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.02,
-           VALE_CALC=2.91872329286e-06,
+           VALE_CALC=2.91872329285E-06,
            VALE_REFE=2.9556e-06,
            NOM_PARA='G',
            TABLE=G4,)

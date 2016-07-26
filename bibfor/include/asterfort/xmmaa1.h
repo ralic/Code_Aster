@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       hpg, ffc, ffe,&
                       ffm, jacobi, coefcr, coefcp,&
                       lpenac, norm, nsinge, nsingm,&
-                      rre, rrm, jddle, jddlm,&
+                      fk_escl, fk_mait, jddle, jddlm,&
                       nfhe, nfhm, lmulti, heavno, heavn, heavfa,&
                       mmat)
         integer :: ndim
@@ -41,8 +41,8 @@ interface
         real(kind=8) :: norm(3)
         integer :: nsinge
         integer :: nsingm
-        real(kind=8) :: rre
-        real(kind=8) :: rrm
+        real(kind=8) :: fk_escl(27,3,3)
+        real(kind=8) :: fk_mait(27,3,3)
         integer :: jddle(2)
         integer :: jddlm(2)
         integer :: nfhe

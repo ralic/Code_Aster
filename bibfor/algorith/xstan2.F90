@@ -1,7 +1,7 @@
-subroutine xstan2(noma, modele, crit2)
+subroutine xstan2(noma, modele, crit2, lfiss)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ subroutine xstan2(noma, modele, crit2)
     integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
     integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
     integer :: i, j, nheav, iheav, nfiss, nfiss2, ifiss, nse, nnose
-    aster_logical :: lelim
+    aster_logical :: lelim, lfiss
     integer, pointer :: connex(:) => null()
     integer, pointer :: cnsv(:) => null()
     integer, pointer :: nbsp(:) => null()
@@ -171,7 +171,7 @@ subroutine xstan2(noma, modele, crit2)
             endif
             call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
                         ifiss, 1, iad)
-            if (zi(jcesv(2)-1+iad) .ne. 1) goto 40
+            if (zi(jcesv(2)-1+iad).ne.1 .and. zi(jcesv(2)-1+iad).ne.3) goto 40
 !
 !         INITIALISATION DES VOLUMES
             vhea = 0
@@ -244,7 +244,7 @@ subroutine xstan2(noma, modele, crit2)
                 call xcrvol(nse, ndim, jcnse, nnose, jpint,&
                             igeom, elrefp, inoloc, nbnoma, jcesd(3),&
                             jcesl(3), jcesv(3), numa2, iheav, nfiss2, vhea,&
-                            jcesd(8), jcesl(8), jcesv(8), vtot)
+                            jcesd(8), jcesl(8), jcesv(8), lfiss, vtot)
                 call jedetr(geom)
  50             continue
             end do
@@ -254,7 +254,7 @@ subroutine xstan2(noma, modele, crit2)
             else
               crimaxi=crit2(2)**ndim
             endif
-            crit=vhea/vtot 
+            crit=vhea/vtot
             if (crit .lt. crimaxi) then
                 cpt = cpt + 1
 !           BOUCLE SUR LES MAILLES SUPPORT DU NOEUD
@@ -275,7 +275,11 @@ subroutine xstan2(noma, modele, crit2)
                             endif
                             call cesexi('S', jcesd(2), jcesl(2), numa2, ino2,&
                                         ifiss, 1, iad)
-                            zi(jcesv(2)-1+iad) = 0
+                            if (zi(jcesv(2)-1+iad).eq.3) then
+                              zi(jcesv(2)-1+iad) = 2
+                            elseif (zi(jcesv(2)-1+iad).eq.1) then
+                              zi(jcesv(2)-1+iad) = 0
+                            endif                            
                             goto 150
                         endif
                     end do
@@ -299,7 +303,7 @@ subroutine xstan2(noma, modele, crit2)
             endif
             call cesexi('S', jcesd(2), jcesl(2), numa, ino,&
                         ifiss, 1, iad)
-            if (zi(jcesv(2)-1+iad) .ge. 1) lelim = .false.
+            if (abs(zi(jcesv(2)-1+iad)) .ge. 1) lelim = .false.
         end do
         if (lelim) then
             zl(jnoxfl-1+2*(nuno-1)+1) = .false.

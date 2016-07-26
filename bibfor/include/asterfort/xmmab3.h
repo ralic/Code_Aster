@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine xmmab3(ndim, nno, nnos, nnol, pla,&
                       ffc, ffp, jac, knp, nfh,&
                       seuil, tau1, tau2, mu, singu,&
-                      rr, lact, ddls, ddlm, mmat)
+                      fk, lact, ddls, ddlm, mmat)
         integer :: ndim
         integer :: nno
         integer :: nnos
@@ -35,10 +35,10 @@ interface
         real(kind=8) :: tau2(3)
         real(kind=8) :: mu
         integer :: singu
-        real(kind=8) :: rr
         integer :: lact(8)
         integer :: ddls
         integer :: ddlm
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: mmat(216, 216)
     end subroutine xmmab3
 end interface

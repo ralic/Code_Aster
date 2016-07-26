@@ -42,7 +42,7 @@ DETRUIRE(CONCEPT=_F(NOM=RES_XFEM))
 LN=FORMULE(NOM_PARA=('X','Y'),VALE='Y-0.5');
 LT=FORMULE(NOM_PARA=('X','Y'),VALE='-X+0.5');
 
-FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,  TYPE_ENRI_FOND='TOPOLOGIQUE',
                     DEFI_FISS=_F(FONC_LT=LT,FONC_LN=LN,),
                     INFO=1,
                     );
@@ -111,11 +111,10 @@ CHAMPMAT=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
 
 CHARBLO=AFFE_CHAR_MECA(MODELE=MODELEK,
                        DDL_IMPO=(_F(GROUP_NO='SURFINF',DX=0.0,DY=0.0,),
-                                 _F(GROUP_NO='VOL',DZ=0.0),
+                                 _F(GROUP_NO='VOL',DZ=0.0, K3=0.),
 # il est necessaire de bloquer en z les ddls enrichis correspondants aux deplacements des points des levres
 # cela a une forte influence sur le deplacement resultat
                                  _F(GROUP_NO='NHEAVI',H1Z=0.0),
-                                 _F(GROUP_NO='NSINGU',E1Z=0.0,E2Z=0.0,E3Z=0.0,E4Z=0.0),
                                   ),
                        )
 
@@ -154,7 +153,7 @@ TABDEPC1= POST_RELEVE_T ( ACTION =_F(INTITULE  = 'DEPLACEMENT',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=0.02,
-           VALE_CALC=-8.8774532906307E-04,
+           VALE_CALC=-0.000879667796006,
            VALE_REFE=-8.7404262899510004E-4,
            NOM_PARA='DX',
            TABLE=TABDEPC1,
@@ -165,7 +164,7 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='AUTRE_ASTER',
            PRECISION=1.E-2,
-           VALE_CALC=3.8281908652023E-03,
+           VALE_CALC=0.00381848009649,
            VALE_REFE=3.8260958514619E-3,
            NOM_PARA='DY',
            TABLE=TABDEPC1,

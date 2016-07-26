@@ -1,7 +1,7 @@
 subroutine te0366(option, nomte)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,8 @@ subroutine te0366(option, nomte)
 #include "asterfort/xtform.h"
 #include "asterfort/xtlagc.h"
 #include "asterfort/xtlagf.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
     character(len=16) :: option, nomte
 !
 ! ----------------------------------------------------------------------
@@ -87,6 +89,8 @@ subroutine te0366(option, nomte)
     integer :: contac, ibid, npte
     integer :: ndeple, nne(3), nnm(3), ddle(2), ddlm(2), nfhe, nfhm
     real(kind=8) :: ffec(8)
+    real(kind=8) :: fk_escl(27,3,3), fk_mait(27,3,3), ka, mu
+    integer :: imate, jbaslo, jlsn
     aster_logical :: lmulti
     integer :: iadzi, iazk24
 ! ----------------------------------------------------------------------
@@ -205,6 +209,31 @@ subroutine te0366(option, nomte)
                 nnm(1), nnc, coore, coorm, coorc,&
                 ffe, ffm, dffc)
 !
+! --- CALCUL DES FCTS SINGULIERES
+!
+    call jevech('PSTANO', 'L', jstno)
+    if (nsinge.eq.1 .and. nne(1).gt. 0) then
+      call jevech('PLSNGG', 'L', jlsn)
+      call jevech('PBASLOC', 'L', jbaslo)
+      call jevech('PMATERC', 'L', imate)
+      call xkamat(zi(imate), ndim, .false._1, ka, mu)
+      call xcalfev_wrap(ndim, nne(1), zr(jbaslo), zi(jstno), -1.d0,&
+                   zr(jlsn), zr(jlsn), zr(jgeom), ka, mu, ffe, fk_escl, face='ESCL')
+    endif
+!
+! --- BRICOLAGES POUR RESPECTER LES ANCIENNES CONVENTIONS DE SIGNE 
+    fk_escl=-1.d0*fk_escl
+    if (nnm(1) .eq. 0) fk_escl=2.d0*fk_escl
+    if (nsingm.eq.1 .and. nnm(1).gt.0) then
+      call jevech('PLSNGG', 'L', jlsn)
+      call jevech('PBASLOC', 'L', jbaslo)
+      call jevech('PMATERC', 'L', imate)
+      call xkamat(zi(imate), ndim, .false._1, ka, mu)
+      call xcalfev_wrap(ndim, nnm(1), zr(jbaslo+nne(1)*3*ndim), zi(jstno+nne(1)), +1.d0,&
+                   zr(jlsn+nne(1)), zr(jlsn+nne(1)), zr(jgeom+nne(1)*ndim),&
+                   ka, mu, ffm, fk_mait, face='MAIT')
+    endif
+!
 ! --- FONCTION DE FORMES POUR LES LAGRANGIENS
 ! --- SI ON EST EN LINEAIRE, ON IMPOSE QUE LE NB DE NOEUDS DE CONTACTS
 ! --- ET LES FFS LAGRANGES DE CONTACT SONT IDENTIQUES A CEUX
@@ -249,7 +278,7 @@ subroutine te0366(option, nomte)
                         hpg, ffc, ffe,&
                         ffm, jacobi, coefcr, coefcp,&
                         lpenac, norm, nsinge, nsingm,&
-                        rre, rrm, ddle, ddlm,&
+                        fk_escl, fk_mait, ddle, ddlm,&
                         nfhe, nfhm, lmulti, zi(jheano), zi(jheavn), zi(jheafa),&
                         mmat)
 !
@@ -296,8 +325,8 @@ subroutine te0366(option, nomte)
 ! --- CALCUL DES INCREMENTS - DEPLACEMENTS
 !
             call xtdepm(ndim, nnm, nne, ndeple, nsinge,&
-                        nsingm, ffe, ffm, jdepde, rre,&
-                        rrm, ddle, ddlm, nfhe, nfhm, lmulti,&
+                        nsingm, ffe, ffm, jdepde, fk_escl,&
+                        fk_mait, ddle, ddlm, nfhe, nfhm, lmulti,&
                         zi(jheavn), zi(jheafa),&
                         ddeple, ddeplm)
 !
@@ -319,7 +348,7 @@ subroutine te0366(option, nomte)
             if (ndim .eq. 3 .and. contac .eq. 3) then
                 call xmmjeu(ndim, nnm, nne, ndeple, nsinge,&
                             nsingm, ffe, ffm, norm, jgeom,&
-                            jdepde, jdepm, rre, rrm, ddle,&
+                            jdepde, jdepm, fk_escl, fk_mait, ddle,&
                             ddlm, nfhe, nfhm, lmulti, zi(jheavn), zi(jheafa),&
                             jeu)
             endif
@@ -336,7 +365,7 @@ subroutine te0366(option, nomte)
                             dvitet, coeffr, jeu,&
                             coeffp, coefff, lpenaf, tau1, tau2,&
                             rese, mprojt, norm, nsinge,&
-                            nsingm, rre, rrm, nvit, contac,&
+                            nsingm, fk_escl, fk_mait, nvit, contac,&
                             ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
 !
             else if (inadh.eq.0) then
@@ -349,7 +378,7 @@ subroutine te0366(option, nomte)
                             coeffr, jeu, coeffp,&
                             lpenaf, coefff, tau1, tau2, rese,&
                             nrese, mprojt, norm, nsinge,&
-                            nsingm, rre, rrm, nvit, contac,&
+                            nsingm, fk_escl, fk_mait, nvit, contac,&
                             ddle, ddlm, nfhe, nfhm, zi(jheavn), mmat)
             endif
         else
@@ -364,7 +393,6 @@ subroutine te0366(option, nomte)
     lesclx = nsinge.eq.1.and.nnm(1).ne.0
     lmaitx = nsingm.eq.1
     lcontx = (contac.eq.1.or.contac.eq.3).and.nlact.lt.nne(2)
-    call jevech('PSTANO', 'L', jstno)
     call xtedd2(ndim, nne, ndeple, nnm, nddl,&
                 option, lesclx, lmaitx, lcontx, zi(jstno),&
                 lact, ddle, ddlm, nfhe, nfhm,&

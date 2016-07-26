@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xmmsa3(ndim, nno, nnos, ffp, nddl,&
                       nvec, v1, v2, v3, nfh,&
-                      singu, rr, ddls, ddlm, jheavn, ncompn,&
+                      singu, fk, ddls, ddlm, jheavn, ncompn,&
                       nfiss, ifiss, jheafa, ncomph, ifa,&
                       saut)
         integer :: nddl
@@ -32,7 +32,7 @@ interface
         real(kind=8) :: v3(*)
         integer :: nfh
         integer :: singu
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         integer :: ddls
         integer :: ddlm
         integer :: nfiss

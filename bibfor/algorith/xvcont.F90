@@ -5,13 +5,13 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
                   ipgf, jac, jheavn, ncompn, jheafa, lact,&
                   ncomph, nd, nddl, ndim, nfh,&
                   nfiss, nno, nnol, nnos, nvit,&
-                  pla, rela, reac, rr, singu,&
+                  pla, rela, reac, singu, fk,&
                   tau1, tau2, vtmp)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,7 +56,6 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
 ! IN PLA    : PLACE DES DDLS DE LAGRANGE
 ! IN RELA   : LOI DE COMPORTEMENT COHESIVE
 ! IN REAC   : REACTION DE CONTACT (LAMBDA)
-! IN RR     : RACINE RAYON A LA POINTE DE FISSURE
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
@@ -87,10 +86,11 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
     integer :: singu
     real(kind=8) :: alpha(3), am(3), dsidep(6, 6), cohes(3)
     real(kind=8) :: coefcr, coefcp, ffc(8), ffp(27), jac, raug
-    real(kind=8) :: nd(3), p(3, 3), reac, rr, saut(3), mu(3)
+    real(kind=8) :: nd(3), p(3, 3), reac, saut(3), mu(3)
     real(kind=8) :: sigma(6), tau1(3), tau2(3), vtmp(400), rela
     real(kind=8) :: delta(6), lamb(3), r, wsaut(3)
     real(kind=8) :: dtang(3), dnor(3), pp(3,3), un
+    real(kind=8) :: fk(27,3,3)
     character(len=8) :: job, champ
 !
 ! --- CAS COHESIF
@@ -111,7 +111,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -125,7 +125,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
 !
             call xmvco1(ndim, nno, nnol, sigma, pla,&
                         lact, dtang, nfh, ddls, jac,&
-                        ffc, ffp, singu, rr, un,&
+                        ffc, ffp, singu, fk, un,&
                         nd, tau1, tau2, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         vtmp)
@@ -139,7 +139,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -190,7 +190,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -215,7 +215,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
                         am, delta, pla, lact, nfh,&
                         ddls, ddlm, nfiss, ifiss, jheafa,&
                         ifa, ncomph, jheavn, ncompn, jac, ffc,&
-                        ffp, singu, r, rr, vtmp,&
+                        ffp, singu, r, fk, vtmp,&
                         p)
         endif
 !
@@ -235,7 +235,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -243,7 +243,7 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
 !
             call xmvec2(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, reac, jac, nfh,&
-                        saut, singu, nd, rr, coefcr,&
+                        saut, singu, fk, nd, coefcr,&
                         ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                         jheafa, ncomph, ifa, vtmp)
         endif
@@ -260,12 +260,12 @@ subroutine xvcont(algocr, cohes, jcohes, ncompv,&
             nvec=2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepl), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
             call xmvep2(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, reac, jac, nfh,&
-                        saut, singu, nd, rr, coefcp,&
+                        saut, singu, fk, nd, coefcp,&
                         ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                         jheafa, ncomph, ifa, vtmp)
         else

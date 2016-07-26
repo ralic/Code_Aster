@@ -1,19 +1,21 @@
-subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
+subroutine xmasel(nnop, nfh, nfe, ddlc, igeom,&
                   imate, pintt, cnset, heavt, lonch,&
-                  basloc, lsn, lst, matuu, heavn)
+                  basloc, lsn, lst, matuu, heavn, jpmilt,&
+                  jstno, nnops, ddlm)
     implicit none
 #include "jeveux.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/xmase2.h"
 #include "asterfort/xmase3.h"
-    integer :: nnop, imate, igeom
-    integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27,5)
+#include "asterfort/iselli.h"
+    integer :: nnop, imate, igeom, jpmilt, jstno, ddlm, nnops
+    integer :: nfh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27,5)
     real(kind=8) :: pintt(3*11), lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), basloc(*)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +38,7 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 ! IN  NNOP    : NOMBRE DE NOEUDS DE L'ELEMENT PARENT
 ! IN  IPOIDS  : POIDS DES POINTS DE GAUSS
 ! IN  IVF     : VALEUR  DES FONCTIONS DE FORME
-! IN  DDLH    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
+! IN  nfh    : NOMBRE DE DDL HEAVYSIDE (PAR NOEUD)
 ! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES D'ENRICHISSEMENT
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
 ! IN  IGEOM   : COORDONEES DES NOEUDS
@@ -61,13 +63,14 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 !
     integer :: nse, npg, ndim
     integer :: j, ise, in, ino
+    integer :: irese, nno
 !
-    real(kind=8) :: he, coorse(12)
+    real(kind=8) :: he, coorse(81)
 !
-    character(len=8) :: elrefp, elrese(3), fami(3)
+    character(len=8) :: elrefp, elrese(6), fami(6)
 !
-    data    elrese /'SE2','TR3','TE4'/
-    data    fami   /'BID','XINT','XINT'/
+    data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
+    data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,12 +79,18 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
 !
     call elref1(elrefp)
 !
+    if (.not.iselli(elrefp)) then
+        irese=3
+    else
+        irese=0
+    endif
+!
 !     ELEMENT DE REFERENCE PARENT : RECUP DE NDIM
     call elrefe_info(fami='RIGI',ndim=ndim)
 !
 !     SOUS-ELEMENT DE REFERENCE : RECUP DE NPG
-    call elrefe_info(elrefe=elrese(ndim),fami=fami(ndim),&
-  npg=npg)
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),&
+  npg=npg, nno=nno)
 !
 !     RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT EN NSE SOUS ELEMENT
     nse=lonch(1)
@@ -90,13 +99,17 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
     do 110 ise = 1, nse
 !
 !       BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
-        do 111 in = 1, ndim+1
+        do 111 in = 1, nno
             ino=cnset((ndim+1)*(ise-1)+in)
             do 112 j = 1, ndim
                 if (ino .lt. 1000) then
                     coorse(ndim*(in-1)+j)=zr(igeom-1+ndim*(ino-1)+j)
-                else
+                else if (ino .gt. 1000 .and. ino .lt. 2000) then
                     coorse(ndim*(in-1)+j)=pintt(ndim*(ino-1000-1)+j)
+                else if (ino .gt. 2000 .and. ino .lt. 3000) then
+                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-2000-1)+j)
+                else if (ino .gt. 3000) then
+                    coorse(ndim*(in-1)+j)=zr(jpmilt-1+ndim*(ino-3000-1)+j)
                 endif
 112          continue
 111      continue
@@ -109,14 +122,16 @@ subroutine xmasel(nnop, ddlh, nfe, ddlc, igeom,&
         if (ndim .eq. 3) then
 !
             call xmase3(elrefp, ndim, coorse, igeom, he,&
-                        ddlh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu, heavn)
+                        nfh, ddlc, nfe, basloc, nnop,&
+                        npg, imate, lsn, lst, matuu, heavn,&
+                        jstno, nnops, ddlm)
 !
         else if (ndim.eq.2) then
 !
             call xmase2(elrefp, ndim, coorse, igeom, he,&
-                        ddlh, ddlc, nfe, basloc, nnop,&
-                        npg, imate, lsn, lst, matuu, heavn)
+                        nfh, ddlc, nfe, basloc, nnop,&
+                        npg, imate, lsn, lst, matuu, heavn,&
+                        jstno, nnops, ddlm)
 !
         endif
 !

@@ -15,12 +15,13 @@ subroutine te0566(nomopt, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
-#include "asterfort/xcalf2.h"
-#include "asterfort/xcalfe.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/xteini.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,15 +53,18 @@ subroutine te0566(nomopt, nomte)
     integer :: ndim, nnop, nnops, nspg, irese, nse
     integer :: nfh, nfe, singu, ddlc, nnom, ddls, nddl, ddlm, ddlg
     integer :: nfiss, contac
-    integer :: jdeplno, jxpg, jheavt, jlonch, jbaslo, jlsn, jlst, jheavn, jdeplpg 
+    integer :: jdeplno, jxpg, jheavt, jlonch, jbaslo, jlsn, jlst, jheavn, jdeplpg, jstno, imate
     integer :: jtab(7), jtab2(7), iret, ncomp, ncompn
-    integer :: ise, kpg, ipg, i, ino, ifiss, ifh, ife 
+    integer :: ise, kpg, ipg, i, ino, ifiss, ifh, alp, igeom
     integer :: he(nfissmx), dec(nbnomx), heavn(nbnomx, 5)
     integer :: hea_se
     integer :: iadzi, iazk24
-    real(kind=8) :: xg(3), ug(3), lsng, lstg, baslog(9), fe(4), dgdgl(4, 3), hg
+    real(kind=8) :: xg(3), ug(3)
     real(kind=8) :: ff(nbnomx)
+    real(kind=8) :: fk(27,3,3)
     character(len=8) :: elrese(6), fami(6), elrefp
+    real(kind=8) :: ka, mu
+    aster_logical :: axi
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -73,6 +77,7 @@ subroutine te0566(nomopt, nomte)
     call xteini(nomte, nfh, nfe, singu, ddlc,&
                 nnom, ddls, nddl, ddlm, nfiss,&
                 contac)
+    axi=lteatt('AXIS','OUI')
 !   champs IN
     call jevech('PDEPLNO', 'L', jdeplno)
     call jevech('PXFGEOM', 'L', jxpg)
@@ -82,7 +87,11 @@ subroutine te0566(nomopt, nomte)
     call jevech('PLSN', 'L', jlsn)
     call jevech('PLST', 'L', jlst)
     if (nfh.gt.0) call jevech('PHEA_NO', 'L', jheavn)
-
+    if (nfe.gt.0) then 
+       call jevech('PSTANO', 'L', jstno)
+       call jevech('PMATERC', 'L', imate)
+       call jevech('PGEOMER', 'L', igeom)
+    endif
 !   champ OUT
     call jevech('PDEPLPG', 'E', jdeplpg)
     call tecach('OOO', 'PDEPLPG', 'E', iret, nval=7,&
@@ -155,37 +164,14 @@ subroutine te0566(nomopt, nomte)
           enddo
 !
 !         evaluation des fonctions de forme au point de Gauss courant
-          call elrfvf(elrefp, xg, nbnomx, ff, nnop)
-          
-          if (nfe .gt. 0) then
-!           BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
-             baslog=0.d0
-             lsng = 0.d0
-             lstg = 0.d0
-             do ino = 1, nnop
-                lsng = lsng + zr(jlsn - 1 + ino) * ff(ino)
-                lstg = lstg + zr(jlst - 1 + ino) * ff(ino)
-                do i = 1, 3*ndim
-                   baslog(i) = baslog(i) + zr(jbaslo-1+3*ndim*(ino-1)+i) * ff(ino)
-                end do
-             end do
+          call elrfvf(elrefp, xg, nbnomx, ff, nnop)         
 !
-!            recuperation de la valeur de la fonction Heaviside
-             hg=real(he(1), kind=8)
-!           FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
-             if (ndim .eq. 2) then
-                call xcalf2(hg, lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-             else if (ndim.eq.3) then
-                call xcalfe(hg, lsng, lstg, baslog, fe,&
-                            dgdgl, iret)
-             endif
-!
-!           PB DE CALCUL DES DERIVEES DES FONCTIONS SINGULIERES
-!           CAR ON SE TROUVE SUR LE FOND DE FISSURE
-             ASSERT(iret.ne.0)
-!
-          endif
+!       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (nfe .gt. 0) then
+            call xkamat(zi(imate), ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), real(he(1),8),&
+                         zr(jlsn),  zr(jlst), zr(igeom), ka, mu, ff, fk)
+        endif
 !
 !         recomposition du champ de deplacement au point de Gauss courant
           ug=0.d0
@@ -202,10 +188,10 @@ subroutine te0566(nomopt, nomte)
                 enddo
              enddo
 !            ddl crack-tip
-             do ife = 1, nfe
-                do i=1, ndim
-                   ug(i) = ug(i) + ff(ino)*zr(jdeplno-1 + dec(ino) + ndim*(nfh+ife) + i)*fe(ife)
-                enddo
+             do alp=1, ndim*nfe
+                 do i=1, ndim
+                   ug(i) = ug(i) + fk(ino,alp,i)*zr(jdeplno-1+dec(ino)+ndim*(nfh+1)+alp)
+                 enddo
              enddo
           enddo
 !

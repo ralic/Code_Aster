@@ -51,16 +51,12 @@ CCOMPOR  = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
     ('EN1',('DX','DY','DZ','H1X','H1Y',
-          'H1Z','E1X','E1Y','E1Z','E2X',
-          'E2Y','E2Z','E3X','E3Y','E3Z',
-          'E4X','E4Y','E4Z',)),))
+          'H1Z','K1','K2','K3',)),))
 
 
 EDEPLPG  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='XFEM',
     components=('DX','DY','DZ','H1X','H1Y',
-          'H1Z','E1X','E1Y','E1Z','E2X',
-          'E2Y','E2Z','E3X','E3Y','E3Z',
-          'E4X','E4Y','E4Z',))
+          'H1Z','K1','K2','K3',))
 
 
 DDL_MECC = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
@@ -222,7 +218,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CALC_G.PPMILTO, LC.E198NEUT), (SP.PPRESSR, EPRESNO),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
                      (SP.PTHETAR, DDL_MECC), (OP.CALC_G.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALC_G.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
@@ -278,7 +274,7 @@ class MECA_XHT_HEXA8(Element):
                      (SP.PPRESSF, CPRESSF), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTEMPSR, CTEMPSR),
                      (SP.PTHETAR, DDL_MECC), (OP.CALC_G_F.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALC_G_F.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
 
@@ -297,7 +293,7 @@ class MECA_XHT_HEXA8(Element):
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTHETAR, DDL_MECC),
                      (OP.CALC_K_G.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     ),
+                     (OP.CALC_K_G.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
@@ -316,7 +312,7 @@ class MECA_XHT_HEXA8(Element):
                      (SP.PPULPRO, LC.CFREQR), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTEMPSR, CTEMPSR),
                      (SP.PTHETAR, DDL_MECC), (OP.CALC_K_G_F.PVARCPR, LC.ZVARCPG),
-                     (SP.PVARCRR, LC.ZVARCPG), ),
+                     (SP.PVARCRR, LC.ZVARCPG), (OP.CALC_K_G_F.PSTANO, STANO_I),),
             para_out=((SP.PGTHETA, EKTHETA), ),
         ),
 
@@ -332,7 +328,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CHAR_MECA_FR3D3D.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_FR3D3D.PLONCHA, LC.E10NEUTI),
                      (OP.CHAR_MECA_FR3D3D.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_FR3D3D.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FR3D3D.PPINTTO, E33NEUTR), (OP.CHAR_MECA_FR3D3D.PSTANO, STANO_I),
-                     ),
+                     (OP.CHAR_MECA_FR3D3D.PBASLOR, LC.N9NEUT_R), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -343,7 +339,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CHAR_MECA_PESA_R.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
                      (SP.PPESANR, LC.CPESANR), (OP.CHAR_MECA_PESA_R.PPINTTO, E33NEUTR),
                      (OP.CHAR_MECA_PESA_R.PPMILTO, LC.E198NEUT), (OP.CHAR_MECA_PESA_R.PSTANO, STANO_I),
-                     (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), ),
+                     (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), (OP.CHAR_MECA_PESA_R.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -353,7 +349,8 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PPINTER, LC.E102NEUT),
                      (SP.PPRESSF, CPRESSF), (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                     (SP.PTEMPSR, CTEMPSR), ),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -363,7 +360,8 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PPINTER, LC.E102NEUT),
                      (SP.PPRESSR, EPRESNO), (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I),
-                     ),
+                     (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
+                     (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -375,7 +373,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.CHAR_MECA_ROTA_R.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
                      (OP.CHAR_MECA_ROTA_R.PPINTTO, E33NEUTR), (OP.CHAR_MECA_ROTA_R.PPMILTO, LC.E198NEUT),
                      (SP.PROTATR, LC.CROTATR), (OP.CHAR_MECA_ROTA_R.PSTANO, STANO_I),
-                     ),
+                     (OP.CHAR_MECA_ROTA_R.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -405,7 +403,8 @@ class MECA_XHT_HEXA8(Element):
                      (OP.DEPL_XPG.PHEAVTO, LC.E32NEUTI), (OP.DEPL_XPG.PHEA_NO, LC.N5NEUTI),
                      (OP.DEPL_XPG.PLONCHA, LC.E10NEUTI), (OP.DEPL_XPG.PLSN, LC.N1NEUT_R),
                      (OP.DEPL_XPG.PLST, LC.N1NEUT_R), (OP.DEPL_XPG.PXFGEOM, XFGEOM_R),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.DEPL_XPG.PSTANO, STANO_I),
+                     (SP.PGEOMER, NGEOMER),),
             para_out=((SP.PDEPLPG, EDEPLPG), ),
         ),
 
@@ -434,7 +433,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.FORC_NODA.PLONCHA, LC.E10NEUTI), (OP.FORC_NODA.PLSN, LC.N1NEUT_R),
                      (OP.FORC_NODA.PLST, LC.N1NEUT_R), (OP.FORC_NODA.PPINTTO, E33NEUTR),
                      (OP.FORC_NODA.PPMILTO, LC.E198NEUT), (OP.FORC_NODA.PSTANO, STANO_I),
-                     (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), ),
+                     (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -539,7 +538,7 @@ class MECA_XHT_HEXA8(Element):
                      (OP.RIGI_MECA_GE.PLONCHA, LC.E10NEUTI), (OP.RIGI_MECA_GE.PLSN, LC.N1NEUT_R),
                      (OP.RIGI_MECA_GE.PLST, LC.N1NEUT_R), (OP.RIGI_MECA_GE.PPINTTO, E33NEUTR),
                      (OP.RIGI_MECA_GE.PPMILTO, LC.E198NEUT), (OP.RIGI_MECA_GE.PSTANO, STANO_I),
-                     ),
+                     (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 

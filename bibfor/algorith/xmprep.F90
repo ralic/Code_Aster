@@ -3,12 +3,13 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
                   iptint, ifa, igeom, ipgf, jac,&
                   jlst, lact, nd, ndim, ninter,&
                   nlact, nno, nnos, nptf, nvit,&
-                  rr, singu, tau1, tau2)
+                  rr, singu, tau1, tau2, ka, mu,&
+                  jbaslo, jstno, jlsn, fk)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,14 +56,21 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 #include "asterfort/xmoffc.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/assert.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterc/r8depi.h"
     integer :: cface(30, 6), contac
     integer :: i, iaint, ibasec, ifa, igeom, ipgf, iptint, j, n
     integer :: jlst, k, lact(8), ndim, ninter, nlact, nno
     integer :: nnos, nptf, nvit, singu, zxain
+    integer :: alp
     real(kind=8) :: dfbid(nno, 3), ffc(8), ffp(27), ffpc(27), g(3), jac
     real(kind=8) :: nd(3), lst, r, rr, tau1(3), tau2(3), x(4)
+    real(kind=8) :: fk_mait(27,3,3), fk_escl(27,3,3)
+    real(kind=8), optional :: ka, mu, fk(27,3,3)
+    integer, optional :: jstno, jlsn, jbaslo
     character(len=8) :: elc, elref, elrefc, fpg
     aster_logical :: axi
+    aster_logical :: largs_fk
 !
 !
 ! --- CALCUL DE JAC (PRODUIT DU JACOBIEN ET DU POIDS)
@@ -134,12 +142,33 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
 ! --- CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
 !
     if (singu .eq. 1) then
+        fk(:,:,:)=0.d0
         lst=0.d0
         do 112 i = 1, nno
             lst=lst+zr(jlst-1+i)*ffp(i)
 112      continue
         r=abs(lst)
         rr=sqrt(r)
+! --- CALCUL FORMEL DU SAUT MOYEN POUR LES FCTS SINGULIERES
+        largs_fk=present(ka).and.&
+                 present(mu).and.&
+                 present(jbaslo).and.&
+                 present(fk).and.&
+                 present(jlsn).and.&
+                 present(jstno)
+        ASSERT(largs_fk)
+        call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), +1.d0,&
+                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ffp, fk_mait,face='MAIT')
+        call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), -1.d0,&
+                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ffp, fk_escl,face='ESCL')
+        do i = 1, nno
+          do alp= 1, ndim
+            do j= 1, ndim
+              fk(i,alp,j)=(fk_mait(i,alp,j)-fk_escl(i,alp,j))/2.d0
+            enddo
+          enddo
+        enddo
+!
     endif
 !
 end subroutine

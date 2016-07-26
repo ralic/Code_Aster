@@ -1,7 +1,8 @@
 subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                   igeom, jheavn, jlst, ivectu, singu,&
                   nddl, ndim, nfe, nfh, nfiss,&
-                  nno, nnom, nnos, depref, sigref)
+                  nno, nnom, nnos, depref, sigref,&
+                  jbaslo, jstno, jlsn)
 !
 ! aslint: disable=W1504
     implicit none
@@ -17,7 +18,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 #include "asterfort/xmulco.h"
 #include "asterfort/xmvco3.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,13 +61,14 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     integer :: i, iadzi, iazk24, vstnc(1), ibid, ifa, ifiss, igeom, ipgf
     integer :: iret, jaint, jbasec, jcface
     integer :: jheavn, jheafa, jheano, jlonch, jlst, jptint, jtab(7)
-    integer :: ivectu, lact(8), singu
+    integer :: ivectu, lact(8), singu, jbaslo, jstno, jlsn
     integer :: nbspg, ncompa, ncompb, ncompc, ncomph, ncompp, ncompn
     integer :: nddl, ndim, nface, nfe, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, npgf, nptf, nspfis, pla(27)
     integer :: idfdef, ipoidf, ivff, j, nnof
     real(kind=8) :: depref, ffc(8), ffp(27), jac
     real(kind=8) :: r3bid(3), rr, sigref, vtmp(400)
+    real(kind=8) :: fk(27,3,3)
     aster_logical :: lbid
     character(len=8) :: elc, elref, elrefc, fpg, typma
 !
@@ -180,7 +182,8 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                             jptint, ifa, igeom, ipgf, jac,&
                             jlst, lact, r3bid, ndim, ninter,&
                             nlact, nno, nnos, nptf, ibid,&
-                            rr, singu, r3bid, r3bid)
+                            rr, singu, r3bid, r3bid,3.d0,sigref,&
+                            jbaslo, jstno, jlsn, fk)
 !
 ! --- CALCUL VECTEURS DE REFERENCE POUR LA LOI D INTERFACE
 !
@@ -188,7 +191,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                             nnos, pla, lact, nfh, ddls,&
                             ddlm, nfiss, ifiss, jheafa, ifa,&
                             ncomph, jheavn, ncompn, jac, ffc, ffp,&
-                            singu, rr, vtmp)
+                            singu, fk, vtmp)
 ! --- FIN DE BOUCLE SUR LES POINTS DE GAUSS
             end do
 !

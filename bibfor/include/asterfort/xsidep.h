@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       igeom, typmod, imate, compor, jpintt,&
                       cnset, heavt, lonch, basloc, idepl,&
                       lsn, lst, sig, jpmilt, nfiss,&
-                      jheavn)
+                      jheavn, jstno)
         integer :: nfiss
         integer :: nnop
         integer :: nfh
@@ -42,5 +42,6 @@ interface
         real(kind=8) :: sig(*)
         integer :: jpmilt
         integer :: jheavn
+        integer :: jstno
     end subroutine xsidep
 end interface

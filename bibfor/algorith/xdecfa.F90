@@ -1,7 +1,7 @@
 subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
-                  pinter, pinref, ainter, jcnset, cooree, cooref, rainter,&
+                  pinter, pinref, ainter, cooree, cooref, rainter,&
                   noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                  i, face, nnose, jmilt, f, mipos)
+                  nnose, jgrlsn, mipos)
     implicit none
 !
 #include "asterf_types.h"
@@ -18,19 +18,20 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 #include "asterfort/xcenfi.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
+#include "blas/ddot.h"
 !
-    integer :: npi, noeud(9), i, face, jmilt, f(6,8), npis
-    integer :: igeom, jlsn, jlst, jcnset, zxain, nnose
-    integer :: nintar, npts, ndim, nno
+    integer :: npi, noeud(9), npis
+    integer :: igeom, jlsn, jlst, zxain, nnose
+    integer :: nintar, npts, ndim, nno, jgrlsn
     real(kind=8) :: pinter(*), ainter(*), cooree(6,ndim), cooref(6,ndim)
-    real(kind=8) :: rainter(3,4), lst(6), lonref, pinref(34*ndim)
+    real(kind=8) :: rainter(3,4), lst(6), lonref, pinref(43*ndim)
     character(len=8) :: elp
     aster_logical :: mipos
 !
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +78,8 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     real(kind=8) :: norme, geom(ndim*nno), ff(27), cenfi(ndim), tabls(20)
     real(kind=8) :: x(ndim), xref(ndim), miref(ndim), mifis(ndim), ptxx(3*ndim)
     real(kind=8) :: vectn(ndim), ksi(ndim), dff(3,27)
-    real(kind=8) :: epsmax, cridist, a, b, c
+    real(kind=8) :: epsmax, cridist, a, b, c, ab(ndim), bc(ndim), gradlsn(ndim)
+    real(kind=8) :: normfa(ndim), det, tempo, temp1(ndim), temp2(ndim), temp3(4)
     integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
     integer :: n(3), kkk, nn(4)
     integer :: itemax
@@ -103,6 +105,50 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     do j = 1, 9
        noeud(j) =0
     end do
+!
+!   NECESSITE D'INVERSER LA CONNECTIVITE DE LA FACE A DECOUPER SI ELLE N'EST PAS
+!   ORIENTEE SUIVANT GRADLSN
+    do j = 1, ndim
+       ab(j) = cooree(2,j)-cooree(1,j)
+       bc(j) = cooree(3,j)-cooree(1,j)
+       gradlsn(j) = zr(jgrlsn-1+j)
+       normfa(j) = 0.d0
+    end do
+    call provec(ab,bc,normfa)
+    call xnormv(ndim, normfa, norme)
+    call xnormv(ndim, gradlsn, norme)
+    det = ddot(ndim, gradlsn, 1, normfa, 1)
+    if (det.lt.0.d0) then
+       tempo = lst(2)
+       lst(2) = lst(3)
+       lst(3) = tempo
+       do j = 1, ndim
+          temp1(j) = cooree(2,j)
+          temp2(j) = cooref(2,j)
+          cooree(2,j) = cooree(3,j)
+          cooref(2,j) = cooref(3,j)
+          cooree(3,j) = temp1(j)
+          cooref(3,j) = temp2(j)
+       end do
+       do j = 1, 4
+          temp3(j) = rainter(2,j)
+          rainter(2,j) = rainter(3,j)
+          rainter(3,j) = temp3(j)
+       end do
+       if (.not. iselli(elp)) then
+          tempo = lst(4)
+          lst(4) = lst(6)
+          lst(6) = tempo
+          do j = 1, ndim
+             temp1(j) = cooree(4,j)
+             temp2(j) = cooref(4,j)
+             cooree(4,j) = cooree(6,j)
+             cooref(4,j) = cooref(6,j)
+             cooree(6,j) = temp1(j)
+             cooref(6,j) = temp2(j)
+          end do
+       endif
+    endif
 !
 !   BOUCLE SUR LES SOMMETS DU TRIA
     do k = 1, 3
@@ -174,17 +220,17 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                 ptxx(2*ndim+jj) = cooref(k+ndim,jj)
              end do
 !      INITIALISATION DU NEWTON
-             a = (lst(k) + lst(kk) - 2*lst(k+ndim))/2.d0
+             a = (lst(k) + lst(kk) - 2.d0*lst(k+ndim))/2.d0
              b = (lst(kk) - lst(k))/2.d0
              c = lst(k+ndim)
              ASSERT(b**2.ge.(4*a*c))
              if (abs(a).lt.1.d-8) then
                 ksi(1) = lst(k)/(lst(k)-lst(kk))
              else
-                ksi(1) = (-b-sqrt(b**2-4*a*c))/(2.d0*a)
-                if (abs(ksi(1)).gt.1) ksi(1) = (-b+sqrt(b**2-4*a*c))/(2.d0*a)
-                ASSERT(abs(ksi(1)).le.1)
-                ksi(1) = (ksi(1)+1)/2.d0
+                ksi(1) = (-b-sqrt(b**2-4.d0*a*c))/(2.d0*a)
+                if (abs(ksi(1)).gt.1.d0) ksi(1) = (-b+sqrt(b**2-4.d0*a*c))/(2.d0*a)
+                ASSERT(abs(ksi(1)).le.1.d0)
+                ksi(1) = (ksi(1)+1.d0)/2.d0
              endif
           else
              ksi(1) = lst(k)/(lst(k)-lst(kk))
@@ -202,9 +248,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                       geom, tabls ,ibid, ibid, itemax, epsmax, ksi)
           call vecini(ndim, 0.d0, xref)
           do ii = 1, ndim
-             xref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
-                       (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
-                       ptxx(j+ndim)
+             xref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*&
+                       (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                       ptxx(ii+ndim)
           end do
           call vecini(27, 0.d0, ff)
           call elrfvf(elp, xref, nbnomx, ff, nno)
@@ -212,7 +258,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           call vecini(ndim, 0.d0, x)
           do ii = 1, ndim
              do j = 1, nno
-                x(ii) = x(ii) + zr(igeom-1+ndim*(j-1)+ii) *ff(j)
+                x(ii) = x(ii) + zr(igeom-1+ndim*(j-1)+ii)*ff(j)
              end do
           end do
 !      VERIF SI DEJA
@@ -249,11 +295,11 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                 ksi(1) = (1.d0+ksi(1))/2.d0
              endif
              do ii = 1, ndim
-                miref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*&
-                            (1.d0-ksi(1))*ptxx(j+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
-                            ptxx(j+ndim)
+                miref(ii) = 2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(ii)+4.d0*ksi(1)*&
+                            (1.d0-ksi(1))*ptxx(ii+2*ndim)+2.d0*ksi(1)*(ksi(1)-5.d-1)*&
+                            ptxx(ii+ndim)
              end do
-             call elrfvf(elp, xref, nbnomx, ff, nno)
+             call elrfvf(elp, miref, nbnomx, ff, nno)
              call vecini(ndim, 0.d0, mifis)
              do ii = 1, ndim
                 do j = 1, nno
@@ -289,19 +335,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
        else if (lst(k).le.0.d0.and.lst(kk).le.0.d0) then
           if (.not.iselli(elp)) then
              ASSERT(npts.eq.2)
-             if (zi(jcnset-1+nnose*(i-1)+f(face,3+k)) .gt. 3000) then
-                do j = 1, ndim
-                     newpt(j) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(face,3+k))-3001)+j)
-                end do
-             else if (zi(jcnset-1+nnose*(i-1)+f(face,3+k)) .gt. 2000) then
-                do j = 1, ndim
-                     newpt(j) = zr(jmilt-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(face,3+k))-2001)+j)
-                end do
-             else if (zi(jcnset-1+nnose*(i-1)+f(face,3+k)) .lt. 2000) then
-                do j = 1, ndim
-                     newpt(j) = zr(igeom-1+ndim*(zi(jcnset-1+nnose*(i-1)+f(face,3+k))-1)+j)
-                end do
-             endif
+             do j = 1, ndim
+                newpt(j) = cooree(k+ndim,j)
+             end do
              call reeref(elp, nno, zr(igeom), newpt, ndim, newptref, ff)
 !      VERIF SI DEJA
              deja = .false.
@@ -333,8 +369,6 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 !   ON DETERMINE MAINTENANT DANS LE CAS QUADRATIQUE LE NOEUD MILIEU 
 !   ENTRE LES DEUX POINTS DU FOND DE FISSURE
 !
-!   ON DETERMINE D'ABORD UNE BASE ORTHONORMEE DU PLAN DANS LEQUEL ON VA FAIRE LA
-!   RECHERCHE
     if (.not. iselli(elp)) then
        if (mipos.and.npts.eq.2) then
           do j = 1, ndim
@@ -415,6 +449,15 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
              num(6) = noeud(6)
              num(7) = noeud(8)
              num(8) = noeud(5)
+          elseif (lst(2).gt.0.d0) then
+             num(1) = noeud(2)
+             num(2) = noeud(1)
+             num(3) = noeud(4)
+             num(4) = noeud(3)
+             num(5) = noeud(7)
+             num(6) = noeud(6)
+             num(7) = noeud(8)
+             num(8) = noeud(5)
           else
              num(1) = noeud(1) 
              num(2) = noeud(2)
@@ -426,7 +469,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
              num(8) = noeud(6)
           endif
           nn(1:4) = 0
-          jonc = .false.
+          jonc = .true.
           call xcenfi(elp, ndim, ndim, nno, geom, zr(jlsn),&
                       pinref, pinref, cenref, cenfi, jonc, nn, num)
   !   ON ARCHIVE CE POINT

@@ -5,7 +5,7 @@ subroutine te0539(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/iselli.h"
+#include "asterfort/ltequa.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmtstm.h"
@@ -22,7 +22,7 @@ subroutine te0539(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,8 +125,7 @@ subroutine te0539(option, nomte)
     call teattr('S', 'XFEM', enr, ibid)
     if (enr(1:2).eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
-    if ((ibid.eq.0) .and.&
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elref)) &
+    if ((ibid.eq.0) .and. ltequa(elref,enr))&
     call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
@@ -143,7 +142,7 @@ subroutine te0539(option, nomte)
                    compor, lgpg, crit, jpintt, zi(jcnset),&
                    zi(jheavt), zi( jlonch), zr(jbaslo), ibid, zr(jlsn),&
                    zr(jlst), sig, vi, zr(imatuu), ibid,&
-                   codret, jpmilt, nfiss, jheavn)
+                   codret, jpmilt, nfiss, jheavn, jstno)
 !
 !-------ON MET NE DUR LE FAIT QUE LA MATRICE EST SYMETRIQUE
         matsym=.true.
@@ -212,7 +211,7 @@ subroutine te0539(option, nomte)
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
                        zi(jheavt), zi(jlonch), zr(jbaslo), ideplm, zr(jlsn),&
                        zr(jlst), zr(icontm), zr(ivarim), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jheavn)
+                       codret, jpmilt, nfiss, jheavn, jstno)
         else
 !
 !        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
@@ -225,7 +224,7 @@ subroutine te0539(option, nomte)
                        zk16(icompo), lgpg, zr(icarcr), jpintt, zi(jcnset),&
                        zi(jheavt), zi(jlonch), zr(jbaslo), ideplp, zr(jlsn),&
                        zr(jlst), zr(icontp), zr(ivarip), zr(imatuu), ivectu,&
-                       codret, jpmilt, nfiss, jheavn)
+                       codret, jpmilt, nfiss, jheavn, jstno)
         endif
 !
     else
@@ -245,7 +244,7 @@ subroutine te0539(option, nomte)
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
                        zr(icontp), zr(ivarim), zr(imatuu), ivectu, codret,&
-                       jpmilt, nfiss, jheavn)
+                       jpmilt, nfiss, jheavn, jstno)
 !
 ! 7.3 - GRANDES ROTATIONS ET PETITES DEFORMATIONS
         else if (zk16(icompo+2).eq.'GROT_GDEP') then
@@ -259,7 +258,7 @@ subroutine te0539(option, nomte)
                        lgpg, zr(icarcr), jpintt, zi(jcnset), zi(jheavt),&
                        zi(jlonch), zr(jbaslo), ideplm, zr(jlsn), zr(jlst),&
                        nfiss, jheavn, zr(icontp), zr(ivarim), zr(imatuu),&
-                       ivectu, codret, jpmilt)
+                       ivectu, codret, jpmilt, jstno)
 !
         else
             call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))

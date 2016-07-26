@@ -2,7 +2,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
                   chglo)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -203,7 +203,7 @@ subroutine xconno(mox, chfis, base, opt, param,&
                                 zi(jcesv-1-iad) = zi(jcnsv-1+(ino-1)* ncmp1+icmp)
                                 if (lstno .and. ndim .eq. ndime) then
                                     if ((.not.zl(jcnsl2-1+(ino-1)*2+1) ) .and.&
-                                        zi(jcesv-1-iad) .gt. 0) then
+                                        abs(zi(jcesv-1-iad)) .gt. 0) then
                                         zl(jcnsl2-1+(ino-1)*2+1) =&
                                         .true.
                                         zl(jcnsl2-1+(ino-1)*2+2) =&

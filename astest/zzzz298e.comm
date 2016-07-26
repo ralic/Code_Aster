@@ -270,7 +270,7 @@ IMPR_TABLE(TABLE=KMAT2)
 # 1. sans variables de commande
 #---
 
-TEST_TABLE(VALE_CALC=760045.177343,
+TEST_TABLE(VALE_CALC=717148.334755,
            NOM_PARA='K1',
            TABLE=K,)
 
@@ -278,7 +278,7 @@ TEST_TABLE(VALE_CALC=760045.177343,
 # 2. avec la variable de commande TEMP
 #---
 
-TEST_TABLE(VALE_CALC=760045.177343,
+TEST_TABLE(VALE_CALC=717148.334755,
            NOM_PARA='K1',
            TABLE=KTEMP,)
 
@@ -286,7 +286,7 @@ TEST_TABLE(VALE_CALC=760045.177343,
 # 3. avec la variable de commande NEUT1
 #---
 
-TEST_TABLE(VALE_CALC=760045.177343,
+TEST_TABLE(VALE_CALC=717148.334755,
            NOM_PARA='K1',
            TABLE=KNEUT,)
 
@@ -294,7 +294,7 @@ TEST_TABLE(VALE_CALC=760045.177343,
 # 4. sans variables de commande et en ecrasant le materiau
 #---
 
-TEST_TABLE(VALE_CALC=760045.177343,
+TEST_TABLE(VALE_CALC=717148.334755,
            NOM_PARA='K1',
            TABLE=KMAT2,)
 

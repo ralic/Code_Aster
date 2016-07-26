@@ -2,6 +2,9 @@ subroutine merige(modele, cara, sigg, strx, matel,&
                   base, nh, deplr, mater)
     implicit none
 #include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/exi_fiss.h"
 #include "asterfort/calcul.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
@@ -18,7 +21,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
     character(len=*) , optional, intent(in) :: deplr,mater
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,6 +52,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
     character(len=16) :: option
     character(len=24) :: ligrmo, chgeom, chcara(18), chharm
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano, pmilto, hea_no
+    aster_logical :: lfiss
 !
 !-----------------------------------------------------------------------
     integer :: icode, ier, nbpara
@@ -110,6 +114,16 @@ subroutine merige(modele, cara, sigg, strx, matel,&
         lchin(12) = strx
         lpain(13) = 'PHEA_NO'
         lchin(13) = hea_no
+        nbpara=13
+        lfiss=exi_fiss(modele)
+        if (lfiss) then
+          ASSERT(present(mater)) 
+          if (mater.ne.' ') then
+            nbpara=nbpara+1
+            lpain(nbpara) = 'PMATERC'
+            lchin(nbpara) = mater
+          endif
+        endif
 !
 ! --- CHAMPS DE SORTIE
 !
@@ -118,7 +132,7 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 !
         option = 'RIGI_MECA_GE'
 !
-        call calcul('S', option, ligrmo, 13, lchin,&
+        call calcul('S', option, ligrmo, nbpara, lchin,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matel, lchout(1), base)

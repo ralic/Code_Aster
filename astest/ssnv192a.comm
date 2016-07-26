@@ -190,6 +190,7 @@ ZVECT = cos(ALPHA) ;
 FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                     DEFI_FISS=_F(FONC_LT=LT,
                                  FONC_LN=LN),
+                    #TYPE_ENRI_FOND='GEOMETRIQUE',RAYON_ENRI=0.4*A,
                      )
 
 # RECUPERATION DE LA TABLE CONTENANT LE NOMBRE DE FONDS DE FISSURE
@@ -311,38 +312,38 @@ SIF = [None] * n * nb_fond
 SIF2 = [None] * nb_fond
 
 VAL_CALC = [
-   1.847391611694   ,
-   1.8494049051518   ,
-   1.845719932257   ,
-   1.8489202141256   ,
-   1.8108600247066   ,
-   1.8128706307279   ,
-   1.8089296821941   ,
-   1.8121310468327   ,
-   1.7987068605033   ,
-   1.8007288197688   ,
-   1.7967924863683   ,
-   1.8000042418175   ,
-   1.8291258182003   ,
-   1.8311377679398   ,
-   1.8273248072255   ,
-   1.8305256304792   ,
-   1.8189861656346   ,
-   1.8210014518828   ,
-   1.8171473669398   ,
-   1.8203518342586   ,
-   1.804783442605   ,
-   1.8067997252483   ,
-   1.8028610842812   ,
-   1.8060676443251   ,
-   1.7984266038779   ,
-   1.8004474897786   ,
-   1.7965457975599   ,
-   1.7997579121549   ,
-   1.8217032536645   ,
-   1.8250934827174   ,
-   1.8223647893748     ,
-   1.826356095256   , ]
+   1.804294921694   ,
+   1.8062012431518   ,
+   1.801710376257   ,
+   1.8056341111256   ,
+   1.8038959877066   ,
+   1.8058211097279   ,
+   1.8012957521941   ,
+   1.8052662578327   ,
+   1.8040079875033   ,
+   1.8059385697688   ,
+   1.8014128933683   ,
+   1.8054019548175   ,
+   1.8040954542003   ,
+   1.8060111769398   ,
+   1.8015030642255   ,
+   1.8054501844792   ,
+   1.8040662986346   ,
+   1.8059869748828   ,
+   1.8014730079398   ,
+   1.8054341072586   ,
+   1.803951987605   ,
+   1.8058798392483   ,
+   1.8013543222812   ,
+   1.8053341053251   ,
+   1.8040932348779   ,
+   1.8060231167786   ,
+   1.8014845715599   ,
+   1.8054722151549   ,
+   1.8113889126645   ,
+   1.8122937087174   ,
+   1.8110915753748     ,
+   1.812280767256   , ]
 
 ct = -1
 
@@ -361,7 +362,7 @@ for i in range(n) :
                               R_SUP=RS[i],
                               NUME_FOND=ifond),
                     LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                LISSAGE_G='LAGRANGE',),
+                                LISSAGE_G='LAGRANGE',),INFO=2,
                   )
 
       IMPR_TABLE(TABLE=SIF[k])
@@ -375,7 +376,7 @@ for j in range(nb_fond) :
                     THETA=_F( FISSURE=FISS,
                               NUME_FOND=ifond),
                     LISSAGE=_F( LISSAGE_THETA='LAGRANGE',
-                                LISSAGE_G='LAGRANGE',),
+                                LISSAGE_G='LAGRANGE',),INFO=2,
                   )
 
       IMPR_TABLE(TABLE=SIF2[j])
@@ -396,7 +397,7 @@ for i in range(n) :
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
-                    PRECISION=0.03 ,
+                    PRECISION=0.01 ,
                     REFERENCE='ANALYTIQUE')
 
 for j in range(nb_fond) :
@@ -406,7 +407,7 @@ for j in range(nb_fond) :
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
                     VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
-                    PRECISION=0.03 ,
+                    PRECISION=0.01 ,
                     REFERENCE='ANALYTIQUE')
 
 #------------------------------------------------------------------------
@@ -431,7 +432,7 @@ for j in range(nb_fond) :
                  NOM_PARA='K1',
                  TYPE_TEST=itest,
                  VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
-                 PRECISION=0.12 ,
+                 PRECISION=0.01 ,
                  REFERENCE='ANALYTIQUE')
         
 # -------------------------------------------------------------   
@@ -449,5 +450,10 @@ MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU1,
                         INFO        = 2)
+
+IMPR_RESU(FORMAT='GMSH',
+          RESU=_F(RESULTAT=RES_XFEM,
+                  NOM_CHAM=('DEPL'),
+                  ),);
  
 FIN()

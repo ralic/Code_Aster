@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -32,7 +32,7 @@ interface
         integer :: nfh
         integer :: nfe
         integer :: ddlc
-        integer :: cmp(nbcmp)
+        integer :: cmp(*)
         aster_logical :: lmeca
         aster_logical :: pre1
     end subroutine xpocmp

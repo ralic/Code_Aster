@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
                       ffc, ffp, reac, jac, nfh,&
-                      saut, singu, nd, rr, cpenco,&
+                      saut, singu, fk, nd, cpenco,&
                       ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                       jheafa, ncomph, ifa, vtmp)
         integer :: ndim
@@ -34,7 +34,7 @@ interface
         real(kind=8) :: saut(3)
         integer :: singu
         real(kind=8) :: nd(3)
-        real(kind=8) :: rr
+        real(kind=8) :: fk(27,3,3)
         real(kind=8) :: cpenco
         integer :: ddls
         integer :: ddlm

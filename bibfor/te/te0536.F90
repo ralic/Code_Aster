@@ -15,7 +15,7 @@ subroutine te0536(option, nomte)
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ subroutine te0536(option, nomte)
     integer :: nnos
     integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
     integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
-    integer :: jheavn, ncompn, heavn(27,5), jtab(7), iret, ifh, ino
+    integer :: jheavn, ncompn, heavn(27,5), jtab(7), iret, ifh, ino, imate
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS
@@ -76,6 +76,10 @@ subroutine te0536(option, nomte)
     if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC')&
         .and. .not.iselli(elrefp)) call jevech('PPMILTO', 'L', jpmilt)
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
+!   IL Y A UN PB DANS LA LECTURE DU MATERIAU POUR CETTE OPTION
+!     ON PREND POUR LE MOMENT UN MATERIAU ARBITRAIRE
+     imate=0
+!    if (nfe.gt.0) call jevech('PMATERC', 'L', imate)
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
@@ -99,7 +103,7 @@ subroutine te0536(option, nomte)
     call xrigel(nno, nfh*ndim, nfe, ddlc,&
                 igeom, jpintt, zi(jcnset), zi(jheavt), zi(jlonch),&
                 zr(jbaslo), zr(jlsn), zr(jlst), zr(icont), zr(imatuu),&
-                jpmilt, heavn)
+                jpmilt, heavn, jstno, imate)
 !
 !
 !     SUPPRESSION DES DDLS SUPERFLUS

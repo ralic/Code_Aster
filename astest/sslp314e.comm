@@ -107,14 +107,14 @@ GK01=CALC_G(       RESULTAT=CHAMDEPL,
 # Une solution analytique existe ( cf MURAKAMI case 8.20)
 
 TEST_TABLE(
-           VALE_CALC=51.989419313764,
+           VALE_CALC=51.9894193138,
            NOM_PARA='G',
            TABLE=G0,)
 
 #
 
 TEST_TABLE(
-           VALE_CALC=51.951388306563,
+           VALE_CALC=51.9513883065,
            NOM_PARA='G_IRWIN',
            TABLE=GK01,)
 

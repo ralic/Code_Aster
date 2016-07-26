@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,9 +19,9 @@
 !
 interface
     subroutine xfovol(elrefp, ndim, coorse, igeom, he,&
-                      ddlh, ddlc, nfe, nnop, jlsn,&
+                      ddlh, ddlc, singu, nnop, jlsn,&
                       jlst, heavn, iforc, itemps, ivectu, fonc,&
-                      fono)
+                      fono, imate, jbaslo, jstno)
         integer :: nnop
         integer :: ndim
         character(len=8) :: elrefp
@@ -30,12 +30,15 @@ interface
         real(kind=8) :: he
         integer :: ddlh
         integer :: ddlc
-        integer :: nfe
+        integer :: singu
         integer :: jlsn
         integer :: jlst
         integer :: iforc
         integer :: itemps
         integer :: ivectu
+        integer :: imate
+        integer :: jbaslo
+        integer :: jstno
         integer :: heavn(27,5)
         aster_logical :: fonc
         aster_logical :: fono

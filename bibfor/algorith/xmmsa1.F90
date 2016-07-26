@@ -1,7 +1,7 @@
 subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
                   pla, ffc, ffp, idepd, idepm,&
                   nfh, nd, tau1, tau2, singu,&
-                  rr, lact, ddls, ddlm, coeffr,&
+                  fk, lact, ddls, ddlm, coeffr,&
                   coeffp, p, adher, knp, ptknp,&
                   ik)
 !
@@ -19,13 +19,14 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
     integer :: algofr, ndim, nno, nnos, nnol
     integer :: nfh, ddls, ddlm
     integer :: singu, pla(27), lact(8), idepd, idepm
-    real(kind=8) :: rr, coeffr, coeffp, p(3, 3), ik(3, 3)
+    real(kind=8) :: coeffr, coeffp, p(3, 3), ik(3, 3)
     real(kind=8) :: ffc(8), ffp(27), tau1(3), tau2(3), ptknp(3, 3)
     real(kind=8) :: knp(3, 3), nd(3)
     aster_logical :: adher
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +67,6 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 ! IN  TAU1   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 ! IN  TAU2   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  IFA    : INDICE DE LA FACETTE COURANTE
 ! IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
 ! IN  LACT   : LISTE DES LAGRANGES ACTIFS
@@ -86,6 +86,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
 !
 !
     integer :: i, j, nli, ino, in, pli, ig
+    integer :: alpi
     real(kind=8) :: ffi, lamb1(3), r3(3), vitang(3), kn(3, 3), saut(3), coefj
 !
 ! ----------------------------------------------------------------------
@@ -111,7 +112,9 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
           enddo 
 155     continue
         do 156 j = 1, ndim*singu
-            saut(j) = saut(j) - 2.d0 * ffp(ino) * rr * zr(idepd-1+in+ndim*(1+nfh)+j)
+          do alpi = 1, ndim
+            saut(j) = saut(j) - 2.d0 * fk(ino,alpi,j) * zr(idepd-1+in+ndim*(1+nfh)+alpi)
+          enddo
 156     continue
 154 end do
 !
@@ -128,7 +131,7 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol,&
             if (ndim .eq. 3) lamb1(j)=lamb1(j) + ffi * tau2(j) * (zr(idepd-1+pli+2) + zr(idepm-1+&
                              &pli+2))
 159     continue
-158 end do
+158 continue
 !
 !
 ! --- TEST DE L'ADHERENCE ET CALCUL DES MATRICES DE FROTTEMENT UTILES

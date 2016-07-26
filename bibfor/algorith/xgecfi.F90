@@ -1,7 +1,7 @@
 subroutine xgecfi(modele, depgeo)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,9 @@ subroutine xgecfi(modele, depgeo)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/megeom.h"
+#include "asterfort/getvid.h"
+#include "asterfort/rcmfmc.h"
     character(len=8) :: modele
     character(len=19) :: depgeo
 !
@@ -59,17 +62,18 @@ subroutine xgecfi(modele, depgeo)
 !
 !
     integer :: nbout, nbin
-    parameter    (nbout=2, nbin=8)
-    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma
+    parameter    (nbout=2, nbin=13)
+    character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2), noma, materi
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=16) :: option
     character(len=19) :: ligrel, pinter, faclon, newges, newgem
     character(len=19) :: gesclo, ltno, fissno, hea_no, hea_fa
+    character(len=19) :: chgeom, basloc, lnno, stano, mate
     character(len=1) :: base
     aster_logical :: debug
     integer :: ifmdbg, nivdbg, iret, nbma, ima
-    integer :: jcesd, jcesl, iad
+    integer :: jcesd, jcesl, iad, n1
     integer, pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     integer, pointer :: cesd2(:) => null()
@@ -104,6 +108,20 @@ subroutine xgecfi(modele, depgeo)
     newgem = modele//'.TOPOFAC.GM'
     hea_no = modele//'.TOPONO.HNO'
     hea_fa = modele//'.TOPONO.HFA'
+!  AJOUT DES CHAMPS NECESSAIRES POUR L ASSEMBLAGE DU CHAMP SINGULIER  
+    call megeom(modele, chgeom)
+    lnno = modele(1:8)//'.LNNO'
+    stano = modele(1:8)//'.STNO'
+    basloc = modele(1:8)//'.BASLOC'
+    materi = ' '
+    call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n1)
+    if (n1 .ne. 0) then
+       call rcmfmc(materi, mate)
+    else
+       mate = ' '
+    endif
+
+!
     call jeexin(newges//'.CESD', iret)
     if (iret .eq. 0) then
 !
@@ -149,6 +167,16 @@ subroutine xgecfi(modele, depgeo)
     lchin(7) = hea_fa
     lpain(8) = 'PHEA_NO'
     lchin(8) = hea_no
+    lpain(9) = 'PGEOMER'
+    lchin(9) = chgeom
+    lpain(10) = 'PBASLOR'
+    lchin(10) = basloc
+    lpain(11) = 'PSTANO'
+    lchin(11) = stano
+    lpain(12) = 'PLSN'
+    lchin(12) = lnno
+    lpain(13) = 'PMATERC'
+    lchin(13) = mate
 !
     lpaout(1) = 'PNEWGES'
     lchout(1) = newges

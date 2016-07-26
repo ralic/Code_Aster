@@ -89,7 +89,7 @@ CFER2_R = LocatedComponents(phys=PHY.FER2_R, type='ELEM',
                             'SIGMBE', 'EPSIBE',))
 
 CFISSR = LocatedComponents(phys=PHY.FISS_R, type='ELEM',
-                           components=('XA', 'YA', 'XNORM', 'YNORM',))
+                           components=('XA', 'YA', 'XTAN', 'YTAN', 'XNORM', 'YNORM',))
 
 CFLAPLA = LocatedComponents(phys=PHY.FLAPLA, type='ELEM',
                             components=('NOMAIL', 'NOGEOM',))

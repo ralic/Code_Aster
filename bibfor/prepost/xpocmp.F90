@@ -3,7 +3,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                   nbcmp, cmp, lmeca, pre1)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(nbcmp)
+    integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(*)
     integer :: ddlc
     aster_logical :: lmeca, pre1, press, press1
     character(len=8) :: elrefp
@@ -140,10 +140,16 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
              cmp(ipos) = i
            endif
         endif
-        if (nomcmp(1:2) .eq. 'E1' .or. nomcmp(1:2) .eq. 'E2' .or. nomcmp(1:2) .eq. 'E3'&
-            .or. nomcmp(1:2) .eq. 'E4') then
+        if (nomcmp(1:2) .eq. 'K1' .or. nomcmp(1:2) .eq. 'K2' .or.&
+            nomcmp(1:2) .eq. 'K3') then
             ipos = ipos +1
             nfe = nfe +1
+            cmp(ipos)=i
+        endif
+        if (nomcmp(1:2) .eq. 'E1') then
+            ASSERT(.not.lmeca)
+            nfe = nfe +1
+            ipos = ipos +1
             cmp(ipos)=i
         endif
         if (nomcmp(1:3) .eq. 'LAG') then

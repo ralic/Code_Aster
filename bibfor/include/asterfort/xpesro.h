@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp,&
                       heavn, nfh, ddlc, nfe, nfiss,&
                       ise, nnop, jlsn, jlst, ivectu,&
-                      fno)
+                      fno, imate, jbaslo, jstno)
         integer :: nnop
         integer :: ndim
         character(len=8) :: elrefp
@@ -35,6 +35,9 @@ interface
         integer :: ise
         integer :: jlsn
         integer :: jlst
+        integer :: imate
+        integer :: jbaslo
+        integer :: jstno
         integer :: ivectu
         real(kind=8) :: fno(ndim*nnop)
     end subroutine xpesro

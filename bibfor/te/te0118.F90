@@ -20,10 +20,13 @@ subroutine te0118(option, nomte)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
+#include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
-#include "asterfort/xdeffe.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnormv.h"
+#include "asterfort/indent.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -68,18 +71,21 @@ subroutine te0118(option, nomte)
     integer :: jlsn, jlst, jpintt, jcnset, jheavt, jlonch
     integer :: jpmilt, jheavn, iforc
     integer :: ino, j, ise, ifiss, in, inop, kpg, ig
-    integer :: nlong_ddl, ddld, ddls, ddlm, ddli, nnoi, indeni
+    integer :: nlong_ddl, ddld, ddls, ddlm, deca
     integer :: ithet, igthet
     integer :: ier, iret, irese, jtab(7)
     real(kind=8) :: th1, th2, dth1d1, dth2d2, divt, pres, tcla
     real(kind=8) :: r8pre, sum_teth, sum_forc, r8bit2(2)
-    real(kind=8) :: poids, norme, vf, lsng, lstg, rg, tg, fe(4)
+    real(kind=8) :: poids, norme, vf
+    real(kind=8) :: fk(27,3,3), ka, mu
+    integer :: alp, jstno, imate, jbaslo
     real(kind=8) :: coorse(3*nno_se_max), geoloc(2*nno_par_max)
     real(kind=8) :: td1(3), td2(3), nd(3), xg(3), xg_loc(2), he(1), oprim(3)
     real(kind=8) :: depla(3), ff(nno_par_max), coorse_loc(2*nno_par_max)
     real(kind=8) :: dford1(3), dford2(3), forcg(3), dfor(3), forc
-    real(kind=8), allocatable :: dfdi_loc(:,:)
+    real(kind=8) :: dfdi_loc(nno_par_max,2)
     character(len=8) :: elrefp, elrese(4), elref, enr, noma
+    aster_logical :: axi
     data          elrese /'SE2','TR3','SE3','TR6'/
 !
 ! ----------------------------------------------------------------------
@@ -93,12 +99,10 @@ subroutine te0118(option, nomte)
     call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop, nnos=nnops)
     ASSERT(nnop .le. nno_par_max)
     ASSERT(ndime .eq. 2)
+    axi = lteatt('AXIS','OUI')
 !
 ! - pour le moment on interdit les elements quadratiques
     ASSERT(iselli(elrefp))
-!
-! - allocate pour passer un tableau 2d correctement dimensionne a reeref
-    allocate(dfdi_loc(nnop,ndime))
 !
 ! - dimension de l'espace
     call tecael(iadzi, iazk24, noms=0)
@@ -132,9 +136,11 @@ subroutine te0118(option, nomte)
         nfh = 1
     endif
     if (enr(1:2) .eq. 'XT' .or. enr(3:3) .eq. 'T') then
-        nfe = 4
+        nfe = 1
     endif
     ASSERT((nfe .gt. 0) .or. (nfh .gt. 0))
+!
+    if (nfe.gt.0) call jevech('PSTANO', 'L', jstno)
 !
 ! - on interdit tout ddl autre que le deplacement (contact...)
     call tecach('OOO', 'PDEPLAR', 'L', iret, nval=7, itab=jtab)
@@ -200,6 +206,10 @@ subroutine te0118(option, nomte)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PLONCHA', 'L', jlonch)
     call jevech('PHEAVTO', 'L', jheavt)
+    if (nfe.gt.0) then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PBASLOR', 'L', jbaslo)
+    endif
 !
 ! - donnees topologiques des fonction Heaviside
     if (enr(1:2).eq.'XH') then
@@ -336,43 +346,24 @@ subroutine te0118(option, nomte)
 !
 ! --------- derivees des fonctions de formes dans le repere local
             call reeref(elrefp, nnop, geoloc, xg_loc, ndime,&
-                        r8bit2, ff, dfdi=dfdi_loc)
+                        r8bit2, ff, dfdi=dfdi_loc(1:nnop,1:ndime))
 !
 ! --------- calcul des fonctions d'enrichissement
             if (nfe .gt. 0) then
-!               level sets au point de Gauss
-                lsng = 0.d0
-                lstg = 0.d0
-                do inop = 1, nnop
-                    lsng = lsng + zr(jlsn-1+inop) * ff(inop)
-                    lstg = lstg + zr(jlst-1+inop) * ff(inop)
-                end do
-!
-!               coordonnees polaires du point
-                rg = sqrt(lsng**2.d0+lstg**2.d0)
-                ASSERT(rg .gt. r8pre)
-                tg = zi(jheavt-1+ise) * abs(atan2(lsng,lstg))
-!
-!               fonctions d'enrichissment
-                call xdeffe(rg, tg, fe)
+            call xkamat(zi(imate), ndim, axi, ka, mu, famiz='XCON')
+            call xcalfev_wrap(ndim, nnop, zr(jbaslo), zi(jstno), he(1),&
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk)
             endif
 !
 ! --------- calcul de l'approximation du deplacement
             call vecini(ndim, 0.d0, depla)
             do inop = 1, nnop
-                if (inop .le. nnops) then
-                    nnoi = 0
-                    ddli = ddls
-                else if (inop.gt.nnops) then
-                    nnoi = nnops
-                    ddli = ddlm
-                endif
-                indeni = ddls*nnoi+ddli*(inop-nnoi-1)
+                call indent(inop,ddls,ddlm,nnops,deca)
                 cpt = 0
 !               ddls classiques
                 do j = 1, ndim
                     cpt = cpt + 1
-                    depla(j) = depla(j) + ff(inop)*zr(idepl-1+indeni+cpt)
+                    depla(j) = depla(j) + ff(inop)*zr(idepl-1+deca+cpt)
                 end do
 !               ddls heaviside
                 do ig = 1, nfh
@@ -381,14 +372,14 @@ subroutine te0118(option, nomte)
                         depla(j) = depla(j) + xcalc_heav(zi(jheavn-1+ncompn*(inop-1)+ig),&
                                                          hea_se,&
                                                          zi(jheavn-1+ncompn*(inop-1)+ncompn))&
-                                            * ff(inop) * zr(idepl-1+indeni+cpt)
+                                            * ff(inop) * zr(idepl-1+deca+cpt)
                     end do
                 end do
 !               ddls enrichis en fond de fissure
-                do ig = 1, nfe
+                do alp = 1, nfe*ndim
+                    cpt = cpt + 1
                     do j = 1, ndim
-                        cpt = cpt + 1
-                        depla(j) = depla(j) + fe(ig) * ff(inop) * zr(idepl-1+indeni+cpt)
+                        depla(j) = depla(j) + fk(inop,alp,j) * zr(idepl-1+deca+cpt)
                     end do
                 end do
             end do
@@ -447,7 +438,5 @@ subroutine te0118(option, nomte)
 999 continue
 !
     zr(igthet) = tcla
-!
-    deallocate(dfdi_loc)
 !
 end subroutine

@@ -50,19 +50,19 @@ for num_calc in range(nb_raff+1):
   #========================
 
   FISS1=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM21',
                                     GROUP_MA_FOND='GM1'),
                        INFO=1,);
 
   FISS2=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM22',
                                     GROUP_MA_FOND='GM2'),
                        INFO=1,);
 
   FISS3=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM23',
                                     GROUP_MA_FOND='GM3'),
                        INFO=1,);
@@ -70,46 +70,46 @@ for num_calc in range(nb_raff+1):
 
   if (num_calc == nb_raff):
     FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                         TYPE_DISCONTINUITE='FISSURE',
+                         TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                          JONCTION=_F(FISSURE=FISS1,POINT=(0.2030945,1.557297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
                          INFO=1,);
   else:
     FISS4=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                         TYPE_DISCONTINUITE='FISSURE',
+                         TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM24',
                                       GROUP_MA_FOND='GM4'),
                          INFO=1,);
 
   FISS5=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM31',
                                     GROUP_MA_FOND='GM5'),
                        INFO=1,);
 
   FISS6=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM32',
                                     GROUP_MA_FOND='GM6'),
                        INFO=1,);
 
   FISS7=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                       TYPE_DISCONTINUITE='FISSURE',
+                       TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                        DEFI_FISS=_F(GROUP_MA_FISS='GM33',
                                     GROUP_MA_FOND='GM7'),
                        INFO=1,);
 
   if (num_calc == nb_raff):
     FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                         TYPE_DISCONTINUITE='FISSURE',
+                         TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                          JONCTION=_F(FISSURE=FISS5,POINT=(-0.2030955,0.057297),),
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),
                          INFO=1,);
   else:
     FISS8=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],
-                         TYPE_DISCONTINUITE='FISSURE',
+                         TYPE_DISCONTINUITE='FISSURE',TYPE_ENRI_FOND='GEOMETRIQUE',
                          DEFI_FISS=_F(GROUP_MA_FISS='GM34',
                                       GROUP_MA_FOND='GM8'),
                          INFO=1,);
@@ -197,34 +197,34 @@ Vale_Ic  = [None]*14
 Vale_IIc = [None]*14
 
 VALE_CALC=[
- 1.79305844396,
- 2.85269698268,
- 1.98209419282,
- 2.40367869654,
- -1.68040440306,
- -0.130513020418,
- 0.0591848818302,
- 0.294164145563,
- -0.523694268521,
- 0.189771683909,
- -0.0566213238137,
- -0.19527290602,
- -0.196056841977,
- 0.0261553177441,
- 3.73360115567,
- 2.33772687617,
- 2.69371424614,
- 1.02201252361,
- 5.38186161345,
- -0.121518042399,
- 4.31192443211,
- -0.170557093349,
- 3.67803278028,
- 0.925937203187,
- 0.416857967121,
- -0.388681215881,
- 1.00616535338,
- 0.0753947046294
+ 1.79516617596,
+ 2.85445304968,
+ 1.98916667982,
+ 2.40276524954,
+ -1.68480830306,
+ -0.133424010418,
+ 0.0557416528302,
+ 0.292959395563,
+ -0.526804538521,
+ 0.190229170909,
+ -0.0565565538137,
+ -0.19626491602,
+ -0.194939961977,
+ 0.0240901827441,
+ 3.73204006567,
+ 2.34018752717,
+ 2.68366716914,
+ 1.02006936261,
+ 5.38586211445,
+ -0.121230982399,
+ 4.31882536611,
+ -0.166710253349,
+ 3.67474462028,
+ 0.929083734187,
+ 0.418851318121,
+ -0.390173635881,
+ 1.00649713638,
+ 0.0706288716294
 ]
 
 for i in range(14):

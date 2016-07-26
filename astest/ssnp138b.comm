@@ -115,28 +115,29 @@ K1_1=[5013.598 , 2454.4]
 K1_2=[ 5013.586 , 2592.142]
 
 # G SUR LE FOND 1 POUR LES DEUX ANGLES (valeurs obtenues par CALC_G, option CALC_K_G)
+# GR N'A PAS DE SENS CAR IL S'AGIT DE LA NON REGRESSION PURE
 GR  =[1.19751E-04 , 5.64356E-05]
 
 # K1 SUR LE FOND 2 (POST_K1_K2_K3) POUR LES DEUX ANGLES
-PK  =[5069.1186266214 , 2589.8601041307]
+PK  =[5090.1606206214 , 2620.7764921307]
 
 VAL_CALC =  [
-       5013.5984820396       ,
-       5013.5861186662       ,
-       5013.5984820396       ,
-       5013.5861186662       ,
-       1.1975050593308E-04   ,
-       1.1975050593308E-04   ,
-       5069.1186266219       ,
-       5069.1186266219       ,
-       2456.5115458743       ,
-       2590.0301744021       ,
-       2456.5115458743       ,
-       2590.0301744021       ,
-       5.6435648377191E-05   ,
-       5.6435648377191E-05   ,
-       2589.860104126        ,
-       2589.860104126         ]
+       5013.3436620396       ,
+       5013.3432966662       ,
+       5013.3436620396       ,
+       5013.3432966662       ,
+       1.1989750593308E-04   ,
+       1.1989750593308E-04   ,
+       5090.1606206219       ,
+       5090.1606206219       ,
+       2452.6003268743       ,
+       2590.9217594021       ,
+       2452.6003268743       ,
+       2590.9217594021       ,
+       5.6344829077191E-05   ,
+       5.6344829077191E-05   ,
+       2620.776492126        ,
+       2620.776492126         ]
 
 SI1CH1 = [None]*(nbcalc)
 SI2CH1 = [None]*(nbcalc)
@@ -159,7 +160,7 @@ for i in range(nbcalc) :
                                  PFON_EXTR  = ( A*cos(eval(alpha))/2, A*sin(eval(alpha))/2, 0.),
                                  ),
                     TYPE_ENRI_FOND='GEOMETRIQUE',
-                    NB_COUCHES=3,
+                    NB_COUCHES=5,
                     INFO=1);
 
   MODELK[i]=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,FISSURE=FISS[i],INFO=1,);
@@ -290,19 +291,13 @@ for i in range(nbcalc) :
 
   TEST_TABLE(TABLE=TG1CH1[i],
              NOM_PARA='G',
-             VALE_CALC=VAL_CALC[8*i+4],  
-             
-             VALE_REFE= GR[i],
-             CRITERE='RELATIF',
-             REFERENCE='AUTRE_ASTER',);
+             VALE_CALC=VAL_CALC[8*i+4],
+             CRITERE='RELATIF',);
 
   TEST_TABLE(TABLE=TG1CH2[i],
              NOM_PARA='G',
              VALE_CALC=VAL_CALC[8*i+5],  
-             
-             VALE_REFE= GR[i],
-             CRITERE='RELATIF',
-             REFERENCE='AUTRE_ASTER',);
+             CRITERE='RELATIF',);
 
 # 2) CALCUL AVEC POST_K1_K2_K3  POUR L'ANGLE COURANT i
 

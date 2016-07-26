@@ -75,7 +75,7 @@ implicit none
 !
     integer :: ifm, niv
     integer, parameter :: nbout = 3
-    integer, parameter :: nbin  = 28
+    integer, parameter :: nbin  = 30
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1) :: base

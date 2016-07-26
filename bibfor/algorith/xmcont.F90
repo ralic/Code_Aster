@@ -5,13 +5,13 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
                   ipgf, jac, jheavn, ncompn, jheafa, mmat,&
                   lact, ncomph, nd, nddl, ndim,&
                   nfh, nfiss, nno, nnol, nnos,&
-                  nvit, pla, rela, rr, singu,&
+                  nvit, pla, rela, singu, fk,&
                   tau1, tau2)
 ! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,6 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
 ! IN NOEUD  : FORMULATION AUX NOEUDS
 ! IN PLA    : PLACE DES DDLS DE LAGRANGE
 ! IN RELA   : LOI DE COMPORTEMENT COHESIVE
-! IN RR     : RACINE RAYON A LA POINTE DE FISSURE
 ! IN SINGU  : ELEMENT ENRICHI CTIP OU ON
 ! IN TAU1   : 1ERE TANGENTE SURFACE DE CONTACT
 ! IN TAU2   : 2EME TANGENTE (3D)
@@ -80,10 +79,11 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
     integer :: singu
     real(kind=8) :: alpha(3), am(3), cohes(3), coefcp, coefcr
     real(kind=8) :: dsidep(6, 6), ffc(8), ffp(27), raug, wsaut(3)
-    real(kind=8) :: jac, mmat(216, 216), nd(3), p(3, 3), rr
+    real(kind=8) :: jac, mmat(216, 216), nd(3), p(3, 3)
     real(kind=8) :: sigma(6), saut(3), tau1(3), tau2(3), rela
     real(kind=8) :: lamb(3), delta(6), r, coheo(3)
     real(kind=8) :: dnor(3), dtang(3), pp(3,3), un
+    real(kind=8) :: fk(27,3,3)
     character(len=8) :: job, champ
 !
 ! CAS FORMULATION LAGRANGIEN AUGMENTE
@@ -97,7 +97,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
         else if (indco.eq.1) then
             call xmmaa3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, nfh, nd,&
-                        coefcr, singu, rr, ddls, ddlm,&
+                        coefcr, singu, fk, ddls, ddlm,&
                         jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                         ifa, mmat)
         endif
@@ -113,7 +113,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
         else if (indco.eq.1) then
             call xmmpa3(ndim, nno, nnos, nnol, pla,&
                         ffc, ffp, jac, nfh, nd,&
-                        coefcp, singu, rr, ddls, ddlm,&
+                        coefcp, singu, fk, ddls, ddlm,&
                         jheavn, ncompn, nfiss, ifiss, jheafa, ncomph,&
                         ifa, mmat)
         endif
@@ -133,7 +133,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             endif
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
             job='MATRICE'
@@ -143,7 +143,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
                         dtang, p, am)
             call xmmco1(ndim, nno, dsidep, pp, p,&
                         nd, nfh, ddls, jac, ffp,&
-                        singu, rr, tau1, tau2, mmat)
+                        singu, fk, tau1, tau2, mmat)
 !
 !           ACTUALISATION INDICATEUR PREDICTION / CORRECTION
             coheo(1)=cohes(1)
@@ -201,7 +201,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
             nvec = 2
             call xmmsa3(ndim, nno, nnos, ffp, nddl,&
                         nvec, zr(idepd), zr(idepm), zr(idepm), nfh,&
-                        singu, rr, ddls, ddlm, jheavn, ncompn,&
+                        singu, fk, ddls, ddlm, jheavn, ncompn,&
                         nfiss, ifiss, jheafa, ncomph, ifa,&
                         saut)
 !
@@ -226,7 +226,7 @@ subroutine xmcont(algocr, coefcr, coefcp, cohes, coheo,&
                         ddlm, dsidep, p, r, nfh,&
                         jac, ffp, ffc, pla, singu,&
                         nfiss, jheafa, jheavn, ncompn, ifa, ncomph,&
-                        ifiss, rr, mmat)
+                        ifiss, fk, mmat)
 !
 ! --- ACTUALISATION INDICATEUR PREDICTION / CORRECTION
 !

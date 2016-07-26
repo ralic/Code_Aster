@@ -245,7 +245,7 @@ IMPR_TABLE(TABLE=TABKNEUT)
 #---
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -253,7 +253,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -261,7 +261,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -269,7 +269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1324885.20838,
+           VALE_CALC=1144133.40798,
            NOM_PARA='K1',
            TABLE=TABK,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -281,7 +281,7 @@ TEST_TABLE(
 #---
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKTEMP,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -289,7 +289,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKTEMP,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -297,7 +297,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKTEMP,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -305,7 +305,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1324885.20838,
+           VALE_CALC=1144133.40798,
            NOM_PARA='K1',
            TABLE=TABKTEMP,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -317,7 +317,7 @@ TEST_TABLE(
 #---
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -325,7 +325,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -333,7 +333,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=851382.586304,
+           VALE_CALC=458480.965328,
            NOM_PARA='K1',
            TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',
@@ -341,7 +341,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1324885.20838,
+           VALE_CALC=1144133.40798,
            NOM_PARA='K1',
            TABLE=TABKNEUT,
            FILTRE=_F(NOM_PARA='NUM_PT',

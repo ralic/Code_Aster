@@ -127,7 +127,7 @@ G_INIT2=CALC_G(THETA=_F(FOND_FISS=FOND,
 
                     
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=2.8898004233E-5,
+           VALE_CALC=2.88980042335E-05,
            NOM_PARA='G',
            TABLE=G_INIT,
            FILTRE=(_F(NOM_PARA='NOEUD',

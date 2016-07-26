@@ -29,6 +29,8 @@ subroutine te0037(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/xteini.h"
 #include "asterfort/xxmmvd.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_saut.h"
@@ -36,7 +38,7 @@ subroutine te0037(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,12 +78,15 @@ subroutine te0037(option, nomte)
     integer :: jlst, jptint, jaint, jcface, jlonch, jstno, jbasec, contac
     integer :: i, j, ninter, nface, cface(30, 6), ifa, nfiss, jfisno
     integer :: ibid, ilev, ifiss, ncompc, jtab(7), ncompp, ino
+    integer :: imate, jlsn, jbaslo
+    integer :: alp
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
-    real(kind=8) :: rr(2), lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
+    real(kind=8) :: lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
     aster_logical :: lbid, pre1, axi
     integer :: compt, nddlm, nddls, nddlp, iret, jheafa, ncomph, ncompb
     real(kind=8) :: thet, pinter(3), pinref(3)
+    real(kind=8) :: fk(27,3,3), ka, mu
     data    he / -1.d0 , 1.d0/
 !
     call jemarq()
@@ -137,7 +142,7 @@ subroutine te0037(option, nomte)
         call xhmini(nomte, nfh, ddls, ddlm, nddlp, nfiss)
 !
         contac = 0
-        singu = 0
+        nfe = 0
         nddls = ddls + nddlp
         nddlm = ddlm
         nnom = nno - nnos
@@ -146,6 +151,13 @@ subroutine te0037(option, nomte)
         call xteini(nomte, nfh, nfe, singu, ddlc,&
                     nnom, ddls, nddl, ddlm, nfiss,&
                     contac)
+    endif
+!
+    if (nfe.gt.0) then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PBASLOR', 'L', jbaslo)
+        call jevech('PLSN', 'L', jlsn)
+        call xkamat(zi(imate), ndim, axi, ka, mu)
     endif
 !
     call tecael(iadzi, iazk24, noms=0)
@@ -244,7 +256,7 @@ subroutine te0037(option, nomte)
 !
 !       ON VERIFIE QUE LES NOEUDS DE LA FACETTE DE CONTACT ONT LST<0
 !
-           if (singu.eq.1) then
+           if (nfe.eq.1) then
               call vecini(3, 0.d0, pinter)
               do i = 1, nptf
                  do j = 1, ndim
@@ -278,17 +290,6 @@ subroutine te0037(option, nomte)
                                nno, igeom, jbasec, xg, jac,&
                                ff, r27bid, dfbid, nd, r3bid,&
                                ifiss, ncompp, ncompb)
-               endif
-!
-!         CALCUL DE RR = SQRT(DISTANCE AU FOND DE FISSURE)
-               if (singu .eq. 1) then
-                   lst=0.d0
-                   do i = 1, nno
-                       lst=lst+zr(jlst-1+i)*ff(i)
-                   end do
-                   if (lst.gt.0.d0) lst = 0.d0
-                   rr(1)=-sqrt(-lst)
-                   rr(2)= sqrt(-lst)
                endif
 !
 !         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -405,6 +406,15 @@ subroutine te0037(option, nomte)
                    do ilev = 1, 2
 !
                       pos=0
+                      if (nfe.gt.0) then
+                        if (he(ilev).gt.0) then
+                          call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), he(ilev),&
+                                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='MAIT')
+                        else
+                          call xcalfev_wrap(ndim, nno, zr(jbaslo), zi(jstno), he(ilev),&
+                                     zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='ESCL')
+                        endif
+                      endif
                       do ino = 1, nno
 !
 !               TERME CLASSIQUE
@@ -426,14 +436,14 @@ subroutine te0037(option, nomte)
                          end do
 !
 !               TERME SINGULIER
-                         do j = 1, singu*ndim
+                         do 555 alp = 1, nfe*ndim
                             pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + rr(ilev) * forrep(j,ilev) * jac * f&
-                                             &f(ino) 
-                         end do
-!
-!               ON SAUTE LES POSITIONS DES DDLS ASYMPTOTIQUES E2, E3, E4
-                         pos = pos + (nfe-1) * ndim * singu
+!               PAS DE CISAILLEMENT MODE III
+                            if (alp.eq.3) goto 555
+                            do j = 1, ndim
+                              zr(ires-1+pos) = zr(ires-1+pos) + fk(ino,alp,j) * forrep(j,ilev) * jac
+                            enddo
+555                      continue
 !
 !               ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
 !

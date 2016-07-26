@@ -1,7 +1,7 @@
 function xfem_cmps(nocmp, phys)
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,8 @@ function xfem_cmps(nocmp, phys)
     elseif (nocmp .eq. 'H3' .or. nocmp .eq. 'H3X' .or. nocmp .eq. 'H3Y' .or. nocmp .eq. 'H3Z') then
         goto 99
     elseif (nocmp .eq. 'H4' .or. nocmp .eq. 'H4X' .or. nocmp .eq. 'H4Y' .or. nocmp .eq. 'H4Z') then
+        goto 99
+    elseif (nocmp .eq. 'K1' .or. nocmp .eq. 'K2' .or. nocmp .eq. 'K3') then
         goto 99
 ! ON RAJOUTE LES CPMS DE CONT/FROT
     elseif (nocmp .eq. 'LAGS_C' .or. nocmp .eq. 'LAGS_F1' .or. nocmp .eq. 'LAGS_F2' .or.  &

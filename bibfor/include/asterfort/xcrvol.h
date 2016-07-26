@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine xcrvol(nse, ndim, jcnse, nnose, jpint,&
                       igeom, elrefp, inoloc, nbnoma, jcesd3,&
                       jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
-                      jcesd8, jcesl8, jcesv8, vtot)
+                      jcesd8, jcesl8, jcesv8, lfiss, vtot)
         integer :: nbnoma
         integer :: ndim
         integer :: nse
@@ -33,6 +35,7 @@ interface
         integer :: jcesl3
         integer :: jcesv3
         integer :: numa2
+        aster_logical :: lfiss
         integer :: iheav
         integer :: nfiss
         real(kind=8) :: vhea

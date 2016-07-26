@@ -2,12 +2,13 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
                   he, nfh, ddlc, ddlm, nfe,&
                   basloc, nnop, npg, idecpg, typmod,&
                   imate, compor, idepl, lsn, lst,&
-                  nfiss, heavn, sig)
+                  nfiss, heavn, jstno, sig)
 !
 ! aslint: disable=W1306,W1504
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterfort/indent.h"
 #include "asterfort/assert.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
@@ -17,12 +18,15 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
-#include "asterfort/xcalf2.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
+#include "asterfort/xkamat.h"
+#include "asterfort/iselli.h"
+#include "asterfort/xcalfev_wrap.h"
+#include "asterfort/xnbddl.h"
     integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
-    integer :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5)
+    integer :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5), jstno
     character(len=8) :: elrefp, elrese, typmod(*)
     character(len=16) :: compor(4)
     real(kind=8) :: basloc(6*nnop), he(nfiss), coorse(*)
@@ -30,7 +34,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,14 +84,17 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     integer :: kpg, n, i, j, ino, iret, ipg, hea_se
     integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
     integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
+    integer :: singu
     aster_logical :: grdepl, axi
-    real(kind=8) :: f(3, 3), eps(6), baslog(6)
-    real(kind=8) :: fe(4), instan, rac2
-    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), lsng, lstg
+    real(kind=8) :: f(3, 3), eps(6)
+    real(kind=8) :: instan, rac2
+    real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)
     real(kind=8) :: r8bi7(7), r8bi3(3)
-    real(kind=8) :: dfdi(nnop, ndim), dgdgl(4, 3)
+    real(kind=8) :: dfdi(nnop, ndim)
+    real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
     real(kind=8) :: grad(3, 3)
-    real(kind=8) :: zero, s, sth, d(4, 4), epsth(6)
+    real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
+    real(kind=8) :: ka, mu 
     integer :: nnops
 !
     data    zero / 0d0 /
@@ -103,11 +110,8 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
     call vecini(7, 0.d0, r8bi7)
     call vecini(3, 0.d0, r8bi3)
 !
-!     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET
-    ddld=ndim*(1+nfh+nfe)
-!
-!     NOMBRE DE DDL TOTAL (DEPL+CONTACT) À CHAQUE NOEUD SOMMET
-    ddls=ddld+ddlc
+!   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
+    call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !
 ! ---- NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT
 !      -----------------------------------------
@@ -151,41 +155,36 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom,&
 !
 !       CALCUL DES FF
         call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff)
+                    xe, ff, dfdi=dfdi)
 !
 !-----------------------------------------------------------------------
 !         BOUCLE SUR LES POINTS DE GAUSS DU SOUS-ELT
 !-----------------------------------------------------------------------
 !
-        if (nfe .gt. 0) then
-!         BASE LOCALE AU POINT DE GAUSS
-            call vecini(6, 0.d0, baslog)
-            lsng = 0.d0
-            lstg = 0.d0
-            do ino = 1, nnop
-                lsng = lsng + lsn(ino) * ff(ino)
-                lstg = lstg + lst(ino) * ff(ino)
-                do i = 1, 6
-                    baslog(i) = baslog(i) + basloc(6*(ino-1)+i) * ff( ino)
-                end do
-            end do
 !
-!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DERIVEES
-            call xcalf2(he(1), lsng, lstg, baslog, fe,&
-                        dgdgl, iret)
-!         ON A PAS PU CALCULER LES DERIVEES DES FONCTIONS SINGULIERES
-!         CAR ON SE TROUVE SUR LE FOND DE FISSURE
-            ASSERT(iret.ne.0)
+!         FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
+        if (singu .gt. 0) then
+            call xkamat(imate, ndim, axi, ka, mu)
+            call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
+        endif
+!
+!       CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE) ET DU DEPLACEMENT 
+!       RADIAL SI AXI (NECESSAIRE POUR LE CALCUL DES DEFORMATIONS EPS)
+        r = 0.d0
+        if (axi) then
+            do ino = 1, nnop
+                r = r + ff(ino)*zr(igeom-1+2*(ino-1)+1)
+            end do
+            ASSERT(r.ge.0d0)
         endif
 !
 !       CALCUL DES DEFORMATIONS EPS
 !
-        call reeref(elrefp, nnop, zr(igeom), xg, ndim,&
-                    xe, ff, dfdi=dfdi)
         call xcinem(axi, igeom, nnop, nnops, idepl, grdepl,&
                     ndim, he,&
-                    nfiss, nfh, nfe, ddls, ddlm,&
-                    fe, dgdgl, ff, dfdi, f,&
+                    nfiss, nfh, singu, ddls, ddlm,&
+                    fk, dkdgl, ff, dfdi, f,&
                     eps, grad, heavn)
 !
 !       CALCUL DES DEFORMATIONS THERMIQUES EPSTH

@@ -2,10 +2,10 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                   igeom, typmod, imate, compor, jpintt,&
                   cnset, heavt, lonch, basloc, idepl,&
                   lsn, lst, sig, jpmilt, nfiss,&
-                  jheavn)
+                  jheavn, jstno)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,6 +75,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
     integer ::  idecpg, nbsig, ig, ifiss, idebs, jpmilt, nfe, idepl
     integer ::  jpintt, igeom, jheavn, ncompn, heavn(nnop,5)
     integer :: irese, nno, jtab(7), ncomp, iret
+    integer :: jstno
 !
     data    elrese /'SE2','TR3','TE4','SE3','TR6','T10'/
     data    fami   /'BID','XINT','XINT','BID','XINT','XINT'/
@@ -158,7 +159,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                         he, nfh, ddlc, ddlm, nfe,&
                         basloc, nnop, npg, idecpg, imate,&
                         compor, idepl, lsn, lst, nfiss,&
-                        heavn, sig(idebs+1))
+                        heavn, jstno, sig(idebs+1))
         else if (ndim.eq.2) then
 !
             ASSERT(nbsig.eq.4)
@@ -167,7 +168,7 @@ subroutine xsidep(nnop, nfh, nfe, ddlc, ddlm,&
                         he, nfh, ddlc, ddlm, nfe,&
                         basloc, nnop, npg, idecpg, typmod,&
                         imate, compor, idepl, lsn, lst,&
-                        nfiss, heavn, sig(idebs+1))
+                        nfiss, heavn, jstno, sig(idebs+1))
 !
         endif
 !

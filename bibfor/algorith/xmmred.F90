@@ -3,7 +3,7 @@ subroutine xmmred(ndimg, depdel, depdes, lagcn, depcn,&
                   ffrocn)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,11 +48,11 @@ subroutine xmmred(ndimg, depdel, depdes, lagcn, depcn,&
     character(len=8) :: ddlc(3), ddls2(4), ddls3(6), ddlt2(6), ddlt3(9)
 ! ----------------------------------------------------------------------
     data         ddlc  /'LAGS_C','LAGS_F1','LAGS_F2'/
-    data         ddls2 /'H1X','H1Y','E1X','E1Y'/
-    data         ddls3 /'H1X','H1Y','H1Z','E1X','E1Y','E1Z'/
-    data         ddlt2 /'DX','DY','H1X','H1Y','E1X','E1Y'/
+    data         ddls2 /'H1X','H1Y','K1','K2'/
+    data         ddls3 /'H1X','H1Y','H1Z','K1','K2','K3'/
+    data         ddlt2 /'DX','DY','H1X','H1Y','K1','K2'/
     data         ddlt3 /'DX','DY','DZ','H1X','H1Y','H1Z',&
-     &                    'E1X','E1Y','E1Z'/
+     &                    'K1','K2','K3'/
 !
 ! ----------------------------------------------------------------------
 !

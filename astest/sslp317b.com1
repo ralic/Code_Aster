@@ -83,13 +83,13 @@ VOLUMEX=POST_ELEM(MODELE=MO,
 # avec les 4 fissures definies ci-dessus.
 
 TEST_TABLE(REFERENCE='NON_DEFINI',
-           VALE_CALC=0.035224609374999,
-           VALE_REFE=0.035224609374999,
+           VALE_CALC=0.0354150390625,
+           VALE_REFE=0.0354150390625,
            NOM_PARA='INTE_X1',
            TABLE=VOLUMEX,)
 
 TEST_TABLE(REFERENCE='NON_DEFINI',
-           VALE_CALC=1.,
+           VALE_CALC=1.0,
            VALE_REFE=1.,
            NOM_PARA='MOYE_X1',
            TABLE=VOLUMEX,)

@@ -1,0 +1,391 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#            C: MODELISATION 2D X-FEM AVEC ELEMENTS LINEAIRES
+#relation = 'ELAS'
+
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',
+              ),
+      DEBUG=_F(SDVERI='OUI',),);
+
+
+MAILLAG0=LIRE_MAILLAGE(FORMAT='MED',);
+
+MAILLAG1 = CREA_MAILLAGE(MAILLAGE = MAILLAG0,
+                         LINE_QUAD = _F(TOUT = 'OUI'));
+
+#----------------------------------------
+# epaisseur (suivant x)
+lx = 16.0;
+
+
+# largeur (suivant y)
+ly = 50.0;
+
+
+# nb element suivant la largeur
+nx = 25.0;
+
+
+# nb element suivant la hauteur
+ny = 71.0;
+
+
+# longueur de la fissure
+a = 6;
+
+
+#----------------------------------------
+# tailles des elements suivant x et y
+hy = (ly / ny);
+hx = (lx / nx);
+h = sqrt(hy**2+hx**2)
+
+
+# creation des noeuds servant a bloquer les modes rigides
+
+MAILLAG1=DEFI_GROUP(reuse =MAILLAG1,
+                    MAILLAGE=MAILLAG1,
+                    CREA_GROUP_NO=(_F(OPTION='ENV_SPHERE',
+                                      NOM='A1',
+                                      POINT=((lx - a),(-(hy) / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='A2',
+                                      POINT=((lx - a),(hy / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='C1',
+                                      POINT=(((lx - a) - (2 * hx)),(-(hy) / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),
+                                   _F(OPTION='ENV_SPHERE',
+                                      NOM='C2',
+                                      POINT=(((lx - a) - (2 * hx)),(hy / 2.0),),
+                                      RAYON=(1 / (8.0 * ny)),
+                                      PRECISION=(1 / (8.0 * ny)),),),);
+
+
+MODELEIN=AFFE_MODELE(MAILLAGE=MAILLAG1,
+                     AFFE=(_F(GROUP_MA='SURFTOT',
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),
+                           _F(GROUP_MA=('LIG1','LIG3',),
+                              PHENOMENE='MECANIQUE',
+                              MODELISATION='C_PLAN',),),);
+
+FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
+                    DEFI_FISS=_F(FORM_FISS = 'DEMI_DROITE',
+                                 PFON      =(0. , 0. ,0.),
+                                 DTAN      =(1. , 0. ,0.),),);
+
+MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELEIN,
+                         FISSURE=FISS)
+
+
+#----------------------------------------------
+#                   MATERIAU
+#----------------------------------------------
+
+MAT=DEFI_MATERIAU(ELAS=_F(E=2.0601E5,
+                          NU=0.3,
+                          ALPHA=0.,),
+                  ECRO_LINE=_F(D_SIGM_EPSI=0.,
+                               SY=808.344,),);
+
+CHAMPMA1=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
+                       MODELE=MODELEK,
+                       AFFE=_F(TOUT='OUI',
+                               MATER=MAT,),);
+
+#----------------------------------------------------------
+#                   CHARGEMENT
+#----------------------------------------------------------
+# blocage des modes rigides
+
+CH=AFFE_CHAR_MECA(MODELE=MODELEK,
+                  LIAISON_DDL=(_F(GROUP_NO=('A1','A2',),
+                                  DDL=('DX','DX',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),
+                               _F(GROUP_NO=('A1','A2',),
+                                  DDL=('DY','DY',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),
+                               _F(GROUP_NO=('C1','C2',),
+                                  DDL=('DY','DY',),
+                                  COEF_MULT=(0.5,0.5,),
+                                  COEF_IMPO=0.,),),);
+
+CHF=AFFE_CHAR_MECA(MODELE=MODELEK,
+                   DDL_IMPO=(_F(GROUP_MA='LIG1',DY=-1.,),
+                             _F(GROUP_MA='LIG3',DY= 1.,),),);
+
+RAMPE=DEFI_FONCTION(NOM_PARA='INST',
+                    VALE=(0.,0.,
+                          1.,1.,),
+                    PROL_DROITE='LINEAIRE',);
+
+#----------------------------------------------
+#                   RESOLUTION
+#----------------------------------------------
+npas = 1
+
+L_INST=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=0.02,NOMBRE=npas),
+                                  _F(JUSQU_A=0.04,NOMBRE=npas),
+                                  _F(JUSQU_A=0.06,NOMBRE=npas),
+                                  _F(JUSQU_A=0.08,NOMBRE=npas),
+                                  _F(JUSQU_A=0.10,NOMBRE=npas),
+                                  ),
+                      );
+
+L_ARCH=DEFI_LIST_REEL(DEBUT=0.,
+                      INTERVALLE=(_F(JUSQU_A=0.02,NOMBRE=1),
+                                  _F(JUSQU_A=0.04,NOMBRE=1),
+                                  _F(JUSQU_A=0.06,NOMBRE=1),
+                                  _F(JUSQU_A=0.08,NOMBRE=1),
+                                  _F(JUSQU_A=0.10,NOMBRE=1),
+                                  ),
+                      );
+
+UTOT1=STAT_NON_LINE(MODELE=MODELEK,
+                    CHAM_MATER=CHAMPMA1,
+                    EXCIT=(
+                           _F(CHARGE=CHF,FONC_MULT=RAMPE,),
+                           _F(CHARGE=CH,),),
+                    COMPORTEMENT=_F(RELATION='ELAS_VMIS_LINE'),
+                    INCREMENT=_F(LIST_INST=L_INST),
+                    ARCHIVAGE=_F(LIST_INST=L_ARCH),
+                    NEWTON=_F(REAC_ITER=1,),
+                    CONVERGENCE=_F(ARRET='OUI',
+                                   ITER_GLOB_MAXI=20,),
+                    )
+
+#------------------------------------------------------------------------
+# POST-TRAITEMENT : VISUALISATION DES DEPLACEMENTS
+#------------------------------------------------------------------------
+
+MA_XFEM=POST_MAIL_XFEM(MODELE=MODELEK)
+
+MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
+                     AFFE=_F(TOUT='OUI',
+                             PHENOMENE='MECANIQUE',
+                             MODELISATION='C_PLAN'))
+
+RES_XFEM=POST_CHAM_XFEM(RESULTAT=UTOT1,
+                        MODELE_VISU=MOD_VISU)
+
+MAT_VISU=AFFE_MATERIAU(MAILLAGE=MA_XFEM,
+                       AFFE=_F(TOUT='OUI',MATER=MAT))
+
+# CALCUL DE DERA_ELGA A TOUS LES INSTANTS ARCHIVES, SAUF AU DERNIER INSTANT
+
+RES_XFEM=CALC_CHAMP(reuse=RES_XFEM,RESULTAT=RES_XFEM,CHAM_MATER=MAT_VISU,CRITERES=('DERA_ELGA'))
+
+IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=RES_XFEM))
+
+# TEST DE DERA_ELGA A L'INSTANT 0.08 (CAR DERA_ELGA N'EST JAMAIS CALCULE AU DERNIER INSTANT)
+TEST_RESU(RESU=_F(INST=0.080000000000000002,
+                  TYPE_TEST='MAX',
+                  RESULTAT=RES_XFEM,
+                  NOM_CHAM='DERA_ELGA',
+                  NOM_CMP='DCHA_V',
+                  VALE_CALC=0.799372257428,
+                  ),
+          )
+
+DEPLFIN=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                   OPERATION='EXTR',
+                   RESULTAT=RES_XFEM,
+                   NOM_CHAM='DEPL',
+                   INST=0.10)
+
+MA_XFEM=DEFI_GROUP(reuse =MA_XFEM,
+                   MAILLAGE=MA_XFEM,
+                   CREA_GROUP_NO=_F(OPTION='ENV_SPHERE',
+                                    NOM='NTEST',
+                                    POINT=(-a,0.,),
+                                    RAYON=0.0001,
+                                    PRECISION=0.0001,),);
+
+TABDEP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='DEPLACEMENT_FISSURE',
+                               CHAM_GD=DEPLFIN,
+                               GROUP_NO='NTEST',
+                               NOM_CMP=('DX','DY',),),);
+
+IMPR_TABLE(TABLE=TABDEP)
+
+# CETTE VALEUR A ETE OBTENUE PAR LA MODELISATION A
+DEPREF = 0.0987568989597;
+
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=-0.0982207000716,
+           VALE_REFE=-0.098756898959699996,
+           NOM_PARA='DY',
+           TYPE_TEST='MIN',
+           TABLE=TABDEP,)
+
+TEST_TABLE(CRITERE='RELATIF',
+           REFERENCE='AUTRE_ASTER',
+           PRECISION=0.02,
+           VALE_CALC=0.0982145000459,
+           VALE_REFE=0.098756898959699996,
+           NOM_PARA='DY',
+           TYPE_TEST='MAX',
+           TABLE=TABDEP,)
+
+#------------------------------------------------------------------------
+# CALCUL DU TAUX DE RESTITUTION DE L ENERGIE G AVEC 2 COURONNES DIFFERENTES
+#------------------------------------------------------------------------
+
+# couronne 1 entre h et 4h
+G_1=CALC_G(THETA=_F(FISSURE=FISS,
+                    R_INF = 1*h,
+                    R_SUP = 4*h),
+           RESULTAT=UTOT1,
+           )
+
+IMPR_TABLE(TABLE=G_1)
+
+# couronne 2 entre 2h et 6h
+G_2=CALC_G(THETA=_F(FISSURE=FISS,
+                    R_INF = 2*h,
+                    R_SUP = 6*h),
+           RESULTAT=UTOT1,
+           )
+
+IMPR_TABLE(TABLE=G_2)
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=3.21008979344,
+           VALE_REFE=3.2908090218925001,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.02,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=13.2470366874,
+           VALE_REFE=13.603188101422001,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.040000000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=31.2309437638,
+           VALE_REFE=31.970374749379999,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.059999999999999998,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=57.7384079953,
+           VALE_REFE=58.993613915841003,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.080000000000000002,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=89.6594259391,
+           VALE_REFE=91.415076304037001,
+           NOM_PARA='G',
+           TABLE=G_1,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.10000000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=3.20949477877,
+           VALE_REFE=3.2908090218925001,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.02,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=13.2419048589,
+           VALE_REFE=13.603188101422001,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.040000000000000001,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=31.2225437747,
+           VALE_REFE=31.970374749379999,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.059999999999999998,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=57.7324982998,
+           VALE_REFE=58.993613915841003,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.080000000000000002,),
+           )
+
+TEST_TABLE(REFERENCE='AUTRE_ASTER',
+           PRECISION=0.040000000000000001,
+           VALE_CALC=89.6629001971,
+           VALE_REFE=91.415076304037001,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.10000000000000001,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=89.6629001971,
+           NOM_PARA='G',
+           TABLE=G_2,
+           FILTRE=_F(NOM_PARA='INST',
+                     VALE=0.10000000000000001,),
+           )
+
+FIN();
+
+#

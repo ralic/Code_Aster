@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       he, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, npg, idecpg, imate,&
                       compor, idepl, lsn, lst, nfiss,&
-                      heavn, sig)
+                      heavn, jstno, sig)
         integer :: nfiss
         integer :: npg
         integer :: nnop
@@ -42,6 +42,7 @@ interface
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         integer :: heavn(nnop, 5)
+        integer :: jstno
         real(kind=8) :: sig(6, npg)
     end subroutine xside3
 end interface

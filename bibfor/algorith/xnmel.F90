@@ -3,7 +3,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                  compor, lgpg, crit, jpintt, cnset,&
                  heavt, lonch, basloc, idepl, lsn,&
                  lst, sig, vi, matuu, ivectu,&
-                 codret, jpmilt, nfiss, jheavn)
+                 codret, jpmilt, nfiss, jheavn, jstno)
 !
 ! aslint: disable=W1306,W1504
     implicit none
@@ -19,6 +19,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     integer :: cnset(4*32), heavt(*), lonch(10), ndim
     integer :: nfh, nfe, ddlc, ddlm
     integer :: ivectu, idepl, jpintt, jpmilt
+    integer :: jstno
     character(len=*) :: poum
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
@@ -27,7 +28,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -182,7 +183,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         typmod, option, imate, compor, lgpg,&
                         crit2, ibid, lsn, lst, idecpg,&
                         sig2, vi2, matuu, ibid2, codret,&
-                        nfiss, heavn)
+                        nfiss, heavn, jstno)
 !
             elseif (option(1:9).eq.'RAPH_MECA' .or. option(1:9)&
         .eq.'FULL_MECA' .or. option(1:10).eq.'RIGI_MECA_') then
@@ -194,7 +195,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
                         typmod, option, imate, compor, lgpg,&
                         crit, idepl, lsn, lst, idecpg,&
                         sig(idebs+1), vi(idebv+1), matuu, ivectu, codret,&
-                        nfiss, heavn)
+                        nfiss, heavn, jstno)
         endif
 !
 !

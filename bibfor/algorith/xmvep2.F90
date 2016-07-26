@@ -1,6 +1,6 @@
 subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
                   ffc, ffp, reac, jac, nfh,&
-                  saut, singu, nd, rr, cpenco,&
+                  saut, singu, fk, nd, cpenco,&
                   ddls, ddlm, jheavn, ncompn, nfiss, ifiss,&
                   jheafa, ncomph, ifa, vtmp)
 !
@@ -15,10 +15,11 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
     integer :: pla(27), nfh
     integer :: singu, ddls, ddlm, nfiss, ifiss, jheafa, ncomph, ifa, jheavn, ncompn
     real(kind=8) :: vtmp(400), cpenco, saut(3), nd(3)
-    real(kind=8) :: ffc(8), ffp(27), jac, reac, rr
+    real(kind=8) :: ffc(8), ffp(27), jac, reac
+    real(kind=8) :: fk(27,3,3)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +58,6 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 ! IN  TAU1   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 ! IN  TAU2   : TANGENTE A LA FACETTE AU POINT DE GAUSS
 ! IN  SINGU  : 1 SI ELEMENT SINGULIER, 0 SINON
-! IN  RR     : DISTANCE AU FOND DE FISSURE
 ! IN  IFA    : INDICE DE LA FACETTE COURANTE
 ! IN  CFACE  : CONNECTIVITÉ DES NOEUDS DES FACETTES
 ! IN  LACT   : LISTE DES LAGRANGES ACTIFS
@@ -70,6 +70,7 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 !
 !
     integer :: i, j, in, pli, ifh, hea_fa(2)
+    integer :: alpi
     real(kind=8) :: ffi, dn, coefi
     aster_logical :: lmultc
 !
@@ -107,7 +108,10 @@ subroutine xmvep2(ndim, nno, nnos, nnol, pla,&
 154         continue
 156     continue
         do 155 j = 1, singu*ndim
-            vtmp(in+ndim*(1+nfh)+j) = vtmp( in+ndim*(1+nfh)+j) + reac*2.d0*ffp(i)*rr*nd(j )*jac
+          do alpi = 1, ndim
+            vtmp(in+ndim*(1+nfh)+alpi) = vtmp( in+ndim*(1+nfh)+alpi) + &
+                                        reac*2.d0*fk(i,alpi,j)*nd(j )*jac
+          enddo
 155     continue
 153 end do
 !

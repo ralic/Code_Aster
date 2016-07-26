@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,7 @@ import cataelem.Commons.attributes as AT
 
 PLST     = InputParameter(phys=PHY.NEUT_R)
 
+PLSN     = InputParameter(phys=PHY.NEUT_R)
 
 PPINTER  = InputParameter(phys=PHY.N816_R)
 
@@ -57,6 +58,16 @@ PHEA_FA  = InputParameter(phys=PHY.N240_I)
 
 PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
 
+PBASLOR  = InputParameter(phys=PHY.NEUT_R)
+
+PSTANO = InputParameter(phys=PHY.N120_I,
+                        comment=""" XFEM """)
+
+PBASLOC  = InputParameter(phys=PHY.N480_R)
+
+PLSNGG     = InputParameter(phys=PHY.NEUT_R,
+comment=""" XFEM """)
+
 # Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
 # sont des champs a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
@@ -83,6 +94,11 @@ XCVBCA = Option(
         SP.PMATERC,
         SP.PMEMCON,
            PPINTER,
+           PLSN,
+           PBASLOR,
+           PSTANO,
+           PBASLOC,
+           PLSNGG,
     ),
     para_out=(
            PCOHESO,

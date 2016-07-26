@@ -27,6 +27,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xdvois.h"
+#include "asterfort/jedetr.h"
 !
     integer :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)
@@ -38,7 +39,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
     aster_logical :: class
 ! ---------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,15 +70,15 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 !
 ! OUT CLASS  : ON AFFECTE AUSSI LA RELATION CINEMATIQUE "TOTALE"
 !
-    integer :: nbxcmp
-    parameter  (nbxcmp=60)
-    integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
+    integer :: nbxcmp, nbnomax
+    parameter  (nbxcmp=60, nbnomax=20)
+    integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp), nno2
     integer :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
     integer :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
-    real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(20*ndim)
-    real(kind=8) :: ff(20), dfbid(20,ndim), eps, ptm(ndim), ptp(ndim), xe(3)
+    real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(nbnomax*ndim)
+    real(kind=8) :: ff(nbnomax), eps, ptm(ndim), ptp(ndim), xe(3)
     real(kind=8) :: valpar(ndim), deplm, deplp, deplun, deplde, depltr, coef(nbxcmp)
-    real(kind=8) :: valh, valc, sign, deplmi, ffb(3), a1, b1, c1, a2, b2, c2
+    real(kind=8) :: valh, valc, sign, deplmi, ffb(nbnomax), a1, b1, c1, a2, b2, c2
     character(len=8) :: noma, typma, elp, elpq, arete, nompar(ndim), nomres
     character(len=8) :: name_node, name_ma(20), ddl(nbxcmp), noeud(nbxcmp)
     character(len=1) :: axes(3)
@@ -175,7 +176,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 ! --- ON EVALUE ALPHA
           if (lsn(1) .ne. 0.d0) then
              param(1) = 0.d0
-             call reeref(arete, nno, lsno, param, 1, alpha, ff, dfbid)
+             call reeref(arete, nno, lsno, param, 1, alpha,&
+                         ff(1:nno))
           endif
 ! --- ON RECUPERE LES COORDONNES DE PTM ET PTP
           if (lsn(1) .eq. 0.d0) then
@@ -245,7 +247,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           if (.not. ismali(typma) .and. lsn(1) .ne. 0.d0 .and. lsno(3) .eq. 0.d0) then
              param(1) = -sign(1.d0,lsn(1))*5.d-1
 !     ON EVALUE LA FONCTION EN PARAM
-             call elrfvf(arete, param, nno, ff, nno)
+             call elrfvf(arete, param, nbnomax, ff, nno2)
              do i = 1, ndim
                 valpar(i)=coor(ndim+i)*ff(1)+coor(2*ndim+i)*ff(2)+coor(3*ndim+i)*ff(3)
              end do
@@ -260,10 +262,10 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
 ! --- QUATRIEME CAS: MAILLLAGE QUADRATIQUE ET NOEUD HORS FISSURE, ET NOEUD
 !     MILIEU PAS SUR LA FISSURE
           if (.not. ismali(typma) .and. lsn(1) .ne. 0.d0 .and. lsno(3) .ne. 0.d0) then
-             call elrfvf(arete, alpha, nno, ff, nno)
+             call elrfvf(arete, alpha, nbnomax, ff, nno2)
              param(1) = (sign(1.d0,alpha(1))*1.d0+alpha(1))/2.d0
 !     ON EVALUE LA FONCTION EN PARAM
-             call elrfvf(arete, param, 3, ffb, nno)
+             call elrfvf(arete, param, nbnomax, ffb, nno2)
              do i = 1, ndim
                 valpar(i)=coor(ndim+i)*ffb(1)+coor(2*ndim+i)*ffb(2)+coor(3*ndim+i)*ffb(3)
              end do
@@ -362,7 +364,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
              endif
 !     ON CHERCHE UN NOEUD DE LA MAILLE TEL QUE LSN SOIT DE SIGNE OPPOSE
              call vecini(ndim, 0.d0, ptp)
-             call elrfvf(elp, ptp, 20, ff, nbnoma)
+             call elrfvf(elp, ptp, nbnomax, ff, nbnoma)
              coorn = noma//'.COORDO    .VALE'
              call jeveuo(coorn, 'L', iadrco)
              do i = 1, nbnoma
@@ -409,7 +411,6 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                 heavm(ncompn*(i-1)+j) = ihea_no(iad)
              end do
           end do
-          hea_pt=-99
           hea_pt=xcalc_code(1,he_real=[-sign(1.d0,lsn(1))])
 !     ON CHERCHE LES COORDONNEES DE CE NOEUD
           do i = 1, ndim
@@ -433,7 +434,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
           call gnomsd(nomres, noojb, 16, 19)
           fenri = noojb(1:19)
           call focste(fenri, 'XXX', deplmi, 'G')
-          call reeref(elp, nbnomac, geom, valpar, ndim, xe, ff, dfbid)
+          call reeref(elp, nbnomac, geom, valpar, ndim, xe, ff(1:nbnomac))
           if (motcle.eq.'DX'.or.motcle.eq.'DY'.or.motcle.eq.'DZ') then
              do i = 1, nbnomac
                 ddl(2*i-1) = 'D'//motcle(2:2)
@@ -540,6 +541,11 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle,&
                    [0.d0], nterm, valimr, valimc, fenri,&
                    'REEL', fonree, '12', 0.d0, lisrel)
     endif
+!
+!    call jedetr(fclas//'.PROL')
+!    call jedetr(fclas//'.VALE')
+!    call jedetr(fenri//'.PROL')
+!    call jedetr(fenri//'.VALE')
 !
     call jedema()
 end subroutine

@@ -1,7 +1,7 @@
 subroutine te0382(option, nomte)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,6 +61,7 @@ subroutine te0382(option, nomte)
 #include "asterfort/xrmes2.h"
 #include "asterfort/xrmev2.h"
 #include "asterfort/assert.h"
+#include "asterfort/ltequa.h"
 !
     character(len=16) :: option, nomte
 !
@@ -181,9 +182,8 @@ subroutine te0382(option, nomte)
     call jevech('PCONTSER', 'L', jsigse)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     call teattr('S', 'XFEM', enr, ibid)
-    if (ibid .eq. 0 .and. (enr.eq.'XH'.or.enr.eq.'XHC') .and. ndim .le. 2) call jevech(&
-                                                                           'PPMILTO', 'L',&
-                                                                           jpmilt)
+    if (ibid .eq. 0 .and. ltequa(elrefe, enr))& 
+       call jevech('PPMILTO', 'L', jpmilt)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------- PREALABLES -----------------------------

@@ -2135,6 +2135,8 @@ phen.add('C_PLAN2XHTC', Modelisation(dim=(2,2), code='CX9',
     elements=(
         (MT.TRIA3     , EL.MECPTR3_XHTC),
         (MT.QUAD4     , EL.MECPQU4_XHTC),
+        (MT.TRIA6     , EL.MECPTR6_XHTC),
+        (MT.QUAD8     , EL.MECPQU8_XHTC),
     )))
 
 phen.add('C_PLAN2XT', Modelisation(dim=(2,2), code='CX5',
@@ -2164,7 +2166,9 @@ phen.add('C_PLAN2XTC', Modelisation(dim=(2,2), code='CX8',
     ),
     elements=(
         (MT.TRIA3     , EL.MECPTR3_XTC),
+        (MT.TRIA6     , EL.MECPTR6_XTC),
         (MT.QUAD4     , EL.MECPQU4_XTC),
+        (MT.QUAD8     , EL.MECPQU8_XTC),
     )))
 
 phen.add('C_PLAN_GRAD_EPSI', Modelisation(dim=(2,2), code='CPG',
@@ -2488,6 +2492,8 @@ phen.add('D_PLAN2XHTC', Modelisation(dim=(2,2), code='DX9',
     elements=(
         (MT.TRIA3     , EL.MEDPTR3_XHTC),
         (MT.QUAD4     , EL.MEDPQU4_XHTC),
+        (MT.TRIA6     , EL.MEDPTR6_XHTC),
+        (MT.QUAD8     , EL.MEDPQU8_XHTC),
     )))
 
 phen.add('D_PLAN2XT', Modelisation(dim=(2,2), code='DX5',
@@ -2518,6 +2524,8 @@ phen.add('D_PLAN2XTC', Modelisation(dim=(2,2), code='DX8',
     elements=(
         (MT.TRIA3     , EL.MEDPTR3_XTC),
         (MT.QUAD4     , EL.MEDPQU4_XTC),
+        (MT.TRIA6     , EL.MEDPTR6_XTC),
+        (MT.QUAD8     , EL.MEDPQU8_XTC),
     )))
 
 phen.add('D_PLAN_2DG', Modelisation(dim=(2,2), code='D2G',

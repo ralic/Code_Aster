@@ -4,7 +4,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                   lmulti, heavno, mmat, vtmp)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
 #include "asterfort/assert.h"
 #include "asterfort/indent.h"
+#include "asterfort/is_enr_line.h"
     integer, intent(in) :: ndim, jnnm(3), nddl, stano(*), lact(8)
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lesclx, lmaitx, lcontx, lmulti
@@ -61,7 +62,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
     parameter     (ddlmax=336)
     integer :: ddlms, ddlmm, ifh, posddl(ddlmax)
     real(kind=8) :: dmax
-    aster_logical :: lmat, lvec
+    aster_logical :: lmat, lvec, lctlin
 !
 !----------------------------------------------------------------------
 !
@@ -72,6 +73,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
 !
     lmat = .false.
     lvec = .false.
+    lctlin=is_enr_line()
 !
 !   OPTIONS RELATIVES A UNE MATRICE
     if (option .eq. 'RIGI_CONT' .or. option .eq. 'RIGI_FROT') then
@@ -124,11 +126,24 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                 do 20 j = 1, ndim
                     posddl(in+2*ndim+j)=1
  20             continue
-            else if (stano(i).eq.2) then
+            else if (abs(stano(i)).eq.2) then
 ! --- NOEUD CRACK-TIP, ON ELIMINE LES DDL HEAVISIDE
                 do 30 j = 1, ndim
                     posddl(in+ndim+j)=1
  30             continue
+!           ON SUPPRIME LES DDLS VECTORIELS DES NOEUDS MILIEUX
+                if (i.gt.nnes.and.lctlin) then
+                do j = 1, ndim
+                    posddl(in+2*ndim+j)=1
+                enddo
+                endif
+            else if (stano(i).eq.3) then
+!           ON SUPPRIME LES DDLS VECTORIELS DES NOEUDS MILIEUX
+                if (i.gt.nnes.and.lctlin) then
+                do j = 1, ndim
+                    posddl(in+2*ndim+j)=1
+                enddo
+                endif
             endif
  10     continue
     else
@@ -153,7 +168,7 @@ subroutine xtedd2(ndim, jnne, ndeple, jnnm, nddl,&
                 do 50 j = 1, ndim
                     posddl(in+2*ndim+j)=1
  50             continue
-            else if (stano(ndeple+i).eq.2) then
+            else if (abs(stano(ndeple+i)).eq.2) then
 ! --- LE NOEUD EST CRACK-TIP, ON ELIMINE HEAVISIDE
                 do 60 j = 1, ndim
                     posddl(in+ndim+j)=1

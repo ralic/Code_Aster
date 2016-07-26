@@ -33,8 +33,7 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-                             components=('DX', 'DY', 'E1X', 'E1Y', 'E2X',
-                                         'E2Y', 'E3X', 'E3Y', 'E4X', 'E4Y',))
+                             components=('DX', 'DY', 'K1', 'K2',))
 
 
 CFORCEF = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
@@ -48,6 +47,8 @@ NFORCER = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
 NGEOMER = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
                             components=('X', 'Y',))
 
+EGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
+    components=('X','Y',))
 
 CTEMPSR = LocatedComponents(phys=PHY.INST_R, type='ELEM',
                             components=('INST',))
@@ -76,6 +77,15 @@ CPRES_R = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
 MVECTUR = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
 
+CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
+    components=('PRES','CISA',))
+
+NTHETAR  = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
+    components=('DX','DY',))
+
+EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
+    components=('GTHETA','FIC[2]','K[2]',))
+
 #------------------------------------------------------------
 class MEAXSE2_XT(Element):
 
@@ -85,6 +95,30 @@ class MEAXSE2_XT(Element):
         ElrefeLoc(MT.SE2, gauss=('RIGI=FPG2',),),
     )
     calculs = (
+
+        OP.CALC_G(te=580,
+                  para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
+                           (SP.PTHETAR, NTHETAR), ),
+                  para_out=((SP.PGTHETA, LC.EGTHETA), ),
+                  ),
+
+        OP.CALC_G_F(te=580,
+                    para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
+                             (SP.PTHETAR, NTHETAR), ),
+                    para_out=((SP.PGTHETA, LC.EGTHETA), ),
+                    ),
+
+        OP.CALC_K_G(te=580,
+                    para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
+                             (SP.PTHETAR, NTHETAR), ),
+                    para_out=((SP.PGTHETA, EKTHETA), ),
+                    ),
+
+        OP.CALC_K_G_F(te=580,
+                      para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
+                               (SP.PTHETAR, NTHETAR), ),
+                      para_out=((SP.PGTHETA, EKTHETA), ),
+                      ),
 
         OP.CHAR_MECA_FF1D2D(te=36,
                             para_in=(
@@ -136,7 +170,8 @@ class MEAXSE2_XT(Element):
                             OP.CHAR_MECA_PRES_F.PPMILTO, LC.E4NEUTR),
                             (SP.PPRESSF, CPRESSF), (
                             OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                            (SP.PTEMPSR, CTEMPSR), ),
+                            (SP.PTEMPSR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
+                            (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N6NEUT_R),),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
@@ -154,7 +189,8 @@ class MEAXSE2_XT(Element):
                             OP.CHAR_MECA_PRES_R.PPMILTO, LC.E4NEUTR),
                             (SP.PPRESSR, EPRESNO), (
                             OP.CHAR_MECA_PRES_R.PSTANO, STANO_I),
-                            ),
+                            (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N6NEUT_R),
+                            (SP.PMATERC, LC.CMATERC),),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
@@ -162,8 +198,9 @@ class MEAXSE2_XT(Element):
                          para_out=(
                          (OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (
                          OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                         (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
-                         ),
+                         (OP.INI_XFEM_ELNO.PSTANO, STANO_I),
+                         (OP.INI_XFEM_ELNO.PBASLOR, LC.N6NEUT_R),),
+                        ),
 
         OP.TOPONO(te=120,
                   para_in=(
@@ -192,6 +229,10 @@ class MEAXSE2_XT(Element):
         OP.TOU_INI_ELEM(te=99,
                         para_out=((OP.TOU_INI_ELEM.PPRES_R, CPRES_R), ),
                         ),
+
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+        ),
 
         OP.TOU_INI_ELNO(te=99,
                         para_out=(

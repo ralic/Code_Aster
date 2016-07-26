@@ -96,7 +96,7 @@ TEST_RESU(CHAM_ELEM=(
                         REFERENCE='AUTRE_ASTER',
                         CHAM_GD=CH2,
                         TYPE_TEST='MAX',
-                        VALE_CALC=2.67425000000000E+01,
+                        VALE_CALC=26.7425,
                         VALE_REFE=26.7425,),
                      ),
           )

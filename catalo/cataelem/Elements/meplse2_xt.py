@@ -32,8 +32,7 @@ from cataelem.Options.options import OP
 
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
-    components=('DX','DY','E1X','E1Y','E2X',
-          'E2Y','E3X','E3Y','E4X','E4Y',))
+    components=('DX','DY','K1','K2',))
 
 
 CFORCEF  = LocatedComponents(phys=PHY.FORC_F, type='ELEM',
@@ -47,6 +46,8 @@ NFORCER  = LocatedComponents(phys=PHY.FORC_R, type='ELNO',
 NGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELNO',
     components=('X','Y',))
 
+EGEOMER  = LocatedComponents(phys=PHY.GEOM_R, type='ELGA', location='RIGI',
+    components=('X','Y',))
 
 CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
     components=('INST',))
@@ -74,15 +75,49 @@ CPRES_R  = LocatedComponents(phys=PHY.PRES_R, type='ELEM',
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
 
+NTHETAR  = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
+    components=('DX','DY',))
+
+EKTHETA  = LocatedComponents(phys=PHY.G, type='ELEM',
+    components=('GTHETA','FIC[2]','K[2]',))
 
 #------------------------------------------------------------
 class MEPLSE2_XT(Element):
     """Please document this element"""
     meshType = MT.SEG2
     elrefe =(
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
         )
     calculs = (
+
+#       -- te0580 : ne resout que les cas triviaux : 0.
+        OP.CALC_G(te=580,
+            para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
+                     (SP.PTHETAR, NTHETAR), ),
+            para_out=((SP.PGTHETA, LC.EGTHETA), ),
+        ),
+
+        OP.CALC_G_F(te=580,
+            para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
+                     (SP.PTHETAR, NTHETAR), ),
+            para_out=((SP.PGTHETA, LC.EGTHETA), ),
+        ),
+
+        OP.CALC_GTP(te=-1),
+
+        OP.CALC_GTP_F(te=-1),
+
+        OP.CALC_K_G(te=580,
+            para_in=((SP.PFR1D2D, NFORCER), (SP.PPRESSR, EPRESNO),
+                     (SP.PTHETAR, NTHETAR), ),
+            para_out=((SP.PGTHETA, EKTHETA), ),
+        ),
+
+        OP.CALC_K_G_F(te=580,
+            para_in=((SP.PFF1D2D, CFORCEF), (SP.PPRESSF, CPRESSF),
+                     (SP.PTHETAR, NTHETAR), ),
+            para_out=((SP.PGTHETA, EKTHETA), ),
+        ),
 
         OP.CHAR_MECA_FF1D2D(te=36,
             para_in=((OP.CHAR_MECA_FF1D2D.PCNSETO, E6NEUTI), (SP.PFF1D2D, CFORCEF),
@@ -91,7 +126,8 @@ class MEPLSE2_XT(Element):
                      (OP.CHAR_MECA_FF1D2D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FF1D2D.PLSN, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FF1D2D.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FF1D2D.PPINTTO, LC.E6NEUTR),
                      (OP.CHAR_MECA_FF1D2D.PPMILTO, LC.E4NEUTR), (OP.CHAR_MECA_FF1D2D.PSTANO, STANO_I),
-                     (SP.PTEMPSR, CTEMPSR), ),
+                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_FF1D2D.PBASLOR, LC.N6NEUT_R),
+                     (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -102,7 +138,7 @@ class MEPLSE2_XT(Element):
                      (OP.CHAR_MECA_FR1D2D.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_FR1D2D.PLSN, LC.N1NEUT_R),
                      (OP.CHAR_MECA_FR1D2D.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FR1D2D.PPINTTO, LC.E6NEUTR),
                      (OP.CHAR_MECA_FR1D2D.PPMILTO, LC.E4NEUTR), (OP.CHAR_MECA_FR1D2D.PSTANO, STANO_I),
-                     ),
+                     (OP.CHAR_MECA_FR1D2D.PBASLOR, LC.N6NEUT_R), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -113,7 +149,8 @@ class MEPLSE2_XT(Element):
                      (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_F.PPINTTO, LC.E6NEUTR), (OP.CHAR_MECA_PRES_F.PPMILTO, LC.E4NEUTR),
                      (SP.PPRESSF, CPRESSF), (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I),
-                     (SP.PTEMPSR, CTEMPSR), ),
+                     (SP.PTEMPSR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
+                     (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N6NEUT_R)),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -124,13 +161,13 @@ class MEPLSE2_XT(Element):
                      (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
                      (OP.CHAR_MECA_PRES_R.PPINTTO, LC.E6NEUTR), (OP.CHAR_MECA_PRES_R.PPMILTO, LC.E4NEUTR),
                      (SP.PPRESSR, EPRESNO), (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N6NEUT_R)),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.INI_XFEM_ELNO(te=99,
             para_out=((OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
+                     (OP.INI_XFEM_ELNO.PSTANO, STANO_I), (OP.INI_XFEM_ELNO.PBASLOR, LC.N6NEUT_R),),
         ),
 
         OP.TOPONO(te=120,
@@ -153,6 +190,10 @@ class MEPLSE2_XT(Element):
             para_out=((OP.TOU_INI_ELEM.PPRES_R, CPRES_R), ),
         ),
 
+        OP.TOU_INI_ELGA(te=99,
+            para_out=((OP.TOU_INI_ELGA.PGEOM_R, EGEOMER), ),
+        ),
+
         OP.TOU_INI_ELNO(te=99,
             para_out=((OP.TOU_INI_ELNO.PGEOM_R, NGEOMER), (OP.TOU_INI_ELNO.PNEUT_F, LC.ENNEUT_F),
                      (OP.TOU_INI_ELNO.PNEUT_R, LC.ENNEUT_R), (OP.TOU_INI_ELNO.PPRES_R, EPRESNO),
@@ -168,5 +209,5 @@ class MEPLSE3_XT(MEPLSE2_XT):
     meshType = MT.SEG3
     elrefe =(
             ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
-            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2',),),
+            ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG4',),),
         )

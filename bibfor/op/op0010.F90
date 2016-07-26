@@ -277,7 +277,7 @@ subroutine op0010()
         endif
     end do
 !
-    if (quad) call utmess('F', 'XFEM_86')
+!!    if (quad) call utmess('F', 'XFEM_86')
 !
 ! --- CONNECTIVITE INVERSEE
 !
@@ -916,8 +916,12 @@ subroutine op0010()
         write(ifm,908)
     endif
 !
+!   ON RAJOUTE UN CRITERE LST PLUS LACHE POUR EVITER DES OSCILLATIONS
+!   NUMERIQUE LORS DE LA PROPAGATION / EN THEORIE CE N EST PAS BIEN DE 
+!   DE RETOUCHER LA GEOMETRIE A LA VOLEE
+!
     call xajuls(noma, nbma, cnslt, cnsln, jconx1,&
-                jconx2, clsm, typdis)
+                jconx2, clsm, typdis, critlst=1.d-3)
 !
     if (niv .ge. 0) then
         write(ifm,*)'NOMBRE DE LEVEL SET REAJUSTEES APRES CONTROLE:',&

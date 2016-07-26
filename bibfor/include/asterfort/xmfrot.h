@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@ interface
                       ffc, ffp, idepd, idepm, indco,&
                       jac, lact, mmat, mu, nd,&
                       ndim, nfh, nfiss, nno, nnol,&
-                      nnos, nvit, pla, rr, seuil,&
-                      singu, tau1, tau2)
+                      nnos, nvit, pla, seuil,&
+                      singu, fk, tau1, tau2)
         integer :: algofr
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
@@ -45,10 +45,10 @@ interface
         integer :: nnos
         integer :: nvit
         integer :: pla(27)
-        real(kind=8) :: rr
         real(kind=8) :: seuil
         integer :: singu
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
+        real(kind=8) :: fk(27,3,3)
     end subroutine xmfrot
 end interface

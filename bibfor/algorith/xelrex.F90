@@ -1,12 +1,13 @@
-subroutine xelrex(elrefp, nno, xref)
+subroutine xelrex(elrefp, nno, xref, ndime)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/elraca.h"
     character(len=8) :: elrefp
     integer :: nno
+    integer, optional :: ndime
     real(kind=8) :: xref(81)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +26,7 @@ subroutine xelrex(elrefp, nno, xref)
 !             L ELEMENT PARENT COMPLET
     integer :: nbfamx
     parameter    ( nbfamx=20)
-    integer :: ndim, nnos, nbfpg, nbpg(nbfamx)
+    integer :: nnos, nbfpg, nbpg(nbfamx), ndim
     real(kind=8) :: vol
     character(len=8) :: fapg(nbfamx), elp
     aster_logical :: transfert
@@ -67,5 +68,7 @@ subroutine xelrex(elrefp, nno, xref)
        xref(ndim*(14-1)+2)=0.
        xref(ndim*(14-1)+3)=0.
     endif
+!
+    if (present(ndime)) ndime=ndim
 !
 end

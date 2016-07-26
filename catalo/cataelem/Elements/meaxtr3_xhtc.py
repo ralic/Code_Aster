@@ -48,15 +48,11 @@ CCOMPOR  = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
 
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
     components=(
-    ('EN1',('DX','DY','H1X','H1Y','E1X',
-          'E1Y','E2X','E2Y','E3X','E3Y',
-          'E4X','E4Y','LAGS_C','LAGS_F1',)),))
+    ('EN1',('DX','DY','H1X','H1Y','K1','K2','LAGS_C','LAGS_F1',)),))
 
 
 EDEPLPG  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='XFEM',
-    components=('DX','DY','H1X','H1Y','E1X',
-          'E1Y','E2X','E2Y','E3X','E3Y',
-          'E4X','E4Y','LAGS_C','LAGS_F1',))
+    components=('DX','DY','H1X','H1Y','K1','K2','LAGS_C','LAGS_F1',))
 
 
 DDL_MECC = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
@@ -178,7 +174,8 @@ class MEAXTR3_XHTC(Element):
                      (SP.PINDCOI, LC.E1NEUTI), (OP.CHAR_MECA_CONT.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_CONT.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_CONT.PPINTER, LC.E14NEUTR),
                      (OP.CHAR_MECA_CONT.PSEUIL, LC.E1NEUTR), (OP.CHAR_MECA_CONT.PSTANO, STANO_I),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_CONT.PBASLOR, LC.N6NEUT_R),
+                     (OP.CHAR_MECA_CONT.PLSN, LC.N1NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -190,7 +187,8 @@ class MEAXTR3_XHTC(Element):
                      (SP.PINDCOI, LC.E1NEUTI), (OP.CHAR_MECA_FROT.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_FROT.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FROT.PPINTER, LC.E14NEUTR),
                      (OP.CHAR_MECA_FROT.PSEUIL, LC.E1NEUTR), (OP.CHAR_MECA_FROT.PSTANO, STANO_I),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_FROT.PBASLOR, LC.N6NEUT_R),
+                     (OP.CHAR_MECA_FROT.PLSN, LC.N1NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -216,7 +214,8 @@ class MEAXTR3_XHTC(Element):
                      (OP.DEPL_XPG.PHEAVTO, E6NEUTI), (OP.DEPL_XPG.PHEA_NO, LC.N5NEUTI),
                      (OP.DEPL_XPG.PLONCHA, LC.E10NEUTI), (OP.DEPL_XPG.PLSN, LC.N1NEUT_R),
                      (OP.DEPL_XPG.PLST, LC.N1NEUT_R), (OP.DEPL_XPG.PXFGEOM, XFGEOM_R),
-                     ),
+                     (SP.PMATERC, LC.CMATERC), (OP.DEPL_XPG.PSTANO, STANO_I),
+                     (SP.PGEOMER, NGEOMER),),
             para_out=((SP.PDEPLPG, EDEPLPG), ),
         ),
 
@@ -239,7 +238,7 @@ class MEAXTR3_XHTC(Element):
                      (OP.FORC_NODA.PLONCHA, LC.E10NEUTI), (OP.FORC_NODA.PLSN, LC.N1NEUT_R),
                      (OP.FORC_NODA.PLST, LC.N1NEUT_R), (OP.FORC_NODA.PPINTTO, LC.E6NEUTR),
                      (OP.FORC_NODA.PSTANO, STANO_I), (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
-                     ),
+                     (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -267,7 +266,9 @@ class MEAXTR3_XHTC(Element):
             para_in=((SP.NOMFIS, E1NEUTK), (SP.PDEPLA, DDL_MECA),
                      (OP.GEOM_FAC.PGESCLO, LC.E14NEUTR), (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
                      (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI), (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
-                     (OP.GEOM_FAC.PPINTER, LC.E14NEUTR), ),
+                     (OP.GEOM_FAC.PPINTER, LC.E14NEUTR), (OP.GEOM_FAC.PBASLOR, LC.N6NEUT_R),
+                     (OP.GEOM_FAC.PLSN, LC.N1NEUT_R), (OP.GEOM_FAC.PSTANO, STANO_I),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PBASESC, LC.E28NEUTR), (SP.PBASMAI, LC.E28NEUTR),
                      (SP.PNEWGEM, LC.E14NEUTR), (SP.PNEWGES, LC.E14NEUTR),
                      ),
@@ -328,7 +329,8 @@ class MEAXTR3_XHTC(Element):
                      (SP.PINDCOI, LC.E1NEUTI), (OP.RIGI_CONT.PLONGCO, LC.E3NEUTI),
                      (OP.RIGI_CONT.PLSN, LC.N1NEUT_R), (OP.RIGI_CONT.PLST, LC.N1NEUT_R),
                      (OP.RIGI_CONT.PPINTER, LC.E14NEUTR), (OP.RIGI_CONT.PSEUIL, LC.E1NEUTR),
-                     (OP.RIGI_CONT.PSTANO, STANO_I), ),
+                     (OP.RIGI_CONT.PSTANO, STANO_I), (SP.PMATERC, LC.CMATERC),
+                     (OP.RIGI_CONT.PBASLOR, LC.N6NEUT_R),),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
                      ),
         ),
@@ -341,7 +343,8 @@ class MEAXTR3_XHTC(Element):
                      (SP.PINDCOI, LC.E1NEUTI), (OP.RIGI_FROT.PLONGCO, LC.E3NEUTI),
                      (OP.RIGI_FROT.PLSN, LC.N1NEUT_R), (OP.RIGI_FROT.PLST, LC.N1NEUT_R),
                      (OP.RIGI_FROT.PPINTER, LC.E14NEUTR), (OP.RIGI_FROT.PSEUIL, LC.E1NEUTR),
-                     (OP.RIGI_FROT.PSTANO, STANO_I), ),
+                     (OP.RIGI_FROT.PSTANO, STANO_I), (SP.PMATERC, LC.CMATERC),
+                     (OP.RIGI_FROT.PBASLOR, LC.N6NEUT_R),),
             para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
                      ),
         ),
@@ -431,7 +434,9 @@ class MEAXTR3_XHTC(Element):
                      (SP.PGLISS, LC.E1NEUTI), (OP.XCVBCA.PHEA_NO, LC.N5NEUTI),
                      (SP.PINDCOI, LC.E1NEUTI), (OP.XCVBCA.PLONGCO, LC.E3NEUTI),
                      (OP.XCVBCA.PLST, LC.N1NEUT_R), (SP.PMEMCON, LC.E1NEUTI),
-                     (OP.XCVBCA.PPINTER, LC.E14NEUTR), ),
+                     (OP.XCVBCA.PPINTER, LC.E14NEUTR), (OP.XCVBCA.PSTANO, STANO_I),
+                     (SP.PMATERC, LC.CMATERC), (OP.XCVBCA.PBASLOR, LC.N6NEUT_R),
+                     (OP.XCVBCA.PLSN, LC.N1NEUT_R),),
             para_out=((SP.PINCOCA, LC.E1NEUTI), (SP.PINDCOO, LC.E1NEUTI),
                      (SP.PINDMEM, LC.E1NEUTI), ),
         ),

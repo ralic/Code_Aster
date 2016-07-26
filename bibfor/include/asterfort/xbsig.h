@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
                      ddlc, ddlm, igeom, compor, jpintt,&
                      cnset, heavt, lonch, basloc, sigma,&
                      nbsig, idepl, lsn, lst, ivectu,&
-                     jpmilt, nfiss, jheavn)
+                     jpmilt, nfiss, jheavn, jstno, imate)
         integer :: nfiss
         integer :: nnop
         integer :: ndim
@@ -28,6 +28,7 @@ interface
         integer :: ddlc
         integer :: ddlm
         integer :: igeom
+        integer :: imate
         character(len=16) :: compor(*)
         integer :: jpintt
         integer :: cnset(128)
@@ -42,5 +43,6 @@ interface
         integer :: ivectu
         integer :: jpmilt
         integer :: jheavn
+        integer :: jstno
     end subroutine xbsig
 end interface
