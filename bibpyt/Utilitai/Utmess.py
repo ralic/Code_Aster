@@ -725,11 +725,8 @@ def in_testcase():
     """Tell if we are currently executing a testcase"""
     step = CONTEXT.get_current_step()
     jdc = getattr(step, 'jdc', step)
-    print "DEBUG: step:", step, "  jdc:", jdc
     if jdc and getattr(jdc, 'fico', None):
-        print "DEBUG: in a testcase"
         return True
-    print "DEBUG: NOT in a testcase"
     return False
 
 def is_last_message(code):
