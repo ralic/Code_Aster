@@ -379,7 +379,7 @@ implicit none
                             call lctppe('Master'    , elem_dime     , l_axis        ,&
                                         nb_node_mast, elem_mast_coor, elem_mast_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm)
+                                        jaco_init   , jaco_upda     , norm, elem_dime*nb_node_slav)
                             if (l_upda_jaco) then
                                 jacobian = jaco_upda
                             else

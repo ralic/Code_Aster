@@ -1,7 +1,7 @@
 subroutine lctppe(side      , elem_dime , l_axis     ,&
                   nb_node   , elem_coor , elem_code  ,&
                   gauss_coor, shape_func, shape_dfunc,&
-                  jaco_init , jaco_upda , norm)
+                  jaco_init , jaco_upda , norm, shift_)
 !
 implicit none
 !
@@ -50,6 +50,7 @@ implicit none
     real(kind=8), intent(out) :: jaco_init 
     real(kind=8), intent(out) :: jaco_upda
     real(kind=8), intent(out) :: norm(3)
+    integer, intent(in), optional :: shift_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,7 +97,8 @@ implicit none
     if (side .eq. 'Slave' ) then
         shift = 0
     elseif (side.eq.'Master') then
-        shift = nb_node*elem_dime
+    ASSERT(present(shift_))
+        shift = shift_
     else
         ASSERT(.false.)
     end if

@@ -21,7 +21,7 @@ interface
     subroutine lctppe(side      , elem_dime , l_axis     ,&
                       nb_node   , elem_coor , elem_code  ,&
                       gauss_coor, shape_func, shape_dfunc,&
-                      jaco_init , jaco_upda , norm)
+                      jaco_init , jaco_upda , norm, shift_)
         character(len=*), intent(in) :: side
         integer, intent(in) :: elem_dime
         aster_logical, intent(in) :: l_axis
@@ -34,5 +34,6 @@ interface
         real(kind=8), intent(out) :: jaco_init 
         real(kind=8), intent(out) :: jaco_upda
         real(kind=8), intent(out) :: norm(3)
+        integer, intent(in), optional :: shift_
     end subroutine lctppe
 end interface
