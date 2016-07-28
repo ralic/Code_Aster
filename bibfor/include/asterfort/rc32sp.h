@@ -18,20 +18,21 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rc32sp(typz, lieu, numsip, pi, mi,&
-                      numsiq, pj, mj, seisme, mse,&
-                      spij, spmeca)
-        character(len=*) :: typz
+    subroutine rc32sp(ze200, lieu, numsip, numsiq, iocs, mse,&
+                      pi, mi, pj, mj, instsp, sp1, spmeca1, noth)
+        aster_logical :: ze200
         character(len=4) :: lieu
         integer :: numsip
-        real(kind=8) :: pi
-        real(kind=8) :: mi(*)
         integer :: numsiq
+        integer :: iocs
+        real(kind=8) :: mse(12)
+        real(kind=8) :: pi
+        real(kind=8) :: mi(12)
         real(kind=8) :: pj
-        real(kind=8) :: mj(*)
-        aster_logical :: seisme
-        real(kind=8) :: mse(*)
-        real(kind=8) :: spij(2)
-        real(kind=8) :: spmeca(2)
+        real(kind=8) :: mj(12)
+        real(kind=8) :: instsp(4)
+        real(kind=8) :: sp1(2)
+        real(kind=8) :: spmeca1(2)
+        aster_logical :: noth
     end subroutine rc32sp
 end interface

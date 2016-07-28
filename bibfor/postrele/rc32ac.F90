@@ -1,4 +1,4 @@
-subroutine rc32ac(b3200, mater, lpmpb, lsn,&
+subroutine rc32ac(ze200, mater, lpmpb, lsn,&
                   lther, lfat, lefat)
     implicit none
 #include "asterf_types.h"
@@ -13,7 +13,6 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 #include "asterfort/jecroc.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/rc3201.h"
-#include "asterfort/rcZ201.h"
 #include "asterfort/jeexin.h"
 #include "asterc/r8vide.h"
 #include "asterfort/rcma02.h"
@@ -23,15 +22,13 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 #include "asterfort/rcZ2sn1.h"
 #include "asterfort/rcZ2s2.h"
 #include "asterfort/rc32rt.h"
-#include "asterfort/rcZ2rt.h"
 #include "asterfort/rc32sp.h"
-#include "asterfort/rcZ2sp1.h"
 #include "asterfort/rc32sa.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/rcZ2env.h"
+#include "asterfort/rc32env.h"
 #include "asterfort/jedema.h"
 !
-    aster_logical :: b3200, lpmpb, lsn, lther, lfat, lefat
+    aster_logical :: ze200, lpmpb, lsn, lther, lfat, lefat
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -77,15 +74,15 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
     real(kind=8) :: utot, utotenv, mse(12), ppi, ppj, matpi(7) 
     integer :: l, ig, numgr, nbsigr, jnsg, i1, jreas, jress, ndim 
     integer :: jrecs, jreca, jfact, iocs, i, jresu2, kk, is1
-    aster_logical :: yapass, seisme, cfait
+    aster_logical :: yapass, seisme, cfait, noth
     integer :: ioc1, iret, j, nsitup, nsituq, nocc, nb, jresu3, ll
     real(kind=8) :: matpj(7), mpi(12), mpj(12), pm, pb, pmpb, sn, snet
     real(kind=8) :: simpij, sp(2), sp1(2), sp2, spmeca(2), kemeca
     real(kind=8) :: kether, saltij(2), smm, fuij(2), upart, ke, feni
-    real(kind=8) :: sn1, snet1, sn2, snet2, spmeca1(2), sp3, sp3bid
+    real(kind=8) :: sn1, sn2, spmeca1(2), sp3
     character(len=8) :: typeke
     integer :: jresu
-    real(kind=8) :: spmeca3, spmeca3bid, instsn(2), instsp(4)
+    real(kind=8) :: spmeca3, instsn(2), instsp(4)
 !
 ! DEB ------------------------------------------------------------------
     data lieu / 'ORIG' , 'EXTR' /  
@@ -236,17 +233,10 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                 seisme = .true.
             endif
 !
-            if (b3200)then
-                call rc3201(lpmpb, lsn, lther, lfat, lther,&
-                            lieu(im), numgr, iocs, seisme, yapass,&
-                            mater, utot, utotenv,zr(jreas), zr(jress), &
-                            zr(jreca), zr(jrecs),zr(jfact), lefat, zr(jresu1))
-            else
-                call rcZ201(numgr, lsn, lther, lfat, lefat, yapass,&
-                            seisme, iocs, mater, lieu(im), utot, utotenv,&
-                            zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
-                            zr(jfact), zr(jresu1))
-            endif
+            call rc3201(ze200, numgr, lpmpb, lsn, lther, lfat, lefat, yapass,&
+                        seisme, iocs, mater, lieu(im), utot, utotenv,&
+                        zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
+                        zr(jfact), zr(jresu1))
 !
 100     continue
 !
@@ -341,18 +331,19 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                     sn2 = 0.d0
                     sp3 = 0.d0
                     spmeca3 = 0.d0
-                    if (b3200)then
-                        call rc32sn('SN_SITU', lieu(im), nsitup, ppi, mpi,&
-                                    nsituq, ppj, mpj, seisme, mse, sn)
-                    else
-                        call rcZ2sn1(lieu(im), nsitup, nsitup, iocs,&
-                                     instsn, sn1, sp3, spmeca3)
-                        call rcZ2s2('SN', ppi, mpi, ppj, mpj, sn2)
-                        sn=sn1+sn2
-                    endif
+                    call rcZ2sn1(ze200, lieu(im), nsitup, nsitup, iocs, mse,&
+                                 ppi, mpi, ppj, mpj, instsn, sn1, sp3, spmeca3)
+                    if (ze200) call rcZ2s2('SN', ppi, mpi, ppj, mpj,&
+                                           seisme, mse, sn2)
+                    sn=sn1+sn2
                     zr(jress-1+10*(is1-1)+4) = sn
                     if (niv .ge. 2) then
                         write (ifm,203) nsitup, sn
+                        if (instsn(1) .lt. 0.d0) then
+                            write (ifm,*) '                SANS INSTANTS'
+                        else
+                            write (ifm,*) '                INSTANTS     : ',instsn
+                        endif
                     endif
                     zr(jresu2+4)=sn
                 endif
@@ -360,15 +351,8 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 ! ----------- CALCUL DU SN*
                 if (lsn .and. lther) then
                     snet = 0.d0
-                    if (b3200)then
-                        call rc32sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
-                                    nsituq, ppj, mpj, seisme, mse, snet)
-                    else
-                        call rcZ2sn1(lieu(im), nsitup, nsitup, iocs,&
-                                     instsn, snet1, sp3bid, spmeca3bid)
-                        call rcZ2s2('SN', ppi, mpi, ppj, mpj, snet2)
-                        snet = snet1+snet2
-                    endif
+                    call rc32sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
+                                nsituq, ppj, mpj, seisme, mse, snet)
                     zr(jress-1+10*(is1-1)+5) = snet
                     if (niv .ge. 2) then
                         write (ifm,232) nsitup, snet
@@ -378,11 +362,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 !
 ! ----------- CALCUL DU ROCHET THERMIQUE
                 if (lther) then
-                    if (b3200)then
-                        call rc32rt(lieu(im), ppi, ppj, simpij)
-                    else
-                        call rcZ2rt(ppi, ppj, simpij)
-                    endif
+                    call rc32rt(lieu(im), ppi, ppj, simpij)
                     write (ifm,234) nsitup, simpij
                     zr(jresu2+9)=simpij
                 endif
@@ -395,18 +375,19 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                 spmeca(2) = 0.d0
                 spmeca1(1) = 0.d0
                 spmeca1(2) = 0.d0
-                if (b3200)then
-                    call rc32sp('SP_SITU', lieu(im), nsitup, ppi, mpi,&
-                                nsituq, ppj, mpj, seisme, mse,&
-                                sp, spmeca)
-                else
-                    call rcZ2sp1(lieu(im), nsitup, nsitup, iocs,&
-                                 instsp, sp1, spmeca1)
-                    call rcZ2s2('SP', ppi, mpi, ppj, mpj, sp2)
-                    sp(1)=sp1(1)+sp2+sp3
-                    spmeca(1)=spmeca1(1)+sp2+spmeca3
-                endif
+                sp2 = 0.d0
+                call rc32sp(ze200, lieu(im), nsitup, nsitup, iocs, mse,&
+                             ppi, mpi, ppj, mpj, instsp, sp1, spmeca1, noth)
+                if (ze200) call rcZ2s2('SP', ppi, mpi, ppj, mpj,&
+                                       seisme, mse, sp2)
+                sp(1)=sp1(1)+sp2+sp3
+                spmeca(1)=spmeca1(1)+sp2+spmeca3
                 if (niv .ge. 2) write (ifm,240) nsitup, sp(1)
+                if (instsp(1) .lt. 0.d0) then
+                    write (ifm,*) '                SANS INSTANTS'
+                else
+                    write (ifm,*) '                INSTANTS     : ',instsp(1),',', instsp(2)
+                endif
                 zr(jress-1+10*(is1-1)+6) = sp(1)
                 zr(jresu2+6) = sp(1)
                 zr(jresu2+10) = max(0.0,sp(1)-spmeca(1))
@@ -439,7 +420,7 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
                     else
                         ke = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/sp(1)
                     endif
-                    call rcZ2env(nsitup, nsitup, ke, lieu(im),feni)
+                    call rc32env(nsitup, nsitup, ke, lieu(im),feni)
                     utotenv = utotenv + upart*feni
                 endif
                 utot = utot + upart
@@ -500,17 +481,10 @@ subroutine rc32ac(b3200, mater, lpmpb, lsn,&
 !
             yapass = .true.
 !
-            if (b3200)then
-                call rc3201(lpmpb, lsn, lther, lfat, lther,&
-                            lieu(im), numgr, iocs, seisme, yapass,&
-                            mater, utot, utotenv, zr(jreas), zr(jress),&
-                             zr(jreca), zr(jrecs), zr(jfact), lefat, zr(jresu3))
-            else
-                call rcZ201(numgr, lsn, lther, lfat, lefat, yapass,&
-                            seisme, iocs, mater, lieu(im), utot, utotenv,&
-                            zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
-                            zr(jfact), zr(jresu3))
-            endif
+            call rc3201(ze200, numgr, lpmpb, lsn, lther, lfat, lefat, yapass,&
+                        seisme, iocs, mater, lieu(im), utot, utotenv,&
+                        zr(jreas), zr(jress), zr(jreca), zr(jrecs),&
+                        zr(jfact), zr(jresu3))
 !
 310     continue
         if (lfat) write (ifm,270) utot

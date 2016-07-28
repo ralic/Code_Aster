@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcZ2r1(nomres)
-        character(len=8) :: nomres
-    end subroutine rcZ2r1
+    subroutine rc32env(k, l, ke, lieu, fen)
+        integer :: k
+        integer :: l
+        real(kind=8) :: ke
+        character(len=4) :: lieu
+        real(kind=8) :: fen
+    end subroutine rc32env
 end interface

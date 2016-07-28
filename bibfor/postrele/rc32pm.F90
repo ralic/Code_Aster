@@ -8,12 +8,13 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc32s0.h"
 #include "asterfort/rc32st.h"
+#include "asterc/getfac.h"
     real(kind=8) :: pi, mi(*), mse(*), pm, pb, pmpb
     aster_logical :: seisme
     character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,10 +42,14 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
 ! VAR : PMPB   : CONTRAINTE EQUIVALENTE PRIMAIRE DE MEMBRANE+FLEXION
 !     ------------------------------------------------------------------
 !
-    integer :: icmps, icmp, jsigu, nbinst
+    integer :: icmps, icmp, jsigu, nbinst, nb
     real(kind=8) :: sth(6), sij(6), sigu, pmij, pbij, pmpbij
 ! DEB ------------------------------------------------------------------
     call jemarq()
+!
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) goto 999
 !
 ! --- CONTRAINTES DUES AUX CHARGEMENTS UNITAIRES
 !
@@ -137,5 +142,6 @@ subroutine rc32pm(lieu, seisme, pi, mi, mse,&
     endif
     pmpb = max( pmpbij, pmpb )
 !
+999 continue
     call jedema()
 end subroutine

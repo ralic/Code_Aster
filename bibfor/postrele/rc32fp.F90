@@ -16,13 +16,13 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/codent.h"
-#include "asterfort/rcZ2env.h"
+#include "asterfort/rc32env.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
     real(kind=8) :: fuij(*), ug, factus(*), ugenv, ke(*)
     character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -111,7 +111,7 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
         factus(6*(icompt-1)+3) = situ(isl)
         factus(6*(icompt-1)+4) = ukl
         if (fatiguenv) then
-            call rcZ2env(situ(isk), situ(isl), kekl, lieu, fenkl)
+            call rc32env(situ(isk), situ(isl), kekl, lieu, fenkl)
         else
             fenkl = 1
         endif 

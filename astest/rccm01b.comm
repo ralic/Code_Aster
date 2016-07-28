@@ -64,7 +64,7 @@ T_THER2 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
 # VALIDATION DU CALCUL DE PM ET PB
 PMPB1=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='PM_PB',
                  INFO=2,
                  CHAR_MECA=(
@@ -91,15 +91,13 @@ PMPB1=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=1,
                      CHAR_ETAT_B=2,
                      PRES_A=0,
-                     PRES_B=0,
-                     TEMP_REF_A=20.0,
-                     TEMP_REF_B=20.0,),),);
+                     PRES_B=0,),),);
 
 IMPR_TABLE(    TABLE=PMPB1,)        
 
 PMPB2=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='PM_PB',
                  INFO=1,
                  CHAR_MECA=(
@@ -121,17 +119,14 @@ PMPB2=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0,
-                     PRES_B=0,
-                     TEMP_REF_A=20.0,
-                     TEMP_REF_B=20.0,),
-                  );
+                     PRES_B=0,),);
 
 IMPR_TABLE(    TABLE=PMPB2,)  
 
 # VALIDATION DU CALCUL DE SN ET DE SN*
 SN1=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='SN',
                  INFO=2,
                  CHAR_MECA=(
@@ -159,15 +154,13 @@ SN1=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_B=2,
                      NUME_RESU_THER = 1,
                      PRES_A=0,
-                     PRES_B=0,
-                     TEMP_REF_A=20.0,
-                     TEMP_REF_B=20.0,),),);
+                     PRES_B=0,),),);
 
 IMPR_TABLE(    TABLE=SN1,)        
 
 SN2=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='SN',
                  INFO=2,
                  CHAR_MECA=(
@@ -189,16 +182,14 @@ SN2=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_A=3,
                      CHAR_ETAT_B=4,
                      PRES_A=0,
-                     PRES_B=0,
-                     TEMP_REF_A=20.0,
-                     TEMP_REF_B=20.0,),
+                     PRES_B=0,),
                   );
 
 IMPR_TABLE(    TABLE=SN2,)  
 
 SN3=POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='SN',
                  INFO=1,
                  CHAR_MECA=(
@@ -225,9 +216,7 @@ SN3=POST_RCCM( MATER=MAT,
                      CHAR_ETAT_B=4,
                      NUME_RESU_THER = 2,
                      PRES_A=0,
-                     PRES_B=0,
-                     TEMP_REF_A=20.0,
-                     TEMP_REF_B=20.0,),
+                     PRES_B=0,),
                   );
 
 IMPR_TABLE(    TABLE=SN3,) 
@@ -235,7 +224,7 @@ IMPR_TABLE(    TABLE=SN3,)
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 2
 FAT12_A = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MECA',
@@ -288,7 +277,7 @@ IMPR_TABLE(    TABLE=FAT12_A,)
 
 FAT12_B = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MECA',
@@ -342,7 +331,7 @@ IMPR_TABLE(    TABLE=FAT12_B,)
 # VALIDATION DU CALCUL EN FATIGUE : SITUATION 1 + SITUATION 3
 FAT13_A = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=2,
                  TYPE_KE='KE_MECA',
@@ -396,7 +385,7 @@ IMPR_TABLE(    TABLE=FAT13_A,)
 
 FAT13_B = POST_RCCM( MATER=MAT,
                  TYPE_RESU='DETAILS',
-                 TYPE_RESU_MECA='B3200_UNIT',
+                 TYPE_RESU_MECA='B3200',
                  OPTION='FATIGUE',
                  INFO=1,
                  TYPE_KE='KE_MECA',
@@ -540,6 +529,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )
+
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=250.000000000,

@@ -18,28 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ201(ig, lsn, lther, lfat, lefat,&
-                      yapass, seisme, iocs, mater,&
-                      lieu, utot, utotenv, resuas,&
-                      resuss, resuca, resucs,&
-                      factus, resumax)
-        integer :: ig
-        aster_logical :: lsn
-        aster_logical :: lther
-        aster_logical :: lfat
-        aster_logical :: lefat
-        aster_logical :: yapass
-        aster_logical :: seisme
-        integer :: iocs
-        character(len=8) :: mater
+    subroutine rc32sp1b(ze200, lieu, numsip, numsiq,&
+                        seismeb32, seismeunit, mse, pi, mi, pj, mj,&
+                        instsp, sp1, spmeca1, noth)
+        aster_logical :: ze200
         character(len=4) :: lieu
-        real(kind=8) :: utot
-        real(kind=8) :: utotenv
-        real(kind=8) :: resuas(*)
-        real(kind=8) :: resuss(*)
-        real(kind=8) :: resuca(*)
-        real(kind=8) :: resucs(*)
-        real(kind=8) :: factus(*)
-        real(kind=8) :: resumax(*)
-    end subroutine rcZ201
+        integer :: numsip
+        integer :: numsiq
+        aster_logical :: seismeb32
+        aster_logical :: seismeunit
+        real(kind=8) :: mse(12)
+        real(kind=8) :: pi
+        real(kind=8) :: mi(12)
+        real(kind=8) :: pj
+        real(kind=8) :: mj(12)
+        real(kind=8) :: instsp(4)
+        real(kind=8) :: sp1(2)
+        real(kind=8) :: spmeca1(2)
+        aster_logical :: noth
+    end subroutine rc32sp1b
 end interface

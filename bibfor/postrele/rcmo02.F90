@@ -7,7 +7,6 @@ subroutine rcmo02(etat, numsit, vale)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/getvtx.h"
     integer :: numsit
     real(kind=8) :: vale(*)
     character(len=1) :: etat
@@ -50,10 +49,9 @@ subroutine rcmo02(etat, numsit, vale)
 !                VALE(12) = MZ_CORP
 !     ------------------------------------------------------------------
 !
-    integer :: i, j, numcha, jlcha, nbchar, jchar, iret, n1
+    integer :: i, j, numcha, jlcha, nbchar, jchar, iret
     character(len=1) :: etats
     character(len=8) ::  knumes, knumec
-    character(len=16) ::  typmec
 ! DEB ------------------------------------------------------------------
 !
     do 10 i = 1, 12
@@ -64,10 +62,6 @@ subroutine rcmo02(etat, numsit, vale)
     call codent(numsit, 'D0', knumes(2:8))
 !
 ! --- LISTE DES CHARGEMENTS POUR LE NUMERO DE SITUATION
-!
-    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
-!
-    if (typmec .eq. 'B3200_T') goto 888
 !
     if ((etat.eq.'S') .or. (etat.eq.'A')) then
         etats = 'A'
@@ -109,7 +103,5 @@ subroutine rcmo02(etat, numsit, vale)
     endif
 !
 999    continue
-!
-888 continue
 !
 end subroutine

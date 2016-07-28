@@ -1,4 +1,4 @@
-subroutine rcZ2env(k,l, ke, lieu, fen)
+subroutine rc32env(k,l, ke, lieu, fen)
     implicit none
 !
     integer :: k, l

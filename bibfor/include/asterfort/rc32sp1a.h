@@ -15,10 +15,25 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine rcZ2rt(pi, pj, simpij)
+    subroutine rc32sp1a(ze200, lieu, numsip, numsiq, seismeb32, seismeunit,&
+                        mse, pi, mi, pj, mj, instsp, sp1, spmeca1, noth)
+        aster_logical :: ze200
+        character(len=4) :: lieu
+        integer :: numsip
+        integer :: numsiq
+        aster_logical :: seismeb32
+        aster_logical :: seismeunit
+        real(kind=8) :: mse(12)
         real(kind=8) :: pi
+        real(kind=8) :: mi(12)
         real(kind=8) :: pj
-        real(kind=8) :: simpij
-    end subroutine rcZ2rt
+        real(kind=8) :: mj(12)
+        real(kind=8) :: instsp(4)
+        real(kind=8) :: sp1(2)
+        real(kind=8) :: spmeca1(2)
+        aster_logical :: noth
+    end subroutine rc32sp1a
 end interface

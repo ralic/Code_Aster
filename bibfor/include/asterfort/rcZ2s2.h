@@ -18,12 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ2s2(typ, pi, mi, pj, mj, s2)
+    subroutine rcZ2s2(typ, pi, mi, pj, mj, seisme, mse, s2)
         character(len=2) :: typ
         real(kind=8) :: pi
         real(kind=8) :: mi(*)
         real(kind=8) :: pj
         real(kind=8) :: mj(*)
+        aster_logical :: seisme
+        real(kind=8) :: mse(*)
         real(kind=8) :: s2
     end subroutine rcZ2s2
 end interface

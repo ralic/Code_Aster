@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rc32ac(b3200, mater, lpmpb, lsn,&
+    subroutine rc32ac(ze200, mater, lpmpb, lsn,&
                       lther, lfat, lefat)
-        aster_logical :: b3200
+        aster_logical :: ze200
         character(len=8) :: mater
         aster_logical :: lpmpb
         aster_logical :: lsn

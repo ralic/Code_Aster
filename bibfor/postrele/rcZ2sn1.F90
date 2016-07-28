@@ -1,5 +1,5 @@
-subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
-                   instsn, sn1, sp3, spmeca3)
+subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
+                   pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -20,10 +20,13 @@ subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
 #include "asterfort/tbliva.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterc/getfac.h"
 #include "asterfort/jedetr.h"
+    aster_logical :: ze200
     character(len=4) :: lieu
     integer :: numsip, numsiq, iocs
-    real(kind=8) :: sn1, sp3, spmeca3, instsn(2)
+    real(kind=8) :: sn1, sp3, spmeca3, instsn(2), pi, mi(12), pj, mj(12)
+    real(kind=8) :: mse(12)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,10 +58,10 @@ subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
 ! OUT : SPMECA3: PARTIE du SPMECA qui dépend de SN
 !
     character(len=8) :: methode, tabfm(6), crit(1), k8b, nocmp(6)
-    integer :: nb, n1, n0, i, nbabsc, jabsc, ndim
+    integer :: nb, n1, n0, i, nbabsc, jabsc, ndim, nbchar
     real(kind=8) :: prec(1), vale(1), momen0, momen1
     character(len=16) :: typmec, valek(1)
-    aster_logical :: exist, seismeb32
+    aster_logical :: exist, seismeb32, seismeunit
     character(len=24) :: valk(3)
     integer :: jseis, j, k, ibid, iret
     complex(kind=8) :: cbid
@@ -71,6 +74,7 @@ subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
 !     SI SEISME AVEC B3200_T
 !--------------------------------------
     seismeb32 = .false.
+    seismeunit = .false.
     valek(1) = 'ABSC_CURV       '
     prec(1) = 1.0d-06
     crit(1) = 'RELATIF'
@@ -82,7 +86,10 @@ subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
     nocmp(6) = 'SIYZ'
 !
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
-    if (iocs .ne. 0 .and. typmec .eq. 'B3200_T') seismeb32=.true.
+    call getfac('CHAR_MECA', nbchar)
+!-- si on est en B3200_T
+    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .eq. 0) seismeb32=.true.
+    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .ne. 0) seismeunit=.true.
     if (seismeb32) then
 !-- on récupère les tables correspondantes
         call getvid('SEISME', 'TABL_FX', iocc=iocs, scal=tabfm(1), nbret=n0)
@@ -144,11 +151,11 @@ subroutine rcZ2sn1(lieu, numsip, numsiq, iocs,&
 !
     call getvtx(' ', 'METHODE', scal=methode, nbret=nb)
     if (methode .eq. 'TRESCA') then
-        call rcZ2sn1a(lieu, numsip, numsiq, seismeb32,&
-                      instsn, sn1, sp3, spmeca3)
+        call rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
+                      seismeunit, mse, pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
     else
-        call rcZ2sn1b(lieu, numsip, numsiq, seismeb32,&
-                      instsn, sn1, sp3, spmeca3)
+        call rcZ2sn1b(ze200, lieu, numsip, numsiq, seismeb32,&
+                      seismeunit, mse, pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
     endif
 !
     if (seismeb32) then

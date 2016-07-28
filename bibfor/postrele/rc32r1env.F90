@@ -130,7 +130,7 @@ subroutine rc32r1env(nomres)
         call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
         if (utotenv/utot .gt. fenint) then
             utotenv = utotenv/fenint
-            zr(jvale+10)=utotenv  
+            zr(jvale+11)=utotenv  
         endif
 !
         call tbajli(nomres, npar6, nopar6, [ibid], zr(jvale),&

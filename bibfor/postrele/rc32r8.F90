@@ -9,6 +9,7 @@ subroutine rc32r8(nomres, mater)
 #include "asterfort/tbajpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getvr8.h"
+#include "asterc/getfac.h"
     character(len=8) :: nomres, mater
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -34,7 +35,7 @@ subroutine rc32r8(nomres, mater)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, npar1, im, jresu, n1
+    integer :: ibid, npar1, im, jresu, n1, nb
     parameter    ( npar1 = 7 )
     real(kind=8) :: rbid, valer(npar1), valres(1), symax
     complex(kind=8) :: c16b
@@ -49,6 +50,10 @@ subroutine rc32r8(nomres, mater)
      &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
     data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R' /
 ! DEB ------------------------------------------------------------------
+!
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) goto 888
 !
     symax = r8vide()
     call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
@@ -89,5 +94,6 @@ subroutine rc32r8(nomres, mater)
 10  continue
 !
 999  continue
+888  continue
 !
 end subroutine

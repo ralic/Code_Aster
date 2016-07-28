@@ -1,23 +1,31 @@
-subroutine rc32sp(typz, lieu, numsip, pi, mi,&
-                  numsiq, pj, mj, seisme, mse,&
-                  spij, spmeca)
+subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
+                   pi, mi, pj, mj, instsp, sp1, spmeca1, noth)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
-#include "asterfort/codent.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/rc32s0.h"
-#include "asterfort/rc32s2.h"
-#include "asterfort/rc32st.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/getvtx.h"
-    integer :: numsip, numsiq
-    real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), spij(2), spmeca(2)
-    aster_logical :: seisme
+#include "asterfort/rc32sp1a.h"
+#include "asterfort/rc32sp1b.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/rcveri.h"
+#include "asterfort/tbexip.h"
+#include "asterfort/utmess.h"
+#include "asterfort/tbexv1.h"
+#include "asterfort/rcver1.h"
+#include "asterfort/getvid.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/tbliva.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterc/getfac.h"
+#include "asterfort/jedetr.h"
+    aster_logical :: ze200, noth
     character(len=4) :: lieu
-    character(len=*) :: typz
+    integer :: numsip, numsiq, iocs
+    real(kind=8) :: sp1(2), spmeca1(2), instsp(4), pi, mi(12), pj, mj(12)
+    real(kind=8) :: mse(12)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,237 +44,121 @@ subroutine rc32sp(typz, lieu, numsip, pi, mi,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !     ------------------------------------------------------------------
-!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
+!     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
 !     CALCUL DU SP
 !
 !     ------------------------------------------------------------------
-! IN  : TYPZ   : 'SP_SITU'  : CALCUL DU SP POUR LA SITUATION
-!              : 'SP_COMB'  : CALCUL DU SP POUR COMBINAISON SITUATION
 ! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
-! IN  : SEISME : =.FALSE. SI PAS DE SEISME, =.TRUE. SINON
 ! IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
-! IN  : PI     : PRESSION ASSOCIEE A L'ETAT STABILISE I
-! IN  : MI     : EFFORTS ASSOCIEES A L'ETAT STABILISE I
 ! IN  : NUMSIQ : NUMERO SITUATION DE L'ETAT STABILISE Q
-! IN  : PJ     : PRESSION ASSOCIEE A L'ETAT STABILISE J
-! IN  : MJ     : EFFORTS ASSOCIEES A L'ETAT STABILISE J
-! IN  : MSE    : EFFORTS DUS AU SEISME
-! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
-! OUT : SPMECA : AMPLITUDE DE VARIATION DES CONTRAINTES MECANIQUES
+! OUT : SP1    : PARTIE B3200 du SP
 !
-    integer :: icmp, jsigu, icmps, long, nbinst, nbthep, nbtheq
-    integer :: jthunq, i1, jthunp, jthun, nb
-    real(kind=8) :: pij, mij(12), sp, sij(6), sigu, sqma(6), sqmi(6)
-    real(kind=8) :: sp1, sp2, spth(6), spqma(2), spqmi(2), sqth(6)
-    character(len=4) :: typ2
-    character(len=8) :: type, knumes, knumet, typeke
+    character(len=8) :: methode, tabfm(6), crit(1), k8b, nocmp(6)
+    integer :: nb, n1, n0, i, nbabsc, jabsc, ndim, nbchar
+    real(kind=8) :: prec(1), vale(1)
+    character(len=16) :: typmec, valek(1)
+    aster_logical :: exist, seismeb32, seismeunit
+    character(len=24) :: valk(3)
+    integer :: jseis, j, ibid, iret
+    complex(kind=8) :: cbid
+    real(kind=8), pointer :: contraintes(:) => null()
+!
 ! DEB ------------------------------------------------------------------
-    type = typz
+    call jemarq()
 !
+!--------------------------------------
+!     SI SEISME AVEC B3200_T
+!--------------------------------------
+    seismeb32 = .false.
+    seismeunit = .false.
+    noth=.false.
+    valek(1) = 'ABSC_CURV       '
+    prec(1) = 1.0d-06
+    crit(1) = 'RELATIF'
+    nocmp(1) = 'SIXX'
+    nocmp(2) = 'SIYY'
+    nocmp(3) = 'SIZZ'
+    nocmp(4) = 'SIXY'
+    nocmp(5) = 'SIXZ'
+    nocmp(6) = 'SIYZ'
 
 !
-    spij(1) = 0.d0
-    spij(2) = 0.d0
-    spmeca(1) = 0.d0
-    spmeca(2) = 0.d0
-    do 8 i1 = 1, 6
-        sqma(i1) = 0.d0
-        sqmi(i1) = 0.d0
-  8 continue
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+    call getfac('CHAR_MECA', nbchar)
+    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .ne. 0) seismeunit=.true.
+    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and.  nbchar .eq. 0) seismeb32=.true.
 !
-! --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
-!
-    call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-!
-! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
-!
-    pij = pi - pj
-!
-! --- VARIATION DE MOMENT RESULTANT
-!
-    do 10 icmp = 1, 12
-        mij(icmp) = mi(icmp) - mj(icmp)
- 10 continue
-!
-! --- CALCUL DES CONTRAINTES EN PEAU PAR COMBINAISON LINEAIRE
-!     POUR LE CHARGEMENT PIJ, MIJ
-!
-    do 30 icmps = 1, 6
-        sij(icmps) = 0.d0
-        do 20 icmp = 1, 12
-            sigu = zr(jsigu-1+6*(icmp-1)+icmps)
-            sij(icmps) = sij(icmps) + mij(icmp)*sigu
+    if (seismeb32) then
+!-- on récupère les tables correspondantes
+        call getvid('SEISME', 'TABL_FX', iocc=iocs, scal=tabfm(1), nbret=n0)
+        call getvid('SEISME', 'TABL_FY', iocc=iocs, scal=tabfm(2), nbret=n0)
+        call getvid('SEISME', 'TABL_FZ', iocc=iocs, scal=tabfm(3), nbret=n0)
+        call getvid('SEISME', 'TABL_MX', iocc=iocs, scal=tabfm(4), nbret=n0)
+        call getvid('SEISME', 'TABL_MY', iocc=iocs, scal=tabfm(5), nbret=n0)
+        call getvid('SEISME', 'TABL_MZ', iocc=iocs, scal=tabfm(6), nbret=n0)
+! ----  on verifie l'ordre des noeuds de la table
+        do 20 i = 1, 6
+            call rcveri(tabfm(i))
  20     continue
-! ----- PRESSION
-        sigu = zr(jsigu-1+72+icmps)
-        sij(icmps) = sij(icmps) + pij*sigu
- 30 continue
-!
-!
-! CAS DE KE_MECA (PAS DE PARTITION MECANIQUE - THERMIQUE)
-!
-! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE P
-!
-    if (numsip .ne. 0) then
-        knumes = 'S       '
-        call codent(numsip, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
-        if (nbthep .eq. 0) then
-            nbinst = 0
-            jthun = 1
-            typ2 = '????'
-            if (type .eq. 'SP_COMB') then
-                typ2 = 'COMB'
-            else if (type .eq. 'SP_SITU') then
-                typ2 = 'SITU'
-            endif
-            if (seisme) then
-                call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                            nbinst, zr(jthun), sp)
-            else
-                call rc32st(sij, nbinst, zr(jthun), sp)
-            endif
-            spij(1) = max(spij(1),sp)
-            if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
-        else
-            knumet = 'S       '
-            call codent(numsip, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthunp)
-            nbinst = 2
-            typ2 = '????'
-            if (type .eq. 'SP_COMB') then
-                typ2 = 'COMB'
-            else if (type .eq. 'SP_SITU') then
-                typ2 = 'SITU'
-            endif
-            do 14 i1 = 1, 6
-                spth(i1) = zr(jthunp+6+i1-1) -zr(jthunp+i1-1)
- 14         continue
-            if (typ2 .eq. 'SITU') then
-                if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                1, spth, sp)
-                else
-                    call rc32st(sij, nbinst, spth, sp)
-                endif
-                spij(1) = max(spij(1),sp)
-            endif
+! ----- on recupere les abscisses curvilignes de la table
+        call tbexip(tabfm(1), valek(1), exist, k8b)
+        if (.not. exist) then
+            valk (1) = tabfm(1)
+            valk (2) = valek(1)
+            call utmess('F', 'POSTRCCM_1', nk=2, valk=valk)
         endif
+        call tbexv1(tabfm(1), valek(1), 'RC.ABSC', 'V', nbabsc,&
+                   k8b)
+        call jeveuo('RC.ABSC', 'L', jabsc)
+! ----- on vérifie la cohérence des tables
+        do 30 i = 1, 5
+            call rcver1('MECANIQUE', tabfm(1), tabfm(1+i))
+ 30     continue
+! ----- on crée un vecteur qui contiendra les contraintes linéarisées dues au séisme
+        ndim = 6*6
+        call wkvect('&&RC3200.SIGSEIS', 'V V R', ndim, jseis)
+        AS_ALLOCATE(vr=contraintes,  size=1)
+! ----- on vient lire les tables
+        do 40 i = 1, 6
+            do 50 j = 1, 6
+                if (lieu .eq. 'ORIG') then
+                    vale(1) = zr(jabsc)
+                else
+                    vale(1) = zr(jabsc+nbabsc-1)
+                endif
+!
+                call tbliva(tabfm(i), 1, valek, [ibid], vale,&
+                           [cbid], k8b, crit, prec, nocmp(j),&
+                           k8b, ibid, contraintes(1), cbid, k8b,&
+                           iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabfm(i)
+                    valk (2) = nocmp(j)
+                    valk (3) = valek(1)
+                    call utmess('F', 'POSTRCCM_2', nk=3, valk=valk, nr=1,&
+                                valr=vale(1))
+                endif
+                zr(jseis+(i-1)*6+j-1) = contraintes(1)
+ 50         continue
+ 40     continue
     endif
 !
-!
-! --- ON BOUCLE SUR LES INSTANTS DU THERMIQUE DE Q
-!
-    if (numsiq .ne. 0) then
-        knumes = 'S       '
-        call codent(numsiq, 'D0', knumes(2:8))
-        call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
-        if (nbtheq .eq. 0) then
-            nbinst = 0
-            jthun = 1
-            typ2 = '????'
-            if (type .eq. 'SP_COMB') then
-                typ2 = 'COMB'
-            else if (type .eq. 'SP_SITU') then
-                typ2 = 'SITU'
-            endif
-            if (seisme) then
-                call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                            nbinst, zr(jthun), sp)
-            else
-                call rc32st(sij, nbinst, zr(jthun), sp)
-            endif
-            spij(1) = max(spij(1),sp)
-            if (typ2 .eq. 'COMB') spij(2) = max(spij(2),sp)
-! - CAS NBQ = 0 / NBP != 0
-            if (typ2 .eq. 'COMB' .and. nbthep .ne. 0) then
-                if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                1, spth, sp)
-                    spij(1) = sp
-                else
-                    call rc32s2(sij, spth, spij)
-                endif
-            endif
-        else
-            knumet = 'S       '
-            call codent(numsiq, 'D0', knumet(2:8))
-            call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'LONUTI', long)
-            call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumet), 'L', jthunq)
-            nbinst = 2
-            typ2 = '????'
-            if (type .eq. 'SP_COMB') then
-                typ2 = 'COMB'
-            else if (type .eq. 'SP_SITU') then
-                typ2 = 'SITU'
-            endif
-            if (typ2 .eq. 'SITU') then
-                if (seisme) then
-                    call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                nbinst, spth, sp)
-                else
-                    call rc32st(sij, nbinst, spth, sp)
-                endif
-                spij(1) = sp
-            else
-! - CAS NBP = 0 / NBQ != 0
-                if (nbthep .eq. 0) then
-                    do 113 i1 = 1, 6
-                        sqth(i1) = zr(jthunq+i1-1) - zr(jthunq+6+i1-1)
-113                 continue
-                    if (seisme) then
-                        call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                    nbinst, sqth, sp)
-                        spij(1) = sp
-                    else
-                        call rc32s2(sij, sqth, spij)
-                    endif
-                else
-                    do 114 i1 = 1, 6
-                        sqmi(i1) = zr(jthunp+i1-1) - zr(jthunq+6+i1-1)
-                        sqma(i1) = zr(jthunp+6+i1-1) - zr(jthunq+i1-1)
-114                 continue
-                    if (seisme) then
-                        call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                    1, sqmi, sp1)
-                        call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                                    1, sqma, sp2)
-                        spij(1) = max(sp1,sp2)
-                        spij(2) = min(sp1,sp2)
-                    else
-                        call rc32s2(sij, sqmi, spqmi)
-                        call rc32s2(sij, sqma, spqma)
-                        spij(1) = max(spqma(1),spqmi(1))
-                        spij(2) = min(spqma(1),spqmi(1))
-                    endif
-                endif
-            endif
-        endif
+    call getvtx(' ', 'METHODE', scal=methode, nbret=nb)
+    if (methode .eq. 'TRESCA') then
+        call rc32sp1a(ze200, lieu, numsip, numsiq, seismeb32,&
+                      seismeunit, mse, pi, mi, pj, mj,&
+                      instsp, sp1, spmeca1, noth)
+    else
+        call rc32sp1b(ze200, lieu, numsip, numsiq, seismeb32,&
+                      seismeunit, mse, pi, mi, pj, mj,&
+                      instsp, sp1, spmeca1, noth)
     endif
 !
-! CAS DE KE_MIXTE (PARTITION MECANIQUE - THERMIQUE)
-!
-    call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
-    if (typeke .eq. 'KE_MIXTE') then
-!
-! --- CALCUL DE KE_MECA
-        nbinst = 0
-        jthun = 1
-        typ2 = '????'
-        if (type .eq. 'SP_COMB') then
-            typ2 = 'COMB'
-        else if (type .eq. 'SP_SITU') then
-            typ2 = 'SITU'
-        endif
-        if (seisme) then
-            call rc32s0(typ2, mij, pij, mse, zr(jsigu),&
-                        nbinst, zr(jthun), sp)
-        else
-            call rc32st(sij, nbinst, zr(jthun), sp)
-        endif
-        spmeca(1) =sp
-!
+    if (seismeb32) then
+        call jedetr('RC.ABSC')
+        call jedetr('&&RC3200.SIGSEIS')
+        AS_DEALLOCATE(vr=contraintes)
     endif
 !
+    call jedema()
 end subroutine

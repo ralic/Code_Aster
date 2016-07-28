@@ -29,6 +29,7 @@ subroutine rc32mu()
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterc/getfac.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc32my.h"
 #include "asterfort/rcver1.h"
@@ -41,7 +42,7 @@ subroutine rc32mu()
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
-    integer :: ncmp
+    integer :: ncmp, nb
     parameter  ( ncmp = 6 )
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid
@@ -55,6 +56,10 @@ subroutine rc32mu()
     call jemarq()
 !
     motclf = 'RESU_MECA_UNIT'
+    call getfac(motclf, nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) goto 999
+!
     prec = 1.0d-06
     crit = 'RELATIF'
 !
@@ -200,5 +205,6 @@ subroutine rc32mu()
     call jedetr(abscur)
     AS_DEALLOCATE(vr=contraintes)
 !
+999 continue
     call jedema()
 end subroutine

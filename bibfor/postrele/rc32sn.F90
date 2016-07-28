@@ -10,6 +10,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/rc32s0.h"
+#include "asterc/getfac.h"
 #include "asterfort/rc32st.h"
     integer :: numsip, numsiq
     real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), snij
@@ -54,7 +55,7 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
 !     ------------------------------------------------------------------
 !
     integer :: icmp, jsigu, icmps, nbinst, long, i1, nbthep, nbtheq
-    integer :: jthun, indicp, indicq
+    integer :: jthun, indicp, indicq, nb
     real(kind=8) :: pij, mij(12), sn, sij(6), sigu, sqma(6), sqmi(6), sn1, sn2
     real(kind=8) :: snth(6)
     character(len=4) :: typ2
@@ -64,6 +65,10 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
     sn = 0.d0
     sn1 = 0.d0
     sn2 = 0.d0
+!
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) goto 999
 !
 ! --- CONTRAINTES LINEAIRISEES DUES AUX CHARGEMENTS UNITAIRES
 !
@@ -213,7 +218,14 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
                     call rc32st(sij, nbinst, snth, sn)
                 endif
             else
-                if (nbthep .ne. 0) then
+                if (nbthep .eq. 0) then
+                    if (seisme) then
+                        call rc32s0(typ2, mij, pij, mse, zr(jsigu+ 78),&
+                                    nbinst, snth, sn)
+                    else
+                        call rc32st(sij, nbinst, snth, sn)
+                    endif
+                else
                     do 114 i1 = 1, 6
                         sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
                         sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
@@ -235,4 +247,5 @@ subroutine rc32sn(typz, lieu, numsip, pi, mi,&
         endif
     endif
 !
+999 continue
 end subroutine

@@ -18,12 +18,18 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ2sn1(lieu, numsip, numsiq,&
-                       iocs, instsn, sn1, sp3, spmeca3)
+    subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
+                       pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
+        aster_logical :: ze200
         character(len=4) :: lieu
         integer :: numsip
         integer :: numsiq
         integer :: iocs
+        real(kind=8) :: mse(12)
+        real(kind=8) :: pi
+        real(kind=8) :: mi(12)
+        real(kind=8) :: pj
+        real(kind=8) :: mj(12)
         real(kind=8) :: instsn(2)
         real(kind=8) :: sn1
         real(kind=8) :: sp3

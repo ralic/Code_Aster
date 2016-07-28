@@ -34,7 +34,7 @@ subroutine rc32in()
 !
     integer :: ndim, jvalin, n1, ktsn, ktsp, n2, n2a, n2b, n2c, n2d
     real(kind=8) :: bid
-    integer :: n2e, n2f, n2g, n2h, i, j
+    integer :: n2e, n2f, n2g, n2h, i, j, n1a, n1b, n1c
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -48,14 +48,11 @@ subroutine rc32in()
     if (n1 .ne. 0) then
         call getvr8('INDI_SIGM', 'K1', scal=zr(jvalin), iocc=1, nbret=n1)
         call getvr8('INDI_SIGM', 'C1', scal=zr(jvalin+1), iocc=1, nbret=n1)  
-        call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1)  
-        call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1)
         call getvr8('INDI_SIGM', 'K3', scal=zr(jvalin+4), iocc=1, nbret=n1)  
         call getvr8('INDI_SIGM', 'C3', scal=zr(jvalin+5), iocc=1, nbret=n1)
 !
         call getvr8('TUYAU', 'R', scal=zr(jvalin+6),iocc=1, nbret=n1)
         call getvr8('TUYAU', 'EP', scal=zr(jvalin+7),iocc=1, nbret=n1)
-        call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1)
         do 20 i =1,8
             zr(jvalin+i+10) = 1
  20     continue
@@ -75,8 +72,23 @@ subroutine rc32in()
             if (n2a*n2b*n2c*n2d*n2e*n2f*n2g*n2h .eq. 0) then
                 call utmess('F', 'POSTRCCM_46')
             endif
+            call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)  
+            call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
+            call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1c)
+            if (n1a+n1b+n1c .ne. 0) then
+                call utmess('F', 'POSTRCCM_46')
+            else
+                zr(jvalin+2) =0
+                zr(jvalin+3) =0
+                zr(jvalin+3) =1
+            endif
+        else
+            call getvr8('INDI_SIGM', 'K2', scal=zr(jvalin+2), iocc=1, nbret=n1a)  
+            call getvr8('INDI_SIGM', 'C2', scal=zr(jvalin+3), iocc=1, nbret=n1b)
+            call getvr8('TUYAU', 'I', scal=zr(jvalin+8),iocc=1, nbret=n1c)
+            if (n1a*n1b*n1c .eq. 0) call utmess('F', 'POSTRCCM_46')
         endif
-! ----- cas du b3200
+! ----- cas du b3200 sans indices de contraintes
     else
         do 10 j =1,19
             zr(jvalin+j-1) = 1

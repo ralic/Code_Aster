@@ -18,22 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rc3201(lpmpb, lsn, lsnet, lfatig, lrocht,&
-                      lieu, ig, iocs, seisme, yapass,&
-                      mater, utot, utotenv,&
-                      resuas, resuss, resuca, resucs,&
-                      factus, fatiguenv, resufin)
+    subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
+                      yapass, seisme, iocs, mater,&
+                      lieu, utot, utotenv, resuas,&
+                      resuss, resuca, resucs,&
+                      factus, resumax)
+        aster_logical :: ze200
+        integer :: ig
         aster_logical :: lpmpb
         aster_logical :: lsn
-        aster_logical :: lsnet
-        aster_logical :: lfatig
-        aster_logical :: lrocht
-        character(len=4) :: lieu
-        integer :: ig
-        integer :: iocs
-        aster_logical :: seisme
+        aster_logical :: lther
+        aster_logical :: lfat
+        aster_logical :: lefat
         aster_logical :: yapass
+        aster_logical :: seisme
+        integer :: iocs
         character(len=8) :: mater
+        character(len=4) :: lieu
         real(kind=8) :: utot
         real(kind=8) :: utotenv
         real(kind=8) :: resuas(*)
@@ -41,7 +42,6 @@ interface
         real(kind=8) :: resuca(*)
         real(kind=8) :: resucs(*)
         real(kind=8) :: factus(*)
-        aster_logical :: fatiguenv
-        real(kind=8) :: resufin(*)
+        real(kind=8) :: resumax(*)
     end subroutine rc3201
 end interface

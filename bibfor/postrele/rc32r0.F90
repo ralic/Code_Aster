@@ -9,6 +9,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 #include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
+#include "asterc/getfac.h"
 !
     character(len=8) :: nomres
     aster_logical :: pmpb, sn, snet
@@ -35,7 +36,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2)
+    integer :: npar0, npar1, npar2, im, ig, is, nbsigr, valei(2), nb
     integer :: jnsg, jpmpba, jpmpbs, nbgr, ioc, numgr, jvale, ibid, n1
     parameter    ( npar0 = 15 , npar1 = 7 , npar2 = 10 )
     real(kind=8) :: valer(5)
@@ -80,6 +81,9 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
         call tbajpa(nomres, npar0, nopar0, typar0)
     endif
 !
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) pmpb = .false.
 !     -----------------------------------------------------------------
 !
 ! --- STOCKAGE DES MAXIMA DANS LA TABLE

@@ -3,11 +3,12 @@ subroutine rc32rt(lieu, pi, pj, simpij)
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rctres.h"
+#include "asterc/getfac.h"
     real(kind=8) :: pi, pj, simpij
     character(len=4) :: lieu
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,9 +29,13 @@ subroutine rc32rt(lieu, pi, pj, simpij)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jsigu, icmp
+    integer :: jsigu, icmp, nb
     real(kind=8) :: pij, sigmp(6)
 ! DEB ------------------------------------------------------------------
+!
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .eq. 0) goto 999
 !
     call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
 !
@@ -46,4 +51,5 @@ subroutine rc32rt(lieu, pi, pj, simpij)
 !
     call rctres(sigmp, simpij)
 !
+999 continue
 end subroutine
