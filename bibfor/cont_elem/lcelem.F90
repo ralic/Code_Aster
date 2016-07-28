@@ -213,7 +213,7 @@ implicit none
         nb_lagr        = 2
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
         indi_lagc(4)   = 1
-        indi_lagc(4)   = 1
+        indi_lagc(5)   = 1
         elga_fami_slav = 'FPG12'
         elga_fami_mast = 'FPG12'
     else if (nomte .eq. 'LACQ4T6D') then
@@ -266,7 +266,7 @@ implicit none
         indi_lagc(5)   = 1
         elga_fami_slav = 'FPG12'
         elga_fami_mast = 'FPG12'
-    else if (nomte .eq. 'LACQ4T6D') then
+    else if (nomte .eq. 'LACQ4T6E') then
         elem_dime      = 3
         elem_slav_code = 'QU4'
         nb_node_slav   = 4
@@ -280,14 +280,16 @@ implicit none
         indi_lagc(5)   = 1
         elga_fami_slav = 'FPG12'
         elga_fami_mast = 'FPG12'
-    else if (nomte .eq. 'LACQ4Q8D') then
+    else if (nomte .eq. 'LACQ4Q8E') then
         elem_dime      = 3
         elem_slav_code = 'QU4'
         nb_node_slav   = 4
         elem_mast_code = 'QU8'
         nb_node_mast   = 8
-        nb_lagr        = 2
+        nb_lagr        = 4
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
+        indi_lagc(2)   = 1
+        indi_lagc(3)   = 1
         indi_lagc(4)   = 1
         indi_lagc(5)   = 1
         elga_fami_slav = 'FPG12'
@@ -341,8 +343,8 @@ implicit none
         nb_node_mast   = 6
         nb_lagr        = 2
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(3)   = 1
         indi_lagc(4)   = 1
+        indi_lagc(5)   = 1
         elga_fami_slav = 'FPG12'
         elga_fami_mast = 'FPG12'
     else if (nomte .eq. 'LACQ8Q4D') then
@@ -588,7 +590,7 @@ implicit none
         nb_node_mast   = 6
         nb_lagr        = 1
         nb_dof         = nb_node_mast*elem_dime + nb_node_slav*elem_dime+nb_lagr
-        indi_lagc(9)   = 1
+        indi_lagc(10)   = 1
         elga_fami_slav = 'FPG12'
         elga_fami_mast = 'FPG12'
     else if (nomte .eq. 'LACQ9Q4D') then
