@@ -61,7 +61,7 @@ implicit none
     character(len=24) :: cpu_name
     character(len=512) :: table_head(3)
     aster_logical :: l_line_search
-    aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont
+    aster_logical :: l_cont, l_fric, l_cont_disc, l_cont_cont,l_cont_lac
     aster_logical :: l_loop_cont, l_loop_fric, l_loop_geom, l_newt_geom
     aster_logical :: l_all_verif, l_device_acti
     type(NL_DS_Table) :: table
@@ -81,6 +81,7 @@ implicit none
     l_cont        = isfonc(list_func_acti, 'CONTACT' )
     l_cont_disc   = isfonc(list_func_acti, 'CONT_DISCRET')
     l_cont_cont   = isfonc(list_func_acti, 'CONT_CONTINU')
+    l_cont_lac    = isfonc(list_func_acti, 'CONT_LAC')
     l_loop_cont   = isfonc(list_func_acti, 'BOUCLE_EXT_CONT')
     l_loop_fric   = isfonc(list_func_acti, 'BOUCLE_EXT_FROT')
     l_loop_geom   = isfonc(list_func_acti, 'BOUCLE_EXT_GEOM')
@@ -121,7 +122,7 @@ implicit none
         if (l_cont_disc) then
             call ActivateDevice(ds_measure, 'Cont_Algo')
         endif
-        if (l_cont_cont) then
+        if (l_cont_cont .or. l_cont_lac) then
             call ActivateDevice(ds_measure, 'Cont_Prep')
             call ActivateDevice(ds_measure, 'Cont_Elem')
             call ActivateDevice(ds_measure, 'Cont_Cycl1')
