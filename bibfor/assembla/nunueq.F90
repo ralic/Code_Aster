@@ -12,6 +12,8 @@ implicit none
 #include "asterfort/exisdg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jenuno.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
@@ -54,7 +56,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: length_prno
+    integer :: length_prno, iexi
     character(len=8) :: node_name_term, cmp_name_term
     character(len=8) :: node_name, cmp_name
     integer :: i_equ, i_dof, i_ligr, i_node, i_rela, i_term, i_equ_old, i_in_rela, i_equ_sav
@@ -68,6 +70,8 @@ implicit none
     integer, pointer :: v_rela_dof(:) => null()
     integer, pointer :: v_sdiden_info(:) => null()
     integer, pointer :: v_sdiden_dime(:) => null()
+    integer, pointer :: v_sdiden_iset(:) => null()
+    integer, pointer :: v_sdiden_nueq(:) => null()
     character(len=8), pointer :: v_sdiden_term(:) => null()
     character(len=8), pointer :: p_cata_cmp(:) => null()
 !
@@ -92,6 +96,17 @@ implicit none
             call jeveuo(sd_iden_rela(1:19)//'.INFO', 'L', vi  = v_sdiden_info)
             call jeveuo(sd_iden_rela(1:19)//'.DIME', 'L', vi  = v_sdiden_dime)
             nb_iden_rela = v_sdiden_info(1)
+            call jeexin(sd_iden_rela(1:19)//'.ISET',iexi)
+            if(iexi .eq. 0)then
+                call wkvect(sd_iden_rela(1:19)//'.ISET','V V I', 1,vi  = v_sdiden_iset)    
+            else
+                call jeveuo(sd_iden_rela(1:19)//'.ISET', 'L', vi  = v_sdiden_iset)
+                if (v_sdiden_iset(1) .eq. 1) then
+                    call jeveuo(sd_iden_rela(1:19)//'.NUEQ', 'L', vi  = v_sdiden_nueq)
+                    v_nueq(:) = v_sdiden_nueq(:)
+                    go to 100
+                end if
+            endif 
         endif
     endif
 !
@@ -210,5 +225,16 @@ implicit none
 !
     AS_DEALLOCATE(vi = v_rela_dof)
 !
+!
+! - Save .NUEQ
+!
+    if (sd_iden_rela.ne.' ') then
+        call jelira(nueq, 'LONMAX', nb_dof)
+        call wkvect(sd_iden_rela(1:19)//'.NUEQ','V V I', nb_dof ,vi  = v_sdiden_nueq)
+        v_sdiden_nueq(:) = v_nueq(:)
+        v_sdiden_iset(1) = 1
+    end if
+100 continue
     call jedema()
+!    
 end subroutine
