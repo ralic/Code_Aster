@@ -309,7 +309,6 @@ implicit none
                     suffix = '.DESC'
                 endif
                 lchin = ligrch(1:13)//nomlig(itych)//suffix
-                WRITE(6,*) 'Charge: ',itych,nomlig(itych),load_apply
                 call jeexin(lchin, iret)
                 info_type = 'RIEN'
                 if (iret .ne. 0) then
@@ -487,8 +486,8 @@ implicit none
 !
     if (l_diri_undead) then
         call load_unde_diri(list_load)
-    endif  
-    
+    endif
+
     AS_DEALLOCATE(vk8 = v_list_dble)
     call jedema()
 end subroutine
