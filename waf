@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # script alias to the waf engine script
+# It also allows to run any other program in the build environment
 
 # source the environment only if DEVTOOLS_COMPUTER_ID is not already defined
 printf "checking environment... "
@@ -19,4 +20,34 @@ else
     echo "already set"
 fi
 
-${0}.engine ${*}
+# call waf.engine or another program?
+if [ $# -lt 1 ]; then
+    # no argument: use waf
+    true
+elif [[ $1 =~ ^\- ]]; then
+    # start with hiphen: suppose to be a waf option
+    true
+else
+    # is the first argument a waf command ?
+    wafcmd=(build buildelem clean configure dist distcheck distclean \
+            i18n install list step test uninstall)
+    found=0
+    # remove '_debug' suffix
+    called=${1//_debug/}
+    for cmd in ${wafcmd[@]}
+    do
+        if [ "$called" = "$cmd" ]; then
+            found=1
+            break
+        fi
+    done
+    if [ ${found} -eq 0 ]; then
+        # not a waf command, call passed command line
+        "${@}"
+        exit $?
+    fi
+fi
+
+# execute waf
+${0}.engine "${@}"
+exit $?
