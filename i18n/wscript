@@ -77,8 +77,8 @@ def configure(self):
         self.check_i18n_tool('xgettext', 'XGETTEXT') and \
         self.check_i18n_tool('msgmerge', 'MSGMERGE')
     self.env['do_i18n_qtlinguist'] = \
-        self.check_i18n_tool('lrelease', 'LRELEASE') and \
-        self.check_i18n_tool('pylupdate4', 'PYLUPDATE')
+        self.check_i18n_tool('lrelease', 'LRELEASE', ['-version']) and \
+        self.check_i18n_tool('pylupdate4', 'PYLUPDATE', ['-version'])
 
 def build(self):
     self(
@@ -99,13 +99,20 @@ def update_i18n(self):
 
 ###############################################################################
 @Configure.conf
-def check_i18n_tool(self, program, varname):
+def check_i18n_tool(self, program, varname, argtest=['-h']):
     """Check a tool for a i18n program and store it using varname"""
     self.start_msg('Check for %s programs' % program)
     try:
+        reason = 'not found'
         self.find_program(program, var=varname)
+        # TODO check the tool works, at least it is callable
+        try:
+            res = self.cmd_and_log(self.env[varname] + argtest)
+        except Errors.WafError:
+            reason = '{} found but does not work!'.format(self.env[varname])
+            raise Errors.ConfigurationError
     except Errors.ConfigurationError:
-        self.end_msg('not found', 'YELLOW')
+        self.end_msg(reason, 'YELLOW')
         if self.options.install_i18n is True:
             raise
     else:
