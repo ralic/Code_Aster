@@ -23,7 +23,7 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
     complex(kind=8), intent(in) :: cval
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,8 +124,12 @@ subroutine rsorac(nomsd, acces, ival, rval, kval,&
         if (ndim .gt. 0) then
             nbtrou = 1
             call jelira(noms2//'.ORDR', 'LONUTI', numed)
-            call jeveuo(noms2//'.ORDR', 'L', jordr)
-            nutrou(1) = zi(jordr+numed-1)
+            if (numed .eq. 0 ) then
+                nbtrou = 0
+            else
+                call jeveuo(noms2//'.ORDR', 'L', jordr)
+                nutrou(1) = zi(jordr+numed-1)
+            endif
         else
             nbtrou = -1
         endif
