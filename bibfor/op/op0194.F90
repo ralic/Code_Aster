@@ -57,7 +57,7 @@ subroutine op0194()
 !
     complex(kind=8) :: c16b
     character(len=4) :: ctyp
-    character(len=8) :: k8b, crit, temper, modele, cara
+    character(len=8) :: k8b, crit, temper, temper2, modele, cara
     character(len=16) :: tysd, option
     character(len=19) :: kordre, kcha, compor
     character(len=24) :: chmeta, phasin, mate
@@ -116,7 +116,10 @@ subroutine op0194()
                 call chpver('F', chmeta(1:19), 'CART', 'VAR2_R', ier)
                 call copisd('CHAMP_GD', 'V', chmeta, phasin(1:19))
             else
-                call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=temper, nbret=n1)
+                call getvid('ETAT_INIT', 'EVOL_THER', iocc=1, scal=temper2, nbret=n1)
+                if (temper2 .ne. temper) then
+                    call utmess('F', 'META1_2')
+                endif
                 call getvis('ETAT_INIT', 'NUME_INIT', iocc=1, scal=num, nbret=n2)
                 if (n2 .eq. 0) then
                     call getvr8('ETAT_INIT', 'INST_INIT', iocc=1, scal=inst, nbret=n3)

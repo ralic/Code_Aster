@@ -23,5 +23,7 @@ cata_msg = {
  Erreur dans CALC_META: le résultat thermique doit contenir au moins deux pas de temps.
 """),
 
-
+    2  : _(u"""
+ Erreur dans CALC_META: le résultat thermique donné pour l'état initial doit être le même que le résultat de CALC_META.
+"""),
 }
