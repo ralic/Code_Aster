@@ -1,7 +1,7 @@
 subroutine op0194()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -80,7 +80,11 @@ subroutine op0194()
     call rsorac(temper, 'LONUTI', 0, r8b, k8b,&
                 c16b, r8b, k8b, tord, 1,&
                 ibid)
-    nbordr=tord(1)            
+    nbordr=tord(1)     
+
+    if (nbordr .lt. 2) then
+        call utmess('F', 'META1_1')
+    endif       
     call wkvect(kordre, 'V V I', nbordr, jordr)
     call rsorac(temper, 'TOUT_ORDRE', 0, r8b, k8b,&
                 c16b, r8b, k8b, zi(jordr), nbordr,&
