@@ -70,7 +70,7 @@ subroutine op0009()
     character(len=16) :: type, oper, suropt
     character(len=19) :: kcha, matel, rigiel, massel, resuel
     character(len=24) :: time2, mate, compor
-!
+    character(len=8), pointer :: v_list_load8(:) => null()
     character(len=24), pointer :: relr(:) => null()
     real(kind=8) :: time, tps(6)
 !
@@ -109,6 +109,7 @@ subroutine op0009()
 !   POUR LES MULTIFIBRES ON SE SERT DE COMPOR
     compor=mate(1:8)//'.COMPOR'
     call jeveuo(kcha, 'E', icha)
+    call jeveuo(kcha, 'E', vk8 = v_list_load8)
     time2 = '&TIME'
 !
     tps(1) = time
@@ -216,7 +217,7 @@ subroutine op0009()
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'AMOR_ACOU') then
-        call meamac(modele, ncha, zk8(icha), mate, matel)
+        call meamac(modele, ncha, v_list_load8, mate, matel, base)
     endif
 !
 ! --------------------------------------------------------------------------------------------------
@@ -238,9 +239,6 @@ subroutine op0009()
 ! --------------------------------------------------------------------------------------------------
 !   DESTRUCTION DES RESUELEM NULS :
     call redetr(matel)
-!
-    call jedetr('&MEAMAC2           .RELR')
-    call jedetr('&MEAMAC2           .RERR')
 !
     call jedetr('&MERIAC1           .RELR')
     call jedetr('&MERIAC1           .RERR')

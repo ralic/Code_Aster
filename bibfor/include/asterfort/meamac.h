@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine meamac(modelz, ncha, lcha, mate, matelz)
-        character(len=*) :: modelz
-        integer :: ncha
-        character(len=8) :: lcha(*)
-        character(len=*) :: mate
-        character(len=*) :: matelz
+    subroutine meamac(model_, nb_load, v_list_load8, mate, matr_elem_, base)
+        character(len=*), intent(in) :: model_
+        integer, intent(in) :: nb_load
+        character(len=8), pointer, intent(in) :: v_list_load8(:)
+        character(len=*), intent(in) :: mate
+        character(len=*), intent(in) :: matr_elem_
+        character(len=1), intent(in) :: base
     end subroutine meamac
 end interface
