@@ -1,5 +1,5 @@
-subroutine memame(option, modele, nchar, lchar, mate,&
-                  carele, exitim, instan, compor, matelz,&
+subroutine memame(option, modele, mate,&
+                  carele, instan, compor, matelz,&
                   base)
 !
 !
@@ -42,12 +42,9 @@ subroutine memame(option, modele, nchar, lchar, mate,&
 #include "asterfort/reajre.h"
 #include "asterfort/redetr.h"
 #include "asterfort/vrcins.h"
-    integer :: nchar
     real(kind=8) :: instan
-    character(len=8) :: lchar(*)
     character(len=1) :: base
     character(len=*) :: option, modele, mate, carele, compor, matelz
-    aster_logical :: exitim
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,11 +57,8 @@ subroutine memame(option, modele, nchar, lchar, mate,&
 !
 ! IN   OPTION : OPTION DE CALCUL
 ! IN   MODELE : NOM DU MODELE (OBLIGATOIRE)
-! IN   NCHAR  : NOMBRE DE CHARGES
-! IN   LCHAR  : LISTE DES CHARGES
 ! IN   MATE   : CARTE DE MATERIAUX
 ! IN   CARELE : CHAMP DE CARAC_ELEM
-! IN   EXITIM : VRAI SI L'INSTANT EST DONNE
 ! IN   INSTAN : INSTANT DE CALCUL
 ! IN   COMPOR : CARTE DE COMPORTEMENT
 ! IN   BASEZ  : NOM DE LA BASE

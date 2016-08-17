@@ -1,5 +1,5 @@
 subroutine merifs(modele, nchar, lchar, mate, cara,&
-                  exitim, time, matel, nh)
+                  time, matel, nh)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -22,10 +22,9 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
     character(len=8) :: modele, cara
     character(len=19) :: matel
     character(len=*) :: lchar(*), mate
-    aster_logical :: exitim
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +48,6 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
 ! IN  : MATE   : CARTE DE MATERIAU
 ! IN  : CARA   : CHAMP DE CARAC_ELEM
 ! IN  : MATEL  : NOM DU MATR_ELEM RESULTAT
-! IN  : EXITIM : VRAI SI L'INSTANT EST DONNE
 ! IN  : TIME   : INSTANT DE CALCUL
 ! IN  : NH     : NUMERO D'HARMONIQUE DE FOURIER
 ! ----------------------------------------------------------------------
@@ -126,13 +124,13 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
         ilires=ilires+1
     endif
 !
-    do 10 icha = 1, nchar
+    do icha = 1, nchar
         ligrch = lchar(icha) (1:8)//'.CHME.LIGRE'
         call jeexin(lchar(icha) (1:8)//'.CHME.LIGRE.LIEL', iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
         lchin(1) = lchar(icha) (1:8)//'.CHME.CMULT'
         call exisd('CHAMP_GD', lchar(icha) (1:8)//'.CHME.CMULT', iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
 !
         lpain(1) = 'PDDLMUR'
         ilires=ilires+1
@@ -142,7 +140,7 @@ subroutine merifs(modele, nchar, lchar, mate, cara,&
                     lpain, 1, lchout, lpaout, 'G',&
                     'OUI')
         call reajre(matel, lchout(1), 'G')
- 10 end do
+    end do
 ! --- MENAGE
     call detrsd('CHAM_ELEM', chvarc)
 !

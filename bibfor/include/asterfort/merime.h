@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine merime(modelz, nchar, lchar, mate, carelz,&
-                      exitim, time, compoz, matelz, nh,&
+                      time, compoz, matelz, nh,&
                       basz)
         character(len=*) :: modelz
         integer :: nchar
@@ -27,10 +27,10 @@ interface
         character(len=*) :: mate
         character(len=*) :: carelz
         aster_logical :: exitim
-        real(kind=8) :: time
         character(len=*) :: compoz
         character(len=*) :: matelz
         integer :: nh
         character(len=*) :: basz
+        real(kind=8), intent(in) :: time
     end subroutine merime
 end interface

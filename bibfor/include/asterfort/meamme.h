@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine meamme(optioz, modele, nchar, lchar, mate,&
-                      cara, exitim, time, base, merigi,&
+                      cara, time, base, merigi,&
                       memass, meamor, varplu)
         character(len=*) :: optioz
         character(len=*) :: modele
@@ -27,7 +27,6 @@ interface
         character(len=8) :: lchar(*)
         character(len=*) :: mate
         character(len=*) :: cara
-        aster_logical :: exitim
         real(kind=8) :: time
         character(len=1) :: base
         character(len=*) :: merigi

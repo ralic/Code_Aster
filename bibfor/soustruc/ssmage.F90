@@ -1,6 +1,6 @@
 subroutine ssmage(nomu, option)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,8 +50,6 @@ subroutine ssmage(nomu, option)
 !
 ! ----------------------------------------------------------------------
 !
-!
-    integer :: nchaci
     real(kind=8) :: time
     character(len=1) :: base
     character(len=8) :: nomo, cara, materi, matel, promes
@@ -60,7 +58,6 @@ subroutine ssmage(nomu, option)
     character(len=24) :: mate, compor
 !-----------------------------------------------------------------------
     integer :: iarefm
-    integer, pointer :: desm(:) => null()
     real(kind=8), pointer :: varm(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
@@ -92,9 +89,6 @@ subroutine ssmage(nomu, option)
         ASSERT(.false.)
     endif
 !
-    call jeveuo(nomu//'.DESM', 'L', vi=desm)
-    nchaci = desm(6)
-!
 !
     call jeveuo(nomu//'.VARM', 'L', vr=varm)
     time = varm(2)
@@ -102,8 +96,8 @@ subroutine ssmage(nomu, option)
 !     -- CALCULS MATRICES ELEMENTAIRES DE MASSE (OU AMORTISSEMENT):
     if (option .eq. 'MASS_MECA') then
         compor = ' '
-        call memame('MASS_MECA  ', nomo, nchaci, zk8(iarefm-1+9+1), mate,&
-                    cara, .true._1, time, compor, matel,&
+        call memame('MASS_MECA', nomo, mate,&
+                    cara, time, compor, matel,&
                     base)
     else if (option.eq.'AMOR_MECA') then
         call dismoi('NOM_PROJ_MESU', nomu, 'MACR_ELEM_STAT', repk=promes)

@@ -3,7 +3,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
                   matass, maprec, cnchci, base, compor)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -162,7 +162,7 @@ subroutine meacmv(modele, mate, carele, fomult, lischa,&
 !
         call uttcpu('CPU.OP0046.1', 'DEBUT', ' ')
         call merime(modele(1:8), nchar, zk24(jchar), mate, carele(1:8),&
-                    .true._1, time, compor, matele, nh,&
+                    time, compor, matele, nh,&
                     base)
         ass1er = .true.
         call uttcpu('CPU.OP0046.1', 'FIN', ' ')

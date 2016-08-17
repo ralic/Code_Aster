@@ -1,10 +1,10 @@
 subroutine merime(modelz, nchar, lchar, mate, carelz,&
-                  exitim, time, compoz, matelz, nh,&
+                  time, compoz, matelz, nh,&
                   basz)
 !
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,10 +44,9 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 #include "asterfort/vrcins.h"
 #include "asterfort/getvtx.h"
     integer :: nchar, nh
-    real(kind=8) :: time
     character(len=*) :: modelz, carelz, matelz
     character(len=*) :: lchar(*), mate, basz, compoz
-    aster_logical :: exitim
+    real(kind=8), intent(in) :: time
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,7 +60,6 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 ! IN  MATE   : CARTE DE MATERIAU
 ! IN  CARELE : CHAMP DE CARAC_ELEM
 ! IN  MATELZ : NOM DU MATR_ELEM RESULTAT
-! IN  EXITIM : VRAI SI L'INSTANT EST DONNE
 ! IN  TIME   : INSTANT DE CALCUL
 ! IN  NH     : NUMERO D'HARMONIQUE DE FOURIER
 ! IN  BASE   : NOM DE LA BASE
@@ -122,7 +120,6 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 !
 ! --- CHAMP TEMPS
 !
-    if (.not.exitim) time = 0.d0
     call mecact('V', chtime, 'MODELE', ligrmo, 'INST_R',&
                 ncmp=1, nomcmp='INST', sr=time)
 !
@@ -266,15 +263,15 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
 ! --- MATRICE DIRICHLET
 !
     option = 'MECA_DDLM_R'
-    do 10 icha = 1, nchar
+    do icha = 1, nchar
         ligrch = lchar(icha) (1:8)//'.CHME.LIGRE'
         argu = lchar(icha) (1:8)//'.CHME.LIGRE.LIEL'
         call jeexin(argu, iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
         lchin(1) = lchar(icha) (1:8)//'.CHME.CMULT'
         argu = lchar(icha) (1:8)//'.CHME.CMULT.DESC'
         call jeexin(argu, iret)
-        if (iret .le. 0) goto 10
+        if (iret .le. 0) cycle
         lpain(1) = 'PDDLMUR'
         ilires=ilires+1
         call codent(ilires, 'D0', lchout(1) (12:14))
@@ -283,7 +280,7 @@ subroutine merime(modelz, nchar, lchar, mate, carelz,&
                     lpain, 1, lchout, lpaout, base,&
                     'OUI')
         call reajre(matele, lchout(1), base)
- 10 end do
+    end do
 !
 ! --- DESTRUCTION DES RESUELEM NULS
 !

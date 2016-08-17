@@ -1,9 +1,9 @@
 subroutine meamme(optioz, modele, nchar, lchar, mate,&
-                  cara, exitim, time, base, merigi,&
+                  cara, time, base, merigi,&
                   memass, meamor, varplu)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,6 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     character(len=*) :: modele, optioz, cara, mate
     character(len=*) :: merigi, memass, meamor, varplu
     character(len=8) :: lchar(*)
-    aster_logical :: exitim
     character(len=1) :: base
 !
 ! ----------------------------------------------------------------------
@@ -65,7 +64,6 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
 ! IN  MATE   : CHAM_MATER
 ! IN  CARA   : CARA_ELEM
 ! OUT MEAMOR : MATR_ELEM AMORTISSEMENT
-! IN  EXITIM : VRAI SI L'INSTANT EST DONNE
 ! IN  TIME   : INSTANT DE CALCUL
 ! IN  MERIGI : MATR_ELEM_DEPL_R DE RIGI_MECA
 ! IN  MEMASS : MATR_ELEM_DEPL_R DE MASS_MECA
@@ -197,7 +195,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
     lpain(7) = 'PVARCPR'
     lchin(7) = chvarc(1:19)
     lpain(8) = 'PRIGIEL'
-    lchin(8) = rigich
+    lchin(8) = rigich(1:19)
     nop=11
 !
     if (rigich .ne. ' ') then
@@ -213,7 +211,7 @@ subroutine meamme(optioz, modele, nchar, lchar, mate,&
                 if (nomgd .eq. 'MDNS_R') then
                     nop=12
                     lpain(12) = 'PRIGINS'
-                    lchin(12) = rigich
+                    lchin(12) = rigich(1:19)
                 endif
             endif
         endif

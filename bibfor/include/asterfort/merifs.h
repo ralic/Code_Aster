@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,13 +19,12 @@
 !
 interface
     subroutine merifs(modele, nchar, lchar, mate, cara,&
-                      exitim, time, matel, nh)
+                      time, matel, nh)
         character(len=8) :: modele
         integer :: nchar
         character(len=*) :: lchar(*)
         character(len=*) :: mate
         character(len=8) :: cara
-        aster_logical :: exitim
         real(kind=8) :: time
         character(len=19) :: matel
         integer :: nh

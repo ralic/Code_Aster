@@ -1,7 +1,7 @@
 subroutine op0009()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,6 @@ subroutine op0009()
     character(len=24) :: time2, mate, compor
 !
     character(len=24), pointer :: relr(:) => null()
-    aster_logical :: exitim
     real(kind=8) :: time, tps(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -110,7 +109,6 @@ subroutine op0009()
 !   POUR LES MULTIFIBRES ON SE SERT DE COMPOR
     compor=mate(1:8)//'.COMPOR'
     call jeveuo(kcha, 'E', icha)
-    exitim = .true.
     time2 = '&TIME'
 !
     tps(1) = time
@@ -118,13 +116,13 @@ subroutine op0009()
 ! --------------------------------------------------------------------------------------------------
     if (suropt .eq. 'RIGI_MECA') then
         call merime(modele, ncha, zk8(icha), mate, cara,&
-                    exitim, time, compor, matel, nh,&
+                    time, compor, matel, nh,&
                     base)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_FLUI_STRU') then
         call merifs(modele, ncha, zk8(icha), mate, cara,&
-                    exitim, time, matel, nh)
+                    time, matel, nh)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_GEOM') then
@@ -163,28 +161,28 @@ subroutine op0009()
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_MECA') then
 !        COMPOR = ' '
-        call memame(suropt, modele, ncha, zk8(icha), mate,&
-                    cara, exitim, time, compor, matel,&
+        call memame(suropt, modele, mate,&
+                    cara, time, compor, matel,&
                     base)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_FLUI_STRU') then
 !        COMPOR = ' '
-        call memame(suropt, modele, ncha, zk8(icha), mate,&
-                    cara, exitim, time, compor, matel,&
+        call memame(suropt, modele, mate,&
+                    cara, time, compor, matel,&
                     base)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_MECA_DIAG') then
 !        COMPOR = ' '
-        call memame(suropt, modele, ncha, zk8(icha), mate,&
-                    cara, exitim, time, compor, matel,&
+        call memame(suropt, modele, mate,&
+                    cara, time, compor, matel,&
                     base)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt(1:9).eq.'AMOR_MECA') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
-                    cara, exitim, time, 'G', rigiel,&
+                    cara, time, 'G', rigiel,&
                     massel, matel, ' ')
 !
 ! --------------------------------------------------------------------------------------------------
@@ -198,7 +196,7 @@ subroutine op0009()
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_MECA_HYST') then
         call meamme(suropt, modele, ncha, zk8(icha), mate,&
-                    cara, exitim, time, 'G', rigiel,&
+                    cara, time, 'G', rigiel,&
                     massel, matel, ' ')
 !
 ! --------------------------------------------------------------------------------------------------
