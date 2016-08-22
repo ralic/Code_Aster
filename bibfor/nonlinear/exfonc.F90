@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/dismoi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ implicit none
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
-    aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela
+    aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo
     character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet
@@ -93,6 +93,7 @@ implicit none
     lexpl           = isfonc(list_func_acti,'EXPLICITE')
     l_grot_gdep     = isfonc(list_func_acti,'GD_ROTA')
     ltheta          = ndynlo(sddyna,'THETA_METHODE')
+    lammo           = ndynlo(sddyna,'AMOR_MODAL')
     limpex          = isfonc(list_func_acti,'IMPLEX')
     l_newt_krylov   = isfonc(list_func_acti,'NEWTON_KRYLOV')
     l_energy        = isfonc(list_func_acti,'ENERGIE')
@@ -169,6 +170,9 @@ implicit none
         endif
         if (lpetsc .and. lmatdi) then
             call utmess('F', 'MECANONLINE3_98')
+        endif
+        if (lammo) then
+            call utmess('F', 'MECANONLINE3_93')
         endif
     endif
 !
