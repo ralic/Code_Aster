@@ -210,7 +210,7 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
       call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
       call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
       call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
-      call rccome(nommat, 'ELAS', ier, k11_ind_nomrc=k11)  
+      call rccome(nommat, 'ELAS', ier, k11_ind_nomrc=k11)
       call jeexin(nommat//k11//'.VALR', ier)
       call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
       call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
@@ -270,7 +270,7 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
         enddo
         nfh=nfh/ndim
         nfe=nfe/ndim
-!       
+!
 !        print*,' - nfh   =',nfh
 !        print*,' - nfe   =',nfe
 !        print*,' - cmp  =',cmp
@@ -307,7 +307,7 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
               if (ier.eq.0) young=.true.
             endif
           enddo
-          if (poiss) then 
+          if (poiss) then
             ka = 3.d0-4.d0*nu
             if (cplan) ka = (3.d0-nu)/(1.d0+nu)
             if (young) mu = e/(2.d0*(1.d0+nu))
@@ -357,8 +357,8 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
 !         CALCUL DES FF LINEAIRE AU CAS OU ...
           ff2(:)=0.
           if (.not.iselli(elrefp)) then
-              call xellin(elrefp, nbno1, elrefp2, nnop2) 
-              call elrfvf(elrefp2, pjef_co((3*(ino1-1)+1):(3*(ino1-1)+ndim)),&
+              call xellin(elrefp, nbno1, elrefp2, nnop2)
+              call elrfvf(elrefp2, pjef_co((3*(ino2-1)+1):(3*(ino2-1)+ndim)),&
                           8, ff2, nnop2)
           endif
 !         APPEL A XCALFEV EN PLUS ET MOINS
