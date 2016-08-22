@@ -21,7 +21,7 @@ subroutine refe99(nomres)
     character(len=8) :: nomres
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -191,7 +191,7 @@ subroutine refe99(nomres)
 !       Reference numbering is required in case more than one modal base is given
         call getvid('    ', 'NUME_REF', iocc=1, scal=numddl, nbret=ier)
         if ((ier.eq.0) .and. noseul) then
-            call utmess('E', 'ALGORITH17_9')
+            call utmess('F', 'ALGORITH17_9')
         endif
 !
         intf = ' '

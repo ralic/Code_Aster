@@ -2,7 +2,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,8 +20,8 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
 ! person_in_charge: hassan.berro at edf.fr
 !
 ! dtmdetect : Detects a change in the state of non-linearities between between
-!             instants i and i-1 by analyzing the saved parameters in NL_SAVES and
-!             NL_SAVE0
+!             instants i and i-1 by analyzing the saved internal variables and
+!             NL_SAVE1
 ! 
 #include "jeveux.h"
 #include "asterc/r8prem.h"
@@ -32,6 +32,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
 #include "asterfort/intget.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -46,12 +47,14 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
 !   -0.2- Local variables
     integer               :: i, nbnoli, nlcase1, nlcase2, ifm
     integer               :: info
-    character(len=8)      :: sd_dtm, sd_int
+    character(len=8)      :: sd_dtm, sd_int, sd_nl
     real(kind=8)          :: epsi, time
 !
+    integer,      pointer :: buffnl(:)=> null()
+    integer,      pointer :: vindx(:)=> null()
     integer,      pointer :: nlcase_i(:)=> null()
-    real(kind=8), pointer :: chosav1(:) => null()
-    real(kind=8), pointer :: chosav2(:) => null()
+    real(kind=8), pointer :: nlsav1(:) => null()
+    real(kind=8), pointer :: nlsav2(:) => null()
 !
 !   0 - Initializations
     sd_dtm  = sd_dtm_
@@ -61,14 +64,19 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
     reinteg = 0
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
     if (nbnoli.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav2   , buffer=buffdtm)
-        call dtmget(sd_dtm, _NL_SAVE1, vr=chosav1   , buffer=buffdtm)
+        
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
+        call nlget (sd_nl , _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
+
+        call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1   , buffer=buffdtm)
         call dtmget(sd_dtm, _NL_CASE , iscal=nlcase1, buffer=buffdtm)
 
         AS_ALLOCATE(vi=nlcase_i, size=nbnoli)
         do i = 1, nbnoli
             nlcase_i(i) = 0
-            if (abs(chosav2(i)).gt.epsi) nlcase_i(i) = 1
+            if (abs(nlsav2(vindx(i))).gt.epsi) nlcase_i(i) = 1
          end do
 !       --- Define an integer in base10, corresponding to the non-linearity case.
 !         python equivalent : nlcase2 = sum([nlcase_i[i]*2**m for m in range(nbnoli)])

@@ -3,7 +3,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nlget.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/prmama.h"
 #include "asterfort/rrlds.h"
@@ -76,9 +77,10 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
     real(kind=8)     :: prec, t2, dotpr, magsq, delta10
     real(kind=8)     :: delta20, coeff, c_added
     character(len=7) :: casek7
-    character(len=8) :: sd_dtm, sd_int, foncv, fonca
+    character(len=8) :: sd_dtm, sd_int, sd_nl, foncv, fonca
     character(len=24):: kadd_jv, fadd_jv, cadd_jv
 !
+    integer, pointer      :: buffnl(:)  => null()
     integer, pointer      :: dk_add_ind(:)  => null()
 
     real(kind=8), pointer :: amorf(:)  => null()
@@ -90,8 +92,8 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
     real(kind=8), pointer :: kgen(:)   => null()
     real(kind=8), pointer :: agen(:)   => null()
    
-    real(kind=8), pointer :: chosav1(:)    => null()
-    real(kind=8), pointer :: chosav2(:)    => null()
+    real(kind=8), pointer :: nlsav1(:)    => null()
+    real(kind=8), pointer :: nlsav2(:)    => null()
     real(kind=8), pointer :: depl2(:)      => null()
     real(kind=8), pointer :: vite2(:)      => null()
     real(kind=8), pointer :: acce2(:)      => null()
@@ -174,10 +176,13 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
             call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
             call intget(sd_int, FORCE_EX, iocc =ind, vr=fext2, buffer=buffint)
 
-            call dtmget(sd_dtm, _NL_SAVES, vr=chosav2, buffer=buffdtm)
-            call dtmget(sd_dtm, _NL_SAVE1, vr=chosav1, buffer=buffdtm)
-            call dtmget(sd_dtm, _NL_SAVES, rvect=chosav1, buffer=buffdtm)
-    
+            call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1, buffer=buffdtm)
+
+            call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+            call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+            call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
+            call nlget (sd_nl , _INTERNAL_VARS, rvect=nlsav1, buffer=buffnl)
+   
             dt = min(1.d-10,dt0*1.d-4)
 
             AS_ALLOCATE(vr=vite1, size=nbmode)
@@ -249,7 +254,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
                         k_a(i,j) = 0.d0
                     end if
                 end do
-                call dcopy(nbmode, chosav1, 1, chosav2, 1)
+                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
 
 !               --- Double check linearity for the diagonal terms
                 if (abs(k_a(i,i)).gt.(1.d5*epsi)) then
@@ -265,7 +270,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
                         k_a(i,i) = 0.d0
                     end if
                 end if
-                call dcopy(nbmode, chosav1, 1, chosav2, 1)
+                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
             end do
             AS_DEALLOCATE(vr=ddepl)            
 
@@ -289,7 +294,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
                         c_a(i,j) = 0.d0
                     end if
                 end do
-                call dcopy(nbmode, chosav1, 1, chosav2, 1)
+                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
 
 !               --- Double check linearity for the diagonal terms
                 if (abs(c_a(i,i)).gt.(1.d5*epsi)) then
@@ -305,7 +310,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
                         c_a(i,i) = 0.d0
                     end if
                 end if
-                call dcopy(nbmode, chosav1, 1, chosav2, 1)
+                call dcopy(nbmode, nlsav1, 1, nlsav2, 1)
             end do
 
 !           --- Remove numerical errors resulting in non symetrical added matrices
@@ -477,7 +482,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
             .and.((dt0*ratio).gt.1.d-10)) then
 
             call intbackup('&&INTBAK', sd_int)
-            call dtmget(sd_dtm, _NL_SAVE0, rvect=chosav2, buffer=buffdtm)
+            call dtmget(sd_dtm, _NL_SAVE0, rvect=nlsav2, buffer=buffdtm)
 
             nullify(buffint)
             call intget(sd_int, IND_ARCH, iscal=lev)
@@ -693,7 +698,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
     end if
 
 !   --- Simple calculation with constant matrices, no action required, just
-!       intialize integeration sd with the matrices info if ind = INDEX(index)=0
+!       intialize integration sd with the matrices info if ind = INDEX(index)=0
     call intget(sd_int, INDEX, iocc=1, iscal=ind)
     if (ind.eq.0) then
 !        --- Mass

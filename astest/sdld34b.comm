@@ -118,17 +118,17 @@ TRANSMO=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
 DXGEMO=RECU_FONCTION(RESU_GENE=TRANSMO,
                      NOM_CHAM='DEPL',
-                     NUME_CMP_GENE=1,)
+                     NUME_CMP_GENE=1,);
 
 TRANSMR=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                         MATR_MASS=MAGE,
                         MATR_RIGI=RIGE,
                         ETAT_INIT=_F(DEPL=DIGE,),
-                        RELA_EFFO_VITE=_F(NOEUD='N', RELATION=rel, NOM_CMP='DX'),
+                        COMPORTEMENT=(_F(RELATION='RELA_EFFO_VITE', 
+                                         NOEUD='N', FONCTION=rel, NOM_CMP='DX'),),
                         INCREMENT=_F(INST_FIN=tfin,
                                      PAS=pdt,),);
-
 DXGEMR=RECU_FONCTION(RESU_GENE=TRANSMR,
                      NOM_CHAM='DEPL',
                      NUME_CMP_GENE=1,)

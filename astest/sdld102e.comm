@@ -31,7 +31,6 @@ DEBUT(CODE=_F(
       DEBUG=_F(SDVERI='OUI',),);
 
 #
-
 LIST_R=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A=80.,
                                     NOMBRE=10,),);
@@ -313,11 +312,9 @@ TRANGEN3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          INCREMENT=_F(INST_INIT=0.,
                                       INST_FIN=82.,
                                       PAS=0.01,),
-                         ARCHIVAGE=_F(PAS_ARCH=10, LIST_INST=LIST_R),
+                         ARCHIVAGE=_F(PAS_ARCH=10),
                          EXCIT=_F(VECT_ASSE_GENE=VECPRO,
                                   COEF_MULT=1.,),);
-
-#
 
 TRANGEN4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                          SCHEMA_TEMPS=_F(SCHEMA='ADAPT_ORDRE2',

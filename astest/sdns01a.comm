@@ -251,7 +251,8 @@ for k in range(1,ns+1):
                             EXCIT=_F( VECT_ASSE_GENE = IM_G100,
                                       FONC_MULT = IMPULF
                                     ),
-                            CHOC=_F( NOEUD_1 = 'N3201',
+                            COMPORTEMENT=_F(RELATION='DIS_CHOC',
+                                     NOEUD_1 = 'N3201',
                                      OBSTACLE = PLANZ,
                                      ORIG_OBST = (0., 0., 0.,),
                                      NORM_OBST = (1., 0., 0.,),
@@ -275,7 +276,8 @@ for k in range(1,ns+1):
                             EXCIT=_F( VECT_ASSE_GENE = IM_G100,
                                       FONC_MULT = IMPULF
                                     ),
-                            CHOC=_F( NOEUD_1 = 'N3201',
+                            COMPORTEMENT=_F(RELATION='DIS_CHOC',
+                                     NOEUD_1 = 'N3201',
                                      OBSTACLE = PLANZ,
                                      ORIG_OBST = (0., 0., 0.,),
                                      NORM_OBST = (1., 0., 0.,),
@@ -299,7 +301,8 @@ for k in range(1,ns+1):
                             EXCIT=_F( VECT_ASSE_GENE = IM_G100,
                                       FONC_MULT = IMPULF
                                     ),
-                            CHOC=_F( NOEUD_1 = 'N3201',
+                            COMPORTEMENT=_F(RELATION='DIS_CHOC',
+                                     NOEUD_1 = 'N3201',
                                      OBSTACLE = PLANZ,
                                      ORIG_OBST = (0., 0., 0.,),
                                      NORM_OBST = (1., 0., 0.,),

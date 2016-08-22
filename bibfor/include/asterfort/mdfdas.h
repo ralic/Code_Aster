@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ interface
                       xmax, fdispo, flocal)
         real(kind=8) :: dnorm
         real(kind=8) :: vnorm
-        real(kind=8) :: vitloc(6)
+        real(kind=8) :: vitloc(3)
         real(kind=8) :: cost
         real(kind=8) :: sint
         real(kind=8) :: coefk1

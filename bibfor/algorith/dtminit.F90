@@ -2,7 +2,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,6 +42,9 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
+#include "asterfort/nlinivec.h"
 #include "asterfort/preres.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
@@ -57,21 +60,20 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !   -0.2- Local variables
     aster_logical     :: reuse
     integer           :: nbrede, nbrevi, nbsauv, nbnli, nbpal
-    integer           :: nbmode, iret, jmass, nbvint, jredr
-    integer           :: jredi, jrevr, jrevi, nbschor, jchor
-    integer           :: nltreat, append, appendind
+    integer           :: nbmode, iret, jmass, nbvint, jchor
+    integer           :: jchor1, nltreat, append, appendind, i
 !
     real(kind=8)      :: tinit, dt
-    character(len=8)  :: sd_dtm, sd_int, nomres, basemo
+    character(len=8)  :: sd_dtm, sd_int, nomres, basemo, sd_nl
     character(len=24) :: matasm, solver
 !
+    integer         , pointer :: vindx(:) => null()
     integer         , pointer :: matdesc(:) => null()
     real(kind=8)    , pointer :: vint(:)    => null()
     real(kind=8)    , pointer :: depl(:)    => null()
     real(kind=8)    , pointer :: vite(:)    => null()
     real(kind=8)    , pointer :: acce(:)    => null()
-    character(len=8), pointer :: inticho(:) => null()
-    character(len=8), pointer :: noeucho(:) => null()
+    real(kind=8)    , pointer :: fext(:)    => null()
     integer         , pointer :: buffdtm(:) => null()
     integer         , pointer :: buffint(:) => null()    
 !
@@ -81,16 +83,26 @@ subroutine dtminit(sd_dtm_, sd_int_)
     sd_int = sd_int_    
 !
 !   1 - Retrieval of the necessary information
-    call dtmget(sd_dtm, _FX_NUMB ,iscal=nbrede)
-    call dtmget(sd_dtm, _FV_NUMB ,iscal=nbrevi)
+
     call dtmget(sd_dtm, _ARCH_NB ,iscal=nbsauv)
     call dtmget(sd_dtm, _CALC_SD ,kscal=nomres)
-    call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli)    
-    call dtmget(sd_dtm, _NB_PALIE,iscal=nbpal)
     call dtmget(sd_dtm, _INST_INI,rscal=tinit)
     call dtmget(sd_dtm, _BASE_MOD,kscal=basemo)
     call dtmget(sd_dtm, _NB_MODES,iscal=nbmode)
     call dtmget(sd_dtm, _DT      ,rscal=dt)
+
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
+    nbrede = 0
+    nbrevi = 0
+    if (nbnli.gt.0) then
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+        call nlget (sd_nl , _NB_PALIE , iscal=nbpal)
+        call nlget (sd_nl , _NB_REL_FX, iscal=nbrede)
+        call nlget (sd_nl , _NB_REL_FV, iscal=nbrevi)
+
+        call nlinivec (sd_nl,  _F_TOT_WK , nbmode)
+        call nlinivec (sd_nl,  _F_TAN_WK , nbmode)
+    end if
 !
     call intsav(sd_int, TIME , 1, iocc=1, rscal=tinit)
     call intsav(sd_int, INDEX, 1, iocc=1, iscal=0)
@@ -126,33 +138,24 @@ subroutine dtminit(sd_dtm_, sd_int_)
     call dtmget(sd_dtm, _MASS_DIA,rvect=zr(jmass))
 !
 !   --- Initialize displacements, velocities, and accelerations
-    call intinivec(sd_int, DEPL, nbmode, iocc=1, vr=depl)
-    call intinivec(sd_int, VITE, nbmode, iocc=1, vr=vite)
-    call intinivec(sd_int, ACCE, nbmode, iocc=1, vr=acce)
-!
-!   --- F(D) and F(V) initialization (work-temporary variables)
-    if (nbrede .ne. 0) then
-        call dtminivec(sd_dtm, _FX_SREDR, nbrede, address=jredr)
-        call dtminivec(sd_dtm, _FX_SREDI, nbrede, address=jredi)
-    endif
-    if (nbrevi .ne. 0) then
-        call dtminivec(sd_dtm, _FV_SREVR, nbrevi, address=jrevr)
-        call dtminivec(sd_dtm, _FV_SREVI, nbrevi, address=jrevi)
-    endif
-!
-!   --- Other non-linearities
-    if (nbnli.gt.0) then
-        call dtmget(sd_dtm, _CHO_NOEU,vk8=noeucho)
-        call dtmget(sd_dtm, _CHO_NAME,vk8=inticho)
-    endif
+    call intinivec(sd_int, DEPL    , nbmode, iocc=1, vr=depl)
+    call intinivec(sd_int, VITE    , nbmode, iocc=1, vr=vite)
+    call intinivec(sd_int, ACCE    , nbmode, iocc=1, vr=acce)
+    call intinivec(sd_int, FORCE_EX, nbmode, iocc=1, vr=fext)
 !
 !   --- Call mdinit to retrieve the initial conditions into depl, vite, and acce.
 !       in addition to internal variables, initial time, etc.
-    nbvint = nbnli*mdtr74grd('MAXVINT')
-    AS_ALLOCATE(vr=vint, size=nbvint)
+    nbvint = 0
+    if (nbnli.gt.0) then
+        call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx)
+        nbvint = vindx(nbnli+1)-1
+        call nlinivec(sd_nl, _INTERNAL_VARS, nbvint, vr=vint)
+    end if
+
     call mdinit(basemo, nbmode, nbnli, depl, vite,&
-                vint, iret, tinit, intitu=inticho, noecho=noeucho,&
-                reprise=reuse, accgen=acce, index=appendind)
+                vint, iret, tinit, reprise=reuse, accgen=acce,&
+                index=appendind)
+!
     call dtmget(sd_dtm, _APPND_SD, iscal=append)
     if (append.ne.0) then
         call dtmsav(sd_dtm, _APPND_SD, 1, iscal=appendind-1)
@@ -168,24 +171,25 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !
 !
 !   --- Copy the retrieved internal variables to the work object zr(jchor)
-    if (nbnli .gt. 0 .and. nbpal .eq. 0) then
-        nbschor = nbnli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT'))
-        nbvint = nbnli*mdtr74grd('MAXVINT')
-        call dtminivec(sd_dtm, _NL_SAVES, nbschor, address=jchor)
-        call dcopy(nbvint, vint, 1, zr(jchor+mdtr74grd('SCHOR')*nbnli), 1)
-        call dtminivec(sd_dtm, _NL_SAVE1, nbschor, address=jchor)
-        call dcopy(nbvint, vint, 1, zr(jchor+mdtr74grd('SCHOR')*nbnli), 1)
+    if (nbvint .gt. 0) then
+        call dtminivec(sd_dtm, _NL_SAVES, nbvint, address=jchor)
+        call dtminivec(sd_dtm, _NL_SAVE1, nbvint, address=jchor1)
+        do i = 1, nbvint
+            zr(jchor +i-1) = vint(i)
+            zr(jchor1+i-1) = vint(i)
+        end do
     endif
-
-    AS_DEALLOCATE(vr=vint)
 
 !   Calculate the initial acceleration
     
 !   --- If no reuse, then acce0 must be calculated based on depl0, vite0, and the 
 !       forces equilibrium equation (using dtmacce). To do so, delete acce0 for now.
     call dtminivec(sd_dtm, _ACC_WORK, nbmode, address=iret)   
+    nullify(buffdtm)
+    nullify(buffint)
     call dtmbuff(sd_dtm, buffdtm)
     call intbuff(sd_int, buffint)
+
     if (.not.(reuse)) then
         call dtmacce(sd_dtm, sd_int, 1, buffdtm, buffint)
     else

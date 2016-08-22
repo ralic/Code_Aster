@@ -1,0 +1,232 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: hassan.berro at edf.fr
+import numpy as np
+
+#################################################
+##############Model Illustration#################
+#################################################
+#    _______________________________________
+#   |              --> x-axis               |
+#   | K                                  K  |
+#   |vvvv(M_left)  (M_center)  (M_right)vvvv|
+#   |         \       /  \       /          |
+#   |          \decr1/    \decr2/           |
+#   |---------------------------------------|
+
+#################################################
+##############Study Parameters###################
+#################################################
+# General characteristics
+M_center =  10.0   #[kg]
+M_left   =   4.5   #[kg]
+M_right  =   3.7   #[kg]
+K_outer  =   1.E3  #[N/m]
+t0       =   0.00  #[s]
+t1       =   1.00  #[s]
+dt       =   1.E-6 #[s]
+freq     =   2.00  #[Hz] charging frequency (sinusoidal function on central node)
+ampl     = 500.00  #[N]  charging amplitude
+
+# Nonlinearity-specific characteristics
+U01      =   2.00
+Sy       = 200.00
+Su       = Sy + 250.0
+Kp       = 4.0*Sy/U01
+Puiss    = 1.50
+
+def FctRp(p):
+    return Sy + Kp*p/pow(1.0+pow(Kp*p/(Su-Sy),Puiss),1.0/Puiss)
+
+dx       = 0.01
+dx_max   = U01*20.
+X        = np.arange(0., dx_max, dx)
+Y1       = map( FctRp , X )
+Y2       = [0.5*y for y in Y1] # Non symmetric non linear laws for center/left and center/right
+X        = list(X+Sy/Kp)
+X.insert(0, 0.0)
+Y1.insert(0, 0.0)
+Y2.insert(0, 0.0)
+
+# Automatically calculated
+om       = 2.*pi*freq
+#################################################
+
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), PAR_LOT='NON')
+
+MESH     = LIRE_MAILLAGE ()
+
+MODEL    = AFFE_MODELE   (MAILLAGE = MESH,
+                          AFFE     = _F(TOUT         = 'OUI', 
+                                        PHENOMENE    = 'MECANIQUE',
+                                        MODELISATION = 'DIS_T'))
+
+ELEM_CH  = AFFE_CARA_ELEM(MODELE  = MODEL,
+                          DISCRET = (_F(GROUP_MA = 'CENTER',
+                                        CARA     = 'M_T_D_N', 
+                                        VALE     = (M_center)),
+                                     _F(GROUP_MA = 'LEFT',
+                                        CARA     = 'M_T_D_N',
+                                        VALE     =  M_left),
+                                     _F(GROUP_MA = 'RIGHT',
+                                        CARA     = 'M_T_D_N',
+                                        VALE     =  M_right),
+                                     _F(GROUP_MA = 'OUTER',
+                                        CARA     = 'K_T_D_L', 
+                                        VALE     = (K_outer, 0., 0.)),
+                                     _F(GROUP_MA = 'DUMMY',
+                                        CARA     = 'M_T_D_L', 
+                                        VALE     = (0.)),
+                                     _F(GROUP_MA = 'DUMMY',
+                                        CARA     = 'K_T_D_L', 
+                                        VALE     = (1.E-12, 0., 0.)), # fictional springs, used for constructing the dynamics basis
+                                     _F(GROUP_MA = 'DUMMY',
+                                        CARA     = 'M_T_D_L', 
+                                        VALE     = (0.))))
+
+COND_2D  = AFFE_CHAR_MECA(MODELE   = MODEL,
+                          DDL_IMPO = (_F(TOUT     = 'OUI',
+                                         DY       = 0.,  
+                                         DZ       = 0.)))
+
+BND_COND = AFFE_CHAR_MECA(MODELE   = MODEL,
+                          DDL_IMPO = (_F(GROUP_NO = 'BOUND',  
+                                         DX       = 0.)))
+
+##########################################################
+
+K_ELEM   = CALC_MATR_ELEM(MODELE    = MODEL,
+                          CHARGE    = (COND_2D, BND_COND),
+                          CARA_ELEM = ELEM_CH,
+                          OPTION    = 'RIGI_MECA')
+
+M_ELEM   = CALC_MATR_ELEM(MODELE    = MODEL,
+                          CHARGE    = (COND_2D, BND_COND),
+                          CARA_ELEM = ELEM_CH,
+                          OPTION    = 'MASS_MECA')
+
+EQ_NBRG  = NUME_DDL      (MATR_RIGI = K_ELEM)
+
+MAT_K    = ASSE_MATRICE  (MATR_ELEM = K_ELEM,
+                          NUME_DDL  = EQ_NBRG)
+
+MAT_M    = ASSE_MATRICE  (MATR_ELEM = M_ELEM,
+                          NUME_DDL  = EQ_NBRG)
+
+BASIS    = CALC_MODES    (MATR_RIGI = MAT_K,
+                          MATR_MASS = MAT_M,
+                          OPTION    = 'PLUS_PETITE',
+                          CALC_FREQ = _F(NMAX_FREQ = 5))
+
+RED_NBRG = NUME_DDL_GENE (BASE      = BASIS,
+                          STOCKAGE  = 'DIAG' )
+
+##########################################################
+
+CHAR_UFX = AFFE_CHAR_MECA(MODELE       = MODEL,
+                          FORCE_NODALE = _F(GROUP_NO = 'CENTER',
+                                            FX       = 1.))
+
+VECT_UFX = CALC_VECT_ELEM(CHARGE    = CHAR_UFX,
+                          OPTION    = 'CHAR_MECA')
+
+UNIT_FX  = ASSE_VECTEUR  (VECT_ELEM = VECT_UFX,
+                          NUME_DDL  = EQ_NBRG)
+
+UFX_RED  = PROJ_VECT_BASE(BASE          = BASIS,
+                          VECT_ASSE     = UNIT_FX,
+                          NUME_DDL_GENE = RED_NBRG,
+                          TYPE_VECT     = 'FORC')
+
+M_RED    = PROJ_MATR_BASE(BASE          = BASIS,
+                          MATR_ASSE     = MAT_M,
+                          NUME_DDL_GENE = RED_NBRG)
+
+K_RED    = PROJ_MATR_BASE(BASE          = BASIS,
+                          MATR_ASSE     = MAT_K,
+                          NUME_DDL_GENE = RED_NBRG)
+
+
+FLOOR    = DEFI_OBSTACLE (TYPE          = 'BI_PLAN_Y')
+
+
+
+SINE_FOR = FORMULE       (NOM_PARA = 'INST',
+                          VALE     = 'ampl * sin ( om*INST )')
+
+
+INSTANTS = DEFI_LIST_REEL(DEBUT      = t0-dt,
+                          INTERVALLE = _F(JUSQU_A = t1+dt,
+                                          PAS     = dt))
+
+FX_TFUNC = CALC_FONC_INTERP(FONCTION  = SINE_FOR,
+                            LIST_PARA = INSTANTS,
+                            NOM_PARA  = 'INST')
+
+FDECR_1 = DEFI_FONCTION   (NOM_PARA  = 'DX',
+                            ABSCISSE  = X,
+                            ORDONNEE  = Y1)
+
+FDECR_2 = DEFI_FONCTION   (NOM_PARA  = 'DX',
+                            ABSCISSE  = X,
+                            ORDONNEE  = Y2)
+
+INTEGR   = DYNA_VIBRA   (TYPE_CALCUL  =  'TRAN',
+                          BASE_CALCUL   =  'GENE',
+                          SCHEMA_TEMPS  =  _F(SCHEMA = 'DIFF_CENTRE'),
+                          MATR_MASS     =  M_RED,
+                          MATR_RIGI     =  K_RED,
+                          AMOR_MODAL    =  _F(AMOR_REDUIT = 0.),
+                          INCREMENT     =  _F(INST_INIT   = t0,
+                                              INST_FIN    = t1,
+                                              PAS         = dt),
+                          EXCIT         =  _F(VECT_ASSE_GENE = UFX_RED,
+                                              FONC_MULT      = FX_TFUNC),
+                          COMPORTEMENT  = (_F(RELATION     = 'DIS_ECRO_TRAC',
+                                              GROUP_NO_1   = 'CENTER',
+                                              GROUP_NO_2   = 'LEFT',
+                                              FX           = FDECR_1),
+                                           _F(RELATION     = 'DIS_ECRO_TRAC',
+                                              GROUP_NO_1   = 'CENTER',
+                                              GROUP_NO_2   = 'RIGHT',
+                                              FX           = FDECR_2)),
+                          ARCHIVAGE     =  _F(PAS_ARCH = 10),
+                          TRAITEMENT_NONL = 'EXPLICITE', INFO=2)
+
+INTEGR.INFO_NONL()
+F_DECR_1  = RECU_FONCTION(RESU_GENE=INTEGR, GROUP_NO_CHOC='CENTER', INTITULE='DIS_ECRO_TRAC   00000001', PARA_X='INST', PARA_Y='VINT1')
+F_DECR_2  = RECU_FONCTION(RESU_GENE=INTEGR, GROUP_NO_CHOC='CENTER', INTITULE='DIS_ECRO_TRAC   00000002', PARA_X='INST', PARA_Y='VINT1')
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC  = 0.23532826190791,
+                         CRITERE    = 'RELATIF',
+                         VALE_PARA  = 0.5,
+                         FONCTION   = F_DECR_1)))
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC  = -0.33532826190791,
+                         CRITERE    = 'RELATIF',
+                         VALE_PARA  = 0.5,
+                         FONCTION   = F_DECR_2)))
+
+IMPR_FONCTION(FORMAT='XMGRACE', 
+              # PILOTE='INTERACTIF',
+              COURBE=(_F(FONCTION=F_DECR_1), _F(FONCTION=F_DECR_2)))
+
+
+F_AXIAL2 = INTEGR.FORCE_AXIALE(2)
+np.savetxt("faxial_decr2.csv", F_AXIAL2, delimiter=",")
+
+FIN()

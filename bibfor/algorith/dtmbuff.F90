@@ -3,7 +3,7 @@ subroutine dtmbuff(sd_dtm, addrs, level)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,12 +26,17 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 ! person_in_charge: hassan.berro at edf.fr    
 #include "jeveux.h"
 #include "asterfort/codent.h"
+#include "asterfort/crevec.h"
 #include "asterfort/dtmget.h"
+#include "asterfort/dtmsav.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/wkvect.h"
+#include "asterfort/nlbuff.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
 #include "asterfort/jgetptc.h"
 
 !   ====================================================================
@@ -49,15 +54,18 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 
 !   --- For general usage
     integer           :: jbuff, ip, iret, addr, long
-    integer           :: ilev, lvl, dec
+    integer           :: ilev, lvl, dec, nbnoli, mxlevel
     character(len=6)  :: k_iocc
+    character(len=8)  :: sd_nl
     character(len=24) :: savename
     type(c_ptr) :: pc
+    integer, pointer  :: buffnl(:) => null() 
 !
 #include "dtminc.h"
 !
 !   Copying the input strings, in order to allow in-command truncated input
     sd_dtm_ = sd_dtm
+    nullify(addrs)
 !
 !   Variable lvl defines the maximum buffer level in the case of per occurence items
     lvl = 1 
@@ -66,16 +74,24 @@ subroutine dtmbuff(sd_dtm, addrs, level)
 !   ====================================================================
 !   = 1 = Validation of the input arguments, distinguishing global vars
 !   ====================================================================
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
+    if (nbnoli.gt.0) then  
+        call dtmget(sd_dtm_, _SD_NONL  , kscal=sd_nl)
+        call nlget (sd_nl  , _MAX_LEVEL, iscal=mxlevel)
+        call nlbuff(sd_nl  ,  buffnl   , level=mxlevel)
+        call dtmsav(sd_dtm_, _NL_BUFFER, size(buffnl), ivect=buffnl)
+    end if
+
     call jeexin(sd_dtm_//'.BUFFER.        ',iret)
     if (iret.gt.0) then
+        call jelibe(sd_dtm_//'.BUFFER.        ')
         call jedetr(sd_dtm_//'.BUFFER.        ')
     end if
-    call wkvect(sd_dtm_//'.BUFFER.        ','V V I',2*lvl*_DTM_NBPAR,jbuff)
-    call jeveut(sd_dtm_//'.BUFFER.        ','E',jbuff)
+    call crevec(sd_dtm_//'.BUFFER.        ','V V I',2*lvl*_DTM_NBPAR,jbuff)
 
     call jgetptc(jbuff, pc, vi=zi(1))
     call c_f_pointer(pc, addrs, [2*lvl*_DTM_NBPAR])
-    
+
     do ip = 1, 2*lvl*_DTM_NBPAR
         addrs(ip) = 0
     end do
@@ -93,16 +109,17 @@ subroutine dtmbuff(sd_dtm, addrs, level)
             savename(16:24)='.'//params(ip)
             call jeexin(savename, iret)
             if (iret.gt.0) then
-                call jeveut(savename,'E',addr)
+                call jelibe(savename)
+                call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
                 addrs(dec+_DTM_NBPAR+ip) = long            
             else if (abs(parind(ip)).eq.1) then
-                call wkvect(savename,'V V '//partyp(ip),1,addr)
+                call crevec(savename, 'V V '//partyp(ip),1, addr)
                 addrs(dec+ip) = addr
                 addrs(dec+_DTM_NBPAR+ip) = 1            
             end if
-10          continue            
+10          continue
         end do
     end do
 

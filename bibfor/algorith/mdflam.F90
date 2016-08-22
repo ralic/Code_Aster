@@ -1,8 +1,9 @@
 subroutine mdflam(dnorm, vitloc, knorm, cost, sint,&
                   flim, fseuil, rigifl, defpla, fnorma,&
                   flocal, vnorm)
+    implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +34,6 @@ subroutine mdflam(dnorm, vitloc, knorm, cost, sint,&
 !    FNORMA          -->  FORCE NORMALE DE CHOC  (MODULE)
 !    FLOCAL          -->  FORCE NORMALE DE CHOC REP. LOCAL
 !-----------------------------------------------------------------------
-    implicit none
     real(kind=8) :: vitloc(3), flocal(3), knorm, fnorma
 !-----------------------------------------------------------------------
     real(kind=8) :: cost, defpla, dnorm, flim, fseuil, rigifl, sint

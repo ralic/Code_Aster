@@ -113,16 +113,7 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 """),
 
     32 : _(u"""
- argument du mot-clé "SOUS_STRUC_1" n'est pas un nom de sous-structure
-"""),
-
-    33 : _(u"""
- calcul non-linéaire par sous-structuration entre 2 structures mobiles :
- le mot-clé SOUS_STRUC_2 est obligatoire
-"""),
-
-    34 : _(u"""
- l'argument du mot-clé "SOUS_STRUC_2" n'est pas un nom de sous-structure
+ argument du mot-clé "%(k1)s" n'est pas un nom de sous-structure
 """),
 
     35 : _(u"""
@@ -212,11 +203,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    81 : _(u"""
-  L'utilisation de %(k1)s avec DYNA_VIBRA n'est pas validée pour le schéma
-  d'intégration %(k2)s.
-"""),
-
     82 : _(u"""
 Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA.
 Le nombre de dispositif de choc est différent.
@@ -229,7 +215,7 @@ Conseil :
 
     83 : _(u"""
 Vous réalisez une poursuite d'un calcul avec DYNA_VIBRA.
-La nature, les noeuds du ou des dispositifs de choc sont différents.
+La nature, les noeuds du des non-linéarités localisées sont différents.
 
               Avant     Maintenant
     Nature    %(k1)8s   %(k2)8s

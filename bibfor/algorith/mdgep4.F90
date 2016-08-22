@@ -7,7 +7,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
     real(kind=8) :: psidel(neq, *), temps, rep
     character(len=8) :: nomfon(*)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,23 +36,26 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
 ! OUT : REP    : VALEUR DE PSIDEL*VALE_NOMFOM(TEMPS)
 ! .________________.____.______________________________________________.
     character(len=8) :: nompar, blanc
-    character(len=24) :: valk
     real(kind=8) :: coef
 !
 !-----------------------------------------------------------------------
-    integer :: iddl, ier, iex, nbexci
+    integer :: iddl, ier, iex, nbexci, cntr
 !-----------------------------------------------------------------------
     blanc = '        '
     nompar = 'INST'
     rep = 0.d0
+    cntr = 0
     do 10 iex = 1, nbexci
-        if (nomfon(iex) .eq. blanc) then
-            valk = 'CHARGE EN MONO APPUI'
-            call utmess('A', 'ALGORITH13_44', sk=valk)
-            goto 10
-        endif
+        if (nomfon(iex) .eq. blanc) goto 10
+
+        cntr = cntr + 1
         call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
         rep = rep + psidel(iddl,iex)*coef
+        
 10  end do
+
+    if (cntr.eq.0) then
+        call utmess('A', 'ALGORITH13_44')
+    end if
 end subroutine

@@ -1,5 +1,5 @@
-subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
-                  repere, xjeu, nbnli, noecho, parcho)
+subroutine mdchan(nlcase, ioc, iliai, mdgene, typnum,&
+                  repere, xjeu)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
@@ -13,15 +13,17 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ioc, iliai, nbnli
-    real(kind=8) :: xjeu, parcho(nbnli, *)
-    character(len=8) :: repere, noecho(nbnli, *)
-    character(len=10) :: motfac
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
+    integer :: ioc, iliai
+    real(kind=8) :: xjeu
+    character(len=8) :: repere, sd_nl
+    character(len=*) :: nlcase
     character(len=16) :: typnum
     character(len=24) :: mdgene
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +42,7 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
 !     ROUTINE APPELEE PAR MDCHOC
 !     RECHERCHE DES ANGLES NAUTIQUES
 !
-! IN  : MOTFAC : 'CHOC', 'FLAMBAGE', 'ANTI_SISM'
+! IN  : MOTFAC : 'DIS_CHOC', 'FLAMBAGE', 'ANTI_SISM'
 ! IN  : IOC    : NUMERO D'OCCURENCE
 ! IN  : ILIAI  : NUMERO DE LA LIAISON TRAITEE
 ! IN  : MDGENE : MODELE GENERALISE
@@ -60,24 +62,29 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
     integer :: n1, jnorm
     real(kind=8) :: txloc(3), tzloc(3), tyloc(3), ang(3), alpha, beta
     real(kind=8) :: normx(3), normy(3), angl, rnorm, rad, eps
+    real(kind=8), pointer :: coor_no1(:) => null()
+    real(kind=8), pointer :: coor_no2(:) => null()
+    character(len=8) :: obst_typ
+    character(len=16) :: motfac
 !     ------------------------------------------------------------------
 !
     rad = r8dgrd()
     eps = r8prem()
+    sd_nl = '&&OP29NL'
+    motfac = nlcase
 !
-    if (motfac .eq. 'CHOC' .or. motfac .eq. 'FLAMBAGE') then
+    if (motfac .eq. 'DIS_CHOC' .or. motfac .eq. 'FLAMBAGE') then
 !          ------------------------------------------
-        call getvr8(motfac, 'NORM_OBST', iocc=ioc, nbval=3, vect=txloc,&
+        call getvr8('COMPORTEMENT', 'NORM_OBST', iocc=ioc, nbval=3, vect=txloc,&
                     nbret=n1)
-        call getvr8(motfac, 'ANGL_VRIL', iocc=ioc, scal=angl, nbret=n1)
+        call getvr8('COMPORTEMENT', 'ANGL_VRIL', iocc=ioc, scal=angl, nbret=n1)
+        call nlget(sd_nl, _OBST_TYP, iocc=iliai, kscal=obst_typ)       
 !
         if (n1 .ne. 0) then
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvx(txloc, alpha, beta)
-                parcho(iliai,17) = sin(alpha)
-                parcho(iliai,18) = cos(alpha)
-                parcho(iliai,19) = sin(beta)
-                parcho(iliai,20) = cos(beta)
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(alpha), cos(alpha)])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(beta) , cos(beta)])
             else
                 call wkvect('&&MDCHAN.NORM', 'V V R', 3, jnorm)
                 zr(jnorm) = txloc(1)
@@ -86,27 +93,23 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                 call orient(mdgene, repere, jnorm, 1, normx,&
                             0)
                 call angvx(normx, alpha, beta)
-                parcho(iliai,17) = sin(alpha)
-                parcho(iliai,18) = cos(alpha)
-                parcho(iliai,19) = sin(beta)
-                parcho(iliai,20) = cos(beta)
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(alpha), cos(alpha)])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(beta) , cos(beta)])
                 call jedetr('&&MDCHAN.NORM')
             endif
-            parcho(iliai,21) = sin(angl*rad)
-            parcho(iliai,22) = cos(angl*rad)
+            call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(angl*rad), cos(angl*rad)])
 !
-        else if (noecho(iliai,9).eq.'BI_PLANY') then
-            tyloc(1) = (parcho(iliai,11) - parcho(iliai,8))
-            tyloc(2) = (parcho(iliai,12) - parcho(iliai,9))
-            tyloc(3) = (parcho(iliai,13) - parcho(iliai,10))
+        else if (obst_typ.eq.'BI_PLANY') then
+            call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+            call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+            tyloc(1) = (coor_no2(1)-coor_no1(1))
+            tyloc(2) = (coor_no2(2)-coor_no1(2))
+            tyloc(3) = (coor_no2(3)-coor_no1(3))
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvxy(txloc, tyloc, ang)
-                parcho(iliai,17) = sin(ang(1))
-                parcho(iliai,18) = cos(ang(1))
-                parcho(iliai,19) = sin(ang(2))
-                parcho(iliai,20) = cos(ang(2))
-                parcho(iliai,21) = sin(ang(3))
-                parcho(iliai,22) = cos(ang(3))
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
             else
                 call wkvect('&&MDCHAN.NORM', 'V V R', 3, jnorm)
                 zr(jnorm) = txloc(1)
@@ -120,28 +123,24 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                 call orient(mdgene, repere, jnorm, 1, normy,&
                             0)
                 call angvxy(normx, normy, ang)
-                parcho(iliai,17) = sin(ang(1))
-                parcho(iliai,18) = cos(ang(1))
-                parcho(iliai,19) = sin(ang(2))
-                parcho(iliai,20) = cos(ang(2))
-                parcho(iliai,21) = sin(ang(3))
-                parcho(iliai,22) = cos(ang(3))
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
                 call jedetr('&&MDCHAN.NORM')
             endif
 !
-        else if (noecho(iliai,9).eq.'BI_PLANZ') then
-            tzloc(1) = (parcho(iliai,11) - parcho(iliai,8))
-            tzloc(2) = (parcho(iliai,12) - parcho(iliai,9))
-            tzloc(3) = (parcho(iliai,13) - parcho(iliai,10))
+        else if (obst_typ.eq.'BI_PLANZ') then
+            call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+            call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+            tzloc(1) = (coor_no2(1)-coor_no1(1))
+            tzloc(2) = (coor_no2(2)-coor_no1(2))
+            tzloc(3) = (coor_no2(3)-coor_no1(3))
             call provec(tzloc, txloc, tyloc)
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvxy(txloc, tyloc, ang)
-                parcho(iliai,17) = sin(ang(1))
-                parcho(iliai,18) = cos(ang(1))
-                parcho(iliai,19) = sin(ang(2))
-                parcho(iliai,20) = cos(ang(2))
-                parcho(iliai,21) = sin(ang(3))
-                parcho(iliai,22) = cos(ang(3))
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
             else
                 call wkvect('&&MDCHAN.NORM', 'V V R', 3, jnorm)
                 zr(jnorm) = txloc(1)
@@ -155,12 +154,9 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                 call orient(mdgene, repere, jnorm, 1, normy,&
                             0)
                 call angvxy(normx, normy, ang)
-                parcho(iliai,17) = sin(ang(1))
-                parcho(iliai,18) = cos(ang(1))
-                parcho(iliai,19) = sin(ang(2))
-                parcho(iliai,20) = cos(ang(2))
-                parcho(iliai,21) = sin(ang(3))
-                parcho(iliai,22) = cos(ang(3))
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+                call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
                 call jedetr('&&MDCHAN.NORM')
             endif
 !
@@ -168,10 +164,8 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
             angl = 0.d0
             if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
                 call angvx(txloc, alpha, beta)
-                parcho(iliai,17) = sin(alpha)
-                parcho(iliai,18) = cos(alpha)
-                parcho(iliai,19) = sin(beta)
-                parcho(iliai,20) = cos(beta)
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(alpha), cos(alpha)])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(beta) , cos(beta)])
             else
                 call wkvect('&&MDCHAN.NORM', 'V V R', 3, jnorm)
                 zr(jnorm) = txloc(1)
@@ -180,26 +174,29 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
                 call orient(mdgene, repere, jnorm, 1, normx,&
                             0)
                 call angvx(normx, alpha, beta)
-                parcho(iliai,17) = sin(alpha)
-                parcho(iliai,18) = cos(alpha)
-                parcho(iliai,19) = sin(beta)
-                parcho(iliai,20) = cos(beta)
+                call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(alpha), cos(alpha)])
+                call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(beta) , cos(beta)])
                 call jedetr('&&MDCHAN.NORM')
             endif
-            parcho(iliai,21) = sin(angl*rad)
-            parcho(iliai,22) = cos(angl*rad)
+            call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(angl*rad), cos(angl*rad)])
         endif
 !
     else if (motfac.eq.'ANTI_SISM') then
-!              ---------------------
+!            ---------------------
 !
-        parcho(iliai,30)= sqrt(xjeu)/2.d0
-        parcho(iliai,31)= sqrt(xjeu)/2.d0
+        call nlsav(sd_nl, _DIST_NO1, 1, iocc=iliai, rscal=sqrt(xjeu)/2.d0)
+        call nlsav(sd_nl, _DIST_NO2, 1, iocc=iliai, rscal=sqrt(xjeu)/2.d0)
 !
 ! --- VECTEUR NOEUD1 VERS NOEUD2
-        tyloc(1) = (parcho(iliai,11) - parcho(iliai,8))
-        tyloc(2) = (parcho(iliai,12) - parcho(iliai,9))
-        tyloc(3) = (parcho(iliai,13) - parcho(iliai,10))
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+        tyloc(1) = (coor_no2(1)-coor_no1(1))
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+        tyloc(2) = (coor_no2(2)-coor_no1(2))
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+        tyloc(3) = (coor_no2(3)-coor_no1(3))
         call normev(tyloc, rnorm)
         if (abs(rnorm).le.eps) then
             call utmess('F', 'ALGORITH5_26')
@@ -223,12 +220,9 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
         call provec(tyloc, tzloc, txloc)
         if (typnum .eq. 'NUME_DDL_SDASTER' .or. repere .eq. 'GLOBAL') then
             call angvxy(txloc, tyloc, ang)
-            parcho(iliai,17) = sin(ang(1))
-            parcho(iliai,18) = cos(ang(1))
-            parcho(iliai,19) = sin(ang(2))
-            parcho(iliai,20) = cos(ang(2))
-            parcho(iliai,21) = sin(ang(3))
-            parcho(iliai,22) = cos(ang(3))
+            call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+            call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+            call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
         else
             call wkvect('&&MDCHAN.NORM', 'V V R', 3, jnorm)
             zr(jnorm) = txloc(1)
@@ -242,12 +236,9 @@ subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
             call orient(mdgene, repere, jnorm, 1, normy,&
                         0)
             call angvxy(normx, normy, ang)
-            parcho(iliai,17) = sin(ang(1))
-            parcho(iliai,18) = cos(ang(1))
-            parcho(iliai,19) = sin(ang(2))
-            parcho(iliai,20) = cos(ang(2))
-            parcho(iliai,21) = sin(ang(3))
-            parcho(iliai,22) = cos(ang(3))
+            call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=iliai, rvect=[sin(ang(1)), cos(ang(1))])
+            call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=iliai, rvect=[sin(ang(2)), cos(ang(2))])
+            call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=iliai, rvect=[sin(ang(3)), cos(ang(3))])
             call jedetr('&&MDCHAN.NORM')
         endif
 !

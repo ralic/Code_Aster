@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdidisisot(nomres, nbchoc, logcho, noecho, nbsauv, temps)
+    subroutine mdidisisot(sd_nl_, nbnoli, nomres, nbsauv, temps)
+        character(len=*) :: sd_nl_
+        integer          :: nbnoli
         character(len=8) :: nomres
-        integer :: nbchoc
-        integer :: logcho(nbchoc, *)
-        character(len=8) :: noecho(nbchoc, *)
-        integer :: nbsauv
-        real(kind=8) :: temps(*)
+        integer          :: nbsauv
+        real(kind=8)     :: temps(*)
     end subroutine mdidisisot
 end interface

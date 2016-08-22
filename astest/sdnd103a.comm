@@ -139,8 +139,8 @@ TRAN_GEE=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
                  ETAT_INIT=_F( VITE = VECT_GEN),
                 EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
-                RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                 RELATION = FOR_EFDE),
+                COMPORTEMENT=_F(RELATION='RELA_EFFO_DEPL',  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                 FONCTION = FOR_EFDE),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS)
                 )
 
@@ -155,8 +155,8 @@ TRAN_GED=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                  SCHEMA_TEMPS=_F(SCHEMA=METHOD2, PAS_MAXI=PAS),
                  ETAT_INIT=_F( VITE= VECT_GEN),
                 EXCIT=_F( VECT_ASSE_GENE = VECT_X,  FONC_MULT = ACCE_X),
-                RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                 RELATION = FOR_EFDE),
+                COMPORTEMENT=_F(RELATION='RELA_EFFO_DEPL',  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                 FONCTION = FOR_EFDE),
                  INCREMENT=_F( INST_INIT = 0., INST_FIN = DER, PAS = PAS),
                  ARCHIVAGE=_F(LIST_INST=L_RECU)
                 )
@@ -453,8 +453,8 @@ TRAN_GE3=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA=METHOD1,),
                         ETAT_INIT=_F( VITE = VECT_GEN),
                        EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
-                       RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                        RELATION = FOR_EFDE),
+                       COMPORTEMENT=_F(RELATION='RELA_EFFO_DEPL',  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                        FONCTION = FOR_EFDE),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
                         PAS=PAS)
                        )
@@ -464,8 +464,8 @@ TRAN_GE4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                         SCHEMA_TEMPS=_F(SCHEMA=METHOD2, PAS_MAXI=PAS),
                         ETAT_INIT=_F( VITE = VECT_GEN),
                        EXCIT=_F( VECT_ASSE_GENE = VECT_X, FONC_MULT = ACCE_X),
-                       RELA_EFFO_DEPL=_F(  NOEUD = 'N01',  NOM_CMP = 'DX',
-                                        RELATION = FOR_EFDE),
+                       COMPORTEMENT=_F(RELATION='RELA_EFFO_DEPL',  NOEUD = 'N01',  NOM_CMP = 'DX',
+                                        FONCTION = FOR_EFDE),
                         INCREMENT=_F( INST_INIT = 0.,  INST_FIN = DER,
                         PAS=PAS),
                         ARCHIVAGE=_F(LIST_INST=L_RECU)

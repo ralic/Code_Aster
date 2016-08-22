@@ -152,13 +152,20 @@ BI_PLANY=DEFI_OBSTACLE(TYPE='BI_PLAN_Y')
 
 #
 
+# References
+tfl = pi/6
+dp = 3.
+t0 = pi/6 +2*sqrt(3.) +(pi+6)/sqrt(2.)
+
+refinedInstants1 = [tfl+1.e-6*i for i in range(-50,51)]
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                       SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                       ETAT_INIT=_F(  VITE = VIT_GENE),
 
-                      FLAMBAGE=_F(  GROUP_NO_1 = 'GROUP_NO_GN2',
+                      COMPORTEMENT=_F(RELATION='FLAMBAGE',
+                                 GROUP_NO_1 = 'GROUP_NO_GN2',
                                  GROUP_NO_2 = 'GROUP_NO_GN3',
                                  OBSTACLE = BI_PLANY,
                                  NORM_OBST = (0., 1., 0.,),
@@ -171,16 +178,18 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
 
                       INCREMENT=_F(
                                   INST_INIT = 0.,   INST_FIN = 3.,
-                                  PAS = 0.001)
+                                  PAS = 1.e-5),
+                      ARCHIVAGE=_F(PAS_ARCH=10, INST=refinedInstants1)
                             )
 
 TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
-                      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MAXI = 0.002),
+                      SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MAXI = 1.e-4),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                                   INST_INIT = 3.),
 
-                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
+                      COMPORTEMENT=_F(RELATION='FLAMBAGE',
+                                 NOEUD_1 = 'N02',
                                  NOEUD_2 = 'N03',
                                  OBSTACLE = BI_PLANY,
                                  NORM_OBST = (0., 1., 0.,),
@@ -192,24 +201,18 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                  RIGI_NOR_POST_FL = 0.25,
                                  ANGL_VRIL = 0.,),
 
-                      INCREMENT=_F(INST_FIN = 12.,  PAS = 0.001,),
-                      ARCHIVAGE=_F(INST=[10.4505447028502])
+                      INCREMENT=_F(INST_FIN = 12.,  PAS = 1.e-5,),
+                      ARCHIVAGE=_F(PAS_ARCH=10, INST=[t0])
                             )
-
 
 TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
                               CHOC=_F(  OPTION = 'IMPACT')
                           )
 
-# references
-tfl = pi/6
-dp = 3.
-t0 = pi/6 +2*sqrt(3.) +(pi+6)/sqrt(2.)
-
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=3.0000000000000001E-3,
-           VALE_CALC=0.524,
-           VALE_REFE=0.52359877559829882,
+           PRECISION=1.E-4,
+           VALE_CALC=0.523599775598,
+           VALE_REFE=pi/6,
            NOM_PARA='INST_FLAMB',
            TABLE=TABLE,
            FILTRE=(_F(NOM_PARA='CALCUL',
@@ -220,8 +223,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           PRECISION=3.00E-3,
-           VALE_CALC=2.99868534271,
+           PRECISION=1.00E-4,
+           VALE_CALC=3.00000741241,
            VALE_REFE=3.0,
            NOM_PARA='ECRAS_RESI',
            TABLE=TABLE,
@@ -234,20 +237,20 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 
 TRAN=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
                            NOM_CHAM='DEPL',
-                           INST=10.4505447028502,
+                           INST=t0,
+                        PRECISION=1.E-08,
                        )
 
-#IMPR_RESU(RESU=_F(RESULTAT=TRAN))
-TEST_RESU(RESU=_F(INST=10.4505447028502,
+TEST_RESU(RESU=_F(INST=t0,
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=TRAN,
                   NOM_CHAM='DEPL',
                   NOEUD='N02',
                   NOM_CMP='DX',
-                  VALE_CALC=-0.000728950353267,
+                  VALE_CALC=7.4534998622E-06,
                   VALE_REFE=0.0,
                   CRITERE=('ABSOLU', 'RELATIF'),
-                  PRECISION=3.00E-3,),
+                  PRECISION=1.00E-4,),
           )
 
 FIN()

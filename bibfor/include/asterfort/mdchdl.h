@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,10 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
-                      ier)
-        integer :: nbnli
-        character(len=8) :: noecho(nbnli, *)
+    subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
         aster_logical :: lnoue2
         integer :: iliai
         integer :: ddlcho(*)

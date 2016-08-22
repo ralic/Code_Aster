@@ -2,7 +2,7 @@ subroutine dtmprep_damp(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ subroutine dtmprep_damp(sd_dtm_)
 !                The only parameter added/modified in the sd_dtm is : AMOR_DIA
 !
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/dtminivec.h"
@@ -49,15 +50,17 @@ subroutine dtmprep_damp(sd_dtm_)
     integer           :: n1, n2, n, nbamor, nbmode
     integer           :: vali(3), iamog, iam, idiff
     integer           :: im, lamre
-    real(kind=8)      :: rundef
+    real(kind=8)      :: rundef, epsi
     character(len=8)  :: sd_dtm, basemo, listam
     character(len=24) :: typeba, valk(1)
     real(kind=8), pointer :: puls(:) => null()
+    real(kind=8), pointer :: masgen(:) => null()
     real(kind=8), pointer :: amogen(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
     rundef = r8vide()
+    epsi   = r8prem()
 !
 !   1 - Retrieval of some necessary information
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -65,6 +68,7 @@ subroutine dtmprep_damp(sd_dtm_)
     call dtmget(sd_dtm, _TYP_BASE, kscal=typeba)
 !
     call dtmget(sd_dtm, _OMEGA, vr=puls)
+    call dtmget(sd_dtm, _MASS_DIA, vr=masgen)
 !
     call dtminivec(sd_dtm, _AMOR_DIA, nbmode, vr=amogen)
 !
@@ -146,6 +150,10 @@ subroutine dtmprep_damp(sd_dtm_)
     endif
 !
     do im = 1, nbmode
+!       --- Static modes : critical damping to avoid artifical dynamics
+!           Note : dynamics of static modes are set as follows
+!       M = k/omega^2    K = k   C = 2*sqrt(k*M) = Cc   M-1*C = 2*omega 
+        if (abs(masgen(im)).lt.epsi) amogen(im)= 1.d0
         amogen(im) = 2.0d0*puls(im)*amogen(im)
     enddo
 !

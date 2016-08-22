@@ -18,11 +18,13 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     integer :: nsst, int, ind, ier
     character(len=1) :: base
     character(len=16) :: parax, paray
-    character(len=8) :: sst, noeud, intitu
+    character(len=8) :: sst, noeud
     character(len=19) :: nomfon, resu, listr
+    character(len=24) :: intitu
+
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,175 +61,169 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     character(len=19) :: fonct1, fonct2
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, ichoc, idec, ie, ival,  jinst
-    integer ::   jparx, jpary, jval, jvalx, jvaly
-    integer :: lfon, lg, lpro, lval, nbchoc, nbinst, nbpara
-    integer :: nbval
-    character(len=8), pointer :: vsst(:) => null()
-    character(len=8), pointer :: ncho(:) => null()
-    character(len=8), pointer :: inti(:) => null()
+    integer :: ic, inl, ie, ival,  jinst, iparax
+    integer ::   jparx, jpary, jval, jvalx, jvaly, start, nbvint, iparay
+    integer :: lfon, lg, lpro, lval, nbnoli, nbinst, nbpara
+    integer :: nbval, jvint
+    character(len=24), pointer :: nlname(:) => null()
     integer, pointer :: desc(:) => null()
+    integer, pointer :: vindx(:) => null()
+
 !-----------------------------------------------------------------------
     call jemarq()
-    ier = 9999
+    ier = 999
     call getres(k8b, k8b, nomcmd)
 !
     call jeveuo(resu//'.DESC', 'L', vi=desc)
-    nbchoc = desc(3)
+    nbnoli = desc(3)
+!
     call jelira(resu//'.DISC', 'LONUTI', nbinst)
     call jeveuo(resu//'.DISC', 'L', jinst)
-    call jeveuo(resu//'.NCHO', 'L', vk8=ncho)
-    call jeveuo(resu//'.INTI', 'L', vk8=inti)
-    if (nsst .ne. 0) call jeveuo(resu//'.SST', 'L', vk8=vsst)
+!
+    call jeveuo(resu(1:16)//'.NL.INTI', 'L', vk24=nlname)
+!
     ic = 1
     if (int .ne. 0) then
-        do 2 ichoc = 1, nbchoc
-            if (inti(ichoc) .eq. intitu) goto 4
+        do 2 inl = 1, nbnoli
+            if (nlname((inl-1)*5+1) .eq. intitu) goto 4
  2      continue
         call utmess('A', 'UTILITAI_86', sk=intitu)
-        goto 9999
+        goto 999
  4      continue
         if (nsst .eq. 0) then
-            if (ncho(ichoc) .eq. noeud) goto 16
+            if (nlname((inl-1)*5+2)(1:8) .eq. noeud) goto 16
             ic = 2
-            if (ncho(1+nbchoc+ichoc-1) .eq. noeud) goto 16
+            if (nlname((inl-1)*5+3)(1:8) .eq. noeud) goto 16
             lg = max(1,lxlgut(noeud))
             call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
-            goto 9999
+            goto 999
         else
-            if (vsst(ichoc) .eq. sst) goto 116
-            if (vsst(1+nbchoc+ichoc-1) .eq. sst) goto 116
+            if (nlname((inl-1)*5+4)(1:8) .eq. sst) goto 116
+            if (nlname((inl-1)*5+5)(1:8) .eq. sst) goto 116
             call utmess('A', 'UTILITAI_88')
-            goto 9999
-116          continue
-            if (ncho(ichoc) .ne. noeud .and. ncho(1+nbchoc+ ichoc-1) .ne. noeud) then
+            goto 999
+116         continue
+            if (nlname((inl-1)*5+2) .ne. noeud .and. nlname((inl-1)*5+3) .ne. noeud) then
                 lg = max(1,lxlgut(noeud))
                 call utmess('A', 'UTILITAI_89', sk=noeud(1:lg))
-                goto 9999
+                goto 999
             endif
-            if (ncho(ichoc) .eq. noeud .and. vsst(ichoc) .eq. sst) goto 16
+            if (nlname((inl-1)*5+2)(1:8) .eq. noeud .and. nlname((inl-1)*5+4)(1:8) .eq. sst) goto 16
             ic = 2
-            if (ncho(1+nbchoc+ichoc-1) .eq. noeud .and. vsst(1+ nbchoc+ichoc-1) .eq. sst) &
+            if (nlname((inl-1)*5+3)(1:8) .eq. noeud .and. nlname((inl-1)*5+5)(1:8) .eq. sst) &
             goto 16
             lg = max(1,lxlgut(noeud))
             call utmess('A', 'UTILITAI_90', sk=noeud(1:lg))
-            goto 9999
+            goto 999
         endif
     endif
 !     --- RECHERCHE DU NOEUD_1 DE CHOC ---
-    do 10 ichoc = 1, nbchoc
-        if (ncho(ichoc) .eq. noeud) goto 16
-10  end do
+    do inl = 1, nbnoli
+        if (nlname((inl-1)*5+2)(1:8) .eq. noeud) goto 16
+    end do
 !     --- RECHERCHE DU NOEUD_2 DE CHOC ---
     ic = 2
-    do 12 ichoc = 1, nbchoc
-        if (ncho(1+nbchoc+ichoc-1) .eq. noeud) goto 16
-12  end do
+    do inl = 1, nbnoli
+        if (nlname((inl-1)*5+3)(1:8) .eq. noeud) goto 16
+    end do
     lg = max(1,lxlgut(noeud))
     call utmess('A', 'UTILITAI_87', sk=noeud(1:lg))
-    goto 9999
+    goto 999
 16  continue
+!
+    call jeveuo(resu(1:16)//'.NL.VINT', 'L', jvint)
+    call jeveuo(resu(1:16)//'.NL.VIND', 'L', vi=vindx)
+    start = vindx(inl)-1
+    nbvint = vindx(nbnoli+1)-1
 !
     if (parax(1:4) .eq. 'INST') then
         jvalx = jinst
         goto 20
-    else if (parax(1:2).eq.'FN') then
-        call jeveuo(resu//'.FCHO', 'L', jparx)
-        idec = 1 + 3*(ichoc-1)
-    else if (parax(1:3).eq.'FT1') then
-        call jeveuo(resu//'.FCHO', 'L', jparx)
-        idec = 2 + 3*(ichoc-1)
-    else if (parax(1:3).eq.'FT2') then
-        call jeveuo(resu//'.FCHO', 'L', jparx)
-        idec = 3 + 3*(ichoc-1)
-    else if (parax(1:2).eq.'VN') then
-        call jeveuo(resu//'.VCHO', 'L', jparx)
-        idec = 1 + 3*(ichoc-1)
-    else if (parax(1:3).eq.'VT1') then
-        call jeveuo(resu//'.VCHO', 'L', jparx)
-        idec = 2 + 3*(ichoc-1)
-    else if (parax(1:3).eq.'VT2') then
-        call jeveuo(resu//'.VCHO', 'L', jparx)
-        idec = 3 + 3*(ichoc-1)
+    else if (parax(1:2).eq.'FN' ) then 
+        jparx = jvint + start
+    else if (parax(1:3).eq.'FT1') then 
+        jparx = jvint + start + 1
+    else if (parax(1:3).eq.'FT2') then 
+        jparx = jvint + start + 2
+    else if (parax(1:2).eq.'VN' ) then 
+        jparx = jvint + start + 3
+    else if (parax(1:3).eq.'VT1') then 
+        jparx = jvint + start + 4
+    else if (parax(1:3).eq.'VT2') then 
+        jparx = jvint + start + 5
     else if (parax(1:5).eq.'DXLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jparx)
         if (ic .eq. 1) then
-            idec = 1 + 3*(ichoc-1)
+            jparx = jvint + start + 6
         else
-            idec = 3*nbchoc*nbinst + 1 + 3*(ichoc-1)
+            jparx = jvint + start + 9
         endif
     else if (parax(1:5).eq.'DYLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jparx)
         if (ic .eq. 1) then
-            idec = 2 + 3*(ichoc-1)
+            jparx = jvint + start + 7
         else
-            idec = 3*nbchoc*nbinst + 2 + 3*(ichoc-1)
+            jparx = jvint + start + 10
         endif
     else if (parax(1:5).eq.'DZLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jparx)
         if (ic .eq. 1) then
-            idec = 3 + 3*(ichoc-1)
+            jparx = jvint + start + 8
         else
-            idec = 3*nbchoc*nbinst + 3 + 3*(ichoc-1)
+            jparx = jvint + start + 11
         endif
-    else
+    else if (parax(1:4).eq.'VINT') then
+        read(parax(5:7),'(I2)') iparax
+        jparx = jvint + start + iparax - 1
+    else 
         lg = max(1,lxlgut(parax(1:8)))
         call utmess('A', 'UTILITAI_91', sk=parax(1:lg))
-        goto 9999
+        goto 999
     endif
     call wkvect('&&FOCRCH.PARAX', 'V V R', nbinst, jvalx)
-    call dcopy(nbinst, zr(jparx+idec-1), 3*nbchoc, zr(jvalx), 1)
+    call dcopy(nbinst, zr(jparx), nbvint, zr(jvalx), 1)
 20  continue
 !
     if (paray(1:4) .eq. 'INST') then
         jvaly = jinst
         goto 22
-    else if (paray(1:2).eq.'FN') then
-        call jeveuo(resu//'.FCHO', 'L', jpary)
-        idec = 1 + 3*(ichoc-1)
+    else if (paray(1:2).eq.'FN' ) then
+        jpary = jvint + start
     else if (paray(1:3).eq.'FT1') then
-        call jeveuo(resu//'.FCHO', 'L', jpary)
-        idec = 2 + 3*(ichoc-1)
+        jpary = jvint + start + 1
     else if (paray(1:3).eq.'FT2') then
-        call jeveuo(resu//'.FCHO', 'L', jpary)
-        idec = 3 + 3*(ichoc-1)
-    else if (paray(1:2).eq.'VN') then
-        call jeveuo(resu//'.VCHO', 'L', jpary)
-        idec = 1 + 3*(ichoc-1)
+        jpary = jvint + start + 2
+    else if (paray(1:2).eq.'VN' ) then
+        jpary = jvint + start + 3
     else if (paray(1:3).eq.'VT1') then
-        call jeveuo(resu//'.VCHO', 'L', jpary)
-        idec = 2 + 3*(ichoc-1)
+        jpary = jvint + start + 4
     else if (paray(1:3).eq.'VT2') then
-        call jeveuo(resu//'.VCHO', 'L', jpary)
-        idec = 3 + 3*(ichoc-1)
+        jpary = jvint + start + 5
     else if (paray(1:5).eq.'DXLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jpary)
         if (ic .eq. 1) then
-            idec = 1 + 3*(ichoc-1)
+            jpary = jvint + start + 6
         else
-            idec = 3*nbchoc*nbinst + 1 + 3*(ichoc-1)
+            jpary = jvint + start + 9
         endif
     else if (paray(1:5).eq.'DYLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jpary)
         if (ic .eq. 1) then
-            idec = 2 + 3*(ichoc-1)
+            jpary = jvint + start + 7
         else
-            idec = 3*nbchoc*nbinst + 2 + 3*(ichoc-1)
+            jpary = jvint + start + 10
         endif
     else if (paray(1:5).eq.'DZLOC') then
-        call jeveuo(resu//'.DLOC', 'L', jpary)
         if (ic .eq. 1) then
-            idec = 3 + 3*(ichoc-1)
+            jpary = jvint + start + 8
         else
-            idec = 3*nbchoc*nbinst + 3 + 3*(ichoc-1)
+            jpary = jvint + start + 11
         endif
-    else
+    else if (paray(1:4).eq.'VINT') then
+        read(paray(5:7),'(I3)') iparay
+        jpary = jvint + start + iparay - 1
+    else 
         lg = max(1,lxlgut(paray(1:8)))
         call utmess('A', 'UTILITAI_91', sk=paray(1:lg))
-        goto 9999
+        goto 999
     endif
     call wkvect('&&FOCRCH.PARAY', 'V V R', nbinst, jvaly)
-    call dcopy(nbinst, zr(jpary+idec-1), 3*nbchoc, zr(jvaly), 1)
+    call dcopy(nbinst, zr(jpary), nbvint, zr(jvaly), 1)
 22  continue
 !
     if (ind .eq. 0) then
@@ -265,7 +261,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         do 100 ival = 0, nbinst-1
             zr(lval+ival) = zr(jinst+ival)
             zr(lfon+ival) = zr(jvalx+ival)
-100      continue
+100     continue
 !
         fonct2 = '&&FOCRCH.FONCT2'
         ASSERT(lxlgut(fonct2).le.24)
@@ -282,7 +278,7 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
         do 110 ival = 0, nbinst-1
             zr(lval+ival) = zr(jinst+ival)
             zr(lfon+ival) = zr(jvaly+ival)
-110      continue
+110     continue
 !
         call jeveuo(listr//'.VALE', 'L', jval)
         call jelira(listr//'.VALE', 'LONUTI', nbpara)
@@ -315,6 +311,6 @@ subroutine focrch(nomfon, resu, noeud, parax, paray,&
     if (parax(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAX')
     if (paray(1:4) .ne. 'INST') call jedetr('&&FOCRCH.PARAY')
 !
-9999  continue
+999  continue
     call jedema()
 end subroutine

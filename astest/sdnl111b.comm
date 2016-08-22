@@ -128,7 +128,7 @@ DYNAMOD4=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                    INST_FIN = 0.0020,
                                    PAS = 1.E-6,
                                    VERI_PAS = 'NON'),
-                      CHOC=_F(
+                       COMPORTEMENT=_F(RELATION='DIS_CHOC',
                                NOEUD_1 = 'NO1',
                                NOEUD_2 = 'NO3',
                                INTITULE = 'LIAISON',

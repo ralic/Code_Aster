@@ -1,8 +1,8 @@
-subroutine mdlibe(nomres, nbnoli, nbrede, nbrevi)
+subroutine mdlibe(nomres, nbnli)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,21 +23,22 @@ subroutine mdlibe(nomres, nbnoli, nbrede, nbrevi)
 !     with a non-constant integration step
 !     ------------------------------------------------------------------
 ! in  : nomres : result name (usually &&AD****)
-! in  : nbnoli : number of localised non linearities from the shocks family (CHOC=_F*)
-! in  : nbrede : number of force = F(X) relationships
-! in  : nbrevi : number of force = F(V) relationships
+! in  : nbnli  : number of localised non linearities
 ! ----------------------------------------------------------------------
 !
 #include "asterfort/jelibe.h"
+#include "asterfort/jeexin.h"
 !   Input arguments
     character(len=8), intent(in) :: nomres
-    integer,          intent(in) :: nbnoli
-    integer,          intent(in) :: nbrede
-    integer,          intent(in) :: nbrevi
+    integer,          intent(in) :: nbnli
 !   Local variables
-    character(len=12)            :: bl11pt
+    integer           :: iret
+    character(len=9)  :: bl8pt
+    character(len=12) :: bl11pt
 !-----------------------------------------------------------------------
     bl11pt = '           .'
+    bl8pt  = '        .'
+
     call jelibe(nomres//bl11pt//'DEPL')
     call jelibe(nomres//bl11pt//'VITE')
     call jelibe(nomres//bl11pt//'ACCE')
@@ -45,27 +46,12 @@ subroutine mdlibe(nomres, nbnoli, nbrede, nbrevi)
     call jelibe(nomres//bl11pt//'DISC')
     call jelibe(nomres//bl11pt//'PTEM')
 
-    if (nbnoli.gt.0) then
-        call jelibe(nomres//bl11pt//'NCHO')
-        call jelibe(nomres//bl11pt//'SST')
-        call jelibe(nomres//bl11pt//'FCHO')
-        call jelibe(nomres//bl11pt//'DLOC')
-        call jelibe(nomres//bl11pt//'VCHO')
-        call jelibe(nomres//bl11pt//'ICHO')
-        call jelibe(nomres//bl11pt//'VINT')
-        call jelibe(nomres//bl11pt//'INTI')
-    end if
-
-    if (nbrede.gt.0) then
-        call jelibe(nomres//bl11pt//'REDC')
-        call jelibe(nomres//bl11pt//'REDD')
-        call jelibe(nomres//bl11pt//'REDN')
-    end if
-
-    if (nbrevi.gt.0) then
-        call jelibe(nomres//bl11pt//'REVC')
-        call jelibe(nomres//bl11pt//'REVV')
-        call jelibe(nomres//bl11pt//'REVN')
+    if (nbnli .gt. 0 ) then
+        call jelibe(nomres//bl8pt//'NL.TYPE')
+        call jelibe(nomres//bl8pt//'NL.INTI')
+        call jelibe(nomres//bl8pt//'NL.VIND')
+        call jeexin(nomres//bl8pt//'NL.VINT', iret)
+        if (iret.gt.0) call jelibe(nomres//bl8pt//'NL.VINT')
     end if
 !
 end subroutine

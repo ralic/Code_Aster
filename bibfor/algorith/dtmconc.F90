@@ -37,6 +37,7 @@ subroutine dtmconc(sd_dtm_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdlibe.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -45,22 +46,20 @@ subroutine dtmconc(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbmode, nbsauv, nbnoli, nbrede, nbrevi
+    integer           :: nbmode, nbsauv, nbnoli, nbvint
     integer           :: jdepl, jvite, jacce, jdisc, jordr
-    integer           :: jptem, jfcho, jdloc, jvcho, jicho
-    integer           :: jvint, jredc, jredd, jrevc, jrevv
-    integer           :: i, iarch_sd, decal(7), nbvint, jvir
-    integer           :: nbsto1, nbstoc, copysize
+    integer           :: jptem, jvint
+    integer           :: i, iarch_sd, decal(3)
+    integer           :: nbstoc, copysize
     character(len=4)  :: intk
-    character(len=8)  :: sd_dtm, result
+    character(len=8)  :: sd_dtm, result, sd_nl
 
+    integer         , pointer :: vindx(:)  => null()
     integer         , pointer :: isto(:)   => null()
     integer         , pointer :: allocs(:) => null()
     character(len=8), pointer :: nomres(:) => null()
     integer         , pointer :: sizres(:) => null()
 !
-#define saucho(ic,m) saucho_v((ic-1)*nbnoli+m) 
-
 !   0 - Initializations
     call jemarq()
 
@@ -87,9 +86,10 @@ subroutine dtmconc(sd_dtm_)
 
 !   2 - Free up the memory used by the last temporary result structure
     call dtmget(sd_dtm, _NB_NONLI,iscal=nbnoli)
-    call dtmget(sd_dtm, _FX_NUMB ,iscal=nbrede)
-    call dtmget(sd_dtm, _FV_NUMB ,iscal=nbrevi)
-    call mdlibe(nomres(iarch_sd), nbnoli, nbrede, nbrevi)
+    if (nbnoli.gt.0) then
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+        call mdlibe(nomres(iarch_sd), nbnoli)
+    end if
 
     call dtmget(sd_dtm, _CALC_SD ,kscal=result)
 
@@ -101,18 +101,13 @@ subroutine dtmconc(sd_dtm_)
 
     call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
 
-    if (nbnoli .ne. 0) call jeveuo(result//'           .VINT', 'E', jvir)
 
 !   ----------------------------------
 !   decal : Array index-sliders
 !   1 : ORDR, DISC, PTEM 
 !   2 : DEPL, VITE, ACCE
-!   3 : FCHO, DCHO, VCHO
-!   4 : ICHO 
-!   5 : REDC, REDD
-!   6 : REVC, REVV 
-!   7 : VINT
-    decal = [0, 0, 0, 0, 0, 0, 0]
+!   3 : VINT
+    decal = [0, 0, 0]
 !   ------------------------------------
 !
 !   4 - Copying all information from &&ADXXXX to the result container (CALC_SD)
@@ -151,66 +146,19 @@ subroutine dtmconc(sd_dtm_)
         call jedetr(nomres(i)//'           .PTEM')
 !
 !       Nonlinearities
-        if (nbnoli .ne. 0) then
-            nbstoc = 3 * nbnoli * copysize
-            nbsto1 = nbnoli * copysize
-            nbvint = nbnoli * copysize * mdtr74grd('MAXVINT')
+        if (nbnoli .gt. 0) then
+            call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx)
+            nbvint = vindx(nbnoli+1)-1
+
+            call jeveuo(nomres(i)//'        .NL.VINT', 'L', jvint)
+            call dcopy (nbvint*copysize, zr(jvint), 1, zr(allocs(7)+decal(3)), 1)
+            call jedetr(nomres(i)//'        .NL.VINT')
 !
-            call jeveuo(nomres(i)//'           .FCHO', 'L', jfcho)
-            call dcopy(nbstoc   , zr(jfcho), 1, zr(allocs(7)+decal(3)), 1)
-            call jedetr(nomres(i)//'           .FCHO')
-!
-            call jeveuo(nomres(i)//'           .DLOC', 'L', jdloc)
-            call dcopy(nbstoc   , zr(jdloc), 1, zr(allocs(8)+decal(3)), 1)
-            call dcopy(nbstoc   , zr(jdloc+3*nbnoli*sizres(i)), &
-                      1, zr(allocs(8)+3*nbnoli*nbsauv+decal(3)), 1)
-            call jedetr(nomres(i)//'           .DLOC')
-!
-            call jeveuo(nomres(i)//'           .VCHO', 'L', jvcho)
-            call dcopy(nbstoc   , zr(jvcho), 1, zr(allocs(9)+decal(3)), 1)
-            call jedetr(nomres(i)//'           .VCHO')
-!
-            call jeveuo(nomres(i)//'           .ICHO', 'L', jicho)
-            call jacopo(nbsto1,'I', jicho, allocs(10)+decal(4))
-            call jedetr(nomres(i)//'           .ICHO')
-!
-            call jeveuo(nomres(i)//'           .VINT', 'L', jvint)
-            call dcopy(nbvint   , zr(jvint), 1, zr(jvir+decal(7)), 1)
-            call jedetr(nomres(i)//'           .VINT')           
-!
-        endif
-!
-!       RELA_EFFO_DEPL
-        if (nbrede .ne. 0) then
-            nbstoc = nbrede * copysize
-            call jeveuo(nomres(i)//'           .REDC', 'L', jredc)
-            call jacopo(nbstoc, 'I', jredc, allocs(11)+decal(5))
-            call jedetr(nomres(i)//'           .REDC')
-!
-            call jeveuo(nomres(i)//'           .REDD', 'L', jredd)
-            call dcopy(nbstoc, zr(jredd), 1, zr(allocs(12)+decal(5)), 1)
-            call jedetr(nomres(i)//'           .REDD')
-        endif
-!
-!       RELA_EFFO_VITE
-        if (nbrevi .ne. 0) then
-            nbstoc = nbrevi * copysize
-            call jeveuo(nomres(i)//'           .REVC', 'L', jrevc)
-            call jacopo(nbstoc, 'I', jrevc, allocs(13)+decal(6))
-            call jedetr(nomres(i)//'           .REVC')
-!
-            call jeveuo(nomres(i)//'           .REVV', 'L', jrevv)
-            call dcopy(nbstoc, zr(jrevv), 1, zr(allocs(14)+decal(6)), 1)
-            call jedetr(nomres(i)//'           .REVV')
         endif
 
         decal(1) = decal(1) + copysize
         decal(2) = decal(2) + nbmode*copysize
-        decal(3) = decal(3) + (3*nbnoli*copysize)
-        decal(4) = decal(4) + (nbnoli*copysize)
-        decal(5) = decal(5) + (nbrede*copysize)
-        decal(6) = decal(6) + (nbrevi*copysize)
-        decal(7) = decal(7) + nbnoli*copysize*mdtr74grd('MAXVINT')
+        decal(3) = decal(3) + nbvint*copysize
 
         call jedetc('V', nomres(i), 1)
     enddo

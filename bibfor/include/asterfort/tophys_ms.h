@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,20 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine tophy3(icho, ia, dplmod, nbchoc, nbmode,&
-                      xgene, ux, uy, uz, nbexci,&
-                      psidel, coef)
-        integer :: nbexci
-        integer :: nbmode
-        integer :: nbchoc
-        integer :: icho
-        integer :: ia
-        real(kind=8) :: dplmod(nbchoc, nbmode, *)
-        real(kind=8) :: xgene(nbmode)
-        real(kind=8) :: ux
-        real(kind=8) :: uy
-        real(kind=8) :: uz
-        real(kind=8) :: psidel(nbchoc, nbexci, *)
-        real(kind=8) :: coef(nbexci)
-    end subroutine tophy3
+    subroutine tophys_ms(dplmod, psidel, coef, xgene, xphys)
+        real(kind=8), pointer, intent(in)  :: dplmod(:)
+        real(kind=8), pointer, intent(in)  :: psidel(:)
+        real(kind=8), pointer, intent(in)  :: coef(:)
+        real(kind=8), pointer, intent(in)  :: xgene(:)
+        real(kind=8),          intent(out) :: xphys(:)
+    end subroutine tophys_ms
 end interface

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,17 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdchan(motfac, ioc, iliai, mdgene, typnum,&
-                      repere, xjeu, nbnli, noecho, parcho)
-        integer :: nbnli
-        character(len=10) :: motfac
+    subroutine mdchan(nlcase, ioc, iliai, mdgene, typnum,&
+                      repere, xjeu)
+        character(len=*) :: nlcase
         integer :: ioc
         integer :: iliai
         character(len=24) :: mdgene
         character(len=16) :: typnum
         character(len=8) :: repere
         real(kind=8) :: xjeu
-        character(len=8) :: noecho(nbnli, *)
-        real(kind=8) :: parcho(nbnli, *)
     end subroutine mdchan
 end interface

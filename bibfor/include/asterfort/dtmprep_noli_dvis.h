@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,21 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdrfis(nbmode, depgen, fexgen, nbnli, nbrfis,&
-                      dplmod, fk, dfk, parcho, angini,&
-                      vrotat, foncp, temps)
-        integer :: nbnli
-        integer :: nbmode
-        real(kind=8) :: depgen(*)
-        real(kind=8) :: fexgen(*)
-        integer :: nbrfis
-        real(kind=8) :: dplmod(nbnli, nbmode, *)
-        character(len=8) :: fk(2)
-        character(len=8) :: dfk(2)
-        real(kind=8) :: parcho(nbnli, *)
-        real(kind=8) :: angini
-        real(kind=8) :: vrotat
-        character(len=8) :: foncp
-        real(kind=8) :: temps
-    end subroutine mdrfis
+    subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
+        character(len=*), intent(in):: sd_dtm_
+        character(len=*), intent(in):: sd_nl_
+        integer,          intent(in):: icomp
+    end subroutine dtmprep_noli_dvis
 end interface
+

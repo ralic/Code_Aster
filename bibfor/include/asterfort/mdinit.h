@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,19 +17,17 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
-                      vint, ier, tinit, intitu, noecho, &
-                      reprise, accgen, index)
+    subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen,&
+                      vint, ier, tinit, reprise, accgen,&
+                      index)
         character(len=8) :: basemo
         integer :: nbmode
-        integer :: nbchoc
+        integer :: nbnoli
         real(kind=8) :: depgen(*)
         real(kind=8) :: vitgen(*)
-        real(kind=8) :: vint(*)
+        real(kind=8), pointer :: vint(:)
         integer :: ier
         real(kind=8) :: tinit
-        character(len=8), optional, intent(in) :: intitu(*)
-        character(len=8), optional, intent(in) :: noecho(nbchoc,*)
         aster_logical, optional, intent(out) :: reprise
         real(kind=8), optional, intent(out) :: accgen(*)
         integer, optional, intent(out) :: index

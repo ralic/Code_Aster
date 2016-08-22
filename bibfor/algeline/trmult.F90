@@ -1,8 +1,11 @@
 subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
-                  pside)
+                  pside, numddl)
     implicit none
 #include "jeveux.h"
+#include "asterfort/assert.h"
 #include "asterfort/compno.h"
+#include "asterfort/copmod.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/jedema.h"
@@ -24,12 +27,12 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    character(len=8) :: modsta, mailla
+    character(len=8) :: modsta, mailla, numddl
     integer :: numexi, neq, iddeeq
     real(kind=8) :: pside(neq)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,15 +70,15 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
     character(len=16) :: acces
     character(len=19) :: chamno
     complex(kind=8) :: c16b
-    integer :: iarg
+    integer :: iarg, imode
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
     integer :: i, id,   idno, ii, in
     integer :: iret, ldgn, nb, nbd, nbdir, nbgr, nbno
-    integer :: nbtrou, nbv
+    integer :: nbtrou, nbv, tmod(1)
     real(kind=8) :: xd
     character(len=24), pointer :: group_no(:) => null()
-    real(kind=8), pointer :: vale(:) => null()
+    real(kind=8), pointer :: base(:) => null()
 !-----------------------------------------------------------------------
     data cmp / 'DX' , 'DY' , 'DZ' , 'DRX' , 'DRY' , 'DRZ' /
 !     ------------------------------------------------------------------
@@ -97,16 +100,16 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                 nbret=nbd)
 !     --- ON NORMALISE LE VECTEUR ---
     xnorm = 0.d0
-    do 10 i = 1, nbdir
+    do i = 1, nbdir
         xnorm = xnorm + depl(i) * depl(i)
-10  end do
+    end do
     xnorm = sqrt(xnorm)
     if (xnorm .lt. 0.d0) then
         call utmess('F', 'ALGORITH9_81')
     endif
-    do 12 i = 1, nbdir
+    do i = 1, nbdir
         depl(i) = depl(i) / xnorm
-12  end do
+    end do
 !
 !     --- RECUPERATION DES POINTS D'ANCRAGE ---
 !
@@ -144,11 +147,17 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
 20          continue
         endif
     endif
+
+    call rsorac(modsta, 'LONUTI', 0, r8b, kbid,&
+                c16b, r8b, kbid, tmod, 1,&
+                ibid)
+    AS_ALLOCATE(vr=base, size=neq*tmod(1))
+    call copmod(modsta, bmodr=base, numer=numddl)
 !
 !     --- CALCUL DU VECTEUR PSI*DELTA ---
 !
     call r8inir(neq, 0.d0, pside, 1)
-    do 30 id = 1, nbdir
+    do id = 1, nbdir
         xd = depl(id)
         if (abs(xd) .gt. epsi) then
             do 40 in = 1, nbno
@@ -166,7 +175,9 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     call utmess('F', 'ALGELINE4_61', nk=2, valk=valk)
                     goto 40
                 endif
-                call rsvpar(modsta, iordr(1), 'TYPE_DEFO', ibid, r8b,&
+                imode = iordr(1)
+
+                call rsvpar(modsta, imode, 'TYPE_DEFO', ibid, r8b,&
                             'DEPL_IMPO', iret)
                 if (iret .ne. 100) then
                     ier = ier + 1
@@ -176,24 +187,23 @@ subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                     call utmess('F', 'ALGELINE4_62', nk=3, valk=valk)
                     goto 40
                 endif
-                call rsexch('F', modsta, 'DEPL', iordr(1), chamno,&
+                call rsexch('F', modsta, 'DEPL', imode, chamno,&
                             iret)
-                call jeveuo(chamno//'.VALE', 'L', vr=vale)
 !
 !              --- ON EFFECTUE LE PRODUIT  MODE_STAT * DIR ---
-                do 42 i = 1, neq
-                    pside(i) = pside(i)+ xd * vale(i)
-42              continue
-                call jelibe(chamno//'.VALE')
+                do i = 1, neq
+                    pside(i) = pside(i)+ xd * base((imode-1)*neq+i) 
+                end do
 40          continue
         endif
-30  end do
+    end do
 !
 !     --- MISE A ZERO DES DDL DE LAGRANGE
     call zerlag(neq, zi(iddeeq), vectr=pside(1))
 !
     call jedetr('&&TRMULT.NOEUD')
     AS_DEALLOCATE(vk24=group_no)
+    AS_DEALLOCATE(vr=base)
 !
     call jedema()
 end subroutine

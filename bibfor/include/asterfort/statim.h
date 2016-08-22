@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                       vint, wk1, wk2, wk3, tdebut,&
                       tfin, nbloc, offset, trepos, nbclas,&
-                      noecho, intitu, nomres)
+                      noecho, intitu, nomres, nbvint)
         integer :: nbobst
         integer :: nbpt
         real(kind=8) :: temps(*)
@@ -38,5 +38,6 @@ interface
         character(len=8) :: noecho(*)
         character(len=8) :: intitu(*)
         character(len=*) :: nomres
+        integer :: nbvint       
     end subroutine statim
 end interface

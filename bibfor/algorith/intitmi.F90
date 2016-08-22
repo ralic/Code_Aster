@@ -2,7 +2,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -45,14 +46,16 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 !   -0.2- Local variables
     aster_logical     :: mdiag, kdiag
-    integer           :: i, nbequ, ind1, iret
+    integer           :: i, nbequ, ind1, iret, nbvint
     integer           :: nbnoli, upmat
     real(kind=8)      :: t1, dt, coeff, epsi, dtold
     real(kind=8)      :: ksi0
     complex(kind=8)   :: s0, sr0, z0, za1, za2
     complex(kind=8)   :: zin
-    character(len=8)  :: sd_dtm, sd_int
+    character(len=8)  :: sd_dtm, sd_int, sd_nl
 !
+    integer         , pointer :: buffnl(:)   => null()
+
     real(kind=8)    , pointer :: depl1(:)    => null()
     real(kind=8)    , pointer :: vite1(:)    => null()
     real(kind=8)    , pointer :: acce1(:)    => null()
@@ -67,8 +70,8 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: agen(:)    => null()
 
     real(kind=8)    , pointer :: par(:)      => null()
-    real(kind=8)    , pointer :: chosav0(:)  => null()
-    real(kind=8)    , pointer :: chosav1(:)  => null()
+    real(kind=8)    , pointer :: nlsav0(:)  => null()
+    real(kind=8)    , pointer :: nlsav1(:)  => null()
 
     real(kind=8)    , pointer :: omegas(:)  => null()
     real(kind=8)    , pointer :: s0_r(:)    => null()
@@ -133,11 +136,14 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
         if (nbnoli.gt.0) then
-            nbnlsav = (nbnoli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT')))*1.d0
-            call intinivec(sd_int, WORK6, nbsavnl, vr=chosav0)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
+            nbnlsav = nbvint *1.d0
+            call intinivec(sd_int, WORK6, nbsavnl, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif
+
 
 !       - Check that the mass and stiffness matrices are both diagonal
         mdiag = .false.
@@ -214,7 +220,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK3, vr=za1_ri  , buffer=buffint) 
         call intget(sd_int, WORK4, vr=za2_ri  , buffer=buffint) 
         call intget(sd_int, WORK5, vr=trans_vd, buffer=buffint) 
-        if (nbsavnl.gt.0) call intget(sd_int, WORK6, vr=chosav0, buffer=buffint)
+        if (nbsavnl.gt.0) call intget(sd_int, WORK6, vr=nlsav0, buffer=buffint)
 
 !       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1)
         call intget(sd_int, DEPL    , iocc=2, vr=depl2, buffer=buffint)
@@ -226,8 +232,10 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     endif
 
     if (nbsavnl.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav1, buffer=buffdtm)
-        call dcopy(nbsavnl, chosav1, 1, chosav0, 1)
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav1, buffer=buffnl)
+        call dcopy(nbsavnl, nlsav1, 1, nlsav0, 1)
     end if
 
     coeff = dt/dtold
@@ -301,7 +309,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
     
     call dtmforc(sd_dtm, sd_int, 2, buffdtm, buffint)
-    if (nbsavnl.gt.0) call dcopy(nbsavnl, chosav0, 1, chosav1, 1)
+    if (nbsavnl.gt.0) call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
 
     if (upmat.eq.1) then
         ! do i = 1, nbequ

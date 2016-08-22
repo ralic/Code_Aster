@@ -24,12 +24,13 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
 !
     integer :: nbrede, nbmode, neq, ier
     real(kind=8) :: dplred(nbrede, nbmode, *), bmodal(neq, *)
     character(len=8) :: fonred(nbrede, *)
     character(len=14) :: numddl
-    character(len=24) :: nomgr1
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -63,8 +64,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !
     integer :: i, nunoe, nuddl, icomp
-    character(len=8) :: noeu, comp, fonc, sst, noecho(3), grno
-    character(len=8) :: maillage
+    character(len=8) :: noeu, comp, fonc, sst, noecho(3)
     character(len=14) :: nume
     character(len=16) :: typnum
     character(len=24) :: mdgene, mdssno, numero
@@ -74,12 +74,14 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
 !-----------------------------------------------------------------------
     integer :: ibid, iret, j
-    integer :: ns, gno, ino
+    integer :: ns
     real(kind=8), pointer :: dplcho(:) => null()
+    character(len=8) :: sd_nl
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ier = 0
+    sd_nl = '&&OP29NL'
     call gettco(numddl, typnum)
 !
     if (typnum(1:13) .eq. 'NUME_DDL_GENE') then
@@ -91,22 +93,10 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
 !
     do 10 i = 1, nbrede
 !
-        call getvtx('RELA_EFFO_DEPL', 'NOEUD', iocc=i, scal=noeu, nbret=ino)
-        call getvtx('RELA_EFFO_DEPL', 'GROUP_NO', iocc=i, scal=grno, nbret=gno)
-        call getvtx('RELA_EFFO_DEPL', 'NOM_CMP', iocc=i, scal=comp)
-        call getvid('RELA_EFFO_DEPL', 'RELATION', iocc=i, scal=fonc)
-        call getvtx('RELA_EFFO_DEPL', 'SOUS_STRUC', iocc=i, scal=sst, nbret=ns)
-!
-        ASSERT(ino.gt.0 .or. gno.gt.0)
-        if (gno .ne. 0) then
-            call dismoi('NOM_MAILLA', numddl, 'NUME_DDL', repk=maillage)
-            call getvem(maillage, 'GROUP_NO', 'RELA_EFFO_DEPL', 'GROUP_NO', i,&
-                        1, 1, nomgr1, ibid)
-            call utnono(' ', maillage, 'NOEUD', nomgr1, noeu, iret)
-!             # Si le GROUP_NO contient plus d'un noeud
-            if (iret .eq. 1)  call utmess('F','ALGORITH5_57', sk=nomgr1)
-        end if
-!
+        call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=noeu)
+        call nlget(sd_nl, _CMP_NAME, iocc=i, kscal=comp)
+        call nlget(sd_nl, _FX_FONCT, iocc=i, kscal=fonc)
+        call nlget(sd_nl, _SS1_NAME, iocc=i, lonvec=ns)
 !
         if (comp(1:2) .eq. 'DX') icomp = 1
         if (comp(1:2) .eq. 'DY') icomp = 2
@@ -168,7 +158,7 @@ subroutine mdrede(numddl, nbrede, nbmode, bmodal, neq,&
             AS_ALLOCATE(vr=dplcho, size=nbmode*6)
             noecho(1) = noeu
             noecho(2) = sst
-            noecho(3) = nume
+            noecho(3) = nume(1:8)
             call resmod(bmodal, nbmode, neq, numero, mdgene,&
                         noecho,dplcho)
             do j = 1, nbmode

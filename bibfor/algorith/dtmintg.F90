@@ -2,7 +2,7 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intnewm.h"
 #include "asterfort/intruku32.h"
 #include "asterfort/intruku54.h"
+#include "asterfort/nlget.h"
 !
 !   -0.1- Input/output arguments
     character(len=*) , intent(in) :: sd_dtm_
@@ -43,9 +44,10 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 !   -0.2- Local variables
     integer               :: nbnoli, method
-    character(len=8)      :: sd_dtm, sd_int
-    real(kind=8), pointer :: chosav1(:) => null()
-    real(kind=8), pointer :: chosav2(:) => null()
+    character(len=8)      :: sd_dtm, sd_int, sd_nl
+    real(kind=8), pointer :: nlsav1(:) => null()
+    real(kind=8), pointer :: nlsav2(:) => null()
+    integer, pointer      :: buffnl(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
@@ -54,9 +56,11 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
     call dtmget(sd_dtm, _SCHEMA_I, iscal=method, buffer=buffdtm)
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli, buffer=buffdtm)
     if (nbnoli.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav2, buffer=buffdtm)
-        call dtmget(sd_dtm, _NL_SAVE1, vr=chosav1, buffer=buffdtm)
-        call dcopy(size(chosav2), chosav2, 1, chosav1, 1)
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
+        call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1, buffer=buffdtm)
+        call dcopy(size(nlsav2), nlsav2, 1, nlsav1, 1)
     end if
 
     select case (method)

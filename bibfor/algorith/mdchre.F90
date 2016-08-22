@@ -1,8 +1,9 @@
-subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
-                  repere, nbnli, parcho, lnoue2)
+subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
+                  repere, lnoue2)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
+#include "asterc/r8prem.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
@@ -11,17 +12,18 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 #include "asterfort/orient.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
 !
-    integer :: ioc, iliai, nbnli
-    real(kind=8) :: parcho(nbnli, *)
+    integer :: ioc, iliai
     aster_logical :: lnoue2
-    character(len=8) :: repere
-    character(len=10) :: motfac
+    character(len=8) :: repere, sd_nl
+    character(len=*) :: nlcase
     character(len=16) :: typnum
     character(len=24) :: mdgene
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,37 +60,39 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
 !     ------------------------------------------------------------------
     integer :: n1, iret, jcoord
     real(kind=8) :: tempo(3), dircho(3), coord(3), txno
+    character(len=16) :: motfac, obstyp
     character(len=24) :: mdssno
+    real(kind=8)          , pointer :: coor_no1(:) => null()
+    real(kind=8)          , pointer :: coor_no2(:) => null()
+    real(kind=8)          , pointer :: ob_orig (:) => null()
 !     ------------------------------------------------------------------
 !
+    sd_nl = '&&OP29NL'
     n1 = 0
     repere = '????????'
+    motfac = nlcase
 !
-    if (motfac .eq. 'CHOC' .or. motfac .eq. 'FLAMBAGE') then
+    if (motfac .eq. 'DIS_CHOC' .or. motfac .eq. 'FLAMBAGE') then
 !          ------------------------------------------
-        call getvtx(motfac, 'REPERE', iocc=ioc, nbval=0, nbret=n1)
+        call getvtx('COMPORTEMENT', 'REPERE', iocc=ioc, nbval=0, nbret=n1)
         if (n1 .eq. 0) then
             repere = 'GLOBAL'
         else
-            call getvtx(motfac, 'REPERE', iocc=ioc, scal=repere, nbret=n1)
+            call getvtx('COMPORTEMENT', 'REPERE', iocc=ioc, scal=repere, nbret=n1)
         endif
-        call getvr8(motfac, 'ORIG_OBST', iocc=ioc, scal=tempo(1), nbret=n1)
+        call getvr8('COMPORTEMENT', 'ORIG_OBST', iocc=ioc, scal=tempo(1), nbret=n1)
     endif
 !
     n1 = -n1
     if (n1 .eq. 3) then
-        call getvr8(motfac, 'ORIG_OBST', iocc=ioc, nbval=3, vect=tempo,&
+        call getvr8('COMPORTEMENT', 'ORIG_OBST', iocc=ioc, nbval=3, vect=tempo,&
                     nbret=n1)
-        if (typnum .eq. 'NUME_DDL_SDASTER') then
-            parcho(iliai,14) = tempo(1)
-            parcho(iliai,15) = tempo(2)
-            parcho(iliai,16) = tempo(3)
+        if (typnum(1:16) .eq. 'NUME_DDL_SDASTER') then
+            call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, rvect=tempo)
         else
             mdssno = mdgene(1:14)//'.MODG.SSNO'
-            if (repere .eq. 'GLOBAL') then
-                parcho(iliai,14) = tempo(1)
-                parcho(iliai,15) = tempo(2)
-                parcho(iliai,16) = tempo(3)
+            if (repere(1:6) .eq. 'GLOBAL') then
+                call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, rvect=tempo)
             else
                 call jenonu(jexnom(mdssno, repere), iret)
                 if (iret .eq. 0) then
@@ -100,35 +104,47 @@ subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
                 zr(jcoord+2) = tempo(3)
                 call orient(mdgene, repere, jcoord, 1, coord,&
                             1)
-                parcho(iliai,14) = coord(1)
-                parcho(iliai,15) = coord(2)
-                parcho(iliai,16) = coord(3)
+                call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, rvect=coord)
                 call jedetr('&&MDCHOC.COORDO')
             endif
         endif
     else
-        parcho(iliai,14) = (parcho(iliai,8)+parcho(iliai,11))/2.d0
-        parcho(iliai,15) = (parcho(iliai,9)+parcho(iliai,12))/2.d0
-        parcho(iliai,16) = (parcho(iliai,10)+parcho(iliai,13))/2.d0
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _OBST_TYP, iocc=iliai, kscal=obstyp)
+        if (obstyp(1:2).eq.'BI') then
+            call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+            call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, &
+                       rvect=[(coor_no1(1)+coor_no2(1))/2.d0,&
+                              (coor_no1(2)+coor_no2(2))/2.d0,&
+                              (coor_no1(3)+coor_no2(3))/2.d0])
+        else 
+            call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=iliai, &
+                       rvect=[(coor_no1(1))/2.d0,&
+                              (coor_no1(2))/2.d0,&
+                              (coor_no1(3))/2.d0])
+        end if
     endif
 !
     if (lnoue2) then
-        dircho(1) = parcho(iliai,8)-parcho(iliai,11)
-        dircho(2) = parcho(iliai,9)-parcho(iliai,12)
-        dircho(3) = parcho(iliai,10)-parcho(iliai,13)
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _COOR_NO2, iocc=iliai, vr=coor_no2)
+        dircho(1) = coor_no1(1)-coor_no2(1)
+        dircho(2) = coor_no1(2)-coor_no2(2)
+        dircho(3) = coor_no1(3)-coor_no2(3)
     else
-        dircho(1) = parcho(iliai,8)-parcho(iliai,14)
-        dircho(2) = parcho(iliai,9)-parcho(iliai,15)
-        dircho(3) = parcho(iliai,10)-parcho(iliai,16)
+        call nlget(sd_nl, _COOR_NO1, iocc=iliai, vr=coor_no1)
+        call nlget(sd_nl, _COOR_ORIGIN_OBSTACLE, iocc=iliai, vr=ob_orig)
+        dircho(1) = coor_no1(1)-ob_orig(1)
+        dircho(2) = coor_no1(2)-ob_orig(2)
+        dircho(3) = coor_no1(3)-ob_orig(3)
     endif
 !
     txno = sqrt(dircho(1)**2+dircho(2)**2+dircho(3)**2)
-    if (txno .eq. 0.d0) txno = 1.d0
+    if (txno .lt. r8prem()) txno = 1.d0
 !
 ! --- DEBUG : UN TRAVAIL DOIT ETRE FAIT SI TXNO = 0.
 !
-    parcho(iliai,45) = dircho(1)/txno
-    parcho(iliai,46) = dircho(2)/txno
-    parcho(iliai,47) = dircho(3)/txno
+    call nlsav(sd_nl, _NORMAL_VECTOR, 3, iocc=iliai, &
+               rvect=[dircho(1)/txno, dircho(2)/txno, dircho(3)/txno])
 !
 end subroutine

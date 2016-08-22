@@ -382,8 +382,10 @@ for k in range(1,ns+1):
                              INCREMENT=_F(  INST_INIT = 0.,
                                           INST_FIN = 4.,
                                         PAS = 2.E-4),
-                            ARCHIVAGE=_F( PAS_ARCH = 5),CHOC=(
-                                 _F( INTITULE = 'CHOC1',
+                            ARCHIVAGE=_F( PAS_ARCH = 5),
+                            COMPORTEMENT=(
+                                    _F(RELATION='DIS_CHOC',
+                                       INTITULE = 'CHOC1',
                                        SOUS_STRUC_1 = 'BARRE1',
                                        NOEUD_1 = 'N8',
                                        SOUS_STRUC_2 = 'BARRE2',
@@ -394,7 +396,8 @@ for k in range(1,ns+1):
                                        DIST_1 = 0.0995,
                                        DIST_2 = 0.0995,
                                        RIGI_NOR = 1.E+8),
-                                 _F( INTITULE = 'CHOC2',
+                                    _F(RELATION='DIS_CHOC',
+                                       INTITULE = 'CHOC2',
                                        SOUS_STRUC_1 = 'BARRE2',
                                        GROUP_NO_1 = 'GROUP1',
                                        SOUS_STRUC_2 = 'BARRE3',

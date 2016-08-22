@@ -3,7 +3,7 @@ subroutine intbuff(sd_int, addrs, level)
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,12 +26,13 @@ subroutine intbuff(sd_int, addrs, level)
 ! person_in_charge: hassan.berro at edf.fr    
 #include "jeveux.h"
 #include "asterfort/codent.h"
+#include "asterfort/crevec.h"
 #include "asterfort/intget.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/jgetptc.h"
 
 !   ====================================================================
@@ -55,11 +56,10 @@ subroutine intbuff(sd_int, addrs, level)
     type(c_ptr) :: pc
 !
 #include "intinc.h"
-
 !
-
 !   Copying the input strings, in order to allow in-command truncated input
     sd_int_ = sd_int
+    nullify(addrs)
 !
 !   Variable lvl defines the maximum buffer level in the case of per occurence items
     lvl = 1 
@@ -70,10 +70,10 @@ subroutine intbuff(sd_int, addrs, level)
 !   ====================================================================
     call jeexin(sd_int_//'.BUFFER.        ',iret)
     if (iret.gt.0) then
+        call jelibe(sd_int_//'.BUFFER.        ')
         call jedetr(sd_int_//'.BUFFER.        ')
     end if
-    call wkvect(sd_int_//'.BUFFER.        ','V V I',2*lvl*_INT_NBPAR,jbuff)
-    call jeveut(sd_int_//'.BUFFER.        ','E',jbuff)
+    call crevec(sd_int_//'.BUFFER.        ','V V I',2*lvl*_INT_NBPAR,jbuff)
 
     call jgetptc(jbuff, pc, vi=zi(1))
     call c_f_pointer(pc, addrs, [2*lvl*_INT_NBPAR])
@@ -95,12 +95,13 @@ subroutine intbuff(sd_int, addrs, level)
             savename(16:24)='.'//params(ip)
             call jeexin(savename, iret)
             if (iret.gt.0) then
-                call jeveut(savename,'E',addr)
+                call jelibe(savename)
+                call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
                 addrs(dec+_INT_NBPAR+ip) = long            
             else if (abs(parind(ip)).eq.1) then
-                call wkvect(savename,'V V '//partyp(ip),1,addr)
+                call crevec(savename, 'V V '//partyp(ip),1, addr)
                 addrs(dec+ip) = addr
                 addrs(dec+_INT_NBPAR+ip) = 1            
             end if

@@ -1,9 +1,8 @@
-subroutine togene(icho, ia, dplmod, nbchoc, nbmode,&
-                  fx, fy, fz, fgene)
+subroutine togene(dplmod, fphys, fgene, coef)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,30 +18,31 @@ subroutine togene(icho, ia, dplmod, nbchoc, nbmode,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !-----------------------------------------------------------------------
-!    CONVERTIT EN BASE MODALE POUR DES DDLS PHYSIQUES DONNES
-!    ATTENTION FGENE N'EST PAS REINITIALISE
+!    Convert into the modal basis a force defined in physical coordinates
+!
+!    Attention : cumulated fgene, fgene needs thus to be initialized
+!                before calling this routine
 !-----------------------------------------------------------------------
 !
-!    ICHO      IN        INDICE CARACTERISANT LA NON-LINEARITE
-!    IA        IN        INDICE = 0 => TRAITEMENT DU NOEUD_1
-!                               = 3 => TRAITEMENT DU NOEUD_2
-!    DPLMOD    IN        VECTEUR DES DEPL MODAUX AUX NOEUDS DE CHOC
-!    NBCHOC    IN        NOMBRE DE CHOCS
-!    NBMODE    IN        NB DE MODES NORMAUX CONSIDERES
-!    FX,Y,Z    IN        VALEURS DES DDLS CORRESPONDANTS
-!    FGENE     IN/OUT    VECTEUR DES COORDONNEES GENERALISEES
+#include "jeveux.h"
 !-----------------------------------------------------------------------
-!
-    integer :: icho, ia, nbmode, nbchoc
-    real(kind=8) :: fgene(nbmode), dplmod(nbchoc, nbmode, *), fx, fy, fz
-!
+    real(kind=8), pointer , intent(in)  :: dplmod(:)
+    real(kind=8),           intent(in)  :: fphys(:)
+    real(kind=8),           intent(out) :: fgene(:)
+    real(kind=8), optional, intent(in)  :: coef
 !-----------------------------------------------------------------------
-    integer :: i
+    integer :: i, j, nbmode
+    real(kind=8) :: coef_m
 !-----------------------------------------------------------------------
-    do 10 i = 1, nbmode
-        fgene(i)=fgene(i)+dplmod(icho,i,1+ia)*fx +dplmod(icho,i,2+ia)*&
-        fy +dplmod(icho,i,3+ia)*fz
-10  end do
-!
-!
+    coef_m = 1.d0
+    if (present(coef)) coef_m = coef
+
+    nbmode = size(dplmod)/3
+
+    do j = 1, 3
+        do i = 1, nbmode
+            fgene(i) = fgene(i) + coef_m*dplmod((i-1)*3+j)*fphys(j)
+        end do
+    end do
+
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -214,18 +214,6 @@ cata_msg = {
 
     45 : _(u"""
       Non convergence du code EDYOS
-"""),
-
-    46 : _(u"""
-      Le code EDYOS n'a pas convergé
-      Avec le schéma en temps d'Euler, on ne sous divise pas le pas de temps
-      Le calcul s'arrête donc
-      Conseil : tester le schéma en temps adaptatif
-"""),
-
-    48 : _(u"""
-      Erreur de syntaxe pour le couplage avec EDYOS :
-      Il faut obligatoirement renseigner COUPLAGE_EDYOS et PALIERS_EDYOS
 """),
 
     49 : _(u"""

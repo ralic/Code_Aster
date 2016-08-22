@@ -32,8 +32,8 @@ function mdtr74grd(nomgrd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!   MAXVINT         : Nombre maximal de variables internes ==> 5 <== DIS_ECRO_TRAC
-!
+!   MAXVINT         : Nombre maximal de variables internes ==> 8 
+
 !   FLAMBAGE        : Nombre de variables internes
 !                       1   écrasement cumulé
 !
@@ -62,12 +62,14 @@ function mdtr74grd(nomgrd)
 ! --------------------------------------------------------------------------------------------------
 !
     mdtr74grd = 0
-    if      ( nomgrd(1:6) .eq.'PARCHO' ) then
+    if      ( nomgrd(1:6) .eq.'DIS_CHOC' ) then
+        mdtr74grd = 8
+    else if ( nomgrd(1:6) .eq.'PARCHO' ) then
         mdtr74grd = 64
     else if ( nomgrd(1:7) .eq.'PAINCHO') then
         mdtr74grd = 3
     else if ( nomgrd(1:7) .eq.'MAXVINT') then
-        mdtr74grd = 5
+        mdtr74grd = 8
     else if ( nomgrd(1:8) .eq.'DIS_VISC') then
         mdtr74grd = 4
     else if ( nomgrd(1:13).eq.'DIS_ECRO_TRAC') then

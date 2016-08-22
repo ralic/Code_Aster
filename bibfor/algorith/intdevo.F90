@@ -2,7 +2,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/rrlds.h"
 #include "asterfort/trlds.h"
@@ -51,14 +52,14 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.2- Local variables
     integer           :: i, j, nbequ, ind1, iret
     integer           :: jw6, ind, iret1, iret2, nr
-    integer           :: nbnoli, upmat, iret3
+    integer           :: nbnoli, upmat, iret3, nbvint
     real(kind=8)      :: t1, dt, dt1, dt2, dt3
     real(kind=8)      :: dt4, dt5, dt6, mdiag_r
     real(kind=8)      :: kdiag_r, cdiag_r, dtnew, pas0, pas1
     real(kind=8)      :: epsi, errt, c0, c1, alpha1
     real(kind=8)      :: alpha2, beta, depmag, tol_dim, coeff
     real(kind=8)      :: seuil1, seuil2, dtold, errdep, coeff2
-    character(len=8)  :: sd_dtm, sd_int
+    character(len=8)  :: sd_dtm, sd_int, sd_nl
 
     real(kind=8)    , pointer :: depl1(:)    => null()
     real(kind=8)    , pointer :: vite1(:)    => null()
@@ -83,8 +84,8 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: agen(:)     => null()
     real(kind=8)    , pointer :: mgenf(:)    => null()
     
-    real(kind=8)    , pointer :: chosav0(:)  => null()
-    real(kind=8)    , pointer :: chosav1(:)  => null()
+    real(kind=8)    , pointer :: nlsav0(:)  => null()
+    real(kind=8)    , pointer :: nlsav1(:)  => null()
 
     real(kind=8)    , pointer :: invm_c(:)   => null()
     real(kind=8)    , pointer :: invm_k(:)   => null()
@@ -92,6 +93,8 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: op_h1(:)    => null()
     real(kind=8)    , pointer :: op_h2(:)    => null()
     real(kind=8)    , pointer :: x1(:)       => null()
+
+    integer, pointer          :: buffnl(:)   => null()
 
 #define mdiag (nint(par(1)).eq.1)
 #define kdiag (nint(par(2)).eq.1)
@@ -253,8 +256,10 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli)
         if (nbnoli.gt.0) then
-            nbnlsav = (nbnoli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT')))*1.d0
-            call intinivec(sd_int, WORK7, nbsavnl, vr=chosav0)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
+            nbnlsav = nbvint *1.d0
+            call intinivec(sd_int, WORK7, nbsavnl, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif
@@ -424,18 +429,15 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Work vector for a variable-step DEVOGE algorithm
         call intget(sd_int, WORK6   ,  address=jw6, buffer=buffint)
 !       --- Retrieve choc parameters save container
-        if (nbsavnl.gt.0) call intget(sd_int, WORK7, vr=chosav0, buffer=buffint)
+        if (nbsavnl.gt.0) call intget(sd_int, WORK7, vr=nlsav0, buffer=buffint)
 
-        if (mdiag) then
-            call intget(sd_int, MASS_DIA, vr=mgen, buffer=buffint)
-        else
-            call intget(sd_int, MASS_FUL, vr=mgen, buffer=buffint)
-        endif
         call intget(sd_int, STEP, iocc=4, rscal=dtold , buffer=buffint)
     end if
     if (nbsavnl.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav1, buffer=buffdtm)
-        call dcopy(nbsavnl, chosav1, 1, chosav0, 1)
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav1, buffer=buffnl)
+        call dcopy(nbsavnl, nlsav1, 1, nlsav0, 1)
     end if
 
     call intget(sd_int, MAT_UPDT, iscal=upmat, buffer=buffint)
@@ -515,12 +517,18 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         ! call utimsd(6, 2, .false._1, .true._1, sd_int, 1, 'V')
     end if
 
+    if (mdiag) then
+        call intget(sd_int, MASS_DIA, vr=mgen, buffer=buffint)
+    else
+        call intget(sd_int, MASS_FUL, vr=mgen, buffer=buffint)
+    endif
+
     nr = 0
     dtnew = dt
 
 10  continue
 !
-    if (nbsavnl.gt.0) call dcopy(nbsavnl, chosav0, 1, chosav1, 1)
+    if (nbsavnl.gt.0) call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
 
 !   2 - Definition of algorithm parameters
     dt1 = dt / 2.d0
@@ -827,7 +835,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
             end if
         end if
         if ((errt.gt.1.d0).and.(nr.lt.25)) then
-            if (coeff2.eq.1.d0) then
+            if (abs(coeff2-1.d0).lt.epsi) then
                 ASSERT(.false.)
             end if
             dtold = dt

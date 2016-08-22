@@ -30,6 +30,7 @@ subroutine dtminfo(sd_dtm_)
 #include "asterfort/dtmget.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 !
 !   -0.1- Input/output arguments
@@ -47,7 +48,7 @@ subroutine dtminfo(sd_dtm_)
     real(kind=8)          :: fmin, fmax, freq, nbpas_max_r
     character(len=8)      :: sd_dtm, basemo, modgen, fsibase
     character(len=8)      :: dep0, vit0, contres, matmas, matrig
-    character(len=8)      :: matamo
+    character(len=8)      :: matamo, sd_nl
     character(len=16)     :: numddl, schema, schtyp, nltreat_k
     character(len=18)     :: nomres
 !
@@ -163,11 +164,13 @@ subroutine dtminfo(sd_dtm_)
 
 !   5 - Localized non linearities
     call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
-    call dtmget(sd_dtm, _FX_NUMB , iscal=nbrede)
-    call dtmget(sd_dtm, _FV_NUMB , iscal=nbrevi)
-    if ((nbnli+nbrede+nbrevi).gt.0) then
+    if (nbnli.gt.0) then
         call utmess('I', 'DYNAMIQUE_71')
-        call dtmget(sd_dtm, _NB_CHOC , iscal=nbchoc)
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
+        call nlget(sd_nl, _NB_CHOC  , iscal=nbchoc)
+        call nlget(sd_nl, _NB_REL_FX, iscal=nbrede)
+        call nlget(sd_nl, _NB_REL_FV, iscal=nbrevi)
+
         if (nbchoc.gt.0) then
             call dtmget(sd_dtm, _NL_TREAT, iscal=nltreat)
             nltreat_k = 'explicite'
@@ -177,30 +180,30 @@ subroutine dtminfo(sd_dtm_)
             call utmess('I', 'DYNAMIQUE_72', nk=1, valk=[nltreat_k], ni=1, vali=[nbchoc])
         endif
 
-        call dtmget(sd_dtm, _NB_ANTSI, iscal=nbants)
+        call nlget(sd_nl, _NB_ANTSI, iscal=nbants)
         if (nbants.gt.0) call utmess('I', 'DYNAMIQUE_73', ni=1, vali=[nbants])
 
-        call dtmget(sd_dtm, _NB_FLAMB, iscal=nbflam)
+        call nlget(sd_nl, _NB_FLAMB, iscal=nbflam)
         if (nbflam.gt.0) call utmess('I', 'DYNAMIQUE_74', ni=1, vali=[nbflam])
 
         if (nbrede.gt.0) call utmess('I', 'DYNAMIQUE_75', ni=1, vali=[nbrede])
 
         if (nbrevi.gt.0) call utmess('I', 'DYNAMIQUE_76', ni=1, vali=[nbrevi])
 
-        call dtmget(sd_dtm, _NB_DIS_VISC, iscal=nbdiscret)
+        call nlget(sd_nl, _NB_DIS_VISC, iscal=nbdiscret)
         if (nbdiscret.gt.0) then
             call utmess('I', 'DYNAMIQUE_77', ni=1, vali=[nbdiscret], nk=1, valk=['DIS_VISC'])
         endif
 
-        call dtmget(sd_dtm, _NB_DIS_ECRO_TRAC, iscal=nbdiscret)
+        call nlget(sd_nl, _NB_DIS_ECRO_TRAC, iscal=nbdiscret)
         if (nbdiscret.gt.0) then
             call utmess('I', 'DYNAMIQUE_77', ni=1, vali=[nbdiscret], nk=1, valk=['DIS_ECRO_TRAC'])
         endif
 
-        call dtmget(sd_dtm, _NB_R_FIS, iscal=nbrfis)
+        call nlget(sd_nl, _NB_R_FIS, iscal=nbrfis)
         if (nbrfis.gt.0) call utmess('I', 'DYNAMIQUE_98', ni=1, vali=[nbrfis])
 
-        call dtmget(sd_dtm, _NB_PALIE, iscal=nbpal)
+        call nlget(sd_nl, _NB_PALIE, iscal=nbpal)
         if (nbpal.gt.0) call utmess('I', 'DYNAMIQUE_99', ni=1, vali=[nbpal])
 
     endif

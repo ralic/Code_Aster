@@ -2,7 +2,7 @@ subroutine resu74(tran, nomres)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,29 +47,24 @@ subroutine resu74(tran, nomres)
 !
     integer :: nbmode, nc, np, ni, nbsto1, nbinst, nbsto2
     integer :: nbsto3, nbstoc, nbsau2, nbsauv, nbvarit, nbvarin
-    integer :: nbchoc, iret
+    integer :: nbnoli, iret
     real(kind=8) :: prec, tinit, prec2
     character(len=8) :: resu, crit
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jacce,  jacce2,  jdch2, jdcho, nbvint
-    integer :: jdepl,  jdepl2, jdesc,  jfch2, jfcho
-    integer :: jicho,  jicho2, jinst,  jinst2, jordr
-    integer :: jvch2, jpas, jpas2, decal
-    integer :: jvcho, jvint,  jvint2, jvite,  jvite2
+    integer :: i, jacce,  jacce2, nbvint, jdepl
+    integer :: jdepl2, jdesc, jinst,  jinst2, jordr
+    integer :: jpas, jpas2, decal, jvint, jvint2
+    integer :: jvite, jvite2
     real(kind=8), pointer :: acce1(:) => null()
-    real(kind=8), pointer :: dch1(:) => null()
-    real(kind=8), pointer :: fch1(:) => null()
     real(kind=8), pointer :: vite1(:) => null()
     real(kind=8), pointer :: inst1(:) => null()
     real(kind=8), pointer :: depl1(:) => null()
     real(kind=8), pointer :: deplf(:) => null()
-    integer, pointer :: icho1(:) => null()
     integer, pointer :: ordr1(:) => null()
     integer, pointer :: ordr2(:) => null()
     real(kind=8), pointer :: vint1(:) => null()
-    real(kind=8), pointer :: vch1(:) => null()
     real(kind=8), pointer :: pas1(:) => null()
 
 !
@@ -206,59 +201,29 @@ subroutine resu74(tran, nomres)
     call jedetr(nomres//'           .PTEM')
 
 !
-!     --- RECUPERATION DES CHOCS
+!     --- RECUPERATION DES VARIABLES INTERNES DES NON LINEARITES
 !
     call jeveuo(tran//'           .DESC', 'E', jdesc)
-    nbchoc = zi(jdesc+2)
-    if (nbchoc .ne. 0) then
-        call jeveuo(tran//'           .FCHO', 'E', vr=fch1)
-        call wkvect(resu//'           .FCHO', 'G V R', 3*nbchoc*nbsauv, jfcho)
-        call dcopy(3*nbchoc*nbinst, fch1, 1, zr(jfcho), 1)
-        call jedetr(tran//'           .FCHO')
-        call jeveuo(nomres//'           .FCHO', 'E', jfch2)
-        call dcopy(3*nbchoc*(nbsau2-1), zr(jfch2+3*nbchoc), 1, zr(jfcho+ 3*nbchoc*nbinst), 1)
-        call jedetr(nomres//'           .FCHO')
-
-        call jeveuo(tran//'           .VCHO', 'E', vr=vch1)
-        call wkvect(resu//'           .VCHO', 'G V R', 3*nbchoc*nbsauv, jvcho)
-        call dcopy(3*nbchoc*nbinst, vch1, 1, zr(jvcho), 1)
-        call jedetr(tran//'           .VCHO')
-        call jeveuo(nomres//'           .VCHO', 'E', jvch2)
-        call dcopy(3*nbchoc*(nbsau2-1), zr(jvch2+3*nbchoc), 1, zr(jvcho+ 3*nbchoc*nbinst), 1)
-        call jedetr(nomres//'           .VCHO')
-
-        call jeveuo(tran//'           .DLOC', 'E', vr=dch1)
-        call wkvect(resu//'           .DLOC', 'G V R', 6*nbchoc*nbsauv, jdcho)
-        call dcopy(6*nbchoc*nbinst, dch1, 1, zr(jdcho), 1)
-        call jedetr(tran//'           .DLOC')
-        call jeveuo(nomres//'           .DLOC', 'E', jdch2)
-        call dcopy(6*nbchoc*(nbsau2-1), zr(jdch2+6*nbchoc), 1, zr(jdcho+ 6*nbchoc*nbinst), 1)
-        call jedetr(nomres//'           .DLOC')
-
-        call jedetr(nomres//'           .INTI')
-        call jedetr(nomres//'           .NCHO')
-        call jedetr(nomres//'           .SST')       
+    nbnoli = zi(jdesc+2)
+    if (nbnoli .ne. 0) then
+        call jedetr(nomres//'        .NL.TYPE')
+        call jedetr(nomres//'        .NL.INTI')
+        call jedetr(nomres//'        .NL.VIND')
 
         ! Variables internes
-        nbvint  = nbchoc*nbsauv*mdtr74grd('MAXVINT')
-        nbvarit = nbchoc*nbinst*mdtr74grd('MAXVINT')
-        nbvarin = nbchoc*(nbsau2-1)*mdtr74grd('MAXVINT')
+        nbvint = zi(jdesc+3)
+        nbvarit = nbvint*nbinst
+        nbvarin = nbvint*(nbsau2-1)
 
-        call jeveuo(tran//'           .VINT', 'E', vr=vint1)
-        call wkvect(resu//'           .VINT', 'G V R', nbvint, jvint)
+        call jeveuo(tran//'        .NL.VINT', 'E', vr=vint1)
+        call wkvect(resu//'        .NL.VINT', 'G V R', nbvint*nbsauv, jvint)
         call dcopy(nbvarit, vint1, 1, zr(jvint), 1)
-        call jedetr(tran//'           .VINT')
-        call jeveuo(nomres//'           .VINT', 'E', jvint2)
-        call dcopy(nbvarin, zr(jvint2+nbchoc*mdtr74grd('MAXVINT')), 1, zr(jvint+ nbvarit), 1)
-        call jedetr(nomres//'           .VINT')
-!
-        call jeveuo(tran//'           .ICHO', 'E', vi=icho1)
-        call wkvect(resu//'           .ICHO', 'G V I', nbchoc*nbsauv, jicho)
-        call copvis(nbchoc*nbinst, icho1, zi(jicho))
-        call jedetr(tran//'           .ICHO')        
-        call jeveuo(nomres//'           .ICHO', 'E', jicho2)
-        call copvis(nbchoc*(nbsau2-1), zi(jicho2+nbchoc), zi(jicho+ nbchoc*nbinst))
-        call jedetr(nomres//'           .ICHO')
+        call jedetr(tran//'        .NL.VINT')
+
+        call jeveuo(nomres//'        .NL.VINT', 'E', jvint2)
+        call dcopy(nbvarin, zr(jvint2+nbvint), 1, zr(jvint+ nbvarit), 1)
+        call jedetr(nomres//'        .NL.VINT')
+
     endif
 
     call jedetr(nomres//'           .DESC')
@@ -279,17 +244,9 @@ subroutine resu74(tran, nomres)
     call jedupo(resu//'           .PTEM', 'G', tran//'           .PTEM', .false._1)
     call jedetr(resu//'           .PTEM')
 
-    if (nbchoc .ne. 0) then
-        call jedupo(resu//'           .FCHO', 'G', tran//'           .FCHO', .false._1)
-        call jedetr(resu//'           .FCHO')
-        call jedupo(resu//'           .DLOC', 'G', tran//'           .DLOC', .false._1)
-        call jedetr(resu//'           .DLOC')
-        call jedupo(resu//'           .VCHO', 'G', tran//'           .VCHO', .false._1)
-        call jedetr(resu//'           .VCHO')
-        call jedupo(resu//'           .ICHO', 'G', tran//'           .ICHO', .false._1)
-        call jedetr(resu//'           .ICHO')
-        call jedupo(resu//'           .VINT', 'G', tran//'           .VINT', .false._1)
-        call jedetr(resu//'           .VINT')       
+    if (nbnoli .ne. 0) then
+        call jedupo(resu//'        .NL.VINT', 'G', tran//'        .NL.VINT', .false._1)
+        call jedetr(resu//'        .NL.VINT')
     endif
 !
 !   --- Further cleanup

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
-                      parcho, noecho, dt, dtmax, dtmin,&
-                      tinit, tfin, nbpas, ier, lisins)
+    subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
+                      dtmax, dtmin, tinit, tfin, nbpas,&
+                      ier, lisins)
         integer :: nbchoc
         integer :: nbmode
         real(kind=8) :: masgen(*)
         real(kind=8) :: pulsat(*)
-        real(kind=8) :: dplmod(nbchoc, nbmode, *)
-        real(kind=8) :: parcho(nbchoc, *)
-        character(len=*) :: noecho(nbchoc, *)
         real(kind=8) :: dt
         real(kind=8) :: dtmax
         real(kind=8) :: dtmin

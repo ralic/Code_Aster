@@ -2,7 +2,7 @@ subroutine dtmprep_fsi(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,6 +43,8 @@ subroutine dtmprep_fsi(sd_dtm_)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdconf.h"
 #include "asterfort/utmess.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
     character(len=*)          , intent(in) :: sd_dtm_
@@ -167,7 +169,7 @@ subroutine dtmprep_fsi(sd_dtm_)
         endif
     end do
 
-    call dtminivec(sd_dtm, _FSI_NUOR, nbm, vi=nuor)
+    AS_ALLOCATE(vi=nuor, size=nbm)
     do i = 1, nbm
         nuor(i) = i
     end do
@@ -193,9 +195,9 @@ subroutine dtmprep_fsi(sd_dtm_)
 
     call dtmsav(sd_dtm, _FSI_BASE, 1, kscal=basflu)
     call dtmsav(sd_dtm, _FSI_TYPF, 1, kscal=typflu)
-    call dtmsav(sd_dtm, _FSI_IVIT, 1, iscal=ivtflu)
     call dtmsav(sd_dtm, _FSI_ITYP, 2, ivect=itypfl)
     call dtmsav(sd_dtm, _FSI_VGAP, 1, rscal=vgap)
+    AS_DEALLOCATE(vi=nuor)
 
 100 continue
 

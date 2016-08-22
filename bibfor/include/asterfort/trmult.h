@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,12 +17,13 @@
 !
 interface
     subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
-                      pside)
+                      pside, numddl)
         integer :: neq
         character(len=8) :: modsta
         integer :: numexi
         character(len=8) :: mailla
         integer :: iddeeq
         real(kind=8) :: pside(neq)
+        character(len=8) :: numddl
     end subroutine trmult
 end interface

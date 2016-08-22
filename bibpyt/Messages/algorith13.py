@@ -75,7 +75,8 @@ cata_msg = {
 """),
 
     44 : _(u"""
- incompatibilité avec MULTI APPUI : %(k1)s
+ Aucun des chargements présents ne correspond à une excitation de type MULT_APPUI.
+ Aucune correction n'est alors apportée aux résultats, calculés en relatif.
 """),
 
     46 : _(u"""

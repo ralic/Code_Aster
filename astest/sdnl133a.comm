@@ -230,7 +230,7 @@ TRANGEN = DYNA_VIBRA   (     MATR_MASS=MASGEN,   MATR_RIGI=RIGGEN,
                                     _F(VECT_ASSE_GENE=VAGFZ,FONC_MULT=RAMP,),
                                     _F(VECT_ASSE_GENE=VAGFY,FONC_MULT=RAMP,),
                                     ),
-                             ROTOR_FISS =  _F(
+                             COMPORTEMENT =  _F(RELATION='ROTOR_FISS',
                                                 GROUP_NO_G = 'FISS_G',
                                                 GROUP_NO_D = 'FISS_D',
                                                 K_PHI=F_K,

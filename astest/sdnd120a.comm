@@ -15,7 +15,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # CAS_TEST__:SDND120A
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'), PAR_LOT='NON')
 
 #
 MAILLAG0=LIRE_MAILLAGE( )
@@ -189,7 +189,8 @@ TRAN_GE1=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
                     ARCHIVAGE=_F(  PAS_ARCH = 80),
-                    ANTI_SISM=_F(  NOEUD_1 = 'NO2',
+                    COMPORTEMENT=_F(RELATION='ANTI_SISM',  
+                            NOEUD_1 = 'NO2',
                             NOEUD_2 = 'NO12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,
@@ -218,7 +219,8 @@ TRAN_GE2=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                        DIRECTION = ( 1., 0., 0.,), NOEUD = 'NO11',
                        VITE = VITESSE2,  DEPL = DEPLACE2)),
                     ARCHIVAGE=_F(  PAS_ARCH = 80),
-                    ANTI_SISM=_F(  GROUP_NO_1 = 'GROUP_NO_GN2',
+                    COMPORTEMENT=_F(RELATION='ANTI_SISM', 
+                            GROUP_NO_1 = 'GROUP_NO_GN2',
                             GROUP_NO_2 = 'GROUP_NO_GN12',
                             RIGI_K1 = 6.E+06,
                             RIGI_K2 = 0.53E+06,
@@ -319,6 +321,8 @@ RMS_NO2R=INFO_FONCTION(RMS=_F(  FONCTION = NO2_DX_R,
                                 PRECISION = 1.E-6)
                          )
 
+IMPR_TABLE(TABLE=MAX_NO2R)
+FIN()
 TEST_TABLE(PRECISION=0.012999999999999999,
            VALE_CALC= 1.26436566E-06,
            VALE_REFE=1.266E-06,
@@ -350,7 +354,7 @@ TEST_TABLE(PRECISION=0.012999999999999999,
 #
 FCHOC=RECU_FONCTION(   RESU_GENE=TRAN_GE1,
                         NOEUD_CHOC='NO2',    INFO=2,
-                       PARA_X='INST',  PARA_Y='FN' )
+                       PARA_X='VINT1',  PARA_Y='VINT7' )
 
 MAXFCHOC=INFO_FONCTION( MAX=_F( FONCTION = FCHOC) )
 

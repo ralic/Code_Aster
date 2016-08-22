@@ -1,7 +1,7 @@
 subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
                   vint, wk1, wk2, wk3, tdebut,&
                   tfin, nbloc, offset, trepos, nbclas,&
-                  noecho, intitu, nomres)
+                  noecho, intitu, nomres, nbvint)
     implicit none
 #include "jeveux.h"
 #include "asterfort/histog.h"
@@ -14,7 +14,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
-    integer :: nbobst, nbpt, nbloc
+    integer :: nbobst, nbpt, nbloc, nbvint
     real(kind=8) :: temps(*), fcho(*), vgli(*), tdebut, tfin
     real(kind=8) :: wk1(*), wk2(*), wk3(*), fnmaxa, fnmety, fnmmoy
     real(kind=8) :: offset, trepos, vint(*)
@@ -22,7 +22,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     character(len=*) :: nomres
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     integer :: ibid, nbpara, nparg, nparp, nparf
 !-----------------------------------------------------------------------
     integer :: i, idebut, idec, ifin, ipas, nbchoc, nbclas
-    integer :: nbpas, ndec, npari, nbvint
+    integer :: nbpas, ndec, npari
     real(kind=8) :: dt, fmax, fmin
 !-----------------------------------------------------------------------
     parameter    ( nparg = 6 , nparp = 7 , npari = 10 , nbpara = 20 )
@@ -114,8 +114,6 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, npara, tpara)
 !
-!   Nombre de variables internes dans la SD
-    nbvint = mdtr74grd('MAXVINT')
 !   Boucle sur les noeuds de choc
     do i = 1, nbobst
         noeud = noecho(i)
@@ -158,9 +156,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 !
 !       AJOUT FLAMBAGE SI CELUI-CI A EU LIEU
 !       Si au dernier pas de temps le flambage a eu lieu on cherche l'instant correspondant
-!           Vint(nbchoc,Vint,nbsauv) = Vint( i , j , k ) = Vint( i + (j-1)*I + (k-1)*I*J )
-!           Pour le flambement la variable interne = 1 (j=1)
-        forcefl = vint(i + (nbpas-1)*nbobst*nbvint)
+        forcefl = vint((nbpas-1)*nbvint+i)
         if (forcefl .gt. 0.d0) then
             valek(3) = tvar(4)
             valek(4) = 'OUI'
@@ -168,21 +164,21 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
             ipas = 1
 !           Quand forcefl devient >0 ==> on a trouvé l'instant
 40          continue
-            forcefl = vint(i + (ipas-1)*nbobst*nbvint)
+            forcefl = vint((ipas-1)*nbvint+i)
             if ( forcefl .gt. 0.0d0 ) then
                 para(2) = temps(ipas)
             else
                 ipas = ipas + 1
                 if (ipas .le. nbpas) goto 40
             endif
-            if (noeud .ne. noecho(nbobst+i)) then
+            if (noecho(nbobst+i).ne.' ') then
 !               cas choc entre 2 noeuds : on repartit l'effort
                 para(1) = para(1)/2.d0
 !               1er noeud
                 call tbajli(nomres, nparf, lparf, [i], para,&
                             [c16b], valek, 0)
 !               2eme noeud
-                valek(1) = intitu(nbobst+i)
+                ! valek(1) = intitu(nbobst+i)
                 valek(2) = noecho(nbobst+i)
                 call tbajli(nomres, nparf, lparf, [i], para,&
                             [c16b], valek, 0)

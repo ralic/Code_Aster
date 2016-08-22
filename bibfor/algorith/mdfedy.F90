@@ -7,6 +7,8 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
 #include "asterf_types.h"
 #include "asterfort/envdep.h"
 #include "asterfort/recfor.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
     integer :: numpas, nbmode, nbpal
     real(kind=8) :: depgen(*), vitgen(*), fexgen(*)
     real(kind=8) :: dplmod(nbpal, nbmode, *), dt, dtsto, tcf
@@ -14,7 +16,7 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
     aster_logical :: prdeff
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,21 +58,24 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
     parameter (palmax=20)
     character(len=3) :: finpal(palmax)
     character(len=6) :: typal(palmax)
-    character(len=8) :: cnpal(palmax)
+    character(len=8) :: cnpal(palmax), sd_nl
     real(kind=8) :: fsauv(palmax, 3)
+
+    real(kind=8)          , pointer :: modal_depl_no1(:) => null()
 !
-    do 30 j = 1, nbpal
-        do 5 l = 1, 6
+    sd_nl = '&&OP29NL'
+    do j = 1, nbpal
+        do l = 1, 6
             dep(j,l)= 0.d0
             vit(j,l)= 0.d0
-  5     continue
-        do 20 i = 1, nbmode
-            do 15 k = 1, 6
+        end do
+        do i = 1, nbmode
+            do k = 1, 6
                 dep(j,k)= dep(j,k)+ dplmod(j,i,k)*depgen(i)
                 vit(j,k)= vit(j,k)+ dplmod(j,i,k)*vitgen(i)
- 15         continue
- 20     continue
- 30 end do
+            end do
+        end do
+    end do
     prdeff = .true.
 !   ENVOI DES CHAMPS CINEMTATIQUES A EDYOS
     call envdep(numpas, nbpal, dt, dtsto, tcf,&
@@ -80,26 +85,30 @@ subroutine mdfedy(nbpal, nbmode, numpas, dt, dtsto,&
                 cnpal, prdeff, conv)
 !   COMBINAISON DES EFFORTS GENERALISES
     if (conv .gt. 0.0d0) then
-        do 200 j = 1, nbpal
+        do j = 1, nbpal
             fsauv(j,1)=force(j,1)
             fsauv(j,2)=force(j,2)
             fsauv(j,2)=force(j,3)
-            do 100 i = 1, nbmode
-                fexgen(i)=fexgen(i)+dplmod(j,i,1)*force(j,1) +dplmod(&
-                j,i,2)*force(j,2) +dplmod(j,i,3)*force(j,3)
-100         continue
-200     continue
+            do i = 1, nbmode
+                call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=j, vr=modal_depl_no1)
+                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*force(j, 1)+&
+                                      dplmod(j, i, 2)*force(j, 2)+&
+                                      dplmod(j, i, 3)*force(j, 3)
+            end do
+        end do
     else
 !      NON CONVERGENCE EDYOS : ON UTILISE FSAUV
-        do 210 j = 1, nbpal
+        do j = 1, nbpal
             fsauv(j,1)=force(j,1)
             fsauv(j,2)=force(j,2)
             fsauv(j,2)=force(j,3)
-            do 110 i = 1, nbmode
-                fexgen(i)=fexgen(i)+dplmod(j,i,1)*fsauv(j,1) +dplmod(&
-                j,i,2)*fsauv(j,2) +dplmod(j,i,3)*fsauv(j,3)
-110         continue
-210     continue
+            do i = 1, nbmode
+                call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=j, vr=modal_depl_no1)
+                fexgen(i) = fexgen(i)+dplmod(j, i, 1)*fsauv(j, 1)+&
+                                      dplmod(j, i, 2)*fsauv(j, 2)+&
+                                      dplmod(j, i, 3)*fsauv(j, 3)
+            end do
+        end do
     endif
 !
 end subroutine

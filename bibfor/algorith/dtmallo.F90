@@ -2,7 +2,7 @@ subroutine dtmallo(sd_dtm_)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,22 +33,23 @@ subroutine dtmallo(sd_dtm_)
 #include "asterfort/jemarq.h"
 #include "asterfort/mdallo.h"
 #include "asterfort/mdlibe.h"
+#include "asterfort/nlget.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 
 !
 !   -0.1- Input/output arguments
     character(len=*)         , intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbsauv, nbmode, iret, nbnli, nbrede
-    integer           :: nbrevi, jordr, jdisc, jptem, jdepl
-    integer           :: jvite, jacce, jfcho, jdcho, jvcho
-    integer           :: jadcho, jredc, jredd, jrevc, jrevv
+    integer           :: nbsauv, nbmode, iret, nbnli
+    integer           :: jordr, jdisc, jptem, jdepl
+    integer           :: jvite, jacce, jvint
     integer           :: adapt, iarch_sd, iret1, iret2, nltreat
-
     real(kind=8)      :: dt, dtmin, dtmax, deltadt, epsi
     character(len=4)  :: intk1, intk0
     character(len=8)  :: sd_dtm, nomres, basemo, riggen, masgen
-    character(len=8)  :: amogen
+    character(len=8)  :: amogen, sd_nl
     character(len=16) :: schema
 !
     character(len=8), pointer :: inticho(:) => null()
@@ -84,21 +85,11 @@ subroutine dtmallo(sd_dtm_)
     if (iret.gt.0) call dtmget(sd_dtm, _AMOR_MAT,kscal=amogen)
 
     call dtmget(sd_dtm, _DT      ,rscal=dt)
+!
+    sd_nl = ' '
     call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli)
-    if (nbnli.gt.0) then
-        call dtmget(sd_dtm, _CHO_NOEU, vk8=noeucho)
-        call dtmget(sd_dtm, _CHO_NAME, vk8=inticho)
-    endif
-
-    call dtmget(sd_dtm, _FX_NUMB ,iscal=nbrede)
-    if (nbrede.gt.0) then
-        call dtmget(sd_dtm, _FX_FONCT, vk8=fonred)
-    endif
-
-    call dtmget(sd_dtm, _FV_NUMB ,iscal=nbrevi)
-    if (nbrevi.gt.0) then
-        call dtmget(sd_dtm, _FV_FONCT, vk8=fonrev)
-    endif
+    if (nbnli.gt.0) call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
+!
 
     call dtmget(sd_dtm, _IND_ALOC, lonvec=iret1)
     if (iret1.ne.0) then
@@ -127,6 +118,8 @@ subroutine dtmallo(sd_dtm_)
         call dtmsav(sd_dtm, _IARCH_SD, 1, iscal=iarch_sd)
     end if
 
+
+
     if (iarch_sd.gt.0) then
         call codent(iarch_sd, 'D0', intk1)
         if (iarch_sd.gt.1) then
@@ -135,31 +128,25 @@ subroutine dtmallo(sd_dtm_)
             nbsauv = nint(nbsauv * 1.5d0)
             call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)
             call dtmsav(sd_dtm, _ARCH_STO, 4, ivect=[0,0,0,0])
-            call mdlibe('&&AD'//intk0, nbnli, nbrede, nbrevi)
+            call mdlibe('&&AD'//intk0, nbnli)
         else
             nbsauv = nint(nbsauv * 0.25d0)
             call dtmsav(sd_dtm, _ARCH_NB , 1, iscal=nbsauv)
         end if
         call mdallo('&&AD'//intk1, 'TRAN', nbsauv, sauve='VOLA', method=schema,&
                     base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen,&
-                    dt=dt, nbchoc=nbnli, noecho=noeucho, intitu=inticho, nbrede=nbrede,&
-                    fonred=fonred, nbrevi=nbrevi, fonrev=fonrev, checkarg=.false._1,&
+                    dt=dt, nbnli=nbnli, checkarg=.false._1,&
                     jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite,&
-                    jacce=jacce, jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jadcho,&
-                    jredc=jredc, jredd=jredd, jrevc=jrevc, jrevv=jrevv)
+                    jacce=jacce, jvint=jvint, sd_nl_=sd_nl)
     else 
         call mdallo(nomres(1:8), 'TRAN', nbsauv, sauve='GLOB', method=schema,&
                     base=basemo, nbmodes=nbmode, rigi=riggen, mass=masgen, amor=amogen,&
-                    dt=dt, nbchoc=nbnli, noecho=noeucho, intitu=inticho, nbrede=nbrede,&
-                    fonred=fonred, nbrevi=nbrevi, fonrev=fonrev, checkarg=.false._1,&
+                    dt=dt, nbnli=nbnli, checkarg=.false._1,&
                     jordr=jordr, jdisc=jdisc, jptem=jptem, jdepl=jdepl, jvite=jvite,&
-                    jacce=jacce, jfcho=jfcho, jdcho=jdcho, jvcho=jvcho, jadcho=jadcho,&
-                    jredc=jredc, jredd=jredd, jrevc=jrevc, jrevv=jrevv)
+                    jacce=jacce, jvint=jvint, sd_nl_=sd_nl)
     end if
 
-    call dtmsav(sd_dtm, _IND_ALOC, 14, ivect = [jordr,jdisc,jptem,jdepl,jvite,jacce,&
-                                                jfcho,jdcho,jvcho,jadcho,jredc,jredd,&
-                                                jrevc,jrevv])
+    call dtmsav(sd_dtm, _IND_ALOC, 7, ivect = [jordr,jdisc,jptem,jdepl,jvite,jacce,jvint])
 
     call jedema()
 end subroutine

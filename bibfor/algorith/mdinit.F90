@@ -1,9 +1,9 @@
-subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
-                  vint, ier, tinit, intitu, noecho,&
-                  reprise, accgen, index)
+subroutine mdinit(basemo, nbmode, nbnoli, depgen, vitgen,&
+                  vint, ier, tinit, reprise, accgen,&
+                  index)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,14 +31,16 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
+#include "asterfort/nltype.h"
 #include "asterfort/utmess.h"
     character(len=8) :: basemo
-    integer :: nbmode, nbchoc, i
-    real(kind=8) :: depgen(*), vitgen(*), vint(*)
+    integer :: nbmode, nbnoli
+    real(kind=8) :: depgen(*), vitgen(*)
+    real(kind=8), pointer :: vint(:)
     integer :: ier
     real(kind=8) :: tinit
-    character(len=8), optional, intent(in) :: intitu(*), noecho(nbchoc, *)
     aster_logical, optional, intent(out) :: reprise
     real(kind=8), optional, intent(out) :: accgen(*)
     integer, optional, intent(out) :: index
@@ -48,35 +50,39 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !
 ! IN  : BASEMO : NOM DU CONCEPT BASE MODALE
 ! IN  : NBMODE : NOMBRE DE MODES
-! IN  : NBCHOC : NOMBRE DE CHOCS
+! IN  : NBNOLI : NOMBRE DE NON LINEARITES
 ! OUT : DEPGEN : DEPLACEMENTS GENERALISES
 ! OUT : VITGEN : VITESSES GENERALISEES
-! OUT : VINT   : VARIABLES INTERNES (POUR LE FLAMBAGE DE CHOC)
-!                (ON RETOURNE UNE VALEUR UNIQUEMENT SI NBCHOC>0 ET QU'ON
-!                 EST DANS UN CAS  DE REPRISE)
+! OUT : VINT   : VARIABLES INTERNES 
+!                (ON RETOURNE UNE VALEUR UNIQUEMENT SI nbnoli>0 ET QU'ON
+!                 EST DANS UN CAS DE REPRISE)
 ! OUT : IER    : CODE RETOUR
 ! --------------------------------------------------------------------------------------------------
     integer :: im, ic
     character(len=19) :: nomdep, nomvit
     character(len=8) :: tran, crit, inter
 ! --------------------------------------------------------------------------------------------------
-    integer :: jdesc, jrefe, jvint, n1
-    integer :: nbinst, nc, ni, np, nt, nbvint, nbchoc0
-    real(kind=8) :: prec
-    integer :: vmessi(2)
-    character(len=8) :: vmessk(6)
+    integer               :: jdesc, jrefe, jvint, n1, jvind, vmessi(2)
+    integer               :: nbinst, nc, ni, np, nt, nbvint, nbnoli0, nl_type
+    real(kind=8)          :: prec
+    character(len=8)      :: sd_nl
+    character(len=24)     :: no1_name, no2_name, vmessk(6), nltype_k0, nltype_k1
+    integer     , pointer :: types(:) => null()
     real(kind=8), pointer :: acce(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: depl(:) => null()
     real(kind=8), pointer :: vite(:) => null()
     real(kind=8), pointer :: depi(:) => null()
     real(kind=8), pointer :: viti(:) => null()
-    character(len=8), pointer :: ncho(:) => null()
-    character(len=8), pointer :: inti(:) => null()
+    character(len=24), pointer :: inti(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
+    sd_nl = '&&OP29NL'
     ier = 0
     if (present(reprise)) reprise = .false.
+!
+    nbvint = 0
+    if (nbnoli.gt.0) nbvint = size(vint)
 !
 !     --- DEPLACEMENT ---
     call getvid('ETAT_INIT', 'DEPL', iocc=1, scal=nomdep, nbret=n1)
@@ -123,34 +129,39 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
 !     --- CAS D UNE REPRISE ---
     call getvid('ETAT_INIT', 'RESULTAT', iocc=1, scal=tran, nbret=nt)
     if (nt .ne. 0) then
-!       récupération du descripteur
+!       recuperation du descripteur
         call jeveuo(tran//'           .DESC', 'L', jdesc)
-        nbchoc0 = zi(jdesc+2)
-        if (nbchoc0 .ne. nbchoc) then
-            vmessi(1) = nbchoc0
-            vmessi(2) = nbchoc
+        nbnoli0 = zi(jdesc+2)
+        if (nbnoli0 .ne. nbnoli) then
+            vmessi(1) = nbnoli0
+            vmessi(2) = nbnoli
             call utmess('F', 'ALGORITH5_82', ni=2, vali=vmessi)
         endif
-        if (nbchoc .ne. 0) then
-            ASSERT( present(intitu) .and. present(noecho) )
-!           récupération des données sur les dipositifs de choc (cf mdallo)
-            call jeveuo(tran//'           .INTI', 'L', vk8=inti)
-            call jeveuo(tran//'           .NCHO', 'L', vk8=ncho)
-            do ic = 1, nbchoc
-                if ((inti(ic).ne.intitu(ic)) .or. (ncho(ic).ne.noecho(ic,1)) .or.&
-                    (ncho(1+nbchoc+ic-1).ne.noecho(ic,5))) then
-                    vmessk(1)=inti(ic)
-                    vmessk(2)=intitu(ic)
-                    vmessk(3)=ncho(ic)
-                    vmessk(4)=noecho(ic,1)
-                    vmessk(5)=ncho(1+nbchoc+ic-1)
-                    vmessk(6)=noecho(ic,5)
+        if (nbnoli .ne. 0) then
+!           recuperation des donnees sur les non linearites
+            call jeveuo(tran//'        .NL.INTI', 'L', vk24=inti)
+            call jeveuo(tran//'        .NL.TYPE', 'L', vi=types)
+            do ic = 1, nbnoli
+                nltype_k0 = nltype(types(ic))
+                call nlget(sd_nl, _NL_TYPE, iocc=ic, iscal=nl_type)
+                nltype_k1 = nltype(nl_type)
+                call nlget(sd_nl, _NO1_NAME, iocc=ic, kscal=no1_name)
+                call nlget(sd_nl, _NO2_NAME, iocc=ic, kscal=no2_name)
+                if (    (nltype_k0.ne.nltype_k1)&
+                    .or.(inti((ic-1)*5+2).ne.no1_name)&
+                    .or.(inti((ic-1)*5+3).ne.no2_name)) then
+                    vmessk(1)=nltype_k0
+                    vmessk(2)=nltype_k1
+                    vmessk(3)=inti((ic-1)*5+2)
+                    vmessk(4)=no1_name
+                    vmessk(5)=inti((ic-1)*5+3)
+                    vmessk(6)=no2_name
                     call utmess('F', 'ALGORITH5_83', nk=6, valk=vmessk)
                 endif
             enddo
         endif
-!       récupération des champs depl vite vint
-!           les calculs sont donc déjà fait au pas de récupération
+!       recuperation des champs depl vite vint
+!           les calculs sont donc deja fait au pas de recuperation
         call getvtx('ETAT_INIT', 'CRITERE', iocc=1, scal=crit, nbret=nc)
         call getvr8('ETAT_INIT', 'PRECISION', iocc=1, scal=prec, nbret=np)
         if (nc.eq.0) crit = 'RELATIF'
@@ -160,7 +171,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         call jeveuo(tran//'           .DISC', 'E', vr=disc)
         call jelira(tran//'           .DISC', 'LONUTI', nbinst)
         if (ni .eq. 0) tinit = disc(nbinst)
-!       Déplacement
+!       Deplacement
         inter = 'NON'
         call jeveuo(tran//'           .DEPL', 'E', vr=depl)
         call extrac(inter, prec, crit, nbinst, disc,&
@@ -176,7 +187,7 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
         if (ier .ne. 0) then
             call utmess('F', 'ALGORITH5_47')
         endif
-!       Accelération
+!       Acceleration
         if (present(accgen)) then
             call jeveuo(tran//'           .ACCE', 'E', vr=acce)
             inter = 'NON'
@@ -187,10 +198,11 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             endif
         endif
 !       Variables internes
-        if (nbchoc .gt. 0) then
-            call jeveuo(tran//'           .VINT', 'E', jvint)
+        if (nbnoli .gt. 0) then
+            call jeveuo(tran//'        .NL.VIND', 'L', jvind)
+            nbvint = zi(jvind+nbnoli)-1
+            call jeveuo(tran//'        .NL.VINT', 'E', jvint)
             inter = 'NON'
-            nbvint = nbchoc*mdtr74grd('MAXVINT')
             call extrac(inter, prec, crit, nbinst, disc,&
                         tinit, zr(jvint), nbvint, vint, ier)
             if (ier .ne. 0) then
@@ -198,11 +210,6 @@ subroutine mdinit(basemo, nbmode, nbchoc, depgen, vitgen,&
             endif
         endif
         if (present(reprise)) reprise = .true.
-    else
-        nbvint = nbchoc*mdtr74grd('MAXVINT')
-        do i = 1, nbvint
-            vint(i) = 0.d0
-        end do
     end if
 !
     call jedema()

@@ -2,7 +2,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -47,11 +48,11 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 !   -0.2- Local variables
     integer           :: i, nbequ, ind1, iret1, iret2
-    integer           :: npper, nrmax, nr, nbnoli
+    integer           :: npper, nrmax, nr, nbnoli, nbvint
     real(kind=8)      :: t1, dt, dt1, dt2, pas1
     real(kind=8)      :: pas2, coeff, err, epsi, norm
     real(kind=8)      :: cpmin, freq
-    character(len=8)  :: sd_dtm, sd_int, vvar
+    character(len=8)  :: sd_dtm, sd_int, sd_nl, vvar
 
     real(kind=8)    , pointer :: depl1(:)    => null()
     real(kind=8)    , pointer :: vite1(:)    => null()
@@ -66,10 +67,11 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: vmin(:)     => null()
     real(kind=8)    , pointer :: velint(:)   => null()
 
-    real(kind=8)    , pointer :: chosav0(:)  => null()
-    real(kind=8)    , pointer :: chosav1(:)  => null()
+    real(kind=8)    , pointer :: nlsav0(:)  => null()
+    real(kind=8)    , pointer :: nlsav1(:)  => null()
 
- 
+     integer, pointer          :: buffnl(:)   => null()
+
 
 ! Algorithm parameters saved in a linear vector, easily accessible using the defines
 #define crit_vmin par(1)
@@ -145,11 +147,13 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Allocate work vector giving intermediate velocity at t_i+1/2
         call intinivec(sd_int, WORK2, nbequ, vr=velint)
 
-!       --- Allocate work vectors for NL_SAVES
+        !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli)
         if (nbnoli.gt.0) then
-            nbnlsav = (nbnoli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT')))*1.d0
-            call intinivec(sd_int, WORK3, nbsavnl, vr=chosav0)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
+            nbnlsav = nbvint *1.d0
+            call intinivec(sd_int, WORK3, nbsavnl, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif
@@ -177,11 +181,13 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK1, vr=vmin, buffer=buffint) 
         call intget(sd_int, WORK2, vr=velint, buffer=buffint) 
 !       --- Retrieve choc parameters save container
-        if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=chosav0, buffer=buffint)
+        if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=nlsav0, buffer=buffint)
     end if
     if (nbsavnl.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav1, buffer=buffdtm)
-        call dcopy(nbsavnl, chosav1, 1, chosav0, 1)
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav1, buffer=buffnl)
+        call dcopy(nbsavnl, nlsav1, 1, nlsav0, 1)
     end if
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
 
@@ -189,7 +195,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 10  continue
 !
-    if (nbsavnl.gt.0) call dcopy(nbsavnl, chosav0, 1, chosav1, 1)
+    if (nbsavnl.gt.0) call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
 
 !   3 - Calculate the system's state at index <2>
 

@@ -2,7 +2,7 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,7 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
 #include "asterfort/mdtr74grd.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
@@ -46,13 +47,13 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
 !
 !   -0.2- Local variables
     integer           :: i, nbequ, ind1, iret1, iret2
-    integer           :: ee, ss, j_kde, j_kvi
+    integer           :: ee, ss, j_kde, j_kvi, nbvint
     integer           :: nbnoli, iret, iret3
     real(kind=8)      :: t1, dt, t2, dt2, coeff
     real(kind=8)      :: errd, errde, errv, errvi, errt
     real(kind=8)      :: seuil1, seuil2, skd, skv, epsi
     real(kind=8)      :: ddep, dvit, errt0
-    character(len=8)  :: sd_dtm, sd_int
+    character(len=8)  :: sd_dtm, sd_int, sd_nl
 
     real(kind=8)    , pointer :: depl1(:)    => null()
     real(kind=8)    , pointer :: vite1(:)    => null()
@@ -63,10 +64,13 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8)    , pointer :: acce2(:)    => null()
     real(kind=8)    , pointer :: fext2(:)    => null()
 
-    real(kind=8)    , pointer :: chosav0(:)    => null()
-    real(kind=8)    , pointer :: chosav1(:)    => null()
+    real(kind=8)    , pointer :: nlsav0(:)    => null()
+    real(kind=8)    , pointer :: nlsav1(:)    => null()
 
     real(kind=8)    , pointer :: par(:)    => null()
+    integer, pointer          :: buffnl(:)   => null()
+
+
 ! Algorithm parameters saved in a linear vector, easily accessible using the defines
 #define cdp(i) par(i)
 #define adp(i,j) par(7+(i-1)*6+j)
@@ -172,11 +176,14 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Allocate work vectors kde and kdv
         call intinivec(sd_int, WORK1, 6*nbequ, address=j_kde)
         call intinivec(sd_int, WORK2, 6*nbequ, address=j_kvi)
+
 !       --- Allocate work vectors for NL_SAVES
-        call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
+        call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli)
         if (nbnoli.gt.0) then
-            nbnlsav = (nbnoli*(mdtr74grd('SCHOR')+mdtr74grd('MAXVINT')))*1.d0
-            call intinivec(sd_int, WORK3, nbsavnl, vr=chosav0)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
+            nbnlsav = nbvint *1.d0
+            call intinivec(sd_int, WORK3, nbsavnl, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif
@@ -205,12 +212,14 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, PARAMS, vr=par)
 
 !       --- Retrieve choc parameters save container
-        if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=chosav0, buffer=buffint)
+        if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=nlsav0, buffer=buffint)
 
     end if
     if (nbsavnl.gt.0) then
-        call dtmget(sd_dtm, _NL_SAVES, vr=chosav1, buffer=buffdtm)
-        call dcopy(nbsavnl, chosav1, 1, chosav0, 1)
+        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
+        call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav1, buffer=buffnl)
+        call dcopy(nbsavnl, nlsav1, 1, nlsav0, 1)
     end if
     call intsav(sd_int, INDEX, 1, iocc=2, iscal=ind1+1, buffer=buffint)
 
@@ -219,13 +228,13 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
     call dcopy(nbequ, vite1, 1, vite2, 1)
     call dcopy(nbequ, acce1, 1, acce2, 1)
     if (nbsavnl.gt.0) then
-        call dcopy(nbsavnl, chosav0, 1, chosav1, 1)
+        call dcopy(nbsavnl, nlsav0, 1, nlsav1, 1)
     end if
 
 !   3 - Loop over all levels (1-6)
     do ee = 1, 6
 
-        t2  = t1 + dt*cdp(ee)
+        t2  = t1 + dt*cdp(ee+1)
         dt2 = dt * (cdp(ee+1)-cdp(ee))
 
         call intsav(sd_int, TIME , 1, iocc=2, rscal=t2, buffer=buffint)

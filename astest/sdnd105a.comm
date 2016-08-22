@@ -17,8 +17,7 @@
 # PLASTIQUE
 # ----------------------------------------------------------------------
 #
-# DEBUG DEBUG DEBUG DEBUG, REAL ERROR OCCURS FORCE_EX IN sd_int
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='NON'))
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 MAILLAG0=LIRE_MAILLAGE( )
 
@@ -137,17 +136,16 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                             MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                             SCHEMA_TEMPS=_F(SCHEMA='DIFF_CENTRE',),
                       ETAT_INIT=_F(  VITE = VIT_GENE),
-
-                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
-                                 OBSTACLE = PLANY,
-                                 NORM_OBST = (0., 1., 0.,),
-                                 ORIG_OBST = (0., 0., 0.,),
-                                 JEU = 1.,
-                                 RIGI_NOR = 1.,
-                                 FNOR_CRIT = 1.,
-                                 FNOR_POST_FL = 0.5,
-                                 RIGI_NOR_POST_FL = 0.5),
-
+                      COMPORTEMENT=_F( RELATION='FLAMBAGE',
+                                       NOEUD_1 = 'N02',
+                                       OBSTACLE = PLANY,
+                                       NORM_OBST = (0., 1., 0.,),
+                                       ORIG_OBST = (0., 0., 0.,),
+                                       JEU = 1.,
+                                       RIGI_NOR = 1.,
+                                       FNOR_CRIT = 1.,
+                                       FNOR_POST_FL = 0.5,
+                                       RIGI_NOR_POST_FL = 0.5),
                       INCREMENT=_F(
                                   INST_INIT = 0.,   INST_FIN = 0.5,
                                   PAS = 0.0002)
@@ -160,17 +158,16 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                                       PAS_MINI = 2.E-8,),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN,
                                   INST_INIT = 0.5),
-
-                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
-                                 OBSTACLE = PLANY,
-                                 NORM_OBST = (0., 1., 0.,),
-                                 ORIG_OBST = (0., 0., 0.,),
-                                 JEU = 1.,
-                                 RIGI_NOR = 1.,
-                                 FNOR_CRIT = 1.,
-                                 FNOR_POST_FL = 0.5,
-                                 RIGI_NOR_POST_FL = 0.5),
-
+                      COMPORTEMENT=_F( RELATION='FLAMBAGE',
+                                       NOEUD_1 = 'N02',
+                                       OBSTACLE = PLANY,
+                                       NORM_OBST = (0., 1., 0.,),
+                                       ORIG_OBST = (0., 0., 0.,),
+                                       JEU = 1.,
+                                       RIGI_NOR = 1.,
+                                       FNOR_CRIT = 1.,
+                                       FNOR_POST_FL = 0.5,
+                                       RIGI_NOR_POST_FL = 0.5),
                       INCREMENT=_F(INST_FIN = 1.,  PAS = 0.0002,)
                             )
 
@@ -178,17 +175,16 @@ TRAN_GEN=DYNA_VIBRA(TYPE_CALCUL='TRAN',BASE_CALCUL='GENE',
                       reuse=TRAN_GEN,  MATR_MASS=MASS_GEN,   MATR_RIGI=RIGI_GEN,
                       SCHEMA_TEMPS=_F(SCHEMA='DEVOGE', PAS_MINI=0.001, PAS_MAXI=0.001),
                       ETAT_INIT=_F(  RESULTAT = TRAN_GEN),
-
-
-                      FLAMBAGE=_F(  NOEUD_1 = 'N02',
-                                 OBSTACLE = PLANY,
-                                 NORM_OBST = (0., 1., 0.,),
-                                 ORIG_OBST = (0., 0., 0.,),
-                                 JEU = 1.,
-                                 RIGI_NOR = 1.,
-                                 FNOR_CRIT = 1.,
-                                 FNOR_POST_FL = 0.5,
-                                 RIGI_NOR_POST_FL = 0.5),
+                      COMPORTEMENT=_F( RELATION='FLAMBAGE',
+                                       NOEUD_1 = 'N02',
+                                       OBSTACLE = PLANY,
+                                       NORM_OBST = (0., 1., 0.,),
+                                       ORIG_OBST = (0., 0., 0.,),
+                                       JEU = 1.,
+                                       RIGI_NOR = 1.,
+                                       FNOR_CRIT = 1.,
+                                       FNOR_POST_FL = 0.5,
+                                       RIGI_NOR_POST_FL = 0.5),
                       INCREMENT=_F(
                                  INST_FIN = 12.,  PAS = 0.001)
                             )
@@ -200,6 +196,7 @@ TRAN=REST_GENE_PHYS(   RESU_GENE=TRAN_GEN,
 TABLE=POST_DYNA_MODA_T(   RESU_GENE=TRAN_GEN,
                               CHOC=_F(  OPTION = 'IMPACT')
                           )
+IMPR_TABLE(TABLE=TABLE)
 
 # references
 tfl = pi/6

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine togene(icho, ia, dplmod, nbchoc, nbmode,&
-                      fx, fy, fz, fgene)
-        integer :: nbmode
-        integer :: nbchoc
-        integer :: icho
-        integer :: ia
-        real(kind=8) :: dplmod(nbchoc, nbmode, *)
-        real(kind=8) :: fx
-        real(kind=8) :: fy
-        real(kind=8) :: fz
-        real(kind=8) :: fgene(nbmode)
+    subroutine togene(dplmod, fphys, fgene, coef)
+        real(kind=8), pointer , intent(in)  :: dplmod(:)
+        real(kind=8),           intent(in)  :: fphys(:)
+        real(kind=8),           intent(out) :: fgene(:)
+        real(kind=8), optional, intent(in)  :: coef
     end subroutine togene
 end interface

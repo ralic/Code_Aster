@@ -1,7 +1,7 @@
 subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
                   tab)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,25 +38,26 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     character(len=8) :: nomfon(2*nbexci)
 ! ----------------------------------------------------------------------
     character(len=8) :: nompar, k8bid
-    character(len=24) :: valk
     real(kind=8) :: coef
 !
 !-----------------------------------------------------------------------
-    integer :: ieq, ier, iex
+    integer :: ieq, ier, iex, cntr
 !-----------------------------------------------------------------------
     k8bid = '        '
     call r8inir(neq, 0.d0, tab, 1)
     nompar = 'INST'
     do 10 iex = 1, nbexci
-        if (nomfon(iex) .eq. k8bid) then
-            valk = 'CHARGE EN MONO APPUI'
-            call utmess('A', 'ALGORITH13_44', sk=valk)
-            goto 10
-        endif
+        if (nomfon(iex) .eq. k8bid) goto 10
+
+        cntr = cntr + 1
         call fointe('F ', nomfon(iex), 1, [nompar], [temps],&
                     coef, ier)
-        do 11 ieq = 1, neq
+        do ieq = 1, neq
             tab(ieq) = tab(ieq) + psidel(ieq,iex)*coef
-11      continue
-10  end do
+        end do
+10  continue
+
+    if (cntr.eq.0) then
+        call utmess('A', 'ALGORITH13_44')
+    end if
 end subroutine

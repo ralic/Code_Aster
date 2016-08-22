@@ -228,7 +228,8 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                        NOEUD = 'NO1'),
 # CONDITION DE CHOC D'UN NOEUD PAR RAPPORT A UN OBSTACLE
 # IMMOBILE DANS LE REFERENTIEL ABSOLU
-               CHOC=_F(  GROUP_NO_1 = 'MASSES',
+               COMPORTEMENT=_F(RELATION='DIS_CHOC',
+                      GROUP_NO_1 = 'MASSES',
                       OBSTACLE = MUR,
                       INTITULE = 'NO2/MUR',
                       ORIG_OBST = ( -1., 0., 0., ),
@@ -242,7 +243,6 @@ TRAN_GE1=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                 INCREMENT=_F( INST_INIT = 0.,  INST_FIN = 1.,  PAS = 0.0002),
                ARCHIVAGE=_F(  PAS_ARCH = 8)
                           )
-
 #
 #=======================================================================
 # 2/ ON ETUDIE LE SYSTEME A 2 DDL
@@ -290,7 +290,8 @@ TRAN_GE2=DYNA_VIBRA(  TYPE_CALCUL='TRAN',
                        VITE = VITESSE2, DEPL = DEPLACE2)),
 # CONDITION DE CHOC ENTRE LE NOEUD 2 ET LE NOEUD 12
 # TEST SUR LA DIFFERENCE DES DEPLACEMENTS ABSOLUS
-                CHOC=_F(  GROUP_NO_1 = 'MASSES1',
+                COMPORTEMENT=_F(RELATION='DIS_CHOC',
+                       GROUP_NO_1 = 'MASSES1',
                        GROUP_NO_2 = 'MASSES2',
                        OBSTACLE = GRILLE,
                        INTITULE = 'NO2/NO12',

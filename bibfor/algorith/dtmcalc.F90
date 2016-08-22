@@ -44,6 +44,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/mdidisvisc.h"
 #include "asterfort/mdidisisot.h"
 #include "asterfort/mdsize.h"
+#include "asterfort/nlget.h"
 #include "asterfort/resu74.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"
@@ -61,12 +62,11 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     integer           :: adapt, pasarch, iarch, force_arch, reinteg
     integer           :: nltreat, nr, nbsauv, iarch_sd, i_nbar
     integer           :: perc, last_prperc, freqpr, ifm, niv
-    integer           :: oldarch, i_nbarf
-    integer           :: jranc, jnoec, nbdiscret
+    integer           :: oldarch, i_nbarf, nbdvis, nbdecr
     real(kind=8)      :: tinit, dt, tps1(4), rint1, rint2
     real(kind=8)      :: time, lastarch, tfin, epsi, newdt
     real(kind=8)      :: dt0
-    character(len=8)  :: sd_dtm, sd_int, calcres, nomres
+    character(len=8)  :: sd_dtm, sd_int, calcres, nomres, sd_nl
 !
     integer         , pointer :: isto(:)    => null()
     integer         , pointer :: allocs(:)  => null()
@@ -74,6 +74,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     integer         , pointer :: buffint(:) => null()
     real(kind=8)    , pointer :: archlst(:) => null()
     real(kind=8)    , pointer :: chosav0(:) => null()
+    integer         , pointer :: buffnl(:)  => null()
 
 !
 !   0 - Initializations
@@ -82,7 +83,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !
     sd_dtm = sd_dtm_
     sd_int = sd_int_
-    epsi = 100.d0*r8prem()
+    epsi = 10.d0*r8prem()
     force_arch = 0
     iarch = 1
 !
@@ -171,15 +172,12 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !       -- Matrices update (Gyroscopy)
         if (upmat) call dtmupmat(sd_dtm, sd_int, buffdtm, buffint)
 
-        ! if (time .gt. 0.0277257d0) then
-        !     write(*,*) 'SOMETHING IS OCCURRING HERE'
-        !     continue
-        ! endif
-
         if (nltreat.eq.1) then
             call intbackup(sd_int, '&&INTBAK')
+            call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
+            call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_SAVE0, vr=chosav0, buffer=buffdtm)
-            call dtmget(sd_dtm, _NL_SAVES, rvect=chosav0, buffer=buffdtm)
+            call nlget (sd_nl , _INTERNAL_VARS, rvect=chosav0, buffer=buffnl)
         endif
 !
         nr = 0
@@ -265,11 +263,14 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
                     call dtmget(sd_dtm, _CALC_SD ,kscal=calcres, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_MODES,iscal=nbmode, buffer=buffdtm)
                     call dtmget(sd_dtm, _NB_NONLI,iscal=nbnli, buffer=buffdtm)
-                    call dtmget(sd_dtm, _FX_NUMB,iscal=nbrede, buffer=buffdtm)
-                    call dtmget(sd_dtm, _FV_NUMB,iscal=nbrevi, buffer=buffdtm)
+                    if (nbnli.gt.0) then
+                        call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl)
+                        call nlget (sd_nl , _NB_REL_FX, iscal=nbrede)
+                        call nlget (sd_nl , _NB_REL_FX, iscal=nbrevi)
+                    end if
                     call dtmget(sd_dtm, _ARCH_STO,vi=isto, buffer=buffdtm)
 !                   --- resize according to the last archived step, isto(1)
-                    call mdsize(calcres, isto(1), nbmode, nbnli, nbrede, nbrevi)
+                    call mdsize(calcres, isto(1), nbmode, nbnli)
 !                   --- Concatenate results in the case of an adaptative integration scheme
                     if (adapt.gt.0) then
                         call dtmconc(sd_dtm)
@@ -289,7 +290,7 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
     enddo
 
 30  continue
-
+!
     if (last_prperc.ne.100) then
         perc = 100
         call utmess('I', 'DYNAMIQUE_89', ni=2, vali=[perc, i_nbar],&
@@ -306,29 +307,31 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
         call resu74(nomres, calcres)
     endif
 
-    call dtmget(sd_dtm, _NB_DIS_VISC, iscal=nbdiscret, buffer=buffdtm)
-    if (nbdiscret .ne. 0) then
-        call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli, buffer=buffdtm)
-        call dtmget(sd_dtm, _IND_ALOC, vi=allocs, buffer=buffdtm)
-        call dtmget(sd_dtm, _CHO_RANK, address=jranc)
-        call dtmget(sd_dtm, _CHO_NOEU, address=jnoec)
-        call mdidisvisc(nomres, nbnli, zi(jranc), zk8(jnoec), i_nbar+1,zr(allocs(2)))
-    endif
-
-    call dtmget(sd_dtm, _NB_DIS_ECRO_TRAC, iscal=nbdiscret, buffer=buffdtm)
-    if (nbdiscret .ne. 0) then
-        call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli, buffer=buffdtm)
-        call dtmget(sd_dtm, _IND_ALOC, vi=allocs, buffer=buffdtm)
-        call dtmget(sd_dtm, _CHO_RANK, address=jranc)
-        call dtmget(sd_dtm, _CHO_NOEU, address=jnoec)
-        call mdidisisot(nomres, nbnli, zi(jranc), zk8(jnoec), i_nbar+1,zr(allocs(2)))
-    endif
-
 !   --- Cleanup extra objects
     if (nltreat.eq.1) then
         call detrsd(' ','&&DTMMOD')
         call detrsd(' ','&&DTMNUG')
     endif
+
+    call dtmget(sd_dtm, _NB_NONLI, iscal=nbnli)
+    if (nbnli.gt.0) then
+        call dtmget(sd_dtm, _SD_NONL, kscal=sd_nl)
+
+        call nlget(sd_nl, _NB_DIS_VISC     , iscal=nbdvis)
+        call nlget(sd_nl, _NB_DIS_ECRO_TRAC, iscal=nbdecr)
+        if ((nbdvis+nbdecr) .gt. 0) then
+            call dtmget(sd_dtm, _IND_ALOC, vi=allocs)
+            if (nbdvis.gt.0) then
+                call mdidisvisc(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+            end if
+            if (nbdecr.gt.0) then
+                call mdidisisot(sd_nl, nbnli, nomres, i_nbar+1, zr(allocs(2)))
+            end if
+        end if
+
+        call detrsd(' ', sd_nl)
+    end if
 !
     call jedema()
+    
 end subroutine

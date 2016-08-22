@@ -4,9 +4,11 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 #include "asterfort/foc1ma.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
+#include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nlget.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
@@ -17,7 +19,7 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     character(len=*) :: trange, noeu, cmp, nomrez
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,23 +38,26 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !     POST-TRAITEMENT DE "RELA_EFFO_DEPL"
 !
 ! ----------------------------------------------------------------------
-    integer ::      nbinst, nbred, inume, jdepl
+    integer ::      nbpt, nbred, inume, jdepl, nbnoli, nbvint, inl, start
     integer ::    i, nbmax, ii, ic, imax, nbpara
     parameter    ( nbpara = 8 )
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
     character(len=8) :: nomres, typara(nbpara), valek(3)
-    character(len=16) :: nopara(nbpara)
+    character(len=16) :: nopara(nbpara), nomk16
     character(len=19) :: nomk19
-    character(len=24) :: nomk24
+    character(len=24) :: identifier
     real(kind=8), pointer :: deplmax(:) => null()
     real(kind=8), pointer :: instmax(:) => null()
     integer, pointer :: nlin(:) => null()
-    character(len=24), pointer :: redn(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     integer, pointer :: desc(:) => null()
-    integer, pointer :: redc(:) => null()
-    real(kind=8), pointer :: redd(:) => null()
+    integer, pointer :: rdindx(:) => null()
+!
+    integer          , pointer :: nltype(:) => null()
+    integer          , pointer :: vindx (:) => null()
+    character(len=24), pointer :: nlname(:) => null()
+    real(kind=8)     , pointer :: vint  (:) => null()
 !
     data nopara / 'RELATION' , 'NOEUD'      , 'CMP',&
      &              'PHASE'    , 'INST_INIT'  , 'INST_FIN',&
@@ -62,57 +67,81 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !
     call jemarq()
     c16b=(0.d0,0.d0)
-    nomk19 = ' '
+    nomk16 = '                '
+    nomk19 = '                   '
     nomk19(1:8) = trange
-    nomk24 = ' '
-    nomk24(1:8) = noeu
-    nomk24(9:16) = cmp
+    nomk16(1:8) = trange
     nomres = nomrez
 !
     call tbcrsd(nomres, 'G')
     call tbajpa(nomres, nbpara, nopara, typara)
 !
     call jeveuo(nomk19//'.DESC', 'L', vi=desc)
-    call jeveuo(nomk19//'.REDN', 'L', vk24=redn)
-    call jeveuo(nomk19//'.REDC', 'L', vi=redc)
-    call jeveuo(nomk19//'.REDD', 'L', vr=redd)
+    nbnoli = desc(3)
+
     call jeveuo(nomk19//'.DISC', 'L', vr=disc)
-    call jelira(nomk19//'.DISC', 'LONUTI', nbinst)
-    nbred = desc(4)
-!
-    do 10 inume = 0, nbred-1
-        if (redn(inume+1)(1:16) .eq. nomk24) goto 12
-10  end do
+    call jelira(nomk19//'.DISC', 'LONUTI', nbpt)
+
+    call jeveuo(nomk16//'.NL.TYPE', 'L', vi  =nltype)
+    call jeveuo(nomk16//'.NL.VIND', 'L', vi  =vindx)
+    call jeveuo(nomk16//'.NL.INTI', 'L', vk24=nlname)
+    call jeveuo(nomk16//'.NL.VINT', 'L', vr  =vint)
+    nbvint = vindx(nbnoli+1)-1
+
+    AS_ALLOCATE(vi=rdindx, size=nbnoli)
+    nbred = 0
+    do i = 1, nbnoli
+        if (nltype(i).eq.NL_FX_RELATIONSHIP) then
+            nbred = nbred + 1
+            rdindx(nbred) = i
+        end if
+    end do
+
+    do inume = 1, nbred
+        i = rdindx(inume)
+        identifier = nlname((i-1)*5+1)
+        if ((identifier(1:8).eq.noeu) .and. (identifier(9:16).eq.cmp)) goto 12
+    end do
     call utmess('F', 'PREPOST4_57')
-!
+
 12  continue
-    valek(1) = redn(inume+1)(17:24)
+    AS_DEALLOCATE(vi=rdindx)
+    inl = i
+!
+    valek(1) = identifier(17:24)
     valek(2) = noeu
     valek(3) = cmp
 !
 !     --- RECHERCHE DU MAXIMUM DE LA FONCTION ---
-    call wkvect('&&POREFD.DEPL', 'V V R', nbinst, jdepl)
-    AS_ALLOCATE(vi=nlin, size=nbinst)
-    AS_ALLOCATE(vr=instmax, size=nbinst)
-    AS_ALLOCATE(vr=deplmax, size=nbinst)
-    do 14 i = 0, nbinst-1
-        zr(jdepl+i) = redd(1+inume+nbred*i)
-        nlin(1+i) = redc(1+inume+nbred*i)
-14  end do
-    call foc1ma(nbinst, disc, zr(jdepl), nbmax, instmax,&
-deplmax)
+    call wkvect('&&POREFD.DEPL', 'V V R', nbpt, jdepl)
+    AS_ALLOCATE(vi=nlin, size=nbpt)
+    AS_ALLOCATE(vr=instmax, size=nbpt)
+    AS_ALLOCATE(vr=deplmax, size=nbpt)
+    start = vindx(inl)
+    do i = 1, nbpt
+        zr(jdepl-1+i) =      vint((i-1)*nbvint+start-1+1)
+        nlin(i)       = nint(vint((i-1)*nbvint+start-1+3))
+    end do
+
+    call jelibe(nomk16//'.NL.TYPE')
+    call jelibe(nomk16//'.NL.VIND')
+    call jelibe(nomk16//'.NL.INTI')
+    call jelibe(nomk16//'.NL.VINT')
+
+    call foc1ma(nbpt, disc, zr(jdepl), nbmax, instmax,&
+                deplmax)
 !
 !     --- RECHERCHE DES PHASES NON-LINEAIRE ---
-    do 18 i = 0, nbinst-1
+    do i = 0, nbpt-1
         if (nlin(1+i) .eq. 1) goto 20
-18  end do
+    end do
     goto 500
 !
 20  continue
 !
     ii = 0
     ic = 0
-    do 30 i = 0, nbinst-1
+    do i = 0, nbpt-1
         if (nlin(1+i) .eq. 1 .and. ic .eq. 0) then
             xmax = zr(jdepl+i)
             imax = i
@@ -135,9 +164,9 @@ deplmax)
             call tbajli(nomres, nbpara, nopara, [ii], para,&
                         [c16b], valek, 0)
         endif
-30  end do
+    end do
     if (ic .eq. 1) then
-        temf = disc(nbinst)
+        temf = disc(nbpt)
         temm = disc(imax+1)
         para(1) = temd
         para(2) = temf

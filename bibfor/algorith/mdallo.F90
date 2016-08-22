@@ -1,10 +1,8 @@
 subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                   rigi, mass, amor, jordr, jdisc,&
                   nbsym, nomsym, jdepl, jvite, jacce,&
-                  method, dt, jptem, nbchoc, noecho,&
-                  intitu, jfcho, jdcho, jvcho, jadcho,&
-                  nbrede, fonred, jredc, jredd, nbrevi,&
-                  fonrev, jrevc, jrevv, sauve, checkarg)
+                  method, dt, jptem, nbnli, sd_nl_,&
+                  jvint, sauve, checkarg)
 ! aslint: disable=W1504
     implicit none
 #include "asterf_types.h"
@@ -15,10 +13,12 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
+#include "asterfort/nlget.h"
 #include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !   Obligatory arguments
     character(len=8), intent(in) :: nomres
     character(len=4), intent(in) :: typcal
@@ -34,20 +34,14 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     character(len=*), optional, intent(in) :: method
     real(kind=8), optional, intent(in) :: dt
     integer, optional, intent(out) :: jptem
-    integer, optional, intent(in) :: nbchoc
-    character(len=8), optional, intent(in) :: noecho(*), intitu(*)
-    integer, optional, intent(out) :: jfcho, jdcho, jvcho, jadcho
-    integer, optional, intent(in) :: nbrede
-    character(len=8), optional, intent(in) :: fonred(*)
-    integer, optional, intent(out) :: jredc, jredd
-    integer, optional, intent(in) :: nbrevi
-    character(len=8), optional, intent(in) :: fonrev(*)
-    integer, optional, intent(out) :: jrevc, jrevv
+    integer, optional, intent(in) :: nbnli
+    character(len=*), optional, intent(in) :: sd_nl_
+    integer, optional, intent(out) :: jvint
     character(len=4), optional, intent(in) :: sauve
     aster_logical , optional, intent(in) :: checkarg
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,12 +68,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 ! IN  : NBMODE : NOMBRE DE MODES
 ! IN  : DT     : PAS DE TEMPS
 ! IN  : NBPAS  : NOMBRE DE PAS CALCULE (INITIAL COMPRIS)
-! IN  : NBCHOC : NOMBRE DE NOEUDS DE CHOC
-! IN  : NOECHO : TABLEAU DES NOMS DES NOEUDS DE CHOC
-! IN  : INTITU : TABLEAU DES NOMS DES LIAISONS
-! IN  : NBREDE : NOMBRE DE RELATIONS EFFORT DEPLACEMENT (RED)
-! IN  : FONRED : TABLEAU DES FONCTIONS DE RED
-! IN  : NBREVI : NOMBRE DE RELATIONS EFFORT VITESSE (REV)
+! IN  : NBNLI  : NOMBRE DE NON LINEARITES LOCALISEES
+! IN  : INTITU : TABLEAU DES NOMS DES LIAISONS NONLINEAIRES (3 ENTREES PAR NON LINEARITE)
 ! IN  : METHOD : ALGORITHME UTILISE (DEVOGE, DIFF_CENTRE, ...)
 !                DANS LE CAS ITMI, UN OBJET EST DIFFERENT
 ! IN  : TYPCAL : VAUT 'HARM' OU 'TRAN'
@@ -87,16 +77,18 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 ! IN  : CHECKARG : VERIFIER LA COHERENCE DANS LES ARGUMENTS OPTIONNELS D'ENTREE
 ! ----------------------------------------------------------------------
     aster_logical :: checkargs, entvid, saved
-    integer :: nbstoc, j1refe, inom, i, ic, iret, jchmp, nbchoc2, nbrede2, nbrevi2, nbvint
-    integer :: jdesc, jinti, jncho, nbsym2, jsst, jvint, nbmode, nbsto1, jredn, jrevn
+    integer :: nbstoc, j1refe, inom, i, iret, jchmp, nbnoli, nbvint
+    integer :: jdesc, jinti, nbsym2, nbmode, jnltyp, jvindx
     real(kind=8) :: dt2
     character(len=3) :: typsau
     character(len=4) :: sauve2, nomsym2(3)
-    character(len=8) :: basemo, riggen, masgen, amogen, numgen, blanc
+    character(len=8) :: basemo, riggen, masgen, amogen, numgen, blanc, sd_nl
     character(len=5) :: attrib
     character(len=12) :: bl11pt
     character(len=16) :: method2
     character(len=24) :: matric(3)
+
+    integer, pointer :: vindx(:) => null()
 !-----------------------------------------------------------------------
 !   --- 0 - Obligatory arguments, validation of the input values
     ASSERT((typcal.eq.'TRAN').or.(typcal.eq.'HARM'))
@@ -113,11 +105,10 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     nomsym2 = ['DEPL','VITE','ACCE']
     method2 = ' '
     dt2 = 0.0d0
-    nbchoc2 = 0
-    nbrede2 = 0
-    nbrevi2 = 0
+    nbnoli = 0
     sauve2 = 'GLOB'
     checkargs = .true.
+    sd_nl = sd_nl_
     if (present(base)) basemo = base
     if (present(nbmodes)) nbmode = nbmodes
     if (present(rigi)) riggen = rigi
@@ -125,9 +116,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (present(amor)) amogen = amor
     if (present(method)) method2 = method
     if (present(dt)) dt2 = dt
-    if (present(nbchoc)) nbchoc2 = nbchoc
-    if (present(nbrede)) nbrede2 = nbrede
-    if (present(nbrevi)) nbrevi2 = nbrevi
+    if (present(nbnli )) nbnoli = nbnli 
     if (present(sauve)) sauve2 = sauve
     if (present(checkarg)) checkargs = checkarg
     if (present(nbsym) .and. present(nomsym)) then
@@ -136,9 +125,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             nomsym2(inom) = nomsym(inom)
         end do
     endif
-#define noechoc(i,j) noecho(i+(j-1)*nbchoc2)
-#define fonrede(i,j) fonred(i+(j-1)*nbrede2)
-#define fonrevi(i,j) fonrev(i+(j-1)*nbrevi2)
 !
 !   --- Initialize all output jeveux pointers to 1 
     if (present(jdepl)) jdepl = 1
@@ -147,14 +133,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     if (present(jptem)) jptem = 1
     if (present(jordr)) jordr = 1
     if (present(jdisc)) jdisc = 1
-    if (present(jfcho)) jfcho = 1
-    if (present(jdcho)) jdcho = 1
-    if (present(jvcho)) jvcho = 1
-    if (present(jadcho)) jadcho= 1
-    if (present(jredc)) jredc = 1
-    if (present(jredd)) jredd = 1
-    if (present(jrevc)) jrevc = 1
-    if (present(jrevv)) jrevv = 1
+    if (present(jvint)) jvint = 1
 !
 !   --- If checkarg is .true. then verify the coherence of all optional arguments, 
     if (checkargs) then
@@ -210,27 +189,11 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
             endif
         endif
 !       --- 4 - Treatment of choc parameters/arguments
-        if (nbchoc2 .ne. 0) then
-            ASSERT((present(noecho)).and.(present(intitu)))
+        if (nbnoli .ne. 0) then
+            ASSERT(present(sd_nl_))
         endif
-        if (nbchoc2 .eq. 0) then
-            ASSERT((absent(jfcho)).and.(absent(jdcho)))
-            ASSERT((absent(jvcho)).and.(absent(jadcho)))
-        endif
-!       --- 5 - Treatment of rela effo depl/vite parameters/arguments
-        if (nbrede2 .ne. 0) then
-            ASSERT(present(fonred))
-        endif
-        if (nbrede2 .eq. 0) then
-            ASSERT((absent(jredc)).and.(absent(jredd)))
-        endif
-        if (nbrevi2 .ne. 0) then
-            ASSERT(present(fonrev))
-        endif
-        if (nbrevi2 .eq. 0) then
-            ASSERT((absent(jrevc)).and.(absent(jrevv)))
-        endif
-!       --- 6 - Treatment of sauv parameter, global (default) or volatile saving
+
+!       --- 5 - Treatment of sauv parameter, global (default) or volatile saving
         ASSERT((sauve2(1:4).eq.'GLOB'.or.sauve2(1:4).eq.'VOLA'))
 !   --- End of argument verification
     endif
@@ -275,12 +238,12 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         endif
     endif
 !
-!   .DESC is already created in mdrecf (external forces retreival), and DESC[7] is set
+!   .DESC is already created in mdrecf (external forces retrieval), and DESC[5] is set
 !   to 1 if a static correction is considered.
     call jeexin(nomres//'           .DESC', iret)
     if (iret .eq. 0) then
-        call crevec(nomres//'           .DESC', typsau//' I', 7, jdesc)
-        do i = 1, 7
+        call wkvect(nomres//'           .DESC', typsau//' I', 5, jdesc)
+        do i = 1, 5
             zi(jdesc+i-1) = 0
         end do
     else 
@@ -308,7 +271,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
         nomsym2(1) = 'DEPL'
         nomsym2(2) = 'VITE'
         nomsym2(3) = 'ACCE'
-        if (nbchoc2 .ne. 0) then
+        if (nbnoli .ne. 0) then
             zi(jdesc) = 2
         endif
 !     -DANS LE CAS ITMI ET ADAPT (METHODES A PAS VARIABLE),
@@ -320,10 +283,9 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !     DANS LE CAS TRANSITOIRE, ON REMPLIT TOUJOURS LES TROIS CHAMPS
     endif
     zi(jdesc+1) = nbmode
-    zi(jdesc+2) = nbchoc2
-    zi(jdesc+3) = nbrede2
-    zi(jdesc+4) = nbrevi2
-    zi(jdesc+5) = mdtr74grd('MAXVINT')
+    zi(jdesc+2) = nbnoli
+    zi(jdesc+3) = 0
+
 !
     if (typcal .eq. 'TRAN') then
         attrib = typsau//' R'
@@ -354,7 +316,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 !
 !       OBJETS COMMUNS
         call crevec(nomres//'           .ORDR', typsau//' I', nbsauv, jordr)
-        call jeveut(nomres//'           .ORDR', 'E', jordr)
         call crevec(nomres//'           .DISC', typsau//' R', nbsauv, jdisc)
         if (typcal .eq. 'TRAN') then
             call crevec(nomres//'           .PTEM', typsau//' R', nbsauv, jptem)
@@ -363,65 +324,49 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
     endif
 !
 !   CREATION DES VECTEURS DE STOCKAGE DES FORCES DE CHOC
-    if (nbchoc2 .ne. 0) then
-        nbstoc = 3 * nbchoc2 * nbsauv
-        nbsto1 = nbchoc2 * nbsauv
-        nbvint = nbchoc * nbsauv * mdtr74grd('MAXVINT')
-        call jeexin(nomres//'           .NCHO', iret)
-        if (iret .eq. 0) call crevec(nomres//'           .NCHO', typsau//' K8', 2*nbchoc2, jncho)
-        call jeexin(nomres//'           .SST', iret)
-        if (iret .eq. 0) call crevec(nomres//'           .SST', typsau//' K8', 2*nbchoc2, jsst)
-        if (nbsauv .ne. 0) then
-            call crevec(nomres//'           .FCHO', typsau//' R', nbstoc, jfcho)
-            call crevec(nomres//'           .DLOC', typsau//' R', 2*nbstoc, jdcho)
-            call crevec(nomres//'           .VCHO', typsau//' R', nbstoc, jvcho)
-            call crevec(nomres//'           .ICHO', typsau//' I', nbsto1, jadcho)
-!           objet variables internes
-            call crevec(nomres//'           .VINT', typsau//' R', nbvint, jvint)
-!           initialisation
-            call r8inir(nbvint, 0.d0, zr(jvint), 1)
+    if (nbnoli .ne. 0) then
+        call nlget(sd_nl, _INTERNAL_VARS_INDEX, vi=vindx)
+        nbvint = vindx(nbnoli+1)-1
+        zi(jdesc+3) = nbvint
+
+        if (nbvint*nbsauv .ne. 0) then
+!           Index
+            call crevec(nomres//'        .NL.VIND', typsau//' I', nbnoli+1, jvindx)
+            call nlget(sd_nl, _INTERNAL_VARS_INDEX, ivect=zi(jvindx))
+!           Internal variables object
+            call crevec(nomres//'        .NL.VINT', typsau//' R', nbvint*nbsauv, jvint)
+            call r8inir(nbvint*nbsauv, 0.d0, zr(jvint), 1)
         endif
-        call jeexin(nomres//'           .INTI', iret)
+
+        call jeexin(nomres//'        .NL.TYPE', iret)
         if (iret .eq. 0) then
-            call crevec(nomres//'           .INTI', typsau//' K8', nbchoc2, jinti)
-            do ic = 1, nbchoc2
-                zk8(jinti+ic-1) = intitu(ic)
-                zk8(jncho+ic-1) = noechoc(ic,1)
-                zk8(jncho+nbchoc2+ic-1) = noechoc(ic,5)
-                zk8(jsst+ic-1) = noechoc(ic,2)
-                zk8(jsst+nbchoc2+ic-1) = noechoc(ic,6)
-            enddo
+            call crevec(nomres//'        .NL.TYPE', typsau//' I', nbnoli, jnltyp)
+            do i = 1, nbnoli
+                call nlget(sd_nl, _NL_TYPE, iocc=i, iscal=zi(jnltyp-1+i))                
+            end do
         endif
-    endif
-!
-!   CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_DEPL
-    if (nbrede2 .ne. 0) then
-        nbstoc = nbrede2 * nbsauv
-        if (nbsauv .ne. 0) then
-            call crevec(nomres//'           .REDC', typsau//' I', nbstoc, jredc)
-            call crevec(nomres//'           .REDD', typsau//' R', nbstoc, jredd)
-        endif
-        call jeexin(nomres//'           .REDN', iret)
+
+        call jeexin(nomres//'        .NL.INTI', iret)
         if (iret .eq. 0) then
-            call crevec(nomres//'           .REDN', typsau//' K24', nbrede2, jredn)
-            do i = 1, nbrede2
-                zk24(jredn+i-1) = fonrede(i,1)//fonrede(i,2)//fonrede(i, 3)
-            enddo
-        endif
-    endif
-!
-!     --- CREATION DES VECTEURS DE STOCKAGE DES RELA_EFFO_VITE ---
-    if (nbrevi2 .ne. 0) then
-        nbstoc = nbrevi2 * nbsauv
-        if (nbsauv .ne. 0) then
-            call crevec(nomres//'           .REVC', typsau//' I', nbstoc, jrevc)
-            call crevec(nomres//'           .REVV', typsau//' R', nbstoc, jrevv)
-        endif
-        call jeexin(nomres//'           .REVN', iret)
-        if (iret .eq. 0) then
-            call crevec(nomres//'           .REVN', typsau//' K24', nbrevi2, jrevn)
-            do i = 1, nbrevi2
-                zk24(jrevn+i-1) = fonrevi(i,1)//fonrevi(i,2)//fonrevi(i, 3)
+            call crevec(nomres//'        .NL.INTI', typsau//' K24', nbnoli*5, jinti)
+            do i = 1, 4*nbnoli
+                zk24(jinti-1+i) = ' '
+            end do
+            do i = 1, nbnoli
+                call nlget(sd_nl, _NL_TITLE, iocc=i, lonvec=iret)
+                if (iret.ne.0) call nlget(sd_nl, _NL_TITLE, iocc=i, kscal=zk24(jinti-1+(i-1)*5+1))
+                
+                call nlget(sd_nl, _NO1_NAME, iocc=i, lonvec=iret)
+                if (iret.ne.0) call nlget(sd_nl, _NO1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+2))
+
+                call nlget(sd_nl, _NO2_NAME, iocc=i, lonvec=iret)
+                if (iret.ne.0) call nlget(sd_nl, _NO2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+3))
+
+                call nlget(sd_nl, _SS1_NAME, iocc=i, lonvec=iret)
+                if (iret.ne.0) call nlget(sd_nl, _SS1_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+4))
+
+                call nlget(sd_nl, _SS2_NAME, iocc=i, lonvec=iret)
+                if (iret.ne.0) call nlget(sd_nl, _SS2_NAME, iocc=i, kscal=zk24(jinti-1+(i-1)*5+5))
             enddo
         endif
     endif

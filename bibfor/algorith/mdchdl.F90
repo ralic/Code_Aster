@@ -1,15 +1,16 @@
-subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
-                  ier)
+subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/posddl.h"
 #include "asterfort/utmess.h"
-    integer :: nbnli, iliai, ddlcho(*), ier
+#include "asterfort/nlget.h"
+#include "asterfort/nlsav.h"
+
+    integer :: iliai, ddlcho(*), ier
     aster_logical :: lnoue2
-    character(len=8) :: noecho(nbnli, *)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,28 +37,27 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
     integer :: nunoe, nuddl
-    character(len=8) :: nume1, noeu1, nume2, noeu2
+    character(len=8) :: nume1, noeu1, nume2, noeu2, sd_nl
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
 !
-    nume1 = noecho(iliai,3)
-    noeu1 = noecho(iliai,1)
-    nume2 = noecho(iliai,7)
-    noeu2 = noecho(iliai,5)
+    sd_nl = '&&OP29NL'
+    call nlget(sd_nl, _NUMDDL_1, iocc=iliai, kscal=nume1)
+    call nlget(sd_nl, _NO1_NAME, iocc=iliai, kscal=noeu1)
 !
     call posddl('NUME_DDL', nume1, noeu1, 'DX', nunoe,&
                 nuddl)
     if (nunoe .eq. 0) then
         ier = ier + 1
         valk(1) = noeu1
-        valk(2) = noecho(iliai,4)
+        call nlget(sd_nl, _MESH_1, iocc=iliai, kscal=valk(2))
         call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
     endif
     if (nuddl .eq. 0) then
         ier = ier + 1
         call utmess('E', 'ALGORITH5_28', sk=noeu1)
     endif
-    ddlcho(6*(iliai-1)+1) = nuddl
+    ddlcho(1) = nuddl
 !
     call posddl('NUME_DDL', nume1, noeu1, 'DY', nunoe,&
                 nuddl)
@@ -65,7 +65,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
         ier = ier + 1
         call utmess('E', 'ALGORITH5_29', sk=noeu1)
     endif
-    ddlcho(6*(iliai-1)+2) = nuddl
+    ddlcho(2) = nuddl
 !
     call posddl('NUME_DDL', nume1, noeu1, 'DZ', nunoe,&
                 nuddl)
@@ -73,22 +73,26 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
         ier = ier + 1
         call utmess('E', 'ALGORITH5_30', sk=noeu1)
     endif
-    ddlcho(6*(iliai-1)+3) = nuddl
+    ddlcho(3) = nuddl
 !
     if (lnoue2) then
+
+        call nlget(sd_nl, _NUMDDL_2, iocc=iliai, kscal=nume2)
+        call nlget(sd_nl, _NO2_NAME, iocc=iliai, kscal=noeu2)
+
         call posddl('NUME_DDL', nume2, noeu2, 'DX', nunoe,&
                     nuddl)
         if (nunoe .eq. 0) then
             ier = ier + 1
             valk(1) = noeu2
-            valk(2) = noecho(iliai,8)
+            call nlget(sd_nl, _MESH_2, iocc=iliai, kscal=valk(2))
             call utmess('E', 'ALGORITH5_27', nk=2, valk=valk)
         endif
         if (nuddl .eq. 0) then
             ier = ier + 1
             call utmess('E', 'ALGORITH5_28', sk=noeu2)
         endif
-        ddlcho(6*(iliai-1)+4) = nuddl
+        ddlcho(4) = nuddl
 !
         call posddl('NUME_DDL', nume2, noeu2, 'DY', nunoe,&
                     nuddl)
@@ -96,7 +100,7 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
             ier = ier + 1
             call utmess('E', 'ALGORITH5_29', sk=noeu2)
         endif
-        ddlcho(6*(iliai-1)+5) = nuddl
+        ddlcho(5) = nuddl
 !
         call posddl('NUME_DDL', nume2, noeu2, 'DZ', nunoe,&
                     nuddl)
@@ -104,11 +108,11 @@ subroutine mdchdl(nbnli, noecho, lnoue2, iliai, ddlcho,&
             ier = ier + 1
             call utmess('E', 'ALGORITH5_30', sk=noeu2)
         endif
-        ddlcho(6*(iliai-1)+6) = nuddl
+        ddlcho(6) = nuddl
     else
-        ddlcho(6*(iliai-1)+4) = ddlcho(6*(iliai-1)+1)
-        ddlcho(6*(iliai-1)+5) = ddlcho(6*(iliai-1)+2)
-        ddlcho(6*(iliai-1)+6) = ddlcho(6*(iliai-1)+3)
+        ddlcho(4) = ddlcho(1)
+        ddlcho(5) = ddlcho(2)
+        ddlcho(6) = ddlcho(3)
     endif
 !
 end subroutine

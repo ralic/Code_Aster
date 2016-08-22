@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mdidisvisc(nomres, nbchoc, logcho, noecho, nbsauv, &
-                          temps)
+    subroutine mdidisvisc(sd_nl_, nbnoli, nomres, nbsauv, temps)
+        character(len=*) :: sd_nl_
+        integer          :: nbnoli
         character(len=8) :: nomres
-        integer :: nbchoc
-        integer :: logcho(nbchoc, *)
-        character(len=8) :: noecho(nbchoc, *)
-        integer :: nbsauv
-        real(kind=8) :: temps(*)
+        integer          :: nbsauv
+        real(kind=8)     :: temps(*)
     end subroutine mdidisvisc
 end interface

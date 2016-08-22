@@ -33,7 +33,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
     character(len=16) :: typbas
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -198,11 +198,12 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call getvid(' ', 'MODE_STAT', scal=modsta, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
-                    call utmess('E', 'ALGORITH13_46')
+                    call utmess('F', 'ALGORITH13_46')
                     goto 10
                 endif
+
                 call trmult(modsta, i, mailla, neq, iddeeq,&
-                            zr(jpsdel+(i-1) *neq))
+                            zr(jpsdel+(i-1) *neq), numddl)
                 call getvid('EXCIT', 'VITE', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)
                 call jeveuo(fonct//'.PROL', 'L', lprol)
@@ -227,17 +228,19 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm,&
                 call getvid(' ', 'MODE_CORR', scal=modcor, nbret=nbv)
                 if (nbv .eq. 0) then
                     ier =ier+1
-                    call utmess('E', 'ALGORITH13_47')
+                    call utmess('F', 'ALGORITH13_47')
                     goto 10
                 endif
-!               Add the identifier .DESC[7] to 1 , i.e. CORR_STAT exists
+!
+
+!               Add the identifier .DESC[5] to 1 , i.e. CORR_STAT exists
                 call jeexin(nomres//'           .DESC',iret)
                 if (iret.eq.0) then 
-                    call wkvect(nomres//'           .DESC', 'G V I', 7, jdesc)
+                    call wkvect(nomres//'           .DESC', 'G V I', 5, jdesc)
                 else 
                     call jeveuo(nomres//'           .DESC', 'E', jdesc)
                 end if
-                zi(jdesc+7-1) = 1
+                zi(jdesc+5-1) = 1
 !                
                 call getvid('EXCIT', 'D_FONC_DT', iocc=i, scal=fonvit(i), nbret=n4)
                 fonct = fonvit(i)(1:8)

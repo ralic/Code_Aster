@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,16 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mdchre(motfac, ioc, iliai, mdgene, typnum,&
-                      repere, nbnli, parcho, lnoue2)
-        integer :: nbnli
-        character(len=10) :: motfac
+    subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
+                      repere, lnoue2)
+        character(len=*) :: nlcase
         integer :: ioc
         integer :: iliai
         character(len=24) :: mdgene
         character(len=16) :: typnum
         character(len=8) :: repere
-        real(kind=8) :: parcho(nbnli, *)
         aster_logical :: lnoue2
     end subroutine mdchre
 end interface

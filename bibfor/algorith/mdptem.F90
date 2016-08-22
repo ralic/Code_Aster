@@ -1,6 +1,6 @@
-subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
-                  parcho, noecho, dt, dtmax, dtmin,&
-                  tinit, tfin, nbpas, ier, lisins)
+subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
+                  dtmax, dtmin, tinit, tfin, nbpas,&
+                  ier, lisins)
     implicit none
 #include "jeveux.h"
 #include "asterc/getres.h"
@@ -12,17 +12,16 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     integer :: nbchoc, nbpas, ier, nbmode
-    real(kind=8) :: masgen(*), pulsat(*), parcho(nbchoc, *)
-    real(kind=8) :: dplmod(nbchoc, nbmode, *)
+    real(kind=8) :: masgen(*), pulsat(*)
     real(kind=8) :: dt, tinit, tfin, dtmax, dtmin
-    character(len=*) :: noecho(nbchoc, *)
     character(len=24) :: lisins
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +53,7 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
 ! OUT : IER    : CODE RETOUR
 ! OUT : LISINS : LISTE DES INSTANTS POUR L'ARCHIVAGE
 ! ----------------------------------------------------------------------
-    integer :: ic, ia, i, j, iveri, ibid
+    integer :: ic, i, j, iveri, ibid, iret
     integer :: jbint,  jvale, jvalr, jinst
     integer :: n1, n2, n3, n4, n5, n6, nr, nt, nni
     integer :: nbgrpa, nbinst, nbinsr, numef, nbordr
@@ -62,23 +61,29 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     real(kind=8) :: dts, dtu, knorm, ktang, r8bid
     real(kind=8) :: valr(3)
     real(kind=8) :: zero, deuxpi, dti, dtp, eps
-    character(len=8) :: veripa, nomres, tran, li
+    character(len=8) :: veripa, nomres, tran, li, sd_nl
     character(len=16) :: typres, nomcmd, method
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: k, n7, nume
+    integer :: k, n7, nume, nbcomps, nbno
     integer, pointer :: ordr(:) => null()
     real(kind=8), pointer :: lpas(:) => null()
+
+    real(kind=8), pointer :: dplmod(:) => null()
+    real(kind=8), pointer :: dplmod1(:) => null()
+    real(kind=8), pointer :: dplmod2(:) => null()
+
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)
+    sd_nl = '&&OP29NL'
 !
     tinit = 0.d0
     ier = 0
     iveri = 0
     zero = 0.d0
     deuxpi = r8depi()
-    eps = r8prem()
+    eps = r8prem()*1.d5
     dts = 1.d10
     dtu = 1.d+10
     dtmax = 1.d+10
@@ -185,35 +190,54 @@ subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dplmod,&
     if (nbchoc .gt. 0) then
 !
         do 20 i = 1, nbchoc
-            knorm = parcho(i,2)
-            ktang = parcho(i,4)
+            knorm = 0.d0
+            ktang = 0.d0
+
+            call nlget(sd_nl, _STIF_NORMAL, iocc=i, lonvec=iret)
+            if (iret.gt.0) call nlget(sd_nl, _STIF_NORMAL, iocc=i, rscal=knorm)
+            call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=i, lonvec=iret)
+            if (iret.gt.0) call nlget(sd_nl, _RIGI_TANGENTIAL, iocc=i, rscal=ktang)
+
+            call nlget(sd_nl, _MODAL_DEPL_NO1, iocc=i, vr=dplmod1)
+
+            nbno = 1
+            call nlget(sd_nl, _MODAL_DEPL_NO2, iocc=i, lonvec=iret)
+            if (iret.gt.0) then 
+                nbno = 2
+                call nlget(sd_nl, _MODAL_DEPL_NO2, iocc=i, vr=dplmod2)
+            end if
+
+            nbcomps = size(dplmod1)/nbmode
+
             ic = 1
-            ia = 0
+            dplmod => dplmod1
 24          continue
             do 22 j = 1, nbmode
                 if (abs(pulsat(j)).le.eps) goto 22
+                if (abs(masgen(j)).le.eps) goto 22
 !
                 if (abs(knorm).gt.eps) then
-                    dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,1+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+1)**2 / masgen(j))
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,2+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+2)**2 / masgen(j))
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2 + knorm * dplmod( i,j,3+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+knorm*dplmod((j-1)*nbcomps+3)**2 / masgen(j))
                     dts = min(dts, dti)
                 endif
                 if (abs(ktang).gt.eps) then
-                    dti = deuxpi / sqrt(pulsat(j)**2 + ktang * dplmod( i,j,1+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+1)**2 / masgen(j))
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2 + ktang * dplmod( i,j,2+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+2)**2 / masgen(j))
                     dts = min(dts, dti)
-                    dti = deuxpi / sqrt(pulsat(j)**2 + ktang * dplmod( i,j,3+ia)**2 / masgen(j))
+                    dti = deuxpi / sqrt(pulsat(j)**2+ktang*dplmod((j-1)*nbcomps+3)**2 / masgen(j))
                     dts = min(dts, dti)
                 endif
 22          continue
             if (ic .eq. 5) goto 20
-            if (noecho(i,9)(1:2) .eq. 'BI') then
+            if (nbno.eq.2) then
                 ic = 5
-                ia = 3
+                nullify(dplmod)
+                dplmod => dplmod2
                 goto 24
             endif
 20      continue

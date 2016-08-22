@@ -78,6 +78,7 @@ implicit none
 #include "asterc/etausr.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterc/r8prem.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/dlarch.h"
@@ -321,7 +322,7 @@ implicit none
                 call getvid('EXCIT', 'VITE', iocc=iexci, scal=zk8(jnovit+ iexci-1), nbret=nv)
                 call getvid('EXCIT', 'DEPL', iocc=iexci, scal=zk8(jnodep+ iexci-1), nbret=nd)
                 call trmult(modsta, iexci, mailla, neq, iddeeq,&
-                            zr(jpsdel+ (iexci-1)*neq))
+                            zr(jpsdel+ (iexci-1)*neq), numddl)
 !     --- MISE A ZERO DES DDL DE LAGRANGE
                 call zerlag(neq, zi(iddeeq), vectr=zr(jpsdel+ (iexci-1)*neq))
             else
@@ -363,7 +364,7 @@ implicit none
             write (ifm,*) ' >>> NEWMARK <<<'//&
      &      'CAS CONDITIONNELLEMENT STABLE.'
         endif
-        if (beta .eq. 0) then
+        if (abs(beta) .lt. r8prem()) then
             call utmess('F', 'ALGORITH9_2')
         endif
     else

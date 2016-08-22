@@ -1,8 +1,9 @@
 subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint,&
                   coefk1, coefk2, coefpy, coefc, coefad,&
                   xmax, fdispo, flocal)
+    implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,14 +38,15 @@ subroutine mdfdas(dnorm, vnorm, vitloc, cost, sint,&
 !   OUT :  FDISPO : FORCE NORMALE DUE AU DISPO ANTI SISMIQUE
 !   OUT :  FLOCAL : FORCE NORMALE DE CHOC REP. LOCAL
 !-----------------------------------------------------------------------
-    implicit none
-    real(kind=8) :: vitloc(6), flocal(3), fdispo
+#include "asterc/r8prem.h"
+!
+    real(kind=8) :: vitloc(3), flocal(3), fdispo
     real(kind=8) :: coefk1, coefk2, coefpy, coefc, coefad, xmax, cost, sint
 !-----------------------------------------------------------------------
     real(kind=8) :: dnorm, vnorm
 !-----------------------------------------------------------------------
     vnorm = vitloc(2)*cost + vitloc(3)*sint
-    if (vnorm .eq. 0.d0) then
+    if (abs(vnorm) .lt. r8prem()) then
         fdispo = -coefk2*dnorm - (coefk1-coefk2)*dnorm/sqrt(1.d0+( coefk1*dnorm/coefpy)**2)
     else
         fdispo = -coefk2*dnorm - (coefk1-coefk2)*dnorm/sqrt(1.d0+( coefk1*dnorm/coefpy)**2) - coe&
