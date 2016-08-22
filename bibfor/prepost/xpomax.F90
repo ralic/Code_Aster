@@ -359,7 +359,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
           call jeveuo(varcns//'.CESD', 'L', jcesd_varc)
           call jeveuo(varcns//'.CESV', 'L', jcesv_varc)
           call jeveuo(varcns//'.CESL', 'L', jcesl_varc)
-          call rccome(nommat, 'ELAS', iret, k11_ind_nomrc=k11)  
+          call rccome(nommat, 'ELAS', iret, k11_ind_nomrc=k11)
           call jeexin(nommat//k11//'.VALR', iret)
           call jelira(nommat//k11//'.VALR', 'LONUTI', nbr)
           call jelira(nommat//k11//'.VALC', 'LONUTI', nbc)
@@ -602,7 +602,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         if (.not.opmail .and. nfh .gt. 0) then
 !         CORRECTION DE NFH SI ON SE TROMPE DANS XPOCMP
             if (nfh .gt. nfiss) nfh = nfiss
-            if (nfiss.gt.1) nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)           
+            if (nfiss.gt.1) nfh = zi(jcesd(8)-1+5+4*(ima-1)+2)
         endif
 !
 !       RECUPERATION DE LA DEFINITION DES FONCTION HEAVISIDES
@@ -614,16 +614,16 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !          MAIS IL PEUT ARRIVER QUE LA MAILLE VOIT AU MOINS
 !          1 NOEUD  AVEC UNE COMPOSANTE HEAVISIDE.
 !          LE DEPLACEMEMENT ASSOCIE DOIT VALOIR ZERO SUR LA MAILLE COURANTE
-!          DANS CE CAS, ON NE PREND PAS DE RISQUE, ON CALCULE AUSSI UN COEF 
+!          DANS CE CAS, ON NE PREND PAS DE RISQUE, ON CALCULE AUSSI UN COEF
 !          HEAVISIDE EGAL ZERO PAR LE HEAVN.
           if (ncompn_tmp.eq.0) then
             ncompn=5
             call wkvect(heavn, 'V V I', n*ncompn, jheavn)
             do ifh = 1, ncompn
-              do j = 1, n                
+              do j = 1, n
                 zi(jheavn-1+(j-1)*ncompn+ifh) = -99
               end do
-            end do           
+            end do
           else
             ncompn=ncompn_tmp
             call wkvect(heavn, 'V V I', n*ncompn, jheavn)
@@ -634,7 +634,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                 ASSERT(iad.gt.0)
                 zi(jheavn-1+(j-1)*ncompn+ifh) = zi(jcesv(12)-1+iad)
               end do
-            end do           
+            end do
           endif
           ASSERT(ncompn.eq.5)
         endif
@@ -704,7 +704,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
               if (ier.eq.0) young=.true.
             endif
           enddo
-          if (poiss) then 
+          if (poiss) then
             ka = 3.d0-4.d0*nu
             if (cplan) ka = (3.d0-nu)/(1.d0+nu)
             if (young) mu = e/(2.d0*(1.d0+nu))
@@ -803,7 +803,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         call detrsd('CHAM_ELEM_S', chs(ich))
     end do
 !
-    if (lvarc) call detrsd('CHAM_NO_S', varcns)
+    if (.not.opmail) call detrsd('CHAM_NO_S', varcns)
 !
     if (opmail) call jedetr(mailx)
     if (opmail) call jedetr(linofi)
