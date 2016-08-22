@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine te0254(option, nomte)
-        character(len=16) :: option
-        character(len=16) :: nomte
+        character(len=16), intent(in) :: option
+        character(len=16), intent(in) :: nomte
     end subroutine te0254
 end interface

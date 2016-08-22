@@ -111,5 +111,36 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=5.0E-3,),
           )
 
+
+# Test for ZERO matrix (issue25454)
+
+NULL=DEFI_MATERIAU( FLUIDE=_F( RHO = 0.,  CELE_R = 0.))
+
+CHAMPNUL=AFFE_MATERIAU(  MAILLAGE=MAYA,AFFE=(
+                       _F( GROUP_MA = ('HEXAEAU'),  MATER = NULL),
+                       )
+                            )
+
+COLNUL=AFFE_MODELE( MAILLAGE=MAYA,  AFFE=(
+                     _F( GROUP_MA = ('HEXAEAU'),
+                       MODELISATION = '3D_FLUIDE',  PHENOMENE = 'MECANIQUE'),),
+                    )
+
+
+MATK_0=CALC_MATR_ELEM(MODELE=COLNUL,
+                        CHAM_MATER=CHAMPNUL,  
+                        OPTION='RIGI_MECA',)
+
+MATM_0=CALC_MATR_ELEM(MODELE=COLNUL,
+                        CHAM_MATER=CHAMPNUL,  
+                        OPTION='MASS_MECA',)
+
+
+TEST_RESU(OBJET=_F(NOM= 'MATM_0         .M01.RESL' ,
+                   VALE_CALC = 0.0,))
+
+TEST_RESU(OBJET=_F(NOM= 'MATK_0  .ME001     .RESL' ,
+                   VALE_CALC = 0.0,))
+
 FIN()
 #

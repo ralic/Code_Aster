@@ -1,6 +1,18 @@
 subroutine te0253(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,117 +27,99 @@ subroutine te0253(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.......................................................................
+! aslint: disable=W0104
 !
-!     BUT: CALCUL DES MATRICES DE RIGIDITE  ELEMENTAIRES EN MECANIQUE
-!          ELEMENTS DE FLUIDE ISOPARAMETRIQUES 2D
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!          OPTION : 'RIGI_MECA '
+! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
+! Elementary computation
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
+! Elements: AXIS_FLUIDE/2D_FLUIDE
+! Options: RIGI_MECA/FORC_NODA/FULL_MECA/RAPH_MECA/RIGI_MECA_HYST/RIGI_MECA_TANG
 !
-!-----------------------------------------------------------------------
-    integer :: icompo, ideplm, ideplp, k, l, n1, n2
-    integer :: nbres, nn, nno2, nt2
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: nbres=2
+    character(len=16), parameter :: nomres(nbres) = (/'RHO   ', 'CELE_R'/)
+    real(kind=8) :: valres(nbres)
+    integer :: icodre(nbres)
+    integer :: jv_compo, jv_deplm, jv_deplp, k, l, n1, n2
+    integer :: nn, nno2, nt2
     real(kind=8) :: r
-!-----------------------------------------------------------------------
-    parameter         ( nbres=2 )
     character(len=8) :: fami, poum
-    character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres), kpg, spt
-    character(len=16) :: nomte, option
-    real(kind=8) :: valres(nbres), a(2, 2, 9, 9)
+    character(len=16) :: rela_comp
+    integer :: kpg, spt
+    real(kind=8) :: a(2, 2, 9, 9)
     real(kind=8) :: b(18, 18), ul(18), c(171)
     real(kind=8) :: poids, rho, celer
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: nno, kp, npg, ik, ijkl, i, j, imatuu
-    integer :: ivectu, jcret, ndim, jgano, nnos
+    integer :: ipoids, ivf, idfde, jv_geom, jv_mate
+    integer :: nno, kp, npg, ik, ijkl, i, j, jv_matr
+    integer :: jv_vect, jv_codret
+    aster_logical :: l_axis
 !
+! --------------------------------------------------------------------------------------------------
 !
+    fami       = 'FPG1'
+    kpg        = 1
+    spt        = 1
+    poum       = '+'
+    a(:,:,:,:) = 0.d0
+    l_axis     = lteatt('AXIS', 'OUI')
 !
+! - Get input fields
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-!
-    if (option .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA' .or. option .eq.&
-        'RIGI_MECA_TANG') then
-        call jevech('PCOMPOR', 'L', icompo)
-        if (zk16(icompo+3) .eq. 'COMP_ELAS') then
-            if (zk16(icompo) .ne. 'ELAS') then
-                call utmess('F', 'ELEMENTS2_90')
-            endif
+    if (option(1:9) .eq. 'FULL_MECA' .or.&
+        option .eq. 'RAPH_MECA' .or.&
+        option .eq. 'RIGI_MECA_TANG') then
+        call jevech('PCOMPOR', 'L', jv_compo)
+        rela_comp = zk16(jv_compo)
+        if (rela_comp .ne. 'ELAS') then
+            call utmess('F', 'FLUID1_1')
         endif
     endif
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PMATERC', 'L', jv_mate)
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
+! - Get element parameters
 !
-    nomres(1) = 'RHO'
-    nomres(2) = 'CELE_R'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
-                2, nomres, valres, icodre, 1)
-    rho = valres(1)
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+!
+! - Get material properties
+!
+    call rcvalb(fami , kpg     , spt   , poum  , zi(jv_mate),&
+                ' '  , 'FLUIDE', 0     , ' '   , [0.d0]     ,&
+                nbres, nomres  , valres, icodre, 1)
+    rho   = valres(1)
     celer = valres(2)
 !
-!     INITIALISATION DE LA MATRICE A
-    do k = 1, 2
-        do l = 1, 2
-            do i = 1, nno
-                do j = 1, i
-                    a(k,l,i,j) = 0.d0
-                end do
-            end do
-        end do
-    end do
-!
-!    BOUCLE SUR LES POINTS DE GAUSS
+! - Loop on Gauss points (compute (P**2)/ (RHO*(CEL**2)) )
 !
     do kp = 1, npg
-!
         k = (kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(jv_geom),&
                     poids)
-!
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!      TERME EN (P**2)/ (RHO*(CEL**2))  C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!
-        if (lteatt('AXIS','OUI')) then
+        if (l_axis) then
             r = 0.d0
             do i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
+                r = r + zr(jv_geom+2*(i-1))*zr(ivf+k+i-1)
             end do
             poids = poids*r
         endif
-!
         do i = 1, nno
             do j = 1, i
-                a(1,1,i,j) = a(1,1,i,j) + poids * zr(ivf+k+i-1) * zr( ivf+k+j-1) / rho / celer/ce&
-                             &ler
-!
+                if (celer .eq. 0.d0 .or. rho .eq. 0.d0) then
+                    a(1,1,i,j) = 0.d0
+                else
+                    a(1,1,i,j) = a(1,1,i,j) +&
+                                poids * zr(ivf+k+i-1) * zr( ivf+k+j-1) / rho / celer/celer
+                endif
             end do
-!
         end do
-!
     end do
 !
-! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
+! - Compute result
 !
     do k = 1, 2
         do l = 1, 2
@@ -138,53 +132,57 @@ subroutine te0253(option, nomte)
             end do
         end do
     end do
-!
     nno2 = nno*2
     nt2 = nno*(nno2+1)
 !
-    if (option(1:9) .ne. 'FULL_MECA' .and. option(1:9) .ne. 'RIGI_MECA') goto 9998
-    if (option .eq. 'RIGI_MECA_HYST') then
-        call jevech('PMATUUC', 'E', imatuu)
-        do i = 1, nt2
-            zc(imatuu+i-1)=dcmplx(c(i),0.d0)
+! - Save matrix
+!
+    if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_MECA') then
+        if (option .eq. 'RIGI_MECA_HYST') then
+            call jevech('PMATUUC', 'E', jv_matr)
+            do i = 1, nt2
+                zc(jv_matr+i-1)=dcmplx(c(i),0.d0)
+            end do
+        else
+            call jevech('PMATUUR', 'E', jv_matr)
+            do i = 1, nt2
+                zr(jv_matr+i-1)=c(i)
+            end do
+        endif
+    endif
+!
+! - Save vector
+!
+    if (option .eq. 'FULL_MECA' .or.&
+        option .eq. 'RAPH_MECA' .or.&
+        option .eq. 'FORC_NODA') then
+        call jevech('PVECTUR', 'E', jv_vect)
+        call jevech('PDEPLMR', 'L', jv_deplm)
+        call jevech('PDEPLPR', 'L', jv_deplp)
+        do i = 1, nno2
+            zr(jv_vect+i-1) = 0.d0
+            ul(i)=zr(jv_deplm+i-1)+zr(jv_deplp+i-1)
         end do
-    else
-        call jevech('PMATUUR', 'E', imatuu)
-        do i = 1, nt2
-            zr(imatuu+i-1)=c(i)
+        nn = 0
+        do n1 = 1, nno2
+            do n2 = 1, n1
+                nn = nn + 1
+                b(n1,n2) = c(nn)
+                b(n2,n1) = c(nn)
+            end do
+        end do
+        do n1 = 1, nno2
+            do n2 = 1, nno2
+                zr(jv_vect+n1-1) = zr(jv_vect+n1-1)+b(n1,n2)*ul(n2)
+            end do
         end do
     endif
-9998 continue
 !
-    if (option .ne. 'FULL_MECA' .and. option .ne. 'RAPH_MECA' .and. option .ne. 'FORC_NODA') &
-    goto 999
-    call jevech('PVECTUR', 'E', ivectu)
-    call jevech('PDEPLMR', 'L', ideplm)
-    call jevech('PDEPLPR', 'L', ideplp)
-    do i = 1, nno2
-        zr(ivectu+i-1) = 0.d0
-        ul(i)=zr(ideplm+i-1)+zr(ideplp+i-1)
-    end do
+! - Save return code
 !
-    nn = 0
-    do n1 = 1, nno2
-        do n2 = 1, n1
-            nn = nn + 1
-            b(n1,n2) = c(nn)
-            b(n2,n1) = c(nn)
-        end do
-    end do
-!
-    do n1 = 1, nno2
-        do n2 = 1, nno2
-            zr(ivectu+n1-1) = zr(ivectu+n1-1)+b(n1,n2)*ul(n2)
-        end do
-    end do
-!
-999 continue
     if (option(1:9) .eq. 'FULL_MECA' .or. option .eq. 'RAPH_MECA') then
-        call jevech('PCODRET', 'E', jcret)
-        zi(jcret) = 0
+        call jevech('PCODRET', 'E', jv_codret)
+        zi(jv_codret) = 0
     endif
 !
 end subroutine

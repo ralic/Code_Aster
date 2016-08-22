@@ -1,6 +1,17 @@
 subroutine te0254(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterf_types.h"
+#include "asterfort/dfdm2d.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/rcvalb.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,118 +26,112 @@ subroutine te0254(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!.......................................................................
-    implicit none
+! aslint: disable=W0104
 !
-!     BUT: CALCUL DES MATRICES DE MASSE ELEMENTAIRES EN MECANIQUE
-!          ELEMENTS  DE FLUIDE ISOPARAMETRIQUES 2D
+    character(len=16), intent(in) :: option
+    character(len=16), intent(in) :: nomte
 !
-!          OPTION : 'MASS_MECA '
+! --------------------------------------------------------------------------------------------------
 !
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!          ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
+! Elementary computation
 !
-#include "jeveux.h"
-#include "asterfort/dfdm2d.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/rcvalb.h"
+! Elements: AXIS_FLUIDE/2D_FLUIDE
+! Option: MASS_MECA
 !
-!-----------------------------------------------------------------------
-    integer :: nbres
+! --------------------------------------------------------------------------------------------------
+!
+    integer, parameter :: nbres=2
+    character(len=16), parameter :: nomres(nbres) = (/'RHO   ', 'CELE_R'/)
+    real(kind=8) :: valres(nbres)
+    integer :: icodre(nbres)
     real(kind=8) :: r
-!-----------------------------------------------------------------------
-    parameter         ( nbres=2 )
     character(len=8) :: fami, poum
-    character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres), kpg, spt
-    character(len=16) :: nomte, option
-    real(kind=8) :: valres(nbres), a(2, 2, 9, 9)
+    integer :: kpg, spt
+    real(kind=8) :: a(2, 2, 9, 9)
     real(kind=8) :: dfdx(9), dfdy(9), poids, rho, celer
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: nno, ndim, kp, npg2, nnos, ik, ijkl, i, j, k, l
-    integer :: imatuu, jgano
+    integer :: ipoids, ivf, idfde, jv_geom, jv_mate
+    integer :: nno, kp, npg, ik, ijkl, i, j, k, l
+    integer :: jv_matr
+    aster_logical :: l_axis
 !
+! --------------------------------------------------------------------------------------------------
 !
-    call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    fami       = 'FPG1'
+    kpg        = 1
+    spt        = 1
+    poum       = '+'
+    a(:,:,:,:) = 0.d0
+    l_axis     = lteatt('AXIS', 'OUI')
 !
+! - Get fields
 !
-    call jevech('PGEOMER', 'L', igeom)
-    call jevech('PMATERC', 'L', imate)
-    call jevech('PMATUUR', 'E', imatuu)
+    call jevech('PGEOMER', 'L', jv_geom)
+    call jevech('PMATERC', 'L', jv_mate)
+    call jevech('PMATUUR', 'E', jv_matr)
 !
-    nomres(1)='RHO'
-    nomres(2)='CELE_R'
-    fami='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    call rcvalb(fami, kpg, spt, poum, zi(imate),&
-                ' ', 'FLUIDE', 0, ' ', [0.d0],&
-                2, nomres, valres, icodre, 1)
-    rho = valres(1)
+! - Get element parameters
+!
+    call elrefe_info(fami='RIGI', nno=nno, npg=npg, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+!
+! - Get material properties
+!
+    call rcvalb(fami , kpg     , spt   , poum  , zi(jv_mate),&
+                ' '  , 'FLUIDE', 0     , ' '   , [0.d0],&
+                nbres, nomres  , valres, icodre, 1)
+    rho   = valres(1)
     celer = valres(2)
 !
-    do 113 k = 1, 2
-        do 113 l = 1, 2
-            do 113 i = 1, nno
-                do 113 j = 1, i
-                    a(k,l,i,j) = 0.d0
-113              continue
+! - Loop on Gauss points
 !
-!    BOUCLE SUR LES POINTS DE GAUSS
-!
-    do 101 kp = 1, npg2
+    do kp = 1, npg
         k=(kp-1)*nno
-        call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
+        call dfdm2d(nno, kp, ipoids, idfde, zr(jv_geom),&
                     poids, dfdx, dfdy)
-!%
-        if (lteatt('AXIS','OUI')) then
+        if (l_axis) then
             r = 0.d0
-            do 102 i = 1, nno
-                r = r + zr(igeom+2*(i-1))*zr(ivf+k+i-1)
-102          continue
+            do i = 1, nno
+                r = r + zr(jv_geom+2*(i-1))*zr(ivf+k+i-1)
+            end do
             poids = poids*r
         endif
+        do i = 1, nno
+            do j = 1, i
 !
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!    TERME EN -RHO*(GRAD(PHI)**2)          C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+! ----- Compute -RHO*(GRAD(PHI)**2)
 !
-        do 106 i = 1, nno
-            do 107 j = 1, i
                 a(2,2,i,j) = a(2,2,i,j) - poids * (dfdx(i)*dfdx(j) + dfdy(i)*dfdy(j))*rho
 !
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!    TERME EN   (P*PHI)/(CEL**2)       C
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+! ----- Compute (P*PHI)/(CEL**2)
 !
-                a(1,2,i,j) = a(1,2,i,j) + poids * zr(ivf+k+i-1) * zr( ivf+k+j-1)/ celer / celer
+                if (celer .eq. 0.d0) then
+                    a(1,2,i,j) = 0.d0
+                else
+                    a(1,2,i,j) = a(1,2,i,j) + poids * zr(ivf+k+i-1) * zr( ivf+k+j-1)/ celer / celer
+                endif
+            end do
+        end do
+    end do
 !
-107          continue
+! - Matrix is symmetric
 !
-106      continue
-!
-101  end do
-!
-    do 108 i = 1, nno
-        do 109 j = 1, i
+    do i = 1, nno
+        do j = 1, i
             a(2,1,i,j) = a(1,2,i,j)
-109      continue
-108  end do
+        end do
+    end do
 !
-! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
+! - Save matrix
 !
-    do 112 k = 1, 2
-        do 112 l = 1, 2
-            do 112 i = 1, nno
+    do k = 1, 2
+        do l = 1, 2
+            do i = 1, nno
                 ik = ((2*i+k-3) * (2*i+k-2)) / 2
-                do 112 j = 1, i
+                do j = 1, i
                     ijkl = ik + 2 * (j-1) + l
-                    zr(imatuu+ijkl-1) = a(k,l,i,j)
-112              continue
+                    zr(jv_matr+ijkl-1) = a(k,l,i,j)
+                end do
+            end do
+        end do
+    end do
 !
 end subroutine
