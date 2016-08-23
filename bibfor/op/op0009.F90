@@ -209,7 +209,7 @@ subroutine op0009()
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'RIGI_ACOU') then
-        call meriac(modele, ncha, zk8(icha), mate, matel)
+        call meriac(modele, ncha, v_list_load8, mate, matel, base)
 !
 ! --------------------------------------------------------------------------------------------------
     else if (suropt.eq.'MASS_ACOU') then
