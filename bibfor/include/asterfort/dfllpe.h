@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
-                      nocmp, cricmp, valere)
-        character(len=16) :: mcfact
-        integer :: iechec
-        character(len=16) :: even
-        real(kind=8) :: penmax
-        character(len=16) :: nocham
-        character(len=16) :: nocmp
-        character(len=16) :: cricmp
-        real(kind=8) :: valere
+    subroutine dfllpe(keywf    , i_fail        , event_type,&
+                      vale_ref , nom_cham      , nom_cmp   , crit_cmp,&
+                      pene_maxi, resi_glob_maxi)
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: i_fail
+        character(len=16), intent(in) :: event_type
+        real(kind=8), intent(out) :: vale_ref
+        character(len=16), intent(out) :: nom_cham
+        character(len=16), intent(out) :: nom_cmp
+        character(len=16), intent(out) :: crit_cmp
+        real(kind=8), intent(out) :: pene_maxi
+        real(kind=8), intent(out) :: resi_glob_maxi
     end subroutine dfllpe
 end interface

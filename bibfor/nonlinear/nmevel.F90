@@ -1,6 +1,6 @@
-subroutine nmevel(sddisc     , nume_inst, vale  , loop_name, lsvimx,&
-                  ldvres     , linsta   , lerrcv, lerror   , conver,&
-                  ds_contact_)
+subroutine nmevel(sddisc, nume_inst  , vale  , loop_name, lsvimx,&
+                  ldvres, lresmx     , linsta, lerrcv   , lerror,&
+                  conver, ds_contact_)
 !
 use NonLin_Datastructure_type
 !
@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/utdidt.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,6 +38,7 @@ implicit none
     integer, intent(in) :: nume_inst
     aster_logical, intent(in) :: lsvimx
     aster_logical, intent(in) :: ldvres
+    aster_logical, intent(in) :: lresmx
     aster_logical, intent(in) :: linsta
     aster_logical, intent(in) :: lerrcv
     aster_logical, intent(in) :: lerror
@@ -68,6 +69,7 @@ implicit none
 !               'INST' - BOUCLE SUR LES PAS DE TEMPS
 ! IN  LSVIMX : .TRUE. SI ITERATIONS MAX ATTEINT DANS SOLVEUR ITERATIF
 ! IN  LDVRES : .TRUE. SI DIVERGENCE DU RESIDU
+! IN  LRESMX : .TRUE. SI DIVERGENCE DU RESIDU (TROP GRAND)
 ! IN  LINSTA : .TRUE. SI INSTABILITE DETECTEE
 ! IN  LERRCV : .TRUE. SI ERREUR A CONVERGENCE DECLENCHEE
 ! IN  LERROR : .TRUE. SI ERREUR DECLENCHEE
@@ -109,6 +111,13 @@ implicit none
             endif
         else if (event_name.eq.'DIVE_RESI') then
             if (ldvres) then
+                i_echec_acti = i_echec
+                if (i_echec_acti .ne. 0) then
+                    goto 99
+                endif
+            endif
+        else if (event_name.eq.'RESI_MAXI') then
+            if (lresmx) then
                 i_echec_acti = i_echec
                 if (i_echec_acti .ne. 0) then
                     goto 99

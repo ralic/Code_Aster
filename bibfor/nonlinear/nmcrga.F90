@@ -41,7 +41,7 @@ subroutine nmcrga(sderro)
 ! ----------------------------------------------------------------------
 !
     integer :: zeven
-    parameter   (zeven = 32)
+    parameter   (zeven = 33)
     character(len=16) :: neven(zeven)
     character(len=8) :: ncret(zeven)
     integer :: vcret(zeven)
@@ -64,7 +64,7 @@ subroutine nmcrga(sderro)
      &              'ERRE_TIMN','ERRE_TIMP','ERRE_EXCP',&
      &              'ITER_MAXI',&
      &              'DIVE_RESI','RESI_MAXR','RESI_MAXN',&
-     &              'CRIT_STAB','DIVE_FIXG',&
+     &              'CRIT_STAB','DIVE_FIXG','RESI_MAXI', &
      &              'DIVE_FIXF','DIVE_FIXC','ERRE_CTCG',&
      &              'ERRE_CTCF','ERRE_CTCC','DIVE_FROT',&
      &              'DIVE_GEOM','DIVE_RELA','DIVE_MAXI',&
@@ -80,7 +80,7 @@ subroutine nmcrga(sderro)
      &              'XXX','XXX','XXX',&
      &              'XXX',&
      &              'XXX','XXX','XXX',&
-     &              'XXX','XXX',&
+     &              'XXX','XXX','XXX',&
      &              'XXX','XXX','XXX',&
      &              'XXX','XXX','XXX',&
      &              'XXX','XXX','XXX',&
@@ -96,7 +96,7 @@ subroutine nmcrga(sderro)
      &               99,99,99,&
      &               99,&
      &               99,99,99,&
-     &               99,99,&
+     &               99,99,99,&
      &               99,99,99,&
      &               99,99,99,&
      &               99,99,99,&
@@ -119,7 +119,7 @@ subroutine nmcrga(sderro)
      &              'ERRI_CALC','ERRI_CALC','ERRI_CALC',&
      &              'ERRI_NEWT',&
      &              'EVEN'     ,'EVEN'     ,'EVEN'     ,&
-     &              'EVEN'     ,'CONV_FIXE',&
+     &              'EVEN'     ,'CONV_FIXE','EVEN'     ,&
      &              'CONV_FIXE','CONV_FIXE','ERRI_FIXE',&
      &              'ERRI_FIXE','ERRI_FIXE','CONV_RESI',&
      &              'CONV_NEWT','CONV_RESI','CONV_RESI',&
@@ -135,7 +135,7 @@ subroutine nmcrga(sderro)
      &              ' ',' '       ,' ',&
      &              ' ',&
      &              ' ',' '       ,' ',&
-     &              ' '       ,' ',&
+     &              ' '       ,' ',' ',&
      &              ' ',' '       ,' ',&
      &              ' ',' '       ,' ',&
      &              ' ',' '       ,' ',&
@@ -152,7 +152,7 @@ subroutine nmcrga(sderro)
      &        'MECANONLINE10_7' ,'MECANONLINE10_5' ,'MECANONLINE10_8' ,&
      &        'MECANONLINE10_3' ,&
      &        ' '               ,' '               ,' '               ,&
-     &        'MECANONLINE10_20',' '               ,&
+     &        'MECANONLINE10_20',' '               ,'MECANONLINE10_26',&
      &        ' '               ,' '               ,'MECANONLINE10_9' ,&
      &        'MECANONLINE10_10','MECANONLINE10_11',' '               ,&
      &        ' '               ,' '               ,' '               ,&

@@ -1,7 +1,11 @@
-subroutine dfllae(mcfact, iechec, pcplus)
+subroutine dfllae(keywf, i_fail, pcent_iter_plus)
+!
+implicit none
+!
+#include "asterfort/getvr8.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,39 +21,25 @@ subroutine dfllae(mcfact, iechec, pcplus)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/getvr8.h"
-    character(len=16) :: mcfact
-    integer :: iechec
-    real(kind=8) :: pcplus
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_fail
+    real(kind=8), intent(out) :: pcent_iter_plus
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! OPERATEUR DEFI_LIST_INST
+! DEFI_LIST_INST
 !
-! LECTURE DES PARAMETRES L'ACTION DE TYPE ITER_SUPPL
+! Get parameters of ACTION=ITER_SUPPL for current failure keyword
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword to read failures
+! In  i_fail           : index of current factor keyword to read failure
+! Out pcent_iter_plus  : value of PCENT_ITER_PLUS for ACTION=ITER_SUPPL
 !
-! IN  MCFACT : MOT-CLEF FACTEUR POUR LIRE L'ECHEC
-! IN  IECHEC : NUMERO OCCURRENCE ECHEC
-! OUT PCPLUS : VALEUR DE PCENT_ITER_PLUS
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iret
-!
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- INITIALISATIONS
-!
-    pcplus = 0.d0
-!
-! --- OPTIONS DE L'ACTION
-!
-    call getvr8(mcfact, 'PCENT_ITER_PLUS', iocc=iechec, scal=pcplus, nbret=iret)
+    pcent_iter_plus = 0.d0
+    call getvr8(keywf, 'PCENT_ITER_PLUS', iocc=i_fail, scal=pcent_iter_plus)
 !
 end subroutine

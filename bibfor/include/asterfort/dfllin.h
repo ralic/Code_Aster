@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dfllin(mcfact, iechec, cmmaxi)
-        character(len=16) :: mcfact
-        integer :: iechec
-        real(kind=8) :: cmmaxi
+    subroutine dfllin(keywf, i_fail, coef_maxi)
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: i_fail
+        real(kind=8), intent(out) :: coef_maxi
     end subroutine dfllin
 end interface

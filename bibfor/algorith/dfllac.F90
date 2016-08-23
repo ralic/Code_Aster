@@ -1,9 +1,20 @@
-subroutine dfllac(mcfact, iechec, dtmin, even, action,&
-                  submet, subaut, pasmin, nbrpas, niveau,&
-                  pcplus, cmmaxi, prcoll, ducoll)
+subroutine dfllac(keywf          , i_fail       , dtmin     , event_type,&
+                  action_type    ,&
+                  subd_methode   , subd_pas_mini,&
+                  subd_niveau    , subd_pas     ,&
+                  subd_auto      , subd_inst    , subd_duree,&
+                  pcent_iter_plus, coef_maxi    )
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dfllae.h"
+#include "asterfort/dflldc.h"
+#include "asterfort/dfllin.h"
+#include "asterfort/getvtx.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,72 +30,78 @@ subroutine dfllac(mcfact, iechec, dtmin, even, action,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/assert.h"
-#include "asterfort/dfllae.h"
-#include "asterfort/dflldc.h"
-#include "asterfort/dfllin.h"
-#include "asterfort/getvtx.h"
-    character(len=16) :: mcfact, even
-    integer :: iechec
-    real(kind=8) :: pasmin, dtmin
-    character(len=16) :: submet, action, subaut
-    integer :: nbrpas, niveau
-    real(kind=8) :: pcplus, cmmaxi, prcoll, ducoll
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_fail
+    real(kind=8), intent(in) :: dtmin
+    character(len=16), intent(in) :: event_type
+    character(len=16), intent(out) :: action_type
+    character(len=16), intent(out) :: subd_methode
+    real(kind=8), intent(out) :: subd_pas_mini
+    integer, intent(out) :: subd_niveau
+    integer, intent(out) :: subd_pas
+    character(len=16), intent(out) :: subd_auto
+    real(kind=8), intent(out) :: subd_inst
+    real(kind=8), intent(out) :: subd_duree
+    real(kind=8), intent(out) :: pcent_iter_plus
+    real(kind=8), intent(out) :: coef_maxi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! OPERATEUR DEFI_LIST_INST
+! DEFI_LIST_INST
 !
-! LECTURE DES PARAMETRES DE L'ACTION
+! Get parameters of ACTION for current failure keyword
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MCFACT : MOT-CLEF FACTEUR POUR LIRE L'ECHEC
-! IN  IECHEC : NUMERO OCCURRENCE ECHEC
-! IN  EVEN   : NOM DE L'EVENEMENT
-! IN  DTMIN  : INCREMENT MINIMUM DANS LA LISTE D'INSTANT
-! OUT ACTION : ACTION
-! OUT SUBMET : TYPE DE SUBDIVISION
-! OUT SUBAUT : TYPE DE SUBDIVISION AUTOMATIQUE
-! OUT PASMIN : VALEUR DE SUBD_PAS_MINI
-! OUT NBRPAS : VALEUR DE SUBD_PAS
-! OUT NIVEAU : VALEUR DE SUBD_NIVEAU
-! OUT PCPLUS : VALEUR DE PCENT_ITER_PLUS
-! OUT CMMAXI : VALEUR DE COEF_MULT_MAXI
-! OUT PRCOLL : VALEUR DE PREC_COLLISION
-! OUT DUCOLL : VALEUR DE DUREE_COLLISION
+! In  keywf            : factor keyword to read failures
+! In  i_fail           : index of current factor keyword to read failure
+! In  dtmin            : minimum time increment in list of times
+! In  event_type       : type of event
+! Out action_type      : type of action
+! Out subd_methode     : value of SUBD_METHODE for ACTION=DECOUPE
+! Out subd_pas_mini    : value of SUBD_PAS_MINI for ACTION=DECOUPE
+! Out subd_niveau      : value of SUBD_NIVEAU for ACTION=DECOUPE
+! Out subd_pas         : value of SUBD_PAS for ACTION=DECOUPE
+! Out subd_auto        : value of SUBD_AUTO for ACTION=DECOUPE
+! Out subd_inst        : value of SUBD_INST for ACTION=DECOUPE
+! Out subd_duree       : value of SUBD_DUREE for ACTION=DECOUPE
+! Out pcent_iter_plus  : value of PCENT_ITER_PLUS for ACTION=ITER_SUPPL
+! Out coef_maxi        : value of COEF_MAXI for ACTION=ADAPT_COEF_PENA
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer :: nocc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    action = ' '
+    action_type = ' '
 !
-! --- ACTION
+! - Read
 !
-    call getvtx(mcfact, 'ACTION', iocc=iechec, scal=action, nbret=iret)
-    if (action .eq. 'ARRET') then
-! ----- PAS D'OPTIONS
-    else if (action.eq.'DECOUPE') then
-        call dflldc(mcfact, iechec, dtmin, even, submet,&
-                    subaut, pasmin, nbrpas, niveau, prcoll,&
-                    ducoll)
-    else if (action.eq.'ITER_SUPPL') then
-        call dfllae(mcfact, iechec, pcplus)
-        call dflldc(mcfact, iechec, dtmin, even, submet,&
-                    subaut, pasmin, nbrpas, niveau, prcoll,&
-                    ducoll)
-    else if (action.eq.'ADAPT_COEF_PENA') then
-        call dfllin(mcfact, iechec, cmmaxi)
-    else if (action.eq.'AUTRE_PILOTAGE') then
-        call dflldc(mcfact, iechec, dtmin, even, submet,&
-                    subaut, pasmin, nbrpas, niveau, prcoll,&
-                    ducoll)
-    else if (action.eq.'CONTINUE') then
-! ----- PAS D'OPTIONS
+    call getvtx(keywf, 'ACTION', iocc=i_fail, scal=action_type, nbret=nocc)
+    ASSERT(nocc .gt. 0)
+    if (action_type .eq. 'ARRET') then
+!
+    else if (action_type.eq.'DECOUPE') then
+        call dflldc(keywf       , i_fail       , dtmin     , event_type,&
+                    subd_methode, subd_pas_mini,&
+                    subd_niveau , subd_pas     ,&
+                    subd_auto   , subd_inst    , subd_duree)
+    else if (action_type.eq.'ITER_SUPPL') then
+        call dfllae(keywf, i_fail, pcent_iter_plus)
+        call dflldc(keywf       , i_fail       , dtmin     , event_type,&
+                    subd_methode, subd_pas_mini,&
+                    subd_niveau , subd_pas     ,&
+                    subd_auto   , subd_inst    , subd_duree)
+    else if (action_type.eq.'ADAPT_COEF_PENA') then
+        call dfllin(keywf, i_fail, coef_maxi)
+    else if (action_type.eq.'AUTRE_PILOTAGE') then
+        call dflldc(keywf       , i_fail       , dtmin     , event_type,&
+                    subd_methode, subd_pas_mini,&
+                    subd_niveau , subd_pas     ,&
+                    subd_auto   , subd_inst    , subd_duree)
+    else if (action_type.eq.'CONTINUE') then
+!
     else
         ASSERT(.false.)
     endif

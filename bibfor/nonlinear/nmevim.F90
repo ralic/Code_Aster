@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -133,6 +133,8 @@ implicit none
                     call utmess('I', 'MECANONLINE10_20')
                 else if (meven.eq.'MECANONLINE10_24') then
                     call utmess('I', 'MECANONLINE10_24')
+                 else if (meven.eq.'MECANONLINE10_26') then
+                    call utmess('I', 'MECANONLINE10_26')
                 else if (meven.eq.'MECANONLINE10_25') then
                     if (cvbouc .and. loop_name .eq. 'NEWT') then
                         call utmess('A', 'MECANONLINE10_25')
@@ -168,6 +170,11 @@ implicit none
                 call nmimpx(ds_print)
             endif
             call utmess('I', 'MECANONLINE10_23')
+        else if (event_name.eq.'RESI_MAXI') then
+            if (l_sep_line) then
+                call nmimpx(ds_print)
+            endif
+            call utmess('I', 'MECANONLINE10_26')
         else if (event_name.eq.'DELTA_GRANDEUR') then
             if (l_sep_line) then
                 call nmimpx(ds_print)

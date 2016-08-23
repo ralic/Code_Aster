@@ -1,7 +1,7 @@
 function dfllvd(vect)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ function dfllvd(vect)
     integer :: llinr
     parameter   (llinr=11)
     integer :: leevr, leevk, lesur
-    parameter   (leevr=6,leevk=3,lesur=10)
+    parameter   (leevr=7,leevk=3,lesur=10)
     integer :: laevr, laevk, latpr, latpk
     parameter   (laevr=6,laevk=1,latpr=6,latpk=4)
 !

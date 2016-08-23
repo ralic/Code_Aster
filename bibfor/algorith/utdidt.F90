@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -216,6 +216,7 @@ implicit none
                 if (vali .eq. 3) valk = 'INTERPENETRATION'
                 if (vali .eq. 4) valk = 'DIVE_RESI'
                 if (vali .eq. 5) valk = 'INSTABILITE'
+                if (vali .eq. 6) valk = 'RESI_MAXI'
             else if (getset.eq.'E') then
                 if (valk .eq. 'ERRE') then
                     v_sddisc_eevr(leevr*(iechec-1)+1) = 0.d0
@@ -308,6 +309,15 @@ implicit none
                 valr = v_sddisc_eevr(leevr*(iechec-1)+6)
             else if (getset.eq.'E') then
                 v_sddisc_eevr(leevr*(iechec-1)+6) = valr
+            endif
+!
+! ----- Parameters for RESI_MAXI
+!
+        else if (question.eq.'RESI_GLOB_MAXI') then
+            if (getset .eq. 'L') then
+                valr = v_sddisc_eevr(leevr*(iechec-1)+7)
+            else if (getset.eq.'E') then
+                v_sddisc_eevr(leevr*(iechec-1)+7) = valr
             endif
 !
 ! ----- Parameters for DECOUPE

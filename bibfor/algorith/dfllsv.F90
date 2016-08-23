@@ -1,11 +1,21 @@
-subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
-                  even, action, submet, subaut, pasmin,&
-                  nbrpas, niveau, pcplus, cmmaxi, delcol,&
-                  durdec, penmax, cricmp, valere, nocham,&
-                  nocmp)
+subroutine dfllsv(v_sdlist_infor, v_sdlist_evenr, v_sdlist_evenk, v_sdlist_subdr,&
+                  i_fail_save   ,&
+                  event_type    , vale_ref    , nom_cham        , nom_cmp       ,&
+                  crit_cmp      , pene_maxi   , resi_glob_maxi  ,&
+                  action_type   , subd_methode, subd_auto       , subd_pas_mini ,&
+                  subd_pas      , subd_niveau , pcent_iter_plus , coef_maxi     ,&
+                  subd_inst     , subd_duree)
+!
+implicit none
+!
+#include "asterfort/assert.h"
+#include "asterfort/dfllvd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,176 +30,175 @@ subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
 ! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/dfllvd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: lisifr, lisevr, lisevk, lisesu
-    integer :: isauve
-    real(kind=8) :: pasmin, pcplus, penmax
-    character(len=16) :: even, action
-    character(len=16) :: submet, subaut
-    integer :: nbrpas, niveau
-    real(kind=8) :: valere
-    character(len=16) :: nocham, nocmp, cricmp
-    real(kind=8) :: cmmaxi, delcol, durdec
 !
-! ----------------------------------------------------------------------
+    real(kind=8), intent(in), pointer :: v_sdlist_infor(:)
+    real(kind=8), intent(in), pointer :: v_sdlist_evenr(:)
+    character(len=16), intent(in), pointer :: v_sdlist_evenk(:)
+    real(kind=8), intent(in), pointer :: v_sdlist_subdr(:)
+    integer, intent(in) :: i_fail_save
+    character(len=16), intent(in) :: event_type
+    real(kind=8), intent(in) :: vale_ref
+    character(len=16), intent(in) :: nom_cham
+    character(len=16), intent(in) :: nom_cmp
+    character(len=16), intent(in) :: crit_cmp
+    real(kind=8), intent(in) :: pene_maxi
+    real(kind=8), intent(in) :: resi_glob_maxi
+    character(len=16), intent(in) :: action_type
+    character(len=16), intent(in) :: subd_methode
+    real(kind=8), intent(in) :: subd_pas_mini
+    integer, intent(in) :: subd_niveau
+    integer, intent(in) :: subd_pas
+    character(len=16), intent(in) :: subd_auto
+    real(kind=8), intent(in) :: subd_inst
+    real(kind=8), intent(in) :: subd_duree
+    real(kind=8), intent(in) :: pcent_iter_plus
+    real(kind=8), intent(in) :: coef_maxi
 !
-! OPERATEUR DEFI_LIST_INST
+! --------------------------------------------------------------------------------------------------
 !
-! ECRITURE DES INFORMATIONS DANS LA SD LIST
+! DEFI_LIST_INST
 !
-! ----------------------------------------------------------------------
+! Save parameters in datastructure
 !
+! --------------------------------------------------------------------------------------------------
 !
-! IN  LISIFR : NOM DE L'OBJET INFOS SUR LA LISTE
-! IN  LISEVR : NOM DE L'OBJET INFOS ECHEC - REELS
-! IN  LISEVK : NOM DE L'OBJET INFOS ECHEC - CHAINES
-! IN  LISESU : NOM DE L'OBJET INFOS ECHEC - OPTIONS DECOUPE
-! IN  ISAUVE : OCCURRENCE POUR LA SAUVEGARDE
-! IN  EVEN   : NOM DE L'EVENEMENT
-! IN  ACTION : NOM DE L'ACTION
-! IN  SUBMET : TYPE DE SUBDIVISION
-! IN  SUBAUT : TYPE DE SUBDIVISION AUTOMATIQUE
-! IN  PASMIN : VALEUR DE SUBD_PAS_MINI
-! IN  NBRPAS : VALEUR DE SUBD_PAS
-! IN  NIVEAU : VALEUR DE SUBD_NIVEAU
-! IN  PCPLUS : VALEUR DE PCENT_ITER_PLUS
-! IN  PENMAX : VALEUR DE PENE_MAXI
-! IN  CRICMP : VALEUR DE CRIT_COMP
-! IN  VALERE : VALEUR DE VALE_REF
-! IN  NOCHAM : VALEUR DE NOM_CHAM
-! IN  NOCMP  : VALEUR DE NOM_CMP
-! IN  CMMAXI : VALEUR DE COEF_MULT_MAXI
-! IN  DELCOL : VALEUR DE DELTAT_COLLISION
-! IN  DURDEC : VALEUR DE DUREE_DECOUPE
+! In  event_type       : type of event
+! In  vale_ref         : value of VALE_REF for EVENEMENT=DELTA_GRANDEUR
+! In  nom_cham         : value of NOM_CHAM for EVENEMENT=DELTA_GRANDEUR
+! In  nom_cmp          : value of NOM_CMP for EVENEMENT=DELTA_GRANDEUR
+! In  crit_cmp         : value of CRIT_CMP for EVENEMENT=DELTA_GRANDEUR
+! In  pene_maxi        : value of PENE_MAXI for EVENEMENT=INTERPENETRATION
+! In  resi_glob_maxi   : value of RESI_GLOB_MAXI for EVENEMENT=RESI_MAXI
+! In  action_type      : type of action
+! In  subd_methode     : value of SUBD_METHODE for ACTION=DECOUPE
+! In  subd_pas_mini    : value of SUBD_PAS_MINI for ACTION=DECOUPE
+! In  subd_niveau      : value of SUBD_NIVEAU for ACTION=DECOUPE
+! In  subd_pas         : value of SUBD_PAS for ACTION=DECOUPE
+! In  subd_auto        : value of SUBD_AUTO for ACTION=DECOUPE
+! In  subd_inst        : value of SUBD_INST for ACTION=DECOUPE
+! In  subd_duree       : value of SUBD_DUREE for ACTION=DECOUPE
+! In  pcent_iter_plus  : value of PCENT_ITER_PLUS for ACTION=ITER_SUPPL
+! In  coef_maxi        : value of COEF_MAXI for ACTION=ADAPT_COEF_PENA
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: leevr, leevk, lesur
-    integer :: jlinr, jeevr, jeevk, jesur
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-! --- TAILLE DES VECTEURS
+! - Get sizes of objects
 !
     leevr = dfllvd('LEEVR')
     leevk = dfllvd('LEEVK')
     lesur = dfllvd('LESUR')
 !
-! --- ACCES SD
+! - Alarm for no-step cut
 !
-    call jeveuo(lisifr, 'E', jlinr)
-    call jeveuo(lisevr, 'E', jeevr)
-    call jeveuo(lisevk, 'E', jeevk)
-    call jeveuo(lisesu, 'E', jesur)
-!
-! --- ALARME SI LE RE-DECOUPAGE EN CAS D'ERREUR EST DEBRAYE
-!
-    if (even .eq. 'ERRE') then
-        if (action .eq. 'ARRET') then
+    if (event_type .eq. 'ERRE') then
+        if (action_type .eq. 'ARRET') then
             call utmess('I', 'DISCRETISATION_9')
         endif
     endif
 !
-! --- AU MOINS UNE ACTION DE SOUS-DECOUPAGE A ETE DEFINIE
+! - At least one ACTION=DECOUPE
 !
-    if (action .eq. 'DECOUPE') then
-        zr(jlinr-1+7) = 1.d0
+    if (action_type .eq. 'DECOUPE') then
+        v_sdlist_infor(7) = 1.d0
     endif
 !
-! --- TYPE D'EVENEMENT
+! - Type of event
 !
-    if (even .eq. 'ERRE') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 0.d0
-    else if (even.eq.'DELTA_GRANDEUR') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 1.d0
-    else if (even.eq.'COLLISION') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 2.d0
-    else if (even.eq.'INTERPENETRATION') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 3.d0
-    else if (even.eq.'DIVE_RESI') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 4.d0
-    else if (even.eq.'INSTABILITE') then
-        zr(jeevr-1+leevr*(isauve-1)+1) = 5.d0
+    if (event_type .eq. 'ERRE') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 0.d0
+    else if (event_type.eq.'DELTA_GRANDEUR') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 1.d0
+    else if (event_type.eq.'COLLISION') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 2.d0
+    else if (event_type.eq.'INTERPENETRATION') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 3.d0
+    else if (event_type.eq.'DIVE_RESI') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 4.d0
+    else if (event_type.eq.'INSTABILITE') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 5.d0
+    else if (event_type.eq.'RESI_MAXI') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+1) = 6.d0
     else
         ASSERT(.false.)
     endif
 !
-! --- ACTION SI EVENEMENT DECLENCHE
+! - Type of action
 !
-    if (action .eq. 'ARRET') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 0.d0
-    else if (action.eq.'DECOUPE') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 2.d0
-    else if (action.eq.'ITER_SUPPL') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 3.d0
-    else if (action.eq.'AUTRE_PILOTAGE') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 4.d0
-    else if (action.eq.'ADAPT_COEF_PENA') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 5.d0
-    else if (action.eq.'CONTINUE') then
-        zr(jeevr-1+leevr*(isauve-1)+2) = 6.d0
+    if (action_type .eq. 'ARRET') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 0.d0
+    else if (action_type.eq.'DECOUPE') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 2.d0
+    else if (action_type.eq.'ITER_SUPPL') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 3.d0
+    else if (action_type.eq.'AUTRE_PILOTAGE') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 4.d0
+    else if (action_type.eq.'ADAPT_COEF_PENA') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 5.d0
+    else if (action_type.eq.'CONTINUE') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+2) = 6.d0
     else
         ASSERT(.false.)
     endif
 !
-! --- EVENEMENT 'DELTA_GRANDEUR' - PARAMETRES
+! - Parameters for EVENEMENT = 'DELTA_GRANDEUR'
 !
-    if (even .eq. 'DELTA_GRANDEUR') then
-        zr (jeevr-1+leevr*(isauve-1)+5) = valere
-        zk16(jeevk-1+leevk*(isauve-1)+1) = nocham
-        zk16(jeevk-1+leevk*(isauve-1)+2) = nocmp
-        zk16(jeevk-1+leevk*(isauve-1)+3) = cricmp
+    if (event_type .eq. 'DELTA_GRANDEUR') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+5) = vale_ref
+        v_sdlist_evenk(leevk*(i_fail_save-1)+1) = nom_cham
+        v_sdlist_evenk(leevk*(i_fail_save-1)+2) = nom_cmp
+        v_sdlist_evenk(leevk*(i_fail_save-1)+3) = crit_cmp
     endif
 !
-! --- EVENEMENT 'INTERPENETRATION' - PARAMETRES
+! - Parameters for EVENEMENT = 'INTERPENETRATION'
 !
-    if (even .eq. 'INTERPENETRATION') then
-        zr(jeevr-1+leevr*(isauve-1)+6) = penmax
+    if (event_type .eq. 'INTERPENETRATION') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+6) = pene_maxi
     endif
 !
-! --- ACTION 'DECOUPE' - PARAMETRES
+! - Parameters for EVENEMENT = 'INTERPENETRATION'
 !
-    if (submet .eq. 'MANUEL') then
-        zr(jesur-1+lesur*(isauve-1)+1) = 1.d0
-        zr(jesur-1+lesur*(isauve-1)+2) = nbrpas
-        zr(jesur-1+lesur*(isauve-1)+3) = pasmin
-        zr(jesur-1+lesur*(isauve-1)+4) = niveau
-    else if (submet.eq.'AUTO') then
-        zr(jesur-1+lesur*(isauve-1)+1) = 2.d0
-        zr(jesur-1+lesur*(isauve-1)+3) = pasmin
-        zr(jesur-1+lesur*(isauve-1)+5) = delcol
-        zr(jesur-1+lesur*(isauve-1)+6) = durdec
-        if (subaut .eq. 'COLLISION') then
-            zr(jesur-1+lesur*(isauve-1)+10) = 1.d0
-        else if (subaut.eq.'EXTRAPOLE') then
-            zr(jesur-1+lesur*(isauve-1)+10) = 2.d0
+    if (event_type .eq. 'RESI_MAXI') then
+        v_sdlist_evenr(leevr*(i_fail_save-1)+7) = resi_glob_maxi
+    endif
+!
+! - Parameters for ACTION = 'DECOUPE'
+!
+    if (subd_methode .eq. 'MANUEL') then
+        v_sdlist_subdr(lesur*(i_fail_save-1)+1) = 1.d0
+        v_sdlist_subdr(lesur*(i_fail_save-1)+2) = subd_pas
+        v_sdlist_subdr(lesur*(i_fail_save-1)+3) = subd_pas_mini
+        v_sdlist_subdr(lesur*(i_fail_save-1)+4) = subd_niveau
+    else if (subd_methode.eq.'AUTO') then
+        v_sdlist_subdr(lesur*(i_fail_save-1)+1) = 2.d0
+        v_sdlist_subdr(lesur*(i_fail_save-1)+3) = subd_pas_mini
+        v_sdlist_subdr(lesur*(i_fail_save-1)+5) = subd_inst
+        v_sdlist_subdr(lesur*(i_fail_save-1)+6) = subd_duree
+        if (subd_auto .eq. 'COLLISION') then
+            v_sdlist_subdr(lesur*(i_fail_save-1)+10) = 1.d0
+        else if (subd_auto.eq.'EXTRAPOLE') then
+            v_sdlist_subdr(lesur*(i_fail_save-1)+10) = 2.d0
         else
             ASSERT(.false.)
         endif
     endif
 !
-! --- ACTION 'ITER_SUPPL' - PARAMETRES
+! - Parameters for ACTION = 'ITER_SUPPL'
 !
-    if (action .eq. 'ITER_SUPPL') then
-        zr(jesur-1+lesur*(isauve-1)+7) = pcplus
+    if (action_type .eq. 'ITER_SUPPL') then
+        v_sdlist_subdr(lesur*(i_fail_save-1)+7) = pcent_iter_plus
     endif
 !
-! --- ACTION 'ADAPT_COEF_PENA' - PARAMETRES
+! - Parameters for ACTION = 'ADAPT_COEF_PENA'
 !
-    if (action .eq. 'ADAPT_COEF_PENA') then
-        zr(jesur-1+lesur*(isauve-1)+8) = cmmaxi
+    if (action_type .eq. 'ADAPT_COEF_PENA') then
+        v_sdlist_subdr(lesur*(i_fail_save-1)+8) = coef_maxi
     endif
 !
     call jedema()

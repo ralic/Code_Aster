@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/nmevel.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: faccvg, ldccvg, numins
-    aster_logical :: lerror, lsvimx, ldvres, linsta, lcritl
+    aster_logical :: lerror, lsvimx, ldvres, linsta, lcritl, lresmx
     character(len=24) :: k24bla
     integer :: ievdac
 !
@@ -99,7 +99,7 @@ implicit none
 ! --- DETECTION DU PREMIER EVENEMENT DECLENCHE
 !
     call nmevel(sddisc, numins, tabinc, 'NEWT', lsvimx,&
-                ldvres, linsta, lcritl, lerror, conver)
+                ldvres, lresmx, linsta, lcritl, lerror, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE
 !

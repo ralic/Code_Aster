@@ -170,7 +170,13 @@ LIS2DD =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =LINSTDD ),
                                  SUBD_NIVEAU = 10,
                                  SUBD_PAS=10,
                                  SUBD_PAS_MINI=1e-6,),
-                              _F(EVENEMENT = 'DIVE_RESI'),)
+                              _F(EVENEMENT = 'DIVE_RESI'),
+                              _F(EVENEMENT = 'RESI_MAXI', RESI_GLOB_MAXI = 6.E-1,ACTION        = 'DECOUPE',
+                                 SUBD_METHODE  = 'MANUEL',
+                                 SUBD_NIVEAU = 2,
+                                 SUBD_PAS=2,
+                                 SUBD_PAS_MINI=1e-6,),
+                              )
                         )
 
 # densites de dislocation initiales (cf zzzz130a)
@@ -432,46 +438,53 @@ DEFI_FICHIER(UNITE = 28,
 
 
 tdep=tmax
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48759673615812,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.48759697170948,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=epsDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=269.5572960744,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=269.5583433288,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=sigDIR,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=4.719313681672E+07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=4.719408788234E+07,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.42996565009869,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.42996601140607,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_5,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=3.847306569678E+07,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=3.847356282155E+07,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=rho_8,
                         ),
               )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=0.26136480978897,
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.26136525944739,
                         VALE_PARA=4000.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_8,
                         ),
               )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                   PARA='ITER_GLOB',
+                   VALE_CALC_I=2,
+                   RESULTAT=SOLNL,
+                   CRITERE='ABSOLU',
+                   ),)
 
 FIN()

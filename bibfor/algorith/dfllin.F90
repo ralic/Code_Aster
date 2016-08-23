@@ -1,7 +1,11 @@
-subroutine dfllin(mcfact, iechec, cmmaxi)
+subroutine dfllin(keywf, i_fail, coef_maxi)
+!
+implicit none
+!
+#include "asterfort/getvr8.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,39 +21,25 @@ subroutine dfllin(mcfact, iechec, cmmaxi)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/getvr8.h"
-    character(len=16) :: mcfact
-    integer :: iechec
-    real(kind=8) :: cmmaxi
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_fail
+    real(kind=8), intent(out) :: coef_maxi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! OPERATEUR DEFI_LIST_INST
+! DEFI_LIST_INST
 !
-! LECTURE DES PARAMETRES L'ACTION DE TYPE INTERPENETRATION
+! Get parameters of ACTION=ADAPT_COEF_PENA for current failure keyword
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  keywf            : factor keyword to read failures
+! In  i_fail           : index of current factor keyword to read failure
+! Out coef_maxi        : value of COEF_MAXI for ACTION=ADAPT_COEF_PENA
 !
-! IN  MCFACT : MOT-CLEF FACTEUR POUR LIRE L'ECHEC
-! IN  IECHEC : NUMERO OCCURRENCE ECHEC
-! OUT CMMAXI : VALEUR DE COEF_MULT_MAXI
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
-!
-    integer :: iret
-!
-! ----------------------------------------------------------------------
-!
-!
-!
-! --- INITIALISATIONS
-!
-    cmmaxi = 0.d0
-!
-! --- OPTIONS DE L'ACTION
-!
-    call getvr8(mcfact, 'COEF_MAXI', iocc=iechec, scal=cmmaxi, nbret=iret)
+    coef_maxi = 0.d0
+    call getvr8(keywf, 'COEF_MAXI', iocc=i_fail, scal=coef_maxi)
 !
 end subroutine

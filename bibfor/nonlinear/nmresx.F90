@@ -1,12 +1,15 @@
-subroutine nmdivr(sddisc, sderro, iter_newt)
+subroutine nmresx(sddisc, sderro, iter_newt)
 !
 implicit none
 !
+#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmlere.h"
+#include "asterfort/utdidt.h"
 !
 ! ======================================================================
+! COPYRIGHT (C) 2016 Stefan H. Reiterer               WWW.CODE-ASTER.ORG
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -32,17 +35,7 @@ implicit none
 !
 ! MECA_NON_LINE - Events
 !
-! Check if RESI_GLOB_MAXI increase
-!
-! --------------------------------------------------------------------------------------------------
-!
-! EVALUATION DE LA DIVERGENCE DU RESIDU :
-!    ON DIT QU'IL Y A DIVERGENCE DU RESIDU SSI :
-!       MIN[ R(I), R(I-1) ] > R(I-2), A PARTIR DE I=3 (COMME ABAQUS)
-!
-!    OU R(I)   EST LE RESIDU A L'ITERATION COURANTE
-!       R(I-1) EST LE RESIDU A L'ITERATION MOINS 1
-!       R(I-2) EST LE RESIDU A L'ITERATION MOINS 2
+! Check if RESI_GLOB_MAXI is not too large
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,30 +45,41 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: r(1), rm1(1), rm2(1)
-    aster_logical :: l_resi_dive
+    real(kind=8) :: r(1), vale_resi
+    aster_logical :: l_resi_maxi
+    integer :: nb_fail, i_fail, i_fail_acti
+    character(len=16) :: event_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_resi_dive = .false.
+    l_resi_maxi = .false. 
 !
-    if (iter_newt .ge. 3) then
+! - Index of RESI_MAXI index
 !
-! ----- Get RESI_GLOB_MAXI
+    call utdidt('L', sddisc, 'LIST',  'NECHEC', vali_ = nb_fail)
+    i_fail_acti = 0
+    do i_fail = 1, nb_fail
+        call utdidt('L', sddisc, 'ECHE', 'NOM_EVEN', index_ = i_fail, valk_ = event_type)
+        if (event_type .eq. 'RESI_MAXI') then
+            i_fail_acti = i_fail
+        endif
+    end do
 !
-        call nmlere(sddisc, 'L', 'VMAXI', iter_newt, r(1))
-        call nmlere(sddisc, 'L', 'VMAXI', iter_newt-1, rm1(1))
-        call nmlere(sddisc, 'L', 'VMAXI', iter_newt-2, rm2(1))
+! - Get RESI_GLOB_MAXI
 !
-! ----- Check evolution of RESI_GLOB_MAXI
+    call nmlere(sddisc, 'L', 'VMAXI', iter_newt, r(1))
 !
-        if (min(r(1),rm1(1)) .gt. rm2(1)) then
-            l_resi_dive = .true.
+! - Evaluate event
+!
+    if (i_fail_acti .gt. 0) then
+        call utdidt('L', sddisc, 'ECHE', 'RESI_GLOB_MAXI', index_ = i_fail_acti, valr_ = vale_resi)
+        if (r(1) .gt. vale_resi) then
+            l_resi_maxi = .true.
         endif
     endif
 !
 ! - Save event
 !
-    call nmcrel(sderro, 'DIVE_RESI', l_resi_dive)
+    call nmcrel(sderro, 'RESI_MAXI', l_resi_maxi)
 !
 end subroutine

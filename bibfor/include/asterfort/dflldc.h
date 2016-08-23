@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,19 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dflldc(mcfact, iechec, dtmin, even, submet,&
-                      subaut, pasmin, nbrpas, niveau, subins,&
-                      subdur)
-        character(len=16) :: mcfact
-        integer :: iechec
-        real(kind=8) :: dtmin
-        character(len=16) :: even
-        character(len=16) :: submet
-        character(len=16) :: subaut
-        real(kind=8) :: pasmin
-        integer :: nbrpas
-        integer :: niveau
-        real(kind=8) :: subins
-        real(kind=8) :: subdur
+    subroutine dflldc(keywf       , i_fail       , dtmin     , event_type,&
+                      subd_methode, subd_pas_mini,&
+                      subd_niveau , subd_pas     ,&
+                      subd_auto   , subd_inst    , subd_duree)
+        character(len=16), intent(in) :: keywf
+        integer, intent(in) :: i_fail
+        real(kind=8), intent(in) :: dtmin
+        character(len=16), intent(in) :: event_type
+        character(len=16), intent(out) :: subd_methode
+        real(kind=8), intent(out) :: subd_pas_mini
+        integer, intent(out) :: subd_niveau
+        integer, intent(out) :: subd_pas
+        character(len=16), intent(out) :: subd_auto
+        real(kind=8), intent(out) :: subd_inst
+        real(kind=8), intent(out) :: subd_duree
     end subroutine dflldc
 end interface

@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/nmltev.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ implicit none
     integer :: ifm, niv
     integer :: ievdac, numins
     aster_logical :: lerrne, lerrst
-    aster_logical :: lsvimx, ldvres, linsta, lcritl, conver
+    aster_logical :: lsvimx, ldvres, linsta, lcritl, conver, lresmx
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,7 +89,7 @@ implicit none
 ! --- VERIFICATION DU DECLENCHEMENT DES EVENT-DRIVEN
 !
     call nmevel(sddisc, numins, valinc,&
-                'NEWT', lsvimx, ldvres, linsta, lcritl,&
+                'NEWT', lsvimx, ldvres, lresmx, linsta, lcritl,&
                 lerrne, conver)
 !
 ! --- UN EVENEMENT SE DECLENCHE

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,32 +15,37 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine dfllsv(lisifr, lisevr, lisevk, lisesu, isauve,&
-                      even, action, submet, subaut, pasmin,&
-                      nbrpas, niveau, pcplus, cmmaxi, delcol,&
-                      durdec, penmax, cricmp, valere, nocham,&
-                      nocmp)
-        character(len=24) :: lisifr
-        character(len=24) :: lisevr
-        character(len=24) :: lisevk
-        character(len=24) :: lisesu
-        integer :: isauve
-        character(len=16) :: even
-        character(len=16) :: action
-        character(len=16) :: submet
-        character(len=16) :: subaut
-        real(kind=8) :: pasmin
-        integer :: nbrpas
-        integer :: niveau
-        real(kind=8) :: pcplus
-        real(kind=8) :: cmmaxi
-        real(kind=8) :: delcol
-        real(kind=8) :: durdec
-        real(kind=8) :: penmax
-        character(len=16) :: cricmp
-        real(kind=8) :: valere
-        character(len=16) :: nocham
-        character(len=16) :: nocmp
+    subroutine dfllsv(v_sdlist_infor, v_sdlist_evenr, v_sdlist_evenk, v_sdlist_subdr,&
+                      i_fail_save   ,&
+                      event_type    , vale_ref    , nom_cham        , nom_cmp       ,&
+                      crit_cmp      , pene_maxi   , resi_glob_maxi  ,&
+                      action_type   , subd_methode, subd_auto       , subd_pas_mini ,&
+                      subd_pas      , subd_niveau , pcent_iter_plus , coef_maxi     ,&
+                      subd_inst     , subd_duree)
+        real(kind=8), intent(in), pointer :: v_sdlist_infor(:)
+        real(kind=8), intent(in), pointer :: v_sdlist_evenr(:)
+        character(len=16), intent(in), pointer :: v_sdlist_evenk(:)
+        real(kind=8), intent(in), pointer :: v_sdlist_subdr(:)
+        integer, intent(in) :: i_fail_save
+        character(len=16), intent(in) :: event_type
+        real(kind=8), intent(in) :: vale_ref
+        character(len=16), intent(in) :: nom_cham
+        character(len=16), intent(in) :: nom_cmp
+        character(len=16), intent(in) :: crit_cmp
+        real(kind=8), intent(in) :: pene_maxi
+        real(kind=8), intent(in) :: resi_glob_maxi
+        character(len=16), intent(in) :: action_type
+        character(len=16), intent(in) :: subd_methode
+        real(kind=8), intent(in) :: subd_pas_mini
+        integer, intent(in) :: subd_niveau
+        integer, intent(in) :: subd_pas
+        character(len=16), intent(in) :: subd_auto
+        real(kind=8), intent(in) :: subd_inst
+        real(kind=8), intent(in) :: subd_duree
+        real(kind=8), intent(in) :: pcent_iter_plus
+        real(kind=8), intent(in) :: coef_maxi
     end subroutine dfllsv
 end interface

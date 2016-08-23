@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dflldb(sdlist, ifm)
-        character(len=8), intent(in) :: sdlist
-        integer, intent(in) :: ifm
-    end subroutine dflldb
+    subroutine nmresx(sddisc, sderro, iter_newt)
+        character(len=19), intent(in) :: sddisc
+        character(len=24), intent(in) :: sderro
+        integer, intent(in) :: iter_newt
+    end subroutine nmresx
 end interface

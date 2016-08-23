@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/nmltev.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,13 +61,14 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: lsvimx, ldvres, linsta
+    aster_logical :: lsvimx, ldvres, linsta, lresmx
     aster_logical :: conver, lerror, lerrcv
 !
 ! ----------------------------------------------------------------------
 !
     call nmerge(sderro, 'SOLV_ITMX', lsvimx)
     call nmerge(sderro, 'DIVE_RESI', ldvres)
+    call nmerge(sderro, 'RESI_MAXI',  lresmx)
     call nmerge(sderro, 'CRIT_STAB', linsta)
 !
 ! --- LA BOUCLE COURANTE A-T-ELLE CONVERGE ?
@@ -89,8 +90,8 @@ implicit none
 !
 ! --- PREMIER EVENT DECLENCHE
 !
-    call nmevel(sddisc    , nume_inst, valinc, loop_name, lsvimx,&
-                ldvres    , linsta   , lerrcv, lerror   , conver,&
-                ds_contact)
+    call nmevel(sddisc, nume_inst , valinc, loop_name, lsvimx,&
+                ldvres, lresmx    , linsta, lerrcv   , lerror,&
+                conver, ds_contact)
 !
 end subroutine

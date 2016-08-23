@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dfllne(mcfact, nechec, nerreu)
-        character(len=16) :: mcfact
-        integer :: nechec
-        integer :: nerreu
+    subroutine dfllne(keywf, nb_fail, l_fail_error)
+        character(len=16), intent(in) :: keywf
+        integer, intent(out) :: nb_fail
+        aster_logical, intent(out) :: l_fail_error
     end subroutine dfllne
 end interface

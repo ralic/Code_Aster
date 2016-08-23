@@ -1,8 +1,15 @@
-subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
-                  nocmp, cricmp, valere)
+subroutine dfllpe(keywf    , i_fail        , event_type,&
+                  vale_ref , nom_cham      , nom_cmp   , crit_cmp,&
+                  pene_maxi, resi_glob_maxi)
+!
+implicit none
+!
+#include "asterfort/getvr8.h"
+#include "asterfort/getvtx.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,54 +25,63 @@ subroutine dfllpe(mcfact, iechec, even, penmax, nocham,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    implicit none
-#include "asterfort/getvr8.h"
-#include "asterfort/getvtx.h"
-    character(len=16) :: mcfact
-    integer :: iechec
-    character(len=16) :: even
-    real(kind=8) :: penmax
-    real(kind=8) :: valere
-    character(len=16) :: nocham, nocmp, cricmp
+    character(len=16), intent(in) :: keywf
+    integer, intent(in) :: i_fail
+    character(len=16), intent(in) :: event_type
+    real(kind=8), intent(out) :: vale_ref
+    character(len=16), intent(out) :: nom_cham
+    character(len=16), intent(out) :: nom_cmp
+    character(len=16), intent(out) :: crit_cmp
+    real(kind=8), intent(out) :: pene_maxi
+    real(kind=8), intent(out) :: resi_glob_maxi
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! OPERATEUR DEFI_LIST_INST
+! DEFI_LIST_INST
 !
-! LECTURE DES PARAMETRES DE L'EVENEMENT
+! Get parameters of EVENEMENT for current failure keyword
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MCFACT : MOT-CLEF FACTEUR POUR LIRE L'ECHEC
-! IN  IECHEC : NUMERO OCCURRENCE ECHEC
-! IN  EVEN   : NOM DE L'EVENEMENT
-! OUT PENMAX : VALEUR DE PENE_MAXI
-! OUT CRICMP : VALEUR DE CRIT_COMP
-! OUT VALERE : VALEUR DE VALE_REF
-! OUT NOCHAM : VALEUR DE NOM_CHAM
-! OUT NOCMP  : VALEUR DE NOM_CMP
+! In  keywf            : factor keyword to read failures
+! In  i_fail           : index of current factor keyword to read failure
+! In  event_type       : type of event
+! Out vale_ref         : value of VALE_REF for EVENEMENT=DELTA_GRANDEUR
+! Out nom_cham         : value of NOM_CHAM for EVENEMENT=DELTA_GRANDEUR
+! Out nom_cmp          : value of NOM_CMP for EVENEMENT=DELTA_GRANDEUR
+! Out crit_cmp         : value of CRIT_CMP for EVENEMENT=DELTA_GRANDEUR
+! Out pene_maxi        : value of PENE_MAXI for EVENEMENT=INTERPENETRATION
+! Out resi_glob_maxi   : value of RESI_GLOB_MAXI for EVENEMENT=RESI_MAXI
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid
+    integer :: nocc
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    penmax = 0.d0
-    valere = 0.d0
-    nocham = ' '
-    nocmp = ' '
-    cricmp = ' '
+    pene_maxi      = 0.d0
+    vale_ref       = 0.d0
+    resi_glob_maxi = 0.d0
+    nom_cham       = ' '
+    nom_cmp        = ' '
+    crit_cmp       = ' '
 !
-! --- EVENEMENT
+! - Read parameters
 !
-    if (even .eq. 'DELTA_GRANDEUR') then
-        call getvr8(mcfact, 'VALE_REF', iocc=iechec, scal=valere, nbret=ibid)
-        call getvtx(mcfact, 'NOM_CHAM', iocc=iechec, scal=nocham, nbret=ibid)
-        call getvtx(mcfact, 'NOM_CMP', iocc=iechec, scal=nocmp, nbret=ibid)
-        cricmp = 'GT'
-    else if (even.eq.'INTERPENETRATION') then
-        call getvr8(mcfact, 'PENE_MAXI', iocc=iechec, scal=penmax, nbret=ibid)
+    if (event_type .eq. 'DELTA_GRANDEUR') then
+        call getvr8(keywf, 'VALE_REF', iocc=i_fail, scal=vale_ref, nbret=nocc)
+        ASSERT(nocc .gt. 0)
+        call getvtx(keywf, 'NOM_CHAM', iocc=i_fail, scal=nom_cham, nbret=nocc)
+        ASSERT(nocc .gt. 0)
+        call getvtx(keywf, 'NOM_CMP', iocc=i_fail, scal=nom_cmp, nbret=nocc)
+        ASSERT(nocc .gt. 0)
+        crit_cmp = 'GT'
+    else if (event_type.eq.'INTERPENETRATION') then
+        call getvr8(keywf, 'PENE_MAXI', iocc=i_fail, scal=pene_maxi, nbret=nocc)
+        ASSERT(nocc .gt. 0)
+    else if (event_type.eq.'RESI_MAXI') then
+        call getvr8(keywf, 'RESI_GLOB_MAXI', iocc=i_fail, scal=resi_glob_maxi, nbret=nocc)
+        ASSERT(nocc .gt. 0)
     endif
 !
 end subroutine

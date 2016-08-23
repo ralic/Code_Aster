@@ -23,6 +23,7 @@ implicit none
 #include "asterfort/nmcore.h"
 #include "asterfort/nmcrel.h"
 #include "asterfort/nmdivr.h"
+#include "asterfort/nmresx.h"
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmerge.h"
 #include "asterfort/nmevcv.h"
@@ -235,9 +236,13 @@ implicit none
 !
             call dierre(sddisc, sdcrit, iterat)
 !
-! --------- EVALUATION DE LA DIVERGENCE DU RESIDU
+! --------- Check if RESI_GLOB_MAXI increase
 !
             call nmdivr(sddisc, sderro, iterat)
+!
+! --------- Check if RESI_GLOB_MAXI is too large
+!
+            call nmresx(sddisc, sderro, iterat)
 !
 ! --------- SI ON A CONVERGE: ON A PAS ATTEINT LE NB D'ITERATIONS MAXIMUM
 !
