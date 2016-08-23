@@ -47,6 +47,8 @@ TEMPE=THER_LINEAIRE(       MODELE=MOTH,
                                 EXCIT=_F(  CHARGE = CHTH)
                         )
 
+
+
 TEMPE=CALC_CHAMP(reuse=TEMPE,RESULTAT=TEMPE,THERMIQUE=('FLUX_ELNO'))
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=2,
@@ -311,6 +313,25 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   NOM_CMP='TEMP',
                   VALE_CALC=66.50637393169,),
           )
+
+
+# =====================================================================
+#  POUR TESTER MASS_THER dans CALC_MATR_ELEM
+#
+# Pour tester: on active le mode débug de CALCUL.F90 puis on compare les valeurs des champs de sortie de MASS_THER
+# dans CALC_MATR_ELEM avec la même chose que le THER_LINEAIRE du test
+#
+# La valeur du TEST_RESU est donc de non-régression
+
+MTRE0=CALC_MATR_ELEM(  OPTION='MASS_THER',
+                       INST = 5.0,
+                       INCR_INST = 5.0,
+                       MODELE=MOTH,
+                       CHAM_MATER=CHMAT,
+                     )
+
+TEST_RESU(OBJET=_F(NOM= 'MTRE0   .0000001   .RESL' ,
+                   VALE_CALC = 0.000478472222222 ,))
 
 FIN()
 #

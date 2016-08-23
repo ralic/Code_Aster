@@ -40,6 +40,7 @@ implicit none
 !               - RIGI_MECA_*
 !               - RAPH_MECA
 !               - CHAR_MECA_NEUM
+!               - MASS_THER
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -190,6 +191,29 @@ implicit none
         nchin = nchin+nbadd
 !
     elseif (option.eq.'RIGI_THER') then
+!
+        nbadd = 9
+        ASSERT(nchin+nbadd .le. mxchin)
+        lpain(nchin + 1 ) = 'PSTANO'
+        lchin(nchin + 1 ) = model(1:8)//'.STNO'
+        lpain(nchin + 2 ) = 'PPINTTO'
+        lchin(nchin + 2 ) = model(1:8)//'.TOPOSE.PIN'
+        lpain(nchin + 3 ) = 'PCNSETO'
+        lchin(nchin + 3 ) = model(1:8)//'.TOPOSE.CNS'
+        lpain(nchin + 4 ) = 'PHEAVTO'
+        lchin(nchin + 4 ) = model(1:8)//'.TOPOSE.HEA'
+        lpain(nchin + 5 ) = 'PLONCHA'
+        lchin(nchin + 5 ) = model(1:8)//'.TOPOSE.LON'
+        lpain(nchin + 6 ) = 'PBASLOR'
+        lchin(nchin + 6 ) = model(1:8)//'.BASLOC'
+        lpain(nchin + 7 ) = 'PLSN'
+        lchin(nchin + 7 ) = model(1:8)//'.LNNO'
+        lpain(nchin + 8 ) = 'PLST'
+        lchin(nchin + 8 ) = model(1:8)//'.LTNO'
+        lpain(nchin + 9 ) = 'PHEA_NO'
+        lchin(nchin + 9 ) = model(1:8)//'.TOPONO.HNO'
+        nchin = nchin+nbadd
+    elseif (option.eq.'MASS_THER') then
 !
         nbadd = 9
         ASSERT(nchin+nbadd .le. mxchin)

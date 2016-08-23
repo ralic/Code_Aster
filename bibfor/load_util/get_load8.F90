@@ -80,8 +80,10 @@ implicit none
 !
 ! - Same model
 !
-    if (model .ne. model_load) then
-        call utmess('F', 'CHARGES5_5', sk = v_list_load8(1))
+    if (nb_load .gt. 0) then
+        if (model .ne. model_load) then
+            call utmess('F', 'CHARGES5_5', sk = v_list_load8(1))
+        endif
     endif
 !
 ! - Check load type

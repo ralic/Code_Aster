@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/vrcins.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,7 +97,8 @@ implicit none
     real(kind=8) :: time_curr
     character(len=8) :: k8bid, nomcmp(6)
     character(len=16) :: k16bid, option, nomcmd
-    character(len=24) :: ligrmo, merigi, memass, mediri, tlimat(3), bidon
+    character(len=19) :: memass
+    character(len=24) :: ligrmo, merigi, mediri, tlimat(3), bidon
     character(len=24) :: vediri, vechtp, vetntp, vetnti, vadirp, vachtp, vechtn
     character(len=24) :: vachtn, vtemp2
     aster_logical :: llin
@@ -106,7 +107,7 @@ implicit none
     data typres /'R'/
     data nomcmp /'INST    ','DELTAT  ','THETA   ','KHI     ',&
      &             'R       ','RHO     '/
-    data memass /'&&METMAS           .RELR'/
+    data memass /'&&METMAS'/
     data merigi /'&&METRIG           .RELR'/
     data vediri /'&&VETDIR           .RELR'/
     data vechtp /'&&VETCHA           .RELR'/
@@ -365,8 +366,8 @@ implicit none
         else
 !
             if (reasms) then
-                call memsth(model, cara_elem, mate, time, varc_curr,&
-                            memass)
+                call memsth(model    , cara_elem, mate, time, memass, 'V',&
+                            varc_curr)
             endif
 !
             if (reasrg) then
@@ -398,12 +399,12 @@ implicit none
             endif
         endif
 !
-        call jeexin(memass, iret)
+        call jeexin(memass//'.RELR', iret)
         if (iret .gt. 0) then
-            call jeveuo(memass, 'L', jmem)
+            call jeveuo(memass//'.RELR', 'L', jmem)
             if (zk24(jmem) (1:8) .ne. '        ') then
                 nbmat = nbmat + 1
-                tlimat(nbmat) =memass
+                tlimat(nbmat) = memass//'.RELR'
             endif
         endif
 !

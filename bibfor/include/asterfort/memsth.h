@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine memsth(modele, carele, mate, inst, varc_curr,&
-                      memass)
-        character(len=24) :: modele
-        character(len=24) :: carele
-        character(len=24) :: mate
-        character(len=24) :: inst
-        character(len=19), intent(in) :: varc_curr
-        character(len=24) :: memass
+    subroutine memsth(model_    , cara_elem_, mate_, chtime, memass, base,&
+                      varc_curr_)
+        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: cara_elem_
+        character(len=*), intent(in) :: mate_
+        character(len=24), intent(in) :: chtime
+        character(len=19), intent(in) :: memass
+        character(len=1), intent(in) :: base
+        character(len=19), optional, intent(in) :: varc_curr_
     end subroutine memsth
 end interface
