@@ -343,10 +343,10 @@ VAL_CALC = [
 1.81606143818,
 1.8148355533,
 1.81531818556,
-1.81296948789,
-1.81316871575,
-1.81394009733,
-1.81445746568,]
+1.8130805747,
+1.81327312844,
+1.81386884276,
+1.81403008191,]
 
 ct = -1
 
@@ -395,21 +395,21 @@ for i in range(n) :
    for j in range(nb_fond) :
       k = i*nb_fond + j
       for itest in ltest :
-         ct = ct +1 
+         ct = ct +1
          TEST_TABLE(TABLE=SIF[k],
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
-                    VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
+                    VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                     PRECISION=0.001 ,
                     REFERENCE='ANALYTIQUE')
 
 for j in range(nb_fond) :
       for itest in ltest :
-         ct = ct +1 
+         ct = ct +1
          TEST_TABLE(TABLE=SIF2[j],
                     NOM_PARA='K1',
                     TYPE_TEST=itest,
-                    VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
+                    VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                     PRECISION=0.001 ,
                     REFERENCE='ANALYTIQUE')
 
@@ -434,13 +434,13 @@ for j in range(nb_fond) :
       TEST_TABLE(TABLE=PK[j],
                  NOM_PARA='K1',
                  TYPE_TEST=itest,
-                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,    
+                 VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,
                  PRECISION=0.002 ,
                  REFERENCE='ANALYTIQUE')
-        
-# -------------------------------------------------------------   
-#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM   
-# -------------------------------------------------------------   
+
+# -------------------------------------------------------------
+#            POST-TRAITEMENT POUR LA VISUALISATION X-FEM
+# -------------------------------------------------------------
 
 MA_XFEM=POST_MAIL_XFEM(MODELE= MODELEK,
                        INFO  = 2)
@@ -448,7 +448,7 @@ MA_XFEM=POST_MAIL_XFEM(MODELE= MODELEK,
 MOD_VISU=AFFE_MODELE(MAILLAGE=MA_XFEM,
                      AFFE=_F(TOUT='OUI',
                               PHENOMENE='MECANIQUE',
-                              MODELISATION='3D',),) 
+                              MODELISATION='3D',),)
 
 RES_XFEM=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                         RESULTAT    = RESU1,
@@ -458,5 +458,5 @@ IMPR_RESU(FORMAT='GMSH',
           RESU=_F(RESULTAT=RES_XFEM,
                   NOM_CHAM=('DEPL'),
                   ),);
- 
+
 FIN()
