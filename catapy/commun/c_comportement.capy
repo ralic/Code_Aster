@@ -312,7 +312,9 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                            fr=tr("Nom de la routine MFRONT dans la bibliothèque")),
                                           VERI_BORNE = SIMP(statut='f', typ='TXM',
                                                             defaut="ARRET",into=('ARRET','SANS','MESSAGE'),
-                                               fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),)
+                                               fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),),
+                                          RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
+                                          ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
                                       ),
 
                                        ),
@@ -347,12 +349,12 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
             # Parametres d'integration
 
-                b_mfront_resi      = BLOC(condition = "RELATION =='MFRONT'",
+                b_mfront_resi      = BLOC(condition = "(RELATION == 'MFRONT')",
                     RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
                     ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
                 ),
 
-                b_no_mfront      = BLOC(condition = "RELATION !='MFRONT'",
+                b_no_mfront        = BLOC(condition = "RELATION !='MFRONT'",
                     RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
                     ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
                 ),
