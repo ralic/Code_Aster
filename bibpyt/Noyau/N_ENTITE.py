@@ -257,9 +257,11 @@ class ENTITE:
 
     def check_position(self):
         """Vérifie l'attribut position."""
-        if self.position not in ('local', 'global', 'global_jdc'):
-            self.cr.fatal(_(u"L'attribut 'position' doit valoir 'local', 'global' "
-                            u"ou 'global_jdc' : %r"), self.position)
+        if self.position not in ('local', 'global'):
+            # a priori, 'global_jdc' est aussi autorisée mais ça ne me semble
+            # pas une bonne idée !
+            self.cr.fatal(_(u"Seule la valeur 'global' est autorisée pour "
+                            u"l'attribut 'position' : %r"), self.position)
 
     def check_defaut(self):
         """Vérifie l'attribut defaut."""
@@ -280,4 +282,3 @@ class ENTITE:
             self.cr.fatal(
                 _(u"L'attribut 'inout' doit valoir 'in','out' ou 'inout' : %r"),
                 self.inout)
-

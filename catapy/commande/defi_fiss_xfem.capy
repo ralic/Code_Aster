@@ -35,8 +35,8 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       grille auxiliaire : pas ouvert avec le cohesif
 # ------------------------------------------------------------------------------------------------------------------------
 
-    MAILLAGE_GRILLE       =SIMP(statut='f',typ=maillage_sdaster,max=1,position='global'),
-    FISS_GRILLE           =SIMP(statut='f',typ=fiss_xfem,max=1),
+    MAILLAGE_GRILLE       =SIMP(statut='f',typ=maillage_sdaster),
+    FISS_GRILLE           =SIMP(statut='f',typ=fiss_xfem),
 
 # ------------------------------------------------------------------------------------------------------------------------
 #                       caracteristiques de la fissure/interface

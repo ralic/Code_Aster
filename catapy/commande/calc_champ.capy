@@ -27,7 +27,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
      CHAM_MATER       = SIMP(statut='f',typ=cham_mater),
      CARA_ELEM        = SIMP(statut='f',typ=cara_elem),
 
-     RESULTAT         = SIMP(statut='o',typ=resultat_sdaster,position='global',
+     RESULTAT         = SIMP(statut='o',typ=resultat_sdaster,
                              fr=tr("Resultat d'une commande globale")),
 
      regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',

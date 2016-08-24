@@ -73,9 +73,9 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                                  ),
                     ),
 
-    CONFIG_INIT  = SIMP(statut='f',typ='TXM',into=("COLLEE","DECOLLEE"), defaut="COLLEE",position='global'),
+    CONFIG_INIT  = SIMP(statut='f',typ='TXM',into=("COLLEE","DECOLLEE"), defaut="COLLEE"),
 
-    SYME         = SIMP(statut='f',typ='TXM',into=("OUI","NON"),         defaut="NON",   position='global'),
+    SYME         = SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut="NON"),
 
 #   remarque : dans le cas symetrique, il faut soit LEVRE_SUP, soit DTAN_ORIG
 #   mais impossible de faire une regle.
