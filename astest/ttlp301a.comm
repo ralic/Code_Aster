@@ -2,17 +2,17 @@
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
 # MAILLES : PENTA15 , QUAD8
@@ -138,84 +138,84 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N1',
                       CHAM_GD=TEMP_01,
                       VALE_CALC=1.066441489,
                       VALE_REFE=1.0449999999999999,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_02,
                       VALE_CALC=1.451461835,
                       VALE_REFE=1.4470000000000001,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_03,
                       VALE_CALC=1.748037606,
                       VALE_REFE=1.742,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_04,
                       VALE_CALC=1.984721655,
                       VALE_REFE=1.982,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_05,
                       VALE_CALC=2.192916855,
                       VALE_REFE=2.1890000000000001,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_06,
                       VALE_CALC=2.375731001,
                       VALE_REFE=2.3730000000000002,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_07,
                       VALE_CALC=2.545131011,
                       VALE_REFE=2.5409999999999999,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_08,
                       VALE_CALC=2.701023103,
                       VALE_REFE=2.698,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_09,
                       VALE_CALC=2.849125210,
                       VALE_REFE=2.8460000000000001,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_10,
                       VALE_CALC=2.988906042,
                       VALE_REFE=2.9860000000000002,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_11,
                       VALE_CALC=3.123245014,
                       VALE_REFE=3.1200000000000001,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    _F(NOEUD='N1',
                       NOM_CMP='TEMP',
                       PRECISION=0.02,
                       CHAM_GD=TEMP_12,
                       VALE_CALC=3.251700830,
                       VALE_REFE=3.2480000000000002,
-                      REFERENCE='NON_DEFINI',),
+                      REFERENCE='SOURCE_EXTERNE',),
                    ),
           )
 
