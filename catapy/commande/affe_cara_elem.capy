@@ -804,8 +804,10 @@ AFFE_CARA_ELEM=MACRO(nom="AFFE_CARA_ELEM",
                  EXCLUS('ANGL_REP','AXE'), ),
       MAILLE   = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+      EPAIS    = SIMP(statut='f',typ='R'),
       ANGL_REP = SIMP(statut='f',typ='R',max=2),
       AXE      = SIMP(statut='f',typ='R',max='**'),
+      N_INIT   = SIMP(statut='f',typ='R'),
    ),
 #
 # ==============================================================================

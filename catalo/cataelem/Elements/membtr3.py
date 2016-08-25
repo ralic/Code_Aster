@@ -31,7 +31,7 @@ from cataelem.Options.options import OP
 
 
 CCACOQU  = LocatedComponents(phys=PHY.CACOQU, type='ELEM',
-    components=('ALPHA','BETA',))
+    components=('EP','ALPHA','BETA','TENS',))
 
 
 CCARCRI  = LocatedComponents(phys=PHY.CARCRI, type='ELEM',
@@ -118,12 +118,16 @@ EGAMIMA  = LocatedComponents(phys=PHY.SPMX_R, type='ELGA', location='RIGI',
     components=('VAL','NUCOU','NUSECT','NUFIBR','POSIC',
           'POSIS',))
 
+EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
+    components=('PRES',))
 
 ZVARIPG  = LocatedComponents(phys=PHY.VARI_R, type='ELGA', location='RIGI',
     components=('VARI',))
 
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
@@ -154,8 +158,9 @@ class MEMBTR3(Element):
         ),
 
         OP.CHAR_MECA_EPSI_R(te=434,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PEPSINR, CEPSINR),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CHAR_MECA_EPSI_R.PCOMPOR, CCOMPOR),
+                     (SP.PEPSINR, CEPSINR), (SP.PGEOMER, NGEOMER), 
+                     (SP.PMATERC, LC.CMATERC),
                      (OP.CHAR_MECA_EPSI_R.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
@@ -177,8 +182,9 @@ class MEMBTR3(Element):
                             ),
 
         OP.CHAR_MECA_PESA_R(te=434,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CHAR_MECA_PESA_R.PCOMPOR, CCOMPOR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 
+                     (SP.PPESANR, LC.CPESANR),
                      (OP.CHAR_MECA_PESA_R.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
@@ -196,11 +202,24 @@ class MEMBTR3(Element):
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
 
-        OP.CHAR_MECA_TEMP_R(te=434,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
-                     (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+        OP.CHAR_MECA_PRES_R(te=18,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
                      ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.CHAR_MECA_PRSU_R(te=424,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.CHAR_MECA_TEMP_R(te=434,
+            para_in=((SP.PCACOQU, CCACOQU), (OP.CHAR_MECA_TEMP_R.PCOMPOR, CCOMPOR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 
+                     (SP.PTEMPSR, CTEMPSR), (OP.CHAR_MECA_TEMP_R.PVARCPR, LC.ZVARCPG), 
+                     (SP.PVARCRR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -225,17 +244,17 @@ class MEMBTR3(Element):
         ),
 
         OP.EPOT_ELEM(te=436,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PDEPLAR, DDL_MECA),
-                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (OP.EPOT_ELEM.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.EPOT_ELEM.PCOMPOR, CCOMPOR),
+                     (SP.PDEPLAR, DDL_MECA),(SP.PGEOMER, NGEOMER), 
+                     (SP.PMATERC, LC.CMATERC), (OP.EPOT_ELEM.PVARCPR, LC.ZVARCPG),
+                     (SP.PVARCRR, LC.ZVARCPG),),
             para_out=((OP.EPOT_ELEM.PENERDR, EENERR), ),
         ),
 
         OP.EPSI_ELGA(te=436,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PDEPLAR, DDL_MECA),
-                     (SP.PGEOMER, NGEOMER), (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.EPSI_ELGA.PCOMPOR, CCOMPOR),
+                     (SP.PDEPLAR, DDL_MECA), (SP.PGEOMER, NGEOMER), 
+                     (OP.EPSI_ELGA.PVARCPR, LC.ZVARCPG), ),
             para_out=((OP.EPSI_ELGA.PDEFOPG, EDEFOPG), ),
         ),
 
@@ -245,24 +264,25 @@ class MEMBTR3(Element):
         ),
 
         OP.FORC_NODA(te=434,
-            para_in=((SP.PCACOQU, CCACOQU), (OP.FORC_NODA.PCONTMR, ECONTPG),
-                     (SP.PGEOMER, NGEOMER), (OP.FORC_NODA.PVARCPR, LC.ZVARCPG),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (SP.PDEPLMR, DDL_MECA),
+                     (OP.FORC_NODA.PCOMPOR, CCOMPOR), (SP.PMATERC, LC.CMATERC),
+                     (OP.FORC_NODA.PCONTMR, ECONTPG),(SP.PGEOMER, NGEOMER), 
+                     (OP.FORC_NODA.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.FULL_MECA(te=435,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, CCARCRI),
                      (OP.FULL_MECA.PCOMPOR, CCOMPOR), (OP.FULL_MECA.PCONTMR, ECONTPG),
-                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PDDEPLA, DDL_MECA), (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
                      (SP.PINSTPR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
                      (SP.PVARCMR, LC.ZVARCPG), (OP.FULL_MECA.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (SP.PVARIMP, ZVARIPG),
                      (OP.FULL_MECA.PVARIMR, ZVARIPG), ),
             para_out=((SP.PCODRET, LC.ECODRET), (OP.FULL_MECA.PCONTPR, ECONTPG),
-                     (SP.PMATUUR, MMATUUR), (OP.FULL_MECA.PVARIPR, ZVARIPG),
-                     (SP.PVECTUR, MVECTUR), ),
+                     (SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR),
+                     (OP.FULL_MECA.PVARIPR, ZVARIPG), (SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.FULL_MECA_ELAS(te=435,
@@ -276,7 +296,7 @@ class MEMBTR3(Element):
                      (OP.FULL_MECA_ELAS.PVARIMR, ZVARIPG), ),
             para_out=((SP.PCODRET, LC.ECODRET), (OP.FULL_MECA_ELAS.PCONTPR, ECONTPG),
                      (SP.PMATUUR, MMATUUR), (OP.FULL_MECA_ELAS.PVARIPR, ZVARIPG),
-                     (SP.PVECTUR, MVECTUR), ),
+                     (SP.PVECTUR, MVECTUR),),
         ),
 
         OP.INIT_VARC(te=99,
@@ -291,16 +311,16 @@ class MEMBTR3(Element):
         ),
 
         OP.MASS_MECA(te=439,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA.PVARCPR, LC.ZVARCPG),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.MASS_MECA.PCOMPOR, CCOMPOR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (OP.MASS_MECA.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
         OP.MASS_MECA_EXPLI(te=439,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA_EXPLI.PVARCPR, LC.ZVARCPG),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.MASS_MECA_EXPLI.PCOMPOR, CCOMPOR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (OP.MASS_MECA_EXPLI.PVARCPR, LC.ZVARCPG), ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 
@@ -323,7 +343,7 @@ class MEMBTR3(Element):
         OP.RAPH_MECA(te=435,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, CCARCRI),
                      (OP.RAPH_MECA.PCOMPOR, CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
-                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PDDEPLA, DDL_MECA), (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
                      (SP.PINSTPR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
                      (SP.PVARCMR, LC.ZVARCPG), (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
@@ -335,9 +355,9 @@ class MEMBTR3(Element):
         ),
 
         OP.REFE_FORC_NODA(te=434,
-            para_in=((SP.PCACOQU, CCACOQU), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (SP.PREFCO, EREFCO),
-                     ),
+            para_in=((SP.PCACOQU, CCACOQU), (OP.REFE_FORC_NODA.PCOMPOR, CCOMPOR),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC), 
+                     (SP.PREFCO, EREFCO),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -379,17 +399,24 @@ class MEMBTR3(Element):
             para_out=((SP.PCONTXR, ECONTPG), (SP.PMATUUR, MMATUUR),
                      ),
         ),
+ 
+         OP.RIGI_MECA_PRSU_R(te=435,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
+                     ),
+            para_out=((SP.PMATUNS, MMATUNS), ),
+        ),
 
         OP.RIGI_MECA_TANG(te=435,
             para_in=((SP.PCACOQU, CCACOQU), (SP.PCARCRI, CCARCRI),
                      (OP.RIGI_MECA_TANG.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
-                     (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PDDEPLA, DDL_MECA), (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
                      (SP.PINSTPR, CTEMPSR), (SP.PMATERC, LC.CMATERC),
                      (SP.PVARCMR, LC.ZVARCPG), (OP.RIGI_MECA_TANG.PVARCPR, LC.ZVARCPG),
                      (SP.PVARCRR, LC.ZVARCPG), (SP.PVARIMP, ZVARIPG),
                      (OP.RIGI_MECA_TANG.PVARIMR, ZVARIPG), ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
+            para_out=((SP.PMATUNS, MMATUNS), (SP.PMATUUR, MMATUUR), ),
         ),
 
         OP.SIEF_ELGA(te=436,
@@ -438,6 +465,13 @@ class MEMBTR6(MEMBTR3):
                               mater=('RIGI','MASS','FPG1'),),
         )
 
+#------------------------------------------------------------
+class MEMBTR7(MEMBTR3):
+    """Please document this element"""
+    meshType = MT.TRIA7
+    elrefe =(
+            ElrefeLoc(MT.TR7, gauss = ('RIGI=FPG3','MASS=FPG7',), mater=('RIGI','MASS',),),
+        )
 
 #------------------------------------------------------------
 class MEMBQU4(MEMBTR3):
@@ -456,4 +490,12 @@ class MEMBQU8(MEMBTR3):
     elrefe =(
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9','FPG1=FPG1'), 
                               mater=('RIGI','MASS','FPG1'),),
+        )
+    
+#------------------------------------------------------------
+class MEMBQU9(MEMBTR3):
+    """Please document this element"""
+    meshType = MT.QUAD9
+    elrefe =(
+            ElrefeLoc(MT.QU9, gauss = ('RIGI=FPG9','MASS=FPG9',), mater=('RIGI','MASS',),),
         )

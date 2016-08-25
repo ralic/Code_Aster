@@ -134,9 +134,10 @@ CHAR_MECA_PRES_R = Option(
 #     duppliquees. Il ne faut pas que le chargement soit pris en compte plusieurs fois :
       #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRM'),)),
       #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'GRC'),)),
-      #CondCalcul('-', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
 #     => l'option est ajoutée sur ces éléments, elle pointe sur te580 afin de
 #        vérifier que le chargement est nul
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.MODELI,'MMB'),)),
+
 
 #     Ce chargement concerne les elements XFEM "massifs" :
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.BORD,'0'),(AT.LXFEM,'OUI'),)),

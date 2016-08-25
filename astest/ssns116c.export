@@ -1,0 +1,9 @@
+P time_limit 120
+P memory_limit 256
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm ssns116c.comm D 1
+F mmed ssns116c.mmed D 20

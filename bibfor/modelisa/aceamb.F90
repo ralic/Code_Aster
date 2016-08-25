@@ -27,7 +27,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,10 +54,11 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !     LMAX   : LONGUEUR
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
 ! ----------------------------------------------------------------------
-    integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, iret, jdls2
-    integer :: i,  nbmat, nbma
+    integer :: jdcc, jdvc, jdls, ioc, ng, nm, n1, n2, n3, n4, iret, jdls2
+    integer :: i,  nbmat, nbma, ncomp
     integer :: ima, nbno,  adrm, numa, jgrma, igr, nbmat0
     integer :: noe1, noe2, noe3, iarg
+    real(kind=8) :: ep, tens
     real(kind=8) :: ang(2)
     real(kind=8) :: axey(3), xnorm, epsi, axex(3), vecnor(3)
     real(kind=8) :: vn1n2(3), vn1n3(3)
@@ -92,13 +93,19 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     call wkvect('&&TMPMEMBRANE', 'V V K24', lmax, jdls)
     call wkvect('&&TMPMEMBRANE2', 'V V K8', lmax, jdls2)
 !
-    zk8(jdcc ) = 'ALPHA'
-    zk8(jdcc+1) = 'BETA'
+    zk8(jdcc  ) = 'EP'
+    zk8(jdcc+1) = 'ALPHA'
+    zk8(jdcc+2) = 'BETA'
+    zk8(jdcc+3) = 'TENS'
 !
+! - NOMBRE DE COMPOSANTES
+    ncomp = 4
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
     do ioc = 1, nbocc
+        ep     = 1.0d0
         ang(1) = 0.0d0
         ang(2) = 0.0d0
+        tens   = 0.0d0
 !
         call getvem(noma, 'GROUP_MA', 'MEMBRANE', 'GROUP_MA', ioc,&
                     iarg, lmax, zk24(jdls), ng)
@@ -109,18 +116,24 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     nbret=n1)
         call getvr8('MEMBRANE', 'AXE', iocc=ioc, nbval=3, vect=axey,&
                     nbret=n2)
-        zr(jdvc ) = ang(1)
-        zr(jdvc+1) = ang(2)
+        call getvr8('MEMBRANE', 'EPAIS', iocc=ioc, scal=ep, nbret=n3)
+        call getvr8('MEMBRANE', 'N_INIT', iocc=ioc, scal=tens, nbret=n4)
+                    
+        zr(jdvc  ) = ep
+        zr(jdvc+1) = ang(1)
+        zr(jdvc+2) = ang(2)
+        zr(jdvc+3) = tens
+        
         if (n2 .eq. 0) then
 ! ---       "GROUP_MA" = TOUTES LES MAILLES DE LA LISTE
             if (ng .gt. 0) then
                 do i = 1, ng
-                    call nocart(cartgr, 2, 2, groupma=zk24(jdls+i-1))
+                    call nocart(cartgr, 2, ncomp, groupma=zk24(jdls+i-1))
                 end do
             endif
 ! ---       "MAILLE" = TOUTES LES MAILLES DE LA LISTE DE MAILLES
             if (nm .gt. 0) then
-                call nocart(cartgr, 3, 2, mode='NOM', nma=nm,&
+                call nocart(cartgr, 3, ncomp, mode='NOM', nma=nm,&
                             limano=zk8(jdls2))
             endif
         else
@@ -176,13 +189,14 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     call utmess('F', 'MODELISA_11')
                 endif
                 call angvx(axex, ang(1), ang(2))
-                zr(jdvc) = ang(1) * r8rddg()
-                zr(jdvc+1) = ang(2) * r8rddg()
-                call nocart(cartgr, 3, 2, mode='NUM', nma=1,&
+                zr(jdvc+1) = ang(1) * r8rddg()
+                zr(jdvc+2) = ang(2) * r8rddg()
+                call nocart(cartgr, 3, ncomp, mode='NUM', nma=1,&
                             limanu=[numa])
             end do
         endif
     end do
+    
 !
     AS_DEALLOCATE(vi=nume_ma)
     call jedetr('&&TMPMEMBRANE')

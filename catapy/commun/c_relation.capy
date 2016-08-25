@@ -89,6 +89,8 @@ def C_RELATION( COMMAND ):
                                         "DRUCK_PRAG_N_A",
                                         "ELAS_GONF",
                                         "ELAS_HYPER",
+                                        "ELAS_HYP_MEMB_NH",
+                                        "ELAS_HYP_MEMB_SV",
                                         "ENDO_PORO_BETON",
                                         "ENDO_CARRE",
                                         "ENDO_FISS_EXP",

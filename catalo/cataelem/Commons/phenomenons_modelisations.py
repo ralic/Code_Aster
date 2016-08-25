@@ -3556,8 +3556,10 @@ phen.add('MEMBRANE', Modelisation(dim=(2,3), code='MMB',
     elements=(
         (MT.TRIA3     , EL.MEMBTR3),
         (MT.TRIA6     , EL.MEMBTR6),
+        (MT.TRIA7     , EL.MEMBTR7),
         (MT.QUAD4     , EL.MEMBQU4),
         (MT.QUAD8     , EL.MEMBQU8),
+        (MT.QUAD9     , EL.MEMBQU9),
     )))
 
 phen.add('PLAN_ELDI', Modelisation(dim=(2,2), code='PDI',

@@ -1,6 +1,6 @@
 subroutine te0439(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,6 +15,7 @@ subroutine te0439(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -25,7 +26,6 @@ subroutine te0439(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
 #include "asterfort/lteatt.h"
 #include "blas/ddot.h"
@@ -41,17 +41,21 @@ subroutine te0439(option, nomte)
     integer :: codres(2)
     character(len=4) :: fami
     integer :: nno, npg, i, imatuu, ndim, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, imate, icacoq
+    integer :: ipoids, ivf, idfde, igeom, imate, icacoq, icompo
     integer :: kpg, n, j, kkd, k
     integer :: kk, nddl, l
-    real(kind=8) :: dff(2, 8)
-    real(kind=8) :: vff(8), b(3, 3, 8), jac, rho(1)
-    real(kind=8) :: alpha, beta
-    real(kind=8) :: a(3, 3, 8, 8), coef
-    real(kind=8) :: diag(3, 8), wgt, alfam(3), somme(3)
-    aster_logical :: ldiag
+    real(kind=8) :: dff(2, 9)
+    real(kind=8) :: vff(9), b(3, 3, 9), jac, rho(1)
+    real(kind=8) :: alpha, beta, h
+    real(kind=8) :: a(3, 3, 9, 9), coef
+    real(kind=8) :: diag(3, 9), wgt, alfam(3), somme(3)
+    aster_logical :: ldiag, grdef
 !
 !
+    call jevech('PCOMPOR', 'L', icompo)
+    
+    grdef = (zk16 ( icompo + 2 )(1:9) .eq. 'GROT_GDEP')
+
     ldiag = (option(1:10).eq.'MASS_MECA_')
 !
 !
@@ -59,7 +63,7 @@ subroutine te0439(option, nomte)
     fami = 'MASS'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg,&
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
-    call r8inir(8*8*3*3, 0.d0, a, 1)
+    call r8inir(9*9*3*3, 0.d0, a, 1)
 !
 ! - PARAMETRES EN ENTREE
 !
@@ -75,8 +79,19 @@ subroutine te0439(option, nomte)
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
-    alpha = zr(icacoq) * r8dgrd()
-    beta = zr(icacoq+1) * r8dgrd()
+    alpha = zr(icacoq+1) * r8dgrd()
+    beta = zr(icacoq+2) * r8dgrd()
+    
+! - EPAISSEUR (VALABLE UNIQUEMENT POUR GROT_GDEP)
+!
+     
+    
+    if (grdef) then
+        h = zr(icacoq)
+    else
+        h = 1.d0
+    endif
+    
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS : ON CALCULE D'ABORD LA
 !      CONTRAINTE ET/OU LA RIGIDITE SI NECESSAIRE PUIS
@@ -96,20 +111,28 @@ subroutine te0439(option, nomte)
 !
 ! - MASS_MECA
 !
+
+    if (grdef) then
         call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                    ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
-                    1, 'RHO', rho, codres, 1)
+               ' ', 'ELAS', 0, ' ', [0.d0],&
+               1, 'RHO', rho, codres, 1)
+    else
+        call rcvalb(fami, kpg, 1, '+', zi(imate),&
+               ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
+               1, 'RHO', rho, codres, 1)
+    endif
+        
 !
 ! - CALCUL DE LA MATRICE "B" : DEPL NODAL -> EPS11 ET DU JACOBIEN
 !
         call mbcine(nno, zr(igeom), dff, alpha, beta,&
                     b, jac)
 !
-        wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac
+        wgt = wgt + rho(1)*zr(ipoids+kpg-1)*jac*h
 !
         do n = 1, nno
             do i = 1, n
-                coef = rho(1)*zr(ipoids+kpg-1)*jac*vff(n)*vff(i)
+                coef = rho(1)*zr(ipoids+kpg-1)*jac*vff(n)*vff(i)*h
                 a(1,1,n,i) = a(1,1,n,i) + coef
                 a(2,2,n,i) = a(2,2,n,i) + coef
                 a(3,3,n,i) = a(3,3,n,i) + coef
@@ -124,7 +147,7 @@ subroutine te0439(option, nomte)
 !
 !-- CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
 !
-        call r8inir(3*8, 0.d0, diag, 1)
+        call r8inir(3*9, 0.d0, diag, 1)
         call r8inir(3, 0.d0, somme, 1)
         do i = 1, 3
             do j = 1, nno

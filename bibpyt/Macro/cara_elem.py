@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -543,8 +543,10 @@ CARA_ELEM=OPER(nom="CARA_ELEM",sd_prod=cara_elem, op= 19,
                               ),
       MAILLE               = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
       GROUP_MA             = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+      EPAIS                = SIMP(statut='f',typ='R'),
       ANGL_REP             = SIMP(statut='f',typ='R',max=2),
       AXE                  = SIMP(statut='f',typ='R',max='**'),
+      N_INIT               = SIMP(statut='f',typ='R'),
    ),
 #
 #============================================================================

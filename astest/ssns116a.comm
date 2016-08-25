@@ -1,0 +1,259 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# On verifie le fonctionnement de la membrane sous gravite en recreant le cas 
+# de la chainette sous pesanteur. On compare le resultat avec le cas ou on 
+# applique une pression non suiveuse equivalente.
+
+# --------------------------------------------------------------------------- #
+# * * * * * * * * * * * * * * * * Parametrage * * * * * * * * * * * * * * * * #
+# --------------------------------------------------------------------------- #
+
+
+## Parametres matériau
+young = 5.7E10
+poisson = 0.49
+rho = 2844.23
+epais = (2.2783E-4)/(10) # longueur : 325, largeur : 10, section : 2.2783E-4
+tensInit = 10000000
+# Comportement materiau
+relation = 'ELAS_HYP_MEMB_SV'
+
+# Gravite 
+gravite = 9.81
+
+# Pression
+press = rho*epais*gravite
+
+# Nombre de pas de temps 
+nbPasGrav = 4
+nbPasPres = 4
+
+# --------------------------------------------------------------------------- #
+# * * * * * * * * * * * * * * *  Initialisation * * * * * * * * * * * * * * * #
+# --------------------------------------------------------------------------- #
+#
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),
+      PAR_LOT='OUI',);
+
+MAIL=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAIL=MODI_MAILLAGE(reuse =MAIL,
+                   MAILLAGE=MAIL,
+                   ORIE_NORM_COQUE=_F(GROUP_MA='membrane',
+                                      VECT_NORM=(0.0,0.0,1.0,),
+                                      GROUP_NO='point_O',),);
+
+#
+# DEFINITION DU MODELE
+MODELE=AFFE_MODELE(    MAILLAGE=MAIL,
+                       AFFE=_F(  TOUT = 'OUI',
+                       PHENOMENE = 'MECANIQUE',
+                       MODELISATION = 'MEMBRANE')  )
+
+#
+# DEFINITION DU MATERIAU
+CAOUT=DEFI_MATERIAU(ELAS=_F(E = young,  NU = poisson, RHO=rho,)
+                    )
+
+CARA=AFFE_CARA_ELEM(MODELE = MODELE,
+                    MEMBRANE =(_F(GROUP_MA     = 'membrane',
+                                  EPAIS        = epais,
+                                  ANGL_REP     = (0., 0.,),
+                                  N_INIT       = tensInit)))
+
+#
+# ATTRIBUTION DU MATERIAU
+CHMAT=AFFE_MATERIAU(    MAILLAGE=MAIL,
+                          AFFE=_F(  TOUT = 'OUI',
+                                 MATER = CAOUT)  )
+
+
+# --------------------------------------------------------------------------- #
+# * * * * * * * * * * * * * * * * * Calculs * * * * * * * * * * * * * * * * * #
+# --------------------------------------------------------------------------- #
+
+
+# DEFINITION DES CONDITIONS AUX LIMITES ET CHARGEMENTS
+ENCAST=AFFE_CHAR_MECA(    MODELE=MODELE,DDL_IMPO=(
+                           _F(  GROUP_NO = 'cote',  DY=0, ),
+                           _F(  GROUP_NO = 'bords', DX=0, DZ=0, ),
+                        ))
+
+CHARGT=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PESANTEUR=_F(GRAVITE=gravite,
+                       DIRECTION=(0.0,0.0,-1.0,),),);
+
+PRESS=AFFE_CHAR_MECA(MODELE=MODELE,
+                     PRES_REP=_F(GROUP_MA='membrane',
+                                 PRES=press,),); 
+
+# CALCULS
+FONCCB=DEFI_FONCTION(
+                     NOM_PARA='INST',
+                     VALE=(0.0 ,0.0,
+                           1.0 ,1.0,),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
+
+
+# Gravite
+LINST1=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=nbPasGrav,),);
+
+RES1 = STAT_NON_LINE(CARA_ELEM=CARA,
+                     CHAM_MATER=CHMAT,
+                     MODELE=MODELE,
+                     EXCIT=(_F(CHARGE=ENCAST,
+                               TYPE_CHARGE='FIXE_CSTE',),
+                            _F(TYPE_CHARGE='FIXE_CSTE',
+                               CHARGE=CHARGT,
+                               FONC_MULT=FONCCB,),
+                            ),
+                     INCREMENT=_F(LIST_INST=LINST1,
+                                  PRECISION=1.E-06,),
+                     COMPORTEMENT=_F(RELATION=relation,
+                                     ITER_INTE_MAXI=20,
+                                     RESI_INTE_RELA=1.E-06,
+                                     ITER_INTE_PAS=0,
+                                     RESI_CPLAN_RELA=1.E-06,
+                                     PARM_THETA=1.0,
+                                     ITER_CPLAN_MAXI=1,
+                                     DEFORMATION='GROT_GDEP',
+                                     PARM_ALPHA=1.0,),
+                     NEWTON=_F(REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               MATR_RIGI_SYME='NON',
+                               REAC_ITER_ELAS=0,
+                               REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(),
+                     CONVERGENCE=_F(ARRET='OUI',
+                                    ITER_GLOB_MAXI=80,
+                                    ITER_GLOB_ELAS=25,),
+                     SOLVEUR=_F(RENUM='METIS',
+                                STOP_SINGULIER='OUI',
+                                ELIM_LAGR='NON',
+                                NPREC=8,
+                                METHODE='MULT_FRONT',),
+                     METHODE='NEWTON',
+                     ARCHIVAGE=_F(PRECISION=1.E-06,
+                                  CRITERE='RELATIF',),
+                     MESURE=_F(TABLE='NON',),
+                     )
+                        
+# Pression non suiveuse
+LINST2=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=_F(JUSQU_A=1.0,
+                                   NOMBRE=nbPasPres,),);
+
+RES2 = STAT_NON_LINE(CARA_ELEM=CARA,
+                     CHAM_MATER=CHMAT,
+                     MODELE=MODELE,
+                     EXCIT=(_F(CHARGE=ENCAST,
+                               TYPE_CHARGE='FIXE_CSTE',),
+                            _F(TYPE_CHARGE='FIXE_CSTE',
+                               CHARGE=PRESS,
+                               FONC_MULT=FONCCB,),
+                            ),
+                     INCREMENT=_F(LIST_INST=LINST2,
+                                  PRECISION=1.E-06,),
+                     COMPORTEMENT=_F(RELATION=relation,
+                                     ITER_INTE_MAXI=20,
+                                     RESI_INTE_RELA=1.E-06,
+                                     ITER_INTE_PAS=0,
+                                     RESI_CPLAN_RELA=1.E-06,
+                                     PARM_THETA=1.0,
+                                     ITER_CPLAN_MAXI=1,
+                                     DEFORMATION='GROT_GDEP',
+                                     PARM_ALPHA=1.0,),
+                     NEWTON=_F(REAC_INCR=1,
+                               MATRICE='TANGENTE',
+                               MATR_RIGI_SYME='NON',
+                               REAC_ITER_ELAS=0,
+                               REAC_ITER=1,),
+                     RECH_LINEAIRE=_F(),
+                     CONVERGENCE=_F(ARRET='OUI',
+                                    ITER_GLOB_MAXI=80,
+                                    ITER_GLOB_ELAS=25,),
+                     SOLVEUR=_F(RENUM='METIS',
+                                STOP_SINGULIER='OUI',
+                                ELIM_LAGR='NON',
+                                NPREC=8,
+                                METHODE='MULT_FRONT',),
+                     METHODE='NEWTON',
+                     ARCHIVAGE=_F(PRECISION=1.E-06,
+                                  CRITERE='RELATIF',),
+                     MESURE=_F(TABLE='NON',),
+                     )
+       
+# --------------------------------------------------------------------------- #
+# * * * * * * * * * * * * * * * Post Traitement * * * * * * * * * * * * * * * #
+# --------------------------------------------------------------------------- #
+
+RES1=CALC_CHAMP(reuse = RES1,
+                 RESULTAT=RES1,
+                 CONTRAINTE='SIEF_NOEU',);
+
+RES2=CALC_CHAMP(reuse = RES2,
+                 RESULTAT=RES2,
+                 CONTRAINTE='SIEF_NOEU',);
+
+
+## Visualisation sur Paravis (deplacements et contraintes)
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RES1,
+                  ),);
+
+IMPR_RESU(FORMAT='MED',
+          UNITE=80,
+          RESU=_F(MAILLAGE=MAIL,
+                  RESULTAT=RES2,
+                  ),);
+
+# Test resultat
+# Comparaison pesanteur analytique (non regression sur pesanteur)
+TEST_RESU(RESU=_F(LEGENDE='Depl point O',
+                  RESULTAT=RES1,
+                  INST=1.,
+                  REFERENCE='ANALYTIQUE',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='point_O',
+                  VALE_CALC=-6.34942183815,
+                  VALE_REFE=-6.352,
+                  PRECISION = 5E-4,),);
+
+# Comparaison pesanteur et pression (non régression sur pression)           
+TEST_RESU(RESU=_F(LEGENDE='Depl point O',
+                  RESULTAT=RES2,
+                  INST=1.,
+                  REFERENCE='AUTRE_ASTER',
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='point_O',
+                  VALE_REFE=-6.34942183815,
+                  VALE_CALC=-6.3494218381506045,
+                  PRECISION = 1E-6,),);
+
+
+FIN()
+#

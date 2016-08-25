@@ -1,6 +1,6 @@
 subroutine ef0436(nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,8 +74,8 @@ subroutine ef0436(nomte)
 ! - LE VECTEUR NORME QUI DETERMINE LE REPERE LOCAL DE LA MEMBRANE
 !   (COMPORTEMENT ANISOTROPE)
 !
-    alpha = zr(icacoq) * r8dgrd()
-    beta = zr(icacoq+1) * r8dgrd()
+    alpha = zr(icacoq+1) * r8dgrd()
+    beta = zr(icacoq+2) * r8dgrd()
 !
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS

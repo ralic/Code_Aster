@@ -17,19 +17,16 @@ subroutine te0434(option, nomte)
 ! ======================================================================
 ! aslint: disable=W0104
     implicit none
+#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
-#include "asterfort/mbcine.h"
-#include "asterfort/mbrigi.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/terefe.h"
-#include "asterfort/verift.h"
+#include "asterfort/mbgchg.h"
+#include "asterfort/mbxchg.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 !
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
@@ -45,18 +42,15 @@ subroutine te0434(option, nomte)
 !                       NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: codres(2)
     character(len=4) :: fami
+    character(len=32) :: phenom
     integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: i, n, kpg, c, cc
-    integer :: ipoids, ivf, idfde, jgano, itemps, ier
+    integer :: n, kpg
+    integer :: ipoids, ivf, idfde, jgano, iret, icompo,itab(1)
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
-    real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
-    real(kind=8) :: alpha, beta, rho(1), rig(3, 3)
-    real(kind=8) :: epsthe, epsref, sgmref, sig(3)
-    character(len=8) :: nompar(4)
-    real(kind=8) :: valpar(4)
-    real(kind=8) :: xgau, ygau, zgau, epsinif(3)
+    integer :: icodre1, icodre2, grav
+    real(kind=8) :: dff(2, 9), vff(9)
+    real(kind=8) :: alpha, beta, h, preten
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -70,12 +64,19 @@ subroutine te0434(option, nomte)
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
-!
+!   
+! -- grav : permet d'utiliser PESANTEUR en STAT_NON_LINE
+    grav = 0
+    
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icacoq)
+    
+    call tecach('N','PCOMPOR', 'L',iret ,1 , itab)
+    icompo = itab(1)
 !
     if (option .eq. 'FORC_NODA') then
         call jevech('PCONTMR', 'L', icontm)
+        call jevech('PMATERC', 'L', imate)
 !
     else if (option.eq.'REFE_FORC_NODA') then
         call jevech('PMATERC', 'L', imate)
@@ -84,14 +85,10 @@ subroutine te0434(option, nomte)
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINR', 'L', iepsin)
 !
-    else if (option.eq.'CHAR_MECA_EPSI_F') then
-        call jevech('PMATERC', 'L', imate)
-        call jevech('PEPSINF', 'L', iepsin)
-        call jevech('PTEMPSR', 'L', itemps)
-!
     else if (option.eq.'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
+        grav = 1
 !
     else if (option.eq.'CHAR_MECA_TEMP_R') then
         call jevech('PMATERC', 'L', imate)
@@ -104,8 +101,29 @@ subroutine te0434(option, nomte)
 !
 ! - DIRECTION DE REFERENCE POUR UN COMPORTEMENT ANISOTROPE
 !
-    alpha = zr(icacoq) * r8dgrd()
-    beta = zr(icacoq+1) * r8dgrd()
+    alpha = zr(icacoq+1) * r8dgrd()
+    beta = zr(icacoq+2) * r8dgrd()
+    
+! - EPAISSEUR ET PRETCONTRAINTES
+    h = zr(icacoq) 
+    preten = zr(icacoq+3)
+    
+    
+! - VERIFICATION DE LA CORRESPONDANCE MATERIAU / COMPORTMENT
+!
+    call rccoma(zi(imate), 'ELAS_MEMBRANE', 0, phenom, icodre1)
+    call rccoma(zi(imate), 'ELAS', 0, phenom, icodre2)
+    
+    if (icodre1 .eq. 0) then
+        if ((icompo.ne.0) .and. (zk16( icompo + 2 )(1:5) .ne. 'PETIT')) then
+            ASSERT(.false.)
+        endif
+    elseif (icodre2 .eq. 0) then
+        if (((icompo.eq.0) .or. (zk16( icompo + 2 )(1:9) .ne. 'GROT_GDEP')) &
+              .and. (grav.eq.0)) then
+            ASSERT(.false.)
+        endif
+    endif
 !
 ! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -119,136 +137,22 @@ subroutine te0434(option, nomte)
             dff(1,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2)
             dff(2,n)=zr(idfde+(kpg-1)*nno*2+(n-1)*2+1)
         end do
-!
-! --- CALCUL DE LA MATRICE "B" :
-!              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
-!
-        call mbcine(nno, zr(igeom), dff, alpha, beta,&
-                    b, jac)
-!
-! - BRANCHEMENT DES DIFFERENTES OPTIONS
-!
-        if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-            (option(1:15).eq.'CHAR_MECA_EPSI_')) then
-!
-! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
-!
-            if (option .eq. 'FORC_NODA') then
-                do c = 1, ncomp
-                    sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
-                end do
-!
-! - CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
-!
-            else if (option.eq.'CHAR_MECA_EPSI_R') then
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                do c = 1, ncomp
-                    do cc = 1, ncomp
-                        sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
-                    end do
-                end do
-!
-            else if (option.eq.'CHAR_MECA_EPSI_F') then
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                
-                nompar(1) = 'X'
-                nompar(2) = 'Y'
-                nompar(3) = 'Z'
-                nompar(4) = 'INST'
-                valpar(4) = zr(itemps)
-                xgau = 0.d0
-                ygau = 0.d0
-                zgau = 0.d0
-!
-                do i = 1, nno
-                    xgau = xgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+1+3*(i-1))
-                    ygau = ygau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+2+3*(i-1))
-                    zgau = zgau + zr(ivf-1+i+nno*(kpg-1))*zr(igeom-1+3+3*(i-1))
-                enddo
-!
-                valpar(1) = xgau
-                valpar(2) = ygau
-                valpar(3) = zgau
-!
-                call fointe('FM', zk8(iepsin), 4, nompar, valpar, epsinif(1), ier)
-                call fointe('FM', zk8(iepsin+1), 4, nompar, valpar, epsinif(2), ier)
-                call fointe('FM', zk8(iepsin+2), 4, nompar, valpar, epsinif(3), ier)
-!
-                do c = 1, ncomp
-                    do cc = 1, ncomp
-                        sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
-                    end do
-                end do
-!
-! - CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
-!
-            else if (option.eq.'CHAR_MECA_TEMP_R') then
-!
-                call verift(fami, kpg, 1, '+', zi(imate),&
-                            epsth_=epsthe)
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                do c = 1, ncomp
-                    sig(c) = epsthe*(rig(1,c)+rig(2,c))
-                end do
-!
+        
+        if (icodre1 .eq. 0) then
+
+            call mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
+                  imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
+                  
+        elseif (icodre2 .eq. 0) then
+        
+            if ((option.ne.'FORC_NODA') .and. (option.ne.'CHAR_MECA_PESA_R')) then
+                call utmess('F', 'MEMBRANE_7')
             endif
-!
-            do n = 1, nno
-                do i = 1, nddl
-                    do c = 1, ncomp
-                        zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
-                        nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
-                        jac
-                    end do
-                end do
-            end do
-!
-! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
-!
-        else if (option.eq.'REFE_FORC_NODA') then
-!
-            call terefe('EPSI_REFE', 'MEMBRANE', epsref)
-            if (epsref .eq. r8vide()) then
-                ASSERT(.false.)
-            endif
-!
-            call mbrigi(fami, kpg, imate, rig)
-!
-!         ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
-            sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
-            ASSERT(sgmref.gt.0.d0)
-!
-            do n = 1, nno
-                do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
-                                                )/npg
-                end do
-            end do
-!
-! - CHAR_MECA_PESA_R
-!
-        else if (option.eq.'CHAR_MECA_PESA_R') then
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
-                        1, 'RHO', rho, codres, 1)
-            do n = 1, nno
-                do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(&
-                                                ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
-                                                &esa+i) *vff(n)*zr( ipoids+kpg-1&
-                                                )*jac
-                end do
-            end do
+            call mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
+              ipoids,ipesa,igeom,ivectu,vff,dff,h,alpha,beta,preten)
+              
         endif
+        
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
     end do
