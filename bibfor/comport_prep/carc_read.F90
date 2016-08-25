@@ -28,6 +28,7 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/deprecated_algom.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -177,6 +178,7 @@ implicit none
                 type_matr_t = 2
                 call getvr8(keywordfact, 'VALE_PERT_RELA', iocc = iocc, scal = vale_pert_rela)
             else if (type_matr_tang .eq. 'TANGENTE_SECANTE') then
+                call deprecated_algom('TANG_SECA')
                 call getvr8(keywordfact, 'SEUIL', iocc = iocc, scal = seuil)
                 call getvr8(keywordfact, 'AMPLITUDE', iocc = iocc, scal = amplitude)
                 call getvr8(keywordfact, 'TAUX_RETOUR', iocc = iocc, scal = taux_retour)
