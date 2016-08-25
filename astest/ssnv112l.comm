@@ -25,7 +25,7 @@
 # GROUPES DE NOEUDS ET MAILLES :
 # GRNO: A B  F
 # GRMA: FACEEF     FACEAE   FACEAB   FACESUP   FACEINF
-# person_in_charge: sebastien.fayolle at edf.fr
+
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),

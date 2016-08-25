@@ -14,28 +14,15 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# CYLINDRE CREUX EN INCOMPRESSIBLE (NU=0.4999)
-# SOUS PRESSION INTERNE (60 MPA) - GRANDES DEFORMATIONS
 #
-# MODELISATION : ELEMENTS MECANIQUE AXIS_INCO (TRIA6 QUAD8)
-# MAILLAGE     : ALIBABA > ASTER
-# ----------------------------------------------------------------------
-# GROUPES DE NOEUDS ET MAILLES: A B C D E F  NOEUMIA NOEUMIB  FACESUP   FACEINF
-#             BORDAB=GRNM11     FACEEF=GRMA12     FACEAE=GRMA13
-# ----------------------------------------------------------------------
+# CYLINDRE CREUX EN INCOMPRESSIBLE GRANDES DEFORMATIONS
+#
 
-DEBUT(
-CODE=_F(
+DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI')
-      );
+      DEBUG=_F(SDVERI='OUI'));
 
 M=LIRE_MAILLAGE(FORMAT='MED');
-
-PRES = FORMULE(VALE='60.',
-               NOM_PARA=('X','Y'));
-PRES_0 = 0.0;
-
 
 MO=AFFE_MODELE(MAILLAGE=M,
                
@@ -61,7 +48,7 @@ CLIM=AFFE_CHAR_MECA(MODELE=MO,
 
 CH=AFFE_CHAR_MECA(MODELE=MO,
                   FACE_IMPO=_F(GROUP_MA='GRMA13',
-                               DX=6e-05),);
+                               DX=6.E-5),);
 
 L_INST1=DEFI_LIST_REEL(DEBUT=0.0,
                        INTERVALLE=_F(JUSQU_A=1.0,
@@ -323,6 +310,24 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   CRITERE='RELATIF',
                   MAILLE='M2',
                   ),
+          )
+
+# Test EPSG_ELGA
+
+
+EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,DEFORMATION=('EPSG_NOEU'))
+
+TEST_RESU(RESU=
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='EPSG_NOEU',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=-0.000598706344105,
+                   VALE_REFE=-0.0005994604316761909,
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-3,),
           )
 
 FIN();

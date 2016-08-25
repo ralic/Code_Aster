@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: sebastien.fayolle at edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,8 +205,8 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------
-class MIPLQU8(Element):
-    """Please document this element"""
+class MIAXQU8(Element):
+    """Mechanics - Axisymmetric - Incompressible - UPG model - QUAD8"""
     meshType = MT.QUAD8
     nodes = (
             SetOfNodes('EN1', (1,2,3,4,)),
@@ -347,6 +347,18 @@ class MIPLQU8(Element):
         OP.EPEQ_ELNO(te=335,
             para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO), ),
             para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
+        ),
+        OP.EPSG_ELGA(te=87,
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
+                     (OP.EPSG_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((OP.EPSG_ELGA.PDEFOPG, EDEFOPG), ),
+        ),
+
+        OP.EPSG_ELNO(te=4,
+            para_in=((OP.EPSG_ELNO.PDEFOPG, EDEFOPG), ),
+            para_out=((SP.PDEFONO, EDEFONO), ),
         ),
 
         OP.EPSI_ELGA(te=447,
@@ -594,8 +606,8 @@ class MIPLQU8(Element):
 
 
 #------------------------------------------------------------
-class MIPLTR6(MIPLQU8):
-    """Please document this element"""
+class MIAXTR6(MIAXQU8):
+    """Mechanics - Axisymmetric - Incompressible - UPGB model - TRIA6"""
     meshType = MT.TRIA6
     nodes = (
             SetOfNodes('EN1', (1,2,3,)),

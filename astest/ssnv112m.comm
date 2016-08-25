@@ -14,16 +14,9 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# CYLINDRE CREUX EN INCOMPRESSIBLE (NU=0.4999)
-# SOUS DEPLACEMENT RADIAL (6.E-5m)
 #
-# MODELISATION : ELEMENTS MECANIQUE PLAN_INCO (TRIA6 QUAD8)
-# MAILLAGE     : ALIBABA > ASTER
-# ----------------------------------------------------------------------
-# GROUPES DE NOEUDS ET MAILLES: A B C D E F
-#              BORDAB=GRNM11    FACEEF=GRMA12     FACEAE=GRMA13
-# ----------------------------------------------------------------------
-# person_in_charge: sebastien.fayolle at edf.fr
+# CYLINDRE CREUX EN INCOMPRESSIBLE GRANDES DEFORMATIONS
+#
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET'),
@@ -319,6 +312,35 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   CRITERE='RELATIF',
                   MAILLE='M2',
                   ),
+          )
+
+# Test EPSG_ELGA
+
+
+EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,DEFORMATION=('EPSG_NOEU'))
+
+TEST_RESU(RESU=(
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='EPSG_NOEU',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.000601356410318,
+                   VALE_REFE=0.0005994604316761909,
+                   CRITERE='RELATIF',
+                   PRECISION=4.E-3,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL,
+                   NOM_CHAM='EPSG_NOEU',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.000604235469839,
+                   VALE_REFE=-0.0006001799999999502,
+                   CRITERE='RELATIF',
+                   PRECISION=7.0E-3,),
+                ),
           )
 
 FIN();

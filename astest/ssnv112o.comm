@@ -24,7 +24,7 @@
 # GRNO: A B C D E F  NOEUMI
 # GRMA: FACEEF     FACEAE   FACEAB   FACSUP   FACINF VOLUME
 # ----------------------------------------------------------------------
-# person_in_charge: sebastien.fayolle at edf.fr
+
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

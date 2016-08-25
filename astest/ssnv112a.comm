@@ -15,18 +15,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# ----------------------------------------------------------------------
+# CYLINDRE CREUX EN INCOMPRESSIBLE GRANDES DEFORMATIONS
 #
-# CYLINDRE CREUX EN INCOMPRESSIBLE GRANDES DEFORMATIONS(NU=0.4999)
-# SOUS DEPLACEMENT RADIAL (U0=6.10E-5)
-#
-# MODELISATION : ELEMENTS MECANIQUE 3D INCOMP.(HEXA20+QUAD8)
-# MAILLAGE     : GIBI
-# ----------------------------------------------------------------------
-# GROUPES DE NOEUDS ET MAILLES :
-# GRNO: A B C D E F  NOEUMI
-# GRMA: FACEEF     FACEAE   FACEAB   FACSUP   FACINF VOLUME
-# ----------------------------------------------------------------------
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -76,7 +66,7 @@ RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.,0.,
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
 # ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
 # CORRIGE LES EVENTUELLES DERIVES.
-EVOL=STAT_NON_LINE(MODELE=MO,INFO=2,
+EVOL=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CM,
                    EXCIT=_F(CHARGE=CH,
                             FONC_MULT=RAMPE),
@@ -93,7 +83,7 @@ EVOL=STAT_NON_LINE(MODELE=MO,INFO=2,
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
 #            MAILLAGE ET A FORTIORI DANS LE CHARGEMENT
-#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR. G. NICOLAS.
+#            IL FAUDRA COMPLETER LE MAILLAGE UN JOUR
 EVOL=CALC_CHAMP(reuse=EVOL,RESULTAT=EVOL,CRITERES=('SIEQ_ELNO'),CONTRAINTE=('SIGM_ELNO'))
 
 EVOL=CALC_CHAMP(reuse =EVOL,
@@ -342,7 +332,59 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   MAILLE='M1',
                   ),
           )
+# Test EPSG_ELGA
 
+CH_L=AFFE_CHAR_MECA(MODELE=MO,
+                  DDL_IMPO=(_F(GROUP_MA='FACEAB',
+                               DX=0.),
+                            _F(GROUP_MA='FACSUP',
+                               DZ=0.),
+                            _F(GROUP_MA='FACINF',
+                               DZ=0.)),
+                  FACE_IMPO=(_F(GROUP_MA='FACEEF',
+                                DNOR=0.),
+                             _F(GROUP_MA='FACEAE',
+                                DNOR=-6.E-5)));
+
+
+EVOL_L=STAT_NON_LINE(MODELE=MO,
+                   CHAM_MATER=CM,
+                   EXCIT=_F(CHARGE=CH_L,
+                            FONC_MULT=RAMPE),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',
+                                DEFORMATION='SIMO_MIEHE'),
+                   INCREMENT=_F(LIST_INST=INSTANTS),
+                   NEWTON=_F(REAC_ITER=1),
+                   CONVERGENCE=_F(SIGM_REFE=60.0,
+                                  EPSI_REFE=3.E-4,
+                                  RESI_REFE_RELA=1.E-3),
+                   SOLVEUR=_F(METHODE='MUMPS',NPREC=-1,));
+
+EVOL_L=CALC_CHAMP(reuse=EVOL_L,RESULTAT=EVOL_L,DEFORMATION=('EPSG_NOEU'))
+
+TEST_RESU(RESU=(
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL_L,
+                   NOM_CHAM='EPSG_NOEU',
+                   NOM_CMP='EPXX',
+                   VALE_CALC=0.000599576100401,
+                   VALE_REFE=0.0005994604316761909,
+                   CRITERE='RELATIF',
+                   PRECISION=2.E-4,),
+                _F(NUME_ORDRE=1,
+                   GROUP_NO='A',
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=EVOL_L,
+                   NOM_CHAM='EPSG_NOEU',
+                   NOM_CMP='EPYY',
+                   VALE_CALC=-0.00059885996551,
+                   VALE_REFE=-0.0006001799999999502,
+                   CRITERE='RELATIF',
+                   PRECISION=2.2E-3,),
+                ),
+          )
 FIN();
 
 #

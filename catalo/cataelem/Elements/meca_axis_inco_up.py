@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: sebastien.fayolle at edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -205,8 +205,8 @@ MMATUNS  = ArrayOfComponents(phys=PHY.MDNS_R, locatedComponents=DDL_MECA)
 
 
 #------------------------------------------------------------
-class MUPLQU8(Element):
-    """Please document this element"""
+class MUAXQU8(Element):
+    """Mechanics - Axisymmetric - Incompressible - UP model - QUAD8"""
     meshType = MT.QUAD8
     nodes = (
             SetOfNodes('EN1', (1,2,3,4,)),
@@ -215,7 +215,7 @@ class MUPLQU8(Element):
     elrefe =(
             ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9','MASS=FPG9','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','MASS','NOEU','FPG1',),),
             ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG9',),),
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','MASS=FPG4',),),
+            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4',),),
         )
     calculs = (
 
@@ -347,6 +347,18 @@ class MUPLQU8(Element):
         OP.EPEQ_ELNO(te=335,
             para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO), ),
             para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
+        ),
+        OP.EPSG_ELGA(te=87,
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
+                     (OP.EPSG_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((OP.EPSG_ELGA.PDEFOPG, EDEFOPG), ),
+        ),
+
+        OP.EPSG_ELNO(te=4,
+            para_in=((OP.EPSG_ELNO.PDEFOPG, EDEFOPG), ),
+            para_out=((SP.PDEFONO, EDEFONO), ),
         ),
 
         OP.EPSI_ELGA(te=447,
@@ -594,8 +606,8 @@ class MUPLQU8(Element):
 
 
 #------------------------------------------------------------
-class MUPLTR6(MUPLQU8):
-    """Please document this element"""
+class MUAXTR6(MUAXQU8):
+    """Mechanics - Axisymmetric - Incompressible - UP model - TRIA6"""
     meshType = MT.TRIA6
     nodes = (
             SetOfNodes('EN1', (1,2,3,)),
@@ -604,19 +616,19 @@ class MUPLTR6(MUPLQU8):
     elrefe =(
             ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG3','MASS=FPG6','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','MASS','NOEU','FPG1',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3',),),
-            ElrefeLoc(MT.SE3, gauss = ('RIGI=FPG4','MASS=FPG4',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3',),),
         )
 
 
 #------------------------------------------------------------
-class MUPLTR3(MUPLQU8):
-    """Please document this element"""
+class MUAXTR3(MUAXQU8):
+    """Mechanics - Axisymmetric - Incompressible - UP model - TRIA3"""
     meshType = MT.TRIA3
     nodes = (
             SetOfNodes('EN1', (1,2,3,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','MASS=FPG3','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','FPG1',),),
+            ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1','MASS=FPG3','NOEU=NOEU','FPG1=FPG1',), mater=('RIGI','MASS','NOEU','FPG1',),),
             ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG1',),),
             ElrefeLoc(MT.SE2, gauss = ('RIGI=FPG2','MASS=FPG2',),),
         )

@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: sebastien.fayolle at edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -199,8 +199,7 @@ MMATUNS = ArrayOfComponents(
 
 #------------------------------------------------------------
 class MBAXQU8(Element):
-
-    """Please document this element"""
+    """Mechanics - Axisymmetric - Incompressible - UPGB model - QUAD8"""
     meshType = MT.QUAD8
     nodes = (
         SetOfNodes('EN1', (1, 2, 3, 4,)),
@@ -368,6 +367,19 @@ class MBAXQU8(Element):
                      para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO), ),
                      para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
                      ),
+
+        OP.EPSG_ELGA(te=87,
+            para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER),
+                     (SP.PMATERC, LC.CMATERC), (SP.PTEMPSR, CTEMPSR),
+                     (OP.EPSG_ELGA.PVARCPR, LC.ZVARCPG), (SP.PVARCRR, LC.ZVARCPG),
+                     ),
+            para_out=((OP.EPSG_ELGA.PDEFOPG, EDEFOPG), ),
+        ),
+
+        OP.EPSG_ELNO(te=4,
+            para_in=((OP.EPSG_ELNO.PDEFOPG, EDEFOPG), ),
+            para_out=((SP.PDEFONO, EDEFONO), ),
+        ),
 
         OP.EPSI_ELGA(te=447,
                      para_in=((SP.PDEPLAR, NDEPLAR), (SP.PGEOMER, NGEOMER),
@@ -670,8 +682,7 @@ class MBAXQU8(Element):
 
 #------------------------------------------------------------
 class MBAXTR6(MBAXQU8):
-
-    """Please document this element"""
+    """Mechanics - Axisymmetric - Incompressible - UPGB model - TR6"""
     meshType = MT.TRIA6
     nodes = (
         SetOfNodes('EN1', (1, 2, 3,)),
