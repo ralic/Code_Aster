@@ -15,18 +15,18 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 
 """Ce module définit les noms de variables internes valides.
 Un comportement ne doit/peut pas utiliser une variable internes dont le
 nom ne serait pas déclaré ici."""
 
 DICT_NOM_VARI = {
-    "ACIER1": _(u"phase métallurgique acier variable interne 1"),
-    "ACIER2": _(u"phase métallurgique acier variable interne 2"),
-    "ACIER3": _(u"phase métallurgique acier variable interne 3"),
-    "ACIER4": _(u"phase métallurgique acier variable interne 4"),
-    "ACIER5": _(u"phase métallurgique acier variable interne 5"),
+    "FERRITE": _(u"phase métallurgique acier variable (ferrite)"),
+    "PERLITE": _(u"phase métallurgique acier variable (perlite)"),
+    "BAINITE": _(u"phase métallurgique acier variable (bainite)"),
+    "MARTENSITE": _(u"phase métallurgique acier variable (martensite)"),
+    "AUSTENITE": _(u"phase métallurgique acier variable (austenite)"),
     "ADOUMEMB": _(u"affaiblissement relatif de raideur en membrane"),
     "ADOUCOMP": _(u"affaiblissement relatif de raideur en membrane en compression"),
     "ADOUFLEX": _(u"affaiblissement relatif de raideur en flexion"),
@@ -697,7 +697,7 @@ DICT_NOM_VARI = {
     "XRTW": _(u"coeff de modif de la resistane a la traction par effet de Weibull"),
     "Y1": _(u"coordonnée Y de la pointe de fissure après rupture par propagation,"),
     "Y2": _(u"coordonnée Y de la pointe de fissure 2 lors de l'amorçage,"),
-    "ZIRC1": _(u"phase métallurgique zirconium variable interne 1"),
-    "ZIRC2": _(u"phase métallurgique zirconium variable interne 2"),
-    "ZIRC3": _(u"phase métallurgique zirconium variable interne 3"),
+    "ZIRCALPH": _(u"phase métallurgique zirconium ALPHA"),
+    "ZIRCALBE": _(u"phase métallurgique zirconium ALPHA/BETA"),
+    "ZIRCBETA": _(u"phase métallurgique zirconium BETA"),
 }

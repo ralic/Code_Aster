@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ loi = LoiComportement(
     doc="""phases metallurgiques de l'acier""",
     num_lc=9999,
     nb_vari=5,
-    nom_vari=('ACIER1', 'ACIER2', 'ACIER3', 'ACIER4', 'ACIER5'),
+    nom_vari=('FERRITE','PERLITE','BAINITE','MARTENSITE','AUSTENITE'),
     mc_mater = ('META_ACIER'),
     modelisation = ('3D', 'AXIS', 'D_PLAN'),
     deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'SIMO_MIEHE'),
