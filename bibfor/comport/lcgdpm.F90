@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/get_meta_phasis.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -193,7 +193,7 @@ implicit none
     troisk = e/(1.d0-2.d0*nu)
 !
     if (compor(1)(1:4) .eq. 'META') then
-        plasti=vim(6)
+        plasti=vim(7)
 !
 ! 2.2 - LOI DES MELANGES
 !
@@ -554,10 +554,10 @@ implicit none
 !
         seuil=eqtel-(1.d0+mu*trans*trbel)*rmoy
         if (seuil .lt. 0.d0) then
-            vip(6)=0.d0
+            vip(7)=0.d0
             dp=0.d0
         else
-            vip(6)=1.d0
+            vip(7)=1.d0
             mutild=2.d0*mu*trbel/3.d0
             call nzcalc(crit, phase, nb_phasis, fmel, seuil,&
                         dt, trans, hmoy, mutild, eta,&
@@ -615,7 +615,7 @@ implicit none
 !
 ! 4.2.2 - CALCUL DE SIGMA
 !
-        plasti=vip(6)
+        plasti=vip(7)
         do i = 1, 6
             if (eqtel .gt. 0.d0) then
                 dvtaup(i)=dvtel(i)-mu*dp*trbel*dvtel(i)/eqtel
@@ -638,22 +638,22 @@ implicit none
                 vip(k)=0.d0
             endif
         end do
-        vip(7)=0.d0
+        vip(6)=0.d0
         if (phase(nb_phasis) .gt. 0.d0) then
             if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1:9) .eq. 'META_V_IL') then
-                vip(7)=vip(7)+(1-fmel)*h(nb_phasis)*vip(nb_phasis)
+                vip(6)=vip(6)+(1-fmel)*h(nb_phasis)*vip(nb_phasis)
             endif
             if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)(1:10) .eq.'META_V_INL') then
-                vip(7)=vip(7)+(1-fmel)*(r(nb_phasis)-sy(nb_phasis))
+                vip(6)=vip(6)+(1-fmel)*(r(nb_phasis)-sy(nb_phasis))
             endif
         endif
         if (zalpha .gt. 0.d0) then
             do k = 1, nb_phasis-1
                 if (compor(1)(1:9) .eq. 'META_P_IL' .or. compor(1)(1: 9) .eq.'META_V_IL') then
-                    vip(7)=vip(7)+fmel*phase(k)*h(k)*vip(k)/zalpha
+                    vip(6)=vip(6)+fmel*phase(k)*h(k)*vip(k)/zalpha
                 endif
                 if (compor(1)(1:10) .eq. 'META_P_INL' .or. compor(1)( 1:10) .eq.'META_V_INL') then
-                    vip(7)=vip(7)+fmel*phase(k)*(r(k)-sy(k))/zalpha
+                    vip(6)=vip(6)+fmel*phase(k)*(r(k)-sy(k))/zalpha
                 endif
             end do
         endif

@@ -251,8 +251,8 @@ implicit none
 !
 ! --------- Exception for name of internal variables
 !
-            call comp_meca_exc2(defo_comp, l_kit_meta, l_mult_comp, l_exte_comp,&
-                                l_excl   , vari_excl)
+            call comp_meca_exc2(l_mult_comp, l_exte_comp,&
+                                l_excl     , vari_excl)
 !
 ! --------- Save names of relation
 !
@@ -273,6 +273,7 @@ implicit none
             call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
             call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = v_vari)
             call comp_meca_name(nb_vari     , l_excl      , vari_excl   , l_kit_meta,&
+                                defo_comp   ,&
                                 comp_code_py, rela_code_py, meta_code_py,&
                                 v_vari)
 !

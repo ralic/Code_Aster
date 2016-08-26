@@ -108,9 +108,7 @@ implicit none
 ! --------- Print name of internal variables
 !
             if (l_excl) then
-                if (vari_excl.eq.'&&META') then
-                    call utmess('I', 'COMPOR4_12')
-                else if (vari_excl.eq.'&&MULT_COMP') then
+                if (vari_excl.eq.'&&MULT_COMP') then
                     call utmess('I', 'COMPOR4_15')
                 else if (vari_excl.eq.'&&EXTE_COMP') then
                     call utmess('I', 'COMPOR4_16')

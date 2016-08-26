@@ -1,5 +1,5 @@
-subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_exte_comp,&
-                          l_excl   , vari_excl)
+subroutine comp_meca_exc2(l_mult_comp, l_exte_comp,&
+                          l_excl     , vari_excl)
 !
 implicit none
 !
@@ -23,8 +23,6 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), intent(in) :: defo_comp
-    aster_logical, intent(in) :: l_kit_meta
     aster_logical, intent(in) :: l_mult_comp
     aster_logical, intent(in) :: l_exte_comp
     aster_logical, intent(out) :: l_excl
@@ -38,8 +36,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  defo_comp        : DEFORMATION comportment
-! In  l_kit_meta       : .true. if metallurgy
 ! In  l_mult_comp      : .true. if multi-comportment (DEFI_COMPOR)
 ! In  l_exte_comp      : .true. if external computing for comportment (MFront, UMAT)
 ! Out l_excl           : .true. if exception case (no names for internal variables)
@@ -49,15 +45,6 @@ implicit none
 !
     l_excl    = .false.
     vari_excl = ' '
-!
-! - KIT META with large strains
-!
-    if (l_kit_meta) then
-        if ((defo_comp .eq. 'SIMO_MIEHE') .or. (defo_comp .eq. 'GDEF_LOG')) then
-            l_excl    = .true.
-            vari_excl = '&&META'
-        endif
-    endif
 !
 ! - Multiple comportment
 !

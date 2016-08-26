@@ -37,10 +37,6 @@ Comportement - Occurrence  %(i1)d"""),
     9: _(u"""  Nombre total de variables internes   : %(i1)d"""),
 
 
-    12: _(u"""
-  Pour les kits métallurgiques KIT_META en grandes déformations, on n'a pas d'informations sur le nom des variables internes.
-"""),
-
     13: _(u"""
   Il y a deux types de modélisations différents pour une même affectation du comportement MFRONT.
   Chaque occurrence de COMPORTEMENT avec relation MFRONT doit contenir un seul type de modélisation.

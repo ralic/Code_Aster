@@ -18,10 +18,8 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_exc2(defo_comp, l_kit_meta , l_mult_comp, l_exte_comp,&
-                              l_excl   , vari_excl)
-        character(len=16), intent(in) :: defo_comp
-        aster_logical, intent(in) :: l_kit_meta
+    subroutine comp_meca_exc2(l_mult_comp, l_exte_comp,&
+                              l_excl     , vari_excl)
         aster_logical, intent(in) :: l_mult_comp
         aster_logical, intent(in) :: l_exte_comp
         aster_logical, intent(out) :: l_excl
