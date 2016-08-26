@@ -314,7 +314,6 @@ implicit none
 ! ----- Name of timer
         character(len=9)  :: timer_name
 ! ----- Times: for Newton iteration, time step and complete computation
-        integer           :: time_mesg
         real(kind=8)      :: time_iter
         real(kind=8)      :: time_step
         real(kind=8)      :: time_comp
@@ -322,7 +321,6 @@ implicit none
         integer           :: time_indi_comp
 ! ----- Counters: for Newton iteration, time step and complete computation
         aster_logical     :: l_count_add
-        integer           :: count_mesg
         integer           :: count_iter
         integer           :: count_step
         integer           :: count_comp
