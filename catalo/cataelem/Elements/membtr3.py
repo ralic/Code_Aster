@@ -189,10 +189,20 @@ class MEMBTR3(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
         
-        OP.CHAR_MECA_PRES_R(te=580,
-                            para_in=((SP.PPRESSR, EPRESNO), ),
-                            para_out=((SP.PVECTUR, MVECTUR), ),
-                            ),
+        OP.CHAR_MECA_PRES_R(te=18,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPRESSR, EPRESNO),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
+
+        OP.CHAR_MECA_PRSU_R(te=424,
+            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
+                     (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PPRESSR, EPRESNO),
+                     ),
+            para_out=((SP.PVECTUR, MVECTUR), ),
+        ),
         
         OP.CHAR_MECA_SECH_R(te=312,
                             para_in=(
@@ -201,19 +211,6 @@ class MEMBTR3(Element):
                             ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
                             ),
-
-        OP.CHAR_MECA_PRES_R(te=18,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHAR_MECA_PRSU_R(te=424,
-            para_in=((SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
-                     (SP.PGEOMER, NGEOMER), (SP.PPRESSR, EPRESNO),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
 
         OP.CHAR_MECA_TEMP_R(te=434,
             para_in=((SP.PCACOQU, CCACOQU), (OP.CHAR_MECA_TEMP_R.PCOMPOR, CCOMPOR),

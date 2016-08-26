@@ -32,6 +32,7 @@ subroutine te0434(option, nomte)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE CHARGEMENT :
 !                                  - CHAR_MECA_EPSI_R
+!                                  - CHAR_MECA_EPSI_F
 !                                  - CHAR_MECA_PESA_R
 !                                  - CHAR_MECA_TEMP_R
 !                                  - FORC_NODA
@@ -46,7 +47,7 @@ subroutine te0434(option, nomte)
     character(len=32) :: phenom
     integer :: nddl, nno, nnos, npg, ndim, ncomp
     integer :: n, kpg
-    integer :: ipoids, ivf, idfde, jgano, iret, icompo,itab(1)
+    integer :: ipoids, ivf, idfde, jgano, iret, icompo,itab(1), itemps
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
     integer :: icodre1, icodre2, grav
     real(kind=8) :: dff(2, 9), vff(9)
@@ -84,6 +85,11 @@ subroutine te0434(option, nomte)
     else if (option.eq.'CHAR_MECA_EPSI_R') then
         call jevech('PMATERC', 'L', imate)
         call jevech('PEPSINR', 'L', iepsin)
+!
+    else if (option.eq.'CHAR_MECA_EPSI_F') then
+        call jevech('PMATERC', 'L', imate)
+        call jevech('PEPSINF', 'L', iepsin)
+        call jevech('PTEMPSR', 'L', itemps)
 !
     else if (option.eq.'CHAR_MECA_PESA_R') then
         call jevech('PMATERC', 'L', imate)
@@ -140,7 +146,7 @@ subroutine te0434(option, nomte)
         
         if (icodre1 .eq. 0) then
 
-            call mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
+            call mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom,&
                   imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
                   
         elseif (icodre2 .eq. 0) then

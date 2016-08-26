@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
-                  imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
+    subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,&
+                  igeom,imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
     character(len=16) :: option
     character(len=4) :: fami
     integer :: nddl, nno, ncomp, npg
     integer :: kpg
-    integer :: ipoids, igeom, imate, ipesa,iepsin
+    integer :: ipoids, igeom, imate, ipesa,iepsin,itemps
     integer :: ivectu, icontm
     real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
     end subroutine mbxchg

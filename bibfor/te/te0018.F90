@@ -7,10 +7,14 @@ subroutine te0018(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
+#include "asterfort/fointe.h"
 #include "asterfort/nmpr3d_vect.h"
+#include "asterfort/rccoma.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +30,7 @@ subroutine te0018(option, nomte)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W0104
+! aslint: disable=W0413
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: option
@@ -35,20 +40,60 @@ subroutine te0018(option, nomte)
 !
 ! Elementary computation
 !
-! Elements: 3D
+! Elements: 3D and membrane (only CHAR_MECA_PRES_R)
 ! Option: CHAR_MECA_PRES_R
 !         CHAR_MECA_EFON_R
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=32) :: phenom
+    character(len=8) :: param
     integer :: ndim, nno, npg, nnos, jgano, kpg, kdec, n
     integer :: ipoids, ivf, idf
     integer :: j_geom, j_pres, j_vect, j_effe
+    integer :: imate, icodre, itab(8), iret, jad, nbv, ier
+    integer :: k
     real(kind=8) :: pres, pres_point(27), coef_mult
+    real(kind=8) :: pr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     ASSERT(option.eq.'CHAR_MECA_PRES_R'.or.option.eq.'CHAR_MECA_EFON_R')
+!
+! - For membrane in small strain, we allow pressure only if it is null
+    if(nomte(1:4).eq.'MEMB') then
+        call jevech('PMATERC', 'L', imate)
+        call rccoma(zi(imate), 'ELAS_MEMBRANE', 0, phenom, icodre)
+! -     Only small strains work with ELAS_MEMBRANE behavior
+        if (icodre .eq. 0) then
+            param='PPRESSR'
+            call tecach('NNO', param, 'L', iret, nval=8, itab=itab)
+            if (iret.eq.0) then
+                jad=itab(1)
+                nbv=itab(2)
+                ASSERT(itab(5).eq.1 .or. itab(5).eq.4)
+                if (itab(5).eq.1) then
+                    do k=1,nbv
+                        if (zr(jad-1+k).ne.0.d0) then
+                            call utmess('F', 'CALCUL_48')
+                        endif
+                    enddo
+                else
+                    do k=1,nbv
+                        if (zk8(jad-1+k).ne.'&FOZERO') then
+                            call fointe(' ', zk8(jad-1+k), 0, ' ', [0.d0], pr, ier)
+                            if (ier.eq.0 .and. pr.eq.0.d0) then
+                                ! tout va bien ...
+                            else
+                                call utmess('F', 'CALCUL_48')
+                            endif
+                        endif
+                    enddo
+                endif
+            endif
+        endif  
+    endif
+    
 !
 ! - Finite element parameters
 !

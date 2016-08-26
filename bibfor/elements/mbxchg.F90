@@ -1,4 +1,4 @@
-subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
+subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom,&
                   imate,ipesa,ivectu,icontm,vff,dff,alpha,beta)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,6 +21,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
 #include "jeveux.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
+#include "asterfort/fointe.h"
 #include "asterfort/mbcine.h"
 #include "asterfort/mbrigi.h"
 #include "asterfort/r8inir.h"
@@ -32,12 +33,13 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
     character(len=4) :: fami
     integer :: nddl, nno, ncomp, npg
     integer :: kpg
-    integer :: ipoids, igeom, imate, ipesa,iepsin
+    integer :: ipoids, igeom, imate, ipesa,iepsin,itemps
     integer :: ivectu, icontm
     real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE DE CHARGEMENT :
 !                                  - CHAR_MECA_EPSI_R
+!                                  - CHAR_MECA_EPSI_F
 !                                  - CHAR_MECA_PESA_R
 !                                  - CHAR_MECA_TEMP_R
 !                                  - FORC_NODA
@@ -54,6 +56,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
 ! IN  KPG          INCREMENT SUR LA BOUCLE DES PTS DE GAUSS
 ! IN  NPG          NOMBRE DE POINT DE GAUSS
 ! IN  IEPSIN       ADRESSE DANS ZR DU TABLEAU PEPSINR
+! IN  ITEMPS       ADRESSE DANS ZR DU TABLEAU PTEMPSR
 ! IN  IPOIDS       ADRESSE DANS ZR DU TABLEAU POIDS
 ! IN  IGEOM        ADRESSE DANS ZR DU TABLEAU PGEOMER
 ! IN  IMATE        ADRESSE DANS ZI DU TABLEAU PMATERC
@@ -68,12 +71,14 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
 !  
-    integer :: i, n, c, cc
+    integer :: i, n, c, cc, ier
     integer :: codres(2)
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: rig(3, 3), rho(1)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)
-    
+    character(len=8) :: nompar(4)
+    real(kind=8) :: valpar(4)
+    real(kind=8) :: xgau, ygau, zgau, epsinif(3)
     
 !
 ! --- CALCUL DE LA MATRICE "B" :
@@ -85,7 +90,7 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
 ! - BRANCHEMENT DES DIFFERENTES OPTIONS
 !
         if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-            (option.eq.'CHAR_MECA_EPSI_R')) then
+            (option(1:15).eq.'CHAR_MECA_EPSI_')) then
 !
 ! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
@@ -106,6 +111,43 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,ipoids,igeom,&
                         sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
                     end do
                 end do
+!
+            else if (option.eq.'CHAR_MECA_EPSI_F') then
+!
+                call mbrigi(fami, kpg, imate, rig)
+!
+                call r8inir(3, 0.d0, sig, 1)
+                
+                nompar(1) = 'X'
+                nompar(2) = 'Y'
+                nompar(3) = 'Z'
+                nompar(4) = 'INST'
+                valpar(4) = zr(itemps)
+                xgau = 0.d0
+                ygau = 0.d0
+                zgau = 0.d0
+!
+                do i = 1, nno
+                    xgau = xgau + vff(i)*zr(igeom-1+1+3*(i-1))
+                    ygau = ygau + vff(i)*zr(igeom-1+2+3*(i-1))
+                    zgau = zgau + vff(i)*zr(igeom-1+3+3*(i-1))
+                enddo
+!
+                valpar(1) = xgau
+                valpar(2) = ygau
+                valpar(3) = zgau
+!
+                call fointe('FM', zk8(iepsin), 4, nompar, valpar, epsinif(1), ier)
+                call fointe('FM', zk8(iepsin+1), 4, nompar, valpar, epsinif(2), ier)
+                call fointe('FM', zk8(iepsin+2), 4, nompar, valpar, epsinif(3), ier)
+!
+                do c = 1, ncomp
+                    do cc = 1, ncomp
+                        sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
+                    end do
+                end do
+                
+                write(*,*) 'TOTO OOOOOOOOOOOOOOOOOOOOOOOOOOOOO'
 !
 ! - CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
 !
