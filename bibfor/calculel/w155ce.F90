@@ -1,6 +1,6 @@
 subroutine w155ce(nomres, resu, nbordr, liordr)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,12 +43,11 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
 !
     integer :: ifm, niv
     integer :: iret, i, nuordr, ibid, nocc, iocc
-    character(len=8) :: modele, carele, mate, mplan
+    character(len=8) :: modele, carele, mplan
     character(len=8) :: modeav, lpain(2), lpaout(1)
     character(len=4) :: tsca
     character(len=16) :: motfac, nomsym
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(2), lchout(1)
-    character(len=19) :: excit
     integer :: vali(2), iexi
     aster_logical :: lreel, lnoeu, ldetli, lvide
 !     ------------------------------------------------------------------
@@ -93,8 +92,7 @@ subroutine w155ce(nomres, resu, nbordr, liordr)
             if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, CARELE, LIGREL :
-                call rslesd(resu, nuordr, modele, mate, carele,&
-                            excit, ibid)
+                call rslesd(resu, nuordr, model_ = modele, cara_elem_ = carele)
                 if (modele .ne. modeav) then
                     if (ldetli) call detrsd('LIGREL', ligrel)
                     call exlima(' ', 1, 'G', modele, ligrel)

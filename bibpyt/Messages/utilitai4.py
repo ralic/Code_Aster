@@ -113,56 +113,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    37: _(u"""
-  -> Le MODELE fourni par l'utilisateur est différent
-     de celui présent dans la Structure de Données Résultat. On poursuit les calculs
-     avec le MODELE fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le MODELE fourni dans la commande est
-     bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un MODELE différent de
-     celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    38: _(u"""
-  -> Le concept de caractéristiques CARA_ELEM fourni par l'utilisateur est différent
-     de celui présent dans la Structure de Données Résultat. On poursuit les calculs
-     avec le CARA_ELEM fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le CARA_ELEM fourni dans la commande est
-     bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un CARA_ELEM différent de
-     celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    39: _(u"""
-  -> Le matériau MATER fourni par l'utilisateur est différent de celui présent dans
-     la Structure de Données Résultat. On poursuit les calculs avec le matériau
-     fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le matériau fourni dans la commande est
-     bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec un matériau différent de
-     celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    40: _(u"""
-  -> Le chargement (mot clé: CHARGE) fourni par l'utilisateur est différent de celui présent dans
-     la Structure de Données Résultat. On poursuit les calculs avec le chargement
-     fourni par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si le chargement fourni dans la commande est
-     bien celui que vous souhaitez. Si oui vous allez poursuivre les calculs
-     post-traitement avec un chargement différent de
-     celui utilisé pour calculer les déplacements, températures,...
-"""),
-
-    41: _(u"""
-  -> les fonctions multiplicatrices du chargement (mot clé: FONC_MULT) fournies par
-     l'utilisateur sont différentes de celles présentes dans la Structure de Données Résultat.
-     On poursuit les calculs avec les fonctions multiplicatrices fournies par l'utilisateur.
-  -> Risque & Conseil : Vérifiez si les fonctions fournies dans la commande sont
-     bien celles que vous souhaitez. Si oui vous allez poursuivre les calculs
-     de post-traitement avec des fonctions différentes de
-     celles utilisées pour calculer les déplacements, températures,...
-"""),
-
     42: _(u"""
  numéro d'ordre trop grand.
 """),

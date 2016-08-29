@@ -22,9 +22,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('RUPTURE0_55','UTILITAI4_40'))
+      IGNORE_ALARM=('RUPTURE0_55','RESULT1_40'))
 
-# on ignore les 2 alarmes'RUPTURE0_55' et 'UTILITAI4_40' car le but de ce cas test 
+# on ignore les 2 alarmes'RUPTURE0_55' et 'RESULT1_40' car le but de ce cas test 
 # est de tester CALC_G avec different type de charges (fcontion, constante, pression...)
 # sans pour autant realiser un calcul mecanique avec chacune de ces charges.
 # Ainsi, on realise un unique calcul mecanique et on fait plusieurs post-traitements.

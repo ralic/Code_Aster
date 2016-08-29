@@ -79,7 +79,7 @@ implicit none
 !
     call getres(k8bid, k16bid, nomcmd)
 !
-    if ((nomcmd.eq.'CALC_CHAMP') .or. (nomcmd.eq.'POST_ELEM')) then
+    if (nomcmd.eq.'CALC_CHAMP') then
         call rslesd(result        , nume_store, model, materi, cara_elem,&
                     list_load_resu, iexcit)
         l_load_user = iexcit.eq.1

@@ -203,26 +203,6 @@ Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s, il ma
  Instant '+' : %(i2)d
 """),
 
-    65: _(u"""
- Vous avez fourni %(i1)d charges alors qu'il n'y a %(i2)d dans la SD résultat.
-
- Risque & Conseil :
-   Vous pouvez obtenir des résultats faux si les charges sont différentes.
-   Vérifiez que vous n'avez pas oublié de charge ou que vous n'en avez pas ajouté.
-"""),
-
-    66: _(u"""
- Le couple (charge, fonction) fourni par l'utilisateur n'est pas présent dans la
- structure de données résultat.
- On poursuit le calcul avec le chargement fourni par l'utilisateur.
-   Charge   (utilisateur) : %(k1)s
-   Fonction (utilisateur) : %(k2)s
-   Charge   (résultat)    : %(k3)s
-   Fonction (résultat)    : %(k4)s
-
-"""),
-
-
     68: _(u"""
  la liste des composantes fournies est incorrecte.
  composantes dans catalogue:

@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,7 @@ implicit none
     do i_store = 2, nb_store
         nume_store = v_list_store(i_store)
         call rslesd(result   , nume_store, model, chmate, cara_elem,&
-                    list_load)
+                    list_load, iexcit)
         if (present(model_)) then
             if (model .ne. model0) then
                 call utmess('F', 'CALCCHAMP_23')

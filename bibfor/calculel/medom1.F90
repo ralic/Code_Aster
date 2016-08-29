@@ -23,7 +23,7 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
     character(len=19) :: kcha
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,7 +78,7 @@ subroutine medom1(modele, mate, cara, kcha, ncha,&
     call getres(k8b, concep, nomcmd)
 !
     if ((nomcmd.eq.'CALC_CHAMP' ) .or. (nomcmd.eq.'CALC_ERREUR' ) .or.&
-        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'POST_ELEM' ) .or. (nomcmd.eq.'CALC_G' )) then
+        (nomcmd.eq.'CALC_META  ' ) .or. (nomcmd.eq.'CALC_G' )) then
 !
 !        RECUPERATION DU MODELE, MATERIAU, CARA_ELEM et EXCIT
 !        POUR LE NUMERO d'ORDRE NUORD

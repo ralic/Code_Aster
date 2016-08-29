@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ implicit none
     real(kind=8) :: prec
     character(len=8) :: materi
     character(len=16) :: repons
-    character(len=19) :: knum, k19bid
+    character(len=19) :: knum
     character(len=8) :: crit
     aster_logical :: lrdm, lmater
     integer :: lfour
@@ -142,8 +142,7 @@ implicit none
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT
 !
-        call rslesd(result, numlu, modele, materi, carele,&
-                    k19bid)
+        call rslesd(result, numlu, modele, materi, carele)
 !
     endif
 !

@@ -101,7 +101,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     character(len=8) :: nomail, nobase, modeli
     character(len=11) :: nobaop
     character(len=16) :: optio2, typmcl(4), motcle(4),valk(2)
-    character(len=19) :: excit, nonbor, compor, lischa
+    character(len=19) :: nonbor, compor, lischa
     character(len=24) :: chaout, ligrel, mateco, ligres
     character(len=24) :: noliop, lisins, mesmai, lacalc, suropt
 !
@@ -176,8 +176,7 @@ subroutine calcop(option, lisopt, resuin, resuou, lisord,&
     minord = zi(lres)
     maxord = zi(lres+nbord2-1)
 !
-    call rslesd(resuin, minord, modele, mateco(1:8), carael,&
-                excit)
+    call rslesd(resuin, minord, modele, mateco(1:8), carael)
     call rsadpa(resuin, 'L', 1, 'MODELE', minord,&
                 0, sjv=jpara)
     if (zk8(jpara) .ne. modele) then

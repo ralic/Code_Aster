@@ -32,6 +32,33 @@ Ce n'est pas possible dans cet opérateur.
 On ne trouve aucun numéro d'ordre dans la structure de données résultat de nom <%(k1)s>
 """),
 
+    37: _(u"""
+Le MODELE fourni par l'utilisateur est différent de celui présent dans la structure de données Résultat. 
+On poursuit les calculs avec le MODELE fourni par l'utilisateur.
+
+Risque & Conseil : Vérifiez si le MODELE fourni dans la commande est bien celui que vous souhaitez. 
+Si oui, vous allez poursuivre les calculs de post-traitement avec un MODELE différent de
+celui utilisé pour calculer les déplacements, températures,...
+"""),
+
+    38: _(u"""
+Les caractéristiques élémentaires CARA_ELEM fournies par l'utilisateur sont différentes de celles présentes dans la structure de données Résultat.  
+On poursuit les calculs avec le CARA_ELEM fourni par l'utilisateur.
+
+Risque & Conseil : Vérifiez si le CARA_ELEM fourni dans la commande est bien celui que vous souhaitez. 
+Si oui, vous allez poursuivre les calculs de post-traitement avec un CARA_ELEM différent de
+celui utilisé pour calculer les déplacements, températures,...
+"""),
+
+    39: _(u"""
+Le matériau fourni par l'utilisateur est différent de celui présent dans la structure de données Résultat. 
+On poursuit les calculs avec le matériau fourni par l'utilisateur.
+
+Risque & Conseil : Vérifiez si le matériau fourni dans la commande est bien celui que vous souhaitez. 
+Si oui, vous allez poursuivre les calculs de post-traitement avec un matériau différent de 
+celui utilisé pour calculer les déplacements, températures,...
+"""),
+
     40: _(u"""
 Le chargement fourni par l'utilisateur est différent de celui présent dans la 
 structure de données Résultat. On poursuit les calculs avec le chargement fourni par l'utilisateur.

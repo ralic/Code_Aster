@@ -65,7 +65,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
 ! In resuco => nom du résultat à post-traiter
 !
     real(kind=8) :: a(3), ab(3), ac(3)
-    character(len=19) :: adrbid
     integer :: ar(12, 3)
     real(kind=8) :: b(3), c(3)
     character(len=19) :: carmat
@@ -78,8 +77,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
     integer :: jlisno, jlnsv, jltsv, jma, jmaco, jmafis
     integer :: jmafon, jmaifo, jnscov, jnsdl, jnsdv, jvale
     integer :: jvalk, jvalm, k
-    character(len=19) :: k19b
-    character(len=8) :: k8b
     character(len=24) :: lismae
     character(len=19) :: lisno
     real(kind=8) :: lsna, lsnb, lsta, lstb
@@ -87,7 +84,6 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
     character(len=19) :: mai
     character(len=24) :: mater
     real(kind=8) :: maxdet, mindet
-    character(len=8) :: model
     integer :: na, nb, nbar, nbls, nbma, nbno, ncmpa, ndim
     integer :: nmaco, nmafis, nmafon, nmaifo
     character(len=8) :: noma, nomfis, nommat
@@ -155,16 +151,11 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim,&
                 ibid)
 !
 !   RECUP PREMIER NUMERO ORDRE
-    !call rsorac(resuco, 'PREMIER', ibid, rbid, k8bid,&
-    !            cbid, 0.d0, 'ABSOLU', iord, 1,&
-    !            ib2)
+!
     call rs_getfirst(resuco, nume_first)
-    adrbid = '&&XDETFO.BID'
-    k8b = 'CARACTER'
 !
 !   RECUP DU MATERIAU 
-    call rslesd(resuco, nume_first, model, mater, k8b,&
-                k19b, ibid)
+    call rslesd(resuco, nume_first, materi_ = mater)
 !
 !   RECUP CONTRAINTE CRITIQUE ET TENACITE
 !

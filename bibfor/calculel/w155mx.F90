@@ -16,7 +16,7 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+!
 ! ======================================================================
 !     COMMANDE :  POST_CHAMP / MIN_MAX_SP
 ! ----------------------------------------------------------------------
@@ -48,12 +48,12 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 !
     integer :: ifm, niv, ico, n1, jlismai, nbma
     integer :: iret, i, nuordr, ibid, nocc, iocc, nchout
-    character(len=8) :: modele, carele, mate, noma
+    character(len=8) :: modele, carele, noma
     character(len=8) :: modeav, nocmp, tymaxi
     character(len=4) :: tych
     character(len=16) :: motfac, nomsym, nomsy2, novari
     character(len=16) :: motcle(2), typmcl(2)
-    character(len=19) :: chin, chextr, excit, ligrel, resu19
+    character(len=19) :: chin, chextr, ligrel, resu19
     character(len=24) :: nompar,lismai
 !     ------------------------------------------------------------------
 !
@@ -72,83 +72,80 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
     if (nocc .eq. 0) goto 30
     ASSERT(nocc.lt.10)
 !
-    do 20,iocc=1,nocc
+    do iocc=1,nocc
 !
 !     -- 2.  : NOMSYM, NOCMP, TYMAXI, TYCH :
 !     --------------------------------------------------
-    motfac='MIN_MAX_SP'
-    call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
-    call getvtx(motfac, 'TYPE_MAXI', iocc=iocc, scal=tymaxi, nbret=ibid)
-    tych=nomsym(6:9)
-    ASSERT(tych.eq.'ELNO' .or. tych.eq.'ELGA')
-    call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=n1)
-    if (n1.eq.0) then
-        ASSERT(nomsym(1:7).eq.'VARI_EL')
-        call getvtx(motfac, 'NOM_VARI', iocc=iocc, scal=novari, nbret=n1)
-        ASSERT(n1.eq.1)
-        motcle(1) = 'GROUP_MA'
-        motcle(2) = 'MAILLE'
-        typmcl(1) = 'GROUP_MA'
-        typmcl(2) = 'MAILLE'
-        lismai='&&w155mx.LISMAI'
-        call rslesd(resu, liordr(1), modele, mate, carele,&
-                    excit, ibid)
-        call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
-        call reliem(' ', noma, 'NU_MAILLE', ' ', 0,&
-                2, motcle(1), typmcl(1), lismai, nbma)
-        call jeveuo(lismai,'L',jlismai)
-        call varinonu(' ', resu19, nbma, zi(jlismai), 1, novari, nocmp)
-        call jedetr(lismai)
-    endif
+        motfac='MIN_MAX_SP'
+        call getvtx(motfac, 'NOM_CHAM', iocc=iocc, scal=nomsym, nbret=ibid)
+        call getvtx(motfac, 'TYPE_MAXI', iocc=iocc, scal=tymaxi, nbret=ibid)
+        tych=nomsym(6:9)
+        ASSERT(tych.eq.'ELNO' .or. tych.eq.'ELGA')
+        call getvtx(motfac, 'NOM_CMP', iocc=iocc, scal=nocmp, nbret=n1)
+        if (n1.eq.0) then
+            ASSERT(nomsym(1:7).eq.'VARI_EL')
+            call getvtx(motfac, 'NOM_VARI', iocc=iocc, scal=novari, nbret=n1)
+            ASSERT(n1.eq.1)
+            motcle(1) = 'GROUP_MA'
+            motcle(2) = 'MAILLE'
+            typmcl(1) = 'GROUP_MA'
+            typmcl(2) = 'MAILLE'
+            lismai='&&w155mx.LISMAI'
+            call rslesd(resu, liordr(1), model_ = modele)
+            call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
+            call reliem(' ', noma, 'NU_MAILLE', ' ', 0,&
+                    2, motcle(1), typmcl(1), lismai, nbma)
+            call jeveuo(lismai,'L',jlismai)
+            call varinonu(' ', resu19, nbma, zi(jlismai), 1, novari, nocmp)
+            call jedetr(lismai)
+        endif
 !
 !
 !     -- 3. : BOUCLE SUR LES NUME_ORDRE
 !     --------------------------------------------------
-    modeav=' '
-    ico=0
-    do 10,i=1,nbordr
-    nuordr=liordr(i)
-    call rsexch(' ', resu19, nomsym, nuordr, chin,&
-                iret)
-    if (iret .eq. 0) then
+        modeav=' '
+        ico=0
+        do i=1,nbordr
+            nuordr=liordr(i)
+            call rsexch(' ', resu19, nomsym, nuordr, chin,&
+                        iret)
+            if (iret .eq. 0) then
 !
 !         -- 3.1 : MODELE, CARELE, LIGREL :
-        call rslesd(resu, nuordr, modele, mate, carele,&
-                    excit, ibid)
-        if (modele .ne. modeav) then
-            call exlima(' ', 1, 'G', modele, ligrel)
-            modeav=modele
+                call rslesd(resu, nuordr, model_ = modele, cara_elem_ = carele)
+                if (modele .ne. modeav) then
+                    call exlima(' ', 1, 'G', modele, ligrel)
+                    modeav=modele
+                endif
+!
+                nomsy2='UTXX_'//tych
+                call getvis(motfac, 'NUME_CHAM_RESU', iocc=iocc, scal=nchout, nbret=ibid)
+                ASSERT(nchout.ge.1 .and. nchout.le.20)
+                call codent(nchout, 'D0', nomsy2(3:4))
+                if (tych .eq. 'ELGA') then
+                    nompar='PGAMIMA'
+                else if (tych.eq.'ELNO') then
+                    nompar='PNOMIMA'
+                else
+                    ASSERT(.false.)
+                endif
+!
+                call rsexch(' ', nomres, nomsy2, nuordr, chextr,&
+                            iret)
+                ASSERT(iret.eq.100)
+                call alchml(ligrel, 'MINMAX_SP', nompar, 'G', chextr,&
+                            iret, ' ')
+                ASSERT(iret.eq.0)
+                call w155m2(chin, carele, ligrel, chextr, nomsym,&
+                            nocmp, tymaxi)
+                ico=ico+1
+                call rsnoch(nomres, nomsy2, nuordr)
+            endif
+        end do
+        if (ico .eq. 0) then
+            call utmess('F', 'CALCULEL2_62', sk=nomsym)
         endif
-!
-        nomsy2='UTXX_'//tych
-        call getvis(motfac, 'NUME_CHAM_RESU', iocc=iocc, scal=nchout, nbret=ibid)
-        ASSERT(nchout.ge.1 .and. nchout.le.20)
-        call codent(nchout, 'D0', nomsy2(3:4))
-        if (tych .eq. 'ELGA') then
-            nompar='PGAMIMA'
-        else if (tych.eq.'ELNO') then
-            nompar='PNOMIMA'
-        else
-            ASSERT(.false.)
-        endif
-!
-        call rsexch(' ', nomres, nomsy2, nuordr, chextr,&
-                    iret)
-        ASSERT(iret.eq.100)
-        call alchml(ligrel, 'MINMAX_SP', nompar, 'G', chextr,&
-                    iret, ' ')
-        ASSERT(iret.eq.0)
-        call w155m2(chin, carele, ligrel, chextr, nomsym,&
-                    nocmp, tymaxi)
-        ico=ico+1
-        call rsnoch(nomres, nomsy2, nuordr)
-    endif
-10  continue
-    if (ico .eq. 0) then
-        call utmess('F', 'CALCULEL2_62', sk=nomsym)
-    endif
-    20 end do
-!
+    end do
 !
 30  continue
     call jedema()

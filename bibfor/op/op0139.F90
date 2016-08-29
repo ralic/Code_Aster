@@ -73,10 +73,8 @@ subroutine op0139()
 !     AJOUTS
     character(len=8) :: k8bid
     character(len=16) :: typdis, k16bid
-    character(len=19) :: k19b
     character(len=19) :: cnsdet, cnxinv
     character(len=19) :: listpt
-    character(len=24) :: mater
     integer :: nume_first
     integer :: jbasc, jfono, jmafon
     integer ::  nmafon, nxptff
@@ -110,8 +108,7 @@ subroutine op0139()
     k8b = 'CARACTER'
 !
 !   RECUPERATION DU NOM DU MODELE
-    call rslesd(resuco, nume_first, nomo, mater, k8b,&
-                k19b, ibid)
+    call rslesd(resuco, nume_first, nomo)
 !
 !   RECUPERATION DU MAILLAGE ASSOCIE AU MODELE
     call jeveuo(nomo(1:8)//'.MODELE    .LGRF', 'L', iadrma)

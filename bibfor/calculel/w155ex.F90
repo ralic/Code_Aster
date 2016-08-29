@@ -1,7 +1,7 @@
 subroutine w155ex(nomres, resu, nbordr, liordr)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! ======================================================================
 !     COMMANDE :  POST_CHAMP /EXTR_XXXX
 ! ----------------------------------------------------------------------
@@ -41,11 +41,11 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !
     integer :: ifm, niv, nucou, nufib, nangl
     integer :: iret, i, nuordr, ibid, n1, nbsym, isym
-    character(len=8) :: modele, carele, mate
+    character(len=8) :: modele, carele
     character(len=8) :: modeav
     character(len=3) :: nicou
     character(len=16) :: motfac, nomsym(10)
-    character(len=19) :: chin, chextr, excit, ligrel, resu19
+    character(len=19) :: chin, chextr, ligrel, resu19
     character(len=24) :: valk(4)
 !     ------------------------------------------------------------------
 !
@@ -98,35 +98,30 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 !
 !     -- 3. : BOUCLE SUR LES CHAMPS
 !     --------------------------------------------------
-    do 20,isym=1,nbsym
-    modeav=' '
-    do 10,i=1,nbordr
-    nuordr=liordr(i)
-    call rsexch(' ', resu19, nomsym(isym), nuordr, chin,&
-                iret)
-    if (iret .eq. 0) then
-!
-!         -- 3.1 : MODELE, CARELE, LIGREL :
-        call rslesd(resu, nuordr, modele, mate, carele,&
-                    excit, ibid)
-        if (modele .ne. modeav) then
-            call exlima(' ', 1, 'G', modele, ligrel)
-            modeav=modele
-        endif
-!
-        call rsexch(' ', nomres, nomsym(isym), nuordr, chextr,&
-                    iret)
-        ASSERT(iret.eq.100)
-        call w155ch(chin, carele, ligrel, chextr, motfac,&
-                    nucou, nicou, nangl, nufib)
-        call rsnoch(nomres, nomsym(isym), nuordr)
-    else
-        valk(1)=nomsym(isym)
-        valk(2)=resu
-        call utmess('A', 'CALCULEL5_3', nk=2, valk=valk, si=nuordr)
-    endif
-10  continue
-    20 end do
+    do isym=1,nbsym
+        modeav=' '
+        do i=1,nbordr
+            nuordr=liordr(i)
+            call rsexch(' ', resu19, nomsym(isym), nuordr, chin,iret)
+            if (iret .eq. 0) then
+                call rslesd(resu, nuordr, model_ = modele, cara_elem_ = carele)
+                if (modele .ne. modeav) then
+                    call exlima(' ', 1, 'G', modele, ligrel)
+                    modeav=modele
+                endif
+                call rsexch(' ', nomres, nomsym(isym), nuordr, chextr,&
+                            iret)
+                ASSERT(iret.eq.100)
+                call w155ch(chin, carele, ligrel, chextr, motfac,&
+                            nucou, nicou, nangl, nufib)
+                call rsnoch(nomres, nomsym(isym), nuordr)
+            else
+                valk(1)=nomsym(isym)
+                valk(2)=resu
+                call utmess('A', 'CALCULEL5_3', nk=2, valk=valk, si=nuordr)
+            endif
+        end do
+    end do
 !
 !
 30  continue

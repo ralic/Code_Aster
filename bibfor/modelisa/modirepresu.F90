@@ -1,6 +1,6 @@
 subroutine modirepresu(resuou, resuin )
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,7 @@ subroutine modirepresu(resuou, resuin )
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+!
     implicit none
     character(len=19) :: resuou, resuin
 !
@@ -66,9 +66,9 @@ subroutine modirepresu(resuou, resuin )
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
     character(len= 8) :: crit, tych, nomma, modele
-    character(len= 8) :: carele, k8bid, exipla, exicoq
+    character(len= 8) :: carele, exipla, exicoq
     character(len=16) :: option, tysd, type, type_cham, repere
-    character(len=19) :: knum, kbid
+    character(len=19) :: knum
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel
     character(len=24) :: nompar, champ0, champ1
     character(len=24) :: valk(2)
@@ -135,7 +135,7 @@ subroutine modirepresu(resuou, resuin )
 !           CHAMP1 SERA ENSUITE RECREE SUR LA BASE GLOBALE
             call copisd('CHAMP_GD', 'V', champ0, champ1)
 !           RECUPERATION DU MODELE ASSOCIE AU CHAMP
-            call rslesd(resuin(1:8), iordr, modele, k8bid, carele, kbid, ibid)
+            call rslesd(resuin(1:8), iordr, model_ = modele, cara_elem_ = carele)
             if (modele .ne. '') then
                 call dismoi('EXI_PLAQUE', modele, 'MODELE', repk=exipla)
                 call dismoi('EXI_COQUE', modele, 'MODELE', repk=exicoq)
