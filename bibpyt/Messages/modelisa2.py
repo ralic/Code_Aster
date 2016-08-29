@@ -19,14 +19,7 @@
 
 cata_msg = {
 
-    1: _(u"""
- Formule interdite pour définir ALPHA(TEMP) : la fonction soit être tabulée.
- Utilisez CALC_FONC_INTERP
-"""),
 
-    2: _(u"""
- resserrer le mot clé PRECISION pour le matériau ELAS_FO
-"""),
 
     3: _(u"""
  calcul de la tension le long du câble numéro %(k1)s  :
@@ -174,17 +167,6 @@ Contactez le support technique.
  valeur inattendue:  %(k1)s
 """),
 
-    42: _(u"""
-Erreur Utilisateur :
- Le paramètre ALPHA (dilatation) du matériau est une fonction de la température.
- Cette fonction (%(k1)s) n'est définie que par un point.
- TEMP_DEF_ALPHA et TEMP_REF ne sont pas identiques.
- On ne peut pas faire le changement de variable TEMP_DEF_ALPHA -> TEMP_REF.
- On s'arrête donc.
-
-Risque & Conseil:
- Il faut définir la fonction ALPHA avec plus d'un point.
-"""),
 
 
 

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine alfint(chmatz, imate, nommaz, tdef, noparz,&
-                      nummat, prec, ch19)
-        character(len=*) :: chmatz
-        integer :: imate
-        character(len=*) :: nommaz
-        real(kind=8) :: tdef
-        character(len=*) :: noparz
-        integer :: nummat
-        real(kind=8) :: prec
-        character(len=19) :: ch19
+    subroutine alfint(chmatz   , imate, mate_namz, tdef, para_namz,&
+                      mate_nume, prec , func_name)
+        character(len=*), intent(in) :: chmatz
+        integer, intent(in) :: imate
+        character(len=*), intent(in) :: mate_namz
+        real(kind=8), intent(in) :: tdef
+        character(len=*), intent(in) :: para_namz
+        integer, intent(in) :: mate_nume
+        real(kind=8), intent(in) :: prec
+        character(len=19), intent(inout) :: func_name
     end subroutine alfint
 end interface

@@ -145,7 +145,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL6_56":
+   if err.id_message == "MATERIAL1_56":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -162,7 +162,7 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
 
-# CM1B : CHAMP DE MATERIAU =F(TEMP) + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL6_1 :
+# CM1B : CHAMP DE MATERIAU =F(TEMP) + TEMP OUBLIE SUR QUELQUES MAILLES => MATERIAL1_2 :
 #---------------------------------------------------------------------------------------------------------
 CM1B=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON1, ),
@@ -175,7 +175,7 @@ try :
 except aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message.strip() == "CALCULEL6_1":
+   if err.id_message.strip() == "MATERIAL1_2":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -223,7 +223,7 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
 
-# CM2B : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE => CALCULEL6_56 :
+# CM2B : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE => MATERIAL1_56 :
 #---------------------------------------------------------------------------
 CM2B=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
@@ -237,7 +237,7 @@ try :
 except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL6_56":
+   if err.id_message == "MATERIAL1_56":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
@@ -285,7 +285,7 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB1),),)
 
 
 
-# CM2D : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE SUR QUELQUES MAILLES => CALCULEL6_1 :
+# CM2D : CHAMP DE MATERIAU F(TEMP,SECH)  + TEMP OUBLIE SUR QUELQUES MAILLES => MATERIAL1_2 :
 #--------------------------------------------------------------------------------------------
 CM2D=AFFE_MATERIAU(MAILLAGE=M,
                  AFFE=_F(TOUT='OUI', MATER=BETON2, ),
@@ -299,7 +299,7 @@ try :
 except  aster.error,err:
    print fmt_raison % str(err)
    # on verifie que l'erreur fatale est bien celle que l'on attendait :
-   if err.id_message == "CALCULEL6_1":
+   if err.id_message == "MATERIAL1_2":
       is_ok = 1
 
 TAB1=CREA_TABLE(LISTE=(_F(PARA='TEST',TYPE_K='K8',LISTE_K='VALEUR  ',), _F(PARA='BOOLEEN',LISTE_I=is_ok,),),)
