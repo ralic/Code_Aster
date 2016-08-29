@@ -4,7 +4,7 @@ subroutine op9999()
 !     ------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,9 @@ subroutine op9999()
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: info, nbenre, nboct, iret
+#include "asterfort/asmpi_info.h"
+    mpi_int :: mrank, msize
+    integer :: info, nbenre, nboct, iret, nbrank
     integer :: ifm, iunerr, iunres, iunmes
     integer :: i, jco, nbco
     integer :: nbext, nfhdf
@@ -60,6 +62,9 @@ subroutine op9999()
 !
     call jemarq()
     info = 1
+
+    call asmpi_info(rank=mrank, size=msize)
+    nbrank = to_aster_int(mrank)
 
     call getvis(' ', 'STATUT', scal=iret)
     bool = iret == ST_ER .or. iret == ST_OK .or. iret == ST_ER_PR0 .or. &
@@ -101,22 +106,23 @@ subroutine op9999()
 !
 ! --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
 !
-    call jedetc('G', '.', 1)
+    if ( nbrank .eq.0 ) then
+      call jedetc('G', '.', 1)
 !
 ! --- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE
 !
-    call uimpba('G', iunmes)
+      call uimpba('G', iunmes)
 !
 ! --- RETASSAGE EVENTUEL DE LA GLOBALE
 !
-    call getvtx(' ', 'RETASSAGE', scal=ouinon)
-    if (ouinon .eq. 'OUI') call jetass('G')
+      call getvtx(' ', 'RETASSAGE', scal=ouinon)
+      if (ouinon .eq. 'OUI') call jetass('G')
 !
 ! --- SAUVEGARDE DE LA GLOBALE AU FORMAT HDF
 !
-    fhdf = 'NON'
-    call getvtx(' ', 'FORMAT_HDF', scal=fhdf, nbret=nfhdf)
-    if (nfhdf .gt. 0) then
+      fhdf = 'NON'
+      call getvtx(' ', 'FORMAT_HDF', scal=fhdf, nbret=nfhdf)
+      if (nfhdf .gt. 0) then
         if (fhdf .eq. 'OUI') then
             if (ouinon .eq. 'OUI') then
                 call utmess('A', 'SUPERVIS2_8')
@@ -124,7 +130,9 @@ subroutine op9999()
             fich = 'bhdf.1'
             call jeimhd(fich, 'G')
         endif
-    endif
+     endif
+   endif
+     
 !
 ! --- RECUPERE LA POSITION D'UN ENREGISTREMENT SYSTEME CARACTERISTIQUE
 !
@@ -133,19 +141,20 @@ subroutine op9999()
 !
 ! --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
 !
-    call jxveri()
+    if ( nbrank .eq.0 ) then
+      call jxveri()
 !
 ! --- CLOTURE DES FICHIERS
 !
-    call jelibf('SAUVE', 'G', info)
-    if (iunerr .gt. 0) write(iunerr,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
-    if (iunres .gt. 0) write(iunres,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
+      call jelibf('SAUVE', 'G', info)
+      if (iunerr .gt. 0) write(iunerr,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
+      if (iunres .gt. 0) write(iunres,* ) '<I> <FIN> FERMETURE DE LA BASE "GLOBALE" EFFECTUEE.'
 !
-    call jelibf('DETRUIT', 'V', info)
+      call jelibf('DETRUIT', 'V', info)
 !
 ! --- RETASSAGE EFFECTIF
 !
-    if (ouinon .eq. 'OUI') then
+      if (ouinon .eq. 'OUI') then
         call jxcopy('G', 'GLOBALE', 'V', 'VOLATILE', nbext)
         if (iunerr .gt. 0) write(iunerr, '(A,I2,A)'&
                            ) ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ',&
@@ -153,17 +162,18 @@ subroutine op9999()
         if (iunres .gt. 0) write(iunres, '(A,I2,A)'&
                            ) ' <I> <FIN> RETASSAGE DE LA BASE "GLOBALE" EFFECTUEE, ',&
                            nbext, ' FICHIER(S) UTILISE(S).'
-    endif
+      endif
 !
 ! --- IMPRESSION DES STATISTIQUES ( AVANT CLOTURE DE JEVEUX )
 !
-    call utmess('I', 'SUPERVIS2_97')
-    if (iunerr .gt. 0) write(iunerr, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
-    if (iunres .gt. 0) write(iunres, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
+      call utmess('I', 'SUPERVIS2_97')
+      if (iunerr .gt. 0) write(iunerr, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
+      if (iunres .gt. 0) write(iunres, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
 !
 ! --- CLOTURE DE JEVEUX
 !
-    call jefini('NORMAL')
+      call jefini('NORMAL')
+    endif  
 !
 !-----------------------------------------------------------------------
 !

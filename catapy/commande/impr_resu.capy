@@ -21,6 +21,8 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
 
          FORMAT          =SIMP(statut='f',typ='TXM',position='global',defaut="RESULTAT",
                                  into=("RESULTAT","IDEAS","ASTER","CASTEM","MED","GMSH") ),
+                                 
+         PROC0           =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
 
          b_modele =BLOC(condition="FORMAT!='MED'",fr=tr("Modèle"),
            MODELE          =SIMP(statut='f',typ=modele_sdaster),
