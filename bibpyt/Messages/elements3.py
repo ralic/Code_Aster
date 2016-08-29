@@ -107,7 +107,7 @@ cata_msg = {
 """),
 
     40 : _(u"""
- DEFORMATION = %(k1)s non programmé.
+ DEFORMATION %(k1)s non programmée.
  Seules les déformations PETIT et GROT_GDEP sont autorisées avec les
  éléments de type %(k2)s.
 """),
@@ -146,11 +146,11 @@ cata_msg = {
 """),
 
     55 : _(u"""
- nombre de couches limite a 10 pour les coques 1d
+ nombre de couches limite à 10 pour les coques 1d
 """),
 
     56 : _(u"""
- valeurs utilisateurs de RHO ou de rof nulles
+ valeur utilisateur de RHO nulle
 """),
 
     59 : _(u"""
@@ -188,7 +188,7 @@ La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANG
 """),
 
     85 : _(u"""
-  relation :  %(k1)s  non implantée sur les éléments "POU_D_T_GD"
+La relation %(k1)s  non implantée sur les éléments "POU_D_T_GD"
 """),
 
     86 : _(u"""
@@ -196,7 +196,7 @@ La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANG
 """),
 
     87 : _(u"""
- RCVALA ne trouve pas RHO, qui est nécessaire en dynamique
+On ne trouve pas RHO, qui est nécessaire en dynamique
 """),
 
     91 : _(u"""
@@ -224,7 +224,7 @@ La loi BETON_DOUBLE_DP ne peut être couplée qu'avec une loi de fluage de GRANG
 """),
 
     99 : _(u"""
-  : seule les poutres à sections constantes sont admises !
+Seules les poutres à section constante sont admises !
 """),
 
 }

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,9 @@ cata_msg = {
     7 : _(u"""
  Appel erroné
   archivage numéro :  %(i1)d
-  code retour de rsexch :  %(i2)d
+  code retour :  %(i2)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     8 : _(u"""
@@ -144,14 +146,18 @@ cata_msg = {
 
     26 : _(u"""
  Appel erroné  résultat :  %(k1)s   archivage numéro :  %(i1)d
-   code retour de rsexch :  %(i2)d
+   code retour :  %(i2)d
    problème champ :  %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     27 : _(u"""
  Appel erroné  résultat :  %(k1)s   archivage numéro :  %(i1)d
-   code retour de rsexch :  %(i2)d
+   code retour  :  %(i2)d
    problème champ :  %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     28 : _(u"""
@@ -231,7 +237,7 @@ cata_msg = {
 
     57 : _(u"""
 Erreur utilisateur :
-  Plusieurs champs correspondent à l'accès demandé pour la sd_résultat  %(k1)s
+  Plusieurs champs correspondent à l'accès demandé pour la structure de données résultat  %(k1)s
   - accès "INST"             : %(r1)19.12e
   - nombre de champs trouvés : %(i1)d
 Conseil:
@@ -244,7 +250,7 @@ Conseil:
 
     59 : _(u"""
 Erreur utilisateur :
-  Plusieurs champs correspondent à l'accès demandé pour la sd_résultat  %(k1)s
+  Plusieurs champs correspondent à l'accès demandé pour la structure de données résultat  %(k1)s
   - accès "FREQ"             : %(r1)19.12e
   - nombre de champs trouvés : %(i1)d
 Conseil:

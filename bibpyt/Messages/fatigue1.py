@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@
 cata_msg = {
     1: _(u"""
  Aucun élément du modèle ne sait calculer l'option
- de fatigue multiaxiale, ('PFACY_R').
+ de fatigue multiaxiale, 
  Il se peut que la modélisation affectée au groupe de mailles
  sur lequel vous faites un calcul de fatigue ne soit pas "3D".
 
@@ -138,12 +138,12 @@ cata_msg = {
 """),
 
     26: _(u"""
- le nom de la fonction  nappe DSIGM(DEPSI,DEPSIMAX)
+ le nom de la fonction  nappe DSIGM
  doit être présent sous le mot clé 'TAHERI_NAPPE'
 """),
 
     27: _(u"""
- le nom de la fonction DSIGM(DEPSI)
+ le nom de la fonction DSIGM
  doit être présent sous le mot clé 'TAHERI_FONC'
 """),
 
@@ -238,13 +238,13 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
     70: _(u"""
- nous ne pouvons pas récupérer la valeur du paramètre A du critère DOMM_MAXI
+ nous ne pouvons pas récupérer la valeur du paramètre A de MATAKE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
 
     71: _(u"""
- nous ne pouvons pas récupérer la valeur du paramètre B du critère DOMM_MAXI
+ nous ne pouvons pas récupérer la valeur du paramètre B de MATAKE
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
@@ -268,7 +268,7 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 """),
 
     75: _(u"""
- nous ne pouvons pas récupérer la valeur du paramètre A du critère FATEMI_SOCIE
+ nous ne pouvons pas récupérer la valeur du paramètre A du critère FATESOCI
  commande: DEFI_MATERIAU
  opérande: CISA_PLAN_CRIT
 """),
@@ -392,7 +392,7 @@ avec valeur_max = valeur_min = valeur du chargement, i.e., amplitude = 0.
 
     93: _(u"""
  Dans CALC_FATIGUE/POST_FATIGUE, pour le critère d'amorçage fournis par la formule, le mot-clé
- FORMULE_VIE est fournis par une formule le seul paramètre accepté est NBRUP,
+ FORMULE_VIE est fournis par une formule le seul paramètre accepté est N_f,
  c'est-à-dire, N_f, car le critère formule est pour GRDEQ = f(N_f).
  Changez le nom et vérifiez bien que la fonction est de type: GRDEQ = f(N_f).
 """),

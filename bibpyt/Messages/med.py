@@ -91,7 +91,7 @@ cata_msg = {
 """),
 
     12 : _(u"""
-  -> Erreur lors de l'appel à EFNEMA, code retour = %(k1)s
+  -> Erreur, code retour = %(k1)s
   -> Risque & Conseil :
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
      Si le maillage a été produit par un code externe, vérifier que les
@@ -203,9 +203,6 @@ cata_msg = {
      - si vous souhaitez imprimer un champ avec l'ensemble des composantes
      Aster qu'il contient, il suffit de faire plusieurs IMPR_RESU et de
      renseigner pour chaque impression une liste d'instants ad hoc.
-
-     Pour la visualisation dans Salomé (Scalar Map par exemple),
-     sélectionner la composante dans Scalar Range/Scalar Mode.
 """),
 
     32 : _(u"""
@@ -235,11 +232,15 @@ cata_msg = {
 """),
 
     38 : _(u"""
-  -> Incohérence catalogue - fortran (nbtyp fortran différent de nbtyp catalogue)
+  -> Incohérence catalogue - fortran 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     39 : _(u"""
-  -> Incohérence catalogue - fortran (nomtyp fortran différent de nomtyp catalogue)
+  -> Incohérence catalogue - fortran
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     40 : _(u"""
@@ -486,10 +487,12 @@ Conseil :
 """),
 
     86 : _(u"""
-  -> champ à lire :  %(k1)s typent :  %(i1)d typgeo :  %(i2)d
+  -> champ à lire :  %(k1)s type  %(i1)d type  %(i2)d
      instant voulu :  %(r1)f
      --> numéro d'ordre :  %(i3)d
      --> numéro de pas de temps :  %(i4)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 
 """),
 
@@ -553,8 +556,8 @@ Conseil :
 
     97 : _(u"""
   -> Fichier MED :  %(k1)s, Champ :  %(k2)s, Instant voulu :  %(r1)f
-     - typent :  %(i1)d
-     - typgeo :  %(i2)d
+     - Type :  %(i1)d
+     - Type :  %(i2)d
 
 """),
 

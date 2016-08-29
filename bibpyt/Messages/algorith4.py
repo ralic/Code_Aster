@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
     36 : _(u"""
- <LCDPPA> il faut redécouper
+Il faut redécouper.
 """),
 
     45 : _(u"""
@@ -65,8 +65,7 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
     53 : _(u"""
-  SYC doit être supérieur à SQRT((1+NU-2*NU*NU)/(2.D0*NU*NU))*SYT
-  dans DEFI_MATERIAU pour prendre en compte le confinement
+  SYC doit être supérieur dans DEFI_MATERIAU pour prendre en compte le confinement
 """),
 
     54 : _(u"""
@@ -180,7 +179,8 @@ Pas de couplage possible avec UMLV et le comportement %(k1)s.
 """),
 
     85 : _(u"""
-  erreur de programmation : valeur de NSEUIL incorrecte.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     86 : _(u"""

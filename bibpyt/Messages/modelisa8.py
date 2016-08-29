@@ -92,7 +92,7 @@ cata_msg = {
 """),
 
     29 : _(u"""
- nombre de composantes supérieur au max nmaxcmp=  %(i1)d ncmp   =  %(i2)d
+ nombre de composantes %(i2)d supérieur au maximum %(i1)d 
 """),
 
     34 : _(u"""

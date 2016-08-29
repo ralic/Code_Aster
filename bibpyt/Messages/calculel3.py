@@ -20,7 +20,7 @@
 cata_msg = {
 
     1 : _(u"""
- manque les accélérations
+Il manque les accélérations.
 """),
 
     2 : _(u"""
@@ -92,9 +92,7 @@ Conseil :
    non pas sous la forme 'TEMP'.
 """),
 
-    19 : _(u"""
- problème à l'appel de ALCHML pour  %(k1)s
-"""),
+
 
 
 
@@ -284,7 +282,7 @@ Erreur utilisateur (EXTR_RESU / RESTREINT) :
 
 
     71 : _(u"""
- il faut 1 chargement de rotation et un seul.
+Il faut un chargement de rotation et un seul.
 """),
 
     72 : _(u"""
@@ -292,7 +290,9 @@ Erreur utilisateur (EXTR_RESU / RESTREINT) :
 """),
 
     73 : _(u"""
- le champ:  %(k1)s  n'est ni un CHAM_ELEM ni un resuelem
+Le champ %(k1)s n'est ni un CHAM_ELEM ni un résultat élémentaire
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     74 : _(u"""

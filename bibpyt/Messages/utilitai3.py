@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,11 +45,11 @@ cata_msg = {
 """),
 
     9 : _(u"""
- maillage autre que SEG2                                ou POI1
+ maillage autre que SEG2 ou POI1
 """),
 
     10 : _(u"""
- mailles ponctuelles                           plexus POI1 ignorées
+ mailles ponctuelles plexus POI1 ignorées
 """),
 
     11 : _(u"""
@@ -77,7 +77,9 @@ cata_msg = {
 """),
 
     18 : _(u"""
- NOM_CMP_IDEM est curieux :  %(k1)s
+C'est curieux :  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     19 : _(u"""
@@ -93,26 +95,28 @@ cata_msg = {
 """),
 
     22 : _(u"""
- pour TYPE_RESU:'EL..' il faut renseigner le mot clé modèle.
+Il faut renseigner le mot clé modèle.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     23 : _(u"""
 Erreur :
-  Aucun élément fini du ligrel '%(k1)s' ne sait calculer le
+  Aucun élément fini du LIGREL %(k1)s ne sait calculer le
   paramètre: %(k2)s de l'option:  %(k3)s.
   Le champ par éléments que l'on veut créer est vide. On ne peut pas continuer.
 """),
 
     24 : _(u"""
- option=  %(k1)s  incompatible avec TYPE_CHAM=  %(k2)s
+L'option %(k1)s  est incompatible avec TYPE_CHAM %(k2)s
 """),
 
     25 : _(u"""
- OPERATION=  %(k1)s  seulement TYPE_CHAM= 'NOEU_GEOM_r'
+L'opération %(k1)s est possible seulement TYPE_CHAM 'NOEU_GEOM_R'
 """),
 
     26 : _(u"""
- OPERATION=  %(k1)s  incompatible avec TYPE_CHAM=  %(k2)s
+L'opération  %(k1)s est incompatible avec TYPE_CHAM %(k2)s
 """),
 
     27 : _(u"""

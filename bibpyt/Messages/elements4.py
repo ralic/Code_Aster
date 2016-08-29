@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,11 +105,15 @@ cata_msg = {
 """),
 
     53 : _(u"""
- ep/r > 0.2 MODI_METRIQUE pas adapté
+MODI_METRIQUE pas adapté
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     54 : _(u"""
- ep/r > 0.2 MODI_METRIQUE=non pas adapté
+MODI_METRIQUE pas adapté
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     56 : _(u"""
@@ -117,11 +121,15 @@ cata_msg = {
 """),
 
     57 : _(u"""
- indn = 1 (intégration normale) ou indn = 0 (intégration réduite) obligatoirement.
+Intégration normale ou intégration réduite obligatoirement.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     58 : _(u"""
-  le code " %(k1)s " est non prévu. code doit être = "gl" ou "lg"
+  le code " %(k1)s " est non prévu
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     59 : _(u"""
@@ -172,11 +180,11 @@ Le module de Young est nul.
 """),
 
     72 : _(u"""
-   RCVALA ne trouve pas nu, qui est nécessaire pour l'élément MECA_HEXS8
+On ne trouve pas le coefficient de Poisson
 """),
 
     73 : _(u"""
-   élément MECA_HEXS8: élasticité non linéaire non programmée.
+   élément: élasticité non linéaire non programmée.
 """),
 
 
@@ -212,11 +220,13 @@ Le module de Young est nul.
 """),
 
     88 : _(u"""
- ELREFE non disponible élément de référence  %(k1)s
+élément de référence  %(k1)s non disponible
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     90 : _(u"""
- ELREFE mal programme maille  %(k1)s  type  %(k2)s  nombre noeuds  %(i1)d
+ élément mal programmé maille  %(k1)s  type  %(k2)s  nombre noeuds  %(i1)d
  nombre noeuds pour le passage Gauss noeuds  %(i2)d
 """),
 

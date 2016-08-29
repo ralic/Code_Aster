@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ cata_msg = {
 """),
 
     8 : _(u"""
-  Il manque le nume_ddl dans le concept %(k1)s.
+  Il manque le NUME_DDL dans le concept %(k1)s.
   Propositions :
    - Si ce concept est issu de l'opérateur DEFI_BASE_MODALE, renseigner le mot-clé NUME_REF dans DEFI_BASE_MODALE.
    - Si ce concept est issu de l'opérateur CREA_RESU, utiliser les mots-clés MATR_RIGI et MATR_MASS dans CREA_RESU.
@@ -61,8 +61,8 @@ cata_msg = {
 """),
     11 : _(u"""
   La fermeture du joint sort des bornes [0,fermeture maximale] sur la maille %(k1)s.
-  fermeture du joint CLO = %(r1)f
-  fermeture maximale UMC = %(r2)f
+  fermeture du joint = %(r1)f
+  fermeture maximale = %(r2)f
   Vérifier la cohérence chargement mécanique, fermeture asymptotique et ouverture
   initiale.
 """),
@@ -95,7 +95,7 @@ cata_msg = {
 """),
 
     19 : _(u"""
-  La projection d'un resultat non réel sur une base de mode (de type
+  La projection d'un résultat non réel sur une base de mode (de type
   résultat harmonique) n'est pas possible. Vous pouvez demander
   l'évolution.
 """),
@@ -123,10 +123,10 @@ cata_msg = {
   pour le concept entrant et sortant.
 """),
     26 : _(u"""
-  La structure de données resultat est corrompue. Elle ne contient pas d'objet avec la liste des numéros d'ordre.
+  La structure de données résultat est corrompue. Elle ne contient pas d'objet avec la liste des numéros d'ordre.
 """),
     27 : _(u"""
-  La structure de données resultat est corrompue. La liste des numéros d'ordres ne correspond pas
+  La structure de données résultat est corrompue. La liste des numéros d'ordres ne correspond pas
   à la liste des discrétisations temporelles ou fréquentielles.
 """),
     28 : _(u"""

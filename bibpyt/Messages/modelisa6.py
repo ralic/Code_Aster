@@ -246,7 +246,9 @@ On trouve %(i1)d noeuds.
 """),
 
     64 : _(u"""
- type sd non traité:  %(k1)s
+Type non traité:  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     70 : _(u"""

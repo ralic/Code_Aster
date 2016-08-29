@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,9 @@ cata_msg = {
 """),
 
     4 : _(u"""
- argument d'appel invalide :  typf =  %(k1)s
+ argument d'appel invalide :   %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     5 : _(u"""
@@ -36,7 +38,9 @@ cata_msg = {
 """),
 
     6 : _(u"""
- argument d'appel invalide :  autor =  %(k1)s
+Argument d'appel invalide :   %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     7 : _(u"""
@@ -48,7 +52,9 @@ cata_msg = {
 """),
 
     9 : _(u"""
- argument d'appel invalide :  unit =  %(k1)s
+ argument d'appel invalide :  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     10 : _(u"""
@@ -84,7 +90,9 @@ cata_msg = {
 """),
 
     18 : _(u"""
- unité logique  %(k1)s , problème lors de l'open  %(k2)s
+ unité logique  %(k1)s , problème lors de l'ouverture du fichier %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     19 : _(u"""
@@ -112,7 +120,7 @@ cata_msg = {
 """),
 
     25 : _(u"""
- fichier non nomme, unité  %(k1)s
+ fichier non nommé, unité  %(k1)s
 """),
 
     26 : _(u"""
@@ -121,6 +129,8 @@ cata_msg = {
 
     27 : _(u"""
  rembobinage impossible, unité  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     28 : _(u"""
@@ -128,7 +138,9 @@ cata_msg = {
 """),
 
     29 : _(u"""
- les champs de type " %(k1)s " sont interdits.(a faire ...)
+ les champs de type " %(k1)s " sont interdits.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     30 : _(u"""
@@ -168,19 +180,27 @@ cata_msg = {
 """),
 
     41 : _(u"""
- XOUS :  %(k1)s  non prévu.
+%(k1)s  non prévu.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     42 : _(u"""
- chaîne sch1 trop longue >24
+Chaînes trop longues
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     43 : _(u"""
- ipos hors de l intervalle (0 24)
+Hors de l'intervalle
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     44 : _(u"""
- longueur totale > 24
+ longueur totale trop grande 24
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     45 : _(u"""
@@ -200,7 +220,7 @@ cata_msg = {
 """),
 
     49 : _(u"""
- type de champ non traite:  %(k1)s
+ type de champ non traité:  %(k1)s
 """),
 
     50 : _(u"""
@@ -208,7 +228,9 @@ cata_msg = {
 """),
 
     52 : _(u"""
- mauvaise valeur pour fonree
+ mauvaise valeur
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     53 : _(u"""
@@ -216,25 +238,31 @@ cata_msg = {
 """),
 
     54 : _(u"""
-Erreur Programmeur / UTTCPU :
- l"argument "INDI" est non valide
+ l"argument est non valide
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
 
 
     56 : _(u"""
-Erreur Programmeur / UTTCPU  :
  On ne peut pas passer dans l'état %(k1)s quand on vient de l'état %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     57 : _(u"""
-Erreur Programmeur / UTTCPU  :
- L"appel a uttcpu ne peut être effectue avec la valeur  %(k1)s  pour l"argument PARA
+
+ L'appel a ne peut être effectue avec la valeur  %(k1)s 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     58 : _(u"""
- (uttrif) type de fonction non connu.
+Type de fonction non connu.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     59 : _(u"""
@@ -246,7 +274,7 @@ Erreur Programmeur / UTTCPU  :
 
 
     88 : _(u"""
- L'option " %(k1)s " est à recalculer
+ L'option %(k1)s est à recalculer
 """),
 
     89 : _(u"""
@@ -268,7 +296,7 @@ Erreur Programmeur / UTTCPU  :
 
 
     94 : _(u"""
- Vous essayer de stocker la SD charge dans la SD résultat.
+ Vous essayez de stocker la SD charge dans la SD résultat.
  Ce n'est pas possible pour une SD résultat de type %(k1)s,
  on ne stocke pas la charge.
 """),

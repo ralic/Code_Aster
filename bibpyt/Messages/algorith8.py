@@ -53,7 +53,9 @@ cata_msg = {
 """),
 
     31 : _(u"""
- borne supérieure PMAX incorrecte
+La borne supérieure est incorrecte.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     32 : _(u"""

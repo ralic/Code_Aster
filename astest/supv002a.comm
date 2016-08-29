@@ -72,49 +72,28 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'))
 #
 # Mots inconnus du dictionnaire malgré tout acceptés pour le moment.
 # L'objectif est bien sûr de réduire cette liste !
-# Vous ne devez pas ajoutés de mots à cette liste. Il faut corriger le texte
+# Vous ne devez pas ajouter de mots à cette liste. Il faut corriger le texte
 # du message incriminé ou bien mettre un ASSERT(condition) si cela concerne
 # uniquement le développeur.
 previous_errors = [
-    'ALCHML', 'AMDBAR', 'AMUMPS',
-    'CHARACTER', 'CHNO', 'CHPVER',
-    'CINX', 'CLO', 'COMBU', 'CVRC', 'DEEQ', 'DELG',
-    'DEPSI', 'DEPSIMAX', 'DEUXMU', 'DISMOI', 'DLAHQR', 'DOMM', 'DPMAT',
-    'DPMAX', 'DPSIDS', 'DRMAX', 'DTREVC', 'ECLAU', 'EDITGD', 'EFNEMA',
-    'ELREFA', 'ELREFE', 'ETENCA', 'FATEMI', 'FINSF', 'FLAHQR',
-    'FTREVC', 'GAMDEV', 'GERPAS', 'GILIRE', 'GL', 'GREL',
-    'HDFCRF', 'HEXS', 'ICHIN', 'ICOEF', 'IDDL',
-    'IM', 'INFOG', 'JECROC', 'JENONU', 'JENUNO', 'JEXNOM', 'JEXNUM', 'JM', 'JUVECA',
-    'KSIB', 'LCDPPA', 'LIBRARY', 'LIGREL',
-    'LMAT', 'LONCUM', 'LONT', 'LTNT', 'Map', 'NBCMP', 'NBDDL',
-    'NBMECA', 'NBPOIN', 'NBRUP', 'NBSIGM', 'NDDL', 'NDS',
-    'NEMA', 'NEQUA', 'NMCOMP', 'NMCONV', 'NMHUJ', 'NMVPIR', 'NMXINS', 'NNOE', 'NOCART',
-    'NOCP', 'NODE', 'NOMLI', 'NOSOLVE', 'NPQ', 'NSEUIL',
-    'NUTIOC', 'NV', 'NVI', 'NVIMAX', 'OMEGA',
-    'PARAMETER', 'PATH', 'PFACY', 'PHYSICAL', 'PMAX',
-    'PREML', 'RAPH', 'RCVALA', 'READDR', 'RESUEL', 'RINF',
-    'ROOT', 'RREUR', 'RSEXCH', 'RSUP', 'SCHUR', 'SECHM', 'SECHP', 'SIF', 'SIGMMO',
-    'SOCIE', 'SOLVE', 'SPD', 'SQRT', 'SSP', 'Scalar', 'TBLIVA',
-    'TYPB', 'TYPEKE', 'TYPL', 'TYPVF', 'UMC', 'UMOY',
-    'USASTE', 'UTTCPU', 'VCINE', 'VPSTOR', 'WORKD', 'WRITDR', 'XMIN',
-    'XOUS', 'ZEDGAR', 'acearp', 'alchml', 'alfint', 'apetsc',
-    'autor', 'breakdown','cagnba', 'cata', 'chckma', 'clcplq',
-    'coefal', 'coefam', 'coefra', 'coefrl', 'cuon', 'cupn', 'cvon', 'cvpn',
-    'deltat', 'eO', 'efferm', 'effoco', 'efouvr', 'elem', 'elrefa',
-    'er', 'error', 'etanca', 'etenca', 'exchml', 'exe', 'export',
-    'flag', 'fointa', 'fonree', 'indn', 'ipos',
-    'ligrel', 'lkcaln', 'longt', 'majpad', 'mem',
-    'modelisation', 'nadm', 'nbmmai', 'nbmmax', 'nbtyp', 'ncmp', 'nmaxcmp',
-    'nomres', 'nomta', 'nomtyp', 'nume',
-    'numeli', 'overflow', 'phenomene', 'pos',
-    'raymin', 'rcmaco', 'relcom',
-    'resuelem', 'resultat', 'rhocp', 'rof', 'rsexch', 'sch',
-    'skin', 'tbliva', 'tmax', 'tmin', 'typelem', 'typesd',
-    'typf', 'typgeo', 'uttcpu', 'uttrif', 'vari', 'vect',
-    'CELK', 'DRDY', 'DRDYB', 'LIGREL', 'LILI', 'dmax', 'elem', 'ep', 'erjac', 'gl',
-    'kr', 'lg', 'lt', 'nmax', 'nume', 'resuelem', 'resultat', 'sd', 'vect',
-    # pour comport2 qui écrit un morceau de fichier de commandes
-    'EXZ', 'EYZ', 'EZZ', 'conservatif'
+    # LE fameux LIGREL !
+    'LIGREL', 
+    # Solveur PETSc
+    'breakdown', 
+    # Nom des fichiers de sortie d'Aster
+    'error', 'export',
+    # Pour paramètre mem_aster
+    'mem',
+    # Pour Edyos
+    'SSP',
+    # Pour PHYSICAL GMSH
+    'PHYSICAL',
+    # Pour LD_LIBRARY_PATH
+    'LIBRARY','PATH',
+    # Pour ASTER_ROOT (MACR_RECAL)
+    'ROOT',
+    # Pour Code_Saturne (coupleur IFS)
+    'USASTE',
     ]
 
 # this replaces 'import supv002a.33'

@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: nicolas.brie at edf.fr
+# person_in_charge: josselin.delmas at edf.fr
 
 cata_msg = {
 
@@ -234,7 +234,7 @@ cata_msg = {
     43: _(u"""  La valeur de décalage en charge critique est : %(r1)12.5E
 """),
 
-    44: _(u"""  La valeur de décalage (OMEGA2) est inférieure à la valeur de corps rigide.
+    44: _(u"""  La valeur de décalage (pulsation au carré) est inférieure à la valeur de corps rigide.
   On la modifie et elle devient : %(r1)12.5E
 """),
 

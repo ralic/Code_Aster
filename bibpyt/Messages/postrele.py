@@ -36,8 +36,9 @@ cata_msg = {
 """),
 
     5 : _(u"""
- il manque le vecteur des composantes "NOCP".
- Contactez le support.
+ il manque le vecteur des composantes 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     6 : _(u"""
@@ -79,8 +80,8 @@ cata_msg = {
 """),
 
     15 : _(u"""
- ICOEF trop grand
- Contactez le support
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
  
@@ -98,7 +99,8 @@ cata_msg = {
 
     20 : _(u"""
  on ne traite pas ce cas
- Contactez le support
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     21 : _(u"""
@@ -313,8 +315,8 @@ cata_msg = {
 """),
 
     53 : _(u"""
- NEC trop grand
- Contactez le support
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     54 : _(u"""
@@ -347,7 +349,7 @@ cata_msg = {
     61 : _(u"""
  Nombre de cycles admissibles négatif,
  vérifiez la courbe de WOHLER
- contrainte calculée =  %(r1)f    nadm =  %(r2)f
+ contrainte calculée =  %(r1)f   Nombre admissible =  %(r2)f
 
 """),
 

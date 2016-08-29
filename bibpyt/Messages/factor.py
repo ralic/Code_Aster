@@ -191,7 +191,7 @@ Conseils :
     55: _(u"""
 Solveur MUMPS :
   Problème ou alarme dans le solveur MUMPS.
-  Le code retour de MUMPS (INFOG(1)) est : %(i1)d
+  Le code retour de MUMPS est : %(i1)d
 
 Conseils :
   Consulter le manuel d'utilisation de MUMPS.
@@ -329,7 +329,7 @@ Conseils :
 """),
     70: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR="OUI_SOLVE" en surchargeant AMUMPS.F. La résolution
+  Vous avez activé une option en mode développement (interface d'appel à MUMPS). La résolution
   du système linéaire en cours va donc s'effectuer normalement mais en plus
   sa matrice et son second membre vont être écrits dans le fichier d'unité logique
   %(i1)d. Vous pouvez le récupérer (sur le processeur 0) via ASTK.
@@ -337,7 +337,7 @@ Solveur MUMPS :
 
     71: _(u"""
 Solveur MUMPS :
-  Vous avez activé l'option IMPR="OUI_NOSOLVE" en surchargeant AMUMPS.F. La résolution
+  Vous avez activé une option en mode développement (interface d'appel à MUMPS). La résolution
   du système linéaire en cours ne va donc pas s'effectuer mais sa matrice et
   son second membre vont être écrits dans le fichier d'unité logique %(i1)d.
   Après cette écriture, l'exécution Aster s'arrête en ERREUR_FATALE pour vous
@@ -451,7 +451,7 @@ Solveur MUMPS :
 Solveur MUMPS :
 
   Attention, vous avez paramétré le solveur linéaire de manière a résoudre un système linéaire
-  SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre système
+  réel symétrique défini positif: mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre système
   linéaire à valeur complexe. Ceci est contradictoire.
 
 Conseil :
@@ -494,7 +494,7 @@ Solveur MUMPS :
 Solveur MUMPS :
 
   Attention, vous avez paramétré le solveur linéaire MUMPS de manière a résoudre un système
-  linéaire SPD (réel Symétrique Défini Positif): mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
+  linéaire réel symétrique défini positif: mot-clé SOLVEUR/TYPE_RESOL='SYMDEF'. Or votre
   matrice comporte des termes négatifs ou nuls sur sa diagonale. Ceci est contradictoire.
 
 Conseil :

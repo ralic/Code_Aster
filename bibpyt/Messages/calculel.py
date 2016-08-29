@@ -28,7 +28,7 @@ cata_msg = {
     2 : _(u"""
 Erreur Utilisateur :
  Quand on utilise AFFE_CHAR_CINE/EVOL_IMPO, c'est le champ de l'EVOL_XXX correspondant
- au 1er instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
+ au premier instant qui impose sa "loi" : tous les ddls de ce champ seront imposés pour tous
  les instants du calcul.
 
  Malheureusement, on ne trouve pas un ddl dans l'EVOL_XXX %(k1)s :
@@ -101,8 +101,8 @@ Erreur de programmation lors de l'assemblage :
     19 : _(u"""
 Erreur :
  Le CHAM_ELEM %(k1)s est incohérent :
-   Il possède %(i1)d GREL.
-   Il a été calculé avec le LIGREL %(k2)s qui possède %(i2)d GREL.
+   Il possède %(i1)d groupe d'éléments.
+   Il a été calculé avec le LIGREL %(k2)s qui possède %(i2)d groupe d'éléments.
 
 Risques & Conseils :
  Il peut s'agir d'une erreur de programmation.
@@ -111,11 +111,11 @@ Risques & Conseils :
 """),
 
     20 : _(u"""
- le champ de grandeur  %(k1)s  ne respecte pas le format XXXX_r
+Le champ de grandeur %(k1)s ne respecte pas le format pour son nom.
 """),
 
     21 : _(u"""
- les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
+Les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
 """),
 
     22 : _(u"""
@@ -161,8 +161,8 @@ Erreur d'utilisation (ou de programmation) :
     28 : _(u"""
  Problème lors de l'utilisation de la structure de données %(k1)s.
  Cette structure de données est de type "évolution temporelle" et l'on n'a pas le droit
- de l'utiliser en dehors de l'intervalle [tmin, tmax].
- Mais ici, il n'y a qu'un seul instant dans la structure de donnée (tmin=tmax).
+ de l'utiliser en dehors de l'intervalle.
+ Mais ici, il n'y a qu'un seul instant dans la structure de donnée.
  Dans ce cas, on suppose alors que ce transitoire est "permanent" et que l'on peut l'utiliser
  pour toute valeur du temps.
 """),
@@ -170,7 +170,7 @@ Erreur d'utilisation (ou de programmation) :
 
     29 : _(u"""
  Erreur utilisateur :
-   Le programme a besoin d'accéder au champ %(k2)s de la structure sd_resultat %(k1)s
+   Le programme a besoin d'accéder au champ %(k2)s de la structure de données résultat %(k1)s
    pour le NUME_ORDRE: %(i1)d
    Mais ce champ n'existe pas dans la structure de données fournie.
    On ne peut pas continuer.
@@ -186,8 +186,8 @@ Erreur utilisateur :
 Risques et conseils :
   * Il faut faire en sorte que les champs soient des champs par éléments de type 'ELEM'.
   * La commande CREA_CHAMP peut produire directement des champs par éléments.
-  * Si on imprime et on relit une sd_resultat sur un fichier au format MED,
-    les cartes de la sd_resultat sont transformées en champs par éléments de type 'ELEM'.
+  * Si on imprime et on relit une structure de données résultat sur un fichier au format MED,
+    les cartes de la structure de données résultat sont transformées en champs par éléments de type 'ELEM'.
   La structure de donnée "coupable" est : %(k1)s
 """),
 
@@ -370,7 +370,7 @@ Risques et conseils :
     72 : _(u"""
  Erreur commande CALC_FERRAILLAGE :
    On n'a pas réussi à calculer la carte de ferraillage sur un élément.
-   Code_retour de la routine clcplq.f : %(i1)d
+   Code_retour de la routine : %(i1)d
 
  Signification du code d'erreur :
    1000 : Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)

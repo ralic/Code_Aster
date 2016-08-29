@@ -20,7 +20,7 @@ cata_msg = {
 
     1: _(u"""
 Vous avez renseigné le mot clé simple MATER de la commande POST_K1_K2_K3.
-Le matériau %(k1)s présent dans la sd_resultat va être surchargé par le matériau %(k2)s .
+Le matériau %(k1)s présent dans la structure de données résultat va être surchargée par le matériau %(k2)s .
 """),
 
     2: _(u"""
@@ -73,7 +73,7 @@ Dans le cas symétrique (SYME='OUI') il faut :
 """),
 
     9: _(u"""
-Dans le cas d'une SD RESULTAT de type DYNA_TRANS,
+Dans le cas d'une structure de données résultat de type DYNA_TRANS,
 le mot-clé EXCIT est obligatoire.
 Veuillez le renseigner.
 """),
@@ -541,7 +541,7 @@ dans DEFI_FOND_FISS: définissez la fissure à partir des mailles de ses lèvres
     95: _(u"""
 Erreur utilisateur.
 Il y a incompatibilité entre le mot-clé FOND_FISS et le modèle %(k1)s associé
-à la structure de donnée RESULTAT. En effet, le modèle %(k1)s est un modèle X-FEM.
+à la structure de données résultat. En effet, le modèle %(k1)s est un modèle X-FEM.
 -> Conseil :
 Lorsque le modèle est de type X-FEM il faut obligatoirement utiliser
 le mot-clé FISSURE de la commande CALC_G.
@@ -550,7 +550,7 @@ le mot-clé FISSURE de la commande CALC_G.
     96: _(u"""
 Erreur utilisateur.
 Il y a incompatibilité entre le mot-clé FISSURE et le modèle %(k1)s associé
-à la structure de donnée RESULTAT. En effet, le modèle %(k1)s est un modèle non X-FEM.
+à la structure de données résultat. En effet, le modèle %(k1)s est un modèle non X-FEM.
 -> Conseil :
 Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle.
 """),
@@ -558,7 +558,7 @@ Veuillez utiliser les mots-clés FOND_FISS ou THETA ou revoir votre modèle.
     97: _(u"""
 Erreur utilisateur.
 Il y a incompatibilité entre le mot-clé FISSURE et le modèle %(k2)s associé
-à la structure de donnée RESULTAT. En effet, la fissure %(k1)s n'est pas associée au
+à la structure de données résultat. En effet, la fissure %(k1)s n'est pas associée au
 modèle %(k2)s.
 -> Conseils :
   - Vérifier le mot-clé FISSURE,

@@ -53,8 +53,8 @@ En mode DISTANT, la variable %(k1)s est obligatoire. On abandonne.
 """),
 
     7 : _(u"""
-Le paramètre 'machine_GMSH_exe' ou 'machine_VISU' n'est pas renseigné,
-il faut ouvrir le fichier manuellement.
+Le paramètre n'est pas renseigné,
+Il faut ouvrir le fichier manuellement.
 """),
 
     8 : _(u"""
@@ -75,12 +75,12 @@ Dans le mode WINDOWS, la variable %(k1)s est obligatoire. On abandonne.
 
     12 : _(u"""
 Les fichiers de post-traitement sont copiés.
-Veuillez maintenant ouvrir manuellement skin.pos avec GMSH.
+Veuillez maintenant ouvrir manuellement avec GMSH.
 """),
 
     13 : _(u"""
 Le fichier de post-traitement est copie.
-Veuillez maintenant ouvrir manuellement fort.33.pos avec GMSH.
+Veuillez maintenant ouvrir manuellement avec GMSH.
 """),
 
     14 : _(u"""

@@ -15,12 +15,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jacques.pellet at edf.fr
+# person_in_charge: nicolas.sellenet at edf.fr
 
 cata_msg = {
 
     1: _(u"""
- le LIGREL :  %(k1)s  ne contient pas d éléments finis
+ le LIGREL %(k1)s  ne contient pas d éléments finis
 """),
 
     2: _(u"""
@@ -44,22 +44,28 @@ cata_msg = {
 
     6: _(u"""
   on n'arrive pas a étendre la carte:  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     7: _(u"""
- famille de points de Gauss "liste" interdite: %(k1)s
+ famille de points de Gauss liste interdite: %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     8: _(u"""
  Erreur :
    Le code cherche à utiliser dans un calcul élémentaire un CHAM_ELEM "étendu" (VARI_R ou sous-points).
-   La programmation de la routine exchml.f ne sait pas encore traiter ce cas.
+   La programmation de la routine ne sait pas encore traiter ce cas.
  Conseil :
    Il y a peut-être lieu d'émettre une demande d'évolution pour traiter ce cas.
 """),
 
     9: _(u"""
- problème noeud tardif pour un champ à représentation constante
+Problème noeud tardif pour un champ à représentation constante
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     10: _(u"""
@@ -82,7 +88,7 @@ cata_msg = {
     14: _(u"""
  Erreur développeur :
  L'option que l'on calcule ne connaît pas le paramètre :  %(k1)s
- Erreur probable dans un catalogue(typelem)
+ Erreur probable dans un catalogue
 """),
     15: _(u"""
  le paramètre: %(k1)s  n'est pas un paramètre de l'option: %(k2)s
@@ -211,23 +217,27 @@ Conseils :
 """),
 
     27 : _(u"""
- On ne trouve pas de routine te0NPQ.
- NPQ doit être compris entre 1 et 600 ici : NPQ = %(k1)s
+ On ne trouve pas de routine de calcul élémentaire.
+ Le numéro doit être compris entre 1 et 600, or ici le numéro vaut  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     28 : _(u"""
  l'attribut:  %(k1)s  n'existe pas pour le type:  %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     29 : _(u"""
  Erreur de programmation ou d'utilisation :
-   On ne trouve pas dans les arguments de la routine calcul de champ a associer
+   On ne trouve pas dans les arguments de la routine calcul de champ à associer
    au paramètre: %(k1)s  (option: %(k2)s  type_élément: %(k3)s )
 """),
 
     30 : _(u"""
  Erreur de programmation :
- on n'a pas pu extraire toutes les composantes voulues du champ global associe
+ on n'a pas pu extraire toutes les composantes voulues du champ global associé
  au paramètre: %(k1)s  (option: %(k2)s  type_élément: %(k3)s )
 """),
 
@@ -247,9 +257,9 @@ Conseils :
 
     32: _(u"""
  Erreur utilisateur :
-   Un calcul élémentaire nécessite une ou plusieurs variables de commande (CVRC).
-   Sur la maille : %(k1)s, on ne trouve pas le bon nombre de "CVRC" :
-   On attend : %(i2)d "CVRC",  mais on n'en trouve que : %(i1)d
+   Un calcul élémentaire nécessite une ou plusieurs variables de commande.
+   Sur la maille : %(k1)s, on ne trouve pas le bon nombre
+   On attend : %(i2)d ,  mais on n'en trouve que : %(i1)d
 
  Conseil :
    Vérifier les occurrences de AFFE_MATERIAU/AFFE_VARC pour la maille concernée.
@@ -257,10 +267,14 @@ Conseils :
 
     33 : _(u"""
  le mode_local:  %(k1)s  ne doit pas être vecteur ou matrice.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     34 : _(u"""
  le mode_local:  %(k1)s  ne doit pas être "DIFF__".
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     35 : _(u"""

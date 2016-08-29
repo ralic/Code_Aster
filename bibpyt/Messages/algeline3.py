@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,13 +84,16 @@ cata_msg = {
 """),
 
     15: _(u"""
- détermination du DRMAX et du déphasage pour le mode  %(k1)s  :
+ détermination du déphasage pour le mode  %(k1)s  :
  le déterminant du système issu du moindre carré est nul
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     16: _(u"""
  détermination du déphasage pour le mode  %(k1)s  :
- THETA0 indéfini
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     17: _(u"""
@@ -98,8 +101,8 @@ cata_msg = {
 """),
 
     18: _(u"""
- Annulation du numérateur dans l'expression d un coefficient donnant
- la solution du problème fluide instationnaire pour UMOY = 0
+ Annulation du numérateur dans l'expression d'un coefficient donnant
+ la solution du problème fluide instationnaire
 """),
 
     19: _(u"""
@@ -159,11 +162,13 @@ Conseils & solution :
 """),
 
     33: _(u"""
- On ne traite pas ce type de CHAM_ELEM, ICOEF différent de 1
+ On ne traite pas ce type de CHAM_ELEM
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     34: _(u"""
- Le CHAM_NO :  %(k1)s  n'existe pas
+ Le CHAM_NO %(k1)s  n'existe pas
 """),
 
     35: _(u"""
@@ -185,11 +190,12 @@ Conseil :
 """),
 
     40: _(u"""
- Erreur : LMAT est nul
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     41: _(u"""
-La matrice possède des ddls imposés éliminés: il faut un VCINE
+La matrice possède des ddls imposés éliminés: il faut un chargement de type AFFE_CHAR_CINE
 """),
 
     42: _(u"""
@@ -307,14 +313,20 @@ Le nombre d'équations est variable d'un mode à l'autre, récupération impossi
 
     72: _(u"""
 Problème interne ARPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     73: _(u"""
-Problème taille WORKD/L -> augmenter DIM_SOUS_ESPACE
+Problème, augmenter DIM_SOUS_ESPACE
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     74: _(u"""
 Problème interne LAPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     75: _(u"""
@@ -325,11 +337,15 @@ si possible, diminuer NMAX_FREQ (ou NMAX_CHAR_CRIT selon le type d'étude).
 """),
 
     76: _(u"""
-Problème interne LAPACK, routine FLAHQR (forme de SCHUR)
+Problème interne LAPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     77: _(u"""
-Problème interne LAPACK, routine FTREVC (vecteurs propres)
+Problème interne LAPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     78: _(u"""
@@ -347,7 +363,9 @@ votre système matriciel est sûrement fortement singulier
 """),
 
     80: _(u"""
-MODE à créer avant appel à VPSTOR
+MODE à créer avant appel
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     81: _(u"""
@@ -421,7 +439,9 @@ MODE à créer avant appel à VPSTOR
 
 
     90: _(u"""
-Objet .REFE/.REFA/.CELK inexistant.
+Objet inexistant.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -449,10 +469,14 @@ Type de tri inconnu
 """),
 
     98: _(u"""
-Problème interne LAPACK, routine DLAHQR (forme de SCHUR)
+Problème interne LAPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     99: _(u"""
-Problème interne LAPACK, routine DTREVC (vecteurs propres)
+Problème interne LAPACK
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 }

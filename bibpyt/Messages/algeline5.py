@@ -41,8 +41,9 @@ cata_msg = {
 
     6: _(u"""
  Résolution MULTI_FRONTALE :
- problème dans le traitement des résultats de AMDBAR
- tous les NDS du SN %(i1)d ont NV nul
+ problème dans le traitement des résultats 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     10: _(u"""
@@ -144,19 +145,24 @@ cata_msg = {
 
     31: _(u"""
   incohérence :
-   DEEQ I      =  %(i1)d
-   DEEQ(2*I-1) =  %(i2)d
-   DEEQ(2*I)   =  %(i3)d
-
+     %(i1)d
+    %(i2)d
+    %(i3)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     32: _(u"""
-  erreur de type DELG(IDDL) différent de -1 ou -2  %(i1)d
+  erreur de type  différent de -1 ou -2  %(i1)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     33: _(u"""
  un ddl bloqué a au moins 2 LAMBDA1 ou 2 LAMBDA2
  le ddl bloqué est  %(i1)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 
 """),
 
@@ -171,6 +177,8 @@ cata_msg = {
  erreur programmeur
  le LAMBDA2  %(i1)d a moins de 2 voisins
  il faut le LAMBDA1 et au moins un DDL
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 
 """),
 
@@ -271,8 +279,10 @@ de fréquences demandées (%(i2)d).
 """),
 
     53: _(u"""
- Erreur de programmation MULT_FRONT (NUME_DDL / PREML0) :
+ Erreur de programmation MULT_FRONT
    * Sur connexité des Lagrange Lambda1
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     54: _(u"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -159,7 +159,7 @@ Erreur utilisateur dans la commande CREA_RESU / TYPE_MAXI= ...
     29 : _(u"""
 Erreur utilisateur :
  La structure de donnée résultat %(k1)s est associée au maillage %(k2)s
- Mais la structure de donnée nume_ddl %(k3)s est associée au maillage %(k4)s
+ Mais la structure de donnée NUME_DDL %(k3)s est associée au maillage %(k4)s
  Il n'y a pas de cohérence.
 """),
 
@@ -202,11 +202,15 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
 """),
 
     41 : _(u"""
- duplication "maillage" du .LTNT, objet inconnu:  %(k1)s
+ duplication maillage objet inconnu:  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     42 : _(u"""
- type de sd. inconnu :  %(k1)s
+ type de structure de données inconnu :  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -227,8 +231,9 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
 """),
 
     49 : _(u"""
-  DISMOI :
-  la question : " %(k1)s " est inconnue
+La question " %(k1)s " est inconnue
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -262,18 +267,21 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
 
 
     57 : _(u"""
-  DISMOI :
-  la question n'a pas de réponse sur une grandeur de type matrice GD_1 x GD_2
+La question n'a pas de réponse sur une grandeur de type matrice
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     59 : _(u"""
-  DISMOI :
-  la question n'a pas de sens sur une grandeur de type matrice GD_1 x GD_2
+La question n'a pas de sens sur une grandeur de type matrice
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     60 : _(u"""
-  DISMOI :
-  la question n'a pas de sens sur une grandeur de type composée
+La question n'a pas de sens sur une grandeur de type composée.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     63 : _(u"""
@@ -297,11 +305,13 @@ Le champ %(k1)s n'est pas un champ aux noeuds.
 """),
 
     70 : _(u"""
- TYPE_MAILLE inconnu.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     71 : _(u"""
- mauvaise récupération de NEMA
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     72 : _(u"""

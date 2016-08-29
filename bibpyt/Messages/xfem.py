@@ -124,7 +124,7 @@ cata_msg = {
   Ceci est certainement du à un point singulier dans la définition de la level-set.
   Il vaut veiller à ce que ce point singulier ne soit pas inclus dans la couronne
   d'intégration du champ thêta.
-  Conseil : réduisez la taille de la couronne du champ thêta : (mots-clés RSUP et RINF).
+  Conseil : réduisez la taille de la couronne du champ thêta
 """),
 
     13: _(u"""
@@ -679,12 +679,12 @@ L'opération ASSE_DEPL de l'opérateur CREA_CHAMP ne prend pas en charge les él
 """),
     95: _(u"""
   -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et le tableau
-     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
+     des facteurs d'intensité de contraintes de la fissure %(k1)s ne contient
      pas de colonne 'GAMMA'.
   -> Risque & Conseil:
      Si vous souhaitez imposer les valeurs de l'angle de déversement aux points 
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO_GAMMA' ou 'ANGLE_IMPO_BETA_GAMMA' et ajouter
-     une colonne 'GAMMA' au tableau de SIF manuellement.
+     une colonne 'GAMMA' au tableau des facteurs d'intensité de contraintes manuellement.
 """),
 
     96: _(u"""

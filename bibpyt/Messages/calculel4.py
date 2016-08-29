@@ -176,7 +176,7 @@ Risques et conseils :
 """),
 
     44 : _(u"""
- 0 ligne trouvée pour le NOM_PARA
+Aucune ligne trouvée pour le NOM_PARA
 """),
 
     45 : _(u"""
@@ -184,7 +184,9 @@ Risques et conseils :
 """),
 
     46 : _(u"""
- code retour de "tbliva" inconnu
+ code retour de inconnu
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     47 : _(u"""
@@ -196,7 +198,7 @@ Risques et conseils :
 """),
 
     54 : _(u"""
- aucuns noeuds sur lesquels projeter.
+ aucuns noeud sur lesquels projeter.
 """),
 
     55 : _(u"""
@@ -209,7 +211,7 @@ Risques et conseils :
 """),
 
     56 : _(u"""
-  %(k1)s  pas trouve.
+  %(k1)s  pas trouvé.
 """),
 
     57 : _(u"""
@@ -255,11 +257,15 @@ Erreur utilisateur :
 """),
 
     67 : _(u"""
- erreur dans etanca pour le problème primal
+ erreur pour le problème primal
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     68 : _(u"""
- erreur dans etenca pour le problème dual
+ erreur pour le problème dual
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     69 : _(u"""

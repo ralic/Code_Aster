@@ -127,7 +127,7 @@ Attention :
 """),
 
     41 : _(u"""
- Pour l'observation no. %(i1)d :
+ Pour l'observation %(i1)d :
 
  La restitution du champ %(k1)s n'est possible que si il a préalablement été calculé sur
  la base de projection. Or, dans la base %(k3)s, le champ %(k2)s n'a pas été trouvé.
@@ -137,7 +137,7 @@ Attention :
 """),
 
     42 : _(u"""
- Pour l'observation no. %(i1)d :
+ Pour l'observation %(i1)d :
 
  Il n'a pas été possible de trouver le composant %(k1)s dans le champ demandé %(k2)s.
 
@@ -212,8 +212,9 @@ Attention :
 """),
 
     55 : _(u"""
- objet &&GILIRE.INDIRECT inexistant
- problème à la lecture des points
+Problème à la lecture des points
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     56 : _(u"""
@@ -226,7 +227,6 @@ Attention :
 
     59 : _(u"""
  le maillage GIBI est peut être erroné :
- il est écrit : "NIVEAU RREUR N_ERR"  avec N_ERR est >0 .
  on continue quand même, mais si vous avez des problèmes plus loin ...
 """),
 
@@ -257,7 +257,9 @@ Attention :
 """),
 
     77 : _(u"""
-  incompatibilité entre les GREL
+  incompatibilité entre les groupes d'éléments
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     79 : _(u"""

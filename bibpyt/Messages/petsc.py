@@ -33,7 +33,7 @@ Solveur PETSc :
 Solveur PETSc :
   Limite atteinte : le solveur PETSc est utilisé par plus de 5 matrices simultanément.
 Solution :
-  Il faut corriger le programme (PARAMETER (NMXINS=5) dans apetsc.F)
+  Il faut corriger le programme
   Contactez l'assistance.
 """),
 

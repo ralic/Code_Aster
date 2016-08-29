@@ -71,20 +71,20 @@ cata_msg = {
 """),
 
     11 : _(u"""
- "NB_POIN" est inférieur au nombre de points de l'interspectre.
+Le nombre de points est inférieur au nombre de points de l'interspectre.
  le spectre est tronqué à la fréquence :  %(r1)f
 """),
 
     12 : _(u"""
- le "NB_POIN" donné est modifié
+Le nombre de points donné est modifié
  (en une puissance de 2 compatible avec l'interspectre)
- le "NB_POIN" retenu est :   %(i1)d
+Le nombre de points retenu est :   %(i1)d
 """),
 
     13 : _(u"""
- la durée est trop grande ou NB_POIN et trop petit par rapport
+La durée est trop grande ou le nombre de points est trop petit par rapport
  à la fréquence max (théorème de Shannon).
- on choisit NBPOIN =  %(i1)d
+ on choisit   %(i1)d points
 """),
 
     14 : _(u"""
@@ -93,9 +93,8 @@ cata_msg = {
 """),
 
     15 : _(u"""
- "NB_POIN" est petit par rapport au pas de discrétisation de l'interspectre.
- NB_POIN =  %(i1)d
- il faudrait un nombre supérieur à :  %(r1)f
+Le nombre de points est petit par rapport au pas de discrétisation de l'interspectre.
+On a %(i1)d. Il faudrait un nombre supérieur à :  %(r1)f
 """),
 
     16 : _(u"""
@@ -160,7 +159,9 @@ cata_msg = {
 
 
     45 : _(u"""
-  on ne trouve pas DPMAX
+  on ne trouve pas 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     46 : _(u"""
@@ -168,7 +169,8 @@ cata_msg = {
 """),
 
     47 : _(u"""
-  F(XMIN) > 0
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     48 : _(u"""
@@ -207,6 +209,8 @@ cata_msg = {
 
     55 : _(u"""
   incohérence détectée
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     56 : _(u"""
@@ -292,8 +296,9 @@ cata_msg = {
 """),
 
     72 : _(u"""
- un PROF_CHNO n'est pas défini
- il manque pour le chargement : %(k1)s
+Il manque la numérotation pour le chargement : %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     73 : _(u"""
@@ -311,7 +316,7 @@ cata_msg = {
 
     75 : _(u"""
  les numérotations ne coïncident pas pour la sous-structure : %(k1)s
- le PROF_CHNO pour la base modale est :  %(k2)s
+ la numérotation pour la base modale est :  %(k2)s
  et celui pour le second membre       :  %(k3)s
 """),
 

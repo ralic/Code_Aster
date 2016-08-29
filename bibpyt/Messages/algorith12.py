@@ -145,18 +145,24 @@ cata_msg = {
 """),
 
     36 : _(u"""
- le PROF_CHNO pour le mode numéro %(i1)d de la base %(k1)s n'est pas
+Le profil de numérotation pour le mode numéro %(i1)d de la base %(k1)s n'est pas
  cohérent avec le NUME_DDL de la base
  La trace de l'interface, déterminé par le NUME_DDL, ne correspond pas
  Il est donc impossible d'extraire la trace de ce mode sur l'interface
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     37 : _(u"""
- arrêt sur problème cohérence PROF_CHNO
+ arrêt sur problème cohérence 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     38 : _(u"""
  arrêt sur problème cohérence interface
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     39 : _(u"""

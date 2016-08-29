@@ -87,7 +87,7 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
 
     18 : _(u"""
   -> Le mot-clé CRITERE de PROPA_FISS est différent de 'ANGLE_IMPO' ou 'ANGLE_IMPO_BETA_GAMMA' et le tableau
-     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s contient
+     des facteurs d'intensité de contraintes de la fissure %(k1)s contient
      une colonne 'BETA' ou une colonne 'GAMMA'.
   -> Risque & Conseil:
      Les valeurs de l'angle de bifurcation notées dans ce tableau ne sont
@@ -98,19 +98,19 @@ On ne peut pas appliquer de chargement de pression ou de condition d'échange th
 
     19 : _(u"""
   -> Le mot-clé CRITERE de PROPA_FISS vaut 'ANGLE_IMPO' et le tableau
-     des facteurs d'intensité de contraintes (SIF) de la fissure %(k1)s ne contient
+     des facteurs d'intensité de contraintes de la fissure %(k1)s ne contient
      pas de colonne 'BETA'.
   -> Risque & Conseil:
      Si vous souhaitez imposer les valeurs de l'angle de bifurcation aux points
      du fonds de fissure, veuillez indiquer CRITERE='ANGLE_IMPO' et ajouter
-     une colonne 'BETA' au tableau de SIF manuellement ou si le modèle est en 3D,
+     une colonne 'BETA' au tableau manuellement ou si le modèle est en 3D,
      en utilisant l'option 'CALC_K_G' de la commande CALC_G.
 """),
 
     20 : _(u"""
   -> En 3D, si METHODE_PROPA='MAILLAGE' dans PROPA_FISS il faut absolument une
      colonne 'ABSC_CURV' contenant les abscisses curvilignes des points du fond
-     dans le tableau des facteurs d'intensité de contraintes (SIF).
+     dans le tableau des facteurs d'intensité de contraintes.
   -> Risque & Conseil:
      Veuillez vérifier la présence de cette colonne.
 """),
@@ -256,11 +256,11 @@ ne borde pourtant aucune maille principale.
 
     75 : _(u"""
   -> Une valeur de la liste de NB_POINT_FOND ne correspond pas au nombre de
-     lignes du tableau des facteurs d'intensité de contraintes (SIF) pour
+     lignes du tableau des facteurs d'intensité de contraintes pour
      le fond %(i1)d de la fissure %(k1)s.
   -> Risque & Conseil:
      Veuillez vérifier que la liste NB_POINT_FOND donnée dans PROPA_FISS
-     soit identique à celle utilisée pour construire le tableau des SIF.
+     soit identique à celle utilisée pour construire le tableau.
   """),
 
 
@@ -280,10 +280,10 @@ ne borde pourtant aucune maille principale.
 
     80 : _(u"""
   -> Le nombre des valeurs dans un des tableaux des facteurs
-     d'intensité de contraintes (SIF) est supérieur au nombre des
+     d'intensité de contraintes est supérieur au nombre des
      points du fond de la fissure correspondante.
   -> Risque & Conseil:
-     Veuillez vérifier que les tableaux de SIF donnés par l'opérateur
+     Veuillez vérifier que les tableaux donnés par l'opérateur
      PROPA_FISS sont corrects. Si NB_POINT_FOND a été utilisé, veuillez
      vérifier aussi que la liste donnée pour chaque fissure est correcte.
   """),

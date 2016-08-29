@@ -20,19 +20,25 @@
 cata_msg = {
 
     1 : _(u"""
- erreur fortran de dimensionnement de tableau (nbmmai>nbmmax)
+ erreur fortran de dimensionnement de tableau
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     2 : _(u"""
- lecture 1 : il manque les coordonnées !
+Il manque les coordonnées !
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     3 : _(u"""
- lecture 1 : il manque les mailles !
+Il manque les mailles !
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     4 : _(u"""
- transcodage : le noeud  %(k1)s  déclaré dans la connectivité de la maille  %(k2)s  n existe pas dans les coordonnées
+ transcodage : le noeud  %(k1)s  déclaré dans la connectivité de la maille  %(k2)s  n'existe pas dans les coordonnées
 """),
 
     5 : _(u"""
@@ -44,15 +50,15 @@ cata_msg = {
 """),
 
     7 : _(u"""
- transcodage : la maille  %(k1)s  déclaré dans le GROUP_MA:  %(k2)s  n'existe pas dans les connectivités
+La maille  %(k1)s  déclaré dans le GROUP_MA %(k2)s  n'existe pas dans les connectivités
 """),
 
     8 : _(u"""
- la maille :  %(k1)s  est en double dans le GROUP_MA:  %(k2)s . on élimine les doublons
+La maille  %(k1)s  est en double dans le GROUP_MA  %(k2)s . On élimine les doublons
 """),
 
     9 : _(u"""
- transcodage : une incohérence a été détectée entre les déclarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivités
+Une incohérence a été détectée entre les déclarations de noms de noeuds ou de mailles lors du transcodage des objets groupes et connectivités
 """),
 
 
@@ -65,15 +71,21 @@ cata_msg = {
 """),
 
     40 : _(u"""
- absence de convergence j
+ absence de convergence 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     41 : _(u"""
- absence de convergence i
+ absence de convergence 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     42 : _(u"""
  pas de convergence
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     44 : _(u"""
@@ -279,7 +291,9 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     91 : _(u"""
- problème pour déterminer le rang de la composante <a1> de la grandeur <cagnba>
+ problème pour déterminer le rang de la composante de la grandeur
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     94 : _(u"""
@@ -299,7 +313,7 @@ La présence de la caractéristique %(k1)s est obligatoire.
 """),
 
     98 : _(u"""
- impossibilité de mélanger des "SEG" et des "tria" ou "QUAD" !
+ impossibilité de mélanger des "SEG" et des "TRIA" ou "QUAD" !
 """),
 
     99 : _(u"""

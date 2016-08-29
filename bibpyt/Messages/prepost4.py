@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -170,7 +170,7 @@ On ne peut donc pas tenir compte des KRX, KRY, KRZ. Les degrés de libertés son
 
     46: _(u"""
  On note que déformation élastique  = déformation TOTALE - déformation PLASTIQUE. Si la déformation
- plastique n'est pas calculée dans le resultat, on prendre la valeur zéro.
+ plastique n'est pas calculée dans le résultat, on prendre la valeur zéro.
 """),
 
     47 : _(u"""

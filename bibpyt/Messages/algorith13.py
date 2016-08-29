@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,8 +38,7 @@ cata_msg = {
 """),
 
     18 : _(u"""
-  GAMDEV(ALPHA) < 0
-  GAMDEV(ALPHA) =  %(r1)f
+  GAMMA négatif et valant  %(r1)f
 """),
 
     26 : _(u"""
@@ -105,7 +104,10 @@ cata_msg = {
 """),
 
     69 : _(u"""
- le noeud: %(k1)s  ne peut pas être TYPL et TYPB
+Le noeud %(k1)s n'est pas du bon type
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
+    '
 """),
 
     75 : _(u"""

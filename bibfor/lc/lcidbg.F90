@@ -43,7 +43,6 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1306
 ! ======================================================================
 !.......................................................................
@@ -167,11 +166,11 @@ implicit none
     call utmess('I','COMPOR2_70',sk=nomail,si=kpg, nr=2, valr=lvalr,fname=file)
     call utmess('I','COMPOR2_71',sk='EXX', nr=4, valr=[instam,epslm(1),instap,eps(1)],fname=file)
     call utmess('I','COMPOR2_71',sk='EYY', nr=4, valr=[instam,epslm(2),instap,eps(2)],fname=file)
-    call utmess('I','COMPOR2_71',sk='EZZ', nr=4, valr=[instam,epslm(3),instap,eps(3)],fname=file)
+    call utmess('I','COMPOR2_71',sk='EPZZ', nr=4, valr=[instam,epslm(3),instap,eps(3)],fname=file)
     call utmess('I','COMPOR2_71',sk='EXY', nr=4, valr=[instam,epslm(4),instap,eps(4)],fname=file)
     if (nval.eq.3) then
-       call utmess('I','COMPOR2_71',sk='EXZ', nr=4, valr=[instam,epslm(5),instap,eps(5)],fname=file)
-       call utmess('I','COMPOR2_71',sk='EYZ', nr=4, valr=[instam,epslm(6),instap,eps(6)],fname=file)
+       call utmess('I','COMPOR2_71',sk='EPXZ', nr=4,valr=[instam,epslm(5),instap,eps(5)],fname=file)
+       call utmess('I','COMPOR2_71',sk='EPYZ', nr=4,valr=[instam,epslm(6),instap,eps(6)],fname=file)
     endif
 
     if (nbvrc .gt. 0) then

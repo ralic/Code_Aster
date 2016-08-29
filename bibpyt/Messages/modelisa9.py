@@ -229,15 +229,15 @@ Conseil :
 """),
 
     44 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur effoco numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
 """),
 
     51 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur efouvr numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
 """),
 
     52 : _(u"""
- fichier MED :  %(k1)s maillage :  %(k2)s erreur efferm numéro  %(i1)d
+ fichier MED :  %(k1)s maillage :  %(k2)s erreur numéro  %(i1)d
 """),
 
     53 : _(u"""
@@ -409,8 +409,9 @@ Erreur Europlexus
 
     97 : _(u"""
 Erreur Europlexus
-   Données incorrectes. Les dimensions des objets ne sont pas cohérentes (Erreur
-   Fortran : acearp)
+   Données incorrectes. Les dimensions des objets ne sont pas cohérentes 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     98 : _(u"""

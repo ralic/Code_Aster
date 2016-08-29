@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,9 +41,9 @@ Conseil :
 """),
 
     6 : _(u"""
- Erreur de programmation :
-
-  Appel invalide, la marque devient négative
+Appel invalide, la marque devient négative
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     7 : _(u"""Destruction de '%(k1)s'
@@ -55,36 +55,47 @@ Conseil :
 """),
 
     10 : _(u"""
- Erreur de programmation :
-
- Le nom demandé existe déjà dans la base %(k1)s
+Le nom demandé existe déjà dans la base %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     11 : _(u"""
  Erreur lors de la fermeture de la base  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     12 : _(u"""
  Fichier associé à la base  %(k1)s n'existe pas.
- Nom du fichier :
-    %(k2)s
+ Nom du fichier :  %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     13 : _(u"""
  Erreur de lecture du premier bloc de  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     14 : _(u"""
  Erreur lors de la fermeture de  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     18 : _(u"""
  Le segment de valeurs associé à l'objet : %(k1)s, n'existe pas en mémoire et
  l'objet ne possède pas d'image disque.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     19 : _(u"""
- Le nom d'un objet JEVEUX ne doit pas commencer par un blanc.
+ Le nom d'un objet ne doit pas commencer par un blanc.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     21 : _(u"""
@@ -114,46 +125,62 @@ Conseil :
 """),
 
     23 : _(u"""
-     Nom de Collection ou de Répertoire de noms inexistant :  %(k1)s
+     Nom de collection ou de Répertoire de noms inexistant :  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     24 : _(u"""
-     JENONU : Collection ou Répertoire de noms  :  %(k1)s
-     Il faut passer par JEXNOM,JEXNUM.
+Collection ou répertoire de noms  :  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     25 : _(u"""
-     Nom de collection ou de répertoire inexistant : >%(k1)s<
+Nom de collection ou de répertoire inexistant : %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     26 : _(u"""
-     Objet JEVEUX inexistant dans les bases ouvertes : >%(k1)s<
-     l'objet n'a pas été créé ou il a été détruit
+Objet inexistant dans les bases ouvertes : %(k1)s
+l'objet n'a pas été créé ou il a été détruit
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     27 : _(u"""
-     Objet simple JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Objet simple  inexistant en mémoire et sur disque : %(k1)s
      le segment de valeurs est introuvable
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     28 : _(u"""
-     Collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Collection inexistante en mémoire et sur disque : %(k1)s
      le segment de valeurs est introuvable
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     29 : _(u"""
-     Objet %(i1)d de collection JEVEUX inexistant en mémoire et sur disque : >%(k1)s<
+     Objet %(i1)d de collection inexistant en mémoire et sur disque : %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     30 : _(u"""
-     Objet de collection JEVEUX inexistant : >%(k1)s<
+     Objet de collection inexistant : %(k1)s
      l'objet n'a pas été créé ou il a été détruit
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     31 : _(u"""
-     Erreur programmeur :
-     La routine JUVECA n'a pas prévu de redimensionner l'objet :%(k1)s
+     La routine n'a pas prévu de redimensionner l'objet :%(k1)s
      de type :%(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -164,6 +191,8 @@ Conseil :
 
     38 : _(u"""
      Numéro d'objet invalide %(i1)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     39 : _(u"""
@@ -175,13 +204,13 @@ Conseil :
 
     40 : _(u"""
      Erreur écriture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
-     code retour WRITDR : %(i3)d
+     code retour : %(i3)d
      Erreur probablement provoquée par une taille trop faible du répertoire de travail.
 """),
 
     41 : _(u"""
      Erreur lecture de l'enregistrement %(i1)d sur la base : %(k1)s %(i2)d
-     code retour READDR : %(i3)d
+     code retour : %(i3)d
 """),
 
     42 : _(u"""
@@ -192,6 +221,8 @@ Conseil :
 
     43 : _(u"""
      Erreur d'ouverture du fichier %(k1)s , code retour %(i1)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     44 : _(u"""
@@ -239,8 +270,9 @@ Conseil :
 """),
 
     59 : _(u"""
- Le nom demandé existe déjà dans le répertoire %(k1)s.
-
+Le nom demandé existe déjà dans le répertoire %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     60 : _(u"""
@@ -291,207 +323,220 @@ Conseil :
     66 : _(u"""
 
  La base au format HDF de nom %(k1)s ne peut être créée.
- La fonction HDFCRF renvoie un code retour : %(i1)d
+ La fonction renvoie un code retour : %(i1)d
 
 """),
 
 
     67 : _(u"""
-
- Le nombre d'objets de la collection %(k1)s est inférieur ou égal à 0
-
+Le nombre d'objets de la collection %(k1)s est inférieur ou égal à 0
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
     68 : _(u"""
 
  Le fichier associé à la base demandée %(k1)s n'est pas ouvert.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     69 : _(u"""
 
  Le nom %(k1)s est déjà utilise pour un objet simple.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     70 : _(u"""
 
  Le type de stockage %(k1)s de la collection est erroné.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     71 : _(u"""
 
- La longueur variable pour la collection %(k1)s est incompatible avec le genre E.
-
+ La longueur variable pour la collection %(k1)s est incompatible avec le genre.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     72 : _(u"""
 
  La longueur du type caractère n'est pas valide pour la collection %(k1)s
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     73 : _(u"""
 
  Le nom %(k1)s du pointeur de longueurs est invalide.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     74 : _(u"""
 
  Le pointeur de longueurs %(k1)s n'a pas été créé dans la bonne base.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     75 : _(u"""
 
  Le pointeur de longueurs %(k1)s n'est pas de la bonne taille.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     76 : _(u"""
 
- Le type du pointeur de longueurs %(k1)s n'est pas correct (différent de I).
-
+ Le type du pointeur de longueurs %(k1)s n'est pas correct (différent d'un entier).
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     77 : _(u"""
 
  Le nom du répertoire de noms %(k1)s est invalide.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     78 : _(u"""
 
- Le répertoire de noms %(k1)s n'a pas été créé dans la bonne base.
-
+Le répertoire de noms %(k1)s n'a pas été créé dans la bonne base.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     79 : _(u"""
 
  Le répertoire de noms %(k1)s n'est pas de la bonne taille.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     80 : _(u"""
 
  L'objet %(k1)s n'est pas un répertoire de noms.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     81 : _(u"""
-
- Le type d'accès %(k1)s est inconnu.
-
+Le type d'accès %(k1)s est inconnu.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     82 : _(u"""
-
- Le type d'accès %(k1)s de la collection est erroné.
-
+Le type d'accès %(k1)s de la collection est erroné.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     83 : _(u"""
-
- Le nom du pointeur d'accès %(k1)s est invalide.
-
+Le nom du pointeur d'accès %(k1)s est invalide.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     84 : _(u"""
- La longueur du nom %(k1)s est invalide (> 24 caractères).
-
+La longueur du nom %(k1)s est invalide (> 24 caractères).
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     85 : _(u"""
-
- Le nom %(k1)s est déjà utilise pour une collection.
-
+Le nom %(k1)s est déjà utilisé pour une collection.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     86 : _(u"""
-
- La longueur du type caractère n'est pas définie pour l'objet %(k1)s
-
+La longueur du type caractère n'est pas définie pour l'objet %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     87 : _(u"""
-
- Un objet de genre répertoire (N) doit être de type caractère (K) %(k1)s
-
+Un objet de genre répertoire doit être de type caractère %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     88 : _(u"""
-
- La longueur du type caractère %(k1)s n'est pas valide.
-
+La longueur du type caractère %(k1)s n'est pas valide.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     89 : _(u"""
-
- Un objet de genre répertoire doit être de type K de longueur multiple de 8 %(k1)s.
-
+Un objet de genre répertoire doit être de type caractère de longueur multiple de 8 %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     90 : _(u"""
-
- Un objet de genre répertoire doit être de type K de longueur inférieure ou égale à 24 %(k1)s.
-
+Un objet de genre répertoire doit être de type caractère de longueur inférieure ou égale à 24 %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     91 : _(u"""
-
- Le type %(k1)s est invalide.
-
+Le type %(k1)s est invalide.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     92 : _(u"""
-
- La longueur ou la position de la sous chaîne %(k1)s est invalide.
-
+La longueur ou la position de la sous chaîne %(k1)s est invalide.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     93 : _(u"""
-
- Les longueurs des sous chaînes %(k1)s sont différentes.
-
+Les longueurs des sous chaînes %(k1)s sont différentes.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     94 : _(u"""
-
- Les sous chaînes %(k1)s sont identiques.
-
+Les sous chaînes %(k1)s sont identiques.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     95 : _(u"""
-
- L'appel de JECROC par JEXNOM ou JEXNUM est obligatoire.
-
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     96 : _(u"""
-
- L'accès par JEXNUM est interdit %(k1)s.
-
+L'accès est interdit %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     97 : _(u"""
-
- Erreur lors de l'appel à JECROC %(k1)s.
-
+Erreur lors de l'appel à  %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     98 : _(u"""
-
- L'attribut %(k1)s. est uniquement destiné aux collections contiguës.
-
+L'attribut %(k1)s est uniquement destiné aux collections contiguës.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     99 : _(u"""
-
- L'attribut est incompatible avec le genre %(k1)s.
-
+L'attribut est incompatible avec le genre %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 }

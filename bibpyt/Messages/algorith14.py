@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -157,8 +157,8 @@ cata_msg = {
 
     66 : _(u"""
  Taille de bloc insuffisante
- taille de bloc demandée (kr8): %(r1)f
- taille de bloc utilisée (kr8): %(r2)f
+ taille de bloc demandée : %(r1)f
+ taille de bloc utilisée : %(r2)f
 """),
 
     69 : _(u"""
@@ -214,7 +214,9 @@ cata_msg = {
 """),
 
     75 : _(u"""
-  Erreur développement : code retour 1 dans NMCOMP en calculant la matrice tangente
+Erreur développement : code retour 1 dans en calculant la matrice tangente
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
  """),
 
     77 : _(u"""

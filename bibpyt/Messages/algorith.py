@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,9 +48,9 @@ cata_msg = {
 """),
 
     33 : _(u"""
- calcul des options RIGI_MECA_TANG, RAPH_MECA et FULL_MECA
- en mécanique des milieux poreux avec couplage THM
- ---> erreur de dimensionnement
+Calcul des options en mécanique des milieux poreux avec couplage THM
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     34 : _(u"""
@@ -148,7 +148,8 @@ cata_msg = {
 
     69 : _(u"""
  trop de familles de systèmes de glissement.
- modifier GERPAS
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     70 : _(u"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -206,8 +206,10 @@ Risques & conseils :
 
     38 : _(u"""
  appel erroné :
- code retour de RSEXCH : %(i1)d
+ code retour : %(i1)d
  Problème CHAM_NO %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     39 : _(u"""
@@ -258,7 +260,9 @@ Erreur utilisateur dans CREA_MAILLAGE / CREA_POI1 :
 """),
 
     60 : _(u"""
-  incohérence n2 NBDDL sans multiplicateurs de Lagrange %(i1)d NBDDL reconstitués %(i2)d
+  incohérence sans multiplicateurs de Lagrange %(i1)d reconstitués %(i2)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     61 : _(u"""
@@ -332,8 +336,10 @@ Erreur utilisateur dans CREA_MAILLAGE / CREA_POI1 :
 
     85 : _(u"""
  appel erroné mode numéro %(i1)d position modale %(i2)d
- code retour de RSEXCH : %(i3)d
+ code retour : %(i3)d
  Problème CHAM_NO %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     86 : _(u"""

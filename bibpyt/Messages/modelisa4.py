@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     10 : _(u"""
- - chckma phase de vérification du maillage - mailles dégénérées
+Phase de vérification du maillage - mailles dégénérées
 """),
 
     11: _(u"""
@@ -141,27 +141,27 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     28 : _(u"""
- <coefal> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
+Le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
 """),
 
     29 : _(u"""
- <coefam> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
+Le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .70
 """),
 
     30 : _(u"""
- <coefam> ce type de réseau n est pas encore implante dans le code
+Ce type de réseau n est pas encore implante dans le code
 """),
 
     31 : _(u"""
- <coefra> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
+Le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
 """),
 
     32 : _(u"""
- <coefra> ce type de réseau n est pas encore implante dans le code
+Ce type de réseau n'est pas encore implanté dans le code
 """),
 
     33 : _(u"""
- <coefrl> le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
+Le numéro de corrélation et/ou le type de réseau passes dans le fichier de commande ne  sont pas cohérents avec le fichier .71
 """),
 
     35 : _(u"""
@@ -213,23 +213,23 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     56 : _(u"""
- la demi fenêtre excitée en amont du noeud central d application n est pas définie.
+ la demi fenêtre excitée en amont du noeud central d'application n'est pas définie.
 """),
 
     57 : _(u"""
- la demi fenêtre excitée en amont du noeud central d application déborde du domaine de définition du maillage.
+ la demi fenêtre excitée en amont du noeud central d'application déborde du domaine de définition du maillage.
 """),
 
     58 : _(u"""
- les demi fenêtres excitées en aval et en amont du noeud central d application ne sont pas raccordées.
+ les demi fenêtres excitées en aval et en amont du noeud central d'application ne sont pas raccordées.
 """),
 
     59 : _(u"""
- la demi fenêtre excitée en aval du noeud central d application n est pas définie.
+ la demi fenêtre excitée en aval du noeud central d'application n'est pas définie.
 """),
 
     60 : _(u"""
- la demi fenêtre excitée en aval du noeud central d application déborde du domaine de définition du maillage.
+ la demi fenêtre excitée en aval du noeud central d'application déborde du domaine de définition du maillage.
 """),
 
     61 : _(u"""
@@ -279,7 +279,7 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     71 : _(u"""
- immersion du câble no %(k1)s  dans la structure béton : le noeud  %(k2)s  se trouve a l'extérieur de la structure
+ immersion du câble no %(k1)s  dans la structure béton : le noeud  %(k2)s  se trouve à l'extérieur de la structure
 """),
 
     72 : _(u"""
@@ -302,11 +302,13 @@ Ceci est dangereux car cela peut produire un maillage non conforme.
 """),
 
     78 : _(u"""
- lecture 1 :erreur de lecture pour %(k1)s
+erreur de lecture pour %(k1)s
 """),
 
     79 : _(u"""
- lecture 1 :item > 24 car  %(k1)s
+item > 24 car  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     80 : _(u"""

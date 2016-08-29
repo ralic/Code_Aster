@@ -268,10 +268,10 @@ hypothèses.
 
     44: _(u"""
 Les paramètres K1 et/ou K2 et/ou G sont absents du tableau des facteurs d'intensité des
-contraintes (SIF) fourni.
+contraintes fourni.
 -> Risque et Conseil :
 Le tableau des facteurs d'intensité des contraintes doit absolument contenir ces trois
-paramètres ainsi que K3 en 3D. Veuillez vérifier le contenu de votre tableau de SIF.
+paramètres ainsi que K3 en 3D. Veuillez vérifier le contenu de votre tableau.
 """),
 
     45: _(u"""

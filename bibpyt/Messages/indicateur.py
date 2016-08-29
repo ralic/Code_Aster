@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,7 +90,7 @@ La %(k1)s caractéristique est nulle. On risque la division par zéro.
 """),
 
     22: _(u"""
-RHO liquide: div par zéro
+RHO liquide: division par zéro
 """),
 
     23: _(u"""
@@ -117,7 +117,9 @@ Ces valeurs doivent être strictement positives.
 """),
 
     31: _(u"""
-deltat: division par zéro
+Division par zéro
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     32 : _(u"""
@@ -131,6 +133,8 @@ deltat: division par zéro
 
     90 : _(u"""
 La condition %(k1)s est bizarre.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     91 : _(u"""

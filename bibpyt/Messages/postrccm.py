@@ -161,12 +161,13 @@ cata_msg = {
 
     30: _(u"""
  problème pour récupérer l'occurrence de SEISME.
- Contactez le support
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     31: _(u"""
- problème avec TYPEKE.
- Contactez le support
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     32: _(u"""
@@ -188,7 +189,8 @@ cata_msg = {
 """),
 
     36: _(u"""
- bogue ! contactez l'assistance.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     37: _(u"""

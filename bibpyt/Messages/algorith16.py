@@ -287,7 +287,7 @@ Risques & conseils :
  """),
 
     96 : _(u"""
-  Comportement ZEDGAR : la dérivée est nulle.
+  Comportement pour le zirconium: la dérivée est nulle.
 """),
 
 

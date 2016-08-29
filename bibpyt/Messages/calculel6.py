@@ -51,7 +51,8 @@ Solution :
 """),
 
     6: _(u"""
-  Erreur de Programmation: code retour de 'TBLIVA' inconnu.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     7: _(u"""
@@ -181,7 +182,7 @@ Conseils :
 
 
     56: _(u"""
- Erreur d'utilisation (rcmaco/alfint) :
+ Erreur d'utilisation :
  Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilatation ALPHA=f(TEMP).
  Mais la température de référence n'est pas fournie sous AFFE_MATERIAU/AFFE_VARC/VALE_REF
 
@@ -209,13 +210,12 @@ Conseils :
 """),
 
     62: _(u"""
-    Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s,
-    il manque le paramètre %(k2)s
+Erreur lors de l'interpolation de la fonction %(k1)s sur la maille %(k3)s, il manque le paramètre %(k2)s
 """),
 
 
     63: _(u"""
- Erreur lors de l'interpolation (fointa) de la fonction %(k1)s :
+ Erreur lors de l'interpolation de la fonction %(k1)s :
  Code retour: %(i1)d
 """),
 
@@ -246,8 +246,10 @@ Conseils :
 
 
     68: _(u"""
- la liste des composantes fournies à NOCART est incorrecte.
+ la liste des composantes fournies à est incorrecte.
  composantes dans catalogue:
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     69: _(u"""
@@ -255,7 +257,9 @@ Conseils :
 """),
 
     70: _(u"""
- composantes dans EDITGD:
+ composantes:
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     71: _(u"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,17 +54,17 @@ cata_msg = {
 """),
 
     8 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés élastique.
+ -> L'objet transmis au mot clé MATER de BETON ne contient pas de propriétés élastique.
  -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU du béton.
 """),
 
     9 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER de BETON ne contient pas de propriétés post élastiques.
+ -> L'objet transmis au mot clé MATER de BETON ne contient pas de propriétés post élastiques.
  -> Risque & Conseil : Ajouter les propriétés post élastiques dans le DEFI_MATERIAU du béton.
 """),
 
     10 : _(u"""
- -> L'objet sd_mater transmit au mot clé MATER d'ACIER ne contient pas de propriétés élastique.
+ -> L'objet transmis au mot clé MATER d'ACIER ne contient pas de propriétés élastique.
  -> Risque & Conseil : Ajouter les propriétés élastique dans le DEFI_MATERIAU de l'acier.
 """),
 
@@ -179,7 +179,7 @@ cata_msg = {
 """),
 
     58 : _(u"""
- relation ASSE_COMBU 1d sans loi de fluence appropriée
+Relation 1d sans loi de fluence appropriée
 """),
 
     59 : _(u"""
@@ -217,11 +217,11 @@ cata_msg = {
 """),
 
     68 : _(u"""
- paramètre UN_SUR_K égal à zéro cas incompatible avec VISC_CINX_CHAB
+ paramètre UN_SUR_K égal à zéro cas incompatible avec VISC_CINE_CHAB
 """),
 
     69 : _(u"""
- loi VISC_CINX_CHAB
+ loi VISC_CINE_CHAB
  on doit obligatoirement avoir UN_SUR_M = zéro
 """),
 
@@ -230,7 +230,9 @@ cata_msg = {
 """),
 
     80 : _(u"""
- Problème interprétation vari entière ??
+ Problème interprétation variable entière
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     81 : _(u"""
@@ -238,7 +240,8 @@ cata_msg = {
 """),
 
     86 : _(u"""
- erreur de programmation 1
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     87 : _(u"""

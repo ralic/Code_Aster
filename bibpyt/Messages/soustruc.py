@@ -322,7 +322,9 @@ cata_msg = {
 """),
 
     75: _(u"""
- autorise : "LAG" ou "GL" pas: %(k1)s
+La valeur  %(k1)s n'est pas autorisée.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     76: _(u"""

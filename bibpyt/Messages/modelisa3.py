@@ -113,7 +113,9 @@ MODI_REPERE / CHAMP_GD
 
 
     37: _(u"""
- erreur a l appel de la routine etenca pour extension de la carte  %(k1)s
+ erreur pour extension de la carte  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     38: _(u"""

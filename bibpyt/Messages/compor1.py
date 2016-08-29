@@ -22,12 +22,14 @@ cata_msg = {
 
     1: _(u"""
  HUJEUX : nombre de variables internes incorrect:
-           NVI > NVIMAX
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     2: _(u"""
- HUJEUX : on ne calcule pas DPSIDS pour K=4.
-           - vérifiez la programmation -
+ HUJEUX : on ne calcule pas la dérivée pour K=4.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     3: _(u"""
@@ -35,16 +37,11 @@ cata_msg = {
             dans la maille %(k1)s.
 
              Vérifiez la cohérence des données mécaniques suivantes :
-                 E, NU, eO (indice des vides), KAPA
+                 E, NU, l'indice des vides, KAPA
                  (contrainte volumique initiale) et KCAM la compressibilité
                  initiale. Si PTRAC et KCAM sont nuls, il faut initialiser les contraintes.
 
                  Il faut notamment vérifier ceci:
-
-        NU = (TROIS*((UN+E0)*SIGMMO+KAPA*KCAM)-DEUXMU*KAPA)/
-     &         (SIX*((UN+E0)*SIGMMO+KAPA*KCAM)+DEUXMU*KAPA)
-
-        E = DEUXMU*(UN+NU)
 """),
 
     4: _(u"""
@@ -52,8 +49,9 @@ cata_msg = {
 """),
 
     5: _(u"""
- HUJEUX : K différent de NBMECA pour le mécanisme isotrope
-           - vérifiez la programmation -
+ HUJEUX : Pour le mécanisme isotrope
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     6: _(u"""
@@ -67,7 +65,8 @@ cata_msg = {
 
     8: _(u"""
  HUJEUX : mécanisme indéterminé
-           - vérifiez la programmation -
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     9 : _(u"""
@@ -102,7 +101,9 @@ Seules quelques lois de comportement qui ne nécessitent pas la méthode Deborst
     16 : _(u"""
 Arrêt suite à l'échec de l'intégration de la loi de comportement.
 
-Erreur numérique (overflow) : la plasticité cumulée devient très grande.
+Erreur numérique: la plasticité cumulée devient très grande.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     17 : _(u"""
@@ -166,7 +167,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
     31: _(u"""
- LETK - lkcaln : division par zéro - entrée en plasticité avec un déviateur nul.
+ LETK : division par zéro - entrée en plasticité avec un déviateur nul.
  le pas de temps est trop petit - augmenter le pas de temps pour augmenter le déviateur.
 """),
 
@@ -176,7 +177,7 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 """),
 
     33: _(u"""
- NMHUJ : ELAS/ELAS_ORTH : erreur de lecture des propriétés matériaux.
+ HUJEUX : ELAS/ELAS_ORTH : erreur de lecture des propriétés matériaux.
 """),
 
     34: _(u"""
@@ -221,8 +222,8 @@ Erreur numérique (overflow) : la plasticité cumulée devient très grande.
 
     42: _(u"""
  CAM_CLAY :  KCAM et PTRAC doivent vérifier la relation suivante :
-
-              KCAM > -K0 * PTRAC  ou KCAM > -(1+e0)/KAPA * PTRAC
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -262,7 +263,7 @@ Ne renseignez pas le mot-clé COMPORTEMENT/%(k2)s, afin de sélectionner l'algor
 
     55: _(u"""
 La <%(k1)s> dichotomie pour la loi IRRAD3M n'a pas trouvé de solution pour
-le nombre d'itération donné <%(i1)d>.\n
+le nombre d'itération donné <%(i1)d>.
 Information pour le débogage
    Borne 0                 : <%(r1).15E>
    Borne 1                 : <%(r2).15E>
@@ -320,17 +321,19 @@ Cet état initial ne sera pas pris en compte.
 
     63 : _(u"""
    ATTENTION SR > 1    SR = %(r1)f
-   SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
+   Séchage moins %(r2)f  Séchage plus %(r3)f    W0 %(r4)f
 """),
 
     64 : _(u"""
    ATTENTION SR < 0    SR = %(r1)f
-   SECHM %(r2)f    SECHP %(r3)f    W0 %(r4)f
+   Séchage moins %(r2)f  Séchage plus %(r3)f   W0 %(r4)f
 """),
 
     65 : _(u"""
-   Attention dans la routine majpad la pression d'air dissous devient
+   Attention, la pression d'air dissous devient
    négative à la maille %(k1)s.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     66 : _(u"""

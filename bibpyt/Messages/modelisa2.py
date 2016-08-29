@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -140,7 +140,9 @@ Erreur utilisateur :
  """),
 
     26: _(u"""
- erreur a l'appel de la routine ETENCA pour extension de la carte  %(k1)s .
+ erreur a l'appel de la routine pour extension de la carte  %(k1)s .
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     27: _(u"""

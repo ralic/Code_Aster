@@ -21,9 +21,9 @@ cata_msg = {
 
     1 : _(u"""
  AFFE_CARA_ELEM : mot clé GENE_TUYAU
- problème : OMEGA est différent de OMEGA2
- OMEGA  = %(r1)f
- OMEGA2 = %(r2)f
+ Les deux angles sont différents
+ %(r1)f
+ %(r2)f
 """),
 
     3 : _(u"""
@@ -78,7 +78,6 @@ Risque & Conseil : mettre un léger écrouissage peut permettre de passer cette 
 """),
 
     10 : _(u"""
- Sous-programme CHPVER :
  le champ  %(k1)s n'a pas le bon type :
    type autorisé  :%(k2)s
    type du champ  :%(k3)s
@@ -185,7 +184,6 @@ Conseil :
 """),
 
     37 : _(u"""
- Sous-programme CHPVER :
  le champ  %(k1)s n'a pas la bonne grandeur :
    grandeur autorisée  :%(k2)s
    grandeur du champ   :%(k3)s
@@ -291,7 +289,9 @@ Erreur utilisateur :
 """),
 
     55 : _(u"""
- ELREFA inconnu:  %(k1)s
+Inconnu:  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -380,9 +380,12 @@ Erreur utilisateur :
 
     90 : _(u"""
 Erreur de programmation :
-   L'attribut NBSIGM n'est pas défini pour cette modélisation.
+   Un attribut n'est pas défini pour cette modélisation.
 Solution :
-   Il faut modifier le catalogue phenomene_modelisation__.cata pour ajouter NBSIGM pour cette modélisation.
+   Il faut modifier le catalogue pour ajouter cet attribut pour cette modélisation.
+
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     91 : _(u"""

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,6 +65,12 @@ Le mot clef EXCIT de la commande n'est pas renseigné et la récupération des c
 le résultat %(k1)s n'est actuellement pas possible.
 
 Conseil : Il faut renseigner le mot clef EXCIT de la commande CALC_CHAMP,
+"""),
+
+19 : _(u"""
+Problème lors de l'appel de l'option %(k1)s.
+
+Contactez le support technique.
 """),
 
 

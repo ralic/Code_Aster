@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ cata_msg = {
 """),
 
     9: _(u"""
- les numéros d'ordre des vitesses donnes sous le mot-clé "NUME_ORDRE" ne sont pas valides.
+ les numéros d'ordre des vitesses donnés sous le mot-clé "NUME_ORDRE" ne sont pas valides.
 """),
 
     10: _(u"""
@@ -85,7 +85,9 @@ cata_msg = {
 """),
 
     29: _(u"""
- nouvelle longueur invalide, < 0
+ nouvelle longueur invalide
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     30: _(u"""
@@ -101,11 +103,14 @@ cata_msg = {
 """),
 
     34: _(u"""
- sd  %(k1)s  inexistante
+Structure de données %(k1)s  inexistante
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     36: _(u"""
- longt trop grand
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     37: _(u"""
@@ -247,19 +252,23 @@ cata_msg = {
 """),
 
     74: _(u"""
- numéro de ligne trop grand
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     75: _(u"""
- erreur programmation le nom d'une table ne doit pas dépasser 17 caractères.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     76: _(u"""
- pas de lignes définies
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     77: _(u"""
- types de paramètres différents
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     78: _(u"""
@@ -275,7 +284,8 @@ cata_msg = {
 """),
 
     81: _(u"""
- pas de paramètres de type i et r
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     82: _(u"""
@@ -307,6 +317,8 @@ cata_msg = {
 """),
 
     99: _(u"""
- et alors typesd =  %(k1)s
+%(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 }

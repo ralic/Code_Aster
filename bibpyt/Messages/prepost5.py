@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,14 +46,15 @@ Champ inexistant DEPL numéro d'ordre %(k1)s pour le calcul de l'option %(k2)s
 """),
 
     10 : _(u"""
- le noeud traite  n'est associe a aucune maille volumique.
+ le noeud traité n'est associé à aucune maille volumique.
  numéro du noeud =  %(i1)d
  nombre de mailles attachées au noeud =  %(i2)d
 """),
 
     16 : _(u"""
- appel erroné numéro d'ordre %(i1)d code retour de rsexch : %(i2)d
+ appel erroné numéro d'ordre %(i1)d code retour  : %(i2)d
  Problème CHAM_NO %(k1)s
+Séchage moins %(r2)f  Séchage plus %(r3)f
 """),
 
     19 : _(u"""
@@ -133,18 +134,24 @@ Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
 
 
     57 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
+ problème dans  le traitement de l'instant  %(r1)f
   récupération de  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     58 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération "numeli" pour  %(k1)s
+ problème dans  le traitement de l'instant  %(r1)f
+  récupération  pour  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     59 : _(u"""
- problème dans  nomta traitement de l'instant  %(r1)f
-  récupération "numeli" pour le secteur  %(i1)d
+ problème dans  le traitement de l'instant  %(r1)f
+  récupération pour le secteur  %(i1)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     61 : _(u"""
@@ -181,8 +188,10 @@ Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
 
     73 : _(u"""
  appel erroné  résultat :  %(k1)s   archivage numéro :  %(i1)d
-   code retour de rsexch :  %(i2)d
+   code retour :  %(i2)d
    problème champ :  %(k2)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     74 : _(u"""
@@ -199,30 +208,33 @@ Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
 """),
 
     77 : _(u"""
- *** banque de données *** pour le type de géométrie  %(k1)s
+banque de données pour le type de géométrie  %(k1)s
   le couple de matériaux  %(k2)s
   ne se trouve pas dans la banque. %(k3)s
 """),
 
     78 : _(u"""
  le calcul du rayon n'est pas assez précis.
-    cupn0 =  %(r1)f
-    cvpn0 =  %(r2)f
-    cupn1 =  %(r3)f
-    cvpn1 =  %(r4)f
-    cupn2 =  %(r5)f
-    cvpn2 =  %(r6)f
-    flag  =  %(i1)d
-    cuon1 =  %(r7)f
-    cuon2 =  %(r8)f
-    cuon3 =  %(r9)f
-    cvon1 =  %(r10)f
-    cvon2 =  %(r11)f
-    cvon3 =  %(r12)f
-    rayon =  %(r13)f
-    raymin =  %(r14)f
-    (rayon - raymin) =  %(r15)f
-    ((rayon-raymin)/raymin) =  %(r16)f
+    %(r1)f
+    %(r2)f
+    %(r3)f
+    %(r4)f
+    %(r5)f
+    %(r6)f
+    %(i1)d
+    %(r7)f
+    %(r8)f
+    %(r9)f
+    %(r10)f
+    %(r11)f
+    %(r12)f
+    %(r13)f
+    %(r14)f
+    (%(r15)f
+    %(r16)f
+
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 }

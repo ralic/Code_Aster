@@ -56,8 +56,9 @@ cata_msg = {
 
 
     8 : _(u"""
- le mot-clé :  %(k1)s  est incorrect.
- on attend : "CUMU" ou "ZERO"
+ le mot-clé %(k1)s  est incorrect.
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
 
@@ -69,19 +70,23 @@ cata_msg = {
 
 
     13 : _(u"""
- ICHIN = 0
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     14 : _(u"""
- ICHIN < -2
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     15 : _(u"""
- S => ICHIN=/0
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     16 : _(u"""
- action : E/L/S
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     18 : _(u"""
@@ -97,7 +102,9 @@ cata_msg = {
     20 : _(u"""
   Erreur programmeur :
     lors d'un assemblage, dans la liste des MATR_ELEM (ou VECT_ELEM) que l'on veut
-    assembler, on ne trouve aucun resuelem.
+    assembler, on ne trouve aucun résultat élémentaire
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     21 : _(u"""
@@ -119,7 +126,9 @@ cata_msg = {
 """),
 
     35 : _(u"""
- il n y a pas de modèle dans la liste  %(k1)s .NUME.LILI
+ il n y a pas de modèle dans la liste  %(k1)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     36 : _(u"""
@@ -139,35 +148,34 @@ cata_msg = {
 
 
     41 : _(u"""
- le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
- n'a pas d'adresse dans : %(k3)s
+ le noeud  %(i1)d  du  %(k1)s du VECT_ELEM  : %(k2)s  n'a pas d'adresse dans : %(k3)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     42 : _(u"""
- le noeud  : %(i1)d  du RESUEL : %(k1)s  du VECT_ELEM  : %(k2)s
-   a une adresse  : %(i2)d  > NEQUA : %(i3)d
+ le noeud  : %(i1)d  du %(k1)s  du VECT_ELEM  : %(k2)s
+   a une adresse  : %(i2)d  supérieur au nombre d'équations : %(i3)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     43 : _(u"""
- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     44 : _(u"""
- --- VECT_ELEM     : %(k1)s
- --- RESU          : %(k2)s
- --- NOMLI         : %(k3)s
- --- GREL numéro   : %(i1)d
- --- MAILLE numéro : %(i2)d
- --- NNOE par NEMA : %(i3)d
- --- NNOE par NODE : %(i4)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     45 : _(u"""
 Erreur Programmeur ou utilisateur :
 -----------------------------------
- Le LIGREL    : %(k1)s  référencé par le noeud supplémentaire. : %(i1)d
- de la maille : %(i2)d  du resuelem  : %(k2)s  du sd_vect_elem : %(k3)s
- n'est pas présent  dans le sd_nume_ddl : %(k4)s
+ Le LIGREL    %(k1)s  référencé par le noeud supplémentaire %(i1)d
+ de la maille %(i2)d  du  %(k2)s  du VECT_ELEM : %(k3)s
+ n'est pas présent  dans le NUME_DDL : %(k4)s
 
 Risques & conseils :
 --------------------
@@ -183,21 +191,27 @@ Risques & conseils :
 """),
 
     46 : _(u"""
- --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     47 : _(u"""
- --- NDDL :  %(i1)d  > NDDL_MAX : %(i2)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     48 : _(u"""
- --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
+ --- le noeud  : %(i1)d  du  %(k1)s  du VECT_ELEM   : %(k2)s
  --- n'a pas d''adresse  dans la numérotation : %(k3)s
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     49 : _(u"""
- --- le noeud  : %(i1)d  du RESUEL    : %(k1)s  du VECT_ELEM   : %(k2)s
- --- a une adresse : %(i2)d   > NEQUA : %(i3)d
+ --- le noeud  : %(i1)d  du  %(k1)s  du VECT_ELEM   : %(k2)s
+ --- a une adresse : %(i2)d  supérieur au nombre d'équations : %(i3)d
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     63 : _(u"""

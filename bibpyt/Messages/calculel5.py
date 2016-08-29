@@ -42,7 +42,9 @@ Conseils :
 """),
 
     4 : _(u"""
- !! problème création CHAM_ELEM nul dans alchml !!
+Problème création CHAM_ELEM nul
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     6 : _(u"""
@@ -143,15 +145,21 @@ PROJ_CHAMP (ou LIAISON_MAILLE) :
   Le noeud %(k1)s de coordonnées (%(r1)e,%(r2)e,%(r3)e) est projeté à la distance %(r4)e"""),
 
     44 : _(u"""
- ! le champ doit être un CHAM_ELEM !
+Le champ doit être un CHAM_ELEM
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     45 : _(u"""
- ! longueurs des modes locaux incompatibles entre eux !
+Longueurs des modes locaux incompatibles entre eux 
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     46 : _(u"""
- ! terme normalisation global nul !
+Terme normalisation global nul
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     48 : _(u"""
@@ -258,7 +266,7 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
 
 
     65 : _(u"""
- composante non définie dans  la grandeur.  composante:  %(k1)s
+ composante non définie dans  la grandeur composante:  %(k1)s
 """),
 
     66 : _(u"""
@@ -304,25 +312,24 @@ Erreur utilisateur dans la commande PROJ_CHAMP :
 """),
 
     72 : _(u"""
- cette commande est réentrante :   sd resultat en sortie     %(k1)s
-    sd resultat "RESU_FINAL"  %(k2)s
+ Cette commande est réentrante :   structure de données résultat en sortie     %(k1)s
+ Structure de données RESU_FINAL  %(k2)s
 """),
 
     73 : _(u"""
- la sd resultat en sortie  %(k1)s
-  doit contenir qu'un seul NUME_ORDRE %(k2)s
+La structure de données résultat en sortie  %(k1)s doit contenir qu'un seul NUME_ORDRE %(k2)s
 """),
 
     76 : _(u"""
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
-    elrefa  :  %(k2)s ;
-    famille :  %(k3)s.
+    élément fini :  %(k2)s
+    famille      :  %(k3)s.
  Faites une demande d'évolution.
 """),
 
     78 : _(u"""
  Il n'est pas encore possible de découper le type_élément :  %(k1)s  en sous-éléments
-    elrefa :  %(k2)s.
+    élément fini :  %(k2)s.
  Faites une demande d'évolution.
 """),
 
