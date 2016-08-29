@@ -20,7 +20,7 @@ subroutine rsnoch(nomsd, nomsy, iordr)
     character(len=*) :: nomsd, nomsy
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,7 +104,9 @@ subroutine rsnoch(nomsd, nomsy, iordr)
 !     -- ON VERIFIE L'EXISTENCE DE CHNOTE :
 !     -------------------------------------------
     if (iret .eq. 100) then
-        call utmess('F', 'UTILITAI_55', sk=chnote)
+       valk(1) = noms2
+       valk(2) = chnote
+       call utmess('F', 'UTILITAI_50', nk=2, valk=valk)
     endif
     ASSERT(iret.eq.0)
 !

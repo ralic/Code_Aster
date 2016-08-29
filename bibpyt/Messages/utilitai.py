@@ -237,8 +237,9 @@ Contactez le support technique.
 """),
 
 
-
-
+    50 : _(u"""
+ champ de nom symbolique %(k1)s inexistant: %(k2)s
+"""),
 
     51 : _(u"""
  il n y a pas de NUME_DDL pour ce CHAM_NO
