@@ -1,9 +1,10 @@
-subroutine rs_getnume(result_, inst      , criter_, prec, nume,&
-                      iret   , vari_name_)
+subroutine rs_get_liststore(result_, nb_store, v_list_store_)
 !
 implicit none
 !
 #include "asterfort/rsorac.h"
+#include "asterfort/utmess.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,58 +25,48 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    real(kind=8), intent(in) :: inst
-    character(len=*), intent(in) :: criter_
-    real(kind=8), intent(in) :: prec
-    integer, intent(out) :: nume
-    integer, intent(out) :: iret
-    character(len=*), optional, intent(in) :: vari_name_
+    integer, intent(out) :: nb_store
+    integer, pointer, optional, intent(out) :: v_list_store_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Results datastructure - Utility
 !
-! Get index stored in results datastructure for a given time
+! Get list of storing index in results datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  result           : name of results datastructure
-! In  inst             : time to find in results datastructure
-! In  criter           : absolute/relative search
-! In  prec             : precision to search time
-! Out nume             : index stored in results datastructure for given time
-! Out iret             : error code
-!                        0 - Time not found
-!                        1 - One time found
-!                        2 - Several times found
-!                        
+! Out nb_store         : number of storing index in results datastructure
+! Out v_list_store     : pointer to list of storing index in results datastructure
+!
+! Warning : if v_list_store is required, don't forget to allocate object before use it
+! First call: get nb_store
+! Second call: get list_store
+! 
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: vari_name
-    character(len=8) :: result, k8bid
-    complex(kind=8) :: c16bid
-    integer :: tnum(1), ibid, nb_find
+    character(len=8) :: result
+    integer :: i_dummy, tord(1)
+    character(len=8) :: k8_dummy
+    real(kind=8) :: r8_dummy
+    complex(kind=8) :: c16_dummy
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result    = result_
-    nume      = 0
-    iret      = 0
-    if (present(vari_name_)) then
-        vari_name = vari_name_
-    else
-        vari_name = 'INST'
+    nb_store = 0
+    result   = result_
+    call rsorac(result   , 'LONUTI', 0       , r8_dummy, k8_dummy,&
+                c16_dummy, r8_dummy, k8_dummy, tord    , 1       ,&
+                i_dummy)
+    nb_store = tord(1)
+    if (nb_store .eq. 0) then
+        call utmess('F', 'RESULT1_3', sk = result)
     endif
-    call rsorac(result , vari_name, ibid   , inst, k8bid,&
-                c16bid , prec     , criter_, tnum, 1    ,&
-                nb_find)
-    if (nb_find.lt.0) then
-        iret = 2
-    elseif (nb_find.eq.1) then
-        iret = 1
-        nume = tnum(1)
-    elseif (nb_find.eq.0) then
-        iret = 0
+    if (present(v_list_store_)) then
+        call rsorac(result   , 'TOUT_ORDRE', 0       , r8_dummy     , k8_dummy,&
+                    c16_dummy, r8_dummy    , k8_dummy, v_list_store_, nb_store,&
+                    i_dummy)
     endif
-
+!
 end subroutine

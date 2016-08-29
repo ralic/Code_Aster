@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ implicit none
                 c16bid, 0.d0     , ' ', list , 1    ,&
                 iret)
     if (iret .eq. 0) then
-        call utmess('F', 'RESULTAT1_1', sk=result)
+        call utmess('F', 'RESULT1_3', sk=result)
     endif
     nume_first = list(1)
     if (present(inst_first)) then

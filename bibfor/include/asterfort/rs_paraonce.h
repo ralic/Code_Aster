@@ -15,15 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-interface
-    subroutine rs_getnume(result_, inst      , criter_, prec, nume,&
-                          iret   , vari_name_)
-        character(len=*), intent(in) :: result_
-        real(kind=8), intent(in) :: inst
-        character(len=*), intent(in) :: criter_
-        real(kind=8), intent(in) :: prec
-        integer, intent(out) :: nume
-        integer, intent(out) :: iret
-        character(len=*), optional, intent(in) :: vari_name_
-    end subroutine rs_getnume
-end interface
+interface 
+    subroutine rs_paraonce(result   , nb_para      , list_para,&
+                           nb_store_, v_list_store_)
+        character(len=8), intent(in) :: result
+        integer, intent(in) :: nb_para
+        character(len=*), intent(in) :: list_para(*)
+        integer, optional, intent(in) :: nb_store_
+        integer, pointer, optional, intent(in) :: v_list_store_(:)
+    end subroutine rs_paraonce
+end interface 

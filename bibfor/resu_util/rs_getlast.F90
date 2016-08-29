@@ -5,10 +5,9 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsorac.h"
-#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,10 +55,9 @@ implicit none
     call rsorac(result, 'DERNIER', 0  , r8bid, k8bid,&
                 c16bid, 0.d0     , ' ', list , 1    ,&
                 iret)
-    if (iret .eq. 0) then
-        call utmess('F', 'RESULTAT1_1', sk=result)
+    if (iret .eq. 1) then
+        nume_last = list(1)
     endif
-    nume_last = list(1)
     if (present(inst_last)) then
         call rsadpa(result, 'L', 1, 'INST', nume_last,&
                     0, sjv=jinst)

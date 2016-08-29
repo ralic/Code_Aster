@@ -1,9 +1,9 @@
-subroutine rs_getnume(result_, inst      , criter_, prec, nume,&
-                      iret   , vari_name_)
+subroutine rs_get_mesh(result_, mesh)
 !
 implicit none
 !
-#include "asterfort/rsorac.h"
+#include "asterfort/rs_get_model.h"
+#include "asterfort/dismoi.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,58 +24,35 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    real(kind=8), intent(in) :: inst
-    character(len=*), intent(in) :: criter_
-    real(kind=8), intent(in) :: prec
-    integer, intent(out) :: nume
-    integer, intent(out) :: iret
-    character(len=*), optional, intent(in) :: vari_name_
+    character(len=8), intent(out) :: mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Results datastructure - Utility
 !
-! Get index stored in results datastructure for a given time
+! Get mesh in results datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  result           : name of results datastructure
-! In  inst             : time to find in results datastructure
-! In  criter           : absolute/relative search
-! In  prec             : precision to search time
-! Out nume             : index stored in results datastructure for given time
-! Out iret             : error code
-!                        0 - Time not found
-!                        1 - One time found
-!                        2 - Several times found
+! Out mesh             : name of mesh
 !                        
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: vari_name
-    character(len=8) :: result, k8bid
-    complex(kind=8) :: c16bid
-    integer :: tnum(1), ibid, nb_find
+    character(len=8) :: result, model
+    integer :: nume, codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
     result    = result_
-    nume      = 0
-    iret      = 0
-    if (present(vari_name_)) then
-        vari_name = vari_name_
-    else
-        vari_name = 'INST'
-    endif
-    call rsorac(result , vari_name, ibid   , inst, k8bid,&
-                c16bid , prec     , criter_, tnum, 1    ,&
-                nb_find)
-    if (nb_find.lt.0) then
-        iret = 2
-    elseif (nb_find.eq.1) then
-        iret = 1
-        nume = tnum(1)
-    elseif (nb_find.eq.0) then
-        iret = 0
-    endif
-
+!
+! - Get model
+!
+    nume = 1
+    call rs_get_model(result, nume, model, codret)
+!
+! - Get mesh
+!
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+!
 end subroutine

@@ -16,14 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rs_getnume(result_, inst      , criter_, prec, nume,&
-                          iret   , vari_name_)
+    subroutine rs_get_mate(result_, nume, chmate, codret)
         character(len=*), intent(in) :: result_
-        real(kind=8), intent(in) :: inst
-        character(len=*), intent(in) :: criter_
-        real(kind=8), intent(in) :: prec
-        integer, intent(out) :: nume
-        integer, intent(out) :: iret
-        character(len=*), optional, intent(in) :: vari_name_
-    end subroutine rs_getnume
+        integer, intent(in) :: nume
+        character(len=*), intent(out) :: chmate
+        integer, intent(out) :: codret
+    end subroutine rs_get_mate
 end interface

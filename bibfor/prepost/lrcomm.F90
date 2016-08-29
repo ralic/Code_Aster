@@ -27,7 +27,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     character(len=16) :: typres
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -172,7 +172,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                 call nmdoco(mod24, car24, compor)
                 call vrcomp(compor, vari, ligrmo, iret, type_stop = 'A')
                 if (iret .eq. 1) then
-                    call utmess('A', 'RESU1_1')
+                    call utmess('A', 'RESULT1_1')
                 endif
             endif
         end do
