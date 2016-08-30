@@ -21,7 +21,7 @@ def configure(self):
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Hdf5-1814/lib',
         YAMMROOT + '/tools/Medfichier-320/lib',
-        YAMMROOT + '/prerequisites/Metis_aster-510_aster/lib',
+        YAMMROOT + '/prerequisites/Metis_aster-20160/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
         YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
@@ -30,7 +30,7 @@ def configure(self):
     self.env.append_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Hdf5-1814/include',
         YAMMROOT + '/tools/Medfichier-320/include',
-        YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
+        YAMMROOT + '/prerequisites/Metis_aster-20160/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
         YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',
         YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include_seq',
