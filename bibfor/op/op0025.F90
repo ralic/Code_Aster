@@ -61,14 +61,13 @@ implicit none
     real(kind=8) :: tpsthe(6), tps1(4), deltat, deltam
     real(kind=8) :: theta, instap, theta_read
     aster_logical :: matcst, coecst, lostat, levol, asme, asms, finpas
-    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, force
-    character(len=1) :: creas
+    aster_logical :: reasrg, reasms, force
     character(len=8) :: result,  mesh
     character(len=19) :: maprec, solver, sddisc, list_load
     character(len=24) :: model, cara_elem
     character(len=24) :: nume_dof
     character(len=24) :: mediri, matass
-    character(len=24) :: cndirp, cnchci, time
+    character(len=24) :: cndiri, cncine, time
     character(len=24) :: mate
     character(len=24) :: vec2nd
     character(len=24) :: compor
@@ -93,8 +92,8 @@ implicit none
     matass      = '&&OP0025.MATR_ASSEM'
     result      = ' '
     mediri      = ' '
-    cndirp      = ' '
-    cnchci      = ' '
+    cndiri      = ' '
+    cncine      = ' '
     compor      = ' '
     sddisc      = '&&OP0025.SDDISC'
 !
@@ -120,17 +119,11 @@ implicit none
     call medith(model, list_load, mediri)
 !
 ! 2.6. ==> PILOTAGE DES REACTUALISATIONS DES ASSEMBLAGES
-!     REASVT : INSTANTS, DIRICHLET, TERMES DU TRANSITOIRE
-!     REASVC : CHARGEMENTS (SOURCES, FLUX, ... )
 !     REASRG : MATRICE DE RIGIDITE
 !     REASMS : MATRICE DE MASSE
-!     REASMT : MATRICE TANGENTE POUR LE NON-LINEAIRE (SANS OBJET ICI)
 !
-    reasvt = .true.
-    reasvc = .true.
     reasrg = .false.
     reasms = .false.
-    reasmt = .false.
 !
 !
     if (lostat) then
@@ -196,13 +189,12 @@ implicit none
         asme = .false.
     endif
 !
-! 3.2.2.2. ==> RESOLUTION
+! - Solve system
 !
     call ntreso(model , mate  , cara_elem, list_load, nume_dof,&
-                solver, lostat, time     , tpsthe   , reasvc  ,&
-                reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                vec2nd, matass, maprec   , cndirp   , cnchci  ,&
-                mediri, compor)
+                solver, lostat, time     , tpsthe   , reasrg  ,&
+                reasms, vec2nd, matass   , maprec   , cndiri  ,&
+                cncine, mediri, compor)
 !
     reasrg = .false.
     reasms = .false.

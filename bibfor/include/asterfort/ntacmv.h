@@ -15,30 +15,36 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 #include "asterf_types.h"
 !
 interface
-    subroutine ntreso(model , mate  , cara_elem, list_load, nume_dof,&
-                      solver, l_stat, time     , tpsthe   , reasrg  ,&
-                      reasms, cn2mbr, matass   , maprec   , cndiri  ,&
-                      cncine, mediri, compor)
+    subroutine ntacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                      l_stat, time  , tpsthe   , reasrg   , reasms  ,&
+                      vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
+                      cn2mbr, matass, cndiri   , cncine   , mediri  ,&
+                      compor)
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: nume_dof
-        character(len=19), intent(in) :: solver
         aster_logical, intent(in) :: l_stat
         character(len=24), intent(in) :: time
         real(kind=8), intent(in) :: tpsthe(6)
         aster_logical, intent(in) :: reasrg
         aster_logical, intent(in) :: reasms
+        character(len=24), intent(in) :: vtemp
+        character(len=24), intent(in) :: vhydr
+        character(len=19), intent(in) :: varc_curr
+        character(len=24), intent(in) :: dry_prev
+        character(len=24), intent(in) :: dry_curr
         character(len=24), intent(in) :: cn2mbr
         character(len=24), intent(in) :: matass
-        character(len=19), intent(in) :: maprec
         character(len=24), intent(in) :: cndiri
         character(len=24), intent(out) :: cncine
         character(len=24), intent(in) :: mediri
         character(len=24), intent(in) :: compor
-    end subroutine ntreso
+    end subroutine ntacmv
 end interface

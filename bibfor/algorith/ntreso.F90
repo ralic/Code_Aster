@@ -1,19 +1,19 @@
 subroutine ntreso(model , mate  , cara_elem, list_load, nume_dof,&
-                  solver, lostat, time     , tpsthe   , reasvc  ,&
-                  reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                  vec2nd, matass, maprec   , cndirp   , cnchci  ,&
-                  mediri, compor)
+                  solver, l_stat, time     , tpsthe   , reasrg  ,&
+                  reasms, cn2mbr, matass   , maprec   , cndiri  ,&
+                  cncine, mediri, compor)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/nxacmv.h"
+#include "asterfort/ntacmv.h"
 #include "asterfort/nxreso.h"
+#include "asterfort/preres.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,46 +28,73 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
+! person_in_charge: mickael.abbas at edf.fr
 !
-    real(kind=8) :: tpsthe(6)
-    character(len=1) :: creas
-    character(len=19) :: list_load, solver, maprec
-    character(len=24) :: model, mate, cara_elem, nume_dof
-    character(len=24) :: time, vec2nd, matass, cndirp, cnchci, compor
-    aster_logical :: reasvc, reasvt, reasmt, reasrg, reasms, lostat
+    character(len=24), intent(in) :: model
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=19), intent(in) :: list_load
+    character(len=24), intent(in) :: nume_dof
+    character(len=19), intent(in) :: solver
+    aster_logical, intent(in) :: l_stat
+    character(len=24), intent(in) :: time
+    real(kind=8), intent(in) :: tpsthe(6)
+    aster_logical, intent(in) :: reasrg
+    aster_logical, intent(in) :: reasms
+    character(len=24), intent(in) :: cn2mbr
+    character(len=24), intent(in) :: matass
+    character(len=19), intent(in) :: maprec
+    character(len=24), intent(in) :: cndiri
+    character(len=24), intent(out) :: cncine
+    character(len=24), intent(in) :: mediri
+    character(len=24), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!     THERMIQUE LINEAIRE - RESOLUTION
-!     *                    ****
-!     COMMANDE:  THER_LINEAIRE
+! THER_LINEAIRE - Algorithm
+!
+! Solve system
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  list_load        : name of datastructure for list of loads
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: chsol, varc_curr
-    character(len=24) :: mediri, vhydr, tmpchi, tmpchf, vec2ni
-    character(len=24) :: vtemp
+    character(len=24) :: dry_prev, dry_curr, vhydr, vtemp
+    integer :: ierr, ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
     chsol     = '&&NTRESO_SOLUTION'
     varc_curr = '&&NTRESO.CHVARC'
-    vtemp     ='&&NXLECTVAR_____'
+    vhydr     = ' '
+    vtemp     = '&&NXLECTVAR_____'
+    dry_prev  = ' '
+    dry_curr  = ' '
 !
 ! - Construct second member
 !
-    call nxacmv(model , mate  , cara_elem, list_load, nume_dof,&
-                solver, lostat, time     , tpsthe   , reasvc  ,&
-                reasvt, reasmt, reasrg   , reasms   , creas   ,&
-                vtemp , vhydr , varc_curr, tmpchi   , tmpchf  ,&
-                vec2nd, vec2ni, matass   , maprec   , cndirp  ,&
-                cnchci, mediri, compor)
+    call ntacmv(model , mate  , cara_elem, list_load, nume_dof,&
+                l_stat, time  , tpsthe   , reasrg   , reasms  ,&
+                vtemp , vhydr , varc_curr, dry_prev , dry_curr,&
+                cn2mbr, matass, cndiri   , cncine   , mediri  ,&
+                compor)
+!
+! - Factor
+!
+    if (reasrg .or. reasms) then
+        call preres(solver, 'V', ierr, maprec, matass,&
+                    ibid, -9999)
+    endif
 !
 ! - Solve linear system
 !
-    call nxreso(matass, maprec, solver, cnchci, vec2nd,&
+    call nxreso(matass, maprec, solver, cncine, cn2mbr,&
                 chsol)
 !
 ! - Save solution
