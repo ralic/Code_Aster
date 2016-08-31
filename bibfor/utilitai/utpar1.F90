@@ -6,7 +6,7 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
     character(len=32) :: lipara(nbpamx)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -331,8 +331,10 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
 !
 !
 !
-        elseif ((typsd.eq.'MODE_MECA').or. (typsd.eq.'MODE_MECA_C').or.&
-    (typsd.eq.'MODE_GENE').or. (typsd.eq.'MODE_ACOU')) then
+    elseif ((typsd.eq.'MODE_MECA').or.&
+            (typsd.eq.'MODE_MECA_C').or.&
+            (typsd.eq.'MODE_GENE').or.&
+            (typsd.eq.'MODE_ACOU')) then
 !     --------------------------------
         ico=ico+1
         lipara(ico)='AMOR_GENE#P#R'
@@ -407,7 +409,20 @@ subroutine utpar1(typsd, nbpamx, lipara, nbpara)
         nbpara=ico
         ASSERT(nbpara.le.nbpamx)
 !
-!
+    else if (typsd.eq.'MODE_EMPI') then
+!     --------------------------------
+        ico=ico+1
+        lipara(ico)='FREQ#A#R'
+        ico=ico+1
+        lipara(ico)='MODELE#P#K8'
+        ico=ico+1
+        lipara(ico)='NUME_MODE#A#I'
+        ico=ico+1
+        lipara(ico)='NOM_CHAM#P#K24'
+        ico=ico+1
+        lipara(ico)='NUME_PLAN#A#I'
+        nbpara=ico
+        ASSERT(nbpara.le.nbpamx)
 !
     else if (typsd.eq.'MULT_ELAS') then
 !     --------------------------------

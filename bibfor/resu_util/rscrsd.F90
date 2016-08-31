@@ -50,6 +50,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     character(len=16) :: types2
     character(len=19) :: noms2
 !     ------------------------------------------------------------------
+!                      C H A M P _ T H E R M O M E C A (ROM)
+!     ------------------------------------------------------------------
+    integer, parameter :: ncthme = 4
+
+!     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E
 !     ------------------------------------------------------------------
     parameter (ncmec1=35)
@@ -79,6 +84,12 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     ------------------------------------------------------------------
     parameter (ncacou=5)
     character(len=16) :: chacou(ncacou)
+!     ------------------------------------------------------------------
+!                      C H A M P _ T H E R M O M E C A (ROM)
+!     ------------------------------------------------------------------
+    character(len=16), parameter :: chthme(ncthme) = (/&
+            'TEMP     ', 'DEPL     ', 'FLUX_NOEU', 'SIEF_NOEU'/)
+
 !     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E
 !     ------------------------------------------------------------------
@@ -361,9 +372,11 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         goto 99
 !
 !     ------------------------------------------------------------------
-        elseif (types2.eq.'MODE_MECA' .or. types2.eq.'MODE_MECA_C' .or.&
-     &        types2.eq.'MODE_GENE' .or. types2.eq.'MODE_ACOU' .or.&
-     &        types2.eq.'DYNAMIQUE' ) then
+        elseif (types2 .eq. 'MODE_MECA'   .or.&
+                types2 .eq. 'MODE_MECA_C' .or.&
+                types2 .eq. 'MODE_GENE'   .or.&
+                types2 .eq. 'MODE_ACOU'   .or.&
+                types2 .eq. 'DYNAMIQUE' ) then
 !
         if (types2 .eq. 'MODE_MECA') then
             call jeecra(noms2//'.DESC', 'DOCU', cval='MOME')
@@ -409,6 +422,16 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
         call jeecra(noms2//'.DESC', 'DOCU', cval='MOSB')
         do i = 1, nbcham
             call jecroc(jexnom(noms2//'.DESC', chmeca(i)))
+        enddo
+        goto 99
+
+    elseif (types2 .eq. 'MODE_EMPI') then
+!
+        nbcham=ncthme
+        call jeecra(noms2//'.DESC', 'NOMMAX', nbcham)
+        call jeecra(noms2//'.DESC', 'DOCU', cval='MOEM')
+        do i = 1, nbcham
+            call jecroc(jexnom(noms2//'.DESC', chthme(i)))
         enddo
         goto 99
 !
