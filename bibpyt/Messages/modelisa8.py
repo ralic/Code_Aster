@@ -69,6 +69,34 @@ cata_msg = {
  Le groupe de fibres %(k1)s n'a pas été défini dans DEFI_GEOM_FIBRE
 """),
 
+
+
+    9 : _(u"""Vérification du maillage.
+"""),
+
+    10 : _(u"""Le noeud %(k1)s connecte plus de 200 mailles.
+"""),
+
+    11 : _(u"""Le noeud %(k1)s est orphelin.
+"""),
+
+    12 : _(u"""La maille %(k1)s est topologiquement dégénérée : noeud répeté dans la connectivité.
+    Type de maille : %(k2)s
+"""),
+
+    13 : _(u"""Les mailles %(k1)s et %(k2)s sont doubles (même noeuds en support).
+    Type de maille : %(k3)s
+"""),
+
+    14 : _(u"""La maille POI1 %(k1)s est incluse dans une autre.
+"""),
+
+    15 : _(u"""La maille %(k1)s possède des noeuds confondus géométriquement.
+    dm/dp = %(r1)f, type de maille : %(k2)s
+"""),
+
+
+
     17 : _(u"""
  La première colonne de la table %(k1)s doit contenir des chaînes K8 ou K24.
 """),

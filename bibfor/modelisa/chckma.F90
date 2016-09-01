@@ -58,9 +58,9 @@ subroutine chckma(nomu, dtol)
     integer :: jdrvlc, jcncin, numail, imail
     integer :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
     integer :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
-    character(len=8) :: noxa, noxb, tyma
+    character(len=8) :: noxa, noxb, tyma, mess_k8(3)
     character(len=24) :: ncncin
-    real(kind=8) :: dm, dp, aplat, drap
+    real(kind=8) :: dm, dp, aplat, drap, mess_r(1)
     real(kind=8) :: xa, xb, ya, yb, za, zb
     character(len=24) :: cooval, connex, nommai, nomnoe, nsolo, mdoubl
     integer :: nbmail, nbnoeu
@@ -102,16 +102,15 @@ subroutine chckma(nomu, dtol)
     knso=0
     alarme = .false.
     nb200=0
-    write(ifm,*) ' ====== VERIFICATION DU MAILLAGE ======'
-    write(ifm,*)
+    call utmess('I', 'MODELISA8_9')
     do ja = 1, nbnoeu
         iadr = zi(jdrvlc + ja-1)
         nbm = zi(jdrvlc + ja+1-1) - zi(jdrvlc + ja-1)
         if (nbm .gt. 200) then
             nb200=1
             call jenuno(jexnum(nomnoe, ja), noxa)
-            write(ifm,*) 'NOEUD CONNECTANT PLUS DE 200 MAILLES: ',&
-            noxa
+            mess_k8(1) = noxa
+            call utmess('A', 'MODELISA8_10', nk = 1, valk = mess_k8)
         endif
         do imail = 1, nbm
             numail = zi(jcncin+iadr-1+imail-1)
@@ -119,7 +118,8 @@ subroutine chckma(nomu, dtol)
                 knso=knso+1
                 zi(insolo-1+knso)= ja
                 call jenuno(jexnum(nomnoe, ja), noxa)
-                write(ifm,*) ' LE NOEUD  '//noxa//' EST ORPHELIN'
+                mess_k8(1) = noxa
+                call utmess('A', 'MODELISA8_11', nk = 1, valk = mess_k8)
                 alarme=.true.
             endif
         end do
@@ -172,10 +172,9 @@ subroutine chckma(nomu, dtol)
             call jenuno(jexnum(nommai, ima), noxa)
             iadtyp=iatyma-1+ima
             call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
-            write(ifm,*)
-            write(ifm,*) ' LA MAILLE ',noxa,'EST TOPOLOGIQUEMENT '//&
-            'DEGENEREE : NOEUD REPETE DANS LA CONNECTIVITE'
-            write(ifm,*) ' TYPE DE LA MAILLE: ',tyma
+            mess_k8(1) = noxa
+            mess_k8(2) = tyma
+            call utmess('A', 'MODELISA8_12', nk = 2, valk = mess_k8)
         endif
         nbm0 = i
 !
@@ -210,9 +209,10 @@ subroutine chckma(nomu, dtol)
                     call jenuno(jexnum(nommai, tabma(i)), noxb)
                     iadtyp=iatyma-1+ima
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
-                    write(ifm,*) ' LES MAILLES '//noxa//' ET '//noxb//&
-                    ' ' //' SONT DOUBLES (MEME NOEUDS EN SUPPORT)'
-                    write(ifm,*) ' TYPE DES MAILLES:',tyma
+                    mess_k8(1) = noxa
+                    mess_k8(2) = noxb
+                    mess_k8(3) = tyma
+                    call utmess('A', 'MODELISA8_13', nk = 3, valk = mess_k8)
                     alarme=.true.
                 endif
 !
@@ -221,7 +221,8 @@ subroutine chckma(nomu, dtol)
 !
         else if (nbm0.gt.1) then
             call jenuno(jexnum(nommai, ima), noxa)
-            write(ifm,*) ' MAILLE POI1 '//noxa//'INCLUSE DANS UNE AUTRE'
+            mess_k8(1) = noxa
+            call utmess('A', 'MODELISA8_14', nk = 1, valk = mess_k8)
         endif
 !
  99     continue
@@ -266,11 +267,11 @@ subroutine chckma(nomu, dtol)
                     call jenuno(jexnum(nommai, ima), noxa)
                     iadtyp=iatyma-1+ima
                     call jenuno(jexnum('&CATA.TM.NOMTM', zi(iadtyp)), tyma)
-                    write(ifm,*)
-                    write(ifm,*) ' LA MAILLE POSSEDE DES NOEUDS CONFONDUS',&
-     &            ' GEOMETRIQUEMENT '
-                    write(ifm,*) ' MAILLE:',noxa,' DM/DP=',drap,&
-                    ' TYPE:',tyma
+                    mess_k8(1) = noxa
+                    mess_k8(2) = tyma
+                    mess_r(1) = drap
+                    call utmess('A', 'MODELISA8_15', nk = 2, valk = mess_k8,&
+                                nr = 1, valr = mess_r)
                 endif
             endif
 !
