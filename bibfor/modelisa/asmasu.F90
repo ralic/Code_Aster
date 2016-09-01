@@ -2,6 +2,7 @@ subroutine asmasu(ma1, ma2, mag)
     implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
+#include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -22,7 +23,7 @@ subroutine asmasu(ma1, ma2, mag)
 !
     character(len=8) :: ma1, ma2, mag
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -97,16 +98,29 @@ subroutine asmasu(ma1, ma2, mag)
     if (nbma .gt. 0) then
         call jecreo(mag//'.NOMMAI', 'G N K8')
         call jeecra(mag//'.NOMMAI', 'NOMMAX', nbma)
-        do 21,i=1,nbm1
-        call codent(i, 'G', kind)
-        noma='M'//kind
-        call jecroc(jexnom(mag//'.NOMMAI', noma))
-21      continue
-        do 22,i=1,nbm2
-        call codent(nbm1+i, 'G', kind)
-        noma='M'//kind
-        call jecroc(jexnom(mag//'.NOMMAI', noma))
-22      continue
+        if (nbm1+nbm2.ge.10000000) then
+            do i=1,nbm1
+                call codlet(i, 'G', kind)
+                noma='M'//kind
+                call jecroc(jexnom(mag//'.NOMMAI', noma))
+            enddo
+            do i=1,nbm2
+                call codlet(nbm1+i, 'G', kind)
+                noma='M'//kind
+                call jecroc(jexnom(mag//'.NOMMAI', noma))
+            enddo
+        else
+            do i=1,nbm1
+                call codent(i, 'G', kind)
+                noma='M'//kind
+                call jecroc(jexnom(mag//'.NOMMAI', noma))
+            enddo
+            do i=1,nbm2
+                call codent(nbm1+i, 'G', kind)
+                noma='M'//kind
+                call jecroc(jexnom(mag//'.NOMMAI', noma))
+            enddo
+        endif
     endif
 !
 !     --OBJET .NOMNOE:
@@ -114,16 +128,29 @@ subroutine asmasu(ma1, ma2, mag)
     if (nbno .gt. 0) then
         call jecreo(mag//'.NOMNOE', 'G N K8')
         call jeecra(mag//'.NOMNOE', 'NOMMAX', nbno)
-        do 31,i=1,nbn1
-        call codent(i, 'G', kind)
-        nono='N'//kind
-        call jecroc(jexnom(mag//'.NOMNOE', nono))
-31      continue
-        do 32,i=1,nbn2
-        call codent(nbn1+i, 'G', kind)
-        nono='N'//kind
-        call jecroc(jexnom(mag//'.NOMNOE', nono))
-32      continue
+        if (nbn1+nbn2.ge.10000000) then
+            do i=1,nbn1
+                call codlet(i, 'G', kind)
+                nono='N'//kind
+                call jecroc(jexnom(mag//'.NOMNOE', nono))
+            enddo
+            do i=1,nbn2
+                call codlet(nbn1+i, 'G', kind)
+                nono='N'//kind
+                call jecroc(jexnom(mag//'.NOMNOE', nono))
+            enddo
+        else
+            do i=1,nbn1
+                call codent(i, 'G', kind)
+                nono='N'//kind
+                call jecroc(jexnom(mag//'.NOMNOE', nono))
+            enddo
+            do i=1,nbn2
+                call codent(nbn1+i, 'G', kind)
+                nono='N'//kind
+                call jecroc(jexnom(mag//'.NOMNOE', nono))
+            enddo
+        endif
     endif
 !
 !
