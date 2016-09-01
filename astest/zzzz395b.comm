@@ -1,0 +1,99 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#
+
+# Test for DEFI_DOMAINE_REDUIT
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+
+# Read the mesh
+mesh=LIRE_MAILLAGE(FORMAT='MED',);
+
+# Thermic model
+model=AFFE_MODELE(MAILLAGE=mesh,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='3D',),);
+
+base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
+                 FORMAT     = 'MED',
+                 MODELE     = model,
+                 UNITE      = 70,
+                 FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__TEMP',
+                                NOM_CHAM     = 'TEMP',),
+                 TOUT_ORDRE = 'OUI',);
+
+
+base_d=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
+                 FORMAT     = 'MED',
+                 MODELE     = model,
+                 UNITE      = 71,
+                 FORMAT_MED = _F(NOM_CHAM_MED = 'base_d__FLUX_NOEU',
+                                 NOM_CHAM     = 'FLUX_NOEU',),
+                 TOUT_ORDRE = 'OUI',);
+
+TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
+                        CARA        = 'NB_GROUP_MA',
+                        REFERENCE   = 'ANALYTIQUE',
+                        CRITERE     = 'ABSOLU',
+                        VALE_REFE_I = 2,
+                        VALE_CALC_I = 2,)
+          )
+
+mesh=DEFI_DOMAINE_REDUIT(reuse=mesh,INFO=2,
+            BASE_PRIMAL=base_p,
+            BASE_DUAL=base_d,
+            NOM_DOMAINE='RID',
+            NOM_INTERFACE='INF',);
+
+IMPR_RESU(FORMAT='MED', UNITE = 80, RESU=_F(MAILLAGE = mesh))
+
+TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
+                        CARA        = 'NB_GROUP_MA',
+                        REFERENCE   = 'ANALYTIQUE',
+                        CRITERE     = 'ABSOLU',
+                        VALE_REFE_I = 3,
+                        VALE_CALC_I = 3)
+          )
+
+TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
+                        CARA        = 'NB_GROUP_NO',
+                        REFERENCE   = 'ANALYTIQUE',
+                        CRITERE     = 'ABSOLU',
+                        VALE_REFE_I = 1,
+                        VALE_CALC_I = 1,)
+          )
+
+TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
+                        CARA        = 'NB_MA_GROUP_MA',
+                        NOM_GROUP_MA= 'RID',
+                        REFERENCE   = 'ANALYTIQUE',
+                        CRITERE     = 'ABSOLU',
+                        VALE_REFE_I = 65,
+                        VALE_CALC_I = 65,)
+          )
+
+TEST_RESU(MAILLAGE = _F(MAILLAGE    = mesh,
+                        CARA        = 'NB_NO_GROUP_NO',
+                        NOM_GROUP_NO= 'INF',
+                        REFERENCE   = 'ANALYTIQUE',
+                        CRITERE     = 'ABSOLU',
+                        VALE_REFE_I = 26,
+                        VALE_CALC_I = 26,)
+          )
+
+FIN();
