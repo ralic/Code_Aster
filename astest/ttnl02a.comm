@@ -113,6 +113,8 @@ TEMPE=THER_NON_LINE(    MODELE=MOTH,
                             NOM_CMP='TEMP',
                             TOUT='OUI',
                             EVAL_CHAM='MAX'),
+             SOLVEUR=_F(METHODE='PETSC',
+                        MATR_DISTRIBUEE='OUI')
 
              )
 
