@@ -142,13 +142,22 @@ ONDES=AFFE_CHAR_MECA_F(MODELE=MODELE,
                       );
                          
 
-ONDEP=AFFE_CHAR_MECA_F(MODELE=MODELE,
+ONDEP1=AFFE_CHAR_MECA_F(MODELE=MODELE,
                        ONDE_PLANE=_F(DIRECTION=(0.0,-1.0,0),
                                      TYPE_ONDE='P',
                                      FONC_SIGNAL=d_sinus,
                                      DIST=-200.,
                                      DEPL_IMPO=sinus,
-                                     GROUP_MA='FOND',
+                                     GROUP_MA='FOND_SS',
+                                     ),);
+
+ONDEP2=AFFE_CHAR_MECA_F(MODELE=MODELE,
+                       ONDE_PLANE=_F(DIRECTION=(0.0,-1.0,0),
+                                     TYPE_ONDE='P',
+                                     FONC_SIGNAL=d_sinus,
+                                     DIST=-200.,
+                                     DEPL_IMPO=sinus,
+                                     GROUP_MA=('FOND_RG','FOND_RD',),
                                      ),);
 
 # 3 Calculs harmoniques pour les deux directions
@@ -170,7 +179,8 @@ BlancP=DYNA_NON_LINE(
                               REAC_INCR = 0,
                               REAC_ITER = 0),
                   INCREMENT=_F(LIST_INST=LINST,),
-                  EXCIT=_F(CHARGE=ONDEP,),
+                  EXCIT=(_F(CHARGE=ONDEP1,),
+                         _F(CHARGE=ONDEP2,),), 
                   );
 
 LINST2=DEFI_LIST_REEL(DEBUT=0.5,

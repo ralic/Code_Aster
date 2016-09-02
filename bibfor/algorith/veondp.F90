@@ -1,7 +1,7 @@
 subroutine veondp(modele, mate, sddyna, temps, vecelz)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
 #include "asterfort/dbgcal.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
+#include "asterfort/gcncon.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -71,6 +72,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
     integer :: nchond
     character(len=19) :: chondp
     aster_logical :: debug
+    character(len=8) :: newnom
     character(len=16) :: option
     integer :: ifmdbg, nivdbg
     character(len=8), pointer :: lgrf(:) => null()
@@ -116,7 +118,7 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
 ! --- CHAMPS DE SORTIE
 !
     lpaout(1) = 'PVECTUR'
-    lchout(1) = vecele
+    lchout(1) = vecele(1:8)//'.???????'
 !
     call detrsd('VECT_ELEM', vecele)
     call memare('V', vecele, modele(1:8), ' ', ' ',&
@@ -131,6 +133,8 @@ subroutine veondp(modele, mate, sddyna, temps, vecelz)
         if (iret .ne. 0 .and. ibid .ne. 0) then
             lchin(4) = zk8(iondp+i-1)//'.CHME.ONDPL'
             lchin(5) = zk8(iondp+i-1)//'.CHME.ONDPR'
+            call gcncon('.', newnom)
+            lchout(1) (10:16) = newnom(2:8)
 !
             call calcul('S', option, ligrmo, nbin, lchin,&
                         lpain, nbout, lchout, lpaout, 'V',&
