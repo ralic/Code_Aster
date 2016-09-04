@@ -23,7 +23,7 @@ cata_msg = {
 
     2 : _(u"""Sauvegarde des %(i1)d modes empiriques dans la base empirique %(k1)s."""),
 
-    4 : _(u"""Comptage du nombre de modes empiriques à sélectionner"""), 
+    4 : _(u"""Comptage du nombre de modes empiriques à sélectionner."""), 
 
     5 : _(u"""On a %(i1)d valeurs singulières comprises entre %(r1)13.6G et %(r2)13.6G . Avec les paramètres, on a retenu %(i2)d modes empiriques."""),   
 
@@ -47,10 +47,36 @@ cata_msg = {
 
    20 : _(u"""On ne peut utiliser que des maillages tridimensionnels."""),
  
-   21 : _(u"""Le champ de type %(k1)s ne doit contenir que %(i1)d composante"""),
+   21 : _(u"""Le champ de type %(k1)s ne doit contenir que %(i1)d composante."""),
  
    22 : _(u"""Le champ contient des conditions limites dualisés (AFFE_CHAR_THER ou AFFE_CHAR_MECA). 
               Ce n'est pas possible avec cet opérateur, utilisez AFFE_CHAR_CINE"""),
 
-   23 : _(u"""Le champ contient une composante au noeud %(k1)s qui n'est pas utilisable avec cet opérateur"""),
+   23 : _(u"""Le champ contient une composante au noeud %(k1)s qui n'est pas utilisable avec cet opérateur."""),
+
+   30 : _(u"""Vérification des paramètres pour le calcul non-linéaire avec réduction de modèle."""),
+
+   31 : _(u"""La base empirique ne repose pas sur le même maillage sur le calcul non-linéaire."""),
+
+   32 : _(u"""La base empirique n'est pas construite sur le bon type de champ."""),
+
+   33 : _(u"""Le groupe de noeuds %(k1)s ne fait pas parti du maillage."""),
+
+   34 : _(u"""La recherche linéaire est interdite avec la réduction de modèle."""),
+
+   35 : _(u"""La base empirique est vide."""),
+
+   36 : _(u"""Création de la structure de données pour réaliser le calcul non-linéaire avec réduction de modèle."""),
+
+   37 : _(u"""Initialisations pour réaliser le calcul non-linéaire avec réduction de modèle."""),
+
+   38 : _(u"""Création de la table pour sauver les coordonnées réduites pour le calcul non-linéaire avec réduction de modèle."""),
+
+   39 : _(u"""Sauvegarde des coordonnées réduites pour le calcul non-linéaire avec réduction de modèle."""),
+
+   40 : _(u"""Résolution du problème réduit."""),
+
+   41 : _(u"""Lecture des paramètres pour réaliser le calcul non-linéaire avec réduction de modèle."""),
+
+   42 : _(u"""Suppression de la structure de données pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 }
