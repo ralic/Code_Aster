@@ -1,6 +1,7 @@
-subroutine nxini0(ds_algopara, ds_inout)
+subroutine nxini0(ds_algopara, ds_inout, ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -8,6 +9,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/CreateAlgoParaDS.h"
 #include "asterfort/CreateInOutDS.h"
+#include "asterfort/romAlgoNLDSCreate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +31,7 @@ implicit none
 !
     type(NL_DS_AlgoPara), intent(out) :: ds_algopara
     type(NL_DS_InOut), intent(out) :: ds_inout
+    type(ROM_DS_AlgoPara), intent(out) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,6 +43,7 @@ implicit none
 !
 ! Out ds_algopara      : datastructure for algorithm parameters
 ! Out ds_inout         : datastructure for input/output management
+! Out ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,5 +63,9 @@ implicit none
 ! - Create algorithm parameters datastructure
 !
     call CreateAlgoParaDS(ds_algopara)
+!
+! - Create ROM parameters datastructure
+!
+    call romAlgoNLDSCreate(ds_algorom)
 !
 end subroutine

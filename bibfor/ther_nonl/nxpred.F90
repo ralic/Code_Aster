@@ -1,8 +1,11 @@
-subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
-                  solver, lostat   , tpsthe   , time     , matass   ,&
-                  lonch , maprec   , varc_curr, temp_prev, temp_iter,&
-                  cn2mbr, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
-                  compor, cndirp   , cnchci   , vec2nd   , vec2ni   )
+subroutine nxpred(model     , mate     , cara_elem, list_load, nume_dof ,&
+                  solver    , lostat   , tpsthe   , time     , matass   ,&
+                  lonch     , maprec   , varc_curr, temp_prev, temp_iter,&
+                  cn2mbr    , hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                  compor    , cndirp   , cnchci   , vec2nd   , vec2ni   ,&
+                  ds_algorom)
+!
+use ROM_Datastructure_type
 !
 implicit none
 !
@@ -11,9 +14,11 @@ implicit none
 #include "asterfort/ascova.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/nxreso.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/nxreso.h"
+#include "asterfort/romAlgoNLReduCoorInit.h"
+#include "asterfort/romAlgoNLSystemSolve.h"
 #include "asterfort/resoud.h"
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
@@ -54,6 +59,7 @@ implicit none
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     aster_logical :: lostat
     character(len=24), intent(in) :: cn2mbr
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,6 +115,12 @@ implicit none
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr = v_vec2ni)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', vr = v_cndirp)
 !
+! - Initializations of reduced coordinates (ROM)
+!
+    if (ds_algorom%l_rom) then
+        call romAlgoNLReduCoorInit(ds_algorom)
+    endif
+!
     if (lostat) then
 !
 !=======================================================================
@@ -152,8 +164,12 @@ implicit none
 !
 ! ----- Solve linear system
 !
-        call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
-                    chsol)
+        if (ds_algorom%l_rom) then
+            call romAlgoNLSystemSolve(matass, cn2mbr, ds_algorom, chsol)
+        else
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                        chsol)
+        endif
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !
@@ -171,8 +187,14 @@ implicit none
 !
 ! ----- Solve linear system
 !
-        call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
-                    chsol)
+        if (ds_algorom%l_rom) then
+            call copisd('CHAMP_GD', 'V', temp_prev, chsol)
+            call romAlgoNLSystemSolve(matass, cn2mbr, ds_algorom, chsol)
+        else
+            call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                        chsol)
+        endif
+
 !
 ! --- RECOPIE DANS temp_iter DU CHAMP SOLUTION CHSOL
 !

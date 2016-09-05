@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -26,7 +26,8 @@ interface
                       vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                       hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
                       cnresi   , ther_crit_i, ther_crit_r, reasma   , testr    ,&
-                      testm)
+                      testm    , ds_algorom)
+        use ROM_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -58,5 +59,6 @@ interface
         aster_logical :: reasma
         real(kind=8) :: testr
         real(kind=8) :: testm
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     end subroutine nxnewt
 end interface

@@ -21,10 +21,11 @@
 !
 interface
     subroutine nxacmv(model      , mate     , cara_elem, list_load, nume_dof   ,&
-                      solver     , l_stat   , time     , tpsthe   , vtemp      ,&
+                      solver     , l_stat   , time     , tpsthe   , temp_iter  ,&
                       vhydr      , varc_curr, dry_prev , dry_curr , cn2mbr_stat,&
                       cn2mbr_tran, matass   , maprec   , cndiri   , cncine     ,&
-                      mediri     , compor)
+                      mediri     , compor   , ds_algorom_)
+        use Rom_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -35,7 +36,7 @@ interface
         character(len=19), intent(in) :: varc_curr
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: tpsthe(6)
-        character(len=24), intent(in) :: vtemp
+        character(len=24), intent(in) :: temp_iter
         character(len=24), intent(in) :: vhydr
         character(len=24), intent(in) :: dry_prev
         character(len=24), intent(in) :: dry_curr
@@ -47,5 +48,6 @@ interface
         character(len=24), intent(out) :: cncine
         character(len=24), intent(in) :: mediri
         character(len=24), intent(in) :: compor
+        type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     end subroutine nxacmv
 end interface

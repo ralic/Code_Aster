@@ -1,7 +1,9 @@
-subroutine nxlect(result     , model     , ther_crit_i, ther_crit_r, ds_inout,&
-                  ds_algopara, result_dry, compor     , l_dry      , l_line_search)
+subroutine nxlect(result       , model     , ther_crit_i, ther_crit_r, ds_inout,&
+                  ds_algopara  , ds_algorom, result_dry , compor     , l_dry   ,&
+                  l_line_search)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -36,6 +38,7 @@ implicit none
     real(kind=8), intent(inout) :: ther_crit_r(*)
     type(NL_DS_InOut), intent(inout) :: ds_inout
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     character(len=8), intent(out) :: result_dry
     character(len=24), intent(out) :: compor
     aster_logical, intent(out) :: l_dry
@@ -55,6 +58,7 @@ implicit none
 ! IO  ther_crit_r      : criteria for algorithm (real)
 ! IO  ds_inout         : datastructure for input/output management
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_algorom       : datastructure for ROM parameters
 ! Out result_dry       : name of datastructure for results (drying)
 ! Out compor           : name of <CARTE> COMPOR
 ! Out l_dry            : .true. if drying (concrete)
@@ -71,7 +75,7 @@ implicit none
 !
 ! - Read parameters for algorithm management
 !
-    call nxdomt(ds_algopara)
+    call nxdomt(ds_algopara, ds_algorom)
 !
 ! - Read parameters for drying
 !

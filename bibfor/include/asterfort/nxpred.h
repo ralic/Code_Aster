@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,11 +20,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxpred(model , mate     , cara_elem, list_load, nume_dof ,&
-                      solver, lostat   , tpsthe   , time     , matass   ,&
-                      lonch , maprec   , varc_curr, temp_prev, temp_iter,&
-                      cn2mbr, hydr_prev, hydr_curr, dry_prev , dry_curr ,&
-                      compor, cndirp   , cnchci   , vec2nd   , vec2ni   )
+    subroutine nxpred(model     , mate     , cara_elem, list_load, nume_dof ,&
+                      solver    , lostat   , tpsthe   , time     , matass   ,&
+                      lonch     , maprec   , varc_curr, temp_prev, temp_iter,&
+                      cn2mbr    , hydr_prev, hydr_curr, dry_prev , dry_curr ,&
+                      compor    , cndirp   , cnchci   , vec2nd   , vec2ni   ,&
+                      ds_algorom)
+        use Rom_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -50,5 +52,6 @@ interface
         character(len=24), intent(in) :: cn2mbr
         character(len=24) :: vec2nd
         character(len=24) :: vec2ni
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     end subroutine nxpred
 end interface

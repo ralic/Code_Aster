@@ -1,8 +1,10 @@
 subroutine nxacmv(model      , mate     , cara_elem, list_load, nume_dof   ,&
-                  solver     , l_stat   , time     , tpsthe   , vtemp      ,&
+                  solver     , l_stat   , time     , tpsthe   , temp_iter  ,&
                   vhydr      , varc_curr, dry_prev , dry_curr , cn2mbr_stat,&
                   cn2mbr_tran, matass   , maprec   , cndiri   , cncine     ,&
-                  mediri     , compor)
+                  mediri     , compor   , ds_algorom_)
+!
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -25,6 +27,7 @@ implicit none
 #include "asterfort/memsth.h"
 #include "asterfort/mergth.h"
 #include "asterfort/merxth.h"
+#include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
 #include "asterfort/vechnl.h"
 #include "asterfort/vechth.h"
@@ -61,7 +64,7 @@ implicit none
     character(len=19), intent(in) :: varc_curr
     aster_logical, intent(in) :: l_stat
     real(kind=8), intent(in) :: tpsthe(6)
-    character(len=24), intent(in) :: vtemp
+    character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vhydr
     character(len=24), intent(in) :: dry_prev
     character(len=24), intent(in) :: dry_curr
@@ -73,6 +76,7 @@ implicit none
     character(len=24), intent(out) :: cncine
     character(len=24), intent(in) :: mediri
     character(len=24), intent(in) :: compor
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,9 +169,9 @@ implicit none
 !
     if (.not.l_stat) then
         option = 'CHAR_THER_EVOLNI'
-        call vetnth(option, model , cara_elem, mate    , time ,&
-                    vtemp , compor, dry_prev , dry_curr, vhydr,&
-                    vetntp, vetnti, varc_curr)
+        call vetnth(option   , model , cara_elem, mate    , time ,&
+                    temp_iter, compor, dry_prev , dry_curr, vhydr,&
+                    vetntp   , vetnti, varc_curr)
         call asasve(vetntp, nume_dof, 'R', vatntp)
         call jeveuo(vatntp, 'L', jtn)
         cntntp = zk24(jtn)
@@ -179,7 +183,7 @@ implicit none
 ! - Compute Neumann loads (second member) - Linear part
 !
     call vechth('STAT', model    , lload_name, lload_info, cara_elem,&
-                mate  , time_curr, time      , vtemp     , vechtp,&
+                mate  , time_curr, time      , temp_iter , vechtp   ,&
                 varc_curr_ = varc_curr)
     call asasve(vechtp, nume_dof, 'R', vachtp)
     call ascova('D', vachtp, lload_func, 'INST', tpsthe(1),&
@@ -190,8 +194,8 @@ implicit none
 !
 ! - Compute Neumann loads (second member) - Nonlinear part
 !
-    call vechnl(model, lload_name, lload_info, cara_elem, time,&
-                vtemp, vechtn)
+    call vechnl(model    , lload_name, lload_info, cara_elem, time,&
+                temp_iter, vechtn)
     call asasve(vechtn, nume_dof, 'R', vachtn)
     call ascova('D', vachtn, ' ', 'INST', tpsthe(1),&
                 'R', cnchnl)
@@ -234,7 +238,7 @@ implicit none
 ! - Tangent matrix (non-linear) - Volumic and surfacic terms
 !
     call merxth(model    , lload_name, lload_info, cara_elem, mate     ,&
-                time_curr, time      , vtemp     , compor   , varc_curr,&
+                time_curr, time      , temp_iter , compor   , varc_curr,&
                 dry_prev , dry_curr  , merigi)
     nb_matr = 0
     call jeexin(merigi(1:8)//'           .RELR', iret)
@@ -266,8 +270,17 @@ implicit none
 !
 ! - Factorization of matrix
 !
-    call preres(solver, 'V', ierr, maprec, matass,&
-                ibid, -9999)
+    if (present(ds_algorom_)) then
+        if (ds_algorom_%l_rom) then
+            call mtdscr(matass)
+        else
+            call preres(solver, 'V', ierr, maprec, matass,&
+                    ibid, -9999)
+        endif
+    else
+        call preres(solver, 'V', ierr, maprec, matass,&
+                    ibid, -9999)
+    endif
 !
     call jedema()
 end subroutine

@@ -1,9 +1,10 @@
-subroutine nxinit(model   , mate    , cara_elem, compor, list_load,&
-                  para    , vhydr   , sdobse   , sddisc, sdcrit   ,&
-                  ds_inout, nume_dof, l_stat   , l_evol, mesh     ,&
-                  time    )
+subroutine nxinit(model , mate    , cara_elem , compor       , list_load,&
+                  para  , nume_dof, l_stat    , l_evol       , l_rom    ,&
+                  sddisc, ds_inout, vhydr     , sdobse       , mesh     ,&
+                  sdcrit, time    , ds_algorom, l_line_search)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -19,6 +20,7 @@ implicit none
 #include "asterfort/ntnume.h"
 #include "asterfort/tiinit.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romAlgoNLInit.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -44,16 +46,19 @@ implicit none
     character(len=24), intent(in) :: compor
     character(len=19), intent(in) :: list_load
     real(kind=8), intent(in) :: para(*)
-    character(len=24), intent(in) :: vhydr
-    character(len=19), intent(out) :: sdobse
-    character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: sdcrit
-    type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=24), intent(out) :: nume_dof
     aster_logical, intent(out) :: l_stat
     aster_logical, intent(out) :: l_evol
+    aster_logical, intent(out) :: l_rom
+    character(len=19), intent(in) :: sddisc
+    type(NL_DS_InOut), intent(inout) :: ds_inout
+    character(len=24), intent(in) :: vhydr
+    character(len=19), intent(out) :: sdobse
     character(len=8), intent(out) :: mesh
+    character(len=19), intent(in) :: sdcrit
     character(len=24), intent(out) :: time
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    aster_logical, intent(in) :: l_line_search
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,6 +86,8 @@ implicit none
 ! Out l_evol           : .true. if transient
 ! Out mesh             : name of mesh
 ! Out time             : name of field to save time parameters
+! IO  ds_algorom       : datastructure for ROM parameters
+! In  l_line_search    : .true. if line search
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,6 +98,7 @@ implicit none
 !
     l_stat = .false._1
     l_evol = .false._1
+    l_rom  = ds_algorom%l_rom
     result = ds_inout%result
     time   = result(1:8)//'.CHTPS'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
@@ -110,11 +118,18 @@ implicit none
 ! - Create input/output datastructure
 !
     call ntetcr(nume_dof , ds_inout,&
-                list_load, compor, vhydr, hydr_init)
+                list_load, compor  , vhydr, hydr_init)
 !
 ! - Read initial state
 !
     call ntdoet(model, nume_dof, l_stat, ds_inout)
+!
+! - Initialization for reduced method
+!
+    if (l_rom) then
+        call romAlgoNLInit('THER'       , mesh, nume_dof, result, ds_algorom,&
+                           l_line_search)
+    endif
 !
 ! - Time discretization and storing datastructures
 !
@@ -127,7 +142,7 @@ implicit none
 !
 ! - Prepare storing
 !
-    call nxnoli(model, mate  , cara_elem, l_stat  , l_evol,&
-                para , sddisc, sdcrit   , ds_inout)
+    call nxnoli(model, mate  , cara_elem, l_stat  , l_evol    ,&
+                para , sddisc, sdcrit   , ds_inout, ds_algorom)
 !
 end subroutine

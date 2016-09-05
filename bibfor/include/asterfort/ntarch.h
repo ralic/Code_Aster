@@ -18,9 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine ntarch(numins, modele  , mate , carele      , para,&
-                      sddisc, ds_inout, force, sdcrit_nonl_)
+    subroutine ntarch(numins, modele  , mate , carele      , para       ,&
+                      sddisc, ds_inout, force, sdcrit_nonl_, ds_algorom_)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         integer, intent(in) :: numins
         character(len=24), intent(in) :: modele
         character(len=24), intent(in) :: mate
@@ -30,5 +31,6 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         aster_logical, intent(inout) :: force
         character(len=19), optional, intent(in) :: sdcrit_nonl_
+        type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     end subroutine ntarch
 end interface

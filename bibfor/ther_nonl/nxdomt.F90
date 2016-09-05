@@ -1,6 +1,7 @@
-subroutine nxdomt(ds_algopara)
+subroutine nxdomt(ds_algopara, ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -9,8 +10,10 @@ implicit none
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvid.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romAlgoNLRead.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -31,6 +34,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,6 +45,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,21 +75,23 @@ implicit none
 !
 ! - Get parameters of method
 !
-    keywf = 'NEWTON'
     if (algo_meth .eq. 'NEWTON') then
+        keywf = 'NEWTON'
         call getvis(keywf, 'REAC_ITER', iocc=1, scal=reac_iter)
         ASSERT(reac_iter .ge. 0)
         ds_algopara%reac_iter = reac_iter
+        call getvr8(keywf, 'RESI_LINE_RELA', iocc=1, scal=resi_line_rela)
+        call getvis(keywf, 'ITER_LINE_MAXI', iocc=1, scal=iter_line_maxi)
+        ds_algopara%line_search%resi_rela = resi_line_rela
+        ds_algopara%line_search%iter_maxi = iter_line_maxi
+    else if (algo_meth .eq. 'MODELE_REDUIT') then
+        keywf = 'MODELE_REDUIT'
+        call getvis(keywf, 'REAC_ITER', iocc=1, scal=reac_iter)
+        ASSERT(reac_iter .ge. 0)
+        ds_algopara%reac_iter = reac_iter
+        call romAlgoNLRead(ds_algorom)
     else
         ASSERT(.false.)
     endif
-!
-! - Get parameters of line search
-!
-    keywf = 'NEWTON'
-    call getvr8(keywf, 'RESI_LINE_RELA', iocc=1, scal=resi_line_rela)
-    call getvis(keywf, 'ITER_LINE_MAXI', iocc=1, scal=iter_line_maxi)
-    ds_algopara%line_search%resi_rela = resi_line_rela
-    ds_algopara%line_search%iter_maxi = iter_line_maxi
 !
 end subroutine

@@ -4,7 +4,9 @@ subroutine nxnewt(model    , mate       , cara_elem  , list_load, nume_dof ,&
                   vtempp   , vec2nd     , mediri     , conver   , hydr_prev,&
                   hydr_curr, dry_prev   , dry_curr   , compor   , cnvabt   ,&
                   cnresi   , ther_crit_i, ther_crit_r, reasma   , testr    ,&
-                  testm)
+                  testm    , ds_algorom)
+!
+use ROM_Datastructure_type
 !
 implicit none
 !
@@ -20,6 +22,9 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/merxth.h"
 #include "asterfort/nxresi.h"
+#include "asterfort/romAlgoNLTherResidual.h"
+#include "asterfort/romAlgoNLSystemSolve.h"
+#include "asterfort/mtdscr.h"
 #include "asterfort/preres.h"
 #include "asterfort/verstp.h"
 #include "asterfort/vethbt.h"
@@ -58,10 +63,14 @@ implicit none
     character(len=24) :: hydr_prev, hydr_curr, compor, dry_prev, dry_curr
     integer :: ther_crit_i(*)
     real(kind=8) :: ther_crit_r(*)
+    real(kind=8) :: testr, testm
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! COMMANDE THER_NON_LINE : ITERATION DE NEWTON
+! THER_NON_LINE - Algorithm
+!
+! Solve current Newton iteration
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,7 +87,6 @@ implicit none
     character(len=19) :: chsol
     character(len=24) :: bidon, veresi, varesi, vabtla, vebtla
     character(len=24) :: tlimat(2), mediri, merigi, cnvabt
-    real(kind=8) :: testr, testm
     real(kind=8) :: time_curr
     character(len=24) :: lload_name, lload_info
 !
@@ -111,7 +119,7 @@ implicit none
     call ascova('D', varesi, bidon, 'INST', r8bid,&
                 typres, cnresi)
 !
-! --- BT LAMBDA - CALCUL ET ASSEMBLAGE
+! - Dirichlet - BT LAMBDA 
 !
     call vethbt(model, lload_name, lload_info, cara_elem, mate,&
                 temp_iter, vebtla)
@@ -121,8 +129,14 @@ implicit none
 !
 ! - Evaluate residuals
 !
-    call nxresi(ther_crit_i, ther_crit_r, vec2nd, cnvabt, cnresi,&
-                cn2mbr     , testr      , testm , conver)
+    if (ds_algorom%l_rom) then
+        call romAlgoNLTherResidual(ther_crit_i, ther_crit_r, vec2nd, cnvabt, cnresi    ,&
+                                   cn2mbr     , testr      , testm , conver, ds_algorom)
+    else
+        call nxresi(ther_crit_i, ther_crit_r, vec2nd, cnvabt, cnresi,&
+                    cn2mbr     , testr      , testm , conver)
+    endif
+ 
     if (conver) then
         call copisd('CHAMP_GD', 'V', temp_iter, vtempp)
         goto 999
@@ -157,18 +171,26 @@ implicit none
 !
 ! --- DECOMPOSITION OU CALCUL DE LA MATRICE DE PRECONDITIONNEMENT
 !
-        call preres(solver, 'V', ierr, maprec, matass,&
-                    ibid, -9999)
+        if (ds_algorom%l_rom) then
+            call mtdscr(matass)
+        else
+            call preres(solver, 'V', ierr, maprec, matass,&
+                        ibid, -9999)
+        endif
 !
     endif
 !
 ! - Solve linear system
+! 
+    if (ds_algorom%l_rom) then
+        call copisd('CHAMP_GD', 'V', temp_prev, chsol)
+        call romAlgoNLSystemSolve(matass, cn2mbr, ds_algorom, chsol)
+    else
+        call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
+                    chsol)
+    endif
 !
-    call nxreso(matass, maprec, solver, cnchci, cn2mbr,&
-                chsol)
-!
-! --- RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL,
-!     INCREMENT DE TEMPERATURE
+! - RECOPIE DANS VTEMPP DU CHAMP SOLUTION CHSOL, INCREMENT DE TEMPERATURE
 !
     call copisd('CHAMP_GD', 'V', chsol, vtempp(1:19))
 !

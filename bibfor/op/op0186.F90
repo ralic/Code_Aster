@@ -1,6 +1,7 @@
 subroutine op0186()
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -34,6 +35,7 @@ implicit none
 #include "asterfort/nxnewt.h"
 #include "asterfort/nxpred.h"
 #include "asterfort/nxrech.h"
+#include "asterfort/romAlgoNLClean.h"
 #include "asterfort/rsinch.h"
 #include "asterfort/sigusr.h"
 #include "asterfort/titre.h"
@@ -71,7 +73,7 @@ implicit none
 !
     aster_logical :: l_stat, matcst, coecst, reasma, arret, conver, itemax
     aster_logical :: l_dry, l_line_search, finpas, l_evol
-    aster_logical :: force
+    aster_logical :: force, l_rom
     integer :: ther_crit_i(3), numins, k, icoret, nbcham, iterho
     integer :: itmax, ifm, niv, neq, iterat, jtempp, jtemp
     integer :: itab(2)
@@ -97,10 +99,10 @@ implicit none
 !
     type(NL_DS_InOut)     :: ds_inout
     type(NL_DS_AlgoPara)  :: ds_algopara
+    type(ROM_DS_AlgoPara) :: ds_algorom
 !
     data sdcrit/'&&OP0186.CRITERE'/
     data maprec/'&&OP0186.MAPREC'/
-    data result/' '/
     data cndiri/1*' '/
     data cncine/1*' '/
     data cn2mbr_stat/'&&OP0186.2ND'/
@@ -133,7 +135,7 @@ implicit none
 !
 ! - Creation of datastructures
 !
-    call nxini0(ds_algopara, ds_inout)
+    call nxini0(ds_algopara, ds_inout, ds_algorom)
 !
 ! - Read parameters (linear)
 !
@@ -143,16 +145,17 @@ implicit none
 !
 ! - Read parameters (non-linear)
 !
-    call nxlect(result     , model     , ther_crit_i, ther_crit_r, ds_inout     ,&
-                ds_algopara, result_dry, compor     , l_dry      , l_line_search)
+    call nxlect(result       , model     , ther_crit_i, ther_crit_r, ds_inout,&
+                ds_algopara  , ds_algorom, result_dry , compor     , l_dry   ,&
+                l_line_search)
     itmax      = ther_crit_i(3)
 !
 ! - Initializations
 !
-    call nxinit(model   , mate    , cara_elem, compor, list_load,&
-                para    , vhydr   , sdobse   , sddisc, sdcrit   ,&
-                ds_inout, nume_dof, l_stat   , l_evol, mesh     ,&
-                time    )
+    call nxinit(model , mate    , cara_elem , compor       , list_load,&
+                para  , nume_dof, l_stat    , l_evol       , l_rom    ,&
+                sddisc, ds_inout, vhydr     , sdobse       , mesh     ,&
+                sdcrit, time    , ds_algorom, l_line_search)
 !
     if (l_stat) then
         numins=0
@@ -282,11 +285,11 @@ implicit none
 !  Compute second members and tangent matrix
 ! ======================================================================
 !
-    call nxacmv(model   , mate    , cara_elem, list_load, nume_dof ,&
-                solver  , l_stat  , time     , tpsthe   , &
-                vtemp    , vhydr    , varc_curr,&
-                dry_prev, dry_curr, cn2mbr_stat   , cn2mbr_tran   , matass   ,&
-                maprec  , cndiri  , cncine   , mediri   , compor)   
+    call nxacmv(model      , mate     , cara_elem , list_load, nume_dof   ,&
+                solver     , l_stat   , time      , tpsthe   , vtemp      ,&
+                vhydr      , varc_curr, dry_prev  , dry_curr , cn2mbr_stat,&
+                cn2mbr_tran, matass   , maprec    , cndiri   , cncine     ,&
+                mediri     , compor   , ds_algorom)   
 !
 ! ======================================================================
 !                        PHASE DE PREDICTION
@@ -296,14 +299,13 @@ implicit none
 !                  | DIRICHLET - B*TEMPERATURE INIT   |
 ! EN TRANSITOIRE : |            VEC2NI                |
 !                  |           DIRICHLET              |
-! SYSTEME LINEAIRE RESOLU:  A * (T+,1 - T-) = B
-! SOLUTION: VTEMP= T- ET VTEMPM = T+,1
 !
-    call nxpred(model , mate  , cara_elem, list_load  , nume_dof   ,&
-                solver, l_stat, tpsthe   , time       , matass     ,&
-                neq   , maprec, varc_curr, vtemp      , vtempm     ,&
-                cn2mbr, vhydr , vhydrp   , dry_prev   , dry_curr   ,&
-                compor, cndiri, cncine   , cn2mbr_stat, cn2mbr_tran)
+    call nxpred(model     , mate  , cara_elem, list_load  , nume_dof   ,&
+                solver    , l_stat, tpsthe   , time       , matass     ,&
+                neq       , maprec, varc_curr, vtemp      , vtempm     ,&
+                cn2mbr    , vhydr , vhydrp   , dry_prev   , dry_curr   ,&
+                compor    , cndiri, cncine   , cn2mbr_stat, cn2mbr_tran,&
+                ds_algorom)
 
 !
 ! ======================================================================
@@ -343,7 +345,7 @@ implicit none
                 vtempp, cn2mbr_stat, mediri     , conver   , vhydr   ,&
                 vhydrp, dry_prev   , dry_curr   , compor   , vabtla  ,&
                 cnresi, ther_crit_i, ther_crit_r, reasma   , testr   ,&
-                testm)
+                testm , ds_algorom)
 !
 ! --- SI NON CONVERGENCE ALORS RECHERCHE LINEAIRE
 !       (CALCUL DE RHO) SUR L INCREMENT VTEMPP
@@ -353,9 +355,6 @@ implicit none
     iterho = 0
     if (.not.conver) then
         if (l_line_search) then
-!
-! ON CALCULE LE RHO/ VTEMPR = T+,I+1BIS = T+,1 + RHO * (T+,I+1 - T+,I)
-! MINIMISE VEC2ND - RESI_THER(T+,I+1BIS) - (BT)*LAGRANGE
             call nxrech(model , mate    , cara_elem, list_load  , nume_dof ,&
                         tpsthe, time    , neq      , compor     , varc_curr,&
                         vtempm, vtempp  , vtempr   , vtemp      , vhydr    ,&
@@ -456,7 +455,7 @@ implicit none
         force = .false.
     endif
     call ntarch(numins, model   , mate , cara_elem, para,&
-                sddisc, ds_inout, force, sdcrit)
+                sddisc, ds_inout, force, sdcrit   , ds_algorom)
 !
 ! - Make observation
 !
@@ -504,6 +503,10 @@ implicit none
 ! --- DESTRUCTION DE TOUTES LES MATRICES CREEES
 !
     call detmat()
+!
+    if (ds_algorom%l_rom) then
+        call romAlgoNLClean(ds_algorom)
+    endif
 !
     call jedema()
 !

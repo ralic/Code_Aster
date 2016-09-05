@@ -16,9 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine nxini0(ds_algopara, ds_inout)
+    subroutine nxini0(ds_algopara, ds_inout, ds_algorom)
         use nonlin_datastructure_type
+        use Rom_Datastructure_type
         type(NL_DS_AlgoPara), intent(out) :: ds_algopara
         type(NL_DS_InOut), intent(out) :: ds_inout
+        type(ROM_DS_AlgoPara), intent(out) :: ds_algorom
     end subroutine nxini0
 end interface 

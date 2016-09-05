@@ -1,7 +1,8 @@
-subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol,&
-                  para , sddisc, sdcrit   , ds_inout)
+subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol    ,&
+                  para , sddisc, sdcrit   , ds_inout, ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -41,6 +42,7 @@ implicit none
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sdcrit
     type(NL_DS_InOut), intent(inout) :: ds_inout
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,12 +111,12 @@ implicit none
         call rscrsd('G', result, 'EVOL_THER', 100)
     endif
 !
-! - Stroing initial state
+! - Storing initial state
 !
     if ((.not.lreuse) .and. (.not.l_stat) .and. l_evol) then
         call utmess('I', 'ARCHIVAGE_4')
-        call ntarch(nume_inst, model   , mate , cara_elem, para,&
-                    sddisc   , ds_inout, force, sdcrit)
+        call ntarch(nume_inst, model   , mate , cara_elem, para      ,&
+                    sddisc   , ds_inout, force, sdcrit   , ds_algorom)
     endif
 !
 end subroutine

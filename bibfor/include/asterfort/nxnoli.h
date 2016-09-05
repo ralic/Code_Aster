@@ -18,9 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nxnoli(model, mate  , cara_elem, l_stat  , l_evol,&
-                      para , sddisc, sdcrit   , ds_inout)
+    subroutine nxnoli(model , mate  , cara_elem, l_stat  , l_evol    ,&
+                      para  , sddisc, sdcrit   , ds_inout, ds_algorom)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
@@ -30,5 +31,6 @@ interface
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sdcrit
         type(NL_DS_InOut), intent(inout) :: ds_inout
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     end subroutine nxnoli
 end interface

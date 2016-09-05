@@ -1,7 +1,8 @@
-subroutine ntarch(numins, modele  , mate , carele      , para,&
-                  sddisc, ds_inout, force, sdcrit_nonl_)
+subroutine ntarch(numins, modele  , mate , carele      , para       ,&
+                  sddisc, ds_inout, force, sdcrit_nonl_, ds_algorom_)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -15,6 +16,7 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
+#include "asterfort/romAlgoNLTableSave.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -42,6 +44,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     aster_logical, intent(inout) :: force
     character(len=19), optional, intent(in) :: sdcrit_nonl_
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +55,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_inout         : datastructure for input/output management
+! In  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,10 +115,18 @@ implicit none
                         para  , nume_store, instan)
         endif
 !
-! ----- Stroring fields
+! ----- Storing fields
 !
         call nmarce(ds_inout, result, sddisc, instan, nume_store,&
                     force)
+!
+! ----- Storing reduced parameters table (ROM)
+!
+        if (present(ds_algorom_)) then
+            if (ds_algorom_%l_rom) then
+                call romAlgoNLTableSave(nume_store, instan, ds_algorom_)
+            endif
+        endif
     endif
 !
 end subroutine
