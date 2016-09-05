@@ -43,7 +43,7 @@ except IOError:
 # Un message de ce type sera affiché dans l'output indiquant le
 # fichier produit contenant tous les mots-clés du catalogue.
 #
-# NB : Vous ne devez modifié ce fichier que si le vocabulaire a été validé !
+# NB : Vous ne devez modifier ce fichier que si le vocabulaire a été validé !
 #
 #    ************************************************************
 #
