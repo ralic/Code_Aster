@@ -273,10 +273,6 @@ Risques et conseils :
  recombinaison de Fourier par l'opérateur COMB_FOURIER.
 """),
 
-    84: _(u"""
-  Le mot-clé MODELE est obligatoire quand RESULTAT est absent
-"""),
-
     85: _(u"""
   Paramètre %(k1)s inexistant dans la table.
 """),

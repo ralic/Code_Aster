@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,12 +23,6 @@ cata_msg = {
     2 : _(u"""
   option %(k1)s : pour l élément  %(k2)s  il faut ajouter dans le %(k3)s
  le nombre de composante calculées du flux
-"""),
-
-    3: _(u"""
-  Le MODELE doit être le même pour tous les numéros d'ordre du RESULTAT.
-  Faire le post-traitement en rentrant le numéro d'ordre ou explicitement
-  le nom du modèle.
 """),
 
     5 : _(u"""

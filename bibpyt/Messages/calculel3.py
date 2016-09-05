@@ -190,18 +190,6 @@ PROJ_CHAMP / METHODE='ECLA_PG' :
  les charges ne s'appuient pas sur le modèle donné en argument.
 """),
 
-    43 : _(u"""
- les charges sont de type différent.
-"""),
-
-    44 : _(u"""
- les charges ne s'appuient pas toutes sur le même modèle
-"""),
-
-    45 : _(u"""
- données incorrectes.
-"""),
-
     46 : _(u"""
 La MATR_ASSE et le CHAM_NO ont des numérotations différentes (%(k1)s et %(k2)s).
 Si la MATR_ASSE contient des ddls LAGR, ceux-ci sont mis à zéro.

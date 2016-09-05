@@ -18,7 +18,6 @@ implicit none
 #include "asterfort/meamgy.h"
 #include "asterfort/meamme.h"
 #include "asterfort/mecact.h"
-#include "asterfort/medome.h"
 #include "asterfort/meimme.h"
 #include "asterfort/memaac.h"
 #include "asterfort/memame.h"
