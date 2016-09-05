@@ -18,10 +18,10 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! dtmprep_noli_dvis : prepare the calculations for a localized nonlinearity
-!                     of type : generalized Zener damper. This routine adds a  
+!                     of type : generalized Zener damper. This routine adds a
 !                     single occurence to sd_nl and increments NB_NOLI in sd_dtm
 !
-!             icomp : an integer giving the index of occurence of the 
+!             icomp : an integer giving the index of occurence of the
 !                     nonlinearity to be treated under the factor kw
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
@@ -71,7 +71,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     integer          , intent(in) :: icomp
 !
 !   -0.2- Local variables
-    aster_logical     :: lnoeu2 
+    aster_logical     :: lnoeu2
     integer           :: i, n1, ibid, nbdisv, nbnoli
     integer           :: nbmcl, ier, nbno1, nbno2, ino1
     integer           :: ino2, ind1, ind2, nbmode, info
@@ -117,7 +117,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     sd_dtm = sd_dtm_
     sd_nl  = sd_nl_
 !
-    lnoeu2 = .false.   
+    lnoeu2 = .false.
     one = 1.d0
  !
     motfac = 'COMPORTEMENT'
@@ -128,7 +128,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     call infmaj()
     call infniv(ibid, info)
 !
-!   --- 1 - Basic information about the mesh and numbering 
+!   --- 1 - Basic information about the mesh and numbering
 !
     call dtmget(sd_dtm, _NUM_DDL, kscal=nume)
     call dtmget(sd_dtm, _NB_MODES, iscal=nbmode)
@@ -197,7 +197,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
         call nlsav(sd_nl, _MESH_2, 1, iocc=i, kscal=mesh2)
     end if
 !
-!   --- 3 - Filling up the sd_nl with further information regarding the 
+!   --- 3 - Filling up the sd_nl with further information regarding the
 !           nonlinearity(ies)
 !
     AS_ALLOCATE(vi=ddlcho, size=6)
@@ -279,7 +279,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     call nlsav(sd_nl, _RES_INTE, 1, iocc=i, rscal=res_inte)
 !
 !
-!   --- 3.4 - Calculation of geometrical properties : 
+!   --- 3.4 - Calculation of geometrical properties :
 !             play, orientation, local coordinates, distances
 !             Vector x1x2 must not be zero
     call nlget(sd_nl, _COOR_NO1, iocc=i, vr=coor_no1)
@@ -296,13 +296,14 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
     call angvx(axe, alpha, beta)
     call nlsav(sd_nl, _SINCOS_ANGLE_A, 2, iocc=i, rvect=[sin(alpha), cos(alpha)])
     call nlsav(sd_nl, _SINCOS_ANGLE_B, 2, iocc=i, rvect=[sin(beta), cos(beta)])
-    call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=i, rvect=[0.0, 0.0])
+    call nlsav(sd_nl, _SINCOS_ANGLE_G, 2, iocc=i, rvect=[0.0d0, 0.0d0])
 
     obst_typ = 'BI_PLANY'
     call nlsav(sd_nl, _OBST_TYP, 1, iocc=i, kscal=obst_typ)
-    call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=i, rvect=[0.5d0*(coor_no1(1)+coor_no2(1)),&
-                                                               0.5d0*(coor_no1(2)+coor_no2(2)),&
-                                                               0.5d0*(coor_no1(3)+coor_no2(3))])
+    call nlsav(sd_nl, _COOR_ORIGIN_OBSTACLE, 3, iocc=i, &
+               rvect=[0.5d0*(coor_no1(1)+coor_no2(1)), &
+                      0.5d0*(coor_no1(2)+coor_no2(2)), &
+                      0.5d0*(coor_no1(3)+coor_no2(3))])
 
     call nlget(sd_nl, _COOR_ORIGIN_OBSTACLE, iocc=i, vr=origob)
     call nlget(sd_nl, _SINCOS_ANGLE_A, iocc=i, vr=sincos_angle_a)
@@ -392,7 +393,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
         defmod1(3*(j-1)+1) = bmodal(ddlcho(1),j)
         defmod1(3*(j-1)+2) = bmodal(ddlcho(2),j)
         defmod1(3*(j-1)+3) = bmodal(ddlcho(3),j)
-        
+
         if (obst_typ(1:2).eq.'BI') then
             defmod2(3*(j-1)+1) = bmodal(ddlcho(4),j)
             defmod2(3*(j-1)+2) = bmodal(ddlcho(5),j)
@@ -426,7 +427,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
                 ps2del2(3*(j-1)+3) = ps1del(ddlcho(6),j)
             end do
         endif
-    endif   
+    endif
 !
 !   --- 4 - Updating indices for sd_nl and sd_dtm
     call nlsav(sd_nl, _MAX_LEVEL, 1, iscal=nbnoli)
