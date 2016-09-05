@@ -231,7 +231,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+1
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                         ajust = .true.
@@ -254,7 +253,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+2
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
                         if (d1 .gt. d2) then
                            lnsv((nunob-1)+1)=0.d0
@@ -277,7 +275,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                         ajust = .true.
-                        call utmess('A', 'XFEM_63')
                     endif
                 else if ((lsna*lsnm).lt.0.d0.and.lsnb.eq.0.d0) then
                     d3=lsnm/lsnmax
@@ -289,7 +286,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+1
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         lnsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                         ajust = .true.
@@ -309,7 +305,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+1
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         if (d1 .gt. d2) then
                            lnsv((nunob-1)+1)=0.d0
                         else
@@ -341,7 +336,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+1
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         clsm=clsm+1
                         ajust = .true.
@@ -361,7 +355,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+3
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
@@ -380,7 +373,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+2
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunob-1)+1)=0.d0
                         clsm=clsm+2
@@ -398,7 +390,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+2
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         ltsv((nunom-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
@@ -416,7 +407,6 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
                         clsm=clsm+2
                         ajust = .true.
                     else
-                        call utmess('A', 'XFEM_63')
                         ltsv((nunob-1)+1)=0.d0
                         ltsv((nunoa-1)+1)=0.d0
                         clsm=clsm+2
@@ -435,6 +425,10 @@ subroutine xajuls(noma, nbma, cnslt, cnsln, jconx1,&
 !     ON REITERE LA PROCEDURE AFIN DE N'AVOIR AUCUN PROBLEME DE COHERENCE SUITE
 !     AUX AJUSTEMENTS
     if (ajust) go to 100
+!
+    if (clsm.gt.0 ) then
+        call utmess('A', 'XFEM_63', si=clsm)
+    endif
 !
 !-----------------------------------------------------------------------
 !     FIN

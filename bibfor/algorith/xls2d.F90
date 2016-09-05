@@ -9,18 +9,21 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "blas/ddot.h"
     integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
     integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
     aster_logical :: callst, grille
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,11 +41,14 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 ! person_in_charge: samuel.geniaut at edf.fr
     integer :: ino, imafis, nmaabs, inoma, nuno(2), jcrd
     real(kind=8) :: p(2), dmin, a(2), b(2), m(2), ap(2), ab(2), norcab, ps, eps
-    real(kind=8) :: d, oriabp, xln, ps1, xlt
+    real(kind=8) :: d, oriabp, xln, ps1, xlt, tole
     integer :: isefis, nseabs, inose, nunose, n1, nbnoma, num, nunoc, i
     aster_logical :: ma2ff
     integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
     aster_logical :: finfis
+    aster_logical, pointer :: is_pt_fond(:) => null()
+!
+    parameter (tole=1.d-12)
 !
     call jemarq()
 !
@@ -56,6 +62,11 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !     VECTEURS INTERMEDIAIRE ET ORIENTATION DES MAILLES
     call wkvect('&&XINILS.LIMFISO', 'V V I', nbmaf, jmafit)
     call wkvect('&&XINILS.ORIENT', 'V V I', nbmaf, jmaori)
+    AS_ALLOCATE(vl=is_pt_fond,size=nbno) 
+    do isefis = 1, nbsef
+      nseabs=zi(jdlise-1+(isefis-1)+1)
+      is_pt_fond(zi(jconx1-1+zi(jconx2+nseabs-1)))=.true.
+    enddo
 !     INITIALISATION PREMIERE MAILLE
     ori=1
     zi(jmaori)=1
@@ -160,8 +171,11 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
             eps=ps/norcab
 !
 !           ON RAMENE LES POINTS EN DEHORS DU SEGMENT
-            if (eps .lt. 0.d0) eps=0.d0
-            if (eps .gt. 1.d0) eps=1.d0
+!             > SI LE POINT N EST PAS SUR LA DROITE DIRECTRICE AU SEGMENT
+            if (abs(ddot(2,ap,1,[-ab(2),ab(1)],1)) .gt. norcab*tole) then
+              if (eps .lt. -tole .and. .not.is_pt_fond(nuno(1))) eps=0.d0
+              if (eps .gt. (1.d0+tole) .and. .not.is_pt_fond(nuno(2))) eps=1.d0
+            endif
 !
             do 212 i = 1, 2
                 m(i)=a(i)+eps*ab(i)
@@ -172,7 +186,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
 !           MISE EN MEMOIRE DE LSN POUR LA MAILLE LA PLUS PROCHE
 !           EN VERIFIANT DE QUEL COTE DE LA FISSURE SE TROUVE P
-            if ((dmin-d) .gt. (r8prem()*1.d04)) then
+            if ((dmin-d) .gt. (r8prem()*1.d02)) then
                 dmin=d
                 oriabp=ab(1)*ap(2)-ab(2)*ap(1)
                 do 213 i = 1, 2
@@ -184,6 +198,8 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
                 else
                     xln=-1.d0*d
                 endif
+!                mp(1:2)=p(1:2)-m(1:2)
+!                xln=(ab(1)*mp(2)-ab(2)*mp(1))/sqrt(norcab)
                 if (zi(jmaori-1+imafis) .eq. 0) then
                     xln=-1.d0*xln
                 endif
@@ -246,7 +262,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !               CALCUL DE LA DISTANCE PA
                     d=padist(2,p,a)
 !               MISE EN MEMOIRE DE LSN=PA.N POUR LE SEG LE PLUS PROCHE
-                    if ((dmin-d) .gt. (r8prem()*1.d04)) then
+                    if ((dmin-d) .gt. (r8prem()*1.d02)) then
                         dmin=d
                         xlt=-1.d0*eps*sqrt(ab(1)*ab(1)+ab(2)*ab(2))
                     endif
@@ -266,6 +282,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !
  11 continue
 !
+    AS_DEALLOCATE(vl=is_pt_fond) 
     call jedema()
 !
 end subroutine

@@ -383,10 +383,15 @@ Utilisez ELIM_ARETE='DUAL'.
 """),
 
     55: _(u"""
-     Attention, un élément fini comporte deux jonctions de fissure ou plus et la découpe en sous 
-     éléments d'intégration est impossible car elle génère un nombre trop important de sous éléments.
-  -> Conseil :
-     Raffinez le maillage afin de n'avoir qu'une seule jonction de fissure par élément.
+     La découpe des facettes de contact XFEM à rencontrer un problème d'espace mémoire
+     lors de l'écriture du mode local %(k1)s.
+     La longueur du mode local dans le catalogue est %(i1)d, pourtant on a calculé qu'il
+     faudrait %(i2)d.
+     Le calcul s'arrête pour prévenir un dépassement mémoire. 
+  -> Conseils:
+     - Vous pouvez augmenter le dimensionnment du mode local %(k1)s.
+     - Veuillez aussi contacter l'équipe de développment pour reporter la configuration de
+     coupe pour l'amélioration du catalogue.
 """),
 
     56: _(u"""
@@ -456,10 +461,14 @@ Utilisez ELIM_ARETE='DUAL'.
 """),
 
     63: _(u"""
-  -> ---Éléments XFEM quadratiques 2D---
-       Un sous élément est découpé par la courbe d'isovaleur zéro de la level-set normale en deux endroits
-       sur une arête.
-       Cette configuration est proscrite.
+      -> ---Éléments XFEM quadratiques ---
+    On a effectué un ajustement géométrique de la fissure, car les arêtes du maillage sain sont
+    coupées plusieurs fois par l'iso-zéro de la level-set.
+    Le nombre d'ajustements effectués est : %(i1)d.
+    Cette correction impacte légèrement la localisation de la fissure.
+  -> Conseil :
+    Veuillez vérifier en post-traitement grâce à la commande POST_MAIL_XFEM que la nouvelle 
+    géométrie de la fissure respecte la géométrie imposée dans la commande DEFI_FISS_XFEM.
 """),
 
     64: _(u"""

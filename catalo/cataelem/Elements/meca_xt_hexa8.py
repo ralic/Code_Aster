@@ -203,7 +203,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_G(te=288,
-            para_in=((OP.CALC_G.PAINTER, LC.E170NEUT), (OP.CALC_G.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_G.PAINTER, LC.E200NEUT), (OP.CALC_G.PBASECO, LC.E360NEUT),
                      (OP.CALC_G.PBASLOR, LC.N9NEUT_R), (OP.CALC_G.PCFACE, LC.E90NEUTI),
                      (OP.CALC_G.PCNSETO, LC.E320NEUI), (OP.CALC_G.PCOMPOR, CCOMPOR),
                      (OP.CALC_G.PCONTRR, ECONTPG), (SP.PDEPLAR, DDL_MECA),
@@ -211,7 +211,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_G.PHEAVTO, LC.E32NEUTI), (OP.CALC_G.PLONCHA, LC.E10NEUTI),
                      (OP.CALC_G.PLONGCO, LC.E3NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
                      (OP.CALC_G.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (SP.PPESANR, LC.CPESANR), (OP.CALC_G.PPINTER, LC.E102NEUT),
+                     (SP.PPESANR, LC.CPESANR), (OP.CALC_G.PPINTER, LC.E120NEUT),
                      (OP.CALC_G.PPINTTO, E33NEUTR), (OP.CALC_G.PPMILTO, LC.E198NEUT),
                      (SP.PPRESSR, EPRESNO), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTHETAR, DDL_MECC),
@@ -221,7 +221,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_GTP(te=288,
-            para_in=((OP.CALC_GTP.PAINTER, LC.E170NEUT), (OP.CALC_GTP.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_GTP.PAINTER, LC.E200NEUT), (OP.CALC_GTP.PBASECO, LC.E360NEUT),
                      (OP.CALC_GTP.PBASLOR, LC.N9NEUT_R), (OP.CALC_GTP.PCFACE, LC.E90NEUTI),
                      (OP.CALC_GTP.PCNSETO, LC.E320NEUI), (OP.CALC_GTP.PCOMPOR, CCOMPOR),
                      (SP.PDEPLAR, DDL_MECA), (SP.PFRVOLU, NFORCER),
@@ -229,7 +229,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_GTP.PLONCHA, LC.E10NEUTI), (OP.CALC_GTP.PLONGCO, LC.E3NEUTI),
                      (OP.CALC_GTP.PLSN, LC.N1NEUT_R), (OP.CALC_GTP.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
-                     (OP.CALC_GTP.PPINTER, LC.E102NEUT), (OP.CALC_GTP.PPINTTO, E33NEUTR),
+                     (OP.CALC_GTP.PPINTER, LC.E120NEUT), (OP.CALC_GTP.PPINTTO, E33NEUTR),
                      (OP.CALC_GTP.PPMILTO, LC.E198NEUT), (SP.PPRESSR, EPRESNO),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
                      (SP.PTHETAR, DDL_MECC), (OP.CALC_GTP.PVARCPR, LC.ZVARCPG),
@@ -238,7 +238,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_GTP_F(te=288,
-            para_in=((OP.CALC_GTP_F.PAINTER, LC.E170NEUT), (OP.CALC_GTP_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_GTP_F.PAINTER, LC.E200NEUT), (OP.CALC_GTP_F.PBASECO, LC.E360NEUT),
                      (OP.CALC_GTP_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_GTP_F.PCFACE, LC.E90NEUTI),
                      (OP.CALC_GTP_F.PCNSETO, LC.E320NEUI), (OP.CALC_GTP_F.PCOMPOR, CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
@@ -246,7 +246,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_GTP_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_GTP_F.PLONCHA, LC.E10NEUTI),
                      (OP.CALC_GTP_F.PLONGCO, LC.E3NEUTI), (OP.CALC_GTP_F.PLSN, LC.N1NEUT_R),
                      (OP.CALC_GTP_F.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (SP.PPESANR, LC.CPESANR), (OP.CALC_GTP_F.PPINTER, LC.E102NEUT),
+                     (SP.PPESANR, LC.CPESANR), (OP.CALC_GTP_F.PPINTER, LC.E120NEUT),
                      (OP.CALC_GTP_F.PPINTTO, E33NEUTR), (OP.CALC_GTP_F.PPMILTO, LC.E198NEUT),
                      (SP.PPRESSF, CPRESSF), (SP.PROTATR, LC.CROTATR),
                      (SP.PSIGISE, ECONTSE), (SP.PTEMPSR, CTEMPSR),
@@ -256,7 +256,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_G_F(te=288,
-            para_in=((OP.CALC_G_F.PAINTER, LC.E170NEUT), (OP.CALC_G_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_G_F.PAINTER, LC.E200NEUT), (OP.CALC_G_F.PBASECO, LC.E360NEUT),
                      (OP.CALC_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_G_F.PCFACE, LC.E90NEUTI),
                      (OP.CALC_G_F.PCNSETO, LC.E320NEUI), (OP.CALC_G_F.PCOMPOR, CCOMPOR),
                      (OP.CALC_G_F.PCONTRR, ECONTPG), (SP.PCOURB, LC.G27NEUTR),
@@ -265,7 +265,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_G_F.PLONCHA, LC.E10NEUTI), (OP.CALC_G_F.PLONGCO, LC.E3NEUTI),
                      (OP.CALC_G_F.PLSN, LC.N1NEUT_R), (OP.CALC_G_F.PLST, LC.N1NEUT_R),
                      (SP.PMATERC, LC.CMATERC), (SP.PPESANR, LC.CPESANR),
-                     (OP.CALC_G_F.PPINTER, LC.E102NEUT), (OP.CALC_G_F.PPINTTO, E33NEUTR),
+                     (OP.CALC_G_F.PPINTER, LC.E120NEUT), (OP.CALC_G_F.PPINTTO, E33NEUTR),
                      (OP.CALC_G_F.PPMILTO, LC.E198NEUT), (SP.PPRESSF, CPRESSF),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
                      (SP.PTEMPSR, CTEMPSR), (SP.PTHETAR, DDL_MECC),
@@ -275,7 +275,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_K_G(te=297,
-            para_in=((OP.CALC_K_G.PAINTER, LC.E170NEUT), (OP.CALC_K_G.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_K_G.PAINTER, LC.E200NEUT), (OP.CALC_K_G.PBASECO, LC.E360NEUT),
                      (OP.CALC_K_G.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G.PCFACE, LC.E90NEUTI),
                      (OP.CALC_K_G.PCNSETO, LC.E320NEUI), (OP.CALC_K_G.PCOMPOR, CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
@@ -283,7 +283,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_K_G.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G.PLONCHA, LC.E10NEUTI),
                      (OP.CALC_K_G.PLONGCO, LC.E3NEUTI), (OP.CALC_K_G.PLSN, LC.N1NEUT_R),
                      (OP.CALC_K_G.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (SP.PPESANR, LC.CPESANR), (OP.CALC_K_G.PPINTER, LC.E102NEUT),
+                     (SP.PPESANR, LC.CPESANR), (OP.CALC_K_G.PPINTER, LC.E120NEUT),
                      (OP.CALC_K_G.PPINTTO, E33NEUTR), (OP.CALC_K_G.PPMILTO, LC.E198NEUT),
                      (SP.PPRESSR, EPRESNO), (SP.PPULPRO, LC.CFREQR),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
@@ -293,7 +293,7 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CALC_K_G_F(te=297,
-            para_in=((OP.CALC_K_G_F.PAINTER, LC.E170NEUT), (OP.CALC_K_G_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.CALC_K_G_F.PAINTER, LC.E200NEUT), (OP.CALC_K_G_F.PBASECO, LC.E360NEUT),
                      (OP.CALC_K_G_F.PBASLOR, LC.N9NEUT_R), (OP.CALC_K_G_F.PCFACE, LC.E90NEUTI),
                      (OP.CALC_K_G_F.PCNSETO, LC.E320NEUI), (OP.CALC_K_G_F.PCOMPOR, CCOMPOR),
                      (SP.PCOURB, LC.G27NEUTR), (SP.PDEPLAR, DDL_MECA),
@@ -301,7 +301,7 @@ class MECA_XT_HEXA8(Element):
                      (OP.CALC_K_G_F.PHEAVTO, LC.E32NEUTI), (OP.CALC_K_G_F.PLONCHA, LC.E10NEUTI),
                      (OP.CALC_K_G_F.PLONGCO, LC.E3NEUTI), (OP.CALC_K_G_F.PLSN, LC.N1NEUT_R),
                      (OP.CALC_K_G_F.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (SP.PPESANR, LC.CPESANR), (OP.CALC_K_G_F.PPINTER, LC.E102NEUT),
+                     (SP.PPESANR, LC.CPESANR), (OP.CALC_K_G_F.PPINTER, LC.E120NEUT),
                      (OP.CALC_K_G_F.PPINTTO, E33NEUTR), (OP.CALC_K_G_F.PPMILTO, LC.E198NEUT),
                      (SP.PPRESSF, CPRESSF), (SP.PPULPRO, LC.CFREQR),
                      (SP.PROTATR, LC.CROTATR), (SP.PSIGISE, ECONTSE),
@@ -338,22 +338,22 @@ class MECA_XT_HEXA8(Element):
         ),
 
         OP.CHAR_MECA_PRES_F(te=37,
-            para_in=((OP.CHAR_MECA_PRES_F.PAINTER, LC.E170NEUT), (OP.CHAR_MECA_PRES_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.CHAR_MECA_PRES_F.PAINTER, LC.E200NEUT), (OP.CHAR_MECA_PRES_F.PBASECO, LC.E360NEUT),
                      (OP.CHAR_MECA_PRES_F.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_F.PPINTER, LC.E102NEUT), (SP.PPRESSF, CPRESSF),
+                     (OP.CHAR_MECA_PRES_F.PPINTER, LC.E120NEUT), (SP.PPRESSF, CPRESSF),
                      (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
                      (SP.PMATERC, LC.CMATERC), (OP.CHAR_MECA_PRES_F.PBASLOR, LC.N9NEUT_R),),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
         OP.CHAR_MECA_PRES_R(te=37,
-            para_in=((OP.CHAR_MECA_PRES_R.PAINTER, LC.E170NEUT), (OP.CHAR_MECA_PRES_R.PBASECO, LC.E306NEUT),
+            para_in=((OP.CHAR_MECA_PRES_R.PAINTER, LC.E200NEUT), (OP.CHAR_MECA_PRES_R.PBASECO, LC.E360NEUT),
                      (OP.CHAR_MECA_PRES_R.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
                      (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_R.PPINTER, LC.E102NEUT), (SP.PPRESSR, EPRESNO),
+                     (OP.CHAR_MECA_PRES_R.PPINTER, LC.E120NEUT), (SP.PPRESSR, EPRESNO),
                      (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), (OP.CHAR_MECA_PRES_R.PBASLOR, LC.N9NEUT_R),
                      (SP.PMATERC, LC.CMATERC),),
             para_out=((SP.PVECTUR, MVECTUR), ),
@@ -596,10 +596,10 @@ class MECA_XT_HEXA8(Element):
                      (OP.TOPOFA.PLSN, LC.N1NEUT_R), (OP.TOPOFA.PLST, LC.N1NEUT_R),
                      (OP.TOPOFA.PPINTTO, E33NEUTR), (OP.TOPOFA.PPMILTO, LC.E198NEUT),
                      ),
-            para_out=((OP.TOPOFA.PAINTER, LC.E170NEUT), (OP.TOPOFA.PBASECO, LC.E306NEUT),
-                     (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E102NEUT),
-                     (OP.TOPOFA.PGESCLO, LC.E102NEUT), (SP.PGMAITR, LC.E102NEUT),
-                     (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E102NEUT),
+            para_out=((OP.TOPOFA.PAINTER, LC.E200NEUT), (OP.TOPOFA.PBASECO, LC.E360NEUT),
+                     (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E120NEUT),
+                     (OP.TOPOFA.PGESCLO, LC.E102NEUT), (SP.PGMAITR, LC.E120NEUT),
+                     (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E120NEUT),
                      ),
         ),
 
@@ -702,6 +702,7 @@ class MECA_XT_HEXA20(MECA_XT_HEXA8):
             ElrefeLoc(MT.H20, gauss = ('RIGI=FPG27','MASS=FPG27','NOEU=NOEU','XFEM=XFEM480','FPG1=FPG1',), mater=('XFEM','NOEU',),),
             ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG15','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
         )
 
 
@@ -716,6 +717,7 @@ class MECA_XT_PENTA15(MECA_XT_HEXA8):
             ElrefeLoc(MT.P15, gauss = ('RIGI=FPG21','MASS=FPG21','NOEU=NOEU','XFEM=XFEM240','FPG1=FPG1',), mater=('XFEM','NOEU',),),
             ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG15','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
         )
 
 
@@ -744,4 +746,5 @@ class MECA_XT_TETRA10(MECA_XT_HEXA8):
     elrefe =(
             ElrefeLoc(MT.T10, gauss = ('RIGI=FPG5','MASS=FPG5','NOEU=NOEU','XGEO=FPG15','XINT=FPG15','XFEM=XFEM90','FPG1=FPG1',), mater=('XFEM','NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
+            ElrefeLoc(MT.TR3, gauss = ('XINT=FPG12','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12',),),
         )

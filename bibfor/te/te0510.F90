@@ -301,13 +301,13 @@ subroutine te0510(option, nomte)
             nbtot = ndim
         endif
         if (nface*nptf .gt. ncompc) then
-           call utmess('F', 'XFEM_55')
+           call utmess('F', 'XFEM_55', sk='PCFACE', ni=2, vali=[ncompc,nface*nptf])
         endif
         if (ninter*ndim .gt. ncompp) then
-           call utmess('F', 'XFEM_55')
+           call utmess('F', 'XFEM_55', sk='PPINTER', ni=2, vali=[ncompp,ninter*ndim])
         endif
         if ((nfiss .gt. 1) .and. (nface*2 .gt. ncomph)) then
-           call utmess('F', 'XFEM_55')
+           call utmess('F', 'XFEM_55', sk='PHEAVFA', ni=2, vali=[ncomph,nface*2])
         endif
 !
         if (nfiss .gt. 1 .and. ninter .gt. 0) then

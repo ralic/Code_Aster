@@ -202,6 +202,9 @@ CVENTCX = LocatedComponents(phys=PHY.VENTCX_F, type='ELEM',
 E102NEUT = LocatedComponents(phys=PHY.N816_R, type='ELEM',
                              components=('X[102]',))
 
+E120NEUT = LocatedComponents(phys=PHY.N816_R, type='ELEM',
+                             components=('X[120]',))
+
 E10NEUTI = LocatedComponents(phys=PHY.N120_I, type='ELEM',
                              components=('X[10]',))
 
@@ -228,6 +231,9 @@ E162NEUR = LocatedComponents(phys=PHY.N2448R, type='ELEM',
 
 E170NEUT = LocatedComponents(phys=PHY.N1360R, type='ELEM',
                              components=('X[170]',))
+
+E200NEUT = LocatedComponents(phys=PHY.N1360R, type='ELEM',
+                             components=('X[200]',))
 
 E18NEUI = LocatedComponents(phys=PHY.N120_I, type='ELEM',
                             components=('X[18]',))
@@ -264,6 +270,9 @@ E2NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
 
 E306NEUT = LocatedComponents(phys=PHY.N2448R, type='ELEM',
                              components=('X[306]',))
+
+E360NEUT = LocatedComponents(phys=PHY.N2448R, type='ELEM',
+                             components=('X[360]',))
 
 E320NEUI = LocatedComponents(phys=PHY.N1280I, type='ELEM',
                              components=('X[320]',))

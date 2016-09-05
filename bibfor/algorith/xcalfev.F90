@@ -169,7 +169,9 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
       elseif(stano(ino).eq.0 .or. stano(ino).eq.2) then
         call xdeffk_wrap(kappa, mu, r_n(ino), t_n(ino), ndim, fkpo_n(ino,1:ndim,1:ndim),&
                          method, stano(ino))
-      elseif(stano(ino).ne.-2) then
+      elseif(stano(ino).eq.-2) then
+        goto 5
+      else
         call utmess('F', 'ELEMENTS6_6', sk='stano')
       endif
       do alp =1, ndim
@@ -204,7 +206,8 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
     dkdgl_g(:,:,:)=0.d0
     if ( lderiv ) then
       if ( lshift) then
-      do ino = 1, nnop
+      do 7 ino = 1, nnop
+        if (stano(ino).eq.-2) goto 7
         do alp =1, ndim
           do i =1, ndim
             do j =1, ndim
@@ -216,7 +219,7 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, he,&
             enddo
           enddo
         enddo
-      enddo
+7     continue
       endif
 !  ON ROGNE SUR TOUT / CALCUL DE LA DERIVEE EN AMONT
 !  *  DERIVEES DES FONCTIONS D'ENRICHISSEMENT DANS LA BASE POLAIRE
