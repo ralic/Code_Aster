@@ -1,7 +1,17 @@
 subroutine op0050()
-    implicit none
-#include "asterfort/utmess.h"
-!     ------------------------------------------------------------------
+!
+use Rom_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/infmaj.h"
+#include "asterfort/titre.h"
+#include "asterfort/ddr_ini0.h"
+#include "asterfort/ddr_chck.h"
+#include "asterfort/ddr_read.h"
+#include "asterfort/ddr_main.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -18,6 +28,36 @@ subroutine op0050()
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!     ------------------------------------------------------------------
-    call utmess('F', 'FERMETUR_5')
+!
+!
+!
+! ----------------------------------------------------------------------
+!
+!   DEFI_DOMAINE_REDUIT
+!
+! ----------------------------------------------------------------------
+!
+    type(ROM_DS_ParaDDR) :: ds_para
+!
+! ----------------------------------------------------------------------
+!
+    call titre()
+    call infmaj()
+!
+! - Create datastructure
+!
+    call ddr_ini0(ds_para)
+!
+! - Read parameters
+!
+    call ddr_read(ds_para)
+!
+! - Some checks
+!
+    call ddr_chck(ds_para)
+!
+! - Compute EIM
+!   
+    call ddr_main(ds_para)
+!
 end subroutine
