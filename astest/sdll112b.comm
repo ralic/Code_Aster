@@ -131,7 +131,7 @@ SPECT_Z=DEFI_NAPPE(  NOM_PARA='AMOR',    INTERPOL='LOG',
 # 1/ ON ETUDIE LA STRUCTURE EN MONO-APPUI
 #                           SANS CORRECTION STATIQUE
 #                           SPECTRE HORIZONTAL
-#                           COMBINAISON SRSS
+#                           COMBINAISON CQC
 #-----------------------------------------
 
 SISM_MO1=COMB_SISM_MODAL(      MODE_MECA=MODE,
@@ -148,7 +148,7 @@ SISM_MO1=COMB_SISM_MODAL(      MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER (3.02.16)
+# VALEUR DE REFERENCE DEPL   
 
 N3_DX=1.78952E-04
 
@@ -161,39 +161,36 @@ N11_DX=1.09032E-03
 
 #N11_DX=(1.09032E-03 + 1.08972E-03)/ 2
 
-TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+TEST_RESU(RESU=(_F(
                    RESULTAT=SISM_MO1,
                    NOM_CHAM='DEPL',
                    NOEUD='N3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.7849328704568E-04,
-                   VALE_REFE=1.7895199999999999E-4,
+                   VALE_CALC=0.000178493287046,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                  ),
+                _F(
                    RESULTAT=SISM_MO1,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DX',
-                   VALE_CALC=3.2927087105026E-04,
-                   VALE_REFE=3.2949900000000002E-4,
+                   VALE_CALC=0.00032927087105,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                   ),
+                _F(
                    RESULTAT=SISM_MO1,
                    NOM_CHAM='DEPL',
                    NOEUD='N11',
                    NOM_CMP='DX',
-                   VALE_CALC=1.0897174411535E-03,
-                   VALE_REFE=1.0903200000000001E-3,
+                   VALE_CALC=0.00108971744115,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
+                   ),
                 ),
           )
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
-# VALEUR DE REFERENCE ACCE_ABSOLU       ASTER (4.02.21)
+# VALEUR DE REFERENCE ACCE_ABSOLU 
 
 N1_AX=1.96200E+00
 
@@ -231,7 +228,7 @@ TEST_RESU(RESU=(_F(
 #
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
-# VALEUR DE REFERENCE REAC        ASTER (4.02.21)
+# VALEUR DE REFERENCE REAC 
 
 N1_RX=6.696036E+02
 
@@ -244,7 +241,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=669.6036105342,
+                   VALE_CALC=669.603610534,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -252,7 +249,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N5',
                    NOM_CMP='DX',
-                   VALE_CALC=1164.2226829856,
+                   VALE_CALC=1164.22268299,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -260,7 +257,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N9',
                    NOM_CMP='DX',
-                   VALE_CALC=928.19947366666,
+                   VALE_CALC=928.199473667,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 ),
@@ -310,7 +307,7 @@ SISM_MO2=COMB_SISM_MODAL(    MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL         CASTEM2000    ASTER (3.02.16)
+# VALEUR DE REFERENCE DEPL  
 
 N3_DX_2=1.78952E-04
 
@@ -323,33 +320,30 @@ N11_DX_2=1.09032E-03
 
 #N11_DX_2=(1.09032E-03 + 1.08972E-03)/ 2.
 
-TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+TEST_RESU(RESU=(_F(
                    RESULTAT=SISM_MO2,
                    NOM_CHAM='DEPL',
                    NOEUD='N3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.7849368153887E-04,
-                   VALE_REFE=1.7895199999999999E-4,
+                   VALE_CALC=0.000178493681539,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                   ),
+                _F(
                    RESULTAT=SISM_MO2,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DX',
-                   VALE_CALC=3.2927091140593E-04,
-                   VALE_REFE=3.2949900000000002E-4,
+                   VALE_CALC=0.000329270911406,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                   ),
+                _F(
                    RESULTAT=SISM_MO2,
                    NOM_CHAM='DEPL',
                    NOEUD='N11',
                    NOM_CMP='DX',
-                   VALE_CALC=1.0897182796588E-03,
-                   VALE_REFE=1.0903200000000001E-3,
+                   VALE_CALC=0.00108971827966,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
+                   ),
                 ),
           )
 
@@ -407,7 +401,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=671.66829843468,
+                   VALE_CALC=671.668298435,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -415,7 +409,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N5',
                    NOM_CMP='DX',
-                   VALE_CALC=1169.7268840111,
+                   VALE_CALC=1169.72688401,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -423,152 +417,16 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N9',
                    NOM_CMP='DX',
-                   VALE_CALC=937.32687543603,
+                   VALE_CALC=937.326875436,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 ),
           )
 
-###=======================================================================
-# 3/ ON ETUDIE LA STRUCTURE EN MONO-APPUI
-#                           SANS CORRECTION STATIQUE
-#                           SPECTRE HORIZONTAL
-#                           COMBINAISON SRSS
-#-----------------------------------------
 
-SISM_MO3=COMB_SISM_MODAL(      MODE_MECA=MODE,
-                               AMOR_REDUIT=0.03,
-                               MASS_INER=MAS,
-                               CORR_FREQ='NON',
-                               MONO_APPUI = 'OUI',
-                               EXCIT=_F( AXE = ( 1., 0., 0., ),
-                                         SPEC_OSCI = SPECT_XY,
-                                         ECHELLE = 1.),
-                               COMB_MODE=_F( TYPE = 'SRSS'),
-                               OPTION=( 'DEPL', 'ACCE_ABSOLU', 'REAC_NODA',)
-                           )
-
-#-----------------------------------------
-# TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL             ASTER (9.02.11)
-
-N3_DX=1.804848E-04
-
-N7_DX=3.2904067E-04
-
-N11_DX=1.088706E-03
-
-#N3_DX=(1.78952E-04 + 1.78493E-04)/ 2.
-
-#N7_DX=(3.29499E-04 + 3.29271E-04)/ 2.
-
-#N11_DX=(1.09032E-03 + 1.08972E-03)/ 2
-
-TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N3',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.804847804311E-04,
-                   VALE_REFE=1.8048479999999999E-4,
-                   NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=0.089999999999999997,),
-                _F(REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N7',
-                   NOM_CMP='DX',
-                   VALE_CALC=3.2904068616012E-04,
-                   VALE_REFE=3.2904066999999999E-4,
-                   NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=0.089999999999999997,),
-                _F(REFERENCE='SOURCE_EXTERNE',
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='DEPL',
-                   NOEUD='N11',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.0887058997034E-03,
-                   VALE_REFE=1.088706E-3,
-                   NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=0.089999999999999997,),
-                ),
-          )
-
-#-----------------------------------------
-# TEST DES VALEURS DE ACCE_ABSOLU
-# VALEUR DE REFERENCE ACCE_ABSOLU       ASTER (9.02.18)
-
-N1_AX=1.96200E+00
-
-N5_AX=1.96200E+00
-
-N9_AX=1.96200E+00
-TEST_RESU(RESU=(_F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='ACCE_ABSOLU',
-                   NOEUD='N1',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.962,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                _F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='ACCE_ABSOLU',
-                   NOEUD='N5',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.962,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                _F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='ACCE_ABSOLU',
-                   NOEUD='N9',
-                   NOM_CMP='DX',
-                   VALE_CALC=1.962,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                ),
-          )
-
-#
-#-----------------------------------------
-# TEST DES VALEURS DE REACTIONS
-# VALEUR DE REFERENCE REAC        ASTER (9.02.18)
-N1_RX=6.762012E+02
-
-N5_RX=1.164525E+03
-
-N9_RX=9.172971E+02
-
-TEST_RESU(RESU=(_F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='REAC_NODA',
-                   NOEUD='N1',
-                   NOM_CMP='DX',
-                   VALE_CALC=676.20124459701,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                _F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='REAC_NODA',
-                   NOEUD='N5',
-                   NOM_CMP='DX',
-                   VALE_CALC=1164.5249698056,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                _F(
-                   RESULTAT=SISM_MO3,
-                   NOM_CHAM='REAC_NODA',
-                   NOEUD='N9',
-                   NOM_CMP='DX',
-                   VALE_CALC=917.29713691595,
-                   NOEUD_CMP=('DIR', 'X'),
-                   ),
-                ),
-          )
 
 #=======================================================================
-# 4/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI
+# 3/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI
 #         SANS CORRECTION STATIQUE
 #                           SPECTRE HORIZONTAL
 #                           COMBINAISON QUADRATIQUE COMPLETE
@@ -641,7 +499,7 @@ SISM_MU1=COMB_SISM_MODAL(      MODE_MECA=MODE,
 
 #-----------------------------------------
 # TEST DES VALEURS DE DEPLACEMENT
-# VALEUR DE REFERENCE DEPL
+# VALEUR DE REFERENCE DEPL mono-appui SISM_MO1 aster 13.2.2
 
 N3_DX_4=1.784933E-04
 
@@ -654,67 +512,73 @@ N11_DX_4=1.089717E-03
 
 #N11_DX_3=5.967E-3
 
-TEST_RESU(RESU=(_F(REFERENCE='SOURCE_EXTERNE',
+TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='DEPL',
                    NOEUD='N3',
                    NOM_CMP='DX',
-                   VALE_CALC=1.7849328704568E-04,
-                   VALE_REFE=1.7849329999999999E-4,
+                   VALE_CALC=0.000178493287046,
+                   VALE_REFE=0.000178493287046,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=1.0000000000000001E-5,),
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DX',
-                   VALE_CALC=3.2927087105025E-04,
-                   VALE_REFE=3.2927089999999998E-4,
+                   VALE_CALC=0.00032927087105,
+                   VALE_REFE=0.00032927087105,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
-                _F(REFERENCE='SOURCE_EXTERNE',
+                   PRECISION=1.0000000000000001E-5,),
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='DEPL',
                    NOEUD='N11',
                    NOM_CMP='DX',
-                   VALE_CALC=1.0897174411534E-03,
-                   VALE_REFE=1.089717E-3,
+                   VALE_CALC=0.00108971744115,
+                   VALE_REFE=0.00108971744115,
                    NOEUD_CMP=('DIR', 'X'),
-                   PRECISION=3.0000000000000001E-3,),
+                   PRECISION=1.0000000000000001E-5,),
                 ),
           )
 
 #-----------------------------------------
 # TEST DES VALEURS DE ACCE_ABSOLU
 # VALEUR DE REFERENCE ACCE_ABSOLU
-#   IDENTIQUES A CELLES DU MONO_APPUI ASTER 9.02.18
+#   IDENTIQUES A CELLES DU MONO_APPUI SISM_MO1 aster 13.2.2
 ## N1_AX  =1.96200E+00 ;
 ## N5_AX  =1.96200E+00 ;
 ## N9_AX  =1.96200E+00 ;
 
-TEST_RESU(RESU=(_F(
+TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOEUD='N1',
                    NOM_CMP='DX',
                    VALE_CALC=1.962,
+                   VALE_REFE=1.962,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
-                _F(
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOEUD='N5',
                    NOM_CMP='DX',
                    VALE_CALC=1.962,
+                   VALE_REFE=1.962,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
-                _F(
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='ACCE_ABSOLU',
                    NOEUD='N9',
                    NOM_CMP='DX',
                    VALE_CALC=1.962,
+                   VALE_REFE=1.962,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
                 ),
           )
@@ -722,7 +586,7 @@ TEST_RESU(RESU=(_F(
 #
 #-----------------------------------------
 # TEST DES VALEURS DE REACTIONS
-# VALEUR DE REFERENCE REAC        ASTER (9.02.18)
+# VALEUR DE REFERENCE REAC   mono-appui SISM_MO1     ASTER (13.2.2)
 
 N1_RX_4=6.696036E+02
 
@@ -736,36 +600,42 @@ N9_RX_4= 9.281995E+02
 
 #N9_RX_3=3.286E3
 
-TEST_RESU(RESU=(_F(
+TEST_RESU(RESU=(_F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=669.6036105342,
+                   VALE_CALC=669.603610534,
+                   VALE_REFE=669.603610534,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
-                _F(
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N5',
                    NOM_CMP='DX',
-                   VALE_CALC=1164.2226829856,
+                   VALE_CALC=1164.22268299,
+                   VALE_REFE=1164.22268299,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
-                _F(
+                _F(REFERENCE='AUTRE_ASTER',
                    RESULTAT=SISM_MU1,
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N9',
                    NOM_CMP='DX',
-                   VALE_CALC=928.19947366666,
+                   VALE_CALC=928.199473667,
+                   VALE_REFE=928.199473667,
                    NOEUD_CMP=('DIR', 'X'),
+                   PRECISION=1.0000000000000001E-5,
                    ),
                 ),
           )
 
 #
 #=======================================================================
-# 5/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI:
+# 4/ ON ETUDIE LA STRUCTURE EN MULTI-APPUI:
 #        EXCITATION EN X
 #        AVEC PRISE EN COMPTE DES MODES NEGLIGES
 #        AVEC DES DEPLACEMENTS D'ANCRAGE DE 0.001 PAR RAPPORT A SA BASE
@@ -825,7 +695,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='DEPL',
                    NOEUD='N3',
                    NOM_CMP='DX',
-                   VALE_CALC=5.8865524242422E-04,
+                   VALE_CALC=0.000588655242424,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -833,7 +703,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='DEPL',
                    NOEUD='N5',
                    NOM_CMP='DX',
-                   VALE_CALC=1.0E-03,
+                   VALE_CALC=0.001,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -841,7 +711,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='DEPL',
                    NOEUD='N7',
                    NOM_CMP='DX',
-                   VALE_CALC=1.1592562496733E-03,
+                   VALE_CALC=0.00115925624967,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -849,7 +719,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='DEPL',
                    NOEUD='N9',
                    NOM_CMP='DX',
-                   VALE_CALC=1.0E-03,
+                   VALE_CALC=0.001,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -857,7 +727,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='DEPL',
                    NOEUD='N11',
                    NOM_CMP='DX',
-                   VALE_CALC=3.1715622256108E-03,
+                   VALE_CALC=0.00317156222561,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 ),
@@ -874,7 +744,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N1',
                    NOM_CMP='DX',
-                   VALE_CALC=1292.344561931,
+                   VALE_CALC=1292.34456193,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -882,7 +752,7 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N5',
                    NOM_CMP='DX',
-                   VALE_CALC=1992.5394314478,
+                   VALE_CALC=1992.53943145,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 _F(
@@ -890,12 +760,13 @@ TEST_RESU(RESU=(_F(
                    NOM_CHAM='REAC_NODA',
                    NOEUD='N9',
                    NOM_CMP='DX',
-                   VALE_CALC=2064.377644969,
+                   VALE_CALC=2064.37764497,
                    NOEUD_CMP=('DIR', 'X'),
                    ),
                 ),
           )
 
-#
+
 FIN( )
 #
+
