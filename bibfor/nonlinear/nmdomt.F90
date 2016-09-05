@@ -1,6 +1,7 @@
-subroutine nmdomt(ds_algopara)
+subroutine nmdomt(ds_algopara, ds_algorom_)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -8,6 +9,7 @@ implicit none
 #include "asterc/getfac.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
+#include "asterfort/romAlgoNLRead.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -34,6 +36,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+    type(ROM_DS_AlgoPara), optional, intent(inout) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,6 +47,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,6 +111,22 @@ implicit none
     else if (algo_meth .eq. 'IMPLEX') then
         ds_algopara%matrix_pred = 'TANGENTE'
         ds_algopara%reac_incr   = 1
+    else if (algo_meth .eq. 'MODELE_REDUIT') then
+        keywf = 'MODELE_REDUIT'
+        call getvtx(keywf, 'MATRICE'   , iocc=1, scal=matrix_corr)
+        call getvtx(keywf, 'PREDICTION', iocc=1, scal=matrix_pred, nbret=iret)
+        if (iret .eq. 0) then
+            matrix_pred = matrix_corr
+        endif
+        ds_algopara%matrix_pred = matrix_pred
+        ds_algopara%matrix_corr = matrix_corr 
+        call getvis(keywf, 'REAC_INCR', iocc=1, scal=reac_incr)
+        ASSERT(reac_incr .ge. 0)
+        ds_algopara%reac_incr = reac_incr
+        call getvis(keywf, 'REAC_ITER', iocc=1, scal=reac_iter)
+        ASSERT(reac_iter .ge. 0)
+        ds_algopara%reac_iter = reac_iter
+        call romAlgoNLRead(ds_algorom_)
     else
         ASSERT(.false.)
     endif

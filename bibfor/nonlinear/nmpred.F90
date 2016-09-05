@@ -1,12 +1,13 @@
 subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
                   comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, ds_measure,&
+                  fonact  , carcri, ds_print, ds_measure , ds_algorom,&
                   sddisc  , sdnume, sderro  , numins     , valinc,&
                   solalg  , matass, maprec  , ds_contact , sddyna,&
                   ds_inout, meelem, measse  , veelem     , veasse,&
                   lerrit)
 !
 use NonLin_Datastructure_type
+use ROM_Datastructure_type
 !
 implicit none
 !
@@ -42,6 +43,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
@@ -79,6 +81,7 @@ implicit none
 ! IO  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -121,7 +124,7 @@ implicit none
         (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
         call nmprta(modele  , numedd, numfix  , mate       , carele,&
                     comref  , compor, lischa  , ds_algopara, solveu,&
-                    fonact  , carcri, ds_print, ds_measure,&
+                    fonact  , carcri, ds_print, ds_measure, ds_algorom,&
                     sddisc  , numins, valinc  , solalg     , matass,&
                     maprec  , ds_contact, sddyna,&
                     meelem  , measse, veelem  , veasse     , sdnume,&

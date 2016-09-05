@@ -18,10 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmfonc(ds_conv  , ds_algopara, solver   , model    , ds_contact    ,&
-                      list_load, sdnume     , sddyna   , sdcriq   , mate          ,&
-                      compor_  , ds_inout   , comp_para, ds_energy, list_func_acti)
+    subroutine nmfonc(ds_conv       , ds_algopara, solver   , model    , ds_contact    ,&
+                      list_load     , sdnume     , sddyna   , sdcriq   , mate          ,&
+                      compor_       , ds_inout   , comp_para, ds_energy, ds_algorom    ,&
+                      list_func_acti)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         type(NL_DS_Conv), intent(in) :: ds_conv
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19), intent(in) :: solver
@@ -36,6 +38,7 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24), intent(in) :: comp_para
         type(NL_DS_Energy), intent(in) :: ds_energy
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         integer, intent(inout) :: list_func_acti(*)
     end subroutine nmfonc
 end interface

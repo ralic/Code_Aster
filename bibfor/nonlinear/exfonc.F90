@@ -64,7 +64,7 @@ implicit none
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
-    aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps
+    aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps, l_rom
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo
     character(len=24) :: typilo, metres
     character(len=16) :: reli_meth, matrix_pred
@@ -96,6 +96,7 @@ implicit none
     lammo           = ndynlo(sddyna,'AMOR_MODAL')
     limpex          = isfonc(list_func_acti,'IMPLEX')
     l_newt_krylov   = isfonc(list_func_acti,'NEWTON_KRYLOV')
+    l_rom           = isfonc(list_func_acti,'ROM')
     l_energy        = isfonc(list_func_acti,'ENERGIE')
     lproj           = isfonc(list_func_acti,'PROJ_MODAL')
     lmatdi          = isfonc(list_func_acti,'MATR_DISTRIBUEE')
@@ -288,6 +289,23 @@ implicit none
         endif
         if ((.not.lgcpc) .and. (.not.lpetsc)) then
             call utmess('F', 'MECANONLINE5_51')
+        endif
+    endif
+!
+! - ROM
+!
+    if (l_rom) then
+        if (l_pilo) then
+            call utmess('F', 'ROM2_6')
+        endif
+        if (l_line_search) then
+            call utmess('F', 'ROM2_4')
+        endif
+        if (l_dyna) then
+            call utmess('F', 'ROM2_7')
+        endif
+        if (l_cont) then
+            call utmess('F', 'ROM2_8')
         endif
     endif
 !

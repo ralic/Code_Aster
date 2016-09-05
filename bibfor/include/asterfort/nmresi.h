@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,9 +20,10 @@ interface
     subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
                       sddyna, ds_conv, ds_print, ds_contact,&
                       matass, numins , eta     , comref  , valinc,&
-                      solalg, veasse , measse  , ds_inout, vresi ,&
-                      vchar)
+                      solalg, veasse , measse  , ds_inout, ds_algorom,&
+                      vresi , vchar)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: numedd
         type(NL_DS_Contact), intent(in) :: ds_contact
@@ -41,6 +42,7 @@ interface
         character(len=19) :: veasse(*)
         character(len=19) :: measse(*)
         type(NL_DS_InOut), intent(in) :: ds_inout
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         real(kind=8), intent(out) :: vchar
         real(kind=8), intent(out) :: vresi
     end subroutine nmresi

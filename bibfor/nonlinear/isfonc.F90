@@ -6,7 +6,7 @@ implicit none
 #include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,8 +103,10 @@ implicit none
 !       ELAS_FO            :  elastic properties are functions
 !       POST_INCR          :  post-treatment for comportment laws
 !       ETAT_INIT          :  initial state
+!       ROM                :  reduced order model
+!       HROM               :  hyper-reduced order model
 !
-! DERNIER NUMERO UTILISE: 60
+! DERNIER NUMERO UTILISE: 62
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -220,6 +222,10 @@ implicit none
         isfonc = list_func_acti(46).eq.1
     else if (func_name.eq.'NEWTON_KRYLOV') then
         isfonc = list_func_acti(48).eq.1
+    else if (func_name.eq.'ROM') then
+        isfonc = list_func_acti(61).eq.1
+    else if (func_name.eq.'HROM') then
+        isfonc = list_func_acti(62).eq.1
     else if (func_name.eq.'ENERGIE') then
         isfonc = list_func_acti(50).eq.1
     else if (func_name.eq.'PROJ_MODAL') then

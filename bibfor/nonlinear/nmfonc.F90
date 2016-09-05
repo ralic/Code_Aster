@@ -1,8 +1,10 @@
-subroutine nmfonc(ds_conv  , ds_algopara, solver   , model    , ds_contact    ,&
-                  list_load, sdnume     , sddyna   , sdcriq   , mate          ,&
-                  compor_  , ds_inout   , comp_para, ds_energy, list_func_acti)
+subroutine nmfonc(ds_conv       , ds_algopara, solver   , model    , ds_contact,&
+                  list_load     , sdnume     , sddyna   , sdcriq   , mate      ,&
+                  compor_       , ds_inout   , comp_para, ds_energy, ds_algorom,&
+                  list_func_acti)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -60,6 +62,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: comp_para
     type(NL_DS_Energy), intent(in) :: ds_energy
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     integer, intent(inout) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -86,6 +89,7 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! In  comp_para        : parameters for comportment
 ! In  ds_energy        : datastructure for energy management
+! In  ds_algorom       : datastructure for ROM parameters
 ! IO  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
@@ -359,6 +363,15 @@ implicit none
         list_func_acti(48) = 1
     endif
 !
+! - NEWTON_KRYLOV algorithm
+!
+    if (ds_algopara%method .eq. 'MODELE_REDUIT') then
+        list_func_acti(61) = 1
+        if (ds_algorom%l_hrom) then
+            list_func_acti(62) = 1
+        endif
+    endif
+!
 ! - DIS_CHOC elements ?
 !
     call nmcpqu(compor, 'RELCOM', 'DIS_CHOC', l_elem_choc)
@@ -433,6 +446,12 @@ implicit none
         endif
         if (isfonc(list_func_acti,'NEWTON_KRYLOV')) then
             write (ifm,*) '<MECANONLINE> ...... METHODE NEWTON_KRYLOV'
+        endif
+        if (isfonc(list_func_acti,'ROM')) then
+            write (ifm,*) '<MECANONLINE> ...... METHODE ROM'
+        endif
+        if (isfonc(list_func_acti,'HROM')) then
+            write (ifm,*) '<MECANONLINE> ...... METHODE HROM'
         endif
         if (isfonc(list_func_acti,'RECH_LINE')) then
             write (ifm,*) '<MECANONLINE> ...... RECHERCHE LINEAIRE'

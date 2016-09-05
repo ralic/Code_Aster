@@ -18,15 +18,16 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmnewt(noma       , modele  , numins  , numedd , numfix    ,&
-                      mate       , carele  , comref  , compor , lischa    ,&
-                      ds_algopara, fonact  , carcri  , ds_measure,&
-                      sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
-                      sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu    ,&
-                      maprec     , matass  , ds_inout, valinc , solalg    ,&
-                      meelem     , measse  , veelem  , veasse , ds_contact,&
-                      eta        , nbiter)
+    subroutine nmnewt(noma       , modele  , numins , numedd    , numfix    ,&
+                      mate       , carele  , comref , compor    , lischa    ,&
+                      ds_algopara, fonact  , carcri , ds_measure, sderro    ,&
+                      ds_print   , sdnume  , sddyna , sddisc    , sdcrit    ,&
+                      sdsuiv     , sdpilo  , ds_conv, solveu    , maprec    ,&
+                      matass     , ds_inout, valinc , solalg    , meelem    ,&
+                      measse     , veelem  , veasse , ds_contact, ds_algorom,&
+                      eta        , nbiter  )
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
         integer :: numins
@@ -61,6 +62,7 @@ interface
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         real(kind=8) :: eta
         integer :: nbiter
     end subroutine nmnewt

@@ -1,13 +1,14 @@
-subroutine nminit(result, model    , numedd    , numfix     , mate  ,&
-                  compor, carele   , list_load , ds_algopara, maprec,&
-                  solveu, carcri   , numins    , sddisc     , sdnume,&
-                  sdcrit, varc_refe, fonact    , mesh       , sdpilo,&
-                  sddyna, ds_print , sd_suiv   , sd_obsv    , sderro,&
-                  sdpost, ds_inout , ds_energy , ds_conv    , sdcriq,&
-                  valinc, solalg   , measse    , veelem     , meelem,&
-                  veasse, codere   , ds_contact, ds_measure)
+subroutine nminit(result, model    , numedd    , numfix     , mate      ,&
+                  compor, carele   , list_load , ds_algopara, maprec    ,&
+                  solveu, carcri   , numins    , sddisc     , sdnume    ,&
+                  sdcrit, varc_refe, fonact    , mesh       , sdpilo    ,&
+                  sddyna, ds_print , sd_suiv   , sd_obsv    , sderro    ,&
+                  sdpost, ds_inout , ds_energy , ds_conv    , sdcriq    ,&
+                  valinc, solalg   , measse    , veelem     , meelem    ,&
+                  veasse, codere   , ds_contact, ds_measure , ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -49,6 +50,7 @@ implicit none
 #include "asterfort/InitConv.h"
 #include "asterfort/InitEnergy.h"
 #include "asterfort/InitPrint.h"
+#include "asterfort/romAlgoNLInit.h"
 #include "asterfort/nmrefe.h"
 #include "asterfort/nminma.h"
 #include "asterfort/nminmc.h"
@@ -106,6 +108,7 @@ implicit none
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,6 +134,7 @@ implicit none
 ! IO  ds_algopara      : datastructure for algorithm parameters
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
+! IO  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -166,7 +170,8 @@ implicit none
 !
     call nmfonc(ds_conv  , ds_algopara, solveu, model    , ds_contact,&
                 list_load, sdnume     , sddyna, sdcriq   , mate      ,&
-                compor   , ds_inout   , carcri, ds_energy, fonact)
+                compor   , ds_inout   , carcri, ds_energy, ds_algorom,&
+                fonact)
 !
 ! - Check compatibility of some functionnalities
 !
@@ -179,6 +184,12 @@ implicit none
     lviss = ndynlo(sddyna,'VECT_ISS' )
     lrefe = isfonc(fonact,'RESI_REFE')
     ldidi = isfonc(fonact,'DIDI')
+!
+! - Initialization for reduced method
+!
+    if (ds_algorom%l_rom) then
+        call romAlgoNLInit('MECA', mesh, numedd, result, ds_algorom)
+    endif
 !
 ! - Prepare contact solving datastructure
 !

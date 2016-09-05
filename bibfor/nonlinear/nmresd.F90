@@ -1,19 +1,22 @@
-subroutine nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
-                  instan, maprec, matass    , cndonn, cnpilo,&
-                  cncine, solalg, rescvg)
+subroutine nmresd(fonact, sddyna, ds_measure, solveu,&
+                  numedd, instan, maprec    , matass     , cndonn,&
+                  cnpilo, cncine, solalg    , rescvg, ds_algorom_)
 !
 use NonLin_Datastructure_type
+use ROM_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmresg.h"
 #include "asterfort/nmreso.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/romAlgoNLSystemSolve.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,6 +39,7 @@ implicit none
     integer :: fonact(*)
     character(len=19) :: solalg(*)
     character(len=19) :: maprec, matass
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: solveu, sddyna
     character(len=19) :: cncine, cndonn, cnpilo
@@ -54,6 +58,7 @@ implicit none
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL
 ! IN  INSTAN : INSTANT COURANT
@@ -71,8 +76,9 @@ implicit none
 !                 1 : NOMBRE MAXIMUM D'ITERATIONS ATTEINT
 !
 !
-    aster_logical :: lprmo
+    aster_logical :: lprmo, l_rom
     character(len=19) :: depso1, depso2
+    character(len=24) :: mata24, vect24
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -89,7 +95,8 @@ implicit none
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lprmo = ndynlo(sddyna,'PROJ_MODAL')
+    lprmo = ndynlo(sddyna, 'PROJ_MODAL')
+    l_rom = isfonc(fonact, 'ROM')
 !
 ! --- RESOLUTION GENERALISEE OU PHYSIQUE
 !
@@ -99,8 +106,15 @@ implicit none
     if (lprmo) then
         call nmresg(numedd, sddyna, instan, cndonn, depso1)
     else
-        call nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
-                    maprec, matass, depso1, depso2, rescvg)
+        if (l_rom) then
+            rescvg = 0
+            mata24 = matass
+            vect24 = cndonn
+            call romAlgoNLSystemSolve(mata24, vect24, ds_algorom_, depso1)
+        else
+            call nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
+                        maprec, matass, depso1, depso2, rescvg)
+        endif
     endif
 !
     call nmtime(ds_measure, 'Stop', 'Solve')

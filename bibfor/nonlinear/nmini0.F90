@@ -1,9 +1,10 @@
 subroutine nmini0(list_func_acti, eta      , nume_inst  , matass  , zmeelm    ,&
                   zmeass        , zveelm   , zveass     , zsolal  , zvalin    ,&
                   ds_print      , ds_conv  , ds_algopara, ds_inout, ds_contact,&
-                  ds_measure    , ds_energy)
+                  ds_measure    , ds_energy, ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -18,6 +19,7 @@ implicit none
 #include "asterfort/CreateContactDS.h"
 #include "asterfort/CreateMeasureDS.h"
 #include "asterfort/CreateEnergyDS.h"
+#include "asterfort/romAlgoNLDSCreate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -54,6 +56,7 @@ implicit none
     type(NL_DS_Contact), intent(out) :: ds_contact
     type(NL_DS_Measure), intent(out) :: ds_measure
     type(NL_DS_Energy), intent(out) :: ds_energy
+    type(ROM_DS_AlgoPara), intent(out) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -72,6 +75,7 @@ implicit none
 ! Out ds_contact       : datastructure for contact management
 ! Out ds_measure       : datastructure for measure and statistics management
 ! Out ds_energy        : datastructure for energy management
+! Out ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,6 +117,10 @@ implicit none
 ! - Create energy management datastructure
 !
     call CreateEnergyDS(ds_energy)
+!
+! - Create ROM parameters datastructure
+!
+    call romAlgoNLDSCreate(ds_algorom)
 !
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !

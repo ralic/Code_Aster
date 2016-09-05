@@ -1,12 +1,13 @@
 subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
                   comref, compor  , lischa, ds_contact, ds_algopara,&
                   solveu, carcri  , fonact, numins, iterat     ,&
-                  sddisc, ds_print, ds_measure, sddyna     ,&
+                  sddisc, ds_print, ds_measure, ds_algorom, sddyna     ,&
                   sdnume, sderro  , matass, maprec, &
                   valinc, solalg  , meelem, measse, veasse     ,&
                   veelem, lerrit  )
 !
 use NonLin_Datastructure_type
+use ROM_Datastructure_type
 !
 implicit none
 !
@@ -49,6 +50,7 @@ implicit none
     character(len=24) :: numedd, numfix
     character(len=24) :: modele, mate, carele, comref, compor, carcri
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     character(len=24) :: sderro
     integer :: fonact(*)
     character(len=19) :: meelem(*), veelem(*)
@@ -82,6 +84,7 @@ implicit none
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IO  ds_contact       : datastructure for contact management
 ! In  ds_algopara      : datastructure for algorithm parameters
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
@@ -153,9 +156,9 @@ implicit none
 !
 ! --- RESOLUTION
 !
-    call nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
-                r8bid , maprec, matass    , cndonn, cnpilo,&
-                cncind, solalg, rescvg)
+    call nmresd(fonact, sddyna, ds_measure, solveu    , numedd,&
+                r8bid , maprec, matass    , cndonn    , cnpilo,&
+                cncind, solalg, rescvg    , ds_algorom)
 !
 999 continue
 !

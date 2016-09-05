@@ -218,7 +218,7 @@ implicit none
 !
     else if (typvec.eq.'CNSSTF') then
         call nmsssv(modele, mate, carele, lischa, vecele)
-!
+!   
 ! --- FORCES SUIVEUSES
 !
     else if (typvec.eq.'CNFSDO') then

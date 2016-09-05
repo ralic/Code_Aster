@@ -1,7 +1,17 @@
-subroutine nmmeng(fonact)
+subroutine nmmeng(list_func_acti, ds_algorom)
+!
+use NonLin_Datastructure_type
+use Rom_Datastructure_type
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/detmat.h"
+#include "asterfort/isfonc.h"
+#include "asterfort/romAlgoNLClean.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,38 +28,33 @@ subroutine nmmeng(fonact)
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/detmat.h"
-#include "asterfort/isfonc.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-    integer :: fonact(*)
+    integer, intent(in) :: list_func_acti(*)
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE MECA_NON_LINE (ALGORITHME PRINCIPAL)
+! MECA_NON_LINE - Algorithm
 !
-! NETTOYAGE FIN DE MECA_NON_LINE
+! Cleaning datastructures
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
+! In  list_func_acti   : list of active functionnalities
+! IO  ds_algorom       : datastructure for ROM parameters
 !
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
+! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_rom
 !
+! --------------------------------------------------------------------------------------------------
 !
+    l_rom = isfonc(list_func_acti,'ROM')
+    if (l_rom) then
+        call romAlgoNLClean(ds_algorom)
+    endif
 !
-!
-! ----------------------------------------------------------------------
-!
-    call jemarq()
-!
-! --- DESTRUCTION DE TOUTES LES MATRICES CREEES
+! - DESTRUCTION DE TOUTES LES MATRICES CREEES
 !
     call detmat()
-!
-!
-    call jedema()
 !
 end subroutine

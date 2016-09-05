@@ -1,13 +1,14 @@
-subroutine nmnewt(noma       , modele  , numins  , numedd , numfix    ,&
-                  mate       , carele  , comref  , compor , lischa    ,&
-                  ds_algopara, fonact  , carcri  , ds_measure,&
-                  sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
-                  sdcrit     , sdsuiv  , sdpilo  , ds_conv, solveu    ,&
-                  maprec     , matass  , ds_inout, valinc , solalg    ,&
-                  meelem     , measse  , veelem  , veasse , ds_contact,&
-                  eta        , nbiter)
+subroutine nmnewt(noma       , modele  , numins , numedd    , numfix    ,&
+                  mate       , carele  , comref , compor    , lischa    ,&
+                  ds_algopara, fonact  , carcri , ds_measure, sderro    ,&
+                  ds_print   , sdnume  , sddyna , sddisc    , sdcrit    ,&
+                  sdsuiv     , sdpilo  , ds_conv, solveu    , maprec    ,&
+                  matass     , ds_inout, valinc , solalg    , meelem    ,&
+                  measse     , veelem  , veasse , ds_contact, ds_algorom,&
+                  eta        , nbiter  )
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -84,6 +85,7 @@ implicit none
     character(len=24) :: comref, compor
     character(len=24) :: mate, carele
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     real(kind=8) :: eta
     integer :: nbiter
     character(len=8) :: noma
@@ -126,6 +128,7 @@ implicit none
 ! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! IN  SDNUME : SD NUMEROTATION
+! IO  ds_algorom       : datastructure for ROM parameters
 ! I/O ETA    : PARAMETRE DE PILOTAGE
 ! OUT NBITER : NOMBRE D'ITERATIONS DE NEWTON
 ! OUT ETATIN : ETAT DE LA CONVERGENCE DU PAS DE TEMPS
@@ -171,10 +174,10 @@ implicit none
 !
 ! --- INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
-    call nmnpas(modele  , noma  , mate  , carele , fonact    ,&
-                ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
-                ds_measure, numedd, numins , ds_contact,&
-                valinc  , solalg, solveu, ds_conv, lischa  )
+    call nmnpas(modele    , noma  , mate  , carele    , fonact    ,&
+                ds_print  , sddisc, sdsuiv, sddyna    , sdnume    ,&
+                ds_measure, numedd, numins, ds_contact, ds_algorom,&
+                valinc    , solalg, solveu, ds_conv   , lischa    )
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
@@ -217,7 +220,7 @@ implicit none
 !
     call nmpred(modele  , numedd, numfix  , mate       , carele,&
                 comref  , compor, lischa  , ds_algopara, solveu,&
-                fonact  , carcri, ds_print, ds_measure ,&
+                fonact  , carcri, ds_print, ds_measure , ds_algorom,&
                 sddisc  , sdnume, sderro  , numins     , valinc,&
                 solalg  , matass, maprec  , ds_contact , sddyna,&
                 ds_inout, meelem, measse  , veelem     , veasse,&
@@ -272,7 +275,7 @@ implicit none
 315 continue
     call nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
                 fonact  , sddyna, ds_conv, ds_print, ds_measure,&
-                sddisc  , sdcrit , sderro  , ds_algopara,&
+                sddisc  , sdcrit , sderro  , ds_algopara, ds_algorom,&
                 ds_inout, comref, matass , solveu  , numins     ,&
                 iterat  , eta   , ds_contact, valinc     ,&
                 solalg  , measse, veasse )
@@ -306,7 +309,7 @@ implicit none
     call nmdesc(modele, numedd  , numfix, mate      , carele     ,&
                 comref, compor  , lischa, ds_contact, ds_algopara,&
                 solveu, carcri  , fonact, numins    , iterat     ,&
-                sddisc, ds_print, ds_measure, sddyna     ,&
+                sddisc, ds_print, ds_measure, ds_algorom, sddyna     ,&
                 sdnume, sderro  , matass, maprec    , valinc     ,&
                 solalg, meelem  , measse, veasse    , veelem     ,&
                 lerrit)

@@ -17,11 +17,12 @@
 !
 !
 interface
-    subroutine nmnpas(modele  , noma  , mate  , carele , fonact    ,&
-                      ds_print, sddisc, sdsuiv, sddyna , sdnume    ,&
-                      ds_measure, numedd, numins , ds_contact,&
-                      valinc  , solalg, solveu, ds_conv, lischa)
+    subroutine nmnpas(modele    , noma  , mate  , carele    , fonact    ,&
+                      ds_print  , sddisc, sdsuiv, sddyna    , sdnume    ,&
+                      ds_measure, numedd, numins, ds_contact, ds_algorom,&
+                      valinc    , solalg, solveu, ds_conv   , lischa    )
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         character(len=24) :: modele
         character(len=8) :: noma
         character(len=24) :: mate
@@ -36,6 +37,7 @@ interface
         character(len=24) :: numedd
         integer :: numins
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: solveu

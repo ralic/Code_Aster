@@ -20,12 +20,13 @@
 interface
     subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
                       comref  , compor, lischa  , ds_algopara, solveu,&
-                      fonact  , carcri, ds_print, ds_measure,&
+                      fonact  , carcri, ds_print, ds_measure , ds_algorom,&
                       sddisc  , numins, valinc  , solalg     , matass,&
                       maprec  , ds_contact, sddyna,&
                       meelem  , measse, veelem  , veasse     , sdnume,&
                       ds_inout, ldccvg, faccvg  , rescvg     , codere)
         use NonLin_Datastructure_type
+        use ROM_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
@@ -41,6 +42,7 @@ interface
         character(len=24) :: carcri
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         character(len=19) :: sddisc
         integer :: numins
         character(len=19) :: valinc(*)

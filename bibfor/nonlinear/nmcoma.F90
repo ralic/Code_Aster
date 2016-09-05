@@ -30,6 +30,7 @@ implicit none
 #include "asterfort/nmtime.h"
 #include "asterfort/nmxmat.h"
 #include "asterfort/preres.h"
+#include "asterfort/mtdscr.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -118,7 +119,7 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: reasma, lcamor, l_diri_undead
+    aster_logical :: reasma, lcamor, l_diri_undead, l_rom
     aster_logical :: ldyna, lamor, l_neum_undead, lcrigi, lcfint, larigi
     character(len=16) :: metcor, metpre
     character(len=16) :: optrig, optamo
@@ -154,6 +155,7 @@ implicit none
 !
     ldyna         = ndynlo(sddyna,'DYNAMIQUE')
     lamor         = ndynlo(sddyna,'MAT_AMORT')
+    l_rom         = isfonc(fonact,'ROM')
     l_neum_undead = isfonc(fonact,'NEUM_UNDEAD')
     l_diri_undead = isfonc(fonact,'DIRI_UNDEAD')
 !
@@ -287,8 +289,12 @@ implicit none
     if (reasma) then
         call nmtime(ds_measure, 'Init', 'Factor')
         call nmtime(ds_measure, 'Launch', 'Factor')
-        call preres(solveu, 'V', faccvg, maprec, matass,&
-                    ibid, -9999)
+        if (l_rom) then
+            call mtdscr(matass)
+        else
+            call preres(solveu, 'V', faccvg, maprec, matass,&
+                        ibid, -9999)
+        endif
         call nmtime(ds_measure, 'Stop', 'Factor')
         call nmrinc(ds_measure, 'Factor')
     endif

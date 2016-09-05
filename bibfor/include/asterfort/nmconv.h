@@ -20,11 +20,12 @@
 interface
     subroutine nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
                       fonact  , sddyna, ds_conv, ds_print, ds_measure,&
-                      sddisc  , sdcrit , sderro  , ds_algopara,&
+                      sddisc  , sdcrit , sderro  , ds_algopara, ds_algorom,&
                       ds_inout, comref, matass , solveu  , numins     ,&
                       iterat  , eta   , ds_contact, valinc  , solalg     ,&
                       measse  , veasse)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         character(len=8) :: noma
         character(len=24) :: modele
         character(len=24) :: mate
@@ -47,6 +48,7 @@ interface
         integer :: iterat
         real(kind=8) :: eta
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: measse(*)

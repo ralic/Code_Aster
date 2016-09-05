@@ -2,7 +2,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
                   maprec, matass, depso1, depso2, rescvg)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,7 +68,6 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
     complex(kind=8) :: c16bid
     character(len=19) :: crgc
     c16bid = dcmplx(0.d0, 0.d0)
-    data         crgc/'&&RESGRA_GCPC'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -83,6 +82,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
 !
 ! --- INITIALISATIONS
 !
+    crgc = '&&RESGRA_GCPC'
     call vtzero(depso1)
     call vtzero(depso2)
 !

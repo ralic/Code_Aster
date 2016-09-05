@@ -1,9 +1,10 @@
-subroutine nmdata(model      , mesh    , mate      , carele    , compor  ,&
-                  lischa     , solveu  , ds_conv   , carcri    , sddyna  ,&
-                  sdpost     , sderro  , ds_energy , sdcriq    , ds_print,&
-                  ds_algopara, ds_inout, ds_contact, ds_measure)
+subroutine nmdata(model      , mesh    , mate      , carele    , compor    ,&
+                  lischa     , solveu  , ds_conv   , carcri    , sddyna    ,&
+                  sdpost     , sderro  , ds_energy , sdcriq    , ds_print  ,&
+                  ds_algopara, ds_inout, ds_contact, ds_measure, ds_algorom)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -60,6 +61,7 @@ implicit none
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Energy), intent(inout) :: ds_energy
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -90,6 +92,7 @@ implicit none
 ! IO  ds_inout         : datastructure for input/output management
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
+! IO  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -137,7 +140,7 @@ implicit none
 !
 ! - Read parameters for algorithm management
 !
-    call nmdomt(ds_algopara)
+    call nmdomt(ds_algopara, ds_algorom)
 !
 ! - Read parameters for algorithm management (line search)
 !

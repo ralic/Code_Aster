@@ -1,10 +1,11 @@
 subroutine nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
                   sddyna, ds_conv, ds_print, ds_contact,&
                   matass, numins , eta     , comref  , valinc,&
-                  solalg, veasse , measse  , ds_inout, vresi ,&
-                  vchar)
+                  solalg, veasse , measse  , ds_inout, ds_algorom,&
+                  vresi , vchar)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -30,6 +31,7 @@ implicit none
 #include "asterfort/nmrede.h"
 #include "asterfort/nmvcmx.h"
 #include "asterfort/rescmp.h"
+#include "asterfort/romAlgoNLMecaResidual.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -66,6 +68,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     real(kind=8), intent(out) :: vchar
     real(kind=8), intent(out) :: vresi
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,6 +88,7 @@ implicit none
 ! IN  MATASS : MATRICE DU PREMIER MEMBRE ASSEMBLEE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! In  ds_contact       : datastructure for contact management
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -99,7 +103,7 @@ implicit none
     integer :: ifm=0, niv=0
     integer :: neq=0
     character(len=8) :: noddlm=' '
-    aster_logical :: ldyna, lstat, lcine, lctcc
+    aster_logical :: ldyna, lstat, lcine, lctcc, l_rom
     character(len=19) :: profch=' ', foiner=' '
     character(len=19) :: commoi=' ', depmoi=' '
     character(len=19) :: cndiri=' ', cnbudi=' ', cnvcfo=' ', cnfext=' '
@@ -163,6 +167,7 @@ implicit none
     lpilo = isfonc(fonact,'PILOTAGE')
     lcine = isfonc(fonact,'DIRI_CINE')
     lctcc = isfonc(fonact,'CONT_CONTINU')
+    l_rom = isfonc(fonact,'ROM')
     linit = (numins.eq.1).and.(.not.ds_inout%l_state_init)
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
@@ -314,6 +319,12 @@ implicit none
         endif
  20     continue
     end do
+!
+! - Evaluate residuals in applying HYPER-REDUCTION
+!
+    if (l_rom) then
+        call romAlgoNLMecaResidual(fint, fext, ds_algorom, vresi)
+    endif
 !
 ! --- SYNTHESE DES RESULTATS
 !

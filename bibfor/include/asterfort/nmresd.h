@@ -16,12 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
-                      instan, maprec, matass    , cndonn, cnpilo,&
-                      cncine, solalg, rescvg)
-        use NonLin_Datastructure_type        
+    subroutine nmresd(fonact, sddyna, ds_measure, solveu,&
+                      numedd, instan, maprec    , matass    , cndonn,&
+                      cnpilo, cncine, solalg    , rescvg, ds_algorom_)
+        use NonLin_Datastructure_type
+        use ROM_Datastructure_type        
         integer :: fonact(*)
         character(len=19) :: sddyna
+        type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: solveu
         character(len=24) :: numedd

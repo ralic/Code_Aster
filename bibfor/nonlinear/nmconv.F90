@@ -1,11 +1,12 @@
 subroutine nmconv(noma    , modele, mate      , numedd  , sdnume     ,&
                   fonact  , sddyna, ds_conv   , ds_print, ds_measure ,&
-                  sddisc  , sdcrit, sderro    , ds_algopara,&
+                  sddisc  , sdcrit, sderro    , ds_algopara, ds_algorom,&
                   ds_inout, comref, matass    , solveu  , numins     ,&
                   iterat  , eta   , ds_contact, valinc  , solalg     ,&
                   measse  , veasse)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -74,6 +75,7 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -105,6 +107,7 @@ implicit none
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDERRO : GESTION DES ERREURS
 ! In  ds_algopara      : datastructure for algorithm parameters
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  SDCRIT : SYNTHESE DES RESULTATS DE CONVERGENCE POUR ARCHIVAGE
 ! IN  COMREF : VARI_COM REFE
@@ -187,8 +190,8 @@ implicit none
         call nmresi(noma  , mate   , numedd  , sdnume  , fonact,&
                     sddyna, ds_conv, ds_print, ds_contact,&
                     matass, numins , eta     , comref  , valinc,&
-                    solalg, veasse , measse  , ds_inout, vresi ,&
-                    vchar)
+                    solalg, veasse , measse  , ds_inout, ds_algorom,&
+                    vresi , vchar)
 !
 ! ----- Evaluate convergence of residuals
 !

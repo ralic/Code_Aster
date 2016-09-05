@@ -1,6 +1,7 @@
 subroutine op0070()
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -101,13 +102,14 @@ implicit none
     character(len=24) :: sd_suiv, sdcriq
     character(len=19) :: sdpilo, sdnume, sddyna, sddisc, sdcrit
     character(len=19) :: sd_obsv, sdpost
-    type(NL_DS_Print)    :: ds_print
-    type(NL_DS_Conv)     :: ds_conv
-    type(NL_DS_AlgoPara) :: ds_algopara
-    type(NL_DS_InOut)    :: ds_inout
-    type(NL_DS_Contact)  :: ds_contact
-    type(NL_DS_Measure)  :: ds_measure
-    type(NL_DS_Energy)   :: ds_energy
+    type(NL_DS_Print)     :: ds_print
+    type(NL_DS_Conv)      :: ds_conv
+    type(NL_DS_AlgoPara)  :: ds_algopara
+    type(NL_DS_InOut)     :: ds_inout
+    type(NL_DS_Contact)   :: ds_contact
+    type(NL_DS_Measure)   :: ds_measure
+    type(NL_DS_Energy)    :: ds_energy
+    type(ROM_DS_AlgoPara) :: ds_algorom
 !
 ! --- VARIABLES CHAPEAUX
 !
@@ -158,25 +160,25 @@ implicit none
     call nmini0(fonact    , eta      , numins     , matass  , zmeelm    ,&
                 zmeass    , zveelm   , zveass     , zsolal  , zvalin    ,&
                 ds_print  , ds_conv  , ds_algopara, ds_inout, ds_contact,&
-                ds_measure, ds_energy)
+                ds_measure, ds_energy, ds_algorom)
 !
 ! - Read parameters
 !
-    call nmdata(modele     , mesh    , mate      , carele    , compor  ,&
-                lischa     , solveu  , ds_conv   , carcri    , sddyna  ,&
-                sdpost     , sderro  , ds_energy , sdcriq    , ds_print,&
-                ds_algopara, ds_inout, ds_contact, ds_measure)
+    call nmdata(modele     , mesh    , mate      , carele    , compor    ,&
+                lischa     , solveu  , ds_conv   , carcri    , sddyna    ,&
+                sdpost     , sderro  , ds_energy , sdcriq    , ds_print  ,&
+                ds_algopara, ds_inout, ds_contact, ds_measure, ds_algorom)
 !
 ! - Initializations of datastructures
 !
-    call nminit(result, modele  , numedd    , numfix     , mate  ,&
-                compor, carele  , lischa    , ds_algopara, maprec,&
-                solveu, carcri  , numins    , sddisc     , sdnume,&
-                sdcrit, comref  , fonact    , mesh       , sdpilo,&
-                sddyna, ds_print, sd_suiv   , sd_obsv    , sderro,&
-                sdpost, ds_inout, ds_energy , ds_conv    , sdcriq,&
-                valinc, solalg  , measse    , veelem     , meelem,&
-                veasse, codere  , ds_contact, ds_measure)
+    call nminit(result, modele  , numedd    , numfix     , mate      ,&
+                compor, carele  , lischa    , ds_algopara, maprec    ,&
+                solveu, carcri  , numins    , sddisc     , sdnume    ,&
+                sdcrit, comref  , fonact    , mesh       , sdpilo    ,&
+                sddyna, ds_print, sd_suiv   , sd_obsv    , sderro    ,&
+                sdpost, ds_inout, ds_energy , ds_conv    , sdcriq    ,&
+                valinc, solalg  , measse    , veelem     , meelem    ,&
+                veasse, codere  , ds_contact, ds_measure , ds_algorom)
 !
 ! - Launch timer for total time
 !
@@ -221,14 +223,14 @@ implicit none
                     solalg, solveu  , matass, maprec     , ds_inout,&
                     meelem, measse  , veelem, veasse     , nbiter)
     else if (lstat.or.limpl) then
-        call nmnewt(mesh       , modele  , numins  , numedd , numfix    ,&
-                    mate       , carele  , comref  , compor , lischa    ,&
-                    ds_algopara, fonact  , carcri  , ds_measure,&
-                    sderro     , ds_print, sdnume  , sddyna , sddisc    ,&
-                    sdcrit     , sd_suiv , sdpilo  , ds_conv, solveu    ,&
-                    maprec     , matass  , ds_inout, valinc , solalg    ,&
-                    meelem     , measse  , veelem  , veasse , ds_contact,&
-                    eta        , nbiter)
+        call nmnewt(mesh       , modele  , numins , numedd    , numfix     ,&
+                    mate       , carele  , comref , compor    , lischa     ,&
+                    ds_algopara, fonact  , carcri , ds_measure, sderro     ,&
+                    ds_print   , sdnume  , sddyna , sddisc    , sdcrit     ,&
+                    sd_suiv    , sdpilo  , ds_conv, solveu    , maprec     ,&
+                    matass     , ds_inout, valinc , solalg    , meelem     ,&
+                    measse     , veelem  , veasse , ds_contact, ds_algorom ,&
+                    eta        , nbiter  )
     else
         ASSERT(.false.)
     endif
@@ -366,6 +368,6 @@ implicit none
 !
 ! --- MENAGE
 !
-    call nmmeng(fonact)
+    call nmmeng(fonact, ds_algorom)
 !
 end subroutine

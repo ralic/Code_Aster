@@ -18,15 +18,16 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nminit(result, model    , numedd    , numfix     , mate  ,&
-                      compor, carele   , list_load , ds_algopara, maprec,&
-                      solveu, carcri   , numins    , sddisc     , sdnume,&
-                      sdcrit, varc_refe, fonact    , mesh       , sdpilo,&
-                      sddyna, ds_print , sd_suiv   , sd_obsv    , sderro,&
-                      sdpost, ds_inout , ds_energy , ds_conv    , sdcriq,&
-                      valinc, solalg   , measse    , veelem     , meelem,&
-                      veasse, codere   , ds_contact, ds_measure)
+    subroutine nminit(result, model    , numedd    , numfix     , mate      ,&
+                      compor, carele   , list_load , ds_algopara, maprec    ,&
+                      solveu, carcri   , numins    , sddisc     , sdnume    ,&
+                      sdcrit, varc_refe, fonact    , mesh       , sdpilo    ,&
+                      sddyna, ds_print , sd_suiv   , sd_obsv    , sderro    ,&
+                      sdpost, ds_inout , ds_energy , ds_conv    , sdcriq    ,&
+                      valinc, solalg   , measse    , veelem     , meelem    ,&
+                      veasse, codere   , ds_contact, ds_measure , ds_algorom)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=8) :: result
         character(len=24) :: model
@@ -66,5 +67,6 @@ interface
         character(len=24) :: codere
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure
+        type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     end subroutine nminit
 end interface

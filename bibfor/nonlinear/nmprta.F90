@@ -1,12 +1,13 @@
 subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
                   comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, ds_measure,&
+                  fonact  , carcri, ds_print, ds_measure , ds_algorom,&
                   sddisc  , numins, valinc  , solalg     , matass,&
                   maprec  , ds_contact , sddyna,&
                   meelem  , measse, veelem  , veasse     , sdnume,&
                   ds_inout, ldccvg, faccvg  , rescvg     , codere)
 !
 use NonLin_Datastructure_type
+use ROM_Datastructure_type
 !
 implicit none
 !
@@ -47,6 +48,7 @@ implicit none
     integer :: numins, faccvg, rescvg, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: matass, maprec
@@ -83,6 +85,7 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
+! In  ds_algorom       : datastructure for ROM parameters
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -202,9 +205,9 @@ implicit none
 !
 ! --- RESOLUTION K.DU = DF
 !
-    call nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
-                instap, maprec, matass    , cndonn, cnpilo,&
-                cncine, solalg, rescvg)
+    call nmresd(fonact, sddyna, ds_measure, solveu    , numedd,&
+                instap, maprec, matass    , cndonn    , cnpilo,&
+                cncine, solalg, rescvg    , ds_algorom)
 !
 999 continue
 !
