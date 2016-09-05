@@ -1,0 +1,273 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+
+mesh=LIRE_MAILLAGE(FORMAT='MED',);
+
+mesh=MODI_MAILLAGE(reuse =mesh,
+                   MAILLAGE=mesh,
+                   ORIE_PEAU_3D=_F(GROUP_MA='S_e',),);
+
+# Define the material
+steel=DEFI_MATERIAU(
+          ELAS=     _F(E= 210000., NU = 0.3),
+          ECRO_LINE=_F(D_SIGM_EPSI=100., SY=100.,),
+          )
+
+chmat=AFFE_MATERIAU(MAILLAGE=mesh,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=steel,),);
+# Mechanic model
+model=AFFE_MODELE(MAILLAGE=mesh,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='MECANIQUE',
+                       MODELISATION='3D',),);
+
+# Boundary condition
+chg_b=AFFE_CHAR_CINE(MODELE=model,
+                      MECA_IMPO=_F(GROUP_MA='S_inf',
+                                 DX=0,DY=0.0,DZ=0),
+                     );
+
+chg_p=AFFE_CHAR_MECA(MODELE=model,
+                     PRES_REP=_F(GROUP_MA='S_e',
+                                 PRES = 1000,),
+                    )
+
+# Time discretization
+list_t=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=10.0,
+                                    PAS=1.0,),);
+
+list_i=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=list_t,),);
+
+rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
+                                          10.,1.,
+                   ),);
+
+
+# Complete 
+stnl=STAT_NON_LINE(MODELE=model,
+                   CHAM_MATER=chmat,
+                   EXCIT=(_F(CHARGE=chg_b,),
+                          _F(CHARGE=chg_p,FONC_MULT=rampe),
+                         ),
+                   INCREMENT=_F(LIST_INST=list_i,),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
+
+stnl=CALC_CHAMP(reuse=stnl,
+                RESULTAT=stnl,
+                CONTRAINTE='SIEF_NOEU',);
+
+# Valeurs de référence (calcul complet)
+TEST_RESU(RESU=(
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0696319525128,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.199062276741,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.529606351907,
+                   ),
+                ),
+          );
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2739.13961277,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-2737.51235419,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-2612.22311229,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-1.01905904477,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXZ',
+                   VALE_CALC=0.358496226016,
+                   ),
+                _F(RESULTAT=stnl,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIYZ',
+                   VALE_CALC=1.80949985804,
+                   ),
+                ),
+          );
+
+base_p=LIRE_RESU(TYPE_RESU  = 'MODE_EMPI',
+                 FORMAT     = 'MED',
+                 MODELE     = model,
+                 UNITE      = 70,
+                 FORMAT_MED =_F(NOM_CHAM_MED = 'base_p__DEPL',
+                                NOM_CHAM     = 'DEPL',),
+                 TOUT_ORDRE = 'OUI',);
+
+
+redu=STAT_NON_LINE(MODELE=model,
+                   CHAM_MATER=chmat,
+                   EXCIT=(_F(CHARGE=chg_b,),
+                          _F(CHARGE=chg_p,FONC_MULT=rampe),
+                         ),
+                   INCREMENT=_F(LIST_INST=list_i,),
+                    METHODE='MODELE_REDUIT',
+                   MODELE_REDUIT=_F(
+                    REAC_ITER=1,
+                    BASE_PRIMAL     = base_p,
+                    DOMAINE_REDUIT  = 'NON',
+                    ),
+                   COMPORTEMENT=_F(RELATION='VMIS_ISOT_LINE',),)
+
+redu=CALC_CHAMP(reuse=redu,
+                RESULTAT=redu,
+                CONTRAINTE='SIEF_NOEU',);
+
+# Test du modèle réduit par rapport au modèle complet
+TEST_RESU(RESU=(
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.0696319525128,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DX',
+                   VALE_CALC=0.0697022675078,
+                   PRECISION = 0.0015
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.199062276741,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.198932466312,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.529606351907,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='DEPL',
+                   NOEUD='N27',
+                   NOM_CMP='DZ',
+                   VALE_CALC=0.529809828586,
+                   ),
+                ),
+          );
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-2739.13961277,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXX',
+                   VALE_CALC=-2734.67787213,
+                   PRECISION = 0.002,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-2737.51235419,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIYY',
+                   VALE_CALC=-2732.47780529,
+                   PRECISION = 0.002,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-2612.22311229,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIZZ',
+                   VALE_CALC=-2607.46423995,
+                   PRECISION = 0.002,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=-1.01905904477,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXY',
+                   VALE_CALC=-1.379329943,
+                   PRECISION = 0.36,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=0.358496226016,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIXZ',
+                   VALE_CALC=0.0271149494991,
+                   PRECISION = 0.93,
+                   ),
+                _F(RESULTAT=redu,
+                   REFERENCE='AUTRE_ASTER',
+                   VALE_REFE=1.80949985804,
+                   NUME_ORDRE= 10,
+                   NOM_CHAM='SIEF_NOEU',
+                   NOEUD='N27',
+                   NOM_CMP='SIYZ',
+                   VALE_CALC=1.16957363179,
+                   PRECISION = 0.36,
+                   ),
+                ),
+          );
+FIN()
