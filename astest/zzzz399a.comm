@@ -1,0 +1,147 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+
+# Hartree Atomic Units
+me = 1.0 # [m_e]
+e = 1.0 # [e]
+mp = 1837.0 # [m_e]
+ht = 1.0 # [hbar]
+a0 = 1.0 # [bohr]
+eps0 = 1.0/(4.0*pi)
+k = 1.0
+c1=ht**2/(2*me)
+om = sqrt(k/me)
+L=10.0 # [bohr]
+
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',)
+
+MAT=DEFI_MATERIAU(THER=_F( RHO_CP = 1.0,LAMBDA = 1.0),)
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=MAT,),)
+
+LAMBDA_F=DEFI_CONSTANTE( VALE=1.0 )
+RHOCP_F = FORMULE(NOM_PARA=('NEUT1',),VALE='NEUT1')
+MATV=DEFI_MATERIAU(THER_FO=_F( RHO_CP = RHOCP_F,LAMBDA = LAMBDA_F),)
+
+FPOTV = FORMULE(NOM_PARA='X',VALE='0.5*k*(X**2)/c1')
+
+CHXY=CREA_CHAMP(OPERATION='EXTR',TYPE_CHAM='NOEU_GEOM_R',NOM_CHAM='GEOMETRIE',MAILLAGE=MAILLAGE)
+CHFPOTV = CREA_CHAMP(OPERATION='AFFE',TYPE_CHAM='NOEU_NEUT_F',MAILLAGE=MAILLAGE,AFFE= (_F(TOUT='OUI', NOM_CMP='X1',VALE_F=FPOTV,),))
+CHPOTV=CREA_CHAMP(OPERATION='EVAL',TYPE_CHAM='NOEU_NEUT_R',CHAM_F=CHFPOTV, CHAM_PARA=CHXY )
+CHMATV=AFFE_MATERIAU(MAILLAGE=MAILLAGE,AFFE=_F(TOUT= 'OUI', MATER= MATV),AFFE_VARC=_F(NOM_VARC='NEUT1', CHAM_GD=CHPOTV,),)
+
+MODE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                 AFFE=_F(TOUT='OUI',
+                         PHENOMENE='THERMIQUE',
+                         MODELISATION='PLAN',),)
+
+CONDLIM=AFFE_CHAR_THER(MODELE=MODE,
+                       TEMP_IMPO=(
+                                  _F(GROUP_MA='GF0',TEMP=0.0,),
+                                  _F(GROUP_MA='GFL',TEMP=0.0,)
+                                 ),
+                       )
+
+K_ELEM=CALC_MATR_ELEM(MODELE=MODE,
+                            CHAM_MATER=CHMAT,
+                               OPTION='RIGI_THER',
+                                CHARGE=CONDLIM 
+                                )
+
+MV_ELEM=CALC_MATR_ELEM(      MODELE=MODE,
+                            CHAM_MATER=CHMATV,
+                               OPTION='MASS_THER',
+                            INCR_INST= 1.0,
+                                )
+                                                        
+
+M_ELEM=CALC_MATR_ELEM(
+                      MODELE     = MODE,
+                      CHAM_MATER = CHMAT,
+                      OPTION     = 'MASS_THER',
+                      INCR_INST  = 1.0,
+                      )
+
+NUM=NUME_DDL(MATR_RIGI=K_ELEM)
+
+K_ASSE=ASSE_MATRICE( MATR_ELEM=K_ELEM,   NUME_DDL=NUM)
+
+MV_ASSE=ASSE_MATRICE( MATR_ELEM=MV_ELEM,   NUME_DDL=NUM)
+
+KMV_ASSE = COMB_MATR_ASSE(COMB_R = ( _F( MATR_ASSE = K_ASSE, COEF_R = 1.),
+                                     _F( MATR_ASSE= MV_ASSE, COEF_R = 1.),
+                                   )
+                         )
+
+
+M_ASSE=ASSE_MATRICE( MATR_ELEM=M_ELEM,   NUME_DDL=NUM)
+
+
+MODES = CALC_MODES(
+                   MATR_RIGI=KMV_ASSE,
+                   MATR_MASS=M_ASSE,
+                   OPTION='PLUS_PETITE',
+                   CALC_FREQ= _F( NMAX_FREQ = 5),
+                  )
+
+
+LIMODE = RECU_TABLE(CO=MODES,NOM_PARA = 'FREQ')
+
+TOLAM = FORMULE(VALE='(2*pi*FREQ)**2',NOM_PARA='FREQ',)
+ENERGY = FORMULE(VALE='c1*LAMBDA',NOM_PARA='LAMBDA',)
+EXPECT = FORMULE(VALE='(NUME_ORDRE-1+0.5)*ht*om',NOM_PARA='NUME_ORDRE',)
+DIFF = FORMULE(VALE='ENERGY-EXPECT',NOM_PARA=('ENERGY','EXPECT'),)
+
+LIMODE=CALC_TABLE(reuse =LIMODE,
+                  TABLE=LIMODE,
+                  ACTION=(
+                          _F(OPERATION='OPER',FORMULE=TOLAM,NOM_PARA='LAMBDA',),
+                          _F(OPERATION='OPER',FORMULE=ENERGY,NOM_PARA='ENERGY',),
+                          _F(OPERATION='OPER',FORMULE=EXPECT,NOM_PARA='EXPECT',),
+                          _F(OPERATION='OPER',FORMULE=DIFF,NOM_PARA='DIFF',),
+                        ),)
+
+IMPR_TABLE(TABLE=LIMODE)
+
+TEST_TABLE ( TABLE = LIMODE , NOM_PARA = 'DIFF', TYPE_TEST='MAX', REFERENCE = 'ANALYTIQUE', VALE_CALC = 3.01524E-04, PRECISION=5E-4, VALE_REFE = 0.0,CRITERE ='ABSOLU') 
+
+                             
+IMPR_RESU(FORMAT='MED',
+          RESU=_F(RESULTAT=MODES,),
+          )
+          
+#COUP1=MACR_LIGN_COUPE( RESULTAT= MODES,
+#                      NOM_CHAM= 'DEPL',
+#                      LIGN_COUPE=   _F( NB_POINTS= 100,
+#                                         COOR_ORIG= ( -L/2, 0.0 ),
+#                                         COOR_EXTR= (  L/2,  0.0 ), ),)
+
+#X1   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=1))
+#X2   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=2))
+#X3   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=3))
+#X4   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=4))
+#X5   = RECU_FONCTION(TABLE=COUP1,  PARA_X='ABSC_CURV',PARA_Y='TEMP',FILTRE = _F(NOM_PARA='NUME_MODE', VALE_I=5))
+#                                         
+#IMPR_FONCTION(UNITE=38, FORMAT='XMGRACE',PILOTE='PNG',COURBE=(_F(MARQUEUR=0,FONCTION=X1),_F(MARQUEUR=0,FONCTION=X2),_F(MARQUEUR=0,FONCTION=X3),_F(MARQUEUR=0,FONCTION=X4),_F(MARQUEUR=0,FONCTION=X5)))
+
+FIN()

@@ -1,5 +1,5 @@
 subroutine memsth(model_    , cara_elem_, mate_, chtime, memass, base,&
-                  varc_curr_)
+                  varc_curr_, time_)
 !
 implicit none
 !
@@ -18,6 +18,7 @@ implicit none
 #include "asterfort/xajcin.h"
 #include "asterfort/inical.h"
 #include "asterfort/gcnco2.h"
+#include "asterfort/vrcins.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -43,6 +44,7 @@ implicit none
     character(len=19), intent(in) :: memass
     character(len=1), intent(in) :: base
     character(len=19), optional, intent(in) :: varc_curr_
+    real(kind=8), optional, intent(in) :: time_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,6 +75,7 @@ implicit none
     integer :: iret, nbin
     aster_logical :: l_xfem
     character(len=8) :: newnom, model
+    character(len=2) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +94,8 @@ implicit none
     if (present(varc_curr_)) then
         varc_curr = varc_curr_
     else
-        varc_curr = ' '
+        varc_curr = '&&VARC_CURR'
+        call vrcins(model, mate, ' ', time_, varc_curr, codret)
     endif
 !
 ! - Prepare MATR_ELEM

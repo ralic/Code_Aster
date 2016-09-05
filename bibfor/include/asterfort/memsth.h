@@ -17,7 +17,7 @@
 !
 interface
     subroutine memsth(model_    , cara_elem_, mate_, chtime, memass, base,&
-                      varc_curr_)
+                      varc_curr_, time_)
         character(len=*), intent(in) :: model_
         character(len=*), intent(in) :: cara_elem_
         character(len=*), intent(in) :: mate_
@@ -25,5 +25,6 @@ interface
         character(len=19), intent(in) :: memass
         character(len=1), intent(in) :: base
         character(len=19), optional, intent(in) :: varc_curr_
+        real(kind=8), optional, intent(in) :: time_
     end subroutine memsth
 end interface
