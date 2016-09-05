@@ -7,7 +7,7 @@ subroutine carcha(noch, nomgd, typcha, option, param)
     character(len=24) :: option
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -164,6 +164,11 @@ subroutine carcha(noch, nomgd, typcha, option, param)
     else if (noch.eq.'EPME_ELNO') then
         nomgd = 'EPSI_R'
         typcha = 'ELNO'
+!
+!     CHAMP DE GRANDEUR "FLUX_R"
+    else if (noch.eq.'FLUX_NOEU') then
+        nomgd = 'FLUX_R'
+        typcha = 'NOEU'
 !
 !     CHAMP DE GRANDEUR "VARI_R"
     else if (noch.eq.'VARI_ELGA') then

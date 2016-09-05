@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,12 +17,13 @@
 !
 interface
     subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
-                      modele)
+                      modele, noch)
         character(len=8) :: resu
         character(len=16) :: typres
         integer :: nbordr
         character(len=8) :: chmat
         character(len=8) :: carael
         character(len=8) :: modele
+        character(len=*) :: noch
     end subroutine lrcomm
 end interface

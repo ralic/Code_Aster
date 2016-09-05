@@ -698,7 +698,7 @@ subroutine crtype()
 !
     if (typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER') then
         call lrcomm(resu, typres, nboini, materi, carele,&
-                    modele)
+                    modele, nsymb)
     endif
 !
 !

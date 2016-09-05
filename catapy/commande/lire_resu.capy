@@ -24,6 +24,7 @@ def lire_resu_prod(TYPE_RESU,**args):
   if TYPE_RESU == "DYNA_TRANS" : return dyna_trans
   if TYPE_RESU == "DYNA_HARMO" : return dyna_harmo
   if TYPE_RESU == "MODE_MECA" :  return mode_meca
+  if TYPE_RESU == "MODE_EMPI" :  return mode_empi
   if TYPE_RESU == "MODE_MECA_C" : return mode_meca_c
   if TYPE_RESU == "EVOL_VARC" :  return evol_varc
   raise AsException("type de concept resultat non prevu")
@@ -42,7 +43,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
 #----------------------
          TYPE_RESU       =SIMP(statut='o',typ='TXM',into=("EVOL_THER","EVOL_ELAS","EVOL_NOLI","MODE_MECA",
                                                           "MODE_MECA_C","DYNA_TRANS","DYNA_HARMO",
-                                                          "EVOL_CHAR","EVOL_VARC") ),
+                                                          "EVOL_CHAR","EVOL_VARC","MODE_EMPI") ),
 
          FORMAT          =SIMP(statut='o',typ='TXM',into=("IDEAS","IDEAS_DS58","ENSIGHT","MED") ),
 
@@ -70,6 +71,10 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
           EXCIT           =FACT(statut='f',max='**',
             CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
             FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
+           ),
+
+          b_mode_empi  = BLOC(condition="TYPE_RESU=='MODE_EMPI'",
+          NUME_PLAN         =SIMP(statut='f',typ='I', defaut=0 ),
            ),
 
           b_evol_noli  = BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
