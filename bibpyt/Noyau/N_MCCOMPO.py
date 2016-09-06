@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -336,6 +336,14 @@ class MCCOMPO(N_OBJECT.OBJECT):
         #  On a rien trouve, le mot cle est absent.
         #  On leve une exception
         raise IndexError, "Le mot cle %s n existe pas dans %s" % (key, self)
+
+    def get(self, key, default=None):
+        """Retourne le mot-clé s'il existe, sinon *default*"""
+        try:
+            value = self.get_mocle(key)
+        except IndexError:
+            value = default
+        return value
 
     def get_child(self, name, restreint='non'):
         """

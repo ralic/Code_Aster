@@ -20,9 +20,8 @@ def calc_table_prod(self, TABLE, ACTION, **kargs):
    """
    l_typ = [AsType(TABLE),]
    for mcf in ACTION:
-      dmc = mcf.cree_dict_valeurs(mcf.mc_liste)
-      if dmc.get('TABLE') != None:
-         l_typ.append(AsType(dmc['TABLE']))
+      if mcf.get('TABLE') is not None:
+         l_typ.append(AsType(mcf['TABLE']))
    # une table_fonction étant une table
    if table_fonction in l_typ:
       return table_fonction

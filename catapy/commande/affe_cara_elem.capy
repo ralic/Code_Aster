@@ -138,8 +138,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                     check( (0< epz2 <= hz2*0.5), defErr, 'POUTRE', i1, 'EPZ2')
             elif mclf['SECTION'] == 'GENERALE':
                 if mclf['VARI_SECT']=='CONSTANT':
-                    tmp = mclf.cree_dict_toutes_valeurs()
-                    if 'CARA' in tmp.keys() :
+                    if mclf.get('CARA') is not None:
                         cara = force_tuple( mclf['CARA'] )
                         vale = force_tuple( mclf['VALE'] )
                         check( len(cara) == len(vale), sizeErr, 'POUTRE', i1)
@@ -209,8 +208,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                     check( (0< epy <= hy*0.5), defErr, 'BARRE', i1, 'EPY')
                     check( (0< epz <= hz*0.5), defErr, 'BARRE', i1, 'EPZ')
             elif mclf['SECTION'] == 'GENERALE':
-                tmp = mclf.cree_dict_toutes_valeurs()
-                if 'CARA' in tmp.keys() :
+                if mclf.get('CARA') is not None:
                     cara = force_tuple( mclf['CARA'] )
                     vale = force_tuple( mclf['VALE'] )
                     check( len(cara) == len(vale), sizeErr, 'BARRE', i1)
