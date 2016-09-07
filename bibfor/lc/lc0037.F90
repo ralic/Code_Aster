@@ -1,10 +1,11 @@
 subroutine lc0037(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, neps,&
                   epsm, deps, sigm, vim, option,&
-                  angmas, sigp, vip, typmod, icomp,&
+                  angmas, sigp, vip, tm, tp,&
+                  tref, tampon, typmod, icomp,&
                   nvi, dsidep, codret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,18 +22,49 @@ subroutine lc0037(fami, kpg, ksp, ndim, imate,&
 ! ======================================================================
 ! aslint: disable=W1504
     implicit none
+#include "asterfort/assert.h"
 #include "asterfort/nmvprk.h"
+#include "asterfort/plasti.h"
+#include "asterfort/utlcal.h"
+
+    real(kind=8) :: tampon(*)
+    real(kind=8) :: tm, tp, tref
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
     real(kind=8) :: crit(*), angmas(*), instam, instap
-    real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
+    real(kind=8) :: epsm(neps), deps(neps), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
-    character(len=16) :: compor(*), option
+    character(len=16) :: compor(*), option, algo
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    call nmvprk(fami, kpg, ksp, ndim, typmod,&
-                imate, compor, crit, instam, instap,&
-                neps, epsm, deps, sigm, vim,&
-                option, angmas, sigp, vip, dsidep,&
-                codret)
+    character(len=11) :: meting
+    common /meti/   meting
+
+
+    if (compor(1).eq.'POLYCRISTAL') then
+        call nmvprk(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, crit, instam, instap,&
+                    neps, epsm, deps, sigm, vim,&
+                    option, angmas, sigp, vip, dsidep,&
+                    codret)
+    elseif (compor(1).eq.'MONOCRISTAL') then
+        call utlcal('VALE_NOM', algo, crit(6))
+        if (algo(1:6) .eq. 'NEWTON') then
+            meting = algo(1:11)
+            call plasti(fami, kpg, ksp, typmod, imate,&
+                        compor, crit, instam, instap, tm,&
+                        tp, tref, epsm, deps, sigm,&
+                        vim, option, angmas, sigp, vip,&
+                        dsidep, icomp, nvi, tampon, codret)
+        else if (algo.eq.'RUNGE_KUTTA') then
+            meting = 'RUNGE_KUTTA'
+            call nmvprk(fami, kpg, ksp, ndim, typmod,&
+                        imate, compor, crit, instam, instap,&
+                        neps, epsm, deps, sigm, vim,&
+                        option, angmas, sigp, vip, dsidep,&
+                        codret)
+        endif
+    else
+        ASSERT(.false.)
+    endif
 !
 end subroutine

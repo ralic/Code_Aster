@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ loi = LoiComportement(
             sont fournies via le concept compor, issu de DEFI_COMPOR.
             Le nombre de variables internes est fonction des choix effectués dans DEFI_COMPOR ;
             pour plus de précisions consulter [R5.03.11].""",
-    num_lc=32,
+    num_lc=37,
     nb_vari=0,
     nom_vari=None,
     mc_mater=None,

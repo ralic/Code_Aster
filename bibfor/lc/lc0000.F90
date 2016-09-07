@@ -502,12 +502,14 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
+
     case (37)
         call lc0037(fami, kpg, ksp, ndim, imate,&
                     compor, crit, instam, instap, neps,&
                     epsm, deps, sigm, vim, option,&
-                    angmas, sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
+                    angmas, sigp, vip, tempd, tempf,&
+                    tref, wkin, typmod, icomp, nvi,&
+                    dsidep, codret)
     case (38)
         call lc0038(fami, kpg, ksp, ndim, imate,&
                     compor, crit, instam, instap, epsm,&
