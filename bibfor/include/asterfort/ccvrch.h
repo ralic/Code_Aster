@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ccvrch(resuin, numor0)
+    subroutine ccvrch(resuin, numor0, lforc_noda)
         character(len=8) :: resuin
         integer :: numor0
+        aster_logical :: lforc_noda
     end subroutine ccvrch
 end interface

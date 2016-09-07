@@ -9,6 +9,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
 #include "asterfort/ccfnrn.h"
 #include "asterfort/ccvrch.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/indk16.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
@@ -60,7 +61,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=6) :: nompro
     parameter  (nompro='CCBCOP')
 !
-    integer :: jordr, iret, nbchar
+    integer :: jordr, iret, nbchar, posopt
     integer :: ifm, niv, nuord
     integer :: nbac, nbpa, nbpara, jpara
     integer :: iaux, j, iadou, iadin, iordr, jopt, iopt
@@ -72,7 +73,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     character(len=19) :: lischa
     character(len=24) :: nompar, chmate
 !
-    aster_logical :: exipla, newcal
+    aster_logical :: exipla, newcal, lforc_noda
 !
     call jemarq()
 !
@@ -157,11 +158,14 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
         call jedetr(nompar)
     endif
 !
+    call jeveuo(lisopt, 'L', jopt)
+!
 !     VERIFICATION DE LA PRESENCE D'UN EXCIT DANS LE FICHIER
 !     DE COMMANDE OU DES CHARGES DANS LA SD RESULTAT
-    call ccvrch(resuin, zi(jordr))
-!
-    call jeveuo(lisopt, 'L', jopt)
+    posopt = indk16(zk16(jopt), 'FORC_NODA', 1, nbropt)
+    lforc_noda = .true.
+    if (posopt.eq.0) lforc_noda = .false.
+    call ccvrch(resuin, zi(jordr), lforc_noda)
 !
 !     BOUCLE SUR LES OPTIONS DEMANDEES PAR L'UTILISATEUR
     do iopt = 1, nbropt

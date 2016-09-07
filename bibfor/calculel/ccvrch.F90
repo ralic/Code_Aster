@@ -1,14 +1,16 @@
-subroutine ccvrch(resuin, numor0)
+subroutine ccvrch(resuin, numor0, lforc_noda)
     implicit none
 !     --- ARGUMENTS ---
 #include "jeveux.h"
 #include "asterc/getexm.h"
 #include "asterc/getfac.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 !
     character(len=8) :: resuin
     integer :: numor0
+    aster_logical :: lforc_noda
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,7 +32,7 @@ subroutine ccvrch(resuin, numor0)
     integer :: nchalu, jpara
 !
     character(len=8) :: k8b
-    character(len=24) :: excisd
+    character(len=24) :: excisd, modele
 !
     nchalu=0
 !
@@ -42,7 +44,22 @@ subroutine ccvrch(resuin, numor0)
 !
     if (excisd .eq. ' ') then
         if (nchalu .eq. 0) then
-            call utmess('A', 'CALCCHAMP_6', sk=resuin)
+!
+            call rsadpa(resuin, 'L', 1, 'MODELE', numor0,&
+                        0, sjv=jpara, styp=k8b)
+            modele=zk8(jpara)
+            ! Si on n'a pas de modele dans la sd_resu, ca veut sans doute dire
+            ! qu'on est en presence d'une sd issue de la dynamique
+            ! Dans ce cas-la l'emission de l'alarme CALCCHAMP_6 a tout son sens
+            if (modele.ne.' ') then
+                call dismoi('EXI_POUX', modele, 'MODELE', repk=k8b)
+            else
+                k8b = 'OUI'
+            endif
+!
+            if (k8b.eq.'OUI' .or. lforc_noda) then
+                call utmess('A', 'CALCCHAMP_6', sk=resuin)
+            endif
         else
             call utmess('A', 'CALCCHAMP_5', sk=resuin)
         endif
