@@ -99,9 +99,13 @@ Contactez le support technique.
 """),
 
     17: _(u"""
- on ne trouve pas dans les arguments de la routine CALCUL de champ à associer au paramètre: %(k1)s
-  - option: %(k2)s
-  - type_élément: %(k3)s
+Pour le calcul de %(k2)s, on ne trouve pas dans les arguments de la routine CALCUL
+de champ à associer au paramètre : %(k1)s
+- option : %(k2)s
+- type_élément : %(k3)s
+
+Conseil : Si vous êtes dans CALC_CHAMP, ce problème survient lorsqu'il manque le champ %(k1)s
+dans la structure de données résultat pour le calcul de l'option %(k2)s.
 """),
 
     18: _(u"""

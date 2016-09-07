@@ -80,7 +80,7 @@ cata_msg = {
     11 : _(u"""Le noeud %(k1)s est orphelin.
 """),
 
-    12 : _(u"""La maille %(k1)s est topologiquement dégénérée : noeud répeté dans la connectivité.
+    12 : _(u"""La maille %(k1)s est topologiquement dégénérée : noeud répété dans la connectivité.
     Type de maille : %(k2)s
 """),
 
@@ -92,7 +92,7 @@ cata_msg = {
 """),
 
     15 : _(u"""La maille %(k1)s possède des noeuds confondus géométriquement.
-    dm/dp = %(r1)f, type de maille : %(k2)s
+    Rapport entre le plus petit côté et le plus grand = %(r1)f, type de maille : %(k2)s
 """),
 
 
