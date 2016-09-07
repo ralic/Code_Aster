@@ -1,5 +1,5 @@
 subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
-                  modele, noch)
+                  modele, noch, from_lire_resu)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -27,8 +27,9 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     character(len=8) :: resu, chmat, carael, modele
     character(len=16) :: typres
     character(len=*) :: noch
+    aster_logical, intent(in), optional :: from_lire_resu
 ! ----------------------------------------------------------------------
-! ======================================================================
+! ======================================================================bibfor/prepost/lrcomm.F90
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -186,7 +187,12 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
                 mod24 = modele
                 car24 = carael
                 call nmdoco(mod24, car24, compor)
-                call vrcomp(compor, vari, ligrmo, iret, type_stop = 'A')
+                if (present(from_lire_resu)) then
+                   call vrcomp(compor, vari, ligrmo, iret, type_stop = 'A',&
+                               from_lire_resu = from_lire_resu)
+                else
+                   call vrcomp(compor, vari, ligrmo, iret, type_stop = 'A')
+                endif 
                 if (iret .eq. 1) then
                     call utmess('A', 'RESULT1_1')
                 endif

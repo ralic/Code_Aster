@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,12 +17,13 @@
 !
 interface
     subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, &
-                      compor_prev, type_stop)
+                      compor_prev, type_stop, from_lire_resu)
         character(len=*), intent(in) :: compor_curr
         character(len=*), intent(in) :: vari
         character(len=*), intent(in) :: ligrel_currz
         integer, intent(out) :: iret
         character(len=*), optional, intent(in) :: compor_prev
         character(len=1), optional, intent(in) :: type_stop
+        aster_logical, intent(in), optional :: from_lire_resu
     end subroutine vrcomp
 end interface

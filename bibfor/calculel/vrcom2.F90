@@ -1,6 +1,6 @@
-subroutine vrcom2(compop, varmoi, ligrep)
+subroutine vrcom2(compop, varmoi, ligrep, from_lire_resu)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,8 @@ subroutine vrcom2(compop, varmoi, ligrep)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: compop, varmoi, ligrep
-! ------------------------------------------------------------------
+    aster_logical :: from_lire_resu
+! ----------------------------------------------------------------------
 ! BUT: MODIFIER VARMOI POUR LE RENDRE COHERENT AVEC COMPOP
 !
 !      COMPOP EST LA CARTE DE COMPOPTEMENT A L'INSTANT "+"
@@ -41,9 +42,11 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !
 ! ------------------------------------------------------------------
 !     ARGUMENTS:
-! COMPOP   IN/JXIN  K19 : CARTE DE COMPOPTEMENT "+"
-! VARMOI   IN/JXVAR K19 : SD CHAM_ELEM   (VARI_R) "-"
-! LIGREP   IN/JXIN  K19 : SD LIGREL "+"
+! COMPOP          IN/JXIN  K19 : CARTE DE COMPOPTEMENT "+"
+! VARMOI          IN/JXVAR K19 : SD CHAM_ELEM   (VARI_R) "-"
+! LIGREP          IN/JXIN  K19 : SD LIGREL "+"
+! FROM_LIRE_RESU  IN : LOGIQUE SIGNALANT QUE L'APPELENT EST LA COMMANDE
+!                 LIRE_RESU POUR TRAITER LES VARIABLES INTERNES
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
@@ -56,15 +59,16 @@ subroutine vrcom2(compop, varmoi, ligrep)
     integer :: jcev2d,  jcev2l, nncp, ibid
     character(len=19) :: cesv1, cesv2, coto, copp
     character(len=19) :: varplu
+    character(len=1) :: base
     real(kind=8), pointer :: cev1v(:) => null()
     real(kind=8), pointer :: cev2v(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !
 !
-!     -- ON VERIFIE QUE VARMOI EST UN OBJET TEMPORAIRE QUE L'ON A
-!        LE DROIT DE MODIFIER :
-    if (varmoi(1:2).ne.'&&') then
+    base='G'
+    if (varmoi(1:2).eq.'&&') base='V'
+    if (varmoi(1:2).ne.'&&' .and. .not. from_lire_resu )  then
         call utmess('A', 'COMPOR2_23')
         goto 99
     endif
@@ -149,12 +153,11 @@ subroutine vrcom2(compop, varmoi, ligrep)
                                 isp, icm, iad2)
                     ASSERT(iad2.gt.0)
                     zl(jcev2l-1+iad2)=.true.
-                    if (action .eq. 1) then
-                            call cesexi('S', jcev1d, jcev1l, ima, ipg,&
-                                        isp, icm, iad1)
+                    if (action .eq. 1 .or. &
+                        ((action.eq.2) .and. icm.le.nbcm1 .and. from_lire_resu)) then
+                            call cesexi('S', jcev1d, jcev1l, ima, ipg, isp, icm, iad1)
                             ASSERT(iad1.gt.0)
                             cev2v(iad2)=cev1v(iad1)
-!
                     else
                         cev2v(iad2)=0.d0
                     endif
@@ -168,8 +171,7 @@ subroutine vrcom2(compop, varmoi, ligrep)
 !     4- ON TRANSFORME CESV2 EN CHAM_ELEM (VARMOI)
 !     --------------------------------------------------
     call detrsd('CHAM_ELEM', varmoi)
-    call cescel(cesv2, ligrep, 'RAPH_MECA', 'PVARIMR', 'OUI',&
-                nncp, 'V', varmoi, 'F', ibid)
+    call cescel(cesv2, ligrep, 'RAPH_MECA', 'PVARIMR', 'OUI', nncp, base, varmoi, 'F', ibid)
 !
 !     4. MENAGE :
 !     -----------

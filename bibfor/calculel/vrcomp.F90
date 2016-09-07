@@ -1,5 +1,5 @@
 subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
-                  type_stop)
+                  type_stop, from_lire_resu)
 !
     implicit none
 !
@@ -18,7 +18,7 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 #include "asterfort/vrcomp_prep.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,6 +41,7 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
     integer, intent(out) :: iret
     character(len=*), optional, intent(in) :: compor_prev
     character(len=1), optional, intent(in) :: type_stop
+    aster_logical, intent(in), optional :: from_lire_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -237,7 +238,11 @@ subroutine vrcomp(compor_curr, vari, ligrel_currz, iret, compor_prev,&
 ! - Have to change internal variable field
 !
     if (l_modif_vari) then
-        call vrcom2(compor_curr, vari, ligrel_curr)
+        if (present(from_lire_resu)) then
+           call vrcom2(compor_curr, vari, ligrel_curr, from_lire_resu)
+        else
+           call vrcom2(compor_curr, vari, ligrel_curr, .false._1)
+        endif
     endif
 !
 ! - Clean

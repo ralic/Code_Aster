@@ -449,7 +449,7 @@ subroutine op0150()
     endif
 !
     call lrcomm(resu, typres, nbordr, chmat, carael,&
-                modele, noch)
+                modele, noch, .true._1)
 !
 265 continue
 !
