@@ -136,12 +136,125 @@ void DEFPPSP(MFRONT_GET_EXTERNAL_STATE_VARIABLE,
 #endif
 }
 
+int mfront_get_number_of_internal_state_variables(char* nomlib, STRING_SIZE lnomlib,
+                                                  char* nomsub, STRING_SIZE lnomsub,
+                                                  char* nommod, STRING_SIZE lnommod)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+    char *libname, *symbol, *model, *symbname=NULL;
+    char * name1;
+    int retour = 0;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
+
+    mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
+    if ( symbname == NULL )
+    {
+        name1 = (char *)malloc(strlen(symbol)\
+                               + strlen("_nInternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, "_nInternalStateVariables");
+        error_symbol_not_found(libname, name1);
+    }
+
+    unsigned short* nbvari2 = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
+
+    FreeStr(libname);
+    FreeStr(symbol);
+    FreeStr(symbname);
+    return *nbvari2;
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
+void DEFSSSP(MFRONT_GET_NUMBER_OF_INTERNAL_STATE_VARIABLES,
+             mfront_get_number_of_internal_state_variables,
+             char* nomlib, STRING_SIZE lnomlib,
+             char* nomsub, STRING_SIZE lnomsub,
+             char* nommod, STRING_SIZE lnommod,
+             INTEGER* nbvari)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+    int nbvari2 = mfront_get_number_of_internal_state_variables(nomlib, lnomlib,
+                                                                nomsub, lnomsub,
+                                                                nommod, lnommod);
+    *nbvari = nbvari2;
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
+void DEFSSSSP(MFRONT_GET_INTERNAL_STATE_VARIABLES,
+              mfront_get_internal_state_variables,
+              char* nomlib, STRING_SIZE lnomlib,
+              char* nomsub, STRING_SIZE lnomsub,
+              char* nommod, STRING_SIZE lnommod,
+              char* txval, STRING_SIZE ltx, INTEGER* nbintvar)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+    char *libname, *symbol, *model, *symbname=NULL;
+    char * name1;
+    int retour = 0;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    int nbcheck = mfront_get_number_of_internal_state_variables(nomlib, lnomlib,
+                                                                nomsub, lnomsub,
+                                                                nommod, lnommod);
+    nbcheck = min(nbcheck, *nbintvar);
+
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
+
+    mfront_name(libname, symbol, model, "_InternalStateVariables", &symbname);
+    if ( symbname == NULL )
+    {
+        name1 = (char *)malloc(strlen(symbol)\
+                               + strlen("_InternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, "_InternalStateVariables");
+        error_symbol_not_found(libname, name1);
+    }
+
+    char** int_var = (char**)libsymb_get_symbol(DLL_DICT, libname, symbname);
+
+    unsigned short i;
+    for ( i = 0; i < nbcheck; ++i )
+    {
+        AS_ASSERT(strlen(int_var[i]) <= ltx);
+        SetTabFStr( txval, i, int_var[i], ltx );
+    }
+
+    FreeStr(libname);
+    FreeStr(symbol);
+    FreeStr(symbname);
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
 void DEFSSSPPPPP(MFRONT_GET_POINTERS,
                  mfront_get_pointers,
-    char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
-    char* nommod, STRING_SIZE lnommod,
-    INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr,
-    INTEGER* pmatprop, INTEGER* pnbprop)
+                 char* nomlib, STRING_SIZE lnomlib,
+                 char* nomsub, STRING_SIZE lnomsub,
+                 char* nommod, STRING_SIZE lnommod,
+                 INTEGER* pliesv, INTEGER* pnbesv, INTEGER* pfcmfr,
+                 INTEGER* pmatprop, INTEGER* pnbprop)
 {
 #ifdef _POSIX
     /* MFRONT Wrapper
