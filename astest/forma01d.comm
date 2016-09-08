@@ -20,7 +20,6 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='NON',),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM='CALCCHAMP_6',
       )
 
 import math

@@ -18,7 +18,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('XFEM_22', 'MODELE1_63', 'CALCCHAMP_6'),
+      IGNORE_ALARM=('XFEM_22', 'MODELE1_63'),
       );
 
 # IGNORE_ALARM : 'XFEM_22' -> on ne modelise qu'un demi-tube, donc on 
