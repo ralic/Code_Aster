@@ -1,7 +1,7 @@
-subroutine jefini(cond)
+subroutine jefini(cond,arg_rank)
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,9 +30,13 @@ subroutine jefini(cond)
 #include "asterfort/ulclos.h"
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
+
+#include "asterc/rmfile.h"
+
     character(len=*) :: cond
-!     ==================================================================
-!-----------------------------------------------------------------------
+    integer, intent(in), optional :: arg_rank
+! ======================================================================
+!
     integer :: i, n
 !-----------------------------------------------------------------------
     parameter  ( n = 5 )
@@ -59,12 +63,22 @@ subroutine jefini(cond)
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common /r8dyje/ mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 !     ==================================================================
-    integer :: vali(7), info, ifm, ires, iret
+    integer :: vali(7), info, ifm, ires, iret, rank
     character(len=8) :: kcond, staou, k8tab(3)
     character(len=24) :: ladate
     real(kind=8) :: rval(3)
 !     ------------------------------------------------------------------
 !
+    if (present(arg_rank)) then
+       rank=arg_rank
+    else
+!     
+!   SI L'ARGUMENT N'EST PAS PRESENT, ON N'EFFECTUE PAS D'ECRITURE rank=1
+!
+       rank=1
+    endif
+!
+
     kcond = cond ( 1: min( len(cond) , len(kcond) ) )
     ASSERT(kcond .eq. 'NORMAL  ' .or. kcond .eq. 'ERREUR  ' .or. kcond .ne. 'TEST    ')
     if (kcond .eq. 'NORMAL  ' .or. kcond .eq. 'TEST    ') then
@@ -87,30 +101,32 @@ subroutine jefini(cond)
 !
 !     -------------  EDITION DES REPERTOIRES ---------------------------
     if (kcond .eq. 'TEST    ') then
-        do 5 i = 1, nbfic
+        do i = 1, nbfic
             if (classe(i:i) .ne. ' ') then
                 call jeimpr(6, classe(i:i), '     JEFINI     ' // kcond)
             endif
- 5      continue
+        enddo
 !     -------------  EDITION SEGMENTATION MEMOIRE ----------------------
         call jeimpm(6)
     endif
 !     -------------  LIBERATION FICHIER --------------------------------
     if (kcond .ne. 'ERREUR  ') then
-        info = 1
-        do 10 i = 1, nbfic
-            if (classe(i:i) .ne. ' ') then
-                call jelibf(staou, classe(i:i), info)
-            endif
-10      continue
+        if (rank.eq.0) then
+            info = 1
+            do i = 1, nbfic
+                if (classe(i:i) .ne. ' ') then
+                    call jelibf(staou, classe(i:i), info)
+                endif
+            enddo
 !       -----------  DESALLOCATION GESTION DES MARQUES -----------------
-        call jjlidy(kdesma(2), kdesma(1))
-        call jjlidy(kposma(2), kposma(1))
-        kdesma(1) = 0
-        kdesma(2) = 0
-        kposma(1) = 0
-        kposma(2) = 0
+            call jjlidy(kdesma(2), kdesma(1))
+            call jjlidy(kposma(2), kposma(1))
+            kdesma(1) = 0
+            kdesma(2) = 0
+            kposma(1) = 0
+            kposma(2) = 0
 !
+        endif
     else
         call asabrt(6)
     endif

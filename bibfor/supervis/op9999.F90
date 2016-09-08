@@ -53,9 +53,9 @@ subroutine op9999()
     integer :: info, nbenre, nboct, iret, nbrank
     integer :: ifm, iunerr, iunres, iunmes
     integer :: i, jco, nbco
-    integer :: nbext, nfhdf
+    integer :: nbext, nfhdf, nproc
     aster_logical :: bool
-    character(len=8) :: k8b, ouinon, infr
+    character(len=8) :: k8b, ouinon, infr, proc
     character(len=16) :: fchier, fhdf, typres
     character(len=80) :: fich
 !-----------------------------------------------------------------------
@@ -65,7 +65,13 @@ subroutine op9999()
 
     call asmpi_info(rank=mrank, size=msize)
     nbrank = to_aster_int(mrank)
-
+!       
+!   --- PROC0 = 'OUI' pour effectuer les ecritures uniquement sur le processeur de rang 0 ---
+!       si PROC0 = 'NON' on force nbrank=0 
+    call getvtx(' ', 'PROC0', scal=proc, nbret=nproc)
+    if ( proc .eq. 'NON' ) then 
+      nbrank = 0 
+    endif   
     call getvis(' ', 'STATUT', scal=iret)
     bool = iret == ST_ER .or. iret == ST_OK .or. iret == ST_ER_PR0 .or. &
            iret == ST_ER_OTH .or. iret == ST_UN_OTH .or. iret == ST_EXCEPT
@@ -106,7 +112,7 @@ subroutine op9999()
 !
 ! --- SUPPRESSION DES CONCEPTS TEMPORAIRES DES MACRO
 !
-    if ( nbrank .eq.0 ) then
+    if ( nbrank .eq. 0 ) then
       call jedetc('G', '.', 1)
 !
 ! --- IMPRESSION DE LA TAILLE DES CONCEPTS DE LA BASE GLOBALE
@@ -141,7 +147,7 @@ subroutine op9999()
 !
 ! --- APPEL JXVERI POUR VERIFIER LA BONNE FIN D'EXECUTION
 !
-    if ( nbrank .eq.0 ) then
+    if ( nbrank .eq. 0 ) then
       call jxveri()
 !
 ! --- CLOTURE DES FICHIERS
@@ -169,15 +175,15 @@ subroutine op9999()
       call utmess('I', 'SUPERVIS2_97')
       if (iunerr .gt. 0) write(iunerr, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
       if (iunres .gt. 0) write(iunres, *) '<I> <FIN> ARRET NORMAL DANS "FIN" PAR APPEL A "JEFINI".'
+    endif  
+    call jedema()
 !
 ! --- CLOTURE DE JEVEUX
 !
-      call jefini('NORMAL')
-    endif  
+    call jefini('NORMAL' , arg_rank=nbrank)
 !
 !-----------------------------------------------------------------------
 !
     100 format(/,1x,'======>')
 !
-    call jedema()
 end subroutine

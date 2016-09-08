@@ -6,5 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mumps05a.comm D 1
+F com1 mumps05a.com1 D 1
 F datg mumps05a.datg D 16
 F mmed mumps05a.mmed D 20

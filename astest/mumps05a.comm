@@ -573,44 +573,6 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 # 3.3 : AVEC CHARGE DUALISEE ET MUMPS DISTRIBUE PAR SOUS-DOMAINES
 #       AVEC MATRICE_DISTRIBUEE
 #----------------------------------------------------------
-MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='SOUS_DOM.OLD',NB_SOUS_DOMAINE=24, CHARGE_PROC0_SD=2))
-MECAD5=MECA_STATIQUE(INFO=niv_info,
-                     MODELE=MO,
-                     CHAM_MATER=CHAM_MAT,
-                     EXCIT=(_F(CHARGE=CHARF),
-                            _F(CHARGE=CHARD)),
-                     OPTION='SANS',
-                     SOLVEUR=_F(METHODE=solveur,
-                                RENUM=meth_renum,
-                                RESI_RELA=-1.0,
-                                GESTION_MEMOIRE='OUT_OF_CORE',
-                                PCENT_PIVOT=pcent_pivot,
-                                POSTTRAITEMENTS='FORCE',
-                                NPREC=-1,
-                                ));
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='D',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MECAD5,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DZ',
-                  VALE_CALC=0.1,
-                  VALE_REFE=0.1,),
-          )
-
-TEST_RESU(RESU=_F(NUME_ORDRE=1,
-                  GROUP_NO='D',
-                  REFERENCE='ANALYTIQUE',
-                  RESULTAT=MECAD5,
-                  NOM_CHAM='DEPL',
-                  NOM_CMP='DX',
-                  VALE_CALC=0.,
-                  VALE_REFE=0.,
-                  CRITERE='ABSOLU',
-                  PRECISION=1.E-08,),
-          )
-
-
-
+# REALISE DANS LE FICHIER COM2
 FIN();
+#PROC0='NON');
