@@ -76,7 +76,7 @@ subroutine op0039()
 !   --- PROC0 = 'OUI' pour effectuer les impressions uniquement sur le processeur de rang 0 ---
     call getvtx(' ', 'PROC0', scal=proc, nbret=nproc)
     if ( proc .eq. 'NON' ) then 
-      nbrank = 1 
+      nbrank = 0 
     endif   
 !
     if ( nbrank .eq. 0 ) then 
