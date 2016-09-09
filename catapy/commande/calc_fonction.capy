@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C, MULT,
-                       ENVELOPPE, FRACTILE, SPEC_OSCI, ASSE, FFT, COMPOSE, CORR_ACCE,
+                       ENVELOPPE, FRACTILE, SPEC_OSCI, ASSE, FFT, COMPOSE, CORR_ACCE, COHERENCE,
                        PUISSANCE, LISS_ENVELOP, ABS, REGR_POLYNOMIALE, DSP, MOYENNE, **args):
 
    if (INTEGRE     != None): return fonction_sdaster
@@ -59,6 +59,7 @@ def calc_fonction_prod(self, DERIVE, EXTRACTION, INTEGRE, INVERSE, COMB, COMB_C,
       if (AsType(vale) == fonction_sdaster )  : return fonction_c
       if (AsType(vale) == fonction_c) : return fonction_sdaster
    if (CORR_ACCE   != None): return fonction_sdaster
+   if (COHERENCE   != None): return fonction_sdaster
    if (LISS_ENVELOP!= None): return nappe_sdaster
    if (REGR_POLYNOMIALE != None): return fonction_sdaster
    if (PUISSANCE   != None): return AsType(PUISSANCE[0]['FONCTION'])
@@ -75,7 +76,7 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
          regles=(UN_PARMI('DERIVE', 'INTEGRE', 'SPEC_OSCI', 'DSP', 'FFT', 'CORR_ACCE',
                           'COMB', 'COMB_C', 'MULT', 'ASSE', 'INVERSE', 'ABS',
                           'ENVELOPPE', 'COMPOSE', 'EXTRACTION', 'PUISSANCE',
-                          'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE', 'MOYENNE'),),
+                          'LISS_ENVELOP', 'FRACTILE', 'REGR_POLYNOMIALE', 'MOYENNE', 'COHERENCE',),),
          FFT             =FACT(statut='f',fr=tr("Transformée de Fourier ou de son inverse"),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,fonction_c) ),
            METHODE         =SIMP(statut='f',typ='TXM',defaut="PROL_ZERO",into=("PROL_ZERO","TRONCATURE","COMPLET") ),
@@ -166,8 +167,19 @@ CALC_FONCTION=MACRO(nom="CALC_FONCTION",
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
            FRACT           =SIMP(statut='o',typ='R',defaut=1.,val_min=0.,val_max=1.,fr=tr("Valeur du fractile") ),
          ),
-         MOYENNE        =FACT(statut='f',fr=tr("Moyenne d une famille de fonctions ou de nappes"),
+         MOYENNE        =  FACT(statut='f',fr=tr("Moyenne d une famille de fonctions ou de nappes"),
            FONCTION        =SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster),max='**' ),
+         ),
+         COHERENCE        =FACT(statut='f',fr=tr("Fonction de coherence"),
+           NAPPE_1         =SIMP(statut='o',typ=(nappe_sdaster), ),
+           NAPPE_2         =SIMP(statut='o',typ=(nappe_sdaster), ),
+           FREQ_COUP      =SIMP(statut='f', typ='R', fr=tr("fréquence de coupure") ),
+           OPTION         =SIMP(statut='f',typ='TXM',defaut="TOUT",validators=NoRepeat(),
+                               into=("DUREE_PHASE_FORTE","TOUT",),),
+           b_option_f      =BLOC(condition= "OPTION == 'DUREE_PHASE_FORTE'",
+               BORNE_INF       =SIMP(statut='f',typ='R',defaut= 0.05E+0, val_min=0.,val_max=0.5,),
+               BORNE_SUP       =SIMP(statut='f',typ='R',defaut= 0.95E+0, val_min=0.5,val_max=1., ),),
+           NB_FREQ_LISS        =SIMP(statut='f',typ='I', defaut=12, fr=tr("Nb de points pour le lissage par fenêtre de Hamming")  ),
          ),
          ASSE            =FACT(statut='f',fr=tr("Concatenation de fonctions"),
            FONCTION        =SIMP(statut='o',typ=fonction_sdaster,min=2,max=2 ),

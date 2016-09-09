@@ -381,4 +381,10 @@ Conseil:
                 il faut changer les coordonnées du noeud de référence COOR_REFE.            
 """),
 
+
+    79: _(u""" évaluation de la cohérence pour la phase forte du signal:
+        instants de début et de fin phase forte: %(r1).2f s et %(r2).2f s
+"""),
+
+
 }

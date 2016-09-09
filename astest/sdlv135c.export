@@ -1,0 +1,10 @@
+P time_limit 100
+P memory_limit 700
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm sdlv135c.comm D 1
+F mail sdlv135a.mail D 20
+F libr sdlv135c.33 D 33

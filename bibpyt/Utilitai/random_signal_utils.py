@@ -274,7 +274,7 @@ def calc_dsp_KT(self, freq_fond, amo, So=1.0):
 #
 #     FRACTION RATIONELLE
 #-----------------------------------------------------------------
-
+##
 def calc_dsp_FR(lfreq, freq_fond, amor, R0, R1, FREQ_CORNER, So=1.0):
     # KT model parameters
     w0 = freq_fond * 2. * pi
@@ -319,6 +319,18 @@ def f_ARIAS_TSM(ta, acce, norme):
     T1 = ta[n1]
     T2 = ta[n2]
     return arias, TSM, T1,  T2
+
+
+def f_phase_forte(ta, acce, p1, p2):
+    arias = f_ARIAS(ta, acce, 1.0)  # indic Arias
+    ener = arias * (2. * 1.0) / pi
+    acce2 = NP.array(acce) ** 2
+    cumener = NP.array([NP.trapz(acce2[0: ii + 1], ta[0: ii + 1])
+                        for ii in range(len(ta))])
+    fract = cumener / ener
+    n1 = NP.searchsorted(fract, p1)
+    n2 = NP.searchsorted(fract, p2)
+    return n1, n2 
 
 
 def f_ENER_qt(ta, acce, n1, n2):
@@ -903,13 +915,13 @@ def f_opt_FR2(para_ini, f_dsp_refe, R0, R2, fcorner):
     sFR = calc_dsp_FR(lfreq, vop, xi0, R0, R2, fcorner, So=1.0)
     residu2 = NP.sum((sFR - f_dsp_refe.vale_y) ** 2)
     return sqrt(residu2)
+
 # ---------------------------------------------------------
 #
 # -----------------------------------------------------------------
 # RAND_DSP
 # -----------------------------------------------------------------
-# TIRAGE DSP ALEATOIRE de la DSP: LOI LOGNORMALE
-
+# TIRAGE DSP ALEATOIRE AVEC LOI LOGNORMALE
 
 def RAND_DSP(MAT_CHOL, Nbf, f_dsp):
 # ---------------------------------------------------------
@@ -923,8 +935,8 @@ def RAND_DSP(MAT_CHOL, Nbf, f_dsp):
     rand_dsp = vale_dsp * alpha2
     f_rand_dsp = t_fonction(freq_dsp, rand_dsp, para=f_dsp.para)
     return f_rand_dsp
-
-
+#
+#
 def RAND_VEC(MAT_CHOL, Nbf, para=1.):
 # ---------------------------------------------------------
 # IN : MAT_CHOL  : chol(COV) pour la liste Periods
@@ -943,7 +955,7 @@ def RAND_VEC(MAT_CHOL, Nbf, para=1.):
     alpha = NP.exp(para * rvec)
     return alpha
 
-# Model des coefficients de correlation (Baker)
+# Coefficients de correlation (Baker)
 
 def corrcoefmodel(Period, f_beta=None):
     # ---------------------------------------------------------

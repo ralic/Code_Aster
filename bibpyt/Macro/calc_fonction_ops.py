@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,9 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe as LISS
-from Utilitai.random_signal_utils import ACCE2SRO, DSP2SRO, SRO2DSP, acce_filtre_CP
+from Utilitai.calc_coherency import calc_cohefromdata 
+from Utilitai.random_signal_utils import (ACCE2SRO, DSP2SRO, SRO2DSP, 
+                                acce_filtre_CP, f_phase_forte)
 
 from Utilitai.Utmess import UTMESS, ASSERT
 from Macro.defi_inte_spec_ops import tocomplex
@@ -368,6 +370,60 @@ class CalcFonction_MOYENNE(CalcFonctionOper):
             self.resu = t_nappe(vale_para, l_fonc_f, para)
         else:
             self.resu = moyenne(self._lf)
+
+
+class CalcFonction_COHERENCE(CalcFonctionOper):
+    """Compute the coherency function of two sets of signals"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        self._build_list_fonc(mcsimp='NAPPE_1')
+    def _run(self):
+        """COHERENCE"""
+        Mm = self.kw['NB_FREQ_LISS']
+        FREQ_COUP  = self.kw['FREQ_COUP']
+        para = {
+            'INTERPOL': ['LIN', 'LIN'], 'NOM_PARA': 'FREQ',
+            'PROL_DROITE': 'CONSTANT', 'PROL_GAUCHE': 'EXCLU',
+            'NOM_RESU': 'ACCE'}
+        nap1 = self._lf[0]
+        assert nap1.para['NOM_PARA'] == 'NUME_ORDRE'
+        vale_para1 = nap1.vale_para
+        nap2 = self.kw['NAPPE_2']
+        vale_para2, lfonc2 = nap2.Valeurs()
+        assert len(vale_para1) == len(vale_para2), 'NAPPE_1 and NAPPE_2 must have same length.'
+        assert set(vale_para2) == set(vale_para1), 'Data lists are not ordered as pairs.'
+
+        acce1 = []
+        acce2 = []  
+        for ii, fonc2 in enumerate(lfonc2):
+            lt = nap1.l_fonc[ii].vale_x
+            fonc1 = nap1.l_fonc[ii].vale_y
+            assert len(lt) == len(fonc2[0]), 'Signals with same length required for NUME_ORDRE '+str(vale_para1[ii])
+            assert (fonc2[0][1]-fonc2[0][0]) == (lt[1]-lt[0]), 'same time steps required'
+            if self.kw['OPTION'] == "DUREE_PHASE_FORTE": 
+                if ii == 0:  
+                    p1 = self.kw['BORNE_INF']
+                    p2 = self.kw['BORNE_SUP']
+                    N1, N2 = f_phase_forte(lt, fonc1, p1, p2)
+                    UTMESS('I', 'SEISME_79',  valr=(lt[N1], lt[N2]))
+                acce2.append(fonc2[1][N1:N2])
+                acce1.append(fonc1[N1:N2]) 
+            else : 
+                acce2.append(fonc2[1])   
+                acce1.append(fonc1)
+        acce1 = NP.array(acce1)    
+        acce2 = NP.array(acce2)
+        dt = lt[1]-lt[0]
+        lfreq, fcohe = calc_cohefromdata(acce1, acce2, dt, Mm)
+        N1 = NP.searchsorted(lfreq, 0.0)
+        N2 = len(lfreq)
+        if FREQ_COUP != None:
+            if lfreq[-1] > FREQ_COUP:
+                N2 = NP.searchsorted(lfreq, FREQ_COUP)
+                print self.kw['FREQ_COUP'], N2          
+        f_cohe = fcohe[N1:N2]
+        l_freq = lfreq[N1:N2]
+        self.resu = t_fonction(l_freq, f_cohe.real, para)
 
 class CalcFonction_INTEGRE(CalcFonctionOper):
     """Integration"""
