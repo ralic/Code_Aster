@@ -1,8 +1,8 @@
-subroutine lcrksg(comp, nvi, vinf, fd, df,&
+subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
                   nmat, coefl, sigi)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ subroutine lcrksg(comp, nvi, vinf, fd, df,&
 #include "asterfort/pmat.h"
 #include "blas/dcopy.h"
     character(len=8) :: mod
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     integer :: nmat, nvi
     real(kind=8) :: hook(6, 6), sigi(6), fd(9), df(9), coefl(nmat)
     real(kind=8) :: vinf(*), fp(3, 3), fpm(3, 3), fe(3, 3), detp, f(3, 3)
@@ -46,10 +46,9 @@ subroutine lcrksg(comp, nvi, vinf, fd, df,&
     common/polycr/irr,decirr,nbsyst,decal,gdef
 !     ----------------------------------------------------------------
 !
-    loi = comp(1)
 !     PAS DE CONTRAINTES PLANES NI DE 1D. 3D = D_PLAN = AXIS
     mod='3D'
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
         if (gdef .eq. 1) then
 !
 !           OPERATEUR D'ELASTICITE DE HOOKE

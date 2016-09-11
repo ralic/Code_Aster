@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine lcresa(fami, kpg, ksp, typmod, imat,&
-                      nmat, materd, materf, comp, nr,&
+                      nmat, materd, materf, rela_comp, nr,&
                       nvi, timed, timef, deps, epsd,&
                       yf, dy, r, iret, yd,&
                       crit)
@@ -31,7 +31,7 @@ interface
         integer :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
-        character(len=16) :: comp(*)
+        character(len=16) :: rela_comp
         real(kind=8) :: timed
         real(kind=8) :: timef
         real(kind=8) :: deps(6)

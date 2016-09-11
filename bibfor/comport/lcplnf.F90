@@ -1,16 +1,15 @@
-subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
+subroutine lcplnf(rela_comp, vind, nbcomm, nmat, cpmono,&
                   materd, materf, iter, nvi, itmax,&
                   toler, pgl, nfs, nsg, toutms,&
                   hsr, dt, dy, yd, yf,&
-                  vinf, tampon, comp, sigd, sigf,&
-                  deps, nr, mod, timed, timef,&
+                  vinf, tampon, sigd, sigf,&
+                  deps, nr, mod, timef,&
                   indi, vins, codret)
 !
-! person_in_charge: jean-michel.proix at edf.fr
 ! aslint: disable=W1504
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,11 +68,11 @@ subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
 #include "asterfort/lkilnf.h"
     integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
     integer :: nfs, nsg, indi(7), i
-    real(kind=8) :: materd(nmat, 2), materf(nmat, 2), vins(nvi), timed, timef
+    real(kind=8) :: materd(nmat, 2), materf(nmat, 2), vins(nvi), timef
     real(kind=8) :: pkc, m13, dtot, hookf(6, 6)
     real(kind=8) :: yd(*), vind(*), toler, pgl(3, 3), dt, tampon(*)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), dy(*), yf(*), vinf(*)
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     real(kind=8) :: sigf(6), deps(*), sigd(6)
@@ -84,26 +83,26 @@ subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
 !     MISE A JOUR DE SIGF , VINF
     call lceqvn(ndt, yf(1), sigf)
 !
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
 ! ---    DEFORMATION PLASTIQUE EQUIVALENTE CUMULEE MACROSCOPIQUE
         call lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
                     materf, iter, nvi, itmax, toler,&
                     pgl, nfs, nsg, toutms, hsr,&
                     dt, dy, yd, vinf, tampon,&
-                    comp, sigf, deps, nr, mod,&
+                    sigf, deps, nr, mod,&
                     codret)
 !
-    else if (loi(1:7).eq.'IRRAD3M') then
+    else if (rela_comp(1:7).eq.'IRRAD3M') then
         call irrlnf(nmat, materf, yf(ndt+1), 1.0d0, vinf)
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
         call burlnf(nvi, vind, nmat, materd, materf,&
                     dt, nr, yd, yf, vinf,&
                     sigf)
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp(1:4) .eq. 'LETK') then
         call lkilnf(nvi, vind, nmat, materf, dt,&
                     sigd, nr, yd, yf, deps,&
                     vinf)
-    else if (loi .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
 !        DEFORMATION PLASTIQUE CUMULEE
         vinf(7) = yf(ndt+1)
 !        H1
@@ -121,11 +120,11 @@ subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
         call lcopli('ISOTROPE', mod, materf(1, 1), hookf)
         call lcprmv(hookf, yf, sigf)
         call lcprsv(dtot, sigf, sigf)
-        do 10 i = 1, ndt
+        do i = 1, ndt
             vinf(i) = yf(i)
-10      continue
+        end do
         vinf(nvi) = iter
-    else if (loi(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp(1:6) .eq. 'HUJEUX') then
         call hujlnf(toler, nmat, materf, nvi, vind,&
                     vinf, vins, nr, yd, yf,&
                     sigd, sigf, indi, codret)

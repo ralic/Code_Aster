@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       nbcomm, cpmono, angmas, pgl, itmax,&
                       toler, ndt, ndi, nr, crit,&
                       nvi, vind, nfs, nsg, toutms,&
-                      nhsr, numhsr, sigd)
+                      nhsr, numhsr, sigd, mult_comp_)
         integer :: nmat
         character(len=*) :: fami
         integer :: kpg
@@ -56,5 +56,6 @@ interface
         integer :: nhsr
         integer :: numhsr(*)
         real(kind=8) :: sigd(6)
+        character(len=16), optional, intent(in) :: mult_comp_
     end subroutine lcmate
 end interface

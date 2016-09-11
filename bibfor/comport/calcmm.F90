@@ -1,16 +1,15 @@
 subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
-                  nsg, toutms, comp, nvi, vind,&
+                  nsg, toutms, nvi, vind,&
                   irota)
     implicit none
 #include "asterfort/lcmmsg.h"
 #include "asterfort/utmess.h"
     integer :: nmat, nbcomm(nmat, 3), nvi, irota, nfs, nsg
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), vind(*)
-    character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,13 +24,11 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !       IN
 !         NBCOMM :  NOMBRE DE COEF COEFTIAU PAR FAMILLE
 !         CPMONO :  NOMS DES LOIS COEFTIAU PAR FAMILLE
 !           NMAT :  NOMBRE MAXI DE COEF MATERIAU
 !          PGL   : MATRICE DE PASSAGE GLOBAL LOCAL DU MONOCRISTAL
-!         COMP   :  COMPOR - LOI ET TYPE DE DEFORMATION
 !         NVI    :  NB VARIABLES INTERNES
 !         VIND   :  VARIABLES INTERNES A T
 !         IROTA  :  >0 POUR ROTATION DE RESEAU, 0 SINON
@@ -60,45 +57,44 @@ subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
     if (gdef .eq. 1) then
 !  EN VUE D'OPTIMISER, STOCKER LG ET NG
         ir=0
-        do 12 ifa = 1, nbfsys
-            nomfam=cpmono(5*(ifa-1)+1)
+        do ifa = 1, nbfsys
+            nomfam=cpmono(5*(ifa-1)+1)(1:16)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, ir, q)
-            do 13 is = 1, nbsys
+            do is = 1, nbsys
                 call lcmmsg(nomfam, nbsys, is, pgl, ms,&
                             ng, lg, ir, q)
-                do 14 i = 1, 3
+                do i = 1, 3
                     toutms(ifa,is,i)=lg(i)
                     toutms(ifa,is,i+3)=ng(i)
-14              continue
-13          continue
-12      continue
-!
+                end do
+            end do
+        end do
     else
 !
 !        ROTATION RESEAU ROTA_RESEAU_CALC - DEBUT
         if (irota .eq. 2) then
             ir=1
-            do 29 i = 1, 3
-                do 29 j = 1, 3
+            do i = 1, 3
+                do j = 1, 3
                     q(i,j)=vind(nvi-19+3*(i-1)+j)+iden(i,j)
-29              continue
+                end do
+            end do
         endif
         nbcomm(nmat,1)=irota
 !        ROTATION RESEAU FIN
 !
-        do 2 ifa = 1, nbfsys
-            nomfam=cpmono(5*(ifa-1)+1)
+        do ifa = 1, nbfsys
+            nomfam=cpmono(5*(ifa-1)+1)(1:16)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, ir, q)
-            do 3 is = 1, nbsys
+            do is = 1, nbsys
                 call lcmmsg(nomfam, nbsys, is, pgl, ms,&
                             ng, lg, ir, q)
-                do 4 i = 1, 6
+                do i = 1, 6
                     toutms(ifa,is,i)=ms(i)
- 4              continue
-!
- 3          continue
- 2      continue
+                end do
+            end do
+        end do
     endif
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
+    subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
                       cpmono, nmat, mod, nvi, sigd,&
                       sigf, vind, vinf, nbphas, iret)
         integer :: nmat
         integer :: ndim
         character(len=16) :: opt
-        character(len=16) :: comp(*)
+        character(len=16) :: rela_comp
         real(kind=8) :: materf(nmat, 2)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)

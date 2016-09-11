@@ -1,9 +1,9 @@
-subroutine rkcah1(comp, y, pas, nvi, w,&
+subroutine rkcah1(rela_comp, y, pas, nvi, w,&
                   wk, h, eps, iret)
-    implicit none
-!     ================================================================
+implicit none
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,17 +21,16 @@ subroutine rkcah1(comp, y, pas, nvi, w,&
 !
 !     INTEGRATION DE LOIS DE COMPORTEMENT PAR  RUNGE KUTTA
 !     CALCUL DU NOUVEAU PAS DE TEMPS (AUGMENTATION)
-!      IN COMP    :  NOM DU MODELE DE COMPORTEMENT
+!      IN RELA_COMP    :  NOM DU MODELE DE COMPORTEMENT
 !         Y       :  VARIABLES INTERNES
 !         PAS     :  INTERVALLE DE TEMPS TF-TD
 !     OUT H       :  PAS DE TEMPS
 !
     integer :: ne, ny, na, nvi, ii, iret
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     real(kind=8) :: pas, h, w, dmg0, eps, maxout, maxdom, wk(*), y(*)
     parameter  ( maxdom = 9.90d-01  )
 !
-    loi=comp(1)
     ne=0
     ny=nvi
     na=ny+nvi
@@ -39,15 +38,15 @@ subroutine rkcah1(comp, y, pas, nvi, w,&
 !
     maxout=maxdom-eps
 !
-    if (loi(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
 !        TRAITEMENT VENDOCHAB
 !        TEST SUR LE NIVEAU DE DOMMAGE--
         if (y(9) .ge. maxdom) then
             dmg0=(y(9)-wk(9))-(wk(na+9)*h)
             if (dmg0 .ge. maxout) then
-                do 99 ii = 1, nvi
+                do ii = 1, nvi
                     y(ii)=(y(ii)-wk(ne+ii))-(wk(na+ii)*h)
-99              continue
+                end do
                 iret=1
             else
                 h=(maxout-dmg0)/((wk(ne+9)/h)+wk(na+9))

@@ -1,4 +1,4 @@
-subroutine lcmmap(fami, kpg, ksp, comp, mod,&
+subroutine lcmmap(fami, kpg, ksp, mult_comp, mod,&
                   imat, nmat, angmas, pgl, materd,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, nfs, nsg,&
@@ -6,7 +6,7 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 ! aslint: disable=W1504
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 !       POLYCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 !                    NB DE CMP DIRECTES/CISAILLEMENT , NB VAR. INTERNES
@@ -141,7 +140,8 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
     integer :: cerr(14), itbint, nbtbsy, nbsysi, imonoi, imonor, numhsr(nhsr)
     character(len=3) :: matcst
     character(len=*) :: fami
-    character(len=16) :: comp(*), nmater, necoul, necris, necrci, nomfam
+        character(len=16) :: mult_comp
+    character(len=16) :: nmater, necoul, necris, necrci, nomfam
     character(len=16) :: phenom, compk, compi, compr, monoi, monor
     character(len=24) :: cpmono(5*nmat+1)
     integer :: i, imat, nbfsys, ifa, j, nbmono, nbsys, nbsyst, idecal
@@ -167,13 +167,13 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
-    read (comp(2),'(I16)') nvi
+    
 !
 !     LA DERNIERE VARIABLE INTERNE EST L'INDICATEUR PLASTIQUE
     nr=nvi+ndt-1
-    compk=comp(7)(1:8)//'.CPRK'
-    compi=comp(7)(1:8)//'.CPRI'
-    compr=comp(7)(1:8)//'.CPRR'
+    compk=mult_comp(1:8)//'.CPRK'
+    compi=mult_comp(1:8)//'.CPRI'
+    compr=mult_comp(1:8)//'.CPRR'
     call jeveuo(compk, 'L', icompk)
     call jeveuo(compi, 'L', icompi)
     call jeveuo(compr, 'L', icompr)
@@ -253,13 +253,13 @@ subroutine lcmmap(fami, kpg, ksp, comp, mod,&
         endif
 !
         do ifa = 1, nbfsys
-            nomfam=cpmono(indcp+5*(ifa-1)+1)
+            nomfam=cpmono(indcp+5*(ifa-1)+1)(1:16)
             call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                         ng, lg, 0, q)
-            nmater=cpmono(indcp+5*(ifa-1)+2)
-            necoul=cpmono(indcp+5*(ifa-1)+3)
-            necris=cpmono(indcp+5*(ifa-1)+4)
-            necrci=cpmono(indcp+5*(ifa-1)+5)
+            nmater=cpmono(indcp+5*(ifa-1)+2)(1:16)
+            necoul=cpmono(indcp+5*(ifa-1)+3)(1:16)
+            necris=cpmono(indcp+5*(ifa-1)+4)(1:16)
+            necrci=cpmono(indcp+5*(ifa-1)+5)(1:16)
 !           NOMBRE DE MATRICE D'INTERACTION DIFFERENTES
 !           COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
             call lcmafl(fami, kpg, ksp, '-', nmater,&

@@ -2,12 +2,12 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                   imat, comp, crit, timed, timef,&
                   neps, epsdt, depst, sigd, vind,&
                   opt, angmas, sigf, vinf, dsde,&
-                  iret)
+                  iret, mult_comp_)
 ! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !     ================================================================
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO-VISCOPLASTIQUE
 !     PAR UNE METHODE DE RUNGE KUTTA
@@ -110,6 +109,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     integer :: imat, ndim, ndt, ndi, nr, nvi, kpg, ksp, i, nbphas, itmax
     integer :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
     integer :: irr, decirr, nbsyst, decal, gdef
+    character(len=16), optional, intent(in) :: mult_comp_
 !     POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
     parameter (nmat =6000)
 !     POUR LCMATE (MONOCRISTAL) DIMENSIONS MAX
@@ -130,7 +130,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     character(len=3) :: matcst
     character(len=8) :: mod, typma, typmod(*)
     character(len=11) :: meting
-    character(len=16) :: comp(*), opt, loi
+    character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
     common /tdim/   ndt,    ndi
     common /opti/   ioptio, idnr
@@ -143,9 +143,14 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     toler = crit(3)
     meting = 'RUNGE_KUTTA'
     mod = typmod(1)
-    loi = comp(1)
+    rela_comp = comp(1)
+    defo_comp = comp(3)
+    mult_comp = ' '
+    if (present(mult_comp_)) then
+        mult_comp = mult_comp_
+    endif
     gdef = 0
-    if (comp(3) .eq. 'SIMO_MIEHE') gdef=1
+    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
 !
 !     YMFS EST UTILISE LORS DU CALCUL D ERREUR COMME MINIMUM DE
 !     CHAQUE COMPOSANTE DE VINT. L IDEAL SERAIT DE RENTRER CE
@@ -162,9 +167,9 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                 nbcomm, cpmono, angmas, pgl, 0,&
                 toler, ndt, ndi, nr, crit,&
                 nvi, vind, nfs, nsg, toutms,&
-                nhsr, numhsr, sigd)
+                nhsr, numhsr, sigd, mult_comp)
 !
-    if (opt(1:9) .eq. 'RIGI_MECA') goto 9000
+    if (opt(1:9) .eq. 'RIGI_MECA') goto 900
 !
     call dcopy(neps, depst, 1, detot, 1)
     call dcopy(neps, epsdt, 1, epsd, 1)
@@ -173,28 +178,28 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
 !
 ! --  INITIALISATION DES VARIABLES INTERNES A T
 !
-    do 10 i = 1, nmat
+    do i = 1, nmat
         cothe(i)=materd(i,1)
         dcothe(i)=-cothe(i)+materf(i,1)
-10  end do
+    end do
 !
-    do 11 i = 1, nmat
+    do i = 1, nmat
         coeff(i)=materd(i,2)
         dcoeff(i)=-coeff(i)+materf(i,2)
-11  end do
+    end do
 !
 !     INITIALISATIONS PARTICULIERES POUR CERTAINES LOIS
 !
-    call lcrkin(ndim, opt, comp, materf, nbcomm,&
+    call lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
                 cpmono, nmat, mod, nvi, sigd,&
                 sigf, vind, vinf, nbphas, iret)
     if (iret .eq. 9) then
 !        ENDOMMAGEMENT MAXI AU POINT DE GAUSS
         iret=0
-        goto 9999
+        goto 999
     endif
 !
-    call gerpas(fami, kpg, ksp, comp, mod,&
+    call gerpas(fami, kpg, ksp, rela_comp, mod,&
                 imat, matcst, nbcomm, cpmono, nbphas,&
                 nvi, nmat, vinf, dtime, itmax,&
                 toler, ymfs, cothe, coeff, dcothe,&
@@ -202,25 +207,25 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                 epsd, detot, x, nfs, nsg,&
                 nhsr, numhsr, hsr, iret)
     if (iret .ne. 0) then
-        goto 9999
+        goto 999
     endif
 !
 ! --  CALCUL DES CONTRAINTES
 !
-    if ((loi(1:8).eq.'MONOCRIS') .and. (gdef.eq.1)) then
-        call lcrksg(comp, nvi, vinf, epsd, detot,&
+    if ((rela_comp(1:8).eq.'MONOCRIS') .and. (gdef.eq.1)) then
+        call lcrksg(rela_comp, nvi, vinf, epsd, detot,&
                     nmat, coel, sigf)
     else
         call calsig(fami, kpg, ksp, vinf, mod,&
-                    comp, vinf, x, dtime, epsd,&
+                    rela_comp, vinf, x, dtime, epsd,&
                     detot, nmat, coel, sigf)
     endif
 !
-    call lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
+    call lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
                 nmat, nvi, sigf, detot, epsd,&
                 materf, pgl)
 !
-9000  continue
+900 continue
 !
 !     OPERATEUR TANGENT = ELASTIQUE OU SECANT (ENDOMMAGEMENT)
     if (materf(nmat,1) .eq. 0) then
@@ -234,5 +239,5 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

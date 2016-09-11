@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
-                      nsg, toutms, comp, nvi, vind,&
+                      nsg, toutms, nvi, vind,&
                       irota)
         integer :: nsg
         integer :: nfs
@@ -26,7 +26,6 @@ interface
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
-        character(len=16) :: comp(*)
         integer :: nvi
         real(kind=8) :: vind(*)
         integer :: irota

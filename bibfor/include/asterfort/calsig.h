@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine calsig(fami, kpg, ksp, ein, mod,&
-                      comp, vini, x, dtime, epsd,&
+                      rela_comp, vini, x, dtime, epsd,&
                       detot, nmat, coel, sigi)
         integer :: nmat
         character(len=*) :: fami
@@ -25,7 +25,7 @@ interface
         integer :: ksp
         real(kind=8) :: ein(6)
         character(len=8) :: mod
-        character(len=16) :: comp(*)
+        character(len=16) :: rela_comp
         real(kind=8) :: vini(*)
         real(kind=8) :: x
         real(kind=8) :: dtime

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcmmat(fami, kpg, ksp, comp, mod,&
+    subroutine lcmmat(fami, kpg, ksp, mult_comp, mod,&
                       imat, nmat, angmas, pgl, materd,&
                       materf, matcst, nbcomm, cpmono, ndt,&
                       ndi, nr, nvi, hsr, nfs,&
@@ -27,7 +27,7 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: comp(*)
+        character(len=16), intent(in) :: mult_comp
         character(len=8) :: mod
         integer :: imat
         real(kind=8) :: angmas(3)

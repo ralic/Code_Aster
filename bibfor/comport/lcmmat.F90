@@ -1,13 +1,12 @@
-subroutine lcmmat(fami, kpg, ksp, comp, mod,&
+subroutine lcmmat(fami, kpg, ksp, mult_comp, mod,&
                   imat, nmat, angmas, pgl, materd,&
                   materf, matcst, nbcomm, cpmono, ndt,&
                   ndi, nr, nvi, hsr, nfs,&
                   nsg, toutms, vind, impexp)
 ! aslint: disable=W1504
     implicit none
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +32,7 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !       IN  FAMI   : FAMILLE DE POINT DE GAUSS
 !            KPG   : NUMERO DU POINT DE GAUSS
 !            KSP   : NUMERO DU SOUS-POINT DE GAUSS
-!           COMP   :  GRANDEUR COMPOR
+! In  rela_comp: RELATION for comportment
 !           IMAT   :  ADRESSE DU MATERIAU CODE
 !           MOD    :  TYPE DE MODELISATION
 !           NMAT   :  DIMENSION  MAXIMUM DE MATER
@@ -87,7 +86,8 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     integer :: cerr(3)
     character(len=3) :: matcst
     character(len=*) :: fami
-    character(len=16) :: comp(*), nmater, necoul, necris, necrci
+    character(len=16) :: nmater, necoul, necris, necrci
+    character(len=16), intent(in) :: mult_comp
     character(len=16) :: phenom, nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: i, imat, nbfsys, ifa, j, dimtms, itbint
@@ -114,10 +114,8 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     call r8inir(2*nmat, 0.d0, materd, 1)
     call r8inir(2*nmat, 0.d0, materf, 1)
 !
-    read (comp(2),'(I16)') nvi
-!
-    call lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
-                itbint, nfs, nsg, hsr)
+    call lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota,&
+                itbint, nsg, hsr)
 !
     if (impexp .eq. 1) then
         if (irota .ne. 0) then
@@ -136,15 +134,15 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     enddo
     nbcomm(1,1)=1
 !
-    do 6 ifa = 1, nbfsys
-        nomfam=cpmono(5*(ifa-1)+1)
+    do ifa = 1, nbfsys
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
         call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                     ng, lg, 0, q)
 !
-        nmater=cpmono(5*(ifa-1)+2)
-        necoul=cpmono(5*(ifa-1)+3)
-        necris=cpmono(5*(ifa-1)+4)
-        necrci=cpmono(5*(ifa-1)+5)
+        nmater=cpmono(5*(ifa-1)+2)(1:16)
+        necoul=cpmono(5*(ifa-1)+3)(1:16)
+        necris=cpmono(5*(ifa-1)+4)(1:16)
+        necrci=cpmono(5*(ifa-1)+5)(1:16)
 !
 !        COEFFICIENTS MATERIAUX LIES A L'ECOULEMENT
         call lcmafl(fami, kpg, ksp, '-', nmater,&
@@ -156,18 +154,18 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !           une seule matrice d'interaction pour le monocristal
             valres(nbval)=1
         endif
-        do 501 i = 1, nbval
+        do i = 1, nbval
             materd(nvini-1+i,2)=valres(i)
-501      continue
+        end do
         nbcomm(ifa,2)=nvini+nbval
 !
 !        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE CINEMATIQUE
         call lcmaec(fami, kpg, ksp, '-', nmater,&
                     imat, necrci, nbval, valres, nmat)
         nvini=nbcomm(ifa,2)
-        do 502 i = 1, nbval
+        do i = 1, nbval
             materd(nvini-1+i,2)=valres(i)
-502      continue
+        end do
         nbcomm(ifa,3)=nvini+nbval
 !
 !        COEFFICIENTS MATERIAUX LIES A L'ECROUISSAGE ISOTROPE
@@ -179,13 +177,13 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !        une seule matrice d'interaction pour le monocristal
         valres(nbval)=1
         nvini=nbcomm(ifa,3)
-        do 503 i = 1, nbval
+        do i = 1, nbval
             materd(nvini-1+i,2)=valres(i)
-503      continue
+        end do
         nbcomm(ifa+1,1)=nvini+nbval
 !
 !
- 6  end do
+    end do
 !     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
     nbcomm(nmat,2)=nbfsys
     nbcomm(nmat,3)=nbcomm(nbfsys+1,1)+1
@@ -193,15 +191,15 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !
     nbsyst=0
 !
-    do 61 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
 !
-        nomfam=cpmono(5*(ifa-1)+1)
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
         call lcmmsg(nomfam, nbsys, 0, pgl, ms,&
                     ng, lg, 0, q)
-        nmater=cpmono(5*(ifa-1)+2)
-        necoul=cpmono(5*(ifa-1)+3)
-        necris=cpmono(5*(ifa-1)+4)
-        necrci=cpmono(5*(ifa-1)+5)
+        nmater=cpmono(5*(ifa-1)+2)(1:16)
+        necoul=cpmono(5*(ifa-1)+3)(1:16)
+        necris=cpmono(5*(ifa-1)+4)(1:16)
+        necrci=cpmono(5*(ifa-1)+5)(1:16)
 !
         nbsyst=nbsyst+nbsys
 !
@@ -214,17 +212,17 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !           une seule matrice d'interaction pour le monocristal
             valres(nbval)=1
         endif
-        do 504 i = 1, nbval
+        do i = 1, nbval
             materf(nvini-1+i,2)=valres(i)
-504      continue
+        end do
         nbcomm(ifa,2)=nvini+nbval
 !
         call lcmaec(fami, kpg, ksp, '+', nmater,&
                     imat, necrci, nbval, valres, nmat)
         nvini=nbcomm(ifa,2)
-        do 505 i = 1, nbval
+        do i = 1, nbval
             materf(nvini-1+i,2)=valres(i)
-505      continue
+        end do
         nbcomm(ifa,3)=nvini+nbval
 !
         call lcmaei(fami, kpg, ksp, '+', nmater,&
@@ -235,12 +233,12 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
         nbval=nbval+1
 !        une seule matrice d'interaction pour le monocristal
         valres(nbval)=1
-        do 506 i = 1, nbval
+        do i = 1, nbval
             materf(nvini-1+i,2)=valres(i)
-506      continue
+        end do
         nbcomm(ifa+1,1)=nvini+nbval
 !
-61  end do
+    end do
 !
     call rccoma(imat, 'ELAS', 1, phenom, cerr(1))
 !
@@ -277,9 +275,9 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
     else if (phenom.eq.'ELAS_ORTH') then
 !
         repere(1)=1
-        do 21 i = 1, 3
+        do i = 1, 3
             repere(i+1)=angmas(i)
-21      continue
+        end do
 !
 ! -    ELASTICITE ORTHOTROPE
 !
@@ -389,28 +387,28 @@ subroutine lcmmat(fami, kpg, ksp, comp, mod,&
 !
     nr=ndt+nbsyst
     call calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
-                nsg, toutms, comp, nvi, vind,&
+                nsg, toutms, nvi, vind,&
                 irota)
 !
 ! -   MATERIAU CONSTANT ?
 !
     matcst = 'OUI'
     epsi=1.d-3
-    do 30 i = 1, nmat
+    do i = 1, nmat
         if (abs(materd(i,1)-materf(i,1) ) .gt. epsi*materd(i,1)) then
             matcst = 'NON'
-            goto 9999
+            goto 999
         endif
-30  end do
-    do 40 i = 1, nmat
+    end do
+    do i = 1, nmat
         if (abs(materd(i,2)-materf(i,2) ) .gt. epsi*materd(i,2)) then
             matcst = 'NON'
             call utmess('F', 'COMPOR1_27')
-            goto 9999
+            goto 999
         endif
-40  end do
+    end do
 !
-9999  continue
+999 continue
 !
 !     ON STOCKE A LA FIN LE NOMBRE TOTAL DE COEF MATERIAU
 !      MATERD(NMAT,2)=NBCOMM(NMAT,3)

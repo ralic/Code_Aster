@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcjacp(fami, kpg, ksp, loi, toler,&
+    subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
                       itmax, mod, imat, nmat, materd,&
                       materf, nr, nvi, timed, timef,&
                       deps, epsd, vind, vinf, yd,&
-                      comp, nbcomm, cpmono, pgl, nfs,&
+                      nbcomm, cpmono, pgl, nfs,&
                       nsg, toutms, hsr, dy, r,&
                       drdy, verjac, drdyb, iret, crit,&
                       indi)
@@ -32,7 +32,7 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: loi
+        character(len=16) :: rela_comp
         real(kind=8) :: toler
         integer :: itmax
         character(len=8) :: mod
@@ -46,7 +46,6 @@ interface
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: yd(nr)
-        character(len=16) :: comp(*)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)

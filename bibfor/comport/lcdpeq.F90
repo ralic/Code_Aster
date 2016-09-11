@@ -1,11 +1,11 @@
-subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
+subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono,&
                   nmat, nvi, sig, detot, epsd,&
                   materf, pgl)
 !
 ! aslint: disable=W1306
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,14 +55,13 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
     real(kind=8) :: detot(*), epsd(*), pk2(6), devi(6), endoc, dp, xi, qm(3, 3)
     real(kind=8) :: materf(nmat, 2), rhoirr(12), tau(60)
     real(kind=8) :: rhosat, phisat, dz, roloop(12), fivoid(12), sdp
-    character(len=16) :: loi, loca, comp(*), necoul, nomfam
+    character(len=16) :: rela_comp, loca, necoul, nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
     data    id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 !
-    loi = comp(1)
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
         nvi = nvi +3
         if (gdef .eq. 1) then
             nvi=nvi+9
@@ -72,12 +71,12 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
     epseq = 0.d0
     nbsys = 0
 !
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
 !
         nbfsys=nbcomm(nmat,2)
 !        NSFV : debut de la famille IFA dans les variables internes
         nsfv=6
-        do 6 ifa = 1, nbfsys
+        do ifa = 1, nbfsys
             ifl=nbcomm(ifa,1)
 !            NUECOU=NINT(MATERF(IFL,2))
             nomfam=cpmono(5*(ifa-1)+1)(1:16)
@@ -105,21 +104,21 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
             endif
 !
             if (irr2 .eq. 1) then
-                do 7 is = 1, 12
+                do is = 1, 12
 !                 VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                     nuvi=nsfv+3*(is-1)+3
                     dp=vinf(nuvi)
                     rhoirr(is)=rhoirr(is)*exp(-xi*dp)
- 7              continue
+                end do
                 call dcopy(12, rhoirr, 1, vinf(nsfv+3*nbsys+1), 1)
 !
             endif
 !
             if (irr2 .eq. 2) then
-                do 8 is = 1, 12
+                do is = 1, 12
 !                 SOMME SUR COPLA(S)
                     sdp=0.d0
-                    do 9 iv = 1, 12
+                    do iv = 1, 12
                         is3=(is-1)/3
                         iv3=(iv-1)/3
 !                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
@@ -128,16 +127,16 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                         if (is3 .eq. iv3) then
                             sdp=sdp+dp
                         endif
- 9                  continue
+                    end do
                     roloop(is)=rhosat+(roloop(is)-rhosat)*exp(-xi*sdp)
                     fivoid(is)=phisat+(fivoid(is)-phisat)*exp(-dz*sdp)
- 8              continue
+                end do
                 call dcopy(12, roloop, 1, vinf(nsfv+3*nbsys+1), 1)
                 call dcopy(12, fivoid, 1, vinf(nsfv+3*nbsys+13), 1)
             endif
 !
             nsfv=nsfv+nbsys*3
- 6      continue
+        end do
 !
 !
         indtau=nsfv
@@ -145,24 +144,24 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
         if (irr2 .eq. 2) indtau=indtau+24
 !        CISSIONS TAU_S
         ns=0
-        do 61 ifa = 1, nbfsys
+        do ifa = 1, nbfsys
             ifl=nbcomm(ifa,1)
             nomfam=cpmono(5*(ifa-1)+1)(1:16)
             call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                         ng, lg, 0, qm)
-            do 71 is = 1, nbsys
+            do is = 1, nbsys
 !              CALCUL DE LA SCISSION REDUITE =
 !              PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !              TAU      : SCISSION REDUITE TAU=SIG:MUS
                 call lcmmsg(nomfam, nbsys, is, pgl, mus,&
                             ng, lg, 0, qm)
                 tau(ns+is)=0.d0
-                do 102 i = 1, 6
+                do i = 1, 6
                     tau(ns+is)=tau(ns+is)+sig(i)*mus(i)
-102              continue
-71          continue
+                end do
+            end do
             ns=ns+nbsys
-61      continue
+        end do
         call dcopy(ns, tau, 1, vinf(indtau+1), 1)
 !
 !
@@ -192,22 +191,22 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
         else
 !           V.I. 1 A 6 REPRéSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
             epseq=0.d0
-            do 10 i = 1, 6
+            do i = 1, 6
                 dvin(i)=vinf(i)-vind(i)
                 epseq=epseq+dvin(i)*dvin(i)
-10          continue
+            end do
             epseq = sqrt ( 2.0d0/3.0d0* epseq )
         endif
         vinf (nvi-1) = vind (nvi-1) + epseq
 !
-    else if (loi(1:8).eq.'POLYCRIS') then
+    else if (rela_comp(1:8).eq.'POLYCRIS') then
 !
 !        V.I. 1 A 6 REPRéSENTE LA DEFORMATION VISCOPLASTIQUE MACRO
         epseq=0.d0
-        do 20 i = 1, 6
+        do i = 1, 6
             dvin(i)=vinf(i)-vind(i)
             epseq=epseq+dvin(i)*dvin(i)
-20      continue
+        end do
         epseq = sqrt ( 2.0d0/3.0d0* epseq )
         vinf (7) = vind (7) + epseq
 !        LOCALISATION
@@ -215,36 +214,37 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
         nbphas=nbcomm(1,1)
         loca=cpmono(1)(1:16)
 !        CALCUL DE  B
-        do 53 i = 1, 6
+        do i = 1, 6
             granb(i)=0.d0
-53      continue
-        do 54 i = 1, 6
-            do 54 iphas = 1, nbphas
+        end do
+        do i = 1, 6
+            do iphas = 1, nbphas
                 indfv=nbcomm(1+iphas,3)
                 fv=materf(indfv,2)
                 granb(i)=granb(i)+fv*vinf(7+6*(iphas-1)+i)
-54          continue
+            end do
+        end do
         nuvi=nvi-6*nbphas-1
-        do 1 iphas = 1, nbphas
+        do iphas = 1, nbphas
             indfv=nbcomm(1+iphas,3)
 !         RECUPERER L'ORIENTATION DE LA PHASE ET LA PROPORTION
             fv=materf(indfv,2)
             call lcloca(materf(1, 2), nmat, nbcomm,&
                         nbphas, sig, vinf, iphas, granb,&
                         loca, sigg)
-            do 2 i = 1, 6
+            do i = 1, 6
                 vinf(nuvi+6*(iphas-1)+i)=sigg(i)
- 2          continue
- 1      continue
+            end do
+        end do
 !
 !        IRRADIATION
         nsfv=7+6*nbphas
         numirr=0
-        do 33 iphas = 1, nbphas
+        do iphas = 1, nbphas
             indpha=nbcomm(1+iphas,1)
             nbfsys=nbcomm(indpha,1)
             indcp=nbcomm(1+iphas,2)
-            do 32 ifa = 1, nbfsys
+            do ifa = 1, nbfsys
                 necoul=cpmono(indcp+5*(ifa-1)+3)(1:16)
 !
                 if (necoul .eq. 'MONO_DD_CC_IRRA') then
@@ -252,14 +252,14 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                     call dcopy(12, vind(decirr+numirr+1), 1, rhoirr, 1)
                     ifl=nbcomm(indpha+ifa,1)
                     xi=materf(ifl+20,2)
-                    do 31 is = 1, nbsys
+                    do is = 1, nbsys
 !                    VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                         nuvi=nsfv+3*(is-1)+3
                         dp=vinf(nuvi)
                         if (irr .eq. 1) then
                             rhoirr(is)=rhoirr(is)*exp(-xi*dp)
                         endif
-31                  continue
+                    end do
                     call dcopy(12, rhoirr, 1, vinf(decirr+numirr+1), 1)
                     numirr=numirr+nbsys
                 endif
@@ -273,10 +273,10 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                     phisat=materf(iei+9,2)
                     xi = materf(iei+10,2)
                     dz = materf(iei+11,2)
-                    do 81 is = 1, nbsys
+                    do is = 1, nbsys
 !                    SOMME SUR COPLA(S)
                         sdp=0.d0
-                        do 91 iv = 1, 12
+                        do iv = 1, 12
 !                       VARIABLES INTERNES PAR SYSTEME DE GLISSEMENT
                             nuvi=nsfv+3*(iv-1)+3
                             dp=vinf(nuvi)
@@ -286,20 +286,20 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
                             if (is3 .eq. iv3) then
                                 sdp=sdp+dp
                             endif
-91                      continue
+                        end do
                         roloop(is)=rhosat+(roloop(is)-rhosat)*exp(-xi*&
                         sdp)
                         fivoid(is)=phisat+(fivoid(is)-phisat)*exp(-dz*&
                         sdp)
-81                  continue
+                            end do
                     call dcopy(12, roloop, 1, vinf(decirr+numirr+1), 1)
                     call dcopy(12, fivoid, 1, vinf(decirr+numirr+13), 1)
                     numirr=numirr+nbsys+nbsys
                 endif
 !
                 nsfv=nsfv+nbsys*3
-32          continue
-33      continue
+            end do
+        end do
     endif
 !
     if (epseq .eq. 0.d0) then
@@ -312,14 +312,14 @@ subroutine lcdpeq(vind, vinf, comp, nbcomm, cpmono,&
 ! --    CALCUL DES CONTRAINTES SUIVANT QUE LE MATERIAU EST
 ! --    ENDOMMAGE OU PAS
 !
-    if (loi(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
 ! --    DEBUT TRAITEMENT DE VENDOCHAB --
 ! --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST ENDOMMAGE OU PAS
         endoc=(1.0d0-vinf(9))
         materf(1,1)=materf(1,1)*endoc
     endif
 !
-    if (loi(1:8) .eq. 'HAYHURST') then
+    if (rela_comp(1:8) .eq. 'HAYHURST') then
 ! --    DEBUT TRAITEMENT DE HAYHURST --
 ! --    CALCUL DE DSDE SUIVANT QUE LE MATERIAU EST
 ! --    ENDOMMAGE OU PAS

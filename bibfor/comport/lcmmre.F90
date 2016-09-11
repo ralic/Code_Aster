@@ -1,4 +1,4 @@
-subroutine lcmmre(typmod, nmat, materd, materf, comp,&
+subroutine lcmmre(typmod, nmat, materd, materf, &
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, nr, nvi, vind,&
                   itmax, toler, timed, timef, yd,&
@@ -6,7 +6,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
 ! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 !     MONOCRISTAL  : CALCUL DES RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
 !                    CF. R5.03.11
@@ -85,7 +84,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
     real(kind=8) :: gamsns(3, 3), fp(3, 3), depst(6)
     real(kind=8) :: crit, sgns, expbp(nsg)
     character(len=8) :: typmod
-    character(len=16) :: comp(*), nomfam
+    character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
@@ -126,7 +125,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
 !     NSFV : debut de la famille IFA dans les variables internes
     nsfv=6
 !
-    do 6 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
 !
         ifl=nbcomm(ifa,1)
         nuecou=nint(materf(nmat+ifl))
@@ -135,9 +134,9 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
 !
-        do 7 is = 1, nbsys
+        do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE
-            call caltau(comp, ifa, is, sigf, fkooh,&
+            call caltau(ifa, is, sigf, fkooh,&
                         nfs, nsg, toutms, taus, mus,&
                         msns)
 !           CALCUL DE L'ECOULEMENT SUIVANT LE COMPORTEMENT
@@ -149,7 +148,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
-                goto 9999
+                goto 999
             endif
 !
             if (nuecou .ge. 4) then
@@ -167,18 +166,18 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
                 call daxpy(9, dgamma, msns, 1, gamsns,&
                            1)
             endif
- 7      continue
+        end do
 !
         nsfa=nsfa+nbsys
         nsfv=nsfv+nbsys*3
 !
- 6  end do
+    end do
 !
     if (gdef .eq. 1) then
         call calcfe(nr, ndt, nvi, vind, deps,&
                     gamsns, fe, fp, iret)
         if (iret .gt. 0) then
-            goto 9999
+            goto 999
         endif
         call lcgrla(fe, epsgl)
         call lcprmv(fkooh, sigf, h1sigf)
@@ -193,5 +192,5 @@ subroutine lcmmre(typmod, nmat, materd, materf, comp,&
         call lcdive(epsef, h1sigf, r(1))
     endif
 !
-9999  continue
+999  continue
 end subroutine

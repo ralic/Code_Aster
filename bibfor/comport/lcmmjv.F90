@@ -1,8 +1,8 @@
-subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
-                  itbint, nfs, nsg, hsr)
+subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota,&
+                  itbint, nsg, hsr)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,6 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !     MONOCRISTAL : RECUPERATION DU MATERIAU A T(TEMPD) ET T+DT(TEMPF)
 !     ----------------------------------------------------------------
@@ -39,10 +38,11 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
-    integer :: nmat, icompi, irota, itbint, icompo, nbfsys, i, j, nfs, nsg
+    integer :: nmat, icompi, irota, itbint, icompo, nbfsys, i, j,  nsg
     integer :: icompr, nbsyst, nbtbsy, ifa, nbsysi, idecal
     real(kind=8) :: hsr(nsg, nsg), tbsysg
-    character(len=16) :: comp(*), compk, compi, compr
+    character(len=16) :: mult_comp
+    character(len=16) :: compk, compi, compr
     character(len=24) :: cpmono(5*nmat+1)
     common/tbsysg/tbsysg(900)
 !     ----------------------------------------------------------------
@@ -52,9 +52,9 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
 !
     call jemarq()
 !
-    compk=comp(7)(1:8)//'.CPRK'
-    compi=comp(7)(1:8)//'.CPRI'
-    compr=comp(7)(1:8)//'.CPRR'
+    compk=mult_comp(1:8)//'.CPRK'
+    compi=mult_comp(1:8)//'.CPRI'
+    compr=mult_comp(1:8)//'.CPRR'
     call jeveuo(compk, 'L', icompo)
     call jeveuo(compi, 'L', icompi)
 !
@@ -64,17 +64,17 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
     nbsyst=zi(icompi-1+8)
 !
 !     5 FAMILLES DE SYSTEMES MAXI
-    do 1 i = 1, 5*nbfsys
+    do i = 1, 5*nbfsys
         cpmono(i)=zk24(icompo-1+i)
- 1  end do
+    end do
 !
     cpmono(5*nbfsys+1)=zk24(icompo-1+5*nbfsys+1)
 !
     nbtbsy=0
-    do 3 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
         nbsysi=zi(icompi-1+8+ifa)
         nbtbsy=nbtbsy+nbsysi
- 3  end do
+    end do
 !
     if (nbtbsy .ne. 0) then
         call r8inir(900, 0.d0, tbsysg, 1)
@@ -91,10 +91,11 @@ subroutine lcmmjv(comp, nmat, cpmono, nbfsys, irota,&
             call jeveuo(compr, 'L', icompr)
         endif
         idecal=nint(zr(icompr+1))
-        do 2 i = 1, nbsyst
-            do 2 j = 1, nbsyst
+        do i = 1, nbsyst
+            do j = 1, nbsyst
                 hsr(i,j)=zr(icompr-2+idecal+nbsyst*(i-1)+j)
- 2          continue
+            end do
+        end do
     endif
     call jedema()
 end subroutine

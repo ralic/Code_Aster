@@ -1,10 +1,10 @@
-subroutine lcdvin(fami, kpg, ksp, comp, mod,&
+subroutine lcdvin(fami, kpg, ksp, rela_comp, mod,&
                   imat, matcst, nvi, nmat, vini,&
                   coeft, x, dtime, sigi, dvin,&
                   iret)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,27 +48,26 @@ subroutine lcdvin(fami, kpg, ksp, comp, mod,&
 #include "asterfort/rkdhay.h"
 #include "asterfort/rkdvec.h"
     integer :: kpg, ksp, imat, nmat, nvi, iret
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=8) :: mod
     character(len=*) :: fami
     character(len=3) :: matcst
     real(kind=8) :: x, dtime, sigi(6), coeft(nmat), vini(nvi), dvin(nvi)
 !
-    loi=comp(1)
-    if (loi .eq. 'VISCOCHAB') then
+    if (rela_comp .eq. 'VISCOCHAB') then
         call rkdcha(nvi, vini, coeft, nmat, sigi,&
                     dvin)
 !
-    else if (loi.eq.'VENDOCHAB') then
+    else if (rela_comp.eq.'VENDOCHAB') then
         call rkdvec(fami, kpg, ksp, imat, matcst,&
                     nvi, vini, coeft, x, dtime,&
                     nmat, sigi, dvin)
 !
-    else if (loi.eq.'HAYHURST') then
+    else if (rela_comp.eq.'HAYHURST') then
         call rkdhay(mod, nvi, vini, coeft, nmat,&
                     sigi, dvin, iret)
 !
-    else if (loi.eq.'NORTON') then
+    else if (rela_comp.eq.'NORTON') then
         call norton(nvi, vini, coeft, nmat, sigi,&
                     dvin, iret)
 !

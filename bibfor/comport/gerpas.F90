@@ -1,4 +1,4 @@
-subroutine gerpas(fami, kpg, ksp, comp, mod,&
+subroutine gerpas(fami, kpg, ksp, rela_comp, mod,&
                   imat, matcst, nbcomm, cpmono, nbphas,&
                   nvi, nmat, y, pas, itmax,&
                   eps, toly, cothe, coeff, dcothe,&
@@ -9,7 +9,7 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
     implicit none
 !     ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
 #include "asterfort/rkcah2.h"
     integer :: nmat, imat, nbcomm(nmat, 3), ne, ny, na, nvi, kpok, ip, i, neps
     integer :: nbphas, nfs, kpg, ksp, itmax, iret, nsg, nhsr, numhsr(*), irota
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     character(len=3) :: matcst
@@ -77,15 +77,14 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
 !      UTILISE SEULEMENT POUR POLYCRISTAL LCMMOP
     real(kind=8) :: toutms(nbphas*nfs*nsg*7)
 !
-    loi=comp(1)
-    if (loi(1:8) .eq. 'POLYCRIS') then
+    if (rela_comp(1:8) .eq. 'POLYCRIS') then
         call calcms(nbphas, nbcomm, cpmono, nmat, pgl,&
                     coeff, angmas, nfs, nsg, toutms)
     endif
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
         irota=0
         call calcmm(nbcomm, cpmono, nmat, pgl, nfs,&
-                    nsg, toutms, comp, nvi, y,&
+                    nsg, toutms, nvi, y,&
                     irota)
     endif
 !
@@ -101,9 +100,9 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
 !
     ip=0
 !
-    do 10 i = 1, nvi
+    do i = 1, nvi
         ymfs(i)=max(toly,abs(y(i)))
-10  end do
+    end do
 !
 40  continue
     if ((x+h) .ge. pas) then
@@ -112,15 +111,15 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
     endif
 !
 !     WK(3*NVI) CONTIENT EE, PUIS Y, PUIS A=F(Y)
-    do 50 i = 1, nvi
+    do i = 1, nvi
         wk(ny+i)=y(i)
-50  end do
+    end do
 !
     xr=x
 60  continue
 !
 !
-    call rk21co(fami, kpg, ksp, comp, mod,&
+    call rk21co(fami, kpg, ksp, rela_comp, mod,&
                 imat, matcst, nbcomm, cpmono, nfs,&
                 nsg, toutms, nvi, nmat, y,&
                 kpok, wk(ne+1), wk(na+1), h, pgl,&
@@ -129,27 +128,27 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
                 detot, nhsr, numhsr, hsr, itmax,&
                 eps, iret)
     if (iret .gt. 0) then
-        goto 9999
+        goto 999
     endif
 !
     w=abs(wk(1))/ymfs(1)
-    do 70 i = 2, nvi
+    do i = 2, nvi
         wz=abs(wk(i))/ymfs(i)
         if (wz .gt. w) w=wz
-70  end do
+    end do
 !
     if (w .le. eps) then
 !        CONVERGENCE DU PAS DE TEMPS COURANT
         kpok=1
         if (ip .eq. 1) then
 !           PAS DE TEMPS FINAL ATTEINT, SOLUTION OK
-            goto 9999
+            goto 999
         else
 !           CALCUL DU NOUVEAU PAS DE TEMPS H (AUGMENTATION)
-            call rkcah1(comp, y, pas, nvi, w,&
+            call rkcah1(rela_comp, y, pas, nvi, w,&
                         wk, h, eps, iret)
             if (iret .gt. 0) then
-                goto 9999
+                goto 999
             else
                 goto 40
             endif
@@ -158,22 +157,22 @@ subroutine gerpas(fami, kpg, ksp, comp, mod,&
 !        W.GT.EPS : NON CV
         kpok=0
 !        ON REPART DE LA SOLUTION Y PRECEDENTE
-        do 80 i = 1, nvi
+        do i = 1, nvi
             y(i)=wk(ny+i)
-80      continue
+        end do
         x=xr
         ip=0
 !        CALCUL DU NOUVEAU PAS DE TEMPS H (DIMINUTION)
-        call rkcah2(comp, y, pas, nvi, w,&
+        call rkcah2(rela_comp, y, pas, nvi, w,&
                     wk, h, eps, iret)
         if (iret .gt. 0) then
-            goto 9999
+            goto 999
         else
             goto 60
         endif
 !
     endif
 !
-9999  continue
+999 continue
 !
 end subroutine

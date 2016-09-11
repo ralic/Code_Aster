@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
+    subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
                       cpmono, nmat, nvi, vini, x,&
                       dtime, pgl, mod, coeft, neps,&
                       epsd, detot, coel, dvin, nfs,&
@@ -29,7 +29,7 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: comp(*)
+        character(len=16) :: rela_comp
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         integer :: nvi

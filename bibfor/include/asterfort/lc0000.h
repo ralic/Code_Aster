@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
-                      imate, compor, crit, instam, instap,&
+                      imate, compor, carcri, instam, instap,&
                       neps, epsm, deps, nsig, sigm,&
                       vim, option, angmas, nwkin, wkin,&
                       cp, numlc, tempd, tempf, tref,&
@@ -38,7 +38,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: epsm(neps)

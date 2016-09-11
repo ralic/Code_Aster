@@ -1,4 +1,4 @@
-subroutine lcplnl(fami, kpg, ksp, loi, toler,&
+subroutine lcplnl(fami, kpg, ksp, rela_comp, toler,&
                   itmax, mod, imat, nmat, materd,&
                   materf, nr, nvi, timed, timef,&
                   deps, epsd, sigd, vind, comp,&
@@ -9,7 +9,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,6 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !
 !     INTEGRATION ELASTO-PLASTIQUE ET VISCO-PLASTICITE
 !           SUR DT DE Y = ( SIG , VIN )
@@ -42,7 +41,6 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !     IN  FAMI   :  FAMILLE DE POINT DE GAUSS
 !         KPG    :  NUMERO DU POINT DE GAUSS
 !         KSP    :  NUMERO DU SOUS-POINT DE GAUSS
-!         LOI    :  MODELE DE COMPORTEMENT
 !         TOLER  :  TOLERANCE DE CONVERGENCE LOCALE
 !         ITMAX  :  NOMBRE MAXI D'ITERATIONS LOCALES
 !         MOD    :  TYPE DE MODELISATION
@@ -117,7 +115,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     aster_logical :: lreli
 !
     character(len=8) :: mod
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp, comp(*)
     character(len=*) :: fami
 !
     common /tdim/   ndt  , ndi
@@ -137,7 +135,6 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.
-    loi=comp(1)
     call utlcal('VALE_NOM', algo, crit(6))
     if (algo .eq. 'NEWTON_RELI') lreli = .true.
 !
@@ -177,7 +174,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     call lceqvn(nvi, vind, vind1)
 !
 !     CHOIX DES PARAMETRES DE LANCEMENT DE MGAUSS
-    call lccaga(loi, cargau)
+    call lccaga(rela_comp, cargau)
 !
     if (mod(1:6) .eq. 'C_PLAN') yd (nr) = epsd(3)
 !
@@ -196,7 +193,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     call r8inir(ndt+nvi, 0.d0, yf, 1)
 !
 !     CALCUL DE LA SOLUTION D ESSAI INITIALE DU SYSTEME NL EN DY
-    call lcinit(fami, kpg, ksp, loi, typess,&
+    call lcinit(fami, kpg, ksp, rela_comp, typess,&
                 essai, mod, nmat, materd, materf,&
                 timed, timef, intg, nr1, nvi,&
                 yd, epsd, deps, dy, comp,&
@@ -226,8 +223,8 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
         call lcsovn(nr, yd, dy, yf)
 !
 !        CALCUL DES TERMES DU SYSTEME A T+DT = -R(DY)
-        call lcresi(fami, kpg, ksp, loi, mod,&
-                    imat, nmat, materd, materf, comp,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                    imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
@@ -245,11 +242,11 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
 !
     if (verjac .ne. 2) then
 !         CALCUL DU JACOBIEN DU SYSTEME A T+DT = DRDY(DY)
-        call lcjacb(fami, kpg, ksp, loi, mod,&
+        call lcjacb(fami, kpg, ksp, rela_comp, mod,&
                     nmat, materd, materf, timed, timef,&
                     yf, deps, itmax, toler, nbcomm,&
                     cpmono, pgl, nfs, nsg, toutms,&
-                    hsr, nr, comp, nvi, vind,&
+                    hsr, nr, nvi, vind,&
                     vinf, epsd, yd, dy, ye,&
                     crit, indi, vind1, bnews, mtrac,&
                     drdy, iret)
@@ -259,11 +256,11 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     endif
 !
     if (verjac .ge. 1) then
-        call lcjacp(fami, kpg, ksp, loi, toler,&
+        call lcjacp(fami, kpg, ksp, rela_comp, toler,&
                     itmax, mod, imat, nmat, materd,&
                     materf, nr, nvi, timed, timef,&
                     deps, epsd, vind, vinf, yd,&
-                    comp, nbcomm, cpmono, pgl, nfs,&
+                    nbcomm, cpmono, pgl, nfs,&
                     nsg, toutms, hsr, dy, r,&
                     drdy, verjac, drdyb, iret, crit,&
                     indi)
@@ -286,8 +283,8 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
         call lcsovn(nr, ddy, dy, dy)
     else if (lreli) then
 !        RECHERCHE LINEAIRE : RENVOIE DY, YF ET R RE-ACTUALISES
-        call lcreli(fami, kpg, ksp, loi, mod,&
-                    imat, nmat, materd, materf, comp,&
+        call lcreli(fami, kpg, ksp, rela_comp, mod,&
+                    imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
@@ -298,7 +295,7 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     if (mod(1:6) .eq. 'C_PLAN') deps(3) = dy(nr)
 !
 !     VERIFICATION DE LA CONVERGENCE EN DY  ET RE-INTEGRATION ?
-    call lcconv(loi, yd, dy, ddy, ye,&
+    call lcconv(rela_comp, yd, dy, ddy, ye,&
                 nr, itmax, toler, iter, intg,&
                 nmat, materf, r, rini, epstr,&
                 typess, essai, icomp, nvi, vind,&
@@ -324,12 +321,12 @@ subroutine lcplnl(fami, kpg, ksp, loi, toler,&
     call lceqvn(ndt, yf(1), sigf)
 !
 !     POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-    call lcplnf(loi, vind, nbcomm, nmat, cpmono,&
+    call lcplnf(rela_comp, vind, nbcomm, nmat, cpmono,&
                 materd, materf, iter, nvi, itmax,&
                 toler, pgl, nfs, nsg, toutms,&
                 hsr, dt, dy, yd, yf,&
-                vinf, tampon, comp, sigd, sigf,&
-                deps, nr1, mod, timed, timef,&
+                vinf, tampon, sigd, sigf,&
+                deps, nr1, mod, timef,&
                 indi, vind0, iret)
 !
     if (iret .ne. 0) then

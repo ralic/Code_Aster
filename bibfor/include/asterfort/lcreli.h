@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcreli(fami, kpg, ksp, loi, mod,&
-                      imat, nmat, materd, materf, comp,&
+    subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
+                      imat, nmat, materd, materf, &
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, hsr, nr, nvi, vind,&
                       vinf, itmax, toler, timed, timef,&
@@ -30,12 +30,11 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: loi
+        character(len=16) :: rela_comp
         character(len=8) :: mod
         integer :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
-        character(len=16) :: comp(*)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)

@@ -2,12 +2,12 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
                   materf, iter, nvi, itmax, toler,&
                   pgl, nfs, nsg, toutms, hsr,&
                   dt, dy, yd, vinf, tampon,&
-                  comp, sigf, df, nr, mod,&
+                  sigf, df, nr, mod,&
                   codret)
 ! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,7 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
     real(kind=8) :: pk2(6), df(3, 3), id6(6), expbp(nsg)
     real(kind=8) :: fetfe6(6), gamsns(3, 3), fe(3, 3), sigf(6), rhoirr(12), xi
     real(kind=8) :: rhosat, phisat, dz, roloop(12), fivoid(12), sdp, dps(30)
-    character(len=16) :: nomfam, comp(*), necoul
+    character(len=16) :: nomfam, necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     integer :: irr, decirr, nbsyst, decal, gdef
@@ -104,10 +104,11 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
     if (nbcomm(nmat,1) .gt. 0) then
 !        ROTATION RESEAU
         ir=1
-        do 24 i = 1, 3
-            do 24 j = 1, 3
+        do i = 1, 3
+            do j = 1, 3
                 qm(i,j)=vind(nvi-19+3*(i-1)+j)+iden(i,j)
-24          continue
+            end do
+        end do
     else
         ir=0
     endif
@@ -125,12 +126,12 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
         call r8inir(9, 0.d0, gamsns, 1)
     endif
     indtau=0
-    do 6 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
 !
         ifl=nbcomm(ifa,1)
         nuecou=nint(materf(nmat+ifl))
-        nomfam=cpmono(5*(ifa-1)+1)
-        necoul=cpmono(5*(ifa-1)+3)
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
+        necoul=cpmono(5*(ifa-1)+3)(1:16)
 !
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, qm)
@@ -152,9 +153,9 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
             irr=0
         endif
 !
-        do 7 is = 1, nbsys
+        do is = 1, nbsys
 !
-            call caltau(comp, ifa, is, sigf, fkooh,&
+            call caltau(ifa, is, sigf, fkooh,&
                         nfs, nsg, toutms, taus, mus,&
                         msns)
 !
@@ -165,12 +166,12 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
                         taus, dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
 !
-            if (iret .gt. 0) goto 9999
+            if (iret .gt. 0) goto 999
 !
             if (gdef .eq. 0) then
-                do 19 i = 1, 6
+                do i = 1, 6
                     devi(i)=devi(i)+mus(i)*dgamma
-19              continue
+                end do
             else
                 call daxpy(9, dgamma, msns, 1, gamsns,&
                            1)
@@ -188,7 +189,7 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
             endif
 !
 ! CONTRAINTE DE CLIVAGE
-            call lcmcli(comp, nomfam, nbsys, is, pgl,&
+            call lcmcli(nomfam, nbsys, is, pgl,&
                         sigf, sicl)
 !
             call lcmmsg(nomfam, nbsys, is, pgl, mus,&
@@ -203,38 +204,33 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
             if (irr .eq. 1) then
                 rhoirr(is)=rhoirr(is)*exp(-xi*dp)
             endif
-!
- 7      continue
+        end do
 !
         if (irr .eq. 1) then
             call dcopy(12, rhoirr, 1, vinf(nsfv+3*nbsys+1), 1)
         endif
 !
         if (irr .eq. 2) then
-            do 8 is = 1, nbsys
+            do is = 1, nbsys
 !              SOMME SUR COPLA(S)
                 sdp=0.d0
-                do 9 iv = 1, 12
+                do iv = 1, 12
                     is3=(is-1)/3
                     iv3=(iv-1)/3
 !                 PARTIE POSITIVE DE ALPHA
                     if (is3 .eq. iv3) then
                         sdp=sdp+dps(iv)
                     endif
- 9              continue
+                end do
                 roloop(is)=rhosat+(roloop(is)-rhosat)*exp(-xi*sdp)
                 fivoid(is)=phisat+(fivoid(is)-phisat)*exp(-dz*sdp)
- 8          continue
+            end do
             call dcopy(12, roloop, 1, vinf(nsfv+3*nbsys+1), 1)
             call dcopy(12, fivoid, 1, vinf(nsfv+3*nbsys+13), 1)
         endif
-!
-!
         nsfa=nsfa+nbsys
         nsfv=nsfv+nbsys*3
-!
-!
- 6  end do
+    end do
 !
     indtau=nsfv
     if (irr .eq. 1) indtau=indtau+12
@@ -245,16 +241,16 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
     nsfa=6
 !     NSFV : debut de la famille IFA dans les variables internes
     nsfv=6
-    do 61 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
         ifl=nbcomm(ifa,1)
-        nomfam=cpmono(5*(ifa-1)+1)
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, qm)
-        do 71 is = 1, nbsys
+        do is = 1, nbsys
 !           CALCUL DE LA SCISSION REDUITE =
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
-            call caltau(comp, ifa, is, sigf, fkooh,&
+            call caltau(ifa, is, sigf, fkooh,&
                         nfs, nsg, toutms, tau(ns+is), mus,&
                         msns)
             call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
@@ -263,11 +259,11 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
                         dy, itmax, toler, materf, expbp,&
                         tau(ns+is), dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
-71      continue
+        end do
         ns=ns+nbsys
         nsfa=nsfa+nbsys
         nsfv=nsfv+nbsys*3
-61  end do
+    end do
 !
     call dcopy(ns, tau, 1, vinf(indtau+1), 1)
 !
@@ -280,36 +276,33 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
     if (gdef .eq. 1) then
         call calcfe(nr, ndt, nvi, vind, df,&
                     gamsns, fe, fp, iret)
-        if (iret .gt. 0) goto 9999
+        if (iret .gt. 0) goto 999
 !
 !        CALCUL DES CONTRAINTES DE KIRCHOFF
         call dcopy(6, sigf, 1, pk2, 1)
         call dscal(3, sqrt(2.d0), pk2(4), 1)
-        call pk2sig(3, fe, 1.d0, pk2, sigf,&
-                    1)
+        call pk2sig(3, fe, 1.d0, pk2, sigf, 1)
 !
 ! les racine(2) attendues par NMCOMP :-)
         call dscal(3, sqrt(2.d0), sigf(4), 1)
 !
-        call daxpy(9, -1.d0, iden, 1, fe,&
-                   1)
+        call daxpy(9, -1.d0, iden, 1, fe, 1)
         call dcopy(9, fe, 1, vinf(nvi-3-18+10), 1)
 !
         call lcgrla(fp, devi)
         call dcopy(6, devi, 1, vinf, 1)
         call dscal(3, sqrt(2.d0), devi(4), 1)
 !
-        call daxpy(9, -1.d0, iden, 1, fp,&
-                   1)
+        call daxpy(9, -1.d0, iden, 1, fp, 1)
         call dcopy(9, fp, 1, vinf(nvi-3-18+1), 1)
 !
         epseq = lcnrte(devi)
         vinf (nvi-1) = epseq
 !
     else
-        do 18 i = 1, 6
+        do i = 1, 6
             vinf(i)=vind(i)+devi(i)
-18      continue
+        end do
         epseq = lcnrte(devi)
         vinf (nvi-1) = vind (nvi-1) + epseq
     endif
@@ -318,6 +311,6 @@ subroutine lcdpec(vind, nbcomm, nmat, ndt, cpmono,&
 !
     vinf (nvi) = iter
 !
-9999  continue
+999 continue
     codret=max(codret,iret)
 end subroutine

@@ -4,12 +4,12 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
                   nbcomm, cpmono, angmas, pgl, itmax,&
                   toler, ndt, ndi, nr, crit,&
                   nvi, vind, nfs, nsg, toutms,&
-                  nhsr, numhsr, sigd)
+                  nhsr, numhsr, sigd, mult_comp_)
 ! aslint: disable=W1504
     implicit   none
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,6 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 !       RECUPERATION DU MATERIAU A TEMPF ET TEMPD
 !       IN  FAMI   :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -75,7 +74,7 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
     integer :: imat, nmat, ndt, ndi, nr, nvi, i, itmax, kpg, ksp, impexp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: vind(*), pgl(3, 3), angmas(3), toler, crit(*), sigd(6)
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp, comp(*), mult_comp
     character(len=8) :: mod, typma
     character(len=3) :: matcst
     character(len=*) :: fami
@@ -83,52 +82,58 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
     integer :: numhsr(*), nbcomm(*), nfs, nsg, nhsr
     real(kind=8) :: hsr(*), toutms(*)
     character(len=24) :: cpmono(*)
+    character(len=16), optional, intent(in) :: mult_comp_
 !       ----------------------------------------------------------------
 !
 ! -     INITIALISATION DE MATERD ET MATERF A 0.
 !
-    do 10 i = 1, nmat
+    do i = 1, nmat
         materd(i,1) = 0.d0
         materd(i,2) = 0.d0
         materf(i,1) = 0.d0
         materf(i,2) = 0.d0
-10  end do
+    end do
 !
-    loi = comp(1)
-    if (loi(1:8) .eq. 'ROUSS_PR') then
+    mult_comp = ' '
+    if (present(mult_comp_)) then
+        mult_comp = mult_comp_
+    endif
+    rela_comp = comp(1)
+    read (comp(2),'(I16)') nvi
+    if (rela_comp(1:8) .eq. 'ROUSS_PR') then
         call rslmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi, vind)
 !
-    else if (loi(1:10) .eq. 'ROUSS_VISC') then
+    else if (rela_comp(1:10) .eq. 'ROUSS_VISC') then
         call rsvmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi, vind)
 !
-    else if (loi(1:9) .eq. 'VISCOCHAB') then
+    else if (rela_comp(1:9) .eq. 'VISCOCHAB') then
         call cvmmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, typma,&
                     ndt, ndi, nr, crit, vind,&
                     nvi, sigd)
 !
-    else if (loi.eq.'VENDOCHAB'.or.loi.eq.'VISC_ENDO_LEMA') then
-        call vecmat(fami, kpg, ksp, mod, loi,&
+    else if (rela_comp.eq.'VENDOCHAB'.or.rela_comp.eq.'VISC_ENDO_LEMA') then
+        call vecmat(fami, kpg, ksp, mod, rela_comp,&
                     imat, nmat, materd, materf, matcst,&
                     typma, ndt, ndi, nr, nvi)
 !
-    else if (loi(1:6) .eq. 'LAIGLE') then
+    else if (rela_comp(1:6) .eq. 'LAIGLE') then
         call lglmat(mod, imat, nmat, tempd, materd,&
                     materf, matcst, ndt, ndi, nr,&
                     nvi)
 !
-        elseif (( loi(1:10) .eq. 'HOEK_BROWN' ).or. ( loi(1:14) .eq.&
-    'HOEK_BROWN_EFF' ))then
+    elseif (( rela_comp(1:10) .eq. 'HOEK_BROWN' ).or. ( rela_comp(1:14) .eq. 'HOEK_BROWN_EFF' ))then
         call hbrmat(mod, imat, nmat, tempd, materd,&
                     materf, matcst, ndt, ndi, nr,&
                     nvi)
 !
-    else if (loi(1:8) .eq. 'MONOCRIS') then
-        call lcmmat(fami, kpg, ksp, comp, mod,&
+    else if (rela_comp(1:8) .eq. 'MONOCRIS') then
+        ASSERT(mult_comp .ne. ' ')
+        call lcmmat(fami, kpg, ksp, mult_comp, mod,&
                     imat, nmat, angmas, pgl, materd,&
                     materf, matcst, nbcomm, cpmono, ndt,&
                     ndi, nr, nvi, hsr, nfs,&
@@ -139,29 +144,30 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
             sigd(6)=0.d0
         endif
 !
-    else if (loi(1:8) .eq. 'POLYCRIS') then
-        call lcmmap(fami, kpg, ksp, comp, mod,&
+    else if (rela_comp(1:8) .eq. 'POLYCRIS') then
+        ASSERT(mult_comp .ne. ' ')
+        call lcmmap(fami, kpg, ksp, mult_comp, mod,&
                     imat, nmat, angmas, pgl, materd,&
                     materf, matcst, nbcomm, cpmono, ndt,&
                     ndi, nr, nvi, nfs, nsg,&
                     nhsr, numhsr, hsr)
         typma='COHERENT'
 !
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp(1:7) .eq. 'IRRAD3M') then
         call irrmat(fami, kpg, ksp, mod, imat,&
                     nmat, itmax, toler, materd, materf,&
                     matcst, ndt, ndi, nr, nvi)
 !
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
         call burmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi)
         typma='COHERENT'
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp(1:4) .eq. 'LETK') then
         call lkimat(mod, imat, nmat, materd, materf,&
                     matcst, ndt, ndi, nvi, nr)
         typma='COHERENT'
-    else if (loi .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
         call haymat(fami, kpg, ksp, mod, imat,&
                     nmat, '-', materd(1, 1), materd(1, 2), nvi,&
                     nr)
@@ -170,7 +176,7 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
                     nr)
         call matect(materd, materf, nmat, matcst)
         typma='COHERENT'
-    else if (loi(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp(1:6) .eq. 'HUJEUX') then
         call hujma2(fami, kpg, ksp, mod, imat,&
                     nmat, tempf, angmas, sigd, vind,&
                     materd, materf, ndt, ndi, nvi,&
@@ -181,10 +187,10 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 ! CAS GENERAL
 !
         call lcmatt(fami, kpg, ksp, mod, imat,&
-                    nmat, '-', comp, materd(1, 1), materd(1, 2),&
+                    nmat, '-', rela_comp, materd(1, 1), materd(1, 2),&
                     typma, ndt, ndi, nr, nvi)
         call lcmatt(fami, kpg, ksp, mod, imat,&
-                    nmat, '+', comp, materf(1, 1), materf(1, 2),&
+                    nmat, '+', rela_comp, materf(1, 1), materf(1, 2),&
                     typma, ndt, ndi, nr, nvi)
 !
         call matect(materd, materf, nmat, matcst)

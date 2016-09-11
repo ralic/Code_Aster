@@ -1,4 +1,4 @@
-subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
+subroutine lcmmop(fami, kpg, ksp, rela_comp, nbcomm,&
                   cpmono, nmat, nvi, vini, x,&
                   dtime, mod, coeft, epsd, detot,&
                   coel, nbphas, nfs, nsg, toutms,&
@@ -20,9 +20,9 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
     real(kind=8) :: toutms(nbphas, nfs, nsg, 7)
     real(kind=8) :: toler, hsr(nsg, nsg, nhsr)
     character(len=*) :: fami
-    character(len=16) :: comp(*)
+    character(len=16) :: rela_comp
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+
 ! ======================================================================
 ! ======================================================================
 !       IN   FAMI   : FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -156,13 +156,13 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
     iret=0
 !
     call calsig(fami, kpg, ksp, evi, mod,&
-                comp, vini, x, dtime, epsd,&
+                rela_comp, vini, x, dtime, epsd,&
                 detot, nmat, coel, sigi)
 !
 ! LOCALISATION
 !   RECUPERATION DU NOMBRE DE PHASES
 !      NBPHAS=NBCOMM(1,1)
-    loca=cpmono(1)
+    loca=cpmono(1)(1:16)
 !     CALCUL DE  B
     do i = 1, 6
         granb(i)=0.d0
@@ -203,9 +203,9 @@ subroutine lcmmop(fami, kpg, ksp, comp, nbcomm,&
 !
         do ifa = 1, nbfsys
 !
-            necoul=cpmono(indcp+5*(ifa-1)+3)
-            necris=cpmono(indcp+5*(ifa-1)+4)
-            necrci=cpmono(indcp+5*(ifa-1)+5)
+            necoul=cpmono(indcp+5*(ifa-1)+3)(1:16)
+            necris=cpmono(indcp+5*(ifa-1)+4)(1:16)
+            necrci=cpmono(indcp+5*(ifa-1)+5)(1:16)
 !
             nbsys=nint(toutms(iphas,ifa,1,7))
 !

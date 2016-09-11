@@ -2,12 +2,12 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
                   comp, crit, timed, timef, tempd,&
                   tempf, tref, epsdt, depst, sigd,&
                   vind, opt, angmas, sigf, vinf,&
-                  dsde, icomp, nvi, tampon, irteti)
+                  dsde, icomp, nvi, tampon, irteti, mult_comp_)
 ! aslint: disable=W1504
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 !     PLASTIQUE PAR UNE MATHODE DE NEWTON (DISCRETISATION IMPLICITE)
@@ -124,8 +123,9 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma, typmod(*)
-    character(len=16) :: comp(*), opt, loi
+    character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
+    character(len=16), optional, intent(in) :: mult_comp_
 !
     integer :: imat, ndt, ndi, nr, nvi, itmax, icomp, kpg, ksp, irteti, irtet
     integer :: nbcomm(nmat, 3), numhsr(1), irr, decirr, nbsyst, decal, gdef
@@ -151,13 +151,18 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
     itmax = int(crit(1))
     toler = crit(3)
     theta = crit(4)
-    loi = comp(1)
+    rela_comp = comp(1)
+    defo_comp = comp(3) 
+    mult_comp = ' '
+    if (present(mult_comp_)) then
+        mult_comp = mult_comp_
+    endif
     mod = typmod(1)
     dt = timef - timed
     resi = opt(1:9).eq.'RAPH_MECA' .or. opt(1:9).eq.'FULL_MECA'
     rigi = opt(1:9).eq.'RIGI_MECA' .or. opt(1:9).eq.'FULL_MECA'
     gdef = 0
-    if (comp(3) .eq. 'SIMO_MIEHE') gdef=1
+    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
     numhsr(1)=1
 !
     typma = 'VITESSE '
@@ -170,7 +175,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
                 nbcomm, cpmono, angmas, pgl, itmax,&
                 toler, ndt, ndi, nr, crit,&
                 nvi, vind, nfs, nsg, toutms,&
-                1, numhsr, sigd)
+                1, numhsr, sigd, mult_comp)
 !
 !
     if (gdef .eq. 1) then
@@ -211,7 +216,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
             seuil=1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(fami, kpg, ksp, loi, mod,&
+            call lcelas(fami, kpg, ksp, rela_comp, mod,&
                         imat, nmat, materd, materf, matcst,&
                         nvi, angmas, deps, sigd, vind,&
                         sigf, vinf, theta, etatd, crit,&
@@ -220,7 +225,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil=1.d0
-            call lccnvx(fami, kpg, ksp, loi, mod,&
+            call lccnvx(fami, kpg, ksp, rela_comp, mod,&
                         imat, nmat, materd, materf, sigd,&
                         sigf, deps, vind, vinf, nbcomm,&
                         cpmono, pgl, nvi, vp, vecp,&
@@ -235,7 +240,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             etatf = 'PLASTIC'
 !
-            call lcplas(fami, kpg, ksp, loi, toler,&
+            call lcplas(fami, kpg, ksp, rela_comp, toler,&
                         itmax, mod, imat, nmat, materd,&
                         materf, nr, nvi, timed, timef,&
                         deps, epsd, sigd, vind, sigf,&
@@ -254,14 +259,14 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(mod, loi, nmat, materd, materf,&
+            call lcelpl(mod, rela_comp, nmat, materd, materf,&
                         timed, timef, deps, nvi, vind,&
                         vinf, nr, yd, yf, sigd,&
                         sigf, drdy)
         endif
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(loi, angmas, nmat, materd, materf,&
+        call lcpopl(rela_comp, angmas, nmat, materd, materf,&
                     mod, deps, sigd, sigf, vind,&
                     vinf)
 !
@@ -276,7 +281,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !
     if (rigi) then
         call lcotan(opt, angmas, etatd, etatf, fami,&
-                    kpg, ksp, loi, mod, imat,&
+                    kpg, ksp, rela_comp, mod, imat,&
                     nmat, materd, materf, epsd, deps,&
                     sigd, sigf, nvi, vind, vinf,&
                     drdy, vp, vecp, theta, dt,&

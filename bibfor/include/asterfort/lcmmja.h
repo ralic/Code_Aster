@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcmmja(comp, typmod, nmat, materf, timed,&
+    subroutine lcmmja(typmod, nmat, materf, timed,&
                       timef, itmax, toler, nbcomm, cpmono,&
                       pgl, nfs, nsg, toutms, hsr,&
                       nr, nvi, vind, df, yf,&
@@ -25,7 +25,6 @@ interface
         integer :: nsg
         integer :: nfs
         integer :: nmat
-        character(len=16) :: comp(*)
         character(len=8) :: typmod
         real(kind=8) :: materf(nmat*2)
         real(kind=8) :: timed

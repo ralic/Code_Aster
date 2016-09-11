@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcplnf(loi, vind, nbcomm, nmat, cpmono,&
+    subroutine lcplnf(rela_comp, vind, nbcomm, nmat, cpmono,&
                       materd, materf, iter, nvi, itmax,&
                       toler, pgl, nfs, nsg, toutms,&
                       hsr, dt, dy, yd, yf,&
-                      vinf, tampon, comp, sigd, sigf,&
-                      deps, nr, mod, timed, timef,&
+                      vinf, tampon, sigd, sigf,&
+                      deps, nr, mod, timef,&
                       indi, vins, codret)
         integer :: nsg
         integer :: nfs
         integer :: nvi
         integer :: nmat
-        character(len=16) :: loi
+        character(len=16) :: rela_comp
         real(kind=8) :: vind(*)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
@@ -45,13 +45,11 @@ interface
         real(kind=8) :: yf(*)
         real(kind=8) :: vinf(*)
         real(kind=8) :: tampon(*)
-        character(len=16) :: comp(*)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: deps(*)
         integer :: nr
         character(len=8) :: mod
-        real(kind=8) :: timed
         real(kind=8) :: timef
         integer :: indi(7)
         real(kind=8) :: vins(nvi)

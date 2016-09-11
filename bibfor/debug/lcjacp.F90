@@ -1,14 +1,14 @@
-subroutine lcjacp(fami, kpg, ksp, loi, toler,&
+subroutine lcjacp(fami, kpg, ksp, rela_comp, toler,&
                   itmax, mod, imat, nmat, materd,&
                   materf, nr, nvi, timed, timef,&
                   deps, epsd, vind, vinf, yd,&
-                  comp, nbcomm, cpmono, pgl, nfs,&
+                  nbcomm, cpmono, pgl, nfs,&
                   nsg, toutms, hsr, dy, r,&
                   drdy, verjac, drdyb, iret, crit,&
                   indi)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
     real(kind=8) :: valr(4), maxtgt, normd1, normd2, maxerr
 !
     character(len=8) :: mod
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=*) :: fami
     data impr/0/
@@ -93,23 +93,23 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
     normd1=0.d0
     normd2=0.d0
 !
-    do 1002 i = 1, 6
+    do i = 1, 6
         normd1=normd1+dyini(i)*dyini(i)
-1002  end do
+    end do
 !
-    do 1003 i = 7, nr
+    do i = 7, nr
         normd2=normd2+dyini(i)*dyini(i)
-1003  end do
+    end do
 !
     if (normd1 .lt. r8miem()) then
-        do 1007 i = 1, 6
+        do i = 1, 6
             normd1=normd1+yd(i)*yd(i)
-1007      continue
+        end do
     endif
     if (normd2 .lt. r8miem()) then
-        do 1008 i = 7, nr
+        do i = 7, nr
             normd2=normd2+yd(i)*yd(i)
-1008      continue
+        end do
     endif
 !
     eps0=1.d-7
@@ -122,7 +122,7 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
         eps2=eps2*sqrt(normd2)
     endif
 !
-    do 1004 i = 1, nr
+    do i = 1, nr
         call lceqvn(nr, dyini, dyp)
         if (i .le. 6) then
             dyp(i)=dyp(i)+eps1
@@ -130,15 +130,15 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
             dyp(i)=dyp(i)+eps2
         endif
         call lcsovn(nr, yd, dyp, yfp)
-        call lcresi(fami, kpg, ksp, loi, mod,&
-                    imat, nmat, materd, materf, comp,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                    imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
                     yd, yfp, deps, epsd, dyp,&
                     rp, iret, crit, indi)
         if (iret .gt. 0) then
-            goto 9999
+            goto 999
         endif
         call lceqvn(nr, dyini, dym)
         if (i .le. 6) then
@@ -147,39 +147,40 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
             dym(i)=dym(i)-eps2
         endif
         call lcsovn(nr, yd, dym, yfm)
-        call lcresi(fami, kpg, ksp, loi, mod,&
-                    imat, nmat, materd, materf, comp,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                    imat, nmat, materd, materf,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
                     yd, yfm, deps, epsd, dym,&
                     rm, iret, crit, indi)
         if (iret .gt. 0) then
-            goto 9999
+            goto 999
         endif
 !        SIGNE - CAR LCRESI CALCULE -R
-        do 1005 j = 1, nr
+        do j = 1, nr
             if (i .le. 6) then
                 drdyb(j,i)=-(rp(j)-rm(j))/2.d0/eps1
             else
                 drdyb(j,i)=-(rp(j)-rm(j))/2.d0/eps2
             endif
-1005      continue
-1004  end do
+        end do
+    end do
 !
 ! COMPARAISON DRDY ET DRDYB
 !
     maxerr=0.d0
     err=0.d0
     if ((verjac.eq.1) .and. (impr.eq.0)) then
-        do 1001 i = 1, nr
-            do 1001 j = 1, nr
+        do i = 1, nr
+            do j = 1, nr
                 if (abs(drdy(i,j)) .gt. maxtgt) then
                     maxtgt=abs(drdy(i,j))
                 endif
-1001          continue
-        do 1006 i = 1, nr
-            do 1006 j = 1, nr
+            end do
+        end do
+        do i = 1, nr
+            do j = 1, nr
                 if (abs(drdy(i,j)) .gt. (1.d-9*maxtgt)) then
                     if (abs(drdyb(i,j)) .gt. (1.d-9*maxtgt)) then
                         err=abs(drdy(i,j)-drdyb(i,j))/drdyb(i,j)
@@ -198,7 +199,8 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
                         endif
                     endif
                 endif
-1006          continue
+            end do
+        end do
     endif
 !
 !     UTILISATION DE DRDYB COMME MATRICE JACOBIENNE
@@ -206,5 +208,5 @@ subroutine lcjacp(fami, kpg, ksp, loi, toler,&
         call lceqvn(nr*nr, drdyb, drdy)
     endif
 !
-9999  continue
+999 continue
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       materf, iter, nvi, itmax, toler,&
                       pgl, nfs, nsg, toutms, hsr,&
                       dt, dy, yd, vinf, tampon,&
-                      comp, sigf, df, nr, mod,&
+                      sigf, df, nr, mod,&
                       codret)
         integer :: nsg
         integer :: nfs
@@ -42,7 +42,6 @@ interface
         real(kind=8) :: yd(*)
         real(kind=8) :: vinf(*)
         real(kind=8) :: tampon(*)
-        character(len=16) :: comp(*)
         real(kind=8) :: sigf(6)
         real(kind=8) :: df(3, 3)
         integer :: nr

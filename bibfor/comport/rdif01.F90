@@ -1,4 +1,4 @@
-subroutine rdif01(fami, kpg, ksp, comp, mod,&
+subroutine rdif01(fami, kpg, ksp, rela_comp, mod,&
                   imat, matcst, nbcomm, cpmono, nfs,&
                   nsg, toutms, nvi, nmat, vini,&
                   cothe, coeff, dcothe, dcoeff, pgl,&
@@ -9,7 +9,7 @@ subroutine rdif01(fami, kpg, ksp, comp, mod,&
     implicit none
 !     ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ subroutine rdif01(fami, kpg, ksp, comp, mod,&
 #include "asterfort/lcmmop.h"
     integer :: kpg, ksp, imat, nmat, nvi, nbcomm(nmat, 3), itens
     integer :: nbphas, nfs, iret, itmax, nsg, nhsr, numhsr(*), neps
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     character(len=*) :: fami
@@ -69,25 +69,24 @@ subroutine rdif01(fami, kpg, ksp, comp, mod,&
 !     POUR GAGNER EN TEMPS CPU
     real(kind=8) :: toutms(*)
 !
-    loi=comp(1)
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
 !       PAS DE VARIATION DES COEF AVEC LA TEMPERATURE
         xm=0.d0
         call coefft(cothe, coeff, dcothe, dcoeff, xm,&
                     dtime, coeft, nmat, coel)
-        call lcmmon(fami, kpg, ksp, comp, nbcomm,&
+        call lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
                     cpmono, nmat, nvi, vini, x,&
                     dtime, pgl, mod, coeft, neps,&
                     epsd, detot, coel, dvin, nfs,&
                     nsg, toutms, hsr(1, 1, 1), itmax, toler,&
                     iret)
 !
-    else if (loi(1:8).eq.'POLYCRIS') then
+    else if (rela_comp(1:8).eq.'POLYCRIS') then
 !       PAS DE VARIATION DES COEF AVEC LA TEMPERATURE
         xm=0.d0
         call coefft(cothe, coeff, dcothe, dcoeff, xm,&
                     dtime, coeft, nmat, coel)
-        call lcmmop(fami, kpg, ksp, comp, nbcomm,&
+        call lcmmop(fami, kpg, ksp, rela_comp, nbcomm,&
                     cpmono, nmat, nvi, vini, x,&
                     dtime, mod, coeft, epsd, detot,&
                     coel, nbphas, nfs, nsg, toutms,&
@@ -96,19 +95,19 @@ subroutine rdif01(fami, kpg, ksp, comp, mod,&
 !
     else
 !
-        do 5 itens = 1, 6
+        do itens = 1, 6
             evi(itens) = vini(itens)
- 5      continue
+        end do
 !
         call coefft(cothe, coeff, dcothe, dcoeff, x,&
                     dtime, coeft, nmat, coel)
 !
 !
         call calsig(fami, kpg, ksp, evi, mod,&
-                    comp, vini, x, dtime, epsd,&
+                    rela_comp, vini, x, dtime, epsd,&
                     detot, nmat, coel, sigi)
 !
-        call lcdvin(fami, kpg, ksp, comp, mod,&
+        call lcdvin(fami, kpg, ksp, rela_comp, mod,&
                     imat, matcst, nvi, nmat, vini,&
                     coeft, x, dtime, sigi, dvin,&
                     iret)

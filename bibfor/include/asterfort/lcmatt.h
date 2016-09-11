@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine lcmatt(fami, kpg, ksp, mod, imat,&
-                      nmat, poum, comp, coefel, coefpl,&
+                      nmat, poum, rela_comp, coefel, coefpl,&
                       typma, ndt, ndi, nr, nvi)
         integer :: nmat
         character(len=*) :: fami
@@ -26,7 +26,7 @@ interface
         character(len=8) :: mod
         integer :: imat
         character(len=*) :: poum
-        character(len=16) :: comp(*)
+        character(len=16) :: rela_comp
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)
         character(len=8) :: typma

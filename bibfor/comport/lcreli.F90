@@ -1,5 +1,5 @@
-subroutine lcreli(fami, kpg, ksp, loi, mod,&
-                  imat, nmat, materd, materf, comp,&
+subroutine lcreli(fami, kpg, ksp, rela_comp, mod,&
+                  imat, nmat, materd, materf, &
                   nbcomm, cpmono, pgl, nfs, nsg,&
                   toutms, hsr, nr, nvi, vind,&
                   vinf, itmax, toler, timed, timef,&
@@ -8,7 +8,7 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
 ! aslint: disable=W1306,W1504
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,6 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: samuel.geniaut at edf.fr
 !
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
@@ -40,13 +39,12 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: timed, timef
     character(len=8) :: mod
-    character(len=16) :: loi
+    character(len=16) :: rela_comp
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), crit(*)
     character(len=*) :: fami
 !
     integer :: nbcomm(nmat, 3), indi(7)
     real(kind=8) :: pgl(3, 3)
-    character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
 !
@@ -105,20 +103,20 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
     call lcsovn(nr, rhoddy, dy, dyp)
     call lcsovn(nr, yd, dyp, yfp)
 !     CALCUL DE R "PLUS" : RP
-    call lcresi(fami, kpg, ksp, loi, mod,&
-                imat, nmat, materd, materf, comp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                imat, nmat, materd, materf,&
                 nbcomm, cpmono, pgl, nfs, nsg,&
                 toutms, hsr, nr, nvi, vind,&
                 vinf, itmax, toler, timed, timef,&
                 yd, yfp, deps, epsd, dyp,&
                 rp, iret, crit, indi)
 !
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
     fp0 = 0.5d0 * ddot(nr,rp,1,rp,1)
-    if (fp0 .lt. r8prem()) goto 8888
-    if (fp0 .le. f+w*rho0*df) goto 8888
+    if (fp0 .lt. r8prem()) goto 888
+    if (fp0 .le. f+w*rho0*df) goto 888
 !
 !     ------------------------------------
 !     TEST SUPPLEMENTAIRE AVEC RHO = 0.5
@@ -128,19 +126,19 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
     call lcpsvn(nr, rho05, ddy, rhoddy)
     call lcsovn(nr, rhoddy, dy, dyp)
     call lcsovn(nr, yd, dyp, yfp)
-    call lcresi(fami, kpg, ksp, loi, mod,&
-                imat, nmat, materd, materf, comp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                imat, nmat, materd, materf, &
                 nbcomm, cpmono, pgl, nfs, nsg,&
                 toutms, hsr, nr, nvi, vind,&
                 vinf, itmax, toler, timed, timef,&
                 yd, yfp, deps, epsd, dyp,&
                 rp, iret, crit, indi)
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
     fsup = 0.5d0*ddot(nr,rp,1,rp,1)
-    if (fsup .lt. r8prem()) goto 8888
-    if (fsup .le. f+w*0.5d0*df) goto 8888
+    if (fsup .lt. r8prem()) goto 888
+    if (fsup .le. f+w*0.5d0*df) goto 888
 !
 !     ----------------------------------------
 !     INTERPOLATION QUADRATIQUE (ENTRE 0 ET 1)
@@ -156,25 +154,25 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
     call lcpsvn(nr, rho1, ddy, rhoddy)
     call lcsovn(nr, rhoddy, dy, dyp)
     call lcsovn(nr, yd, dyp, yfp)
-    call lcresi(fami, kpg, ksp, loi, mod,&
-                imat, nmat, materd, materf, comp,&
+    call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                imat, nmat, materd, materf, &
                 nbcomm, cpmono, pgl, nfs, nsg,&
                 toutms, hsr, nr, nvi, vind,&
                 vinf, itmax, toler, timed, timef,&
                 yd, yfp, deps, epsd, dyp,&
                 rp, iret, crit, indi)
-    if (iret .ne. 0) goto 9999
+    if (iret .ne. 0) goto 999
 !
 !     TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
     fp1 = 0.5d0 * ddot(nr,rp,1,rp,1)
-    if (fp1 .lt. r8prem()) goto 8888
-    if (fp1 .le. f+w*rho1*df) goto 8888
+    if (fp1 .lt. r8prem()) goto 888
+    if (fp1 .le. f+w*rho1*df) goto 888
 !
 !     ------------------------------------
 !     INTERPOLATIONS CUBIQUES
 !     ------------------------------------
 !
-    do 100 itrho = 1, imxrho
+    do itrho = 1, imxrho
         m(1,1) = 1.d0/(rho0**2)
         m(1,2) = -1.d0/(rho1**2)
         m(2,1) = -rho1/(rho0**2)
@@ -184,7 +182,7 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
         ASSERT(abs(rho0-rho1).gt.r8prem())
         a = 1.d0/(rho0 - rho1) * ( m(1,1)*s(1) + m(1,2)*s(2) )
         b = 1.d0/(rho0 - rho1) * ( m(2,1)*s(2) + m(2,2)*s(2) )
-        if (abs(3.d0*a) .le. r8prem()) goto 8888
+        if (abs(3.d0*a) .le. r8prem()) goto 888
         rho2 = (-b + sqrt(b**2-3.d0*a*df)) / (3.d0 * a)
 !
 !       PROJECTION SUR L'INTERVALLE [RHOMIN,RHOMAX]
@@ -194,37 +192,37 @@ subroutine lcreli(fami, kpg, ksp, loi, mod,&
         call lcpsvn(nr, rho2, ddy, rhoddy)
         call lcsovn(nr, rhoddy, dy, dyp)
         call lcsovn(nr, yd, dyp, yfp)
-        call lcresi(fami, kpg, ksp, loi, mod,&
-                    imat, nmat, materd, materf, comp,&
+        call lcresi(fami, kpg, ksp, rela_comp, mod,&
+                    imat, nmat, materd, materf, &
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, nvi, vind,&
                     vinf, itmax, toler, timed, timef,&
                     yd, yfp, deps, epsd, dyp,&
                     rp, iret, crit, indi)
-        if (iret .ne. 0) goto 9999
+        if (iret .ne. 0) goto 999
 !
 !       TEST DE LA REGLE D'ARMIJO : SI TEST REUSSI, ON SORT
         fp2 = 0.5d0 * ddot(nr,rp,1,rp,1)
-        if (fp2 .lt. r8prem()) goto 8888
-        if (fp2 .le. f+w*rho2*df) goto 8888
+        if (fp2 .lt. r8prem()) goto 888
+        if (fp2 .le. f+w*rho2*df) goto 888
 !
 !       NOUVELLE INTERPOLATION CUBIQUE AVEC LES DEUX DERNIERS RHO
         rho0 = rho1
         rho1 = rho2
         fp0 = fp1
         fp1 = fp2
-100  end do
+    end do
 !
 !     ON A FAIT TOUTES LES INTERATIONS D'INTERPOLATIONS CUBIQUES
 !
-8888  continue
+888 continue
 !
 !     EN ECRASE LES ENTREES AVEC LES VARIABLES RE-ACTUALISEES
-    do 500 i = 1, nr
+    do i = 1, nr
         r(i) = rp(i)
         yf(i) = yfp(i)
         dy(i) = dyp(i)
-500  end do
+    end do
 !
-9999  continue
+999  continue
 end subroutine

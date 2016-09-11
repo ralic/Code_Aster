@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
+    subroutine lcmmjg(nmat, nbcomm, cpmono, hsr,&
                       dt, nvi, vind, yd, dy,&
                       itmax, toler, materf, sigf, fkooh,&
                       nfs, nsg, toutms, pgl, msnst,&
@@ -24,7 +24,6 @@ interface
         integer :: nsg
         integer :: nfs
         integer :: nmat
-        character(len=16) :: comp(*)
         integer :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: hsr(nsg, nsg)

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       imat, comp, crit, timed, timef,&
                       neps, epsdt, depst, sigd, vind,&
                       opt, angmas, sigf, vinf, dsde,&
-                      iret)
+                      iret, mult_comp_)
         integer :: neps
         character(len=*) :: fami
         integer :: kpg
@@ -42,5 +42,6 @@ interface
         real(kind=8) :: vinf(*)
         real(kind=8) :: dsde(6, 6)
         integer :: iret
+        character(len=16), optional, intent(in) :: mult_comp_
     end subroutine nmvprk
 end interface

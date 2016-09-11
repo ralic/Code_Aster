@@ -7,7 +7,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !     ----------------------------------------------------------------
 !     COMPORTEMENT MONOCRISTALLIN
 !                :  MATRICE SYMETRIQUE DE COMPORTEMENT TANGENT
@@ -101,54 +100,58 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                     nmat, mod, nvi, vind, vinf,&
                     sigd, nr, yd, bnews, mtrac)
         call dcopy(nr, yd, 1, yf, 1)
-        call lcmmja(comp, mod, nmat, mater, timed,&
+        call lcmmja(mod, nmat, mater, timed,&
                     timef, itmax, toler, nbcomm, cpmono,&
                     pgl, nfs, nsg, toutms, hsr,&
                     nr, nvi, vind, df, yf,&
                     yd, dy, drdy, iret)
-        if (iret .gt. 0) goto 9999
+        if (iret .gt. 0) goto 999
     endif
 !
 ! - RECUPERER LES SOUS-MATRICES BLOC
 !
-    do 101 k = 1, 6
-        do 101 j = 1, 6
+    do k = 1, 6
+        do j = 1, 6
             z0(k,j)=drdy(k,j)
-101     continue
-    do 201 k = 1, 6
-        do 201 j = 1, ns
+        end do
+    end do
+    do k = 1, 6
+        do j = 1, ns
             z1(k,j)=drdy(k,ndt+j)
-201     continue
-!
-    do 301 k = 1, ns
-        do 301 j = 1, 6
+        end do
+    end do
+    do k = 1, ns
+        do j = 1, 6
             z2(k,j)=drdy(ndt+k,j)
-301     continue
-    do 401 k = 1, ns
-        do 401 j = 1, ns
+        end do
+    end do
+    do k = 1, ns
+        do j = 1, ns
             z3(k,j)=drdy(ndt+k,ndt+j)
-401     continue
+        end do
+    end do
 !     Z2=INVERSE(Z3)*Z2
 !     CALL MGAUSS ('NCSP',Z3, Z2, NS, NS, 6, DET, IRET )
     call mgauss('NCWP', z3, z2, ns, ns,&
                 6, det, iret)
-    if (iret .gt. 0) goto 9999
+    if (iret .gt. 0) goto 999
 !
 !     KYL=Z1*INVERSE(Z3)*Z2
     call promat(z1, 6, 6, ns, z2,&
                 ns, ns, 6, kyl)
 !
 !     Z0=Z0+Z1*INVERSE(Z3)*Z2
-    do 501 k = 1, 6
-        do 501 j = 1, 6
+    do k = 1, 6
+        do j = 1, 6
             z0(k,j)=z0(k,j)-kyl(k,j)
-501     continue
+        end do
+    end do
 !
     call dcopy(36, i6, 1, zinv, 1)
 !     CALL MGAUSS ('NCSP',Z0, ZINV, 6, 6, 6, DET, IRET )
     call mgauss('NCWP', z0, zinv, 6, 6,&
                 6, det, iret)
-    if (iret .gt. 0) goto 9999
+    if (iret .gt. 0) goto 999
 !
     if (gdef .eq. 0) then
 !
@@ -162,5 +165,5 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef,&
                     mater, mod, nr, dsde)
 !
     endif
-9999 continue
+999 continue
 end subroutine

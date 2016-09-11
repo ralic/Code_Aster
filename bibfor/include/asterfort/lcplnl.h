@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcplnl(fami, kpg, ksp, loi, toler,&
+    subroutine lcplnl(fami, kpg, ksp, rela_comp, toler,&
                       itmax, mod, imat, nmat, materd,&
                       materf, nr, nvi, timed, timef,&
                       deps, epsd, sigd, vind, comp,&
@@ -34,7 +34,7 @@ interface
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        character(len=16) :: loi
+        character(len=16) :: rela_comp
         real(kind=8) :: toler
         integer :: itmax
         character(len=8) :: mod

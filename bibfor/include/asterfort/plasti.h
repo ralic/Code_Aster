@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                       comp, crit, timed, timef, tempd,&
                       tempf, tref, epsdt, depst, sigd,&
                       vind, opt, angmas, sigf, vinf,&
-                      dsde, icomp, nvi, tampon, irteti)
+                      dsde, icomp, nvi, tampon, irteti, mult_comp_)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -46,5 +46,6 @@ interface
         integer :: nvi
         real(kind=8) :: tampon(*)
         integer :: irteti
+        character(len=16), optional, intent(in) :: mult_comp_
     end subroutine plasti
 end interface

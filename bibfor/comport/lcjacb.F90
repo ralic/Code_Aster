@@ -1,8 +1,8 @@
-subroutine lcjacb(fami, kpg, ksp, loi, mod,&
+subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
                   nmat, materd, materf, timed, timef,&
                   yf, deps, itmax, toler, nbcomm,&
                   cpmono, pgl, nfs, nsg, toutms,&
-                  hsr, nr, comp, nvi, vind,&
+                  hsr, nr, nvi, vind,&
                   vinf, epsd, yd, dy, ye,&
                   crit, indi, vind1, bnews, mtrac,&
                   drdy, iret)
@@ -10,7 +10,7 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -85,50 +85,49 @@ subroutine lcjacb(fami, kpg, ksp, loi, mod,&
 !
     character(len=*) :: fami
     character(len=8) :: mod
-    character(len=16) :: loi
+    character(len=16) :: rela_comp
 !
     integer :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3)
-    character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
 !
     aster_logical :: bnews(3), mtrac
 !       ----------------------------------------------------------------
 !
     iret=0
-    if (loi(1:9) .eq. 'VISCOCHAB') then
+    if (rela_comp(1:9) .eq. 'VISCOCHAB') then
         call cvmjac(mod, nmat, materf, timed, timef,&
                     yf, dy, nr, epsd, deps,&
                     drdy)
 !
-    else if (loi(1:8) .eq. 'MONOCRIS') then
-        call lcmmja(comp, mod, nmat, materf, timed,&
+    else if (rela_comp(1:8) .eq. 'MONOCRIS') then
+        call lcmmja(mod, nmat, materf, timed,&
                     timef, itmax, toler, nbcomm, cpmono,&
                     pgl, nfs, nsg, toutms, hsr,&
                     nr, nvi, vind, deps, yf,&
                     yd, dy, drdy, iret)
 !
-    else if (loi(1:7) .eq. 'IRRAD3M') then
+    else if (rela_comp(1:7) .eq. 'IRRAD3M') then
         call irrjac(fami, kpg, ksp, mod, nmat,&
                     materf, yf, dy, nr, drdy)
 !
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
         call burjac(mod, nmat, materd, materf, nvi,&
                     vind, timed, timef, yd, yf,&
                     dy, nr, drdy)
 !
-    else if (loi(1:4) .eq. 'LETK') then
+    else if (rela_comp(1:4) .eq. 'LETK') then
         call lkijac(mod, nmat, materf, timed, timef,&
                     yf, deps, nr, nvi, vind,&
                     vinf, yd, dy, drdy, iret)
 !
-    else if (loi .eq. 'HAYHURST') then
+    else if (rela_comp .eq. 'HAYHURST') then
         call hayjac(mod, nmat, materf(1, 1), materf(1, 2), timed,&
                     timef, yf, deps, nr, nvi,&
                     vind, vinf, yd, dy, crit,&
                     drdy, iret)
 !
-    else if (loi(1:6) .eq. 'HUJEUX') then
+    else if (rela_comp(1:6) .eq. 'HUJEUX') then
         call hujjac(mod, nmat, materf, indi, deps,&
                     nr, yd, yf, ye, nvi,&
                     vind, vind1, vinf, drdy, bnews,&

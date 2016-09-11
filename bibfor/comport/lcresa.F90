@@ -1,5 +1,5 @@
 subroutine lcresa(fami, kpg, ksp, typmod, imat,&
-                  nmat, materd, materf, comp, nr,&
+                  nmat, materd, materf, rela_comp, nr,&
                   nvi, timed, timef, deps, epsd,&
                   yf, dy, r, iret, yd,&
                   crit)
@@ -7,7 +7,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 ! aslint: disable=W1306,W1504
     implicit   none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
     character(len=8) :: typmod
     character(len=*) :: fami
     character(len=3) :: matcst
-    character(len=16) :: comp(*)
+    character(len=16) :: rela_comp
     common /tdim/   ndt,    ndi
 !----------------------------------------------------------------
 !
@@ -85,32 +85,30 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 !     CALCUL DE DSIG AVEC THETA
     call dcopy(ndt, dy, 1, dsig, 1)
     call dcopy(ndt, yd, 1, smx, 1)
-    call daxpy(6, theta, dsig, 1, smx,&
-               1)
+    call daxpy(6, theta, dsig, 1, smx, 1)
 !
     call dcopy(nvi, yd(ndt+1), 1, vini, 1)
-    call daxpy(nvi, theta, dy, 1, vini,&
-               1)
+    call daxpy(nvi, theta, dy, 1, vini, 1)
 !
 !     CALCUL DES DERIVEES DES VARIABLES INTERNES AU POINT T+THETA*DT
-    call lcdvin(fami, kpg, ksp, comp, typmod,&
+    call lcdvin(fami, kpg, ksp, rela_comp, typmod,&
                 imat, matcst, nvi, nmat, vini,&
                 materf(1, 2), x, dtime, smx, dvin,&
                 iret)
 !
     call dscal(nvi, dtime, dvin, 1)
 !
-    do 5 itens = 1, nvi
+    do itens = 1, nvi
         vini(itens) = yd(ndt+itens)+dvin(itens)
- 5  end do
+    end do
 !
-    do 6 itens = 1, 6
+    do itens = 1, 6
         evi(itens) = vini(itens)
- 6  end do
+    end do
 !
 !     CALCUL DES CONTRAINTES AU POINT T+DT
     call calsig(fami, kpg, ksp, evi, typmod,&
-                comp, vini, x, dtime, epsd,&
+                rela_comp, vini, x, dtime, epsd,&
                 deps, nmat, materf(1, 1), sigi)
 !
 !     CALCUL DES RESIDUS AU POINT T+DT
@@ -122,7 +120,6 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat,&
 !     CALCUL DES RESIDUS AU POINT T+DT
 !
     call dcopy(nvi, dvin, 1, r(ndt+1), 1)
-    call daxpy(nvi, -1.d0, dy(ndt+1), 1, r(ndt+1),&
-               1)
+    call daxpy(nvi, -1.d0, dy(ndt+1), 1, r(ndt+1), 1)
 !
 end subroutine

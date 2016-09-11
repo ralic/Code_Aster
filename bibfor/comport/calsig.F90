@@ -1,10 +1,15 @@
 subroutine calsig(fami, kpg, ksp, ein, mod,&
-                  comp, vini, x, dtime, epsd,&
+                  rela_comp, vini, x, dtime, epsd,&
                   detot, nmat, coel, sigi)
-    implicit none
-!     ================================================================
+!
+implicit none
+!
+#include "asterfort/lcopli.h"
+#include "asterfort/lcprmv.h"
+#include "asterfort/rcvarc.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,12 +44,10 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
 !         COEL    :  COEFFICENT DE L'OPERATEUR D'ELASTICITE ORTHOTROPE
 !     OUT SIGI    :  CONTRAINTES A L'INSTANT COURANT
 !     ----------------------------------------------------------------
-#include "asterfort/lcopli.h"
-#include "asterfort/lcprmv.h"
-#include "asterfort/rcvarc.h"
+
     character(len=*) :: fami
     character(len=8) :: mod
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     integer :: kpg, ksp, icp, nmat, iret, iret1, iret2, iret3
     real(kind=8) :: nu, coel(nmat), hook(6, 6), alphal, alphat, alphan, ethl
     real(kind=8) :: etht
@@ -64,19 +67,17 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
     dtper = 0.d0
     iret=iret1+iret2+iret3
 !
-    loi=comp(1)
-!
     xsdt=x/dtime
 !
-    if (coel(nmat) .eq. 0) then
+    if (nint(coel(nmat)) .eq. 0) then
 !
         e=coel(1)
         e0=e
         dmg=0.d0
 !        ENDOMMAGEMNT EVENTUEL
-        if (loi(1:9) .eq. 'VENDOCHAB') then
+        if (rela_comp(1:9) .eq. 'VENDOCHAB') then
             dmg=vini(9)
-        else if (loi(1:8).eq.'HAYHURST') then
+        else if (rela_comp(1:8).eq.'HAYHURST') then
             dmg=vini(11)
         endif
         e=e0*(1.d0-dmg)
@@ -88,10 +89,10 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
         else
             eth=0.d0
         endif
-        do 10 icp = 1, 6
+        do icp = 1, 6
             eel(icp)=epsd(icp)+detot(icp)*xsdt-ein(icp)-eth
             if (icp .eq. 3) eth=0.0d0
-10      continue
+        end do
 !
 ! --     CAS DES CONTRAINTES PLANES
 !
@@ -102,13 +103,11 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
         demu=e/(1.0d0+nu)
         treel=(eel(1)+eel(2)+eel(3))
         treel=nu*demu*treel/(1.0d0-nu-nu)
-        do 11 icp = 1, 6
+        do icp = 1, 6
             sigi(icp)=demu*eel(icp)+treel
             if (icp .eq. 3) treel=0.0d0
-11      continue
-!
-    else if (coel(nmat).eq.1) then
-!
+        end do
+    else if (nint(coel(nmat)) .eq. 1) then
         call lcopli('ORTHOTRO', mod, coel, hook)
         alphal = coel(73)
         alphat = coel(74)
@@ -128,8 +127,6 @@ subroutine calsig(fami, kpg, ksp, ein, mod,&
         eel(4) = epsd(4)+detot(4)*xsdt-ein(4)
         eel(5) = epsd(5)+detot(5)*xsdt-ein(5)
         eel(6) = epsd(6)+detot(6)*xsdt-ein(6)
-!
         call lcprmv(hook, eel, sigi)
-!
     endif
 end subroutine

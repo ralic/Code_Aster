@@ -1,4 +1,4 @@
-subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
+subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm,&
                   cpmono, nmat, nvi, vini, x,&
                   dtime, pgl, mod, coeft, neps,&
                   epsd, detot, coel, dvin, nfs,&
@@ -25,10 +25,10 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
     real(kind=8) :: sigi(6), epsd(neps), detot(neps), pgl(3, 3), toler
     real(kind=8) :: hsr(nsg, nsg, 1)
     character(len=*) :: fami
-    character(len=16) :: comp(*)
-! person_in_charge: jean-michel.proix at edf.fr
+    character(len=16) :: rela_comp
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,7 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 ! ======================================================================
 !       IN FAMI     :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !         KPG,KSP   :  NUMERO DU (SOUS)POINT DE GAUSS
-!          COMP     :  NOM DU MODELE DE COMPORTEMENT
+!         rela_comp   :  NOM DU MODELE DE COMPORTEMENT
 !           MOD     :  TYPE DE MODELISATION
 !           IMAT    :  ADRESSE DU MATERIAU CODE
 !         NBCOMM :  NOMBRE DE COEF MATERIAU PAR FAMILLE
@@ -84,10 +84,10 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 !
     call r8inir(9, 0.d0, gamsns, 1)
     call r8inir(nsg, 0.d0, dy, 1)
-    do 5 itens = 1, 6
+    do itens = 1, 6
         evi(itens) = vini(itens)
         devi(itens) = 0.d0
- 5  end do
+    end do
 !
     call dcopy(nmat, coeft, 1, materf(nmat+1), 1)
     call dcopy(nmat, coel, 1, materf(1), 1)
@@ -95,24 +95,24 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 !     CALCUL DU NOMBRE TOTAL DE SYSTEMES DE GLISSEMENT
     nbfsys=nbcomm(nmat,2)
     nbsyst=0
-    do 10 ifa = 1, nbfsys
-        nomfam=cpmono(5*(ifa-1)+1)
+    do ifa = 1, nbfsys
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
         nbsyst=nbsyst+nbsys
-10  end do
+    end do
 !
     if (coeft(nbcomm(1,1)) .ge. 4) then
 !         KOCKS-RAUCH ET DD_CFC : VARIABLE PRINCIPALE=DENSITE DISLOC
         ASSERT(nbcomm(nmat, 2).eq.1)
-        do 102 i = 1, nbsyst
+        do i = 1, nbsyst
             yd(6+i)=vini(6+3*(i-1)+1)
-102      continue
+        end do
     else
 !        AUTRES COMPORTEMENTS MONOCRISTALLINS
-        do 103 i = 1, nbsyst
+        do i = 1, nbsyst
             yd(6+i)=vini(6+3*(i-1)+2)
-103      continue
+        end do
     endif
 !
 !
@@ -124,13 +124,13 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
     endif
 !
     if (gdef .eq. 1) then
-        call lcrksg(comp, nvi, vini, epsd, detot,&
+        call lcrksg(rela_comp, nvi, vini, epsd, detot,&
                     nmat, coel, sigi)
         call lcgrla(detot, deps)
         call dscal(3, sqrt(2.d0), deps(4), 1)
     else
         call calsig(fami, kpg, ksp, evi, mod,&
-                    comp, vini, x, dtime, epsd,&
+                    rela_comp, vini, x, dtime, epsd,&
                     detot, nmat, coel, sigi)
         call dcopy(6, detot, 1, deps, 1)
     endif
@@ -143,20 +143,20 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
 !     NSFA : debut de la famille IFA dans DY et YD, YF
     nsfa=6
 !
-    do 6 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
 !
-        nomfam=cpmono(5*(ifa-1)+1)
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
 !
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ng, lg, 0, q)
 !
-        do 7 is = 1, nbsys
+        do is = 1, nbsys
 !
 !           CALCUL DE LA SCISSION REDUITE =
 !           PROJECTION DE SIG SUR LE SYSTEME DE GLISSEMENT
 !           TAU      : SCISSION REDUITE TAU=SIG:MUS
 !
-            call caltau(comp, ifa, is, sigi, fkooh,&
+            call caltau(ifa, is, sigi, fkooh,&
                         nfs, nsg, toutms, taus, mus,&
                         msns)
 !
@@ -177,7 +177,7 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
                         sgns, rp, iret)
 !
             if (iret .gt. 0) then
-                goto 9999
+                goto 999
             endif
 !
             nuvi=nuvi+3
@@ -193,23 +193,23 @@ subroutine lcmmon(fami, kpg, ksp, comp, nbcomm,&
                 call daxpy(9, dgamma, msns, 1, gamsns,&
                            1)
             endif
- 7      continue
+        end do
 !
         nsfa=nsfa+nbsys
         nsfv=nsfv+nbsys*3
 !
- 6  end do
+    end do
 !
 ! --    DERIVEES DES VARIABLES INTERNES
 !
-    do 30 itens = 1, 6
+    do itens = 1, 6
         dvin(itens)= devi(itens)
-30  end do
+    end do
     if (gdef .eq. 1) then
         call dcopy(9, vini(nvi-3-18+1 ), 1, fp, 1)
         call pmat(3, gamsns, fp, fp1)
         call dcopy(9, fp1, 1, dvin(nvi-3-18+1 ), 1)
     endif
 !
-9999  continue
+999 continue
 end subroutine

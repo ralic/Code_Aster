@@ -1,9 +1,9 @@
 subroutine lcmatt(fami, kpg, ksp, mod, imat,&
-                  nmat, poum, comp, coefel, coefpl,&
+                  nmat, poum, rela_comp, coefel, coefpl,&
                   typma, ndt, ndi, nr, nvi)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,6 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
 !         IMAT   :  ADRESSE DU MATERIAU CODE
 !         NMAT   :  DIMENSION  DE MATER
 !         POUM   :  '+' ou '-'
-!         COMP   :  COMPORTEMENT
 !     OUT        :  COEFFICIENTS MATERIAU A T- OU T+
 !         COEFEL :  CARACTERISTIQUES ELASTIQUES
 !         COEFPL :  CARACTERISTIQUES PLASTIQUES
@@ -41,7 +40,7 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
     integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, imat
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     character(len=8) :: mod, typma
     character(len=11) :: meting
     common /meti/   meting
@@ -62,9 +61,8 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat,&
     endif
     ndi = 3
     typma = 'COHERENT'
-    loi = comp(1)
 !
-    if (loi .eq. 'NORTON') then
+    if (rela_comp .eq. 'NORTON') then
         call matnor(fami, kpg, ksp, imat, nmat,&
                     poum, coefel, coefpl, ndt, nvi,&
                     nr)

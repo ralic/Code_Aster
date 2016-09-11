@@ -1,9 +1,9 @@
-subroutine rkcah2(comp, y, pas, nvi, w,&
+subroutine rkcah2(rela_comp, y, pas, nvi, w,&
                   wk, h, eps, iret)
-    implicit none
-!     ================================================================
+implicit none
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,19 +21,18 @@ subroutine rkcah2(comp, y, pas, nvi, w,&
 !
 !     INTEGRATION DE LOIS DE COMPORTEMENT PAR  RUNGE KUTTA
 !     CALCUL DU NOUVEAU PAS DE TEMPS (DIMINUTION)
-!      IN COMP    :  NOM DU MODELE DE COMPORTEMENT
+!      IN rela_comp    :  NOM DU MODELE DE COMPORTEMENT
 !         Y       :  VARIABLES INTERNES
 !     OUT H       :  PAS DE TEMPS
 !
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
     integer :: ne, ny, na, nvi, iret
-    character(len=16) :: loi, comp(*)
+    character(len=16) :: rela_comp
     real(kind=8) :: y(*), h, w, dmg0, dmg1, maxout, maxdom, wk(*), eps
     real(kind=8) :: prec, coef, pas
     parameter  ( maxdom = 9.90d-01  )
 !
-    loi=comp(1)
     ne=0
     ny=nvi
     na=ny+nvi
@@ -43,7 +42,7 @@ subroutine rkcah2(comp, y, pas, nvi, w,&
 !
     maxout=maxdom-eps
 !
-    if (loi(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
 !        TRAITEMENT VENDOCHAB
         dmg1=y(9)
 !        TEST SUR LE NIVEU DE DOMMAGE--

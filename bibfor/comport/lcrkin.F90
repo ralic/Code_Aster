@@ -1,9 +1,9 @@
-subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
+subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
                   cpmono, nmat, mod, nvi, sigd,&
                   sigf, vind, vinf, nbphas, iret)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     real(kind=8) :: materf(nmat, 2), vind(*), vinf(*), id(3, 3), sigd(*)
     real(kind=8) :: sigf(*)
     real(kind=8) :: dsde(6, 6), maxdom, endoc, fp(3, 3)
-    character(len=16) :: loi, comp(*), opt, necoul
+    character(len=16) :: rela_comp, opt, necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     common/tdim/ ndt,ndi
@@ -59,7 +59,6 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     data id/1.d0,0.d0,0.d0, 0.d0,1.d0,0.d0, 0.d0,0.d0,1.d0/
 !     ----------------------------------------------------------------
 !
-    loi = comp(1)
     iret=0
     call lcinma(0.d0, dsde)
 !
@@ -71,7 +70,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
 !
 ! --    DEBUT TRAITEMENT DE VENDOCHAB --
 !     ROUTINE DE DECROISSANCE DES CONTRAINTES QUAND D>MAXDOM
-    if (loi(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
 !
         if (opt .eq. 'RIGI_MECA_TANG') then
             call utmess('F', 'ALGORITH8_91')
@@ -79,33 +78,33 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
         if (vind(9) .ge. maxdom) then
 !
             if (vind(9) .eq. 1.0d0) then
-                do 4 icp = 1, 2*ndim
+                do icp = 1, 2*ndim
                     sigf(icp)=sigd(icp)*(0.01d0)
- 4              continue
+                end do
                 materf(1,1)=0.01d0*materf(1,1)
                 call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
             else
-                do 5 icp = 1, 2*ndim
+                do icp = 1, 2*ndim
                     sigf(icp)=sigd(icp)*(0.1d0)
- 5              continue
+                end do
                 endoc=(1.0d0-max(maxdom,vind(9)))*0.1d0
                 materf(1,1)=endoc*materf(1,1)
                 call lcopli('ISOTROPE', mod, materf(1, 1), dsde)
                 materf(1,1)=materf(1,1)/endoc
             endif
-            do 6 icp = 1, nvi
+            do icp = 1, nvi
                 vinf(icp)=vind(icp)
- 6          continue
+            end do
             vinf(9)=1.0d0
             iret=9
-            goto 9999
+            goto 999
         endif
     endif
 ! --  FIN   TRAITEMENT DE VENDOCHAB --
 !
     call dcopy(nvi, vind, 1, vinf, 1)
 !
-    if (loi(1:9) .eq. 'VENDOCHAB') then
+    if (rela_comp(1:9) .eq. 'VENDOCHAB') then
 !        INITIALISATION DE VINF(8) A UNE VALEUR NON NULLE
 !        POUR EVITER LES 1/0 DANS RKDVEC
         if (vinf(8) .le. (1.0d-8)) then
@@ -118,7 +117,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
     decirr=0
     nbsyst=0
     decal=0
-    if (loi(1:8) .eq. 'MONOCRIS') then
+    if (rela_comp(1:8) .eq. 'MONOCRIS') then
         if (gdef .eq. 1) then
             if (opt .ne. 'RAPH_MECA') then
                 call utmess('F', 'ALGORITH8_91')
@@ -132,7 +131,7 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
         if (materf(nbcomm(1,1),2) .ge. 4) then
 !           UNE SEULE FAMILLE
             ASSERT(nbcomm(nmat, 2).eq.1)
-            necoul=cpmono(3)
+            necoul=cpmono(3)(1:16)
             irr=0
             if (necoul .eq. 'MONO_DD_CC_IRRA') then
                 irr=1
@@ -149,25 +148,25 @@ subroutine lcrkin(ndim, opt, comp, materf, nbcomm,&
 !      POUR POLYCRISTAL
 !     INITIALISATION DE NBPHAS
     nbphas=nbcomm(1,1)
-    if (loi(1:8) .eq. 'POLYCRIS') then
+    if (rela_comp(1:8) .eq. 'POLYCRIS') then
 !        RECUPERATION DU NOMBRE DE PHASES
         nbphas=nbcomm(1,1)
         nsfv=7+6*nbphas
-        do 33 iphas = 1, nbphas
+        do iphas = 1, nbphas
             indpha=nbcomm(1+iphas,1)
             nbfsys=nbcomm(indpha,1)
-            do 32 ifa = 1, nbfsys
+            do ifa = 1, nbfsys
 !              indice de la famille IFA
                 indfa=indpha+ifa
                 ifl=nbcomm(indfa,1)
                 nuecou=nint(materf(ifl,2))
                 nbsys=12
                 nsfv=nsfv+nbsys*3
-32          continue
-33      continue
+            end do
+        end do
         decirr=nsfv
     endif
 !
 !
-9999  continue
+999 continue
 end subroutine

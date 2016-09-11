@@ -1,8 +1,8 @@
-subroutine lcmcli(comp, nomfam, nbsys, is, pgl,&
+subroutine lcmcli(nomfam, nbsys, is, pgl,&
                   sigf, sicl)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ subroutine lcmcli(comp, nomfam, nbsys, is, pgl,&
     real(kind=8) :: sigf(6), pgl(3, 3), ms(6), ng(3), si(3, 3), sing(3), sicl, p
     real(kind=8) :: lg(3)
     real(kind=8) :: qm(3, 3)
-    character(len=16) :: nomfam, comp(*)
+    character(len=16) :: nomfam
     integer :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr,decirr,nbsyst,decal,gdef
 !
@@ -40,18 +40,16 @@ subroutine lcmcli(comp, nomfam, nbsys, is, pgl,&
     else
         call tnsvec(6, 3, si, sigf, 1.d0/sqrt(2.d0))
     endif
-    do 9 i = 1, 3
-        sing(i) = 0.d0
- 9  end do
-    do 11 i = 1, 3
-        do 10 j = 1, 3
+    sing(:) = 0.d0
+    do i = 1, 3
+        do j = 1, 3
             sing(i) = sing(i) + si(i,j) * ng(j)
-10      end do
-11  end do
+        end do
+    end do
     p = 0.d0
-    do 1 i = 1, 3
+    do i = 1, 3
         p = p + sing(i)*ng(i)
- 1  end do
+    end do
     sicl = max(sicl, p)
 !
 end subroutine

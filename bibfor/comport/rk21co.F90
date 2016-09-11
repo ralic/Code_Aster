@@ -1,4 +1,4 @@
-subroutine rk21co(fami, kpg, ksp, comp, mod,&
+subroutine rk21co(fami, kpg, ksp, rela_comp, mod,&
                   imat, matcst, nbcomm, cpmono, nfs,&
                   nsg, toutms, nvi, nmat, y,&
                   kp, ee, a, h, pgl,&
@@ -10,7 +10,7 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
     implicit none
 !     ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,7 +33,7 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 !     ----------------------------------------------------------------
 !     IN  FAMI    :  FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !         KPG,KSP :  NUMERO DU (SOUS)POINT DE GAUSS
-!         COMP    :  NOM DU MODELE DE COMPORTEMENT
+!         RELA_COMP    :  NOM DU MODELE DE COMPORTEMENT
 !         MOD     :  TYPE DE MODELISATION
 !         IMAT    :  CODE DU MATERIAU CODE
 !         MATCST  : 'OUI'  'NAP'  'NON'
@@ -59,7 +59,7 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 #include "asterfort/rdif01.h"
     integer :: kpg, ksp, nmat, imat, nbcomm(nmat, 3), kp, nvi, i, nfs, nsg
     integer :: nbphas, itmax, iret, nhsr, numhsr(*), neps
-    character(len=16) :: comp(*)
+    character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     character(len=*) :: fami
@@ -71,38 +71,34 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 !      POUR GAGNER EN TEMPS CPU
     real(kind=8) :: toutms(*)
 !
-    do 1 i = 1, nvi
+    do i = 1, nvi
         ee(i)=0.d0
         f(i)=0.d0
- 1  end do
+    end do
 !
     if (kp .eq. 1) then
 !        INTEGRATION Y1=F(Y,T)
-        call rdif01(fami, kpg, ksp, comp, mod,&
+        call rdif01(fami, kpg, ksp, rela_comp, mod,&
                     imat, matcst, nbcomm, cpmono, nfs,&
                     nsg, toutms, nvi, nmat, y,&
                     cothe, coeff, dcothe, dcoeff, pgl,&
                     nbphas, coel, x, pas, neps,&
                     epsd, detot, f, nhsr, numhsr,&
                     hsr, itmax, toler, iret)
-!
-        do 10 i = 1, nvi
+        do i = 1, nvi
             a(i)=f(i)
             y(i)=y(i)+a(i)*h
-10      continue
-!
+        end do
     else
-!
-        do 11 i = 1, nvi
+        do i = 1, nvi
             y(i)=y(i)+a(i)*h
-11      continue
-!
+        end do
     endif
 !
     x=x+h
 !     INTEGRATION Y2=F(Y1,T+H)
 !
-    call rdif01(fami, kpg, ksp, comp, mod,&
+    call rdif01(fami, kpg, ksp, rela_comp, mod,&
                 imat, matcst, nbcomm, cpmono, nfs,&
                 nsg, toutms, nvi, nmat, y,&
                 cothe, coeff, dcothe, dcoeff, pgl,&
@@ -112,9 +108,9 @@ subroutine rk21co(fami, kpg, ksp, comp, mod,&
 !
     hs2=0.5d0*h
 !
-    do 12 i = 1, nvi
+    do i = 1, nvi
         ee(i)=(f(i)-a(i))*hs2
         y(i)=y(i)+ee(i)
-12  end do
+    end do
 !
 end subroutine

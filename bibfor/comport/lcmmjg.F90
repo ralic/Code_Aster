@@ -1,4 +1,4 @@
-subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
+subroutine lcmmjg(nmat, nbcomm, cpmono, hsr,&
                   dt, nvi, vind, yd, dy,&
                   itmax, toler, materf, sigf, fkooh,&
                   nfs, nsg, toutms, pgl, msnst,&
@@ -7,7 +7,7 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
 !       ----------------------------------------------------------------
 !     MONOCRISTAL : POUR LE CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE
 !                   CALCUL EN GDEF DE Gamma.Ms*Ns et dFp/Dgamma
@@ -63,7 +62,7 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
     real(kind=8) :: dt, fkooh(6, 6), sigf(6), toler, taus, dp, crit, sgns, rp
     real(kind=8) :: q(3, 3), mus(6), ns(3), ms(3), dfpdga(3, 3, nsg)
     real(kind=8) :: expbp(nsg), yd(*), msnst(3, 3, nsg), dalpha, dgamma
-    character(len=16) :: nomfam, comp(*)
+    character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
 !     ----------------------------------------------------------------
 !
@@ -74,14 +73,14 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
     nbfsys=nbcomm(nmat,2)
 !     PROGRAMMATION VALABLE POUR UNE SEULE FAMILLE DE SYSTEMES
     ASSERT(nbfsys.eq.1)
-    do 16 ifa = 1, nbfsys
+    do ifa = 1, nbfsys
 !        Calcul preliminaire de somme(dgamma*ms*ns)
         call r8inir(9, 0.d0, gamsns, 1)
-        nomfam=cpmono(5*(ifa-1)+1)
+        nomfam=cpmono(5*(ifa-1)+1)(1:16)
         call lcmmsg(nomfam, nbsys, 0, pgl, mus,&
                     ns, ms, 0, q)
-        do 17 is = 1, nbsys
-            call caltau(comp, ifa, is, sigf, fkooh,&
+        do is = 1, nbsys
+            call caltau(ifa, is, sigf, fkooh,&
                         nfs, nsg, toutms, taus, mus,&
                         msnst(1, 1, is))
             call lcmmlc(nmat, nbcomm, cpmono, nfs, nsg,&
@@ -90,13 +89,12 @@ subroutine lcmmjg(comp, nmat, nbcomm, cpmono, hsr,&
                         dy, itmax, toler, materf, expbp,&
                         taus, dalpha, dgamma, dp, crit,&
                         sgns, rp, iret)
-            call daxpy(9, dgamma, msnst(1, 1, is), 1, gamsns,&
-                       1)
-17      continue
-        do 19 is = 1, nbsys
+            call daxpy(9, dgamma, msnst(1, 1, is), 1, gamsns, 1)
+        end do
+        do is = 1, nbsys
             call caldfp(msnst(1, 1, is), gamsns, dfpdga(1, 1, is), iret)
-19      continue
+        end do
         nsfa=nsfa+nbsys
         nsfv=nsfv+nbsys*3
-16  end do
+    end do
 end subroutine
