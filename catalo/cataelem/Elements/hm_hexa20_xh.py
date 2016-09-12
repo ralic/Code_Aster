@@ -394,7 +394,7 @@ class HM_HEXA20_XH(Element):
         OP.PAS_COURANT(te=404,
                        para_in=(
                            (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                       ),
+                       (OP.PAS_COURANT.PVARCPR, LC.ZVARCPG),),
                        para_out=((SP.PCOURAN, LC.ECOURAN), ),
                        ),
 

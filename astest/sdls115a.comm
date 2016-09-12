@@ -24,6 +24,12 @@ EP   = 0.1
 EY  = 4.3880E10
 NU  = 0.
 
+RHOF = DEFI_CONSTANTE(VALE=2500.E0)
+NUF = DEFI_CONSTANTE(VALE=0.)
+EYF = FORMULE(NOM_PARA=('Z',), VALE="4.3880E10+Z-Z" )
+AA = DEFI_CONSTANTE(VALE=0.0000001)
+AB = DEFI_CONSTANTE(VALE=0.0001)
+
 LONG = 1.0
 LARG = 1.0
 C0   = sqrt(EY/RHO)
@@ -63,18 +69,29 @@ MOD1=AFFE_MODELE(MAILLAGE=MAIL,
 
 
 
+#MAT=DEFI_MATERIAU(
+                  #ELAS = _F(
+                             #E    =  EY,
+                             #NU   =  NU,
+                             #RHO  = RHO,
+                         #AMOR_ALPHA=0.0000001, AMOR_BETA=0.0001,
+                           #),
+                 #);
+
 MAT=DEFI_MATERIAU(
-                  ELAS = _F(
-                             E    =  EY,
-                             NU   =  NU,
-                             RHO  = RHO,
-                         AMOR_ALPHA=0.0000001, AMOR_BETA=0.0001,
+                  ELAS_FO = _F(
+                             E    =  EYF,
+                             NU   =  NUF,
+                             RHO  = RHOF,
+                         AMOR_ALPHA=AA, AMOR_BETA=AB,
                            ),
                  );
 
+CHGEOM=CREA_CHAMP(TYPE_CHAM='NOEU_GEOM_R', OPERATION='EXTR', MAILLAGE=MAIL, NOM_CHAM='GEOMETRIE',)
 
 CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
                     AFFE=(_F(TOUT='OUI',MATER=MAT,),),
+                    AFFE_VARC=_F(NOM_VARC='GEOM', CHAM_GD=CHGEOM), 
                     );
 
 CELE1=AFFE_CARA_ELEM(MODELE=MOD1,

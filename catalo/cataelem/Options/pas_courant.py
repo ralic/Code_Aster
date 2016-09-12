@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,13 +25,15 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
+PVARCPR  = InputParameter(phys=PHY.VARI_R,
+comment=""" PVARCPR : VARIABLES DE COMMANDES  POUR T+ """)
 
 PAS_COURANT = Option(
     para_in=(
         SP.PCACOQU,
         SP.PGEOMER,
         SP.PMATERC,
+           PVARCPR,
     ),
     para_out=(
         SP.PCOURAN,

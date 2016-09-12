@@ -1,7 +1,7 @@
 subroutine pascou(mate, carele, sddyna, sddisc)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -39,6 +40,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 #include "asterfort/ndynre.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vrcins.h"
 !
     character(len=24) :: mate, carele
     character(len=19) :: sddyna, sddisc
@@ -60,14 +62,15 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 !
 !
 !
-    integer :: ibid, jcesd, jcesl, n1, i
+    integer :: ibid, jcesd, jcesl, n1, i, numins
     integer :: nbma, ima, iad, nbinst, nbmcfl
-    real(kind=8) :: dtcou, valeur, phi
+    real(kind=8) :: dtcou, valeur, phi, instin
     aster_logical :: booneg, boopos
+    character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: mo, lpain(3), lpaout(1), stocfl, maicfl, mail
-    character(len=19) :: chams
-    character(len=24) :: chgeom, ligrel, lchin(3), lchout(1), chcara(18)
+    character(len=8) :: mo, lpain(4), lpaout(1), stocfl, maicfl, mail
+    character(len=19) :: chams, chvarc
+    character(len=24) :: chgeom, ligrel, lchin(4), lchout(1), chcara(18)
     real(kind=8), pointer :: ditr(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
 !
@@ -78,6 +81,7 @@ subroutine pascou(mate, carele, sddyna, sddisc)
 ! --- INITIALISATIONS
 !
     nompro ='OP0070'
+    chvarc = '&&PASCOU.CH_VARC_R'
 !
     call getvid(' ', 'MODELE', scal=mo, nbret=ibid)
 !
@@ -92,18 +96,27 @@ subroutine pascou(mate, carele, sddyna, sddisc)
     lpain(2)='PGEOMER'
     lchin(2)=chgeom
 !
+! --- CHAMP DES VARIABLES DE COMMANDE
+    numins = 0
+    instin = diinst(sddisc,numins)
+    call vrcins(mo, mate, carele, instin, chvarc,&
+                    codret)
+    
+    lpain(3)='PVARCPR'
+    lchin(3)=chvarc(1:19)
+!
 ! --- CHAMP DE CARACTERISTIQUES ELEMENTAIRES
     call mecara(carele(1:8), chcara)
 !
     if (carele(1:8) .ne. ' ') then
-        lpain(3)='PCACOQU'
-        lchin(3)=chcara(7)
+        lpain(4)='PCACOQU'
+        lchin(4)=chcara(7)
     endif
 !
     lpaout(1)='PCOURAN'
     lchout(1)='&&'//nompro//'.PAS_COURANT'
 !
-    call calcul('S', 'PAS_COURANT', ligrel, 3, lchin,&
+    call calcul('S', 'PAS_COURANT', ligrel, 4, lchin,&
                 lpain, 1, lchout, lpaout, 'V',&
                 'OUI')
 !

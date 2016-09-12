@@ -15,7 +15,7 @@ subroutine te0404(option, nomte)
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,6 +115,7 @@ subroutine te0404(option, nomte)
         if (elas_keyword .eq. 'ELAS') then
             nomres(1) = 'E'
             nomres(2) = 'NU'
+            fami = 'FPG1'
             call rcvalb(fami, 1, 1, '+', zi(imate),&
                         ' ', elas_keyword, 0, ' ', [0.d0],&
                         2, nomres, valres, codres, 1)
