@@ -3,7 +3,6 @@ subroutine mmprel(sdcont, mesh, model, ligret)
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterfort/ajellt.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -16,7 +15,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +30,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: model
@@ -121,7 +120,7 @@ implicit none
             if (.not.l_veri) then
                 nb_elem_slav = mminfi(sdcont_defi,'NBMAE' ,i_zone)
                 jdecme       = mminfi(sdcont_defi,'JDECME',i_zone)
-                        ASSERT(nb_elem_slav.le.nt_elem_slav)
+                ASSERT(nb_elem_slav.le.nt_elem_slav)
                 do i_elem_slav = 1, nb_elem_slav
                     elem_slav_idx  = jdecme+i_elem_slav
                     elem_slav_nume = v_sdcont_mailco(elem_slav_idx)

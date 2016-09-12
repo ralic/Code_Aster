@@ -103,6 +103,9 @@ implicit none
     else if (question .eq.'FORMUL_XFEM') then
         cont_form = cfdisi(sdcont_defi,'FORMULATION')
         cfdisl = (cont_form.eq.3)
+    else if (question .eq.'FORMUL_LAC') then
+        cont_form = cfdisi(sdcont_defi,'FORMULATION')
+        cfdisl = (cont_form.eq.5)
     else if (question.eq.'AXISYMETRIQUE') then
         cfdisl = cfdisi(sdcont_defi,'AXISYMETRIQUE').eq.1
     else if (question.eq.'FROTTEMENT') then

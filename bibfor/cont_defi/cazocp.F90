@@ -41,6 +41,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  sdcont         : name of contact datastructure
+! In  model          : name of model
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,14 +54,14 @@ implicit none
     real(kind=8) :: resi_abso, gcp_coef_resi
     real(kind=8) :: geom_resi, frot_resi
     aster_logical :: l_cont_gcp, l_newt_fr
-    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_mesh
-    aster_logical :: l_mortar
+    aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_lac
+    aster_logical :: l_xfem_mortar
     character(len=16) :: lissage, coef_adap
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     character(len=24) :: sdcont_paraci
     integer, pointer :: v_sdcont_paraci(:) => null()
-    integer, pointer :: xfem_cont(:) => null()
+    integer, pointer :: v_xfem_cont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,8 +88,8 @@ implicit none
 !
     l_cont_disc = cfdisl(sdcont_defi,'FORMUL_DISCRETE')
     l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
-    l_cont_mesh = l_cont_disc.or.l_cont_cont
     l_cont_xfem = cfdisl(sdcont_defi,'FORMUL_XFEM')
+    l_cont_lac  = cfdisl(sdcont_defi,'FORMUL_LAC')
     l_cont_gcp  = cfdisl(sdcont_defi,'CONT_GCP' )
     l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
 !
@@ -100,6 +101,8 @@ implicit none
         algo_reso_geom = 'POINT_FIXE'
     else if (l_cont_disc) then
         algo_reso_geom = 'POINT_FIXE'
+    else if (l_cont_lac) then
+        call getvtx(' ', 'ALGO_RESO_GEOM', scal=algo_reso_geom)
     else
         ASSERT(.false.)
     endif
@@ -153,6 +156,8 @@ implicit none
             endif
         else if (l_cont_disc) then
             algo_reso_frot = 'POINT_FIXE'
+        else if (l_cont_lac) then
+             call utmess('F', 'CONTACT4_4')
         else
             ASSERT(.false.)
         endif
@@ -167,6 +172,7 @@ implicit none
         else
             ASSERT(.false.)
         endif
+        ASSERT(.not.l_cont_lac)
     endif
 !
 ! - Friction parameters
@@ -188,6 +194,7 @@ implicit none
             call getvr8(' ', 'RESI_FROT', scal=frot_resi)
             v_sdcont_paracr(2) = frot_resi
         endif
+        ASSERT(.not.l_cont_lac)
     endif
 !
 ! - Contact algorithm
@@ -198,6 +205,8 @@ implicit none
         algo_reso_cont = 'POINT_FIXE'
     else if (l_cont_disc) then
         algo_reso_cont = 'POINT_FIXE'
+    else if (l_cont_lac) then
+        call getvtx(' ', 'ALGO_RESO_GEOM', scal=algo_reso_cont)
     else
         ASSERT(.false.)
     endif
@@ -292,7 +301,7 @@ implicit none
 !
 ! - Smoothing
 !
-    if (l_cont_mesh) then
+    if (l_cont_disc .or. l_cont_cont .or. l_cont_lac) then
         call getvtx(' ', 'LISSAGE', scal=lissage)
         if (lissage(1:3) .eq. 'NON') then
             v_sdcont_paraci(19) = 0
@@ -319,16 +328,15 @@ implicit none
 ! - XFEM formulation
 !
     if (l_cont_xfem) then
-!       Is the mortar formulation in use ?
-        call jeveuo(model//'.XFEM_CONT','L',vi=xfem_cont)
-        l_mortar = xfem_cont(1).eq.2
-!
+        call jeveuo(model//'.XFEM_CONT', 'L', vi = v_xfem_cont)
+        l_xfem_mortar = v_xfem_cont(1).eq.2
         call getvtx(' ', 'ELIM_ARETE', scal=elim_edge)
         if (elim_edge .eq. 'DUAL') then
             v_sdcont_paraci(29) = 0
         else if (elim_edge .eq. 'ELIM') then
-!           ELIM_ARETE='ELIM' is incompatiple with mortar formulation
-            if (l_mortar) call utmess('F', 'XFEM_62')
+            if (l_xfem_mortar) then
+                call utmess('F', 'XFEM_62')
+            endif
             v_sdcont_paraci(29) = 1
         else
             ASSERT(.false.)
@@ -337,7 +345,7 @@ implicit none
 !
 ! - Verification method
 !
-    if (l_cont_mesh) then
+    if (l_cont_disc.or.l_cont_cont) then
         call getvtx(' ', 'STOP_INTERP', scal=stop_singular)
         if (stop_singular .eq. 'OUI') then
             v_sdcont_paraci(25) = 1
@@ -345,6 +353,14 @@ implicit none
             v_sdcont_paraci(25) = 0
         else
             ASSERT(.false.)
+        endif
+    endif
+!
+! - Checks for LAC method
+!
+    if (l_cont_lac) then
+        if (algo_reso_cont .ne. 'NEWTON' .or. algo_reso_geom .ne. 'NEWTON') then
+            call utmess('F', 'CONTACT4_1')
         endif
     endif
 !

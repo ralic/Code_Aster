@@ -1,13 +1,8 @@
-subroutine caramx(sdcont, cont_form, nb_cont_zone)
+subroutine exipat(mesh, iret)
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/caracc.h"
-#include "asterfort/caracd.h"
-#include "asterfort/caracm.h"
-#include "asterfort/caracp.h"
-#include "asterfort/caracx.h"
+#include "asterfort/jeexin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,44 +22,30 @@ implicit none
 ! ======================================================================
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-    character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: nb_cont_zone
+    character(len=8), intent(in) :: mesh
+    integer, intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Creation of datastructures
+! Check if exist PATCH in mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  cont_form        : formulation of contact
-! In  nb_cont_zone     : number of zones of contact
+! In  mesh             : name of mesh
+! Out iret             : 1 if PATCH exists in mesh 0 otherwise
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: ipatch
 !
-! - Datastructures for all formulations (Not depending on contact zone)
+! --------------------------------------------------------------------------------------------------
 !
-    call caracp(sdcont)
-!
-! - Datastructures for formulations
-!
-    if (cont_form .eq. 1) then
-        call caracm(sdcont, nb_cont_zone)
-        call caracd(sdcont, nb_cont_zone)
-    else if (cont_form .eq. 2) then
-        call caracm(sdcont, nb_cont_zone)
-        call caracc(sdcont, nb_cont_zone)
-    else if (cont_form .eq. 3) then
-        call caracx(sdcont, nb_cont_zone)
-    else if (cont_form .eq. 5) then
-        call caracm(sdcont, nb_cont_zone)
-        call caracc(sdcont, nb_cont_zone)
-    else
-        ASSERT(.false.)
+    iret = 0
+    call jeexin(mesh//'.PATCH', ipatch)
+    if (ipatch .ne. 0) then
+        iret=1
     endif
 !
 end subroutine

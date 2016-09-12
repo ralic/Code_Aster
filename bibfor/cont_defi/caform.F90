@@ -1,14 +1,12 @@
-subroutine cazoco(sdcont      , model, keywf, cont_form, i_zone,&
-                  nb_cont_zone)
+subroutine caform(cont_form)
 !
 implicit none
 !
 #include "asterf_types.h"
+#include "asterc/getfac.h"
 #include "asterfort/assert.h"
-#include "asterfort/cazocc.h"
-#include "asterfort/cazocd.h"
-#include "asterfort/cazocm.h"
-#include "asterfort/cazocx.h"
+#include "asterfort/cazouu.h"
+#include "asterfort/getvtx.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,41 +26,48 @@ implicit none
 ! ======================================================================
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-    character(len=8), intent(in) :: sdcont
-    character(len=8), intent(in) :: model
-    character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: cont_form
-    integer, intent(in) :: i_zone
+    integer, intent(out) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Get parameters (depending on contact zones)
+! Get contact formulation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  model            : name of model
-! In  keywf            : factor keyword to read
-! In  nb_cont_zone     : number of zones of contact
-! In  cont_form        : formulation of contact
-! In  i_zone           : index of contact zone
+! Out cont_form        : formulation of contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (cont_form .eq. 1) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocd(sdcont, keywf, i_zone, nb_cont_zone)
-    else if (cont_form .eq. 2) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone)
-    else if (cont_form .eq. 3) then
-        call cazocx(sdcont, model, keywf, i_zone)
-    else if (cont_form .eq. 5) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone)
+    character(len=16) :: s_formul, keywf, s_algo_cont
+    integer :: noc, nb_cont_zone
+!
+! --------------------------------------------------------------------------------------------------
+!
+    keywf     = 'ZONE'
+    cont_form = 0
+!
+! - Contact formulation
+!
+    call getvtx(' ', 'FORMULATION', scal=s_formul, nbret=noc)
+    ASSERT(noc.ne.0)
+!
+    if (s_formul .eq. 'DISCRETE') then
+        cont_form = 1
+    else if (s_formul.eq.'CONTINUE') then
+        call getvtx(keywf, 'ALGO_CONT', iocc=1, scal=s_algo_cont)
+        if (s_algo_cont.eq.'LAC') then
+            call getfac(keywf, nb_cont_zone)
+            call cazouu(keywf, nb_cont_zone, 'ALGO_CONT')
+            cont_form = 5
+        else
+            cont_form = 2
+        endif
+    else if (s_formul.eq.'XFEM') then
+        cont_form = 3
+    else if (s_formul.eq.'LIAISON_UNIL') then
+        cont_form = 4
     else
         ASSERT(.false.)
     endif

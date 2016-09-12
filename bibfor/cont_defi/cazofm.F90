@@ -31,7 +31,8 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+! aslint: disable=W0413
 !
     character(len=8), intent(in) :: sdcont
     integer, intent(in) :: cont_form
@@ -79,6 +80,8 @@ implicit none
         s_formul = 'CONTINUE'
     else if (cont_form.eq.3) then
         s_formul = 'XFEM'
+    else if (cont_form.eq.5) then
+        s_formul = 'LAC'
     else
         ASSERT(.false.)
     endif
@@ -147,6 +150,9 @@ implicit none
         else
             algo_frot = 0
         endif
+    else if (cont_form.eq.5) then
+        algo_cont = 8
+        ASSERT(.not.l_frot)
     else
         ASSERT(.false.)
     endif

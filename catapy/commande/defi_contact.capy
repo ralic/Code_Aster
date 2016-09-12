@@ -199,7 +199,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                   ),
 
 
-# Automatic elimiantion for non-vital edges
+# Automatic elimination for non-vital edges
            b_arete_xfem= BLOC(condition = "FORMULATION == 'XFEM' ",
                               ELIM_ARETE  =SIMP(statut='f',
                                                 typ='TXM',
@@ -281,8 +281,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                 ZONE=FACT(statut='o',
                                           max='**',
 # -- Appariement
-                                          APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
-                                                                into=("NODAL","MAIT_ESCL"),),
+                                          APPARIEMENT=SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",into=("NODAL","MAIT_ESCL",)),
 #
                                           regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
                                                   UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
@@ -377,111 +376,120 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
          b_affe_continue = BLOC(condition = "FORMULATION == 'CONTINUE'",
                                 ZONE=FACT(statut='o',
                                           max='**',
-# -- Appariement
-                                          APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",
-                                                                into=("MAIT_ESCL",)),
-
-
-#
-                                          regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
-                                                  UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
-                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
-                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-#
-                                          NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
-                                                                into=("MAIT","MAIT_ESCL","ESCL"),),
-#
-                                          VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                into=("AUTO","FIXE","VECT_Y")),
-
-                                          b_nmait_fixe=BLOC(condition = "VECT_MAIT == 'FIXE'",
-                                            MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                            ),
-
-                                          b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
-                                            MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                            ),
-#
-                                          VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                                                into=("AUTO","FIXE","VECT_Y")),
-
-                                          b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
-                                            ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
-                                            ),
-
-                                          b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
-                                            ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
-                                            ),
-#
-                                          TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
-                                                           into  =("PROCHE","FIXE")),
-
-                                          b_appa_fixe=BLOC(condition = "TYPE_APPA == 'FIXE'",
-                                            DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
-                                            ),
-#
-                                          DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                          DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
-                                          b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
-                                            CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
-                                            ),
-
-                                          DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                          DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-#
-                                          TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
-                                          TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
-# -- Incompatibilité avec CL
-                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
-                                          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
-                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
-                                          SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-# -- Mode sans calcul
-                                          RESOLUTION       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
-                                          b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
-                                                       TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
-                                                       ),
-# -- Fonctionnalités spécifiques 'CONTINUE'
-
-                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
-                                          into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
-                                          b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
-                                                          fr=tr("Degré du polynôme de Legendre donnant les points de Gauss"),
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=1,val_max=6),
-                                            ),
-                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
-                                                          fr=tr("Nombre de subdivisions du domaine"),
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
-                                            ),
-                                          b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
-                                                          fr=tr("Degré du polynôme interpolateur"),
-                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
-                                            ),
-#
-                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
-                                                                into=("OUI","INTERPENETRE","NON"),),
-#
-                                          GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-#
+# -- Method for contact                                 
+                                          
                                           ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
-                                                                into=("STANDARD","PENALISATION"),),
+                                                                into=("STANDARD","PENALISATION","LAC"),),
 
                                           b_cont_std=BLOC(condition = "ALGO_CONT == 'STANDARD' ",
                                                           fr=tr("Paramètres de la formulation Lagrangienne"),
                                                           COEF_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
                                                           ),
+                                                          
                                           b_cont_pena=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
-                                                            fr=tr("Paramètres de la méthode pénalisée"),
-                                                            COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
+                                                           fr=tr("Paramètres de la méthode pénalisée"),
+                                                           COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
+                                                           ),
+# --- Pairing options (for standard slave/master)
+                                          b_pair_std=BLOC(condition = "ALGO_CONT == 'STANDARD' or ALGO_CONT == 'PENALISATION' ",
+                                                          fr=tr("Options d'appariement standard "),
+                                                          APPARIEMENT=SIMP(statut='f',typ='TXM',defaut="MAIT_ESCL",into=("MAIT_ESCL",)),
+                                                          regles=(UN_PARMI('GROUP_MA_ESCL','MAILLE_ESCL'),
+                                                          UN_PARMI('GROUP_MA_MAIT','MAILLE_MAIT'),),
+                                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                                          MAILLE_MAIT     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                                          MAILLE_ESCL     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+# -------------------- Choice of normals --------------------------------------------------------------------------------------------------
+                                                          NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
+                                                                                into=("MAIT","MAIT_ESCL","ESCL"),),
+                                                          VECT_MAIT       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                                into=("AUTO","FIXE","VECT_Y")),
+                                                          b_nmait_fixe =BLOC(condition = "VECT_MAIT == 'FIXE'",
+                                                                             MAIT_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
+                                                                             ),
+                                                          b_nmait_vecty=BLOC(condition = "VECT_MAIT == 'VECT_Y'",
+                                                                             MAIT_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                                                             ),
+                                                          VECT_ESCL       =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                                into=("AUTO","FIXE","VECT_Y")),
+                                                          b_nescl_fixe=BLOC(condition = "VECT_ESCL == 'FIXE'",
+                                                                            ESCL_FIXE     =SIMP(statut='o',typ='R',min=3,max=3),
+                                                                           ),
+                                                          b_nescl_vecty=BLOC(condition = "VECT_ESCL == 'VECT_Y'",
+                                                                             ESCL_VECT_Y   =SIMP(statut='o',typ='R',min=3,max=3),
+                                                          ),
+# -------------------- Options for pairing  -----------------------------------------------------------------------------------------------
+                                                          TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="PROCHE",
+                                                                                into  =("PROCHE","FIXE")),
+                                                          b_appa_fixe=BLOC(condition = "TYPE_APPA == 'FIXE'",
+                                                                           DIRE_APPA     =SIMP(statut='f',typ='R',min=3,max=3),
+                                                                          ),
+                                                          TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=-1.0),
+                                                          TOLE_PROJ_EXT   =SIMP(statut='f',typ='R'  ,defaut=0.50),
+# -------------------- Add suppl. gaps      -----------------------------------------------------------------------------------------------
+                                                          DIST_POUTRE     =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                                          DIST_COQUE      =SIMP(statut='f',typ='TXM',defaut="NON", into=("OUI","NON")),
+                                                          b_cara=BLOC(condition = "DIST_POUTRE == 'OUI' or DIST_COQUE == 'OUI'",
+                                                                      CARA_ELEM     =SIMP(statut='o',typ=(cara_elem) ),
+                                                          ),
+                                                          DIST_MAIT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+                                                          DIST_ESCL       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
+# -------------------- Managing boundary conditions with contact --------------------------------------------------------------------------
+                                                          SANS_NOEUD      =SIMP(statut='f',typ=no   ,validators=NoRepeat(),max='**'),
+                                                          SANS_GROUP_NO   =SIMP(statut='f',typ=grno ,validators=NoRepeat(),max='**'),
+                                                          SANS_MAILLE     =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
+                                                          SANS_GROUP_MA   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
+# -------------------- Specific collocation integration rules -----------------------------------------------------------------------------
+                                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                                into=("AUTO","GAUSS","SIMPSON","NCOTES",),),
+                                                          b_gauss   =BLOC(condition = "INTEGRATION == 'GAUSS' ",
+                                                                          fr=tr("Degré du polynôme de Legendre donnant les points de Gauss"),
+                                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=1,val_max=6),
+                                                                         ),
+                                                          b_simpson =BLOC(condition = "INTEGRATION == 'SIMPSON' ",
+                                                                          fr=tr("Nombre de subdivisions du domaine"),
+                                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=1,val_min=1,val_max=4),
+                                                                         ),
+                                                          b_ncotes  =BLOC(condition = "INTEGRATION == 'NCOTES' ",
+                                                                          fr=tr("Degré du polynôme interpolateur"),
+                                                                          ORDRE_INT = SIMP(statut='f',typ='I',defaut=3,val_min=3,val_max=8),
+                                                                         ),
+# -------------------- No contact solving (only pairing)  -----------------------------------------------------------------------------------
+                                                          RESOLUTION       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
+                                                          b_verif=BLOC(condition = "RESOLUTION == 'NON' ",
+                                                                       TOLE_INTERP   = SIMP(statut='f',typ='R',defaut = 0.),
+                                                                      ),
+# -------------------- Special options  -----------------------------------------------------------------------------------------------------
+                                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
+                                                                                into=("OUI","INTERPENETRE","NON"),),
+                                                          GLISSIERE       =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
+                                          ),
+# --- Pairing options (for segment to segment contact)
+                                          b_pair_mortar=BLOC(condition = "ALGO_CONT == 'LAC' ",
+                                                          fr=tr("Options d'appariement standard "),
+                                                          APPARIEMENT     =SIMP(statut='f',typ='TXM',defaut="MORTAR_LAC",
+                                                                                into=("MORTAR_LAC",)),
+                                                          TYPE_APPA       =SIMP(statut='f',typ='TXM',defaut="ROBUSTE",
+                                                                                into=("FORCEE","ROBUSTE","RAPIDE",)),
+                                                          TOLE_APPA       =SIMP(statut='f',typ='R'  ,defaut=1.E-8),
+                                                          TYPE_JACOBIEN   =SIMP(statut='f',typ='TXM',defaut="INITIAL",
+                                                                                into=("INITIAL","ACTUALISE",),),
+                                                          NORMALE         =SIMP(statut='f',typ='TXM',defaut="MAIT",
+                                                                                into=("MAIT",),),
+                                                          INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
+                                                                                into=("AUTO",),),
+                                                                         
+                                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
+                                                          CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
+                                                                                into=("OUI","INTERPENETRE","NON"),),
                                                             ),
-#
+# -- Method for friction
                                           b_frottement=BLOC(condition = "FROTTEMENT == 'COULOMB' ",
                                                             fr=tr("Paramètres du frottement de Coulomb"),
                                                             COULOMB    = SIMP(statut='o',typ='R',),
                                                             SEUIL_INIT = SIMP(statut='f',typ='R'),
-#
                                           regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
                                                   SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                                                   SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
@@ -503,10 +511,9 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                   COEF_PENA_FROT  =SIMP(statut='o',typ='R'),
                                                                   ),
 
-                                            ), #fin bloc b_frottement
-                                          ), #fin mot-clé facteur ZONE
-                                ), #fin bloc b_affe_continue
-
+                                            ),
+                                          ), 
+                                ), 
 
 # AFFECTATION - CAS XFEM
 

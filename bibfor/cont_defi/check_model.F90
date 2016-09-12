@@ -1,14 +1,10 @@
-subroutine cazoco(sdcont      , model, keywf, cont_form, i_zone,&
-                  nb_cont_zone)
+subroutine check_model(mesh, model, cont_form)
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cazocc.h"
-#include "asterfort/cazocd.h"
-#include "asterfort/cazocm.h"
-#include "asterfort/cazocx.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/exipat.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,43 +24,46 @@ implicit none
 ! ======================================================================
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
-    character(len=8), intent(in) :: sdcont
+    character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
     integer, intent(in) :: cont_form
-    integer, intent(in) :: i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Get parameters (depending on contact zones)
+! Check if exist XFEM in model or PATCH in mesh
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdcont           : name of contact concept (DEFI_CONTACT)
+! In  mesh             : name of mesh
 ! In  model            : name of model
-! In  keywf            : factor keyword to read
-! In  nb_cont_zone     : number of zones of contact
 ! In  cont_form        : formulation of contact
-! In  i_zone           : index of contact zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (cont_form .eq. 1) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocd(sdcont, keywf, i_zone, nb_cont_zone)
-    else if (cont_form .eq. 2) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone)
-    else if (cont_form .eq. 3) then
-        call cazocx(sdcont, model, keywf, i_zone)
-    else if (cont_form .eq. 5) then
-        call cazocm(sdcont, keywf, i_zone)
-        call cazocc(sdcont, keywf, i_zone)
-    else
-        ASSERT(.false.)
+    integer :: iret
+!
+! --------------------------------------------------------------------------------------------------
+!
+!
+! - Check if exist XFEM in model
+!
+    if (cont_form .eq. 3) then
+        call exixfe(model, iret)
+        if (iret .eq. 0) then
+            call utmess('F', 'XFEM2_8', sk=model)
+        endif
     endif
 !
+! - Check if exist PATCH in mesh (LAC method)
+!
+    if (cont_form .eq. 5) then
+        call exipat(mesh, iret)
+        if (iret .eq. 0) then
+            call utmess('F', 'CONTACT4_2', sk=mesh)
+        endif
+    endif  
+!
 end subroutine
+ 

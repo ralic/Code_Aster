@@ -15,7 +15,7 @@ implicit none
 #include "asterc/r8prem.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -145,6 +145,9 @@ implicit none
         call getvr8(keywf, 'COEF_PENA_CONT', iocc=i_zone, scal=coef_pena_cont)
         algo_cont = 3.d0
         coef_cont = coef_pena_cont
+    else if (s_algo_cont .eq. 'LAC') then
+        algo_cont = 5.d0
+        coef_cont = coef_augm_cont
     else
         ASSERT(.false.)
     endif
@@ -207,18 +210,22 @@ implicit none
 !
 ! - Contact nodes excluded
 !
-    call getvtx(keywf, 'SANS_GROUP_NO', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_1)
-    call getvtx(keywf, 'SANS_NOEUD'   , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_2)
-    l_node_excl = (nb_cont_excl_1.ne.0) .or. (nb_cont_excl_2.ne.0)
-    call getvtx(keywf, 'SANS_GROUP_MA', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_3)
-    call getvtx(keywf, 'SANS_MAILLE'  , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_4)
-    l_node_excl = l_node_excl.or.((nb_cont_excl_3.ne.0).or.(nb_cont_excl_4.ne.0))
+    if (s_algo_cont .ne. 'LAC') then
+        call getvtx(keywf, 'SANS_GROUP_NO', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_1)
+        call getvtx(keywf, 'SANS_NOEUD'   , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_2)
+        l_node_excl = (nb_cont_excl_1.ne.0) .or. (nb_cont_excl_2.ne.0)
+        call getvtx(keywf, 'SANS_GROUP_MA', iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_3)
+        call getvtx(keywf, 'SANS_MAILLE'  , iocc=i_zone, scal=s_cont_excl, nbret=nb_cont_excl_4)
+        l_node_excl = l_node_excl.or.((nb_cont_excl_3.ne.0).or.(nb_cont_excl_4.ne.0))
+    endif
 !
 ! - Friction nodes excluded
 !
-    call getvtx(keywf, 'SANS_GROUP_NO_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_1)
-    call getvtx(keywf, 'SANS_NOEUD_FR'   , iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_2)
-    l_frot_excl = (nb_frot_excl_1.ne.0) .or. (nb_frot_excl_2.ne.0)
+    if (s_algo_cont .ne. 'LAC') then
+        call getvtx(keywf, 'SANS_GROUP_NO_FR', iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_1)
+        call getvtx(keywf, 'SANS_NOEUD_FR'   , iocc=i_zone, scal=s_frot_excl, nbret=nb_frot_excl_2)
+        l_frot_excl = (nb_frot_excl_1.ne.0) .or. (nb_frot_excl_2.ne.0)
+    endif
 !
 ! - For friction direction to exclude (vector)
 !
@@ -269,13 +276,15 @@ implicit none
 !
 ! - Bilateral contact
 !
-    call getvtx(keywf, 'GLISSIERE', iocc=i_zone, scal=s_gliss)
-    if (s_gliss .eq. 'OUI') then
-        l_gliss = .true.
-    else if (s_gliss .eq. 'NON') then
-        l_gliss = .false.
-    else
-        ASSERT(.false.)
+    if (s_algo_cont .ne. 'LAC') then
+        call getvtx(keywf, 'GLISSIERE', iocc=i_zone, scal=s_gliss)
+        if (s_gliss .eq. 'OUI') then
+            l_gliss = .true.
+        else if (s_gliss .eq. 'NON') then
+            l_gliss = .false.
+        else
+            ASSERT(.false.)
+        endif
     endif
 !
     v_sdcont_caracf(zcmcf*(i_zone-1)+8) = cont_init

@@ -1,7 +1,7 @@
 subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
                   imod, iatt, imail, nno)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,20 +81,21 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     call jenuno(jexnum('&CATA.TE.NOMTE', zi(jmail-1+numae)), typel)
 ! --- RECUPERATION DE LA MODÉLISATION POUR L'ESCALVE
     call dismte('MODELISATION', typel, ibid, mod, ier)
-    do 10 k = 1, 3
+    do k = 1, 3
         if (mode(k) .eq. mod(1:2)) imod = k
-10  end do
+    end do
     ASSERT(imod.ne.0)
 ! --- RECUPERATION DES L'ATTRIBUT POUR L'ESCALVE
     call teattr('S', 'XFEM', att, ier, typel=typel)
-    do 20 k = 1, 7
+    do k = 1, 7
         if (att .eq. attr(k)) iatt(1) = k
-20  end do
+    end do
+    write (6,*) "iatt(1)",iatt(1)
     ASSERT(iatt(1).ne.0)
 ! --- RECUPERATION DU TYPE DE MAILLE POUR L'ESCALVE
-    do 30 k = 1, 8
+    do k = 1, 8
         if (typma .eq. mail(ndim-1,k)) imail(1) = k
-30  end do
+    end do
     ASSERT(imail(1).ne.0)
     nno(1) = nbno(ndim-1,imail(1))
 !
@@ -108,16 +109,16 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     ASSERT(mod(1:2).eq.mode(imod))
 ! --- RECUPERATION DES L'ATTRIBUT POUR LE MAITRE
     call teattr('S', 'XFEM', att, ier, typel=typel)
-    do 40 k = 1, 7
+    do k = 1, 7
         if (att .eq. attr(k)) iatt(2) = k
-40  end do
+    end do
     ASSERT(iatt(2).ne.0)
 ! --- RECUPERATION DU TYPE DE MAILLE
-    do 50 k = 1, 8
+    do k = 1, 8
         if (typma .eq. mail(ndim-1,k)) then
             imail(2) = k
         endif
-50  end do
+    end do
     ASSERT(imail(2).ne.0)
     nno(2) = nbno(ndim-1,imail(2))
 !

@@ -38,7 +38,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zmeth = 22, ztole = 3 , ztabf = 34, zcmcf = 13
+    integer, parameter :: zmeth = 23, ztole = 3 , ztabf = 34, zcmcf = 13
     integer, parameter :: ztgde = 6 , zdirn = 6 , zdime = 18, zpoud = 3
     integer, parameter :: ztypm = 2 , zperc = 4 , ztypn = 2 , zmesx = 5
     integer, parameter :: zapme = 3 , zmaes = 4 , zresu = 30, zcmdf = 6

@@ -28,7 +28,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
@@ -74,6 +74,8 @@ implicit none
             call surfc2(sdcont, mesh)
         else if (cont_form .eq. 3) then
             call surfc3(sdcont, mesh, unit_msg)
+        else if (cont_form .eq. 5) then
+            ASSERT(.false.)
         else
             ASSERT(.false.)
         endif

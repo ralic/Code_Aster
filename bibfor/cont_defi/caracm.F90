@@ -7,7 +7,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer, intent(in) :: nb_cont_zone
@@ -50,7 +50,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    jv_base = 'G'
+    jv_base     = 'G'
     sdcont_defi = sdcont(1:8)//'.CONTACT'
 !
 ! - Datastructure for contact definition
@@ -70,11 +70,11 @@ implicit none
 !
 ! - Creation
 !
-    call wkvect(sdcont_methco, jv_base//' V I', zmeth*nb_cont_zone, j_sdcont_methco)
-    call wkvect(sdcont_dirapp, jv_base//' V R', 3*nb_cont_zone, j_sdcont_dirapp)
-    call wkvect(sdcont_dirnor, jv_base//' V R', zdirn*nb_cont_zone, j_sdcont_dirnor)
-    call wkvect(sdcont_jeufo1, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo1)
-    call wkvect(sdcont_jeufo2, jv_base//' V K8', nb_cont_zone, j_sdcont_jeufo2)
-    call wkvect(sdcont_toleco, jv_base//' V R', ztole*nb_cont_zone, j_sdcont_toleco)
+    call wkvect(sdcont_methco, jv_base//' V I' , zmeth*nb_cont_zone, j_sdcont_methco)
+    call wkvect(sdcont_dirapp, jv_base//' V R' , 3*nb_cont_zone    , j_sdcont_dirapp)
+    call wkvect(sdcont_dirnor, jv_base//' V R' , zdirn*nb_cont_zone, j_sdcont_dirnor)
+    call wkvect(sdcont_jeufo1, jv_base//' V K8', nb_cont_zone      , j_sdcont_jeufo1)
+    call wkvect(sdcont_jeufo2, jv_base//' V K8', nb_cont_zone      , j_sdcont_jeufo2)
+    call wkvect(sdcont_toleco, jv_base//' V R' , ztole*nb_cont_zone, j_sdcont_toleco)
 !
 end subroutine

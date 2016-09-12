@@ -1,15 +1,18 @@
-subroutine limaco(sdcont      , keywf , mesh, model, model_ndim,&
-                  nb_cont_zone, ligret)
+subroutine dfc_read_lac(sdcont, keywf       , mesh, model, model_ndim,&
+                        ligret, nb_cont_zone)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/dfc_read_cont.h"
-#include "asterfort/dfc_read_disc.h"
-#include "asterfort/dfc_read_xfem.h"
-#include "asterfort/dfc_read_lac.h"
+#include "asterfort/dfc_read_zone.h"
+#include "asterfort/dfc_save_dime.h"
+#include "asterfort/dfc_chck.h"
+#include "asterfort/caraxi.h"
+#include "asterfort/tablco.h"
+#include "asterfort/utmess.h"
+#include "asterfort/elimco.h"
+#include "asterfort/typeco.h"
+#include "asterfort/mmprel_lac.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,50 +36,67 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
+    integer, intent(in) :: model_ndim
     character(len=19), intent(in) :: ligret
     integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_CONTACT
 !
-! Get elements and nodes of contact, checkings
+! LAC method - Read contact data
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  keywf            : factor keyword to read
 ! In  sdcont           : name of contact concept (DEFI_CONTACT)
-! In  nb_cont_zone     : number of zones of contact
-! In  model            : name of model
+! In  keywf            : factor keyword to read
 ! In  mesh             : name of mesh
+! In  model            : name of model
+! In  ligret           : name of special LIGREL for slave elements (CONTINUE formulation)
 ! In  model_ndim       : dimension of model
-! In  ligret           : special LIGREL for slaves elements
+! In  nb_cont_zone     : number of zones of contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
-    character(len=24) :: sdcont_defi
+    integer :: nb_cont_surf, nb_cont_elem, nb_cont_node, nb_node_coq3d
+    aster_logical :: l_elim_coq3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    sdcont_defi = sdcont(1:8)//'.CONTACT'
-    cont_form   = cfdisi(sdcont_defi,'FORMULATION')
+    l_elim_coq3d = .false.
 !
-    if (cont_form .eq. 1) then
-        call dfc_read_disc(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    elseif (cont_form .eq. 2) then
-        call dfc_read_cont(sdcont, keywf       , mesh, model, model_ndim  ,&
-                           ligret, nb_cont_zone)
-    elseif (cont_form .eq. 3) then
-        call dfc_read_xfem(sdcont      , keywf, mesh, model, model_ndim,&
-                           nb_cont_zone)
-    elseif (cont_form .eq. 5) then
-        call dfc_read_lac (sdcont, keywf       , mesh, model, model_ndim  ,&
-                           ligret, nb_cont_zone)                      
-    else
-        ASSERT(.false.)
+! - Read zone: nodes and elements
+!
+    call dfc_read_zone(sdcont      , keywf       , mesh        , model, nb_cont_zone,&
+                       nb_cont_surf, nb_cont_elem, nb_cont_node)
+!
+! - Cleaning nodes and elements
+!
+    call elimco(sdcont      , mesh        , model  , nb_cont_surf,&
+                nb_cont_elem, nb_cont_node, l_elim_coq3d, nb_node_coq3d_ = nb_node_coq3d)
+    if (nb_node_coq3d.ne.0) then
+        call utmess('F','CONTACT_94')
     endif
+!
+! - Inverse connectivities
+!
+    call tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
+!
+! - Save contact counters
+!
+    call dfc_save_dime(sdcont      , mesh        , model_ndim, nb_cont_zone, nb_cont_surf,&
+                       nb_cont_elem, nb_cont_node)
+!
+! - Elements and nodes parameters
+!
+    call typeco(sdcont, mesh) 
+!
+! - Check if axi-symmetric
+!
+    call caraxi(sdcont, model, mesh, model_ndim)
+!
+! - Create slave elements in model
+!
+    call mmprel_lac(sdcont, mesh, model, ligret)
 !
 end subroutine
