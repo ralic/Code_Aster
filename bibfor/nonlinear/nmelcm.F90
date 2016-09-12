@@ -98,8 +98,7 @@ implicit none
 !
     l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    !l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_lac     = .false._1
+    l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     l_cont_pena    = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
     l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')

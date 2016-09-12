@@ -79,7 +79,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: chgeom=' ', chmlcf=' '
+    character(len=19) :: chgeom=' ', chmlcf=' ', normli=' '
     character(len=19) :: cpoint=' ', cpinte=' ', cainte=' ', ccface=' '
     character(len=19) :: lnno  =' ', ltno  =' ', stano =' ', fissno=' '
     character(len=19) :: heavno=' ', hea_no=' ', hea_fa=' '
@@ -91,14 +91,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     chgeom = '&&NMELCO.CHGEOM'
+    normli = ds_contact%sdcont_solv(1:14)//'.PSNO'
     option = ' '
 !
 ! - Get contact parameters
 !
     l_cont_cont    = cfdisl(ds_contact%sdcont_defi,'FORMUL_CONTINUE')
     l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
-    !l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
-    l_cont_lac     = .false._1
+    l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
 !
@@ -258,18 +258,20 @@ implicit none
     lchin(27) = hea_no
     lpain(28) = 'PHEA_FA'
     lchin(28) = hea_fa
+    lpain(29) = 'PSNO'
+    lchin(29) = normli
     if (l_cont_xfem .and. l_cont_xfem_gg) then
       lpain(15) = 'PLSNGG'
       lchin(15) = lnno
-      lpain(29) = 'PBASLOC'
-      lchin(29) =  basefo   
+      lpain(30) = 'PBASLOC'
+      lchin(30) =  basefo   
     else
       lpain(15) = 'PLSN'
       lchin(15) = lnno
-      lpain(29) = 'PBASLOR'
-      lchin(29) =  basefo
+      lpain(30) = 'PBASLOR'
+      lchin(30) =  basefo
     endif
-    ASSERT(29.le.nbin)
+    ASSERT(30.le.nbin)
 !
 ! - Prepare output field for XFEM/CZM
 !
