@@ -102,9 +102,9 @@ implicit none
 ! - Check compatiblity DECOUPE_LAC<=>DEFI_CONTACT 
 !
     call jelira(mesh//'.PTRNOMPAT', 'LONMAX', nb_dcl_zi)
-    ASSERT(nb_dcl_zi .eq. nb_cont_zone)
-    !Ajouter un message d'erreur l'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité le même 
-    !nombre de zone que celles définis dans DEFI_CONTACT
+    if (nb_dcl_zi .ne. nb_cont_zone) then 
+        call utmess('F', 'CONTACT2_17')   
+    endif
 !
 ! - Create pointer index DECOUPE_LAC<=>DEFI_CONTACT 
 !

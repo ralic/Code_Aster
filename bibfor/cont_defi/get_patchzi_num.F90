@@ -7,6 +7,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
+#include "asterfort/utmess.h"
 
 
 ! ======================================================================
@@ -61,8 +62,8 @@ implicit none
             find=.true.                
         endif
     enddo
-    ASSERT(find)
-    !Ajouter un message d'erreur la zone de contact esclave "nmgrma" n'a pas était prétraitée
-    !avec l'option DECOUPE_LAC de CREA_MAILLAGE
+    if ( .not. find ) then 
+        call utmess('F', 'CONTACT2_18',valk=nm_patchzi(i_patchzi))   
+    endif
 !
 end subroutine

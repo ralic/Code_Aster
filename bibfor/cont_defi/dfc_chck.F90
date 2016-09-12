@@ -6,9 +6,10 @@ implicit none
 #include "asterfort/cfnodb.h"
 #include "asterfort/cfbord.h"
 #include "asterfort/chckco.h"
+#include "asterfort/cfdisi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,17 +44,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: iform
 !
 ! - Check common nodes
 !
     call cfnodb(sdcont)
+    
+    iform = cfdisi(sdcont(1:8)//'.CONTACT','FORMULATION')
+    if (iform .ne. 5) then  
 !
 ! - Check dimension of elements versus model dimension
 !
-    call cfbord(sdcont, mesh)
+        call cfbord(sdcont, mesh)
 !
 ! - Check normals/tangents
 !
-    call chckco(sdcont, mesh, model_ndim)
+        call chckco(sdcont, mesh, model_ndim)
+    endif
 !
 end subroutine

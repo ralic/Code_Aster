@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,10 +70,25 @@ Si le calcul venait à échouer, vérifiez la définition de vos surfaces de con
 """),
 
     16 : _(u"""
-Contact formulation continue.
 Les zones de contact numéro %(i1)i et numéro %(i2)i ont %(i3)i noeuds communs à leurs surfaces esclaves : c'est interdit.
 Conseil :
  - changez vos surfaces de contact.
+ - pour la méthode LAC, il faut désactiver le lissage
+"""),
+    
+
+    17 : _(u"""
+L'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité le même nombre de zones que celles définies dans DEFI_CONTACT
+Conseil :
+ - Assurez vous d'avoir renseigné le bon nombre de zones esclaves dans CREA_MAILLAGE/DECOUPE_LAC et DEFI_CONTACT
+"""),
+    
+    
+
+    18 : _(u"""
+L'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité la zone %(k1)s définie dans DEFI_CONTACT.
+Conseil :
+ - Assurez vous d'avoir renseigné cette zone dans dans CREA_MAILLAGE/DECOUPE_LAC.
 """),
 
 }

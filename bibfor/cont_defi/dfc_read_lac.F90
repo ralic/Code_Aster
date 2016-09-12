@@ -91,6 +91,10 @@ implicit none
 !
     call typeco(sdcont, mesh) 
 !
+! - Some checks : ONE NODE IS COMMON TO TWO SLAVE SURFACES
+!
+    call dfc_chck(sdcont, mesh, model_ndim)
+!
 ! - Check if axi-symmetric
 !
     call caraxi(sdcont, model, mesh, model_ndim)
