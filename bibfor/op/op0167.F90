@@ -84,8 +84,8 @@ subroutine op0167()
 #include "asterfort/cppagn.h"
 !
     integer :: i, lgno, lgnu, nbecla, nbmc, iret, iad, nbma, iqtr, nbvolu
-    integer :: n1, numma, nbjoin, nbrest, n1a, n1b, izone, jlgrma
-!
+    integer :: n1, numma, nbjoin, nbrest, n1a, n1b, izone, jlgrma, jnompat
+! 
     parameter(nbmc=5)
     real(kind=8) :: epais
     character(len=4) :: cdim, repk
@@ -1113,6 +1113,18 @@ subroutine op0167()
 ! ------ NETTOYAGE
             AS_DEALLOCATE(vi=lima)
         enddo
+! ------ CREATION DU POINTEUR VERS LES NOMS -------------------------------------------------------
+        call wkvect(nomaou//'.PTRNOMPAT', 'G V K24',nbgrma,jnompat)
+        do izone=1, nbgrma
+           zk24(jnompat+izone-1)=zk24(jlgrma+izone-1)
+! ------ IMPRESSIONS            
+           if (.false.) then
+               write (*,*)izone
+               write (*,*)zk24(jnompat+izone-1)
+           endif             
+        end do
+ 
+              
         call jedetr(nomaax//'.PATCH')
         call jedetr(nomaax//'.CONOPA')
         call jedetr(nomaax//'.COMAPA')

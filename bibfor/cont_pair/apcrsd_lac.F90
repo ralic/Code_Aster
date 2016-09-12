@@ -72,6 +72,7 @@ implicit none
     integer :: ifm, niv
     integer :: nt_patch, nb_cont_zone, nb_elem, nb_elem_patch
     integer :: i_elem, i_zone, i_cont_elem
+    character(len=16) :: sdcont_defi
     character(len=24) :: pair_method
     integer :: longt, elem_indx, longc, elem_nbnode, patch_indx, elem_nume
     integer, pointer :: v_mesh_comapa(:) => null()
@@ -108,6 +109,9 @@ implicit none
     character(len=24) :: sdappa_psno
     character(len=24) :: sdappa_norl
     real(kind=8), pointer :: v_sdappa_norl(:) => null()
+    character(len=24) :: sdappa_dcl
+    integer, pointer :: v_sdappa_dcl(:) => null()
+    integer, pointer :: vi_ptrdclac(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -247,6 +251,14 @@ implicit none
             v_sdappa_info(6*(patch_indx-1)+1) = nb_elem_patch
         endif
     end do
+!
+! - Datastructure for pointer index DECOUPE_LAC<=>DEFI_CONTACT
+!
+    sdappa_dcl = sdappa(1:19)//'.DCL '
+    sdcont_defi = ds_contact%sdcont_defi(1:16)
+    call wkvect(sdappa_dcl, 'V V I', nb_cont_zone, vi = v_sdappa_dcl)
+    call jeveuo(sdcont_defi(1:16)//'.PTRDCLC','L',vi = vi_ptrdclac)
+    v_sdappa_dcl(:)=vi_ptrdclac(:)
 !
     call jedema()
 !

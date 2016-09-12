@@ -3,6 +3,7 @@ subroutine mmprel_lac(sdcont, mesh, model, ligret)
 implicit none
 !
 #include "asterf_types.h"
+#include "jeveux.h"
 #include "asterfort/ajellt.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
@@ -14,7 +15,10 @@ implicit none
 #include "asterfort/mminfl.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/jelira.h"
+#include "asterfort/get_patchzi_num.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,17 +60,19 @@ implicit none
 !
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
+    character(len=24) :: sdcont_ptrdclac
     integer, pointer :: v_sdcont_mailco(:) => null()
-    character(len=16) :: modeli, phenom
+    character(len=16) :: modeli, phenom, nmgrma
     integer :: jdecme, i_zone, i_sub_elem
-    integer :: nb_cont_zone, model_ndim, nb_cont_elem, nt_elem_slav
+    integer :: nb_cont_zone, model_ndim, nb_cont_elem, nt_elem_slav, nb_dcl_zi
     integer :: i_elem_slav, elem_slav_indx, elem_slav_nume, nb_elem_slav
-    integer :: jdecpa, nb_patch, i_patch, patch_type
-    integer :: nt_sub_elem, nb_sub_elem, nb_list_elem
+    integer :: jdecpa, nb_patch, i_patch, patch_type, jngrma, nupatch_zi
+    integer :: nt_sub_elem, nb_sub_elem, nb_list_elem, nb_grma, n1b  
     character(len=24) :: list_elem
     integer, pointer :: v_list_elem(:) => null()
     integer, pointer :: v_mesh_lpatch(:) => null()
     integer, pointer :: v_mesh_patch(:) => null()
+    integer, pointer :: vi_ptrdclac(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,11 +83,14 @@ implicit none
 !
     sdcont_defi   = sdcont(1:8)//'.CONTACT'
     sdcont_mailco = sdcont_defi(1:16)//'.MAILCO'
+    sdcont_ptrdclac = sdcont_defi(1:16)//'.PTRDCLC'
     call jeveuo(sdcont_mailco, 'L', vi = v_sdcont_mailco)
+    
 !
 ! - Access to mesh (patches)
 !
     call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_lpatch)
+    nmgrma='&&OP0060.NMMA'
 !
 ! - Parameters
 !
@@ -89,6 +98,17 @@ implicit none
     nb_cont_elem = cfdisi(sdcont_defi,'NMACO')
     nt_elem_slav = cfdisi(sdcont_defi,'NTMAE')
     nb_cont_zone = cfdisi(sdcont_defi,'NZOCO')
+!
+! - Check compatiblity DECOUPE_LAC<=>DEFI_CONTACT 
+!
+    call jelira(mesh//'.PTRNOMPAT', 'LONMAX', nb_dcl_zi)
+    ASSERT(nb_dcl_zi .eq. nb_cont_zone)
+    !Ajouter un message d'erreur l'option DECOUPE_LAC de CREA_MAILLAGE n'a pas traité le même 
+    !nombre de zone que celles définis dans DEFI_CONTACT
+!
+! - Create pointer index DECOUPE_LAC<=>DEFI_CONTACT 
+!
+    call wkvect(sdcont_ptrdclac, 'G V I', nb_cont_zone, vi = vi_ptrdclac)
 !
 ! - Create list of slave elements
 !
@@ -102,8 +122,17 @@ implicit none
 !
 ! ----- Get current patches
 !
-        nb_patch = v_mesh_lpatch(2*(i_zone-1)+2)
-        jdecpa   = v_mesh_lpatch(2*(i_zone-1)+1)
+        call getvtx('ZONE', 'GROUP_MA_ESCL' , iocc=1, nbval=0, nbret=nb_grma)
+        ASSERT(nb_grma.eq.-1) 
+        call wkvect(nmgrma, 'V V K24', -nb_grma, jngrma)
+        call getvtx('ZONE','GROUP_MA_ESCL',iocc=i_zone,nbval=-nb_grma,vect=zk24(jngrma),nbret=n1b)
+        ASSERT(n1b.eq.-nb_grma)
+           
+        call get_patchzi_num(mesh,zk24(jngrma),nupatch_zi)
+        vi_ptrdclac(i_zone)=nupatch_zi
+        
+        nb_patch = v_mesh_lpatch(2*(nupatch_zi-1)+2)
+        jdecpa   = v_mesh_lpatch(2*(nupatch_zi-1)+1)
 !
 ! ----- Acces to slave elements in zone
 !
@@ -227,6 +256,7 @@ implicit none
                 ASSERT(.false.)
             end if
         end do
+        call jedetr(nmgrma)
         nt_sub_elem= nt_sub_elem+nb_sub_elem
     end do
     if (nt_sub_elem .ne. nt_elem_slav) then

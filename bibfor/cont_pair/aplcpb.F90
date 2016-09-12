@@ -87,7 +87,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: list_pair(nb_elem_mast)
+    integer :: list_pair(nb_elem_mast), nbpatch_t
     integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
     integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
     character(len=8) :: elem_mast_code, elem_slav_code
@@ -96,9 +96,8 @@ implicit none
     integer :: nb_pair, nb_poin_inte
     integer :: i_mast_neigh, i_elin_mast, i_elin_slav, i_slav_start, i_mast_start, i_find_mast
     integer :: i_node, i_dime, i_slav_neigh, i_neigh
-    integer :: patch_indx, patch_nume, patch_jdec
+    integer :: patch_indx
     real(kind=8) :: total_weight, inte_weight, gap_moy, elem_slav_weight
-    real(kind=8) :: patch_weight_c(nb_elem_slav), patch_weight_t(nb_elem_slav)
     real(kind=8) :: poin_inte(32)
     integer :: elin_mast_nbsub, elin_mast_sub(8,4), elin_mast_nbnode(8)
     integer :: elin_slav_nbsub, elin_slav_sub(8,9), elin_slav_nbnode(8)
@@ -125,8 +124,9 @@ implicit none
     character(len=24) :: sdappa_gapi, sdappa_coef
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
+    real(kind=8), pointer :: patch_weight_t(:) => null()
+    real(kind=8), pointer :: patch_weight_c(:) => null()
     integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_patch(:) => null()
     integer, pointer :: v_mesh_typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -139,8 +139,10 @@ implicit none
     inte_neigh(1:4)                = 0
     list_slav_master(1:4)          = 0
     list_slav_weight(1:4)          = 0.d0
-    patch_weight_c(1:nb_elem_slav) = 0.d0
-    patch_weight_t(1:nb_elem_slav) = 0.d0
+    call jelira(mesh//'.PATCH','NUTIOC', nbpatch_t)
+    nbpatch_t= nbpatch_t-1
+    AS_ALLOCATE(vr=patch_weight_c, size= nbpatch_t)
+    AS_ALLOCATE(vr=patch_weight_t, size= nbpatch_t)
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
     mast_indx_mini = minval(list_elem_mast)
@@ -160,9 +162,7 @@ implicit none
 ! - Access to mesh
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
-    call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_patch)
     call jeveuo(mesh//'.COMAPA','L', vi = v_mesh_comapa)
-    patch_jdec = v_mesh_patch(2*(i_zone-1)+1)-1
 !
 ! - Objects for flags
 !
@@ -232,9 +232,8 @@ implicit none
 ! ----- Get current patch
 !
         patch_indx = v_mesh_comapa(elem_slav_nume)
-        patch_nume = patch_indx+1-patch_jdec
         if (debug) then
-            write(*,*) "Current patch: ", patch_indx, patch_nume
+            write(*,*) "Current patch: ", patch_indx
         endif
 !
 ! ----- Get informations about slave element
@@ -262,7 +261,7 @@ implicit none
 !
 ! ----- Total weight for patch
 !                    
-        patch_weight_t(patch_nume) = patch_weight_t(patch_nume) + elem_slav_weight
+        patch_weight_t(patch_indx) = patch_weight_t(patch_indx) + elem_slav_weight
 !
 ! ----- Number of neighbours
 !
@@ -515,7 +514,7 @@ implicit none
 ! --------------------- Save values
 !
                         v_sdappa_gapi(patch_indx)  = v_sdappa_gapi(patch_indx)-gap_moy
-                        patch_weight_c(patch_nume) = patch_weight_c(patch_nume)+inte_weight
+                        patch_weight_c(patch_indx) = patch_weight_c(patch_indx)+inte_weight
                     end if
                 end do
             end do
@@ -635,6 +634,8 @@ implicit none
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
     AS_DEALLOCATE(vi=elem_mast_flag)
+    AS_DEALLOCATE(vr=patch_weight_t)
+    AS_DEALLOCATE(vr=patch_weight_c)
     call jedema()
 !
 end subroutine

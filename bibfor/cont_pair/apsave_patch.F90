@@ -49,12 +49,12 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_patch, patch_indx, patch_jdec, nb_patch
-    integer, pointer :: v_mesh_comapa(:) => null()
     integer, pointer :: v_mesh_lpatch(:) => null()
     character(len=24) :: sdappa_gapi, sdappa_coef, sdappa_poid
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     real(kind=8), pointer :: v_sdappa_poid(:) => null()
+    integer, pointer :: v_sdappa_dcl(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,9 +62,9 @@ implicit none
 ! - Access to patch
 !
     call jeveuo(jexnum(mesh//'.PATCH',1), 'L', vi = v_mesh_lpatch)
-    call jeveuo(mesh//'.COMAPA','L', vi = v_mesh_comapa)
-    nb_patch   = v_mesh_lpatch(2*(i_zone-1)+2) 
-    patch_jdec = v_mesh_lpatch(2*(i_zone-1)+1)-1
+    call jeveuo(sdappa(1:19)//'.DCL', 'L', vi = v_sdappa_dcl)
+    nb_patch   = v_mesh_lpatch(2*(v_sdappa_dcl(i_zone)-1)+2) 
+    patch_jdec = v_mesh_lpatch(2*(v_sdappa_dcl(i_zone)-1)+1)-1
 !
 ! - Access to pairing datastructures
 !
@@ -86,8 +86,8 @@ implicit none
 ! - For non-paired patchs => NAN for gap
 !
     do i_patch = 1, nb_patch
-        if (patch_weight_c(i_patch) .le. pair_tole) then
-            patch_indx = i_patch-1+patch_jdec
+        patch_indx = i_patch-1+patch_jdec
+        if (patch_weight_c(patch_indx) .le. pair_tole) then
             v_sdappa_gapi(patch_indx) = r8nnem()
             v_sdappa_coef(patch_indx) = 0.d0   
         end if
@@ -98,9 +98,9 @@ implicit none
     do i_patch = 1, nb_patch
         patch_indx = i_patch-1+patch_jdec
         if (.not.isnan(v_sdappa_gapi(patch_indx))) then
-            v_sdappa_gapi(patch_indx) = v_sdappa_gapi(patch_indx)/patch_weight_c(i_patch)
-            v_sdappa_coef(patch_indx) = patch_weight_c(i_patch)/patch_weight_t(i_patch)
-            v_sdappa_poid(patch_indx) = patch_weight_c(i_patch)
+            v_sdappa_gapi(patch_indx) = v_sdappa_gapi(patch_indx)/patch_weight_c(patch_indx)
+            v_sdappa_coef(patch_indx) = patch_weight_c(patch_indx)/patch_weight_t(patch_indx)
+            v_sdappa_poid(patch_indx) = patch_weight_c(patch_indx)
         end if          
     end do
 !

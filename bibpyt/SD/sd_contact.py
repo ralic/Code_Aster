@@ -267,6 +267,14 @@ class sd_contact(AsBase):
 
 # --------------------------------------------------------------------------------------------------#
 
+#   Formulation CONTINUE
+
+#   Pointeur d'index DECOUPE_LAC<=>DEFI_CONTACT
+    PTRDCLC = Facultatif(AsVI(SDNom(nomj='.CONTACT.PTRDCLC')))
+    
+    
+# --------------------------------------------------------------------------------------------------#
+
 #   Formulation XFEM
 
     CARAXF = Facultatif(AsVR(SDNom(nomj='.CONTACT.CARAXF')))
