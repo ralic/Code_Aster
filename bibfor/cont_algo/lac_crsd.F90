@@ -47,7 +47,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: nt_patch, jv_dummy
-    character(len=24) :: sdcont_stat, sdcont_lagc
+    character(len=24) :: sdcont_stat, sdcont_lagc, sdcont_zeta
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,8 +63,10 @@ implicit none
 ! - Create objects 
 !
     sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
+    sdcont_zeta = ds_contact%sdcont_solv(1:14)//'.ZETA'
     sdcont_lagc = ds_contact%sdcont_solv(1:14)//'.LAGC'
     call wkvect(sdcont_stat, 'V V I', nt_patch, jv_dummy)
+    call wkvect(sdcont_zeta, 'V V I', nt_patch, jv_dummy)
     call wkvect(sdcont_lagc, 'V V R', nt_patch, jv_dummy)
 !
 end subroutine

@@ -7,6 +7,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/jeveuo.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mmapin.h"
@@ -57,7 +58,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_allv, l_step_first
-    character(len=19) :: sdcont_depgeo, disp_prev, sdcont_depini
+    character(len=19) :: sdcont_depgeo, disp_prev, sdcont_depini, sdcont_stat, sdcont_zeta
+    integer, pointer :: v_sdcont_stat(:) => null()
+    integer, pointer :: v_sdcont_zeta(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !    
@@ -94,6 +97,14 @@ implicit none
 ! - Initial pairing
 !
     call mmapin(mesh, ds_contact, ds_measure)
+!
+! - Management of status for time cut
+!   
+    sdcont_stat = ds_contact%sdcont_solv(1:14)//'.STAT'
+    sdcont_zeta = ds_contact%sdcont_solv(1:14)//'.ZETA'    
+    call jeveuo(sdcont_zeta, 'L', vi = v_sdcont_zeta)
+    call jeveuo(sdcont_stat, 'E', vi = v_sdcont_stat)
+    v_sdcont_stat(:)=v_sdcont_zeta(:)
 !
 ! - Initial options
 !
