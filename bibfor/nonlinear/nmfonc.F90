@@ -228,6 +228,9 @@ implicit none
             if (l_frot) then
                 list_func_acti(3) = 1
             endif
+        else if (i_cont_form .eq. 5) then
+            list_func_acti(63) = 1
+            list_func_acti(26) = 1
         else
             ASSERT(.false.)
         endif
@@ -482,6 +485,9 @@ implicit none
         endif
         if (isfonc(list_func_acti,'CONT_XFEM')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT XFEM'
+        endif
+        if (isfonc(list_func_acti,'CONT_LAC')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT LAC'
         endif
         if (isfonc(list_func_acti,'BOUCLE_EXT_GEOM')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT BOUCLE GEOM'

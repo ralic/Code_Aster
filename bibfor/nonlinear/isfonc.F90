@@ -50,6 +50,7 @@ implicit none
 !       CONT_DISCRET       :  CONTACT DISCRET
 !       CONT_CONTINU       :  CONTACT CONTINU
 !       CONT_XFEM          :  CONTACT XFEM
+!       CONT_LAC           :  CONTACT LAC
 !       CONTACT_INIT       :  CONTACT INITIAL
 !       FROT_DISCRET       :  FROTTEMENT DISCRET
 !       FROT_CONTINU       :  FROTTEMENT CONTINU
@@ -106,7 +107,7 @@ implicit none
 !       ROM                :  reduced order model
 !       HROM               :  hyper-reduced order model
 !
-! DERNIER NUMERO UTILISE: 62
+! DERNIER NUMERO UTILISE: 63
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,10 +121,9 @@ implicit none
         isfonc = list_func_acti(1).eq.1
     else if (func_name.eq.'PILOTAGE') then
         isfonc = list_func_acti(2).eq.1
-!
     else if (func_name.eq.'CONTACT') then
         isfonc = (list_func_acti(4).eq.1) .or. (list_func_acti(5).eq.1) .or.&
-                 (list_func_acti(9).eq.1)
+                 (list_func_acti(9).eq.1 .or. (list_func_acti(63).eq.1))
     else if (func_name.eq.'LIAISON_UNILATER') then
         isfonc = list_func_acti(12).eq.1
     else if (func_name.eq.'ELT_CONTACT') then
@@ -136,6 +136,8 @@ implicit none
         isfonc = list_func_acti(5).eq.1
     else if (func_name.eq.'CONT_XFEM') then
         isfonc = list_func_acti(9) .eq.1
+    else if (func_name.eq.'CONT_LAC') then
+        isfonc = list_func_acti(63) .eq.1
     else if (func_name.eq.'CONTACT_INIT') then
         isfonc = list_func_acti(17).eq.1
     else if (func_name.eq.'DIS_CHOC') then
