@@ -16,16 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfveri(mesh        , ds_contact  , time_curr   , nt_ncomp_poin,&
-                      v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone)
+    subroutine apstos(mesh, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        real(kind=8), intent(in) :: time_curr
-        integer, intent(in) :: nt_ncomp_poin
-        real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
-        integer, pointer, intent(in) :: v_ncomp_loca(:)
-        character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
-        integer, pointer, intent(in) :: v_ncomp_zone(:) 
-    end subroutine cfveri
+    end subroutine apstos
 end interface

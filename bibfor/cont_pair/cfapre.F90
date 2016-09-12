@@ -1,4 +1,4 @@
-subroutine cfapre(noma, ds_contact, newgeo, sdappa, instan)
+subroutine cfapre(mesh, ds_contact, time_curr)
 !
 use NonLin_Datastructure_type
 !
@@ -46,28 +46,27 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8) :: noma
-    character(len=19) :: sdappa
+    character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19) :: newgeo
-    real(kind=8) :: instan
+    real(kind=8), intent(in) :: time_curr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES DISCRETES - APPARIEMENT)
+! Contact - Solve
 !
-! RECOPIE DE LA SD APPARIEMENT DEDIEE POUR LE CONTACT
+! Discrete method - Save pairing in contact datastructures
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  NOMA   : NOM DU MAILLAGE
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
-! IN  NEWGEO : NOUVELLE GEOMETRIE (AVEC DEPLACEMENT GEOMETRIQUE)
+! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
+! In  time_curr        : current time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: izone, i, iliai, ip, ifm, niv
+    integer :: ifm, niv
+    character(len=19) :: sdappa, newgeo
+    integer :: izone, i, iliai, ip
     integer :: jdecne
     integer :: inoe
     integer :: posmae, posnoe(1), posmam, posnom(1)
@@ -82,12 +81,20 @@ implicit none
     real(kind=8) :: coorne(3), gap_user
     real(kind=8) :: coefff, coefpn, coefpt, coefte
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... RECOPIE DE L''APPARIEMENT'
+        write (ifm,*) '<CONTACT> ... Save pairing in contact datastructures'
     endif
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
+! - New geometry name
+!
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! --- INFOS SUR LA CHARGE DE CONTACT
 !
@@ -147,7 +154,7 @@ implicit none
 !
 ! ------- NOM DU NOEUD
 !
-            call jenuno(jexnum(noma//'.NOMNOE', numnoe(1)), nomnoe)
+            call jenuno(jexnum(mesh//'.NOMNOE', numnoe(1)), nomnoe)
 !
 ! ------- INFOS APPARIEMENT
 !
@@ -162,7 +169,7 @@ implicit none
 !
             if (typapp .lt. 0) then
                 if (niv .ge. 2) then
-                    call cfappi(noma, ds_contact%sdcont_defi, nomnoe, typapp, entapp)
+                    call cfappi(mesh, ds_contact%sdcont_defi, nomnoe, typapp, entapp)
                 endif
                 goto 35
             else if (typapp.eq.1) then
@@ -171,7 +178,7 @@ implicit none
 ! --------- LIAISON DE CONTACT EFFECTIVE
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
-                call cfapno(noma, newgeo, ds_contact, lctfd,&
+                call cfapno(mesh, newgeo, ds_contact, lctfd,&
                             ndimg, izone, posnoe(1), numnoe(1),&
                             coorne, posnom(1), tau1m, tau2m, iliai)
 !
@@ -181,7 +188,7 @@ implicit none
 ! --------- LIAISON DE CONTACT EFFECTIVE
                 iliai = iliai + 1
 ! --------- CALCUL LIAISON
-                call cfapma(noma, newgeo, ds_contact, lctfd,&
+                call cfapma(mesh, newgeo, ds_contact, lctfd,&
                             ndimg, izone, posnoe(1), numnoe(1),&
                             coorne, posmam, ksipr1, ksipr2, tau1m,&
                             tau2m, iliai)
@@ -191,7 +198,7 @@ implicit none
 !
 ! ------- CALCUL DU JEU FICTIF DE LA ZONE
 !
-            call cfdist(ds_contact, izone, posmae, coorne, instan, &
+            call cfdist(ds_contact, izone, posmae, coorne, time_curr, &
                         gap_user, node_slav_indx_ = posnoe(1))
 !
 ! ------- CARACTERISTIQUES DE LA LIAISON POUR LA ZONE

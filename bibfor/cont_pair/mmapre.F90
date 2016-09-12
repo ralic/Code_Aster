@@ -1,4 +1,4 @@
-subroutine mmapre(mesh, nume_dof, ds_contact, sdappa)
+subroutine mmapre(mesh, nume_dof, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -36,7 +36,7 @@ implicit none
 #include "blas/ddot.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,24 +56,23 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=19), intent(in) :: sdappa
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! ROUTINE CONTACT (METHODES CONTINUES - APPARIEMENT)
+! Contact - Solve
 !
-! RECOPIE DE LA SD APPARIEMENT DEDIEE POUR LE CONTACT
+! Continue method - Save pairing in contact datastructures
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
 ! In  nume_dof         : name of numbering object (NUME_DDL)
 ! IO  ds_contact       : datastructure for contact management
-! IN  SDAPPA : NOM DE LA SD APPARIEMENT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: sdappa
     integer :: nzoco, ndimg
     character(len=24) :: tabfin
     integer :: jtabf
@@ -90,13 +89,17 @@ implicit none
     aster_logical :: lappar, l_excl_frot, l_node_excl
     integer :: ndexfr
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ...... RECOPIE DE L''APPARIEMENT'
+        write (ifm,*) '<CONTACT> ... Save pairing in contact datastructures'
     endif
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! --- INITIALISATIONS
 !

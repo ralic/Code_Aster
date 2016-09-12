@@ -1,4 +1,6 @@
-subroutine apforc(sdappa, mesh, sdcont_defi, newgeo)
+subroutine apforc(mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -25,10 +27,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=19), intent(in) :: newgeo
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,29 +38,36 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: newgeo, sdappa
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> FORCE BRUTE'
+        write (ifm,*) '<Pairing> . Brut force'
     endif
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
+! - New geometry name
+!
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Find nearest master node from current contact point
 !
-    call aprend(sdappa, sdcont_defi, newgeo)
+    call aprend(sdappa, ds_contact%sdcont_defi, newgeo)
 !
 ! - Find nearest element from current contact point
 !
-    call aprema(sdappa, mesh, sdcont_defi, newgeo)
+    call aprema(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
 !
 ! - All-reduce pairing data structure
 !

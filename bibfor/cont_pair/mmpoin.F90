@@ -1,4 +1,4 @@
-subroutine mmpoin(mesh, ds_contact, newgeo, sdappa)
+subroutine mmpoin(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -44,8 +44,6 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: newgeo
-    character(len=19), intent(in) :: sdappa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,14 +53,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
-! In  newgeo           : name of field for geometry update from initial coordinates of nodes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, iret
+    integer :: ifm, niv
+    integer :: iret, length
+    character(len=19) :: sdappa, newgeo
     character(len=24) :: sdappa_poin, sdappa_infp, sdappa_noms
     character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
     character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel    
@@ -80,14 +78,22 @@ implicit none
     real(kind=8) :: ksi1, ksi2
     character(len=8) :: elem_slav_type, elem_slav_name
     character(len=16) :: poin_name
-    integer :: model_ndim, nb_cont_zone, length
+    integer :: model_ndim, nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('CONTACT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> ......... PREPARATION DE L''APPARIEMENT'
+        write (ifm,*) '<CONTACT> ... Set pairing datastructure'
     endif
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
+! - New geometry name
+!
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Access to pairing datastructure
 !

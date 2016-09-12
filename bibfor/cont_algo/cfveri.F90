@@ -1,5 +1,5 @@
-subroutine cfveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
-                  v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
+subroutine cfveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
+                  v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
 !
 use NonLin_Datastructure_type
 !
@@ -50,14 +50,13 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=19), intent(in) :: newgeo
-    character(len=19), intent(in) :: sdappa
+    real(kind=8), intent(in) :: time_curr
     integer, intent(in) :: nt_ncomp_poin
     real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
     integer, pointer, intent(in) :: v_ncomp_loca(:)
     character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
     integer, pointer, intent(in) :: v_ncomp_zone(:)
-    real(kind=8), intent(in) :: time_curr
+    
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,17 +68,16 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
-! In  newgeo           : name of field for geometry update from initial coordinates of nodes
-! In  sdappa           : name of pairing datastructure
+! In  time_curr        : current time
 ! In  nt_ncomp_poin    : number of points in no-computation mode
 ! In  v_ncomp_jeux     : pointer to save gaps
 ! In  v_ncomp_loca     : pointer to save index of node
 ! In  v_ncomp_enti     : pointer to save name of entities
 ! In  v_ncomp_zone     : pointer to save contact zone index
-! In  time_curr        : current time
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=19) :: newgeo, sdappa
     integer :: pair_type, pair_enti
     integer :: jdecne
     integer :: posmae, elem_mast_nume, node_slav_indx(1), elem_mast_indx, node_slav_nume(1)
@@ -102,6 +100,14 @@ implicit none
     node_slav_indx = 0
     i_ncomp_poin   = 1
     k8bla          = ' '
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
+! - New geometry name
+!
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Parameters
 !

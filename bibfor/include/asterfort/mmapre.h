@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmapre(mesh, nume_dof, ds_contact, sdappa)
+    subroutine mmapre(mesh, nume_dof, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: nume_dof
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        character(len=19), intent(in) :: sdappa
     end subroutine mmapre
 end interface

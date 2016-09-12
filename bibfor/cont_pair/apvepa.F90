@@ -1,4 +1,6 @@
-subroutine apvepa(sdappa, sdcont_defi)
+subroutine apvepa(ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -10,7 +12,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,8 +29,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
-    character(len=24), intent(in) :: sdcont_defi
+     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,12 +39,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: sdappa
     integer :: nb_cont_zone, nt_poin, nb_poin
     integer :: pair_type
     integer :: i_zone, i_poin, i_poin_zone
@@ -53,8 +54,12 @@ implicit none
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> VERIFICATION DE L''APPARIEMENT'
+        write (ifm,*) '<Pairing> . Check pairing'
     endif
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
 ! - Initializations
 !
@@ -63,8 +68,8 @@ implicit none
 !
 ! - Get parameters
 !
-    nt_poin      = cfdisi(sdcont_defi,'NTPT'  )
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    nt_poin      = cfdisi(ds_contact%sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
 ! - Loop on contact zones
 !
@@ -72,7 +77,7 @@ implicit none
 !
 ! ----- Parameters on current zone
 !
-        nb_poin = mminfi(sdcont_defi, 'NBPT' , i_zone)
+        nb_poin = mminfi(ds_contact%sdcont_defi, 'NBPT' , i_zone)
 !
 ! ----- Loop on points
 !

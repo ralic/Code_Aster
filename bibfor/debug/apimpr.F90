@@ -1,4 +1,6 @@
-subroutine apimpr(sdappa, ifm, mesh, sdcont_defi)
+subroutine apimpr(ifm, mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -18,7 +20,7 @@ implicit none
 #include "asterfort/jexnum.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,10 +37,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
     integer, intent(in) :: ifm
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,13 +49,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
 ! In  ifm              : unit for message
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=19) :: sdappa
     integer :: nb_cont_zone, ntpt, nbpt
     integer :: typapp, entapp
     real(kind=8) :: coorpt(3)
@@ -69,11 +70,15 @@ implicit none
 !
     call jemarq()
 !
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
 ! --- INITIALISATIONS
 !
     ip = 1
-    ntpt         = cfdisi(sdcont_defi,'NTPT'  )
-    nb_cont_zone = cfdisi(sdcont_defi,'NZOCO' )
+    ntpt         = cfdisi(ds_contact%sdcont_defi,'NTPT'  )
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO' )
 !
 ! ----------------------------------------------------------------------
 ! --- INFOS SUR LES ZONES
@@ -93,7 +98,7 @@ implicit none
 !
 ! ----- INFORMATION SUR LA ZONE
 !
-        nbpt = mminfi(sdcont_defi, 'NBPT' , i_zone)
+        nbpt = mminfi(ds_contact%sdcont_defi, 'NBPT' , i_zone)
 !
 ! ----- BOUCLE SUR LES POINTS
 !
@@ -126,14 +131,14 @@ implicit none
             else if (typapp.eq.1) then
                 write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 posnom = entapp
-                call cfnumn(sdcont_defi, 1, posnom(1), numnom(1))
+                call cfnumn(ds_contact%sdcont_defi, 1, posnom(1), numnom(1))
                 call jenuno(jexnum(mesh//'.NOMNOE', numnom(1)), nomnom)
                 write(ifm,601) nomnom
                 write(ifm,801) dist
             else if (typapp.eq.2) then
                 write(ifm,401) coorpt(1),coorpt(2),coorpt(3)
                 elem_mast_indx = entapp
-                call cfnumm(sdcont_defi, elem_mast_indx, elem_mast_nume)
+                call cfnumm(ds_contact%sdcont_defi, elem_mast_indx, elem_mast_nume)
                 call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_nume), nommam)
                 write(ifm,602) nommam
                 write(ifm,701) ksi1,ksi2

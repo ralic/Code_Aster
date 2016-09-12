@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfapre(noma, ds_contact, newgeo, sdappa, instan)
+    subroutine cfapre(mesh, ds_contact, time_curr)
         use NonLin_Datastructure_type
-        character(len=8) :: noma
+        character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19) :: newgeo
-        character(len=19) :: sdappa
-        real(kind=8) :: instan
+        real(kind=8), intent(in) :: time_curr
     end subroutine cfapre
 end interface

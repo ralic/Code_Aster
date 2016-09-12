@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfappa(mesh, ds_contact, inst_curr)
+    subroutine cfappa(mesh, ds_contact, time_curr)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        real(kind=8), intent(in) :: inst_curr
+        real(kind=8), intent(in) :: time_curr
     end subroutine cfappa
 end interface

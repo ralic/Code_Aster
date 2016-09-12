@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/mreacg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: sdappa, newgeo, disp_curr
+    character(len=19) :: disp_curr
     aster_logical :: l_cont_cont, l_cont_disc, l_cont_allv
     real(kind=8), pointer :: v_ncomp_jeux(:) => null()
     integer, pointer :: v_ncomp_loca(:) => null()
@@ -75,11 +75,6 @@ implicit none
 !
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
 !
-! - Acces to contact objects
-!
-    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
-    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
-!
 ! - Geometry update
 !
     if (l_cont_allv) then
@@ -90,13 +85,13 @@ implicit none
 !
     if (l_cont_allv) then
         if (l_cont_cont) then
-            call mmpoin(mesh, ds_contact, newgeo, sdappa)
+            call mmpoin(mesh, ds_contact)
         else if (l_cont_disc) then
-            call cfpoin(mesh, ds_contact, newgeo, sdappa)
+            call cfpoin(mesh, ds_contact)
         else
             ASSERT(.false.)
         endif
-        call apcalc(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
+        call apcalc('N_To_S', mesh, ds_contact)
     endif
 !
 ! - Prepare datastructures
@@ -107,11 +102,11 @@ implicit none
 ! - Evaluate
 !
     if (l_cont_cont) then
-        call mmveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
-                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
+        call mmveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
+                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
     else if (l_cont_disc) then
-        call cfveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
-                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
+        call cfveri(mesh        , ds_contact  , time_curr    , nt_ncomp_poin,&
+                    v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti , v_ncomp_zone)
     else
         ASSERT(.false.)
     endif

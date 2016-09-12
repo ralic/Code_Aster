@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apforc(sdappa, mesh, sdcont_defi, newgeo)
-        character(len=19), intent(in) :: sdappa
+    subroutine apforc(mesh, ds_contact)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        character(len=24), intent(in) :: sdcont_defi
-        character(len=19), intent(in) :: newgeo
+        type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine apforc
 end interface

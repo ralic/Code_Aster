@@ -1,14 +1,14 @@
-subroutine mmappa(mesh, nume_dof, ds_contact)
+subroutine apntos(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/apcalc.h"
+#include "asterfort/apcaln.h"
+#include "asterfort/apforc.h"
+#include "asterfort/apimpr.h"
+#include "asterfort/apvepa.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/mmapre.h"
-#include "asterfort/mmpoin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,42 +29,55 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: nume_dof
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Solve
+! Contact - Pairing
 !
-! Continue method - Pairing 
+! Pairing - Node to segment
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nume_dof         : name of numbering object (NUME_DDL)
-! IO  ds_contact       : datastructure for contact management
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: newgeo, sdappa
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('CONTACT', ifm, niv)
+    call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
+        write (ifm,*) '<Pairing> Node-to-segment pairing'
     endif
 !
-! - Set pairing datastructure
+! - Pairing datastructure
 !
-    call mmpoin(mesh, ds_contact)
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
 !
-! - Pairing
+! - New geometry name
 !
-    call apcalc('N_To_S', mesh, ds_contact)
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
-! - Save pairing in contact datastructures
+! - Compute tangents
 !
-    call mmapre(mesh, nume_dof, ds_contact)
+    call apcaln(mesh, ds_contact)
+!
+! - Pairing by "brute" force
+!
+    call apforc(mesh, ds_contact)
+!
+! - Check pairing
+!
+    call apvepa(ds_contact)
+!
+! - Debug print
+!
+    if (niv .ge. 2) then
+        call apimpr(ifm, mesh, ds_contact)
+    endif
 !
 end subroutine

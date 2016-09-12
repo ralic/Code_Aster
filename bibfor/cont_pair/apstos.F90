@@ -1,14 +1,11 @@
-subroutine mmappa(mesh, nume_dof, ds_contact)
+subroutine apstos(mesh, ds_contact)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/apcalc.h"
+!#include "asterfort/apalac.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/mmapre.h"
-#include "asterfort/mmpoin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,42 +26,37 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: nume_dof
-    type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Contact - Solve
+! Contact - Pairing
 !
-! Continue method - Pairing 
+! Pairing - Segment to segment
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nume_dof         : name of numbering object (NUME_DDL)
-! IO  ds_contact       : datastructure for contact management
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: newgeo
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infdbg('CONTACT', ifm, niv)
+    call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<CONTACT> .. Pairing'
+        write (ifm,*) '<Pairing> Segment-to-segment pairing'
     endif
 !
-! - Set pairing datastructure
+! - New geometry name
 !
-    call mmpoin(mesh, ds_contact)
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Pairing
 !
-    call apcalc('N_To_S', mesh, ds_contact)
-!
-! - Save pairing in contact datastructures
-!
-    call mmapre(mesh, nume_dof, ds_contact)
+!    call apalac(mesh, ds_contact, newgeo)
 !
 end subroutine

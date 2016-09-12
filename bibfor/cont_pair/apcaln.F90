@@ -1,4 +1,6 @@
-subroutine apcaln(sdappa, mesh, sdcont_defi, newgeo)
+subroutine apcaln(mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -27,10 +29,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=19), intent(in) :: newgeo
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,27 +40,37 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: newgeo, sdappa
     aster_logical :: one_proc
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('APPARIEMENT', ifm, niv)
     if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> ... CALCUL DES TANGENTES SUR TOUS LES NOEUDS'
+        write (ifm,*) '<Pairing> . Compute tangents'
     endif
-    one_proc=.false.
+!
+! - Inititializations
+!
+    one_proc = .false._1
+!
+! - Pairing datastructure
+!
+    sdappa = ds_contact%sdcont_solv(1:14)//'.APPA'
+!
+! - New geometry name
+!
+    newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
 !
 ! - Compute tangents at each node for each element
 !
-    call aptgen(sdappa, mesh, sdcont_defi, newgeo)
+    call aptgen(sdappa, mesh, ds_contact%sdcont_defi, newgeo)
 !
 ! - All-reduce for tangents field by element
 !
@@ -70,18 +80,16 @@ implicit none
 !
 ! - Compute 
 !
-    call aptgno(sdappa, mesh, sdcont_defi)
+    call aptgno(sdappa, mesh, ds_contact%sdcont_defi)
 !
 ! - All-reduce for tangents at each node field
-!   
+!
     if (.not. one_proc) then
         call sdmpic('SD_APPA_TGNO',sdappa)   
     endif 
 !
 ! - Check normals discontinuity
 !
-    
-    call apverl(sdappa, mesh, sdcont_defi)
-    
+    call apverl(sdappa, mesh, ds_contact%sdcont_defi)
 !
 end subroutine

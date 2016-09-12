@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,18 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmveri(mesh        , ds_contact  , newgeo      , sdappa      , nt_ncomp_poin,&
-                      v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone, time_curr)
+    subroutine mmveri(mesh        , ds_contact  , time_curr   , nt_ncomp_poin,&
+                      v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_zone)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        character(len=19), intent(in) :: newgeo
-        character(len=19), intent(in) :: sdappa
+        real(kind=8), intent(in) :: time_curr
         integer, intent(in) :: nt_ncomp_poin
         real(kind=8), pointer, intent(in) :: v_ncomp_jeux(:)
         integer, pointer, intent(in) :: v_ncomp_loca(:)
         character(len=16), pointer, intent(in) :: v_ncomp_enti(:)
-        integer, pointer, intent(in) :: v_ncomp_zone(:)
-        real(kind=8), intent(in) :: time_curr
+        integer, pointer, intent(in) :: v_ncomp_zone(:) 
     end subroutine mmveri
 end interface

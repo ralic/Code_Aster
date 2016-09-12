@@ -1,15 +1,15 @@
-subroutine apcalc(sdappa, mesh, sdcont_defi, newgeo)
+subroutine apcalc(pair_category, mesh, ds_contact)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/apcaln.h"
-#include "asterfort/apforc.h"
-#include "asterfort/apimpr.h"
-#include "asterfort/apvepa.h"
-#include "asterfort/infdbg.h"
+#include "asterfort/apstos.h"
+#include "asterfort/apntos.h"
+#include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,10 +26,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=19), intent(in) :: sdappa
+    character(len=6), intent(in) :: pair_category
     character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: sdcont_defi
-    character(len=19), intent(in) :: newgeo
+    type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -39,38 +38,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  sdappa           : name of pairing datastructure
+! In  pair_category    : type of pairing Segment_To_Segment or Node_To_Segment
 ! In  mesh             : name of mesh
-! In  sdcont_defi      : name of contact definition datastructure (from DEFI_CONTACT)
-! In  newgeo           : name of field for geometry update from initial coordinates of nodes
+! In  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-!
-! --------------------------------------------------------------------------------------------------
-!
-    call infdbg('APPARIEMENT', ifm, niv)
-    if (niv .ge. 2) then
-        write (ifm,*) '<APPARIEMENT> REALISATION DE L''APPARIEMENT'
-    endif
-!
-! - Compute tangents
-!
-    call apcaln(sdappa, mesh, sdcont_defi, newgeo)
-!
-! - Pairing by "brute" force
-!
-    call apforc(sdappa, mesh, sdcont_defi, newgeo)
-!
-! - Check pairing
-!
-    call apvepa(sdappa, sdcont_defi)
-!
-! - Debug print
-!
-    if (niv .ge. 2) then
-        call apimpr(sdappa, ifm, mesh, sdcont_defi)
+    if (pair_category.eq.'N_To_S') then
+        call apntos(mesh, ds_contact)
+    elseif (pair_category.eq.'S_To_S') then
+        call apstos(mesh, ds_contact)
+    else
+        ASSERT(.false.)
     endif
 !
 end subroutine
