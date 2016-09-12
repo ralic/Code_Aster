@@ -42,8 +42,8 @@ subroutine dfdmxx(nno, dfdi, coor, dfdgl)
     real(kind=8) :: de, dn, dk, j11, j12, j13, j21, j22, j23, j31, j32, j33
 !
 !
-    g=0.
-    dfdgl=0.
+    g=0.d0
+    dfdgl=0.d0
 !
     do 100 i = 1, nno
         ii = 3*(i-1)

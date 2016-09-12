@@ -115,8 +115,11 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]))
 
 MA[nb_iter]=DEFI_GROUP( reuse=MA[nb_iter],
                         MAILLAGE=MA[nb_iter],
-                        CREA_GROUP_NO=(_F(GROUP_MA='LATD',),
+                        CREA_GROUP_NO=(_F(NOEUD='N120',NOM='N120'),
+                                       _F(GROUP_MA='LATD',),
                                        _F(GROUP_MA='LATG',),
+                                       _F(DIFFE=('LATD','N120'),NOM='LATD2'),
+                                       _F(DIFFE=('LATG','N120'),NOM='LATG2'),
                                       ));
 
 MA[nb_iter]=MODI_MAILLAGE(reuse =MA[nb_iter],
@@ -128,7 +131,7 @@ MODE=AFFE_MODELE(MAILLAGE=MA[nb_iter],
                          PHENOMENE='MECANIQUE',
                          MODELISATION='3D'))
 
-FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter], NB_COUCHES=3,
+FISSX=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter], #NB_COUCHES=3,
                      #TYPE_ENRI_FOND='TOPOLOGIQUE',
                      DEFI_FISS=_F(FONC_LT=LT,
                                   FONC_LN=LN),
@@ -149,6 +152,9 @@ CHAR=AFFE_CHAR_MECA(MODELE=MODX,
                     # mode rigide de translation :
                     # conditions de symetrie :
                     DDL_IMPO=(_F(GROUP_NO=('D'), DY=0.,),
+                             # _F(GROUP_NO=('LATG2',),DX=0.,H1X=0.,K3=0.),
+                             # _F(GROUP_NO=('LATD2',),DZ=0.,H1Z=0.,K3=0.),
+                             # _F(GROUP_NO=('N120',) ,DX=0.,DZ=0.),
                               _F(GROUP_NO=('LATG',),DX=0.,K3=0.),
                               _F(GROUP_NO=('LATD',),DZ=0.,K3=0.),
                              ),

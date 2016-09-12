@@ -20,7 +20,6 @@ subroutine xderfk(kappa, mu, r, theta, ndim, dfkdpo)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterc/r8depi.h"
 !
     integer :: ndim
@@ -43,8 +42,6 @@ subroutine xderfk(kappa, mu, r, theta, ndim, dfkdpo)
     real(kind=8) :: rr, drr, s, c, s2, c2
 !
 !----------------------------------------------------------------
-!
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
     rr=sqrt(r)/(2.d0*mu*sqrt(r8depi()))
     drr=1.d0/(4.d0*mu*sqrt(r)*sqrt(r8depi()))

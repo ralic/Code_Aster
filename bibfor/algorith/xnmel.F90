@@ -87,7 +87,7 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
 ! OUT IVECTU  : VECTEUR FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !..............................................................
 !----------------------------------------------------------------
-    character(len=8) :: elrefp, elrese(6), fami(6)
+    character(len=8) :: elrefp, elrese(6), fami(6), fami_se
     real(kind=8) :: coorse(81), he(nfiss)
     integer :: nse, npg
     integer :: j, ise, in, ino, idebs, idebv, nnops
@@ -117,7 +117,13 @@ subroutine xnmel(poum, nnop, nfh, nfe, ddlc,&
     else
         irese=0
     endif
-    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami(ndim+irese),nno=nno,&
+    fami_se=fami(ndim+irese)
+    if (nfe.gt.0) then
+      if (ndim.eq.3 .and. &
+        (count(zi((jstno-1+1):(jstno-1+nnop)).eq.2)+&
+         count(zi((jstno-1+1):(jstno-1+nnop)).eq.0)).eq.nnop) fami_se='XGEO'
+    endif
+    call elrefe_info(elrefe=elrese(ndim+irese),fami=fami_se,nno=nno,&
     npg=npg)
 !
 !     NOMBRE DE CONTRAINTES ASSOCIE A L'ELEMENT

@@ -18,7 +18,8 @@
 interface
     subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
                             lsn, lst, geom, kappa, mu, ff, fk,&
-                            dfdi, dkdgl, face, elref, nnop2, ff2, dfdi2)
+                            dfdi, dkdgl, face, elref, nnop2, ff2,&
+                            dfdi2, kstop)
         integer :: nnop
         integer :: ndim
         integer :: stano(*)
@@ -33,6 +34,7 @@ interface
         real(kind=8) :: geom(*)
         real(kind=8), optional :: dkdgl(27,3,3,3)
         real(kind=8), optional :: dfdi(nnop,ndim)
+        character(len=1), optional :: kstop
         character(len=4), optional :: face
         character(len=8), optional :: elref
         integer, optional :: nnop2

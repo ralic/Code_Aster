@@ -176,10 +176,12 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, ddlm,&
          if (singu.gt.0) then
             if (he(ilev).gt.0) then
               call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(ilev),&
-                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='MAIT')
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='MAIT',&
+                           elref=elrefp, kstop='C')
             else
               call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(ilev),&
-                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='ESCL')
+                           zr(jlsn), zr(jlst), zr(igeom), ka, mu, ff, fk, face='ESCL',&
+                           elref=elrefp, kstop='C')
             endif
          endif
 !       CALCUL DES COORDONNEES CYLINDRIQUES

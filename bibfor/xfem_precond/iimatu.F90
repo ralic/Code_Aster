@@ -27,14 +27,13 @@ function iimatu(i, ndim, nfh, nfe)
 !-----------------------------------------------------------------------
     implicit none
 !-----------------------------------------------------------------------
-    integer ::i, ndim, nfh, nfe, iimatu
+    integer :: i, ndim, nfh, nfe, iimatu
 !-----------------------------------------------------------------------
 !
-     iimatu=i
-     if (nfe.gt.0) then
-        if (i.gt.ndim*(1+nfh)) then
-          iimatu=int((i-ndim*(1+nfh)-1)/ndim)+ndim*(1+nfh)+1
-        endif
+     if (nfe.gt.0 .and. i.gt.ndim*(1+nfh)) then
+        iimatu=int((i-ndim*(1+nfh)-1)/ndim)+ndim*(1+nfh)+1
+     else
+        iimatu=i
      endif
 !
 end function

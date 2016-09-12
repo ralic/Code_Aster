@@ -20,7 +20,6 @@ subroutine xdeffk(kappa, mu, r, theta, ndim, fkpo)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterc/r8depi.h"
 !
     integer :: ndim
@@ -36,8 +35,6 @@ subroutine xdeffk(kappa, mu, r, theta, ndim, fkpo)
 !
     real(kind=8) :: rr
 !---------------------------------------------------------------
-!
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
     rr=sqrt(r)/(2.d0*mu*sqrt(r8depi()))
 !

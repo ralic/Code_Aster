@@ -45,8 +45,6 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 !
     character(len=8) :: pref
 !
-    ASSERT(option.eq.'DEFAULT'.or.option.eq.'SMOOTH'.or.option.eq.'JUMP'.or.option.eq.'BASIC')
-!
     pref=option
 !    if (istano.eq.-2) pref='SMOOTH'
 !

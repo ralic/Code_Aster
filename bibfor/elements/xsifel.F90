@@ -114,7 +114,7 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3)
     integer :: icodre(4)
     character(len=16) :: nomres(4)
-    character(len=8) :: elrese(6), fami(6)
+    character(len=8) :: elrese(6), fami(6), fami_se
     aster_logical :: lcour, grdepl, axi, l_temp_noeu, l_not_zero
     integer :: irese, nnops, indenn, mxstac
     parameter      (mxstac=1000)
@@ -168,8 +168,13 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
     endif
 !
 !   Sous-element de reference
+    fami_se=fami(ndim+irese)
+    if (nfe.gt.0) then
+      if (ndim.eq.3 .and. &
+        count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2).eq.0) fami_se='XGEO'
+    endif
     call elrefe_info(elrefe=elrese(ndim+irese),&
-                     fami=fami(ndim+irese),&
+                     fami=fami_se,&
                      ndim=ndimb,&
                      nno=nno,&
                      nnos=nnos,&
@@ -323,7 +328,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt,&
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (singu .gt. 0) then
             call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
-                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl)
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi, dkdgl,&
+                         elref=elrefp, kstop='C')
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)

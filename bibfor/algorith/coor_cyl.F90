@@ -24,7 +24,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xcoocy.h"
 #include "asterfort/provec.h"
@@ -72,47 +72,7 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
       end do
     end do
 !
-!    e1(:)=0.d0
-!    e2(:)=0.d0
-!    e3(:)=0.d0
-!    do ino = 1, nnop
-!      do  i = 1, ndim     
-!        e1(i) = basloc(3*ndim*(ino-1)+i+ndim)
-!        e2(i) = basloc(3*ndim*(ino-1)+i+2*ndim)
-!      end do
-!      call xnormv(3, e1, norme)
-!      call xnormv(3, e2, norme)
-!      call provec(e1, e2, e3)
-!      call xnormv(3, e3, norme)
-!      call provec(e2, e3, e1)
-!      do i = 1, ndim
-!        baslog(i+ndim) = baslog(i+ndim) + e1(i)*ff(ino)
-!        baslog(i+2*ndim) = baslog(i+2*ndim) + e2(i)*ff(ino)
-!      end do
-!    enddo
-!    do i = ndim+1, 3*ndim
-!      baslog(i)=0.d0 
-!      do ino = 1, nnop
-!        baslog(i) = baslog(i) + basloc(3*ndim*(ino-1)+i)
-!      end do
-!      baslog(i)=baslog(i)/nnop
-!    end do
-!
     call xbasgl(ndim, baslog, 1, p_g, invp_g)
-!
-!     p_g(1:ndim,1:ndim)=0.
-!     invp_g(1:ndim,1:ndim)=0.
-!     do ino = 1, nnop
-!       call xbasgl(ndim, basloc, ino, p(1:ndim,1:ndim),&
-!                   invp(1:ndim,1:ndim))
-!       do i =1,ndim
-!         do j=1,ndim
-!           p_g(i,j)=p_g(i,j)+ff(ino)*p(i,j)
-!           invp_g(i,j)=invp_g(i,j)+ff(ino)*invp(i,j)
-!         enddo
-!       enddo
-!     enddo
-!     call matinv('C', ndim, p_g, invp_g, det)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !   * SI ON DISPOSAIT DU PROJETE DU POINT DE GAUSS SUR LE FOND 
@@ -128,9 +88,15 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
     if (present(lcourb)) then
        if (lcourb) then
-         ASSERT(present(courb))
-         ASSERT(present(dfdi))
-         ASSERT(ndim.eq.3)
+         if (.not.present(courb)) then
+          call utmess('F', 'ELEMENTS6_7', sk='courb')
+         endif
+         if (.not.present(dfdi)) then
+          call utmess('F', 'ELEMENTS6_7', sk='dfdi')
+         endif
+         if (ndim.ne.3) then
+          call utmess('F', 'ELEMENTS6_8', si=ndim)
+         endif
          call dfdmxx(nnop, dfdi, geom, dfdgl) 
          courb=0.
          do ino = 1, nnop

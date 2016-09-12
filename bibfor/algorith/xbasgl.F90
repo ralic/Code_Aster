@@ -21,7 +21,7 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/provec.h"
 #include "asterfort/xnormv.h"
 #include "asterc/r8prem.h"
@@ -41,7 +41,9 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
     real(kind=8) :: e1(3), e2(3), e3(3), norme, det
 !----------------------------------------------------------------
 !
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
+    if (.not.(ndim.eq.2.or.ndim.eq.3)) then
+      call utmess('F', 'ELEMENTS6_9', si=ndim)
+    endif
 !
     e1(:)=0.d0
     e2(:)=0.d0
@@ -67,11 +69,11 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
 !  *  VERIFICATION QUE LA BASE EST ORTHONORMEE (DETERMINANT DE P VAUT BIEN 1)
      call matinv('C', ndim, p, invp, det)
 !    det = det_mat(ndim,p)
-    if (abs((abs(det)-1.d0)).gt.1.d-5) then
+!    if (abs((abs(det)-1.d0)).gt.1.d-5) then
 !  *  SI LE DETERMINANT N EST PAS 1 XCALFEV A SANS DOUTE ETE APPELEE AVEC UNE BASE NULLE
 !     POUR CALCULER ZERO
 !      ASSERT(norme.lt.r8prem())
-    endif
+!    endif
 !
 !    if (ndim.eq.2) then
 !      p(1:2,2)=sign(1.,det)*[-e1(2),e1(1)]

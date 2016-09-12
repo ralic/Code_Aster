@@ -357,7 +357,7 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz,&
 !         CALCUL DES FF LINEAIRE AU CAS OU ...
           ff2(:)=0.
           if (.not.iselli(elrefp)) then
-              call xellin(elrefp, nbno1, elrefp2, nnop2)
+              call xellin(elrefp, nbno1, elrefp2, nnop2) 
               call elrfvf(elrefp2, pjef_co((3*(ino2-1)+1):(3*(ino2-1)+ndim)),&
                           8, ff2, nnop2)
           endif

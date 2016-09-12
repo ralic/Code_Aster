@@ -182,7 +182,7 @@ class MECA_XTC_HEXA8(Element):
         )
     elrefe =(
             ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','NOEU=NOEU','XFEM=XFEM480','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','GAUSS=FPG12','SIMP=SIMP',),),
         )
     calculs = (
@@ -628,7 +628,7 @@ class MECA_XTC_PENTA6(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.PE6, gauss = ('RIGI=FPG6','NOEU=NOEU','XFEM=XFEM240','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','GAUSS=FPG12','SIMP=SIMP',),),
         )
 
@@ -642,7 +642,7 @@ class MECA_XTC_PYRAM5(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5','NOEU=NOEU','XFEM=XFEM180','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )
 
@@ -655,7 +655,7 @@ class MECA_XTC_TETRA4(MECA_XTC_HEXA8):
             SetOfNodes('EN1', (1,2,3,4,)),
         )
     elrefe =(
-            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','NOEU=NOEU','XINT=FPG15','FPG1=FPG1','XFEM=XFEM90',), mater=('RIGI','XFEM',),),
+            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','NOEU=NOEU','XINT=FPG15','XGEO=FPG5','FPG1=FPG1','XFEM=XFEM90',), mater=('RIGI','XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','GAUSS=FPG12','SIMP=SIMP',),),
         )
 
@@ -674,8 +674,8 @@ class MECA_XTC_HEXA20(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.H20, gauss = ('RIGI=FPG27','NOEU=NOEU','XFEM=XFEM480','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
-            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
+            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )
@@ -691,8 +691,8 @@ class MECA_XTC_PENTA15(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.P15, gauss = ('RIGI=FPG21','NOEU=NOEU','XFEM=XFEM240','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
-            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
+            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )
@@ -708,8 +708,8 @@ class MECA_XTC_PYRAM13(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.P13, gauss = ('RIGI=FPG27','NOEU=NOEU','XFEM=XFEM180','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
-            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
+            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )
@@ -725,8 +725,8 @@ class MECA_XTC_TETRA10(MECA_XTC_HEXA8):
         )
     elrefe =(
             ElrefeLoc(MT.T10, gauss = ('RIGI=FPG5','NOEU=NOEU','XFEM=XFEM90','FPG1=FPG1',), mater=('RIGI','XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
-            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
+            ElrefeLoc(MT.T10, gauss = ('XINT=FPG15','XGEO=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TR6, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )

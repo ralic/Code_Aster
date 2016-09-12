@@ -36,7 +36,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: lsn(nnop), lst(nnop), sig(2*ndim, npg)
     real(kind=8) :: matuu(*), vi(lgpg, npg)
     character(len=*) :: poum
-    character(len=8) :: elrefp, elrese, typmod(*)
+    character(len=8) :: elrefp, elrese, typmod(*), fami_se
     character(len=16) :: option, compor(*)
 !
 ! ======================================================================
@@ -126,6 +126,7 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !     NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD
     call xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
+    call xkamat(imate, ndim, axi, ka, mu)
 !
 ! - INITIALISATION
     grdepl = compor(3) .eq. 'GROT_GDEP'
@@ -137,7 +138,13 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     endif
 !
 !     ADRESSE DES COORD DU SOUS ELT EN QUESTION
-    call elrefe_info(elrefe=elrese, fami='XINT', ndim=ndimb, nno=nno, nnos=nnos,&
+    fami_se='XINT'
+    if (nfe.gt.0) then
+      if (ndim.eq.3 .and. &
+        (count(zi((jstno-1+1):(jstno-1+nnop)).eq.2)+&
+         count(zi((jstno-1+1):(jstno-1+nnop)).eq.0)).eq.nnop) fami_se='XGEO'
+    endif
+    call elrefe_info(elrefe=elrese, fami=fami_se, ndim=ndimb, nno=nno, nnos=nnos,&
                      npg=npgbis, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfde,&
                      jdfd2=jdfd2, jgano=jgano)
 !
@@ -171,9 +178,9 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 !       FONCTION D'ENRICHISSEMENT AU POINT DE GAUSS ET LEURS DÉRIVÉES
         if (singu .gt. 0) then
-            call xkamat(imate, ndim, axi, ka, mu)
             call xcalfev_wrap(ndim, nnop, basloc, zi(jstno), he(1),&
-                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi=dfdi, dkdgl=dkdgl)
+                         lsn, lst, zr(igeom), ka, mu, ff, fk, dfdi=dfdi, dkdgl=dkdgl,&
+                         elref=elrefp, kstop='C')
         endif
 !
 ! -     CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE):

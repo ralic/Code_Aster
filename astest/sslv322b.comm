@@ -85,7 +85,7 @@ MA[i_raff]=LIRE_MAILLAGE(FORMAT='MED',);
 # refinements loop
 for i_raff in range(nb_iter) :
                                   
-   Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],
+   Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],TYPE_ENRI_FOND='TOPOLOGIQUE',
                 DEFI_FISS=(
                     _F(FORM_FISS='ELLIPSE',
                        DEMI_GRAND_AXE=a,
@@ -162,7 +162,7 @@ MA[nb_iter]=MODI_MAILLAGE(reuse=MA[nb_iter],
                           MAILLAGE=MA[nb_iter],
                           ORIE_PEAU_3D=_F(GROUP_MA=('inter',),),);
 
-Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],
+Fiss_01=DEFI_FISS_XFEM(MAILLAGE=MA[nb_iter],TYPE_ENRI_FOND='TOPOLOGIQUE',
                        DEFI_FISS=(
                            _F(FORM_FISS='ELLIPSE',
                               DEMI_GRAND_AXE=a,

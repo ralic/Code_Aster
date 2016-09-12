@@ -64,7 +64,7 @@ subroutine te0288(option, nomte)
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81)
     integer :: icodre(3), contac, iadzi, iazk24, jstno
-    character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
+    character(len=8) :: elrefp, elrese(6), fami(6), fami_se, nompar(4), enr
     character(len=16) :: compor(4), nomres(3)
     aster_logical :: grand, incr
 !
@@ -90,14 +90,6 @@ subroutine te0288(option, nomte)
         if (thet .lt. r8prem()) compt = compt + 1
  10  continue
     if (compt .eq. nnop) goto 999
-!
-!     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
-    if (.not.iselli(elrefp)) then
-        irese=3
-    else
-        irese=0
-    endif
-    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami(ndim+irese), nno=nno, npg=npg)
 !
 !     INITIALISATION DES DIMENSIONS DES DDLS X-FEM
     call xteini(nomte, nfh, nfe, singu, ddlc,&
@@ -146,6 +138,19 @@ subroutine te0288(option, nomte)
 !     PROPRES AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if (ibid .eq. 0  .and. ltequa(elrefp,enr)) &
     call jevech('PPMILTO', 'L', jpmilt)
+!
+!     SOUS-ELEMENT DE REFERENCE : RECUP DE NNO, NPG ET IVF
+    if (.not.iselli(elrefp)) then
+        irese=3
+    else
+        irese=0
+    endif
+    fami_se=fami(ndim+irese)
+    if (nfe.gt.0) then
+      if (ndim.eq.3 .and. &
+        count(zi((jstno-1+1):(jstno-1+nnop)).eq.-2).eq.0) fami_se='XGEO'
+    endif
+    call elrefe_info(elrefe=elrese(ndim+irese), fami=fami_se, nno=nno, npg=npg)
 !
 !     CALCUL DES FORCES NODALES CORRESPONDANT AUX CHARGES VOLUMIQUES
     call xcgfvo(option, ndim, nnop, fno)

@@ -1,6 +1,7 @@
 subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
                         lsn, lst, geom, kappa, mu, ff, fk,&
-                        dfdi, dkdgl, face, elref, nnop2, ff2, dfdi2)
+                        dfdi, dkdgl, face, elref, nnop2, &
+                        ff2, dfdi2, kstop)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,7 +25,7 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/xcalfev.h"
 #include "asterfort/iselli.h"
 #include "asterfort/xellin.h"
@@ -37,6 +38,7 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
     real(kind=8) :: kappa, ff(*), geom(*), mu
     real(kind=8), optional :: dkdgl(27,3,3,3)
     real(kind=8), optional :: dfdi(nnop,ndim)
+    character(len=1), optional :: kstop
     character(len=4), optional :: face
     character(len=8), optional :: elref
     integer, optional :: nnop2
@@ -68,14 +70,12 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
 !
 !----------------------------------------------------------------
 !
-    aster_logical :: lderiv
+    aster_logical :: lderiv, lstop
     integer :: ino, nnop_lin, j
     character(len=4) :: fac2
     character(len=8) :: elrefp, elrefp_lin
     real(kind=8) :: ff_lin(8), dfdi_lin(8,3), xe_lin(ndim), xg(ndim)
 !----------------------------------------------------------------
-!
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !    PREPARATION DES ARGUMENTS DE XCALFEV
@@ -83,41 +83,57 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he,&
     fac2=' '
     if (present(face)) fac2=face
 !
+    lstop=.true.
+    if (present(kstop)) then
+      if (kstop.eq.'C') lstop=.false.
+    endif    
+!
     if (.not.present(dkdgl)) then
       lderiv=.false.
     else
       lderiv=.true.
-      ASSERT(present(dfdi))
+      if (.not.present(dfdi)) then
+          call utmess('F', 'ELEMENTS6_6', sk='dfdi')
+      endif
       dkdgl(:,:,:,:)=0.d0
     endif
 !
+    elrefp=' '
     if (present(elref)) then
       elrefp=elref
-      if (iselli(elrefp)) goto 10
-      ASSERT(present(nnop2).and.present(ff2))
+      if (iselli(elrefp)) goto 10 
+      if (.not. lstop) goto 5    
+      if (.not.present(nnop2)) then
+          call utmess('F', 'ELEMENTS6_6', sk='nnop2')
+      endif
+      if (.not.present(ff2)) then
+          call utmess('F', 'ELEMENTS6_6', sk='ff2')
+      endif
       nnop_lin=nnop2
       ff_lin(1:nnop_lin)=ff2(1:nnop_lin)
       if (.not.lderiv) goto 10
-      ASSERT(present(dfdi2))
+      if (.not.present(dfdi2)) then
+          call utmess('F', 'ELEMENTS6_6', sk='dfdi2')
+      endif
       dfdi_lin(1:nnop_lin,1:ndim)= dfdi2(1:nnop_lin,1:ndim)
-    else
-      call elref1(elrefp)
-      if (iselli(elrefp)) goto 10
-      xg(:)=0.
-      do ino=1, nnop
+    endif
+5   continue
+    if (elrefp.eq.' ') call elref1(elrefp)
+    if (iselli(elrefp)) goto 10
+    xg(:)=0.
+    do ino=1, nnop
         do j=1, ndim
           xg(j)=xg(j)+ff(ino)*geom(ndim*(ino-1)+j)
         enddo
-      enddo
-      call xellin(elrefp, nnop, elrefp_lin, nnop_lin)
-      if (.not.lderiv) then
+    enddo
+    call xellin(elrefp, nnop, elrefp_lin, nnop_lin)
+    if (.not.lderiv) then
         call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin,&
                           ff_lin(1:nnop_lin))
-      else
+    else
         call reeref(elrefp_lin, nnop_lin, geom, xg, ndim, xe_lin,&
                           ff_lin(1:nnop_lin), dfdi=dfdi_lin(1:nnop_lin,1:ndim))
-      endif  
-    endif
+    endif  
 !
 10  continue
 !

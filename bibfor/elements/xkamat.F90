@@ -23,7 +23,7 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/lteatt.h"
@@ -51,7 +51,6 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 !
 !   ABANDON DE L APPEL A RCVALD2 ==> ON PREFERE L APPEL A RCVALA QUI EST 
 !     PLUS DIRECT ET PLUS ROBUSTE
-!  print*,'entrée : xkamat'
     nbpar=1
     nompar(1)=' '
     valpar(1)=0.d0
@@ -60,7 +59,6 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
     else
       fami='XFEM'
     endif
-!  print*,' - fami=',fami
 !
     if (fami.eq.'XCON') goto 10
 !
@@ -90,22 +88,29 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
     endif
 !
 !  VERIFICATION DE LA PRESENCE DES PARAM. ELAS. 
-   ASSERT(count(icodre.eq.0).eq.2)
+   if (count(icodre.eq.0).ne.2) then
+     call utmess('F', 'ELEMENTS6_10')
+   endif
 !
    e = valres(1)
    nu = valres(2)
 !
-   if (ndim.eq.2.and.lteatt('C_PLAN','OUI')) then
+   if (ndim.eq.2) then
 !
+      if (lteatt('C_PLAN','OUI')) then
             ka = (3.d0-nu)/(1.d0+nu)
             mu = e/(2.d0*(1.d0+nu))
+      else
+            mu = e/(2.d0*(1.d0+nu))
+            ka = 3.d0-4.d0*nu 
+      endif
+!
    else
 !
             mu = e/(2.d0*(1.d0+nu))
             ka = 3.d0-4.d0*nu
 !
    endif
-!  print*,'sortie : xkamat'
 !
     call jedema()
 end subroutine

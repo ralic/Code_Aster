@@ -22,13 +22,12 @@ subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/xnormv.h"
 !
     integer :: ndim
     real(kind=8) :: rg, tg, xg(ndim), pfon(ndim)
     real(kind=8) :: p(ndim,ndim)
-    aster_logical, optional :: l_not_zero
+    aster_logical :: l_not_zero
 !
 !
 !
@@ -40,8 +39,6 @@ subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
     real(kind=8) :: cosi, og(ndim), sinu, tole
     parameter (tole=1.d-12)
 !----------------------------------------------------------------
-!
-    ASSERT(ndim.eq.2.or.ndim.eq.3)
 !
     do i = 1, ndim
       og(i)=xg(i)-pfon(i)
@@ -58,9 +55,7 @@ subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
 !  - CETTE COMPARAISON POURRIE, IL FAUT L AMALIORER:
 !      * LA PROBABILITE QUE RG SOIT TRES PETIT EST QUASI NULLE
 !      * LE TEST ICI N EST PAS MIS A L ECHELLE
-    if (present(l_not_zero)) then
-      l_not_zero=.true.
-      if (rg .lt. tole) l_not_zero=.false.
-    endif
+    l_not_zero=.true.
+    if (rg .lt. tole) l_not_zero=.false.
 !
 end subroutine

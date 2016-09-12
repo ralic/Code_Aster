@@ -24,6 +24,6 @@ interface
         real(kind=8) :: xg(ndim)
         real(kind=8) :: pfon(ndim)
         real(kind=8) :: p(ndim,ndim)
-        aster_logical, optional :: l_not_zero
+        aster_logical :: l_not_zero
     end subroutine xcoocy
 end interface
