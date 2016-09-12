@@ -90,7 +90,7 @@ subroutine xmelel(ndim, jmail, jtymai, numae, numam,&
     do k = 1, 7
         if (att .eq. attr(k)) iatt(1) = k
     end do
-    write (6,*) "iatt(1)",iatt(1)
+    
     ASSERT(iatt(1).ne.0)
 ! --- RECUPERATION DU TYPE DE MAILLE POUR L'ESCALVE
     do k = 1, 8
