@@ -204,6 +204,7 @@ implicit none
 !
     if (l_cont) then
         i_cont_form = cfdisi(ds_contact%sdcont_defi,'FORMULATION')
+        list_func_acti(64)  = 1
         if (i_cont_form .eq. 2) then
             list_func_acti(5)  = 1
             list_func_acti(17) = cfdisi(ds_contact%sdcont_defi,'ALL_INTERPENETRE')
@@ -231,6 +232,7 @@ implicit none
         else if (i_cont_form .eq. 5) then
             list_func_acti(63) = 1
             list_func_acti(26) = 1
+            l_frot = .false.
         else
             ASSERT(.false.)
         endif
@@ -270,7 +272,7 @@ implicit none
 ! - Generalized Newton
 !
     if (l_cont) then
-        if (i_cont_form .eq. 2) then
+        if (i_cont_form .eq. 2 .or. i_cont_form .eq. 5 ) then
             l_newt_geom = cfdisl(ds_contact%sdcont_defi,'GEOM_NEWTON')
             l_newt_frot = cfdisl(ds_contact%sdcont_defi,'FROT_NEWTON')
             l_newt_cont = cfdisl(ds_contact%sdcont_defi,'CONT_NEWTON')
