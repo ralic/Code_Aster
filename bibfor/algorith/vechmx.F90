@@ -2,7 +2,7 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
                   nbin_maxi, lpain, lchin, lastin, vecele)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,8 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 #include "asterfort/lisltc.h"
 #include "asterfort/lisopt.h"
 #include "asterfort/reajre.h"
+#include "asterfort/codent.h"
+
     integer :: nbin_maxi, lastin
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
@@ -98,7 +100,8 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis,&
 !
 ! --- CHAMP DE SORTIE
 !
-    call gcnco2(newnom)
+    call codent(ichar, 'D0', newnom(2:8))
+
     lchout(1) = '&&VECHMX.'//newnom(2:8)
     call corich('E', lchout(1), ichar, ibid)
 !
