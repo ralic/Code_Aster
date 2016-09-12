@@ -101,20 +101,22 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    one_proc=.false.
+!
+! - Initializations
+!
+    one_proc = .false._1
 !
 ! - Acces to pairing datastructure
 !
     sdappa_tgel = sdappa(1:19)//'.TGEL'
-
 !
-! ----- Mpi informations
+! - MPI informations
 !
     call asmpi_comm('GET', mpicou)
     call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
-    if(one_proc)then
+    if (one_proc) then
         nb_proc = 1
-        i_proc= 0
+        i_proc  = 0
     endif
     nb_elem_mpi  = int(nb_elem/nb_proc)
     nbr_elem_mpi = nb_elem-nb_elem_mpi*nb_proc
@@ -122,7 +124,7 @@ implicit none
     idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
 !
 ! - Loop on elements
-!
+! 
     do i_elem = idx_start, idx_end
 !
 ! ----- Current element
@@ -132,7 +134,7 @@ implicit none
 !
 ! ----- Number of nodes
 !
-        call cfnben(sdcont_defi, elem_indx, 'CONNEX', elem_nbnode)
+        call cfnben(sdcont_defi, elem_indx, 'CONNEX', enti_nb_ = elem_nbnode)
 !
 ! ----- Parameters of current element
 !
