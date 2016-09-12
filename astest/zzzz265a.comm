@@ -197,6 +197,11 @@ SNL=STAT_NON_LINE(MODELE=MODELE,
                   SOLVEUR=_F(METHODE='MULT_FRONT',
                              NPREC=15,),);
 
+IMPR_RESU(PROC0='NON', FORMAT='MED', UNITE=81, 
+          RESU=_F(RESULTAT=SNL,
+          NOM_CHAM='DEPL',),);
+
+
 LOAD=AFFE_CHAR_MECA(MODELE=MODELE,
                     FORCE_NODALE=_F(GROUP_NO='EXCIT19',
                                     FZ=_FORCE,),);
@@ -261,5 +266,11 @@ TEST_RESU(RESU=(_F(INST=10.5,
                    ),
                 ),
           )
+
+DEPL_LU = LIRE_RESU(TYPE_RESU='EVOL_NOLI', FORMAT='MED', UNITE=81,
+                     MODELE=MODELE, TOUT_ORDRE='OUI',
+                     FORMAT_MED=(
+                         _F(NOM_RESU='SNL', NOM_CHAM='DEPL'),))
+
 
 FIN();
