@@ -370,12 +370,7 @@ Risques et conseils :
     72 : _(u"""
  Erreur commande CALC_FERRAILLAGE :
    On n'a pas réussi à calculer la carte de ferraillage sur un élément.
-   Code_retour de la routine : %(i1)d
-
- Signification du code d'erreur :
-   1000 : Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
-   1020 : Section complètement comprimée, Pivot C non calculé
-   1050 : ELS : Dépassement contrainte béton;
+   Levier négatif ou nul (l'utilisateur a fourni des valeurs d'enrobage incompatibles avec l'épaisseur de l'élément)
 """),
 
     73 : _(u"""
@@ -399,6 +394,34 @@ Risques et conseils :
     76 : _(u"""
  Votre modèle contient un mélange d'éléments 1D,2D ou 3D.
  Le lissage global n'est possible que pour les éléments 2D soit 3D.
+"""),
+    77 : _(u"""
+ Commande CALC_FERRAILLAGE :
+   ELU : On n'a pas réussi à calculer la densité de ferraillage sur une ou plusieurs facettes de Capra Maury.
+   Les sections d'aciers sont complètement comprimées. La densité calculée est nulle sur ces facettes.
+   Le résultat sur l'élément peut être non nul si les autres facettes sont calculables.
+   ATTENTION : Aucune vérification des contraintes dans le béton n'est faite en compression sur cette facette.
+   (Pivot C non calculé)   
+"""),
+    78 : _(u"""
+ Commande CALC_FERRAILLAGE :
+   ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
+   Toutes les facettes de Capra Maury sont en compression.
+   Les sections d'aciers sont complètement comprimées. La densité calculée est mise à -1.
+   C'est probablement un pivot C, ce cas n'est pas prévu.   
+"""),
+
+    79 : _(u"""
+ Commande CALC_FERRAILLAGE :
+   ELU : On n'a pas réussi à calculer la densité de ferraillage sur l'élément.
+   Pour une des facettes de Capra Maury au moins, la section est complètement comprimée. La densité calculée est mise à -1.
+   C'est probablement un pivot C, ce cas n'est pas prévu.
+"""),
+
+    80 : _(u"""
+ Erreur commande CALC_FERRAILLAGE :
+   On n'a pas réussi à calculer la carte de ferraillage sur un élément.
+   ELS : Dépassement contrainte béton;
 """),
 
     90 : _(u"""

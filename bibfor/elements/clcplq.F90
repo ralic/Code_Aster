@@ -3,7 +3,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
                   dnsits, sigmbe, epsibe, ierr)
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
 #include "asterfort/clcelu.h"
 #include "asterfort/clcopt.h"
 #include "asterfort/trgfct.h"
+#include "asterfort/utmess.h"
     real(kind=8) :: ht
     real(kind=8) :: enrobg
     integer :: typcmb
@@ -61,7 +62,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(5)
     real(kind=8) :: sigmbe, epsibe
-    integer :: ierr
+    integer :: ierr,nb_fac_comp
 !
 !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
 !
@@ -106,6 +107,7 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
     epsimx = 0d0
 !        ! BOUCLE SUR LES FACETTES
 !        ! DETERMINATION DU FERRAILLAGE POUR CHACUNE DES FACETTES
+    nb_fac_comp = 0
     do 10 i = 1, 36
         effn = fcttab(i,1) * effrts(1) + fcttab(i,2) * effrts(2) + fcttab(i,3) * effrts(3)
         effm = fcttab(i,1) * effrts(4) + fcttab(i,2) * effrts(5) + fcttab(i,3) * effrts(6)
@@ -114,8 +116,14 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
 ! Calcul ELU
             call clcelu(piva, pivb, effm, effn, ht,&
                         enrobg, sigaci, sigbet, es, ai(i),&
-                        as(i), epsil, ierr)
-            if (ierr .ne. 0) goto 999
+                        as(i), epsil, ierr)            
+            if (ierr .eq. 1020) then
+               nb_fac_comp = nb_fac_comp + 1
+            endif
+            if (ierr .eq. 1050) then
+               call utmess('F', 'CALCULEL_80')!ELS depassement contrainte max
+               goto 999
+            endif
             if (epsil .gt. epsimx) epsimx = epsil
 !
 ! CALCUL DU FERRAILLAGE TRANSVERSAL seulement en ELU
@@ -123,10 +131,14 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
             levier = 0.9*(ht - enrobg)
             if (levier .le. 0d0) then
                 ierr = 1000
+                call utmess('F', 'CALCULEL_72')
                 goto 999
             endif
             sigmat = sqrt(effrts(7)*effrts(7)+effrts(8)*effrts(8))/ levier
             dnsits(5) = sigmat / sigaci
+!           pivot C "vrai" facette totalement comprimées (on ne sait pas calculer)
+!           on passe les autres facettes
+            if (ierr .eq. 1040) goto 999 
 !
         else
 ! Calcul ELS
@@ -147,6 +159,10 @@ subroutine clcplq(ht, enrobg, typcmb, piva, pivb,&
 !       OPTIMISATION DES FERRAILLAGES
     call clcopt(fcttab, ai, dnsits(1), dnsits(2))
     call clcopt(fcttab, as, dnsits(3), dnsits(4))
+!
+    if (nb_fac_comp .gt. 35) then
+        ierr = 1030
+    endif
 !
 999  continue
 end subroutine

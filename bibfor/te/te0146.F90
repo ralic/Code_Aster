@@ -11,7 +11,7 @@ subroutine te0146(option, nomte)
     character(len=16) :: option, nomte
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -115,8 +115,25 @@ subroutine te0146(option, nomte)
     call clcplq(ht, enrobg, typcmb, piva, pivb,&
                 ea, cequi, sigaci, sigbet, effrts,&
                 dnsits, sigmbe, epsibe, ierr)
-    if (ierr .gt. 0) then
-        call utmess('F', 'CALCULEL_72', si=ierr)
+    if (ierr .eq. 1020) then
+!       une facette comprimée
+        call utmess('A', 'CALCULEL_77')     
+    endif
+    if (ierr .eq. 1030) then
+!       toutes les facettes sont comprimées
+        call utmess('A', 'CALCULEL_78')
+!       on garde la densite transverse
+        do k = 1, 4
+            dnsits(k)=-1.d0
+        end do        
+    endif
+    if (ierr .eq. 1040) then
+!   section completement comprimée
+        call utmess('A', 'CALCULEL_79')
+!       on garde la densite transverse
+        do k = 1, 4
+            dnsits(k)=-1.d0
+        end do
     endif
 !
 !       -- stockage des resultats :

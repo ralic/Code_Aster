@@ -22,7 +22,7 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
 !
 !______________________________________________________________________
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,9 +110,16 @@ subroutine clcelu(piva, pivb, effm, effn, ht,&
                         sigacim = es*epsila
                     endif
                 endif
+            else
+              ierr = 1020
+              dnsinf = 0.0d0
+              dnssup = 0.0d0
+              !goto 999
             endif
         else
-            ierr = 1020
+            ierr = 1040
+            dnsinf = 0.0d0
+            dnssup = 0.0d0
             goto 999
         endif
     endif
