@@ -92,7 +92,7 @@ implicit none
     character(len=24) :: comref = '&&OP0026.COMREF'
     character(len=19) :: commoi, complu, depplu
     character(len=19) :: depmoi, depdel, varplu, sigplu, varmoi, sigmoi
-    character(len=19) :: mediri, merigi, vediri, vefint, veforc, vevarc_prev, vevarc_curr
+    character(len=19) :: mediri, merigi, vediri, vefint, veforc, vefori(2), vevarc_prev, vevarc_curr
     aster_logical :: lmatr, lvnod, lvfin, lcomp, l_varc_prev, l_varc_curr
     aster_logical :: l_merimo, l_medime, l_vefnme, l_etat_init
     aster_logical :: tabret(0:10)
@@ -288,10 +288,13 @@ implicit none
         partps(1)=0.d0
         partps(2)=0.d0
         partps(3)=0.d0
+        vefori(1)=veforc
+        vefori(2)=' '
+
         if (.not.l_merimo) call copisd('CHAMP_GD', 'V', sigmoi, sigplu)
         call vefnme(option, 'G', modele, mate, carele,&
                     compor, partps, 0, ligrmo, complu,&
-                    sigplu, k24bid, depplu, ' ', veforc)
+                    sigplu, k24bid, depplu, ' ', vefori)
     endif
 !
 ! - State variables

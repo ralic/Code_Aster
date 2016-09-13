@@ -1,7 +1,7 @@
 subroutine op0183()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,7 +78,7 @@ subroutine op0183()
     character(len=16) :: compex
     character(len=19) :: resuco, knum, infcha, ligrel, resuc1, chdep2
     character(len=24) :: modele, mater, carac, charge, infoch, chamno
-    character(len=24) :: nume, vfono, vafono, sigma, chdepl, k24bid
+    character(len=24) :: nume, vfono, vfonri(2), vafono, sigma, chdepl, k24bid
     character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
@@ -213,7 +213,8 @@ subroutine op0183()
 !
 !
 !
-        vfono=' '
+        vfonri(1)=' '
+        vfonri(2)=' '
         vafono=' '
         vreno='&&'//nompro//'           .RELR'
         nh=0
@@ -291,9 +292,10 @@ subroutine op0183()
 !
         call vefnme(option, 'V', modele, mater, carac,&
                     compor, partps, nh, ligrel, chvarc,&
-                    sigma, ' ', chdepl, chdep2, vfono)
+                    sigma, ' ', chdepl, chdep2, vfonri)
 !
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
+        vfono = vfonri(1)
         call asasve(vfono, nume, 'R', vafono)
 !
         call rsexch(' ', resuc1, 'DEPL', iordr, chamno,&

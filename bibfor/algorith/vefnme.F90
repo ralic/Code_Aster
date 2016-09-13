@@ -22,9 +22,13 @@ subroutine vefnme(option, base, model, mate, carele,&
 #include "asterfort/mecara.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/codent.h"
+#include "asterfort/exisd.h"
+#include "asterfort/sepach.h"
+#include "asterfort/copisd.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +59,7 @@ subroutine vefnme(option, base, model, mate, carele,&
     character(len=*), intent(in) :: strxz
     character(len=*), intent(in) :: deplz
     character(len=*), intent(in) :: depl_incrz
-    character(len=*), intent(inout) :: vecelz
+    character(len=*), intent(inout) :: vecelz(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,17 +95,19 @@ subroutine vefnme(option, base, model, mate, carele,&
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=8) :: k8bla, mesh
-    character(len=8) :: newnom
+    character(len=8) :: newnom, nomgd, carael
     character(len=19) :: numhar, tpsmoi, tpsplu, ligrel_local, ligrel
-    character(len=19) :: chgeom, chcara(18), vecele
+    character(len=19) :: chgeom, chcara(18), vecele, veceli
+    character(len=19) :: lchinr(nbin), lchini(nbin)
     character(len=16) :: optio2
-    integer :: ibid, iret
+    integer :: ibid, iret, inddec(nbin), iexi, k
     real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
     character(len=19) :: sigma, varicom, strx
     character(len=19) :: depl, depl_incr
-    aster_logical :: debug
+    character(len=19) :: chdecr(nbin), chdeci(nbin), ch19, chr, chi, ch1(nbout), ch2(nbout)
+    aster_logical :: debug, lcmplx, lsspt
     integer :: ifmdbg, nivdbg
 !
 ! --------------------------------------------------------------------------------------------------
@@ -111,6 +117,7 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
 ! - Initializations
 !
+    carael=carele(1:8)
     sigma = sigmaz
     varicom = varicomz
     strx = strxz
@@ -143,9 +150,13 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
 ! - VECT_ELEM name
 !
-    vecele = vecelz
+    vecele = vecelz(1)
     if (vecele .eq. ' ') then
         vecele = '&&VEFNME'
+    endif
+    veceli = vecelz(2)
+    if (veceli .eq. ' ') then
+        veceli = '&&VEFNMI'
     endif
     if (ligrel .eq. ' ') then
         ligrel_local = model(1:8)//'.MODELE'
@@ -175,6 +186,10 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
     call inical(nbin, lpain, lchin, nbout, lpaout,&
                 lchout)
+    call inical(nbin, lpain, lchin, nbout, lpaout,&
+                ch1)
+    call inical(nbin, lpain, lchin, nbout, lpaout,&
+                ch2)
 !
 ! - CREATION DES LISTES DES CHAMPS IN
 !
@@ -279,6 +294,12 @@ subroutine vefnme(option, base, model, mate, carele,&
     call gcnco2(newnom)
     lchout(1) = vecele(1:8)//newnom
     call corich('E', lchout(1), -1, ibid)
+    call gcnco2(newnom)
+    ch1(1) = vecele(1:8)//newnom
+    call corich('E', ch1(1), -1, ibid)
+    call gcnco2(newnom)
+    ch2(1) = veceli(1:8)//newnom
+    call corich('E', ch2(1), -1, ibid)
 !
 ! --- PREPARATION DU VECT_ELEM RESULTAT
 !
@@ -286,6 +307,50 @@ subroutine vefnme(option, base, model, mate, carele,&
     call memare(base, vecele, model, ' ', carele,&
                 'CHAR_MECA')
 !
+    lcmplx=.false.
+    do k = 1, nbin
+        inddec(k)=0
+        if (lpain(k) .eq. ' ') goto 1
+        ch19=lchin(k)
+        if (ch19 .eq. ' ') goto 1
+        call exisd('CHAMP', ch19, iexi)
+        if (iexi .eq. 0) goto 1
+        call dismoi('NOM_GD', ch19, 'CHAMP', repk=nomgd)
+        if (nomgd(5:6) .eq. '_C') then
+            lcmplx=.true.
+            inddec(k)=1
+            chr='&&VEFNME.CHXX.R'
+            chi='&&VEFNME.CHXX.I'
+            call codent(k, 'D0', chr(12:13))
+            call codent(k, 'D0', chi(12:13))
+            call sepach(carael, ch19, 'V', chr, chi)
+            chdecr(k)=chr
+            chdeci(k)=chi
+        endif
+  1     continue
+    end do
+
+    if (lcmplx) then
+        call detrsd('VECT_ELEM', veceli)
+    endif
+
+    call exisd('CHAM_ELEM_S', lchout(1), iexi)
+    lsspt=(iexi.ne.0)
+
+    if (lcmplx) then
+        do k = 1, nbin
+            if (inddec(k) .eq. 0) then
+                lchinr(k)=lchin(k)
+                lchini(k)=lchin(k)
+            else
+                lchinr(k)=chdecr(k)
+                lchini(k)=chdeci(k)
+            endif
+        end do
+        call memare(base, veceli, model, ' ', carele,&
+                'CHAR_MECA')
+    endif
+
     if (debug) then
         call dbgcal(optio2, ifmdbg, nbin, lpain, lchin,&
                     nbout, lpaout, lchout)
@@ -293,15 +358,37 @@ subroutine vefnme(option, base, model, mate, carele,&
 !
 ! - APPEL A CALCUL
 !
-    call calcul('S', optio2, ligrel_local, nbin, lchin,&
+    if (lcmplx) then
+        if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchout(1), ch1(1))
+        call calcul('S', optio2, ligrel_local, nbin, lchinr,&
+                lpain, nbout, ch1, lpaout, 'V',&
+                'OUI')
+        call reajre(vecele, ch1(1), 'V')
+        vecelz(1) = vecele//'.RELR'
+!
+        if (lsspt) call copisd('CHAM_ELEM_S', 'V', lchout(1), ch2(1))
+        call calcul('S', optio2, ligrel_local, nbin, lchini,&
+                lpain, nbout, ch2, lpaout, 'V',&
+                'OUI')
+        call reajre(veceli, ch2(1), 'V')
+        vecelz(2) = veceli//'.RELR'
+    else
+        call calcul('S', optio2, ligrel_local, nbin, lchin,&
                 lpain, nbout, lchout, lpaout, base,&
                 'OUI')
-    call reajre(vecele, lchout(1), base)
-!
-    vecelz = vecele//'.RELR'
+        call reajre(vecele, lchout(1), base)
+        vecelz(1) = vecele//'.RELR'
+    endif
 !
 ! - Cleaning
 !
+    do k = 1, nbin
+        if (inddec(k) .ne. 0) then
+            call detrsd('CHAMP', chdecr(k))
+            call detrsd('CHAMP', chdeci(k))
+        endif
+    end do
+
     call detrsd('CHAMP_GD', numhar)
     call detrsd('CHAMP_GD', tpsmoi)
     call detrsd('CHAMP_GD', tpsplu)

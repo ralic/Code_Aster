@@ -61,6 +61,12 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
                         fr=tr("Charges contenant les temperatures, les efforts repartis pour les poutres..."),
                         regles=(EXCLUS('FONC_MULT','COEF_MULT',),),
          CHARGE       = SIMP(statut='o',typ=(char_meca,char_cine_meca),),
+#pour les chgt harmo
+            PHAS_DEG    =     SIMP(statut='f',typ='R',defaut= 0.E+0),
+            PUIS_PULS   =     SIMP(statut='f',typ='I',defaut= 0),
+            FONC_MULT_C =     SIMP(statut='f',typ=(fonction_c,formule_c),),
+            COEF_MULT_C =     SIMP(statut='f',typ='C'),
+
          FONC_MULT    = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
          COEF_MULT    = SIMP(statut='f',typ='R'),
          TYPE_CHARGE  = SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",),),),

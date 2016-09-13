@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -33,6 +33,6 @@ interface
         character(len=*), intent(in) :: strxz
         character(len=*), intent(in) :: deplz
         character(len=*), intent(in) :: depl_incrz
-        character(len=*), intent(inout) :: vecelz
+        character(len=*), intent(inout) :: vecelz(*)
     end subroutine vefnme
 end interface

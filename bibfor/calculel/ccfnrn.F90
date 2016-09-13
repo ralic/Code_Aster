@@ -40,13 +40,16 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 #include "asterfort/wkvect.h"
 #include "asterfort/medome_once.h"
 #include "asterfort/verif_bord.h"
+#include "asterfort/ascomb.h"
+#include "asterfort/dylach.h"
+#include "asterfort/lislec.h"
     integer :: nbordr
     character(len=4) :: chtype
     character(len=8) :: resuin, resuou
     character(len=16) :: option, typesd
     character(len=19) :: lisord
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,21 +71,21 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 ! person_in_charge: nicolas.sellenet at edf.fr
     integer :: jordr, iret, iordr, i, jinfc, nbchar, ic, jref
     integer :: iachar, ichar, ii, nuord, nh, jnmo, nbddl, lmat, iad, ind
-    integer :: neq, jfo, lonch
+    integer :: neq, jfo, lonch, jfr, jfi
     integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce
     integer :: cret
     real(kind=8) :: etan, time, partps(3), omega2, coef(3)
     character(len=1) :: stop
     character(len=2) :: codret
     character(len=6) :: nompro
-    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3)
-    character(len=16) :: typmo, optio2
-    character(len=19) :: ligrel, chdep2, infcha, list_load
+    character(len=8) :: k8bid, kiord, ctyp, nomcmp(3), para
+    character(len=16) :: typmo, optio2, motfac
+    character(len=19) :: ligrel, chdep2, infcha, list_load, vebid
     character(len=24) :: numref, fomult, charge, infoch, vechmp, vachmp, cnchmp
-    character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono
-    character(len=24) :: carac
+    character(len=24) :: vecgmp, vacgmp, cncgmp, vefpip, vafpip, cnfpip, vfono(2)
+    character(len=24) :: carac, cnchmpc
     character(len=24) :: vafono, vreno, vareno, sigma, chdepl, valk(3), nume
-    character(len=24) :: mater
+    character(len=24) :: mater, vafonr, vafoni
     character(len=24) :: chvive, chacve, masse, chvarc, compor, k24bid, chamno
     character(len=24) :: strx
     character(len=24) :: bidon, chacce, modele, kstr
@@ -90,10 +93,14 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
     real(kind=8), pointer :: cgmp(:) => null()
     real(kind=8), pointer :: chmp(:) => null()
     real(kind=8), pointer :: fono(:) => null()
+    real(kind=8), pointer :: fonor(:) => null()
+    real(kind=8), pointer :: fonoi(:) => null()
     real(kind=8), pointer :: fpip(:) => null()
     real(kind=8), pointer :: noch(:) => null()
     real(kind=8), pointer :: reno(:) => null()
     real(kind=8), pointer :: nldepl(:) => null()
+    complex(kind=8), pointer :: nochc(:) => null()
+    complex(kind=8), pointer :: chmpc(:) => null()
     integer, pointer :: v_list_store(:) => null()
     parameter(nompro='CCFNRN')
     data chvarc/'&&CCFNRN.CHVARC'/
@@ -119,7 +126,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
 ! - Only one list of loads for REAC_NODA
 !
-    if (option .eq. 'REAC_NODA') then
+    if (option .eq. 'REAC_NODA' .and. &
+        (typesd .eq. 'EVOL_ELAS' .or. typesd .eq. 'EVOL_NOLI')) then
         call jeveuo(lisord, 'L', vi = v_list_store)
         call medome_once(resuin, v_list_store, nbordr,&
                          list_load_ = list_load)
@@ -216,8 +224,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         vafpip=' '
         cnfpip=' '
         etan=0.d0
-        vfono=' '
+        vfono(1)=' '
+        vfono(2)=' '
         vafono=' '
+        vafonr=' '
+        vafoni=' '
         vreno='&&'//nompro//'           .RELR'
         vareno='&&'//nompro//'           .RELR'
 !
@@ -299,12 +310,20 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call rsexch(' ', resuin, 'COMPORTEMENT', iordr, compor,&
                     iret)
 !
+! separation reel imag si dyna_harmo
         call vefnme(option, 'V', modele, mater, carac,&
                     compor, partps, nh, ligrel, chvarc,&
                     sigma, strx, chdepl, chdep2, vfono)
-!
 !       --- ASSEMBLAGE DES VECTEURS ELEMENTAIRES ---
-        call asasve(vfono, nume, 'R', vafono)
+        if (typesd.ne.'DYNA_HARMO') then
+            call asasve(vfono(1), nume, 'R', vafono)
+        else
+! creation champ aux noeuds
+            call vtcreb(vfono(1), 'V', 'R', nume_ddlz = nume)
+            call asasve(vfono(1), nume, 'R', vafonr)
+            call vtcreb(vfono(2), 'V', 'R', nume_ddlz = nume)
+            call asasve(vfono(2), nume, 'R', vafoni)
+        endif
 !
 !       --- CREATION DE LA STRUCTURE CHAM_NO ---
         call rsexch(' ', resuou, option, iordr, chamno,&
@@ -318,20 +337,41 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             call utmess('A', 'PREPOST5_1', nk=2, valk=valk)
             call detrsd('CHAM_NO', chamno(1:19))
         endif
-        call vtcreb(chamno, 'G', 'R',&
+        if (typesd.ne.'DYNA_HARMO') then
+            call vtcreb(chamno, 'G', 'R',&
                     nume_ddlz = nume,&
                     nb_equa_outz = neq)
-        call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
+            call jeveuo(chamno(1:19)//'.VALE', 'E', vr=noch)
+        else
+            call vtcreb(chamno, 'G', 'C',&
+                    nume_ddlz = nume,&
+                    nb_equa_outz = neq)
+            call jeveuo(chamno(1:19)//'.VALE', 'E', vc=nochc)
+        endif
 !
 !       --- REMPLISSAGE DE L'OBJET .VALE DU CHAM_NO ---
-        call jeveuo(vafono, 'L', jfo)
-        call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
         call jelira(chamno(1:19)//'.VALE', 'LONMAX', lonch)
+        if (typesd.ne.'DYNA_HARMO') then
+            call jeveuo(vafono, 'L', jfo)
+            call jeveuo(zk24(jfo)(1:19)//'.VALE', 'L', vr=fono)
+        else
+            call jeveuo(vafonr, 'L', jfr)
+            call jeveuo(zk24(jfr)(1:19)//'.VALE', 'L', vr=fonor)
+            call jeveuo(vafoni, 'L', jfi)
+            call jeveuo(zk24(jfi)(1:19)//'.VALE', 'L', vr=fonoi)
+            do j = 0, lonch-1
+                nochc(1+j)=dcmplx(fonor(1+j),fonoi(1+j))
+            end do
+        endif
 !
 !       --- STOCKAGE DES FORCES NODALES ---
         if (option .eq. 'FORC_NODA') then
             do j = 0, lonch-1
-                noch(1+j)=fono(1+j)
+                if (typesd.ne.'DYNA_HARMO') then
+                    noch(1+j)=fono(1+j)
+                else
+                    nochc(1+j)=nochc(1+j)
+                endif
             end do
             goto 270
         endif
@@ -350,24 +390,51 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
             else
                 stop = 'S'
             endif
-            call vechme(stop, modele, charge, infoch, partps,&
-                        carac, mater, vechmp, varc_currz = chvarc, ligrel_calcz = ligrel)
 !
-            call asasve(vechmp, nume, 'R', vachmp)
-            call ascova('D', vachmp, fomult, 'INST', time,&
+            if (typesd.ne.'DYNA_HARMO') then
+                call vechme(stop, modele, charge, infoch, partps,&
+                        carac, mater, vechmp, varc_currz = chvarc, ligrel_calcz = ligrel)
+                call asasve(vechmp, nume, 'R', vachmp)
+                call ascova('D', vachmp, fomult, 'INST', time,&
                         'R', cnchmp)
 !
 ! --- CHARGES SUIVEUSE (TYPE_CHARGE: 'SUIV')
-            call detrsd('CHAMP_GD', bidon)
-            call vtcreb(bidon, 'G', 'R',&
+                call detrsd('CHAMP_GD', bidon)
+                call vtcreb(bidon, 'G', 'R',&
                         nume_ddlz = nume,&
                         nb_equa_outz = neq)
-            call vecgme(modele, carac, mater, charge, infoch,&
+                call vecgme(modele, carac, mater, charge, infoch,&
                         partps(1), chdepl, bidon, vecgmp, partps(1),&
                         compor, ligrel, chvive, k24bid)
-            call asasve(vecgmp, nume, 'R', vacgmp)
-            call ascova('D', vacgmp, fomult, 'INST', time,&
+                call asasve(vecgmp, nume, 'R', vacgmp)
+                call ascova('D', vacgmp, fomult, 'INST', time,&
                         'R', cncgmp)
+            else
+                if (ligrel(1:8) .ne. modele) then
+!pour les DYNA_HARMO
+!pour l instant je ne fais le calcul de REAC_NODA que sur le modele en entier
+!(gestion FONC_MULT_C : fastidieuse)
+                    call utmess('F', 'PREPOST3_96')
+                endif
+                motfac = 'EXCIT'
+                if (i .eq. 1) then
+                    call lislec(motfac, 'MECANIQUE', 'V', infcha)
+                else
+                    call jedetr(cnchmpc(1:19)//'.REFE')
+                    call jedetr(cnchmpc(1:19)//'.DESC')
+                    call jedetr(cnchmpc(1:19)//'.VALE')
+                endif
+                vebid = '&&VEBIDON'
+                vechmp = '&&VECHMP'
+                call dylach(modele, mater, carac, infcha, nume,&
+                        vebid, vechmp, vebid, vebid)
+                para = 'FREQ'
+                cnchmpc='&&'//nompro//'.CHARGE'
+                call vtcreb(cnchmpc, 'V', 'C',&
+                            nume_ddlz = nume,&
+                            nb_equa_outz = neq)
+                call ascomb(infcha, vechmp, 'C', para, time, cnchmpc)
+            endif
 !
 ! --- POUR UN EVOL_NOLI, PRISE EN COMPTE DES FORCES PILOTEES
             if (typesd .eq. 'EVOL_NOLI') then
@@ -385,10 +452,18 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
 !
 ! --- CALCUL DU CHAMNO DE REACTION PAR DIFFERENCE DES FORCES NODALES
 ! --- ET DES FORCES EXTERIEURES MECANIQUES NON SUIVEUSES
-            call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=chmp)
-            call jeveuo(cncgmp(1:19)//'.VALE', 'L', vr=cgmp)
+            if (typesd.ne.'DYNA_HARMO') then
+                call jeveuo(cnchmp(1:19)//'.VALE', 'L', vr=chmp)
+                call jeveuo(cncgmp(1:19)//'.VALE', 'L', vr=cgmp)
+            else
+                call jeveuo(cnchmpc(1:19)//'.VALE', 'L', vc=chmpc)
+            endif
             do j = 0, lonch-1
-                noch(1+j)=fono(1+j)-chmp(1+j)-cgmp(1+j)
+                if (typesd.ne.'DYNA_HARMO') then
+                    noch(1+j)=fono(1+j)-chmp(1+j)-cgmp(1+j)
+                else
+                    nochc(1+j)=nochc(1+j)-chmpc(1+j)
+                endif
             end do
             if (typesd.eq.'EVOL_NOLI') then
                 call jeveuo(cnfpip(1:19)//'.VALE', 'L', vr=fpip)
@@ -399,7 +474,11 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         else
 !         --- CALCUL DU CHAMNO DE REACTION PAR RECOPIE DE FORC_NODA
             do j = 0, lonch-1
-                noch(1+j)=fono(1+j)
+                if (typesd.ne.'DYNA_HARMO') then
+                    noch(1+j)=fono(1+j)
+                else
+                    nochc(1+j)=nochc(1+j)
+                endif
             end do
         endif
 !
@@ -499,7 +578,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                 call mcmult('ZERO', lmat, zc(lacce), zc(ltrav), 1,&
                             .true._1)
                 do j = 0, lonch-1
-                    noch(1+j)=noch(1+j)+dble(zc(ltrav+j))
+                    nochc(1+j)=nochc(1+j)+zc(ltrav+j)
                 end do
                 call jedetr('&&'//nompro//'.TRAV')
             else
@@ -539,7 +618,8 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
                         iordr)
         endif
         call detrsd('CHAMP_GD', '&&'//nompro//'.SIEF')
-        call detrsd('VECT_ELEM', vfono(1:8))
+        call detrsd('VECT_ELEM', vfono(1)(1:8))
+        call detrsd('VECT_ELEM', vfono(2)(1:8))
         call detrsd('VECT_ELEM', vreno(1:8))
         call detrsd('VECT_ELEM', vechmp(1:8))
         call detrsd('VECT_ELEM', vecgmp(1:8))
@@ -562,6 +642,12 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr,&
         call jedetr(vachmp(1:6)//'00.BIDON     .REFE')
         call jedetr(vacgmp(1:6)//'00.BIDON     .REFE')
         call jedetr(vafpip(1:6)//'00.BIDON     .REFE')
+        call jedetr(vfono(1)(1:8)//'           .REFE')
+        call jedetr(vfono(2)(1:8)//'           .REFE')
+        call jedetr(vfono(1)(1:8)//'           .DESC')
+        call jedetr(vfono(2)(1:8)//'           .VALE')
+        call jedetr(vfono(1)(1:8)//'           .VALE')
+        call jedetr(vfono(2)(1:8)//'           .DESC')
         call jedetr(vachmp(1:8)//'.ASCOVA')
         call jedetr(vacgmp(1:8)//'.ASCOVA')
         call jedetr(vafpip(1:8)//'.ASCOVA')
