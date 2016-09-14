@@ -96,6 +96,9 @@ MODELE=AFFE_MODELE( MAILLAGE=MAILLAGE,
                     );
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,    
                                NU = 0.3,
                                RHO = 2300.,
@@ -104,7 +107,7 @@ SOL=DEFI_MATERIAU(   ELAS=_F(  E = 7.5E15,
                      COMP_THM = 'LIQU_SATU',
                      THM_LIQU=_F(RHO = 1000.,
                                  UN_SUR_K = 1.E-20,
-                                 ALPHA = 1.E-4,
+                                 ALPHA = THMALP1,
                                  CP = 4180.,
                                  VISC = VISCOLIQ,
                                  D_VISC_TEMP = DVISCOL,

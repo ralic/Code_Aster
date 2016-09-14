@@ -247,6 +247,9 @@ PCINIT2 = PG02 - PEAUINIT2
 #======================================
 #            MATERIAU
 #======================================
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000105)
+
 MAT = DEFI_MATERIAU ( ELAS      =_F(
    E               = 72.9E6  ,
    NU              = 0.3     ,
@@ -258,7 +261,7 @@ MAT = DEFI_MATERIAU ( ELAS      =_F(
                       THM_LIQU    =_F(
    RHO             =1.E+3     ,
    UN_SUR_K        = 0   ,
-   ALPHA           = 1.048E-4   ,
+   ALPHA           = THMALP1   ,
    CP              = 0.      ,
    VISC            = VISCOLIQ   ,
    D_VISC_TEMP     = DVISCOL    ,

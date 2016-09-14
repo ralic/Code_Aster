@@ -102,6 +102,9 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
 # DEFI_MATERIAU
 #*********************************************************
 #
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(
    ELAS=_F(E=5.E8,
            NU=0.2,
@@ -110,7 +113,7 @@ MATERIAU=DEFI_MATERIAU(
    THM_LIQU=_F(
          RHO = 1.,
          UN_SUR_K = UN_SUR_K,
-         ALPHA = 1.E-4,
+         ALPHA = THMALP1,
          VISC = UN,
          D_VISC_TEMP = ZERO),
 

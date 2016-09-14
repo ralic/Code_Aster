@@ -156,6 +156,9 @@ DM8=DEFI_CONSTANTE(VALE=1.E-07,);
 
 KINTBO=DEFI_CONSTANTE(VALE=1.E-20,);
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                               NU=0.2,
                               RHO=2670.0,
@@ -163,7 +166,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP1,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),
@@ -220,6 +223,9 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         INFO=1,);
 DLSBG=DEFI_CONSTANTE(VALE=0.05,);
 
+
+THMALP2 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                               NU=0.2,
                               RHO=2670.0,
@@ -227,7 +233,7 @@ MATERBG=DEFI_MATERIAU(ELAS=_F(E=1.9E+20,
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP2,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

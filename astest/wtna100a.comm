@@ -170,6 +170,9 @@ EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
 NU=DEFI_CONSTANTE(VALE=0.2,);
 BIDON = 0.,
 RHOF=DEFI_CONSTANTE(VALE = 2670.,)
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERBO=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
@@ -180,7 +183,7 @@ MATERBO=DEFI_MATERIAU(
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP1,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),
@@ -239,6 +242,9 @@ LSBG=CALC_FONC_INTERP(FONCTION=LSG,
                         INFO=2,);
 DLSBG=DEFI_CONSTANTE(VALE=0.05,);
 
+
+THMALP2 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERBG=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
@@ -249,7 +255,7 @@ MATERBG=DEFI_MATERIAU(
                       COMP_THM = 'LIQU_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.E-10,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP2,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

@@ -139,6 +139,9 @@ HENRY = DEFI_CONSTANTE ( VALE = 1.E20);
 
 PREF=1.;
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(
    ELAS=_F(  E = 1.3E8,
              NU = 0.4,
@@ -148,7 +151,7 @@ MATERIAU=DEFI_MATERIAU(
    THM_LIQU=_F(
          RHO = RHO_EAU,
          UN_SUR_K = 0.5E-9,
-         ALPHA = 1.E-4,
+         ALPHA = THMALP1,
          VISC = VISCOL,
          D_VISC_TEMP = ZERO),
    COMP_THM = 'LIQU_AD_GAZ',

@@ -161,6 +161,9 @@ FICKAGO = DEFI_CONSTANTE ( VALE = 1.5459e-5);
 FICKWAG=DEFI_CONSTANTE ( VALE = 8.60651E-11);
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATAGO=DEFI_MATERIAU(ELAS=_F(
                                     E   = 150E6,
                                     NU  = 0.3,
@@ -174,7 +177,7 @@ MATAGO=DEFI_MATERIAU(ELAS=_F(
 
                      THM_LIQU=_F(RHO                    = 1000.0,
                                  UN_SUR_K               = 5.0E-10,
-                                 ALPHA                  = 1.E-4,
+                                 ALPHA                  = THMALP1,
                                  CP                     = 4180.,
                                  VISC                   = VISCOLIQ,
                                  D_VISC_TEMP            = DVISCOL,),

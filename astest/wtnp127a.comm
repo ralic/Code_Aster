@@ -116,6 +116,9 @@ MODELT=AFFE_MODELE(MAILLAGE=MAIL,
 #*********************************************************
 #
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(COMP_THM='LIQU_AD_GAZ_VAPE',
                        THM_INIT=_F(PRE1=0.,
                                    PRE2=PGREF,
@@ -148,7 +151,7 @@ MATERIAU=DEFI_MATERIAU(COMP_THM='LIQU_AD_GAZ_VAPE',
                                    UN_SUR_K=UN_SUR_K,
                                    VISC=UN,
                                    D_VISC_TEMP=ZERO,
-                                   ALPHA=1.E-4),
+                                   ALPHA=THMALP1),
                        THM_GAZ=_F(MASS_MOL=1.,
                                   VISC=UN,
                                   D_VISC_TEMP=ZERO),

@@ -58,6 +58,9 @@ MAILLAGE = DEFI_GROUP( reuse        = MAILLAGE,
                           CREA_GROUP_MA=_F(NOM='ROCHE',TOUT='OUI',),
                           CREA_GROUP_NO=_F(GROUP_MA='ROCHE',), );
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 SOL=DEFI_MATERIAU(  ELAS=_F(  E = 7.74E6,
                                 NU = 0.3,
                                 RHO = 2500.,
@@ -74,7 +77,7 @@ SOL=DEFI_MATERIAU(  ELAS=_F(  E = 7.74E6,
                      THM_LIQU=_F(
                                 RHO = 1000.,
                                 UN_SUR_K = 0.0,
-                                ALPHA = 1.E-4,
+                                ALPHA = THMALP1,
                                 CP = 4180.,
                                 VISC = VISCOLIQ,
                                 D_VISC_TEMP = DVISCOL,

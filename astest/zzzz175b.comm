@@ -43,6 +43,9 @@ BLOC     = [None]*(10*(n_adap_max+1));
 #  A.4. Proprietes du materiau (copiees sur wtnl100a)
 # ---------------------------------------------------
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                NU=0.0,
                                RHO=2800.0,
@@ -72,7 +75,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=1.E7,
                                    UN_SUR_K=0.0,
                                    VISC=UN,
                                    D_VISC_TEMP=ZERO,
-                                   ALPHA=1.E-4,
+                                   ALPHA=THMALP1,
                                    CP=4180.0,),
                        THM_GAZ=_F(MASS_MOL=0.02896,
                                   CP=1000.0,

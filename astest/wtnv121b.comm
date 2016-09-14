@@ -172,6 +172,9 @@ DPERMG=CALC_FONC_INTERP(FONCTION=DPG,
 #
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000066)
+
 MATERIAU=DEFI_MATERIAU(
                   ELAS=_F(E = 39.5E9,
                             NU = 0.245,
@@ -188,7 +191,7 @@ MATERIAU=DEFI_MATERIAU(
                   THM_LIQU=_F(
                                 RHO = 1000.,
                                 UN_SUR_K = 0.5E-9,
-                                ALPHA = 0.66193E-4,
+                                ALPHA = THMALP1,
                                 CP = 4180.,
                                 VISC = VISCOLIQ,
                                 D_VISC_TEMP = DVISCOL,

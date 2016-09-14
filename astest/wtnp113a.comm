@@ -170,12 +170,15 @@ DPERML=CALC_FONC_INTERP(FONCTION=DPL,
                        INFO=2,);
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 BG=DEFI_MATERIAU(
    THM_LIQU=_F(
          RHO = 1000.,
          UN_SUR_K = 1.E-10,
          CP=1000.0,
-         ALPHA = 1.E-4,
+         ALPHA = THMALP1,
          VISC = VISCOL,
          D_VISC_TEMP = ZERO,),
    COMP_THM = 'LIQU_GAZ',

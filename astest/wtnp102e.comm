@@ -163,6 +163,9 @@ LAMBS=CALC_FONC_INTERP(FONCTION=LS,
                         INFO=2,);
 DLS=DEFI_CONSTANTE(VALE=0.3,);
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
+
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                               NU=0.20000000000000001,
                               RHO=2670.0,
@@ -170,7 +173,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15000000E8,
                       COMP_THM = 'LIQU_VAPE_GAZ',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
-                                  ALPHA=0.,
+                                  ALPHA=THMALP1,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

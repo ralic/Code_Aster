@@ -57,6 +57,9 @@ LAMB=DEFI_CONSTANTE(VALE=1.8,);
 
 KINTBG=DEFI_CONSTANTE(VALE=9.9999999999999998E-20,);
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERBG=DEFI_MATERIAU(ELAS=_F(E=2.166000000E9,
                               NU=0.29999999999999999,
                               RHO=2410.0,
@@ -64,7 +67,7 @@ MATERBG=DEFI_MATERIAU(ELAS=_F(E=2.166000000E9,
                       COMP_THM = 'LIQU_SATU',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=5.0000000000000003E-10,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP1,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

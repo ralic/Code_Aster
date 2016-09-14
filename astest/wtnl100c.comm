@@ -59,6 +59,9 @@ BIDON=DEFI_CONSTANTE(VALE=0.0);
 KINT=DEFI_CONSTANTE(VALE=1e-08);
 #
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                                NU=0.0,
                                RHO=2800.0,
@@ -91,7 +94,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                        UN_SUR_K=0.0,
                        VISC=UN,
                        D_VISC_TEMP=ZERO,
-                       ALPHA=0.0001,
+                       ALPHA=THMALP1,
                        CP=4180.0),
                        THM_GAZ=_F(
                        MASS_MOL=0.02896,

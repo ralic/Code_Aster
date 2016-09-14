@@ -99,6 +99,9 @@ EL = DEFI_FONCTION  ( NOM_PARA   = 'TEMP' ,
 NU=DEFI_CONSTANTE(VALE=0.,);
 
 RHOF=DEFI_CONSTANTE(VALE = 1.,)
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
+
 MATERIAU=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
@@ -109,7 +112,7 @@ MATERIAU=DEFI_MATERIAU(
                        COMP_THM = 'LIQU_SATU',
                        THM_LIQU=_F(RHO=1.0,
                                    UN_SUR_K=0.0,
-                                   ALPHA=0.0,
+                                   ALPHA=THMALP1,
                                    CP=1.0,
                                    VISC=UN,
                                    D_VISC_TEMP=ZERO,),

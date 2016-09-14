@@ -85,10 +85,13 @@ DSATBO=DEFI_CONSTANTE(VALE=-1.E-12,);
 KINTBO=DEFI_CONSTANTE(VALE=10.E-21,);
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
+
 MATERBO=DEFI_MATERIAU(COMP_THM = 'LIQU_VAPE',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
-                                  ALPHA=0.,
+                                  ALPHA=THMALP1,
                                   CP=4180.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

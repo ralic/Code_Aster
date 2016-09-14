@@ -243,6 +243,9 @@ LCTCOX = DEFI_CONSTANTE ( VALE = 1.81 );        # LAMB_CT ((1 - PHI0) x LAMBSoli
 #****************************************************************
 # JEU
 #****************************************************************
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000105)
+
 MATJEU = DEFI_MATERIAU (
 
              ELAS   =_F(
@@ -257,7 +260,7 @@ MATJEU = DEFI_MATERIAU (
              THM_LIQU  =_F(
   RHO       = 1000.   ,
   UN_SUR_K    = 0.500E-9  ,
-  ALPHA      = 1.048E-4  ,
+  ALPHA      = THMALP1  ,
   CP       = 4180.   ,
   VISC      = VISCOLIQ  ,
   D_VISC_TEMP   = DVISCOL  ,
@@ -322,6 +325,9 @@ MATJEU = DEFI_MATERIAU (
 # ZE Caracteristiques de la Zone Endommagee
 #****************************************************************
 #
+
+THMALP2 = DEFI_CONSTANTE(VALE=0.000105)
+
 MATZE = DEFI_MATERIAU (
 
              ELAS   =_F(
@@ -336,7 +342,7 @@ MATZE = DEFI_MATERIAU (
              THM_LIQU  =_F(
   RHO       = 1000.   ,
   UN_SUR_K    = 0.500E-9  ,
-  ALPHA      = 1.048E-4  ,
+  ALPHA      = THMALP2  ,
   CP       = 4180.   ,
   VISC      = VISCOLIQ  ,
   D_VISC_TEMP   = DVISCOL  ,
@@ -404,6 +410,9 @@ MATZE = DEFI_MATERIAU (
 # COX Caracteristiques du Callovo-Oxfordien
 #***************************************************************
 #
+
+THMALP3 = DEFI_CONSTANTE(VALE=0.000105)
+
 MATCOX = DEFI_MATERIAU (
 
              ELAS   =_F(
@@ -418,7 +427,7 @@ MATCOX = DEFI_MATERIAU (
              THM_LIQU  =_F(
   RHO       = 1000.   ,
   UN_SUR_K    = 0.500E-9  ,
-  ALPHA      = 1.048E-4  ,
+  ALPHA      = THMALP3  ,
   CP       = 4180.   ,
   VISC      = VISCOLIQ  ,
   D_VISC_TEMP   = DVISCOL  ,

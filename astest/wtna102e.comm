@@ -125,6 +125,9 @@ BIDON = 0.,
 
 
 RHOF=DEFI_CONSTANTE(VALE = 2670.,)
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
+
 MATERBO=DEFI_MATERIAU(
                     ELAS_FO=_F(E=EL,
                               NU=NU,
@@ -135,7 +138,7 @@ MATERBO=DEFI_MATERIAU(
                       COMP_THM = 'LIQU_AD_GAZ_VAPE',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
-                                  ALPHA=0.,
+                                  ALPHA=THMALP1,
                                   CP=0.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),

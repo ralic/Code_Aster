@@ -81,6 +81,9 @@ LI_BIS=DEFI_LIST_REEL(DEBUT=10,
 # 3. Definition du materiau
 ###########################
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                                NU=0.0,
                                RHO=2800.0,
@@ -99,7 +102,7 @@ MATERIAU=DEFI_MATERIAU(ELAS=_F(E=10000000.0,
                                    UN_SUR_K=0.0,
                                    VISC=UN,
                                    D_VISC_TEMP=ZERO,
-                                   ALPHA=0.0001,),);
+                                   ALPHA=THMALP1,),);
 
 ########################
 # 4. Lecture du maillage

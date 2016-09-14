@@ -114,6 +114,9 @@ DCONDHO=DEFI_CONSTANTE(VALE=0.0,);
 
 CONDLIQ=DEFI_CONSTANTE(VALE=2.9999999999999999E-16,);
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000100)
+
 ARGILE0=DEFI_MATERIAU(ELAS=_F(E=2.25000000E8,
                               NU=0.0,
                               RHO=2000.0,
@@ -121,7 +124,7 @@ ARGILE0=DEFI_MATERIAU(ELAS=_F(E=2.25000000E8,
                                COMP_THM = 'LIQU_SATU',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=3.77E-09,
-                                  ALPHA=1.E-4,
+                                  ALPHA=THMALP1,
                                   CP=2.850000E6,
                                   VISC=UN,
                                   D_VISC_TEMP=ZERO,),

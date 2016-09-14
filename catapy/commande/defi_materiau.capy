@@ -1794,7 +1794,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA         = SIMP(statut='f',typ='R'),
+                                           ALPHA         = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP            = SIMP(statut='f',typ='R'),
                                          ),
 # =================================================================================
@@ -1970,7 +1970,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================
@@ -2143,7 +2143,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
            THM_LIQU        =FACT(statut='f',
              RHO             =SIMP(statut='f',typ='R'),
              UN_SUR_K        =SIMP(statut='f',typ='R'),
-             ALPHA           =SIMP(statut='f',typ='R'),
+             ALPHA           = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              CP              =SIMP(statut='f',typ='R'),
              VISC            =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              D_VISC_TEMP     =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -2300,7 +2300,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================
@@ -2479,7 +2479,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES CACHEES -------------------------------------------
@@ -2688,7 +2688,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================
@@ -2874,7 +2874,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================
@@ -3069,7 +3069,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # ---------------------------------------------------------------------------------
 # -------------------   DONNEES NECESSAIRE SI THERMIQUE   -------------------------
 # ---------------------------------------------------------------------------------
-                                           ALPHA            = SIMP(statut='f',typ='R'),
+                                           ALPHA            = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                            CP               = SIMP(statut='f',typ='R'),
                                              ),
 # =================================================================================

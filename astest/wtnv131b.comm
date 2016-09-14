@@ -105,6 +105,9 @@ KINTBO=DEFI_CONSTANTE(VALE=1.E-19,);
 HENRY=DEFI_CONSTANTE(VALE=50000.,);
 
 
+
+THMALP1 = DEFI_CONSTANTE(VALE=0.000000)
+
 MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                               NU=0.2,
                               RHO=2670.0,
@@ -112,7 +115,7 @@ MATERBO=DEFI_MATERIAU(ELAS=_F(E=5.15E8,
                       COMP_THM = 'LIQU_AD_GAZ_VAPE',
                       THM_LIQU=_F(RHO=1000.0,
                                   UN_SUR_K=0.,
-                                  ALPHA=0.,
+                                  ALPHA=THMALP1,
                                   CP=0.0,
                                   VISC=VISCOLIQ,
                                   D_VISC_TEMP=DVISCOL,),
