@@ -1857,6 +1857,7 @@ phen.add('CONT_SL_3D', Modelisation(dim=(2,3), code='CT3',
         (MT.TRIA6     , EL.COT6E3D),
         (MT.QUAD9     , EL.COQ9E3D),
         (MT.SEG2      , EL.COP2E3D),
+        (MT.SEG3      , EL.COP3E3D),
     )))
 
 #-- Define SLAVE elements for LAC method (in DEFI_CONTACT) - Contact
