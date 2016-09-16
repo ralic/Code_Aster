@@ -40,6 +40,7 @@ ONDE_PLAN = Option(
     ),
     condition=(
       CondCalcul('+', ((AT.PHENO,'ME'),(AT.ABSO  ,'OUI'),)),
+      CondCalcul('-', ((AT.FLUIDE,'OUI'),(AT.ABSO,'OUI'),)),
     ),
     comment=""" SECOND MEMBRE POUR ONDE_PLAN """,
 )
