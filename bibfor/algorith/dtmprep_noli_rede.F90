@@ -47,7 +47,6 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/resmod.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-#include "asterfort/vecini.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
@@ -99,12 +98,14 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
         call jeveuo(nume//'      .NUME.REFN', 'L', vk24=refe)
         mdgene = refe(1)
 
-        call getvtx(motfac, 'SOUS_STRUC_1', iocc=icomp, scal=sst1, nbret=iret)
-        if (iret .eq. 0) call utmess('F', 'ALGORITH5_31')
+        call getvtx(motfac, 'SOUS_STRUC', iocc=icomp, scal=sst1, nbret=iret)
+        if (iret .eq. 0) call utmess('F', 'ALGORITH5_31', sk='SOUS_STRUC')
 
         mdssno = mdgene(1:14)//'.MODG.SSNO'
         call jenonu(jexnom(mdssno, sst1), iret)
-        if (iret .eq. 0) call utmess('F', 'ALGORITH5_32')
+        if (iret .eq. 0) then
+            call utmess('F', 'ALGORITH5_64')
+        endif
 
         call mgutdm(mdgene, sst1, ibid, 'NOM_NUME_DDL', ibid, nume1)
         call mgutdm(mdgene, sst1, ibid, 'NOM_MAILLAGE', ibid, mesh1)
@@ -143,21 +144,8 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
     if (comp(1:3) .eq. 'DRY') icmp = 5
     if (comp(1:3) .eq. 'DRZ') icmp = 6
 !
-! ----- CALCUL DIRECT
-    if (typnum .eq. 'NUME_DDL_SDASTER') then
-        call posddl('NUME_DDL', nume1, noeu, comp, inod,&
+    call posddl('NUME_DDL', nume1, noeu, comp, inod,&
                     nuddl)
-!
-! ----- CALCUL PAR SOUS-STRUCTURATION
-    else if (typnum(1:13).eq.'NUME_DDL_GENE') then
-        call jenonu(jexnom(mdssno, sst1), iret)
-        if (iret .eq. 0) then
-            call utmess('F', 'ALGORITH5_64')
-        endif
-
-        call posddl('NUME_DDL', nume1, noeu, comp, inod,&
-                    nuddl)
-    endif
 !
     if (nuddl .eq. 0) then
         valk = noeu
@@ -171,7 +159,6 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
     endif
 !
     call nlinivec(sd_nl, _MODAL_DEPL_NO1, 6*nbmode, iocc=i, vr=dplred)
-    call vecini(6*nbmode, 0.d0, dplred)
 
     call dtmget(sd_dtm, _BASE_VEC, vr=bmodal_v)
     call dtmget(sd_dtm, _NB_PHYEQ, iscal=neq)
@@ -192,7 +179,7 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
         call resmod(bmodal_v, nbmode, neq, numero, mdgene,&
                     noecho, dplcho)
         do j = 1, nbmode
-            dplred((j-1)*6+icmp) = dplcho(j+(icomp-1)*nbmode)
+            dplred((j-1)*6+icmp) = dplcho(j+(icmp-1)*nbmode)
         end do
         AS_DEALLOCATE(vr=dplcho)
     endif

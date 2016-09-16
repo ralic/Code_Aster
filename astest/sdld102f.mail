@@ -1,0 +1,24 @@
+ TITRE
+         AUTEUR=INTERFACE_IDEAS                 DATE=14/09/2016                 
+ FINSF
+ %
+ COOR_3D
+ NN1        0.20000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ NN2        0.30000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ M1       NN1       NN2      
+ FINSF
+ %
+ GROUP_NO
+ MASSE                   
+ NN2
+ FINSF
+ %
+ GROUP_MA
+ RESSORT                 
+ M1
+ FINSF
+ %
+ FIN

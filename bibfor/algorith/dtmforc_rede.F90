@@ -20,7 +20,7 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-! dtmforc_choc : Calculates the force/displacement localized force at 
+! dtmforc_rede : Calculates the force/displacement localized force at 
 !                the current step (t)
 !
 !       nl_ind           : nonlinearity index (for sd_nl access)
@@ -36,7 +36,9 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/fointe.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
-
+#include "asterfort/vecini.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
     integer               , intent(in)  :: nl_ind
@@ -51,11 +53,12 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     character(len=8)  :: sd_dtm, sd_nl, fonc, comp
     integer           :: im, ier, icomp, nbmode, saredi
     integer           :: start, finish
-    real(kind=8)      :: seuil, force, saured
+    real(kind=8)      :: seuil, force
 !
     integer         , pointer :: vindx(:) => null()
     real(kind=8)    , pointer :: dplred(:) => null()
     real(kind=8)    , pointer :: vint(:) => null()
+    real(kind=8)    , pointer :: fext0(:)   => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_
@@ -77,22 +80,33 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     if (comp(1:3) .eq. 'DRY') icomp = 5
     if (comp(1:3) .eq. 'DRZ') icomp = 6
 !
+!seuil : deplacement suivant icomp en repere physique
+!        (equivalent tophys)
     seuil = 0.d0
     do im = 1, nbmode
         seuil = seuil + dplred((im-1)*6+icomp) * depl(im)
     end do
 !
-    saured = seuil
     saredi = 1
 !
     call fointe('F ', fonc, 1, [comp], [seuil],&
                 force, ier)
+
     if (abs(force) .le. r8prem()) saredi = 0
 !
+    AS_ALLOCATE(vr=fext0, size=nbmode)
+    call vecini(nbmode, 0.d0, fext0)
+
+!fext0 : force en repere generalise (equivalent togene)
     do im = 1, nbmode
-        fext(im) = fext(im) + dplred((im-1)*6+icomp) * force
+        fext0(im) = fext0(im) + dplred((im-1)*6+icomp) * force
+    end do
+
+    do im = 1, nbmode
+        fext(im) = fext(im) + fext0(im)
     end do
 !
+    AS_DEALLOCATE(vr=fext0)
 
 ! --------------------------------------------------------------------------------------------------
 !   --- Internal variables, storage
@@ -103,5 +117,6 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     vint(start  ) = seuil
     vint(start+1) = force
     vint(start+2) = 1.d0 * saredi
+
 
 end subroutine
