@@ -6,6 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
+#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/infdbg.h"
@@ -53,7 +54,7 @@ implicit none
     integer :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
     integer :: j_patch, cont_init
     integer :: indi_cont_curr, indi_cont_prev
-    real(kind=8) :: tole_inter, pair_init, gap
+    real(kind=8) :: tole_inter, gap, armini, epsint
     character(len=19) :: sdappa
     character(len=24) :: sdcont_stat
     integer, pointer :: v_sdcont_stat(:) => null()
@@ -74,6 +75,11 @@ implicit none
 ! - Initializations
 !
     tole_inter = 1.d-5
+!
+! - Tolerance for CONTACT_INIT
+!
+    armini = armin(mesh)
+    epsint = 1.d-6*armini
 !
 ! - Get parameters
 !
@@ -102,13 +108,9 @@ implicit none
         nb_patch = v_mesh_lpatch((i_cont_zone-1)*2+2)
         j_patch  = v_mesh_lpatch((i_cont_zone-1)*2+1)
 !
-! ----- Get initial pairing
+! ----- Get parameters
 !
-        pair_init = 100.d0*r8prem()
         cont_init = mminfi(ds_contact%sdcont_defi, 'CONTACT_INIT', i_cont_zone)
-        if (cont_init .eq. 1) then
-            pair_init = 0.5               
-        end if
 !
 ! ----- Loop on patches
 !
@@ -119,14 +121,24 @@ implicit none
 !
 ! --------- Compute new status
 !
-            if (isnan( gap)) then
+            if (isnan(gap)) then
                 indi_cont_curr = -1
             else
-                if (gap .le. pair_init .and.&
-                    v_sdappa_coef(j_patch-2+i_patch).ge.tole_inter) then
+                indi_cont_curr = 0
+                if (cont_init .eq. 2) then
+! ----------------- Only interpenetrated points
+                    if (gap .le. epsint.and.&
+                        v_sdappa_coef(j_patch-2+i_patch) .ge. tole_inter) then
+                        indi_cont_curr = 1
+                    endif
+                else if (cont_init .eq. 1) then
+! ----------------- All points
                     indi_cont_curr = 1
-                else
+                else if (cont_init .eq. 0) then
+! ----------------- No initial contact
                     indi_cont_curr = 0
+                else
+                    ASSERT(.false.)
                 endif
             endif
 !
