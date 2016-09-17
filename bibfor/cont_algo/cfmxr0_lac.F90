@@ -1,4 +1,4 @@
-subroutine cfmxr0_lac(mesh, ds_contact)
+subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
 !
 use NonLin_Datastructure_type
 !
@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/nmrvai.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
@@ -36,6 +37,7 @@ implicit none
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Measure), optional, intent(inout) :: ds_measure_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,6 +49,7 @@ implicit none
 !
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
+! IO  ds_measure       : datastructure for measure and statistics management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +58,7 @@ implicit none
     integer, parameter :: nceld2 = 4
     integer, parameter :: nceld3 = 4 
     integer :: ifm, niv
-    integer :: nt_patch, nb_grel, nb_liel
+    integer :: nt_patch, nb_grel, nb_liel, nbliac
     integer :: i_liel, i_grel, patch_indx, elem_slav_nume, iret, vale_indx, decal
     real(kind=8) :: lagc, gapi, coef
     integer :: indi_cont
@@ -133,6 +136,7 @@ implicit none
 !
 ! - Fill input field
 !
+    nbliac    = 0
     do i_grel = 1, nb_grel
         decal   = v_celinr_celd(nceld1+i_grel)
         nb_liel = v_celinr_celd(decal+1)
@@ -158,10 +162,17 @@ implicit none
                     zr(vale_indx-1+3) = indi_cont
                     zr(vale_indx-1+4) = coef
                     zr(vale_indx-1+5) = coef*lagc
+                    if (indi_cont .eq. 1) then
+                        nbliac = nbliac + 1
+                    endif
                 end if
             enddo
         endif
     enddo
+!
+    if (present(ds_measure_)) then
+        call nmrvai(ds_measure_, 'Cont_NCont', input_count = nbliac)
+    endif
 !
     call jedema()
 end subroutine

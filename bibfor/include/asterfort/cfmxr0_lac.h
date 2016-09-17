@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine cfmxr0_lac(mesh, ds_contact)
+    subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
+        type(NL_DS_Measure), optional, intent(inout) :: ds_measure_
     end subroutine cfmxr0_lac
 end interface

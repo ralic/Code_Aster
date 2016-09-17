@@ -26,9 +26,9 @@ Seuls les algorithmes en Newton sont utilisables (ALGO_RESO_GEOM et ALGO_RESO_CO
 
     2 : _(u"""
 Contact LAC
-    Le maillage %(k1)s ne contient pas la collection .PATCH spécifique à la méthode ALGO_CONT='LAC'.
+    Le maillage %(k1)s ne contient pas les objets spécifiques à la méthode ALGO_CONT='LAC'.
 Conseil:
-    Il faut faire CREA_MAILLAGE/DECOUPE_LAC     avant DEFI_CONTACT
+    Il faut faire CREA_MAILLAGE/DECOUPE_LAC avant DEFI_CONTACT
 """),
 
     4 : _(u"""
@@ -40,8 +40,8 @@ Contact LAC
 Contact LAC
          On ne détecte pas le bon nombre de mailles esclaves. 
          Conseil :
-             Cette erreur est probablement dû au fait que vous avez inversez les rôles maîtres et esclaves. 
-             Vérifiez que votre GROUP_MA_ESCL contient bien des patchs créés via DECOUPE_LAC de CREA_MAILLAGE.  
+             Cette erreur est probablement dû au fait que vous avez inversé les rôles maîtres et esclaves. 
+             Vérifiez que votre GROUP_MA_ESCL est bien celui utilisé par DECOUPE_LAC de CREA_MAILLAGE.  
 """),
 
 }

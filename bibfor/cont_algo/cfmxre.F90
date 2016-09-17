@@ -126,7 +126,7 @@ implicit none
             call cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter,&
                         cnsinr   , cnsper)
         else if (l_cont_lac) then   
-            call cfmxr0_lac(mesh, ds_contact)
+            call cfmxr0_lac(mesh, ds_contact, ds_measure)
         else
             ASSERT(.false.)
         endif

@@ -11,6 +11,7 @@ implicit none
 #include "asterfort/cfdisl.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
@@ -46,7 +47,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: nt_patch, jv_dummy
+    integer :: nt_patch, jv_dummy, nt_elem_slav, vali(2)
     character(len=24) :: sdcont_stat, sdcont_lagc, sdcont_zeta
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,6 +60,13 @@ implicit none
 ! - Get parameters
 !
     nt_patch     = ds_contact%nt_patch
+    nt_elem_slav = cfdisi(ds_contact%sdcont_defi,'NTMAE')
+!
+! - Print
+!
+    vali(1) = nt_patch
+    vali(2) = nt_elem_slav
+    call utmess('I', 'MECANONLINE6_7', ni = 2, vali = vali)
 !
 ! - Create objects 
 !
