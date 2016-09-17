@@ -96,5 +96,8 @@ Contact méthode continue et pilotage sont incompatibles
      Désactivez la distribution de la matrice en parallèle.
 """),
 
+    99 : _(u"""
+Le contact de type LAC n'est pas utilisable avec le solveur MULT_FRONT, il faut utiliser MUMPS.
+"""),
 
 }

@@ -60,9 +60,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: reac_incr, reac_iter
-    aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc
+    aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc, l_cont_lac, l_iden_rela
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
-    aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim
+    aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim, l_mult_front
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps, l_rom
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo
@@ -82,6 +82,7 @@ implicit none
     l_cont_cont     = isfonc(list_func_acti,'CONT_CONTINU')
     l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
     l_cont          = isfonc(list_func_acti,'CONTACT')
+    l_cont_lac      = isfonc(list_func_acti,'CONT_LAC')
     l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
     l_pilo          = isfonc(list_func_acti,'PILOTAGE')
     l_line_search   = isfonc(list_func_acti,'RECH_LINE')
@@ -106,6 +107,7 @@ implicit none
     lpetsc          = isfonc(list_func_acti,'PETSC')
     lldsp           = isfonc(list_func_acti,'LDLT_SP')
     l_mumps         = isfonc(list_func_acti,'MUMPS')
+    l_mult_front    = isfonc(list_func_acti,'MULT_FRONT')
     l_diri_undead   = isfonc(list_func_acti,'DIRI_UNDEAD')
 !
 ! - Get algorithm parameters
@@ -174,6 +176,15 @@ implicit none
         endif
         if (lammo) then
             call utmess('F', 'MECANONLINE3_93')
+        endif
+    endif
+!
+! - Contact (LAC)
+!
+    if (l_cont_lac) then
+        l_iden_rela = ds_contact%l_iden_rela
+        if (l_iden_rela .and. l_mult_front) then
+            call utmess('F', 'MECANONLINE3_99')
         endif
     endif
 !
