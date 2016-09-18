@@ -195,6 +195,82 @@ void DEFSSSP(MFRONT_GET_NUMBER_OF_INTERNAL_STATE_VARIABLES,
 #endif
 }
 
+void DEFSSSS(MFRONT_GET_INTERNAL_STATE_VARIABLES_TYPES,
+              mfront_get_internal_state_variables_types,
+              char* nomlib, STRING_SIZE lnomlib,
+              char* nomsub, STRING_SIZE lnomsub,
+              char* nommod, STRING_SIZE lnommod,
+              char* txval, STRING_SIZE ltx)
+{
+#ifdef _POSIX
+    /* MFRONT Wrapper
+    */
+    char *libname, *symbol, *model, *symbname=NULL;
+    char * name1;
+    int retour = 0;
+    PyObject* DLL_DICT;
+    DLL_DICT = get_dll_register_dict();
+
+    libname = MakeCStrFromFStr(nomlib, lnomlib);
+    symbol = MakeCStrFromFStr(nomsub, lnomsub);
+    model = MakeCStrFromFStr(nommod, lnommod);
+
+    mfront_name(libname, symbol, model, "_nInternalStateVariables", &symbname);
+    if ( symbname == NULL ) {
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)
+                               + strlen("_nInternalStateVariables") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_nInternalStateVariables");
+        error_symbol_not_found(libname, name1);
+    }
+    unsigned short* nb_int_var = (unsigned short*)libsymb_get_symbol(DLL_DICT, libname, symbname);
+
+    mfront_name(libname, symbol, model, "_InternalStateVariablesTypes", &symbname);
+    if ( symbname == NULL ) {
+        name1 = (char *)malloc(strlen(symbol) + strlen(model)
+                               + strlen("_InternalStateVariablesTypes") + 1);
+        strcpy(name1, symbol);
+        strcat(name1, model);
+        strcat(name1, "_InternalStateVariablesTypes");
+        error_symbol_not_found(libname, name1);
+    }
+
+    int* int_var = (int*)libsymb_get_symbol(DLL_DICT, libname, symbname);
+
+    unsigned short i;
+    for ( i = 0; i < *nb_int_var; ++i )
+    {
+        if ( int_var[i] == 0 )
+        {
+            SetTabFStr( txval, i, "scalar", ltx );
+        }
+        else if ( int_var[i] == 1 )
+        {
+            SetTabFStr( txval, i, "vector", ltx );
+        }
+        else if ( int_var[i] == 3 )
+        {
+            SetTabFStr( txval, i, "tensor", ltx );
+        }
+        else
+        {
+            AS_ASSERT( int_var[i] == 0 || int_var[i] == 1 || int_var[i] == 3);
+        }
+    }
+
+
+
+
+    FreeStr(libname);
+    FreeStr(symbol);
+    FreeStr(symbname);
+#else
+    printf("Not available under Windows.\n");
+    abort();
+#endif
+}
+
 void DEFSSSSP(MFRONT_GET_INTERNAL_STATE_VARIABLES,
               mfront_get_internal_state_variables,
               char* nomlib, STRING_SIZE lnomlib,
