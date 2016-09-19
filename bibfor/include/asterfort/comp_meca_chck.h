@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_chck(model      , mesh        , full_elem_s, l_etat_init, info_comp_valk,&
-                              l_auto_elas, l_auto_deborst, l_comp_erre)
+    subroutine comp_meca_chck(model         , mesh          , full_elem_s, l_etat_init,&
+                              ds_compor_prep,&
+                              l_auto_elas   , l_auto_deborst, l_comp_erre)
+        use NonLin_Datastructure_type
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: full_elem_s
         aster_logical, intent(in) :: l_etat_init
-        character(len=16), intent(inout) :: info_comp_valk(:)
+        type(NL_DS_ComporPrep), intent(inout) :: ds_compor_prep
         aster_logical, intent(out) :: l_auto_elas
         aster_logical, intent(out) :: l_auto_deborst
         aster_logical, intent(out) :: l_comp_erre

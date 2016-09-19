@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_read(l_etat_init, info_comp_valk, info_comp_vali, &
-                              model)
+    subroutine comp_meca_read(l_etat_init, ds_compor_prep, model)
+        use NonLin_Datastructure_type
         aster_logical, intent(in) :: l_etat_init
-        character(len=16), intent(out) :: info_comp_valk(:)
-        integer          , intent(out) :: info_comp_vali(:)
+        type(NL_DS_ComporPrep), intent(inout) :: ds_compor_prep
         character(len=8), intent(in), optional :: model
     end subroutine comp_meca_read
 end interface

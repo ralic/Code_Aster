@@ -1,9 +1,11 @@
-subroutine comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
+subroutine comp_meca_info(ds_compor_prep)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterc/getfac.h"
-#include "asterfort/as_allocate.h"
+#include "asterfort/comp_meca_init.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,30 +23,26 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), pointer, intent(out) :: p_info_comp_valk(:)
-    integer          , pointer, intent(out) :: p_info_comp_vali(:)
-    integer          , pointer, intent(out) :: p_info_comp_nvar(:)
-    integer          , intent(out) :: nbocc_compor
+    type(NL_DS_ComporPrep), intent(out) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Preparation of comportment (mechanics)
 !
-! Create comportment informations objects
+! Create datastructure to prepare comportement
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  p_info_comp_valk : comportment informations (character)
-! IO  p_info_comp_vali : comportment informations (integer)
-! IO  p_info_comp_nvar : comportment informations (int. vari. count)
-! Out nbocc_compor     : number of comportement keywords
+! Out ds_compor_prep   : datastructure to prepare comportement
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: icomp, nb_info_comp
+    integer :: nb_info_comp, nbocc_compor
+    type(NL_DS_Compor) :: ds_compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,30 +50,40 @@ implicit none
     keywordfact  = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc_compor)
 !
+! - Initializations
+!
+    ds_compor_prep%v_comp => null()
+!    ds_compor_prep%v_exte => null()
+!
 ! - Number of comportement information
 !
-    if (nbocc_compor.eq.0) then
+    if (nbocc_compor .eq. 0) then
         nb_info_comp = 1
     else
         nb_info_comp = nbocc_compor
     endif
 !
-! - Create comportment informations objects
+! - Save number of comportments
 !
-    AS_ALLOCATE(vk16 = p_info_comp_valk, size = 16*nb_info_comp)
-    AS_ALLOCATE(vi   = p_info_comp_vali, size = nb_info_comp )
-    AS_ALLOCATE(vi   = p_info_comp_nvar, size = 10*nb_info_comp)
+    ds_compor_prep%nb_comp = nbocc_compor
+!
+! - Allocate comportment informations objects 
+!
+    allocate(ds_compor_prep%v_comp(nb_info_comp))
+!
+! - Allocate comportment informations objects (external: UMAT and MFront)
+!
+!    allocate(ds_compor_prep%v_exte(nb_info_comp))
 !
 ! - If nothing in COMPORTEMENT: all is elastic
 !
-    if (nbocc_compor.eq.0) then
-        do icomp = 1, 16
-            p_info_comp_valk(icomp) = 'VIDE'
-        enddo
-        p_info_comp_valk(1) = 'ELAS'
-        p_info_comp_valk(2) = 'PETIT'
-        p_info_comp_valk(3) = 'COMP_ELAS'
-        p_info_comp_valk(4) = 'ANALYTIQUE'
+    call comp_meca_init(ds_compor)
+    if (nbocc_compor .eq. 0) then
+        ds_compor_prep%v_comp(1) = ds_compor
+        ds_compor_prep%v_comp(1)%rela_comp = 'ELAS'
+        ds_compor_prep%v_comp(1)%defo_comp = 'PETIT'
+        ds_compor_prep%v_comp(1)%type_comp = 'COMP_ELAS'
+        ds_compor_prep%v_comp(1)%type_cpla = 'ANALYTIQUE'
     endif
 !
 end subroutine

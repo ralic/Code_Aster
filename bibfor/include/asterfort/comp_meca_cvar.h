@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
-        character(len=16), intent(in) :: p_info_comp_valk(:)
-        integer          , intent(in) :: p_info_comp_vali(:)
-        integer          , intent(out) :: p_info_comp_nvar(:)
+    subroutine comp_meca_cvar(ds_compor_prep)
+        use NonLin_Datastructure_type
+        type(NL_DS_ComporPrep), intent(inout) :: ds_compor_prep
     end subroutine comp_meca_cvar
 end interface

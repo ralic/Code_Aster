@@ -1,11 +1,12 @@
-subroutine comp_meca_save(model         , mesh            , chmate          , compor, nb_cmp,&
-                          info_comp_valk, info_comp_nvar)
+subroutine comp_meca_save(model         , mesh, chmate, compor, nb_cmp,&
+                          ds_compor_prep)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
-#include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
@@ -45,8 +46,7 @@ implicit none
     character(len=8), intent(in) :: chmate
     character(len=19), intent(in) :: compor
     integer, intent(in) :: nb_cmp
-    character(len=16), intent(in) :: info_comp_valk(:)
-    integer, intent(in) :: info_comp_nvar(:)
+    type(NL_DS_ComporPrep), intent(in) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +61,7 @@ implicit none
 ! In  chmate           : name of material field
 ! In  compor           : name of <CARTE> COMPOR
 ! In  nb_cmp           : number of components in <CARTE> COMPOR
-! In  info_comp_valk   : comportment informations (character)
-! In  info_comp_nvar   : comportment informations (int. vari. count)
+! In  ds_compor_prep   : datastructure to prepare comportement
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,22 +73,20 @@ implicit none
     integer :: i_elem_affe
     character(len=19) :: ligrmo
     character(len=16) :: keywordfact
-    integer :: iocc, nbocc
+    integer :: i_comp, nb_comp
     character(len=16), pointer :: v_compor_valv(:) => null()
     character(len=16) :: defo_comp, rela_comp, type_comp, type_cpla, mult_comp
     character(len=16) :: kit_comp(4), type_matg, post_iter
-    aster_logical :: l_cristal, l_umat, l_mfront
-    aster_logical :: l_pmf, l_is_pmf
+    aster_logical :: l_cristal, l_pmf, l_is_pmf
     integer :: nb_vari, nb_vari_comp(4), elem_nume, nume_comp(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc = 0
-    keywordfact = 'COMPORTEMENT'
-    call getfac(keywordfact, nbocc)
+    keywordfact    = 'COMPORTEMENT'
     list_elem_affe = '&&COMPMECASAVE.LIST'
-    l_is_pmf  = .false.
-    ligrmo    =  model//'.MODELE'
+    nb_comp        = ds_compor_prep%nb_comp
+    l_is_pmf       = .false.
+    ligrmo         =  model//'.MODELE'
 !
 ! - Access to MODEL
 !
@@ -101,47 +98,36 @@ implicit none
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
-    do iocc = 1, nbocc
+    do i_comp = 1, nb_comp
 !
 ! ----- Get infos
 !
-        nb_vari         = info_comp_nvar(10*(iocc-1) + 1)
-        nb_vari_comp(1) = info_comp_nvar(10*(iocc-1) + 2)
-        nb_vari_comp(2) = info_comp_nvar(10*(iocc-1) + 3)
-        nb_vari_comp(3) = info_comp_nvar(10*(iocc-1) + 4)
-        nb_vari_comp(4) = info_comp_nvar(10*(iocc-1) + 5)
-        nume_comp(1)    = info_comp_nvar(10*(iocc-1) + 6)
-        nume_comp(2)    = info_comp_nvar(10*(iocc-1) + 7)
-        nume_comp(3)    = info_comp_nvar(10*(iocc-1) + 8)
-        nume_comp(4)    = info_comp_nvar(10*(iocc-1) + 9)
-        rela_comp       = info_comp_valk(16*(iocc-1) + 1)
-        defo_comp       = info_comp_valk(16*(iocc-1) + 2)
-        type_comp       = info_comp_valk(16*(iocc-1) + 3)
-        type_cpla       = info_comp_valk(16*(iocc-1) + 4)
-        kit_comp(1)     = info_comp_valk(16*(iocc-1) + 5)
-        kit_comp(2)     = info_comp_valk(16*(iocc-1) + 6)
-        kit_comp(3)     = info_comp_valk(16*(iocc-1) + 7)
-        kit_comp(4)     = info_comp_valk(16*(iocc-1) + 8)
-        mult_comp       = info_comp_valk(16*(iocc-1) + 14)
-        type_matg       = info_comp_valk(16*(iocc-1) + 15)
-        post_iter       = info_comp_valk(16*(iocc-1) + 16)
+        nb_vari         = ds_compor_prep%v_comp(i_comp)%nb_vari
+        nb_vari_comp(:) = ds_compor_prep%v_comp(i_comp)%nb_vari_comp(:)
+        nume_comp(:)    = ds_compor_prep%v_comp(i_comp)%nume_comp(:)
+        rela_comp       = ds_compor_prep%v_comp(i_comp)%rela_comp
+        defo_comp       = ds_compor_prep%v_comp(i_comp)%defo_comp
+        type_comp       = ds_compor_prep%v_comp(i_comp)%type_comp
+        type_cpla       = ds_compor_prep%v_comp(i_comp)%type_cpla
+        kit_comp(:)     = ds_compor_prep%v_comp(i_comp)%kit_comp(:)
+        mult_comp       = ds_compor_prep%v_comp(i_comp)%mult_comp
+        type_matg       = ds_compor_prep%v_comp(i_comp)%type_matg
+        post_iter       = ds_compor_prep%v_comp(i_comp)%post_iter
 !
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'CRISTAL', l_cristal)
-        call comp_meca_l(rela_comp, 'UMAT'   , l_umat)
-        call comp_meca_l(rela_comp, 'MFRONT' , l_mfront)
+        call comp_meca_l(rela_comp, 'PMF'    , l_pmf)
 !
 ! ----- Multifiber beams
 !
-        call comp_meca_l(rela_comp, 'PMF', l_pmf)
         if (l_pmf) then
             l_is_pmf = .true.
         endif
 !
 ! ----- Get elements
 !
-        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+        call comp_read_mesh(mesh          , keywordfact, i_comp        ,&
                             list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Check if elements belong to model
@@ -158,7 +144,7 @@ implicit none
         endif
         if (.not.l_affe_all) then
             if (nb_model_affe.eq.0) then
-                call utmess('A', 'COMPOR4_72', si = iocc)
+                call utmess('A', 'COMPOR4_72', si = i_comp)
             endif
         endif
 !

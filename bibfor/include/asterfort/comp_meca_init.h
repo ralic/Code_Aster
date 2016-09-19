@@ -16,14 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_save(model         , mesh, chmate, compor, nb_cmp,&
-                              ds_compor_prep)
+    subroutine comp_meca_init(ds_compor)
         use NonLin_Datastructure_type
-        character(len=8), intent(in) :: model
-        character(len=8), intent(in) :: mesh
-        character(len=8), intent(in) :: chmate
-        character(len=19), intent(in) :: compor
-        integer, intent(in) :: nb_cmp
-        type(NL_DS_ComporPrep), intent(in) :: ds_compor_prep
-    end subroutine comp_meca_save
+        type(NL_DS_Compor), intent(out) :: ds_compor
+    end subroutine comp_meca_init
 end interface

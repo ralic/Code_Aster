@@ -366,4 +366,30 @@ implicit none
         type(NL_DS_Table)     :: table
     end type NL_DS_Energy
 !
+! - Type: for comportement
+! 
+    type NL_DS_Compor
+        character(len=16) :: rela_comp
+        character(len=16) :: defo_comp
+        character(len=16) :: type_comp
+        character(len=16) :: type_cpla
+        character(len=16) :: kit_comp(4)
+        character(len=16) :: mult_comp
+        character(len=16) :: type_matg
+        character(len=16) :: post_iter
+        integer           :: nb_vari
+        integer           :: nb_vari_comp(4)
+        integer           :: nume_comp(4)
+        integer           :: nb_vari_exte
+    end type NL_DS_Compor
+!
+! - Type: for preparation of comportment
+! 
+    type NL_DS_ComporPrep
+! ----- Number of comportements
+        integer                         :: nb_comp
+! ----- List of comportements
+        type(NL_DS_Compor), pointer     :: v_comp(:)
+    end type NL_DS_ComporPrep
+!
 end module

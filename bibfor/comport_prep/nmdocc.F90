@@ -1,5 +1,7 @@
 subroutine nmdocc(model, chmate, l_etat_init, compor)
 !
+use NonLin_Datastructure_type
+!
 implicit none
 !
 #include "asterf_types.h"
@@ -34,6 +36,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: model
@@ -57,13 +60,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_auto_elas, l_auto_deborst, l_comp_erre
-    integer :: nb_cmp, nbocc_compor
+    integer :: nb_cmp
     character(len=8) :: mesh
     character(len=19) :: comp_elas, full_elem_s
     character(len=19) :: compor_info
-    character(len=16), pointer :: p_info_comp_valk(:) => null()
-    integer, pointer :: p_info_comp_vali(:) => null()
-    integer, pointer :: p_info_comp_nvar(:) => null()
+    type(NL_DS_ComporPrep) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,13 +74,13 @@ implicit none
     compor_info = '&&NMDOCC.INFO'
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
-! - Create comportment informations objects
+! - Create datastructure to prepare comportement
 !
-    call comp_meca_info(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar, nbocc_compor)
-    if (nbocc_compor .eq. 0) then
+    call comp_meca_info(ds_compor_prep)
+    if (ds_compor_prep%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
     endif
-    if (nbocc_compor .ge. 99999) then
+    if (ds_compor_prep%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
     endif
 !
@@ -97,7 +98,7 @@ implicit none
 !
 ! - Read informations from command file
 !
-    call comp_meca_read(l_etat_init, p_info_comp_valk, p_info_comp_vali, model)
+    call comp_meca_read(l_etat_init, ds_compor_prep, model)
 !
 ! - Create <CARTE> of FULL_MECA option for checking
 !
@@ -105,8 +106,9 @@ implicit none
 !
 ! - Check informations in COMPOR <CARTE>
 !
-    call comp_meca_chck(model      , mesh          , full_elem_s, l_etat_init, p_info_comp_valk,&
-                        l_auto_elas, l_auto_deborst, l_comp_erre)
+    call comp_meca_chck(model         , mesh          , full_elem_s, l_etat_init,&
+                        ds_compor_prep,&
+                        l_auto_elas   , l_auto_deborst, l_comp_erre)
     if (l_auto_deborst) then
         call utmess('I', 'COMPOR5_20')
     endif
@@ -119,12 +121,12 @@ implicit none
 !
 ! - Count internal variables
 !
-    call comp_meca_cvar(p_info_comp_valk, p_info_comp_vali, p_info_comp_nvar)
+    call comp_meca_cvar(ds_compor_prep)
 !
 ! - Save informations in COMPOR <CARTE>
 !
-    call comp_meca_save(model           , mesh            , chmate          , compor, nb_cmp,&
-                        p_info_comp_valk, p_info_comp_nvar)
+    call comp_meca_save(model         , mesh, chmate, compor, nb_cmp,&
+                        ds_compor_prep)
 !
 ! - Prepare informations about internal variables
 !
@@ -135,8 +137,9 @@ implicit none
 !
     call imvari(compor_info)
 !
-    AS_DEALLOCATE(vk16 = p_info_comp_valk)
-    AS_DEALLOCATE(vi   = p_info_comp_vali)
-    AS_DEALLOCATE(vi   = p_info_comp_nvar)
+! - Cleaning
+!
+    deallocate(ds_compor_prep%v_comp)
+    !deallocate(ds_compor_prep%v_exte)
 !
 end subroutine
