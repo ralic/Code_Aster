@@ -1,8 +1,9 @@
 subroutine nmdocr(model, carcri)
 !
+use NonLin_Datastructure_type
+!
 implicit none
 !
-#include "asterfort/as_deallocate.h"
 #include "asterfort/carc_info.h"
 #include "asterfort/carc_init.h"
 #include "asterfort/carc_read.h"
@@ -26,6 +27,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in)   :: model
@@ -39,24 +41,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model       : name of model
-! Out carcri      : name of <CARTE> CARCRI
+! In  model            : name of model
+! Out carcri           : name of <CARTE> CARCRI
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: mesh
-    integer :: nb_cmp, nbocc_carcri
-    character(len=16), pointer :: p_info_carc_valk(:) => null()
-    real(kind=8)     , pointer :: p_info_carc_valr(:) => null()
+    integer :: nb_cmp
+    type(NL_DS_ComporParaPrep) :: ds_compor_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
     carcri = '&&NMDOCR.CARCRI'
+    call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
 !
 ! - Create carcri informations objects
 !
-    call carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_carcri)
+    call carc_info(ds_compor_para)
 !
 ! - Create CARCRI <CARTE>
 !
@@ -68,14 +69,14 @@ implicit none
 !
 ! - Read informations from command file
 !
-    call carc_read(p_info_carc_valk, p_info_carc_valr, model)
+    call carc_read(ds_compor_para, model)
 !
 ! - Save and check informations in CARCRI <CARTE>
 !
-    call carc_save(model           , mesh            , carcri, nb_cmp, &
-                   p_info_carc_valk, p_info_carc_valr)
+    call carc_save(model, mesh, carcri, nb_cmp, ds_compor_para)
 !
-    AS_DEALLOCATE(vk16 = p_info_carc_valk)
-    AS_DEALLOCATE(vr   = p_info_carc_valr)
+! - Cleaning
+!
+    deallocate(ds_compor_para%v_para)
 !
 end subroutine

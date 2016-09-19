@@ -5,7 +5,6 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_deallocate.h"
 #include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/carc_info.h"
@@ -63,18 +62,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: carsiz=20
     character(len=19) :: compor_info
-    integer :: i_comp, nume_comp(4), nbocc_carcri, nb_vari_comp(4)
+    integer :: i_comp, nume_comp(4), nb_vari_comp(4)
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, defo_comp, type_comp
     character(len=16) :: mult_comp, kit_comp(4), type_cpla, type_matg, post_iter
     aster_logical :: l_kit_thm, l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
-    character(len=16), pointer :: p_info_carc_valk(:) => null()
-    real(kind=8), pointer :: p_info_carc_valr(:) => null()
     type(NL_DS_ComporPrep) :: ds_compor_prep
+    type(NL_DS_ComporParaPrep) :: ds_compor_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -132,6 +129,8 @@ implicit none
         ASSERT(.false.)
     endif
 !  
+! - Save in list
+!
     compor(1)  = rela_comp
     write (compor(2),'(I16)') nb_vari
     compor(3)  = defo_comp
@@ -163,15 +162,16 @@ implicit none
 !
 ! - Create carcri informations objects
 !
-    call carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_carcri)
-    ASSERT(nbocc_carcri.ne.0)
+    call carc_info(ds_compor_para)
 !
 ! - Read informations from command file
 !
-    call carc_read(p_info_carc_valk, p_info_carc_valr)
-    i_comp = 1
+    call carc_read(ds_compor_para)
+!  
+! - Save in list
 !
-    algo_inte = p_info_carc_valk(2*(i_comp-1) + 2)
+    i_comp = 1
+    algo_inte = ds_compor_para%v_para(i_comp)%algo_inte
     if (rela_comp.eq.'MFRONT') then
         call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
     else
@@ -180,33 +180,32 @@ implicit none
     call nmdocv(keywordfact, i_comp, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
     call utlcal('NOM_VALE', algo_inte, algo_inte_r)
 !
-    carcri(1) = iter_inte_maxi
-    carcri(2) = p_info_carc_valr(carsiz*(i_comp-1) + 2)
-    carcri(3) = resi_inte_rela
-    carcri(4) = p_info_carc_valr(carsiz*(i_comp-1) + 4)
-    carcri(5) = p_info_carc_valr(carsiz*(i_comp-1) + 5)
-    carcri(6) = algo_inte_r
-    carcri(7) = p_info_carc_valr(carsiz*(i_comp-1) + 7)
-    carcri(8) = p_info_carc_valr(carsiz*(i_comp-1) + 8)
-    carcri(9) = p_info_carc_valr(carsiz*(i_comp-1) + 9)
-    carcri(10) = p_info_carc_valr(carsiz*(i_comp-1) + 10)
-    carcri(11) = p_info_carc_valr(carsiz*(i_comp-1) + 11)
-    carcri(12) = p_info_carc_valr(carsiz*(i_comp-1) + 12)
-    carcri(13) = p_info_carc_valr(carsiz*(i_comp-1) + 13)
-    carcri(14) = p_info_carc_valr(carsiz*(i_comp-1) + 14)
-    carcri(15) = p_info_carc_valr(carsiz*(i_comp-1) + 15)
-    carcri(16) = p_info_carc_valr(carsiz*(i_comp-1) + 16)
+    carcri(1)  = iter_inte_maxi
+    carcri(2)  = ds_compor_para%v_para(i_comp)%type_matr_t
+    carcri(3)  = resi_inte_rela
+    carcri(4)  = ds_compor_para%v_para(i_comp)%parm_theta
+    carcri(5)  = ds_compor_para%v_para(i_comp)%iter_inte_pas
+    carcri(6)  = algo_inte_r
+    carcri(7)  = ds_compor_para%v_para(i_comp)%vale_pert_rela
+    carcri(8)  = ds_compor_para%v_para(i_comp)%resi_deborst_max
+    carcri(9)  = ds_compor_para%v_para(i_comp)%iter_deborst_max
+    carcri(10) = ds_compor_para%v_para(i_comp)%seuil
+    carcri(11) = ds_compor_para%v_para(i_comp)%amplitude
+    carcri(12) = ds_compor_para%v_para(i_comp)%taux_retour
+    carcri(13) = ds_compor_para%v_para(i_comp)%post_iter
+    carcri(14) = ds_compor_para%v_para(i_comp)%c_pointer%nbvarext
+    carcri(15) = ds_compor_para%v_para(i_comp)%c_pointer%namevarext
+    carcri(16) = ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc
     carcri(17) = 1
     carcri(18) = 0
-    carcri(19) = p_info_carc_valr(carsiz*(i_comp-1) + 19)
-    carcri(20) = p_info_carc_valr(carsiz*(i_comp-1) + 20)
-    carcri(21) = p_info_carc_valr(carsiz*(i_comp-1) + 21)
+    carcri(19) = ds_compor_para%v_para(i_comp)%c_pointer%matprop
+    carcri(20) = ds_compor_para%v_para(i_comp)%c_pointer%nbprop
+    carcri(21) = ds_compor_para%v_para(i_comp)%post_incr
 !
 ! - Cleaning
 !
     deallocate(ds_compor_prep%v_comp)
-    AS_DEALLOCATE(vk16 = p_info_carc_valk)
-    AS_DEALLOCATE(vr   = p_info_carc_valr)
+    deallocate(ds_compor_para%v_para)
 !
     call jedema()
 !

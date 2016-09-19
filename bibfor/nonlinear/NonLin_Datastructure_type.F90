@@ -392,4 +392,43 @@ implicit none
         type(NL_DS_Compor), pointer     :: v_comp(:)
     end type NL_DS_ComporPrep
 !
+! - Type: pointer to external constitutive laws
+! 
+    type NL_DS_ComporPointer
+        integer      ::  nbvarext
+        integer      ::  namevarext
+        integer      ::  fct_ldc
+        integer      ::  matprop
+        integer      ::  nbprop
+    end type NL_DS_ComporPointer
+!
+! - Type: for parameters for constitutive laws
+! 
+    type NL_DS_ComporPara
+        integer      :: type_matr_t
+        real(kind=8) :: parm_alpha
+        real(kind=8) :: parm_theta
+        integer      :: iter_inte_pas
+        real(kind=8) :: vale_pert_rela
+        real(kind=8) :: resi_deborst_max
+        integer      :: iter_deborst_max
+        real(kind=8) :: seuil
+        real(kind=8) :: amplitude
+        real(kind=8) :: taux_retour
+        integer      :: post_iter
+        integer      :: post_incr
+        character(len=16) :: rela_comp
+        character(len=16) :: algo_inte
+        type(NL_DS_ComporPointer) :: c_pointer
+    end type NL_DS_ComporPara
+!
+! - Type: for preparation of parameters for constitutive laws
+! 
+    type NL_DS_ComporParaPrep
+! ----- Number of comportements
+        integer                         :: nb_comp
+! ----- List of parameters
+        type(NL_DS_ComporPara), pointer :: v_para(:)
+    end type NL_DS_ComporParaPrep
+!
 end module

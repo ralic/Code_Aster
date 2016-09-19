@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
-        character(len=16), pointer, intent(out) :: p_info_carc_valk(:)
-        real(kind=8)     , pointer, intent(out) :: p_info_carc_valr(:)
-        integer          , intent(out) :: nbocc_compor
+    subroutine carc_info(ds_compor_para)
+        use NonLin_Datastructure_type
+        type(NL_DS_ComporParaPrep), intent(out) :: ds_compor_para
     end subroutine carc_info
 end interface

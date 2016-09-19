@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine carc_read(info_carc_valk, info_carc_valr, model)
-        character(len=16),  intent(out) :: info_carc_valk(:)
-        real(kind=8)     ,  intent(out) :: info_carc_valr(:)
-        character(len=8), intent(in), optional :: model
+    subroutine carc_read(ds_compor_para, model_)
+        use NonLin_Datastructure_type
+        type(NL_DS_ComporParaPrep), intent(inout) :: ds_compor_para
+        character(len=8), intent(in), optional :: model_
     end subroutine carc_read
 end interface

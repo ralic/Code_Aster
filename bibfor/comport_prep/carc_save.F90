@@ -1,11 +1,11 @@
-subroutine carc_save(model, mesh, carcri, nb_cmp, info_carc_valk,&
-                     info_carc_valr)
+subroutine carc_save(model, mesh, carcri, nb_cmp, ds_compor_para)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getexm.h"
-#include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_mod.h"
@@ -48,8 +48,7 @@ implicit none
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: carcri
     integer, intent(in) :: nb_cmp
-    character(len=16), intent(in) :: info_carc_valk(:)
-    real(kind=8), intent(in) :: info_carc_valr(:)
+    type(NL_DS_ComporParaPrep), intent(in) :: ds_compor_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,18 +62,16 @@ implicit none
 ! In  model            : name of model
 ! In  carcri           : name of <CARTE> CARCRI
 ! In  nb_cmp           : number of components in <CARTE> CARCRI
-! In  info_carc_valk   : carcri informations (character)
-! In  info_carc_valr   : carcri informations (real)
+! In  ds_compor_para   : datastructure to prepare parameters for constitutive laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: carsiz=21
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe, model_dim
     integer, pointer :: v_elem_affe(:) => null()
     character(len=16) :: keywordfact
-    integer :: iocc, nbocc
+    integer :: i_comp, nb_comp
     real(kind=8), pointer :: p_carc_valv(:) => null()
     character(len=16) :: algo_inte, rela_comp, model_mfront
     character(len=255) :: libr_name, subr_name
@@ -87,9 +84,12 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nbocc = 0
-    keywordfact = 'COMPORTEMENT'
-    call getfac(keywordfact, nbocc)
+
+!
+! - Initializations
+!
+    keywordfact    = 'COMPORTEMENT'
+    nb_comp        = ds_compor_para%nb_comp
     list_elem_affe = '&&CARCSAVE.LIST'
 !
 ! - Access to <CARTE>
@@ -98,25 +98,24 @@ implicit none
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
-    do iocc = 1, nbocc
+    do i_comp = 1, nb_comp
 !
 ! ----- Get infos
 !
-        type_matr_t      = int(info_carc_valr(carsiz*(iocc-1) + 2))
-        parm_theta       = info_carc_valr(carsiz*(iocc-1) + 4)
-        iter_inte_pas    = int(info_carc_valr(carsiz*(iocc-1) + 5))
-        algo_inte_r      = info_carc_valr(carsiz*(iocc-1) + 6)
-        vale_pert_rela   = info_carc_valr(carsiz*(iocc-1) + 7)
-        resi_deborst_max = info_carc_valr(carsiz*(iocc-1) + 8)
-        iter_deborst_max = int(info_carc_valr(carsiz*(iocc-1) + 9))
-        seuil            = info_carc_valr(carsiz*(iocc-1) + 10)
-        amplitude        = info_carc_valr(carsiz*(iocc-1) + 11)
-        taux_retour      = info_carc_valr(carsiz*(iocc-1) + 12)
-        post_iter        = info_carc_valr(carsiz*(iocc-1) + 13)
-        parm_alpha       = info_carc_valr(carsiz*(iocc-1) + 18)
-        post_incr        = info_carc_valr(carsiz*(iocc-1) + 21)
-        rela_comp        = info_carc_valk(2*(iocc-1) + 1)
-        algo_inte        = info_carc_valk(2*(iocc-1) + 2)
+        type_matr_t      = ds_compor_para%v_para(i_comp)%type_matr_t
+        parm_theta       = ds_compor_para%v_para(i_comp)%parm_theta
+        iter_inte_pas    = ds_compor_para%v_para(i_comp)%iter_inte_pas
+        vale_pert_rela   = ds_compor_para%v_para(i_comp)%vale_pert_rela
+        resi_deborst_max = ds_compor_para%v_para(i_comp)%resi_deborst_max
+        iter_deborst_max = ds_compor_para%v_para(i_comp)%iter_deborst_max
+        seuil            = ds_compor_para%v_para(i_comp)%seuil
+        amplitude        = ds_compor_para%v_para(i_comp)%amplitude
+        taux_retour      = ds_compor_para%v_para(i_comp)%taux_retour
+        post_iter        = ds_compor_para%v_para(i_comp)%post_iter
+        parm_alpha       = ds_compor_para%v_para(i_comp)%parm_alpha
+        post_incr        = ds_compor_para%v_para(i_comp)%post_incr
+        rela_comp        = ds_compor_para%v_para(i_comp)%rela_comp
+        algo_inte        = ds_compor_para%v_para(i_comp)%algo_inte
 !
 ! ----- Detection of specific cases
 !
@@ -125,7 +124,7 @@ implicit none
 !
 ! ----- Get list of elements where comportment is defined
 !
-        call comp_read_mesh(mesh          , keywordfact, iocc        ,&
+        call comp_read_mesh(mesh          , keywordfact, i_comp        ,&
                             list_elem_affe, l_affe_all , nb_elem_affe)
 !
 ! ----- Get ALGO_INTE - Plane stress
@@ -142,7 +141,7 @@ implicit none
 ! ----- For KIT
 !
         if (l_kit) then
-            call comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp)
+            call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
         endif
 !
 ! ----- Get parameters for external programs (MFRONT/UMAT)
@@ -150,26 +149,26 @@ implicit none
         call comp_read_exte(rela_comp  , kit_comp ,&
                             l_umat     , l_mfront , l_mfront_offi,&
                             libr_name  , subr_name,&
-                            keywordfact, iocc   )
+                            keywordfact, i_comp   )
 !
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
-        call nmdocv(keywordfact, iocc, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
+        call nmdocv(keywordfact, i_comp, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
         if (l_mfront) then
             if (l_mfront_offi .or. l_kit_thm) then
-                call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+                call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
             else
-                call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
+                call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             endif
             call comp_meca_mod(mesh       , model       ,&
-                               keywordfact, iocc        , rela_comp,&
+                               keywordfact, i_comp        , rela_comp,&
                                model_dim  , model_mfront)
             call mfront_set_double_parameter(libr_name, subr_name, model_mfront,&
                                              "epsilon", resi_inte_rela)
             call mfront_set_integer_parameter(libr_name, subr_name, model_mfront,&
                                               "iterMax", int(iter_inte_maxi))
         else
-            call nmdocv(keywordfact, iocc, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
+            call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
         endif
 !
 ! ----- Set in <CARTE>
@@ -189,15 +188,15 @@ implicit none
         p_carc_valv(13) = post_iter
         p_carc_valv(21) = post_incr
 !       exte_comp UMAT / MFRONT
-        p_carc_valv(14) = info_carc_valr(carsiz*(iocc-1) + 14)
-        p_carc_valv(15) = info_carc_valr(carsiz*(iocc-1) + 15)
-        p_carc_valv(16) = info_carc_valr(carsiz*(iocc-1) + 16)
+        p_carc_valv(14) = ds_compor_para%v_para(i_comp)%c_pointer%nbvarext
+        p_carc_valv(15) = ds_compor_para%v_para(i_comp)%c_pointer%namevarext
+        p_carc_valv(16) = ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc
 !       cf. CALC_POINT_MAT / PMDORC
         p_carc_valv(17) = 0
         p_carc_valv(18) = parm_alpha
 !       exte_comp UMAT / MFRONT
-        p_carc_valv(19) = info_carc_valr(carsiz*(iocc-1) + 19)
-        p_carc_valv(20) = info_carc_valr(carsiz*(iocc-1) + 20)
+        p_carc_valv(19) = ds_compor_para%v_para(i_comp)%c_pointer%matprop
+        p_carc_valv(20) = ds_compor_para%v_para(i_comp)%c_pointer%nbprop
 !
 ! ----- Affect in <CARTE>
 !

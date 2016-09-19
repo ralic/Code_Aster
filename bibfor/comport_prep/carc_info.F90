@@ -1,4 +1,6 @@
-subroutine carc_info(p_info_carc_valk, p_info_carc_valr, nbocc_compor)
+subroutine carc_info(ds_compor_para)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -21,11 +23,10 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=16), pointer, intent(out) :: p_info_carc_valk(:)
-    real(kind=8)     , pointer, intent(out) :: p_info_carc_valr(:)
-    integer          , intent(out) :: nbocc_compor
+    type(NL_DS_ComporParaPrep), intent(out) :: ds_compor_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -35,21 +36,22 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  p_info_carc_valk : pointer to carcri informations (character)
-! IO  p_info_carc_valr : pointer to carcri informations (real)
-! Out nbocc_compor     : number of comportement keywords
+! Out ds_compor_para   : datastructure to prepare parameters for constitutive laws
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: nb_info_comp
-    integer, parameter :: carsiz=21
+    integer :: nb_info_comp, nbocc_compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
     nbocc_compor = 0
     keywordfact  = 'COMPORTEMENT'
     call getfac(keywordfact, nbocc_compor)
+!
+! - Initializations
+!
+    ds_compor_para%v_para => null()
 !
 ! - Number of comportement information
 !
@@ -59,9 +61,12 @@ implicit none
         nb_info_comp = nbocc_compor
     endif
 !
-! - Create comportment informations objects
+! - Save number of comportments
 !
-    AS_ALLOCATE(vk16 = p_info_carc_valk, size = 2*nb_info_comp)
-    AS_ALLOCATE(vr   = p_info_carc_valr, size = carsiz*nb_info_comp)
+    ds_compor_para%nb_comp = nbocc_compor
+!
+! - Allocate objects
+!
+    allocate(ds_compor_para%v_para(nb_info_comp))
 !
 end subroutine
