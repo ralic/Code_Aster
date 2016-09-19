@@ -5,17 +5,17 @@ use NonLin_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/comp_meca_mod.h"
+#include "asterfort/comp_read_typmod.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
-#include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterfort/jeveuo.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/umat_get_function.h"
 #include "asterc/mfront_get_pointers.h"
@@ -25,10 +25,6 @@ implicit none
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
 #include "asterfort/comp_read_exte.h"
-#include "asterfort/mfront_get_libname.h"
-#include "asterfort/mfront_get_function.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/deprecated_algom.h"
@@ -81,20 +77,25 @@ implicit none
     character(len=16) :: veri_b=' '
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
-    aster_logical :: l_kit_thm=.false._1, l_mfront=.false._1
+    aster_logical :: l_kit_thm=.false._1, l_mfront_proto=.false._1
     aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1, l_kit = .false._1
     character(len=16) :: texte(3)=(/ ' ',' ',' '/), model_mfront=' '
     character(len=80), pointer :: int_var(:) => null()
     character(len=255) :: libr_name=' ', subr_name=' '
+    integer, pointer :: v_model_elem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call jemarq()
-!
-! - Initializations
-!
     keywordfact = 'COMPORTEMENT'
     nb_comp     = ds_compor_para%nb_comp
+    mesh        = ' '
+!
+! - Pointer to list of elements in model
+!
+    if ( present(model_) ) then
+        call jeveuo(model_//'.MAILLE', 'L', vi = v_model_elem)
+        call dismoi('NOM_MAILLA', model_, 'MODELE', repk=mesh)
+    endif
 !
 ! - Read informations
 !
@@ -273,27 +274,24 @@ implicit none
 ! ----- Get parameters for external programs (MFRONT/UMAT)
 !
         call comp_read_exte(rela_comp  , kit_comp ,&
-                            l_umat     , l_mfront , l_mfront_offi,&
+                            l_umat     , l_mfront_proto , l_mfront_offi,&
                             libr_name  , subr_name,&
                             keywordfact, i_comp   )
+!
+! ----- Get model for MFRONT
+!
+        if (l_mfront_proto .or. l_mfront_offi) then
+            call comp_read_typmod(mesh       , v_model_elem,&
+                                  keywordfact, i_comp      , rela_comp,&
+                                  model_dim  , model_mfront)
+        endif
 !
 ! ----- Get function pointers for external programs (MFRONT/UMAT)
 !
         cptr_nbvarext   = 0
         cptr_namevarext = 0
         cptr_fct_ldc    = 0
-        if ( l_mfront ) then
-            if ( present(model_) ) then
-                call dismoi('NOM_MAILLA', model_, 'MODELE', repk=mesh)
-! ------------- STAT_NON_LINE case
-                call comp_meca_mod(mesh       , model_      ,&
-                                   keywordfact, i_comp        , rela_comp,&
-                                   model_dim  , model_mfront)
-            else
-! ------------- CALC_POINT_MAT case
-                model_dim    = 3
-                model_mfront = '_Tridimensional'
-            endif
+        if ( l_mfront_offi .or. l_mfront_proto) then
 !           The keywords in DEFI_MATERIAU are those for Tridimensional hypothesis
 !FIXME      ASSERT(model_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
             call mfront_get_number_of_internal_state_variables(libr_name, subr_name,&
@@ -328,7 +326,7 @@ implicit none
 ! ----- Ban if RELATION = MFRONT and ITER_INTE_PAS negative
 !
         if (iter_inte_pas .lt. 0.d0) then
-            if (l_mfront_offi .or. l_mfront) then
+            if ( l_mfront_offi .or. l_mfront_proto) then
                 call utmess('F', 'COMPOR1_95')
             end if
         end if
@@ -337,26 +335,31 @@ implicit none
 !
 ! ----- Save options in list
 !
-        ds_compor_para%v_para(i_comp)%type_matr_t           = type_matr_t
-        ds_compor_para%v_para(i_comp)%parm_alpha            = parm_alpha
-        ds_compor_para%v_para(i_comp)%parm_theta            = parm_theta
-        ds_compor_para%v_para(i_comp)%iter_inte_pas         = iter_inte_pas
-        ds_compor_para%v_para(i_comp)%vale_pert_rela        = vale_pert_rela
-        ds_compor_para%v_para(i_comp)%resi_deborst_max      = resi_deborst_max
-        ds_compor_para%v_para(i_comp)%iter_deborst_max      = iter_deborst_max
-        ds_compor_para%v_para(i_comp)%seuil                 = seuil
-        ds_compor_para%v_para(i_comp)%amplitude             = amplitude
-        ds_compor_para%v_para(i_comp)%taux_retour           = taux_retour
-        ds_compor_para%v_para(i_comp)%post_iter             = ipostiter
-        ds_compor_para%v_para(i_comp)%post_incr             = ipostincr
-        ds_compor_para%v_para(i_comp)%c_pointer%nbvarext    = cptr_nbvarext
-        ds_compor_para%v_para(i_comp)%c_pointer%namevarext  = cptr_namevarext
-        ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc     = cptr_fct_ldc
-        ds_compor_para%v_para(i_comp)%c_pointer%matprop     = cptr_matprop
-        ds_compor_para%v_para(i_comp)%c_pointer%nbprop      = cptr_nbprop
-        ds_compor_para%v_para(i_comp)%rela_comp             = rela_comp
-        ds_compor_para%v_para(i_comp)%algo_inte             = algo_inte
+        ds_compor_para%v_para(i_comp)%type_matr_t              = type_matr_t
+        ds_compor_para%v_para(i_comp)%parm_alpha               = parm_alpha
+        ds_compor_para%v_para(i_comp)%parm_theta               = parm_theta
+        ds_compor_para%v_para(i_comp)%iter_inte_pas            = iter_inte_pas
+        ds_compor_para%v_para(i_comp)%vale_pert_rela           = vale_pert_rela
+        ds_compor_para%v_para(i_comp)%resi_deborst_max         = resi_deborst_max
+        ds_compor_para%v_para(i_comp)%iter_deborst_max         = iter_deborst_max
+        ds_compor_para%v_para(i_comp)%seuil                    = seuil
+        ds_compor_para%v_para(i_comp)%amplitude                = amplitude
+        ds_compor_para%v_para(i_comp)%taux_retour              = taux_retour
+        ds_compor_para%v_para(i_comp)%post_iter                = ipostiter
+        ds_compor_para%v_para(i_comp)%post_incr                = ipostincr
+        ds_compor_para%v_para(i_comp)%c_pointer%nbvarext       = cptr_nbvarext
+        ds_compor_para%v_para(i_comp)%c_pointer%namevarext     = cptr_namevarext
+        ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc        = cptr_fct_ldc
+        ds_compor_para%v_para(i_comp)%c_pointer%matprop        = cptr_matprop
+        ds_compor_para%v_para(i_comp)%c_pointer%nbprop         = cptr_nbprop
+        ds_compor_para%v_para(i_comp)%rela_comp                = rela_comp
+        ds_compor_para%v_para(i_comp)%algo_inte                = algo_inte
+        ds_compor_para%v_para(i_comp)%comp_exte%nb_vari_umat   = 0
+        ds_compor_para%v_para(i_comp)%comp_exte%nb_vari_mfront = 0
+        ds_compor_para%v_para(i_comp)%comp_exte%libr_name      = libr_name 
+        ds_compor_para%v_para(i_comp)%comp_exte%subr_name      = subr_name
+        ds_compor_para%v_para(i_comp)%comp_exte%model_mfront   = model_mfront
+        ds_compor_para%v_para(i_comp)%comp_exte%model_dim      = model_dim
     end do
 !
-    call jedema()
 end subroutine

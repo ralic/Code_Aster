@@ -1,6 +1,6 @@
 subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp     ,&
                                model_dim     , model_mfront    ,&
-                               l_check_      , model_type_save_, codret_)
+                               codret)
 !
 implicit none
 !
@@ -31,9 +31,7 @@ implicit none
     aster_logical, intent(in) :: l_mfront_cp
     integer, intent(out) :: model_dim
     character(len=16), intent(out) :: model_mfront
-    aster_logical, optional, intent(in) :: l_check_
-    character(len=16), optional, intent(inout) :: model_type_save_
-    integer, optional, intent(out) :: codret_
+    integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,8 +45,6 @@ implicit none
 ! In  l_mfront_cp      : .true. if plane stress is possible for this MFront behaviour
 ! Out model_dim        : dimension of model 2 or 3
 ! Out model_mfront     : type of modelisation for MFront
-! In  l_check          : .true. for check
-! IO  model_type_save  : previous modelisation of finite element
 ! Out codret           : code for error 
 !                        0 - OK
 !                        1 - Error - Not same finite element
@@ -56,47 +52,27 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, codret
-    character(len=1) :: d1
-    character(len=16) :: model_type, model_type_save
-    character(len=16) :: principal, model_thm
-    aster_logical :: l_check
+    integer :: iret
+    character(len=1) :: model_dim_s
+    character(len=16) :: principal, model_thm, model_type
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret          = 0
-    model_dim       = 0
-    model_mfront    = ' '
-!
-! - Activation of checks
-!
-    l_check = .false._1
-    if (present(l_check_)) then
-        l_check         = l_check_
-        model_type_save = model_type_save_
-    endif
+    codret       = 0
+    model_dim    = 0
+    model_mfront = ' '
 !
 ! - Get attributes on finite element
 !
-    call teattr('C', 'TYPMOD'         , model_type, iret, typel = elem_type_name)
-    call teattr('C', 'PRINCIPAL'      , principal , iret, typel = elem_type_name)
-    call teattr('C', 'THM'            , model_thm , iret, typel = elem_type_name)
-    call teattr('C', 'DIM_TOPO_MODELI', d1        , iret, typel = elem_type_name)
-    read(d1,'(I1)') model_dim
+    call teattr('C', 'TYPMOD'         , model_type , iret, typel = elem_type_name)
+    call teattr('C', 'PRINCIPAL'      , principal  , iret, typel = elem_type_name)
+    call teattr('C', 'THM'            , model_thm  , iret, typel = elem_type_name)
+    call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel = elem_type_name)
+    read(model_dim_s,'(I1)') model_dim
 !
 ! - Select modelisation for MFront
 !
     if (principal .eq. 'OUI') then
-        if (l_check) then
-            if (model_type_save .eq. ' ') then
-                model_type_save = model_type
-            endif
-            if (model_type_save .ne. model_type) then
-                model_mfront = model_type
-                codret = 1
-                goto 99
-            endif
-        endif
         if ( model_type .eq. 'COMP3D' ) then
             model_mfront = '_Tridimensional'
         elseif ( model_type .eq. 'C_PLAN' ) then
@@ -119,23 +95,12 @@ implicit none
             model_mfront = '_Tridimensional'
         else
             model_mfront = model_type
-            if (l_check) then
-                codret = 2
-            else
-                ASSERT(.false.)
-            endif
+            codret = 2
         endif
     endif
 !
-99  continue
-!
-    if (model_dim.le.1) then
+    if (model_dim .le. 1) then
         codret = 2
-    endif
-!
-    if (present(l_check_)) then
-        codret_          = codret
-        model_type_save_ = model_type_save
     endif
 !
 end subroutine

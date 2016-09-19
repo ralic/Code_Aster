@@ -73,15 +73,17 @@ implicit none
         call lctype(rela_comp_py, ldctyp)
         call lcdiscard(rela_comp_py)
         l_detec = ldctyp == 'mfront'
-    else if (what .eq. 'MFRONT') then
+    else if (what .eq. 'MFRONT_PROTO') then
         l_detec = (rela_comp .eq. 'MFRONT')
+    else if (what .eq. 'MFRONT') then
+        call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_detec)
         if (.not. l_detec) then
             call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
         endif
     else if (what .eq. 'EXTE_COMP') then
-        l_detec = (rela_comp .eq. 'MFRONT').or.(rela_comp .eq. 'UMAT')
+        call comp_meca_l(rela_comp, 'MFRONT', l_detec)
         if (.not. l_detec) then
-            call comp_meca_l(rela_comp, 'MFRONT_OFFI', l_detec)
+            call comp_meca_l(rela_comp, 'UMAT', l_detec)
         endif
     else if (what .eq. 'PMF') then
         l_detec = (rela_comp .eq. 'MULTIFIBRE')

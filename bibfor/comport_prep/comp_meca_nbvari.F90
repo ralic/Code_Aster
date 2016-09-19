@@ -55,14 +55,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_mfront_cp, l_mfront, l_umat, l_mfront_offi
+    aster_logical :: l_mfront_cp, l_mfront_proto, l_umat, l_mfront_offi
     integer, pointer :: v_model_elem(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
     integer, pointer :: v_compor_desc(:) => null()
     integer, pointer :: v_compor_lima(:) => null()
     integer, pointer :: v_compor_lima_lc(:) => null()
     integer :: nb_vale, nb_cmp_max, nb_zone, nb_vari
-    integer :: i_zone
+    integer :: i_zone, codret
     integer :: type_affe, indx_lima, elem_type_nume, elem_nume, model_dim
     character(len=16) :: elem_type_name
     character(len=16) :: type_matg, post_iter
@@ -145,20 +145,22 @@ implicit none
 ! ----- Get parameters for external programs (MFRONT/UMAT)
 !
         call comp_read_exte(rela_comp, kit_comp ,&
-                            l_umat   , l_mfront , l_mfront_offi,&
+                            l_umat   , l_mfront_proto , l_mfront_offi,&
                             libr_name, subr_name)
-        l_mfront_cp = type_cpla .eq. 'ANALYTIQUE' .and. l_mfront
+        l_mfront_cp = type_cpla .eq. 'ANALYTIQUE' .and. (l_mfront_proto .or. l_mfront_offi)
 !
 ! ----- Get number of internal variables for MFRONT
 !
         nb_vari_exte = 0
-        if (l_mfront) then
+        if (l_mfront_proto .or. l_mfront_offi) then
             if (present(model_)) then
                 elem_type_nume = v_model_elem(elem_nume)
                 if (elem_type_nume .ne. 0 .and. libr_name .ne. ' ') then
                     call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
-                    call comp_mfront_modelem(elem_type_name, l_mfront_cp,&
-                                             model_dim     , model_mfront)
+                    call comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
+                                             model_dim     , model_mfront,&
+                                             codret)
+                    ASSERT(codret .eq. 0)
                     call mfront_get_nbvari(libr_name   , subr_name, model_mfront, model_dim,&
                                            nb_vari_exte)
                     if (nb_vari_exte .eq. 0) then

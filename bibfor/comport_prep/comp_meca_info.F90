@@ -53,7 +53,7 @@ implicit none
 ! - Initializations
 !
     ds_compor_prep%v_comp => null()
-!    ds_compor_prep%v_exte => null()
+    ds_compor_prep%v_exte => null()
 !
 ! - Number of comportement information
 !
@@ -73,7 +73,7 @@ implicit none
 !
 ! - Allocate comportment informations objects (external: UMAT and MFront)
 !
-!    allocate(ds_compor_prep%v_exte(nb_info_comp))
+    allocate(ds_compor_prep%v_exte(nb_info_comp))
 !
 ! - If nothing in COMPORTEMENT: all is elastic
 !

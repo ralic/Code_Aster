@@ -8,19 +8,16 @@ implicit none
 #include "asterc/getexm.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/comp_meca_l.h"
-#include "asterfort/comp_meca_mod.h"
+#include "asterfort/comp_read_typmod.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exicp.h"
-#include "asterfort/mfront_get_libname.h"
-#include "asterfort/mfront_get_function.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmdocv.h"
 #include "asterfort/nocart.h"
 #include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_read_exte.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/utlcal.h"
 #include "asterc/mfront_set_double_parameter.h"
@@ -80,13 +77,9 @@ implicit none
     real(kind=8) :: post_iter, post_incr
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    aster_logical :: plane_stress, l_mfront, l_mfront_offi, l_umat, l_kit_thm, l_kit
+    aster_logical :: plane_stress, l_mfront_proto, l_mfront_offi, l_kit_thm, l_kit
 !
 ! --------------------------------------------------------------------------------------------------
-!
-
-!
-! - Initializations
 !
     keywordfact    = 'COMPORTEMENT'
     nb_comp        = ds_compor_para%nb_comp
@@ -116,11 +109,17 @@ implicit none
         post_incr        = ds_compor_para%v_para(i_comp)%post_incr
         rela_comp        = ds_compor_para%v_para(i_comp)%rela_comp
         algo_inte        = ds_compor_para%v_para(i_comp)%algo_inte
+        libr_name        = ds_compor_para%v_para(i_comp)%comp_exte%libr_name
+        subr_name        = ds_compor_para%v_para(i_comp)%comp_exte%subr_name
+        model_mfront     = ds_compor_para%v_para(i_comp)%comp_exte%model_mfront
+        model_dim        = ds_compor_para%v_para(i_comp)%comp_exte%model_dim
 !
 ! ----- Detection of specific cases
 !
-        call comp_meca_l(rela_comp, 'KIT'    , l_kit)
-        call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+        call comp_meca_l(rela_comp, 'KIT'         , l_kit)
+        call comp_meca_l(rela_comp, 'KIT_THM'     , l_kit_thm)
+        call comp_meca_l(rela_comp, 'MFRONT_PROTO', l_mfront_proto)
+        call comp_meca_l(rela_comp, 'MFRONT_OFFI' , l_mfront_offi)
 !
 ! ----- Get list of elements where comportment is defined
 !
@@ -144,25 +143,15 @@ implicit none
             call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
         endif
 !
-! ----- Get parameters for external programs (MFRONT/UMAT)
-!
-        call comp_read_exte(rela_comp  , kit_comp ,&
-                            l_umat     , l_mfront , l_mfront_offi,&
-                            libr_name  , subr_name,&
-                            keywordfact, i_comp   )
-!
 ! ----- Get RESI_INTE_RELA/ITER_INTE_MAXI
 !
         call nmdocv(keywordfact, i_comp, algo_inte, 'ITER_INTE_MAXI', iter_inte_maxi)
-        if (l_mfront) then
+        if ( l_mfront_offi .or. l_mfront_proto) then
             if (l_mfront_offi .or. l_kit_thm) then
                 call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_RELA', resi_inte_rela)
             else
                 call nmdocv(keywordfact, i_comp, algo_inte, 'RESI_INTE_MAXI', resi_inte_rela)
             endif
-            call comp_meca_mod(mesh       , model       ,&
-                               keywordfact, i_comp        , rela_comp,&
-                               model_dim  , model_mfront)
             call mfront_set_double_parameter(libr_name, subr_name, model_mfront,&
                                              "epsilon", resi_inte_rela)
             call mfront_set_integer_parameter(libr_name, subr_name, model_mfront,&

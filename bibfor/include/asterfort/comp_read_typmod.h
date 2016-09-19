@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_mod(mesh       , model       ,&
-                             keywordfact, iocc        , rela_comp,&
-                             model_dim  , model_mfront, type_cpla_)
-        character(len=8), intent(in) :: model
+    subroutine comp_read_typmod(mesh       , v_model_elem,&
+                                keywordfact, i_comp      , rela_comp ,&
+                                model_dim  , model_mfront, type_cpla_)
         character(len=8), intent(in) :: mesh
+        integer, intent(in), pointer :: v_model_elem(:)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer, intent(in) :: i_comp
         character(len=16), intent(in) :: rela_comp
-        integer, intent(out) :: model_dim
         character(len=16), intent(out) :: model_mfront
+        integer, intent(out) :: model_dim
         character(len=16), optional, intent(out) :: type_cpla_
-    end subroutine comp_meca_mod
+    end subroutine comp_read_typmod
 end interface

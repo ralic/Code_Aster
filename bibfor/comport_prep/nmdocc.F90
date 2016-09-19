@@ -140,6 +140,6 @@ implicit none
 ! - Cleaning
 !
     deallocate(ds_compor_prep%v_comp)
-    !deallocate(ds_compor_prep%v_exte)
+    deallocate(ds_compor_prep%v_exte)
 !
 end subroutine

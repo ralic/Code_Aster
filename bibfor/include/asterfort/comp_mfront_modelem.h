@@ -20,13 +20,11 @@
 interface
     subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp     ,&
                                    model_dim     , model_mfront    ,&
-                                   l_check_      , model_type_save_, codret_)
+                                   codret)
         character(len=16), intent(in) :: elem_type_name
         aster_logical, intent(in) :: l_mfront_cp
         integer, intent(out) :: model_dim
         character(len=16), intent(out) :: model_mfront
-        aster_logical, optional, intent(in) :: l_check_
-        character(len=16), optional, intent(inout) :: model_type_save_
-        integer, optional, intent(out) :: codret_
+        integer, intent(out) :: codret
     end subroutine comp_mfront_modelem
 end interface

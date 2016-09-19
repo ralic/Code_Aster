@@ -194,7 +194,7 @@ implicit none
             type_cpla = 'ANALYTIQUE'
         endif
     else
-! - For MFRONT: already selected in comp_meca_mod
+! - For MFRONT: already selected in comp_meca_read
     endif
 !
 ! - All elements are boundary elements

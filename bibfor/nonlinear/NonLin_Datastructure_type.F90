@@ -366,6 +366,17 @@ implicit none
         type(NL_DS_Table)     :: table
     end type NL_DS_Energy
 !
+! - Type: for exterior comportement
+! 
+    type NL_DS_ComporExte
+        character(len=255) :: subr_name
+        character(len=255) :: libr_name
+        character(len=16)  :: model_mfront
+        integer            :: model_dim
+        integer            :: nb_vari_umat
+        integer            :: nb_vari_mfront
+    end type NL_DS_ComporExte
+!
 ! - Type: for comportement
 ! 
     type NL_DS_Compor
@@ -390,6 +401,9 @@ implicit none
         integer                         :: nb_comp
 ! ----- List of comportements
         type(NL_DS_Compor), pointer     :: v_comp(:)
+! ----- List of external comportements
+        type(NL_DS_ComporExte), pointer :: v_exte(:)
+
     end type NL_DS_ComporPrep
 !
 ! - Type: pointer to external constitutive laws
@@ -417,9 +431,10 @@ implicit none
         real(kind=8) :: taux_retour
         integer      :: post_iter
         integer      :: post_incr
-        character(len=16) :: rela_comp
-        character(len=16) :: algo_inte
+        character(len=16)         :: rela_comp
+        character(len=16)         :: algo_inte
         type(NL_DS_ComporPointer) :: c_pointer
+        type(NL_DS_ComporExte)    :: comp_exte
     end type NL_DS_ComporPara
 !
 ! - Type: for preparation of parameters for constitutive laws
