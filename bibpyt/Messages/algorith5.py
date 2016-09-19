@@ -182,10 +182,6 @@ On n'a pas trouvé le ddl DZ pour le noeud  %(k1)s .
 Le GROUP_NO %(k1)s ne doit pas contenir plus d'un noeud.
 """),
 
-    63 : _(u"""
- RELA_EFFO_DEPL par sous-structuration, le mot-clé SOUS_STRUC est obligatoire
-"""),
-
     64 : _(u"""
  l'argument du mot-clé "SOUS_STRUC" n'est pas un nom de sous-structure
 """),
