@@ -58,8 +58,6 @@ subroutine dtmprep(sd_dtm_)
 #include "asterfort/jeveut.h"
 #include "asterfort/mdptem.h"
 #include "asterfort/mdrecf.h"
-#include "asterfort/mdrede.h"
-#include "asterfort/mdrevi.h"
 #include "asterfort/mdveri.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/mgutdm.h"

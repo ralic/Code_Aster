@@ -34,7 +34,6 @@ subroutine resu74(tran, nomres)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=8) :: nomres, tran

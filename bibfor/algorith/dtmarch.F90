@@ -40,7 +40,6 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/jgetptc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdarch.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/nlget.h"
 #include "asterfort/pmavec.h"
 !

@@ -33,7 +33,6 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intget.h"
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

@@ -14,7 +14,6 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/nlget.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"

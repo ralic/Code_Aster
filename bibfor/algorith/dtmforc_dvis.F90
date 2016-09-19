@@ -41,7 +41,6 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/gloloc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/locglo.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/rk5adp.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"

@@ -8,7 +8,6 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli,&
 #include "asterfort/impact.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"

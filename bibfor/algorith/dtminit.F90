@@ -41,7 +41,6 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdinit.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
 #include "asterfort/nlinivec.h"

@@ -35,7 +35,6 @@ subroutine intadapt1(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "asterfort/intinivec.h"
 #include "asterfort/intget.h"
 #include "asterfort/intsav.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/nlget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

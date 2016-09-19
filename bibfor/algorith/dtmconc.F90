@@ -36,7 +36,6 @@ subroutine dtmconc(sd_dtm_)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mdlibe.h"
-#include "asterfort/mdtr74grd.h"
 #include "asterfort/nlget.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/as_deallocate.h"
