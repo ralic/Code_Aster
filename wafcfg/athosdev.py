@@ -36,8 +36,10 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-320/lib',
         YAMMROOT + '/prerequisites/Metis_aster-510_aster/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203-1/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
+        '/home/A19043/MUMPS_SNAPSHOT-2015-07-23consortium_LR/lib',
+        '/home/A19043/MUMPS_SNAPSHOT-2015-07-23consortium_LR/libseq',
+        '/home/A19043/parmetis-4.0.3/Lib_parmetis4/lib',
+        '/home/A19043/scotch_6.0.4/lib',
     ])
 
     self.env.append_value('INCLUDES', [
@@ -46,12 +48,17 @@ def configure(self):
         YAMMROOT + '/tools/Medfichier-320/include',
         YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203-1/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include_seq',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/include',    ])
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster4/SEQ/include_seq',
+        '/home/A19043/scotch_6.0.4/include',
+        '/home/A19043/parmetis-4.0.3/include',
+        '/home/A19043/parmetis-4.0.3/Lib_parmetis4/include',
+        '/home/A19043/parmetis-4.0.3/metis/GKlib',
+        '/home/A19043/parmetis-4.0.3/metis/programs',
+    ])
 
     self.env.append_value('LIB', ('pthread', 'util'))
-
+    self.env.append_value('LIB_SCOTCH', ('scotcherrexit'))
     # to fail if not found
     opts.enable_hdf5 = True
     opts.enable_med = True

@@ -1,7 +1,7 @@
 subroutine amumpu(option, type, kxmps, usersm, nprec,&
                   lresol, kvers, nbfact)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -562,7 +562,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         kvers=''
         kvers=trim(adjustl(nvers))
         select case (kvers)
-            case('4.10.0','5.0.1','5.0.1consortium')
+        case('4.10.0','5.0.1','5.0.1consortium')
         case default
             call utmess('F', 'FACTOR_72', sk=kvers)
         end select

@@ -228,7 +228,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
    _BlocLD['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("RCMK",), )
 
-   _BlocMU['RENUM'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("AMD", "AMF", "PORD", "METIS", "QAMD", "SCOTCH", "AUTO", ), )
+   _BlocMU['RENUM'] = SIMP(statut='f', typ='TXM', defaut="AUTO", into=("AMD", "AMF", "PORD", "METIS", "QAMD", "SCOTCH", "AUTO", "PARMETIS", "PTSCOTCH"), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 #  NPREC

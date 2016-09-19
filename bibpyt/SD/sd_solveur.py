@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,7 @@ class sd_solveur(AsBase):
             assert slvk[1] in ('AUTO', 'SANS')
             assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO')
             assert slvk[3] in (
-                'AMD', 'AMF', 'PORD', 'METIS', 'QAMD', 'AUTO', 'SCOTCH')
+                'AMD', 'AMF', 'PORD', 'METIS', 'QAMD', 'AUTO', 'SCOTCH', 'PARMETIS', 'PTSCOTCH')
             assert slvk[5] in ('LAGR2', 'NON',), slvk
             assert slvk[6] in ('OUI', 'NON', 'XXXX')
             assert slvk[7] in ('OUI', 'NON', 'XXXX')

@@ -526,4 +526,34 @@ Attention :
   futures résolutions de systèmes linéaires avec MUMPS dans cet opérateur.
 
 """),
+89: _(u"""
+Solveur MUMPS :
+  Vous avez paramétré le solveur linéaire MUMPS avec le renuméroteur 'PTSCOTCH'. Or celui-ci ne
+  fonctionne qu'en mode parallèle. Pour ne pas stopper le calcul, on lui a substitué pour vous sa version séquentielle: SCOTCH.
+
+  La prochaine fois:
+    - Relancer le calcul avec la version MPI sur plusieurs processeurs,
+    - Changer de renuméroteur ou laisser le paramètre RENUM à la valeur 'AUTO'.
+
+"""),
+90: _(u"""
+Solveur MUMPS :
+  Vous avez paramétré le solveur linéaire MUMPS avec le renuméroteur 'PARMETIS'. Or celui-ci ne
+  fonctionne qu'en mode parallèle. Pour ne pas stopper le calcul, on lui a substitué pour vous sa version séquentielle: METIS.
+
+  La prochaine fois:
+    - Relancer le calcul avec la version MPI sur plusieurs processeurs,
+    - Changer de renuméroteur ou laisser le paramètre RENUM à la valeur 'AUTO'.
+
+"""),
+91: _(u"""
+Solveur MUMPS :
+  Vous avez paramétré le solveur linéaire MUMPS avec un renuméroteur parallèle: RENUM='PARMETIS' ou 'PTSCOTCH'. Or ceux-ci ne
+  sont pas installés dans cette version de Code_Aster.
+
+  Conseil:
+    - Assurer vous de prendre une version parallèle de Code_Aster linkée à ces packages externes,
+    - Changer de renuméroteur ou laisser le paramètre RENUM à la valeur 'AUTO'.
+
+"""),
 }

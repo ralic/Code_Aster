@@ -1,6 +1,6 @@
 subroutine amumpi(option, lquali, ldist, kxmps, type)
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -54,7 +54,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     type(cmumps_struc), pointer :: cmpsk => null()
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
-    integer :: ifm, niv, i, isymm, isymv, isym
+    integer :: ifm, niv, i, isymm, isymv, isym, nbproc
     integer :: nprec, ibid
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps, blrfront, keep488, keep490, keep491
@@ -188,6 +188,17 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 !        INITIALISATION ICNTL/CNTL POUR MUMPS (ANALYSE +FACTO)
 !       ------------------------------------------------------
     else if (option.eq.2) then
+       if (type .eq. 'S') then
+            nbproc=smpsk%nprocs
+        else if (type.eq.'C') then
+            nbproc=cmpsk%nprocs
+        else if (type.eq.'D') then
+            nbproc=dmpsk%nprocs
+        else if (type.eq.'Z') then
+            nbproc=zmpsk%nprocs
+        else
+            ASSERT(.false.)
+        endif
 !
 ! ---     INIT
         do i = 1, nicntl
@@ -285,24 +296,52 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
             ASSERT(.false.)
         endif
 !
-! ---     RENUMEROTATION
-! ---       Analyse sequentielle par defaut
-        icntl(28)=1
-        icntl(29)=0
+! ---     Ordering phase
+! automatic choice of sequantial or parallel analysis
+        icntl(28)= 0
+! automatic choice of the sequential ordering
+        icntl(7) = 7
+! automatic choice of the parallel ordering
+        icntl(29)= 0
+
         if (slvk(4) .eq. 'AMD') then
-            icntl(7) = 0
+            icntl(28) = 1
+            icntl(7)  = 0
         else if (slvk(4).eq.'AMF') then
+            icntl(28)= 1
             icntl(7) = 2
         else if (slvk(4).eq.'SCOTCH') then
+            icntl(28)= 1
             icntl(7) = 3
+        else if (slvk(4).eq.'PTSCOTCH') then
+            if (nbproc.eq.1) then
+                icntl(28)= 1
+                icntl(7) = 3
+                call utmess('A','FACTOR_89')
+            else
+                icntl(28)=2
+                icntl(29)=1
+            endif
         else if (slvk(4).eq.'PORD') then
+            icntl(28)= 1
             icntl(7) = 4
         else if (slvk(4).eq.'METIS') then
+            icntl(28)= 1
             icntl(7) = 5
+        else if (slvk(4).eq.'PARMETIS') then
+            if (nbproc.eq.1) then
+                icntl(28)= 1
+                icntl(7) = 5
+                call utmess('A','FACTOR_90')
+            else
+                icntl(28)=2
+                icntl(29)=2
+            endif
         else if (slvk(4).eq.'QAMD') then
+            icntl(28)= 1
             icntl(7) = 6
         else if (slvk(4).eq.'AUTO') then
-            icntl(7) = 7
+! choosen par default
         else
             ASSERT(.false.)
         endif

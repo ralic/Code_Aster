@@ -269,6 +269,8 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
         else if (smpsk%infog(1).eq.-6) then
             iret=2
             goto 99
+        else if (smpsk%infog(1).eq.-38) then
+            call utmess('F', 'FACTOR_91')
         else
             iaux=smpsk%infog(1)
             if (iaux .lt. 0) then
@@ -279,8 +281,12 @@ subroutine amumps(action, kxmps, rsolu, vcine, nbsol,&
                 endif
             endif
         endif
-        if (slvk(4) .ne. 'AUTO' .and. smpsk%icntl(7) .ne. smpsk% infog(7) .and.&
-            (.not.lpreco)) then
+        if ((slvk(4) .ne.'AUTO').and.(smpsk%icntl(7).ne.smpsk%infog(7)).and.&
+            (.not.lpreco).and.(smpsk%infog(32).eq.1)) then
+            call utmess('A', 'FACTOR_50', sk=slvk(4))
+        endif
+        if ((slvk(4) .ne.'AUTO').and.(smpsk%icntl(29).ne.smpsk%infog(7)).and.&
+            (.not.lpreco).and.(smpsk%infog(32).eq.2)) then
             call utmess('A', 'FACTOR_50', sk=slvk(4))
         endif
 !
