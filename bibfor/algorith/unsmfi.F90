@@ -4,7 +4,7 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
     implicit none
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -124,18 +124,18 @@ subroutine unsmfi(imate, phi, cs, t, tbiot,&
 ! ON FIXE ARBITRAIREMENT LE PARAMETRE NUS A FIXE 0.3
 !
             nus=0.3d0
-            m11=young1*(young3-young1*nu31*nu31)/((1.d0+nu12)* (young3-&
-        young3*nu12-2.d0*young1*nu31*nu31))
-            m12=young1*(young3*nu12+young1*nu31*nu31)/((1.d0+nu12)*&
-        (young3-young3*nu12-2.d0*young1*nu31*nu31))
-            m13=young1*young3*nu31/(young3-young3*nu12-2.d0* young1*nu31*&
-        nu31)
+            m11=young1*(young3-young1*nu13*nu13)/((1.d0+nu12)* (young3-&
+        young3*nu12-2.d0*young1*nu13*nu13))
+            m12=young1*(young3*nu12*(1.+nu13)+young1*nu13*nu13)/((1.d0+nu12)*&
+        (young3-young3*nu12-2.d0*young1*nu13*nu13))
+            m13=young1*young3*nu13/(young3-young3*nu12-2.d0* young1*nu13*&
+        nu13)
 !
             if (abs(1.d0-biot1) .gt. eps) then
                 ks=(m11+m12+m13)/(3.d0*(1.d0-biot1))
             else if (abs(1.d0-biot3).gt.eps) then
                 m33=young1*young1*(1.d0-nu12)/ (young3-young3*nu12-2.d0*&
-            young1*nu31*nu31)
+            young1*nu13*nu13)
                 ks=(2*m13+m33)/(3.d0*(1.d0-biot3))
             else
 ! MATERIAU INCOMPRESSIBLE
