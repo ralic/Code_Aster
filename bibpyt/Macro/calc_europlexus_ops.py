@@ -368,7 +368,7 @@ class EUROPLEXUS:
         # écriture des résultats EPX en MED
         champ_fact = self.ARCHIVAGE
         if champ_fact is not None:
-            bloc = BLOC_DONNEES('MEDE', cle='NEWN')
+            bloc = BLOC_DONNEES('MEDE')
             epx[directive].add_bloc(bloc)
 
         # on traite la directive fin maintenant car elle est toujours présente
