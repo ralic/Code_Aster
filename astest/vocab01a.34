@@ -1578,8 +1578,6 @@ I_CORP
 I_TUBU
 ImplicitHayhurst
 ImplicitHayhurst_FO
-ImplicitNorton
-ImplicitNorton_FO
 J1
 J2
 J3
@@ -2342,13 +2340,7 @@ N_CJS
 N_INIT
 N_KE
 N_PUIS
-NormalStiffness
-Norton
-Norton_FO
-Norton_Jacnum
-Norton_Jacnum_FO
-Norton_RK54
-Norton_RK54_FO
+NormalStiffness 
 OBJET
 OBSERVABILITE
 OBSERVATION
@@ -2389,8 +2381,6 @@ OUVERT_REMANENTE
 OUV_FICT
 OUV_MIN
 O_ETOILE
-OrthotropicElast
-OrthotropicElast_FO
 P
 PA
 PAGINATION
@@ -3027,8 +3017,6 @@ SUPER_MAILLE
 SUPPORT
 SURCHARGE
 SURF
-SVenantKirchhoff
-SVenantKirchhoff_FO
 SY
 SYC
 SYME
