@@ -109,7 +109,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                              ),
 
         b_cal_contrainte =BLOC(condition="(COMPORTEMENT!=None and (OPTION=='CALC_G' or OPTION=='CALC_GTP' or OPTION=='CALC_G_GLOB'))",
-          CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',into=("NON",),),
+          CALCUL_CONTRAINTE =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON",),),
          ),
 
 
