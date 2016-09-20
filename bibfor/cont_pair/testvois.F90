@@ -94,6 +94,7 @@ implicit none
 ! ----- Loop on linearized slave sub-elements
 !
         do i_elin_slav = 1, elin_slav_nbsub
+            elin_slav_coor(:) = 0.d0
 !
 ! --------- Get coordinates for current linearized slave sub-element
 !         
@@ -107,6 +108,7 @@ implicit none
 ! --------- Loop on linearized master sub-elements
 !           
             do i_elin_mast = 1, elin_mast_nbsub
+                elin_mast_coor(:) = 0.d0
 !
 ! ------------- Get coordinates for current linearized master sub-element
 !

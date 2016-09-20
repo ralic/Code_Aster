@@ -535,14 +535,14 @@ implicit none
 !
                 if (elem_mast_code .eq. 'SE2' .or. elem_mast_code .eq. 'SE3') then
                     nb_mast_neigh = 2
-                    tole_weight   = 0.2
+                    tole_weight   = 0.5
                 elseif (elem_mast_code .eq. 'TR3' .or. elem_mast_code .eq. 'TR6') then
                     nb_mast_neigh = 3
                     tole_weight   = 0.05
                 elseif (elem_mast_code .eq. 'QU4' .or. elem_mast_code .eq. 'QU8' .or.&
                         elem_mast_code .eq. 'QU9') then
                     nb_mast_neigh = 4
-                    tole_weight   = 0.1
+                    tole_weight   = 0.4
                 else
                     ASSERT(.false.)
                 endif
@@ -570,14 +570,14 @@ implicit none
                         .and.elem_slav_flag(elem_neigh_indx) .eq. 0 &
                         .and. list_slav_weight(i_slav_neigh) .lt. tole_weight ) then
                         weight_test=0.d0
-                        !call testvois(mesh          , jv_geom       , elem_slav_type,&
-                        !              elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                        !              pair_tole     , weight_test)
-                        !if (weight_test .gt. list_slav_weight(i_slav_neigh).and.&
-                        !    weight_test .gt. pair_tole) then
+                        call testvois(mesh          , jv_geom       , elem_slav_type,&
+                                      elem_mast_coor, elem_mast_code, elem_slav_nume,&
+                                      pair_tole     , weight_test)
+                        if (weight_test .gt. list_slav_weight(i_slav_neigh).and.&
+                            weight_test .gt. pair_tole) then
                             list_slav_master(i_slav_neigh) = elem_mast_nume
                             list_slav_weight(i_slav_neigh) = weight_test
-                        !end if
+                        end if
                     end if
                 end do
                 l_recup = .false.
