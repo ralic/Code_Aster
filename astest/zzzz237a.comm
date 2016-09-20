@@ -20,7 +20,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
               DEBUG=_F(SDVERI='OUI'))
 
 # ALARME APPARIEMENT_1: TEST DU NON APPARIEMENT (CF FICHE 18979)
-# NORMAL DANS CE TEST: ON VERIFIE TOLE_APPA et TOLE_PROJ_EXT
+# NORMAL DANS CE TEST: ON VERIFIE DIST_APPA et TOLE_PROJ_EXT
 # L'ALARME SE DECLENCHE -> CES DEUX FONCTIONNALITES SONT OK
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
@@ -399,7 +399,7 @@ TEST_RESU(CHAM_NO=_F(
 
 #--------------------------
 
-# Validation de TOLE_APPA en FORMULATION 'DISCRETE' et 'CONTINUE'
+# Validation de DIST_APPA en FORMULATION 'DISCRETE' et 'CONTINUE'
 
 CONT_TA = DEFI_CONTACT(MODELE      = MO,
                    FORMULATION  = 'DISCRETE',
@@ -408,7 +408,7 @@ CONT_TA = DEFI_CONTACT(MODELE      = MO,
                         _F(
                              GROUP_MA_MAIT='HE',
                              GROUP_MA_ESCL='AB',
-                             TOLE_APPA=+1.0,
+                             DIST_APPA=+1.0,
                          ),
 
                        ),
@@ -422,7 +422,7 @@ CONTC_TA = DEFI_CONTACT(MODELE      = MO,
                         _F(
                              GROUP_MA_MAIT='HE',
                              GROUP_MA_ESCL='AB',
-                             TOLE_APPA=+1.0,
+                             DIST_APPA=+1.0,
                          ),
 
                        ),

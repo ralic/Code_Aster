@@ -16,7 +16,6 @@ implicit none
 #include "asterfort/aplcpb.h"
 #include "asterfort/aplcno.h"
 #include "asterfort/aplcpg.h"
-#include "asterfort/aplcfb.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jelira.h"
 #include "asterfort/wkvect.h"
@@ -108,14 +107,12 @@ implicit none
 !
 ! ----- Get parameters
 !
-        pair_tole     = mminfr(ds_contact%sdcont_defi, 'TOLE_APPA', i_zone)
+        pair_tole     = mminfr(ds_contact%sdcont_defi, 'RESI_APPA', i_zone)
         sdcont_methco = ds_contact%sdcont_defi(1:16)//'.METHCO'
         call jeveuo(sdcont_methco, 'L', vi = v_sdcont_methco)
-        if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 2) then
-            pair_method  = 'FORCEE'        
-        else if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 3) then 
+        if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 2) then 
             pair_method  = 'ROBUSTE'        
-        else if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 4) then 
+        else if (v_sdcont_methco(zmeth*(i_zone-1)+7) .eq. 3) then 
             pair_method  = 'RAPIDE'
         endif
 !
@@ -141,10 +138,6 @@ implicit none
                         nb_pair_zone, list_pair_zone)
         elseif (pair_method.eq.'RAPIDE') then
             call aplcpg(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
-                        nb_elem_mast, v_sdappa_mast , nb_elem_slav, v_sdappa_slav, &
-                        nb_pair_zone, list_pair_zone)
-        elseif (pair_method.eq.'FORCEE') then
-            call aplcfb(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
                         nb_elem_mast, v_sdappa_mast , nb_elem_slav, v_sdappa_slav, &
                         nb_pair_zone, list_pair_zone)
         else

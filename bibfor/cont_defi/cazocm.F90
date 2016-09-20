@@ -124,13 +124,13 @@ implicit none
         v_sdcont_methco(zmeth*(i_zone-1)+1) = 0
     else if (type_pair .eq. 'MAIT_ESCL') then
         v_sdcont_methco(zmeth*(i_zone-1)+1) = 1
-    else if (type_pair .eq. 'MORTAR_LAC') then
+    else if (type_pair .eq. 'MORTAR') then
          v_sdcont_methco(zmeth*(i_zone-1)+1) = 2
     else
         ASSERT(.false.)
     endif
 !
-! - Type of jacobian (MORTAR_LAC)
+! - Type of jacobian (MORTAR)
 !
     call getvtx(keywf, 'ALGO_CONT', iocc=i_zone, scal=s_algo_cont, nbret = iret) 
     if (iret .eq. 0) then
@@ -145,9 +145,6 @@ implicit none
         else
             ASSERT(.false.)
         endif
-    endif
-    if (s_algo_cont .eq. 'LAC' ) then 
-        call getvtx(keywf, 'TYPE_JACOBIEN', iocc=i_zone, scal=type_jacobian)
     endif
 !
 ! - Get DIST_POUTRE/DIST_COQUE
@@ -275,29 +272,34 @@ implicit none
 !
 ! - Pairing: search fixed direction - (DIRE_APPA)
 !
-    call getvtx(keywf, 'TYPE_APPA', iocc=i_zone, scal=type_appa_search)
-    if (type_appa_search .eq. 'PROCHE') then
-        v_sdcont_methco(zmeth*(i_zone-1)+7) = 0
-    else if (type_appa_search(1:4) .eq. 'FIXE') then
-        v_sdcont_methco(zmeth*(i_zone-1)+7) = 1
-        call getvr8(keywf, 'DIRE_APPA', iocc=i_zone, nbval=3, vect=dire_appa,&
-                    nbret=noc)
-        ASSERT(noc.gt.0)
-        call normev(dire_appa, noor)
-        if (noor .le. r8prem()) then
-            call utmess('F', 'CONTACT3_15')
+    if (s_algo_cont .eq. 'LAC') then 
+        call getvtx(keywf, 'TYPE_APPA', iocc=i_zone, scal=type_appa_search)
+        if (type_appa_search  .eq.  'ROBUSTE') then
+            v_sdcont_methco(zmeth*(i_zone-1)+7) = 2
+        else if (type_appa_search  .eq.  'RAPIDE') then
+            v_sdcont_methco(zmeth*(i_zone-1)+7) = 3
+        else
+            ASSERT(.false.)
         endif
-        v_sdcont_dirapp(3*(i_zone-1)+1) = dire_appa(1)
-        v_sdcont_dirapp(3*(i_zone-1)+2) = dire_appa(2)
-        v_sdcont_dirapp(3*(i_zone-1)+3) = dire_appa(3)
-    else if (type_appa_search  .eq.  'FORCEE') then
-        v_sdcont_methco(zmeth*(i_zone-1)+7) = 2
-    else if (type_appa_search  .eq.  'ROBUSTE') then
-        v_sdcont_methco(zmeth*(i_zone-1)+7) = 3
-    else if (type_appa_search  .eq.  'RAPIDE') then
-        v_sdcont_methco(zmeth*(i_zone-1)+7) = 4
-    else
-        ASSERT(.false.)
+    else 
+        call getvtx(keywf, 'TYPE_PROJECTION', iocc=i_zone, scal=type_appa_search)
+        if (type_appa_search .eq. 'ORTHOGONALE') then
+            v_sdcont_methco(zmeth*(i_zone-1)+7) = 0
+        else if (type_appa_search(1:4) .eq. 'FIXE') then
+            v_sdcont_methco(zmeth*(i_zone-1)+7) = 1
+            call getvr8(keywf, 'DIRE_APPA', iocc=i_zone, nbval=3, vect=dire_appa,&
+                        nbret=noc)
+            ASSERT(noc.gt.0)
+            call normev(dire_appa, noor)
+            if (noor .le. r8prem()) then
+                call utmess('F', 'CONTACT3_15')
+            endif
+            v_sdcont_dirapp(3*(i_zone-1)+1) = dire_appa(1)
+            v_sdcont_dirapp(3*(i_zone-1)+2) = dire_appa(2)
+            v_sdcont_dirapp(3*(i_zone-1)+3) = dire_appa(3)
+        else
+            ASSERT(.false.)
+        endif    
     endif
 !
 ! - Resolution of contact (VERIF mode) ?
@@ -339,15 +341,28 @@ implicit none
         endif
     endif
 !
-! - TOLE_APPA
-! --- TOLE_APPA <0: pairing for any distance
-! --- TOLE_APPA >0: pairing only if distance(slave,master) < TOLE_APPA
+    if (s_algo_cont .eq. 'LAC') then
+! - RESI_APPA
+! --- RESI_APPA <0: pairing for any distance
+! --- RESI_APPA >0: pairing only if distance(slave,master) < RESI_APPA
 !
-    call getvr8(keywf, 'TOLE_APPA', iocc=i_zone, scal=tole_appa)
-    if (tole_appa .lt. 0.d0) then
-        v_sdcont_toleco(ztole*(i_zone-1)+2) = -1.d0
+        call getvr8(keywf, 'RESI_APPA', iocc=i_zone, scal=tole_appa)
+        if (tole_appa .lt. 0.d0) then
+            v_sdcont_toleco(ztole*(i_zone-1)+2) = -1.d0
+        else
+            v_sdcont_toleco(ztole*(i_zone-1)+2) = tole_appa
+        endif
     else
-        v_sdcont_toleco(ztole*(i_zone-1)+2) = tole_appa
+! - DIST_APPA
+! --- DIST_APPA <0: pairing for any distance
+! --- DIST_APPA >0: pairing only if distance(slave,master) < DIST_APPA
+!
+        call getvr8(keywf, 'DIST_APPA', iocc=i_zone, scal=tole_appa)
+        if (tole_appa .lt. 0.d0) then
+            v_sdcont_toleco(ztole*(i_zone-1)+2) = -1.d0
+        else
+            v_sdcont_toleco(ztole*(i_zone-1)+2) = tole_appa
+        endif
     endif
 !
 ! - Tolerance for non-computation mode

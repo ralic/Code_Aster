@@ -118,7 +118,7 @@ implicit none
 ! ----- Parameters on current zone
 !
         jdecnm       = mminfi(sdcont_defi, 'JDECNM'   , i_zone)
-        pair_tole    = mminfr(sdcont_defi, 'TOLE_APPA', i_zone)
+        pair_tole    = mminfr(sdcont_defi, 'DIST_APPA', i_zone)
         nb_poin      = mminfi(sdcont_defi, 'NBPT'     , i_zone)
         nb_node_mast = mminfi(sdcont_defi, 'NBNOM'    , i_zone)
         l_pair_dire  = mminfi(sdcont_defi, 'TYPE_APPA', i_zone).eq.1

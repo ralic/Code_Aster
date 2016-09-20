@@ -80,7 +80,7 @@ CONT = DEFI_CONTACT(MODELE         = MO,
                     ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_CONT = 'NEWTON',
                     ZONE=_F(
-                             TYPE_APPA     = 'FIXE',
+                             TYPE_PROJECTION     = 'FIXE',
                              DIRE_APPA     = (0.,-1.,0.),
                              NORMALE       = 'MAIT_ESCL',
                              GROUP_MA_MAIT ='GM11',

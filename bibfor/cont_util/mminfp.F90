@@ -313,7 +313,10 @@ implicit none
             call jeveuo(sdcont_toleco, 'L', vr  = v_sdcont_toleco)
             vale_r = v_sdcont_toleco(ztole*(i_zone-1)+1)
         endif
-    else if (question.eq.'TOLE_APPA') then
+    else if (question.eq.'DIST_APPA') then
+        call jeveuo(sdcont_toleco, 'L', vr  = v_sdcont_toleco)
+        vale_r = v_sdcont_toleco(ztole*(i_zone-1)+2)
+    else if (question.eq.'RESI_APPA') then
         call jeveuo(sdcont_toleco, 'L', vr  = v_sdcont_toleco)
         vale_r = v_sdcont_toleco(ztole*(i_zone-1)+2)
     else if (question.eq.'TOLE_INTERP') then
@@ -328,8 +331,6 @@ implicit none
             call jeveuo(sdcont_caraxf, 'L', vr = v_sdcont_caraxf)
             vale_r = v_sdcont_caraxf(zcmxf*(i_zone-1)+11)
             vale_i = nint(vale_r)
-        else
-            ASSERT(.false.)
         endif
     else if (question.eq.'ALGO_CONT_PENA') then
         if (cont_form .eq. 2) then

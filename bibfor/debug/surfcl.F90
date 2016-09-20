@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,8 +62,8 @@ implicit none
     integer :: nt_node_mast, nt_elem_mast, nt_node_mastc, nt_elem_mastc
     integer :: nb_node_excl, nb_cont_poinc, nb_cont_poin
     integer :: i_zone, i_surf, i_elem, i_node, node_nume
-    real(kind=8) :: tole_interp, tole_appa, tole_proj_ext
-    integer :: type_norm, type_appa_search, type_norm_mast, type_norm_slav, type_appa
+    real(kind=8) :: tole_interp, tole_proj_ext, resi_appa, dist_appa
+    integer :: type_norm, type_appa_search, type_norm_mast, type_norm_slav, type_appa, algo_cont
     aster_logical :: l_dist_shell, l_dist_beam, l_veri
     aster_logical :: l_liss, l_exis_verif, lstop
     character(len=8) :: jeuf1, jeuf2
@@ -184,7 +184,9 @@ implicit none
         type_norm_mast   = mminfi(sdcont_defi, 'VECT_MAIT'    , i_zone)
         type_norm_slav   = mminfi(sdcont_defi, 'VECT_ESCL'    , i_zone)
         tole_proj_ext    = mminfr(sdcont_defi, 'TOLE_PROJ_EXT', i_zone)
-        tole_appa        = mminfr(sdcont_defi, 'TOLE_APPA'    , i_zone)
+        algo_cont        = mminfi(sdcont_defi, 'ALGO_CONT'    , i_zone)
+        resi_appa        = mminfr(sdcont_defi, 'RESI_APPA'    , i_zone)
+        dist_appa        = mminfr(sdcont_defi, 'DIST_APPA'    , i_zone)
 !
         write (unit_msg,*) '<CONTACT> ...... OPTIONS SUR LA ZONE : ',i_zone
 !
@@ -231,7 +233,11 @@ implicit none
 ! ----- Tolerances
 !
         write (unit_msg,171) 'TOLE_PROJ_EXT   ',tole_proj_ext
-        write (unit_msg,171) 'TOLE_APPA       ',tole_appa
+        if (algo_cont .eq. 5) then 
+            write (unit_msg,171) 'RESI_APPA       ',resi_appa
+        else 
+            write (unit_msg,171) 'DIST_APPA       ',dist_appa
+        endif
 !
 ! ----- SANS_GROUP_NO
 !
