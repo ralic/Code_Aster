@@ -16,6 +16,8 @@ YAMMROOT = os.environ['ROOT_SALOME']
 def configure(self):
     opts = self.options
 
+    self.env.append_value('CXXFLAGS', ['-D_GLIBCXX_USE_CXX11_ABI=0'])
+
     self.env['ADDMEM'] = 350
 
     self.env.append_value('LIBPATH', [

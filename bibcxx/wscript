@@ -9,6 +9,7 @@ def options(self):
 
 def configure(self):
     self.load('compiler_cxx')
+    self.check_cxx_compiler_flags()
     self.check_bibcxx_depends()
     cxxpath = self.path.get_src().abspath()
     self.env.append_value('INCLUDES', cxxpath)
@@ -41,8 +42,15 @@ def build(self):
 ###############################################################################
 @Configure.conf
 def check_bibcxx_depends(self):
-    """check dependencies of bibc"""
-    self.check_cc(uselib_store='CXX', lib='stdc++')
+    """check dependencies of bibcxx"""
+    self.check_cxx(uselib_store='CXX', lib='stdc++')
+
+@Configure.conf
+def check_cxx_compiler_flags(self):
+    """check C++ compiler flags"""
+    # this option is compiler independent (ifort & g++)
+    self.check_cxx(cxxflags='-std=c++11', uselib_store='SYS',
+                   mandatory=False)
 
 @Configure.conf
 def check_optimization_cxxflags(self):
