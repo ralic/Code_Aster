@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,10 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
-    subroutine comp_meca_vari(rela_comp , defo_comp , type_cpla , nb_vari      , kit_comp_    ,&
-                              type_matg_, post_iter_, mult_comp_, nb_vari_exte_, nb_vari_comp_,&
-                              nume_comp_)
+    subroutine comp_nbvari_std(rela_comp , defo_comp, type_cpla     , nb_vari   ,&
+                               kit_comp_ , type_matg_, post_iter_   , mult_comp_,&
+                               l_cristal_, nume_comp_, nb_vari_rela_)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: type_cpla
@@ -27,8 +29,8 @@ interface
         character(len=16), optional, intent(in) :: type_matg_
         character(len=16), optional, intent(in) :: post_iter_
         character(len=16), optional, intent(in) :: mult_comp_
-        integer, optional, intent(out) :: nb_vari_comp_(4)
-        integer, optional, intent(in) :: nb_vari_exte_
+        aster_logical, optional, intent(in) :: l_cristal_
+        integer, optional, intent(out) :: nb_vari_rela_
         integer, optional, intent(out) :: nume_comp_(4)
-    end subroutine comp_meca_vari
+    end subroutine comp_nbvari_std
 end interface

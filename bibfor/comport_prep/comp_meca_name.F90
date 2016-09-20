@@ -1,15 +1,18 @@
-subroutine comp_meca_name(nb_vari     , l_excl      , vari_excl   , l_kit_meta,&
-                          defo_comp   ,&
-                          comp_code_py, rela_code_py, meta_code_py,&
+subroutine comp_meca_name(nb_vari    , l_excl       , vari_excl,&
+                          l_kit_meta , l_mfront_offi, &
+                          rela_comp  , defo_comp  , kit_comp, type_cpla, type_matg, post_iter,&
+                          libr_name  , subr_name    , model_mfront, model_dim   ,&
                           v_vari_name)
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcvari.h"
+#include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
+#include "asterfort/comp_mfront_vname.h"
+#include "asterfort/comp_meca_code.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -33,10 +36,17 @@ implicit none
     aster_logical, intent(in) :: l_excl
     character(len=16), intent(in) :: vari_excl
     aster_logical, intent(in) :: l_kit_meta
+    aster_logical, intent(in) :: l_mfront_offi
+    character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: defo_comp
-    character(len=16), intent(in) :: comp_code_py
-    character(len=16), intent(in) :: rela_code_py
-    character(len=16), intent(in) :: meta_code_py
+    character(len=16), intent(in) :: kit_comp(4)
+    character(len=16), intent(in) :: type_cpla
+    character(len=16), intent(in) :: type_matg
+    character(len=16), intent(in) :: post_iter
+    character(len=255), intent(in) :: libr_name
+    character(len=255), intent(in) :: subr_name
+    character(len=16), intent(in) :: model_mfront
+    integer, intent(in) :: model_dim
     character(len=16), pointer, intent(in) :: v_vari_name(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,9 +62,7 @@ implicit none
 ! In  vari_excl        : name of internal variables if l_excl
 ! In  l_kit_meta       : .true. if metallurgy
 ! In  defo_comp        : DEFORMATION comportment
-! In  comp_code_py     : composite coded comportment (coding in Python)
-! In  rela_code_py     : coded comportment for RELATION (coding in Python)
-! In  meta_code_py     : coded comportment for metallurgy (coding in Python)
+
 ! In  v_vari_name      : pointer to names of internal variables
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,12 +71,15 @@ implicit none
     character(len=6) :: phas_name(10)
     character(len=8) :: rela_name(30)
     integer :: i_vari, i_vari_meta, i_vari_rela
+    character(len=16) :: comp_code_py, rela_code_py, meta_code_py
 !
 ! --------------------------------------------------------------------------------------------------
 !
     if (l_excl) then
         v_vari_name(1:nb_vari) = vari_excl
     else
+        call comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
+                            post_iter, comp_code_py, rela_code_py, meta_code_py)
         if (l_kit_meta) then
             call lcinfo(meta_code_py, idummy, nb_vari_meta)
             call lcinfo(rela_code_py, idummy, nb_vari_rela)
@@ -108,6 +119,14 @@ implicit none
                 v_vari_name(i_vari) = 'TYZ'
             endif
             ASSERT(i_vari .eq. nb_vari)
+            call lcdiscard(comp_code_py)
+            call lcdiscard(rela_code_py)
+            call lcdiscard(meta_code_py)
+        elseif (l_mfront_offi) then
+            call comp_mfront_vname(nb_vari    , &
+                                   defo_comp  , type_cpla, type_matg   , post_iter,&
+                                   libr_name  , subr_name, model_mfront, model_dim,&
+                                   v_vari_name)
         else
             call lcvari(comp_code_py, nb_vari, v_vari_name)
         endif 

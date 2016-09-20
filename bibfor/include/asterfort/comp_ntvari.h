@@ -15,13 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine comp_meca_nbvari(model_ , compor_cart_, compor_list_,&
-                                nt_vari, nb_vari_maxi)
+    subroutine comp_ntvari(model_ , compor_cart_, compor_list_, compor_info,&
+                           nt_vari, nb_vari_maxi, nb_zone     , v_exte)
+        use NonLin_Datastructure_type
         character(len=8), optional, intent(in) :: model_
         character(len=19), optional, intent(in) :: compor_cart_
         character(len=16), optional, intent(in) :: compor_list_(20)
+        character(len=19), intent(in) :: compor_info
         integer, intent(out) :: nt_vari
         integer, intent(out) :: nb_vari_maxi
-    end subroutine comp_meca_nbvari
+        integer, intent(out) :: nb_zone
+        type(NL_DS_ComporExte), pointer, intent(out) :: v_exte(:)
+    end subroutine comp_ntvari
 end interface

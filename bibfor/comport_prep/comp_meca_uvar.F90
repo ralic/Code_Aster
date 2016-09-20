@@ -103,7 +103,7 @@ implicit none
                 if (vari_name(1:2) .eq. '&&') then
                    if (vari_name.eq.'&&MULT_COMP') then
                         call utmess('I', 'COMPOR4_15')
-                    else if (vari_name.eq.'&&EXTE_COMP') then
+                    else if (vari_name.eq.'&&PROT_COMP') then
                         call utmess('I', 'COMPOR4_16')
                     else
                         ASSERT(.false.)

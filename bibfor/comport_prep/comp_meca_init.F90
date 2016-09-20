@@ -47,7 +47,6 @@ implicit none
     ds_compor%mult_comp       = 'VIDE'
     ds_compor%type_matg       = 'VIDE'
     ds_compor%post_iter       = 'VIDE'
-    ds_compor%nb_vari_exte    = 0
     ds_compor%nb_vari         = 0
     ds_compor%nb_vari_comp(:) = 0
     ds_compor%nume_comp(:)    = 0

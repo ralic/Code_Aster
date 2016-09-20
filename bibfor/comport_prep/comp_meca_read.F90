@@ -62,7 +62,7 @@ implicit none
     character(len=16) :: type_matg, post_iter, model_mfront
     character(len=16) :: kit_comp(4)
     character(len=255) :: libr_name, subr_name
-    integer :: unit_comp, nb_vari_umat, nb_vari_mfront
+    integer :: unit_comp, nb_vari_umat
     aster_logical :: l_cristal, l_umat, l_mfront_proto, l_mfront_offi, l_kit_thm, l_kit
     integer, pointer :: v_model_elem(:) => null()
 !
@@ -88,7 +88,6 @@ implicit none
         model_mfront   = ' '
         model_dim      = 0
         nb_vari_umat   = 0
-        nb_vari_mfront = 0
         unit_comp      = 0
         rela_comp      = 'VIDE'
         defo_comp      = 'VIDE'
@@ -159,20 +158,11 @@ implicit none
                                   model_dim  , model_mfront, type_cpla)
         endif
 !
-! ----- Get number of internal variables
-!
-        if (l_mfront_proto .or. l_mfront_offi) then
-            call mfront_get_nbvari(libr_name, subr_name, model_mfront, model_dim, nb_vari_mfront)
-            if ( nb_vari_mfront .eq. 0 ) then
-                nb_vari_mfront = 1
-            endif
-        endif
-!
 ! ----- Select type of comportment (incremental or total)
 !
         call comp_meca_incr(rela_comp, defo_comp, type_comp, l_etat_init)
 !
-! ----- Save parameters in list
+! ----- Save parameters
 !
         ds_compor_prep%v_comp(i_comp)%rela_comp      = rela_comp
         ds_compor_prep%v_comp(i_comp)%defo_comp      = defo_comp
@@ -182,13 +172,14 @@ implicit none
         ds_compor_prep%v_comp(i_comp)%mult_comp      = mult_comp
         ds_compor_prep%v_comp(i_comp)%type_matg      = type_matg
         ds_compor_prep%v_comp(i_comp)%post_iter      = post_iter
+        ds_compor_prep%v_exte(i_comp)%l_umat         = l_umat
+        ds_compor_prep%v_exte(i_comp)%l_mfront_proto = l_mfront_proto
+        ds_compor_prep%v_exte(i_comp)%l_mfront_offi  = l_mfront_offi
         ds_compor_prep%v_exte(i_comp)%libr_name      = libr_name 
         ds_compor_prep%v_exte(i_comp)%subr_name      = subr_name
         ds_compor_prep%v_exte(i_comp)%nb_vari_umat   = nb_vari_umat
-        ds_compor_prep%v_exte(i_comp)%nb_vari_mfront = nb_vari_mfront
         ds_compor_prep%v_exte(i_comp)%model_mfront   = model_mfront
         ds_compor_prep%v_exte(i_comp)%model_dim      = model_dim
-        ds_compor_prep%v_comp(i_comp)%nb_vari_exte   = max(nb_vari_mfront, nb_vari_umat)
     end do
 !
 end subroutine

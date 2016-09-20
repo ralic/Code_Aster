@@ -65,15 +65,12 @@ format MED.
     7 : _(u"""
   Il n'a pas été possible d'imprimer le champ %(k1)s en utilisant IMPR_NOM_VARI='OUI'. 
   Cela est dû au fait que certains comportements  dans votre modèle ne sont pas imprimables avec cette option:
-  - Le comportement a été défini avec MFRONT ou UMAT
+  - Le comportement a été défini avec MFRONT ou UMAT en mode prototype
   - Le comportement contient a été défini sur une poutre multifibres
-  - Le comportement est de type métallurgique en grandes déformations
   - Le comportement ne contient que des comportements élastiques
 
   -> Conseils :
-     - N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ,
-     - Demandez l'évolution pour que ces comportements soient
-       compatibles avec IMPR_NOM_VARI='OUI'.
+     - N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ
 """),
 
 

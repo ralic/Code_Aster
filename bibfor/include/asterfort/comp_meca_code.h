@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
-                              post_iter, comp_elem_py, rela_comp_py, rela_meta_py)
-        character(len=16), intent(in) :: rela_comp
-        character(len=16), intent(in) :: defo_comp
-        character(len=16), intent(in) :: type_cpla
-        character(len=16), intent(in) :: kit_comp(4)
-        character(len=16), intent(in) :: type_matg
-        character(len=16), intent(in) :: post_iter
-        character(len=16), intent(out) :: comp_elem_py
-        character(len=16), intent(out) :: rela_comp_py
-        character(len=16), intent(out) :: rela_meta_py
+    subroutine comp_meca_code(rela_comp_, defo_comp_  , type_cpla_   , kit_comp_   , type_matg_,&
+                              post_iter_, comp_code_py, rela_code_py_, meta_code_py_)
+        character(len=16), optional, intent(in) :: rela_comp_
+        character(len=16), optional, intent(in) :: defo_comp_
+        character(len=16), optional, intent(in) :: type_cpla_
+        character(len=16), optional, intent(in) :: kit_comp_(4)
+        character(len=16), optional, intent(in) :: type_matg_
+        character(len=16), optional, intent(in) :: post_iter_
+        character(len=16), intent(out) :: comp_code_py
+        character(len=16), optional, intent(out) :: rela_code_py_
+        character(len=16), optional, intent(out) :: meta_code_py_
     end subroutine comp_meca_code
 end interface

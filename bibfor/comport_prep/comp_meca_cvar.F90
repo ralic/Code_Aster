@@ -6,8 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/comp_meca_l.h"
-#include "asterfort/comp_meca_vari.h"
+#include "asterfort/comp_nbvari.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +44,9 @@ implicit none
     character(len=16) :: keywordfact
     character(len=16) :: type_matg, post_iter
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
-    integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_exte
+    integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_umat, model_dim
+    character(len=255) :: libr_name, subr_name
+    character(len=16) :: model_mfront
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +65,6 @@ implicit none
 !
 ! ----- Options
 !
-        nb_vari_exte = ds_compor_prep%v_comp(i_comp)%nb_vari_exte
         rela_comp    = ds_compor_prep%v_comp(i_comp)%rela_comp
         defo_comp    = ds_compor_prep%v_comp(i_comp)%defo_comp
         type_cpla    = ds_compor_prep%v_comp(i_comp)%type_cpla
@@ -72,12 +72,18 @@ implicit none
         mult_comp    = ds_compor_prep%v_comp(i_comp)%mult_comp
         type_matg    = ds_compor_prep%v_comp(i_comp)%type_matg
         post_iter    = ds_compor_prep%v_comp(i_comp)%post_iter
+        libr_name    = ds_compor_prep%v_exte(i_comp)%libr_name
+        subr_name    = ds_compor_prep%v_exte(i_comp)%subr_name
+        nb_vari_umat = ds_compor_prep%v_exte(i_comp)%nb_vari_umat
+        model_mfront = ds_compor_prep%v_exte(i_comp)%model_mfront
+        model_dim    = ds_compor_prep%v_exte(i_comp)%model_dim
 !
 ! ----- Count internal variables
 !
-        call comp_meca_vari(rela_comp, defo_comp, type_cpla, nb_vari     , kit_comp    ,&
-                            type_matg, post_iter, mult_comp, nb_vari_exte, nb_vari_comp,&
-                            nume_comp)
+        call comp_nbvari(rela_comp   , defo_comp   , type_cpla   , kit_comp ,&
+                         type_matg   , post_iter   , mult_comp   , libr_name,&
+                         subr_name   , model_dim   , model_mfront, nb_vari  ,&
+                         nb_vari_umat, nb_vari_comp, nume_comp)
 !
 ! ----- Save informations
 !

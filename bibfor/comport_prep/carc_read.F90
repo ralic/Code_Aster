@@ -19,8 +19,6 @@ implicit none
 #include "asterc/lcdiscard.h"
 #include "asterc/umat_get_function.h"
 #include "asterc/mfront_get_pointers.h"
-#include "asterc/mfront_get_number_of_internal_state_variables.h"
-#include "asterc/mfront_get_internal_state_variables.h"
 #include "asterc/mfront_set_outofbounds_policy.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_rkit.h"
@@ -70,7 +68,7 @@ implicit none
     real(kind=8) :: parm_theta=0.d0, vale_pert_rela=0.d0
     real(kind=8) :: resi_deborst_max=0.d0, seuil=0.d0, amplitude=0.d0, taux_retour=0.d0
     real(kind=8) :: parm_alpha=0.d0, resi_radi_rela=0.d0
-    integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0, nbtest=0
+    integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0
     integer :: ipostiter=0, ipostincr=0
     character(len=8) :: mesh = ' '
     character(len=16) :: rela_comp=' ', rela_comp_py=' '
@@ -80,7 +78,6 @@ implicit none
     aster_logical :: l_kit_thm=.false._1, l_mfront_proto=.false._1
     aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1, l_kit = .false._1
     character(len=16) :: texte(3)=(/ ' ',' ',' '/), model_mfront=' '
-    character(len=80), pointer :: int_var(:) => null()
     character(len=255) :: libr_name=' ', subr_name=' '
     integer, pointer :: v_model_elem(:) => null()
 !
@@ -292,16 +289,6 @@ implicit none
         cptr_namevarext = 0
         cptr_fct_ldc    = 0
         if ( l_mfront_offi .or. l_mfront_proto) then
-!           The keywords in DEFI_MATERIAU are those for Tridimensional hypothesis
-!FIXME      ASSERT(model_mfront == '_Tridimensional' .or. .not. l_mfront_offi)
-            call mfront_get_number_of_internal_state_variables(libr_name, subr_name,&
-                                                               model_mfront, nbtest)
-            if( nbtest.ne.0 ) then
-                call wkvect('&&CARC_READ.INT_VAR', 'V V K80', nbtest, vk80=int_var)
-                call mfront_get_internal_state_variables(libr_name, subr_name,&
-                                                         model_mfront, int_var,&
-                                                         nbtest)
-            endif
             call mfront_get_pointers(libr_name, subr_name, model_mfront,&
                                      cptr_nbvarext, cptr_namevarext,&
                                      cptr_fct_ldc,&
@@ -355,7 +342,6 @@ implicit none
         ds_compor_para%v_para(i_comp)%rela_comp                = rela_comp
         ds_compor_para%v_para(i_comp)%algo_inte                = algo_inte
         ds_compor_para%v_para(i_comp)%comp_exte%nb_vari_umat   = 0
-        ds_compor_para%v_para(i_comp)%comp_exte%nb_vari_mfront = 0
         ds_compor_para%v_para(i_comp)%comp_exte%libr_name      = libr_name 
         ds_compor_para%v_para(i_comp)%comp_exte%subr_name      = subr_name
         ds_compor_para%v_para(i_comp)%comp_exte%model_mfront   = model_mfront

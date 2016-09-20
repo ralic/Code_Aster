@@ -18,14 +18,19 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
-                                   model_dim     , model_mfront,&
-                                   codret        , type_cpla_)
-        character(len=16), intent(in) :: elem_type_name
-        aster_logical, intent(in) :: l_mfront_cp
-        integer, intent(out) :: model_dim
-        character(len=16), intent(out) :: model_mfront
-        integer, intent(out) :: codret
-        character(len=16), optional, intent(out) :: type_cpla_
-    end subroutine comp_mfront_modelem
+    subroutine comp_nbvari_ext(l_umat        , nb_vari_umat ,&
+                               l_mfront_proto, l_mfront_offi,&
+                               libr_name     , subr_name    ,&
+                               model_dim     , model_mfront ,&
+                               nb_vari_exte)
+        aster_logical, intent(in) :: l_umat
+        integer, intent(in) :: nb_vari_umat
+        aster_logical, intent(in) :: l_mfront_proto
+        aster_logical, intent(in) :: l_mfront_offi
+        character(len=255), intent(in) :: libr_name
+        character(len=255), intent(in) :: subr_name
+        integer, intent(in) :: model_dim
+        character(len=16), intent(in) :: model_mfront
+        integer, intent(out) :: nb_vari_exte
+    end subroutine comp_nbvari_ext
 end interface

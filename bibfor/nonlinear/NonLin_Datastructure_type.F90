@@ -369,12 +369,14 @@ implicit none
 ! - Type: for exterior comportement
 ! 
     type NL_DS_ComporExte
+        aster_logical      :: l_umat
+        aster_logical      :: l_mfront_proto
+        aster_logical      :: l_mfront_offi
         character(len=255) :: subr_name
         character(len=255) :: libr_name
         character(len=16)  :: model_mfront
         integer            :: model_dim
         integer            :: nb_vari_umat
-        integer            :: nb_vari_mfront
     end type NL_DS_ComporExte
 !
 ! - Type: for comportement
@@ -391,7 +393,6 @@ implicit none
         integer           :: nb_vari
         integer           :: nb_vari_comp(4)
         integer           :: nume_comp(4)
-        integer           :: nb_vari_exte
     end type NL_DS_Compor
 !
 ! - Type: for preparation of comportment
@@ -403,7 +404,6 @@ implicit none
         type(NL_DS_Compor), pointer     :: v_comp(:)
 ! ----- List of external comportements
         type(NL_DS_ComporExte), pointer :: v_exte(:)
-
     end type NL_DS_ComporPrep
 !
 ! - Type: pointer to external constitutive laws

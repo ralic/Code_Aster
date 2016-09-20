@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,17 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine comp_meca_exc1(defo_comp  , mult_comp  , nb_vari_exte, l_kit_meta, l_cristal, &
-                              l_exte_comp, nb_vari    )
-        character(len=16), intent(in) :: defo_comp
-        character(len=16), intent(in) :: mult_comp
-        integer, intent(in) :: nb_vari_exte
-        aster_logical, intent(in) :: l_kit_meta
-        aster_logical, intent(in) :: l_cristal
-        aster_logical, intent(in) :: l_exte_comp
-        integer, intent(inout) :: nb_vari
-    end subroutine comp_meca_exc1
+    subroutine meta_kit_nvar(rela_meta, nb_vari_meta)
+        character(len=16), intent(in) :: rela_meta
+        integer, intent(out) :: nb_vari_meta
+    end subroutine meta_kit_nvar
 end interface

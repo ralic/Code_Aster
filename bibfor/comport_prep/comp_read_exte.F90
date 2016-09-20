@@ -96,7 +96,7 @@ implicit none
     if (l_mfront_offi) then
         ASSERT(.not.l_kit_thm)
         call mfront_get_libname(libr_name)
-        call mfront_get_function(rela_comp, subr_name)
+        call mfront_get_function(rela_comp_ask, subr_name)
     elseif (l_mfront_proto) then
         if (present(keywordfact_)) then
             call getvtx(keywordfact_, 'LIBRAIRIE'  , iocc = i_comp_, scal = libr_name)

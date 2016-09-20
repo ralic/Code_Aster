@@ -1,7 +1,7 @@
 subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_rkit.h"
-#include "asterfort/comp_meca_vari.h"
+#include "asterfort/comp_nbvari.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -114,11 +114,13 @@ subroutine dc_multifibre(nbocci, sdcomp)
         if (rela_comp(1:4) .eq. 'KIT_') then
             ASSERT(rela_comp.eq.'KIT_DDI')
         endif
+        kit_comp(:) = 'VIDE'
         l_kit = (rela_comp.eq.'KIT')
         if (l_kit) then
             call comp_meca_rkit(moclef, iocc, rela_comp, kit_comp)
         endif
-        call comp_meca_vari(rela_comp, defo_comp, algo1d, nbv)
+        call comp_nbvari(rela_comp, defo_comp, algo1d, kit_comp_ = kit_comp,&
+                         nb_vari_ = nbv)
 !
         do ig = 1, nbg
 !           Numéro correspondant au nom

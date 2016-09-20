@@ -110,11 +110,6 @@ implicit none
         l_mfront_cp = iret .ne. 0
         call lcdiscard(rela_comp_py)
     endif
-    if (l_mfront_cp) then
-        type_cpla = 'ANALYTIQUE'
-    else
-        type_cpla = 'DEBORST'
-    endif
 !
 ! - Loop on elements
 !
@@ -136,7 +131,7 @@ implicit none
             call jenuno(jexnum('&CATA.TE.NOMTE', elem_type_nume), elem_type_name)
             call comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
                                      model_dim     , model_mfront,&
-                                     codret)
+                                     codret        , type_cpla)
             if (model_mfront .ne. ' ') then
                 if (model_save .eq. ' ') then
                     model_save = model_mfront

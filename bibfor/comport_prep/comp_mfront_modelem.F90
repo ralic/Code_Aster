@@ -1,6 +1,6 @@
-subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp     ,&
-                               model_dim     , model_mfront    ,&
-                               codret)
+subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp ,&
+                               model_dim     , model_mfront,&
+                               codret        , type_cpla_)
 !
 implicit none
 !
@@ -32,6 +32,7 @@ implicit none
     integer, intent(out) :: model_dim
     character(len=16), intent(out) :: model_mfront
     integer, intent(out) :: codret
+    character(len=16), optional, intent(out) :: type_cpla_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,18 +50,20 @@ implicit none
 !                        0 - OK
 !                        1 - Error - Not same finite element
 !                        2 - Error - No MFront modelisation allowed on this element
+! Out type_cpla        : stress plane hypothesis (for Deborst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: iret
     character(len=1) :: model_dim_s
-    character(len=16) :: principal, model_thm, model_type
+    character(len=16) :: principal, model_thm, model_type, type_cpla
 !
 ! --------------------------------------------------------------------------------------------------
 !
     codret       = 0
     model_dim    = 0
     model_mfront = ' '
+    type_cpla    = 'VIDE'
 !
 ! - Get attributes on finite element
 !
@@ -79,9 +82,11 @@ implicit none
 ! Deborst algorithm
             if (l_mfront_cp) then
                 model_mfront = '_PlaneStress'
+                type_cpla    = 'ANALYTIQUE'
             else
                 model_mfront = '_Axisymmetrical'
                 model_dim    = 2
+                type_cpla    = 'DEBORST'
             endif
         elseif ( model_type .eq. 'D_PLAN' ) then
             model_mfront = '_PlaneStrain'
@@ -91,6 +96,7 @@ implicit none
 ! Deborst algorithm
             model_mfront = '_Axisymmetrical'
             model_dim    = 2
+            type_cpla    = 'DEBORST'
         elseif ( model_thm .eq. 'OUI' ) then
             model_mfront = '_Tridimensional'
         else
@@ -101,6 +107,10 @@ implicit none
 !
     if (model_dim .le. 1) then
         codret = 2
+    endif
+!
+    if (present(type_cpla_)) then
+        type_cpla_ = type_cpla
     endif
 !
 end subroutine

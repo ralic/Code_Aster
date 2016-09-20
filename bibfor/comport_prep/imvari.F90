@@ -51,7 +51,7 @@ implicit none
     integer :: i_vari, i_zone
     integer :: nb_vari, nb_zone, nb_elem_zone, nt_vari
     character(len=16) :: vari_excl
-    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp, mult_comp
+    character(len=16) :: rela_comp, defo_comp, type_cpla
     aster_logical :: l_excl
     integer, pointer :: v_info(:) => null()
     integer, pointer :: v_zone(:) => null()
@@ -95,22 +95,16 @@ implicit none
 !
 ! --------- Get names of relation
 !
-            rela_comp   = v_rela(9*(i_zone-1) + 1)
-            defo_comp   = v_rela(9*(i_zone-1) + 2)
-            type_comp   = v_rela(9*(i_zone-1) + 3) 
-            type_cpla   = v_rela(9*(i_zone-1) + 4)
-            kit_comp(1) = v_rela(9*(i_zone-1) + 5)
-            kit_comp(2) = v_rela(9*(i_zone-1) + 6)
-            kit_comp(3) = v_rela(9*(i_zone-1) + 7)
-            kit_comp(4) = v_rela(9*(i_zone-1) + 8)
-            mult_comp   = v_rela(9*(i_zone-1) + 9)
+            rela_comp   = v_rela(3*(i_zone-1) + 1)
+            defo_comp   = v_rela(3*(i_zone-1) + 2)
+            type_cpla   = v_rela(3*(i_zone-1) + 3)
 !
 ! --------- Print name of internal variables
 !
             if (l_excl) then
                 if (vari_excl.eq.'&&MULT_COMP') then
                     call utmess('I', 'COMPOR4_15')
-                else if (vari_excl.eq.'&&EXTE_COMP') then
+                else if (vari_excl.eq.'&&PROT_COMP') then
                     call utmess('I', 'COMPOR4_16')
                 else
                     ASSERT(.false.)

@@ -1,9 +1,10 @@
-subroutine comp_meca_exc2(l_mult_comp, l_prot_comp,&
-                          l_excl     , vari_excl)
+subroutine meta_kit_nvar(rela_meta, nb_vari_meta)
 !
 implicit none
 !
-#include "asterf_types.h"
+#include "asterc/lccree.h"
+#include "asterc/lcinfo.h"
+#include "asterc/lcdiscard.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,41 +24,30 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical, intent(in) :: l_mult_comp
-    aster_logical, intent(in) :: l_prot_comp
-    aster_logical, intent(out) :: l_excl
-    character(len=16), intent(out) :: vari_excl
+    character(len=16), intent(in) :: rela_meta
+    integer, intent(out) :: nb_vari_meta
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! META_*
 !
-! Exception for name of internal variables
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  l_mult_comp      : .true. if multi-comportment (DEFI_COMPOR)
-! In  l_prot_comp      : .true. if external computing for comportment (MFront, UMAT)
-! Out l_excl           : .true. if exception case (no names for internal variables)
-! Out vari_excl        : name of internal variables if l_excl
+! Number of internal variables
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    l_excl    = .false.
-    vari_excl = ' '
+! In  rela_meta        : relations for META
+! Out nb_vari_meta     : number of internal variables for META
 !
-! - Multiple comportment
+! --------------------------------------------------------------------------------------------------
 !
-    if (l_mult_comp) then
-        l_excl    = .true.
-        vari_excl = '&&MULT_COMP'
-    endif
+    character(len=16) :: rela_meta_py
+    integer :: idummy
 !
-! - External comportment
+! --------------------------------------------------------------------------------------------------
 !
-    if (l_prot_comp) then
-        l_excl    = .true.
-        vari_excl = '&&PROT_COMP'
-    endif
+    nb_vari_meta = 0
+    call lccree(1, rela_meta, rela_meta_py)
+    call lcinfo(rela_meta_py, idummy, nb_vari_meta)
+    call lcdiscard(rela_meta_py)
 !
 end subroutine

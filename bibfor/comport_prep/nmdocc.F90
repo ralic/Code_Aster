@@ -130,8 +130,7 @@ implicit none
 !
 ! - Prepare informations about internal variables
 !
-    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info,&
-                        l_list_elem_ = .true._1, l_info_full_ = .true._1)
+    call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info)
 !
 ! - Print informations about internal variables
 !
