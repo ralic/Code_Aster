@@ -17,6 +17,9 @@
 # ======================================================================
 # GEOMETRIE PROCHE DU CPP N4
 
+os.system("mfront --obuild ssnl117b.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so plasticity.so")
+
 from Contrib.macro_rota_globale import MACR_ROTA_GLOBALE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), DEBUG=_F(SDVERI='OUI'))
@@ -101,11 +104,6 @@ CAREL=AFFE_CARA_ELEM(   MODELE=MO,
           ORIENTATION=_F( GROUP_NO = 'D', CARA = 'GENE_TUYAU', VALE = (0., 0., 1.,))
                               )
 
-#MAT=DEFI_MATERIAU(    ELAS=_F( E = YOUNG, NU = POISSON),
-#                         ECRO_LINE=_F( D_SIGM_EPSI = H, SY = SIGY)
- #                       )
-
-
 MAT=DEFI_MATERIAU(      ELAS=_F( E = YOUNG, NU = POISSON),
                          Plasticity=_F(
                                 YoungModulus = YOUNG,
@@ -114,6 +112,11 @@ MAT=DEFI_MATERIAU(      ELAS=_F( E = YOUNG, NU = POISSON),
                                 s0 = SIGY,
                                 ET = H,
                          ),
+                        MFRONT=_F(LISTE_COEF=(YOUNG,
+                                              POISSON,
+                                              0.,
+                                              SIGY,
+                                              H,),),
                    )
 
 CHMAT=AFFE_MATERIAU(   MAILLAGE=MA,
@@ -839,7 +842,145 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
           )
 
 #---------------------------------------------------------------------------------------
+# Test for MFront in "prototype" mode and TUYAU (1D models)
+# NB: ssnl117b.mfront is same than standard Plasticity.mfront
+
+U2=STAT_NON_LINE(MODELE=MO,
+                 CHAM_MATER=CHMAT,
+                 CARA_ELEM=CAREL,
+                 EXCIT=( _F( CHARGE = CHART,
+                             FONC_MULT = FONCT), 
+                         _F(CHARGE = CHARP,),
+                       ),
+                 INCREMENT=_F( LIST_INST = LINST, NUME_INST_FIN = 8),
+                 COMPORTEMENT=(
+                         _F( GROUP_MA = 'BC',  
+                                RELATION='MFRONT',
+                                NOM_ROUTINE='asterplasticity',
+                                LIBRAIRIE='plasticity.so',
+
+                             RESI_INTE_MAXI = 1.E-6,ITER_CPLAN_MAXI=3 ),
+                         _F( GROUP_MA = ( 'AB',  'CD',), RELATION = 'ELAS', )),
+                 NEWTON=_F(
+                         MATRICE = 'TANGENTE',
+                         REAC_ITER = 3
+                        ),
+                 CONVERGENCE=_F(
+                         RESI_GLOB_RELA = 1.E-4,
+                         ITER_GLOB_MAXI = 100),
+                 RECH_LINEAIRE=_F(
+                 ITER_LINE_MAXI = 3)
+              )
+
+U2=CALC_CHAMP(reuse=U2,
+              RESULTAT=U2,
+              CRITERES=('SIEQ_ELGA','EPEQ_ELGA'),
+              VARI_INTERNE=('VARI_ELNO'),
+              DEFORMATION=('EPSI_ELGA','DEGE_ELNO'),
+              CONTRAINTE=('EFGE_ELNO'),);
+
+# NON REGRESSION
 
 
+TEST_RESU(RESU=(_F(NUME_ORDRE=8,
+                   GROUP_NO='D',
+                   RESULTAT=U2,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DY',
+                   VALE_CALC=0.021841320475495,
+                   ),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=2,
+                   SOUS_POINT=61,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS',
+                   VALE_CALC=4.67555458E+07,
+                   VALE_REFE=4.6755545829999998E7,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=3,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=3,
+                   SOUS_POINT=55,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS',
+                   VALE_CALC= 5.60814117E+07,
+                   VALE_REFE=5.6081411689999998E7,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=8,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=2,
+                   SOUS_POINT=98,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS_SG',
+                   VALE_CALC=-1.55006532E+08,
+                   VALE_REFE=-1.5500653230000001E8,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=8,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=3,
+                   SOUS_POINT=42,
+                   RESULTAT=U2,
+                   NOM_CHAM='SIEQ_ELGA',
+                   NOM_CMP='VMIS_SG',
+                   VALE_CALC=-7.14370627E+06,
+                   VALE_REFE=-7.1437062719999999E6,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=4,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   SOUS_POINT=77,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPEQ_ELGA',
+                   NOM_CMP='INVA_2',
+                   VALE_CALC= 2.59028148E-04,
+                   VALE_REFE=2.5902814769999998E-4,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=5,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   SOUS_POINT=8,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPEQ_ELGA',
+                   NOM_CMP='INVA_2',
+                   VALE_CALC=0.000176929293231,
+                   VALE_REFE=0.000176929293231,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=8,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=1,
+                   SOUS_POINT=61,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPEQ_ELGA',
+                   NOM_CMP='INVA_2SG',
+                   VALE_CALC=-3.52768376E-04,
+                   VALE_REFE=-3.5276837559999999E-4,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                _F(NUME_ORDRE=8,
+                   REFERENCE='AUTRE_ASTER',
+                   POINT=3,
+                   SOUS_POINT=9,
+                   RESULTAT=U2,
+                   NOM_CHAM='EPEQ_ELGA',
+                   NOM_CMP='INVA_2SG',
+                   VALE_CALC=-8.94014194E-05,
+                   VALE_REFE=-8.9401419390000003E-05,
+                   PRECISION=1.E-2,
+                   MAILLE='M1',),
+                ),
+          )
 
 FIN()

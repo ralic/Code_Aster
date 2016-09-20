@@ -159,7 +159,7 @@ implicit none
 ! ------------- STAT_NON_LINE case
                 call comp_meca_mod(mesh       , model       ,&
                                    keywordfact, iocc        , rela_comp,&
-                                   model_dim  , model_mfront)
+                                   model_dim  , model_mfront, type_cpla)
             else
 ! ------------- CALC_POINT_MAT case
                 model_dim    = 3

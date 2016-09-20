@@ -1,12 +1,13 @@
 subroutine comp_meca_mod(mesh       , model       ,&
                          keywordfact, iocc        , rela_comp,&
-                         model_dim  , model_mfront)
+                         model_dim  , model_mfront, type_cpla_)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/getvtx.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -42,6 +43,7 @@ implicit none
     character(len=16), intent(in) :: rela_comp
     integer, intent(out) :: model_dim
     character(len=16), intent(out) :: model_mfront
+    character(len=16), optional, intent(out) :: type_cpla_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,7 +59,8 @@ implicit none
 ! In  iocc             : factor keyword index
 ! In  rela_comp        : RELATION comportment
 ! Out model_dim        : dimension of modelisation (2D or 3D)
-! Out model_mfront     : type of modelisation MFrront
+! Out model_mfront     : type of modelisation MFront
+! Out type_cpla        : stress plane hypothesis (for Deborst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +69,7 @@ implicit none
     aster_logical :: l_affe_all, l_mfront_cp, l_check
     character(len=24) :: list_elem_affe
     character(len=16) :: elem_type_name, model_type_save
-    character(len=16) :: rela_comp_py
+    character(len=16) :: rela_comp_py, answer, type_cpla
     integer, pointer :: v_model_elem(:) => null()
     integer, pointer :: v_elem_affe(:) => null()
 !
@@ -77,6 +80,7 @@ implicit none
     model_mfront    = ' '
     model_dim       = 0
     list_elem_affe  = '&&COMPMECASAVE.LIST'
+    type_cpla       = 'VIDE'
 !
 ! - Access to model
 !
@@ -93,11 +97,22 @@ implicit none
         nb_elem = nb_elem_affe
     endif
 !
-! - Coding comportment
+! - For plane stress hypothesis
 !
-    call lccree(1, rela_comp, rela_comp_py)
-    call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', iret)
-    l_mfront_cp = iret .ne. 0
+    if (rela_comp .eq. 'MFRONT') then
+        call getvtx(keywordfact, 'ALGO_CPLAN', iocc = iocc, scal = answer)
+        l_mfront_cp = answer .eq. 'ANALYTIQUE'  
+    else
+        call lccree(1, rela_comp, rela_comp_py)
+        call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', iret)
+        l_mfront_cp = iret .ne. 0
+        call lcdiscard(rela_comp_py)
+    endif
+    if (l_mfront_cp) then
+        type_cpla = 'ANALYTIQUE'
+    else
+        type_cpla = 'DEBORST'
+    endif
 !
 ! - Loop on elements
 !
@@ -129,6 +144,8 @@ implicit none
         endif
     end do
 !
-    call lcdiscard(rela_comp_py)
+    if (present(type_cpla_)) then
+        type_cpla_ = type_cpla
+    endif
 !
 end subroutine

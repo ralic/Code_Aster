@@ -129,6 +129,10 @@ implicit none
 !
 99  continue
 !
+    if (model_dim.le.1) then
+        codret = 2
+    endif
+!
     if (present(l_check_)) then
         codret_          = codret
         model_type_save_ = model_type_save

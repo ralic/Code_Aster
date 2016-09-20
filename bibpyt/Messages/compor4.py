@@ -49,6 +49,7 @@ Comportement - Occurrence  %(i1)d"""),
 
     14: _(u"""
   La modélisation %(k1)s dans le modèle n'est pas utilisable avec MFront.
+  S'il s'agit d'éléments de type TUYAU ou PMF et que vous êtes en mode prototypage, vous devez activer ALGO_CPLAN='DEBORST' pour pouvoir l'utiliser.
 """),
 
     15: _(u"""

@@ -100,6 +100,7 @@ implicit none
 !
         rela_comp   = info_comp_valk(16*(iocc-1) + 1)
         defo_comp   = info_comp_valk(16*(iocc-1) + 2)
+        type_cpla   = info_comp_valk(16*(iocc-1) + 4)
         kit_comp(1) = info_comp_valk(16*(iocc-1) + 5)
         rela_thmc   = kit_comp(1)
 !
@@ -120,7 +121,6 @@ implicit none
 !
 ! ----- Check comportment/model with Comportement.py
 !
-        type_cpla = 'VIDE'
         call nmdovm(model       , l_affe_all  , list_elem_affe, nb_elem_affe  , full_elem_s,&
                     rela_comp_py, type_cpla   , l_auto_elas   , l_auto_deborst, l_comp_erre,&
                     l_one_elem  , l_elem_bound)

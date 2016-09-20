@@ -18,7 +18,7 @@
 interface
     subroutine comp_meca_mod(mesh       , model       ,&
                              keywordfact, iocc        , rela_comp,&
-                             model_dim  , model_mfront)
+                             model_dim  , model_mfront, type_cpla_)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywordfact
@@ -26,5 +26,6 @@ interface
         character(len=16), intent(in) :: rela_comp
         integer, intent(out) :: model_dim
         character(len=16), intent(out) :: model_mfront
+        character(len=16), optional, intent(out) :: type_cpla_
     end subroutine comp_meca_mod
 end interface

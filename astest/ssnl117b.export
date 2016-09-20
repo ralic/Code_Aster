@@ -8,3 +8,4 @@ P testlist verification sequential
 F comm ssnl117b.comm D 1
 F mail ssnl117b.mail D 20
 F datg ssnl117b.datg D 16
+F nom  ssnl117b.mfront D 0

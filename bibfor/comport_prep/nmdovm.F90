@@ -39,7 +39,7 @@ implicit none
     integer, intent(in) :: nb_elem_affe
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(in) :: rela_comp_py
-    character(len=16), intent(out) :: type_cpla
+    character(len=16), intent(inout) :: type_cpla
     aster_logical, intent(out) :: l_auto_elas
     aster_logical, intent(out) :: l_auto_deborst
     aster_logical, intent(out) :: l_comp_erre
@@ -60,7 +60,7 @@ implicit none
 ! In  nb_elem_affe     : number of elements where comportment affected
 ! In  list_elem_affe   : list of elements where comportment affected
 ! In  rela_comp_py     : comportement RELATION - Python coding
-! Out type_cpla        : stress plane hypothesis (for Deborst)
+! IO  type_cpla        : stress plane hypothesis (for Deborst)
 ! Out l_auto_elas      : .true. if at least one element use ELAS by default
 ! Out l_auto_deborst   : .true. if at least one element swap to Deborst algorithm
 ! Out l_comp_erre      : .true. if at least one element use comportment on element 
@@ -81,6 +81,7 @@ implicit none
     integer :: nume_elem
     character(len=16), pointer :: cesv(:) => null()
     integer, pointer :: maille(:) => null()
+    aster_logical :: l_to_affect
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,7 +89,13 @@ implicit none
 !
 ! - Initializations
 !
-    type_cpla      = 'ANALYTIQUE'
+    l_to_affect = .false.
+    if (type_cpla .eq. 'VIDE') then
+        l_to_affect = .true.
+    endif
+!
+! - Initializations
+!
     l_auto_elas    = .false.
     l_auto_deborst = .false.
     l_comp_erre    = .false.
@@ -157,13 +164,11 @@ implicit none
                     call lctest(rela_comp_py, 'MODELISATION', 'C_PLAN', irett)
                     if (irett .eq. 0) then
                         l_auto_deborst = .true.
-                        type_cpla = 'DEBORST'
                     endif
                 else if (type_elem(1:6).eq.'COMP1D') then
                     call lctest(rela_comp_py, 'MODELISATION', '1D', irett)
                     if (irett .eq. 0) then
                         l_auto_deborst = .true.
-                        type_cpla = 'DEBORST'
                     endif
                 else if (type_elem(1:6).eq.'COMP3D') then
                     call lctest(rela_comp_py, 'MODELISATION', '3D', irett)
@@ -179,6 +184,18 @@ implicit none
             endif
         endif
     enddo
+!
+! - De borst
+!
+    if (l_to_affect) then
+        if (l_auto_deborst) then
+            type_cpla = 'DEBORST'
+        else
+            type_cpla = 'ANALYTIQUE'
+        endif
+    else
+! - For MFRONT: already selected in comp_meca_mod
+    endif
 !
 ! - All elements are boundary elements
 !
