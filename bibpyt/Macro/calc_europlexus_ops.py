@@ -28,6 +28,12 @@ import os
 import os.path as osp
 import copy
 import tempfile
+import aster_core
+import uuid
+import getpass
+import socket
+import shutil
+
 
 # Protection pour Eficas
 try:
@@ -36,6 +42,7 @@ try:
     from Utilitai.partition import MAIL_PY
     from Utilitai.Utmess import UTMESS
     from Calc_epx.calc_epx_utils import tolist
+    from Utilitai.utils import encode_str, decode_str, send_file
 except:
     pass
 
@@ -92,6 +99,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     os.rmdir(REPE_epx)
     os.symlink(REPE_OUT, REPE_epx)
 
+
     # Le concept sortant (de type evol_noli) est nomme 'resu'.
     # Le nom de ce concept sera celui defini par l'utilisateur.
     self.DeclareOut('resu', self.sd)
@@ -99,6 +107,15 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
 
     # On récupère ce nom pour le nommage des fichiers dans REPE_OUT.
     nom_resu = self.sd.get_name()
+
+    #Commandes pour le cas parallele
+    rank, np = aster_core.MPI_CommRankSize()
+
+    # Creation d'un repertoire commun pour les echanges de donnees entre procs
+    user=getpass.getuser()
+    name_tmp = uuid.uuid4()
+    os.mkdir('/scratch/%s/EPX_%s'%(user,name_tmp))
+    rep_tmp='/scratch/%s/EPX_%s'%(user,name_tmp)
 
     #
     # TRADUCTION DES INFORMATIONS
@@ -108,6 +125,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
                      FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
                      CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE='REPE_OUT',
                      EXEC=EXEC, VERS=VERS, INFO=INFO, REPE_epx=REPE_epx, NOM_RESU=nom_resu,
+                     REPE_tmp=rep_tmp, NP=np, RANK=rank,
                      args=args)
 
     #
@@ -119,15 +137,43 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     #
     # LANCEMENT DU CALCUL
     #
+    
 
+    #Commandes pour le cas parallele
+    #rank, np = aster_core.MPI_CommRankSize()
     if args['LANCEMENT'] == 'OUI':
-
-        EPX.lancer_calcul()
+        if np > 1 :
+            # Commandes pour que le processeur 0 voit les autres processeurs
+            cwd = osp.join(os.getcwd(), 'REPE_OUT')
+            host = socket.gethostname()
+            path = "{}:{}".format(host, cwd)
+            alldirs = aster_core.MPI_GatherStr(path, 0)
+            if rank==0 : 
+                # Execution d Europlexus
+                EPX.lancer_calcul()
+                # Envoie des donnees sur les autres processeurs
+                name_epx='%s/commandes_%s.epx'%(cwd,nom_resu)
+                name_msh='%s/commandes_%s.msh'%(cwd,nom_resu)
+                name_sau='%s/resu_%s.sau'%(cwd,nom_resu)
+                name_med='%s/champ_%s.med'%(cwd,nom_resu)
+                if COURBE is not None:
+                    name_pun='%s/courbes_%s.pun'%(cwd,nom_resu)
+                for i in alldirs[1:] :
+                    send_file(name_epx, i)
+                    send_file(name_msh, i)
+                    send_file(name_sau, i)
+                    send_file(name_med, i)
+                    if COURBE is not None:
+                        send_file(name_pun, i)
+            else :
+                print "PROCESSOR 0 IS RUNNING EUROPLEXUS!"
+            aster_core.MPI_Barrier()
+        else :
+            EPX.lancer_calcul()
 
         #
         # COPIE DES RESULTATS EPX DANS LE CONCEPT ASTER
         #
-
         EPX.get_resu()
 
         #
@@ -154,6 +200,8 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
 
     # Suppression du lien symbolique
     os.remove(REPE_epx)
+    # Suppression du repertoire temporaire
+    shutil.rmtree(rep_tmp)
 
     return ier
 
@@ -171,7 +219,7 @@ class EUROPLEXUS:
     def __init__(self, ETAT_INIT, MODELE, CARA_ELEM, CHAM_MATER, COMPORTEMENT,
                  FONC_PARASOL, EXCIT, OBSERVATION, ARCHIVAGE, COURBE,
                  CALCUL, AMORTISSEMENT, DOMAINES, INTERFACES, REPE, EXEC, VERS,
-                  INFO, REPE_epx, NOM_RESU, args):
+                  INFO, REPE_epx, NOM_RESU, REPE_tmp, NP, RANK, args):
         """
             Met toutes les entrées en attributs.
             Crée les directives EPX.
@@ -265,8 +313,11 @@ class EUROPLEXUS:
         self.INFO = INFO
         self.COMPORTEMENT = COMPORTEMENT
         self.AMORTISSEMENT = AMORTISSEMENT
-
+   
         self.REPE_epx = REPE_epx
+        self.NP = NP
+        self.RANK=RANK
+        self.REPE_tmp=REPE_tmp
 
         # Commande d'execution de Europlexus
         tooldir = aster_core.get_option('repout')
@@ -321,9 +372,10 @@ class EUROPLEXUS:
         nom_fichiers = {'COMMANDE': 'commandes_%s.epx'%NOM_RESU,
                         'MAILLAGE': 'commandes_%s.msh'%NOM_RESU,
                         'SAUV': 'resu_%s.sau'%NOM_RESU,
-                        'MED': 'champ_%s.e2m'%NOM_RESU,
+                        'MED': 'champ_%s.med'%NOM_RESU,
                         'PUN': 'courbes_%s.pun'%NOM_RESU,
                         }
+
         for fic in nom_fichiers.keys():
             nom_fic = nom_fichiers[fic]
             nom_fichiers[fic] = os.path.join(self.REPE_epx, nom_fic)
@@ -377,7 +429,7 @@ class EUROPLEXUS:
         epx[directive].add_void()
 
   #-----------------------------------------------------------------------
-    def export_MAILLAGE(self,):
+    def export_MAILLAGE(self):
         """
             Imprime le maillage et le résultat initial aster au format MED
             s'il y a un état initial.
@@ -391,7 +443,16 @@ class EUROPLEXUS:
         # Donner un nom au fichier de maillage parce que le fort.unite peut
         # être ecrasée par d'autre operation d'ecriture.
         unite = self.get_unite_libre()
-        fichier_maillage = self.nom_fichiers['MAILLAGE']
+        
+        if self.NP > 1 :
+            # Ecriture du fichier maillage dans un repertoire commun a tous les procs
+            fichiermaillage = self.nom_fichiers['MAILLAGE']
+            namemsh = os.path.basename(fichiermaillage)          
+            send_file(fichiermaillage, self.REPE_tmp)
+            fichier_maillage='%s/%s'%(self.REPE_tmp,namemsh)
+        else :
+            fichier_maillage = self.nom_fichiers['MAILLAGE']
+        
         DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
 
         if self.ETAT_INIT is not None:
@@ -1041,7 +1102,9 @@ class EUROPLEXUS:
         """
         from Cata.cata import LIRE_EUROPLEXUS
         import med_aster
+      
         fichier_med = self.nom_fichiers['MED']
+
         if not os.path.isfile(fichier_med):
             UTMESS('F', 'PLEXUS_14')
         # on complète le test car le fichier est créé au début du calcul
@@ -1075,11 +1138,23 @@ class EUROPLEXUS:
     def lancer_calcul(self):
         """Lancement du calcul EPX"""
         from Cata.cata import EXEC_LOGICIEL
-        fichier_epx = osp.abspath(self.nom_fichiers['COMMANDE'])
-        EXEC_LOGICIEL(LOGICIEL=self.EXEC,
-                      ARGUMENT=(fichier_epx, self.VERS, self.REPE_epx),
-                      CODE_RETOUR_MAXI=-1,
-                      INFO=2)
+        if self.NP > 1 :
+            # Ecriture du fichier epx dans un repertoire commun a tous les procs
+            fichierepx = osp.abspath(self.nom_fichiers['COMMANDE'])
+            nameepx = os.path.basename(fichierepx)
+            send_file(fichierepx, self.REPE_tmp)
+            fichier_epx='%s/%s'%(self.REPE_tmp,nameepx)
+            npstr=str(self.NP)
+            EXEC_LOGICIEL(LOGICIEL='/home/rd-ap-europlexus/EPXD/bin/epx_launch_mpi_interactive',
+                          ARGUMENT=('-np', npstr, '-data', fichier_epx),
+                          CODE_RETOUR_MAXI=-1,
+                          INFO=2)
+        else :
+            fichier_epx = osp.abspath(self.nom_fichiers['COMMANDE'])
+            EXEC_LOGICIEL(LOGICIEL=self.EXEC,
+                          ARGUMENT=(fichier_epx, self.VERS, self.REPE_epx),
+                          CODE_RETOUR_MAXI=-1,
+                          INFO=2)
 #-----------------------------------------------------------------------
     def write_all_gr(self,):
         """

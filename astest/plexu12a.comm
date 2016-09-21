@@ -1,0 +1,166 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
+
+# ------------------- Lecture du maillage
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',UNITE=20);
+
+MODELE=AFFE_MODELE(INFO=1,
+                   MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT='OUI',
+                            PHENOMENE = 'MECANIQUE',
+                            MODELISATION = '3D_SI'),);
+
+# ------------------- Definition des materiaux
+
+YOUNG0=206.E9 
+NU0=0.3 
+MU0=YOUNG0/(2*(1+NU0)); 
+RHO0=8250.
+ALPHA0=0.
+A0=354.E6
+B0=2090.E6
+C0=0.02
+N0=0.8
+EP=0.01
+
+INCO=DEFI_MATERIAU(ELAS=_F(E=YOUNG0,                                                                                                                       
+                           NU=NU0,                                                                                                                               
+                           RHO=RHO0,),                                            
+                   ECRO_COOK=_F(A=A0,                                                                                      
+                                B=B0,                                                                                        
+                                C=C0,                                                                                 
+                                N_PUIS=N0,                                                                                 
+                                EPSP0=EP,),);
+
+
+CHMATER=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                      AFFE=_F(GROUP_MA='CUBE',
+                              MATER=INCO),);
+                            
+BLOQ=AFFE_CHAR_MECA(MODELE=MODELE,
+                    DDL_IMPO=_F(GROUP_NO='BAS',
+                                DX = 0.,
+                                DY = 0.,
+                                DZ = 0.,),);
+
+PRESS=AFFE_CHAR_MECA(MODELE=MODELE,
+                     PRES_REP=_F(GROUP_MA='HAUT',
+                                 PRES=5.e9,),);
+
+
+FOMU=DEFI_FONCTION(NOM_PARA='INST',
+                   VALE=(0.000,  0.0,
+                         0.001,  0.3,
+                         0.002,  0.7,
+                         0.003,  1.0,
+                         0.020,  1.0,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',);
+
+
+U_EPX=CALC_EUROPLEXUS(MODELE=MODELE,
+                      CHAM_MATER=CHMATER,
+                      COMPORTEMENT=_F(RELATION='VMIS_JOHN_COOK',
+                                      GROUP_MA='CUBE',),
+                      EXCIT=(_F(CHARGE=PRESS,
+                                FONC_MULT=FOMU),
+                             _F(CHARGE=BLOQ,),),
+                      LANCEMENT='OUI',
+                      CALCUL=_F(TYPE_DISCRETISATION='UTIL',
+                                INST_INIT = 0,
+                                INST_FIN  = 0.01,
+                                PASFIX    = 1e-6,),
+                      ARCHIVAGE=_F(PAS_NBRE=1000,),);
+
+IMPR_RESU(FORMAT='RESULTAT',RESU=_F(RESULTAT=U_EPX,),);
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M52',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-4142547960.94,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=-4.1425E+09,),);
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M52',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-4142547960.94,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=-4.1425E+09,),);
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M52',
+                  NOM_CMP='SIZZ',
+                  VALE_CALC=1213121865.38,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=1.2131E+09,),);
+          
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='VARI_ELGA',
+                  MAILLE='M52',
+                  NOM_CMP='V1',
+                  VALE_CALC=2.74978871954,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=2.7498E+00,),);         
+          
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M54',
+                  NOM_CMP='SIXX',
+                  VALE_CALC=-807828174.131,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=-8.0783E+08,),);
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M54',
+                  NOM_CMP='SIYY',
+                  VALE_CALC=-807828174.132,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=-8.0783E+08),);
+
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='SIEF_ELGA',
+                  MAILLE='M54',
+                  NOM_CMP='SIZZ',
+                  VALE_CALC=3705283273.32,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=3.7053E+09,),);
+          
+TEST_RESU(RESU=_F(NUME_ORDRE = 10000,
+                  RESULTAT=U_EPX,
+                  NOM_CHAM='VARI_ELGA',
+                  MAILLE='M54',
+                  NOM_CMP='V1',
+                  VALE_CALC=2.19570960129,
+                  REFERENCE='SOURCE_EXTERNE',
+                  VALE_REFE=2.1957E+00,),);    
+
+FIN();
