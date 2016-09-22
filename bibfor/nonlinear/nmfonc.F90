@@ -1,7 +1,6 @@
-subroutine nmfonc(ds_conv       , ds_algopara, solver   , model    , ds_contact,&
-                  list_load     , sdnume     , sddyna   , sdcriq   , mate      ,&
-                  compor_       , ds_inout   , comp_para, ds_energy, ds_algorom,&
-                  list_func_acti)
+subroutine nmfonc(ds_conv  , ds_algopara    , solver   , model     , ds_contact    ,&
+                  list_load, sdnume         , sddyna   , sdcriq    , mate          ,&
+                  ds_inout , ds_constitutive, ds_energy, ds_algorom, list_func_acti)
 !
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
@@ -27,7 +26,6 @@ implicit none
 #include "asterfort/jeveuo.h"
 #include "asterfort/matdis.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/nmcpqu.h"
 #include "asterfort/nmlssv.h"
 !
 ! ======================================================================
@@ -58,9 +56,8 @@ implicit none
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sdcriq
     character(len=24), intent(in) :: mate
-    character(len=*), intent(in) :: compor_
     type(NL_DS_InOut), intent(in) :: ds_inout
-    character(len=24), intent(in) :: comp_para
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Energy), intent(in) :: ds_energy
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     integer, intent(inout) :: list_func_acti(*)
@@ -85,9 +82,8 @@ implicit none
 ! In  sddyna           : dynamic parameters datastructure
 ! In  sdcriq           : datastructure for quality indicators
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of comportment definition (field)
 ! In  ds_inout         : datastructure for input/output management
-! In  comp_para        : parameters for comportment
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_energy        : datastructure for energy management
 ! In  ds_algorom       : datastructure for ROM parameters
 ! IO  list_func_acti   : list of active functionnalities
@@ -96,13 +92,12 @@ implicit none
 !
     integer :: nocc, iret, nb_subs_stat, nb_load_subs
     integer :: i_cont_form
-    aster_logical :: l_deborst, l_frot, l_elem_choc, l_all_verif, l_refe, l_comp
+    aster_logical :: l_deborst, l_frot, l_dis_choc, l_all_verif, l_refe, l_comp, l_post_incr
     aster_logical :: l_loop_geom, l_loop_frot, l_loop_cont
     integer :: ixfem, i_buckl, i_vibr_mode, i_stab
     aster_logical :: l_load_undead, l_load_laplace, l_load_elim, l_load_didi
     character(len=8) :: k8bid, repk
     character(len=16) :: command, k16bid, matr_distr
-    character(len=19) :: compor
     character(len=24) :: solv_type, solv_precond, sdcriq_errt
     aster_logical :: l_stat, l_dyna
     aster_logical :: l_newt_cont, l_newt_frot, l_newt_geom
@@ -113,9 +108,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor      = compor_
     l_cont      = ds_contact%l_meca_cont
     l_unil      = ds_contact%l_meca_unil
+    l_deborst   = ds_constitutive%l_deborst
+    l_dis_choc  = ds_constitutive%l_dis_choc
+    l_post_incr = ds_constitutive%l_post_incr
 !
 ! - Print
 !
@@ -178,8 +175,9 @@ implicit none
 !
 ! - Deborst algorithm
 !
-    call nmcpqu(compor, 'C_PLAN', 'DEBORST', l_deborst)
-    if (l_deborst) list_func_acti(7) = 1
+    if (l_deborst) then
+        list_func_acti(7) = 1
+    endif
 !
 ! - Reference criterion RESI_REFE_RELA
 !
@@ -379,8 +377,9 @@ implicit none
 !
 ! - DIS_CHOC elements ?
 !
-    call nmcpqu(compor, 'RELCOM', 'DIS_CHOC', l_elem_choc)
-    if (l_elem_choc) list_func_acti(29) = 1
+    if (l_dis_choc) then
+        list_func_acti(29) = 1
+    endif
 !
 ! - Command variables
 !
@@ -434,8 +433,9 @@ implicit none
 !
 ! - Post-treatment on comportment laws ?
 !
-    call dismoi('POST_INCR', comp_para, 'CARTE_CARCRI', repk=repk)
-    if (repk .eq. 'OUI') list_func_acti(58) = 1
+    if (l_post_incr) then
+        list_func_acti(58) = 1
+    endif
 !
 ! - Print
 !

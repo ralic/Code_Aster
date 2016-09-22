@@ -18,11 +18,10 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
-                      carele  , compor, lischa, numins, ds_measure,&
-                      sddisc  , fonact, comref,&
-                      ds_inout, valinc, solalg, veelem, measse,&
-                      veasse  , sddyna)
+    subroutine nmchar(mode  , phasez         , modele, numedd  , mate      ,&
+                      carele, ds_constitutive, lischa, numins  , ds_measure,&
+                      sddisc, fonact         , comref, ds_inout, valinc    ,&
+                      solalg, veelem         , measse, veasse  , sddyna)
         use NonLin_Datastructure_type
         character(len=4) :: mode
         character(len=*) :: phasez
@@ -30,7 +29,7 @@ interface
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         integer :: numins
         type(NL_DS_Measure), intent(inout) :: ds_measure

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmextr_comp(field     , field_disc, field_type, meshz    , modelz   ,&
-                           cara_elemz, matez     , compor    , disp_curr, strx_curr,&
-                           varc_curr , varc_refe , time      , ligrelz)
+    subroutine nmextr_comp(field     , field_disc, field_type     , meshz    , modelz   ,&
+                           cara_elemz, matez     , ds_constitutive, disp_curr, strx_curr,&
+                           varc_curr , varc_refe , time           , ligrelz)
+        use NonLin_Datastructure_type
         character(len=19), intent(in) :: field
         character(len=24), intent(in) :: field_type
         character(len=4), intent(in) :: field_disc
@@ -26,7 +27,7 @@ interface
         character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
-        character(len=19), intent(in) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=*), intent(in) :: disp_curr
         character(len=*), intent(in) :: strx_curr
         character(len=*), intent(in) :: varc_curr

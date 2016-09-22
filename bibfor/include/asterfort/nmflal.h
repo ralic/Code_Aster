@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmflal(option, compor, sdpost, mod45, defo,&
-                      nfreq, cdsp, typmat, optmod, bande,&
-                      nddle, ddlexc, nsta, ddlsta, modrig)
+    subroutine nmflal(option, ds_constitutive, sdpost, mod45 , defo  ,&
+                      nfreq , cdsp           , typmat, optmod, bande ,&
+                      nddle , ddlexc         , nsta  , ddlsta, modrig)
+        use NonLin_Datastructure_type
         character(len=16) :: option
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: sdpost
         character(len=4) :: mod45
         integer :: defo

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,6 +22,6 @@ interface
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: chmate
         aster_logical, intent(in) :: l_etat_init
-        character(len=19), intent(out) :: compor
+        character(len=19), intent(in) :: compor
     end subroutine nmdocc
 end interface

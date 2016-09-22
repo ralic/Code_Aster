@@ -1,6 +1,6 @@
-subroutine nmihht(model    , nume_dof , mate       , compor        , comp_para,&
+subroutine nmihht(model    , nume_dof , mate       , ds_constitutive,&
                   cara_elem, list_load, varc_refe  , list_func_acti, ds_measure,&
-                  sddyna   , sdnume     , ds_contact    , hval_incr,&
+                  sddyna   , sdnume   , ds_contact , hval_incr,&
                   sddisc   , hval_algo, hval_veasse, hval_measse   , ds_inout)
 !
 use NonLin_Datastructure_type
@@ -33,8 +33,7 @@ implicit none
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: mate
     character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: compor
-    character(len=24), intent(in) :: comp_para
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: varc_refe
@@ -61,8 +60,7 @@ implicit none
 ! In  model            : name of the model
 ! In  mate             : name of material characteristics (field)
 ! In  cara_elem        : name of elementary characteristics (field)
-! In  compor           : name of comportment definition (field)
-! In  comp_para        : parameters for comportment (field)
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  nume_dof         : name of numbering (NUME_DDL)
 ! In  list_load        : name of datastructure for list of loads
 ! In  varc_refe        : name of reference command variables vector
@@ -97,7 +95,7 @@ implicit none
 ! - Compute previous second member for multi-step schemes
 !
     if (l_reuse .or. l_init_state) then
-        call nmchht(model    , mate     , cara_elem  , compor        , comp_para ,&
+        call nmchht(model    , mate     , cara_elem  , ds_constitutive,&
                     list_load, nume_dof , varc_refe  , list_func_acti, ds_measure ,&
                     sddyna   , sddisc   , sdnume     , ds_contact,&
                     hval_incr, hval_algo, hval_veasse, hval_measse   , ds_inout)

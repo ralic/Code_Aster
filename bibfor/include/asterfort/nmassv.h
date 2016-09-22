@@ -16,17 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
-                      compor  , numedd, instam, instap,&
-                      sddyna  , ds_measure, valinc, comref,&
-                      ds_inout, measse, vecelz, vecasz)
+    subroutine nmassv(typvez         , modelz, lischa, mate    , carele,&
+                      ds_constitutive, numedd, instam, instap  , sddyna,&
+                      ds_measure     , valinc, comref, ds_inout, measse,&
+                      vecelz         , vecasz)
         use NonLin_Datastructure_type
         character(len=*) :: typvez
         character(len=*) :: modelz
         character(len=19) :: lischa
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24) :: numedd
         real(kind=8) :: instam
         real(kind=8) :: instap

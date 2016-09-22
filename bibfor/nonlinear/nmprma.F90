@@ -1,9 +1,9 @@
-subroutine nmprma(modelz     , mate    , carele, compor, carcri,&
+subroutine nmprma(modelz     , mate    , carele, ds_constitutive,&
                   ds_algopara, lischa  , numedd, numfix, solveu,&
                   comref     , ds_print, ds_measure, sddisc,&
                   sddyna     , numins  , fonact, ds_contact,&
                   valinc     , solalg  , veelem, meelem, measse,&
-                  maprec     , matass  , codere, faccvg, ldccvg)
+                  maprec     , matass  , faccvg, ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -51,11 +51,12 @@ implicit none
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
-    character(len=24) :: compor, carcri, numedd, numfix
+    character(len=24) :: numedd, numfix
     character(len=19) :: sddisc, sddyna, lischa, solveu
-    character(len=24) :: comref, codere
+    character(len=24) :: comref
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veelem(*), meelem(*), measse(*)
     integer :: numins
@@ -63,21 +64,21 @@ implicit none
     character(len=19) :: maprec, matass
     integer :: faccvg, ldccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
 !
 ! CALCUL DE LA MATRICE GLOBALE EN PREDICTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
 ! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_contact       : datastructure for contact management
 ! IO  ds_print         : datastructure for printing parameters
@@ -85,7 +86,6 @@ implicit none
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION
@@ -109,9 +109,8 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: reasma, renume
     aster_logical :: lcrigi, lcfint, lcamor, larigi
@@ -125,7 +124,7 @@ implicit none
     character(len=16) :: list_calc_opti(20), list_asse_opti(20)
     aster_logical :: list_l_asse(20), list_l_calc(20)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -229,13 +228,12 @@ implicit none
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
     if (nb_matr .gt. 0) then
-        call nmxmat(modelz, mate, carele, compor, carcri,&
-                    sddisc, sddyna, fonact, numins, iterat,&
-                    valinc, solalg, lischa, comref,&
-                    numedd, numfix, ds_measure, ds_algopara,&
-                    nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
-                    list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere, ds_contact)
+        call nmxmat(modelz        , mate       , carele     , ds_constitutive, sddisc        ,&
+                    sddyna        , fonact     , numins     , iterat         , valinc        ,&
+                    solalg        , lischa     , comref     , numedd         , numfix        ,&
+                    ds_measure    , ds_algopara, nb_matr    , list_matr_type , list_calc_opti,&
+                    list_asse_opti, list_l_calc, list_l_asse, lcfint         , meelem        ,&
+                    measse        , veelem     , ldccvg     , ds_contact)
     endif
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER

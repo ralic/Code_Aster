@@ -1,7 +1,6 @@
-subroutine nmcalm(typmat, modelz, lischa, mate      , carele,&
-                  compor, instam, instap, valinc    , solalg,&
-                  optmaz, base  , meelem, ds_contact,&
-                  matele)
+subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
+                  ds_constitutive, instam, instap, valinc    , solalg,&
+                  optmaz         , base  , meelem, ds_contact, matele)
 !
 use NonLin_Datastructure_type
 !
@@ -48,7 +47,7 @@ implicit none
 !
     character(len=*) :: modelz
     character(len=*) :: mate, carele
-    character(len=24) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     real(kind=8) :: instam, instap
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: lischa
@@ -70,6 +69,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGEMENTS
 ! IN  MATE   : CHAMP MATERIAU
 ! In  ds_contact       : datastructure for contact management
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  TYPMAT : TYPE DE MATRICE A CALCULER
 !                MERIGI  - MATRICE POUR RIGIDITE
 !                MEDIRI  - MATRICE POUR CL DIRICHLET LAGRANGE
@@ -171,7 +171,7 @@ implicit none
 !
     else if (typmat.eq.'MEMASS') then
         call memame(optmat, model, mate,&
-                    carele, instam, compor, matele,&
+                    carele, instam, ds_constitutive%compor, matele,&
                     base)
 !
 ! --- MATR_ELEM AMORTISSEMENT
@@ -185,7 +185,7 @@ implicit none
 !
     else if (typmat.eq.'MESUIV') then
         call mecgme(model, carele, mate  , lischa, instap,&
-                    disp_prev, disp_cumu_inst, instam, compor, matele)
+                    disp_prev, disp_cumu_inst, instam, ds_constitutive%compor, matele)
         call mecgm2(lischa, instap, matele)
 !
 ! --- MATR_ELEM DES SOUS-STRUCTURES

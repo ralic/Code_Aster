@@ -54,7 +54,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     list_load = '&&OP00XX.LIST_LOAD'
-    solver_   = '&&OP00XX.SOLVER'
 !
 ! - Get results
 !
@@ -71,6 +70,7 @@ implicit none
 ! - Get parameters for solver
 !
     if (present(solver_)) then
+        solver_   = '&&OP00XX.SOLVER'
         call cresol(solver_)
     endif
 !

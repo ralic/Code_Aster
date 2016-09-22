@@ -1,6 +1,18 @@
-subroutine nmflal(option, compor, sdpost, mod45, defo,&
-                  nfreq, cdsp, typmat, optmod, bande,&
-                  nddle, ddlexc, nsta, ddlsta, modrig)
+subroutine nmflal(option, ds_constitutive, sdpost, mod45 , defo  ,&
+                  nfreq , cdsp           , typmat, optmod, bande ,&
+                  nddle , ddlexc         , nsta  , ddlsta, modrig)
+!
+use NonLin_Datastructure_type
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/nmlesd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,15 +32,8 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/nmlesd.h"
-#include "asterfort/utmess.h"
-    character(len=24) :: compor, ddlexc, ddlsta
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: ddlexc, ddlsta
     character(len=16) :: optmod, option
     character(len=4) :: mod45
     integer :: nfreq, defo, nddle, nsta, cdsp
@@ -36,20 +41,19 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
     real(kind=8) :: bande(2)
     character(len=19) :: sdpost
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL DE MODES)
 !
 ! LECTURE DES OPTIONS DANS MECA_NON_LINE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  OPTION : TYPE DE CALCUL
 !              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
 !              'FLAMBDYN' MODES DE FLAMBEMENT EN DYNAMIQUE
 !              'VIBRDYNA' MODES VIBRATOIRES
-! IN  COMPOR : CARTE COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! OUT MOD45  : TYPE DE CALCUL DE MODES PROPRES
 !              'VIBR'     MODES VIBRATOIRES
@@ -71,17 +75,14 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
 ! OUT NSTA   : NOMBRE DE DDL STAB
 ! OUT DDLSTA : NOM DE L'OBJET JEVEUX CONTENANT LE NOM DES DDLS STAB
 !
+! --------------------------------------------------------------------------------------------------
 !
-!
-!
-    integer :: nbv, i, ibid
+    integer :: ibid
     real(kind=8) :: r8bid
     character(len=24) :: k24bid
     character(len=16) :: optrig
-    character(len=16), pointer :: vale(:) => null()
-    integer, pointer :: desc(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -98,20 +99,12 @@ subroutine nmflal(option, compor, sdpost, mod45, defo,&
     optrig = ' '
     typmat = ' '
     nsta = 0
-    modrig=' '
-! --- TYPE DE DEFORMATIONS
 !
-    call jeveuo(compor(1:19)//'.VALE', 'L', vk16=vale)
-    call jeveuo(compor(1:19)//'.DESC', 'L', vi=desc)
-    nbv = desc(3)
-!     RIGIDITE GEOMETRIQUE INTEGREE A LA MATRICE TANGENTE
-    do 10 i = 1, nbv
-        if ((vale(1+2+20*(i-1)).eq.'GROT_GDEP') .or.&
-            (vale(1+2+20*(i-1)).eq.'SIMO_MIEHE') .or.&
-            (vale(1+2+20*(i-1)).eq.'GDEF_LOG')) then
-            defo = 1
-        endif
-10  enddo
+! - Check if geometric matrix is included in global tangent matrix
+!
+    if (ds_constitutive%l_matr_geom) then
+        defo = 1
+    endif
 !
 ! --- RECUPERATION DES OPTIONS
 !

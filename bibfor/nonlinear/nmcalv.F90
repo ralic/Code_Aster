@@ -1,6 +1,6 @@
-subroutine nmcalv(typvec, modelz, lischa, mate  , carele,&
-                  compor, numedd, comref, ds_measure, instam,&
-                  instap, valinc, solalg, sddyna, option,&
+subroutine nmcalv(typvec         , modelz, lischa, mate      , carele,&
+                  ds_constitutive, numedd, comref, ds_measure, instam,&
+                  instap         , valinc, solalg, sddyna    , option,&
                   vecele)
 !
 use NonLin_Datastructure_type
@@ -47,8 +47,9 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*) :: modelz
-    character(len=24) :: mate, carele, compor, numedd
+    character(len=24) :: mate, carele, numedd
     character(len=24) :: comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8) :: instam, instap
     character(len=19) :: lischa, sddyna
@@ -70,9 +71,9 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  NUMEDD : NUME_DDL
 ! IO  ds_measure       : datastructure for measure and statistics management
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  INSTAM : INSTANT MOINS
 ! IN  INSTAP : INSTANT PLUS
@@ -92,7 +93,7 @@ implicit none
     character(len=19) :: depl, sigm, strx
     integer :: neq
     real(kind=8) :: partps(2), inst(3)
-    character(len=24) :: charge, infoch
+    character(len=24) :: charge, infoch, compor
     character(len=8) :: noma
     character(len=16) :: optio2
     integer :: ifm, niv
@@ -106,6 +107,7 @@ implicit none
 !
 ! --- INITIALISATIONS
 !
+    compor = ds_constitutive%compor
     modele = modelz
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=noma)
     call dismoi('NB_EQUA   ', numedd, 'NUME_DDL', repi=neq)

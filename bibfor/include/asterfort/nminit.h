@@ -18,45 +18,43 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nminit(result, model    , numedd    , numfix     , mate      ,&
-                      compor, carele   , list_load , ds_algopara, maprec    ,&
-                      solveu, carcri   , numins    , sddisc     , sdnume    ,&
-                      sdcrit, varc_refe, fonact    , mesh       , sdpilo    ,&
-                      sddyna, ds_print , sd_suiv   , sd_obsv    , sderro    ,&
-                      sdpost, ds_inout , ds_energy , ds_conv    , sdcriq    ,&
-                      valinc, solalg   , measse    , veelem     , meelem    ,&
-                      veasse, codere   , ds_contact, ds_measure , ds_algorom)
+    subroutine nminit(mesh      , model     , mate       , cara_elem      , list_load ,&
+                      numedd    , numfix    , ds_algopara, ds_constitutive, maprec    ,&
+                      solver    , numins    , sddisc     , sdnume         , sdcrit    ,&
+                      varc_refe , fonact    , sdpilo     , sddyna         , ds_print  ,&
+                      sd_suiv   , sd_obsv   , sderro     , sdpost         , ds_inout  ,&
+                      ds_energy , ds_conv   , sdcriq     , valinc         , solalg    ,&
+                      measse    , veelem    , meelem     , veasse         , ds_contact,&
+                      ds_measure, ds_algorom)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        type(NL_DS_InOut), intent(inout) :: ds_inout
-        character(len=8) :: result
-        character(len=24) :: model
+        character(len=8), intent(in) :: mesh
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: mate
+        character(len=24), intent(in) :: cara_elem
+        character(len=19), intent(in) :: list_load
         character(len=24) :: numedd
         character(len=24) :: numfix
-        character(len=24) :: mate
-        character(len=24) :: compor
-        character(len=24) :: carele
-        character(len=19) :: list_load
+        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
+        type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
         character(len=19) :: maprec
-        character(len=19) :: solveu
-        character(len=24) :: carcri
+        character(len=19), intent(in) :: solver
         integer :: numins
         character(len=19) :: sddisc
         character(len=19) :: sdnume
         character(len=19) :: sdcrit
         character(len=24) :: varc_refe
         integer :: fonact(*)
-        character(len=8) :: mesh
         character(len=19) :: sdpilo
         character(len=19) :: sddyna
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: sd_suiv
+        character(len=19), intent(out) :: sd_obsv
         character(len=24) :: sderro
         character(len=19) :: sdpost
-        character(len=19), intent(out) :: sd_obsv
+        type(NL_DS_InOut), intent(inout) :: ds_inout
         type(NL_DS_Energy), intent(inout) :: ds_energy
         type(NL_DS_Conv), intent(inout) :: ds_conv
-        type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         character(len=24) :: sdcriq
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
@@ -64,7 +62,6 @@ interface
         character(len=19) :: veelem(*)
         character(len=19) :: meelem(*)
         character(len=19) :: veasse(*)
-        character(len=24) :: codere
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom

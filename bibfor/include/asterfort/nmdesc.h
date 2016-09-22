@@ -20,13 +20,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
-                      comref, compor  , lischa, ds_contact, ds_algopara,&
-                      solveu, carcri  , fonact, numins, iterat     ,&
-                      sddisc, ds_print, ds_measure, ds_algorom, sddyna     ,&
-                      sdnume, sderro  , matass, maprec, &
-                      valinc, solalg  , meelem, measse, veasse     ,&
-                      veelem, lerrit  )
+    subroutine nmdesc(modele  , numedd         , numfix    , mate      , carele     ,&
+                      comref  , ds_constitutive, lischa    , ds_contact, ds_algopara,&
+                      solveu  , fonact         , numins    , iterat    , sddisc     ,&
+                      ds_print, ds_measure     , ds_algorom, sddyna    , sdnume     ,&
+                      sderro  , matass         , maprec    , valinc    , solalg     ,&
+                      meelem  , measse         , veasse    , veelem    , lerrit  )
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
         character(len=24) :: modele
@@ -35,12 +34,11 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: solveu
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=24) :: carcri
         integer :: fonact(*)
         integer :: numins
         integer :: iterat

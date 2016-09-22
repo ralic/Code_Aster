@@ -1,8 +1,7 @@
-subroutine nmassp(modele    , numedd, mate  , carele, comref,&
-                  compor    , lischa, carcri, fonact, ds_measure,&
-                  ds_contact, sddyna, valinc, solalg, veelem,&
-                  veasse    , ldccvg, codere, cnpilo,&
-                  cndonn    , sdnume, matass)
+subroutine nmassp(modele         , numedd, mate  , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                  sddyna         , valinc, solalg, veelem    , veasse    ,&
+                  ldccvg         , cnpilo, cndonn, sdnume    , matass)
 !
 use NonLin_Datastructure_type
 !
@@ -38,31 +37,31 @@ implicit none
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna, sdnume, matass
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: modele, numedd, mate, codere
-    character(len=24) :: carele, compor, comref, carcri
+    character(len=24) :: modele, numedd, mate
+    character(len=24) :: carele, comref
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veasse(*), veelem(*)
     character(len=19) :: cnpilo, cndonn
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
 !
 ! CALCUL DU SECOND MEMBRE POUR LA PREDICTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : NOM DU MODELE
 ! IN  NUMEDD : NOM DE LA NUMEROTATION
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VALEURS DE REF DES VARIABLES DE COMMANDE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  LISCHA : SD L_CHARGES
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_contact       : datastructure for contact management
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -72,7 +71,6 @@ implicit none
 ! IN  SDNUME : SD NUMEROTATION
 ! OUT CNPILO : VECTEUR ASSEMBLE DES FORCES PILOTEES
 ! OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
-! OUT CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
 ! OUT LDCCVG : CODE RETOUR DE L'INTEGRATION DU COMPORTEMENT
 !                -1 : PAS D'INTEGRATION DU COMPORTEMENT
 !                 0 : CAS DU FONCTIONNEMENT NORMAL
@@ -80,11 +78,12 @@ implicit none
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 !
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     aster_logical :: lstat, ldyna
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -105,11 +104,10 @@ implicit none
 ! --- EVALUATION DU SECOND MEMBRE
 !
     if (ldyna) then
-        call ndassp(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, ds_measure, fonact,&
-                    ds_contact, sddyna, valinc, solalg, veelem,&
-                    veasse, ldccvg, codere, cndonn,&
-                    sdnume, matass)
+        call ndassp(modele         , numedd, mate      , carele, comref    ,&
+                    ds_constitutive, lischa, ds_measure, fonact, ds_contact,&
+                    sddyna         , valinc, solalg    , veelem, veasse    ,&
+                    ldccvg         , cndonn, sdnume    , matass)
     else if (lstat) then
         call nsassp(modele, numedd, lischa, fonact, sddyna,&
                     ds_measure, valinc, veelem, veasse, cnpilo,&

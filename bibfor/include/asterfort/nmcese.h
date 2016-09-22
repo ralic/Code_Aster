@@ -16,21 +16,20 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcese(modele, numedd, mate, carele, comref,&
-                      compor, lischa, carcri, fonact, ds_measure,&
-                      ds_contact, iterat, sdnume, sdpilo, valinc,&
-                      solalg, veelem, veasse, offset,&
-                      typsel, sddisc, licite, rho, eta,&
-                      etaf, criter, ldccvg, pilcvg, matass)
+    subroutine nmcese(modele         , numedd, mate  , carele    , comref    ,&
+                      ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                      iterat         , sdnume, sdpilo, valinc    , solalg    ,&
+                      veelem         , veasse, offset, typsel    , sddisc    ,&
+                      licite         , rho   , eta   , etaf      , criter    ,&
+                      ldccvg         , pilcvg, matass)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
-        character(len=24) :: carcri
         integer :: fonact(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(in) :: ds_contact

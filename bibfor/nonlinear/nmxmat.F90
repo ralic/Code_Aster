@@ -1,10 +1,9 @@
-subroutine nmxmat(modelz, mate, carele, compor, carcri,&
-                  sddisc, sddyna, fonact, numins, iterat,&
-                  valinc, solalg, lischa, comref,&
-                  numedd, numfix, ds_measure, ds_algopara,&
-                  nbmatr, ltypma, loptme, loptma,&
-                  lcalme, lassme, lcfint, meelem, measse,&
-                  veelem, ldccvg, codere, ds_contact_)
+subroutine nmxmat(modelz    , mate       , carele, ds_constitutive, sddisc,&
+                  sddyna    , fonact     , numins, iterat         , valinc,&
+                  solalg    , lischa     , comref, numedd         , numfix,&
+                  ds_measure, ds_algopara, nbmatr, ltypma         , loptme,&
+                  loptma    , lcalme     , lassme, lcfint         , meelem,&
+                  measse    , veelem     , ldccvg, ds_contact_)
 !
 use NonLin_Datastructure_type
 !
@@ -46,11 +45,12 @@ implicit none
     character(len=*) :: modelz
     character(len=*) :: mate
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: compor, carcri, carele
+    character(len=24) :: carele
     integer :: numins, iterat, ldccvg
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: numedd, numfix
-    character(len=24) :: comref, codere
+    character(len=24) :: comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: meelem(*), measse(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
@@ -58,13 +58,13 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), optional, intent(in) :: ds_contact_
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
 !
 ! CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -72,14 +72,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
-! IN  METHOD : INFORMATIONS SUR LES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  PARMET : PARAMETRES DES METHODES DE RESOLUTION (VOIR NMLECT)
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  ITERAT : NUMERO D'ITERATION
@@ -99,9 +96,8 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=6) :: typmat
     integer :: imatr
@@ -111,9 +107,9 @@ implicit none
     real(kind=8) :: instam, instap
     aster_logical :: lcalc, lasse
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    base = 'V'
+    base   = 'V'
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins)
     ldccvg = -1
@@ -141,17 +137,17 @@ implicit none
         if (lcalc) then
             call nmchex(meelem, 'MEELEM', typmat, matele)
             if (typmat .eq. 'MERIGI') then
-                call nmrigi(modelz, mate, carele, compor, carcri,&
+                call nmrigi(modelz, mate, carele, ds_constitutive,&
                             sddyna, ds_measure, fonact, iterat,&
                             valinc, solalg, comref, meelem, veelem,&
-                            optcal, ldccvg, codere)
+                            optcal, ldccvg)
             else
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(ds_measure, 'Init', 'Cont_Elem')
                     call nmtime(ds_measure, 'Launch', 'Cont_Elem')
                 endif
                 call nmcalm(typmat, modelz, lischa, mate       , carele,&
-                            compor, instam, instap, valinc     , solalg,&
+                            ds_constitutive, instam, instap, valinc     , solalg,&
                             optcal, base  , meelem, ds_contact_, matele)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(ds_measure, 'Stop', 'Cont_Elem')

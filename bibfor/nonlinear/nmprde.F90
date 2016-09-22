@@ -1,10 +1,9 @@
-subroutine nmprde(modele, numedd, numfix  , mate       , carele,&
-                  comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, ds_print, ds_measure ,&
-                  sddisc, numins, valinc  , solalg     , matass,&
-                  maprec, ds_contact , sddyna     , meelem,&
-                  measse, veelem, veasse  , ldccvg     , faccvg,&
-                  rescvg, codere)
+subroutine nmprde(modele, numedd         , numfix    , mate       , carele    ,&
+                  comref, ds_constitutive, lischa    , ds_algopara, solveu    ,&
+                  fonact, ds_print       , ds_measure, sddisc     , numins    ,&
+                  valinc, solalg         , matass    , maprec     , ds_contact,&
+                  sddyna, meelem         , measse    , veelem     , veasse    ,&
+                  ldccvg, faccvg         , rescvg)
 !
 use NonLin_Datastructure_type
 !
@@ -47,21 +46,20 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19) :: lischa, solveu, sddisc, sddyna
     character(len=24) :: numedd, numfix
-    character(len=24) :: modele, mate, carele, comref, compor
-    character(len=24) :: carcri
+    character(len=24) :: modele, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
 !
 ! PREDICTION PAR DEPLACEMENT DONNE (EXTRAPOL/DEPL_CALCULE)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -69,13 +67,12 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  MAPREC : MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! IN  MATASS : MATRICE ASSEMBLEE
 ! IN  SOLVEU : SOLVEUR
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -105,17 +102,15 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: incest, depest, depmoi
     character(len=19) :: depso1, depso2
     aster_logical :: lproj
     integer :: iret
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     depest = '&&CNPART.CHP1'
     incest = '&&CNPART.CHP2'
@@ -159,13 +154,12 @@ implicit none
 ! --- CINEMATIQUEMENT ADMISSIBLE
 !
     if (lproj) then
-        call nmprca(modele, numedd, numfix  , mate       , carele,&
-                    comref, compor, lischa  , ds_algopara, solveu,&
-                    fonact, carcri, ds_print, ds_measure , sddisc,&
-                    numins, valinc  , solalg     , matass,&
-                    maprec, ds_contact, sddyna     , meelem,&
-                    measse, veelem, veasse  , depest     , ldccvg,&
-                    faccvg, rescvg, codere)
+        call nmprca(modele, numedd         , numfix     , mate       , carele    ,&
+                    comref, ds_constitutive, lischa     , ds_algopara, solveu    ,&
+                    fonact, ds_print       , ds_measure , sddisc     , numins    ,&
+                    valinc, solalg         , matass     , maprec     , ds_contact,&
+                    sddyna, meelem         , measse     , veelem     , veasse    ,&
+                    depest, ldccvg         , faccvg     , rescvg)
     endif
 !
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,24 +18,22 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine merimo(base     , model    , cara_elem, mate     , varc_refe,&
-                      compor   , carcri   , iterat   , acti_func, sddyna   ,&
-                      hval_incr, hval_algo, merigi   , vefint   , optioz   ,&
-                      tabret   , codere)
+    subroutine merimo(base           , model , cara_elem, mate  , varc_refe,&
+                      ds_constitutive, iterat, acti_func, sddyna, hval_incr,&
+                      hval_algo      , merigi, vefint   , optioz, tabret   )
+        use NonLin_Datastructure_type
         character(len=1), intent(in) :: base
         integer, intent(in) :: iterat
         character(len=*), intent(in) :: mate
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24), intent(in) :: varc_refe
         integer, intent(in) :: acti_func(*)
-        character(len=24), intent(in) :: carcri
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         character(len=*), intent(in) :: optioz
-        character(len=24), intent(in) :: codere
         character(len=19), intent(in) :: merigi
         character(len=19), intent(in) :: vefint
         aster_logical, intent(out) :: tabret(0:10)

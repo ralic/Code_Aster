@@ -20,13 +20,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
-                      comref  , compor, lischa  , ds_algopara, solveu,&
-                      fonact  , carcri, ds_print, ds_measure , ds_algorom,&
-                      sddisc  , sdnume, sderro  , numins     , valinc,&
-                      solalg  , matass, maprec  , ds_contact , sddyna,&
-                      ds_inout, meelem, measse  , veelem     , veasse,&
-                      lerrit)
+    subroutine nmpred(modele, numedd         , numfix    , mate       , carele  ,&
+                      comref, ds_constitutive, lischa    , ds_algopara, solveu  ,&
+                      fonact, ds_print       , ds_measure, ds_algorom , sddisc  ,&
+                      sdnume, sderro         , numins    , valinc     , solalg  ,&
+                      matass, maprec         , ds_contact, sddyna     , ds_inout,&
+                      meelem, measse         , veelem    , veasse     , lerrit)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
         character(len=24) :: modele
@@ -35,13 +34,12 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         integer :: fonact(*)
-        character(len=24) :: carcri
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom

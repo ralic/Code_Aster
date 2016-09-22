@@ -16,16 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmrigi(modelz, mate, carele, compor, carcri,&
-                      sddyna, ds_measure, fonact, iterat,&
-                      valinc, solalg, comref, meelem, veelem,&
-                      optioz, ldccvg, codere)
+    subroutine nmrigi(modelz    , mate  , carele, ds_constitutive, sddyna,&
+                      ds_measure, fonact, iterat, valinc         , solalg,&
+                      comref    , meelem, veelem, optioz         , ldccvg)
         use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=*) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: sddyna
         type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: fonact(*)
@@ -37,6 +35,5 @@ interface
         character(len=19) :: veelem(*)
         character(len=*) :: optioz
         integer :: ldccvg
-        character(len=24) :: codere
     end subroutine nmrigi
 end interface

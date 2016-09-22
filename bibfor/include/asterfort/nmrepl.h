@@ -18,23 +18,21 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmrepl(modele , numedd, mate       , carele, comref,&
-                      compor , lischa, ds_algopara, carcri, fonact,&
-                      iterat , ds_measure, sdpilo     , sdnume, sddyna,&
-                      ds_contact, deltat     , valinc, solalg,&
-                      veelem , veasse, sddisc, etan  ,&
-                      ds_conv, eta   , offset     , ldccvg, pilcvg,&
-                      matass )
+    subroutine nmrepl(modele         , numedd, mate       , carele, comref    ,&
+                      ds_constitutive, lischa, ds_algopara, fonact, iterat    ,&
+                      ds_measure     , sdpilo, sdnume     , sddyna, ds_contact,&
+                      deltat         , valinc, solalg     , veelem, veasse    ,&
+                      sddisc         , etan  , ds_conv    , eta   , offset    ,&
+                      ldccvg         , pilcvg, matass )
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=24) :: carcri
         integer :: fonact(*)
         integer :: iterat
         type(NL_DS_Measure), intent(inout) :: ds_measure

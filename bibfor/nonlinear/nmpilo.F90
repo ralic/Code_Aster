@@ -1,6 +1,6 @@
-subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                  modele, mate, compor, ds_contact, valinc,&
-                  nbatte, numedd, nbeffe, eta, pilcvg,&
+subroutine nmpilo(sdpilo, deltat, rho            , solalg    , veasse,&
+                  modele, mate  , ds_constitutive, ds_contact, valinc,&
+                  nbatte, numedd, nbeffe         , eta       , pilcvg,&
                   carele)
 !
 use NonLin_Datastructure_type
@@ -24,7 +24,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,19 +45,19 @@ implicit none
     integer :: pilcvg
     real(kind=8) :: deltat, rho, eta(nbatte)
     character(len=19) :: sdpilo
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: solalg(*), veasse(*), valinc(*)
-    character(len=24) :: modele, mate, compor, carele
+    character(len=24) :: modele, mate, carele
     character(len=24) :: numedd
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! RESOLUTION DE L'EQUATION DE PILOTAGE
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 !       DU = DUN + RHO.DU0 + ETA.RHO.DU1
 !       AVEC UN CHARGEMENT F0 + ETA_VRAI.F1
@@ -71,7 +71,7 @@ implicit none
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : MATERIAU
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_contact       : datastructure for contact management
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -86,8 +86,7 @@ implicit none
 !                 1 : PAS DE SOLUTION
 !                 2 : BORNE ATTEINTE -> FIN DU CALCUL
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: neq, i, ierm
     real(kind=8) :: dtau, etrmin, etrmax, coef
@@ -106,7 +105,7 @@ implicit none
     character(len=24), pointer :: pltk(:) => null()
     real(kind=8), pointer :: plir(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('PILOTAGE', ifm, niv)
@@ -190,10 +189,10 @@ implicit none
 ! --- PILOTAGE PAR CRITERE
 !
     else if (typpil.eq.'PRED_ELAS' .or. typpil.eq.'DEFORMATION') then
-        call nmpipe(modele, ligrpi, cartyp, careta, mate,&
-                    compor, ds_contact, valinc, depdel, ddepl0,&
-                    ddepl1, dtau, nbeffe, eta, pilcvg,&
-                    typpil, carele)
+        call nmpipe(modele         , ligrpi    , cartyp, careta, mate  ,&
+                    ds_constitutive, ds_contact, valinc, depdel, ddepl0,&
+                    ddepl1         , dtau      , nbeffe, eta   , pilcvg,&
+                    typpil         , carele)
     else
         ASSERT(.false.)
     endif

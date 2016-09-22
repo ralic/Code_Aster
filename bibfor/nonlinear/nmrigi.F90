@@ -1,7 +1,6 @@
-subroutine nmrigi(modelz, mate, carele, compor, carcri,&
-                  sddyna, ds_measure, fonact, iterat,&
-                  valinc, solalg, comref, meelem, veelem,&
-                  optioz, ldccvg, codere)
+subroutine nmrigi(modelz    , mate  , carele, ds_constitutive, sddyna,&
+                  ds_measure, fonact, iterat, valinc         , solalg,&
+                  comref    , meelem, veelem, optioz         , ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -37,10 +36,11 @@ implicit none
     character(len=*) :: modelz
     character(len=*) :: mate
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: compor, carcri, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: carele
     integer :: iterat, ldccvg
     character(len=19) :: sddyna
-    character(len=24) :: comref, codere
+    character(len=24) :: comref
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
@@ -58,10 +58,9 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  ITERAT : NUMERO D'ITERATION
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -71,7 +70,6 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORS
-! OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
 !
 ! ----------------------------------------------------------------------
 !
@@ -87,7 +85,6 @@ implicit none
     modele = modelz
     ldccvg = 0
     optrig = optioz
-    codere = '&&OP0070.CODERE'
 !
 ! --- VECT_ELEM ET MATR_ELEM
 !
@@ -112,9 +109,9 @@ implicit none
 ! --- CALCUL DES MATR_ELEM DE RIGIDITE
 !
     call merimo(base, modele, carele, mate, comref,&
-                compor, carcri, iterat+1, fonact, sddyna,&
+                ds_constitutive, iterat+1, fonact, sddyna,&
                 valinc, solalg, merigi, vefint, optrig,&
-                tabret, codere)
+                tabret)
 !
 ! - End timer
 !

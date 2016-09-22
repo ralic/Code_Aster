@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,19 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merimp(model    , cara_elem, mate  , varc_refe, compor,&
-                      carcri   , acti_func, iterat, sddyna   , hval_incr, &
-                      hval_algo, caco3d   , mxchin, nbin     , lpain    , &
-                      lchin)
+    subroutine merimp(model    , cara_elem, mate  , varc_refe, ds_constitutive,&
+                      acti_func, iterat   , sddyna, hval_incr, hval_algo      ,&
+                      caco3d   , mxchin   , nbin  , lpain    , lchin)
+        use NonLin_Datastructure_type
         integer, intent(in) :: iterat
         character(len=*), intent(in) :: mate
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24), intent(in) :: varc_refe
         integer, intent(in) :: acti_func(*)
-        character(len=24), intent(in) :: carcri
         character(len=24), intent(in) :: caco3d
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)

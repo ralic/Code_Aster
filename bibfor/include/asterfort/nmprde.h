@@ -18,13 +18,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmprde(modele, numedd, numfix  , mate       , carele,&
-                      comref, compor, lischa  , ds_algopara, solveu,&
-                      fonact, carcri, ds_print, ds_measure ,&
-                      sddisc, numins, valinc  , solalg     , matass,&
-                      maprec, ds_contact, sddyna     , meelem,&
-                      measse, veelem, veasse  , ldccvg     , faccvg,&
-                      rescvg, codere)
+    subroutine nmprde(modele, numedd         , numfix    , mate       , carele    ,&
+                      comref, ds_constitutive, lischa    , ds_algopara, solveu    ,&
+                      fonact, ds_print       , ds_measure, sddisc     , numins    ,&
+                      valinc, solalg         , matass    , maprec     , ds_contact,&
+                      sddyna, meelem         , measse    , veelem     , veasse    ,&
+                      ldccvg, faccvg         , rescvg)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -32,12 +31,11 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         integer :: fonact(*)
-        character(len=24) :: carcri
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
@@ -55,6 +53,5 @@ interface
         integer :: ldccvg
         integer :: faccvg
         integer :: rescvg
-        character(len=24) :: codere
     end subroutine nmprde
 end interface

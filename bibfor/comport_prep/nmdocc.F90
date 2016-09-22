@@ -42,7 +42,7 @@ implicit none
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: chmate
     aster_logical, intent(in) :: l_etat_init
-    character(len=19), intent(out) :: compor
+    character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ implicit none
 ! In  model       : name of model
 ! In  chmate      : name of material field
 ! In  l_etat_init : .true. if initial state is defined
-! Out compor      : name of <CARTE> COMPOR
+! In  compor      : name of <CARTE> COMPOR
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +68,6 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    compor      = '&&NMDOCC.COMPOR'
     comp_elas   = '&&NMDOCC.COMP_ELAS'
     full_elem_s = '&&NMDOCC.FULL_ELEM'
     compor_info = '&&NMDOCC.INFO'

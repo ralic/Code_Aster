@@ -1,8 +1,8 @@
-subroutine nmcere(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, ds_measure,&
-                  ds_contact, iterat, sdnume, valinc, solalg,&
-                  veelem, veasse, offset, rho,&
-                  eta, residu, ldccvg, matass)
+subroutine nmcere(modele         , numedd, mate  , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                  iterat         , sdnume, valinc, solalg    , veelem    ,&
+                  veasse         , offset, rho   , eta       , residu    ,&
+                  ldccvg         , matass)
 !
 use NonLin_Datastructure_type
 !
@@ -54,29 +54,28 @@ implicit none
     integer :: iterat, ldccvg
     real(kind=8) :: eta, rho, offset, residu
     character(len=19) :: lischa, sdnume, matass
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: modele, numedd, mate, carele, comref
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! CHOIX DU ETA DE PILOTAGE PAR CALCUL DU RESIDU
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDNUME : SD NUMEROTATION
@@ -98,7 +97,7 @@ implicit none
 ! OUT RESIDU : RESIDU OPTIMAL SI L'ON A CHOISI LE RESIDU
 ! IN  MATASS : SD MATRICE ASSEMBLEE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer, parameter :: zvalin = 28
@@ -107,7 +106,6 @@ implicit none
     integer :: neq, nmax
     character(len=19) :: vefint, vediri, vebudi
     character(len=19) :: cnfint, cndiri, cnfext, cnbudi
-    character(len=24) :: codere
     character(len=19) :: valint(zvalin)
     character(len=19) :: solalt(zsolal)
     character(len=19) :: depdet, depdel, deppr1, deppr2
@@ -123,7 +121,7 @@ implicit none
     real(kind=8), pointer :: du0(:) => null()
     real(kind=8), pointer :: du1(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
@@ -138,7 +136,6 @@ implicit none
     ddep = '&&CNCETA.CHP0'
     depdet = '&&CNCETA.CHP1'
     depplt = '&&CNCETA.CHP2'
-    codere = '&&NMCETA.CODRE1'
     ldccvg = -1
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
     call nmchai('VALINC', 'LONMAX', nmax)
@@ -169,10 +166,8 @@ implicit none
     call jeveuo(deppr2(1:19)//'.VALE', 'L', vr=du1)
     call jeveuo(ddep(1:19) //'.VALE', 'E', vr=ddepl)
     call r8inir(neq, 0.d0, ddepl, 1)
-    call daxpy(neq, rho, du0, 1, ddepl,&
-               1)
-    call daxpy(neq, eta-offset, du1, 1, ddepl,&
-               1)
+    call daxpy(neq, rho, du0, 1, ddepl, 1)
+    call daxpy(neq, eta-offset, du1, 1, ddepl, 1)
 !
 ! --- MISE A JOUR DE L'INCREMENT DE DEPLACEMENT DEPUIS LE DEBUT
 ! --- DU PAS DE TEMPS DEPDET = DEPDEL+DDEP
@@ -201,9 +196,9 @@ implicit none
 !
 ! --- REACTUALISATION DES FORCES INTERIEURES
 !
-    call nmfint(modele, mate  , carele, comref, compor,&
-                carcri, fonact, iterat, k19bla, ds_measure,&
-                valint, solalt, ldccvg, codere, vefint)
+    call nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                fonact, iterat, k19bla, ds_measure, valint         ,&
+                solalt, ldccvg, vefint)
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !

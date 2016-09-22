@@ -1,10 +1,10 @@
-subroutine nmprta(modele  , numedd, numfix  , mate       , carele,&
-                  comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, ds_measure , ds_algorom,&
-                  sddisc  , numins, valinc  , solalg     , matass,&
-                  maprec  , ds_contact , sddyna,&
-                  meelem  , measse, veelem  , veasse     , sdnume,&
-                  ds_inout, ldccvg, faccvg  , rescvg     , codere)
+subroutine nmprta(modele    , numedd         , numfix    , mate       , carele,&
+                  comref    , ds_constitutive, lischa    , ds_algopara, solveu,&
+                  fonact    , ds_print       , ds_measure, ds_algorom , sddisc,&
+                  numins    , valinc         , solalg    , matass     , maprec,&
+                  ds_contact, sddyna         , meelem    , measse     , veelem,&
+                  veasse    , sdnume         , ds_inout  , ldccvg     , faccvg,&
+                  rescvg    )
 !
 use NonLin_Datastructure_type
 use ROM_Datastructure_type
@@ -46,6 +46,7 @@ implicit none
 !
     integer :: fonact(*)
     integer :: numins, faccvg, rescvg, ldccvg
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -53,21 +54,20 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: matass, maprec
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
-    character(len=24) :: modele, mate, carele, comref, compor
+    character(len=24) :: modele, mate, carele, comref
     character(len=24) :: numedd, numfix
-    character(len=24) :: carcri, codere
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION)
 !
 ! PREDICTION PAR METHODE DE NEWTON-EULER
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -75,12 +75,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
 ! IN  LISCHA : LISTE DES CHARGES
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_inout         : datastructure for input/output management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
@@ -115,17 +114,15 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnpilo
     aster_logical :: lstat, limpl, leltc
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -161,12 +158,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(modele     , mate    , carele, compor, carcri,&
+    call nmprma(modele     , mate    , carele, ds_constitutive,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
                 comref     , ds_print, ds_measure, sddisc,&
                 sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
-                maprec     , matass  , codere, faccvg, ldccvg)
+                maprec     , matass  , faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -175,27 +172,25 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
-                carele  , compor      , lischa, numins, ds_measure,&
-                sddisc  , fonact      , comref,&
-                ds_inout, valinc      , solalg, veelem, measse,&
-                veasse  , sddyna)
+    call nmchar('VARI', 'PREDICTION'   , modele, numedd  , mate      ,&
+                carele, ds_constitutive, lischa, numins  , ds_measure,&
+                sddisc, fonact         , comref, ds_inout, valinc    ,&
+                solalg, veelem         , measse, veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
     if (leltc) then
-        call nmfocc('PREDICTION', modele, mate, numedd, fonact,&
-                    ds_contact, ds_measure, solalg,&
-                    valinc, veelem, veasse)
+        call nmfocc('PREDICTION', modele    , mate  , numedd, fonact,&
+                    ds_contact  , ds_measure, solalg, valinc, veelem,&
+                    veasse)
     endif
 !
 ! --- CALCUL DU SECOND MEMBRE
 !
-    call nmassp(modele, numedd, mate  , carele, comref,&
-                compor, lischa, carcri, fonact, ds_measure,&
-                ds_contact, sddyna, valinc, solalg, veelem,&
-                veasse, ldccvg, codere, cnpilo,&
-                cndonn, sdnume, matass)
+    call nmassp(modele         , numedd, mate  , carele    , comref    ,&
+                ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                sddyna         , valinc, solalg, veelem    , veasse    ,&
+                ldccvg         , cnpilo, cndonn, sdnume    , matass)
 !
 ! --- INCREMENT DE DEPLACEMENT NUL EN PREDICTION
 !

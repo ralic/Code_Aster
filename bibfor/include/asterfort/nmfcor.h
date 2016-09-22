@@ -20,24 +20,23 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmfcor(modele, numedd, mate  , carele     , comref  ,&
-                      compor, lischa, fonact, ds_algopara, carcri  ,&
-                      numins, iterat, ds_measure, sddisc  ,&
-                      sddyna, sdnume, sderro, ds_contact , ds_inout,&
-                      valinc, solalg, veelem, veasse     , meelem  ,&
-                      measse, matass, lerrit)
+    subroutine nmfcor(modele         , numedd    , mate    , carele     , comref,&
+                      ds_constitutive, lischa    , fonact  , ds_algopara, numins,&
+                      iterat         , ds_measure, sddisc  , sddyna     , sdnume,&
+                      sderro         , ds_contact, ds_inout, valinc     , solalg,&
+                      veelem         , veasse    , meelem  , measse     , matass,&
+                      lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         integer :: fonact(*)
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_InOut), intent(in) :: ds_inout
-        character(len=24) :: carcri
         integer :: numins
         integer :: iterat
         type(NL_DS_Measure), intent(inout) :: ds_measure

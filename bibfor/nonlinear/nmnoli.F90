@@ -1,6 +1,6 @@
-subroutine nmnoli(sddisc, sderro, carcri    , ds_print , sdcrit  ,&
-                  fonact, sddyna, sdpost    , modele   , mate    ,&
-                  carele, sdpilo, ds_measure, ds_energy, ds_inout,&
+subroutine nmnoli(sddisc, sderro, ds_constitutive, ds_print , sdcrit  ,&
+                  fonact, sddyna, sdpost         , modele   , mate    ,&
+                  carele, sdpilo, ds_measure     , ds_energy, ds_inout,&
                   sdcriq)
 !
 use NonLin_Datastructure_type
@@ -36,8 +36,9 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Energy), intent(in) :: ds_energy
-    character(len=24) :: sderro, carcri
+    character(len=24) :: sderro
     character(len=24) :: modele, mate, carele
     character(len=24) :: sdcriq
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -56,6 +57,7 @@ implicit none
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_print         : datastructure for printing parameters
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -69,7 +71,6 @@ implicit none
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -124,10 +125,10 @@ implicit none
 !
     if (.not.lreuse) then
         call utmess('I', 'ARCHIVAGE_4')
-        call nmarch(numins    , modele  , mate  , carele, fonact   ,&
-                    carcri    , ds_print, sddisc, sdpost, sdcrit   ,&
-                    ds_measure, sderro  , sddyna, sdpilo, ds_energy,&
-                    ds_inout  , sdcriq  )
+        call nmarch(numins         , modele  , mate  , carele, fonact   ,&
+                    ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
+                    ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
+                    ds_inout       , sdcriq  )
     endif
 !
 end subroutine

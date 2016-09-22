@@ -18,18 +18,16 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine ndxprm(modelz     , mate  , carele, compor, carcri,&
-                      ds_algopara, lischa, numedd, numfix, solveu,&
-                      comref     , sddisc, sddyna, ds_measure,&
-                      numins     , fonact, valinc, solalg, veelem,&
-                      meelem     , measse, maprec, matass, codere,&
-                      faccvg     , ldccvg)
+    subroutine ndxprm(modelz, mate  , carele    , ds_constitutive, ds_algopara,&
+                      lischa, numedd, numfix    , solveu         , comref     ,&
+                      sddisc, sddyna, ds_measure, numins         , fonact     ,&
+                      valinc, solalg, veelem    , meelem         , measse     ,&
+                      maprec, matass, faccvg    , ldccvg)
         use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: lischa
         character(len=24) :: numedd
@@ -48,7 +46,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: maprec
         character(len=19) :: matass
-        character(len=24) :: codere
         integer :: faccvg
         integer :: ldccvg
     end subroutine ndxprm

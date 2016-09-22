@@ -1,7 +1,7 @@
 subroutine nmflam(option, modele, numedd, numfix     , carele,&
-                  compor, numins, mate       , comref,&
+                  ds_constitutive, numins, mate       , comref,&
                   lischa, ds_contact, ds_algopara, fonact,&
-                  carcri, ds_measure, sddisc, sddyna,&
+                  ds_measure, sddisc, sddyna,&
                   sdpost, valinc, solalg, meelem     , measse,&
                   veelem, sderro)
 !
@@ -55,22 +55,23 @@ implicit none
     character(len=19) :: meelem(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
-    character(len=24) :: modele, numedd, numfix, carele, compor
+    character(len=24) :: modele, numedd, numfix, carele
     character(len=19) :: veelem(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: mate
-    character(len=24) :: carcri, comref
+    character(len=24) :: comref
     integer :: fonact(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! CALCUL DE MODES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  OPTION : TYPE DE CALCUL
 !              'FLAMBSTA' MODES DE FLAMBEMENT EN STATIQUE
@@ -82,14 +83,13 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -99,7 +99,7 @@ implicit none
 ! IN  VEELEM : VECTEUR ELEMENTAIRE (POUR NMFLMA)
 ! IN  SDERRO : SD ERREUR
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: linsta
     integer :: nfreq, nfreqc
@@ -116,7 +116,7 @@ implicit none
     character(len=19) :: champ2, vecmo2
     character(len=24) :: k24bid, ddlexc, ddlsta
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -133,9 +133,9 @@ implicit none
 !
 ! --- RECUPERATION DES OPTIONS
 !
-    call nmflal(option, compor, sdpost, mod45, defo,&
-                nfreq, cdsp, typmat, optmod, bande,&
-                nddle, ddlexc, nsta, ddlsta, modrig)
+    call nmflal(option, ds_constitutive, sdpost, mod45 , defo  ,&
+                nfreq , cdsp           , typmat, optmod, bande ,&
+                nddle , ddlexc         , nsta  , ddlsta, modrig)
 !
 ! --- CALCUL DE LA MATRICE TANGENTE ASSEMBLEE ET DE LA MATRICE GEOM.
 !
@@ -143,7 +143,7 @@ implicit none
                 mate  , carele, sddisc, sddyna     , fonact,&
                 numins, valinc, solalg, lischa     , comref,&
                 ds_contact, numedd     , numfix,&
-                compor, carcri, ds_measure, meelem,&
+                ds_constitutive, ds_measure, meelem,&
                 measse, veelem, nddle , ddlexc     , modrig,&
                 ldccvg, matas2, matgeo)
     ASSERT(ldccvg.eq.0)

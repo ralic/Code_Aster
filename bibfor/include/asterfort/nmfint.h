@@ -16,16 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmfint(modele, mate  , carele, comref, compor    ,&
-                      carcri, fonact, iterat, sddyna, ds_measure,&
-                      valinc, solalg, ldccvg, codere, vefint)
+    subroutine nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                      fonact, iterat, sddyna, ds_measure, valinc         ,&
+                      solalg, ldccvg, vefint)
         use NonLin_Datastructure_type        
         character(len=24) :: modele
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         integer :: fonact(*)
         integer :: iterat
         character(len=19) :: sddyna
@@ -33,7 +32,6 @@ interface
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         integer :: ldccvg
-        character(len=24) :: codere
         character(len=19) :: vefint
     end subroutine nmfint
 end interface

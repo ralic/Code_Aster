@@ -1,10 +1,9 @@
-subroutine nmrepl(modele , numedd, mate       , carele, comref,&
-                  compor , lischa, ds_algopara, carcri, fonact,&
-                  iterat , ds_measure, sdpilo     , sdnume, sddyna,&
-                  ds_contact, deltat     , valinc, solalg,&
-                  veelem , veasse, sddisc, etan  ,&
-                  ds_conv, eta   , offset     , ldccvg, pilcvg,&
-                  matass )
+subroutine nmrepl(modele         , numedd, mate       , carele, comref    ,&
+                  ds_constitutive, lischa, ds_algopara, fonact, iterat    ,&
+                  ds_measure     , sdpilo, sdnume     , sddyna, ds_contact,&
+                  deltat         , valinc, solalg     , veelem, veasse    ,&
+                  sddisc         , etan  , ds_conv    , eta   , offset    ,&
+                  ldccvg         , pilcvg, matass )
 !
 use NonLin_Datastructure_type
 !
@@ -52,31 +51,30 @@ implicit none
     real(kind=8) :: deltat, eta, etan, offset
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: lischa, sddyna, sdnume, sdpilo, sddisc, matass
-    character(len=24) :: carcri
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
+    character(len=24) :: modele, numedd, mate, carele, comref
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
     integer :: pilcvg, ldccvg
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! CHOIX DU ETA DE PILOTAGE AVEC RECHERCHE LINEAIRE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  SDPILO : SD PILOTAGE
@@ -108,7 +106,7 @@ implicit none
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 ! IN  MATASS : SD MATRICE ASSEMBLEE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: zveass, zsolal, zvalin
     parameter    (zveass=32,zsolal=17,zvalin=28)
@@ -132,7 +130,7 @@ implicit none
     integer :: ifm, niv
     character(len=24), pointer :: pltk(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
@@ -183,11 +181,10 @@ implicit none
 ! --- FONCTIONS DE PILOTAGE LINEAIRES : RECHERCHE LINEAIRE STANDARD
 !
     if (typilo .eq. 'DDL_IMPO') then
-        call nmrelp(modele , numedd, mate  , carele     , comref,&
-                    compor , lischa, carcri, fonact     , iterat,&
-                    ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
-                    valinc , solalg, veelem, veasse     , &
-                    ds_conv, ldccvg)
+        call nmrelp(modele         , numedd, mate       , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
+                    sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
+                    solalg         , veelem, veasse     , ds_conv   , ldccvg)
         goto 999
     endif
 !
@@ -242,9 +239,9 @@ implicit none
 !
 ! ----- RESOLUTION DE L'EQUATION DE PILOTAGE: NVELLE DIRECT. DE DESCENTE
 !
-        call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                    modele, mate, compor, ds_contact, valinc,&
-                    nbatte, numedd, nbeffe, proeta, pilcvg,&
+        call nmpilo(sdpilo, deltat, rho            , solalg    , veasse,&
+                    modele, mate  , ds_constitutive, ds_contact, valinc,&
+                    nbatte, numedd, nbeffe         , proeta    , pilcvg,&
                     carele)
         if (pilcvg .eq. 1) goto 999
 !
@@ -259,12 +256,12 @@ implicit none
 !
         call nmchso(veasse, 'VEASSE', 'CNDIRI', cndirs(act), veasst)
         call nmchso(veasse, 'VEASSE', 'CNFINT', cnfins(act), veasst)
-        call nmceta(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, sdpilo, iterat, sdnume, valint(1, act),&
-                    solalg, veelem, veasst, sddisc,&
-                    nbeffe, irecli, proeta, offset, rho,&
-                    eta, ldccvg, pilcvg, residu, matass)
+        call nmceta(modele         , numedd, mate  , carele        , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure    , ds_contact,&
+                    sdpilo         , iterat, sdnume, valint(1, act), solalg    ,&
+                    veelem         , veasst, sddisc, nbeffe        , irecli    ,&
+                    proeta         , offset, rho   , eta           , ldccvg    ,&
+                    pilcvg         , residu, matass)
 !
 ! ----- PB CVG: S'IL EXISTE DEJA UN RHO OPTIMAL, ON LE CONSERVE
 ! ----- ET ON SORT

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                      modele, mate, compor, ds_contact, valinc,&
-                      nbatte, numedd, nbeffe, eta, pilcvg,&
+    subroutine nmpilo(sdpilo, deltat, rho            , solalg    , veasse,&
+                      modele, mate  , ds_constitutive, ds_contact, valinc,&
+                      nbatte, numedd, nbeffe         , eta       , pilcvg,&
                       carele)
         use NonLin_Datastructure_type
         integer :: nbatte
@@ -29,7 +29,7 @@ interface
         character(len=19) :: veasse(*)
         character(len=24) :: modele
         character(len=24) :: mate
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: valinc(*)
         character(len=24) :: numedd

@@ -1,4 +1,4 @@
-subroutine nmxvec(modelz  , mate  , carele, compor, ds_measure,&
+subroutine nmxvec(modelz  , mate  , carele, ds_constitutive, ds_measure,&
                   sddisc  , sddyna, numins, valinc, solalg,&
                   lischa  , comref, numedd,&
                   ds_inout, veelem, veasse, measse, nbvect,&
@@ -40,8 +40,9 @@ implicit none
     character(len=16) :: loptve(20)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: compor, numedd
+    character(len=24) :: numedd
     integer :: numins
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, sddyna, lischa
@@ -62,7 +63,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -121,7 +122,7 @@ implicit none
         if (lcalc) then
             call nmchex(veelem, 'VEELEM', typvec, vecele)
             call nmcalv(typvec, modele, lischa, mate  , carele,&
-                        compor, numedd, comref, ds_measure, instam,&
+                        ds_constitutive, numedd, comref, ds_measure, instam,&
                         instap, valinc, solalg, sddyna, option,&
                         vecele)
         endif
@@ -131,8 +132,8 @@ implicit none
         if (lasse) then
             call nmchex(veasse  , 'VEASSE', typvec, vecass)
             call nmassv(typvec  , modelz, lischa, mate, carele,&
-                        compor  , numedd, instam, instap, &
-                        sddyna  , ds_measure, valinc, comref,&
+                        ds_constitutive, numedd, instam, instap, &
+                        sddyna         , ds_measure, valinc, comref,&
                         ds_inout, measse, vecele, vecass)
         endif
     end do

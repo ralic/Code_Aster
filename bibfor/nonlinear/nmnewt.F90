@@ -1,11 +1,11 @@
-subroutine nmnewt(noma       , modele  , numins , numedd    , numfix    ,&
-                  mate       , carele  , comref , compor    , lischa    ,&
-                  ds_algopara, fonact  , carcri , ds_measure, sderro    ,&
-                  ds_print   , sdnume  , sddyna , sddisc    , sdcrit    ,&
-                  sdsuiv     , sdpilo  , ds_conv, solveu    , maprec    ,&
-                  matass     , ds_inout, valinc , solalg    , meelem    ,&
-                  measse     , veelem  , veasse , ds_contact, ds_algorom,&
-                  eta        , nbiter  )
+subroutine nmnewt(mesh       , model    , numins    , numedd         , numfix   ,&
+                  mate       , cara_elem, comref    , ds_constitutive, list_load,&
+                  ds_algopara, fonact   , ds_measure, sderro         , ds_print ,&
+                  sdnume     , sddyna   , sddisc    , sdcrit         , sdsuiv   ,&
+                  sdpilo     , ds_conv  , solveu    , maprec         , matass   ,&
+                  ds_inout   , valinc   , solalg    , meelem         , measse   ,&
+                  veelem     , veasse   , ds_contact, ds_algorom     , eta      ,&
+                  nbiter  )
 !
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
@@ -65,69 +65,68 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
+    character(len=8), intent(in) :: mesh
+    character(len=24), intent(in) :: model
     integer :: numins
-    integer :: fonact(*)
+    character(len=24) :: numedd
+    character(len=24) :: numfix
+    character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: cara_elem
+    character(len=24) :: comref
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    character(len=19), intent(in) :: list_load
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri
+    integer :: fonact(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: sderro, sdsuiv
-    character(len=19) :: sdnume, sddyna, sddisc, sdcrit
-    character(len=19) :: sdpilo
-    character(len=19) :: valinc(*), solalg(*)
-    character(len=19) :: meelem(*), veelem(*)
-    character(len=19) :: measse(*), veasse(*)
+    character(len=24) :: sderro
     type(NL_DS_Print), intent(inout) :: ds_print
+    character(len=19) :: sdnume
+    character(len=19) :: sddyna
+    character(len=19) :: sddisc
+    character(len=19) :: sdcrit
+    character(len=24) :: sdsuiv
+    character(len=19) :: sdpilo
     type(NL_DS_Conv), intent(inout) :: ds_conv
+    character(len=19) :: solveu
+    character(len=19) :: maprec
+    character(len=19) :: matass
     type(NL_DS_InOut), intent(in) :: ds_inout
-    character(len=19) :: lischa
-    character(len=19) :: solveu, maprec, matass
-    character(len=24) :: modele, numedd, numfix
-    character(len=24) :: comref, compor
-    character(len=24) :: mate, carele
+    character(len=19) :: valinc(*)
+    character(len=19) :: solalg(*)
+    character(len=19) :: meelem(*)
+    character(len=19) :: measse(*)
+    character(len=19) :: veelem(*)
+    character(len=19) :: veasse(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     real(kind=8) :: eta
     integer :: nbiter
-    character(len=8) :: noma
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! OPERATEUR NON-LINEAIRE MECANIQUE
+! MECA_NON_LINE - Algorithm
 !
-! ALGORITHME DE NEWTON (STATIQUE ET DYNAMIQUE)
+! Newton
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-! IN  MODELE : MODELE
-! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
-! IN  NUMFIX : NUME_DDL (FIXE AU COURS DU CALCUL)
-! IN  MATE   : CHAMP MATERIAU
-! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
-! IN  LISCHA : LISTE DES CHARGES
-! IN  SOLVEU : SOLVEUR
-! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
-! IN  SDDISC : SD DISC_INST
-! IO  ds_measure       : datastructure for measure and statistics management
-! IN  SDERRO : GESTION DES ERREURS
-! IO  ds_print         : datastructure for printing parameters
+! In  mesh             : name of mesh
+! In  model            : name of model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  list_load        : name of datastructure for list of loads
+! IO  ds_algopara      : datastructure for algorithm parameters
+! IO  ds_constitutive  : datastructure for constitutive laws management
+! In  solver           : name of datastructure for solver
+! In  sd_suiv          : datastructure for dof monitoring parameters
+! In  sd_obsv          : datastructure for observation parameters
+! IO  ds_inout         : datastructure for input/output management
+! IO  ds_energy        : datastructure for energy management
 ! IO  ds_conv          : datastructure for convergence management
-! In  ds_inout         : datastructure for input/output management
-! IN  NUMINS : NUMERO D'INSTANT
-! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
-! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  MEELEM : VARIABLE CHAPEAU POUR NOM DES MATR_ELEM
-! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
-! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
-! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IO  ds_contact       : datastructure for contact management
-! IN  SDDYNA : SD DYNAMIQUE
-! IN  MATASS : NOM DE LA MATRICE DU PREMIER MEMBRE ASSEMBLEE
-! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
-! IN  SDNUME : SD NUMEROTATION
+! IO  ds_measure       : datastructure for measure and statistics management
+! IO  ds_algorom       : datastructure for ROM parameters
+! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_algorom       : datastructure for ROM parameters
 ! I/O ETA    : PARAMETRE DE PILOTAGE
 ! OUT NBITER : NOMBRE D'ITERATIONS DE NEWTON
@@ -137,7 +136,7 @@ implicit none
 !     2 - NCVG -> LE PAS DE TEMPS N'A PAS CONVERGE
 !     3 - STOP -> ERREUR FATALE - ARRET DU CALCUL
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: niveau, iterat
     aster_logical :: lerrit
@@ -145,7 +144,7 @@ implicit none
     character(len=4) :: etnewt, etfixe
     real(kind=8) :: time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     iterat = 0
     niveau = 0
@@ -174,18 +173,17 @@ implicit none
 !
 ! --- INITIALISATIONS POUR LE NOUVEAU PAS DE TEMPS
 !
-    call nmnpas(modele    , noma  , mate  , carele    , fonact    ,&
+    call nmnpas(model     , mesh  , mate  , cara_elem , fonact    ,&
                 ds_print  , sddisc, sdsuiv, sddyna    , sdnume    ,&
                 ds_measure, numedd, numins, ds_contact, ds_algorom,&
-                valinc    , solalg, solveu, ds_conv   , lischa    )
+                valinc    , solalg, solveu, ds_conv   , list_load )
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
-    call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
-                carele  , compor, lischa, numins, ds_measure,&
-                sddisc  , fonact, comref,&
-                ds_inout, valinc, solalg, veelem, measse,&
-                veasse  , sddyna)
+    call nmchar('FIXE'   , ' '            , model    , numedd  , mate      ,&
+                cara_elem, ds_constitutive, list_load, numins  , ds_measure,&
+                sddisc   , fonact         , comref   , ds_inout, valinc    ,&
+                solalg   , veelem         , measse   , veasse  , sddyna)
 !
 ! ======================================================================
 !     BOUCLE POINTS FIXES
@@ -198,14 +196,14 @@ implicit none
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
-    call nmible(niveau, modele, noma      , ds_contact,&
+    call nmible(niveau, model     , mesh    , ds_contact,&
                 fonact, ds_measure, ds_print)
 !
 ! --- CREATION OBJETS POUR CONTACT CONTINU
 !
-    call nmnble(numins, modele, noma  , numedd, ds_measure,&
-                sddyna, sddisc, fonact, ds_contact,&
-                valinc, solalg)
+    call nmnble(numins, model , mesh  , numedd    , ds_measure,&
+                sddyna, sddisc, fonact, ds_contact, valinc    ,&
+                solalg)
 !
 ! ======================================================================
 !     PREDICTION
@@ -218,13 +216,12 @@ implicit none
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call nmpred(modele  , numedd, numfix  , mate       , carele,&
-                comref  , compor, lischa  , ds_algopara, solveu,&
-                fonact  , carcri, ds_print, ds_measure , ds_algorom,&
-                sddisc  , sdnume, sderro  , numins     , valinc,&
-                solalg  , matass, maprec  , ds_contact , sddyna,&
-                ds_inout, meelem, measse  , veelem     , veasse,&
-                lerrit)
+    call nmpred(model , numedd         , numfix    , mate       , cara_elem,&
+                comref, ds_constitutive, list_load , ds_algopara, solveu   ,&
+                fonact, ds_print       , ds_measure, ds_algorom , sddisc   ,&
+                sdnume, sderro         , numins    , valinc     , solalg   ,&
+                matass, maprec         , ds_contact, sddyna     , ds_inout ,&
+                meelem, measse         , veelem    , veasse     , lerrit)
 !
     if (lerrit) goto 315
 !
@@ -244,36 +241,36 @@ implicit none
 ! --- EN CORRIGEANT LA (LES) DIRECTIONS DE DESCENTE
 ! --- SI CONTACT OU PILOTAGE OU RECHERCHE LINEAIRE
 !
-    call nmdepl(modele, numedd, mate      , carele , comref     ,&
-                compor, lischa, fonact    , ds_measure , ds_algopara,&
-                carcri, noma  , numins    , iterat , solveu     ,&
-                matass, sddisc, sddyna    , sdnume , sdpilo     ,&
-                sderro, ds_contact, valinc , solalg     ,&
-                veelem, veasse, eta       , ds_conv, lerrit)
+    call nmdepl(model          , numedd   , mate  , cara_elem , comref     ,&
+                ds_constitutive, list_load, fonact, ds_measure, ds_algopara,&
+                mesh           , numins   , iterat, solveu    , matass     ,&
+                sddisc         , sddyna   , sdnume, sdpilo    , sderro     ,&
+                ds_contact     , valinc   , solalg, veelem    , veasse     ,&
+                eta            , ds_conv  , lerrit)
 !
     if (lerrit) goto 315
 !
 ! --- CALCUL DES FORCES APRES CORRECTION
 !
-    call nmfcor(modele, numedd, mate  , carele     , comref  ,&
-                compor, lischa, fonact, ds_algopara, carcri  ,&
-                numins, iterat, ds_measure, sddisc  ,&
-                sddyna, sdnume, sderro, ds_contact , ds_inout,&
-                valinc, solalg, veelem, veasse     , meelem  ,&
-                measse, matass, lerrit)
+    call nmfcor(model          , numedd    , mate    , cara_elem  , comref,&
+                ds_constitutive, list_load , fonact  , ds_algopara, numins,&
+                iterat         , ds_measure, sddisc  , sddyna     , sdnume,&
+                sderro         , ds_contact, ds_inout, valinc     , solalg,&
+                veelem         , veasse    , meelem  , measse     , matass,&
+                lerrit)
 !
     if (lerrit) goto 315
 !
 ! - DOF monitoring
 !
-    call nmsuiv(noma  , sdsuiv, ds_print, carele, modele,&
-                mate  , compor, valinc  , comref, sddisc,&
+    call nmsuiv(mesh  , sdsuiv         , ds_print, cara_elem, model ,&
+                mate  , ds_constitutive, valinc  , comref   , sddisc,&
                 numins)
 !
 ! --- ESTIMATION DE LA CONVERGENCE
 !
 315 continue
-    call nmconv(noma    , modele, mate   , numedd  , sdnume     ,&
+    call nmconv(mesh    , model, mate   , numedd  , sdnume     ,&
                 fonact  , sddyna, ds_conv, ds_print, ds_measure,&
                 sddisc  , sdcrit , sderro  , ds_algopara, ds_algorom,&
                 ds_inout, comref, matass , solveu  , numins     ,&
@@ -282,7 +279,7 @@ implicit none
 !
 ! --- MISE A JOUR DES EFFORTS DE CONTACT
 !
-    call nmfcon(modele, numedd, mate  , fonact, ds_contact,&
+    call nmfcon(model, numedd, mate  , fonact, ds_contact,&
                 ds_measure, valinc, solalg,&
                 veelem, veasse)
 !
@@ -306,13 +303,12 @@ implicit none
 !
 320 continue
 !
-    call nmdesc(modele, numedd  , numfix, mate      , carele     ,&
-                comref, compor  , lischa, ds_contact, ds_algopara,&
-                solveu, carcri  , fonact, numins    , iterat     ,&
-                sddisc, ds_print, ds_measure, ds_algorom, sddyna     ,&
-                sdnume, sderro  , matass, maprec    , valinc     ,&
-                solalg, meelem  , measse, veasse    , veelem     ,&
-                lerrit)
+    call nmdesc(model   , numedd         , numfix    , mate      , cara_elem  ,&
+                comref  , ds_constitutive, list_load , ds_contact, ds_algopara,&
+                solveu  , fonact         , numins    , iterat    , sddisc     ,&
+                ds_print, ds_measure     , ds_algorom, sddyna    , sdnume     ,&
+                sderro  , matass         , maprec    , valinc    , solalg     ,&
+                meelem  , measse         , veasse    , veelem    , lerrit)
 !
     if (lerrit) goto 315
 !
@@ -374,7 +370,7 @@ implicit none
 !
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
 !
-    call nmtble(niveau, modele, noma    , mate  , ds_contact, &
+    call nmtble(niveau, model, mesh    , mate  , ds_contact, &
                 fonact, ds_print, ds_measure, sddyna,&
                 sderro, ds_conv , sddisc, numins, valinc,&
                 solalg)

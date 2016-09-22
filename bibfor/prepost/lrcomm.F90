@@ -83,6 +83,8 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
     list_load      = '&&LRCOMM.LISCHA'
     list_load_resu = '&&LRCOMM.LISCHA'
+    compor         = '&&LRCOMM.COMPOR'
+    carcri         = '&&LRCOMM.CARCRI'
 !
     call rsorac(resu, 'LONUTI', ibid, rbid, k8bid,&
                 cbid, epsi, crit, tord, 1,&

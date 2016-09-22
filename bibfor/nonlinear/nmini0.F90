@@ -1,7 +1,7 @@
 subroutine nmini0(list_func_acti, eta      , nume_inst  , matass         , zmeelm    ,&
                   zmeass        , zveelm   , zveass     , zsolal         , zvalin    ,&
                   ds_print      , ds_conv  , ds_algopara, ds_inout       , ds_contact,&
-                  ds_measure    , ds_energy, ds_algorom )
+                  ds_measure    , ds_energy, ds_algorom , ds_constitutive)
 !
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
@@ -20,6 +20,7 @@ implicit none
 #include "asterfort/CreateMeasureDS.h"
 #include "asterfort/CreateEnergyDS.h"
 #include "asterfort/romAlgoNLDSCreate.h"
+#include "asterfort/nonlinDSConstitutiveCreate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +58,7 @@ implicit none
     type(NL_DS_Measure), intent(out) :: ds_measure
     type(NL_DS_Energy), intent(out) :: ds_energy
     type(ROM_DS_AlgoPara), intent(out) :: ds_algorom
+    type(NL_DS_Constitutive), intent(out) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,6 +78,7 @@ implicit none
 ! Out ds_measure       : datastructure for measure and statistics management
 ! Out ds_energy        : datastructure for energy management
 ! Out ds_algorom       : datastructure for ROM parameters
+! Out ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -121,6 +124,10 @@ implicit none
 ! - Create ROM parameters datastructure
 !
     call romAlgoNLDSCreate(ds_algorom)
+!
+! - Create constitutive laws management datastructure
+!
+    call nonlinDSConstitutiveCreate(ds_constitutive)
 !
 ! --- FONCTIONNALITES ACTIVEES               (NMFONC/ISFONC)
 !

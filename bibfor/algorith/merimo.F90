@@ -1,9 +1,10 @@
-subroutine merimo(base, model, cara_elem, mate, varc_refe,&
-                  compor, carcri, iterat, acti_func, sddyna,&
-                  hval_incr, hval_algo, merigi, vefint, optioz,&
-                  tabret, codere)
+subroutine merimo(base           , model , cara_elem, mate  , varc_refe,&
+                  ds_constitutive, iterat, acti_func, sddyna, hval_incr,&
+                  hval_algo      , merigi, vefint   , optioz, tabret)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,7 +27,7 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
 #include "asterfort/redetr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,14 +50,12 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: varc_refe
     integer, intent(in) :: acti_func(*)
-    character(len=24), intent(in) :: carcri
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
     character(len=*), intent(in) :: optioz
-    character(len=24), intent(in) :: codere
     character(len=19), intent(in) :: merigi
     character(len=19), intent(in) :: vefint
     aster_logical, intent(out) :: tabret(0:10)
@@ -69,11 +68,12 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchout, mxchin
-    parameter    (mxchout=9, mxchin=56)
+    parameter    (mxchout=9, mxchin=57)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
@@ -121,10 +121,9 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
 !
 ! - Input fields
 !
-    call merimp(model, cara_elem, mate, varc_refe, compor,&
-                carcri, acti_func, iterat, sddyna, hval_incr,&
-                hval_algo, caco3d, mxchin, nbin, lpain,&
-                lchin)
+    call merimp(model    , cara_elem, mate  , varc_refe, ds_constitutive,&
+                acti_func, iterat   , sddyna, hval_incr, hval_algo      ,&
+                caco3d   , mxchin   , nbin  , lpain    , lchin)
 !
 ! - Output fields
 !
@@ -160,16 +159,13 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
     if (nivdbg .ge. 2) then
         write (ifmdbg,*) '<CALCUL> ... OPTION: ',option
         if (matrix) then
-            write (ifmdbg,*) '<CALCUL> ... CALCUL DES MATR_ELEM '//&
-            ' DE RIGIDITE '
+            write (ifmdbg,*) '<CALCUL> ... CALCUL DES MATR_ELEM DE RIGIDITE '
         endif
         if (vector) then
-            write (ifmdbg,*) '<CALCUL> ... CALCUL DES VECT_ELEM '//&
-            ' DES FORCES INTERNES '
+            write (ifmdbg,*) '<CALCUL> ... CALCUL DES VECT_ELEM DES FORCES INTERNES '
         endif
         if (conext) then
-            write (ifmdbg,*) '<CALCUL> ... CALCUL DES CONTRAINTES '//&
-            ' EXTRAPOLEES POUR IMPLEX '
+            write (ifmdbg,*) '<CALCUL> ... CALCUL DES CONTRAINTES EXTRAPOLEES POUR IMPLEX '
         endif
     endif
 !
@@ -230,7 +226,7 @@ subroutine merimo(base, model, cara_elem, mate, varc_refe,&
     if (codint) then
         nbout = nbout+1
         lpaout(nbout) = 'PCODRET'
-        lchout(nbout) = codere(1:19)
+        lchout(nbout) = ds_constitutive%comp_error(1:19)
         ich_codret = nbout
     endif
     if (conext) then

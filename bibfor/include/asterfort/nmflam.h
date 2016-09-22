@@ -19,9 +19,9 @@
 !
 interface
     subroutine nmflam(option, modele, numedd, numfix     , carele,&
-                      compor, numins, mate       , comref,&
+                      ds_constitutive, numins, mate       , comref,&
                       lischa, ds_contact, ds_algopara, fonact,&
-                      carcri, ds_measure, sddisc, sddyna,&
+                      ds_measure, sddisc, sddyna,&
                       sdpost, valinc, solalg, meelem     , measse,&
                       veelem, sderro)
         use NonLin_Datastructure_type
@@ -30,7 +30,6 @@ interface
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: carele
-        character(len=24) :: compor
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
@@ -38,7 +37,7 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         character(len=19) :: sddyna

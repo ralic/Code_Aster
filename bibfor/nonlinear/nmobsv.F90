@@ -1,5 +1,5 @@
-subroutine nmobsv(meshz     , modelz, sddisc, sd_obsv  , nume_time,&
-                  cara_elemz, matez , compor, varc_refe, valinc   ,&
+subroutine nmobsv(meshz     , modelz, sddisc         , sd_obsv  , nume_time,&
+                  cara_elemz, matez , ds_constitutive, varc_refe, valinc   ,&
                   ds_inout  )
 !
 use NonLin_Datastructure_type
@@ -38,7 +38,7 @@ implicit none
     character(len=*), intent(in) :: cara_elemz
     character(len=*), intent(in) :: matez
     character(len=*), intent(in) :: modelz
-    character(len=19), intent(in) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=*), intent(in) :: varc_refe
     character(len=19), intent(in) :: valinc(*)
     type(NL_DS_InOut), optional, intent(in) :: ds_inout
@@ -58,7 +58,7 @@ implicit none
 ! In  model            : name of model
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of <CARTE> COMPOR
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  varc_refe        : command variable for reference
 ! In  valinc           : hat variable for algorithm fields
 ! In  ds_inout         : datastructure for input/output management
@@ -88,7 +88,7 @@ implicit none
 ! - Make observation 
 !
     call nmobse(meshz     , sd_obsv  , time,&
-                cara_elemz, modelz   , matez    , compor, disp_curr,&
+                cara_elemz, modelz   , matez    , ds_constitutive, disp_curr,&
                 strx_curr , varc_curr, varc_refe)
 !
 ! - Change fields after initial observation

@@ -20,12 +20,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine ndxpre(modele, numedd, numfix  , mate       , carele,&
-                      comref, compor, lischa  , ds_algopara, solveu,&
-                      fonact, carcri, sddisc  , ds_measure,&
-                      numins, valinc, solalg  , matass     , maprec,&
-                      sddyna, sderro, ds_inout, meelem     , measse,&
-                      veelem, veasse, lerrit)
+    subroutine ndxpre(modele  , numedd         , numfix    , mate       , carele,&
+                      comref  , ds_constitutive, lischa    , ds_algopara, solveu,&
+                      fonact  , sddisc         , ds_measure, numins     , valinc,&
+                      solalg  , matass         , maprec    , sddyna     , sderro,&
+                      ds_inout, meelem         , measse    , veelem     , veasse,&
+                      lerrit)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -33,13 +33,12 @@ interface
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         integer :: fonact(*)
-        character(len=24) :: carcri
         character(len=19) :: sddisc
         type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: numins

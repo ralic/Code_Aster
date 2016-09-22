@@ -453,4 +453,25 @@ implicit none
         type(NL_DS_ComporPara), pointer :: v_para(:)
     end type NL_DS_ComporParaPrep
 !
+! - Type: constitutive laws management
+! 
+    type NL_DS_Constitutive
+! ----- Name of field for constitutive laws
+        character(len=24)     :: compor
+! ----- Name of field for criteria of constitutive laws
+        character(len=24)     :: carcri
+! ----- Name of field for constitutive laws - Special crystal
+        character(len=24)     :: mult_comp
+! ----- Name of field for error field from constitutive laws
+        character(len=24)     :: comp_error
+! ----- Flag for De Borst algorithm
+        aster_logical         :: l_deborst
+! ----- Flag for DIS_CHOC
+        aster_logical         :: l_dis_choc
+! ----- Flag for POST_INCR
+        aster_logical         :: l_post_incr
+! ----- Flag for large strains in tangent matrix
+        aster_logical         :: l_matr_geom
+    end type NL_DS_Constitutive
+!
 end module

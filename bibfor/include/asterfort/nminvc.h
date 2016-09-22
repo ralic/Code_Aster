@@ -16,15 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nminvc(modelz, mate  , carele, compor, ds_measure,&
-                      sddisc, sddyna, valinc, solalg, lischa    ,&
-                      comref, numedd, ds_inout,&
-                      veelem, veasse, measse)
+    subroutine nminvc(modelz, mate  , carele  , ds_constitutive, ds_measure,&
+                      sddisc, sddyna, valinc  , solalg         , lischa    ,&
+                      comref, numedd, ds_inout, veelem         , veasse    ,&
+                      measse)
         use NonLin_Datastructure_type
         character(len=*) :: modelz
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc
         character(len=19) :: sddyna

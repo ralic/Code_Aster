@@ -1,7 +1,7 @@
-subroutine nmassv(typvez  , modelz, lischa, mate  , carele,&
-                  compor  , numedd, instam, instap, &
-                  sddyna  , ds_measure, valinc, comref,&
-                  ds_inout, measse, vecelz, vecasz)
+subroutine nmassv(typvez         , modelz, lischa, mate    , carele,&
+                  ds_constitutive, numedd, instam, instap  , sddyna,&
+                  ds_measure     , valinc, comref, ds_inout, measse,&
+                  vecelz         , vecasz)
 !
 use NonLin_Datastructure_type
 !
@@ -53,7 +53,8 @@ implicit none
     character(len=19) :: lischa
     real(kind=8) :: instap, instam
     character(len=19) :: sddyna
-    character(len=24) :: mate, carele, compor, numedd, comref
+    character(len=24) :: mate, carele, numedd, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: measse(*), valinc(*)
     type(NL_DS_InOut), intent(in) :: ds_inout
@@ -72,7 +73,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  NUMEDD : NUME_DDL
 ! IN  INSTAP : INSTANT PLUS
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -251,7 +252,7 @@ implicit none
 ! --- FORCES ISSUES DES VARIABLES DE COMMANDE (PAS DE VECT_ELEM)
 !
     else if (typvec.eq.'CNVCPR') then
-        call nmvcpr(modele, mate  , carele, comref, compor, &
+        call nmvcpr(modele, mate  , carele, comref, ds_constitutive%compor, &
                     valinc, nume_dof_ = numedd, base_ = 'V',&
                     vect_elem_prev_ = '&&VEVCOM',&
                     vect_elem_curr_ = '&&VEVCOP',&

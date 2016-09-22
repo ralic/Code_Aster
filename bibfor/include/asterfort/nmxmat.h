@@ -20,19 +20,18 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmxmat(modelz, mate  , carele, compor     , carcri,&
+    subroutine nmxmat(modelz, mate  , carele, ds_constitutive,&
                       sddisc, sddyna, fonact, numins     , iterat,&
                       valinc, solalg, lischa, comref     , &
                       numedd, numfix, ds_measure, ds_algopara,&
                       nbmatr, ltypma, loptme     , loptma,&
                       lcalme, lassme, lcfint, meelem     , measse,&
-                      veelem, ldccvg, codere, ds_contact_)
+                      veelem, ldccvg, ds_contact_)
         use NonLin_Datastructure_type        
         character(len=*) :: modelz
         character(len=*) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         integer :: fonact(*)
@@ -56,7 +55,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         integer :: ldccvg
-        character(len=24) :: codere
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     end subroutine nmxmat

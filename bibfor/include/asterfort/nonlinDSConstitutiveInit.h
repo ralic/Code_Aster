@@ -15,15 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine cgleco(resu, modele, mate, iord0, compor,incr)
-        integer, intent(in) :: iord0
-        character(len=8), intent(in) :: resu
-        character(len=8), intent(in) :: modele
-        character(len=8), intent(in) :: mate
-        character(len=19), intent(out) :: compor
-        aster_logical, intent(out) :: incr
-    end subroutine cgleco
+    subroutine  nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive)
+        use NonLin_Datastructure_type
+        character(len=24), intent(in) :: model
+        character(len=24), intent(in) :: cara_elem
+        type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
+    end subroutine nonlinDSConstitutiveInit
 end interface

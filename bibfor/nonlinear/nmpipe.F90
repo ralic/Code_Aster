@@ -1,7 +1,7 @@
-subroutine nmpipe(modele, ligrpi, cartyp, careta, mate,&
-                  compor, ds_contact, valinc, depdel, ddepl0,&
-                  ddepl1, tau, nbeffe, eta, pilcvg,&
-                  typpil, carele)
+subroutine nmpipe(modele         , ligrpi    , cartyp, careta, mate  ,&
+                  ds_constitutive, ds_contact, valinc, depdel, ddepl0,&
+                  ddepl1         , tau       , nbeffe, eta   , pilcvg,&
+                  typpil         , carele)
 !
 use NonLin_Datastructure_type
 !
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,26 +52,26 @@ implicit none
     character(len=24) :: typpil
     character(len=19) :: ddepl0, ddepl1
     character(len=19) :: ligrpi, cartyp, careta
-    character(len=24) :: modele, mate, compor, carele
+    character(len=24) :: modele, mate, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: depdel, valinc(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! RESOLUTION DE L'EQUATION DE PILOTAGE PAR PREDICTION ELASTIQUE OU
 ! DEFORMATION
 !
-! ----------------------------------------------------------------------
-!
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  LIGRPI : LIGREL DES MAILLES CONTROLEES PAR LE PILOTAGE
 ! IN  CARTYP : CARTE CONTENANT LE TYPE DE PILOTAGE
 ! IN  MATE   : MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_contact       : datastructure for contact management
 ! IN  DEPDEL : INCREMENT DE DEPLACEMENT
 ! IN  DDEPL0 : VARIATION DE DEPLACEMENT K-1.F0
@@ -87,8 +87,7 @@ implicit none
 !                 1 : PAS DE SOLUTION
 !                 2 : BORNE ATTEINTE -> FIN DU CALCUL
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbout, nbin
     parameter    (nbout=1, nbin=23)
@@ -118,7 +117,7 @@ implicit none
     data ctau            /'&&NMPIPE.CTAU'/
     data a0a1, trav      /'&&NMPIPE.A0A1', '&&NMPIPE.TRAV'/
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
@@ -199,7 +198,7 @@ implicit none
     lpain(2) = 'PMATERC'
     lchin(2) = mate(1:19)
     lpain(3) = 'PCOMPOR'
-    lchin(3) = compor(1:19)
+    lchin(3) = ds_constitutive%compor(1:19)
     lpain(4) = 'PDEPLMR'
     lchin(4) = depmoi
     lpain(5) = 'PCONTMR'

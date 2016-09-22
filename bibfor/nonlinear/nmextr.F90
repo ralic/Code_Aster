@@ -1,6 +1,6 @@
 subroutine nmextr(meshz       , modelz    , sdextrz   , ds_inout , keyw_fact,&
                   nb_keyw_fact, nb_extr   ,&
-                  cara_elemz  , matez     , compor    , disp_curr, strx_curr,&
+                  cara_elemz  , matez     , ds_constitutive, disp_curr, strx_curr,&
                   varc_curr   , varc_refe , time      )
 !
 use NonLin_Datastructure_type
@@ -58,7 +58,7 @@ implicit none
     integer, intent(out) :: nb_extr
     character(len=*), optional, intent(in) :: cara_elemz
     character(len=*), optional, intent(in) :: matez
-    character(len=19), optional, intent(in) :: compor
+    type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
     character(len=*), optional, intent(in) :: disp_curr
     character(len=*), optional, intent(in) :: strx_curr
     character(len=*), optional, intent(in) :: varc_curr
@@ -82,7 +82,7 @@ implicit none
 ! Out nb_extr          : total number of extraction points
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of <CARTE> COMPOR
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  disp_curr        : current displacements
 ! In  varc_curr        : command variable for current time
 ! In  varc_refe        : command variable for reference
@@ -155,8 +155,8 @@ implicit none
             field_comp = v_extr_comp(4*(i_field_comp-1)+1)
             field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4)
             field_type = v_extr_comp(4*(i_field_comp-1)+3)
-            call nmextr_comp(field_comp, field_disc, field_type, meshz    , modelz   ,&
-                             cara_elemz, matez     , compor    , disp_curr, strx_curr,&
+            call nmextr_comp(field_comp, field_disc, field_type     , meshz    , modelz   ,&
+                             cara_elemz, matez     , ds_constitutive, disp_curr, strx_curr,&
                              varc_curr , varc_refe , time      )
         end do
     endif
@@ -224,7 +224,7 @@ implicit none
             call nmextk(meshz    , keyw_fact , i_keyw_fact, field        , field_type,&
                         field_s  , field_disc, list_node  , list_elem    , list_poin ,&
                         list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
-                        compor   , list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
+                        ds_constitutive%compor, list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
 !
 ! --------- Get type of extraction for components
 !

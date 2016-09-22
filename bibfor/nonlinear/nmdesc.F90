@@ -1,10 +1,9 @@
-subroutine nmdesc(modele, numedd  , numfix, mate  , carele     ,&
-                  comref, compor  , lischa, ds_contact, ds_algopara,&
-                  solveu, carcri  , fonact, numins, iterat     ,&
-                  sddisc, ds_print, ds_measure, ds_algorom, sddyna     ,&
-                  sdnume, sderro  , matass, maprec, &
-                  valinc, solalg  , meelem, measse, veasse     ,&
-                  veelem, lerrit  )
+subroutine nmdesc(modele  , numedd         , numfix    , mate      , carele     ,&
+                  comref  , ds_constitutive, lischa    , ds_contact, ds_algopara,&
+                  solveu  , fonact         , numins    , iterat    , sddisc     ,&
+                  ds_print, ds_measure     , ds_algorom, sddyna    , sdnume     ,&
+                  sderro  , matass         , maprec    , valinc    , solalg     ,&
+                  meelem  , measse         , veasse    , veelem    , lerrit  )
 !
 use NonLin_Datastructure_type
 use ROM_Datastructure_type
@@ -48,7 +47,8 @@ implicit none
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
     character(len=24) :: numedd, numfix
-    character(len=24) :: modele, mate, carele, comref, compor, carcri
+    character(len=24) :: modele, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     character(len=24) :: sderro
@@ -59,13 +59,13 @@ implicit none
     type(NL_DS_Print), intent(inout) :: ds_print
     aster_logical :: lerrit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! CALCUL DE LA DIRECTION DE DESCENTE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -73,7 +73,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : L_CHARGES
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IO  ds_print         : datastructure for printing parameters
@@ -93,15 +93,14 @@ implicit none
 ! IN  MEASSE : VARIABLE CHAPEAU POUR NOM DES MATR_ASSE
 ! OUT LERRIT : .TRUE. SI ERREUR PENDANT L'ITERATION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    character(len=24) :: codere
     character(len=19) :: cncine, depdel, cndonn, cnpilo, cncind
     integer :: faccvg, rescvg, ldccvg
     real(kind=8) :: r8bid
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -122,7 +121,6 @@ implicit none
     ldccvg = -1
     faccvg = -1
     rescvg = -1
-    codere = '&&NMDESC.CODERE'
 !
 ! --- DECOMPACTION DES VARIABLES CHAPEAUX
 !
@@ -131,13 +129,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmcoma(modele     , mate  , carele, compor  , carcri,&
-                ds_algopara, lischa, numedd, numfix  , solveu,&
-                comref     , sddisc, sddyna, ds_print, ds_measure,&
-                numins, iterat, fonact  , ds_contact,&
-                valinc     , solalg, veelem  , meelem,&
-                measse     , veasse, maprec, matass  , codere,&
-                faccvg     , ldccvg, sdnume)
+    call nmcoma(modele, mate  , carele    , ds_constitutive, ds_algopara,&
+                lischa, numedd, numfix    , solveu         , comref     ,&
+                sddisc, sddyna, ds_print  , ds_measure     , numins     ,&
+                iterat, fonact, ds_contact, valinc         , solalg     ,&
+                veelem, meelem, measse    , veasse         , maprec     ,&
+                matass, faccvg, ldccvg    , sdnume)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

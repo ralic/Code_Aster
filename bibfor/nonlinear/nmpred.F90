@@ -1,10 +1,9 @@
-subroutine nmpred(modele  , numedd, numfix  , mate       , carele,&
-                  comref  , compor, lischa  , ds_algopara, solveu,&
-                  fonact  , carcri, ds_print, ds_measure , ds_algorom,&
-                  sddisc  , sdnume, sderro  , numins     , valinc,&
-                  solalg  , matass, maprec  , ds_contact , sddyna,&
-                  ds_inout, meelem, measse  , veelem     , veasse,&
-                  lerrit)
+subroutine nmpred(modele, numedd         , numfix    , mate       , carele  ,&
+                  comref, ds_constitutive, lischa    , ds_algopara, solveu  ,&
+                  fonact, ds_print       , ds_measure, ds_algorom , sddisc  ,&
+                  sdnume, sderro         , numins    , valinc     , solalg  ,&
+                  matass, maprec         , ds_contact, sddyna     , ds_inout,&
+                  meelem, measse         , veelem    , veasse     , lerrit)
 !
 use NonLin_Datastructure_type
 use ROM_Datastructure_type
@@ -46,23 +45,24 @@ implicit none
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: lischa, solveu, sddisc, sddyna, sdnume
-    character(len=24) :: modele, mate, carele, comref, compor
+    character(len=24) :: modele, mate, carele, comref
     character(len=24) :: numedd, numfix
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24) :: carcri, sderro
+    character(len=24) :: sderro
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     aster_logical :: lerrit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! PHASE DE PREDICTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -70,12 +70,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! In  ds_inout         : datastructure for input/output management
 ! IO  ds_contact       : datastructure for contact management
@@ -98,13 +97,12 @@ implicit none
 ! IN  SDNUME : SD NUMEROTATION
 ! OUT LERRIT  : .TRUE. SI ERREUR PENDANT PREDICTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer :: faccvg, rescvg, ldccvg
-    character(len=24) :: codere
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -113,7 +111,6 @@ implicit none
 !
 ! --- INITIALISATION CODES RETOURS
 !
-    codere = '&&NMPRED.CODERE'
     faccvg = -1
     rescvg = -1
     ldccvg = -1
@@ -122,26 +119,25 @@ implicit none
 !
     if ((ds_algopara%matrix_pred .eq. 'ELASTIQUE').or.&
         (ds_algopara%matrix_pred .eq. 'TANGENTE')) then
-        call nmprta(modele  , numedd, numfix  , mate       , carele,&
-                    comref  , compor, lischa  , ds_algopara, solveu,&
-                    fonact  , carcri, ds_print, ds_measure, ds_algorom,&
-                    sddisc  , numins, valinc  , solalg     , matass,&
-                    maprec  , ds_contact, sddyna,&
-                    meelem  , measse, veelem  , veasse     , sdnume,&
-                    ds_inout, ldccvg, faccvg  , rescvg     , codere)
+        call nmprta(modele    , numedd         , numfix    , mate       , carele,&
+                    comref    , ds_constitutive, lischa    , ds_algopara, solveu,&
+                    fonact    , ds_print       , ds_measure, ds_algorom , sddisc,&
+                    numins    , valinc         , solalg    , matass     , maprec,&
+                    ds_contact, sddyna         , meelem    , measse     , veelem,&
+                    veasse    , sdnume         , ds_inout  , ldccvg     , faccvg,&
+                    rescvg    )
 !
 ! --- PREDICTION PAR EXTRAPOLATION DU PAS PRECEDENT OU PAR DEPLACEMENT
 ! --- CALCULE
 !
     elseif ((ds_algopara%matrix_pred .eq. 'EXTRAPOLE').or.&
             (ds_algopara%matrix_pred .eq.'DEPL_CALCULE')) then
-        call nmprde(modele, numedd, numfix  , mate       , carele,&
-                    comref, compor, lischa  , ds_algopara, solveu,&
-                    fonact, carcri, ds_print, ds_measure,&
-                    sddisc, numins, valinc  , solalg     , matass,&
-                    maprec, ds_contact, sddyna     , meelem,&
-                    measse, veelem, veasse  , ldccvg     , faccvg,&
-                    rescvg, codere)
+        call nmprde(modele, numedd         , numfix    , mate       , carele    ,&
+                    comref, ds_constitutive, lischa    , ds_algopara, solveu    ,&
+                    fonact, ds_print       , ds_measure, sddisc     , numins    ,&
+                    valinc, solalg         , matass    , maprec     , ds_contact,&
+                    sddyna, meelem         , measse    , veelem     , veasse    ,&
+                    ldccvg, faccvg         , rescvg)
     else
         ASSERT(.false.)
     endif

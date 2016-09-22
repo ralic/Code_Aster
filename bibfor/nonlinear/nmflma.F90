@@ -2,7 +2,7 @@ subroutine nmflma(typmat, mod45 , defo  , ds_algopara, modelz,&
                   mate  , carele, sddisc, sddyna     , fonact,&
                   numins, valinc, solalg, lischa     , comref,&
                   ds_contact, numedd     , numfix,&
-                  compor, carcri, ds_measure, meelem,&
+                  ds_constitutive, ds_measure, meelem,&
                   measse, veelem, nddle , ddlexc     , modrig,&
                   ldccvg, matass, matgeo)
 !
@@ -59,7 +59,7 @@ implicit none
     integer :: fonact(*)
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: compor, carcri
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     integer :: numins, ldccvg, nddle
     character(len=19) :: sddisc, sddyna, lischa
@@ -69,13 +69,13 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: matass, matgeo
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (CALCUL - UTILITAIRE)
 !
 ! CALCUL DE LA MATRICE GLOBALE POUR FLAMBEMENT/MODES VIBRATOIRES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  TYPMAT : TYPE DE MATRICE DE RIGIDITE A UTILISER
 !                'ELASTIQUE/TANGENTE/SECANTE'
@@ -91,13 +91,12 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISC_INST
 ! IN  PREMIE : SI PREMIER INSTANT DE CALCUL
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -121,18 +120,15 @@ implicit none
 !              - MATRICE DE RAIDEUR ASSEMBLEE GLOBALE (CAS FLAMBEMENT)
 !              - MATRICE DE MASSE (CAS MODES DYNAMIQUES)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: zvalin
-    parameter    (zvalin=28)
-!
+    integer, parameter :: zvalin = 28
     aster_logical :: reasma
     aster_logical :: lcrigi, lcfint, lmacr
     aster_logical :: l_neum_undead
     character(len=16) :: optrig
     integer :: reincr, iterat
     character(len=8) :: tdiag, syme
-    character(len=24) :: codere
     character(len=19) :: rigi2, masse, memass, megeom
     character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, valin2(zvalin)
     integer :: nmax
@@ -142,7 +138,7 @@ implicit none
     aster_logical :: list_l_asse(20), list_l_calc(20)
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -154,7 +150,6 @@ implicit none
 !
     nb_matr              = 0
     list_matr_type(1:20) = ' '
-    codere = '&&NMFLMA.CODERE'
     iterat = 0
 !
 ! --- RECOPIE DU VECTEUR CHAPEAU
@@ -266,13 +261,13 @@ implicit none
 ! --- CALCUL ET ASSEMBLAGE DES MATR_ELEM DE LA LISTE
 !
     if (nb_matr .gt. 0) then
-        call nmxmat(modelz, mate, carele, compor, carcri,&
+        call nmxmat(modelz, mate, carele, ds_constitutive,&
                     sddisc, sddyna, fonact, numins, iterat,&
                     valin2, solalg, lischa, comref,&
                     numedd, numfix, ds_measure, ds_algopara,&
                     nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse, lcfint, meelem, measse,&
-                    veelem, ldccvg, codere, ds_contact)
+                    veelem, ldccvg, ds_contact)
     endif
 !
 ! --- ON RECONSTRUIT RIGI2 TOUJOURS SYMETRIQUE

@@ -1,9 +1,9 @@
-subroutine nmcese(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, ds_measure,&
-                  ds_contact, iterat, sdnume, sdpilo, valinc,&
-                  solalg, veelem, veasse, offset,&
-                  typsel, sddisc, licite, rho, eta,&
-                  etaf, criter, ldccvg, pilcvg, matass)
+subroutine nmcese(modele         , numedd, mate  , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                  iterat         , sdnume, sdpilo, valinc    , solalg    ,&
+                  veelem         , veasse, offset, typsel    , sddisc    ,&
+                  licite         , rho   , eta   , etaf      , criter    ,&
+                  ldccvg         , pilcvg, matass)
 !
 use NonLin_Datastructure_type
 !
@@ -45,8 +45,8 @@ implicit none
     integer :: iterat
     real(kind=8) :: rho, offset, eta(2)
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri
+    character(len=24) :: modele, numedd, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
@@ -56,25 +56,24 @@ implicit none
     integer :: ldccvg, pilcvg
     real(kind=8) :: etaf, criter
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! SELECTION DU PARAMETRE DE PILOTAGE ENTRE DEUX SOLUTIONS
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDPILO : SD PILOTAGE
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDNUME : SD NUMEROTATION
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -108,8 +107,7 @@ implicit none
 !                 2 : BORNE ATTEINTE -> FIN DU CALCUL
 ! IN  MATASS : SD MATRICE ASSEMBLEE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: ldccv(2), ierm, indic, sel
     real(kind=8) :: f(2)
@@ -124,7 +122,7 @@ implicit none
     character(len=24), pointer :: pltk(:) => null()
     parameter     (contra=0.1d0,precyc=5.d-2)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('PILOTAGE', ifm, niv)
 !
@@ -223,16 +221,16 @@ implicit none
 ! --- SELECTION SELON LA METHODE CHOISIE: RESIDU OU MIXTE
 !
     if (typsel .eq. 'RESIDU' .or. mixte) then
-        call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, offset, rho,&
-                    eta(1), f(1), ldccv(1), matass)
-        call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, offset, rho,&
-                    eta(2), f(2), ldccv(2), matass)
+        call nmcere(modele         , numedd, mate  , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                    iterat         , sdnume, valinc, solalg    , veelem    ,&
+                    veasse         , offset, rho   , eta(1)    , f(1)      ,&
+                    ldccv(1)       , matass)
+        call nmcere(modele         , numedd, mate  , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                    iterat         , sdnume, valinc, solalg    , veelem    ,&
+                    veasse         , offset, rho   , eta(2)    , f(2)      ,&
+                    ldccv(2)       , matass)
 !
 ! ----- SI STRATEGIE MIXTE : EXAMEN DU CONTRASTE
 !

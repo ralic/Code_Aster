@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmsuiv(meshz    , sd_suiv, ds_print, cara_elemz, modelz,&
-                      matez    , compor , valinc  , varc_refe , sddisc,&
+    subroutine nmsuiv(meshz    , sd_suiv        , ds_print, cara_elemz, modelz,&
+                      matez    , ds_constitutive, valinc  , varc_refe , sddisc,&
                       nume_inst)
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
@@ -27,7 +27,7 @@ interface
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
         character(len=*), intent(in) :: modelz
-        character(len=19), intent(in) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=*), intent(in) :: varc_refe
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: valinc(*)

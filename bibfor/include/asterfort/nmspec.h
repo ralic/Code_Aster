@@ -18,17 +18,17 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmspec(modele     , numedd, numfix, carele  , compor    ,&
-                      numins     , mate  , comref, lischa  , ds_contact,&
-                      ds_algopara, fonact, carcri, ds_print, ds_measure,&
-                      sddisc, valinc, solalg  , meelem    ,&
-                      measse     , veelem, sddyna, sdpost  , sderro)
+    subroutine nmspec(modele     , numedd, numfix  , carele    , ds_constitutive,&
+                      numins     , mate  , comref  , lischa    , ds_contact     ,&
+                      ds_algopara, fonact, ds_print, ds_measure, sddisc         ,&
+                      valinc     , solalg, meelem  , measse    , veelem         ,&
+                      sddyna     , sdpost, sderro)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
@@ -36,7 +36,6 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
-        character(len=24) :: carcri
         type(NL_DS_Print), intent(in) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc

@@ -1,7 +1,7 @@
-subroutine nminvc(modelz, mate  , carele, compor, ds_measure,&
-                  sddisc, sddyna, valinc, solalg, lischa    ,&
-                  comref, numedd, ds_inout,&
-                  veelem, veasse, measse)
+subroutine nminvc(modelz, mate  , carele  , ds_constitutive, ds_measure,&
+                  sddisc, sddyna, valinc  , solalg         , lischa    ,&
+                  comref, numedd, ds_inout, veelem         , veasse    ,&
+                  measse)
 !
 use NonLin_Datastructure_type
 !
@@ -32,7 +32,7 @@ implicit none
 !
     character(len=*) :: modelz
     character(len=24) :: mate, carele
-    character(len=24) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: sddisc, sddyna, lischa
     character(len=24) :: comref, numedd
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -49,7 +49,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
 ! IN  SDDYNA : SD DYNAMIQUE
-! IN  COMPOR : CARTE COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  MODELE : NOM DU MODELE
 ! IN  SOLVEU : SOLVEUR
 ! IN  NUMEDD : NUME_DDL
@@ -95,11 +95,11 @@ implicit none
 ! --- CALCUL DES VECT_ELEM DE LA LISTE
 !
     if (nbvect .gt. 0) then
-        call nmxvec(modelz, mate  , carele, compor, ds_measure,&
-                    sddisc, sddyna, numins, valinc, solalg,&
-                    lischa, comref, numedd,&
-                    ds_inout, veelem, veasse, measse, nbvect,&
-                    ltypve  , lcalve, loptve, lassve)
+        call nmxvec(modelz, mate  , carele, ds_constitutive, ds_measure,&
+                    sddisc, sddyna, numins, valinc         , solalg    ,&
+                    lischa, comref, numedd, ds_inout       , veelem    ,&
+                    veasse, measse, nbvect, ltypve         , lcalve    ,&
+                    loptve, lassve)
     endif
 !
 end subroutine

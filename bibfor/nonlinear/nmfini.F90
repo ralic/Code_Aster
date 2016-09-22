@@ -1,7 +1,7 @@
-subroutine nmfini(sddyna  , valinc, measse, modele, mate  ,&
-                  carele  , compor, ds_measure, sddisc, numins,&
-                  solalg  , lischa, comref,&
-                  ds_inout, numedd, veelem, veasse)
+subroutine nmfini(sddyna, valinc         , measse    , modele  , mate  ,&
+                  carele, ds_constitutive, ds_measure, sddisc  , numins,&
+                  solalg, lischa         , comref    , ds_inout, numedd,&
+                  veelem, veasse)
 !
 use NonLin_Datastructure_type
 !
@@ -40,21 +40,22 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19) :: sddyna, valinc(*), measse(*)
-    character(len=24) :: modele, mate, carele, compor, comref
+    character(len=24) :: modele, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: numedd
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: sddisc, solalg(*), lischa, veelem(*), veasse(*)
     integer :: numins
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL)
 !
 ! CALCUL DES ENERGIES
 ! INITIALISATION DES VECTEURS DE FORCE POUR LE CALCUL DES ENERGIES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -62,7 +63,7 @@ implicit none
 ! IN  MODELE : MODELE
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -74,7 +75,7 @@ implicit none
 ! IN  VEELEM : VECTEURS ELEMENTAIRES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: masse, amort, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
@@ -96,7 +97,7 @@ implicit none
     real(kind=8), pointer :: fnomo(:) => null()
     real(kind=8), pointer :: vitmo(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     lamor = ndynlo(sddyna,'MAT_AMORT')
     ldyna = ndynlo(sddyna,'DYNAMIQUE')
@@ -153,11 +154,11 @@ implicit none
     nbvect=0
     call nmcvec('AJOU', 'CNFNOD', 'SIGMOI', .true._1, .true._1,&
                 nbvect, ltypve, loptve, lcalve, lassve)
-    call nmxvec(modele  , mate  , carele, compor, ds_measure,&
-                sddisc  , sddyna, numins, valinc, solalg,&
-                lischa  , comref, numedd,&
-                ds_inout, veelem, veasse, measse, nbvect,&
-                ltypve  , lcalve, loptve, lassve)
+    call nmxvec(modele, mate  , carele, ds_constitutive, ds_measure,&
+                sddisc, sddyna, numins, valinc         , solalg    ,&
+                lischa, comref, numedd, ds_inout       , veelem    ,&
+                veasse, measse, nbvect, ltypve         , lcalve    ,&
+                loptve, lassve)
     call nmchex(veasse, 'VEASSE', 'CNFNOD', cnfnod)
     call jeveuo(cnfnod//'.VALE', 'L', vr=cnfno)
     do iaux = 1, neq

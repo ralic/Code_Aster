@@ -22,7 +22,7 @@ interface
                       mate  , carele, sddisc, sddyna     , fonact,&
                       numins, valinc, solalg, lischa     , comref,&
                       ds_contact, numedd, numfix,&
-                      compor, carcri, ds_measure, meelem,&
+                      ds_constitutive, ds_measure, meelem,&
                       measse, veelem, nddle , ddlexc     , modrig,&
                       ldccvg, matass, matgeo)
         use NonLin_Datastructure_type
@@ -44,8 +44,7 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24) :: numedd
         character(len=24) :: numfix
-        character(len=24) :: compor
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)

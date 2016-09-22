@@ -18,22 +18,20 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nminmc(fonact, lischa, sddyna    , modele, compor,&
-                      numedd, numfix, ds_contact, ds_algopara,&
-                      carcri, solalg, valinc    , mate, carele,&
-                      sddisc, ds_measure, comref, meelem,&
-                      measse, veelem, codere)
+    subroutine nminmc(fonact, lischa, sddyna    , modele     , ds_constitutive,&
+                      numedd, numfix, ds_contact, ds_algopara, solalg         ,&
+                      valinc, mate  , carele    , sddisc     , ds_measure     ,&
+                      comref, meelem, measse    , veelem)
         use NonLin_Datastructure_type        
         integer :: fonact(*)
         character(len=19) :: lischa
         character(len=19) :: sddyna
         character(len=24) :: modele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24) :: numedd
         character(len=24) :: numfix
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        character(len=24) :: carcri
         character(len=19) :: solalg(*)
         character(len=19) :: valinc(*)
         character(len=24) :: mate
@@ -44,6 +42,5 @@ interface
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
-        character(len=24) :: codere
     end subroutine nminmc
 end interface

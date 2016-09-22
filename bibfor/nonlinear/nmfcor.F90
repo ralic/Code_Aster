@@ -1,9 +1,9 @@
-subroutine nmfcor(modele, numedd  , mate  , carele     , comref,&
-                  compor, lischa  , fonact, ds_algopara, carcri,&
-                  numins, iterat  , ds_measure, sddisc,&
-                  sddyna, sdnume  , sderro, ds_contact,&
-                  ds_inout, valinc, solalg     , veelem,&
-                  veasse, meelem  , measse, matass     , lerrit)
+subroutine nmfcor(modele         , numedd    , mate    , carele     , comref,&
+                  ds_constitutive, lischa    , fonact  , ds_algopara, numins,&
+                  iterat         , ds_measure, sddisc  , sddyna     , sdnume,&
+                  sderro         , ds_contact, ds_inout, valinc     , solalg,&
+                  veelem         , veasse    , meelem  , measse     , matass,&
+                  lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -52,8 +52,9 @@ implicit none
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sddisc, sddyna, sdnume
     character(len=19) :: lischa, matass
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, sderro
+    character(len=24) :: modele, numedd, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: sderro
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19) :: meelem(*), veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
@@ -74,12 +75,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENTC IN  LISCHA : LISTE DES CHARGES
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -97,7 +97,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lcfint, lcrigi, lcdiri, lcbudi
-    character(len=24) :: codere
     character(len=19) :: vefint, vediri, vebudi, cnfint, cndiri, cnbudi
     character(len=19) :: depplu, vitplu, accplu
     character(len=16) :: option
@@ -115,7 +114,6 @@ implicit none
 ! --- INITIALISATIONS CODES RETOURS
 !
     ldccvg = -1
-    codere = '&&NMFCOR.CODERE'
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -137,11 +135,10 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI'  , 'CORRECTION', modele, numedd, mate,&
-                carele  , compor, lischa, numins, ds_measure,&
-                sddisc  , fonact, comref,&
-                ds_inout, valinc, solalg, veelem, measse,&
-                veasse  , sddyna)
+    call nmchar('VARI', 'CORRECTION'   , modele, numedd  , mate      ,&
+                carele, ds_constitutive, lischa, numins  , ds_measure,&
+                sddisc, fonact         , comref, ds_inout, valinc    ,&
+                solalg, veelem         , measse, veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE POUR CONTACT/XFEM
 !
@@ -161,14 +158,13 @@ implicit none
 !
     if (lcfint) then
         if (lcrigi) then
-            call nmrigi(modele, mate, carele, compor, carcri,&
-                        sddyna, ds_measure, fonact, iterat,&
-                        valinc, solalg, comref, meelem, veelem,&
-                        option, ldccvg, codere)
+            call nmrigi(modele    , mate  , carele, ds_constitutive, sddyna,&
+                        ds_measure, fonact, iterat, valinc         , solalg,&
+                        comref    , meelem, veelem, option         , ldccvg)
         else
-            call nmfint(modele, mate  , carele, comref, compor,&
-                        carcri, fonact, iterat, sddyna, ds_measure,&
-                        valinc, solalg, ldccvg, codere, vefint)
+            call nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                        fonact, iterat, sddyna, ds_measure, valinc         ,&
+                        solalg, ldccvg, vefint)
         endif
     endif
 !

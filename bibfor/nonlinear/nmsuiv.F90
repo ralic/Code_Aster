@@ -1,5 +1,5 @@
-subroutine nmsuiv(meshz    , sd_suiv, ds_print, cara_elemz, modelz,&
-                  matez    , compor , valinc  , varc_refe , sddisc,&
+subroutine nmsuiv(meshz    , sd_suiv        , ds_print, cara_elemz, modelz,&
+                  matez    , ds_constitutive, valinc  , varc_refe , sddisc,&
                   nume_inst)
 !
 use NonLin_Datastructure_type
@@ -43,7 +43,7 @@ implicit none
     character(len=*), intent(in) :: cara_elemz
     character(len=*), intent(in) :: matez
     character(len=*), intent(in) :: modelz
-    character(len=19), intent(in) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=*), intent(in) :: varc_refe
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: valinc(*)
@@ -63,7 +63,7 @@ implicit none
 ! In  model            : name of model
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of <CARTE> COMPOR
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  valinc           : hat variable for algorithm fields
 ! In  nume_inst        : index of current time step
 !
@@ -138,9 +138,9 @@ implicit none
             field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4) 
             field_type = v_extr_comp(4*(i_field_comp-1)+3)
             ligrel     = v_extr_comp(4*(i_field_comp-1)+4)(1:19)
-            call nmextr_comp(field_comp, field_disc, field_type, meshz    , modelz   ,&
-                             cara_elemz, matez     , compor    , disp_curr, strx_curr,&
-                             varc_curr , varc_refe , time      , ligrelz = ligrel)
+            call nmextr_comp(field_comp, field_disc, field_type     , meshz    , modelz   ,&
+                             cara_elemz, matez     , ds_constitutive, disp_curr, strx_curr,&
+                             varc_curr , varc_refe , time           , ligrelz = ligrel)
         end do
     endif
 !

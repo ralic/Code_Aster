@@ -1,8 +1,7 @@
-subroutine nmrelp(modele , numedd, mate  , carele     , comref    ,&
-                  compor , lischa, carcri, fonact     , iterat    ,&
-                  ds_measure , sdnume, sddyna, ds_algopara, ds_contact,&
-                  valinc , solalg, veelem, veasse     ,&
-                  ds_conv, ldccvg)
+subroutine nmrelp(modele         , numedd, mate       , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
+                  sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
+                  solalg         , veelem, veasse     , ds_conv   , ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -60,30 +59,29 @@ implicit none
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(in) :: ds_contact
-    character(len=24) :: carcri
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, sddyna, sdnume
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
+    character(len=24) :: modele, numedd, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! RECHERCHE LINEAIRE DANS LA DIRECTION DE DESCENTE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
@@ -102,11 +100,10 @@ implicit none
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 ! IO  ds_conv          : datastructure for convergence management
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: zsolal, zvalin
-    parameter    (zsolal=17,zvalin=28)
-!
+    integer, parameter :: zsolal = 17
+    integer, parameter :: zvalin = 28
     integer :: itrlmx, iterho, neq, act, opt, ldcopt
     integer :: dimmem, nmax
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
@@ -119,7 +116,6 @@ implicit none
     character(len=19) :: cnfins(2), cndirs(2), k19bla
     character(len=19) :: depplu, sigplu, varplu, complu
     character(len=19) :: sigplt, varplt, depplt
-    character(len=24) :: codere
     character(len=19) :: vefint, vediri
     character(len=19) :: cnfint, cndiri, cnfext
     character(len=19) :: depdet, ddepla, depdel
@@ -128,7 +124,7 @@ implicit none
     integer :: ifm, niv
     real(kind=8), pointer :: vale(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -274,10 +270,9 @@ implicit none
 !
 ! ----- REACTUALISATION DES FORCES INTERIEURES
 !
-        call nmfint(modele, mate, carele, comref, compor,&
-                    carcri, fonact, iterat, sddyna, ds_measure,&
-                    valint(1, act), solalt, ldccvg, codere,&
-                    vefint)
+        call nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                    fonact, iterat, sddyna, ds_measure, valint(1, act) ,&
+                    solalt, ldccvg, vefint)
 !
 ! ----- ASSEMBLAGE DES FORCES INTERIEURES
 !

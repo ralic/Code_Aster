@@ -1,6 +1,6 @@
 subroutine cgleco(resu, modele, mate, iord0, compor,&
                   incr)
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
@@ -18,7 +18,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor,&
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,6 +75,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor,&
     incr = .false.
     nbcomp = 0
     keywordfact = 'COMPORTEMENT'
+    compor      = '&&CGLECO.COMPOR'
     call dismoi('NOM_MAILLA', modele, 'MODELE', repk=mesh)
     l_etat_init = .false.
     call getfac('ETAT_INIT', nbetin)
@@ -90,14 +91,12 @@ subroutine cgleco(resu, modele, mate, iord0, compor,&
 !
 ! ----- No COMPORTEMENT: get from RESULT
 !
-        call rsexch(' ', resu, 'COMPORTEMENT', iord0, compor,&
-                    iret)
+        call rsexch(' ', resu, 'COMPORTEMENT', iord0, compor, iret)
 !
 ! ----- No COMPOR <CARTE> in RESULT: create ELAS COMPOR <CARTE>
 !
         if (iret .ne. 0) then
             limpel = .true.
-            compor = '&&CGLECO.COMPOR'
             call comp_init(mesh, compor, 'V', nb_cmp)
             call comp_meca_elas(compor, nb_cmp, l_etat_init)
         endif

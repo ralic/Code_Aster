@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmextr(meshz       , modelz    , sdextrz   , ds_inout , keyw_fact,&
                       nb_keyw_fact, nb_extr   ,&
-                      cara_elemz  , matez     , compor    , disp_curr, strx_curr,&
+                      cara_elemz  , matez     , ds_constitutive, disp_curr, strx_curr,&
                       varc_curr   , varc_refe , time      )
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
@@ -30,7 +30,7 @@ interface
         integer, intent(out) :: nb_extr  
         character(len=*), optional, intent(in) :: cara_elemz
         character(len=*), optional, intent(in) :: matez
-        character(len=19), optional, intent(in) :: compor
+        type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
         character(len=*), optional, intent(in) :: disp_curr
         character(len=*), optional, intent(in) :: strx_curr
         character(len=*), optional, intent(in) :: varc_curr

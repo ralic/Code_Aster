@@ -1,9 +1,9 @@
-subroutine nmdepl(modele, numedd    , mate   , carele    , comref     ,&
-                  compor, lischa    , fonact , ds_measure, ds_algopara,&
-                  carcri, noma      , numins , iterat    , solveu     ,&
-                  matass, sddisc    , sddyna , sdnume    , sdpilo     ,&
-                  sderro, ds_contact, valinc , solalg    , veelem     ,&
-                  veasse, eta       , ds_conv, lerrit)
+subroutine nmdepl(modele         , numedd , mate  , carele    , comref     ,&
+                  ds_constitutive, lischa , fonact, ds_measure, ds_algopara,&
+                  noma           , numins , iterat, solveu    , matass     ,&
+                  sddisc         , sddyna , sdnume, sdpilo    , sderro     ,&
+                  ds_contact     , valinc , solalg, veelem    , veasse     ,&
+                  eta            , ds_conv, lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -57,16 +57,15 @@ implicit none
     character(len=19) :: sddisc, sdnume, sddyna, sdpilo
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, matass, solveu
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri, sderro
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: modele, numedd, mate, carele, comref
+    character(len=24) :: sderro
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
     aster_logical :: lerrit
 !
 ! --------------------------------------------------------------------------------------------------
-!
-! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! CALCUL DE L'INCREMENT DE DEPLACEMENT A PARTIR DE(S) DIRECTION(S)
 ! DE DESCENTE
@@ -79,12 +78,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  NOMA   : NOM DU MAILLAGE
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -160,12 +158,11 @@ implicit none
 !
     if (.not.lreli .or. iterat .eq. 0) then
         if (lpilo) then
-            call nmpich(modele, numedd, mate  , carele, comref,&
-                        compor, lischa, carcri, fonact, ds_measure,&
-                        ds_contact, sdpilo, iterat, sdnume,&
-                        deltat, valinc, solalg, veelem, veasse,&
-                        sddisc, eta   , rho   , offset,&
-                        ldccvg, pilcvg, matass)
+            call nmpich(modele         , numedd, mate  , carele    , comref    ,&
+                        ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                        sdpilo         , iterat, sdnume, deltat    , valinc    ,&
+                        solalg         , veelem, veasse, sddisc    , eta       ,&
+                        rho            , offset, ldccvg, pilcvg    , matass)
             ds_conv%line_sear_coef = 1.d0
             ds_conv%line_sear_iter = 0
         endif
@@ -174,19 +171,17 @@ implicit none
 ! --- RECHERCHE LINEAIRE
 !
         if (lpilo) then
-            call nmrepl(modele , numedd, mate       , carele, comref,&
-                        compor , lischa, ds_algopara, carcri, fonact,&
-                        iterat , ds_measure, sdpilo     , sdnume, sddyna,&
-                        ds_contact, deltat  , valinc, solalg,&
-                        veelem , veasse, sddisc, etan  ,&
-                        ds_conv, eta   , offset     , ldccvg, pilcvg,&
-                        matass )
+            call nmrepl(modele         , numedd, mate       , carele, comref    ,&
+                        ds_constitutive, lischa, ds_algopara, fonact, iterat    ,&
+                        ds_measure     , sdpilo, sdnume     , sddyna, ds_contact,&
+                        deltat         , valinc, solalg     , veelem, veasse    ,&
+                        sddisc         , etan  , ds_conv    , eta   , offset    ,&
+                        ldccvg         , pilcvg, matass )
         else
-            call nmreli(modele , numedd, mate  , carele     , comref,&
-                        compor , lischa, carcri, fonact     , iterat,&
-                        ds_measure , sdnume, sddyna, ds_algopara, ds_contact,&
-                        valinc , solalg, veelem, veasse     ,&
-                        ds_conv, ldccvg)
+            call nmreli(modele         , numedd, mate       , carele    , comref    ,&
+                        ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
+                        sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
+                        solalg         , veelem, veasse     , ds_conv   , ldccvg)
         endif
     endif
 !

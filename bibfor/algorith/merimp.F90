@@ -1,9 +1,10 @@
-subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
-                  carcri, acti_func, iterat, sddyna, hval_incr,&
-                  hval_algo, caco3d, mxchin, nbin, lpain,&
-                  lchin)
+subroutine merimp(model    , cara_elem, mate  , varc_refe, ds_constitutive,&
+                  acti_func, iterat   , sddyna, hval_incr, hval_algo      ,&
+                  caco3d   , mxchin   , nbin  , lpain    , lchin)
 !
-    implicit none
+use NonLin_Datastructure_type
+!
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,7 +27,7 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
 #include "asterfort/xajcin.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,10 +49,9 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: cara_elem
-    character(len=24), intent(in) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: varc_refe
     integer, intent(in) :: acti_func(*)
-    character(len=24), intent(in) :: carcri
     character(len=24), intent(in) :: caco3d
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
@@ -68,6 +68,7 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -176,10 +177,12 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
 !
 ! - Extend elementary field for internal variables
 !
-    call exisd('CHAM_ELEM_S', compor, iret)
-    if (iret .eq. 0) call cesvar(cara_elem, compor, ligrmo, compor)
-    call copisd('CHAM_ELEM_S', 'V', compor, vari_curr)
-    call copisd('CHAM_ELEM_S', 'V', compor, sigm_curr)
+    call exisd('CHAM_ELEM_S', ds_constitutive%compor, iret)
+    if (iret .eq. 0) then
+        call cesvar(cara_elem, ds_constitutive%compor, ligrmo, ds_constitutive%compor)
+    endif
+    call copisd('CHAM_ELEM_S', 'V', ds_constitutive%compor, vari_curr)
+    call copisd('CHAM_ELEM_S', 'V', ds_constitutive%compor, sigm_curr)
 !
 ! - Geometry field
 !
@@ -206,7 +209,7 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
     lpain(4) = 'PVARIMR'
     lchin(4) = vari_prev(1:19)
     lpain(5) = 'PCOMPOR'
-    lchin(5) = compor(1:19)
+    lchin(5) = ds_constitutive%compor(1:19)
     lpain(6) = 'PDEPLMR'
     lchin(6) = disp_prev(1:19)
     lpain(7) = 'PDEPLPR'
@@ -218,7 +221,7 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
     lpain(10) = 'PINSTPR'
     lchin(10) = time_curr(1:19)
     lpain(11) = 'PCARCRI'
-    lchin(11) = carcri(1:19)
+    lchin(11) = ds_constitutive%carcri(1:19)
     lpain(12) = 'PCAGNPO'
     lchin(12) = chcara(6)(1:19)
     lpain(13) = 'PCAORIE'
@@ -269,7 +272,9 @@ subroutine merimp(model, cara_elem, mate, varc_refe, compor,&
     lchin(35) = stru_prev(1:19)
     lpain(36) = 'PSTRXMP'
     lchin(36) = stru_iter(1:19)
-    nbin = 36
+    !lpain(37) = 'PMULCOM'
+    !lchin(37) = ds_constitutive%mult_comp(1:19)
+    nbin = 37
 !
 ! - XFEM fields
 !

@@ -1,9 +1,9 @@
-subroutine ndxpre(modele, numedd, numfix  , mate       , carele,&
-                  comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, sddisc  , ds_measure,&
-                  numins, valinc, solalg  , matass     , maprec,&
-                  sddyna, sderro, ds_inout, meelem     , measse,&
-                  veelem, veasse, lerrit)
+subroutine ndxpre(modele  , numedd         , numfix    , mate       , carele,&
+                  comref  , ds_constitutive, lischa    , ds_algopara, solveu,&
+                  fonact  , sddisc         , ds_measure, numins     , valinc,&
+                  solalg  , matass         , maprec    , sddyna     , sderro,&
+                  ds_inout, meelem         , measse    , veelem     , veasse,&
+                  lerrit)
 !
 use NonLin_Datastructure_type
 !
@@ -47,22 +47,22 @@ implicit none
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: lischa, solveu, sddisc, sddyna
-    character(len=24) :: modele, mate, carele, comref, compor
+    character(len=24) :: modele, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: numedd, numfix
-    character(len=24) :: carcri
     character(len=24) :: sderro
     character(len=19) :: meelem(*), veelem(*)
     character(len=19) :: measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     aster_logical :: lerrit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! PHASE DE PREDICTION - CAS EXPLICITE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -70,13 +70,12 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
 ! IN  LISCHA : SD LISTE DES CHARGES
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -93,15 +92,14 @@ implicit none
 ! OUT MAPREC : MATRICE DE RESOLUTION ASSEMBLEE - PRECONDITIONNEMENT
 ! OUT LERRIT  : .TRUE. SI ERREUR PENDANT PREDICTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnzero
-    character(len=24) :: codere
     integer :: ldccvg, faccvg, rescvg
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -117,7 +115,6 @@ implicit none
 !
 ! --- INITIALISATION CODES RETOURS
 !
-    codere = '&&NDXPRE.CODERE'
     faccvg = -1
     rescvg = -1
     ldccvg = -1
@@ -128,12 +125,11 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call ndxprm(modele     , mate  , carele, compor, carcri,&
-                ds_algopara, lischa, numedd, numfix, solveu,&
-                comref     , sddisc, sddyna, ds_measure,&
-                numins     , fonact, valinc, solalg, veelem,&
-                meelem     , measse, maprec, matass, codere,&
-                faccvg     , ldccvg)
+    call ndxprm(modele, mate  , carele    , ds_constitutive, ds_algopara,&
+                lischa, numedd, numfix    , solveu         , comref     ,&
+                sddisc, sddyna, ds_measure, numins         , fonact     ,&
+                valinc, solalg, veelem    , meelem         , measse     ,&
+                maprec, matass, faccvg    , ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -142,18 +138,17 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS VARIABLES AU COURS DU PAS DE TEMPS
 !
-    call nmchar('VARI'  , 'PREDICTION', modele, numedd, mate,&
-                carele  , compor, lischa, numins, ds_measure,&
-                sddisc  , fonact, comref,&
-                ds_inout, valinc, solalg, veelem, measse,&
-                veasse  , sddyna)
+    call nmchar('VARI', 'PREDICTION'   , modele, numedd  , mate      ,&
+                carele, ds_constitutive, lischa, numins  , ds_measure,&
+                sddisc, fonact         , comref, ds_inout, valinc    ,&
+                solalg, veelem         , measse, veasse  , sddyna)
 !
 ! --- CALCUL DU SECOND MEMBRE
 !
-    call nmassx(modele, numedd, mate, carele, comref,&
-                compor, lischa, carcri, fonact, ds_measure,&
-                sddyna, valinc, solalg, veelem, veasse,&
-                ldccvg, codere, cndonn)
+    call nmassx(modele         , numedd, mate  , carele    , comref,&
+                ds_constitutive, lischa, fonact, ds_measure, sddyna,&
+                valinc         , solalg, veelem, veasse    , ldccvg,&
+                cndonn)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !
@@ -161,9 +156,9 @@ implicit none
 !
 ! --- RESOLUTION
 !
-    call nmresd(fonact, sddyna, ds_measure, solveu,&
-                numedd, instap, maprec, matass, cndonn,&
-                cnzero, cncine, solalg, rescvg)
+    call nmresd(fonact, sddyna, ds_measure, solveu, numedd,&
+                instap, maprec, matass    , cndonn, cnzero,&
+                cncine, solalg, rescvg)
 !
 999 continue
 !

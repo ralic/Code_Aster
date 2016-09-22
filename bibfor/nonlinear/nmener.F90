@@ -1,7 +1,7 @@
 subroutine nmener(valinc, veasse, measse, sddyna, eta        ,&
                   ds_energy, fonact, numedd, numfix, ds_algopara,&
                   meelem, numins, modele, mate  , carele     ,&
-                  compor, ds_measure, sddisc, solalg, lischa     ,&
+                  ds_constitutive, ds_measure, sddisc, solalg, lischa     ,&
                   comref, veelem, ds_inout)
 !
 use NonLin_Datastructure_type
@@ -48,7 +48,8 @@ implicit none
     character(len=19) :: sddyna, valinc(*), veasse(*), measse(*)
     type(NL_DS_Energy), intent(inout) :: ds_energy
     character(len=19) :: meelem(*), sddisc, solalg(*), lischa, veelem(*)
-    character(len=24) :: numedd, numfix, modele, mate, carele, compor
+    character(len=24) :: numedd, numfix, modele, mate, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: comref
     type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8) :: eta
@@ -56,13 +57,13 @@ implicit none
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL)
 !
 ! CALCUL DES ENERGIES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
@@ -80,7 +81,7 @@ implicit none
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
@@ -88,12 +89,10 @@ implicit none
 ! IN  COMREF : VARI_COM DE REFERENCE
 ! IN  VEELEM : VECTEURS ELEMENTAIRES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-    integer :: zveass
-    parameter    (zveass=32)
+    integer, parameter:: zveass = 32
     integer :: iret(zveass)
-!
     character(len=19) :: depmoi, depplu, vitmoi, vitplu, masse, amort, rigid
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
     character(len=19) :: famplu, flimoi, fliplu, fnoplu
@@ -116,7 +115,7 @@ implicit none
     real(kind=8), pointer :: fnopl(:) => null()
     real(kind=8), pointer :: veass(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
@@ -335,10 +334,10 @@ implicit none
 ! --- ON LE FAIT ICI AFIN DE DISPOSER D UNE MATRICE D AMORTISSEMENT.
 !
     if (numins .eq. 1) then
-        call nmfini(sddyna  , valinc, measse, modele, mate  ,&
-                    carele  , compor, ds_measure, sddisc, numins,&
-                    solalg  , lischa, comref,&
-                    ds_inout, numedd, veelem, veasse)
+        call nmfini(sddyna, valinc         , measse    , modele  , mate  ,&
+                    carele, ds_constitutive, ds_measure, sddisc  , numins,&
+                    solalg, lischa         , comref    , ds_inout, numedd,&
+                    veelem, veasse)
     endif
 !
 ! --- PREPARATION DES CHAMPS DE FORCE

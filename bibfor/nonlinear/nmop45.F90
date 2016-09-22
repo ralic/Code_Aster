@@ -3,7 +3,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                   modes, modes2, ddlsta, nsta)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -207,7 +207,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
 !   pour gerer l'appel depuis modint :    
     call dismoi('SOLVEUR', matrig, 'MATR_ASSE', repk=solveu)
     if ((solveu(1:8) .ne. '&&NUME91') .and. (solveu(1:8) .ne. '&&DTM&&&')) then
-        solveu='&&OP0070.SOLVEUR'
+        solveu='&&OP00XX.SOLVER'
     endif
 ! --- VERIF SOLVEUR LINEAIRE
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmobsv(meshz     , modelz, sddisc, sd_obsv  , nume_time,&
-                      cara_elemz, matez , compor, varc_refe, valinc   ,&
+    subroutine nmobsv(meshz     , modelz, sddisc         , sd_obsv  , nume_time,&
+                      cara_elemz, matez , ds_constitutive, varc_refe, valinc   ,&
                       ds_inout  )
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: meshz
@@ -27,7 +27,7 @@ interface
         character(len=*), intent(in) :: cara_elemz
         character(len=*), intent(in) :: matez
         character(len=*), intent(in) :: modelz
-        character(len=19), intent(in) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=*), intent(in) :: varc_refe
         character(len=19), intent(in) :: valinc(*)
         type(NL_DS_InOut), optional, intent(in) :: ds_inout

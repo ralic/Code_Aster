@@ -1,7 +1,7 @@
-subroutine nmarch(numins    , modele  , mate  , carele, fonact   ,&
-                  carcri    , ds_print, sddisc, sdpost, sdcrit   ,&
-                  ds_measure, sderro  , sddyna, sdpilo, ds_energy,&
-                  ds_inout  , sdcriq  )
+subroutine nmarch(numins         , modele  , mate  , carele, fonact   ,&
+                  ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
+                  ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
+                  ds_inout       , sdcriq  )
 !
 use NonLin_Datastructure_type
 !
@@ -47,7 +47,7 @@ implicit none
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Energy), intent(in) :: ds_energy
     character(len=19) :: sddisc, sdcrit, sddyna, sdpost, sdpilo
-    character(len=24) :: carcri
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: sderro, sdcriq
     character(len=24) :: modele, mate, carele
 !
@@ -66,7 +66,7 @@ implicit none
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  SDCRIT : VALEUR DES CRITERES DE CONVERGENCE
@@ -156,8 +156,8 @@ implicit none
 !
 ! ----- Storing parameters
 !
-        call nmarc0(result, modele        , mate  , carele, fonact,&
-                    sdcrit, sddyna        , sdpost, carcri, sdcriq,&
+        call nmarc0(result, modele        , mate      , carele         , fonact,&
+                    sdcrit, sddyna        , sdpost    , ds_constitutive, sdcriq,&
                     sdpilo, list_load_resu, nume_store, instan)
 !
 ! ----- Stroring fields

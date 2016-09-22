@@ -16,20 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ndassp(modele, numedd, mate, carele, comref,&
-                      compor, lischa, carcri, ds_measure, fonact,&
-                      ds_contact, sddyna, valinc, solalg, veelem,&
-                      veasse, ldccvg, codere, cndonn,&
-                      sdnume, matass)
+    subroutine ndassp(modele         , numedd, mate      , carele, comref    ,&
+                      ds_constitutive, lischa, ds_measure, fonact, ds_contact,&
+                      sddyna         , valinc, solalg    , veelem, veasse    ,&
+                      ldccvg         , cndonn, sdnume    , matass)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
         character(len=24) :: mate
         character(len=24) :: carele
         character(len=24) :: comref
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
-        character(len=24) :: carcri
         type(NL_DS_Measure), intent(inout) :: ds_measure
         integer :: fonact(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
@@ -39,7 +37,6 @@ interface
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         integer :: ldccvg
-        character(len=24) :: codere
         character(len=19) :: cndonn
         character(len=19) :: sdnume
         character(len=19) :: matass

@@ -1,7 +1,7 @@
 subroutine nmassx(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, ds_measure,&
+                  ds_constitutive, lischa, fonact, ds_measure,&
                   sddyna, valinc, solalg, veelem, veasse,&
-                  ldccvg, codere, cndonn)
+                  ldccvg, cndonn)
 !
 use NonLin_Datastructure_type
 !
@@ -42,9 +42,10 @@ implicit none
     integer :: ldccvg
     integer :: fonact(*)
     character(len=19) :: lischa, sddyna
-    character(len=24) :: modele, numedd, mate, codere
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: modele, numedd, mate
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: carele, compor, comref, carcri
+    character(len=24) :: carele, comref
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: veasse(*), veelem(*)
     character(len=19) :: cndonn
@@ -62,9 +63,8 @@ implicit none
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VALEURS DE REF DES VARIABLES DE COMMANDE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : SD LISTE DES CHARGES
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  SDDYNA : SD DYNAMIQUE
@@ -73,7 +73,6 @@ implicit none
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! OUT CNDONN : VECTEUR ASSEMBLE DES FORCES DONNEES
-! OUT CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
 ! OUT LDCCVG : CODE RETOUR INTEGRATION DU COMPORTEMENT
 !                0 - OK
 !                1 - ECHEC DANS L'INTEGRATION : PAS DE RESULTATS
@@ -160,15 +159,13 @@ implicit none
 !
 ! --- CALCUL DES FORCES INTERIEURES
 !
-    call nmfint(modele, mate, carele, comref, compor,&
-                carcri, fonact, iterat, sddyna, ds_measure,&
-                valinc, solalg, ldccvg, codere,&
-                vefint)
+    call nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                fonact, iterat, sddyna, ds_measure, valinc         ,&
+                solalg, ldccvg, vefint)
 !
 ! --- ASSEMBLAGE DES FORCES INTERIEURES
 !
-    call assvec('V', cnfint, 1, vefint, [1.d0],&
-                numedd, ' ', 'ZERO', 1)
+    call assvec('V', cnfint, 1, vefint, [1.d0], numedd, ' ', 'ZERO', 1)
 !
 ! --- CHARGEMENTS DONNES
 !

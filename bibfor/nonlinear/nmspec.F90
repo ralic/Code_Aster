@@ -1,8 +1,8 @@
-subroutine nmspec(modele     , numedd, numfix, carele  , compor    ,&
-                  numins     , mate  , comref, lischa  , ds_contact,&
-                  ds_algopara, fonact, carcri, ds_print, ds_measure,&
-                  sddisc, valinc, solalg  , meelem    ,&
-                  measse     , veelem, sddyna, sdpost  , sderro)
+subroutine nmspec(modele     , numedd, numfix  , carele    , ds_constitutive,&
+                  numins     , mate  , comref  , lischa    , ds_contact     ,&
+                  ds_algopara, fonact, ds_print, ds_measure, sddisc         ,&
+                  valinc     , solalg, meelem  , measse    , veelem         ,&
+                  sddyna     , sdpost, sderro)
 !
 use NonLin_Datastructure_type
 !
@@ -45,21 +45,22 @@ implicit none
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: sderro
     character(len=19) :: lischa, sddisc, sddyna, sdpost
-    character(len=24) :: modele, numedd, numfix, carele, compor
+    character(len=24) :: modele, numedd, numfix, carele
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: veelem(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: mate
-    character(len=24) :: carcri, comref
+    character(len=24) :: comref
     integer :: fonact(*)
     type(NL_DS_Print), intent(in) :: ds_print
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! ANALYSE DE FLAMBEMENT OU STABILITE ET/OU MODES VIBRATOIRES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -67,14 +68,13 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_contact       : datastructure for contact management
 ! In  ds_print         : datastructure for printing parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  SDDISC : SD DISC_INST
 ! IN  PREMIE : SI PREMIER INSTANT DE CALCUL
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -83,7 +83,7 @@ implicit none
 ! IN  MATASS : MATRICE ASSEMBLEE GLOBALE
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lmvib, lflam
     aster_logical :: calcul
@@ -92,7 +92,7 @@ implicit none
     character(len=16) :: option
     character(len=19) :: nomlis
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     inst = diinst(sddisc,numins)
     calcul = .false.
@@ -137,9 +137,9 @@ implicit none
 ! ------- CALCUL EFFECTIF
 !
             call nmflam(option, modele, numedd, numfix     , carele,&
-                        compor, numins, mate       , comref,&
+                        ds_constitutive, numins, mate       , comref,&
                         lischa, ds_contact, ds_algopara, fonact,&
-                        carcri, ds_measure, sddisc, sddyna,&
+                        ds_measure, sddisc, sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif
@@ -160,9 +160,9 @@ implicit none
 ! ------- CALCUL EFFECTIF
 !
             call nmflam(option, modele, numedd, numfix     , carele,&
-                        compor, numins, mate       , comref,&
+                        ds_constitutive, numins, mate       , comref,&
                         lischa, ds_contact, ds_algopara, fonact,&
-                        carcri, ds_measure, sddisc, sddyna,&
+                        ds_measure, sddisc, sddyna,&
                         sdpost, valinc, solalg, meelem     , measse,&
                         veelem, sderro)
         endif

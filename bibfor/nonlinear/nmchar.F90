@@ -1,8 +1,7 @@
-subroutine nmchar(mode    , phasez, modele, numedd, mate  ,&
-                  carele  , compor, lischa, numins, ds_measure,&
-                  sddisc  , fonact, comref,&
-                  ds_inout, valinc, solalg, veelem, measse,&
-                  veasse  , sddyna)
+subroutine nmchar(mode  , phasez         , modele, numedd  , mate      ,&
+                  carele, ds_constitutive, lischa, numins  , ds_measure,&
+                  sddisc, fonact         , comref, ds_inout, valinc    ,&
+                  solalg, veelem         , measse, veasse  , sddyna)
 !
 use NonLin_Datastructure_type
 !
@@ -40,7 +39,8 @@ implicit none
     character(len=19) :: lischa
     character(len=24) :: modele, mate, carele, numedd
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: compor, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: comref
     character(len=19) :: sddyna, sddisc
     integer :: fonact(*)
     integer :: numins
@@ -48,13 +48,13 @@ implicit none
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - CALCUL)
 !
 ! CALCUL ET ASSEMBLAGE DES FORCES EXTERNES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODE   : 'FIXE' -> CALCUL CHARGES FIXES AU COURS DU TEMPS
 !              'VARI' -> CALCUL CHARGES VARIABLES AU COURS DU TEMPS
@@ -66,7 +66,7 @@ implicit none
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  NUMEDD : NUME_DDL
 ! IN  NUMINS : NUMERO INSTANT
 ! IO  ds_measure       : datastructure for measure and statistics management
@@ -80,8 +80,7 @@ implicit none
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
 ! IN  SDDYNA : SD DYNAMIQUE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: ldyna, lexpl
     aster_logical :: londe, llapl, lammo, lsstf, lviss
@@ -93,7 +92,7 @@ implicit none
     aster_logical :: lassve(20), lcalve(20)
     integer :: ifm, niv
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
     if (niv .ge. 2) then
@@ -201,7 +200,7 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
+        call nmxvec(modele  , mate  , carele, ds_constitutive, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
@@ -278,7 +277,7 @@ implicit none
 !
 ! --- CALCUL EFFECTIF
 !
-        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
+        call nmxvec(modele  , mate  , carele, ds_constitutive, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&
@@ -346,7 +345,7 @@ implicit none
 !
 ! --- CALCUL ET ASSEMBLAGE
 !
-        call nmxvec(modele  , mate  , carele, compor, ds_measure,&
+        call nmxvec(modele  , mate  , carele, ds_constitutive, ds_measure,&
                     sddisc  , sddyna, numins, valinc, solalg,&
                     lischa  , comref, numedd,&
                     ds_inout, veelem, veasse, measse, nbvect,&

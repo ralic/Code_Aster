@@ -1,9 +1,9 @@
-subroutine nmceta(modele, numedd, mate, carele, comref,&
-                  compor, lischa, carcri, fonact, ds_measure,&
-                  ds_contact, sdpilo, iterat, sdnume, valinc,&
-                  solalg, veelem, veasse, sddisc,&
-                  nbeffe, irecli, proeta, offset, rho,&
-                  etaf, ldccvg, pilcvg, residu, matass)
+subroutine nmceta(modele         , numedd, mate  , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                  sdpilo         , iterat, sdnume, valinc    , solalg    ,&
+                  veelem         , veasse, sddisc, nbeffe    , irecli    ,&
+                  proeta         , offset, rho   , etaf      , ldccvg    ,&
+                  pilcvg         , residu, matass)
 !
 use NonLin_Datastructure_type
 !
@@ -43,31 +43,30 @@ implicit none
     integer :: ldccvg, pilcvg
     real(kind=8) :: etaf, proeta(2), rho, offset, residu
     character(len=19) :: lischa, sdnume, sdpilo, matass
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
-    character(len=24) :: carcri
+    character(len=24) :: modele, numedd, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! CHOIX DU PARAMETRE DE PILOTAGE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IN  SDPILO : SD PILOTAGE
 ! IN  SDNUME : SD NUMEROTATION
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -93,8 +92,7 @@ implicit none
 ! OUT RESIDU : RESIDU OPTIMAL SI L'ON A CHOISI LE RESIDU
 ! IN  MATASS : SD MATRICE ASSEMBLEE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: bormin, bormax
     integer :: j, i
@@ -108,7 +106,7 @@ implicit none
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
@@ -201,12 +199,12 @@ implicit none
 !     S'IL EXISTE DEUX ETA SOLUTIONS :
 !        - ON DEMANDE A NMCESE DE CHOISIR
     if (nbeffe .eq. 2) then
-        call nmcese(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, iterat, sdnume, sdpilo, valinc,&
-                    solalg, veelem, veasse, offset,&
-                    typsel, sddisc, licite, rho, eta,&
-                    etaf, residu, ldccvg, pilcvg, matass)
+        call nmcese(modele         , numedd, mate  , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                    iterat         , sdnume, sdpilo, valinc    , solalg    ,&
+                    veelem         , veasse, offset, typsel    , sddisc    ,&
+                    licite         , rho   , eta   , etaf      , residu    ,&
+                    ldccvg         , pilcvg, matass)
     else if (nbeffe.eq.1) then
         etaf = eta(1)
         pilcvg = licite(1)
@@ -219,11 +217,11 @@ implicit none
     if (irecli) then
 ! ----- CETTE ETAPE EST SAUTEE SI LE RESIDU EST DEJA CALCULE DANS NMCESE
         if (typsel .eq. 'RESIDU' .and. nbeffe .eq. 2)     continue
-        call nmcere(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, iterat, sdnume, valinc, solalg,&
-                    veelem, veasse, offset, rho,&
-                    etaf, residu, ldccvg, matass)
+        call nmcere(modele         , numedd, mate  , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                    iterat         , sdnume, valinc, solalg    , veelem    ,&
+                    veasse         , offset, rho   , etaf      , residu    ,&
+                    ldccvg         , matass)
     endif
 !
 ! --- AFFICHAGE

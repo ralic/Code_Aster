@@ -1,6 +1,6 @@
-subroutine nmfint(modele, mate  , carele, comref, compor    ,&
-                  carcri, fonact, iterat, sddyna, ds_measure,&
-                  valinc, solalg, ldccvg, codere, vefint)
+subroutine nmfint(modele, mate  , carele, comref    , ds_constitutive,&
+                  fonact, iterat, sddyna, ds_measure, valinc         ,&
+                  solalg, ldccvg, vefint)
 !
 use NonLin_Datastructure_type
 !
@@ -37,41 +37,40 @@ implicit none
     integer :: fonact(*)
     character(len=19) :: sddyna
     type(NL_DS_Measure), intent(inout) :: ds_measure
-    character(len=24) :: modele, mate, codere
-    character(len=24) :: carele, compor, comref, carcri
+    character(len=24) :: modele, mate
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    character(len=24) :: carele, comref
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: vefint
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! INTEGRATION DE LA LOI DE COMPORTEMENT
 ! CALCUL DES FORCES INTERIEURES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : NOM DU CHAMP DE MATERIAU
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VALEURS DE REF DES VARIABLES DE COMMANDE
-! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO DE L'ITERATION DE NEWTON
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! OUT VEFINT : VECT_ELEM DES FORCES INTERNES
-! OUT CODERE : CHAM_ELEM CODE RETOUR ERREUR INTEGRATION LDC
 ! OUT LDCCVG : CODE RETOUR DE L'INTEGRATION DU COMPORTEMENT
 !                -1 : PAS D'INTEGRATION DU COMPORTEMENT
 !                 0 : CAS DE FONCTIONNEMENT NORMAL
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: tabret(0:10)
     integer :: iter
@@ -80,7 +79,7 @@ implicit none
     character(len=16) :: option
     character(len=19) :: k19bla
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -94,7 +93,6 @@ implicit none
     base = 'V'
     k19bla = ' '
     option = 'RAPH_MECA'
-    codere = '&&OP0070.CODERE'
     ldccvg = 0
 !
 ! - Launch timer
@@ -105,9 +103,9 @@ implicit none
 ! --- CALCUL DES FORCES INTERIEURES
 !
     call merimo(base, modele, carele, mate, comref,&
-                compor, carcri, iter, fonact, sddyna,&
+                ds_constitutive, iter, fonact, sddyna,&
                 valinc, solalg, k19bla, vefint, option,&
-                tabret, codere)
+                tabret)
 !
 ! - End timer
 !

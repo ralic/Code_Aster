@@ -1,6 +1,8 @@
-subroutine nmextr_comp(field     , field_disc, field_type, meshz    , modelz   ,&
-                       cara_elemz, matez     , compor    , disp_curr, strx_curr,&
-                       varc_curr , varc_refe , time      , ligrelz)
+subroutine nmextr_comp(field     , field_disc, field_type     , meshz    , modelz   ,&
+                       cara_elemz, matez     , ds_constitutive, disp_curr, strx_curr,&
+                       varc_curr , varc_refe , time           , ligrelz)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -13,7 +15,7 @@ implicit none
 #include "asterfort/mecact.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +39,7 @@ implicit none
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: cara_elemz
     character(len=*), intent(in) :: matez
-    character(len=19), intent(in) :: compor
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=*), intent(in) :: disp_curr
     character(len=*), intent(in) :: strx_curr
     character(len=*), intent(in) :: varc_curr
@@ -62,7 +64,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of <CARTE> COMPOR
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  disp_curr        : current displacements
 ! In  varc_curr        : command variable for current time
 ! In  varc_refe        : command variable for reference
@@ -135,7 +137,7 @@ implicit none
     lpain(7)  = 'PCACOQU'
     lchin(7)  = chcara(7)(1:19)
     lpain(8)  = 'PCOMPOR'
-    lchin(8)  = compor(1:19)
+    lchin(8)  = ds_constitutive%compor(1:19)
     lpain(9)  = 'PCAGEPO'
     lchin(9)  = chcara(5)(1:19)
     lpain(10) = 'PCAORIE'
@@ -161,6 +163,5 @@ implicit none
     call calcul('S'  , option, ligrel, nbin  , lchin,&
                 lpain, nbout , lchout, lpaout, 'V'  ,&
                 'OUI')
-
 !
 end subroutine

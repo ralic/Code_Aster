@@ -1,8 +1,7 @@
-subroutine nmreli(modele , numedd, mate  , carele     , comref,&
-                  compor , lischa, carcri, fonact     , iterat,&
-                  ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
-                  valinc , solalg, veelem, veasse     ,&
-                  ds_conv, ldccvg)
+subroutine nmreli(modele         , numedd, mate       , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
+                  sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
+                  solalg         , veelem, veasse     , ds_conv   , ldccvg)
 !
 use NonLin_Datastructure_type
 !
@@ -34,11 +33,11 @@ implicit none
     integer :: fonact(*)
     integer :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19) :: lischa, sddyna, sdnume
-    character(len=24) :: modele, numedd, mate, carele, comref, compor
+    character(len=24) :: modele, numedd, mate, carele, comref
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
@@ -56,11 +55,10 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_contact       : datastructure for contact management
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ITERAT : NUMERO D'ITERATION DE NEWTON
 ! IN  SDNUME : SD NUMEROTATION
@@ -92,10 +90,9 @@ implicit none
 !
 ! --- RECHERCHE LINEAIRE DANS LA DIRECTION DE DESCENTE
 !
-    call nmrelp(modele , numedd, mate  , carele     , comref,&
-                compor , lischa, carcri, fonact     , iterat,&
-                ds_measure, sdnume, sddyna, ds_algopara, ds_contact,&
-                valinc , solalg, veelem, veasse     ,&
-                ds_conv, ldccvg)
+    call nmrelp(modele         , numedd, mate       , carele    , comref    ,&
+                ds_constitutive, lischa, fonact     , iterat    , ds_measure,&
+                sdnume         , sddyna, ds_algopara, ds_contact, valinc    ,&
+                solalg         , veelem, veasse     , ds_conv   , ldccvg)
 !
 end subroutine

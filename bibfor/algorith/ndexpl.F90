@@ -1,9 +1,9 @@
-subroutine ndexpl(modele, numedd  , numfix, mate       , carele  ,&
-                  comref, compor  , lischa, ds_algopara, fonact  ,&
-                  carcri, ds_print, ds_measure, sdnume     , sddyna  ,&
-                  sddisc, sderro, valinc     , numins  ,&
-                  solalg, solveu  , matass, maprec     , ds_inout,&
-                  meelem, measse  , veelem, veasse     , nbiter  )
+subroutine ndexpl(modele  , numedd         , numfix  , mate       , carele,&
+                  comref  , ds_constitutive, lischa  , ds_algopara, fonact,&
+                  ds_print, ds_measure     , sdnume  , sddyna     , sddisc,&
+                  sderro  , valinc         , numins  , solalg     , solveu,&
+                  matass  , maprec         , ds_inout, meelem     , measse,&
+                  veelem  , veasse         , nbiter  )
 !
 use NonLin_Datastructure_type
 !
@@ -39,7 +39,6 @@ implicit none
     integer :: numins
     integer :: fonact(*)
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    character(len=24) :: carcri
     character(len=24) :: sderro
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sdnume, sddyna, sddisc
@@ -51,17 +50,18 @@ implicit none
     character(len=19) :: lischa
     character(len=19) :: solveu, maprec, matass
     character(len=24) :: modele, numedd, numfix
-    character(len=24) :: comref, compor
+    character(len=24) :: comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: mate, carele
     integer :: nbiter
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! OPERATEUR NON-LINEAIRE MECANIQUE
 !
 ! ALGORITHME DYNAMIQUE EXPLICITE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -69,13 +69,12 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARIABLES DE COMMANDE DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : L_CHARGES
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES (VOIR NMFONC)
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
 ! IN  NUMINS : NUMERO D'INSTANT
@@ -90,11 +89,11 @@ implicit none
 ! IN  MAPREC : NOM DE LA MATRICE DE PRECONDITIONNEMENT (GCPC)
 ! OUT NBITER : NOMBRE D'ITERATIONS DE NEWTON
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lerrit
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 
 !
@@ -106,20 +105,19 @@ implicit none
 !
 ! --- CALCUL DES CHARGEMENTS CONSTANTS AU COURS DU PAS DE TEMPS
 !
-    call nmchar('FIXE'  , ' '   , modele, numedd, mate  ,&
-                carele  , compor, lischa, numins, ds_measure,&
-                sddisc  , fonact, comref,&
-                ds_inout, valinc, solalg, veelem, measse,&
-                veasse  , sddyna)
+    call nmchar('FIXE', ' '            , modele, numedd  , mate      ,&
+                carele, ds_constitutive, lischa, numins  , ds_measure,&
+                sddisc, fonact         , comref, ds_inout, valinc    ,&
+                solalg, veelem         , measse, veasse  , sddyna)
 !
 ! --- PREDICTION D'UNE DIRECTION DE DESCENTE
 !
-    call ndxpre(modele, numedd, numfix  , mate       , carele,&
-                comref, compor, lischa  , ds_algopara, solveu,&
-                fonact, carcri, sddisc  , ds_measure,&
-                numins, valinc, solalg  , matass     , maprec,&
-                sddyna, sderro, ds_inout, meelem     , measse,&
-                veelem, veasse, lerrit)
+    call ndxpre(modele  , numedd         , numfix    , mate       , carele,&
+                comref  , ds_constitutive, lischa    , ds_algopara, solveu,&
+                fonact  , sddisc         , ds_measure, numins     , valinc,&
+                solalg  , matass         , maprec    , sddyna     , sderro,&
+                ds_inout, meelem         , measse    , veelem     , veasse,&
+                lerrit)
 !
     if (lerrit) goto 315
 !

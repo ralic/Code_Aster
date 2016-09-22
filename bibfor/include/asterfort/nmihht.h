@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine nmihht(model    , nume_dof , mate       , compor        , comp_para,&
+    subroutine nmihht(model    , nume_dof , mate       , ds_constitutive,&
                       cara_elem, list_load, varc_refe  , list_func_acti, ds_measure,&
                       sddyna   , sdnume   , ds_contact , hval_incr     ,&
                       sddisc   , hval_algo, hval_veasse, hval_measse   , ds_inout)
@@ -26,8 +26,7 @@ interface
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=24), intent(in) :: cara_elem
-        character(len=24), intent(in) :: compor
-        character(len=24), intent(in) :: comp_para
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: list_load
         character(len=24), intent(in) :: varc_refe

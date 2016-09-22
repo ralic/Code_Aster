@@ -1,6 +1,8 @@
 subroutine nmobse(meshz     , sd_obsv  , time,&
-                  cara_elemz, modelz   , matez    , compor, disp_curr,&
+                  cara_elemz, modelz   , matez    , ds_constitutive, disp_curr,&
                   strx_curr , varc_curr, varc_refe)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -39,7 +41,7 @@ implicit none
     character(len=*), optional, intent(in) :: cara_elemz
     character(len=*), optional, intent(in) :: matez
     character(len=*), optional, intent(in) :: modelz
-    character(len=19), optional, intent(in) :: compor
+    type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
     character(len=*), optional, intent(in) :: disp_curr
     character(len=*), optional, intent(in) :: strx_curr
     character(len=*), optional, intent(in) :: varc_curr
@@ -59,7 +61,7 @@ implicit none
 ! In  model            : name of model
 ! In  cara_elem        : name of datastructure for elementary parameters (CARTE)
 ! In  mate             : name of material characteristics (field)
-! In  compor           : name of <CARTE> COMPOR
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  disp_curr        : current displacements
 ! In  varc_curr        : command variable for current time
 ! In  varc_refe        : command variable for reference
@@ -148,9 +150,9 @@ implicit none
             field_disc = v_extr_comp(4*(i_field_comp-1)+2)(1:4) 
             field_type = v_extr_comp(4*(i_field_comp-1)+3)
             ligrel     = v_extr_comp(4*(i_field_comp-1)+4)(1:19)
-            call nmextr_comp(field_comp, field_disc, field_type, meshz    , modelz   ,&
-                             cara_elemz, matez     , compor    , disp_curr, strx_curr,&
-                             varc_curr , varc_refe , time      , ligrelz = ligrel)
+            call nmextr_comp(field_comp, field_disc, field_type     , meshz    , modelz   ,&
+                             cara_elemz, matez     , ds_constitutive, disp_curr, strx_curr,&
+                             varc_curr , varc_refe , time           , ligrelz = ligrel)
         end do
     endif
 !

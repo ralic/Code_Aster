@@ -1,6 +1,8 @@
-subroutine nmarc0(result, modele        , mate  , carele   , fonact,&
-                  sdcrit, sddyna        , sdpost, carcri   , sdcriq,&
+subroutine nmarc0(result, modele        , mate  , carele         , fonact,&
+                  sdcrit, sddyna        , sdpost, ds_constitutive, sdcriq,&
                   sdpilo, list_load_resu, numarc, time_curr)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
@@ -19,7 +21,7 @@ implicit none
 #include "asterfort/rssepa.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +44,8 @@ implicit none
     real(kind=8) :: time_curr
     character(len=19) :: sddyna, sdpost, sdpilo
     character(len=19) :: list_load_resu, sdcrit
-    character(len=24) :: modele, mate, carele, sdcriq, carcri
+    character(len=24) :: modele, mate, carele, sdcriq
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,13 +55,12 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-!
 ! IN  RESULT : NOM UTILISATEUR DU CONCEPT RESULTAT
 ! IN  MODELE : NOM DU MODELE
 ! IN  MATE   : CHAMP DE MATERIAU
 ! IN  SDCRIT : VALEUR DES CRITERES DE CONVERGENCE
 ! IN  SDPILO : SD PILOTAGE
-! IN  CARCRI : CARTE DES CRITERES DE CONVERGENCE LOCAUX
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  SDCRIQ : SD CRITERE QUALITE
 ! IN  COMPOR : CARTE DECRIVANT LE TYPE DE COMPORTEMENT
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
@@ -78,8 +80,8 @@ implicit none
     character(len=24) :: errthm, typsel, typpil
     real(kind=8) :: taberr(2), theta, valr, chcrit, freqr, coef, chstab, time_prev
     integer :: iret
-    integer :: jinst, jerrt, jpara, jacces
-    integer :: jacce2
+    integer :: jv_para, jerrt
+    real(kind=8), pointer :: v_carcri_valv(:) => null()
     real(kind=8), pointer :: plir(:) => null()
     real(kind=8), pointer :: crtr(:) => null()
     character(len=24), pointer :: pltk(:) => null()
@@ -107,11 +109,10 @@ implicit none
 ! --- ARCHIVAGE DE THETA EN THM
 !
     if (lthm) then
-        call jeveuo(carcri(1:19)//'.VALV', 'L', jpara)
-        theta = zr(jpara+3)
-        call rsadpa(result, 'E', 1, 'PARM_THETA', numarc,&
-                    0, sjv=jinst)
-        zr(jinst) = theta
+        call jeveuo(ds_constitutive%carcri(1:19)//'.VALV', 'L', vr = v_carcri_valv)
+        theta = v_carcri_valv(4)
+        call rsadpa(result, 'E', 1, 'PARM_THETA', numarc, 0, sjv=jv_para)
+        zr(jv_para) = theta
     endif
 !
 ! --- ARCHIVAGE DE LA CHARGE CRITIQUE DU MODE DE FLAMBEMENT
@@ -119,9 +120,8 @@ implicit none
     if (lflam) then
         call nmarcp('FLAM', sdpost, k19bla, chcrit, iret)
         if (iret .ne. 0) then
-            call rsadpa(result, 'E', 1, 'CHAR_CRIT', numarc,&
-                        0, sjv=jacces)
-            zr(jacces) = chcrit
+            call rsadpa(result, 'E', 1, 'CHAR_CRIT', numarc, 0, sjv=jv_para)
+            zr(jv_para) = chcrit
         endif
     endif
 !
@@ -130,9 +130,8 @@ implicit none
     if (lstab) then
         call nmarcp('STAB', sdpost, k19bla, chstab, iret)
         if (iret .ne. 0) then
-            call rsadpa(result, 'E', 1, 'CHAR_STAB', numarc,&
-                        0, sjv=jacce2)
-            zr(jacce2) = chstab
+            call rsadpa(result, 'E', 1, 'CHAR_STAB', numarc, 0, sjv=jv_para)
+            zr(jv_para) = chstab
         endif
     endif
 !
@@ -142,31 +141,27 @@ implicit none
         ASSERT(ldyna)
         call nmarcp('VIBR', sdpost, k19bla, freqr, iret)
         if (iret .ne. 0) then
-            call rsadpa(result, 'E', 1, 'FREQ', numarc,&
-                        0, sjv=jacces)
-            zr(jacces) = freqr
+            call rsadpa(result, 'E', 1, 'FREQ', numarc, 0, sjv=jv_para)
+            zr(jv_para) = freqr
         endif
     endif
 !
 ! --- ARCHIVAGE DE L'INSTANT
 !
-    call rsadpa(result, 'E', 1, 'INST', numarc,&
-                0, sjv=jinst)
-    zr(jinst) = time_curr
+    call rsadpa(result, 'E', 1, 'INST', numarc, 0, sjv=jv_para)
+    zr(jv_para) = time_curr
 !
 ! --- ARCHIVAGE DE L'INSTANT PRECEDENT
 !
     if (ldyna) then
         time_prev = ndynre(sddyna,'INST_PREC')
-        call rsadpa(result, 'E', 1, 'INST_PREC', numarc,&
-                    0, sjv=jinst)
-        zr(jinst) = time_prev
+        call rsadpa(result, 'E', 1, 'INST_PREC', numarc, 0, sjv=jv_para)
+        zr(jv_para) = time_prev
     endif
 !
 ! --- ARCHIVAGE DU MODELE, MATERIAU, CARA_ELEM ET DE LA SD CHARGE
 !
-    call rssepa(result, numarc, modele(1:8), mate(1:8), carele(1:8),&
-                list_load_resu)
+    call rssepa(result, numarc, modele(1:8), mate(1:8), carele(1:8), list_load_resu)
 !
 ! --- ARCHIVAGE DES CRITERES DE CONVERGENCE
 !
@@ -174,19 +169,16 @@ implicit none
     call jeveuo(sdcrit//'.CRDE', 'L', vk16=crde)
     valr = crtr(1)
     valk = crde(1)
-    call rsadpa(result, 'E', 1, valk, numarc,&
-                0, sjv=jpara)
-    zi(jpara) = nint(valr)
+    call rsadpa(result, 'E', 1, valk, numarc, 0, sjv=jv_para)
+    zi(jv_para) = nint(valr)
     valr = crtr(5)
     valk = crde(5)
-    call rsadpa(result, 'E', 1, valk, numarc,&
-                0, sjv=jpara)
-    zr(jpara) = valr
+    call rsadpa(result, 'E', 1, valk, numarc, 0, sjv=jv_para)
+    zr(jv_para) = valr
     valr = crtr(6)
     valk = crde(6)
-    call rsadpa(result, 'E', 1, valk, numarc,&
-                0, sjv=jpara)
-    zr(jpara) = valr
+    call rsadpa(result, 'E', 1, valk, numarc, 0, sjv=jv_para)
+    zr(jv_para) = valr
 !
 ! --- ARCHIVAGE DES INDICATEURS D'ERREUR EN TEMPS EN THM UNIQUEMENT
 !
@@ -195,12 +187,10 @@ implicit none
         call jeveuo(errthm, 'L', jerrt)
         taberr(1) = zr(jerrt-1+1)
         taberr(2) = zr(jerrt-1+2)
-        call rsadpa(result, 'E', 1, 'ERRE_TPS_LOC', numarc,&
-                    0, sjv=jinst)
-        zr(jinst) = taberr(1)
-        call rsadpa(result, 'E', 1, 'ERRE_TPS_GLOB', numarc,&
-                    0, sjv=jinst)
-        zr(jinst) = taberr(2)
+        call rsadpa(result, 'E', 1, 'ERRE_TPS_LOC', numarc, 0, sjv=jv_para)
+        zr(jv_para) = taberr(1)
+        call rsadpa(result, 'E', 1, 'ERRE_TPS_GLOB', numarc, 0, sjv=jv_para)
+        zr(jv_para) = taberr(2)
     endif
 !
 ! --- ARCHIVAGE DE COEF_MULT SI PILOTAGE
@@ -213,9 +203,8 @@ implicit none
             'ANGL_INCR_DEPL') then
             call jeveuo(sdpilo(1:19)//'.PLIR', 'L', vr=plir)
             coef = plir(1)
-            call rsadpa(result, 'E', 1, 'COEF_MULT', numarc,&
-                        0, sjv=jinst)
-            zr(jinst) = coef
+            call rsadpa(result, 'E', 1, 'COEF_MULT', numarc, 0, sjv=jv_para)
+            zr(jv_para) = coef
         endif
     endif
 !

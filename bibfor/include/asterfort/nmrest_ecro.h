@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmrest_ecro(model_, mate_, compor_, hval_incr, carcri)
+    subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
+        use NonLin_Datastructure_type
         character(len=*), intent(in) :: model_
         character(len=*), intent(in) :: mate_
-        character(len=*), intent(in) :: compor_
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19), intent(in) :: hval_incr(*)
-        character(len=24), intent(in) :: carcri
     end subroutine nmrest_ecro
 end interface

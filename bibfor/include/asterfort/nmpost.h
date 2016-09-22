@@ -19,9 +19,9 @@
 !
 interface
     subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
-                      compor , numins  , mate  , comref     , ds_inout,&
+                      ds_constitutive , numins  , mate  , comref     , ds_inout,&
                       ds_contact, ds_algopara, fonact  ,&
-                      carcri , ds_print, ds_measure, sddisc , &
+                      ds_print, ds_measure, sddisc , &
                       sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
                       solalg , meelem  , measse, veelem     , veasse  ,&
                       ds_energy, sdcriq  , eta   , lischa)
@@ -31,7 +31,7 @@ interface
         character(len=24) :: numedd
         character(len=24) :: numfix
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         integer :: numins
         character(len=24) :: mate
         character(len=24) :: comref
@@ -39,7 +39,6 @@ interface
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         integer :: fonact(*)
-        character(len=24) :: carcri
         type(NL_DS_Print), intent(in) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sddisc

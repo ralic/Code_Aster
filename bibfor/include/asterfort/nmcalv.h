@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalv(typvec, modelz, lischa, mate      , carele,&
-                      compor, numedd, comref, ds_measure, instam,&
-                      instap, valinc, solalg, sddyna    , option,&
+    subroutine nmcalv(typvec         , modelz, lischa, mate      , carele,&
+                      ds_constitutive, numedd, comref, ds_measure, instam,&
+                      instap         , valinc, solalg, sddyna    , option,&
                       vecele)
         use NonLin_Datastructure_type        
         character(len=6) :: typvec
@@ -26,7 +26,7 @@ interface
         character(len=19) :: lischa
         character(len=24) :: mate
         character(len=24) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24) :: numedd
         character(len=24) :: comref
         type(NL_DS_Measure), intent(inout) :: ds_measure

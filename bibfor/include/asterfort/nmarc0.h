@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmarc0(result, modele        , mate  , carele   , fonact,&
-                      sdcrit, sddyna        , sdpost, carcri   , sdcriq,&
+    subroutine nmarc0(result, modele        , mate  , carele         , fonact,&
+                      sdcrit, sddyna        , sdpost, ds_constitutive, sdcriq,&
                       sdpilo, list_load_resu, numarc, time_curr)
+        use NonLin_Datastructure_type
         character(len=8) :: result
         character(len=24) :: modele
         character(len=24) :: mate
@@ -27,7 +28,7 @@ interface
         character(len=19) :: sdcrit
         character(len=19) :: sddyna
         character(len=19) :: sdpost
-        character(len=24) :: carcri
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=24) :: sdcriq
         character(len=19) :: sdpilo
         character(len=19) :: list_load_resu

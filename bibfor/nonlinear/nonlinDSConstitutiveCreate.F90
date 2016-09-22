@@ -1,10 +1,12 @@
-subroutine nmdorc(model, chmate, l_etat_init, compor, carcri, mult_comp_)
+subroutine nonlinDSConstitutiveCreate(ds_constitutive)
+!
+use NonLin_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/nmdocc.h"
-#include "asterfort/nmdocr.h"
+#include "asterfort/assert.h"
+#include "asterfort/infdbg.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -20,47 +22,42 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(in) :: model
-    character(len=*), intent(in) :: chmate
-    aster_logical, intent(in) :: l_etat_init
-    character(len=*), intent(in) :: compor
-    character(len=*), intent(in) :: carcri
-    character(len=*), optional, intent(in) :: mult_comp_
+    type(NL_DS_Constitutive), intent(out) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Preparation of comportment (mechanics)
+! MECA_NON_LINE - Constitutive laws
 !
-! Read objects for constitutive laws
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  model       : name of model
-! In  chmate      : name of material field
-! In  l_etat_init : .true. if initial state is defined
-! In  compor      : name of <CARTE> COMPOR
-! In  carcri      : name of <CARTE> CARCRI
-! In  mult_comp   : name of <CARTE> MULT_COMP
+! Create constitutive laws management datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! Out ds_constitutive  : datastructure for constitutive laws management
 !
-! - Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
+! --------------------------------------------------------------------------------------------------
 !
-    call nmdocc(model, chmate, l_etat_init, compor)
+    integer :: ifm, niv
 !
-! - Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
+! --------------------------------------------------------------------------------------------------
 !
-    call nmdocr(model, carcri)
-!
-! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
-!
-    if (present(mult_comp_)) then
-       ! call nmdocm()
+    call infdbg('MECANONLINE', ifm, niv)
+    if (niv .ge. 2) then
+        write (ifm,*) '<MECANONLINE> . Create constitutive laws management datastructure'
     endif
+!
+! - Initializations
+!
+    ds_constitutive%compor      = '&&OP00XX.COMPOR'
+    ds_constitutive%carcri      = '&&OP00XX.CARCRI'
+    ds_constitutive%mult_comp   = '&&OP00XX.MULT_COMP'
+    ds_constitutive%comp_error  = '&&OP00XX.COMP_ERROR'
+    ds_constitutive%l_deborst   = .false._1
+    ds_constitutive%l_dis_choc  = .false._1
+    ds_constitutive%l_post_incr = .false._1
+    ds_constitutive%l_matr_geom = .false._1
 !
 end subroutine

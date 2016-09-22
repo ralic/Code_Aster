@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,17 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcalm(typmat, modelz, lischa, mate      , carele,&
-                      compor, instam, instap, valinc    , solalg,&
-                      optmaz, base  , meelem, ds_contact,&
-                      matele)
+    subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
+                      ds_constitutive, instam, instap, valinc    , solalg,&
+                      optmaz         , base  , meelem, ds_contact, matele)
         use NonLin_Datastructure_type
         character(len=6) :: typmat
         character(len=*) :: modelz
         character(len=19) :: lischa
         character(len=*) :: mate
         character(len=*) :: carele
-        character(len=24) :: compor
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         real(kind=8) :: instam
         real(kind=8) :: instap
         character(len=19) :: valinc(*)

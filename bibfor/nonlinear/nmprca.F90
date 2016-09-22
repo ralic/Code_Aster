@@ -1,10 +1,9 @@
-subroutine nmprca(modele, numedd, numfix  , mate       , carele,&
-                  comref, compor, lischa  , ds_algopara, solveu,&
-                  fonact, carcri, ds_print, ds_measure , sddisc,&
-                  numins, valinc  , solalg     , matass,&
-                  maprec, ds_contact, sddyna     , meelem,&
-                  measse, veelem, veasse  , depest     , ldccvg,&
-                  faccvg, rescvg, codere  )
+subroutine nmprca(modele, numedd         , numfix     , mate       , carele    ,&
+                  comref, ds_constitutive, lischa     , ds_algopara, solveu    ,&
+                  fonact, ds_print       , ds_measure , sddisc     , numins    ,&
+                  valinc, solalg         , matass     , maprec     , ds_contact,&
+                  sddyna, meelem         , measse     , veelem     , veasse    ,&
+                  depest, ldccvg         , faccvg     , rescvg)
 !
 use NonLin_Datastructure_type
 !
@@ -46,26 +45,25 @@ implicit none
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
     type(NL_DS_Measure), intent(inout) :: ds_measure
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: lischa, solveu, sddisc, sddyna
-    character(len=24) :: modele, mate, carele, comref, compor
+    character(len=24) :: modele, mate, carele, comref
     character(len=24) :: numedd, numfix
-    character(len=24) :: carcri
     type(NL_DS_Print), intent(inout) :: ds_print
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    character(len=24) :: codere
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: meelem(*), measse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=19) :: depest
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PREDICTION - DEPL. DONNE)
 !
 ! PROJECTION DU CHAMP DONNE SUR L'ESPACE DES CONDITIONS AUX LIMITES
 ! CINEMATIQUEMENT ADMISSIBLES
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL (VARIABLE AU COURS DU CALCUL)
@@ -73,12 +71,11 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! In  ds_algopara      : datastructure for algorithm parameters
 ! IN  SOLVEU : SOLVEUR
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IO  ds_print         : datastructure for printing parameters
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDDISC : SD DISCRETISATION TEMPORELLE
@@ -110,10 +107,8 @@ implicit none
 !                 1 : ECHEC DE L'INTEGRATION DE LA LDC
 !                 2 : ERREUR SUR LA NON VERIF. DE CRITERES PHYSIQUES
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
-! OUT CODERE : CHAM_ELEM CODE RETOUR INTEGRATION LDC
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: neq, i
     character(len=19) :: depso1, depso2, cncine
@@ -148,12 +143,12 @@ implicit none
 !
 ! --- CALCUL DE LA MATRICE GLOBALE
 !
-    call nmprma(modele     , mate    , carele, compor, carcri,&
+    call nmprma(modele     , mate    , carele, ds_constitutive,&
                 ds_algopara, lischa  , numedd, numfix, solveu,&
                 comref     , ds_print, ds_measure, sddisc,&
                 sddyna     , numins  , fonact, ds_contact,&
                 valinc     , solalg  , veelem, meelem, measse,&
-                maprec     , matass  , codere, faccvg, ldccvg)
+                maprec     , matass  , faccvg, ldccvg)
 !
 ! --- ERREUR SANS POSSIBILITE DE CONTINUER
 !

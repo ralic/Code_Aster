@@ -1,7 +1,7 @@
-subroutine nmdata(model     , mesh      , mate      , cara_elem  , list_load,&
-                  solver    , ds_conv   , sddyna    , sdpost     , sderro   ,&
-                  ds_energy , sdcriq    , ds_print  , ds_algopara, ds_inout ,&
-                  ds_contact, ds_measure, ds_algorom, compor     , carcri)
+subroutine nmdata(model    , mesh      , mate      , cara_elem , ds_constitutive,&
+                  list_load, solver    , ds_conv   , sddyna    , sdpost         ,&
+                  sderro   , ds_energy , sdcriq    , ds_print  , ds_algopara    ,&
+                  ds_inout , ds_contact, ds_measure, ds_algorom)
 !
 use NonLin_Datastructure_type
 use Rom_Datastructure_type
@@ -53,6 +53,7 @@ implicit none
     character(len=*), intent(out) :: mesh
     character(len=*), intent(out) :: mate
     character(len=*), intent(out) :: cara_elem
+    type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     character(len=*), intent(out) :: list_load
     character(len=*), intent(out) :: solver
     type(NL_DS_Conv), intent(inout) :: ds_conv
@@ -67,8 +68,6 @@ implicit none
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
-    character(len=24) :: compor
-    character(len=24) :: carcri
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -82,6 +81,7 @@ implicit none
 ! Out model            : name of model
 ! Out mate             : name of material characteristics (field)
 ! Out cara_elem        : name of elementary characteristics (field)
+! IO  ds_constitutive  : datastructure for constitutive laws management
 ! Out list_load        : name of datastructure for list of loads
 ! Out solver           : name of datastructure for solver
 ! IO  ds_conv          : datastructure for convergence management
@@ -131,7 +131,7 @@ implicit none
 !
 ! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
 !
-    call nmdorc(model, mate, l_etat_init, compor, carcri)
+    call nmdorc(model, mate, l_etat_init, ds_constitutive%compor, ds_constitutive%carcri)
 !
 ! - Read parameters for convergence
 !
@@ -176,7 +176,7 @@ implicit none
 ! --- LECTURE DES DONNEES CRITERE QUALITE
 !
     if (nomcmd .eq. 'STAT_NON_LINE') then
-        call nmcrer(carcri, sdcriq)
+        call nmcrer(ds_constitutive%carcri, sdcriq)
         call nmetdo(sdcriq)
     endif
 !

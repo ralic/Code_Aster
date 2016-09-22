@@ -1,9 +1,8 @@
-subroutine nmpich(modele    , numedd, mate  , carele, comref,&
-                  compor    , lischa, carcri, fonact, ds_measure,&
-                  ds_contact, sdpilo, iterat, sdnume, deltat,&
-                  valinc    , solalg, veelem, veasse, &
-                  sddisc    , eta   , rho   , offset, ldccvg,&
-                  pilcvg    , matass)
+subroutine nmpich(modele         , numedd, mate  , carele    , comref    ,&
+                  ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                  sdpilo         , iterat, sdnume, deltat    , valinc    ,&
+                  solalg         , veelem, veasse, sddisc    , eta       ,&
+                  rho            , offset, ldccvg, pilcvg    , matass)
 !
 use NonLin_Datastructure_type
 !
@@ -38,19 +37,20 @@ implicit none
     integer :: iterat, pilcvg, ldccvg
     real(kind=8) :: deltat, eta, rho, offset
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
-    character(len=24) :: carcri, modele, numedd, mate, carele, comref, compor
+    character(len=24) :: modele, numedd, mate, carele, comref
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME - PILOTAGE)
 !
 ! CALCUL DU ETA DE PILOTAGE ET CALCUL DE LA CORRECTION
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -58,11 +58,10 @@ implicit none
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  SDNUME : SD NUMEROTATION
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! IN  LISCHA : LISTE DES CHARGES
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! IN  SDPILO : SD PILOTAGE
-! IN  CARCRI : PARAMETRES DES METHODES D'INTEGRATION LOCALES
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! In  ds_contact       : datastructure for contact management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
@@ -88,15 +87,14 @@ implicit none
 !                 3 : SIZZ PAS NUL POUR C_PLAN DEBORST
 ! IN  MATASS : SD MATRICE ASSEMBLEE
 !
-!
-!
+! --------------------------------------------------------------------------------------------------
 !
     integer :: nbeffe, nbatte
     real(kind=8) :: proeta(2), residu
     integer :: ifm, niv
     aster_logical :: irecli
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call infdbg('PILOTAGE', ifm, niv)
     if (niv .ge. 2) then
@@ -113,20 +111,20 @@ implicit none
 !
 ! --- RESOLUTION DE L'EQUATION DE PILOTAGE
 !
-    call nmpilo(sdpilo, deltat, rho, solalg, veasse,&
-                modele, mate, compor, ds_contact, valinc,&
-                nbatte, numedd, nbeffe, proeta, pilcvg,&
+    call nmpilo(sdpilo, deltat, rho            , solalg    , veasse,&
+                modele, mate  , ds_constitutive, ds_contact, valinc,&
+                nbatte, numedd, nbeffe         , proeta    , pilcvg,&
                 carele)
 !
 ! - CHOIX DE ETA_PILOTAGE
 !
     if (pilcvg .ne. 1) then
-        call nmceta(modele, numedd, mate, carele, comref,&
-                    compor, lischa, carcri, fonact, ds_measure,&
-                    ds_contact, sdpilo, iterat, sdnume, valinc,&
-                    solalg, veelem, veasse, sddisc,&
-                    nbeffe, irecli, proeta, offset, rho,&
-                    eta, ldccvg, pilcvg, residu, matass)
+        call nmceta(modele         , numedd, mate  , carele    , comref    ,&
+                    ds_constitutive, lischa, fonact, ds_measure, ds_contact,&
+                    sdpilo         , iterat, sdnume, valinc    , solalg    ,&
+                    veelem         , veasse, sddisc, nbeffe    , irecli    ,&
+                    proeta         , offset, rho   , eta       , ldccvg    ,&
+                    pilcvg         , residu, matass)
     endif
 !
 ! --- LE CALCUL DE PILOTAGE A FORCEMENT ETE REALISE

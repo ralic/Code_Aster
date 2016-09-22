@@ -1,7 +1,7 @@
 subroutine nmpost(modele , mesh    , numedd, numfix     , carele  ,&
-                  compor , numins  , mate  , comref     , ds_inout,&
+                  ds_constitutive , numins  , mate  , comref     , ds_inout,&
                   ds_contact, ds_algopara, fonact  ,&
-                  carcri , ds_print, ds_measure, sddisc     , &
+                  ds_print, ds_measure, sddisc     , &
                   sd_obsv, sderro  , sddyna, sdpost     , valinc  ,&
                   solalg , meelem  , measse, veelem     , veasse  ,&
                   ds_energy, sdcriq  , eta   , lischa)
@@ -55,22 +55,23 @@ implicit none
     character(len=19) :: sddisc, sddyna, sdpost
     character(len=19), intent(in) :: sd_obsv
     type(NL_DS_Print), intent(in) :: ds_print
-    character(len=24) :: modele, numedd, numfix, compor
+    character(len=24) :: modele, numedd, numfix
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19) :: veelem(*), measse(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: sderro, sdcriq
     character(len=24) :: mate, carele
-    character(len=24) :: carcri, comref
+    character(len=24) :: comref
     integer :: fonact(*)
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! ROUTINE MECA_NON_LINE (ALGORITHME)
 !
 ! CALCULS DE POST-TRAITEMENT
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
 ! IN  MODELE : MODELE
 ! IN  NUMEDD : NUME_DDL
@@ -78,7 +79,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! IN  CARELE : CARACTERISTIQUES DES ELEMENTS DE STRUCTURE
 ! IN  COMREF : VARI_COM DE REFERENCE
-! IN  COMPOR : COMPORTEMENT
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! In  ds_inout         : datastructure for input/output management
 ! In  ds_print         : datastructure for printing parameters
 ! IO  ds_contact       : datastructure for contact management
@@ -86,20 +87,19 @@ implicit none
 ! IN  SDDYNA : SD POUR LA DYNAMIQUE
 ! IO  ds_energy        : datastructure for energy management
 ! In  ds_algopara      : datastructure for algorithm parameters
-! IN  CARCRI : PARAMETRES METHODES D'INTEGRATION LOCALES (VOIR NMLECT)
 ! IN  NUMINS : NUMERO D'INSTANT
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  SDPOST : SD POUR POST-TRAITEMENTS (CRIT_STAB ET MODE_VIBR)
 ! IN  SDCRIQ : SD CRITERE QUALITE
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lmvib, lflam, lerrt, lcont, lener, l_post_incr, l_obsv, l_post
     character(len=4) :: etfixe
     real(kind=8) :: time
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     lcont       = isfonc(fonact,'CONTACT')
     lerrt       = isfonc(fonact,'ERRE_TEMPS_THM')
@@ -149,12 +149,11 @@ implicit none
 ! --- CALCUL DE POST-TRAITEMENT: STABILITE ET MODES VIBRATOIRES
 !
     if (lmvib .or. lflam) then
-        call nmspec(modele  , numedd, numfix     , carele, compor,&
-                    numins, mate       , comref, lischa,&
-                    ds_contact, ds_algopara, fonact, carcri,&
-                    ds_print, ds_measure, sddisc, valinc,&
-                    solalg  , meelem, measse     , veelem, sddyna,&
-                    sdpost  , sderro)
+        call nmspec(modele     , numedd, numfix  , carele    , ds_constitutive,&
+                    numins     , mate  , comref  , lischa    , ds_contact     ,&
+                    ds_algopara, fonact, ds_print, ds_measure, sddisc         ,&
+                    valinc     , solalg, meelem  , measse    , veelem         ,&
+                    sddyna     , sdpost, sderro)
     endif
 !
 ! --- CALCUL DES ENERGIES
@@ -163,21 +162,21 @@ implicit none
         call nmener(valinc, veasse, measse, sddyna, eta        ,&
                     ds_energy, fonact, numedd, numfix, ds_algopara,&
                     meelem, numins, modele, mate  , carele     ,&
-                    compor, ds_measure, sddisc, solalg, lischa     ,&
+                    ds_constitutive, ds_measure, sddisc, solalg, lischa     ,&
                     comref, veelem, ds_inout)
     endif
 !
 ! - Post-treatment for behavior laws.
 !
     if (l_post_incr) then
-        call nmrest_ecro(modele, mate, compor, valinc, carcri)
+        call nmrest_ecro(modele, mate, ds_constitutive, valinc)
     endif
 !
 ! - Make observation
 !
     if (l_obsv) then
-        call nmobsv(mesh  , modele, sddisc, sd_obsv, numins,&
-                    carele, mate  , compor, comref , valinc)
+        call nmobsv(mesh  , modele, sddisc         , sd_obsv, numins,&
+                    carele, mate  , ds_constitutive, comref , valinc)
     endif
 !
 ! - End of timer for post-treatment

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdorc(model, chmate, l_etat_init, compor, carcri)
-        character(len=8), intent(in) :: model
-        character(len=8), intent(in) :: chmate
+    subroutine nmdorc(model, chmate, l_etat_init, compor, carcri, mult_comp_)
+        character(len=*), intent(in) :: model
+        character(len=*), intent(in) :: chmate
         aster_logical, intent(in) :: l_etat_init
-        character(len=19), intent(out) :: compor
-        character(len=24), intent(out) :: carcri
+        character(len=*), intent(in) :: compor
+        character(len=*), intent(in) :: carcri
+        character(len=*), optional, intent(in) :: mult_comp_
     end subroutine nmdorc
 end interface
