@@ -394,8 +394,8 @@ RESU1 = CALC_EUROPLEXUS(
 
 
 #IMPR_RESU(RESU=_F(RESULTAT=RESU1,GROUP_NO='P04',NOM_CHAM='DEPL'))
-   
-   
+
+
 TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    INST=2.0E-05,
                    REFERENCE='SOURCE_EXTERNE',
@@ -420,7 +420,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    RESULTAT=RESU1,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=-0.449463136369,
+                   VALE_CALC=-0.449384151174,
                    VALE_REFE=-0.44933,
                    PRECISION=0.03, ),
                 _F(GROUP_NO='P04',
@@ -429,7 +429,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='P04',
                    RESULTAT=RESU1,
                    NOM_CHAM='VITE',
                    NOM_CMP='DZ',
-                   VALE_CALC=-822.368268469,
+                   VALE_CALC=-821.78513042,
                    VALE_REFE=-824.761,
                    PRECISION=0.1, ),
                 ),
