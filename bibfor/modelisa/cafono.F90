@@ -35,7 +35,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     character(len=8) :: char, mesh
     character(len=*) :: ligrcz, ligrmz
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,7 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
     parameter     (nmocl=10)
     integer :: ntypel(nmocl), forimp(nmocl)
     real(kind=8) :: dgrd, valfor(nmocl)
-    aster_logical :: verif
+    aster_logical :: verif, l_occu_void
     character(len=8) :: nomn, typmcl(2), typlag, valfof(nmocl)
     character(len=16) :: motcle(nmocl), keywordfact, motcls(2)
     character(len=19) :: carte, ligrmo, ligrch
@@ -253,13 +253,24 @@ subroutine cafono(char, ligrcz, mesh, ligrmz, vale_type)
         if (nbno .eq. 0) goto 110
         call jeveuo(mesnoe, 'L', jno)
 !
+        l_occu_void = .true.
         do jj = 1, nbno
             call jenonu(jexnom(nomnoe, zk8(jno-1+jj)), ino)
             noms_noeuds(ino) = zk8(jno-1+jj)
             call affono(zr(jval), zk8(jval), desgi(ino), zi(jprnm- 1+(ino-1)*nbec+1), nbcomp,&
                         vale_type, zk8(jno-1+jj), ino, nsurch, forimp,&
                         valfor, valfof, motcle, verif, nbec)
+            
+            if (desgi(ino) .ne. 0) l_occu_void = .false.
         end do
+        
+        if (l_occu_void) then
+            do ii =1, 6
+                if (forimp(ii) .ne. 0) then
+                    call utmess('F', 'CHARGES2_46', sk=motcle(ii))
+                endif
+            enddo
+        endif
 !
         call jedetr(mesnoe)
 110     continue

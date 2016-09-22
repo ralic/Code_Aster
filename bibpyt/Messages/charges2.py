@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -179,7 +179,11 @@ Erreur utilisateur :
   Mais ce ddl n'existe sur aucun de ces noeuds.
 """),
 
-
+    46: _(u"""
+Erreur utilisateur :
+  Vous voulez imposer une force selon la composante %(k1)s sur un ensemble de noeuds,
+  mais cette composante de force n'existe sur aucun de ces noeuds.
+"""),
 
 
     48: _(u"""
