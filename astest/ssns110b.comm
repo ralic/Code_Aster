@@ -131,7 +131,8 @@ ORIENTAT=AFFE_CARA_ELEM(MODELE   = MODE,
                         MASSIF   =_F(GROUP_MA   = 'CZM_BA',
                                    ANGL_REP = (0., -90.,0.)),
                         MEMBRANE =(_F(GROUP_MA     = 'ARMATU',
-                                    ANGL_REP     = (-90., 0.,))));
+                                    ANGL_REP     = (-90., 0.,),
+                                    EPAIS = 1.0)));
 
 # -----------------------------------------------------
 # CALCUL

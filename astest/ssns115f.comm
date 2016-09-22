@@ -25,7 +25,7 @@
 young = 2.
 poisson = 0.3
 # Comportement materiau
-relation = 'ELAS_HYP_MEMB_NH'
+relation = 'ELAS_MEMBRANE_NH'
 
 ## Pression suiveuse
 #Pression finale 
@@ -140,7 +140,7 @@ RES1=STAT_NON_LINE(MODELE=MODELE,
                                     PARM_THETA=1.0,
                                     PARM_ALPHA=1.0,),),
                    INCREMENT=_F(LIST_INST=LIST1,
-                                PRECISION=1e-06,),
+                                PRECISION=1e-08,),
                    METHODE='NEWTON',
                    NEWTON=_F(REAC_INCR=1,
                              MATRICE='TANGENTE',
@@ -178,7 +178,7 @@ TEST_RESU(RESU=_F(LEGENDE='Depl point O',
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
                   GROUP_NO='point_O',
-                  VALE_CALC=1047.47523127,
+                  VALE_CALC=1047.4759,
                   REFERENCE='SOURCE_EXTERNE',
                   VALE_REFE=1047.,
                   PRECISION=1E-3,),);

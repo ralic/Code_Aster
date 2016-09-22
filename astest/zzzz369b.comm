@@ -116,9 +116,11 @@ LACAR=AFFE_CARA_ELEM(    MODELE=LEMOD,
                              ),
                        MEMBRANE=(
                                 _F( GROUP_MA = 'ACPLUS',
-                                 ANGL_REP=(0.,0.),),
+                                 ANGL_REP=(0.,0.),
+                                 EPAIS = 1.0),
                                 _F( GROUP_MA = 'ACMOINS',
-                                 ANGL_REP=(0.,0.),),
+                                 ANGL_REP=(0.,0.),
+                                 EPAIS = 1.0),
                                )
                         )
 

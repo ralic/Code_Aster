@@ -20,7 +20,7 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='ELAS_HYP_MEMB_NH',
+    nom='ELAS_MEMBRANE_NH',
     doc="""Relation de comportement hyper-élastique utilisant le modèle Néo-Hookéen
            applicable uniquement aux MEMBRANE en grandes déformations (DEFORMATION='GROT_GDEP') """,
     num_lc=9999,

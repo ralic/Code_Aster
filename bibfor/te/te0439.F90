@@ -26,6 +26,7 @@ subroutine te0439(option, nomte)
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
 #include "asterfort/lteatt.h"
 #include "blas/ddot.h"
@@ -71,7 +72,7 @@ subroutine te0439(option, nomte)
     call jevech('PMATERC', 'L', imate)
     call jevech('PCACOQU', 'L', icacoq)
 !
-! PARAMETRES EN SORTIE
+! - PARAMETRES EN SORTIE
 !
     call jevech('PMATUUR', 'E', imatuu)
 !
@@ -87,6 +88,11 @@ subroutine te0439(option, nomte)
      
     
     if (grdef) then
+! - LES MEMBRANES EN GROT_GDEP EN DYNAMIQUE SONT CODEES MAIS PAS TESTEES
+! - ON INTERDIT MASS_MECA POUR LE MOMENT
+        call utmess('F', 'MEMBRANE_9')
+! - il suffit d'enlever ce message d'erreur pour rendre l'option fonctionnelle
+
         h = zr(icacoq)
     else
         h = 1.d0
@@ -145,7 +151,7 @@ subroutine te0439(option, nomte)
 ! -------------------------
     if (ldiag) then
 !
-!-- CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
+! ---   CALCUL DE LA TRACE EN TRANSLATION SUIVANT X
 !
         call r8inir(3*9, 0.d0, diag, 1)
         call r8inir(3, 0.d0, somme, 1)
@@ -156,11 +162,11 @@ subroutine te0439(option, nomte)
             alfam(i) = wgt/somme(i)
         enddo
 !
-!-- CALCUL DU FACTEUR DE DIAGONALISATION
+! ---   CALCUL DU FACTEUR DE DIAGONALISATION
 !
 !        ALFA = WGT/TRACE
 !
-! PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
+! ---   PASSAGE DU STOCKAGE RECTANGULAIRE (A) AU STOCKAGE TRIANGULAIRE (ZR)
 !
         do j = 1, nno
             do i = 1, 3

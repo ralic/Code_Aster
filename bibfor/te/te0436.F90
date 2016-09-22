@@ -71,7 +71,7 @@ subroutine te0436(option, nomte)
                       npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
 
     if (option.eq.'EFGE_ELGA') then
-!       -- c'est facile : il n'y a qu'a recopier :
+! ---   c'est facile : il n'y a qu'a recopier :
         call jevech('PSIEFR', 'L', j1)
         call jevech('PEFGER', 'E', j2)
         do k=1,3*npg
@@ -171,7 +171,7 @@ subroutine te0436(option, nomte)
 !
         if ((option.eq.'SIEF_ELGA') .or. (option.eq.'EPOT_ELEM')) then
 !
-!         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
+! ------    CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
             call r8inir(3, 0.d0, epsm, 1)
             do n = 1, nno
                 do i = 1, nddl
@@ -181,13 +181,13 @@ subroutine te0436(option, nomte)
                 end do
             end do
 !
-!         RETRAIT DE LA DEFORMATION THERMIQUE
+! ------    RETRAIT DE LA DEFORMATION THERMIQUE
             call verift(fami, kpg, 1, '+', zi(imate),&
                         epsth_=epsthe)
             epsm(1) = epsm(1) - epsthe
             epsm(2) = epsm(2) - epsthe
 !
-!         CALCUL DE LA CONTRAINTE AU PG
+! ------    CALCUL DE LA CONTRAINTE AU PG
             call mbrigi(fami, kpg, imate, rig)
 !
             call r8inir(3, 0.d0, sig, 1)
@@ -211,7 +211,7 @@ subroutine te0436(option, nomte)
 !
         else if (option.eq.'EPSI_ELGA') then
 !
-!         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
+! ------    CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
             do n = 1, nno
                 do i = 1, nddl
                     do c = 1, ncomp

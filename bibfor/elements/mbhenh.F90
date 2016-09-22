@@ -58,7 +58,9 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
     real(kind=8) :: xfctlam, wfctlam
     real(kind=8) :: q, detc, factor0, factor1, factor2
 !
-! DEFINITION DES DONNES MATERIAU
+! -----------------------------------------------------------------
+! ---          IMPORTATION DES PARAMETRES MATERIAU              ---
+! -----------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
@@ -75,17 +77,20 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
         call utmess('F', 'MEMBRANE_4')
     endif
     
-! --- COEFFICIENTS DE LAME
+! - COEFFICIENTS DE LAME
     lambda=young*nu/((1+nu)*(1-2*nu))
     mu=young/(2*(1+nu))
-    
-! 
-! CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II (LOI DE COMPORTEMENT REDUITE)
 !
-!la base A1,A2,A3 etant direct le determinant est >0, on peut mettre au carre
+! -----------------------------------------------------------------
+! ---          CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II      ---
+! ---                (LOI DE COMPORTEMENT REDUITE)              ---
+! -----------------------------------------------------------------
+!
+! la base A1,A2,A3 etant direct le determinant est >0, on peut mettre au carre
     q = (jacdef**2)/(jacini**2)
-    
-! --- FONCTION DE LAMBERT
+!    
+! - FONCTION DE LAMBERT
+!
     xfctlam = (2*mu/(lambda*q))*exp(2*mu/lambda)
     call fctlam(xfctlam,wfctlam)
         
@@ -99,11 +104,11 @@ subroutine mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
                                  + factor0*adef(alpha,beta)
         end do
     end do
-    
 !
-! CALCUL DU TENSEUR TANGENT MATERIEL d(sigPK2)/dE
-!    
-    
+! -----------------------------------------------------------------
+! ---      CALCUL DU TENSEUR TANGENT MATERIEL d(sigPK2)/dE      ---
+! -----------------------------------------------------------------
+!
     factor1 = mu*c33/(1 + 2*mu*c33 / lambda)
     factor2 = 0.5*(mu - factor0)
     

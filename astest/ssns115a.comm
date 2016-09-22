@@ -25,7 +25,7 @@
 young = 2.
 poisson = 0.3
 # Comportement materiau
-relation = 'ELAS_HYP_MEMB_SV'
+relation = 'ELAS_MEMBRANE_SV'
 
 ## Pression suiveuse
 #Pression finale 
@@ -76,7 +76,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                     MEMBRANE=_F(GROUP_MA='membrane',
                                 ANGL_REP=(0.0,0.0,),
                                 EPAIS=1.0,
-                                N_INIT=1.E-6,),);
+                                N_INIT=1.E-5,),);
 
 #
 # ATTRIBUTION DU MATERIAU
@@ -146,7 +146,7 @@ RES1=STAT_NON_LINE(MODELE=MODELE,
                              REAC_ITER=1,
                              REAC_ITER_ELAS=0,),
                    RECH_LINEAIRE=_F(),
-                   CONVERGENCE=_F(ITER_GLOB_MAXI=200,
+                   CONVERGENCE=_F(ITER_GLOB_MAXI=500,
                                   ITER_GLOB_ELAS=25,
                                   ARRET='OUI',),
                    SOLVEUR=_F(METHODE='MULT_FRONT',

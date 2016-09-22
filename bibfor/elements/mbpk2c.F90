@@ -110,7 +110,6 @@ subroutine mbpk2c(sens,alpha, beta, h,covaini,jacini,jacdef,sigin,sigout)
     elseif (sens .eq. 1) then
 ! -- MATRICE DE PASSAGE DE BASE PROJETE A LA BASE NATURELLE
 !
-        
         det = (matp(1,1)*matp(2,2) - matp(1,2)*matp(2,1))
         
         matpinv(1,1) = matp(2,2)/det

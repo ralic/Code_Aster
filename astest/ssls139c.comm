@@ -29,7 +29,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'), PAR_LOT='OUI')
 ep = 0.001
 
 # Comportement materiau
-relation = 'ELAS_HYP_MEMB_SV'
+relation = 'ELAS_MEMBRANE_SV'
 
 # Comportement du beton et de l'acier
 E_A    = 200.E9

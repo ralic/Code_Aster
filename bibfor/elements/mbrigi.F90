@@ -1,6 +1,6 @@
 subroutine mbrigi(fami, kpg, imate, rig)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
     integer :: codres(7)
     character(len=4) :: fami
     character(len=16) :: nomres(7)
@@ -60,7 +61,7 @@ subroutine mbrigi(fami, kpg, imate, rig)
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, codret)
     if (phenom .ne. 'ELAS_MEMBRANE') then
-        ASSERT(.false.)
+        call utmess('F', 'MEMBRANE_5')
     endif
 !
 ! - RECUPERATION DES COMPOSANTES

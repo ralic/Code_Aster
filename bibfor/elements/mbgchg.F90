@@ -52,6 +52,7 @@ subroutine mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
 ! IN  IVECTU       ADRESSE DANS ZR DU TABLEAU PVECTUR
 ! IN  DFF          DERIVEE DES F. DE FORME
 ! IN  H            EPAISSEUR DE LA MEMBRANE
+! IN ALPHA, BETA   ANGLES DEF. LA BASE DE L'ÉCRITURE DES CONTRAINTES
 ! IN  PRETEN       PRECONTRAINTES
 !     
 ! OUT ***          ***
@@ -67,20 +68,18 @@ subroutine mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
     real(kind=8) :: vecfie(3*nno), sighca(3), sigout(3)
     real(kind=8) :: rho(1)
 !
-   
-    if (option.eq.'FORC_NODA') then
-
 ! - FORC_NODA
+    if (option.eq.'FORC_NODA') then
         call jevech('PDEPLMR', 'L', ideplm)
     
 !
-! - CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE INITIALE
+! ---   CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE INITIALE
 !
         call subaco(nno, dff, zr(igeom), covaini)
         call sumetr(covaini, metrini, jacini)
         call subacv(covaini, metrini, jacini, cnvaini, aini)
    
-! - CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE DEFORMEE
+! ---   CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE DEFORMEE
 !   
         do n = 1, 3*nno
             posdef(n) = zr(igeom+n-1) + zr(ideplm+n-1)
@@ -91,7 +90,7 @@ subroutine mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
         call sumetr(covadef, metrdef, jacdef)
         call subacv(covadef, metrdef, jacdef, cnvadef, adef)
         
-! - ON EXTRAIT LES CONTRAINTES DE CAUCHY INTEGREES QUE L'ON TRANSFORME EN PKII (NON INTEGREES) 
+! ---   ON EXTRAIT LES CONTRAINTES DE CAUCHY INTEGREES QUE L'ON TRANSFORME EN PKII (NON INTEGREES) 
 !
         do c = 1, ncomp
             sighca(c) = zr(icontm+(kpg-1)*ncomp+c-1)
@@ -104,25 +103,23 @@ subroutine mbgchg(option,fami,nddl,nno,ncomp,kpg,imate,icontm,&
         sigpk2(1,2) = sigout(3)
         sigpk2(2,1) = sigout(3)        
     
-! ! --- SI LA NORME EUCLIDIENNE DE SIGPK2 EST NULLE, ON APPLIQUE DES PRECONTRAINTES
+! ---   SI LA NORME EUCLIDIENNE DE SIGPK2 EST NULLE, ON APPLIQUE DES PRECONTRAINTES
         if (sqrt(sigpk2(1,1)**2+2*sigpk2(1,2)**2+sigpk2(2,2)**2).lt.1.d-6) then
             sigpk2(1,1) = preten
             sigpk2(2,2) = preten
         endif
     
-! --- CALCUL DU VECTEUR FORCE INTERNE ELEMENTAIRE
-
+! ---   CALCUL DU VECTEUR FORCE INTERNE ELEMENTAIRE
         call mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
     
-! --- RANGEMENT DES RESULTATS
+! ---   RANGEMENT DES RESULTATS
 !
         do n = 1, 3*nno
             zr(ivectu + n - 1) = zr(ivectu + n - 1) + vecfie(n)*jacini
         end do
     
+! - CHAR_MECA_PESA_R
     else if (option.eq.'CHAR_MECA_PESA_R') then
-    
-! CHAR_MECA_PESA_R
        
        call subaco(nno, dff, zr(igeom), covaini)
        call sumetr(covaini, metrini, jacini)

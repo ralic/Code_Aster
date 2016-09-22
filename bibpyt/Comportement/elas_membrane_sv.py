@@ -20,7 +20,7 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='ELAS_HYP_MEMB_SV',
+    nom='ELAS_MEMBRANE_SV',
     doc="""Relation de comportement hyper-élastique utilisant le modèle de Saint-Venant Kirchhoff
            applicable uniquement aux MEMBRANE en grandes déformations (DEFORMATION='GROT_GDEP') """,
     num_lc=9999,

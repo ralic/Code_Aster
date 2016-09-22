@@ -87,7 +87,8 @@ COUPLE=AFFE_CHAR_MECA_F(MODELE   = MODE,
 
 ORI_MEMB=AFFE_CARA_ELEM(MODELE = MODE,
                         MEMBRANE =(_F(GROUP_MA     = 'MEMBRA',
-                                      ANGL_REP     = (0., 0.,))));
+                                      ANGL_REP     = (0., 0.,),
+                                      EPAIS = 1.0)));
 
 #
 # ----------------------------------------------

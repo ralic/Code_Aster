@@ -70,6 +70,7 @@ LECAR=AFFE_CARA_ELEM(
                     MODELE=LEMOD,
                     MEMBRANE=_F(GROUP_MA = 'GEOA',
                                 ANGL_REP=(0,0),
+                                EPAIS = 1.0,
                                 )
                  )
 # -------------------------------------------------

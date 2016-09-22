@@ -68,24 +68,24 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: epsm(3), deps(3), epsth(3), epsthe, sigp(3), tmp, rig(3, 3)
 !
-! --- CALCUL DE LA MATRICE "B" :
-!              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
+! - CALCUL DE LA MATRICE "B" :
+!   DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
 !
     call mbcine(nno, zr(igeom), dff, alpha, beta,&
                 b, jac)
 !
-! --- RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
+! - RIGI_MECA : ON DONNE LA RIGIDITE ELASTIQUE
 !
     if (option .eq. 'RIGI_MECA') then
 !
         call mbrigi(fami, kpg, imate, rig)
 !
-! --- RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
+! - RAPH_MECA, FULL_MECA*, RIGI_MECA_* : ON PASSE PAR LA LDC 1D
 !
     elseif ((option .eq.'RAPH_MECA').or. (option(1:9)&
     .eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
 !
-!         CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
+! ---   CALCUL DE LA DEFORMATION MEMBRANAIRE DANS LE REPERE LOCAL
         call r8inir(3, 0.d0, epsm, 1)
         call r8inir(3, 0.d0, deps, 1)
         do n = 1, nno
@@ -121,7 +121,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
 !
     endif
 !
-! --- RANGEMENT DES RESULTATS
+! - RANGEMENT DES RESULTATS
 !
     if (vecteu) then
         do n = 1, nno
@@ -147,7 +147,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
                             j1 = nddl
                         endif
 !
-!                 RIGIDITE ELASTIQUE
+! ---------------       RIGIDITE ELASTIQUE
                         tmp = 0.d0
                         do c = 1, ncomp
                             do cc = 1, ncomp
@@ -156,7 +156,7 @@ subroutine mbxnlr(option,fami,nddl,nno,ncomp,kpg,ipoids,igeom,&
                             end do
                         end do
 !
-!                 STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
+! ---------------       STOCKAGE EN TENANT COMPTE DE LA SYMETRIE
                         if (j .le. j1) then
                             kk = kkd + nddl*(m-1)+j
                             zr(imatuu+kk-1) = zr(imatuu+kk-1) + tmp

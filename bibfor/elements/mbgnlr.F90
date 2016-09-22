@@ -68,7 +68,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
 !     IPOIDS            ADRESSE DANS ZR DU TABLEAU POIDS
 !     ICONTP            ADRESSE DANS ZR DU TABLEAU PCONTPR
 !     IVECTU            ADRESSE DANS ZR DU TABLEAU PMATUUR
-!     IMATUN            ADRESSE DANS ZR DU TABLEAU PMATUNS
+!     IMATUU            ADRESSE DANS ZR DU TABLEAU PMATUUR
 !
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
@@ -81,13 +81,12 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     real(kind=8) :: sigpk2(2,2), dsigpk2(2, 2, 2, 2), sighca(3), sigpk2temp(3)
     real(kind=8) :: ktgt(3*nno,3*nno)
     real(kind=8) :: vecfie(3*nno)
-    
-    
-! ON S'ASSURE QUE L'OPTION UTILISEE EST PRISE EN COMPTE
+       
+! - ON S'ASSURE QUE L'OPTION UTILISEE EST PRISE EN COMPTE
 !
     if ((option .ne.'FULL_MECA').and. (option .ne.'RAPH_MECA')&
                        .and. (option.ne.'RIGI_MECA_TANG')) then
-        call utmess('F', 'MEMBRANE_5')
+        ASSERT(.false.)
     end if
     
 ! - CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE INITIALE
@@ -96,8 +95,7 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     call subacv(covaini, metrini, jacini, cnvaini, aini)
    
 ! - CALCUL DES COORDONNEES COVARIANTES ET CONTRAVARIANTES DE LA SURFACE DEFORMEE
-!   
-    
+!    
     do n = 1, 3*nno
             posdef(n) = zr(igeom+n-1) + zr(ideplm+n-1) + zr(ideplp+n-1)
     end do
@@ -107,47 +105,41 @@ subroutine mbgnlr(option,vecteu,matric,nno,ncomp,imate,icompo,dff,alpha,beta,h,&
     
     call subacv(covadef, metrdef, jacdef, cnvadef, adef)
     
-   
 ! - ON APPELLE LA LDC HYPERELASTIQUE NEO-HOOKEENE
-! -- ON OBTIENT LE CONTRAINTES A L'ITERATION DE NEWTON (i-1) (SIGPK2: TENSEUR SYM) 
+! - ON OBTIENT LES CONTRAINTES A L'ITERATION DE NEWTON (i-1) (SIGPK2: TENSEUR SYM) 
 !
-    if (zk16 (icompo)(1:16).eq.'ELAS_HYP_MEMB_SV') then
+    if (zk16 (icompo)(1:16).eq.'ELAS_MEMBRANE_SV') then
         call mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
-    elseif (zk16 (icompo)(1:16).eq.'ELAS_HYP_MEMB_NH') then
+    elseif (zk16 (icompo)(1:16).eq.'ELAS_MEMBRANE_NH') then
         call mbhenh(imate,kpg,fami,aini,adef,jacini,jacdef,sigpk2,dsigpk2)
     else
         ASSERT(.false.)
     endif
     
-! --- SI LA NORME EUCLIDIENNE DE SIGPK2 EST NULLE, ON APPLIQUE DES PRECONTRAINTES
+! - SI LA NORME EUCLIDIENNE DE SIGPK2 EST NULLE, ON APPLIQUE DES PRECONTRAINTES
 
     if (sqrt(sigpk2(1,1)**2+2*sigpk2(1,2)**2+sigpk2(2,2)**2).lt.1.0d-6) then
         sigpk2(1,1) = sigpk2(1,1) + preten
         sigpk2(2,2) = sigpk2(2,2) + preten
     endif
     
-    
 ! - ON CALCUL LA MATRICE TANGENTE ELEMENTAIRE DUE AUX EFFORTS INTERNES
 !
     if ((option(1:9).eq.'FULL_MECA').or. (option(1:10).eq.'RIGI_MECA_')) then
-    
         call mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
-        
     end if
     
     if ((option .eq.'RAPH_MECA').or. (option(1:9).eq.'FULL_MECA')) then
     
-! - ON EN DEDUIT LES CONTRAINTES INTEGREES (SUR L'EPAISSEUR) DE CAUCHY
-! -- SIGMA_CAUCHY = (SIGMA11, SIGMA22, SIGMA12)
-        
+! ---   ON EN DEDUIT LES CONTRAINTES INTEGREES (SUR L'EPAISSEUR) DE CAUCHY
+! ---   SIGMA_CAUCHY = (SIGMA11, SIGMA22, SIGMA12)     
         sigpk2temp(1) = sigpk2(1,1)
         sigpk2temp(2) = sigpk2(2,2)
         sigpk2temp(3) = sigpk2(1,2)
-        
-       
+
         call mbpk2c(0 ,alpha, beta, h,covaini,jacini,jacdef,sigpk2temp,sighca)
         
-! - CALCUL DU VECTEUR FORCE INTERNE ELEMENTAIRE
+! ---   CALCUL DU VECTEUR FORCE INTERNE ELEMENTAIRE
 !    
         call mbvfie(nno,kpg,dff,sigpk2,ipoids,h,covadef,vecfie)
         

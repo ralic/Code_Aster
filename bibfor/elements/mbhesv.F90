@@ -58,7 +58,9 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
     real(kind=8) :: young, nu, lambda, mu
     real(kind=8) :: factor0, factor1
 !
-! DEFINITION DES DONNES MATERIAU
+! -----------------------------------------------------------------
+! ---          IMPORTATION DES PARAMETRES MATERIAU              ---
+! -----------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS', 1, phenom, icodre(1))
     if (phenom .eq. 'ELAS') then
@@ -75,11 +77,14 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
         call utmess('F', 'MEMBRANE_4')
     endif
     
-! --- COEFFICIENTS DE LAME
+! - COEFFICIENTS DE LAME
     lambda=young*nu/((1+nu)*(1-2*nu))
     mu=young/(2*(1+nu))
-! 
-! CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II (LOI DE COMPORTEMENT REDUITE)
+!
+! -----------------------------------------------------------------
+! ---          CALCUL DES CONTRAINTES DE PIOLA KIRCHOFF II      ---
+! ---                (LOI DE COMPORTEMENT REDUITE)              ---
+! -----------------------------------------------------------------
 !
     factor0 = young/(1-nu*nu)
     
@@ -100,9 +105,10 @@ subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
         end do
     end do
 !
-! CALCUL DU TENSEUR TANGENT MATERIEL d(sigPK2)/dE
-!    
-    
+! -----------------------------------------------------------------
+! ---      CALCUL DU TENSEUR TANGENT MATERIEL d(sigPK2)/dE      ---
+! -----------------------------------------------------------------
+!
     factor1 = 2*lambda*mu/(lambda+2*mu)
     
     do alpha = 1, 2

@@ -49,9 +49,15 @@ subroutine te0434(option, nomte)
     integer :: n, kpg
     integer :: ipoids, ivf, idfde, jgano, iret, icompo,itab(1), itemps
     integer :: igeom, icacoq, imate, icontm, ipesa, iepsin, ivectu
-    integer :: icodre1, icodre2, grav
+    integer :: icodre1, icodre2
     real(kind=8) :: dff(2, 9), vff(9)
     real(kind=8) :: alpha, beta, h, preten
+    aster_logical :: grav
+!
+!
+! -----------------------------------------------------------------
+! ---              INITIALISATION DES VARIABLES                 ---
+! -----------------------------------------------------------------
 !
 ! - NOMBRE DE COMPOSANTES DES TENSEURS
 !
@@ -65,9 +71,8 @@ subroutine te0434(option, nomte)
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)
 !
 ! - PARAMETRES EN ENTREE
-!   
-! -- grav : permet d'utiliser PESANTEUR en STAT_NON_LINE
-    grav = 0
+! - grav : permet d'utiliser PESANTEUR en STAT_NON_LINE
+    grav = (option.eq.'CHAR_MECA_PESA_R')
     
     call jevech('PGEOMER', 'L', igeom)
     call jevech('PCACOQU', 'L', icacoq)
@@ -91,10 +96,9 @@ subroutine te0434(option, nomte)
         call jevech('PEPSINF', 'L', iepsin)
         call jevech('PTEMPSR', 'L', itemps)
 !
-    else if (option.eq.'CHAR_MECA_PESA_R') then
+    else if (grav) then
         call jevech('PMATERC', 'L', imate)
         call jevech('PPESANR', 'L', ipesa)
-        grav = 1
 !
     else if (option.eq.'CHAR_MECA_TEMP_R') then
         call jevech('PMATERC', 'L', imate)
@@ -112,26 +116,29 @@ subroutine te0434(option, nomte)
     
 ! - EPAISSEUR ET PRETCONTRAINTES
     h = zr(icacoq) 
-    preten = zr(icacoq+3)
-    
-    
-! - VERIFICATION DE LA CORRESPONDANCE MATERIAU / COMPORTMENT
+    preten = zr(icacoq+3)/h
+!
+! -----------------------------------------------------------------
+! ---  VERIFICATION DE LA CORRESPONDANCE MATERIAU / COMPORTMENT ---
+! -----------------------------------------------------------------
 !
     call rccoma(zi(imate), 'ELAS_MEMBRANE', 0, phenom, icodre1)
     call rccoma(zi(imate), 'ELAS', 0, phenom, icodre2)
     
     if (icodre1 .eq. 0) then
         if ((icompo.ne.0) .and. (zk16( icompo + 2 )(1:5) .ne. 'PETIT')) then
-            ASSERT(.false.)
+            call utmess('F', 'MEMBRANE_10')
         endif
     elseif (icodre2 .eq. 0) then
         if (((icompo.eq.0) .or. (zk16( icompo + 2 )(1:9) .ne. 'GROT_GDEP')) &
-              .and. (grav.eq.0)) then
-            ASSERT(.false.)
+              .and. (.not.grav)) then
+            call utmess('F', 'MEMBRANE_10')
         endif
     endif
 !
-! - DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS
+! -----------------------------------------------------------------
+! ---       DEBUT DE LA BOUCLE SUR LES POINTS DE GAUSS          ---
+! -----------------------------------------------------------------
 !
     do kpg = 1, npg
 !
@@ -158,9 +165,8 @@ subroutine te0434(option, nomte)
               ipoids,ipesa,igeom,ivectu,vff,dff,h,alpha,beta,preten)
               
         endif
-        
+    end do
 !
 ! - FIN DE LA BOUCLE SUR LES POINTS DE GAUSS
-    end do
 !
 end subroutine

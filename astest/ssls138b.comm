@@ -47,7 +47,8 @@ MODE=AFFE_MODELE(MAILLAGE = MAIL,
 
 CARA=AFFE_CARA_ELEM(MODELE = MODE,
                     MEMBRANE =(_F(GROUP_MA     = 'FACE',
-                                  ANGL_REP     = (90., 0.,))))
+                                  ANGL_REP     = (90., 0.,),
+                                  EPAIS = 1.0)))
 
 CL_TRAC=AFFE_CHAR_MECA(MODELE   = MODE,
                        DDL_IMPO =(_F(GROUP_MA = 'FACE',
@@ -323,7 +324,8 @@ CARA2=AFFE_CARA_ELEM(MODELE = MODE,
                                                 'M31','M32','M33','M34','M35',
                                                 'M36','M37','M38','M39','M40',
                                                 'M41','M42','M43','M44','M45',),
-                                  ANGL_REP     = (90., 0.,))))
+                                  ANGL_REP     = (90., 0.,),
+                                  EPAIS = 1.0)))
 
 R_TRAC2=STAT_NON_LINE(MODELE      = MODE,
                      CHAM_MATER  = MATE,

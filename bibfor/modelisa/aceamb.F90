@@ -4,6 +4,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 #include "asterc/r8rddg.h"
 #include "asterfort/alcart.h"
 #include "asterfort/angvx.h"
+#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvem.h"
@@ -102,7 +103,6 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     ncomp = 4
 ! --- LECTURE DES VALEURS ET AFFECTATION DANS LA CARTE CARTPF
     do ioc = 1, nbocc
-        ep     = 1.0d0
         ang(1) = 0.0d0
         ang(2) = 0.0d0
         tens   = 0.0d0
@@ -118,8 +118,12 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
                     nbret=n2)
         call getvr8('MEMBRANE', 'EPAIS', iocc=ioc, scal=ep, nbret=n3)
         call getvr8('MEMBRANE', 'N_INIT', iocc=ioc, scal=tens, nbret=n4)
-                    
-        zr(jdvc  ) = ep
+!        EPAIS EST OBLIGATOIRE : ASSERT SI PAS LA
+        if (n3 .ne. 0) then
+            zr(jdvc) = ep
+        else
+            ASSERT(.false.)
+        endif
         zr(jdvc+1) = ang(1)
         zr(jdvc+2) = ang(2)
         zr(jdvc+3) = tens

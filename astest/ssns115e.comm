@@ -25,7 +25,7 @@
 young = 2.
 poisson = 0.3
 # Comportement materiau
-relation = 'ELAS_HYP_MEMB_NH'
+relation = 'ELAS_MEMBRANE_NH'
 
 ## Pression suiveuse
 #Pression finale 

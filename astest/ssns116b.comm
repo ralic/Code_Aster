@@ -29,9 +29,9 @@ young = 5.7E10
 poisson = 0.49
 rho = 2844.23
 epais = (2.2783E-4)/(10) # longueur : 325, largeur : 10, section : 2.2783E-4
-tensInit = 10000000
+tensInit = 10000000*epais
 # Comportement materiau
-relation = 'ELAS_HYP_MEMB_SV'
+relation = 'ELAS_MEMBRANE_SV'
 
 # Gravite 
 gravite = 9.81

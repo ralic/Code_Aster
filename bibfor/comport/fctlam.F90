@@ -45,10 +45,10 @@ subroutine fctlam(x,finalW)
     currentW=0.d0
     n = 0
     nmax = 1000
-! La valeur w0, premier terme de la suite, a un impact fort sur la convergence 
-! lors de l'utilisation de valeur 'x élevées'
-! On lui associe des valeurs precalculees  par le biais d'une régression lineraire
-! pour assurer cette convergence
+! - La valeur w0, premier terme de la suite, a un impact fort sur la convergence 
+!   lors de l'utilisation de valeur 'x élevées'
+!   On lui associe des valeurs précalculées  par le biais d'une régression linéraire
+!   pour assurer cette convergence
     
     if (x.lt.8) then
         lastW=1.d0
@@ -57,7 +57,7 @@ subroutine fctlam(x,finalW)
     endif
     
     
-! ON S'ASSURE DE RESTER SUR LES BRANCHES AUX VALEURS REELLES
+! - ON S'ASSURE DE RESTER SUR LES BRANCHES AUX VALEURS REELLES
     if (x .le. -1.d0/exp(1.d0)) then
         ASSERT(.false.)
     end if

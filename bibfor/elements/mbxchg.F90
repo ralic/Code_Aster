@@ -81,136 +81,135 @@ subroutine mbxchg(option,fami,nddl,nno,ncomp,kpg, npg,iepsin,itemps,ipoids,igeom
     real(kind=8) :: xgau, ygau, zgau, epsinif(3)
     
 !
-! --- CALCUL DE LA MATRICE "B" :
-!              DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
+! - CALCUL DE LA MATRICE "B" :
+!   DEPL NODAL --> DEFORMATIONS MEMBRANAIRES ET JACOBIEN
 !
-        call mbcine(nno, zr(igeom), dff, alpha, beta,&
-                    b, jac)
+    call mbcine(nno, zr(igeom), dff, alpha, beta,&
+                b, jac)
 !
 ! - BRANCHEMENT DES DIFFERENTES OPTIONS
 !
-        if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
-            (option(1:15).eq.'CHAR_MECA_EPSI_')) then
+    if ((option.eq.'FORC_NODA') .or. (option.eq.'CHAR_MECA_TEMP_R') .or.&
+        (option(1:15).eq.'CHAR_MECA_EPSI_')) then
 !
-! - FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
+! ---   FORC_NODA : IL SUFFIT DE RECOPIER SIGMA
 !
-            if (option .eq. 'FORC_NODA') then
-                do c = 1, ncomp
-                    sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
-                end do
-!
-! - CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
-!
-            else if (option.eq.'CHAR_MECA_EPSI_R') then
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                do c = 1, ncomp
-                    do cc = 1, ncomp
-                        sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
-                    end do
-                end do
-!
-            else if (option.eq.'CHAR_MECA_EPSI_F') then
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                
-                nompar(1) = 'X'
-                nompar(2) = 'Y'
-                nompar(3) = 'Z'
-                nompar(4) = 'INST'
-                valpar(4) = zr(itemps)
-                xgau = 0.d0
-                ygau = 0.d0
-                zgau = 0.d0
-!
-                do i = 1, nno
-                    xgau = xgau + vff(i)*zr(igeom-1+1+3*(i-1))
-                    ygau = ygau + vff(i)*zr(igeom-1+2+3*(i-1))
-                    zgau = zgau + vff(i)*zr(igeom-1+3+3*(i-1))
-                enddo
-!
-                valpar(1) = xgau
-                valpar(2) = ygau
-                valpar(3) = zgau
-!
-                call fointe('FM', zk8(iepsin), 4, nompar, valpar, epsinif(1), ier)
-                call fointe('FM', zk8(iepsin+1), 4, nompar, valpar, epsinif(2), ier)
-                call fointe('FM', zk8(iepsin+2), 4, nompar, valpar, epsinif(3), ier)
-!
-                do c = 1, ncomp
-                    do cc = 1, ncomp
-                        sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
-                    end do
-                end do
-                
-                write(*,*) 'TOTO OOOOOOOOOOOOOOOOOOOOOOOOOOOOO'
-!
-! - CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
-!
-            else if (option.eq.'CHAR_MECA_TEMP_R') then
-!
-                call verift(fami, kpg, 1, '+', zi(imate),&
-                            epsth_=epsthe)
-!
-                call mbrigi(fami, kpg, imate, rig)
-!
-                call r8inir(3, 0.d0, sig, 1)
-                do c = 1, ncomp
-                    sig(c) = epsthe*(rig(1,c)+rig(2,c))
-                end do
-!
-            endif
-!
-            do n = 1, nno
-                do i = 1, nddl
-                    do c = 1, ncomp
-                        zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
-                        nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
-                        jac
-                    end do
-                end do
+        if (option .eq. 'FORC_NODA') then
+            do c = 1, ncomp
+                sig(c) = zr(icontm+(kpg-1)*ncomp+c-1)
             end do
 !
-! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
+! ---   CHAR_MECA_EPSI_R : SIG = RIG*EPSIN
 !
-        else if (option.eq.'REFE_FORC_NODA') then
-!
-            call terefe('EPSI_REFE', 'MEMBRANE', epsref)
-            if (epsref .eq. r8vide()) then
-                ASSERT(.false.)
-            endif
+        else if (option.eq.'CHAR_MECA_EPSI_R') then
 !
             call mbrigi(fami, kpg, imate, rig)
 !
-!         ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
-            sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
-            ASSERT(sgmref.gt.0.d0)
-!
-            do n = 1, nno
-                do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
-                                                )/npg
+            call r8inir(3, 0.d0, sig, 1)
+            do c = 1, ncomp
+                do cc = 1, ncomp
+                    sig(c) = sig(c) + zr(iepsin+cc-1)*rig(cc,c)
                 end do
             end do
+!
+        else if (option.eq.'CHAR_MECA_EPSI_F') then
+!
+            call mbrigi(fami, kpg, imate, rig)
+!
+            call r8inir(3, 0.d0, sig, 1)
+            
+            nompar(1) = 'X'
+            nompar(2) = 'Y'
+            nompar(3) = 'Z'
+            nompar(4) = 'INST'
+            valpar(4) = zr(itemps)
+            xgau = 0.d0
+            ygau = 0.d0
+            zgau = 0.d0
+!
+            do i = 1, nno
+                xgau = xgau + vff(i)*zr(igeom-1+1+3*(i-1))
+                ygau = ygau + vff(i)*zr(igeom-1+2+3*(i-1))
+                zgau = zgau + vff(i)*zr(igeom-1+3+3*(i-1))
+            enddo
+!
+            valpar(1) = xgau
+            valpar(2) = ygau
+            valpar(3) = zgau
+!
+            call fointe('FM', zk8(iepsin), 4, nompar, valpar, epsinif(1), ier)
+            call fointe('FM', zk8(iepsin+1), 4, nompar, valpar, epsinif(2), ier)
+            call fointe('FM', zk8(iepsin+2), 4, nompar, valpar, epsinif(3), ier)
+!
+            do c = 1, ncomp
+                do cc = 1, ncomp
+                    sig(c) = sig(c) + epsinif(cc)*rig(cc,c)
+                end do
+            end do
+            
+!
+! ---   CHAR_MECA_TEMP_R : SIG = RIG*EPSTHE
+!
+        else if (option.eq.'CHAR_MECA_TEMP_R') then
+!
+            call verift(fami, kpg, 1, '+', zi(imate),&
+                        epsth_=epsthe)
+!
+            call mbrigi(fami, kpg, imate, rig)
+!
+            call r8inir(3, 0.d0, sig, 1)
+            do c = 1, ncomp
+                sig(c) = epsthe*(rig(1,c)+rig(2,c))
+            end do
+!
+        endif
+!
+        do n = 1, nno
+            do i = 1, nddl
+                do c = 1, ncomp
+                    zr(ivectu+(n-1)*nddl+i-1)=zr(ivectu+(n-1)*&
+                    nddl+i-1) +b(c,i,n)*sig(c)*zr(ipoids+kpg-1)*&
+                    jac
+                end do
+            end do
+        end do
+!
+! - REFE_FORC_NODA : ON CALCULE DES FORCES DE REFERENCE
+!
+    else if (option.eq.'REFE_FORC_NODA') then
+!
+        call terefe('EPSI_REFE', 'MEMBRANE', epsref)
+        if (epsref .eq. r8vide()) then
+            ASSERT(.false.)
+        endif
+!
+        call mbrigi(fami, kpg, imate, rig)
+!
+! ---   ON CALCULE UN ORDRE DE GRANDEUR DE LA CONTRAINTE MEMBRANAIRE
+        sgmref = epsref*(rig(1,1) + rig(2,2))/2.d0
+        ASSERT(sgmref.gt.0.d0)
+!
+        do n = 1, nno
+            do i = 1, nddl
+                zr(ivectu+(n-1)*nddl+i-1) = zr(ivectu+(n-1)*nddl+ i-1) + sgmref*sqrt(abs(jac)&
+                                            )/npg
+            end do
+        end do
 !
 ! - CHAR_MECA_PESA_R
 !
-        else if (option.eq.'CHAR_MECA_PESA_R') then
-            call rcvalb(fami, kpg, 1, '+', zi(imate),&
-                        ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
-                        1, 'RHO', rho, codres, 1)
-            do n = 1, nno
-                do i = 1, nddl
-                    zr(ivectu+(n-1)*nddl+i-1) = zr(&
-                                                ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
-                                                &esa+i) *vff(n)*zr( ipoids+kpg-1&
-                                                )*jac
-                end do
+    else if (option.eq.'CHAR_MECA_PESA_R') then
+        call rcvalb(fami, kpg, 1, '+', zi(imate),&
+                    ' ', 'ELAS_MEMBRANE', 0, ' ', [0.d0],&
+                    1, 'RHO', rho, codres, 1)
+        do n = 1, nno
+            do i = 1, nddl
+                zr(ivectu+(n-1)*nddl+i-1) = zr(&
+                                            ivectu+(n-1)*nddl+ i-1) + rho(1)*zr(ipesa)* zr(ip&
+                                            &esa+i) *vff(n)*zr( ipoids+kpg-1&
+                                            )*jac
             end do
-        endif
-        
+        end do
+    endif
+            
 end subroutine
