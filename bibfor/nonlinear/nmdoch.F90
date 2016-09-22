@@ -1,4 +1,4 @@
-subroutine nmdoch(list_load, l_load_user, list_load_resu)
+subroutine nmdoch(list_load, l_load_user, list_load_resu_)
 !
 implicit none
 !
@@ -44,9 +44,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical, intent(in) :: l_load_user
     character(len=19), intent(in) :: list_load
-    character(len=19), intent(in) :: list_load_resu
+    aster_logical, intent(in) :: l_load_user
+    character(len=19), optional, intent(in) :: list_load_resu_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,7 +85,7 @@ implicit none
     character(len=16) :: nomcmd, typesd, load_apply
     character(len=8) :: load_name, nomfct, model, load_model
     character(len=24) :: info_type
-    character(len=19) :: lisdbl
+    character(len=19) :: lisdbl, list_load_resu
     character(len=24) :: ligrch, lchin
     integer :: i_neum_lapl, i_diri_suiv
     aster_logical :: lfcplx, lacce, l_zero_allowed, l_apply_user, l_diri_undead
@@ -108,6 +108,10 @@ implicit none
 !
 ! - Initializations
 !
+    list_load_resu = ' '
+    if (present(list_load_resu_)) then
+        list_load_resu = list_load_resu_
+    endif
     nb_load        = 0
     infmax         = 0
     fctcsr         = '&&NMDOME'

@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
 #include "asterfort/nmchex.h"
-#include "asterfort/nmdome.h"
+#include "asterfort/nmlect.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nmvcle.h"
 #include "asterfort/nmvcre.h"
@@ -79,14 +79,14 @@ implicit none
     character(len=24) :: newsd(nbomax)
     integer :: n1, nbopt, iterat, numins
     integer :: niv, ifm
-    integer :: iret, nuord, long
+    integer :: iret, long
     integer :: nbnobj
     real(kind=8) :: instam, instap, partps(3)
     character(len=8) :: result, newtab, oldtab
     character(len=16) :: lopt(4), option
-    character(len=19) :: lischa ='&&OP0026.LISCHA', k19bla = ' '
+    character(len=19) :: list_load ='&&OP0026.LISCHA', k19bla = ' '
     character(len=19) :: linst
-    character(len=24) :: modele, mate, carele = '&&OP0026.CARELE'
+    character(len=24) :: model, mate, cara_elem = '&&OP0026.CARELE'
     character(len=24) :: compor, carcri ='&&OP0026.CARCRI'
     character(len=24) :: codere, ligrmo, k24bid
     character(len=24) :: comref = '&&OP0026.COMREF'
@@ -106,8 +106,7 @@ implicit none
 !
 ! - Initializations
 !
-    nuord         = 0
-    modele        = ' '
+    model         = ' '
     k19bla        = ' '
     fonact(1:100) = 0
     oldtab        = ' '
@@ -134,11 +133,10 @@ implicit none
 !
     call getvtx(' ', 'OPTION', nbval=6, vect=lopt, nbret=nbopt)
 !
-! - Model, material and loadings
+! - Get parameters from command file
 !
-    call nmdome(modele, mate, carele, lischa, result,&
-                nuord)
-    call dismoi('NOM_LIGREL', modele, 'MODELE', repk=ligrmo)
+    call nmlect(result, model, mate, cara_elem, list_load)
+    call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
 !
 ! - Get displacements
 !
@@ -167,7 +165,7 @@ implicit none
 !
 ! - Get comportment
 !
-    call nmdorc(modele(1:8), mate, l_etat_init, compor, carcri)
+    call nmdorc(model(1:8), mate, l_etat_init, compor, carcri)
 !
 ! - Get current time
 !
@@ -183,12 +181,12 @@ implicit none
 !
     call nmchex(valinc, 'VALINC', 'COMMOI', commoi)
     call nmchex(valinc, 'VALINC', 'COMPLU', complu)
-    call nmvcle(modele, mate, carele, instap, complu)
-    call nmvcle(modele, mate, carele, instam, commoi)
+    call nmvcle(model, mate, cara_elem, instap, complu)
+    call nmvcle(model, mate, cara_elem, instam, commoi)
 !
 ! - Command variable reference creation
 !
-    call nmvcre(modele, mate, carele, comref)
+    call nmvcre(model, mate, cara_elem, comref)
 !
 ! - Checking number of internal variables
 !
@@ -267,7 +265,7 @@ implicit none
 !
     if (l_merimo) then
         iterat=1
-        call merimo('G', modele, carele, mate, comref,&
+        call merimo('G', model, cara_elem, mate, comref,&
                     compor, carcri, iterat, fonact, k19bla,&
                     valinc, solalg, merigi, vefint, option,&
                     tabret, codere)
@@ -276,9 +274,9 @@ implicit none
 ! - Lagrange dof computation
 !
     if (l_medime) then
-        call medime('G', 'CUMU', modele, lischa, merigi)
-        call vebtla('G', modele, mate, carele, depplu,&
-                    lischa, vediri)
+        call medime('G', 'CUMU', model, list_load, merigi)
+        call vebtla('G', model, mate, cara_elem, depplu,&
+                    list_load, vediri)
     endif
 !
 ! - Nodal forces
@@ -292,7 +290,7 @@ implicit none
         vefori(2)=' '
 
         if (.not.l_merimo) call copisd('CHAMP_GD', 'V', sigmoi, sigplu)
-        call vefnme(option, 'G', modele, mate, carele,&
+        call vefnme(option, 'G', model, mate, cara_elem,&
                     compor, partps, 0, ligrmo, complu,&
                     sigplu, k24bid, depplu, ' ', vefori)
     endif
@@ -300,11 +298,11 @@ implicit none
 ! - State variables
 !
     if (l_varc_prev) then
-        call nmvcpr(modele, mate       , carele, comref     , compor   ,&
+        call nmvcpr(model, mate       , cara_elem, comref     , compor   ,&
                     valinc, base_ = 'G', vect_elem_prev_ = vevarc_prev)
     endif
     if (l_varc_curr) then
-        call nmvcpr(modele, mate       , carele, comref     , compor   ,&
+        call nmvcpr(model, mate       , cara_elem, comref     , compor   ,&
                     valinc, base_ = 'G', vect_elem_curr_ = vevarc_curr)
     endif
 !

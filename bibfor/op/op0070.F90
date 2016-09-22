@@ -164,10 +164,10 @@ implicit none
 !
 ! - Read parameters
 !
-    call nmdata(modele     , mesh    , mate      , carele    , compor    ,&
-                lischa     , solveu  , ds_conv   , carcri    , sddyna    ,&
-                sdpost     , sderro  , ds_energy , sdcriq    , ds_print  ,&
-                ds_algopara, ds_inout, ds_contact, ds_measure, ds_algorom)
+    call nmdata(modele    , mesh      , mate      , carele     , lischa  ,&
+                solveu    , ds_conv   , sddyna    , sdpost     , sderro  ,&
+                ds_energy , sdcriq    , ds_print  , ds_algopara, ds_inout,&
+                ds_contact, ds_measure, ds_algorom, compor     , carcri)
 !
 ! - Initializations of datastructures
 !

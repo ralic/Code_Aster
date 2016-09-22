@@ -1,7 +1,7 @@
-subroutine nmini0(list_func_acti, eta      , nume_inst  , matass  , zmeelm    ,&
-                  zmeass        , zveelm   , zveass     , zsolal  , zvalin    ,&
-                  ds_print      , ds_conv  , ds_algopara, ds_inout, ds_contact,&
-                  ds_measure    , ds_energy, ds_algorom)
+subroutine nmini0(list_func_acti, eta      , nume_inst  , matass         , zmeelm    ,&
+                  zmeass        , zveelm   , zveass     , zsolal         , zvalin    ,&
+                  ds_print      , ds_conv  , ds_algopara, ds_inout       , ds_contact,&
+                  ds_measure    , ds_energy, ds_algorom )
 !
 use NonLin_Datastructure_type
 use Rom_Datastructure_type

@@ -111,13 +111,13 @@ implicit none
     call getvid(' ', 'CARA_ELEM', scal=cara_elem, nbret=nocc)
     call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
     if ((nocc.eq.0) .and. (answer.eq.'OUI')) then
-        call utmess('A', 'RESUELEM1_39')
+        call utmess('A', 'MECHANICS1_39')
         cara_elem = ' '
     endif
     call getvid(' ', 'CHAM_MATER', scal=chmate, nbret=nocc)
     call dismoi('BESOIN_MATER', model, 'MODELE', repk=answer)
     if ( (nocc.eq.0) .and. (answer .eq.'OUI')) then
-        call utmess('A', 'RESUELEM1_40')
+        call utmess('A', 'MECHANICS1_40')
         chmate = ' '
     endif
     if (chmate .ne. ' ') then

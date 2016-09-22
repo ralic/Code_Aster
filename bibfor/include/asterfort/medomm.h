@@ -16,12 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmlect(result, model, mate, cara_elem, list_load, solver_)
-        character(len=*), intent(out) :: result
+    subroutine medomm(model, mate, cara_elem)
         character(len=*), intent(out) :: model
         character(len=*), intent(out) :: mate
         character(len=*), intent(out) :: cara_elem
-        character(len=*), intent(out) :: list_load
-        character(len=*), optional, intent(out) :: solver_
-    end subroutine nmlect
+    end subroutine medomm
 end interface

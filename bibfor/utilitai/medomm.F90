@@ -1,11 +1,13 @@
-subroutine nmlect(result, model, mate, cara_elem, list_load, solver_)
+subroutine medomm(model, mate, cara_elem)
 !
 implicit none
 !
-#include "asterc/getres.h"
-#include "asterfort/cresol.h"
-#include "asterfort/medomm.h"
-#include "asterfort/nmdoch.h"
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/getvid.h"
+#include "asterfort/rcmfmc.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,14 +25,10 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=*), intent(out) :: result
     character(len=*), intent(out) :: model
     character(len=*), intent(out) :: mate
     character(len=*), intent(out) :: cara_elem
-    character(len=*), intent(out) :: list_load
-    character(len=*), optional, intent(out) :: solver_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,38 +38,50 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out result           : name of results datastructure
 ! Out model            : name of model
 ! Out mate             : name of material characteristics (field)
 ! Out cara_elem        : name of elementary characteristics (field)
-! Out list_load        : name of datastructure for list of loads
-! Out solver           : name of datastructure for solver
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: k16dummy
+    integer :: nocc
+    character(len=8) :: concept, answer
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    list_load = '&&OP00XX.LIST_LOAD'
-    solver_   = '&&OP00XX.SOLVER'
+    model     = ' '
+    mate      = ' '
+    cara_elem = ' '
 !
-! - Get results
+! - Get model
 !
-    call getres(result, k16dummy, k16dummy)
+    concept = ' '
+    call getvid(' ', 'MODELE', scal=concept, nbret=nocc)
+    ASSERT(nocc .ne. 0)
+    model = concept
 !
-! - Get parameters from command file
+! - Get material characteristics field
 !
-    call medomm(model, mate, cara_elem)
-!
-! - Get loads information and create datastructure
-!
-    call nmdoch(list_load, l_load_user = .true._1)
-!
-! - Get parameters for solver
-!
-    if (present(solver_)) then
-        call cresol(solver_)
+    concept = ' '
+    call getvid(' ', 'CHAM_MATER', scal=concept, nbret=nocc)
+    call dismoi('BESOIN_MATER', model, 'MODELE', repk=answer)
+    if ((nocc.eq.0) .and. (answer .eq. 'OUI')) then
+        call utmess('A', 'MECHANICS1_40')
     endif
+    if (nocc .ne. 0) then
+        call rcmfmc(concept, mate)
+    else
+        mate = ' '
+    endif
+!
+! - Get elementary characteristics
+!
+    concept = ' '
+    call getvid(' ', 'CARA_ELEM', scal=concept, nbret=nocc)
+    call dismoi('EXI_RDM', model, 'MODELE', repk=answer)
+    if ((nocc.eq.0) .and. (answer .eq. 'OUI')) then
+        call utmess('A', 'MECHANICS1_39')
+    endif
+    cara_elem = concept
 !
 end subroutine

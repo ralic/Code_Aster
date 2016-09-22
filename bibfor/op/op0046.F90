@@ -1,34 +1,6 @@
 subroutine op0046()
 !
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
-!
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-!
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-!
-    implicit none
-!
-! ----------------------------------------------------------------------
-!
-! COMMANDE:  MECA_STATIQUE
-!
-! ----------------------------------------------------------------------
-!
-!
-!
-!
-! 0.3. ==> VARIABLES LOCALES
+implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -63,22 +35,45 @@ subroutine op0046()
 #include "asterfort/vrcins.h"
 #include "asterfort/vrcref.h"
 !
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+!
+
+!
+! --------------------------------------------------------------------------------------------------
+!
+! MECA_STATIQUE
+!
+! --------------------------------------------------------------------------------------------------
+!
     integer :: ibid, nh, nbchre, n1, n4, n5, n7
     integer :: iordr, nbmax, nchar, jchar
     integer :: iocc, nfon, iret, i, nbuti
     integer :: ifm, niv, ier
-!
     real(kind=8) :: temps, time, alpha
     real(kind=8) :: rundf
-!
     character(len=1) :: base, typcoe
     character(len=2) :: codret
     character(len=8) :: k8bla, result, listps, nomode, noma
     character(len=8) :: nomfon, charep, kstr
     character(len=16) :: nosy
-    character(len=19) :: solveu, lischa, ligrel, lisch2
+    character(len=19) :: solver, list_load, ligrel, lisch2
     character(len=19) :: matass
-    character(len=24) :: modele, carele, charge, fomult
+    character(len=24) :: model, cara_elem, charge, fomult
     character(len=24) :: chtime, chamgd
     character(len=24) :: chamel, chstrx
     character(len=24) :: chgeom, chcara(18), chharm
@@ -86,13 +81,12 @@ subroutine op0046()
     character(len=24) :: mate
     character(len=24) :: k24bla, noobj
     character(len=24) :: compor
-!
     aster_logical :: exipou
-!
     complex(kind=8) :: calpha
     real(kind=8), pointer :: vale(:) => null()
     integer, pointer :: ordr(:) => null()
-! DEB ------------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
     rundf=r8vide()
@@ -106,8 +100,6 @@ subroutine op0046()
 ! -- INITIALISATIONS
 !
     base ='G'
-    solveu = '&&OP0046.SOLVEUR'
-    lischa = '&&OP0046.LISCHA'
     matass = '&&OP0046.MATR_RIGI'
     chtime = ' '
     charge = ' '
@@ -125,13 +117,17 @@ subroutine op0046()
 !
 ! --- LECTURE DES OPERANDES DE LA COMMANDE
 !
-    call nmlect(result, modele, mate, carele, compor,&
-                lischa, solveu)
+    call nmlect(result, model, mate, cara_elem,&
+                list_load, solver)
+!
+! - For multifiber beams
+!
+    compor = mate(1:8)//'.COMPOR'
 !
 ! -- ACCES A LA LISTE DES CHARGGES
 !
-    charge = lischa//'.LCHA'
-    fomult = lischa//'.FCHA'
+    charge = list_load//'.LCHA'
+    fomult = list_load//'.FCHA'
 !
 ! -- ACCES A LA LISTE D'INSTANTS
 !
@@ -147,12 +143,12 @@ subroutine op0046()
 !
 ! ---- CALCUL MECANIQUE
 !
-    call mestat(modele, fomult, lischa, mate, carele,&
-                listps, solveu, compor, matass)
+    call mestat(model, fomult, list_load, mate, cara_elem,&
+                listps, solver, compor, matass)
 !
 ! ---- CALCUL DE L'OPTION SIEF_ELGA OU RIEN
 !
-    nomode = modele(1:8)
+    nomode = model(1:8)
     ligrel = nomode//'.MODELE'
 !
     call dismoi('NOM_MAILLA', nomode, 'MODELE', repk=noma)
@@ -172,7 +168,7 @@ subroutine op0046()
     endif
 !
     exipou = .false.
-    call dismoi('EXI_POUX', modele, 'MODELE', repk=k8bla)
+    call dismoi('EXI_POUX', model, 'MODELE', repk=k8bla)
     if (k8bla(1:3) .eq. 'OUI') exipou = .true.
     call jelira(charge, 'LONMAX', nchar)
 !
@@ -197,14 +193,14 @@ subroutine op0046()
                     iret)
         if (iret .gt. 0) goto 13
 !
-        call mecham(nosy, nomode, carele, nh, chgeom,&
+        call mecham(nosy, nomode, cara_elem, nh, chgeom,&
                     chcara, chharm, iret)
         if (iret .ne. 0) goto 13
         time = vale(iordr)
         call mechti(chgeom(1:8), time, rundf, rundf, chtime)
-        call vrcins(modele, mate, carele, time, chvarc(1:19),&
+        call vrcins(model, mate, cara_elem, time, chvarc(1:19),&
                     codret)
-        call vrcref(modele(1:8), mate(1:8), carele(1:8), chvref(1:19))
+        call vrcref(model(1:8), mate(1:8), cara_elem(1:8), chvref(1:19))
 !
         if (exipou .and. nfon .ne. 0) then
             call fointe('F ', nomfon, 1, ['INST'], [time],&
@@ -265,14 +261,14 @@ subroutine op0046()
     call jeveuo(result//'           .ORDR', 'L', vi=ordr)
     do i = 1, nbuti
         iordr=ordr(i)
-        call rssepa(result, iordr, modele(1:8), mate(1:8), carele(1:8),&
+        call rssepa(result, iordr, model(1:8), mate(1:8), cara_elem(1:8),&
                     lisch2(1:19))
     end do
 !
 !     -----------------------------------------------
 ! --- COPIE DE LA SD INFO_CHARGE DANS LA BASE GLOBALE
 !     -----------------------------------------------
-    call copisd(' ', 'G', lischa, lisch2(1:19))
+    call copisd(' ', 'G', list_load, lisch2(1:19))
 !
 !     -----------------------------------------------
 ! --- MENAGE FINAL
