@@ -57,7 +57,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E
 !     ------------------------------------------------------------------
-    parameter (ncmec1=35)
+    parameter (ncmec1=38)
     parameter (ncmec2=50)
     parameter (ncmec3=37)
     parameter (ncmuti=40)
@@ -108,7 +108,8 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
      & 'EPEQ_ELGA',       'EPEQ_ELNO',       'EPEQ_NOEU',&
      & 'SIRO_ELEM',       'FLHN_ELGA',&
      & 'SIPM_ELNO',       'STRX_ELGA',       'FORC_EXTE',&
-     & 'FORC_AMOR',       'FORC_LIAI'/
+     & 'FORC_AMOR',       'FORC_LIAI',&
+     & 'EPGQ_ELGA',       'EPGQ_ELNO',       'EPGQ_NOEU'/
 !
 !      '1234567890123456','1234567890123456','1234567890123456',
     data chmec2/&

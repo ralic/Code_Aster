@@ -340,6 +340,16 @@ class MGCA_HEXA20(Element):
             para_in=((OP.EPEQ_ELNO.PDEFORR, EDEFONO), ),
             para_out=((OP.EPEQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
         ),
+        
+        OP.EPGQ_ELGA(te=335,
+            para_in=((OP.EPGQ_ELGA.PDEFORR, EDEFOPG), ),
+            para_out=((OP.EPGQ_ELGA.PDEFOEQ, EDFEQPG), ),
+        ),
+
+        OP.EPGQ_ELNO(te=335,
+            para_in=((OP.EPGQ_ELNO.PDEFORR, EDEFONO), ),
+            para_out=((OP.EPGQ_ELNO.PDEFOEQ, LC.EDFEQNO), ),
+        ),
 
         OP.EPME_ELGA(te=25,
             para_in=((OP.EPME_ELGA.PCOMPOR, CCOMPOR), (SP.PDEPLAR, DDL_MECA),

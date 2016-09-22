@@ -53,6 +53,8 @@ subroutine te0335(option, nomte)
 !                'EPEQ_ELNO'
 !                'EPMQ_ELGA'
 !                'EPMQ_ELNO'
+!                'EPGQ_ELGA'
+!                'EPGQ_ELNO'
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +80,9 @@ subroutine te0335(option, nomte)
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     endif
 !
-    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELGA')&
-        .or. (option.eq.'EPMQ_ELNO')) then
+    if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPEQ_ELNO') .or.&
+        (option.eq.'EPMQ_ELGA') .or. (option.eq.'EPMQ_ELNO') .or.&
+        (option.eq.'EPGQ_ELGA') .or. (option.eq.'EPGQ_ELNO')) then
 !
         call tecach('OOO', 'PDEFORR', 'L', iret, nval=7,&
                     itab=itabin)
@@ -133,7 +136,7 @@ subroutine te0335(option, nomte)
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPMQ_ELGA')) then
+        if ((option.eq.'EPEQ_ELGA') .or. (option.eq.'EPMQ_ELGA') .or. (option.eq.'EPGQ_ELGA')) then
             do 10 ipg = 1, npg
                 do 11 isp = 1, nbsp
                     idec = idefo+(ipg-1)*nbcmp *nbsp+(isp-1)*nbcmp
@@ -162,7 +165,7 @@ subroutine te0335(option, nomte)
 !
 ! ------ DEFORMATIONS :
 ! -------------------
-        if ((option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELNO')) then
+        if ((option.eq.'EPEQ_ELNO') .or. (option.eq.'EPMQ_ELNO').or. (option.eq.'EPGQ_ELNO')) then
             do 30 ino = 1, nno
                 do 31 isp = 1, nbsp
                     idec = idefo+(ino-1)*nbcmp *nbsp+(isp-1)*nbcmp

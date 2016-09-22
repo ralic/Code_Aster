@@ -208,9 +208,9 @@ V=CALC_CHAMP(
 V=CALC_CHAMP(
              reuse=V,
                 RESULTAT=V,
-                  DEFORMATION=('EPSG_ELNO')
+                  DEFORMATION=('EPSG_ELNO','EPSG_ELGA'),
+                  CRITERES=('EPGQ_ELGA','EPGQ_ELNO','EPGQ_NOEU')
              )
-
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    RESULTAT=V,
@@ -389,6 +389,20 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=7,
                    REFERENCE = 'ANALYTIQUE',
                    PRECISION=1.0000000000000001E-05,
                    CRITERE='ABSOLU',
+                   MAILLE='MA1',),
+                 _F(NUME_ORDRE=7,
+                   RESULTAT=V,
+                   NOM_CHAM='EPGQ_ELGA',
+                   POINT=1,
+                   NOM_CMP='PRIN_1',
+                   VALE_CALC=-0.0450000039196,
+                   MAILLE='MA1',),
+                 _F(NUME_ORDRE=7,
+                   RESULTAT=V,
+                   NOM_CHAM='EPGQ_ELNO',
+                   NOEUD='NO8',
+                   NOM_CMP='PRIN_3',
+                   VALE_CALC=0.105000009203,
                    MAILLE='MA1',),
                 ),
           )
