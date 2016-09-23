@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,9 +30,8 @@ import cataelem.Commons.attributes as AT
 PNBSP_I  = InputParameter(phys=PHY.NBSP_I, container='CARA!.CANBSP',
 comment="""  PNBSP_I :  NOMBRE DE SOUS_POINTS  """)
 
-
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment="""  Informations for non-linear comportment """)
 
 PCONTMR  = InputParameter(phys=PHY.SIEF_R)
 
@@ -68,6 +67,7 @@ FULL_MECA_ELAS = Option(
         SP.PCARCRI,
         SP.PCINFDI,
            PCOMPOR,
+        SP.PMULCOM,
            PCONTMR,
         SP.PDEPLMR,
         SP.PDEPLPR,

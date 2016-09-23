@@ -51,10 +51,8 @@ NDEPLAC  = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
     components=('DX','DY','DZ',))
 
 
-DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO', diff=True,
-    components=(
-    ('EN1',('DX','DY','DZ',)),
-    ('EN2',()),))
+DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
+    components=('DX','DY','DZ',))
 
 
 EDEPLPG  = LocatedComponents(phys=PHY.DEPL_R, type='ELGA', location='RIGI',
@@ -734,7 +732,7 @@ class MECA_HEXS8(Element):
         ),
 
         OP.FULL_MECA(te=407,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.FULL_MECA.PCOMPOR, CCOMPOR), (OP.FULL_MECA.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -749,7 +747,7 @@ class MECA_HEXS8(Element):
         ),
 
         OP.FULL_MECA_ELAS(te=407,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.FULL_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -854,7 +852,7 @@ class MECA_HEXS8(Element):
         ),
 
         OP.RAPH_MECA(te=407,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RAPH_MECA.PCOMPOR, CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -897,7 +895,7 @@ class MECA_HEXS8(Element):
         ),
 
         OP.RIGI_MECA_ELAS(te=407,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RIGI_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -930,7 +928,7 @@ class MECA_HEXS8(Element):
         ),
 
         OP.RIGI_MECA_TANG(te=407,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RIGI_MECA_TANG.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),

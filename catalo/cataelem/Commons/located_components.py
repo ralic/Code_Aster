@@ -66,6 +66,9 @@ CCOEFR = LocatedComponents(phys=PHY.IMPE_R, type='ELEM',
 CCOMPO2 = LocatedComponents(phys=PHY.COMPOR, type='ELEM',
                             components=('NBVARI',))
 
+CMLCOMP = LocatedComponents(phys=PHY.MULTCOMP, type='ELEM',
+                            components=('SD_COMP',))
+
 CCONFR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
                            components=('X[28]',))
 

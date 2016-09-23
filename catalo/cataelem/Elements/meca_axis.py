@@ -685,7 +685,7 @@ class MEAXQU4(Element):
         ),
 
         OP.FULL_MECA(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.FULL_MECA.PCOMPOR, CCOMPOR), (OP.FULL_MECA.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -701,7 +701,7 @@ class MEAXQU4(Element):
         ),
 
         OP.FULL_MECA_ELAS(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.FULL_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -840,7 +840,7 @@ class MEAXQU4(Element):
         ),
 
         OP.RAPH_MECA(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.RAPH_MECA.PCOMPOR, CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -892,7 +892,7 @@ class MEAXQU4(Element):
         ),
 
         OP.RIGI_MECA_ELAS(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.RIGI_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -918,7 +918,7 @@ class MEAXQU4(Element):
         ),
 
         OP.RIGI_MECA_IMPLEX(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.RIGI_MECA_IMPLEX.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_IMPLEX.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -931,7 +931,7 @@ class MEAXQU4(Element):
         ),
 
         OP.RIGI_MECA_TANG(te=100,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+            para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                      (OP.RIGI_MECA_TANG.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
                      (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                      (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),

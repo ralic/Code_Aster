@@ -683,7 +683,7 @@ class MEDPQS4(Element):
         ),
 
         OP.FULL_MECA(te=350,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.FULL_MECA.PCOMPOR, CCOMPOR), (OP.FULL_MECA.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -697,7 +697,7 @@ class MEDPQS4(Element):
         ),
 
         OP.FULL_MECA_ELAS(te=350,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.FULL_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.FULL_MECA_ELAS.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -821,7 +821,7 @@ class MEDPQS4(Element):
         ),
 
         OP.RAPH_MECA(te=350,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RAPH_MECA.PCOMPOR, CCOMPOR), (OP.RAPH_MECA.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -864,7 +864,7 @@ class MEDPQS4(Element):
         ),
 
         OP.RIGI_MECA_ELAS(te=350,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RIGI_MECA_ELAS.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_ELAS.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),
@@ -889,7 +889,7 @@ class MEDPQS4(Element):
         ),
 
         OP.RIGI_MECA_TANG(te=350,
-        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI),
+        para_in=((SP.PCAMASS, CCAMASS), (SP.PCARCRI, CCARCRI), (SP.PMULCOM, LC.CMLCOMP),
                  (OP.RIGI_MECA_TANG.PCOMPOR, CCOMPOR), (OP.RIGI_MECA_TANG.PCONTMR, ECONTPG),
                  (SP.PDEPLMR, DDL_MECA), (SP.PDEPLPR, DDL_MECA),
                  (SP.PGEOMER, NGEOMER), (SP.PINSTMR, CTEMPSR),

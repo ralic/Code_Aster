@@ -1949,6 +1949,14 @@ MATE_F   = PhysicalQuantity(type='K8',
        MATE : nom du materiau affecte a une maille
 """)
 
+MULTCOMP = PhysicalQuantity(type='K16',
+    components=(
+       'SD_COMP',
+    ),
+    comment=""" Comportement pour *CRISTAL
+       SD_COMP : nom de la SD issue de DEFI_COMPOR (MONOCRISTAL,..)
+""")
+
 
 N120_I   = PhysicalQuantity(type='I',
     components=(

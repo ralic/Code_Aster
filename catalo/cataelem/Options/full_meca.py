@@ -28,7 +28,7 @@ import cataelem.Commons.attributes as AT
 
 
 PCOMPOR  = InputParameter(phys=PHY.COMPOR,
-comment=""" PARAMETRES DE CONVERGENCE POUR COMPORTEMENT """)
+comment="""  Informations for non-linear comportment """)
 
 
 PCAORIE  = InputParameter(phys=PHY.CAORIE,
@@ -122,6 +122,7 @@ FULL_MECA = Option(
         SP.PCINFDI,
            PCNSETO,
            PCOMPOR,
+        SP.PMULCOM,
            PCONTMR,
         SP.PDDEPLA,
         SP.PDEPENT,

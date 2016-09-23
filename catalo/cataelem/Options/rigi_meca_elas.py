@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,10 +25,8 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
-
-
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment="""  Informations for non-linear comportment """)
 
 PCONTMR  = InputParameter(phys=PHY.SIEF_R)
 
@@ -62,6 +60,7 @@ RIGI_MECA_ELAS = Option(
         SP.PCARCRI,
         SP.PCINFDI,
            PCOMPOR,
+        SP.PMULCOM,
            PCONTMR,
         SP.PDEPLMR,
         SP.PDEPLPR,

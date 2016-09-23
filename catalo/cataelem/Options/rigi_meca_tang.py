@@ -27,8 +27,8 @@ import cataelem.Commons.attributes as AT
 
 
 
-PCOMPOR  = InputParameter(phys=PHY.COMPOR)
-
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment="""  Informations for non-linear comportment """)
 
 PCAORIE  = InputParameter(phys=PHY.CAORIE, container='CARA!.CARORIEN',
 comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """)
@@ -107,6 +107,7 @@ RIGI_MECA_TANG = Option(
         SP.PCINFDI,
            PCNSETO,
            PCOMPOR,
+        SP.PMULCOM,
            PCONTMR,
         SP.PDDEPLA,
         SP.PDEPENT,
