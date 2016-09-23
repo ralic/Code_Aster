@@ -4,6 +4,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/nmdocc.h"
+#include "asterfort/nmdocm.h"
 #include "asterfort/nmdocr.h"
 !
 ! ======================================================================
@@ -60,7 +61,7 @@ implicit none
 ! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
 !
     if (present(mult_comp_)) then
-       ! call nmdocm()
+        call nmdocm(model, mult_comp_)
     endif
 !
 end subroutine
