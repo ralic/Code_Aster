@@ -53,7 +53,7 @@ subroutine te0100(option, nomte)
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, li
-    integer :: ivarix, iret
+    integer :: ivarix, iret, jv_mult_comp
     integer :: jtab(7), jcret, codret
     integer :: ndim, nnos, jgano, idim
     real(kind=8) :: vect1(54), vect2(4*27*27), vect3(4*27*2), dfdi(4*9)
@@ -105,7 +105,8 @@ subroutine te0100(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    mult_comp = zk16(icompo-1+7)
+    call jevech('PMULCOM', 'L', jv_mult_comp)
+    mult_comp = zk16(jv_mult_comp-1+1)
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)

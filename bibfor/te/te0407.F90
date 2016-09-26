@@ -45,7 +45,7 @@ implicit none
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, jcret, codret
-    integer :: ivarix
+    integer :: ivarix, jv_mult_comp
     integer :: jtab(7), nnos, idim
     real(kind=8) :: def(6, 3, 8), dfdi(8, 3)
     real(kind=8) :: angmas(7), bary(3)
@@ -80,7 +80,8 @@ implicit none
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    mult_comp = zk16(icompo-1+7)
+    call jevech('PMULCOM', 'L', jv_mult_comp)
+    mult_comp = zk16(jv_mult_comp-1+1)
     do i = 1, nno
         do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno

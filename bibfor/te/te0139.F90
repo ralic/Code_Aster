@@ -50,7 +50,7 @@ subroutine te0139(option, nomte)
     integer :: icontm, ivarim
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip, li, jcret, codret
-    integer :: ivarix
+    integer :: ivarix, jv_mult_comp
     aster_logical :: matsym
     integer :: jtab(7), nnos, idim
     real(kind=8) :: bary(3)
@@ -90,7 +90,8 @@ subroutine te0139(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    mult_comp = zk16(icompo-1+7)
+    call jevech('PMULCOM', 'L', jv_mult_comp)
+    mult_comp = zk16(jv_mult_comp-1+1)
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
     lgpg1 = max(jtab(6),1)*jtab(7)

@@ -44,7 +44,7 @@ implicit none
     character(len=4) :: fami
     integer :: nno, npg1, i, imatuu, lgpg, lgpg1
     integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icontm, ivarim
+    integer :: icontm, ivarim, jv_mult_comp
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix, iret, idim
@@ -89,7 +89,9 @@ implicit none
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
-    mult_comp = zk16(icompo-1+7)
+    call jevech('PCOMPOR', 'L', icompo)
+    call jevech('PMULCOM', 'L', jv_mult_comp)
+    mult_comp = zk16(jv_mult_comp-1+1)
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)

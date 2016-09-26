@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine pmdorc(compor, carcri, nb_vari, incela)
+    subroutine pmdorc(compor, carcri, nb_vari, incela, mult_comp)
         character(len=16), intent(out) :: compor(20)
         real(kind=8), intent(out) :: carcri(21)
         integer, intent(out) :: nb_vari
         integer, intent(out) :: incela
+        character(len=16), intent(out) :: mult_comp
     end subroutine pmdorc
 end interface

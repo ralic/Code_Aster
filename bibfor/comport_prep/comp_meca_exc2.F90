@@ -1,5 +1,5 @@
-subroutine comp_meca_exc2(l_mult_comp, l_prot_comp,&
-                          l_excl     , vari_excl)
+subroutine comp_meca_exc2(l_cristal, l_prot_comp,&
+                          l_excl   , vari_excl)
 !
 implicit none
 !
@@ -23,7 +23,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    aster_logical, intent(in) :: l_mult_comp
+    aster_logical, intent(in) :: l_cristal
     aster_logical, intent(in) :: l_prot_comp
     aster_logical, intent(out) :: l_excl
     character(len=16), intent(out) :: vari_excl
@@ -36,7 +36,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  l_mult_comp      : .true. if multi-comportment (DEFI_COMPOR)
+! In  l_cristal        : .true. if *CRISTAL comportment
 ! In  l_prot_comp      : .true. if external computing for comportment (MFront, UMAT)
 ! Out l_excl           : .true. if exception case (no names for internal variables)
 ! Out vari_excl        : name of internal variables if l_excl
@@ -48,7 +48,7 @@ implicit none
 !
 ! - Multiple comportment
 !
-    if (l_mult_comp) then
+    if (l_cristal) then
         l_excl    = .true.
         vari_excl = '&&MULT_COMP'
     endif

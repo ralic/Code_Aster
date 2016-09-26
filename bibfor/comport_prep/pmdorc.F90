@@ -1,4 +1,4 @@
-subroutine pmdorc(compor, carcri, nb_vari, incela)
+subroutine pmdorc(compor, carcri, nb_vari, incela, mult_comp)
 !
 use NonLin_Datastructure_type
 !
@@ -46,6 +46,7 @@ implicit none
     real(kind=8), intent(out) :: carcri(21)
     integer, intent(out) :: nb_vari
     integer, intent(out) :: incela
+    character(len=16), intent(out) :: mult_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +68,7 @@ implicit none
     integer :: nbocc1, nbocc2, nbocc3
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, defo_comp, type_comp
-    character(len=16) :: mult_comp, kit_comp(4), type_cpla, type_matg, post_iter
+    character(len=16) :: kit_comp(4), type_cpla, type_matg, post_iter
     aster_logical :: l_kit_thm, l_etat_init
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     type(NL_DS_ComporPrep) :: ds_compor_prep
@@ -136,7 +137,7 @@ implicit none
     compor(3)  = defo_comp
     compor(4)  = type_comp
     write (compor(6),'(I16)') nume_comp(1)
-    compor(7)  = mult_comp
+    compor(7)  = ' '
     compor(8)  = kit_comp(1)
     compor(9)  = kit_comp(2)
     compor(10) = kit_comp(3)

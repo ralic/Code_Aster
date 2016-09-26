@@ -131,7 +131,8 @@ implicit none
 !
 ! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
 !
-    call nmdorc(model, mate, l_etat_init, ds_constitutive%compor, ds_constitutive%carcri)
+    call nmdorc(model, mate, l_etat_init,&
+                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
 !
 ! - Read parameters for convergence
 !

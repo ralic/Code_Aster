@@ -103,6 +103,10 @@ implicit none
 !
     nb_cmp = nb_cmp_max
 !
+! - Default ELASTIQUE COMPOR <CARTE> on all mesh
+!
+    call nocart(mult_comp, 1, nb_cmp)
+!
 ! - Read informations from command file
 !
     do i_comp = 1, nbocc_compor
@@ -147,7 +151,7 @@ implicit none
 !
 ! - Cleaning
 !
-    call jedetr(mult_comp//'.NCMP')
-    call jedetr(mult_comp//'.VALV')
+    call jedetr(mult_comp(1:19)//'.NCMP')
+    call jedetr(mult_comp(1:19)//'.VALV')
 !
 end subroutine

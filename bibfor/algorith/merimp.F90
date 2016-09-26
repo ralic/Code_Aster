@@ -272,8 +272,8 @@ implicit none
     lchin(35) = stru_prev(1:19)
     lpain(36) = 'PSTRXMP'
     lchin(36) = stru_iter(1:19)
-    !lpain(37) = 'PMULCOM'
-    !lchin(37) = ds_constitutive%mult_comp(1:19)
+    lpain(37) = 'PMULCOM'
+    lchin(37) = ds_constitutive%mult_comp(1:19)
     nbin = 37
 !
 ! - XFEM fields

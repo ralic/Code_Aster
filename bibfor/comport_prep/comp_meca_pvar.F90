@@ -82,7 +82,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_excl, l_kit_meta, l_mult_comp
+    aster_logical :: l_excl, l_kit_meta, l_cristal
     aster_logical :: l_umat, l_mfront_proto, l_mfront_offi, l_prot_comp
     aster_logical :: l_zone_read
     character(len=8) :: mesh
@@ -101,7 +101,7 @@ implicit none
     integer :: nb_vale, nb_cmp_max, nb_zone, nb_vari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
     integer :: i_zone, i_elem, nb_elem_mesh, iret
     character(len=16) :: type_matg, post_iter, vari_excl
-    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp, mult_comp
+    character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
     character(len=16) :: model_mfront
     integer :: model_dim
@@ -214,7 +214,6 @@ implicit none
                 defo_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+3)
                 type_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+4)
                 type_cpla   = v_compor_vale(nb_cmp_max*(i_zone-1)+5)
-                mult_comp   = v_compor_vale(nb_cmp_max*(i_zone-1)+7)
                 kit_comp(1) = v_compor_vale(nb_cmp_max*(i_zone-1)+8)
                 kit_comp(2) = v_compor_vale(nb_cmp_max*(i_zone-1)+9)
                 kit_comp(3) = v_compor_vale(nb_cmp_max*(i_zone-1)+10)
@@ -227,7 +226,6 @@ implicit none
                 defo_comp   = compor_list_(3)
                 type_comp   = compor_list_(4)
                 type_cpla   = compor_list_(5)
-                mult_comp   = compor_list_(7)
                 kit_comp(1) = compor_list_(8)
                 kit_comp(2) = compor_list_(9)
                 kit_comp(3) = compor_list_(10)
@@ -240,7 +238,7 @@ implicit none
 ! --------- Detection of specific cases
 !
             call comp_meca_l(rela_comp, 'KIT_META' , l_kit_meta)
-            l_mult_comp = mult_comp .ne. ' ' .and. mult_comp .ne. 'VIDE'
+            call comp_meca_l(rela_comp, 'CRISTAL'  , l_cristal)
 !
 ! --------- Parameters for external constitutive laws
 !
@@ -255,8 +253,8 @@ implicit none
 !
 ! --------- Exception for name of internal variables
 !
-            call comp_meca_exc2(l_mult_comp, l_prot_comp,&
-                                l_excl     , vari_excl)
+            call comp_meca_exc2(l_cristal, l_prot_comp,&
+                                l_excl   , vari_excl)
 !
 ! --------- Save names of relation
 !
@@ -269,10 +267,11 @@ implicit none
             call jeecra(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari)
             call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'E', vk16 = v_vari)
             call comp_meca_name(nb_vari    , l_excl       , vari_excl,&
-                          l_kit_meta , l_mfront_offi, &
-                          rela_comp  , defo_comp  , kit_comp, type_cpla, type_matg, post_iter,&
-                          libr_name  , subr_name    , model_mfront, model_dim   ,&
-                          v_vari)
+                                l_kit_meta , l_mfront_offi, &
+                                rela_comp  , defo_comp    , kit_comp ,&
+                                type_cpla  , type_matg    , post_iter,&
+                                libr_name  , subr_name    , model_mfront, model_dim   ,&
+                                v_vari)
 !
 ! --------- Save current zone
 !

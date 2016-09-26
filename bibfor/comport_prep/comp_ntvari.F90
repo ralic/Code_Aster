@@ -13,7 +13,6 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/comp_nbvari.h"
 #include "asterfort/comp_mfront_modelem.h"
 #include "asterfort/comp_read_exte.h"
 #include "asterfort/teattr.h"
@@ -234,9 +233,11 @@ implicit none
 !
 ! ----- Get number of internal variables
 !
-        call comp_nbvari(rela_comp, defo_comp, type_cpla   , kit_comp ,&
-                         type_matg, post_iter, mult_comp   , libr_name,&
-                         subr_name, model_dim, model_mfront, nb_vari)
+        if (present(compor_cart_)) then
+            read (v_compor_vale(nb_cmp_max*(i_zone-1)+2),'(I16)') nb_vari
+        else
+            read (compor_list_(2),'(I16)') nb_vari
+        endif
         nt_vari      = nt_vari+nb_vari
         nb_vari_maxi = max(nb_vari_maxi,nb_vari)
     end do

@@ -173,7 +173,8 @@ implicit none
 !
 ! - Get comportment
 !
-    call nmdorc(model(1:8), mate, l_etat_init, ds_constitutive%compor, ds_constitutive%carcri)
+    call nmdorc(model, mate, l_etat_init,&
+                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
 !
 ! - Initializations for constitutive laws
 !

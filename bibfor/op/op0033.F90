@@ -87,7 +87,7 @@ implicit none
     parameter    (nbvrcm=100)
     character(len=4) :: fami, cargau
     character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
-    character(len=16) :: option, compor(ncmpma), nompar(ntamax), opt2
+    character(len=16) :: option, compor(ncmpma), nompar(ntamax), opt2, mult_comp
     character(len=19) :: codi, sddisc, k19b, sdcrit
     character(len=24) :: sderro
     integer, parameter :: carsiz=21
@@ -146,7 +146,7 @@ implicit none
 !
 !     RECUPERATION DU COMPORTEMENT
 !     ----------------------------
-    call pmdorc(compor, carcri, nbvari, incela)
+    call pmdorc(compor, carcri, nbvari, incela, mult_comp)
 !
     call wkvect(vim, 'V V R', nbvari, lvim)
     call wkvect(vip, 'V V R', nbvari, lvip)
@@ -261,7 +261,7 @@ implicit none
                         ncmp, epsm, deps, 6, sigm,&
                         zr(lvim2), opt2, ang, 10, work,&
                         sigp, zr(lvip), 6*ncmp, dsidep, 1,&
-                        rbid, iret)
+                        rbid, iret, mult_comp)
             if (compor(3) .eq. 'SIMO_MIEHE') then
                 call dscal(2*ndim, 1.d0/jp, sigp, 1)
             endif
@@ -303,7 +303,7 @@ implicit none
                         6, epsm, deps, 6, sigm,&
                         zr(lsvip), opt2, ang, 10, work,&
                         ssigp, zr(lsvip), 36, dsidep, 1,&
-                        rbid, iret)
+                        rbid, iret, mult_comp)
         else if (incela.eq.2) then
             call nmcpel(fami, kpg, 1, '+', ndim,&
                         typmod, ang, imate, compor, carcri,&
@@ -377,7 +377,7 @@ implicit none
                     6, epsm, deps, 6, sigm,&
                     zr(lvim2), option, ang, 10, work,&
                     sigp, zr(lvip), 36, dsidep, 1,&
-                    rbid, iret)
+                    rbid, iret, mult_comp)
     else if (incela.eq.2) then
         call dcopy(6, epsm, 1, eps, 1)
         call daxpy(6, 1.d0, deps, 1, eps,&
