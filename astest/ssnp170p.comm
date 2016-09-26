@@ -77,7 +77,7 @@ for i in range(2):
                                 GROUP_MA_MAIT=group_ma_mait,
                                 GROUP_MA_ESCL=group_ma_escl,
                                 ALGO_CONT='LAC',
-                                #CONTACT_INIT='OUI',
+                                TYPE_APPA="RAPIDE",
                                 ),);
     
     

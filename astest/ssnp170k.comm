@@ -62,8 +62,7 @@ DEFICO=DEFI_CONTACT(MODELE=MODI,
                             GROUP_MA_MAIT='Group_2',
                             GROUP_MA_ESCL='Group_1',
                             ALGO_CONT='LAC',
-                            #CONTACT_INIT='OUI',
-                ),);
+                            TYPE_APPA="RAPIDE",),);
 
 CHAR1=AFFE_CHAR_CINE(MODELE=MODI,
                      MECA_IMPO=(_F(GROUP_MA='Symx',

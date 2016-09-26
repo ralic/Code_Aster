@@ -10,6 +10,9 @@ implicit none
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/gt_linoma.h"
+#include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,13 +50,15 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: knuzo
-    character(len=24) :: cnivma, cnives
-    integer :: nb_elem_mast, nb_elem_slav
+    character(len=24) :: cnives
+    integer :: nb_elem_mast, nb_elem_slav, nb_node_mast
     character(len=24) :: sdappa_mast, sdappa_slav 
-    character(len=24) :: sdappa_slne, sdappa_mane
+    character(len=24) :: sdappa_slne, sdappa_mane, sdappa_civm, sdappa_lnma
     integer :: mast_indx_maxi , slav_indx_maxi, mast_indx_mini, slav_indx_mini
     integer, pointer :: v_sdappa_mast(:) => null()
     integer, pointer :: v_sdappa_slav(:) => null()
+    integer, pointer :: list_node_mast(:) => null()
+    integer, pointer :: v_lnma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,6 +71,8 @@ implicit none
     sdappa_slne = sdappa(1:19)//'.ESN'//knuzo(1:1)
     sdappa_mast = sdappa(1:19)//'.MAS'//knuzo(1:1)
     sdappa_slav = sdappa(1:19)//'.ESC'//knuzo(1:1)
+    sdappa_civm = sdappa(1:19)//'.CIM'//knuzo(1:1)
+    sdappa_lnma = sdappa(1:19)//'.LNM'//knuzo(1:1)
 !
 ! - Access to objects
 !
@@ -73,6 +80,13 @@ implicit none
     call jelira(sdappa_slav, 'LONMAX', nb_elem_slav) 
     call jeveuo(sdappa_mast, 'L', vi = v_sdappa_mast)
     call jeveuo(sdappa_slav, 'L', vi = v_sdappa_slav)
+!
+! - Create list of node of master elements
+!
+    call gt_linoma(mesh,v_sdappa_mast,nb_elem_mast,list_node_mast,nb_node_mast)
+    call wkvect(sdappa_lnma,'V V I',nb_node_mast ,vi=v_lnma)
+    v_lnma(:)=list_node_mast(:)
+    AS_DEALLOCATE(vi=list_node_mast)
 !
 ! - Get parameters
 !
@@ -83,10 +97,9 @@ implicit none
 !
 ! - Create inverse connectivities
 !
-    cnivma = '&&aplcpg_cnivma'
     cnives = '&&aplcpg_cnives'
     call cncinv(mesh, v_sdappa_slav, nb_elem_slav, 'V', cnives)
-    call cncinv(mesh, v_sdappa_mast, nb_elem_mast, 'V', cnivma)
+    call cncinv(mesh, v_sdappa_mast, nb_elem_mast, 'V', sdappa_civm)
 !
 ! - Create neighbouring objects
 !
@@ -94,12 +107,11 @@ implicit none
     call jedetr(sdappa_mane) 
     call cnvois(mesh  , v_sdappa_slav, nb_elem_slav, slav_indx_mini, slav_indx_maxi,&
                 cnives, sdappa_slne)
-    call cnvois(mesh  , v_sdappa_mast, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
-                cnivma, sdappa_mane)
+    call cnvois(mesh       , v_sdappa_mast, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
+                sdappa_civm, sdappa_mane)
 !
 ! - Cleaning
 !
-    call jedetr(cnivma)
     call jedetr(cnives)
 !
 end subroutine        

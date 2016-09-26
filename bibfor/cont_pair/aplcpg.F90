@@ -23,7 +23,7 @@ implicit none
 #include "asterfort/clpoma.h"
 #include "asterfort/assert.h"
 #include "asterfort/apdcma.h"
-#include "asterfort/apprin.h"
+#include "asterfort/ap_infast.h"
 #include "asterfort/apdmae.h"
 #include "asterfort/aprtpe.h"
 #include "asterfort/cncinv.h"
@@ -109,7 +109,7 @@ implicit none
     integer :: elem_start, elem_slav_start(nb_elem_slav), elem_mast_start(nb_elem_slav), elem_nume
     integer :: slav_indx_mini, mast_indx_mini, slav_indx_maxi, mast_indx_maxi
     integer :: elem_neigh_indx, mast_find_indx, elem_slav_neigh, elem_mast_neigh
-    aster_logical :: l_recup, debug, l_not_memory
+    aster_logical :: l_recup, debug
     integer, pointer :: mast_find_flag(:) => null()
     integer, pointer :: elem_mast_flag(:) => null()
     integer, pointer :: elem_slav_flag(:) => null()
@@ -181,14 +181,17 @@ implicit none
 !
 ! - Find initial elements for pairing by PANG method
 !
+120 continue
     if (debug) then 
         write(*,*)'Recherche mailles de départ'
     end if
-    l_not_memory = .true.
-    call apprin(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
-                list_elem_mast , nb_elem_slav , list_elem_slav , elem_mast_flag,&
-                elem_slav_flag , nb_mast_start, elem_mast_start, nb_slav_start ,&
-                elem_slav_start)
+    call ap_infast(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+                     list_elem_mast , nb_elem_slav , list_elem_slav , elem_mast_flag,&
+                     elem_slav_flag , nb_mast_start, elem_mast_start, nb_slav_start ,&
+                     elem_slav_start, sdappa, i_zone)
+    if (nb_slav_start.eq.0) then
+        goto 110
+    end if
 !
 ! - Pairing
 !
@@ -550,7 +553,7 @@ implicit none
                     elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
                     if ( elem_slav_neigh .ne. 0 .and.&
                          inte_neigh(i_slav_neigh) .eq. 1 &
-                        .and.elem_slav_flag(elem_neigh_indx) .eq. 0 &
+                        .and.elem_slav_flag(elem_neigh_indx) .ne. 1 &
                         .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
                         weight_test=0.d0
                         call testvois(mesh          , jv_geom       , elem_slav_type,&
@@ -589,7 +592,7 @@ implicit none
             end if  
             if (elem_slav_neigh .ne. 0  .and.&
                 list_slav_master(i_slav_neigh).ne. 0 .and.&
-                elem_slav_flag(elem_neigh_indx) .eq. 0 ) then
+                elem_slav_flag(elem_neigh_indx) .ne. 1 ) then
                 elem_slav_start(nb_slav_start+1) = elem_slav_neigh
                 nb_slav_start                    = nb_slav_start+1
                 elem_slav_flag(elem_neigh_indx)  = 1
@@ -603,6 +606,7 @@ implicit none
         write(*,*)'Fin boucle appariement PANG'
         write(*,*)'maille contact trouvee',nb_pair_zone
     end if
+    goto 120
 110 continue
     if (debug) then 
         write(*,*)'Fin appariement PANG RAPIDE'
