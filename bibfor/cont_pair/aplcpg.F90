@@ -1,6 +1,6 @@
 subroutine aplcpg(mesh        , newgeo        , sdappa      , i_zone        , pair_tole,&
                   nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, &
-                  nb_pair_zone, list_pair_zone)
+                  nb_pair_zone, list_pair_zone, i_proc      , nb_proc, pair_method)
 !
 implicit none
 !
@@ -24,6 +24,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/apdcma.h"
 #include "asterfort/ap_infast.h"
+#include "asterfort/apprin.h"
 #include "asterfort/apdmae.h"
 #include "asterfort/aprtpe.h"
 #include "asterfort/cncinv.h"
@@ -65,6 +66,9 @@ implicit none
     integer, intent(in) :: list_elem_slav(nb_elem_slav)
     integer, intent(inout) :: nb_pair_zone
     integer, pointer, intent(inout) :: list_pair_zone(:)
+    integer, intent(in) :: i_proc
+    integer, intent(in) :: nb_proc
+    character(len=24), intent(in) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -122,13 +126,15 @@ implicit none
     integer :: inte_neigh(4), inte_neigh_aux(4)
     integer :: jv_geom, elem_type_nume
     real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
-    character(len=24) :: sdappa_gapi, sdappa_coef
+    character(len=24) :: sdappa_gapi, sdappa_coef, njv_weight_c, njv_weight_t,njv_nb_pair_zmpi
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     real(kind=8), pointer :: patch_weight_t(:) => null()
     real(kind=8), pointer :: patch_weight_c(:) => null()
     integer, pointer :: v_mesh_comapa(:) => null()
     integer, pointer :: v_mesh_typmail(:) => null()
+    integer, pointer :: nb_pair_zmpi(:) => null()
+    integer, pointer :: list_pair_zmpi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -142,8 +148,12 @@ implicit none
     list_slav_weight(1:4)          = 0.d0
     call jelira(mesh//'.PATCH','NUTIOC', nbpatch_t)
     nbpatch_t= nbpatch_t-1
-    AS_ALLOCATE(vr=patch_weight_c, size= nbpatch_t)
-    AS_ALLOCATE(vr=patch_weight_t, size= nbpatch_t)
+    njv_weight_c=sdappa(1:19)//'.PWC '
+    call wkvect(njv_weight_c, "V V R", nbpatch_t, vr=patch_weight_c)
+    njv_weight_t=sdappa(1:19)//'.PWT '
+    call wkvect(njv_weight_t, "V V R", nbpatch_t, vr=patch_weight_t)
+    njv_nb_pair_zmpi=sdappa(1:19)//'.NAPP'
+    call wkvect(njv_nb_pair_zmpi, "V V I", nb_proc, vi=nb_pair_zmpi)
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
     mast_indx_mini = minval(list_elem_mast)
@@ -185,10 +195,30 @@ implicit none
     if (debug) then 
         write(*,*)'Recherche mailles de départ'
     end if
-    call ap_infast(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
-                     list_elem_mast , nb_elem_slav , list_elem_slav , elem_mast_flag,&
-                     elem_slav_flag , nb_mast_start, elem_mast_start, nb_slav_start ,&
-                     elem_slav_start, sdappa, i_zone)
+    if (pair_method .eq. "RAPIDE") then
+        call ap_infast(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+                       list_elem_mast , nb_elem_slav , list_elem_slav ,elem_slav_flag ,&
+                       nb_mast_start, elem_mast_start, nb_slav_start  ,elem_slav_start,&
+                       sdappa, i_zone)
+    elseif (pair_method .eq. "ROBUSTE") then
+        call apprin(mesh           , newgeo       , pair_tole      , nb_elem_mast  ,&
+                    list_elem_mast , nb_elem_slav , list_elem_slav , elem_slav_flag ,&
+                    nb_mast_start, elem_mast_start, nb_slav_start  , elem_slav_start)
+    endif
+    if (debug) then
+        if (nb_slav_start .eq. 0) then
+            write(*,*) ". No more slave start element "
+        else
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_slav_start(1)), elem_slav_name)
+            write(*,*) ". Start slave element: ", elem_slav_name
+        endif
+        if (nb_mast_start .eq. 0) then
+            write(*,*) ". No more master start element "
+        else
+            call jenuno(jexnum(mesh//'.NOMMAI', elem_mast_start(1)), elem_mast_name)
+            write(*,*) ". Start master element: ", elem_mast_name
+        endif     
+    endif
     if (nb_slav_start.eq.0) then
         goto 110
     end if
@@ -575,7 +605,7 @@ implicit none
         if (nb_pair .ne. 0) then
             call apsave_pair(i_zone      , elem_slav_nume,&
                              nb_pair     , list_pair     ,&
-                             nb_pair_zone, list_pair_zone)
+                             nb_pair_zmpi(i_proc+1), list_pair_zmpi)
         end if
 !
 ! ----- Next elements
@@ -604,7 +634,7 @@ implicit none
     end do
     if (debug) then 
         write(*,*)'Fin boucle appariement PANG'
-        write(*,*)'maille contact trouvee',nb_pair_zone
+        write(*,*)'maille contact trouvee',nb_pair_zmpi
     end if
     goto 120
 110 continue
@@ -615,12 +645,18 @@ implicit none
 ! - Save values for patch
 !
     call apsave_patch(mesh          , sdappa        , i_zone, pair_tole,&
-                      patch_weight_c, patch_weight_t)
+                      patch_weight_c, patch_weight_t, nb_proc, list_pair_zmpi,&
+                      nb_pair_zmpi, list_pair_zone, nb_pair_zone, i_proc)
+    !write(*,*)"Fin APSAVE_PATCH", i_proc
+    !write(*,*)"NB_pair_zone: ",nb_pair_zone ,i_proc
+    !write(*,*)"list_pair_zone: ",list_pair_zone(:) ,i_proc
 !
     AS_DEALLOCATE(vi=mast_find_flag)
     AS_DEALLOCATE(vi=elem_slav_flag)
     AS_DEALLOCATE(vi=elem_mast_flag)
-    AS_DEALLOCATE(vr=patch_weight_t)
-    AS_DEALLOCATE(vr=patch_weight_c)
+    AS_DEALLOCATE(vi=list_pair_zmpi)
+    call jedetr(njv_weight_c)
+    call jedetr(njv_weight_t)
+    call jedetr(njv_nb_pair_zmpi)
     call jedema() 
 end subroutine

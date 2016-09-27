@@ -18,9 +18,8 @@
 !
 interface
     subroutine apprin(mesh          , newgeo        , pair_tole      ,nb_elem_mast  ,&
-                      list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_mast_flag,&
-                      elem_slav_flag, nb_mast_start , elem_mast_start,nb_slav_start ,&
-                      elem_slav_start)
+                      list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_slav_flag,&
+                      nb_mast_start , elem_mast_start,nb_slav_start  ,elem_slav_start)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         real(kind=8), intent(in) :: pair_tole
@@ -28,7 +27,6 @@ interface
         integer, intent(in) :: list_elem_mast(nb_elem_mast)
         integer, intent(in) :: nb_elem_slav
         integer, intent(in) :: list_elem_slav(nb_elem_slav)
-        integer, pointer, intent(inout) :: elem_mast_flag(:)
         integer, pointer, intent(inout) :: elem_slav_flag(:)
         integer, intent(out) :: nb_mast_start
         integer, intent(out) :: elem_mast_start(nb_elem_slav)

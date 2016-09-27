@@ -1,7 +1,7 @@
 subroutine ap_infast(mesh          , newgeo        , pair_tole      ,nb_elem_mast  ,&
-                     list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_mast_flag,&
-                     elem_slav_flag, nb_mast_start , elem_mast_start,nb_slav_start ,&
-                     elem_slav_start, sdappa, i_zone)
+                     list_elem_mast, nb_elem_slav  , list_elem_slav ,elem_slav_flag,&
+                     nb_mast_start , elem_mast_start,nb_slav_start  ,elem_slav_start,&
+                     sdappa, i_zone)
 !
 implicit none
 !
@@ -45,7 +45,6 @@ implicit none
     integer, intent(in) :: list_elem_mast(nb_elem_mast)
     integer, intent(in) :: nb_elem_slav
     integer, intent(in) :: list_elem_slav(nb_elem_slav)
-    integer, pointer, intent(inout) :: elem_mast_flag(:)
     integer, pointer, intent(inout) :: elem_slav_flag(:)
     integer, intent(out) :: nb_mast_start
     integer, intent(out) :: elem_mast_start(nb_elem_slav)
@@ -197,7 +196,7 @@ implicit none
 !
 ! ------------- Already tracked ?
 !
-                if (elem_mast_flag(elem_mast_indx) .eq. 0 ) then
+                if (.true.) then
                     if (debug) then
                         write(*,*) "Master element not yet tracked"
                     endif

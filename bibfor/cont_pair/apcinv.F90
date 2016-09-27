@@ -13,6 +13,14 @@ implicit none
 #include "asterfort/wkvect.h"
 #include "asterfort/gt_linoma.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+
+#ifdef _USE_MPI
+#include "mpif.h"
+#include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,6 +65,10 @@ implicit none
     integer :: mast_indx_maxi , slav_indx_maxi, mast_indx_mini, slav_indx_mini
     integer, pointer :: v_sdappa_mast(:) => null()
     integer, pointer :: v_sdappa_slav(:) => null()
+    mpi_int :: i_proc, nb_proc, mpicou
+    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer, pointer :: v_appa_slav_mpi(:) => null()
+    integer ::nb_el_slav_mpi
     integer, pointer :: list_node_mast(:) => null()
     integer, pointer :: v_lnma(:) => null()
 !
@@ -91,24 +103,40 @@ implicit none
 ! - Get parameters
 !
     mast_indx_maxi = maxval(v_sdappa_mast)
-    slav_indx_maxi = maxval(v_sdappa_slav)
     mast_indx_mini = minval(v_sdappa_mast)
-    slav_indx_mini = minval(v_sdappa_slav)
 !
 ! - Create inverse connectivities
 !
     cnives = '&&aplcpg_cnives'
-    call cncinv(mesh, v_sdappa_slav, nb_elem_slav, 'V', cnives)
+!
+! - MPI initialisation
+! 
+    call asmpi_comm('GET', mpicou)
+    call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+    nb_elem_mpi  = int(nb_elem_slav/nb_proc)
+    nbr_elem_mpi = nb_elem_slav-nb_elem_mpi*nb_proc
+    idx_start    = 1+(i_proc)*nb_elem_mpi
+    idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
+    nb_el_slav_mpi = idx_end - idx_start + 1 
+    AS_ALLOCATE(vi=v_appa_slav_mpi, size=nb_el_slav_mpi)
+    v_appa_slav_mpi(:)=v_sdappa_slav(idx_start:idx_end)
+    slav_indx_maxi = maxval(v_appa_slav_mpi)
+    slav_indx_mini = minval(v_appa_slav_mpi)
+    !write(*,*)"I_PROC = ", i_proc
+    !write(*,*)"NB_ELEM_MPI = ",nb_el_slav_mpi, "LIST_ELEM_SLAV_MPI = ",v_appa_slav_mpi(:)
+    !write(*,*)"NB_ELEM_SLAV = ", nb_elem_slav, "LIST_ELEM_SLAV = ",v_sdappa_slav(:)
+    call cncinv(mesh, v_appa_slav_mpi, nb_el_slav_mpi, 'V', cnives)
     call cncinv(mesh, v_sdappa_mast, nb_elem_mast, 'V', sdappa_civm)
 !
 ! - Create neighbouring objects
 !
     call jedetr(sdappa_slne)
     call jedetr(sdappa_mane) 
-    call cnvois(mesh  , v_sdappa_slav, nb_elem_slav, slav_indx_mini, slav_indx_maxi,&
+    call cnvois(mesh  , v_appa_slav_mpi, nb_el_slav_mpi, slav_indx_mini, slav_indx_maxi,&
                 cnives, sdappa_slne)
     call cnvois(mesh       , v_sdappa_mast, nb_elem_mast, mast_indx_mini, mast_indx_maxi,&
                 sdappa_civm, sdappa_mane)
+    AS_DEALLOCATE(vi=v_appa_slav_mpi)
 !
 ! - Cleaning
 !

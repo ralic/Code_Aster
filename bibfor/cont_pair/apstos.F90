@@ -13,7 +13,6 @@ implicit none
 #include "asterfort/cfmmvd.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/aplcpb.h"
 #include "asterfort/aplcno.h"
 #include "asterfort/aplcpg.h"
 #include "asterfort/cfdisi.h"
@@ -22,6 +21,15 @@ implicit none
 #include "asterfort/jerazo.h"
 #include "asterfort/apstoc.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+
+#ifdef _USE_MPI
+#include "mpif.h"
+#include "asterf_mpi.h"
+#endif
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -72,6 +80,10 @@ implicit none
     integer, pointer :: v_sdappa_slav(:) => null()
     integer, pointer :: v_sdcont_methco(:) => null()
     character(len=24) :: sdcont_methco
+    mpi_int :: i_proc, nb_proc, mpicou
+    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer, pointer :: v_appa_slav_mpi(:) => null()
+    integer ::nb_el_slav_mpi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -131,23 +143,34 @@ implicit none
         call jeveuo(sdappa_slav, 'L', vi = v_sdappa_slav)
 !
 ! ----- Pairing
+!       
 !
-        if (pair_method.eq.'ROBUSTE') then
-            call aplcpb(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
-                        nb_elem_mast, v_sdappa_mast , nb_elem_slav, v_sdappa_slav, &
-                        nb_pair_zone, list_pair_zone)
-        elseif (pair_method.eq.'RAPIDE') then
-            call aplcpg(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
-                        nb_elem_mast, v_sdappa_mast , nb_elem_slav, v_sdappa_slav, &
-                        nb_pair_zone, list_pair_zone)
-        else
-            ASSERT(.false.)
-        endif
+! ----- MPI initialisation
+! 
+        call asmpi_comm('GET', mpicou)
+        call asmpi_info(mpicou,rank=i_proc , size=nb_proc)
+        nb_elem_mpi  = int(nb_elem_slav/nb_proc)
+        nbr_elem_mpi = nb_elem_slav-nb_elem_mpi*nb_proc
+        idx_start    = 1+(i_proc)*nb_elem_mpi
+        idx_end      = idx_start+nb_elem_mpi-1+nbr_elem_mpi*int((i_proc+1)/nb_proc)
+        !write(*,*)"Proc : ", i_proc, "idx_start", idx_start, "idx_end", idx_end
+        nb_el_slav_mpi = idx_end - idx_start + 1 
+        AS_ALLOCATE(vi=v_appa_slav_mpi, size=nb_el_slav_mpi)
+        v_appa_slav_mpi(:)=v_sdappa_slav(idx_start:idx_end)
+        !write(*,*)"I_PROC = ", i_proc
+        !write(*,*)"NB_ELEM_MPI = ",nb_el_slav_mpi, "LIST_ELEM_SLAV_MPI = ",v_appa_slav_mpi(:)
+        !write(*,*)"NB_ELEM_SLAV = ", nb_elem_slav, "LIST_ELEM_SLAV = ",v_sdappa_slav(:)
+        call aplcpg(mesh        , newgeo        , sdappa      , i_zone       , pair_tole,&
+                    nb_elem_mast, v_sdappa_mast , nb_el_slav_mpi, v_appa_slav_mpi, &
+                    nb_pair_zone, list_pair_zone, int(i_proc), int(nb_proc), pair_method)
+        AS_DEALLOCATE(vi=v_appa_slav_mpi)
     end do
 !
 ! - Save pairing information in sdappa data structure
 !
+    !write(*,*)"Debut apstoc"
     call apstoc(ds_contact, nb_pair_zone, list_pair_zone)
+    !write(*,*)"Fin apstoc"
 !
 ! - Compute smooth normals at nodes
 !

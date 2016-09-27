@@ -62,6 +62,7 @@ implicit none
     character(len=4) :: zone_type 
     real(kind=8) :: norm_vect(3), epsi_maxi
     integer :: norm_type
+    character(len=16), pointer :: valk(:)=>null()
 !
 ! --------------------------------------------------------------------------------------------------
 ! 
@@ -91,6 +92,13 @@ implicit none
         jdecne       = mminfi(sdcont_defi, 'JDECNE', i_zone)
         jdecme       = mminfi(sdcont_defi, 'JDECME', i_zone)
         norm_type    = 0
+!
+! ----- MPI initialisation
+!
+        call jeveuo(sdappa(1:19)//'.MPIB', 'E', vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call jeveuo(sdappa(1:19)//'.MPIC', 'E', vk16=valk)
+        valk(1)='MPI_INCOMPLET'
 ! 
 ! ----- Compute tangents at each node for each master element
 !

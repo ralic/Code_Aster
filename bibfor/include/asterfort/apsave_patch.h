@@ -19,12 +19,19 @@
 !
 interface
     subroutine apsave_patch(mesh          , sdappa        , i_zone, pair_tole,&
-                            patch_weight_c, patch_weight_t)
+                            patch_weight_c, patch_weight_t, nb_proc, list_pair_zmpi,&
+                            nb_pair_zmpi, list_pair_zone, nb_pair_zone, i_proc)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: sdappa
         integer, intent(in) :: i_zone
         real(kind=8), intent(in) :: pair_tole
         real(kind=8), intent(in) :: patch_weight_c(*)
         real(kind=8), intent(in) :: patch_weight_t(*)
+        integer, intent(inout) :: nb_pair_zone
+        integer, pointer, intent(inout) :: list_pair_zone(:)
+        integer, pointer, intent(in) :: nb_pair_zmpi(:)
+        integer, pointer, intent(in) :: list_pair_zmpi(:)   
+        integer, intent(in) :: nb_proc
+        integer, intent(in) :: i_proc
     end subroutine apsave_patch
 end interface

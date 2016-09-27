@@ -20,7 +20,7 @@
 interface
     subroutine aplcpg(mesh        , newgeo        , sdappa      , i_zone        , pair_tole,&
                       nb_elem_mast, list_elem_mast, nb_elem_slav, list_elem_slav, &
-                      nb_pair_zone, list_pair_zone)
+                      nb_pair_zone, list_pair_zone, i_proc      , nb_proc, pair_method)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         character(len=19), intent(in) :: sdappa
@@ -32,5 +32,8 @@ interface
         integer, intent(in) :: list_elem_slav(nb_elem_slav)
         integer, intent(inout) :: nb_pair_zone
         integer, pointer, intent(inout) :: list_pair_zone(:)
+        integer, intent(in) :: i_proc
+        integer, intent(in) :: nb_proc
+        character(len=24), intent(in) :: pair_method
     end subroutine aplcpg
 end interface
