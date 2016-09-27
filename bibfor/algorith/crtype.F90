@@ -76,7 +76,7 @@ subroutine crtype()
     integer :: ino, nbv(1), jrefe, nb_load, icmpd, icmpi
     integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
     integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
-    integer :: nbordr1, nbordr2, ier1
+    integer :: nbordr1, nbordr2, ier1, nb_modele, nb_materi, nb_carele
 !
     parameter  (mxpara=10)
 !
@@ -88,7 +88,7 @@ subroutine crtype()
     character(len=4) :: typabs
     character(len=6) :: typegd
     character(len=8) :: k8b, resu, nomf, noma, typmod, criter, matr, nogdsi, axe
-    character(len=8) :: modele, materi, carele, blan8, noma2
+    character(len=8) :: modele, materi, carele, blan8, noma2, modele_prev, materi_prev, carele_prev
     character(len=14) :: numedd
     character(len=16) :: nomp(mxpara), type, oper, acces, k16b
     character(len=19) :: nomch, champ, listr8, list_load, pchn1, resu19, profprev, profch
@@ -112,6 +112,12 @@ subroutine crtype()
     blan8 = ' '
     list_load = ' '
     nboini=10
+    nb_modele=0
+    nb_materi=0
+    nb_carele=0
+    modele_prev=' '
+    materi_prev=' '
+    carele_prev=' '
 !
     call getres(resu, type, oper)
     resu19=resu
@@ -138,10 +144,21 @@ subroutine crtype()
     do iocc = 1, nbfac
         modele = ' '
         call getvid('AFFE', 'MODELE', iocc=iocc, scal=modele, nbret=n1)
+!
+!   on compte les modeles, materiaux et les cara_ele différents d'un pas à l'autre 
+!   (y compris la chaine ' ' ) 
+!   si on en trouve au moins 2 différents, l'appel final à lrcomm se fera avec ' '
+!        
+        if (modele .ne. ' ' .and. modele .ne. modele_prev) nb_modele=nb_modele+1
+        modele_prev=modele
         materi = blan8
         call getvid('AFFE', 'CHAM_MATER', iocc=iocc, scal=materi, nbret=n1)
+        if (materi .ne. ' ' .and. materi .ne. materi_prev) nb_materi=nb_materi+1
+        materi_prev=materi
         carele = blan8
         call getvid('AFFE', 'CARA_ELEM', iocc=iocc, scal=carele, nbret=n1)
+        if (carele .ne. ' ' .and. carele .ne. carele_prev) nb_carele=nb_carele+1
+        carele_prev=carele
 !        -- POUR STOCKER INFO_CHARGE DANS LE PARAMETRE EXCIT :
         call getvid('AFFE', 'CHARGE', iocc=iocc, nbval=0, nbret=n1)
         if (n1 .lt. 0) then
@@ -669,8 +686,7 @@ subroutine crtype()
                 call dismoi('PROF_CHNO', champ, 'CHAMP', repk=profch, arret='C',&
                             ier=ier)
                 if (ier .eq. 0) then
-                    call refdaj('F', resu19, (nbordr2-nbordr1), profch, 'DYNAMIQUE',&
-                                matric, ier)
+                    call refdaj('F', resu19, (nbordr2-nbordr1), profch, 'DYNAMIQUE', matric, ier)
                 endif
             else
                 call refdaj('F', resu19, (nbordr2-nbordr1), numedd, 'DYNAMIQUE',&
@@ -697,8 +713,10 @@ subroutine crtype()
     endif
 !
     if (typres .eq. 'EVOL_NOLI' .or. typres .eq. 'EVOL_ELAS' .or. typres .eq. 'EVOL_THER') then
-        call lrcomm(resu, typres, nboini, materi, carele,&
-                    modele, nsymb)
+      if (nb_modele .gt. 1) modele = ' '
+      if (nb_materi .gt. 1) materi = ' '
+      if (nb_carele .gt. 1) carele = ' '
+      call lrcomm(resu, typres, nboini, materi, carele, modele, nsymb)
     endif
 !
 !
