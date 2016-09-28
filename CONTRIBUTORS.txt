@@ -73,7 +73,7 @@
     Luc Davenne
     Martin David
     P. David
-    Philippe De Bonnieres
+    Philippe de Bonnieres
     Thomas De Soza <thomas.de-soza .at. edf.fr>
     Isabelle Debost
     Gilles Debruyne
@@ -83,6 +83,7 @@
     Olivier Diard
     Norberto Dominguez
     Anne-Marie Donore
+    Guillaume Drouet
     Fabien Dumay
     Annick Dumond
     Georges Dumont
@@ -137,10 +138,11 @@
     Pascal Latrubesse
     André Laulusa
     N. Laurent
+    Nathan Lauzeral
     Jérôme Laverne
     Francis Lebouvier
     Éric Leclère
-    Véronique Lecorvec
+    Véronique Le Corvec
     Jean-Pierre Lefebvre <j-pierre.lefebvre .at. edf.fr>
     Vincent Lefebvre
     Walter Lefevre
@@ -225,7 +227,7 @@
     Denis Thomasson
     Mohamed Torkhani
     Van-Xuan Tran
-    M. Trost
+    Michel Trost
     Sylvie Vandenberghe
     Christophe Vare
     Isabelle Vautier
@@ -238,6 +240,7 @@
     François Waeckel
     Françoise Waeckel
     Olivier Wilk
+    Albert Y
     Antoine Yessayan
     Irmela Zentner
 #
