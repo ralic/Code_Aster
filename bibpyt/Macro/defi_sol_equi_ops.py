@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     from Accas import _F
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table import Table
-    from math import log, sqrt
+    from math import log, sqrt, floor
 
   #--------------------------------------------------------------------------------
   # On importe les definitions des commandes a utiliser dans la macro
@@ -164,12 +164,22 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     tfin = tt[nbdt - 1]
 
     fmax = 0.5 / dt  # facteur 1/2 car FFT calculee avec SYME='NON'
-    df = 2 * fmax / nbdt
+    df = 2.0 * fmax / nbdt
+    fmax = (0.5 / dt) - df
+    NB4 = 4*int(floor(nbdt / 4))
+    if NB4 < nbdt :
+       text = ('NB4 =' + str(NB4) + ' < NBDT =' + str(nbdt) 
+               + ' non multiple de 4')
+       aster.affiche('MESSAGE', text)
 
     if args['FREQ_COUP'] != None:
         fcoup = args['FREQ_COUP']
     else:
         fcoup = fmax
+    fmaxc = fcoup
+    if fmax < fcoup:
+        fmaxc = fmax
+    print 'df fmax fmaxc ', df, fmax, fmaxc
 
 # On genere les frequences
     __lfreq = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=fmax, PAS=df),)
@@ -179,21 +189,25 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
 # definition des frequences de calcul
     __lfreqc = DEFI_LIST_REEL(
-        DEBUT=0., INTERVALLE=_F(JUSQU_A=fcoup, PAS=0.1),)
+        DEBUT=0.1, INTERVALLE=_F(JUSQU_A=fmaxc, PAS=0.1),)
 
 # Definition de la fonction unite et du filtre en frequence
     __UN = DEFI_FONCTION(NOM_PARA='FREQ', VALE=(0., 1., fmax, 1.,),
                          INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
 
-    if (fmax + df) > fcoup:
-        __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
-                                 VALE_C=(0., 0., 0., df, 1., 0., (fcoup - df), 1., 0., (
-                                         fcoup), 0., 0., (fmax + df), 0., 0.),
-                                 INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
-    else:
-        __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
-                                 VALE_C=(0., 0., 0., df, 1., 0., (
-                                         fcoup - df), 1., 0., (fcoup), 0., 0.),
+#    if (fmax + df) > fcoup:
+#        __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+#                                 VALE_C=(0., 0., 0., df, 1., 0., (fcoup - df), 1., 0., (
+#                                         fcoup), 0., 0., (fmax + df), 0., 0.),
+#                                 INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
+#    else:
+#        __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+#                                 VALE_C=(0., 0., 0., df, 1., 0., (
+#                                         fcoup - df), 1., 0., (fcoup), 0., 0.),
+#                                 INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
+
+    __FILTRE = DEFI_FONCTION(NOM_PARA='FREQ',
+                             VALE_C=(0., 0., 0., df, 1., 0., fmaxc, 1., 0., (fmaxc+df), 0., 0.),
                                  INTERPOL='LIN', PROL_DROITE = 'CONSTANT', PROL_GAUCHE = 'CONSTANT',)
 
 # Lecture du maillage
@@ -266,7 +280,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
 # On calcule la FFT
 
-    __AHX = CALC_FONCTION(FFT=_F(FONCTION=__ACCEX, METHODE='COMPLET',))
+    __AHX = CALC_FONCTION(FFT=_F(FONCTION=__ACCEX, METHODE='COMPLET',),)
 
 #
 # DEBUT DE LA BOUCLE       #
@@ -713,7 +727,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         __AX_RAf = CALC_FONCTION(FFT=_F(FONCTION=__AHX_RA,
                                         METHODE='COMPLET',
-                                        SYME='NON',)
+                                        SYME='NON',),PROL_DROITE='CONSTANT',
                                  )
         __AX_RA = CALC_FONCTION(
             COMB=_F(FONCTION=__AX_RAf, COEF=1.), LIST_PARA=__linst,
@@ -735,7 +749,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
             LIST_PARA=__lfreq, NOM_PARA='FREQ',)
 
         __AXrCL = CALC_FONCTION(
-            FFT=_F(FONCTION=__AHXrCL, METHODE='COMPLET', SYME='NON',))
+            FFT=_F(FONCTION=__AHXrCL, METHODE='COMPLET', SYME='NON',),PROL_DROITE='CONSTANT',)
 
         __AX_CL = CALC_FONCTION(
             COMB=(_F(FONCTION=__AXrCL, COEF=1.,), _F(FONCTION=__AX_RA, COEF=1.,),), LIST_PARA=__linst,)
@@ -802,23 +816,25 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
 
             __fthr = RECU_FONCTION(
-                GROUP_NO=('PN' + str(k)), RESULTAT=__DYNHARM, NOM_CHAM='ACCE', NOM_CMP='DX', INTERPOL='LIN',)
+                GROUP_NO=('PN' + str(k)), RESULTAT=__DYNHARM, NOM_CHAM='ACCE', NOM_CMP='DX', INTERPOL='LIN',
+                          PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT')
 
             __axhr = CALC_FONCTION(
                 MULT=(_F(FONCTION=__AHX_RA,), _F(FONCTION=__fthr,), _F(FONCTION=__FILTRE,)), LIST_PARA=__lfreq, NOM_PARA='FREQ',)
 
             __axr = CALC_FONCTION(
-                FFT=_F(FONCTION=__axhr, METHODE='COMPLET', SYME='NON',))
+                FFT=_F(FONCTION=__axhr, METHODE='COMPLET', SYME='NON',),PROL_DROITE='CONSTANT',)
 
             __axa[k] = CALC_FONCTION(
                 COMB=(_F(FONCTION=__axr, COEF=1.,), _F(FONCTION=__AX_RA, COEF=1.,),), LIST_PARA=__linst,)
 
             __ftep = RECU_FONCTION(
-                GROUP_MA=__TMAT['M', k], RESULTAT=__DYNHARM, NOM_CHAM='EPSI_ELGA', POINT=1, NOM_CMP='EPXY', INTERPOL='LIN',)
+                GROUP_MA=__TMAT['M', k], RESULTAT=__DYNHARM, NOM_CHAM='EPSI_ELGA', POINT=1, NOM_CMP='EPXY', INTERPOL='LIN',
+                          PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT')
             __eph = CALC_FONCTION(
                 MULT=(_F(FONCTION=__AHX_RA,), _F(FONCTION=__ftep,), _F(FONCTION=__FILTRE,)), LIST_PARA=__lfreq, NOM_PARA='FREQ',)
             __epxy[k] = CALC_FONCTION(
-                FFT=_F(FONCTION=__eph, METHODE='COMPLET', SYME='NON',))
+                FFT=_F(FONCTION=__eph, METHODE='COMPLET', SYME='NON',),PROL_DROITE='CONSTANT',)
 
             # Calcul de la distorsion : gamma = 2*epxy ; tau = sixy
             __gam[k] = CALC_FONCTION(
@@ -829,7 +845,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
             __tauh = CALC_FONCTION(COMB_C=_F(FONCTION=__eph,COEF_C = f2Getoil),LIST_PARA=__lfreq,NOM_PARA='FREQ',);
             
-            __tau[k] = CALC_FONCTION(FFT=_F(FONCTION=__tauh,METHODE='COMPLET',SYME='NON',));
+            __tau[k] = CALC_FONCTION(FFT=_F(FONCTION=__tauh,METHODE='COMPLET',SYME='NON',),PROL_DROITE='CONSTANT',);
 
             # Calcul des max
             __accxa = CALC_FONCTION(ABS=_F(FONCTION=__axa[k]))
