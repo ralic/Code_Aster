@@ -163,7 +163,7 @@ IMPR_TABLE(TABLE=TABG,);
 
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=214.571030638,
+           VALE_CALC=231.446204017,
            NOM_PARA='G',
            TABLE=SIF,
            FILTRE=(_F(NOM_PARA='NUM_PT',
@@ -174,7 +174,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=214.571030638,
+           VALE_CALC=207.117752798,
            NOM_PARA='G',
            TABLE=TABG,
            FILTRE=(_F(NOM_PARA='NUM_PT',

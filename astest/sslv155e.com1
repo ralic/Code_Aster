@@ -66,6 +66,6 @@ TEST_RESU(RESU=_F(RESULTAT=RESSNL,
                   NOM_CMP='SIYY',
                   MAILLE='M646',
                   POINT=3,
-                  VALE_CALC=1168520.85332),)
+                  VALE_CALC=1168520.85334),)
 
 FIN()

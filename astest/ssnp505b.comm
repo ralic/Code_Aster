@@ -247,14 +247,14 @@ for i in range(14):
 TEST_TABLE(TABLE=PK[0],
            NOM_PARA='K1',
            CRITERE='RELATIF',
-           VALE_CALC=1.74241687241,
+           VALE_CALC=1.74241687246,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[0],
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           VALE_CALC=2.76063302258,
+           VALE_CALC=2.76063302255,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -268,28 +268,28 @@ TEST_TABLE(TABLE=PK[1],
 TEST_TABLE(TABLE=PK[1],
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           VALE_CALC=3.16932408371,
+           VALE_CALC=3.16932408372,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[2],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.569859656591,
+           VALE_CALC=-0.569859656594,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[2],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.441931236359,
+           VALE_CALC=0.441931236362,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[3],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=0.173119587557,
+           VALE_CALC=0.173119587539,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -297,49 +297,49 @@ TEST_TABLE(TABLE=PK[3],
 TEST_TABLE(TABLE=PK[3],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.284277960801,
+           VALE_CALC=0.284277960792,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[4],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.347462588916,
+           VALE_CALC=-0.347462588756,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[4],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-          VALE_CALC=0.15232623323,
+          VALE_CALC=0.152326233208,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[5],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00450305299939,
+           VALE_CALC=-0.00450305299927,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[5],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.0385175971436,
+           VALE_CALC=-0.0385175971415,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[6],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.339807959596,
+           VALE_CALC=-0.339807959597,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[6],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.258245037541,
+           VALE_CALC=0.258245037544,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -374,14 +374,14 @@ TEST_TABLE(TABLE=PK[8],
 TEST_TABLE(TABLE=PK[9],
            NOM_PARA='K1',
            CRITERE='RELATIF',
-           VALE_CALC=5.42917064543,
+           VALE_CALC=5.42917064544,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[9],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.126908406184,
+           VALE_CALC=-0.126908406181,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -395,7 +395,7 @@ TEST_TABLE(TABLE=PK[10],
 TEST_TABLE(TABLE=PK[10],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.167984925693,
+           VALE_CALC=-0.167984925692,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -409,21 +409,21 @@ TEST_TABLE(TABLE=PK[11],
 TEST_TABLE(TABLE=PK[11],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.932482556454,
+           VALE_CALC=0.932482556455,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[12],
            NOM_PARA='K1',
            CRITERE='ABSOLU',
-           VALE_CALC=0.404839346499,
+           VALE_CALC=0.404839346498,
            VALE_ABS='NON',
            INFO=1,)
 
 TEST_TABLE(TABLE=PK[12],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.351884505772,
+           VALE_CALC=-0.35188450577,
            VALE_ABS='NON',
            INFO=1,)
 
@@ -437,7 +437,7 @@ TEST_TABLE(TABLE=PK[13],
 TEST_TABLE(TABLE=PK[13],
            NOM_PARA='K2',
            CRITERE='ABSOLU',
-           VALE_CALC=0.109326027978,
+           VALE_CALC=0.10932602798,
            VALE_ABS='NON',
            INFO=1,)
 

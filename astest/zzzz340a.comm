@@ -263,7 +263,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=-6.25277607469E-13    ,
+                   VALE_CALC=-5.96855898038E-13    ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -274,7 +274,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=-4.54736345055E-13 ,
+                   VALE_CALC=-9.37906191503E-13 ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    NOM_CHAM='TEMP_ELGA',
@@ -285,7 +285,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXR,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=2.27373675443E-13  ,
+                   VALE_CALC=0.0  ,
                    CRITERE='ABSOLU',),),);
 
 # CAS OU LE CHARGEMENT TEMP_CONTINUE EST CREE AVEC AFFE_CHAR_THER_F
@@ -299,7 +299,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=-6.25277607469E-13  ,
+                   VALE_CALC=-5.96855898038E-13  ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -310,7 +310,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=1.45430681622E-13 ,
+                   VALE_CALC=9.40558337779E-15 ,
                    CRITERE='ABSOLU',),),);
 TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    NOM_CHAM='TEMP_ELGA',
@@ -321,7 +321,7 @@ TEST_RESU(RESU=(_F(RESULTAT=TEMPEXF,
                    REFERENCE = 'ANALYTIQUE' ,
                    VALE_REFE=0.,
                    PRECISION= 1.0E-9,
-                   VALE_CALC=-4.54736345055E-13  ,
+                   VALE_CALC=-9.37906191503E-13  ,
                    CRITERE='ABSOLU',),),);
 
 # TEST SUR LE GRADIENT DE TEMPERATURE SELON Y

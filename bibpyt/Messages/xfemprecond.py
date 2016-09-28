@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,5 +56,12 @@ cata_msg = {
     - Sinon, désactiver le pré-conditionneur X-FEM dans le MODI_MODELE_XFEM/PRETRAITEMENTS='SANS'
       pour tenter de poursuivre le calcul. Cette opération est très risquée.
 """),
+
+    8 : _(u"""
+  -> La connectivité stockée lors de la découpe XFEM ne situe pas 
+     dans les bornes autorisées.
+     Cela risque de produire des sous-éléments distordus à cause de la 
+     mauvaise localisation des points de découpe.
+  """),
 
 }

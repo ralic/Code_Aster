@@ -188,7 +188,7 @@ TEST_TABLE(TABLE=PK,
            NOM_PARA='G',
            FILTRE=_F(NOM_PARA = 'NUME_ORDRE',
                      VALE_I = 5),
-           VALE_CALC=3.67195387146E+11,);
+           VALE_CALC=3.67195387145E+11,);
 
 ##############################################
 # CALCUL TRANSITOIRE EN COORDONNEES MODALES

@@ -72,7 +72,7 @@ class THER_XT_HEXA8(Element):
     meshType = MT.HEXA8
     elrefe =(
             ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','XFEM=XFEM480',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
     calculs = (
@@ -218,7 +218,7 @@ class THER_XT_PENTA6(THER_XT_HEXA8):
     meshType = MT.PENTA6
     elrefe =(
             ElrefeLoc(MT.PE6, gauss = ('RIGI=FPG6','XFEM=XFEM240',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
 
@@ -229,7 +229,7 @@ class THER_XT_PYRAM5(THER_XT_HEXA8):
     meshType = MT.PYRAM5
     elrefe =(
             ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5','XFEM=XFEM180',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
 
@@ -239,6 +239,6 @@ class THER_XT_TETRA4(THER_XT_HEXA8):
     """Please document this element"""
     meshType = MT.TETRA4
     elrefe =(
-            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','XINT=FPG15','XFEM=XFEM90',), mater=('XFEM',),),
+            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','XINT=FPG15','XGEO=FPG5','XFEM=XFEM90',), mater=('XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )

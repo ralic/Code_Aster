@@ -263,7 +263,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00716831483938,
+           VALE_CALC=0.00716831483933,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -271,7 +271,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=15048394.1613,
+           VALE_CALC=15048394.1612,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',
@@ -279,7 +279,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00742187105723,
+           VALE_CALC=0.00742187105721,
            NOM_PARA='DY',
            TABLE=TAB_U,
            FILTRE=_F(NOM_PARA='INST',
@@ -287,7 +287,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4812282.68406,
+           VALE_CALC=4812282.68407,
            NOM_PARA='DY',
            TABLE=FORCE,
            FILTRE=_F(NOM_PARA='INST',

@@ -347,7 +347,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
                      VALE=140,),
            )
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=856080.22638,
+           VALE_CALC=856080.226382,
            VALE_REFE= 8.56080E5,
            NOM_PARA='DY',
            TABLE=FORCE,

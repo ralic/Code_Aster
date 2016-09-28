@@ -20,7 +20,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
     real(kind=8), intent(in), optional :: u(ndime), v(ndime)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,10 +82,10 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
              pta(j) = x(ndime*(ia-1)+j)
           end do
        else
-          do j = 1, ndime
-             newpt(j) = pintt(ndime*(ia-1001)+j)
+          do j = 1, ndim
+             newpt(j) = pintt(ndim*(ia-1001)+j)
           end do
-          call reeref(elrefp, nno, geom, newpt, ndime,&
+          call reeref(elrefp, nno, geom, newpt, ndim,&
                       pta, ff)
        endif
 !
@@ -94,10 +94,10 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
              ptb(j) = x(ndime*(ib-1)+j)
           end do
        else
-          do j = 1, ndime
-             newpt(j) = pintt(ndime*(ib-1001)+j)
+          do j = 1, ndim
+             newpt(j) = pintt(ndim*(ib-1001)+j)
           end do
-          call reeref(elrefp, nno, geom, newpt, ndime,&
+          call reeref(elrefp, nno, geom, newpt, ndim,&
                       ptb, ff)
        endif
 !
@@ -106,10 +106,10 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
              ptc(j) = x(ndime*(ic-1)+j)
           end do
        else
-          do j = 1, ndime
-             newpt(j) = pintt(ndime*(ic-1001)+j)
+          do j = 1, ndim
+             newpt(j) = pintt(ndim*(ic-1001)+j)
           end do
-          call reeref(elrefp, nno, geom, newpt, ndime,&
+          call reeref(elrefp, nno, geom, newpt, ndim,&
                       ptc, ff)
        endif
        call vecini(4*ndime,0.d0, dekker)

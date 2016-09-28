@@ -32,7 +32,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     aster_logical :: cut
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -436,16 +436,18 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
             tampor(k)=pinter(ndim*(pp-1)+k)
             pinter(ndim*(pp-1)+k)=pinter(ndim*(pd-1)+k)
             pinter(ndim*(pd-1)+k)=tampor(k)
-!  TRAITEMENT DE PINREF
-            tampor(k)=pinref(ndim*(pp-1)+k)
-            pinref(ndim*(pp-1)+k)=pinref(ndim*(pd-1)+k)
-            pinref(ndim*(pd-1)+k)=tampor(k)
 203     continue
+!  TRAITEMENT DE PINREF
+        do 204 k = 1, ndime
+            tampor(k)=pinref(ndime*(pp-1)+k)
+            pinref(ndime*(pp-1)+k)=pinref(ndime*(pd-1)+k)
+            pinref(ndime*(pd-1)+k)=tampor(k)
+204     continue
 200 continue
 !
 !      ON RAMENE LES CONFIGURATIONS RASANTES DEGENEREES AUX CONFIGURATIONS CLASSIQUES
     if ((ndim.eq.3) .and. (ifiss.eq.1) .and. cut) then
-       call xdblsn(ninter, npts, ndim, ar,&
+       call xdblsn(ninter, npts, ndim, ndime, ar,&
                    pinref, pinter, ainter, cnset, nnose, it)
     endif
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE

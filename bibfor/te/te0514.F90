@@ -79,7 +79,7 @@ subroutine te0514(option, nomte)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
     integer :: ndoub3(nmmax*(2**nfimax)), coupe(nfimax)
-    aster_logical :: deja, ajn, cut
+    aster_logical :: deja, ajn, cut, lconnec_ok
 !
     data            elrese /'SEG3','TRIA6','TETRA10'/
 !......................................................................
@@ -383,10 +383,17 @@ subroutine te0514(option, nomte)
                 ise-1)+i))
                 end do
 !           ARCHIVAGE DE PCNSETO
+                lconnec_ok=.true.   
                 do in = 1, nnose
+                    lconnec_ok=lconnec_ok.and.&
+                                ((cnse(ise,in).gt.0.and.cnse(ise,in).le.nno+nnc).or.&
+                                (cnse(ise,in).gt.1000.and.cnse(ise,in).le.1000+ncompp).or.&
+                                (cnse(ise,in).gt.2000.and.cnse(ise,in).le.2000+ncompm))
                     zi(jcnset-1+nnose*(ise2-1)+in)=cnse(ise,in)
                 end do
-!
+                if (.not. lconnec_ok) then
+                  call utmess('F', 'XFEMPRECOND_8')
+                endif 
             end do
 !
         end do

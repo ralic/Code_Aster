@@ -260,7 +260,7 @@ TEST_TABLE(TABLE=SIG_A,
            TYPE_TEST='MAX',
            REFERENCE='ANALYTIQUE',
            VALE_REFE=-100.,
-           VALE_CALC=-96.1514793005,
+           VALE_CALC=-96.1514793004,
            PRECISION=0.05,
            )
 

@@ -239,7 +239,7 @@ TEST_TABLE(TABLE=TABLSN[1],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-4.21407700402E-15,
+           VALE_CALC=-4.09611580765E-15,
 #           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
@@ -249,7 +249,7 @@ TEST_TABLE(TABLE=TABLSN[1],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-5.28743715478E-15,
+           VALE_CALC=-4.10088629721E-15,
 #           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
@@ -259,7 +259,7 @@ TEST_TABLE(TABLE=TABLST[1],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=2.83106871279E-15,
+           VALE_CALC=2.82759926584E-15,
 #           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
@@ -269,7 +269,7 @@ TEST_TABLE(TABLE=TABLST[1],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=2.47111359153E-15,
+           VALE_CALC=2.56045185054E-15,
 #           ORDRE_GRANDEUR=1.,
            VALE_REFE=0.0  )
 
@@ -298,7 +298,7 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-2.06485218199E-06,
+           VALE_CALC=-2.06485217877E-06,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[2],
@@ -307,7 +307,7 @@ TEST_TABLE(TABLE=TABLST[2],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-2.10139801571E-06,
+           VALE_CALC=-2.10139801336E-06,
            VALE_REFE=0.0  )
 
 
@@ -326,7 +326,7 @@ TEST_TABLE(TABLE=TABLSN[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=0.000339107501482,
+           VALE_CALC=0.000339107501481,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -335,7 +335,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MAX',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00114299414254,
+           VALE_CALC=-0.00114299414253,
            VALE_REFE=0.0  )
 
 TEST_TABLE(TABLE=TABLST[3],
@@ -344,7 +344,7 @@ TEST_TABLE(TABLE=TABLST[3],
            PRECISION=tol,
            TYPE_TEST='MIN',
            CRITERE='ABSOLU',
-           VALE_CALC=-0.00123082096986,
+           VALE_CALC=-0.00123082096985,
            VALE_REFE=0.0  )
 
 FIN();

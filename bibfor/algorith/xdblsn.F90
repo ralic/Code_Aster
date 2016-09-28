@@ -1,4 +1,4 @@
-subroutine xdblsn(ninter, npts, ndim, ar,&
+subroutine xdblsn(ninter, npts, ndim, ndime, ar,&
                   pinref, pinter, ainter, cnset, nnose, it)
     implicit none
 !
@@ -8,10 +8,10 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
 #include "asterfort/jemarq.h"
 #include "asterfort/xxmmvd.h"
     integer :: ninter, npts, ndim, ar(12, 3), cnset(*)
-    integer :: nnose, it
+    integer :: nnose, it, ndime
     real(kind=8) :: pinref(*), pinter(*), ainter(*)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -91,7 +91,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
        do i = elim2, 4
           do j = 1, ndim
              pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-             pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+          end do
+          do j = 1, ndime
+             pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
           end do
           do j = 1, zxain
              ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)
@@ -111,7 +113,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
        do i = elim, 3
           do j = 1, ndim
              pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-             pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+          end do
+          do j = 1, ndime
+             pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
           end do
           do j = 1, zxain
              ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)
@@ -125,7 +129,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
        do i = 1, 4
           do j = 1, ndim
              pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+2)+j)
-             pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+2)+j)
+          end do
+          do j = 1, ndime
+             pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+2)+j)
           end do
           do j = 1, zxain
              ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+2)+j)
@@ -164,7 +170,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
           do i = elim, 3
              do j = 1, ndim
                 pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-                pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+             end do
+             do j = 1, ndime
+                pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
              end do
              do j = 1, zxain
                 ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)
@@ -179,7 +187,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
        do i = 1, 4
           do j = 1, ndim
              pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-             pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+          end do
+          do j = 1, ndime
+             pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
           end do
           do j = 1, zxain
              ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)
@@ -218,7 +228,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
           do i = elim, 3
              do j = 1, ndim
                 pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-                pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+             end do
+             do j = 1, ndime
+                pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
              end do
              do j = 1, zxain
                 ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)
@@ -250,7 +262,9 @@ subroutine xdblsn(ninter, npts, ndim, ar,&
           do i = 1, 3
              do j = 1, ndim
                 pinter(ndim*(i-1)+j)=pinter(ndim*(i-1+1)+j)
-                pinref(ndim*(i-1)+j)=pinref(ndim*(i-1+1)+j)
+             end do
+             do j = 1, ndime
+                pinref(ndime*(i-1)+j)=pinref(ndime*(i-1+1)+j)
              end do
              do j = 1, zxain
                 ainter(zxain*(i-1)+j)=ainter(zxain*(i-1+1)+j)

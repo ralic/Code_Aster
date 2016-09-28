@@ -72,7 +72,7 @@ class THER_XHT_HEXA8(Element):
     meshType = MT.HEXA8
     elrefe =(
             ElrefeLoc(MT.HE8, gauss = ('RIGI=FPG8','XFEM=XFEM480',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
     calculs = (
@@ -90,22 +90,22 @@ class THER_XHT_HEXA8(Element):
         ),
 
         OP.CHAR_THER_PARO_F(te=599,
-            para_in=((OP.CHAR_THER_PARO_F.PAINTER, LC.E170NEUT), (OP.CHAR_THER_PARO_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.CHAR_THER_PARO_F.PAINTER, LC.E200NEUT), (OP.CHAR_THER_PARO_F.PBASECO, LC.E360NEUT),
                      (OP.CHAR_THER_PARO_F.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.CHAR_THER_PARO_F.PHEA_NO, LC.N5NEUTI), (SP.PHECHPF, LC.CHECHPF),
                      (OP.CHAR_THER_PARO_F.PLONGCO, LC.E3NEUTI), (OP.CHAR_THER_PARO_F.PLSN, LC.N1NEUT_R),
-                     (OP.CHAR_THER_PARO_F.PLST, LC.N1NEUT_R), (OP.CHAR_THER_PARO_F.PPINTER, LC.E102NEUT),
+                     (OP.CHAR_THER_PARO_F.PLST, LC.N1NEUT_R), (OP.CHAR_THER_PARO_F.PPINTER, LC.E120NEUT),
                      (OP.CHAR_THER_PARO_F.PSTANO, STANO_I), (SP.PTEMPER, DDL_THER),
                      (SP.PTEMPSR, CTEMPSR), ),
             para_out=((SP.PVECTTR, MVECTTR), ),
         ),
 
         OP.CHAR_THER_PARO_R(te=599,
-            para_in=((OP.CHAR_THER_PARO_R.PAINTER, LC.E170NEUT), (OP.CHAR_THER_PARO_R.PBASECO, LC.E306NEUT),
+            para_in=((OP.CHAR_THER_PARO_R.PAINTER, LC.E200NEUT), (OP.CHAR_THER_PARO_R.PBASECO, LC.E360NEUT),
                      (OP.CHAR_THER_PARO_R.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.CHAR_THER_PARO_R.PHEA_NO, LC.N5NEUTI), (SP.PHECHPR, LC.EHECHPR),
                      (OP.CHAR_THER_PARO_R.PLONGCO, LC.E3NEUTI), (OP.CHAR_THER_PARO_R.PLSN, LC.N1NEUT_R),
-                     (OP.CHAR_THER_PARO_R.PLST, LC.N1NEUT_R), (OP.CHAR_THER_PARO_R.PPINTER, LC.E102NEUT),
+                     (OP.CHAR_THER_PARO_R.PLST, LC.N1NEUT_R), (OP.CHAR_THER_PARO_R.PPINTER, LC.E120NEUT),
                      (OP.CHAR_THER_PARO_R.PSTANO, STANO_I), (SP.PTEMPER, DDL_THER),
                      (SP.PTEMPSR, CTEMPSR), ),
             para_out=((SP.PVECTTR, MVECTTR), ),
@@ -140,22 +140,22 @@ class THER_XHT_HEXA8(Element):
         ),
 
         OP.RIGI_THER_PARO_F(te=594,
-            para_in=((OP.RIGI_THER_PARO_F.PAINTER, LC.E170NEUT), (OP.RIGI_THER_PARO_F.PBASECO, LC.E306NEUT),
+            para_in=((OP.RIGI_THER_PARO_F.PAINTER, LC.E200NEUT), (OP.RIGI_THER_PARO_F.PBASECO, LC.E360NEUT),
                      (OP.RIGI_THER_PARO_F.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.RIGI_THER_PARO_F.PHEA_NO, LC.N5NEUTI), (SP.PHECHPF, LC.CHECHPF),
                      (OP.RIGI_THER_PARO_F.PLONGCO, LC.E3NEUTI), (OP.RIGI_THER_PARO_F.PLSN, LC.N1NEUT_R),
-                     (OP.RIGI_THER_PARO_F.PLST, LC.N1NEUT_R), (OP.RIGI_THER_PARO_F.PPINTER, LC.E102NEUT),
+                     (OP.RIGI_THER_PARO_F.PLST, LC.N1NEUT_R), (OP.RIGI_THER_PARO_F.PPINTER, LC.E120NEUT),
                      (OP.RIGI_THER_PARO_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
                      ),
             para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR), ),
         ),
 
         OP.RIGI_THER_PARO_R(te=594,
-            para_in=((OP.RIGI_THER_PARO_R.PAINTER, LC.E170NEUT), (OP.RIGI_THER_PARO_R.PBASECO, LC.E306NEUT),
+            para_in=((OP.RIGI_THER_PARO_R.PAINTER, LC.E200NEUT), (OP.RIGI_THER_PARO_R.PBASECO, LC.E360NEUT),
                      (OP.RIGI_THER_PARO_R.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
                      (OP.RIGI_THER_PARO_R.PHEA_NO, LC.N5NEUTI), (SP.PHECHPR, LC.EHECHPR),
                      (OP.RIGI_THER_PARO_R.PLONGCO, LC.E3NEUTI), (OP.RIGI_THER_PARO_R.PLSN, LC.N1NEUT_R),
-                     (OP.RIGI_THER_PARO_R.PLST, LC.N1NEUT_R), (OP.RIGI_THER_PARO_R.PPINTER, LC.E102NEUT),
+                     (OP.RIGI_THER_PARO_R.PLST, LC.N1NEUT_R), (OP.RIGI_THER_PARO_R.PPINTER, LC.E120NEUT),
                      (OP.RIGI_THER_PARO_R.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
                      ),
             para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR), ),
@@ -179,10 +179,10 @@ class THER_XHT_HEXA8(Element):
                      (OP.TOPOFA.PLSN, LC.N1NEUT_R), (OP.TOPOFA.PLST, LC.N1NEUT_R),
                      (OP.TOPOFA.PPINTTO, E33NEUTR), (OP.TOPOFA.PPMILTO, LC.E198NEUT),
                      ),
-            para_out=((OP.TOPOFA.PAINTER, LC.E170NEUT), (OP.TOPOFA.PBASECO, LC.E306NEUT),
-                     (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E102NEUT),
-                     (OP.TOPOFA.PGESCLO, LC.E102NEUT), (SP.PGMAITR, LC.E102NEUT),
-                     (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E102NEUT),
+            para_out=((OP.TOPOFA.PAINTER, LC.E200NEUT), (OP.TOPOFA.PBASECO, LC.E360NEUT),
+                     (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E120NEUT),
+                     (OP.TOPOFA.PGESCLO, LC.E120NEUT), (SP.PGMAITR, LC.E120NEUT),
+                     (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E120NEUT),
                      ),
         ),
 
@@ -221,7 +221,7 @@ class THER_XHT_PENTA6(THER_XHT_HEXA8):
     meshType = MT.PENTA6
     elrefe =(
             ElrefeLoc(MT.PE6, gauss = ('RIGI=FPG6','XFEM=XFEM240',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
 
@@ -232,7 +232,7 @@ class THER_XHT_PYRAM5(THER_XHT_HEXA8):
     meshType = MT.PYRAM5
     elrefe =(
             ElrefeLoc(MT.PY5, gauss = ('RIGI=FPG5','XFEM=XFEM180',), mater=('XFEM',),),
-            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15',),),
+            ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','XGEO=FPG5',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )
 
@@ -242,6 +242,6 @@ class THER_XHT_TETRA4(THER_XHT_HEXA8):
     """Please document this element"""
     meshType = MT.TETRA4
     elrefe =(
-            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','XINT=FPG15','XFEM=XFEM90',), mater=('XFEM',),),
+            ElrefeLoc(MT.TE4, gauss = ('RIGI=FPG1','XINT=FPG15','XGEO=FPG5','XFEM=XFEM90',), mater=('XFEM',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','XCON=FPG12',),),
         )

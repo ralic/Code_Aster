@@ -17,7 +17,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     real(kind=8) :: lsna , lsnb, lsnm
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,8 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
 !
     character(len=6) :: name
     real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81), ff(27)
-    real(kind=8) :: epsmax, a , b , c, pta(ndime), ptb(ndime), newpt(ndime)
-    real(kind=8) :: ptm(ndime)
+    real(kind=8) :: epsmax, a , b , c, pta(ndim), ptb(ndim), newpt(ndim)
+    real(kind=8) :: ptm(ndim)
     integer :: itemax, ibid, n(3), j, nno, iret
 !
 !---------------------------------------------------------------------
@@ -64,10 +64,10 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
           pta(j) = x(ndime*(ia-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ia-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ia-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    pta, ff)
     endif
 !
@@ -76,10 +76,10 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
           ptb(j) = x(ndime*(ib-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ib-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ib-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptb, ff)
     endif
 !
@@ -88,10 +88,10 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
           ptm(j) = x(ndime*(im-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pmitt(ndime*(im-2001)+j)
+       do j = 1, ndim
+          newpt(j) = pmitt(ndim*(im-2001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptm, ff)
     endif
 !  ON STOCKE LES COORDONEES DE REFERENCE DE A ET B DANS <ptxx>

@@ -239,7 +239,7 @@ FY = RECU_FONCTION ( TABLE  = FORCE,
 #-------------------------------------------------------------
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=0.00331659846725,
+           VALE_CALC=0.0033165984675,
            VALE_REFE=3.3165999999999998E-3,
            NOM_PARA='DY',
            TABLE=TAB_U,
@@ -248,7 +248,7 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
-           VALE_CALC=42615323.0628,
+           VALE_CALC=42615323.0719,
            VALE_REFE=4.2615300E7,
            NOM_PARA='DY',
            TABLE=FORCE,

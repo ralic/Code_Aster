@@ -216,7 +216,7 @@ IMPR_TABLE(TABLE=SIF_1,
 TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           VALE_CALC=7477.34472695,
+           VALE_CALC=7477.34472696,
            TYPE_TEST='MAX',)
 
 #==================================

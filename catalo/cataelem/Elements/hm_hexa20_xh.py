@@ -226,15 +226,15 @@ class HM_HEXA20_XH(Element):
 
         OP.CHAR_MECA_PRES_F(te=37,
                             para_in=(
-                            (OP.CHAR_MECA_PRES_F.PAINTER, LC.E170NEUT), (
-                            OP.CHAR_MECA_PRES_F.PBASECO, LC.E306NEUT),
+                            (OP.CHAR_MECA_PRES_F.PAINTER, LC.E200NEUT), (
+                            OP.CHAR_MECA_PRES_F.PBASECO, LC.E360NEUT),
                             (OP.CHAR_MECA_PRES_F.PCFACE, LC.E90NEUTI), (
                             SP.PGEOMER, NGEOMER),
                             (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (
                             OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
                             (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (
                             OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
-                            (OP.CHAR_MECA_PRES_F.PPINTER, LC.E102NEUT), (
+                            (OP.CHAR_MECA_PRES_F.PPINTER, LC.E120NEUT), (
                             SP.PPRESSF, CPRESSF),
                             (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (
                             SP.PTEMPSR, CTEMPSR),
@@ -244,15 +244,15 @@ class HM_HEXA20_XH(Element):
 
         OP.CHAR_MECA_PRES_R(te=37,
                             para_in=(
-                            (OP.CHAR_MECA_PRES_R.PAINTER, LC.E170NEUT), (
-                            OP.CHAR_MECA_PRES_R.PBASECO, LC.E306NEUT),
+                            (OP.CHAR_MECA_PRES_R.PAINTER, LC.E200NEUT), (
+                            OP.CHAR_MECA_PRES_R.PBASECO, LC.E360NEUT),
                             (OP.CHAR_MECA_PRES_R.PCFACE, LC.E90NEUTI), (
                             SP.PGEOMER, NGEOMER),
                             (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (
                             OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
                             (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (
                             OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
-                            (OP.CHAR_MECA_PRES_R.PPINTER, LC.E102NEUT), (
+                            (OP.CHAR_MECA_PRES_R.PPINTER, LC.E120NEUT), (
                             SP.PPRESSR, EPRESNO),
                             (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), ),
                             para_out=((SP.PVECTUR, MVECTUR), ),
@@ -494,14 +494,14 @@ class HM_HEXA20_XH(Element):
                   OP.TOPOFA.PPMILTO, LC.E198NEUT),
                   (SP.PTYPDIS, LC.E1NEUTI), ),
                   para_out=(
-                  (OP.TOPOFA.PAINTER, LC.E170NEUT), (
-                  OP.TOPOFA.PBASECO, LC.E306NEUT),
+                  (OP.TOPOFA.PAINTER, LC.E200NEUT), (
+                  OP.TOPOFA.PBASECO, LC.E360NEUT),
                   (OP.TOPOFA.PCFACE, LC.E90NEUTI), (
-                  SP.PGESCLA, LC.E102NEUT),
+                  SP.PGESCLA, LC.E120NEUT),
                   (OP.TOPOFA.PGESCLO, LC.E102NEUT), (
-                  SP.PGMAITR, LC.E102NEUT),
+                  SP.PGMAITR, LC.E120NEUT),
                   (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (
-                  OP.TOPOFA.PPINTER, LC.E102NEUT),
+                  OP.TOPOFA.PPINTER, LC.E120NEUT),
                   ),
                   ),
 

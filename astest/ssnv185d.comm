@@ -150,20 +150,22 @@ K1REF=-PRES*sqrt(pi*a)*fab
 
 prec = 0.03
 
-VAL_CALC = [1.0474681466786E+07 ,
-            1.0313372992544E+07 ,
-            1.0475263624517E+07 ,
-            1.0313760926996E+07 ,
-            1.0475284930484E+07 ,
-            1.0313933443343E+07 ,
-            1.0474753512195E+07 ,
-            1.031341766982E+07  ,
-            1.0474882624685E+07 ,
-            1.031355981281E+07  ,
-            1.0474664425126E+07 ,
-            1.0313356772155E+07 ,
-            1.0475554890707E+07 ,
-            1.031398004387E+07  , ]
+VAL_CALC = [
+    10477278.8299,
+    10315371.3506,
+    10479188.3885,
+    10316683.9841,
+    10479388.4721,
+    10317284.6593,
+    10478106.0242,
+    10316094.8111,
+    10477982.044,
+    10316009.1202,
+    10477259.6001,
+    10315352.5152,
+    10480312.3902,
+    10317511.7834,
+]
             
 for i in range(0,nbc+1) :
    TEST_TABLE(TABLE=SIF[i],
@@ -195,7 +197,7 @@ IMPR_TABLE(TABLE = PK)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.10000000000000001,
-           VALE_CALC= 1.0446558006434E+07,
+           VALE_CALC= 10455734.1883,
            VALE_REFE=1.044773991882051E7,
            NOM_PARA='K1',
            TABLE=PK,
@@ -244,7 +246,7 @@ TEST_TABLE(CRITERE='RELATIF',
            )
 
 TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=1.4228999694400001E5,
+           VALE_CALC=142289.996944,
            NOM_PARA='COOR_Z',
            TYPE_TEST='SOMM_ABS',
            TABLE=TABDEP,
@@ -270,7 +272,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DX',
-                   VALE_CALC=5.4881848990915E-3,
+                   VALE_CALC=0.00556530712437,
                    
                    CRITERE='RELATIF',
                    ),
@@ -279,7 +281,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=1.5196877064496999,
+                   VALE_CALC=1.52011619816,
                    
                    CRITERE='RELATIF',
                    ),
@@ -288,7 +290,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RES_XFEM,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.1789603238422001,
+                   VALE_CALC=1.17920224902,
                    
                    CRITERE='RELATIF',
                    ),

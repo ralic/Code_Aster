@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xdblsn(ninter, npts, ndim, ar,&
+    subroutine xdblsn(ninter, npts, ndim, ndime, ar,&
                       pinref, pinter, ainter, cnset, nnose, it)
         integer :: ninter
         integer ::  ar(12, 3)
         integer :: npts
         integer :: ndim
+        integer :: ndime
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
         real(kind=8) :: pinref(*) 

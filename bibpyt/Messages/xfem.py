@@ -389,8 +389,8 @@ Utilisez ELIM_ARETE='DUAL'.
      faudrait %(i2)d.
      Le calcul s'arrête pour prévenir un dépassement mémoire. 
   -> Conseils:
-     - Vous pouvez augmenter le dimensionnment du mode local %(k1)s.
-     - Veuillez aussi contacter l'équipe de développment pour reporter la configuration de
+     - Vous pouvez augmenter le dimensionnement du mode local %(k1)s.
+     - Veuillez aussi contacter l'équipe de développement pour reporter la configuration de
      coupe pour l'amélioration du catalogue.
 """),
 
@@ -463,7 +463,7 @@ Utilisez ELIM_ARETE='DUAL'.
     63: _(u"""
       -> ---Éléments XFEM quadratiques ---
     On a effectué un ajustement géométrique de la fissure, car les arêtes du maillage sain sont
-    coupées plusieurs fois par l'iso-zéro de la level-set.
+    coupées plusieurs fois par l'isovaleur zéro de la level-set.
     Le nombre d'ajustements effectués est : %(i1)d.
     Cette correction impacte légèrement la localisation de la fissure.
   -> Conseil :

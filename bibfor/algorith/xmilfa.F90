@@ -20,7 +20,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
     real(kind=8) :: pmiref(*), ksi(ndime), pintt(*), pmitt(*)
     character(len=8) :: elrefp, typma
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
-    real(kind=8) :: xref(81), ptb(ndime), ptd(ndime), newpt(ndime)
+    real(kind=8) :: xref(81), ptb(ndim), ptd(ndim), newpt(ndim)
     real(kind=8) :: pta(ndime), cosu, cosv, cosw
     real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)
     aster_logical :: courbe
@@ -101,10 +101,10 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
           ptb(j) = xref(ndime*(ib-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ib-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ib-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptb, ff)
     endif
 !
@@ -113,10 +113,10 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
           ptd(j) = xref(ndime*(id-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pmitt(ndime*(id-2001)+j)
+       do j = 1, ndim
+          newpt(j) = pmitt(ndim*(id-2001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptd, ff)
     endif
 !
@@ -125,10 +125,10 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
           pta(j) = xref(ndime*(ia-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ia-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ia-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    pta, ff)
     endif
 !

@@ -225,7 +225,7 @@ TEST_RESU(RESU=_F(INST=9.00001,
                   NOM_CHAM='DEPL',
                   NOEUD='N9',
                   NOM_CMP='LAGS_C',
-                  VALE_CALC=0.109998900007,
+                  VALE_CALC=0.10999890001,
                   VALE_REFE=0.1099989,),
           )
           
@@ -235,7 +235,7 @@ TEST_RESU(RESU=_F(INST=8.00002,
                   NOM_CHAM='DEPL',
                   NOEUD='N9',
                   NOM_CMP='LAGS_F1',
-                  VALE_CALC=5.93450543136E-15,
+                  VALE_CALC=1.36168295935E-14,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',),
           )

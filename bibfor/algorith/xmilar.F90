@@ -16,7 +16,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
     character(len=8) :: elrefp
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
 !     ----------------------------------------------------------------
 !
     integer :: nno, j
-    real(kind=8) :: x(81), newpt(ndime), pta(ndime), ptb(ndime), ptm(ndime), ff(27)
+    real(kind=8) :: x(81), newpt(ndim), pta(ndim), ptb(ndim), ptm(ndim), ff(27)
     real(kind=8) :: ab(ndime), aip(ndime), normab, normaip, s
 !
 ! --------------------------------------------------------------------
@@ -59,10 +59,10 @@ subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
           pta(j) = x(ndime*(ia-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ia-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ia-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    pta, ff)
     endif
     if (ib.lt.1000) then
@@ -70,10 +70,10 @@ subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
           ptb(j) = x(ndime*(ib-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pintt(ndime*(ib-1001)+j)
+       do j = 1, ndim
+          newpt(j) = pintt(ndim*(ib-1001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptb, ff)
     endif
     if (im.lt.2000) then
@@ -81,10 +81,10 @@ subroutine xmilar(ndim, ndime, elrefp, geom,  pinref,&
           ptm(j) = x(ndime*(im-1)+j)
        end do
     else
-       do j = 1, ndime
-          newpt(j) = pmitt(ndime*(im-2001)+j)
+       do j = 1, ndim
+          newpt(j) = pmitt(ndim*(im-2001)+j)
        end do
-       call reeref(elrefp, nno, geom, newpt, ndime,&
+       call reeref(elrefp, nno, geom, newpt, ndim,&
                    ptm, ff)
     endif
 !

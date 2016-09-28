@@ -215,7 +215,7 @@ IMPR_TABLE(TABLE=SIF_1,
 TEST_TABLE(TABLE=SIF_1,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           VALE_CALC=7477.34472695,
+           VALE_CALC=7477.34472696,
            TYPE_TEST='MAX',)
 #==================================
 #Propa 2
@@ -291,7 +291,7 @@ IMPR_TABLE(TABLE=SIF_3,
 TEST_TABLE(TABLE=SIF_3,
            NOM_PARA='K2',
            CRITERE='RELATIF',
-           VALE_CALC=23335.4267981,
+           VALE_CALC=23335.4267969,
            TYPE_TEST='MAX',)
 #----------------------------------------------
 #         EDITION DE FICHIERS MED

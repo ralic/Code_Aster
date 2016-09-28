@@ -63,6 +63,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
     call wkvect('&&XINILS.LIMFISO', 'V V I', nbmaf, jmafit)
     call wkvect('&&XINILS.ORIENT', 'V V I', nbmaf, jmaori)
     AS_ALLOCATE(vl=is_pt_fond,size=nbno) 
+    is_pt_fond(1:nbno)=.false.
     do isefis = 1, nbsef
       nseabs=zi(jdlise-1+(isefis-1)+1)
       is_pt_fond(zi(jconx1-1+zi(jconx2+nseabs-1)))=.true.
@@ -146,6 +147,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
 !     CALCUL DE LSN
 !     -------------
         dmin=r8maem()
+        xln=r8maem()
 !         RECHERCHE DE LA MAILLE LA PLUS PROCHE :
 !         BOUCLE SUR NOEUDS DE MAFIS
         do 2 imafis = 1, nbmaf
@@ -219,6 +221,7 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv,&
         endif
 !
         dmin=r8maem()
+        xlt=r8maem()
 !
 !         RECHERCHE DU POINT LE PLUS PROCHE : BOUCLE SUR POINT DE FONFIS
         do 3 isefis = 1, nbsef

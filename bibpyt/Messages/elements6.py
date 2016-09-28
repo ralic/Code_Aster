@@ -38,32 +38,30 @@ On ne peut pas utiliser le modèle 3D_SI avec un comportement élastique de type
 
     6 : _(u"""
   -> Erreur de programmation :
-  -> L argument %(k1)s est manquant ou mal renseigné dans l appel a la routine <xcalfev>
+  -> L argument %(k1)s est manquant ou mal renseigné dans une routine élémentaire XFEM
   -> Veuillez renseigner cette argument
 """),
 
     7 : _(u"""
   -> Erreur de programmation :
-  -> L argument %(k1)s est manquant ou mal renseigné dans l appel a la routine <coor_cyl>
+  -> L argument %(k1)s est manquant ou mal renseigné dans une routine élémentaire XFEM
   -> Veuillez renseigner cette argument
 """),
 
     8 : _(u"""
   -> Erreur de programmation :
-  -> En dimension %(i1)d, le calcul d'un tenseur de courbure dans la routine <coor_cyl>
-     n'est pas autorisé
+  -> En dimension %(i1)d, le calcul d'un tenseur de courbure n'est pas autorisé.
 """),
 
     9 : _(u"""
   -> Erreur de programmation :
-  -> En dimension %(i1)d, le calcul d'une matrice de passage n'a pas de sens
-     dans la routine <xbasgl>
+  -> En dimension %(i1)d, le calcul d'une matrice de passage n'a pas de sens.
 """),
 
     10 : _(u"""
   -> Erreur de programmation :
-  -> Au moins un des paramètres élastiques (module d'Young ou coefficent de poisson) n'a
-     pas été trouvé dans <xkamat> lors de l'évaluation des fonctions vectorielles XFEM
+  -> Au moins un des paramètres élastiques (module d'Young ou coefficient de poisson) n'a
+     pas été trouvé lors de l'évaluation des fonctions vectorielles XFEM
 """),
 
 }

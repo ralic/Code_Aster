@@ -176,34 +176,38 @@ coef=(pi*a)/(2.*b)
 fab=sqrt(tan(coef)/coef)*(0.752+0.37*(1.-sin(coef))**3+2.02*a/b)/cos(coef)
 K1REF=-PRES*sqrt(pi*a)*fab
 
-VAL_CALC =[11133102.309  ,
-           11101940.8998  ,
-           11130480.9302  ,
-           11120568.0864  ,
-           11134393.0203  ,
-           11109541.6757  ,
-           11129794.0418  ,
-           11110948.7785  ,
-           11129296.3776  ,
-           11107807.9882  ,
-           11133012.2686  ,
-           11101966.3131  ,
-           11133012.2686  ,
-           11101966.3131  ]
+VAL_CALC =[
+    11134068.4902,
+    11103011.5697,
+    11131548.2849,
+    11121766.7572,
+    11135475.9086,
+    11110060.5353,
+    11130888.3549,
+    11112007.8095,
+    11130277.7386,
+    11108871.1447,
+    11133978.0315,
+    11103037.2183,
+    11133978.0315,
+    11103037.2183,
+    11250906.2262,]
 
+ct=-1
 for i in range(0,nbc+1) :
+   ct=ct+1
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MAX',
-              VALE_CALC=VAL_CALC[2*i +0 ], VALE_REFE=K1REF,     
+              VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,     
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
-
+   ct=ct+1
    TEST_TABLE(TABLE=SIF[i],
               NOM_PARA='K1',
               TYPE_TEST='MIN',
-              VALE_CALC=VAL_CALC[2*i +1 ], VALE_REFE=K1REF,     
+              VALE_CALC=VAL_CALC[ct], VALE_REFE=K1REF,     
               CRITERE='RELATIF',
               PRECISION=0.02,
               REFERENCE='ANALYTIQUE',);
@@ -220,9 +224,10 @@ PK=POST_K1_K2_K3(FISSURE = FISS,
 
 IMPR_TABLE(TABLE = PK)
 
+ct=ct+1
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            PRECISION=0.04,
-           VALE_CALC=1.1246472537E+07,
+           VALE_CALC=VAL_CALC[ct],
            VALE_REFE=1.1202664084020415E7,
            NOM_PARA='K1',
            TABLE=PK,

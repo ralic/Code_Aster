@@ -31,7 +31,7 @@ implicit none
 !
     type(ROM_DS_Empi), intent(in) :: ds_empi
     type(ROM_DS_Snap), intent(in) :: ds_snap
-    real(kind=8), pointer, intent(in) :: q(:)
+    real(kind=8), pointer, intent(inout) :: q(:)
     real(kind=8), intent(out), pointer :: v(:)
     real(kind=8), intent(out), pointer :: s(:)
     integer, intent(out) :: nb_sing
