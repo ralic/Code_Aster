@@ -1,13 +1,24 @@
 subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                   idfde, geom, typmod, option, imate,&
-                  compor, lgpg, crit, instam, instap,&
+                  compor, mult_comp, lgpg, carcri, instam, instap,&
                   deplm, deplp, angmas, sigm, vim,&
                   dfdi, def, sigp, vip, matuu,&
                   vectu, codret)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/calsta.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfda2d.h"
+#include "asterfort/iniqs4.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,23 +34,17 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/calsta.h"
-#include "asterfort/codere.h"
-#include "asterfort/dfda2d.h"
-#include "asterfort/iniqs4.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
+!
     integer :: nno, npg, imate, lgpg, codret, cod(9), npgs
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: instam, instap
-    real(kind=8) :: geom(2, nno), crit(3)
+    real(kind=8) :: geom(2, nno)
     real(kind=8) :: deplm(1:2, 1:nno), deplp(1:2, 1:nno), dfdi(nno, 2)
     real(kind=8) :: def(4, nno, 2)
     real(kind=8) :: sigm(10, npg), sigp(10, npg)
@@ -112,11 +117,11 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
     grand = .false.
     axi = typmod(1) .eq. 'AXIS'
 !
-    do 20 i = 1, 3
-        do 10 j = 1, 3
+    do i = 1, 3
+        do j = 1, 3
             f(i,j) = kron(i,j)
- 10     continue
- 20 end do
+        end do
+    end do
 !
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES SPECIFIQUES AU COMPORTEMENT
@@ -125,9 +130,9 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                 deplm, deplp, elgeom)
 !
 ! - INITIALISATION CODES RETOURS
-    do 30 kpg = 1, npg
+    do kpg = 1, npg
         cod(kpg) = 0
- 30 end do
+    end do
 !
 ! - INITIALISATION QUAS4
     call iniqs4(nno, sdfde, sdfdk, poi2sg, coopg)
@@ -167,10 +172,10 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
 !     CALCUL DE DFDI,F,EPS,DEPS,R(EN AXI) ET POIDS
 !
-    do 70 j = 1, 6
+    do j = 1, 6
         eps(j) = 0.d0
         deps(j) = 0.d0
- 70 end do
+    end do
     call nmgeom(2, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
                 .true._1, poids, dfdi, f, eps,&
@@ -183,19 +188,19 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-    do 90 n = 1, nno
-        do 80 i = 1, 2
+    do n = 1, nno
+        do i = 1, 2
             def(1,n,i) = f(i,1)*dfdi(n,1)
             def(2,n,i) = f(i,2)*dfdi(n,2)
             def(3,n,i) = 0.d0
             def(4,n,i) = (f(i,1)*dfdi(n,2)+f(i,2)*dfdi(n,1))/rac2
- 80     continue
- 90 end do
+        end do
+    end do
 !
 !
-    do 100 i = 1, 3
+    do i = 1, 3
         sign(i) = sigm(i,kpg)
-100 end do
+    end do
     sign(4) = sigm(4,kpg)*rac2
 !
 !
@@ -207,11 +212,11 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
     endif
 !
     call nmcomp(fami, kpg, 1, 2, typmod,&
-                imate, compor, crit, instam, instap,&
+                imate, compor, carcri, instam, instap,&
                 6, eps, deps, 6, sign,&
                 vim(1, kpg), optios, angmas, 10, elgeom(1, kpg),&
                 sigma, vip(1, kpg), 36, dsidep, 1,&
-                rbid, cod(kpg))
+                rbid, cod(kpg), mult_comp)
 !
 ! - ERREUR D'INTEGRATION
     if (cod(kpg) .eq. 1) then
@@ -225,17 +230,17 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
 !     CALCUL DE KC (MATRICE DE RIGIDITE AU CENTRE)
 !     --------------------------------------------
-        do 150 n = 1, nno
-            do 140 i = 1, 2
-                do 110 kl = 1, 4
+        do n = 1, nno
+            do i = 1, 2
+                do kl = 1, 4
                     sig(kl) = 0.d0
                     sig(kl) = sig(kl) + def(1,n,i)*dsidep(1,kl)
                     sig(kl) = sig(kl) + def(2,n,i)*dsidep(2,kl)
                     sig(kl) = sig(kl) + def(3,n,i)*dsidep(3,kl)
                     sig(kl) = sig(kl) + def(4,n,i)*dsidep(4,kl)
-110             continue
-                do 130 j = 1, 2
-                    do 120 m = 1, n
+                end do
+                do j = 1, 2
+                    do m = 1, n
                         if (m .eq. n) then
                             j1 = i
                         else
@@ -253,13 +258,10 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                             kk = kkd + 2* (m-1) + j
                             matuu(kk) = matuu(kk) + tmp*poids
                         endif
-120                 continue
-130             continue
-140         continue
-150     continue
-!
-!
-!
+                    end do
+                end do
+            end do
+        end do
 !
 !           CORRECTION DE LA MATRICE DE RIGIDITE
 !                 CALCUL DE KSTAB
@@ -267,7 +269,7 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
         npgs = 4
 !
 !        CALCUL DES TERMES EVALUES AUX 4 POINTS DE GAUSS
-        do 160 kpgs = 1, npgs
+        do kpgs = 1, npgs
 !
             call dfda2d(kpgs, nno, poi2sg(kpgs), sdfde, sdfdk,&
                         sdedx, sdedy, sdkdx, sdkdy, sdfdx,&
@@ -280,13 +282,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
             call calsta(proj, gamma, dh, def, nno,&
                         kpgs, sig, tmp, kk, kkd,&
                         matuu, dsidep, jac)
-!
-160     continue
+        end do
     endif
-!
-!
-!
-!
 !
 ! - CALCUL DE LA FORCE INTERIEURE ET DES CONTRAINTES DE CAUCHY
 !
@@ -299,14 +296,14 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
 !
 !     DEPLACEMENTS GENERALISES
-        do 170 kl = 1, nno
+        do kl = 1, nno
             pqx = pqx + gamma(kl)*deplp(1,kl)
             pqy = pqy + gamma(kl)*deplp(2,kl)
-170     continue
+        end do
 !
 !
 !      INCREMENT DES CONTRAINTES GENERALISEES
-        do 180 i = 1, 6
+        do i = 1, 6
             qmoins(i) = sigm(i+4,kpg)
 !
 !         QUAS4 SANS PROJECTION
@@ -332,22 +329,22 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
             endif
 !
             qplus(i) = qmoins(i) + dq(i)
-180     continue
+        end do
 !
 !
 !      OPERATEUR DE GRADIENT AU CENTRE
-        do 200 n = 1, nno
-            do 190 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
                 defc(1,n,i) = def(1,n,i)
                 defc(2,n,i) = def(2,n,i)
                 defc(3,n,i) = def(3,n,i)
                 defc(4,n,i) = def(4,n,i)
-190         continue
-200     continue
+            end do
+        end do
 !
 !
 !      OPERATEUR DE STABILISATION DU GRADIENT AU 4 POINTS DE GAUSS
-        do 290 kpgs = 1, npgs
+        do kpgs = 1, npgs
 !
 !
             call dfda2d(kpgs, nno, poi2sg(kpgs), sdfde, sdfdk,&
@@ -358,8 +355,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
             dh(2*kpgs) = coopg(2*kpgs-1)*sdkdy(kpgs) + coopg(2*kpgs)* sdedy(kpgs)
 !
 !
-            do 220 n = 1, nno
-                do 210 i = 1, 2
+            do n = 1, nno
+                do i = 1, 2
 !
 !         QUAS4 SANS PROJECTION
 !         ---------------------
@@ -389,8 +386,8 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
 !
                     endif
 !
-210             continue
-220         continue
+                end do
+            end do
 !
 !
 !    CONTRAINTES DE HOURGLASS
@@ -420,46 +417,37 @@ subroutine nmas2d(fami, nno, npg, ipoids, ivf,&
                 sigas(4,kpgs) = 0.d0
             endif
 !
-!
-!
-!
 !     CALCUL DES FORCES INTERNES
 !
-            do 250 n = 1, nno
-                do 240 i = 1, 2
-                    do 230 kl = 1, 3
-                        vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigas( kl,kpgs)* jac + defn(kl,n,i&
-                                     &)*sigas(kl,kpgs)* jac
-230                 continue
-                    vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigas(4, kpgs)*jac* rac2 + defn(4,n,i)*&
-                                 &sigas(4,kpgs)*jac
-240             continue
-250         continue
+            do n = 1, nno
+                do i = 1, 2
+                    do kl = 1, 3
+                        vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigas( kl,kpgs)* jac +&
+                                     defn(kl,n,i)*sigas(kl,kpgs)* jac
+                    end do
+                    vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigas(4, kpgs)*jac* rac2 +&
+                                 defn(4,n,i)* sigas(4,kpgs)*jac
+                end do
+            end do
 !
-            do 280 n = 1, nno
-                do 270 i = 1, 2
-                    do 260 kl = 1, 3
-                        vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigma( kl)*jac + defn(kl,n,i)*sigm&
-                                     &a(kl)*jac
-260                 continue
-                    vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigma(4)* jac + defn(4,n,i)*sigma(4)*ja&
-                                 &c/rac2
-270             continue
-280         continue
-290     continue
-!
-!
-        do 300 kl = 1, 3
+            do n = 1, nno
+                do i = 1, 2
+                    do kl = 1, 3
+                        vectu(i,n) = vectu(i,n) + defc(kl,n,i)*sigma( kl)*jac +&
+                                     defn(kl,n,i)*sigma(kl)*jac
+                    end do
+                    vectu(i,n) = vectu(i,n) + defc(4,n,i)*sigma(4)* jac +&
+                                 defn(4,n,i)*sigma(4)*jac/rac2
+                end do
+            end do
+        end do
+        do kl = 1, 3
             sigp(kl,kpg) = sigma(kl)
-300     continue
+        end do
         sigp(4,kpg) = sigma(4)/rac2
-!
-!
-        do 310 i = 1, 6
+        do i = 1, 6
             sigp(i+4,kpg) = qplus(i)
-310     continue
-!
-!
+        end do
     endif
 !
 !

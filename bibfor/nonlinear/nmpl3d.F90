@@ -1,6 +1,6 @@
 subroutine nmpl3d(fami  , nno  , npg   , ipoids, ivf   ,&
                   idfde , geom , typmod, option, imate ,&
-                  compor, lgpg , crit  , instam, instap,&
+                  compor, mult_comp, lgpg , carcri  , instam, instap,&
                   deplm , deplp, angmas, sigm  , vim   ,&
                   matsym, dfdi , def   , sigp  , vip   ,&
                   matuu , vectu, codret)
@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/nmgeom.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,9 @@ implicit none
     character(len=16), intent(in) :: option
     integer, intent(in) :: imate
     character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     integer, intent(in) :: lgpg
-    real(kind=8), intent(in) :: crit(*)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
     real(kind=8), intent(inout) :: deplm(1:3, 1:nno)
@@ -167,12 +168,12 @@ implicit none
 !
 ! ----- Compute behaviour
 !
-        call nmcomp(fami       , kpg        , 1     , 3     , typmod        ,&
-                    imate      , compor     , crit  , instam, instap        ,&
-                    6          , eps        , deps  , 6     , sigm_norm     ,&
-                    vim(1, kpg), option     , angmas, 10    , elgeom(1, kpg),&
-                    sigma      , vip(1, kpg), 36    , dsidep, 1             ,&
-                    rbid       , cod(kpg))
+        call nmcomp(fami       , kpg        , 1        , 3     , typmod        ,&
+                    imate      , compor     , carcri     , instam, instap        ,&
+                    6          , eps        , deps     , 6     , sigm_norm     ,&
+                    vim(1, kpg), option     , angmas   , 10    , elgeom(1, kpg),&
+                    sigma      , vip(1, kpg), 36       , dsidep, 1             ,&
+                    rbid       , cod(kpg)   , mult_comp)
         if (cod(kpg) .eq. 1) then
             goto 999
         endif
@@ -278,7 +279,7 @@ implicit none
 !
 ! - For POST_ITER='CRIT_RUPT'
 !
-    if (crit(13) .gt. 0.d0) then
+    if (carcri(13) .gt. 0.d0) then
         ndim = 3
         call crirup(fami, imate, ndim, npg, lgpg,&
                     option, compor, sigp, vip, vim,&

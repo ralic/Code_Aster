@@ -1,12 +1,22 @@
 subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                   idfde, geom, typmod, option, imate,&
-                  compor, lgpg, crit, instam, instap,&
+                  compor, mult_comp, lgpg, carcri, instam, instap,&
                   ideplm, ideplp, angmas, sigm, vim,&
                   matsym, dfdi, def, sigp, vip,&
                   matuu, ivectu, codret)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterfort/codere.h"
+#include "asterfort/crirup.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,28 +31,20 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterfort/codere.h"
-#include "asterfort/crirup.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9), ipoids, ivf, idfde
     integer :: ivectu, ideplm, ideplp, ndim
 !
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    character(len=16) :: option, compor(*)
-!
+    character(len=16) :: option
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: angmas(3)
-    real(kind=8) :: geom(2, nno), crit(*)
+    real(kind=8) :: geom(2, nno)
     real(kind=8) :: dfdi(nno, 2)
     real(kind=8) :: def(4, nno, 2)
     real(kind=8) :: sigm(4, npg), sigp(4, npg)
@@ -108,22 +110,22 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                 zr(ideplm), zr(ideplp), elgeom)
 !
 ! - INITIALISATION CODES RETOURS
-    do 1955 kpg = 1, npg
+    do kpg = 1, npg
         cod(kpg)=0
-1955 end do
+    end do
 !
 ! - CALCUL POUR CHAQUE POINT DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 ! - CALCUL DES ELEMENTS GEOMETRIQUES
 !
 !     CALCUL DE DFDI,F,EPS,DEPS,R(EN AXI) ET POIDS
 !
-        do 20 j = 1, 6
+        do j = 1, 6
             eps (j)=0.d0
             deps(j)=0.d0
- 20     continue
+        end do
 !
         call nmgeom(2, nno, axi, grand, geom,&
                     kpg, ipoids, ivf, idfde, zr(ideplm),&
@@ -138,38 +140,38 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                     r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-        do 40 n = 1, nno
-            do 30 i = 1, 2
+        do n = 1, nno
+            do i = 1, 2
                 def(1,n,i) = f(i,1)*dfdi(n,1)
                 def(2,n,i) = f(i,2)*dfdi(n,2)
                 def(3,n,i) = 0.d0
                 def(4,n,i) = (f(i,1)*dfdi(n,2) + f(i,2)*dfdi(n,1))/ rac2
- 30         continue
- 40     continue
+            end do
+        end do
 !
 !      TERME DE CORRECTION (3,3) AXI QUI PORTE EN FAIT SUR LE DDL 1
         if (axi) then
-            do 50 n = 1, nno
+            do n = 1, nno
                 def(3,n,1) = f(3,3)*zr(ivf+n+(kpg-1)*nno-1)/r
- 50         continue
+            end do
         endif
 !
-        do 60 i = 1, 3
+        do i = 1, 3
             sign(i) = sigm(i,kpg)
- 60     continue
+        end do
         sign(4) = sigm(4,kpg)*rac2
 !
 !
 ! - LOI DE COMPORTEMENT
         call nmcomp(fami, kpg, 1, 2, typmod,&
-                    imate, compor, crit, instam, instap,&
+                    imate, compor, carcri, instam, instap,&
                     6, eps, deps, 6, sign,&
                     vim(1, kpg), option, angmas, 10, elgeom(1, kpg),&
                     sigma, vip(1, kpg), 36, dsidep, 1,&
-                    rbid, cod(kpg))
+                    rbid, cod(kpg), mult_comp)
 !
         if (cod(kpg) .eq. 1) then
-            goto 1956
+            goto 999
         endif
 !
 !
@@ -178,17 +180,17 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
         if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1: 9) .eq. 'FULL_MECA') then
 !
             if (matsym) then
-                do 160 n = 1, nno
-                    do 150 i = 1, 2
-                        do 151 kl = 1, 4
+                do n = 1, nno
+                    do i = 1, 2
+                        do kl = 1, 4
                             sig(kl)=0.d0
                             sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
                             sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
                             sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
                             sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-151                     continue
-                        do 140 j = 1, 2
-                            do 130 m = 1, n
+                        end do
+                        do j = 1, 2
+                            do m = 1, n
                                 if (m .eq. n) then
                                     j1 = i
                                 else
@@ -209,22 +211,22 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                                     matuu(kk) = matuu(kk) + tmp*poids
                                 endif
 !
-130                         continue
-140                     continue
-150                 continue
-160             continue
+                            end do
+                        end do
+                    end do
+                end do
             else
-                do 560 n = 1, nno
-                    do 550 i = 1, 2
-                        do 551 kl = 1, 4
+                do n = 1, nno
+                    do i = 1, 2
+                        do kl = 1, 4
                             sig(kl)=0.d0
                             sig(kl)=sig(kl)+def(1,n,i)*dsidep(1,kl)
                             sig(kl)=sig(kl)+def(2,n,i)*dsidep(2,kl)
                             sig(kl)=sig(kl)+def(3,n,i)*dsidep(3,kl)
                             sig(kl)=sig(kl)+def(4,n,i)*dsidep(4,kl)
-551                     continue
-                        do 540 j = 1, 2
-                            do 530 m = 1, nno
+                        end do
+                        do j = 1, 2
+                            do m = 1, nno
 !
 !                   RIGIDITE ELASTIQUE
                                 tmp=0.d0
@@ -237,10 +239,10 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                                 kk = 2*nno*(2*(n-1)+i-1) + 2*(m-1)+j
                                 matuu(kk) = matuu(kk) + tmp*poids
 !
-530                         continue
-540                     continue
-550                 continue
-560             continue
+                            end do
+                        end do
+                    end do
+                end do
             endif
         endif
 !
@@ -249,19 +251,19 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !
         if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
-            do 230 n = 1, nno
-                do 220 i = 1, 2
-                    do 210 kl = 1, 4
+            do n = 1, nno
+                do i = 1, 2
+                    do kl = 1, 4
 !               VECTU(I,N)=VECTU(I,N)+DEF(KL,N,I)*SIGMA(KL)*POIDS
                         zr(ivectu-1+2*(n-1)+i)= zr(ivectu-1+2*(n-1)+i)&
                         +def(kl,n,i)*sigma(kl)*poids
-210                 continue
-220             continue
-230         continue
+                    end do
+                end do
+            end do
 !
-            do 310 kl = 1, 3
+            do kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-310         continue
+            end do
             sigp(4,kpg) = sigma(4)/rac2
 !
         endif
@@ -270,24 +272,24 @@ subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
 !
         if (option(1:16) .eq. 'RIGI_MECA_IMPLEX') then
 !
-            do 320 kl = 1, 3
+            do kl = 1, 3
                 sigp(kl,kpg) = sigma(kl)
-320         continue
+            end do
             sigp(4,kpg) = sigma(4)/rac2
 !
         endif
 !
-800 end do
+    end do
 !
 !     POST_ITER='CRIT_RUPT'
-    if (crit(13) .gt. 0.d0) then
+    if (carcri(13) .gt. 0.d0) then
         ndim=2
         call crirup(fami, imate, ndim, npg, lgpg,&
                     option, compor, sigp, vip, vim,&
                     instam, instap)
     endif
 !
-1956 continue
+999 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, npg, codret)
 end subroutine

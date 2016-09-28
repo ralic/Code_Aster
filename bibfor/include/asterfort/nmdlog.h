@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,8 +20,8 @@
 interface
     subroutine nmdlog(fami, option, typmod, ndim, nno,&
                       npg, iw, ivf, vff, idff,&
-                      geomi, dff, compor, mate, lgpg,&
-                      crit, angmas, instm, instp, matsym,&
+                      geomi, dff, compor, mult_comp, mate, lgpg,&
+                      carcri, angmas, instm, instp, matsym,&
                       deplm, depld, sigm, vim, sigp,&
                       vip, fint, matuu, codret)
         integer :: lgpg
@@ -37,9 +37,10 @@ interface
         integer :: idff
         real(kind=8) :: geomi(*)
         real(kind=8) :: dff(nno, *)
-        character(len=16) :: compor(*)
+        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: mult_comp
+        real(kind=8), intent(in) :: carcri(*)
         integer :: mate
-        real(kind=8) :: crit(*)
         real(kind=8) :: angmas(3)
         real(kind=8) :: instm
         real(kind=8) :: instp

@@ -1,12 +1,12 @@
 subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                   npg, iw, vff, idff, geomi,&
-                  dff, compor, mate, lgpg, crit,&
+                  dff, compor, mate, mult_comp, lgpg, crit,&
                   angmas, instm, instp, deplm, depld,&
                   sigm, vim, sigp, vip, fint,&
                   matr, codret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: option, compor(*)
+    character(len=16), intent(in) :: mult_comp
     real(kind=8) :: geomi(*), dff(nno, *), crit(*), instm, instp
     real(kind=8) :: vff(nno, npg)
     real(kind=8) :: angmas(3)
@@ -185,7 +186,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                     9, fm, fd, 6, sigmam,&
                     vim(1, g), option, angmas, 10, tampon,&
                     taup, vip( 1, g), 54, dsidep, 1,&
-                    wkout, cod(g))
+                    wkout, cod(g), mult_comp)
 !
         if (cod(g) .eq. 1) then
             codret = 1

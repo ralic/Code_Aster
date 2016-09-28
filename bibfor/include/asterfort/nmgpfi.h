@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmgpfi(fami, option, typmod, ndim, nno,&
                       npg, iw, vff, idff, geomi,&
-                      dff, compor, mate, lgpg, crit,&
+                      dff, compor, mate, mult_comp, lgpg, crit,&
                       angmas, instm, instp, deplm, depld,&
                       sigm, vim, sigp, vip, fint,&
                       matr, codret)
@@ -36,6 +36,7 @@ interface
         real(kind=8) :: dff(nno, *)
         character(len=16) :: compor(*)
         integer :: mate
+        character(len=16), intent(in) :: mult_comp
         real(kind=8) :: crit(*)
         real(kind=8) :: angmas(3)
         real(kind=8) :: instm

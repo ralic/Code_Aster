@@ -1,5 +1,5 @@
 subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, carcri, instam, instap,&
+                  imate, compor, mult_comp, carcri, instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
                   vim, option, angmas, nwkin, wkin,&
                   cp, numlc, tempd, tempf, tref,&
@@ -143,6 +143,7 @@ implicit none
     real(kind=8) :: vim(nvi), vip(nvi)
     real(kind=8) :: dsidep(ndsde)
     character(len=16) :: compor(*), option
+    character(len=16), intent(in) :: mult_comp
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     aster_logical :: cp
@@ -240,7 +241,7 @@ implicit none
 !             RETURN1 EN CAS DE NON CONVERGENCE LOCALE
 !     ----------------------------------------------------------------
 !
-    character(len=16) :: mult_comp
+
 !     ----------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
@@ -256,8 +257,6 @@ implicit none
                         ksp, imate)
         endif
     endif
-!
-    mult_comp = compor(7)
 !
     select case (numlc)
 !

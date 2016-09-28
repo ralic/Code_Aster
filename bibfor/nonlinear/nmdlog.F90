@@ -1,9 +1,27 @@
 subroutine nmdlog(fami, option, typmod, ndim, nno,&
                   npg, iw, ivf, vff, idff,&
-                  geomi, dff, compor, mate, lgpg,&
-                  crit, angmas, instm, instp, matsym,&
+                  geomi, dff, compor, mult_comp, mate, lgpg,&
+                  carcri, angmas, instm, instp, matsym,&
                   deplm, depld, sigm, vim, sigp,&
                   vip, fint, matuu, codret)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/codere.h"
+#include "asterfort/dfdmip.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmepsi.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/poslog.h"
+#include "asterfort/prelog.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -20,6 +38,9 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1306,W1504
+!
+
 ! ----------------------------------------------------------------------
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_*, RAPH_MECA ET FULL_MECA_*
 !           EN GRANDES DEFORMATIONS 2D (D_PLAN ET AXI) ET 3D LOG
@@ -55,30 +76,19 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
 ! OUT MATUU   : MATR. DE RIGIDITE NON SYM. (RIGI_MECA_* ET FULL_MECA_*)
 ! OUT CODRET  : CODE RETOUR DE L'INTEGRATION DE LA LDC
 !
-! aslint: disable=W1306,W1504
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/codere.h"
-#include "asterfort/dfdmip.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmepsi.h"
-#include "asterfort/nmgrtg.h"
-#include "asterfort/poslog.h"
-#include "asterfort/prelog.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
+
+
     aster_logical :: grand, axi, resi, rigi, matsym, cplan, lintbo
     parameter (grand = .true._1)
     integer :: g, i, nddl, cod(27), ivf
     integer :: ndim, nno, npg, mate, lgpg, codret, iw, idff
     character(len=8) :: typmod(*)
     character(len=*) :: fami
-    character(len=16) :: option, compor(*)
-    real(kind=8) :: geomi(*), dff(nno, *), crit(*), instm, instp
+    character(len=16) :: option
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8) :: geomi(*), dff(nno, *), instm, instp
     real(kind=8) :: vff(nno, npg), dtde(6, 6)
     real(kind=8) :: angmas(3), deplm(*), depld(*), sigm(2*ndim, npg), epsml(6)
     real(kind=8) :: vim(lgpg, npg), sigp(2*ndim, npg), vip(lgpg, npg)
@@ -159,11 +169,11 @@ subroutine nmdlog(fami, option, typmod, ndim, nno,&
         call r8inir(36, 0.d0, dtde, 1)
         call r8inir(6, 0.d0, tp, 1)
         call nmcomp(fami, g, 1, ndim, typmod,&
-                    mate, compor, crit, instm, instp,&
+                    mate, compor, carcri, instm, instp,&
                     6, epsml, deps, 6, tn,&
                     vim(1, g), option, angmas, 10, elgeom(1, g),&
                     tp, vip(1, g), 36, dtde, 1,&
-                    rbid, cod(g))
+                    rbid, cod(g), mult_comp)
 !
 !        TEST SUR LES CODES RETOUR DE LA LOI DE COMPORTEMENT
 !

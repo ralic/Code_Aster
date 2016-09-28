@@ -19,7 +19,7 @@
 !
 interface
     subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
-                      imate, compor, carcri, instam, instap,&
+                      imate, compor, mult_comp, carcri, instam, instap,&
                       neps, epsm, deps, nsig, sigm,&
                       vim, option, angmas, nwkin, wkin,&
                       cp, numlc, tempd, tempf, tref,&
@@ -38,6 +38,7 @@ interface
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: compor(*)
+        character(len=16), intent(in) :: mult_comp
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap

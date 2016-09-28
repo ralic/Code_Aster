@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 !
 interface
     subroutine nmcpla(fami, kpg, ksp, ndim, typmod,&
-                      imat, compor, crit, timed, timef,&
+                      imat, compor, mult_comp, carcri, timed, timef,&
                       neps, epsdt, depst, nsig, sigd,&
                       vind, option, nwkin, wkin, sigf,&
                       vinf, ndsde, dsde, nwkout, wkout,&
@@ -31,8 +31,9 @@ interface
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imat
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: mult_comp
+        real(kind=8), intent(in) :: carcri(*)
         real(kind=8) :: timed
         real(kind=8) :: timef
         integer :: neps

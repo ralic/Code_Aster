@@ -1,12 +1,25 @@
 subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
                   vff, idfde, geomi, typmod, option,&
-                  imate, compor, lgpg, crit, instam,&
+                  imate, compor, mult_comp, lgpg, carcri, instam,&
                   instap, deplm, deplp, angmas, sigm,&
                   vim, matsym, dfdi, pff, def,&
                   sigp, vip, matuu, vectu, codret)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/codere.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/lcegeo.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/nmgeom.h"
+#include "asterfort/nmgrtg.h"
+#include "asterfort/pk2sig.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,29 +34,18 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
-!
 ! aslint: disable=W1504
-    implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/codere.h"
-#include "asterfort/lcdetf.h"
-#include "asterfort/lcegeo.h"
-#include "asterfort/nmcomp.h"
-#include "asterfort/nmgeom.h"
-#include "asterfort/nmgrtg.h"
-#include "asterfort/pk2sig.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
     integer :: nno, npg, imate, lgpg, codret, cod(9)
     integer :: ipoids, ivf, idfde
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
-!
+    character(len=16) :: option
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: instam, instap, angmas(3), detfm
-    real(kind=8) :: geomi(2, nno), crit(3)
+    real(kind=8) :: geomi(2, nno)
     real(kind=8) :: dfdi(nno, 2), deplm(2*nno), deplp(2*nno)
     real(kind=8) :: pff(4, nno, nno), def(4, nno, 2), vff(*)
     real(kind=8) :: sigm(4, npg), sigp(4, npg)
@@ -110,13 +112,13 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !
 !     INITIALISATION CODES RETOURS
 !
-    do 1955 kpg = 1, npg
+    do kpg = 1, npg
         cod(kpg)=0
-1955 end do
+    end do
 !
 !     CALCUL POUR CHAQUE POINT DE GAUSS
 !
-    do 800 kpg = 1, npg
+    do kpg = 1, npg
 !
 !        CALCUL DES ELEMENTS GEOMETRIQUES
 !
@@ -139,10 +141,10 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !        CALCUL DE DEPS POUR LDC
 !
         maxeps=0.d0
-        do 25 j = 1, 6
+        do j = 1, 6
             deps (j)=epsp(j)-epsm(j)
             maxeps=max(maxeps,abs(epsp(j)))
- 25     continue
+        end do
 !
 !        VERIFICATION QUE EPS RESTE PETIT
         if (maxeps .gt. 0.05d0) then
@@ -164,15 +166,15 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
 !        INTEGRATION
 !
         call nmcomp(fami, kpg, 1, 2, typmod,&
-                    imate, compor, crit, instam, instap,&
+                    imate, compor, carcri, instam, instap,&
                     6, epsm, deps, 6, sigmn,&
                     vim(1, kpg), option, angmas, 10, elgeom(1, kpg),&
                     sigma, vip(1, kpg), 36, dsidep, 1,&
-                    r8bid, cod(kpg))
+                    r8bid, cod(kpg), mult_comp)
 !
 !
         if (cod(kpg) .eq. 1) then
-            goto 1956
+            goto 999
         endif
 !
 !        CALCUL DE LA MATRICE DE RIGIDITE ET DES FORCES INTERIEURES
@@ -192,9 +194,9 @@ subroutine nmgr2d(fami, nno, npg, ipoids, ivf,&
                         1)
         endif
 !
-800 end do
+    end do
 !
-1956 continue
+999 continue
 !
 ! - SYNTHESE DES CODES RETOURS
 !

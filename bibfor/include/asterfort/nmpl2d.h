@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine nmpl2d(fami, nno, npg, ipoids, ivf,&
                       idfde, geom, typmod, option, imate,&
-                      compor, lgpg, crit, instam, instap,&
+                      compor, mult_comp, lgpg, carcri, instam, instap,&
                       ideplm, ideplp, angmas, sigm, vim,&
                       matsym, dfdi, def, sigp, vip,&
                       matuu, ivectu, codret)
@@ -35,8 +35,9 @@ interface
         character(len=8) :: typmod(*)
         character(len=16) :: option
         integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        character(len=16), intent(in) :: compor(*)
+        character(len=16), intent(in) :: mult_comp
+        real(kind=8), intent(in) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
         integer :: ideplm

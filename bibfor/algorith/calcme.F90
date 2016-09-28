@@ -1,5 +1,5 @@
 subroutine calcme(option, compor, thmc, meca, imate,&
-                  typmod, crit, instam, instap, tref,&
+                  typmod, carcri, instam, instap, tref,&
                   ndim, dimdef, dimcon, nvimec, yate,&
                   addeme, adcome, addete, defgem, congem,&
                   congep, vintm, vintp, addep1, addep2,&
@@ -75,13 +75,13 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     real(kind=8) :: vintm(nvimec), vintp(nvimec)
     real(kind=8) :: dsde(dimcon, dimdef), rac2
     character(len=8) :: typmod(2)
-    character(len=16) :: option, compor(*), meca, thmc, phenom
+    character(len=16) :: option, compor(*), meca, thmc, phenom, mult_comp
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
     integer :: i, j, nelas, nresma, numlc, aniso, nwkin
     real(kind=8) :: deps(6), t, dt, tini, p1, p2, wkin(4)
-    real(kind=8) :: young, nu, alpha0, crit(*), instam, instap, tref
+    real(kind=8) :: young, nu, alpha0, carcri(*), instam, instap, tref
     parameter     (nelas = 4  )
     parameter     (nresma = 18)
     real(kind=8) :: elas(nelas)
@@ -115,6 +115,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
     kpg=1
     spt=1
     poum='+'
+    mult_comp = ' '
 !
     rac2 = sqrt(2.0d0)
 !
@@ -256,7 +257,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !
         else
 !
-            call lcmohr(ndim, typmod, imate, crit, option, tini,&
+            call lcmohr(ndim, typmod, imate, carcri, option, tini,&
                         deps, congem(adcome), congep(adcome), vintm, vintp,&
                         dsdeme, retcom)
 ! --OK
@@ -276,7 +277,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 
         mectru = .true.
         tini = t - dt
-        call nmcjs(typmod, imate, compor, crit, instam,&
+        call nmcjs(typmod, imate, compor, carcri, instam,&
                    instap, tini, t, tref, defgem(addeme+ndim),&
                    deps, congem(adcome), vintm, option, congep(adcome),&
                    vintp, dsdeme, retcom)
@@ -300,7 +301,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc=34
         cp=.false.
         call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, crit, instam, instap,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
                     vintm, option, angmas, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
@@ -319,7 +320,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc=33
         cp=.false.
         call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, crit, instam, instap,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
                     vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
@@ -335,7 +336,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc=33
         cp=.false.
         call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, crit, instam, instap,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
                     vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
@@ -364,7 +365,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc=35
         cp=.false.
         call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, crit, instam, instap,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
                     vintm, option, angma1, 1, [0.d0],&
                     cp, numlc, tini, t, tref,&
@@ -386,7 +387,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         wkin(3)=t
         wkin(4)=tref
         call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, crit, instam, instap,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
                     6, defgem(addeme+ndim), deps, 6, congem(adcome),&
                     vintm, option, angma1, nwkin, wkin ,&
                     cp, numlc, tini, t, tref,&
@@ -425,7 +426,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc = 42
 
         tini = t - dt
-        call dpvplc(typmod, option, imate, crit, instam,&
+        call dpvplc(typmod, option, imate, carcri, instam,&
                     instap, tini, t, tref, deps,&
                     congem(adcome), vintm, congep(adcome), vintp, dsdeme,&
                     retcom)
@@ -459,7 +460,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         numlc = 22
 
         tini = t - dt
-        call nmccam(ndim, typmod, imate, compor, crit,&
+        call nmccam(ndim, typmod, imate, compor, carcri,&
                     tini, t, tref,&
                     deps, congem(adcome), vintm, option, congep(adcome),&
                     vintp, dsdeme, retcom)
@@ -495,7 +496,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
-        call nmbarc(ndim, imate, crit, sat, tbiot(1),&
+        call nmbarc(ndim, imate, carcri, sat, tbiot(1),&
                     tini, t, deps, congem(adcome), vintm,&
                     option, congep(adcome), vintp, dsdeme, p1,&
                     p2, dp1, dp2, dsidp1, sipm,&
@@ -533,7 +534,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
 !
-        call elagon(ndim, imate, crit, sat, tbiot(1),&
+        call elagon(ndim, imate, carcri, sat, tbiot(1),&
                     tini, t, alpha0, deps, young,&
                     nu, congem(adcome), option, congep(adcome), dsdeme,&
                     p1, p2, dp1, dsidp1, dsidp2)
@@ -584,7 +585,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call dsipdp(thmc, adcome, addep1, addep2, dimcon,&
                     dimdef, dsde, dspdp1, dspdp2, pre2tr)
 !
-        call lchbr2(typmod, option, imate, crit, congem(adcome),&
+        call lchbr2(typmod, option, imate, carcri, congem(adcome),&
                     defgem( addeme+ndim), tini, t, tref, deps,&
                     vintm, vintp, dspdp1, dspdp2, sipp,&
                     congep(adcome), dsdeme, dsidp1, dsidp2, retcom)
@@ -668,7 +669,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         call lcldsb('RIGI', 1, 1, ndim, typmod,&
                     imate, compor, defgem( addeme+ndim), deps, vintm,&
                     tini, t, tref, option, congep(adcome),&
-                    vintp, dsdeme12, crit)
+                    vintp, dsdeme12, carcri)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
             do i = 1, 2*ndim
                 do j = 1, 2*ndim
@@ -694,7 +695,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
     if(retcom .eq. 1) then
         call lcidbg(fami, kpg, spt, typmod, complg, &
-                    crit, instam, instap, 6, & 
+                    carcri, instam, instap, 6, & 
                     defgem(addeme+ndim),deps, 6,&
                     congem(adcome), vintm, option) 
     endif

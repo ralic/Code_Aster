@@ -1,27 +1,12 @@
 subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
                   idfde, geom, typmod, option, imate,&
-                  compor, lgpg, crit, instam, instap,&
+                  compor, mult_comp, lgpg, carcri, instam, instap,&
                   deplm, deplp, angmas, sigm, vim,&
                   dfdi, def, sigp, vip, matuu,&
                   vectu, codret)
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-! (AT YOUR OPTION) ANY LATER VERSION.
 !
-! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+implicit none
 !
-! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! ======================================================================
-! aslint: disable=W1504
-    implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/caatdb.h"
@@ -39,14 +24,36 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
+!
+! ======================================================================
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+! (AT YOUR OPTION) ANY LATER VERSION.
+!
+! THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+! WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+! MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+! GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!
+! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+! ======================================================================
+! aslint: disable=W1504
+!
     integer :: nno, imate, lgpg, codret, nbpg1
     integer :: ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
-    character(len=16) :: option, compor(*)
+    character(len=16) :: option
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: instam, instap
-    real(kind=8) :: geom(3, nno), crit(3)
+    real(kind=8) :: geom(3, nno)
     real(kind=8) :: deplm(3, nno), deplp(3, nno), dfdi(nno, 3)
     real(kind=8) :: def(6, 3, nno)
     real(kind=8) :: sigm(78, nbpg1), sigp(78, nbpg1)
@@ -131,9 +138,9 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
                 deplm, deplp, elgeom)
 !
 ! - INITIALISATION CODES RETOURS
-    do 1 kpg = 1, nbpg1
+    do kpg = 1, nbpg1
         cod(kpg) = 0
-  1 end do
+    end do
 !
 ! - INITIALISATION HEXAS8
     call elraga('HE8', 'FPG8    ', ndim, nbpg2, coopg2,&
@@ -146,41 +153,41 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     call matini(3, nno, 0.d0, bi)
 !
     den = 0.d0
-    do 2 kpg = 1, nbpg2
+    do kpg = 1, nbpg2
         call dfdm3d(nno, kpg, ipoid2, idfde2, geom,&
                     jac, dfdx, dfdy, dfdz)
         den = den + jac
-        do 3 ino = 1, nno
+        do ino = 1, nno
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)
             bi(2,ino) = bi(2,ino) + jac * dfdy(ino)
             bi(3,ino) = bi(3,ino) + jac * dfdz(ino)
-  3     continue
-  2 end do
-    do 4 i = 1, 3
-        do 5 ino = 1, nno
+        end do
+    end do
+    do i = 1, 3
+        do ino = 1, nno
             bi(i,ino) = bi(i,ino)/ den
-  5     continue
-  4 end do
+        end do
+    end do
 !
 ! - CALCUL DES COEFFICIENTS GAMMA
 !
-    do 6 i = 1, 4
-        do 7 k = 1, 3
+    do i = 1, 4
+        do k = 1, 3
             hx(k,i) = 0.d0
-            do 8 j = 1, nno
+            do j = 1, nno
                 hx(k,i) = hx(k,i) + h(j,i) * geom(k,j)
-  8         continue
-  7     continue
-  6 end do
-    do 9 i = 1, 4
-        do 10 j = 1, nno
+            end do
+        end do
+    end do
+    do i = 1, 4
+        do j = 1, nno
             s = 0.d0
-            do 11 k = 1, 3
+            do k = 1, 3
                 s = s + hx(k,i) * bi(k,j)
- 11         continue
+            end do
             gam(i,j) = 0.125d0 * (h(j,i) - s)
- 10     continue
-  9 end do
+        end do
+    end do
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
@@ -191,10 +198,10 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
 !     CALCUL DE DFDI,F,EPS,DEPS ET POIDS
 !
-    do 70 j = 1, 6
+    do j = 1, 6
         eps(j) = 0.d0
         deps(j) = 0.d0
- 70 end do
+    end do
     axi = .false.
     call nmgeom(3, nno, axi, grand, geom,&
                 kpg, ipoids, ivf, idfde, deplm,&
@@ -208,23 +215,23 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
                 r)
 !
 !      CALCUL DES PRODUITS SYMETR. DE F PAR N,
-    do 41 i = 1, nno
-        do 31 j = 1, 3
+    do i = 1, nno
+        do j = 1, 3
             def(1,j,i) = f(j,1)*dfdi(i,1)
             def(2,j,i) = f(j,2)*dfdi(i,2)
             def(3,j,i) = f(j,3)*dfdi(i,3)
             def(4,j,i) = (f(j,1)*dfdi(i,2) + f(j,2)*dfdi(i,1))/rac2
             def(5,j,i) = (f(j,1)*dfdi(i,3) + f(j,3)*dfdi(i,1))/rac2
             def(6,j,i) = (f(j,2)*dfdi(i,3) + f(j,3)*dfdi(i,2))/rac2
- 31     continue
- 41 continue
+        end do
+    end do
 !
-    do 100 i = 1, 3
+    do i = 1, 3
         sign(i) = sigm(i,kpg)
-100 end do
-    do 65 i = 4, 6
+    end do
+    do i = 4, 6
         sign(i) = sigm(i,kpg)*rac2
- 65 end do
+    end do
 !
 ! - LOI DE COMPORTEMENT
     if (option(1:9) .eq. 'RAPH_MECA') then
@@ -234,15 +241,15 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
     endif
 !
     call nmcomp(fami, kpg, 1, 3, typmod,&
-                imate, compor, crit, instam, instap,&
+                imate, compor, carcri, instam, instap,&
                 6, eps, deps, 6, sign,&
                 vim(1, kpg), optios, angmas, 10, elgeom(1, kpg),&
                 sigma, vip(1, kpg), 36, d, 1,&
-                rbid, cod(kpg))
+                rbid, cod(kpg), mult_comp)
 !
 ! - ERREUR D'INTEGRATION
     if (cod(kpg) .eq. 1) then
-        goto 320
+        goto 999
     endif
 !
 !  RECUP DU COEF DE POISSON POUR ASQBI
@@ -286,34 +293,27 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !     --------------------------------------------
 !
 !        CALCUL DES TERMES EVALUES AUX 8 POINTS DE GAUSS
-        do 160 kpg = 1, nbpg2
+        do kpg = 1, nbpg2
             call invjac(nno, kpg, ipoid2, idfde2, geom,&
                         invja, jac)
-!
-            do 161 i = 1, 3
+            do i = 1, 3
                 dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
-161         continue
-!
-            do 162 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
-162         continue
-!
-            do 163 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
-163         continue
-!
-            do 164 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg&
                                     &-1) * coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(&
                                     &3*kpg) * invja(2,i)
-164         continue
-!
+            end do
             call cast3d(proj, gam, dh, def, nno,&
                         kpg, nub, nu, d, calbn,&
                         bn, jac, matuu)
-!
-160     continue
-!
+        end do
     endif
 !
 ! - CALCUL DES FORCES INTERNES ET DES CONTRAINTES DE CAUCHY
@@ -322,30 +322,30 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
 !     INITIALISATION
         nbpg2 = 8
-        do 12 ia = 1, 4
+        do ia = 1, 4
             pqx(ia) = 0.d0
             pqy(ia) = 0.d0
             pqz(ia) = 0.d0
- 12     continue
+        end do
 !
 !     DEFORMATIONS GENERALISEES
-        do 169 ia = 1, 4
-            do 170 kl = 1, nno
+        do ia = 1, 4
+            do kl = 1, nno
                 pqx(ia) = pqx(ia) + gam(ia,kl)*deplp(1,kl)
                 pqy(ia) = pqy(ia) + gam(ia,kl)*deplp(2,kl)
                 pqz(ia) = pqz(ia) + gam(ia,kl)*deplp(3,kl)
-170         continue
-169     continue
+            end do
+        end do
 !
 !      INCREMENT DES CONTRAINTES GENERALISEES
 !
         call calcdq(proj, nub, nu, d, pqx,&
                     pqy, pqz, dq)
 !
-        do 180 i = 1, 72
+        do i = 1, 72
             qmoins(i) = sigm(i+6,1)
             qplus(i) = qmoins(i) + dq(i)
-180     continue
+        end do
 !
         call matini(3, nno, 0.d0, vectu)
         call matini(6, nbpg2, 0.d0, sigas)
@@ -354,28 +354,24 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
 !      OPERATEUR DE STABILISATION DU GRADIENT AUX 8 POINTS DE GAUSS
 !
-        do 290 kpg = 1, nbpg2
+        do kpg = 1, nbpg2
             kp = 3*(kpg-1)
             call invjac(nno, kpg, ipoid2, idfde2, geom,&
                         invja, jac)
-!
-            do 165 i = 1, 3
+            do i = 1, 3
                 dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
-165         continue
-!
-            do 166 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
-166         continue
-!
-            do 167 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
-167         continue
-!
-            do 168 i = 1, 3
+            end do
+            do i = 1, 3
                 dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg&
                                     &-1) * coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(&
                                     &3*kpg) * invja(2,i)
-168         continue
+            end do
 !
 !  CALCUL DE BN AU POINT DE GAUSS KPG
 !
@@ -385,42 +381,38 @@ subroutine nmas3d(fami, nno, nbpg1, ipoids, ivf,&
 !
 !    CONTRAINTES DE HOURGLASS
 !
-            do 32 i = 1, 6
+            do i = 1, 6
                 ii = 12*(i-1)
-                do 34 ia = 1, 4
+                do ia = 1, 4
                     iaa = 3*(ia-1)
-                    do 35 j = 1, 3
+                    do j = 1, 3
                         sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,kp+j)
- 35                 continue
- 34             continue
- 32         continue
+                    end do
+                end do
+            end do
 !
 !     CALCUL DES FORCES INTERNES
 !
-            do 250 i = 1, nno
-                do 240 j = 1, 3
-                    do 230 kl = 1, 3
+            do i = 1, nno
+                do j = 1, 3
+                    do kl = 1, 3
                         vectu(j,i) = vectu(j,i) + (def(kl,j,i)+ bn(kl, j,i))* (sigas(kl,kpg)+sigm&
                                      &a(kl))*jac + (rac2* def(kl+3,j,i)+ bn(kl+3,j,i))* (sigas(kl&
                                      &+3,kpg) +sigma(kl+3)/rac2)*jac
-230                 continue
-240             continue
-250         continue
-!
-290     continue
-!
-        do 300 kl = 1, 3
+                    end do
+                end do
+            end do
+        end do
+        do kl = 1, 3
             sigp(kl,1) = sigma(kl)
             sigp(kl+3,1) = sigma(kl+3)/rac2
-300     continue
-!
-        do 310 i = 1, 72
+        end do
+        do i = 1, 72
             sigp(i+6,1) = qplus(i)
-310     continue
-!
+        end do
     endif
 !
-320 continue
+999 continue
 ! - SYNTHESE DES CODES RETOURS
     call codere(cod, nbpg1, codret)
 !

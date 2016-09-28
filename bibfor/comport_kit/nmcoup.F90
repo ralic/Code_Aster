@@ -1,5 +1,5 @@
 subroutine nmcoup(fami, kpg, ksp, ndim, typmod,&
-                  imat, compor, lcpdb, crit, timed,&
+                  imat, compor, mult_comp, lcpdb, carcri, timed,&
                   timef, neps, epsdt, depst, nsig,&
                   sigd, vind, option, angmas, nwkin,&
                   wkin, sigf, vinf, ndsde, dsde,&
@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/lc0065.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,7 +36,9 @@ implicit none
 !
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
-    real(kind=8) :: crit(*)
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: timed, timef
     real(kind=8) :: wkin(*), wkout(*)
     real(kind=8) :: epsdt(*), depst(*)
@@ -44,7 +46,7 @@ implicit none
     real(kind=8) :: vind(*), vinf(*), angmas(*)
     real(kind=8) :: dsde(*)
     aster_logical :: lcpdb
-    character(len=16) :: compor(*), option
+    character(len=16) :: option
     character(len=*) :: fami
     character(len=8) :: typmod(*)
 !
@@ -115,7 +117,7 @@ implicit none
             rela_plas      .eq. 'ROUSS_PR'       .or.&
             rela_plas      .eq. 'BETON_DOUBLE_DP') then
             call nmcpla(fami, kpg   , ksp  , ndim  , typmod,&
-                        imat, compor, crit , timed , timef ,&
+                        imat, compor, mult_comp, carcri , timed , timef ,&
                         neps, epsdt , depst, nsig  , sigd  ,&
                         vind, option, nwkin, wkin  , sigf  ,&
                         vinf, ndsde , dsde , nwkout, wkout ,&
@@ -151,7 +153,7 @@ implicit none
                 call lcumfp(fami , kpg   , ksp  , ndim  , typmod   ,&
                             imat , compor, timed, timef , epsdt    ,&
                             depst, sigd  , vind , option, rela_plas,&
-                            sigf , vinf  , dsde , crit)
+                            sigf , vinf  , dsde , carcri)
             endif
         else
             call utmess('F', 'COMPOR3_3', sk=rela_plas)
@@ -162,7 +164,7 @@ implicit none
             rela_plas .eq. 'VMIS_CINE_LINE') then
             call kit_glrc_dm_vmis(imat  , rela_plas, epsdt, depst, vind,&
                                   option, sigd     , sigf , vinf , dsde,&
-                                  crit  , iret)
+                                  carcri  , iret)
         else
             call utmess('F', 'COMPOR3_4', sk=rela_plas)
         endif
@@ -172,7 +174,7 @@ implicit none
         if ((rela_plas(1:15) .eq. 'ENDO_PORO_BETON') .or.&
             (rela_flua(1:15) .eq. 'ENDO_PORO_BETON')) then
             call lc0065(fami  , kpg , ksp  , ndim  , imat  ,&
-                        compor, crit, timed, timef , epsdt ,&
+                        compor, carcri, timed, timef , epsdt ,&
                         depst , sigd, vind , option, angmas,&
                         sigf  , vinf, wkin , typmod, 1     ,&
                         155   , dsde, iret)

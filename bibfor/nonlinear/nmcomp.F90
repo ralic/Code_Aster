@@ -1,9 +1,9 @@
 subroutine nmcomp(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
+                  imate, compor, carcri, instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
                   vim, option, angmas, nwkin, wkin,&
                   sigp, vip, ndsde, dsidep, nwkout,&
-                  wkout, codret)
+                  wkout, codret, mult_comp_)
 !
 implicit none
 !
@@ -40,11 +40,12 @@ implicit none
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     character(len=16) :: compor(*), option
-    real(kind=8) :: crit(*), instam, instap
+    real(kind=8) :: carcri(*), instam, instap
     real(kind=8) :: epsm(*), deps(*), dsidep(*)
     real(kind=8) :: sigm(*), vim(*), sigp(*), vip(*)
     real(kind=8) :: wkin(nwkin), wkout(nwkout)
     real(kind=8) :: angmas(*)
+    character(len=16), optional, intent(in) :: mult_comp_
 ! ----------------------------------------------------------------------
 !     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
 !     ELEMENTS ISOPARAMETRIQUES EN PETITES OU GRANDES DEFORMATIONS
@@ -115,7 +116,7 @@ implicit none
     integer :: ndt, ndi
     common /tdim/ ndt,ndi
 !
-    character(len=16) :: optio2
+    character(len=16) :: optio2, mult_comp
     aster_logical :: cp, convcp
     integer :: cpl, nvv, ncpmax
     real(kind=8) :: r8bid
@@ -134,10 +135,15 @@ implicit none
 !
     if (cp) then
         convcp = .false.
-        ncpmax = nint(crit(9))
+        ncpmax = nint(carcri(9))
     else
         convcp = .true.
         ncpmax = 1
+    endif
+!
+    mult_comp = ' '
+    if (present(mult_comp_)) then
+        mult_comp = mult_comp_
     endif
 !
 !     RECUP NUMLC
@@ -149,14 +155,14 @@ implicit none
         if (compor(1) .eq. 'KIT_DDI') then
 !        POUR EVITER LA RECURSIVITE. PETITES DEFORMATIONS
             call nmcoup(fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, cp, crit, instam,&
+                        imate, compor, mult_comp, cp, carcri, instam,&
                         instap, neps, epsm, deps, nsig,&
                         sigm, vim, option, angmas, nwkin,&
                         wkin, sigp, vip, ndsde, dsidep,&
                         nwkout, wkout, codret)
         else
             call redece(fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, crit, instam, instap,&
+                        imate, compor, mult_comp, carcri, instam, instap,&
                         neps, epsm, deps, nsig, sigm,&
                         vim, option, angmas, nwkin, wkin,&
                         cp, numlc, r8bid, r8bid, r8bid,&
@@ -166,7 +172,7 @@ implicit none
 !
 !       VERIFIER LA CONVERGENCE DES CONTRAINTES PLANES ET
 !       SORTIR DE LA BOUCLE SI NECESSAIRE
-        if (cp) call nmcpl3(compor, option, crit, deps, dsidep,&
+        if (cp) call nmcpl3(compor, option, carcri, deps, dsidep,&
                             ndim, sigp, vip, cpl, icp,&
                             convcp)
 !
@@ -180,7 +186,7 @@ implicit none
     if (cp) then
         if (codret .eq. 0) then
             call nmcpl2(compor, typmod, option, optio2, cpl,&
-                        nvv, crit, deps, dsidep, ndim,&
+                        nvv, carcri, deps, dsidep, ndim,&
                         sigp, vip, codret)
         else
             option=optio2
@@ -193,7 +199,7 @@ implicit none
                     codret)
     else if (codret .eq. 1) then
         call lcidbg(fami, kpg, ksp, typmod, compor,&
-                    crit, instam, instap, neps, epsm,&
+                    carcri, instam, instap, neps, epsm,&
                     deps, nsig, sigm, vim, option)
     endif
 end subroutine

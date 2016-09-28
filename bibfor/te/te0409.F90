@@ -185,7 +185,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: matr(50), sigm(8), alfmc
 !
     character(len=8) :: k8bid
-    character(len=16) :: comp3
+    character(len=16) :: comp3, mult_comp
     character(len=24) :: valk(2)
 !
     codret = 0
@@ -194,6 +194,7 @@ subroutine te0409(option, nomte)
     t3g = .false.
     q4g = .false.
     leul = .false.
+    mult_comp = ' '
 !
     if (nomte .eq. 'MEDKTG3' .or. nomte .eq. 'MET3GG3') then
         t3g = .true.
@@ -631,7 +632,7 @@ subroutine te0409(option, nomte)
 !               -- endommagement plus plasticite
                 call r8inir(3, r8vide(), angmas, 1)
                 call nmcoup('RIGI', ipg, 1, 3, k8bid,&
-                            zi(imate), zk16(icompo), lbid, zr(icarcr), r8bid,&
+                            zi(imate), zk16(icompo), mult_comp, lbid, zr(icarcr), r8bid,&
                             r8bid, 6, epsm, deps, 6,&
                             sigm, ecr, option, angmas, 1,&
                             win, sig, ecrp, 36, dsidep,&

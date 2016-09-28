@@ -1,5 +1,5 @@
 subroutine nmcpla(fami, kpg   , ksp  , ndim  , typmod,&
-                  imat, compor, crit , timed , timef ,&
+                  imat, compor, mult_comp, carcri , timed , timef ,&
                   neps, epsdt , depst, nsig  , sigd  ,&
                   vind, option, nwkin, wkin  , sigf  ,&
                   vinf, ndsde , dsde , nwkout, wkout ,&
@@ -41,14 +41,16 @@ implicit none
 !
     integer :: imat, ndim, kpg, ksp, iret
     integer :: neps, nsig, nwkin, nwkout, ndsde
-    real(kind=8) :: crit(*)
+    character(len=16), intent(in) :: compor(*)
+    character(len=16), intent(in) :: mult_comp
+    real(kind=8), intent(in) :: carcri(*)
     real(kind=8) :: timed, timef, tempd, tempf, tref
     real(kind=8) :: wkin(*), wkout(*)
     real(kind=8) :: epsdt(6), depst(6)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*)
     real(kind=8) :: dsde(ndsde)
-    character(len=16) :: compor(*), option
+    character(len=16) :: option
     character(len=*) :: fami
     character(len=8) :: typmod(*)
 !
@@ -203,8 +205,8 @@ implicit none
 !
 ! - Get convergence criteria
 !
-    itemax = int(crit(1))
-    toler  = crit(3)
+    itemax = int(carcri(1))
+    toler  = carcri(3)
 !
 ! = COUPLING = BEGIN
 !
@@ -285,12 +287,12 @@ implicit none
 !
     if (rela_plas(1:9) .eq. 'VMIS_ISOT' .or. rela_plas(1:14) .eq. 'VMIS_ISOT_LINE') then
         call nmisot(fami             , kpg      , ksp , ndim             , typmod,&
-                    imat             , rela_plas, crit, deps             , sigd  ,&
+                    imat             , rela_plas, carcri, deps             , sigd  ,&
                     vind(idx_vi_plas), option   , sigf, vinf(idx_vi_plas), dsde  ,&
                     iret)
     else if (rela_plas(1:8).eq. 'ROUSS_PR' .or. rela_plas(1:15).eq.'BETON_DOUBLE_DP') then
         call redece(fami             , kpg              , ksp   , ndim , typmod,&
-                    imat             , compor_plas      , crit  , timed, timef ,&
+                    imat             , compor_plas      , mult_comp, carcri  , timed, timef ,&
                     neps             , epsdt            , deps  , nsig , sigd  ,&
                     vind(idx_vi_plas), option           , angmas, nwkin, wkin  ,&
                     cp               , nume_plas        , r8bid , r8bid, r8bid ,&

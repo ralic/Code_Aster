@@ -1,6 +1,18 @@
 subroutine te0407(option, nomte)
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/nmas3d.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,16 +27,7 @@ subroutine te0407(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!
-    implicit none
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/nmas3d.h"
-#include "asterfort/rcangm.h"
-#include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
-#include "blas/dcopy.h"
+! aslint: disable=W0104
 !
     character(len=16) :: option, nomte
 ! ......................................................................
@@ -36,6 +39,7 @@ subroutine te0407(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     character(len=8) :: typmod(2)
+    character(len=16) :: mult_comp
     integer :: jgano, nno, npg, i, imatuu, lgpg, ndim, lgpg1, iret
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: icontm, ivarim
@@ -76,19 +80,18 @@ subroutine te0407(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    mult_comp = zk16(icompo-1+7)
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call rcangm(ndim, bary, angmas)
-!
 !
 ! - VARIABLES DE COMMANDE
 !
     call jevech('PINSTMR', 'L', iinstm)
     call jevech('PINSTPR', 'L', iinstp)
-!
 !
 ! - PARAMETRES EN SORTIE
 !
@@ -124,18 +127,16 @@ subroutine te0407(option, nomte)
 !      PETITES DEFORMATIONS (AVEC EVENTUELLEMENT REACTUALISATION)
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
             if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-                do 20 i = 1, 3*nno
+                do i = 1, 3*nno
                     zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
-20              continue
+                end do
             endif
             call nmas3d('RIGI', nno, npg, ipoids, ivf,&
                         idfde, zr(igeom), typmod, option, zi(imate),&
-                        zk16(icompo), lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
+                        zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
                         zr(ideplm), zr(ideplp), angmas, zr(icontm), zr(ivarim),&
                         dfdi, def, zr(icontp), zr(ivarip), zr(imatuu),&
                         zr(ivectu), codret)
-!
-!
         else
             call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif

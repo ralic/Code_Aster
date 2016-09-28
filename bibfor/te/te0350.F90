@@ -1,7 +1,20 @@
 subroutine te0350(option, nomte)
 !
+implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/jevech.h"
+#include "asterfort/lteatt.h"
+#include "asterfort/nmas2d.h"
+#include "asterfort/rcangm.h"
+#include "asterfort/tecach.h"
+#include "asterfort/utmess.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,26 +29,17 @@ subroutine te0350(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
 !
+    character(len=16) :: option, nomte
+
 ! ======================================================================
 !    CALCUL DES OPTIONS MECANIQUES POUR LES ELEMENTS QUAS4
 !    => 1 POINT DE GAUSS + STABILISATION ASSUMED STRAIN
 ! ======================================================================
 !
-    implicit none
-#include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
-#include "asterfort/nmas2d.h"
-#include "asterfort/rcangm.h"
-#include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
-#include "blas/dcopy.h"
 !
-    character(len=16) :: option, nomte
-!
+    character(len=16) :: mult_comp
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     integer :: nno, npg1, i, imatuu, lgpg, lgpg1
@@ -44,7 +48,7 @@ subroutine te0350(option, nomte)
     integer :: iinstm, iinstp, ideplm, ideplp, icompo, icarcr
     integer :: ivectu, icontp, ivarip
     integer :: ivarix, iret, idim
-    integer :: jtab(7), jcret, codret, ndim, nnos, jgano
+    integer :: jtab(7), jcret, codret, ndim
     real(kind=8) :: vect1(54), vect3(4*27*2), xyz(3)
     real(kind=8) :: angmas(7)
 !
@@ -53,8 +57,8 @@ subroutine te0350(option, nomte)
 !
 !
     fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
+    call elrefe_info(fami=fami,ndim=ndim,nno=nno,&
+                      npg=npg1,jpoids=ipoids,jvf=ivf,jdfde=idfde)
 !
 !     MATNS MAL DIMENSIONNEE
     ASSERT(nno.le.9)
@@ -85,6 +89,7 @@ subroutine te0350(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
+    mult_comp = zk16(icompo-1+7)
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
@@ -97,11 +102,11 @@ subroutine te0350(option, nomte)
     xyz(1) = 0.d0
     xyz(2) = 0.d0
     xyz(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             xyz(idim) = xyz(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140      continue
-150  end do
+        end do
+    end do
     call rcangm(ndim, xyz, angmas)
 !
 ! - VARIABLES DE COMMANDE
@@ -144,16 +149,16 @@ subroutine te0350(option, nomte)
 ! - HYPO-ELASTICITE
 !
         if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-            do 20 i = 1, 2*nno
+            do i = 1, 2*nno
                 zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
-20          continue
+            end do
         endif
 !
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
 !
             call nmas2d(fami, nno, npg1, ipoids, ivf,&
                         idfde, zr(igeom), typmod, option, zi(imate),&
-                        zk16(icompo), lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
+                        zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
                         zr(ideplm), zr(ideplp), angmas, zr(icontm), zr(ivarim),&
                         vect1, vect3, zr(icontp), zr(ivarip), zr(imatuu),&
                         zr(ivectu), codret)

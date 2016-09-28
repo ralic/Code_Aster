@@ -15,6 +15,7 @@ subroutine te0100(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W0104
 !
     implicit none
 #include "asterf_types.h"
@@ -58,6 +59,7 @@ subroutine te0100(option, nomte)
     real(kind=8) :: vect1(54), vect2(4*27*27), vect3(4*27*2), dfdi(4*9)
     real(kind=8) :: angmas(7), bary(3)
     aster_logical :: matsym
+    character(len=16) :: mult_comp
 !     POUR TGVERI
     real(kind=8) :: sdepl(3*9), svect(3*9), scont(6*9), smatr(3*9*3*9), epsilo
     real(kind=8) :: varia(2*3*9*3*9)
@@ -103,6 +105,7 @@ subroutine te0100(option, nomte)
     call jevech('PDEPLPR', 'L', ideplp)
     call jevech('PCOMPOR', 'L', icompo)
     call jevech('PCARCRI', 'L', icarcr)
+    mult_comp = zk16(icompo-1+7)
 !
     call tecach('OOO', 'PVARIMR', 'L', iret, nval=7,&
                 itab=jtab)
@@ -115,11 +118,11 @@ subroutine te0100(option, nomte)
     bary(1) = 0.d0
     bary(2) = 0.d0
     bary(3) = 0.d0
-    do 150 i = 1, nno
-        do 140 idim = 1, ndim
+    do i = 1, nno
+        do idim = 1, ndim
             bary(idim) = bary(idim)+zr(igeom+idim+ndim*(i-1)-1)/nno
-140     continue
-150 end do
+        end do
+    end do
     call rcangm(ndim, bary, angmas)
 !
 ! - VARIABLES DE COMMANDE
@@ -172,10 +175,9 @@ subroutine te0100(option, nomte)
         else
 !
 !        OPTION FULL_MECA OU RAPH_MECA : ARGUMENTS EN T+
-            do 10 li = 1, 2*nno
+            do li = 1, 2*nno
                 zr(ideplp+li-1) = zr(ideplm+li-1) + zr(ideplp+li-1)
- 10         continue
-!
+            end do
             call nmel2d(fami, '+', nno, npg1, ipoids,&
                         ivf, idfde, zr(igeom), typmod, option,&
                         zi(imate), zk16(icompo), lgpg, zr(icarcr), ideplp,&
@@ -188,12 +190,12 @@ subroutine te0100(option, nomte)
 ! - HYPO-ELASTICITE
 !
 !      Pour le calcul de la matrice tangente par perturbation
-1000     continue
+500     continue
 !
         if (zk16(icompo+2) (6:10) .eq. '_REAC') then
-            do 20 i = 1, 2*nno
+            do i = 1, 2*nno
                 zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1) + zr(ideplp+i-1)
- 20         continue
+            end do
         endif
 !
         if (zk16(icompo+2) (1:5) .eq. 'PETIT') then
@@ -211,7 +213,7 @@ subroutine te0100(option, nomte)
 !
                 call nmpl2d(fami, nno, npg1, ipoids, ivf,&
                             idfde, zr(igeom), typmod, option, zi(imate),&
-                            zk16(icompo), lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
+                            zk16(icompo), mult_comp, lgpg, zr(icarcr), zr(iinstm), zr(iinstp),&
                             ideplm, ideplp, angmas, zr( icontm), zr(ivarim),&
                             matsym, vect1, vect3, zr(icontp), zr( ivarip),&
                             zr(imatuu), ivectu, codret)
@@ -223,7 +225,7 @@ subroutine te0100(option, nomte)
         else if (zk16(icompo+2) (1:10).eq.'SIMO_MIEHE') then
             call nmgpfi(fami, option, typmod, ndim, nno,&
                         npg1, ipoids, zr( ivf), idfde, zr(igeom),&
-                        dfdi, zk16(icompo), zi(imate), lgpg, zr( icarcr),&
+                        dfdi, zk16(icompo), zi(imate), mult_comp, lgpg, zr( icarcr),&
                         angmas, zr(iinstm), zr(iinstp), zr(ideplm), zr( ideplp),&
                         zr(icontm), zr(ivarim), zr(icontp), zr(ivarip), zr( ivectu),&
                         zr(imatuu), codret)
@@ -237,7 +239,7 @@ subroutine te0100(option, nomte)
 !
             call nmgr2d(fami, nno, npg1, ipoids, ivf,&
                         zr(ivf), idfde, zr(igeom), typmod, option,&
-                        zi(imate), zk16(icompo), lgpg, zr( icarcr), zr(iinstm),&
+                        zi(imate), zk16(icompo), mult_comp, lgpg, zr( icarcr), zr(iinstm),&
                         zr(iinstp), zr(ideplm), zr(ideplp), angmas, zr(icontm),&
                         zr(ivarim), matsym, vect1, vect2, vect3,&
                         zr(icontp), zr(ivarip), zr(imatuu), zr(ivectu), codret)
@@ -245,7 +247,7 @@ subroutine te0100(option, nomte)
 !
             call nmdlog(fami, option, typmod, ndim, nno,&
                         npg1, ipoids, ivf, zr(ivf), idfde,&
-                        zr(igeom), dfdi, zk16(icompo), zi(imate), lgpg,&
+                        zr(igeom), dfdi, zk16(icompo), mult_comp, zi(imate), lgpg,&
                         zr(icarcr), angmas, zr(iinstm), zr(iinstp), matsym,&
                         zr( ideplm), zr(ideplp), zr(icontm), zr(ivarim), zr(icontp),&
                         zr( ivarip), zr(ivectu), zr(imatuu), codret)
@@ -254,7 +256,7 @@ subroutine te0100(option, nomte)
             call utmess('F', 'ELEMENTS3_16', sk=zk16(icompo+2))
         endif
 !
-        if (codret .ne. 0) goto 2000
+        if (codret .ne. 0) goto 999
 !
 !       Calcul eventuel de la matrice TGTE par PERTURBATION
         call tgveri(option, zr(icarcr), zk16(icompo), nno, zr(igeom),&
@@ -262,11 +264,11 @@ subroutine te0100(option, nomte)
                     svect, 4*npg1, zr(icontp), scont, npg1*lgpg,&
                     zr(ivarip), zr(ivarix), zr(imatuu), smatr, matsym,&
                     epsilo, varia, iret)
-        if (iret .ne. 0) goto 1000
+        if (iret .ne. 0) goto 500
 !
     endif
 !
-2000 continue
+999 continue
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
         call jevech('PCODRET', 'E', jcret)

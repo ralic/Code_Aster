@@ -1,13 +1,26 @@
 subroutine redece(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, crit, instam, instap,&
+                  imate, compor, mult_comp, carcri, instam, instap,&
                   neps, epsdt, depst, nsig, sigd,&
                   vind, option, angmas, nwkin, wkin,&
                   cp, numlc, tempd, tempf, tref,&
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, codret)
-! aslint: disable=W1306,W1504
+!
 use calcul_module, only : ca_iredec_, ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+!
 implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/lc0000.h"
+#include "asterfort/lceqve.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcprsm.h"
+#include "asterfort/lcprsv.h"
+#include "asterfort/lcsoma.h"
+#include "asterfort/lcsove.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +37,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+! aslint: disable=W1306,W1504
 !
 ! ======================================================================
 !     INTEGRATION DES LOIS DE COMPORTEMENT NON LINEAIRE POUR LES
@@ -115,20 +128,10 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-#include "asterf_types.h"
-#include "asterfort/lc0000.h"
-#include "asterfort/lceqve.h"
-#include "asterfort/lceqvn.h"
-#include "asterfort/lcprsm.h"
-#include "asterfort/lcprsv.h"
-#include "asterfort/lcsoma.h"
-#include "asterfort/lcsove.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/utmess.h"
     integer :: imate, ndim, ndt, ndi, nvi, kpg, ksp, numlc
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !
-    real(kind=8) :: crit(*), angmas(*)
+    real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap, tempd, tempf, tref
     real(kind=8) :: wkin(nwkin), wkout(nwkout)
     real(kind=8) :: epsdt(neps), depst(neps)
@@ -137,6 +140,7 @@ implicit none
     real(kind=8) :: dsde(ndsde)
 !
     character(len=16) :: compor(*), option
+    character(len=16), intent(in) :: mult_comp
     character(len=8) :: typmod(*)
     character(len=*) :: fami
     aster_logical :: cp
@@ -174,7 +178,7 @@ implicit none
     ca_tf1_=instap
 !
 !
-    ipal = int(crit(5))
+    ipal = int(carcri(5))
     codret=0
 !
 !       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
@@ -203,7 +207,7 @@ implicit none
     endif
 !
     call lc0000(fami, kpg, ksp, ndim, typmod,&
-                imate, compor, crit, instam, instap,&
+                imate, compor, mult_comp, carcri, instam, instap,&
                 neps, epsdt, depst, nsig, sigd,&
                 vind, option, angmas, nwkin, wkin,&
                 cp, numlc, tempd, tempf, tref,&
@@ -271,7 +275,7 @@ implicit none
 !
 !
         call lc0000(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, crit, td, tf,&
+                    imate, compor, mult_comp, carcri, td, tf,&
                     neps, eps, deps, nsig, sd,&
                     vind, option, angmas, nwkin, wkin,&
                     cp, numlc, tempd, tempf, tref,&
