@@ -27,7 +27,7 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFP(HDFCLD, hdfcld, INTEGER *idd)
+ASTERINTEGER DEFP(HDFCLD, hdfcld, ASTERINTEGER *idd)
 {
 #ifndef _DISABLE_HDF5
     hid_t id;

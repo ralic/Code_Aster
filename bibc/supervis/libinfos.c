@@ -31,7 +31,8 @@
 #include "scotch.h"
 #endif
 
-void DEFPPP(LIHDFV,lihdfv, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGER *patch )
+void DEFPPP(LIHDFV,lihdfv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+            _OUT ASTERINTEGER *patch )
 {
     /* Retourne la version de HDF5 */
     int ier = 0;
@@ -39,13 +40,14 @@ void DEFPPP(LIHDFV,lihdfv, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGE
 #ifndef _DISABLE_HDF5
     ier = (int)H5get_libversion( &n1, &n2, &n3 );
 #endif
-    *major = (INTEGER)n1;
-    *minor = (INTEGER)n2;
-    *patch = (INTEGER)n3;
+    *major = (ASTERINTEGER)n1;
+    *minor = (ASTERINTEGER)n2;
+    *patch = (ASTERINTEGER)n3;
     return;
 }
 
-void DEFPPP(LIMEDV,limedv, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGER *patch )
+void DEFPPP(LIMEDV,limedv, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+            _OUT ASTERINTEGER *patch )
 {
     /* Retourne la version de MED */
     int ier = 0;
@@ -55,23 +57,24 @@ void DEFPPP(LIMEDV,limedv, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGE
 #else
     unsigned int n1=0, n2=0, n3=0;
 #endif
-    *major = (INTEGER)n1;
-    *minor = (INTEGER)n2;
-    *patch = (INTEGER)n3;
+    *major = (ASTERINTEGER)n1;
+    *minor = (ASTERINTEGER)n2;
+    *patch = (ASTERINTEGER)n3;
     return;
 }
 
-void DEFPPP(LISCOV,liscov, _OUT INTEGER *major, _OUT INTEGER *minor, _OUT INTEGER *patch )
+void DEFPPP(LISCOV,liscov, _OUT ASTERINTEGER *major, _OUT ASTERINTEGER *minor,
+            _OUT ASTERINTEGER *patch )
 {
     /* Retourne la version de SCOTCH */
 #ifndef _DISABLE_SCOTCH
-    *major = (INTEGER)SCOTCH_VERSION;
-    *minor = (INTEGER)SCOTCH_RELEASE;
-    *patch = (INTEGER)SCOTCH_PATCHLEVEL;
+    *major = (ASTERINTEGER)SCOTCH_VERSION;
+    *minor = (ASTERINTEGER)SCOTCH_RELEASE;
+    *patch = (ASTERINTEGER)SCOTCH_PATCHLEVEL;
 #else
-    *major = (INTEGER)0;
-    *minor = (INTEGER)0;
-    *patch = (INTEGER)0;
+    *major = (ASTERINTEGER)0;
+    *minor = (ASTERINTEGER)0;
+    *patch = (ASTERINTEGER)0;
 #endif
     return;
 }

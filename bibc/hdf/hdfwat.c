@@ -31,10 +31,10 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPSPS(HDFWAT, hdfwat, INTEGER *iddat, char *nomat, STRING_SIZE ln,
-                                INTEGER *nbv, char *valat, STRING_SIZE lv)
+ASTERINTEGER DEFPSPS(HDFWAT, hdfwat, ASTERINTEGER *iddat, char *nomat, STRING_SIZE ln,
+                                ASTERINTEGER *nbv, char *valat, STRING_SIZE lv)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t ida,aid,aty,att;  
   herr_t ret,retc; 

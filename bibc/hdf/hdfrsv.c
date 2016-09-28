@@ -30,9 +30,10 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPPPP(HDFRSV, hdfrsv, INTEGER *idat, INTEGER *lsv, void *sv, INTEGER *icv)
+ASTERINTEGER DEFPPPP(HDFRSV, hdfrsv, ASTERINTEGER *idat, ASTERINTEGER *lsv,
+                     void *sv, ASTERINTEGER *icv)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t ida,datatype,dasp,bidon=0;
   herr_t ier;

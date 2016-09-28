@@ -83,20 +83,20 @@
 *
 ****************************************************************/
 
-void DEFP(KLOKLO, kloklo, INTEGER *date)
+void DEFP(KLOKLO, kloklo, ASTERINTEGER *date)
 {
     time_t timval;
     struct tm *timeptr;
 
     time(&timval);
     timeptr = localtime(&timval);
-    date[6] = (INTEGER)(timeptr->tm_sec);
-    date[5] = (INTEGER)(timeptr->tm_min);
-    date[4] = (INTEGER)(timeptr->tm_hour);
-    date[1] = (INTEGER)(timeptr->tm_mday);
-    date[2] = (INTEGER)(timeptr->tm_mon+1);
-    date[3] = (INTEGER)(timeptr->tm_year+1900);
-   date[0] = (INTEGER)(timeptr->tm_wday == 0 ? 6 : timeptr->tm_wday-1);
-   date[7] = (INTEGER)(timeptr->tm_yday+1);
-   date[8] = (INTEGER)((date[7]+6)/7);
+    date[6] = (ASTERINTEGER)(timeptr->tm_sec);
+    date[5] = (ASTERINTEGER)(timeptr->tm_min);
+    date[4] = (ASTERINTEGER)(timeptr->tm_hour);
+    date[1] = (ASTERINTEGER)(timeptr->tm_mday);
+    date[2] = (ASTERINTEGER)(timeptr->tm_mon+1);
+    date[3] = (ASTERINTEGER)(timeptr->tm_year+1900);
+   date[0] = (ASTERINTEGER)(timeptr->tm_wday == 0 ? 6 : timeptr->tm_wday-1);
+   date[7] = (ASTERINTEGER)(timeptr->tm_yday+1);
+   date[8] = (ASTERINTEGER)((date[7]+6)/7);
 } 

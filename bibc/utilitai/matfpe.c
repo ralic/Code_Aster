@@ -35,7 +35,7 @@ void hanfpe (int sig);
 static int compteur_fpe = 1;
 #endif
 
-void DEFP(MATFPE, matfpe, INTEGER *enable)
+void DEFP(MATFPE, matfpe, ASTERINTEGER *enable)
 {
 #if defined _DISABLE_MATHLIB_FPE
 

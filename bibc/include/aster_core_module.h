@@ -28,31 +28,33 @@
 
 extern PyMODINIT_FUNC init_aster_core();
 
-INTEGER DEFS( JDCGET, jdcget, _IN char *, STRING_SIZE );
-extern void DEFSP( JDCSET, jdcset, _IN char *, STRING_SIZE, _IN INTEGER * );
+ASTERINTEGER DEFS( JDCGET, jdcget, _IN char *, STRING_SIZE );
+extern void DEFSP( JDCSET, jdcset, _IN char *, STRING_SIZE, _IN ASTERINTEGER * );
 extern PyObject* GetJdcAttr(_IN char *);
 extern double get_tpmax();
-extern void DEFP(RDTMAX, rdtmax, DOUBLE *);
+extern void DEFP(RDTMAX, rdtmax, ASTERDOUBLE *);
 
 extern PyObject* asterc_getopt(_IN char *);
 extern long asterc_getopt_long(_IN char *, _OUT int *);
 extern double asterc_getopt_double(_IN char *, _OUT int *);
 extern char* asterc_getopt_string(_IN char *, _OUT int *);
-extern void DEFSPP(GTOPTI,gtopti, _IN char *, STRING_SIZE, _OUT INTEGER *, _OUT INTEGER *);
-extern void DEFSPP(GTOPTR,gtoptr, _IN char *, STRING_SIZE, _OUT DOUBLE *, _OUT INTEGER *);
+extern void DEFSPP(GTOPTI,gtopti, _IN char *, STRING_SIZE,
+                   _OUT ASTERINTEGER *, _OUT ASTERINTEGER *);
+extern void DEFSPP(GTOPTR,gtoptr, _IN char *, STRING_SIZE,
+                   _OUT ASTERDOUBLE *, _OUT ASTERINTEGER *);
 extern void DEFSSP(GTOPTK,gtoptk, _IN char *, STRING_SIZE, _OUT char *, STRING_SIZE,
-                   _OUT INTEGER *);
+                   _OUT ASTERINTEGER *);
 
-extern void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *, _IN STRING_SIZE, _IN INTEGER *,
+extern void DEFSPSPSPPPPS(UTPRIN,utprin, _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *,
                          _IN char *, _IN STRING_SIZE,
-                         _IN INTEGER *, _IN char *, _IN STRING_SIZE, _IN INTEGER *,
-                         _IN INTEGER *, _IN INTEGER *, _IN DOUBLE *,
+                         _IN ASTERINTEGER *, _IN char *, _IN STRING_SIZE, _IN ASTERINTEGER *,
+                         _IN ASTERINTEGER *, _IN ASTERINTEGER *, _IN ASTERDOUBLE *,
                          _IN char*, _IN STRING_SIZE);
-extern void DEFPP(CHKMSG,chkmsg, _IN INTEGER *, _OUT INTEGER *);
+extern void DEFPP(CHKMSG,chkmsg, _IN ASTERINTEGER *, _OUT ASTERINTEGER *);
 extern void DEFSSP(CHEKSD,cheksd,_IN char *,_IN STRING_SIZE, _IN char *, _IN STRING_SIZE,
-                   _OUT INTEGER *);
+                   _OUT ASTERINTEGER *);
 
-extern void DEFP(PRHEAD,prhead, _IN INTEGER *);
+extern void DEFP(PRHEAD,prhead, _IN ASTERINTEGER *);
 
 extern PyObject* aster_matfpe(PyObject*, PyObject *);
 

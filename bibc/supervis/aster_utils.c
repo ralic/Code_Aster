@@ -143,7 +143,7 @@ void _check_string_length( STRING_SIZE flen )
 /*
  * Fonctions de conversion
  */
-void convc8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
+void convc8( _IN int nval, _IN PyObject *tup, _OUT ASTERDOUBLE *val)
 {
     /*
      * tup est un tuple de tuples internes, chaque tuple
@@ -151,7 +151,7 @@ void convc8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
      */
     int    i = 0;
     int    k = 0;
-    int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val);
+    int conv_un_c8( _IN PyObject *tup, _OUT ASTERDOUBLE *val);
     if(nval != 0){
         PyObject *v = (PyObject*)0;
         for(i=0;i<nval;i++){
@@ -162,7 +162,7 @@ void convc8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
     return;
 }
 
-int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
+int conv_un_c8( _IN PyObject *tup, _OUT ASTERDOUBLE *val)
 {
     /*
      * Enrichissement des complexes stockes dans val a partir du tuple tup
@@ -175,8 +175,8 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
     if(PyComplex_Check(tup)||PyFloat_Check(tup)||PyLong_Check(tup)||PyInt_Check(tup)){
         /* On est dans le cas d'un objet Python complexe */
         /* representation : partie reelle/partie imaginaire */
-        *val    =(DOUBLE)PyComplex_RealAsDouble(tup);
-        *(val+1)=(DOUBLE)PyComplex_ImagAsDouble(tup);
+        *val    =(ASTERDOUBLE)PyComplex_RealAsDouble(tup);
+        *(val+1)=(ASTERDOUBLE)PyComplex_ImagAsDouble(tup);
     }
     else if(PyTuple_Check(tup)){
         /* On est dans le cas d'un complexe représenté par un triplet : "RI" ou "MP",x,y */
@@ -184,13 +184,13 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
             MYABORT("erreur dans la partie Python");
         if (strcmp(repres,"RI")==0){
             /* representation : partie reelle/partie imaginaire */
-            *val    =(DOUBLE)x;
-            *(val+1)=(DOUBLE)y;
+            *val    =(ASTERDOUBLE)x;
+            *(val+1)=(ASTERDOUBLE)y;
         }
         else{
             /* representation RHO,THETA (les angles sont fournis en degres) */
-            *val    =(DOUBLE)(*rho * cos( *theta /180. * CALL_R8PI()) );
-            *(val+1)=(DOUBLE)(*rho * sin( *theta /180. * CALL_R8PI()) );
+            *val    =(ASTERDOUBLE)(*rho * cos( *theta /180. * CALL_R8PI()) );
+            *(val+1)=(ASTERDOUBLE)(*rho * sin( *theta /180. * CALL_R8PI()) );
         }
     }
     else {
@@ -199,7 +199,7 @@ int conv_un_c8( _IN PyObject *tup, _OUT DOUBLE *val)
     return 2;
 }
 
-void convr8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
+void convr8( _IN int nval, _IN PyObject *tup, _OUT ASTERDOUBLE *val)
 {
     /*
      * Convertit un Tuple en tableau de double
@@ -215,12 +215,12 @@ void convr8( _IN int nval, _IN PyObject *tup, _OUT DOUBLE *val)
     }
     for(i=0;i<nval;i++){
         v=PyTuple_GetItem(tup,i);
-        val[i]=(DOUBLE)PyFloat_AsDouble(v);
+        val[i]=(ASTERDOUBLE)PyFloat_AsDouble(v);
     }
     return;
 }
 
-void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
+void convert( _IN int nval, _IN PyObject *tup, _OUT ASTERINTEGER *val)
 {
     /*
      * Convertit un Tuple en tableau d entier
@@ -236,7 +236,7 @@ void convert( _IN int nval, _IN PyObject *tup, _OUT INTEGER *val)
     }
     for(i=0;i<nval;i++){
         v=PyTuple_GetItem(tup,i);
-        val[i]=(INTEGER)PyInt_AsLong(v);
+        val[i]=(ASTERINTEGER)PyInt_AsLong(v);
     }
     return;
 }
@@ -314,7 +314,7 @@ void converltx( _IN int nval, _IN PyObject *tup, _OUT char *val, _IN STRING_SIZE
 /*
  * Fonctions pour créer des listes et tuples
  */
-PyObject * MakeTupleString(long nbval, char *kval, STRING_SIZE lkval, INTEGER *lval)
+PyObject * MakeTupleString(long nbval, char *kval, STRING_SIZE lkval, ASTERINTEGER *lval)
 {
    /*
     *   Entrees:
@@ -373,16 +373,16 @@ PyObject * MakeListString( long nbval,char *kval,STRING_SIZE lkval )
     return l;
 }
 
-PyObject * MakeTupleInt(long nbval,INTEGER* kval)
+PyObject * MakeTupleInt(long nbval,ASTERINTEGER* kval)
 {
    /*
     *   Entrees:
     *      nbval nombre d'entiers dans kval
-    *      kval  tableau de nbval INTEGER FORTRAN
+    *      kval  tableau de nbval ASTERINTEGER FORTRAN
     *   Sorties:
     *      RETOUR fonction : tuple de int Python de longueur nbval
     *   Fonction:
-    *      Convertir un tableau de INTEGER FORTRAN en un tuple de int Python de meme longueur
+    *      Convertir un tableau de ASTERINTEGER FORTRAN en un tuple de int Python de meme longueur
     */
     int i;
     PyObject * tupl;
@@ -396,16 +396,16 @@ PyObject * MakeTupleInt(long nbval,INTEGER* kval)
     return tupl;
 }
 
-PyObject * MakeListInt(long nbval, INTEGER* kval)
+PyObject * MakeListInt(long nbval, ASTERINTEGER * kval)
 {
    /*
     *   Entrees:
     *       nbval nombre d'entiers dans kval
-    *       kval  tableau de nbval INTEGER FORTRAN
+    *       kval  tableau de nbval ASTERINTEGER FORTRAN
     *   Sorties:
     *       RETOUR fonction : liste de int Python de longueur nbval
     *   Fonction:
-    *       Convertir un tableau de INTEGER FORTRAN en une liste de int Python de meme longueur
+    *       Convertir un tableau de ASTERINTEGER FORTRAN en une liste de int Python de meme longueur
     */
    int i;
    PyObject *l=PyList_New((Py_ssize_t)nbval);
@@ -418,7 +418,7 @@ PyObject * MakeListInt(long nbval, INTEGER* kval)
    return l;
 }
 
-PyObject * MakeTupleFloat(long nbval, DOUBLE * kval)
+PyObject * MakeTupleFloat(long nbval, ASTERDOUBLE * kval)
 {
     /*
      *  Entrees:
@@ -441,7 +441,7 @@ PyObject * MakeTupleFloat(long nbval, DOUBLE * kval)
     return tupl;
 }
 
-PyObject * MakeListFloat(long nbval, DOUBLE * kval)
+PyObject * MakeListFloat(long nbval, ASTERDOUBLE * kval)
 {
     /*
      * Entrees:

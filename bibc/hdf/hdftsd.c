@@ -32,10 +32,10 @@
 #endif
 #define FALSE   0
 
-INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt,
-                INTEGER *ltype, INTEGER *lv)
+ASTERINTEGER DEFPSPP(HDFTSD, hdftsd, ASTERINTEGER *iddat, char *type, STRING_SIZE lt,
+                ASTERINTEGER *ltype, ASTERINTEGER *lv)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t id,datatype,class,dataspace;
   hsize_t dims_out[1];
@@ -52,11 +52,11 @@ INTEGER DEFPSPP(HDFTSD, hdftsd, INTEGER *iddat, char *type, STRING_SIZE lt,
   for (k=1;k<lt;k++) {
     *(type+k)=' ';
   }
-  if ((*ltype = (INTEGER)H5Tget_size(datatype))>=0 ) {
+  if ((*ltype = (ASTERINTEGER)H5Tget_size(datatype))>=0 ) {
     if ((dataspace = H5Dget_space(id))>=0 ) { 
       if ((rank = H5Sget_simple_extent_ndims(dataspace))==1) {
         status = H5Sget_simple_extent_dims(dataspace, dims_out, NULL);
-        *lv = (INTEGER)dims_out[0];  
+        *lv = (ASTERINTEGER)dims_out[0];  
         H5Sclose(dataspace);
         iret=0;
       }

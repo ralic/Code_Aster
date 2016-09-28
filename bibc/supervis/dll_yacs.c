@@ -39,34 +39,34 @@ PyObject* get_dll_register_dict();
 #define LIB_YACS "libCalciumC.so"
 
 #define FUNC_CPECH(NAME) void DEF_P_PPPPSPSP(*NAME, \
-        INTEGER*, INTEGER4*, REAL4*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERREAL4*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*)
 
 #define FUNC_CPEDB(NAME) void DEF_P_PPPPSPPP(*NAME, \
-        INTEGER*, INTEGER4*, DOUBLE*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, \
-        DOUBLE*, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERDOUBLE*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, \
+        ASTERDOUBLE*, ASTERINTEGER4*)
 
 #define FUNC_CPEEN(NAME) void DEF_P_PPPPSPPP(*NAME, \
-        INTEGER*, INTEGER4*, REAL4*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, \
-        INTEGER4*, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERREAL4*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, \
+        ASTERINTEGER4*, ASTERINTEGER4*)
 
 #define FUNC_CPLCH(NAME) void DEF_P_PPPPPSPPSP(*NAME, \
-        INTEGER*, INTEGER4*, REAL4*, REAL4*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERREAL4*, ASTERREAL4*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*)
 
 #define FUNC_CPLDB(NAME) void DEF_P_PPPPPSPPPP(*NAME, \
-        INTEGER*, INTEGER4*, DOUBLE*, DOUBLE*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, INTEGER4*, \
-        DOUBLE*, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, ASTERINTEGER4*, \
+        ASTERDOUBLE*, ASTERINTEGER4*)
 
 #define FUNC_CPLEN(NAME) void DEF_P_PPPPPSPPPP(*NAME, \
-        INTEGER*, INTEGER4*, REAL4*, REAL4*, INTEGER4*, \
-        char*, STRING_SIZE, INTEGER4*, INTEGER4*, \
-        INTEGER4*, INTEGER4*)
+        ASTERINTEGER *, ASTERINTEGER4*, ASTERREAL4*, ASTERREAL4*, ASTERINTEGER4*, \
+        char*, STRING_SIZE, ASTERINTEGER4*, ASTERINTEGER4*, \
+        ASTERINTEGER4*, ASTERINTEGER4*)
 
 void load_yacs_lib()
 {
@@ -76,8 +76,8 @@ void load_yacs_lib()
     void *yacs_handle;
     char *valk;
     int iret=0;
-    INTEGER n0=0, nk=0, ibid=0;
-    DOUBLE rbid=0.;
+    ASTERINTEGER n0=0, nk=0, ibid=0;
+    ASTERDOUBLE rbid=0.;
     char symbol[12];
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
@@ -256,9 +256,9 @@ void load_yacs_lib()
 
 /* SUBROUTINE CPECH */
 void DEFPPPPSPSP(CPECH,cpech,
-        INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
-        char *fnompal, STRING_SIZE lnompal, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERREAL4 *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
+        char *fnompal, STRING_SIZE lnompal, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];
@@ -288,9 +288,9 @@ void DEFPPPPSPSP(CPECH,cpech,
 
 /* SUBROUTINE CPEDB */
 void DEFPPPPSPPP(CPEDB,cpedb,
-        INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
-        DOUBLE *paramr, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERDOUBLE *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
+        ASTERDOUBLE *paramr, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];
@@ -317,9 +317,9 @@ void DEFPPPPSPPP(CPEDB,cpedb,
 
 /* SUBROUTINE CPEEN */
 void DEFPPPPSPPP(CPEEN,cpeen,
-        INTEGER *icompo, INTEGER4 *cpiter, REAL4 *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim,
-        INTEGER4 *parami, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERREAL4 *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim,
+        ASTERINTEGER4 *parami, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];
@@ -346,9 +346,10 @@ void DEFPPPPSPPP(CPEEN,cpeen,
 
 /* SUBROUTINE CPLCH */
 void DEFPPPPPSPPSP(CPLCH,cplch,
-        INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
-        char *fnompal, STRING_SIZE lnompal, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERREAL4 *ti,
+        ASTERREAL4 *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
+        char *fnompal, STRING_SIZE lnompal, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];
@@ -378,9 +379,10 @@ void DEFPPPPPSPPSP(CPLCH,cplch,
 
 /* SUBROUTINE CPLDB */
 void DEFPPPPPSPPPP(CPLDB,cpldb,
-        INTEGER *icompo, INTEGER4 *cpiter, DOUBLE *ti, DOUBLE *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
-        DOUBLE *paramr, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERDOUBLE *ti,
+        ASTERDOUBLE *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
+        ASTERDOUBLE *paramr, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];
@@ -407,9 +409,10 @@ void DEFPPPPPSPPPP(CPLDB,cpldb,
 
 /* SUBROUTINE CPLEN */
 void DEFPPPPPSPPPP(CPLEN,cplen,
-        INTEGER *icompo, INTEGER4 *cpiter, REAL4 *ti, REAL4 *tf, INTEGER4 *numpas,
-        char *fnomvar, STRING_SIZE lnomvar, INTEGER4 *idim, INTEGER4 *taille,
-        INTEGER4 *parami, INTEGER4 *info )
+        ASTERINTEGER *icompo, ASTERINTEGER4 *cpiter, ASTERREAL4 *ti,
+        ASTERREAL4 *tf, ASTERINTEGER4 *numpas,
+        char *fnomvar, STRING_SIZE lnomvar, ASTERINTEGER4 *idim, ASTERINTEGER4 *taille,
+        ASTERINTEGER4 *parami, ASTERINTEGER4 *info )
 {
 #ifdef _POSIX
     char symbol[12];

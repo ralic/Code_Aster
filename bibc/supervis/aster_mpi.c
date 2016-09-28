@@ -61,6 +61,7 @@ void aster_mpi_init(int argc, char **argv)
     /*! MPI initialization */
 #ifdef _USE_MPI
 
+    printf("MPI_Init...\n");
     AS_ASSERT(MPI_Init(&argc, &argv) == MPI_SUCCESS);
     AS_ASSERT(atexit(terminate) == 0);
     /* set the error handler */
@@ -186,8 +187,8 @@ void DEFP(ASMPI_BARRIER_WRAP, asmpi_barrier_wrap, MPI_Fint *comm) {
 int aster_set_mpi_barrier(aster_comm_t *node) {
     /*! Set a MPI barrier */
 #ifdef _USE_MPI
-    INTEGER iret, n0=0, n1=1, ibid=0;
-    DOUBLE rbid=0.;
+    ASTERINTEGER iret, n0=0, n1=1, ibid=0;
+    ASTERDOUBLE rbid=0.;
     char *valk;
 
     DEBUG_MPI("mpi_barrier: %s is %d\n", "communicator", (int)MPI_Comm_c2f(node->id))
@@ -348,8 +349,8 @@ void DEFPPP(ASMPI_INFO_WRAP, asmpi_info_wrap, MPI_Fint *comm, MPI_Fint *rank, MP
  * Wrappers around MPI_Send
  * Do not check returncode because all errors raise
  */
-void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
-                                          INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -359,8 +360,8 @@ void DEFPPPPP(ASMPI_SEND_R, asmpi_send_r, DOUBLE *buf, INTEGER4 *count, INTEGER4
     return;
 }
 
-void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, INTEGER *buf, INTEGER4 *count, INTEGER4 *dest,
-                                          INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -370,8 +371,8 @@ void DEFPPPPP(ASMPI_SEND_I, asmpi_send_i, INTEGER *buf, INTEGER4 *count, INTEGER
     return;
 }
 
-void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, INTEGER4 *buf, INTEGER4 *count, INTEGER4 *dest,
-                                            INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -385,8 +386,8 @@ void DEFPPPPP(ASMPI_SEND_I4, asmpi_send_i4, INTEGER4 *buf, INTEGER4 *count, INTE
  * Wrappers around MPI_Recv
  * Do not check returncode because all errors raise
  */
-void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
-                                          INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -396,8 +397,8 @@ void DEFPPPPP(ASMPI_RECV_R, asmpi_recv_r, DOUBLE *buf, INTEGER4 *count, INTEGER4
     return;
 }
 
-void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, INTEGER *buf, INTEGER4 *count, INTEGER4 *source,
-                                          INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, ASTERINTEGER *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -407,8 +408,8 @@ void DEFPPPPP(ASMPI_RECV_I, asmpi_recv_i, INTEGER *buf, INTEGER4 *count, INTEGER
     return;
 }
 
-void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, INTEGER4 *buf, INTEGER4 *count, INTEGER4 *source,
-                                            INTEGER4 *tag, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, ASTERINTEGER4 *buf, ASTERINTEGER4 *count,
+              ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -422,8 +423,8 @@ void DEFPPPPP(ASMPI_RECV_I4, asmpi_recv_i4, INTEGER4 *buf, INTEGER4 *count, INTE
  * Wrapper around MPI_ISend
  * Do not check returncode because all errors raise
  */
-void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *dest,
-                                               INTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
+void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+               ASTERINTEGER4 *dest, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
     MPI_Comm mpicom;
     MPI_Request mpireq;
 #ifdef _USE_MPI
@@ -439,8 +440,8 @@ void DEFPPPPPP(ASMPI_ISEND_I4, asmpi_isend_i4, DOUBLE *buf, INTEGER4 *count, INT
  * Wrapper around MPI_IRecv
  * Do not check returncode because all errors raise
  */
-void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INTEGER4 *source,
-                                               INTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
+void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, ASTERDOUBLE *buf, ASTERINTEGER4 *count,
+               ASTERINTEGER4 *source, ASTERINTEGER4 *tag, MPI_Fint *comm, MPI_Fint *request) {
     MPI_Comm mpicom;
     MPI_Request mpireq;
 #ifdef _USE_MPI
@@ -456,14 +457,14 @@ void DEFPPPPPP(ASMPI_IRECV_I4, asmpi_irecv_i4, DOUBLE *buf, INTEGER4 *count, INT
  * Wrapper around MPI_Test
  * Do not check returncode because all errors raise
  */
-void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, INTEGER4 *flag) {
+void DEFPP(ASMPI_TEST, asmpi_test, MPI_Fint *request, ASTERINTEGER4 *flag) {
     MPI_Request mpireq;
     int iflag;
 #ifdef _USE_MPI
     mpireq = MPI_Request_f2c(*request);
     AS_ASSERT(MPI_Test(&mpireq, &iflag, MPI_STATUS_IGNORE) == MPI_SUCCESS);
     /* true=1, false=0 */
-    *flag = (INTEGER4)iflag;
+    *flag = (ASTERINTEGER4)iflag;
 #endif
     return;
 }
@@ -485,11 +486,11 @@ void DEFP(ASMPI_CANCEL, asmpi_cancel, MPI_Fint *request) {
  * Wrapper around MPI_Wtime
  * Do not check returncode because all errors raise
  */
-DOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
+ASTERDOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
 #ifdef _USE_MPI
-    return (DOUBLE)MPI_Wtime();
+    return (ASTERDOUBLE)MPI_Wtime();
 #else
-    return (DOUBLE)0.0;
+    return (ASTERDOUBLE)0.0;
 #endif
 }
 
@@ -497,8 +498,8 @@ DOUBLE DEF0(ASMPI_WTIME, asmpi_wtime) {
  * Wrappers around MPI_Reduce
  * Do not check returncode because all errors raise
  */
-void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf, INTEGER4 *count,
-                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
+               ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -510,8 +511,8 @@ void DEFPPPPPP(ASMPI_REDUCE_R, asmpi_reduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf,
     return;
 }
 
-void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf, INTEGER4 *count,
-                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
+               ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -523,8 +524,8 @@ void DEFPPPPPP(ASMPI_REDUCE_C, asmpi_reduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf,
     return;
 }
 
-void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, INTEGER *sendbuf, INTEGER *recvbuf, INTEGER4 *count,
-                                               MPI_Fint *op, INTEGER4 *root, MPI_Fint *comm) {
+void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, ASTERINTEGER *sendbuf, ASTERINTEGER *recvbuf,
+               ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -536,9 +537,9 @@ void DEFPPPPPP(ASMPI_REDUCE_I, asmpi_reduce_i, INTEGER *sendbuf, INTEGER *recvbu
     return;
 }
 
-void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, INTEGER4 *sendbuf, INTEGER4 *recvbuf,
-                                                 INTEGER4 *count, MPI_Fint *op, INTEGER4 *root,
-                                                 MPI_Fint *comm) {
+void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, ASTERINTEGER4 *sendbuf, ASTERINTEGER4 *recvbuf,
+               ASTERINTEGER4 *count, MPI_Fint *op, ASTERINTEGER4 *root,
+               MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -554,8 +555,8 @@ void DEFPPPPPP(ASMPI_REDUCE_I4, asmpi_reduce_i4, INTEGER4 *sendbuf, INTEGER4 *re
  * Wrappers around MPI_Allreduce
  * Do not check returncode because all errors raise
  */
-void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, DOUBLE *sendbuf, DOUBLE *recvbuf,
-                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
+              ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -567,8 +568,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_R, asmpi_allreduce_r, DOUBLE *sendbuf, DOUBLE *rec
     return;
 }
 
-void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, DOUBLE *sendbuf, DOUBLE *recvbuf,
-                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, ASTERDOUBLE *sendbuf, ASTERDOUBLE *recvbuf,
+              ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -580,8 +581,8 @@ void DEFPPPPP(ASMPI_ALLREDUCE_C, asmpi_allreduce_c, DOUBLE *sendbuf, DOUBLE *rec
     return;
 }
 
-void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, INTEGER *sendbuf, INTEGER *recvbuf,
-                                                    INTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, ASTERINTEGER *sendbuf,
+              ASTERINTEGER *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op, MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -593,9 +594,9 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I, asmpi_allreduce_i, INTEGER *sendbuf, INTEGER *r
     return;
 }
 
-void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, DOUBLE *sendbuf, DOUBLE *recvbuf,
-                                                      INTEGER4 *count, MPI_Fint *op,
-                                                      MPI_Fint *comm) {
+void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, ASTERDOUBLE *sendbuf,
+              ASTERDOUBLE *recvbuf, ASTERINTEGER4 *count, MPI_Fint *op,
+              MPI_Fint *comm) {
     MPI_Comm mpicom;
     MPI_Op mpiop;
 #ifdef _USE_MPI
@@ -611,8 +612,9 @@ void DEFPPPPP(ASMPI_ALLREDUCE_I4, asmpi_allreduce_i4, DOUBLE *sendbuf, DOUBLE *r
  * Wrappers around MPI_Bcast
  * Do not check returncode because all errors raise
  */
-void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, DOUBLE *buffer, INTEGER4 *count, INTEGER4 *root,
-                                           MPI_Fint *comm) {
+void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, ASTERDOUBLE *buffer,
+             ASTERINTEGER4 *count, ASTERINTEGER4 *root,
+             MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -622,8 +624,9 @@ void DEFPPPP(ASMPI_BCAST_R, asmpi_bcast_r, DOUBLE *buffer, INTEGER4 *count, INTE
     return;
 }
 
-void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, DOUBLE *buffer, INTEGER4 *count, INTEGER4 *root,
-                                           MPI_Fint *comm) {
+void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, ASTERDOUBLE *buffer,
+             ASTERINTEGER4 *count, ASTERINTEGER4 *root,
+             MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -633,8 +636,9 @@ void DEFPPPP(ASMPI_BCAST_C, asmpi_bcast_c, DOUBLE *buffer, INTEGER4 *count, INTE
     return;
 }
 
-void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, INTEGER *buffer, INTEGER4 *count, INTEGER4 *root,
-                                           MPI_Fint *comm) {
+void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, ASTERINTEGER *buffer,
+             ASTERINTEGER4 *count, ASTERINTEGER4 *root,
+             MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -644,8 +648,9 @@ void DEFPPPP(ASMPI_BCAST_I, asmpi_bcast_i, INTEGER *buffer, INTEGER4 *count, INT
     return;
 }
 
-void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, INTEGER4 *buffer, INTEGER4 *count, INTEGER4 *root,
-                                             MPI_Fint *comm) {
+void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, ASTERINTEGER4 *buffer,
+             ASTERINTEGER4 *count, ASTERINTEGER4 *root,
+             MPI_Fint *comm) {
     MPI_Comm mpicom;
 #ifdef _USE_MPI
     mpicom = MPI_Comm_f2c(*comm);
@@ -660,7 +665,7 @@ void DEFPPPP(ASMPI_BCAST_I4, asmpi_bcast_i4, INTEGER4 *buffer, INTEGER4 *count, 
  */
 int gErrFlg = 0;
 
-void DEFP( ASABRT, asabrt, _IN INTEGER *iret )
+void DEFP( ASABRT, asabrt, _IN ASTERINTEGER *iret )
 {
     /*! \brief Define a dedicated function to abort a Code_Aster execution.
      *
@@ -694,7 +699,7 @@ void terminate( void )
 {
     /*! Function registered using atexit() in main.
      */
-    INTEGER dummy=0;
+    ASTERINTEGER dummy=0;
     printf("End of the Code_Aster execution\n");
 #ifdef _USE_MPI
     if ( gErrFlg == 0 ) {

@@ -121,9 +121,9 @@ void stptrap (int sig)
 }
 
 
-static INTEGER status_usr1 = 0;
+static ASTERINTEGER status_usr1 = 0;
 
-INTEGER DEF0(ETAUSR, etausr)
+ASTERINTEGER DEF0(ETAUSR, etausr)
 {
     /* ETAt USR1 :
      * Retourne la variable status_usr1 */
@@ -136,7 +136,7 @@ void stpusr1 (int sig)
      * callback appelé lors de la réception du signal USR1.
      */
     CALL_UTMESS("I", "SUPERVIS_96");
-    status_usr1 = (INTEGER)1;
+    status_usr1 = (ASTERINTEGER)1;
 }
 
 void DEF0(CLRUSR, clrusr)
@@ -145,5 +145,5 @@ void DEF0(CLRUSR, clrusr)
      * Réinitialise la valeur de status_usr1
      * Utile pour éviter la récursivité.
      */
-   status_usr1 = (INTEGER)0;
+   status_usr1 = (ASTERINTEGER)0;
 }

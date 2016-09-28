@@ -33,9 +33,9 @@ extern void PRE_myabort(_IN const char *nomFichier , _IN const int numeroLigne,
 #define MYABORT(message) PRE_myabort( __FILE__ , __LINE__ , message )
 
 #define CALL_ISJVUP() CALL0(ISJVUP, isjvup)
-extern INTEGER DEF0(ISJVUP, isjvup);
+extern ASTERINTEGER DEF0(ISJVUP, isjvup);
 
-extern void CALLP(XFINI,xfini, _IN INTEGER *);
+extern void CALLP(XFINI,xfini, _IN ASTERINTEGER *);
 
 /* FIN ASTER_MODULE_H */
 #endif

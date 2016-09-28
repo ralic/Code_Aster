@@ -33,7 +33,8 @@
 #endif
 
 
-void DEFPPSP(APLEXT, aplext, INTEGER *niv, INTEGER *nbd ,char *nom ,STRING_SIZE lnom, INTEGER *ier)
+void DEFPPSP(APLEXT, aplext, ASTERINTEGER *niv, ASTERINTEGER *nbd ,char *nom,
+             STRING_SIZE lnom, ASTERINTEGER *ier)
 {
    char *args[100];
    char nomcmd[256+1];

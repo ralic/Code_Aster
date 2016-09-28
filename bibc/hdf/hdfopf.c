@@ -27,9 +27,9 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
+ASTERINTEGER DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t idfic; 
   int k;
@@ -44,7 +44,7 @@ INTEGER DEFS(HDFOPF, hdfopf, char *nomfic, STRING_SIZE ln)
   while (nomf[k] == ' ') { k--;}
   nomf[k+1] = '\0';
   if ( (idfic = H5Fopen(nomf, H5F_ACC_RDONLY, H5P_DEFAULT)) >= 0) 
-    iret = (INTEGER) idfic;
+    iret = (ASTERINTEGER) idfic;
   free (nomf);
 #else
   CALL_UTMESS("F", "FERMETUR_3");

@@ -20,8 +20,8 @@
 /* recherche de la  n-ieme apparition d un K*8 dans une liste de K*8    */
 /* resultat = indice si present / 0 si absent                           */
 
-INTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
-                char *mot, STRING_SIZE lm, INTEGER *n, INTEGER *nmot)
+ASTERINTEGER DEFSSPP(INDIK8, indik8, char *lstmot, STRING_SIZE llm,
+                char *mot, STRING_SIZE lm, ASTERINTEGER *n, ASTERINTEGER *nmot)
 {
     long i,j=0;
     char *p,m[8];

@@ -36,14 +36,15 @@ PyObject* get_dll_register_dict();
 
 /* declarations of pointers on UMAT functions */
 #define FUNC_UMAT(NAME)  void DEFUMAT(*NAME, \
-        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
-        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
-        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
-            DOUBLE*, DOUBLE*, char*, STRING_SIZE,  \
-        INTEGER*, INTEGER*, INTEGER*, INTEGER*, DOUBLE*, INTEGER*, \
-            DOUBLE*, DOUBLE*, DOUBLE*,  \
-        DOUBLE*, DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER*, INTEGER*, INTEGER*, \
-            INTEGER*, INTEGER*, INTEGER* )
+        ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
+        ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
+        ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
+        ASTERDOUBLE*, ASTERDOUBLE*, char*, STRING_SIZE,  \
+        ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER *, ASTERDOUBLE*, \
+        ASTERINTEGER *, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*,  \
+        ASTERDOUBLE*, ASTERDOUBLE* dfgrd0, ASTERDOUBLE* dfgrd1, ASTERINTEGER *, \
+        ASTERINTEGER *, ASTERINTEGER *, \
+        ASTERINTEGER *, ASTERINTEGER *, ASTERINTEGER * )
 
 void load_umat_lib(const char* libname, const char* symbol)
 {
@@ -52,8 +53,8 @@ void load_umat_lib(const char* libname, const char* symbol)
     void *umat_handle;
     char *error;
     char symbol_[18], *valk;
-    INTEGER ibid=0, n0=0, nk=0;
-    DOUBLE rbid=0.;
+    ASTERINTEGER ibid=0, n0=0, nk=0;
+    ASTERDOUBLE rbid=0.;
     FUNC_UMAT(f_umat) = NULL;
     PyObject* DLL_DICT;
     DLL_DICT = get_dll_register_dict();
@@ -105,7 +106,7 @@ void load_umat_lib(const char* libname, const char* symbol)
 
 void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
     char* nomlib, STRING_SIZE lnomlib, char* nomsub, STRING_SIZE lnomsub,
-    INTEGER* pfumat)
+    ASTERINTEGER * pfumat)
 {
 #ifdef _POSIX
     /* UMAT WraPper : wrapper to get the UMAT function.
@@ -124,7 +125,7 @@ void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
     if ( ! libsymb_is_known(DLL_DICT, libname, symbol) ) {
         load_umat_lib(libname, symbol);
     }
-    *pfumat = (INTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
+    *pfumat = (ASTERINTEGER)libsymb_get_symbol(DLL_DICT, libname, symbol);
 
     FreeStr(libname);
     FreeStr(symbol);
@@ -135,14 +136,16 @@ void DEFSSP(UMAT_GET_FUNCTION, umat_get_function,
 }
 
 void DEFPPPPPPPPPPPPPPPPPPPSPPPPPPPPPPPPPPPPPP(UMATWP, umatwp,
-    INTEGER* pfumat, DOUBLE* stress, DOUBLE* statev, DOUBLE* ddsdde, DOUBLE* sse,
-    DOUBLE* spd, DOUBLE* scd, DOUBLE* rpl, DOUBLE* ddsddt, DOUBLE* drplde,
-    DOUBLE* drpldt, DOUBLE* stran, DOUBLE* dstran, DOUBLE* time, DOUBLE* dtime,
-    DOUBLE* temp, DOUBLE* dtemp, DOUBLE* predef, DOUBLE* dpred, char* cmname, STRING_SIZE lcmname,
-    INTEGER* ndi, INTEGER* nshr, INTEGER* ntens, INTEGER* nstatv, DOUBLE* props,
-    INTEGER* nprops, DOUBLE* coords, DOUBLE* drot, DOUBLE* pnewdt, DOUBLE* celent,
-    DOUBLE* dfgrd0, DOUBLE* dfgrd1, INTEGER* noel, INTEGER* npt, INTEGER* layer,
-    INTEGER* kspt, INTEGER* kstep, INTEGER* kinc )
+    ASTERINTEGER * pfumat, ASTERDOUBLE* stress, ASTERDOUBLE* statev,ASTERDOUBLE* ddsdde,
+    ASTERDOUBLE* sse, ASTERDOUBLE* spd, ASTERDOUBLE* scd, ASTERDOUBLE* rpl,
+    ASTERDOUBLE* ddsddt, ASTERDOUBLE* drplde, ASTERDOUBLE* drpldt, ASTERDOUBLE* stran,
+    ASTERDOUBLE* dstran, ASTERDOUBLE* time, ASTERDOUBLE* dtime, ASTERDOUBLE* temp,
+    ASTERDOUBLE* dtemp, ASTERDOUBLE* predef, ASTERDOUBLE* dpred, char* cmname,
+    STRING_SIZE lcmname, ASTERINTEGER * ndi, ASTERINTEGER * nshr, ASTERINTEGER * ntens,
+    ASTERINTEGER * nstatv, ASTERDOUBLE* props, ASTERINTEGER * nprops, ASTERDOUBLE* coords,
+    ASTERDOUBLE* drot, ASTERDOUBLE* pnewdt, ASTERDOUBLE* celent, ASTERDOUBLE* dfgrd0,
+    ASTERDOUBLE* dfgrd1, ASTERINTEGER * noel, ASTERINTEGER * npt, ASTERINTEGER * layer,
+    ASTERINTEGER * kspt, ASTERINTEGER * kstep, ASTERINTEGER * kinc )
 {
 #ifdef _POSIX
     /* UMAT WraPper : wrapper to the UMAT function through the function pointer

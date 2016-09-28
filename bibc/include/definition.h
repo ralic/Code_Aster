@@ -31,7 +31,7 @@
  * puis : CALL_SUB(a,b,c)
  * Pour définir une fonction C de nom SUB avec un argument string et 2 arguments autres,
  * appelable depuis le fortran, faire:
- * void DEFSPP(SUB, sub, char * nomobj, STRING_SIZE lnom, DOUBLE *d, INTEGER *i)
+ * void DEFSPP(SUB, sub, char * nomobj, STRING_SIZE lnom, ASTERDOUBLE *d, ASTERINTEGER *i)
  * {
  * }
  * ici, lnom est l'entier qui indique la longueur de la chaine Fortran nomobj

@@ -134,11 +134,11 @@ void _raiseException( _IN int val )
     return;
 }
 
-void DEFPSPSPPPP(UEXCEP,uexcep, _IN INTEGER *exc_type,
+void DEFPSPSPPPP(UEXCEP,uexcep, _IN ASTERINTEGER *exc_type,
                                 _IN char *idmess, _IN STRING_SIZE lidmess,
-                                _IN INTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
-                                _IN INTEGER *nbi, _IN INTEGER *vali,
-                                _IN INTEGER *nbr, _IN DOUBLE *valr)
+                                _IN ASTERINTEGER *nbk, _IN char *valk, _IN STRING_SIZE lvk,
+                                _IN ASTERINTEGER *nbi, _IN ASTERINTEGER *vali,
+                                _IN ASTERINTEGER *nbr, _IN ASTERDOUBLE *valr)
 {
     /*
      * Fortran/Python interface to raise an exception from the fortran subroutines

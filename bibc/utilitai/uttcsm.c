@@ -46,18 +46,18 @@
 #endif
 
 
-static DOUBLE _cache_t0 = -1.;
+static ASTERDOUBLE _cache_t0 = -1.;
 
-void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
+void DEFP(UTTCSM, uttcsm, ASTERDOUBLE *t_csm)
 {
-    DOUBLE elaps;
+    ASTERDOUBLE elaps;
 
 #ifdef _POSIX
 /* calcul de elaps avec gettimeofday  */
     struct timeval tv;
     struct timezone tz;
     gettimeofday(&tv,&tz);
-    elaps=(DOUBLE) tv.tv_sec + (DOUBLE) tv.tv_usec / 1000000.;
+    elaps=(ASTERDOUBLE) tv.tv_sec + (ASTERDOUBLE) tv.tv_usec / 1000000.;
 
 #else
 /* calcul de elaps : date depuis epoch en secondes
@@ -82,12 +82,12 @@ void DEFP(UTTCSM, uttcsm, DOUBLE *t_csm)
 #ifdef _POSIX
    struct tms temps;
    times (&temps);
-   t_csm[0]=(DOUBLE)temps.tms_utime/(DOUBLE)CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(DOUBLE)temps.tms_stime/(DOUBLE)CLOCKS_PER_SEC_VALUE;
+   t_csm[0]=(ASTERDOUBLE)temps.tms_utime/(ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
+   t_csm[1]=(ASTERDOUBLE)temps.tms_stime/(ASTERDOUBLE)CLOCKS_PER_SEC_VALUE;
 
 #else
-   t_csm[0]=(DOUBLE)clock()/CLOCKS_PER_SEC_VALUE;
-   t_csm[1]=(DOUBLE)0.;
+   t_csm[0]=(ASTERDOUBLE)clock()/CLOCKS_PER_SEC_VALUE;
+   t_csm[1]=(ASTERDOUBLE)0.;
 
 #endif
 }

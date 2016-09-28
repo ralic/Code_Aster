@@ -36,7 +36,7 @@
 **
 ** Le numero du processus est recupere par getpid
 */
-INTEGER DEFP (MEMPID, mempid, INTEGER *val) 
+ASTERINTEGER DEFP (MEMPID, mempid, ASTERINTEGER *val) 
 {
     static char filename[80];
     static char sbuf[1024];
@@ -108,10 +108,10 @@ OS X does not support retrieving memory consumptions through /proc or kvm librar
     close(fd);
 
     S=strstr(sbuf,"VmData:")+8;
-    val[0] = (INTEGER)atoi(S); 
+    val[0] = (ASTERINTEGER)atoi(S); 
 
     S=strstr(sbuf,"VmSize:")+8;
-    val[1] = (INTEGER)atoi(S); 
+    val[1] = (ASTERINTEGER)atoi(S); 
 
     if ( strstr(sbuf,"VmPeak:") != NULL ) {
         S=strstr(sbuf,"VmPeak:")+8;
@@ -121,7 +121,7 @@ OS X does not support retrieving memory consumptions through /proc or kvm librar
     }
 
     S=strstr(sbuf,"VmRSS:")+7;
-    val[3] = (INTEGER)atoi(S); 
+    val[3] = (ASTERINTEGER)atoi(S); 
       
     S=strstr(sbuf,"VmStk:")+7;
     lmem = atoi(S);

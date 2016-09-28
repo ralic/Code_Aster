@@ -17,7 +17,8 @@
 #include "aster.h"
 
 void DEFSPPPP(STRMOV, strmov, char *src,  STRING_SIZE len_src,
-                              INTEGER *isb, INTEGER *num, INTEGER *dest, INTEGER *idb)
+              ASTERINTEGER *isb, ASTERINTEGER *num,
+              ASTERINTEGER *dest, ASTERINTEGER *idb)
 {
     memcpy((char *)dest+*idb-1, src+*isb-1, *num);
 }

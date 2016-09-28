@@ -73,7 +73,7 @@ long  open_fac ( char *nom )
 
 
 void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
-                            INTEGER *mode, INTEGER *ierr)
+                            ASTERINTEGER *mode, ASTERINTEGER *ierr)
 {
     /*
         mode = 0 : ro read only
@@ -83,8 +83,8 @@ void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
     long iu, nbread;
     char *fname, smode[4], *valk;
     int imode;
-    INTEGER n0=0, n1=1, ibid=0;
-    DOUBLE rbid=0.;
+    ASTERINTEGER n0=0, n1=1, ibid=0;
+    ASTERDOUBLE rbid=0.;
 
     imode = (int)(*mode);
     *ierr = 0;
@@ -126,7 +126,7 @@ void DEFSPP(OPENDR, opendr, char *dfname, STRING_SIZE len_dfname,
     FreeStr(fname);
 }
 
-void DEFSP(CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, INTEGER *ierr)
+void DEFSP(CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, ASTERINTEGER *ierr)
 {
     long iu;
     char *fname;
@@ -147,11 +147,11 @@ void DEFSP(CLOSDR, closdr, char *dfname, STRING_SIZE len_dfname, INTEGER *ierr)
 }
 
 void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
-                              INTEGER *nbytes, INTEGER *irec, INTEGER *ierr)
+                              ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr)
 {
     long offset;
     long iu,nbseek;
-    INTEGER nbval;
+    ASTERINTEGER nbval;
     char *fname;
 
     *ierr = 0;
@@ -174,7 +174,7 @@ void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     }
     offset = (*irec-1)*nenr[iu]+OFF_INIT;
     nbseek=fseek(fpfile[iu],offset, SEEK_SET);
-    nbval=(INTEGER)fread(buf,1,(size_t)(*nbytes),fpfile[iu]);
+    nbval=(ASTERINTEGER)fread(buf,1,(size_t)(*nbytes),fpfile[iu]);
     if ( nbval != *nbytes ) {
         *ierr = -4;
     }
@@ -182,11 +182,11 @@ void DEFSPPPP(READDR, readdr, char *dfname, STRING_SIZE len_dfname, void *buf,
 }
 
 void DEFSPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
-            INTEGER *nbytes, INTEGER *irec, INTEGER *ierr)
+            ASTERINTEGER *nbytes, ASTERINTEGER *irec, ASTERINTEGER *ierr)
 {
     long offset;
     long iu,nbseek,nbwrite;
-    INTEGER nbval;
+    ASTERINTEGER nbval;
     char *fname;
 
     *ierr = 0;
@@ -208,7 +208,7 @@ void DEFSPPPP(WRITDR, writdr, char *dfname, STRING_SIZE len_dfname, void *buf,
     }
     offset = (*irec-1)*(nenr[iu])+OFF_INIT;
     nbseek=fseek(fpfile[iu],offset, SEEK_SET);
-    nbval=(INTEGER)fwrite(buf,1,(size_t)(*nbytes),fpfile[iu]);
+    nbval=(ASTERINTEGER)fwrite(buf,1,(size_t)(*nbytes),fpfile[iu]);
 
     if ( nbval != *nbytes ) {
         *ierr = -4;

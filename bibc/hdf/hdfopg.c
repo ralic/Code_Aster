@@ -28,9 +28,9 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
+ASTERINTEGER DEFPS(HDFOPG, hdfopg, ASTERINTEGER *idf, char *nomgr, STRING_SIZE ln)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t  idgrp,idfic;     
   char *nomd;
@@ -54,7 +54,7 @@ INTEGER DEFPS(HDFOPG, hdfopg, INTEGER *idf, char *nomgr, STRING_SIZE ln)
   nomd[k+1] = '\0';
 
   if ((idgrp = H5Gopen2(idfic, nomd, H5P_DEFAULT)) >= 0) 
-    iret = (INTEGER) idgrp;
+    iret = (ASTERINTEGER) idgrp;
   free (nomd);
 #else
   CALL_UTMESS("F", "FERMETUR_3");

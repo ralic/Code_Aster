@@ -22,9 +22,9 @@
 
 
 /*! Temps(sec) total restant pour ce processus */
-void DEFP(UTTRST, uttrst, DOUBLE *t_rst)
+void DEFP(UTTRST, uttrst, ASTERDOUBLE *t_rst)
 {
-    DOUBLE t_csm[3], t_lim;
+    ASTERDOUBLE t_csm[3], t_lim;
     CALL_UTTCSM(t_csm);
     t_lim = get_tpmax();
     *t_rst = t_lim - t_csm[2];

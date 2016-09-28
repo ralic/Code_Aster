@@ -30,10 +30,10 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPSS(HDFNOM, hdfnom, INTEGER *idf, char *nomgr, STRING_SIZE ln,
+ASTERINTEGER DEFPSS(HDFNOM, hdfnom, ASTERINTEGER *idf, char *nomgr, STRING_SIZE ln,
                char *nom, STRING_SIZE lnm)
 {
-  INTEGER nbobj=0;
+  ASTERINTEGER nbobj=0;
 #ifndef _DISABLE_HDF5
   hid_t idfic , bidon=0;
   hsize_t ind;

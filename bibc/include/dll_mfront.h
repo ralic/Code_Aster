@@ -23,12 +23,16 @@
 
 /* declarations of pointers on MFRONT functions */
 #define FUNC_MFRONT(NAME)  void DEFMFRONTBEHAVIOUR(*NAME, \
-        DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, DOUBLE*, \
-            DOUBLE*, DOUBLE*, INTEGER*, INTEGER*, DOUBLE*, INTEGER*, \
-            DOUBLE*, DOUBLE*, INTEGER*)
-#define FUNC_MFRONT_SET_DOUBLE(NAME)  void DEFMFRONTSETDOUBLE(*NAME, char*, DOUBLE, STRING_SIZE)
-#define FUNC_MFRONT_SET_INTEGER(NAME)  void DEFMFRONTSETINTEGER(*NAME, char*, INTEGER, STRING_SIZE)
-#define FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(NAME)  void DEFMFRONTSETOUTOFBOUNDSPOLICY(*NAME, INTEGER)
+        ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
+            ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, ASTERDOUBLE*, \
+            ASTERINTEGER*, ASTERINTEGER*, ASTERDOUBLE*, ASTERINTEGER*, ASTERDOUBLE*, \
+            ASTERDOUBLE*, ASTERINTEGER*)
+#define FUNC_MFRONT_SET_DOUBLE(NAME)  void DEFMFRONTSETDOUBLE(*NAME, char*, \
+                                                              ASTERDOUBLE, STRING_SIZE)
+#define FUNC_MFRONT_SET_INTEGER(NAME)  void DEFMFRONTSETINTEGER(*NAME, char*, ASTERINTEGER, \
+                                                                STRING_SIZE)
+#define FUNC_MFRONT_SET_OUTOFBOUNDS_POLICY(NAME) void DEFMFRONTSETOUTOFBOUNDSPOLICY(*NAME,\
+                                                                                    ASTERINTEGER)
 
 /*
  *   PUBLIC FUNCTIONS
@@ -43,7 +47,7 @@
 
 /**
  * \brief Return the symbol name of the MFront lib after testing if it should
- *        contain the modelization or not.
+ *        contain the modeliaztion or not.
  * @param libname   Name of library
  * @param symbol    Name of the main function (ex. asterbehaviourname)
  * @param model     Name of the modelization

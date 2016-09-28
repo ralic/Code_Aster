@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, INTEGER *info)
+void DEFSP(RMFILE, rmfile, char *nom1, STRING_SIZE lnom1, ASTERINTEGER *info)
 {
     char *cmdline, *fname;
     size_t ldeb;

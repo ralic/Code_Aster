@@ -23,10 +23,11 @@
 #endif
 
 
-void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
-                                 INTEGER4 *connect, INTEGER4 *idconnect, INTEGER *nbpart,
-                                 INTEGER4 *mapsd, INTEGER4 *edlo, INTEGER4 *velo,
-                                 INTEGER *numver, INTEGER *ier)
+void DEFPPPPPPPPPP(FETSCO,fetsco, ASTERINTEGER *nbmato, ASTERINTEGER *nblien,
+                                  ASTERINTEGER4 *connect, ASTERINTEGER4 *idconnect,
+                                  ASTERINTEGER *nbpart, ASTERINTEGER4 *mapsd,
+                                  ASTERINTEGER4 *edlo, ASTERINTEGER4 *velo,
+                                  ASTERINTEGER *numver, ASTERINTEGER *ier)
 {
 #ifndef _DISABLE_SCOTCH
   int err,numv;
@@ -69,7 +70,7 @@ void DEFPPPPPPPPPP(FETSCO,fetsco, INTEGER *nbmato, INTEGER *nblien,
   }
   
   numv = version*10000 + release*100 + patch;
-  *numver = (INTEGER)numv;
-  *ier = (INTEGER)err;
+  *numver = (ASTERINTEGER)numv;
+  *ier = (ASTERINTEGER)err;
 #endif
 }

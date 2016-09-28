@@ -28,11 +28,11 @@ void DEFPPPPPPPPPPPPP(ONMETL,onmetl, nbnd,nadj,
                        invpnd,permnd,supnd, parent,
           nbsn,nbops,fctnzs, lgind,
           niv)
-     INTEGER4 *nbnd,*nadj,  *xadjd, *adjncy;
-     INTEGER4 *invpnd, *permnd,*supnd, *parent,*nbsn;
-     DOUBLE *nbops;
-     INTEGER4 *fctnzs, *lgind;
-     INTEGER *niv;
+     ASTERINTEGER4 *nbnd,*nadj,  *xadjd, *adjncy;
+     ASTERINTEGER4 *invpnd, *permnd,*supnd, *parent,*nbsn;
+     ASTERDOUBLE *nbops;
+     ASTERINTEGER4 *fctnzs, *lgind;
+     ASTERINTEGER *niv;
 {
 #ifdef _HAVE_METIS
   /*
@@ -58,8 +58,8 @@ fctnzs : Nombre de termes non nuls dans la matrice factorisee
 lgind  : longueur de tableaux de pointeurs
    */
   int n,m,i;
-  INTEGER ibid0=0, ibid1=1, iret;
-  DOUBLE rbid=0.;
+  ASTERINTEGER ibid0=0, ibid1=1, iret;
+  ASTERDOUBLE rbid=0.;
   char *kbid;
   n=*nbnd;
   m=*nadj;

@@ -20,7 +20,7 @@
 
 #include <stdio.h>
 
-void DEFP(UTFLSH, utflsh, INTEGER *codret)
+void DEFP(UTFLSH, utflsh, ASTERINTEGER *codret)
 {
 #ifdef _POSIX
   *codret = fflush(0) ;

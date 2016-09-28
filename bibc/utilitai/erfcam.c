@@ -17,14 +17,14 @@
 
 #include "aster.h"
 
-double DEFP(ERFCAM, erfcam, DOUBLE *x)
+double DEFP(ERFCAM, erfcam, ASTERDOUBLE *x)
 {
-  DOUBLE y;
+  ASTERDOUBLE y;
 #ifdef _POSIX
-  y = (DOUBLE)erfc(*x);
+  y = (ASTERDOUBLE)erfc(*x);
   return(y);
 #else
-  extern DOUBLE DEFP(ERFCFO,erfcfo, DOUBLE *);
+  extern ASTERDOUBLE DEFP(ERFCFO,erfcfo, ASTERDOUBLE *);
   y = ERFCFO(x);
   return(y);
 #endif

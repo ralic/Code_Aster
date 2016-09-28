@@ -30,9 +30,9 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPS(HDFNBO, hdfnbo, INTEGER *idf, char *nomgr, STRING_SIZE ln)
+ASTERINTEGER DEFPS(HDFNBO, hdfnbo, ASTERINTEGER *idf, char *nomgr, STRING_SIZE ln)
 {
-  INTEGER nbobj=0;
+  ASTERINTEGER nbobj=0;
 #ifndef _DISABLE_HDF5
   hid_t idfic, bidon=0;
   char *nomg;

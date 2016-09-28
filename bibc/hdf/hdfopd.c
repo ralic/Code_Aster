@@ -29,9 +29,10 @@
 #include <hdf5.h>
 #endif
 
-INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *nomd, STRING_SIZE ln)
+ASTERINTEGER DEFPSS(HDFOPD, hdfopd, ASTERINTEGER *idf, char *nomg,
+                    STRING_SIZE lg, char *nomd, STRING_SIZE ln)
 {
-  INTEGER iret=-1;
+  ASTERINTEGER iret=-1;
 #ifndef _DISABLE_HDF5
   hid_t id,idfic,dapl_id; 
   int k,lg2;
@@ -62,7 +63,7 @@ INTEGER DEFPSS(HDFOPD, hdfopd, INTEGER *idf, char *nomg, STRING_SIZE lg, char *n
   nom[k+1] = '\0';
 
   if ( (id = H5Dopen2(idfic,nom,dapl_id)) >= 0) 
-    iret = (INTEGER) id;
+    iret = (ASTERINTEGER) id;
 
   free (nom);
 #else

@@ -29,7 +29,8 @@ This function uses mmap() to prevent memory fragmentation with malloc() on Linux
 mmap() is not available on other platforms but should not be needed at least on OS X (darwin).
 */
 
-void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, INTEGER *abrt)
+void DEFPPPP(HPALLOC, hpalloc, void **addr,ASTERINTEGER *length,
+             ASTERINTEGER *errcode, ASTERINTEGER *abrt)
 {
     void abort();
 #ifdef GNU_LINUX
@@ -42,11 +43,11 @@ void DEFPPPP(HPALLOC, hpalloc, void **addr,INTEGER *length, INTEGER *errcode, IN
     {
 #ifdef GNU_LINUX
         ir=mallopt(M_MMAP_THRESHOLD,0);
-        *addr = (void *)malloc(*length * sizeof(INTEGER));
+        *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
         ir=mallopt(M_MMAP_THRESHOLD,128*1024);
         if ( *addr == (void *)-1 )
 #else
-        *addr = (void *)malloc(*length * sizeof(INTEGER));
+        *addr = (void *)malloc(*length * sizeof(ASTERINTEGER));
         if ( *addr == (void *)0 )
 #endif /* GNU_LINUX */
         {

@@ -32,9 +32,9 @@
 #endif
 #include <stdlib.h>
 
-INTEGER DEFPSSSPSP(HDFWSV, hdfwsv, INTEGER *idf, char *nomg, STRING_SIZE lg,
-                                   char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt,
-                                   INTEGER *ltype, char *sv, STRING_SIZE toto, INTEGER *lsv)
+ASTERINTEGER DEFPSSSPSP(HDFWSV, hdfwsv, ASTERINTEGER *idf, char *nomg, STRING_SIZE lg,
+                        char *nomdts, STRING_SIZE ln, char *type, STRING_SIZE lt,
+                        ASTERINTEGER *ltype, char *sv, STRING_SIZE toto, ASTERINTEGER *lsv)
 {
 #ifndef _DISABLE_HDF5
   hid_t idfic,datatype,dataspace,dataset,type_id;
