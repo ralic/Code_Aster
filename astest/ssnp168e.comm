@@ -20,6 +20,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI',DEBUG=_F(S
 #--------------------------------------------------------------
 # 1 - MAILLAGE ET MODELE
 #--------------------------------------------------------------
+
 # LECTURE DU MAILLAGE
 MAIL = LIRE_MAILLAGE( FORMAT='MED',)
 
@@ -56,36 +57,60 @@ echel = 1000
 EE = 21000.e6/echel**2
 NU = 0.2
 DD = 3.e-3*echel 
-Gf = 100./echel
-ft = 3.9e6/echel**2
-fc = 28.5e6/echel**2
-pp = 1.5
 
-# DEFINITION DU BETON AU CENTRE 
-BETON = DEFI_MATER_GC( ENDO_FISS_EXP = _F( E  = EE, NU = NU, FT = ft, GF = Gf, FC = fc, P  = pp,
-                                           LARG_BANDE = DD),);
+Gf      = 100./echel
+#resistances bitrac=1.7
+#ft      = 3.9e6/echel**2
+#fc      = 80.e6/echel**2
+#tau     = 11.e6/echel**2
+
+#resistances bitrac=2.9
+ft      = 3.9e6/echel**2
+fc      = 8.5e6/echel**2
+tau     = 3.25e6/echel**2
+
+pp   = 1.5
+wy   = 0.5*ft**2/EE
+kk   = 0.75*Gf/DD
+mm   = kk/wy
+CC   = 0.375*Gf*DD
+pena = 1.E3 * kk
+comp = (fc-ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1-2*NU))
+coef = (fc+ft)*tau*(1+NU)*3**0.5/(2*ft*fc*(1+NU))
+volu = (coef**2-1)*2*(1+NU)/(1-2*NU)
+
+# DEFINITION DU BETON AU CENTRE DE L4EPROUVETTE
+BETON = DEFI_MATERIAU( ELAS = _F( E = EE, NU = NU),
+                       ENDO_SCALAIRE = _F( M = mm, P = pp, K = kk, C_VOLU = volu, C_COMP = comp),
+                       NON_LOCAL = _F( C_GRAD_VARI = CC, PENA_LAGR = pena),);
 
 # DEFINITION DU BETON AUX EXTREMITES DE L'EPROUVETTE
-BET_RIG = DEFI_MATER_GC( ENDO_FISS_EXP = _F( E  = EE, NU = NU, FT = ft*50, GF = Gf, FC = fc*50, P  = pp,
-                                             LARG_BANDE = DD/1000.),);
+BET_RIG = DEFI_MATERIAU( ELAS = _F(E = EE, NU = NU),
+                         ENDO_SCALAIRE = _F( M = mm/1000, P = pp, K = kk, C_VOLU = volu, C_COMP = comp),
+                         NON_LOCAL = _F( C_GRAD_VARI = CC, PENA_LAGR = pena),);
 
 # AFFECTATION DES MATERIAUX
 CHMAT = AFFE_MATERIAU( MAILLAGE = MAIL,
                        AFFE = (_F( GROUP_MA = 'NON_LIN',
-                                   MATER =  BETON),
+                                   MATER =  BETON,),
                                _F( GROUP_MA = 'LINEAIRE',
-                                   MATER =  BET_RIG),),);
+                                   MATER =  BET_RIG,),),);
 
 #--------------------------------------------------------------
 # 3- DEFINITION ET AFFECTATION DES CHARGEMENTS
 #--------------------------------------------------------------
 
-# NOMBRE D'IMAGES (max = 92)
-nr_img = inst_2_reach = 92
+# NOMBRE D'IMAGES (max = 227)
+# /!\ ATTENTION : instant max = 130 --> non CV de la loi ENDO_SCALAIRE au-dela
+nr_img = inst_2_reach = 130
 
 # SELECTION DES IMAGES A PRENDRE EN COMPTE
 inst_init = 0
-inst_fix = pas_calcul = 4     # environ 1 min de calcul
+#inst_fix = pas_calcul = 1     # Environ 9 min de calcul
+#inst_fix = pas_calcul = 2     # Environ 5 min de calcul
+#inst_fix = pas_calcul = 4     # Environ 3 min de calcul
+#inst_fix = pas_calcul = 6     # Environ 2 min de calcul
+inst_fix = pas_calcul = 8     # Environ 1 min 30 de calcul
 
 # LISTE DES IAMGES PRISES EN COMPTE
 inst2do = [inst_init,inst_fix] + range(inst_fix+pas_calcul,inst_2_reach+1,pas_calcul)
@@ -193,11 +218,12 @@ for i in inst2do :
                                        _F( FONCTION = UYB[inst_old], COEF = -1.0),),);
                                                   
     DEP[i] = AFFE_CHAR_MECA_F( MODELE = MODEMECA,
-                               FACE_IMPO = (_F( GROUP_MA ='FC_HAUT', DX = DXH[i], DY = DYH[i],),
-                                            _F( GROUP_MA ='FC_BAS', DX = DXB[i], DY = DYB[i],),),);
+                               FACE_IMPO = (_F( GROUP_MA ='FC_HAUT', DX = DXH[i], DY = DYH[i]),
+                                            _F( GROUP_MA ='FC_BAS', DX = DXB[i], DY = DYB[i]),),);
 
     inst_old = i
-    
+
+# DEFINITION DE LA LISTE D'INSTANT + METHODE DE DECOUPE
 INST_LIN = DEFI_LIST_REEL( VALE = inst2do,);
 
 TEMPS_LI = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = INST_LIN),
@@ -205,7 +231,7 @@ TEMPS_LI = DEFI_LIST_INST( DEFI_LIST = _F( LIST_INST = INST_LIN),
                                        SUBD_METHODE = 'MANUEL',
                                        SUBD_NIVEAU = 4,
                                        SUBD_PAS = 5),);
-
+ 
 #--------------------------------------------------------------
 # 4- RESOLUTION NON-LINEAIRE
 #--------------------------------------------------------------
@@ -219,21 +245,21 @@ RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
 # RESOLUTION PREMIER INSTANT DE CALCUL
 EVOL = STAT_NON_LINE( MODELE = MODEMECA,
                       CHAM_MATER = CHMAT,
-                      EXCIT = _F( CHARGE = DEP[inst_fix], TYPE_CHARGE = 'DIDI', FONC_MULT = RAMPE),
-                      COMPORTEMENT = _F( RELATION = 'ENDO_FISS_EXP',
+                      EXCIT = _F( CHARGE = DEP[inst_fix], TYPE_CHARGE= 'DIDI', FONC_MULT = RAMPE),
+                      COMPORTEMENT = _F( RELATION = 'ENDO_SCALAIRE',
                                          GROUP_MA = ('NON_LIN','LINEAIRE'),),
-                      INCREMENT = _F(LIST_INST = TEMPS_LI, INST_INIT = inst_init, INST_FIN = inst_fix),
+                      INCREMENT = _F( LIST_INST = TEMPS_LI, INST_INIT = inst_init, INST_FIN = inst_fix),
                       NEWTON = _F( MATRICE = 'TANGENTE',
                                    REAC_ITER = 1,
-                                   PAS_MINI_ELAS = 0,),
+                                   PAS_MINI_ELAS = 0),
                       CONVERGENCE = _F( RESI_REFE_RELA = 1.e-5,
                                         SIGM_REFE = ft,
-                                        LAGR_REFE = Gf/DD,
+                                        LAGR_REFE = kk,
                                         VARI_REFE = 1,
                                         ITER_GLOB_MAXI = 10),
-                      SOLVEUR = _F( METHODE = 'MUMPS',
-                                    PCENT_PIVOT = 30),  
-                      ARCHIVAGE = _F( PAS_ARCH = 5.),);
+                      SOLVEUR =_F( METHODE = 'MUMPS',
+                                   PCENT_PIVOT = 30),
+                      ARCHIVAGE =_F( PAS_ARCH = 5.),);
 
 # DESTRUCTION DE LA RAMPE POUR REUTILISATION
 DETRUIRE( CONCEPT=_F( NOM = RAMPE,),); 
@@ -248,31 +274,31 @@ for i in inst2do :
   
     RAMPE = DEFI_FONCTION( NOM_PARA = 'INST',
                            VALE = (inst_old,  0.,
-                                   i,         1.),    
+                           i,         1.),    
                            PROL_DROITE = 'LINEAIRE');
 
     EVOL = STAT_NON_LINE( reuse = EVOL,
-                          ETAT_INIT = _F( EVOL_NOLI = EVOL),
+                          ETAT_INIT = _F( EVOL_NOLI = EVOL,),
                           MODELE = MODEMECA,
                           CHAM_MATER = CHMAT,
-                          EXCIT = _F( CHARGE = DEP[i], TYPE_CHARGE = 'DIDI', FONC_MULT = RAMPE),
-                          COMPORTEMENT = _F( RELATION = 'ENDO_FISS_EXP',
-                                             GROUP_MA = ('NON_LIN','LINEAIRE'),),
+                          EXCIT = _F( CHARGE = DEP[i], TYPE_CHARGE= 'DIDI', FONC_MULT = RAMPE),
+                          COMPORTEMENT = _F( RELATION = 'ENDO_SCALAIRE',
+                                              GROUP_MA = ('NON_LIN','LINEAIRE'),),
                           INCREMENT = _F( LIST_INST = TEMPS_LI, INST_INIT = inst_old, INST_FIN = i),
                           NEWTON = _F( MATRICE = 'TANGENTE',
                                        REAC_ITER = 1,
                                        PAS_MINI_ELAS = 0),
                           CONVERGENCE = _F( RESI_REFE_RELA = 1.e-5,
                                             SIGM_REFE = ft,
-                                            LAGR_REFE = Gf/DD,
+                                            LAGR_REFE = kk,
                                             VARI_REFE = 1,
-                                            ITER_GLOB_MAXI = 30),
-                          SOLVEUR = _F( METHODE = 'MUMPS',
-                                        PCENT_PIVOT = 30),  
-                          ARCHIVAGE = _F( PAS_ARCH = 5.),);
+                                            ITER_GLOB_MAXI = 20),
+                          SOLVEUR =_F( METHODE = 'MUMPS',
+                                       PCENT_PIVOT = 30),
+                          ARCHIVAGE =_F( PAS_ARCH = 5.),);
 
     inst_old = i
-    DETRUIRE (CONCEPT = _F(NOM = RAMPE),); 
+    DETRUIRE( CONCEPT=_F( NOM = RAMPE),); 
 
 # CALCUL DES FORCES NODALES + CHAMP D'ENDOMMAGEMENT
 EVOL = CALC_CHAMP( reuse = EVOL,
@@ -284,11 +310,11 @@ EVOL = CALC_CHAMP( reuse = EVOL,
                    FORCE = 'FORC_NODA',
                    VARI_INTERNE = 'VARI_NOEU')
 
+'''
 #--------------------------------------------------------------
 # 5-POST-TRAITEMENT DES RESULTATS + TESTS
 #--------------------------------------------------------------
 
-'''
 # RECUPERATION DU CHEMIN DE FISSURATION
 MA_FISS = POST_ENDO_FISS( TABLE = CO('TAB_FISS'),
                           RESULTAT = EVOL,
@@ -303,10 +329,12 @@ MA_FISS = POST_ENDO_FISS( TABLE = CO('TAB_FISS'),
                                           ANGL_MAX = 180,),);
 
 # IMPRESSION DE LA TABLE DU CHEMIN DE FISSURATION
-IMPR_TABLE( UNITE = 8, TABLE = TAB_FISS, FORMAT = 'TABLEAU', SEPARATEUR = ';', TITRE = '')
+IMPR_TABLE( UNITE = 8, TABLE = TAB_FISS, FORMAT='TABLEAU', SEPARATEUR = ';', TITRE ='')
 
 # IMPRESSION DU MAILLAGE DU CHEMIN DE FISSURATION
-IMPR_RESU( FORMAT = 'MED', UNITE = 80, RESU = _F( MAILLAGE = MA_FISS,),);
+IMPR_RESU( FORMAT = 'MED',
+           UNITE = 80,
+           RESU = _F( MAILLAGE = MA_FISS),);
 '''
 
 ##############################################
@@ -488,71 +516,71 @@ F_EXP = LIRE_TABLE( UNITE = 29, FORMAT = 'ASTER', SEPARATEUR = ' ')
 
 # !! ATTENTION !! TESTS VALABLE POUR inst_fix = pas_calcul = 8 UNIQUEMENT !
 
-# CISAILLEMENT 
+# CISAILLEMENT
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.03,
-            VALE_CALC = 1.082504E+00,
-            VALE_REFE = 1.112780E+00,
+            PRECISION = 0.10,
+            VALE_CALC = 2.648107E+00,
+            VALE_REFE = 2.420760E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 2.564460E-03,),);
+                         VALE = -8.051796E-03),); 
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
             PRECISION = 0.01,
-            VALE_CALC = 2.751321E+00,
-            VALE_REFE = 2.761790E+00,
+            VALE_CALC = 2.905392E+00,
+            VALE_REFE = 2.916370E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 7.037655E-03),); 
+                         VALE = -1.084549E-02,),);
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.02,
-            VALE_CALC = 3.084654E+00,
-            VALE_REFE = 3.039000E+00,
+            PRECISION = 0.01,
+            VALE_CALC = 3.221131E+00,
+            VALE_REFE = 3.227550E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 8.196182E-03),); 
+                         VALE = -1.308019E-02),); 
 
 # TRACTION
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.02,
-            VALE_CALC = 5.621297E+00,
-            VALE_REFE = 5.566070E+00,
+            PRECISION = 0.03,
+            VALE_CALC = 7.797826E+00,
+            VALE_REFE = 7.592210E+00,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 4.082746E-03),);
+                        VALE = 7.486336E-03),);
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.01,
-            VALE_CALC = 7.458570E+00,
-            VALE_REFE = 7.500930E+00,
+            PRECISION = 0.05,
+            VALE_CALC = 3.417188E+00,
+            VALE_REFE = 3.562730E+00,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 5.540330E-03),);   
+                        VALE = 8.830637E-04),);   
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.02,
-            VALE_CALC = 1.441479E+01,
-            VALE_REFE = 14.18560E+00,
+            PRECISION = 0.12,
+            VALE_CALC = 3.954162E+00,
+            VALE_REFE = 3.544190E+00,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 1.429160E-02),);   
+                        VALE = 1.303476E-03),);   
 
 ###################################
 #   TESTS U_F DE NON REGRESSION   #
 ###################################
 
-TEST_TABLE( VALE_CALC = 2.751321E+00,
+TEST_TABLE( VALE_CALC = 2.527032E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 7.037655E-03,),);
+                         VALE = 7.644145E-03),);
 
 '''
 #############################################

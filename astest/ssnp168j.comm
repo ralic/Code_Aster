@@ -80,12 +80,14 @@ CHMAT = AFFE_MATERIAU( MAILLAGE = MAIL,
 # 3- DEFINITION ET AFFECTATION DES CHARGEMENTS
 #--------------------------------------------------------------
 
-# NOMBRE D'IMAGES (max = 92)
-nr_img = inst_2_reach = 92
+# NOMBRE D'IMAGES (max = 565)
+nr_img = inst_2_reach = 565
 
 # SELECTION DES IMAGES A PRENDRE EN COMPTE
 inst_init = 0
-inst_fix = pas_calcul = 4     # environ 1 min de calcul
+#inst_fix = pas_calcul = 1     # environ 35 min de calcul
+#inst_fix = pas_calcul = 4     # environ 5 min de calcul
+inst_fix = pas_calcul = 8     # environ 2 min 30 de calcul
 
 # LISTE DES IAMGES PRISES EN COMPTE
 inst2do = [inst_init,inst_fix] + range(inst_fix+pas_calcul,inst_2_reach+1,pas_calcul)
@@ -482,6 +484,7 @@ T_FUY = CALC_TABLE( TABLE = T_FU,
 F_EXP = LIRE_TABLE( UNITE = 29, FORMAT = 'ASTER', SEPARATEUR = ' ')
 #IMPR_TABLE( TABLE = F_EXP)
 
+
 #######################################################
 #   TESTS DE COMPARAISON AVEC LA THESE DE A.CARPIUC   #
 #######################################################
@@ -490,69 +493,69 @@ F_EXP = LIRE_TABLE( UNITE = 29, FORMAT = 'ASTER', SEPARATEUR = ' ')
 
 # CISAILLEMENT 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.03,
-            VALE_CALC = 1.082504E+00,
-            VALE_REFE = 1.112780E+00,
-            NOM_PARA = 'FORCEX',
-            TABLE = T_FUX,
-            FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 2.564460E-03,),);
-
-TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.01,
-            VALE_CALC = 2.751321E+00,
-            VALE_REFE = 2.761790E+00,
-            NOM_PARA = 'FORCEX',
-            TABLE = T_FUX,
-            FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 7.037655E-03),); 
-
-TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
             PRECISION = 0.02,
-            VALE_CALC = 3.084654E+00,
-            VALE_REFE = 3.039000E+00,
+            VALE_CALC = 1.380063E+00,
+            VALE_REFE = 1.364470E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 8.196182E-03),); 
+                         VALE = -7.252218E-03,),);
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.07,
+            VALE_CALC = 2.253044E+00,
+            VALE_REFE = 2.121140E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -1.242866E-02),); 
+
+TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
+            PRECISION = 0.04,
+            VALE_CALC = 2.505865E+00,
+            VALE_REFE = 2.420910E+00,
+            NOM_PARA = 'FORCEX',
+            TABLE = T_FUX,
+            FILTRE = _F( NOM_PARA = 'DEPLX',
+                         VALE = -1.862813E-02),); 
 
 # TRACTION
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.02,
-            VALE_CALC = 5.621297E+00,
-            VALE_REFE = 5.566070E+00,
+            PRECISION = 0.03,
+            VALE_CALC = 6.275910E+00,
+            VALE_REFE = 6.420840E+00,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 4.082746E-03),);
+                        VALE = 4.735272E-03),);
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.01,
-            VALE_CALC = 7.458570E+00,
-            VALE_REFE = 7.500930E+00,
+            PRECISION = 0.06,
+            VALE_CALC = -7.065039E+00,
+            VALE_REFE = -7.491850E+00,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 5.540330E-03),);   
+                        VALE = -3.761587E-03),);   
 
 TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-            PRECISION = 0.02,
-            VALE_CALC = 1.441479E+01,
-            VALE_REFE = 14.18560E+00,
+            PRECISION = 0.03,
+            VALE_CALC = -1.168866E+01,
+            VALE_REFE = -1.144100E+01,
             NOM_PARA = 'FORCEY',
             TABLE = T_FUY,
             FILTRE =_F( NOM_PARA = 'DEPLY',
-                        VALE = 1.429160E-02),);   
+                        VALE = -4.116827E-03),);   
 
 ###################################
 #   TESTS U_F DE NON REGRESSION   #
 ###################################
 
-TEST_TABLE( VALE_CALC = 2.751321E+00,
+TEST_TABLE( VALE_CALC = 3.546832E+00,
             NOM_PARA = 'FORCEX',
             TABLE = T_FUX,
             FILTRE = _F( NOM_PARA = 'DEPLX',
-                         VALE = 7.037655E-03,),);
+                         VALE = -2.742377E-02),);
 
 '''
 #############################################

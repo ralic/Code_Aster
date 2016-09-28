@@ -1,0 +1,12 @@
+P time_limit 200
+P memory_limit 1000
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm ssnp168l.comm D 1
+F mmed ssnp168i.mmed D 20
+F libr ssnp168k.23 DC 23
+F libr ssnp168k.24 DC 24
+F libr ssnp168i.29 D 29

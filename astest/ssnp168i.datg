@@ -1,0 +1,215 @@
+##################################################################
+#                    EPROUVETTE NOORU-MOHAMED                    #
+#           1 entaille + chemin de fissuration courbe            #
+##################################################################
+
+#  A----------------------B
+#  |                      |
+#  O                      P
+#  |             /\       |
+#  | \          /  \      |
+#  |  \        /    \D___C|
+#  |   \      /      |____
+#  |    \    /       E   F|
+#  |     \  /             |
+#  R      \/              Q
+#  |                      |
+#  H----------------------G
+
+# IMPORTATION DES LIBRAIRIES :
+import sys, math, csv, os
+import salome
+salome.salome_init()
+theStudy = salome.myStudy
+
+# PARAMETRES GEOMETRIQUES :
+L_hori = 200.      # LONGUEUR HORISONTALE      (DISTANCE ENTRE A ET B ) 
+L_vert = 150.      # LONGUEUR VERTICALE        (DISTANCE ENTRE A ET H ) 
+Ee = 5.            # EPAISSEUR DE L'ENTAILLE   (DISTANCE ENTRE C ET F ) 
+Ep_entail = 25.    # PROFONDEUR DE L'ENTAILLE  (DISTANCE ENTRE C ET D ) 
+Ey_entail = 0.     # POSITION VERTICALE DE L'ENTAILLE
+L_sup = 25.        # LONGUEUR SUPERIEURE       (DISTANCE ENTRE A et O)
+L_inf = 25.        # LONGUEUR SUPERIEURE       (DISTANCE ENTRE H et R)
+
+# PARAMETRES DU MAILLAGE (NETGEN) :
+max_size = 30
+min_size = 2
+max_local_size = 0.5
+
+# INITIALISATION DES DIFFERENTS PARAMETRES POUR LA VISUALISATION EN SALOME :
+import iparameters
+ipar = iparameters.IParameters(salome.myStudy.GetCommonParameters("Interface Applicative", 1))
+ipar.setProperty("AP_ACTIVE_MODULE", "Mesh")
+
+# PARAMETRAGE NOTEBOOK :
+import salome_notebook
+notebook = salome_notebook.NoteBook(theStudy)
+notebook.set("min_size", min_size)
+notebook.set("max_local_size", max_local_size)
+notebook.set("max_size", max_size)
+
+###############################################
+#               MODULE GEOMETRY               #
+###############################################
+
+# IMPORTATION DES LIBRAIRIES :
+import GEOM
+from salome.geom import geomBuilder
+geompy = geomBuilder.New(theStudy)
+geompy.init_geom(theStudy)
+
+SD_pts = {}        # STRUCTURE DES DIFFERENTS POINTS DE LA GEOMETRIE
+SD_obj = {}        # STRUCTURE DES DIFFERENTS OBJETS DE LA GEOMETRIE
+SD_fiss = {}       # STRUCTURE DE POINTS DU CHEMIN DE FISSURATION
+
+# RECUPERATION DU CHEMIN DE FISSURATION :
+# Chemin absolu du fichier 'table_fiss.csv' contenant les points du chemin de fissuration
+os.chdir("/home/a09174/Documents/CIWAP_2/Dev_cas_tests/SSNP168_Endommagement_eprouvette_doublement_entaillee/Dev/Eprouvette_1_entaille_non_proportionnel/Scripts_geometrie_eprouvette")
+table_fiss = open("table_fiss.csv","rb")
+reader = csv.reader(table_fiss, delimiter=";")
+i, entete = 0, 5
+nb_ligne = sum(1 for _ in open('table_fiss.csv'))     # Recupere le nombre de ligne du fichier
+for test in reader :
+    if i == entete :
+        SD_fiss["P_0"]  = (0,	 75,	 0,	0)
+    if i > entete :
+        string = "P_" + str(nb_ligne-i)
+        SD_fiss[string] = (nb_ligne-i, float(test[1]), float(test[2]),  0)
+    i=i+1
+table_fiss.close()
+
+# CREATION DES POINTS DE REFERENCE :
+# Contour exterieur :
+SD_pts["A"] = geompy.MakeVertex(-L_hori/2,		  L_vert/2,	        0)                                      
+SD_pts["B"] = geompy.MakeVertex( L_hori/2,                L_vert/2,  	        0)
+SD_pts["C"] = geompy.MakeVertex( L_hori/2,                Ee/2 + Ey_entail, 	0)
+SD_pts["D"] = geompy.MakeVertex( L_hori/2 - Ep_entail,    Ee/2 + Ey_entail, 	0)
+SD_pts["E"] = geompy.MakeVertex( L_hori/2 - Ep_entail,   -Ee/2 + Ey_entail, 	0)
+SD_pts["F"] = geompy.MakeVertex( L_hori/2, 	         -Ee/2 + Ey_entail, 	0)
+SD_pts["G"] = geompy.MakeVertex( L_hori/2,      	 -L_vert/2,          	0)                                      
+SD_pts["H"] = geompy.MakeVertex(-L_hori/2,      	 -L_vert/2,          	0)
+# Parties superieure et inferieure de l'eprouvette :
+SD_pts["O"] = geompy.MakeVertex(-L_hori/2,	          L_vert/2-L_sup,	0)
+SD_pts["P"] = geompy.MakeVertex( L_hori/2, 	          L_vert/2-L_sup,	0)
+SD_pts["Q"] = geompy.MakeVertex( L_hori/2,	         -L_vert/2+L_sup, 	0)
+SD_pts["R"] = geompy.MakeVertex(-L_hori/2,	         -L_vert/2+L_sup,	0)
+# Chemin de fissuration :
+list_pts_fiss = sorted(SD_fiss.values())
+string = 'geompy.MakePolyline(['     # Chaine pour creer le chemin de fissuration (objet GEOM)
+for k in list_pts_fiss :
+    s = [i for i,j in SD_fiss.items() if j==k]
+    string = string + 'SD_fiss' + str(s) + ','
+string = string + '])'
+for i,j in SD_fiss.items() :
+    SD_fiss[i] = geompy.MakeVertex(j[1],	j[2],	j[3])
+
+# CREATION DU CONTOUR PRINCIPAL PAR DES POLYLINES :
+CONTOUR = geompy.MakePolyline([SD_pts["A"],SD_pts["B"],SD_pts["C"],SD_pts["D"],SD_pts["E"],SD_pts["F"],SD_pts["G"],SD_pts["H"],SD_pts["A"]])
+
+# CREATION DE LA FACE PRINCIPALE A PARTIR DU CONTOUR : 
+FACE = geompy.MakeFace(CONTOUR, 1)
+
+# CREATION DES DIFFERENTES PARTIES DE L'EPROUVETTE :
+SINGU_H = geompy.MakeFace(geompy.MakePolyline([SD_pts["A"],SD_pts["B"],SD_pts["P"],SD_pts["O"],SD_pts["A"]]), 1)
+SINGU_B = geompy.MakeFace(geompy.MakePolyline([SD_pts["R"],SD_pts["Q"],SD_pts["G"],SD_pts["H"],SD_pts["R"]]), 1)
+DEDANS = geompy.MakeFace(geompy.MakePolyline([SD_pts["O"],SD_pts["P"],SD_pts["C"],SD_pts["D"],SD_pts["E"],SD_pts["F"],SD_pts["Q"],SD_pts["R"],SD_pts["O"]]),1)
+
+# CREATION DU CHEMIN DE FISSURATION :
+TRAJET_FISS = eval(string)
+
+# CREATION DE L'OBJET PRINCIPAL :
+MainObject = geompy.MakePartition([FACE], [TRAJET_FISS,SINGU_H,SINGU_B], [], [], geompy.ShapeType["FACE"], 0, [], 0)
+
+# CREATION DES DIFFERENTS GROUPES :
+coords = geompy.PointCoordinates(SD_pts["A"])
+SD_obj["P_HAUT"]=geompy.GetInPlace(MainObject,geompy.MakeVertex(coords[0],coords[1],coords[2]))
+coords = geompy.PointCoordinates(SD_pts["G"])
+SD_obj["P_BAS"]=geompy.GetInPlace(MainObject,geompy.MakeVertex(coords[0],coords[1],coords[2]))
+# Face haut (AB) :
+SD_obj["FC_HAUT"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD_pts["A"],SD_pts["B"]) )
+# Face bas (HG) :
+SD_obj["FC_BAS"]=geompy.GetInPlace(MainObject,geompy.MakeLineTwoPnt(SD_pts["G"],SD_pts["H"]) )
+# Parties de l'eprouvette :
+SD_obj["SINGU_H"]=geompy.GetInPlace(MainObject,SINGU_H)
+SD_obj["SINGU_B"]=geompy.GetInPlace(MainObject,SINGU_B)
+SD_obj["DEDANS"]=geompy.GetInPlace(MainObject,DEDANS)
+# Trajet de fissuration :
+SD_obj["TRAJET_FISS"]=geompy.GetInPlace(MainObject,TRAJET_FISS)
+
+#CREATION DE L'OBJET PRINCIPALE
+geompy.addToStudy(MainObject, "EPROUVETTE")
+
+# AFFICHAGE DES OBJETS DANS L'HISTORIQUE :
+keys=SD_obj.keys()
+keys.sort()
+for name in keys:
+    geompy.addToStudyInFather(MainObject,SD_obj[name],name)
+
+# AFFICHAGE DES POINTS DANS L'HISTORIQUE :
+keys=SD_pts.keys()
+keys.sort()
+for name in keys:
+    geompy.addToStudy(SD_pts[name],name)
+
+# AFFICHAGE DES POINTS DANS L'HISTORIQUE :
+keys=SD_fiss.keys()
+keys.sort()
+for name in keys:
+    geompy.addToStudy(SD_fiss[name],name)
+
+###############################################
+#                MODULE SMESH                 #
+###############################################
+
+# IMPORTATION DES LIBRAIRIES :
+import SMESH, SALOMEDS
+import StdMeshers
+import NETGENPlugin
+from salome.smesh import smeshBuilder
+smesh = smeshBuilder.New(theStudy)
+
+# NOM DE L'OBJET
+MESH = smesh.Mesh(MainObject,"EPROUVETTE")
+
+# NETGEN_1D2D
+NETGEN_2D = MESH.Triangle(algo=smeshBuilder.NETGEN)
+NETGEN_Parameters = NETGEN_2D.Parameters()
+NETGEN_Parameters.SetMaxSize("max_size")
+NETGEN_Parameters.SetSecondOrder( 0 )
+NETGEN_Parameters.SetOptimize( 1 )
+NETGEN_Parameters.SetFineness( 2 )
+NETGEN_Parameters.SetMinSize("min_size")
+NETGEN_Parameters.SetQuadAllowed( 0 )
+NETGEN_Parameters.SetLocalSizeOnShape(SD_obj["TRAJET_FISS"], "max_local_size")
+
+# CREATION DES GROUPE DE NOEUDS :
+mesh_group=[]
+items=SD_obj.items()
+items.sort()
+for name, ref in items:
+    mesh_group.append(MESH.Group(ref,name))
+
+# CALCUL DU MAILLAGE :
+MESH.Compute()
+
+# CHOIX DES ELEMENTS :
+MESH.ConvertToQuadratic( 1 )
+
+# EXPORT DU MAILLAGE AU FORMAT "MED" :
+smesh.SetName(MESH.GetMesh(), 'EPROUVETTE')
+MESH.ExportMED("Maillage_raffine.mmed")
+
+# SHOW MESH :
+def GetStringID(object):
+        """get ID for given object in the string form, for example 0:1:3:12 """
+        """ If considered object is Mesh instance mmm, then one should pass mmm.GetMesh() as input object\n
+        If considered object is Algorithm instance aaa, then one should pass aaa.GetAlgorithm() as input object\n """
+        ior  = salome.orb.object_to_string(object) # get unique ior ID of the object
+        sobj = salome.myStudy.FindObjectIOR(ior)   # object pointer of SALOMEDS.Study type (Kernel module)
+        ID=sobj.GetID()
+        return ID
+
+# FIN :
+main_id=GetStringID(MESH.GetMesh())
+gs = salome.ImportComponentGUI("SMESH")
+gs.CreateAndDisplayActor(main_id)

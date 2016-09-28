@@ -6,7 +6,7 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm ssnp168d.comm D 1
-F mmed ssnp168c.mmed D 20
-F libr ssnp168c.23 DC 23
-F libr ssnp168c.24 DC 24
-F libr ssnp168c.29 DC 29
+F mmed ssnp168a.mmed D 20
+F libr ssnp168c.23 D 23
+F libr ssnp168c.24 D 24
+F libr ssnp168a.29 D 29
