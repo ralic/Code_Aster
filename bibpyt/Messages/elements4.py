@@ -203,7 +203,10 @@ On ne trouve pas le coefficient de Poisson
 
     80 : _(u"""
   L'élément de plaque QUAD4 défini sur la maille : %(k1)s
-  n'est pas plan et peut conduire a des résultats faux
+  n'est pas plan et peut conduire a des résultats faux.
+
+  Conseil : Si vous utilisez de l'excentrement, essayez de mailler
+            en utilisant des triangles.
 """),
 
     81 : _(u"""
