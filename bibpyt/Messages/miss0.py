@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -129,5 +129,59 @@ doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
 
     25 : _(u"""Calcul de la fréquence numéro %(i1)d sur le processeur #%(i2)d.
 """),
+
+    26 : _(u"""Le groupe %(k1)s n'appartient pas au maillage.
+"""),
+
+    27 : _(u"""NOMBRE_RECEPTEUR doit être pair.
+"""),
+
+    28 : _(u"""Au moins un des points de contrôle dépasse la cote Z0 = %(r1).4f .
+"""),
+
+    29 : _(u"""On est en cas superficiel alors que SURF='NON'.
+"""),
+
+    30 : _(u"""Le nombre de couche de sol est différent du nombre de matériaux.
+"""),
+
+    32 : _(u"""Au moins un des points de contrôle est sous le substratum.
+"""),
+
+    33 : _(u"""Au moins un des points de contrôle est sur la limite entre deux couches de sols.
+               On ne sait pas gérer ce cas en automatique, il faut passer en mode manuel.
+"""),
+
+    34 : _(u"""Incohérence entre GROUP_MA_INTERF et les cotes verticales.
+"""),
+
+    35 : _(u"""Si le maillage de l'interface est quadratique, 
+               alors on ne peut assurer la cohérence avec le GROUP_NO spécifié.
+               Conseil : l'utilisation de GROUP_MA au lieu de GROUP_NO permettrait de valider 
+               la cohérence pour les maillages quadratiques.
+"""),
+
+    36 : _(u"""Au moins un des points de contrôle est au dessus de l'interface.
+               On ne sait pas gérer ce cas en automatique, il faut passer en mode manuel.
+"""),
+
+    37 : _(u"""L'enfoncement de l'interface dépasse la position du substratum.
+"""),
+
+    38 : _(u"""Erreur de précision dans la construction des sous-couches.
+"""),
+
+    39 : _(u"""L'interface va plus bas que le substratum.
+"""),
+
+    40 : _(u"""On a détecté qu'une couche de sol coïncide avec la base de l'interface.
+               Pour corriger cela, on décale la couche %(r1).4f de %(r2).4f .
+"""),
+
+    41 : _(u"""On a détecté qu'une couche de sol coïncide avec la base de l'interface.
+               Cela peut poser problème avec MISS3D 
+               et l'option DECALAGE_AUTO peut corriger cela automatiquement.
+"""),
+
 
 }
