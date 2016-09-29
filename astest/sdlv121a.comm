@@ -41,6 +41,12 @@ MAIL=DEFI_GROUP( reuse=MAIL,   MAILLAGE=MAIL,CREA_GROUP_NO=(
                      )
 IMPR_RESU(RESU=_F(MAILLAGE=MAIL));
 
+MAIL = MODI_MAILLAGE(reuse=MAIL,
+                       MAILLAGE=MAIL,
+                       ORIE_PEAU_3D=_F(GROUP_MA=('ABSO', ),
+                                       GROUP_MA_VOLU=('VOLU', ),),
+                       INFO=1,)
+
 MAT1=DEFI_MATERIAU( ELAS=_F(  E = 4.44E+8, RHO = 1900.,  NU = 0.48)
                     )
 

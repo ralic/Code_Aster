@@ -56,7 +56,7 @@ subroutine te0499(option, nomte)
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos, ndim2
-    real(kind=8) :: coedir, typer, valfon, coedi2
+    real(kind=8) :: coedir, typer, valfon
     character(len=8) :: nompar(2)
     real(kind=8) :: valpar(2)
 !
@@ -253,7 +253,8 @@ subroutine te0499(option, nomte)
         else
             coedir = -1.d0
         endif
-!        write(6,*) 'scal nux nuy coedir ',scal,nux,nuy,coedir
+!        on force coedir à -1 apres orientation
+        coedir = -1.d0
 !
 !        --- CALCUL DE V.N ---
 !
@@ -316,11 +317,7 @@ subroutine te0499(option, nomte)
 !
         taondy = sigma(2,1)*nux
         taondy = taondy + sigma(2,2)*nuy
-!        write(6,*) 'taux tauy taondx taondy ',taux, tauy, taondx, taondy
 !
-        coedi2 = coedir
-!        coedir = 1.d0
-!        coedir = 0.d0
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !

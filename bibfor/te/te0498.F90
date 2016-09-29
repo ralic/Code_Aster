@@ -334,6 +334,8 @@ subroutine te0498(option, nomte)
         else
             coedir = -1.d0
         endif
+!        on force coedir à -1 apres orientation
+        coedir = -1.d0
 !
 !        --- CALCUL DE V.N ---
 !
