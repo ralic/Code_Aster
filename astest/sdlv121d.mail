@@ -1,0 +1,232 @@
+ TITRE
+CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
+ FINSF
+ %
+ COOR_2D
+ N1        0.00000000000000E+00  0.00000000000000E+00
+ N2        5.00000000000000E+00  0.00000000000000E+00
+ N3        0.00000000000000E+00 -5.00000000000001E+00
+ N4        5.00000000000000E+00 -5.00000000000001E+00
+ N5        0.00000000000000E+00 -1.00000000000000E+01
+ N6        5.00000000000000E+00 -1.00000000000000E+01
+ N7        0.00000000000000E+00 -1.50000000000000E+01
+ N8        5.00000000000000E+00 -1.50000000000000E+01
+ N9        0.00000000000000E+00 -2.00000000000000E+01
+ N10       5.00000000000000E+00 -2.00000000000000E+01
+ N11       0.00000000000000E+00 -2.50000000000000E+01
+ N12       5.00000000000000E+00 -2.50000000000000E+01
+ N13       0.00000000000000E+00 -3.00000000000000E+01
+ N14       5.00000000000000E+00 -3.00000000000000E+01
+ N15       0.00000000000000E+00 -3.50000000000000E+01
+ N16       5.00000000000000E+00 -3.50000000000000E+01
+ N17       0.00000000000000E+00 -4.00000000000000E+01
+ N18       5.00000000000000E+00 -4.00000000000000E+01
+ N19       0.00000000000000E+00 -4.50000000000000E+01
+ N20       5.00000000000000E+00 -4.50000000000000E+01
+ N21       5.00000000000000E+00 -5.00000000000000E+01
+ N22       0.00000000000000E+00 -5.00000000000000E+01
+ FINSF
+ %
+ SEG2    
+ M11      N3       N4      
+ M12      N5       N6      
+ M13      N7       N8      
+ M14      N9       N10     
+ M15      N11      N12     
+ M16      N13      N14     
+ M17      N15      N16     
+ M18      N17      N18     
+ M19      N19      N20     
+ M20      N22      N21     
+ M21      N1       N2      
+ FINSF
+ %
+ QUAD4   
+ M1       N22      N21      N20      N19     
+ M2       N19      N20      N18      N17     
+ M3       N17      N18      N16      N15     
+ M4       N15      N16      N14      N13     
+ M5       N13      N14      N12      N11     
+ M6       N11      N12      N10      N9      
+ M7       N9       N10      N8       N7      
+ M8       N7       N8       N6       N5      
+ M9       N5       N6       N4       N3      
+ M10      N3       N4       N2       N1      
+ FINSF
+ %
+ SEG2    
+ M22      N1       N3      
+ M23      N3       N5      
+ M24      N5       N7      
+ M25      N7       N9     
+ M26      N9       N11     
+ M27      N11      N13     
+ M28      N13      N15     
+ M29      N15      N17     
+ M30      N17      N19     
+ M31      N19      N22     
+ M32      N2       N4  
+ M33      N4       N6      
+ M34      N6       N8      
+ M35      N8       N10     
+ M36      N10      N12     
+ M37      N12      N14     
+ M38      N14      N16     
+ M39      N16      N18     
+ M40      N18      N20     
+ M41      N20      N21         
+ FINSF
+ %
+ GROUP_NO
+ P0                      
+ N1      
+ FINSF
+ %
+ GROUP_NO
+ P1                      
+ N2      
+ FINSF
+ %
+ GROUP_NO
+ P2                      
+ N22     
+ FINSF
+ %
+ GROUP_NO
+ P3                      
+ N21     
+ FINSF
+ %
+ GROUP_NO
+ FACE1                   
+ N19      N20     
+ FINSF
+ %
+ GROUP_NO
+ FACE2                   
+ N17      N18     
+ FINSF
+ %
+ GROUP_NO
+ FACE3                   
+ N15      N16     
+ FINSF
+ %
+ GROUP_NO
+ FACE4                   
+ N13      N14     
+ FINSF
+ %
+ GROUP_NO
+ FACE5                   
+ N11      N12     
+ FINSF
+ %
+ GROUP_NO
+ FACE6                   
+ N9       N10     
+ FINSF
+ %
+ GROUP_NO
+ FACE7                   
+ N7       N8      
+ FINSF
+ %
+ GROUP_NO
+ FACE8                   
+ N5       N6      
+ FINSF
+ %
+ GROUP_NO
+ FACE9                   
+ N3       N4      
+ FINSF
+ %
+ GROUP_NO
+ ABSO                    
+ N21      N22     
+ FINSF
+ %
+ GROUP_NO
+ LIBR                    
+ N1       N2      
+ FINSF
+ %
+ GROUP_MA
+ GLOBAL                  
+ M20      M19      M18      M17      M16      M15      M14     
+ M13      M12      M11      M21      M1       M2       M3      
+ M4       M5       M6       M7       M8       M9       M10     
+ FINSF
+ %
+ GROUP_MA
+ ABSO                    
+ M20     
+ FINSF
+ %
+ GROUP_MA
+ FACE1                   
+ M19     
+ FINSF
+ %
+ GROUP_MA
+ FACE2                   
+ M18     
+ FINSF
+ %
+ GROUP_MA
+ FACE3                   
+ M17     
+ FINSF
+ %
+ GROUP_MA
+ FACE4                   
+ M16     
+ FINSF
+ %
+ GROUP_MA
+ FACE5                   
+ M15     
+ FINSF
+ %
+ GROUP_MA
+ FACE6                   
+ M14     
+ FINSF
+ %
+ GROUP_MA
+ FACE7                   
+ M13     
+ FINSF
+ %
+ GROUP_MA
+ FACE8                   
+ M12     
+ FINSF
+ %
+ GROUP_MA
+ FACE9                   
+ M11     
+ FINSF
+ %
+ GROUP_MA
+ LIBR                    
+ M21     
+ FINSF
+ %
+ GROUP_MA
+ SURFACE                 
+ M1       M2       M3       M4       M5       M6       M7      
+ M8       M9       M10     
+ FINSF
+ %
+ GROUP_MA
+ CONTOUR                 
+ M20       M22       M23       M24       M25       M26       M27      
+ M28       M29       M30       M31       M32       M33       M34
+ M35       M36       M37       M38       M39       M40       M41
+ FINSF
+ %
+ FIN
+ 
+

@@ -15,7 +15,7 @@ subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
 #include "asterfort/nocart.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -169,7 +169,7 @@ subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
         name_cmp(2,1) = 'PRES'
     else if (load_type.eq.'ONDE_PLANE') then
         nb_cmp(1) = 2
-        nb_cmp(2) = 5
+        nb_cmp(2) = 6
         name_cmp(1,1) = 'Z1'
         name_cmp(1,2) = 'Z2'
         name_cmp(2,1) = 'X1'
@@ -177,6 +177,7 @@ subroutine char_crea_cart(phenom  , load_type, load, mesh, vale_type,&
         name_cmp(2,3) = 'X3'
         name_cmp(2,4) = 'X4'
         name_cmp(2,5) = 'X5'
+        name_cmp(2,6) = 'X6'
     else if (load_type.eq.'ROTATION') then
         nb_cmp(1) = 7
         name_cmp(1,1) = 'OME'

@@ -3,6 +3,7 @@ subroutine te0499(option, nomte)
     implicit none
 !
 #include "jeveux.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
@@ -51,12 +52,12 @@ subroutine te0499(option, nomte)
     real(kind=8) :: xgg(4), ygg(4), vondn(2), vondt(2), uondn(2), uondt(2)
     real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele
     real(kind=8) :: trace, norm, jac
-    real(kind=8) :: param, h, instd, ris, rip, l0, usl0
+    real(kind=8) :: param0, param, param2, h, h2, instd, instd2, ris, rip, l0, usl0
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos, ndim2
-    real(kind=8) :: coedir, typer, valfon
+    real(kind=8) :: coedir, typer, valfon, valfon2
     character(len=8) :: nompar(2)
     real(kind=8) :: valpar(2)
 !
@@ -135,6 +136,9 @@ subroutine te0499(option, nomte)
     diry =zr(iondc+1)
     typer=zr(iondc+3)
     h = zr(iondc+4)
+    h2 = zr(iondc+5)
+!ER h2 équivalent de h pour définir la position du toit du rocher par rapport a l'onde
+
 !
     if (typer .eq. 0.d0) type = 'P'
     if (typer .eq. 1.d0) type = 'S'
@@ -180,35 +184,48 @@ subroutine te0499(option, nomte)
         k = (kp-1)*nno
 !
 !        CALCUL DU CHARGEMONT PAR ONDE PLANE
-        param=dirx*xgg(kp)+diry*ygg(kp)
+        param0=dirx*xgg(kp)+diry*ygg(kp)
 !        write(6,*) 'param av=',param
-        param = param -h
-!         write(6,*) 'param ap=',param
+        param = param0 -h
+!        write(6,*) 'param 1=',param
+!        write(6,*) 'param 2=',param2
         instd = zr(jinst) - param/cele
         if (instd .lt. 0.d0) then
           valfon = 0.d0
         else
           call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
         endif
+        if (h2 .ne. r8vide()) then
+          param2= 2.0d0*(h2-h)-param
+          instd2 = zr(jinst) - param2/cele
+          if (instd2 .lt. 0.d0) then
+            valfon2 = 0.d0
+          else
+            call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+          endif
+        else
+           valfon2 = 0.d0
+        endif
 !
         valfon = -valfon/cele
+        valfon2 = -valfon2/cele
 !        VALFON = VALFON/CELE
 !
 !        CALCUL DES CONTRAINTES ASSOCIEES A L'ONDE PLANE
 !        CALCUL DU GRADIENT DU DEPLACEMENT
         if (type .eq. 'P') then
 !
-            grad(1,1) = dirx*valfon*dirx
-            grad(1,2) = diry*valfon*dirx
-            grad(2,1) = dirx*valfon*diry
-            grad(2,2) = diry*valfon*diry
+            grad(1,1) = dirx*(valfon-valfon2)*dirx
+            grad(1,2) = diry*(valfon-valfon2)*dirx
+            grad(2,1) = dirx*(valfon-valfon2)*diry
+            grad(2,2) = diry*(valfon-valfon2)*diry
 !
         else if (type.eq.'S') then
 !
-            grad(1,1) = dirx*valfon*norx
-            grad(1,2) = diry*valfon*norx
-            grad(2,1) = dirx*valfon*nory
-            grad(2,2) = diry*valfon*nory
+            grad(1,1) = dirx*(valfon-valfon2)*norx
+            grad(1,2) = diry*(valfon-valfon2)*norx
+            grad(2,1) = dirx*(valfon-valfon2)*nory
+            grad(2,2) = diry*(valfon-valfon2)*nory
 !
         endif
 !
@@ -247,14 +264,12 @@ subroutine te0499(option, nomte)
 !        --- TEST DU SENS DE LA NORMALE PAR RAPPORT A LA DIRECTION
 !            DE L'ONDE
 !
-        scal = nux*dirx + nuy*diry
-        if (scal .gt. 0.d0) then
-            coedir = 1.d0
-        else
-            coedir = -1.d0
-        endif
-!        on force coedir à -1 apres orientation
+!ER        scal = nux*dirx + nuy*diry
+!ER        if (scal .gt. 0.d0) then
+!ER            coedir = 1.d0
+!ER        else
         coedir = -1.d0
+!ER        endif
 !
 !        --- CALCUL DE V.N ---
 !
@@ -262,11 +277,11 @@ subroutine te0499(option, nomte)
         vondt(2) = 0.d0
 !
         if (type .eq. 'P') then
-            vondt(1) = -cele*valfon*dirx
-            vondt(2) = -cele*valfon*diry
+            vondt(1) = -cele*(valfon+valfon2)*dirx
+            vondt(2) = -cele*(valfon+valfon2)*diry
         else if (type.eq.'S') then
-            vondt(1) = -cele*valfon*norx
-            vondt(2) = -cele*valfon*nory
+            vondt(1) = -cele*(valfon+valfon2)*norx
+            vondt(2) = -cele*(valfon+valfon2)*nory
         endif
 !
         scal = nux*vondt(1) + nuy*vondt(2)
@@ -293,12 +308,21 @@ subroutine te0499(option, nomte)
         else
           call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
         endif
+        if (h2 .ne. r8vide()) then
+          if (instd2 .lt. 0.d0) then
+            valfon2 = 0.d0
+          else
+            call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+          endif
+        else
+          valfon2 = 0.d0
+        endif
         if (type .eq. 'P') then
-            uondt(1) = valfon*dirx
-            uondt(2) = valfon*diry
+            uondt(1) = (valfon+valfon2)*dirx
+            uondt(2) = (valfon+valfon2)*diry
         else if (type.eq.'S') then
-            uondt(1) = valfon*norx
-            uondt(2) = valfon*nory
+            uondt(1) = (valfon+valfon2)*norx
+            uondt(2) = (valfon+valfon2)*nory
         endif
         scal = nux*uondt(1) + nuy*uondt(2)
         uondn(1) = nux*scal
@@ -317,7 +341,7 @@ subroutine te0499(option, nomte)
 !
         taondy = sigma(2,1)*nux
         taondy = taondy + sigma(2,2)*nuy
-!
+
 !
 !        --- CALCUL DU VECTEUR ELEMENTAIRE
 !

@@ -4,6 +4,7 @@ subroutine cbondp(load, mesh, ndim, vale_type)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
+#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/char_crea_cart.h"
 #include "asterfort/char_read_val.h"
@@ -18,7 +19,7 @@ subroutine cbondp(load, mesh, ndim, vale_type)
 #include "asterfort/vetyma.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,7 +110,7 @@ subroutine cbondp(load, mesh, ndim, vale_type)
             ASSERT(val_nb.eq.1)
             call char_read_val(keywordfact, iocc, 'DEPL_IMPO', 'FONC', val_nb,&
                                r8dummy, signde, c16dummy, k16dummy)
-           if (val_nb .ne. 1) then
+            if (val_nb .ne. 1) then
                signde = '&FOZERO'
             endif
 !
@@ -172,12 +173,20 @@ subroutine cbondp(load, mesh, ndim, vale_type)
 ! --------- Affectation of values in <CARTE> - Wave type and direction
 !
             call jeveuo(carte(2)//'.VALV', 'E', jvalv)
-            nb_cmp = 5
+            nb_cmp = 6
             zr(jvalv-1+1) = wave_dire(1)
             zr(jvalv-1+2) = wave_dire(2)
             zr(jvalv-1+3) = wave_dire(3)
             zr(jvalv-1+4) = wave_type_r
             zr(jvalv-1+5) = dist
+            zr(jvalv-1+6) = r8vide()
+            call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc,&
+                        nbval=0, nbret=ndir)
+            if (ndir .ne. 0) then
+               call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc,&
+                           scal=dist)
+               zr(jvalv-1+6) = dist
+            endif
             call nocart(carte(2), 3, nb_cmp, mode='NUM', nma=nb_elem,&
                         limanu=zi(j_elem))
         endif

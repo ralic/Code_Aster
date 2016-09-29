@@ -490,10 +490,10 @@ sro_axd=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
 #
 # Valeurs de reference pour test :
 inst1 = 0.27
-calt1 = 1.269536639714
+calt1 = 1.273984709738
 reft1 = 1.27
 tolt1 = 0.01
-calsro = 3.439980595327
+calsro = 3.446278205765
 refsro = 3.44
 tolsro = 0.01
 
