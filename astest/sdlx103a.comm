@@ -27,7 +27,7 @@ MAILLAGE=ASSE_MAILLAGE(MAILLAGE_1=MAIL1,
 
 MAILLAGE=DEFI_GROUP(reuse =MAILLAGE,
                     MAILLAGE=MAILLAGE,
-                    CREA_GROUP_NO=_F(GROUP_MA=('SBAS','SBAS1','SBAS2')),
+                    CREA_GROUP_NO=_F(GROUP_MA=('SBAS','SBAS1','SBAS2','SLATE1')),
                     )
 
 MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
@@ -219,6 +219,41 @@ VEC2_ELE=CALC_VECT_ELEM(OPTION='CHAR_MECA',
 VECAS2=ASSE_VECTEUR(VECT_ELEM=VEC2_ELE,
                     NUME_DDL=NUMEDDL,)
 
+# Table de sol en manuel pour reference :
+# TBSOL = DEFI_SOL_MISS(
+#    TITRE="SOL DU TEST NUPEC",
+#    MATERIAU=(
+#       _F(E=1.1788e8,  NU=0.386, RHO=1.77e3, AMOR_HYST=0.10),
+#       _F(E=1.9027e8,  NU=0.279, RHO=1.77e3, AMOR_HYST=0.10),
+#       _F(E=2.0700e8,  NU=0.265, RHO=1.77e3, AMOR_HYST=0.10),
+#       _F(E=2.2419e8,  NU=0.251, RHO=1.77e3, AMOR_HYST=0.10),
+#       _F(E=2.4867e8,  NU=0.272, RHO=1.77e3, AMOR_HYST=0.10),
+#       _F(E=9.7776e7,  NU=0.120, RHO=1.94e3, AMOR_HYST=0.10),
+#       _F(E=6.1493e8,  NU=0.371, RHO=1.94e3, AMOR_HYST=0.10),
+#       _F(E=1.0151e9,  NU=0.415, RHO=1.94e3, AMOR_HYST=0.04),
+#       _F(E=1.019e10,  NU=0.386, RHO=2.21e3, AMOR_HYST=0.04),
+#       _F(E=1.501e10,  NU=0.343, RHO=2.21e3, AMOR_HYST=0.04),
+#    ),
+#    COUCHE=(
+#       _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI",),
+#       _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI",),
+#       _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI",),
+#       _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI",),
+#       _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI",),
+#       _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=0.5, NUME_MATE=6, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=2.5, NUME_MATE=7,),
+#       _F(EPAIS=3.0, NUME_MATE=8,),
+#       _F(EPAIS=14., NUME_MATE=9,),
+#       _F(SUBSTRATUM="OUI", NUME_MATE=10,),
+#    ),
+#    INFO=2,
+# )
+
 TBSOL = DEFI_SOL_MISS(
    TITRE="SOL DU TEST NUPEC",
    MATERIAU=(
@@ -233,24 +268,47 @@ TBSOL = DEFI_SOL_MISS(
       _F(E=1.019e10,  NU=0.386, RHO=2.21e3, AMOR_HYST=0.04),
       _F(E=1.501e10,  NU=0.343, RHO=2.21e3, AMOR_HYST=0.04),
    ),
-   COUCHE=(
-      _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI",),
-      _F(EPAIS=0.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI",),
-      _F(EPAIS=0.5, NUME_MATE=2, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI",),
-      _F(EPAIS=0.5, NUME_MATE=3, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI",),
-      _F(EPAIS=0.5, NUME_MATE=4, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI",),
-      _F(EPAIS=0.5, NUME_MATE=5, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=0.5, NUME_MATE=6, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=2.5, NUME_MATE=7,),
-      _F(EPAIS=3.0, NUME_MATE=8,),
-      _F(EPAIS=14., NUME_MATE=9,),
-      _F(SUBSTRATUM="OUI", NUME_MATE=10,),
+   COUCHE_AUTO=_F(
+               SURF='NON',HOMOGENE='NON',
+               NUME_MATE=(1,2,3,4,5,6,7,8,9,),
+               NUME_MATE_SUBSTRATUM = 10,
+               EPAIS_PHYS=(1.,1.,1.,1.,1.,0.5,2.5,3.,14.,),
+               GROUP_NO='SLATE1',
+               NOMBRE_RECEPTEUR=2,
+               GROUP_MA_INTERF='SBAS',
+               MAILLAGE=MAILLAGE,
+               # On met le decalage a non pour retrouver la definition manuelle
+               DECALAGE_AUTO='NON',
    ),
-   INFO=2,
+   INFO=2,   
+)
+
+# On compare avec GROUP_MA au lieu de GROUP_NO :
+TBSOL2 = DEFI_SOL_MISS(
+   TITRE="SOL DU TEST NUPEC",
+   MATERIAU=(
+      _F(E=1.1788e8,  NU=0.386, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=1.9027e8,  NU=0.279, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.0700e8,  NU=0.265, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.2419e8,  NU=0.251, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=2.4867e8,  NU=0.272, RHO=1.77e3, AMOR_HYST=0.10),
+      _F(E=9.7776e7,  NU=0.120, RHO=1.94e3, AMOR_HYST=0.10),
+      _F(E=6.1493e8,  NU=0.371, RHO=1.94e3, AMOR_HYST=0.10),
+      _F(E=1.0151e9,  NU=0.415, RHO=1.94e3, AMOR_HYST=0.04),
+      _F(E=1.019e10,  NU=0.386, RHO=2.21e3, AMOR_HYST=0.04),
+      _F(E=1.501e10,  NU=0.343, RHO=2.21e3, AMOR_HYST=0.04),
+   ),
+   COUCHE_AUTO=_F(
+               SURF='NON',HOMOGENE='NON',
+               NUME_MATE=(1,2,3,4,5,6,7,8,9,),
+               NUME_MATE_SUBSTRATUM = 10,
+               EPAIS_PHYS=(1.,1.,1.,1.,1.,0.5,2.5,3.,14.,),
+               GROUP_MA='SLATE1',
+               NOMBRE_RECEPTEUR=2,
+               GROUP_MA_INTERF='SBAS',
+               MAILLAGE=MAILLAGE,
+   ),
+   INFO=2,   
 )
 
 # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL

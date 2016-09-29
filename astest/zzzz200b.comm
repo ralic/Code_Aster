@@ -430,7 +430,8 @@ FO1=DEFI_FONCTION(   NOM_PARA='FREQ',
           VALE=( 0., 1., 100., 1., ) );
 
 
-TABSOL=DEFI_SOL_MISS(
+#Pour reference :
+TABSOL0=DEFI_SOL_MISS(
     TITRE="SOL STRATIFIE",
     MATERIAU=(
         _F(E=1.01E10,  NU=0.38, RHO=2400, AMOR_HYST=0.10),
@@ -444,6 +445,21 @@ TABSOL=DEFI_SOL_MISS(
         _F(EPAIS=19.5, NUME_MATE=3,),
         _F(SUBSTRATUM="OUI", NUME_MATE=4,),
     ),
+    INFO=2,
+)
+
+TABSOL=DEFI_SOL_MISS(
+    TITRE="SOL STRATIFIE",
+    MATERIAU=(
+        _F(E=1.01E10,  NU=0.38, RHO=2400, AMOR_HYST=0.10),
+        _F(E=2.06E10,  NU=0.36, RHO=2500, AMOR_HYST=0.10),
+        _F(E=1.66E10,  NU=0.39, RHO=2400, AMOR_HYST=0.10),
+        _F(E=2.60E10,  NU=0.31, RHO=2500, AMOR_HYST=0.10),
+    ),
+    COUCHE_AUTO=_F(EPAIS_PHYS=(10.5,10.5,19.5), 
+                   SURF='OUI',HOMOGENE='NON',
+                   NUME_MATE=(1,2,3),
+                   NUME_MATE_SUBSTRATUM=4),
     INFO=2,
 )
 

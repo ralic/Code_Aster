@@ -212,16 +212,24 @@ fmin=30.
 NF = 3
 fmax=fmin+NF*df
 
+# Pour reference :
+# tabsol0=DEFI_SOL_MISS(
+#     TITRE="SOL HOMOGENE",
+#     MATERIAU=(
+#         _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
+#         _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
+#     ),
+#     COUCHE=(
+#         _F(EPAIS=40, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI",),
+#         _F(SUBSTRATUM="OUI", NUME_MATE=2,),
+#     ),
+#     INFO=2,
+# )
+
 tabsol=DEFI_SOL_MISS(
     TITRE="SOL HOMOGENE",
-    MATERIAU=(
-        _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
-        _F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
-    ),
-    COUCHE=(
-        _F(EPAIS=40, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI",),
-        _F(SUBSTRATUM="OUI", NUME_MATE=2,),
-    ),
+    MATERIAU=_F(E=1.8E09,  NU=0.33, RHO=1875, AMOR_HYST=0.10),
+    COUCHE_AUTO=_F(EPAIS_PHYS=40., HOMOGENE='OUI', SURF='OUI',),
     INFO=2,
 )
 

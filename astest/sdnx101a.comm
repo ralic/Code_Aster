@@ -225,7 +225,8 @@ MAEL=MACR_ELEM_DYNA(  BASE_MODALE=BAMO);
 
 # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
 #---------------------------------------
-TABSOL =  DEFI_SOL_MISS(
+#Pour reference :
+TABSOL0 =  DEFI_SOL_MISS(
     TITRE="SOL HOMOGENE",
     MATERIAU=(
         _F(E=28.E+08,  NU=0.4, RHO=2.1e3, AMOR_HYST=0.10),
@@ -234,6 +235,17 @@ TABSOL =  DEFI_SOL_MISS(
     COUCHE=(
         _F(EPAIS=25., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
         _F(SUBSTRATUM="OUI", NUME_MATE=2,),
+    ),
+    INFO=2,
+)
+
+TABSOL =  DEFI_SOL_MISS(
+    TITRE="SOL HOMOGENE",
+    MATERIAU=(
+        _F(E=28.E+08,  NU=0.4, RHO=2.1e3, AMOR_HYST=0.10),
+    ),
+    COUCHE_AUTO=_F(
+               SURF='OUI',HOMOGENE='OUI',EPAIS_PHYS=25.,
     ),
     INFO=2,
 )

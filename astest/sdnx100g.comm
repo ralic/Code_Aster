@@ -146,8 +146,9 @@ PRE_SEISME_NONL(
 IMPR_CO(CHAINE='MAEL0   .LINO', UNITE = 6);
 
 
-TABSOL = DEFI_SOL_MISS(
-   TITRE="SOL DE ST ALBAN",
+#Pour reference :
+TABSOL0 = DEFI_SOL_MISS(
+   TITRE="SOL STRATIFIE",
    MATERIAU=(
       _F(E=2.67e8,   NU=0.49, RHO=2650., AMOR_HYST=0.05),
       _F(E=3.35e8,   NU=0.49, RHO=2650., AMOR_HYST=0.05),
@@ -170,6 +171,27 @@ TABSOL = DEFI_SOL_MISS(
    ),
    INFO=2,
 );
+
+TABSOL = DEFI_SOL_MISS(
+   TITRE="SOL STRATIFIE",
+   MATERIAU=(
+      _F(E=2.67e8,   NU=0.49, RHO=2650., AMOR_HYST=0.05),
+      _F(E=3.35e8,   NU=0.49, RHO=2650., AMOR_HYST=0.05),
+      _F(E=9.21e8,   NU=0.47, RHO=2710., AMOR_HYST=0.05),
+      _F(E=1.39e9,   NU=0.47, RHO=2710., AMOR_HYST=0.05),
+      _F(E=1.96e9,   NU=0.47, RHO=2710., AMOR_HYST=0.05),
+      _F(E=3.02e9,   NU=0.45, RHO=2710., AMOR_HYST=0.05),
+      _F(E=5.95e9,   NU=0.45, RHO=2710., AMOR_HYST=0.05),
+      _F(E=4.23e10,  NU=0.25, RHO=2710., AMOR_HYST=0.02),
+   ),
+   COUCHE_AUTO=_F(
+               SURF='OUI',HOMOGENE='NON',
+               NUME_MATE=(1,2,3,4,5,6,7,),
+               NUME_MATE_SUBSTRATUM = 8,
+               EPAIS_PHYS=(7.6,7.6,33.,34.,34.,5.5,5.5,),
+   ),
+   INFO=2,
+)
 
 
 CALC_MISS(

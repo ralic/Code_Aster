@@ -135,7 +135,8 @@ mael=MACR_ELEM_DYNA(BASE_MODALE=bamo,
                     MATR_RIGI=rigidite,
                     MATR_MASS=masse,)
 
-tabsol=DEFI_SOL_MISS(MATERIAU=(_F(E=7.00E+07,
+#Pour reference :
+tabsol0=DEFI_SOL_MISS(MATERIAU=(_F(E=7.00E+07,
                                   NU=0.4,
                                   RHO=2400,
                                   AMOR_HYST=0.10,),
@@ -158,6 +159,20 @@ tabsol=DEFI_SOL_MISS(MATERIAU=(_F(E=7.00E+07,
                              _F(SUBSTRATUM='OUI',
                                 NUME_MATE=1,),),
                      TITRE='SOL MOU',)
+
+tabsol=DEFI_SOL_MISS(TITRE="SOL MOU",
+                     MATERIAU=_F(E=7.00E+07,
+                                 NU=0.4,
+                                 RHO=2400,
+                                 AMOR_HYST=0.10,),
+                     COUCHE_AUTO=_F(EPAIS_PHYS=35., 
+                                    SURF='OUI',HOMOGENE='NON',
+                                    GROUP_MA_CONTROL='PC',
+                                    MAILLAGE=MAILLAGE,
+                                    NUME_MATE=1,
+                                    NUME_MATE_SUBSTRATUM=1),
+    INFO=2,
+)
 
 tfin = 4.0
 df = 1.0 / tfin

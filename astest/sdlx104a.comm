@@ -232,7 +232,8 @@ fmaxc = 8. ;
 fmaxc = 6. ;
 
 
-tabsol = DEFI_SOL_MISS(
+# Pour test visuel :
+tabsol0 = DEFI_SOL_MISS(
     TITRE="SOL STRATIFIE",
     MATERIAU=(
         _F(E=4.480000E+09,  NU=0.40, RHO=2.15e3, AMOR_HYST=0.08),
@@ -246,6 +247,18 @@ tabsol = DEFI_SOL_MISS(
         _F(EPAIS=38.5, NUME_MATE=3,),
         _F(SUBSTRATUM="OUI", NUME_MATE=4,),
     ),
+    INFO=2,
+);
+
+tabsol = DEFI_SOL_MISS(
+    TITRE="SOL STRATIFIE",
+    MATERIAU=(
+        _F(E=4.480000E+09,  NU=0.40, RHO=2.15e3, AMOR_HYST=0.08),
+        _F(E=1.421000E+09,  NU=0.45, RHO=2.07e3, AMOR_HYST=0.114),
+        _F(E=1.305000E+09,  NU=0.45, RHO=2.15e3, AMOR_HYST=0.16),
+        _F(E=6.000000E+09,  NU=0.45, RHO=2.40e3, AMOR_HYST=0.06),
+    ),
+    COUCHE_AUTO=_F(EPAIS_PHYS=(43.9,31.0,38.5),SURF='OUI',HOMOGENE='NON',NUME_MATE=(1,2,3),NUME_MATE_SUBSTRATUM=4,),
     INFO=2,
 );
 

@@ -270,34 +270,47 @@ NDDLGEN = NUME_DDL_GENE( BASE= BAMO, STOCKAGE= 'PLEIN',);
 #
 
 
-TABSOL = DEFI_SOL_MISS(
-   TITRE="SOL HOMOGENE",
-   MATERIAU=(
-      _F(E=3.0e11,   NU=0.16, RHO=2000., AMOR_HYST=0.10),
-      _F(E=3.0e11,   NU=0.16, RHO=2000., AMOR_HYST=0.10),
-   ),
-   COUCHE=(
-      _F(EPAIS=2.5, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=2.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=5.5, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=5.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=6.0, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=6.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=6.5, NUME_MATE=1, RECEPTEUR="OUI"),
-      _F(EPAIS=6.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(EPAIS=10., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
-      _F(SUBSTRATUM="OUI", NUME_MATE=2,),
-   ),
-   INFO=2,
-);
+# Table de sol en manuel pour reference :
+# TABSOL = DEFI_SOL_MISS(
+#    TITRE="SOL HOMOGENE",
+#    MATERIAU=(
+#       _F(E=3.0e11,   NU=0.16, RHO=2000., AMOR_HYST=0.10),
+#       _F(E=3.0e11,   NU=0.16, RHO=2000., AMOR_HYST=0.10),
+#    ),
+#    COUCHE=(
+#       _F(EPAIS=2.5, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=2.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=4.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=5.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=5.5, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=5.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=6.0, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=6.0, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=6.5, NUME_MATE=1, RECEPTEUR="OUI"),
+#       _F(EPAIS=6.5, NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(EPAIS=10., NUME_MATE=1, RECEPTEUR="OUI", SOURCE="OUI"),
+#       _F(SUBSTRATUM="OUI", NUME_MATE=2,),
+#    ),
+#    INFO=2,
+# );
+
+TABSOL=DEFI_SOL_MISS(MATERIAU=_F(E=3.0e11,
+                                  NU=0.16,
+                                  RHO=2000.,
+                                  AMOR_HYST=0.10,),
+                     COUCHE_AUTO=_F(SURF='NON',HOMOGENE='OUI',EPAIS_PHYS=87.,
+                                    GROUP_MA='SURFBAS2',
+                                    NOMBRE_RECEPTEUR=2,
+                                    GROUP_MA_INTERF='SURFBAS2',
+                                    MAILLAGE=mail,
+                                     ),     
+                     TITRE='SOL HOMOGENE',INFO=2,);
 
 
 INCLUDE(UNITE=31,);
