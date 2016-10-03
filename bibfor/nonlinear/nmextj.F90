@@ -1,6 +1,6 @@
 subroutine nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
-                  spoi_nume , nb_vale, elem_nume, jcesd        , jcesv    ,&
-                  jcesl     , jcesc  , vale_resu)
+                  spoi_nume , nb_vale, i_elem   , elem_nume    , jcesd    ,&
+                  jcesv     , jcesl  , jcesc    , vale_resu)
 !
 implicit none
 !
@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/nmextv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,7 @@ implicit none
     character(len=24), intent(in) :: list_cmp
     character(len=8), intent(in) :: type_extr_cmp
     integer, intent(in) :: poin_nume
+    integer, intent(in) :: i_elem
     integer, intent(in):: elem_nume
     integer, intent(in) :: spoi_nume
     integer, intent(in) :: jcesd
@@ -53,6 +54,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  i_elem           : index of element
 ! In  elem_nume        : index of element
 ! In  poin_nume        : index of point
 ! In  spoi_nume        : index of subpoint
@@ -69,8 +71,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para_maxi
-    parameter    (nb_para_maxi=20)
+    integer, parameter :: nb_para_maxi = 20
     character(len=8) :: v_cmp_name(nb_para_maxi)
     real(kind=8) :: v_cmp_vale(nb_para_maxi)
     integer :: nb_cmp_vale, nb_cmp_maxi
@@ -89,7 +90,7 @@ implicit none
 !
     call jeveuo(list_cmp, 'L', vk8 = v_list_cmp)
     do i_cmp = 1, nb_cmp
-        v_cmp_name(i_cmp) = v_list_cmp(i_cmp)
+        v_cmp_name(i_cmp) = v_list_cmp(nb_cmp*(i_elem-1)+i_cmp)
     end do
 !
 ! - Get value of components

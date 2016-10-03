@@ -16,11 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field        , field_type,&
-                     field_s  , field_disc, list_node  , list_elem    , list_poin ,&
-                     list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
-                     compor   , list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
+    subroutine nmextk(mesh     , model      ,&
+                      keyw_fact, i_keyw_fact,&
+                      field    , field_type , field_s  , field_disc,&
+                      list_node, list_elem  , list_poin, list_spoi ,&
+                      nb_node  , nb_elem    , nb_poin  , nb_spoi   ,&
+                      compor   , list_cmp   , list_vari, nb_cmp    , type_sele_cmp)
         character(len=8), intent(in) :: mesh
+        character(len=8), intent(in) :: model
         character(len=16), intent(in) :: keyw_fact
         integer, intent(in) :: i_keyw_fact
         character(len=19), intent(in) :: field

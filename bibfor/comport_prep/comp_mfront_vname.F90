@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/comp_meca_code.h"
+#include "asterfort/lxlgut.h"
 #include "asterc/mfront_get_number_of_internal_state_variables.h"
 #include "asterc/mfront_get_internal_state_variables.h"
 #include "asterc/mfront_get_internal_state_variables_types.h"
@@ -67,7 +68,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vari_type, i_vari_type, i_vari, i_dime, nb_vari_mfr, nb_vari_supp, i
+    integer :: nb_vari_type, i_vari_type, i_vari, i_dime, nb_vari_mfr, nb_vari_supp, i, leng
     character(len=16) :: vari_name, m_vari_name, m_vari_type, comp_code_py
     character(len=80), pointer :: v_varim_name(:) => null()
     character(len=80), pointer :: v_varim_type(:) => null()
@@ -96,18 +97,27 @@ implicit none
         do i_vari_type = 1, nb_vari_type
             m_vari_name = v_varim_name(i_vari_type)(1:16)
             m_vari_type = v_varim_type(i_vari_type)(1:16)
+            leng        = lxlgut(m_vari_name)
             if (m_vari_type .eq. 'scalar') then
                 i_vari = i_vari + 1
                 v_vari_name(i_vari) = m_vari_name
             elseif (m_vari_type .eq. 'vector') then
                 do i_dime = 1, 2*model_dim
-                    vari_name = m_vari_name(1:14)//cmpv_name(i_dime)
+                    if (leng .le. 14) then
+                        vari_name = m_vari_name(1:leng)//cmpv_name(i_dime)
+                    else
+                        vari_name = m_vari_name(1:14)//cmpv_name(i_dime)
+                    endif
                     i_vari = i_vari + 1
                     v_vari_name(i_vari) = vari_name
                 end do
             elseif (m_vari_type .eq. 'tensor') then
                 do i_dime = 1, 9
-                    vari_name = m_vari_name(1:14)//cmpt_name(i_dime)
+                    if (leng .le. 14) then
+                        vari_name = m_vari_name(1:leng)//cmpt_name(i_dime)
+                    else
+                        vari_name = m_vari_name(1:14)//cmpt_name(i_dime)
+                    endif
                     i_vari = i_vari + 1
                     v_vari_name(i_vari) = vari_name
                 end do

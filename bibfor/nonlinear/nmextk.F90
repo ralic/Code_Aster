@@ -1,7 +1,9 @@
-subroutine nmextk(mesh     , keyw_fact , i_keyw_fact, field        , field_type,&
-                  field_s  , field_disc, list_node  , list_elem    , list_poin ,&
-                  list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
-                  compor   , list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)
+subroutine nmextk(mesh     , model      ,&
+                  keyw_fact, i_keyw_fact,&
+                  field    , field_type , field_s  , field_disc,&
+                  list_node, list_elem  , list_poin, list_spoi ,&
+                  nb_node  , nb_elem    , nb_poin  , nb_spoi   ,&
+                  compor   , list_cmp   , list_vari, nb_cmp    , type_sele_cmp)
 !
 implicit none
 !
@@ -38,6 +40,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
+    character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keyw_fact
     integer, intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
@@ -67,6 +70,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
+! In  model            : name of model
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
 ! In  field            : name of field
@@ -146,12 +150,12 @@ implicit none
         ASSERT(n1.lt.0)
         ASSERT(field_type.eq.'VARI_ELGA')
         nb_cmp = -n1
-        call wkvect(list_cmp , 'V V K8', nb_cmp, vk8 = v_list_cmp)
+        call wkvect(list_cmp , 'V V K8', nb_elem*nb_cmp, vk8 = v_list_cmp)
         call wkvect(list_vari, 'V V K16', nb_cmp, vk16 = v_list_vari)
         call getvtx(keyw_fact, 'NOM_VARI', iocc=i_keyw_fact, nbval=nb_cmp, vect=v_list_vari,&
                     nbret=iret)
         call jeveuo(list_elem, 'L', vi = v_list_elem)
-        call varinonu(compor, ' ', nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
+        call varinonu(model, compor, ' ', nb_elem, v_list_elem, nb_cmp, v_list_vari, v_list_cmp)
         type_sele_cmp = 'NOM_VARI'
     endif
 !
@@ -207,7 +211,13 @@ implicit none
 !
             nb_cmp_maxi = zi(jcesd+4)
             do ipar = 1, nb_cmp
-                cmp_name = v_list_cmp(ipar)
+                if (type_sele_cmp .eq. 'NOM_CMP') then
+                    cmp_name = v_list_cmp(ipar)
+                elseif (type_sele_cmp .eq. 'NOM_VARI') then
+                    cmp_name = v_list_cmp(nb_cmp*(i_elem-1)+ipar)
+                else
+                    ASSERT(.false.)
+                endif
 !
 ! ------------- For VARI_ELGA field
 !

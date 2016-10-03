@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
+    subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
         character(len=8) :: nomgd
         character(len=*) :: mcfac
         integer :: iocc
         character(len=8) :: nomcmp
         integer :: ivari
+        character(len=16) :: nom_vari
     end subroutine utcmp1
 end interface

@@ -43,11 +43,12 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
 #include "asterfort/utmess.h"
 #include "asterfort/varinonu.h"
 #include "asterfort/w155m2.h"
+#include "asterfort/wkvect.h"
     character(len=8) :: nomres, resu
     integer :: nbordr, liordr(nbordr)
 !
     integer :: ifm, niv, ico, n1, jlismai, nbma
-    integer :: iret, i, nuordr, ibid, nocc, iocc, nchout
+    integer :: iret, i, nuordr, ibid, nocc, iocc, nchout, jcmp
     character(len=8) :: modele, carele, noma
     character(len=8) :: modeav, nocmp, tymaxi
     character(len=4) :: tych
@@ -96,7 +97,10 @@ subroutine w155mx(nomres, resu, nbordr, liordr)
             call reliem(' ', noma, 'NU_MAILLE', ' ', 0,&
                     2, motcle(1), typmcl(1), lismai, nbma)
             call jeveuo(lismai,'L',jlismai)
-            call varinonu(' ', resu19, nbma, zi(jlismai), 1, novari, nocmp)
+            call wkvect('&&W155MX.CMP', 'V V K8', nbma*1, jcmp)
+            call varinonu(modele, ' ', resu19, nbma, zi(jlismai), 1, novari, zk8(jcmp))
+            nocmp = zk8(jcmp)
+            call jedetr('&&W155MX.CMP')
             call jedetr(lismai)
         endif
 !

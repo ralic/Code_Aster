@@ -221,7 +221,7 @@ implicit none
 !
 ! --------- Get component(s)
 !
-            call nmextk(meshz    , keyw_fact , i_keyw_fact, field        , field_type,&
+            call nmextk(meshz    , modelz    , keyw_fact , i_keyw_fact, field        , field_type,&
                         field_s  , field_disc, list_node  , list_elem    , list_poin ,&
                         list_spoi, nb_node   , nb_elem    , nb_poin      , nb_spoi   ,&
                         ds_constitutive%compor, list_cmp  , list_vari  , nb_cmp     , type_sele_cmp)

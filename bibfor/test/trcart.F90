@@ -24,7 +24,7 @@ subroutine trcart(ific, nocc)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,6 +51,7 @@ subroutine trcart(ific, nocc)
     real(kind=8) :: epsi, epsir, valr, valrr
     complex(kind=8) :: valc, valcr
     character(len=1) :: typres
+    character(len=16) :: nom_vari
     character(len=8) :: crit, noddl, nomma, nomail, nomgd
     character(len=11) :: motcle
     character(len=19) :: cham19
@@ -138,7 +139,7 @@ subroutine trcart(ific, nocc)
 !
 !
         call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
-        call utcmp1(nomgd, 'CARTE', iocc, noddl, ivari)
+        call utcmp1(nomgd, 'CARTE', iocc, noddl, ivari, nom_vari)
 !
         nl1 = lxlgut(lign1)
         nl1 = lxlgut(lign1(1:nl1-1))

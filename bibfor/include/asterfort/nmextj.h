@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,13 +17,14 @@
 !
 interface
     subroutine nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
-                      spoi_nume , nb_vale, elem_nume, jcesd        , jcesv    ,&
+                      spoi_nume , nb_vale, i_elem, elem_nume, jcesd        , jcesv    ,&
                       jcesl     , jcesc  , vale_resu)
         character(len=24), intent(in) :: field_type
         integer, intent(in) :: nb_cmp
         character(len=24), intent(in) :: list_cmp
         character(len=8), intent(in) :: type_extr_cmp
         integer, intent(in) :: poin_nume
+        integer, intent(in):: i_elem
         integer, intent(in):: elem_nume
         integer, intent(in) :: spoi_nume
         integer, intent(in) :: jcesd

@@ -63,17 +63,6 @@ Il faut donner le point d'intégration et le SOUS_POINT si c'est un élément de
  La variable interne nommée %(k1)s n'existe pas sur les mailles concernées.
 """),
 
-    23 : _(u"""
-Erreur utilisateur :
-  On veut désigner une variable interne en utilisant le mot clé NOM_VARI.
-  Mais les mailles concernées ne sont pas toutes affectées par le même comportement.
-  On trouve des éléments affectés par :
-     RELATION = %(k1)s DEFORMATION = %(k2)s
-  et d'autres éléments affectés par :
-     RELATION = %(k3)s DEFORMATION = %(k4)s
-  
-"""),
-
     24 : _(u"""
 Erreur utilisateur commande RECU_TABLE / RESU :
   On veut désigner des variables internes en utilisant le mot clé NOM_VARI.

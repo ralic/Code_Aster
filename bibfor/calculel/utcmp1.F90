@@ -1,4 +1,4 @@
-subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
+subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
@@ -7,6 +7,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
     integer :: iocc
     character(len=8) :: nomgd, nomcmp
     character(len=*) :: mcfac
+    character(len=16) :: nom_vari
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,25 +40,23 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari)
 !  ivari  out i  : numero de la variable interne si nomgd='VARI_R'
 !                   0 Si nomgd /= 'VARI_R'
 !                  -1 si nomgd='VARI_R' + motcle NOM_VARI.
-!                     Dans ce cas, nomcmp=NOM_VARI
 !
 ! ----------------------------------------------------------------------
     integer :: ibid, n2, iret, ivari
-    character(len=16) :: nomvari
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
 !
 !
+    nom_vari = ' '
 !
     if (nomgd .eq. 'VARI_R') then
 !     ------------------------------
         call getvtx(mcfac, 'NOM_CMP', iocc=iocc, scal=nomcmp, nbret=n2)
         ASSERT(n2.eq.1 .or. n2.eq.0)
         if (n2.eq.0) then
-            call getvtx(mcfac, 'NOM_VARI', iocc=iocc, scal=nomvari, nbret=n2)
+            call getvtx(mcfac, 'NOM_VARI', iocc=iocc, scal=nom_vari, nbret=n2)
             ASSERT(n2.eq.1)
             ivari=-1
-            nomcmp=nomvari
         else
             call lxliis(nomcmp(2:8), ibid, iret)
             ivari=ibid

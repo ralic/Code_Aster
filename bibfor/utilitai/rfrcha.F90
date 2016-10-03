@@ -2,7 +2,7 @@ subroutine rfrcha()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ subroutine rfrcha()
     character(len=4) :: typch2
     character(len=8) :: k8b, crit, maille, noma, intres
     character(len=8) :: noeud, cmp, nomgd
-    character(len=16) :: nomcmd, typcon, typcha
+    character(len=16) :: nomcmd, typcon, typcha, nom_vari
     character(len=19) :: nomfon, cham19
     character(len=24) :: nogno, nogma
     integer :: vali
@@ -169,7 +169,7 @@ subroutine rfrcha()
             if (type .ne. 'R') then
                 call utmess('F', 'UTILITAI4_19')
             endif
-            call utcmp1(nomgd, ' ', 1, cmp, ivari)
+            call utcmp1(nomgd, ' ', 1, cmp, ivari, nom_vari)
             call utch19(cham19, noma, maille, noeud, npoint,&
                         nusp, ivari, cmp, type, valr,&
                         valc, vali, iret)

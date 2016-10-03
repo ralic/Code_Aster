@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/sdmpic.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,17 +137,17 @@ implicit none
         elem_nume = v_list_elem(i_elem)
         call jenuno(jexnum(mesh(1:8)//'.NOMMAI', elem_nume), elem_name)
 !
-! --------- Number of points/subpoints on current element
+! ----- Number of points/subpoints on current element
 !
-            nb_elem_poin = zi(jcesd+5+4*(elem_nume-1))
-            nb_elem_spoi = zi(jcesd+5+4*(elem_nume-1)+1)
+        nb_elem_poin = zi(jcesd+5+4*(elem_nume-1))
+        nb_elem_spoi = zi(jcesd+5+4*(elem_nume-1)+1)
 !
-! --------- Check
+! ----- Check
 !
-            nb_poin_r = nb_poin
-            nb_spoi_r = nb_spoi
-            if (nb_poin_r .gt. nb_elem_poin) nb_poin_r = nb_elem_poin
-            if (nb_spoi_r .gt. nb_elem_spoi) nb_spoi_r = nb_elem_spoi
+        nb_poin_r = nb_poin
+        nb_spoi_r = nb_spoi
+        if (nb_poin_r .gt. nb_elem_poin) nb_poin_r = nb_elem_poin
+        if (nb_spoi_r .gt. nb_elem_spoi) nb_spoi_r = nb_elem_spoi
 !
 ! --------- Extract and set point/subpoint value(s) by element
 !
@@ -162,7 +162,7 @@ implicit none
 ! ----------------- Extract value at Gauss point
 !
                     call nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
-                                spoi_nume , nb_vale, elem_nume, jcesd        , jcesv    ,&
+                                spoi_nume , nb_vale, i_elem   , elem_nume, jcesd    , jcesv    ,&
                                 jcesl     , jcesc  , vale_resu)
 !
 ! ----------------- Select index in working vectors (point/subpoint)

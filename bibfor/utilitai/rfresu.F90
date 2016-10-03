@@ -45,11 +45,12 @@ subroutine rfresu()
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
 #include "asterfort/varinonu.h"
+#include "asterfort/rsadpa.h"
     integer :: nbtrou, numer1(1), l, n1, iret, ivari
     integer :: nm, ngm, npoint, np, nn, npr, ngn
-    integer :: nres, ifm, niv, nusp, numa
+    integer :: nres, ifm, niv, nusp, numa, jlue
     real(kind=8) :: epsi
-    character(len=8) :: k8b, crit, maille, noma, intres
+    character(len=8) :: k8b, crit, maille, noma, intres, nomo
     character(len=8) :: noeud, cmp, nomgd
     character(len=16) :: nomcmd, typcon, nomcha, npresu, nomvari
     character(len=19) :: nomfon, cham19, resu
@@ -130,12 +131,13 @@ subroutine rfresu()
                 call utmess('A', 'UTILITAI6_72', sk=valk(1))
             endif
         endif
-        call utcmp1(nomgd, ' ', 1, cmp, ivari)
+        call utcmp1(nomgd, ' ', 1, cmp, ivari, nomvari)
         if (ivari.eq.-1) then
             ASSERT(nomcha(1:7).eq.'VARI_EL')
+            call rsadpa(resu, 'L', 1, 'MODELE', 1, 0, sjv=jlue)
+            nomo = zk8(jlue)
             call jenonu(jexnom(noma//'.NOMMAI', maille), numa)
-            nomvari=cmp
-            call varinonu(' ', resu, 1, [numa], 1, nomvari, cmp)
+            call varinonu(nomo, ' ', resu, 1, [numa], 1, nomvari, cmp)
             call lxliis(cmp(2:8), ivari, iret)
             ASSERT(iret.eq.0)
             ASSERT(cmp(1:1).eq.'V')

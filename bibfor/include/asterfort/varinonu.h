@@ -15,15 +15,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine varinonu(compor_,sdresu_,nbma,lima,nbvari,novari,&
-     &nuvari)
-              integer, intent(in) :: nbvari
-              character(len=*), intent(in) :: compor_
-              character(len=*), intent(in) :: sdresu_
-              integer, intent(in) :: nbma
-              integer, intent(in) :: lima(nbma)
-              character(len=16), intent(in) :: novari(nbvari)
-              character(len=8), intent(out) :: nuvari(nbvari)
-            end subroutine varinonu
-          end interface 
+interface 
+    subroutine varinonu(model    , compor_  , sdresu_,&
+                        nb_elem  , list_elem, nb_vari, name_vari,&
+                        nume_vari)
+        character(len=*), intent(in) :: model
+        character(len=*), intent(in) :: compor_
+        character(len=*), intent(in) :: sdresu_
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: list_elem(nb_elem)
+        integer, intent(in) :: nb_vari
+        character(len=16), intent(in) :: name_vari(nb_vari)
+        character(len=8), intent(out) ::  nume_vari(nb_elem, nb_vari)
+    end subroutine varinonu
+end interface 

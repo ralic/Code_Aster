@@ -1,8 +1,10 @@
-subroutine varinonu(compor_, sdresu_, nbma, lima, nbvari, novari, nuvari)
-    implicit none
+subroutine varinonu(model    , compor_  , sdresu_,&
+                    nb_elem  , list_elem, nb_vari, name_vari,&
+                    nume_vari)
+!
+implicit none
 !
 #include "jeveux.h"
-!
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
@@ -14,20 +16,17 @@ subroutine varinonu(compor_, sdresu_, nbma, lima, nbvari, novari, nuvari)
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/detrsd.h"
+#include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
 #include "asterfort/indk16.h"
+#include "asterfort/comp_meca_pvar.h"
 #include "asterfort/utmess.h"
-
-    character(len=*), intent(in) :: compor_
-    character(len=*), intent(in) :: sdresu_
-    integer, intent(in) :: nbma, nbvari, lima(nbma)
-    character(len=16), intent(in) :: novari(nbvari)
-    character(len=8), intent(out) ::  nuvari(nbvari)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,7 +44,16 @@ subroutine varinonu(compor_, sdresu_, nbma, lima, nbvari, novari, nuvari)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=*), intent(in) :: model
+    character(len=*), intent(in) :: compor_
+    character(len=*), intent(in) :: sdresu_
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: list_elem(nb_elem)
+    integer, intent(in) :: nb_vari
+    character(len=16), intent(in) :: name_vari(nb_vari)
+    character(len=8), intent(out) ::  nume_vari(nb_elem, nb_vari)
+!
 ! -------------------------------------------------------------------
 ! But : Etablir la correspondance entre les noms "mecaniques" de variables internes
 ! et leurs "numeros"  : 'V1', 'V7', ...
@@ -54,29 +62,29 @@ subroutine varinonu(compor_, sdresu_, nbma, lima, nbvari, novari, nuvari)
 !    compor_: nom de la carte de comportement (ou ' ')
 !    sdresu_: nom d'une sd_resultat (ou ' ')
 !       il faut fournir un et un seul des 2 arguments compor_ et sdresu_
-!    nbma   : longueur de la liste lima
-!    lima   : liste des numeros de mailles concernees
-!    nbvari : longueur des listes novari et nuvari
-!    novari : liste des noms "mecaniques" des variables internes
+!    nb_elem   : longueur de la liste list_elem
+!    list_elem   : liste des numeros de mailles concernees
+!    nb_vari : longueur des listes name_vari et nume_vari
+!    name_vari : liste des noms "mecaniques" des variables internes
 ! sorties:
-!    nuvari : liste des "numeros" des variables internes
+!    nume_vari : liste des "numeros" des variables internes
 ! -------------------------------------------------------------------
 !
-    integer :: iexi,ima,kcmp,iad1,numlc,nbpt,nbsp,nbvaric,kvari,inum,numa
-    integer :: j_comp_l, j_comp_d, iret
-    integer :: nbvamx
+    integer :: i_vari,inum
+    integer :: iret, i_elem, i_zone, jv_vari
+    integer :: nume_elem, nb_vari_zone
     aster_logical :: dbg=.false.
-    parameter ( nbvamx = 200)
-
-    character(len=8) :: licmp(2)
-    character(len=16) :: lcompo(2), comco2, liste_vari(nbvamx),relcom,deform
-    character(len=19) :: compor_s, compor_s2, compor
-    character(len=16), pointer :: cesv(:) => null()
-    character(len=24) :: valk(4)
-!--------------------------------------------------------------------------------
-
+    character(len=19) :: compor, ligrmo
+    character(len=19) :: compor_info
+    integer, pointer :: v_compor_ptma(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-
+    compor_info = '&&NMDOCC.INFO'
+!
+! - Get COMPOR field
+!
     if (compor_ .ne.' ') then
         ASSERT(sdresu_ .eq. ' ')
         compor=compor_
@@ -85,81 +93,37 @@ subroutine varinonu(compor_, sdresu_, nbma, lima, nbvari, novari, nuvari)
         call dismoi('COMPOR_1', sdresu_, 'RESULTAT', repk=compor)
         ASSERT(compor.ne.' ')
     endif
-
-
-
-!   1. Verification que toutes les mailles de lima sont affectees par le
-!      meme comportement :
-!      => relcom, deform
-!   ---------------------------------------------------------------------
-    compor_s='&&VARINONU.CS'
-    compor_s2='&&VARINONU.CS2'
-
-
-!   -- Pour gagner du temps, on ne cree pas compor_s2 a chaque appel :
-    call jeexin(compor_s2//'.CESD',iexi)
-    if (iexi.eq.0) then
-        call carces(compor, 'ELEM', ' ', 'V', compor_s, 'A', iret)
-        ASSERT(iret.eq.0)
-        licmp(1)='RELCOM'
-        licmp(2)='DEFORM'
-        call cesred(compor_s, 0, [0], 2, licmp(1),'V', compor_s2)
-        call detrsd('CHAM_ELEM_S', compor_s)
+!
+! - Access to COMPOR field
+!
+    ligrmo = model(1:8)//'.MODELE'
+    call etenca(compor, ligrmo, iret)
+    call jeveuo(compor//'.PTMA', 'L', vi = v_compor_ptma)
+!
+! - Prepare informations about internal variables
+!
+    call jeexin(compor_info(1:19)//'.ZONE', iret)
+    if (iret .eq. 0) then
+        call comp_meca_pvar(model_ = model, compor_cart_ = compor, compor_info = compor_info)
     endif
-    call jeveuo(compor_s2//'.CESD', 'L', j_comp_d)
-    call jeveuo(compor_s2//'.CESV', 'L', vk16=cesv)
-    call jeveuo(compor_s2//'.CESL', 'L', j_comp_l)
-
-    do ima=1,nbma
-        numa=lima(ima)
-        nbpt = zi(j_comp_d-1+5+4* (numa-1)+1)
-        nbsp = zi(j_comp_d-1+5+4* (numa-1)+2)
-        ASSERT(nbpt.eq.1)
-        ASSERT(nbsp.eq.1)
-        call cesexi('C', j_comp_d, j_comp_l, numa,1,1,1,iad1)
-        ASSERT(iad1.gt.0)
-        if (ima.eq.1) then
-            relcom=cesv(iad1)
-            deform=cesv(iad1+1)
-        else
-            if ((cesv(iad1).ne.relcom).or.(cesv(iad1+1).ne.deform)) then
-                valk(1)=relcom
-                valk(2)=deform
-                valk(3)=cesv(iad1)
-                valk(4)=cesv(iad1+1)
-                call utmess('F', 'EXTRACTION_23', nk=4, valk=valk)
+!
+! - Access to informations
+!
+    do i_elem = 1, nb_elem
+        nume_elem = list_elem(i_elem)
+        i_zone    = v_compor_ptma(nume_elem)
+        call jelira(jexnum(compor_info(1:19)//'.VARI', i_zone), 'LONMAX', nb_vari_zone)
+        call jeveuo(jexnum(compor_info(1:19)//'.VARI', i_zone), 'L', jv_vari)
+        do i_vari = 1, nb_vari
+            inum = indk16(zk16(jv_vari), name_vari(i_vari), 1, nb_vari_zone)
+            if (inum .eq. 0) then
+                call utmess('F','EXTRACTION_22',sk=name_vari(i_vari))
             endif
-        endif
-    enddo
-
-
-!   2. Calcul de la liste des variables internes pour (relcom, deform) :
-!      => liste_vari
-!   --------------------------------------------------------------------
-    lcompo(1)=relcom
-    lcompo(2)=deform
-    call lccree(2, lcompo, comco2)
-    call lcinfo(comco2, numlc, nbvaric)
-    if (dbg) write(6,*) 'varinonu numlc=',numlc
-    if (dbg) write(6,*) 'varinonu nbvaric=',nbvaric
-    ASSERT(nbvaric.le.nbvamx)
-    call lcvari(comco2, nbvaric, liste_vari)
-    if (dbg) write(6,*) 'varinonu liste_vari(:)=',liste_vari(1:nbvaric)
-    call lcdiscard(comco2)
-
-
-!   3. Calcul de nuvari :
-!   ---------------------
-    do kvari=1,nbvari
-        inum = indk16(liste_vari, novari(kvari), 1, nbvaric )
-        if (inum.eq.0) then
-            call utmess('F','EXTRACTION_22',sk=novari(kvari))
-        endif
-        nuvari(kvari)='V'
-        call codent(inum, 'G', nuvari(kvari)(2:8))
-        if (dbg) write(6,*) 'varinonu nnuvari=',nuvari(kvari)
-    enddo
-
+            nume_vari(i_elem, i_vari) = 'V'
+            call codent(inum, 'G', nume_vari(i_elem, i_vari)(2:8))
+            if (dbg) write(6,*) 'varinonu nnuvari=',nume_vari(i_elem, i_vari)
+        enddo
+    end do
+!
     call jedema()
-
 end subroutine

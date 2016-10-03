@@ -263,7 +263,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
             call getvtx('RESU', 'NOM_VARI', iocc=1, nbval=0, nbret=n1)
             nbcmp=-n1
             ASSERT(nbcmp.gt.0)
-            call wkvect(nkcmp, 'V V K8', nbcmp, jcmp)
+            call wkvect(nkcmp, 'V V K8', nbma*nbcmp, jcmp)
             call wkvect(nkvari, 'V V K16', nbcmp, jcmp16)
             call getvtx('RESU', 'NOM_VARI', iocc=1, nbval=nbcmp, vect=zk16(jcmp16),&
                          nbret=n1)
@@ -275,7 +275,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp,&
                 call utmess('F', 'EXTRACTION_25',sk=nocham)
             endif
             ASSERT(nbma.gt.0)
-            call varinonu(' ', sdresu, nbma, zi(jlma), nbcmp, zk16(jcmp16), zk8(jcmp))
+            call varinonu(nomo, ' ', sdresu, nbma, zi(jlma), nbcmp, zk16(jcmp16), zk8(jcmp))
         endif
     endif
 !

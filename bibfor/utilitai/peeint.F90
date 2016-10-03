@@ -244,11 +244,11 @@ subroutine peeint(resu, modele, nbocc)
             call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=0, vect=k8b, nbret=nbcmp)
             nbcmp=-nbcmp
             ASSERT(nbcmp.gt.0)
-            call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)
+            call wkvect('&&PEEINT.CMP', 'V V K8', nbmai*nbcmp, jcmp)
             call wkvect('&&PEEINT.NVARI', 'V V K16', nbcmp, jvari)
             call getvtx('INTEGRALE', 'NOM_VARI', iocc=iocc, nbval=nbcmp, vect=zk16(jvari),&
                     nbret=iret)
-            call varinonu(' ', resuco, nbmai, zi(jmesma), nbcmp, zk16(jvari), zk8(jcmp))
+            call varinonu(modele, ' ', resuco, nbmai, zi(jmesma), nbcmp, zk16(jvari), zk8(jcmp))
         else
             ivari=0
             call wkvect('&&PEEINT.CMP', 'V V K8', nbcmp, jcmp)

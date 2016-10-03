@@ -29,7 +29,7 @@ subroutine trchel(ific, nocc)
     integer, intent(in) :: nocc
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,7 @@ subroutine trchel(ific, nocc)
     character(len=8) :: crit, noddl, nomma, typtes, nomail, nomgd
     character(len=11) :: motcle
     character(len=19) :: cham19
-    character(len=16) :: tbtxt(2), tbref(2)
+    character(len=16) :: tbtxt(2), tbref(2), nom_vari
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
     character(len=200) :: lign1, lign2
@@ -311,7 +311,7 @@ subroutine trchel(ific, nocc)
             endif
 !
             call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
-            call utcmp1(nomgd, 'CHAM_ELEM', iocc, noddl, ivari)
+            call utcmp1(nomgd, 'CHAM_ELEM', iocc, noddl, ivari, nom_vari)
             call getvis('CHAM_ELEM', 'SOUS_POINT', iocc=iocc, scal=nusp, nbret=n2)
             if (n2 .eq. 0) nusp = 0
             call getvis('CHAM_ELEM', 'POINT', iocc=iocc, scal=nupo, nbret=n2)

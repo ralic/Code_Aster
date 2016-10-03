@@ -74,9 +74,9 @@ subroutine trresu(ific, nocc)
     character(len=4) :: typch, chpt
     character(len=8) :: crit, crit2, nomail, noddl, nomma
     character(len=8) :: noresu, typtes, nomgd
-    character(len=8) :: leresu
+    character(len=8) :: leresu, model
     character(len=11) :: motcle
-    character(len=16) :: nopara, k16b, tbtxt(2), tbref(2),nomcha,cmp16
+    character(len=16) :: nopara, k16b, tbtxt(2), tbref(2),nomcha,cmp16, nom_vari
     character(len=19) :: cham19, knum
     character(len=33) :: nonoeu
     character(len=24) :: travr, travi, travc, travrr, travir, travcr, nogrno
@@ -404,8 +404,7 @@ subroutine trresu(ific, nocc)
                 call dismoi('TYPE_CHAMP', cham19, 'CHAMP', repk=typch)
                 call dismoi('NOM_MAILLA', cham19, 'CHAMP', repk=nomma)
                 call dismoi('NOM_GD', cham19, 'CHAMP', repk=nomgd)
-
-                call utcmp1(nomgd, 'RESU', iocc, noddl, ivari)
+                call utcmp1(nomgd, 'RESU', iocc, noddl, ivari, nom_vari)
 
                 call getvis('RESU', 'SOUS_POINT', iocc=iocc, scal=nusp, nbret=n2)
                 if (n2 .eq. 0) nusp = 0
@@ -465,9 +464,11 @@ subroutine trresu(ific, nocc)
 
                     if (ivari.eq.-1) then
                         ASSERT(nomcha(1:7).eq.'VARI_EL')
+                        call rsadpa(leresu, 'L', 1, 'MODELE', numord, 0, sjv=jlue)
+                        model = zk8(jlue)
                         call jenonu(jexnom(nomma//'.NOMMAI', nomail), numa)
-                        cmp16=noddl
-                        call varinonu(' ', leresu, 1, [numa], 1, cmp16, noddl)
+                        !cmp16=noddl
+                        call varinonu(model,' ', leresu, 1, [numa], 1, nom_vari, noddl)
                         call lxliis(noddl(2:8), ivari, iret)
                         ASSERT(iret.eq.0)
                         ASSERT(noddl(1:1).eq.'V')
