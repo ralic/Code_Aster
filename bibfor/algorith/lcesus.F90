@@ -31,8 +31,7 @@ subroutine lcesus(x,val,der)
     real(kind=8) :: lambda, deuxmu, troisk, gamma, rigmin, pc, pr, epsth
     common /lcee/ lambda,deuxmu,troisk,gamma,rigmin,pc,pr,epsth
 ! --------------------------------------------------------------------------------------------------
-
-    if (x.ge.0.d0 .or. gamma.eq.0.d0) then
+    if (x*gamma.ge.-1.d-3) then
         val = 0
         der = 0
     else

@@ -73,6 +73,7 @@ nx =  1./5**0.5
 ny =  2./5**0.5
 
 
+
 # -----------------------------------------------------
 #                 MAILLAGE ET MODELE
 # -----------------------------------------------------
@@ -186,7 +187,6 @@ tfin_pilo = 2.
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
                 VARI_INTERNE=('VARI_ELNO','VARI_NOEU'));
 
 # -----------------------------------------------------
@@ -250,6 +250,86 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                    ),
            )
 
+
+
+# ------------------------------------------------------------
+# TESTS DES POST-TRAITEMENTS EN DEFORMATIONS ET EN CONTRAINTES
+# ------------------------------------------------------------
+
+
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                CONTRAINTE  = ('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO','SIEF_NOEU'),
+                DEFORMATION = ('EPSI_ELGA','EPSI_ELNO','EPSI_NOEU','EPSG_ELGA','EPSG_ELNO','EPSG_NOEU'),
+                CRITERES    = ('EPEQ_ELGA','EPEQ_ELNO','EPEQ_NOEU','SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU'),
+                );
+
+EPEQ = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'EPEQ_NOEU',
+    NOM_CMP   = 'PRIN_3',
+    GROUP_NO  = 'G20',
+    INST      = tfin_pilo,
+    ),
+  )
+
+  
+SIEQ = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'SIEQ_NOEU',
+    NOM_CMP   = 'VMIS',
+    GROUP_NO  = 'G20',
+    INST      = tfin_pilo,
+    ),
+  )
+  
+EPSG = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'EPSG_NOEU',
+    NOM_CMP   = 'EPXX',
+    GROUP_NO  = 'G20',
+    INST      = tfin_pilo,
+    ),
+  )
+  
+epeq = eps
+sieq = 2*mu*Aa*eps
+epsg = (eps+0.5*eps**2)*nx*nx
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.000286,
+           VALE_REFE=epeq,
+           NOM_PARA='PRIN_3',
+           TABLE=EPEQ,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.900000000616,
+           VALE_REFE=sieq,
+           NOM_PARA='VMIS',
+           TABLE=SIEQ,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=5.72081796E-05,
+           VALE_REFE=epsg,
+           NOM_PARA='EPXX',
+           TABLE=EPSG,
+           )
+
+
 # -----------------------------------------------------------------
 # Compression phase
 # -----------------------------------------------------------------
@@ -264,7 +344,9 @@ RAMPE = DEFI_FONCTION(
 INSTANT2 = DEFI_LIST_REEL(  
   DEBUT = 0,                
   INTERVALLE = (            
-    _F(JUSQU_A = 1, NOMBRE = 5)
+    _F(JUSQU_A = 0.2,  NOMBRE = 1),
+    _F(JUSQU_A = 0.4,  NOMBRE = 2),
+    _F(JUSQU_A = 1,    NOMBRE = 3),
     )                       
   )                         
 
@@ -276,7 +358,7 @@ EVOL2 = STAT_NON_LINE(
   EXCIT      = _F(CHARGE = TRACTION, FONC_MULT=RAMPE),
   COMPORTEMENT = _F(RELATION  = 'ENDO_FISS_EXP'),
   INCREMENT = _F(LIST_INST = INSTANT2, INST_INIT=0),
-  NEWTON    = _F(MATRICE='TANGENTE', REAC_ITER = 1),
+  NEWTON    = _F(MATRICE='TANGENTE', REAC_ITER = 1, PAS_MINI_ELAS=0.15),
   CONVERGENCE = _F(
     SIGM_REFE      = ft,
     VARI_REFE      = 1.,

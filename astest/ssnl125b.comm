@@ -27,6 +27,13 @@ D  = 50.
 p  = 1.5
 
 
+# calcul de G_INIT pour tester DEFI_MATER_GC
+
+import math
+sc = 1.0045582654870742*ft   # specific to ft=3 and fc=30 
+dsigddel = 2.0/(3.0*math.pi)*(2+p)**1.5 * sc**2/Gf
+Ginit = 0.5*sc**2/dsigddel
+
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
@@ -85,7 +92,7 @@ FRAG = DEFI_MATER_GC(
     FT = ft,
     GF = Gf,
     FC = fc,
-    P  = 1.5,
+    G_INIT = Ginit,
     LARG_BANDE = 2*D,
     ),
   )

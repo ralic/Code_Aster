@@ -201,8 +201,9 @@ tfin = 2.
 
 EVOL=CALC_CHAMP(reuse =EVOL,
                 RESULTAT=EVOL,
-                CONTRAINTE=('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO'),
-                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'));
+                VARI_INTERNE=('VARI_ELNO','VARI_NOEU'),
+                );
+
 
 # -----------------------------------------------------
 #     EXTRACTION SUR LA FACE DROITE DU QUADGRANGLE
@@ -219,6 +220,7 @@ RESU = POST_RELEVE_T(
     ),
   )
 
+  
 IMPR_TABLE(TABLE=RESU)
 
 # -----------------------------------------------------
@@ -263,6 +265,84 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                    _F(NOM_PARA='COOR_Y',
                       VALE=2,),
                    ),
+           )
+
+
+# ------------------------------------------------------------
+# TESTS DES POST-TRAITEMENTS EN DEFORMATIONS ET EN CONTRAINTES
+# ------------------------------------------------------------
+
+EVOL=CALC_CHAMP(reuse =EVOL,
+                RESULTAT=EVOL,
+                CONTRAINTE  = ('SIGM_ELGA','SIGM_ELNO','SIEF_ELNO','SIEF_NOEU'),
+                DEFORMATION = ('EPSI_ELGA','EPSI_ELNO','EPSI_NOEU','EPSG_ELGA','EPSG_ELNO','EPSG_NOEU'),
+                CRITERES    = ('EPEQ_ELGA','EPEQ_ELNO','EPEQ_NOEU','SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU'),
+                );
+
+
+EPEQ = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'EPEQ_NOEU',
+    NOM_CMP   = 'PRIN_3',
+    GROUP_NO  = '200',
+    INST      = tfin,
+    ),
+  )
+  
+SIEQ = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'SIEQ_NOEU',
+    NOM_CMP   = 'VMIS',
+    GROUP_NO  = '200',
+    INST      = tfin,
+    ),
+  )
+  
+EPSG = POST_RELEVE_T(
+  ACTION = _F(
+    INTITULE  = 'RESULTAT',
+    OPERATION = 'EXTRACTION',
+    RESULTAT  =  EVOL,
+    NOM_CHAM  = 'EPSG_NOEU',
+    NOM_CMP   = 'EPXX',
+    GROUP_NO  = '200',
+    INST      = tfin,
+    ),
+  )
+  
+epeq = eps
+sieq = 2*mu*Aa*eps
+epsg = (eps+0.5*eps**2)*nx*nx
+
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.000286,
+           VALE_REFE=epeq,
+           NOM_PARA='PRIN_3',
+           TABLE=EPEQ,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=0.900000000616,
+           VALE_REFE=sieq,
+           NOM_PARA='VMIS',
+           TABLE=SIEQ,
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           PRECISION=1.E-3,
+           VALE_CALC=2.04314927143E-05,
+           VALE_REFE=epsg,
+           NOM_PARA='EPXX',
+           TABLE=EPSG,
            )
 
 
@@ -333,6 +413,8 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            TABLE=ENER,
            FILTRE =_F(NOM_PARA='INST', VALE=1),
            )
+
+
 
 
 FIN()
