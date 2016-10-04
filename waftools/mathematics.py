@@ -27,6 +27,7 @@ def configure(self):
     # always check for libpthread, libm (never in static)
     self.check_cc(uselib_store='MATH', lib='pthread')
     self.check_cc(uselib_store='MATH', lib='m')
+    self.check_number_cores()
     if self.options.maths_libs in (None, 'auto'):
         # try MKL first, then automatic blas/lapack
         if not self.detect_mkl():
@@ -215,6 +216,23 @@ def check_math_libs(self, name, libs, embed, optional=False):
     return found
 
 @Configure.conf
+def check_number_cores(self):
+    """Check for the number of available cores."""
+    self.start_msg('Checking for number of cores')
+    try:
+        self.find_program('nproc')
+        try:
+            res = self.cmd_and_log(['nproc'])
+            nproc = int(res)
+        except Errors.WafError:
+            raise Errors.ConfigurationError
+    except Errors.ConfigurationError:
+        nproc = 1
+    else:
+        self.end_msg(nproc)
+    self.env['NPROC'] = nproc
+
+@Configure.conf
 def get_mathlib_from_numpy(self):
     '''The idea is that numpy shall be linked to blas and lapack.
     So we will try to get then using ldd if available'''
@@ -286,7 +304,7 @@ def check_math_libs_call(self, color='RED'):
         ret = self.check_fc(fragment=omp_thread_fragment, use='MATH OPENMP MPI',
                             mandatory=True, execute=True, define_ret=True)
         nbThreads = int((ret and ret.split() or [])[-1])
-        refe = 2 if self.env.BUILD_OPENMP else 1
+        refe = min(self.env['NPROC'], 2) if self.env.BUILD_OPENMP else 1
         if nbThreads < refe:
             raise ValueError("expected at least {0} thread(s)".format(nbThreads))
     except Exception, exc:
