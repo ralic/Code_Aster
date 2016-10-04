@@ -1,6 +1,6 @@
 subroutine coeneu(imod, nbnode)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,7 @@ subroutine coeneu(imod, nbnode)
     character(len=8) :: chnode
     character(len=12) :: chenti, aut
     character(len=80) :: chfone
-    aster_logical :: dim3d
-    real(kind=8) :: zcte, x, y, z
+    real(kind=8) :: x, y, z
     real(kind=8), pointer :: coor(:) => null()
     integer, pointer :: detr(:) => null()
     integer, pointer :: info(:) => null()
@@ -75,45 +74,25 @@ subroutine coeneu(imod, nbnode)
 !
 ! --- TEST SI MAILLAGE 2D OU 3D :
 !     ------------------------------------------------------
-    dim3d = .false.
-    zcte = coor(3)
-    do 10 inode = 2, nbnode
-        if (coor(3*(inode-1)+3) .ne. zcte) then
-            dim3d=.true.
-            goto 10
-        endif
- 10 end do
-!
-    if (dim3d) then
-        write(imod,'(A,4X,A)')'COOR_3D',chenti
-    else
-        write(imod,'(A,4X,A)')'COOR_2D',chenti
-    endif
-!      WRITE(IMOD,'(11X,2A,12X,A,A2,A,A2,A,A4)')
-!     +'AUTEUR=',AUT,'DATE=',CT(1)(1:2),'/',CT(2)(1:2),'/',CT(3)
-!
+    write(imod,'(A,4X,A)')'COOR_3D',chenti
     write(imod,'(A)') chfone
 !
 ! --- ECRITURE DES NUMEROS DE NOEUDS ET DE LEURS COORDONNEES :
 !     ------------------------------------------------------
-    do 20 inode = 1, nbnode
+    do inode = 1, nbnode
         node = info(inode)
 !
 !      ON N'ECRIT PAS LES NOEUDS ORPHELINS
-        if (detr(node+1) .eq. 0) goto 20
+        if (detr(node+1) .eq. 0) cycle
 !
         x = coor(3*(inode-1)+1)
         y = coor(3*(inode-1)+2)
         z = coor(3*(inode-1)+3)
 !
         call codent(node, 'G', chnode(2:8))
-        if (dim3d) then
-            write(imod,'(2X,A,2X,3(1PE21.14),1X)') chnode,x,y,z
-        else
-            write(imod,'(2X,A,2X,2(1PE21.14),1X)') chnode,x,y
-        endif
+        write(imod,'(1X,A8,3(1X,1PE21.14))') chnode,x,y,z
 !
- 20 end do
+    end do
 !
     write(imod,'(A)') 'FINSF'
     write(imod,'(A)') '%'

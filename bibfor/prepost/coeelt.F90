@@ -1,7 +1,7 @@
 subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                   nbmail)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,9 +74,9 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
     k8bid = '        '
     chenti = 'NBOBJ=      '
 !
-    do 10 i = 1, 32
+    do i = 1, 32
         chtab(i) = '        '
-10  end do
+    end do
 !
 ! --- RECUPERATION DES OBJETS DE TRAVAIL :
 !     ----------------------------------
@@ -90,9 +90,9 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! --- ECRITURE DES MAILLES :
 !     --------------------
-    do 20 nte = 1, nbtyma
+    do nte = 1, nbtyma
 !
-        if (nbtym(nte) .eq. 0) goto 20
+        if (nbtym(nte) .eq. 0) cycle
         call codent(nbtym(nte), 'G', chenti(7:12))
 !
 ! ---   ECRITURE DE LA DATE :
@@ -104,7 +104,7 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
 ! ---   BOUCLE SUR LES MAILLES :
 !       ----------------------
-        do 30 ima = 1, nbmail
+        do ima = 1, nbmail
             ityp = typma(ima)
             nbno = nbnma(ima)
             if (ityp .eq. nte) then
@@ -114,11 +114,11 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 !
                 nbnoas = nbnoma(nte)
 !
-                do 40 ino = 1, nbnoas
+                do ino = 1, nbnoas
                     neu2(ino) = noma(1+ij+nuconn(nte,ino)-1)
                     call codnop(chtab(ino), prfnoe, 1, 1)
                     call codent(neu2(ino), 'G', chtab(ino)(2:8))
-40              continue
+                end do
 !
                 idiv = int(nbnoas/8)
                 irest = mod(nbnoas,8)
@@ -126,36 +126,36 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                 if (irest .ne. 0) then
                     write(imod,202) chmail,(chtab(i),i=1,nbnoas)
                 else
-                    do 1000 k = 1, idiv
+                    do k = 1, idiv
                         l = 8*(k-1)
                         if (idiv .eq. 1) then
-                            write(imod,'(A,8(1X,A))') chmail,(chtab(i)&
+                            write(imod,'(8(1x,a8))') chmail,(chtab(i)&
                             ,i=1+l,8+l)
                         else
-                            write(imod,'(8X,8(1X,A))') (chtab(i),i=1+&
+                            write(imod,'(9x,7(1x,a8))') (chtab(i),i=1+&
                             l,8+l)
                         endif
-1000                  continue
+                    end do
                 endif
             endif
             ij = ij + nbno
-30      continue
+        end do
 !
         write(imod,'(A)') 'FINSF'
         write(imod,'(A)') '%'
 !
-20  end do
+    end do
 !
-    202 format(a,8(1x,a),/,(8x,8(1x,a)))
+    202 format(a,8(1x,a8),/,(9x,8(1x,a8)))
 !
 ! --- ECRITURE DES GROUP_MA :
 !     ---------------------
     call jelira('&&PRECOU.INDICE.GROUP_MA', 'LONUTI', indmax)
 !
     maxmai = 0
-    do 50 i = 1, indmax
+    do i = 1, indmax
         maxmai = max(maxmai,nbmag(i))
-50  end do
+    end do
 !
     call wkvect('&&PRECOU.GRMA.MAILLES', 'V V K24', maxmai, jgrmai)
 !
@@ -164,31 +164,31 @@ subroutine coeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
 ! --- BOUCLE SUR LES GROUPES DE MAILLES :
 !     ---------------------------------
     ier = 0
-    do 60 i = 1, indmax
+    do i = 1, indmax
         numgro = indma(i)
         if (numgro .ge. 1000000) then
             ier = ier + 1
             call utmess('E', 'PREPOST5_21', ni=2, vali=[numgro, 1000000])
-            goto 60
+            cycle
         endif
         call codent(numgro, 'G', chgrou(3:8))
         write(imod,'(A,4X,2A)') 'GROUP_MA','NOM=',chgrou
         call jeveuo(jexnum('&&PRECOU.LISTE.GROUP_MA', i), 'E', jgr)
-        do 70 k = 1, nbmag(i)
+        do k = 1, nbmag(i)
             call codnop(chmail, prfmai, 1, 1)
             call codent(zi(jgr+k-1), 'G', chmail(2:8))
             zk24(jgrmai+k-1) = chmail
-70      continue
+        end do
 !
 ! ---   ECRITURE DES MAILLES DU GROUPE DE MAILLES COURANT :
 !       -------------------------------------------------
-        write(imod,'(24(2X,A))') (zk24(jgrmai+k-1),k=1,nbmag(i))
+        write(imod,'(7(1X,A8))') (zk24(jgrmai+k-1),k=1,nbmag(i))
 !
         write(imod,'(A)') 'FINSF'
         write(imod,'(A)') '%'
 !
 !
-60  end do
+    end do
 !
 !
     if (ier .ne. 0) then

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -379,7 +379,7 @@ def calc_ifs_dnl_ops(self, GROUP_MA_IFS, NOM_CMP_IFS, UNITE_NOEUD, UNITE_ELEM, M
             print "DYNA_NON_LINE NUMPAS=", _numpas
             #__rescur=DYNA_NON_LINE(
             __rescur = DYNA_NON_LINE(
-                #                       ETAT_INIT = dEtatInit,
+                ETAT_INIT = dEtatInit,
                 MODELE=MODELE,
                 INCREMENT=_F(LIST_INST=_liste,),
                 EXCIT=dExcit,
