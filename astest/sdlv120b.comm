@@ -200,6 +200,9 @@ DYNA=DYNA_NON_LINE(    MODELE=MODELE,
                                      FORMULATION='DEPLACEMENT',),
                         )
 
+
+CALC_CHAMP(reuse=DYNA, RESULTAT=DYNA, PROPRIETES=('MATE_ELEM', 'MATE_ELGA'))
+
 DXNA3=RECU_FONCTION(    LIST_INST=TEMLI2,   PRECISION=1.E-4,
                         RESULTAT=DYNA,   NOEUD='N3',
                         NOM_CHAM='DEPL',
@@ -247,5 +250,45 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.001,
                          ),
                       ),
               )
+
+IMPR_RESU(RESU=_F(RESULTAT=DYNA, NOM_CHAM='MATE_ELGA', NUME_ORDRE=1, GROUP_MA='IABSO'))
+
+# Maille D_PLAN
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,  
+                  RESULTAT=DYNA,
+                  NOM_CHAM='MATE_ELGA', 
+                  MAILLE = 'M16', 
+                  POINT = 1, 
+                  NOM_CMP='E',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=3.6E+10 , 
+                  VALE_CALC= 3.6E+10),
+                _F(NUME_ORDRE=1,  
+                  RESULTAT=DYNA,
+                  NOM_CHAM='MATE_ELEM', 
+                  MAILLE = 'M16',
+                  NOM_CMP='NU',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=0.2 , 
+                  VALE_CALC= 0.2),
+                 ),
+                )
+
+# Maille D_PLAN_ABSO
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,  
+                  RESULTAT=DYNA,
+                  NOM_CHAM='MATE_ELGA', 
+                  MAILLE = 'M46', 
+                  POINT = 1, 
+                  NOM_CMP='E',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=3.6E+10 , 
+                  VALE_CALC= 3.6E+10),
+                _F(NUME_ORDRE=1,  
+                  RESULTAT=DYNA,
+                  NOM_CHAM='MATE_ELEM', 
+                  MAILLE = 'M46',
+                  NOM_CMP='NU',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=0.2 , 
+                  VALE_CALC= 0.2),
+                 ),
+                )
 
 FIN()

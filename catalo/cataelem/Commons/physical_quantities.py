@@ -1944,6 +1944,19 @@ MASS_R   = PhysicalQuantity(type='R',
      EZ : moment d'inertie principal Z
 """)
 
+MATE_R   = PhysicalQuantity(type='R',
+    components=(
+       'E',
+       'NU',
+       'RHO',
+    ),
+    comment="""  MATE_R Type:R Parmètres matériaux
+       E   : module d'Young
+       NU  : Coef. de Poisson
+       RHO : Masse volumique
+""")
+
+
 
 MATE_F   = PhysicalQuantity(type='K8',
     components=(

@@ -84,6 +84,16 @@ class MEAB_FACE3(Element):
                      ),
             para_out=((SP.PMATUUR, MMATUUR), (SP.PVECTUR, MVECTUR), ),
         ),
+        
+        OP.MATE_ELGA(te=142,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R), ),
+        ),
+        
+        OP.MATE_ELEM(te=142,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R), ),
+        ),
 
         OP.ONDE_PLAN(te=498,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),

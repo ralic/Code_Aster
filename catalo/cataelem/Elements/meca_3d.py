@@ -839,6 +839,18 @@ class MECA_HEXA20(Element):
             para_in=((SP.PGEOMER, NGEOMER), ),
             para_out=((SP.PMATZZR, MMATZZR), ),
         ),
+        
+        OP.MATE_ELGA(te=142,
+            para_in=((SP.PMATERC, LC.CMATERC),
+                     (OP.MATE_ELGA.PVARCPR, LC.ZVARCPG), ),
+            para_out=((OP.MATE_ELGA.PMATERR, LC.EGMATE_R), ),
+        ),
+        
+        OP.MATE_ELEM(te=142,
+            para_in=((SP.PMATERC, LC.CMATERC),
+                     (OP.MATE_ELEM.PVARCPR, LC.ZVARCPG), ),
+            para_out=((OP.MATE_ELEM.PMATERR, LC.EEMATE_R), ),
+        ),
 
         OP.MECA_GYRO(te=159,
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),

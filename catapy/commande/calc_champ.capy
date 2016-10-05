@@ -93,6 +93,9 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr=tr("Options pour le calcul de variables internes"),
                              into=C_NOM_CHAM_INTO(phenomene='VARI_INTERNE',categorie='lin'),),
+         PROPRIETES   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr=tr("Options pour le calcul de propriétés"),
+                             into=C_NOM_CHAM_INTO(phenomene='PROPRIETES',categorie='lin'),),
                      ),
 
      # Bloc non-lineaire
@@ -116,6 +119,10 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          VARI_INTERNE = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr=tr("Options pour le calcul de variables internes"),
                              into=C_NOM_CHAM_INTO(phenomene='VARI_INTERNE',categorie='nonlin'),),
+         
+         PROPRIETES   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
+                             fr=tr("Options pour le calcul de propriétés"),
+                             into=C_NOM_CHAM_INTO(phenomene='PROPRIETES',categorie='nonlin'),),
 
          b_nom_vari   = BLOC(condition = "au_moins_un(VARI_INTERNE, ('VAEX_ELNO','VAEX_ELGA','VAEX_NOEU'))",
              NOM_VARI = SIMP(statut='o',typ='TXM',min= 1,max='**',

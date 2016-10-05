@@ -355,6 +355,13 @@ M_ASSE=ASSE_MATRICE(    MATR_ELEM=M_ELEM, NUME_DDL=NUMERO )
 MODE3=CALC_MODES(MATR_RIGI=K_ASSE, MATR_MASS=M_ASSE, OPTION='PLUS_PETITE',
                  CALC_FREQ=_F(NMAX_FREQ=10,) ,
                  SOLVEUR_MODAL=_F(METHODE='TRI_DIAG', ))
+                 
+CALC_CHAMP(reuse=MODE3, RESULTAT=MODE3, PROPRIETES=('MATE_ELEM', 'MATE_ELGA'))
+
+MATEGA=CREA_TABLE(RESU=(_F(RESULTAT=MODE3, NOM_CHAM='MATE_ELGA', NUME_ORDRE=1, 
+                  MAILLE=('MA000074','MA000081'), NOM_CMP='RHO')))
+
+IMPR_TABLE(TABLE=MATEGA)
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,  PARA='FREQ',  RESULTAT=MODE3,
                   REFERENCE='AUTRE_ASTER', VALE_REFE=226.938996101 , PRECISION=1.e-11, VALE_CALC= 226.938996101))
@@ -362,6 +369,43 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,  PARA='FREQ',  RESULTAT=MODE3,
                   REFERENCE='AUTRE_ASTER', VALE_REFE=1111.41079771 , PRECISION=1.e-11, VALE_CALC= 1111.41079771))
 TEST_RESU(RESU=_F(NUME_ORDRE=7,  PARA='FREQ',  RESULTAT=MODE3,
                   REFERENCE='AUTRE_ASTER', VALE_REFE=4508.49918197 , PRECISION=1.e-11, VALE_CALC= 4508.49918197))
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,  
+                  RESULTAT=MODE3,
+                  NOM_CHAM='MATE_ELGA', 
+                  MAILLE='MA000074', 
+                  POINT = 1, 
+                  NOM_CMP='RHO',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=1E3 , 
+                  VALE_CALC= 1E3),
+                _F(NUME_ORDRE=1,  
+                  RESULTAT=MODE3,
+                  NOM_CHAM='MATE_ELEM', 
+                  MAILLE='MA000074', 
+                  NOM_CMP='RHO',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=1E3 , 
+                  VALE_CALC= 1E3),
+                _F(NUME_ORDRE=1,  
+                  RESULTAT=MODE3,
+                  NOM_CHAM='MATE_ELGA', 
+                  MAILLE='MA000081', 
+                  POINT = 1, 
+                  NOM_CMP='RHO',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=3E3 , 
+                  VALE_CALC= 3E3),
+                _F(NUME_ORDRE=1,  
+                  RESULTAT=MODE3,
+                  NOM_CHAM='MATE_ELEM', 
+                  MAILLE='MA000081', 
+                  NOM_CMP='RHO',
+                  REFERENCE='ANALYTIQUE', VALE_REFE=3E3 , 
+                  VALE_CALC= 3E3),
+                 ),
+                )
+
+IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=MODE3, NOM_CHAM=('MATE_ELGA','MATE_ELEM'),
+                               TOUT='OUI',
+          ))
 
 FIN()
 #
