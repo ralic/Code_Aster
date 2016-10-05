@@ -9,7 +9,7 @@ subroutine focoli(ipt, coli, interp, x, y,&
     character(len=24) :: interp
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,13 +49,38 @@ subroutine focoli(ipt, coli, interp, x, y,&
             resu = linlin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
 !
         else if (interp.eq.'LIN LOG ') then
-            resu = linlog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            if (y(ipt).lt.r8prem() .or. y(ipt+1).lt.r8prem())then
+                ier = 250
+                valr (1) = rvar
+                valr (2) = x(ipt)
+                valr (3) = x(ipt+1)
+                call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
+            else
+                resu = linlog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            endif
 !
         else if (interp.eq.'LOG LOG ') then
-            resu = loglog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            if (x(ipt).lt.r8prem() .or. x(ipt+1).lt.r8prem() .or.&
+                y(ipt).lt.r8prem() .or. y(ipt+1).lt.r8prem())then
+                ier = 250
+                valr (1) = rvar
+                valr (2) = x(ipt)
+                valr (3) = x(ipt+1)
+                call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
+            else
+                resu = loglog(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            endif
 !
         else if (interp.eq.'LOG LIN ') then
-            resu = loglin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            if (x(ipt).lt.r8prem() .or. x(ipt+1).lt.r8prem())then
+                ier = 250
+                valr (1) = rvar
+                valr (2) = x(ipt)
+                valr (3) = x(ipt+1)
+                call utmess('A', 'UTILITAI6_15', nr=3, valr=valr)
+            else
+                resu = loglin(rvar,x(ipt),y(ipt),x(ipt+1),y(ipt+1))
+            endif
 !
         else if (interp(1:3).eq.'NON') then
             epsi = sqrt ( r8prem() )

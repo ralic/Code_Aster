@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -170,15 +170,22 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     dic.update(ldicf[i])
 
                     if (interp or dCi.has_key('LIST_PARA')) and i > 0:
-                        __ftmp = CALC_FONC_INTERP(
-                            FONCTION=obj,
-                            VALE_PARA=p,
-                            LIST_PARA_FONC=__li,
-                            **dic
-                        )
-                        pv, lv2 = __ftmp.Valeurs()
-                        lx = lv2[0][0]
-                        ly = lv2[0][1]
+                        
+                        try:
+                            __ftmp = CALC_FONC_INTERP(
+                                FONCTION=obj,
+                                VALE_PARA=p,
+                                LIST_PARA_FONC=__li,
+                                **dic
+                            )
+                            pv, lv2 = __ftmp.Valeurs()
+                            lx = lv2[0][0]
+                            ly = lv2[0][1]
+                        except aster.error,err:
+                            # on verifie que la bonne exception a ete levee
+                            assert err.id_message == "FONCT0_9", 'unexpected id : %s' % err.id_message
+                            continue
+
                     # on stocke les données dans le Graph
                     nomresu = dic['NOM_RESU'].strip() + '_' + str(
                         len(graph.Legendes))
@@ -198,17 +205,28 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                 if type(dpar['NOM_PARA']) in (list, tuple):
                     dpar['NOM_PARA'] = dpar['NOM_PARA'][0]
                 if interp:
-                    __ftmp = CALC_FONC_INTERP(
-                        FONCTION=obj,
-                        LIST_PARA=__linter,
-                        **dpar
-                    )
+                    try:
+                        __ftmp = CALC_FONC_INTERP(
+                            FONCTION=obj,
+                            LIST_PARA=__linter,
+                            **dpar
+                        )
+                    except aster.error,err:
+                        
+                            # on verifie que la bonne exception a ete levee
+                            assert err.id_message == "FONCT0_9", 'unexpected id : %s' % err.id_message
+                            continue
                 elif dCi.has_key('LIST_PARA'):
-                    __ftmp = CALC_FONC_INTERP(
-                        FONCTION=obj,
-                        LIST_PARA=dCi['LIST_PARA'],
-                        **dpar
-                    )
+                    try:
+                        __ftmp = CALC_FONC_INTERP(
+                            FONCTION=obj,
+                            LIST_PARA=dCi['LIST_PARA'],
+                            **dpar
+                        )
+                    except aster.error,err:
+                            # on verifie que la bonne exception a ete levee
+                            assert err.id_message == "FONCT0_9", 'unexpected id : %s' % err.id_message
+                            continue
                 lval = list(__ftmp.Valeurs())
                 lx = lval[0]
                 lr = lval[1]
