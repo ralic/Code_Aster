@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -239,6 +239,11 @@ Remontée d'erreur (pour aider à l'analyse) :
    SPEC_OSCI, la norme ne peut être nulle.
 """),
 
+    35 : _(u"""
+   INTERPOL_FFT : Le pas de temps PAS_INST demandé pour le calcul de l'interpolation
+   du signal est plus grand que le pas de temps du signal initial.
+"""),
+
     36 : _(u"""
    SPEC_OSCI, la méthode choisie suppose des amortissements sous critiques,
    (inférieurs à 1).
@@ -314,6 +319,15 @@ La formule '%(k1)s' dépend de %(i1)d paramètres.
       - Si votre formule dépend de 3 paramètres ou plus, vous devez d'abord créer une
         nouvelle formule à un seul paramètre (et appelé IMPR_FONCTION) ou à 2 paramètres
         et passer par CALC_FONC_INTERP puis IMPR_FONCTION.
+"""),
+
+    51 : _(u"""
+L'écart entre le pas de temps demandé (PAS_INST) et celui obtenu est supérieur
+à la précision souhaitée :
+   Pas de temps du signal de sortie obtenu   : %(r1)f
+   Pas de temps du signal de sortie souhaité : %(r2)f
+   Écart relatif                             : %(r3).2f %%
+   
 """),
 
     52 : _(u"""

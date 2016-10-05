@@ -689,5 +689,148 @@ TEST_FONCTION(VALEUR=(   _F(VALE_CALC=0.31829528014329, VALE_REFE=0.3183,
 # FIN VALIDATION DSP
 ##--------------------------------------------------------
 
+# VALIDATION DE L'INTERPOLATION DES ACCELEROGRAMMES : INTERPOL_FFT
+# ----------------------------------------------------------------
+
+INCLUDE(UNITE=11,   INFO=1)
+# (voir zzzz100b)
+FREQ11=49.916805324459233
+FREQ12=119.80033277870216
+
+# nombre de valeurs impair
+
+INTX=CALC_FONCTION( INTERPOL_FFT=_F( FONCTION = X, PAS_INST = 5.E-4, ) )
+
+FFINTX=CALC_FONCTION( FFT=_F( FONCTION = INTX, METHODE='COMPLET',) )
+                          
+                          
+INTY=CALC_FONCTION( INTERPOL_FFT=_F( FONCTION = Y, PAS_INST = 7.E-4, PRECISION=1E-3) )
+
+FFINTY=CALC_FONCTION( FFT=_F( FONCTION = INTY, METHODE='COMPLET',   ) )
+#
+# nombre de valeurs pair (avec debut du signal en temps non en zero)
+
+XFF1P=CALC_FONCTION( FFT=_F( FONCTION = XP, METHODE='COMPLET',) )
+INTXP=CALC_FONCTION( INTERPOL_FFT=_F( FONCTION = XP, PAS_INST = 5.E-4) )
+
+FFINTXP=CALC_FONCTION( FFT=_F( FONCTION = INTXP, METHODE='COMPLET',) )
+
+YFF1P=CALC_FONCTION( FFT=_F( FONCTION = YP, METHODE='COMPLET',) )
+
+INTYP=CALC_FONCTION( INTERPOL_FFT=_F( FONCTION = YP, PAS_INST = 7.E-4,) )
+
+FFINTYP=CALC_FONCTION( FFT=_F( FONCTION = INTYP, METHODE='COMPLET',) )
+
+
+# Valeurs pour METHODE='COMPLET' (Matlab)
+
+# signaux impairs
+
+# on normalise par DT_OLD/DT_NEW
+
+
+dt_calc = 0.000500833333333
+coef_x = 0.001/dt_calc
+#FFX_F11B=coef_x*FFX_F11 (voir zzzz100b)
+FFX_F11B=coef_x*46.773788670759131-coef_x*295.81845952473248j,
+#FFX_F12B=coef_x*FFX_F12
+FFX_F12B=coef_x*107.56095648453922-coef_x*272.16663185073367j,
+
+dt_calc = 0.000698837209302
+coef_y = 0.001/dt_calc
+#FFY_F11B=coef_y*FFY_F11
+FFY_F11B=- coef_y*5.3909464299143508- coef_y*312.17287961881800j,
+#FFY_F12B=coef_y*FFY_F12
+FFY_F12B=coef_y*103.55711676347113-coef_y*268.47490307166413j,
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=FFX_F11B,
+                         VALE_REFE_C=FFX_F11B,
+                         VALE_PARA=FREQ11,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTX,),
+                      _F(VALE_CALC_C=FFX_F12B,
+                         VALE_REFE_C=FFX_F12B,
+                         VALE_PARA=FREQ12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTX,),
+                      _F(VALE_CALC_C=FFY_F11B,
+                         VALE_REFE_C=FFY_F11B,
+                         VALE_PARA=FREQ11,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTY,),
+                      _F(VALE_CALC_C=FFY_F12B,
+                         VALE_REFE_C=FFY_F12B,
+                         VALE_PARA=FREQ12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTY,),
+                      ),
+              )
+
+
+# signaux pairs
+
+
+dt_calc = 0.0005
+coef_x = 0.001/dt_calc
+#FFX_F11B=coef_x*FFX_F11 (voir zzzz100b)
+FFX_F11B=coef_x*46.773788670759131-coef_x*295.81845952473248j,
+#FFX_F12B=coef_x*FFX_F12
+FFX_F12B=coef_x*107.56095648453922-coef_x*272.16663185073367j,
+
+dt_calc = 0.000700934579439
+coef_y = 0.001/dt_calc
+#FFY_F11B=coef_y*FFY_F11
+FFY_F11B=- coef_y*5.3909464299143508- coef_y*312.17287961881800j,
+#FFY_F12B=coef_y*FFY_F12
+FFY_F12B=coef_y*103.55711676347113-coef_y*268.47490307166413j,
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=88.07756-271.0748j,
+                         VALE_PARA=FREQ11,
+                         FONCTION=XFF1P,),
+                      _F(VALE_CALC_C=180.7614-192.4914j,
+                         VALE_PARA=FREQ12,
+                         FONCTION=XFF1P,),
+                      _F(VALE_CALC_C=coef_x*(88.07756-271.0748j),
+                         VALE_REFE_C=coef_x*(88.07756-271.0748j),
+                         VALE_PARA=FREQ11,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTXP,),
+                      _F(VALE_CALC_C=coef_x*(180.7614-192.4914j),
+                         VALE_REFE_C=coef_x*(180.7614-192.4914j),
+                         VALE_PARA=FREQ12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTXP,),
+                      ),
+              )
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC_C=38.99211-295.1141j,
+                         VALE_PARA=FREQ11,
+                         FONCTION=YFF1P,),
+                      _F(VALE_CALC_C=190.3513-188.4763j,
+                         VALE_PARA=FREQ12,
+                         FONCTION=YFF1P,),
+                      _F(VALE_CALC_C=(coef_y*38.99211-coef_y*295.1141j,),
+                         VALE_REFE_C=(coef_y*38.99211-coef_y*295.1141j,),
+                         VALE_PARA=FREQ11,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTYP,),
+                      _F(VALE_CALC_C=(coef_y*190.3513-coef_y*188.4763j,),
+                         VALE_REFE_C=(coef_y*190.3513-coef_y*188.4763j,),
+                         VALE_PARA=FREQ12,
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=1.0000000000000001E-05,
+                         FONCTION=FFINTYP,),
+                      ),
+              )
+
+
+
 #
 FIN()

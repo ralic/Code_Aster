@@ -335,6 +335,70 @@ class CalcFonction_FFT(CalcFonctionOper):
         else:
             self.resu = self._lf[0].fft(kw['METHODE'], kw['SYME'])
 
+class CalcFonction_INTERPOL_FFT(CalcFonctionOper):
+    """Zero padding method"""
+    def _build_data(self):
+        """Read keywords to build the data"""
+        opts = {}
+        #if self.typres is fonction_sdaster:
+            #opts['arg'] = 'complex'
+        self._build_list_fonc(**opts)
+
+    def _run(self):
+        """INTERPOL_FFT"""
+        import copy
+        kw = self.kw
+        t0 = self._lf[0].vale_x[0]
+
+        dt_init = self._lf[0].vale_x[1]-t0
+        N_init = len(self._lf[0].vale_x)
+        
+        dt_cible = kw['PAS_INST']
+        if dt_init < dt_cible:
+            UTMESS('F','FONCT0_35')
+        # nombre d'intervalles
+        N_init-=1
+        N_sortie=int((N_init)*dt_init/dt_cible)
+        
+        if N_init*dt_init/dt_cible - N_sortie >= 0.5:
+            N_sortie+=1
+        # retour au nombre de valeurs
+        N_sortie+=1
+        
+        # FFT
+        ft = self._lf[0].fft('COMPLET')
+        
+        # suppression de la partie symetrique du signal
+        N = len(ft.vale_x)
+        valex = list(ft.vale_x[:N/2+1])
+        valey = list(ft.vale_y[:N/2+1])
+        
+        # zero padding
+        dfreq = (valex[1]-valex[0]).real
+        last_freq = valex[-1]
+        N_pad = N_sortie/2+1-N/2-1
+        for i in range(N_pad):
+            freq = last_freq + (i+1)* dfreq
+            valex.append(freq)
+            valey.append(0.)
+        ft.vale_x = NP.array(valex)
+        ft.vale_y = NP.array(valey)
+        
+        # IFFT 
+        self.resu = ft.fft('COMPLET', 'NON')
+        self.resu.vale_x = self.resu.vale_x + t0
+        
+        # dt fin reel
+        dt_fin = self.resu.vale_x[1]-self.resu.vale_x[0]
+        
+        # normalisation
+        coef_norm = dt_init/dt_fin
+        self.resu.vale_y = self.resu.vale_y * coef_norm
+
+        ecart = abs(dt_fin-kw['PAS_INST'])/kw['PAS_INST']
+        if ecart > kw['PRECISION']:
+            UTMESS('A','FONCT0_51', valr=[dt_fin, kw['PAS_INST'], 100*ecart])
+
 class CalcFonction_FRACTILE(CalcFonctionOper):
     """Compute the fractile of functions"""
     def _run(self):
