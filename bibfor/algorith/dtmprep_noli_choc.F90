@@ -64,6 +64,7 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/locglo.h"
 !
 !   -0.1- Input/output arguments
     character(len=*) , intent(in) :: sd_dtm_
@@ -78,15 +79,16 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
     integer           :: ino1, ino2, ind1, ind2, irett
     integer           :: namtan, nbmode, ind_mmax, info, vali
     integer           :: j, neq, start, finish, mxlevel, nbchoc
-    integer           :: nl_type, nexcit
+    integer           :: nl_type, nexcit, unidir
 !
     real(kind=8)      :: ctang, ktang, fric_static, fric_dynamic, r8bid
     real(kind=8)      :: gap, xjeu, k, amor, mmax
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, valr(10), damp_normal, stif_normal, dist_no1
     real(kind=8)      :: dist_no2, ddpilo(3), dpiglo(6), dpiloc(6), one
-    real(kind=8)      :: coor(3)
+    real(kind=8)      :: coor(3), VectIN(3), VectOUT(3)
 !
+    character(len=3)  :: unidirk
     character(len=8)  :: sd_dtm, sd_nl, mesh, mesh1, mesh2
     character(len=8)  :: nume, sst1, sst2, nomma, no1_name
     character(len=8)  :: no2_name, monmot, k8typ, kbid, repere
@@ -386,16 +388,23 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
         if (n1.gt.0) call nlsav(sd_nl, _RIGI_TANGENTIAL, 1, iocc=i, rscal=ktang)
 
         friction = .true.
+        unidir = 0
         call getvtx(motfac, 'FROTTEMENT', iocc=icomp, scal=typfro, nbret=n1)
         if (typfro(1:10) .eq. 'COULOMB   ') then
-            call getvr8(motfac, 'COULOMB', iocc=icomp, scal=fric_dynamic, nbret=n1)
+            call getvr8(motfac, 'COULOMB'        , iocc=icomp, scal=fric_dynamic, nbret=n1)
+            call getvtx(motfac, 'UNIDIRECTIONNEL', iocc=icomp, scal=unidirk, nbret=n1)
+            if (unidirk.eq.'OUI') unidir = 1
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=fric_dynamic)
-            call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=fric_dynamic)
+            call nlsav(sd_nl, _FRIC_STATIC , 1, iocc=i, rscal=fric_dynamic)
+            call nlsav(sd_nl, _FRIC_UNIDIR , 1, iocc=i, iscal=unidir)
         else if (typfro(1:16) .eq. 'COULOMB_STAT_DYN') then
             call getvr8(motfac, 'COULOMB_DYNA', iocc=icomp, scal=fric_dynamic, nbret=n1)
             call getvr8(motfac, 'COULOMB_STAT', iocc=icomp, scal=fric_static, nbret=n1)
+            call getvtx(motfac, 'UNIDIRECTIONNEL', iocc=icomp, scal=unidirk, nbret=n1)
+            if (unidirk.eq.'OUI') unidir = 1
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=fric_dynamic)
             call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=fric_static)
+            call nlsav(sd_nl, _FRIC_UNIDIR , 1, iocc=i, iscal=unidir)
         else
             call nlsav(sd_nl, _FRIC_DYNAMIC, 1, iocc=i, rscal=0.d0)
             call nlsav(sd_nl, _FRIC_STATIC, 1, iocc=i, rscal=0.d0)
@@ -554,6 +563,16 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
             valr(9)  = sincos_angle_g(1)
             valr(10) = sincos_angle_g(2)
             call utmess('I', 'ALGORITH16_8', nr=10, valr=valr)
+
+            VectIN(1) = 1.0d0
+            VectIN(2) = 0.0d0
+            VectIN(3) = 0.0d0
+            call locglo(VectIN, sina, cosa, sinb,&
+                        cosb, sing, cosg, VectOUT)
+            if (unidir .eq. 1) then
+                call utmess('I', 'ALGORITH16_97',nr=3, valr=VectOUT)
+            endif
+
             if (obst_typ(1:2).eq.'BI') then
                 xjeu = sqrt(xjeu)-(dist_no1+dist_no2)
                 valr (1) = xjeu

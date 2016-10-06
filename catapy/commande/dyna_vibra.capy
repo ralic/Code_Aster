@@ -331,10 +331,12 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             AMOR_TAN    =         SIMP(statut='f',typ='R'),
             FROTTEMENT  =         SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","COULOMB","COULOMB_STAT_DYNA"),),
             b_coulomb   =         BLOC(condition="FROTTEMENT=='COULOMB'",
-            COULOMB     =             SIMP(statut='o',typ='R'),),
+            COULOMB     =             SIMP(statut='o',typ='R'),
+            UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
             b_c_st_dyna =         BLOC(condition="FROTTEMENT=='COULOMB_STAT_DYNA'",
             COULOMB_STAT=             SIMP(statut='o',typ='R'),
-            COULOMB_DYNA=             SIMP(statut='o',typ='R'),),),
+            COULOMB_DYNA=             SIMP(statut='o',typ='R'),
+            UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),),
 
 
 #       C.2.2 Cracked rotor

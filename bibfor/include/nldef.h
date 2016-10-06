@@ -19,7 +19,7 @@
 ! sd_nl data structure : Parameters <-> integer definitions
 ! -------------------------------------------------------------------------
 !
-#define _NL_NBPAR 89
+#define _NL_NBPAR 90
 
 #define _ADHERANCE 1
 #define _ANTISISMIC_C 2
@@ -110,6 +110,7 @@
 #define _ANG_INIT  87
 #define _ANG_ROTA  88
 #define _INTERNAL_VARS_INDEX  89
+#define _FRIC_UNIDIR  90
 
 #define _NL_NB_TYPES     9
 

@@ -39,6 +39,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "asterfort/fnorm.h"
 #include "asterfort/fointe.h"
 #include "asterfort/ftang.h"
+#include "asterfort/ftang_rail.h"
 #include "asterfort/gloloc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/locglo.h"
@@ -69,7 +70,7 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
     aster_logical     :: multi_support
     integer           :: i, iex, nbexci, ier, par_coorno(2)
     integer           :: nbno, ino, adherance, nbmode, im
-    integer           :: start, finish
+    integer           :: start, finish, unidir
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8)      :: ddeplo(3), dvitlo(3), xjeu, knorm, cnorm
@@ -268,10 +269,18 @@ subroutine dtmforc_choc(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
             oldvt(1)  =      vint(start+18)
             oldvt(2)  =      vint(start+19)
 
-!           --- Calculation of the tangential (frictional) force
-            call ftang(fn, ddeplo, dvitlo, cfrotd, cfrots, &
-                       ktang, ctang, adherance, oldvt, oldft,&
-                       oldxl, cost, sint, ftange, flocal, vtang)          
+            call nlget(sd_nl, _FRIC_UNIDIR, iocc=nl_ind, iscal=unidir , buffer=buffnl)
+            if (unidir.eq.0) then
+!               --- Calculation of the tangential (frictional) force, isotropic mode
+                call ftang(fn, ddeplo, dvitlo, cfrotd, cfrots, &
+                           ktang, ctang, adherance, oldvt, oldft,&
+                           oldxl, cost, sint, ftange, flocal, vtang)
+            else
+!               --- Calculation of the tangential (frictional) force, unidir mode
+                call ftang_rail(fn, ddeplo, dvitlo, cfrotd, cfrots, &
+                                ktang, ctang, adherance, oldvt, oldft,&
+                                oldxl, cost, sint, ftange, flocal, vtang)
+            end if
 
 !       --- Conversion to the global (physical) reference
             call locglo(flocal, sina, cosa, sinb, cosb,&

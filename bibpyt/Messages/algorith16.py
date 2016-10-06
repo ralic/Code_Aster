@@ -20,9 +20,10 @@
 cata_msg = {
 
     2 : _(u"""
-  Informations sur les noeuds de choc
-  lieu de choc   :  %(i1)d
-  noeud de choc  :  %(k1)s
+ --------------------PARAMETRES DE CHOC--------------------
+ Informations sur les noeuds de choc
+ lieu de choc   :  %(i1)d
+ noeud de choc  :  %(k1)s
 """),
 
     3 : _(u"""
@@ -57,6 +58,7 @@ cata_msg = {
 
     9 : _(u"""
  jeu initial :  %(r1)f
+ ----------------------------------------------------------
 """),
 
     10 : _(u"""
@@ -299,7 +301,13 @@ Risques & conseils :
 """),
 
 
-
+    97 : _(u"""
+ Comportement unidirectionnel activé : 
+ Le coefficient de frottement est nul suivant l'axe X local.
+ En repère global cet axe correspond à :  x :  %(r1)f
+                                          y :  %(r2)f
+                                          z :  %(r3)f
+"""),
 
 
 

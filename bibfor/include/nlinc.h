@@ -40,7 +40,8 @@
                  'ROTR_DFK', 'ROTR_FK ', 'SIGN_DYZ', 'SINCOS_A', 'SINCOS_B', &
                  'SINCOS_G', 'SS1_NAME', 'SS2_NAME', 'STIF_NOR', 'FTAN_STK', &
                  'VTAN_PRE', 'VAR_INTR', 'MX_LEVEL', 'F_TOT_WK', 'F_TAN_WK', &
-                 'NOM_CMP ', 'PSI_DEL2', 'ANG_INIT', 'ANG_ROTA', 'VAR_INDX'/
+                 'NOM_CMP ', 'PSI_DEL2', 'ANG_INIT', 'ANG_ROTA', 'VAR_INDX', &
+                 'FRIC_UNI'/
 
     data partyp /'I  ', 'R  ', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
@@ -59,7 +60,8 @@
                  'K24', 'K24', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'K24', 'K24', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'I  ', 'R  ', 'R  ', &
-                 'K24', 'R  ', 'R  ', 'K24', 'I  '/ 
+                 'K24', 'R  ', 'R  ', 'K24', 'I  ', &
+                 'I  '/ 
 
 ! -------------------------------------------------------------------------
 !   parind = -2 : vector global        ; = -1 : scalar global ;
@@ -83,4 +85,5 @@
                   1,  1,  2,  2,  2, &
                   2,  1,  1,  1,  2, &
                   2, -2, -1, -2, -2, &
-                  1,  2,  1,  1, -2/
+                  1,  2,  1,  1, -2, &
+                  1/
