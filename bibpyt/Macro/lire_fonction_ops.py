@@ -52,8 +52,8 @@ def lire_blocs(nomfich, SEPAR, INFO=1):
             if llen == 0:
                 llen = len(splin)
             elif len(splin) != llen:
-                raise LectureBlocError,  'Ligne %d : %d champs au lieu de %d attendus' % (
-                    il, len(splin), llen)
+                raise LectureBlocError('Ligne {0} : {1} champs au lieu de {2} '
+                                       'attendus'.format(il, len(splin), llen))
         except ValueError:
             if lignes == []:
                 pass  # dans ce cas, on a plusieurs lignes délimitant 2 fonctions
@@ -89,18 +89,20 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
     bloc_resu = INDIC_RESU[0]
     col_resu = INDIC_RESU[1]
     if bloc_para > nb_blocs:
-        raise LectureBlocError, "Il y a %d blocs or INDIC_PARA=(%d, .)" % (
-            nb_blocs, bloc_para)
+        raise LectureBlocError("Il y a {0} blocs or INDIC_PARA=({1}, .)"
+                               .format(nb_blocs, bloc_para))
     if bloc_resu > nb_blocs:
-        raise LectureBlocError, "Il y a %d blocs or INDIC_RESU=(%d, .)" % (
-            nb_blocs, bloc_resu)
+        raise LectureBlocError("Il y a {0} blocs or INDIC_RESU=({1}, .)"
+                               .format(nb_blocs, bloc_resu))
 
     if col_para > len(blocs[bloc_para - 1][0]):
-        raise LectureBlocError, "Le bloc %d comporte %d colonnes or INDIC_PARA=(., %d)" % \
-            (bloc_para, len(blocs[bloc_para - 1][0]), col_para)
+        raise LectureBlocError("Le bloc {0} comporte {1} colonnes or "
+                               "INDIC_PARA=(., {2})".format(bloc_para,
+                               len(blocs[bloc_para - 1][0]), col_para))
     if col_resu > len(blocs[bloc_resu - 1][0]):
-        raise LectureBlocError, "Le bloc %d comporte %d colonnes or INDIC_RESU=(., %d)" % \
-            (bloc_resu, len(blocs[bloc_resu - 1][0]), col_resu)
+        raise LectureBlocError("Le bloc {0} comporte {1} colonnes or "
+                               "INDIC_RESU=(., {2})".format(bloc_resu,
+                               len(blocs[bloc_resu - 1][0]), col_resu))
 
     # construction du VALE de la fonction par recherche des indices
     # de colonnes et de fonctions dans le tableau blocs
@@ -112,7 +114,7 @@ def liste_double(nomfich, INDIC_PARA, INDIC_RESU, SEPAR, INFO=1):
         message = """Les deux colonnes extraites n'ont pas la meme longueur
          %d lignes pour PARA
          %d lignes pour RESU""" % (len(vale_para), len(vale_resu))
-        raise LectureBlocError, message
+        raise LectureBlocError(message)
 
     laux = transpose([vale_para, vale_resu])
     liste_vale = []
@@ -131,11 +133,12 @@ def liste_simple(nomfich, INDIC_PARA, SEPAR, INFO=1):
     bloc_para = INDIC_PARA[0]
     col_para = INDIC_PARA[1]
     if bloc_para > nb_blocs:
-        raise LectureBlocError, "Il y a %d blocs or INDIC_PARA=(%d, .)" % (
-            nb_blocs, bloc_para)
+        raise LectureBlocError("Il y a {0} blocs or INDIC_PARA=({1}, .)"
+                               .format(nb_blocs, bloc_para))
     if col_para > len(blocs[bloc_para - 1][0]):
-        raise LectureBlocError, "Le bloc %d comporte %d colonnes or INDIC_PARA=(., %d)" % \
-            (bloc_para, len(blocs[bloc_para - 1][0]), col_para)
+        raise LectureBlocError("Le bloc {0} comporte {1} colonnes or "
+                               "INDIC_PARA=(., {2})".format(bloc_para,
+                               len(blocs[bloc_para - 1][0]), col_para))
 
     # construction du VALE de la fonction par recherche des indices
     # de colonnes et de fonctions dans le tableau l_fonc
@@ -180,8 +183,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
         try:
             liste_vale = liste_double(nomfich, INDIC_PARA, args['INDIC_RESU'],
                                       SEPAR, INFO)
-        except LectureBlocError, message:
-            UTMESS('F', 'FONCT0_42', valk=message)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
 
         # création de la fonction ASTER :
         ut_fonc = DEFI_FONCTION(NOM_PARA=NOM_PARA,
@@ -204,13 +207,13 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
             indic2 = args['INDIC_PHAS']
         try:
             liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR, INFO)
-        except LectureBlocError, message:
-            UTMESS('F', 'FONCT0_42', valk=message)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
 
         try:
             liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR, INFO)
-        except LectureBlocError, message:
-            UTMESS('F', 'FONCT0_42', valk=message)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
 
         liste = []
         if 'INDIC_REEL' in args:
@@ -244,8 +247,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
             try:
                 liste_vale = liste_double(nomfich, args['INDIC_ABSCISSE'],
                                           elem['INDIC_RESU'], SEPAR, INFO)
-            except LectureBlocError, message:
-                UTMESS('F', 'FONCT0_42', valk=message)
+            except LectureBlocError, exc:
+                UTMESS('F', 'FONCT0_42', valk=exc.args)
 
             motscles['DEFI_FONCTION'].append(_F(VALE=liste_vale,
                                                 INTERPOL=args[
@@ -255,8 +258,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                                                 PROL_GAUCHE=args['PROL_GAUCHE_FONC']))
         try:
             liste_para = liste_simple(nomfich, INDIC_PARA, SEPAR, INFO)
-        except LectureBlocError, message:
-            UTMESS('F', 'FONCT0_42', valk=message)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
 
         # création de la nappe
         ut_fonc = DEFI_NAPPE(PARA=liste_para,
