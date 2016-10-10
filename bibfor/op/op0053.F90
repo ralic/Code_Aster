@@ -5,6 +5,7 @@ use Rom_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/titre.h"
 #include "asterfort/dbr_chck.h"
@@ -67,5 +68,12 @@ implicit none
 ! - Compute the POD by the main function
 !
     call dbr_main(ds_para)
+!
+! - Clean
+!
+    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
+       AS_DEALLOCATE(vi = ds_para%ds_empi%ds_lineic%v_nume_pl)
+       AS_DEALLOCATE(vi = ds_para%ds_empi%ds_lineic%v_nume_sf)
+    endif
 !
 end subroutine

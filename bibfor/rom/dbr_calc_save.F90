@@ -53,8 +53,6 @@ implicit none
     real(kind=8), pointer :: v_lin(:) => null()
     real(kind=8), pointer :: s_lin(:) => null()
     integer, pointer :: v_nume_slice(:) => null()
-    integer, pointer :: v_nume_pl(:) => null()
-    integer, pointer :: v_nume_sf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,31 +62,26 @@ implicit none
 !
     if (base_type .eq. 'LINEIQUE') then
         nb_slice  = ds_empi%ds_lineic%nb_slice
-        v_nume_pl = ds_empi%ds_lineic%v_nume_pl
-        v_nume_sf = ds_empi%ds_lineic%v_nume_sf 
         AS_ALLOCATE(vr=v_lin, size = nb_equa*nb_mode*nb_slice)
         AS_ALLOCATE(vr=s_lin, size = nb_mode*nb_slice)
         AS_ALLOCATE(vi=v_nume_slice, size = nb_mode*nb_slice)
-        
         do i_slice = 1, nb_slice
             do i_mode = 1, nb_mode
                 s_lin(i_mode + nb_mode*(i_slice - 1)) = s(i_mode)
                 v_nume_slice(i_mode + nb_mode*(i_slice - 1)) = i_slice
             enddo    
         enddo
-
         do i_equa = 1, nb_equa
             i_node  = (i_equa - 1)/nb_cmp + 1
             i_cmp   = i_equa - (i_node - 1)*nb_cmp
-            i_slice = v_nume_pl(i_node)
-            n_2d    = v_nume_sf(i_node)
+            i_slice = ds_empi%ds_lineic%v_nume_pl(i_node)
+            n_2d    = ds_empi%ds_lineic%v_nume_sf(i_node)
             i_2d    = (n_2d - 1)*nb_cmp + i_cmp
             do i_mode = 1, nb_mode
                 v_lin(i_equa + nb_equa*(i_mode - 1 + nb_mode*(i_slice - 1))) =&
                     v(i_2d + nb_equa/nb_slice*(i_mode - 1))
             enddo
         enddo
-
         call dbr_save(ds_empi, nb_mode*nb_slice, s_lin, v_lin, v_nume_slice)
         AS_DEALLOCATE(vr = v_lin)
         AS_DEALLOCATE(vr = s_lin)

@@ -112,6 +112,7 @@ implicit none
     call dismoi('NB_EQUA'     , field_refe, 'CHAM_NO' , repi = nb_equa) 
     call dismoi('NOM_MAILLA'  , field_refe, 'CHAM_NO' , repk = mesh)
     call dismoi('NB_NO_MAILLA', mesh      , 'MAILLAGE', repi = nb_node)
+    ds_empi%ds_lineic    = ds_para%ds_empi%ds_lineic
     ds_empi%base         = base
     ds_empi%field_type   = field_type
     ds_empi%field_refe   = field_refe

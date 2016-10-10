@@ -1,0 +1,211 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'));
+
+mesh=LIRE_MAILLAGE(FORMAT='MED',);
+
+# Material properties for thermics: functions
+Lambda=DEFI_FONCTION(
+                     NOM_PARA='TEMP',
+                     VALE=(20.0 ,0.014 ,
+                           100.0 ,0.0152 ,
+                           200.0 ,0.0166 ,
+                           300.0 ,0.0179 ,
+                           400.0 ,0.019 ,
+                           500.0 ,0.0206 ,
+                           600.0 ,0.0218 ,
+                           700.0 ,0.0231 ,
+                           800.0 ,0.0243 ,
+                           900.0 ,0.026 ,
+                           1000.0 ,0.0273 ,
+                           1200.0 ,0.0299 ,),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
+
+rho_cp=DEFI_FONCTION(
+                     NOM_PARA='TEMP',
+                     VALE=(20.0 ,0.0036 ,
+                           100.0 ,0.0039053 ,
+                           200.0 ,0.0041685 ,
+                           300.0 ,0.0043 ,
+                           400.0 ,0.004396 ,
+                           500.0 ,0.004446 ,
+                           600.0 ,0.004495 ,
+                           700.0 ,0.0045815 ,
+                           800.0 ,0.0047875 ,
+                           900.0 ,0.0049465 ,
+                           1000.0 ,0.0049962 ,
+                           1200.0 ,0.00504365 ,),
+                     PROL_DROITE='LINEAIRE',
+                     PROL_GAUCHE='LINEAIRE',);
+
+# Heat transfer coefficient with air (W.mm-2.K-1)
+C_echang=DEFI_CONSTANTE(VALE=1.5e-05,);
+
+# Heat transfer coefficient with one face of the cube (W.mm-2.K-1)
+C_echanf=DEFI_CONSTANTE(VALE=1.0,);
+
+# Ambient temperature
+T_ex=DEFI_CONSTANTE(VALE=20.0,);
+
+# Temperature of one face of the cube
+T_im=DEFI_FONCTION(
+                   NOM_PARA='INST',
+                   VALE=(0.0 ,20.0 ,
+                         1.0 ,30.0 ,
+                         2.0 ,50.0 ,
+                         3.0 ,90.0 ,
+                         4.0 ,140.0 ,
+                         5.0 ,240.0 ,
+                         6.0 ,350.0 ,
+                         7.0 ,570.0 ,
+                         8.0 ,800.0 ,
+                         9.0 ,1000.0 ,),
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='LINEAIRE',);
+# Emissivity
+C_epsi=DEFI_CONSTANTE(VALE=0.75,);
+
+# Stefan–Boltzmann constant (J.mm-2.s-1.K-4)
+C_sigma=DEFI_CONSTANTE(VALE=5.67e-14,);
+
+# Define the material
+steel=DEFI_MATERIAU(THER_NL=_F(LAMBDA=Lambda,
+                             RHO_CP=rho_cp,),);
+
+chmat=AFFE_MATERIAU(MAILLAGE=mesh,
+                    AFFE=_F(TOUT='OUI',
+                            MATER=steel,),);
+# Thermic model
+model=AFFE_MODELE(MAILLAGE=mesh,
+               AFFE=_F(TOUT='OUI',
+                       PHENOMENE='THERMIQUE',
+                       MODELISATION='3D',),);
+
+# Boundary condition
+chg_th=AFFE_CHAR_THER_F(MODELE=model,
+                        RAYONNEMENT=_F(GROUP_MA='S_e',
+                                       SIGMA=C_sigma,
+                                       EPSILON=C_epsi,
+                                       TEMP_EXT=T_ex,),
+                        ECHANGE=(_F(GROUP_MA='S_e',
+                                    COEF_H=C_echang,
+                                    TEMP_EXT=T_ex,),
+                                 _F(GROUP_MA='S_f',
+                                    COEF_H=C_echanf,
+                                    TEMP_EXT=T_im,),),);
+
+
+# Time discretization
+list_t=DEFI_LIST_REEL(DEBUT=0.0,
+                      INTERVALLE=_F(JUSQU_A=10.0,
+                                    PAS=1.0,),);
+
+list_i=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
+                                   LIST_INST=list_t,),);
+
+# Complete computation to create base
+thnl=THER_NON_LINE(MODELE=model,
+                   CHAM_MATER=chmat,
+                   EXCIT=_F(CHARGE=chg_th,),
+                   INCREMENT=_F(LIST_INST=list_i,),
+                   ETAT_INIT=_F(VALE=20.0,),
+                   NEWTON=_F(REAC_ITER=1,
+                             ITER_LINE_MAXI=3,),
+                   CONVERGENCE=_F(RESI_GLOB_MAXI=1e-5,),);
+
+thnl=CALC_CHAMP(reuse=thnl,
+                RESULTAT=thnl,
+                THERMIQUE='FLUX_NOEU',);
+
+# Create base (TEMP)
+base_p=DEFI_BASE_REDUITE(RESULTAT = thnl,
+                         INFO     = 2,
+                         TYPE_BASE='LINEIQUE',
+                         AXE='OX',
+                         SECTION='S_2D',
+                         NOM_CHAM = 'TEMP',
+                         NB_MODE  = 3);
+
+# Create base (FLUX_NOEU)
+base_d=DEFI_BASE_REDUITE(RESULTAT = thnl,
+                         INFO     = 2,
+                         TYPE_BASE='LINEIQUE',
+                         AXE='OX',
+                         SECTION='S_2D',
+                         NOM_CHAM = 'FLUX_NOEU',
+                         TOLE_SVD = 1.E-3,);
+
+# Print base (TEMP)
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=base_p))
+
+# Print base (FLUX_NOEU)
+IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=base_d))
+
+# Tests
+TEST_RESU(RESU=(
+                _F(RESULTAT=base_p,
+                   NUME_MODE = 1,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=(-0.281243767362,0.281243767362),
+                   ),
+                _F(RESULTAT=base_p,
+                   NUME_MODE = 2,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=(-0.376297867997,0.376297867997),
+                   ),
+                _F(RESULTAT=base_p,
+                   NUME_MODE = 3,
+                   NOM_CHAM='TEMP',
+                   NOEUD='N1',
+                   NOM_CMP='TEMP',
+                   VALE_CALC=(-0.169905641218,0.169905641218),
+                   ),  
+                ),
+          );
+
+TEST_RESU(RESU=(
+                _F(RESULTAT=base_d,
+                   NUME_MODE= 1,
+                   NOM_CHAM='FLUX_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=(0.000528821858268,-0.000528821858268),
+                   ),
+                _F(RESULTAT=base_d,
+                   NUME_MODE= 2,
+                   NOM_CHAM='FLUX_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='FLUY',
+                   VALE_CALC=(-0.0086548847081,+0.0086548847081),
+                   ),
+                _F(RESULTAT=base_d,
+                   NUME_MODE= 3,
+                   NOM_CHAM='FLUX_NOEU',
+                   NOEUD='N1',
+                   NOM_CMP='FLUX',
+                   VALE_CALC=(-0.0286653021093,+0.0286653021093),
+                   ),
+                ),
+          );
+
+FIN();

@@ -57,8 +57,6 @@ implicit none
     real(kind=8) :: tole_node
     character(len=8) :: axe_line = ' ', mesh= ' '
     character(len=24) :: surf_num = ' '
-    integer          , pointer :: v_nume_pl(:) => null()
-    integer          , pointer :: v_nume_sf(:) => null()
     integer          , pointer :: v_grno(:) => null()
     real(kind=8)     , pointer :: v_coor(:) => null()
     real(kind=8)     , pointer :: v_coor_x(:) => null()
@@ -82,13 +80,14 @@ implicit none
     axe_line  = ds_empi%axe_line
     surf_num  = ds_empi%surf_num
     ds_line   = ds_empi%ds_lineic
+    nb_node   = ds_empi%nb_node
     tole_node = ds_line%tole_node
 !
 ! - Allocate pointers for lineic objects
 !
     nb_slice = nb_node
-    AS_ALLOCATE(vi = v_nume_pl, size = nb_node)
-    AS_ALLOCATE(vi = v_nume_sf, size = nb_node)
+    AS_ALLOCATE(vi = ds_line%v_nume_pl, size = nb_node)
+    AS_ALLOCATE(vi = ds_line%v_nume_sf, size = nb_node)
 !
 ! - Get coordinates of nodes
 !
@@ -119,7 +118,7 @@ implicit none
         v_coor_p(1:nb_slice) = v_coor_w(1:nb_slice)
 
         call romLineicIndexList(nb_node  , v_coor_x , nb_slice, v_coor_p,&
-                                v_nume_pl, tole_node)
+                                ds_line%v_nume_pl, tole_node)
         
         do i_node = 1, nb_node_grno
             v_coor_1(i_node) = v_coor(1+3*(v_grno(i_node)-1)+1)
@@ -127,7 +126,7 @@ implicit none
         enddo
         call romLineicIndexSurf(nb_node     , v_coor_y , v_coor_z,&
                                 nb_node_grno, v_coor_1 , v_coor_2,&
-                                v_nume_sf   , tole_node)
+                                ds_line%v_nume_sf, tole_node)
     elseif (axe_line .eq. 'OY') then
         v_coor_w(1:nb_node) = v_coor_y(1:nb_node)
         call uttrir(nb_slice, v_coor_w, tole_node)
@@ -135,7 +134,7 @@ implicit none
         v_coor_p(1:nb_slice) = v_coor_w(1:nb_slice)
 
         call romLineicIndexList(nb_node  , v_coor_y , nb_slice, v_coor_p,&
-                                v_nume_pl, tole_node)
+                                ds_line%v_nume_pl, tole_node)
 
         do i_node = 1, nb_node_grno
             v_coor_1(i_node) = v_coor(1+3*(v_grno(i_node)-1)+2)
@@ -143,7 +142,7 @@ implicit none
         enddo
         call romLineicIndexSurf(nb_node     , v_coor_z , v_coor_x,&
                                 nb_node_grno, v_coor_1 , v_coor_2,&
-                                v_nume_sf   , tole_node)    
+                                ds_line%v_nume_sf, tole_node)    
     elseif (axe_line .eq. 'OZ') then
         v_coor_w(1:nb_node) = v_coor_z(1:nb_node)
         call uttrir(nb_slice, v_coor_w, tole_node)
@@ -151,7 +150,7 @@ implicit none
         v_coor_p(1:nb_slice) = v_coor_w(1:nb_slice)
 
         call romLineicIndexList(nb_node  , v_coor_z , nb_slice, v_coor_p,&
-                                v_nume_pl, tole_node)
+                                ds_line%v_nume_pl, tole_node)
 
         do i_node = 1, nb_node_grno
             v_coor_1(i_node) = v_coor(1+3*(v_grno(i_node)-1)+0)
@@ -159,7 +158,7 @@ implicit none
         enddo
         call romLineicIndexSurf(nb_node     , v_coor_x , v_coor_y,&
                                 nb_node_grno, v_coor_1 , v_coor_2,&
-                                v_nume_sf   , tole_node)
+                                ds_line%v_nume_sf, tole_node)
     else
         ASSERT(.false.)
     endif
@@ -176,8 +175,6 @@ implicit none
 !
 ! - Save 
 !
-    ds_line%v_nume_pl = v_nume_pl
-    ds_line%v_nume_sf = v_nume_sf
     ds_line%nb_slice  = nb_slice
     ds_empi%ds_lineic = ds_line
 !

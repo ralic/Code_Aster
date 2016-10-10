@@ -55,8 +55,6 @@ implicit none
     character(len=8)  :: base_type, result
     character(len=24) :: field_type, list_snap
     integer, pointer :: v_list_snap(:) => null()
-    integer, pointer :: v_nume_pl(:) => null()
-    integer, pointer :: v_nume_sf(:) => null()
     type(ROM_DS_LineicNumb) :: ds_line
     real(kind=8), pointer :: v_field_resu(:) => null()
     character(len=24) :: field_resu = '&&ROM_FIELDRESU'
@@ -92,9 +90,7 @@ implicit none
 ! - Save the [Q] matrix depend on which type of reduced base
 !    
     if (base_type .eq. 'LINEIQUE') then
-        nb_slice  = ds_line%nb_slice
-        v_nume_pl = ds_line%v_nume_pl 
-        v_nume_sf = ds_line%v_nume_sf
+        nb_slice  =  ds_line%nb_slice
         do i_snap = 1, nb_snap
             nume_inst = v_list_snap(i_snap)
             call rsexch(' '  , result, field_type, nume_inst, field_resu, iret)
@@ -103,8 +99,8 @@ implicit none
             do i_equa = 1, nb_equa
                 i_node = (i_equa - 1)/nb_cmp + 1
                 i_cmp  = i_equa - (i_node - 1)*nb_cmp
-                i_pl   = v_nume_pl(i_node)
-                n_2d   = v_nume_sf(i_node)
+                i_pl   = ds_line%v_nume_pl(i_node)
+                n_2d   = ds_line%v_nume_sf(i_node)
                 i_2d   = (n_2d - 1)*nb_cmp + i_cmp
                 q(i_2d + nb_equa*(i_pl - 1)/nb_slice + nb_equa*(i_snap - 1))= v_field_resu(i_equa)
             enddo

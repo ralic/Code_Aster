@@ -104,6 +104,8 @@ implicit none
         zk24(jv_para) = field_type
         call rsadpa(base, 'E', 1, 'NUME_PLAN', i_mode, 0, sjv=jv_para)
         zi(jv_para) = v_nume_slice(i_mode)
+        call rsadpa(base, 'E', 1, 'NUME_MODE', i_mode, 0, sjv=jv_para)
+        zi(jv_para) = i_mode
     end do
 !
 end subroutine
