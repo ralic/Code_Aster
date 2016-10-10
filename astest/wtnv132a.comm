@@ -40,15 +40,13 @@ PREF      = -1.E+6   ;
 R_ELA_DEV = 0.025    ;
 R_ELA_ISO = .01      ;   # on desactive le mecanisme isotrope
 
-vari = [ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,
-        ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
-
-vari_cart_cc = [-PCO/2,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO,ZERO] ;
-
 list_no_later_dro = ['N46','N47','N48','N49','N50','N51','N52','N53',
                      'N54','N55','N187'];
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'), IGNORE_ALARM='CALCULEL4_9',PAR_LOT='OUI', DEBUG=_F(SDVERI='OUI'))
+DEBUT(CODE        =_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+      IGNORE_ALARM=('CALCULEL4_9','ALGORITH9_84',),
+      PAR_LOT     ='OUI',
+      DEBUG       =_F(SDVERI='OUI'),);
 
 VISCOLIQ = DEFI_CONSTANTE(VALE=0.001 );
 
@@ -89,7 +87,6 @@ for n in range(nbcouche-1):
                        AFFE=_F(GROUP_MA    =tuple(list_group_ma),
                                PHENOMENE   ='MECANIQUE',
                                MODELISATION='3D_HMS'),);
-
 # <--5: fin boucle for
 
 
@@ -162,11 +159,11 @@ AFFMAT[0]=AFFE_MATERIAU(MAILLAGE=MA,
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),),);
 
-PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
+PES=AFFE_CHAR_MECA(MODELE=MOD[0],
                    PESANTEUR=_F(GRAVITE=9.81,
                                 DIRECTION=(0.0,0.0,-1.0,),),);
 
-CHPAR=AFFE_CHAR_CINE(MODELE=MOD[nbcouche-2],
+CHPAR=AFFE_CHAR_CINE(MODELE=MOD[0],
                      MECA_IMPO=_F(GROUP_MA='BAS', DZ=0.0),);
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
@@ -184,7 +181,6 @@ TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
 #        ----------------------------------
 # INIT-  Pose couches 1 et 2 = 1ere couches
 #        ----------------------------------
-
 
 # Consditions aux limites en deplacement pour les premieres couches
 n_couche=2
@@ -216,10 +212,8 @@ DEFLIST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST =TEMPS ),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
-                                 SUBD_PAS=2,
-                                 SUBD_NIVEAU=10,),);
-
-
+                                 SUBD_PAS      =2,
+                                 SUBD_NIVEAU   =10,),);
 
 # Pas d'Initialisation des contraintes
 # Mise en place de la premiere couche et de la seconde couche simultanement = 1ere couche
@@ -274,7 +268,11 @@ VAR[0]=CREA_CHAMP(INFO=1,
                 NOM_CHAM='VARI_ELGA',
                 INST=2000000.0,);
 
-U[0]=CALC_CHAMP(reuse=U[0],CONTRAINTE=('SIGM_ELNO',),CRITERES=('SIEQ_ELNO',),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[0])
+U[0]=CALC_CHAMP(reuse=U[0],
+                CONTRAINTE=('SIGM_ELNO',),
+                CRITERES=('SIEQ_ELNO',),
+                VARI_INTERNE=('VARI_ELNO'),
+                RESULTAT=U[0])
 
 
 T_DEP[0]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
@@ -364,7 +362,6 @@ CHNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                          NOM_CMP=('DX','DY','DZ','PRE1',),
                          VALE=(0.,0.,0.,0.),),);
 
-
 #         -------------------------
 # SUITE-  Pose couches 3 a nbcouche
 #         -------------------------
@@ -384,7 +381,7 @@ list_noeu_haut=list_no_later_dro[:2]
 for n in range(1,nbcouche-1):
 
     DETRUIRE(OBJET=_F(CHAINE=('CHLAT','PHAUT','INIDEP','INISIG','SIEF',
-                              'CART',),),);
+                              'CHPAR',),),);
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -467,6 +464,8 @@ for n in range(1,nbcouche-1):
                                        DIRECTION=(0.0,0.0,-1.0,),
                                        GROUP_MA =list_group_ma[:n+1]),);
 
+    CHPAR=AFFE_CHAR_CINE(MODELE=MOD[n],
+                     MECA_IMPO=_F(GROUP_MA='BAS', DZ=0.0),);
     # Deplacements lateraux nuls
     CHLAT=AFFE_CHAR_CINE(INFO=1,
                          MODELE=MOD[n],
@@ -493,7 +492,6 @@ for n in range(1,nbcouche-1):
     print ' > list_group_ma_bas =',list_group_ma[:n+1]
     print '   list_group_ma_hau =',list_group_ma[n+1]
 
-
     # Initialisation des champs de deplacement et de contrainte dans les couches
     # deja calculees
     INIDEP=CREA_CHAMP(INFO=1,
@@ -501,15 +499,14 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       OPTION='DEPL',
-
-                      ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
-                               CHAM_GD=DEP[n-1],),),);
+                      ASSE=_F(GROUP_MA=list_group_ma[:n+1],
+                              CHAM_GD=DEP[n-1],),);
 
     FX = FORMULE(NOM_PARA=('X'),VALE='X')
     FY = FORMULE(NOM_PARA=('Y'),VALE='Y')
     FZ = FORMULE(NOM_PARA=('Z'),VALE='PROJ(Z,%f)'%Height[n])
 
-    DEPL_PJ = PROJ_CHAMP(INFO = 2,
+    DEPL_PJ = PROJ_CHAMP(INFO =1,
                          PROJECTION = 'OUI',
                          METHODE    = 'COLLOCATION',
                          MODELE_1   = MOD[n-1],
@@ -518,21 +515,16 @@ for n in range(1,nbcouche-1):
                          VIS_A_VIS  = _F(GROUP_MA_1 = list_group_ma[:n+1],
                                          GROUP_MA_2 = list_group_ma[:n+2],
                                          TRANSF_GEOM_2 = (FX, FY, FZ),
-                                           ),
-                           );
+                                           ),);
 
-    CH_BID = CREA_CHAMP(INFO=2,
+    CH_BID = CREA_CHAMP(INFO=1,
                          TYPE_CHAM='NOEU_DEPL_R',
                          OPERATION='ASSE',
                          MODELE = MOD[n],
                          ASSE=_F(GROUP_MA=list_group_ma[:n+2],
                                 CHAM_GD = DEPL_PJ,
                                 NOM_CMP = ('DX','DY','DZ'),
-                         ),
-                         );
-
-
-
+                         ),);
     Z1 = Height[n+1];
     Z0 = Height[n];
 
@@ -540,31 +532,30 @@ for n in range(1,nbcouche-1):
     DYN = FORMULE(NOM_PARA=('DY','Z'),VALE='DY*(%f-Z)/(%f-%f)'%(Z1,Z1,Z0))
     DZN = FORMULE(NOM_PARA=('DZ','Z'),VALE='DZ*(%f-Z)/(%f-%f)'%(Z1,Z1,Z0))
 
-    CH_GEOM = CREA_CHAMP(INFO=2,
+    CH_GEOM = CREA_CHAMP(INFO=1,
                          TYPE_CHAM = 'NOEU_GEOM_R',
                          MAILLAGE = MA,
                          OPERATION='EXTR',
-                         NOM_CHAM = 'GEOMETRIE',
-                         )
+                         NOM_CHAM = 'GEOMETRIE',);
 
 
-    CH_FONC = CREA_CHAMP(INFO=2,
+    CH_FONC = CREA_CHAMP(INFO=1,
                          TYPE_CHAM='NOEU_NEUT_F',
                          OPERATION='AFFE',
                          MODELE = MOD[n],
-                         AFFE=(_F(GROUP_MA=list_group_ma[n+1],
+                         AFFE=_F(GROUP_MA=list_group_ma[n+1],
                                   VALE_F = (DXN,DYN,DZN),
-                                  NOM_CMP= ('X1','X2','X3')),
+                                  NOM_CMP= ('X1','X2','X3'),
                                ),);
 
-    CH_EVAL = CREA_CHAMP(INFO=2,
+    CH_EVAL = CREA_CHAMP(INFO=1,
                          TYPE_CHAM='NOEU_NEUT_R',
                          OPERATION='EVAL',
                          CHAM_F = CH_FONC,
                          CHAM_PARA = (DEPL_PJ,CH_GEOM),
                                );
 
-    CH_DEPL = CREA_CHAMP(INFO=2,
+    CH_DEPL = CREA_CHAMP(INFO=1,
                          TYPE_CHAM='NOEU_DEPL_R',
                          OPERATION='ASSE',
                          MODELE = MOD[n],
@@ -572,10 +563,9 @@ for n in range(1,nbcouche-1):
                                 CHAM_GD = CH_EVAL,
                                 NOM_CMP = ('X1','X2','X3'),
                                 NOM_CMP_RESU = ('DX','DY','DZ'),
-                         ),
-                         );
+                         ),);
 
-    DEPL_IN=CREA_CHAMP(INFO=2,
+    DEPL_IN=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='NOEU_DEPL_R',
                       OPERATION='ASSE',
                       MODELE=MOD[n],
@@ -606,49 +596,15 @@ for n in range(1,nbcouche-1):
                                CUMUL='OUI',
                                COEF_R=1.0,),),);
 
-    CART = CREA_CHAMP(INFO = 1,
-                   TYPE_CHAM='ELGA_NEUT_R',
-                   OPERATION='AFFE',
-                   MODELE=MOD[n],
-                   PROL_ZERO='OUI',
-                   AFFE=_F(GROUP_MA=list_group_ma[n+1],
-                           NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20'),
-                           VALE    =vari),);
-
     INIVAR=CREA_CHAMP(INFO=1,
                       TYPE_CHAM='ELGA_VARI_R',
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       PROL_ZERO='OUI',
-                      ASSE=(_F(GROUP_MA=list_group_ma[:n+1],
-                               CHAM_GD=VAR[n-1],
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                            _F(GROUP_MA=list_group_ma[n+1],
-                               CHAM_GD=CART,
-                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20'),
-                               NOM_CMP_RESU=('V1','V2','V3','V4','V5','V6','V7','V8','V9','V10','V11',
-                                             'V12','V13','V14','V15','V16','V17','V18','V19','V20'),
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                            _F(GROUP_MA=list_group_ma[n+1],
-                               CHAM_GD=CART,
-                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11',
-                                     'X12','X13','X14','X15','X16','X17','X18','X19','X20',),
-                               NOM_CMP_RESU=('V21','V22','V23','V24','V25','V26','V27','V28','V29','V30',
-                                             'V31','V32','V33','V34','V35','V36','V37','V38','V39','V40'),
-                               CUMUL='OUI',
-                               COEF_R=1.0),
-                            _F(GROUP_MA=list_group_ma[n+1],
-                               CHAM_GD=CART,
-                               NOM_CMP =('X1','X2','X3','X4','X5','X6','X7','X8','X9','X10','X11','X12',),
-
-                               NOM_CMP_RESU=('V41','V42','V43','V44','V45','V46','V47','V48',
-                                             'V49','V50','V51','V52'),
-                               CUMUL='OUI',
-                               COEF_R=1.0),),);
+                      ASSE=_F(GROUP_MA=list_group_ma[:n+1],
+                              CHAM_GD=VAR[n-1],
+                              CUMUL='OUI',
+                              COEF_R=1.0),);
 
     U[n]=STAT_NON_LINE(MODELE=MOD[n],
                  CHAM_MATER=AFFMAT[n],
@@ -656,9 +612,7 @@ for n in range(1,nbcouche-1):
                         _F(CHARGE=CHPAR),
                         _F(CHARGE=CHLAT),
                         _F(CHARGE=PESBAS),
-                        #_F(CHARGE=PESHAU),
-                        _F(CHARGE=PESHAU, FONC_MULT=FONCH,),
-                        ),
+                        _F(CHARGE=PESHAU, FONC_MULT=FONCH,),),
                  COMPORTEMENT=(_F(RELATION='KIT_HM',
                                ITER_INTE_PAS=-10,
                                RELATION_KIT=('ELAS','LIQU_SATU','HYDR_UTIL'),
@@ -704,7 +658,10 @@ for n in range(1,nbcouche-1):
                 INST = t_fin,
                 INFO=1,);
 
-    U[n]=CALC_CHAMP(reuse=U[n],CONTRAINTE=('SIGM_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTAT=U[n])
+    U[n]=CALC_CHAMP(reuse=U[n],
+                    CONTRAINTE=('SIGM_ELNO'),
+                    VARI_INTERNE=('VARI_ELNO'),
+                    RESULTAT=U[n]);
 
 
 # -->15: Boucle sur le nombre de noeuds a post-traiter
@@ -765,7 +722,7 @@ for n in range(1,nbcouche-1):
     DETRUIRE(CONCEPT=_F(NOM=(INIVAR,FONCH,PESHAU,PESBAS,
                              DEPL_IN,DEPL_PJ,FX,FY,FZ,
                              CH_FONC,CH_EVAL,CH_GEOM,DXN,DYN,DZN,
-                             CH_DEPL,CH_BID),),);
+                             CH_DEPL,CH_BID,),),);
 
 # <--10: fin boucle for
 

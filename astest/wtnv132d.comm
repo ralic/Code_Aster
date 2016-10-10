@@ -15,8 +15,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
-              VISU_EFICAS='NON'),IGNORE_ALARM='CALCULEL4_9');
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
+      IGNORE_ALARM='CALCULEL4_9');
 
 # Redimensionnement du probleme hydromecanique
 P0=1.E+6;
@@ -32,8 +32,6 @@ print comment
 print ' ----- PARAMETRES DE REDIEMNSIONNEMENT -----\n\n'
 print '>> K0 = %e; P0 = %e; T0 = %e; F0 = %e'  %(K0,P0,T0,F0)
 print comment
-
-
 
 # Nombre de couches
 # (dont la couche elastique correspondant au BEDROCK)
@@ -76,10 +74,8 @@ MA=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'));
 # de noeuds doubles: c'est volontairement qu'on a dedouble
 # le maillage: un pour la modele HM, un pour le modele de 2nd gradient
 
-
 list_group_ma=['ELEMS0'];
 for n in range(nbcouche-1): list_group_ma.append('ELEMS'+str(n+1));
-
 
 #IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA));
 
@@ -106,9 +102,7 @@ for n in range(nbcouche-1):
                        AFFE=(_F(GROUP_MA   =tuple(list_group_ma),
                                PHENOMENE   ='MECANIQUE',
                                MODELISATION='D_PLAN_HM_SI')));
-
 # <--5: fin boucle for
-
 
 #  -------------------------------------------------------------------
 #  Definition du sol sature en eau ACTIF, affectation global materiau,
@@ -181,11 +175,11 @@ AFFMAT1=AFFE_MATERIAU(MAILLAGE=MA,
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0,),),);
 
-PES=AFFE_CHAR_MECA(MODELE=MOD[nbcouche-2],
+PES=AFFE_CHAR_MECA(MODELE=MOD[0],
                    PESANTEUR=_F(GRAVITE=1.0,
                                 DIRECTION=(0.0,-1.0,0.0)));
 
-CHPAR=AFFE_CHAR_CINE(MODELE=MOD[nbcouche-2],
+CHPAR=AFFE_CHAR_CINE(MODELE=MOD[0],
                      MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0));
 
 TEMPS=DEFI_LIST_REEL(DEBUT=0.0,
@@ -211,7 +205,6 @@ FOC = DEFI_CONSTANTE(VALE=9.81/F0);
 #        ----------------------------------
 # INIT-  Pose couches 1 et 2 = 1ere couches
 #        ----------------------------------
-
 
 # Consditions aux limites en deplacement pour les premieres couches
 n_couche=2
@@ -268,8 +261,7 @@ U[0]=STAT_NON_LINE(MODELE=MOD[0],
                  ARCHIVAGE=_F(LIST_INST=TEMPS,),
                  NEWTON=_F(MATRICE='TANGENTE',
                            REAC_ITER=1,
-                           PAS_MINI_ELAS=1.E8/T0,
-                           ),
+                           PAS_MINI_ELAS=1.E8/T0,),
                  CONVERGENCE=_F(ITER_GLOB_MAXI=10,
                                 ITER_GLOB_ELAS=300,
                                 RESI_GLOB_RELA=1.E-6,),);
@@ -301,8 +293,6 @@ U[0]=CALC_CHAMP(reuse=U[0],
                 VARI_INTERNE='VARI_ELNO',
                 RESULTAT=U[0],);
 
-
-
 T_DEP[0]=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLACEMENT',
                                  NOEUD=list_no_later_dro[0],
                                  RESULTAT=U[0],
@@ -328,7 +318,6 @@ CHNUL=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
 # SUITE-  Pose couches 3 a nbcouche
 #         -------------------------
 
-
 # Hauteur successive de la colonne au fur et a mesure de la construction
 Height = [5,7,9,11,13,15,17,19,21,23,25]
 
@@ -342,7 +331,8 @@ list_noeu_haut=list_no_later_dro[:2]
 # -->10: Boucle sur la pose des couches 3 a nbcouche
 for n in range(1,nbcouche-1):
 
-    DETRUIRE(INFO=1,OBJET=_F(CHAINE=('CHLAT','PHAUT','SIEF',),),);
+    DETRUIRE(INFO=1,
+             OBJET=_F(CHAINE=('CHLAT','CHPAR','PHAUT','SIEF',),),);
 
     n_couche = n+2
     print ' > n_couche          =',n_couche
@@ -389,6 +379,9 @@ for n in range(1,nbcouche-1):
                               MATER=MAT1),
                             _F(GROUP_MA=list_group_ma[0],
                               MATER=MAT0),),);
+                              
+    CHPAR=AFFE_CHAR_CINE(MODELE=MOD[n],
+                     MECA_IMPO=_F(GROUP_MA='BAS', DY=0.0));
 
     PESHAU=AFFE_CHAR_MECA(MODELE=MOD[n],
                           PESANTEUR=_F(GRAVITE=9.81 /F0,
@@ -399,7 +392,6 @@ for n in range(1,nbcouche-1):
                           PESANTEUR=_F(GRAVITE=9.81 /F0,
                                        DIRECTION=(0.0,-1.0,0.0,),
                                        GROUP_MA =list_group_ma[:n+1],),);
-
 
     # Deplacements lateraux nuls
     CHLAT=AFFE_CHAR_CINE(INFO=1,
@@ -424,7 +416,6 @@ for n in range(1,nbcouche-1):
     print ' > list_group_ma_end =',list_group_ma[:n+1]
     print '   list_group_ma =',list_group_ma[n+1]
 
-
     # Initialisation des champs de deplacement et de contrainte dans les couches
     # deja calculees
     GrMa = list_group_ma[:n+1];
@@ -434,7 +425,6 @@ for n in range(1,nbcouche-1):
                       OPERATION='ASSE',
                       MODELE=MOD[n],
                       OPTION='DEPL',
-
                       ASSE=_F(GROUP_MA=GrMa,
                               CHAM_GD=DEP[n-1]));
 
@@ -469,7 +459,6 @@ for n in range(1,nbcouche-1):
                          MAILLAGE = MA,
                          OPERATION='EXTR',
                          NOM_CHAM = 'GEOMETRIE',);
-
 
     CH_FONC = CREA_CHAMP(INFO=1,
                          TYPE_CHAM='NOEU_NEUT_F',
@@ -533,7 +522,6 @@ for n in range(1,nbcouche-1):
                                CHAM_GD=VAR[n-1],
                                CUMUL='OUI',
                                COEF_R=1.0),);
-
     t_init=(n+1)*1.E6 /T0
     t_fin =(n+2)*1.E6 /T0
 
