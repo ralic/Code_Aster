@@ -1,0 +1,100 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+# POST_LIQUEFACTION SUR UN BARRAGE 2D
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+MA0 = LIRE_MAILLAGE(FORMAT = 'MED', UNITE=20);
+
+MA  = CREA_MAILLAGE(MAILLAGE  = MA0,
+            LINE_QUAD = _F(TOUT='OUI'),);
+
+MOD = AFFE_MODELE(MAILLAGE = MA,
+                  AFFE     = (_F(TOUT='OUI',
+                                 PHENOMENE    ='MECANIQUE',
+                                 MODELISATION = 'D_PLAN_HM_SI',),),
+                  VERI_JACOBIEN = 'NON',);
+
+RESUREF = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
+                    FORMAT     = 'MED',
+                    MODELE     = MOD,
+                    FORMAT_MED = (_F(NOM_RESU = 'U_9',
+                                     NOM_CHAM = 'SIEF_ELGA'),) ,
+                    UNITE      = 21,
+                    TOUT_ORDRE = 'OUI',);
+
+RESU = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
+                 FORMAT     = 'MED',
+                 MODELE     = MOD,
+                 FORMAT_MED = (_F( NOM_RESU = 'EAU',
+                                   NOM_CHAM = 'SIEF_ELGA'),) ,
+                 UNITE      = 22,
+                 TOUT_ORDRE = 'OUI',);
+
+POSTLIQ = POST_LIQUEFACTION(RESU_REF = RESUREF,
+                    INST_REF = 94608000.,
+                            AXE      = 'Y',
+                    RESULTAT = RESU,)
+
+#-------------------------------------------------------------------------------
+#   TEST (COMPARAISON DU CHAMP OBTENU AVEC POST_LIQEUFACTION ET DU CHAMP 
+#         D'UN .MED QUI CONTIENT LE CALCUL) 
+#--------------------------------------------------------------------------------
+
+RUPOSTLI = CREA_CHAMP (OPERATION = 'EXTR',
+               TYPE_CHAM = 'ELGA_SIEF_R',
+                       RESULTAT  = POSTLIQ, 
+               NOM_CHAM  = 'SIEF_ELGA',
+               INST      = 31536000.,)
+
+REFLIQ = LIRE_RESU(TYPE_RESU  = 'EVOL_NOLI',
+                   FORMAT     = 'MED',
+                   MODELE     = MOD,
+                   FORMAT_MED = (_F(NOM_RESU = 'LIQ',
+                                    NOM_CHAM = 'SIEF_ELGA'),) ,
+                   UNITE      = 23,
+                   TOUT_ORDRE = 'OUI',);
+
+RUREF = CREA_CHAMP(OPERATION = 'EXTR',
+           TYPE_CHAM = 'ELGA_SIEF_R',
+                   RESULTAT  = REFLIQ, 
+           NOM_CHAM  = 'SIEF_ELGA',
+               INST      = 31536000.,)
+
+DIFF = CREA_CHAMP(OPERATION = 'ASSE',
+               MODELE    = MOD, 
+          TYPE_CHAM = 'ELGA_SIEF_R',
+               ASSE      = (_F(CHAM_GD = RUPOSTLI , 
+                  TOUT    = 'OUI',
+                                CUMUL   = 'OUI', 
+                  COEF_R  = 1.),
+                           _F(CHAM_GD = RUREF ,
+                  TOUT    = 'OUI',
+                    CUMUL   = 'OUI', 
+                  COEF_R  = -1.),),) 
+
+TEST_RESU (CHAM_ELEM=(_F(CHAM_GD        = DIFF,
+                         NOM_CMP        = 'SIPYY',
+                         TYPE_TEST      = 'SOMM_ABS',
+                     VALE_CALC      = 0.0,
+                         CRITERE        = 'ABSOLU',
+                         REFERENCE      = 'ANALYTIQUE',
+                         VALE_REFE      = 0.0,
+                         ORDRE_GRANDEUR = 1.0),),)
+
+FIN();
