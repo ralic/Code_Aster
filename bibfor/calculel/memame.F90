@@ -1,7 +1,28 @@
-subroutine memame(option, modele, mate,&
-                  carele, instan, compor, matelz,&
-                  base)
+subroutine memame(option , model_    , mate_, cara_elem_, time,&
+                  compor_, matr_elem_, base)
 !
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/assert.h"
+#include "asterfort/calcul.h"
+#include "asterfort/dbgcal.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/exixfe.h"
+#include "asterfort/infdbg.h"
+#include "asterfort/inical.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/mecham.h"
+#include "asterfort/memare.h"
+#include "asterfort/reajre.h"
+#include "asterfort/redetr.h"
+#include "asterfort/vrcins.h"
+#include "asterfort/xajcin.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -21,247 +42,165 @@ subroutine memame(option, modele, mate,&
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
+    character(len=*), intent(in) :: option
+    character(len=*), intent(in) :: model_
+    character(len=*), intent(in) :: mate_
+    character(len=*), intent(in) :: cara_elem_
+    real(kind=8), intent(in) :: time
+    character(len=*), intent(in) :: compor_
+    character(len=*), intent(in) :: matr_elem_
+    character(len=1), intent(in) :: base
 !
-#include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/dbgcal.h"
-#include "asterfort/detrsd.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/infdbg.h"
-#include "asterfort/inical.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mecham.h"
-#include "asterfort/memare.h"
-#include "asterfort/reajre.h"
-#include "asterfort/redetr.h"
-#include "asterfort/vrcins.h"
-    real(kind=8) :: instan
-    character(len=1) :: base
-    character(len=*) :: option, modele, mate, carele, compor, matelz
+! --------------------------------------------------------------------------------------------------
 !
-! ----------------------------------------------------------------------
+! Compute MASS_* elementary matrix
 !
-! ROUTINE CALCUL
+! --------------------------------------------------------------------------------------------------
 !
-! CALCUL DES MATRICES ELEMENTAIRES DE MASSE MECA
+! In  option           : name of option
+! In  model            : name of the model
+! In  mate             : name of material characteristics (field)
+! In  cara_elem        : name of elementary characteristics (field)
+! In  time             : current time
+! In  base             : JEVEUX base to create matr_elem
+! In  matr_elem        : name of matr_elem result
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
-!
-! IN   OPTION : OPTION DE CALCUL
-! IN   MODELE : NOM DU MODELE (OBLIGATOIRE)
-! IN   MATE   : CARTE DE MATERIAUX
-! IN   CARELE : CHAMP DE CARAC_ELEM
-! IN   INSTAN : INSTANT DE CALCUL
-! IN   COMPOR : CARTE DE COMPORTEMENT
-! IN   BASEZ  : NOM DE LA BASE
-! OUT  MATELE : NOM DU MATR_ELEM RESULTAT
-! IN   BASE   : NOM DE LA BASE
-!
-!
-!
-!
-    integer :: nbout, nbin
-    parameter    (nbout=2, nbin=18)
-    character(len=8) :: lpaout(nbout), lpain(nbin)
-    character(len=24) :: lchout(nbout), lchin(nbin)
-    character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
-    character(len=19) :: pmilto, hea_no
-!
+    integer, parameter :: nb_in_maxi = 30
+    integer, parameter :: nbout = 2
+    character(len=8) :: lpain(nb_in_maxi), lpaout(nbout)
+    character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
     character(len=2) :: codret
-    character(len=19) :: chvarc, matele
+    character(len=19) :: chvarc, matr_elem
     character(len=24) :: ligrmo
+    character(len=24), pointer :: v_matr_rerr(:) => null()
     character(len=24) :: chgeom, chcara(18), chharm
-    integer :: nbout2
-    integer :: nh, iret, icode
-    integer :: ifmdbg, nivdbg, ier
-    aster_logical :: debug
-    character(len=24), pointer :: rerr(:) => null()
-    data chvarc /'&&MEMAME.VARC'/
+    integer :: nbout2, nbin, nh, iret, icode, nb_subs_stat
+    aster_logical :: l_xfem
+    character(len=24) :: cara_elem, mate
+    character(len=8) :: model
 !
-! ----------------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
-    call infdbg('PRE_CALCUL', ifmdbg, nivdbg)
 !
-! --- INITIALISATIONS
+! - Initializations
 !
-    matele = matelz
-    if (nivdbg .ge. 2) then
-        debug = .true.
-    else
-        debug = .false.
-    endif
-    nh = 0
-    if (modele(1:1) .eq. ' ') then
-        ASSERT(.false.)
-    else
-        ligrmo = modele(1:8)//'.MODELE'
-    endif
+    model     = model_
+    cara_elem = cara_elem_
+    mate      = mate_
+    matr_elem = matr_elem_
+    nh        = 0
+    ligrmo    = model(1:8)//'.MODELE'
+    chvarc    = '&&MEMAME.VARC'
+    call exixfe(model, iret)
+    l_xfem = (iret .ne. 0)
+    call dismoi('NB_SS_ACTI', model, 'MODELE', repi=nb_subs_stat)
 !
-! --- INITIALISATION DES CHAMPS POUR CALCUL
+! - Init fields
 !
-    call inical(nbin, lpain, lchin, nbout, lpaout,&
-                lchout)
+    call inical(nb_in_maxi, lpain, lchin, nbout, lpaout,&
+                lchout    )   
 !
-! --- CREATION DES CHAMPS GEOM. CARAC_ELEM ET HARM_FOURIER
+! - Create fields (geometry, elem. characteristics, Fourier)
 !
-    call mecham(option, modele, carele, nh, chgeom,&
+    call mecham(option, model , cara_elem, nh, chgeom,&
                 chcara, chharm, icode)
 !
-! --- CREATION DU CHAMP DE VARIABLES DE COMMANDE
+! - Construct command variables fields
 !
-    call vrcins(modele, mate, carele, instan, chvarc,&
+    call vrcins(model , mate, cara_elem, time, chvarc,&
                 codret)
 !
-! --- PREPARATION DES MATR_ELEM
+! - Prepare MATR_ELEM
 !
-    call memare(base, matele, modele, mate, carele,&
-                option)
-    call jeveuo(matele(1:19)//'.RERR', 'E', vk24=rerr)
-    rerr(3) (1:3) = 'OUI'
-    call jeexin(matele(1:19)//'.RELR', iret)
-    if (iret .gt. 0) call jedetr(matele(1:19)//'.RELR')
+    call jeexin(matr_elem(1:19)//'.RELR', iret)
+    if (iret .eq. 0) then
+        call memare(base, matr_elem, model, mate, cara_elem, option)
+    else
+        call jedetr(matr_elem(1:19)//'.RELR')
+    endif
+    call jeveuo(matr_elem(1:19)//'.RERR', 'E', vk24 = v_matr_rerr)
+    if (nb_subs_stat .gt. 0) then
+        v_matr_rerr(3) = 'OUI_SOUS_STRUC'
+    endif
     if (icode .eq. 1) goto 10
 !
-!  -----VERIFICATION DE L'EXISTENCE D'UN MODELE X-FEM------
-    call exixfe(modele, ier)
-    if (ier .ne. 0) then
+! - Input fields
 !
-!  -----CAS DU MODELE X-FEM-----------------------
+    lpain(1) = 'PGEOMER'
+    lchin(1) = chgeom(1:19)
+    lpain(2) = 'PMATERC'
+    lchin(2) = mate(1:19)
+    lpain(3) = 'PCAORIE'
+    lchin(3) = chcara(1)(1:19)
+    lpain(4) = 'PCADISM'
+    lchin(4) = chcara(3)(1:19)
+    lpain(5) = 'PCAGNPO'
+    lchin(5) = chcara(6)(1:19)
+    lpain(6) = 'PCACOQU'
+    lchin(6) = chcara(7)(1:19)
+    lpain(7) = 'PCASECT'
+    lchin(7) = chcara(8)(1:19)
+    lpain(8) = 'PVARCPR'
+    lchin(8) = chvarc(1:19)
+    lpain(9) = 'PCAARPO'
+    lchin(9) = chcara(9)(1:19)
+    lpain(10) = 'PCACABL'
+    lchin(10) = chcara(10)(1:19)
+    lpain(11) = 'PCAGEPO'
+    lchin(11) = chcara(5)(1:19)
+    lpain(12) = 'PABSCUR'
+    lchin(12) = chgeom(1:8)//'.ABSC_CURV'
+    lpain(13) = 'PCAGNBA'
+    lchin(13) = chcara(11)(1:19)
+    lpain(14) = 'PCAPOUF'
+    lchin(14) = chcara(13)(1:19)
+    lpain(15) = 'PCOMPOR'
+    lchin(15) = compor_(1:19)
+    lpain(16) = 'PNBSP_I'
+    lchin(16) = chcara(16)(1:19)
+    lpain(17) = 'PFIBRES'
+    lchin(17) = chcara(17)(1:19)
+    lpain(18) = 'PCINFDI'
+    lchin(18) = chcara(15)(1:19)
+    nbin      = 18
+    if (l_xfem) then
+        call xajcin(model, option, nb_in_maxi, lchin, lpain,&
+                    nbin)
+    endif
 !
-        pintto = modele(1:8)//'.TOPOSE.PIN'
-        cnseto = modele(1:8)//'.TOPOSE.CNS'
-        heavto = modele(1:8)//'.TOPOSE.HEA'
-        loncha = modele(1:8)//'.TOPOSE.LON'
-        pmilto = modele(1:8)//'.TOPOSE.PMI'
-        hea_no = modele(1:8)//'.TOPONO.HNO'
-        basloc = modele(1:8)//'.BASLOC'
-        lsn = modele(1:8)//'.LNNO'
-        lst = modele(1:8)//'.LTNO'
-        stano = modele(1:8)//'.STNO'
+! - Output fields
 !
-! ----- REMPLISSAGE DES CHAMPS D'ENTREE
+    lpaout(1) = 'PMATUUR'
+    lchout(1) = matr_elem(1:15)//'.M01'
+    lpaout(2) = 'PMATUNS'
+    lchout(2) = matr_elem(1:15)//'.M02'
+    if (option .eq. 'MASS_MECA') then
+        nbout2 = 2
+    else
+        nbout2 = 1
+    endif
 !
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
-        lpain(2) = 'PMATERC'
-        lchin(2) = mate
-        lpain(3) = 'PPINTTO'
-        lchin(3) = pintto
-        lpain(4) = 'PHEAVTO'
-        lchin(4) = heavto
-        lpain(5) = 'PLONCHA'
-        lchin(5) = loncha
-        lpain(6) = 'PCNSETO'
-        lchin(6) = cnseto
-        lpain(7) = 'PBASLOR'
-        lchin(7) = basloc
-        lpain(8) = 'PLSN'
-        lchin(8) = lsn
-        lpain(9) = 'PLST'
-        lchin(9) = lst
-        lpain(10) = 'PSTANO'
-        lchin(10) = stano
-        lpain(11) = 'PHEA_NO'
-        lchin(11) = hea_no
-        lpain(12) = 'PPMILTO'
-        lchin(12) = pmilto
+! - Compute
 !
-! --- CHAMPS DE SORTIE
+    call calcul('S', option, ligrmo, nbin, lchin,&
+                lpain, nbout2, lchout, lpaout, base,&
+                'OUI')
 !
-        lpaout(1) = 'PMATUUR'
-        lchout(1) = matele(1:15)//'.M01'
+! - Add RESU_ELEM in MATR_ELEM
 !
-        call calcul('S', option, ligrmo, 12, lchin,&
-                    lpain, 1, lchout, lpaout, base,&
-                    'OUI')
-        call reajre(matelz, lchout(1), base)
-!
-    else if (ier.eq.0) then
-!
-!----------CAS FEM CLASSIQUE-------------------------
-!
-! ----- CHAMPS D'ENTREE
-!
-        lpain(1) = 'PGEOMER'
-        lchin(1) = chgeom
-        lpain(2) = 'PMATERC'
-        lchin(2) = mate
-        lpain(3) = 'PCAORIE'
-        lchin(3) = chcara(1)
-        lpain(4) = 'PCADISM'
-        lchin(4) = chcara(3)
-        lpain(5) = 'PCAGNPO'
-        lchin(5) = chcara(6)
-        lpain(6) = 'PCACOQU'
-        lchin(6) = chcara(7)
-        lpain(7) = 'PCASECT'
-        lchin(7) = chcara(8)
-        lpain(8) = 'PVARCPR'
-        lchin(8) = chvarc
-        lpain(9) = 'PCAARPO'
-        lchin(9) = chcara(9)
-        lpain(10) = 'PCACABL'
-        lchin(10) = chcara(10)
-        lpain(11) = 'PCAGEPO'
-        lchin(11) = chcara(5)
-        lpain(12) = 'PABSCUR'
-        lchin(12) = chgeom(1:8)//'.ABSC_CURV'
-        lpain(13) = 'PCAGNBA'
-        lchin(13) = chcara(11)
-        lpain(14) = 'PCAPOUF'
-        lchin(14) = chcara(13)
-        lpain(15) = 'PCOMPOR'
-        lchin(15) = compor
-        lpain(16) = 'PNBSP_I'
-        lchin(16) = chcara(16)
-        lpain(17) = 'PFIBRES'
-        lchin(17) = chcara(17)
-        lpain(18) = 'PCINFDI'
-        lchin(18) = chcara(15)
-!
-! ----- CHAMPS DE SORTIE
-!
-        lpaout(1) = 'PMATUUR'
-        lchout(1) = matele(1:15)//'.M01'
-        lpaout(2) = 'PMATUNS'
-        lchout(2) = matele(1:15)//'.M02'
-        if (option .eq. 'MASS_MECA') then
-            nbout2 = 2
-        else
-            nbout2 = 1
-        endif
-!
-! ----- APPEL A CALCUL
-!
-        if (debug) then
-            call dbgcal(option, ifmdbg, nbin, lpain, lchin,&
-                        nbout2, lpaout, lchout)
-        endif
-!
-        call calcul('S', option, ligrmo, nbin, lchin,&
-                    lpain, nbout2, lchout, lpaout, base,&
-                    'OUI')
-!
-! ----- STOCKAGE DES RESU_ELEM
-!
-        call reajre(matelz, lchout(1), base)
-        call reajre(matelz, lchout(2), base)
+    call reajre(matr_elem_, lchout(1), base)
+    if (nbout2 .eq. 2) then
+        call reajre(matr_elem_, lchout(2), base)
     endif
 !
  10 continue
 !
-!     -- DESTRUCTION DES RESUELEM NULS :
-    call redetr(matelz)
+! - Cleaning
 !
+    call redetr(matr_elem_)
     call detrsd('CHAMP_GD', chvarc)
 !
     call jedema()

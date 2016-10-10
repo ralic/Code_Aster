@@ -18,16 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine memame(option, modele, mate,&
-                      carele, instan, compor, matelz,&
-                      base)
-        character(len=*) :: option
-        character(len=*) :: modele
-        character(len=*) :: mate
-        character(len=*) :: carele
-        real(kind=8) :: instan
-        character(len=*) :: compor
-        character(len=*) :: matelz
-        character(len=1) :: base
+    subroutine memame(option , model_    , mate_, cara_elem_, time,&
+                      compor_, matr_elem_, base)
+        character(len=*), intent(in) :: option
+        character(len=*), intent(in) :: model_
+        character(len=*), intent(in) :: mate_
+        character(len=*), intent(in) :: cara_elem_
+        real(kind=8), intent(in) :: time
+        character(len=*), intent(in) :: compor_
+        character(len=*), intent(in) :: matr_elem_
+        character(len=1), intent(in) :: base
     end subroutine memame
 end interface
