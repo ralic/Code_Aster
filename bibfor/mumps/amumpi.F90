@@ -214,7 +214,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
 
 ! ---     BLR
         if (blrok) then
-            if (kvers(1:24).eq.'5.0.1consortium') then
+            if ((kvers(1:15).eq.'5.0.1consortium').or.(kvers(1:15).eq.'5.0.2consortium')) then
                 ! ok
             else
                 call utmess('A', 'FACTOR_48', sk=kvers)

@@ -116,7 +116,7 @@ DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = INSTANTS));
 # LES SYSTEMES LINEAIRES SONT DIFFICILES A RESOUDRE.
 # ON DEVERROUILLE LA DETECTION DE SINGULARITE. LE PROCESSUS DE NEWTON
 # CORRIGE LES EVENTUELLES DERIVES.
-EVOL=STAT_NON_LINE(MODELE=MO,
+EVOL=STAT_NON_LINE(MODELE=MO, INFO=2,
                    CHAM_MATER=CM,
                    EXCIT=_F(CHARGE=CH,
                             FONC_MULT=RAMPE),
@@ -127,8 +127,8 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    CONVERGENCE=_F(SIGM_REFE=60.0,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3),
-                   SOLVEUR=_F(METHODE='MUMPS',
-   NPREC=-1));
+                   SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='MINI',NPREC=-1,
+   ));
 
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
@@ -350,7 +350,7 @@ TEST_RESU(RESU=(_F(GROUP_NO='A',
 
 #--------------------------------------------------------------------------------
 #  TEST SUR L'ESTIMATEUR D'ERREUR EN RESIDU
-
+# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2 sur Athosdev
 TEST_RESU(RESU=_F(INST=1.0,
                   POINT=1,
                   RESULTAT=EVOL,
@@ -358,6 +358,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CMP='NUEST',
                   VALE_CALC=2.19379335417,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.e-3, # systeme linéaire mal conditionné
                   MAILLE='M537',
                   ),
           )
@@ -369,6 +370,7 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CMP='ERREST',
                   VALE_CALC=0.00066736601152,
                   CRITERE='RELATIF',
+                  TOLE_MACHINE=1.e-3, # systeme linéaire mal conditionné
                   MAILLE='M537',
                   ),
           )

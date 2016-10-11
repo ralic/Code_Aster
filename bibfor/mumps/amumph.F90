@@ -236,7 +236,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- STOCKE DANS LA SD_SOLVEUR
                     kvers=trim(adjustl(slvk(12)))
                     select case (kvers)
-                        case('4.10.0','5.0.1','5.0.1consortium')
+                        case('5.0.1','5.0.1consortium','5.0.2','5.0.2consortium')
                     case default
                         call utmess('F', 'FACTOR_72', sk=kvers)
                     end select

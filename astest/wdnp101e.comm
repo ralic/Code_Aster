@@ -736,7 +736,8 @@ U9B=DYNA_NON_LINE(reuse=U9B,
                              ),
                  NEWTON=_F(MATR_RIGI_SYME='OUI',),
                  SOLVEUR=_F(RENUM='METIS',
-                            METHODE='MUMPS',),
+                            METHODE='MUMPS',
+),
                  ETAT_INIT=_F(EVOL_NOLI=U9B,
                               INST=0.0,PRECISION=1.E-6,
                               ),
@@ -797,11 +798,12 @@ TABINF1 = INFO_FONCTION(RMS = _F(FONCTION = ACCA47X,
 # Les valeurs de reference correspondent a un calcul avec
 # une modelisation "d_plan_hm" avec un maillage raffine
 # en supposant que ce calcul est suffisamment precis.
+# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            PRECISION=6.E-2,
            TOLE_MACHINE=3.e-4, # On ne sait pas pourquoi ...
            VALE_REFE=1.8911159616941,
-           VALE_CALC=1.99722909399,
+           VALE_CALC=1.99687913481,
            NOM_PARA='RMS',
            TABLE=TABINF1,);
 

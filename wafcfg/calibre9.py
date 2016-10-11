@@ -23,22 +23,24 @@ def configure(self):
     self.env.append_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Hdf5-1814/lib',
         YAMMROOT + '/tools/Medfichier-320/lib',
-        YAMMROOT + '/prerequisites/Metis_aster-20160/lib',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster1/lib',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster6/SEQ/lib',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/lib',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/lib',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/lib',
+        YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/SEQ/lib',
     ])
 
     self.env.append_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Hdf5-1814/include',
         YAMMROOT + '/tools/Medfichier-320/include',
-        YAMMROOT + '/prerequisites/Metis_aster-20160/include',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
+        YAMMROOT + '/prerequisites/Scotch_aster-604_aster6/SEQ/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include',
-        YAMMROOT + '/prerequisites/Mumps-501_consortium_aster5/SEQ/include_seq',
-        YAMMROOT + '/prerequisites/Scotch_aster-604_aster1/include',
+        YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/SEQ/include',
+        YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/SEQ/include_seq',
     ])
 
+    self.env.append_value('LIB', ('pthread', 'util'))
+    self.env.append_value('LIB_SCOTCH', ('scotcherrexit'))
     # to fail if not found
     opts.enable_hdf5 = True
     opts.enable_med = True
@@ -48,3 +50,4 @@ def configure(self):
     opts.enable_mfront = True
 
     opts.enable_petsc = False
+

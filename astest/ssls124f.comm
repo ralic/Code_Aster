@@ -197,34 +197,43 @@ CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
                       FORCE_ARETE=(_F(GROUP_MA='LI87',
                                       FZ=F/b,),),
                            );
-
+# DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+9)
+# ON UTILISE MUMPS
 RESU32=MECA_STATIQUE(MODELE=MODMEC32,
-                    CHAM_MATER=CHMAT32,
+                    CHAM_MATER=CHMAT32,INFO=2,
+                    SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
+                               ),
                     EXCIT=_F(CHARGE=CHARG32,),
                     );
 
 Iy=b*h*h*h/12.
 Uz=F*L*L*L/3./YG/Iy
-
-
+# La solution obtenue presente une certaine variabilite entre machines qui decoule
+# du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
+# => l'usage du mot cle TOLE_MACHINE.
+# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
+calc_aster5_p1=1.97075649353E-06
+calc_aster5_p2=1.97114961124E-06
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.97075653745E-06,
+                   VALE_CALC=calc_aster5_p1,
                    VALE_REFE=Uz,
-                   PRECISION=0.014999999999999999,),
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   PRECISION=0.1,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU32,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=1.97114965551E-06,
+                   VALE_CALC=calc_aster5_p2,
                    VALE_REFE=Uz,
-                   PRECISION=0.014999999999999999,),
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   PRECISION=0.1,),
                 ),
           )
 
@@ -284,8 +293,9 @@ Uz=F*L*L*L/3./YG/Iy
 # La solution obtenue presente une certaine variabilite entre machines qui decoule
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
 # => l'usage du mot cle TOLE_MACHINE.
-calc_aster5_p7=0.00196773211719
-calc_aster5_p8=0.00196786885017
+# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
+calc_aster5_p7=0.00196742542888
+calc_aster5_p8=0.00196755888617
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
@@ -294,8 +304,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=calc_aster5_p7,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-3, # Voir commentaire plus haut
-                   PRECISION=0.02,),
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   PRECISION=0.1,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
                    REFERENCE='ANALYTIQUE',
@@ -304,8 +314,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=calc_aster5_p8,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-3, # Voir commentaire plus haut
-                   PRECISION=0.02,),
+                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   PRECISION=0.1,),
                 ),
           )
 
