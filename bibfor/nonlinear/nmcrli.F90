@@ -6,6 +6,7 @@ implicit none
 #include "asterc/getres.h"
 #include "asterc/gettco.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/deprecated_command.h"
 #include "asterfort/diinst.h"
 #include "asterfort/getvr8.h"
@@ -24,7 +25,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,6 +114,7 @@ implicit none
 ! - Type of list_inst
 !
     call gettco(list_inst, list_inst_type)
+    ASSERT(list_inst_type .ne. ' ')
 !
 ! - Create list of times and information vector
 !
