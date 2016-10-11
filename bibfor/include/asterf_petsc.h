@@ -22,7 +22,7 @@
 !
 #include <petscversion.h>
 ! Gestion des versions de PETSc
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2
+#if (( PETSC_VERSION_MAJOR <= 2 )|| ( PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2 ))
 #   define ASTER_PETSC_VERSION_LEQ_32
 #endif
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 3
@@ -33,6 +33,9 @@
 #endif
 #if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 5
 #   define ASTER_PETSC_VERSION_LEQ_35
+#endif
+#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 6
+#   define ASTER_PETSC_VERSION_LEQ_36
 #endif
 ! Inclusion des interfaces Fortran de PETSc définies
 ! dans la librairie  
@@ -46,6 +49,8 @@
 #include <finclude/petscpc.h90>
 #include <finclude/petscksp.h>
 #include <finclude/petscksp.h90>
+#include <finclude/petscviewer.h>
+#include <finclude/petscviewer.h90>
 #else
 #include <petsc/finclude/petscsys.h>
 #include <petsc/finclude/petscvec.h>
@@ -56,6 +61,8 @@
 #include <petsc/finclude/petscpc.h90>
 #include <petsc/finclude/petscksp.h>
 #include <petsc/finclude/petscksp.h90>
+#include <petsc/finclude/petscviewer.h>
+#include <petsc/finclude/petscviewer.h90>
 !
 #endif
 !

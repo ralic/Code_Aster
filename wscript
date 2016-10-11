@@ -199,8 +199,8 @@ def build(self):
     # shared the list of dependencies between bibc/bibfor
     # the order may be important
     self.env['all_dependencies'] = [
-        'MED', 'HDF5', 'MUMPS', 'METIS', 'SCOTCH', 'MFRONT',
-        'PETSC', 'MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
+        'MED', 'HDF5','PETSC','MUMPS', 'METIS', 'SCOTCH', 'MFRONT',
+        'MATH', 'MPI', 'OPENMP', 'CLIB', 'SYS']
     get_srcs = self.path.get_src().ant_glob
     if not self.variant:
         self.fatal('Call "waf build_debug" or "waf build_release", and read ' \

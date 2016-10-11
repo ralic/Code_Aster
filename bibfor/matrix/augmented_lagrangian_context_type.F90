@@ -107,7 +107,15 @@ subroutine set_precond_data( ctxt )
     PetscScalar :: fillp
     PetscReal :: aster_petsc_default_real
     type(saddle_point_context_type), pointer :: sp_ctxt =>null()
+    integer, parameter :: icc_pre =0, mumps_pre = 1
+    integer :: pre_type 
+    Mat :: f
     !
+#ifdef ASTER_PETSC_VERSION_LEQ_36
+    pre_type = icc_pre 
+#else
+    pre_type = mumps_pre
+#endif 
     ! TODO déterminer les bonnes valeurs 
     niremp=1
     fillp =1.0
@@ -117,11 +125,7 @@ subroutine set_precond_data( ctxt )
     !
     ! Récupération du communicateur MPI
     call asmpi_comm('GET', mpicomm)
-    ! Attention, la factorisation ICC ne fonctionne qu'en séquentiel 
-    call asmpi_info(rank=rang, size=nbproc)
-    if (rang > 1) then
-      call utmess( 'F', 'PETSC_20')
-    endif
+    !
     ctxt%gamma = sp_ctxt%alpha
     !
     ! Compute block of physical dofs m_mat 
@@ -148,28 +152,54 @@ subroutine set_precond_data( ctxt )
     call PCSetOperators( ctxt%pcphy, ctxt%m_mat, ctxt%m_mat, ierr )
     ASSERT( ierr == 0 )
     ! 
-    call PCSetType(ctxt%pcphy,PCICC,ierr)
-    ASSERT( ierr == 0 )
-    call PCFactorSetLevels(ctxt%pcphy,niremp,ierr)
+    if ( pre_type == icc_pre ) then 
+    ! Attention, la factorisation ICC ne fonctionne qu'en séquentiel 
+        call asmpi_info(rank=rang, size=nbproc)
+        if (nbproc > 1 ) then
+            call utmess( 'F', 'PETSC_20')
+        endif
+        call PCSetType(ctxt%pcphy,PCICC,ierr)
+        ASSERT( ierr == 0 )
+        call PCFactorSetLevels(ctxt%pcphy,niremp,ierr)
+        ASSERT(ierr.eq.0)
+        call PCFactorSetFill(ctxt%pcphy,fillp,ierr)
+        ASSERT(ierr.eq.0)
+        call PCFactorSetMatOrderingType(ctxt%pcphy,MATORDERINGNATURAL,ierr)
+        ASSERT(ierr.eq.0)
+#ifdef ASTER_PETSC_VERSION_LEQ_36
+#else
+    else if ( pre_type == mumps_pre ) then 
+    ! Ou encore  mumps mais à partir du moment où petsc est compilée
+    ! avec support de l'interface MUMPS 
+       call PCSetType(ctxt%pcphy, PCLU, ierr)
+       ASSERT(ierr == 0)
+       call PCFactorSetMatSolverPackage(ctxt%pcphy,MATSOLVERMUMPS,ierr)
+       ASSERT(ierr.eq.0)
+       call PCFactorSetUpMatSolverPackage(ctxt%pcphy,ierr)
+       ASSERT(ierr.eq.0)
+       call PCFactorGetMatrix(ctxt%pcphy,F,ierr)
+       ASSERT(ierr.eq.0)
+ ! ICNTL(7) (sequential matrix ordering): 5 (METIS) 
+       call MatMumpsSetIcntl(F,7,5,ierr)
+       ASSERT(ierr.eq.0)
+!  ICNTL(22) (in-core/out-of-core facility): 0/1
+       call MatMumpsSetIcntl(F,22,1,ierr)
+       ASSERT(ierr.eq.0)
+!  ICNTL(24) (detection of null pivot rows): 1
+       call MatMumpsSetIcntl(F,24,1,ierr)
+       ASSERT(ierr.eq.0)
+!  ICNTL(14) (percentage increase in the estimated working space) 
+       call MatMumpsSetIcntl(F,14,50,ierr)
+       ASSERT(ierr.eq.0)
+!  CNTL(3) (absolute pivoting threshold):      1e-06 
+       call MatMumpsSetCntl(F,3,1.D-6,ierr)
+       ASSERT(ierr.eq.0)
+#endif 
+    else
+        ASSERT(.false.)
+    endif 
+    call PCSetUp(ctxt%pcphy,ierr)
     ASSERT(ierr.eq.0)
-    call PCFactorSetFill(ctxt%pcphy,fillp,ierr)
-    ASSERT(ierr.eq.0)
-    call PCFactorSetMatOrderingType(ctxt%pcphy,MATORDERINGNATURAL,ierr)
-    ASSERT(ierr.eq.0)
-    ! On pourrait aussi utiliser HYPRE pilut 
-    !call PCSetType(ctxt%pcphy,PCHYPRE,ierr)
-    !ASSERT( ierr == 0 )
-    !call PCHYPRESetType(ctxt%pcphy,'pilut', ierr)
-    !ASSERT(ierr.eq.0)
-    ! Ou encore  mumps ...
-!      call PCFactorSetMatSolverPackage(pcphy,MATSOLVERMUMPS,ierr)
-!      call PCFactorSetUpMatSolverPackage(pcphy,ierr)
-!      call PCFactorGetMatrix(pcphy,F,ierr)
-!      call MatMumpsSetIcntl(F,7,2,ierr)
-!      call MatMumpsSetIcntl(F,24,1,ierr)
-!      call MatMumpsSetCntl(F,3,1.D-6,ierr)
-     call PCSetUp(ctxt%pcphy,ierr)
-     ASSERT(ierr.eq.0)
     !
 end subroutine set_precond_data
 !
@@ -184,6 +214,7 @@ subroutine free_augm_lagrangian_context( ctxt )
     call PCDestroy( ctxt%pcphy, ierr )
     ASSERT( ierr == 0 ) 
     ! TODO compteur de référence 
+    call free_saddle_point_context( ctxt%sp_ctxt )
     nullify( ctxt%sp_ctxt ) 
     !
 end subroutine free_augm_lagrangian_context

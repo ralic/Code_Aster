@@ -11,8 +11,8 @@
 !
 ! It contains 
 ! - Index Sets necessary to extract data from the global (double Lagrange) Aster system
-! - matrix data ( k_mat, c_mat )
-! - vector workspace ( x_1, x_2, b_1, b_2 )
+! - matrix data ( k_mat, c_mat, d_mat )
+! - vector workspace ( x_1, x_2, x_3, b_1, b_2, b_3 )
 ! 
 module saddle_point_context_class
 !
@@ -57,7 +57,7 @@ type, public :: saddle_point_context_type
     ! Index Sets section 
     ! ==================
     ! Flag : true if Index Sets (IS) have been setup
-    logical :: is_setup = .false.
+    aster_logical :: is_setup = .false.
     ! Index set of physical degrees of freedom 
     ! in PETSc matrix (of the whole double Lagrange system)
     IS :: is_phys
@@ -77,20 +77,23 @@ type, public :: saddle_point_context_type
     ! 
     ! Matrix Data section
     ! ============
-    logical :: data_setup = .false.
+    aster_logical :: data_setup = .false.
     ! Stiffness Matrix
     Mat :: k_mat 
-    ! Constraint Matrix
-    Mat :: c_mat 
+    ! Constraint Matrix 
+    ! c_mat is obtained from is_lag1 x is_phys 
+    ! whereas d_mat is obtained from is_lag2 x is_phys
+    ! They are identical on a single proc, but they have different parallel layout
+    Mat :: c_mat,  d_mat 
     !
     ! Work Space
     ! ==========
-    logical :: work_setup = .false.
-    Vec :: x1, x2, xtmp
-    Vec :: y1, y2 
+    aster_logical :: work_setup = .false.
+    Vec :: x1, x2, x3, xtmp
+    Vec :: y1, y2, y3 
     ! Scatter tools
     ! =============
-    logical :: scatter_setup = .false.
+    aster_logical :: scatter_setup = .false.
     VecScatter :: scatter_to_phys, scatter_to_lag1, scatter_to_lag2
     !
 #endif 
@@ -115,8 +118,6 @@ function new_saddle_point_context( full_matas, a_mat, ak_mat ) result ( ctxt )
     !
     real(kind=8) :: un_sur_alpha
     !
- 
-    
     ! On récupère l'inverse du paramètre alpha
     call conlag( full_matas, un_sur_alpha )
     ctxt%alpha = 1.d0/un_sur_alpha
@@ -145,64 +146,32 @@ subroutine set_is( matas , ctxt )
     character(len=19), intent(in)                  :: matas
     type(saddle_point_context_type), intent(inout) :: ctxt 
     !
-    ! 
     ! Local variables 
-    mpi_int :: mpicomm
-    integer(kind=4),dimension(:), pointer   :: idof => null()
+    PetscInt :: nphys, nlag1, nlag2 
     !
     ASSERT( .not. ctxt%is_setup )
     !
-    ! Récupération du communicateur MPI
-    call asmpi_comm('GET', mpicomm)
-    !
     ! Degrés de liberté physiques :
     ! =============================
-    ! Détermination des indices (Fortran) dans la matrice aster s
-    idof => get_indices_of_dofs( physical_dof, matas )
-    ctxt%nphys = size(idof)
-    !
-    ! Passage indices Fortran -> Indices C 
-    idof(:)=idof(:)-1
-    ! Construction d'un Index Set (IS) PETSc à partir du vecteur d'indices C
-    call ISCreateGeneral(mpicomm,to_petsc_int(ctxt%nphys),idof, &
-    PETSC_COPY_VALUES, ctxt%is_phys, ierr )
-    !
-    ASSERT(ierr == 0 )
-    if (associated( idof ) ) then 
-       deallocate( idof ) 
-    endif 
+    ctxt%is_phys = build_is_for_type_of_dof( matas, physical_dof )
+    call ISGetSize(ctxt%is_phys , nphys, ierr )
+    ASSERT( ierr == 0 ) 
+    ctxt%nphys = to_aster_int( nphys )
     !
     ! Lagrange 1 :
     ! ============
-    ! Détermination des indices (Fortran) dans la matrice aster 
-    idof => get_indices_of_dofs( lagrange1_dof, matas )
-    ctxt%nlag1 = size(idof)
-    !
-    ! Passage indices Fortran -> Indices C 
-    idof(:)=idof(:)-1
-    ! Construction d'un Index Set (IS) PETSc à partir du vecteur d'indices C
-    call ISCreateGeneral(mpicomm,to_petsc_int(ctxt%nlag1),idof,PETSC_COPY_VALUES, &
-    ctxt%is_lag1,ierr)
-    ASSERT(ierr == 0 )
-    if (associated( idof ) ) then 
-       deallocate( idof ) 
-    endif 
+    ctxt%is_lag1 = build_is_for_type_of_dof( matas, lagrange1_dof )
+    call ISGetSize(ctxt%is_lag1 , nlag1, ierr )
+    ASSERT( ierr == 0 ) 
+    ctxt%nlag1 = to_aster_int( nlag1 ) 
     !
     ! Lagrange 2 :
     ! ============
-    ! Détermination des indices (Fortran) dans la matrice aster 
-    idof => get_indices_of_dofs( lagrange2_dof, matas )
-    ctxt%nlag2 = size(idof)
-    !
-    ! Passage indices Fortran -> Indices C 
-    idof(:)=idof(:)-1
-    ! Construction d'un Index Set (IS) PETSc à partir du vecteur d'indices C
-    call ISCreateGeneral(mpicomm,to_petsc_int(ctxt%nlag2),idof,PETSC_COPY_VALUES, &
-    ctxt%is_lag2,ierr)
-    ASSERT(ierr == 0 )
-    if (associated( idof ) ) then 
-       deallocate( idof ) 
-    endif 
+    ctxt%is_lag2 = build_is_for_type_of_dof( matas, lagrange2_dof )
+    call ISGetSize(ctxt%is_lag2 , nlag2, ierr )
+    ASSERT( ierr == 0 ) 
+    ctxt%nlag2 = to_aster_int( nlag2 )
+    ! Cette étape est terminée 
     ctxt%is_setup = .true.
     !
 end subroutine set_is
@@ -234,6 +203,10 @@ subroutine set_matrix_data( a_mat, ak_mat,  ctxt)
     MAT_INITIAL_MATRIX, ctxt%c_mat, ierr)
     ASSERT(ierr == 0)
     !
+    call MatGetSubMatrix(ak_mat, ctxt%is_lag2, ctxt%is_phys, &
+    MAT_INITIAL_MATRIX, ctxt%d_mat, ierr)
+    ASSERT(ierr == 0)
+    !
     ctxt%data_setup = .true.
     !
 end subroutine set_matrix_data
@@ -260,9 +233,16 @@ subroutine set_workspace( ctxt )
     call MatCreateVecs( ctxt%c_mat, PETSC_NULL_OBJECT, ctxt%x2, ierr )
     ASSERT( ierr == 0 ) 
     call VecDuplicate( ctxt%x2, ctxt%y2, ierr )
+    ASSERT( ierr == 0 )
+    call MatCreateVecs( ctxt%d_mat, PETSC_NULL_OBJECT, ctxt%x3, ierr )
+    ASSERT( ierr == 0 ) 
+    call VecDuplicate( ctxt%x3, ctxt%y3, ierr )
     ASSERT( ierr == 0 ) 
     !
     ctxt%work_setup = .true. 
+    ! On n'a plus besoin de d_mat 
+    call MatDestroy( ctxt%d_mat, ierr ) 
+    ASSERT( ierr == 0 ) 
     !
 end subroutine set_workspace
 !
@@ -290,7 +270,7 @@ subroutine set_scatter( a_mat, ctxt )
     ASSERT( ierr == 0 ) 
     call VecScatterCreate(ctxt%x2,PETSC_NULL_OBJECT,x, ctxt%is_lag1, ctxt%scatter_to_lag1, ierr)
     ASSERT( ierr == 0 ) 
-    call VecScatterCreate(ctxt%x2,PETSC_NULL_OBJECT,x, ctxt%is_lag2, ctxt%scatter_to_lag2, ierr)
+    call VecScatterCreate(ctxt%x3,PETSC_NULL_OBJECT,x, ctxt%is_lag2, ctxt%scatter_to_lag2, ierr)
     ASSERT( ierr == 0 ) 
     !
     call VecDestroy( x, ierr )
@@ -321,11 +301,15 @@ subroutine free_saddle_point_context( ctxt )
     ASSERT( ierr == 0 )
     call VecDestroy( ctxt%x2, ierr )
     ASSERT( ierr == 0 )
+    call VecDestroy( ctxt%x3, ierr )
+    ASSERT( ierr == 0 )
     call VecDestroy( ctxt%xtmp, ierr )
     ASSERT( ierr == 0 )
     call VecDestroy( ctxt%y1, ierr )
     ASSERT( ierr == 0 )
     call VecDestroy( ctxt%y2, ierr )
+    ASSERT( ierr == 0 )
+    call VecDestroy( ctxt%y3, ierr )
     ASSERT( ierr == 0 )
     call VecScatterDestroy( ctxt%scatter_to_phys, ierr ) 
     ASSERT( ierr == 0 )
@@ -335,6 +319,81 @@ subroutine free_saddle_point_context( ctxt )
     ASSERT( ierr == 0 )
     !
 end subroutine free_saddle_point_context
+!
+! 
+function build_is_for_type_of_dof( matas, type_of_dof ) result ( is )
+    ! Dummy arguments
+    character(len=19)   :: matas 
+    integer, intent(in) :: type_of_dof
+    IS                  :: is
+    ! Local variables 
+    mpi_int :: mpicomm, rank, nbproc
+    integer :: ndof, pass, ii, jerr  
+    PetscInt :: istart, iend, my_ndof
+    integer(kind=4),dimension(:), pointer :: idof => null()
+    PetscInt,dimension(:), allocatable    :: my_idof 
+    Vec :: vtmp 
+    !
+    ! Récupération du communicateur MPI
+    call asmpi_comm('GET', mpicomm)
+    call asmpi_info(rank=rank, size=nbproc)
+    !
+    ! Détermination des indices (Fortran) dans la matrice aster 
+    idof => get_indices_of_dofs( type_of_dof, matas )
+    ndof = size(idof)
+    ! Le vecteur d'indices idof contient les indices globaux des ddls 
+    ! physiques. Il a la même taille et contient les mêmes
+    ! valeurs sur tous les processeurs participant au calcul. 
+    !
+    ! Passage indices Fortran -> Indices C 
+    idof(:) = idof(:) - 1
+    !
+    ! Détermination de istart et iend 
+    if ( nbproc == 1 ) then
+        ! on n'a rien à faire 
+        istart = 0 
+        iend = ndof
+    else 
+    ! Sur plusieurs procs 
+    ! l'index set retourné 
+    ! par cette fonction a la même répartition 
+    ! parallèle qu'un vecteur PETSc de taille ndof   
+        call VecCreateMPI(mpicomm, PETSC_DECIDE, ndof, vtmp, ierr )
+        ASSERT( ierr == 0 ) 
+        call VecGetOwnerShipRange( vtmp, istart, iend, ierr )
+        ASSERT( ierr == 0 )
+        call VecDestroy( vtmp, ierr ) 
+        ASSERT( ierr == 0 ) 
+    endif 
+    ! Sur chaque processeur, l'IS  possède les degrés de liberté 
+    ! listés dans my_idof
+    do pass = 1, 2
+        my_ndof = 0  
+        do ii = istart, iend-1
+                my_ndof = my_ndof + 1 
+                if ( pass == 2 ) then 
+                    my_idof( my_ndof ) = idof ( ii + 1 )
+                endif  
+        enddo
+        if ( pass == 1 ) then 
+            allocate( my_idof( my_ndof ), stat = jerr ) 
+            ASSERT( jerr == 0 )
+        endif
+    enddo
+    !
+    ! Construction d'un Index Set (IS) PETSc à partir du vecteur d'indices C
+    call ISCreateGeneral(mpicomm, my_ndof, my_idof, &
+        PETSC_COPY_VALUES, is, ierr )
+    ASSERT(ierr == 0 )
+    if (associated( idof ) ) then 
+       deallocate( idof ) 
+    endif 
+    !
+    if (allocated( my_idof ) ) then 
+       deallocate( my_idof ) 
+    endif 
+    ! 
+end function build_is_for_type_of_dof
 !
 #else
 ! Si on ne compile pas avec PETSc, il faut quand même définir les 

@@ -59,6 +59,10 @@ use petsc_data_module
     PetscReal :: rtol, atol, dtol, aster_petsc_default_real
     Mat :: a
     KSP :: ksp
+#ifdef ASTER_PETSC_VERSION_LEQ_36
+#else
+    PetscViewerAndFormat :: vf
+#endif
 !=================================================================
     call jemarq()
 !
@@ -122,11 +126,17 @@ use petsc_data_module
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
 !
-!     - pour suivre les itérations de Krylov-TODO 
+!     - pour suivre les itérations de Krylov
 !     --------------------------------------
     if (niv .ge. 2) then
+#ifdef ASTER_PETSC_VERSION_LEQ_36
         call KSPMonitorSet(ksp, KSPMonitorTrueResidualNorm, PETSC_NULL_OBJECT,&
                            PETSC_NULL_FUNCTION, ierr)
+#else
+         call PetscViewerAndFormatCreate(PETSC_VIEWER_STDOUT_WORLD, PETSC_VIEWER_DEFAULT, vf,ierr)
+         call KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm, vf, PetscViewerAndFormatDestroy,&
+                            ierr)
+#endif 
         ASSERT(ierr.eq.0)
     endif
 !

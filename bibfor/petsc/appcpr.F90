@@ -113,7 +113,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     fillin = slvr(3)
     niremp = slvi(4)
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
-    lmd = matd.eq.'OUI'
+    lmd = matd == 'OUI'
 !
     fill = niremp
     fillp = fillin
@@ -136,7 +136,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 !     -- ON UTILISE DONC DES VERSIONS PAR BLOC
 !   -- QUE L'ON CREERA AU MOMENT DE LA RESOLUTION (DANS APPCRS)
 !     -----------------------------------------------------------
-    if ((precon.eq.'LDLT_INC') .or. (precon.eq.'SOR')) then
+    if ((precon == 'LDLT_INC') .or. (precon == 'SOR')) then
         if (nbproc .gt. 1) then
 !           EN PARALLELE, ON NE PREPARE PAS LE PRECONDITIONNEUR
 !           TOUT DE SUITE CAR ON NE VEUT PAS ETRE OBLIGE
@@ -148,11 +148,11 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 !   -- VERIFICATIONS COMPLEMENTAIRES POUR LES PRE-CONDITIONNEURS MULTIGRILLES
 !   -- DEFINITION DU NOYAU UNIQUEMENT EN MODELISATION SOLIDE (2D OU 3D)
 !   -------------------------------------------------------------------------
-    if ((precon .eq. 'ML') .or. (precon .eq. 'BOOMER') .or. (precon.eq.'GAMG')) then
+    if ((precon  ==  'ML') .or. (precon  ==  'BOOMER') .or. (precon == 'GAMG')) then
 !       -- PAS DE LAGRANGE
         call dismoi('EXIS_LAGR', nomat, 'MATR_ASSE', repk=exilag, arret='C',ier=iret)
-        if (iret .eq. 0) then
-            if (exilag .eq. 'OUI') then
+        if (iret  ==  0) then
+            if (exilag  ==  'OUI') then
                 call utmess('F', 'PETSC_18')
             endif
         endif
@@ -167,7 +167,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     
 #ifdef ASTER_PETSC_VERSION_LEQ_34
 #else
-    if (precon.eq.'GAMG') then 
+    if (precon == 'GAMG') then 
 !       -- CREATION DES MOUVEMENTS DE CORPS RIGIDE --
 !           * VECTEUR RECEPTABLE DES COORDONNEES AVEC TAILLE DE BLOC
 !           
@@ -252,14 +252,14 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 !           * CALCUL DES MODES A PARTIR DES COORDONNEES
         if (bs.le.3) then
             call MatNullSpaceCreateRigidBody(coords, sp, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr == 0)
             call MatSetNearNullSpace(a, sp, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr == 0)
             call MatNullSpaceDestroy(sp, ierr)
-            ASSERT(ierr.eq.0)
+            ASSERT(ierr == 0)
         endif
         call VecDestroy(coords, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         endif
 ! Si dimgeo /= 3 on ne pré-calcule pas les modes de corps rigides 
         endif 
@@ -269,118 +269,145 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 !     -- CHOIX DU PRECONDITIONNEUR :
 !     ------------------------------
     call KSPGetPC(ksp, pc, ierr)
-    ASSERT(ierr.eq.0)
+    ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-    if (precon .eq. 'LDLT_INC') then
+    if (precon  ==  'LDLT_INC') then
         call PCSetType(pc, PCILU, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCFactorSetLevels(pc, to_petsc_int(fill), ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCFactorSetFill(pc, fillp, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCFactorSetMatOrderingType(pc, MATORDERINGNATURAL, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
     !-----------------------------------------------------------------------
     else if (precon.eq.'BLOC_LAGR') then
         call KSPGetPC(ksp,pc,ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCSetType(pc,PCSHELL,ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
+        call PCShellSetName(pc,"BLOC_LAGR Preconditionner", ierr )
+        ASSERT(ierr == 0)
         call PCShellSetSetUp(pc,augmented_lagrangian_setup, ierr ) 
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCShellSetApply(pc,augmented_lagrangian_apply,ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCShellSetContext(pc,kptsc,ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr )
-        ASSERT( ierr == 0 ) 
-        call KSPSetPCSide(ksp,PC_LEFT,ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT( ierr == 0 )
 !-----------------------------------------------------------------------
-    else if (precon.eq.'LDLT_SP') then
+    else if (precon == 'LDLT_SP') then
         call PCSetType(pc, PCSHELL, ierr)
-        ASSERT(ierr.eq.0)
-!        LDLT_SP FAIT APPEL A DEUX ROUTINES EXTERNES
+        ASSERT(ierr == 0)
+        call PCShellSetName(pc,"LDLT_SP Preconditionner", ierr )
+        ASSERT(ierr == 0)
+!       LDLT_SP FAIT APPEL A DEUX ROUTINES EXTERNES
         call PCShellSetSetUp(pc, ldsp1, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
         call PCShellSetApply(pc, ldsp2, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !
-        ASSERT(spmat.eq.' ')
+        ASSERT(spmat == ' ')
         spmat = nomat
-        ASSERT(spsolv.eq.' ')
+        ASSERT(spsolv == ' ')
         spsolv = nosolv
 !-----------------------------------------------------------------------
-    else if (precon.eq.'JACOBI') then
+    else if (precon == 'JACOBI') then
         call PCSetType(pc, PCJACOBI, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-    else if (precon.eq.'SOR') then
+    else if (precon == 'SOR') then
         call PCSetType(pc, PCSOR, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-    else if (precon.eq.'ML') then
+    else if (precon == 'ML') then
         call PCSetType(pc, PCML, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', sk=precon)
         endif
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !        CHOIX DE LA RESTRICTION (UNCOUPLED UNIQUEMENT ACTUELLEMENT)
+#ifdef ASTER_PETSC_VERSION_LEQ_36
         call PetscOptionsSetValue('-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
-        ASSERT(ierr.eq.0)
-!
+        ASSERT(ierr == 0)
         call PetscOptionsSetValue('-pc_ml_PrintLevel', '0', ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
+#else
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT, '-pc_ml_CoarsenScheme', 'Uncoupled', ierr)
+        ASSERT(ierr == 0)
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT, '-pc_ml_PrintLevel', '0', ierr)
+        ASSERT(ierr == 0)
+#endif 
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
-    else if (precon.eq.'BOOMER') then
+    else if (precon == 'BOOMER') then
         call PCSetType(pc, PCHYPRE, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', sk=precon)
         endif
+#ifdef ASTER_PETSC_VERSION_LEQ_36
         call PetscOptionsSetValue('-pc_hypre_type', 'boomeramg', ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_coarsen_type', 'PMIS', ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
-        ASSERT(ierr.eq.0)
-!
+        ASSERT(ierr == 0)
         call PetscOptionsSetValue('-pc_hypre_boomeramg_print_statistics', '0', ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
+#else
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT,'-pc_hypre_type', 'boomeramg', ierr)
+        ASSERT(ierr == 0)
+!        CHOIX DE LA RESTRICTION (PMIS UNIQUEMENT ACTUELLEMENT)
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT, &
+             &   '-pc_hypre_boomeramg_coarsen_type', 'PMIS', ierr)
+        ASSERT(ierr == 0)
+!        CHOIX DU LISSAGE (SOR UNIQUEMENT POUR LE MOMENT)
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT, &
+             &   '-pc_hypre_boomeramg_relax_type_all', 'SOR/Jacobi', ierr)
+        ASSERT(ierr == 0)
+        call PetscOptionsSetValue(PETSC_NULL_OBJECT, &
+             & '-pc_hypre_boomeramg_print_statistics', '0', ierr)
+        ASSERT(ierr == 0)
+#endif 
 !        APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
 #ifdef ASTER_PETSC_VERSION_LEQ_32
 #else 
-     else if (precon.eq.'GAMG') then
+     else if (precon == 'GAMG') then
         call PCSetType(pc, PCGAMG, ierr)
         if (ierr .ne. 0) then
             call utmess('F', 'PETSC_19', 1, precon)
         endif
 !       CHOIX DE LA VARIANTE AGGREGATED
 !        call PCGAMGSetType(pc, "agg", ierr)
-!        ASSERT(ierr.eq.0)
+!        ASSERT(ierr == 0)
 !       CHOIX DU NOMBRE DE LISSAGES
         nsmooth=1
         call PCGAMGSetNSmooths(pc, nsmooth, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !
+#ifdef ASTER_PETSC_VERSION_LEQ_36
         call PetscOptionsSetValue('-pc_gamg_verbose', '2', ierr)
-        ASSERT(ierr.eq.0)
+#else
+        call PetscOptionsSetValue( PETSC_NULL_OBJECT,'-pc_gamg_verbose', '2', ierr)
+#endif
+        ASSERT(ierr == 0)
 !       APPEL OBLIGATOIRE POUR PRENDRE EN COMPTE LES AJOUTS CI-DESSUS
         call PCSetFromOptions(pc, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
      
 #endif
 !-----------------------------------------------------------------------
-    else if (precon.eq.'SANS') then
+    else if (precon == 'SANS') then
         call PCSetType(pc, PCNONE, ierr)
-        ASSERT(ierr.eq.0)
+        ASSERT(ierr == 0)
 !-----------------------------------------------------------------------
     else
         ASSERT(.false.)
@@ -391,7 +418,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     call PCSetUp(pc, ierr)
 !     ANALYSE DU CODE RETOUR
     if (ierr .ne. 0) then
-        if (precon .eq. 'LDLT_SP') then
+        if (precon  ==  'LDLT_SP') then
 !           ERREUR : PCENT_PIVOT PAS SUFFISANT
             call utmess('F', 'PETSC_15')
         else

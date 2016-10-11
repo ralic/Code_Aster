@@ -422,7 +422,6 @@ use saddle_point_module
             nmaxit = maxits
             call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
             slvi(5) = nmaxit
-            write(*,*)'Nombre d iterations de Krylov ',nmaxit
         endif
 !
 !        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LDLT_SP

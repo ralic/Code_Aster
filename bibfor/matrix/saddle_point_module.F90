@@ -112,15 +112,15 @@ subroutine convert_rhs_to_saddle_point( b )
     !
     Vec, intent(inout) :: b
     !
-    ! Set to zero the Vector x2 
+    ! Set to zero the Vector x3 
     !
-    call VecSet( sp_context%x2, 0.0, ierr ) 
+    call VecSet( sp_context%x3, 0.0, ierr ) 
     ASSERT( ierr == 0 ) 
-    ! And load the values of x2 to vector b 
-    call VecScatterBegin( sp_context%scatter_to_lag2, sp_context%x2, b, &
+    ! And load the values of x3 to vector b 
+    call VecScatterBegin( sp_context%scatter_to_lag2, sp_context%x3, b, &
       &     INSERT_VALUES, SCATTER_FORWARD, ierr )
     ASSERT( ierr == 0 )
-    call VecScatterEnd( sp_context%scatter_to_lag2, sp_context%x2, b, &
+    call VecScatterEnd( sp_context%scatter_to_lag2, sp_context%x3, b, &
      &         INSERT_VALUES, SCATTER_FORWARD, ierr )
     ASSERT( ierr == 0 )
     !
@@ -232,10 +232,10 @@ subroutine  update_double_lagrange( x )
     call VecScatterEnd( sp_context%scatter_to_lag1, sp_context%x2, x, &
          &    INSERT_VALUES, SCATTER_FORWARD, ierr )
     ASSERT( ierr == 0 )
-    call VecScatterBegin( sp_context%scatter_to_lag2, sp_context%x2, x, &
+    call VecScatterBegin( sp_context%scatter_to_lag2, sp_context%x3, x, &
          &    INSERT_VALUES, SCATTER_FORWARD, ierr )
     ASSERT( ierr == 0 )
-    call VecScatterEnd( sp_context%scatter_to_lag2, sp_context%x2, x, &
+    call VecScatterEnd( sp_context%scatter_to_lag2, sp_context%x3, x, &
          &    INSERT_VALUES, SCATTER_FORWARD, ierr )
     ASSERT( ierr == 0 )
     !
