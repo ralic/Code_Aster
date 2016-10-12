@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,20 @@ def check(checker, co, l_before, etape):
     # on imprime les messages d'erreur stockés dans le checker
     lerreur = [(obj, msg) for level, obj, msg in checker.msg if level == 0]
     lerreur.sort()
+
+    # on vérifie que la commande n'a pas créé d'objets interdits
+    l_possible = set(checker.names.keys())
+    l_interdit = list(l_new - l_possible)
+    l_interdit.sort()
+
+    # concept utilisateur
+    if co.nom[0:8].strip() == sd.nomj.nomj.strip():
+        obj = "{:24}".format("{0:<8}._TYPCO_".format(co.nom))
+        if obj in l_interdit:
+            l_interdit.remove(obj)
+        if obj not in l_after:
+            lerreur.append((obj, "type manquant"))
+
     if len(lerreur) > 0:
         # pour "ouvrir" le message
         nom_concept = sd.nomj.nomj.strip()
@@ -92,10 +106,6 @@ def check(checker, co, l_before, etape):
     # SD suivante
     checker.msg = []
 
-    # on vérifie que la commande n'a pas créé d'objets interdits
-    l_possible = set(checker.names.keys())
-    l_interdit = list(l_new - l_possible)
-    l_interdit.sort()
     if len(l_interdit) > 0:
         # pour "ouvrir" le message :
         UTMESS("E+", 'SDVERI_40', valk=type_concept)
