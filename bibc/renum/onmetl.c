@@ -22,6 +22,13 @@
 #include "programs/metisbin.h"
 #endif
 
+/* Prototypes of internal functions */
+int ReadGraphL(graph_t *, int *, int *, int *, int *, int *);
+int ComputeFillInL(graph_t *, idx_t *, idx_t *, idx_t *, int *,
+                   int *, double *, int *, int *);
+int smbfctl(int, idx_t *, idx_t *, idx_t *, idx_t *, idx_t *, int *, idx_t *,
+            idx_t *, int *, idx_t *, idx_t *, int *, int *, double *);
+
 
 void DEFPPPPPPPPPPPPP(ONMETL,onmetl, nbnd,nadj,
                         xadjd, adjncy,
