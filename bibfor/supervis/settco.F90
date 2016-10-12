@@ -1,13 +1,13 @@
 !> Register the supervisor type name in the result itself.
-!
+
 !> The type name is the name of the Python class in uppercases.
 !>
 !> Only the datastructures created by calling an opXXXX subroutine are registered
 !> by the supervisor (see E_ETAPE.Exec).
-!
+
 !> @param[in]  name     name of the datastructure
 !> @param[in]  typeco   name of the supervisor type.
-!
+
 subroutine settco(name, typeco)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,22 +26,28 @@ subroutine settco(name, typeco)
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mathieu.courtois@edf.fr
-!
+
     implicit none
-    character(len=*), intent(in) :: name
-    character(len=*), intent(in) :: typeco
-!
+
 #include "jeveux.h"
+#include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-!
+
+!   arguments
+    character(len=*), intent(in) :: name
+    character(len=*), intent(in) :: typeco
+
     character(len=8) :: name8
     character(len=16) :: attr
     character(len=24) :: type24
     integer :: iret
     character(len=24), pointer :: vk(:) => null()
-!
+
+    call jemarq()
+
     name8 = name
     type24 = typeco
     attr = name8//'._TYPCO_'
@@ -52,5 +58,7 @@ subroutine settco(name, typeco)
         call jeveuo(attr, 'E', vk24=vk)
     endif
     vk(1) = type24
-!
+
+    call jedema()
+
 end subroutine settco

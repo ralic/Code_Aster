@@ -22,6 +22,7 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/rsexch.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/rsorac.h"
+#include "asterfort/settco.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecind.h"
 #include "asterfort/vpgskp.h"
@@ -67,6 +68,7 @@ subroutine orth99(nomres, ritz)
     character(len=16) :: typbas
     character(len=14) :: nu, numdd1, numdda, matri1
     character(len=19) :: matr, chamol
+    character(len=24) :: typeco
     real(kind=8), pointer :: trav1(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
     integer, pointer :: trav4(:) => null()
@@ -178,6 +180,7 @@ subroutine orth99(nomres, ritz)
                 nindep)
 !
 !-- GESTION DES CONCEPTS REENTRANTS
+    call gettco(nomres, typeco)
     call jeexin(nomres//'           .DESC', ier)
     if (ier .ne. 0) then
         call wkvect('&&ORTH99.VECT_TEMP', 'V V I', nbmode, ibid)
@@ -193,6 +196,7 @@ subroutine orth99(nomres, ritz)
         call jedetc('G', nomres, 1)
     endif
     call rscrsd('G', nomres, 'MODE_MECA', nbmode)
+    call settco(nomres, typeco)
 !
 !   If an existing concept was used, recuperate its reference information
     if (ier .ne. 0) call refdcp('&&ORTH99', nomres)

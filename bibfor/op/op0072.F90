@@ -89,7 +89,7 @@ subroutine op0072()
     call getvid(' ', 'VECT_ASSE_GENE', scal=vectas, nbret=n3)
     call getvid(' ', 'BASE', scal=basemo, nbret=n4)
     call getvtx(' ', 'TYPE_VECT', scal=nomtyp, nbret=n2)
-    call gettco(basemo, typbas)
+    call gettco(basemo, typbas, .true._1)
 !
 ! --- RECUPERATION DU NB DE MODES
 !
