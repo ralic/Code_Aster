@@ -56,6 +56,7 @@ subroutine ibdbgs()
 !-----------------------------------------------------------------------
     call jemarq()
     tbloc=800.d0
+    call ibcode(ncode)
     ndbg = 0
 !
 !     -- DEBUG / JXVERI :
@@ -70,7 +71,6 @@ subroutine ibdbgs()
     call getvtx('DEBUG', 'SDVERI', iocc=1, scal=repons)
     if (ncode .gt. 0) then
         ! Un jour, on mettra 'OUI' par defaut...
-        repons='NON'
     endif
 !
     if (repons .eq. 'OUI') then
@@ -103,7 +103,6 @@ subroutine ibdbgs()
     endif
 !
 !     -- WARNING SUR LES MOTS-CLES CODE ET DEBUG
-    call ibcode(ncode)
     if (ncode .gt. 0 .or. ndbg .gt. 0) then
         call utmess('I', 'SUPERVIS_22')
     endif
