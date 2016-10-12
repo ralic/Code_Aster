@@ -27,7 +27,7 @@ subroutine op0196()
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/cescar.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cnscno.h"

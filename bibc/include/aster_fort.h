@@ -91,6 +91,8 @@ extern void DEF0(POURSU,poursu);
 #define CALL_ASABRT(a) CALLP(ASABRT,asabrt,a)
 extern void DEFP(ASABRT, asabrt, _IN ASTERINTEGER *);
 
+#define CALL_SETTCO(a,b) CALLSS(SETTCO,settco,a,b)
+extern void DEFSS(SETTCO,settco, char *,STRING_SIZE, char *,STRING_SIZE);
 
 /* routines JEVEUX */
 #define CALL_JEMARQ() CALL0(JEMARQ, jemarq)

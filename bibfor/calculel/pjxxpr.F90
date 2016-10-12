@@ -41,7 +41,7 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"

@@ -28,7 +28,7 @@ subroutine modirepresu(resuou, resuin )
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesfus.h"

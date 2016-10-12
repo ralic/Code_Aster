@@ -30,7 +30,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvid.h"

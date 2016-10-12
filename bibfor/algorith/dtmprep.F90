@@ -27,7 +27,7 @@ subroutine dtmprep(sd_dtm_)
 #include "blas/dcopy.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
 #include "asterfort/ajlagr.h"
 #include "asterfort/assert.h"

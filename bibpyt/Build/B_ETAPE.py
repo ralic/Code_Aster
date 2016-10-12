@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -692,45 +692,6 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
             B_utils.TraceGet('GETVLS', nom_motfac, iocc, nom_motcle, valeur)
             for k in valeur[1]:
                 assert is_int(k)
-        return valeur
-
-    def gettco(self, nom_concept):
-        """
-          Methode : B_ETAPE.ETAPE.gettco
-          Auteur : Antoine Yessayan
-          Intention : retourne le type d'un concept a partir de son nom  passe
-                en argument. Cette methode est a l'usage du superviseur Aster
-        """
-        no = nom_concept.strip()
-        valeur = None
-
-        try:
-            # On essaie de recuperer le concept no parmi les concepts existant dans le contexte
-            # avant l'étape self
-            objet_sd = self.parent.get_sd_avant_etape(no, self)
-            if objet_sd == None:
-                # Si on n'a rien trouve
-                if self.sd != None and self.sd.nom == no:
-                    # Et si l objet demande est le concept produit, on
-                    # l'utilise
-                    objet_sd = self.sd
-                    # XXX Ne suffit peut etre pas a traiter completement le cas des concepts produits
-                    # pour les macros. Il y a aussi ceux de self.sdprods
-            assert(objet_sd != None)
-            valeur = B_utils.Typast(AsType(objet_sd))
-            valeur = valeur.upper()
-        except AssertionError:
-            # if not nom_concept.startswith('&'):
-                # from warnings import warn
-                # warn("concept inconnu : %s" % nom_concept, RuntimeWarning,
-                # stacklevel=1)
-            valeur = ' '
-        except:
-            # raise AsException("Probleme dans gettco: %s, %s ; Objet introuvable!" % (self.nom, nom_concept))
-            # objet inexistant : l'appelant doit décoder le ' '
-            valeur = ' '
-        # message.debug(SUPERV, "concept : %s, type : '%s'", nom_concept,
-        # valeur)
         return valeur
 
     def gettvc(self, nom):

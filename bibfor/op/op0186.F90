@@ -9,7 +9,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/etausr.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"

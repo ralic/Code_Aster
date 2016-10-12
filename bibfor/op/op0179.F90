@@ -26,7 +26,7 @@ subroutine op0179()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"

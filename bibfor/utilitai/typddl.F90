@@ -2,7 +2,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
                   nbbloq, nblagr, nbliai)
     implicit none
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
@@ -22,7 +22,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
     character(len=*) :: choixz, numez
 !----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -138,7 +138,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti,&
         call jeveuo(nume//'.NUME.REFN', 'L', jrefe)
         call gettco(zk24(jrefe), typrep)
         if (typrep .eq. 'MODELE_GENE     ') then
-            modgen = zk24(jrefe)
+            modgen = zk24(jrefe)(1:8)
             call jenonu(jexnom(norig(1:19)//'.LILI', '&SOUSSTR'), ibid)
             call jelira(jexnum(norig, ibid), 'LONMAX', nbsst)
 ! On compte que si il y a plus d'une sous-structure

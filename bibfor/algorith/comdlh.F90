@@ -35,7 +35,7 @@ subroutine comdlh()
 #include "asterc/etausr.h"
 #include "asterc/gcucon.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"

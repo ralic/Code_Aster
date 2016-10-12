@@ -36,7 +36,7 @@ subroutine dtmprep_noli_dvis(sd_dtm_, sd_nl_, icomp)
 !
 !
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/angvx.h"

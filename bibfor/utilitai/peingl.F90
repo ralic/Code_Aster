@@ -4,7 +4,7 @@ subroutine peingl(resu, modele, mate, cara, nh,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
 #include "asterfort/alchml.h"
 #include "asterfort/calcul.h"

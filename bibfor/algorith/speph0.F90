@@ -2,7 +2,7 @@ subroutine speph0(nomu, table)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvem.h"

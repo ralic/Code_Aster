@@ -1,7 +1,7 @@
 subroutine focain(method, nomfon, cste, sortie, base)
     implicit none
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/foc2in.h"
 #include "asterfort/jedema.h"
@@ -17,7 +17,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
     real(kind=8) :: cste
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,8 @@ subroutine focain(method, nomfon, cste, sortie, base)
 !     VILLARCEAU       : 4 :   45   14   64   24   64   14   --   --
 !     HARDY            : 6 :  140   41  216   27  272   27  216   41
 !     ----------------------------------------------------------------
-    character(len=16) :: nomres, typres
+    character(len=8) :: nomres
+    character(len=16) :: typres
     character(len=19) :: nomfi, nomfs
     character(len=24) :: vale, prol
 !     ----------------------------------------------------------------
@@ -109,7 +110,7 @@ subroutine focain(method, nomfon, cste, sortie, base)
 !     --- AFFECTATION DU .PROL ---
     prol = nomfi//'.PROL'
     call jeveuo(prol, 'L', lpro)
-    nomres = zk24(lpro+3)
+    nomres = zk24(lpro+3)(1:8)
     if (nomres(1:4) .eq. 'ACCE') then
         nomres = 'VITE'
     else if (nomres(1:4) .eq. 'VITE') then

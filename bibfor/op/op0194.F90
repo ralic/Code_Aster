@@ -23,7 +23,7 @@ subroutine op0194()
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/calcop.h"
 #include "asterfort/chpver.h"
 #include "asterfort/copisd.h"

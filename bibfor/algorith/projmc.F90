@@ -2,7 +2,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu,&
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/copmod.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"

@@ -5,7 +5,7 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
@@ -48,7 +48,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Material - Coding 
+! Material - Coding
 !
 ! Interpolation of ALPHA
 !

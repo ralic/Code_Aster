@@ -2,7 +2,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"

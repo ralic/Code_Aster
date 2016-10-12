@@ -27,7 +27,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/codent.h"

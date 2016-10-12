@@ -4,7 +4,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
                   cara, chvarc, codret)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,7 @@ subroutine meca01(optio0, nbordr, jordr, nchar, jcha,&
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/alchml.h"
 #include "asterfort/codent.h"

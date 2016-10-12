@@ -234,35 +234,6 @@ void DEFP(INIRAN,iniran,_IN ASTERINTEGER *jump)
 }
 
 /* ------------------------------------------------------------------ */
-void DEFSS(GETTCO,gettco,_IN char *nomobj, _IN STRING_SIZE lnom,
-                        _OUT char *typobj, _IN STRING_SIZE ltyp)
-{
-        /*
-          retrouver le type "superviseur" du concept nomobj.
-        */
-        char *mcs      = (char*)0 ;
-        PyObject *res  = (PyObject*)0 ;
-        char *nomType  = (char*)0 ;
-                                                           DEBUG_ASSERT(lnom>0) ;
-        mcs = MakeCStrFromFStr(nomobj,lnom);
-
-        /*
-        recherche dans le jeu de commandes python du nom du type de
-         du concept Aster de nom nomobj
-        */
-        res=PyObject_CallMethod(get_sh_etape(),"gettco","s",mcs);
-        if (res == (PyObject*)0)MYABORT("erreur dans la partie Python (gettco)");
-                                                           DEBUG_ASSERT( PyString_Check(res) );
-        nomType=PyString_AsString(res);
-                                                           DEBUG_ASSERT(nomType!=(char*)0) ;
-        CopyCStrToFStr(typobj, nomType, ltyp);
-        Py_DECREF(res);                /*  decrement sur le refcount du retour */
-        FreeStr(mcs);
-        return ;
-}
-
-
-/* ------------------------------------------------------------------ */
 void DEFPS(GETMAT,getmat,_INOUT ASTERINTEGER *nbarg,_OUT char *motcle,_IN STRING_SIZE lcle)
 {
         /*
@@ -2240,6 +2211,29 @@ return PyInt_FromLong((long)ier);
 }
 
 /* ------------------------------------------------------------------ */
+static char register_type_doc[]=
+"register_type(sdname, typename)\n\
+\n\
+Enregistre le type du concept dans son objet jeveux.";
+
+static PyObject *aster_register_type(self, args)
+PyObject *self; /* Not used */
+PyObject *args;
+{
+    char *name, *type, *Fname, *Ftype;
+    int lname, ltype;
+
+    if (!PyArg_ParseTuple(args, "s#s#", &name, &lname, &type, &ltype)) return NULL;
+    Fname = MakeFStrFromCStr(name, lname);
+    Ftype = MakeFStrFromCStr(type, ltype);
+
+    CALL_SETTCO(Fname, Ftype);
+
+    Py_INCREF( Py_None ) ;
+    return Py_None;
+}
+
+/* ------------------------------------------------------------------ */
 static PyObject *jeveux_getobjects( PyObject* self, PyObject* args)
 {
     ASTERINTEGER nmax, total;
@@ -2570,6 +2564,7 @@ static PyMethodDef aster_methods[] = {
                 {"jeveux_getattr", jeveux_getattr,   METH_VARARGS},
                 {"jeveux_exists", jeveux_exists,     METH_VARARGS},
                 {"get_nom_concept_unique", aster_gcncon, METH_VARARGS},
+                {"register_type", aster_register_type, METH_VARARGS, register_type_doc},
                 {NULL,                NULL}/* sentinel */
 };
 

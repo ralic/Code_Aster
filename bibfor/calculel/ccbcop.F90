@@ -3,7 +3,7 @@ subroutine ccbcop(resuin, resuou, lisord, nbordr, lisopt,&
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcop.h"
 #include "asterfort/ccfnrn.h"

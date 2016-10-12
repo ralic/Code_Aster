@@ -29,7 +29,7 @@ subroutine op0100()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/cakg2d.h"
 #include "asterfort/cakg3d.h"

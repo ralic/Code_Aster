@@ -4,7 +4,7 @@ subroutine load_neum_evcd(stop      , inst_curr , load_name, i_load  , ligrel_ca
 !
 implicit none
 !
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

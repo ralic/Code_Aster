@@ -1,8 +1,8 @@
 subroutine eclpgr()
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: j-pierre.lefebvre at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ subroutine eclpgr()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/celfpg.h"
@@ -47,7 +47,7 @@ subroutine eclpgr()
 !
 ! ---------------------------------------------------------------------
     real(kind=8) :: prec
-    integer :: ibid, iret, i, iains1, iains2, cret
+    integer :: ibid, iret, i, iains1, iains2
     integer :: nbsy, np, nc, isy
     integer :: nbordr, iordr
     integer :: mxsy, iret2, nbproc

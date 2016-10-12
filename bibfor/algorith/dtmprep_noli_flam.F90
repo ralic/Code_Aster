@@ -26,7 +26,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 !                     COMPORTEMENT of the command DYNA_VIBRA.
 !
 #include "jeveux.h"
-#include "asterc/gettco.h"
+#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
