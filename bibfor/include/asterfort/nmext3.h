@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,25 +16,27 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmext3(mesh         , field    , field_type, field_s       , nb_cmp   ,&
-                      nb_elem      , nb_poin  , nb_spoi   , type_extr_elem, type_extr,&
-                      type_extr_cmp, list_elem, list_poin , list_spoi     , list_cmp ,&
-                      work_poin    , work_elem)
+    subroutine nmext3(mesh          , field    , field_type   , field_s      ,&
+                      nb_cmp        , nb_elem  , nb_poin      , nb_spoi      ,&
+                      type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
+                      list_elem     , list_poin, list_spoi    , list_cmp     ,&
+                      work_poin     , work_elem)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: nb_poin
-        integer, intent(in) :: nb_spoi
-        integer, intent(in) :: nb_cmp
         character(len=19), intent(in) :: field
         character(len=24), intent(in) :: field_type
         character(len=24), intent(in) :: field_s
+        integer, intent(in) :: nb_cmp
+        integer, intent(in) :: nb_elem
+        integer, intent(in) :: nb_poin
+        integer, intent(in) :: nb_spoi
+        character(len=8), intent(in) :: type_extr_elem
+        character(len=8), intent(in) :: type_extr
+        character(len=8), intent(in) :: type_extr_cmp
+        character(len=8), intent(in) :: type_sele_cmp
         character(len=24), intent(in) :: list_elem
         character(len=24), intent(in) :: list_poin
         character(len=24), intent(in) :: list_spoi
         character(len=24), intent(in) :: list_cmp
-        character(len=8), intent(in) :: type_extr
-        character(len=8), intent(in) :: type_extr_elem
-        character(len=8), intent(in) :: type_extr_cmp
         character(len=19), intent(in) :: work_poin
         character(len=19), intent(in) :: work_elem
     end subroutine nmext3

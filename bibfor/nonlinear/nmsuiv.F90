@@ -81,7 +81,7 @@ implicit none
     character(len=24) :: field_type, field_s
     character(len=4) :: field_disc
     character(len=19) :: field, field_comp, ligrel
-    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, mesh
+    character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, type_sele_cmp, mesh
     character(len=19) :: work_poin, work_node, work_elem
     character(len=24) :: extr_info, extr_type, extr_field, extr_comp
     integer, pointer :: v_extr_info(:) => null()
@@ -183,6 +183,7 @@ implicit none
             type_extr      = v_extr_type(4*(i_keyw_fact-1)+1)
             type_extr_elem = v_extr_type(4*(i_keyw_fact-1)+2)
             type_extr_cmp  = v_extr_type(4*(i_keyw_fact-1)+3)
+            type_sele_cmp  = v_extr_type(4*(i_keyw_fact-1)+4)
 !
 ! --------- Create temporary vectors for extraction
 !
@@ -195,11 +196,11 @@ implicit none
 !
 ! --------- Compute extraction values and store them
 !
-            call nmext1(mesh          , field    , field_disc   , field_type, field_s,&
-                        nb_elem       , nb_node  , nb_poin      , nb_spoi   , nb_cmp,&
-                        type_extr_elem, type_extr, type_extr_cmp, list_node , list_elem,&
-                        list_poin     , list_spoi, list_cmp     , work_node , work_poin,&
-                        work_elem)
+            call nmext1(mesh          , field    , field_disc   , field_type   , field_s ,&
+                        nb_elem       , nb_node  , nb_poin      , nb_spoi      , nb_cmp  ,&
+                        type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
+                        list_node     , list_elem, list_poin    , list_spoi    , list_cmp,&
+                        work_node     , work_poin, work_elem)
 !
 ! --------- Print monitored values in table
 !

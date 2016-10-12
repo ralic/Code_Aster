@@ -1,6 +1,6 @@
-subroutine nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
-                  spoi_nume , nb_vale, i_elem   , elem_nume    , jcesd    ,&
-                  jcesv     , jcesl  , jcesc    , vale_resu)
+subroutine nmextj(field_type, nb_cmp   , list_cmp, type_extr_cmp, type_sele_cmp,&
+                  poin_nume , spoi_nume, nb_vale , i_elem       , elem_nume    ,&
+                  jcesd     , jcesv    , jcesl   , jcesc        , vale_resu)
 !
 implicit none
 !
@@ -35,6 +35,7 @@ implicit none
     integer, intent(in) :: nb_cmp
     character(len=24), intent(in) :: list_cmp
     character(len=8), intent(in) :: type_extr_cmp
+    character(len=8), intent(in) :: type_sele_cmp
     integer, intent(in) :: poin_nume
     integer, intent(in) :: i_elem
     integer, intent(in):: elem_nume
@@ -66,6 +67,7 @@ implicit none
 ! In  nb_cmp           : number of components
 ! In  list_cmp         : name of object contains list of components
 ! In  type_extr_cmp    : type of extraction for components
+! In  type_sele_cmp    : type of selection for components NOM_CMP or NOM_VARI
 ! Out vale_resu        : list of result values
 ! Out nb_vale          : number of result values (one if function)
 !
@@ -90,7 +92,13 @@ implicit none
 !
     call jeveuo(list_cmp, 'L', vk8 = v_list_cmp)
     do i_cmp = 1, nb_cmp
-        v_cmp_name(i_cmp) = v_list_cmp(nb_cmp*(i_elem-1)+i_cmp)
+        if (type_sele_cmp .eq. 'NOM_CMP') then
+            v_cmp_name(i_cmp) = v_list_cmp(i_cmp)
+        elseif (type_sele_cmp .eq. 'NOM_VARI') then
+            v_cmp_name(i_cmp) = v_list_cmp(nb_cmp*(i_elem-1)+i_cmp)
+        else
+            ASSERT(.false.)
+        endif
     end do
 !
 ! - Get value of components

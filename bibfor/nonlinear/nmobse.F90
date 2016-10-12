@@ -214,11 +214,11 @@ implicit none
 !
 ! ------------- Compute extraction values and store them
 !
-                call nmext1(mesh          , field    , field_disc   , field_type, field_s,&
-                            nb_elem       , nb_node  , nb_poin      , nb_spoi   , nb_cmp,&
-                            type_extr_elem, type_extr, type_extr_cmp, list_node , list_elem,&
-                            list_poin     , list_spoi, list_cmp     , work_node , work_poin,&
-                            work_elem)
+                call nmext1(mesh          , field    , field_disc   , field_type   , field_s ,&
+                            nb_elem       , nb_node  , nb_poin      , nb_spoi      , nb_cmp  ,&
+                            type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
+                            list_node     , list_elem, list_poin    , list_spoi    , list_cmp,&
+                            work_node     , work_poin, work_elem)
 !
 ! ------------- Get title of observation
 !

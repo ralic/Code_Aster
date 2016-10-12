@@ -1,7 +1,8 @@
-subroutine nmext3(mesh         , field    , field_type, field_s       , nb_cmp   ,&
-                  nb_elem      , nb_poin  , nb_spoi   , type_extr_elem, type_extr,&
-                  type_extr_cmp, list_elem, list_poin , list_spoi     , list_cmp ,&
-                  work_poin    , work_elem)
+subroutine nmext3(mesh          , field    , field_type   , field_s      ,&
+                  nb_cmp        , nb_elem  , nb_poin      , nb_spoi      ,&
+                  type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&
+                  list_elem     , list_poin, list_spoi    , list_cmp     ,&
+                  work_poin     , work_elem)
 !
 implicit none
 !
@@ -36,20 +37,21 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nb_poin
-    integer, intent(in) :: nb_spoi
-    integer, intent(in) :: nb_cmp
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
     character(len=24), intent(in) :: field_s
+    integer, intent(in) :: nb_cmp
+    integer, intent(in) :: nb_elem
+    integer, intent(in) :: nb_poin
+    integer, intent(in) :: nb_spoi
+    character(len=8), intent(in) :: type_extr_elem
+    character(len=8), intent(in) :: type_extr
+    character(len=8), intent(in) :: type_extr_cmp
+    character(len=8), intent(in) :: type_sele_cmp
     character(len=24), intent(in) :: list_elem
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
     character(len=24), intent(in) :: list_cmp
-    character(len=8), intent(in) :: type_extr
-    character(len=8), intent(in) :: type_extr_elem
-    character(len=8), intent(in) :: type_extr_cmp
     character(len=19), intent(in) :: work_poin
     character(len=19), intent(in) :: work_elem
 !
@@ -62,29 +64,28 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  nb_elem          : number of elements
-! In  nb_poin          : number of points (Gauss)
-! In  nb_spoi          : number of subpoints
-! In  nb_cmp           : number of components
 ! In  field            : name of field
 ! In  field_type       : type of field (name in results datastructure)
 ! In  field_s          : name of reduced field (CHAM_ELEM_S)
+! In  nb_cmp           : number of components
+! In  nb_elem          : number of elements
+! In  nb_poin          : number of points (Gauss)
+! In  nb_spoi          : number of subpoints
+! In  type_extr_elem   : type of extraction by element
+! In  type_extr        : type of extraction
+! In  type_extr_cmp    : type of extraction for components
+! In  type_sele_cmp    : type of selection for components NOM_CMP or NOM_VARI
 ! In  list_elem        : name of object contains list of elements
 ! In  list_poin        : name of object contains list of points (Gauss)
 ! In  list_spoi        : name of object contains list of subpoints
 ! In  list_cmp         : name of object contains list of components
-! In  type_extr        : type of extraction
-! In  type_extr_elem   : type of extraction by element
-! In  type_extr_cmp    : type of extraction for components
-! In  work_elem        : working vector to save element values
 ! In  work_poin        : working vector to save point (Gauss) values
+! In  work_elem        : working vector to save element values
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para_maxi
-    parameter    (nb_para_maxi=20)
+    integer, parameter :: nb_para_maxi = 20
     real(kind=8) :: vale_resu(nb_para_maxi)
-!
     integer :: i_elem, i_poin, i_spoi, i_elem_r, i_poin_r, i_spoi_r, elem_nume
     integer :: poin_nume, spoi_nume, iret
     integer :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r
@@ -161,9 +162,9 @@ implicit none
 !
 ! ----------------- Extract value at Gauss point
 !
-                    call nmextj(field_type, nb_cmp , list_cmp , type_extr_cmp, poin_nume,&
-                                spoi_nume , nb_vale, i_elem   , elem_nume, jcesd    , jcesv    ,&
-                                jcesl     , jcesc  , vale_resu)
+                    call nmextj(field_type, nb_cmp   , list_cmp, type_extr_cmp, type_sele_cmp,&
+                                poin_nume , spoi_nume, nb_vale , i_elem       , elem_nume    ,&
+                                jcesd     , jcesv    , jcesl   , jcesc        , vale_resu)
 !
 ! ----------------- Select index in working vectors (point/subpoint)
 !

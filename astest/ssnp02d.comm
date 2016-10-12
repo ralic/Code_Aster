@@ -24,6 +24,9 @@ DEBUT(CODE=_F(
 
 MAYA=LIRE_MAILLAGE();
 
+MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
+                     CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
+
 MODEL=AFFE_MODELE(MAILLAGE=MAYA,
                   
                   AFFE=_F(TOUT='OUI',
@@ -105,6 +108,9 @@ LINST0=DEFI_LIST_REEL(DEBUT=0.0,
 
 listtps=DEFI_LIST_INST( DEFI_LIST=_F(LIST_INST=LINST0),);
 
+moyenne =FORMULE(VALE='0.5*abs(SIXX+SIYY)',
+               NOM_PARA=('SIXX','SIYY'),);
+
 CALCNL=STAT_NON_LINE(MODELE=MODEL,
                      CHAM_MATER=MATER,
                      EXCIT=(_F(CHARGE=CONDLIM,),
@@ -134,6 +140,13 @@ CALCNL=STAT_NON_LINE(MODELE=MODEL,
                                  TOUT       = 'OUI',
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
+                            _F(NOM_CMP=('SIXX','SIYY',),
+                               NOM_CHAM='SIEF_ELGA',
+                               EVAL_ELGA='MAX',
+                               EVAL_CMP ='FORMULE',
+                               FORMULE  =moyenne,
+                               EVAL_CHAM='MAX',
+                               GROUP_MA ='TOUT',),
                              ),
                      ARCHIVAGE=_F(LIST_INST=LINST0),
                                     );
