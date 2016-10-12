@@ -356,9 +356,8 @@ TEST_RESU(RESU=_F(INST=1.0,
                   RESULTAT=EVOL,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
-                  VALE_CALC=2.19379335417,
+                  VALE_CALC=2.19379476384,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.e-3, # systeme linéaire mal conditionné
                   MAILLE='M537',
                   ),
           )
@@ -368,9 +367,8 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   RESULTAT=EVOL,
                   NOM_CHAM='ERME_ELNO',
                   NOM_CMP='ERREST',
-                  VALE_CALC=0.00066736601152,
+                  VALE_CALC=0.000667366441125,
                   CRITERE='RELATIF',
-                  TOLE_MACHINE=1.e-3, # systeme linéaire mal conditionné
                   MAILLE='M537',
                   ),
           )
