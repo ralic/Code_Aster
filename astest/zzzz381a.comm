@@ -166,11 +166,11 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/GF.concept",
-             NB_VALE_I=436,
-             VALE_CALC_I=342829,
+             NB_VALE_I=441,
+             VALE_CALC_I=342833,
              NB_VALE=1818,
-             VALE_CALC=1363.9406660,
-             VALE_CALC_K="2a61c79e46b52c293cc1cd6e3a7a17c0",
+             VALE_CALC=1363.940666,
+             VALE_CALC_K="8ccc33be4f17e2bd5bf957b2871d4620",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -181,12 +181,12 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/POUCA.concept",
-             NB_VALE_I=1424,
+             NB_VALE_I=1429,
              # VALE_CALC_I: on ne teste pas les entiers car on y trouve des
              # décalages dans l'objet CELD
              NB_VALE=2960,
              VALE_CALC=4234.6971548,
-             VALE_CALC_K="6f28832b0727ab61cdba687ec9681068",
+             VALE_CALC_K="525d5647c628915356ecc2c959bb192b",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -197,11 +197,11 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/COMP1.concept",
-             NB_VALE_I=52,
-             VALE_CALC_I=1146,
+             NB_VALE_I=59,
+             VALE_CALC_I=1152,
              NB_VALE=0,
              VALE_CALC=0.0000000000,
-             VALE_CALC_K="eeb25fba002d62a44c45bc5d86af6e61",
+             VALE_CALC_K="489e1eda3e6d0342c68e8209a1e04dfd",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 
@@ -212,11 +212,11 @@ DEFI_FICHIER(ACTION='LIBERER', UNITE=unite)
 DETRUIRE(CONCEPT=_F(NOM=unite),INFO=1)
 
 TEST_FICHIER(FICHIER="./REPE_OUT/CHMAT.concept",
-             NB_VALE_I=102,
-             VALE_CALC_I=2107665,
+             NB_VALE_I=107,
+             VALE_CALC_I=2107671,
              NB_VALE=0,
              VALE_CALC=0.0000000000,
-             VALE_CALC_K="5613b7c2ed1dfc141b185a6811bdaefd",
+             VALE_CALC_K="9c71f126ff0549032b58b85eb2ea4072",
              EXPR_IGNORE=('IADM','DATE','LTYP','LONO'),
 )
 

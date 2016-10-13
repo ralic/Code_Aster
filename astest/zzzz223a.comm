@@ -201,21 +201,21 @@ IMPR_CO(UNITE=17,NIVEAU=0, CONCEPT=_F(NOM=U3),)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=17)
 
 TEST_FICHIER(FICHIER="./fort.17",
-             NB_VALE_I=42,
-             VALE_CALC_I=198,
+             NB_VALE_I=43,
+             VALE_CALC_I=202,
              NB_VALE=25,
              VALE_CALC=180.,
-             VALE_CALC_K="1568164337da04ac8de2f59c5f5f6465",
+             VALE_CALC_K="5c8461481ccb0f03c1f63cd9b82cb850",
 )
 
 IMPR_CO(UNITE=18,NIVEAU=0, CONCEPT=_F(NOM=U2),)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=18)
 
 TEST_FICHIER(FICHIER="./fort.18",
-             NB_VALE_I=52,
-             VALE_CALC_I=190,
+             NB_VALE_I=53,
+             VALE_CALC_I=193,
              NB_VALE=35,
              VALE_CALC=220.,
-             VALE_CALC_K="f66c92058617175afe95c38af443e743"
+             VALE_CALC_K="70b07634d2edfbc2f588c0150f2675ef"
 )
 FIN()
