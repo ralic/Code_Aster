@@ -23,14 +23,14 @@ def configure(self):
         YAMMROOT + '/prerequisites/Parmetis_aster-403_aster/lib',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster6/MPI/lib',
         YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/MPI/lib',
-        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/lib',
+        YAMMROOT + '/prerequisites/Petsc_mpi-373_aster/lib',
     ])
 
     self.env.prepend_value('INCLUDES', [
         YAMMROOT + '/prerequisites/Parmetis_aster-403_aster/include',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster6/MPI/include',
         YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/MPI/include',
-        YAMMROOT + '/prerequisites/Petsc_mpi-petsc_aster/include',
+        YAMMROOT + '/prerequisites/Petsc_mpi-373_aster/include',
     ])
 
     opts.enable_petsc = True    

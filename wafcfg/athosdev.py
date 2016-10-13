@@ -44,7 +44,7 @@ def configure(self):
         YAMMROOT + '/prerequisites/Python-273/include/python2.7',
         YAMMROOT + '/prerequisites/Hdf5-1814/include',
         YAMMROOT + '/tools/Medfichier-320/include',
-        YAMMROOT + '/prerequisites/Metis_aster-510_aster/include',
+        YAMMROOT + '/prerequisites/Metis_aster-510_aster1/include',
         YAMMROOT + '/prerequisites/Scotch_aster-604_aster6/SEQ/include',
         YAMMROOT + '/prerequisites/Mfront-TFEL203/include',
         YAMMROOT + '/prerequisites/Mumps-502_consortium_aster1/SEQ/include',
