@@ -1,7 +1,7 @@
 subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 #include "asterfort/nmmuap.h"
 #include "asterfort/nmondp.h"
 #include "asterfort/utmess.h"
+#include "asterfort/deprecated_algom.h"
     character(len=19) :: sddyna
     character(len=24) :: modele, mate, carele
     character(len=19) :: lischa
@@ -239,6 +240,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n2)
         zk16(jtsch+4-1) = 'THETA_METHODE'
         phi = 0.5d0
+        call deprecated_algom('THETA')
     else if (schema(1:3).eq.'HHT') then
         call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
         call getvtx('SCHEMA_TEMPS', 'MODI_EQUI', iocc=1, scal=rep, nbret=n1)
@@ -254,6 +256,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         call getvr8('SCHEMA_TEMPS', 'KAPPA', iocc=1, scal=kappa, nbret=n2)
         zk16(jtsch+9-1) = 'KRENK'
         phi = 0.5d0
+        call deprecated_algom('KRENK')
     else
         ASSERT(.false.)
     endif

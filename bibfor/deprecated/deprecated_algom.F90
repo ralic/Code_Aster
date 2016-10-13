@@ -20,7 +20,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: josselin.delmas at edf.fr
+! person_in_charge: nicolas.sellenet at edf.fr
 !
     character(len=*), intent(in) :: algo
 !
@@ -47,10 +47,14 @@ implicit none
     elseif (algo .eq. 'TANG_SECA') then
         vali = 13
         valk = "STAT_NON_LINE/TYPE_MATR_TANG='TANGENTE_SECANTE'"
-!
+    elseif (algo .eq. 'KRENK') then
+        vali = 13
+        valk = 'KRENK'
+    elseif (algo .eq. 'THETA') then
+        vali = 13
+        valk = 'THETA'
     else
         goto 999
-!
     endif
 !
     call utmess('A', 'SUPERVIS_9', sk = valk, si = vali)
