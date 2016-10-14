@@ -253,8 +253,8 @@ def all(self):
     Options.commands = lst + Options.commands
 
 class BuildElementContext(Build.BuildContext):
-    """execute the build for elements catalog only using an installed Aster (also performed at install)"""
-    cmd = 'buildelem'
+    """execute the build for elements catalog only using an installed Aster (also performed at install, for internal use only)"""
+    cmd = '_buildelem'
     fun = 'build_elements'
 
 def runtest(self):
