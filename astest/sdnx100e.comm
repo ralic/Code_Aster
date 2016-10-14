@@ -352,8 +352,18 @@ freqspec = DEFI_LIST_REEL ( DEBUT = 0.1,
                                        ),
                                        ),
                            );
+                           
+                           
+labsr = DEFI_LIST_REEL ( VALE=(0.000001, 0.000005, 0.000015, 0.00005,
+                                 0.0001, 0.0004, 0.001, 0.004, 0.01),
+                           );
+                           
+lfreqc = DEFI_LIST_REEL(DEBUT=0.15,
+                          INTERVALLE=_F(PAS=0.15,
+                                        JUSQU_A=8.4,),
+                          )
 
-tabsol= DEFI_SOL_EQUI(MAILLAGE=mailcol,
+tabsol= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        GROUP_MA_DROITE='DR8',GROUP_MA_GAUCHE='GA8',
                        GROUP_MA_COL='SURF',GROUP_MA_SUBSTR='BAS',
 
@@ -479,7 +489,7 @@ tmatela=LIRE_TABLE(UNITE=51);
 tmatgg=LIRE_TABLE(UNITE=52);
 tmatdg=LIRE_TABLE(UNITE=53);
 
-tabsol2= DEFI_SOL_EQUI(MAILLAGE=mailcol,
+tabsol2= DEFI_SOL_EQUI(#MAILLAGE=mailcol,
                        TITRE='DONNEES PAR TABLES',
                        GROUP_MA_DROITE='DR8',GROUP_MA_GAUCHE='GA8',
                        GROUP_MA_COL='SURF',GROUP_MA_SUBSTR='BAS',
@@ -492,13 +502,16 @@ tabsol2= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                        #LIEU_SIGNAL='CHAMP_LIBRE',
                        LIEU_SIGNAL='AFFLEURANT',
                        FONC_SIGNAL=accexRA,
+                       LIST_FREQ=lfreqc,
                        RESI_RELA=0.05,
                        SURF='NON',
                        NIVE_COUCH_ENFO=32,
-                       FREQ_COUP=9.5,
+                       FREQ_COUP=8.5,
                        COEF_AMPL_ACCE=1.);
 
 IMPR_TABLE(TABLE=tabsol2);
+
+#FIN( );
 
 tabsol3= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                        GROUP_MA_DROITE='DR8',GROUP_MA_GAUCHE='GA8',
@@ -607,9 +620,12 @@ tabsol3= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                           RHO=2710., AMOR_HYST=0.02, NUME_MATE=4,),
                             ),
                        LIEU_SIGNAL='CHAMP_LIBRE',
+                       NOM_CMP='DY',
                        CORR_AMOR='OUI',
                        FONC_SIGNAL=ACCEX,
-                       LIST_FREQ=freqspec,
+                       LIST_FREQ_SPEC_OSCI=freqspec,
+                       LIST_FREQ=lfreqc,
+                       LIST_EPSI=labsr,
                        UNITE_TABLE_RESU=24,
                        UNITE_RESU_TRAN =57,
                        UNITE_RESU_SPEC =58,
@@ -617,7 +633,7 @@ tabsol3= DEFI_SOL_EQUI(MAILLAGE=mailcol,
                        SURF='NON',
                        NIVE_COUCH_ENFO=32,
                        NB_RECEPTEUR =4,
-                       FREQ_COUP=9.5,
+                       FREQ_COUP=8.5,
                        COEF_VARI_MATE=1.0,
                        COEF_AMPL_ACCE=1.);
 
@@ -960,6 +976,7 @@ CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                              UNITE_RESU_AMOR=37,
                              UNITE_RESU_MASS=38,
                              #UNITE_RESU_FORC=36,
+                             #NB_PAS_MAXI=25,
                              ),
                       );
 
