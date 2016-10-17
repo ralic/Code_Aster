@@ -120,7 +120,7 @@ MAIL=DEFI_GROUP(reuse =MAIL,
               MAILLAGE=MAIL,
               CREA_GROUP_MA=(
                      _F(NOM='M13', MAILLE='M13',),
-                     _F(NOM='SM3', MAILLE='SM3',),
+                     _F(NOM='SMA3', MAILLE='SM3',),
               ));
 
 MODEL=AFFE_MODELE(MAILLAGE=MAIL,
@@ -312,7 +312,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='EP',TABLE=TABCOQ,
 #----------------------------
 CANBSP=CREA_CHAMP(TYPE_CHAM='ELEM_NBSP_I', OPERATION='EXTR', CARA_ELEM=CARA,
                NOM_CHAM='.CANBSP', INFO=2,)
-TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, GROUP_MA='SM3', POINT=1, SOUS_POINT=1,
+TEST_RESU(CHAM_ELEM=_F( CHAM_GD = CANBSP, GROUP_MA='SMA3', POINT=1, SOUS_POINT=1,
           REFERENCE='ANALYTIQUE', NOM_CMP = 'COQ_NCOU', VALE_REFE_I=1, VALE_CALC_I=1,))
 
 #---------------------------------------------------------------------------------------

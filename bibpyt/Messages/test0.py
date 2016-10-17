@@ -102,4 +102,7 @@ pas la non régression."""),
         "flags": "DECORATED",
         },
 
+    20 : _(u"""  Le groupe de maille %(k1)s contient %(i1)d mailles, il en faut une au maximum """),
+
+
 }

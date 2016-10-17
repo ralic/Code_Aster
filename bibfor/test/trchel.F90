@@ -14,6 +14,11 @@ subroutine trchel(ific, nocc)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jenuno.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"
@@ -54,7 +59,7 @@ subroutine trchel(ific, nocc)
 !
     integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp
     integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
-    integer :: irefrr, irefir, irefcr, n1a, n1b
+    integer :: irefrr, irefir, irefcr, n1a, n1b, imigma, nbmag
     real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne
@@ -267,9 +272,14 @@ subroutine trchel(ific, nocc)
             if (n1a .eq. 1) then
                 n1=1
             else if (n1a .eq. 0) then
-                call getvem(nomma, 'MAILLE', 'CHAM_ELEM', 'GROUP_MA', iocc,&
-                        iarg, 1, nomail, n1b)
-                if (n1b .eq. 1) n1=1
+                call getvem(nomma, 'GROUP_MA', 'CHAM_ELEM', 'GROUP_MA', iocc, iarg, 1, nomail, n1b)
+                if (n1b .eq. 1) then 
+                   call jeveuo(jexnom(nomma//'.GROUPEMA', nomail), 'L', imigma)
+                   call jelira(jexnom(nomma//'.GROUPEMA', nomail), 'LONMAX', nbmag)
+                   if ( nbmag .gt. 1) call utmess('F', 'TEST0_20' , sk=nomail, si=nbmag) 
+                   call jenuno(jexnum(nomma//'.NOMMAI', zi(imigma)), nomail)
+                   n1=1
+               endif    
             endif
             if (n1 .ne. 0) then
                 nl1 = lxlgut(lign1)
