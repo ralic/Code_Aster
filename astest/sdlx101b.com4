@@ -116,9 +116,11 @@ resge2fr = CALC_MISS(
         TYPE='BINAIRE',
         Z0= -11.60,
         SURF='OUI',
-        ALGO = 'DEPL',
-        OFFSET_MAX=110,
-        OFFSET_NB=400,
+        AUTO='OUI',COEF_OFFSET=3,
+        # Valeurs en manuel :
+        #ALGO = 'DEPL',
+        #OFFSET_MAX=110,
+        #OFFSET_NB=400,
         SPEC_MAX=0.12,
         SPEC_NB=16384,
     ),
@@ -149,7 +151,7 @@ TAB2FR=MACR_SPECTRE(
                 );
 
 TEST_TABLE(
-           VALE_CALC=0.75644033538400,
+           VALE_CALC=0.756455745451,
            VALE_REFE=0.75644033538400,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -159,7 +161,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9643743648183,
+           VALE_CALC=1.96427989445,
            VALE_REFE=1.9643743648183,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -169,7 +171,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.3016463851582,
+           VALE_CALC=4.30149632807,
            VALE_REFE=4.3016463851582,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -179,7 +181,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.7834986859623,
+           VALE_CALC=4.78361100414,
            VALE_REFE=4.7834986859623,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -189,7 +191,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.0728221793034,
+           VALE_CALC=5.07297268697,
            VALE_REFE=5.0728221793034,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -217,9 +219,11 @@ resge3fr = CALC_MISS(
         TYPE='BINAIRE',
         Z0= -11.60,
         SURF='OUI',
-        ALGO = 'DEPL',
-        OFFSET_MAX=110,
-        OFFSET_NB=400,
+        AUTO='OUI',COEF_OFFSET=3,
+        # Valeurs en manuel :
+        #ALGO = 'DEPL',
+        #OFFSET_MAX=110,
+        #OFFSET_NB=400,
         SPEC_MAX=0.12,
         SPEC_NB=16384,
     ),
@@ -255,7 +259,7 @@ TAB3FR=MACR_SPECTRE(
                 );
 
 TEST_TABLE(
-           VALE_CALC=0.75644033538400,
+           VALE_CALC=0.756455745451,
            VALE_REFE=0.75644033538400,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -265,7 +269,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.9643743648183,
+           VALE_CALC=1.96427989445,
            VALE_REFE=1.9643743648183,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -275,7 +279,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.3016463851582,
+           VALE_CALC=4.30149632807,
            VALE_REFE=4.3016463851582,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -285,7 +289,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=4.7834986859623,
+           VALE_CALC=4.78361100414,
            VALE_REFE=4.7834986859623,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',
@@ -295,7 +299,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.0728221793034,
+           VALE_CALC=5.07297268697,
            VALE_REFE=5.0728221793034,
            REFERENCE = 'AUTRE_ASTER',
            NOM_PARA='eH_0_SOMMET',

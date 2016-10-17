@@ -300,9 +300,12 @@ CALC_MISS(TYPE_RESU='FICHIER',
                        Z0=5.0,
                        SURF='NON',
                        ISSF='OUI',
-                       ALGO='REGU',
-                       OFFSET_MAX=1000,
-                       OFFSET_NB=5000,),);
+                       AUTO='OUI',OPTION_DREF='NON',OPTION_RFIC='NON',
+                       # Valeurs en manuel :
+                       #ALGO='REGU',
+                       #OFFSET_MAX=1000,
+                       #OFFSET_NB=5000,
+                       ),);
 
 nddlgen=NUME_DDL_GENE(BASE=bamo,
                       STOCKAGE='PLEIN',);

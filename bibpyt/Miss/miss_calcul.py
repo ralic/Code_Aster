@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,10 +112,10 @@ class CalculMiss(object):
         self.cree_reptrav()
         self.init_reader()
         self.cree_resultat_aster()
+        self.cree_fichier_sol()
         self.cree_fichier_mvol()
         self.cree_fichier_pc()
         self.cree_fichier_chp()
-        self.cree_fichier_sol()
         self.cree_commande_miss()
         self.cree_fichier_option()
         # libérer la structure contenant les données numériques
@@ -273,7 +273,7 @@ class CalculMiss(object):
         self._dbg_trace("Stop")
         if self.param['TABLE_SOL'] is not None:
             tabsol = self.param['TABLE_SOL'].EXTR_TABLE()
-            sol_content = fichier_sol(tabsol, self.param)
+            sol_content = fichier_sol(tabsol, self.data, self.param)
             if self.verbose:
                 _print('Fichier de sol', sol_content)
             open(self._fichier_tmp("sol"), 'w').write(sol_content)

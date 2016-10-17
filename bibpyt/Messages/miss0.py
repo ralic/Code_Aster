@@ -183,5 +183,11 @@ doivent obligatoirement être définies en utilisant le mot-clé MATER_FLUIDE.
                et l'option DECALAGE_AUTO peut corriger cela automatiquement.
 """),
 
+    42 : _(u"""On est en mode enfoncé et tous les noeuds de l'interface sont à la même cote Z.
+               Le mode AUTO pour PARAMETRE ne sait pas gérer ce cas, il faut basculer en manuel.
+"""),
+
+    43 : _(u"""Le mot-clé %(k1)s étant renseigné, sa valeur outrepasse celle calculée par le mode AUTO.
+"""),
 
 }

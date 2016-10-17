@@ -147,7 +147,7 @@ bamo = DEFI_BASE_MODALE ( CLASSIQUE=_F (INTERF_DYNA= interdyn,
 mael = MACR_ELEM_DYNA (BASE_MODALE= bamo,
                       );
 
-# Pour test visuel :
+# pour reference :
 TABSOL0 = DEFI_SOL_MISS(
     TITRE="SOL MOU",
     MATERIAU=(
@@ -211,11 +211,12 @@ CALC_MISS(
         FREQ_MAX=35.,
         FREQ_PAS=1.0,
         Z0=0.,
-        DREF=1.,
-        RFIC = 1.,
-        ALGO = 'REGU',
-        OFFSET_MAX=10,
-        OFFSET_NB=200,
+        AUTO='OUI',OPTION_DREF = 'OUI', OPTION_RFIC = 'OUI', COEF_OFFSET = 3,
+        #DREF=1.,
+        #RFIC = 1.,
+        #ALGO = 'REGU',
+        #OFFSET_MAX=10,
+        #OFFSET_NB=200,
     ),
 )
 
@@ -309,7 +310,7 @@ TEST_FONCTION(VALEUR=(
                          REFERENCE='SOURCE_EXTERNE',
                          PRECISION=0.17,
                          FONCTION=KV,),
-                      _F(VALE_CALC=0.25769010,
+                      _F(VALE_CALC=0.25769508940819,
                          CRITERE='RELATIF',
                          VALE_PARA=35.0,
                          FONCTION=KV,),

@@ -46,7 +46,7 @@ TAB=MACR_SPECTRE(
                 );
 
 TEST_TABLE(
-           VALE_CALC=0.64712672600502,
+           VALE_CALC=0.647140575331,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -54,7 +54,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.47514139535580,
+           VALE_CALC=0.475115166181,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -62,7 +62,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.35422339690871,
+           VALE_CALC=0.354200241065,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -70,7 +70,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.38583607467578,
+           VALE_CALC=0.385855977386,
            NOM_PARA='eH_0_SOMMET',CRITERE='ABSOLU',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -78,7 +78,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.34254337015258,
+           VALE_CALC=0.342576622863,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -102,7 +102,7 @@ TAB0=MACR_SPECTRE(
                 );
 
 TEST_TABLE(
-           VALE_CALC=0.64712672600502,
+           VALE_CALC=0.647140575331,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -110,7 +110,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.47514139535580,
+           VALE_CALC=0.475115166181,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -118,7 +118,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.35422339690871,
+           VALE_CALC=0.354200241065,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -126,7 +126,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.38583607467578,
+           VALE_CALC=0.385855977386,
            NOM_PARA='eH_0_SOMMET',CRITERE='ABSOLU',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='FREQ',
@@ -134,7 +134,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.34254337015258,
+           VALE_CALC=0.342576622863,
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB0,
            FILTRE=_F(NOM_PARA='FREQ',

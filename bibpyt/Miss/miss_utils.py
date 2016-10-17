@@ -95,6 +95,7 @@ class MISS_PARAMETER(object):
             '_hasPC': False,
             '_nbPC': 0,
             '_nbfreq': 0,
+            '_auto_first_LT': None,
         }
         self._keywords = {}
         # une seule occurence du mcfact
@@ -299,3 +300,60 @@ def copie_fichier(src, dst):
             shutil.copyfile(src, dst)
         except:
             raise aster.error('MISS0_6', valk=(src, dst))
+
+def l_coor_sort(l_coor):
+    """Tri des coordonnees"""
+    l_coor_xyz0 = []
+    l_coor_xyz = []
+    tole = 1.E-5
+    for i in range(3):
+        l_coor_xyz0=[l_coor[x] for x in range(len(l_coor)) if ((x+3-i)%3 == 0) ]
+        l_coor_xyz1=[l_coor_xyz0[0]]
+        if len(l_coor_xyz0) > 1:
+            for coor in l_coor_xyz0[1:]:
+                verif_tole = True
+                for coor2 in l_coor_xyz1:
+                    if abs(coor-coor2) < tole:
+                        verif_tole = verif_tole and False
+                if  verif_tole:  
+                    l_coor_xyz1.append(coor)
+        l_coor_xyz.append(l_coor_xyz1)
+
+    return l_coor_xyz[0], l_coor_xyz[1],l_coor_xyz[2]
+
+def calc_param_auto(l_coor_x,l_coor_y,l_coor_z,surf,coef_offset):
+    """Calcul des parametres RFIC, DREF, OFFSET_NB, OFFSET_MAX"""
+    dx = abs(max(l_coor_x) - min(l_coor_x))
+    dy = abs(max(l_coor_y) - min(l_coor_y))
+    long = (dx*dx+dy*dy)**.5
+    if surf == "OUI":
+        dref = round(long / 6.,1)
+        rfic = 0.
+    else:
+        dz = abs(max(l_coor_z) - min(l_coor_z))
+        if len(l_coor_z) > 1:
+            dref = round(dz / (len(l_coor_z)-1),1)
+            rfic = dref
+        else:
+            UTMESS('F', 'MISS0_42')
+    if round(long,0) < long:
+        offset_max = int(round(long,0)+1.)
+    else:
+        offset_max = int(round(long,0))
+    taille_elem = round(0.5*(dx/(len(l_coor_x)-1)+dy/(len(l_coor_y)-1)),2)
+    offset_nb = int(round(offset_max*coef_offset/taille_elem,0))
+    return dref, rfic, offset_max, offset_nb
+
+def verif_sol_homogene(tab):
+    """Verification si le sol est homogene"""
+    sol_homogene = True
+    for ic, row in enumerate(tab):
+        if ic == 0:
+            young = row['E']
+            nu = row['NU']
+            rho = row['RHO']
+            hyst = row['AMOR_HYST']            
+        else:
+            sol_homogene = sol_homogene and (row['E'] == young) and (row['NU'] == nu) and (row['RHO'] == rho) and (row['AMOR_HYST'] == hyst)
+    vs = (young/(2.*(1.+nu)*rho))**.5
+    return sol_homogene, vs   

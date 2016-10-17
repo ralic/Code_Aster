@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,12 +19,15 @@
 
 import os
 import aster
-from Miss.miss_utils import dict_format
+
+from Utilitai.Utmess import UTMESS
+
+from Miss.miss_utils import dict_format, l_coor_sort, calc_param_auto, verif_sol_homogene
 
 sfmt = dict_format['sR']
 
 
-def fichier_sol(tab, param=None):
+def fichier_sol(tab, struct, param=None):
     """Retourne le contenu du fichier de sol construit à partir de
     la table des données de sol et éventuellement des paramètres du calcul.
     """
@@ -103,9 +106,58 @@ def fichier_sol(tab, param=None):
             if row["s_FORCE"] != 0:
                 content.append(format % row)
     # complément des paramètres du calcul
-    if param and param.get('OFFSET_MAX'):
+    spec_max_auto = False
+    # Gestion automatique de certains parametres
+    if param and param.get('AUTO') == "OUI" and param.get('_auto_first_LT') == None:
+        l_coor_nodes = struct.noeud_coor
+        l_coor_x, l_coor_y, l_coor_z = l_coor_sort(l_coor_nodes)
+        surf = param['SURF']
+        coef_offset = param['COEF_OFFSET']
+        dref_auto, rfic_auto, offset_max_auto, offset_nb_auto = calc_param_auto(l_coor_x,l_coor_y,l_coor_z,surf,coef_offset)
+        sol_homo, vs = verif_sol_homogene(tab)
+        if param['SURF'] == "OUI" and sol_homo:
+            spec_max_auto = True
+            spec_max = vs/15. 
+        if param['OFFSET_MAX'] is None:
+            param['OFFSET_MAX'] = offset_max_auto
+        else:
+            UTMESS('A', 'MISS0_43', valk='OFFSET_MAX')
+        if param['OFFSET_NB'] is None:
+            param['OFFSET_NB'] = offset_nb_auto
+        else:
+            UTMESS('A', 'MISS0_43', valk='OFFSET_NB')
+        if param['OPTION_DREF'] == "OUI":
+            if param['DREF'] == None:
+                param['DREF'] = dref_auto
+            else:
+                UTMESS('A', 'MISS0_43', valk='DREF')
+        if param['OPTION_RFIC'] == "OUI":
+            if param['RFIC'] == None:
+                param['RFIC'] = rfic_auto
+            else:
+                UTMESS('A', 'MISS0_43', valk='RFIC')
+        else:
+            param['RFIC'] = 0.
+        if spec_max_auto:
+            if param['SPEC_MAX'] == None:
+                param['SPEC_MAX'] = spec_max
+            else:
+                UTMESS('A', 'MISS0_43', valk='SPEC_MAX')
+        #        
+        print 'Mode automatique :'
+        print '-    OFFSET_MAX auto = ',param['OFFSET_MAX']
+        print '-    OFFSET_NB auto = ',param['OFFSET_NB']
+        print '-    DREF auto = ',param['DREF']
+        print '-    RFIC auto = ',param['RFIC']
+        if spec_max_auto:
+            print '-    SPEC_MAX auto = ',param['SPEC_MAX']
+        # Pour Laplace-temps, on ne recalcule les parametre qu'une fois
+        if param['_auto_first_LT'] == None:
+            param['_auto_first_LT'] = False
+    #    
+    if (param and param.get('OFFSET_MAX')) or (param and param.get('AUTO') == "OUI"):
         # ALGO
-        if param['ALGO']:
+        if param and param.get('ALGO'):
             content.append("ALGO %s" % param['ALGO'])
         elif param['SURF'] == "OUI":
             content.append("ALGO DEPL")
@@ -116,11 +168,11 @@ def fichier_sol(tab, param=None):
             content.append(("DREF" + sfmt) % param['DREF'])
         if param['SPEC_MAX']:
             content.append(("SPEC" + sfmt + " / %d") %
-                           (param['SPEC_MAX'], param['SPEC_NB']))
+                       (param['SPEC_MAX'], param['SPEC_NB']))
         else:
             content.append("SPEC AUTO")
         content.append(("OFFSET" + sfmt + " / %d") %
-                       (param['OFFSET_MAX'], param['OFFSET_NB']))
+                   (param['OFFSET_MAX'], param['OFFSET_NB']))
 
     content.append("FIND")
 
