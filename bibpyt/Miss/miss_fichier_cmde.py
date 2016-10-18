@@ -602,8 +602,13 @@ class TestMissCmde(unittest.TestCase):
             'OFFSET_MAX': None,
             'OFFSET_NB': None,
             'TYPE': 'ASCII',
+            'AUTO': 'NON',
+            'OPTION_DREF': 'NON',
+            'OPTION_RFIC': 'NON',
+            'COEF_OFFSET': 12,
             '_hasPC': False,
             '_nbPC': 0,
+            '_auto_first_LT': None,
         })
         self._write = False
 
