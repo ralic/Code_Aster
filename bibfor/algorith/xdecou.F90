@@ -14,6 +14,7 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xajpin.h"
+#include "asterfort/xinter.h"
 #include "asterfort/xxmmvd.h"
     real(kind=8) :: lsn(*), pintt(*), lonref, pinter(*), ainter(*)
     integer :: ndim, nnop, nnose, it, cnset(*), ninter, igeom, npts
@@ -64,12 +65,12 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
 !       AINTER   : INFOS ARETE ASSOCIÃE AU POINTS D'INTERSECTION
 !     ------------------------------------------------------------------
 !
-    real(kind=8) :: a(3), b(3), c(3), lsna, lsnb, tampor(4)
-    real(kind=8) :: lsnc, somlsn(nfisc+1), ff(nnop)
-    real(kind=8) :: rbid2(ndim)
-    integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
+    real(kind=8) :: a(3), b(3), c(3), lsna, lsnb, lsnm, tampor(4)
+    real(kind=8) :: somlsn(nfisc+1), ff(nnop), lsnelp(8)
+    real(kind=8) :: rbid2(ndim), cref(3)
+    integer :: ar(12, 3), nbar, nta, ntb, na, nb, nm, ins
     integer :: ia, i, j, ipt, ibid, pp, pd, k, ptmax
-    integer :: ndime, iter, a1, a2
+    integer :: ndime, a1, a2
     integer :: mxstac
     character(len=8) :: typma
     integer :: zxain
@@ -231,30 +232,16 @@ subroutine xdecou(ndim, elp, nnop, nnose, it,&
             endif
             if (lsna .ne. 0 .and. lsnb .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-888             continue
                 do 130 i = 1, ndim
                     c(i)=a(i)-lsna/(lsnb-lsna)*(b(i)-a(i))
 130             continue
-                if (nfiss .ge. 2) then
-!         CALCUL DES FF
-                    call reeref(elp, nnop, zr(igeom), c, ndim,&
-                                rbid2, ff)
-!         INTERPOLATION LSN
-                    lsnc=0
-                    iter = 0
-                    do 30 i = 1, nnop
-                        lsnc = lsnc + ff(i)*lsn((i-1)*nfiss+ifiss)
- 30                 continue
-                    if (abs(lsnc) .gt. lonref*1d-8) then
-                        iter = iter+1
-                        ASSERT(iter.lt.50)
-                        lsnb = lsnc
-                        do 140 i = 1, ndim
-                            b(i) = c(i)
-140                     continue
-                        goto 888
-                    endif
-                endif
+                nm=0
+                lsnm=(lsna+lsnb)/2.d0
+                do i = 1, nnop
+                   lsnelp(i)=lsn((i-1)*nfiss+ifiss)
+                end do
+                call xinter(ndim, ndime, elp, zr(igeom), lsnelp, na, nb,&
+                            nm, pintt, pintt, lsna, lsnb, lsnm, cref, c)
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
 !            ALPHA=PADIST(NDIM,A,C)
 !           ON AJOUTE A LA LISTE LE POINT C

@@ -5,7 +5,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xdelt0.h"
@@ -113,11 +112,6 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
                     delta(1))
     endif
 !
-!   ON VERIFIE POUR XINTER QUE LE NEWTON RESTE SUR L ARETE
-    if (name .eq. 'XINTER') then
-       ASSERT((ksi2(1) .ge. 0.d0) .and. (ksi2(1) .le. 1.d0))
-    endif
-!
 ! --- ACTUALISATION
 !
     do i = 1, ndime
@@ -128,13 +122,17 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 !   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
 !   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
-    if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI') then
+    if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI'.or.name .eq. 'XINTER') then
         if (present(dekker)) then
             if (iter.eq.itemax) then
 !   DANS CERTAINS CAS, IL EST IMPOSSIBLE DE TROUVER UN POINT MILIEU SUR LA
 !   FISSURE DANS LA FACE DU SOUS ELEMENT, ON EFFECTUE ALORS UNE APPROXIAMTION
 !   LINEAIRE DE LA FISSURE SUR CETTE FACE
-               ksi2(1) = 0.d0
+               if (name.eq.'XINTER') then
+                  ksi2(1) = ksi(1)
+               else
+                  ksi2(1) = 0.d0
+               endif
                goto 30
             endif
             if (ksi2(1) .gt. intsup) then

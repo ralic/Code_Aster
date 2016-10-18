@@ -206,7 +206,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.57760836867,
+           VALE_CALC=2.5776160603,
            NOM_PARA='COOR_Y',
            TYPE_TEST='MIN',
            TABLE=TAB,

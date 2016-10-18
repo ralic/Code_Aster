@@ -53,8 +53,14 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
 !
     call jemarq()
 !
+    if (name.eq.'XINTER') then
+       intinf=0.d0
+       intsup=1.d0
+       goto 99
+    endif
+!
     intinf=0.d0
-    intsup =0.d0
+    intsup=0.d0
     cpt = 0
 !   RECUPERATION DES COORDONNEES DE REFERENCE DES NOEUDS SOMMETS DU SOUS ELEMENT
     do j = 1, ndime
@@ -226,6 +232,8 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, intsup)
     endif
 !
     ASSERT(cpt.ge.2)
+!
+99  continue
 !
     call jedema()
 end subroutine
