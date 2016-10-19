@@ -222,6 +222,7 @@ implicit none
     call gcncon('_', veforc)
     call gcncon('_', vevarc_prev)
     call gcncon('_', vevarc_curr)
+    call gcncon('_', ds_constitutive%comp_error)
 !
 ! - Changeing names of variables
 !
