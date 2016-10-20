@@ -456,6 +456,7 @@ CALC_MISS(
              UNITE_RESU_RIGI = 35,
              UNITE_RESU_AMOR = 37,
              UNITE_RESU_MASS = 38,
+             TYPE_FICHIER_TEMPS='BINAIRE',
             MATR_GENE = _F(
                              MATR_MASS = mato,
                              MATR_RIGI = rito,
@@ -477,15 +478,15 @@ CALC_MISS(
 
 
 MATK = LIRE_IMPE_MISS(UNITE_RESU_IMPE=35, INST_EXTR=0.0,
-                      SYME='OUI',
+                      SYME='OUI', TYPE='BINAIRE',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
                       
 MATC = LIRE_IMPE_MISS(UNITE_RESU_IMPE=37, INST_EXTR=0.0,
-                      SYME='OUI',
+                      SYME='OUI', TYPE='BINAIRE',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
                       
 MATM = LIRE_IMPE_MISS(UNITE_RESU_IMPE=38, INST_EXTR=0.0,
-                      SYME='OUI',
+                      SYME='OUI', TYPE='BINAIRE',
                       BASE=BAMO, NUME_DDL_GENE=NDDLGEN);
                       
 # Termes Z0
@@ -654,6 +655,19 @@ CHSOL=AFFE_CHAR_MECA(MODELE=MODELB,
                              UNITE_RESU_AMOR=37,
                              UNITE_RESU_MASS=38,
                              #UNITE_RESU_FORC=36,
+                             TYPE='BINAIRE',
+                             ),
+                      );
+                      
+CHSOL2=AFFE_CHAR_MECA(MODELE=MODELB,
+                 FORCE_SOL=_F(SUPER_MAILLE='STAT1',
+                             #GROUP_NO_INTERF='CENT_RAD',
+                             UNITE_RESU_RIGI=35,
+                             UNITE_RESU_AMOR=37,
+                             UNITE_RESU_MASS=38,
+                             #UNITE_RESU_FORC=36,
+                             TYPE='BINAIRE',
+                             NB_PAS_TRONCATURE=30,
                              ),
                       );
                       
@@ -665,6 +679,34 @@ DYNA=DYNA_NON_LINE(MODELE=MODELB,
                         _F(CHARGE=PESAX,FONC_MULT=ACCEX,),
                         _F(CHARGE=PESAY,FONC_MULT=ACCEY,),
                         _F(CHARGE=CHSOL),
+                        _F(CHARGE=COND_LIB),
+                        ),
+                 COMPORTEMENT=(_F(RELATION='ELAS',
+                                    TOUT='OUI',),
+                            #_F(RELATION='DIS_ECRO_CINE',
+                            #        GROUP_MA='BK',),
+                                ),
+                 NEWTON=_F(#PREDICTION='ELASTIQUE',
+                           MATRICE='ELASTIQUE',
+                           #MATRICE='TANGENTE',
+                           REAC_INCR=0,REAC_ITER=0,
+                           ),
+                 SCHEMA_TEMPS = _F(SCHEMA='HHT',ALPHA=-0.0,
+                                   FORMULATION='DEPLACEMENT',),
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-8,
+                                ITER_GLOB_MAXI = 20,
+                                ARRET='OUI',),
+                 INCREMENT=_F(LIST_INST=L_INST,),
+                 #ARCHIVAGE=_F(PAS_ARCH=1,),             
+                          );
+                          
+DYNA2=DYNA_NON_LINE(MODELE=MODELB,
+                 CHAM_MATER=CHMATB,
+                 CARA_ELEM=ELEMB,
+                 EXCIT=(
+                        _F(CHARGE=PESAX,FONC_MULT=ACCEX,),
+                        _F(CHARGE=PESAY,FONC_MULT=ACCEY,),
+                        _F(CHARGE=CHSOL2),
                         _F(CHARGE=COND_LIB),
                         ),
                  COMPORTEMENT=(_F(RELATION='ELAS',
@@ -757,14 +799,6 @@ GARADB_Y=CALC_FONCTION(LIST_PARA=L_INST,
                        ); 
                        
 
-#
-# ACCELERATIONS ABSOLUES
-# -----------------------
-#
-#
-
-
-
 GABKRX=RECU_FONCTION(RESULTAT=DYNA,
                      NOM_CHAM='ACCE',
                      NOM_CMP='DX',
@@ -797,11 +831,78 @@ GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
                           ),
                        );  
                        
+#
+#
 # ACCELERATIONS ABSOLUES
 # -----------------------
 #
 #
 
+
+GRADBRXB=RECU_FONCTION(RESULTAT=DYNA2,
+                       NOM_CHAM='ACCE',
+                       NOM_CMP='DX',
+                       GROUP_NO='CENT_RAD',
+                       INTERPOL='LIN',
+                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
+
+
+GARADBXB=CALC_FONCTION(LIST_PARA=L_INST,
+                    COMB=(_F(FONCTION=GRADBRXB,
+                             COEF=1.,),
+                          _F(FONCTION=ACCEX,
+                             COEF=1.,),
+                          ),
+                       ); 
+                       
+GRADBRYB=RECU_FONCTION(RESULTAT=DYNA2,
+                       NOM_CHAM='ACCE',
+                       NOM_CMP='DY',
+                       GROUP_NO='CENT_RAD',
+                       INTERPOL='LIN',
+                       TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
+
+
+GARADBYB=CALC_FONCTION(LIST_PARA=L_INST,
+                    COMB=(_F(FONCTION=GRADBRYB,
+                             COEF=1.,),
+                          _F(FONCTION=ACCEY,
+                             COEF=1.,),
+                          ),
+                       ); 
+
+
+GABKRXB=RECU_FONCTION(RESULTAT=DYNA2,
+                     NOM_CHAM='ACCE',
+                     NOM_CMP='DX',
+                     GROUP_NO='SOMMET',
+                     INTERPOL='LIN',
+                     TITRE='ACCELERATION ABSOLUE AU SOMMET',);
+                     
+                     
+GABKXB=CALC_FONCTION(LIST_PARA=L_INST,
+                    COMB=(_F(FONCTION=GABKRXB,
+                             COEF=1.,),
+                          _F(FONCTION=ACCEX,
+                             COEF=1.,),
+                          ),
+                       );  
+                       
+GABKRYB=RECU_FONCTION(RESULTAT=DYNA2,
+                     NOM_CHAM='ACCE',
+                     NOM_CMP='DY',
+                     GROUP_NO='SOMMET',
+                     INTERPOL='LIN',
+                     TITRE='ACCELERATION ABSOLUE AU SOMMET',);
+                     
+                     
+GABKYB=CALC_FONCTION(LIST_PARA=L_INST,
+                    COMB=(_F(FONCTION=GABKRYB,
+                             COEF=1.,),
+                          _F(FONCTION=ACCEY,
+                             COEF=1.,),
+                          ),
+                       );  
 
               
                    
@@ -809,65 +910,7 @@ GABK_Y=CALC_FONCTION(LIST_PARA=L_INST,
 #          CALCUL DES SPECTRES DE PLANCHERS AU NIVEAU DU
 #          RADIER ET DU SOMMET
 #
-#
-#------------------
-# ACCELERATIONS
-#------------------
-#
-#
-# ACCELERATIONS ABSOLUES
-# -----------------------
-#
-#
 
-
-# GARADB_X=RECU_FONCTION(RESULTAT=DYNA,
-#                        NOM_CHAM='ACCE',
-#                        NOM_CMP='DX',
-#                        GROUP_NO='CENT_RAD',
-#                        INTERPOL='LIN',
-#                        TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
-# 
-# GARADB_Y=RECU_FONCTION(RESULTAT=DYNA,
-#                        NOM_CHAM='ACCE',
-#                        NOM_CMP='DY',
-#                        GROUP_NO='CENT_RAD',
-#                        INTERPOL='LIN',
-#                        TITRE='ACCELERATION ABSOLUE AU CENTRE BAS DU RADIER',);
-
-
-
-#
-#======================================================================
-#
-#                SOMMET
-#
-#======================================================================
-#
-#
-
-
-# GABK_X=RECU_FONCTION(RESULTAT=DYNA,
-#                      NOM_CHAM='ACCE',
-#                      NOM_CMP='DX',
-#                      GROUP_NO='SOMMET',
-#                      INTERPOL='LIN',
-#                      TITRE='ACCELERATION ABSOLUE AU SOMMET',);
-# 
-# GABK_Y=RECU_FONCTION(RESULTAT=DYNA,
-#                      NOM_CHAM='ACCE',
-#                      NOM_CMP='DY',
-#                      GROUP_NO='SOMMET',
-#                      INTERPOL='LIN',
-#                      TITRE='ACCELERATION ABSOLUE AU SOMMET',);
-
-#
-#======================================================================
-#          CALCUL DES SPECTRES DE PLANCHER :
-#
-#             AU CENTRE DU RADIER - FACE INFERIEURE 
-#             AU SOMMET
-#
 #======================================================================
 #
 #
@@ -924,6 +967,51 @@ SIMPOX=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEX, #LIST_FREQ = freqspec,
 SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, #LIST_FREQ = freqspec,
                                  NORME=9.81, AMOR_REDUIT=(0.05),),);
                                  
+# CALCUL DES SPECTRES DE PLANCHER DU RADIER
+# -----------------------------------------
+# 
+# EN X
+#-----
+#
+
+
+SRADBX5B=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBXB,
+                                   NORME=9.81, AMOR_REDUIT=(0.05),),);
+
+#
+#
+
+
+# EN Y
+#-----
+#
+#
+
+
+SRADBY5B=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GARADBYB,
+                                   NORME=9.81, AMOR_REDUIT=(0.05),),);
+
+#
+# CALCUL DES SPECTRES DE PLANCHER AU SOMMET
+# -----------------------------------------
+# 
+# EN X
+#-----
+#
+
+
+SBKX5B=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKXB,
+                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
+
+# EN Y
+#-----
+#
+#
+
+
+SBKY5B=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=GABKYB,
+                                 NORME=9.81, AMOR_REDUIT=(0.05),),);
+                                 
 
 
 #======================================================
@@ -953,48 +1041,97 @@ SIMPOY=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=ACCEY, #LIST_FREQ = freqspec,
 #
 # LA REFERENCE PROVIENT D'UN CALCUL ASTER SANS INTERPOLATION
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.65738636,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.65738632276226,
                          VALE_REFE=0.65684950,
                          VALE_PARA=(0.050000000000000003, 1.6499999999999999),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.07,
+                         PRECISION=0.001,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBX5,),
-                      _F(VALE_CALC=0.55953011,
+                      _F(VALE_CALC=0.55953009131179,
                          VALE_REFE=0.55922663,
                          VALE_PARA=(0.050000000000000003, 3.23),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=7.E-2,
+                         PRECISION=0.001,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBX5,),
-                      _F(VALE_CALC=0.64661416,
+                      _F(VALE_CALC=0.64661426628778,
                          VALE_REFE=0.64564131,
                          VALE_PARA=(0.050000000000000003, 1.5900000000000001),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=2.E-1,
+                         PRECISION=0.003,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBY5,),
-                      _F(VALE_CALC=0.67436318,
+                      _F(VALE_CALC=0.67436316594288,
                          VALE_REFE=0.67409326,
                          VALE_PARA=(0.050000000000000003, 3.0),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.02,
+                         PRECISION=0.001,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SRADBY5,),
-                      _F(VALE_CALC=1.993987868,
+                      _F(VALE_CALC=1.993987881956,
                          VALE_REFE=1.993416,
                          VALE_PARA=(0.050000000000000003, 1.74),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.23,
+                         PRECISION=0.001,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SBKX5,),
-                      _F(VALE_CALC=3.206392697,
+                      _F(VALE_CALC=3.206392567483,
                          VALE_REFE=3.203010,
                          VALE_PARA=(0.050000000000000003, 1.6499999999999999),
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=0.06,
+                         PRECISION=0.002,
                          NOM_PARA=('AMOR', 'FREQ'),
                          FONCTION=SBKY5,),
+                      ),
+              )
+              
+#
+#
+# LA REFERENCE PROVIENT DE L'AUTRE CALCUL ASTER AVEC INTERPOLATION
+
+TEST_FONCTION(VALEUR=(_F(VALE_REFE=0.65738636,
+                         VALE_CALC=0.65503302154144,
+                         VALE_PARA=(0.050000000000000003, 1.6499999999999999),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.005,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SRADBX5B,),
+                      _F(VALE_REFE=0.55953011,
+                         VALE_CALC=0.55917607861531,
+                         VALE_PARA=(0.050000000000000003, 3.23),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.001,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SRADBX5B,),
+                      _F(VALE_REFE=0.64661416,
+                         VALE_CALC=0.63867914542075,
+                         VALE_PARA=(0.050000000000000003, 1.5900000000000001),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.015,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SRADBY5B,),
+                      _F(VALE_REFE=0.67436318,
+                         VALE_CALC=0.67202758393633,
+                         VALE_PARA=(0.050000000000000003, 3.0),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.005,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SRADBY5B,),
+                      _F(VALE_REFE=1.993987868,
+                         VALE_CALC=1.983566110399 ,
+                         VALE_PARA=(0.050000000000000003, 1.74),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.01,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SBKX5B,),
+                      _F(VALE_REFE=3.206392697,
+                         VALE_CALC=3.146695025511,
+                         VALE_PARA=(0.050000000000000003, 1.6499999999999999),
+                         REFERENCE='AUTRE_ASTER',
+                         PRECISION=0.02,
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=SBKY5B,),
                       ),
               )
 

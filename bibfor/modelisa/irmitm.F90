@@ -1,6 +1,6 @@
-subroutine irmitm(nbmode, ifmis, freq, tabrig)
+subroutine irmitm(nbmode, ifmis, freq, tabrig, ibin)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,13 +26,13 @@ subroutine irmitm(nbmode, ifmis, freq, tabrig)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
     character(len=24) :: tabrig, tabfrq, tabri2, tabri0
-    real(kind=8) :: a(3), nins2
+    real(kind=8) :: a(3), nins2, nbm
 !      INTEGER*8    LONG1,LONG2,LONG3
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, ic, ifmis, ifreq, jfrq
-    integer :: jri0, jri2, jrig, nbmode, nfreq
+    integer :: jri0, jri2, jrig, nbmode, nfreq, ibin
     real(kind=8) :: freq, pas
 !-----------------------------------------------------------------------
     call jemarq()
@@ -43,27 +43,33 @@ subroutine irmitm(nbmode, ifmis, freq, tabrig)
     tabfrq = '&&IRMITM.FREQ'
     call wkvect(tabri2, 'V V R', nbmode*nbmode, jri2)
     call wkvect(tabri0, 'V V R', nbmode*nbmode, jri0)
-    rewind ifmis
 !
 !   Lecture d'entiers INTEGER*8 en binaire venant de MISS3D
 !   On convertit ensuite en INTEGER (*4 sur machine 32 bits, sinon *8).
 !   Les reels ne posent pas de probleme : ce sont toujours des REAL*8
 !
-    read(ifmis,*) nins2,pas
+    if (ibin.eq.0) then
+      rewind ifmis
+      read(ifmis,*) nins2,pas
+    else
+      open(unit=ifmis,form='unformatted',status='old',access='stream')
+      read(ifmis) nins2,pas,nbm
+    endif
+
     nfreq=int(nins2)
+    write(6,*) 'ninst pas ',nfreq,pas
     call wkvect(tabfrq, 'V V R', nfreq, jfrq)
-!      NBMODE=LONG2
-!      N1=LONG3
     ic=1
-!      CALL WKVECT(TABRIG,'V V R',NBMODE*NBMODE,JRIG)
     call jeveuo(tabrig, 'E', jrig)
-!      READ(IFMIS) (ZR(JFRQ+IFR-1),IFR=1,NFREQ)
-!      READ(IFMIS) (TFREQ(IFR),IFR=1,NFREQ)
-!      WRITE(6,*) 'TABFRE0=',(TFREQ(IFR),IFR=1,NFREQ)
-    do 1 i = 1, nfreq
+    if (ibin.eq.0) then
+      do i = 1, nfreq
         zr(jfrq+i-1) = (i-1)*pas
- 1  end do
-    do 3 i = 1, nfreq
+      end do
+    else
+      read(ifmis) (zr(jfrq+i-1),i=1,nfreq)
+    endif
+    write(6,*) 'lfreq ',(zr(jfrq+i-1),i=1,nfreq)
+    do i = 1, nfreq
         a(1) = zr(jfrq+i-1)
         if (freq .le. (a(1) + r8prem( ))) then
             ifreq = i
@@ -78,26 +84,37 @@ subroutine irmitm(nbmode, ifmis, freq, tabrig)
             endif
             goto 7
         endif
- 3  end do
+    end do
     ifreq = nfreq
     ic = 0
  7  continue
-!      WRITE(6,*) 'NBMODE=',NBMODE
-!      WRITE(6,*) 'FREQ= ',FREQ,' IFREQ= ',IFREQ,' IC= ',IC
-    do 5 i = 1, ifreq-1
+    if (ibin.eq.0) then
+      do i = 1, ifreq-1
         read(ifmis,*) a(1)
-        read(ifmis,1000) ((zr(jri0+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
-        i2=1,nbmode)
- 5  end do
-    read(ifmis,*) a(1)
-!      WRITE(6,*) 'INST= ',A(1)
-    read(ifmis,1000) ((zr(jrig+(i2-1)*nbmode+i1-1),&
-     &              i1=1,nbmode),i2=1,nbmode)
+        read(ifmis,100) ((zr(jri0+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
+        &i2=1,nbmode)
+      end do
+      read(ifmis,*) a(1)
+      read(ifmis,100) ((zr(jrig+(i2-1)*nbmode+i1-1),&
+       &              i1=1,nbmode),i2=1,nbmode)
+    else
+      do i = 1, ifreq-1
+        read(ifmis) ((zr(jri0+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
+        &i2=1,nbmode)
+      end do
+      read(ifmis) ((zr(jrig+(i2-1)*nbmode+i1-1),&
+       &              i1=1,nbmode),i2=1,nbmode)
+    endif
     if (ic .ge. 1) then
-        read(ifmis,*) a(1)
-        read(ifmis,1000) ((zr(jri2+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
-        i2=1,nbmode)
-        do 8 i1 = 1, nbmode
+        if (ibin.eq.0) then
+          read(ifmis,*) a(1)
+          read(ifmis,100) ((zr(jri2+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
+          &i2=1,nbmode)
+        else
+          read(ifmis) ((zr(jri2+(i2-1)*nbmode+i1-1), i1=1,nbmode),&
+          &i2=1,nbmode)
+        endif
+        do 9 i1 = 1, nbmode
             do 8 i2 = 1, nbmode
                 zr(jrig+(i2-1)*nbmode+i1-1) = zr(&
                                               jrig+(i2-1)*nbmode+ i1-1) + (freq-zr(jfrq+ifreq-1))&
@@ -105,12 +122,16 @@ subroutine irmitm(nbmode, ifmis, freq, tabrig)
                                               &-1)*nbmode+i1-1)-zr(jrig+ (i2-1)*nbmode+i1-1)&
                                               )
  8          continue
+ 9      continue
+    endif
+    if (ibin.ne.0) then
+      close(unit=ifmis)
     endif
 !
     call jedetr(tabri0)
     call jedetr(tabri2)
     call jedetr(tabfrq)
 !
-    1000 format((6(1x,1pe13.6)))
+    100 format((6(1x,1pe13.6)))
     call jedema()
 end subroutine

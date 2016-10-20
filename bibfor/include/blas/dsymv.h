@@ -15,12 +15,21 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+
 interface
-    subroutine irmitm(nbmode, ifmis, freq, tabrig, ibin)
-        integer :: nbmode
-        integer :: ifmis
-        integer :: ibin
-        real(kind=8) :: freq
-        character(len=24) :: tabrig
-    end subroutine irmitm
+    subroutine dsymv(uplo, n, alpha, a,&
+                     lda, x, incx, beta, y,&
+                     incy)
+        integer, intent(in) :: lda
+        character(len=1), intent(in) :: uplo
+        integer, intent(in) :: n
+        real(kind=8) ,intent(in) :: alpha
+        real(kind=8) ,intent(in) :: a(lda, *)
+        real(kind=8) ,intent(in) :: x(*)
+        integer, intent(in) :: incx
+        real(kind=8) ,intent(in) :: beta
+        real(kind=8) ,intent(inout) :: y(*)
+        integer, intent(in) :: incy
+    end subroutine dsymv
 end interface

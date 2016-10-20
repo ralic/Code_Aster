@@ -25,8 +25,8 @@ subroutine op0164()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
+#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
@@ -63,7 +63,7 @@ subroutine op0164()
 !
 !-----------------------------------------------------------------------
     integer :: i, i1, i2, iaconl, iadesc, ialime, ic
-    integer :: ifmis, ifr, ifreq, ii, j, jfrq
+    integer :: ifmis, ifr, ifreq, ii, j, jfrq, ibin
     integer :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
     integer :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
     integer :: nterm, nueq
@@ -115,9 +115,13 @@ subroutine op0164()
     tabfrq = '&&OP0164.FREQ'
     call wkvect(tabrig, 'V V R', 2*nbmode*nbmode, jrig)
     call wkvect(tabri2, 'V V R', 2*nbmode*nbmode, jri2)
+    ibin = 1
+    if (typbin .ne. 'BINAIRE') then
+        ibin = 0
+    endif
     if (nit .ne. 0) then
         call wkvect(tabrit, 'V V R', nbmode*nbmode, jrit)
-        call irmitm(nbmode, ifmis, inst, tabrit)
+        call irmitm(nbmode, ifmis, inst, tabrit, ibin)
         call jeveuo(tabrit, 'L', jrit)
         do i1 = 1, nbmode
             do i2 = 1, nbmode

@@ -1032,49 +1032,75 @@ class PostMissFichierTemps(PostMissFichier):
         for n in range(0, self.L_points):
             # Symmetric impedance
             Z_temps[:,:, n] = (Z_temps[:,:, n] + Z_temps[:,:, n].transpose())/2.
-
+        
+        ibin = 1
+        if self.param['TYPE_FICHIER_TEMPS']=='ASCII':
+           ibin = 0
         if self.param['MATR_GENE']:
             if self.param['MATR_GENE']['MATR_MASS']:
                 Z_temps_M = NP.zeros((self.nrows, self.ncols, self.L_points), float)
                 for n in range(0, self.L_points):
                     Z_temps_M[:,:, n] = NP.dot(Z_temps[:,:, n], self.Mg)
-                self.impr_impe(Z_temps_M, self.param['UNITE_RESU_MASS'])
+                self.impr_impe(Z_temps_M, self.param['UNITE_RESU_MASS'], ibin)
 
             if self.param['MATR_GENE']['MATR_AMOR']:
                 Z_temps_C = NP.zeros((self.nrows, self.ncols, self.L_points), float)
                 for n in range(0, self.L_points):
                     Z_temps_C[:,:, n] = NP.dot(Z_temps[:,:, n], self.Cg)
-                self.impr_impe(Z_temps_C, self.param['UNITE_RESU_AMOR'])
+                self.impr_impe(Z_temps_C, self.param['UNITE_RESU_AMOR'], ibin)
 
             if self.param['MATR_GENE']['MATR_RIGI']:
                 Z_temps_K = NP.zeros((self.nrows, self.ncols, self.L_points), float)
                 for n in range(0, self.L_points):
                     Z_temps_K[:,:, n] = NP.dot(Z_temps[:,:, n], self.Kg)
-                self.impr_impe(Z_temps_K, self.param['UNITE_RESU_RIGI'])
+                self.impr_impe(Z_temps_K, self.param['UNITE_RESU_RIGI'], ibin)
         else:
-            self.impr_impe(Z_temps, self.param['UNITE_RESU_RIGI'])
+            self.impr_impe(Z_temps, self.param['UNITE_RESU_RIGI'], ibin)
 
-    def impr_impe(self, Zdt, unite_type_impe):
+    def impr_impe(self, Zdt, unite_type_impe, ibin):
         """Ecriture d'une impédance quelconque dans le fichier de sortie en argument"""
-        if self.param['NB_MODE'] < 6:
+        print'ibin=',ibin
+        if ibin == 0:
+         if self.param['NB_MODE'] < 6:
             nb_colonne = self.param['NB_MODE']
-        else:
+         else:
             nb_colonne = 6
 
-        fmt_ligne = " %13.6E" * nb_colonne
+         fmt_ligne = " %13.6E" * nb_colonne
         # residu = NP.remainder(self.param['NB_MODE'],NB_COLONNE)
         # fmt_ligne_fin = " %13.6E" * residu
 
-        txt = []
-        txt.append('%s %s' % (str(self.L_points), str(self.dt)))
-        for n in range(0, self.L_points):
+         txt = []
+         txt.append('%s %s' % (str(self.L_points), str(self.dt)))
+         for n in range(0, self.L_points):
             txt.append('%s' % str(n*self.dt))
             for l in range(0, self.nrows):
                 for c in range(0, self.ncols, nb_colonne):
                     txt.append(fmt_ligne % tuple(Zdt[l, c:c+nb_colonne, n]))
 
-        with open(self._fichier_aster(unite_type_impe), 'wb') as fid:
+         with open(self._fichier_aster(unite_type_impe), 'wb') as fid:
             fid.write(os.linesep.join(txt))
+
+        else:
+         fid = open(self._fichier_aster(unite_type_impe), 'wb')
+         lpara =[]
+         lpara.append(float(self.L_points))
+         lpara.append(self.dt)
+         lpara.append(float(self.nrows))
+         print 'lpara=',lpara
+         lfreq =[]
+         for n in range(0, self.L_points):
+            lfreq.append(n*self.dt)
+         print 'lfreq=',lfreq
+         lparaArr = NP.array(lpara)
+         lfreqArr = NP.array(lfreq)
+         lparaArr.tofile(fid)
+         lfreqArr.tofile(fid)
+         for n in range(0, self.L_points):
+            lineArr = Zdt[:, :, n]
+            #print 'lineArr=',lineArr
+            lineArr.tofile(fid)
+         fid.close()
 
     def ecri_forc(self, fs_temps):
         """Ecriture de l'effort sismique dans le fichier de sortie"""

@@ -21,9 +21,12 @@ implicit none
 #include "asterfort/rs_getfirst.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
+#include "blas/dsymv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,11 +78,11 @@ implicit none
     integer :: neq
     integer :: nume0, nume
     real(kind=8) :: instd, inst, pas, coef1, coef2
-    real(kind=8) :: impe12
+    real(kind=8) :: alpha
     integer :: iordr, iarc, iarc2, iret
-    integer :: id1, id2, ifreq
+    integer :: id1, ifreq
     integer :: jinst, ldnew
-    integer :: nddint, unitef, nbmode
+    integer :: nddint, unitef, nbmode, npasm, nummax
     character(len=8) :: criterion
     real(kind=8) :: precision
     real(kind=8), pointer :: vaa2(:) => null()
@@ -88,6 +91,10 @@ implicit none
     real(kind=8), pointer :: vald(:) => null()
     real(kind=8), pointer :: valv(:) => null()
     real(kind=8), pointer :: vav2(:) => null()
+    real(kind=8), pointer :: trav(:) => null()
+    real(kind=8), pointer :: travd(:) => null()
+    real(kind=8), pointer :: travv(:) => null()
+    real(kind=8), pointer :: trava(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,6 +123,7 @@ implicit none
     pas    = zr(iddint-1+1)
     unitef = nint(zr(iddint-1+2))
     nddint = nint(zr(iddint-1+3))
+    npasm = nint(zr(iddint-1+4))
     nbmode = nddint
 !
 ! - Get parameters
@@ -152,8 +160,17 @@ implicit none
     instd = inst
     coef1 = (instap-instd)/pas
     coef2 = 1.d0-coef1
+    nummax = nume+1-nume0
+    if (npasm .ne. 0 .and. npasm .lt. (nume+1-nume0)) then
+        nummax = npasm
+    endif
+    write(6,*) 'nummax=',nummax
 !
-    do iordr = 1, nume+1-nume0
+    AS_ALLOCATE(vr=trav, size=nbmode)
+    AS_ALLOCATE(vr=travd, size=nbmode)
+    AS_ALLOCATE(vr=travv, size=nbmode)
+    AS_ALLOCATE(vr=trava, size=nbmode)
+    do iordr = 1, nummax
         iarc = iordr+nume0
         iarc2 = nume+1-iordr
         call rsexch('F', ds_inout%result, 'DEPL', iarc2, chamnd,&
@@ -185,35 +202,60 @@ implicit none
         endif
 !
         ifreq = int(inst*(1.d0+precision)/pas)+1
-        do id1 = 1, nbmode
-            do id2 = 1, nbmode
-                impe12 = 0.5d0* (zr(jrigt+(ifreq-1)*nbmode*nbmode+(id2-1)*nbmode+id1-1)+&
-                                 zr(jrigt+(ifreq-1)*nbmode*nbmode+(id1-1)*nbmode+id2-1))
-                zr(ldnew+zi(ieqint+id1-1)-1) = zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                               impe12*vald(1+zi(ieqint+id2-1)-1)*coef1
-                if (iarc2 .gt. 0) then
-                    zr(ldnew+zi(ieqint+id1-1)-1) = zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                                   impe12*vad2(1+zi(ieqint+ id2-1)-1)*coef2
-                endif
-                impe12 = 0.5d0* (zr(jmast+(ifreq-1)*nbmode*nbmode+(id2-1)*nbmode+id1-1)+&
-                                 zr(jmast+(ifreq-1)*nbmode*nbmode+(id1-1)*nbmode+id2-1))
-                zr(ldnew+zi(ieqint+id1-1)-1)= zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                              impe12*vala(1+zi(ieqint+id2-1)-1)*coef1
-                if (iarc2 .gt. 0) then
-                    zr(ldnew+zi(ieqint+id1-1)-1) = zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                                   impe12*vaa2(1+zi(ieqint+id2-1)-1)*coef2
-                endif
-                impe12 = 0.5d0* (zr(jamot+(ifreq-1)*nbmode*nbmode+(id2-1)*nbmode+id1-1)+&
-                                 zr(jamot+(ifreq-1)*nbmode*nbmode+(id1-1)*nbmode+id2-1))
-                zr(ldnew+zi(ieqint+id1-1)-1) = zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                               impe12*valv(1+zi(ieqint+id2-1)-1)*coef1
-                if (iarc2 .gt. 0) then
-                    zr(ldnew+zi(ieqint+id1-1)-1) = zr(ldnew+zi(ieqint+id1-1)-1)-&
-                                                   impe12*vav2(1+zi(ieqint+id2-1)-1)*coef2
-              endif
-            end do
-        end do
+                
+        if (iarc2 .gt. 0) then 
+            do id1 = 1,nbmode
+                trav(id1) = zr(ldnew+zi(ieqint+id1-1)-1)
+                travd(id1) = coef1 * vald(1+zi(ieqint+id1-1)-1)&
+                + coef2 * vad2(1+zi(ieqint+id1-1)-1)
+                travv(id1) = coef1 * valv(1+zi(ieqint+id1-1)-1)&
+                + coef2 * vav2(1+zi(ieqint+id1-1)-1)
+                trava(id1) = coef1 * vala(1+zi(ieqint+id1-1)-1)&
+                + coef2 *vaa2(1+zi(ieqint+id1-1)-1)
+            end do    
+            alpha = -0.5d0
+            call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travd, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travd, 1, 1.d0, trav,1)
+            call dsymv('L', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travv, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travv, 1, 1.d0, trav,1)
+            call dsymv('L', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, trava, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, trava, 1, 1.d0, trav,1)
+        else
+            do id1 = 1,nbmode
+                trav(id1) = zr(ldnew+zi(ieqint+id1-1)-1)
+                travd(id1) = vald(1+zi(ieqint+id1-1)-1)
+                travv(id1) = valv(1+zi(ieqint+id1-1)-1)
+                trava(id1) = vala(1+zi(ieqint+id1-1)-1)
+            end do    
+            alpha = -0.5d0 * coef1
+            call dsymv('L', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travd, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jrigt+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travd, 1, 1.d0, trav,1)
+            call dsymv('L', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travv, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jamot+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, travv, 1, 1.d0, trav,1)
+            call dsymv('L', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, trava, 1, 1.d0, trav,1)
+            call dsymv('U', nbmode, alpha, zr(jmast+(ifreq-1)*nbmode*nbmode),&
+                        nbmode, trava, 1, 1.d0, trav,1)
+           
+        endif
+        do id1 = 1,nbmode
+            zr(ldnew+zi(ieqint+id1-1)-1) = trav(id1)
+        end do    
     end do
+    AS_DEALLOCATE(vr=trav)
+    AS_DEALLOCATE(vr=travd)
+    AS_DEALLOCATE(vr=travv)
+    AS_DEALLOCATE(vr=trava)
 !
 ! --- LECTURE FORCES
 !

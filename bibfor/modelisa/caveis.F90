@@ -1,6 +1,6 @@
 subroutine caveis(chargz)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,24 +42,25 @@ subroutine caveis(chargz)
 ! ------ VARIABLES LOCALES
     character(len=8) :: charge, maille
     character(len=24) :: obj, gnintf
+    character(len=16) :: typbin
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idveis, iffor, ifmis, n1, ng, nm, nv
+    integer :: idveis, iffor, ifmis, n1, ng, nm, nv, npasm, ibin
 !
 !-----------------------------------------------------------------------
     call jemarq()
 !
     call getfac('FORCE_SOL', nv)
 !
-    if (nv .eq. 0) goto 9999
+    if (nv .eq. 0) goto 999
 !
 !
     charge = chargz
     obj = charge//'.CHME.VEISS'
 !
-    call wkvect(obj, 'G V K24', 6, idveis)
+    call wkvect(obj, 'G V K24', 8, idveis)
     ifmis=0
     call getvis('FORCE_SOL', 'UNITE_RESU_RIGI', iocc=1, scal=ifmis, nbret=n1)
     call codent(ifmis, 'D', zk24(idveis))
@@ -78,8 +79,16 @@ subroutine caveis(chargz)
     maille = ' '
     call getvtx('FORCE_SOL', 'SUPER_MAILLE', iocc=1, scal=maille, nbret=nm)
     zk24(idveis+5) = maille
+    call getvis('FORCE_SOL', 'NB_PAS_TRONCATURE', iocc=1, scal=npasm, nbret=n1)
+    call codent(npasm, 'D', zk24(idveis+6))
+    call getvtx('FORCE_SOL', 'TYPE', iocc=1, scal=typbin, nbret=nm)
+    ibin = 1
+    if (typbin .ne. 'BINAIRE') then
+        ibin = 0
+    endif
+    call codent(ibin, 'D', zk24(idveis+7))
 !
-9999  continue
+999 continue
 !
     call jedema()
 !.============================ FIN DE LA ROUTINE ======================
