@@ -7,6 +7,7 @@ implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/infdbg.h"
@@ -74,6 +75,7 @@ implicit none
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     integer, pointer :: v_mesh_patch(:) => null()
     integer, pointer :: v_mesh_lpatch(:) => null()
+    integer, pointer :: v_pa_lcum(:) => null()
     real(kind=8), pointer :: v_cnscon_cnsv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -130,6 +132,12 @@ implicit none
                       l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
     call jeveuo(cnscon//'.CNSV', 'L', vr = v_cnscon_cnsv)
 !
+! - Get current patch
+
+    call jeveuo(mesh//'.PATCH', 'L', vi = v_mesh_patch)
+    call jeveuo(jexatr(mesh//'.PATCH', 'LONCUM'), 'L', vi = v_pa_lcum)
+
+!
 ! - Loop on contact zones
 !
     do i_cont_zone = 1, nb_cont_zone
@@ -142,14 +150,11 @@ implicit none
 ! ----- Loop on patches
 !
         do i_patch = 1, nb_patch
-!
-! --------- Get current patch
 
-            call jeveuo(jexnum(mesh//'.PATCH',j_patch+i_patch-1), 'L', vi = v_mesh_patch)
 !
 ! --------- Get/Set LAGS_C 
 !
-            node_nume = v_mesh_patch(2)
+            node_nume = v_mesh_patch(v_pa_lcum(j_patch+i_patch-1)+2-1)
             lagc      = v_cnscon_cnsv(node_nume)
             v_sdcont_lagc(j_patch-2+i_patch) = lagc
 !

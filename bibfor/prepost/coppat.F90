@@ -1,7 +1,7 @@
-subroutine coppat(main, maout, nbma, nbpain)
+subroutine coppat(main, maout, nbma, nbpain, lenpat)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,12 +36,13 @@ subroutine coppat(main, maout, nbma, nbpain)
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
     integer, intent(in) :: nbma
+    integer, intent(in) :: lenpat
     integer, intent(out) :: nbpain
 ! -------------------------------------------------------------------------------------------------
 !   RECUPERATION ET MISE A JOUR DE LA COLLECTION .PATH
 ! -------------------------------------------------------------------------------------------------
     integer :: nbpatch, nbzone, nbinfo, patch
-    integer :: nwpath, odpath
+    integer :: nwpath, odpath, lonpat
     integer :: inc1, inc2
 
 ! -------------------------------------------------------------------------------------------------
@@ -51,8 +52,11 @@ subroutine coppat(main, maout, nbma, nbpain)
     call jelira(main//'.PATCH','NUTIOC',nbpatch)
     nbpain = nbpatch-1
     call jelira(jexnum(main//'.PATCH', 1),'LONUTI' ,nbzone)
-    call jecrec(maout//'.PATCH','G V I', 'NU', 'DISPERSE', 'VARIABLE', nbpatch+nbma)
+    call jelira(main//'.PATCH','LONT' ,lonpat)
+    call jecrec(maout//'.PATCH','G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch+nbma)
+    call jeecra(maout//'.PATCH', 'LONT', ival=lonpat+lenpat+2)
     call jecroc(jexnum(maout//'.PATCH',1))
+
     call jeecra(jexnum(maout//'.PATCH',1), 'LONMAX', ival=nbzone+2)
     call jeecra(jexnum(maout//'.PATCH',1), 'LONUTI', ival=nbzone+2)
     call jeveuo(jexnum(maout//'.PATCH',1), 'E', patch)

@@ -81,6 +81,7 @@ implicit none
     integer, pointer :: v_connex(:) => null()
     integer, pointer :: v_connex_lcum(:) => null()
     integer :: ztabf
+    integer ::  deca
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     integer, pointer :: v_ligrcf_nbno(:) => null()
@@ -156,6 +157,8 @@ implicit none
 !
     call jecrec(ligrcf//'.NEMA', 'V V I', 'NU', 'CONTIG', 'VARIABLE', nb_cont_pair)
     call jeecra(ligrcf//'.NEMA', 'LONT', nt_node + nb_cont_pair)
+    deca = 0
+    call jeveuo(ligrcf//'.NEMA', 'E', vi = v_ligrcf_nema)
     do i_cont_pair = 1, nb_cont_pair
 !
 ! ----- Get parameters
@@ -184,20 +187,21 @@ implicit none
 !
         call jecroc(jexnum(ligrcf//'.NEMA', i_cont_pair))
         call jeecra(jexnum(ligrcf//'.NEMA', i_cont_pair), 'LONMAX', nb_node_elem+1)
-        call jeveuo(jexnum(ligrcf//'.NEMA', i_cont_pair), 'E', vi = v_ligrcf_nema)
-        v_ligrcf_nema(nb_node_elem+1) = typg_cont_nume
+        v_ligrcf_nema(deca+nb_node_elem+1) = typg_cont_nume
 !
 ! ----- Copy slave nodes
 !
         do i_node = 1, nb_node_slav
-            v_ligrcf_nema(i_node) = v_connex(v_connex_lcum(elem_slav_nume)-1+i_node)
+            v_ligrcf_nema(deca+i_node) = v_connex(v_connex_lcum(elem_slav_nume)-1+i_node)
         end do
 !
 ! ----- Copy master nodes
 !
         do i_node = 1, nb_node_mast
-            v_ligrcf_nema(nb_node_slav+i_node) = v_connex(v_connex_lcum(elem_mast_nume)-1+i_node)
+            v_ligrcf_nema(deca+nb_node_slav+i_node) = v_connex(v_connex_lcum(elem_mast_nume)-1+&
+                                                               i_node)
         end do
+        deca = deca+nb_node_elem+1
     end do
 !
 ! - Size of LIEL object

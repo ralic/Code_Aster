@@ -13,6 +13,8 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfi.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,7 +58,7 @@ implicit none
     integer, parameter :: nceld2 = 4
     integer, parameter :: nceld3 = 4
     integer :: nt_liel, nb_grel, nb_liel, i_grel, i_liel, i_cont_pair, nb_cont_pair, i_zone
-    integer :: vale_indx, decal, elem_slav_nume, patch_nume, jacobian_type
+    integer :: vale_indx, decal, elem_slav_nume, patch_nume, jacobian_type, nb_cont_zone
     real(kind=8) :: r_axi, r_smooth
     character(len=19) :: sdappa
     character(len=24) :: chmlcf_celv
@@ -73,6 +75,7 @@ implicit none
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
     character(len=24) :: sdappa_apli
     integer, pointer :: v_sdappa_apli(:) => null()
+    integer, pointer :: typ_jaco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,6 +86,11 @@ implicit none
     r_smooth     = real(cfdisi(ds_contact%sdcont_defi,'LISSAGE'),kind=8)
     r_axi        = real(cfdisi(ds_contact%sdcont_defi,'AXISYMETRIQUE'),kind=8)
     nb_cont_pair = ds_contact%nb_cont_pair
+    nb_cont_zone = cfdisi(ds_contact%sdcont_defi, 'NZOCO')
+    AS_ALLOCATE(vi=typ_jaco, size= nb_cont_zone)
+    do i_zone=1, nb_cont_zone
+        typ_jaco(i_zone)= mminfi(ds_contact%sdcont_defi, 'TYPE_JACOBIEN', i_zone)
+    end do
 !
 ! - Access to input field
 !
@@ -125,7 +133,7 @@ implicit none
             elem_slav_nume = v_sdappa_apli(3*(i_cont_pair-1)+1)
             i_zone         = v_sdappa_apli(3*(i_cont_pair-1)+3)
             patch_nume     = v_mesh_comapa(elem_slav_nume)
-            jacobian_type  = mminfi(ds_contact%sdcont_defi, 'TYPE_JACOBIEN', i_zone)
+            jacobian_type  = typ_jaco(i_zone)
 ! --------- Adress in CHAM_ELEM
             vale_indx = jv_chmlcf_celv-1+v_chmlcf_celd(decal+nceld2+nceld3*(i_liel-1)+4)
 ! --------- Set values in CHAM_ELEM
@@ -158,6 +166,7 @@ implicit none
         nt_liel = nt_liel + nb_liel
     enddo
     ASSERT(nt_liel .eq. nb_cont_pair)
+    AS_DEALLOCATE(vi=typ_jaco)
 !
     call jedema()
 !

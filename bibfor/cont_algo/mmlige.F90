@@ -10,6 +10,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
@@ -95,6 +96,8 @@ implicit none
     aster_logical :: l_frot, l_cont_cont, l_cont_lac, l_axi
     integer, pointer :: v_mesh_typmail(:) => null()
     integer :: ztabf
+    integer :: indx_slav_name, linuma_max, linuma_min
+    character(len=16), pointer :: v_tp_slav_name(:) => null()
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     character(len=24) :: sdappa_apli
@@ -140,6 +143,16 @@ implicit none
         call liglma(ligrel_elem_slav, nb_elem_slav, linuma, linute)
         call jeveuo(linuma, 'L', vi = v_linuma)
         call jeveuo(linute, 'L', vi = v_linute)
+        linuma_max   = maxval(v_linuma)
+        linuma_min   = minval(v_linuma)
+        AS_ALLOCATE(vk16=v_tp_slav_name, size= linuma_max+1-linuma_min)
+        do i_elem_slav = 1, nb_elem_slav
+            elem_slav_nume =v_linuma(i_elem_slav)
+            typf_slav_nume = v_linute(i_elem_slav)
+            call jenuno(jexnum('&CATA.TE.NOMTE', typf_slav_nume), typf_slav_name)
+            indx_slav_name           = elem_slav_nume + 1 - linuma_min
+            v_tp_slav_name(indx_slav_name) = typf_slav_name
+        end do
     endif
 !
 ! - Number of contact elements
@@ -210,15 +223,9 @@ implicit none
 !
 ! --------- Index of FE type for slave element
 !
-            typf_slav_nume = 0
-            typf_slav_name = ' '
-            do i_elem_slav = 1, nb_elem_slav
-                if (v_linuma(i_elem_slav) .eq. elem_slav_nume) then
-                    typf_slav_nume = v_linute(i_elem_slav)
-                    call jenuno(jexnum('&CATA.TE.NOMTE', typf_slav_nume), typf_slav_name)
-                end if
-            end do
-            ASSERT(typf_slav_nume .ne. 0)
+            indx_slav_name = elem_slav_nume + 1 - linuma_min
+            typf_slav_name = v_tp_slav_name(indx_slav_name)
+            
             call mmelem_data_l(l_axi_          = l_axi         ,&
                                typg_slav_name_ = typg_slav_name, typg_mast_name_ = typg_mast_name,&
                                typf_slav_name_ = typf_slav_name,&
@@ -226,11 +233,10 @@ implicit none
                                typg_cont_nume_ = typg_cont_nume,&
                                typf_cont_nume_ = typf_cont_nume,&
                                get_elem_indx_  = elem_indx)
-
         endif
-        call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
-        call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
         if (niv .ge. 2) then
+            call jenuno(jexnum('&CATA.TM.NOMTM', typg_cont_nume), typg_cont_name)
+            call jenuno(jexnum('&CATA.TE.NOMTE', typf_cont_nume), typf_cont_name)
             WRITE(6,*) 'MMLIGE: ',i_cont_pair
             WRITE(6,*) 'MMLIGE - Master  : ',elem_mast_nume, elem_mast_name, typg_mast_name
             WRITE(6,*) 'MMLIGE - Slave   : ',elem_slav_nume, elem_slav_name, typg_slav_name
@@ -285,5 +291,6 @@ implicit none
 !
     call jedetr(linuma)
     call jedetr(linute)
+    AS_DEALLOCATE(vk16=v_tp_slav_name)
 !
 end subroutine

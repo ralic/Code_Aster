@@ -1,7 +1,7 @@
 subroutine cpifpa(main, maout)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ subroutine cpifpa(main, maout)
 ! -------------------------------------------------------------------------------------------------
     integer :: nbpatch, nbinfo, odcnpa, odcmpa
     integer :: nwpath, odpath, jcnnpa, jcnmpa
-    integer :: inc1, inc2, nbma ,nbno,info
+    integer :: inc1, inc2, nbma ,nbno,info, lonpat
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !
@@ -47,8 +47,10 @@ subroutine cpifpa(main, maout)
     nbma = zi(info-1+3)
 ! ------ RECOPIE .PATCH
     call jelira(main//'.PATCH','NUTIOC',nbpatch)
+    call jelira(main//'.PATCH','LONT',lonpat)
     call jedetr(maout//'.PATCH')
-    call jecrec(maout//'.PATCH','G V I', 'NU', 'DISPERSE', 'VARIABLE', nbpatch)
+    call jecrec(maout//'.PATCH','G V I', 'NU', 'CONTIG', 'VARIABLE', nbpatch)
+    call jeecra(maout//'.PATCH', 'LONT',lonpat)
     do inc1=1, nbpatch
         call jeveuo(jexnum(main//'.PATCH', inc1), 'L', odpath)
         call jelira(jexnum(main//'.PATCH', inc1), 'LONUTI', nbinfo)

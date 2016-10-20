@@ -81,7 +81,7 @@ implicit none
     integer :: jmacsu, jmacou, jlimane, jconloc, lgma, inc2, jcnmpa, jcnnpa
     integer :: ind, res(1), ntrou, jtpmao, jtypma, aux, numa, laux(1)
     integer :: jcnmai, jcnmao, incc, ntrou1, jgma, jrgma
-    integer :: conlen, cnlclg, idtpma, nbnoma, odcnpa, odcmpa,lenconloc, lenlimane
+    integer :: conlen, cnlclg, idtpma, nbnoma, odcnpa, odcmpa,lenconloc, lenlimane, lenpat
 !     
     character(len=24) :: nomnoi, nomnoe, limane, conloc
     character(len=24) :: nomnd, nomma, cninv, cnivax, rgma, gpptnn
@@ -93,18 +93,7 @@ implicit none
     call jemarq()
     false=.false.
     nbpain = 0
-! --- CREATION OU RECUPERATION DE LA COLLECTION .PATCH --------------------------------------------
-    if (izone .eq. 1) then
-        call jecrec(maout//'.PATCH','G V I', 'NU', 'DISPERSE', 'VARIABLE', nbma+1)
-        call jecroc(jexnum(maout//'.PATCH',1))
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONMAX', ival=2)
-        call jeecra(jexnum(maout//'.PATCH',1), 'LONUTI', ival=2)
-        call jeveuo(jexnum(maout//'.PATCH',1), 'E', patch)
-        zi(patch+1-1)=2
-        zi(patch+2-1)=nbma
-    else
-        call coppat(main,maout,nbma,nbpain)
-    end if
+
 ! --- DUPLICATION A L'IDENTIQUE DES GROUPES DE NOEUDS (PAS DE MISE A JOUR) ------------------------
     call cpclma(main, maout, 'GROUPENO', 'G')
 ! --- DIMENSION DU NOUVEAU MAILLAGE, DES CONNECTIVITE (AUXILAIRE ET NOUVELLE) ---------------------
@@ -117,6 +106,7 @@ implicit none
     conlen = 0
     cnlclg = 0
     lenconloc = 0
+    lenpat    = 0
     lenlimane = nma-nbma*2
     cninv='&&CPPAGN.CNINV'
     call wkvect(cninv,'V V I', nbma, jcninv)
@@ -133,14 +123,16 @@ implicit none
                 conlen = conlen + 1*2 + 1*3
                 lenconloc = lenconloc + 2*3 + 2*2
                 cnlclg = cnlclg + 4
-                lenlimane = lenlimane + 3 + 2              
+                lenlimane = lenlimane + 3 + 2
+                lenpat = lenpat + 2              
             case ('QUAD4')
                 nbnot = nbnot + 4
                 nbmat = nbmat + 5
                 conlen = conlen + 2*2 + 3*4
                 lenconloc = lenconloc + 3*2 + 4*4
                 cnlclg = cnlclg + 7
-                lenlimane = lenlimane + 4 + 4 
+                lenlimane = lenlimane + 4 + 4
+                lenpat = lenpat + 3
             case ('TRIA6')
                 nbnot = nbnot + 0
                 nbmat = nbmat + 0
@@ -148,13 +140,15 @@ implicit none
                 lenconloc = lenconloc + 3 + 6
                 cnlclg = cnlclg + 2
                 lenlimane = lenlimane + 2 + 1
+                lenpat = lenpat + 2
             case ('QUAD8')
                 nbnot = nbnot + 0
                 nbmat = nbmat + 0
                 conlen = conlen + 0
                 lenconloc = lenconloc + 3 + 8
                 cnlclg = cnlclg + 2
-                lenlimane = lenlimane + 2 + 1  
+                lenlimane = lenlimane + 2 + 1
+                lenpat = lenpat + 2 
 ! -------- CAS 3D
             case ('TETRA4')
                 nbnot = nbnot + 1
@@ -162,39 +156,58 @@ implicit none
                 conlen = conlen + 2*3 + 2*4
                 cnlclg = cnlclg + 6
                 lenconloc = lenconloc + 3*3 + 4*3
-                lenlimane = lenlimane + 3 + 4 
+                lenlimane = lenlimane + 3 + 4
+                lenpat = lenpat + 2
             case ('TETRA10')
                 nbnot = nbnot + 5
                 nbmat = nbmat + 4
                 conlen = conlen + 2*6 + 2*10
                 cnlclg = cnlclg + 6
                 lenconloc = lenconloc + 3*6 + 4*10
-                lenlimane = lenlimane + 3 + 4 
+                lenlimane = lenlimane + 3 + 4
+                lenpat = lenpat + 2
             case ('HEXA8')
                 nbnot = nbnot + 8
                 nbmat = nbmat + 9
                 conlen = conlen + 4*4 + 5*8
                 lenconloc = lenconloc + 5*4 + 6*8
                 cnlclg = cnlclg + 11
-                lenlimane = lenlimane + 6 + 7 
+                lenlimane = lenlimane + 6 + 7
+                lenpat = lenpat + 5
             case ('HEXA20')
                 nbnot = nbnot + 28
                 nbmat = nbmat + 9
                 conlen = conlen + 4*8 + 5*20
                 lenconloc = lenconloc + 5*8 + 6*20
                 cnlclg = cnlclg + 11
-                 lenlimane = lenlimane + 6 + 7 
+                lenlimane = lenlimane + 6 + 7
+                lenpat = lenpat + 5
             case ('HEXA27')
                 nbnot = nbnot + 0
                 nbmat = nbmat + 0
                 conlen = conlen + 0
                 lenconloc = lenconloc + 27 + 9
                 cnlclg = cnlclg + 2
-                lenlimane = lenlimane + 2 + 1 
+                lenlimane = lenlimane + 2 + 1
+                lenpat = lenpat + 2
             case default
                 ASSERT(.false.)
         end select
     enddo
+! --- CREATION OU RECUPERATION DE LA COLLECTION .PATCH --------------------------------------------
+    if (izone .eq. 1) then
+        call jecrec(maout//'.PATCH','G V I', 'NU', 'CONTIG', 'VARIABLE', nbma+1)
+        call jeecra(maout//'.PATCH', 'LONT', ival=2+lenpat)
+        call jecroc(jexnum(maout//'.PATCH',1))
+        call jeecra(jexnum(maout//'.PATCH',1), 'LONMAX', ival=2)
+        call jeecra(jexnum(maout//'.PATCH',1), 'LONUTI', ival=2)
+        call jeveuo(jexnum(maout//'.PATCH',1), 'E', patch)
+        zi(patch+1-1)=2
+        zi(patch+2-1)=nbma
+    else
+        call coppat(main,maout,nbma,nbpain,lenpat)
+    end if
+! -------------------------------------------------------------------------------------------------
     call jedupo(main//'.DIME', 'G', maout//'.DIME', dupcol=false)
     call jeveuo(maout//'.DIME', 'E', jdim)
     zi(jdim-1 + 1) = nbnot

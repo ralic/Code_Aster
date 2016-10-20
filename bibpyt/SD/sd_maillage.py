@@ -53,7 +53,7 @@ class sd_maillage(sd_titre):
     NOMMAI = Facultatif(AsPn(ltyp=8))
 
     # si le sd_maillage a des patchs:
-    PATCH  = Facultatif(AsColl(acces='NU', stockage='DISPERSE', modelong='VARIABLE', type='I', ))
+    PATCH  = Facultatif(AsColl(acces='NU', stockage='CONTIG', modelong='VARIABLE', type='I', ))
     COMAPA = Facultatif(AsVI())
     CONOPA = Facultatif(AsVI())
     PTRNOMPAT = Facultatif(AsVK24())
