@@ -129,7 +129,7 @@ TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
                      GROUP_NO='G1_1',
                      PRECISION=0.05,
                      CHAM_GD=SIELNO2,
-                     VALE_CALC=-2912.06041838,
+                     VALE_CALC=-2912.05665327,
                      VALE_REFE=-2798.3,),
           )
 
@@ -139,7 +139,7 @@ TEST_RESU(CHAM_NO=_F(CRITERE='RELATIF',
                      GROUP_NO='G1_2',
                      PRECISION=0.05,
                      CHAM_GD=SIELNO2,
-                     VALE_CALC=-2911.29604194,
+                     VALE_CALC=-2911.29227342,
                      VALE_REFE=-2798.3,),
           )
 
