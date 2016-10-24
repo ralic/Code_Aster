@@ -16,10 +16,12 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),
-      IGNORE_ALARM=('MODELISA4_9'))
+      IGNORE_ALARM=('MODELISA4_9','PREPOST5_50',),)
 #
 # LES MAILLES APLATIES SONT DUES AUX ELEMENTS DISCRETS DE TYPE SEG2 DONT LES
 # NOEUDS SONT CONFONDUS
+# L'ALARME PREPOST5_51 EST VOLONTAIREMENT DECLENCHEE 
+# POUR TESTER AMOR_NEGATIF DANS CALC_AMOR_MODAL
 #
 METHODE='EULER'
 
@@ -548,6 +550,110 @@ L_AMOR=CALC_AMOR_MODAL(
                                               SEUIL = 0.3)
                            )
 
+#
+#  CALC_AMOR_MODAL POUR DECLENCHER AMOR_NEGATIF#
+ATXN=DEFI_FONCTION(
+                          NOM_PARA='FREQ',
+                              VALE=(
+
+    0.00,     0.0000,
+    30.0,     -2.0,
+
+                                   ),
+                          PROL_DROITE='CONSTANT'
+
+                      )
+
+
+L_AMORN=CALC_AMOR_MODAL(
+                                   ENER_SOL=_F(
+                                       MODE_MECA = MODE,
+                                       METHODE = 'RIGI_PARASOL',
+                                       GROUP_MA_RADIER = 'SRADIER',
+                                       GROUP_NO_CENTRE = 'P1',
+                                       COEF_GROUP = 1.,
+                                       KX = 6.295E11,
+                                       KY = 6.295E11,
+                                       KZ = 6.864E11,
+                                       KRX = 3.188E14,
+                                       KRY = 3.188E14,
+                                       KRZ = 3.2E14,),
+                               AMOR_INTERNE=_F(
+                                              ENER_POT = EPOT,
+                                              GROUP_MA = (
+                                                 'POU_D_T', 
+                                                 'MASSES',  
+                                                 'LIAI_NOE',
+                                                 'VRADIER',
+                                                 'SRADIER',
+                                                            ),
+                                              AMOR_REDUIT = (
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                            )),
+                                   AMOR_SOL=_F(
+                                              AMOR_REDUIT = 0.001,
+                                              FONC_AMOR_GEO = (
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                              ),
+                                              HOMOGENE = 'OUI',
+                                              SEUIL = 0.3),
+                                    CORR_AMOR_NEGATIF = 'OUI',
+                                    COEF_CORR_AMOR = 0.01,
+                           )
+
+L_AMOR2=CALC_AMOR_MODAL(
+                                   ENER_SOL=_F(
+                                       MODE_MECA = MODE,
+                                       METHODE = 'RIGI_PARASOL',
+                                       GROUP_MA_RADIER = 'SRADIER',
+                                       GROUP_NO_CENTRE = 'P1',
+                                       COEF_GROUP = 1.,
+                                       KX = 6.295E11,
+                                       KY = 6.295E11,
+                                       KZ = 6.864E11,
+                                       KRX = 3.188E14,
+                                       KRY = 3.188E14,
+                                       KRZ = 3.2E14,),
+                               AMOR_INTERNE=_F(
+                                              ENER_POT = EPOT,
+                                              GROUP_MA = (
+                                                 'POU_D_T', 
+                                                 'MASSES',  
+                                                 'LIAI_NOE',
+                                                 'VRADIER',
+                                                 'SRADIER',
+                                                            ),
+                                              AMOR_REDUIT = (
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                            )),
+                                   AMOR_SOL=_F(
+                                              AMOR_REDUIT = 0.001,
+                                              FONC_AMOR_GEO = (
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                              ),
+                                              HOMOGENE = 'OUI',
+                                              SEUIL = 0.3),
+                                    CORR_AMOR_NEGATIF = 'IGNORE',
+                           )
+
 
 # VALEUR DE REFERENCE : VALEURS OBTENUES EN VERSION 3.06.26
 
@@ -666,6 +772,98 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.06159355428799,
                         FONCTION=F_AMOR,
                         ),
               )
+
+#
+# TESTS SUR LES VALEURS OBTENUES DE CALC_AMOR_MODAL AVEC
+# AMOR_NEGATIF
+#
+
+F_AMORN=DEFI_FONCTION(    NOM_PARA='AMOR',
+                              VALE_PARA=LISTE,
+                              VALE_FONC=L_AMORN)
+                              
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01,
+                        VALE_PARA=1.0,
+                        FONCTION=F_AMORN,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01,
+                        VALE_PARA=2.0,
+                        FONCTION=F_AMORN,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.009268429283136991,
+                        VALE_PARA=3.0,
+                        FONCTION=F_AMORN,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.009307128154670228,
+                        VALE_PARA=4.0,
+                        FONCTION=F_AMORN,
+                        ),
+              )
+
+#
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01,
+                        VALE_PARA=5.0,
+                        FONCTION=F_AMORN,
+                        ),
+              )
+
+L_AMOR3=CALC_AMOR_MODAL(
+                                   ENER_SOL=_F(
+                                       MODE_MECA = MODE,
+                                       METHODE = 'RIGI_PARASOL',
+                                       GROUP_MA_RADIER = 'SRADIER',
+                                       GROUP_NO_CENTRE = 'P1',
+                                       COEF_GROUP = 1.,
+                                       KX = 6.295E11,
+                                       KY = 6.295E11,
+                                       KZ = 6.864E11,
+                                       KRX = 3.188E14,
+                                       KRY = 3.188E14,
+                                       KRZ = 3.2E14,),
+                               AMOR_INTERNE=_F(
+                                              ENER_POT = EPOT,
+                                              GROUP_MA = (
+                                                 'POU_D_T', 
+                                                 'MASSES',  
+                                                 'LIAI_NOE',
+                                                 'VRADIER',
+                                                 'SRADIER',
+                                                            ),
+                                              AMOR_REDUIT = (
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                              0.01,
+                                                            )),
+                                   AMOR_SOL=_F(
+                                              AMOR_REDUIT = 0.001,
+                                              FONC_AMOR_GEO = (
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                                ATXN,
+                                                              ),
+                                              HOMOGENE = 'OUI',
+                                              SEUIL = 0.3),
+                                    CORR_AMOR_NEGATIF = 'IGNORE',
+                           )
+
 
 FIN( )
 #

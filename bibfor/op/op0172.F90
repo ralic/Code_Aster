@@ -2,7 +2,7 @@ subroutine op0172()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +23,7 @@ subroutine op0172()
 #include "asterc/getres.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
+#include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
@@ -57,7 +58,7 @@ subroutine op0172()
     integer :: ibid, aprno, iddl, ncmp, nec, gd, nbmode
     integer :: vali
     real(kind=8) :: r8b, zero, rigi(6), amosol, seuil, amomo, poucen
-    real(kind=8) :: valrr(2)
+    real(kind=8) :: valrr(2), coef_corr_amor
     real(kind=8) :: a(3), b(3), c(3), valr(6)
     complex(kind=8) :: c16b
     character(len=3) :: rep
@@ -68,7 +69,7 @@ subroutine op0172()
     character(len=16) :: concep, nomcmd, valek(2)
     character(len=19) :: enerpo
     character(len=24) :: nprno, deeq, nomch1, nomob1, nomob2
-    character(len=24) :: magrno, manono, magrma, manoma, nomgr
+    character(len=24) :: magrno, manono, magrma, manoma, nomgr, amo_neg
     integer :: iarg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -404,6 +405,9 @@ subroutine op0172()
     call getvid('AMOR_SOL', 'FONC_AMOR_GEO', iocc=1, nbval=ncompo, vect=amogeo, nbret=nba)
     call getvtx('AMOR_SOL', 'HOMOGENE', iocc=1, scal=rep, nbret=nrp)
 !
+    call getvtx(' ', 'CORR_AMOR_NEGATIF', scal=amo_neg, nbret=ibid)
+    call getvr8(' ', 'COEF_CORR_AMOR', scal=coef_corr_amor, nbret=ibid)
+!    
     call wkvect('&&OP0172.AMOMOD', 'V V R', nbmode, iamomo)
 !
     valek(1) = 'NUME_ORDRE'
@@ -447,6 +451,23 @@ subroutine op0172()
             vali = imod
             call utmess('I', 'PREPOST5_64', si=vali, nr=2, valr=valrr)
         endif
+!
+        if (amomo .le. 0.d0) then
+            vali = imod
+            if (amo_neg .eq. 'OUI') then 
+                zr(iamomo+imod-1) = coef_corr_amor
+                valrr (1) = amomo
+                valrr (2) = zr(iamomo+imod-1)               
+                call utmess('I', 'PREPOST5_51', si=vali, nr=2,valr=valrr)
+            elseif (amo_neg .eq. 'NON') then
+                call utmess('F', 'PREPOST5_52', si=vali, sr=amomo)
+            elseif (amo_neg .eq. 'IGNORE') then
+                call utmess('A', 'PREPOST5_50', si=vali, sr=amomo)
+            else
+                ASSERT(.false.)
+            endif
+        endif
+!    
     enddo
 !
     write(ifr,1002)

@@ -126,13 +126,19 @@ Erreur utilisateur dans la commande EXTR_RESU / RESTREINT :
   Il devrait être %(k3)s.
 """),
 
-
-
-
-
-
-
-
+    50 : _(u"""
+ Attention : la valeur d'amortissement associée au mode propre %(i1)d est négative ou nulle : %(r1)f.
+"""),
+ 
+    51 : _(u"""
+ La valeur d'amortissement associée au mode propre %(i1)d est négative ou nulle : %(r1)f.
+ Vous avez demandé qu'elle soit corrigée. Cet amortissement est mis à %(r2)f.
+"""),
+ 
+    52 : _(u"""
+ La valeur d'amortissement associée au mode propre %(i1)d est négative ou nulle : %(r1)f.
+"""),
+ 
     57 : _(u"""
  problème dans  le traitement de l'instant  %(r1)f
   récupération de  %(k1)s
