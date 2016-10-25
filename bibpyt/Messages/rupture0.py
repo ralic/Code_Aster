@@ -566,6 +566,12 @@ modèle %(k2)s.
   - Vérifier la commande MODI_MODELE_XFEM qui a créé le modèle %(k2)s.
 """),
 
+    98: _(u"""
+Erreur dans l'utilisation du mot clé facteur FOND_FISS.
+Dans le cas d'un fond fermé, il n'est pas possible d'utiliser le mot clé simple NOEUD ou GROUP_NO.
+Vous devez obligatoirement utiliser le mot clé simple MAILLE ou GROUP_MA.
+"""),
+
     99: _(u"""
 Point du fond numéro : %(i1)d.
 Augmenter NB_NOEUD_COUPE. S'il s'agit d'un noeud extrémité, vérifier les tangentes
