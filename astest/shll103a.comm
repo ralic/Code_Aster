@@ -1,20 +1,20 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mohamed.torkhani at edf.fr
+# person_in_charge: mohamed-amine.hassini at edf.fr
 #
 
 import numpy as NP
@@ -65,7 +65,7 @@ cara=AFFE_CARA_ELEM(MODELE=modele,
                     DISCRET=(_F(CARA='M_TR_D_N',
                                 GROUP_MA='DISQ1',
                                 REPERE='LOCAL',
-                                VALE=(3.50E+00,7.00E-03, 
+                                VALE=(3.50E+00,7.00E-03,
                                 3.50E-03,3.50E-03,0,0,0,0,0,0,),),
                              _F(CARA='K_TR_D_N',
                                 GROUP_MA='DISQ1',
@@ -76,7 +76,7 @@ cara=AFFE_CARA_ELEM(MODELE=modele,
                              _F(CARA='M_TR_D_N',
                                 GROUP_MA='DISQ2',
                                 REPERE='LOCAL',
-                                VALE=(3.00E+00,6.00E-03, 
+                                VALE=(3.00E+00,6.00E-03,
                                 3.00E-03,3.00E-03,0,0,0,0,0,0,),),
                              _F(GROUP_MA='PALIER1',
                                    CARA='K_TR_N',
@@ -119,7 +119,7 @@ blocage=AFFE_CHAR_MECA(MODELE=modele,
                                      DY=0,
                                      DRY=0,
                                      ),))
-                                    
+
 # --------------------------------
 #MATRICES ASSEMBLEES K, M
 #VECTEURS ASSEMBLES
@@ -156,8 +156,8 @@ ASSEMBLAGE(MODELE=modele,
                               OPTION='CHAR_MECA',
                               CHARGE=EF_HAR_Z),
                            ),);
-                              
-              
+
+
 
 GYELEM=CALC_MATR_ELEM(OPTION='MECA_GYRO',
                       MODELE=modele,
@@ -181,7 +181,7 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
 
 i=0
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -219,7 +219,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -374,7 +374,7 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -412,7 +412,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -580,7 +580,7 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
                              _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -618,7 +618,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -807,7 +807,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -965,7 +965,7 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
                              _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -1003,7 +1003,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -1152,7 +1152,7 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODX))
 DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -1190,7 +1190,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -1347,7 +1347,7 @@ GYOM2=COMB_MATR_ASSE(COMB_R=(_F(MATR_ASSE=GYAS, COEF_R=OM2,),
                              _F(MATR_ASSE=AMOR, COEF_R=1.,),),);
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -1385,7 +1385,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))
@@ -1544,7 +1544,7 @@ DETRUIRE(CONCEPT=_F(NOM=TABMODZ))
 
 
 for i, RPM in enumerate(VIT):
-  
+
   DHAM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
                     MATR_MASS=MASSE,
                     MATR_RIGI=RIGIDITE,
@@ -1582,7 +1582,7 @@ for i, RPM in enumerate(VIT):
                          ACTION=(_F(OPERATION='COMB', TABLE=tdzi),),
                          TITRE="Table DZ")
     DETRUIRE(CONCEPT=_F(NOM=(tdxi, tdzi),),)
-  
+
   DETRUIRE(CONCEPT=_F(NOM=DHAM))
   DETRUIRE(CONCEPT=_F(NOM=DX_DIS2))
   DETRUIRE(CONCEPT=_F(NOM=DZ_DIS2))

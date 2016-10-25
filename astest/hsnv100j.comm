@@ -15,7 +15,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # IDENTIQUE A HSNV100G MAIS AVEC TEST DE AFFE_VARC DANS SIMU_POIN_MAT
-## person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: jean-michel.proix at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 

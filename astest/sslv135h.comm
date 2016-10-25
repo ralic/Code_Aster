@@ -1,4 +1,4 @@
-# person_in_charge: van-xuan.tran at edf.fr
+# person_in_charge: sarah.plessis at edf.fr
 #
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -80,7 +80,7 @@
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),
                IGNORE_ALARM=('PREPOST4_27')),
-               
+
 CUBE = LIRE_MAILLAGE(FORMAT='MED', )
 
 CUBE=DEFI_GROUP(reuse = CUBE,
@@ -274,7 +274,7 @@ WHOL_F =   FORMULE(
 MANCO1=   FORMULE(
            NOM_PARA=('NBRUP'),
            VALE=''' 0.01*(NBRUP**(-0.1619)) '''
-           ) 
+           )
 
 NBPR = 12
 CRIT = [None]*NBPR
@@ -288,22 +288,22 @@ NCRI = ['''DTAUCR''', '''DGAMCR''', '''DSINCR''', '''DEPNCR''','''MTAUCR''', '''
 FVIE = [WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, WHOL_F, MANCO1, MANCO1, MANCO1, MANCO1, MANCO1 ]
 NPRS = ['SIGEQ1','ENDO1','NBRUP1','VNM1X', 'VNM1Y', 'VNM1Z' ]
 
-RESU = [100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707, 0, 
-        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0, 
+RESU = [100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707, 0,
+        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0,
         200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
         1.75E-3, 2.11E-5, 4.74E4,(-1, 1), 0.0174, 0,
 
-        100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707,  0, 
-        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0, 
+        100, 1.028E-6, 9.73E5, (0.707, -0.707), 0.707,  0,
+        2.425E-3, 1.583E-4, 6.3163E3, (0.707, -0.707), 0.707, 0,
         200, 1.348E-5, 7.418E4, (-1,1), 0.0174, 0,
         1.75E-3, 2.11E-5, 4.74E4, (-1,1), 0.0174, 0,
 
-        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0, 
+        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0,
         0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0,
-        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0, 
+        1.125E-3, 1.3782E-6, 7.256E5, (0.707, -0.707), 0.707, 0,
         0.75E-3, 1.126E-7, 8.88E6, (-1,1), 0.0174, 0
         ]
-        
+
 #CALCULE
 RESC = [100, 1.0277056600669E-06, 9.73041E+05, (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
          2.425E-3, 1.5833553719608E-04, 6316.0,  (0.70710678118655, -0.70710678118655), 0.70710678118655,0,
@@ -322,7 +322,7 @@ RESC = [100, 1.0277056600669E-06, 9.73041E+05, (0.70710678118655, -0.70710678118
         ]
 
 #######################
-# TEST CRITERE FORMULE 
+# TEST CRITERE FORMULE
 #########################################NOEUD
 for i in range(NBPR) :
     CRIT[i] = FORMULE(
@@ -348,7 +348,7 @@ for i in range(NBPR) :
 
 
 
-    for j in range(6) :     
+    for j in range(6) :
         crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'
         TEST_RESU(CHAM_NO=_F(NOEUD='N1',
                      REFERENCE='ANALYTIQUE',
@@ -358,7 +358,7 @@ for i in range(NBPR) :
                      VALE_CALC=RESC[j+ 6*i],
                      CRITERE=crit2,
                      PRECISION=0.004
-                     ), 
+                     ),
           )
 
 # TEST CRITERE FORMULE AVEC 'DOMA_ELGA',
@@ -380,8 +380,8 @@ for i in range(NBPR) :
                          PRECISION = 1.E-4
                        )
 
-    for j in range(6) :     
-        crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'                  
+    for j in range(6) :
+        crit2 = 'RELATIF' if RESU[j + 6*i] != 0. else 'ABSOLU'
         TEST_RESU(CHAM_ELEM=(_F(REFERENCE='ANALYTIQUE',
                         POINT=3,
                         NOM_CMP=NPRS[j],
@@ -391,6 +391,6 @@ for i in range(NBPR) :
                         VALE_REFE=RESU[j+ 6*i],
                         VALE_CALC=RESC[j+ 6*i],
                         CRITERE=crit2,
-                        ),),) 
+                        ),),)
 
 FIN( )

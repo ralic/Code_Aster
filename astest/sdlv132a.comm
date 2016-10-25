@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mohamed.torkhani at edf.fr
+# person_in_charge: mohamed-amine.hassini at edf.fr
 #
 
 DEBUT(CODE=_F(
@@ -253,7 +253,7 @@ MELM1_CB=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      CARA_ELEM=CARELEM1,
                      CHARGE=CH1_CB,);
 
-NUM1_CB=NUME_DDL(MATR_RIGI=MELR1_CB);                   
+NUM1_CB=NUME_DDL(MATR_RIGI=MELR1_CB);
 
 ASSR1_CB=ASSE_MATRICE(MATR_ELEM=MELR1_CB,
                       NUME_DDL=NUM1_CB,);
@@ -273,7 +273,7 @@ MELM1_MN=CALC_MATR_ELEM(OPTION='MASS_MECA',
                      CARA_ELEM=CARELEM1,
                      CHARGE=CH1_MN,);
 
-NUM1_MN=NUME_DDL(MATR_RIGI=MELR1_MN );                                          
+NUM1_MN=NUME_DDL(MATR_RIGI=MELR1_MN );
 
 ASSR1_MN=ASSE_MATRICE(MATR_ELEM=MELR1_MN,
                       NUME_DDL=NUM1_MN,);

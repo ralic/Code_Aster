@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: mathieu.courtois@edf.fr
+# person_in_charge: mathieu.courtois at edf.fr
 # Don't forget to change person in charge in `printKeywordsUsage` function
 
 import os
