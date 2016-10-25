@@ -101,9 +101,6 @@ subroutine te0118(option, nomte)
     ASSERT(ndime .eq. 2)
     axi = lteatt('AXIS','OUI')
 !
-! - pour le moment on interdit les elements quadratiques
-    ASSERT(iselli(elrefp))
-!
 ! - dimension de l'espace
     call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)(1:8)

@@ -106,7 +106,7 @@ class MECA_XH_FACE3(Element):
                      (OP.CALC_G.PHEAVTO, E6NEUTI), (OP.CALC_G.PHEA_NO, LC.N5NEUTI),
                      (OP.CALC_G.PLONCHA, LC.E10NEUTI), (OP.CALC_G.PLSN, LC.N1NEUT_R),
                      (OP.CALC_G.PLST, LC.N1NEUT_R), (OP.CALC_G.PPINTTO, LC.E12NEUTR),
-                     (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),
+                     (SP.PPRESSR, EPRESNO), (SP.PTHETAR, NTHETAR),(OP.CALC_G.PPMILTO, E33NEUTR),
                      ),
             para_out=((SP.PGTHETA, LC.EGTHETA), ),
         ),
