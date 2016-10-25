@@ -116,22 +116,22 @@ subroutine sdmpic(typesd, nomsd)
 !
     else if (types2 .eq. 'SD_APPA_LAC1') then
 !     ----------------------------------
-        !call jeveuo(k19//'.MPIA', 'E', vk16=valk)
-        !if (valk(1) .eq. 'MPI_COMPLET') goto 999
+        call jeveuo(k19//'.MPID', 'E', vk16=valk)
+        if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.GAPI')
         call asmpi_comm_jev('MPI_SUM', k19//'.PWT ')
         call asmpi_comm_jev('MPI_SUM', k19//'.PWC ')
         call asmpi_comm_jev('MPI_SUM', k19//'.NAPP')   
-        !valk(1)='MPI_COMPLET'       
+        valk(1)='MPI_COMPLET'       
 !
 !
 !
     else if (types2 .eq. 'SD_APPA_LAC2') then
 !     ----------------------------------
-        !call jeveuo(k19//'.MPIA', 'E', vk16=valk)
-        !if (valk(1) .eq. 'MPI_COMPLET') goto 999
+        call jeveuo(k19//'.MPIE', 'E', vk16=valk)
+        if (valk(1) .eq. 'MPI_COMPLET') goto 999
         call asmpi_comm_jev('MPI_SUM', k19//'.AUX ')  
-        !valk(1)='MPI_COMPLET'       
+        valk(1)='MPI_COMPLET'       
 !
 !
     else

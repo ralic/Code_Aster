@@ -9,6 +9,7 @@ implicit none
 #include "asterc/r8nnem.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jexatr.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -92,7 +93,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: list_pair(nb_elem_mast), nbpatch_t
+    integer :: list_pair(nb_elem_mast), nbpatch_t, iret
     integer :: elem_slav_nbnode, elem_slav_nume, elem_slav_dime, elem_slav_indx
     integer :: elem_mast_nbnode, elem_mast_nume, elem_mast_dime, elem_mast_indx
     character(len=8) :: elem_mast_code, elem_slav_code
@@ -137,6 +138,7 @@ implicit none
     integer, pointer :: list_pair_zmpi(:) => null()
     integer, pointer :: v_mesh_connex(:)  => null()
     integer, pointer :: v_connex_lcum(:)  => null()
+    character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -156,6 +158,18 @@ implicit none
     call wkvect(njv_weight_t, "V V R", nbpatch_t, vr=patch_weight_t)
     njv_nb_pair_zmpi=sdappa(1:19)//'.NAPP'
     call wkvect(njv_nb_pair_zmpi, "V V I", nb_proc, vi=nb_pair_zmpi)
+    call jeexin(sdappa(1:19)//'.MPID',iret)
+    if (iret .eq. 0) then
+        call wkvect(sdappa(1:19)//'.MPID','V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call wkvect(sdappa(1:19)//'.MPIE','V V K16',1,vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+    else 
+        call jeveuo(sdappa(1:19)//'.MPID', 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+        call jeveuo(sdappa(1:19)//'.MPIE', 'E',vk16=valk)
+        valk(1)='MPI_INCOMPLET'
+    endif   
     mast_indx_maxi = maxval(list_elem_mast)
     slav_indx_maxi = maxval(list_elem_slav)
     mast_indx_mini = minval(list_elem_mast)
