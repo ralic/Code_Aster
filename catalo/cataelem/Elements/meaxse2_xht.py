@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: van-xuan.tran at edf.fr
+# person_in_charge: sam.cuvilliez at edf.fr
 # CATALOGUES DES ELEMENTS 2D X-FEM HEAVISIDE-CRACKTIP DE BORD SANS CONTACT
 
 # ======================================================================
@@ -198,7 +198,7 @@ class MEAXSE2_XHT(Element):
                          para_out=(
                          (OP.INI_XFEM_ELNO.PLSN, LC.N1NEUT_R), (
                          OP.INI_XFEM_ELNO.PLST, LC.N1NEUT_R),
-                         (OP.INI_XFEM_ELNO.PSTANO, STANO_I), 
+                         (OP.INI_XFEM_ELNO.PSTANO, STANO_I),
                          (OP.INI_XFEM_ELNO.PBASLOR, LC.N6NEUT_R),),
                          ),
 

@@ -16,7 +16,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mathieu.courtois@edf.fr
+# person_in_charge: mathieu.courtois at edf.fr
 
 from cataelem.Tools.base_objects import Phenomenon, Modelisation, objects_from_context
 import cataelem.Commons.mesh_types as MT
@@ -2092,7 +2092,7 @@ phen.add('CONT_LAC_EL_2DC', Modelisation(dim=(1,2), code='L2C',
         (MT.SEG23    , EL.LCS2S3C),
         (MT.SEG32    , EL.LCS3S2C),
     )))
-    
+
 
 phen.add('CONT_LAC_EL_2DD', Modelisation(dim=(1,2), code='L2D',
     attrs=(
@@ -2102,7 +2102,7 @@ phen.add('CONT_LAC_EL_2DD', Modelisation(dim=(1,2), code='L2D',
         (MT.SEG22    , EL.LCS2S2D),
         (MT.SEG23    , EL.LCS2S3D),
     )))
-    
+
 
 phen.add('CONT_LAC_EL_2DE', Modelisation(dim=(1,2), code='L2E',
     attrs=(
@@ -2112,7 +2112,7 @@ phen.add('CONT_LAC_EL_2DE', Modelisation(dim=(1,2), code='L2E',
         (MT.SEG22    , EL.LCS2S2E),
         (MT.SEG23    , EL.LCS2S3E),
     )))
-      
+
 phen.add('CONT_LAC_EL_2DF', Modelisation(dim=(1,2), code='L2F',
     attrs=(
         (AT.CONTACT,'OUI'),
@@ -2124,7 +2124,7 @@ phen.add('CONT_LAC_EL_2DF', Modelisation(dim=(1,2), code='L2F',
         (MT.SEG23    , EL.LCS2S3CA),
         (MT.SEG32    , EL.LCS3S2CA),
     )))
-    
+
 
 phen.add('CONT_LAC_EL_2DG', Modelisation(dim=(1,2), code='L2G',
     attrs=(
@@ -2135,7 +2135,7 @@ phen.add('CONT_LAC_EL_2DG', Modelisation(dim=(1,2), code='L2G',
         (MT.SEG22    , EL.LCS2S2DA),
         (MT.SEG23    , EL.LCS2S3DA),
     )))
-    
+
 
 phen.add('CONT_LAC_EL_2DH', Modelisation(dim=(1,2), code='L2H',
     attrs=(
@@ -2145,7 +2145,7 @@ phen.add('CONT_LAC_EL_2DH', Modelisation(dim=(1,2), code='L2H',
     elements=(
         (MT.SEG22    , EL.LCS2S2EA),
         (MT.SEG23    , EL.LCS2S3EA),
-    ))) 
+    )))
 
 phen.add('CONT_LAC_EL_3DD', Modelisation(dim=(2,3), code='L3D',
     attrs=(

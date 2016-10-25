@@ -1,5 +1,5 @@
 # coding=utf-8
-# person_in_charge: van-xuan.tran at edf.fr
+# person_in_charge: sam.cuvilliez at edf.fr
 # CATALOGUES DES ELEMENTS AXIS X-FEM HEAVISIDE DE BORD SANS CONTACT
 
 # ======================================================================
