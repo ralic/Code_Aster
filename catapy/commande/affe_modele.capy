@@ -56,203 +56,203 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                 b_mecanique     =BLOC( condition = "PHENOMENE=='MECANIQUE'",
                                         fr=tr("modélisations mécaniques"),
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
-                                  "2D_DIS_T",        # RESP. : FLEJOU J.L.FLEJOU
-                                  "2D_DIS_TR",       # RESP. : FLEJOU J.L.FLEJOU
-                                  "2D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
-                                  "2D_FLUI_PESA",    # RESP. : GREFFET N.GREFFET
-                                  "2D_FLUI_STRU",    # RESP. : GREFFET N.GREFFET
-                                  "2D_FLUIDE",       # RESP. : GREFFET N.GREFFET
-                                  "3D",              # RESP. : DESROCHES X.DESROCHES
-                                  "3D_ABSO",         # RESP. : DEVESA G.DEVESA
-                                  "3D_FAISCEAU",     # RESP. : VOLDOIRE F.VOLDOIRE
-                                  "3D_FLUI_ABSO",    # RESP. : DEVESA G.DEVESA
-                                  "3D_FLUIDE",       # RESP. : GREFFET N.GREFFET
-                                  "3D_INCO_UPG",     # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_UPGB",    # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_UP",      # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_INCO_UPO",     # RESP. : SFAYOLLE S.FAYOLLE
-                                  "3D_SI",           # RESP. : DESROCHES X.DESROCHES
-                                  "3D_GRAD_EPSI",    # RESP. : MICHEL S.MICHEL
-                                  "3D_GRAD_VARI",    # RESP. : MICHEL S.MICHEL
-                                  "3D_GVNO",         # RESP. : BEAURAIN J.BEAURAIN
-                                  "3D_JOINT",        # RESP. : LAVERNE J.LAVERNE
-                                  "3D_JOINT_HYME",   # RESP. : LAVERNE J.LAVERNE
-                                  "3D_INTERFACE",    # RESP. : LAVERNE J.LAVERNE
-                                  "3D_INTERFACE_S",  # RESP. : LAVERNE J.LAVERNE
-                                  "AXIS",            # RESP. : LEFEBVRE J.P.LEFEBVRE
-                                  "AXIS_FLUI_STRU",  # RESP. : GREFFET N.GREFFET
-                                  "AXIS_FLUIDE",     # RESP. : GREFFET N.GREFFET
-                                  "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
-                                  "AXIS_INCO_UPG",   # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_UPGB",  # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_UP",    # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_INCO_UPO",   # RESP. : SFAYOLLE S.FAYOLLE
-                                  "AXIS_SI",         # RESP. : DESROCHES X.DESROCHES
-                                  "AXIS_GRAD_VARI",  # RESP. : MICHEL S.MICHEL
-                                  "AXIS_GVNO",       # RESP. : BEAURAIN J.BEAURAIN
-                                  "AXIS_JOINT",      # RESP. : LAVERNE J.LAVERNE
-                                  "AXIS_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
-                                  "AXIS_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
-                                  "AXIS_ELDI",       # RESP. : LAVERNE J.LAVERNE
-                                  "BARRE",           # RESP. : FLEJOU J.L.FLEJOU
-                                  "CABLE_GAINE",     # RESP. :
-                                  "2D_BARRE",        # RESP. : FLEJOU J.L.FLEJOU
-                                  "C_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
-                                  "C_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
-                                  "C_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
-                                  "CABLE",           # RESP. : FLEJOU J.L.FLEJOU
-                                  "CABLE_POULIE",    # RESP. : None
-                                  "COQUE_3D",        # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE_AXIS",      # RESP. : DESROCHES X.DESROCHES
-                                  "D_PLAN",          # RESP. : LEFEBVRE J.P.LEFEBVRE
-                                  "D_PLAN_GRAD_EPSI",# RESP. : MICHEL S.MICHEL
-                                  "D_PLAN_GRAD_VARI",# RESP. : MICHEL S.MICHEL
-                                  "D_PLAN_GVNO",     # RESP. : BEAURAIN J.BEAURAIN
-                                  "D_PLAN_GRAD_SIGM",# RESP. : GRANET S.GRANET
-                                  "PLAN_JOINT",      # RESP. : LAVERNE J.LAVERNE
-                                  "PLAN_JOINT_HYME", # RESP. : LAVERNE J.LAVERNE
-                                  "PLAN_INTERFACE",  # RESP. : LAVERNE J.LAVERNE
-                                  "PLAN_INTERFACE_S",# RESP. : LAVERNE J.LAVERNE
-                                  "PLAN_ELDI",       # RESP. : LAVERNE J.LAVERNE
-                                  "D_PLAN_ABSO",     # RESP. : DEVESA G.DEVESA
-                                  "D_PLAN_INCO_UPG", # RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_UPGB",# RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_UP",  # RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_INCO_UPO", # RESP. : SFAYOLLE S.FAYOLLE
-                                  "D_PLAN_SI",       # RESP. : DESROCHES X.DESROCHES
-                                  "DIS_T",           # RESP. : FLEJOU J.L.FLEJOU
-                                  "DIS_TR",          # RESP. : FLEJOU J.L.FLEJOU
-                                  "DKT",             # RESP. : DESROCHES X.DESROCHES
-                                  "DKTG",            # RESP. : MARKOVIC D.MARKOVIC
-                                  "DST",             # RESP. : DESROCHES X.DESROCHES
-                                  "FLUI_STRU",       # RESP. : GREFFET N.GREFFET
-                                  "POU_FLUI_STRU",   # RESP. : GREFFET N.GREFFET
-                                  "GRILLE_EXCENTRE", # RESP. : ROSPARS C.ROSPARS
-                                  "GRILLE_MEMBRANE", # RESP. : ROSPARS C.ROSPARS
-                                  "MEMBRANE",        # RESP. : ROSPARS C.ROSPARS
-                                  "POU_D_E",         # RESP. : FLEJOU J.L.FLEJOU
-                                  "POU_D_EM",        # RESP. : FLEJOU J.L.FLEJOU
-                                  "POU_D_T",         # RESP. : FLEJOU J.L.FLEJOU
-                                  "POU_D_T_GD",      # RESP. : FLEJOU J.L.FLEJOU
-                                  "POU_D_TG",        # RESP. : FLEJOU J.L.FLEJOU
-                                  "POU_D_TGM",       # RESP. : FLEJOU J.L.FLEJOU
-                                  "Q4G",             # RESP. : DESROCHES X.DESROCHES
-                                  "Q4GG",            # RESP. : DESROCHES X.DESROCHES
-                                  "TUYAU_3M",        # RESP. : PROIX J.M.PROIX
-                                  "TUYAU_6M",        # RESP. : PROIX J.M.PROIX
-                                  "SHB",             # RESP. : DESROCHES X.DESROCHES
-                                  "D_PLAN_HHM",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2M_SI",   # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HM",       # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HM_SI",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THM",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HHMD",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2MD",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HMD",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THHD",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THH2D",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THVD",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THH2MD",   # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THHMD",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THMD",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HHMS",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2MS",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HMS",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THHS",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THH2S",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THVS",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THH2MS",   # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THHMS",    # RESP. : GRANET S.GRANET
-                                  "D_PLAN_THMS",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HM_P",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HS",       # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HHD",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HHS",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2D",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2S",     # RESP. : GRANET S.GRANET
-                                  "D_PLAN_2DG",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_DIL",      # RESP. : GRANET S.GRANET
-                                  "3D_DIL",          # RESP. : GRANET S.GRANET
-                                  "AXIS_THM",        # RESP. : GRANET S.GRANET
-                                  "AXIS_HHM",        # RESP. : GRANET S.GRANET
-                                  "AXIS_HM",         # RESP. : GRANET S.GRANET
-                                  "AXIS_HH2MD",      # RESP. : GRANET S.GRANET
-                                  "AXIS_HHMD",       # RESP. : GRANET S.GRANET
-                                  "AXIS_HMD",        # RESP. : GRANET S.GRANET
-                                  "AXIS_THHD",       # RESP. : GRANET S.GRANET
-                                  "AXIS_THH2D",      # RESP. : GRANET S.GRANET
-                                  "AXIS_THVD",       # RESP. : GRANET S.GRANET
-                                  "AXIS_THHMD",      # RESP. : GRANET S.GRANET
-                                  "AXIS_THH2MD",     # RESP. : GRANET S.GRANET
-                                  "AXIS_THMD",       # RESP. : GRANET S.GRANET
-                                  "AXIS_HH2MS",      # RESP. : GRANET S.GRANET
-                                  "AXIS_HHMS",       # RESP. : GRANET S.GRANET
-                                  "AXIS_HMS",        # RESP. : GRANET S.GRANET
-                                  "AXIS_THHS",       # RESP. : GRANET S.GRANET
-                                  "AXIS_THH2S",      # RESP. : GRANET S.GRANET
-                                  "AXIS_THVS",       # RESP. : GRANET S.GRANET
-                                  "AXIS_THHMS",      # RESP. : GRANET S.GRANET
-                                  "AXIS_THH2MS",     # RESP. : GRANET S.GRANET
-                                  "AXIS_THMS",       # RESP. : GRANET S.GRANET
-                                  "AXIS_HHD",        # RESP. : GRANET S.GRANET
-                                  "AXIS_HHS",        # RESP. : GRANET S.GRANET
-                                  "AXIS_HH2D",       # RESP. : GRANET S.GRANET
-                                  "AXIS_HH2S",       # RESP. : GRANET S.GRANET
-                                  "3D_HHM" ,         # RESP. : GRANET S.GRANET
-                                  "3D_HH2M_SI" ,      # RESP. : GRANET S.GRANET
-                                  "3D_HM",           # RESP. : GRANET S.GRANET
-                                  "3D_HM_SI",        # RESP. : GRANET S.GRANET
-                                  "3D_THHM",         # RESP. : GRANET S.GRANET
-                                  "3D_THM",          # RESP. : GRANET S.GRANET
-                                  "3D_HHMD",         # RESP. : GRANET S.GRANET
-                                  "3D_HMD",          # RESP. : GRANET S.GRANET
-                                  "3D_THHD",         # RESP. : GRANET S.GRANET
-                                  "3D_THVD",         # RESP. : GRANET S.GRANET
-                                  "3D_THHMD",        # RESP. : GRANET S.GRANET
-                                  "3D_THMD",         # RESP. : GRANET S.GRANET
-                                  "3D_HHMS",         # RESP. : GRANET S.GRANET
-                                  "3D_HMS",          # RESP. : GRANET S.GRANET
-                                  "3D_THHS",         # RESP. : GRANET S.GRANET
-                                  "3D_THVS",         # RESP. : GRANET S.GRANET
-                                  "3D_THHMS",        # RESP. : GRANET S.GRANET
-                                  "3D_THMS",         # RESP. : GRANET S.GRANET
-                                  "3D_THH2MD",       # RESP. : GRANET S.GRANET
-                                  "3D_THH2MS",       # RESP. : GRANET S.GRANET
-                                  "3D_HH2MD",        # RESP. : GRANET S.GRANET
-                                  "3D_HH2MS",        # RESP. : GRANET S.GRANET
-                                  "3D_THH2S",        # RESP. : GRANET S.GRANET
-                                  "3D_THH2D",        # RESP. : GRANET S.GRANET
-                                  "3D_HS",           # RESP. : GRANET S.GRANET
-                                  "3D_HHD",          # RESP. : GRANET S.GRANET
-                                  "3D_HHS",          # RESP. : GRANET S.GRANET
-                                  "3D_HH2D",         # RESP. : GRANET S.GRANET
-                                  "3D_HH2S",         # RESP. : GRANET S.GRANET
-                                  "3D_HH2SUDA",      # RESP. : GRANET S.GRANET
-                                  "D_PLAN_HH2SUDA",  # RESP. : GRANET S.GRANET
-                                  "PLAN_JHMS",
-                                  "AXIS_JHMS",
+                                  "2D_DIS_T",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "2D_DIS_TR",       # person_in_charge: jean-luc.flejou at edf.fr
+                                  "2D_FLUI_ABSO",    # person_in_charge: georges-cc.devesa at edf.fr
+                                  "2D_FLUI_PESA",    # person_in_charge: nicolas.greffet at edf.fr
+                                  "2D_FLUI_STRU",    # person_in_charge: nicolas.greffet at edf.fr
+                                  "2D_FLUIDE",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_ABSO",         # person_in_charge: georges-cc.devesa at edf.fr
+                                  "3D_FAISCEAU",     # person_in_charge: francois.voldoire at edf.fr
+                                  "3D_FLUI_ABSO",    # person_in_charge: georges-cc.devesa at edf.fr
+                                  "3D_FLUIDE",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "3D_INCO_UPG",     # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UPGB",    # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UP",      # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UPO",     # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_SI",           # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_GRAD_EPSI",    # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "3D_GRAD_VARI",    # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "3D_GVNO",         # person_in_charge: jerome.beaurain at edf.fr
+                                  "3D_JOINT",        # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_JOINT_HYME",   # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_INTERFACE",    # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_INTERFACE_S",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS",            # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "AXIS_FLUI_STRU",  # person_in_charge: nicolas.greffet at edf.fr
+                                  "AXIS_FLUIDE",     # person_in_charge: nicolas.greffet at edf.fr
+                                  "AXIS_FOURIER",    # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "AXIS_INCO_UPG",   # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UPGB",  # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UP",    # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UPO",   # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_SI",         # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_GRAD_VARI",  # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "AXIS_GVNO",       # person_in_charge: jerome.beaurain at edf.fr
+                                  "AXIS_JOINT",      # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_INTERFACE_S",# person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_ELDI",       # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "BARRE",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "CABLE_GAINE",     # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "2D_BARRE",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "C_PLAN",          # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "C_PLAN_SI",       # person_in_charge: mickael.abbas at edf.fr
+                                  "C_PLAN_GRAD_EPSI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "CABLE",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "CABLE_POULIE",    # person_in_charge: jean-luc.flejou at edf.fr
+                                  "COQUE_3D",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "COQUE_AXIS",      # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "D_PLAN",          # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "D_PLAN_GRAD_EPSI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "D_PLAN_GRAD_VARI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "D_PLAN_GVNO",     # person_in_charge: jerome.beaurain at edf.fr
+                                  "D_PLAN_GRAD_SIGM",# person_in_charge: sylvie.granet at edf.fr
+                                  "PLAN_JOINT",      # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_JOINT_HYME", # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_INTERFACE_S",# person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_ELDI",       # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "D_PLAN_ABSO",     # person_in_charge: georges-cc.devesa at edf.fr
+                                  "D_PLAN_INCO_UPG", # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UPGB",# person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UP",  # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UPO", # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_SI",       # person_in_charge: mickael.abbas at edf.fr
+                                  "DIS_T",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "DIS_TR",          # person_in_charge: jean-luc.flejou at edf.fr
+                                  "DKT",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "DKTG",            # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "DST",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "FLUI_STRU",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "POU_FLUI_STRU",   # person_in_charge: nicolas.greffet at edf.fr
+                                  "GRILLE_EXCENTRE", # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "GRILLE_MEMBRANE", # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "MEMBRANE",        # person_in_charge: thomas.de-soza at edf.fr
+                                  "POU_D_E",         # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_EM",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_T",         # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_T_GD",      # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_TG",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_TGM",       # person_in_charge: jean-luc.flejou at edf.fr
+                                  "Q4G",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "Q4GG",            # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "TUYAU_3M",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "TUYAU_6M",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "SHB",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "D_PLAN_HHM",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2M_SI",  # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM",       # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM_SI",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THM",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHMD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2MD",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HMD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2D",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THVD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2MD",   # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHMD",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THMD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHMS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2MS",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HMS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2S",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THVS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2MS",   # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHMS",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THMS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM_P",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2D",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2S",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_2DG",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_DIL",      # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_DIL",          # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THM",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHM",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HM",         # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2MD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHMD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HMD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2D",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THVD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHMD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2MD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THMD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2MS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HMS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2S",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THVS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHMS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2MS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2D",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2S",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHM" ,         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2M_SI" ,     # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HM",           # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HM_SI",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHM",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THM",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHMD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HMD",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THVD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHMD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THMD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHMS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HMS",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THVS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHMS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THMS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2MD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2MS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2MD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2MS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2S",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2D",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HS",           # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHD",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHS",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2D",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2S",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2SUDA",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2SUDA",  # person_in_charge: sylvie.granet at edf.fr
+                                  "PLAN_JHMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_JHMS",       # person_in_charge: sylvie.granet at edf.fr
                                                                       )  )  ),
 
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
                                         fr=tr("modélisations thermiques"),
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
-                                  "3D",              # RESP. : DURAND C.DURAND
-                                  "3D_DIAG",         # RESP. : DURAND C.DURAND
-                                  "AXIS",            # RESP. : DURAND C.DURAND
-                                  "AXIS_DIAG",       # RESP. : DURAND C.DURAND
-                                  "AXIS_FOURIER",    # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE",           # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE_AXIS",      # RESP. : DESROCHES X.DESROCHES
-                                  "COQUE_PLAN",      # RESP. : DESROCHES X.DESROCHES
-                                  "PLAN",            # RESP. : DURAND C.DURAND
-                                  "PLAN_DIAG",       # RESP. : DURAND C.DURAND
+                                  "3D",              # person_in_charge: jessica.haelewyn at edf.fr
+                                  "3D_DIAG",         # person_in_charge: jessica.haelewyn at edf.fr
+                                  "AXIS",            # person_in_charge: jessica.haelewyn at edf.fr
+                                  "AXIS_DIAG",       # person_in_charge: jessica.haelewyn at edf.fr
+                                  "AXIS_FOURIER",    # person_in_charge: jessica.haelewyn at edf.fr
+                                  "COQUE",           # person_in_charge: jessica.haelewyn at edf.fr
+                                  "COQUE_AXIS",      # person_in_charge: jessica.haelewyn at edf.fr
+                                  "COQUE_PLAN",      # person_in_charge: jessica.haelewyn at edf.fr
+                                  "PLAN",            # person_in_charge: jessica.haelewyn at edf.fr
+                                  "PLAN_DIAG",       # person_in_charge: jessica.haelewyn at edf.fr
                                                                       ),),),
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",
                                         fr=tr("modélisations acoustiques"),
                      MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
-                                  "3D",              # RESP. : None
-                                  "PLAN"             # RESP. : None
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN"             # person_in_charge: mickael.abbas at edf.fr
                                                                        ), ),),
 
          ),
