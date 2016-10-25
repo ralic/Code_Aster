@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mohamed.torkhani at edf.fr
+# person_in_charge: mohamed-amine.hassini at edf.fr
 #
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),)
@@ -182,19 +182,19 @@ PHIdeb = 0
 tdeb = 0.0
 tfin = 12.0
 pdtf = 5e-05
-alpha = 3.273e-01
+alpha = -3.273e-01
 
-A = ((exp(alpha*tfin)*OMfin)-(exp(alpha*tdeb)*OMdeb))/(exp(alpha*tfin)-exp(alpha*tdeb))
-B = (OMfin-OMdeb)/(exp(-alpha*tfin)-exp(-alpha*tdeb))
-C = PHIdeb - A*tdeb - ((B/alpha)*exp(-alpha*tdeb))
+A = ((exp(alpha*tfin)*OMdeb)-(exp(alpha*tdeb)*OMfin))/(exp(alpha*tfin)-exp(alpha*tdeb))
+B = (OMfin-OMdeb)/(exp(alpha*tfin)-exp(alpha*tdeb))
+C = PHIdeb - A*tdeb - ((B/alpha)*exp(alpha*tdeb))
 
-PHI=FORMULE(VALE='A*INST - ((B/alpha)*exp(-alpha*INST)) + C',
+PHI=FORMULE(VALE='A*INST + ((B/alpha)*exp(alpha*INST)) + C',
             NOM_PARA='INST',);
 
-OM=FORMULE(VALE='A+B*exp(-alpha*INST)',
+OM=FORMULE(VALE='A+B*exp(alpha*INST)',
            NOM_PARA='INST',);
 
-ACC=FORMULE(VALE='-alpha*B*exp(-alpha*INST)',
+ACC=FORMULE(VALE='alpha*B*exp(alpha*INST)',
             NOM_PARA='INST',);
 
 
@@ -284,18 +284,13 @@ DY2_GED2=CALC_FONCTION(PUISSANCE=_F(FONCTION=DY_GED2,
 MOD_GED2=CALC_FONCTION(COMB=(_F(FONCTION=DX2_GED2,COEF=1.0),
                              _F(FONCTION=DY2_GED2,COEF=1.0),), )
 
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.026381689437E-09,
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=2.024424907701E-09,
                         VALE_REFE=2.0160099999999999E-09,
-                        VALE_PARA=3.1967500000000002,
+                        VALE_PARA=3.1956000000000002,
                         REFERENCE='SOURCE_EXTERNE',
                         PRECISION=1.E-2,
                         FONCTION=MOD_GED2,),
-              )
-
-TEST_FONCTION(VALEUR=_F(VALE_CALC=2.026381689437E-09,
-                        VALE_PARA=3.1967500000000002,
-                        FONCTION=MOD_GED2,
-                        ),
               )
 
 FIN();
