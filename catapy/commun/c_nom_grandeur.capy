@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mathieu.courtois@edf.fr
+# person_in_charge: mathieu.courtois at edf.fr
 def C_NOM_GRANDEUR():
     """Retourne la liste des noms des grandeurs pour le catalogue"""
     return (

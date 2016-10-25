@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mickael.abbas@edf.fr
+# person_in_charge: mickael.abbas at edf.fr
 #
 
 DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
@@ -28,4 +28,3 @@ DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
      INFO          = SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
      TITRE         = SIMP(statut='f',typ='TXM',max='**'),
 ) ;
-

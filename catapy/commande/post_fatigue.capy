@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: van-xuan.tran at edf.fr
+# person_in_charge: sarah.plessis at edf.fr
 POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
                   fr=tr("Calculer en un point, le dommage de fatigue subi par une structure soumise à une histoire de chargement"),
@@ -50,7 +50,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                          PRESENT_PRESENT('EPSP_XX','EPSP_YY','EPSP_ZZ','EPSP_XY','EPSP_XZ','EPSP_YZ'),
                                          AU_MOINS_UN('SIGM_XX','SIGM_YY','SIGM_ZZ','SIGM_XY','SIGM_XZ','SIGM_YZ',
                                                      'EPS_XX','EPS_YY','EPS_ZZ','EPS_XY','EPS_XZ','EPS_YZ',
-                                                     'EPSP_XX','EPSP_YY','EPSP_ZZ','EPSP_XY','EPSP_XZ','EPSP_YZ'), 
+                                                     'EPSP_XX','EPSP_YY','EPSP_ZZ','EPSP_XY','EPSP_XZ','EPSP_YZ'),
                                                    ),
                                  SIGM_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  SIGM_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -58,14 +58,14 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                  SIGM_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  SIGM_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  SIGM_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 
+
                                  EPS_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_XY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPS_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
-                                 
+
                                  EPSP_XX  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPSP_YY  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPSP_ZZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
@@ -73,36 +73,36 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
                                  EPSP_XZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  EPSP_YZ  = SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                ),
-                               
-             TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),                            
-             DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ), 
-             
+
+             TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),
+             DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ),
+
              b_fati_pfvie  = BLOC(condition = "(DOMMAGE == 'FORM_VIE')",
                                     FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                                  ),
-                                 
+
              MATER          = SIMP(statut='f',typ=mater_sdaster),
              COEF_CORR      = SIMP(statut='f',typ='R'),
              COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
 
-         
+
              b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE_MODI_AC","DANG_VAN_MODI_AC","CROSSLAND",
                                                                "PAPADOPOULOS","FORMULE_CRITERE") ),
- 
-               METHODE       =SIMP(statut='f',typ='TXM',into=("CERCLE_EXACT",) ),                
+
+               METHODE       =SIMP(statut='f',typ='TXM',into=("CERCLE_EXACT",) ),
                b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
-                   FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),  
+                   FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
                ),
              ),
-           
+
             b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',
                                    into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","FORMULE_CRITERE") ),
                PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
                DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),
-                   
+
                b_fati_npf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
                    FORMULE_GRDEQ   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                ),

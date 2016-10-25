@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: nicolas.brie at edf.fr
+# person_in_charge: olivier.boiteau at edf.fr
 
 def calc_modes_prod( self, TYPE_RESU, **args) :
    if (TYPE_RESU not in ("DYNAMIQUE","MODE_FLAMB","GENERAL")):
@@ -104,7 +104,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                                     ),
                                      ),
 
-         
+
 
 #########################################################################################
 #  catalogue du cas DYNAMIQUE
@@ -115,7 +115,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                                                   matr_asse_gene_r,matr_asse_gene_c,matr_asse_pres_r ) ),
                  MATR_MASS  =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r,matr_asse_temp_r ) ),
                  MATR_AMOR  =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
-      
+
                  CALC_FREQ  =FACT(statut='d', min=0,
              b_plus_petite =BLOC(condition = "OPTION == 'PLUS_PETITE'",
                                  fr=tr("Recherche des plus petites fréquences propres"),
@@ -185,7 +185,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                  MATR_RIGI      =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
                  MATR_RIGI_GEOM =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
                           ),
-         
+
          b_general  =BLOC(condition = "TYPE_RESU == 'GENERAL'",
                  MATR_A         =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
                  MATR_B         =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ) ),
@@ -209,7 +209,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                                           validators=AndVal((OrdList('croissant'), NoRepeat())),
                                           fr=tr("Valeur des deux charges critiques délimitant la bande de recherche")),
                      TABLE_CHAR_CRIT=SIMP(statut= 'f',typ=table_sdaster),
-      
+
                                ),
          b_param_inv_flamb_gen =BLOC(condition = "OPTION in ('SEPARE','AJUSTE','PROCHE')",
                      CHAR_CRIT      =SIMP(statut='o',typ='R',max='**',
@@ -240,10 +240,10 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                      SEUIL       =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=1.e-6,
                                        fr=tr("Valeur limite admise pour l'erreur a posteriori des modes")),
                      PREC_SHIFT  =SIMP(statut='f',typ='R',defaut= 5.E-3,val_min=0.E+0 ),
-                 b_sturm_simult=BLOC( condition = "(OPTION in ('PLUS_PETITE','PLUS_GRANDE','CENTRE','TOUT')) or (TYPE_RESU!='DYNAMIQUE' and OPTION == 'BANDE')", 
+                 b_sturm_simult=BLOC( condition = "(OPTION in ('PLUS_PETITE','PLUS_GRANDE','CENTRE','TOUT')) or (TYPE_RESU!='DYNAMIQUE' and OPTION == 'BANDE')",
                      STURM       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
                                       ),
-                 b_sturm_bande =BLOC( condition = "TYPE_RESU=='DYNAMIQUE' and OPTION == 'BANDE'", 
+                 b_sturm_bande =BLOC( condition = "TYPE_RESU=='DYNAMIQUE' and OPTION == 'BANDE'",
                      STURM       =SIMP(statut='f',typ='TXM',defaut="GLOBAL",into=("GLOBAL","LOCAL","OUI","NON") ),
                                      ),
                                        ),

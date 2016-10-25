@@ -1,23 +1,23 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
- 
-# person_in_charge: Georges-cc.devesa at edf.fr
+
+# person_in_charge: georges-cc.devesa at edf.fr
 def rest_cond_tran_prod(RESULTAT,TYPE_RESU,**args ):
- 
+
   if AsType(RESULTAT) == dyna_trans  : return dyna_trans
   if (AsType(RESULTAT) == evol_noli and TYPE_RESU == "DYNA_TRANS") : return dyna_trans
   if (AsType(RESULTAT) == evol_noli and TYPE_RESU == "EVOL_NOLI") : return evol_noli
@@ -25,7 +25,7 @@ def rest_cond_tran_prod(RESULTAT,TYPE_RESU,**args ):
   raise AsException("type de concept resultat non prevu")
 
 REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
-                    fr=tr("Restituer dans la base physique des résultats issus d'un calcul" 
+                    fr=tr("Restituer dans la base physique des résultats issus d'un calcul"
                          "non-lineaire avec projection modale ou d'un calcul transitoire linear"
                          "avec condensation dynamique"),
                     reentrant='f',
@@ -40,7 +40,7 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
 #         NUME_DDL        =SIMP(statut='f',typ=nume_ddl_sdaster ),
          MACR_ELEM_DYNA  =SIMP(statut='f',typ=macr_elem_dyna),
          TOUT_INST       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),  
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster ),
          TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
          NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
@@ -58,5 +58,5 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
              CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
              CARA_ELEM       =SIMP(statut='f',typ=cara_elem),),
              RESU_FINAL      =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
 )  ;

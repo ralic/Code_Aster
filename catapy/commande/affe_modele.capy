@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: mathieu.courtois@edf.fr
+# person_in_charge: mathieu.courtois at edf.fr
 AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
             UIinfo={"groupes":("Modélisation",)},
                  fr=tr("Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage"),reentrant='n',

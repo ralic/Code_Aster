@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: Georges-cc.devesa at edf.fr
+# person_in_charge: georges-cc.devesa at edf.fr
 CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8_sdaster,
                      fr=tr("Création d'une liste d'amortissements modaux calculés selon la règle du RCC-G"),
                      reentrant='n',
