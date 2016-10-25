@@ -7,6 +7,7 @@ implicit none
 #include "asterfort/jecrec.h"
 #include "asterfort/jenuno.h"  
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jecroc.h"
@@ -59,44 +60,34 @@ implicit none
 !
     integer :: i_elem, i_neigh, aux(1) ,nb_find, lmail(1), jtypma
     integer :: elem_indx, elem_nume
-    integer :: list_neigh(4), nb_neigh, nt_neigh
+    integer :: list_neigh(4), nb_neigh
     character(len=8) :: elem_code, elem_type
     integer, pointer :: v_elem_neigh(:) => null()
+    integer, pointer :: v_connex(:) => null()
+    integer, pointer :: v_connex_lcum(:) => null()
+    integer, pointer :: v_conx_inv(:) => null()
+    integer, pointer :: v_inv_lcum(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', jtypma)
 !
-! - Total number of neighbours
+! - Acces to mesh
 !
-    nt_neigh = 0
-    do i_elem = 1, nb_elem
-        elem_nume = list_elem(i_elem)
-        call jenuno(jexnum('&CATA.TM.NOMTM', zi(jtypma+elem_nume-1)), elem_type)
-        select case (elem_type)
-            case('SEG2')
-                nt_neigh = nt_neigh + 2
-            case('SEG3')
-                nt_neigh = nt_neigh + 2
-            case('TRIA3')
-                nt_neigh = nt_neigh + 3
-            case('TRIA6')
-                nt_neigh = nt_neigh + 3
-            case('QUAD4')
-                nt_neigh = nt_neigh + 4
-            case('QUAD8')
-                nt_neigh = nt_neigh + 4
-            case('QUAD9')
-                nt_neigh = nt_neigh + 4
-            case default
-                ASSERT(.false.)
-        end select
-    end do
+    call jeveuo(mesh//'.CONNEX', 'L', vi = v_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
+
+!
+! - Acces to conx_inve
+!
+    call jeveuo(conx_inve, 'L', vi = v_conx_inv)
+    call jeveuo(jexatr(conx_inve, 'LONCUM'), 'L', vi = v_inv_lcum)
+
 !
 ! - Create object (collection)
 !
     call jecrec(elem_neigh,'V V I', 'NU', 'CONTIG', 'VARIABLE', elem_indx_maxi+1-elem_indx_mini)
-    call jeecra(elem_neigh, 'LONT', nt_neigh+(elem_indx_maxi+1-elem_indx_mini-nb_elem)) 
+    call jeecra(elem_neigh, 'LONT', nb_elem*4+(elem_indx_maxi+1-elem_indx_mini-nb_elem)*4) 
     do i_elem = 1, elem_indx_maxi+1-elem_indx_mini
         elem_nume = i_elem-1+elem_indx_mini
         nb_find   = 0
@@ -123,10 +114,10 @@ implicit none
                     ASSERT(.false.)
             end select
             call jecroc(jexnum(elem_neigh,i_elem))
-            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=nb_neigh)
+            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=4)
         elseif (nb_find .eq. 0) then
             call jecroc(jexnum(elem_neigh,i_elem))
-            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=1)
+            call jeecra(jexnum(elem_neigh,i_elem), 'LONMAX', ival=4)
         else
             ASSERT(.false.)      
         end if
@@ -164,9 +155,9 @@ implicit none
                 ASSERT(.false.)
         end select
         call jeveuo(jexnum(elem_neigh, elem_indx), 'E', vi = v_elem_neigh)
-        call gtvois(mesh     , list_elem, nb_elem   , elem_nume, elem_code,&
-                    conx_inve, nb_neigh , list_neigh)
-        do i_neigh=1, nb_neigh
+        call gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
+                    v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
+        do i_neigh=1, 4
             v_elem_neigh(i_neigh) = list_neigh(i_neigh) 
         end do
     end do

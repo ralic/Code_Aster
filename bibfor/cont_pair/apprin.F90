@@ -7,6 +7,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/jelira.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
@@ -87,6 +88,8 @@ implicit none
     real(kind=8) :: poin_inte(32), inte_weight
     integer, pointer :: v_mesh_typmail(:) => null()
     aster_logical :: debug
+    integer, pointer :: v_mesh_connex(:)  => null()
+    integer, pointer :: v_connex_lcum(:)  => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,6 +104,8 @@ implicit none
 ! - Access to mesh
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh//'.CONNEX', 'L', vi = v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
 !
 ! - Access to updated geometry
 !
@@ -133,9 +138,10 @@ implicit none
 ! --------- Get informations about slave element
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
-            call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
+            call apcoor(jv_geom       , elem_slav_type  ,&
                         elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
-                        elem_slav_code, elem_slav_dime)
+                        elem_slav_code, elem_slav_dime, v_mesh_connex   ,&
+                        v_connex_lcum)
 !
 ! --------- Cut slave element in linearized sub-elements (SEG2 or TRIA3)
 !
@@ -168,9 +174,10 @@ implicit none
 ! ----------------- Get informations about master element
 !
                     call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
-                    call apcoor(mesh          , jv_geom       , elem_mast_type  ,&
+                    call apcoor(jv_geom       , elem_mast_type  ,&
                                 elem_mast_nume, elem_mast_coor, elem_mast_nbnode,&
-                                elem_mast_code, elem_mast_dime)
+                                elem_mast_code, elem_mast_dime, v_mesh_connex   ,&
+                                v_connex_lcum)
 !
 ! ----------------- Cut master element in linearized sub-elements (SEG2 or TRIA3)
 !

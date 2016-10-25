@@ -50,55 +50,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_pair
-    integer, pointer :: list_tmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-
-!
-! - First contact element: allocate list of contact elements
-!
-    if (nb_pair_zone .eq. 0) then
-        AS_DEALLOCATE(vi = list_pair_zone)
-        AS_ALLOCATE(vi = list_pair_zone, size = 3*nb_pair)
-        do i_pair = 1, nb_pair
-            list_pair_zone(3*(i_pair-1)+1) = elem_slav_nume    
-            list_pair_zone(3*(i_pair-1)+2) = list_pair(i_pair)
-            list_pair_zone(3*(i_pair-1)+3) = i_zone
-        end do
-    endif
-!
-! - Not first contact element
-!
-    if (nb_pair_zone .ne. 0) then
-!
-! ----- Get old contact elements and copy them in temporary one
-!
-        AS_ALLOCATE(vi = list_tmp, size = 3*nb_pair_zone)
-        do i_pair = 1, 3*nb_pair_zone
-            list_tmp(i_pair) = list_pair_zone(i_pair)    
-        end do
-!
-! ----- Re-allocate list of contact elements
-!    
-        AS_DEALLOCATE(vi = list_pair_zone)
-        AS_ALLOCATE(vi = list_pair_zone, size = 3*nb_pair_zone+3*nb_pair)
-!
-! ----- Copy old pairs
-! 
-        do i_pair = 1, 3*nb_pair_zone
-            list_pair_zone(i_pair) = list_tmp(i_pair)    
-        end do
-!
 ! ----- Add new pairs
 ! 
-        do i_pair = 1, nb_pair
-            list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+1) = elem_slav_nume    
-            list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+2) = list_pair(i_pair)
-            list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+3) = i_zone
-        end do
-        AS_DEALLOCATE(vi=list_tmp)
-    endif
+    do i_pair = 1, nb_pair
+        list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+1) = elem_slav_nume    
+        list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+2) = list_pair(i_pair)
+        list_pair_zone(3*nb_pair_zone+3*(i_pair-1)+3) = i_zone
+    end do
 !
 ! - New number of contact pairs
 !

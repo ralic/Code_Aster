@@ -1,5 +1,5 @@
-subroutine apcoor(mesh       , jv_geom  , elem_type, elem_nume, elem_coor,&
-                  elem_nbnode, elem_code, elem_dime)
+subroutine apcoor(jv_geom  , elem_type, elem_nume, elem_coor,elem_nbnode,&
+                  elem_code, elem_dime, v_mesh_connex, v_connex_lcum)
 !
 implicit none
 !
@@ -26,7 +26,6 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in) :: mesh
     integer, intent(in) :: jv_geom
     character(len=8), intent(in) :: elem_type
     integer, intent(in) :: elem_nume
@@ -34,6 +33,8 @@ implicit none
     integer, intent(out) :: elem_nbnode
     character(len=8), intent(out) :: elem_code
     integer, intent(out) :: elem_dime
+    integer, pointer, intent(in) :: v_mesh_connex(:)
+    integer, pointer, intent(in) :: v_connex_lcum(:)  
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,14 +57,12 @@ implicit none
 !
     integer :: node_nume
     integer :: i_node, i_dime
-    integer, pointer :: v_mesh_connex(:) => null()
     aster_logical:: debug
 !
 ! --------------------------------------------------------------------------------------------------
 !
     debug=.false.
     elem_coor(1:27) = 0.d0
-    call jeveuo(jexnum(mesh//'.CONNEX',elem_nume),'L', vi = v_mesh_connex)
 !
     select case (elem_type)
         case('SEG2')
@@ -99,7 +98,7 @@ implicit none
     end select
 !
     do i_node = 1, elem_nbnode
-        node_nume = v_mesh_connex(i_node)
+        node_nume = v_mesh_connex(v_connex_lcum(elem_nume)-1+i_node)
         if (debug) then
             write(*,*)"noeud", node_nume
         end if

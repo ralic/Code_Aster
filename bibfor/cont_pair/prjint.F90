@@ -76,7 +76,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: debug
+    aster_logical :: debug, l_reli
     real(kind=8) :: slav_para_coor(elem_dime-1,4)
     real(kind=8) :: mast_para_coor(elem_dime-1,4)
     real(kind=8) :: tevapr, dist_sign, sig
@@ -99,7 +99,8 @@ implicit none
     endif
     inte_weight     = 0.d0
     poin_inte(1:elem_dime-1,1:16) = 0.d0
-    debug = .false.
+    debug   = .false.
+    l_reli  = .false.
     if (debug) then
         write(*,*) ". Projection/intersection"
     endif
@@ -159,16 +160,28 @@ implicit none
 ! ----- Project current master node on slave linearized element
 !
         call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
-                    elin_slav_coor, node_coor       , 200      ,&
+                    elin_slav_coor, node_coor       , 75      ,&
                     pair_tole     , ksi1            , ksi2     ,&
-                    tau1          , tau2            , niverr)
+                    tau1          , tau2            , niverr, l_reli)
         if (niverr .eq. 0) then
             mast_para_coor(1, i_node) = ksi1 
             if (elem_dime .eq. 3) then
                 mast_para_coor(2, i_node) = ksi2
             end if
         else
-           ASSERT(.false.)
+           l_reli=.true.
+           call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
+                    elin_slav_coor, node_coor       , 75      ,&
+                    pair_tole     , ksi1            , ksi2     ,&
+                    tau1          , tau2            , niverr, l_reli)
+            if (niverr .eq. 0) then
+                mast_para_coor(1, i_node) = ksi1 
+                if (elem_dime .eq. 3) then
+                    mast_para_coor(2, i_node) = ksi2
+                end if
+            else
+                ASSERT(.false.)
+            endif
         endif
 !
 ! ----- Compute distance from point to its orthogonal projection

@@ -1,6 +1,7 @@
-subroutine testvois(mesh          , jv_geom       , elem_slav_type,&
+subroutine testvois(jv_geom       , elem_slav_type,&
                     elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                    pair_tole     , inte_weight)
+                    pair_tole     , inte_weight ,    v_mesh_connex,&
+                    v_connex_lcum)
 !
 implicit none
 !
@@ -27,7 +28,6 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in) :: mesh
     integer, intent(in) :: jv_geom
     character(len=8), intent(in) :: elem_slav_type
     real(kind=8),intent(in) :: elem_mast_coor(27)
@@ -35,6 +35,8 @@ implicit none
     integer,intent(in) :: elem_slav_nume
     real(kind=8),intent(in) :: pair_tole
     real(kind=8),intent(out) :: inte_weight
+    integer, pointer, intent(in) :: v_mesh_connex(:)
+    integer, pointer, intent(in) :: v_connex_lcum(:) 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,9 +77,9 @@ implicit none
 !
 ! ----- Get informations about slave element
 !
-        call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
+        call apcoor(jv_geom       , elem_slav_type  ,&
                     elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
-                    elem_slav_code, elem_dime)
+                    elem_slav_code, elem_dime, v_mesh_connex, v_connex_lcum)
 !
 ! ----- Cut slave element in linearized sub-elements
 !

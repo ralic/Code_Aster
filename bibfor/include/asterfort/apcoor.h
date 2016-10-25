@@ -16,9 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine apcoor(mesh       , jv_geom  , elem_type, elem_nume, elem_coor,&
-                      elem_nbnode, elem_code, elem_dime)
-        character(len=8), intent(in) :: mesh
+    subroutine apcoor(jv_geom  , elem_type, elem_nume, elem_coor,&
+                      elem_nbnode, elem_code, elem_dime, v_mesh_connex, v_connex_lcum)
         integer, intent(in) :: jv_geom
         character(len=8), intent(in) :: elem_type
         integer, intent(in) :: elem_nume
@@ -26,5 +25,7 @@ interface
         integer, intent(out) :: elem_nbnode
         character(len=8), intent(out) :: elem_code
         integer, intent(out) :: elem_dime
+        integer, pointer, intent(in) :: v_mesh_connex(:)
+        integer, pointer, intent(in) :: v_connex_lcum(:)  
     end subroutine apcoor
 end interface

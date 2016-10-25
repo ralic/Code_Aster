@@ -15,10 +15,13 @@ implicit none
 #include "asterfort/apcoor.h"
 #include "asterfort/apdcma.h"
 #include "asterfort/prjint.h"
+#include "asterfort/gt_linoma.h"
 #include "asterfort/gtctma.h"
 #include "asterfort/gtclno.h"
 #include "asterfort/gtlmex.h"
 #include "asterfort/codent.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/as_allocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -96,6 +99,8 @@ implicit none
     integer :: nb_poin_inte, nb_node_mast, nume_node_cl, nb_el_ma_ax
     real(kind=8) :: poin_inte(32), inte_weight, center(3)
     integer, pointer :: v_mesh_typmail(:) => null()
+    integer, pointer :: v_mesh_connex(:) => null()
+    integer, pointer :: v_connex_lcum(:) => null()
     integer, pointer :: list_node_mast(:) => null()
     integer, pointer :: v_cninv(:) => null()
     integer, pointer :: v_cninv_lcum(:) => null()
@@ -128,6 +133,8 @@ implicit none
 ! - Access to mesh
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
+    call jeveuo(mesh//'.CONNEX', 'L', vi = v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
 !
 ! - Access to updated geometry
 !
@@ -160,9 +167,10 @@ implicit none
 ! --------- Get informations about slave element
 !
             call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_slav_type)
-            call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
+            call apcoor(jv_geom       , elem_slav_type  ,&
                         elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
-                        elem_slav_code, elem_slav_dime)
+                        elem_slav_code, elem_slav_dime, v_mesh_connex   ,&
+                        v_connex_lcum)
 !
 ! --------- Cut slave element in linearized sub-elements (SEG2 or TRIA3)
 !
@@ -204,9 +212,10 @@ implicit none
 ! ----------------- Get informations about master element! - Access to mesh
 !
                     call jenuno(jexnum('&CATA.TM.NOMTM', elem_type_nume), elem_mast_type)
-                    call apcoor(mesh          , jv_geom       , elem_mast_type  ,&
+                    call apcoor(jv_geom       , elem_mast_type  ,&
                                 elem_mast_nume, elem_mast_coor, elem_mast_nbnode,&
-                                elem_mast_code, elem_mast_dime)
+                                elem_mast_code, elem_mast_dime, v_mesh_connex   ,&
+                                v_connex_lcum)
 !
 ! ----------------- Cut master element in linearized sub-elements (SEG2 or TRIA3)
 !

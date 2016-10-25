@@ -1,5 +1,6 @@
-subroutine gtvois(mesh     , list_elem, nb_elem   , elem_nume, elem_code,&
-                  conx_inve, nb_neigh , list_neigh)
+subroutine gtvois(v_connex  , v_connex_lcum, list_elem, nb_elem   , elem_nume, elem_code,&
+                  v_conx_inv, v_inv_lcum   , nb_neigh , list_neigh)
+                 
 !
 implicit none
 !
@@ -27,8 +28,10 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8), intent(in) :: mesh
-    character(len=24), intent(in) :: conx_inve
+    integer, pointer, intent(in) :: v_connex(:)
+    integer, pointer, intent(in) :: v_connex_lcum(:)
+    integer, pointer, intent(in) :: v_conx_inv(:)
+    integer, pointer, intent(in) :: v_inv_lcum(:)
     integer, intent(in) :: nb_elem
     integer, intent(in) :: list_elem(nb_elem)
     integer, intent(in) :: elem_nume
@@ -56,12 +59,11 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nb_node, list_node(4), node_1, node_2
-    integer :: jv_elem_1, jv_elem_2
     integer :: node_nbelem_1, node_nbelem_2
     integer :: nb_find, elem_find(2)
     integer :: list_node_next(4)
     integer :: i_node, i_neigh, nb_dime
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer :: a(nb_elem) , b(nb_elem), i
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +71,6 @@ implicit none
 !
 ! - Get list of nodes of current element
 !
-    call jeveuo(jexnum(mesh//'.CONNEX',elem_nume), 'L', vi = v_mesh_connex)
     if (elem_code .eq. 'SE2' .or. elem_code .eq. 'SE3') then
         nb_node = 2
         nb_dime = 1 
@@ -83,7 +84,7 @@ implicit none
         ASSERT(.false.)
     end if   
     do i_node = 1, nb_node
-        list_node(i_node) = v_mesh_connex(i_node)
+        list_node(i_node) = v_connex(v_connex_lcum(elem_nume)-1+i_node)
     end do
 !
 ! - Set index of next nodes
@@ -100,11 +101,15 @@ implicit none
             nb_find = 0
             node_1  = list_node(i_neigh)
             node_2  = list_node(list_node_next(i_neigh))
-            call jelira(jexnum(conx_inve,node_1),'LONMAX',node_nbelem_1)
-            call jelira(jexnum(conx_inve,node_2),'LONMAX',node_nbelem_2)
-            call jeveuo(jexnum(conx_inve,node_1),'L',jv_elem_1)
-            call jeveuo(jexnum(conx_inve,node_2),'L',jv_elem_2)
-            call utlisi('INTER'   , zi(jv_elem_1), node_nbelem_1, zi(jv_elem_2), node_nbelem_2,&
+            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)
+            node_nbelem_2=v_inv_lcum(node_2+1) - v_inv_lcum(node_2)
+            do i= 1 , node_nbelem_1
+                a(i)=v_conx_inv(v_inv_lcum(node_1)-1+i)
+            end do
+            do i= 1 , node_nbelem_2
+                b(i)=v_conx_inv(v_inv_lcum(node_2)-1+i)
+            end do
+            call utlisi('INTER'   , a, node_nbelem_1,b, node_nbelem_2,&
                         elem_find , 2            , nb_find)
             ASSERT(nb_find .le. 2)
             ASSERT(nb_find .ge. 1)
@@ -120,14 +125,13 @@ implicit none
         do i_neigh = 1,nb_neigh
             nb_find = 0
             node_1  = list_node(i_neigh)
-            call jelira(jexnum(conx_inve,node_1),'LONMAX',node_nbelem_1)          
-            call jeveuo(jexnum(conx_inve,node_1),'L',jv_elem_1)
+            node_nbelem_1=v_inv_lcum(node_1+1) - v_inv_lcum(node_1)          
             ASSERT(node_nbelem_1 .le. 2)
             if (node_nbelem_1 .eq. 2) then
-                if (list_elem(zi(jv_elem_1+1-1)) .eq. elem_nume) then
-                    list_neigh(i_neigh) = list_elem(zi(jv_elem_1+2-1))
+                if (list_elem(v_conx_inv(v_inv_lcum(node_1))) .eq. elem_nume) then
+                    list_neigh(i_neigh) = list_elem(v_conx_inv(v_inv_lcum(node_1)+1))
                 else
-                    list_neigh(i_neigh) = list_elem(zi(jv_elem_1+1-1))
+                    list_neigh(i_neigh) = list_elem(v_conx_inv(v_inv_lcum(node_1)))
                 end if    
             end if
         end do

@@ -8,6 +8,7 @@ implicit none
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/jecrec.h"
+#include "asterfort/jexatr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
@@ -29,7 +30,6 @@ implicit none
 #include "asterfort/aprtpe.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/cnvois.h"
 #include "asterfort/codent.h"
 #include "asterfort/testvois.h"
 #include "asterfort/as_deallocate.h"
@@ -135,6 +135,8 @@ implicit none
     integer, pointer :: v_mesh_typmail(:) => null()
     integer, pointer :: nb_pair_zmpi(:) => null()
     integer, pointer :: list_pair_zmpi(:) => null()
+    integer, pointer :: v_mesh_connex(:)  => null()
+    integer, pointer :: v_connex_lcum(:)  => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,6 +167,7 @@ implicit none
     sdappa_coef = sdappa(1:19)//'.COEF'
     call jeveuo(sdappa_gapi, 'E', vr = v_sdappa_gapi)
     call jeveuo(sdappa_coef, 'E', vr = v_sdappa_coef)
+    AS_ALLOCATE(vi=list_pair_zmpi, size= 3*nb_elem_slav*nb_elem_mast)
 !
 ! - Access to updated geometry
 !
@@ -174,6 +177,8 @@ implicit none
 !
     call jeveuo(mesh//'.TYPMAIL', 'L', vi = v_mesh_typmail)
     call jeveuo(mesh//'.COMAPA','L', vi = v_mesh_comapa)
+    call jeveuo(mesh//'.CONNEX', 'L', vi = v_mesh_connex)
+    call jeveuo(jexatr(mesh//'.CONNEX', 'LONCUM'), 'L', vi = v_connex_lcum)
 !
 ! - Objects for flags
 !
@@ -188,6 +193,8 @@ implicit none
     call codent(i_zone, 'G', knuzo)
     sdappa_mane = sdappa(1:19)//'.MAN'//knuzo(1:1)
     sdappa_slne = sdappa(1:19)//'.ESN'//knuzo(1:1)
+    call jeveuo(sdappa_mane, 'L', vi = v_sdappa_mane)
+    call jeveuo(sdappa_slne, 'L', vi = v_sdappa_slne)
 !
 ! - Find initial elements for pairing by PANG method
 !
@@ -254,9 +261,10 @@ implicit none
 !
 ! ----- Get informations about slave element
 !
-        call apcoor(mesh          , jv_geom       , elem_slav_type  ,&
+        call apcoor(jv_geom       , elem_slav_type  ,&
                     elem_slav_nume, elem_slav_coor, elem_slav_nbnode,&
-                    elem_slav_code, elem_slav_dime)
+                    elem_slav_code, elem_slav_dime, v_mesh_connex   ,&
+                    v_connex_lcum)
         if (debug) then 
             write(*,*) "Current slave element: ", elem_slav_nume, elem_slav_name,&
                        '(type : ', elem_slav_code, ')' 
@@ -296,10 +304,9 @@ implicit none
 !
 ! ----- Access to neighbours
 !
-        call jeveuo(jexnum(sdappa_slne, elem_slav_indx), 'L', vi = v_sdappa_slne)
         if (debug) then
             do i_slav_neigh = 1, nb_slav_neigh
-                elem_nume = v_sdappa_slne(i_slav_neigh)
+                elem_nume = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
                 if (elem_nume .ne. 0) then
                     call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
                 else
@@ -357,10 +364,9 @@ implicit none
 !
 ! --------- Access to neighbours
 !        
-            call jeveuo(jexnum(sdappa_mane, elem_mast_indx), 'L', vi = v_sdappa_mane)
             if (debug) then
                 do i_mast_neigh = 1, 4
-                    elem_nume = v_sdappa_mane(i_mast_neigh)
+                    elem_nume = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                     if (elem_nume .ne. 0) then
                         call jenuno(jexnum(mesh//'.NOMMAI', elem_nume), elem_name)
                     else
@@ -379,9 +385,10 @@ implicit none
 !
 ! --------- Get informations about master element
 !
-            call apcoor(mesh          , jv_geom       , elem_mast_type  ,&
+            call apcoor(jv_geom       , elem_mast_type  ,&
                         elem_mast_nume, elem_mast_coor, elem_mast_nbnode,&
-                        elem_mast_code, elem_mast_dime)
+                        elem_mast_code, elem_mast_dime, v_mesh_connex   ,&
+                        v_connex_lcum)
 !
 ! --------- Cut master element in linearized sub-elements
 !
@@ -566,7 +573,7 @@ implicit none
 ! ------------- Prepare next master element
 !
                 do i_mast_neigh = 1, nb_mast_neigh
-                    elem_mast_neigh = v_sdappa_mane(i_mast_neigh)
+                    elem_mast_neigh = v_sdappa_mane((elem_mast_indx-1)*4+i_mast_neigh)
                     elem_neigh_indx = elem_mast_neigh+1-mast_indx_mini
                     if (elem_mast_neigh .ne. 0 .and.&
                         mast_find_flag(elem_neigh_indx) .eq. 0 ) then
@@ -579,16 +586,17 @@ implicit none
 ! ------------- Prepare next slave element: higher weight
 !  
                 do i_slav_neigh = 1, nb_slav_neigh
-                    elem_slav_neigh = v_sdappa_slne(i_slav_neigh) 
+                    elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh) 
                     elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
                     if ( elem_slav_neigh .ne. 0 .and.&
                          inte_neigh(i_slav_neigh) .eq. 1 &
                         .and.elem_slav_flag(elem_neigh_indx) .ne. 1 &
                         .and. list_slav_weight(i_slav_neigh) .lt. tole_weight) then
                         weight_test=0.d0
-                        call testvois(mesh          , jv_geom       , elem_slav_type,&
+                        call testvois(jv_geom       , elem_slav_type,&
                                       elem_mast_coor, elem_mast_code, elem_slav_nume,&
-                                      pair_tole     , weight_test)
+                                      pair_tole     , weight_test,    v_mesh_connex ,&
+                                      v_connex_lcum)
                         if (weight_test .gt. list_slav_weight(i_slav_neigh).and.&
                             weight_test .gt. pair_tole) then
                             list_slav_master(i_slav_neigh) = elem_mast_nume
@@ -614,7 +622,7 @@ implicit none
             write(*,*)'Next elements - Nb: ',nb_slav_neigh
         endif
         do i_slav_neigh = 1, nb_slav_neigh
-            elem_slav_neigh = v_sdappa_slne(i_slav_neigh)
+            elem_slav_neigh = v_sdappa_slne((elem_slav_indx-1)*4+i_slav_neigh)
             elem_neigh_indx = elem_slav_neigh+1-slav_indx_mini
             if (debug) then 
                 write(*,*)'Next elements - Current: ',i_slav_neigh,elem_slav_neigh,&
