@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,10 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
 interface
     subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
                       iter_maxi, tole_maxi, ksi1  , ksi2     , tang_1 ,&
-                      tang_2   , error)
+                      tang_2   , error, l_reli_)
         character(len=8), intent(in) :: type_elem
         integer, intent(in) :: nb_node
         integer, intent(in) :: nb_dim
@@ -31,5 +32,6 @@ interface
         real(kind=8), intent(out) :: tang_1(3)
         real(kind=8), intent(out) :: tang_2(3)
         integer, intent(out) :: error
+        aster_logical, intent(in), optional:: l_reli_
     end subroutine mmnewt
 end interface

@@ -69,6 +69,7 @@ implicit none
     real(kind=8) :: xp1, yp1, xp2, yp2, elem_coor(3,9)
     integer :: i_inte_poin, i_node, i_dime
     integer :: niverr, test, list_node_next(16), nb_node_coop
+    aster_logical :: l_reli
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +80,7 @@ implicit none
     elem_coor(1:3,1:9) = 0.d0
     node_coop(1:elem_dime-1,1:4) = 0.d0
     poin_inte(:,:)     = 0.d0
+    l_reli = .false.
     do i_node = 1,elin_slav_nbnode
         do i_dime = 1,elem_dime
             elem_coor(i_dime,i_node) = elin_slav_coor(i_dime,i_node)
@@ -99,18 +101,31 @@ implicit none
 ! ----- Projection on slave element
 !
         call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
-                    elem_coor     , node_coor       , 200,&
+                    elem_coor     , node_coor       , 75,&
                     proj_tole     , ksi1            , ksi2,&
                     tau1          , tau2            ,&
-                    niverr)
+                    niverr,l_reli)
         if (niverr .eq. 0) then
             poin_coop(1,i_node) = ksi1
             if (elem_dime .eq. 3) then
                 poin_coop(2,i_node) = ksi2
             end if
         else
-            write(*,*) "mmnewt failed"
-            ASSERT(.false.)
+            l_reli=.true.
+            call mmnewt(elin_slav_code, elin_slav_nbnode, elem_dime,&
+                    elem_coor     , node_coor       , 75,&
+                    proj_tole     , ksi1            , ksi2,&
+                    tau1          , tau2            ,&
+                    niverr, l_reli)
+            if (niverr .eq. 0) then
+                poin_coop(1,i_node) = ksi1
+                if (elem_dime .eq. 3) then
+                    poin_coop(2,i_node) = ksi2
+                end if
+            else
+                write(*,*) "mmnewt failed"
+                ASSERT(.false.)
+            endif
         endif
     end do
 !

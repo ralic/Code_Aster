@@ -2,7 +2,7 @@ subroutine lcsegp(elem_dime   , nb_lagr       , indi_lagc     ,&
                   nb_node_mast, elin_mast_coor, elin_mast_code,&
                   nb_node_slav, elin_slav_coor, elin_slav_code,&
                   poidspg     , gauss_coot    , jacobian      ,&
-                  vtmp)
+                  norm        , vtmp)
 !
 implicit none
 !
@@ -43,6 +43,7 @@ implicit none
     real(kind=8), intent(in) :: poidspg
     real(kind=8), intent(in) :: gauss_coot(2)
     real(kind=8), intent(in) :: jacobian
+    real(kind=8), intent(in) :: norm(3)
     real(kind=8), intent(inout) :: vtmp(55)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,9 +71,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: i_node, i_dime, jj, shift, niverr
-    real(kind=8) :: tau1(3), tau2(3), dir(3), gauss_coor(3), proj_tole
+    real(kind=8) :: tau1(3), tau2(3), gauss_coor(3), proj_tole
     real(kind=8) :: vect_pm(3), ksi1, ksi2, sig, pdgr
-    real(kind=8) :: dff(2, 9), dist, r_lagr_c
+    real(kind=8) :: dist, r_lagr_c
     real(kind=8) :: slav_coor(3,9),mast_coor(3,9)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,7 +84,6 @@ implicit none
     tau1(1:3) = 0.d0
     tau2(1:3) = 0.d0
     vect_pm(1:3) = 0.d0
-    dir(1:3) = 0.d0
     shift = 0
     r_lagr_c=real(nb_lagr,kind=8)
     slav_coor(1:3,1:9) = 0.d0
@@ -106,22 +106,14 @@ implicit none
 !
     call reerel(elin_slav_code, nb_node_slav, elem_dime, elin_slav_coor, gauss_coot,&
                 gauss_coor) 
-!
-! - Compute normal
-!    
-    call mmdonf(elem_dime, nb_node_slav, elin_slav_code,&
-                gauss_coot(1), gauss_coot(2),&
-                dff)
-    call mmtang(elem_dime, nb_node_slav, slav_coor, dff, tau1,&
-                tau2)
-    call mmnorm(elem_dime, tau1, tau2, dir)
+
     pdgr=jacobian*poidspg
 !
 ! - Projection of slave point on master element
    
      call mmnewd(elin_mast_code, nb_node_mast, elem_dime, mast_coor, &
-                 gauss_coor, 200,&
-                 proj_tole, dir, ksi1, ksi2,&
+                 gauss_coor, 75,&
+                 proj_tole, norm , ksi1, ksi2,&
                  tau1, tau2, niverr)
      if (niverr.eq.1) then
         write(*,*)"mmnewd failed"
@@ -136,9 +128,9 @@ implicit none
 ! - Compute _algebrical_ distance
 !
     if (elem_dime .eq. 3) then
-        sig = vect_pm(1)*dir(1)+vect_pm(2)*dir(2)+vect_pm(3)*dir(3)
+        sig = vect_pm(1)*norm(1)+vect_pm(2)*norm(2)+vect_pm(3)*norm(3)
     elseif (elem_dime .eq. 2) then
-        sig = vect_pm(1)*dir(1)+vect_pm(2)*dir(2)
+        sig = vect_pm(1)*norm(1)+vect_pm(2)*norm(2)
     else
         ASSERT(.false.)
     end if

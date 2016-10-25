@@ -60,7 +60,7 @@ implicit none
     integer :: nb_node_slav, nb_node_mast, nb_lagr, nb_poin_inte, nb_dof, nb_tria, nb_gauss
     integer :: indi_lagc(10)
     integer :: elem_dime
-    integer :: jvect
+    integer :: jvect, jv_geom
     integer :: i_tria, i_dime, i_elin_mast, i_elin_slav, i_node, i_gauss
     real(kind=8) :: proj_tole, lagrc
     integer :: algo_reso_geom, indi_cont, norm_smooth
@@ -79,7 +79,7 @@ implicit none
     real(kind=8) :: inte_weight
     real(kind=8) :: gauss_weight(12), gauss_coor(2,12), gauss_coot(2)
     character(len=8) :: elga_fami_slav, elga_fami_mast 
-    real(kind=8) :: poidpg, jaco_init, jaco_upda, jacobian
+    real(kind=8) :: poidpg, jacobian
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9)
     real(kind=8) :: vtmp(55)
 !
@@ -96,6 +96,7 @@ implicit none
     debug                = .false.
     loptf                = nomopt.eq.'RIGI_FROT'
     ASSERT(.not.loptf)
+    call jevech('PGEOMER', 'L', jv_geom)
 !
 ! - Get informations about contact element
 !
@@ -249,34 +250,29 @@ implicit none
 !
 ! --------------------- Get integration points for slave element
 !
-                        call lcptga(elem_dime, tria_coot , elga_fami_slav,&
-                                    nb_gauss , gauss_coor, gauss_weight)
+!                        call lcptga(elem_dime, tria_coot , elga_fami_slav,&
+!                                    nb_gauss , gauss_coor, gauss_weight)
 !
 ! --------------------- Loop on integration points in slave element
 !
-                        do i_gauss = 1, nb_gauss
+!                        do i_gauss = 1, nb_gauss
 !
 ! ------------------------- Get current integration point
 !
-                            gauss_coot(1:2) = 0.d0
-                            do i_dime = 1, elem_dime-1
-                                gauss_coot(i_dime) = gauss_coor(i_dime, i_gauss)
-                            end do
-                            poidpg = gauss_weight(i_gauss)
+!                            gauss_coot(1:2) = 0.d0
+!                            do i_dime = 1, elem_dime-1
+!                                gauss_coot(i_dime) = gauss_coor(i_dime, i_gauss)
+!                            end do
+!                            poidpg = gauss_weight(i_gauss)
 !
 ! ------------------------- Compute geometric quantities for contact (slave side)
 !
-                            call lctppe('Slave'     , elem_dime     , l_axis        ,&
-                                        nb_node_slav, elin_slav_coor, elem_slav_code,&
-                                        gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm)
-                            if (l_upda_jaco) then
-                                jacobian = jaco_upda
-                            else
-                                jacobian = jaco_init
-                            endif
+!                            call lctppe('Slave'     , elem_dime     , l_axis        ,&
+!                                        nb_node_slav, elin_slav_coor, elem_slav_code,&
+!                                        gauss_coot  , shape_func    , shape_dfunc   ,&
+!                                        jacobian   , l_upda_jaco     ,  norm, jv_geom)
 !
-                        end do                                     
+!                        end do                                     
                                                                     
 ! ------- CONTRIBUTIONS ESCLAVES et "GEOMETRIQUES":
 !
@@ -326,12 +322,7 @@ implicit none
                             call lctppe('Slave'     , elem_dime     , l_axis        ,&
                                         nb_node_slav, elem_slav_coor, elem_slav_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm)
-                            if (l_upda_jaco) then
-                                jacobian = jaco_upda
-                            else
-                                jacobian = jaco_init
-                            endif
+                                        jacobian   , l_upda_jaco     , norm, jv_geom)
 !
 ! ------------------------- Compute contact vector - geometric (slave side)
 !
@@ -344,7 +335,7 @@ implicit none
                                         elem_mast_code,&
                                         nb_node_slav, elem_slav_coor,&
                                         elem_slav_code,&
-                                        poidpg      , gauss_coot    , jaco_upda,&
+                                        poidpg      , gauss_coot    , jacobian, norm ,&
                                         vtmp)
 
                         end do             
@@ -379,12 +370,8 @@ implicit none
                             call lctppe('Master'    , elem_dime     , l_axis        ,&
                                         nb_node_mast, elem_mast_coor, elem_mast_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm, elem_dime*nb_node_slav)
-                            if (l_upda_jaco) then
-                                jacobian = jaco_upda
-                            else
-                                jacobian = jaco_init
-                            endif
+                                        jacobian  , l_upda_jaco     , norm, jv_geom ,&
+                                        elem_dime*nb_node_slav)
 !
 ! ------------------------- Compute contact vector (master side)
 !

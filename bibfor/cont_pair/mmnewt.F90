@@ -1,10 +1,11 @@
 subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
                   iter_maxi, tole_maxi, ksi1  , ksi2     , tang_1 ,&
-                  tang_2   , error)
+                  tang_2   , error, l_reli_)
 !
     implicit none
 !
 #include "asterc/r8gaem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/mmfonf.h"
 #include "asterfort/mmreli.h"
@@ -40,6 +41,7 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
     real(kind=8), intent(out) :: tang_1(3)
     real(kind=8), intent(out) :: tang_2(3)
     integer, intent(out) :: error
+    aster_logical, intent(in), optional :: l_reli_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +81,7 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
     real(kind=8) :: alpha
     real(kind=8) :: tole_rela, tole_abso, tole_newt
     real(kind=8) :: dist, dist_mini, ksi1_mini, ksi2_mini
+    aster_logical :: l_reli
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,6 +99,11 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
     tole_rela = tole_maxi
     alpha     = 1.d0
     dist_mini = r8gaem()
+    if (present(l_reli_)) then
+        l_reli=l_reli_
+    else
+        l_reli=.true.
+    endif
 !
 ! - Newton loop
 !
@@ -196,8 +204,12 @@ subroutine mmnewt(type_elem, nb_node  , nb_dim, elem_coor, pt_coor,&
 !
 ! - Line search
 !
-    call mmreli(type_elem, nb_node, nb_dim, elem_coor, pt_coor,&
-                ksi1, ksi2, dksi1, dksi2, alpha)
+    if (l_reli) then
+        call mmreli(type_elem, nb_node, nb_dim, elem_coor, pt_coor,&
+                    ksi1, ksi2, dksi1, dksi2, alpha)
+    else
+        alpha=1.d0
+    endif
 !
 ! - Update
 !

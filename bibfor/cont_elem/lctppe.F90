@@ -1,14 +1,16 @@
 subroutine lctppe(side      , elem_dime , l_axis     ,&
                   nb_node   , elem_coor , elem_code  ,&
                   gauss_coor, shape_func, shape_dfunc,&
-                  jaco_init , jaco_upda , norm, shift_)
+                  jacobian , l_jaco_upda , norm, jv_geom,&
+                  shift_)
 !
 implicit none
 !
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/mmfonf.h"
+#include "asterfort/mmnonf.h"
+#include "asterfort/mmdonf.h"
 #include "asterfort/mmmjac.h"
 #include "asterfort/reerel.h"
 #include "asterfort/mmnorm.h"
@@ -47,9 +49,10 @@ implicit none
     real(kind=8), intent(in) :: gauss_coor(2)
     real(kind=8), intent(out) :: shape_func(9)
     real(kind=8), intent(out) :: shape_dfunc(2, 9)
-    real(kind=8), intent(out) :: jaco_init 
-    real(kind=8), intent(out) :: jaco_upda
+    real(kind=8), intent(out) :: jacobian 
+    aster_logical, intent(in) :: l_jaco_upda
     real(kind=8), intent(out) :: norm(3)
+    integer, intent(in) :: jv_geom
     integer, intent(in), optional :: shift_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -69,15 +72,15 @@ implicit none
 ! In  gauss_coor       : coordinates of current integration point
 ! Out shape_func       : shape functions at integration point
 ! Out shape_dfunc      : derivatives of shape functions at integration point
-! Out jaco_init        : initial jacobian at integration point
-! Out jaco_upda        : updated jacobian at integration point
+! Out jacobian         : jacobian at integration point
+! In  l_jaco_upda      : .true. for updated jacobian 
 ! Out norm             : normal at integration point
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: shape_ddfunc(3, 9), jcs1(3), jcs2(3), aux(3), elem_coot(3,9)
+    real(kind=8) :: jcs1(3), jcs2(3), aux(3), elem_coot(3,9)
     real(kind=8) :: tau1(3), tau2(3), dxdk, dydk, dzdk, r
-    integer :: jv_geom ,i_node, i_dime, shift
+    integer :: i_node, i_dime, shift
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,8 +92,7 @@ implicit none
     norm(1:3) = 0.d0
     tau1(1:3) = 0.d0
     tau2(1:3) = 0.d0
-    jaco_init = 0.d0 
-    jaco_upda = 0.d0
+    jacobian  = 0.d0
 !
 ! - Shift in list of nodes depending on side (master or slave)
 !
@@ -111,11 +113,14 @@ implicit none
         end do
     end do
 !
-! - Get shape functions
+! - Get shape functions and first derivative only (for perf)
 !
-    call mmfonf(elem_dime    , nb_node      , elem_code,&
+    call mmnonf(elem_dime    , nb_node      , elem_code,&
                 gauss_coor(1), gauss_coor(2),&
-                shape_func   , shape_dfunc  , shape_ddfunc)
+                shape_func )
+    call mmdonf(elem_dime    , nb_node      , elem_code,&
+                gauss_coor(1), gauss_coor(2),&
+                shape_dfunc)
 !
 ! - Compute normal
 !
@@ -128,52 +133,55 @@ implicit none
 !
 ! - Compute updated surfacic jacobian of element
 !
-    if (elem_dime .eq. 3) then
-        jcs1(1:3)=0.d0
-        jcs2(1:3)=0.d0
-        do i_node = 1, nb_node
-            jcs1(1)=jcs1(1)+shape_dfunc(1,i_node)*elem_coot(1,i_node)
-            jcs1(2)=jcs1(2)+shape_dfunc(1,i_node)*elem_coot(2,i_node)
-            jcs1(3)=jcs1(3)+shape_dfunc(1,i_node)*elem_coot(3,i_node)
-            jcs2(1)=jcs2(1)+shape_dfunc(2,i_node)*elem_coot(1,i_node)
-            jcs2(2)=jcs2(2)+shape_dfunc(2,i_node)*elem_coot(2,i_node)
-            jcs2(3)=jcs2(3)+shape_dfunc(2,i_node)*elem_coot(3,i_node)
-        end do
-        aux(1)=jcs1(2)*jcs2(3)-jcs1(3)*jcs2(2)
-        aux(2)=jcs1(3)*jcs2(1)-jcs1(1)*jcs2(3)
-        aux(3)=jcs1(1)*jcs2(2)-jcs1(2)*jcs2(1)    
-        jaco_upda=sqrt(aux(1)**2+aux(2)**2+aux(3)**2)
-    elseif (elem_dime .eq. 2) then
-        dxdk=0.d0
-        dydk=0.d0
-        dzdk=0.d0
-        do i_node = 1, nb_node
-            dxdk = dxdk + elem_coot(1,i_node)*shape_dfunc(1,i_node)
-            dydk = dydk + elem_coot(2,i_node)*shape_dfunc(1,i_node)
-            if (elem_dime .eq. 3) then
-                dzdk = dzdk + elem_coot(3,i_node)*shape_dfunc(1,i_node)
-            end if
-        end do
-        jaco_upda = sqrt(dxdk**2+dydk**2+dzdk**2)
-        if (l_axis) then
-            r = 0.d0
+    if (l_jaco_upda) then 
+        if (elem_dime .eq. 3) then
+            jcs1(1:3)=0.d0
+            jcs2(1:3)=0.d0
             do i_node = 1, nb_node
-                r = r + elem_coot(1,i_node)*shape_func(i_node)
+                jcs1(1)=jcs1(1)+shape_dfunc(1,i_node)*elem_coot(1,i_node)
+                jcs1(2)=jcs1(2)+shape_dfunc(1,i_node)*elem_coot(2,i_node)
+                jcs1(3)=jcs1(3)+shape_dfunc(1,i_node)*elem_coot(3,i_node)
+                jcs2(1)=jcs2(1)+shape_dfunc(2,i_node)*elem_coot(1,i_node)
+                jcs2(2)=jcs2(2)+shape_dfunc(2,i_node)*elem_coot(2,i_node)
+                jcs2(3)=jcs2(3)+shape_dfunc(2,i_node)*elem_coot(3,i_node)
             end do
-            if (r .le. r8prem()) then
-                r=1.d-7
-                call utmess('A', 'CONTACT2_14')
+            aux(1)=jcs1(2)*jcs2(3)-jcs1(3)*jcs2(2)
+            aux(2)=jcs1(3)*jcs2(1)-jcs1(1)*jcs2(3)
+            aux(3)=jcs1(1)*jcs2(2)-jcs1(2)*jcs2(1)    
+            jacobian=sqrt(aux(1)**2+aux(2)**2+aux(3)**2)
+        elseif (elem_dime .eq. 2) then
+            dxdk=0.d0
+            dydk=0.d0
+            dzdk=0.d0
+            do i_node = 1, nb_node
+                dxdk = dxdk + elem_coot(1,i_node)*shape_dfunc(1,i_node)
+                dydk = dydk + elem_coot(2,i_node)*shape_dfunc(1,i_node)
+                if (elem_dime .eq. 3) then
+                    dzdk = dzdk + elem_coot(3,i_node)*shape_dfunc(1,i_node)
+                end if
+            end do
+            jacobian = sqrt(dxdk**2+dydk**2+dzdk**2)
+            if (l_axis) then
+                r = 0.d0
+                do i_node = 1, nb_node
+                    r = r + elem_coot(1,i_node)*shape_func(i_node)
+                end do
+                if (r .le. r8prem()) then
+                    r=1.d-7
+                    call utmess('A', 'CONTACT2_14')
+                endif
+                jacobian = jacobian*abs(r)
             endif
-            jaco_upda = jaco_upda*abs(r)
+        else
+            ASSERT(.false.)
         endif
     else
-        ASSERT(.false.)
-    endif
 !
-! - Compute initial surfacic jacobian of element
+! ----- Compute initial surfacic jacobian of element
 ! 
-    call jevech('PGEOMER', 'L', jv_geom)
-    call mmmjac(elem_code, jv_geom+shift, shape_func, shape_dfunc, l_axis, &
-                nb_node  , elem_dime    , jaco_init)  
+
+        call mmmjac(elem_code, jv_geom+shift, shape_func, shape_dfunc, l_axis, &
+                    nb_node  , elem_dime    , jacobian)
+    endif  
 !
 end subroutine

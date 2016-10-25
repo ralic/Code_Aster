@@ -20,7 +20,7 @@ interface
                       nb_node_mast, elin_mast_coor, elin_mast_code,&
                       nb_node_slav, elin_slav_coor, elin_slav_code,&
                       poidspg     , gauss_coot    , jacobian      ,&
-                      vtmp)
+                      norm        , vtmp)
         integer, intent(in) :: elem_dime
         integer, intent(in) :: nb_lagr
         integer, intent(in) :: indi_lagc(10)
@@ -33,6 +33,7 @@ interface
         real(kind=8), intent(in) :: poidspg
         real(kind=8), intent(in) :: gauss_coot(2)
         real(kind=8), intent(in) :: jacobian
+        real(kind=8), intent(in) :: norm(3)
         real(kind=8), intent(inout) :: vtmp(55)
     end subroutine lcsegp
 end interface

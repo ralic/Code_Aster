@@ -59,7 +59,7 @@ implicit none
     integer :: nb_node_slav, nb_node_mast, nb_lagr, nb_poin_inte, nb_dof, nb_tria, nb_gauss
     integer :: indi_lagc(10)
     integer :: elem_dime
-    integer :: jmatt
+    integer :: jmatt, jv_geom
     integer :: i_tria, i_dime, i_elin_mast, i_elin_slav, i_node, i_gauss
     real(kind=8) :: proj_tole
     integer :: algo_reso_geom, indi_cont, norm_smooth
@@ -78,7 +78,7 @@ implicit none
     real(kind=8) :: inte_weight
     real(kind=8) :: gauss_weight(12), gauss_coor(2,12), gauss_coot(2)
     character(len=8) :: elga_fami_slav, elga_fami_mast 
-    real(kind=8) :: poidpg, jaco_init, jaco_upda, jacobian
+    real(kind=8) :: poidpg, jacobian
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9)
     real(kind=8) :: mmat(55, 55)
 !
@@ -95,6 +95,7 @@ implicit none
     debug                = .false.
     loptf                = nomopt.eq.'RIGI_FROT'
     ASSERT(.not.loptf)
+    call jevech('PGEOMER', 'L', jv_geom)
 !
 ! - Get informations about contact element
 !
@@ -274,12 +275,7 @@ implicit none
                             call lctppe('Slave'     , elem_dime     , l_axis        ,&
                                         nb_node_slav, elem_slav_coor, elem_slav_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm)
-                            if (l_upda_jaco) then
-                                jacobian = jaco_upda
-                            else
-                                jacobian = jaco_init
-                            endif
+                                        jacobian   , l_upda_jaco    , norm, jv_geom )
 !
 ! ------------------------- Compute contact matrix (slave side)
 !
@@ -319,12 +315,8 @@ implicit none
                             call lctppe('Master'    , elem_dime     , l_axis        ,&
                                         nb_node_mast, elem_mast_coor, elem_mast_code,&
                                         gauss_coot  , shape_func    , shape_dfunc   ,&
-                                        jaco_init   , jaco_upda     , norm, elem_dime*nb_node_slav)
-                            if (l_upda_jaco) then
-                                jacobian = jaco_upda
-                            else
-                                jacobian = jaco_init
-                            endif
+                                        jacobian  , l_upda_jaco   , norm, jv_geom ,&
+                                        elem_dime*nb_node_slav)
 !
 ! ------------------------- Compute contact matrix (master side)
 !

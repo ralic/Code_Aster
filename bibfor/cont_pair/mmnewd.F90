@@ -6,12 +6,13 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
 #include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/mmfonf.h"
+#include "asterfort/mmnonf.h"
+#include "asterfort/mmdonf.h"
 #include "asterfort/mmreli.h"
 #include "asterfort/mmtang.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +73,7 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
     parameter   (zero=0.d0)
 !
     integer :: ino, idim, iter
-    real(kind=8) :: ff(9), dff(2, 9), ddff(3, 9)
+    real(kind=8) :: ff(9), dff(2, 9)
     real(kind=8) :: vect_posi(3)
     real(kind=8) :: matrix(3,3)
     real(kind=8) :: residu(3)
@@ -113,8 +114,10 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
 !
 ! - Shape functions (and derivates) at current point
 !
-    call mmfonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
-                ff, dff, ddff)
+    call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+                ff )
+    call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+                dff)
 !
 ! - Position vector of current point
 !
@@ -228,8 +231,10 @@ subroutine mmnewd(type_elem, nb_node  , nb_dim   , elem_coor, pt_coor,&
     else if ((iter.ge.iter_maxi).and.(test.gt.tole_newt)) then
         ksi1 = ksi1_mini
         ksi2 = ksi2_mini
-        call mmfonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
-                    ff, dff, ddff)
+        call mmnonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+                    ff )
+        call mmdonf(nb_dim, nb_node, type_elem, ksi1, ksi2,&
+                    dff)
         call mmtang(nb_dim, nb_node, elem_coor, dff, tang_1,&
                     tang_2)
     endif
