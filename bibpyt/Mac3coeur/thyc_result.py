@@ -46,6 +46,21 @@ def cherche_rubrique_nom(fobj, nom):
         if re.search(nom,line) : return True
     return None
 
+def compute_ep_from_Z(line) :
+  Zstr=line[2:len(line)]
+  size=len(Zstr)
+  Z=size*[None]
+  for i in range(size) :
+    Z[i]=float(Zstr[i])
+    
+  ep=[None]*size
+  ep[0]=2*float(Z[0])
+  for i in range(size-1) :
+    ep[i+1]=2*(Z[i+1]-Z[i])-ep[i]
+  epstr=['ep(m)', '=']
+  for i in range(size) :
+    epstr.append(ep[i])
+  return(epstr)
 
 def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
     """XXX pas documenté, propre à lire_resu_thyc"""
@@ -139,16 +154,25 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     line = f.readline().split()
     line2 = f2.readline().split()
     line2 = f2.readline().split()
-
+    fline=f.readline().split()
+    version=None
+    if (fline[0] == "ep(m)"):
+      version = "Old"
+    elif (fline[0] == "Z(m)"):
+      version = "New"
+    else :
+      raise KeyError("invalid thyc result file")
     # Recuperation de l'epaisseur des mailles dans Thyc
-    epaisseur = f.readline().split()
-    if (epaisseur[0] != "ep(m)"):
-        raise KeyError("invalid epaisseur")
-
-    cote = f.readline().split()
-    if (cote[0] != "Z(m)"):
-        raise KeyError("invalid cote axial")
-
+    #epaisseur = f.readline().split()
+    #if (epaisseur[0] != "ep(m)"):
+        #raise KeyError("invalid epaisseur")
+    if version == "Old" :
+      cote = f.readline().split()
+    else :
+      cote=fline
+    #if (cote[0] != "Z(m)"):
+        #raise KeyError("invalid cote axial")
+    epaisseur = compute_ep_from_Z(cote)
     j = 0
     pos_thyc = []
     for i in range(2, len(cote)):
