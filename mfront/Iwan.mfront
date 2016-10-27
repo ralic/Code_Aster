@@ -1,0 +1,222 @@
+@Parser         Implicit;
+@Behaviour      Iwan; 
+@Author         Vinicius Alves Fernandes (EDF R&D AMA-T64);
+@Description{
+Iwan model for cyclic behaviour of soils;
+}
+
+@Algorithm NewtonRaphson_NumericalJacobian;
+
+@Theta 1. ;
+@Epsilon 1.e-10 ;
+@IterMax 50 ;
+@Includes{
+#include"TFEL/Material/Lame.hxx"
+}
+
+// Number of hardening surfaces
+@IntegerConstant Ns = 12 ;
+
+// Material properties
+
+// Elasticity
+@MaterialProperty stress   young; 
+young.setGlossaryName("YoungModulus");
+@MaterialProperty real     nu;
+nu.setGlossaryName("PoissonRatio");
+// Parameters of hyperbolic model
+@MaterialProperty real     GammaRef;
+@MaterialProperty real     n;
+
+// State variables
+// Scalar as linear kinematic hardening
+@StateVariable real        pp[Ns];
+
+// Auxiliary state variable
+// Kinematic tensor hardening
+@AuxiliaryStateVariable Stensor X[Ns];
+// Plastic strain tensor
+@AuxiliaryStateVariable Stensor  Eplast;
+// 
+@AuxiliaryStateVariable real    fn[Ns];
+// Actual time step
+@AuxiliaryStateVariable real     t0;
+
+// Local variables
+// Lame coefficients
+@LocalVariable real    lambda;
+@LocalVariable real    mu;
+// Size of kinematical surfaces
+@LocalVariable real    Y[Ns];
+// Norm of deviatoric stress tensor with elastic increment
+@LocalVariable real    qe[Ns]; // deviateur
+// Norm of deviatoric stress tensor
+@LocalVariable real    qn[Ns]; // deviateur
+// Mean stress
+@LocalVariable real    p; // pression moyenne
+// Plastic flow tensor
+@LocalVariable Stensor PSI[Ns];
+// Kinematical hardening coefficients
+@LocalVariable real    C[Ns+1];
+// Deviatoric stress
+@LocalVariable Stensor    S;
+// Stress and strain values from hyperbolic model
+@LocalVariable real    ltau[Ns+1]; // tau
+@LocalVariable real    leps[Ns+1]; // gamma
+
+/* Initialize Lame coefficients */
+@InitLocalVars{
+
+    using namespace tfel::material::lame;
+    lambda = computeLambda(young,nu);
+    mu = computeMu(young,nu);
+    real G=young/(2.*(1.+nu));
+
+// Gamma interpaolation values
+// Attention : elastic behavior until gamma < 10-5
+// Non convergence if gamma > 0.1
+    ltau[0]=0.;
+    leps[0]=0.;
+    leps[1]=1.00000000e-05;
+    leps[2]=2.15443469e-05;
+    leps[3]=4.64158883e-05;
+    leps[4]=1.00000000e-04;
+    leps[5]=2.15443469e-04;
+    leps[6]=4.64158883e-04;
+    leps[7]=1.00000000e-03;
+    leps[8]=2.15443469e-03;
+    leps[9]=4.64158883e-03;
+    leps[10]=1.00000000e-02;
+    leps[11]=2.00000000e-02;
+    leps[12]=2.00000000e-01;
+
+// Tau values obtained from hyperbolic model
+    for (unsigned short i=1;i<=Ns;i++){
+        ltau[i]=leps[i]*G/(1.+1.*pow(leps[i]/GammaRef,n));
+    }
+
+// Initial C value
+    C[0] = 2*G;
+// C values recursively obtained 
+    real aux=0.;
+    for (unsigned short i=1;i<Ns;i++){
+        aux = 1./(C[i-1])+aux;
+        C[i]=1./(0.5*(leps[i]-leps[i-1])/(ltau[i]-ltau[i-1])-aux);
+    }
+
+// Size of kinematical surfaces
+    for (unsigned short i=0;i<Ns;i++){   
+        Y[i]=ltau[i+1]/sqrt(2./3.);
+    }
+} 
+
+
+@TangentOperator{
+    using namespace tfel::material::lame;
+    StiffnessTensor De;
+    Stensor4 Je; 
+    computeElasticStiffness<N,Type>::exe(De,lambda,mu);
+    getPartialJacobianInvert(Je);
+    Dt = De*Je;
+}
+
+// Elastic prediction
+@Predictor{
+    // Initial timestep
+    if (t0==0.){
+        eel=eto;
+        for (unsigned short i=0;i<Ns;i++){
+            X[i]=Stensor(0.);
+            pp[i]=0.;
+        }
+    }
+    else{
+        deel=deto;
+        Stensor sig0 = (lambda*trace(eel+deel)*Stensor::Id()+2.*mu*(eel+deel));
+        p=trace(sig0)/3.;
+        S=sig0-p*Stensor::Id();
+        real dev=trace(deel)/3.;
+        Stensor ded=deel-dev*Stensor::Id();
+
+        for (unsigned short i=0;i<Ns;i++){
+            qe[i]=sigmaeq(S-X[i]+2.*mu*ded/dt);
+            qn[i]=sigmaeq(S-X[i]);
+            if (qn[i]<1.e-6){
+                PSI[i]=Stensor(0.);
+                dpp[i]=0.;
+            }
+            else{
+                PSI[i]=1.5*(S-X[i])/qn[i];
+                fn[i]=qn[i]-Y[i];
+                
+                if (fn[i]<0.){
+                   dpp[i]=0.;
+                }       
+                else{
+                    if(C[i+1]==0){
+                        dpp[i]=dt*(qe[i]-Y[i])/(1.5*(C[i]));
+                    }
+                    else{
+                        dpp[i]=dt*(qe[i]-Y[i])/(1.5*(C[i+1]));
+                    }
+                }
+            }
+        }
+        Stensor aux=Stensor(0.);
+        for (unsigned short i=0;i<Ns;i++){
+            aux = dpp[i]*PSI[i]+aux;
+        }
+        deel=deto-aux;
+  
+    }
+}
+
+@ComputeStress{
+    sig = (lambda*trace(eel)*Stensor::Id()+2.*mu*(eel));
+} 
+
+@Integrator{
+    p=trace(sig)/3.;
+    S=sig-p*Stensor::Id();
+    real dev=trace(deel)/3.;
+    Stensor ded=deel-dev*Stensor::Id();
+    for (unsigned short i=0;i<Ns;i++){
+        qe[i]=sigmaeq(S-X[i]+2.*mu*ded/dt);
+        qn[i]=sigmaeq(S-X[i]);
+        if (qn[i]<1.e-6){
+            PSI[i]=Stensor(0.);
+        }
+        else{
+            PSI[i]=1.5*(S-X[i])/qn[i];
+        }
+        fn[i]=qn[i]-Y[i];
+        
+        if (fn[i]<0.){
+            fpp[i]=dpp[i];
+        }       
+        else{
+            if(C[i+1]==0){
+                fpp[i]=dpp[i]-dt*(qe[i]-Y[i])/(1.5*(C[i]));
+            }
+            else{
+                fpp[i]=dpp[i]-dt*(qe[i]-Y[i])/(1.5*(C[i+1]));
+            }
+        }
+    }
+    Stensor aux=Stensor(0.);
+    for (unsigned short i=0;i<Ns;i++){
+        aux = dpp[i]*PSI[i]+aux;
+    }
+    feel=deel-deto+aux;
+}
+
+@UpdateAuxiliaryStateVars{
+    t0 = t0+dt;
+    Stensor etoT=eto+deto;
+    Eplast=etoT-eel;
+    for (unsigned short i=0;i<Ns;i++){
+        if (dpp[i]>0.){
+           X[i] = X[i]+C[i+1]*dpp[i]*PSI[i];
+        }    
+    }
+}
