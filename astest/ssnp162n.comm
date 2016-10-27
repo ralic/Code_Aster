@@ -150,7 +150,8 @@ TRAC_1=AFFE_CHAR_MECA(
   )
 
 # CREATION DE LISTE D'INSTANT
-L_INST=DEFI_LIST_REEL(VALE=range(insfin+1))
+LR=DEFI_LIST_REEL(VALE=range(insfin+1))
+L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),);
 
 # LISTE D'INSTANTS POUR LES TESTS DE RESULTATS
 linst=[0,insfin/4,insfin/2,3*insfin/4,insfin]
@@ -284,25 +285,25 @@ IMPR_FONCTION(FORMAT='TABLEAU',
 sigma_endo = (delta_endo-sigma_max*(1.+pena_rupture)/k_n)/(L_cube/young-pena_rupture/k_n)
 sigma_pena = -sigma_max*pena_contact*(young+L_cube*k_n)/(young+L_cube*k_n*pena_contact)
 
-TEST_FONCTION(VALEUR=(_F(VALE_CALC=100000.0,
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=1.000000000000E+05,
                          VALE_REFE=sigma_max,
                          VALE_PARA=linst[1],
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=20000.0,
+                      _F(VALE_CALC=20000.00000000,
                          VALE_REFE=sigma_endo,
                          VALE_PARA=linst[2],
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=-200000.0,
+                      _F(VALE_CALC=-2.000000000000E+05,
                          VALE_REFE=sigma_pena,
                          VALE_PARA=linst[3],
                          REFERENCE='ANALYTIQUE',
                          NOM_PARA='INST',
                          FONCTION=FN,),
-                      _F(VALE_CALC=0.00900000000573,
+                      _F(VALE_CALC=8.999999673039E-03,
                          VALE_REFE=0.,
                          CRITERE='ABSOLU',
                          VALE_PARA=linst[4],
@@ -419,7 +420,7 @@ TEST_RESU(RESU=_F(INST=linst2[2],
                   RESULTAT=U_2,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
-                  VALE_CALC= 8.00000000E+04,
+                  VALE_CALC=80000.0,
                   VALE_REFE=sigma_max*(1.-beta),
                   MAILLE='CUBEDEG',),
           )
@@ -436,7 +437,7 @@ TEST_RESU(RESU=_F(INST=linst2[2],
                   RESULTAT=U_2,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
-                  VALE_CALC= 2.08873016E+05,
+                  VALE_CALC=208873.016278,
                   VALE_REFE=k_t_endo*delta_max_tan,
                   MAILLE='CUBEDEG',),
           )
@@ -450,7 +451,7 @@ TEST_RESU(RESU=_F(INST=linst2[3],
                   RESULTAT=U_2,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
-                  VALE_CALC = 2.0887301627792E+05,
+                  VALE_CALC=281774.603256,
                   MAILLE='CUBEDEG',),
           )
 
@@ -462,7 +463,7 @@ TEST_RESU(RESU=_F(INST=linst2[3],
                   RESULTAT=U_2,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITY',
-                  VALE_CALC= 1.14940945E-14,
+                  VALE_CALC=3.3856224659E-14,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
                   MAILLE='CUBEDEG',),
@@ -488,7 +489,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.10000000E-07,
+      VALE_CALC=1.1E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -500,7 +501,8 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,
+      VALE_CALC = 0.,
+      ORDRE_GRANDEUR = 1,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -512,7 +514,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,
+      VALE_CALC=1.0,
       ),
 
     _F(
@@ -524,7 +526,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.200000000,
+      VALE_CALC=0.2,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -536,7 +538,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=1.000000000,
+      VALE_CALC=1.0,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -547,7 +549,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=0.060751322,
+      VALE_CALC=0.0607513224814,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -559,7 +561,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 2.20000000E-08,
+      VALE_CALC=2.2E-08,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -570,7 +572,7 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 1.50000000E-07,
+      VALE_CALC=1.5E-07,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -582,7 +584,8 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC=-2.53926414E-25,
+      VALE_CALC = 0.,
+      ORDRE_GRANDEUR = delta_max,
       ),
     _F(
       REFERENCE = 'ANALYTIQUE',
@@ -594,7 +597,8 @@ TEST_RESU (
       MAILLE    = 'CUBEDEG',
       POINT     = 1,
       INST      = linst2[3],
-      VALE_CALC= 0.00000000E+00,
+      VALE_CALC = 0.,
+      ORDRE_GRANDEUR = delta_max,
       ),
     )
   )
@@ -696,7 +700,7 @@ TEST_RESU(RESU=_F(INST=linst3[2],
                   RESULTAT=U_3,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SIGN',
-                  VALE_CALC= 8.00000000E+04,
+                  VALE_CALC=80000.0,
                   VALE_REFE=sigma_max*(1.-beta),
                   MAILLE='CUBEDEG',),
           )
@@ -712,7 +716,7 @@ TEST_RESU(RESU=_F(INST=linst3[2],
                   RESULTAT=U_3,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITY',
-                  VALE_CALC=-2.301359791464E+05,
+                  VALE_CALC=-208873.016278,
                   MAILLE='CUBEDEG',),
           )
 
@@ -724,7 +728,7 @@ TEST_RESU(RESU=_F(INST=linst3[4],
                   RESULTAT=U_3,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITY',
-                  VALE_CALC=3.1181275714916E+05,
+                  VALE_CALC=289874.779586,
                   MAILLE='CUBEDEG',),
           )
 
@@ -735,7 +739,7 @@ TEST_RESU(RESU=_F(INST=linst3[4],
                   RESULTAT=U_3,
                   NOM_CHAM='SIEF_ELGA',
                   NOM_CMP='SITX',
-                  VALE_CALC= 4.65891911E-11,
+                  VALE_CALC=2.11154564873E-11,
                   VALE_REFE=0.0,
                   CRITERE='ABSOLU',
                   MAILLE='CUBEDEG',),
@@ -745,3 +749,4 @@ TEST_RESU(RESU=_F(INST=linst3[4],
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_2,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 #IMPR_RESU(FORMAT='GMSH',RESU=(_F(RESULTAT=U_3,NOM_CHAM='DEPL',TYPE_CHAM='VECT_3D',NOM_CMP=('DX','DY','DZ')))),
 FIN()
+

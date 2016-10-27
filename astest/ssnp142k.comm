@@ -19,9 +19,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),PAR_LOT='OUI',DEBUG=_F(S
 ######## PARAMETRES ############# 
 # LES INSTANT PARAMETRISE DIRECTEMENT LE NIVEAU D'EAU
 
-telas=3.31         # niveau d'eau pour le chargement sans pilotage (charge max avant non convergence) 
+telas=3.34         # niveau d'eau pour le chargement sans pilotage (charge max avant non convergence) 
 tpilot=telas+1     # chargement en pilotage (temps non physique)
-tfin=tpilot+0.1    # niveau d'eau final
+tfin=tpilot+0.5    # niveau d'eau final
 tpost=tpilot       # niveau d'eau pour le posttraitement des ouvertures de joint
 
 noeud_joint='N1'   # le noeud de la levre sup. du joint en amont du barrage
@@ -193,7 +193,7 @@ EVOL=STAT_NON_LINE(reuse = EVOL,
                   INCREMENT=_F(LIST_INST=L_INST,INST_INIT=telas,INST_FIN=tpilot),
                   NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                   PILOTAGE=_F(TYPE='DDL_IMPO',
-                                 COEF_MULT=1.e5, # PILOTAGE D'OUVERTURE EN MICROMETRE (1/COEF_MULT)
+                                 COEF_MULT=5.e4, # PILOTAGE D'OUVERTURE EN 10*MICROMETRE (1/COEF_MULT)
                                  NOEUD=noeud_joint,
                                  NOM_CMP='DY',
                                ),
@@ -362,23 +362,23 @@ IMPR_TABLE(TABLE=T_FU,COMM_PARA='#')
 ################### TESTS NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=1.83025466125E-08,
+           VALE_CALC=4.0834820757E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.0,),
+                     VALE=4.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=38772.2212199,
+           VALE_CALC=-20646.6925809,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
-                     VALE=4.0,),
+                     VALE=4.2,),
            )
 
 TEST_TABLE(
-           VALE_CALC=-7.53900532959E-07,
+           VALE_CALC=-6.15220537099E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -386,7 +386,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-753900.532959,
+           VALE_CALC=-615220.537099,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -394,7 +394,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-9.04902807875E-07,
+           VALE_CALC=-9.23276340688E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -402,7 +402,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-904902.807875,
+           VALE_CALC=-923276.340688,
 
            NOM_PARA='SIGN',
            TABLE=SIGN_M,

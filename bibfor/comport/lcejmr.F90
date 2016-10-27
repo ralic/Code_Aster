@@ -4,7 +4,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
                   instam, instap)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,9 +51,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !    CALCUL MECA (AVEC ENVENTUELLEMENT PRES_CLAVAGE OU PRES_FLUIDE)
 !    SUR UN MAILLAGE LINEAIRE OU QUADRATIQUE
 !
-! IN : EPSM SAUT INSTANT MOINS ET GRAD PRESSION ET PRES FLUIDE SI HYME
-! IN : DEPS INC DE SAUT  ET INC GRAD PRESSION ET INC PRES FLUIDE SI HYME
-! IN : MATE, OPTION, VIM, COOROT,INSTAM, INSTAP
+! IN : EPSM - SAUT INSTANT MOINS ET GRAD PRESSION ET PRES FLUIDE SI HYME
+! IN : DEPS - INC DE SAUT  ET INC GRAD PRESSION ET INC PRES FLUIDE SI HYME
+! IN : MATE, OPTION, VIM, COOROT, INSTAM, INSTAP
+! IN : SIGMO - SIGMA INSTANT MOINS ET FLUX HYDRO SI HYME 
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
     integer :: nbpa
@@ -61,11 +62,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     integer :: cod(nbpa)
     integer :: i, n, diss, cass
     real(kind=8) :: sc, lc, lct, k0, val(nbpa), presfl, presg, prescl, sciage, tmp
-    real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim)
-    real(kind=8) :: fhglo(ndim)
-    real(kind=8) :: a(ndim), da(ndim), ka, r0, rc, alpha, beta, rk, ra, rt
+    real(kind=8) :: gp(ndim-1), gploc(ndim), gpglo(ndim), fhloc(ndim), fhglo(ndim)
+    real(kind=8) :: delta(ndim), ddelta(ndim), ka, r0, rc, alpha, beta, rk, ra, rt
     real(kind=8) :: rt0, r8bid
-    real(kind=8) :: oset, doset, inst, valpar(ndim+1), rhof, visf, amin
+    real(kind=8) :: offset(ndim), doffset(ndim), inst, valpar(ndim+1), rhof, visf, amin
     real(kind=8) :: invrot(ndim, ndim), rigart
     character(len=8) :: nompar(ndim+1)
     character(len=16) :: nom(nbpa)
@@ -82,10 +82,9 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     if (typmod(2) .eq. 'ELEMJOIN') ifhyme=.false.
 !
 ! SAUT DE DEPLACEMENT EN T- OU T+
-    call dcopy(ndim, epsm, 1, a, 1)
-    call dcopy(ndim, deps, 1, da, 1)
-    if (resi) call daxpy(ndim, 1.d0, deps, 1, a,&
-                         1)
+    call dcopy(ndim, epsm, 1, delta, 1)
+    call dcopy(ndim, deps, 1, ddelta, 1)
+    if (resi) call daxpy(ndim, 1.d0, deps, 1, delta,1)
 !
 ! GRADIENT DE PRESSION ET PRESSION EN T- OU T+
     if (ifhyme) then
@@ -138,11 +137,11 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! PENTE NORMALE INITIAL
     r0 = val(1)
     beta = val(4)
-! PARAMETRE QUI DEFINI LA LONGUEUR CRITIQUE TANGENTIELLE (0<ALPHA<=2)
+! PARAMETRE QUI DEFINI LA LONGUEUR CRITIQUE TANGENTIELLE (0<=ALPHA<=2)
     alpha= val(5)
 ! LONGUEUR CRITIQUE TANGENTIELLE
 ! ALPHA=0: LCT=0; ALPHA=1: LCT=LC; ALPHA=2;LCT=INFTY
-    if (alpha .ne. 2.d0) then
+    if ( (alpha .ge. 0.d0) .and. (alpha .lt. 2.d0) ) then
         lct=lc*tan(alpha*r8pi()/4.d0)
     else
 ! PRESENTATION D'UNE INFINITE NUMERIQUE
@@ -259,19 +258,25 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! INITIALISATION DU POINT D'EQUILIBRE POUR LA LDC (OFFSET)
 !-----------------------
 ! CLAVAGE
-! EPAISSEUR DE JOINT NE PEUT QUE AUGMENTER; DOSET > 0
-    doset = 0.d0
-    if (prescl .ge. 0.d0) doset = max (0.d0, a(1) + prescl/(beta*r0) )
+! EPAISSEUR DE JOINT NE PEUT QUE AUGMENTER; DOFFSET(1) > 0
+    doffset(1) = 0.d0
+    if (prescl .ge. 0.d0) doffset(1) = max (0.d0, delta(1) + prescl/(beta*r0) )
 ! SCIAGE
 ! LE JOINT EST ENDOMMAGE PAR LE SCIAGE
     if (sciage .gt. 0.d0) ka = lc
 ! L'EPASSEUR SCIEE EST DIMINUEE DE L'OUVERTURE INITALE DE JOINT
     sciage = sciage - max(0.,epsm(1))
-    if (sciage .gt. 0.d0) doset = doset - sciage
-    oset = vim(10) + doset
+    if (sciage .gt. 0.d0) doffset(1) = doffset(1) - sciage
+    offset(1) = vim(10) + doffset(1)
+! OFFSET TANGENTIEL
+    offset(2) = vim(19)
+    if (ndim.eq.3) offset(3) = vim(20)
 !
 ! LA LDC EST DEFINIE PAR RAPPORT A NOUVEAU POINT D'EQUILIBRE
-    a(1) = a(1) - oset
+    do  i = 1, ndim
+       delta(i) = delta(i) - offset(i)
+    end do    
+
 !
 ! CALCUL DES PENTES
 !------------------
@@ -289,8 +294,8 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! PENTE TANGENTIELLE ACTUELLE
 ! SI ALPHA=2 RT CSTE, SI ALPHA=0 ALORS LCT=0 ET DONC RT=0)
     rt = rt0
-    if (a(1) .gt. 0.d0) then
-        if (lct .ne. 0.d0) rt = max(0.d0, rt0*(1.d0-a(1)/lct))
+    if (delta(1) .gt. 0.d0) then
+        if (lct .ne. 0.d0) rt = max( 0.d0, rt0*( 1.d0-delta(1)/lct ) )
         if (lct .eq. 0.d0) rt = 0.d0
     endif
     if (alpha .eq. 2.d0) rt = rt0
@@ -314,9 +319,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !----------------------------------------------------
 !
     if (ifhyme) then
-        do 44 n = 1, ndim-1
-            sigma(ndim+n) = -rhof*gp(n)*(max(amin,a(1)+amin))**3/(12* visf)
- 44     continue
+        do n = 1, ndim-1
+            sigma(ndim+n) = &
+                 -rhof*gp(n)*(max(amin,delta(1)+amin))**3/(12*visf)
+        end do
     endif
 !
 ! CALCUL DE LA CONTRAINTE MECANIQUE
@@ -326,26 +332,31 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !    PRESFL : IMPOSEE, PRESG : CALCULEE (MODELISATION HYME)
 !
     if (ifhyme) then
-        sigma(1) = rc * min(0.d0,a(1)) - presg
+        sigma(1) = rc * min(0.d0,delta(1)) - presg
     else
-        sigma(1) = rc * min(0.d0,a(1)) - presfl
+        sigma(1) = rc * min(0.d0,delta(1)) - presfl
     endif
 !
 !    PARTIE TANGENTIELLE
-    do 20 i = 2, ndim
-        if (rt .ne. 0.d0) then
-            sigma(i) = sigmo(i) + rt*deps(i)
+    do  i = 2, ndim
+        if (rt .gt. 0.d0) then
+!           sigma(i) = sigmo(i) + rt*ddelta(i) ! version incrementale
+!          ligne de code inutile pour eviter dummy input de sigmo
+           sigma(i) = sigmo(i) 
+           sigma(i) = rt*delta(i)
         else
-            sigma(i) = 0.d0
+           sigma(i) = 0.d0
+!          glissement de joint de la valeur de delta
+           offset(i) = delta(i) + offset(i) 
         endif
- 20 end do
+    end do
 !
 !    CONTRAINTE DE FISSURATION NORMALE
-    if ((a(1).ge.lc) .or. (ka.ge.lc)) then
+    if ((delta(1).ge.lc) .or. (ka.ge.lc)) then
         diss = 0
         cass = 2
     else
-        if (a(1) .le. ka) then
+        if (delta(1) .le. ka) then
 !
             diss = 0
             if (ka .gt. k0) then
@@ -353,18 +364,18 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
             else
                 cass = 0
             endif
-            sigma(1) = sigma(1) + rk*max(0.d0,a(1))
+            sigma(1) = sigma(1) + rk*max(0.d0,delta(1))
 !
         else
 !
             diss = 1
             cass = 1
             if (lc .ne. 0.d0) then
-                ra = max(0.d0,sc*(1.d0 - a(1)/lc)/a(1))
+                ra = max(0.d0,sc*(1.d0 - delta(1)/lc)/delta(1))
             else
                 ra = 0.d0
             endif
-            sigma(1) = sigma(1) + ra*max(0.d0,a(1))
+            sigma(1) = sigma(1) + ra*max(0.d0,delta(1))
 !
         endif
     endif
@@ -383,8 +394,8 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 ! V12 A V14 : COMPOSANTES DU GRADIENT DE PRESSION DANS LE REPERE GLOBAL
 ! V15 A V17 : COMPOSANTES DU FLUX HYDRO DANS LE REPERE GLOBAL
 ! V18 : PRESSION DE FLUIDE IMPOSEE OU CALCULEE ET INTERPOLEE (EN HYME)
-!
-    vip(1) = max(ka,a(1))
+! V19-V20 : GLISSEMENT TANGENTIELS
+    vip(1) = max(ka,delta(1))
     vip(2) = diss
     vip(3) = cass
     if (lc .ne. 0.d0) then
@@ -397,24 +408,23 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
     if (rt .lt. rt0) vip(5) = 1.d0
     if (rt .eq. 0.d0) vip(5) = 2.d0
     vip(6) = 1.d0 - rt/rt0
-    vip(7) = a(1) + oset
-    vip(8) = a(2)
+    vip(7) = delta(1) + offset(1)
+    vip(8) = delta(2) + offset(2)
     if (ndim .eq. 3) then
-        vip(9) = a(3)
+        vip(9) = delta(3) + offset(3)
     else
         vip(9) = 0.d0
     endif
 !
 !     CALCUL DU NOUVEAU POINT D'EQUILIBRE V10 EN CAS DE CLAVAGE/SCIAGE
 !     LE CLAVAGE FAIT AUGMENTER L'EPAISSEUR DU JOINT
-!     => OSET EST CROISSANT (CLAVAGE)
+!     => OFFSET(1) EST CROISSANT (CLAVAGE)
 !     LE SCIAGE FAIT DIMINUER L'EPAISSEUR DU JOINT
-!     => OSET EST DECROISSANT (SCIAGE)
-    vip(10) = oset
+!     => OFFSET(1) EST DECROISSANT (SCIAGE)
+    vip(10) = offset(1)
 !
 !     FLUX, GRAD DE PRESSION ET PRESSION DANS LE REPERE GLOBAL
     if (ifhyme) then
-!
         gploc(1) = 0.d0
         gploc(2) = gp(1)
         if (ndim .eq. 3) then
@@ -434,12 +444,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE CALCULEE
 !       ON ANNULE SON INFLUENCE
         vip(11) = sigma(1) + presg
-!
         vip(12) = gpglo(1)
         vip(13) = gpglo(2)
         vip(15) = fhglo(1)
         vip(16) = fhglo(2)
-!
         if (ndim .eq. 3) then
             vip(14) = gpglo(3)
             vip(17) = fhglo(3)
@@ -450,13 +458,10 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
 !       PRESSION DE FLUIDE CALCULEE AUX NOEUDS (DDL) ET INTERPOL AU PG
         vip(18) = presg
-!
     else
-!
 !       CONTRAINTE MECANIQUE NORMALE SANS PRESSION DE FLUIDE IMPOSEE
 !       ON ANNULE SON INFLUENCE
         vip(11) = sigma(1) + presfl
-!
 !       VI PAS UTILISEES EN MODELISATION NON HYME
         vip(12) = 0.d0
         vip(13) = 0.d0
@@ -464,10 +469,14 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
         vip(15) = 0.d0
         vip(16) = 0.d0
         vip(17) = 0.d0
-!
 !       PRESSION DE FLUIDE IMPOSEE AU PG :
         vip(18) = presfl
-!
+    endif
+    vip(19) = offset(2)
+    if (ndim.eq.3) then
+       vip(20) = offset(3)
+    else
+       vip(20) = 0.d0
     endif
 !
 5000 continue
@@ -483,16 +492,17 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
 !       TERME : DW/DGP  (POUR KTAN P P)
         do 42 n = 1, ndim-1
-            dsidep(ndim+n,ndim+n)=-rhof*(max(amin,a(1)+amin))**3/(12*&
-            visf)
+            dsidep(ndim+n,ndim+n)=&
+                        -rhof*(max(amin,delta(1)+amin))**3/(12*visf)
  42     continue
 !
 !       TERME : DW/DDELTA_N  (POUR KTAN P U)
         do 43 n = 1, ndim-1
-            if (a(1) .lt. 0.d0) then
+            if (delta(1) .lt. 0.d0) then
                 dsidep(ndim+n,1) = 0.d0
             else
-                dsidep(ndim+n,1) = -3*rhof*gp(n)*(a(1)+amin)**2/(12* visf)
+                dsidep(ndim+n,1) =&
+                        -3*rhof*gp(n)*(delta(1)+amin)**2/(12*visf)
             endif
  43     continue
 !
@@ -503,17 +513,16 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
     rigart=1.d-8
 !   MATRICE TANGENTE DE CONTACT FERME
-    if (a(1) .le. 0.d0) then
+    if (delta(1) .le. 0.d0) then
         dsidep(1,1) = rc
 ! POUR LE JOINT CLAVE LA MATRICE DE RIGIDITE NORMALE EST ZERO
-        if ((prescl.ge.0.d0) .and. (doset.gt.0.d0)) dsidep(1,1) = rigart*r0
+        if ((prescl.ge.0.d0) .and. (doffset(1).gt.0.d0)) dsidep(1,1) = rigart*r0
         do i = 2, ndim
             dsidep(i,i) = rt0
         end do
     else
-!
 !   MATRICE TANGENTE DE CONTACT OUVERT
-!   (NOTER QUE DANS LA SUITE A(1)>0)
+!   (NOTER QUE DANS LA SUITE DELTA(1)>0)
 !
 !       MATRICE TANGENTE DE FISSURATION
         if ((diss.eq.0) .or. elas) then
@@ -524,8 +533,8 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !
         do i = 2, ndim
             dsidep(i,i) = rt
-            if ((lct.ne.0.d0) .and. (a(1).lt.lct)) then
-                dsidep(i,1) = -da(i)*rt0/lct
+            if ((lct.ne.0.d0) .and. (delta(1).lt.lct)) then
+                dsidep(i,1) = -delta(i)*rt0/lct
             endif
         end do
 !
@@ -534,7 +543,7 @@ subroutine lcejmr(fami, kpg, ksp, ndim, mate,&
 !       LA CONVERGENCE
         if (cass .eq. 2) dsidep(1,1) = rigart*r0
 !
-        if (abs(rt) .lt. rigart) then
+        if (abs(rt) .lt. rigart*rt0) then
             do i = 2, ndim
                 dsidep(i,i) = rigart*rt0
             end do

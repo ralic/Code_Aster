@@ -218,7 +218,7 @@ SIGT_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################ TESTS NON REGRESSION ###########################
 
 TEST_TABLE(
-           VALE_CALC=-4.6220930977794E-08,
+           VALE_CALC=-4.62209309209E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -226,7 +226,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.0E-08,
+           VALE_CALC=-3E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -234,7 +234,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-16220.930977794,
+           VALE_CALC=-16220.9309209,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -242,7 +242,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=15.783000599295,
+           VALE_CALC=15.7801051847,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -251,7 +251,7 @@ TEST_TABLE(
 
 
 TEST_TABLE(
-           VALE_CALC=-2.0136119018672E-08,
+           VALE_CALC=-2.01361197659E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -259,7 +259,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.0E-08,
+           VALE_CALC=-3E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -267,7 +267,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=101.90942764289,
+           VALE_CALC=101.682586991,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -275,7 +275,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=5.4219686928491E-08,
+           VALE_CALC=5.42196909809E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -283,7 +283,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.6501492577928E-08,
+           VALE_CALC=-2.65014925779E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -291,7 +291,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=152.70576346252,
+           VALE_CALC=149.878484216,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',

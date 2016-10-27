@@ -429,6 +429,8 @@ DICT_NOM_VARI = {
     "SAUT_N": _(u"saut normal"),
     "SAUT_T1": _(u"saut tangentiel 1"),
     "SAUT_T2": _(u"saut tangentiel 2"),
+    "SHIFT_T1": _(u"glissement tangentiel 1"),
+    "SHIFT_T2": _(u"glissement tangentiel 2"),
     "SDEVCRIT": _(u"CJS rapport entre le seuil déviatoire et le seuil déviatorique critique"),
     "SDEVEPSP": _(u"CJS signe du produit contracté de la contrainte déviatorique par la déformation plastique déviatorique"),
     "SEE1": _(u"contrainte dans le squelette solide"),

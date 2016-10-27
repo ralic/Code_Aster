@@ -36,7 +36,7 @@ niv_av=DEFI_FONCTION(NOM_PARA='INST',NOM_RESU='NRT_AV',VALE=(0,0, 1,0, 2,0, 3,0,
 
 # PARAMETRES MECANIQUES DES JOINTS
 k_n=1E12
-sig_m=0.
+sig_m=100.
 alpha=1.0
 penrup=0.2
 
@@ -159,7 +159,7 @@ PAMONT=AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AMON',),PRES=p_am,)
 PAVAL =AFFE_CHAR_MECA_F(MODELE=MO,PRES_REP=_F(GROUP_MA=('BAR_AVAL', ),PRES=p_av,),);
 
 # LISTE D'INSTANTS
-LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=3,),_F(JUSQU_A=tfin, NOMBRE=2,)));
+LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=(_F(JUSQU_A=3, NOMBRE=3,),_F(JUSQU_A=tfin, NOMBRE=5,)));
 L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),
                         ECHEC=_F(
                                  SUBD_NIVEAU=6,
@@ -215,13 +215,11 @@ U_F=STAT_NON_LINE(MODELE=MO,
 ################### POST TRAITEMENT U_M  #######################
 
 U_M=CALC_CHAMP(reuse =U_M,
-
               RESULTAT=U_M,
                VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
 
 U_M=CALC_CHAMP(reuse =U_M,
-
               RESULTAT=U_M,
                CONTRAINTE=('SIEF_ELNO'),
               GROUP_MA='JOINT');
@@ -252,7 +250,6 @@ SIGN_M=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################### POST TRAITEMENT U_F  #######################
 
 U_F=CALC_CHAMP(reuse =U_F,
-
               RESULTAT=U_F,
                VARI_INTERNE=('VARI_ELNO'),
               GROUP_MA='JOINT');
@@ -277,6 +274,15 @@ SAUT_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                GROUP_NO=('JOINT_H',),
                                NOM_CMP='V7',),);
 
+# SAUT TANGENTIEL DANS LE JOINT
+SAUT_T=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
+                               INTITULE='SAUT_T',
+                               RESULTAT=U_F,
+                               NOM_CHAM='VARI_NOEU',
+                               INST=tfin,
+                               GROUP_NO=('JOINT_H',),
+                               NOM_CMP='V8',),);
+
 # CONTRAINTE NORMALE DANS LE JOINT
 SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
                                INTITULE='SIG_N',
@@ -291,7 +297,7 @@ SIGN_F=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.07,
-           VALE_CALC= 4.22748732E-07,
+           VALE_CALC=4.22748731842E-07,
            VALE_REFE=4.01E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
@@ -299,9 +305,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=0.0,),
            )
 
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=1.E-2,
-           VALE_CALC=-8.82900000E+04,
+           VALE_CALC=-88290.0,
            VALE_REFE=-8.8300E4,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
@@ -309,9 +316,10 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
                      VALE=0.0,),
            )
 
+
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.05,
-           VALE_CALC=-4.41827286E-07,
+           VALE_CALC=-4.41827286392E-07,
            VALE_REFE=-4.25E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
@@ -321,7 +329,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 
 TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
            PRECISION=0.05,
-           VALE_CALC=-4.41827286E+05,
+           VALE_CALC=-441827.286392,
            VALE_REFE=-4.25000E5,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
@@ -332,7 +340,7 @@ TEST_TABLE(REFERENCE='SOURCE_EXTERNE',
 ################### TESTS U_M NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=-8.7498030736702E-08,
+           VALE_CALC=-8.7498030735E-08,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -340,7 +348,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-87498.030736702,
+           VALE_CALC=-87498.030735,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -348,7 +356,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.8526340695249E-07,
+           VALE_CALC=-1.85263406952E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -356,7 +364,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.8526340695249E5,
+           VALE_CALC=-185263.406952,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -364,7 +372,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.8813882064631E-07,
+           VALE_CALC=-2.88138820647E-07,
            NOM_PARA='V7',
            TABLE=SAUT_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -372,7 +380,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.8813882064631E5,
+           VALE_CALC=-288138.820647,
            NOM_PARA='SIGN',
            TABLE=SIGN_M,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -382,7 +390,7 @@ TEST_TABLE(
 ################### TESTS U_F  NON REGRESSION #######################
 
 TEST_TABLE(
-           VALE_CALC=1.336803580613E-07,
+           VALE_CALC=1.33680358055E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -390,7 +398,15 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-65334.600000045,
+           VALE_CALC=-3.51771783253E-07,
+           NOM_PARA='V8',
+           TABLE=SAUT_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=1.3,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-65334.6,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -398,7 +414,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.3829472449661E-07,
+           VALE_CALC=-1.38294724486E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -406,7 +422,15 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.7007912449665E5,
+           VALE_CALC=-1.12842804737E-07,
+           NOM_PARA='V8',
+           TABLE=SAUT_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=3.2,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-170079.124486,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -414,7 +438,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.1896262525914E-07,
+           VALE_CALC=-3.18962625269E-07,
            NOM_PARA='V7',
            TABLE=SAUT_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -422,7 +446,15 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.2602582525915E5,
+           VALE_CALC=-1.52158852948E-07,
+           NOM_PARA='V8',
+           TABLE=SAUT_T,
+           FILTRE=_F(NOM_PARA='COOR_X',
+                     VALE=4.6,),
+           )
+
+TEST_TABLE(
+           VALE_CALC=-326025.825269,
            NOM_PARA='SIGN',
            TABLE=SIGN_F,
            FILTRE=_F(NOM_PARA='COOR_X',
@@ -430,3 +462,4 @@ TEST_TABLE(
            )
 
 FIN()
+

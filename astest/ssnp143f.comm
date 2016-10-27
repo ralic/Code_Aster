@@ -118,9 +118,9 @@ CH_PES = AFFE_CHAR_MECA(
   FORCE_INTERNE = (_F(GROUP_MA=('BARRAGE',),FX=0.0, FY=-rho_b*ap, FZ=0.0)));
 
 # CREATION DE LISTE D'INSTANT
-L_INST=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
+LR=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbpas,),);
+L_INST =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LR ),);
 L_ARCH=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=tfin, NOMBRE=nbarch,),);
-
 # CALCUL
 U_1=STAT_NON_LINE(MODELE=MO,
                   CHAM_MATER=CM,
@@ -218,7 +218,7 @@ SIGT_AP=POST_RELEVE_T(ACTION=_F(OPERATION='EXTRACTION',
 ################ TESTS NON REGRESSION ###########################
 
 TEST_TABLE(
-           VALE_CALC=-4.1479689602778E-08,
+           VALE_CALC=-4.14796898977E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -226,7 +226,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.0E-08,
+           VALE_CALC=-3E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -234,7 +234,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-11479.689602778,
+           VALE_CALC=-11479.6898977,
            NOM_PARA='SIGN',
            TABLE=SIG_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -242,7 +242,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-17.337717157187,
+           VALE_CALC=-17.3366099698,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -250,7 +250,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-18.400640910886,
+           VALE_CALC=-18.4070059219,
            NOM_PARA='SITY',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -258,7 +258,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.2953275756308E-08,
+           VALE_CALC=-2.29532766288E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -266,7 +266,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-3.0E-08,
+           VALE_CALC=-3E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -274,7 +274,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=64.005644489058,
+           VALE_CALC=63.9051907721,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -282,7 +282,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=12.971636104022,
+           VALE_CALC=12.9628171042,
            NOM_PARA='SITY',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -290,7 +290,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=3.1903458801704E-08,
+           VALE_CALC=3.19034743281E-08,
            NOM_PARA='V7',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -298,7 +298,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-2.7421587056694E-08,
+           VALE_CALC=-2.74215870567E-08,
            NOM_PARA='V10',
            TABLE=VAR_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -306,7 +306,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=2.9121187107297,
+           VALE_CALC=2.86794760378,
            NOM_PARA='SITX',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
@@ -314,7 +314,7 @@ TEST_TABLE(
            )           
 
 TEST_TABLE(
-           VALE_CALC=-51.222271201817,
+           VALE_CALC=-50.5860552827,
            NOM_PARA='SITY',
            TABLE=SIGT_AP,
            FILTRE=_F(NOM_PARA='COOR_Y',
