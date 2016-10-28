@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # -----------------------------------------------------
-# MODELISATION 3D : FLUAGE PROPRE BETON_BURGER_FP
+# MODELISATION 3D : FLUAGE PROPRE BETON_BURGER
 # -----------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
@@ -81,7 +81,7 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                   NU = NU ,TEMP_DEF_ALPHA=0.,
                                   ALPHA = ALPHA ,
                                   FONC_DESORP = FONC1),
-                     BETON_BURGER_FP =_F( K_RS   = 2.0E+5,
+                     BETON_BURGER =_F( K_RS   = 2.0E+5,
                                         ETA_RS = 4.0E+10,
                                         KAPPA  = 3.E-3,
                                         ETA_IS = 1.0E+11,
@@ -174,7 +174,7 @@ U=STAT_NON_LINE( MODELE=MO,
                    _F(CHARGE = CH21),
                    _F(CHARGE = CH22),
                  ),
-       COMPORTEMENT=_F(RELATION = 'BETON_BURGER_FP',
+       COMPORTEMENT=_F(RELATION = 'BETON_BURGER',
                     ITER_INTE_MAXI = 1000),
                  INCREMENT=_F(LIST_INST = L_INST,
                               NUME_INST_FIN = 22),

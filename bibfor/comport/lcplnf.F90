@@ -94,7 +94,7 @@ subroutine lcplnf(rela_comp, vind, nbcomm, nmat, cpmono,&
 !
     else if (rela_comp(1:7).eq.'IRRAD3M') then
         call irrlnf(nmat, materf, yf(ndt+1), 1.0d0, vinf)
-    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:12) .eq. 'BETON_BURGER') then
         call burlnf(nvi, vind, nmat, materd, materf,&
                     dt, nr, yd, yf, vinf,&
                     sigf)

@@ -8,7 +8,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
     implicit none
 !       ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,7 +99,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
                     itmax, toler, iter, r, rini,&
                     iret)
 !
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (loi(1:12) .eq. 'BETON_BURGER') then
 !
         call burcvg(nr, itmax, toler, iter, dy,&
                     r, rini, iret)

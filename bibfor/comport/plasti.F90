@@ -136,7 +136,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
     real(kind=8) :: vp(3), vecp(3, 3), tampon(*), dsde(6, *), pgl(3, 3)
     real(kind=8) :: angmas(3)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(nrm*nrm)
-!     POUR BETON_BURGER_FP - ATTENTION DIMENSION MAXI POUR CE MODELE
+!     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
     real(kind=8) :: yd(21), yf(21)
     parameter  ( epsi = 1.d-15 )
     aster_logical :: resi, rigi

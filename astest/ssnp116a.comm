@@ -16,7 +16,7 @@
 # ======================================================================
 #-----------------------------------------------------------------------
 #   TEST DU MODELE DE COUPLAGE D'UNE LOI DE FLUAGE DE GRANGER
-#   (GRANGER_FP) ET DES LOIS DE PLASTICITE/FISSURATION :
+#   (BETON_GRANGER) ET DES LOIS DE PLASTICITE/FISSURATION :
 #   BETON_DOUBLE_DP (DOUBLE CRITERE DE DRUCKER PRAGER),
 #   VMIS_ISOT_LINE
 #   EN DEPLACEMENT IMPOSE, EN MODELISATION 3D, EN TRACTION UNIAXIALE (XX).
@@ -92,10 +92,10 @@ BETON=DEFI_MATERIAU(            ELAS_FO=_F( E = E,
                                             ALPHA = ALPHA,
                                             TEMP_DEF_ALPHA=0.0,
                                             FONC_DESORP = DESORP,),
-                                GRANGER_FP=_F( J1 = 0.2,
+                                BETON_GRANGER=_F( J1 = 0.2,
                                             TAUX_1 = 4320000.,
                                             ),
-                              V_GRANGER_FP=_F(FONC_V   = FoncV,
+                              V_BETON_GRANGER=_F(FONC_V   = FoncV,
                                               ),
                            BETON_DOUBLE_DP=_F( F_C = FC,
                                             F_T = FT,
@@ -213,7 +213,7 @@ COEF_TR=DEFI_FONCTION( NOM_PARA='INST',
                         )
 
 #########################################################
-###    COUPLAGE GRANGER_FP BETON_DOUBLE_DP            ###
+###    COUPLAGE BETON_GRANGER BETON_DOUBLE_DP            ###
 #     THERMIQUE ET SECHAGE CST - SOLUTION ANALYTIQUE  ###
 #########################################################
 
@@ -227,7 +227,7 @@ COUPLA=STAT_NON_LINE(
                   INCREMENT=_F(  LIST_INST = DEFLIST),
                   CHAM_MATER=CM,
                   COMPORTEMENT=_F(  RELATION = 'KIT_DDI',
-                                 RELATION_KIT = ('GRANGER_FP_V',
+                                 RELATION_KIT = ('BETON_GRANGER_V',
                                              'BETON_DOUBLE_DP',),
                                  ITER_INTE_MAXI = 20,
                                  ITER_INTE_PAS = 0,
@@ -489,7 +489,7 @@ COND_LI2=AFFE_CHAR_MECA( MODELE=MO,
                    )
 
 #########################################################
-###    COUPLAGE GRANGER_FP BETON_DOUBLE_DP            ###
+###    COUPLAGE BETON_GRANGER BETON_DOUBLE_DP            ###
 #     THERMIQUE ET SECHAGE VARIABLE  ###
 #########################################################
 
@@ -503,7 +503,7 @@ COUPLA2=STAT_NON_LINE(
                   INCREMENT=_F(  LIST_INST = DEFLIST),
                   CHAM_MATER=CMV,
                   COMPORTEMENT=_F(  RELATION = 'KIT_DDI',
-                                 RELATION_KIT = ('GRANGER_FP_V',
+                                 RELATION_KIT = ('BETON_GRANGER_V',
                                              'BETON_DOUBLE_DP',),
                                  DEFORMATION = 'PETIT',
                                  ITER_INTE_MAXI = 20,
@@ -604,7 +604,7 @@ TEST_TABLE(
            )
 
 ################################################
-###    COUPLAGE GRANGER_FP  VMIS_ISOT_LINE   ###
+###    COUPLAGE BETON_GRANGER  VMIS_ISOT_LINE   ###
 ################################################
 
 COUPLA3=STAT_NON_LINE(
@@ -616,7 +616,7 @@ COUPLA3=STAT_NON_LINE(
                 INCREMENT=_F(  LIST_INST = DEFLIST),
                 CHAM_MATER=CMV,
                 COMPORTEMENT=_F(  RELATION = 'KIT_DDI',
-                               RELATION_KIT = ('GRANGER_FP_V',
+                               RELATION_KIT = ('BETON_GRANGER_V',
                                                'VMIS_ISOT_LINE',),
                                DEFORMATION = 'PETIT',
                                ITER_INTE_MAXI = 20,

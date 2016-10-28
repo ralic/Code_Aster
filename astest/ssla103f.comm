@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-#       SUR UN CYLINDRE  - COUPLAGE ENDO_ISOT_BETON/BETON_UMLV_FP
+#       SUR UN CYLINDRE  - COUPLAGE ENDO_ISOT_BETON/BETON_UMLV
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -48,7 +48,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                     BETON_ECRO_LINE=_F( SYT = 4.E6,
                                         D_SIGM_EPSI = -10.E9,
                                         SYC = 53.4E6),
-                   BETON_UMLV_FP=_F( K_RS   = 1.E25,
+                   BETON_UMLV=_F( K_RS   = 1.E25,
                                      ETA_RS = 1.E25,
                                      K_IS   = 1.E25,
                                      ETA_IS = 1.E25,
@@ -145,7 +145,7 @@ U=STAT_NON_LINE( MODELE=MO,
                 CHAM_MATER=CM,
                 EXCIT=_F(CHARGE=CH1,),
                 COMPORTEMENT=_F(RELATION = 'KIT_DDI',
-                             RELATION_KIT=('BETON_UMLV_FP','ENDO_ISOT_BETON'),
+                             RELATION_KIT=('BETON_UMLV','ENDO_ISOT_BETON'),
                              ITER_INTE_MAXI=100,),
                  INCREMENT=_F(LIST_INST=L_INST,),
                 NEWTON=_F(MATRICE='TANGENTE',

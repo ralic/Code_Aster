@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='GRANGER_FP_V',
+    nom='BETON_GRANGER_V',
     doc="""Comportement de fluage propre du beton avec prise en compte du
    phénomène de vieillissement, cf. R7.01.01""",
     num_lc=26,
@@ -31,7 +31,7 @@ loi = LoiComportement(
         'VG32', 'VG33', 'VG34', 'VG35', 'VG36', 'VG37', 'VG38', 'VG39', 'VG40', 'VG41',
         'VG42', 'VG43', 'VG44', 'VG45', 'VG46', 'VG47', 'VG48', 'VG49', 'VG50', 'VG51',
         'VG52', 'VG53', 'VG54', 'VG55'),
-    mc_mater = ('ELAS', 'GRANGER_FP', 'V_GRANGER_FP'),
+    mc_mater = ('ELAS', 'BETON_GRANGER', 'V_BETON_GRANGER'),
     modelisation = ('3D', 'AXIS', 'D_PLAN'),
     deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
     nom_varc = ('TEMP', 'SECH', 'HYDR'),

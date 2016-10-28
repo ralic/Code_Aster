@@ -143,8 +143,8 @@ implicit none
 !
 ! - Creep strains: epsi_creep
 !
-    if (rela_comp(1:10) .ne. 'GRANGER_FP' .and.&
-        (rela_comp(1:7).ne.'KIT_DDI'.or.kit_comp_2(1:10).ne.'GRANGER_FP')) then
+    if (rela_comp(1:13) .ne. 'BETON_GRANGER' .and.&
+        (rela_comp(1:7).ne.'KIT_DDI'.or.kit_comp_2(1:13).ne.'BETON_GRANGER')) then
         l_creep = .false.
         do i = 1, mxcmel
             epsi_plas(i) = zero

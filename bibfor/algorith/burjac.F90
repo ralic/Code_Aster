@@ -2,7 +2,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
                   vind, timed, timef, yd, yf,&
                   dy, nr, drdy)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! person_in_charge: alexandre.foucault at edf.fr
 !       ----------------------------------------------------------------
 !       CALCUL DU JACOBIEN DU SYSTEME NL A RESOUDRE = DRDY(DY)
-!       POUR LE MODELE BETON_BURGER_FP
+!       POUR LE MODELE BETON_BURGER
 !       IN  MOD    :  TYPE DE MODELISATION
 !           NMAT   :  DIMENSION MATER
 !           MATERD :  COEFFICIENTS MATERIAU A T

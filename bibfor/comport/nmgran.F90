@@ -110,7 +110,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     mod = typmod(1)
     call granvi(mod, ndimsi, ibid, ibid)
     call matini(6, 6, 0.d0, dsidep)
-    if (.not.( compor(1)(1:10) .eq. 'GRANGER_FP' )) then
+    if (.not.( compor(1)(1:13) .eq. 'BETON_GRANGER' )) then
         call utmess('F', 'ALGORITH4_50', sk=compor(1))
     endif
     delta = instap-instam
@@ -245,10 +245,10 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
     coefj=0.d0
     do i = 1, 8
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
+                    ' ', 'BETON_GRANGER', 0, ' ', [0.d0],&
                     1, nomres(i), valres(i), icodre(i), 0)
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'GRANGER_FP', 0, ' ', [0.d0],&
+                    ' ', 'BETON_GRANGER', 0, ' ', [0.d0],&
                     1, nomres(i+8), valres(i+8), icodre(i+8), 0)
         if ((icodre(i) .ne.0) .and. (icodre(i+8) .ne.0)) then
             valres(i) = 0.d0
@@ -271,10 +271,10 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
 !
 !  ------- CARACTERISTIQUES EFFET DU VIEILLISSEMENT
 !
-    if (compor(1) (1:14) .eq. 'GRANGER_FP_V') then
+    if (compor(1) (1:15) .eq. 'BETON_GRANGER_V') then
 !~         nomres(1)='QSR_VEIL'
 !~         call rcvalb(fami, kpg, ksp, '+', imate,&
-!~                     ' ', 'V_GRANGER_FP', 0, ' ', [0.d0],&
+!~                     ' ', 'V_BETON_GRANGER', 0, ' ', [0.d0],&
 !~                     1, nomres(1), valres(1), icodre(1), 0)
 !~         if (icodre(1) .ne. 0) valres(1)=0.d0
 !~         qsrv=valres(1)
@@ -290,7 +290,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate,&
         tceq = (agem+agep)/2
         nomres(1)='FONC_V'
         call rcvalb(fami, kpg, ksp, '+', imate,&
-                    ' ', 'V_GRANGER_FP', 1, 'INST', [tceq],&
+                    ' ', 'V_BETON_GRANGER', 1, 'INST', [tceq],&
                     1, nomres, valres, icodre, 0)
 !
         vieil = valres(1)

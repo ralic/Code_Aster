@@ -19,7 +19,7 @@ DEBUT(CODE=_F( NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
 
 # ==================================================== #
 # 
-#~ GRANGER_FP_V CONSTITUTIVE LAW FOR CREEP OF CONCRETE :
+#~ BETON_GRANGER_V CONSTITUTIVE LAW FOR CREEP OF CONCRETE :
 #     EFFECT OF AGING AT CONSTANT TEMPERATURE
 # 
 # ==================================================== #
@@ -67,7 +67,7 @@ BET = DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                   TEMP_DEF_ALPHA=20.0,
                                   ALPHA=ALPHA,
                                   FONC_DESORP=FONC_D,),
-                    GRANGER_FP=_F(
+                    BETON_GRANGER=_F(
                                   J1=JS[0],
                                   J2=JS[1],
                                   J3=JS[2],
@@ -85,7 +85,7 @@ BET = DEFI_MATERIAU(ELAS_FO=_F(E=YOUNG,
                                   TAUX_7=TAUS[6]*day,
                                   TAUX_8=TAUS[7]*day,
                                   ),
-                    V_GRANGER_FP=_F(FONC_V  =foncV,),)
+                    V_BETON_GRANGER=_F(FONC_V  =foncV,),)
 
 # LOADING INSTANTS (IN DAYS) AND FINAL TIME
 AGES = [2., 10., 28.]
@@ -121,7 +121,7 @@ for i in range(len(AGES)) :
   vari = 55 * [0.]
   vari[-1] = age *day
   T_RE0[i] = SIMU_POINT_MAT(VARI_INIT    = _F(VALE = vari),
-                            COMPORTEMENT = _F(RELATION='GRANGER_FP_V',
+                            COMPORTEMENT = _F(RELATION='BETON_GRANGER_V',
                                               DEFORMATION='PETIT',),
                             MATER        = BET,
                             INCREMENT    = _F(LIST_INST = DEFLIST,),

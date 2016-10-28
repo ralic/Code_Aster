@@ -42,7 +42,7 @@ ZERO =DEFI_CONSTANTE(VALE=0.);
 
 UN =DEFI_CONSTANTE(VALE=1.0);
 
-compor='BETON_BURGER_FP'
+compor='BETON_BURGER'
 
 Nbvari=21
 
@@ -69,7 +69,7 @@ MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                TEMP_DEF_ALPHA=TREF,
                                ALPHA=ALPH,
                                FONC_DESORP = FONC1),
-                     BETON_BURGER_FP =_F( K_RS   = 4360,
+                     BETON_BURGER =_F( K_RS   = 4360,
                                         ETA_RS = 3.41e9,
                                         KAPPA  = 3e-3,
                                         ETA_IS = 5.76e12,
@@ -226,7 +226,7 @@ for i in range(NCAL):
                                 TEMP_DEF_ALPHA=0.,
                                 ALPHA=ZERO,
                                 FONC_DESORP = FONC1),
-                     BETON_BURGER_FP =_F( K_RS   = 4360,
+                     BETON_BURGER =_F( K_RS   = 4360,
                                         ETA_RS = 3.41e9,
                                         KAPPA  = 3e-3,
                                         ETA_IS = 5.76e12,

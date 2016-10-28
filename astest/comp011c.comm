@@ -43,7 +43,7 @@ ZERO =DEFI_CONSTANTE(VALE=0.);
 
 UN =DEFI_CONSTANTE(VALE=1.0);
 
-compor='BETON_UMLV_FP'
+compor='BETON_UMLV'
 
 Nbvari=21
 
@@ -70,7 +70,7 @@ MATER=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                                TEMP_DEF_ALPHA=TREF,
                                ALPHA=ALPH,
                                FONC_DESORP = FONC1),
-                     BETON_UMLV_FP =_F( K_RS   = 2.0E+5,
+                     BETON_UMLV =_F( K_RS   = 2.0E+5,
                                         ETA_RS = 4.0E+10,
                                         K_IS   = 5.0E+4,
                                         ETA_IS = 1.0E+11,
@@ -217,7 +217,7 @@ for i in range(NCAL):
                                 TEMP_DEF_ALPHA=0.,
                                 ALPHA=ZERO,
                                 FONC_DESORP = FONC1),
-                     BETON_UMLV_FP =_F( K_RS   = 2.0E+5,
+                     BETON_UMLV =_F( K_RS   = 2.0E+5,
                                         ETA_RS = 4.0E+10,
                                         K_IS   = 5.0E+4,
                                         ETA_IS = 1.0E+11,

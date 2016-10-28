@@ -9,7 +9,7 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
     implicit  none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,7 +105,7 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
                     sigf, vind, seuil)
 ! ======================================================================
 ! ======================================================================
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (loi(1:12) .eq. 'BETON_BURGER') then
 ! --- LE FLUAGE EST CONSIDERE POUR TOUT TYPE DE SOLLICITATION MECANIQUE
         call burcvx(mod, nmat, materd, materf, timed,&
                     timef, nvi, vind, nr, sigd,&

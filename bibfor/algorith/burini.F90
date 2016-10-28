@@ -2,7 +2,7 @@ subroutine burini(nmat, materd, materf, timed, timef,&
                   nvi, vind, nr, yd, deps,&
                   dy)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ subroutine burini(nmat, materd, materf, timed, timef,&
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
 !=====================================================================
-!  BETON_BURGER_FP : CALCUL SOLUTION ESSAI DY = ( DSIG DEPSFI (DEPS3))
+!  BETON_BURGER : CALCUL SOLUTION ESSAI DY = ( DSIG DEPSFI (DEPS3))
 !                    AVEC     Y  = ( SIG  EPSFI  (EPS3))
 !  LA SOLUTION D'ESSAI EST ETABLIE SUIVANT UNE APPROCHE LINEARISEE
 !  D'ORDRE 1 AUTOUR DE L'ETAT MATERIAU A L'INSTANT T

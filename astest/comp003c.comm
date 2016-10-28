@@ -75,7 +75,7 @@ BETON[0]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                     E=YOUNG_Pa,
                                     ALPHA=ALPHA,TEMP_DEF_ALPHA=0.,
                                     FONC_DESORP = FONC1),
-              BETON_BURGER_FP =_F( K_RS      = K_RS_Pa,
+              BETON_BURGER =_F( K_RS      = K_RS_Pa,
                                    ETA_RS    = ETA_RS_Pa,
                                    ETA_IS    = ETA_IS_Pa,
                                    K_RD      = K_RD_Pa,
@@ -92,7 +92,7 @@ BETON[1]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                     E=YOUNG,
                                     ALPHA=ALPHA,TEMP_DEF_ALPHA=0.,
                                     FONC_DESORP = FONC1),
-              BETON_BURGER_FP =_F( K_RS      = K_RS,
+              BETON_BURGER =_F( K_RS      = K_RS,
                                    ETA_RS    = ETA_RS,
                                    ETA_IS    = ETA_IS,
                                    K_RD      = K_RD,
@@ -103,7 +103,7 @@ BETON[1]=DEFI_MATERIAU(ELAS_FO     =_F(NU=POISSON,
                                    TEMP_0_C  = TEMP_0_C,),
                                     );
 
-compor='BETON_BURGER_FP'
+compor='BETON_BURGER'
 
 ##################################################################################
 #Discretisation du calcul. nbequi = nombre de calculs "equivalents" : Pa, Rot

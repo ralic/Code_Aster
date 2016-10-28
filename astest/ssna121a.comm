@@ -79,7 +79,7 @@ BETON=DEFI_MATERIAU(ELAS_FO=_F(E=E,
                                ALPHA= ALPHA,
                                FONC_DESORP=FCTD,
                                ),
-                    BETON_UMLV_FP=_F(K_RS   = 2.0E11,      #[Pa]
+                    BETON_UMLV=_F(K_RS   = 2.0E11,      #[Pa]
                                      ETA_RS = 4.0E16,      #[Pa.s]
                                      K_IS   = 5.0E10,     #[Pa]
                                      ETA_IS = 1.0E17,      #[Pa.s]
@@ -181,7 +181,7 @@ RESUMECA=STAT_NON_LINE(
                                _F(CHARGE=CLIM,),
                                _F(CHARGE=CH_P,),
                               ),
-                       COMPORTEMENT=_F(RELATION='BETON_UMLV_FP'),
+                       COMPORTEMENT=_F(RELATION='BETON_UMLV'),
                        INCREMENT=_F(LIST_INST=DEFLIST,
                                    ),
                        NEWTON=_F(PREDICTION = 'ELASTIQUE',MATRICE='TANGENTE',REAC_ITER=1),

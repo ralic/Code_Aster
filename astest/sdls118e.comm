@@ -332,19 +332,19 @@ DEPLX=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT=DYNA_XP,
                  NOM_CHAM='DEPL',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 DEPLY=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_YP,
                  NOM_CHAM='DEPL',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 DEPLZ=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_ZP,
                  NOM_CHAM='DEPL',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 VITEX=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_XP,
@@ -356,31 +356,31 @@ VITEY=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  RESULTAT=DYNA_YP,
                  NOM_CHAM='VITE',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 VITEZ=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_ZP,
                  NOM_CHAM='VITE',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 ACCEX=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_XP,
                  NOM_CHAM='ACCE',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 ACCEY=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_YP,
                  NOM_CHAM='ACCE',
                  NUME_ORDRE = 2,
-                 INFO=1,); 		 
+                 INFO=1,);  
 ACCEZ=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                  OPERATION='EXTR',
                  RESULTAT=DYNA_ZP,
                  NOM_CHAM='ACCE',
                  NUME_ORDRE = 2,
-                 INFO=1,);		 
+                 INFO=1,); 
 DEPLA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',
                   NUME_DDL= NUME_DD0,
@@ -400,8 +400,8 @@ DEPLA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            CUMUL='OUI',
                            COEF_R=1.0,
                            ),
-		        ),
-                  ); 		  
+        ),
+                  );   
 VITEA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',
                   NUME_DDL= NUME_DD0,
@@ -421,9 +421,9 @@ VITEA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            CUMUL='OUI',
                            COEF_R=1.0,
                            ),
-		        ),
+        ),
                   ); 
-		  
+  
 ACCEA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',
                   NUME_DDL= NUME_DD0,
@@ -442,7 +442,7 @@ ACCEA=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                            CUMUL='OUI',
                            COEF_R=1.0,
                            ),
-		        ),
+        ),
                   );
 
 DYNA_REF=CREA_RESU(OPERATION='AFFE',
@@ -457,7 +457,7 @@ DYNA_REF=CREA_RESU(reuse=DYNA_REF,OPERATION='AFFE',
               MATR_RIGI=rigid0,
               MATR_MASS=masse0,
               NOM_CHAM='VITE',
-              AFFE=(_F(CHAM_GD=VITEA,INST=0.0,),),);	  
+              AFFE=(_F(CHAM_GD=VITEA,INST=0.0,),),);  
 DYNA_REF=CREA_RESU(reuse=DYNA_REF,OPERATION='AFFE',
               TYPE_RESU='DYNA_TRANS',
               MATR_RIGI=rigid0,

@@ -31,7 +31,7 @@ subroutine nmtstm(compor, imatri, matsym)
 !
     matsym=.true.
     if (compor(1)(1:7) .eq. 'KIT_DDI') then
-        if (compor(8)(1:13) .eq. 'BETON_UMLV_FP') then
+        if (compor(8)(1:10) .eq. 'BETON_UMLV') then
             matsym = .false.
         endif
     endif

@@ -16,7 +16,7 @@ subroutine te0528(option, nomte)
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,8 +34,8 @@ subroutine te0528(option, nomte)
 !
 !     BUT: CALCUL DES DEFORMATIONS DUES :
 !         AU FLUAGE DE DESSICCATION
-!          POUR LE MODELE BETON_UMLV_FP
-!         AU FLUAGE PROPRE POUR LES MODELES BETON_UMLV_FP ET GRANGER
+!          POUR LE MODELE BETON_UMLV
+!         AU FLUAGE PROPRE POUR LES MODELES BETON_UMLV ET GRANGER
 !          AUX NOEUDS ET PG
 !          ELEMENTS ISOPARAMETRIQUES 3D/D_PLAN/AXIS
 !
@@ -72,15 +72,15 @@ subroutine te0528(option, nomte)
 !    VERIFICATION DU COMPORTEMENT FLUAGE
     lflu=.false.
     if (option(1:4) .eq. 'EPFD') then
-        if ((compo1(1:13).eq.'BETON_UMLV_FP') .or. (compo1(1:15) .eq.'BETON_BURGER_FP')&
-            .or. ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:13) .eq. 'BETON_UMLV_FP' )) then
+        if ((compo1(1:10).eq.'BETON_UMLV') .or. (compo1(1:12) .eq.'BETON_BURGER')&
+            .or. ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
             lflu=.true.
         endif
     else if (option(1:4).eq.'EPFP') then
-        if ((compo1(1:13).eq.'BETON_UMLV_FP') .or. (compo1(1:15) .eq.'BETON_BURGER_FP') .or.&
-            (compo1(1:10).eq.'GRANGER_FP') .or.&
-            (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:10) .eq.'GRANGER_FP') .or.&
-            (compo1(1:7).eq.'KIT_DDI'.and. compo2( 1:13).eq.'BETON_UMLV_FP')) lflu= .true.
+        if ((compo1(1:10).eq.'BETON_UMLV') .or. (compo1(1:12) .eq.'BETON_BURGER') .or.&
+            (compo1(1:13).eq.'BETON_GRANGER') .or.&
+            (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:13) .eq.'BETON_GRANGER') .or.&
+            (compo1(1:7).eq.'KIT_DDI'.and. compo2(1:10).eq.'BETON_UMLV')) lflu= .true.
     endif
 !
     if (.not.lflu) then
@@ -122,14 +122,14 @@ subroutine te0528(option, nomte)
 !
         do 140 igau = 1, npg
 !
-! POUR BETON_UMLV_FP LE FLUAGE DE DESSICCATION VAUT
+! POUR BETON_UMLV LE FLUAGE DE DESSICCATION VAUT
 !                    [V9 V10 V11 V18 V19 V20]
 !
-            if ((compo1(1:13).eq.'BETON_UMLV_FP') .or.&
-                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:13) .eq. 'BETON_UMLV_FP' )) then
+            if ((compo1(1:10).eq.'BETON_UMLV') .or.&
+                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
                 call lcumvi('FD', zr(ivari+(igau-1)*nbvari), epstmp)
 !
-            else if (compo1(1:15).eq.'BETON_BURGER_FP') then
+            else if (compo1(1:12).eq.'BETON_BURGER') then
                 call burftm('FD', zr(ivari+(igau-1)*nbvari), epstmp)
 !
             endif
@@ -153,8 +153,8 @@ subroutine te0528(option, nomte)
 !
         do 180 igau = 1, npg
 !
-            if ((compo1(1:13).eq.'BETON_UMLV_FP') .or.&
-                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:13) .eq. 'BETON_UMLV_FP' )) then
+            if ((compo1(1:10).eq.'BETON_UMLV') .or.&
+                ( compo1(1:7) .eq. 'KIT_DDI' .and. compo2(1:10) .eq. 'BETON_UMLV' )) then
 !      POUR BETON_UMLV LE FLUAGE PROPRE VAUT
 !        EPFP11 = (V1+V2) + V3 + V4
 !        EPFP22 = (V1+V2) + V5 + V6
@@ -169,7 +169,7 @@ subroutine te0528(option, nomte)
                     epsfl(nbsig*(igau-1)+i)=epstmp(i)
 185             continue
 !
-            else if (compo1(1:15).eq.'BETON_BURGER_FP') then
+            else if (compo1(1:12).eq.'BETON_BURGER') then
 !      POUR BETON_BURGER LE FLUAGE PROPRE VAUT
 !        EPFP11 = (V1+V2) + V3 + V4
 !        EPFP22 = (V1+V2) + V5 + V6
@@ -185,8 +185,8 @@ subroutine te0528(option, nomte)
 190             continue
 !
 !-------------------------------------------------------------------*
-                else if ((compo1(1:10).eq.'GRANGER_FP') .or. (compo1(1:7)&
-            .eq.'KIT_DDI'.and. compo2(1:10).eq.'GRANGER_FP') )&
+                else if ((compo1(1:13).eq.'BETON_GRANGER') .or. (compo1(1:7)&
+            .eq.'KIT_DDI'.and. compo2(1:13).eq.'BETON_GRANGER') )&
             then
                 nomres='NU'
                 nompar='INST'

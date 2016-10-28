@@ -2,7 +2,7 @@ subroutine burcvx(mod, nmat, materd, materf, timed,&
                   timef, nvi, vind, nr, sigd,&
                   deps, yd, yf, toler, seuil)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ subroutine burcvx(mod, nmat, materd, materf, timed,&
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
 !=====================================================================
-!  BETON_BURGER_FP : CALCUL SOLUTION ESSAI ELASTIQUE
+!  BETON_BURGER : CALCUL SOLUTION ESSAI ELASTIQUE
 !  LA SOLUTION D'ESSAI EST ETABLIE SUIVANT UNE APPROCHE LINEARISEE
 !  D'ORDRE 1 AUTOUR DE L'ETAT MATERIAU A L'INSTANT T
 !  IN  NMAT   : DIMENSION MATER

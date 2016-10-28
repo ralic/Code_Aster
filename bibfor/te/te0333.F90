@@ -148,8 +148,8 @@ implicit none
 !
 ! - Creep strains: epsi_creep
 !
-    if (rela_comp(1:10) .ne. 'GRANGER_FP' .and.&
-       (rela_comp(1:7).ne.'KIT_DDI'.or.kit_comp_1(1:10).ne.'GRANGER_FP')) then
+    if (rela_comp(1:13) .ne. 'BETON_GRANGER' .and.&
+       (rela_comp(1:7).ne.'KIT_DDI'.or.kit_comp_1(1:13).ne.'BETON_GRANGER')) then
         l_creep = .false.
         do i = 1, mxcmel
             epsi_plas(i) = zero
@@ -170,7 +170,7 @@ implicit none
         l_temp = .true.
     else if (rela_comp(1:7).eq.'KIT_DDI') then
         if (kit_comp_2(1:15) .eq. 'BETON_DOUBLE_DP') then
-            if (kit_comp_1(1:10) .eq. 'GRANGER_FP') then
+            if (kit_comp_1(1:13) .eq. 'BETON_GRANGER') then
                 nvi = nvif + 3
                 l_temp = .true.
             else
@@ -188,7 +188,7 @@ implicit none
         call rcvarc(' ', 'TEMP', '+', 'RIGI', igau,&
                     1, tempg, iret)
 !
-! ----- Change temperature from internal variable (maximum) for BETON_DOUBLE_DP/GRANGER_FP
+! ----- Change temperature from internal variable (maximum) for BETON_DOUBLE_DP/BETON_GRANGER
 !
         if (l_temp) then
             if (tempg .lt. zr(ivari+ (igau-1)*nbvari+nvi- 1)) then

@@ -5,7 +5,7 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 ! aslint: disable=W1306
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,7 +48,7 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 !     YF     :  VECTEUR SOLUTION A T+DT
 !  OUT
 !     VINF   :  VARIABLES INTERNES A T+DT
-!     DRDY   :  MATRICE JACOBIENNE POUR BETON_BURGER_FP
+!     DRDY   :  MATRICE JACOBIENNE POUR BETON_BURGER
 ! ----------------------------------------------------------------
 !     ------------------------------------------------------------
 #include "asterfort/burjac.h"
@@ -67,7 +67,7 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 ! ----------------------------------------------------------------
     if (loi(1:7) .eq. 'IRRAD3M') then
         call irrlnf(nmat, materf, vind, 0.0d0, vinf)
-    else if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (loi(1:12) .eq. 'BETON_BURGER') then
         dt = timef-timed
         call burlnf(nvi, vind, nmat, materd, materf,&
                     dt, nr, yd, yf, vinf,&

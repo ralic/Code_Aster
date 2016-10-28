@@ -89,7 +89,7 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
         call irrres(fami, kpg, ksp, typmod, nmat,&
                     materd, materf, yd, yf, deps,&
                     dy, r)
-    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:12) .eq. 'BETON_BURGER') then
         call burres(typmod, nmat, materd, materf, timed,&
                     timef, nvi, vind, yd, yf,&
                     deps, dy, nr, r)

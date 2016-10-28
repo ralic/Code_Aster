@@ -1,7 +1,7 @@
 subroutine burard(vin, nvi, materd, materf, nmat,&
                   timed, timef, an, bn, cn)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ subroutine burard(vin, nvi, materd, materf, nmat,&
 !=======================================================================
 !
 ! ROUTINE QUI CALCULE LES MATRICES DE DEFORMATION DE FLUAGE PROPRE
-!   DEVIATOIRE REVERSIBLE D APRES LE MODELE BETON_BURGER_FP
+!   DEVIATOIRE REVERSIBLE D APRES LE MODELE BETON_BURGER
 !
 ! IN  VIN      : VARIABLES INTERNES INITIALES
 !     NVI      : DIMENSION DES VECTEURS VARIABLES INTERNES

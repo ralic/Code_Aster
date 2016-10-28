@@ -111,7 +111,7 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
         call irrjac(fami, kpg, ksp, mod, nmat,&
                     materf, yf, dy, nr, drdy)
 !
-    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:12) .eq. 'BETON_BURGER') then
         call burjac(mod, nmat, materd, materf, nvi,&
                     vind, timed, timef, yd, yf,&
                     dy, nr, drdy)

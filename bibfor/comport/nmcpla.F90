@@ -164,7 +164,7 @@ implicit none
     compor_creep(1) = rela_flua
     write (compor_creep(2),'(I16)') nvi_flua
     compor_creep(3) = compor(3)
-    ASSERT(compor_creep(1)(1:10) .eq. 'GRANGER_FP')
+    ASSERT(compor_creep(1)(1:13) .eq. 'BETON_GRANGER')
 
 !
 ! - Number of internal variables

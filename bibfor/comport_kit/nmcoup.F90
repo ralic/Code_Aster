@@ -111,7 +111,7 @@ implicit none
     rela_flua = compor(8)
     rela_plas = compor(9)
 !
-    if (rela_flua(1:10) .eq. 'GRANGER_FP') then
+    if (rela_flua(1:13) .eq. 'BETON_GRANGER') then
         if (rela_plas      .eq. 'ELAS'           .or.&
             rela_plas(1:9) .eq. 'VMIS_ISOT'      .or.&
             rela_plas      .eq. 'ROUSS_PR'       .or.&
@@ -128,7 +128,7 @@ implicit none
         else 
             call utmess('F', 'COMPOR3_2', sk=rela_plas)
         endif
-    else if (rela_flua.eq.'BETON_UMLV_FP') then
+    else if (rela_flua.eq.'BETON_UMLV') then
         if (rela_plas      .eq. 'ENDO_ISOT_BETON' .or.&
             rela_plas(1:6) .eq. 'MAZARS') then
             if (rela_plas(1:15) .eq. 'ENDO_ISOT_BETON') then

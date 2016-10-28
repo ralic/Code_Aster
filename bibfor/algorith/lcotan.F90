@@ -11,7 +11,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -109,7 +109,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
 !
     if (opt(1:9) .eq. 'RIGI_MECA') then
 !
-        if ((loi.eq.'LAIGLE') .or. (loi.eq.'BETON_BURGER_FP')) then
+        if ((loi.eq.'LAIGLE') .or. (loi.eq.'BETON_BURGER')) then
 !
             call lcjela(loi, mod, nmat, materd, vind,&
                         dsde)
@@ -150,7 +150,7 @@ subroutine lcotan(opt, angmas, etatd, etatf, fami,&
     else if (opt(1:9) .eq. 'FULL_MECA') then
 !
         if (etatf .eq. 'ELASTIC') then
-            if (loi(1:15) .eq. 'BETON_BURGER_FP') then
+            if (loi(1:12) .eq. 'BETON_BURGER') then
                 call burjpl(nmat, materf, nr, drdy, dsde)
             else
                 call lcjela(loi, mod, nmat, materf, vinf,&

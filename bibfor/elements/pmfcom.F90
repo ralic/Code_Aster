@@ -297,7 +297,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit,&
         endif
 !
 ! --------------------------------------------------------------------------------------------------
-    else if (compo.eq.'GRANGER_FP_INDT') then
+    else if (compo.eq.'BETON_GRANGER') then
 !       Appel à comp1d pour bénéficier des comportements AXIS: méthode de DEBORST
 !           La LDC doit retourner le module tangent
         if ((algo(1:7).ne.'DEBORST') .and. (compo(1:4).ne.'SANS')) then

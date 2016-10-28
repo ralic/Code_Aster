@@ -9,7 +9,7 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla,&
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,15 +51,15 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dmflua, dmplas
-    parameter  ( dmflua = 7, dmplas = 10)
+    parameter  ( dmflua = 6, dmplas = 10)
     character(len=16) :: poflua(dmflua), poplas(dmplas)
     integer :: ikit, ii, nocc
     character(len=16) :: rela_kit(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    data poflua / 'GRANGER_FP'      ,'GRANGER_FP_V'    ,'GRANGER_FP_INDT' ,        &
-                  'BETON_UMLV_FP'   ,'GLRC_DM'         ,'GLRC_DAMAGE'     ,'FLUA_PORO_BETON'/
+    data poflua / 'BETON_GRANGER'      ,'BETON_GRANGER_V'    ,        &
+                  'BETON_UMLV'   ,'GLRC_DM'         ,'GLRC_DAMAGE'     ,'FLUA_PORO_BETON'/
     data poplas / 'ELAS'            ,'VMIS_ISOT_TRAC'  ,'VMIS_ISOT_PUIS'  ,        &
                   'VMIS_ISOT_LINE'  ,'VMIS_CINE_LINE'  ,'ROUSS_PR'        ,        &
                   'BETON_DOUBLE_DP' ,'ENDO_ISOT_BETON' ,'MAZARS'          ,'ENDO_PORO_BETON'/
@@ -104,13 +104,13 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla,&
 !
 ! - Compatibility
 !
-    if (rela_flua(1:10) .eq. 'GRANGER_FP') then
+    if (rela_flua(1:13) .eq. 'BETON_GRANGER') then
         if (rela_plas .ne. 'ELAS' .and. rela_plas .ne. 'VMIS_ISOT_TRAC' .and. rela_plas&
             .ne. 'VMIS_ISOT_PUIS' .and. rela_plas .ne. 'VMIS_ISOT_LINE' .and. rela_plas&
             .ne. 'ROUSS_PR' .and. rela_plas .ne. 'BETON_DOUBLE_DP') then
             call utmess('F', 'COMPOR3_2', sk=rela_plas)
         endif
-    else if (rela_flua.eq.'BETON_UMLV_FP') then
+    else if (rela_flua.eq.'BETON_UMLV') then
         if (rela_plas .ne. 'ENDO_ISOT_BETON' .and. rela_plas .ne. 'MAZARS') then
             call utmess('F', 'COMPOR3_3', sk=rela_plas)
         endif
@@ -136,7 +136,7 @@ subroutine ddi_kit_read(keywordfact, iocc, rela_flua, rela_plas, rela_cpla,&
 !
 ! - Alarm
 !
-    if (rela_flua .eq. 'BETON_UMLV_FP') then
+    if (rela_flua .eq. 'BETON_UMLV') then
         if (rela_plas .eq. 'ENDO_ISOT_BETON' .or. rela_plas .eq. 'MAZARS') then
             call utmess('A', 'COMPOR3_83')
         endif

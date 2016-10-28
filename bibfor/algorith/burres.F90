@@ -2,7 +2,7 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
                   timef, nvi, vin, yd, yf,&
                   deps, dy, nr, r)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
 ! ======================================================================
 ! person_in_charge: alexandre.foucault at edf.fr
 !=====================================================================
-!    BETON_BURGER_FP : CALCUL RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
+!    BETON_BURGER : CALCUL RESIDUS DU SYSTEME NL A RESOUDRE = R(DY)
 !                    CF. R7.01.34
 !                    DY =  DSIG (DBETA PAR SYSTEME)
 !                    Y  =  SIG   (BETA  PAR SYSTEME)

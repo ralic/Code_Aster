@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -330,7 +330,7 @@ implicit none
     nomres(7)='ETA_ID'
 !
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'BETON_UMLV_FP', 0, ' ', [rbid],&
+                ' ', 'BETON_UMLV', 0, ' ', [rbid],&
                 7, nomres, valres, icodre, 2)
     krs = valres(1)
     etars = valres(2)
@@ -344,7 +344,7 @@ implicit none
 !
     nomres(8)='ETA_FD'
     call rcvalb(fami, kpg, ksp, '+', imate,&
-                ' ', 'BETON_UMLV_FP', 0, ' ', [rbid],&
+                ' ', 'BETON_UMLV', 0, ' ', [rbid],&
                 8, nomres, valres, icodre, 0)
 !     FLUAGE DE DESSICCATION NON ACTIVE
     if (icodre(8) .ne. 0) then

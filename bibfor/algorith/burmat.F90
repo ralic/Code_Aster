@@ -2,7 +2,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
                   nmat, materd, materf, matcst, ndt,&
                   ndi, nr, nvi)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -163,7 +163,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 !
 
     call rcvalb(fami, kpg, ksp, '+', imat,&
-                ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
+                ' ', 'BETON_BURGER', 0, ' ', [0.d0],&
                 9, nomc(7), materd(1, 2), cerr(7), 0)
 !
 !   teste sur la valeur de QSR_K
@@ -201,7 +201,7 @@ subroutine burmat(fami, kpg, ksp, mod, imat,&
 ! === =================
 !
     call rcvalb(fami, kpg, ksp, '-', imat,&
-                ' ', 'BETON_BURGER_FP', 0, ' ', [0.d0],&
+                ' ', 'BETON_BURGER', 0, ' ', [0.d0],&
                 1, nomc(16), materd(10, 2), cerr(16), 0)
     if (cerr(16) .ne. 0) then
         materd(10,2) = -1.d0

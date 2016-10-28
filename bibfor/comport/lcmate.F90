@@ -158,7 +158,7 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
                     nmat, itmax, toler, materd, materf,&
                     matcst, ndt, ndi, nr, nvi)
 !
-    else if (rela_comp(1:15) .eq. 'BETON_BURGER_FP') then
+    else if (rela_comp(1:12) .eq. 'BETON_BURGER') then
         call burmat(fami, kpg, ksp, mod, imat,&
                     nmat, materd, materf, matcst, ndt,&
                     ndi, nr, nvi)
