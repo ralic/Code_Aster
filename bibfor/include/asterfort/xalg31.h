@@ -18,7 +18,7 @@
 interface 
     subroutine xalg31(ndim, elrefp, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
         integer :: ndim
         integer :: it
         integer :: nnose
@@ -43,5 +43,6 @@ interface
         real(kind=8) :: pintt(*) 
         real(kind=8) :: pmitt(*) 
         aster_logical :: jonc
+        integer :: exit(2)
     end subroutine xalg31
 end interface 

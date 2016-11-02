@@ -1,6 +1,6 @@
 subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
                   n, ip1, ip2, pinref, miref, mifis,&
-                  pintt, jonc, u, v)
+                  pintt, exit, jonc, u, v)
     implicit none
 !
 #include "jeveux.h"
@@ -12,7 +12,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime, n(3), ip1, ip2
+    integer :: ndim, ndime, n(3), ip1, ip2, exit(2)
     character(len=8) :: elrefp
     real(kind=8) :: mifis(ndim), pinref(*), miref(ndime), geom(*), lsn(*)
     real(kind=8) :: pintt(*)
@@ -160,7 +160,7 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
        call xnewto(elrefp, name, n,&
                    ndime, ptxx, ndim, geom, lsn,&
                    ip1, ip2, itemax,&
-                   epsmax, ksi, dekker)
+                   epsmax, ksi, exit, dekker)
     endif
     do j=1,ndime
        miref(j)=ksi(1)*ptxx(j)+ptxx(j+ndime)

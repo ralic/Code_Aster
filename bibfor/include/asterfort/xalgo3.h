@@ -18,7 +18,7 @@
 interface 
     subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
         integer :: ndim
         integer :: nnop
         integer :: it
@@ -44,5 +44,6 @@ interface
         real(kind=8) :: pintt(*) 
         real(kind=8) :: pmitt(*)
         aster_logical :: jonc
+        integer :: exit(2)
     end subroutine xalgo3
 end interface 

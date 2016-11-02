@@ -2,7 +2,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
                   cnset, typma, ndime, geom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref, pintt, pmitt, jonc)
+                  pinref, pintt, pmitt, jonc, exit)
     implicit none
 !
 #include "asterf_types.h"
@@ -20,7 +20,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, nnop, it, nnose, cnset(*)
+    integer :: ndim, ndime, nnop, it, nnose, cnset(*), exit(2)
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(*)
     real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
@@ -176,7 +176,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
 !
             call xmifis(ndim, ndime, elrefp, geom, lsnelp,&
                         n, ip1(k), ip2(k), pinref, ksia,&
-                        milfi, pintt, jonc)
+                        milfi, pintt, exit, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
@@ -198,7 +198,7 @@ subroutine xalg40(ndim, elrefp, nnop, it, nnose,&
     nn(4) = cnset(nnose*(it-1)+4)
 !    LE NOEUD MILIEU AU CENTRE DE LA FACE QUADRANGLE
     call xcenfi(elrefp, ndim, ndime, nnop, geom, lsnelp,&
-                pinref, pmiref, ksia, cenfi, jonc, nn)
+                pinref, pmiref, ksia, cenfi, nn, exit, jonc)
     mfisloc=mfisloc+1
     call xajpmi(ndim, pmilie, pmmax, ipm, inm, cenfi,&
                 lonref, ajout)

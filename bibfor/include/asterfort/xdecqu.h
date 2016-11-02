@@ -20,7 +20,7 @@ interface
                       igeom, pinter, ninter, npts, ainter,&
                       pmilie, nmilie, mfis, tx, txlsn,&
                       pintt, pmitt, ifiss, nfiss, fisco,&
-                      nfisc, cut, coupe)
+                      nfisc, cut, coupe, exit)
         integer :: ndim
         integer :: nnose
         integer :: it
@@ -44,5 +44,6 @@ interface
         integer :: nfisc
         aster_logical :: cut
         integer :: coupe(nfiss)
+        integer :: exit(2)
     end subroutine xdecqu
 end interface

@@ -517,7 +517,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                            call reeref(elp, nno, zr(igeom), newpt, ndim,&
                                        ptref, ff)
                            do ino = 1, nno
-                              lsn(3)=lsn(3)+zr(jlsn-1+ino)*ff(ino)
+                              lsn(k)=lsn(k)+zr(jlsn-1+ino)*ff(ino)
                            end do
                            if (abs(lsn(k)).ge.lonref*cridist) goto 23
                         end do

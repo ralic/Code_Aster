@@ -18,7 +18,7 @@
 interface
     subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
                   n, ip1, ip2, pinref, miref, mifis, &
-                  pintt, jonc, u, v)
+                  pintt, exit, jonc, u, v)
         integer :: ndime
         integer :: ndim
         integer :: n(3)
@@ -32,6 +32,7 @@ interface
         real(kind=8) :: mifis(ndim)
         real(kind=8) :: pintt(*)
         aster_logical :: jonc
+        integer :: exit(2)
         real(kind=8), intent(in), optional :: u(ndime)
         real(kind=8), intent(in), optional :: v(ndime)
     end subroutine xmifis

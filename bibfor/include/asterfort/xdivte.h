@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xdivte(elp, cnset, nse, nnose)
+    subroutine xdivte(elp, cnset, nse, nnose, exit)
         character(len=8) :: elp
         integer :: cnset(*)
         integer :: nse
         integer :: nnose
+        integer :: exit(2)
     end subroutine xdivte
 end interface

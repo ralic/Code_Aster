@@ -45,7 +45,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
     real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81), ff(27)
     real(kind=8) :: epsmax, a , b , c, pta(ndim), ptb(ndim), newpt(ndim)
     real(kind=8) :: ptm(ndim), dekker(4*ndime)
-    integer :: itemax, ibid, n(3), j, nno, iret
+    integer :: itemax, ibid, n(3), j, nno, iret, exit(2)
 !
 !---------------------------------------------------------------------
 !     DEBUT
@@ -121,10 +121,11 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib,&
        ksi(1) = (ksi(1)+1)/2.d0
     endif
     call vecini(4*ndime, 0.d0, dekker)
+    exit(1:2) = 0
     call xnewto(elrefp, name, n,&
                 ndime, ptxx, ndim, geom, lsn,&
                 ibid, ibid, itemax,&
-                epsmax, ksi, dekker)
+                epsmax, ksi, exit, dekker)
 !  FIN DE RECHERCHE SUR SEGMENT AB
     do j = 1, ndime
         inref(j)=2.d0*(1.d0-ksi(1))*(5.d-1-ksi(1))*ptxx(j)+4.d0*ksi(1)*(1.d0-ksi(1))*&

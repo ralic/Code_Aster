@@ -1,6 +1,6 @@
 subroutine xnewto(elrefp, name, n, ndime, ptxx,&
                   ndim, tabco, tabls, ipp, ip,&
-                  itemax, epsmax, ksi, dekker)
+                  itemax, epsmax, ksi, exit, dekker)
     implicit none
 !
 #include "jeveux.h"
@@ -18,6 +18,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
     character(len=6) :: name
     character(len=8) :: elrefp
     real(kind=8), intent(in), optional :: dekker(4*ndime)
+    integer, intent(inout), optional :: exit(2)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,6 +48,8 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !       EPSMAX  : RESIDU POUR CONVERGENCE DE NEWTON
 !       N       : LES INDICES DES NOEUX D'UNE FACE DANS L'ELEMENT PARENT
 !       PMILIE  : LES COORDONNES DES POINTS MILIEUX
+!       EXIT    : RETOUR EVENTUEL A UNE DECOUPE PRIMAIRE DIFFERENTE EN CAS
+!                 D'ECHEC DU NEWTON
 !
 !     SORTIE
 !       KSI     : COORDONNEES DE REFERENCE DU POINT
@@ -132,6 +135,9 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
                   ksi2(1) = ksi(1)
                else
                   ksi2(1) = 0.d0
+                  if (exit(1).le.1) then
+                     exit(1) = 1
+                  endif
                endif
                goto 30
             endif

@@ -16,13 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xdblsn(ninter, npts, ndim, ndime, ar,&
+    subroutine xdblsn(ninter, npts, ndim, ar,&
                       pinref, pinter, ainter, cnset, nnose, it)
         integer :: ninter
         integer ::  ar(12, 3)
         integer :: npts
         integer :: ndim
-        integer :: ndime
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
         real(kind=8) :: pinref(*) 

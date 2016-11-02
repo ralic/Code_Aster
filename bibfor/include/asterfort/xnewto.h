@@ -19,7 +19,7 @@ interface
     subroutine xnewto(elrefp, name, n, ndime,&
                        ptxx, ndim, tabco, tabls,&
                        ipp, ip, itemax,&
-                       epsmax, ksi, dekker)
+                       epsmax, ksi, exit, dekker)
         integer :: ndime
         integer :: ndim
         character(len=8) :: elrefp
@@ -33,6 +33,7 @@ interface
         integer :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: ksi(ndime)
+        integer, intent(inout), optional :: exit(2)
         real(kind=8), intent(in), optional :: dekker(4*ndime)
     end subroutine xnewto
 end interface

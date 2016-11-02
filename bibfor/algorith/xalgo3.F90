@@ -1,6 +1,6 @@
 subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                   geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm, &
-                  pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                  pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     implicit none
 !
 #    include "jeveux.h"
@@ -12,7 +12,7 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
 #    include "asterfort/xalg42.h"
 #    include "asterfort/xalg20.h"
     character(len=8) :: typma, elrefp
-    integer ::  ndim, ndime, nnop, it, nnose, cnset(*)
+    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), exit(2)
     integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(27)
     real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
@@ -60,27 +60,27 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
     if (ndime .eq. 2) then
         call xalg20(ndim, elrefp, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 3 .and. npts .eq. 0) then
          call xalg30(ndim, elrefp, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 3 .and. npts .eq. 1) then
          call xalg31(ndim, elrefp, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 4 .and. npts.eq. 0) then
          call xalg40(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 4 .and. npts.eq. 2) then
         call xalg42(ndim, elrefp, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else if (ninter .eq. 4 .and. npts.eq. 1) then
         call xalg41(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime,&
                       geom, lsnelp, pmilie, ninter, ainter, ar, npts, nptm,&
-                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc)
+                      pmmax, nmilie, mfis, lonref, pinref, pintt, pmitt, jonc, exit)
     else
         ASSERT(.false.)
     endif

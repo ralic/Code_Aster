@@ -13,6 +13,8 @@ subroutine te0514(option, nomte)
 #include "asterfort/matini.h"
 #include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
+#include "asterfort/provec.h"
+#include "asterfort/reeref.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
@@ -23,6 +25,8 @@ subroutine te0514(option, nomte)
 #include "asterfort/xdecqu.h"
 #include "asterfort/xdecqv.h"
 #include "asterfort/xdivte.h"
+#include "asterfort/xelrex.h"
+#include "asterfort/xnormv.h"
 #include "asterfort/xxmmvd.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
@@ -68,13 +72,13 @@ subroutine te0514(option, nomte)
     integer :: ndim, ibid, ndime, iad, jtab(7), jtab2(2), vali(2)
     integer :: nnc, npm, nmilie, nmfis, nbar, ar(12,3)
     integer :: iret, nfiss, ifiss, ncomb, ninmax, nmmax, nbars, ars(12,3)
-    integer :: a1, a2, b1, b2, ncompm
+    integer :: a1, a2, b1, b2, ncompm, exit(2)
     parameter(ptmaxi=6,zintmx=5,pmmaxi=17,nsemax=6,nfimax=10)
     parameter(ninmax=44,nmmax=264)
     real(kind=8) :: nmil(3, 7), txlsn(28), ainter(ptmaxi*zintmx), rainter(4)
     real(kind=8) :: newpt(3), p(3), lonref, pinter(3*ptmaxi)
-    real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax)
-    real(kind=8) :: xg(3), cridist
+    real(kind=8) :: pmilie(3*pmmaxi), heav(nsemax*nfimax), u(3), v(3), normal(3)
+    real(kind=8) :: xg(3), cridist, xref(81), ff(27), ptref(3), norme
     parameter(cridist=1.d-9)
     integer :: fisco(2*nfimax), fisc(2*nfimax), zxain, ai
     integer :: ndoubl(ninmax*(2**nfimax)), ndoub2(ninmax*(2**nfimax))
@@ -91,7 +95,7 @@ subroutine te0514(option, nomte)
 !
     ASSERT(option.eq.'TOPOSE')
     call vecini(51, 0.d0, pmilie)
-    call vecini(20, 0.d0, ainter)
+    call vecini(30, 0.d0, ainter)
     call vecini(4, 0.d0, rainter)
 !
     call elref1(elp)
@@ -170,6 +174,9 @@ subroutine te0514(option, nomte)
                     nnc)
     end if
 !
+ exit(1:2) = 0
+ 73 continue
+!
     npi=0
     zxain = xxmmvd('ZXAIN')
     npm=0
@@ -180,7 +187,7 @@ subroutine te0514(option, nomte)
     call loncar(ndim, typma, zr(igeom), lonref)
 !
 !     ON SUBDIVISE L'ELEMENT PARENT EN NIT SOUS-ELEMENTS
-    call xdivte(elp, zi(jcnset), nit, nnose)
+    call xdivte(elp, zi(jcnset), nit, nnose, exit)
     cpt = nit
 !     PROBLEME DE DIMENSSIONNEMENT DANS LES CATALOGUES
         ASSERT(ncompc.ge.nnose*ncomph)
@@ -226,7 +233,8 @@ subroutine te0514(option, nomte)
                             igeom, pinter, ninter, npts, ainter,&
                             pmilie, nmilie, nmfis, nmil, txlsn,&
                             zr(jpintt), zr(jpmilt), ifiss, nfiss,&
-                            fisc, nfisc, cut, coupe)
+                            fisc, nfisc, cut, coupe, exit)
+                if (exit(1).eq.1) goto 73
 !
                 call xdecqv(nnose, it, zi(jcnset), zi(jheavt), zr(jlsn), igeom,&
                             ninter, npts, ndim, ainter, nse, cnse,&
@@ -284,28 +292,50 @@ subroutine te0514(option, nomte)
                        do k = 1, zxain
                           zr(jout6-1+zxain*(npi-1)+k)=0.d0
                        end do
+                       if (ifiss.gt.1) then
 !             MARQUAGE POINT DE JONCTION DE FISSURES
-                       if (rainter(4).eq.-1.d0) zr(jout6-1+zxain*(npi-1)+4)=-1.d0
+                          if (rainter(4).eq.-1.d0) zr(jout6-1+zxain*(npi-1)+4)=-1.d0
+                          call conare(typma, ar, nbar)
+                          call xelrex(elp, nno, xref)
+                          call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                      ptref, ff)
+                          call vecini(3, 0.d0, u)
+                          call vecini(3, 0.d0, v)
+                          call vecini(3, 0.d0, normal)
+                          do j = 1, nbar
+                             do k = 1, ndim
+                                u(k)=xref((ar(j,1)-1)*ndim+k)-xref((ar(j,2)-1)*ndim+k)
+                                v(k)=ptref(k)-xref((ar(j,2)-1)*ndim+k)
+                             end do
+                             call provec(u, v, normal)
+                             call xnormv(3, normal, norme)
+                             if (norme.lt.cridist) then
+                                zr(jout6-1+zxain*(npi-1)+1)=j
+                                zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
+                                zr(jout6-1+zxain*(npi-1)+4)=rainter(4)
+                             endif
+                          end do
+                       else
+                          call conare(typma, ar, nbar)
+                          typsma = elrese(ndim)
+                          call conare(typsma, ars, nbars)
+                          b1=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),1)-1)
+                          b2=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),2)-1)
 !
-                       call conare(typma, ar, nbar)
-                       typsma = elrese(ndim)
-                       call conare(typsma, ars, nbars)
-                       b1=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),1)-1)
-                       b2=zi(jcnset+nnose*(it-1)+ars(nint(rainter(1)),2)-1)
-!
-                       do j = 1, nbar
-                          a1 = ar(j,1)
-                          a2 = ar(j,2)
-                          if (a1.eq.b1.and.a2.eq.b2) then
-                             zr(jout6-1+zxain*(npi-1)+1)=j
-                             zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
-                             zr(jout6-1+zxain*(npi-1)+4)=rainter(4)
-                          else if (a1.eq.b2.and.a2.eq.b1) then
-                             zr(jout6-1+zxain*(npi-1)+1)=j
-                             zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
-                             zr(jout6-1+zxain*(npi-1)+4)=1.d0-rainter(4)
-                          endif
-                       end do
+                          do j = 1, nbar
+                             a1 = ar(j,1)
+                             a2 = ar(j,2)
+                             if (a1.eq.b1.and.a2.eq.b2) then
+                                zr(jout6-1+zxain*(npi-1)+1)=j
+                                zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
+                                zr(jout6-1+zxain*(npi-1)+4)=rainter(4)
+                             else if (a1.eq.b2.and.a2.eq.b1) then
+                                zr(jout6-1+zxain*(npi-1)+1)=j
+                                zr(jout6-1+zxain*(npi-1)+3)=rainter(3)
+                                zr(jout6-1+zxain*(npi-1)+4)=1.d0-rainter(4)
+                             endif
+                          end do
+                       endif
                     endif
 !
 !             MISE A JOUR DU CNSE (TRANSFORMATION DES 100 EN 1000...)

@@ -1,6 +1,6 @@
 subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                   pinref, pmiref, cenref, cenfi,&
-                  jonc, nn, num)
+                  nn, exit, jonc, num)
 !
     implicit none
 !
@@ -9,14 +9,13 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 #include "blas/ddot.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
-#include "asterfort/provec.h"
 #include "asterfort/reerel.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xcedge.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime, nno, nn(4)
+    integer :: ndim, ndime, nno, nn(4), exit(2)
     integer, intent(in), optional :: num(8)
     character(len=8) :: elrefp
     real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
@@ -53,14 +52,14 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 !     ----------------------------------------------------------------
 !
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81), dekker(4*ndime)
-    real(kind=8) :: pi1pi2(ndime), pi1pi3(ndime), dff(3,27), gradls(ndime)
-    real(kind=8) :: v(3), ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
+    real(kind=8) :: dff(3,27), gradls(ndime)
+    real(kind=8) :: ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
     integer :: ibid, itemax, i, n(3), j
     integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34, nbnomx
     character(len=6) :: name
     character(len=3) :: edge
     aster_logical :: courbe
-    parameter   (tole=1.d-1)
+    parameter   (tole=1.d-2)
     parameter (nbnomx = 27)
 !
 ! --------------------------------------------------------------------
@@ -91,17 +90,6 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
     endif
 !
     ASSERT( ndime .eq. 3)
-!
-    do i = 1,ndime
-       pi1pi2(i)=pinref(ndime*(pi2-1)+i)-pinref(ndime*(pi1-1)+i)
-       pi1pi3(i)=pinref(ndime*(pi3-1)+i)-pinref(ndime*(pi1-1)+i)
-    enddo
-    call xnormv(ndime, pi1pi2, rbid)
-    call xnormv(ndime, pi1pi3, rbid)
-    call provec(pi1pi2, pi1pi3, v)
-    do i=1,ndime
-       ptxx(i)=v(i)
-    enddo
 !
 !   CALCUL D UN POINT DE DEPART POUR LE NEWTON
 !===============================================================
@@ -207,7 +195,7 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
        call xnewto(elrefp, name, n,&
                    ndime, ptxx, ndim, geom, lsn,&
                    ibid, ibid, itemax,&
-                   epsmax, ksi, dekker)
+                   epsmax, ksi, exit, dekker)
     endif
 !
     do i = 1, ndime

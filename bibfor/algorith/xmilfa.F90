@@ -59,7 +59,7 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     integer :: a1, a2, a, b, d, ib, ar(12, 3), nbar, ia, id
     integer :: i, j, zxain, nno
-    real(kind=8) :: xref(81), ptb(ndim), ptd(ndim), newpt(ndim)
+    real(kind=8) :: xref(81), ptb(ndime), ptd(ndime), newpt(ndim)
     real(kind=8) :: pta(ndime), cosu, cosv, cosw
     real(kind=8) :: ff(27), t1(ndime), t2(ndime), sinu, rbid, t3(ndime)
     aster_logical :: courbe
@@ -158,8 +158,9 @@ subroutine xmilfa(elrefp, ndim, ndime, geom, cnset,&
 !
     if (courbe) then
 !   EN DEUXIEME APPROXIMATION: ON CHOISIT LE MILIEU DES "MILIEUX" PM2 ET D
+!
         do i = 1, ndime
-            ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
+           ksi(i)=(pmiref(ndime*(pm2-1)+i)+ptd(i))/2.d0
         enddo
     endif
 !

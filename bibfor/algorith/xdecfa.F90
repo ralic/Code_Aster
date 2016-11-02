@@ -31,7 +31,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,7 +81,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
     real(kind=8) :: epsmax, cridist, a, b, c, ab(ndim), bc(ndim), gradlsn(ndim)
     real(kind=8) :: normfa(ndim), det, tempo, temp1(ndim), temp2(ndim), temp3(4)
     integer :: k, ii, jj, j, ni, kk, ibid, num(8), nbnomx
-    integer :: n(3), kkk, nn(4)
+    integer :: n(3), kkk, nn(4), exit(2)
     integer :: itemax
     aster_logical :: deja, jonc
     parameter   (nbnomx = 27)
@@ -399,7 +399,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                            pinref((noeud(2)-1)*ndim+j))/2.d0
              end do
           endif
-!   ON RECHERCHE SUR LA MEDIATRICE DU SEGEMENT IP1IP2 PORTEE PAR GRADLST
+!   ON RECHERCHE SUR LA MEDIATRICE DU SEGMENT IP1IP2 PORTEE PAR GRADLST
           call vecini(ndim, 0.d0, vectn)
           call elrfdf(elp, xref, ndim*nbnomx, dff, nno, ndim)
           do ii = 1, ndim
@@ -470,8 +470,9 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
           endif
           nn(1:4) = 0
           jonc = .true.
+          exit(1:2) = 0
           call xcenfi(elp, ndim, ndim, nno, geom, zr(jlsn),&
-                      pinref, pinref, cenref, cenfi, jonc, nn, num)
+                      pinref, pinref, cenref, cenfi, nn, exit, jonc, num)
   !   ON ARCHIVE CE POINT
           npi = npi+1
           do j = 1, ndim

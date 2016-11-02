@@ -18,7 +18,7 @@
 interface 
     subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
                       pinref, pmiref, cenref, cenfi,&
-                      jonc, nn, num)
+                      nn, exit, jonc, num)
         character(len=8) :: elrefp
         integer :: ndim
         integer :: ndime
@@ -29,8 +29,9 @@ interface
         real(kind=8) :: pmiref(*)
         real(kind=8) :: cenref(ndime)
         real(kind=8) :: cenfi(ndim)
-        integer, intent(in), optional :: num(8)
-        aster_logical :: jonc
         integer :: nn(4)
+        integer :: exit(2)
+        aster_logical :: jonc
+        integer, intent(in), optional :: num(8)
     end subroutine xcenfi
 end interface 

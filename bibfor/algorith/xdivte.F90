@@ -1,9 +1,10 @@
-subroutine xdivte(elp, cnset, nse, nnose)
+subroutine xdivte(elp, cnset, nse, nnose, exit)
     implicit none
 !
 #include "jeveux.h"
+#include "asterfort/xpente.h"
 #include "asterfort/assert.h"
-    integer :: cnset(*), nse, nnose
+    integer :: cnset(*), nse, nnose, exit(2)
     character(len=8) :: elp
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,6 +30,14 @@ subroutine xdivte(elp, cnset, nse, nnose)
 !
 !     ENTREE
 !       ELP     : TYPE DE MAILLE
+!       EXIT    : EXIT(1) = 0 : LA DECOUPE N'A RENCONTRE AUCUN ECHEC
+!                 EXIT(1) = 1 : LA DECOUPE A RECONTRE UN ECHEC, ON TENTE UNE
+!                               CONFIGURATION DE DECOUPE PRIMAIRE DIFFERENTE
+!                 EXIT(1) = 2 : DERNIERE CONFIGURATION DE DECOUPE PRIMAIRE
+!                               POSSIBLE, ON EFFECTUE LA DECOUPE QUOI QU'IL
+!                               ARRIVE
+!                 EXIT(2): NUMERO DE LA CONFIGURATION DE DECOUPE PRIMAIRE EN
+!                          COURS
 !
 !     SORTIE
 !       CNSET   : CONNECTIVITÉ DES NOEUDS DE LA MAILLE
@@ -36,8 +45,10 @@ subroutine xdivte(elp, cnset, nse, nnose)
 !       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 !     ------------------------------------------------------------------
 !
-    integer :: ino, ise, connec(6, 10)
+    integer :: ino, ise, connec(6, 10), i , n(18), bis, ter, qar, dec
 ! ----------------------------------------------------------------------
+!
+    exit(1) = 0
 !
     if (elp .eq. 'HE8') then
         connec(1,1)=6
@@ -127,8 +138,98 @@ subroutine xdivte(elp, cnset, nse, nnose)
         connec(6,8)=23
         connec(6,9)=26
         connec(6,10)=27
+        if (exit(2).ge.1.and.exit(2).le.71) then
+           bis = mod(exit(2),18)
+           ter = floor(real(bis/3,kind=8))
+           qar = 2*mod(bis,3)+mod(ter,2)
+           dec = floor(real(exit(2)/18,kind=8))
+           n(1) = mod(3-1+dec,4)+1
+           n(2) = mod(8-1+dec,4)+5
+           n(3) = mod(4-1+dec,4)+1
+           n(4) = mod(2-1+dec,4)+1
+           n(5) = mod(5-1+dec,4)+5
+           n(6) = mod(1-1+dec,4)+1
+           n(7) = mod(24-22+dec,4)+22
+           n(8) = mod(16-13+dec,4)+13
+           n(9) = mod(11-9+dec,4)+9
+           n(10) = mod(10-9+dec,4)+9
+           n(11) = mod(20-17+dec,4)+17
+           n(12) = mod(12-9+dec,4)+9
+           n(13) = mod(22-22+dec,4)+22
+           n(14) = mod(13-13+dec,4)+13
+           n(15) = mod(9-9+dec,4)+9
+           n(16) = 27
+           n(17) = mod(25-22+dec,4)+22
+           n(18) = 21
+           call xpente(1, connec, n, ter)
+           n(1) = mod(5-1+dec,4)+5
+           n(2) = mod(2-1+dec,4)+1
+           n(3) = mod(6-1+dec,4)+5
+           n(4) = mod(8-1+dec,4)+5
+           n(5) = mod(3-1+dec,4)+1
+           n(6) = mod(7-1+dec,4)+5
+           n(7) = mod(22-22+dec,4)+22
+           n(8) = mod(14-13+dec,4)+13
+           n(9) = mod(17-17+dec,4)+17
+           n(10) = mod(20-17+dec,4)+17
+           n(11) = mod(10-9+dec,4)+9
+           n(12) = mod(18-17+dec,4)+17
+           n(13) = mod(24-22+dec,4)+22
+           n(14) = mod(15-13+dec,4)+13
+           n(15) = mod(19-17+dec,4)+17
+           n(16) = 27
+           n(17) = mod(23-22+dec,4)+22
+           n(18) = 26
+           call xpente(4, connec, n, qar)
+        elseif (exit(2).ge.1.and.exit(2).le.107) then
+           bis = mod(exit(2),18)
+           ter = floor(real(bis/3,kind=8))
+           qar = 2*mod(bis,3)+mod(ter,2)
+           dec = floor(real((exit(2)-72)/18,kind=8))
+           n(1) = mod(7-1+dec,4)+5
+           n(2) = mod(5-1+dec,4)+5
+           n(3) = mod(8-1+dec,4)+5
+           n(4) = mod(3-1+dec,4)+1
+           n(5) = mod(1-1+dec,4)+1
+           n(6) = mod(4-1+dec,4)+1
+           n(7) = 26
+           n(8) = mod(20-17+dec,4)+17
+           n(9) = mod(19-17+dec,4)+17
+           n(10) = mod(15-13+dec,4)+13
+           n(11) = mod(13-13+dec,4)+13
+           n(12) = mod(16-13+dec,4)+13
+           n(13) = 21
+           n(14) = mod(12-9+dec,4)+9
+           n(15) = mod(11-9+dec,4)+9
+           n(16) = 27
+           n(17) = mod(25-22+dec,4)+22
+           n(18) = mod(24-22+dec,4)+22
+           call xpente(1, connec, n, ter)
+           n(1) = mod(1-1+dec,4)+1
+           n(2) = mod(3-1+dec,4)+1
+           n(3) = mod(2-1+dec,4)+1
+           n(4) = mod(5-1+dec,4)+5
+           n(5) = mod(7-1+dec,4)+5
+           n(6) = mod(6-1+dec,4)+5
+           n(7) = 21
+           n(8) = mod(10-9+dec,4)+9
+           n(9) = mod(9-9+dec,4)+9
+           n(10) = mod(13-13+dec,4)+13
+           n(11) = mod(15-13+dec,4)+13
+           n(12) = mod(14-13+dec,4)+13
+           n(13) = 26
+           n(14) = mod(18-17+dec,4)+17
+           n(15) = mod(17-17+dec,4)+17
+           n(16) = 27
+           n(17) = mod(23-22+dec,4)+22
+           n(18) = mod(22-22+dec,4)+22
+           call xpente(4, connec, n, qar)
+        endif
         nse=6
         nnose=10
+        if (exit(2).eq.107) then
+           exit(1) = 2
+        endif
     else if (elp.eq.'PE6') then
         connec(1,1)=5
         connec(1,2)=4
@@ -176,8 +277,17 @@ subroutine xdivte(elp, cnset, nse, nnose)
         connec(3,8)=18
         connec(3,9)=7
         connec(3,10)=16
+        do i = 1, 18
+           n(i) = i
+        end do
+        if (exit(2).ge.1) then
+           call xpente(1, connec, n, exit(1))
+        endif
         nse=3
         nnose=10
+        if (exit(2).eq.5) then
+           exit(1) = 2
+        endif
     else if (elp.eq.'PY5') then
 !       SOUS-TETRAS
 !       CONNEC = [1 2 3 5
@@ -196,28 +306,31 @@ subroutine xdivte(elp, cnset, nse, nnose)
 !       SOUS-TETRAS
 !       CONNEC = [1 2 3 5
 !                 1 3 4 5]
-        connec(1,1)=1
-        connec(1,2)=2
-        connec(1,3)=3
+        connec(1,1)=mod(1-1+exit(2),4)+1
+        connec(1,2)=mod(2-1+exit(2),4)+1
+        connec(1,3)=mod(3-1+exit(2),4)+1
         connec(1,4)=5
-        connec(1,5)=6
-        connec(1,6)=7
+        connec(1,5)=mod(6-6+exit(2),4)+6
+        connec(1,6)=mod(7-6+exit(2),4)+6
         connec(1,7)=14
-        connec(1,8)=10
-        connec(1,9)=11
-        connec(1,10)=12
-        connec(2,1)=1
-        connec(2,2)=3
-        connec(2,3)=4
+        connec(1,8)=mod(10-10+exit(2),4)+10
+        connec(1,9)=mod(11-10+exit(2),4)+10
+        connec(1,10)=mod(12-10+exit(2),4)+10
+        connec(2,1)=mod(1-1+exit(2),4)+1
+        connec(2,2)=mod(3-1+exit(2),4)+1
+        connec(2,3)=mod(4-1+exit(2),4)+1
         connec(2,4)=5
         connec(2,5)=14
-        connec(2,6)=8
-        connec(2,7)=9
-        connec(2,8)=10
-        connec(2,9)=12
-        connec(2,10)=13
+        connec(2,6)=mod(8-6+exit(2),4)+6
+        connec(2,7)=mod(9-6+exit(2),4)+6
+        connec(2,8)=mod(10-10+exit(2),4)+10
+        connec(2,9)=mod(12-10+exit(2),4)+10
+        connec(2,10)=mod(13-10+exit(2),4)+10
         nse=2
         nnose=10
+        if (exit(2).eq.1) then
+           exit(1) = 2
+        endif
     else if (elp.eq.'TE4') then
         connec(1,1)=1
         connec(1,2)=2
@@ -248,20 +361,23 @@ subroutine xdivte(elp, cnset, nse, nnose)
         nse=2
         nnose=3
     else if (elp.eq.'QU8') then
-        connec(1,1)=1
-        connec(1,2)=2
-        connec(1,3)=4
-        connec(1,4)=5
+        connec(1,1)=mod(1-1+exit(2),4)+1
+        connec(1,2)=mod(2-1+exit(2),4)+1
+        connec(1,3)=mod(4-1+exit(2),4)+1
+        connec(1,4)=mod(5-1+exit(2),4)+5
         connec(1,5)=9
-        connec(1,6)=8
-        connec(2,1)=2
-        connec(2,2)=3
-        connec(2,3)=4
-        connec(2,4)=6
-        connec(2,5)=7
+        connec(1,6)=mod(8-1+exit(2),4)+5
+        connec(2,1)=mod(2-1+exit(2),4)+1
+        connec(2,2)=mod(3-1+exit(2),4)+1
+        connec(2,3)=mod(4-1+exit(2),4)+1
+        connec(2,4)=mod(6-1+exit(2),4)+5
+        connec(2,5)=mod(7-1+exit(2),4)+5
         connec(2,6)=9
         nse=2
         nnose=6
+        if (exit(2).eq.1) then
+           exit(1) = 2
+        endif
     else if (elp.eq.'TR3') then
         connec(1,1)=1
         connec(1,2)=2
@@ -292,6 +408,8 @@ subroutine xdivte(elp, cnset, nse, nnose)
 !       TYPE D'ELEMENT FINI PAS TRAITE
         ASSERT(.false.)
     endif
+!
+    exit(2) = exit(2)+1
 !
     do  ise = 1, nse
         do 20 ino = 1, nnose

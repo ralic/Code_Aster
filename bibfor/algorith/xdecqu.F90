@@ -2,7 +2,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   igeom, pinter, ninter, npts, ainter,&
                   pmilie, nmilie, mfis, tx, txlsn,&
                   pintt, pmitt, ifiss, nfiss, fisco, &
-                  nfisc, cut, coupe)
+                  nfisc, cut, coupe, exit)
     implicit none
 !
 #include "asterf_types.h"
@@ -26,7 +26,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/xinter.h"
 #include "asterfort/xxmmvd.h"
     integer :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
-    integer :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss)
+    integer :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss), exit(2)
     real(kind=8) :: pinter(*), ainter(*), pmilie(*), tx(3, 7), txlsn(28)
     real(kind=8) :: pintt(*), pmitt(*)
     aster_logical :: cut
@@ -83,13 +83,13 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     real(kind=8) :: val, rbid, cref(ndim), pinref(18), lsnelp(27)
     real(kind=8) :: xref(81), ff(27), newpt(ndim), somlsn(nfisc+1)
     integer :: ar(12, 3), nbar, nta, ntb, na, nb, ins
-    integer :: ia, i, ipi, ibid, pp, pd, k, nnoc
+    integer :: ia, i, ipi, ibid, pp, pd, k
     integer :: ndime, noeua, noeub, noeuc, im
     integer :: j, a1, a2, ipt, nm
     integer :: ptmax, pmmaxi(3), pmmax
     integer :: ntm, inm, nptm, nnop, inter
     integer :: zxain, mxstac
-    character(len=8) :: typma, elrese(3), elrefp, elcomp
+    character(len=8) :: typma, elrese(3), elrefp
     aster_logical :: papillon, ajout, jonc
 !
     parameter       (ptmax=6)
@@ -188,27 +188,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !     LONGUEUR D'ARETE MAXIMALE DE L'ELEMENT (DU SE3 OU TR6)
     lonref=0.d0
 !
-!     DETERMINATION DE L'ELEMENT PARENT COMPLET
-    nnoc = nnop
-    elcomp = elrefp
-    if (nnop.eq.20) then
-       nnoc=27
-       elcomp='H27'
-    elseif (nnop.eq.15) then
-       nnoc=18
-       elcomp='P18'
-    elseif (nnop.eq.8) then
-       nnoc=9
-       elcomp='QU9'
-    endif
-!
 !     TABLEAU DES LSN DES NOEUDS DE L'ELEMENT PARENT COMPLET POUR LA FISSURE COURANTE
     call vecini(27, 0.d0, lsnelp)
     do j = 1, nnop
        lsnelp(j) = zr(jlsn-1+(j-1)*nfiss+ifiss)
-    end do
-    do j = 1, (nnoc-nnop)
-       lsnelp(nnop+j)=txlsn((j-1)*nfiss+ifiss)
     end do
 !
 !     TABLEAU DES COORDONNEES DES NOEUDS DE L'ELEMENT PARENT COMPLET
@@ -216,9 +199,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     do i = 1, ndim
        do j = 1, nnop
           geom((j-1)*ndim+i) = zr(igeom-1+(j-1)*ndim+i)
-       end do
-       do j = 1, (nnoc-nnop)
-          geom((nnop+j-1)*ndim+i) = tx(i,j)
        end do
     end do
 !     BOUCLE SUR LES ARETES DU SOUS ELEMENT POUR AJUSTEMENT DES
@@ -237,10 +217,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !     BLINDAGE PARTIEL : FISSURE RENTRANTE SUR UNE ARETE
         if (lsna .eq. 0 .and. lsnb .eq. 0) then
            tabls(ntm) = 0.d0
-        else if (lsna*lsnm .lt. 0 .and. lsnb*lsnm .lt. 0) then
-           tabls(ntm) = (lsna+lsnb)/20.d0
-        else if (lsnm .eq. 0 .and. lsnb*lsna .gt. 0) then
-           tabls(ntm) = (lsna+lsnb)/20.d0
         else if (lsna .eq. 0 .and. lsnb*lsnm .lt. 0) then
            tabls(ntm) = 0.d0
         else if (lsnb .eq. 0 .and. lsna*lsnm .lt. 0) then
@@ -252,7 +228,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     do 30 ia = 1, nbar
         if ((tabls(ar(ia,1))*tabls(ar(ia,2))) .lt. 0.d0) cut = .true.
  30 continue
-   coupe(ifiss) = 1
+   if (cut) coupe(ifiss) = 1
 !
 !     BOUCLE SUR LES ARETES POUR DETERMINER LES POINTS D'INTERSECTION
     do 100 ia = 1, nbar
@@ -387,7 +363,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !         SI LA FISSURE COUPE AILLEURS
             if (lsna .ne. 0 .and. lsnb .ne. 0 .and. lsnm .ne. 0) then
 !           INTERPOLATION DES COORDONNEES DE C
-                call xinter(ndim, ndime, elcomp, geom, lsnelp, na, nb,&
+                call xinter(ndim, ndime, elrefp, geom, lsnelp, na, nb,&
                             nm, pintt, pmitt, lsna, lsnb, lsnm, cref, c) 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !           POSITION DU PT D'INTERSECTION SUR L'ARETE
@@ -397,7 +373,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                             c, longar, ainter, ia, 0,&
                             alpha, ajout)
                 if (ajout .and. (na .gt. 1000 .and. nb .gt. 1000)) then
-!           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE, ON LE MARQUE AVEC
+!           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE INTERNE A L'ELEMENT, ON LE MARQUE AVEC
 !           UN ALPHA EGAL A -1
                    ainter(zxain*(ipi-1)+4) = -1.d0
                 endif
@@ -446,8 +422,8 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 200 continue
 !
 !      ON RAMENE LES CONFIGURATIONS RASANTES DEGENEREES AUX CONFIGURATIONS CLASSIQUES
-    if ((ndim.eq.3) .and. (ifiss.eq.1) .and. cut) then
-       call xdblsn(ninter, npts, ndim, ndime, ar,&
+    if ((ndime.eq.3) .and. (ifiss.eq.1) .and. cut) then
+       call xdblsn(ninter, npts, ndim, ar,&
                    pinref, pinter, ainter, cnset, nnose, it)
     endif
 !      TRI DES POINTS POUR QUE LE POLYGONE IP1,IP2,IP3,IP4 SOIT CONVEXE
@@ -583,14 +559,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     if (.not.cut) goto 999
 !
-! VERIFICATION DES CONFIGURATIONS AUTORISEES
-    if (ifiss.eq.1) then
-       call xerfis(ndime, ninter, npts, nptm)
-    endif
-!
-! CALCUL DES POINTS MILIEUX
-!
-    pmmax=pmmaxi(ndim)
     call loncar(ndim, typma, tabco, lonref)
 !
     jonc = .false.
@@ -600,18 +568,26 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     end do
     if (inter.gt.1) jonc = .true.
 !
-    if (ndim .le. 2) call xalgo2(ndim, elcomp, it, nnose,&
+! VERIFICATION DES CONFIGURATIONS AUTORISEES
+    if (ifiss.eq.1) then
+       call xerfis(ndime, ninter, npts, nptm)
+    endif
+!
+! CALCUL DES POINTS MILIEUX
+!
+    pmmax=pmmaxi(ndim)
+    if (ndim .le. 2) call xalgo2(ndim, elrefp, it, nnose,&
                                  cnset, typma, ndime, geom, lsnelp,&
                                  pmilie, ninter, ainter, ar, npts,&
                                  nptm, pmmax, nmilie, mfis, lonref,&
-                                 pinref, pintt, pmitt, jonc)
+                                 pinref, pintt, pmitt, jonc, exit)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-    if (ndim .eq. 3) call xalgo3(ndim, elcomp, nnoc, it, nnose,&
+    if (ndim .eq. 3) call xalgo3(ndim, elrefp, nnop, it, nnose,&
                                  cnset, typma, ndime, geom, lsnelp,&
                                  pmilie, ninter, ainter, ar, npts,&
                                  nptm, pmmax, nmilie, mfis, lonref,&
-                                 pinref, pintt, pmitt, jonc)
+                                 pinref, pintt, pmitt, jonc, exit)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
 999 continue

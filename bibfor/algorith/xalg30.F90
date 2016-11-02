@@ -2,7 +2,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
                   cnset, typma, ndime, geom, lsnelp,&
                   pmilie, ninter, ainter, ar, npts,&
                   nptm, pmmax, nmilie, mfis, lonref,&
-                  pinref, pintt, pmitt, jonc)
+                  pinref, pintt, pmitt, jonc, exit)
     implicit none
 !
 #include "asterf_types.h"
@@ -19,7 +19,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
 #include "asterfort/xstudo.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, it, nnose, cnset(*)
+    integer :: ndim, ndime, it, nnose, cnset(*), exit(2)
     integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: ainter(*), pmilie(*), lonref, lsnelp(*)
     real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
@@ -169,7 +169,7 @@ subroutine xalg30(ndim, elrefp, it, nnose,&
 !
             call xmifis(ndim, ndime, elrefp, geom, lsnelp,&
                         n, ip1(k), ip2(k), pinref, ksia,&
-                        milfi, pintt, jonc)
+                        milfi, pintt, exit, jonc)
 !
 !        on incremente le nombre de points milieux sur la fissure
             mfisloc=mfisloc+1
