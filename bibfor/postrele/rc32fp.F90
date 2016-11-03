@@ -1,5 +1,5 @@
-subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
-                  ke, lieu, ug, factus, ugenv, fatiguenv)
+subroutine rc32fp(nbsigr, nocc, nom, situ, sigr, fuij,&
+                  comb, lieu, ug, factus, factus2, ugenv, fatiguenv)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -18,8 +18,9 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 #include "asterfort/codent.h"
 #include "asterfort/rc32env.h"
     integer :: nbsigr, nocc(*), situ(*), sigr(*)
-    real(kind=8) :: fuij(*), ug, factus(*), ugenv, ke(*)
+    real(kind=8) :: fuij(*), ug, factus(*), ugenv, comb(*)
     character(len=4) :: lieu
+    character(len=24) :: factus2(*), nom(*)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,11 +47,13 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     integer :: isk, isl, k, l, nk, nl, n0, i1, nsitup, ifm, niv, icompt
-    integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
+    integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13, ndim
     real(kind=8) :: fumax, ukl, fenkl, kekl
     aster_logical :: trouve, yapass, fatiguenv
     character(len=3) :: typass
     integer, pointer :: passage_sit(:) => null()
+    integer :: ioc1, ioc2, numg1, numg2
+    integer, pointer :: situ_group(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -102,21 +105,51 @@ subroutine rc32fp(nbsigr, nocc, situ, sigr, fuij,&
                 nbp13, sigr, yapass, typass, nsitup)
 !
     ukl = dble( n0 ) * fumax
-    kekl = ke(nbsigr*(isk-1)+isl)
+    ndim=nbsigr*nbsigr
+    kekl = comb(5*ndim+nbsigr*(isk-1)+isl)
+!
+    call jeveuo('&&RC32SI.SIT_GROUP', 'L', vi=situ_group)
+    ioc1 = sigr(isk)
+    ioc2 = sigr(isl)
+    numg1 = situ_group(1+2*ioc1-2)
+    numg2 = situ_group(1+2*ioc2-2)
 !
     if (icompt .le. 49) then
-        icompt = icompt + 1
-        factus(6*(icompt-1)+1) = 1
-        factus(6*(icompt-1)+2) = situ(isk)
-        factus(6*(icompt-1)+3) = situ(isl)
-        factus(6*(icompt-1)+4) = ukl
         if (fatiguenv) then
             call rc32env(situ(isk), situ(isl), kekl, lieu, fenkl)
         else
             fenkl = 1
-        endif 
-        factus(6*(icompt-1)+5) = fenkl
-        factus(6*(icompt-1)+6) = fenkl*ukl
+        endif
+!
+        icompt = icompt + 1
+        factus(23*(icompt-1)+1) = 1
+        factus(23*(icompt-1)+2) = situ(isk)
+        factus(23*(icompt-1)+3) = nk
+        factus(23*(icompt-1)+4) = numg1
+        factus(23*(icompt-1)+5) = situ(isl)
+        factus(23*(icompt-1)+6) = nl
+        factus(23*(icompt-1)+7) = numg2
+        factus(23*(icompt-1)+8) = n0
+!
+        factus(23*(icompt-1)+9) = comb(nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+10) = comb(1*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+11) = comb(2*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+12) = comb(3*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+13) = comb(4*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+14) = comb(6*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+15) = comb(7*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+16) = comb(8*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+17) = comb(9*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+18) = comb(10*ndim+nbsigr*(isk-1)+isl)
+        factus(23*(icompt-1)+19) = comb(11*ndim+nbsigr*(isk-1)+isl)
+!
+        factus(23*(icompt-1)+20) = fumax
+        factus(23*(icompt-1)+21) = ukl
+        factus(23*(icompt-1)+22) = fenkl
+        factus(23*(icompt-1)+23) = fenkl*ukl
+!
+        factus2(2*(icompt-1)+1) = nom(isk)
+        factus2(2*(icompt-1)+2) = nom(isl)
     endif
 !
     if (niv .ge. 2) then

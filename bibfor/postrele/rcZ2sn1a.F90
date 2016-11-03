@@ -1,22 +1,23 @@
 subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
-                    seismeunit, mse, pi, mi, pj, mj,&
-                    instsn, sn1, sp3, spmeca3)
+                    seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
+                    instsn, sn, sp3, spmeca3)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/codent.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rctres.h"
+#include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/rcZ2s2.h"
+#include "asterfort/jelira.h"
+#include "asterfort/rctres.h"
 #include "asterfort/jedema.h"
+    aster_logical :: ze200, seismeb32, seismeunit, seismeze200
     character(len=4) :: lieu
     integer :: numsip, numsiq
-    aster_logical :: ze200, seismeb32, seismeunit
-    real(kind=8) :: sn1, sp3, spmeca3, instsn(2), pi, pj, mi(12), mj(12)
-    real(kind=8) :: mse(12)
+    real(kind=8) :: mse(12), propi(20), propj(20), proqi(20)
+    real(kind=8) :: proqj(20), instsn(2), sn, sp3, spmeca3
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -36,41 +37,46 @@ subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
 ! ======================================================================
 !     ------------------------------------------------------------------
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
-!     CALCUL DU SN OU SN* (partie B3200) par la méthode du TRESCA SIGNE
+!     CALCUL DU SN avec la méthode TRESCA SIGNE
 !
-! IN  : LIEU   : ORIG ou EXTR
-! IN  : NUMSIP : NUMERO SITUATION P
-! IN  : NUMSIQ : NUMERO SITUATION Q
-! IN  : SEISMEB32: SI SEISME AVEC B3200_T
-! OUT : SN1    : PARTIE B3200 de SN
-! OUT : SP3    : PARTIE B3200 de SP qui dépend des instants de SN
-! OUT : SPMECA3: PARTIE B3200 de SPMECA qui dépend des instants de SN
 !     ------------------------------------------------------------------
+! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
+! IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
+! IN  : NUMSIQ : NUMERO SITUATION DE L'ETAT STABILISE Q
+! OUT : sn    
 !
-    character(len=2) :: typ
-    character(len=8) :: knumes
-    integer :: nbthep, nbprep, nbmecap, nbp, long, jtranp, indicp, ind2
-    real(kind=8) :: sntran(6), tresca, sqmi(6), sqma(6), tresca1, tresca2
-    integer :: nbtheq, nbpreq, nbmecaq, nbq, jtranq, indicq, jvalin, ind1
-    real(kind=8) :: k1, c1, k2, c2, k3, c3, snther(6), snpres(6), snmec(6)
-    real(kind=8) :: tresthpq, tresprpq, tresmecpq, e1(2), e2(2), e3(2)
-    integer :: jseis, j, i1, i2, i3, i4, i5, i6, i0, iret, jsigu, icmps, icmp
-    real(kind=8) :: e4(2), e5(2), e6(2), sntrans(6), sntrans1(6), sntrans2(6)
-    real(kind=8) :: mij(12), pij, sigu, sij(12), e0(2), snt(6), sqmit(6), sqmat(6)
+    integer :: jseis, j, iret, jsigu, icmp, nbthep, nbprep, nbmecap, nbp
     real(kind=8) :: seisfx(6), seisfy(6), seisfz(6), seismx(6), seismy(6)
     real(kind=8) :: seismz(6), seisfx2(6), seisfy2(6), seisfz2(6), seismx2(6)
-    real(kind=8) :: seismy2(6), seismz2(6)
-    integer :: i7, i8, i9, i10, i11, i12
+    real(kind=8) :: seismy2(6), seismz2(6), snpp, sn2pp, trescapp, sij(6)
+    character(len=8) :: knumes
+    character(len=2) :: typ, typpq, typqq
+    real(kind=8) :: mij(12), sigu, pij, instpmin, instpmax, e0(2), e1(2)
+    integer :: long, jtranp, i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10
+    real(kind=8) :: sntran(6), snt(6), tresca, snqq, sn2qq, trescaqq, sqtran(6)
+    integer :: i11, i12, nbtheq, nbpreq, nbmecaq, nbq, jtranq, indicp
+    real(kind=8) :: instqmin, instqmax, sqt(6), sn2pq, trescapq, sn2, sij1(6)
+    real(kind=8) :: sij2(6), sij3(6), sij4(6), mij1(12), mij2(12), mij3(12)
+    real(kind=8) :: mij4(12), pij1, pij2, pij3, pij4, smi(6), sma(6)
+    real(kind=8) :: instbid(2), seis(6), st11(6), st12(6), st13(6), st14(6)
+    real(kind=8) :: st21(6), st22(6), st23(6), st24(6), snpq, snther(6)
+    integer :: indicq, jvalin, ind1, ind2
+    real(kind=8) :: snpres(6), snmec(6), tresthpq, tresprpq, tresmecpq
+    real(kind=8) :: k1, c1, k2, c2, k3, c3
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-    sn1 = 0.d0
-    typ ='00'
+    sn  = 0.d0
+    sp3 = 0.d0
+    spmeca3 = 0.d0
 !
+!--------------------------------------------
+!     SI SEISME ET B3200 de type instantanée
+!--------------------------------------------
     if (seismeb32) then
         call jeveuo('&&RC3200.SIGSEIS', 'L', jseis)
-        do 15 j = 1, 6
+        do 20 j = 1, 6
             seisfx(j) = zr(jseis+j-1)
             seisfy(j) = zr(jseis+1*6+j-1)
             seisfz(j) = zr(jseis+2*6+j-1)
@@ -83,49 +89,24 @@ subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
             seismx2(j)= 0.d0
             seismy2(j)= 0.d0
             seismz2(j)= 0.d0
- 15     continue
+20      continue
     endif
 !
-    do 2 i0 = 1, 2
-        i1 = 2*(i0-2)+1
-        e0(i0) = i1
-        e1(i0) = i1
-        e2(i0) = i1
-        e3(i0) = i1
-        e4(i0) = i1
-        e5(i0) = i1
-        e6(i0) = i1
- 2  continue
-!
+!--------------------------------------
+!     SI SEISME B3200 de type unitaire
+!--------------------------------------
+    iret  = 0
     knumes = 'S       '
     call codent(numsip, 'D0', knumes(2:8))
-!
-!--------------------------------------
-!     SI B3200 de type unitaire
-!--------------------------------------
-    do 17 j = 1, 6
-            sij(j) = 0.d0
-17 continue
     if (.not. ze200) then
         call jeexin(jexnom('&&RC3200.SITU_ETAT_A', knumes), iret)
         if (iret .ne. 0) then
             call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
-        do 30 icmps = 1, 6
-            do 20 icmp = 1, 12
-                mij(icmp)=mi(icmp)-mj(icmp)
-                sigu = zr(jsigu-1+78+6*(icmp-1)+icmps)
-                sij(icmps) = sij(icmps) + mij(icmp)*sigu
- 20         continue
-            pij=pi-pj
-            sigu = zr(jsigu-1+78+72+icmps)
-            sij(icmps) = sij(icmps) + pij*sigu
- 30     continue
-!
         endif
     endif
 !
     if(seismeunit) then
-        do 19 j = 1, 6
+        do 30 j = 1, 6
             seisfx(j) = 2*mse(1)*zr(jsigu-1+78+j)
             seisfy(j) = 2*mse(2)*zr(jsigu-1+78+1*6+j)
             seisfz(j) = 2*mse(3)*zr(jsigu-1+78+2*6+j)
@@ -138,216 +119,512 @@ subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
             seismx2(j)= 2*mse(10)*zr(jsigu-1+78+9*6+j)
             seismy2(j)= 2*mse(11)*zr(jsigu-1+78+10*6+j)
             seismz2(j)= 2*mse(12)*zr(jsigu-1+78+11*6+j)
- 19     continue
+ 30     continue
     endif
 !
-!--------------------------------------
-!     DANS LE CAS D'UNE SITUATION
-!--------------------------------------
+!--------------------------------------------------------------------
+!                  DANS LE CAS D'UNE SITUATION SEULE
+!                          CALCUL DE SN(P,P)
+!--------------------------------------------------------------------
+    typ   = '00'
+    snpp  = 0.d0
+    sn2pp = 0.d0
+    trescapp = 0.d0
+!
+!-- on calcule la partie ze200
+    if (ze200) call rcZ2s2('SN', propi, propj, seismeze200, mse, sn2pp)
+!
+!-- on calcule la partie b3200_unitaire
+    do 40 j = 1, 6
+        sij(j) = 0.d0
+40  continue
+    if (iret .ne. 0) then
+        do 50 j = 1, 6
+            do 60 icmp = 1, 12
+                mij(icmp) = propi(1+icmp)-propj(1+icmp)
+                sigu = zr(jsigu-1+78+6*(icmp-1)+j)
+                sij(j) = sij(j)+mij(icmp)*sigu
+60          continue
+            pij = propi(1)-propj(1)
+            sigu = zr(jsigu-1+78+72+j)
+            sij(j) = sij(j)+pij*sigu
+50      continue
+    endif
+!
+!-- on calcule la partie b3200_transitoire
     call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbthep)
     call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbprep)
     call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecap)
-    nbp=max(nbthep,nbprep, nbmecap)
+    nbp = max(nbthep,nbprep, nbmecap)
     if (nbp .ne. 0) then
         typ='PP'
         call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumes), 'LONUTI', long)
         call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumes), 'L', jtranp)
-        instsn(1) = zr(jtranp+84)
-        instsn(2) = zr(jtranp+85)
         indicp = jtranp + 6*2
-        do 14 j = 1, 6
+        do 70 j = 1, 6
             sntran(j) = zr(indicp+6+j-1) -zr(indicp+j-1)
- 14     continue
+70      continue
+        instpmin = zr(jtranp+84)
+        instpmax = zr(jtranp+85)
     else
-        instsn(1) = -1.0
-        instsn(2) = -1.0
-        do 114 j = 1, 6
+        do 80 j = 1, 6
             sntran(j) = 0.d0
- 114     continue
+80      continue
+        instpmin = -1.0
+        instpmax = -1.0
     endif
+!
+!-- on maximise sur les différentes possibilités de signes
+    do 90 i0 = 1, 2
+        i1 = 2*(i0-2)+1
+        e0(i0) = i1
+        e1(i0) = i1
+90  continue
 !
     if (seismeb32 .or. seismeunit) then
-        do 66 i1 = 1, 2
-          do 56 i2 = 1, 2
-            do 46 i3 = 1, 2
-              do 36 i4 = 1, 2
-                do 26 i5 = 1, 2
-                  do 16 i6 = 1, 2
-                    do 166 i7 = 1, 2
-                      do 156 i8 = 1, 2
-                        do 146 i9 = 1, 2
-                          do 136 i10 = 1, 2
-                            do 126 i11 = 1, 2
-                              do 116 i12 = 1, 2
-                                do 86 i0 = 1, 2
-                                  do 76 j = 1, 6
-                                      sntrans(j) = sntran(j)+e0(i0)*sij(j)+&
-                                                e1(i1)*seisfx(j)+ e2(i2)*seisfy(j)+&
-                                                e3(i3)*seisfz(j)+e4(i4)*seismx(j)+&
-                                                e5(i5)*seismy(j)+e6(i6)*seismz(j)+&
-                                                e1(i7)*seisfx2(j)+ e2(i8)*seisfy2(j)+&
-                                                e3(i9)*seisfz2(j)+e4(i10)*seismx2(j)+&
-                                                e5(i11)*seismy2(j)+e6(i12)*seismz2(j)
-76                                continue
-                                  call rctres(sntrans,tresca)
-                                  sn1 = max(sn1,tresca)
-86                              continue
-116                           continue
-126                         continue
-136                       continue
-146                     continue
-156                   continue
-166                 continue
-16                continue
-26              continue
-36            continue
-46          continue
-56        continue
-66      continue
+        do 100 i1 = 1, 2
+          do 101 i2 = 1, 2
+            do 102 i3 = 1, 2
+              do 103 i4 = 1, 2
+                do 104 i5 = 1, 2
+                  do 105 i6 = 1, 2
+                    do 106 i7 = 1, 2
+                      do 107 i8 = 1, 2
+                        do 108 i9 = 1, 2
+                          do 109 i10 = 1, 2
+                            do 110 i11 = 1, 2
+                              do 111 i12 = 1, 2
+                                do 112 i0 = 1, 2
+                                  do 113 j = 1, 6
+                                      snt(j) =  sntran(j)         +e0(i0)*sij(j)     +&
+                                                e1(i1)*seisfx(j)  +e1(i2)*seisfy(j)  +&
+                                                e1(i3)*seisfz(j)  +e1(i4)*seismx(j)  +&
+                                                e1(i5)*seismy(j)  +e1(i6)*seismz(j)  +&
+                                                e1(i7)*seisfx2(j) +e1(i8)*seisfy2(j) +&
+                                                e1(i9)*seisfz2(j) +e1(i10)*seismx2(j)+&
+                                                e1(i11)*seismy2(j)+e1(i12)*seismz2(j)
+113                               continue
+                                  call rctres(snt,tresca)
+                                  trescapp = max(trescapp, tresca)
+112                             continue
+111                           continue
+110                         continue
+109                       continue
+108                     continue
+107                   continue
+106                 continue
+105               continue
+104             continue
+103           continue
+102         continue
+101       continue
+100     continue
     else
-        do 96 i0 = 1, 2
-            do 106 j=1,6
-                 snt(j)=sntran(j)+e0(i0)*sij(j)
-        106 continue
+        do 114 i0 = 1, 2
+            do 115 j=1,6
+                snt(j)  = sntran(j)+e0(i0)*sij(j)
+        115 continue
             call rctres(snt,tresca)
-            sn1 = max(sn1,tresca)
-96      continue
+            trescapp = max(trescapp, tresca)
+114      continue
     endif
 !
+    snpp    = trescapp+sn2pp
+    sn  = snpp
+    instsn(1) = instpmin
+    instsn(2) = instpmax
+!
     if (numsip .eq. numsiq) goto 888
-!--------------------------------------
-!     DANS LE CAS D'UNE COMBINAISON
-!--------------------------------------
-    sn1 = 0.d0
+!
+!--------------------------------------------------------------------
+!                  DANS LE CAS D'UNE COMBINAISON DE
+!                          SITUATIONS P ET Q
+!--------------------------------------------------------------------
+!--------------------- CALCUL DE sn(Q,Q)-----------------------------
+    snqq  = 0.d0
+    sn2qq = 0.d0
+    trescaqq = 0.d0
+!
+!-- on calcule la partie ze200
+    if (ze200) call rcZ2s2('SN', proqi, proqj, seismeze200, mse, sn2qq)
+!
+!-- on calcule la partie b3200_unitaire
+    do 120 j = 1, 6
+        sij(j) = 0.d0
+120 continue
+    if (iret .ne. 0) then
+        do 130 j = 1, 6
+            do 140 icmp = 1, 12
+                mij(icmp) = proqi(1+icmp)-proqj(1+icmp)
+                sigu = zr(jsigu-1+78+6*(icmp-1)+j)
+                sij(j) = sij(j)+mij(icmp)*sigu
+140         continue
+            pij = proqi(1)-proqj(1)
+            sigu = zr(jsigu-1+78+72+j)
+            sij(j) = sij(j)+pij*sigu
+130     continue
+    endif
+!
+!-- on calcule la partie b3200_transitoire
     knumes = 'S       '
     call codent(numsiq, 'D0', knumes(2:8))
     call jelira(jexnom('&&RC3200.SITU_THER', knumes), 'LONUTI', nbtheq)
     call jelira(jexnom('&&RC3200.SITU_PRES', knumes), 'LONUTI', nbpreq)
     call jelira(jexnom('&&RC3200.SITU_MECA', knumes), 'LONUTI', nbmecaq)
-    nbq = max(nbpreq,nbtheq, nbmecaq)
+    nbq = max(nbtheq,nbpreq, nbmecaq)
     if (nbq .ne. 0) then
+        typqq='QQ'
         call jelira(jexnom('&&RC3200.TRANSIT.'//lieu, knumes), 'LONUTI', long)
         call jeveuo(jexnom('&&RC3200.TRANSIT.'//lieu, knumes), 'L', jtranq)
-        indicq = jtranq + 6*2
+        indicq = jtranq + 6*2 
+        do 150 j = 1, 6
+            sqtran(j) = zr(indicq+6+j-1) -zr(indicq+j-1)
+150     continue
+        instqmin = zr(jtranq+84)
+        instqmax = zr(jtranq+85)
+    else
+        typqq='00'
+        do 160 j = 1, 6
+            sqtran(j) = 0.d0
+160     continue
+        instqmin= -1.0
+        instqmax = -1.0
+    endif
+!
+!-- on maximise sur les possibilités de signes
+    if (seismeb32 .or. seismeunit) then
+        do 170 i1 = 1, 2
+          do 171 i2 = 1, 2
+            do 172 i3 = 1, 2
+              do 173 i4 = 1, 2
+                do 174 i5 = 1, 2
+                  do 175 i6 = 1, 2
+                    do 176 i7 = 1, 2
+                      do 177 i8 = 1, 2
+                        do 178 i9 = 1, 2
+                          do 179 i10 = 1, 2
+                            do 180 i11 = 1, 2
+                              do 181 i12 = 1, 2
+                                do 182 i0 = 1, 2
+                                  do 183 j = 1, 6
+                                      sqt(j) =  sqtran(j)         +e0(i0)*sij(j)     +&
+                                                e1(i1)*seisfx(j)  +e1(i2)*seisfy(j)  +&
+                                                e1(i3)*seisfz(j)  +e1(i4)*seismx(j)  +&
+                                                e1(i5)*seismy(j)  +e1(i6)*seismz(j)  +&
+                                                e1(i7)*seisfx2(j) +e1(i8)*seisfy2(j) +&
+                                                e1(i9)*seisfz2(j) +e1(i10)*seismx2(j)+&
+                                                e1(i11)*seismy2(j)+e1(i12)*seismz2(j)
+183                               continue
+                                  call rctres(sqt,tresca)
+                                  trescaqq = max(tresca, trescaqq)
+182                             continue
+181                           continue
+180                         continue
+179                       continue
+178                     continue
+177                   continue
+176                 continue
+175               continue
+174             continue
+173           continue
+172         continue
+171       continue
+170     continue
+    else
+        do 184 i0 = 1, 2
+            do 185 j=1,6
+                sqt(j)  = sqtran(j)+e0(i0)*sij(j)
+        185 continue
+            call rctres(sqt,tresca)
+            trescaqq = max(tresca, trescaqq)
+184      continue
+    endif
+!
+    snqq = trescaqq+sn2qq
+!
+! -- Comparaison de SN(P,P) et SN(Q,Q)
+    if (snqq .gt. snpp) then
+        typ=typqq
+        sn  = snqq
+        instsn(1)= instqmin
+        instsn(2)= instqmax
+    endif
+!
+!--------------------- CALCUL DE SN(P,Q)-----------------------------
+    sn2pq = 0.d0
+    snpq = 0.d0
+    trescapq = 0.d0
+!
+!-- on calcule la partie ze200
+    if (ze200) then
+        call rcZ2s2('SN', propi, proqi, seismeze200, mse, sn2)
+        sn2pq=max(sn2,sn2pq)
+        call rcZ2s2('SN', propj, proqj, seismeze200, mse, sn2)
+        sn2pq=max(sn2,sn2pq)
+        call rcZ2s2('SN', propi, proqj, seismeze200, mse, sn2)
+        sn2pq=max(sn2,sn2pq)
+        call rcZ2s2('SN', propj, proqi, seismeze200, mse, sn2)
+        sn2pq=max(sn2,sn2pq)
+    endif
+!
+!-- on calcule la partie b3200_unitaire
+    do 200 j = 1, 6
+        sij1(j) = 0.d0
+        sij2(j) = 0.d0
+        sij3(j) = 0.d0
+        sij4(j) = 0.d0
+200 continue
+    if (iret .ne. 0) then
+        do 205 j = 1, 6
+            do 210 icmp = 1, 12
+                mij1(icmp) = propi(1+icmp)-proqi(1+icmp)
+                mij2(icmp) = propj(1+icmp)-proqj(1+icmp)
+                mij3(icmp) = propi(1+icmp)-proqj(1+icmp)
+                mij4(icmp) = propj(1+icmp)-proqi(1+icmp)
+                sigu = zr(jsigu-1+78+6*(icmp-1)+j)
+                sij1(j) = sij1(j) + mij1(icmp)*sigu
+                sij2(j) = sij2(j) + mij2(icmp)*sigu
+                sij3(j) = sij3(j) + mij3(icmp)*sigu
+                sij4(j) = sij4(j) + mij4(icmp)*sigu
+210         continue
+            pij1 = propi(1)-proqi(1)
+            pij2 = propj(1)-proqj(1)
+            pij3 = propi(1)-proqj(1)
+            pij4 = propj(1)-proqi(1)
+            sigu = zr(jsigu-1+72+78+j)
+            sij1(j) = sij1(j) + pij1*sigu
+            sij2(j) = sij2(j) + pij2*sigu
+            sij3(j) = sij3(j) + pij3*sigu
+            sij4(j) = sij4(j) + pij4*sigu
+205     continue
+    endif
+!
+!-- on calcule la partie b3200_transitoire
+    if (nbq .ne. 0) then
         if (nbp .ne. 0) then
-            typ='PQ'
-            do 115 i1 = 1, 6
-                sqmi(i1) = zr(indicp+i1-1) - zr(indicq+6+ i1-1)
-                sqma(i1) = zr(indicp+6+i1-1) - zr(indicq+ i1-1)
-115         continue
+            typpq='PQ'
+            do 211 j = 1, 6
+                smi(j)   = zr(indicp+j-1)    - zr(indicq+6+j-1)
+                sma(j)   = zr(indicp+6+j-1)  - zr(indicq+j-1)
+211         continue
         else
-            typ='QQ'
-            do 216 i1 = 1, 6
-                sqmi(i1) = 0.d0
-                sqma(i1) = zr(indicq+6+i1-1) - zr(indicq+ i1-1)
-216         continue
-            instsn(1) = zr(jtranq+84)
-            instsn(2) = zr(jtranq+85)
+            typpq='QQ'
+            do 212 j = 1, 6
+                smi(j)   = 0.d0
+                sma(j)   = zr(indicq+6+j-1) - zr(indicq+j-1)
+212         continue
+            instbid(1) = instqmin
+            instbid(2) = instqmax
         endif
     else
         if (nbp .ne. 0) then
-            typ='PP'
-            do 117 i1 = 1, 6
-                sqmi(i1) = 0.d0
-                sqma(i1) = zr(indicp+6+i1-1) - zr(indicp+ i1-1)
-117         continue
-            instsn(1) = zr(jtranp+84)
-            instsn(2) = zr(jtranp+85)
+            typpq='PP'
+            do 213 j = 1, 6
+                smi(j)   = 0.d0
+                sma(j)   = zr(indicp+6+j-1) - zr(indicp+j-1)
+213         continue
+            instbid(1) = instpmin
+            instbid(2) = instpmax
         else
-            typ='00'
-            do 218 i1 = 1, 6
-                sqmi(i1) = 0.d0
-                sqma(i1) = 0.d0
-218         continue
-            instsn(1) = -1.0
-            instsn(2) = -1.0
+            typpq='00'
+            do 214 j = 1, 6
+                smi(j) = 0.d0
+                sma(j) = 0.d0
+214         continue
+            instbid(1) = -1.0
+            instbid(2) = -1.0
         endif
     endif
 !
+!-- on maximise sur les possibilités de signes
     if (seismeb32 .or. seismeunit) then
-        do 68 i1 = 1, 2
-          do 58 i2 = 1, 2
-            do 48 i3 = 1, 2
-              do 38 i4 = 1, 2
-                do 28 i5 = 1, 2
-                  do 18 i6 = 1, 2
-                    do 168 i7 = 1, 2
-                      do 158 i8 = 1, 2
-                        do 148 i9 = 1, 2
-                          do 138 i10 = 1, 2
-                            do 128 i11 = 1, 2
-                              do 118 i12 = 1, 2
-                                do 88 i0 = 1, 2
-                                  do 78 j = 1, 6
-                                      sntrans1(j) = sqmi(j)+e0(i0)*sij(j)+e1(i1)*seisfx(j)+&
-                                               e2(i2)*seisfy(j)+e3(i3)*seisfz(j)+&
-                                               e4(i4)*seismx(j)+e5(i5)*seismy(j)+&
-                                               e6(i6)*seismz(j)+e1(i7)*seisfx2(j)+&
-                                               e2(i8)*seisfy2(j)+e3(i9)*seisfz2(j)+&
-                                               e4(i10)*seismx2(j)+e5(i11)*seismy2(j)+&
-                                               e6(i12)*seismz2(j)
-                                      sntrans2(j) = sqma(j)+e0(i0)*sij(j)+e1(i1)*seisfx(j)+&
-                                               e2(i2)*seisfy(j)+e3(i3)*seisfz(j)+&
-                                               e4(i4)*seismx(j)+e5(i5)*seismy(j)+&
-                                               e6(i6)*seismz(j)+e1(i7)*seisfx2(j)+&
-                                               e2(i8)*seisfy2(j)+e3(i9)*seisfz2(j)+&
-                                               e4(i10)*seismx2(j)+e5(i11)*seismy2(j)+&
-                                               e6(i12)*seismz2(j)
-78                                continue
-                                  call rctres(sntrans1,tresca1)
-                                  call rctres(sntrans2,tresca2)
-                                  if (tresca1 .gt. sn1) then
-                                      sn1=tresca1
-                                      if (typ .eq. 'PQ') then
-                                          typ='QP'
-                                          instsn(1) = zr(jtranp+84) 
-                                          instsn(2) = zr(jtranq+85) 
-                                      endif
+        do 220 i1 = 1, 2
+          do 221 i2 = 1, 2
+            do 222 i3 = 1, 2
+              do 223 i4 = 1, 2
+                do 224 i5 = 1, 2
+                  do 225 i6 = 1, 2
+                    do 226 i7 = 1, 2
+                      do 227 i8 = 1, 2
+                        do 228 i9 = 1, 2
+                          do 229 i10 = 1, 2
+                            do 230 i11 = 1, 2
+                              do 231 i12 = 1, 2
+                                do 232 i0 = 1, 2
+                                  do 233 j = 1, 6
+                                      seis(j)= e1(i1)*seisfx(j)+e1(i2)*seisfy(j)+&
+                                               e1(i3)*seisfz(j)+e1(i4)*seismx(j)+&
+                                               e1(i5)*seismy(j)+e1(i6)*seismz(j)+&
+                                               e1(i7)*seisfx2(j)+e1(i8)*seisfy2(j)+&
+                                               e1(i9)*seisfz2(j)+e1(i10)*seismx2(j)+&
+                                               e1(i11)*seismy2(j)+e1(i12)*seismz2(j)
+                                      st11(j) = smi(j)+e0(i0)*sij1(j)+seis(j)
+                                      st12(j) = smi(j)+e0(i0)*sij2(j)+seis(j)
+                                      st13(j) = smi(j)+e0(i0)*sij3(j)+seis(j)
+                                      st14(j) = smi(j)+e0(i0)*sij4(j)+seis(j)
+                                      st21(j) = sma(j)+e0(i0)*sij1(j)+seis(j)
+                                      st22(j) = sma(j)+e0(i0)*sij2(j)+seis(j)
+                                      st23(j) = sma(j)+e0(i0)*sij3(j)+seis(j)
+                                      st24(j) = sma(j)+e0(i0)*sij4(j)+seis(j)
+233                               continue
+!
+                                  call rctres(st11,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='PQ'
+                                      endif  
                                   endif
-                                  if (tresca2 .gt. sn1) then
-                                      sn1=tresca2
-                                      if (typ .eq. 'PQ') then
-                                          instsn(1) = zr(jtranq+84) 
-                                          instsn(2) = zr(jtranp+85) 
-                                      endif
+                                  call rctres(st12,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='PQ'
+                                      endif   
                                   endif
-88                              continue
-118                           continue
-128                         continue
-138                       continue
-148                     continue
-158                   continue
-168                 continue
-18                continue
-28              continue
-38            continue
-48          continue
-58        continue
-68      continue
+                                  call rctres(st13,tresca)
+                                   if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='PQ'
+                                      endif  
+                                  endif
+                                  call rctres(st14,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='PQ'
+                                      endif  
+                                  endif
+                                  call rctres(st21,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='QP'
+                                      endif 
+                                  endif
+                                  call rctres(st22,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='QP'
+                                      endif  
+                                  endif
+                                  call rctres(st23,tresca)
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='QP'
+                                      endif  
+                                  endif
+                                  if (tresca .gt. trescapq) then
+                                      trescapq = tresca
+                                      if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                                          typpq='QP'
+                                      endif 
+                                  endif
+!
+232                             continue
+231                           continue
+230                         continue
+229                       continue
+228                     continue
+227                   continue
+226                 continue
+225               continue
+224             continue
+223           continue
+222         continue
+221       continue
+220     continue
     else
-        do 98 i0 = 1, 2
-            do 108 j=1,6
-                 sqmit(j)=sqmi(j)+e0(i0)*sij(j)
-                 sqmat(j)=sqma(j)+e0(i0)*sij(j)
-        108 continue
-            call rctres(sqmit,tresca1)
-            call rctres(sqmat,tresca2)
-            if (tresca1 .gt. sn1) then
-                sn1=tresca1
-                if (typ .eq. 'PQ') then
-                    typ='QP'
-                    instsn(1) = zr(jtranp+84) 
-                    instsn(2) = zr(jtranq+85) 
+        do 234 i0 = 1, 2
+            do 235 j=1,6
+                st11(j)=smi(j)+e0(i0)*sij1(j)
+                st12(j)=smi(j)+e0(i0)*sij2(j)
+                st13(j)=smi(j)+e0(i0)*sij3(j)
+                st14(j)=smi(j)+e0(i0)*sij4(j)
+                st21(j)=sma(j)+e0(i0)*sij1(j)
+                st22(j)=sma(j)+e0(i0)*sij2(j)
+                st23(j)=sma(j)+e0(i0)*sij3(j)
+                st24(j)=sma(j)+e0(i0)*sij4(j)
+235         continue
+            call rctres(st11,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='PQ'
+                endif  
+            endif
+            call rctres(st12,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='PQ'
+                endif  
+            endif
+            call rctres(st13,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='PQ'
+                endif 
+            endif
+            call rctres(st14,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='PQ'
+                endif  
+            endif
+!
+            call rctres(st21,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='QP'
+                endif  
+            endif
+            call rctres(st22,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='QP'
+                endif 
+            endif
+            call rctres(st23,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='QP'
                 endif
             endif
-            if (tresca2 .gt. sn1) then
-                sn1=tresca2
-                if (typ .eq. 'PQ') then
-                    instsn(1) = zr(jtranq+84) 
-                    instsn(2) = zr(jtranp+85) 
-                endif
+            call rctres(st24,tresca)
+            if (tresca .gt. trescapq) then
+                trescapq = tresca
+                if(typpq .eq. 'PQ' .or. typpq .eq. 'QP') then
+                    typpq='QP'
+                endif  
             endif
-98      continue
+!
+234     continue
+    endif
+!
+    if(typpq .eq. 'PQ') then
+       instbid(1) = instpmin
+       instbid(2) = instqmax
+    else
+       instbid(1) = instqmin
+       instbid(2) = instpmax
+    endif
+!
+    snpq=trescapq+sn2pq
+!
+    if(snpq .gt. sn) then
+        sn  = snpq
+        instsn(1) = instbid(1)
+        instsn(2) = instbid(2)
+        typ =typpq
     endif
 !
 888 continue
@@ -355,9 +632,6 @@ subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
 !-----------------------------------------------------------
 !   CALCUL DE LA PARTIE SP3 (QUI DEPEND DES INSTANTS DE SN)
 !-----------------------------------------------------------
-    sp3 = 0.d0
-    spmeca3 = 0.d0
-!
     if (typ .eq. '00') goto 999
 !
     call jeveuo('&&RC3200.INDI', 'L', jvalin)

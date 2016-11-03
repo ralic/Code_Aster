@@ -42,7 +42,7 @@ subroutine rc32si()
 !     ------------------------------------------------------------------
     integer :: nbsitu, nbseis, ndim
     integer, pointer :: nume_group(:) => null()
-    integer :: jsigr, jnsitu, jnbocc, jpresa, jpresb, jcombi
+    integer :: jsigr, jnsitu, jnbocc, jpresa, jpresb, jcombi, jsigrpas
     integer :: jsp12, jsp23, jsp13, nbgr, iocc, nume, n1, nocc
     aster_logical :: yapass
     character(len=8) :: k8b, knume
@@ -51,7 +51,8 @@ subroutine rc32si()
     integer :: nbchar, jchara, jcharb, nbth, jther, nbpres, jpres
     integer :: nbmec, jmec, nscy, jnumgr, jseigr, nbgrt, nbsigr
     integer :: numgs, jnsg, ii, vali(3), jspas, nbsg1, nbsg2, nbsg3
-    integer :: nbp12, nbp23, nbp13, numg1, numg2
+    integer :: nbp12, nbp23, nbp13, numg1, numg2, jnom, jtempa, jtempb
+    character(len=24) :: nomsitu
 !
 ! DEB ------------------------------------------------------------------
 !
@@ -60,12 +61,14 @@ subroutine rc32si()
     ndim = nbsitu + nbseis
     AS_ALLOCATE(vi=nume_group, size=ndim)
 !
-    call wkvect('&&RC32SI.SITU_GROUP', 'V V I', 2*ndim, jsigr)
+    call wkvect('&&RC32SI.SIT_GROUP', 'V V I', 2*ndim, jsigr)
+    call wkvect('&&RC32SI.SIT_GROUP_PAS', 'V V I', 2*ndim, jsigrpas)
     call wkvect('&&RC3200.SITU_NUMERO', 'V V I', ndim, jnsitu)
     call wkvect('&&RC3200.SITU_NB_OCCUR', 'V V I', 2*ndim, jnbocc)
     call wkvect('&&RC3200.SITU_PRES_A', 'V V R', nbsitu, jpresa)
     call wkvect('&&RC3200.SITU_PRES_B', 'V V R', nbsitu, jpresb)
     call wkvect('&&RC3200.SITU_COMBINABLE', 'V V L', ndim, jcombi)
+    call wkvect('&&RC3200.SITU_NOM', 'V V K24', ndim, jnom)
 !
     call jecrec('&&RC3200.SITU_ETAT_A', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 ndim)
@@ -105,6 +108,15 @@ subroutine rc32si()
         zi(jnsitu+iocc-1) = nume
         knume = 'S       '
         call codent(nume, 'D0', knume(2:8))
+
+! ------ ON STOCKE LE NOM DE SITUATION:
+!        ---------------------------------
+        call getvtx('SITUATION', 'NOM_SITU', iocc=iocc, scal=nomsitu, nbret=n1)
+        if(n1 .ne. 0) then
+            zk24(jnom+iocc-1)=nomsitu
+        else
+            zk24(jnom+iocc-1)='PAS DE NOM'
+        endif      
 !
 ! ------ ON STOCKE LE NOMBRE D'OCCURRENCE:
 !        ---------------------------------
@@ -156,10 +168,14 @@ subroutine rc32si()
             if (nbvg .eq. 1) then
                 zi(jsigr+2*iocc-2) = zi(jnbvg)
                 zi(jsigr+2*iocc-1) = zi(jnbvg)
+                zi(jsigrpas+2*iocc-2) = zi(jnbvg)
+                zi(jsigrpas+2*iocc-1) = zi(jnbvg)
             else
 !----------- Sinon (elle appartient à deux groupes)
                 zi(jsigr+2*iocc-2) = zi(jnbvg)
                 zi(jsigr+2*iocc-1) = zi(jnbvg+1)
+                zi(jsigrpas+2*iocc-2) = zi(jnbvg)
+                zi(jsigrpas+2*iocc-1) = zi(jnbvg+1)
             endif
             call jedetr('&&RC32SI.VALE_GR')
         else
@@ -178,8 +194,8 @@ subroutine rc32si()
                 call utmess('F', 'POSTRCCM_34')
             endif
 !
-            zi(jsigr+2*iocc-2) = min ( numpas(1), numpas(2) )
-            zi(jsigr+2*iocc-1) = max ( numpas(1), numpas(2) )
+            zi(jsigrpas+2*iocc-2) = min ( numpas(1), numpas(2) )
+            zi(jsigrpas+2*iocc-1) = max ( numpas(1), numpas(2) )
 !
 !----------- On comptabilise le nombre de groupes au total nbgr
             numgr = numpas(1)
@@ -289,6 +305,8 @@ subroutine rc32si()
         call getvis('SEISME', 'NUME_GROUPE', iocc=iocc, scal=nume, nbret=n1)
         zi(jsigr+2*(nbsitu+iocc)-2) = nume
         zi(jsigr+2*(nbsitu+iocc)-1) = nume
+        zi(jsigrpas+2*(nbsitu+iocc)-2) = nume
+        zi(jsigrpas+2*(nbsitu+iocc)-1) = nume
 !
 ! ------ COMBINABLE DANS SON GROUPE:
 !        ------------------------------------
@@ -467,8 +485,8 @@ subroutine rc32si()
         nbp13 = 0
 !
         do 40 iocc = 1, ndim, 1
-            numg1 = zi(jsigr+2*iocc-2)
-            numg2 = zi(jsigr+2*iocc-1)
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 1) then
                 nbsg1 = nbsg1 + 1
             else if (numg1.eq.1 .and. numg2.eq.2) then
@@ -504,37 +522,53 @@ subroutine rc32si()
 !
         ii = 0
         do 42 iocc = 1, ndim, 1
-            numg1 = zi(jsigr+2*iocc-2)
-            numg2 = zi(jsigr+2*iocc-1)
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 1) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
  42     continue
         do 44 iocc = 1, ndim, 1
-            numg1 = zi(jsigr+2*iocc-2)
-            numg2 = zi(jsigr+2*iocc-1)
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 2) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
+ 44     continue
+        do 46 iocc = 1, ndim, 1
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 2 .and. numg2 .eq. 2) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
+ 46     continue
+        do 48 iocc = 1, ndim, 1
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 2 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
+ 48     continue
+        do 50 iocc = 1, ndim, 1
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 3 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
+ 50     continue
+        do 52 iocc = 1, ndim, 1
+            numg1 = zi(jsigrpas+2*iocc-2)
+            numg2 = zi(jsigrpas+2*iocc-1)
             if (numg1 .eq. 1 .and. numg2 .eq. 3) then
                 ii = ii + 1
                 zi(jnsg+ii-1) = iocc
             endif
- 44     continue
+ 52     continue
         call jeecra(jexnum('&&RC3200.LES_GROUPES', nbgr), 'LONUTI', ii)
     endif
 !

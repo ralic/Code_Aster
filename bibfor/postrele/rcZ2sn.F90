@@ -1,5 +1,5 @@
-subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
-                   pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
+subroutine rcZ2sn(ze200, lieu, numsip, numsiq,iocs, mse,&
+                  propi, propj, proqi, proqj, instsn, sn, sp3, spmeca3)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -14,10 +14,11 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
 #include "asterfort/utmess.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/rcver1.h"
-#include "asterfort/rc32my.h"
 #include "asterfort/getvid.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/tbliva.h"
+#include "asterfort/rcZ2s2.h"
+#include "asterfort/rc32my.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterc/getfac.h"
@@ -25,8 +26,8 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
     aster_logical :: ze200
     character(len=4) :: lieu
     integer :: numsip, numsiq, iocs
-    real(kind=8) :: sn1, sp3, spmeca3, instsn(2), pi, mi(12), pj, mj(12)
-    real(kind=8) :: mse(12)
+    real(kind=8) :: sn, instsn(2), sp3, spmeca3
+    real(kind=8) :: mse(12), propi(20), propj(20), proqi(20), proqj(20)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,51 +47,55 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
 ! ======================================================================
 !     ------------------------------------------------------------------
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
-!     CALCUL DU SN
+!     CALCUL DU SP
 !
 !     ------------------------------------------------------------------
 ! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 ! IN  : NUMSIP : NUMERO SITUATION DE L'ETAT STABILISE P
 ! IN  : NUMSIQ : NUMERO SITUATION DE L'ETAT STABILISE Q
-! IN  : SEISME B3200_T
-! OUT : SN1    : PARTIE B3200 du SN
-! OUT : SP3    : PARTIE du SP qui dépend de SN
-! OUT : SPMECA3: PARTIE du SPMECA qui dépend de SN
+! OUT : SN1    : PARTIE B3200 du SP
 !
     character(len=8) :: methode, tabfm(6), crit(1), k8b, nocmp(6)
     integer :: nb, n1, n0, i, nbabsc, jabsc, ndim, nbchar
     real(kind=8) :: prec(1), vale(1), momen0, momen1
     character(len=16) :: typmec, valek(1)
-    aster_logical :: exist, seismeb32, seismeunit
+    aster_logical :: exist, seismeb32, seismeunit, seismeze200
     character(len=24) :: valk(3)
-    integer :: jseis, j, k, ibid, iret
+    integer :: jseis, j, ibid, iret, k
     complex(kind=8) :: cbid
     real(kind=8), pointer :: contraintes(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-!--------------------------------------
+!-------------------------------------
+!     SEISME ZE200 ?
+!-------------------------------------
+    seismeze200 = .false.
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+    if (iocs .ne. 0 .and. typmec .eq. 'ZE200a') seismeze200=.true.
+    if (iocs .ne. 0 .and. typmec .eq. 'ZE200b') seismeze200=.true.
+!
+!-------------------------------------
 !     SI SEISME AVEC B3200_T
-!--------------------------------------
+!-------------------------------------
     seismeb32 = .false.
     seismeunit = .false.
-    valek(1) = 'ABSC_CURV       '
-    prec(1) = 1.0d-06
-    crit(1) = 'RELATIF'
-    nocmp(1) = 'SIXX'
-    nocmp(2) = 'SIYY'
-    nocmp(3) = 'SIZZ'
-    nocmp(4) = 'SIXY'
-    nocmp(5) = 'SIXZ'
-    nocmp(6) = 'SIYZ'
 !
-    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     call getfac('CHAR_MECA', nbchar)
-!-- si on est en B3200_T
-    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .eq. 0) seismeb32=.true.
     if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .ne. 0) seismeunit=.true.
+    if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and.  nbchar .eq. 0) seismeb32=.true.
+!
     if (seismeb32) then
+        valek(1) = 'ABSC_CURV       '
+        prec(1) = 1.0d-06
+        crit(1) = 'RELATIF'
+        nocmp(1) = 'SIXX'
+        nocmp(2) = 'SIYY'
+        nocmp(3) = 'SIZZ'
+        nocmp(4) = 'SIXY'
+        nocmp(5) = 'SIXZ'
+        nocmp(6) = 'SIYZ'
 !-- on récupère les tables correspondantes
         call getvid('SEISME', 'TABL_FX', iocc=iocs, scal=tabfm(1), nbret=n0)
         call getvid('SEISME', 'TABL_FY', iocc=iocs, scal=tabfm(2), nbret=n0)
@@ -124,20 +129,19 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
         do 40 i = 1, 6
             do 50 j = 1, 6
                 do 60 k = 1, nbabsc
+                  vale(1) = zr(jabsc+k-1)
 !
-                    vale(1) = zr(jabsc+k-1)
-!
-                    call tbliva(tabfm(i), 1, valek, [ibid], vale,&
-                               [cbid], k8b, crit, prec, nocmp(j),&
-                               k8b, ibid, contraintes(k), cbid, k8b,&
-                               iret)
-                    if (iret .ne. 0) then
-                        valk (1) = tabfm(i)
-                        valk (2) = nocmp(j)
-                        valk (3) = valek(1)
-                        call utmess('F', 'POSTRCCM_2', nk=3, valk=valk, nr=1,&
-                                    valr=vale(1))
-                    endif
+                  call tbliva(tabfm(i), 1, valek, [ibid], vale,&
+                             [cbid], k8b, crit, prec, nocmp(j),&
+                             k8b, ibid, contraintes(k), cbid, k8b,&
+                             iret)
+                  if (iret .ne. 0) then
+                    valk (1) = tabfm(i)
+                    valk (2) = nocmp(j)
+                    valk (3) = valek(1)
+                    call utmess('F', 'POSTRCCM_2', nk=3, valk=valk, nr=1,&
+                                valr=vale(1))
+                  endif
  60             continue
                 call rc32my(nbabsc, zr(jabsc), contraintes, momen0, momen1)
                 if (lieu .eq. 'ORIG') then
@@ -152,10 +156,12 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
     call getvtx(' ', 'METHODE', scal=methode, nbret=nb)
     if (methode .eq. 'TRESCA') then
         call rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
-                      seismeunit, mse, pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
+                      seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
+                      instsn, sn, sp3, spmeca3)
     else
         call rcZ2sn1b(ze200, lieu, numsip, numsiq, seismeb32,&
-                      seismeunit, mse, pi, mi, pj, mj, instsn, sn1, sp3, spmeca3)
+                      seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
+                      instsn, sn, sp3, spmeca3)
     endif
 !
     if (seismeb32) then
@@ -163,5 +169,6 @@ subroutine rcZ2sn1(ze200, lieu, numsip, numsiq, iocs, mse,&
         call jedetr('&&RC3200.SIGSEIS')
         AS_DEALLOCATE(vr=contraintes)
     endif
+!
     call jedema()
 end subroutine

@@ -185,7 +185,7 @@ Contactez le support technique.
 
     34: _(u"""
  "NUME_PASSAGE" contient les numéros des deux groupes la situation de passage, 
- ces numéros sont strictement positifs. Compatible avec au plus 3 groupes
+ ces numéros sont strictement positifs. Compatible avec au plus 5 groupes
 """),
 
     36: _(u"""

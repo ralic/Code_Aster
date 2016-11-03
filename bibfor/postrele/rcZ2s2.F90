@@ -1,4 +1,4 @@
-subroutine rcZ2s2(typ, pi, mi, pj, mj, seisme, mse, s2)
+subroutine rcZ2s2(typ, propi, propj, seisme, mse, s2)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -6,7 +6,7 @@ subroutine rcZ2s2(typ, pi, mi, pj, mj, seisme, mse, s2)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jedema.h"
     character(len=2) :: typ
-    real(kind=8) :: pi, mi(*), pj, mj(*), mse(*), s2
+    real(kind=8) :: propi(20), propj(20), mse(*), s2
     aster_logical :: seisme
 !     ------------------------------------------------------------------
 ! ======================================================================
@@ -90,15 +90,15 @@ subroutine rcZ2s2(typ, pi, mi, pj, mj, seisme, mse, s2)
 !-----------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE A LA PRESSION S2P
 !-----------------------------------------------------
-    pij = pi - pj
+    pij = propi(1) - propj(1)
     s2p = coefp*rayon*abs(pij)/ep
 !---------------------------------------------------------
 ! --- CALCUL DE LA PARTIE DUE AUX MOMENTS S2M SANS SEISME
 !---------------------------------------------------------
     do 100 i = 1, 3    
-        mij(i) = mi(i+3) - mj(i+3)
+        mij(i) = propi(i+4) - propj(i+4)
         racine = racine + mij(i)**2
-        mijcor(i) = mi(9+i) - mj(9+i)
+        mijcor(i) = propi(10+i) - propj(10+i)
         racicor = racicor + mijcor(i)**2
  100 continue
 !
@@ -133,13 +133,13 @@ subroutine rcZ2s2(typ, pi, mi, pj, mj, seisme, mse, s2)
                do 30 i4 = 1, 2
                    do 20 i5 = 1, 2
                        do 10 i6 = 1, 2
-                           mijs(1) = mi(4) - mj(4)+ mse(4)*e1(i1)
-                           mijs(2) = mi(5) - mj(5)+ mse(5)*e2(i2)
-                           mijs(3) = mi(6) - mj(6)+ mse(6)*e3(i3)
+                           mijs(1) = propi(5) - propj(5)+ mse(4)*e1(i1)
+                           mijs(2) = propi(6) - propj(6)+ mse(5)*e2(i2)
+                           mijs(3) = propi(7) - propj(7)+ mse(6)*e3(i3)
                            racines = mijs(1)**2+mijs(2)**2+mijs(3)**2
-                           mijcors(1) = mi(10) - mj(10)+ mse(10)*e4(i4)
-                           mijcors(2) = mi(11) - mj(11)+ mse(11)*e5(i5)
-                           mijcors(3) = mi(12) - mj(12)+ mse(12)*e6(i6)
+                           mijcors(1) = propi(11) - propj(11)+ mse(10)*e4(i4)
+                           mijcors(2) = propi(12) - propj(12)+ mse(11)*e5(i5)
+                           mijcors(3) = propi(13) - propj(13)+ mse(12)*e6(i6)
                            racicors = mijcors(1)**2+mijcors(2)**2+mijcors(3)**2
 !
                            if (rcor+rtub .eq. 0) then

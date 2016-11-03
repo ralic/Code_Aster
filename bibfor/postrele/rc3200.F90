@@ -35,13 +35,14 @@ subroutine rc3200()
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200 et B3200
 !
     character(len=8) :: mater
-    integer :: n1, nbther, nbopt, iopt
+    integer :: n1, nbther, nbopt, iopt, nb
     character(len=16) :: typmec, kopt(3)
-    aster_logical :: lpmpb, lsn, lther, lfat, lefat, ze200
+    aster_logical :: lpmpb, lsn, lther, lfat, lefat, ze200, b32unit
 !
 ! DEB ------------------------------------------------------------------
 !
     ze200 = .false.
+    b32unit = .false.
     call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     if (typmec .eq. 'ZE200a' .or. typmec .eq. 'ZE200b') ze200=.true.
 
@@ -87,6 +88,9 @@ subroutine rc3200()
 !     ------------------------------------------------------------------
 !
     call getvid(' ', 'MATER', scal=mater, nbret=n1)
+    call getfac('RESU_MECA_UNIT', nb)
+!-- si on est en ZE200 ou B3200_T
+    if (nb .ne. 0) b32unit=.true.
 !
     lpmpb = .false.
     lsn   = .false.
@@ -95,7 +99,7 @@ subroutine rc3200()
     lefat = .false.
 !
     call getfac('RESU_THER', nbther)
-    if (nbther .ne. 0) then
+    if (nbther .ne. 0 .and. nb .ne. 0) then
         lther = .true.
     endif
 !
@@ -104,15 +108,15 @@ subroutine rc3200()
     call getvtx(' ', 'OPTION', nbval=nbopt, vect=kopt, nbret=n1)
     do 20 iopt = 1, nbopt
         if (kopt(iopt) .eq. 'PM_PB') then
-            lpmpb = .true.
+            if (nb .ne. 0) lpmpb = .true.
         else if (kopt(iopt) .eq. 'SN') then
             lsn = .true.
         else if (kopt(iopt) .eq. 'FATIGUE') then
-            lpmpb = .true.
+            if (nb .ne. 0) lpmpb = .true.
             lfat = .true.
             lsn = .true.
         else if (kopt(iopt) .eq. 'EFAT') then
-            lpmpb = .true.
+            if (nb .ne. 0) lpmpb = .true.
             lfat = .true.
             lsn = .true.
             lefat = .true.

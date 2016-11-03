@@ -22,7 +22,7 @@ interface
                       yapass, seisme, iocs, mater,&
                       lieu, utot, utotenv, resuas,&
                       resuss, resuca, resucs,&
-                      factus, resumax)
+                      factus, factus2, resumax)
         aster_logical :: ze200
         integer :: ig
         aster_logical :: lpmpb
@@ -42,6 +42,7 @@ interface
         real(kind=8) :: resuca(*)
         real(kind=8) :: resucs(*)
         real(kind=8) :: factus(*)
+        character(len=24) :: factus2(*)
         real(kind=8) :: resumax(*)
     end subroutine rc3201
 end interface

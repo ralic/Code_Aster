@@ -43,14 +43,13 @@ subroutine rc32env(k,l, ke, lieu, fen)
 #include "asterfort/tbexv1.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/rctres.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/lcqeqv.h"
 #include "asterfort/rcjaco.h"
 #include "asterfort/rcveri.h"
+#include "asterfort/utmess.h"
 !
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=16) :: motclf5, val
@@ -69,7 +68,7 @@ subroutine rc32env(k,l, ke, lieu, fen)
     real(kind=8) :: a, b, c, epsisup, epsiinf, temp, tmoy, tsup, tinf
     real(kind=8) :: valtinf, valtsup, valtmoynum, valtmoyden, epsiet
     real(kind=8) :: critepsi, tempmin, tempmax, tempii, emin, emax 
-    character(len=24) :: instan, abscur, instany
+    character(len=24) :: instan, abscur, instany, valk(4)
     complex(kind=8) :: cbid
 !
 ! DEB ------------------------------------------------------------------
@@ -243,6 +242,14 @@ subroutine rc32env(k,l, ke, lieu, fen)
                         [cbid], k8b, crit, prec, 'TEMP',&
                         k8b, ibid, temp, cbid, k8b,&
                         iret)
+            if (iret .ne. 0) then
+                valk (1) = table4
+                valk (2) = 'TEMP'
+                valk (3) = valek(1)
+                valk (4) = valek(2)
+                call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                             valr=vale)
+            endif
             zr(jtemp+j-1)=temp
 !
             do 14 m = 1, ncmp

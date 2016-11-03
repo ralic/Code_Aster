@@ -351,9 +351,8 @@ IMPR_TABLE(  TABLE=FAT,
                            VALE_K  = 'COMB'),
                        _F( NOM_PARA = 'SEISME',
                            VALE_K  = 'SANS'),),
-              NOM_PARA = ('NUME_GROUPE', 'LIEU', 'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
-                          'SALT1_IJ', 'SALT2_IJ','INST_SN_1', 'INST_SN_2', 'INST_SP1_1',
-                          'INST_SP1_2','INST_SP2_1','INST_SP2_2' ,'FU_UNIT'),
+              NOM_PARA = ('GROUPE_1', 'LIEU', 'SIT1', 'SIT2', 'INST_SN_1', 'INST_SN_2', 'SN',
+                          'KE_MECA', 'KE_THER', 'INST_SP_1', 'INST_SP_2', 'SALT' ,'FU_UNIT'),
              );
 
 # CALCULS AVEC LA METHODE QUI TESTE TOUS LES INSTANTS    
@@ -510,7 +509,7 @@ FATb = POST_RCCM( MATER=MAT,
                  SITUATION=(
                   _F(NB_OCCUR=1,
                      NUME_SITU=1,
-                     NOM_SITU='Situation 1',
+                     NOM_SITU='Situation_1',
                      NUME_GROUPE=1,
                      NUME_RESU_THER = 1,
                      CHAR_ETAT_A=1,
@@ -520,7 +519,7 @@ FATb = POST_RCCM( MATER=MAT,
                       ),
                   _F(NB_OCCUR=1,
                      NUME_SITU=2,
-                     NOM_SITU='Situation 2',
+                     NOM_SITU='Situation_2',
                      NUME_GROUPE=1,
                      NUME_RESU_THER = 2,
                      CHAR_ETAT_A=3,
@@ -530,14 +529,67 @@ FATb = POST_RCCM( MATER=MAT,
                         ),),);
 
 IMPR_TABLE(  TABLE=FATb,
-              TITRE = 'impression des SN et SP pour chaque combinaison sans prise en compte du seisme',
-              FILTRE= (_F( NOM_PARA = 'TYPE',
-                           VALE_K  = 'COMB'),
-                       _F( NOM_PARA = 'SEISME',
-                           VALE_K  = 'SANS'),),
-              NOM_PARA = ('NUME_GROUPE', 'LIEU', 'NUME_SITU_I', 'NUME_SITU_J', 'SN' ,
-                          'SALT1_IJ', 'SALT2_IJ','INST_SN_1', 'INST_SN_2', 'INST_SP1_1',
-                          'INST_SP1_2','INST_SP2_1','INST_SP2_2' ,'FU_UNIT'),
+             );
+
+# VALIDATION DU CALCUL DE FATIGUE ZE200a
+FATc = POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='SYSTUS',
+                 TYPE_RESU_MECA='ZE200a',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 INDI_SIGM=(
+                   _F(C1=1.0,
+                      K1=1.0,
+                      K2=1.0,
+                      C2=2.0,
+                      C3=1.0,
+                      K3=1.0,),),
+                 TUYAU=(
+                   _F(R=0.5,
+                      EP=1.0,
+                      I=1.0,),),
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=21.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),   
+                  _F(NUME_CHAR=3,
+                     NOM_CHAR='ETAT A - SITU2',
+                     MX=1.0,  MY=0.0,  MZ=0.0,),
+                  _F(NUME_CHAR=4,
+                     NOM_CHAR='ETAT B - SITU2',
+                     MX=61.0,  MY=0.0,  MZ=0.0,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T_THER, ), 
+                            _F(NUME_RESU_THER=2,
+                            TABL_RESU_THER=T_THER2, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_1',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     PRES_A=201,
+                     PRES_B=1,
+                      ),
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_2',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 2,
+                     CHAR_ETAT_A=3,
+                     CHAR_ETAT_B=4,
+                     PRES_A=0,
+                     PRES_B=0,
+                        ),),);
+
+IMPR_TABLE(  TABLE=FATc,
              );
 
 
@@ -619,8 +671,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )
-
-# FAT - COMBINAISON DES SITUATIONS 1 ET 2
+#--------------------------------------
+# FATa - COMBINAISON DES SITUATIONS 1 ET 2
+# AVEC LA METHODE TRESCA
+#--------------------------------------
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=235.500000000,
            VALE_REFE=235.5,
@@ -638,7 +692,10 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            FILTRE=_F(NOM_PARA='LIEU',
                      VALE_K='EXTR',),
            )
-
+#--------------------------------------
+# FATb AVEC LA METHODE TOUT_INST
+#--------------------------------------
+#SN_MAX
 TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_CALC=235.500000000,
            VALE_REFE=235.5,
@@ -657,4 +714,410 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE_K='EXTR',),
            )
 
+#SP_MAX
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=240.500000000,
+           VALE_REFE=240.5,
+           NOM_PARA='SP_MAX',
+           TABLE=FATb,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=350.500000000,
+           VALE_REFE=350.5,
+           NOM_PARA='SP_MAX',
+           TABLE=FATb,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+#SALT_MAX
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=120.250000000,
+           VALE_REFE=120.25,
+           NOM_PARA='SALT_MAX',
+           TABLE=FATb,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=175.250000000,
+           VALE_REFE=175.25,
+           NOM_PARA='SALT_MAX',
+           TABLE=FATb,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+#INSTANTS de SP
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.50000000,
+           VALE_REFE=1.5,
+           NOM_PARA='INST_SP_1',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='FICTIF_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=3.00000000,
+           VALE_REFE=3.0,
+           NOM_PARA='INST_SP_2',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='FICTIF_1',),
+                   )
+           )
+
+#INSTANTS de SN
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=4.50000000,
+           VALE_REFE=4.5,
+           NOM_PARA='INST_SN_1',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.00000000,
+           VALE_REFE=1.0,
+           NOM_PARA='INST_SN_2',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.50000000,
+           VALE_REFE=1.5,
+           NOM_PARA='INST_SN_1',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=3.00000000,
+           VALE_REFE=3.0,
+           NOM_PARA='INST_SN_2',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+#FU PARTIEL, FU UNIT et N_OCC_pris
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000340989505247,
+           VALE_REFE=0.000340989505247,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000540993949838,
+           VALE_REFE=0.000540993949838,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000340989505247,
+           VALE_REFE=0.000340989505247,
+           NOM_PARA='FU_UNIT',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000540993949838,
+           VALE_REFE=0.000540993949838,
+           NOM_PARA='FU_UNIT',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N_OCC_pris',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N_OCC_pris',
+           TABLE=FATb,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+#------------------------------------------------------------
+# FATc avec TYPE_RESU= 'SYSTUS' et AVEC LA METHODE TOUT_INST
+#------------------------------------------------------------
+#INSTANTS de SP
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.50000000,
+           VALE_REFE=1.5,
+           NOM_PARA='INST_SP_1',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='FICTIF_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=3.00000000,
+           VALE_REFE=3.0,
+           NOM_PARA='INST_SP_2',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='FICTIF_1',),
+                   )
+           )
+
+#INSTANTS de SN
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=4.50000000,
+           VALE_REFE=4.5,
+           NOM_PARA='INST_SN_1',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.00000000,
+           VALE_REFE=1.0,
+           NOM_PARA='INST_SN_2',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1.50000000,
+           VALE_REFE=1.5,
+           NOM_PARA='INST_SN_1',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=3.00000000,
+           VALE_REFE=3.0,
+           NOM_PARA='INST_SN_2',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+#FU PARTIEL, FU UNIT et N_OCC_pris
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000340989505247,
+           VALE_REFE=0.000340989505247,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000540993949838,
+           VALE_REFE=0.000540993949838,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000340989505247,
+           VALE_REFE=0.000340989505247,
+           NOM_PARA='FU_UNIT',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000540993949838,
+           VALE_REFE=0.000540993949838,
+           NOM_PARA='FU_UNIT',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N_OCC_pris',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='N_OCC_pris',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='FACT',),
+                   _F(NOM_PARA='NOM_SIT1',
+                     VALE_K='Situation_1',),
+                   )
+           )
+
+#FU PARTIEL TOTAL
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000340989505247,
+           VALE_REFE=0.000340989505247,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='TOTAL',),
+                   )
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=0.000540993949838,
+           VALE_REFE=0.000540993949838,
+           NOM_PARA='FU_PARTIEL',
+           TABLE=FATc,
+           FILTRE=(_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+                   _F(NOM_PARA='TYPE',
+                     VALE_K='TOTAL',),
+                   )
+           )
 FIN();

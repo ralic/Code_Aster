@@ -1,5 +1,5 @@
 subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
-                   pi, mi, pj, mj, instsp, sp1, spmeca1, noth)
+                  propi, propj, proqi, proqj, instsp, sp1, spme, mat1, mat2)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -17,15 +17,16 @@ subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
 #include "asterfort/getvid.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/tbliva.h"
+#include "asterfort/rcZ2s2.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterc/getfac.h"
 #include "asterfort/jedetr.h"
-    aster_logical :: ze200, noth
+    aster_logical :: ze200
     character(len=4) :: lieu
     integer :: numsip, numsiq, iocs
-    real(kind=8) :: sp1(2), spmeca1(2), instsp(4), pi, mi(12), pj, mj(12)
-    real(kind=8) :: mse(12)
+    real(kind=8) :: sp1(2), spme(2), instsp(4), mat1(7), mat2(7)
+    real(kind=8) :: mse(12), propi(20), propj(20), proqi(20), proqj(20)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +58,7 @@ subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
     integer :: nb, n1, n0, i, nbabsc, jabsc, ndim, nbchar
     real(kind=8) :: prec(1), vale(1)
     character(len=16) :: typmec, valek(1)
-    aster_logical :: exist, seismeb32, seismeunit
+    aster_logical :: exist, seismeb32, seismeunit, seismeze200
     character(len=24) :: valk(3)
     integer :: jseis, j, ibid, iret
     complex(kind=8) :: cbid
@@ -66,29 +67,34 @@ subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
-!--------------------------------------
+!-------------------------------------
+!     SEISME ZE200 ?
+!-------------------------------------
+    seismeze200 = .false.
+    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
+    if (iocs .ne. 0 .and. typmec .eq. 'ZE200a') seismeze200=.true.
+    if (iocs .ne. 0 .and. typmec .eq. 'ZE200b') seismeze200=.true.
+!
+!-------------------------------------
 !     SI SEISME AVEC B3200_T
-!--------------------------------------
+!-------------------------------------
     seismeb32 = .false.
     seismeunit = .false.
-    noth=.false.
-    valek(1) = 'ABSC_CURV       '
-    prec(1) = 1.0d-06
-    crit(1) = 'RELATIF'
-    nocmp(1) = 'SIXX'
-    nocmp(2) = 'SIYY'
-    nocmp(3) = 'SIZZ'
-    nocmp(4) = 'SIXY'
-    nocmp(5) = 'SIXZ'
-    nocmp(6) = 'SIYZ'
-
 !
-    call getvtx(' ', 'TYPE_RESU_MECA', scal=typmec, nbret=n1)
     call getfac('CHAR_MECA', nbchar)
     if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and. nbchar .ne. 0) seismeunit=.true.
     if (iocs .ne. 0 .and. typmec .eq. 'B3200' .and.  nbchar .eq. 0) seismeb32=.true.
 !
     if (seismeb32) then
+        valek(1) = 'ABSC_CURV       '
+        prec(1) = 1.0d-06
+        crit(1) = 'RELATIF'
+        nocmp(1) = 'SIXX'
+        nocmp(2) = 'SIYY'
+        nocmp(3) = 'SIZZ'
+        nocmp(4) = 'SIXY'
+        nocmp(5) = 'SIXZ'
+        nocmp(6) = 'SIYZ'
 !-- on récupère les tables correspondantes
         call getvid('SEISME', 'TABL_FX', iocc=iocs, scal=tabfm(1), nbret=n0)
         call getvid('SEISME', 'TABL_FY', iocc=iocs, scal=tabfm(2), nbret=n0)
@@ -146,12 +152,12 @@ subroutine rc32sp(ze200, lieu, numsip, numsiq,iocs, mse,&
     call getvtx(' ', 'METHODE', scal=methode, nbret=nb)
     if (methode .eq. 'TRESCA') then
         call rc32sp1a(ze200, lieu, numsip, numsiq, seismeb32,&
-                      seismeunit, mse, pi, mi, pj, mj,&
-                      instsp, sp1, spmeca1, noth)
+                      seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
+                      instsp, sp1, spme, mat1, mat2)
     else
         call rc32sp1b(ze200, lieu, numsip, numsiq, seismeb32,&
-                      seismeunit, mse, pi, mi, pj, mj,&
-                      instsp, sp1, spmeca1, noth)
+                      seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
+                      instsp, sp1, spme, mat1, mat2)
     endif
 !
     if (seismeb32) then

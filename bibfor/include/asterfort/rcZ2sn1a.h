@@ -18,22 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq,&
-                        seismeb32, seismeunit, mse, pi, mi, pj, mj,&
-                        instsn, sn1, sp3, spmeca3)
+    subroutine rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32, seismeunit,&
+                        seismeze200, mse, propi, propj, proqi, proqj,&
+                        instsn, sn, sp3, spmeca3)
         aster_logical :: ze200
         character(len=4) :: lieu
         integer :: numsip
         integer :: numsiq
         aster_logical :: seismeb32
         aster_logical :: seismeunit
+        aster_logical :: seismeze200
         real(kind=8) :: mse(12)
-        real(kind=8) :: pi
-        real(kind=8) :: mi(12)
-        real(kind=8) :: pj
-        real(kind=8) :: mj(12)
+        real(kind=8) :: propi(20)
+        real(kind=8) :: propj(20)
+        real(kind=8) :: proqi(20)
+        real(kind=8) :: proqj(20)
         real(kind=8) :: instsn(2)
-        real(kind=8) :: sn1
+        real(kind=8) :: sn
         real(kind=8) :: sp3
         real(kind=8) :: spmeca3
     end subroutine rcZ2sn1a

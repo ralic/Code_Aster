@@ -50,7 +50,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
-    data nopar0 / 'TYPE','SEISME', 'NUME_GROUPE', 'LIEU', 'NUME_SITU',&
+    data nopar0 / 'TYPE','SEISME', 'GROUPE_1', 'LIEU', 'NUME_SITU',&
      &              'PM', 'PB', 'PMPB', 'SN', 'SN*', 'PM_MAX',&
      &              'PB_MAX', 'PMPB_MAX', 'SN_MAX' , 'SN*_MAX' /
     data typar0 / 'K8', 'K8', 'I', 'K8', 'I', 'R', 'R', 'R', 'R' ,&
@@ -60,7 +60,7 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
      &                              'SN_MAX', 'SN*_MAX' /
     data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R' , 'R'  /
 !
-    data nopar2 / 'TYPE', 'SEISME', 'NUME_GROUPE', 'LIEU',&
+    data nopar2 / 'TYPE', 'SEISME', 'GROUPE_1', 'LIEU',&
      &              'NUME_SITU', 'PM', 'PB', 'PMPB', 'SN', 'SN*'  /
 ! DEB ------------------------------------------------------------------
 !
@@ -105,12 +105,12 @@ subroutine rc32r0(nomres, pmpb, sn, snet)
             valer(3) = r8vide()
         endif
         if (sn) then
-            valer(4) = zr(jvale+5)
+            valer(4) = zr(jvale+3)
         else
             valer(4) = r8vide()
         endif
         if (snet) then
-            valer(5) = zr(jvale+6)
+            valer(5) = zr(jvale+4)
         else
             valer(5) = r8vide()
         endif

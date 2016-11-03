@@ -5,7 +5,6 @@ subroutine rc32rs(mater, lpmpb, lsn,&
 #include "jeveux.h"
 #include "asterc/getres.h"
 #include "asterfort/tbcrsd.h"
-#include "asterfort/rc32r1env.h"
 #include "asterfort/rc32r1.h"
 #include "asterfort/rc32r0.h"
 #include "asterfort/rc32r8.h"
@@ -42,11 +41,7 @@ subroutine rc32rs(mater, lpmpb, lsn,&
     call tbcrsd(nomres, 'G')
 !
     if (lfat) then
-        if (lefat) then
-            call rc32r1env(nomres)
-        else
-            call rc32r1(nomres)
-        endif
+        call rc32r1(nomres, lefat)
     else
         call rc32r0(nomres, lpmpb, lsn, lther)
     endif

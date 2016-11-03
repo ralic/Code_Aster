@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,16 +16,19 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rc32fu(nbsigr, nocc, situ, fuij, ke, lieu,&
-                      ug, factus, ugenv, fatiguenv)
+    subroutine rc32fu(nbsigr, nocc, nom, situ, sigr, fuij, comb, lieu,&
+                      ug, factus, factus2, ugenv, fatiguenv)
         integer :: nbsigr
         integer :: nocc(*)
+        character(len=24) :: nom(*)
         integer :: situ(*)
+        integer :: sigr(*)
         real(kind=8) :: fuij(*)
-        real(kind=8) :: ke(*)
+        real(kind=8) :: comb(*)
         character(len=4) :: lieu
         real(kind=8) :: ug
         real(kind=8) :: factus(*)
+        character(len=24) :: factus2(*)
         real(kind=8) :: ugenv
         aster_logical :: fatiguenv
     end subroutine rc32fu

@@ -14,7 +14,7 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
     character(len=3) :: typass
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,17 +46,17 @@ subroutine rc32f1(nbsigr, nocc, saltij, isk, isl,&
     integer :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salt1, saltam
     aster_logical :: chemin
-    integer, pointer :: situ_group(:) => null()
+    integer, pointer :: situ_group_pas(:) => null()
 !     ------------------------------------------------------------------
 !
-    call jeveuo('&&RC32SI.SITU_GROUP', 'L', vi=situ_group)
+    call jeveuo('&&RC32SI.SIT_GROUP_PAS', 'L', vi=situ_group_pas)
 !
     ioc1 = sigr(isk)
     ioc2 = sigr(isl)
-    numg1 = situ_group(1+2*ioc1-2)
-    ig1 = situ_group(1+2*ioc1-1)
-    numg2 = situ_group(1+2*ioc2-2)
-    ig2 = situ_group(1+2*ioc2-1)
+    numg1 = situ_group_pas(1+2*ioc1-2)
+    ig1 = situ_group_pas(1+2*ioc1-1)
+    numg2 = situ_group_pas(1+2*ioc2-2)
+    ig2 = situ_group_pas(1+2*ioc2-1)
 !
     yapass = .false.
     typass = '?_?'

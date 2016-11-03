@@ -1,7 +1,7 @@
 subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                   yapass, seisme, iocs, mater, lieu,&
                   utot, utotenv, resuas, resuss,&
-                  resuca, resucs, factus, resumax)
+                  resuca, resucs, factus, factus2, resumax)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -18,7 +18,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 #include "asterfort/rcmo02.h"
 #include "asterfort/rc32pm.h"
 #include "asterfort/rc32sn.h"
-#include "asterfort/rcZ2sn1.h"
+#include "asterfort/rcZ2sn.h"
 #include "asterfort/rc32sp.h"
 #include "asterfort/rcma02.h"
 #include "asterfort/rc32sa.h"
@@ -39,6 +39,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     character(len=4) :: lieu
     real(kind=8) :: utot, utotenv, resuas(*), resuss(*), resuca(*)
     real(kind=8) :: resucs(*), factus(*), resumax(*)
+    character(len=24) :: factus2(*)
 !     ------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -83,35 +84,38 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     integer :: ifm, niv, nb, jcombi, nbsitu, nbsigr, jnsg, is1, is2
     real(kind=8) :: pmmax, pbmax, pmbmax, pm, pb, pmpb, sij0(12)
     real(kind=8) :: pms, pbs, pmpbs
-    real(kind=8) :: sm, snmax, snemax, spmax, kemax, spthem, samax
+    real(kind=8) :: snmax, snemax, spmax, spthem, samax
     real(kind=8) :: sigpm, sn, snet, sp(2), spmeca(2), mse(12)
     character(len=8) :: typeke, kbid
     integer, pointer :: situ_numero(:) => null()
     real(kind=8), pointer :: situ_pres_a(:) => null()
     real(kind=8), pointer :: situ_pres_b(:) => null()
     integer, pointer :: situ_nb_occur(:) => null()
-    integer :: nbsig2, ndim, jmfu, jmke, ioc1, ns, nscy, nsitup, i
+    character(len=24), pointer :: situ_nom(:) => null()
+    integer :: nbsig2, ndim, jmfu, jmcomb, ioc1, ns, nscy, nsitup, i
     integer, pointer :: nb_occurr(:) => null()
+    character(len=24), pointer :: nom_situ(:) => null()
     integer, pointer :: impr_situ(:) => null()
     real(kind=8), pointer :: matrice_fu_b(:) => null()
     real(kind=8), pointer :: matrice_fu_s(:) => null()
     real(kind=8) :: matpi(7), kemeca, kether, saltse(2), fuse(2)
     integer :: icas, icss, i1, nocc, indi, icodre(1), ioc2, i2, k
     real(kind=8) :: spthep(2), ppi, ppj, mpi(12), mpj(12), simpij, sns
-    real(kind=8) :: snets, sn1, sn2, matpj(7), sp1(2)
+    real(kind=8) :: snets, matpj(7), sp1(2)
     real(kind=8) :: sp2, saltij(2), smm, fuij(2), sps(2), spmecs(2)
     real(kind=8) :: kemecs, kethes, saltijs(2), ug, nadm(1), vale(2)
-    aster_logical :: endur, noth, pqpq, pqpqs, pqpqme, pqpqmes
-    integer :: nsituq, j, inds
+    aster_logical :: endur
+    integer :: nsituq, j, inds, ndim2
     real(kind=8) :: pqi, pqj, mqi(12), mqj(12), matqi(7), matqj(7) 
-    real(kind=8) :: snpq, snpqs, spcomb(2), sp1comb(2), sp2comb 
+    real(kind=8) :: snpq, snpqs, spcomb(2), sp1comb(2) 
     real(kind=8) :: mat1(7), mat2(7), spther(2), ugenv, spmeca1(2)
     real(kind=8) :: spmecs1(2),sp3, spmeca3, sp3bid, spmeca3bid
-    real(kind=8) :: sp3s, spmeca3s, sp1s(2), mat1s(7), mat2s(7), sp2s
+    real(kind=8) :: sp3s, spmeca3s, sp1s(2), mat1s(7), mat2s(7)
     real(kind=8) :: instsn(2), instsp(4), instsns(2), instsps(4)
-    real(kind=8) :: sp1combs(2), sppq(2), sppqs(2), spmecomb(2)
-    real(kind=8) :: spmepq(2), spmepqs(2), spmecombs(2), instbid(4)
-    real(kind=8) :: instbid2(2)
+    real(kind=8) :: sp1combs(2), spmecomb(2)
+    real(kind=8) :: spmecombs(2)
+    real(kind=8) :: propi(20), propj(20), proqi(20)
+    real(kind=8) :: proqj(20)
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -120,11 +124,9 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     pmmax = 0.d0
     pbmax = 0.d0
     pmbmax = 0.d0
-    sm = 0.d0
     snmax = 0.d0
     snemax = 0.d0
     spmax = 0.d0
-    kemax = 0.d0
     spthem = 0.d0
     samax = 0.d0
     sigpm = 0.d0
@@ -136,14 +138,15 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     call jeveuo('&&RC3200.SITU_PRES_A', 'L', vr=situ_pres_a)
     call jeveuo('&&RC3200.SITU_PRES_B', 'L', vr=situ_pres_b)
     call jeveuo('&&RC3200.SITU_NB_OCCUR', 'L', vi=situ_nb_occur)
+    call jeveuo('&&RC3200.SITU_NOM', 'L', vk24=situ_nom)
     call jelira('&&RC3200.SITU_PRES_A', 'LONUTI', nbsitu)
     call jelira(jexnum('&&RC3200.LES_GROUPES', ig), 'LONUTI', nbsigr)
     call jeveuo(jexnum('&&RC3200.LES_GROUPES', ig), 'L', jnsg)
 !
     do 11 is1 = 1, nbsigr
-        do 12 is2 = 1, 10
-            resuas(10*(is1-1)+is2) = r8vide()
-            resuss(10*(is1-1)+is2) = r8vide()
+        do 12 is2 = 1, 9
+            resuas(9*(is1-1)+is2) = r8vide()
+            resuss(9*(is1-1)+is2) = r8vide()
  12     continue
  11 continue
 !
@@ -153,12 +156,17 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         nbsig2 = nbsigr - 1
     endif
     ndim = nbsig2*nbsig2
+    ndim2 = 12*ndim
 !
     AS_ALLOCATE(vi=nb_occurr, size=nbsig2)
+    AS_ALLOCATE(vk24=nom_situ, size=nbsig2)
     AS_ALLOCATE(vi=impr_situ, size=nbsig2)
 !
     call wkvect('&&RC3201.MATRICE_FU', 'V V R', ndim, jmfu)
-    call wkvect('&&RC3201.MATRICE_KE', 'V V R', ndim, jmke)
+    call wkvect('&&RC3201.MATRICE_COMB', 'V V R', ndim2, jmcomb)
+    do 100 i = 1, ndim2
+        zr(jmcomb+i-1)=r8vide()
+100 continue
     if (seisme) then
         AS_ALLOCATE(vr=matrice_fu_b, size=ndim)
         AS_ALLOCATE(vr=matrice_fu_s, size=ndim)
@@ -179,8 +187,6 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         pb = 0.d0
         pmpb = 0.d0
         sn = 0.d0
-        sn1 = 0.d0
-        sn2 = 0.d0
         snet = 0.d0
         sp(1) = 0.d0
         sp(2) = 0.d0
@@ -192,10 +198,8 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         nsitup = situ_numero(1+zi(jnsg+is1-1)-1)
         call rcmo02('S', nsitup, mse)
         ppi = 0.d0
-        ppj = 0.d0
         do 13 i = 1, 12
             mpi(i) = 0.d0
-            mpj(i) = 0.d0
  13    continue
         do 113 k = 1, 12
                 sij0(k) = 0.d0
@@ -205,43 +209,49 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         if (lpmpb) then
             call rc32pm(lieu, seisme, ppi, sij0, mse,&
                         pm, pb, pmpb)
-            resuas(10*(is1-1)+1) = pm
-            resuas(10*(is1-1)+2) = pb
-            resuas(10*(is1-1)+3) = pmpb
+            resuas(9*(is1-1)+1) = pm
+            resuas(9*(is1-1)+2) = pb
+            resuas(9*(is1-1)+3) = pmpb
             pmmax = max ( pmmax , pm )
             pbmax = max ( pbmax , pb )
             pmbmax = max ( pmbmax , pmpb )
         endif
 ! ----- Calcul du SN
         if (lsn) then
-            if (ze200) call rcZ2s2('SN', ppi, mpi, ppi, mpi, seisme, mse, sn2)
-            call rcZ2sn1(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                         ppi, mpi, ppj, mpj, instsn, sn1, sp3bid, spmeca3bid)
-            sn = sn1+sn2
-            resuas(10*(is1-1)+4) = sn
+            call rcma02('A', iocs, matpi)
+            propi(1)=ppi
+            do 223 k = 1,12
+              propi(1+k) = mpi(k)             
+223         continue
+            do 222 j = 1,7
+              propi(13+j) = matpi(j)                   
+222         continue
+            do 221 j = 1,20
+              proqi(j) = 0.d0                   
+221         continue
+            call rcZ2sn(ze200, lieu, nsitup, nsitup,iocs, mse,&
+                        propi, propi, proqi, proqi, instsn, sn, sp3bid, spmeca3bid)
+            resuas(9*(is1-1)+4) = sn
             snmax = max( snmax , sn )
         endif
 ! ----- Calcul du SN*
         if (lsn .and. lther) then
             call rc32sn('SN*_SITU', lieu, nsitup, ppi, sij0,&
                         0, ppi, sij0, seisme, mse, snet)
-            resuas(10*(is1-1)+5) = snet
+            resuas(9*(is1-1)+5) = snet
             snemax = max( snemax , snet )
         endif
 ! ----- Calcul de SP, SALT et FU
         if (lfat) then
-            if (ze200) call rcZ2s2('SP', ppi, mpi, ppi, mpi, seisme, mse, sp(1))
             call rc32sp(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                         ppi, mpi, ppj, mpj, instsp, sp1, spmeca1, noth)
-            sp(1) = sp(1)+sp1(1)
-            spmeca(1) = sp(1)
-            call rcma02('A', iocs, matpi)
+                         propi, propi, proqi, proqi, instsp, sp1, spmeca1, mat1, mat2)
+            sp(1) = sp1(1)
+            spmeca(1) = spmeca1(1)
             call rc32sa('SITU', mater, matpi, matpi, sn, sp, spmeca,&
-                        kemeca, kether, saltse, sm, fuse)
-            resuas(10*(is1-1)+6) = sp(1)
-            resuas(10*(is1-1)+7) = kemeca
-            resuas(10*(is1-1)+8) = kether
-            resuas(10*(is1-1)+9) = saltse(1)
+                        kemeca, kether, saltse, smm, fuse)
+            resuas(9*(is1-1)+6) = kemeca
+            resuas(9*(is1-1)+7) = kether
+            resuas(9*(is1-1)+8) = saltse(1)
         endif
 ! ----- Ajout de commentaires dans le fichier mess 
         if (niv .ge. 2) then
@@ -295,7 +305,9 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         if (.not.zl(jcombi+ioc1-1)) goto 20
 !
         i1 = i1 + 1
+        indi = nbsig2*(i1-1)+(i1-1)
         nb_occurr(i1) = situ_nb_occur(1+2*ioc1-2)
+        nom_situ(i1) = situ_nom(ioc1)
         impr_situ(i1) = situ_numero(ioc1)
         nsitup = situ_numero(ioc1)
         ppi = situ_pres_a(ioc1)
@@ -307,8 +319,6 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         pb = 0.d0
         pmpb = 0.d0
         sn = 0.d0
-        sn1 = 0.d0
-        sn2 = 0.d0
         snet = 0.d0
         simpij = 0.d0
         pms = 0.d0
@@ -323,9 +333,9 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                         pm, pb, pmpb)
             call rc32pm(lieu, .false._1, ppj, mpj, mse,&
                         pm, pb, pmpb)
-            resuss(10*(is1-1)+1) = pm
-            resuss(10*(is1-1)+2) = pb
-            resuss(10*(is1-1)+3) = pmpb
+            resuss(9*(is1-1)+1) = pm
+            resuss(9*(is1-1)+2) = pb
+            resuss(9*(is1-1)+3) = pmpb
             pmmax = max ( pmmax , pm )
             pbmax = max ( pbmax , pb )
             pmbmax = max ( pmbmax , pmpb )
@@ -333,18 +343,29 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 !
 ! ----- Calcul du SN
         if (lsn) then
-            call rcZ2sn1(ze200, lieu, nsitup, nsitup, 0, mse,&
-                         ppi, mpi, ppj, mpj, instsn, sn1, sp3, spmeca3)
-            if (ze200) call rcZ2s2('SN', ppi, mpi, ppj, mpj, .false._1, mse, sn2)
-            sn = sn1+sn2
-            resuss(10*(is1-1)+4) = sn
+            propi(1)=ppi
+            propj(1)=ppj
+            do 323 k = 1,12
+              propi(1+k) = mpi(k)     
+              propj(1+k) = mpj(k)         
+323         continue
+            do 322 j = 1,7
+              propi(13+j) = 0.d0   
+              propj(13+j) = 0.d0              
+322         continue
+            do 321 j = 1,20
+               proqi(j) = 0.d0                   
+321          continue
+            call rcZ2sn(ze200, lieu, nsitup, nsitup, 0, mse,&
+                     propi, propj, proqi, proqi, instsn, sn, sp3, spmeca3)
+            resuss(9*(is1-1)+4) = sn
             snmax = max(snmax,sn)
         endif
 ! ----- Calcul du SN*
         if (lsn .and. lther) then
             call rc32sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
                         0, ppj, mpj, .false._1, mse, snet)
-            resuss(10*(is1-1)+5) = snet
+            resuss(9*(is1-1)+5) = snet
             snemax = max(snemax,snet)
         endif
 ! ----- Calcul du Rochet Thermique
@@ -359,25 +380,23 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                             pms, pbs, pmpbs)
                 call rc32pm(lieu, seisme, ppj, mpj, mse,&
                             pms, pbs, pmpbs)
-                resuas(10*(is1-1)+1) = pms
-                resuas(10*(is1-1)+2) = pbs
-                resuas(10*(is1-1)+3) = pmpbs
+                resuas(9*(is1-1)+1) = pms
+                resuas(9*(is1-1)+2) = pbs
+                resuas(9*(is1-1)+3) = pmpbs
                 pmmax = max ( pmmax , pms )
                 pbmax = max ( pbmax , pbs )
                 pmbmax = max ( pmbmax , pmpbs )
             endif
             if (lsn) then
-                call rcZ2sn1(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                             ppi, mpi, ppj, mpj, instsns, sn1, sp3s, spmeca3s)
-                if (ze200) call rcZ2s2('SN', ppi, mpi, ppj, mpj, seisme, mse, sn2)
-                sns = sn1+sn2
-                resuas(10*(is1-1)+4) = sns
+                call rcZ2sn(ze200, lieu, nsitup, nsitup, iocs, mse,&
+                           propi, propj, proqi, proqi, instsns, sns, sp3s, spmeca3s)
+                resuas(9*(is1-1)+4) = sns
                 snmax = max(snmax,sns)
             endif
             if (lsn .and. lther) then
                 call rc32sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
                             0, ppj, mpj, seisme, mse, snets)
-                resuas(10*(is1-1)+5) = snets
+                resuas(9*(is1-1)+5) = snets
                 snemax = max(snemax,snets)
             endif
         endif
@@ -425,34 +444,43 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         nocc = situ_nb_occur(1+2*ioc1-2)
         call rcma02('A', ioc1, matpi)
         call rcma02('B', ioc1, matpj)
+        do 324 j = 1,7
+          propi(13+j) = matpi(j)    
+          propj(13+j) = matpj(j)               
+324     continue
 !
         call rc32sp(ze200, lieu, nsitup, nsitup, 0, mse,&
-                     ppi, mpi, ppj, mpj, instsp, sp1, spmeca1, noth)
-        if (ze200) call rcZ2s2('SP', ppi, mpi, ppj, mpj, .false._1, mse, sp2)
-        sp(1) = sp1(1)+sp2+sp3
-        spmeca(1) = spmeca1(1)+sp2+spmeca3
+                     propi, propj, proqi, proqi, instsp, sp1, spmeca1, mat1, mat2)
+        sp(1) = sp1(1)+sp3
+        spmeca(1) = spmeca1(1)+spmeca3
         call rc32sa('SITU', mater, matpi, matpj, sn, sp, spmeca,&
                     kemeca, kether, saltij, smm, fuij)
-        resuss(10*(is1-1)+6) = sp(1)
-        resuss(10*(is1-1)+7) = kemeca
-        resuss(10*(is1-1)+8) = kether
-        resuss(10*(is1-1)+9) = saltij(1)
-        kemax = max( kemax , kemeca )
+        resuss(9*(is1-1)+6) = kemeca
+        resuss(9*(is1-1)+7) = kether
+        resuss(9*(is1-1)+8) = saltij(1)
 !
-        indi = nbsig2*(i1-1)+(i1-1)
 ! ----- on remplit la matrice des fu
         zr(jmfu-1+indi+1) = fuij(1)
-! ----- on remplit la matrice des ke
+! ----- on remplit la matrice des grandeurs de la situation p
+        if(instsn(1) .ge. 0) then
+            zr(jmcomb-1+indi+1) = instsn(1)
+            zr(jmcomb+ndim-1+indi+1) = instsn(2)
+        endif
+        zr(jmcomb+2*ndim-1+indi+1) = sn
+        zr(jmcomb+ndim*3-1+indi+1) = kemeca
+        zr(jmcomb+ndim*4-1+indi+1) = kether
         if (typeke .eq. 'KE_MECA') then
-            zr(jmke-1+indi+1) = kemeca
+            zr(jmcomb+ndim*5-1+indi+1) = kemeca
         else
-            zr(jmke-1+indi+1) = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/(sp(1))
+            zr(jmcomb+ndim*5-1+indi+1) = (kemeca*spmeca(1)+kether*(sp(1)-spmeca(1)))/(sp(1))
         endif
+        if(instsp(1) .ge. 0) then
+            zr(jmcomb+ndim*6-1+indi+1) = instsp(1)
+            zr(jmcomb+ndim*7-1+indi+1) = instsp(2)
+        endif
+        zr(jmcomb+ndim*10-1+indi+1) = saltij(1)
 !
-        if (saltij(1) .gt. samax) then
-            samax = saltij(1)
-            sm = smm
-        endif
+        samax = max(samax,saltij(1))
 ! ----- Calcul de SP, SALT et FU si SEISME
         sps(1) = 0.d0
         sps(2) = 0.d0
@@ -461,18 +489,28 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 !
         if (seisme) then
             matrice_fu_b(indi+1) = fuij(1)
+            propi(1)=ppi
+            propj(1)=ppj
+            do 423 k = 1,12
+              propi(1+k) = mpi(k)     
+              propj(1+k) = mpj(k)         
+423         continue
+            do 422 j = 1,7
+              propi(13+j) = matpi(j)    
+              propj(13+j) = matpj(j)               
+422         continue
+            do 421 j = 1,20
+              proqi(j) = 0.d0                   
+421         continue
             call rc32sp(ze200, lieu, nsitup, nsitup,iocs, mse,&
-                         ppi, mpi, ppj, mpj, instsps, sp1s, spmecs1, noth)
-            if (ze200) call rcZ2s2('SP', ppi, mpi, ppj, mpj, seisme, mse, sp2)
-            sps(1) = sp1s(1)+sp2+sp3s
-            spmecs(1) = spmecs1(1)+sp2+spmeca3s
+                         propi, propj, proqi, proqi, instsps, sp1s, spmecs1, mat1, mat2)
+            sps(1) = sp1s(1)+sp3s
+            spmecs(1) = spmecs1(1)+spmeca3s
             call rc32sa('SITU', mater, matpi, matpj, sns, sps, spmecs,&
                         kemecs, kethes, saltijs, smm, fuij)
-            resuas(10*(is1-1)+6) = sps(1)
-            resuas(10*(is1-1)+7) = kemecs
-            resuas(10*(is1-1)+8) = kethes
-            resuas(10*(is1-1)+9) = saltijs(1)
-            kemax = max( kemax , kemeca )
+            resuas(9*(is1-1)+6) = kemecs
+            resuas(9*(is1-1)+7) = kethes
+            resuas(9*(is1-1)+8) = saltijs(1)
             matrice_fu_s(indi+1) = fuij(1)
         endif
 !
@@ -494,7 +532,8 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             if (instsp(1) .lt. 0.d0) then
               write (ifm,*) '                   (SP SANS INSTANTS)'
             else
-              write (ifm,*) '                                         INSTANTS SP   : ',instsp(1),',',instsp(2)
+              write (ifm,*) '                                         INSTANTS SP   : ',&
+              instsp(1),',',instsp(2)
             endif
           endif
           if (typeke .eq. 'KE_MIXTE') then
@@ -519,8 +558,8 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             endif
             ug = dble( nocc ) / nadm(1)
         endif
-        resuas(10*(is1-1)+10) = ug
-        resuss(10*(is1-1)+10) = ug
+        if (seisme) resuas(9*(is1-1)+9) = ug
+        resuss(9*(is1-1)+9) = ug
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !               ON TRAITE LA COMBINAISON DES SITUATIONS P ET Q
@@ -557,85 +596,46 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 ! --------------------------------------------
 !               CALCUL DU SN SANS SEISME
 ! --------------------------------------------
+            propi(1) = ppi
+            propj(1) = ppj
+            proqi(1) = pqi
+            proqj(1) = pqj
+            do 523 k = 1,12
+                propi(1+k) = mpi(k)     
+                propj(1+k) = mpj(k)
+                proqi(1+k) = mqi(k)     
+                proqj(1+k) = mqj(k)           
+523         continue
+            do 522 j = 1,7
+                propi(13+j) = matpi(j)     
+                propj(13+j) = matpj(j)
+                proqi(13+j) = matqi(j)     
+                proqj(13+j) = matqj(j)                 
+522         continue
+!
             snpq = 0.d0
-            sn1 = 0.d0
-            sn2 = 0.d0
             sp3 = 0.d0
             spmeca3 = 0.d0
-!---------- On maximise la partie B3200
-            call rcZ2sn1(ze200, lieu, nsitup, nsitup, 0, mse,&
-                         ppi, mpi, ppj, mpj, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-            call rcZ2sn1(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppi, mpi, pqi, mqi, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-            call rcZ2sn1(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppi, mpi, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-            call rcZ2sn1(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppj, mpj, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-            call rcZ2sn1(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppj, mpj, pqi, mqi, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-            call rcZ2sn1(ze200, lieu, nsituq, nsituq, 0, mse,&
-                         pqi, mqi, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-            if (sn .gt. sn1) then
-                sn1=sn
-                sp3 = sp3bid
-                spmeca3 = spmeca3bid
-                instsn(1) = instbid2(1)
-                instsn(2) = instbid2(2)
-            endif
-!---------- On maximise la partie B3600
-            if (ze200) then
-                call rcZ2s2('SN', ppi, mpi, ppj, mpj, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-                call rcZ2s2('SN', ppi, mpi, pqi, mqi, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-                call rcZ2s2('SN', ppi, mpi, pqj, mqj, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-                call rcZ2s2('SN', ppj, mpj, pqj, mqj, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-                call rcZ2s2('SN', ppj, mpj, pqi, mqi, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-                call rcZ2s2('SN', pqi, mqi, pqj, mqj, .false._1, mse, sn)
-                sn2 = max(sn, sn2)
-            endif
+            call rcZ2sn(ze200, lieu, nsitup, nsituq, 0, mse,&
+                     propi, propj, proqi, proqj, instsn, snpq, sp3, spmeca3)
 !
-            snpq=sn1+sn2
+            icss = icss + 1
+            if (instsn(1) .ge. 0) then
+                resucs(icss) = instsn(1)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
+            icss = icss + 1
+            if (instsn(2) .ge. 0) then
+                resucs(icss) = instsn(2)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
             icss = icss + 1
             resucs(icss) = snpq
+            resuca(icss) = r8vide()
             snmax = max(snmax,snpq)
 !
 ! --------------------------------------------
@@ -643,82 +643,24 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 ! --------------------------------------------
             if (seisme) then
                 snpqs = 0.d0
-                sn1 = 0.d0
-                sn2 = 0.d0
                 sp3s = 0.d0
                 spmeca3s = 0.d0
-!---------- On maximise la partie B3200
-                call rcZ2sn1(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                             ppi, mpi, ppj, mpj, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-                call rcZ2sn1(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppi, mpi, pqi, mqi, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-                call rcZ2sn1(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppi, mpi, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-                call rcZ2sn1(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppj, mpj, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-                call rcZ2sn1(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppj, mpj, pqi, mqi, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-                call rcZ2sn1(ze200, lieu, nsituq, nsituq, iocs, mse,&
-                             pqi, mqi, pqj, mqj, instbid2, sn, sp3bid, spmeca3bid)
-                if (sn .gt. sn1) then
-                    sn1=sn
-                    sp3s = sp3bid
-                    spmeca3s = spmeca3bid
-                    instsns(1) = instbid2(1)
-                    instsns(2) = instbid2(2)
-                endif
-!---------- On maximise la partie B3600
-                if (ze200) then
-                    call rcZ2s2('SN', ppi, mpi, ppj, mpj, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                    call rcZ2s2('SN', ppi, mpi, pqi, mqi, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                    call rcZ2s2('SN', ppi, mpi, pqj, mqj, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                    call rcZ2s2('SN', ppj, mpj, pqj, mqj, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                    call rcZ2s2('SN', ppj, mpj, pqi, mqi, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                    call rcZ2s2('SN', pqi, mqi, pqj, mqj, seisme, mse, sn)
-                    sn2 = max(sn, sn2)
-                endif
+!---------- On maximise les parties B3200 et ZE200
+                call rcZ2sn(ze200, lieu, nsitup, nsituq, iocs, mse,&
+                           propi, propj, proqi, proqj, instsns, snpqs, sp3s, spmeca3s)
 !
-                snpqs=sn1+sn2
+                icas = icas + 1
+                if(instsns(1) .ge. 0) then
+                    resuca(icas) = instsns(1)
+                else
+                    resuca(icas) = r8vide()
+                endif
+                icas = icas + 1
+                if(instsns(2) .ge. 0) then
+                    resuca(icas) = instsns(2)
+                else
+                    resuca(icas) = r8vide()
+                endif
                 icas = icas + 1
                 resuca(icas) = snpqs
                 snmax = max(snmax,snpqs)
@@ -728,482 +670,55 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
               write (ifm,110) nsitup,nsituq,snpq
               if (seisme) write (ifm,111) snpqs
               if (instsn(1) .lt. 0) then
-                write (ifm,*) '                                             (SN SANS INSTANTS)      '
+                write (ifm,*) '                                             (SN SANS INSTANTS)'
               else
                 write (ifm,*) '                                        INSTANTS SN   : '
                 write (ifm,444) instsn(1), instsn(2)
-                if (seisme) write (ifm,445) instsn(1), instsn(2)
+                if (seisme) write (ifm,445) instsns(1), instsns(2)
               endif
             endif
 !
 ! --------------------------------------------
 !               CALCUL DU SP SANS SEISME
 ! --------------------------------------------
-            pqpq=.false.
-            pqpqme=.false.
             spcomb(1)= 0.d0
             spcomb(2)= 0.d0
             sp1comb(1)   = 0.d0
             sp1comb(2)   = 0.d0
-            sppq(1)         = 0.d0
-            sppq(2)         = 0.d0
-            sp2comb      = 0.d0
             spmeca(1)= 0.d0
             spmeca(2)= 0.d0
-            spmeca1(1)= 0.d0
-            spmeca1(2)= 0.d0
             spmecomb(1)= 0.d0
             spmecomb(2)= 0.d0
-            spmepq(1)         = 0.d0
-            spmepq(2)         = 0.d0
-!---------- On maximise la partie B3200
-!---------- Calcul du SP(P,P)
-            do 19 j = 1, 7
-                mat1(j) = matpi(j)
-                mat2(j) = matpj(j)
-19         continue
-!
-            call rc32sp(ze200, lieu, nsitup, nsitup, 0, mse,&
-                         ppi, mpi, ppj, mpj, instbid, sp1, spmeca1, noth)
-            sp1comb(1)=sp1(1)
-            spmecomb(1)=spmeca1(1)
-            instsp(1) = instbid(1)
-            instsp(2) = instbid(2)
-
-!---------- Calcul du SP(Q,Q)
-            call rc32sp(ze200, lieu, nsituq, nsituq, 0, mse,&
-                         pqi, mqi, pqj, mqj, instbid, sp1, spmeca1, noth)
-            if(sp1(1) .gt. sp1comb(1)) then
-                instsp(3) = instsp(1)
-                instsp(4) = instsp(2)
-                instsp(1) = instbid(1)
-                instsp(2) = instbid(2)
-                sp1comb(2)=sp1comb(1)
-                sp1comb(1)=sp1(1)
-                do 169 j = 1, 7
-                mat1(j) = matqi(j)
-                mat2(j) = matqj(j)
-169             continue
-            else
-                instsp(3) = instbid(1)
-                instsp(4) = instbid(2)
-                sp1comb(2)=sp1(1)
-            endif
-            if(spmeca1(1) .gt. spmecomb(1)) then
-                spmecomb(2)=spmecomb(1)
-                spmecomb(1)=spmeca1(1)
-            else
-                spmecomb(2)=spmeca1(1)
-            endif
-!---------- Calcul du SP(P,Q)
-            call rc32sp(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppi, mpi, pqi, mqi, instbid, sp1, spmeca1, noth)
-            sppq(1) = sp1(1)
-            sppq(2) = sp1(2)
-            spmepq(1) = spmeca1(1)
-            spmepq(2) = spmeca1(2)
-            if(sp1(1) .gt. sp1comb(1)) then
-                instsp(1) = instbid(1)
-                instsp(2) = instbid(2)
-                instsp(3) = instbid(3)
-                instsp(4) = instbid(4)
-                pqpq =.true.
-                sp1comb(1)=sp1(1)
-                do 129 j = 1, 7
-                mat1(j) = matpi(j)
-                mat2(j) = matqi(j)
-129             continue
-            endif
-            if(spmeca1(1) .gt. spmecomb(1)) then
-                pqpqme = .true.
-                spmecomb(1)=spmeca1(1)
-            endif
 !
             call rc32sp(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppi, mpi, pqj, mqj, instbid, sp1, spmeca1, noth)
-            if (noth) then
-                sppq(1)=max(sppq(1), sp1(1))
-                sppq(2)=min(sppq(1), sp1(1))
-            else
-                if (sp1(1) .gt. sppq(1)) then
-                    sppq(1)=sp1(1)
-                    sppq(2)=sp1(2)
-                endif
-            endif
-            if(sp1(1) .gt. sp1comb(1)) then
-                instsp(1) = instbid(1)
-                instsp(2) = instbid(2)
-                instsp(3) = instbid(3)
-                instsp(4) = instbid(4)
-                pqpq =.true.
-                sp1comb(1)=sp1(1)
-                do 139 j = 1, 7
-                mat1(j) = matpi(j)
-                mat2(j) = matqj(j)
-139             continue
-            endif
-            if (spmeca1(1) .eq. spmeca1(2)) then
-                spmepq(1)=max(spmepq(1), spmeca1(1))
-                spmepq(2)=min(spmepq(1), spmeca1(1))
-            else
-                if (spmeca1(1) .gt. spmepq(1)) then
-                    spmepq(1)=spmeca1(1)
-                    spmepq(2)=spmeca1(2)
-                endif
-            endif
-
-            if(spmeca1(1) .gt. spmecomb(1)) then
-                pqpqme=.true.
-                spmecomb(1)=spmeca1(1)
-            endif
+                        propi, propj, proqi, proqj,&
+                        instsp, sp1comb, spmecomb, mat1, mat2)
 !
-            call rc32sp(ze200, lieu, nsitup, nsituq, 0, mse,&
-                         ppj, mpj, pqj, mqj, instbid, sp1, spmeca1, noth)
-            if (noth) then
-                if (sp1(1) .gt. sppq(1)) then
-                    sppq(2)=sppq(1)
-                    sppq(1)=sp1(1)
-                else
-                    if (sp1(1) .gt. sppq(2)) sppq(2)=sp1(1)
-                endif
-            else
-                if (sp1(1) .gt. sppq(1)) then
-                    sppq(1)=sp1(1)
-                    sppq(2)=sp1(2)
-                endif
-            endif
-            if(sp1(1) .gt. sp1comb(1)) then
-                instsp(1) = instbid(1)
-                instsp(2) = instbid(2)
-                instsp(3) = instbid(3)
-                instsp(4) = instbid(4)
-                pqpq =.true.
-                sp1comb(1)=sp1(1)
-                do 149 j = 1, 7
-                mat1(j) = matpj(j)
-                mat2(j) = matqj(j)
-149             continue
-            endif
-            if (spmeca1(1) .eq. spmeca1(2)) then
-                if (spmeca1(1) .gt. spmepq(1)) then
-                    spmepq(2)=spmepq(1)
-                    spmepq(1)=spmeca1(1)
-                else
-                    if (spmeca1(1) .gt. spmepq(2)) spmepq(2)=spmeca1(1)
-                endif
-            else
-                if (spmeca1(1) .gt. spmepq(1)) then
-                    spmepq(1)=spmeca1(1)
-                    spmepq(2)=spmeca1(2)
-                endif
-            endif
-            if(spmeca1(1) .gt. spmecomb(1)) then
-                pqpqme =.true.
-                spmecomb(1)=spmeca1(1)
-            endif
-!
-            call rc32sp(ze200, lieu, nsitup, nsituq, 0,mse, &
-                         ppj, mpj, pqi, mqi, instbid, sp1, spmeca1, noth)
-            if (noth) then
-                if (sp1(1) .gt. sppq(1)) then
-                    sppq(2)=sppq(1)
-                    sppq(1)=sp1(1)
-                else
-                    if (sp1(1) .gt. sppq(2)) sppq(2)=sp1(1)
-                endif
-            else
-                if (sp1(1) .gt. sppq(1)) then
-                    sppq(1)=sp1(1)
-                    sppq(2)=sp1(2)
-                endif
-            endif
-            if(sp1(1) .gt. sp1comb(1)) then
-                instsp(1) = instbid(1)
-                instsp(2) = instbid(2)
-                instsp(3) = instbid(3)
-                instsp(4) = instbid(4)
-                pqpq =.true.
-                sp1comb(1)=sp1(1)
-                do 159 j = 1, 7
-                mat1(j) = matpj(j)
-                mat2(j) = matqi(j)
-159             continue
-            endif
-            if (spmeca1(1) .eq. spmeca1(2)) then
-                if (spmeca1(1) .gt. spmepq(1)) then
-                    spmepq(2)=spmepq(1)
-                    spmepq(1)=spmeca1(1)
-                else
-                    if (spmeca1(1) .gt. spmepq(2)) spmepq(2)=spmeca1(1)
-                endif
-            else
-                if (spmeca1(1) .gt. spmepq(1)) then
-                    spmepq(1)=spmeca1(1)
-                    spmepq(2)=spmeca1(2)
-                endif
-            endif
-            if(spmeca1(1) .gt. spmecomb(1)) then
-                pqpqme =.true.
-                spmecomb(1)=spmeca1(1)
-            endif
-!
-            if (pqpq) sp1comb(2) = sppq(2) 
-            if (pqpqme) spmecomb(2) = spmepq(2) 
-!
-!---------- On maximise la partie calculée B3600
-            if (.not. ze200) goto 999
-!
-            call rcZ2s2('SP', ppi, mpi, ppj, mpj, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-            call rcZ2s2('SP', ppi, mpi, pqi, mqi, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-            call rcZ2s2('SP', ppi, mpi, pqj, mqj, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-            call rcZ2s2('SP', ppj, mpj, pqj, mqj, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-            call rcZ2s2('SP', ppj, mpj, pqi, mqi, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-            call rcZ2s2('SP', pqi, mqi, pqj, mqj, .false._1, mse, sp2)
-            sp2comb = max(sp2, sp2comb)
-999 continue
-!
-            spcomb(1)=sp1comb(1)+sp2comb+sp3
+            spcomb(1)=sp1comb(1)+sp3
             spcomb(2)=sp1comb(2)+sp3
-            spmeca(1)=spmecomb(1)+sp2comb+spmeca3
+            spmeca(1)=spmecomb(1)+spmeca3
             spmeca(2)=spmecomb(2)+spmeca3
 !
 ! --------------------------------------------
 !               CALCUL DU SP AVEC SEISME
 ! --------------------------------------------
             if (seisme) then
-                pqpqs =.false.
-                pqpqmes = .false.
                 sps(1)= 0.d0
                 sps(2)= 0.d0
                 spmecs(1)= 0.d0
                 spmecs(2)= 0.d0
                 sp1combs(1)   = 0.d0
                 sp1combs(2)   = 0.d0
-                sppqs(1)         = 0.d0
-                sppqs(2)         = 0.d0
-                spmepqs(1)         = 0.d0
-                spmepqs(2)         = 0.d0
-                spmecs1(1)= 0.d0
-                spmecs1(2)= 0.d0
                 spmecombs(1)= 0.d0
-                spmecombs(2)= 0.d0
-                sp1s(1)      = 0.d0
-                sp1s(2)     = 0.d0
-                sp2s      = 0.d0
-!---------- On maximise la partie B3200
-!---------- Calcul du SP(P,P)
-                do 28 j = 1, 7
-                    mat1s(j) = matpi(j)
-                    mat2s(j) = matpj(j)
-28              continue
-!
-                call rc32sp(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                             ppi, mpi, ppj, mpj, instbid, sp1s, spmecs1, noth)
-                sp1combs(1)=sp1s(1)
-                spmecombs(1)=spmecs1(1)
-                instsps(1)=instbid(1)
-                instsps(2)=instbid(2)
-!---------- Calcul du SP(Q,Q)
-                call rc32sp(ze200, lieu, nsituq, nsituq, iocs, mse,&
-                             pqi, mqi, pqj, mqj, instbid, sp1s, spmecs1, noth)
-                if(sp1s(1) .gt. sp1combs(1)) then
-                    instsps(3) = instsps(1)
-                    instsps(4) = instsps(2)
-                    instsps(1)=instbid(1)
-                    instsps(2)=instbid(2)
-                    sp1combs(2)=sp1combs(1)
-                    sp1combs(1)=sp1s(1)
-                    do 128 j = 1, 7
-                    mat1s(j) = matqi(j)
-                    mat2s(j) = matqj(j)
-128                 continue
-                else
-                    sp1combs(2)=sp1s(1)
-                endif
-                if(spmecs1(1) .gt. spmecombs(1)) then
-                    spmecombs(2)=spmecombs(1)
-                    spmecombs(1)=spmecs1(1)
-                else
-                    spmecombs(2)=spmecs1(1)
-                endif
-!---------- Calcul du SP(P,Q)
-                call rc32sp(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppi, mpi, pqi, mqi, instbid, sp1s, spmecs1, noth)
-                sppqs(1) = sp1s(1)
-                sppqs(2) = sp1s(2)
-                if(sp1s(1) .gt. sp1combs(1)) then
-                    instsps(1)=instbid(1)
-                    instsps(2)=instbid(2)
-                    instsps(3)=instbid(3)
-                    instsps(4)=instbid(4)
-                    pqpqs =.true.
-                    sp1combs(1)=sp1s(1)
-                    do 138 j = 1, 7
-                    mat1s(j) = matpi(j)
-                    mat2s(j) = matqi(j)
-138                 continue
-                endif
-                spmepqs(1) = spmecs1(1)
-                spmepqs(2) = spmecs1(2)
-                if(spmecs1(1) .gt. spmecombs(1)) then
-                    pqpqmes =.true.
-                    spmecombs(1)=spmecs1(1)
-                endif
+                spmecombs(2)= 0.d0  
 !
                 call rc32sp(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppi, mpi, pqj, mqj, instbid, sp1s, spmecs1, noth)
-                if (noth) then
-                    sppqs(1)=max(sppqs(1), sp1s(1))
-                    sppqs(2)=min(sppqs(1), sp1s(1))
-                else
-                    if (sp1s(1) .gt. sppqs(1)) then
-                        sppqs(1)=sp1s(1)
-                        sppqs(2)=sp1s(2)
-                    endif
-                endif
-                if(sp1s(1) .gt. sp1combs(1)) then
-                    instsps(1)=instbid(1)
-                    instsps(2)=instbid(2)
-                    instsps(3)=instbid(3)
-                    instsps(4)=instbid(4)
-                    pqpqs =.true.
-                    sp1combs(1)=sp1s(1)
-                    do 148 j = 1, 7
-                    mat1s(j) = matpi(j)
-                    mat2s(j) = matqj(j)
-148                 continue
-                endif
-                if (spmecs1(1) .eq. spmecs1(2)) then
-                    spmepqs(1)=max(spmepqs(1), spmecs1(1))
-                    spmepqs(2)=min(spmepqs(1), spmecs1(1))
-                else
-                    if (spmecs1(1) .gt. spmepqs(1)) then
-                        spmepqs(1)=spmecs1(1)
-                        spmepqs(2)=spmecs1(2)
-                    endif
-                endif
-                if(spmecs1(1) .gt. spmecombs(1)) then
-                    pqpqmes =.true.
-                    spmecombs(1)=spmecs1(1)
-                endif
+                            propi, propj, proqi, proqj,&
+                            instsps, sp1combs, spmecombs, mat1s, mat2s)
 !
-                call rc32sp(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                             ppj, mpj, pqj, mqj, instbid, sp1s, spmecs1, noth)
-                if (noth) then
-                    if (sp1s(1) .gt. sppqs(1)) then
-                        sppqs(2)=sppqs(1)
-                        sppqs(1)=sp1s(1)
-                    else
-                        if (sp1s(1) .gt. sppqs(2)) sppqs(2)=sp1s(1)
-                    endif
-                else
-                    if (sp1s(1) .gt. sppqs(1)) then
-                        sppqs(1)=sp1s(1)
-                        sppqs(2)=sp1s(2)
-                    endif
-                endif
-                if(sp1s(1) .gt. sp1combs(1)) then
-                    instsps(1)=instbid(1)
-                    instsps(2)=instbid(2)
-                    instsps(3)=instbid(3)
-                    instsps(4)=instbid(4)
-                    pqpqs =.true.
-                    sp1combs(1)=sp1s(1)
-                    do 158 j = 1, 7
-                    mat1s(j) = matpj(j)
-                    mat2s(j) = matqj(j)
-158                 continue
-                endif
-                if (spmecs1(1) .eq. spmecs1(2)) then
-                    if (spmecs1(1) .gt. spmepqs(1)) then
-                        spmepqs(2)=spmepqs(1)
-                        spmepqs(1)=spmecs1(1)
-                    else
-                        if (spmecs1(1) .gt. spmepqs(2)) spmepqs(2)=spmecs1(1)
-                    endif
-                else
-                    if (spmecs1(1) .gt. spmepqs(1)) then
-                        spmepqs(1)=spmecs1(1)
-                        spmepqs(2)=spmecs1(2)
-                    endif
-                endif
-                if(spmecs1(1) .gt. spmecombs(1)) then
-                    pqpqmes =.true.
-                    spmecombs(1)=spmecs1(1)
-                endif
-!
-                call rc32sp(ze200, lieu, nsitup, nsituq, iocs, mse, &
-                             ppj, mpj, pqi, mqi, instbid, sp1s, spmecs1, noth)
-                if (noth) then
-                    if (sp1s(1) .gt. sppqs(1)) then
-                        sppqs(2)=sppqs(1)
-                        sppqs(1)=sp1s(1)
-                    else
-                        if (sp1s(1) .gt. sppqs(2)) sppqs(2)=sp1s(1)
-                    endif
-                else
-                    if (sp1s(1) .gt. sppqs(1)) then
-                        sppqs(1)=sp1s(1)
-                        sppqs(2)=sp1s(2)
-                    endif
-                endif
-                if(sp1s(1) .gt. sp1combs(1)) then
-                    instsps(1)=instbid(1)
-                    instsps(2)=instbid(2)
-                    instsps(3)=instbid(3)
-                    instsps(4)=instbid(4)
-                    pqpqs =.true.
-                    sp1combs(1)=sp1s(1)
-                    do 168 j = 1, 7
-                    mat1s(j) = matpj(j)
-                    mat2s(j) = matqj(j)
-168                 continue
-                endif
-                if (spmecs1(1) .eq. spmecs1(2)) then
-                    if (spmecs1(1) .gt. spmepqs(1)) then
-                        spmepqs(2)=spmepqs(1)
-                        spmepqs(1)=spmecs1(1)
-                    else
-                        if (spmecs1(1) .gt. spmepqs(2)) spmepqs(2)=spmecs1(1)
-                    endif
-                else
-                    if (spmecs1(1) .gt. spmepqs(1)) then
-                        spmepqs(1)=spmecs1(1)
-                        spmepqs(2)=spmecs1(2)
-                    endif
-                endif
-                if(spmecs1(1) .gt. spmecombs(1)) then
-                    pqpqmes =.true.
-                    spmecombs(1)=spmecs1(1)
-                endif
-!
-                if (pqpqs) sp1combs(2) = sppqs(2) 
-                if (pqpqmes) spmecombs(2) = spmepqs(2) 
-!
-!---------- On maximise la partie B3600
-                if (ze200) then
-                    call rcZ2s2('SP', ppi, mpi, ppj, mpj, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                    call rcZ2s2('SP', ppi, mpi, pqi, mqi, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                    call rcZ2s2('SP', ppi, mpi, pqj, mqj, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                    call rcZ2s2('SP', ppj, mpj, pqj, mqj, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                    call rcZ2s2('SP', ppj, mpj, pqi, mqi, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                    call rcZ2s2('SP', pqi, mqi, pqj, mqj, seisme, mse, sp2)
-                    sp2s = max(sp2, sp2s)
-                endif
-!
-                sps(1)=sp1combs(1)+sp2s+sp3s
+                sps(1)=sp1combs(1)+sp3s
                 sps(2)=sp1combs(2)+sp3s
-                spmecs(1)=spmecombs(1)+sp2s+spmeca3s
+                spmecs(1)=spmecombs(1)+spmeca3s
                 spmecs(2)=spmecombs(2)+spmeca3s
             endif
 !
@@ -1211,78 +726,135 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             call rc32sa('COMB', mater, mat1, mat2, snpq, spcomb, spmeca,&
                         kemeca, kether, saltij, smm, fuij)
             icss = icss + 1
-            resucs(icss) = spcomb(1)
+            resucs(icss) = kemeca
+            resuca(icss) = r8vide()
             icss = icss + 1
-            resucs(icss) = spcomb(2)
+            resucs(icss) = kether
+            resuca(icss) = r8vide()
+            icss = icss + 1
+            if(instsp(1) .ge. 0) then
+                resucs(icss) = instsp(1)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
+            icss = icss + 1
+            if(instsp(2) .ge. 0) then
+                resucs(icss) = instsp(2)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
+            icss = icss + 1
+            if(instsp(3) .ge. 0) then
+                resucs(icss) = instsp(3)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
+            icss = icss + 1
+            if(instsp(4) .ge. 0) then
+                resucs(icss) = instsp(4)
+            else
+                resucs(icss) = r8vide()
+            endif
+            resuca(icss) = r8vide()
             icss = icss + 1
             resucs(icss) = saltij(1)
+            resuca(icss) = r8vide()
             icss = icss + 1
             resucs(icss) = saltij(2)
-            icss = icss + 1
-            resucs(icss) = instsn(1)
-            icss = icss + 1
-            resucs(icss) = instsn(2)
-            icss = icss + 1
-            resucs(icss) = instsp(1)
-            icss = icss + 1
-            resucs(icss) = instsp(2)
-            icss = icss + 1
-            resucs(icss) = instsp(3)
-            icss = icss + 1
-            resucs(icss) = instsp(4)
+            resuca(icss) = r8vide()
             icss = icss + 1
             resucs(icss) = fuij(1)+fuij(2)
-            kemax = max( kemax , kemeca )
-            if (saltij(1) .gt. samax) then
-                samax = saltij(1)
-                sm = smm
-            else if (saltij(2).gt.samax) then
-                samax = saltij(2)
-                sm = smm
-            endif
+            resuca(icss) = r8vide()
+!
+            samax = max(samax,saltij(1))
+            samax = max(samax,saltij(2))
 !
             inds = nbsig2*(i1-1) + (i2-1)
             indi = nbsig2*(i2-1) + (i1-1)
 ! --------- on remplit la matrice des fu
             zr(jmfu-1+indi+1) = fuij(1)+fuij(2)
             zr(jmfu-1+inds+1) = fuij(1)+fuij(2)
-! --------- on remplit la matrice des ke
-            if (typeke .eq. 'KE_MECA') then
-                zr(jmke-1+indi+1) = kemeca
-                zr(jmke-1+inds+1) = kemeca
-            else
-                zr(jmke-1+indi+1) = (kemeca*spmeca(1)+kether*(spcomb(1)-spmeca(1)))/(spcomb(1))
-                zr(jmke-1+inds+1) = (kemeca*spmeca(1)+kether*(spcomb(1)-spmeca(1)))/(spcomb(1))
+! --------- on remplit la matrice des grandeurs de la combinaisons
+            if(instsn(1) .ge. 0) then
+                zr(jmcomb-1+indi+1) = instsn(1)
+                zr(jmcomb-1+inds+1) = instsn(1)
+                zr(jmcomb+ndim-1+indi+1) = instsn(2)
+                zr(jmcomb+ndim-1+inds+1) = instsn(2)
             endif
+            zr(jmcomb+2*ndim-1+indi+1) = snpq
+            zr(jmcomb+2*ndim-1+inds+1) = snpq
+            zr(jmcomb+3*ndim-1+indi+1) = kemeca
+            zr(jmcomb+3*ndim-1+inds+1) = kemeca
+            zr(jmcomb+4*ndim-1+indi+1) = kether
+            zr(jmcomb+4*ndim-1+inds+1) = kether
+            if (typeke .eq. 'KE_MECA') then
+              zr(jmcomb+ndim*5-1+indi+1) = kemeca
+              zr(jmcomb+ndim*5-1+inds+1) = kemeca
+            else
+              zr(jmcomb+ndim*5-1+indi+1) = (kemeca*spmeca(1)+&
+                                            kether*(spcomb(1)-spmeca(1)))/(spcomb(1))
+              zr(jmcomb+ndim*5-1+inds+1) = (kemeca*spmeca(1)+&
+                                            kether*(spcomb(1)-spmeca(1)))/(spcomb(1))
+            endif
+            if(instsp(1) .ge. 0) then
+                zr(jmcomb+6*ndim-1+indi+1) = instsp(1)
+                zr(jmcomb+6*ndim-1+inds+1) = instsp(1)
+                zr(jmcomb+7*ndim-1+indi+1) = instsp(2)
+                zr(jmcomb+7*ndim-1+inds+1) = instsp(2)
+            endif
+            if(instsp(3) .ge. 0) then
+                zr(jmcomb+8*ndim-1+indi+1) = instsp(3)
+                zr(jmcomb+8*ndim-1+inds+1) = instsp(3)
+                zr(jmcomb+9*ndim-1+indi+1) = instsp(4)
+                zr(jmcomb+9*ndim-1+inds+1) = instsp(4)
+            endif
+            zr(jmcomb+10*ndim-1+indi+1) = saltij(1)
+            zr(jmcomb+10*ndim-1+inds+1) = saltij(1)
+            zr(jmcomb+11*ndim-1+indi+1) = saltij(2)
+            zr(jmcomb+11*ndim-1+inds+1) = saltij(2)
 ! ------- CALCUL DU SALT et du FU partiel si SEISME
             if (seisme) then
                 matrice_fu_b(inds+1) = fuij(1)+fuij(2)
                 matrice_fu_b(indi+1) = fuij(1)+fuij(2)
-                call rc32sa('COMB', mater, mat1, mat2, snpqs, sps, spmecs,&
+                call rc32sa('COMB', mater, mat1s, mat2s, snpqs, sps, spmecs,&
                              kemecs, kethes, saltijs, smm, fuij)
                 icas = icas + 1
-                resuca(icas) = sps(1)
+                resuca(icas) = kemecs
                 icas = icas + 1
-                resuca(icas) = sps(2)
+                resuca(icas) = kethes
+                icas = icas + 1
+                if(instsps(1) .ge. 0) then
+                    resuca(icas) = instsps(1)
+                else
+                    resuca(icas) = r8vide()
+                endif
+                icas = icas + 1
+                if(instsps(2) .ge. 0) then
+                    resuca(icas) = instsps(2)
+                else
+                    resuca(icas) = r8vide()
+                endif
+                icas = icas + 1
+                if(instsps(3) .ge. 0) then
+                    resuca(icas) = instsps(3)
+                else
+                    resuca(icas) = r8vide()
+                endif
+                icas = icas + 1
+                if(instsps(4) .ge. 0) then
+                    resuca(icas) = instsps(4)
+                else
+                    resuca(icas) = r8vide()
+                endif
                 icas = icas + 1
                 resuca(icas) = saltijs(1)
                 icas = icas + 1
                 resuca(icas) = saltijs(2)
                 icas = icas + 1
-                resuca(icas) = instsns(1)
-                icas = icas + 1
-                resuca(icas) = instsns(2)
-                icas = icas + 1
-                resuca(icas) = instsps(1)
-                icas = icas + 1
-                resuca(icas) = instsps(2)
-                icas = icas + 1
-                resuca(icas) = instsps(3)
-                icas = icas + 1
-                resuca(icas) = instsps(4)
-                icas = icas + 1
                 resuca(icas) = fuij(1)+fuij(2)
-                kemax = max( kemax , kemeca )
                 matrice_fu_s(inds+1) = fuij(1)+fuij(2)
                 matrice_fu_s(indi+1) = fuij(1)+fuij(2)
             endif
@@ -1333,11 +905,11 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             utot = utot + ug
         endif
         if (.not. yapass) then
-            call rc32fu(nbsig2, nb_occurr, impr_situ, zr(jmfu), zr(jmke), &
-                        lieu, ug, factus, ugenv, lefat)
+            call rc32fu(nbsig2, nb_occurr, nom_situ, impr_situ, zi(jnsg), zr(jmfu), &
+                        zr(jmcomb), lieu, ug, factus, factus2, ugenv, lefat)
         else
-            call rc32fp(nbsig2, nb_occurr, impr_situ, zi(jnsg), zr(jmfu),&
-                        zr(jmke), lieu, ug, factus, ugenv, lefat)
+            call rc32fp(nbsig2, nb_occurr, nom_situ, impr_situ, zi(jnsg), zr(jmfu),&
+                        zr(jmcomb), lieu, ug, factus, factus2, ugenv, lefat)
         endif
         utot = utot + ug
         utotenv = utotenv + ugenv
@@ -1346,23 +918,22 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     resumax(1)  = pmmax
     resumax(2)  = pbmax
     resumax(3)  = pmbmax
-    resumax(4)  = sm
-    resumax(5)  = snmax
-    resumax(6)  = snemax
-    resumax(7)  = spmax
-    resumax(8)  = kemax
-    resumax(9)  = samax
-    resumax(10) = sigpm
-    resumax(11) = spthem
+    resumax(4)  = snmax
+    resumax(5)  = snemax
+    resumax(6)  = spmax
+    resumax(7)  = samax
+    resumax(8) = sigpm
+    resumax(9) = spthem
 !
     if (seisme) then
         AS_DEALLOCATE(vr=matrice_fu_b)
         AS_DEALLOCATE(vr=matrice_fu_s)
     endif
     call jedetr('&&RC3201.MATRICE_FU')
-    call jedetr('&&RC3201.MATRICE_KE')
+    call jedetr('&&RC3201.MATRICE_COMB')
     AS_DEALLOCATE(vi=nb_occurr)
     AS_DEALLOCATE(vi=impr_situ)
+    AS_DEALLOCATE(vk24=nom_situ)
 !
 !
     112 format (1p,' SITUATION ',i4,' PM =',e12.5,&
