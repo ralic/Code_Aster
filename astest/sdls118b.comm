@@ -244,8 +244,7 @@ print "ALPHA=0.0"
 
 ssi_1_a = DYNA_ISS_VARI(
 #                      FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                      FONC_SIGNAL   = ACCE_X2 ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X2) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -262,6 +261,7 @@ ssi_1_a = DYNA_ISS_VARI(
                                  MATR_AMOR = AMORT,
                            ),
                        INFO   =1 ,);
+
 
 ssi_1=RECU_FONCTION(RESU_GENE=ssi_1_a,
                        NOM_CHAM='ACCE',
@@ -308,8 +308,7 @@ pas_f=2.5
 
 ssi_1_b = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                      FONC_SIGNAL   = ACCE_X ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -382,8 +381,7 @@ fmax=100./2.
 pas_f=2.5
 ssi_2_a = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                      FONC_SIGNAL   = ACCE_X ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -419,8 +417,7 @@ pas_f=2.5
 
 ssi_2_b = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                      FONC_SIGNAL   = ACCE_X ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -577,8 +574,7 @@ fmax = 35.0
 pas_f = 2.5
 ssi_4_a = DYNA_ISS_VARI(
                        FREQ_MAX  = fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                       FONC_SIGNAL   = ACCE_X ,
+                       EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -594,8 +590,7 @@ ssi_4_a = DYNA_ISS_VARI(
 
 ssi_4_b = DYNA_ISS_VARI(
                        FREQ_MAX  = fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                       FONC_SIGNAL   = ACCE_X ,
+                       EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),
@@ -610,8 +605,7 @@ ssi_4_b = DYNA_ISS_VARI(
 
 ssi_4_c = DYNA_ISS_VARI(
                        FREQ_MAX  = fmax,  FREQ_PAS = pas_f ,
-                       NOM_CMP =  'DX' ,
-                       FONC_SIGNAL   = ACCE_X ,
+                       EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='CORP_RIGI',),

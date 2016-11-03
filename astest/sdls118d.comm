@@ -342,8 +342,8 @@ pas_f=2.5
 
 ssi_1_b = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,     
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = ACCE_X ,         
+                       PRECISION  =  0.9 ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,       
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='QUELCONQUE',),
@@ -383,8 +383,8 @@ fmax=100./2.
 pas_f=2.5
 ssi_2_a = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = ACCE_X ,         
+                       PRECISION  =  0.9 ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='QUELCONQUE',),
@@ -419,8 +419,8 @@ fmax=35.0
 pas_f=2.5
 ssi_2_b = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = ACCE_X ,         
+                       PRECISION  =  0.9 ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='QUELCONQUE',),
@@ -542,8 +542,8 @@ fmax=35.0
 pas_f=2.5
 ssi_4_a = DYNA_ISS_VARI(
                         FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,      
-                       NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = ACCE_X ,         
+                       PRECISION  =  0.9 ,
+                      EXCIT_SOL   =_F( ACCE_X = ACCE_X) ,        
                        INTERF =_F(
                                 GROUP_NO_INTERF='RADIER',
                                 MODE_INTERF ='QUELCONQUE',),

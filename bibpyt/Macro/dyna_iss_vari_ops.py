@@ -63,13 +63,16 @@ class DynaISSParameters(object):
             cohekeys.mc_liste)
         self.mat_gene_keys = genekeys.cree_dict_valeurs(genekeys.mc_liste)
         self.interf_keys = interfkeys.cree_dict_valeurs(interfkeys.mc_liste)
-        if kwargs['FONC_SIGNAL']:
+        if kwargs['EXCIT_SOL']:
             self.cas = 'TRANS'
+            excit_sol = kwargs['EXCIT_SOL'][0]
+            self.excit_sol_keys = excit_sol.cree_dict_valeurs(excit_sol.mc_liste)
         else :
             self.cas = 'SPEC'
         others.remove('MATR_GENE')
         others.remove('MATR_COHE')
         others.remove('INTERF')
+        others.remove('EXCIT_SOL')
         self.other_keys = {}
         for key in others:
             self.other_keys[key] = kwargs.get(key)
@@ -99,7 +102,6 @@ class Generator(object):
         self.macro = macro
         self.case = params.cas
         self.INFO = params.other_keys['INFO']
-        self.NOM_CMP = params.other_keys['NOM_CMP']
         self.cohe_params = params.cohe_keys
         self.calc_params = params.other_keys
         self.mat_gene_params = params.mat_gene_keys
@@ -111,7 +113,17 @@ class Generator(object):
         self.liste_freq = []
         self.liste_freq_sig = []
         self.cohe_params.update(params.interf_keys)
-
+        if params.cas == 'TRANS':
+            self.excit_params = params.excit_sol_keys
+            for dire in self.excit_params.keys():
+                if self.excit_params[dire] == None:
+                    del self.excit_params[dire]
+            nom_cmp = [q.replace('ACCE_','D') for q in self.excit_params.keys()]
+            self.list_NOM_CMP = nom_cmp
+            self.NOM_CMP = None
+        else:
+            self.NOM_CMP = params.other_keys['NOM_CMP']
+        
     def prepare_input(self):
         """run prepare data"""       
         v_refa_rigi = self.mat_gene_params['MATR_RIGI'].sdj.REFA.get()
@@ -140,7 +152,10 @@ class Generator(object):
             texte3 = 'MODES STATIQUES: ' + str(nbmods)
             aster.affiche('MESSAGE', texte1)
             aster.affiche('MESSAGE', texte2 + ' - ' + texte3)
-            aster.affiche('MESSAGE', 'COMPOSANTE ' + self.NOM_CMP)
+            if self.case != 'TRANS':
+                aster.affiche('MESSAGE', 'COMPOSANTE ' + self.NOM_CMP)
+            else:
+                aster.affiche('MESSAGE', 'COMPOSANTES ' + ','.join(self.list_NOM_CMP))
             aster.affiche('MESSAGE', 'NBNO INTERFACE: ' + str(len(noe_interf)))
 
     def sampling(self):
@@ -168,13 +183,33 @@ class GeneratorTRANS(Generator):
         """ sampling for trans"""
         from math import ceil, floor
         CALC_FONCTION = self.macro.get_cmd('CALC_FONCTION')
-        tt, vale_s = self.calc_params['FONC_SIGNAL'].Valeurs()
-        DT = tt[1] - tt[0]
-        __foint = CALC_FONCTION(FFT = 
-                        _F(FONCTION = self.calc_params['FONC_SIGNAL'],
+        __foint = [None]*3
+        
+        # verification que les abscisses des différents signaux sont les mêmes
+        dire0 = self.excit_params.keys()[0]
+        tt0, vale_s = self.excit_params[dire0].Valeurs()
+        for idi, dire in enumerate(self.excit_params.keys()[1:]):
+            tt, vale_s = self.excit_params[dire].Valeurs()
+            if len(tt0) != len(tt):
+                UTMESS('F','SEISME_80', valk=[dire0,dire])
+            max_abs = max(abs(NP.array(tt0)))
+            prec = 1.e-6
+            for i in range(len(tt0)):
+                if abs(tt0[i]-tt[i])/max_abs > prec:
+                    UTMESS('F','SEISME_81', vali=[i+1], valk=[dire0,dire])
+            
+            __foint[idi+1] = CALC_FONCTION(FFT = 
+                                _F(FONCTION = self.excit_params[dire],
+                                   METHODE = 'PROL_ZERO', ),)
+            self.excit_params[dire] = __foint[idi+1]
+            
+        # utilisation du premier signal uniquement pour calcul des différents paramètres
+        DT = tt0[1] - tt0[0]
+        __foint[0] = CALC_FONCTION(FFT = 
+                        _F(FONCTION = self.excit_params[dire0],
                            METHODE = 'PROL_ZERO', ),)
-        self.calc_params['FONC_SIGNAL'] = __foint
-        vale_fre, vale_re, vale_im = __foint.Valeurs()
+        self.excit_params[dire0] = __foint[0]
+        vale_fre, vale_re, vale_im = __foint[0].Valeurs()
         FREQ_PAS = 1. / (len(vale_fre) * DT)
         NB_FREQ = int(floor(len(vale_fre) / 2))
         FREQ_INIT = 0.0
@@ -217,11 +252,22 @@ class GeneratorTRANS(Generator):
         dyha = self.compute_result()
 
     def compute_result(self):
-        VEC = self.compute_harm_gene()
+        L_VEC = self.compute_harm_gene()
+        __dyge0 = self.create_host_sd()
         REST_SPEC_TEMP = self.macro.get_cmd('REST_SPEC_TEMP')
         nbmodt = self.mat_gene_params['NBMODT'] 
-        __dyge0 = self.create_host_sd()
-
+        
+        tup_re = []
+        tup_im = []
+        tup_re1 = []
+        tup_im1 = []
+        tup_re2 = []
+        tup_im2 = []
+        # boucle sur les 3 directions : sommation directionnelle
+        n_dire = len(self.excit_params.keys())
+        for i, dire in enumerate(self.excit_params.keys()):
+            VEC = L_VEC[i]
+            
 #   ATTENTION:  on sort le champ en déplacement: 
 #               c'est équivalent au champ en acceleration
 #               car on a applique un signal en ACCE pour fosi en acce
@@ -229,102 +275,110 @@ class GeneratorTRANS(Generator):
 #               (erreurs numeriques au point 0)
 # > on remplace donc le champ en acceleration
 
-        # si tous les point on été calculés: pas d'interpolation
-        vale_fre, vale_re, vale_im = self.calc_params['FONC_SIGNAL'].Valeurs()
-        if self.calc_params['FREQ_MAX'] == None:
-            inul = 0
-            for k, freqk in enumerate(self.liste_freq_sig):
-                omegk = 2.0 * pi * freqk
-                coef_a = (vale_re[k] + vale_im[k] * 1.j)
-                VEC_comp = VEC[k] * coef_a
-                tup_re = VEC_comp.real
-                tup_im = VEC_comp.imag
-                if freqk > 1.e-6 :
-                  tup_re1 = (-1.0)*tup_re/(omegk*omegk)
-                  tup_im1 = (-1.0)*tup_im/(omegk*omegk)
-                  tup_re2 = tup_im/omegk
-                  tup_im2 = (-1.0)*tup_re/omegk
-                #                                     1         2         3
-                #                                   8901234567890123456789012
-                  aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re1), tuple(tup_im1), 1)
-                  aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2), tuple(tup_im2), 1)
-                  if inul == 1 :
-                    tup_re1a = tup_re1
-                    tup_im1a = tup_im1
-                    tup_re2a = tup_re2
-                    tup_im2a = tup_im2
-                    inul = 2
-                  elif inul == 2 :
-                    tup_re1b = (2.0)*tup_re1a-tup_re1
-                    tup_im1b = (2.0)*tup_im1a-tup_im1
-                    tup_re2b = (2.0)*tup_re2a-tup_re2
-                    tup_im2b = (2.0)*tup_im2a-tup_im2
-                    aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
-                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re1b), tuple(tup_im1b), 1)
-                    aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
-                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re2b), tuple(tup_im2b), 1)
-                    inul = 0
-                else:
-                  inul = 1
-                aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re), tuple(tup_im), 1)
-        else:
-            inul = 0
-            for k, freqk in enumerate(self.liste_freq_sig):
-                coef_a = (vale_re[k] + vale_im[k] * 1.j)
-                omegk = 2.0 * pi * freqk
-                if freqk >= self.calc_params['FREQ_MAX']:   
-                # interpolation du vecteur POD VEC(NB_FREQ, nbmodt)
-                    tup_re = VEC[-1].real * 0.0
-                    tup_im = VEC[-1].imag * 0.0
-                else:
-                    vale_i = NP.searchsorted(self.liste_freq, freqk)
-                    if vale_i == 0:
-                        VEC_comp = VEC[0] * coef_a
-                        tup_re = VEC_comp.real
-                        tup_im = VEC_comp.imag
+            # si tous les point on été calculés: pas d'interpolation
+            vale_fre, vale_re, vale_im = self.excit_params[dire].Valeurs()
+            if self.calc_params['FREQ_MAX'] == None:
+                inul = 0
+                for k, freqk in enumerate(self.liste_freq_sig):
+                    omegk = 2.0 * pi * freqk
+                    coef_a = (vale_re[k] + vale_im[k] * 1.j)
+                    VEC_comp = VEC[k] * coef_a
+                    if i == 0:
+                        tup_re.append(VEC_comp.real)
+                        tup_im.append(VEC_comp.imag)
                     else:
-                        dfp = (freqk - self.liste_freq[vale_i - 1]) / (
-                            self.liste_freq[vale_i] - self.liste_freq[vale_i - 1])
-                        VEC_comp = coef_a * (VEC[vale_i - 1] + 
-                                         dfp * (VEC[vale_i] - VEC[vale_i - 1])) 
-                        tup_re = VEC_comp.real
-                        tup_im = VEC_comp.imag
-                if freqk > 1.e-6 :
-                  tup_re1 = (-1.0)*tup_re/(omegk*omegk)
-                  tup_im1 = (-1.0)*tup_im/(omegk*omegk)
-                  tup_re2 = tup_im/omegk
-                  tup_im2 = (-1.0)*tup_re/omegk
-                #                                     1         2         3
-                #                                   8901234567890123456789012
-                  aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re1), tuple(tup_im1), 1)
-                  aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2), tuple(tup_im2), 1)
-                  if inul == 1 :
-                    tup_re1a = tup_re1
-                    tup_im1a = tup_im1
-                    tup_re2a = tup_re2
-                    tup_im2a = tup_im2
-                    inul = 2
-                  elif inul == 2 :
-                    tup_re1b = (2.0)*tup_re1a-tup_re1
-                    tup_im1b = (2.0)*tup_im1a-tup_im1
-                    tup_re2b = (2.0)*tup_re2a-tup_re2
-                    tup_im2b = (2.0)*tup_im2a-tup_im2
-                    aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
-                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re1b), tuple(tup_im1b), 1)
-                    aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
-                      range(nbmodt * (k-2) + 1, nbmodt * (k-1) + 1)), tuple(tup_re2b), tuple(tup_im2b), 1)
-                    inul = 0
-                else:
-                  inul = 1
-                aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
-                    range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re), tuple(tup_im), 1)
+                        tup_re[k] += VEC_comp.real
+                        tup_im[k] += VEC_comp.imag
+                    # traitement des vitesses et déplacements apres sommation des directions pour l'acceleration
+                    if i == n_dire-1:
+                        if freqk > 1.e-6 :
+                            tup_re1.append((-1.0)*tup_re[k]/(omegk*omegk))
+                            tup_im1.append((-1.0)*tup_im[k]/(omegk*omegk))
+                            tup_re2.append(tup_im[k]/omegk)
+                            tup_im2.append((-1.0)*tup_re[k]/omegk)
 
+                            if inul == 1 :
+                                inul = 2
+                            elif inul == 2 :
+                                tup_re1[k-2] = (2.0)*tup_re1[k-1]-tup_re1[k]
+                                tup_im1[k-2] = (2.0)*tup_im1[k-1]-tup_im1[k]
+                                tup_re2[k-2] = (2.0)*tup_re2[k-1]-tup_re2[k]
+                                tup_im2[k-2] = (2.0)*tup_im2[k-1]-tup_im2[k]
+                                inul = 0
+                        else:
+                            inul = 1
+                            tup_re1.append(VEC_comp.real*0.)
+                            tup_im1.append(VEC_comp.imag*0.)
+                            tup_re2.append(VEC_comp.real*0.)
+                            tup_im2.append(VEC_comp.imag*0.)
+            else:
+                inul = 0
+                for k, freqk in enumerate(self.liste_freq_sig):
+                    coef_a = (vale_re[k] + vale_im[k] * 1.j)
+                    omegk = 2.0 * pi * freqk
+                    if freqk >= self.calc_params['FREQ_MAX']:   
+                    # interpolation du vecteur POD VEC(NB_FREQ, nbmodt)
+                        if i == 0:
+                            tup_re.append(VEC[-1].real * 0.0)
+                            tup_im.append(VEC[-1].imag * 0.0)
+                    else:
+                        vale_i = NP.searchsorted(self.liste_freq, freqk)
+                        if vale_i == 0:
+                            VEC_comp = VEC[0] * coef_a
+                            if i == 0:
+                                tup_re.append(VEC_comp.real)
+                                tup_im.append(VEC_comp.imag)
+                            else:
+                                tup_re[k] += VEC_comp.real
+                                tup_im[k] += VEC_comp.imag
+                        else:
+                            dfp = (freqk - self.liste_freq[vale_i - 1]) / (
+                                self.liste_freq[vale_i] - self.liste_freq[vale_i - 1])
+                            VEC_comp = coef_a * (VEC[vale_i - 1] + 
+                                             dfp * (VEC[vale_i] - VEC[vale_i - 1])) 
+                            if i == 0:
+                                tup_re.append(VEC_comp.real)
+                                tup_im.append(VEC_comp.imag)
+                            else:
+                                tup_re[k] += VEC_comp.real
+                                tup_im[k] += VEC_comp.imag
+                    
+                    # traitement des vitesses et déplacements apres sommation des directions pour l'acceleration
+                    if i == n_dire-1:
+                        if freqk > 1.e-6 :
+                            tup_re1.append((-1.0)*tup_re[k]/(omegk*omegk))
+                            tup_im1.append((-1.0)*tup_im[k]/(omegk*omegk))
+                            tup_re2.append(tup_im[k]/omegk)
+                            tup_im2.append((-1.0)*tup_re[k]/omegk)
+
+                            if inul == 1 :
+                                inul = 2
+                            elif inul == 2 :
+                                tup_re1[k-2] = (2.0)*tup_re1[k-1]-tup_re1[k]
+                                tup_im1[k-2] = (2.0)*tup_im1[k-1]-tup_im1[k]
+                                tup_re2[k-2] = (2.0)*tup_re2[k-1]-tup_re2[k]
+                                tup_im2[k-2] = (2.0)*tup_im2[k-1]-tup_im2[k]
+                                inul = 0
+                        else:
+                            inul = 1
+                            tup_re1.append(VEC_comp.real*0.)
+                            tup_im1.append(VEC_comp.imag*0.)
+                            tup_re2.append(VEC_comp.real*0.)
+                            tup_im2.append(VEC_comp.imag*0.)
+
+        # affectation des valeurs    
+        for k in range(len(self.liste_freq_sig)):
+            #                                     1         2         3
+            #                                   8901234567890123456789012
+            aster.putvectjev(__dyge0.get_name() + '           .DEPL        ', nbmodt, tuple(
+            range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re1[k]), tuple(tup_im1[k]), 1)
+            aster.putvectjev(__dyge0.get_name() + '           .VITE        ', nbmodt, tuple(
+            range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2[k]), tuple(tup_im2[k]), 1)
+            aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
+                range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re[k]), tuple(tup_im[k]), 1)
+            
         aster.affiche('MESSAGE','START REST_SPEC_TEMP' )
+        
         dyha = REST_SPEC_TEMP(RESU_GENE = __dyge0, SYMETRIE='NON',
                               #METHODE = 'PROL_ZERO' ,
                               TOUT_CHAM='OUI',
@@ -345,9 +399,10 @@ class GeneratorTRANS(Generator):
                        _F(MATR_ASSE = __impe, COEF_C = 1.0 + 0.j,),
                        _F(MATR_ASSE = self.mat_gene_params['MATR_RIGI'],
                           COEF_C = 1.0 + 0.j,),), SANS_CMP='LAGR', )
+        # on fixe la composante car sa valeur n'a pas d'importance
         __fosi = LIRE_FORC_MISS(BASE = self.mat_gene_params['BASE'],
                        NUME_DDL_GENE = self.mat_gene_params['NUME_DDL'],
-                       NOM_CMP = self.NOM_CMP, NOM_CHAM = 'DEPL',
+                       NOM_CMP = 'DX', NOM_CHAM = 'DEPL',
                        ISSF = self.calc_params['ISSF'],
                        UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                        FREQ_EXTR = self.FREQ_PAS,)
@@ -359,7 +414,8 @@ class GeneratorTRANS(Generator):
                   TOUT_CHAM='OUI',
                   FREQ = self.liste_freq_sig, 
                   EXCIT=_F(VECT_ASSE_GENE = __fosi,
-                           COEF_MULT_C = 1.,),)
+                           COEF_MULT_C = 1.,),
+                        )
         return __dyge0
 
 
@@ -396,7 +452,7 @@ class GeneratorTRANS(Generator):
         __fosi = LIRE_FORC_MISS(
                       BASE =self.mat_gene_params['BASE'],
                       NUME_DDL_GENE = self.mat_gene_params['NUME_DDL'],
-                      NOM_CMP = self.NOM_CMP,
+                      NOM_CMP = dict_modes['NOM_CMP'],
                       NOM_CHAM = 'DEPL',
                       UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                       ISSF = 'NON',
@@ -444,7 +500,8 @@ class GeneratorTRANS(Generator):
         if k > 0:
             DETRUIRE(CONCEPT = _F(NOM = (__impe, __fosi, __rito)), INFO=1)
         return VECRES
-
+        VEC = calc_miss_vari(self)             
+        return VEC
 
 
 #     -----------------------------------------------------------------
@@ -467,7 +524,7 @@ class GeneratorSPEC(Generator):
     def compute_harm_gene(self):
             """ compute harm_gene for spec"""                                  
             SPEC = calc_miss_vari(self)
-            return SPEC
+            return SPEC[0]
 
     def compute_freqk(self, k, RESU, VEC, dict_modes):
         """ compute response for freqk - spec"""
@@ -485,7 +542,7 @@ class GeneratorSPEC(Generator):
         __fosi = LIRE_FORC_MISS(
                       BASE =self.mat_gene_params['BASE'],
                       NUME_DDL_GENE = self.mat_gene_params['NUME_DDL'],
-                      NOM_CMP = self.NOM_CMP,
+                      NOM_CMP = dict_modes['NOM_CMP'],
                       NOM_CHAM = 'DEPL',
                       UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                       ISSF = 'NON',

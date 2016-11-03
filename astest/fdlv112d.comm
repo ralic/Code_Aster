@@ -272,8 +272,9 @@ pas_f=1./10.24
 
 Trg1i = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                      NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = accex ,
+                      PRECISION  =  0.9 ,
+                      EXCIT_SOL   = _F( ACCE_X = accex,
+                                        ),
                       ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',
@@ -300,8 +301,9 @@ from math import pi
 p_alpha = 0.5 / 2. / pi
 Trg1 = DYNA_ISS_VARI(
                       FREQ_MAX  =fmax,  FREQ_PAS = pas_f ,
-                      NOM_CMP =  'DX' ,  PRECISION  =  0.9 ,
-                      FONC_SIGNAL   = accex ,
+                      PRECISION  =  0.9 ,
+                      EXCIT_SOL   = _F( ACCE_X = accex,
+                                        ),
                       ISSF='OUI',
                        INTERF =_F(
                                 GROUP_NO_INTERF='ISOLSTR',

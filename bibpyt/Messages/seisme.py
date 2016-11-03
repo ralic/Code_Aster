@@ -386,5 +386,14 @@ Conseil:
         instants de début et de fin phase forte: %(r1).2f s et %(r2).2f s
 """),
 
+    80: _(u"""
+Les signaux renseignés dans les opérandes %(k1)s et %(k2)s de EXCIT_SOL n'ont pas
+le même nombres de valeurs.           
+"""),
+
+    81: _(u"""
+Les valeurs numéro %(i1)d  des abscisses des signaux renseignés dans les opérandes 
+%(k1)s et %(k2)s de EXCIT_SOL sont différentes.
+"""),
 
 }

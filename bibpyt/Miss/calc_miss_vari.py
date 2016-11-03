@@ -31,33 +31,46 @@ def calc_miss_vari(self):
 
     from Utilitai.signal_correlation_utils import (CALC_COHE)
     NB_FREQ = 1 + int((self.FMAX - self.FREQ_INIT) / self.FREQ_PAS)
-    RESU = None
+    if self.case == 'TRANS':
+        RESU = [None]*len(self.list_NOM_CMP)
+        list_NOM_CMP = self.list_NOM_CMP
+    else:
+        RESU = [None]*1
+        list_NOM_CMP = [self.NOM_CMP]
+    self.NOM_CMP = None
+
+# BOUCLE SUR LES FREQUENCES : Matrice de cohérence
+    PVEC= [None]*NB_FREQ
+    nbm = [None]*NB_FREQ
+    for k in range(NB_FREQ):
+        freqk = self.FREQ_INIT + self.FREQ_PAS * k
+        if self.INFO == 2:
+            aster.affiche('MESSAGE', 'FREQUENCE DE CALCUL: ' + str(freqk)) 
+        # COHERENCE  
+        COHE = CALC_COHE(freqk*2.*pi, **self.cohe_params)
+        # EIGENVALUE DECOMP 
+        PVEC[k], nbm[k] = compute_POD(COHE, self.calc_params['PRECISION'], self.INFO)
 
 # RECUPERATION DES MODES MECA (STATIQUES)
     nbmodd = self.mat_gene_params['NBMODD']        
     nbmods = self.mat_gene_params['NBMODS']
     GROUP_NO_INTER =  self.interf_params['GROUP_NO_INTERF']
-    dict_modes = compute_mecmode(self.NOM_CMP, GROUP_NO_INTER,
-                                 self.mat_gene_params['BASE'], nbmods, nbmodd)
-    dict_modes['nbmods'] = nbmods
-    dict_modes['nbno'] = self.interf_params['NBNO']
-    dict_modes['NOM_CMP'] = self.NOM_CMP
-
-# BOUCLE SUR LES FREQUENCES
-    for k in range(NB_FREQ):
-        freqk = self.FREQ_INIT + self.FREQ_PAS * k
-        if self.INFO == 2:
-            aster.affiche('MESSAGE', 'FREQUENCE DE CALCUL: ' + str(freqk)) 
-      # COHERENCE  
-        COHE = CALC_COHE(freqk*2.*pi, **self.cohe_params)
-      # EIGENVALUE DECOMP 
-        PVEC, nbm = compute_POD(COHE, self.calc_params['PRECISION'], self.INFO)
-        dict_modes['nbpod'] = nbm
-      # CALCUL ISS VARI    
-        if self.interf_params['MODE_INTERF'] != 'QUELCONQUE' :
-            RESU = self.compute_freqk( k, RESU, PVEC, dict_modes)
-        else:  #MODE_INTERF =='QUELCONQUE'
-            RESU = compute_freqk_quelconque(self, k, RESU, PVEC, dict_modes)
+    
+# BOUCLE SUR LES DIRECTIONS
+    for i_cmp, nom_cmp in enumerate(list_NOM_CMP):
+        dict_modes = compute_mecmode(nom_cmp, GROUP_NO_INTER,
+                                     self.mat_gene_params['BASE'], nbmods, nbmodd)
+        dict_modes['nbmods'] = nbmods
+        dict_modes['nbno'] = self.interf_params['NBNO']
+        dict_modes['NOM_CMP'] = nom_cmp
+    # BOUCLE SUR LES FREQUENCES
+        for k in range(NB_FREQ):
+            dict_modes['nbpod'] = nbm[k]
+          # CALCUL ISS VARI    
+            if self.interf_params['MODE_INTERF'] != 'QUELCONQUE' :
+                RESU[i_cmp] = self.compute_freqk( k, RESU[i_cmp], PVEC[k], dict_modes)
+            else:  #MODE_INTERF =='QUELCONQUE'
+                RESU[i_cmp] = compute_freqk_quelconque(self, k, RESU[i_cmp], PVEC[k], dict_modes)
     return RESU
 #--------------------------------------------------------------------------------
 
@@ -229,7 +242,7 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
     __fosi = LIRE_FORC_MISS(
                       BASE =self.mat_gene_params['BASE'],
                       NUME_DDL_GENE = self.mat_gene_params['NUME_DDL'],
-                      NOM_CMP = self.NOM_CMP,
+                      NOM_CMP = dict_modes['NOM_CMP'],
                       NOM_CHAM = 'DEPL',
                       UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                       ISSF = self.calc_params['ISSF'],
