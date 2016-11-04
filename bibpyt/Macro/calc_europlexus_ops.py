@@ -43,6 +43,7 @@ try:
     from Utilitai.Utmess import UTMESS
     from Calc_epx.calc_epx_utils import tolist
     from Utilitai.utils import encode_str, decode_str, send_file
+    from asrun.run import AsRunFactory
 except:
     pass
 
@@ -114,8 +115,11 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     # Creation d'un repertoire commun pour les echanges de donnees entre procs
     user=getpass.getuser()
     name_tmp = uuid.uuid4()
-    os.mkdir('/scratch/%s/EPX_%s'%(user,name_tmp))
-    rep_tmp='/scratch/%s/EPX_%s'%(user,name_tmp)
+    
+    run = AsRunFactory()
+    
+    os.mkdir('%s/EPX_%s'%(run['shared_tmp'],name_tmp))
+    rep_tmp='%s/EPX_%s'%(run['shared_tmp'],name_tmp)
 
     #
     # TRADUCTION DES INFORMATIONS
