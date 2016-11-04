@@ -1012,6 +1012,10 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                ANGDIL      =SIMP(statut='o',typ='R',val_min=0.E+0,val_max=60.E+0,),
                COHESION    =SIMP(statut='o',typ='R',val_min=0.E+0,),
              ),
+             
+           RANKINE  =FACT(statut='f',
+               SIGMA_T    =SIMP(statut='o',typ='R',),
+             ),
 
            CAM_CLAY      =FACT(statut='f',
              MU              =SIMP(statut='o',typ='R'),

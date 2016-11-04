@@ -163,6 +163,7 @@ def C_RELATION( COMMAND ):
                                         "META_V_INL_PT_RE",
                                         "META_V_INL_RE",
                                         "MOHR_COULOMB",
+                                        "RANKINE",
                                         "MONOCRISTAL",
                                         "MULTIFIBRE",
                                         "NORTON",
