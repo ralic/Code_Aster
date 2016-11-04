@@ -71,7 +71,10 @@ subroutine velame(modele, charge, infcha, depmoz, vecelz)
     call jemarq()
     newnom = '.0000000'
 !
-    vecele = '&&VELAME           '
+    vecele = vecelz
+    if (vecele .eq. ' ') then
+        vecele = '&&VELAME'
+    endif
     resuel = '&&VELAME.???????'
     depmoi = depmoz
 !
