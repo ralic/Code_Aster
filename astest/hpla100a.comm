@@ -178,7 +178,6 @@ DEPLDI2=CALC_CHAMP(reuse=DEPLDI2,RESULTAT=DEPLDI2,CONTRAINTE=('SIGM_ELNO'),DEFOR
 #---------------------------------------------------------------------
 
 T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
-                CHARGE=CHDIL,
                 RESULTAT=DEPLDIL,);
 
 IMPR_TABLE(TABLE=T_POT,);

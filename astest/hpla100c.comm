@@ -985,7 +985,6 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=2,
 #---------------------------------------------------------------------
 
 T_POT=POST_ELEM(  RESULTAT=U,
-                  CHARGE=CHDI3,
                   NIVE_COUCHE='INF',
                   ENER_POT=_F( TOUT = 'OUI',)  )
 

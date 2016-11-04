@@ -509,11 +509,9 @@ TEST_RESU(RESU=_F(INST=66.665999999999997,
           )
 
 T_POT=POST_ELEM(ENER_POT=_F(TOUT='OUI',),
-                CHARGE=CHMECA,
                 RESULTAT=U,);
 
 T_TOT=POST_ELEM(ENER_TOTALE=_F(TOUT='OUI',),
-                CHARGE=CHMECA,
                 RESULTAT=U,);
 
 IMPR_TABLE(TABLE=T_POT,);

@@ -123,8 +123,7 @@ U=CALC_CHAMP(reuse =U,
              DEFORMATION=('EPSG_ELGA',),);
 
 # WEIBULL AVEC OPTION SIGM_ELGA
-WEIB=POST_ELEM(CHARGE=CHARG,
-               WEIBULL=_F(CORR_PLAST='NON',
+WEIB=POST_ELEM(WEIBULL=_F(CORR_PLAST='NON',
                           TOUT='OUI',
                           COEF_MULT=2.0,
                           OPTION='SIGM_ELGA',),
@@ -132,8 +131,7 @@ WEIB=POST_ELEM(CHARGE=CHARG,
                TOUT_ORDRE='OUI',);
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=NON
-WEIB2=POST_ELEM(CHARGE=CHARG,
-                WEIBULL=_F(CORR_PLAST='NON',
+WEIB2=POST_ELEM(WEIBULL=_F(CORR_PLAST='NON',
                            TOUT='OUI',
                            COEF_MULT=2.0,
                            OPTION='SIGM_ELMOY',),
@@ -141,8 +139,7 @@ WEIB2=POST_ELEM(CHARGE=CHARG,
                 TOUT_ORDRE='OUI',);
 
 # WEIBULL AVEC OPTION SIGM_ELMOY ET CORR_PLAST=OUI
-WEIB3=POST_ELEM(CHARGE=CHARG,
-                WEIBULL=_F(CORR_PLAST='OUI',
+WEIB3=POST_ELEM(WEIBULL=_F(CORR_PLAST='OUI',
                            TOUT='OUI',
                            COEF_MULT=2.0,
                            OPTION='SIGM_ELMOY',),

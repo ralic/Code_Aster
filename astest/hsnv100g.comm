@@ -252,12 +252,10 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #
 T_POT=POST_ELEM(
                     RESULTAT=U,
-                      CHARGE=CHMECA,
                     ENER_POT=_F( TOUT = 'OUI',)  )
 
 T_TOT=POST_ELEM(
                     RESULTAT=U,
-                      CHARGE=CHMECA,
                     ENER_TOTALE=_F( TOUT = 'OUI',)  )
 
 IMPR_TABLE(TABLE=T_POT);

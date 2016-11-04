@@ -145,7 +145,6 @@ U=CALC_CHAMP(reuse=U,CONTRAINTE=('SIEF_ELNO'),VARI_INTERNE=('VARI_ELNO'),RESULTA
 
 T_POT=POST_ELEM(    CHAM_MATER=CM,
                     RESULTAT=U,
-                      CHARGE=CHMECA,
                     ENER_POT=_F( TOUT = 'OUI',)  )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',

@@ -1937,7 +1937,6 @@ U2=MECA_STATIQUE(      MODELE=MO,
 #---------------------------------------------------------------------
 T_POT=POST_ELEM(
                     RESULTAT=U2,
-                      CHARGE=CHG1,
                     ENER_POT=_F( TOUT = 'OUI',)  )
 
 IMPR_TABLE ( TABLE=T_POT )

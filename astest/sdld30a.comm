@@ -150,8 +150,7 @@ ASSEMBLAGE(MODELE=MODELE,
 MASSINER=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                    MODELE=MODELE,
                    CHAM_MATER=CHAMPMAT,
-                   CARA_ELEM=CARA_ELE,
-                   CHARGE=CON_LIM,);
+                   CARA_ELEM=CARA_ELE,);
 
 MODES=CALC_MODES(MATR_RIGI=RIGIDITE,
                  CALC_FREQ=_F(NMAX_FREQ=3,

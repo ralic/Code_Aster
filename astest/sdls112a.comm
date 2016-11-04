@@ -123,8 +123,7 @@ MASS=ASSE_MATRICE(MATR_ELEM=MELEM,
 MASSE=POST_ELEM(MASS_INER=_F(TOUT='OUI',),
                 MODELE=MODFEM,
                 CHAM_MATER=CHMAT,
-                CARA_ELEM=CHCAR,
-                CHARGE=CHARGE,);
+                CARA_ELEM=CHCAR,);
 
 
 #*******************************************************
