@@ -58,7 +58,8 @@ EVOL=STAT_NON_LINE(MODELE=MO,
                    INCREMENT=_F(LIST_INST=LIST,),
                    SOLVEUR=_F(METHODE='PETSC',
                               ALGORITHME='CR',
-                              PRE_COND='LDLT_SP',),
+                              PRE_COND='LDLT_SP',
+                              PCENT_PIVOT=30, ),
                    INFO=2,);
 
 TEST_RESU(RESU=(_F(RESULTAT=EVOL,
