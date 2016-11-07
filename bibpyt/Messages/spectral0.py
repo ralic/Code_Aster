@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,5 +63,16 @@ Le mot-clé format correspond au format du fichier source, qui peut être 'ASTER
 Le calcul en multi-appuis n'est réalisable que lorsque le concept résultat renseigné sous le mot-clé RESU est RESU_GENE.
 """),
 
+14: _(u"""
+Les listes données pour AMOR_EQUIP, FREQ_EQUIP et COEF_MASS_EQUIP doivent être de même longueur
+"""),
+
+15: _(u"""
+La somme des rapport de masses COEF_MASS_EQUIP doit être égale à 1
+"""),
+
+16: _(u"""
+La valeur initiale du signal d'entrée dépasse le critère limite TOLE_INIT choisi %(r1)f > %(r2)f
+"""),
 
 }

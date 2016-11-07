@@ -1,0 +1,134 @@
+ TITRE
+CODE_ASTER - 11.01.04 - VERSION DE DEVELOPPEMENT          - FRONTAL1         - L
+ FINSF
+ %
+ COOR_3D
+ N01       0.00000000000000E+00  0.00000000000000E+00  0.00000000000000E+00
+ N02       0.00000000000000E+00  0.00000000000000E+00  1.00000000000000E+00
+ N03       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ N04       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ N05       0.00000000000000E+00  0.00000000000000E+00  2.00000000000000E+00
+ FINSF
+ %
+ SEG2    
+ ELN1     N01      N02     
+ ELN2     N02      N03     
+ ELN3     N02      N04 
+ ELN4     N02      N05 
+ AMN1     N01      N02     
+ AMN2     N02      N03     
+ AMN3     N02      N04  
+ AMN4     N02      N05  
+ FINSF
+ %
+ GROUP_NO
+ DY                      
+ N02      N03      N04     N05     
+ FINSF
+ %
+ GROUP_NO
+ DZ                      
+ N02      N03      N04     N05
+ FINSF
+ %
+ GROUP_NO
+ DRX                     
+ N02      N03      N04     
+ FINSF
+ %
+ GROUP_NO
+ DRY                     
+ N02      N03      N04     
+ FINSF
+ %
+ GROUP_NO
+ DRZ                     
+ N02      N03      N04     
+ FINSF
+ %
+ GROUP_NO
+ MASSES                  
+ N02      N03      N04     
+ FINSF
+ %
+ GROUP_NO
+ ENCASTRE                
+ N01     
+ FINSF
+ %
+ GROUP_NO
+ N01                
+ N01     
+ FINSF
+ %
+ GROUP_NO
+ N02                
+ N02     
+ FINSF
+ %
+ GROUP_NO
+ N03                
+ N03     
+ FINSF
+ %
+ GROUP_NO
+ N04                
+ N04     
+ FINSF
+ %
+ GROUP_NO
+ N05                
+ N05     
+ FINSF
+ %
+ GROUP_MA
+ LIAI_NOE                
+ ELN1     ELN2     ELN3    
+ FINSF
+ %
+ GROUP_MA
+ RLN_1                   
+ ELN1     ELN2     ELN3    
+ FINSF
+ %
+ GROUP_MA
+ ELN1                   
+ ELN1    
+ FINSF
+ %
+ GROUP_MA
+ ELN2                   
+ ELN2    
+ FINSF
+ %
+ GROUP_MA
+ ELN3                   
+ ELN3    
+ FINSF
+ %
+ GROUP_MA
+ ELN4                   
+ ELN4    
+ FINSF
+ %
+ GROUP_MA
+ AMN1                   
+ AMN1    
+ FINSF
+ %
+ GROUP_MA
+ AMN2                   
+ AMN2    
+ FINSF
+ %
+ GROUP_MA
+ AMN3                   
+ AMN3    
+ FINSF
+ %
+ GROUP_MA
+ AMN4                   
+ AMN4    
+ FINSF
+ %
+ FIN

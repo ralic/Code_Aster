@@ -1,0 +1,380 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
+              DEBUG=_F(SDVERI='NON',),);
+
+import math
+
+###Valeurs
+k1 = 4000.
+k2_1 = 200.
+k2_2 = 800.
+k2_3 = 50.
+m1 = 1.
+m2_1 = 0.05
+m2_2 = 0.025
+m2_3 = 0.025
+m2 = m2_1+m2_2+m2_3
+
+lbd = m2/m1
+w1 = (k1/(m1+m2))**0.5
+f1 = w1/(2*math.pi)
+f1s = f1*(1+lbd)**0.5
+
+w2_1 = (k2_1/m2_1)**0.5
+f2_1 = w2_1/(2*math.pi)
+w2_2 = (k2_2/m2_2)**0.5
+f2_2 = w2_2/(2*math.pi)
+w2_3 = (k2_3/m2_3)**0.5
+f2_3 = w2_3/(2*math.pi)
+print f1,f1s,f2_1,f2_2,f2_3
+
+amor_supp = 0.07
+amor_equi = 0.05
+
+
+c1 = 2*(m1+m2)*amor_supp*w1
+c2_1 = 2*m2_1*amor_equi*w2_1
+c2_2 = 2*m2_2*amor_equi*w2_2
+c2_3 = 2*m2_3*amor_equi*w2_3
+print c1
+###
+
+MAILLAG0=LIRE_MAILLAGE(FORMAT='ASTER', )
+
+MAILLAGE=CREA_MAILLAGE(MAILLAGE=MAILLAG0,
+    CREA_POI1=(
+    _F(NOM_GROUP_MA='N02',  NOEUD = 'N02', ),
+    _F(NOM_GROUP_MA='N03',  NOEUD = 'N03', ),
+    _F(NOM_GROUP_MA='N04',  NOEUD = 'N04', ),
+    _F(NOM_GROUP_MA='N05',  NOEUD = 'N05', ),
+    ),)
+
+ACCELERO = FORMULE(NOM_PARA='INST',VALE='sin((INST)*20.*2.*pi)')
+ 
+L_INST=DEFI_LIST_REEL(  DEBUT=0.,
+                           INTERVALLE=_F(  JUSQU_A = 1.0,  PAS = 0.0001)) 
+
+ACCE = CALC_FONC_INTERP( FONCTION=ACCELERO, LIST_PARA=L_INST,
+        NOM_PARA='INST',
+        NOM_RESU='ACCE',
+        PROL_GAUCHE='EXCLU', PROL_DROITE='LINEAIRE',
+        INTERPOL='LIN',
+        TITRE=' FONCTION' )   
+
+L_FREQ = DEFI_LIST_REEL(  DEBUT=0.1,
+                           INTERVALLE=_F(  JUSQU_A = 50.,  PAS = 0.1)) 
+                           
+####################
+## MODELE A
+MOD_A=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+                  _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
+                         GROUP_MA = ('ELN1','AMN1')
+                         ),
+                       _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
+                         GROUP_MA =('N02')
+                         ))
+                    )
+#
+CARA_A=AFFE_CARA_ELEM(  MODELE=MOD_A,
+                          DISCRET=(_F(  GROUP_MA = ('N02',),
+                                        CARA = 'M_T_D_N',  VALE = (m1+m2)),    
+                                   _F(  GROUP_MA = ('N02',),
+                                        CARA = 'K_T_D_N',  VALE = (0.,0.,0.,)),
+                                   _F(  GROUP_MA=('ELN1'),  CARA = 'K_T_D_L',
+                                        VALE = (0., 0., k1,),  REPERE = 'GLOBAL'),
+                                   _F(  GROUP_MA=('AMN1'),  CARA = 'A_T_D_L',
+                                        VALE = (0., 0., c1,),  REPERE = 'GLOBAL')     )
+                         )
+
+CON_A=AFFE_CHAR_MECA( MODELE=MOD_A,
+                        DDL_IMPO=(_F( GROUP_NO = 'N01', DX = 0., DY = 0., DZ = 0.),
+                                  _F( GROUP_NO = 'N02', DX = 0., DY = 0.),),
+                         )
+                         
+RIGI_ELA=CALC_MATR_ELEM(  MODELE=MOD_A,        OPTION='RIGI_MECA',
+                            CARA_ELEM=CARA_A,   CHARGE=CON_A   )
+
+MASS_ELA=CALC_MATR_ELEM( MODELE=MOD_A,    OPTION='MASS_MECA_DIAG',
+                            CARA_ELEM=CARA_A,   CHARGE=CON_A   )
+                            
+AMOR_ELA=CALC_MATR_ELEM( MODELE=MOD_A,    OPTION='AMOR_MECA',
+                            CARA_ELEM=CARA_A,   CHARGE=CON_A   )                            
+
+NUME_A=NUME_DDL(  MATR_RIGI=RIGI_ELA )
+
+#
+RIGI_A=ASSE_MATRICE(  MATR_ELEM=RIGI_ELA,   NUME_DDL=NUME_A  )
+MASS_A=ASSE_MATRICE(  MATR_ELEM=MASS_ELA,   NUME_DDL=NUME_A  )
+AMOR_A=ASSE_MATRICE(  MATR_ELEM=AMOR_ELA,   NUME_DDL=NUME_A  )        
+
+MONO_XA=CALC_CHAR_SEISME(   MATR_MASS=MASS_A,   DIRECTION=( 0., 0., 1.,),
+                              MONO_APPUI='OUI'
+                             )       
+                             
+TRAN_LA=DYNA_VIBRA( TYPE_CALCUL='TRAN',
+                    BASE_CALCUL='PHYS',
+                    MATR_MASS=MASS_A,    
+                    MATR_RIGI=RIGI_A,
+                    MATR_AMOR = AMOR_A,
+                    INCREMENT=_F( LIST_INST = L_INST),
+                    EXCIT=_F(  VECT_ASSE = MONO_XA,  FONC_MULT = ACCE)
+                           )   
+                
+ACCE0 = DEFI_CONSTANTE(VALE = 1.E-8) 
+                
+# CALCUL SANS IPM, POUR INFORMATION
+#
+# table2 = MACR_SPECTRE(MAILLAGE = MAILLAGE,
+#                      PLANCHER = _F( NOM='N02',
+#                                     NOEUD='N02'),
+#                      CALCUL = 'RELATIF',
+#                      NOM_CHAM ='ACCE',
+#                      AMOR_SPEC = 0.05,
+#                      LIST_FREQ = L_FREQ,
+#                      LIST_INST = L_INST,
+#                      NORME = 1.,
+#                      RESU=_F(
+#                             RESULTAT = TRAN_LA,
+#                             ACCE_X = ACCE0,
+#                             ACCE_Y = ACCE0,
+#                             ACCE_Z = ACCE,
+#                      ),
+#                      IMPRESSION=_F(FORMAT = 'TABLEAU',
+#                                    UNITE = 27)
+# )
+     
+TAB =  CREA_TABLE(RESU =_F(RESULTAT = TRAN_LA, 
+                            NOM_CHAM ='ACCE',
+                            TOUT_CMP='OUI',
+                            TOUT='OUI',
+                            ),                  
+) 
+     
+tabl_spe = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
+                     AMOR_SPEC = 0.05,
+                     EQUIPEMENT =(_F(NOM='NOEUD2',
+                                  GROUP_NO='N02',
+                                RAPPORT_MASSE_TOTALE = lbd,
+                                COEF_MASS_EQUIP = (m2_1/m2,m2_2/m2,m2_3/m2),
+                                FREQ_EQUIP = (f2_1,f2_2,f2_3), 
+                                FREQ_SUPPORT  = f1,
+                                AMOR_SUPPORT = amor_supp,
+                                AMOR_EQUIP = (amor_equi,amor_equi,amor_equi)
+                                 ),),  
+                     LIST_INST = L_INST,
+                     CALCUL ='RELATIF',
+                     LIST_FREQ = L_FREQ,
+                     NORME = 1.,
+                     RESU = (_F(TABLE = TAB,
+                               ACCE_Z = ACCE,),),
+)
+
+#IMPR_TABLE(TABLE=tabl_spe,FORMAT='TABLEAU',UNITE=28);  
+  
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=5.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(0.437517122449 ),
+             VALE_REFE=(4.25896E-01, ),
+             PRECISION=6.2E-2,)
+
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=10.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.47444236774 ),
+             VALE_REFE=(1.44050E+00, ),
+             PRECISION=7.2E-2,)        
+
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=15.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.93646256141 ),
+             VALE_REFE=(1.93754E+00, ),
+             PRECISION=2.3E-2,)       
+
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=20.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(3.40805094425 ),
+             VALE_REFE=(3.39816E+00 , ),
+             PRECISION=0.7E-2,)             
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=25.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.46576034744 ),
+             VALE_REFE=(1.46011E+00, ),
+             PRECISION=1.6E-2,)
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=30.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.06939373897 ),
+             VALE_REFE=(1.08058E+00, ),
+             PRECISION=1.1E-2,)
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=35.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(0.992295681197 ),
+             VALE_REFE=(1.00117E+00, ),
+             PRECISION=0.9E-2,)             
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=40.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(0.927037728394 ),
+             VALE_REFE=(9.29183E-01, ),
+             PRECISION=0.8E-2,)             
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=45.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(0.879024239638 ),
+             VALE_REFE=(8.71687E-01, ),
+             PRECISION=1.3E-2,)             
+             
+TEST_TABLE(TABLE=tabl_spe,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=50.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(0.849115746399 ),
+             VALE_REFE=(8.33936E-01, ),
+             PRECISION=1.9E-2,)
+             
+
+## MODELE B : SOLUTION DE REFRENCE
+# MOD_B=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
+#                    _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
+#                           GROUP_MA = ('ELN1','ELN2','ELN3','ELN4','AMN1','AMN2','AMN3','AMN4')
+#                           ),
+#                         _F(  PHENOMENE = 'MECANIQUE',  MODELISATION = 'DIS_T',
+#                           GROUP_MA =('N02','N03','N04','N05')
+#                           ))
+#                      )
+#                     
+# CON_B=AFFE_CHAR_MECA( MODELE=MOD_B,
+#                          DDL_IMPO=(_F(  GROUP_NO = 'ENCASTRE',
+#                                         DX = 0., DY = 0., DZ = 0.),
+#                                    _F(  GROUP_NO = 'DY',   DY = 0.),
+#                                    _F(  GROUP_NO = 'DZ',   DX = 0.))
+#                           )                    
+#                          
+# 
+# CARA_B=AFFE_CARA_ELEM(  MODELE=MOD_B,
+#                            DISCRET=(_F(  GROUP_MA = ('N02',),
+#                                          CARA = 'M_T_D_N',  VALE = m1),
+#                                     _F(  GROUP_MA = ('N03',),
+#                                          CARA = 'M_T_D_N',  VALE = m2_1),     
+#                                     _F(  GROUP_MA = ('N04',),
+#                                          CARA = 'M_T_D_N',  VALE = m2_2),   
+#                                     _F(  GROUP_MA = ('N05',),
+#                                          CARA = 'M_T_D_N',  VALE = m2_3),        
+#                                     _F(  GROUP_MA = ('N02',  'N03','N04','N05'),
+#                                          CARA = 'K_T_D_N',  VALE = (0.,0.,0.,)),
+#                                     _F(  GROUP_MA=('ELN1'),  CARA = 'K_T_D_L',
+#                                          VALE = (0., 0., k1,),  REPERE = 'GLOBAL'),
+#                                     _F(  GROUP_MA=('ELN2'),  CARA = 'K_T_D_L',
+#                                          VALE = (0., 0., k2_1,),  REPERE = 'GLOBAL'),
+#                                     _F(  GROUP_MA=('ELN3'),  CARA = 'K_T_D_L',
+#                                          VALE = (0., 0., k2_2,),  REPERE = 'GLOBAL'),
+#                                     _F(  GROUP_MA=('ELN4'),  CARA = 'K_T_D_L',
+#                                          VALE = (0., 0., k2_3,),  REPERE = 'GLOBAL'),     
+#                                     _F(  GROUP_MA=('AMN1'),  CARA = 'A_T_D_L',
+#                                          VALE = (0., 0., c1,),  REPERE = 'GLOBAL'),
+#                                     _F(  GROUP_MA=('AMN2'),  CARA = 'A_T_D_L',
+#                                          VALE = (0., 0., c2_1,),  REPERE = 'GLOBAL'),
+#                                     _F(  GROUP_MA=('AMN3'),  CARA = 'A_T_D_L',
+#                                          VALE = (0., 0., c2_2,),  REPERE = 'GLOBAL'),    
+#                                     _F(  GROUP_MA=('AMN4'),  CARA = 'A_T_D_L',
+#                                          VALE = (0., 0., c2_3,),  REPERE = 'GLOBAL'),                                            
+#                                          )
+#                           )
+#       
+# RIGI_ELB=CALC_MATR_ELEM(  MODELE=MOD_B,        OPTION='RIGI_MECA',
+#                              CARA_ELEM=CARA_B,   CHARGE=CON_B  )
+# 
+# MASS_ELB=CALC_MATR_ELEM( MODELE=MOD_B,    OPTION='MASS_MECA_DIAG',
+#                              CARA_ELEM=CARA_B,   CHARGE=CON_B  )
+# 
+# AMOR_ELB=CALC_MATR_ELEM( MODELE=MOD_B,    OPTION='AMOR_MECA',
+#                              CARA_ELEM=CARA_B,   CHARGE=CON_B   )  
+#                                                
+# NUME_B=NUME_DDL(  MATR_RIGI=RIGI_ELB )
+# 
+# RIGI_B=ASSE_MATRICE(  MATR_ELEM=RIGI_ELB,   NUME_DDL=NUME_B  )
+# MASS_B=ASSE_MATRICE(  MATR_ELEM=MASS_ELB,   NUME_DDL=NUME_B  )
+# AMOR_B=ASSE_MATRICE(  MATR_ELEM=AMOR_ELB,   NUME_DDL=NUME_B  )
+#       
+# MONO_XB=CALC_CHAR_SEISME(   MATR_MASS=MASS_B,   DIRECTION=( 0., 0., 1.,),
+#                                MONO_APPUI='OUI'
+#                               )         
+# 
+# #-----------------------------------------------------------------------
+# # CALCULS TRANSITOIRES DIRECTS
+# #-----------------------------------------------------------------------
+# 
+# TRAN_LB=DYNA_VIBRA(TYPE_CALCUL='TRAN',
+#                      BASE_CALCUL='PHYS',
+#                      MATR_MASS=MASS_B,
+#                      MATR_RIGI=RIGI_B,
+#                      MATR_AMOR = AMOR_B,
+#                      SCHEMA_TEMPS=_F(SCHEMA='NEWMARK',),
+#                      INCREMENT=_F( LIST_INST = L_INST),
+#                      EXCIT=_F(  VECT_ASSE = MONO_XB,  FONC_MULT = ACCE)
+#                             )
+#        
+# table = MACR_SPECTRE(MAILLAGE = MAILLAGE,
+#                       PLANCHER = _F( NOM='N02',
+#                                      GROUP_NO='N02'),
+#                       CALCUL = 'RELATIF',
+#                       NOM_CHAM ='ACCE',
+#                       AMOR_SPEC = 0.05,
+#                       LIST_FREQ = L_FREQ,
+#                       NORME = 1.,
+#                       LIST_INST = L_INST,
+#                       RESU=_F(
+#                              RESULTAT = TRAN_LB,
+#                              ACCE_X = ACCE0,
+#                              ACCE_Y = ACCE0,
+#                              ACCE_Z = ACCE,
+#                       ),
+#                       IMPRESSION=_F(FORMAT = 'TABLEAU',
+#                                     UNITE = 29)
+#  )                  
+FIN()
