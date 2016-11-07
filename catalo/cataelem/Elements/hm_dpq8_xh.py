@@ -203,6 +203,7 @@ class HM_DPQ8_XH(Element):
 
         OP.CHAR_MECA_PESA_R(te=588,
                             para_in=(
+                            (OP.CHAR_MECA_PESA_R.PBASLOR, LC.N6NEUT_R),
                             (OP.CHAR_MECA_PESA_R.PCNSETO, LC.E36NEUI), (
                             SP.PGEOMER, NGEOMER),
                             (OP.CHAR_MECA_PESA_R.PHEAVTO, E6NEUTI), (

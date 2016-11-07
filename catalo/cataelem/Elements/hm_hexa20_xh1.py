@@ -257,6 +257,7 @@ class HM_HEXA20_XH1(Element):
 
         OP.CHAR_MECA_PESA_R(te=588,
                             para_in=(
+                            (OP.CHAR_MECA_PESA_R.PBASLOR, LC.N9NEUT_R),
                             (OP.CHAR_MECA_PESA_R.PCNSETO, E1280NEI), (
                             OP.CHAR_MECA_PESA_R.PFISNO, LC.FISNO_I),
                             (SP.PGEOMER, NGEOMER), (

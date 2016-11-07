@@ -128,7 +128,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
            do i = 1, nbf
                 lsnabs = 0.d0
                 do j = 1, 4
-                  if (f(i,j).ne.0.d0) lsnabs = lsnabs+abs(zr(jlsn-1+(f(i,j)-1)*nfiss+ifiss))
+                  if (f(i,j).ne.0) lsnabs = lsnabs+abs(zr(jlsn-1+(f(i,j)-1)*nfiss+ifiss))
                 end do
                 if (lsnabs.le.cridist*lonref) arete = .true. 
            end do

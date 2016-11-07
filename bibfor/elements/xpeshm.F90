@@ -5,7 +5,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                   yaenrm, nfiss, nfh, jfisno)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,8 +55,8 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
     integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp
     integer :: heavt(*), lonch(10), cnset(*)
     integer :: heavn(nnop,5), ig, ncompn, hea_se
-    real(kind=8) :: xg(ndim), xe(ndim), coorse(81), dbid(nnop, ndim), he(nfiss)
-    real(kind=8) :: ff(nnop), rbid1(4), rbid2(4), rbid3(4), poids, rho, rx
+    real(kind=8) :: xg(ndim), xe(ndim), coorse(30), dbid(nnop, ndim), he(nfiss)
+    real(kind=8) :: ff(nnop), poids, rho, rx
     character(len=8) :: elrefp
 !
     call elref1(elrefp)
@@ -97,6 +97,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
     do ise = 1, nse
 !
 !     BOUCLE SUR LES 4/3 SOMMETS DU SOUS-TETRA/TRIA
+        call vecini(30, 0.d0, coorse)
         do in = 1, nno
             ino=cnset(nno*(ise-1)+in)
             do j = 1, ndim
@@ -151,10 +152,10 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !     CALCUL DU JACOBIEN DE LA TRANSFORMATION SS-ELT -> SS-ELT REF
             if (ndim .eq. 2) then
                 call dfdm2d(nno, ipi, ipoids, idfde, coorse,&
-                            poids, rbid1, rbid2)
+                            poids)
             else if (ndim .eq. 3) then
                 call dfdm3d(nno, ipi, ipoids, idfde, coorse,&
-                            poids, rbid1, rbid2, rbid3)
+                            poids)
             endif
 !
             poids = poids*rho*zr(ipesa)
@@ -206,13 +207,13 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     if (yaenrm .eq. 1) then
                       do ifh = 1, nfh
                         if (ino.le.nnops) then
-                           zr(ivectu+ienr+(ndim+1)*ifh)=zr(ivectu+ienr+(ndim+1)*ifh)&
+                           zr(ivectu-1+ienr+(ndim+1)*ifh)=zr(ivectu-1+ienr+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+1)*ff(ino)
 !
-                           zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
+                           zr(ivectu-1+ienr+1+(ndim+1)*ifh)=zr(ivectu-1+ienr+1+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
                            if (ndim .eq. 3) then
-                              zr(ivectu+ienr+2+(ndim+1)*ifh)=zr(ivectu+ienr+2+(ndim+1)*ifh)+&
+                              zr(ivectu-1+ienr+2+(ndim+1)*ifh)=zr(ivectu-1+ienr+2+(ndim+1)*ifh)+&
                               xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*&
                               zr(ipesa+3)*ff(ino)
                            endif

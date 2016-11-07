@@ -13,7 +13,7 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
     real(kind=8) :: tx(3, 7), lsn(*), txlsn(28)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -116,7 +116,7 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 !.....................................................................
 !     CALCUL DE LA LSN DU MILIEU
 !
-    do 10 j = 1, nnc
+    do j = 1, nnc
         do 11 i = 1, ndim
             xe(i)=tx(i,j)
 11      continue
@@ -129,7 +129,7 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 12         continue
            txlsn((j-1)*nfiss+ifiss)=xlsn
         end do
-10  end do
+    end do
 !
 !.....................................................................
 !      CALCUL DES COORDONNES DANS L ELEMENT REEL

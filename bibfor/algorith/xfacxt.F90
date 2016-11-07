@@ -796,7 +796,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
                            call xdecfa(elp, nno, igeom, jlsn, jlst, npi, npis,&
                                        pinter, pinref, ainter, cooree, cooref, rainter,&
                                        noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                                       nnose, jgrlsn, mipos)
+                                       jgrlsn, mipos)
                            call xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
                         endif
                      endif

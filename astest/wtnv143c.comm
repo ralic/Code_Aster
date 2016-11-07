@@ -154,6 +154,10 @@ FLUH=AFFE_CHAR_MECA(MODELE=MODELEK,
                     FLUX_THM_REP=_F(TOUT='OUI',FLUN_HYDR1=0.,),
                    );
 
+PESA=AFFE_CHAR_MECA(MODELE=MODELEK,
+                    PESANTEUR=_F(GRAVITE=9.81,DIRECTION=(0., 0., -1.))
+                   );
+
 #----------------------------------------------
 #                   RESOLUTION
 #----------------------------------------------
@@ -173,6 +177,7 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CHAM_MATER  = CHAMPMAT,
                     EXCIT       = (_F(CHARGE = CH   ),
                                    _F(CHARGE = HYDR ),
+                                   _F(CHARGE = PESA ),
                                    _F(CHARGE = HYDR2 ), 
                                    _F(CHARGE = CH1,  FONC_MULT = MULT ),
                                    _F(CHARGE = FLUH ),),
@@ -274,8 +279,8 @@ DEP1M = CALC_TABLE(TABLE = DEP1,
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.0E-6,
-           VALE_CALC=-0.00431034482759,
-           VALE_REFE=-4.310344828E-03,
+           VALE_CALC=-0.00432355872845,
+           VALE_REFE=-4.323558729E-03,
            NOM_PARA='DZ',
            TYPE_TEST='MIN',
            TABLE=DEP1P,)
@@ -283,8 +288,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.0E-6,
-           VALE_CALC=-0.00431034482759,
-           VALE_REFE=-4.310344828E-03,
+           VALE_CALC=-0.00432355872845,
+           VALE_REFE=-4.323558729E-03,
            NOM_PARA='DZ',
            TYPE_TEST='MAX',
            TABLE=DEP1P,)
@@ -292,8 +297,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.0E-6,
-           VALE_CALC=0.00431034482759,
-           VALE_REFE=4.310344828E-03,
+           VALE_CALC=0.00429713092672,
+           VALE_REFE=4.297130927E-03,
            NOM_PARA='DZ',
            TYPE_TEST='MIN',
            TABLE=DEP1M,)
@@ -301,8 +306,8 @@ TEST_TABLE(CRITERE='RELATIF',
 TEST_TABLE(CRITERE='RELATIF',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.0E-6,
-           VALE_CALC=0.00431034482759,
-           VALE_REFE=4.310344828E-03,
+           VALE_CALC=0.00429713092672,
+           VALE_REFE=4.297130927E-03,
            NOM_PARA='DZ',
            TYPE_TEST='MAX',
            TABLE=DEP1M,)

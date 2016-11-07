@@ -246,6 +246,7 @@ class HM_DPTR6_XH1(Element):
 
         OP.CHAR_MECA_PESA_R(te=588,
                             para_in=(
+                            (OP.CHAR_MECA_PESA_R.PBASLOR, LC.N6NEUT_R),
                             (OP.CHAR_MECA_PESA_R.PCNSETO, LC.E144NEUI), (
                             OP.CHAR_MECA_PESA_R.PFISNO, LC.FISNO_I),
                             (SP.PGEOMER, NGEOMER), (

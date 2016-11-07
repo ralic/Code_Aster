@@ -1,7 +1,7 @@
 subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
                   pinter, pinref, ainter, cooree, cooref, rainter,&
                   noeud, npts, nintar, lst ,lonref, ndim, zxain,&
-                  nnose, jgrlsn, mipos)
+                  jgrlsn, mipos)
     implicit none
 !
 #include "asterf_types.h"
@@ -21,7 +21,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 #include "blas/ddot.h"
 !
     integer :: npi, noeud(9), npis
-    integer :: igeom, jlsn, jlst, zxain, nnose
+    integer :: igeom, jlsn, jlst, zxain
     integer :: nintar, npts, ndim, nno, jgrlsn
     real(kind=8) :: pinter(*), ainter(*), cooree(6,ndim), cooref(6,ndim)
     real(kind=8) :: rainter(3,4), lst(6), lonref, pinref(43*ndim)
@@ -31,7 +31,7 @@ subroutine xdecfa(elp, nno, igeom, jlsn, jlst, npi,npis,&
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
