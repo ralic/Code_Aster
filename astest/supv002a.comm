@@ -102,7 +102,7 @@ execfile('fort.33', globals())
 # TEST_TABLE are included in the "macro-command"
 SUPV002(ERREUR=previous_errors,
         # print all unknown words returns by aspell
-        INFO=2,
+        INFO=1,
         )
 
 FIN()
