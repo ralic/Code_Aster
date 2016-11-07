@@ -14,10 +14,12 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 #include "asterfort/iselli.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
+#include "asterfort/dmatmc.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/indent.h"
 #include "asterfort/matini.h"
 #include "asterfort/nmcpel.h"
+#include "asterfort/ortrep.h"
 #include "asterfort/reeref.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecini.h"
@@ -95,7 +97,6 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 ! OUT IVECTU  : VECTEUR FORCES NODALES (RAPH_MECA ET FULL_MECA)
 !......................................................................
 !
-    character(len=16) :: compo2(4)
     integer :: kpg, i, ig, n, nn, m, mn, j, j1, kl, l, kkd, ipg
     integer :: ddld, ddls, nno, nnos, npgbis, cpt, ndimb, dec(nnop)
     integer :: idfde, ipoids, ivf, jcoopg, jdfd2, jgano, hea_se
@@ -108,6 +109,8 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
     real(kind=8) :: def(6, ndim*(1+nfh+ndim), nnop)
     real(kind=8) :: r
     real(kind=8) :: fk(27,3,3), dkdgl(27,3,3,3), ka, mu
+    integer :: nbsig
+    real(kind=8) :: bary(3), repere(7), d(36), instan
     aster_logical :: grdepl, axi, cplan
 !
     integer :: indi(6), indj(6)
@@ -158,6 +161,22 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
 ! CALCUL DE L IDENTIFIANT DU SS ELEMENT
     hea_se=xcalc_code(nfiss, he_real=[he])
+!
+!   calcul du repère d'othotropie, pour calculer la matrice de Hooke
+!   dans le cas de l'option RIGI_MECA
+    bary = 0.d0
+    repere = 0.d0
+    if (option.eq.'RIGI_MECA') then
+! ---- RECUPERATION  DES DONNEEES RELATIVES AU REPERE D'ORTHOTROPIE :
+!     COORDONNEES DU BARYCENTRE ( POUR LE REPRE CYLINDRIQUE )
+!
+       do n = 1, nnop
+           do i = 1, ndim
+               bary(i) = bary(i)+zr(igeom-1+ndim*(n-1)+i)/nnop
+           end do
+       end do
+       call ortrep(ndim, bary, repere)
+    endif
 !
 !-----------------------------------------------------------------------
 !     BOUCLE SUR LES POINTS DE GAUSS
@@ -344,18 +363,30 @@ subroutine xxnmel(poum, elrefp, elrese, ndim, coorse,&
 !
         if (option .eq. 'RIGI_MECA') then
 !
-! -       LOI DE COMPORTEMENT : ON VA OBTENIR ICI LA MATRICE DE HOOKE
-!         POUR LE CAS ELASTIQUE ISOTROPE - DEFO/CONTR PLANES OU 3D
+!           Calcul du tenseur de Hooke [D]
+!              {sxx, syy, szz, sxy, sxz, syz}^T = [Ð]{exx, eyy, ezz, 2*exy, 2*exz, 2*eyz}^T
             ipg= idecpg + kpg
-            compo2(1)='ELAS'
-            compo2(2)=' '
-            compo2(3)=' '
-            compo2(4)=' '
+            instan = 0.d0
+            nbsig = 2*ndim
 !
-            call nmcpel('XFEM', ipg, 1, poum, ndim,&
-                        typmod, angmas, imate, compo2, crit,&
-                        option, eps, sigma, vi(1, kpg), dsidep,&
-                        codret)
+            call dmatmc('XFEM', imate, instan, '+',&
+                        ipg, 1, repere, xg, nbsig, d)
+!
+!           Calcul du tenseur de comportement tangent [D']
+!              {sxx, syy, szz, sqrt(2)*sxy, sqrt(2)*sxz, sqrt(2)*syz}^T = 
+!                  [D']{exx, eyy, ezz, sqrt(2)*exy, sqrt(2)*exz, sqrt(2)*eyz}^T
+            do j=1, nbsig
+               do i=1, nbsig
+                  dsidep(i, j) = d((j-1)*nbsig + i)
+               enddo
+            enddo
+            do j=4, nbsig
+               do i=4, nbsig
+                  dsidep(i, j) = 2.d0*d((j-1)*nbsig + i)
+               enddo
+            enddo
+!
+!           Calcul de la matrice de rigidité : [K] = [B]^T[D'][B]
 !
             do n = 1, nnop
                 nn=dec(n)

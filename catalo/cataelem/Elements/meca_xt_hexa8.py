@@ -517,7 +517,9 @@ class MECA_XT_HEXA8(Element):
                      (OP.RIGI_MECA.PLONCHA, LC.E10NEUTI), (OP.RIGI_MECA.PLSN, LC.N1NEUT_R),
                      (OP.RIGI_MECA.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
                      (OP.RIGI_MECA.PPINTTO, E33NEUTR), (OP.RIGI_MECA.PPMILTO, LC.E198NEUT),
-                     (OP.RIGI_MECA.PSTANO, STANO_I), ),
+                     (OP.RIGI_MECA.PSTANO, STANO_I),
+                     (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
+                    ),
             para_out=((SP.PMATUUR, MMATUUR), ),
         ),
 

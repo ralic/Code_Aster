@@ -137,7 +137,7 @@ subroutine te0539(option, nomte)
         compor(2)=' '
         compor(3)=' '
         compor(4)=' '
-        call xnmel('-', nno, nfh, nfe, ddlc,&
+        call xnmel('+', nno, nfh, nfe, ddlc,&
                    ddlm, igeom, typmod, option, zi( imate),&
                    compor, lgpg, crit, jpintt, zi(jcnset),&
                    zi(jheavt), zi( jlonch), zr(jbaslo), ibid, zr(jlsn),&

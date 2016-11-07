@@ -529,13 +529,6 @@ class MECA_XHTC_HEXA8(Element):
                      ),
         ),
 
-        OP.RIGI_MECA(te=11,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
         OP.RIGI_MECA_TANG(te=539,
             para_in=((OP.RIGI_MECA_TANG.PBASLOR, LC.N9NEUT_R), (SP.PCAMASS, CCAMASS),
                      (SP.PCARCRI, CCARCRI), (OP.RIGI_MECA_TANG.PCNSETO, LC.E320NEUI),

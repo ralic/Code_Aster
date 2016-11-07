@@ -88,11 +88,30 @@ FISS=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1, NB_COUCHES=5,
 
 MODELEK=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS,INFO=2,);
 
+# Les paramètres matériaux sont définis comme des fonctions constantes
+# de la température pour tester la prise en compte des variables de
+# commande dans MECA_STATIQUE, en X-FEM
+E_N=DEFI_FONCTION(NOM_PARA='TEMP',
+                  NOM_RESU='E',
+                  PROL_DROITE='CONSTANT',
+                  PROL_GAUCHE='CONSTANT',
+                  VALE=(20.0, 2.05E11,
+                        220.0,2.05E11),
+                 );
+NU_N=DEFI_FONCTION(NOM_PARA='TEMP',
+                   NOM_RESU='NU',
+                   PROL_DROITE='CONSTANT',
+                   PROL_GAUCHE='CONSTANT',
+                   VALE=(20.0, 0.3,
+                         220.0,0.3),
+                  );
+ALPHA_N = DEFI_CONSTANTE(VALE=1.282e-5)
 
-ACIER=DEFI_MATERIAU(ELAS=_F(E=205000000000.0,
-                            NU=0.3,
-                            RHO=7800.0,
-                            ALPHA=1.282E-05,),);
+ACIER=DEFI_MATERIAU(ELAS_FO=_F(E=E_N,
+                               NU=NU_N,
+                               ALPHA=ALPHA_N,
+                               TEMP_DEF_ALPHA=20.,
+                              ),);
 
 CHAMMA=AFFE_MATERIAU(MAILLAGE=MAILLAG1,
                        MODELE=MODELEK,

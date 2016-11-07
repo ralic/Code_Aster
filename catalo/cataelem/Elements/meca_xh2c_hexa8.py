@@ -505,17 +505,6 @@ class MECA_XH2C_HEXA8(Element):
                      ),
         ),
 
-        OP.RIGI_MECA(te=539,
-            para_in=((OP.RIGI_MECA.PBASLOR, LC.N9NEUT_R), (OP.RIGI_MECA.PCNSETO, LC.E512NEUI),
-                     (OP.RIGI_MECA.PFISNO, LC.FISNO_I), (SP.PGEOMER, NGEOMER),
-                     (OP.RIGI_MECA.PHEAVTO, LC.E128NEUI), (OP.RIGI_MECA.PHEA_NO, LC.N5NEUTI),
-                     (OP.RIGI_MECA.PLONCHA, LC.E10NEUTI), (OP.RIGI_MECA.PLSN, LC.N1NEUT_R),
-                     (OP.RIGI_MECA.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (OP.RIGI_MECA.PPINTTO, LC.E132NEUR), (OP.RIGI_MECA.PSTANO, STANO_I),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
         OP.RIGI_MECA_TANG(te=539,
             para_in=((OP.RIGI_MECA_TANG.PBASLOR, LC.N9NEUT_R), (SP.PCAMASS, CCAMASS),
                      (SP.PCARCRI, CCARCRI), (OP.RIGI_MECA_TANG.PCNSETO, LC.E512NEUI),

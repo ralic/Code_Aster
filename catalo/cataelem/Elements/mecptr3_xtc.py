@@ -487,13 +487,6 @@ class MECPTR3_XTC(Element):
                      ),
         ),
 
-        OP.RIGI_MECA(te=81,
-            para_in=((SP.PCAMASS, CCAMASS), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.RIGI_MECA.PVARCPR, LC.ZVARCPG),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
         OP.RIGI_MECA_TANG(te=539,
             para_in=((OP.RIGI_MECA_TANG.PBASLOR, LC.N6NEUT_R), (SP.PCAMASS, CCAMASS),
                      (SP.PCARCRI, CCARCRI), (OP.RIGI_MECA_TANG.PCNSETO, LC.E36NEUI),
