@@ -16,7 +16,7 @@
 #
 #
 # ======================================================================
-# person_in_charge: j-pierre.lefebvre at edf.fr
+# person_in_charge: mathieu.courtois at edf.fr
 TEST_RESU=PROC(nom="TEST_RESU",op=23,
             UIinfo={"groupes":("Résultats et champs","Utilitaires",)},
          fr=tr("Extraction d'une valeur d'une structure de donnée et comparaison à une valeur de référence"),
@@ -133,7 +133,7 @@ TEST_RESU=PROC(nom="TEST_RESU",op=23,
                                  into=('NB_MAILLE','NB_NOEUD','NB_GROUP_MA','NB_GROUP_NO','NB_MA_GROUP_MA','NB_NO_GROUP_NO',)),
            NOM_GROUP_MA    =SIMP(statut='f',typ=grma,max=1),
            NOM_GROUP_NO    =SIMP(statut='f',typ=grno,max=1),
-                            
+
            **C_TEST_REFERENCE('MAILLAGE', max=1)
          ),
 

@@ -236,16 +236,16 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                 b_thermique     =BLOC( condition = "PHENOMENE=='THERMIQUE'",
                                         fr=tr("modélisations thermiques"),
                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
-                                  "3D",              # person_in_charge: jessica.haelewyn at edf.fr
-                                  "3D_DIAG",         # person_in_charge: jessica.haelewyn at edf.fr
-                                  "AXIS",            # person_in_charge: jessica.haelewyn at edf.fr
-                                  "AXIS_DIAG",       # person_in_charge: jessica.haelewyn at edf.fr
-                                  "AXIS_FOURIER",    # person_in_charge: jessica.haelewyn at edf.fr
-                                  "COQUE",           # person_in_charge: jessica.haelewyn at edf.fr
-                                  "COQUE_AXIS",      # person_in_charge: jessica.haelewyn at edf.fr
-                                  "COQUE_PLAN",      # person_in_charge: jessica.haelewyn at edf.fr
-                                  "PLAN",            # person_in_charge: jessica.haelewyn at edf.fr
-                                  "PLAN_DIAG",       # person_in_charge: jessica.haelewyn at edf.fr
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_DIAG",         # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS",            # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_DIAG",       # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_FOURIER",    # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE",           # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE_AXIS",      # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE_PLAN",      # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN",            # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN_DIAG",       # person_in_charge: mickael.abbas at edf.fr
                                                                       ),),),
 
                 b_acoustique    =BLOC( condition = "PHENOMENE=='ACOUSTIQUE'",

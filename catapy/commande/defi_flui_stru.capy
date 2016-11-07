@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: andre.adobes at edf.fr
+# person_in_charge: hassan.berro at edf.fr
 DEFI_FLUI_STRU=OPER(nom="DEFI_FLUI_STRU",op= 143,sd_prod=type_flui_stru,
                     reentrant='n',fr=tr("Définit les caractéristiques nécessaires à l'étude dynamique d'une structure sous écoulement"),
             UIinfo={"groupes":("Modélisation",)},

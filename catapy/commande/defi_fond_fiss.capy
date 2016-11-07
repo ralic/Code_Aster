@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: sam.cuvilliez at edf.fr
 
 DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                     op=55,
@@ -27,7 +27,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
 
     # definition du fond de fissure
     FOND_FISS = FACT(statut='o',max=2,
-    
+
                      TYPE_FOND = SIMP(statut='f',typ='TXM',into=("OUVERT","FERME","INF","SUP"),defaut="OUVERT"),
 
                      NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
@@ -42,7 +42,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                                    GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
                                    regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
-                                   # si ordo 
+                                   # si ordo
                                    b_ordo = BLOC(condition = "NOEUD_ORIG != None or GROUP_NO_ORIG != None",
                                                  NOEUD_EXTR    = SIMP(statut='f',typ=no,  max=1),
                                                  GROUP_NO_EXTR = SIMP(statut='f',typ=grno,max=1),
@@ -55,7 +55,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                                         GROUP_NO_ORIG =SIMP(statut='f',typ=grno,max=1),
                                         regles=(EXCLUS('NOEUD_ORIG','GROUP_NO_ORIG'),),
 
-                                        # si ordo 
+                                        # si ordo
                                         b_ordo_ferme = BLOC(condition = "NOEUD_ORIG != None or GROUP_NO_ORIG != None",
                                                             MAILLE_ORIG   = SIMP(statut='f',typ=ma,  max=1),
                                                             GROUP_MA_ORIG = SIMP(statut='f',typ=grma,  max=1),
@@ -85,7 +85,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                     GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                     MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                     ),
-    
+
     b_levre_inf  = BLOC(condition = "LEVRE_SUP != None and SYME == 'NON'",
 
                         LEVRE_INF =FACT(statut='o',max=1,
@@ -93,7 +93,7 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                                         GROUP_MA =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
                                         MAILLE   =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                                         ),
-                        ),  
+                        ),
 
     # dans le cas decolle
     b_decolle    = BLOC(condition = "CONFIG_INIT == 'DECOLLEE'",

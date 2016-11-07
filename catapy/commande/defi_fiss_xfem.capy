@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: samuel.geniaut at edf.fr
+# person_in_charge: sam.cuvilliez at edf.fr
 
 DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n',
             UIinfo={"groupes":("Modélisation",)},
@@ -80,7 +80,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            DEMI_LONGUEUR  =SIMP(statut='o',typ='R',val_min=0.),
            RAYON_CONGE    =SIMP(statut='o',typ='R',val_min=0.),
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
-           VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),  
+           VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),  ),
       b_cylindre          =BLOC(condition = "FORM_FISS == 'CYLINDRE' ",fr=tr("Paramètres de la fissure cylindrique"),
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
@@ -110,7 +110,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
     GROUP_MA_ENRI         =SIMP(statut='f',typ=grma,max=01),
 
 # ------------------------------------------------------------------------------------------------------------------------
-#                       types d'enrichissement 
+#                       types d'enrichissement
 # ------------------------------------------------------------------------------------------------------------------------
 
     b_enri_inte           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",
@@ -132,7 +132,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            NB_COUCHES     =SIMP(statut='f',typ='I',defaut=2,val_min=1),
 
                                ),
-                             ),                        
+                             ),
                           ),
 
 # ------------------------------------------------------------------------------------------------------------------------
