@@ -1,3 +1,4 @@
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -100,11 +101,11 @@ CHME1A=AFFE_CHAR_MECA(MODELE=MO1,
 
 
 
-                    
+
 LINST=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=_F(JUSQU_A = 1.0, NOMBRE = 1));
-                      
-                      
+
+
 RESU1A=STAT_NON_LINE(MODELE=MO1,
                 CHAM_MATER=CHMAT1,
                 CARA_ELEM=EP1,
@@ -142,13 +143,13 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A3', RESULTAT=RESU1A, NOM_CHAM='DEPL',
 #------------------------------------------------------------
 nxx=fx
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='NXX',
-                  REFERENCE='ANALYTIQUE', VALE_REFE=nxx, 
+                  REFERENCE='ANALYTIQUE', VALE_REFE=nxx,
                   VALE_CALC=4468.74999996 ,PRECISION=0.15,))
 
 mxx=-fz*L - e*fx
 mxx=-fz*L
 TEST_RESU(RESU=_F(NUME_ORDRE=1, GROUP_NO='A1', RESULTAT=RESU1A, NOM_CHAM='EFGE_NOEU', NOM_CMP='MXX',
-                  REFERENCE='ANALYTIQUE', VALE_REFE=mxx, 
+                  REFERENCE='ANALYTIQUE', VALE_REFE=mxx,
                   VALE_CALC=9999.99999843,))
 
 

@@ -1,4 +1,3 @@
-# person_in_charge: mickael.abbas at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -113,7 +112,7 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=1.0,
                                     NOMBRE=1));
 
-RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS', 
+RESU=STAT_NON_LINE(SOLVEUR=_F(METHODE='MUMPS',
                               # Commente en attente de correction de MATR_DISTRIBUEE avec les charges cinematiques
                               #MATR_DISTRIBUEE='OUI',
                              ),

@@ -1,4 +1,4 @@
-# person_in_charge: patrick.massin at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # DATE   : 11/09/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD)
 # ======================================================================
@@ -376,7 +376,7 @@ IMPR_TABLE(TABLE=VOLUM2)
 #=================================================
 #
 # Test VOLUME
-# 
+#
 #=================================================
 
 VOLUM3=POST_ELEM( RESULTAT=RESUL,
@@ -397,7 +397,7 @@ TEST_TABLE(TABLE=VOLUM3,
            FILTRE=_F(NOM_PARA='NUME_ORDRE',
                       VALE_I=22,),
                    ),
- 
+
 FIN();
 
 #

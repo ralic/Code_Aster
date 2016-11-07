@@ -1,26 +1,26 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: daniele.colombo at ifpen.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),)
 
 # *********************************************
-# MAILLAGE 
+# MAILLAGE
 # *********************************************
 
 poutre=LIRE_MAILLAGE(FORMAT='MED',
@@ -151,8 +151,8 @@ for i in range(0,NPS) :
                  FISSURE=_F(FISS_ACTUELLE=fiss[i],
                             FISS_PROPAGEE=fiss[i+1],
                             TABLE=SIF[i],),
-                 METHODE_PROPA='SIMPLEXE',               
-                 DA_MAX=2,             
+                 METHODE_PROPA='SIMPLEXE',
+                 DA_MAX=2,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
@@ -161,7 +161,7 @@ for i in range(0,NPS) :
                               COEF_MULT_MAXI=1.,),
                  RAYON=RS,
                  INFO=0,);
-                
+
 #     LEVEL SET AU PAS DE PROPAGATION COURANT
       LSN[i+1]=CREA_CHAMP(TYPE_CHAM='NOEU_NEUT_R',
                           OPERATION='EXTR',
@@ -171,7 +171,7 @@ for i in range(0,NPS) :
                           OPERATION='EXTR',
                           FISSURE=fiss[i+1],
                           NOM_CHAM='LTNO',);
-                          
+
       IMPR_RESU(FORMAT='MED',
                 UNITE=30,
                 RESU=_F(CHAM_GD=LSN[i+1],),);
@@ -275,7 +275,7 @@ for i in range(0,NPS-1) :
    MOVI[i]=AFFE_MODELE(MAILLAGE=MAXF[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='D_PLAN',),) 
+                                 MODELISATION='D_PLAN',),)
 
    DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVI[i],

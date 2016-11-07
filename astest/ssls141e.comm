@@ -1,21 +1,21 @@
-# person_in_charge: xavier.desroches at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# PLAQUE RECTANGULAIRE 
+# PLAQUE RECTANGULAIRE
 # CALCUL : 1 MONOCOUCHE
 # SOLUTION ANALYTIQUE DE PLAQUE AVEC CT
 # MODELISATION DST
@@ -58,7 +58,7 @@ u_cisa = frep*b*L/(G*A*k)
 u_l = u_flex + u_cisa
 T=frep
 M=-T*L
-# nombre de couches 
+# nombre de couches
 ncou = 1
 # sous-point pour la fibre neutre
 nssp_neutre = 2*ncou-(int(ncou)/2)
@@ -67,17 +67,17 @@ nssp_sup = ncou*3
 #
 # calculs des résultats analytiques
 #
-# pour une maille pres du bord libre 
-z3 = h/2.          
-x1 = 9.91667 # abscisse point de gauss    
+# pour une maille pres du bord libre
+z3 = h/2.
+x1 = 9.91667 # abscisse point de gauss
 sixx1 = -z3*T*b/I*(L-x1)
 sixy1 = T*b/A*3/2
 # pour une maille pres du bord encastre
-x2 = 4.16667E-02 # abscisse point de gauss 
-# print x2                    
+x2 = 4.16667E-02 # abscisse point de gauss
+# print x2
 sixx2 = -z3*T*b/I*(L-x2)
-sixy2 = T*b/A*3/2 
-#    
+sixy2 = T*b/A*3/2
+#
 epxx2 = -z3*T*b/(E*I)*(L-x2)
 epxy2 = 0.5*T*b/(k*G*A)
 
@@ -188,16 +188,16 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
                      VALE_REFE=u_l,
                      NOM_CMP='DZ',
                      REFERENCE='ANALYTIQUE',),);
-        
+
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='DEPL',NUME_ORDRE=1,
                      GROUP_NO='A2',PRECISION=0.13,
                      VALE_CALC=-4.425996637265E-05,
                      VALE_REFE=u_l,
                      NOM_CMP='DZ',
                      REFERENCE='ANALYTIQUE',),);
-                     
-    
-# TEST SUR LES MOMENTS                     
+
+
+# TEST SUR LES MOMENTS
 
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.02,
                      GROUP_NO='A1',
@@ -205,13 +205,13 @@ TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.
                      VALE_REFE=10000.0,
                      NOM_CMP='MXX',
                      REFERENCE='ANALYTIQUE',),);
-                     
+
 TEST_RESU(RESU=_F(RESULTAT=RESU2A,NOM_CHAM='EFGE_NOEU',NUME_ORDRE=1,PRECISION=0.33,
                      GROUP_NO='A4',
                      VALE_CALC=6756.0848037035 ,
                      VALE_REFE=10000.0,
                      NOM_CMP='MXX',
-                     REFERENCE='ANALYTIQUE',),);  
+                     REFERENCE='ANALYTIQUE',),);
 
 #IMPR_RESU(FORMAT='MED',UNITE=21, RESU=_F(MAILLAGE=MA1))
 #################################################################################################
@@ -222,9 +222,9 @@ tb1  = CREA_TABLE (
                                 NOM_CHAM='SIEF_ELGA',
                                 MAILLE='M801',
                                 ),
-                  ); 
-IMPR_TABLE ( TABLE = tb1)        
-      
+                  );
+IMPR_TABLE ( TABLE = tb1)
+
 
 # chcek sur une maille près du support
 
@@ -235,7 +235,7 @@ tb3  = CREA_TABLE (
                                 NOM_CHAM='SIEF_ELGA',
                                 MAILLE='M880',
                                 ),
-                 ); 
-IMPR_TABLE ( TABLE = tb3)    
+                 );
+IMPR_TABLE ( TABLE = tb3)
 
 FIN();

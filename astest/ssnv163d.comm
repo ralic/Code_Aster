@@ -1,4 +1,4 @@
-# person_in_charge: alexandre.foucault at edf.fr
+# person_in_charge: marina.bottoni at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -89,7 +89,7 @@ BETON=DEFI_MATERIAU( ELAS_FO =_F( E = E,
                                         ETA_RD = 1.0E+10,
                                         ETA_ID = 1.0e+11,
                                         QSR_K  = 0.,
-                                        TEMP_0_C  = 20.,  
+                                        TEMP_0_C  = 20.,
                                       ),
                   )
 

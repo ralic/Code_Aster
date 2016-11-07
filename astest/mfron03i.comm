@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@
 # ======================================================================
 # Comparaison entre la loi MonoDDCC_Irra (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_DD_CC_IRRA') (Code_Aster) sur un point materiel
-# Validation basée sur rho_5 et rho_8 en testant le maximum de la différence 
+# Validation basée sur rho_5 et rho_8 en testant le maximum de la différence
 # entre Code_Aster et MFront
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
@@ -124,7 +125,7 @@ ACIERDDA=DEFI_MATERIAU(
                                 G_LT = Mu,
                                 G_LN = Mu,
                                 G_TN = Mu,),
-                                
+
                       MONO_DD_CC_IRRA=_F(
                                     B       =b,
                                     GH       =GH,
@@ -534,7 +535,7 @@ for i in range(1,13):
                           PARA_X='INST',
                           PARA_Y='V'+str(6+i),
                           INTERPOL='LIN');
-                        
+
     rhoas[i]=RECU_FONCTION(TABLE=IMPLDDA,
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),

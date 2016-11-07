@@ -1,3 +1,4 @@
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -22,7 +23,6 @@
 #  D'INSTABILITE (FLAMBEMENT D'EULER)
 #- MODELISATION AVEC DES ELEMENTS 'POU_D_T_GD' (SEG2)
 #---------------------------------------------------------------------
-# person_in_charge: patrick.massin at edf.fr
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU

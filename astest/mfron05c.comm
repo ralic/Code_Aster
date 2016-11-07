@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import os
@@ -25,8 +25,8 @@ import os
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 
-MATF=DEFI_MATERIAU( 
-                      ELAS=_F(E=20000., NU=0.3),                      
+MATF=DEFI_MATERIAU(
+                      ELAS=_F(E=20000., NU=0.3),
                       GTN=_F( YoungModulus = 200000. ,
                                PoissonRatio = 0.3 ,
                                ),
@@ -37,21 +37,21 @@ MATF=DEFI_MATERIAU(
 LINST=DEFI_LIST_REEL(              DEBUT=0.,INTERVALLE=(
                               _F( JUSQU_A = 0.3, NOMBRE = 100),
                               ))
-                              
+
 E1=DEFI_FONCTION( NOM_PARA='INST',
                             PROL_DROITE='LINEAIRE',
                            PROL_GAUCHE='LINEAIRE',
                           VALE=( 0.0,  0.0,
-                                 1., 0.02,    
+                                 1., 0.02,
                                  ))
-                                 
+
 E2=DEFI_FONCTION( NOM_PARA='INST',
                             PROL_DROITE='LINEAIRE',
                            PROL_GAUCHE='LINEAIRE',
                           VALE=( 0.0,  0.0,
-                                 1., 0.1,    
+                                 1., 0.1,
                                  ))
-                                 
+
 zero=DEFI_CONSTANTE(VALE=0.)
 
 SOLMF=SIMU_POINT_MAT( MATER=MATF, INFO=1,
@@ -70,21 +70,21 @@ TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=0.3),
                    VALE_CALC=910.12,
                    VALE_REFE=910.12,
                    REFERENCE='SOURCE_EXTERNE',
-) 
+)
 TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=0.3),
                    TABLE=SOLMF,
                    NOM_PARA='SIYY',
                    VALE_CALC=1069.37121518,
                    VALE_REFE=1069.37,
                    REFERENCE='SOURCE_EXTERNE',
-) 
+)
 TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=0.3),
                    TABLE=SOLMF,
                    NOM_PARA='SIZZ',
                    VALE_CALC=870.308,
                    VALE_REFE=870.308,
                    REFERENCE='SOURCE_EXTERNE',
-) 
+)
 
 
 FIN()

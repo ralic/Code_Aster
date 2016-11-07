@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +70,7 @@ ACIERDD=DEFI_MATERIAU(
                                 G_LT = MU,
                                 G_LN = MU,
                                 G_TN = MU,),
-                                
+
                       MONO_DD_CC_IRRA=_F(
                                     B       =b,
                                     GH       =GH,

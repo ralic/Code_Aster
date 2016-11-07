@@ -1,20 +1,20 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: daniele.colombo at ifpen.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),)
 
@@ -173,8 +173,8 @@ for i in range(nbcalc) :
                  FISSURE=_F(FISS_ACTUELLE=FISS[i],
                             FISS_PROPAGEE=FISS[i+1],
                             TABLE=SIF[i],),
-                 METHODE_PROPA='SIMPLEXE',            
-                 DA_MAX=0.3,               
+                 METHODE_PROPA='SIMPLEXE',
+                 DA_MAX=0.3,
                  LOI_PROPA=_F(LOI='PARIS',
                               C=1.,
                               M=1.,
@@ -193,7 +193,7 @@ for i in range(nbcalc) :
                           OPERATION='EXTR',
                           FISSURE=FISS[i+1],
                           NOM_CHAM='LTNO',);
-                            
+
 #----------------------------------------------
 #         POST TRAITEMENT
 #----------------------------------------------
@@ -210,7 +210,7 @@ i=nbcalc-1
 # ON PEUT DONC CALCULER LA VALEUR DES LEVEL SETS POUR CES NOEUDS:
 
 TABLSN= POST_RELEVE_T(ACTION=_F(INTITULE='Test LSN',
-                                NOEUD=('N1130','N1028','N926',),                                
+                                NOEUD=('N1130','N1028','N926',),
                                 CHAM_GD=LSN[i],
                                 TOUT_CMP='OUI',
                                 OPERATION='EXTRACTION',),);
@@ -244,7 +244,7 @@ TEST_TABLE(CRITERE='ABSOLU',
 TEST_TABLE(CRITERE='ABSOLU',
            REFERENCE='NON_DEFINI',
            PRECISION=0.33333333333333331,
-           VALE_CALC=0.20000000298, 
+           VALE_CALC=0.20000000298,
            VALE_REFE=0.0,
            NOM_PARA='X1',
            TYPE_TEST='MIN',

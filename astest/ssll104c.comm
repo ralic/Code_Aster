@@ -1,3 +1,4 @@
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -94,7 +95,7 @@ CELEM1=AFFE_CARA_ELEM(   MODELE=MO1,
                     CARA = ( 'R',),
                     VALE = (  1.,),
                  ),
-            
+
                      )
 
 
@@ -106,13 +107,13 @@ FF=DEFI_FONCTION(NOM_PARA='INST',
                      VALE=(0.0,    0.0,
                            2.,   2.),
                      )
-# VALIDATION DE AFFE_CHAR_MECA/PRE_EPSI POUR LES BARRES 
+# VALIDATION DE AFFE_CHAR_MECA/PRE_EPSI POUR LES BARRES
 
 CALC_POU=STAT_NON_LINE(MODELE=MO1,
                     CARA_ELEM=CELEM1,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL1,),
-                           _F(CHARGE = EPSPOU, FONC_MULT=FF 
+                           _F(CHARGE = EPSPOU, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -123,7 +124,7 @@ CALC_BA=STAT_NON_LINE(MODELE=MO1,
                     CARA_ELEM=CELEM1,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL1,),
-                           _F(CHARGE = EPSBA, FONC_MULT=FF 
+                           _F(CHARGE = EPSBA, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -152,7 +153,7 @@ TEST_RESU(RESU=(_F(NOEUD='N11',
                ),
           )
 
-# VALIDATION DE AFFE_CHAR_MECA_F/PRE_EPSI POUR LES BARRES 
+# VALIDATION DE AFFE_CHAR_MECA_F/PRE_EPSI POUR LES BARRES
 
 EPXX=FORMULE(NOM_PARA = ('X','Y','Z','INST'),
                VALE     = '1.E-5*(X+Y+Z)*INST',
@@ -198,7 +199,7 @@ CALC_BAR=STAT_NON_LINE(MODELE=MO1,
                     CARA_ELEM=CELEM1,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL1,),
-                           _F(CHARGE = EPSBA2R, FONC_MULT=FF 
+                           _F(CHARGE = EPSBA2R, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),

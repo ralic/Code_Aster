@@ -14,8 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean-michel.proix at edf.fr
-# ======================================================================
+# person_in_charge: felix.latourte at edf.fr
 # NON REGRESSION : CALCUL EN 3D_SI JUSQU'A t=1.5
 # pour le calcul complet (t=30, Epsmax=10%) il faut changer :
 # TFIN=30

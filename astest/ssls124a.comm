@@ -1,4 +1,4 @@
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -572,8 +572,8 @@ CHARG35=AFFE_CHAR_MECA(MODELE=MODMEC35,
 # DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+15)
 # L/h=5000 ==> POUR TESTER LE VERROUILLAGE EN CISAILLEMENT
 # ON UTILISE MUMPS ET ON DESACTIVE LA DETECTION DE SINGULARITE
-# On estime que ce cas d'utilisation avec SHB grand élancement n'est pas pertinent. 
-# Ce cas de figure ne sera donc plus testé. 
+# On estime que ce cas d'utilisation avec SHB grand élancement n'est pas pertinent.
+# Ce cas de figure ne sera donc plus testé.
 #RESU35=STAT_NON_LINE(MODELE=MODMEC35,
                      #CHAM_MATER=CHMAT35,
                      #EXCIT=_F(CHARGE=CHARG35,),

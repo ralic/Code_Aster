@@ -14,7 +14,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: sebastien.fayolle at edf.fr
 
 DEBUT(CODE=_F(
 NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI'))
@@ -33,7 +32,7 @@ MA=DEFI_GROUP(reuse =MA,
                                 NOM='SYY1',),),);
 
 MODE=AFFE_MODELE(MAILLAGE=MA,
-                 
+
                  AFFE=_F(TOUT='OUI',
                          PHENOMENE='MECANIQUE',
                          MODELISATION=('3D','3D_SI',),),);
@@ -54,8 +53,8 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                                  EPSP0=1.0,
                                  TROOM=298.0,
                                  TMELT=1083.,),);
-                                 
-                                 
+
+
 # pour ce test, il faut que l'elasticite soit incrementale
 ACIERE=DEFI_MATERIAU(ELAS=_F(E=117.E3,
                             NU=0.35,
@@ -176,7 +175,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    SOLVEUR=_F(),
- 
+
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
                                  NOM_CHAM   ='VARI_ELGA',
                                  TOUT       = 'OUI',
@@ -188,7 +187,7 @@ RESU=DYNA_NON_LINE(MODELE=MODE,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
- 
+
                   ARCHIVAGE=_F(LIST_INST=L_ARCH),
                    );
 RESU=DYNA_NON_LINE(reuse = RESU,
@@ -215,7 +214,7 @@ RESU=DYNA_NON_LINE(reuse = RESU,
                              MATRICE='TANGENTE',
                              REAC_ITER=1,),
                    SOLVEUR=_F(),
- 
+
                   SUIVI_DDL=(_F(NOM_CMP    ='V1',
                                  NOM_CHAM   ='VARI_ELGA',
                                  TOUT       = 'OUI',
@@ -227,8 +226,8 @@ RESU=DYNA_NON_LINE(reuse = RESU,
                                  EVAL_ELGA  ='MAX',
                                  EVAL_CHAM ='MAX',),
                                  ),
- 
- 
+
+
                    );
 
 VITE_A2=POST_RELEVE_T(ACTION=_F(INTITULE='VITE EN A2',

@@ -1,3 +1,4 @@
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -240,7 +241,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=0.02096051393883,
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.03228755226222 ,
                         VALE_REFE=0.03217489098398,
                         REFERENCE='AUTRE_ASTER',
-                        PRECISION=0.005,                        
+                        PRECISION=0.005,
                         VALE_PARA=2000,
                         NOM_PARA='INST',
                         FONCTION=endoexp,

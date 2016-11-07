@@ -1,3 +1,4 @@
+# person_in_charge: mickael.abbas at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,7 +16,6 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # IDENTIQUE A HSNV100G MAIS AVEC TEST DE AFFE_VARC DANS SIMU_POIN_MAT
-# person_in_charge: jean-michel.proix at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 

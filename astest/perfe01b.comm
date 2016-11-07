@@ -15,6 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: felix.latourte at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
@@ -282,7 +283,7 @@ for igr in range(nbgr):
 
 TIMP=DEFI_CONSTANTE(VALE=TEMP)
 
-                                  
+
 SIGEPS=SIMU_POINT_MAT(INFO=2,
                    COMPORTEMENT=_F(
                                 RELATION='POLYCRISTAL',
@@ -303,7 +304,7 @@ SIGEPS=SIMU_POINT_MAT(INFO=2,
 
                    INCREMENT=_F(LIST_INST=LISTPS),
                    EPSI_IMPOSE=_F(EPZZ=EPSZZ),
-                   
+
                    AFFE_VARC=_F(  NOM_VARC='TEMP',
                                      VALE_FONC=TIMP,
                                      VALE_REF=TEMP),

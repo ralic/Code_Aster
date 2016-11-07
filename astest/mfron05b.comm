@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
 import os
@@ -65,44 +65,44 @@ delta2=0.
 
 
 
-MATFRONT=DEFI_MATERIAU( 
-                      ELAS=_F(E=145000., NU=0.3,ALPHA=1e-5,),                      
+MATFRONT=DEFI_MATERIAU(
+                      ELAS=_F(E=145000., NU=0.3,ALPHA=1e-5,),
 
-                      ImplicitHayhurst=_F( 
-                               YoungModulus = 145000. , 
-                               PoissonRatio = 0.3 ,     
-                               K     = Kcoef,    
-                               epsi0 = ep0val,   
-                               sigma0= sig0val,  
+                      ImplicitHayhurst=_F(
+                               YoungModulus = 145000. ,
+                               PoissonRatio = 0.3 ,
+                               K     = Kcoef,
+                               epsi0 = ep0val,
+                               sigma0= sig0val,
                                h1    = h1,
                                h2    = h2,
                                H1star= H1star,
                                H2star= H2star,
-                               A0    = A0,       
+                               A0    = A0,
                                alphaD= alphaD,
                                delta1= delta1,
                                delta2= delta2,
                                sequid=0.,
                                ),
-                               
 
-                      Hayhurst=_F( 
-                               YoungModulus = 145000. , 
-                               PoissonRatio = 0.3 ,     
-                               K     = Kcoef,    
-                               epsi0 = ep0val,   
-                               sigma0= sig0val,  
+
+                      Hayhurst=_F(
+                               YoungModulus = 145000. ,
+                               PoissonRatio = 0.3 ,
+                               K     = Kcoef,
+                               epsi0 = ep0val,
+                               sigma0= sig0val,
                                h1    = h1,
                                h2    = h2,
                                H1star= H1star,
                                H2star= H2star,
-                               A0    = A0,       
+                               A0    = A0,
                                alphaD= alphaD,
                                delta1= delta1,
                                delta2= delta2,
                                sequid=0.,
                                ),
-                               
+
                                )
 
 char=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
@@ -114,8 +114,8 @@ char=DEFI_FONCTION(NOM_PARA='INST',VALE=(0,0,
 lalist=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=(_F(JUSQU_A=tref,
                                      NOMBRE=2000,),),);
-                                     
-listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),                          
+
+listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
                          ECHEC=_F(SUBD_NIVEAU=10,
                                   SUBD_METHODE='MANUEL',
                                   SUBD_PAS=10,
@@ -123,16 +123,16 @@ listtps = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=lalist,),
                                   SUBD_PAS_MINI=0.0,
                                   ACTION='DECOUPE'),
                                   )
-                                     
+
 listarch=DEFI_LIST_REEL(DEBUT=0,
-                      INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=2000,),),); 
+                      INTERVALLE=(_F(JUSQU_A=tref,NOMBRE=2000,),),);
 
 ###########
 # explicite
 ###########
 
 resuexpl=SIMU_POINT_MAT(MATER=MATFRONT,INFO=1,
-                     SIGM_IMPOSE=_F(SIYY=char,),                      
+                     SIGM_IMPOSE=_F(SIYY=char,),
                      COMPORTEMENT=_F(RELATION='Hayhurst',
                                   RESI_INTE_RELA=1.E-8,
                                   ),
@@ -159,10 +159,10 @@ endoexpl=RECU_FONCTION(TABLE=resuexpl,
 # valeurs eloignees car test en HPP, pour tester SIMU_POINT_MAT SUPPORT=POINT+MFRONT
 
 # voici les resultats en GDEF
-# OK   AUTRE_ASTER      XXXX             0.0210           0.0202           3.9%          
-# OK   AUTRE_ASTER      XXXX             0.0323           0.0309           4.4%          
-# OK   AUTRE_ASTER      XXXX             6.65E-06         6.57E-06         1.3%   
-          
+# OK   AUTRE_ASTER      XXXX             0.0210           0.0202           3.9%
+# OK   AUTRE_ASTER      XXXX             0.0323           0.0309           4.4%
+# OK   AUTRE_ASTER      XXXX             6.65E-06         6.57E-06         1.3%
+
 tsec=2000
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01797769,
                         VALE_REFE=0.020968,
@@ -207,7 +207,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=5.268210E-06,
 ###########
 
 resuimpl=SIMU_POINT_MAT(MATER=MATFRONT,INFO=1,
-                     SIGM_IMPOSE=_F(SIYY=char,),                      
+                     SIGM_IMPOSE=_F(SIYY=char,),
                      COMPORTEMENT=_F(RELATION='ImplicitHayhurst',
                                   RESI_INTE_RELA=1.E-8,
                                   ),
@@ -233,10 +233,10 @@ endoimpl=RECU_FONCTION(TABLE=resuimpl,
 # valeurs eloignees car test en HPP, pour tester SIMU_POINT_MAT SUPPORT=POINT+MFRONT
 
 # voici les resultats en GDEF
-# OK   AUTRE_ASTER      XXXX             0.0210           0.0202           3.9%          
-# OK   AUTRE_ASTER      XXXX             0.0323           0.0309           4.4%          
-# OK   AUTRE_ASTER      XXXX             6.65E-06         6.57E-06         1.3%   
-          
+# OK   AUTRE_ASTER      XXXX             0.0210           0.0202           3.9%
+# OK   AUTRE_ASTER      XXXX             0.0323           0.0309           4.4%
+# OK   AUTRE_ASTER      XXXX             6.65E-06         6.57E-06         1.3%
+
 tsec=2000
 TEST_FONCTION(VALEUR=_F(VALE_CALC=0.01797669,
                         VALE_REFE=0.020968,
@@ -283,8 +283,8 @@ IMPR_FONCTION(
             _F(FONCTION=epYYexpl),
             _F(FONCTION=epYYimpl),
             ),
-            UNITE=41, 
-            PILOTE=pilote,           
+            UNITE=41,
+            PILOTE=pilote,
             TITRE='Espilon = f(INST)');
 
 IMPR_FONCTION(
@@ -293,7 +293,7 @@ IMPR_FONCTION(
             _F(FONCTION=endoexpl,),
             _F(FONCTION=endoimpl,),
             ),
-            PILOTE=pilote,           
+            PILOTE=pilote,
             UNITE=42,
             TITRE='endo = f(INST)');
 
@@ -304,7 +304,7 @@ IMPR_FONCTION(
             _F(FONCTION=depsimpl,),
             ),
             UNITE=43,
-            PILOTE=pilote,           
+            PILOTE=pilote,
             TITRE='depsdt = f(INST)');
 
 FIN();

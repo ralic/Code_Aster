@@ -1,20 +1,20 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: irmela.zentner at edf.fr
+# person_in_charge: harinaivo.andriambololona at edf.fr
 
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
@@ -36,7 +36,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODELE,
                               SECTION='GENERALE',
                               CARA=('A','IY','IZ',
                                     'AY','AZ','JX',
-                                    'RY','RZ','RT',), 
+                                    'RY','RZ','RT',),
                               VALE=(1.26737E-04,2.71577E-09,2.71577E-09,
                                     1.69403E+00,1.69403E+00,5.43155E-09,
                                     7.93900E-03,7.93900E-03,7.93900E-03,),),);
@@ -50,9 +50,9 @@ CHMAT=AFFE_MATERIAU(   MAILLAGE=TUBE,
                                  MATER = MAT))
 
 CHDDL=AFFE_CHAR_MECA(  MODELE=MODELE,
-                       DDL_IMPO=(_F(  GROUP_NO = 'EXTREMIT', 
+                       DDL_IMPO=(_F(  GROUP_NO = 'EXTREMIT',
                                       DX=0.0,DY=0.0,DZ=0.0,DRY=0.0),
-                                 _F(  GROUP_NO = 'MC', 
+                                 _F(  GROUP_NO = 'MC',
                                       DZ=0.0,)))
 
 MELR=CALC_MATR_ELEM( MODELE=MODELE,

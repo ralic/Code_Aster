@@ -1,27 +1,28 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: samuel.geniaut at edf.fr
 # CALCUL DE K AVEC CALC_G
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'))
-      
+
 nb_pas = 4
 Damax = 2.
-          
+
 PRE_GMSH();
 MAST=LIRE_MAILLAGE(INFO=1,);
 
@@ -63,14 +64,14 @@ PROPA_FISS(METHODE_PROPA='INITIALISATION',
          );
 
 # Propagation
-for i in range(0,nb_pas) : 
+for i in range(0,nb_pas) :
 
    MO[i]=AFFE_MODELE(MAILLAGE=MAT[i],
                       AFFE=(_F(GROUP_MA='MSURF',
                                PHENOMENE='MECANIQUE',
                                MODELISATION='D_PLAN',),),);
 
-   FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAT[i],  
+   FISS[i]=DEFI_FISS_XFEM(MAILLAGE=MAT[i],
                        DEFI_FISS=_F(GROUP_MA_FISS='FISS_'+str(i),
                                     GROUP_MA_FOND='FOND_'+str(i),),);
 
@@ -94,7 +95,7 @@ for i in range(0,nb_pas) :
                       EXCIT=(_F(CHARGE=CHAR[i],),
                              ),
                       );
-   
+
 
    SIF[i]=POST_K1_K2_K3(RESULTAT=UTOT[i],
                       FISSURE=FISS[i],
@@ -102,7 +103,7 @@ for i in range(0,nb_pas) :
                       INFO=2,);
 
    IMPR_TABLE(TABLE=SIF[i])
-   
+
    MAX[i+1]=CO('MAX_%d' %(i+1) )
    MAT[i+1] = CO('MAT_%d'%(i+1))
 
@@ -131,7 +132,7 @@ MAT[i]=DEFI_GROUP(reuse =MAT[i],
                 CREA_GROUP_NO=_F(NOM='FOND_%d' %(i),
                                  GROUP_MA='FOND_%d' %(i),),
                     );
-                
+
 CHXN = CREA_CHAMP (OPERATION = 'EXTR',TYPE_CHAM='NOEU_GEOM_R',
                    NOM_CHAM='GEOMETRIE',MAILLAGE=MAT[i],)
 

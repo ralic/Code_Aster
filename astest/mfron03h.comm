@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@
 # ======================================================================
 # Comparaison entre la loi MonoCrystalDDCC (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_DD_CC') (Code_Aster) sur un point materiel
-# Validation basée sur rho_5 en testant le maximum de la différence 
+# Validation basée sur rho_5 en testant le maximum de la différence
 # entre Code_Aster et MFront
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
@@ -99,7 +100,7 @@ ACIERDDA=DEFI_MATERIAU(ELAS=_F(E=E,
                                     DEPDT=epsi_1,
                                      ),
                     );
-                    
+
 COMPODDA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=ACIERDDA,
                                     ECOULEMENT='MONO_DD_CC',
                                     ELAS='ELAS',
@@ -336,7 +337,7 @@ epsDIRAS=CALC_FONCTION(COMB=(_F(FONCTION = epsXXAS,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
                     );
-                    
+
 sigDIRAS=CALC_FONCTION(COMB=(_F(FONCTION = sigXXAS,
                               COEF= l_norm[ori][0]*l_norm[ori][0],),
                            _F(FONCTION = sigYYAS,
@@ -350,7 +351,7 @@ sigDIRAS=CALC_FONCTION(COMB=(_F(FONCTION = sigXXAS,
                            _F(FONCTION = sigYZAS,
                               COEF= 2*l_norm[ori][1]*l_norm[ori][2],),
                            ),
-                    );                    
+                    );
 
 
 IMPLDD=SIMU_POINT_MAT(MATER=ACIERDDM,
@@ -493,7 +494,7 @@ for i in range(1,13):
                          PARA_X='INST',
                         PARA_Y='V'+str(7+3*(i-1)),
                         INTERPOL='LIN');
-    
+
     rhoia[i]=CALC_FONCTION(COMB=_F(FONCTION=rhoi[i],
                                    COEF=b*b,),);
     IMPR_FONCTION(
@@ -511,7 +512,7 @@ for i in range(1,13):
                             FONC_Y=rhoim[i],
                             COULEUR = i+14,
                             MARQUEUR = 0,
-                            LEGENDE= unicode(systemm[i],'iso-8859-1').encode('utf-8'),),  
+                            LEGENDE= unicode(systemm[i],'iso-8859-1').encode('utf-8'),),
                            ),
                 UNITE=30,);
 

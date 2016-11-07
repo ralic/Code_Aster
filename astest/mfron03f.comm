@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
@@ -16,10 +17,10 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 # 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# Comparaison entre la loi PolyCrystalDDCFC (MFront) et la loi 
-# POLYCRISTAL (ECOULEMENT='MONO_DD_CFC') (Code_Aster) sur un point 
+# Comparaison entre la loi PolyCrystalDDCFC (MFront) et la loi
+# POLYCRISTAL (ECOULEMENT='MONO_DD_CFC') (Code_Aster) sur un point
 # materiel avec 30 grains
-# Validation basée sur SIZZ en testant le maximum de la différence 
+# Validation basée sur SIZZ en testant le maximum de la différence
 # relative entre Code_Aster et MFront
 
 import numpy as NP
@@ -89,7 +90,7 @@ MATF=DEFI_MATERIAU(
                               PoissonRatio12 = NU,
                               PoissonRatio23 = NU,
                               PoissonRatio13 = NU,
-                              ShearModulus12 = G,  
+                              ShearModulus12 = G,
                               ShearModulus23 = G,
                               ShearModulus13 = G,
                                tauf=  TAU_F,

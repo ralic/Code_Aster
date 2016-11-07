@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
@@ -18,7 +19,7 @@
 # ======================================================================
 # Comparaison entre la loi MonoDDCFC_Irra (MFront) et la loi MONOCRISTAL
 # (ECOULEMENT='MONO_DD_CFC_IRRA') (Code_Aster) sur un point materiel
-# Validation basée sur SIZZ et V7 (variables internes MFront) en testant 
+# Validation basée sur SIZZ et V7 (variables internes MFront) en testant
 # le maximum de la différence relative entre Code_Aster et MFront
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));

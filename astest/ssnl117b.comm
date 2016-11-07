@@ -1,4 +1,4 @@
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -849,12 +849,12 @@ U2=STAT_NON_LINE(MODELE=MO,
                  CHAM_MATER=CHMAT,
                  CARA_ELEM=CAREL,
                  EXCIT=( _F( CHARGE = CHART,
-                             FONC_MULT = FONCT), 
+                             FONC_MULT = FONCT),
                          _F(CHARGE = CHARP,),
                        ),
                  INCREMENT=_F( LIST_INST = LINST, NUME_INST_FIN = 8),
                  COMPORTEMENT=(
-                         _F( GROUP_MA = 'BC',  
+                         _F( GROUP_MA = 'BC',
                                 RELATION='MFRONT',
                                 NOM_ROUTINE='asterplasticity',
                                 LIBRAIRIE='plasticity.so',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
-#
+# person_in_charge: sofiane.hendili at edf.fr
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,11 +14,8 @@
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-
-
-
-# -*- coding: utf-8 -*-
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
 
 import os
 
@@ -103,18 +100,18 @@ TEMPE=CALC_META(reuse =TEMPE,
 
 # reference HSNV134A
 
-MATF=DEFI_MATERIAU( 
+MATF=DEFI_MATERIAU(
                   ELAS_META=_F(E = 80000.,
                                NU = 0.35,
                                F_ALPHA = 0.,
                                C_ALPHA = 0.,
                                PHASE_REFE = 'FROID',
                                EPSF_EPSC_TREF = 0.,),
-                  AnisoLemaitre=_F( 
-                           YoungModulus  =80000.,    
-                           PoissonRatio  =0.35, 
-                           a_0  =2.39,       ## F1_A  
-                           a_1  =0.22,       ## F2_A   
+                  AnisoLemaitre=_F(
+                           YoungModulus  =80000.,
+                           PoissonRatio  =0.35,
+                           a_0  =2.39,       ## F1_A
+                           a_1  =0.22,       ## F2_A
                            a_2  =9.36,       ## C_A
                            m_0  =0.0,        ## F1_M
                            m_1  =0.77E-04,   ## F2_M
@@ -123,22 +120,22 @@ MATF=DEFI_MATERIAU(
                            pn_1 =2.96,       ## F2_N
                            pn_2 =6.11,       ## C_N
                            Q_0 =19922.8,    ## F1_Q
-                           Q_1 =21023.7,    ## F2_Q,  
+                           Q_1 =21023.7,    ## F2_Q,
                            Q_2 =6219.,      ## C_Q
-                           M1_0 =0.4414,     ## F_M11          
-                           M1_1 =1.,         ## F_M22     
-                           M1_2 =0.714,      ## F_M33  
+                           M1_0 =0.4414,     ## F_M11
+                           M1_1 =1.,         ## F_M22
+                           M1_2 =0.714,      ## F_M33
                            M1_3 =0.75,       ## F_M12
                            M1_4 =0.75,       ## F_M13
-                           M1_5 =0.75,       ## F_M23        
+                           M1_5 =0.75,       ## F_M23
                            M3_0 =1.,         ## C_M11
                            M3_1 =1.,         ## C_M22
                            M3_2 =1.,         ## C_M33
-                           M3_3 =0.75,       ## C_M12    
-                           M3_4 =0.75,       ## C_M13  
+                           M3_3 =0.75,       ## C_M12
+                           M3_4 =0.75,       ## C_M13
                            M3_5 =0.75,       ## C_M23
                             ),)
-                            
+
 CMF=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F( TOUT = 'OUI', MATER = MATF ),
                   AFFE_VARC=(_F(TOUT='OUI',
@@ -181,7 +178,7 @@ VF=STAT_NON_LINE(MODELE=MO,
                 CHAM_MATER=CMF,
                 EXCIT=(_F(CHARGE=CHPC,FONC_MULT=FMULT,),
                        _F(CHARGE=CH_L,),),
-               
+
                 COMPORTEMENT=_F(RELATION='AnisoLemaitre',
                         RESI_INTE_RELA=1e-10,
                         ),
@@ -190,7 +187,7 @@ VF=STAT_NON_LINE(MODELE=MO,
                          REAC_ITER = 1),
                CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                               ITER_GLOB_MAXI = 30))
-                              
+
 #IMPR_RESU(RESU=_F(RESULTAT=VF)) # pour voir les variables internes
 
 VFP=CALC_CHAMP( RESULTAT=VF,  DEFORMATION='EPSI_NOEU',CONTRAINTE='SIGM_NOEU');

@@ -1,3 +1,4 @@
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,7 +46,7 @@ DEFI_GROUP( reuse=MA,   MAILLAGE=MA,
 MO=AFFE_MODELE(
 
                MAILLAGE=MA,
-                 
+
 
                 AFFE=_F(
                 TOUT = 'OUI',
@@ -68,7 +69,7 @@ ACIER=DEFI_MATERIAU(
 
 CARBA=AFFE_CARA_ELEM(
                           MODELE=MO,
-                           
+
                            BARRE=_F(
        GROUP_MA = 'TOUT',
 
@@ -736,7 +737,7 @@ ACIER2=DEFI_MATERIAU(
 
 CARBA2=AFFE_CARA_ELEM(
                           MODELE=MO,
-                           
+
                            BARRE=_F(
        GROUP_MA = 'TOUT',
 

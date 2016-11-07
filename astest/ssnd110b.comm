@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -241,7 +242,7 @@ sys1=8
 sys2=5
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.021521447826E+11,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=rho_8,
@@ -249,14 +250,14 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.021521447826E+11,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.011387884925E+11,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=rho_5,
                         ),
               )
-              
-# tau_5 
+
+# tau_5
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-4.57848E7,
                         VALE_REFE=-4.5785E7,
                         REFERENCE='SOURCE_EXTERNE',
@@ -278,7 +279,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=4.96002E7,
 # glissement plastiques
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.117300729091E-05,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_8,
@@ -286,7 +287,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.117300729091E-05,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.109265891005E-05,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=gamma_5,
@@ -296,7 +297,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.109265891005E-05,
 # deformation viscoplastique globale
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.328269182397E-05,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIXX,
@@ -304,7 +305,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-1.328269182397E-05,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=1.321606985811E-05,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIZZ,
@@ -312,7 +313,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=1.321606985811E-05,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=2.930908154869E-06,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIXY,
@@ -320,7 +321,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=2.930908154869E-06,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=9.390143505536E-06,
-                        
+
                         VALE_PARA=1.0,
                         NOM_PARA='INST',
                         FONCTION=EVIYZ,
@@ -739,7 +740,7 @@ TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.05441691165723,
               )
 
 TEST_FONCTION(VALEUR=_F(VALE_CALC=-0.28714372712474,
-                        
+
                         VALE_PARA=500.0,
                         NOM_PARA='INST',
                         FONCTION=gammi_5,

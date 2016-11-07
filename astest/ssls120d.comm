@@ -1,4 +1,4 @@
-# person_in_charge: xavier.desroches at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -99,17 +99,17 @@ E1CYL=MODI_REPERE(RESULTAT=ELAS1,
                   NUME_ORDRE=1,
                   MODI_CHAM=(
                   _F(NOM_CHAM='SIGM_ELNO',
-                  NOM_CMP=('SIXX','SIYY','SIZZ', 
-                           'SIXY','SIXZ','SIYZ',), 
+                  NOM_CMP=('SIXX','SIYY','SIZZ',
+                           'SIXY','SIXZ','SIYZ',),
                   TYPE_CHAM='TENS_3D',),),
-                  REPERE='COQUE_UTIL_CYL', 
+                  REPERE='COQUE_UTIL_CYL',
                   AFFE=_F(ORIGINE = (0.0, 0.0, 0.0,),
                           AXE_Z =(0.0, 0.0, 1.0,),
                               GROUP_MA='VIROLE',),);
-      
-E1CYLC1M=POST_CHAMP(RESULTAT=E1CYL, 
+
+E1CYLC1M=POST_CHAMP(RESULTAT=E1CYL,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1, 
+                                  NUME_COUCHE=1,
                                   NIVE_COUCHE='MOY',),);
 R = 5.7;
 L = 16.0;
@@ -213,10 +213,10 @@ ELAS2=MECA_STATIQUE(MODELE=MODMECA,
                            _F(CHARGE=PH,),),);
 
 CALC_CHAMP(reuse=ELAS2,RESULTAT=ELAS2,CONTRAINTE=('SIGM_ELNO'));
-      
-ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2, 
+
+ELAS2C1M=POST_CHAMP(RESULTAT=ELAS2,
                     EXTR_COQUE=_F(NOM_CHAM='SIGM_ELNO',
-                                  NUME_COUCHE=1, 
+                                  NUME_COUCHE=1,
                                   NIVE_COUCHE='MOY',),);
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   GROUP_NO='A3',

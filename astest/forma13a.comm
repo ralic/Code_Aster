@@ -14,7 +14,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: emmanuel.boyere at edf.fr
+# person_in_charge: mathieu.corus at edf.fr
 #
 
 
@@ -178,7 +178,7 @@ CAR_TUY=AFFE_CARA_ELEM(MODELE=TUYAU,
                        COQUE=(_F(GROUP_MA='Tuy_2D',
                                 EPAIS=0.01,),
                              _F(GROUP_MA='tuy_vol',
-                                EPAIS=0.05,),),   
+                                EPAIS=0.05,),),
                                 );
 
 MAC_PAL=CREA_ELEM_SSD(MODELE=PALIER,

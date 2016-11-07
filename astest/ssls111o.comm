@@ -1,3 +1,4 @@
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -14,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # SSLS111O
 # PLAQUE DE STRATIFIE RECTANGULAIRE EXCENTREE
 # CALCULS : 1 MONOCOUCHE (REF) ET 1 BICOUCHE EXCENTRES
@@ -116,7 +116,7 @@ CHME1A=AFFE_CHAR_MECA(MODELE=MO1,
                       FORCE_ARETE=_F(GROUP_MA='L12',
                                       FZ=frep ),);
 
-LISTINST = DEFI_LIST_REEL(VALE = (0.,1.))                             
+LISTINST = DEFI_LIST_REEL(VALE = (0.,1.))
 
 RESU1A_S=STAT_NON_LINE(MODELE=MO1,
                     CHAM_MATER=CHMAT1,
@@ -130,9 +130,9 @@ RESU1A_S=STAT_NON_LINE(MODELE=MO1,
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-4,
                                    ITER_GLOB_MAXI=25,),
-                    SOLVEUR=_F(),               
-                     ) 
-                     
+                    SOLVEUR=_F(),
+                     )
+
 RESU1A=MECA_STATIQUE(MODELE=MO1,
                 CHAM_MATER=CHMAT1,
                 CARA_ELEM=EP1,
@@ -140,8 +140,8 @@ RESU1A=MECA_STATIQUE(MODELE=MO1,
                       _F(CHARGE=CL1),
                       _F(CHARGE=CHME1A),
                       ),
-                      )  
-                      
+                      )
+
 #IMPR_RESU(UNITE = 8,
            #RESU=_F(RESULTAT=RESU1A_S,
                     #NOM_CHAM='SIEF_ELGA',
@@ -155,8 +155,8 @@ RESU1A=MECA_STATIQUE(MODELE=MO1,
                     #NOM_CMP = 'SIXZ'))
 #
 
-                    
-                    
+
+
 # ______________________________________________________________________
 #
 #                        PLAQUE EXCENTREE MULTICOUCHE
@@ -172,7 +172,7 @@ EP2=AFFE_CARA_ELEM(MODELE=MO1,
                              INER_ROTA='OUI',),
                           ),);
 
-                      
+
 RESU2A_S=STAT_NON_LINE(MODELE=MO1,
                     CHAM_MATER=CHMAT1,
                     CARA_ELEM=EP2,
@@ -185,9 +185,9 @@ RESU2A_S=STAT_NON_LINE(MODELE=MO1,
                               REAC_ITER=1,),
                     CONVERGENCE=_F(RESI_GLOB_RELA=1.E-4,
                                    ITER_GLOB_MAXI=25,),
-                    SOLVEUR=_F(),               
-                     ) 
-                     
+                    SOLVEUR=_F(),
+                     )
+
 RESU2A=MECA_STATIQUE(MODELE=MO1,
                 CHAM_MATER=CHMAT1,
                 CARA_ELEM=EP2,
@@ -195,8 +195,8 @@ RESU2A=MECA_STATIQUE(MODELE=MO1,
                       _F(CHARGE=CL1),
                       _F(CHARGE=CHME1A),
                       ),
-                      )  
-                      
+                      )
+
 #IMPR_RESU(UNITE = 8,
            #RESU=_F(RESULTAT=RESU2A_S,
                     #NOM_CHAM='SIEF_ELGA',

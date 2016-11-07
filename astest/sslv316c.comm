@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: daniele.colombo at ifpen.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM='XFEM2_94',);
 
@@ -120,17 +120,17 @@ RS = 0.8
 VAL_CALC = [
             -4.43048375764E-15,
             -4.65469676691E-15,
-             3.01061259256E-15, 
-             2.76167977376E-15, 
+             3.01061259256E-15,
+             2.76167977376E-15,
             -0.000672885486702,
-            -0.000672885486702, 
+            -0.000672885486702,
              2.01227923213E-16,
             -1.31145094784E-15,
              0.00036546126462 ,
              0.00036546126462 ,
             -0.000414166523737,
             -0.000414166523737,]
-            
+
 for i in range(nbcalc) :
 
    MODELX[i]=MODI_MODELE_XFEM(MODELE_IN=MODELE,FISSURE=FISS[i],INFO=1,);

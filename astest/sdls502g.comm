@@ -1,26 +1,26 @@
-# person_in_charge: patrick.massin at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # DATE   : 19/05/2000
 # AUTEUR : F. LEBOUVIER (DELTACAD )
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
-#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE PLAQUE CARREE EPAISSE 
-#    SIMPLEMENT SUPPORTEE 
-#  - MODELISATION AVEC DES ELEMENTS 3D (QUAD4) 
+#  - CALCUL EN ANALYSE MODALE DYNAMIQUE D'UNE PLAQUE CARREE EPAISSE
+#    SIMPLEMENT SUPPORTEE
+#  - MODELISATION AVEC DES ELEMENTS 3D (QUAD4)
 #---------------------------------------------------------------------
 #
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),);
@@ -37,7 +37,7 @@ PLAQ_MA=DEFI_GROUP(reuse =PLAQ_MA,
                 CREA_GROUP_NO=_F(GROUP_MA='BORDS',NOM='BORDS',),);
 #
 #---------------------------------------------------------------------
-#                     CARACTERISTIQUES ELEMENTAIRES 
+#                     CARACTERISTIQUES ELEMENTAIRES
 #---------------------------------------------------------------------
 #
 CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
@@ -46,7 +46,7 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODEL,
 
 #
 #---------------------------------------------------------------------
-#                     CARACTERISTIQUES MATERIAUX 
+#                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 #
 ACIER=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
@@ -60,7 +60,7 @@ MAT=AFFE_MATERIAU(   MAILLAGE=PLAQ_MA,
 
 #
 #---------------------------------------------------------------------
-#                     CHARGEMENTS 
+#                     CHARGEMENTS
 #---------------------------------------------------------------------
 #
 CHAR0=AFFE_CHAR_MECA(     MODELE=MODEL,
@@ -69,7 +69,7 @@ CHAR0=AFFE_CHAR_MECA(     MODELE=MODEL,
 
 #
 #---------------------------------------------------------------------
-#                     RESOLUTION 
+#                     RESOLUTION
 #---------------------------------------------------------------------
 #
 M_EL_RIG=CALC_MATR_ELEM(       MODELE=MODEL,
@@ -109,7 +109,7 @@ MODES=CALC_MODES(MATR_RIGI=M_AS_RIG,
 
 #
 #---------------------------------------------------------------------
-#                     VERIFICATION DES RESULTATS 
+#                     VERIFICATION DES RESULTATS
 #---------------------------------------------------------------------
 #
 TEST_RESU(RESU=(_F(PARA='FREQ',

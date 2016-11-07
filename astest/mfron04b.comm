@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: sofiane.hendili at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,7 +16,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-
 
 import os
 
@@ -95,14 +95,14 @@ TEMPE=CALC_META(reuse=TEMPE,
 
 # cf. hsnv134b
 
-MATF=DEFI_MATERIAU( 
+MATF=DEFI_MATERIAU(
                   ELAS_META=_F(E = 80000.,
                                NU = 0.35,
                                F_ALPHA = 0.,
                                C_ALPHA = 0.,
                                PHASE_REFE = 'FROID',
                                EPSF_EPSC_TREF = 0.,),
-                               
+
                   META_LEMA_ANI=_F(
                             F1_A=2.39,    F2_A=0.22,     C_A=9.36,
                             F1_M=0.0,    F2_M=0.77E-04, C_M=0.99E-04,
@@ -114,12 +114,12 @@ MATF=DEFI_MATERIAU(
                             F_MRT_RT=0.75,               C_MRT_RT=0.75,
                             F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
                             F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),
-                            
-                  AnisoLemaitre=_F( 
-                           YoungModulus  =80000.,    
-                           PoissonRatio  =0.35, 
-                           a_0  =2.39,       ## F1_A  
-                           a_1  =0.22,       ## F2_A   
+
+                  AnisoLemaitre=_F(
+                           YoungModulus  =80000.,
+                           PoissonRatio  =0.35,
+                           a_0  =2.39,       ## F1_A
+                           a_1  =0.22,       ## F2_A
                            a_2  =9.36,       ## C_A
                            m_0  =0.0,        ## F1_M
                            m_1  =0.77E-04,   ## F2_M
@@ -128,23 +128,23 @@ MATF=DEFI_MATERIAU(
                            pn_1 =2.96,       ## F2_N
                            pn_2 =6.11,       ## C_N
                            Q_0 =19922.8,     ## F1_Q
-                           Q_1 =21023.7,     ## F2_Q,  
+                           Q_1 =21023.7,     ## F2_Q,
                            Q_2 =6219.,       ## C_Q
-                           M1_0 =0.4414,     ## F_M11          
-                           M1_1 =0.714,      ## F_M22     
-                           M1_2 =1.,         ## F_M33  
+                           M1_0 =0.4414,     ## F_M11
+                           M1_1 =0.714,      ## F_M22
+                           M1_2 =1.,         ## F_M33
                            M1_3 =0.75,       ## F_M12
                            M1_4 =0.75,       ## F_M13
-                           M1_5 =0.75,       ## F_M23        
+                           M1_5 =0.75,       ## F_M23
                            M3_0 =1.,         ## C_M11
                            M3_1 =1.,         ## C_M22
                            M3_2 =1.,         ## C_M33
-                           M3_3 =0.75,       ## C_M12    
-                           M3_4 =0.75,       ## C_M13  
+                           M3_3 =0.75,       ## C_M12
+                           M3_4 =0.75,       ## C_M13
                            M3_5 =0.75,       ## C_M23
                             ),)
 
-                            
+
 CMF=AFFE_MATERIAU(MAILLAGE=MAIL,
                   AFFE=_F( TOUT = 'OUI', MATER = MATF ),
                   AFFE_VARC=(_F(TOUT='OUI',
@@ -156,7 +156,7 @@ CMF=AFFE_MATERIAU(MAILLAGE=MAIL,
                                 VALE_REF=700.,
                                 NOM_VARC='TEMP',
                                 NOM_CHAM='TEMP'),))
-                            
+
 MO=AFFE_MODELE(MAILLAGE=MAIL,
                AFFE=_F(TOUT='OUI',
                        PHENOMENE ='MECANIQUE',
@@ -206,7 +206,7 @@ def ProjAxe(point, centre, axe):
     # Pour tout point M de l axe
     # on pose :  AM = k .  u donc
     # xm=k.dx+xa ; ym=k.dy+ya ; zm=k.dz+za
-    # la distance MP**2 = (xm-xp)**2+(ym-yp)**2+(zm-zp)**2= a.k**2+b.k+c 
+    # la distance MP**2 = (xm-xp)**2+(ym-yp)**2+(zm-zp)**2= a.k**2+b.k+c
     # MP**2 est minimum si M est la projection de P sur l axe, donc
     #  en -b/2a, pour k = kmin
     #              dx(xp-xa)+dy(yp-ya)+dz(zp-za)      u.AP
@@ -236,7 +236,7 @@ def ANGLENAUT(repere):
     #   au 3 axes de repere
 
    import copy
-   
+
    # expression des coordonnees globales des 3 vecteurs de base locale
    x=NP.array([1.,0.,0.])
    y=NP.array([0.,1.,0.])
@@ -335,13 +335,13 @@ def ANGLE_CYL(GROUP_MA,MAILLAGE,CENTRE,AXE,LISTE_CARA,**args):
       xg=NP.mean(X[lnoeud])
       yg=NP.mean(Y[lnoeud])
       zg=NP.mean(Z[lnoeud])
-      
+
       P=NP.array([xg,yg,zg])
       M, repere = ProjAxe(P, CENTRE, AXE)
 
       #print "Point projete=", M
       #print "repere local=",repere
-      
+
       alpha,beta,gamma = ANGLENAUT(repere)
 
       # Meme remarque que precedemment sur les listes Python
@@ -353,7 +353,7 @@ def ANGLE_CYL(GROUP_MA,MAILLAGE,CENTRE,AXE,LISTE_CARA,**args):
       LISTE_CARA.append(mon_dico)
 
   return LISTE_CARA
-  
+
 DEFI_GROUP(reuse =MAIL,MAILLAGE=MAIL,CREA_GROUP_MA=_F(NOM='MATIERE', TOUT='OUI', TYPE_MAILLE='3D',));
 
 LISTE_ANGLES=[]
@@ -375,11 +375,11 @@ UMF=STAT_NON_LINE(MODELE=MO, CARA_ELEM=ORIEN,
                 CHAM_MATER=CMF,
                 EXCIT=(_F(CHARGE = CHPC,FONC_MULT = FMULT),
                        _F(CHARGE = CH_L),),
-                       
+
                 COMPORTEMENT=_F(RELATION='AnisoLemaitre',
                          RESI_INTE_RELA=1e-10,
                         ),
-                             
+
                INCREMENT=_F(LIST_INST = L_INST,),
                NEWTON=_F(MATRICE = 'TANGENTE',
                          REAC_ITER = 1),
@@ -539,8 +539,8 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=20,
                    PRECISION=1.E-4,),
                 ),
           )
-          
 
-         
-         
+
+
+
 FIN()

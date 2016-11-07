@@ -1,4 +1,4 @@
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R2012  EDF R&DD                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -76,7 +76,7 @@ unite=DEFI_FICHIER(ACTION='ASSOCIER', FICHIER=nom_maillage,ACCES='NEW',UNITE=20)
 #maillage=INCLUDE(DONNEE='ssnv212.mater.datg')
 
 MAILL=LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'),FORMAT='ASTER',UNITE=unite,  )
-                          
+
 DEFI_FICHIER(ACTION='LIBERER', UNITE=20)
 
 #PRE_GIBI(UNITE_GIBI = 16)

@@ -1,22 +1,22 @@
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                    
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: daniele.colombo at ifpen.fr
+# person_in_charge: samuel.geniaut at edf.fr
 
-# MODELISATION D: METHODE GEOMETRIQUE
+# MODELISATION B: METHODE GEOMETRIQUE
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 
@@ -32,18 +32,18 @@ NPAS = 13
 DA = 3.5
 
 # RAYONS INFERIEUR ET SUPERIEUR DES COURONNES D'INTEGRATION POUR CALC_G
-RI = 3. 
+RI = 3.
 RS = 12.
 RP = 12.
 
 #longueur de fissure initiale
-xinit = 65. 
-yinit = 19. 
+xinit = 65.
+yinit = 19.
 
 #----------------------------------------------
 #                   MODELE
 #----------------------------------------------
-                    
+
 
 MODE = [None]*(NPAS+1)
 
@@ -81,7 +81,7 @@ FISS[0]=DEFI_FISS_XFEM(MAILLAGE=MAILLAG1,
                         TYPE_ENRI_FOND = 'GEOMETRIQUE',
                         RAYON_ENRI = 12.,
                        );
-         
+
 #----------------------------------------------
 #         PROPAGATION SUR 3 PAS DE TEMPS
 #----------------------------------------------
@@ -164,9 +164,9 @@ VAL_CALC= [
 ]
 
 
-            
+
 for i in range(1,NPAS+1) :
-                                                  
+
     MODE[i]=MODI_MODELE_XFEM(MODELE_IN=MODEL,FISSURE=FISS[i-1],);
 
 
@@ -176,7 +176,7 @@ for i in range(1,NPAS+1) :
                                 MATER=ACIER,
                                 ),
                              );
-                                                                      
+
     CHRIG[i]=AFFE_CHAR_MECA(MODELE=MODE[i],
                       DDL_IMPO=( _F(GROUP_NO=('P1',), DX=0.0, DY=0.0),_F(GROUP_NO=('P2',), DY=0.0)),
                       FORCE_NODALE=_F(GROUP_NO=('P3',),FY=-1.,),
@@ -198,10 +198,10 @@ for i in range(1,NPAS+1) :
                          );
 
     IMPR_TABLE(TABLE=SIF[i]);
- 
-# TEST DE KI PAR RAPPORT A KI RERERENCE (MAILLAGE) 
+
+# TEST DE KI PAR RAPPORT A KI RERERENCE (MAILLAGE)
     TEST_TABLE(CRITERE='RELATIF',
-               REFERENCE='AUTRE_ASTER', 
+               REFERENCE='AUTRE_ASTER',
                PRECISION=0.05,
                VALE_CALC=VAL_CALC[(i-1)*2+0],
                VALE_REFE=VAL_REFE[(i-1)*2+0],
@@ -209,7 +209,7 @@ for i in range(1,NPAS+1) :
                TYPE_TEST='MAX',
                TABLE=SIF[i],)
 
-# TEST DE KII PAR RAPPORT A KII REFERENCE (MAILLAGE)  
+# TEST DE KII PAR RAPPORT A KII REFERENCE (MAILLAGE)
 # ON TESTE JUSTE SI KII NEST PAS TROP ELEVE PAR RAPPORT A KI (DE L ORDRE DE 1)
     TEST_TABLE(CRITERE='ABSOLU',
                REFERENCE='AUTRE_ASTER',
@@ -220,11 +220,11 @@ for i in range(1,NPAS+1) :
                TYPE_TEST='MAX',
                TABLE=SIF[i],)
 
-    FISS[i] = CO('FISS_%d'%(i)) 
- 
+    FISS[i] = CO('FISS_%d'%(i))
+
     if ( i != NPAS+1 ) :
-        
-        PROPA_FISS(METHODE_PROPA='SIMPLEXE',     
+
+        PROPA_FISS(METHODE_PROPA='SIMPLEXE',
                 MODELE=MODE[i],
                 FISSURE=_F(FISS_ACTUELLE=FISS[i-1],
                             FISS_PROPAGEE=FISS[i],
@@ -248,7 +248,7 @@ for i in range(1,NPAS+1) :
                            OPERATION='EXTR',
                            FISSURE=FISS[i],
                            NOM_CHAM='LTNO',);
-                           
+
 #      CHERR[0] = RAFF_XFEM(FISSURE=FISS[i+1])
 #      DETRUIRE(CONCEPT=_F(NOM=MODX[i],))
 #      DETRUIRE(CONCEPT=_F(NOM=ModH[i],))
@@ -267,7 +267,7 @@ for i in range(1,NPAS+1) :
     MOVIS[i]=AFFE_MODELE(MAILLAGE=MAXFE[i],
                          AFFE=_F(TOUT='OUI',
                                  PHENOMENE='MECANIQUE',
-                                 MODELISATION='D_PLAN',),) 
+                                 MODELISATION='D_PLAN',),)
 
     DEPL[i]=POST_CHAM_XFEM(
                           MODELE_VISU   = MOVIS[i],
@@ -278,6 +278,6 @@ for i in range(1,NPAS+1) :
     IMPR_RESU(   FORMAT='MED',
              UNITE=30,
              RESU=_F(RESULTAT=DEPL[i],),);
-             
+
 
 FIN();

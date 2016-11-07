@@ -1,3 +1,4 @@
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,7 +28,7 @@ NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 MA=LIRE_MAILLAGE();
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

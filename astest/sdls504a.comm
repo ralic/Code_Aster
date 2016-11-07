@@ -1,19 +1,19 @@
-# person_in_charge: patrick.massin at edf.fr
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR   
-# (AT YOUR OPTION) ANY LATER VERSION.                                 
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
 #
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT 
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF          
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU    
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                            
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 #
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE   
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,       
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.      
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #---------------------------------------------------------------------
 #  - CALCUL DE STABILITE D'UNE POUTRE CONSOLE SOUMISE A UN EFFORT
@@ -29,16 +29,16 @@ MA=LIRE_MAILLAGE(FORMAT='MED', )
 
 #
 MAIL=CREA_MAILLAGE(     MAILLAGE=MA,
-                       MODI_MAILLE=_F( TOUT = 'OUI',    
-                                    OPTION = 'TRIA6_7',  
+                       MODI_MAILLE=_F( TOUT = 'OUI',
+                                    OPTION = 'TRIA6_7',
                                     )
                      )
 
 #
 MOEL=AFFE_MODELE(   MAILLAGE=MAIL,
-                          AFFE=_F( TOUT = 'OUI',          
-                                PHENOMENE = 'MECANIQUE',     
-                                MODELISATION = 'COQUE_3D',  
+                          AFFE=_F( TOUT = 'OUI',
+                                PHENOMENE = 'MECANIQUE',
+                                MODELISATION = 'COQUE_3D',
                                 )
                     )
 
@@ -48,14 +48,14 @@ MOEL=AFFE_MODELE(   MAILLAGE=MAIL,
 #---------------------------------------------------------------------
 #
 CAEL=AFFE_CARA_ELEM(   MODELE=MOEL,COQUE=(
-                          _F( GROUP_MA = 'SEMELLES',  
-                                 EPAIS = 0.0113,     
-                                 A_CIS = 5650.,     
+                          _F( GROUP_MA = 'SEMELLES',
+                                 EPAIS = 0.0113,
+                                 A_CIS = 5650.,
                                  ),
-                          _F( GROUP_MA = 'AME',  
-                                 EPAIS = 0.0075,     
-                                 ANGL_REP = (90., 0.,),  
-                                 A_CIS = 3750.,     
+                          _F( GROUP_MA = 'AME',
+                                 EPAIS = 0.0075,
+                                 ANGL_REP = (90., 0.,),
+                                 A_CIS = 3750.,
                                  ))
                        )
 
@@ -64,8 +64,8 @@ CAEL=AFFE_CARA_ELEM(   MODELE=MOEL,COQUE=(
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 #
-MATERIAU=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,   
-                                  NU = 0.3,  
+MATERIAU=DEFI_MATERIAU(   ELAS=_F( E = 2.E+11,
+                                  NU = 0.3,
                                   )
                           )
 
@@ -80,16 +80,16 @@ CHAM_MAT=AFFE_MATERIAU(   MAILLAGE=MAIL,
 #---------------------------------------------------------------------
 #
 CON_LI=AFFE_CHAR_MECA(        MODELE=MOEL,
-                              DDL_IMPO=_F( GROUP_NO = 'ENCASTRE',  
-                                        DX = 0.,    DY = 0.,    DZ = 0.,   
-                                        DRX = 0.,   DRY = 0.,   DRZ = 0.,  
+                              DDL_IMPO=_F( GROUP_NO = 'ENCASTRE',
+                                        DX = 0.,    DY = 0.,    DZ = 0.,
+                                        DRX = 0.,   DRY = 0.,   DRZ = 0.,
                                         )
                          )
 
 #
 CHARGE=AFFE_CHAR_MECA(         MODELE=MOEL,
-                           FORCE_NODALE=_F( GROUP_NO = 'P',  
-                                         FY = -1.,        
+                           FORCE_NODALE=_F( GROUP_NO = 'P',
+                                         FY = -1.,
                                          )
                          )
 
@@ -145,7 +145,7 @@ NBMOD1 = INFO_MODE(MATR_RIGI=MAS_RI_M,MATR_RIGI_GEOM=MAS_RI_G,
              TYPE_MODE='MODE_FLAMB',COMPTAGE=_F(METHODE='STURM'),
              SOLVEUR=_F(METHODE='MUMPS'),
              CHAR_CRIT=(-1.E+6,-5.E+5,0.0,1.E+5,1.1E+6,),)
-             
+
 IMPR_TABLE(TABLE=NBMOD1,UNITE=6)
 TEST_TABLE(TABLE=NBMOD1,REFERENCE='ANALYTIQUE',
            NOM_PARA='NB_MODE', TYPE_TEST='SOMM',
@@ -175,7 +175,7 @@ RESULT1=CALC_MODES(MATR_RIGI=MAS_RI_M,
                    CALC_CHAR_CRIT=_F(CHAR_CRIT=(-1.E+06,1.+05),
                                      ),
                    VERI_MODE=_F(STOP_ERREUR='NON'), # Reponse provisoire suite Issue25191
-                   AMELIORATION='OUI', 
+                   AMELIORATION='OUI',
                    TYPE_RESU='MODE_FLAMB',
                    )
 #
@@ -217,57 +217,57 @@ TEST_RESU(RESU=(_F(PARA='CHAR_CRIT',
           )
 
 TEST_RESU(RESU=(_F(RESULTAT = RESULT_G,
-                   NUME_MODE = 6,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 6,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = 1.0775348330981E+05,
                    VALE_REFE = 104797.82,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                 _F(RESULTAT = RESULT_G,
-                   NUME_MODE = 5,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 5,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = -1.0787876516812E+05,
                    VALE_REFE = -104797.82,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                   ),
            )
 
 TEST_RESU(RESU=(_F(RESULTAT = RESULT0,
-                   NUME_MODE = 1,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 1,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = -7.8662373445668E+05,
                    VALE_REFE = -786624.0,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                 _F(RESULTAT = RESULT0,
-                   NUME_MODE = 4,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 4,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = -1.0787876516812E+05,
                    VALE_REFE = -107879.0,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                   ),
            )
 TEST_RESU(RESU=(_F(RESULTAT = RESULT1,
-                   NUME_MODE = 1,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 1,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = -7.8662373423126E+05,
                    VALE_REFE = -786624.0,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                 _F(RESULTAT = RESULT1,
-                   NUME_MODE = 4,  
-                   PARA = 'CHAR_CRIT',       
+                   NUME_MODE = 4,
+                   PARA = 'CHAR_CRIT',
                    VALE_CALC = -1.0787876516812E+05,
                    VALE_REFE = -107879.0,
                    REFERENCE='NON_DEFINI',
-                   PRECISION = 0.03,  
+                   PRECISION = 0.03,
                    CRITERE = 'RELATIF',),
                   ),
            )

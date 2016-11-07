@@ -1,4 +1,4 @@
-# person_in_charge: jean-michel.proix at edf.fr
+# person_in_charge: emricka.julan at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -36,7 +36,7 @@ import numpy as NP
 MA=LIRE_MAILLAGE();
 
 MO=AFFE_MODELE(MAILLAGE=MA,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='C_PLAN',),);

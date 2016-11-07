@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
-
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
-#
+# person_in_charge: sofiane.hendili at edf.fr
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -14,10 +13,8 @@
 #
 # YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-
-
-
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
 
 import os
 
@@ -88,8 +85,8 @@ IMPR_RESU(RESU=_F(RESULTAT=TEMPE))
 # ON DEGENERE LA LOI POUR AVOIR UNE LOI DE VISCOSITE
 # DE TYPE NORTON D OU F1_M=0.D0
 
-                            
-MATF=DEFI_MATERIAU( 
+
+MATF=DEFI_MATERIAU(
                   ELAS_META=_F(E = 80000.,
                                NU = 0.35,
                                F_ALPHA = 0.,
@@ -97,34 +94,34 @@ MATF=DEFI_MATERIAU(
                                PHASE_REFE = 'FROID',
                                EPSF_EPSC_TREF = 0.,),
                   AnisoLemaitre=_F(
-                           YoungModulus  =80000.,    
-                           PoissonRatio  =0.35, 
-                           a_0  =2.40,       ## F1_A=2.40,    
-                           a_1  =0.20,       ## F2_A=0.20,    
+                           YoungModulus  =80000.,
+                           PoissonRatio  =0.35,
+                           a_0  =2.40,       ## F1_A=2.40,
+                           a_1  =0.20,       ## F2_A=0.20,
                            a_2  =9.40,       ## C_A=9.40,
-                           m_0  =0.0,        ## F1_M=0.0,    
+                           m_0  =0.0,        ## F1_M=0.0,
                            m_1  =0.80E-04,   ## F2_M=0.80E-04,
                            m_2  =0.99E-04,   ## C_M=0.99E-04,
-                           pn_0 =4.40,       ## F1_N=4.40,    
-                           pn_1 =3.0,        ## F2_N=3.0,     
+                           pn_0 =4.40,       ## F1_N=4.40,
+                           pn_1 =3.0,        ## F2_N=3.0,
                            pn_2 =6.1,        ## C_N=6.1,
-                           Q_0  =19900.,     ## F1_Q=19900., 
-                           Q_1  =21000.,     ## F2_Q=21000.,  
+                           Q_0  =19900.,     ## F1_Q=19900.,
+                           Q_1  =21000.,     ## F2_Q=21000.,
                            Q_2  =6200.,      ## C_Q=6200.,
-                           M1_0 =1.,         ## F_MRR_RR          
+                           M1_0 =1.,         ## F_MRR_RR
                            M1_1 =1.,         ## F_MTT_TT
-                           M1_2 =1.,         ## F_MZZ_ZZ     
+                           M1_2 =1.,         ## F_MZZ_ZZ
                            M1_3 =0.75,       ## F_MRT_RT
                            M1_4 =0.75,       ## F_MTZ_TZ
-                           M1_5 =0.75,       ## F_MRZ_RZ        
+                           M1_5 =0.75,       ## F_MRZ_RZ
                            M3_0 =1.,         ## C_MRR_RR
                            M3_1 =1.,         ## C_MTT_TT
                            M3_2 =1.,         ## C_MZZ_ZZ
-                           M3_3 =0.75,       ## C_MRT_RT     
-                           M3_4 =0.75,       ## C_MRZ_RZ   
+                           M3_3 =0.75,       ## C_MRT_RT
+                           M3_4 =0.75,       ## C_MRZ_RZ
                            M3_5 =0.75,       ## C_MTZ_TZ
                             ),)
-                            
+
 
 CMF=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F( TOUT = 'OUI', MATER = MATF ),
@@ -167,7 +164,7 @@ CHR_TRAC=AFFE_CHAR_MECA(       MODELE=MO,
 VF=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CMF,
         EXCIT=( _F(CHARGE = CHR_LIAI),
                 _F(CHARGE = CHR_TRAC, FONC_MULT = F_CHAR,TYPE_CHARGE = 'DIDI')),
-                
+
                 COMPORTEMENT=_F(RELATION='AnisoLemaitre',
                         DEFORMATION = 'GDEF_LOG',
                         RESI_INTE_RELA=1e-10,
@@ -179,9 +176,9 @@ VF=STAT_NON_LINE( MODELE=MO, CHAM_MATER=CMF,
 
 VF=STAT_NON_LINE( reuse=VF,MODELE=MO,CHAM_MATER=CMF, ETAT_INIT=_F( EVOL_NOLI = VF,),
                    EXCIT=(
-                _F(CHARGE = CHR_LIAI), 
+                _F(CHARGE = CHR_LIAI),
                 _F(CHARGE = CHR_TRAC,FONC_MULT = F_CHAR, TYPE_CHARGE = 'DIDI')),
-                
+
                 COMPORTEMENT=_F(RELATION='AnisoLemaitre',
                         DEFORMATION = 'GDEF_LOG',
                         RESI_INTE_RELA=1e-10,

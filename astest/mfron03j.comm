@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -16,7 +17,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # Comparaison entre la loi GdefMonoCrystal (MFront) et la loi MONOCRISTAL
-# (ECOULEMENT='MONO_VISC1',ECRO_ISOT='MONO_ISOT1',ECRO_CINE='MONO_CINE1',) 
+# (ECOULEMENT='MONO_VISC1',ECRO_ISOT='MONO_ISOT1',ECRO_CINE='MONO_CINE1',)
 # (Code_Aster) en grande deformation (SIMO_MIEHE) sur un point materiel
 # Validation basée sur EPZZ, SIZZ, GAMMA_1, GAMMA_9, GAMMA_12.
 
@@ -121,7 +122,7 @@ MATF=DEFI_MATERIAU(
                            R0 = R_0__,
                            Q = Q__,
                            b = B__,
-                           d1 = D__,  
+                           d1 = D__,
                            ),
                   GdefMono_Jacnum=_F(
                            YoungModulus1 = E_L ,

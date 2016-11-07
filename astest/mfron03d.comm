@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 #
@@ -20,7 +21,7 @@
 # (ECOULEMENT='MONO_VISC1',ECRO_ISOT='MONO_ISOT1',ECRO_CINE='MONO_CINE1')
 # (Code_Aster) sur un point materiel avec 30 grains en explicite
 # Validation basée sur SIZZ et EPZZ en comparant les résultats Code_Aster
-# et MFront sur des courbes ainsi que la différence sur SIZZ entre les 
+# et MFront sur des courbes ainsi que la différence sur SIZZ entre les
 # deux modèles
 
 import numpy as NP
@@ -50,32 +51,32 @@ ACIER=DEFI_MATERIAU(ELAS=_F(E=145200.0,
                                   ),
                     MONO_CINE1=_F(D=36.68,),
                     );
-                    
+
 Nu=0.3
 E_L=145200.
 G=E_L/2./(1.+Nu)
 
-MATFRONT=DEFI_MATERIAU( 
+MATFRONT=DEFI_MATERIAU(
                       ELAS=_F(E=145200.0, NU=0.3,),
-                      PolyCrystal_MC=_F( 
+                      PolyCrystal_MC=_F(
                            YoungModulus1 = E_L ,
                            YoungModulus2 = E_L ,
                            YoungModulus3 = E_L,
                            PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,   
-                           PoissonRatio13 = Nu,    
-                           ShearModulus12 = G,  
-                           ShearModulus23 = G,  
-                           ShearModulus13 = G,  
+                           PoissonRatio23 = Nu,
+                           PoissonRatio13 = Nu,
+                           ShearModulus12 = G,
+                           ShearModulus23 = G,
+                           ShearModulus13 = G,
                                m = 10.,   # N
                                K = 40.,   # K
-                               C = 0.,    # C  
+                               C = 0.,    # C
                                R0 = 75.5,  # R0
                                Q = 9.77,  # Q
-                               b = 19.34, # b  
-                               H = 1.,    # H   
-                               d1 = 36.68, # D  
-                               Mu = G, # Mu  
+                               b = 19.34, # b
+                               H = 1.,    # H
+                               d1 = 36.68, # D
+                               Mu = G, # Mu
                                ),
                                )
 
@@ -103,7 +104,7 @@ def DEFI_ANGLES(Ng,COMPMONO,**args):
 #LISTE_GROUP : MOT-CLE FACTEUR MASSIF de DEFI_COMPOR / POLYCRISTAL
 ###################################################################
    import copy, math
-   from random import *   
+   from random import *
    coef=360.
    LISTE_ANGLES=[]
    for ig in range(Ng):
@@ -230,7 +231,7 @@ DEFLIST1 =DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST = LINST),
 #                                  NOM_CMP ='V3',
 #                                  SUBD_NIVEAU=10),
                          ))
-                        
+
 
 SOLNL=SIMU_POINT_MAT(INFO=1,
                    COMPORTEMENT=_F(
@@ -302,20 +303,20 @@ MFEPZZ=RECU_FONCTION(TABLE=SOLMF,
 
 #pilote='INTERACTIF'
 pilote=''
-                   
+
 IMPR_FONCTION(FORMAT='XMGRACE',PILOTE=pilote,
             COURBE=(
                     _F( FONC_X=FEPZZ,    FONC_Y=FSIZZ,  LEGENDE='polycristal aster'),
                     _F( FONC_X=MFEPZZ,   FONC_Y=MFSIZZ, LEGENDE='polycristal mfront'),
                     ),
             );
-            
+
 
 DIF1=CALC_FONCTION(COMB=(
                           _F( FONCTION = FSIZZ, COEF =  1.),
                           _F( FONCTION = MFSIZZ, COEF = -1.),
                           ) );
-                   
+
 TINT1=CREA_TABLE(FONCTION= _F(FONCTION = DIF1,PARA = ('INST','NEUT1')),);
 
 TEST_TABLE(NOM_PARA='NEUT1',TYPE_TEST='SOMM_ABS',TABLE=TINT1,VALE_CALC=8.77130389904)

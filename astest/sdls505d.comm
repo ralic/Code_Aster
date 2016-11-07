@@ -1,3 +1,4 @@
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -81,7 +82,7 @@ CHARGE=AFFE_CHAR_MECA(MODELE=MOEL,
 #---------------------------------------------------------------------
 #                        RESOLUTION
 #---------------------------------------------------------------------
- 
+
 RES=MECA_STATIQUE(    MODELE=MOEL,
                       CHAM_MATER=CHAM_MAT,
                       CARA_ELEM=CAEL,EXCIT=(

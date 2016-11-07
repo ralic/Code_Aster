@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,7 +18,7 @@
 # ======================================================================
 # Comparaison entre la loi PolyCrystalDDCC (MFront) et la loi POLYCRISTAL
 # (ECOULEMENT='MONO_DD_CC') (Code_Aster) sur un point materiel avec 30 grains
-# Validation basée sur EPZZ, SIZZ en testant le maximum de la différence 
+# Validation basée sur EPZZ, SIZZ en testant le maximum de la différence
 # entre Code_Aster et MFront
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),);

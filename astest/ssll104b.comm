@@ -1,3 +1,4 @@
+# person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -213,7 +214,7 @@ CHF1=AFFE_CHAR_MECA_F(  MODELE=MO1,
                         PRE_EPSI=_F( MAILLE=('E1','E2','E4','E5','E7','E8'),
                                      EPX = EPX,
                                      KY = KY,
-                                     KZ = KZ, 
+                                     KZ = KZ,
                                    )
                     )
 
@@ -221,7 +222,7 @@ CHF2=AFFE_CHAR_MECA_F(  MODELE=MO2,
                         PRE_EPSI=_F( MAILLE=('E1','E2','E4','E5','E7','E8'),
                                      EPX = EPX,
                                      KY = KY,
-                                     KZ = KZ, 
+                                     KZ = KZ,
                                    )
                     )
 
@@ -229,7 +230,7 @@ CHF3=AFFE_CHAR_MECA_F(  MODELE=MO3,
                         PRE_EPSI=_F( MAILLE=('E1','E2','E4','E5','E7','E8'),
                                      EPX = EPX,
                                      KY = KY,
-                                     KZ = KZ, 
+                                     KZ = KZ,
                                    )
                     )
 
@@ -237,7 +238,7 @@ CHF4=AFFE_CHAR_MECA_F(  MODELE=MO4,
                         PRE_EPSI=_F( MAILLE=('E1','E2','E4','E5','E7','E8'),
                                      EPX = EPX,
                                      KY = KY,
-                                     KZ = KZ, 
+                                     KZ = KZ,
                                    )
                     )
 
@@ -245,7 +246,7 @@ CHF5=AFFE_CHAR_MECA_F(  MODELE=MO5,
                         PRE_EPSI=_F( MAILLE=('E1','E2','E4','E5','E7','E8'),
                                      EPX = EPX,
                                      KY = KY,
-                                     KZ = KZ, 
+                                     KZ = KZ,
                                    )
                     )
 
@@ -341,7 +342,7 @@ STNL1_R=STAT_NON_LINE(MODELE=MO1,
                     CARA_ELEM=CELEM1,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL1,),
-                           _F(CHARGE = CH1, FONC_MULT=FF 
+                           _F(CHARGE = CH1, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -352,7 +353,7 @@ STNL1_F=STAT_NON_LINE(MODELE=MO1,
                     CARA_ELEM=CELEM1,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL1,),
-                           _F(CHARGE = CHF1, 
+                           _F(CHARGE = CHF1,
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -364,7 +365,7 @@ STNL2_R=STAT_NON_LINE(MODELE=MO2,
                     CARA_ELEM=CELEM2,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL2,),
-                           _F(CHARGE = CH2, FONC_MULT=FF 
+                           _F(CHARGE = CH2, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -375,7 +376,7 @@ STNL2_F=STAT_NON_LINE(MODELE=MO2,
                     CARA_ELEM=CELEM2,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL2,),
-                           _F(CHARGE = CHF2, 
+                           _F(CHARGE = CHF2,
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -398,7 +399,7 @@ STNL3_F=STAT_NON_LINE(MODELE=MO3,
                     CARA_ELEM=CELEM3,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL3,),
-                           _F(CHARGE = CHF3, 
+                           _F(CHARGE = CHF3,
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'ELAS',),
@@ -421,7 +422,7 @@ STNL4_F=STAT_NON_LINE(MODELE=MO4,
                     CARA_ELEM=CELEM4,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL4,),
-                           _F(CHARGE = CHF4, 
+                           _F(CHARGE = CHF4,
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'MULTIFIBRE',),
@@ -433,7 +434,7 @@ STNL5_R=STAT_NON_LINE(MODELE=MO5,
                     CARA_ELEM=CELEM5,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL5,),
-                           _F(CHARGE = CH5, FONC_MULT=FF 
+                           _F(CHARGE = CH5, FONC_MULT=FF
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'MULTIFIBRE',),
@@ -444,7 +445,7 @@ STNL5_F=STAT_NON_LINE(MODELE=MO5,
                     CARA_ELEM=CELEM5,
                     CHAM_MATER=CHMAT,
                     EXCIT=(_F(CHARGE = CL5,),
-                           _F(CHARGE = CHF5, 
+                           _F(CHARGE = CHF5,
                             ),
                           ),
                     COMPORTEMENT=_F(RELATION = 'MULTIFIBRE',),

@@ -1,3 +1,4 @@
+# person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -276,7 +277,7 @@ Uz=F*L*L*L/3/YG/Iy
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
 # => l'usage du mot cle TOLE_MACHINE.
 # Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
-calc_aster5_p7=0.00195745414206 
+calc_aster5_p7=0.00195745414206
 calc_aster5_p8=0.0019605729106
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',

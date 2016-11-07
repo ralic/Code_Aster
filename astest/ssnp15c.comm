@@ -1,3 +1,4 @@
+# person_in_charge: david.haboussa at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -29,7 +30,7 @@ M=DEFI_GROUP(reuse =M,
                               TOUT='OUI',),);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='DKT',),);
