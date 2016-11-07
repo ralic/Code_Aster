@@ -55,6 +55,7 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
 #include "asterfort/burlnf.h"
 #include "asterfort/irrlnf.h"
 #include "asterfort/lceqvn.h"
+#include "asterfort/srilnf.h"
     common /tdim/   ndt  , ndi
 !     ------------------------------------------------------------
     character(len=16) :: loi
@@ -86,6 +87,16 @@ subroutine lcelpl(mod, loi, nmat, materd, materf,&
         vinf(5) = 0.d0
         vinf(6) = 0.d0
         vinf(7) = 0.d0
+    else if (loi(1:3).eq.'LKR') then
+        call lceqvn(4, vind, vinf)
+        vinf(5)=0.d0
+        vinf(6)=0.d0
+        vinf(7)=0.d0
+        vinf(9)=vind(9)-3.d0*materf(3,1)*(materf(7,1)-materf(6,1))
+        vinf(8)=vind(8)-deps(1)-deps(2)-deps(3)-(vinf(9)-vind(9))
+        vinf(10)=0.d0
+        vinf(11)=0.d0
+        vinf(12)=0
     else if (loi(1:6).eq.'HUJEUX') then
 ! --- PAS DE MODIFICATION PARTICULIERE
 ! --- CAS DIFFERENT DE LA GENERALITE

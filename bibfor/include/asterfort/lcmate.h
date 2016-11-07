@@ -17,7 +17,7 @@
 !
 interface
     subroutine lcmate(fami, kpg, ksp, comp, mod,&
-                      imat, nmat, tempd, tempf, impexp,&
+                      imat, nmat, tempd, tempf, tref, impexp,&
                       typma, hsr, materd, materf, matcst,&
                       nbcomm, cpmono, angmas, pgl, itmax,&
                       toler, ndt, ndi, nr, crit,&
@@ -32,6 +32,7 @@ interface
         integer :: imat
         real(kind=8) :: tempd
         real(kind=8) :: tempf
+        real(kind=8) :: tref
         integer :: impexp
         character(len=8) :: typma
         real(kind=8) :: hsr(*)

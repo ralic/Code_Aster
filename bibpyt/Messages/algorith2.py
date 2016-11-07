@@ -249,4 +249,10 @@ Contactez le support technique.
  structure de données de type %(k3)s
 """),
 
+    81 : _(u"""
+ L'état initial défini n'est pas plastiquement admissible.
+ L'état initial de contraintes est erroné ou les propriétés matériaux ne sont pas adaptées au problème posé.
+ Le calcul s'arrête en erreur fatale par précautions.
+"""),
+
 }

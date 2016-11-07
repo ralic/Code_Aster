@@ -6,7 +6,7 @@ subroutine lcelas(fami, kpg, ksp, loi, mod,&
     implicit   none
 !       ================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,6 +39,7 @@ subroutine lcelas(fami, kpg, ksp, loi, mod,&
 #include "asterfort/hujpel.h"
 #include "asterfort/lcelin.h"
 #include "asterfort/lksige.h"
+#include "asterfort/srsige.h"
 #include "asterfort/rsllin.h"
     integer :: nmat, nvi, imat, iret, kpg, ksp
 !
@@ -65,6 +66,9 @@ subroutine lcelas(fami, kpg, ksp, loi, mod,&
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR LETK
         call lksige(mod, nmat, materd, deps, sigd,&
                     sigf)
+    else if (loi(1:3).eq.'LKR') then
+!        ELASTICITE NON LINEAIRE ISOTROPE POUR LKR
+        call srsige(nmat,materd,deps,sigd,sigf)
     else if (loi(1:6).eq.'HUJEUX') then
 !        ELASTICITE NON LINEAIRE ISOTROPE POUR HUJEUX
         call hujpel(fami, kpg, ksp, etatd, mod,&

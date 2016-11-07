@@ -372,7 +372,22 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                     congep(adcome), vintp, 36, dsdeme, 1,&
                     [0.d0], retcom)
     endif
-
+    if (meca .eq. 'LKR') then
+        complg(1) = 'LKR'
+        write (complg(2),'(I16)') nvimec
+        complg(3) = compor(3)
+        mectru = .true.
+        tini = t - dt
+        numlc=59
+        cp=.false.
+        call redece('RIGI', 1, 1, ndim, typmod,&
+                    imate, complg, mult_comp, carcri, instam, instap,&
+                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
+                    vintm, option, angma1, 1, [0.d0],&
+                    cp, numlc, tini, t, tref,&
+                    congep(adcome), vintp, 36, dsdeme, 1,&
+                    [0.d0], retcom)
+    endif
     if (meca .eq. 'MFRONT') then
         complg(1) = 'MFRONT'
         write (complg(2),'(I16)') nvimec

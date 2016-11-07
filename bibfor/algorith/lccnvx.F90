@@ -62,6 +62,7 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
 #include "asterfort/lcmmvx.h"
 #include "asterfort/lglcvx.h"
 #include "asterfort/lkcnvx.h"
+#include "asterfort/srcnvx.h"
 #include "asterfort/rslcvx.h"
     integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg, nr, iret
     character(len=*) :: fami
@@ -114,6 +115,9 @@ subroutine lccnvx(fami, kpg, ksp, loi, mod,&
     else if (loi(1:4) .eq. 'LETK') then
         call lkcnvx(sigd, sigf, nvi, vind, nmat,&
                     materf, seuil, vinf)
+! ======================================================================
+    else if (loi(1:3).eq.'LKR') then
+        call srcnvx(sigd,sigf,nvi,vind,nmat,materf,seuil,vinf)
 ! ======================================================================
     else if (loi(1:6) .eq. 'HUJEUX') then
         call hujcvx(mod, nmat, materf, vinf, deps,&

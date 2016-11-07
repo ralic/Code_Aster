@@ -1,0 +1,297 @@
+# ===================================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG             
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY               
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY               
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR                  
+# (AT YOUR OPTION) ANY LATER VERSION.                                                
+#                                                                                    
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT                
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF                         
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU                   
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                                           
+#                                                                                    
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE                  
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,                      
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.                     
+# ===================================================================================
+# ::::::::::::::::::::::: CONFINEMENT DE 5 MPA ::::::::::::::::::::::::::::::::::::::
+# :::::::::::::::::::::: ALGO_INTE = NEWTON_PERT ::::::::::::::::::::::::::::::::::::
+# ;::::::::::::::::::::::: TEMPS_U1 = 7000.0 ::::::::::::::::::::::::::::::::::::::::
+# :;:::::::::::::::::::::: TEMPS_U2 = 13000.0 :::::::::::::::::::::::::::::::::::::::
+# :::::::::::::::::::::::: TEMPERATURE 0:0:100 ::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),PAR_LOT='OUI')
+# ===================================================================================
+# ::: DEF. DE CSTE. -----------------------------------------------------------------
+# ===================================================================================
+VISCOLIQ = DEFI_CONSTANTE(VALE=1.E-3)
+DVISCOL  = DEFI_CONSTANTE(VALE=0.)
+KINT     = DEFI_CONSTANTE(VALE=1.E-18)
+ALPHAT   = DEFI_CONSTANTE(VALE=1.e-4)
+# ===================================================================================
+# ::: MAILLAGE + MODELE -------------------------------------------------------------
+# ===================================================================================
+MAILLAGE = LIRE_MAILLAGE(FORMAT = 'MED')
+
+MAILLAGE = MODI_MAILLAGE(reuse = MAILLAGE,
+                         MAILLAGE = MAILLAGE,
+                         ORIE_PEAU_3D = _F(GROUP_MA = ('HAUT','DEVANT','DROITE',),),)
+
+MAILLAGE = DEFI_GROUP(reuse = MAILLAGE,
+                      MAILLAGE = MAILLAGE,
+                      CREA_GROUP_MA = _F(NOM = 'ROCHE', TOUT = 'OUI',),
+                      CREA_GROUP_NO = _F(NOM = 'ROCHES',
+                                         CRIT_NOEUD = 'SOMMET',
+                                         GROUP_MA = 'ROCHE'),)
+
+MODELE = AFFE_MODELE(MAILLAGE = MAILLAGE,
+                     AFFE = _F(TOUT = 'OUI',
+                               PHENOMENE = 'MECANIQUE',
+                               MODELISATION = '3D_THM'),)
+
+# ===================================================================================
+# ::: LISTES DE TEMPS ---------------------------------------------------------------
+# ===================================================================================
+TEMPS1 = DEFI_LIST_REEL(DEBUT = 0.,
+                        INTERVALLE = (_F(JUSQU_A = 3600., NOMBRE = 1.),
+                                      _F(JUSQU_A = 7000., NOMBRE = 1.),),)
+
+DEFLIST1 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = TEMPS1),
+                          ECHEC = _F(EVENEMENT = 'ERREUR',
+                                     ACTION = 'DECOUPE',
+                                     SUBD_METHODE = 'MANUEL',
+                                     SUBD_NIVEAU = 5, ),)
+
+TEMPS2 = DEFI_LIST_REEL(DEBUT = 7000.,
+                        INTERVALLE = (_F(JUSQU_A = 13000., 
+                                         NOMBRE = 600.,),),)
+
+# :::::: DECOUPE --------------------------------------------------------------------
+DEFLIST2 = DEFI_LIST_INST(DEFI_LIST = _F(LIST_INST = TEMPS2),
+                          ECHEC = _F(EVENEMENT = 'ERREUR',
+                                     ACTION = 'DECOUPE',
+                                     SUBD_METHODE = 'MANUEL',
+                                     SUBD_NIVEAU = 5.,
+                                     SUBD_PAS = 2.,),)
+
+# :::::: ARCHIVAGE PHASE 2 ----------------------------------------------------------
+ARCHI2 = DEFI_LIST_REEL(DEBUT = 7000.,
+                        INTERVALLE = (_F(JUSQU_A = 13000., 
+                                         NOMBRE = 600.,),),)
+
+# ===================================================================================
+# ::: MATERIAU : SOL ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+SOL = DEFI_MATERIAU(ELAS = _F(E  = 6000.0E6,
+                              NU = 0.12  ,
+                              ALPHA = 1.E-5),
+                    LKR = _F(PA        = .1e6,
+                            NELAS     = 0.,
+                            SIGMA_C   = 12.e6,
+                            GAMMA     = .8,
+                            V_1       = 2.1,
+                            V_2       = 2.2,
+                            A_2       = .65,
+                            M_0       = .1,
+                            M_1       = 4.1,
+                            Q_I       = 45.e6,
+                            XI_1      = .017,
+                            XI_2      = .030,
+                            XI_5      = .0039,
+                            F_P       = .1,
+                            A         = 1.5e-13,
+                            N         = 4.5,
+                            RHO_1     = .1,
+                            RHO_2     = .3,
+                            RHO_4     = .2,
+                            R_Q       = 1.e-4, 
+                            R_M       = 1.e-4,
+                            R_S       = 1.e-3,
+                            R_X1      = 1.e-2,
+                            R_X2      = 1.e-2,
+                            R_X5      = 1.e-2,
+                            Z         = 1000.,),
+                    COMP_THM = 'LIQU_SATU',
+                    THM_LIQU = _F(RHO = 1000.,
+                                  UN_SUR_K = 5.E-10,
+                                  ALPHA = ALPHAT,
+                                  CP = 4180.,
+                                  VISC = VISCOLIQ,
+                                  D_VISC_TEMP = DVISCOL,),
+                    THM_DIFFU = _F(RHO = 2400.,
+                                   CP = 1065.,
+                                   BIOT_COEF = 1.,
+                                   PESA_X = 0.,
+                                   PESA_Y = 0.,
+                                   PESA_Z = 0.,
+                                   PERM_IN = KINT,),
+                    THM_INIT = _F(TEMP = 273.15,
+                                  PRE1 = 0.0,
+                                  PORO = 0.14,),)
+
+# ===================================================================================
+# ::: AFFE_MATERIAU :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+CHMAT = AFFE_MATERIAU(MAILLAGE = MAILLAGE,
+                      AFFE = _F(TOUT = 'OUI', MATER = SOL,),)
+
+# ===================================================================================
+# ::: CONFINEMENT :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+PR_LATE = AFFE_CHAR_MECA(MODELE = MODELE,
+                         PRES_REP = _F(GROUP_MA = ('DEVANT','DROITE',),
+                                       PRES = 1.,),)
+
+PR_V = AFFE_CHAR_MECA(MODELE = MODELE,
+                      PRES_REP = _F(GROUP_MA = 'HAUT',
+                                    PRES = 1.,),)
+
+# ===================================================================================
+# ::: DEPL. BLOQUES POUR COND. DE SYM. ::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+DEP_SYM = AFFE_CHAR_MECA(MODELE = MODELE,
+                         FACE_IMPO = (_F(GROUP_MA = 'BAS', DZ = 0.,),
+                                      _F(GROUP_MA = 'DERRIERE', DX = 0.,),
+                                      _F(GROUP_MA = 'GAUCHE', DY = 0.,),),)
+
+# ===================================================================================
+# ::: PRESSION D'EAU IMPOSEE NULLE ::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+P0 = AFFE_CHAR_MECA(MODELE = MODELE,
+                    DDL_IMPO = _F(GROUP_NO = 'ROCHES', PRE1 = 0.,),)
+
+# ===================================================================================
+# ::: TEMPERATURE :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+TIMPO = AFFE_CHAR_MECA(MODELE = MODELE,
+                       DDL_IMPO = _F(TOUT = 'OUI', TEMP = 1.,),)
+
+# ===================================================================================
+# ::: FONC_MULT POUR CONFINEMENT ::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+EVOL_HYD = DEFI_FONCTION(NOM_PARA = 'INST',
+                         PROL_DROITE = 'CONSTANT',
+                         VALE = ( 0.0, 0.0, 7000.0, 5.E6,),)
+
+# ===================================================================================
+# ::: FONC_MULT POUR LA TEMPERATURE :::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+EVOL_TH = DEFI_FONCTION(NOM_PARA = 'INST',
+                         PROL_DROITE = 'CONSTANT',
+                         VALE = ( 0.0, 0., 7000.0, 0., 13000.0, 100.,),)
+
+# ===================================================================================
+# ::: RESOLUTION PHASE 1 : CHAR. MECA. ISO. + MONTEE EN T ---------------------------
+# ===================================================================================
+U1 = STAT_NON_LINE(MODELE = MODELE,
+                   CHAM_MATER = CHMAT,
+                   EXCIT = (_F(CHARGE = PR_LATE,
+                               FONC_MULT = EVOL_HYD,),
+                            _F(CHARGE = PR_V,
+                               FONC_MULT = EVOL_HYD,),
+                            _F(CHARGE = DEP_SYM,),
+                            _F(CHARGE = P0,),
+                            _F(CHARGE = TIMPO,
+                               FONC_MULT = EVOL_TH,),),
+                   COMPORTEMENT = _F(ALGO_INTE = 'NEWTON_PERT',
+                                     RELATION = 'KIT_THM',
+                                     RELATION_KIT = ('LKR',
+                                                     'LIQU_SATU',
+                                                     'HYDR_UTIL',),),
+                   NEWTON = _F(MATRICE = 'TANGENTE',
+                               REAC_ITER = 1,),
+                   CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                    ITER_GLOB_MAXI = 20),
+                   INCREMENT = _F(LIST_INST = DEFLIST1,),
+                   ARCHIVAGE = _F(PRECISION = 1.E-6))
+
+IMPR_RESU(RESU = _F(RESULTAT = U1),)
+
+# ===================================================================================
+# ::: POST-TRAITEMENT PHASE 1 -------------------------------------------------------
+# ===================================================================================
+U1 = CALC_CHAMP(reuse = U1,
+                RESULTAT = U1,
+                CONTRAINTE = 'SIGM_ELNO',
+                VARI_INTERNE = 'VARI_ELNO',
+                DEFORMATION = 'EPSI_ELNO',)
+
+U1 = CALC_CHAMP(reuse = U1,
+                RESULTAT = U1,
+                TOUT_ORDRE = 'OUI',
+                CONTRAINTE = 'SIGM_NOEU',
+                VARI_INTERNE = 'VARI_NOEU',
+                DEFORMATION = 'EPSI_NOEU',)
+
+# ===================================================================================
+# ::: DEPL. IMPO. PHASE DEV. ::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+# ===================================================================================
+DEP_IMP = AFFE_CHAR_MECA(MODELE = MODELE,
+                         DDL_IMPO = (_F(GROUP_MA = 'HAUT', DZ = 1.,),),)
+                
+# ===================================================================================
+# ::: COEF_MULT DEPL. IMPO. PHASE 2 -------------------------------------------------
+# ===================================================================================
+EVOL_DEV = DEFI_FONCTION(NOM_PARA = 'INST',
+                   PROL_DROITE = 'LINEAIRE',
+                   PROL_GAUCHE = 'CONSTANT',
+                   VALE = (7000., -7.59999999999999E-04, 13000., -.06,),)
+
+# ===================================================================================
+# ::: RESOLUTION PHASE 2 : CHARGEMENT DEV. ------------------------------------------
+# ===================================================================================
+U2 = STAT_NON_LINE(MODELE = MODELE,
+                   CHAM_MATER = CHMAT,
+                   EXCIT = (_F(CHARGE = PR_LATE,
+                               FONC_MULT = EVOL_HYD,),
+                            _F(CHARGE = DEP_IMP,
+                               FONC_MULT = EVOL_DEV,),
+                            _F(CHARGE = DEP_SYM,),
+                            _F(CHARGE = P0,),
+                            _F(CHARGE = TIMPO,
+                               FONC_MULT = EVOL_TH,),),
+                   ETAT_INIT = _F(EVOL_NOLI = U1),
+                   COMPORTEMENT = _F(ALGO_INTE = 'NEWTON_PERT',
+                                     RELATION = 'KIT_THM',
+                                     RELATION_KIT = ('LKR',
+                                                     'LIQU_SATU',
+                                                     'HYDR_UTIL',),),
+                   NEWTON = _F(MATRICE = 'TANGENTE',
+                               REAC_ITER = 1,),
+                   CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
+                                    ITER_GLOB_MAXI = 20),
+                   INCREMENT = _F(LIST_INST = DEFLIST2,),
+                   ARCHIVAGE = _F(LIST_INST = ARCHI2,
+                                  PRECISION = 1.E-6),)
+
+# ===================================================================================
+# ::: POST-TRAITEMENT PHASE 2 -------------------------------------------------------
+# ===================================================================================
+U2 = CALC_CHAMP(reuse = U2,
+                RESULTAT = U2,
+                CONTRAINTE = 'SIGM_ELNO',
+                VARI_INTERNE = 'VARI_ELNO',
+                DEFORMATION = 'EPSI_ELNO',)
+
+U2 = CALC_CHAMP(reuse      = U2,
+                RESULTAT   = U2,
+                TOUT_ORDRE = 'OUI',
+                CONTRAINTE = 'SIGM_NOEU',
+                VARI_INTERNE = 'VARI_NOEU',
+                DEFORMATION = 'EPSI_NOEU',)
+
+TEST_RESU(RESU=_F(INST=1.3000E4,
+                  RESULTAT=U2,
+                  NOM_CHAM='DEPL',
+                  NOEUD='NO8',
+                  NOM_CMP='DX',
+                  VALE_CALC=0.0312536801147,),)
+
+TEST_RESU(RESU=_F(INST=1.3000E4,
+                  RESULTAT=U2,
+                  NOM_CHAM='SIGM_NOEU',
+                  NOEUD='NO8',
+                  NOM_CMP='SIZZ',
+                  VALE_CALC=-14044940.6435,),)
+
+FIN()

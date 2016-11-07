@@ -1,7 +1,7 @@
 subroutine vrcpto(compor, deps, neps, fami, kpg,&
                   ksp, imate)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
 !
     aster_logical :: lpomec
     integer :: dmmeca, ii
-    parameter     ( dmmeca = 20 )
+    parameter     ( dmmeca = 21 )
     character(len=16) :: pomeca(dmmeca)
 !
     data pomeca / 'ELAS'            ,&
@@ -63,6 +63,7 @@ subroutine vrcpto(compor, deps, neps, fami, kpg,&
      &              'BARCELONE'       ,&
      &              'LAIGLE'          ,&
      &              'LETK'            ,&
+     &              'LKR'             ,&
      &              'VISC_DRUC_PRAG'  ,&
      &              'HOEK_BROWN_EFF'  ,&
      &              'HOEK_BROWN_TOT'  ,&

@@ -171,6 +171,14 @@ subroutine lcafyd(comp, materd, materf, nbcomm, cpmono,&
 ! --- INITIALISATION A XIVP
         yd(ndt+3) = vind(3)
 !
+    else if (loi(1:3).eq.'LKR') then
+! --- INITIALISATION A ZERO DU MULTIPLICATEUR PLASTIQUE
+        yd(ndt+1)=0.d0
+! --- INITIALISATION A XIP
+        yd(ndt+2)=vind(1)
+! --- INITIALISATION A XIVP
+        yd(ndt+3)=vind(3)
+!
     else if (loi .eq. 'HAYHURST') then
         call lcopil('ISOTROPE', mod, materd(1, 1), dkooh)
 !        DEFORMATION ELASTIQUE INSTANT PRECEDENT

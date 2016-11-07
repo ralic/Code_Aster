@@ -56,6 +56,7 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
 #include "asterfort/lcmmre.h"
 #include "asterfort/lcresa.h"
 #include "asterfort/lkresi.h"
+#include "asterfort/srresi.h"
     integer :: imat, nmat, nr, nvi, kpg, ksp, itmax, iret
     integer :: nfs, nsg, indi(7)
     real(kind=8) :: deps(6), epsd(6), vind(*), toler
@@ -97,7 +98,10 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod,&
         call lkresi(typmod, nmat, materf, timed, timef,&
                     nvi, vind, vinf, yd, yf,&
                     deps, nr, r)
-    else if (rela_comp .eq. 'HAYHURST') then
+    else if (rela_comp(1:3).eq.'LKR') then
+        call srresi(nmat,materf,timed,timef,&
+                    nvi,vind,vinf,yd,yf,deps,nr,r)
+    else if (rela_comp(1:8) .eq. 'HAYHURST') then
         call hayres(typmod, nmat, materd, materf, timed,&
                     timef, yd, yf, deps, dy,&
                     r, crit, iret)

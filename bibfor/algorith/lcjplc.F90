@@ -43,6 +43,7 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
 #include "asterfort/lcmmjp.h"
 #include "asterfort/lcoptg.h"
 #include "asterfort/lkijpl.h"
+#include "asterfort/srijpl.h"
     integer :: imat, nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
     integer :: kpg, ksp
     real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler, angmas(3)
@@ -75,6 +76,8 @@ subroutine lcjplc(loi, mod, angmas, imat, nmat,&
     else if (loi(1:4) .eq. 'LETK') then
         call lkijpl(nmat, mater, sigf, nr, drdy,&
                     dsde)
+    else if (loi(1:3) .eq. 'LKR') then
+        call srijpl(nmat,mater,sigf,nr,drdy,dsde)
     else if (loi.eq.'HAYHURST') then
         n2=nr-ndt
         call lcoptg(nmat, mater, nr, n2, drdy,&

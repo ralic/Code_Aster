@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,33 +16,37 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lc0059(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, tampon, typmod, icomp,&
-                      nvi, dsidep, codret)
+    subroutine lc0059(fami, kpg, ksp, imate,&
+                      compor, crit, instam, instap, neps, epsm,&
+                      deps, nsig, sigm, vim, option, angmas,&
+                      sigp, vip, tmin, tpin, trefin, tampon,&
+                      typmod, icomp, nvi, dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
-        integer :: ndim
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: epsm(6)
-        real(kind=8) :: deps(6)
-        real(kind=8) :: sigm(6)
-        real(kind=8) :: vim(*)
+        integer :: neps
+        real(kind=8) :: epsm(neps)
+        real(kind=8) :: deps(neps)
+        integer :: nsig
+        real(kind=8) :: sigm(nsig)
+        real(kind=8) :: vim(nvi)
         character(len=16) :: option
-        real(kind=8) :: angmas(3)
-        real(kind=8) :: sigp(6)
-        real(kind=8) :: vip(*)
+        real(kind=8) :: angmas(*)
+        real(kind=8) :: sigp(nsig)
+        real(kind=8) :: vip(nvi)
+        real(kind=8) :: tmin
+        real(kind=8) :: tpin
+        real(kind=8) :: trefin
         real(kind=8) :: tampon(*)
         character(len=8) :: typmod(*)
         integer :: icomp
         integer :: nvi
-        real(kind=8) :: dsidep(6, 6)
+        real(kind=8) :: dsidep(6,6)
         integer :: codret
     end subroutine lc0059
 end interface

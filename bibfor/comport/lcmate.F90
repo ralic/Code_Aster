@@ -1,5 +1,5 @@
 subroutine lcmate(fami, kpg, ksp, comp, mod,&
-                  imat, nmat, tempd, tempf, impexp,&
+                  imat, nmat, tempd, tempf, tref, impexp,&
                   typma, hsr, materd, materf, matcst,&
                   nbcomm, cpmono, angmas, pgl, itmax,&
                   toler, ndt, ndi, nr, crit,&
@@ -67,12 +67,13 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
 #include "asterfort/lcmmat.h"
 #include "asterfort/lglmat.h"
 #include "asterfort/lkimat.h"
+#include "asterfort/srimat.h"
 #include "asterfort/matect.h"
 #include "asterfort/rslmat.h"
 #include "asterfort/rsvmat.h"
 #include "asterfort/vecmat.h"
     integer :: imat, nmat, ndt, ndi, nr, nvi, i, itmax, kpg, ksp, impexp
-    real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
+    real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf, tref
     real(kind=8) :: vind(*), pgl(3, 3), angmas(3), toler, crit(*), sigd(6)
     character(len=16) :: rela_comp, comp(*), mult_comp
     character(len=8) :: mod, typma
@@ -167,7 +168,11 @@ subroutine lcmate(fami, kpg, ksp, comp, mod,&
         call lkimat(mod, imat, nmat, materd, materf,&
                     matcst, ndt, ndi, nvi, nr)
         typma='COHERENT'
-    else if (rela_comp .eq. 'HAYHURST') then
+    else if (rela_comp(1:3).eq.'LKR') then
+        call srimat(mod,imat,nmat,tempd,tempf,tref,materd,materf,&
+                    matcst,ndt,ndi,nvi,nr)
+        typma='COHERENT'
+    else if (rela_comp(1:8) .eq. 'HAYHURST') then
         call haymat(fami, kpg, ksp, mod, imat,&
                     nmat, '-', materd(1, 1), materd(1, 2), nvi,&
                     nr)

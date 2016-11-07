@@ -10,7 +10,7 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr,&
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr,&
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: dmthmc, dmhydr, dmmeca
-    parameter  ( dmthmc = 8, dmhydr = 4, dmmeca = 20 )
+    parameter  ( dmthmc = 8, dmhydr = 4, dmmeca = 21 )
     character(len=16) :: pothmc(dmthmc), pohydr(dmhydr), pomeca(dmmeca)
     character(len=16) :: valk(3)
     integer :: ikit, ii, nocc
@@ -74,7 +74,7 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr,&
                   'HOEK_BROWN_TOT'  ,'MAZARS'          ,'ENDO_ISOT_BETON' ,&
                   'ELAS_GONF'       ,'DRUCK_PRAGER'    ,'DRUCK_PRAG_N_A'  ,&
                   'JOINT_BANDIS'    ,'CZM_LIN_REG'     ,'CZM_EXP_REG'     ,&
-                  'MOHR_COULOMB'    ,'MFRONT'/
+                  'MOHR_COULOMB'    ,'MFRONT'          ,'LKR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !

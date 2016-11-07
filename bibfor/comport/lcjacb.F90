@@ -73,6 +73,7 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
 #include "asterfort/irrjac.h"
 #include "asterfort/lcmmja.h"
 #include "asterfort/lkijac.h"
+#include "asterfort/srijac.h"
     integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
     integer :: indi(7)
     real(kind=8) :: deps(*), epsd(*), toler, crit(*)
@@ -121,7 +122,12 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod,&
                     yf, deps, nr, nvi, vind,&
                     vinf, yd, dy, drdy, iret)
 !
-    else if (rela_comp .eq. 'HAYHURST') then
+    else if (rela_comp(1:3) .eq. 'LKR') then
+        call srijac(nmat,materf,timed,timef,&
+                    yf,deps,nr,nvi,vind,&
+                    vinf,yd,drdy)
+!
+    else if (rela_comp(1:8) .eq. 'HAYHURST') then
         call hayjac(mod, nmat, materf(1, 1), materf(1, 2), timed,&
                     timef, yf, deps, nr, nvi,&
                     vind, vinf, yd, dy, crit,&

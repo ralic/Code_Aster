@@ -72,6 +72,7 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
 #include "asterfort/lccong.h"
 #include "asterfort/lcmmcv.h"
 #include "asterfort/lkicvg.h"
+#include "asterfort/sricvg.h"
     integer :: typess, itmax, iter, intg, nr, icomp
     integer :: iret, nmat, nvi, indi(7)
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
@@ -109,6 +110,11 @@ subroutine lcconv(loi, yd, dy, ddy, ye,&
         call lkicvg(nr, itmax, toler, iter, r,&
                     nvi, vinf, dy, iret)
 !
+    else if (loi(1:3).eq.'LKR') then
+!
+        call sricvg(nr,itmax,toler,iter,r,&
+                    nvi,vinf,dy,iret)
+! 
     else if (loi(1:6) .eq. 'HUJEUX') then
 !
         call hujcvg(nmat, mater, nvi, vind, vinf,&

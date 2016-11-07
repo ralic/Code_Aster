@@ -170,7 +170,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! --  RECUPERATION COEF MATERIAU A T ET/OU T+DT
 !
     call lcmate(fami, kpg, ksp, comp, mod,&
-                imat, nmat, tempd, tempf, 0,&
+                imat, nmat, tempd, tempf, tref, 0,&
                 typma, hsr, materd, materf, matcst,&
                 nbcomm, cpmono, angmas, pgl, itmax,&
                 toler, ndt, ndi, nr, crit,&
@@ -193,7 +193,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
     endif
 !
 ! --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
-    if (abs(vind (nvi)) .le. epsi) then
+    if (abs(vind(nvi)) .le. epsi) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
@@ -249,6 +249,7 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
                         irtet, theta, vp, vecp, seuil,&
                         devg, devgii, drdy, tampon, crit)
 !
+
             if (irtet .eq. 1) then
                 goto 1
             else if (irtet .eq. 2) then

@@ -2,7 +2,7 @@ subroutine posvar(compor, ndim, vari, nume)
 ! ======================================================================
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -296,6 +296,40 @@ subroutine posvar(compor, ndim, vari, nume)
             goto 9999
 !----- INDICATEUR DE LA PLASTICITE
         else if (vari(1:8).eq.'IND_PLAS') then
+            nume=advime+6
+            goto 9999
+        else
+            nume=-1
+            goto 9999
+        endif
+!-----LA LOI MECANIQUE THERMO-VISCOPLASTIQUE DU CIH : LKR
+    else if (meca(1:6).eq.'LKR') then
+!----- VARIABLE D ECROUISSAGE ELASTOPLASTIQUE
+        if (vari(1:4) .eq. 'RXIP') then
+            nume=advime
+            goto 9999
+!----- DEFORMATION  DEVIATORIQUE PLASTIQUE
+        else if (vari(1:7).eq.'RGAMMAP') then
+            nume=advime+1
+            goto 9999
+!----- VARIABLE D ECROUISSAGE VISCOPLASTIQUE
+        else if (vari(1:5).eq.'RXIVP') then
+            nume=advime+2
+            goto 9999
+!----- DEFORMATION  DEVIATORIQUE VISCOPLASTIQUE
+        else if (vari(1:8).eq.'RGAMMAVP') then
+            nume=advime+3
+            goto 9999
+!----- INDICATEUR DU DOMAINE DE CONTRACTANCE/DILATANCE
+        else if (vari(1:9).eq.'RINDICDIL') then
+            nume=advime+4
+            goto 9999
+!----- INDICATEUR DE LA VISCOSITE
+        else if (vari(1:8).eq.'INDIVISC') then
+            nume=advime+5
+            goto 9999
+!----- INDICATEUR DE LA PLASTICITE
+        else if (vari(1:8).eq.'INDIPLAS') then
             nume=advime+6
             goto 9999
         else

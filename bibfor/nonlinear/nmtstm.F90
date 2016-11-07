@@ -60,6 +60,10 @@ subroutine nmtstm(compor, imatri, matsym)
         matsym = .false.
     endif
 !
+    if (compor(1)(1:3) .eq. 'LKR') then
+        matsym = .false.
+    endif
+!
     if (compor(1)(1:10) .eq. 'HOEK_BROWN') then
         matsym = .false.
     endif

@@ -649,11 +649,11 @@ implicit none
                     wkin, icomp, sigp, vip, dsidep,&
                     codret)
     case (59)
-        call lc0059(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
+        call lc0059(fami, kpg, ksp, imate,&
+                    compor, carcri, instam, instap, neps, epsm,&
+                    deps, nsig, sigm, vim, option, angmas,&
+                    sigp, vip, tempd, tempf, tref, wkin,&
+                    typmod, icomp, nvi, dsidep, codret)
     case (60)
         call lc0060(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&

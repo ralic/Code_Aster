@@ -162,7 +162,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
 !                    NB DE CMP DIRECTES/CISAILLEMENT + NB VAR. INTERNES
 !
     call lcmate(fami, kpg, ksp, comp, mod,&
-                imat, nmat, rbid, rbid, 1,&
+                imat, nmat, rbid, rbid, rbid, 1,&
                 typma, hsr, materd, materf, matcst,&
                 nbcomm, cpmono, angmas, pgl, 0,&
                 toler, ndt, ndi, nr, crit,&

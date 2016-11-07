@@ -80,6 +80,6 @@ authorized = (
 # TEST_TABLE are included in the "macro-command"
 VOCAB01(EXISTANT=existing_keywords,
         UIINFO=authorized,
-        INFO=1)
+        INFO=2)
 
 FIN()
