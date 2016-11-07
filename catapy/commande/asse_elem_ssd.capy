@@ -17,7 +17,7 @@
 # person_in_charge: mathieu.corus at edf.fr
 
 
-def asse_elem_ssd_prod(self,RESU_ASSE_SSD,**args):
+def asse_elem_ssd_prod(self, RESU_ASSE_SSD, **args):
     MTYPES = {
         'MODELE' : modele_gene,
         'NUME_DDL_GENE' : nume_ddl_gene,
@@ -25,9 +25,11 @@ def asse_elem_ssd_prod(self,RESU_ASSE_SSD,**args):
         'MASS_GENE' : matr_asse_gene_r,
               }
     for res in RESU_ASSE_SSD:
-        for mc, typ in MTYPES.items():
-            if res[mc]:
-                self.type_sdprod(res[mc], typ)
+        if res not in MTYPES:
+            continue
+
+        self.type_sdprod(RESU_ASSE_SSD[res], MTYPES[res])
+
     return None
 
 ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",

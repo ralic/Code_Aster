@@ -21,11 +21,10 @@
 def calc_gp_prod(self,TRANCHE_2D,GPMAX, **args):
   """Typage des sd_prod
   """
-  if TRANCHE_2D!=None:
+  if TRANCHE_2D:
     if TRANCHE_2D['ZONE_MAIL']== "NON":
-      for ss_cop in TRANCHE_2D:
-        if ss_cop['CHAMP_VISU']!= None:
-          self.type_sdprod(ss_cop['CHAMP_VISU'], cham_elem)
+        if TRANCHE_2D.get('CHAMP_VISU'):
+          self.type_sdprod(TRANCHE_2D['CHAMP_VISU'], cham_elem)
   if GPMAX !=None:
      self.type_sdprod(GPMAX, table_sdaster)
   return table_sdaster

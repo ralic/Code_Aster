@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,32 +16,19 @@
 # ======================================================================
 # person_in_charge: sam.cuvilliez at edf.fr
 
-def calc_essai_geomeca_prod(self,
-                            ESSAI_TD,
-                            ESSAI_TND,
-                            ESSAI_CISA_C,
-                            ESSAI_TND_C,
-                            ESSAI_TD_A,
-                            ESSAI_TD_NA,
-                            ESSAI_OEDO_C,
-                            ESSAI_ISOT_C,
-                            #ESSAI_XXX,
-                            **args):
-  List_essais = []
-  if ESSAI_TD     != None : List_essais += ESSAI_TD.List_F()
-  if ESSAI_TND    != None : List_essais += ESSAI_TND.List_F()
-  if ESSAI_CISA_C != None : List_essais += ESSAI_CISA_C.List_F()
-  if ESSAI_TND_C  != None : List_essais += ESSAI_TND_C.List_F()
-  if ESSAI_TD_A   != None : List_essais += ESSAI_TD_A.List_F()
-  if ESSAI_TD_NA   != None : List_essais += ESSAI_TD_NA.List_F()
-  if ESSAI_OEDO_C  != None : List_essais += ESSAI_OEDO_C.List_F()
-  if ESSAI_ISOT_C  != None : List_essais += ESSAI_ISOT_C.List_F()
-  #if ESSAI_XXX    != None : List_essais += ESSAI_XXX.List_F()
-  for DicoEssai in List_essais :
-    if DicoEssai.has_key('TABLE_RESU'):
-      for Table in DicoEssai['TABLE_RESU']:
-        self.type_sdprod(Table,table_sdaster)
-  return None
+def calc_essai_geomeca_prod(self, **args):
+    for key, fact in args.items():
+        if not key.startswith('ESSAI_'):
+            continue
+        if not fact:
+            continue
+        for occurrence in fact:
+            res = occurrence.get('TABLE_RESU')
+            if not res:
+                continue
+            for table in res:
+                self.type_sdprod(table, table_sdaster)
+    return None
 
 
 CALC_ESSAI_GEOMECA = MACRO(nom="CALC_ESSAI_GEOMECA",

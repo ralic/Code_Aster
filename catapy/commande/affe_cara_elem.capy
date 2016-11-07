@@ -16,11 +16,16 @@
 # ======================================================================
 # person_in_charge: jean-luc.flejou at edf.fr
 
+def force_tuple(obj):
+    """Force *obj* to be a tuple."""
+    if type(obj) not in (list, tuple):
+        obj = [obj, ]
+    return tuple(obj)
+
 
 def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                         GRILLE, MASS_REP, **args):
     """Fonction sdprod de AFFE_CARA_ELEM"""
-    from Noyau.N_types import force_tuple
     # phase de typage seul
     if args.get('__only_type__'):
         return cara_elem
@@ -51,24 +56,24 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
         for i in range(len(POUTRE)):
             i1 = i + 1
             mclf = POUTRE[i]
-            if mclf['SECTION'] == 'CERCLE':
+            if mclf.get('SECTION') == 'CERCLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
                 check( len(cara) == len(vale), sizeErr, 'POUTRE', i1)
-                if mclf['VARI_SECT']=='CONSTANT':
+                if mclf.get('VARI_SECT')=='CONSTANT':
                     rayon = valeurCara('R',  cara, vale)
                     ep    = valeurCara('EP', cara, vale, rayon)
                     check( rayon > 0.0, defErr, 'POUTRE', i1, 'R')
                     check( 0 < ep <= rayon, defErr, 'POUTRE', i1, ('R', 'EP'))
-                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
-                    if mclf['GROUP_MA'] :
+                elif mclf.get('VARI_SECT')=='HOMOTHETIQUE':
+                    if mclf.get('GROUP_MA') :
                         r_debut  = valeurCara('R_DEBUT',  cara, vale)
                         r_fin    = valeurCara('R_FIN',    cara, vale)
                         ep_debut = valeurCara('EP_DEBUT', cara, vale, r_debut)
                         ep_fin   = valeurCara('EP_FIN',   cara, vale, r_fin)
                         check( r_debut > 0.0, defErr, 'POUTRE', i1, 'R_DEBUT')
                         check( r_fin   > 0.0, defErr, 'POUTRE', i1, 'R_FIN')
-                    elif mclf['MAILLE'] :
+                    elif mclf.get('MAILLE') :
                         r_debut  = valeurCara('R1',  cara, vale)
                         r_fin    = valeurCara('R2',  cara, vale)
                         ep_debut = valeurCara('EP1', cara, vale, r_debut)
@@ -77,11 +82,11 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                         check( r_fin   > 0.0, defErr, 'POUTRE', i1, 'R2')
                     check( (0.0< ep_debut <= r_debut), defErr, 'POUTRE', i1, ('R1', 'EP1'))
                     check( (0.0< ep_fin   <= r_fin),   defErr, 'POUTRE', i1, ('R2', 'EP2'))
-            elif mclf['SECTION'] == 'RECTANGLE':
+            elif mclf.get('SECTION') == 'RECTANGLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
                 check( len(cara) == len(vale), sizeErr, 'POUTRE', i1)
-                if mclf['VARI_SECT']=='CONSTANT':
+                if mclf.get('VARI_SECT')=='CONSTANT':
                     if 'H' in cara :
                         h  = valeurCara('H',  cara, vale)
                         ep = valeurCara('EP', cara, vale, h*0.5)
@@ -96,7 +101,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                         check( hz > 0.0, defErr, 'POUTRE', i1, 'HZ')
                         check( (0< epy <= hy*0.5), defErr, 'POUTRE', i1, ('HY', 'EPY'))
                         check( (0< epz <= hz*0.5), defErr, 'POUTRE', i1, ('HZ', 'EPZ'))
-                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
+                elif mclf.get('VARI_SECT')=='HOMOTHETIQUE':
                     if 'H1' in cara :
                         h1  = valeurCara('H1',  cara, vale)
                         ep1 = valeurCara('EP1', cara, vale, h1*0.5)
@@ -123,7 +128,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                         check( (0< epy2 <= hy2*0.5), defErr, 'POUTRE', i1, 'EPY2')
                         check( (0< epz1 <= hz1*0.5), defErr, 'POUTRE', i1, 'EPZ1')
                         check( (0< epz2 <= hz2*0.5), defErr, 'POUTRE', i1, 'EPZ2')
-                elif mclf['VARI_SECT']=='AFFINE':
+                elif mclf.get('VARI_SECT')=='AFFINE':
                     hy   = valeurCara('HY',   cara, vale)
                     hz1  = valeurCara('HZ1',  cara, vale)
                     hz2  = valeurCara('HZ2',  cara, vale)
@@ -136,8 +141,8 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                     check( (0< epy  <= hy *0.5), defErr, 'POUTRE', i1, 'EPY')
                     check( (0< epz1 <= hz1*0.5), defErr, 'POUTRE', i1, 'EPZ1')
                     check( (0< epz2 <= hz2*0.5), defErr, 'POUTRE', i1, 'EPZ2')
-            elif mclf['SECTION'] == 'GENERALE':
-                if mclf['VARI_SECT']=='CONSTANT':
+            elif mclf.get('SECTION') == 'GENERALE':
+                if mclf.get('VARI_SECT')=='CONSTANT':
                     if mclf.get('CARA') is not None:
                         cara = force_tuple( mclf['CARA'] )
                         vale = force_tuple( mclf['VALE'] )
@@ -150,7 +155,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                         check( iy > 0.0, defErr, 'POUTRE', i1, 'IY')
                         check( iz > 0.0, defErr, 'POUTRE', i1, 'IZ')
                         check( jx > 0.0, defErr, 'POUTRE', i1, 'JX')
-                elif mclf['VARI_SECT']=='HOMOTHETIQUE':
+                elif mclf.get('VARI_SECT')=='HOMOTHETIQUE':
                     cara = force_tuple( mclf['CARA'] )
                     vale = force_tuple( mclf['VALE'] )
                     check( len(cara) == len(vale), sizeErr, 'POUTRE', i1)
@@ -171,7 +176,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                     check( iz2 > 0.0, defErr, 'POUTRE', i1, 'IZ2')
                     check( jx2 > 0.0, defErr, 'POUTRE', i1, 'JX2')
             # Caractéristiques des coudes
-            elif mclf['SECTION'] == 'COUDE':
+            elif mclf.get('SECTION') == 'COUDE':
                 for caraCoude in ['INDI_SIGM','INDI_SIGM_XY','INDI_SIGM_XZ','COEF_FLEX','COEF_FLEX_XY','COEF_FLEX_XZ',]:
                     if ( caraCoude in mclf ):
                         vale =  mclf[caraCoude]
@@ -181,7 +186,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
         for i in range(len(BARRE)):
             i1 = i + 1
             mclf = BARRE[i]
-            if mclf['SECTION'] == 'CERCLE':
+            if mclf.get('SECTION') == 'CERCLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
                 check( len(cara) == len(vale), sizeErr, 'BARRE', i1)
@@ -189,7 +194,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                 ep    = valeurCara('EP', cara, vale, rayon)
                 check( rayon > 0.0, defErr, 'BARRE', i1, 'R')
                 check( (0.0 < ep <= rayon), defErr, 'BARRE', i1, 'EP')
-            elif mclf['SECTION'] == 'RECTANGLE':
+            elif mclf.get('SECTION') == 'RECTANGLE':
                 cara = force_tuple( mclf['CARA'] )
                 vale = force_tuple( mclf['VALE'] )
                 check( len(cara) == len(vale), sizeErr, 'BARRE', i1)
@@ -207,7 +212,7 @@ def affe_cara_elem_prod(self, POUTRE, BARRE, COQUE, CABLE, DISCRET, DISCRET_2D,
                     check( hz > 0.0, defErr, 'BARRE', i1, 'HZ')
                     check( (0< epy <= hy*0.5), defErr, 'BARRE', i1, 'EPY')
                     check( (0< epz <= hz*0.5), defErr, 'BARRE', i1, 'EPZ')
-            elif mclf['SECTION'] == 'GENERALE':
+            elif mclf.get('SECTION') == 'GENERALE':
                 if mclf.get('CARA') is not None:
                     cara = force_tuple( mclf['CARA'] )
                     vale = force_tuple( mclf['VALE'] )
