@@ -70,9 +70,9 @@ implicit none
         call ltcrsd(result, 'G')
     endif
 !
-! - Get name of observation table
+! - Get name of reduced coordinates
 !
-    call ltnotb(result, 'OBSV_REDUIT', tabl_name)   
+    call ltnotb(result, 'COOR_REDUIT', tabl_name)   
 !
 ! - Create observation table (if necessary)
 !

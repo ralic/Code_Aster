@@ -1,9 +1,10 @@
 subroutine nmarch(numins         , modele  , mate  , carele, fonact   ,&
                   ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
                   ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
-                  ds_inout       , sdcriq  )
+                  ds_inout       , sdcriq  , ds_algorom_)
 !
 use NonLin_Datastructure_type
+use Rom_Datastructure_type
 !
 implicit none
 !
@@ -21,6 +22,7 @@ implicit none
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
+#include "asterfort/romAlgoNLTableSave.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -50,6 +52,7 @@ implicit none
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24) :: sderro, sdcriq
     character(len=24) :: modele, mate, carele
+    type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,6 +80,7 @@ implicit none
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  ds_energy        : datastructure for energy management
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
+! In  ds_algorom       : datastructure for ROM parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -164,6 +168,14 @@ implicit none
 !
         call nmarce(ds_inout, result  , sddisc, instan, nume_store,&
                     force   , ds_print)
+!
+! ----- Storing reduced parameters table (ROM)
+!
+        if (present(ds_algorom_)) then
+            if (ds_algorom_%l_rom) then
+                call romAlgoNLTableSave(nume_store, instan, ds_algorom_)
+            endif
+        endif
 !
 ! ----- End timer
 !

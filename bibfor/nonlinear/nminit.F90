@@ -369,8 +369,8 @@ implicit none
 !
 ! - Prepare storing
 !
-    call nmnoli(sddisc, sderro, ds_constitutive, ds_print , sdcrit  ,&
-                fonact, sddyna, sdpost         , model    , mate    ,&
+    call nmnoli(sddisc   , sderro, ds_constitutive, ds_print , sdcrit  ,&
+                fonact   , sddyna, sdpost         , model    , mate    ,&
                 cara_elem, sdpilo, ds_measure     , ds_energy, ds_inout,&
                 sdcriq)
 !

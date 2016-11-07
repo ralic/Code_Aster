@@ -299,7 +299,7 @@ implicit none
     call nmarch(numins         , model  , mate  , cara_elem, fonact   ,&
                 ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
                 ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
-                ds_inout       , sdcriq  )
+                ds_inout       , sdcriq  , ds_algorom)
     call onerrf('EXCEPTION+VALID', k16bid, ibid)
 !
 ! --- ETAT DU CALCUL
@@ -332,7 +332,7 @@ implicit none
         call nmarch(numins-1       , model  , mate  , cara_elem, fonact   ,&
                     ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
                     ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
-                    ds_inout       , sdcriq  )
+                    ds_inout       , sdcriq  , ds_algorom)
     endif
 !
 ! - Write messages for errors

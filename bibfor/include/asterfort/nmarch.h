@@ -19,8 +19,9 @@ interface
     subroutine nmarch(numins         , modele  , mate  , carele, fonact   ,&
                       ds_constitutive, ds_print, sddisc, sdpost, sdcrit   ,&
                       ds_measure     , sderro  , sddyna, sdpilo, ds_energy,&
-                      ds_inout       , sdcriq  )
+                      ds_inout       , sdcriq  , ds_algorom_)
         use NonLin_Datastructure_type
+        use Rom_Datastructure_type
         integer :: numins
         character(len=24) :: modele
         character(len=24) :: mate
@@ -38,5 +39,6 @@ interface
         type(NL_DS_Energy), intent(in) :: ds_energy
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24) :: sdcriq
+        type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
     end subroutine nmarch
 end interface
