@@ -125,9 +125,9 @@ CARA_ELE=AFFE_CARA_ELEM(MODELE=MODELE,
                                    CARA=('A','IZ','IY','AY','AZ','JX','EZ','EY','RY','RZ','RT',),
                                    VALE=(64.0,341.33,341.33,1.0,1.0,682.7,0.0,0.0,1.0,1.0,1.0,),),
                                 ),
-                        COQUE=(_F(GROUP_MA='SBAS',
+                        COQUE=(_F(GROUP_MA='SBAS',ANGL_REP=(45.,45.,),
                                  EPAIS=0.001,),
-                               _F(GROUP_MA='SBASM',
+                               _F(GROUP_MA='SBASM',ANGL_REP=(45.,45.,),
                                  EPAIS=1.6,),
                               ),
                         DISCRET=(_F(MAILLE=('MASA1','MBSA1',),
@@ -251,30 +251,6 @@ VECAS2=ASSE_VECTEUR(VECT_ELEM=VEC2_ELE,
                     NUME_DDL=NUMEDDL,);
 #
 
-IMPR_MACR_ELEM(MACR_ELEM_DYNA=MAEL,
-               FORMAT='MISS_3D',
-               SOUS_TITRE='NUPEC RIGIDE',
-               AMOR_REDUIT=0.01,
-               GROUP_MA_INTERF='SBAST',
-               IMPR_MODE_MECA='NON',
-               IMPR_MODE_STAT='OUI',);
-
-# IMPR_MISS_3D(MACR_ELEM_DYNA=MAEL,
-#              EXCIT=_F(VECT_ASSE=VECAS1,
-#                       FONC_MULT=FO1,),
-#              FREQ_INIT=0.1,
-#              FREQ_FIN=20.0,
-#              PAS=0.1,
-#              TITRE='NUPEC DX',);
-# 
-# IMPR_MISS_3D(MACR_ELEM_DYNA=MAEL,
-#              EXCIT=_F(VECT_ASSE=VECAS2,
-#                       FONC_MULT=FO1,),
-#              FREQ_INIT=0.1,
-#              FREQ_FIN=20.0,
-#              PAS=0.1,
-#              TITRE='NUPEC DY',);
-
 # Pour reference :
 TABSOL0 = DEFI_SOL_MISS(
    TITRE="SOL DU TEST NUPEC",
@@ -303,178 +279,110 @@ TABSOL = DEFI_SOL_MISS(
       _F(E=1.019e10,  NU=0.386, RHO=2.21e3, AMOR_HYST=0.04),
       _F(E=1.501e10,  NU=0.343, RHO=2.21e3, AMOR_HYST=0.04),
    ),
-   COUCHE_AUTO=_F(EPAIS_PHYS=(0.5,2.5,3.0,14.),SURF='OUI',HOMOGENE='NON',NUME_MATE=(1,2,3,4),NUME_MATE_SUBSTRATUM=5,),
+   COUCHE_AUTO=_F(EPAIS_PHYS=(0.5,2.5,3.0,14.),SURF='OUI',
+                  HOMOGENE='NON',NUME_MATE=(1,2,3,4),
+                  NUME_MATE_SUBSTRATUM=5,),
    INFO=2,
 )
 
+#
+# Etape de calcul des impedances et forces sismiques
+# On utilise sur toute les plateformes les fichiers generes sur
+# athosdev pour eviter la  variabilite liees a MISS3D sur clap0f0q
+# Pour regenerer ces donnees il suffit de decommenter l'appel suivant
+# a CALC_MISS
+#
 # TRAITEMENT DE MISS3D PAR EXEC_LOGICIEL
 #---------------------------------------
-
-CALC_MISS(
-  TYPE_RESU='FICHIER',
-  PROJET    = 'SDLX102A',
-  REPERTOIRE= './SDLX102A',
-    MACR_ELEM_DYNA=MAEL,
-    AMOR_REDUIT=(0.05,),
-#  UNITE_IMPR_ASTER= 26,
-    GROUP_MA_INTERF='SBAST',
-    UNITE_RESU_IMPE=38,
-    UNITE_RESU_FORC=28,
+#
+# CALC_MISS(
+#     TABLE_SOL=TABSOL,
+#     TYPE_RESU='FICHIER',
+#     MACR_ELEM_DYNA=MAEL,
+#     GROUP_MA_INTERF='SBAST',
+#     PROJET = 'SDLX102A10',
+#               PARAMETRE=_F(
+#                FREQ_MIN=7.3,
+#                FREQ_MAX=10.4,
+#                FREQ_PAS=3.1,
+#                Z0= 0.,
+#                TYPE='BINAIRE',
+#                DREF=4.,
+#                SURF='OUI',
+#                # RFIC = 1.,
+#                ALGO = 'DEPL',
+#                OFFSET_MAX=30,
+#                OFFSET_NB=300,
+#               ),
+#                UNITE_RESU_IMPE=38,
+#                UNITE_RESU_FORC=28,
+#     INFO=1,
+# )
+dyge1=CALC_MISS(
     TABLE_SOL=TABSOL,
-#  UNITE_OPTI_MISS = 31,
-#  UNITE_MODELE_SOL= 22,
+    TYPE_RESU='HARM_GENE',
+    MACR_ELEM_DYNA=MAEL,
+    BASE_MODALE=BAMO,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    AMOR_REDUIT=0.01,
+    GROUP_MA_INTERF='SBAST',
+    MODELE=MODELE,
+    PROJET = 'SDLX102A1',
+    EXCIT_HARMO=(
+        _F(VECT_ASSE=VECAS1,
+           COEF_MULT=1.,),
+    ),
               PARAMETRE=_F(
                FREQ_MIN=7.3,
                FREQ_MAX=10.4,
-               FREQ_PAS=0.1,
+               FREQ_PAS=3.1,
                Z0= 0.,
                TYPE='BINAIRE',
                DREF=4.,
                SURF='OUI',
-               # RFIC = 1.,
                ALGO = 'DEPL',
                OFFSET_MAX=30,
                OFFSET_NB=300,
-#               FICH_RESU_IMPE='../fort.38',
-#               FICH_RESU_FORC='../fort.28',
               ),
-             ) ;
+               UNITE_RESU_IMPE=38,
+               UNITE_RESU_FORC=28,
+    INFO=1,
+)
 
-# DYHA1=LIRE_MISS_3D(MACR_ELEM_DYNA=MAEL,
-#                    UNITE=27,
-#                    NOM='SDLX102A.01.h',
-#                    TYPE_RESU='HARMO',
-#                    TITRE='HARMO NUPEC DX',);
-# 
-# DYHA2=LIRE_MISS_3D(MACR_ELEM_DYNA=MAEL,
-#                    UNITE=29,
-#                    NOM='SDLX102A.02.h',
-#                    TYPE_RESU='HARMO',
-#                    TITRE='HARMO NUPEC DY',);
+dyge2=CALC_MISS(
+    TABLE_SOL=TABSOL,
+    TYPE_RESU='HARM_GENE',
+    MACR_ELEM_DYNA=MAEL,
+    BASE_MODALE=BAMO,
+    MATR_RIGI=RIGIDITE,
+    MATR_MASS=MASSE,
+    AMOR_REDUIT=0.01,
+    GROUP_MA_INTERF='SBAST',
+    MODELE=MODELE,
+    PROJET = 'SDLX102A2',
+    EXCIT_HARMO=(
+        _F(VECT_ASSE=VECAS2,
+           COEF_MULT=1.,),
+    ),
+              PARAMETRE=_F(
+               FREQ_MIN=7.3,
+               FREQ_MAX=10.4,
+               FREQ_PAS=3.1,
+               Z0= 0.,
+               TYPE='BINAIRE',
+               DREF=4.,
+               SURF='OUI',
+               ALGO = 'DEPL',
+               OFFSET_MAX=30,
+               OFFSET_NB=300,
+              ),
+               UNITE_RESU_IMPE=38,
+               UNITE_RESU_FORC=28,
+    INFO=1,
+)
 
 
-nddlgen = NUME_DDL_GENE( BASE= BAMO,
-                          STOCKAGE= 'PLEIN',);
-
-rigigen=PROJ_MATR_BASE(  BASE=BAMO,  NUME_DDL_GENE=nddlgen,
-                            MATR_ASSE=RIGIDITE );
-
-massgen=PROJ_MATR_BASE(  BASE=BAMO,  NUME_DDL_GENE=nddlgen,
-                            MATR_ASSE=MASSE );
-
-vecgen1=PROJ_VECT_BASE(  BASE=BAMO,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=VECAS1 );
-
-vecgen2=PROJ_VECT_BASE(  BASE=BAMO,  NUME_DDL_GENE=nddlgen,
-                            VECT_ASSE=VECAS2 );
-
-DEFI_FICHIER(ACTION='LIBERER', UNITE=38, );
-DEFI_FICHIER(ACTION='LIBERER', UNITE=28, );
-
-NF = 111
-NF = 33
-impe=[None]*NF
-rito=[None]*NF
-
-for k in range(1,NF):
-
-  impe[k] = LIRE_IMPE_MISS(BASE=BAMO,  NUME_DDL_GENE=nddlgen,
-                       UNITE_RESU_IMPE=38, FREQ_EXTR=7.2+0.1*k,
-                       TYPE='BINAIRE',
-                          );
-
-  rito[k]=COMB_MATR_ASSE(COMB_C=(
-                                _F(MATR_ASSE=impe[k],
-                                 COEF_C=1.0+0.j,),
-                                _F(MATR_ASSE=rigigen,
-                                 COEF_C=1.0+0.j,),
-                                 ),
-                                 SANS_CMP='LAGR',
-                                 );
-
-  if k==1:
-    dyge1 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
-                          MATR_MASS = massgen,
-                          MATR_RIGI = rito[k],
-                          SOLVEUR=_F( METHODE='LDLT', ),
-                          FREQ = 7.2+0.1*k,
-                          AMOR_MODAL=_F(AMOR_REDUIT= (0.01,0.01,0.01,
-                                        0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.0,),),
-                          EXCIT =_F ( VECT_ASSE_GENE = vecgen1,
-                                      COEF_MULT= 1.,
-                                  ),
-                        );
-
-    dyge2 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
-                          MATR_MASS = massgen,
-                          MATR_RIGI = rito[k],
-                          SOLVEUR=_F( METHODE='LDLT', ),
-                          FREQ = 7.2+0.1*k,
-                          AMOR_MODAL=_F(AMOR_REDUIT= (0.01,0.01,0.01,
-                                        0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.0,),),
-                          EXCIT =_F ( VECT_ASSE_GENE = vecgen2,
-                                      COEF_MULT= 1.,
-                                  ),
-                        );
-
-  else:
-    dyge1 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
-                          reuse=dyge1, RESULTAT=dyge1,
-                          MATR_MASS = massgen,
-                          MATR_RIGI = rito[k],
-                          SOLVEUR=_F( METHODE='LDLT', ),
-                          FREQ = 7.2+0.1*k,
-                          AMOR_MODAL=_F(AMOR_REDUIT= (0.01,0.01,0.01,
-                                        0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.0,),),
-                          EXCIT =_F ( VECT_ASSE_GENE = vecgen1,
-                                      COEF_MULT= 1.,
-                                  ),
-                        );
-
-    dyge2 = DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='GENE',
-                          reuse=dyge2, RESULTAT=dyge2,
-                          MATR_MASS = massgen,
-                          MATR_RIGI = rito[k],
-                          SOLVEUR=_F( METHODE='LDLT', ),
-                          FREQ = 7.2+0.1*k,
-                          AMOR_MODAL=_F(AMOR_REDUIT= (0.01,0.01,0.01,
-                                        0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.01,0.01,0.01,0.01,0.01,0.01,
-                                        0.0,),),
-                          EXCIT =_F ( VECT_ASSE_GENE = vecgen2,
-                                      COEF_MULT= 1.,
-                                  ),
-                        );
 
 
 DXA1=RECU_FONCTION(RESU_GENE = dyge1,
@@ -516,21 +424,21 @@ MDYB1=CALC_FONCTION(EXTRACTION=_F(FONCTION=DYB1,
 
 TEST_FONCTION(VALEUR=(_F(VALE_CALC=0.000113210871228,
                          VALE_REFE=1.13207E-4,
-                         VALE_PARA=7.2999999999999998,
+                         VALE_PARA=7.3,
                          REFERENCE='AUTRE_ASTER',
                          PRECISION=1.E-3,
                          FONCTION=MDXA1,),
                       _F(VALE_CALC=0.000112618510152,
                          VALE_REFE=1.12606E-4,
-                         VALE_PARA=7.2999999999999998,
+                         VALE_PARA=7.3,
                          REFERENCE='AUTRE_ASTER',
                          PRECISION=1.E-3,
                          FONCTION=MDXB1,),
-                      _F(VALE_CALC=2.50591561058e-05,
+                      _F(VALE_CALC=2.463929009375E-05,
                          VALE_REFE=2.5023499999999999E-05,
-                         VALE_PARA=10.300000000000001,
+                         VALE_PARA=10.4,
                          REFERENCE='AUTRE_ASTER',
-                         PRECISION=2.E-3,
+                         PRECISION=2.E-2,
                          FONCTION=MDYA1,),
                       _F(VALE_CALC=2.45365421447e-05,
                          VALE_REFE=2.4512399999999999E-05,
