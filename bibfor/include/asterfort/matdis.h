@@ -16,7 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine matdis(matd)
+            subroutine matdis(matd, verbose)
               character(len=3) :: matd
+              aster_logical, intent(in), optional :: verbose
             end subroutine matdis
           end interface 

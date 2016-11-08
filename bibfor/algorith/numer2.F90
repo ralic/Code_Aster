@@ -71,7 +71,7 @@ implicit none
     character(len=14) :: nume_ddl , nume_ddl_old, moloc
     character(len=24) :: sd_iden_rela
     character(len=3) :: matd
-    logical :: l_matr_dist
+    aster_logical :: l_matr_dist, verbose
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,8 @@ implicit none
         sd_iden_rela = sd_iden_relaz
     endif
 !
-    call matdis(matd)
+    verbose=.false.
+    call matdis(matd, verbose)
     ASSERT(matd.eq.'OUI' .or. matd.eq.'NON')
     if (matd.eq.'OUI') then
         l_matr_dist = .true.

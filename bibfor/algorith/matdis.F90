@@ -1,4 +1,4 @@
-subroutine matdis(matd)
+subroutine matdis(matd, verbose )
     implicit none
 #include "asterc/getexm.h"
 #include "asterfort/assert.h"
@@ -29,12 +29,18 @@ subroutine matdis(matd)
 !
 ! ----------------------------------------------------------------------
     character(len=3) :: matd
+    aster_logical, intent(in), optional :: verbose 
 ! ----------------------------------------------------------------------
     integer :: ibid, eximc, eximo
+    aster_logical :: verbose_loc
     character(len=8) :: modele, partit
     character(len=19) :: ligrmo
 
 !   -- MATR_DISTRIBUEE ?
+    verbose_loc=.true.
+    if ( present(verbose)  ) then
+        verbose_loc = verbose 
+    endif  
     matd = 'NON'
     eximc = getexm('SOLVEUR', 'MATR_DISTRIBUEE')
     eximo = getexm(' ', 'MODELE')
@@ -49,7 +55,9 @@ subroutine matdis(matd)
         call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
         if (partit.eq.' ' .and. matd.eq.'OUI') then
             matd = 'NON'
-            call utmess('I', 'ASSEMBLA_3')
+            if ( verbose_loc ) then 
+               call utmess('I', 'ASSEMBLA_3')
+            endif 
         endif
     endif
 end subroutine
