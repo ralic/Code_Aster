@@ -45,7 +45,6 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
     DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
     STAT_NON_LINE = self.get_cmd('STAT_NON_LINE')
     CALC_CHAMP = self.get_cmd('CALC_CHAMP')
-    CREA_CHAMP = self.get_cmd('CREA_CHAMP')
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     RECU_TABLE = self.get_cmd('RECU_TABLE')
     DEFI_MATERIAU = self.get_cmd('DEFI_MATERIAU')
@@ -394,12 +393,23 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
             NOM_CHAM='FORC_NODA',
             INST=__TMAX)
 
+        __REAC0 = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
+                            OPERATION='AFFE',
+                            MODELE=MODELE,
+                            AFFE=_F(TOUT='OUI',
+                                    NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','GLIS','SITY'),
+                                    VALE=(0.,0.,0.,0.,0.,0.,0.,0.)), )
+        
+        
         __REAC = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                             OPERATION='ASSE',
                             MODELE=MODELE,
-                            ASSE=_F(GROUP_MA=__GROUP_MA_A,
+                            ASSE=(_F(TOUT='OUI',
+                                    CHAM_GD=__REAC0,
+                                    COEF_R=1.), 
+                                  _F(GROUP_MA=__GROUP_MA_A,
                                     CHAM_GD=__REA,
-                                    COEF_R=-1.), )
+                                    COEF_R=-1.), ))
 
         _F_CA = AFFE_CHAR_MECA(MODELE=MODELE,
                                VECT_ASSE=__REAC)
@@ -495,11 +505,14 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
         motscle5['DDL_IMPO'] = []
         motscle5['RELA_CINE_BP'] = []
         motscle3 = {}
-        motscle3['AFFE'] = []
+        motscle3['AFFE'] = [_F(TOUT='OUI', NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','GLIS','SITY'),
+                                                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.)  )]
         motscle3a = {}
-        motscle3a['AFFE'] = []
+        motscle3a['AFFE'] = [_F(TOUT='OUI', NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','GLIS','SITY'),
+                                                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.)  )]
         motscle3b = {}
-        motscle3b['AFFE'] = []
+        motscle3b['AFFE'] = [_F(TOUT='OUI', NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','GLIS','SITY'),
+                                                      VALE=(0.,0.,0.,0.,0.,0.,0.,0.)  )]
         motscle6 = {}
         motscle6['DDL_IMPO'] = []
         __ActifActif = False
