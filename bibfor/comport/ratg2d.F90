@@ -59,7 +59,7 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
 !
 ! Declaration of integer type variables
     integer :: itri, iorder, mmax, nmax, mxiter
-    integer :: i, j, ii, jj, mm, itjac1
+    integer :: ii, jj, mm, itjac1
 !
 ! Declaration of integer type variables
     aster_logical :: epflag

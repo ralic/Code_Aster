@@ -89,18 +89,18 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
     real(kind=8) :: r2bulk, r1d3, eetv
     real(kind=8) :: pt, eetvd3, pstrs1, pstrs2, pstrs3, smct
     real(kind=8) :: phia, phib, phic, res
-    real(kind=8) :: consta, ddgama, dgama, dmax1, dgamc
+    real(kind=8) :: consta, ddgama, dgama, dgamc
     real(kind=8) :: smcta, smctb, smctc, constb, drvaa
     real(kind=8) :: drvab, drvba, drvbb, r1ddet, ddgamb, dgamb
     real(kind=8) :: resnor, factor, aux1, aux2, aux3
-    real(kind=8) :: cotphi, ddepv, s1, s2, s3, sttv
+    real(kind=8) :: ddepv, s1, s2, s3, sttv
     real(kind=8) :: r0, r1, r2, r3, r4, small, tol, sqr
     real(kind=8) :: apex, edge, ifplas, sufail
     real(kind=8) :: tr(nmax), p, r1nu, r1ny
 !
 ! Declaration of integer type variables
-    integer :: icode(nmax), ndt, ndi, i, j, ii, jj, mm
-    integer :: mxiter, indic(mmax), nbmeca, index(3,2)
+    integer :: icode(nmax), ndt, ndi, i, ii, jj, mm
+    integer :: mxiter, indic(mmax), nbmeca
 !
 ! Declaration of integer type variables
     aster_logical :: epflag
@@ -137,21 +137,8 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
         outofp=.true.
     endif
 !
-!     epflag=.true.
     epflag=.false.
 !
-!     if (epflag) then
-!         write(6,'(A)')'!'
-!         write(6,'(A)')'!-----------------------------------------!'
-!         write(6,'(A)')'!                                         !'
-!         write(6,'(A)')'!                 RANKINE                 !'
-!         write(6,'(A)')'!                                         !'
-!         write(6,'(A)')'!-----------------------------------------!'
-!         write(6,'(A)')'!'
-!         write(6,'(3(A),L)')'! * MODELISATION=',mod,' OUT OF PLANE =',&
-!         outofp
-!         write(6,'(3(A,I2))')'! * NDIM   =',ndim,' NDT =',ndt,' NDI =',ndi
-!     endif
 !
 ! Remove SQRT(2) from extradiagonal terms of input strain and stress
 ! ------------------------------------------------------------------
@@ -244,11 +231,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
         strait(6)=r1nu*strest(6)
     endif
 !
-!     if (epflag) then
-!         write(6,'(A,6(1X,E15.8))')'! * STRAIT =',(strait(i),i=1,ndt)
-!         write(6,'(A,6(1X,E15.8))')'! * STRESM =',(stresm(i),i=1,ndt)
-!         write(6,'(A,6(1X,E15.8))')'! * STREST =',(strest(i),i=1,ndt)
-!     endif
 !
 ! Compute eigen-stress for prediction: pstrs1, pstrs2, pstrs3
     call mcpstr(strest, tridim, pstrs, eigprj, ii, jj, mm, codret)
@@ -259,77 +241,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
     indic(1)=ii
     indic(2)=mm
     indic(3)=jj
-!
-!     if (epflag) then
-!         write(6,'(A)')'!'
-!         write(6,'(A)')'! CALCUL DES VALEURS ET VECTEURS PROPRES DE SIGMA'
-!         write(6,'(A)')'!'
-!         write(6,'(A,3(1X,E15.8))')'! * SIGM_PRINC =',&
-!         pstrs1, pstrs2, pstrs3
-! !
-!         write(6,'(A)')'!'
-!         if (.not.tridim) then
-!             write(6,'(A)')'|   DIRE_PRINC_1   |   DIRE_PRINC_2   |'
-!         else
-!             write(6,'(A)')&
-!             '|   DIRE_PRINC_1   |   DIRE_PRINC_2   |   DIRE_PRINC_3   |'
-!         endif
-!         do i = 1, ndi
-!             write(6,'(3(1X,E15.8))')(eigprj(i,j),j=1,ndi)
-!         enddo
-! !
-!         write(6,'(A)')'!'
-!         write(6,'(A)')'! EIGENBASIS : M_AB = N_A * N_B'
-! ! ---2D case
-!         if ((.not.tridim) .and. outofp) then
-! !
-!             write(6,'(A)')&
-!             '!      M_11      |      M_22      |      M_33      |      M_12'
-!             do i = 1, ndi+1
-!                 write(6,'(4(1X,E15.8))')&
-!                 (eigprj(i,j)*eigprj(i,j),j=1,ndi+1),eigprj(i,1)*eigprj(i,2)
-!             enddo
-! !
-!             write(6,'(4(1X,E15.8))')&
-!                 (eigprj(1,j)*eigprj(2,j),j=1,ndi),r0,eigprj(1,1)*eigprj(2,2)
-! !
-!         elseif (.not.tridim) then
-! !
-!             write(6,'(A)')'!      M_11      |      M_22      |      M_12'
-!             do i = 1, ndi
-!                 write(6,'(3(1X,E15.8))')&
-!                 (eigprj(i,j)*eigprj(i,j),j=1,ndi),eigprj(i,1)*eigprj(i,2)
-!             enddo
-! !
-!             write(6,'(3(1X,E15.8))')&
-!                 (eigprj(1,j)*eigprj(2,j),j=1,ndi),eigprj(1,1)*eigprj(2,2)
-! ! ---3D case
-!         else
-!             write(6,'(A,A)')&
-!             '!      M_11       |       M_22       |       M_33       |',&
-!              '      M_12       |       M_13       |       M_23'
-!             index(1,1)=1
-!             index(2,1)=1
-!             index(3,1)=2
-!             index(1,2)=2
-!             index(2,2)=3
-!             index(3,2)=3
-!             do i = 1, ndi
-!                 write(6,'(6(1X,E15.8))')&
-!                   (eigprj(i,j)*eigprj(i,j),j=1,ndi),&
-!                   (eigprj(i,index(j,1))* &
-!                    eigprj(i,index(j,2)),j=1,ndi)
-!             enddo
-! !
-!             do i = 1, ndi
-!                 write(6,'(6(1X,E15.8))')&
-!                   (eigprj(index(i,1),j)*eigprj(index(i,2),j),j=1,ndi),&
-!                   (eigprj(index(i,1),index(j,1))* &
-!                    eigprj(index(i,2),index(j,2)),j=1,ndi)
-!             enddo
-!         endif
-! ! ---End of Verification
-!     endif
 !
 ! ==================================================================
 !
@@ -525,12 +436,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
     factor=(abs(smcta)+abs(smctb)+abs(smctc))
     if (factor .ne. r0) resnor=resnor/factor
 !
-!     if (epflag) then
-!         write(6, '(4(A,E15.8))')&
-!         '! * PHIA =',phia,' PHIB =',phib,' PHIC =',phic
-!         write(6, '(4(A,E15.8))') '! * RESNOR =',resnor
-!     endif
-!
     if (resnor .le. tol) then
 ! Set initial guess for volumetric plastic strain increment DEPV
         res   =cohe-pt
@@ -544,14 +449,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
         s2   =p
         s3   =p
         apex =r1
-!
-!         if (epflag) then
-!             write(6, '(A)') '!'
-!             write(6, '(A)') '!!! RETURN TO APEX !!!'
-!             write(6, '(A)') '!'
-!             write(6, '(4(A,E15.8))') &
-!             '! * S1=',s1,' S2=',s2,' S3=',s3
-!         endif
 !
         goto 70
     endif
@@ -665,23 +562,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
 !
     endif
 !
-!     if (epflag) then
-!         write(6,'(A)')'!(^_^)'
-!         write(6,'(A)')'!(^_^) END OF INTEGRATION (^_^)'
-!         write(6,'(A)')'!(^_^)'
-!     endif
-!
-! ================================================================
-!
-!         If OPTION ='FULL_MECA', compute
-!         Consistent Stiffness Matrix
-!         ---------------------------
-!
-!         If OPTION ='RIGI_MECA', compute
-!         Tangent Stiffness Matrix
-!         ---------------------------
-!
-! ================================================================
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
