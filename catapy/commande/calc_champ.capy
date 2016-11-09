@@ -72,8 +72,7 @@ CALC_CHAMP=OPER(nom="CALC_CHAMP",op=52,sd_prod=calc_champ_prod,reentrant='f',
          TYPE_CHARGE  = SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",),),),
 
      # Bloc lineaire
-     b_lineaire  = BLOC(condition = "AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,\
-                                                          comb_fourier,mult_elas,fourier_elas,mode_flamb)",
+     b_lineaire  = BLOC(condition = """AsType(RESULTAT) in (evol_elas,dyna_trans,dyna_harmo,mode_meca,comb_fourier,mult_elas,fourier_elas,mode_flamb)""",
          CONTRAINTE   = SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**',
                              fr=tr("Options pour le calcul de contraintes et efforts generalises"),
                              into=C_NOM_CHAM_INTO(phenomene='CONTRAINTE',categorie='lin'),),

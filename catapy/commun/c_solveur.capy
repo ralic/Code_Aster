@@ -224,7 +224,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #  RENUM
    _BlocMF['RENUM'] = SIMP(statut='f', typ='TXM', defaut="METIS", into=("MD", "MDA", "METIS", ), )
 
-   
+
 
    _BlocLD['RENUM'] = SIMP(statut='f', typ='TXM', defaut="RCMK", into=("RCMK",), )
 
@@ -442,9 +442,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
                                                          fr=tr("Paramètres du préconditionneur Lagrangien Augmenté BLOC_LAGR"),
                                                          **_BlocPE_LAGAUG
                                                          ),
-                                     b_autres     = BLOC(condition = "PRE_COND == 'JACOBI' or \
-                                                                      PRE_COND == 'SOR'    or \
-                                                                      PRE_COND == 'SANS'",
+                                     b_autres     = BLOC(condition = "PRE_COND in ('JACOBI','SOR','SANS')",
                                                          **_BlocXX_Autres
                                                          ),
                                      **_BlocPE

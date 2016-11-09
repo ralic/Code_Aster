@@ -38,7 +38,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
             GROUP_MA    = SIMP( statut='f',typ=grma,validators=NoRepeat(),max='**'),
             MAILLE      = SIMP( statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
             RELATION    = SIMP( statut='o',typ='TXM',defaut="ELAS",into=C_RELATION(COMMAND)),
-            b_monox     = BLOC( condition = "RELATION == 'MONOCRISTAL' ", 
+            b_monox     = BLOC( condition = "RELATION == 'MONOCRISTAL' ",
                                 fr=tr("SD issue de DEFI_COMPOR"),
                                 COMPOR          = SIMP(statut='o',typ=compor_sdaster,max=1),
                               ),
@@ -46,7 +46,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 fr=tr("SD issue de DEFI_COMPOR"),
                                 COMPOR          = SIMP(statut='o',typ=compor_sdaster,max=1),
                               ),
-            b_umat      = BLOC( condition = "RELATION == 'UMAT' ", 
+            b_umat      = BLOC( condition = "RELATION == 'UMAT' ",
                                 fr=tr("Comportement utilisateur de type UMAT"),
                                 NB_VARI         = SIMP(statut='o',typ='I',max=1,
                                 fr=tr("Nombre de variables internes")),
@@ -55,7 +55,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 NOM_ROUTINE     = SIMP(statut='o', typ='TXM',
                                 fr=tr("Nom de la routine UMAT dans la bibliothèque")),
                               ),
-            b_mfront    = BLOC( condition = "RELATION == 'MFRONT' ", 
+            b_mfront    = BLOC( condition = "RELATION == 'MFRONT' ",
                                 fr=tr("Comportement utilisateur de type MFRONT"),
                                 LIBRAIRIE       = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
                                 fr=tr("Chemin vers la bibliothèque dynamique pour MFRONT")),
@@ -67,7 +67,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 ALGO_CPLAN      = SIMP(statut='f', typ='TXM', defaut="DEBORST",
                                                        into=('DEBORST','ANALYTIQUE'),),
                               ),
-            b_kit_ddi   = BLOC( condition = "RELATION == 'KIT_DDI' ", 
+            b_kit_ddi   = BLOC( condition = "RELATION == 'KIT_DDI' ",
                                 fr=tr("relations de couplage fluage-plasticite"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',min=2,max=2,
                                                       validators=NoRepeat(),
@@ -104,9 +104,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         ),
                                                       ),
                               ),
-            b_kit_thm   = BLOC( condition = "RELATION in ['KIT_HHM','KIT_HH', 'KIT_H',\
-                                                         'KIT_HM','KIT_THHM', 'KIT_THH',\
-                                                         'KIT_THM','KIT_THV']",
+            b_kit_thm   = BLOC( condition = "RELATION in ['KIT_HHM','KIT_HH', 'KIT_H', 'KIT_HM','KIT_THHM', 'KIT_THH', 'KIT_THM','KIT_THV']",
                                 fr=tr("lois de comportements thermo-hydro-mecaniques"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',max=9,
                                                       validators=NoRepeat(),
@@ -150,7 +148,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         "HYDR_ENDO",
                                                         ),
                                                      ),
-                                b_mfr_thm   = BLOC( condition = "'MFRONT' in RELATION_KIT",
+                                b_mfr_thm   = BLOC( condition = """'MFRONT' in value("RELATION_KIT")""",
                                     fr=tr("Comportement utilisateur meca THM de type MFRONT"),
                                     LIBRAIRIE   = SIMP(statut='o', typ='TXM',
                                     fr=tr("Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"),
@@ -165,23 +163,11 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                        ),
                                     ALGO_CPLAN  = SIMP(statut='f', typ='TXM',
                                                        defaut="DEBORST",
-                                                       into=('DEBORST','ANALYTIQUE'), 
+                                                       into=('DEBORST','ANALYTIQUE'),
                                                       ),
                                                   ),
                               ),
-            b_kit_meta  = BLOC( condition = "RELATION in ('META_LEMA_ANI','META_P_CL_PT_RE',\
-                                                          'META_P_CL_PT','META_P_CL_RE',\
-                                                          'META_P_CL','META_P_IL_PT_RE',\
-                                                          'META_P_IL_PT','META_P_IL_RE',\
-                                                          'META_P_IL','META_P_INL_PT_RE',\
-                                                          'META_P_INL_PT','META_P_INL_RE',\
-                                                          'META_P_INL', 'META_V_CL_PT_RE',\
-                                                          'META_V_CL_PT','META_V_CL_RE',\
-                                                          'META_V_CL','META_V_IL_PT_RE',\
-                                                          'META_V_IL_PT','META_V_IL_RE',\
-                                                          'META_V_IL','META_V_INL_PT_RE',\
-                                                          'META_V_INL_PT','META_V_INL_RE',\
-                                                          'META_V_INL')",
+            b_kit_meta  = BLOC( condition = """value("RELATION").startswith('META_')""",
                                 fr=tr("nombre de phases metallurgiques"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',max=1,
                                                       validators=NoRepeat(),
@@ -204,15 +190,12 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
     else:
         opts = {}
         if COMMAND == 'STAT_NON_LINE' or 'DYNA_NON_LINE':
-            opts['b_crirupt'] = BLOC(condition =
-                    "RELATION in ('VMIS_ISOT_LINE','VMIS_ISOT_TRAC','VISCOCHAB','VISC_ISOT_LINE','VISC_ISOT_TRAC',)",
+            opts['b_crirupt'] = BLOC(condition = "RELATION in ('VMIS_ISOT_LINE','VMIS_ISOT_TRAC','VISCOCHAB','VISC_ISOT_LINE','VISC_ISOT_TRAC',)",
                                    fr=tr("Critere de rupture selon une contrainte critique"),
                     POST_ITER    =SIMP(statut='f',typ='TXM',into=("CRIT_RUPT",), ),
                                   )
         if COMMAND == 'STAT_NON_LINE':
-            opts['b_anneal'] = BLOC(condition =
-                    "RELATION in ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB',\
-                                   'VMIS_CIN2_CHAB')",
+            opts['b_anneal'] = BLOC(condition = "RELATION in ('VMIS_ISOT_LINE','VMIS_CINE_LINE','VMIS_ECMI_LINE','VMIS_ISOT_TRAC','VMIS_CIN1_CHAB','VMIS_CIN2_CHAB')",
                                    fr=tr("Restauration d'écrouissage"),
                     POST_INCR    =SIMP(statut='f',typ='TXM',into=("REST_ECRO",), ),
                                   )
@@ -230,7 +213,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 fr=tr("SD issue de DEFI_COMPOR"),
                                 COMPOR =SIMP(statut='o',typ=compor_sdaster,max=1),
                               ),
-            b_umat      = BLOC( condition = "RELATION == 'UMAT' ", 
+            b_umat      = BLOC( condition = "RELATION == 'UMAT' ",
                                 fr=tr("Comportement utilisateur de type UMAT"),
                                 NB_VARI         = SIMP(statut='o',typ='I',max=1,
                                 fr=tr("Nombre de variables internes")),
@@ -239,7 +222,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 NOM_ROUTINE     = SIMP(statut='o', typ='TXM',
                                 fr=tr("Nom de la routine UMAT dans la bibliothèque")),
                               ),
-            b_mfront    = BLOC( condition = "RELATION == 'MFRONT' ", 
+            b_mfront    = BLOC( condition = "RELATION == 'MFRONT' ",
                                 fr=tr("Comportement utilisateur de type MFRONT"),
                                 LIBRAIRIE       = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
                                 fr=tr("Chemin vers la bibliothèque dynamique pour MFRONT")),
@@ -251,7 +234,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                 ALGO_CPLAN      = SIMP(statut='f', typ='TXM', defaut="DEBORST",
                                                        into=('DEBORST','ANALYTIQUE'),),
                               ),
-            b_kit_ddi   = BLOC( condition = "RELATION == 'KIT_DDI' ", 
+            b_kit_ddi   = BLOC( condition = "RELATION == 'KIT_DDI' ",
                                 fr=tr("relations de couplage fluage-plasticite"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',min=2,max=2,
                                                       validators=NoRepeat(),
@@ -288,9 +271,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         ),
                                                       ),
                               ),
-            b_kit_thm   = BLOC( condition = "RELATION in ['KIT_HHM','KIT_HH', 'KIT_H',\
-                                                         'KIT_HM','KIT_THHM', 'KIT_THH',\
-                                                         'KIT_THM','KIT_THV']",
+            b_kit_thm   = BLOC( condition = "RELATION in ['KIT_HHM','KIT_HH', 'KIT_H','KIT_HM','KIT_THHM', 'KIT_THH','KIT_THM','KIT_THV']",
                                 fr=tr("lois de comportements thermo-hydro-mecaniques"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',max=9,
                                                       validators=NoRepeat(),
@@ -334,7 +315,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                         "HYDR_ENDO",
                                                         ),
                                                      ),
-                                b_mfr_thm   = BLOC( condition = "'MFRONT' in RELATION_KIT",
+                                b_mfr_thm   = BLOC( condition = """'MFRONT' in value("RELATION_KIT")""",
                                     fr=tr("Comportement utilisateur meca THM de type MFRONT"),
                                     LIBRAIRIE   = SIMP(statut='o', typ='TXM',
                                     fr=tr("Chemin vers la bibliothèque dynamique définissant le comportement MFRONT"),
@@ -349,25 +330,13 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                        ),
                                     ALGO_CPLAN  = SIMP(statut='f', typ='TXM',
                                                        defaut="DEBORST",
-                                                       into=('DEBORST','ANALYTIQUE'), 
+                                                       into=('DEBORST','ANALYTIQUE'),
                                                       ),
                                     RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
                                     ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
                                                   ),
                               ),
-            b_kit_meta  = BLOC( condition = "RELATION in ('META_LEMA_ANI','META_P_CL_PT_RE',\
-                                                          'META_P_CL_PT','META_P_CL_RE',\
-                                                          'META_P_CL','META_P_IL_PT_RE',\
-                                                          'META_P_IL_PT','META_P_IL_RE',\
-                                                          'META_P_IL','META_P_INL_PT_RE',\
-                                                          'META_P_INL_PT','META_P_INL_RE',\
-                                                          'META_P_INL', 'META_V_CL_PT_RE',\
-                                                          'META_V_CL_PT','META_V_CL_RE',\
-                                                          'META_V_CL','META_V_IL_PT_RE',\
-                                                          'META_V_IL_PT','META_V_IL_RE',\
-                                                          'META_V_IL','META_V_INL_PT_RE',\
-                                                          'META_V_INL_PT','META_V_INL_RE',\
-                                                          'META_V_INL')",
+            b_kit_meta  = BLOC( condition = """value("RELATION").startswith('META_')""",
                                 fr=tr("nombre de phases metallurgiques"),
                                 RELATION_KIT    =SIMP(statut='o',typ='TXM',max=1,
                                                       validators=NoRepeat(),

@@ -376,8 +376,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
          b_affe_continue = BLOC(condition = "FORMULATION == 'CONTINUE'",
                                 ZONE=FACT(statut='o',
                                           max='**',
-# -- Method for contact                                 
-                                          
+# -- Method for contact
+
                                           ALGO_CONT       =SIMP(statut='f',typ='TXM',defaut="STANDARD",
                                                                 into=("STANDARD","PENALISATION","LAC"),),
 
@@ -385,7 +385,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                           fr=tr("Paramètres de la formulation Lagrangienne"),
                                                           COEF_CONT = SIMP(statut='f',typ='R',defaut=100.E+0),
                                                           ),
-                                                          
+
                                           b_cont_pena=BLOC(condition = "ALGO_CONT == 'PENALISATION' ",
                                                            fr=tr("Paramètres de la méthode pénalisée"),
                                                            COEF_PENA_CONT  =SIMP(statut='o',typ='R'),
@@ -477,7 +477,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                                 into=("INITIAL","ACTUALISE",),),
                                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO",
                                                                                 into=("AUTO",),),
-                                                                         
+
                                                           GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
                                                           GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max=1),
                                                           CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE",
@@ -491,8 +491,7 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                           regles=(EXCLUS('SANS_NOEUD_FR','SANS_GROUP_NO_FR'),),
                                                   SANS_NOEUD_FR    =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
                                                   SANS_GROUP_NO_FR =SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
-                                                            b_sans_group_no_frot=BLOC(condition = " SANS_GROUP_NO_FR != None or \
-                                                                                                    SANS_NOEUD_FR != None ",
+                                                            b_sans_group_no_frot=BLOC(condition = "SANS_GROUP_NO_FR != None or SANS_NOEUD_FR != None",
                                                             fr=tr("Direction de frottement à exclure (uniquement dans le cas 3D)"),
                                                             DIRE_EXCL_FROT=SIMP(statut='f',typ='R',min=3,max=3),
                                                             ),
@@ -510,8 +509,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT",
                                                                   ),
 
                                             ),
-                                          ), 
-                                ), 
+                                          ),
+                                ),
 
 # AFFECTATION - CAS XFEM
 

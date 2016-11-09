@@ -132,8 +132,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             PAS_LIMI_RELA=            SIMP(statut='f',typ='R',defaut= 1.E-6),
             NB_POIN_PERIODE=          SIMP(statut='f',typ='I',defaut= 50),),
 
-            b_alladapt  =         BLOC(condition = "SCHEMA=='RUNGE_KUTTA_54' or SCHEMA=='RUNGE_KUTTA_32' or SCHEMA=='DEVOGE' \
-                                                   or SCHEMA=='ADAPT_ORDRE1' or  SCHEMA=='ADAPT_ORDRE2'",
+            b_alladapt  =         BLOC(condition = "SCHEMA in ('RUNGE_KUTTA_54','RUNGE_KUTTA_32','DEVOGE','ADAPT_ORDRE1','ADAPT_ORDRE2')",
             PAS_MINI    =             SIMP(statut='f',typ='R'),
             PAS_MAXI    =             SIMP(statut='f',typ='R'),
             NMAX_ITER_PAS=            SIMP(statut='f',typ='I',defaut= 16),),           ),
@@ -301,9 +300,9 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 #       C.2   Non-linear excitations
 #       C.2.1 Chocs
         COMPORTEMENT    = FACT(statut='f',max='**',
-            RELATION    =     SIMP(statut='o', typ='TXM', into=('DIS_CHOC', 'ROTOR_FISS', 'PALIER_EDYOS', 'FLAMBAGE', 'ANTI_SISM', 
+            RELATION    =     SIMP(statut='o', typ='TXM', into=('DIS_CHOC', 'ROTOR_FISS', 'PALIER_EDYOS', 'FLAMBAGE', 'ANTI_SISM',
                                                                 'DIS_VISC', 'DIS_ECRO_TRAC', 'RELA_EFFO_DEPL', 'RELA_EFFO_VITE')),
-            b_choc      =     BLOC(condition="RELATION == 'DIS_CHOC'", 
+            b_choc      =     BLOC(condition="RELATION == 'DIS_CHOC'",
                                    regles=(UN_PARMI('MAILLE','GROUP_MA','NOEUD_1','GROUP_NO_1'),
                                            EXCLUS('NOEUD_2','GROUP_NO_2'),
                                            PRESENT_ABSENT('GROUP_MA','NOEUD_2','GROUP_NO_2'),
@@ -340,8 +339,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 
 #       C.2.2 Cracked rotor
-        b_rotor         = BLOC(condition="RELATION == 'ROTOR_FISS'", 
-                               regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'), 
+        b_rotor         = BLOC(condition="RELATION == 'ROTOR_FISS'",
+                               regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
                                        EXCLUS('NOEUD_G','GROUP_NO_G'),
                                        PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
                                        PRESENT_PRESENT('GROUP_NO_D','GROUP_NO_G',),),

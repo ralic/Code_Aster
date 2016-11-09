@@ -103,9 +103,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 4. Pour de l'adaptation libre, il faut un champ d'indicateur
 #
-  b_champ = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                (ADAPTATION == 'RAFFINEMENT') or \
-                                (ADAPTATION == 'DERAFFINEMENT') " ,
+  b_champ = BLOC( condition = "ADAPTATION in ('RAFF_DERA','RAFFINEMENT','DERAFFINEMENT') " ,
                   fr=tr("Pour une adaptation libre, choix du champ définissant la région à raffiner/déraffiner"),
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT_N')),
@@ -201,8 +199,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #        absolu, relatif, en proportion d'entite
 # 5.1. Pour le raffinement :
 #
-  b_critere_de_raffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                                 (ADAPTATION == 'RAFFINEMENT') " ,
+  b_critere_de_raffinement = BLOC( condition = "ADAPTATION in ('RAFF_DERA','RAFFINEMENT') " ,
                                 fr=tr("Critère de raffinement."),
 
 #
@@ -224,8 +221,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 5.2. Pour le deraffinement :
 #
-  b_critere_de_deraffinement = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                                   (ADAPTATION == 'DERAFFINEMENT') " ,
+  b_critere_de_deraffinement = BLOC( condition = "ADAPTATION in ('RAFF_DERA','DERAFFINEMENT')" ,
                                      fr=tr("Critère de déraffinement."),
 #
     regles=(UN_PARMI ( 'CRIT_DERA_ABS', 'CRIT_DERA_REL', 'CRIT_DERA_PE', 'CRIT_DERA_MS' ),),
@@ -278,9 +274,6 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 6.3. Une boite rectangulaire ou parallelepipedique
 # 6.3.1. Incontournables
 #
-##gn      b_z_boiteXY = BLOC( condition = " (TYPE == 'RECTANGLE') or (TYPE == 'BOITE') " ,
-##gn                          fr=tr("X et Y mini/maxi pour un rectangle ou un parallelepipede."),
-##gn
       X_MINI = SIMP(statut='f',typ='R',
                     fr=tr("Abscisse minimum de la boite"),
                     ),
@@ -293,73 +286,49 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
       Y_MAXI = SIMP(statut='f',typ='R',
                       fr=tr("Abscisse maximum de la boite"),
                       ),
-##gn      ) ,
 #
 # 6.3.2. Complement pour une boite parallelepipedique
 #
-##gn      b_z_boiteZ = BLOC( condition = " (TYPE == 'BOITE') " ,
-##gn                         fr=tr("Z mini/maxi pour un parallelepipede."),
-##gn
       Z_MINI = SIMP(statut='f',typ='R',
                     fr=tr("Cote minimum de la boite"),
                     ),
       Z_MAXI = SIMP(statut='f',typ='R',
                     fr=tr("Cote maximum de la boite"),
                     ),
-##gn      ) ,
 #
 # 6.4. Rayon pour un disque, une sphere ou un cylindre
 #
-##gn      b_z_rayon = BLOC( condition = " (TYPE == 'DISQUE') or (TYPE == 'SPHERE') or (TYPE == 'CYLINDRE') " ,
-##gn                        fr=tr("Le rayon d'un disque, d'une sphere ou d'un cylindre."),
-##gn
       RAYON = SIMP(statut='f',typ='R',val_min=0.0,
                    fr=tr("Rayon"),
                    ),
-##gn      ) ,
 #
 # 6.5. Pour un disque plein ou perce, une sphere
 # 6.5.1. Incontournables
 #
-##gn      b_z_di_sp_XY = BLOC( condition = " (TYPE == 'DISQUE') or (TYPE == 'SPHERE') or (TYPE == 'DISQUE_PERCE') " ,
-##gn                           fr=tr("X et Y du centre d'un disque plein ou perce, d'une sphere."),
-##gn
       X_CENTRE = SIMP(statut='f',typ='R',
                       fr=tr("Abscisse du centre du disque ou de la sphère"),
                       ),
       Y_CENTRE = SIMP(statut='f',typ='R',
                       fr=tr("Ordonnée du centre du disque ou de la sphère"),
                       ),
-##gn      ) ,
 #
 # 6.5.2. Complement pour une sphere
 #
-##gn      b_z_sp_Z = BLOC( condition = " (TYPE == 'SPHERE') " ,
-##gn                       fr=tr("Cote du centre de la sphere."),
-##gn
        Z_CENTRE = SIMP(statut='f',typ='R',
                        fr=tr("Cote du centre de la sphère"),
                        ),
-##gn      ) ,
 #
 # 6.6. Rayons interieur et exterieur pour un disque perce ou un tuyau
 #
-##gn      b_z_rayon_int_ext = BLOC( condition = " (TYPE == 'DISQUE_PERCE') or (TYPE == 'TUYAU') " ,
-##gn                                fr=tr("Le rayon d'un disque perce ou d'un tuyau."),
-##gn
       RAYON_INT = SIMP(statut='f',typ='R',val_min=0.0,
                        fr=tr("Rayon intérieur"),
                        ),
       RAYON_EXT = SIMP(statut='f',typ='R',val_min=0.0,
                        fr=tr("Rayon extérieur"),
                        ),
-##gn      ) ,
 #
 # 6.7. Un cylindre ou un tuyau
 #
-##gn      b_z_cylindre_tuyau = BLOC( condition = " (TYPE == 'CYLINDRE') or (TYPE == 'TUYAU') " ,
-##gn                                 fr=tr("Pour un cylindre ou un tuyau."),
-##gn
       X_AXE = SIMP(statut='f',typ='R',
                    fr=tr("Abscisse du vecteur directeur de l'axe"),
                    ),
@@ -381,7 +350,6 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
       HAUTEUR = SIMP(statut='f',typ='R',val_min=0.0,
                      fr=tr("Hauteur"),
                      ),
-##gn     ) ,
 #
     ) ,
 #
@@ -390,10 +358,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 # 7. Les niveaux extremes pour le maillage adapte
 # 7.1. Pour le raffinement :
 #
-  b_niveau_maximum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                         (ADAPTATION == 'RAFF_DERA_ZONE') or \
-                                         (ADAPTATION == 'RAFFINEMENT') or \
-                                         (ADAPTATION == 'RAFFINEMENT_UNIFORME') " ,
+  b_niveau_maximum = BLOC( condition = "ADAPTATION in ('RAFF_DERA','RAFF_DERA_ZONE','RAFFINEMENT','RAFFINEMENT_UNIFORME') " ,
                            fr=tr("Profondeur maximale de raffinement"),
 #
     NIVE_MAX = SIMP(statut='f',typ='I',val_min=1,
@@ -408,10 +373,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 7.2. Pour le deraffinement :
 #
-  b_niveau_minimum = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                         (ADAPTATION == 'RAFF_DERA_ZONE') or \
-                                         (ADAPTATION == 'DERAFFINEMENT') or \
-                                         (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
+  b_niveau_minimum = BLOC( condition = "ADAPTATION in ('RAFF_DERA','RAFF_DERA_ZONE','DERAFFINEMENT','DERAFFINEMENT_UNIFORME') " ,
                            fr=tr("Niveau minimum de profondeur de déraffinement"),
 
     NIVE_MIN = SIMP(statut='f',typ='I',val_min=0,
@@ -421,12 +383,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 8. Filtrage de l'adaptation par des groupes
 #
-  b_filtrage_par_des_groupes = BLOC( condition = " (ADAPTATION == 'RAFF_DERA') or \
-                                                   (ADAPTATION == 'RAFFINEMENT') or \
-                                                   (ADAPTATION == 'RAFFINEMENT_UNIFORME') or \
-                                                   (ADAPTATION == 'RAFF_DERA_ZONE') or \
-                                                   (ADAPTATION == 'DERAFFINEMENT') or \
-                                                   (ADAPTATION == 'DERAFFINEMENT_UNIFORME') " ,
+  b_filtrage_par_des_groupes = BLOC( condition = "ADAPTATION in ('RAFF_DERA','RAFFINEMENT','RAFFINEMENT_UNIFORME','RAFF_DERA_ZONE','DERAFFINEMENT','DERAFFINEMENT_UNIFORME') " ,
                                 fr=tr("Filtrage de l'adaptation par des groupes."),
 #
     GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',
@@ -811,8 +768,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 17.2. Unite logique d'un fichier à ajouter à HOMARD.Configuration
 #
-  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V11_N') or \
-                                (VERSION_HOMARD == 'V11_N_PERSO') " ,
+  b_unite = BLOC( condition = "VERSION_HOMARD in ('V11_N','V11_N_PERSO') " ,
                                 fr=tr("Fichier supplémentaire."),
 #
   UNITE = SIMP(statut='f',typ='I',val_min=1, inout='in',

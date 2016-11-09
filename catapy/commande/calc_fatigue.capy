@@ -123,8 +123,7 @@ CALC_FATIGUE=OPER(nom="CALC_FATIGUE",op= 151,sd_prod=calc_fatigue_prod,reentrant
            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
                CRITERE       =SIMP(statut='o',typ='TXM',
                                    into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","FORMULE_CRITERE","VMIS_TRESCA") ),
-               b_fati_np  =BLOC(condition =
-                               "(CRITERE != 'VMIS_TRESCA')",
+               b_fati_np  =BLOC(condition = "(CRITERE != 'VMIS_TRESCA')",
                    PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
                    DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),
                ),

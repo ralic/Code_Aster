@@ -16,7 +16,7 @@
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
 
-def C_OBSERVATION(PHYSIQUE) : 
+def C_OBSERVATION(PHYSIQUE) :
 
         assert PHYSIQUE in ('MECANIQUE','THERMIQUE')
         _meca = False
@@ -70,23 +70,13 @@ def C_OBSERVATION(PHYSIQUE) :
             b_formule       =BLOC(condition="(EVAL_CMP=='FORMULE')",
                                    FORMULE = SIMP(statut='o',typ=formule,max=1),),
 
-            b_cham_no       =BLOC(condition="(NOM_CHAM=='DEPL') or \
-                                        (NOM_CHAM=='VITE') or \
-                                        (NOM_CHAM=='ACCE') or \
-                                        (NOM_CHAM=='TEMP') or \
-                                        (NOM_CHAM=='FORC_NODA') or \
-                                        (NOM_CHAM=='CONT_NOEU') or \
-                                        (NOM_CHAM=='DEPL_ABSOLU') or \
-                                        (NOM_CHAM=='VITE_ABSOLU') or \
-                                        (NOM_CHAM=='ACCE_ABSOLU')",
+            b_cham_no       =BLOC(condition="NOM_CHAM in ('DEPL','VITE','ACCE','TEMP','FORC_NODA','CONT_NOEU','DEPL_ABSOLU','VITE_ABSOLU','ACCE_ABSOLU')",
                              regles   =(UN_PARMI('NOEUD','GROUP_NO','GROUP_MA','MAILLE','TOUT')),
                              **_BlocNode
                             ),
 
-            b_cham_elga     =BLOC(condition="(NOM_CHAM=='SIEF_ELGA') or \
-                                        (NOM_CHAM=='EPSI_ELGA') or \
-                                        (NOM_CHAM=='VARI_ELGA')",
-                             regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')), 
+            b_cham_elga     =BLOC(condition="NOM_CHAM in ('SIEF_ELGA','EPSI_ELGA','VARI_ELGA')",
+                             regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')),
                                  b_elga_vale     =BLOC(condition="(EVAL_ELGA=='VALE')",
                                    POINT           =SIMP(statut='o',typ='I'  ,validators=NoRepeat(),max='**'),
                                    SOUS_POINT      =SIMP(statut='f',typ='I'  ,validators=NoRepeat(),max='**'),

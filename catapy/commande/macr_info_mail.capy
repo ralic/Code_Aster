@@ -123,8 +123,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
 # 5.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
-  b_unite = BLOC( condition = " (VERSION_HOMARD == 'V11_N') or \
-                                (VERSION_HOMARD == 'V11_N_PERSO') " ,
+  b_unite = BLOC( condition = "VERSION_HOMARD in ('V11_N','V11_N_PERSO')" ,
                                 fr=tr("Fichier supplementaire."),
 
 #
