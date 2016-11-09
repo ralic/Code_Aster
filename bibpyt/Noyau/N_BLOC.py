@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ import N_ENTITE
 import N_MCBLOC
 from N_Exception import AsException
 from N_types import force_list
+from N_utils import AsType
 from strfunc import ufmt
 
 
@@ -115,7 +116,8 @@ class BLOC(N_ENTITE.ENTITE):
            les valeurs des mots-clés
         """
         # On recopie le dictionnaire pour protéger l'original
-        dico = bloc_utils()
+        dico = {}
+        dico.update(block_utils(dico))
         dico.update(dict)
         if self.condition != None:
             try:
@@ -146,20 +148,52 @@ class BLOC(N_ENTITE.ENTITE):
         else:
             return 0
 
+# Keep consistency with SyntaxUtils.block_utils from AsterStudy, AsterXX
+def block_utils(evaluation_context):
+    """Define some helper functions to write block conditions.
 
-def bloc_utils():
-    """Définit un ensemble de fonctions utilisables pour écrire les
-    conditions de BLOC."""
-    def au_moins_un(mcsimp, valeurs):
-        """Valide si la (ou une) valeur de 'mcsimp' est au moins une fois dans
-        la ou les 'valeurs'. Similaire à la règle AU_MOINS_UN, 'mcsimp' peut
-        contenir plusieurs valeurs."""
-        test = set(force_list(mcsimp))
-        valeurs = set(force_list(valeurs))
-        return not test.isdisjoint(valeurs)
+    Arguments:
+        evaluation_context (dict): The context containing the keywords.
+    """
 
-    def aucun(mcsimp, valeurs):
-        """Valide si aucune des valeurs de 'mcsimp' n'est dans 'valeurs'."""
-        return not au_moins_un(mcsimp, valeurs)
+    def exists(name):
+        """Tell if the keyword name exists in the context.
+        The context is set to the evaluation context. In the catalog, just
+        use: `exists("keyword")`"""
+        return evaluation_context.get(name) is not None
+
+    def is_in(name, values):
+        """Checked if the/a value of 'keyword' is at least once in 'values'.
+        Similar to the rule AtLeastOne, 'keyword' may contain several
+        values."""
+        if type(name) not in (list, tuple):
+            name = [name, ]
+        if type(values) not in (list, tuple):
+            values = [values, ]
+        # convert name to keyword
+        keyword = []
+        for name_i in name:
+            if not exists(name_i):
+                return False
+            value_i = evaluation_context[name_i]
+            if type(value_i) not in (list, tuple):
+                value_i = [value_i, ]
+            keyword.extend(value_i)
+        test = set(keyword)
+        values = set(values)
+        return not test.isdisjoint(values)
+
+    def value(name, default=""):
+        """Return the value of a keyword or the default value if it does
+        not exist.
+        The *default* default value is an empty string as it is the most
+        used type of keywords."""
+        return evaluation_context.get(name, default)
+
+    def is_type(name):
+        """Return the type of a keyword."""
+        return AsType(value(name))
+
+    equal_to = is_in
 
     return locals()

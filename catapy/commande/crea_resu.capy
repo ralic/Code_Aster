@@ -36,19 +36,19 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
 
          OPERATION =SIMP(statut='o',typ='TXM',into=("AFFE","ASSE","ECLA_PG","PERM_CHAM","PROL_RTZ","PREP_VRC1","PREP_VRC2",),
                          fr=tr("choix de la fonction a activer"),),
-                         
+
          TYPE_RESU    =SIMP(statut='o',position='global',typ='TXM',
                             into=(
-                                  # pour bloc AFFE                         
+                                  # pour bloc AFFE
                                     "MODE_MECA","MODE_MECA_C","MULT_ELAS",
                                     "EVOL_ELAS","EVOL_NOLI",
                                     "DYNA_HARMO","DYNA_TRANS",
                                     "FOURIER_ELAS","FOURIER_THER",
                                     "EVOL_THER","EVOL_VARC","EVOL_CHAR"
-                                  # pour bloc ASSE 
+                                  # pour bloc ASSE
                                   # "EVOL_THER "
                                   # pour bloc ECLA_PG
-                                  # "EVOL_ELAS","EVOL_NOLI","EVOL_THER" 
+                                  # "EVOL_ELAS","EVOL_NOLI","EVOL_THER"
                                   # pour bloc PERM_CHAM
                                   # "EVOL_NOLI"
                                   # pour bloc PROL_RTZ
@@ -74,30 +74,30 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              NOM_CHAM     =SIMP(statut='o',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO()),
            ),
 
-           b_mode       =BLOC(condition = "au_moins_un(TYPE_RESU, ('MODE_MECA', 'MODE_MECA_C', 'DYNA_HARMO', 'DYNA_TRANS'))",
+           b_mode       =BLOC(condition = "is_in('TYPE_RESU', ('MODE_MECA', 'MODE_MECA_C', 'DYNA_HARMO', 'DYNA_TRANS'))",
              MATR_RIGI     =SIMP(statut='f',typ=matr_asse_depl_r,),
              MATR_MASS     =SIMP(statut='f',typ=matr_asse_depl_r,),
-           ),          
+           ),
 #
 #  pour ajouter un comportement dans la SD
-#                
+#
            COMPORTEMENT     =C_COMPORTEMENT(),
 #
 #  pour ajouter une charge dans la SD
-#     
+#
            b_evol_elas  = BLOC(condition="TYPE_RESU=='EVOL_ELAS'",
            EXCIT           =FACT(statut='f',max='**',
              CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
              FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
              TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",into=("FIXE_CSTE",) ),),
             ),
-      
+
            b_evol_ther  = BLOC(condition="TYPE_RESU=='EVOL_THER'",
            EXCIT           =FACT(statut='f',max='**',
              CHARGE          =SIMP(statut='o',typ=(char_ther,char_cine_ther)),
              FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),),
             ),
-      
+
            b_evol_noli  = BLOC(condition="TYPE_RESU=='EVOL_NOLI'",
            EXCIT           =FACT(statut='f',max='**',
             CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
@@ -125,8 +125,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
                 NOM_CAS         =SIMP(statut='f',typ='TXM' ),
                 CHARGE          =SIMP(statut='f',typ=(char_meca),max='**'),
              ),
-             b_evol          =BLOC(condition = "au_moins_un(TYPE_RESU, ('EVOL_ELAS', 'EVOL_NOLI', \
-                                        'EVOL_THER', 'EVOL_VARC', 'EVOL_CHAR', 'DYNA_TRANS'))",
+             b_evol          =BLOC(condition = "is_in('TYPE_RESU', ('EVOL_ELAS', 'EVOL_NOLI', 'EVOL_THER', 'EVOL_VARC', 'EVOL_CHAR', 'DYNA_TRANS'))",
                 regles=(UN_PARMI('INST','LIST_INST'),),
                 INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
                 LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
@@ -147,7 +146,7 @@ CREA_RESU=OPER(nom="CREA_RESU",op=124,sd_prod=crea_resu_prod,reentrant='f',
              b_mode       =BLOC(condition = "TYPE_RESU in ('MODE_MECA','MODE_MECA_C')",
                 NUME_MODE       =SIMP(statut='o',typ='I'),
                 FREQ            =SIMP(statut='f',typ='R'),
-                AXE             =SIMP(statut='f',typ='TXM',into=("X","Y","Z") ), 
+                AXE             =SIMP(statut='f',typ='TXM',into=("X","Y","Z") ),
              ),
              b_mode_cmplx =BLOC(condition = "TYPE_RESU == 'MODE_MECA_C'",
                 AMOR_REDUIT     =SIMP(statut='f',typ='R'),

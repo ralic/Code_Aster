@@ -213,11 +213,24 @@ class ENTITE:
 
     def check_condition(self):
         """Vérifie l'attribut condition."""
+        from N_BLOC import block_utils
         if self.condition != None:
             if type(self.condition) is not str:
                 self.cr.fatal(
                     _(u"L'attribut 'condition' doit être une chaine de caractères : %r"),
                     self.condition)
+            from Cata import cata
+            try:
+                ctxt = {"reuse": None}
+                ctxt.update(cata.__dict__)
+                ctxt.update(block_utils({}))
+                eval(self.condition, ctxt)
+            except Exception as exc:
+                # !!! Remove comments to force checking of block conditions !!!
+                pass
+                # self.cr.fatal(
+                #     _(u"L'attribut 'condition' ne peut être évalué : %r; Raison : %s"),
+                #     self.condition, str(exc))
         else:
             self.cr.fatal(_(u"La condition ne doit pas valoir None !"))
 

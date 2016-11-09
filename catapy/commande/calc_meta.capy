@@ -33,7 +33,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
      MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',
                            fr=tr("le calcul ne sera effectué que sur ces mailles là")),
 
-     b_meta =BLOC(condition= "au_moins_un(OPTION, ('META_ELNO','META_NOEU'))",
+     b_meta =BLOC(condition= "is_in('OPTION', ('META_ELNO','META_NOEU'))",
        ETAT_INIT       =FACT(statut='o',
           regles=(UN_PARMI('EVOL_THER', 'META_INIT_ELNO'),),
           EVOL_THER       =SIMP(statut='f',typ=evol_ther ),

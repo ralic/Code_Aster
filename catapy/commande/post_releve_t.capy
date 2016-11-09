@@ -53,7 +53,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
                  PRECISION       =SIMP(statut='o',typ='R',),),
            ),
 
-           b_extrema   =BLOC(condition="au_moins_un(OPERATION, 'EXTREMA')",
+           b_extrema   =BLOC(condition="equal_to('OPERATION', 'EXTREMA')",
                              fr=tr("recherche de MIN MAX"),
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -65,7 +65,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
            ),
 
-           b_MOYENNE_ARITH   =BLOC(condition="au_moins_un(OPERATION, 'MOYENNE_ARITH')",
+           b_MOYENNE_ARITH   =BLOC(condition="is_in('OPERATION', 'MOYENNE_ARITH')",
                              fr=tr("moyenne sur des groupes"),
                              regles=(EXCLUS('TOUT_CMP','NOM_CMP'),),
               TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
@@ -77,7 +77,7 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
               NOM_CMP         =SIMP(statut='f',typ='TXM',max='**'),
            ),
 
-           b_autre   =BLOC(condition="aucun(OPERATION, ('EXTREMA', 'MOYENNE_ARITH'))",
+           b_autre   =BLOC(condition="not is_in('OPERATION', ('EXTREMA', 'MOYENNE_ARITH'))",
                            fr=tr("extraction et moyenne"),
                            regles=(AU_MOINS_UN('GROUP_NO','NOEUD'),
                                    UN_PARMI('TOUT_CMP','NOM_CMP','INVARIANT','ELEM_PRINCIPAUX','RESULTANTE'),
