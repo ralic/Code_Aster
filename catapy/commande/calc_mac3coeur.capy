@@ -53,7 +53,7 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                UNITE_THYC      = SIMP(statut='o',typ='I', max=1, inout='in'),                   # Unite Logique du fichier THYC
 
                # choix du maintien dans le cas mono-assemblage
-               b_maintien_mono = BLOC(condition = """TYPE_COEUR[:4] == 'MONO'""",
+               b_maintien_mono = BLOC(condition = """exists("TYPE_COEUR") and TYPE_COEUR.startswith('MONO')""",
 
                     TYPE_MAINTIEN = SIMP(statut='o',typ='TXM',into=("FORCE","DEPL_PSC"), ),
 
@@ -64,21 +64,21 @@ CALC_MAC3COEUR = MACRO(nom="CALC_MAC3COEUR",
                                        ),
 
                # choix du maintien dans le cas d'un coeur à plusieurs assemblages
-               b_maintien_coeur = BLOC(condition = """TYPE_COEUR[:4] != 'MONO'""",
+               b_maintien_coeur = BLOC(condition = """exists("TYPE_COEUR") and not TYPE_COEUR.startswith('MONO')""",
 
                     TYPE_MAINTIEN = SIMP(statut='f',typ='TXM',into=("DEPL_PSC",),defaut="DEPL_PSC" ),
 
                                        ),
 
                # choix de la poussée d'Archimède dans le cas mono-assemblage
-               b_archimede_mono = BLOC(condition = """TYPE_COEUR[:4] == 'MONO'""",
+               b_archimede_mono = BLOC(condition = """exists("TYPE_COEUR") and TYPE_COEUR.startswith( 'MONO')""",
 
                     ARCHIMEDE = SIMP(statut='o',typ='TXM',into=("OUI","NON"), ),
 
                                        ),
 
                # choix de la poussée d'Archimède dans le cas d'un coeur à plusieurs assemblages
-               b_archimede_coeur = BLOC(condition = """TYPE_COEUR[:4] != 'MONO'""",
+               b_archimede_coeur = BLOC(condition = """exists("TYPE_COEUR") and not TYPE_COEUR.startswith('MONO')""",
 
                     ARCHIMEDE = SIMP(statut='f',typ='TXM',into=("OUI", ),defaut="OUI" ),
 
