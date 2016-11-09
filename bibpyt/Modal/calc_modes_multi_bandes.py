@@ -36,6 +36,7 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
     MATR_MASS = args['MATR_MASS']
     CALC_FREQ = args['CALC_FREQ']
     METHODE = SOLVEUR_MODAL['METHODE']
+    STOP_BANDE_VIDE = "NON"
 
     # ----------------------------------------------------------------------
     #
@@ -83,10 +84,10 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
     # Lorsqu'on ne veut q'un niveau de parallelisme (celui du solveur lineaire)
     # on bluffe l'algo en posant rang=0/nbproc=1 pour tous les procs.
     # Cependant si le solveur est autre que MUMPS on s'arrete en erreur.
-    if (args['NIVEAU_PARALLELISME'] == 'COMPLET'):
+    if CALC_FREQ['NIVEAU_PARALLELISME'] == 'COMPLET':
         rang, nbproc = aster_core.MPI_CommRankSize()
         niv_par = 'COMPLET'
-    elif (args['NIVEAU_PARALLELISME'] == 'PARTIEL'):
+    elif CALC_FREQ['NIVEAU_PARALLELISME'] == 'PARTIEL':
         rang = 0
         nbproc = 1
         niv_par = 'PARTIEL'
@@ -156,7 +157,8 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
 
     # Gestion des sous-bandes de frequences et construction (si //) de l'objet
     nbmodeth, nbsb_nonvide, proc_sb_nvide = gestion_sous_bande(
-        solveur_lineaire, __nbmodi, nnfreq, nbproc)
+        solveur_lineaire, __nbmodi, nnfreq, nbproc,
+        STOP_BANDE_VIDE == "OUI")
 
     # ----------------------------------------------------------------------
     #
@@ -225,7 +227,7 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
                                       STURM=motveri,
                                       PREC_SHIFT=VERI_MODE['PREC_SHIFT'])
 
-            motscit['STOP_BANDE_VIDE'] = args['STOP_BANDE_VIDE']
+            motscit['STOP_BANDE_VIDE'] = STOP_BANDE_VIDE
 
             OPTION = 'SANS'  # option for detecting rigid body modes
             if METHODE == 'TRI_DIAG':
@@ -323,9 +325,9 @@ def calc_modes_multi_bandes( self, SOLVEUR_MODAL, SOLVEUR,
         #
         #--------------------------------------------------------------------
         elif (sb_vide):
-            if (args['STOP_BANDE_VIDE'] == 'OUI'):
+            if (STOP_BANDE_VIDE == 'OUI'):
                 UTMESS('F', 'MODAL_6', vali=(i + 1,))
-            elif (args['STOP_BANDE_VIDE'] == 'NON'):
+            elif (STOP_BANDE_VIDE == 'NON'):
                 aster.affiche('MESSAGE', 72 * '-')
                 UTMESS('I', 'MODAL_6', vali=(i + 1,))
                 aster.affiche('MESSAGE', 72 * '-')
@@ -483,7 +485,7 @@ def recup_modele_partition(MATR_RIGI, dbg):
 # cf. op0032.
 
 
-def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc):
+def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc, stop):
 
     nbsb_nonvide = None
     proc_sb_nvide = []
@@ -506,10 +508,10 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc):
     if ((modemax > 3*modemin) & (modemax > 50)):
         UTMESS('I', 'MODAL_19', vali=(imin,modemin,imax,modemax),)
     if (modemin < 10):
-        UTMESS('I', 'MODAL_20', vali=(imin,modemin),)  
+        UTMESS('I', 'MODAL_20', vali=(imin,modemin),)
     if (modemax > 100):
         UTMESS('I', 'MODAL_21', vali=(imax,modemax),)
-    
+
     # Recuperation du nbre de sous-bandes non vides
     nbsb_nonvide = 0
     for i in range(0, nnfreq - 1):
@@ -518,12 +520,10 @@ def gestion_sous_bande(solveur_lineaire, __nbmodi, nnfreq, nbproc):
 
     if ((nbmodeth == 0) | (nbsb_nonvide == 0)):
         aster.affiche('MESSAGE', 72 * '-')
-        if (args['STOP_BANDE_VIDE'] == 'OUI'):
+        if stop:
             UTMESS('F', 'MODAL_8', valr=(lborne[0], lborne[nnfreq - 1]))
-        elif (args['STOP_BANDE_VIDE'] == 'NON'):
-            UTMESS('A', 'MODAL_8', valr=(lborne[0], lborne[nnfreq - 1]))
         else:
-            assert(False)  # Pb parametrage STOP_BANDE_VIDE
+            UTMESS('A', 'MODAL_8', valr=(lborne[0], lborne[nnfreq - 1]))
         aster.affiche('MESSAGE', 72 * '-')
 
     if (nbproc > 1):

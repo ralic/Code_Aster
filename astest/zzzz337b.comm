@@ -126,22 +126,28 @@ niv_para='COMPLET'
 
 # si nb_proc==nb_sous_bande: SOLVEUR MODAL=defaut, SOLVEUR LINEAIRE='MUMPS'
 nbmd41=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
-                 FREQ=(0.1,10.,20.,30.,40.,),SOLVEUR=_F(METHODE='MUMPS'),NIVEAU_PARALLELISME=niv_para,)
+                 FREQ=(0.1,10.,20.,30.,40.,),
+                 SOLVEUR=_F(METHODE='MUMPS'),
+                 NIVEAU_PARALLELISME=niv_para,)
 IMPR_TABLE(TABLE=nbmd41,UNITE=6)
 para_sturm='GLOBAL'
 mode41=CALC_MODES(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
-                   VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
+                   CALC_FREQ=_F(FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para, ),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
+                   VERI_MODE=_F( STURM=para_sturm ),
+                   FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode41l=CALC_MODES(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F(FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para, ),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode41n=CALC_MODES(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F(FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 # si nb_proc==nb_sous_bande: SOLVEURS LINEAIRE/MODAL/STURM PANACHAGE
 nbmdMF=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
@@ -154,23 +160,26 @@ IMPR_TABLE(TABLE=nbmdLDLT,UNITE=6)
 # PARALLELISME 4x1 (SORENSEN + MULT_FRONT)
 para_sturm='GLOBAL'
 modeSM=CALC_MODES( MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   CALC_FREQ=_F(FREQ=(0.1, 10., 20., 30., 40. ),
+                                NIVEAU_PARALLELISME=niv_para,),
                    SOLVEUR_MODAL=_F( METHODE='SORENSEN' ),
-                   SOLVEUR=_F( METHODE='MULT_FRONT' ),NIVEAU_PARALLELISME=niv_para,
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 # PARALLELISME 4x1 (TRI_DIAG + MULT_FRONT)
 para_sturm='LOCAL'
 modeLM=CALC_MODES( MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   CALC_FREQ=_F(FREQ=(0.1, 10., 20., 30., 40. ),
+                                NIVEAU_PARALLELISME=niv_para,),
                    SOLVEUR_MODAL=_F( METHODE='TRI_DIAG',COEF_DIM_ESPACE=8 ),
-                   SOLVEUR=_F( METHODE='MULT_FRONT' ),NIVEAU_PARALLELISME=niv_para,
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 # PARALLELISME 4x1 (JACOBI + MULT_FRONT)
 para_sturm='NON'
 modeJM=CALC_MODES( MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ) ),
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40. ),
+                                NIVEAU_PARALLELISME=niv_para,),
                    SOLVEUR_MODAL=_F( METHODE='JACOBI' ),
-                   SOLVEUR=_F( METHODE='MULT_FRONT' ),NIVEAU_PARALLELISME=niv_para,
+                   SOLVEUR=_F( METHODE='MULT_FRONT' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 # si nb_proc>nb_sous_bande: SOLVEUR LINEAIRE=autre que MUMPS UTMESS_F MODAL_9/10 CF CAS_TEST ERREU15 (QUELQUE SOIT SOLVEUR MODAL/STURM)
@@ -182,18 +191,21 @@ nbmd22=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
 IMPR_TABLE(TABLE=nbmd22,UNITE=6)
 para_sturm='GLOBAL'
 mode22=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ), NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F(FREQ=(0.1, 20., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode22l=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode22n=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 # PARALLELISME AVEC DESEQUILIBRAGE: 1x2 POUR LA PREMIERE SOUS-BANDE, 1x1 POUR LES AUTRES
@@ -202,18 +214,21 @@ nbmd211=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
 IMPR_TABLE(TABLE=nbmd211,UNITE=6)
 para_sturm='GLOBAL'
 mode211=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                 NIVEAU_PARALLELISME=niv_para,),
+                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                     VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode211l=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                 NIVEAU_PARALLELISME=niv_para,),
+                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                     VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode211n=CALC_MODES(MATR_RIGI=MATRIGI, INFO=info,MATR_MASS=MATMASS,OPTION='BANDE',
-                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                    CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                 NIVEAU_PARALLELISME=niv_para,),
+                    SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                     VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 
@@ -231,18 +246,21 @@ nbmd15=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
 IMPR_TABLE(TABLE=nbmd15,UNITE=6)
 para_sturm='GLOBAL'
 mode15=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode15l=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode15n=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1,5.,10.,20.,30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 # si nb_proc==nb_sous_bande: SOLVEUR LINEAIRE=autre que MUMPS, UTMESS_F MODAL_14 CF CAS_TEST ERREU15 (QUELQUE SOIT SOLVEUR MODAL/STURM)
@@ -254,18 +272,21 @@ nbmd14=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
 IMPR_TABLE(TABLE=nbmd14,UNITE=6)
 para_sturm='GLOBAL'
 mode14=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode14l=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode14n=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 10., 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 # si nb_proc>nb_sous_bande: SOLVEUR LINEAIRE=autre que MUMPS, UTMESS_F MODAL_14 CF CAS_TEST ERREU15 (QUELQUE SOIT SOLVEUR MODAL/STURM)
@@ -277,18 +298,21 @@ nbmd13=INFO_MODE(MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,
 IMPR_TABLE(TABLE=nbmd13,UNITE=6)
 para_sturm='GLOBAL'
 mode13=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='LOCAL'
 mode13l=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 para_sturm='NON'
 mode13n=CALC_MODES( MATR_RIGI=MATRIGI,MATR_MASS=MATMASS,INFO=info,OPTION='BANDE',
-                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.) ),
-                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),NIVEAU_PARALLELISME=niv_para,
+                   CALC_FREQ=_F( FREQ=(0.1, 20., 30., 40.),
+                                NIVEAU_PARALLELISME=niv_para,),
+                   SOLVEUR=_F( METHODE='MUMPS',RENUM='QAMD',GESTION_MEMOIRE='IN_CORE' ),
                    VERI_MODE=_F( STURM=para_sturm ),FILTRE_MODE=_F( SEUIL=0.0003 ),NORM_MODE=_F(),IMPRESSION=_F(),)
 
 
