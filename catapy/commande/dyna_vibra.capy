@@ -159,7 +159,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
             RESULTAT    =         SIMP(statut='f',typ=tran_gene),
 
-            b_resu      =         BLOC(condition = "RESULTAT != NONE", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
+            b_resu      =         BLOC(condition = "RESULTAT != None", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
             NUME_ORDRE  =             SIMP(statut='f',typ='I'),
             INST_INIT   =             SIMP(statut='f',typ='R'),
             b_inst_init =             BLOC(condition = "INST_INIT != None",
@@ -178,7 +178,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                                                        PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
             RESULTAT    =         SIMP(statut='f',typ=dyna_trans),
 
-            b_resu      =         BLOC(condition = "RESULTAT != NONE", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
+            b_resu      =         BLOC(condition = "RESULTAT != None", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
             NUME_ORDRE  =             SIMP(statut='f',typ='I'),
             INST_INIT   =             SIMP(statut='f',typ='R'),
             b_inst_init =             BLOC(condition = "INST_INIT != None",
