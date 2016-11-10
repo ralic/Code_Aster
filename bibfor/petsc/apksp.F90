@@ -95,15 +95,19 @@ use petsc_data_module
     else if (algo.eq.'CR') then
         call KSPSetType(ksp, KSPCR, ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'GMRES') then
+    else if (algo.eq.'GMRES') then 
+        call KSPSetType(ksp, KSPGMRES, ierr)
+    else if (algo.eq.'GMRES_LMP') then
         call KSPSetType(ksp, KSPGMRES, ierr)
         ASSERT(ierr.eq.0)
+! On indique qu'on veut récupérer les Ritz à la fin de la résolution
+! afin de construire le préconditionneur de second niveau LMP
+        call KSPSetComputeRitz(ksp, petsc_true, ierr)
     else if (algo.eq.'GCR') then
         call KSPSetType(ksp, KSPGCR, ierr)
         ASSERT(ierr.eq.0)
     else if (algo.eq.'FGMRES') then
         call KSPSetType(ksp, KSPFGMRES, ierr)
-        ASSERT(ierr.eq.0)
     else
         ASSERT(.false.)
     endif
@@ -125,6 +129,9 @@ use petsc_data_module
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
+
+    call KSPSetUp( ksp, ierr ) 
+    ASSERT( ierr == 0 ) 
 !
 !     - pour suivre les itérations de Krylov
 !     --------------------------------------
@@ -142,6 +149,9 @@ use petsc_data_module
 !
     call jedema()
 !
+#else
+kptsc=0
+ASSERT(.false.)
 #endif
 !
 end subroutine

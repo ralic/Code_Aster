@@ -21,8 +21,10 @@ subroutine appcpr(kptsc)
 use petsc_data_module
 use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     augmented_lagrangian_setup, augmented_lagrangian_destroy
+use lmp_module, only : lmp_apply_right, lmp_destroy
+use lmp_data_module, only : reac_lmp
 
-    implicit none
+implicit none
 #include "asterf_types.h"
 #include "asterf.h"
 #include "jeveux.h"
@@ -55,7 +57,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     integer :: nloc, neqg, ndprop, ieq, numno, icmp
     integer :: iret
     integer :: il, ix, iga_f, igp_f
-    integer :: fill
+    integer :: fill, reacpr
     integer, dimension(:), pointer :: slvi => null()
     integer, dimension(:), pointer :: prddl => null()
     integer, dimension(:), pointer :: deeq => null()
@@ -76,7 +78,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     real(kind=8), dimension(:), pointer :: coordo => null() 
     real(kind=8), dimension(:), pointer :: slvr => null()
 !
-    aster_logical :: lmd
+    aster_logical :: lmd, lmp_is_active
 !
 !----------------------------------------------------------------
 !     Variables PETSc
@@ -114,6 +116,12 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     niremp = slvi(4)
     call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
     lmd = matd == 'OUI'
+!
+    lmp_is_active = slvk(6) =='GMRES_LMP'
+    if ( lmp_is_active .and. precon/= 'LDLT_SP' ) then
+       call utmess('F',  'PETSC_28')
+    endif 
+    reacpr = slvi(6)
 !
     fill = niremp
     fillp = fillin
@@ -286,16 +294,29 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
         ASSERT(ierr == 0)
         call PCSetType(pc,PCSHELL,ierr)
         ASSERT(ierr == 0)
-        call PCShellSetName(pc,"BLOC_LAGR Preconditionner", ierr )
-        ASSERT(ierr == 0)
         call PCShellSetSetUp(pc,augmented_lagrangian_setup, ierr ) 
-        ASSERT(ierr == 0)
-        call PCShellSetApply(pc,augmented_lagrangian_apply,ierr)
         ASSERT(ierr == 0)
         call PCShellSetContext(pc,kptsc,ierr)
         ASSERT(ierr == 0)
         call PCShellSetDestroy(pc, augmented_lagrangian_destroy, ierr )
         ASSERT( ierr == 0 )
+!       Si LMP, on définit un préconditionneur à gauche et à droite
+        if ( lmp_is_active ) then
+             ASSERT( ierr == 0 ) 
+             call PCShellSetName(pc,"Symmetric Preconditionner: Left BLOC_LAGR, right LMP", ierr )
+             ASSERT( ierr == 0 )
+             call PCShellSetApplySymmetricLeft(pc, augmented_lagrangian_apply, ierr)
+             ASSERT(ierr == 0)
+             call PCShellSetApplySymmetricRight(pc, lmp_apply_right,ierr)
+             ASSERT(ierr == 0)
+             call KSPSetPCSide(ksp,PC_SYMMETRIC,ierr)
+             ASSERT( ierr == 0 )
+        else
+             call PCShellSetName(pc,"BLOC_LAGR Preconditionner", ierr )
+             ASSERT(ierr == 0)
+             call PCShellSetApply(pc,augmented_lagrangian_apply,ierr)
+             ASSERT(ierr == 0)
+        endif
 !-----------------------------------------------------------------------
     else if (precon == 'LDLT_SP') then
         call PCSetType(pc, PCSHELL, ierr)
@@ -305,8 +326,24 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 !       LDLT_SP FAIT APPEL A DEUX ROUTINES EXTERNES
         call PCShellSetSetUp(pc, ldsp1, ierr)
         ASSERT(ierr == 0)
-        call PCShellSetApply(pc, ldsp2, ierr)
-        ASSERT(ierr == 0)
+!       Si LMP, on définit un préconditionneur à gauche et à droite
+        if ( lmp_is_active ) then
+             ASSERT( ierr == 0 ) 
+             call PCShellSetName(pc,"Symmetric Preconditionner: Left LDLT_SP, right LMP", ierr )
+             ASSERT( ierr == 0 )
+             call PCShellSetApplySymmetricLeft(pc, ldsp2, ierr)
+             ASSERT(ierr == 0)
+             call PCShellSetApplySymmetricRight(pc, lmp_apply_right,ierr)
+             ASSERT(ierr == 0)
+             call KSPSetPCSide(ksp,PC_SYMMETRIC,ierr)
+             ASSERT( ierr == 0 )
+!       Pour le préconditionneur LDLT_SP, on définit reac_lmp à partir de reac_precond
+             reac_lmp = reacpr/2
+        else
+             call PCShellSetName(pc,"LDLT_SP Preconditionner", ierr )
+             call PCShellSetApply(pc, ldsp2, ierr)
+             ASSERT( ierr == 0 )
+        endif
 !
         ASSERT(spmat == ' ')
         spmat = nomat
@@ -433,6 +470,7 @@ use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
 #else
     integer :: idummy
     idummy = kptsc
+    idummy = reac_lmp
 #endif
 !
 end subroutine

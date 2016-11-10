@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: josselin.delmas at edf.fr
+# person_in_charge: natacha.bereux at edf.fr
 
 cata_msg = {
 
@@ -183,5 +183,26 @@ Solveur PETSc :
   Ce n'est pas le cas ici. On arrête l'exécution.
 """),
 
+24 : _(u"""
+Solveur PETSc :
+  La résolution du système linéaire précédent s'est effectuée en %(i1)d itérations. 
+  """),
+
+26 : _(u"""
+Solveur PETSc :
+  On construit un nouveau préconditionneur de second niveau à partir des éléments de Ritz calculés au cours de la résolution du système linéaire précédent.   
+  """),
+27 : _(u"""
+Solveur PETSc :
+  On conserve le préconditionneur de second niveau pour les résolutions ultérieures.   
+  """),
+28 : _(u"""
+Solveur PETSc :
+  Vous avez demandé à utiliser un préconditionneur de second niveau. C'est seulement possible avec le préconditionneur de premier niveau 'LDLT_SP'. 
+  Conseils:
+  Vous pouvez :
+  - soit changer de préconditionneur de premier niveau (choisir PRE_COND='LDLT_SP'),
+  - soit désactiver le préconditionneur de second niveau (en choisissant ALGORITHME='GMRES' ou 'FGMRES' au lieu de 'GMRES_LMP').   
+  """),
 
 }

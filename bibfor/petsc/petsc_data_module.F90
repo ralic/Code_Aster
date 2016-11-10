@@ -33,6 +33,7 @@ private
 !----------------------------------------------------------------
 !
 ! person_in_charge natacha.bereux at edf.fr 
+!
 ! Variables globales PETSc pour la définition d'un système linéaire 
 ! au format PETSc 
 !

@@ -1,6 +1,6 @@
-subroutine pcmump(matasz, solvez, iretz)
+subroutine pcmump(matasz, solvez, iretz, new_facto)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,7 @@ subroutine pcmump(matasz, solvez, iretz)
 #include "asterfort/mtmchc.h"
     character(len=*) :: matasz, solvez
     integer :: iretz
+    aster_logical, intent(out), optional :: new_facto
 !-----------------------------------------------------------------------
 !
 !     CREATION D'UNE MATRICE DE PRECONDITIONNEMENT (PETSC, GCPC)
@@ -35,11 +36,12 @@ subroutine pcmump(matasz, solvez, iretz)
 !-----------------------------------------------------------------------
 ! IN  K*  MATASZ    : NOM DE LA MATR_ASSE A PRECONDITIONNER
 ! IN  K*  SOLVEZ    : NOM DE LA SD SOLVEUR
-! IN  I   IRETZ     : CODE RETOUR (!=0 SI ERREUR)
+! OUT  I   IRETZ     : CODE RETOUR (!=0 SI ERREUR)
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
     integer ::   iterpr, reacpr, pcpiv,  iret
+    aster_logical :: new_facto_loc
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
     character(len=24) :: precon, solvbd
@@ -61,7 +63,10 @@ subroutine pcmump(matasz, solvez, iretz)
     reacpr=slvi(6)
     pcpiv =slvi(7)
 !
+    new_facto_loc = .false.
+!
     ASSERT(precon.eq.'LDLT_SP')
+    
 !
 ! --  PRISE EN COMPTE DES CHARGEMENTS CINEMATIQUES
 ! --  SAUF DANS LE CAS OU LE SOLVEUR EST PETSC
@@ -85,7 +90,12 @@ subroutine pcmump(matasz, solvez, iretz)
                     ' ', 0, iret, .true._1)
         call amumph('PRERES', solvbd, matass, [0.d0], [cbid],&
                     ' ', 0, iret, .true._1)
+        new_facto_loc = .true.
     endif
+!
+    if ( present( new_facto) ) then 
+       new_facto = new_facto_loc
+    endif 
 !
 ! --  DESTRUCTION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
     call detrsd('SOLVEUR', solvbd)

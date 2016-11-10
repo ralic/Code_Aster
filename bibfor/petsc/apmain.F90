@@ -2,6 +2,7 @@ subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                   iret)
 use petsc_data_module
 use saddle_point_module
+use lmp_module, only : lmp_update
     implicit none
 !
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
@@ -92,7 +93,7 @@ use saddle_point_module
     mpi_int :: rang, nbproc
     mpi_int :: mpicomm
 !
-    character(len=24) :: precon
+    character(len=24) :: precon, algo, valk(2)
     character(len=24), dimension(:), pointer :: slvk  => null()
     character(len=19) :: nomat, nosolv
     character(len=14) :: nonu
@@ -116,6 +117,7 @@ use saddle_point_module
     KSPConvergedReason :: indic
     Mat :: a
     KSP :: ksp
+    PC :: pc
 !----------------------------------------------------------------
     cbid = dcmplx(0.d0, 0.d0)
     call jemarq()
@@ -143,9 +145,11 @@ use saddle_point_module
     else
         call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
         precon = slvk(2)
+        algo = slvk(6)
         call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
         lmd = matd.eq.'OUI'
-    endif
+!
+    endif 
 !
 !
     if (action .eq. 'PRERES') then
@@ -262,7 +266,6 @@ use saddle_point_module
         call KSPGetConvergedReason(ksp, indic, ierr)
         ASSERT(ierr.eq.0)
         call KSPGetIterationNumber(ksp, its, ierr)
-
         ASSERT(ierr.eq.0)
 
 !
@@ -400,6 +403,18 @@ use saddle_point_module
 !        ----------------------------
         call apsolu(kptsc, lmd, rsolu)
 !
+
+!        2.7 UTILISATION DU LMP EN 2ND NIVEAU
+!        -------------------------------------
+       
+        call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
+        algo = slvk(6)
+        if  ( algo == 'GMRES_LMP' ) then
+            call KSPGetPC( ksp, pc, ierr )
+            ASSERT( ierr == 0 )
+            call lmp_update( pc, ksp, ierr ) 
+            ASSERT( ierr == 0 ) 
+        endif
 !
 !         2.8 NETTOYAGE PETSc (VECTEURS) :
 !         --------------------------------
@@ -465,7 +480,7 @@ use saddle_point_module
         ASSERT(ierr.eq.0)
         call KSPDestroy(ksp, ierr)
         ASSERT(ierr.eq.0)
-!
+! 
 !        -- SUPRESSION DE L'INSTANCE PETSC
         nomats(kptsc) = ' '
         nosols(kptsc) = ' '

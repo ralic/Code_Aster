@@ -319,7 +319,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 #
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="FGMRES", into=("CG", "CR", "GMRES", "GCR", "FGMRES" ), )
+   _BlocPE['ALGORITHME'] = SIMP(statut='f', typ='TXM', defaut="FGMRES", into=("CG", "CR", "GMRES", "GCR", "FGMRES", "GMRES_LMP" ), )
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 

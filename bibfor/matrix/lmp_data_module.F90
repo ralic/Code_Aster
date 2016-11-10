@@ -1,5 +1,6 @@
+module lmp_data_module
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,9 +16,17 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine matdis(matd, verbose)
-              character(len=3) :: matd
-              aster_logical, intent(in), optional :: verbose
-            end subroutine matdis
-          end interface 
+!
+! person_in_charge: natacha.bereux at edf.fr
+!
+use lmp_context_class
+!
+implicit none 
+#include "asterf.h"
+#include "asterf_types.h"
+!
+aster_logical :: lmp_is_setup = .false.
+type(lmp_context_type) :: lmp_context
+integer, public :: reac_lmp = 15
+!
+end module lmp_data_module
