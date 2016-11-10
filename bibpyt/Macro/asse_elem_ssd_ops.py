@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,25 +81,10 @@ def asse_elem_ssd_ops(self, RESU_ASSE_SSD, SOUS_STRUC, LIAISON, VERIF, **args):
                          **arg_liaison))
     modl_gene['LIAISON'] = mcfact
 
-    if VERIF:
-        mcfact = []
-        for i in range(len(VERIF)):
-            arg_verif = {}
-            if VERIF[i]['STOP_ERREUR']:
-                arg_verif['STOP_ERREUR'] = VERIF[i]['STOP_ERREUR']
-            if VERIF[i]['PRECISION']:
-                arg_verif['PRECISION'] = VERIF[i]['PRECISION']
-            if VERIF[i]['CRITERE']:
-                arg_verif['CRITERE'] = VERIF[i]['CRITERE']
-            mcfact.append(_F(**arg_verif))
-        modl_gene['VERIF'] = mcfact
-    else:
-        modl_gene['VERIF'] = None
-
     modele = DEFI_MODELE_GENE(
         SOUS_STRUC=modl_gene['SOUS_STRUC'],
         LIAISON=modl_gene['LIAISON'],
-        VERIF=modl_gene['VERIF'],
+        VERIF=VERIF,
     )
 
     nugene = NUME_DDL_GENE(MODELE_GENE=modele,

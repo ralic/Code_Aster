@@ -35,8 +35,8 @@ from Cata_Utils.t_fonction import (
     FonctionError, ParametreError, InterpolationError, ProlongementError,
 )
 from Utilitai import liss_enveloppe as LISS
-from Utilitai.calc_coherency import calc_cohefromdata 
-from Utilitai.random_signal_utils import (ACCE2SRO, DSP2SRO, SRO2DSP, 
+from Utilitai.calc_coherency import calc_cohefromdata
+from Utilitai.random_signal_utils import (ACCE2SRO, DSP2SRO, SRO2DSP,
                                 acce_filtre_CP, f_phase_forte)
 
 from Utilitai.Utmess import UTMESS, ASSERT
@@ -161,7 +161,10 @@ class CalcFonctionOper(object):
         """Return the list of mcsimp values for all occurrences of mcfact."""
         # only one occurrence of MCFACT or only one value in MCSIMP
         value = []
-        nbmf = len(self.kw)
+        try:
+            nbmf = len(self.kw)
+        except AttributeError:
+            nbmf = 1
         for mcf in self.kw:
             val = force_list(mcf[mcsimp])
             assert nbmf == 1 or len(val) == 1, (nbmf, val)
@@ -352,27 +355,27 @@ class CalcFonction_INTERPOL_FFT(CalcFonctionOper):
 
         dt_init = self._lf[0].vale_x[1]-t0
         N_init = len(self._lf[0].vale_x)
-        
+
         dt_cible = kw['PAS_INST']
         if dt_init < dt_cible:
             UTMESS('F','FONCT0_35')
         # nombre d'intervalles
         N_init-=1
         N_sortie=int((N_init)*dt_init/dt_cible)
-        
+
         if N_init*dt_init/dt_cible - N_sortie >= 0.5:
             N_sortie+=1
         # retour au nombre de valeurs
         N_sortie+=1
-        
+
         # FFT
         ft = self._lf[0].fft('COMPLET')
-        
+
         # suppression de la partie symetrique du signal
         N = len(ft.vale_x)
         valex = list(ft.vale_x[:N/2+1])
         valey = list(ft.vale_y[:N/2+1])
-        
+
         # zero padding
         dfreq = (valex[1]-valex[0]).real
         last_freq = valex[-1]
@@ -383,14 +386,14 @@ class CalcFonction_INTERPOL_FFT(CalcFonctionOper):
             valey.append(0.)
         ft.vale_x = NP.array(valex)
         ft.vale_y = NP.array(valey)
-        
-        # IFFT 
+
+        # IFFT
         self.resu = ft.fft('COMPLET', 'NON')
         self.resu.vale_x = self.resu.vale_x + t0
-        
+
         # dt fin reel
         dt_fin = self.resu.vale_x[1]-self.resu.vale_x[0]
-        
+
         # normalisation
         coef_norm = dt_init/dt_fin
         self.resu.vale_y = self.resu.vale_y * coef_norm
@@ -458,24 +461,24 @@ class CalcFonction_COHERENCE(CalcFonctionOper):
         assert set(vale_para2) == set(vale_para1), 'Data lists are not ordered as pairs.'
 
         acce1 = []
-        acce2 = []  
+        acce2 = []
         for ii, fonc2 in enumerate(lfonc2):
             lt = nap1.l_fonc[ii].vale_x
             fonc1 = nap1.l_fonc[ii].vale_y
             assert len(lt) == len(fonc2[0]), 'Signals with same length required for NUME_ORDRE '+str(vale_para1[ii])
             assert (fonc2[0][1]-fonc2[0][0]) == (lt[1]-lt[0]), 'same time steps required'
-            if self.kw['OPTION'] == "DUREE_PHASE_FORTE": 
-                if ii == 0:  
+            if self.kw['OPTION'] == "DUREE_PHASE_FORTE":
+                if ii == 0:
                     p1 = self.kw['BORNE_INF']
                     p2 = self.kw['BORNE_SUP']
                     N1, N2 = f_phase_forte(lt, fonc1, p1, p2)
                     UTMESS('I', 'SEISME_79',  valr=(lt[N1], lt[N2]))
                 acce2.append(fonc2[1][N1:N2])
-                acce1.append(fonc1[N1:N2]) 
-            else : 
-                acce2.append(fonc2[1])   
+                acce1.append(fonc1[N1:N2])
+            else :
+                acce2.append(fonc2[1])
                 acce1.append(fonc1)
-        acce1 = NP.array(acce1)    
+        acce1 = NP.array(acce1)
         acce2 = NP.array(acce2)
         dt = lt[1]-lt[0]
         lfreq, fcohe = calc_cohefromdata(acce1, acce2, dt, Mm)
@@ -484,7 +487,7 @@ class CalcFonction_COHERENCE(CalcFonctionOper):
         if FREQ_COUP != None:
             if lfreq[-1] > FREQ_COUP:
                 N2 = NP.searchsorted(lfreq, FREQ_COUP)
-                print self.kw['FREQ_COUP'], N2          
+                print self.kw['FREQ_COUP'], N2
         f_cohe = fcohe[N1:N2]
         l_freq = lfreq[N1:N2]
         self.resu = t_fonction(l_freq, f_cohe.real, para)

@@ -24,11 +24,6 @@ def asse_elem_ssd_prod(self, RESU_ASSE_SSD, **args):
         'RIGI_GENE' : matr_asse_gene_r,
         'MASS_GENE' : matr_asse_gene_r,
     }
-    try:
-        RESU_ASSE_SSD = RESU_ASSE_SSD[0]
-    except KeyError:
-        pass
-
     for mc, typ in MTYPES.items():
         if RESU_ASSE_SSD.get(mc):
             self.type_sdprod(RESU_ASSE_SSD[mc], typ)
