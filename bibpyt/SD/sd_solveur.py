@@ -57,7 +57,7 @@ class sd_solveur(AsBase):
         elif method == 'LDLT':
             assert slvk[1] in ('XXXX')
             assert slvk[2] in ('XXXX')
-            assert slvk[3] in ('SANS',)
+            assert slvk[3] in ('RCMK',)
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
@@ -66,7 +66,7 @@ class sd_solveur(AsBase):
             assert slvk[11] in ('XXXX')
         elif method == 'GCPC':
             assert slvk[1] in ('LDLT_INC', 'LDLT_SP', 'SANS')
-            assert slvk[3] in ('SANS',)
+            assert slvk[3] in ('SANS','RCMK')
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
@@ -76,7 +76,7 @@ class sd_solveur(AsBase):
         elif method == 'PETSC':
             assert slvk[1] in (
                 'LDLT_INC', 'LDLT_SP', 'JACOBI', 'SOR', 'ML', 'BOOMER', 'SANS')
-            assert slvk[3] in ('SANS',)
+            assert slvk[3] in ('SANS', 'RCMK')
             assert slvk[5] in ('CG', 'CR', 'GMRES', 'GCR')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
