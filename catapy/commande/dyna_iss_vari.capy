@@ -46,7 +46,7 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
          ),
          MATR_COHE       =FACT(statut='o',
               TYPE = SIMP(statut='o',typ='TXM' , into=("MITA_LUCO","ABRAHAMSON", "ABRA_ROCHER", "ABRA_SOLMOYEN")   ),            
-              b_type_coh = BLOC(condition="TYPE=='MITA_LUCO' ",
+              b_type_coh = BLOC(condition="""equal_to("TYPE", 'MITA_LUCO') """,
                  VITE_ONDE       =SIMP(statut='o',typ='R', val_min=0.0 ),
                  PARA_ALPHA     =SIMP(statut='f',typ='R',defaut=0.1),),
          ),
@@ -64,14 +64,14 @@ DYNA_ISS_VARI=MACRO(nom="DYNA_ISS_VARI",
 #
         INFO           =SIMP(statut='f',typ='I' ,defaut=1,into=( 1 , 2)),
 #
-         b_type_trans = BLOC(condition="EXCIT_SOL !=None",
+         b_type_trans = BLOC(condition="""exists("EXCIT_SOL")""",
                         FREQ_MAX       =SIMP(statut='f',typ='R' ),
                         FREQ_PAS       =SIMP(statut='f',typ='R' ),
                         regles=( ENSEMBLE('FREQ_MAX','FREQ_PAS'),  )
 
                         ),
 
-        b_type_spec = BLOC(condition="NB_FREQ != None",
+        b_type_spec = BLOC(condition="""exists("NB_FREQ")""",
                        FREQ_INIT       =SIMP(statut='o',typ='R' ),
                        FREQ_PAS     =SIMP(statut='o',typ='R' ),
                        OPTION        = SIMP(statut='f',typ='TXM',into=("TOUT","DIAG"),defaut="TOUT"),

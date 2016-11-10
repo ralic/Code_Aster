@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@ ASSE_VECT_GENE=OPER(nom="ASSE_VECT_GENE",op= 140,sd_prod=vect_asse_gene,
             UIinfo={"groupes":("Matrices et vecteurs",)},
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          METHODE          =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("CLASSIQUE","INITIAL") ),
-         b_nume     =BLOC(condition = "METHODE == 'CLASSIQUE'",
+         b_nume     =BLOC(condition = """equal_to("METHODE", 'CLASSIQUE')""",
              CHAR_SOUS_STRUC =FACT(statut='o',max='**',
              SOUS_STRUC      =SIMP(statut='o',typ='TXM' ),
              VECT_ASSE       =SIMP(statut='o',typ=cham_no_sdaster ),

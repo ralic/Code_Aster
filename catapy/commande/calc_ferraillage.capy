@@ -39,11 +39,11 @@ CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_pro
          FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
          LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
 
-         b_acce_reel     =BLOC(condition="(FREQ != None)or(LIST_FREQ != None)or(INST != None)or(LIST_INST != None)",
+         b_acce_reel     =BLOC(condition="""(exists("FREQ"))or(exists("LIST_FREQ"))or(exists("INST"))or(exists("LIST_INST"))""",
             CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
-            b_prec_rela=BLOC(condition="(CRITERE=='RELATIF')",
+            b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
                  PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso=BLOC(condition="(CRITERE=='ABSOLU')",
+            b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
                  PRECISION       =SIMP(statut='o',typ='R',),),
          ),
 

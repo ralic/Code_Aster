@@ -69,20 +69,20 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
                                          "RIGI_THER","RIGI_ACOU","MASS_ACOU","AMOR_ACOU",)
                                    ),
 
-             b_gyro = BLOC( condition = "OPTION in ('RIGI_GYRO', 'MECA_GYRO')",
+             b_gyro = BLOC( condition = """is_in("OPTION", ('RIGI_GYRO', 'MECA_GYRO'))""",
                GROUP_MA       =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
              ),
 
-             b_rigi_meca = BLOC( condition = "OPTION=='RIGI_MECA'",
+             b_rigi_meca = BLOC( condition = """equal_to("OPTION", 'RIGI_MECA')""",
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),
 
-             b_rigi_geom = BLOC( condition = "OPTION=='RIGI_GEOM'",
+             b_rigi_geom = BLOC( condition = """equal_to("OPTION", 'RIGI_GEOM')""",
                SIEF_ELGA       =SIMP(statut='o',typ=cham_elem),
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),
 
-             b_rigi_ther = BLOC( condition = "OPTION=='RIGI_THER'",
+             b_rigi_ther = BLOC( condition = """equal_to("OPTION", 'RIGI_THER')""",
                MODE_FOURIER    =SIMP(statut='f',typ='I',defaut= 0),
              ),
 #
@@ -91,16 +91,16 @@ ASSEMBLAGE=MACRO(nom="ASSEMBLAGE",
          VECT_ASSE       =FACT(statut='f',max='**',
              VECTEUR         =SIMP(statut='o',typ=CO),
              OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_ACOU","CHAR_THER") ),
-           b_char_meca     =BLOC(condition = "OPTION == 'CHAR_MECA'", fr=tr("chargement mécanique"),
+           b_char_meca     =BLOC(condition = """equal_to("OPTION", 'CHAR_MECA')""", fr=tr("chargement mécanique"),
               CHARGE       =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
               MODE_FOURIER =SIMP(statut='f',typ='I',defaut= 0 ),
               ),
 
-           b_char_ther     =BLOC(condition = "OPTION=='CHAR_THER'", fr=tr("chargement thermique"),
+           b_char_ther     =BLOC(condition = """equal_to("OPTION", 'CHAR_THER')""", fr=tr("chargement thermique"),
               CHARGE           =SIMP(statut='f',typ=char_ther,validators=NoRepeat(),max='**'),
               ),
 
-           b_char_acou     =BLOC(condition = "OPTION=='CHAR_ACOU'", fr=tr("chargement acoustique"),
+           b_char_acou     =BLOC(condition = """equal_to("OPTION", 'CHAR_ACOU')""", fr=tr("chargement acoustique"),
               CHARGE           =SIMP(statut='f',typ=char_acou,validators=NoRepeat(),max='**'),
               ),
 #

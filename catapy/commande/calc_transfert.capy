@@ -44,7 +44,7 @@ CALC_TRANSFERT=MACRO(nom="CALC_TRANSFERT",
 
         REPERE      =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
 
-        b_repere  = BLOC( condition = "REPERE=='RELATIF'",
+        b_repere  = BLOC( condition = """equal_to("REPERE", 'RELATIF')""",
               ENTRAINEMENT   =FACT(statut='o',max=1,
                         DX            =SIMP(statut='o',typ=(fonction_sdaster,fonction_c)),
                         DY            =SIMP(statut='o',typ=(fonction_sdaster,fonction_c)),

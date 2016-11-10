@@ -32,7 +32,7 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                APLAT         =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          ),
 
-         b_format_med =BLOC( condition = " ( FORMAT == 'MED' ) " ,
+         b_format_med =BLOC( condition = """ ( equal_to("FORMAT", 'MED') ) """ ,
                              fr=tr("Informations complémentaires pour la lecture MED."),
                              
 

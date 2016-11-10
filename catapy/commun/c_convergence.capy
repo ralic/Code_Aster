@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -26,7 +26,7 @@ def C_CONVERGENCE(COMMAND=None) :
     else:
         mcfact =   FACT(statut='d',
                         regles=(PRESENT_ABSENT('RESI_REFE_RELA','RESI_GLOB_MAXI','RESI_GLOB_RELA','RESI_COMP_RELA'),),
-                        b_refe_rela    =   BLOC(condition = "RESI_REFE_RELA != None",
+                        b_refe_rela    =   BLOC(condition = """exists("RESI_REFE_RELA")""",
                                                     regles=(AU_MOINS_UN('SIGM_REFE','EPSI_REFE','FLUX_THER_REFE','EFFORT_REFE','MOMENT_REFE',
                                                                         'FLUX_HYD1_REFE','FLUX_HYD2_REFE','VARI_REFE','DEPL_REFE','LAGR_REFE','PI_REFE'),),
                                                     EFFORT_REFE     =SIMP(statut='f',typ='R', fr=tr("Force de référence pour les éléments de structure.")),

@@ -323,7 +323,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
            MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FORCE",into=("VENT","FORCE") ),
            # moment interdit avec VENT
-           b_force = BLOC(condition = "TYPE_CHARGE == 'FORCE'",
+           b_force = BLOC(condition = """equal_to("TYPE_CHARGE", 'FORCE')""",
                           regles=(
                     AU_MOINS_UN('FX','FY','FZ','MX','MY','MZ','N','VY','VZ','MT','MFY','MFZ'),
                    PRESENT_ABSENT('FX','N','VY','VZ','MT','MFY','MFZ'),
@@ -351,7 +351,7 @@ AFFE_CHAR_MECA_F=OPER(nom="AFFE_CHAR_MECA_F",op=7,sd_prod=char_meca,
                     MFY             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
                     MFZ             =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule) ),
                                   ),
-           b_vent = BLOC(condition = "TYPE_CHARGE == 'VENT'",
+           b_vent = BLOC(condition = """equal_to("TYPE_CHARGE", 'VENT')""",
                          regles=(
                     AU_MOINS_UN('FX','FY','FZ','N','VY','VZ',),
                    PRESENT_ABSENT('FX','N','VY','VZ',),

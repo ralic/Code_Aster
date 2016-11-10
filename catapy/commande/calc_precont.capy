@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +35,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
          ETAT_INIT       =C_ETAT_INIT('STAT_NON_LINE','f'),
 #-------------------------------------------------------------------
          METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX")),
-         b_meth_newton = BLOC(condition = "METHODE == 'NEWTON'",
+         b_meth_newton = BLOC(condition = """equal_to("METHODE", 'NEWTON')""",
                            NEWTON = C_NEWTON(),
                         ),
          ENERGIE         =FACT(statut='f',max=1,

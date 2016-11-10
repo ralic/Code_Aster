@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,7 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                ALPHA = SIMP(statut='f',typ='R',val_min=0.E+0,fr="Coef. dilatation thermique",),
                INFO = SIMP(statut='f',typ='I',defaut=1,into=(1,2),),
 
-               b_glrc_dm=BLOC(condition = "RELATION == 'GLRC_DM'",
+               b_glrc_dm=BLOC(condition = """equal_to("RELATION", 'GLRC_DM')""",
                               fr=tr("Paramètres de la loi GLRC_DM"),
                               BETON = FACT(statut='o',max=1,
                                 MATER = SIMP(statut='o',typ=(mater_sdaster),),
@@ -42,15 +42,15 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                               AMOR_HYST = SIMP(statut='f',typ='R',val_min=0.E+0,),
                               COMPR = SIMP(statut='o',typ='TXM',defaut="GAMMA",
                                            into=("GAMMA","SEUIL")),
-                   b_gamma=BLOC(condition = "COMPR == 'GAMMA'",
+                   b_gamma=BLOC(condition = """equal_to("COMPR", 'GAMMA')""",
                                 fr=tr("Paramètre d'endommagement en compression "),
                                 GAMMA_C = SIMP(statut='o',typ='R',defaut=1.0E+0,val_min=0.0E+0, val_max=1.0E+0),),
-                   b_seuil=BLOC(condition = "COMPR == 'SEUIL'",
+                   b_seuil=BLOC(condition = """equal_to("COMPR", 'SEUIL')""",
                                 fr=tr("Seuil d'endommagement en compression "),
                                 NYC = SIMP(statut='o',typ='R'),),
                    PENTE = SIMP(statut='o',typ='TXM',defaut="RIGI_ACIER",
                                 into=("PLAS_ACIER","UTIL","RIGI_ACIER")),
-                   b_util = BLOC(condition = "PENTE == 'UTIL'",
+                   b_util = BLOC(condition = """equal_to("PENTE", 'UTIL')""",
                                  fr=tr("Valeur de la déformation maximale de l'élément"),
                                   EPSI_MEMB = SIMP(statut='o',typ='R',defaut=0.E+0),
                                   KAPPA_FLEX = SIMP(statut='o',typ='R',defaut=0.E+0),),
@@ -59,7 +59,7 @@ DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
                    METHODE_ENDO = SIMP(statut='o',typ='TXM',defaut="ENDO_INTER",
                                   into=("ENDO_NAISS","ENDO_LIM","ENDO_INTER"),),
                            ),
-           b_glrc_damage=BLOC(condition = "RELATION == 'GLRC_DAMAGE'",
+           b_glrc_damage=BLOC(condition = """equal_to("RELATION", 'GLRC_DAMAGE')""",
                             fr=tr("Paramètres de la loi GLRC_DAMAGE"),
                    CISAIL_NL          =FACT(statut='f',max=1,
                      BTD1            =SIMP(statut='o',typ='R'),

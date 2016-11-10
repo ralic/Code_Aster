@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
            SUPER_MAILLE    =SIMP(statut='f',typ=ma,max='**'),
            TRAN            =SIMP(statut='f',typ='R',max=3),
            ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
-           b_angl_naut     =BLOC(condition = "ANGL_NAUT != None",
+           b_angl_naut     =BLOC(condition = """exists("ANGL_NAUT")""",
              CENTRE          =SIMP(statut='f',typ='R',max=3),
            ),
          ),
@@ -39,7 +39,7 @@ DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
            SUPER_MAILLE    =SIMP(statut='o',typ=ma,max='**'),
            GROUP_NO        =SIMP(statut='o',typ=grno,max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="GEOMETRIQUE",into=("GEOMETRIQUE","NOEUD_A_NOEUD","INVERSE") ),
-           geometrique     =BLOC(condition = "OPTION == 'GEOMETRIQUE'",
+           geometrique     =BLOC(condition = """equal_to("OPTION", 'GEOMETRIQUE')""",
              CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
              PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
            ),
@@ -50,11 +50,11 @@ DEFI_MAILLAGE=OPER(nom="DEFI_MAILLAGE",op=  88,sd_prod=maillage_sdaster,
                                  fr=tr("Renommage de tous les noeuds") ),
            NOEUD_INIT      =SIMP(statut='f',typ=no,
                                  fr=tr("Renommage d un seul noeud")),
-           b_tout          =BLOC(condition = "TOUT != None",
+           b_tout          =BLOC(condition = """exists("TOUT")""",
              PREFIXE         =SIMP(statut='f',typ='TXM' ),
              INDEX           =SIMP(statut='o',typ='I',max='**'),
            ),
-           b_noeud_init    =BLOC(condition = "NOEUD_INIT != None",
+           b_noeud_init    =BLOC(condition = """exists("NOEUD_INIT")""",
              SUPER_MAILLE    =SIMP(statut='o',typ=ma),
              NOEUD_FIN       =SIMP(statut='o',typ=no),
            ),

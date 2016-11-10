@@ -21,7 +21,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
 
          CHARGEMENT = SIMP(statut='o',typ='TXM',into=("UNIAXIAL","MULTIAXIAL","QUELCONQUE")),
 
-         b_uniaxial = BLOC( condition = "CHARGEMENT=='UNIAXIAL'",
+         b_uniaxial = BLOC( condition = """equal_to("CHARGEMENT", 'UNIAXIAL')""",
                       regles=(PRESENT_PRESENT('CORR_KE','MATER'),
                               PRESENT_PRESENT('CORR_SIGM_MOYE','MATER'),
                               PRESENT_PRESENT('DOMMAGE','MATER'),),
@@ -43,7 +43,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
              CUMUL          = SIMP(statut='f',typ='TXM',into=("LINEAIRE",)),
          ),
 
-         b_multiaxial = BLOC( condition = "CHARGEMENT=='MULTIAXIAL'",
+         b_multiaxial = BLOC( condition = """equal_to("CHARGEMENT", 'MULTIAXIAL')""",
              HISTOIRE       = FACT(statut='o',
                                  regles=(PRESENT_PRESENT('SIGM_XX','SIGM_YY','SIGM_ZZ','SIGM_XY','SIGM_XZ','SIGM_YZ'),
                                          PRESENT_PRESENT('EPS_XX','EPS_YY','EPS_ZZ','EPS_XY','EPS_XZ','EPS_YZ'),
@@ -77,7 +77,7 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
              TYPE_CHARGE    = SIMP(statut='o',typ='TXM',into=("PERIODIQUE","NON_PERIODIQUE")),
              DOMMAGE         = SIMP(statut='f',typ='TXM',into=("WOHLER","MANSON_COFFIN","FORM_VIE") ),
 
-             b_fati_pfvie  = BLOC(condition = "(DOMMAGE == 'FORM_VIE')",
+             b_fati_pfvie  = BLOC(condition = """(equal_to("DOMMAGE", 'FORM_VIE'))""",
                                     FORMULE_VIE   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                                  ),
 
@@ -86,31 +86,31 @@ POST_FATIGUE=OPER(nom="POST_FATIGUE",op=136,sd_prod=table_sdaster,reentrant='n',
              COEF_PREECROU =SIMP(statut='f',typ='R',defaut= 1.0E+0),
 
 
-             b_period       =BLOC(condition = "TYPE_CHARGE == 'PERIODIQUE'",
+             b_period       =BLOC(condition = """equal_to("TYPE_CHARGE", 'PERIODIQUE')""",
                CRITERE       =SIMP(statut='o',typ='TXM',into=("MATAKE_MODI_AC","DANG_VAN_MODI_AC","CROSSLAND",
                                                                "PAPADOPOULOS","FORMULE_CRITERE") ),
 
                METHODE       =SIMP(statut='f',typ='TXM',into=("CERCLE_EXACT",) ),
-               b_fati_pf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
+               b_fati_pf  =BLOC(condition = """(equal_to("CRITERE", 'FORMULE_CRITERE'))""",
                    FORMULE_GRDEQ   = SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                    FORMULE_CRITIQUE = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
                ),
              ),
 
-            b_non_period   =BLOC(condition = "TYPE_CHARGE == 'NON_PERIODIQUE'",
+            b_non_period   =BLOC(condition = """equal_to("TYPE_CHARGE", 'NON_PERIODIQUE')""",
                CRITERE       =SIMP(statut='o',typ='TXM',
                                    into=("MATAKE_MODI_AV","DANG_VAN_MODI_AV","FATESOCI_MODI_AV","FORMULE_CRITERE") ),
                PROJECTION    =SIMP(statut='o',typ='TXM',into=("UN_AXE", "DEUX_AXES") ),
                DELTA_OSCI    =SIMP(statut='f',typ='R',defaut= 0.0E+0),
 
-               b_fati_npf  =BLOC(condition = "(CRITERE == 'FORMULE_CRITERE')",
+               b_fati_npf  =BLOC(condition = """(equal_to("CRITERE", 'FORMULE_CRITERE'))""",
                    FORMULE_GRDEQ   =SIMP(statut='o',typ=(fonction_sdaster,formule) ),
                ),
             ),
 
          ),
 
-         b_quelconque = BLOC( condition = "CHARGEMENT=='QUELCONQUE'",
+         b_quelconque = BLOC( condition = """equal_to("CHARGEMENT", 'QUELCONQUE')""",
              HISTOIRE       = FACT(statut='o',
                                  SIGM_XX  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),
                                  SIGM_YY  = SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule)),

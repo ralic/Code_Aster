@@ -39,10 +39,10 @@ MODE_ITER_CYCL=OPER(nom="MODE_ITER_CYCL",op=  80,sd_prod=mode_cycl,
            NB_DIAM         =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            OPTION          =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE"
                                 ,into=("PLUS_PETITE","CENTRE","BANDE") ),
-           b_centre      =BLOC(condition = "OPTION == 'CENTRE'",
+           b_centre      =BLOC(condition = """equal_to("OPTION", 'CENTRE')""",
              FREQ            =SIMP(statut='o',typ='R',),
            ),
-           b_bande       =BLOC(condition = "OPTION == 'BANDE'",
+           b_bande       =BLOC(condition = """equal_to("OPTION", 'BANDE')""",
              FREQ            =SIMP(statut='o',typ='R',min=2,validators=NoRepeat(),max=2),
            ),
 #  NMAX_FREQ n a-t-il pas un sens qu avec OPTION CENTRE                                

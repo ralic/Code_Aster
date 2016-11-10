@@ -153,7 +153,7 @@ AFFE_CHAR_CINE=OPER(nom="AFFE_CHAR_CINE",op= 101,sd_prod=affe_char_cine_prod
          ),
 
          EVOL_IMPO  =SIMP(statut='f',typ=(evol_noli,evol_elas,evol_ther),fr=tr("Pour imposer les ddls d'un evol_xxx")),
-         b_evol_impo = BLOC ( condition = "EVOL_IMPO != None",
+         b_evol_impo = BLOC ( condition = """exists("EVOL_IMPO")""",
            NOM_CMP         =SIMP(statut='f',typ='TXM',max='**',), # pour n'imposer que certaines CMPS (par défaut : toutes)
          ),
 

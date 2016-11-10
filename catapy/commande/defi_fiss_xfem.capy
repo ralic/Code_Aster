@@ -49,11 +49,11 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
       FONC_LT             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
       FONC_LN             =SIMP(statut='f',typ=(fonction_sdaster,formule) ),
 #     Front initial ptopagation cohesive
-      b_cohesif           =BLOC(condition = "TYPE_DISCONTINUITE == 'COHESIF'",
+      b_cohesif           =BLOC(condition = """equal_to("TYPE_DISCONTINUITE", 'COHESIF')""",
          GROUP_MA_BORD     =SIMP(statut='o',typ=grma,max=1),
       ),
 #
-      b_sans_cohesif      = BLOC(condition = "TYPE_DISCONTINUITE != 'COHESIF'",fr="Options pas ouvertes avec le cohesif",
+      b_sans_cohesif      = BLOC(condition = """not equal_to("TYPE_DISCONTINUITE", 'COHESIF')""",fr="Options pas ouvertes avec le cohesif",
          CHAM_NO_LSN         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
          CHAM_NO_LST         =SIMP(statut='f',typ=cham_no_sdaster,min=1,max=1),
          GROUP_MA_FISS       =SIMP(statut='f',typ=grma,min=1,max=1),
@@ -61,14 +61,14 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
       ),
       FORM_FISS   =SIMP(statut='f',typ='TXM',into=("ELLIPSE","RECTANGLE","CYLINDRE","DEMI_PLAN",
                                                    "SEGMENT","DEMI_DROITE","DROITE","ENTAILLE") ),
-      b_ellipse           =BLOC(condition = "FORM_FISS == 'ELLIPSE' ",fr=tr("Paramètres de la fissure/interface elliptique"),
+      b_ellipse           =BLOC(condition = """equal_to("FORM_FISS", 'ELLIPSE') """,fr=tr("Paramètres de la fissure/interface elliptique"),
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
            COTE_FISS      =SIMP(statut='f',typ='TXM',defaut="IN",into=("IN","OUT",) ),    ),
-      b_rectangle         =BLOC(condition = "FORM_FISS == 'RECTANGLE' ",fr=tr("Paramètres de la fissure/interface rectangulaire"),
+      b_rectangle         =BLOC(condition = """equal_to("FORM_FISS", 'RECTANGLE') """,fr=tr("Paramètres de la fissure/interface rectangulaire"),
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
            RAYON_CONGE    =SIMP(statut='f',typ='R',val_min=0.,defaut=0.),
@@ -76,29 +76,29 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),
            COTE_FISS      =SIMP(statut='f',typ='TXM',defaut="IN",into=("IN","OUT",) ),    ),
-      b_entaille          =BLOC(condition = "FORM_FISS == 'ENTAILLE' ",fr=tr("Paramètres de l'interface entaille"),
+      b_entaille          =BLOC(condition = """equal_to("FORM_FISS", 'ENTAILLE') """,fr=tr("Paramètres de l'interface entaille"),
            DEMI_LONGUEUR  =SIMP(statut='o',typ='R',val_min=0.),
            RAYON_CONGE    =SIMP(statut='o',typ='R',val_min=0.),
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),  ),
-      b_cylindre          =BLOC(condition = "FORM_FISS == 'CYLINDRE' ",fr=tr("Paramètres de la fissure cylindrique"),
+      b_cylindre          =BLOC(condition = """equal_to("FORM_FISS", 'CYLINDRE') """,fr=tr("Paramètres de la fissure cylindrique"),
            DEMI_GRAND_AXE =SIMP(statut='o',typ='R',val_min=0.),
            DEMI_PETIT_AXE =SIMP(statut='o',typ='R',val_min=0.),
            CENTRE         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_X         =SIMP(statut='o',typ='R',min=3,max=3),
            VECT_Y         =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_demiplan          =BLOC(condition = "FORM_FISS == 'DEMI_PLAN' ",fr=tr("Paramètres de la fissure plane à front droit"),
+      b_demiplan          =BLOC(condition = """equal_to("FORM_FISS", 'DEMI_PLAN') """,fr=tr("Paramètres de la fissure plane à front droit"),
            PFON           =SIMP(statut='o',typ='R',min=3,max=3),
            NORMALE        =SIMP(statut='o',typ='R',min=3,max=3),
            DTAN           =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_segment           =BLOC(condition = "FORM_FISS == 'SEGMENT' ",fr=tr("Paramètres de la fissure 2D segment"),
+      b_segment           =BLOC(condition = """equal_to("FORM_FISS", 'SEGMENT') """,fr=tr("Paramètres de la fissure 2D segment"),
            PFON_ORIG      =SIMP(statut='o',typ='R',min=3,max=3),
            PFON_EXTR      =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_demidroite         =BLOC(condition = "FORM_FISS == 'DEMI_DROITE' ",fr=tr("Paramètres de la fissure 2D demi-droite"),
+      b_demidroite         =BLOC(condition = """equal_to("FORM_FISS", 'DEMI_DROITE') """,fr=tr("Paramètres de la fissure 2D demi-droite"),
            PFON           =SIMP(statut='o',typ='R',min=3,max=3),
            DTAN           =SIMP(statut='o',typ='R',min=3,max=3),),
-      b_droite            =BLOC(condition = "FORM_FISS == 'DROITE' ",fr=tr("Paramètres de l'interface 2D (fissure traversante)"),
+      b_droite            =BLOC(condition = """equal_to("FORM_FISS", 'DROITE') """,fr=tr("Paramètres de l'interface 2D (fissure traversante)"),
            POINT          =SIMP(statut='o',typ='R',min=3,max=3),
            DTAN           =SIMP(statut='o',typ='R',min=3,max=3),),
                             ),
@@ -113,22 +113,22 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       types d'enrichissement
 # ------------------------------------------------------------------------------------------------------------------------
 
-    b_enri_inte           =BLOC(condition = "TYPE_DISCONTINUITE == 'INTERFACE' ",
+    b_enri_inte           =BLOC(condition = """equal_to("TYPE_DISCONTINUITE", 'INTERFACE') """,
 
       CHAM_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("DEPL","SIGM"),defaut="DEPL" ),
 
                           ),
 
 
-    b_enri_fiss           =BLOC(condition = "TYPE_DISCONTINUITE == 'FISSURE' ",
+    b_enri_fiss           =BLOC(condition = """equal_to("TYPE_DISCONTINUITE", 'FISSURE') """,
 
       CHAM_DISCONTINUITE  =SIMP(statut='f',typ='TXM',into=("DEPL",),defaut="DEPL" ),
       TYPE_ENRI_FOND      =SIMP(statut='f',typ='TXM',into=("TOPOLOGIQUE","GEOMETRIQUE"),defaut="GEOMETRIQUE" ),
 
-        b_enri_geom       =BLOC(condition = "TYPE_ENRI_FOND == 'GEOMETRIQUE' ",fr=tr("Paramètres de l enrichissement geometrique"),
+        b_enri_geom       =BLOC(condition = """equal_to("TYPE_ENRI_FOND", 'GEOMETRIQUE') """,fr=tr("Paramètres de l enrichissement geometrique"),
            RAYON_ENRI     =SIMP(statut='f',typ='R',val_min=0.E+0),
 
-          b_enri_couches  =BLOC(condition = "(RAYON_ENRI == None) ",fr=tr("Paramètres de l enrichissement à n couches"),
+          b_enri_couches  =BLOC(condition = """(not exists("RAYON_ENRI")) """,fr=tr("Paramètres de l enrichissement à n couches"),
            NB_COUCHES     =SIMP(statut='f',typ='I',defaut=2,val_min=1),
 
                                ),
@@ -139,7 +139,7 @@ DEFI_FISS_XFEM=OPER(nom="DEFI_FISS_XFEM",op=  41,sd_prod=fiss_xfem,reentrant='n'
 #                       branchement
 # ------------------------------------------------------------------------------------------------------------------------
 
-    b_jonction            =BLOC(condition = "(MAILLAGE_GRILLE == None) and (FISS_GRILLE == None)",
+    b_jonction            =BLOC(condition = """(not exists("MAILLAGE_GRILLE")) and (not exists("FISS_GRILLE"))""",
         JONCTION              =FACT(statut='f',max=1,
           FISSURE             =SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
           POINT               =SIMP(statut='o',typ='R',max=3,),

@@ -1261,17 +1261,17 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              ),
            CABLE_GAINE_FROT=FACT(statut='f',min=0 ,max=1,
              TYPE = SIMP(statut='o',typ='TXM',into=("FROTTANT","GLISSANT","ADHERENT")),
-             b_glissant =BLOC(condition="TYPE=='GLISSANT'",
+             b_glissant =BLOC(condition="""equal_to("TYPE", 'GLISSANT')""",
                                     fr=tr("Loi cable gaine glissante"),
                      FROT_LINE         =SIMP(statut='c',typ='R',defaut= 0.0,),
                      FROT_COURB       =SIMP(statut='c',typ='R',defaut= 0.0,),
              ),
-             b_adherent =BLOC(condition="TYPE=='ADHERENT'",
+             b_adherent =BLOC(condition="""equal_to("TYPE", 'ADHERENT')""",
                                     fr=tr("Loi cable gaine adherent"),
                      FROT_LINE         =SIMP(statut='c',typ='R',defaut= -1.0,),
                      FROT_COURB       =SIMP(statut='c',typ='R',defaut= 0.0,),
              ),
-             b_frottant =BLOC(condition="TYPE=='FROTTANT'",
+             b_frottant =BLOC(condition="""equal_to("TYPE", 'FROTTANT')""",
                                     fr=tr("Loi cable gaine frottant"),
                      FROT_LINE         =SIMP(statut='o',typ='R',defaut= 0.0,),
                      FROT_COURB       =SIMP(statut='o',typ='R',defaut= 0.0,),
@@ -1657,7 +1657,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU -----------------------------------------------
 # =================================================================================
-           b_liqusatu      = BLOC(condition = "COMP_THM == 'LIQU_SATU' ",
+           b_liqusatu      = BLOC(condition = """equal_to("COMP_THM", 'LIQU_SATU') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_SATU"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -1827,7 +1827,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ --------------------------------------
 # =================================================================================
-           b_liqugaz      = BLOC(condition = "COMP_THM == 'LIQU_GAZ' ",
+           b_liqugaz      = BLOC(condition = """equal_to("COMP_THM", 'LIQU_GAZ') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_GAZ"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2009,7 +2009,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_GAZ ------------------------------------------------
 # =================================================================================
-           b_gaz          = BLOC(condition = "COMP_THM == 'GAZ' ",
+           b_gaz          = BLOC(condition = """equal_to("COMP_THM", 'GAZ') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type GAZ"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2170,7 +2170,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ --------------------------------------
 # =================================================================================
-           b_liqugazatm   = BLOC(condition = "COMP_THM == 'LIQU_GAZ_ATM' ",
+           b_liqugazatm   = BLOC(condition = """equal_to("COMP_THM", 'LIQU_GAZ_ATM') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_GAZ_ATM"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2334,7 +2334,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ,  THM_AIR_DISSOUS---------
 # =================================================================================
-           b_liquadgaz  = BLOC(condition = "COMP_THM == 'LIQU_AD_GAZ' ",
+           b_liquadgaz  = BLOC(condition = """equal_to("COMP_THM", 'LIQU_AD_GAZ') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_AD_GAZ"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2541,7 +2541,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ, THM_VAPE_GAZ ------------------------
 # =================================================================================
-           b_liquvapegaz  = BLOC(condition = "COMP_THM == 'LIQU_VAPE_GAZ' ",
+           b_liquvapegaz  = BLOC(condition = """equal_to("COMP_THM", 'LIQU_VAPE_GAZ') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_VAPE_GAZ"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2730,7 +2730,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_GAZ, THM_VAPE_GAZ THM_AIR_DISSOUS---------
 # =================================================================================
-           b_liquadvape  = BLOC(condition = "COMP_THM == 'LIQU_AD_GAZ_VAPE' ",
+           b_liquadvape  = BLOC(condition = """equal_to("COMP_THM", 'LIQU_AD_GAZ_VAPE') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_AD_GAZ_VAPE"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -2926,7 +2926,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
 # --- PRESENCE OBLIGATOIRE DES MOT-CLES SUIVANT : ---------------------------------
 # --- THM_INIT, THM_DIFFU, THM_LIQU, THM_VAPE_GAZ ---------------------------------
 # =================================================================================
-           b_liquvape  = BLOC(condition = "COMP_THM == 'LIQU_VAPE' ",
+           b_liquvape  = BLOC(condition = """equal_to("COMP_THM", 'LIQU_VAPE') """,
                                  fr=tr("Paramètres nécessaires pour une loi de couplage de type LIQU_VAPE"),
 # =================================================================================
 # --- MOT-CLE OBLIGATOIRE ---------------------------------------------------------
@@ -3135,21 +3135,21 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                                                             "FATESOCI_MODI_AV",
                                                             ) ),
 
-             b_critere_matake =BLOC(condition="CRITERE=='MATAKE_MODI_AC' or CRITERE=='MATAKE_MODI_AV'",
+             b_critere_matake =BLOC(condition="""equal_to("CRITERE", 'MATAKE_MODI_AC') or equal_to("CRITERE", 'MATAKE_MODI_AV')""",
                          fr=tr("Cisaillement plan critique critère de matake pour les cas amplitude constante et amplitude variable"),
                MATAKE_A         =SIMP(statut='o',typ='R'),
                MATAKE_B         =SIMP(statut='o',typ='R'),
                COEF_FLEX_TORS   =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
              ),
 
-             b_critere_dang_van =BLOC(condition="(CRITERE=='DANG_VAN_MODI_AC' or CRITERE=='DANG_VAN_MODI_AV')",
+             b_critere_dang_van =BLOC(condition="""(equal_to("CRITERE", 'DANG_VAN_MODI_AC') or equal_to("CRITERE", 'DANG_VAN_MODI_AV'))""",
                                  fr=tr("Critère de Dang Van modifié pour les cas amplitude constante et amplitude variable"),
                D_VAN_A            =SIMP(statut='o',typ='R'),
                D_VAN_B            =SIMP(statut='o',typ='R'),
                COEF_CISA_TRAC     =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
              ),
 
-             b_critere_fate_soci =BLOC(condition="CRITERE=='FATESOCI_MODI_AV'",
+             b_critere_fate_soci =BLOC(condition="""equal_to("CRITERE", 'FATESOCI_MODI_AV')""",
                                fr=tr("Critère de Fatemi et Socie, en élasticité ou élastoplasticité, pour le cas amplitude variable"),
                FATSOC_A           =SIMP(statut='o',typ='R'),
                COEF_CISA_TRAC     =SIMP(statut='o',typ='R',val_min=1.0E0,val_max=1.7321E0),
@@ -3374,12 +3374,12 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
              SY              =SIMP(statut='o',typ='R'),
              P_ULTM          =SIMP(statut='o',typ='R'),
              ECROUISSAGE = SIMP(statut='o',typ='TXM',into=("LINEAIRE","PARABOLIQUE")),
-             b_lineaire =BLOC(condition="ECROUISSAGE=='LINEAIRE'",
+             b_lineaire =BLOC(condition="""equal_to("ECROUISSAGE", 'LINEAIRE')""",
                                     fr=tr("Loi de comportement de type Drucker Prager avec un ecrouissage lineaire"),
                     H               =SIMP(statut='o',typ='R'),
                     TYPE_DP         =SIMP(statut='c',typ='R',defaut= 1.0,),
              ),
-             b_parabolique =BLOC(condition="ECROUISSAGE=='PARABOLIQUE'",
+             b_parabolique =BLOC(condition="""equal_to("ECROUISSAGE", 'PARABOLIQUE')""",
                                     fr=tr("Loi de comportement de type Drucker Prager avec un ecrouissage parabolique"),
                     SY_ULTM         =SIMP(statut='o',typ='R'),
                     TYPE_DP         =SIMP(statut='c',typ='R',defaut= 2.0,),

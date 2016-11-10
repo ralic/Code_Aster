@@ -25,4 +25,3 @@ POST_LIQUEFACTION=MACRO(nom="POST_LIQUEFACTION",
                         INST_REF = SIMP(statut='o',typ='R'),
                         RESULTAT = SIMP(statut='o',typ=evol_noli,), 
 ) ;
-

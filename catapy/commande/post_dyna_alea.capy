@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,14 +31,14 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
                         VALE       = SIMP(statut='f',typ='R', min=1,validators=NoRepeat(),max='**' ),
                         LIST_PARA  = SIMP(statut='f',typ=listr8_sdaster),
                         METHODE    = SIMP(statut='o',typ='TXM',into=("EMV","REGRESSION") ),
-                        a_methode =BLOC(condition = "METHODE == 'REGRESSION'", 
+                        a_methode =BLOC(condition = """equal_to("METHODE", 'REGRESSION')""", 
                             SEUIL     = SIMP(statut='o',typ='R' ),  ), 
-                        b_methode =BLOC(condition = "METHODE == 'EMV'",
+                        b_methode =BLOC(condition = """equal_to("METHODE", 'EMV')""",
                            SEUIL     = SIMP(statut='f',typ='R' ),   
                            AM_INI     = SIMP(statut='o',typ='R' ),
                            BETA_INI   = SIMP(statut='f',typ='R',defaut= 0.3 ),
                            FRACTILE   = SIMP(statut='f',typ='R', min=1,validators=NoRepeat(),max='**'),
-                           b_inte_spec_f  = BLOC(condition="""FRACTILE !=None""",
+                           b_inte_spec_f  = BLOC(condition="""exists("FRACTILE")""",
                                NB_TIRAGE =SIMP(statut='f',typ='I' ),),),),
 
          INTERSPECTRE=FACT(statut='f',
@@ -49,10 +49,10 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
                            NUME_ORDRE_I    =SIMP(statut='f',typ='I',max='**' ),
                            NOEUD_I         =SIMP(statut='f',typ=no,max='**'),
                            OPTION          =SIMP(statut='f',typ='TXM',into=("DIAG","TOUT",) ),
-                           b_nume_ordre_i =BLOC(condition = "NUME_ORDRE_I != None",
+                           b_nume_ordre_i =BLOC(condition = """exists("NUME_ORDRE_I")""",
                                NUME_ORDRE_J    =SIMP(statut='o',typ='I',max='**' ),
                                         ),
-                           b_noeud_i      =BLOC(condition = "NOEUD_I != None",
+                           b_noeud_i      =BLOC(condition = """exists("NOEUD_I")""",
                                NOEUD_J         =SIMP(statut='o',typ=no,max='**'),
                                NOM_CMP_I       =SIMP(statut='o',typ='TXM',max='**' ),
                                NOM_CMP_J       =SIMP(statut='o',typ='TXM',max='**' ),

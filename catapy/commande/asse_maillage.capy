@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,7 @@ ASSE_MAILLAGE=OPER(nom="ASSE_MAILLAGE",op= 105,sd_prod=maillage_sdaster,
          MAILLAGE_1 =  SIMP(statut='o',typ=maillage_sdaster,),
          MAILLAGE_2 =  SIMP(statut='o',typ=maillage_sdaster,),
          OPERATION  =  SIMP(statut='o',typ='TXM',into=("SOUS_STR","SUPERPOSE","COLLAGE"),),
-         b_collage  =  BLOC(condition = "OPERATION == 'COLLAGE'",
+         b_collage  =  BLOC(condition = """equal_to("OPERATION", 'COLLAGE')""",
            COLLAGE  =  FACT(statut='o',
               GROUP_MA_1     =SIMP(statut='o',typ=grma),
               GROUP_MA_2     =SIMP(statut='o',typ=grma),

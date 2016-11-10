@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,17 +25,17 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
             UIinfo={"groupes":("Matrices et vecteurs",)},
                     fr=tr("Calcul des seconds membres élémentaires"),
          OPTION          =SIMP(statut='o',typ='TXM',into=("CHAR_MECA","CHAR_THER","CHAR_ACOU") ),
-         b_char_meca     =BLOC(condition = "OPTION=='CHAR_MECA'",
+         b_char_meca     =BLOC(condition = """equal_to("OPTION", 'CHAR_MECA')""",
            regles=(AU_MOINS_UN('CHARGE','MODELE'),),
            CHARGE          =SIMP(statut='f',typ=char_meca,validators=NoRepeat(),max='**'),
            MODELE          =SIMP(statut='f',typ=modele_sdaster),
-           b_charge     =BLOC(condition = "CHARGE != None", fr=tr("modèle ne contenant pas de sous-structure"),
+           b_charge     =BLOC(condition = """exists("CHARGE")""", fr=tr("modèle ne contenant pas de sous-structure"),
               CHAM_MATER   =SIMP(statut='f',typ=cham_mater),
               CARA_ELEM    =SIMP(statut='f',typ=cara_elem),
               INST         =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
               MODE_FOURIER =SIMP(statut='f',typ='I',defaut= 0 ),
            ),
-           b_modele     =BLOC(condition = "(MODELE != None)",fr=tr("modèle contenant une sous-structure"),
+           b_modele     =BLOC(condition = """(exists("MODELE"))""",fr=tr("modèle contenant une sous-structure"),
               SOUS_STRUC      =FACT(statut='o',min=01,
                 regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
                 CAS_CHARGE  =SIMP(statut='o',typ='TXM' ),
@@ -44,13 +44,13 @@ CALC_VECT_ELEM=OPER(nom="CALC_VECT_ELEM",op=8,sd_prod=calc_vect_elem_prod,reentr
               ),
            ),
          ),
-         b_char_ther     =BLOC(condition = "OPTION=='CHAR_THER'",
+         b_char_ther     =BLOC(condition = """equal_to("OPTION", 'CHAR_THER')""",
            CARA_ELEM        =SIMP(statut='f',typ=cara_elem),
            CHARGE           =SIMP(statut='o',typ=char_ther,validators=NoRepeat(),max='**'),
            INST             =SIMP(statut='f',typ='R',defaut= 0.E+0 ),
          ),
 
-         b_char_acou     =BLOC(condition = "OPTION=='CHAR_ACOU'",
+         b_char_acou     =BLOC(condition = """equal_to("OPTION", 'CHAR_ACOU')""",
            CHAM_MATER        =SIMP(statut='o',typ=cham_mater),
            CHARGE            =SIMP(statut='o',typ=char_acou,validators=NoRepeat(),max='**'),
          ),

@@ -24,7 +24,7 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant=
          SPEC_TURB      =SIMP(statut='o',typ=spectre_sdaster,validators=NoRepeat(),max='**' ),
          TOUT_CMP       =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON")),
          BASE_ELAS_FLUI =SIMP(statut='f',typ=melasflu_sdaster ),
-         b_fluide = BLOC(condition="BASE_ELAS_FLUI !=None",
+         b_fluide = BLOC(condition="""exists("BASE_ELAS_FLUI")""",
            VITE_FLUI      =SIMP(statut='o',typ='R'),
            PRECISION       =SIMP(statut='f',typ='R',defaut=1.0E-3 ),
          ),

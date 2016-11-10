@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,27 +102,27 @@ OBSERVATION=MACRO(nom="OBSERVATION",
            TYPE_CHAM       =SIMP(statut='f',typ='TXM',
                                  into=("VECT_2D","VECT_3D","TENS_2D","TENS_3D"),
                                        defaut="VECT_3D"),
-           b_vect_2d       =BLOC(condition = "TYPE_CHAM=='VECT_2D'",
+           b_vect_2d       =BLOC(condition = """equal_to("TYPE_CHAM", 'VECT_2D')""",
               NOM_CMP         =SIMP(statut='o',typ='TXM',min=2,max=2 ),),
-           b_vect_3d       =BLOC(condition = "TYPE_CHAM=='VECT_3D'",
+           b_vect_3d       =BLOC(condition = """equal_to("TYPE_CHAM", 'VECT_3D')""",
               NOM_CMP         =SIMP(statut='f',typ='TXM',min=3,max=3,defaut=('DX','DY','DZ') ),),
-           b_tens_2d       =BLOC(condition = "TYPE_CHAM=='TENS_2D'",
+           b_tens_2d       =BLOC(condition = """equal_to("TYPE_CHAM", 'TENS_2D')""",
               NOM_CMP         =SIMP(statut='f',typ='TXM',min=4,max=4,defaut=('EPXX','EPYY','EPZZ','EPXY',) ),),
-           b_tens_3d       =BLOC(condition = "TYPE_CHAM=='TENS_3D'",
+           b_tens_3d       =BLOC(condition = """equal_to("TYPE_CHAM", 'TENS_3D')""",
               NOM_CMP         =SIMP(statut='f',typ='TXM',min=6,max=6,defaut=('EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ',),),),
 
            REPERE          =SIMP(statut='o',typ='TXM',
                                  into=("UTILISATEUR","CYLINDRIQUE","NORMALE","DIR_JAUGE"),),
-           b_normale       =BLOC(condition = "REPERE=='NORMALE'",
+           b_normale       =BLOC(condition = """equal_to("REPERE", 'NORMALE')""",
              regles=(UN_PARMI('VECT_X','VECT_Y')),
              VECT_X          =SIMP(statut='f',typ='R',min=3,max=3),
              VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3), ),
-           b_utilisateur   =BLOC(condition = "REPERE=='UTILISATEUR'",
+           b_utilisateur   =BLOC(condition = """equal_to("REPERE", 'UTILISATEUR')""",
              ANGL_NAUT       =SIMP(statut='o',typ='R',max=3)),
-           b_cylindrique   =BLOC(condition = "REPERE=='CYLINDRIQUE'",
+           b_cylindrique   =BLOC(condition = """equal_to("REPERE", 'CYLINDRIQUE')""",
              ORIGINE         =SIMP(statut='o',typ='R',min=2,max=3),
              AXE_Z           =SIMP(statut='o',typ='R',min=3,max=3)),
-           b_dir_jauge       =BLOC(condition = "REPERE=='DIR_JAUGE'",
+           b_dir_jauge       =BLOC(condition = """equal_to("REPERE", 'DIR_JAUGE')""",
              VECT_X          =SIMP(statut='f',typ='R',min=3,max=3),
              VECT_Y          =SIMP(statut='f',typ='R',min=3,max=3), ),
          ),

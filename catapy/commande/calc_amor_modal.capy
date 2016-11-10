@@ -67,7 +67,7 @@ CALC_AMOR_MODAL=OPER(nom="CALC_AMOR_MODAL",op= 172,sd_prod=listr8_sdaster,
            SEUIL           =SIMP(statut='f',typ='R',defaut= 0.3 ),
          ),
          CORR_AMOR_NEGATIF    =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","IGNORE","OUI") ),
-         b_corr_amor   = BLOC(condition="CORR_AMOR_NEGATIF == 'OUI'",
+         b_corr_amor   = BLOC(condition="""equal_to("CORR_AMOR_NEGATIF", 'OUI')""",
            COEF_CORR_AMOR  =SIMP(statut='o',typ='R',max=1,val_min=1.E-3, val_max=1.),
          ),
 )  ;

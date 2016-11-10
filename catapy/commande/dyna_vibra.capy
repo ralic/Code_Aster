@@ -38,53 +38,53 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         TYPE_CALCUL     = SIMP(statut='o',typ='TXM',position='global',into=("HARM","TRAN"),),
 
         # Physical model information
-        b_phys_model    = BLOC(condition = "BASE_CALCUL=='PHYS'",
+        b_phys_model    = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS')""",
         MODELE          =     SIMP(statut='f',typ=modele_sdaster),
         CHAM_MATER      =     SIMP(statut='f',typ=cham_mater),
         CARA_ELEM       =     SIMP(statut='f',typ=cara_elem),),
 
         # Dynamic matrices (mass, stiffness, and damping)
         # Physical basis, transient calculation
-        b_matr_tran_phys= BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='PHYS'",
+        b_matr_tran_phys= BLOC(condition = """equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'PHYS')""",
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_depl_r),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_depl_r),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_depl_r),),),
 
         # Reduced (generalized) basis, transient calculation
-        b_matr_tran_gene= BLOC(condition = "TYPE_CALCUL=='TRAN' and BASE_CALCUL=='GENE'",
+        b_matr_tran_gene= BLOC(condition = """equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'GENE')""",
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_gene_r),),
 
         VITESSE_VARIABLE= SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
 
-        b_variable      = BLOC(condition="VITESSE_VARIABLE=='OUI'",
+        b_variable      = BLOC(condition="""equal_to("VITESSE_VARIABLE", 'OUI')""",
         MATR_GYRO       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         VITE_ROTA       =     SIMP(statut='o',typ=(fonction_sdaster,formule),),
         MATR_RIGY       =     SIMP(statut='f',typ=(matr_asse_gene_r),),
         ACCE_ROTA       =     SIMP(statut='f',typ=(fonction_sdaster,formule),),),
 
-        b_constante     = BLOC(condition="VITESSE_VARIABLE=='NON'",
+        b_constante     = BLOC(condition="""equal_to("VITESSE_VARIABLE", 'NON')""",
         VITE_ROTA       =     SIMP(statut='o',typ='R',defaut=0.E0),),
         COUPLAGE_EDYOS  =     FACT(statut='f',max=1,
             PAS_TPS_EDYOS=        SIMP(statut='o',typ='R' ),),),
 
         # Physical basis, harmonic (spectral) calculation
-        b_matr_harm_phys= BLOC(condition="TYPE_CALCUL == 'HARM' and BASE_CALCUL=='PHYS'",
+        b_matr_harm_phys= BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'PHYS')""",
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_pres_c),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_pres_c),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_pres_c),),
         MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_depl_r),),),
 
         # Reduced basis, harmonic calculation
-        b_matr_harm_gene= BLOC(condition="TYPE_CALCUL == 'HARM' and BASE_CALCUL=='GENE'",
+        b_matr_harm_gene= BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM') and equal_to("BASE_CALCUL", 'GENE')""",
         MATR_MASS       =     SIMP(statut='o',typ=(matr_asse_gene_r),),
         MATR_RIGI       =     SIMP(statut='o',typ=(matr_asse_gene_r,matr_asse_gene_c),),
         MATR_AMOR       =     SIMP(statut='f',typ=(matr_asse_gene_r),),
         MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_gene_r),),),
 
         # Calculation in continue-mode, obligatory keyword reuse with RESULTAT
-        b_reuse_harm    = BLOC(condition = "reuse and TYPE_CALCUL == 'HARM'",
+        b_reuse_harm    = BLOC(condition = """reuse and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr        = tr("en mode concept reentrant : RESULTAT obligatoire"),
         RESULTAT        =     SIMP(statut='o',typ=(dyna_harmo,harm_gene),),),
 
@@ -92,12 +92,12 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         AMOR_MODAL      = FACT(statut='f',
             AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
             LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
-            b_mode      =     BLOC(condition = "BASE_CALCUL == 'PHYS' and TYPE_CALCUL == 'TRAN'",
+            b_mode      =     BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
             MODE_MECA   =         SIMP(statut='o',typ=mode_meca),
             NB_MODE     =         SIMP(statut='f',typ='I'),),),
 
         # Harmonic calculation parameters
-        b_param_harm    = BLOC(condition= "TYPE_CALCUL == 'HARM'",
+        b_param_harm    = BLOC(condition= """equal_to("TYPE_CALCUL", 'HARM')""",
                                regles   = (UN_PARMI('FREQ','LIST_FREQ'),
                                            EXCLUS('NOM_CHAM','TOUT_CHAM'),),
         FREQ            =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
@@ -106,7 +106,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         TOUT_CHAM       =     SIMP(statut='f',typ='TXM',into=("OUI",),),),
 
         # Transient calculation parameters
-        b_param_tran    = BLOC(condition = "TYPE_CALCUL == 'TRAN'",
+        b_param_tran    = BLOC(condition = """equal_to("TYPE_CALCUL", 'TRAN')""",
 
         # 1. Integration schemes
         SCHEMA_TEMPS    =     FACT(statut='d',
@@ -114,25 +114,25 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                                        into=("NEWMARK", "WILSON", "DIFF_CENTRE",
                                              "DEVOGE", "ADAPT_ORDRE1", "ADAPT_ORDRE2",
                                              "RUNGE_KUTTA_32", "RUNGE_KUTTA_54", "ITMI"),),
-            b_newmark   =         BLOC(condition = "SCHEMA == 'NEWMARK'",
+            b_newmark   =         BLOC(condition = """equal_to("SCHEMA", 'NEWMARK')""",
             BETA        =             SIMP(statut='f',typ='R',defaut= 0.25),
             GAMMA       =             SIMP(statut='f',typ='R',defaut= 0.5),),
 
-            b_wilson    =         BLOC(condition = "SCHEMA == 'WILSON'",
+            b_wilson    =         BLOC(condition = """equal_to("SCHEMA", 'WILSON')""",
             THETA       =             SIMP(statut='f',typ='R',defaut= 1.4),),
 
-            b_rk_devo   =         BLOC(condition="SCHEMA=='RUNGE_KUTTA_54' or SCHEMA=='RUNGE_KUTTA_32' or SCHEMA=='DEVOGE'",
+            b_rk_devo   =         BLOC(condition="""equal_to("SCHEMA", 'RUNGE_KUTTA_54') or equal_to("SCHEMA", 'RUNGE_KUTTA_32') or equal_to("SCHEMA", 'DEVOGE')""",
             TOLERANCE   =             SIMP(statut='f',typ='R',defaut= 1.E-5),
             ALPHA       =             SIMP(statut='f',typ='R',defaut= 0.),),
 
-            b_adapt_ord =         BLOC(condition = "SCHEMA=='ADAPT_ORDRE1' or  SCHEMA=='ADAPT_ORDRE2'",
+            b_adapt_ord =         BLOC(condition = """equal_to("SCHEMA", 'ADAPT_ORDRE1') or  equal_to("SCHEMA", 'ADAPT_ORDRE2')""",
             VITE_MIN    =             SIMP(statut='f',typ='TXM',defaut="NORM",into=("MAXI","NORM"),),
             COEF_MULT_PAS=            SIMP(statut='f',typ='R',defaut= 1.1),
             COEF_DIVI_PAS=            SIMP(statut='f',typ='R',defaut= 1.3333334),
             PAS_LIMI_RELA=            SIMP(statut='f',typ='R',defaut= 1.E-6),
             NB_POIN_PERIODE=          SIMP(statut='f',typ='I',defaut= 50),),
 
-            b_alladapt  =         BLOC(condition = "SCHEMA in ('RUNGE_KUTTA_54','RUNGE_KUTTA_32','DEVOGE','ADAPT_ORDRE1','ADAPT_ORDRE2')",
+            b_alladapt  =         BLOC(condition = """is_in("SCHEMA", ('RUNGE_KUTTA_54','RUNGE_KUTTA_32','DEVOGE','ADAPT_ORDRE1','ADAPT_ORDRE2'))""",
             PAS_MINI    =             SIMP(statut='f',typ='R'),
             PAS_MAXI    =             SIMP(statut='f',typ='R'),
             NMAX_ITER_PAS=            SIMP(statut='f',typ='I',defaut= 16),),           ),
@@ -140,12 +140,12 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         # 2. Time discretisation
         INCREMENT       =     FACT(statut='o', regles=(UN_PARMI('LIST_INST','PAS'),),
             LIST_INST   =         SIMP(statut='f',typ=listr8_sdaster),
-            b_list      =         BLOC(condition = "LIST_INST != None", regles=(EXCLUS('INST_FIN','NUME_FIN'),),
+            b_list      =         BLOC(condition = """exists("LIST_INST")""", regles=(EXCLUS('INST_FIN','NUME_FIN'),),
             NUME_FIN    =             SIMP(statut='f',typ='I'),
             INST_FIN    =             SIMP(statut='f',typ='R'),),
 
             PAS         =         SIMP(statut='f',typ='R'),
-            b_pas       =         BLOC(condition = "PAS != None",
+            b_pas       =         BLOC(condition = """exists("PAS")""",
             INST_INIT   =             SIMP(statut='f',typ='R'),
             INST_FIN    =             SIMP(statut='o',typ='R'),),
 
@@ -153,39 +153,39 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
        # 3. Initial state
 
-        b_init_gene     = BLOC(condition="BASE_CALCUL == 'GENE'",
+        b_init_gene     = BLOC(condition="""equal_to("BASE_CALCUL", 'GENE')""",
         ETAT_INIT       =     FACT(statut='f', max = 1,
                                                regles=(EXCLUS('RESULTAT','DEPL'), EXCLUS('RESULTAT','VITE'),),
 
             RESULTAT    =         SIMP(statut='f',typ=tran_gene),
 
-            b_resu      =         BLOC(condition = "RESULTAT != None", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
+            b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
             NUME_ORDRE  =             SIMP(statut='f',typ='I'),
             INST_INIT   =             SIMP(statut='f',typ='R'),
-            b_inst_init =             BLOC(condition = "INST_INIT != None",
+            b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
             CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =                 BLOC(condition="(CRITERE=='RELATIF')",
+            b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
             PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =                 BLOC(condition="(CRITERE=='ABSOLU')",
+            b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
             PRECISION   =                     SIMP(statut='o',typ='R',),),),),
 
             DEPL        =         SIMP(statut='f',typ=vect_asse_gene),
             VITE        =         SIMP(statut='f',typ=vect_asse_gene),),),
 
-        b_init_phys     = BLOC(condition="BASE_CALCUL == 'PHYS'",
+        b_init_phys     = BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
         ETAT_INIT       =     FACT(statut='f', max = 1,
                                                regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
                                                        PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
             RESULTAT    =         SIMP(statut='f',typ=dyna_trans),
 
-            b_resu      =         BLOC(condition = "RESULTAT != None", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
+            b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
             NUME_ORDRE  =             SIMP(statut='f',typ='I'),
             INST_INIT   =             SIMP(statut='f',typ='R'),
-            b_inst_init =             BLOC(condition = "INST_INIT != None",
+            b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
             CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =                 BLOC(condition="(CRITERE=='RELATIF')",
+            b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
             PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =                 BLOC(condition="(CRITERE=='ABSOLU')",
+            b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
             PRECISION   =                     SIMP(statut='o',typ='R',),),),),
 
             DEPL        =         SIMP(statut='f',typ=cham_no_sdaster),
@@ -199,17 +199,17 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             LIST_INST   =     SIMP(statut='f',typ=(listr8_sdaster),),
             INST        =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
 
-            b_dlt_prec  =     BLOC(condition="BASE_CALCUL == 'PHYS' and (LIST_INST != None or INST != None)",
+            b_dlt_prec  =     BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS') and (exists("LIST_INST") or exists("INST"))""",
             CRITERE     =         SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =         BLOC(condition="(CRITERE=='RELATIF')",
+            b_prec_rela =         BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
             PRECISION   =             SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =         BLOC(condition="(CRITERE=='ABSOLU')",
+            b_prec_abso =         BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
             PRECISION   =             SIMP(statut='o',typ='R',),),),
-            b_cham_exclu=     BLOC(condition="BASE_CALCUL == 'PHYS'",
+            b_cham_exclu=     BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
             CHAM_EXCLU  =         SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("DEPL","VITE","ACCE"),),),),
 
         # 5. Energy calculation
-        bloc_ener       = BLOC(condition="BASE_CALCUL == 'PHYS'",
+        bloc_ener       = BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
         ENERGIE         =     FACT(statut='f',max=1,
         CALCUL          =         SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),),),
 
@@ -219,7 +219,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 #       Definition of the external excitation
 #       A. Harmonic case
-        b_excit_harm    = BLOC(condition="TYPE_CALCUL == 'HARM'",
+        b_excit_harm    = BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM')""",
         EXCIT           = FACT(statut='o',max='**',regles=(UN_PARMI('VECT_ASSE','VECT_ASSE_GENE','CHARGE'),
                                                            UN_PARMI('FONC_MULT','FONC_MULT_C','COEF_MULT','COEF_MULT_C'),),
             VECT_ASSE   =     SIMP(statut='f',typ=cham_no_sdaster),
@@ -238,7 +238,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 ##########################################################################################
 
 #       B. Transient case, physical basis
-        b_excit_line_tran= BLOC(condition="TYPE_CALCUL == 'TRAN' and BASE_CALCUL == 'PHYS'",
+        b_excit_line_tran= BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'PHYS')""",
         EXCIT            = FACT(statut='f',max='**',
                                 regles=(UN_PARMI('CHARGE','VECT_ASSE'),
                                         EXCLUS('CHARGE','COEF_MULT'), EXCLUS('FONC_MULT','COEF_MULT'), EXCLUS('ACCE','COEF_MULT'),
@@ -251,7 +251,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             VITE         =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
             DEPL         =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
             MULT_APPUI   =     SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),
-            b_mult_appui =     BLOC(condition = "MULT_APPUI == 'OUI'", regles=(EXCLUS('NOEUD','GROUP_NO'),),
+            b_mult_appui =     BLOC(condition = """equal_to("MULT_APPUI", 'OUI')""", regles=(EXCLUS('NOEUD','GROUP_NO'),),
             DIRECTION    =         SIMP(statut='f',typ='R',max='**'),
             NOEUD        =         SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
             GROUP_NO     =         SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),),
@@ -264,7 +264,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 #       C. Transient case, reduced basis
 #       C.1 Regular excitation (linear)
-        b_excit_tran_mod = BLOC(condition="TYPE_CALCUL == 'TRAN' and BASE_CALCUL == 'GENE'",
+        b_excit_tran_mod = BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'GENE')""",
                                 regles=(PRESENT_ABSENT ('MODE_STAT'     ,'MODE_CORR'),
                                         PRESENT_PRESENT('BASE_ELAS_FLUI','NUME_VITE_FLUI'),),
         EXCIT            = FACT(statut='f',max='**',
@@ -280,13 +280,13 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             DEPL         =     SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
 
             MULT_APPUI   =     SIMP(statut='f',typ='TXM',into=("OUI",),),
-            b_mult_appui =     BLOC(condition="MULT_APPUI == 'OUI'", regles=(EXCLUS('NOEUD','GROUP_NO'),),
+            b_mult_appui =     BLOC(condition="""equal_to("MULT_APPUI", 'OUI')""", regles=(EXCLUS('NOEUD','GROUP_NO'),),
             DIRECTION    =         SIMP(statut='f',typ='R',max='**'),
             NOEUD        =         SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
             GROUP_NO     =         SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),),
 
             CORR_STAT    =     SIMP(statut='f',typ='TXM',into=("OUI",),),
-            b_corr_stat  =     BLOC(condition = "CORR_STAT == 'OUI'",
+            b_corr_stat  =     BLOC(condition = """equal_to("CORR_STAT", 'OUI')""",
             D_FONC_DT    =         SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
             D_FONC_DT2   =         SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),),),
 
@@ -302,7 +302,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         COMPORTEMENT    = FACT(statut='f',max='**',
             RELATION    =     SIMP(statut='o', typ='TXM', into=('DIS_CHOC', 'ROTOR_FISS', 'PALIER_EDYOS', 'FLAMBAGE', 'ANTI_SISM',
                                                                 'DIS_VISC', 'DIS_ECRO_TRAC', 'RELA_EFFO_DEPL', 'RELA_EFFO_VITE')),
-            b_choc      =     BLOC(condition="RELATION == 'DIS_CHOC'",
+            b_choc      =     BLOC(condition="""equal_to("RELATION", 'DIS_CHOC')""",
                                    regles=(UN_PARMI('MAILLE','GROUP_MA','NOEUD_1','GROUP_NO_1'),
                                            EXCLUS('NOEUD_2','GROUP_NO_2'),
                                            PRESENT_ABSENT('GROUP_MA','NOEUD_2','GROUP_NO_2'),
@@ -329,17 +329,17 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RIGI_TAN    =         SIMP(statut='f',typ='R',defaut= 0.E+0),
             AMOR_TAN    =         SIMP(statut='f',typ='R'),
             FROTTEMENT  =         SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","COULOMB","COULOMB_STAT_DYNA"),),
-            b_coulomb   =         BLOC(condition="FROTTEMENT=='COULOMB'",
+            b_coulomb   =         BLOC(condition="""equal_to("FROTTEMENT", 'COULOMB')""",
             COULOMB     =             SIMP(statut='o',typ='R'),
             UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
-            b_c_st_dyna =         BLOC(condition="FROTTEMENT=='COULOMB_STAT_DYNA'",
+            b_c_st_dyna =         BLOC(condition="""equal_to("FROTTEMENT", 'COULOMB_STAT_DYNA')""",
             COULOMB_STAT=             SIMP(statut='o',typ='R'),
             COULOMB_DYNA=             SIMP(statut='o',typ='R'),
             UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),),
 
 
 #       C.2.2 Cracked rotor
-        b_rotor         = BLOC(condition="RELATION == 'ROTOR_FISS'",
+        b_rotor         = BLOC(condition="""equal_to("RELATION", 'ROTOR_FISS')""",
                                regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
                                        EXCLUS('NOEUD_G','GROUP_NO_G'),
                                        PRESENT_PRESENT('NOEUD_D','NOEUD_G'),
@@ -356,7 +356,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
 
 #       C.2.3 Code coupling with EDYOS
-        b_lubrication   = BLOC(condition="RELATION == 'PALIER_EDYOS'",
+        b_lubrication   = BLOC(condition="""equal_to("RELATION", 'PALIER_EDYOS')""",
                                regles=(PRESENT_ABSENT('UNITE','GROUP_NO'),
                                        PRESENT_ABSENT('UNITE','TYPE_EDYOS'),
                                        EXCLUS('GROUP_NO','NOEUD'),),
@@ -366,7 +366,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             TYPE_EDYOS  =     SIMP(statut='f',typ='TXM',into=("PAPANL","PAFINL","PACONL","PAHYNL",),),),
 
 #       C.2.4 Buckling
-        b_buckling      = BLOC(condition="RELATION == 'FLAMBAGE'",
+        b_buckling      = BLOC(condition="""equal_to("RELATION", 'FLAMBAGE')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
                                        EXCLUS('NOEUD_2','GROUP_NO_2'),),
             NOEUD_1     =     SIMP(statut='f',typ=no),
@@ -387,7 +387,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RIGI_NOR_POST_FL= SIMP(statut='f',typ='R'),),
 
 #       C.2.5 Anti-sismic disposition non linearity
-        b_antisism      = BLOC(condition="RELATION == 'ANTI_SISM'",
+        b_antisism      = BLOC(condition="""equal_to("RELATION", 'ANTI_SISM')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
                                        UN_PARMI('NOEUD_2','GROUP_NO_2'),),
             NOEUD_1     =     SIMP(statut='f',typ=no),
@@ -402,7 +402,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             DX_MAX      =     SIMP(statut='f',typ='R',defaut= 1.),),
 
 #       C.2.6.1 Discrete viscous coupling, generalized Zener
-        b_disvisc       = BLOC(condition="RELATION == 'DIS_VISC'",
+        b_disvisc       = BLOC(condition="""equal_to("RELATION", 'DIS_VISC')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
                                        UN_PARMI('NOEUD_2','GROUP_NO_2'),
                                        UN_PARMI('K1','UNSUR_K1'), UN_PARMI('K2','UNSUR_K2'), UN_PARMI('K3','UNSUR_K3'),),
@@ -423,7 +423,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RESI_INTE_RELA=   SIMP(statut='o',typ='R',defaut= 1.0E-6),),
 
 #       C.2.6.2 Discrete nonlinear behavior
-        b_disecro       = BLOC(condition="RELATION == 'DIS_ECRO_TRAC'",
+        b_disecro       = BLOC(condition="""equal_to("RELATION", 'DIS_ECRO_TRAC')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
                                        UN_PARMI('NOEUD_2','GROUP_NO_2'),),
             NOEUD_1     =   SIMP(statut='f',typ=no),
@@ -435,7 +435,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RESI_INTE_RELA = SIMP(statut='o',typ='R',defaut= 1.0E-6),),
 
 #       C.2.7 Force displacement relationship non linearity
-        b_refx          = BLOC(condition="RELATION == 'RELA_EFFO_DEPL'",
+        b_refx          = BLOC(condition="""equal_to("RELATION", 'RELA_EFFO_DEPL')""",
                                regles=(UN_PARMI('NOEUD','GROUP_NO'),),
             NOEUD       =     SIMP(statut='f',typ=no, max=1),
             GROUP_NO    =     SIMP(statut='f',typ=grno, max=1),
@@ -444,7 +444,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             FONCTION    =     SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),),
 
 #       C.2.8 Force velocity relationship non linearity
-        b_refv          = BLOC(condition="RELATION == 'RELA_EFFO_VITE'",
+        b_refv          = BLOC(condition="""equal_to("RELATION", 'RELA_EFFO_VITE')""",
                                regles=(UN_PARMI('NOEUD','GROUP_NO'),),
             NOEUD       =     SIMP(statut='f',typ=no, max=1),
             GROUP_NO    =     SIMP(statut='f',typ=grno, max=1),
@@ -462,9 +462,9 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             SEUIL       =         SIMP(statut='f',typ='R',defaut= 0.5),),
 
 #            Implicit or explicit treatment of choc non-linearities in integration
-        b_nl_wet        =     BLOC(condition="BASE_ELAS_FLUI!=None",
+        b_nl_wet        =     BLOC(condition="""exists("BASE_ELAS_FLUI")""",
         TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='IMPLICITE', into=('IMPLICITE',),),),
-        b_nl_dry        =     BLOC(condition="BASE_ELAS_FLUI==None",
+        b_nl_dry        =     BLOC(condition="""not exists("BASE_ELAS_FLUI")""",
         TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='EXPLICITE', into=('IMPLICITE','EXPLICITE'),),),
 
        ),
@@ -472,15 +472,15 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 ##########################################################################################
 
 #       Solver parameters (common catalogue)
-        b_sol_harm_gene = BLOC(condition = "BASE_CALCUL=='GENE' and TYPE_CALCUL=='HARM'",
+        b_sol_harm_gene = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr=tr("Methode de resolution matrice generalisee"),
         SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','GENE'),),
-        b_sol_harm_phys = BLOC(condition = "BASE_CALCUL=='PHYS' and TYPE_CALCUL=='HARM'",
+        b_sol_harm_phys = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr=tr("Methode de resolution matrice sur ddl physique"),
         SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','PHYS'),),
-        b_sol_line_tran = BLOC(condition = "BASE_CALCUL=='PHYS' and TYPE_CALCUL=='TRAN'",
+        b_sol_line_tran = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
         SOLVEUR         =     C_SOLVEUR('DYNA_LINE_TRAN'),),
-        b_sol_tran_gene = BLOC(condition = "BASE_CALCUL=='GENE' and TYPE_CALCUL=='TRAN'",
+        b_sol_tran_gene = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'TRAN')""",
         SOLVEUR         =     C_SOLVEUR('DYNA_TRAN_MODAL'),),
 
 ##########################################################################################
@@ -488,7 +488,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 #       Diverse
         TITRE           = SIMP(statut='f',typ='TXM',max='**'),
         INFO            = SIMP(statut='f',typ='I',into=(1,2),),
-        b_impression    = BLOC(condition = "BASE_CALCUL=='GENE' and TYPE_CALCUL=='TRAN'",
+        b_impression    = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'TRAN')""",
             IMPRESSION      = FACT(statut='f',
                 regles=(PRESENT_ABSENT('UNITE_DIS_VISC','INST_FIN','INST_INIT','TOUT','NIVEAU'),
                         PRESENT_ABSENT('UNITE_DIS_ECRO_TRAC','INST_FIN','INST_INIT','TOUT','NIVEAU'),),

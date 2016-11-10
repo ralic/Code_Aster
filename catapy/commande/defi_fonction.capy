@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,16 +40,16 @@ DEFI_FONCTION=OPER(nom="DEFI_FONCTION",op=3,sd_prod=defi_fonction_prod,
                                      "(absc, partie réelle, partie imaginaire)")),
          VALE_PARA       =SIMP(statut='f',typ=listr8_sdaster,
                                fr =tr("Fonction réelle définie par deux concepts de type listr8") ),
-         b_vale_para     =BLOC(condition = "VALE_PARA != None",
+         b_vale_para     =BLOC(condition = """exists("VALE_PARA")""",
            VALE_FONC       =SIMP(statut='o',typ=listr8_sdaster ),
          ),
-         b_abscisse      =BLOC(condition = "ABSCISSE != None",
+         b_abscisse      =BLOC(condition = """exists("ABSCISSE")""",
            ORDONNEE        =SIMP(statut='o',typ='R',min=2,max='**',
                                fr =tr("Liste d ordonnées d une fonction réelle")),
          ),
          NOEUD_PARA      =SIMP(statut='f',typ=no,max='**',
                                fr =tr("Fonction réelle définie par une liste de noeuds et un maillage")),
-         b_noeud_para    =BLOC(condition = "NOEUD_PARA != None",
+         b_noeud_para    =BLOC(condition = """exists("NOEUD_PARA")""",
            MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
            VALE_Y          =SIMP(statut='o',typ='R',max='**'),
          ),

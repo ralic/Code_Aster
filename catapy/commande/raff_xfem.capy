@@ -36,7 +36,7 @@ RAFF_XFEM=MACRO(nom="RAFF_XFEM",
                 TYPE   =SIMP(statut='f',typ='TXM',into=('DISTANCE','ZONE'),defaut='DISTANCE'),
                 FISSURE=SIMP(statut='o',typ=fiss_xfem,min=1,max='**',),
 
-                b_zone =BLOC(condition = "TYPE == 'ZONE' ",fr=tr("Paramètres de la zone"),
+                b_zone =BLOC(condition = """equal_to("TYPE", 'ZONE') """,fr=tr("Paramètres de la zone"),
                    RAYON =SIMP(statut='o',typ='R',val_min=0.),
                             ),
 

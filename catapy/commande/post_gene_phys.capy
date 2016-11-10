@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -44,11 +44,11 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                       TOUT_ORDRE = SIMP(statut = 'f' , typ='TXM'         , into = ("OUI",) ),
                       FREQ       = SIMP(statut = 'f' , typ='R'           , validators = NoRepeat(), max = '**' ),  
                       LIST_FREQ  = SIMP(statut = 'f' , typ=listr8_sdaster,),
-                      b_prec     = BLOC(condition = "(INST != None) or (LIST_INST != None) or (FREQ != None) or (LIST_FREQ != None)",
+                      b_prec     = BLOC(condition = """(exists("INST")) or (exists("LIST_INST")) or (exists("FREQ")) or (exists("LIST_FREQ"))""",
                           CRITERE = SIMP(statut = 'f', typ = 'TXM', defaut = 'RELATIF', into = ('ABSOLU','RELATIF') ),
-                              b_prec_rela = BLOC(condition = "(CRITERE=='RELATIF')",
+                              b_prec_rela = BLOC(condition = """(equal_to("CRITERE", 'RELATIF'))""",
                               PRECISION   = SIMP(statut = 'f', typ='R', defaut= 1.E-6,),),
-                              b_prec_abso = BLOC(condition = "(CRITERE=='ABSOLU')",
+                              b_prec_abso = BLOC(condition = """(equal_to("CRITERE", 'ABSOLU'))""",
                               PRECISION   = SIMP(statut = 'o', typ='R',),),),
 
                       NOEUD      = SIMP(statut = 'f', typ=no  , validators = NoRepeat(), max = '**'),
@@ -56,7 +56,7 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                       MAILLE     = SIMP(statut = 'f', typ=ma  , validators = NoRepeat(), max = '**'),
                       GROUP_MA   = SIMP(statut = 'f', typ=grma, validators = NoRepeat(), max = '**'),
 
-                      b_acce_abs      = BLOC(condition = "(NOM_CHAM == 'ACCE_ABSOLU')",
+                      b_acce_abs      = BLOC(condition = """(equal_to("NOM_CHAM", 'ACCE_ABSOLU'))""",
                                              regles    = (PRESENT_PRESENT('ACCE_MONO_APPUI','DIRECTION'),),
                       ACCE_MONO_APPUI = SIMP(statut = 'f', typ=(fonction_sdaster,nappe_sdaster,formule)),
                       DIRECTION       = SIMP(statut = 'f', typ='R', min=3, max = 3 ),),),

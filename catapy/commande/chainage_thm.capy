@@ -52,7 +52,7 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
 
          # Cas HYDR_MECA :
 
-         b_hydr_meca    = BLOC(condition = "TYPE_CHAINAGE == 'HYDR_MECA'",fr=tr("Chaînage hydraulique vers mécanique"),
+         b_hydr_meca    = BLOC(condition = """equal_to("TYPE_CHAINAGE", 'HYDR_MECA')""",fr=tr("Chaînage hydraulique vers mécanique"),
 
              RESU_HYDR       = SIMP(statut='o',typ=resultat_sdaster,fr=tr("Résultat hydraulique à chaîner") ),
              MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle d'arrivée mécanique")),
@@ -60,14 +60,14 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
              MATR_HM1        = SIMP(statut='o',typ=corresp_2_mailla,),
              MATR_HM2        = SIMP(statut='o',typ=corresp_2_mailla,),
 
-             b_type_resu     = BLOC(condition = "TYPE_RESU == 'EVOL_VARC'",fr=tr("Instant obligatoire si TYPE_RESU=EVOL_VARC"),
+             b_type_resu     = BLOC(condition = """equal_to("TYPE_RESU", 'EVOL_VARC')""",fr=tr("Instant obligatoire si TYPE_RESU=EVOL_VARC"),
                                    INST = SIMP(statut='o',typ='R',validators=NoRepeat(),min=1,max=1),
 
            ),),
 
          # Cas MECA_HYDR :
 
-         b_meca_hydr    = BLOC(condition = "TYPE_CHAINAGE == 'MECA_HYDR'",fr=tr("Chaînage mécanique vers hydraulique"),
+         b_meca_hydr    = BLOC(condition = """equal_to("TYPE_CHAINAGE", 'MECA_HYDR')""",fr=tr("Chaînage mécanique vers hydraulique"),
 
              RESU_MECA       = SIMP(statut='o',typ=resultat_sdaster,fr=tr("Résultat mécanique à chaîner") ),
              MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle d'arrivée hydraulique")),
@@ -78,7 +78,7 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
 
          # Cas INIT :
 
-         b_init    = BLOC(condition = "TYPE_CHAINAGE == 'INIT'",fr=tr("Calcul des matrices de projection"),
+         b_init    = BLOC(condition = """equal_to("TYPE_CHAINAGE", 'INIT')""",fr=tr("Calcul des matrices de projection"),
 
              MODELE_MECA     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle mécanique")),
              MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle hydraulique")),

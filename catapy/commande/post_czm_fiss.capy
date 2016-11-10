@@ -46,7 +46,7 @@ POST_CZM_FISS=MACRO(
   RESULTAT = SIMP(statut='o',typ=evol_noli,max=1,),
 
   b_longueur =BLOC(
-    condition  = "OPTION == 'LONGUEUR' ",
+    condition  = """equal_to("OPTION", 'LONGUEUR') """,
     GROUP_MA   = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
     POINT_ORIG = SIMP(statut='o',typ='R',min=2,max=2),
     VECT_TANG  = SIMP(statut='o',typ='R',min=2,max=2),

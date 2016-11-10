@@ -39,7 +39,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
                            fr=tr("Maillage de la frontiere à suivre"),
                            ),
 #
-  b_frontiere = BLOC( condition = " MAILLAGE_FRONTIERE != None " ,
+  b_frontiere = BLOC( condition = """ exists("MAILLAGE_FRONTIERE") """ ,
                       fr=tr("Information complémentaire sur la frontière"),
 
 #
@@ -123,7 +123,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
 #
 # 5.5. Unite logique d'un fichier à ajouter a HOMARD.Configuration
 #
-  b_unite = BLOC( condition = "VERSION_HOMARD in ('V11_N','V11_N_PERSO')" ,
+  b_unite = BLOC( condition = """is_in("VERSION_HOMARD", ('V11_N','V11_N_PERSO'))""" ,
                                 fr=tr("Fichier supplementaire."),
 
 #
