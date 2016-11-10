@@ -61,7 +61,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
     integer :: nuno2, ier, nbno, j
     real(kind=8) :: lsn1, lsn2
     character(len=8) :: typmav
-    aster_logical :: connec
+    aster_logical :: connec, miconf
     integer, pointer :: connex(:) => null()
     integer, pointer :: nunotmp(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
@@ -95,6 +95,8 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
     milieu = .false.
 !     INDICATEUR, LE NOEUD APPARTIENT-IL A UNE ARETE COUPEE
     coupee = .false.
+!     INDICATEUR, LE NOEUD EST UN NOEUD MILIEU ET APPARTIENT A UNE ARETE CONFORME
+    miconf = .false.
 !     INITIALISATION
     call vecini(3, 0.d0, lsno)
     voisin(1:3) = [0,0,0]
@@ -116,7 +118,11 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
              call cesexi('C', jlsnd, jlsnl,numa, ar(i,2),&
                          1, 1, iad)
              lsn2 = lsnv(iad)
-             if (lsn1*lsn2 .ge. 0.d0) then
+             if (lsn1.eq.0.d0 .and. lsn2.eq.0.d0 ) then
+!     L'ARETE EST CONFORME A LA FISSURE
+                miconf=.true.
+                coupee = .true.
+             elseif (lsn1*lsn2 .ge. 0.d0) then
 !     SI L'ARETE N'EST PAS TRAVERSEE PAR LA FISSURE, ON BLOQUE LES DDLS
 !     ENRICHIS
                 voisin(1) = connex(zi(jconx2+numa-1)+ar(i,1)-1)
@@ -143,7 +149,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
     endif
 ! --- SI L'ON EST PAS SUR UN NOEUD MILIEU, ON IDENTIFIE LES NOEUDS
 !     VOISINS DE PART ET D'AUTRE DE LA LSN
-    if (.not. milieu) then
+    if (.not. milieu .or. miconf) then
 ! ---     BOUCLE SUR LES MAILLES CONTENANT LE NOEUD
        do ima = 1, nbmano
           numav = zi(adrma-1 + ima)
@@ -176,14 +182,14 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
              endif
 78           continue
 !      SI ON A TROUVE UN NOEUD CONNECTE AU NOEUD COURANT
-             if (connec) then
+             if (connec .or. miconf) then
                 call cesexi('C', jlsnd, jlsnl,numav, ar(i,1),&
                             1, 1, iad)
                 lsn1 = lsnv(iad)
                 call cesexi('C', jlsnd, jlsnl,numav, ar(i,2),&
                             1, 1, iad)
                 lsn2 = lsnv(iad)
-                if (lsn1*lsn2 .lt. 0.d0) then
+                if (lsn1*lsn2 .lt. 0.d0 .and. .not.miconf) then
                    coupee = .true.
                    if (lsn1 .lt. 0.d0) then
                       voisin(1)  = connex(zi(jconx2+numav-1)+ar(i,1)-1)
@@ -203,7 +209,7 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2,&
                       voisin(3) = connex(zi(jconx2+numav-1)+ar(i,3)-1)
                    endif
                 endif
-                if (lsn1*lsn2 .ge. 0.d0) then
+                if (lsn1*lsn2 .ge. 0.d0 .or. miconf) then
                    if (lsn(1) .eq. 0.d0) then
                       if (lsn1 .lt. 0.d0) then
                          voisin(1)  = connex(zi(jconx2+numav-1)+ar(i,1)-1)

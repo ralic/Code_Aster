@@ -281,7 +281,7 @@ implicit none
 !
     call nmfcon(model, numedd, mate  , fonact, ds_contact,&
                 ds_measure, valinc, solalg,&
-                veelem, veasse)
+                veelem, veasse,  ds_constitutive)
 !
 ! - Evaluate events at current Newton iteration
 !
@@ -373,7 +373,7 @@ implicit none
     call nmtble(niveau, model, mesh    , mate  , ds_contact, &
                 fonact, ds_print, ds_measure, sddyna,&
                 sderro, ds_conv , sddisc, numins, valinc,&
-                solalg)
+                solalg,  ds_constitutive)
 !
 ! --- ETAT DE LA CONVERGENCE POINT FIXE
 !

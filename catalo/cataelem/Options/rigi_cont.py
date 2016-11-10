@@ -77,6 +77,11 @@ comment=""" XFEM """)
 
 PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
 
+
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment=""" UTILE POUR HM-XFEM """)
+
+
 PBASLOR  = InputParameter(phys=PHY.NEUT_R)
 
 PBASLOC  = InputParameter(phys=PHY.N480_R)
@@ -115,6 +120,11 @@ RIGI_CONT = Option(
            PSTANO,
         SP.PVITE_M,
         SP.PVITE_P,
+        SP.PINSTMR,
+        SP.PINSTPR,
+           PCOMPOR,
+        SP.PCARCRI,
+        SP.PFISCO,
            PBASLOR,
            PBASLOC,
            PLSNGG,

@@ -275,8 +275,15 @@ subroutine te0510(option, nomte)
             call xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &
                         igeom ,jlsn, jaint, jgrlsn, nfiss, ifiss,&
-                        fisc, nfisc, nfisc2, ncompe, jstano)
+                        fisc, nfisc, nfisc2, ncompe, jstano, jlst,&
+                        typdis, minlst)
             nbtot = ninter
+            if(typdis.eq.'COHESIF'.and.minlst.ge.0.d0) then
+                nptf = 0
+                ninter = 0
+                nface = 0
+                goto 97
+            endif
         elseif (enr(2:2) .eq. 'T' .and. face(1:8).eq.'SOUS_ELE') then
             call xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter, ninter,&
                         jphe, ndim, ainter, nface, nptf, cface, &

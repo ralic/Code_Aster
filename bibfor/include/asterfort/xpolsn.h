@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,8 +18,8 @@
 interface
     subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                       ima, iad, igeom, nfiss, ndime,&
-                      ndim, jconx1, jconx2, co, lsn,&
-                      lst)
+                      ndim, jconx1, jconx2, fisco, co,&
+                      lsn, lst)
         integer :: nfiss
         integer :: n
         character(len=8) :: elrefp
@@ -33,6 +33,7 @@ interface
         integer :: ndim
         integer :: jconx1
         integer :: jconx2
+        integer :: fisco(*)
         real(kind=8) :: co(3)
         real(kind=8) :: lsn(nfiss)
         real(kind=8) :: lst(nfiss)

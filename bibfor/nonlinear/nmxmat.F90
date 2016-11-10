@@ -148,7 +148,8 @@ implicit none
                 endif
                 call nmcalm(typmat, modelz, lischa, mate       , carele,&
                             ds_constitutive, instam, instap, valinc     , solalg,&
-                            optcal, base  , meelem, ds_contact_, matele)
+                            optcal, base  , meelem, ds_contact_, matele,&
+                            fonact)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(ds_measure, 'Stop', 'Cont_Elem')
                     call nmrinc(ds_measure, 'Cont_Elem')

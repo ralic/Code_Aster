@@ -1,4 +1,5 @@
-subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact)
+subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact,&
+                  ds_constitutive, list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -10,6 +11,7 @@ implicit none
 #include "asterfort/copisd.h"
 #include "asterfort/dbgcal.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/inical.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -42,6 +44,8 @@ implicit none
     character(len=24), intent(in) :: mate
     character(len=19), intent(in) :: hval_incr(*)
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,11 +60,13 @@ implicit none
 ! In  mate             : name of material characteristics (field)
 ! In  hval_incr        : hat-variable for incremental values fields
 ! IO  ds_contact       : datastructure for contact management
+! In  ds_constitutive  : datastructure for constitutive laws management
+! In  list_func_acti   : list of active functionnalities 
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 4
-    integer, parameter :: nbin  = 23
+    integer, parameter :: nbin  = 25
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -69,10 +75,9 @@ implicit none
     character(len=19) :: xdonco, xindco, xmemco, xgliss, xcohes, ccohes
     character(len=16) :: option
     character(len=19) :: ligrmo, cicoca, cindoo, cmemco, ltno
-    character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo
-    character(len=19) :: fissno, heavno, heavfa, hea_no, hea_fa
-    character(len=19) :: lnno, baslo, stano
-    aster_logical :: debug, lcontx
+    character(len=19) :: pinter, ainter, cface, faclon, baseco, xcoheo, lnno, stano
+    character(len=19) :: fissno, heavno, heavfa, hea_no, hea_fa, fisco, baslo
+    aster_logical :: debug, lcontx, lxthm
     integer :: ifm, niv, ifmdbg, nivdbg
     character(len=19) :: oldgeo, depmoi, depplu
     aster_logical :: loop_cont_conv
@@ -124,7 +129,11 @@ implicit none
 ! --- DETERMINATION DE L OPTION
 !
     if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) option='XCVBCA'
-    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR' 
+    if(xfem_cont(1).eq.2) option='XCVBCA_MORTAR'
+!
+! --- MODELE HM-XFEM ?
+!
+    lxthm = isfonc(list_func_acti,'THM')
 !
 ! --- INITIALISATION DES CHAMPS POUR CALCUL
 !
@@ -148,16 +157,20 @@ implicit none
     heavfa = model(1:8)//'.TOPOFAC.HE'
     hea_no = model(1:8)//'.TOPONO.HNO'
     hea_fa = model(1:8)//'.TOPONO.HFA'
+    stano = model(1:8)//'.STNO'
+    fisco = model(1:8)//'.FISSCO'
     lnno = model(1:8)//'.LNNO'
     baslo = model(1:8)//'.BASLOC'
-    stano = model(1:8)//'.STNO'
 !
 ! --- CREATION DU CHAM_ELEM_S VIERGE  INDIC. CONTACT ET MEMOIRE CONTACT
 !
-    call xmchex(mesh, xindco, cindoo)
-    call xmchex(mesh, xmemco, cmemco)
-    if (xfem_cont(1).eq.1.or.xfem_cont(1).eq.3) then
-        call xmchex(mesh, xcohes, ccohes)
+    if (lxthm .and. xfem_cont(1).eq.3) then
+       call xmchex(mesh, xcoheo, ccohes)
+    else if (.not.lxthm) then
+       call xmchex(mesh, xindco, cindoo)
+       call xmchex(mesh, xmemco, cmemco)
+       if(xfem_cont(1).eq.1.or.xfem_cont(1).eq.3)&
+           call xmchex(mesh, xcohes, ccohes)
     endif
 !
 ! --- CREATION DES LISTES DES CHAMPS IN
@@ -198,16 +211,20 @@ implicit none
     lchin(17) = heavno
     lpain(18) = 'PHEAVFA'
     lchin(18) = heavfa
-    lpain(19) = 'PHEA_NO'
-    lchin(19) = hea_no
-    lpain(20) = 'PHEA_FA'
-    lchin(20) = hea_fa
-    lpain(21) = 'PLSN'
-    lchin(21) = lnno
-    lpain(22) = 'PBASLOR'
-    lchin(22) = baslo
-    lpain(23) = 'PSTANO'
-    lchin(23) = stano
+    lpain(19) = 'PCOMPOR'
+    lchin(19) = ds_constitutive%compor(1:19)
+    lpain(20) = 'PHEA_NO'
+    lchin(20) = hea_no
+    lpain(21) = 'PHEA_FA'
+    lchin(21) = hea_fa
+    lpain(22) = 'PFISCO'
+    lchin(22) = fisco
+    lpain(23) = 'PLSN'
+    lchin(23) = lnno
+    lpain(24) = 'PSTANO'
+    lchin(24) = stano
+    lpain(25) = 'PBASLOR'
+    lchin(25) = baslo
 !
 ! --- CREATION DES LISTES DES CHAMPS OUT
 !

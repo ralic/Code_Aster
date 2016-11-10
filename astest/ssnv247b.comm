@@ -151,7 +151,6 @@ UTOT1=STAT_NON_LINE(MODELE      = MODELEK,
                     CONVERGENCE = _F(RESI_GLOB_RELA = 1.E-6,
                                      ITER_GLOB_MAXI = 100,    
                                     ),
-                    SOLVEUR = _F(METHODE = 'MUMPS', NPREC=-1),
                     INCREMENT   = _F(LIST_INST = L_INS,),
                    )
 

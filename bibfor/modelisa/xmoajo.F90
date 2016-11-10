@@ -8,7 +8,7 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
     integer :: jj, nfiss, itypx(*), ntypx(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,6 +78,9 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
         if (zi(jj+1) .lt. 0) then
             zi(jj+5)= itypx(6-zi(jj+1))
             ntypx(7-zi(jj+1)) = ntypx(7-zi(jj+1)) + 1
+        else if (zi(jj+1).ge.5) then
+            zi(jj+5) = itypx(13+nfiss)
+            ntypx(14+zi(jj+1)-4) = ntypx(14+nfiss) + 1
         else
             zi(jj+5)= itypx(9+zi(jj+1))
             ntypx(10+zi(jj+1)) = ntypx(10+zi(jj+1)) + 1

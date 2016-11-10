@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,8 @@ interface
     subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset,&
                   pinter, ninter, jphe, ndim, ainter,nface,nptf,&
                   cface, igeom, jlsn, jaint, jgrlsn, nfiss,&
-                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano)
+                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano,&
+                  jlst, typdis, minlst)
         integer :: ninter
         integer :: nface
         integer :: cface(30,6)
@@ -44,5 +45,8 @@ interface
         integer :: nfisc2
         integer :: ncompe
         integer :: jstano
+        integer :: jlst
+        character(len=16) :: typdis
+        real(kind=8) :: minlst
     end subroutine xfacxh
 end interface

@@ -1,7 +1,7 @@
 function xxmmvd(vect)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ function xxmmvd(vect)
     integer :: zxcar
     parameter (zxcar=12)
     integer :: zxbas, zxedg
-    parameter (zxbas=12,zxedg=25)
+    parameter (zxbas=14,zxedg=25)
     integer :: zxain
     parameter (zxain=5)
     aster_logical :: lvect

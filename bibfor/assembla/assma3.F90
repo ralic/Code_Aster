@@ -2,13 +2,12 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
                   c1, rang, jnueq, jnumsd, jresl,&
                   nbvel, nnoe, ldist, ldgrel,&
                   ilima, jadli, jadne, jprn1, jprn2,&
-                  jnulo1, jnulo2, jposd1, jposd2, admodl,&
+                  jnulo1, jposd1, admodl,&
                   lcmodl, mode, nec, nmxcmp, ncmp,&
                   jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                  lgtmp2, jvalm, ilinu, ellagr,&
-                  jdesc, jrepe, jptvoi, jelvoi, codvoi)
+                  lgtmp2, jvalm, ilinu, ellagr)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,15 +45,13 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel,&
     integer :: igr, ilima, ilinu, nbterm
     integer :: jnueq, jnulo1, jnumsd, jposd1, jprn1, jprn2
     integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
-    integer :: lcmodl, k1, k2, n2, n3, jnulo2, jposd2
+    integer :: lcmodl, k1, k2, n2, n3
     integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
-    integer :: nec, nmxcmp, nnoe, numa, nk2, decael, jdesc
+    integer :: nec, nmxcmp, nnoe, numa, nk2, decael
     aster_logical :: ldist, ldgrel
 !
-    character(len=16) :: codvoi
-    integer :: jrepe, jptvoi, jelvoi
     integer :: nbi1mx, nbi1
-    parameter (nbi1mx=27*27*20*20)
+    parameter (nbi1mx=560*560)
     integer :: ti1(nbi1mx)
     integer :: ti2(nbi1mx)
 !-----------------------------------------------------------------------

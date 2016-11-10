@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface 
-    subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
+    subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
         character(len=16) :: nomte
         integer :: nfh
         integer :: ddld
         integer :: ddlm
         integer :: ddlp
         integer :: nfiss
+        integer :: ddlc
+        integer :: contac
     end subroutine xhmini
 end interface 

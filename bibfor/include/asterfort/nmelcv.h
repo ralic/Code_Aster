@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine nmelcv(phase    , mesh     , model    , mate     , ds_contact    ,&
                       disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                      vect_elem)
+                      vect_elem, time_prev, time_curr, ds_constitutive, list_func_acti)
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: phase
         character(len=8), intent(in) :: mesh
@@ -31,5 +31,9 @@ interface
         character(len=19), intent(in) :: vite_curr
         character(len=19), intent(in) :: disp_cumu_inst
         character(len=19), intent(out) :: vect_elem
+        character(len=19), intent(in) :: time_prev
+        character(len=19), intent(in) :: time_curr
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+        integer, intent(in) :: list_func_acti(*)
     end subroutine nmelcv
 end interface

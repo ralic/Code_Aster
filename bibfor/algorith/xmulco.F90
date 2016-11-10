@@ -1,6 +1,6 @@
-subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
+subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
                   jheano, vstnc, lact, lcalel, lelim,&
-                  ndim, nfe, nfh, nfiss, ninter,&
+                  ndim, nfh, nfiss, ninter,&
                   nlact, nno, nnol, nnom, nnos,&
                   pla, typma)
 ! aslint: disable=W1504
@@ -8,7 +8,7 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
 #include "asterf_types.h"
 #include "jeveux.h"
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,9 +38,9 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
 ! IN NNO : NOMBRE TOT DE NOEUDS
 ! IN NNOS : NOMBRE NOEUDS SOMMETS
 ! IN NDIM : DIMENSION
-! IN NFE : NOMBRE DE NOEUDS ENRICHIS CRACK TIP
 ! IN DDLC : NOMBRE DE DDLS DE CONTACT PAR NOEUD
-! IN DDLM :
+! IN DDLC : NOMBRE DE DDLS PAR NOEUD SOMMET
+! IN DDLM : NOMBRE DE DDLS PAR NOEUD MILIEU
 ! IN NNOM : NOMBRE DE NOEUDS MILIEUX
 ! IN LCALEL : SI TE DE CALCUL ELEMENTAIRE
 ! OUT PLA : PLACES DE LAGRANGES DE CONTACT DANS LA MATRICE
@@ -51,9 +51,9 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
 #include "asterfort/xlacti.h"
 #include "asterfort/xplmat.h"
     integer :: contac, ddlc, ddlm, iaint, ifiss, jheano, vstnc(*)
-    integer :: lact(8), ndim, nfe, nfh, nfiss, ninter, nlact
+    integer :: lact(8), ndim, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, pla(27)
-    integer :: pli, i
+    integer :: pli, i, ddls
     aster_logical :: lelim, lcalel
     character(len=8) :: typma
 ! ----------------------------------------------------------------------
@@ -62,12 +62,12 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
     if (lcalel) then
         if (nlact .lt. nnos) lelim = .true.
         if (nfiss .eq. 1) then
-            do 50 i = 1, nnos
+            do i = 1, nnos
                 if (lact(i) .eq. 0) vstnc(i)=0
- 50         continue
+            end do
         else
             do 60 i = 1, nnos
-                if (lact(i) .eq. 0) vstnc( (i-1)*nfh+ zi(jheano-1+(i-1)* nfiss+ifiss) )=0
+                if (lact(i) .eq. 0) vstnc((i-1)*nfh+zi(jheano-1+(i-1)*nfiss+ifiss))=0
  60         continue
         endif
     endif
@@ -75,13 +75,14 @@ subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
     if (contac .eq. 1) nnol=nno
     if (contac .eq. 2) nnol=nno
     if (contac .eq. 3) nnol=nnos
-    do 15 i = 1, nnol
-        call xplmat(ndim, nfh, nfe, ddlc, ddlm,&
-                    nno, nnom, i, pli)
+    do i = 1, nnol
+        call xplmat(ddls, ddlc, ddlm,&
+                    nnos, nnom, i, pli)
         if (nfiss .eq. 1) then
             pla(i) = pli
         else
             pla(i) = pli+ndim*(zi(jheano-1+(i-1)*nfiss+ifiss)-1)
         endif
- 15 end do
+!
+    end do
 end subroutine

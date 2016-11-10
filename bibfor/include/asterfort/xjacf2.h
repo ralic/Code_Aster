@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,9 +18,8 @@
 interface
     subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                       jinter, ifa, cface, nptf, ipg,&
-                      nnop, igeom, jbasec, xg, jac,&
-                      ffp, ffpc, dfdi, nd, tau1,&
-                      ifiss, ncompp, ncompb)
+                      nnop, nnops, igeom, jbasec, xg, jac,&
+                      ffp, ffpc, dfdi, nd, tau1, dfdic)
         character(len=8) :: elrefp
         character(len=8) :: elrefc
         character(len=8) :: elc
@@ -32,6 +31,7 @@ interface
         integer :: nptf
         integer :: ipg
         integer :: nnop
+        integer :: nnops
         integer :: igeom
         integer :: jbasec
         real(kind=8) :: xg(3)
@@ -41,8 +41,6 @@ interface
         real(kind=8) :: dfdi(27, 3)
         real(kind=8) :: nd(3)
         real(kind=8) :: tau1(3)
-        integer, intent(in), optional :: ifiss
-        integer, intent(in), optional :: ncompp
-        integer, intent(in), optional :: ncompb
+        real(kind=8), intent(out), optional :: dfdic(nnops, 3)
     end subroutine xjacf2
 end interface

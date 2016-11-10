@@ -20,7 +20,6 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-!
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -30,6 +29,7 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 #include "asterfort/xconno.h"
 #include "asterfort/xfisco.h"
 #include "asterfort/xfisno.h"
+#include "asterfort/xjonct.h"
 #include "asterfort/xoripe.h"
 #include "asterfort/xstan2.h"
 #include "asterfort/xtopoc.h"
@@ -97,6 +97,12 @@ subroutine xcodec(noma, modelx, k8condi, linter, decou)
 ! --- CALCUL DES DONNEES UTILES POUR L'INTÉGRATION (SOUS-TETRAS...)
 !
     call xtopoi(noma, modelx)
+!
+! --- UTILE POUR LES INTERSECTIONS
+!
+    if (linter) then
+        call xjonct(noma, modelx)
+    endif
 !
 ! --- CALCUL DE LA TOPOLOGIE DES FACETTES DE CONTACT
 !

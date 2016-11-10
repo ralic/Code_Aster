@@ -1,6 +1,6 @@
 subroutine xfisno(noma, modelx)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,8 +74,8 @@ subroutine xfisno(noma, modelx)
 ! --- LE CONTACT EST-IL DÉCLARÉ
 !
     call jeveuo(modelx(1:8)//'.XFEM_CONT', 'L', vi=xfem_cont)
-    ASSERT(xfem_cont(1).le.1)
-    lcont = xfem_cont(1).eq.1
+    ASSERT(xfem_cont(1).le.1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1).eq.3)
+    lcont = (xfem_cont(1).eq.1 .or. xfem_cont(1).eq.2 .or. xfem_cont(1).eq.3)
     if (lcont) then
         heavno = modelx(1:8)//'.HEAVNO'
         ces2 = '&&XFISNO.HEAVNO'

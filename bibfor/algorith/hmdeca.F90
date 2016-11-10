@@ -1,11 +1,11 @@
-subroutine hmdeca(i, ddls, ddlm, nnos, idec)
+subroutine hmdeca(i, ddls, ddlm, nnos, idec, dec)
 !
     implicit none
 !
-    integer :: i, ddls, ddlm, nnos, idec
+    integer :: i, ddls, ddlm, nnos, idec, dec
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,14 +33,17 @@ subroutine hmdeca(i, ddls, ddlm, nnos, idec)
 !  NNOS    : NOMBRE DE NOEUDS SOMMETS DE L'ELEMENT
 !
 !  SORTIE
-!  IN      : SAUT DE DDL
+!  IDEC    : SAUT DE DDL
+!  DEC     : VAUT 1 POUR UN NOUED MILIEU ET 0 POUR UN NOEUD SOMMET
 !......................................................................
 !     ON RAJOUTE "+1" POUR LE DECALAGE SUR LES NOEUDS SOMMETS CAR
 !     LES DDL DE PRESSION SONT A PRENDRE EN COMPTE EN HM-XFEM
 !
     if (i .le. nnos) then
-        idec=ddls*(i-1) + 1
+        idec=ddls*(i-1)
+        dec=1
     else
         idec=ddls*nnos+ddlm*(i-nnos-1)
+        dec=0
     endif
 end subroutine

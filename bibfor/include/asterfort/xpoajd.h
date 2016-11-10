@@ -19,12 +19,13 @@
 !
 interface 
     subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
-                      ninter, iainc, typma, co, igeom,&
+                      ninter, iainc, ncompa, typma, co, igeom,&
                       jdirno, nfiss, jheavn, ncompn, he, ndime,&
                       ndim, cmp, nbcmp, nfh, nfe,&
                       ddlc, ima, jconx1, jconx2, jcnsv1,&
                       jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                      nnn, contac, lmeca, pre1, jbaslo, &
+                      nnn, contac, lmeca, pre1, heavno,&
+                      nlachm, lacthm, jbaslo, &
                       jlsn, jlst, jstno, ka, mu)
         integer :: nbcmp
         integer :: nfiss
@@ -33,7 +34,7 @@ interface
         integer :: ino
         real(kind=8) :: lsn(nfiss)
         real(kind=8) :: lst(nfiss)
-        integer :: ninter
+        integer :: ninter(4)
         integer :: iainc
         character(len=8) :: typma
         real(kind=8) :: co(3)
@@ -62,6 +63,10 @@ interface
         integer :: contac
         aster_logical :: lmeca
         aster_logical :: pre1
+        integer :: ncompa
+        integer :: heavno(20, 3)
+        integer :: nlachm(2)
+        integer :: lacthm(16)
         integer :: jbaslo
         integer :: jlsn
         integer :: jlst

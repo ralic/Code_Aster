@@ -1,6 +1,7 @@
 subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
                   ds_constitutive, instam, instap, valinc    , solalg,&
-                  optmaz         , base  , meelem, ds_contact, matele)
+                  optmaz         , base  , meelem, ds_contact, matele,&
+                  list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -23,6 +24,7 @@ implicit none
 #include "asterfort/memare.h"
 #include "asterfort/merige.h"
 #include "asterfort/nmchex.h"
+#include "asterfort/nmvcex.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/nmelcm.h"
 #include "asterfort/wkvect.h"
@@ -56,6 +58,7 @@ implicit none
     character(len=1) :: base
     character(len=19) :: meelem(*), solalg(*), valinc(*)
     character(len=19) :: matele
+    integer, intent(in) :: list_func_acti(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -70,6 +73,7 @@ implicit none
 ! IN  MATE   : CHAMP MATERIAU
 ! In  ds_contact       : datastructure for contact management
 ! In  ds_constitutive  : datastructure for constitutive laws management
+! In  list_func_acti   : list of active functionnalities
 ! IN  TYPMAT : TYPE DE MATRICE A CALCULER
 !                MERIGI  - MATRICE POUR RIGIDITE
 !                MEDIRI  - MATRICE POUR CL DIRICHLET LAGRANGE
@@ -96,7 +100,8 @@ implicit none
     integer :: i
     character(len=16) :: optmat
     character(len=19) :: disp_prev, sigplu, vite_curr, vite_prev, acce_prev, strplu
-    character(len=19) :: disp_cumu_inst, varplu
+    character(len=19) :: disp_cumu_inst, varplu, time_curr
+    character(len=19) :: varc_prev, varc_curr, time_prev
     character(len=24) :: charge, infoch
     character(len=8) :: mesh
     integer :: ifm, niv
@@ -129,6 +134,10 @@ implicit none
         call nmchex(valinc, 'VALINC', 'SIGPLU', sigplu)
         call nmchex(valinc, 'VALINC', 'STRPLU', strplu)
         call nmchex(valinc, 'VALINC', 'VARMOI', varplu)
+        call nmchex(valinc, 'VALINC', 'COMMOI', varc_prev)
+        call nmchex(valinc, 'VALINC', 'COMPLU', varc_curr)
+        call nmvcex('INST', varc_prev, time_prev)
+        call nmvcex('INST', varc_curr, time_curr)
     endif
     if (solalg(1)(1:1) .ne. ' ') then
         call nmchex(solalg, 'SOLALG', 'DEPDEL', disp_cumu_inst)
@@ -201,14 +210,14 @@ implicit none
     else if (typmat.eq.'MEELTC') then
         call nmelcm('CONT'   , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    matele)
+                    matele   , time_prev, time_curr, ds_constitutive, list_func_acti)
 !
 ! --- MATR_ELEM DES ELTS DE FROTTEMENT (XFEM+CONTINUE)
 !
     else if (typmat.eq.'MEELTF') then
         call nmelcm('FROT'   , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    matele)
+                    matele   , time_prev, time_curr, ds_constitutive, list_func_acti)
     else
         ASSERT(.false.)
     endif

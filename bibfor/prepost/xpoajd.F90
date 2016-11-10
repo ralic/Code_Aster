@@ -1,10 +1,11 @@
 subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
-                  ninter, iainc, typma, co, igeom,&
+                  ninter, iainc, ncompa, typma, co, igeom,&
                   jdirno, nfiss, jheavn, ncompn, he, ndime,&
                   ndim, cmp, nbcmp, nfh, nfe,&
                   ddlc, ima, jconx1, jconx2, jcnsv1,&
                   jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                  nnn, contac, lmeca, pre1, jbaslo,&
+                  nnn, contac, lmeca, pre1, heavno,&
+                  nlachm, lacthm, jbaslo,&
                   jlsn, jlst, jstno, ka, mu)
 ! aslint: disable=W1306,W1504
     implicit none
@@ -21,6 +22,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/xdeffe.h"
 #include "asterfort/xlacti.h"
 #include "asterfort/xmoffc.h"
+#include "asterfort/xmofhm.h"
 #include "asterfort/xpoffo.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
@@ -29,9 +31,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 #include "asterfort/iselli.h"
 !
     integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
-    integer :: nbcmp, cmp(*), nfe, ima, jconx1, jconx2, jcnsv1
-    integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac
-    integer :: nfiss, he(nfiss), nfh, inn, nnn, ninter, jheavn, ncompn
+    integer :: nbcmp, cmp(*), nfe, ima, jconx1, jconx2, jcnsv1, heavno(20, 3)
+    integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac, ncompa
+    integer :: nfiss, he(nfiss), nfh, inn, nnn, ninter(4), jheavn, ncompn
+    integer :: nlachm(2), lacthm(16)
     integer :: jbaslo, jlsn, jlst, jstno
     aster_logical :: lmeca
     character(len=8) :: elrefp, typma
@@ -102,9 +105,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !
 !
     character(len=8) :: elrefc, elref2
-    integer :: nnops
-    real(kind=8) :: ff(nnop), ffc(nnop), fe(4), crilsn, minlsn
-    real(kind=8) :: r, theta, chpri(3), lagrs(9)
+    integer :: nnops, iaindec, nptint
+    real(kind=8) :: ff(nnop), ffc(16), fe(4), crilsn, minlsn
+    real(kind=8) :: r, theta, chpri(3), lagrs(9), laghm(3), lagrc(3*ndim)
     real(kind=8) :: ff2(8), press
     real(kind=8) :: fk(27,3,3)
     integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
@@ -134,11 +137,12 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
  20     continue
     endif
 !
+    fiss = 1
     if (lpint) then
         minlsn = r8maem()
         do 50 ifiss = 1, nfiss
 !     ON DETECTE LA FISSURE CORESPONDANTE AU POINT D'INTERSECTION
-            if (abs(lsn(ifiss)) .lt. minlsn) then
+            if (abs(lsn(ifiss)) .lt. minlsn .and. he(ifiss) .ne. 0) then
                 minlsn = abs(lsn(ifiss))
                 fiss = ifiss
             endif
@@ -149,8 +153,10 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
     endif
     if (ddlc .gt. 0) then
         ASSERT(lmeca)
-    endif 
-    lcont = (ddlc.gt.0).and.(ndime.eq.ndim) .and.(ninter.gt.0).and.(nfiss.eq.1)
+    endif
+    nptint=ninter(1)
+    if (pre1) nptint=ninter(fiss)
+    lcont = (ddlc.gt.0).and.(ndime.eq.ndim).and.(nptint.gt.0)
 !
     inn = inn + 1
     inntot = inntot + 1
@@ -256,6 +262,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !         ON ZAPPE LA POSITION DES DDLS HEAVISIDE DE PRESSION QUELQUE SOIT LA
 !         NATURE DU NOEUD
                 ipos=ipos+1
+!                
  85         continue
 !
  70     continue
@@ -264,7 +271,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
             npr(i)=zi(jconx1-1+zi(jconx2+ima-1)+i-1)
  93     continue
 !
-         press=0.d0
+        press=0.d0
 !         DDLS CLASSIQUES POUR LA PRESSION DANS LE MASSIF
         do 95 i = 1, nnops
            press = press + ff2(i)*zr(jcnsv1-1+nbcmp*(npr(i)-1)+cmp(ndim+1))
@@ -317,15 +324,98 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 140         continue
 100     continue
     endif
+    if (pre1) then 
+!
+!      CALCUL DES LAGRANGES DE CONTACT HM-XFEM
+!      SEULEMENT POUR LES POINTS D'INTERSECTION
+!
+       call vecini(3, 0.d0, laghm)
+       call vecini(3*ndim, 0.d0, lagrc)
+       if (lpint .and. lcont) then
+!
+!      NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
+           if (contac.ge.2) then
+! ---  FONCTIONS DE FORMES LINEAIRES POUR LE P2P1
+               call elelin(contac, elrefp, elrefc, ibid, nnol)
+               call xpoffo(ndim, ndime, elrefc, nnol, igeom,&
+                           co, ff)
+           else 
+               ASSERT(.false.)
+           endif
+! ---  FONCTIONS DE FORMES MODIFIÉES
+           iaindec = iainc+ncompa*(fiss-1)
+           nptint=ninter(fiss)
+           call xlacti(typma, nptint, iaindec, lact, nlact)
+           nlachm(1) = nlact
+           lacthm(1:8) = lact(1:8)
+           ASSERT(nlachm(1).gt.0.or.nlachm(2).gt.0)
+           call xmofhm(lacthm, nlachm, nnol, ff, ffc)
+           do 200 j = 1, nnol
+               ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
+200        continue
+!
+           if (contac.eq.3) then
+              do 310 i = 1, 3
+! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
+                  do 330 j = 1, nnol
+                      laghm(i)=laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j,fiss)-1)+i))*ffc(j)
+330               continue
+310           continue 
+!
+              do 311 i = 1, ndim
+! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE)
+                  do 331 j = 1, nnol
+                      lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+331               continue
+311           continue
+           else if (contac.eq.2) then
+              do 312 i = 1, 3
+! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
+                  do 332 j = 1, nnol
+                      laghm(i)=laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+i))*ffc(j)
+332               continue
+312           continue
+!
+              do 313 i = 1, ndim
+! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
+                  do 333 j = 1, nnol
+                      lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+333               continue
+313           continue
+!
+              do 314 i = ndim+1, 2*ndim
+! ---  CALCUL DE JUPS_C, JUPS_F1 ET JUPS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
+                  do 334 j = 1, nnol
+                      lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+334               continue
+314           continue
+!
+              do 315 i = 2*ndim+1, 3*ndim
+! ---  CALCUL DE MUS_C, MUS_F1 ET MUS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
+                  do 335 j = 1, nnol
+                      lagrc(i)=lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                      +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j,fiss)-1)+3+i))*ffc(j)
+335               continue
+315           continue
+           endif
+       endif
+    else 
 !
 !     CALCUL DES LAGRANGES DE CONTACT FROTTEMENT
 !     SEULEMENT POUR LES POINTS D'INTERSECTION
 !
-    call vecini(3*ndim, 0.d0, lagrs)
-    if (lpint .and. lcont) then
+       call vecini(3*ndim, 0.d0, lagrs)
+       if (lpint .and. lcont .and.nfiss.eq.1) then
 !
 !       NOEUD(S) GLOBAUX PORTANT LE(S) LAMBDA(S)
-        call xlacti(typma, ninter, iainc, lact, nlact)
+        nptint=ninter(1)
+        iaindec = iainc
+        call xlacti(typma, nptint, iaindec, lact, nlact)
         ASSERT(nlact.gt.0)
         if (contac .eq. 1.or.contac.eq.2) then
             nnol = nnop
@@ -337,24 +427,25 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         endif
 ! --- FONCTIONS DE FORMES MODIFIÉES
         call xmoffc(lact, nlact, nnol, ff, ffc)
-        do 200 j = 1, nnol
+        do 220 j = 1, nnol
             ngl(j)=zi(jconx1-1+zi(jconx2+ima-1)+j-1)
-200     continue
+220     continue
 !
-        do 310 i = 1, ddlc
+        do 343 i = 1, ddlc
 ! --- CALCUL AVEC LES FF DE CONTACT FFC, LINÉAIRES ET MODIFIÉES
-            do 330 j = 1, nnol
-                lagrs(i)=lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
-                +cmp((1+nfh+nfe)*ndim+i))*ffc(j)
-330         continue
-310     continue
+               do 353 j = 1, nnol
+                   lagrs(i)=lagrs(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1)&
+                   +cmp((1+nfh+nfe)*ndim+i))*ffc(j)
+353            continue
+343        continue
+       endif
     endif
 !
 !       ECRITURE DANS LE .VALE2 POUR LE NOEUD INO2
     ino2 = nbnoc + inntot
     if (pre1) then
-        idecv2 = jcnsv2-1+(ndimc+1)*(ino2-1)
-        idecl2 = jcnsl2-1+(ndimc+1)*(ino2-1)
+        idecv2 = jcnsv2-1+(4*ndimc+4)*(ino2-1)
+        idecl2 = jcnsl2-1+(4*ndimc+4)*(ino2-1)
         do 300 i = 1, ndimc
             zr(idecv2+i)=chpri(i)
             zl(idecl2+i)=.true.
@@ -362,6 +453,23 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
 !       ADRESSAGE DANS LE TABLEAU ZR DES DDLS DE PRESSIONS
         zr(idecv2+ndimc+1)=press
         zl(idecl2+ndimc+1)=.true.
+        if (lpint.and.lcont) then 
+!       ADRESSAGE POUR LES LAGRANGES DE CONTACT HM-XFEM
+           do 360 i = 1, 3
+              zr(idecv2+ndimc+1+i)=laghm(i)
+              zl(idecl2+ndimc+1+i)=.true.
+360        continue
+           do 361 i = 1, ndim
+              zr(idecv2+ndimc+1+3+i)=lagrc(i)
+              zl(idecl2+ndimc+1+3+i)=.true.
+361        continue
+           if (contac.eq.2) then
+              do 362 i = ndim+1, 3*ndim
+                 zr(idecv2+ndimc+1+3+i)=lagrc(i)
+                 zl(idecl2+ndimc+1+3+i)=.true.
+362           continue
+           endif
+        endif
     else
         if (lmeca) then
 !         POUR LA MECA
@@ -375,7 +483,7 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst,&
         do 400 i = 1, ndimc
             zr(idecv2+i)=chpri(i)
             zl(idecl2+i)=.true.
-            if (lpint .and. lcont) then
+            if (lpint .and. lcont .and.nfiss.eq.1) then
 !             POUR LES LAGRANGES DE CONTACT EN MECA
                 nlag = ddlc/ndimc
                 do j=1,nlag

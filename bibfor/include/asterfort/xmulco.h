@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,12 +17,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmulco(contac, ddlc, ddlm, iaint, ifiss,&
+    subroutine xmulco(contac, ddls, ddlc, ddlm, iaint, ifiss,&
                       jheano, vstnc, lact, lcalel, lelim,&
-                      ndim, nfe, nfh, nfiss, ninter,&
+                      ndim, nfh, nfiss, ninter,&
                       nlact, nno, nnol, nnom, nnos,&
                       pla, typma)
         integer :: contac
+        integer :: ddls
         integer :: ddlc
         integer :: ddlm
         integer :: iaint
@@ -33,7 +34,6 @@ interface
         aster_logical :: lcalel
         aster_logical :: lelim
         integer :: ndim
-        integer :: nfe
         integer :: nfh
         integer :: nfiss
         integer :: ninter

@@ -17,7 +17,7 @@
 !
 interface
     subroutine xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
-                      sddyna, hat_valinc)
+                      sddyna, hat_valinc, list_func_acti)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
@@ -26,5 +26,6 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: hat_valinc(*)
         character(len=19), intent(in) :: sddyna
+        integer, intent(in) :: list_func_acti(*)
     end subroutine xminit
 end interface

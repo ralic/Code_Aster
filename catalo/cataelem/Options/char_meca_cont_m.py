@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,13 @@ import cataelem.Commons.parameters as SP
 import cataelem.Commons.attributes as AT
 
 
+
+
 PLST = InputParameter(phys=PHY.NEUT_R,
+                      comment=""" XFEM """)
+
+
+PLSN = InputParameter(phys=PHY.NEUT_R,
                       comment=""" XFEM """)
 
 
@@ -61,6 +67,18 @@ PHEA_NO = InputParameter(phys=PHY.N120_I,
                          comment=""" XFEM """)
 
 
+PCOMPOR = InputParameter(phys=PHY.COMPOR,
+                         comment=""" UTILE POUR HM-XFEM """)
+
+
+PFISNO = InputParameter(phys=PHY.NEUT_I,
+                        comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+
+
+PHEA_FA = InputParameter(phys=PHY.N240_I,
+                         comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """)
+
+
 CHAR_MECA_CONT_M = Option(
     para_in=(
         PAINTER,
@@ -75,10 +93,19 @@ CHAR_MECA_CONT_M = Option(
         SP.PINDCOI,
         PLONGCO,
         PLST,
+        PLSN,
         SP.PMATERC,
         PPINTER,
         PSEUIL,
         PSTANO,
+        SP.PINSTMR,
+        SP.PINSTPR,
+        PCOMPOR,
+        SP.PCARCRI,
+        SP.PFISCO,
+        PFISNO,
+        SP.PHEAVNO,
+        PHEA_FA,
     ),
     para_out=(
         SP.PVECTUR,

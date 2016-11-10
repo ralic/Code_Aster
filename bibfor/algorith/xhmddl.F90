@@ -1,9 +1,10 @@
 subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                   stano, matsym, option, nomte, mat,&
-                  vect, ddlm, nfiss, jfisno)
+                  vect, ddlm, nfiss, jfisno, lcontx,&
+                  contac)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,9 +28,9 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 #include "asterc/r8maem.h"
 #include "asterfort/teattr.h"
 #include "jeveux.h"
-    aster_logical :: matsym
+    aster_logical :: matsym, lcontx
     integer :: ndim, ddls, nddl, nno, nnos, stano(*), ddlm, nfh
-    integer, intent(in) :: nfiss, jfisno
+    integer :: nfiss, jfisno, dec, contac
     character(len=16) :: option, nomte
     real(kind=8) :: mat(*), vect(*)
 !
@@ -38,7 +39,7 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 ! IN   NDIM   : DIMENSION DE L'ESPACE
 ! IN   DDLS   : NOMBRE DE DDL A CHAQUE NOEUD SOMMET
 ! IN   DDLM   : NOMBRE DE DDL A CHAQUE NOEUD MILIEU
-! IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ELEMENT
+! IN   NDDL   : NOMBRE DE DDL TOTAL DE L'ÉLÉMENT
 ! IN   NNO    : NOMBRE DE NOEUDS DE L'ELEMENT PORTANT DES DDLS DE DEPL
 ! IN   NNOS   : NOMBRE DE NOEUDS SOMMENT DE L'ELEMENT
 ! IN   STANO  : STATUT DES NOEUDS
@@ -46,8 +47,10 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 ! IN   NOMTE  : NOM DU TYPE ELEMENT
 ! IN   NFISS  : NOMBRE DE FISSURES "VUES" PAR L'ELEMENT
 ! IN   JFISNO : POINTEUR DE CONNECTIVITE FISSURE/HEAVISIDE
+! IN   LCONTX : INDIQUE SI IL Y A DU CONTACT OU PAS 
+! IN   CONTAC : TYPE DE CONTACT
 !
-! IN/OUT :   MAT   : MATRICE DE RIGIDITE
+! IN/OUT :   MAT   : MATRICE DE RIGIDITÉ
 ! IN/OUT :   VECT  : VECTEUR SECOND MEMBRE
 !
 !
@@ -56,7 +59,7 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 !
     aster_logical :: lelim
     integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
-    parameter    (ddlmax=20*20)
+    parameter    (ddlmax=52*20)
     integer :: posddl(ddlmax), ifh, fisno(nno, nfiss)
     real(kind=8) :: dmax, dmin, codia
     character(len=8) :: tyenel
@@ -82,6 +85,7 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 !
     call teattr('S', 'XFEM', tyenel, ier, typel=nomte)
     if (tyenel(1:2) .eq. 'XH') ielim=1
+    if (lcontx) ielim=2
 !
 !     REMPLISSAGE DU VECTEUR POS : POSITION DES DDLS A SUPPRIMER
 !
@@ -94,26 +98,39 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
     lelim=.false.
 !
     do ino = 1, nno
-        call hmdeca(ino, ddls, ddlm, nnos, in)
+        call hmdeca(ino, ddls, ddlm, nnos, in, dec)
 !
         if (ielim .eq. 1) then
             do ifh = 1, nfh
                istatu = stano((ino-1)*nfiss+fisno(ino,ifh))
                ASSERT(istatu.le.1)
                if (istatu .eq. 0) then
-!              ON SUPPRIME LES DDL H MECA SUR LES NOEUDS MILIEUX
-                   if (ino.gt.nnos) then 
-                      do k = 1, ndim
-                           posddl(in+ndim+ndim*(ifh-1)+k)=1
-                      end do
-!              SUR LES NOEUDS SOMMETS ON SUPPRIME LES H MECA ET LES DDL H HYDRO
-                   elseif (ino.le.nnos) then 
-                      do k = 1, ndim+1
-                           posddl(in+ndim+(ndim+1)*(ifh-1)+k)=1
-                      end do
-                   endif 
+!              ON SUPPRIME LES DDL H MECA ET HYDRO
+                   do k = 1, ndim+dec
+                        posddl(in+(ndim+dec)*ifh+k)=1
+                   end do
                    lelim=.true.
                endif
+            end do
+        else if (ielim .eq. 2) then 
+!           ON SUPPRIME LES DDLS PRE_FLU, LAG_FLI, LAG_FLS, LAG1_HM ET 
+!           LAG2_HM AUX NOEUDS SOMMETS
+            do ifh = 1, nfh
+               if (ino.le.nnos) then 
+                   istatu = stano((ino-1)*max(1,nfh)+ifh)
+                   if (istatu.eq.0) then 
+                       if (contac.eq.3) then
+                          do k = 1, 3+ndim
+                              posddl(in+(ndim+dec)*(nfh+1)+(ifh-1)*(ndim+3)+k)=1
+                          end do
+                       else if (contac.eq.2) then
+                          do k = 1, 3+3*ndim
+                              posddl(in+(ndim+dec)*(nfh+1)+(ifh-1)*(3*ndim+3)+k)=1
+                          end do
+                       endif
+                       lelim=.true.
+                   endif
+                endif
             end do
         endif
     end do
@@ -123,8 +140,10 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
 !     POUR LES OPTIONS CONCERNANT DES MATRICES :
 !        CALCUL DU COEFFICIENT DIAGONAL POUR
 !        L'ELIMINATION DES DDLS HEAVISIDE
-        if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option .eq.&
-            'FULL_MECA' .or. option .eq. 'MASS_MECA') then
+        if (option(1:10) .eq. 'RIGI_MECA_'& 
+            .or. option .eq. 'RIGI_MECA'& 
+            .or. option .eq. 'FULL_MECA'& 
+            .or. option(1:9) .eq. 'RIGI_CONT') then
             dmin=r8maem()
             dmax=-r8maem()
             do 110 i = 1, nddl
@@ -153,7 +172,7 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
         do 200 i = 1, nddl
             if (posddl(i) .eq. 0) goto 200
             if (option(1:10) .eq. 'RIGI_MECA_' .or. option .eq. 'RIGI_MECA' .or. option&
-                .eq. 'FULL_MECA' .or. option .eq. 'MASS_MECA') then
+                .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RIGI_CONT') then
                 do 210 j = 1, nddl
                     if (matsym) then
                         if (j .lt. i) mat((i-1)*i/2+j) = 0.d0
@@ -169,13 +188,9 @@ subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
             if (option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA' .or. option .eq.&
                 'FORC_NODA' .or. option .eq. 'CHAR_MECA_PRES_R' .or. option .eq.&
                 'CHAR_MECA_PRES_F' .or. option .eq. 'CHAR_MECA_FLUX_R' .or. option .eq.&
-                'CHAR_MECA_FLUX_F' .or. option .eq. 'CHAR_MECA_FR2D3D' .or. option .eq.&
-                'CHAR_MECA_FR1D2D' .or. option .eq. 'CHAR_MECA_FF2D3D' .or. option .eq.&
-                'CHAR_MECA_FF1D2D' .or. option .eq. 'CHAR_MECA_CONT' .or. option .eq.&
-                'CHAR_MECA_FROT' .or. option .eq. 'CHAR_MECA_FR3D3D' .or. option .eq.&
-                'CHAR_MECA_FR2D2D' .or. option .eq. 'CHAR_MECA_FF3D3D' .or. option .eq.&
-                'CHAR_MECA_FF2D2D' .or. option .eq. 'CHAR_MECA_PESA_R' .or. option .eq.&
-                'CHAR_MECA_ROTA_R' .or. option .eq. 'CHAR_MECA_TEMP_R') vect(i) = 0.d0
+                'CHAR_MECA_FLUX_F' .or. option(1:14) .eq. 'CHAR_MECA_CONT' .or. option .eq.&
+                'CHAR_MECA_PESA_R') vect(i) = 0.d0
+
 200     continue
     endif
 !

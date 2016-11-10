@@ -279,7 +279,7 @@ subroutine xstan2(noma, modele, crit2, lfiss)
                               zi(jcesv(2)-1+iad) = 2
                             elseif (zi(jcesv(2)-1+iad).eq.1) then
                               zi(jcesv(2)-1+iad) = 0
-                            endif                            
+                            endif
                             goto 150
                         endif
                     end do

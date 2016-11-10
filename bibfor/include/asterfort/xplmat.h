@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
+    subroutine xplmat(ddls, ddlc, ddlm,&
                       nnos, nnom, n, pl)
-        integer :: ndim
-        integer :: nfh
-        integer :: nfe
+        integer :: ddls
         integer :: ddlc
         integer :: ddlm
         integer :: nnos

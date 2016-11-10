@@ -5,7 +5,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,6 +71,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     real(kind=8) :: norme, pm(3, 3), ptr(3, 3), theta(3)
     real(kind=8) :: tau1(3), tau2(3), nd(3), temp(3), xg(3)
     real(kind=8) :: ptp(3), vec(3), sens
+!
 !     BASE LOCALE ET LEVEL SETS AU POINT DE GAUSS
 !     DIMENSIONNEMENT A 3 ET NON NDIM POUR POUVOIR UTILISER NORMEV.F
     call matini(3, 3, 0.d0, pm)
@@ -85,19 +86,19 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
             pm(3,i) = tau2(i)
 119      continue
     endif
-    call transp(pm, 3, ndim, ndim, ptr,&
-                3)
+    call transp(pm, ndim, ndim, ndim, ptr,&
+                ndim)
     call vecini(3, 0.d0, e1)
     call vecini(3, 0.d0, e2)
     call vecini(3, 0.d0, ptp)
     call vecini(3, 0.d0, vec)
-    do 132 ino = 1, nnop
+    do ino = 1, nnop
         do 110 i = 1, ndim
             ptp(i) = ptp(i) + basloc(3*ndim*(ino-1)+i) * ff(ino)
             e2(i) = e2(i) + basloc(3*ndim*(ino-1)+i+ndim) * ff(ino)
             e1(i) = e1(i) + basloc(3*ndim*(ino-1)+i+2*ndim) * ff(ino)
 110      continue
-132  end do
+    end do
 !
 ! E1 == NORMALE (N)
 ! E2 == TANGENTE DIRECTION DE FISSURATION (M)
@@ -107,14 +108,14 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 !     -----------------------------------
     call vecini(3, 0.d0, theta)
 !
-    do 390 i = 1, ndim
+    do i = 1, ndim
         do 301 ino = 1, nnop
             theta(i) = theta(i) + ff(ino) * zr(ithet-1+ndim*(ino-1)+i)
 301      continue
 !
 !       ON REMPLACE E2 PAR THETA: REDRESSEMENT EN BORD DE FISSURE
         e2(i) = theta(i)
-390  end do
+    end do
 !
 !    ON REORTHOGONALISE THETA
 !    EN GARDANT SA NORME!
@@ -124,7 +125,7 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     call normev(theta, norme_theta)
     call provec(temp, e1, theta)
     call normev(theta, norme)
-    do i=1,ndim
+    do i = 1,ndim
         theta(i) = norme_theta*theta(i)
     end do
 !
@@ -173,20 +174,21 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 ! AJOUT CALCUL DE LA CONTRAINTE COHÉSIVE
 !
     call vecini(3, 0.d0, lambl)
-    do 270 ino = 1, nnop
+    do ino = 1, nnop
         call indent(ino, ddls, ddlm, nnos, ii)
         do 280 j = 1, ndim
             lambl(j) = lambl(j) + zr(idepl-1+ii+ddld+j)*ff(ino)
 280      continue
-270  end do
-    call prmave(0, ptr, 3, ndim, ndim,&
+    end do
+    call prmave(0, ptr, ndim, ndim, ndim,&
                 lambl, ndim, lamb, ndim, ier)
 !
 !     ---------------------------------------------
-!     3) CALCUL DU DEPLACEMENT
+!     3) CALCUL DU SAUT DE DEPLACEMENT
 !     ---------------------------------------------
     call matini(ndim, ndim, 0.d0, grdep)
-    do 290 ino = 1, nnop
+!
+    do ino = 1, nnop
         call vecini(ndim, 0.d0, am)
         call indent(ino, ddls, ddlm, nnos, ii)
         do 291 j = 1, ndim
@@ -195,13 +197,12 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
 292          continue
 291      continue
 !
-        do 281 j = 1, ndim
-            do 282 l = 1, ndim
+        do j = 1, ndim
+            do l = 1, ndim
                 grdep(j,l) = grdep(j,l) + dfdi(ino,l)*am(j)
-282          continue
-281      continue
-290  end do
-!
+            end do
+        end do
+     end do
 !
 !     -----------------------------------
 !     4) CALCUL EFFECTIF DE G, K1, K2, K3
@@ -216,14 +217,14 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
     grde1 = 0.d0
     grde2 = 0.d0
     grde3 = 0.d0
-    do 530 j = 1, ndim
+    do j = 1, ndim
         do 540 l = 1, ndim
             grde1 = grde1 + e1(j)*grdep(j,l)*theta(l)
             grde2 = grde2 + e2(j)*grdep(j,l)*theta(l)
             grde3 = grde3 + e3(j)*grdep(j,l)*theta(l)
             g = g - lamb(j)*grdep(j,l)*theta(l)
 540      continue
-530  end do
+    end do
     lamb1 = ddot(3,lamb,1,e1,1)
     lamb2 = ddot(3,lamb,1,e2,1)
     lamb3 = ddot(3,lamb,1,e3,1)
@@ -242,7 +243,6 @@ subroutine xsifl2(basloc, coeff, coeff3, ddld, ddlm,&
         zr(igthet-1+6)=zr(igthet-1+6)+g2*jac*coeff
         zr(igthet-1+7)=zr(igthet-1+7)+g3*jac*coeff3
     else if (ndim.eq.2) then
-!
 ! PAS PROGRAMME POUR L INSTANT
 !
         ASSERT(.false.)

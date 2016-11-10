@@ -192,7 +192,6 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                     end do
                 endif
                 if (.not.ismali(typma)) then
-                  mincoh=-1
 !               ON NE TRAITE PAS LA MULTI-FISSURATION EN QUADRATIQUE
                   nm=ar(ia,3)
                   nunom=connex(zi(jconx2+ima-1)+nm-1)
@@ -208,10 +207,13 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                   endif
                   if (lsna .eq. 0.d0 .and. lsnb .eq. 0.d0) then
                       if (lsta .lt. minlst) minlst=lsta
+                      if (lsta .lt. mincoh) mincoh=lsta
                       if (lsta .gt. maxlst) maxlst=lsta
                       if (lstb .lt. minlst) minlst=lstb
+                      if (lstb .lt. mincoh) mincoh=lstb
                       if (lstb .gt. maxlst) maxlst=lstb
                       if (lstm .lt. minlst) minlst=lstm
+                      if (lstm .lt. mincoh) mincoh=lstm
                       if (lstm .gt. maxlst) maxlst=lstm
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -228,6 +230,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       endif
                   else if (lsna .eq. 0 .and. lsnm .ne. 0) then
                       if (lsta .lt. minlst) minlst=lsta
+                      if (lsta .lt. mincoh) mincoh=lsta
                       if (lsta .gt. maxlst) maxlst=lsta
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -238,8 +241,10 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       endif
                   else if (lsna .eq. 0 .and. lsnm .eq. 0) then
                       if (lsta .lt. minlst) minlst=lsta
+                      if (lsta .lt. mincoh) mincoh=lsta
                       if (lsta .gt. maxlst) maxlst=lsta
                       if (lstm .lt. minlst) minlst=lstm
+                      if (lstm .lt. mincoh) mincoh=lstm
                       if (lstm .gt. maxlst) maxlst=lstm
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -253,6 +258,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       endif
                   else if (lsnb .eq. 0 .and. lsnm .ne. 0) then
                       if (lstb .lt. minlst) minlst=lstb
+                      if (lstb .lt. mincoh) mincoh=lstb
                       if (lstb .gt. maxlst) maxlst=lstb
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -263,8 +269,10 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       endif
                   else if (lsnb .eq. 0 .and. lsnm .eq. 0) then
                       if (lstb .lt. minlst) minlst=lstb
+                      if (lstb .lt. mincoh) mincoh=lstb
                       if (lstb .gt. maxlst) maxlst=lstb
                       if (lstm .lt. minlst) minlst=lstm
+                      if (lstm .lt. mincoh) mincoh=lstm
                       if (lstm .gt. maxlst) maxlst=lstm
                       if (ljonc) then
                           do ifiss = 1, nfiss
@@ -306,6 +314,7 @@ subroutine xstano(noma, lisno, nmafis, jmafis, cnslt,&
                       c2 = 2.d0*lstm
                       lstc = (a2*x1**2+b2*x1+c2)*5.d-1
                       if (lstc .lt. minlst) minlst=lstc
+                      if (lstc .lt. mincoh) mincoh=lstc
                       if (lstc .gt. maxlst) maxlst=lstc
                       if (ljonc) then
                           do ifiss = 1, nfiss

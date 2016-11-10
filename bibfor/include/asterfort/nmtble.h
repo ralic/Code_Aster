@@ -19,7 +19,7 @@ interface
     subroutine nmtble(cont_loop     , model   , mesh  , mate     , ds_contact,&
                       list_func_acti, ds_print, ds_measure, sddyna    ,&
                       sderro        , ds_conv , sddisc, nume_inst,hval_incr  ,&
-                      hval_algo)
+                      hval_algo, ds_constitutive)
         use NonLin_Datastructure_type        
         integer, intent(inout) :: cont_loop
         character(len=24), intent(in) :: model
@@ -36,5 +36,6 @@ interface
         integer, intent(in) :: nume_inst
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     end subroutine nmtble
 end interface

@@ -170,12 +170,12 @@ subroutine xsifle(ndim, ifa, jptint, cface,&
             ASSERT(nno.eq.nnop)
             call xjacff(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ipgf, nnop,&
-                        igeom, jbasec, xg, jac, ff,&
+                        nnos, igeom, jbasec, xg, jac, ff,&
                         r27bid, dfdi, nd, tau1, tau2)
         else if (ndim.eq.2) then
             call xjacf2(elref, elrefc, elc, ndim, fpg,&
                         jptint, ifa, cface, ndim, ipgf,&
-                        nnop, igeom, jbasec, xg, jac,&
+                        nnop, nnos, igeom, jbasec, xg, jac,&
                         ff, r27bid, dfdi, nd, tau1)
         endif
         if (option .ne. 'CALC_K_G_COHE') then

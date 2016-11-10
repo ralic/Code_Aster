@@ -1,7 +1,7 @@
 subroutine xverm2(nfiss, fiss, mod)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,7 +65,7 @@ subroutine xverm2(nfiss, fiss, mod)
 !       seules les INTERFACEs sont autorisees en HM-XFEM
 !
         call dismoi('TYPE_DISCONTINUITE', fiss(ifiss), 'FISS_XFEM', repk=typdis)
-        if (exithm .eq. 'OUI' .and. typdis .ne. 'INTERFACE') then
+        if (exithm .eq. 'OUI' .and. typdis .eq. 'FISSURE') then
             call utmess('F', 'XFEM_78', sk='HM-XFEM')
         endif
 !

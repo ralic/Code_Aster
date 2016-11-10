@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 interface
     subroutine lceiou(fami, kpg, ksp, mat, option,&
                       mu, su, de, ddedt, vim,&
-                      vip, r)
+                      vip, r, pfluide)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -31,5 +31,6 @@ interface
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: r
+        real(kind=8), optional, intent(in) :: pfluide
     end subroutine lceiou
 end interface

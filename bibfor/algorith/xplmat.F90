@@ -1,13 +1,13 @@
-subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
+subroutine xplmat(ddls, ddlc, ddlm,&
                   nnos, nnom, n, pl)
 !
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: ndim, nfh, nfe, ddlc, nnos, nnom, n, pl, ddlm
+    integer :: ddls, ddlc, nnos, nnom, n, pl, ddlm
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,6 @@ subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
 !             CALCULE LA PLACE DU LAMBDA(N) NORMAL DANS LA MATRICE
 !             DE RAIDEUR DUE AU CONTACT
 !
-! IN  NDIM    : DIMENSION (=3)
 ! IN  NFH     : NOMBRE DE FONCTIONS HEAVYSIDE
 ! IN  NFE     : NOMBRE DE FONCTIONS SINGULIÈRES
 ! IN  DDLC    : NOMBRE DE DDL DE CONTACT (PAR NOEUD)
@@ -39,13 +38,7 @@ subroutine xplmat(ndim, nfh, nfe, ddlc, ddlm,&
 ! OUT PL      : PLACE DU LMBDA DANS LA MATRICE
 !     ------------------------------------------------------------------
 !
-    integer :: ddls
-!
-! ----------------------------------------------------------------------
     ASSERT(n.le.(nnos+nnom))
-!
-!     NOMBRE DE DDL PAR NOEUD SOMMET
-    ddls=ndim*(1+nfh+nfe)+ddlc
 !
 !     PLACE DU PREMIER DDL DE CONTACT POUR CHAQUE N
     if (n .le. nnos) then

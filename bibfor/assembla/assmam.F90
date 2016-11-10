@@ -94,7 +94,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !                          1 --> reelles
 !                          2 --> complexes
 !-----------------------------------------------------------------------
-    character(len=16) :: optio, optio2, codvoi
+    character(len=16) :: optio, optio2
     character(len=1) :: base1, typsca
     character(len=2) :: tt
     character(len=8) ::  nogdco, nogdsi, ma, ma2, mo, mo2, partit
@@ -110,8 +110,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 
     integer :: admodl, i
     integer :: jdesc
-    integer :: jadli, jadne, jnueq, jnulo1, jnulo2
-    integer :: jposd1, jposd2, jtmp2, lgtmp2
+    integer :: jadli, jadne, jnueq, jnulo1
+    integer :: jposd1, jtmp2, lgtmp2
     integer :: ibid, iconx1, iconx2, idbgav
     integer :: jprn1, jprn2, jresl
     integer :: iel, ier, ifm, igr
@@ -122,8 +122,8 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     integer :: lcmodl, mode, n1, nbelm
     integer :: nblc, nbnomx, nbnoss, nbresu
     integer :: ncmp, nbvel, nec, nel, nequ, nbproc, vali(4)
-    integer :: niv, nlili, nmxcmp, nnoe, jptvoi, jelvoi
-    integer :: nugd, rang, ieq, idia, ellagr, jrepe, iexi
+    integer :: niv, nlili, nmxcmp, nnoe
+    integer :: nugd, rang, ieq, idia, ellagr, iexi
     character(len=24), pointer :: prtk(:) => null()
     integer, pointer :: smde(:) => null()
     character(len=24), pointer :: noli(:) => null()
@@ -317,9 +317,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
 !      standard (jusqu'a present : 27 (hexa27))
     nbnomx=max(nbnoss,50)
     call wkvect('&&ASSMAM.NUMLO1', 'V V I', 2*nbnomx, jnulo1)
-    call wkvect('&&ASSMAM.NUMLO2', 'V V I', 2*nbnomx, jnulo2)
     call wkvect('&&ASSMAM.POSDD1', 'V V I', nbnomx*nmxcmp, jposd1)
-    call wkvect('&&ASSMAM.POSDD2', 'V V I', nbnomx*nmxcmp, jposd2)
 
 !   -- allocation d'un objet de travail utilise dans asretm :
 !      ce vecteur est agrandi si necessaire dans asretm
@@ -522,11 +520,10 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
                                     c1, rang, jnueq, jnumsd, jresl,&
                                     nbvel, nnoe, ldistme, ldgrel,&
                                     ilima, jadli, jadne, jprn1, jprn2,&
-                                    jnulo1, jnulo2, jposd1, jposd2, admodl,&
+                                    jnulo1, jposd1, admodl,&
                                     lcmodl, mode, nec, nmxcmp, ncmp,&
                                     jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                                    lgtmp2, jvalm, ilinu, ellagr,&
-                                    jdesc, jrepe, jptvoi, jelvoi, codvoi)
+                                    lgtmp2, jvalm, ilinu, ellagr)
                     end do
                     call jelibe(jexnum(resu//'.RESL', igr))
                 endif
@@ -588,9 +585,7 @@ subroutine assmam(base, matas, nbmat, tlimat, licoef,&
     call jedetr(matdev//'.ADNE')
     call jedetr(matdev//'.ADLI')
     call jedetr('&&ASSMAM.NUMLO1')
-    call jedetr('&&ASSMAM.NUMLO2')
     call jedetr('&&ASSMAM.POSDD1')
-    call jedetr('&&ASSMAM.POSDD2')
     call jedetr('&&ASSMAM.TMP2')
     call jedbg2(ibid, idbgav)
     if (dbg) call cheksd(matdev, 'SD_MATR_ASSE', iret)

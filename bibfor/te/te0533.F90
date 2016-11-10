@@ -214,9 +214,9 @@ subroutine te0533(option, nomte)
 !
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
-        call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
+        call xmulco(contac, ddls, ddlc, ddlm, jaint, ifiss,&
                     jheano, vstnc, lact, .true._1, lelim,&
-                    ndim, nfe, nfh, nfiss, ninter,&
+                    ndim, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)
 !

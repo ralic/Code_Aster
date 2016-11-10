@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/xmele3.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -128,10 +128,10 @@ implicit none
 !
     if(contac.eq.1.or.contac.eq.3) then
         call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                    xindc0, 'PINDCOI', 'RIGI_CONT')
+                    xindc0, 'PINDCOI', 'RIGI_CONT', list_func_acti)
     else if(contac.eq.2) then
         call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                    xindc0, 'PINDCOI', 'RIGI_CONT_M')
+                    xindc0, 'PINDCOI', 'RIGI_CONT_M', list_func_acti)
     endif
 !
     if (lxczm) then
@@ -140,20 +140,20 @@ implicit none
 !
         if(contac.eq.1.or.contac.eq.3) then
             call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                        xcohe0, 'PCOHES', 'RIGI_CONT')
+                        xcohe0, 'PCOHES', 'RIGI_CONT', list_func_acti)
 !
 !       SI CONTACT MORTAR, CHAMP ELNO
 !
         else if(contac.eq.2) then
             call xmele3(mesh, model, ligrel, nfiss,&
-                        xcohe0, 'PCOHES', 'RIGI_CONT_M')
+                        xcohe0, 'PCOHES', 'RIGI_CONT_M', list_func_acti)
         else
             ASSERT(.false.)
         endif
     endif
     if (lxffm) then
         call xmele1(mesh, model, ds_contact, ligrel, nfiss,&
-                    xseuc0, 'PSEUIL', 'RIGI_CONT')
+                    xseuc0, 'PSEUIL', 'RIGI_CONT', list_func_acti)
     endif
 !
     call jedema()

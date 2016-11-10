@@ -52,7 +52,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
     integer :: nnop, nnops, n, nddls, nddlm, ipi, npg, ifiss
     integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jheavn
     integer :: ivectu, yaenrm, ifh, fisno(nnop, nfiss), iret , jtab(7)
-    integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp
+    integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp, dec
     integer :: heavt(*), lonch(10), cnset(*)
     integer :: heavn(nnop,5), ig, ncompn, hea_se
     real(kind=8) :: xg(ndim), xe(ndim), coorse(30), dbid(nnop, ndim), he(nfiss)
@@ -125,7 +125,7 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
 !
         do 70 n = 1, nnop
             call indent(n, nddls, nddlm, nnops, dec1(n))
-            call hmdeca(n, nddls, nddlm, nnops, dec2(n))
+            call hmdeca(n, nddls, nddlm, nnops, dec2(n), dec)
  70     continue
 ! =====================================================================
 ! --- BOUCLE SUR LES POINTS D'INTEGRATION -----------------------------
@@ -207,13 +207,12 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls,&
                     if (yaenrm .eq. 1) then
                       do ifh = 1, nfh
                         if (ino.le.nnops) then
-                           zr(ivectu-1+ienr+(ndim+1)*ifh)=zr(ivectu-1+ienr+(ndim+1)*ifh)&
+                           zr(ivectu+ienr+(ndim+1)*ifh)=zr(ivectu+ienr+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+1)*ff(ino)
-!
-                           zr(ivectu-1+ienr+1+(ndim+1)*ifh)=zr(ivectu-1+ienr+1+(ndim+1)*ifh)&
+                           zr(ivectu+ienr+1+(ndim+1)*ifh)=zr(ivectu+ienr+1+(ndim+1)*ifh)&
                            +xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*zr(ipesa+2)*ff(ino)
                            if (ndim .eq. 3) then
-                              zr(ivectu-1+ienr+2+(ndim+1)*ifh)=zr(ivectu-1+ienr+2+(ndim+1)*ifh)+&
+                              zr(ivectu+ienr+2+(ndim+1)*ifh)=zr(ivectu+ienr+2+(ndim+1)*ifh)+&
                               xcalc_heav(heavn(ino,ifh),hea_se,heavn(ino,5))*poids*&
                               zr(ipesa+3)*ff(ino)
                            endif

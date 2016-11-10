@@ -1,6 +1,6 @@
 subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
                   ds_measure, valinc, solalg,&
-                  veelem, veasse)
+                  veelem, veasse, ds_constitutive)
 !
 use NonLin_Datastructure_type
 !
@@ -34,6 +34,7 @@ implicit none
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,6 +54,7 @@ implicit none
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  VEELEM : VARIABLE CHAPEAU POUR NOM DES VECT_ELEM
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
+! In  ds_constitutive  : datastructure for constitutive laws management
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +69,7 @@ implicit none
     if (leltc) then
         call nmfocc('CORRECTION', modele, mate, numedd, fonact,&
                     ds_contact, ds_measure, solalg,&
-                    valinc, veelem, veasse)
+                    valinc, veelem, veasse, ds_constitutive)
     endif
 !
 end subroutine

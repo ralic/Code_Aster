@@ -96,7 +96,7 @@ implicit none
 !
         if (l_cont_xfem) then
             call xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
-                        sddyna, hat_valinc)
+                        sddyna, hat_valinc, list_func_acti)
         endif   
     endif
 !

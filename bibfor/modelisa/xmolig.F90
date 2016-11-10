@@ -18,7 +18,7 @@ subroutine xmolig(liel1, trav)
     character(len=24) :: liel1, trav
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,24 +59,24 @@ subroutine xmolig(liel1, trav)
     integer :: icpq8(6), icpt6(6), idpq8(6), idpt6(6)
     integer :: if4(10), if3(10), ipf2(10)
     integer :: if8(3), if6(3), ipf3(3)
-    integer :: ihyq8(11), ihyt6(11), ihymq8(1), ihymt6(1), ihysq8(1)
-    integer :: ihyst6(1), ihydq8(1), ihydt6(1), iphm(11)
-    integer :: ihe20(11), ihem20(1), ihed20(1), ihes20(1), ipe15(11)
-    integer :: ipem15(1), ipes15(1), iped15(1), ipy13(11), ipym13(1)
-    integer :: ipys13(1), ipyd13(1), ite10(11), ites10(1)
-    integer :: ited10(1), item10(1), ibhm(11), ichm(11)
+    integer :: ihyq8(17), ihyt6(17), ihymq8(4), ihymt6(4), ihysq8(4)
+    integer :: ihyst6(4), ihydq8(4), ihydt6(4), iphm(17)
+    integer :: ihe20(17), ihem20(1), ihed20(1), ihes20(1), ipe15(17)
+    integer :: ipem15(1), ipes15(1), iped15(1), ipy13(17), ipym13(1)
+    integer :: ipys13(1), ipyd13(1), ite10(17), ites10(1)
+    integer :: ited10(1), item10(1), ibhm(17), ichm(17)
 !
     integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
     integer :: nt4(15), nt10(7)
     integer :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
     integer :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
     integer :: nf6(7), npf2(11), npf3(7)
-    integer :: nhyq8(11), nhyt6(11), nhymq8(7), nhymt6(7), nhysq8(7)
-    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(11)
-    integer :: nhe20(11), nhem20(7), nhed20(7), nhes20(7), npe15(11)
-    integer :: npem15(7), npes15(7), nped15(7), npy13(11), npym13(7)
-    integer :: npys13(7), npyd13(7), nte10(11), ntem10(7), ntes10(7)
-    integer :: nted10(7), nbhm(11), nchm(11)
+    integer :: nhyq8(17), nhyt6(17), nhymq8(7), nhymt6(7), nhysq8(7)
+    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(17)
+    integer :: nhe20(17), nhem20(7), nhed20(7), nhes20(7), npe15(17)
+    integer :: npem15(7), npes15(7), nped15(7), npy13(17), npym13(7)
+    integer :: npys13(7), npyd13(7), nte10(17), ntem10(7), ntes10(7)
+    integer :: nted10(7), nbhm(17), nchm(17)
 !
     integer :: iaxt3(6), iaxq4(6), iaxq8(6), iaxt6(6), iax2(3), iax3(3)
     integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
@@ -315,61 +315,127 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'MEDPTR6_XHTC'), idpt6(6))
 !
 ! -----------------------------------------------------------------
-! AJOUT DES ELEMENTS XFEM-THM (D_PLAN)
+! AJOUT DES ELEMENTS HM-XFEM (D_PLAN)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH' ), ihyq8(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8M_XH' ), ihymq8(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8S_XH' ), ihysq8(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8D_XH' ), ihydq8(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH1' ), ihyq8(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2' ), ihyq8(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3' ), ihyq8(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH4' ), ihyq8(10))
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH' ), ihyt6(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6M_XH' ), ihymt6(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6S_XH' ), ihyst6(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6D_XH' ), ihydt6(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH1' ), ihyt6(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2' ), ihyt6(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3' ), ihyt6(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH4' ), ihyt6(10))
+!
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XHC' ), ihyq8(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8M_XHC' ), ihymq8(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8S_XHC' ), ihysq8(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8D_XHC' ), ihydq8(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2C' ), ihyq8(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3C' ), ihyq8(12))
+!
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XHC' ), ihyt6(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6M_XHC' ), ihymt6(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6S_XHC' ), ihyst6(4))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6D_XHC' ), ihydt6(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2C' ), ihyt6(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3C' ), ihyt6(12))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XHC3' ), ihyq8(14))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XHC3' ), ihyt6(14))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH2C3' ), ihyq8(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPQ8_XH3C3' ), ihyq8(16))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH2C3' ), ihyt6(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPTR6_XH3C3' ), ihyt6(16))
+
 ! ------------------------------------------------------------------
-! AJOUT DES ELEMENTS XFEM-THM (3D)
+! AJOUT DES ELEMENTS HM-XFEM (3D)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH' ), ihe20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20M_XH' ), ihem20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20S_XH' ), ihes20(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20D_XH' ), ihed20(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH1' ), ihe20(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2' ), ihe20(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3' ), ihe20(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH4' ), ihe20(10))
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH' ), ipe15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15M_XH' ), ipem15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15S_XH' ), ipes15(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15D_XH' ), iped15(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH1' ), ipe15(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2' ), ipe15(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH3' ), ipe15(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH4' ), ipe15(10))
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH' ), ipy13(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13M_XH' ), ipym13(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13S_XH' ), ipys13(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13D_XH' ), ipyd13(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH1' ), ipy13(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2' ), ipy13(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3' ), ipy13(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH4' ), ipy13(10))
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH' ), ite10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10M_XH' ), item10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10S_XH' ), ites10(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10D_XH' ), ited10(1))
+
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH1' ), ite10(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2' ), ite10(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3' ), ite10(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH4' ), ite10(10))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XHC' ), ihe20(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XHC' ), ipe15(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XHC' ), ipy13(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XHC' ), ite10(4))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2C' ), ihe20(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3C' ), ihe20(12))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C' ), ipe15(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C' ), ipe15(12))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2C' ), ipy13(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3C' ), ipy13(12))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2C' ), ite10(11))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3C' ), ite10(12))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XHC3' ), ihe20(14))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XHC3' ), ipe15(14))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XHC3' ), ipy13(14))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XHC3' ), ite10(14))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH2C3' ), ihe20(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_HEXA20_XH3C3' ), ihe20(16))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C3' ), ipe15(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PENTA15_XH2C3' ), ipe15(16))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH2C3' ), ipy13(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_PYRAM13_XH3C3' ), ipy13(16))
+
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH2C3' ), ite10(15))
+    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_TETRA10_XH3C3' ), ite10(16))
+
 ! ------------------------------------------------------------------
 !
 !     ELEMENT PRINCIPAUX AXIS QUADRATIQUES
@@ -433,19 +499,16 @@ subroutine xmolig(liel1, trav)
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPSE3_XH1' ), iphm(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPSE3_XH2' ), iphm(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPSE3_XH3' ), iphm(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_DPSE3_XH4' ), iphm(10))
 ! ------------------------------------------------------------------
 ! AJOUT DES ELEMENTS DE BORD 3D HM-XFEM
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE8_XH' ), ibhm(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE8_XH1' ), ibhm(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE8_XH2' ), ibhm(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE8_XH3' ), ibhm(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE8_XH4' ), ibhm(10))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE6_XH' ), ichm(1))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE6_XH1' ), ichm(7))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE6_XH2' ), ichm(8))
     call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE6_XH3' ), ichm(9))
-    call jenonu(jexnom('&CATA.TE.NOMTE', 'HM_FACE6_XH4' ), ichm(10))
 ! ------------------------------------------------------------------
 !
 !     ELEMENT DE BORD AXIS LINEAIRES

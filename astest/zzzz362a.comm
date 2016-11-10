@@ -30,6 +30,8 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
 #  - MECANIQUE / 3D
 #  - MECANIQUE / 3D / avec contact
 #  - THERMIQUE / 3D
+#  - MECANIQUE / 3D_HM
+#  - MECANIQUE / 3D_HM / avec contact
 #
 # ###################################################
 # ###################################################
@@ -348,18 +350,26 @@ MQMEX = MODI_MODELE_XFEM(MODELE_IN = MQMES,
 MQHMX = MODI_MODELE_XFEM(MODELE_IN = MQHMS,
                          FISSURE  = INTEQU,)
 
+# MQHMX : Modele Quadratique Hydro-Mecanique Xfem avec contact
+MQHMXC = MODI_MODELE_XFEM(MODELE_IN = MQHMS,
+                          FISSURE  = INTEQU,
+                          CONTACT='STANDARD',)
+
 # ###################################################
 # Impression du contenu des modeles xfem obtenus :
 # ###################################################
 
 DEFI_FICHIER(UNITE=31, FICHIER='./fort.31')
 DEFI_FICHIER(UNITE=32, FICHIER='./fort.32')
+DEFI_FICHIER(UNITE=33, FICHIER='./fort.33')
 
 IMPR_CO(UNITE=31,CONCEPT=_F(NOM=MQMEX),NIVEAU=-1,PERMUTATION='NON',)
 IMPR_CO(UNITE=32,CONCEPT=_F(NOM=MQHMX),NIVEAU=-1,PERMUTATION='NON',)
+IMPR_CO(UNITE=33,CONCEPT=_F(NOM=MQHMXC),NIVEAU=-1,PERMUTATION='NON',)
 
 DEFI_FICHIER(ACTION='LIBERER',UNITE=31)
 DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
+DEFI_FICHIER(ACTION='LIBERER',UNITE=33)
 
 # ###################################################
 # "Post-traitements" des fichiers obtenus avec IMPR_CO
@@ -367,15 +377,19 @@ DEFI_FICHIER(ACTION='LIBERER',UNITE=32)
 
 File31 = open('./fort.31', "r")
 File32 = open('./fort.32', "r")
+File33 = open('./fort.33', "r")
 
 LinesFile31 = File31.readlines()
 LinesFile32 = File32.readlines()
+LinesFile33 = File33.readlines()
 
 File31.close()
 File32.close()
+File33.close()
 
 ListQMEX = [] # 31 <-> MQMEX
 ListQHMX = [] # 32 <-> MQHMX
+ListQHMXC = [] # 33 <-> MQHMXC
 
 # 31 <-> ListQMEX / MQMEX
 nommo  = 'MQMEX'
@@ -400,6 +414,18 @@ for line in LinesFile32:
     # on remplace le nom du modele par 8 " "
     lsplit[1] = lsplit[1].replace(nommo," "*8)
     ListQHMX.append(lsplit)
+
+# 33 <-> ListQHMXC / MQHMXC
+nommo  = 'MQHMXC'
+nommo += (8-len(nommo))*" "
+for line in LinesFile33:
+  if ('TOPOFAC' in line) and ('.CELV' in line) or \
+     ('TOPOSE'  in line) and ('.CELV' in line) :
+    lsplit = line.split("|")
+    assert nommo in lsplit[1]
+    # on remplace le nom du modele par 8 " "
+    lsplit[1] = lsplit[1].replace(nommo," "*8)
+    ListQHMXC.append(lsplit)
 
 ## pour debug
 #assert len(ListQMEX) == len(ListQHMX)
@@ -449,5 +475,29 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE_I=1,
            NOM_PARA='BOOLEEN',
            TABLE=TARESUM3,)
+
+# TABTAIL4 -> entre MQMEX et MQHMXC
+nobj_ok = 0
+if (len(ListQMEX) > 0) and (len(ListQMEX) == len(ListQHMXC)) : nobj_ok = 1
+TABTAIL4 = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [nobj_ok], PARA = 'BOOLEEN'),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TABTAIL4,)
+
+# TARESUM5 -> entre MQMEX et MQHMXC
+vale_ok = 0
+if (ListQMEX != []) and (ListQMEX == ListQHMXC) : vale_ok = 1
+TARESUM4 = CREA_TABLE(TITRE = '',
+                      LISTE = _F( LISTE_I = [vale_ok], PARA = 'BOOLEEN'),)
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_I=1,
+           VALE_REFE_I=1,
+           NOM_PARA='BOOLEEN',
+           TABLE=TARESUM4,)
 
 FIN()

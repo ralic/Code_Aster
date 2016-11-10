@@ -29,8 +29,6 @@ import cataelem.Commons.attributes as AT
 
 PLST     = InputParameter(phys=PHY.NEUT_R)
 
-PLSN     = InputParameter(phys=PHY.NEUT_R)
-
 PPINTER  = InputParameter(phys=PHY.N816_R)
 
 
@@ -60,9 +58,6 @@ PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELEM')
 
 PBASLOR  = InputParameter(phys=PHY.NEUT_R)
 
-PSTANO = InputParameter(phys=PHY.N120_I,
-                        comment=""" XFEM """)
-
 PBASLOC  = InputParameter(phys=PHY.N480_R)
 
 PLSNGG     = InputParameter(phys=PHY.NEUT_R,
@@ -71,6 +66,18 @@ comment=""" XFEM """)
 # Attention : les champs PINDCOO, PINDMEM, PINDCOT et PCOHESO
 # sont des champs a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
+
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment=""" UTILE POUR HM-XFEM """)
+
+
+PSTANO   = InputParameter(phys=PHY.N120_I,
+comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
+
+
+PLSN     = InputParameter(phys=PHY.NEUT_R,
+comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
+
 
 XCVBCA = Option(
     para_in=(
@@ -81,6 +88,7 @@ XCVBCA = Option(
            PCFACE,
         SP.PCOHES,
         SP.PDEPL_P,
+        SP.PDEPL_M,
         SP.PDONCO,
            PFISNO,
         SP.PGEOMER,
@@ -91,6 +99,8 @@ XCVBCA = Option(
         SP.PINDCOI,
            PLONGCO,
            PLST,
+           PCOMPOR,
+        SP.PFISCO,
         SP.PMATERC,
         SP.PMEMCON,
            PPINTER,

@@ -1,6 +1,6 @@
 subroutine nmelcm(phase    , mesh     , model    , mate     , ds_contact    ,&
                   disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                  matr_elem)
+                  matr_elem, time_prev, time_curr, ds_constitutive, list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -14,6 +14,7 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -50,6 +51,10 @@ implicit none
     character(len=19), intent(in) :: vite_curr
     character(len=19), intent(in) :: disp_cumu_inst
     character(len=19), intent(out) :: matr_elem
+    character(len=19), intent(in) :: time_prev
+    character(len=19), intent(in) :: time_curr
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,13 +74,17 @@ implicit none
 ! In  vite_curr        : speed at current time
 ! In  acce_prev        : acceleration at beginning of current time
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
+! In  time_prev        : previous time
+! In  time_curr        : current time
+! In  ds_constitutive  : datastructure for constitutive laws management
+! In  list_func_acti   : list of active functionnalitie
 ! Out matr_elem        : elementary matrix
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer, parameter :: nbout = 3
-    integer, parameter :: nbin  = 30
+    integer, parameter :: nbin  = 35
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1) :: base
@@ -83,7 +92,7 @@ implicit none
     character(len=19) :: xcohes, ccohes
     character(len=16) :: option
     aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
-    aster_logical :: l_cont_pena, l_all_verif, l_xfem_czm
+    aster_logical :: l_cont_pena, l_all_verif, l_xfem_czm    , l_xthm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,6 +112,7 @@ implicit none
     l_cont_pena    = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
     l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
     l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    l_xthm         = isfonc(list_func_acti,'THM')
     
     if (.not.l_all_verif) then
 !
@@ -123,7 +133,8 @@ implicit none
                          mesh     , model    , mate     , ds_contact,&
                          disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                          nbin     , lpain    , lchin    ,&
-                         option   , ccohes   , xcohes)
+                         option   , list_func_acti, time_prev, time_curr , ds_constitutive,&
+                         ccohes   , xcohes)
 !
 ! ----- <LIGREL> for contact elements
 !
@@ -141,10 +152,15 @@ implicit none
         lpaout(1) = 'PMATUNS'
         lchout(1) = matr_elem(1:15)//'.M01'
 
-        lpaout(2) = 'PMATUUR'
-        lchout(2) = matr_elem(1:15)//'.M02'
+        if (l_xthm) then
+           lpaout(2) = 'PCOHESO'
+           lchout(2) = ccohes
+        else
+           lpaout(2) = 'PMATUUR'
+           lchout(2) = matr_elem(1:15)//'.M02'
+        endif
 
-        if (phase .eq. 'CONT' .and. l_xfem_czm) then
+        if (phase .eq. 'CONT' .and. l_xfem_czm .and. .not.l_xthm) then
            lpaout(3) = 'PCOHESO'
            lchout(3) = ccohes
         endif
@@ -160,7 +176,11 @@ implicit none
         call reajre(matr_elem, lchout(1), base)
         call reajre(matr_elem, lchout(2), base)
         if (l_xfem_czm .and. phase .eq. 'CONT') then
-            call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
+           if (l_xthm) then
+              call copisd('CHAMP_GD', 'V', lchout(2), xcohes)
+           else
+              call copisd('CHAMP_GD', 'V', lchout(3), xcohes)
+           endif
         endif
     endif
 !

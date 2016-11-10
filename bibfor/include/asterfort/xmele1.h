@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine xmele1(mesh  , model, ds_contact, ligrel, nfiss,&
-                      chelem, param, option)
+                      chelem, param, option    , list_func_acti)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
@@ -27,5 +27,6 @@ interface
         character(len=19), intent(in) :: ligrel
         character(len=*), intent(in) :: param
         character(len=*), intent(in) :: option
+        integer, intent(in) :: list_func_acti(*)
     end subroutine xmele1
 end interface

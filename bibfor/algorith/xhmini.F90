@@ -1,8 +1,7 @@
-subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
+subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
 !
     implicit none
 !
-#   include "asterfort/assert.h"
 #   include "asterfort/elref1.h"
 #   include "asterfort/elrefe_info.h"
 #   include "asterfort/teattr.h"
@@ -10,11 +9,11 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
 #   include "jeveux.h"
 !
     character(len=16) :: nomte
-    integer :: nfh, ddlm, ddlp
-    integer :: nfiss
+    integer :: nfh, ddlm, ddlp, ddlc
+    integer :: nfiss, contac
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,8 +39,10 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
 ! OUT  DDLD   : NOMBRE DE DDL (DEPL) A CHAQUE NOEUD SOMMET
 ! OUT  DDLM   : NOMBRE DE DDL (DEPL) A CHAQUE NOEUD MILIEU
 ! OUT  DDLP   : NOMBRE DE DDL (PRES) A CHAQUE NOEUD SOMMET
+! OUT  DDLC   : NOMBRE DE DDL POUR LE CONTACT (SOMMET UNIQUEMENT)
+! OUT  CONTAC : =3 POUR CONTACT P2P1 (PAS DE P1P1 EN HM-XFEM)
 ! OUT  NFISS  : NOMBRE DE FISSURES
-! OUT  NFFH   : NOMBRE DE DDL HEAVISIDE PAR NOEUD
+! OUT  NFH    : NOMBRE DE DDL HEAVISIDE PAR NOEUD
 !     ------------------------------------------------------------------
 !
     integer :: ndim, nnop, ier, nnops
@@ -59,22 +60,38 @@ subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
     ddlm = 0
     ddld = 0
     ddlp = 0
+    ddlc = 0
+    contac=0 
     nfiss = 1
 !
     call teattr('S', 'XFEM', enr, ier, typel=nomte)
 !
 ! --- DDL ENRICHISSEMENT : HEAVYSIDE
 !
-    if (enr(1:2) .eq. 'XH') then
+    if (enr(1:2).eq.'XH') then
         nfh = 1
         if (enr(1:3) .eq. 'XH2') nfh = 2
         if (enr(1:3) .eq. 'XH3') nfh = 3
-        if (enr(1:3) .eq. 'XH4') nfh = 4
 !       NOMBRE DE FISSURES
         call tecach('NOO', 'PLST', 'L', iret, nval=7,&
                     itab=jtab)
         nfiss = jtab(7)
     endif
+    
+! --- NOMBRE DE DDL POUR LE CONTACT: PRE_FLU, LAG_FLI, LAG_FLS 
+!     LAG1_HM ET LAG2_HM ET INDICATION DU CONTACT: P2P1 
+!     
+    if (enr(3:3).eq.'C' .or. enr(4:4).eq.'C') then 
+! --- CONTACT MORTAR
+       if (enr(4:4).eq.'3'.or.enr(5:5).eq.'3') then
+          ddlc = (1+1+1+3*ndim)*nfh
+          contac=2
+! --- CONTACT COHESIF
+       else
+          ddlc = (1+1+1+ndim)*nfh
+          contac=3
+       endif
+    endif  
 !
 ! --- NOMBRE DE DDL AUX NOEUDS SOMMETS (MECANIQUES)
 !

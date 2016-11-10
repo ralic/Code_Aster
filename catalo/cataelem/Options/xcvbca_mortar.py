@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,6 +52,30 @@ PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
 # sont des champs a sous-points
 # pour les elements de contact XFEM (xhc,xhtc,xtc)
 
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment=""" UTILE POUR HM-XFEM """)
+
+
+PSTANO   = InputParameter(phys=PHY.N120_I,
+comment=""" XFEM - STATUT DES NOEUDS (ENRICHISSEMENT) """)
+
+
+PLSN     = InputParameter(phys=PHY.NEUT_R,
+comment=""" XFEM - VALEURS DE LA LEVEL SET NORMALE """)
+
+
+PFISNO   = InputParameter(phys=PHY.NEUT_I,
+comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+
+
+PHEA_FA  = InputParameter(phys=PHY.N240_I,
+comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """)
+
+
+PHEA_NO  = InputParameter(phys=PHY.N120_I,
+comment="""  XFEM - IDENTIFIANT HEAVISIDE AU NOEUD XFEM  """)
+
+
 XCVBCA_MORTAR = Option(
     para_in=(
            PAINTER,
@@ -59,12 +83,21 @@ XCVBCA_MORTAR = Option(
            PCFACE,
         SP.PCOHES,
         SP.PDEPL_P,
+        SP.PDEPL_M,
         SP.PDONCO,
         SP.PGEOMER,
         SP.PGLISS,
         SP.PINDCOI,
            PLONGCO,
            PLST,
+           PLSN,
+           PCOMPOR,
+           PSTANO,
+           PFISNO,
+        SP.PHEAVNO,
+        SP.PFISCO,
+           PHEA_FA,
+           PHEA_NO,
         SP.PMATERC,
         SP.PMEMCON,
            PPINTER,

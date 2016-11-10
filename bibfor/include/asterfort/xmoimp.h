@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -70,32 +70,32 @@ interface
         integer :: ntf3(7)
         integer :: ntpf2(7)
         integer :: ntax2(7)
-        integer :: nhyq8(11)
-        integer :: nhyt6(11)
+        integer :: nhyq8(17)
+        integer :: nhyt6(17)
         integer :: nhymq8(7)
         integer :: nhymt6(7)
         integer :: nhysq8(7)
         integer :: nhyst6(7)
         integer :: nhydq8(7)
         integer :: nhydt6(7)
-        integer :: nphm(11)
-        integer :: nhe20(11)
+        integer :: nphm(17)
+        integer :: nhe20(17)
         integer :: nhem20(7)
         integer :: nhed20(7)
         integer :: nhes20(7)
-        integer :: npe15(11)
+        integer :: npe15(17)
         integer :: npem15(7)
         integer :: npes15(7)
         integer :: nped15(7)
-        integer :: npy13(11)
+        integer :: npy13(17)
         integer :: npym13(7)
         integer :: npys13(7)
         integer :: npyd13(7)
-        integer :: nte10(11)
+        integer :: nte10(17)
         integer :: ntem10(7)
         integer :: ntes10(7)
         integer :: nted10(7)
-        integer :: nbhm(11)
-        integer :: nchm(11)
+        integer :: nbhm(17)
+        integer :: nchm(17)
     end subroutine xmoimp
 end interface 

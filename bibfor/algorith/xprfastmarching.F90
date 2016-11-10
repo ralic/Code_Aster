@@ -1,7 +1,7 @@
 subroutine xprfastmarching(cmnd, noma, fispre, cnxinv, noesom,&
                            lcmin, cnsln, grln, cnslt, grlt,&
                            isozro, nodtor,eletor, liggrd,&
-                           vpoint, cnsbl ,deltat ,cnsbet ,listp )
+                           vpoint, cnsbl ,deltat ,cnsbet ,listp)
 
    implicit none
 !
@@ -41,7 +41,7 @@ subroutine xprfastmarching(cmnd, noma, fispre, cnxinv, noesom,&
     real(kind=8)      :: deltat
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -305,7 +305,6 @@ subroutine xprfastmarching(cmnd, noma, fispre, cnxinv, noesom,&
     call cescns(chams, ' ', 'V', grls, ' ',&
                 ibid)
     call jeveuo(grls//'.CNSV', 'E', jgrls)
-
 !  DESTRUCTION DES OBJETS VOLATILES
     call jedetr(copiels)
     call jedetr(vtemp)

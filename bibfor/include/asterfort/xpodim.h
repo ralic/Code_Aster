@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,7 +23,7 @@ interface
                       ces1, ces2, cel2, cesvi1, cesvi2,&
                       ior, resuco, nbnoc, nbmac, logrma,&
                       dirgrm, maxfem, ngfon, comps1, comps2,&
-                      pre1)
+                      pre1, mo)
         character(len=8) :: malini
         character(len=24) :: mailc
         character(len=8) :: modvis
@@ -50,5 +50,6 @@ interface
         character(len=19) :: comps1
         character(len=19) :: comps2
         aster_logical :: pre1
+        character(len=8) :: mo
     end subroutine xpodim
 end interface 

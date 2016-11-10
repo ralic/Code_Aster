@@ -75,7 +75,7 @@ subroutine te0036(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, ipres, itemps, ires, j
     integer :: nfh, nfe, nse, ise
     integer :: in, ino, iadzi, iazk24, jstno
-    integer :: iforc, iret, ig, pos, ndime, nddl, ddls
+    integer :: iforc, iret, ig, pos, ndime, nddl, ddls, contac
     real(kind=8) :: xg(4), r
     real(kind=8) :: pres, ff(27), coorse(18), cosa, sina
     real(kind=8) :: nd(3), norme, rb1(3), rb2(3), cisa
@@ -130,18 +130,18 @@ subroutine te0036(option, nomte)
     nfh = 0
     nfiss = 1
     call teattr('S', 'XFEM', enr, ier)
-    if (enr(1:2) .eq. 'XH') then
+    if (enr(1:2).eq.'XH') then
 ! --- NOMBRE DE FISSURES
         call tecach('NOO', 'PHEAVTO', 'L', iret, nval=7,&
                     itab=jtab)
         ncomp = jtab(2)
         nfiss = jtab(7)
         nfh = 1
-        if (enr .eq. 'XH2') then
+        if (enr(1:3) .eq. 'XH2') then
            nfh = 2
-        else if (enr .eq. 'XH3') then
+        else if (enr(1:3) .eq. 'XH3') then
            nfh = 3
-        else if (enr .eq. 'XH4') then
+        else if (enr(1:3) .eq. 'XH4') then
            nfh = 4
         endif
     endif
@@ -474,12 +474,13 @@ subroutine te0036(option, nomte)
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     if (pre1) then
-       ddls = ndim*(1+nfh+nfe)+(1+nfh)
-       ddlm = ndim*(1+nfh+nfe)
+       ddls = ndim*(1+nfh)+(1+nfh)
+       ddlm = ndim*(1+nfh)
        nnopm= nnop-nnops
        nddl = nnops*ddls + nnopm*ddlm
+       contac = 0
        call xhmddl(ndim, nfh, ddls, nddl, nnop, nnops, zi(jstno),.false._1,&
-                   option, nomte, rbid, zr(ires), ddlm, nfiss, jfisno)
+                   option, nomte, rbid, zr(ires), ddlm, nfiss, jfisno, .false._1, contac)
     else
        ddls = ndim*(1+nfh+nfe)
        nddl = nnop*ddls

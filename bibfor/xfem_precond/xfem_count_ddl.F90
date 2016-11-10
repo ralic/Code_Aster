@@ -53,7 +53,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
     integer :: ieq, nuno, nucmp, j
     integer :: ipos
     integer :: ddlmax
-    parameter (ddlmax=27)
+    parameter (ddlmax=52)
 !
 !   REMARQUE: ON A AU PLUS 27 DDLS POUR UN ELEMENT XFEM (cf. 3D_XHHC)
 !-----------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
        ipos=neq_mloc(ino_xfem(nuno))+1
        ieq_loc(ieq)=ipos
        neq_mloc(ino_xfem(nuno))=ipos
-20  enddo
+ 20  continue
 !
     maxi_ddl=0
     do j=1,nbnoxfem

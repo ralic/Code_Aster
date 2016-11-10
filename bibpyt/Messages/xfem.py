@@ -223,6 +223,10 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
      Utiliser la méthode UPWIND ou effectuer le calcul sur le maillage physique.    
 """),
 
+    28: _(u"""
+     Les flux de fluide dans les fractures ne sont autorisés que pour les modélisations HM-XFEM.
+"""),
+
     29: _(u"""
      Nombre de mailles contenant le fond de fissure : %(i1)d
 """),
@@ -308,7 +312,8 @@ Le calcul de la norme L2 de la pression de contact sur une fissure XFEM n'est pa
 
     43: _(u"""
       Le contact autre que P1P1 est actif et la maille %(k1)s est connectée à 2 fissures,
-      le multi-Heaviside ne peut pas être pris en compte si le contact autre que P1P1 est utilisé.
+      à l'exception des modélisations HM-XFEM, le multi-Heaviside ne peut pas être pris
+      en compte si le contact autre que P1P1 est utilisé.
       Pour ne pas activer le multi-Heaviside, les fissures doivent être séparées de 2 mailles
       minimum. Veuillez raffiner le maillage entre les fissures (ou écarter les fissures).
 """),
@@ -583,8 +588,7 @@ Utilisez ELIM_ARETE='DUAL'.
 """),
 
     78: _(u"""
-  -> Erreur, pour une modélisation %(k1)s, on ne peut définir que des interfaces,
-     l'introduction de fissures dans le modèle n'est pas possible.
+  -> Erreur, pour une modélisation %(k1)s, l'introduction de fissures dans le modèle n'est pas possible.
 
 """),
 

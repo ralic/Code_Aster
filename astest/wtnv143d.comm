@@ -198,7 +198,7 @@ RES_X1=POST_CHAM_XFEM(MODELE_VISU = MOD_VISU,
                      );
 
 # IMPR_RESU(FORMAT='GMSH',UNITE=82,RESU=_F(RESULTAT=RES_X1,));
-IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_X1,));
+#IMPR_RESU(FORMAT='MED',RESU=_F(RESULTAT=RES_X1,));
 
 # -------------------------------------------------------------   
 #            TEST_TABLE

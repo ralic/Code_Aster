@@ -1,36 +1,33 @@
 subroutine te0588(option, nomte)
     implicit none
-#include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/epsthm.h"
-#include "asterfort/eulnau.h"
-#include "asterc/r8dgrd.h"
-#include "asterfort/elref1.h"
-#include "asterfort/iselli.h"
-#include "asterc/ismaem.h"
-#include "asterfort/jevech.h"
-#include "asterfort/naueul.h"
-#include "asterfort/posthm.h"
-#include "asterfort/rcangm.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/refthm.h"
-#include "asterfort/teattr.h"
-#include "asterfort/tecach.h"
-#include "asterfort/vecini.h"
-#include "asterfort/xasshm.h"
-#include "asterfort/xcaehm.h"
-#include "asterfort/xfnohm.h"
-#include "asterfort/xhmddl.h"
-#include "asterfort/xhmini.h"
-#include "asterfort/xpeshm.h"
-#include "jeveux.h"
+#   include "asterf_types.h"
+#   include "asterfort/assert.h"
+#   include "asterfort/eulnau.h"
+#   include "asterc/r8dgrd.h"
+#   include "asterfort/elref1.h"
+#   include "asterfort/iselli.h"
+#   include "asterc/ismaem.h"
+#   include "asterfort/jevech.h"
+#   include "asterfort/naueul.h"
+#   include "asterfort/rcangm.h"
+#   include "asterfort/rccoma.h"
+#   include "asterfort/rcvalb.h"
+#   include "asterfort/teattr.h"
+#   include "asterfort/tecach.h"
+#   include "asterfort/vecini.h"
+#   include "asterfort/xasshm.h"
+#   include "asterfort/xcaehm.h"
+#   include "asterfort/xfnohm.h"
+#   include "asterfort/xhmddl.h"
+#   include "asterfort/xhmini.h"
+#   include "asterfort/xpeshm.h"
+#   include "jeveux.h"
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! =====================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! =====================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,37 +48,29 @@ subroutine te0588(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
-    integer :: jgano, nno, imatuu, ndim, imate, iinstm, jcret
-    integer :: ipoid2, ivf2, dimmat
-    integer :: idfde2, npi, npg, nvim
-!
-    integer :: retloi, iret, iretp, iretm
-    integer :: ipoids, ivf, idfde, igeom, idefo
-    integer :: iinstp, ideplm, ideplp, idepla, icompo, icarcr, ipesa
+    integer :: nno, imatuu, ndim, imate, iinstm, jcret
+    integer :: dimmat, npi, npg, li, ibid, yaenrm
+    integer :: retloi, iretp, iretm, icodre(1)
+    integer :: ipoids, ivf, idfde, igeom, idim
+    integer :: iinstp, ideplm, ideplp, icompo, icarcr, ipesa
     integer :: icontm, ivarip, ivarim, ivectu, icontp
-! =====================================================================
-! =====================================================================
     integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
     integer :: dimdef, dimcon, nbvari, nddls, nddlm
-    integer :: nmec, np1, np2, i, ncmp, nnos, ichg, ichn
-    integer :: jtab(7), igau, isig, nnom
+    integer :: nmec, np1, np2, i, nnos
+    integer :: nnom
     real(kind=8) :: defgep(13), defgem(13)
-    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(29, 20*8)
-    real(kind=8) :: drds(29, 11+5), drdsr(29, 11+5), dsde(11+5, 29)
-    real(kind=8) :: r(29), sigbar(29), c(29), ck(29), cs(29)
-    real(kind=8) :: epsm(405)
+    real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(25, 52*20)
+    real(kind=8) :: drds(25, 11+5), drdsr(25, 11+5), dsde(11+5, 25)
+    real(kind=8) :: r(25), sigbar(25), c(25), ck(25), cs(25)
     real(kind=8) :: angmas(7), coor(3), angnau(3), angleu(3)
     character(len=3) :: modint
     character(len=8) :: typmod(2)
     character(len=16) :: phenom, elref
-! =====================================================================
-    integer :: li, ibid, yaenrm, idim
-    real(kind=8) :: rho(1), rbid(100)
-    integer :: icodre(1)
-    aster_logical :: axi, perman
+    real(kind=8) :: rho(1), rbid(1)
+    aster_logical :: axi, perman, fnoevo
 ! =====================================================================
 !  CETTE ROUTINE FAIT UN CALCUL EN HM AVEC XFEM
-!  29 = (9 DEF MECA) + (12 DEF HEAV MECA) + 4 POUR P1 + 4 pour P1 HEAV
+!  25 = (9 DEF MECA) + (9 DEF HEAV MECA) + 4 POUR P1 + 3 pour P1 HEAV
 !  16 = 12 MECA + 4 POUR P1
 ! =====================================================================
 !  POUR LES TABLEAUX DEFGEP ET DEFGEM ON A DANS L'ORDRE :
@@ -91,8 +80,8 @@ subroutine te0588(option, nomte)
 !                                      PRE1 P1DX P1DY P1DZ
 !                                      (PARTIE ENRICHIE)
 !                                      H1X  H1Y H1Z  H2X  H2Y  H2Z
-!                                      H3X  H3Y H3Z  H4X  H4Y  H4Z
-!                                      H1PRE1  H2PRE1  H3PRE1  H4PRE1
+!                                      H3X  H3Y H3Z
+!                                      H1PRE1  H2PRE1  H3PRE1
 !            EPSXY = RAC2/2*(DU/DY+DV/DX)
 ! =====================================================================
 !    POUR LES CHAMPS DE CONTRAINTE
@@ -129,16 +118,15 @@ subroutine te0588(option, nomte)
 ! DIMDEF    DIMENSION DES DEFORMATIONS GENERALISEES ELEMENTAIRES
 ! IVF       FONCTIONS DE FORMES QUADRATIQUES
 ! =====================================================================
-    aster_logical :: fnoevo
     real(kind=8) :: dt
 ! =====================================================================
 ! DECLARATION POUR XFEM
 !
-    integer :: nfh, nfiss, jfisno
+    integer :: nfh, nfiss, jfisno, ddlc, contac
     integer :: ddld, ddlm, ddlp, nnop, nnops, nnopm
     integer :: enrmec(3), nenr, dimenr, enrhyd(3)
     integer :: jpintt, jcnset, jheavt, jpmilt, jheavn
-    integer :: jlonch, jbaslo, jlst, jstno
+    integer :: jlonch, jlst, jstno
     character(len=8) :: enr
 ! =====================================================================
 ! --- 1. INITIALISATIONS ----------------------------------------------
@@ -149,14 +137,14 @@ subroutine te0588(option, nomte)
 ! =====================================================================
 ! INITIALISATION POUR XFEM
 !
-    call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss)
+    call xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
     call xcaehm(nomte, axi, perman, typmod, modint,&
                 mecani, press1, press2, tempe, dimdef,&
                 dimcon, nmec, np1, np2, ndim,&
                 nno, nnos, nnom, npi, npg,&
                 nddls, nddlm, dimuel, ipoids, ivf,&
                 idfde, ddld, ddlm, ddlp, enrmec, nenr,&
-                dimenr, nnop, nnops, nnopm, enrhyd, nfh)
+                dimenr, nnop, nnops, nnopm, enrhyd, ddlc, nfh)
 ! =====================================================================
 ! --- PARAMETRES PROPRES A XFEM ---------------------------------------
 ! =====================================================================
@@ -164,7 +152,6 @@ subroutine te0588(option, nomte)
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)
     call jevech('PLONCHA', 'L', jlonch)
-    call jevech('PBASLOR', 'L', jbaslo)
     call jevech('PLST', 'L', jlst)
     call jevech('PSTANO', 'L', jstno)
     call elref1(elref)
@@ -298,7 +285,7 @@ subroutine te0588(option, nomte)
 ! =====================================================================
         call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, zr(imatuu),&
-                    zr(ivectu), nddlm, nfiss, jfisno)
+                    zr(ivectu), nddlm, nfiss, jfisno, .false._1, contac)
     endif
 ! =====================================================================
 ! --- 3. OPTION : CHAR_MECA_PESA_R ------------------------------------
@@ -327,7 +314,7 @@ subroutine te0588(option, nomte)
 ! =====================================================================
         call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, rbid,&
-                    zr(ivectu), nddlm, nfiss, jfisno)
+                    zr(ivectu), nddlm, nfiss, jfisno, .false._1, contac)
     endif
 ! ======================================================================
 ! --- 4. OPTION : FORC_NODA --------------------------------------------
@@ -372,89 +359,6 @@ subroutine te0588(option, nomte)
 ! =====================================================================
         call xhmddl(ndim, nfh, nddls, dimuel, nnop, nnops,&
                     zi(jstno), .false._1, option, nomte, rbid,&
-                    zr(ivectu), nddlm, nfiss, jfisno)
+                    zr(ivectu), nddlm, nfiss, jfisno, .false._1, contac)
     endif
-! ======================================================================
-! --- 6. OPTION : REFE_FORC_NODA ---------------------------------------
-! ======================================================================
-    if (option .eq. 'REFE_FORC_NODA') then
-! ======================================================================
-! --- ON RAPPELLE QUE LES PARAMETRES DU CRITERE DE CONVERGENCE SONT ----
-! --- STOCKES DE LA FACON SUIVANTE : (1) : SIGM_REFE -------------------
-! ---------------------------------- (3) : FLUX_THER_REFE --------------
-! ---------------------------------- (4) : FLUX_HYD1_REFE --------------
-! ---------------------------------- (5) : FLUX_HYD2_REFE --------------
-! ======================================================================
-! --- INITIALISATION ---------------------------------------------------
-! ======================================================================
-        dt = 1.0d0
-        fnoevo = .true.
-! ======================================================================
-! --- PARAMETRES EN ENTREE ---------------------------------------------
-! ======================================================================
-        call jevech('PGEOMER', 'L', igeom)
-        call jevech('PMATERC', 'L', imate)
-! ======================================================================
-! --- PARAMETRES EN SORTIE ---------------------------------------------
-! ======================================================================
-        call jevech('PVECTUR', 'E', ivectu)
-! ======================================================================
-! --- APPEL A LA ROUTINE SUR LES CRITERES DE CONVERGENCE ---------------
-! ======================================================================
-        call refthm(fnoevo, dt, perman, nno, nnos,&
-                    nnom, npi, npg, ipoids, ipoid2,&
-                    ivf, ivf2, idfde, idfde2, zr(igeom),&
-                    b, dfdi, dfdi2, r, zr( ivectu),&
-                    zi(imate), mecani, press1, press2, tempe,&
-                    dimdef, dimcon, dimuel, nddls, nddlm,&
-                    nmec, np1, np2, ndim, axi)
-    endif
-! ======================================================================
-! --- 7. OPTION : SIEF_ELNO --------------------------------------------
-! ======================================================================
-    if (option .eq. 'SIEF_ELNO  ') then
-        ncmp = dimcon
-        call jevech('PCONTRR', 'L', ichg)
-        call jevech('PSIEFNOR', 'E', ichn)
-        nvim = mecani(5)
-        call posthm(option, modint, jgano, ncmp, nvim,&
-                    zr(ichg), zr(ichn))
-    endif
-! ======================================================================
-! --- 8. OPTION : VARI_ELNO --------------------------------------------
-! ======================================================================
-    if (option .eq. 'VARI_ELNO  ') then
-        call jevech('PVARIGR', 'L', ichg)
-        call jevech('PVARINR', 'E', ichn)
-!
-        call jevech('PCOMPOR', 'L', icompo)
-        read (zk16(icompo+1),'(I16)') ncmp
-        read (zk16(icompo-1+7+9+4),'(I16)') nvim
-        call tecach('OOO', 'PVARIGR', 'L', iret, nval=7,&
-                    itab=jtab)
-!
-        call posthm(option, modint, jgano, ncmp, nvim,&
-                    zr(ichg), zr(ichn))
-    endif
-! ======================================================================
-! --- 9. OPTION : EPSI_ELGA --------------------------------------------
-! ======================================================================
-    if (option .eq. 'EPSI_ELGA') then
-        call jevech('PGEOMER', 'L', igeom)
-        call jevech('PDEPLAR', 'L', idepla)
-        call jevech('PDEFOPG', 'E', idefo)
-        call epsthm(nddls, nddlm, nno, nnos, nnom,&
-                    nmec, dimdef, dimuel, ndim, npi,&
-                    ipoids, ipoid2, ivf, ivf2, idfde,&
-                    idfde2, dfdi, dfdi2, b, zr(igeom),&
-                    zr(idepla), mecani, press1, press2, tempe,&
-                    np1, np2, axi, epsm)
-!
-        do 200 igau = 1, npi
-            do 210 isig = 1, 6
-                zr(idefo+6*(igau-1)+isig-1) = epsm(6*(igau-1)+isig)
-210         continue
-200     continue
-    endif
-! ======================================================================
 end subroutine

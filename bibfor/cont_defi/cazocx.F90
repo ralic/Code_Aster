@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -225,7 +225,7 @@ implicit none
         v_sdcont_caraxf(zcmxf*(i_zone-1)+9) = 2.d0
     else if (s_algo_lagr.eq.'VERSION3') then
 !       Algorithme uniquement disponible pour des éléments quadratiques
-        if (v_xfem_cont(1).ne.3) call utmess('F', 'XFEM_90')
+        if (v_xfem_cont(1).eq.1) call utmess('F', 'XFEM_90')
 !       Algorithme uniquement disponible en petits glissements
         if (l_xfem_gg) call utmess('F', 'XFEM_91')
 

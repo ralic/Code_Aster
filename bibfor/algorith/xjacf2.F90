@@ -1,8 +1,7 @@
 subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                   jinter, ifa, cface, nptf, ipg,&
-                  nnop, igeom, jbasec,xg, jac,&
-                  ffp, ffpc, dfdi, nd, tau1,&
-                  ifiss, ncompp, ncompb)
+                  nnop, nnops, igeom, jbasec,xg, jac,&
+                  ffp, ffpc, dfdi, nd, tau1, dfdic)
     implicit none
 !
 #include "asterf_types.h"
@@ -16,15 +15,15 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 #include "asterfort/reeref.h"
 #include "asterfort/vecini.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim
+    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim, nnops
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
     real(kind=8) :: nd(3), tau1(3), xg(3)
     character(len=8) :: elrefp, fpg, elc, elrefc
-    integer, intent(in), optional :: ifiss, ncompp, ncompb
+    real(kind=8), intent(out), optional :: dfdic(nnops,3)
 !
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,11 +99,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     end do
     do i = 1, nptf
         do j = 1, ndim
-            if (present(ifiss)) then
-               coor2d((i-1)*ndim+j)=zr(jinter-1+ncompp*(ifiss-1)+ndim*(cface(ifa,i)-1)+j)
-            else
-               coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
-            endif
+            coor2d((i-1)*ndim+j)=zr(jinter-1+ndim*(cface(ifa,i)-1)+j)
         end do
     end do
 !
@@ -127,17 +122,10 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
     nd(2) = -sina
     do j = 1, ndim
         do k = 1, nno
-            if (present(ifiss)) then
-               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j)
-               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                         (ifiss-1)*ncompb+ndim*ndim*(k-1)+j+ndim)
-            else
-               grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                         ndim*ndim*(k-1)+j)
-               grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
-                         ndim*ndim*(k-1)+j+ndim)
-            endif
+            grln(j) = grln(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                      ndim*ndim*(k-1)+j)
+            grlt(j) = grlt(j) + zr(ivff-1+nno*(ipg-1)+k)*zr(jbasec-1+&
+                      ndim*ndim*(k-1)+j+ndim)
         end do
     end do
 !
@@ -175,7 +163,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg,&
 !     CALCUL DES FF DE L'ÉLÉMENT DE CONTACT EN CE POINT DE GAUSS
     call elelin(3, elrefc, k8bid, nnoc, ibid)
 !
-    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc)
+    call reeref(elrefc, nnoc, zr(igeom), xg, ndim, xe, ffpc, dfdi=dfdic)
 !
 999 continue
 !

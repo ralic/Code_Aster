@@ -1,9 +1,9 @@
 subroutine lceitc(fami, kpg, ksp, mat, option,&
                   mu, su, de, ddedt, vim,&
-                  vip, r)
+                  vip, r, pfluide)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,20 +24,21 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: mat, kpg, ksp
-    real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6)
-    real(kind=8) :: vim(*), vip(*), r
     character(len=16) :: option
+    integer :: mat, kpg, ksp
+    real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r
     character(len=*) :: fami
+    real(kind=8), optional, intent(in) :: pfluide
 !
 !-----------------------------------------------------------------------
-!            LOI DE COMPORTEMENT COHESIVE CZM_TAC_MIX
+!            LOI DE COMPORTEMENT COHESIVE CZM_LIN_MIX
 !            POUR LES ELEMENTS D'INTERFACE 2D ET 3D.
 !
 ! IN : FAMI,KPG,KSP,MAT,OPTION
 !      MU  : LAGRANGE
 !      SU  : SAUT DE U
 !      VIM : VARIABLES INTERNES
+!      PFLUIDE : POUR LES MODELES HM-XFEM
 !
 ! OUT : DE    : DELTA, SOLUTION DE LA MINIMISATION
 !       DDEDT : D(DELTA)/DT
@@ -45,242 +46,200 @@ subroutine lceitc(fami, kpg, ksp, mat, option,&
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
 !
-    aster_logical :: resi, rigi, elas
-    integer :: regime, regm, i, j, cod(4), cinema
-    real(kind=8) :: sc, gc, dc, h, ka, kap, gap, sk, val(4)
-    real(kind=8) :: t(3), pr(3, 3), tpo(3), tno, lbd, d
+    aster_logical :: resi, rigi
+    integer :: regime, i, j
+    real(kind=8) :: sc, gc, dc, h, ka, val(4), tmp, ga, kap, gap
+    real(kind=8) :: dn, tno, t(3), tpo(3), lbd
+    integer :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
+    real(kind=8) :: eps
+    parameter    (eps=1.d-8)
 !
-    data nom /'GC','SIGM_C','PENA_LAGR','CINEMATIQUE'/
+    data nom /'GC','SIGM_C','PENA_LAGR','RIGI_GLIS'/
 !-----------------------------------------------------------------------
 !
-! ---------------------------
-! -- PRINCIPALES NOTATIONS --
-! ---------------------------
 !
-! -  CARACTERISTIQUES DE LA ZONE COHESIVE
-!    GC     : ENERGIE COHESIVE
-!    SC     : CONTRAINTE CRITIQUE
-!    DC     : OUVERTURE CRITIQUE
-!    H      : DECROISSANCE DE LA CONTRAINTE COHESIVE
-!    R      : PARAMETRE DE PENALISATION
+! OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
 !
-! -  DONNEES D'ENTREE
-!    MU     : LAGRANGE
-!    SU     : SAUT DE U
-!    VIM    : VARIABLES INTERNES
-!             |1   : PLUS GRANDE NORME DU SAUT (KA)
-!             |2   : REGIME DE LA LOI (REGM)
-!             |      |0 : ADHERENCE INITIALE OU COURANTE
-!             |      |1 : DISSIPATION
-!             |      |2 : SURFACE LIBRE FINALE (RUPTURE)
-!             |      |3 : SURFACE LIBRE (SOUS CONTRAINTE)
-!             |3   : INDICATEUR D'ENDOMMAGEMENT
-!             |      |0 : SAIN
-!             |      |1 : ENDOMMAGE
-!             |      |2 : CASSE
-!             |4   : POURCENTAGE D'ENERGIE DISSIPEE (GA)
-!             |5   : VALEUR DE L'ENERGIE DISSIPEE (GA*GC)
-!             |6   : ENERGIE RESIDUELLE COURANTE (RIEN)
-!             |7-9 : VALEURS DE DELTA
-!
-! -  DONNEES DE SORTIE
-!    DE     : DELTA
-!    DDEDT  : DERIVEE DE DELTA
-!    VIP    : VARIABLES INTERNES MISES A JOUR
-!
-! -  GRANDEURS LOCALES
-!    GA     : POURCENTAGE D'ENERGIE DISSIPEE
-!    REGM   : REGIME DE FONCTIONNEMENT DE LA LOI A L'INSTANT PRECEDENT
-!    REGIME : NOUVEAU REGIME DE FONCTIONNEMENT
-!    KA     : OUVERTURE MAXIMALE COURANTE
-!    SK     : CONTRAINTE CRITIQUE COURANTE
-!    T      : FORCE COHESIVE LAMBDA + R.[U]
-!    PR     : MATRICE DE PROJECTION SUIVANT LA CINEMATIQUE
-!    TPO    : FORCE COHESIVE PROJETEE
-!    TNO    : NORME DE LA FORCE COHESIVE PROJETEE
-!
-! --------------------
-! -- INITIALISATION --
-! --------------------
-!
-!    OPTION CALCUL DU RESIDU OU CALCUL DE LA MATRICE TANGENTE
     resi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RAPH'
     rigi = option(1:4).eq.'FULL' .or. option(1:4).eq.'RIGI'
-    elas = option(11:14).eq.'ELAS'
 !
-!    RECUPERATION DES PARAMETRES PHYSIQUES
     if (option .eq. 'RIGI_MECA_TANG') then
         poum = '-'
     else
         poum = '+'
     endif
 !
+! RECUPERATION DES PARAMETRES PHYSIQUES
     call rcvalb(fami, kpg, ksp, poum, mat,&
                 ' ', 'RUPT_FRAG', 0, ' ', [0.d0],&
                 4, nom, val, cod, 2)
 !
-!    PARAMETRE DU COMPORTEMENT DE LA LOI DE TALON-CURNIER
     gc = val(1)
     sc = val(2)
     dc = 2.d0*gc/sc
     h = sc/dc
     r = h * val(3)
 !
-!    ENTIER DECRIVANT LA CINEMATIQUE DU COMPORTEMENT DE L INTERFACE
-!     (CODE DANS LA ROUTINE RCSTOC)
-    cinema = int(val(4))
+! -- INITIALISATION
 !
 !    LECTURE DES VARIABLES INTERNES
-!      GA   = VIM(4)
-    regm = nint(vim(2))
-    ka = vim(1)
-    sk = max(0.d0,sc - h*ka)
+    ga = vim(4)
 !
-! -----------------------------
-! -- CALCUL DU SECOND MEMBRE --
-! -----------------------------
+!    CALCUL DE KAPPA : KA = DC*(1-SQRT(1-GA))
+    tmp = sqrt(max(0.d0,1.d0-ga))
+    tmp = dc*(1.d0-tmp)
+    tmp = max(0.d0,tmp)
+    tmp = min(dc,tmp)
+    ka = tmp
 !
-!    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U]
-    t(1) = mu(1) + r*su(1)
-    t(2) = mu(2) + r*su(2)
-    t(3) = mu(3) + r*su(3)
+!    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U] + PF
+!    ON RAJOUTE PF DANS LE CALCUL DE LA CONTRAINTE (EFFECTIVE) POUR 
+!    LE MODELE HM-XFEM
 !
-!    PROJECTEUR POUR UNE COMPOSANTE NORMALE POSITIVE
-    call r8inir(9, 0.d0, pr, 1)
-!
-    if ((cinema.eq.0) .and. (t(1).ge.0.d0)) pr(1,1) = 1.d0
-    pr(2,2) = 1.d0
-    if ((cinema.eq.0) .or. (cinema.eq.2)) pr(3,3) = 1.d0
-!
-!    PROJECTION DE LA COMPOSANTE NORMALE POSITIVE
-    tpo(1) = t(1)*pr(1,1)
-    tpo(2) = t(2)*pr(2,2)
-    tpo(3) = t(3)*pr(3,3)
-!
-!    NORME DU SECOND MEMBRE PROJETE
-    tno = sqrt(tpo(1)**2 + tpo(2)**2 + tpo(3)**2)
-!
-! --------------------------------------------
-! -- RESOLUTION DU PROBLEME 1D SUR LA NORME --
-! --------------------------------------------
-!
-!    DETERMINATION DU REGIME DE COMPORTEMENT
-    if (resi) then
-!
-!      SURFACE LIBRE (SOUS CONTRAINTE)
-        if (tno .lt. r*ka) then
-            regime = 3
-!
-!      ADHERENCE (INITIALE OU COURANTE)
-        else if (tno .le. r*ka + sk) then
-            regime = 0
-!
-!      ENDOMMAGEMENT
-        else if (tno .lt. r*dc) then
-            regime = 1
-!
-!      SURFACE LIBRE FINALE (RUPTURE)
-        else
-            regime = 2
-        endif
-!
-!    SINON, ON N'ACTUALISE PAS LE REGIME DE FONCTIONNEMENT DE LA LOI
+    if (present(pfluide)) then
+       t(1) = mu(1) + r*su(1) + pfluide
+       t(2) = mu(2) + r*su(2)
+       t(3) = mu(3) + r*su(3)
     else
-        regime = regm
+       t(1) = mu(1) + r*su(1)
+       t(2) = mu(2) + r*su(2)
+       t(3) = mu(3) + r*su(3)
     endif
 !
+!    PARTIE NORMALE POSITIVE
 !
-!    CALCUL DE L'ECOULEMENT 1D SELON LE REGIME DE COMPORTEMENT
-    if (regime .eq. 3) then
-        lbd = 1.d0/r
-    else if (regime.eq.0) then
-        if (tno .gt. 0.d0) then
-            lbd = ka/tno
-        else
-            lbd = 0.d0
-        endif
-    else if (regime.eq.1) then
-        lbd = (dc + (tno-r*dc)/(r-h)) / tno
+    if (t(1).ge.0.d0) then
+       tpo(1) = t(1)
     else
-        lbd = 1.d0/r
+       tpo(1) = 0.d0
+    endif
+    tpo(2) = t(2)
+    tpo(3) = t(3)
+    tno = sqrt(tpo(1)**2+tpo(2)**2+tpo(3)**2)
+!
+! -- CALCUL DE DELTA
+!
+!    SI RIGI_MECA_*
+    if (.not. resi) then
+        regime = nint(vim(2))
+        goto 500
     endif
 !
-! ------------------------------------
-! -- CONSTRUCTION DE LA SOLUTION 3D --
-! ------------------------------------
-!
-!    CALCUL DU SAUT DE DEPLACEMENT 3D
-    if (resi) then
-        call r8inir(6, 0.d0, de, 1)
-        de(1) = lbd*tpo(1)
-        de(2) = lbd*tpo(2)
-        de(3) = lbd*tpo(3)
+!    SI ZONE COHESIVE INTACTE A L'INSTANT PRECEDANT
+    if (ka.eq.0.d0) then
+!       ADHESION INITIALE
+       if (tno.le.sc) then
+          regime=-1
+          lbd=0.d0
+!       SURFACE LIBRE
+       else if (tno.ge.r*dc) then
+          regime=2
+          lbd=1/r
+!       ENDOMMAGEMENT
+       else
+          regime=1
+          lbd=(tno-sc)/((r-h)*tno)
+       endif
+!    SI ZONE COHESIVE ANEANTIE A L'INSTANT PRECEDANT
+    else if (ka.ge.dc) then
+       regime=2
+       lbd=1/r
+!    SI ZONE COHESIVE ENDOMMAGEE A L'INSTANT PRECEDANT
+    else
+!       SURFACE LIBRE
+       if (tno.ge.r*dc) then
+          regime=2
+          lbd=1/r
+!       ENDOMMAGEMENT
+       else if (tno.ge.(ka*(r-h)+sc-eps)) then
+          regime=1
+          lbd=(tno-sc)/((r-h)*tno)
+!       RETOUR ELASTIQUE
+       else
+          regime=3
+          lbd=ka/(ka*(r-h)+sc)
+       endif
     endif
 !
-!    MISE A JOUR DES VARIABLES INTERNES
-    if (resi) then
+    call r8inir(6, 0.d0, de, 1)
+    de(1) = lbd*tpo(1)
+    de(2) = lbd*tpo(2)
+    de(3) = lbd*tpo(3)
+    dn = sqrt(de(1)**2+de(2)**2+de(3)**2)
 !
-        kap = min( max(ka,lbd*tno) , dc )
-        gap = kap/dc * (2.d0 - kap/dc)
-        gap = max(0.d0,gap)
-        gap = min(1.d0,gap)
 !
-        vip(1) = kap
-        vip(2) = regime
+! -- ACTUALISATION DES VARIABLES INTERNES
+!   V1 :  PLUS GRANDE NORME DU SAUT (SEUIL EN SAUT)
+!   V2 :  REGIME DE LA LOI
+!        -1 : CONTACT
+!         0 : ADHERENCE INITIALE OU COURANTE
+!         1 : DISSIPATION
+!         2 : SURFACE LIBRE FINALE (RUPTURE)
+!         3 : RETOUR ELASTIQUE
+!   V3 :  INDICATEUR D'ENDOMMAGEMENT
+!         0 : SAIN
+!         1 : ENDOMMAGE
+!         2 : CASSE
+!   V4 :  POURCENTAGE D'ENERGIE DISSIPEE
+!   V5 :  VALEUR DE L'ENERGIE DISSIPEE (V4*GC)
+!   V6 :  ENERGIE RESIDUELLE COURANTE
+!        (NULLE POUR CE TYPE D'IRREVERSIBILITE)
+!   V7 A V9 : VALEURS DE DELTA
 !
-        if (kap .eq. 0.d0) then
-            vip(3) = 0.d0
-        else if (kap.eq.dc) then
-            vip(3) = 2.d0
-        else
-            vip(3) = 1.d0
-        endif
+    kap = min( max(ka,dn) , dc )
+    gap = kap/dc * (2.d0 - kap/dc)
+    gap = max(0.d0,gap)
+    gap = min(1.d0,gap)
 !
-        vip(4) = gap
-        vip(5) = gc*vip(4)
-        vip(6) = 0.d0
-        vip(7) = de(1)
-        vip(8) = de(2)
-        vip(9) = de(3)
+    vip(1) = kap
+    vip(2) = regime
 !
+    if (kap .eq. 0.d0) then
+        vip(3) = 0.d0
+    else if (kap.eq.dc) then
+        vip(3) = 2.d0
+    else
+        vip(3) = 1.d0
     endif
 !
-! ----------------------
-! -- MATRICE TANGENTE --
-! ----------------------
+    vip(4) = gap
+    vip(5) = gc*vip(4)
+    vip(6) = 0.d0
+    vip(7) = de(1)
+    vip(8) = de(2)
+    vip(9) = de(3)
 !
-    if (rigi) then
+! -- MATRICE TANGENTE
 !
-!      AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
-        if (elas) then
-            if (regime .eq. 1) regime = 0
-        endif
+500 continue
+    if (.not. rigi) goto 999
 !
-!      CALCUL DU COEFFICIENT 1D DE LA MATRICE TANGENTE
-        if (regime .eq. 3) then
-            d = 0.d0
-        else if (regime.eq.0) then
-            if (tno .gt. 0.d0) then
-                d = -lbd/tno**2
-            else
-                d = 0.d0
-            endif
-        else if (regime.eq.1) then
-            d = (1.d0/(r-h) - lbd)/tno**2
-        else
-            d = 0.d0
-        endif
+    call r8inir(36, 0.d0, ddedt, 1)
 !
-!      MATRICE TANGENTE 3D
-        call r8inir(36, 0.d0, ddedt, 1)
-        do 100 i = 1, 3
-            do 110 j = 1, 3
-                ddedt(i,j) = d * tpo(i)*tpo(j) + lbd*pr(i,j)
-110         continue
-100     continue
-!
+    if (regime .eq. 2) then
+       ddedt(1,1) = 1/r
+       ddedt(2,2) = 1/r
+       ddedt(3,3) = 1/r
+       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
+    else if (regime .eq. 1) then
+       ddedt(1,1) = 1/(r-h)-sc/(tno*(r-h))
+       ddedt(2,2) = 1/(r-h)-sc/(tno*(r-h))
+       ddedt(3,3) = 1/(r-h)-sc/(tno*(r-h))
+       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
+       do i = 1, 3
+          do j = 1, 3
+             ddedt(i,j) = ddedt(i,j)+sc/((r-h)*tno**3)*tpo(i)*tpo(j)
+          end do
+       end do
+    else if (regime .eq. 3) then
+       ddedt(1,1) = ka/(ka*(r-h)+sc)
+       ddedt(2,2) = ka/(ka*(r-h)+sc)
+       ddedt(3,3) = ka/(ka*(r-h)+sc)
+       if (t(1).lt.0.d0) ddedt(1,1) = 0.d0
     endif
+!
+999 continue
 !
 end subroutine

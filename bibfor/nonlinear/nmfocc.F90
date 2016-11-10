@@ -1,6 +1,6 @@
 subroutine nmfocc(phase      , model     , mate     , nume_dof , list_func_acti,&
                   ds_contact , ds_measure, hval_algo, hval_incr, hval_veelem   ,&
-                  hval_veasse)
+                  hval_veasse, ds_constitutive)
 !
 use NonLin_Datastructure_type
 !
@@ -17,6 +17,7 @@ implicit none
 #include "asterfort/nmelcv.h"
 #include "asterfort/nmrinc.h"
 #include "asterfort/nmtime.h"
+#include "asterfort/nmvcex.h"
 #include "asterfort/vtaxpy.h"
 !
 ! ======================================================================
@@ -48,6 +49,7 @@ implicit none
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_veelem(*)
     character(len=19), intent(in) :: hval_veasse(*)
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,15 +73,18 @@ implicit none
 ! In  hval_algo        : hat-variable for algorithms fields
 ! In  hval_veelem      : hat-variable for elementary vectors
 ! In  hval_veasse      : hat-variable for vectors (node fields)
+! In  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     aster_logical :: l_elem_cont, l_elem_frot, l_all_verif, l_newt_cont, l_newt_geom, l_cont_lac
+    aster_logical :: l_xthm
     character(len=8) :: mesh
     character(len=19) :: vect_elem_cont, vect_elem_frot
     character(len=19) :: vect_asse_frot, vect_asse_cont, vect_asse_fint
     character(len=19) :: disp_prev, disp_cumu_inst, vite_prev, acce_prev, vite_curr
+    character(len=19) :: varc_prev, varc_curr, time_prev, time_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +102,7 @@ implicit none
     l_newt_cont = isfonc(list_func_acti,'CONT_NEWTON')
     l_newt_geom = isfonc(list_func_acti,'GEOM_NEWTON')
     l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
+    l_xthm = isfonc(list_func_acti,'THM')
 !
 ! - Get fields
 !
@@ -110,6 +116,10 @@ implicit none
     call nmchex(hval_veelem, 'VEELEM', 'CNELTF', vect_elem_frot)
     call nmchex(hval_veasse, 'VEASSE', 'CNELTC', vect_asse_cont)
     call nmchex(hval_veasse, 'VEASSE', 'CNELTF', vect_asse_frot)
+    call nmchex(hval_incr, 'VALINC', 'COMMOI', varc_prev)
+    call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
+    call nmvcex('INST', varc_prev, time_prev)
+    call nmvcex('INST', varc_curr, time_curr)
 !
 ! - Generalized Newton: contact status evaluate before
 !
@@ -123,7 +133,7 @@ implicit none
         if (l_elem_cont .and. (.not.l_all_verif)) then
             call vtaxpy(-1.d0, vect_asse_cont, vect_asse_fint)
         endif
-        if (l_elem_frot .and. (.not.l_all_verif)) then
+        if (l_elem_frot .and. (.not.l_all_verif) .and. (.not.l_xthm)) then
             call vtaxpy(-1.d0, vect_asse_frot, vect_asse_fint)
         endif
     endif
@@ -135,7 +145,7 @@ implicit none
         call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('CONT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    vect_elem_cont)
+                    vect_elem_cont, time_prev, time_curr, ds_constitutive, list_func_acti)
         call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
@@ -147,12 +157,12 @@ implicit none
 !
 ! - Compute friction forces
 !
-    if (l_elem_frot .and. (.not.l_all_verif)) then
+    if (l_elem_frot .and. (.not.l_all_verif) .and. (.not.l_xthm)) then
         call nmtime(ds_measure, 'Init'  , 'Cont_Elem')
         call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('FROT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    vect_elem_frot)
+                    vect_elem_frot, time_prev, time_curr, ds_constitutive, list_func_acti)
         call assvec('V', vect_asse_frot, 1, vect_elem_frot, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
@@ -168,7 +178,7 @@ implicit none
         if (l_elem_cont .and. (.not.l_all_verif)) then
             call vtaxpy(+1.d0, vect_asse_cont, vect_asse_fint)
         endif
-        if (l_elem_frot .and. (.not.l_all_verif)) then
+        if (l_elem_frot .and. (.not.l_all_verif) .and. (.not.l_xthm)) then
             call vtaxpy(+1.d0, vect_asse_frot, vect_asse_fint)
         endif
     endif

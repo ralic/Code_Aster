@@ -1,4 +1,4 @@
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,11 +21,10 @@ interface
                       c1, rang, jnueq, jnumsd, jresl,&
                       nbvel, nnoe, ldist, ldgrel,&
                       ilima, jadli, jadne, jprn1, jprn2,&
-                      jnulo1, jnulo2, jposd1, jposd2, admodl,&
+                      jnulo1, jposd1, admodl,&
                       lcmodl, mode, nec, nmxcmp, ncmp,&
                       jsmhc, jsmdi, iconx1, iconx2, jtmp2,&
-                      lgtmp2, jvalm, ilinu, ellagr,&
-                      jdesc, jrepe, jptvoi, jelvoi, codvoi)
+                      lgtmp2, jvalm, ilinu, ellagr)
         aster_logical :: lmasym
         aster_logical :: lmesym
         character(len=2) :: tt
@@ -46,9 +45,7 @@ interface
         integer :: jprn1
         integer :: jprn2
         integer :: jnulo1
-        integer :: jnulo2
         integer :: jposd1
-        integer :: jposd2
         integer :: admodl
         integer :: lcmodl
         integer :: mode
@@ -64,10 +61,5 @@ interface
         integer :: jvalm(2)
         integer :: ilinu
         integer :: ellagr
-        integer :: jdesc
-        integer :: jrepe
-        integer :: jptvoi
-        integer :: jelvoi
-        character(len=16) :: codvoi
     end subroutine assma3
 end interface

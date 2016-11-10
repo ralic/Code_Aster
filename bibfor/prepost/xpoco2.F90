@@ -74,7 +74,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
     integer :: jcnsl1, nbcmp2
 !   ON INDIQUE EN DUR LE NOMBRE DE COMPOSANTE A VERIFIER EN HM-XFEM
 !   A CAUSE DES DDLS DE PRESSION
-    parameter (nbcmp2=20)
+    parameter (nbcmp2=52)
     aster_logical :: exist(nbno, nbcmp2)
     real(kind=8), pointer :: cnsv1(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
@@ -106,7 +106,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
 !     VERIF QUE LES 2 PREMIERES COMPOSANTES DU CHAMP DEP1 ou DEP4
 !     SONT DX DY OU QUE LA PREMIERE COMPOSANTES DE CE CHAMP EST TEMP
-    ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
+      ASSERT((cnsc(1).eq.'DX'.and.cnsc(2).eq.'DY') .or. (cnsc(1).eq.'TEMP'))
 !
     lmeca = xismec()
 !     RQ : "NDIMC" CORRESPOND AU NOMBRE DE COMPOSANTE VECTORIELLE DU
@@ -134,8 +134,8 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
 !
         do i = 1, nbno
             if (dirno(i) .ne. 0) then
-                idecv2 = jcnsv2-1+(ndimc+1)*(dirno(i)-1)
-                idecl2 = jcnsl2-1+(ndimc+1)*(dirno(i)-1)
+                idecv2 = jcnsv2-1+(4*ndimc+4)*(dirno(i)-1)
+                idecl2 = jcnsl2-1+(4*ndimc+4)*(dirno(i)-1)
                 do j = 1, ndimc
                     zr(idecv2+j)= cnsv1(nbcmp*(i-1)+j)
                     zl(idecl2+j)=.true.
@@ -145,42 +145,10 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma,&
                         zr(idecv2+3)= cnsv1(nbcmp*(i-1)+3)
                         zl(idecl2+3)=.true.
                     endif
-                    if (exist(i,6)) then
-                        zr(idecv2+6)= cnsv1(nbcmp*(i-1)+6)
-                        zl(idecl2+6)=.true.
-                    endif
-                    if (exist(i,9)) then
-                        zr(idecv2+9)= cnsv1(nbcmp*(i-1)+9)
-                        zl(idecl2+9)=.true.
-                    endif
-                    if (exist(i,12)) then
-                        zr(idecv2+12)= cnsv1(nbcmp*(i-1)+12)
-                        zl(idecl2+12)=.true.
-                    endif
-                    if (exist(i,15)) then
-                        zr(idecv2+15)= cnsv1(nbcmp*(i-1)+15)
-                        zl(idecl2+15)=.true.
-                    endif
                 else if (ndim .eq. 3) then
                     if (exist(i,4)) then
                         zr(idecv2+4)= cnsv1(nbcmp*(i-1)+4)
                         zl(idecl2+4)=.true.
-                    endif
-                    if (exist(i,8)) then
-                        zr(idecv2+8)= cnsv1(nbcmp*(i-1)+8)
-                        zl(idecl2+8)=.true.
-                    endif
-                    if (exist(i,12)) then
-                        zr(idecv2+12)= cnsv1(nbcmp*(i-1)+12)
-                        zl(idecl2+12)=.true.
-                    endif
-                    if (exist(i,16)) then
-                        zr(idecv2+16)= cnsv1(nbcmp*(i-1)+16)
-                        zl(idecl2+16)=.true.
-                    endif
-                    if (exist(i,20)) then
-                        zr(idecv2+20)= cnsv1(nbcmp*(i-1)+20)
-                        zl(idecl2+20)=.true.
                     endif
                 endif
             endif

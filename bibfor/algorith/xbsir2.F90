@@ -1,6 +1,6 @@
 subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
                   igeom, jheavn, jlst, ivectu, singu,&
-                  nddl, ndim, nfe, nfh, nfiss,&
+                  nddl, ndim, nfh, nfiss,&
                   nno, nnom, nnos, depref, sigref,&
                   jbaslo, jstno, jlsn)
 !
@@ -44,7 +44,6 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 ! IN SINGU
 ! IN NDDL   : NB TOTAL DDL ELEMENT
 ! NDIM      : DIMENSION DU MODELE
-! NFE       : NB FONCTION ENRICHISSEMENT CTIP
 ! NFH       : IDEM HEAVISIDE
 ! NFISS     : NB FISSURES
 ! NNO       : NB NOEUD ELEM PARENT
@@ -63,7 +62,7 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
     integer :: jheavn, jheafa, jheano, jlonch, jlst, jptint, jtab(7)
     integer :: ivectu, lact(8), singu, jbaslo, jstno, jlsn
     integer :: nbspg, ncompa, ncompb, ncompc, ncomph, ncompp, ncompn
-    integer :: nddl, ndim, nface, nfe, nfh, nfiss, ninter, nlact
+    integer :: nddl, ndim, nface, nfh, nfiss, ninter, nlact
     integer :: nno, nnol, nnom, nnos, npgf, nptf, nspfis, pla(27)
     integer :: idfdef, ipoidf, ivff, j, nnof
     real(kind=8) :: depref, ffc(8), ffp(27), jac
@@ -161,9 +160,9 @@ subroutine xbsir2(elref, contac, ddlc, ddlm, ddls,&
 !
 ! --- RECUP MULTIPLICATEURS ACTIFS ET LEURS INDICES
 !
-        call xmulco(contac, ddlc, ddlm, jaint, ifiss,&
+        call xmulco(contac, ddls, ddlc, ddlm, jaint, ifiss,&
                     jheano, vstnc, lact, .false._1, lbid,&
-                    ndim, nfe, nfh, nfiss, ninter,&
+                    ndim, nfh, nfiss, ninter,&
                     nlact, nno, nnol, nnom, nnos,&
                     pla, typma)
 !

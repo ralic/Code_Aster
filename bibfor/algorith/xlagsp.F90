@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/xelfis_lists.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -83,7 +83,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: nbcmp
-    parameter    (nbcmp = 12)
+    parameter    (nbcmp = 14)
 !
     integer :: nb_node_mesh, nbar, nbarto, itypma
     integer :: ar(12, 3), na, nb, nunoa, nb_edge_max
@@ -539,7 +539,7 @@ implicit none
 ! --- SI LE MULTI-HEAVISIDE EST ACTIF, ON CREE UNE SD SUPPLEMENTAIRE
 ! --- CONTENANT LE NUMÉROS DE LAGRANGIEN CORESPONDANT.
 !
-    if (lmulti) call xlag2c(model, sdline_crack, jnbpt)
+    if (lmulti) call xlag2c(model, sdline_crack, jnbpt, mesh)
 !
 ! --- DESTRUCTION DES OBJETS TEMPORAIRES
 !

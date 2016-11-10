@@ -34,17 +34,18 @@ components=(
     ('EN2', ('X', 'Y', 'Z',)),))
 
 
-for cmp in (
-    'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
-    'GLIS', 'GONF', 'GRX', 'H1PRE1', 'H1X', 'H1Y',
-    'H1Z', 'H2PRE1', 'H2X', 'H2Y', 'H2Z', 'H3PRE1', 'H3X', 'H3Y', 'H3Z', 'H4X', 'H4Y', 'H4Z',
-    'LAG2_C', 'LAG2_F1', 'LAG2_F2', 'LAG3_C', 'LAG3_F1', 'LAG3_F2', 'LAG4_C', 'LAG4_F1',
-    'LAG4_F2', 'LAGS_C', 'LAGS_F1', 'LAGS_F2', 'LH1', 'PHI', 'PRE1', 'PRE2', 'PRES', 'PRES11',
-    'PRES12', 'PRES13', 'PRES21', 'PRES22', 'PRES23', 'PRES31', 'PRES32', 'PRES33', 'TEMP',
-    'UI2', 'UI3', 'UI4', 'UI5', 'UI6', 'UO2', 'UO3', 'UO4', 'UO5', 'UO6', 'V11', 'V12', 'V13',
-    'V21', 'V22', 'V23', 'V31', 'V32', 'V33', 'VI2', 'VI3', 'VI4', 'VI5', 'VI6', 'VO2', 'VO3',
-    'VO4', 'VO5', 'VO6', 'WI1', 'WI2', 'WI3', 'WI4', 'WI5', 'WI6',
-        'WO', 'WO1', 'WO2', 'WO3', 'WO4', 'WO5', 'WO6',):
+for cmp in ( 'DH', 'DRX', 'DRY', 'DRZ', 'DX', 'DY', 'DZ', 'K1', 'K2', 'K3',
+             'GLIS', 'GONF', 'GRX', 'H1PRE1', 'H1X', 'H1Y',
+             'H1Z', 'H2PRE1', 'H2X', 'H2Y', 'H2Z', 'H3PRE1', 'H3X', 'H3Y', 'H3Z', 'H4X', 'H4Y', 'H4Z',
+             'PRE_FLU', 'LAG_FLI' , 'LAG_FLS' , 'LAGS_C' , 'LAGS_F1', 'LAGS_F2' , 'LAG2_C' , 'LAG2_F1',
+             'LAG2_F2', 'LAG3_C', 'LAG3_F1', 'LAG3_F2', 'PR2_FLU', 'LA2_FLI' , 'LA2_FLS', 
+             'PR3_FLU', 'LA3_FLI', 'LA3_FLS' , 'LAG4_C' , 'LAG4_F1', 'LAG4_F2' , 'LH1', 'PHI', 'PRE1', 'PRE2', 'PRES', 'PRES11',
+             'PRES12', 'PRES13', 'PRES21', 'PRES22', 'PRES23', 'PRES31', 'PRES32', 'PRES33', 'TEMP',
+             'D1X' , 'D1Y' , 'D1Z' , 'D2X' , 'D2Y' , 'D2Z' , 'D3X' , 'D3Y' , 'D3Z',
+             'UI2', 'UI3', 'UI4', 'UI5', 'UI6', 'UO2', 'UO3', 'UO4', 'UO5', 'UO6', 'V11', 'V12', 'V13',
+             'V21', 'V22', 'V23', 'V31', 'V32', 'V33', 'VI2', 'VI3', 'VI4', 'VI5', 'VI6', 'VO2', 'VO3',
+             'VO4', 'VO5', 'VO6', 'WI1', 'WI2', 'WI3', 'WI4', 'WI5', 'WI6',
+             'WO', 'WO1', 'WO2', 'WO3', 'WO4', 'WO5', 'WO6',):
 
     #----------------
     # Modes locaux :

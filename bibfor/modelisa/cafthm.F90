@@ -23,7 +23,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !      FONREE : FONC OU REEL
 ! ======================================================================
 ! ======================================================================
-    integer :: n1, n2, n3, nflux, jvalv,  iocc
+    integer :: n1, n2, n3, n4, nflux, jvalv,  iocc
     integer :: nbtou, nbma, jma, ncmp
     integer :: iret, nfiss, jnfis
     character(len=8) :: k8b, mod, typmcl(2)
@@ -89,6 +89,11 @@ subroutine cafthm(char, noma, ligrmo, fonree)
     vncmp(2) = 'PFLU2'
     vncmp(3) = 'PTHER'
 !
+    if (fonree .eq. 'FONC') then
+       ncmp = 4
+       vncmp(4) = 'PFLUF'
+    endif
+!
     if (fonree .eq. 'REEL') then
         zr(jvalv) = 0.d0
         zr(jvalv+1) = 0.d0
@@ -97,6 +102,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
         zk8(jvalv) = '&FOZERO'
         zk8(jvalv+1) = '&FOZERO'
         zk8(jvalv+2) = '&FOZERO'
+        zk8(jvalv+3) = '&FOZERO'
     endif
     call nocart(carte, 1, ncmp)
 !
@@ -118,6 +124,7 @@ subroutine cafthm(char, noma, ligrmo, fonree)
             call getvid(motclf, 'FLUN_HYDR1', iocc=iocc, scal=zk8(jvalv), nbret=n1)
             call getvid(motclf, 'FLUN_HYDR2', iocc=iocc, scal=zk8(jvalv+1), nbret=n2)
             call getvid(motclf, 'FLUN', iocc=iocc, scal=zk8(jvalv+2), nbret=n3)
+            call getvid(motclf, 'FLUN_FRAC', iocc=iocc, scal=zk8(jvalv+3), nbret=n4)
         endif
 !
 ! --- TEST SUR LES CAL
@@ -140,6 +147,8 @@ subroutine cafthm(char, noma, ligrmo, fonree)
 !           NE SONT PAS AUTORISES EN HM-XFEM
                if ((n2.ne.0).and.(n3.ne.0)) call utmess('F', 'XFEM_48')
             endif
+!           LES FLUX DE FLUIDE DANS LES FRACTURES NE SONT AUTORISES QU'EN HM_XFEM
+            if ((fonree.eq.'FONC') .and. (nfiss.eq.0) .and. (n4.ne.0)) call utmess('F', 'XFEM_28')
             call reliem(ligrmo, noma, 'NU_MAILLE', motclf, iocc,&
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then

@@ -1,5 +1,5 @@
 subroutine xminit(mesh  , model , ds_contact, nume_inst, ds_measure,&
-                  sddyna, hat_valinc)
+                  sddyna, hat_valinc, list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -42,6 +42,7 @@ implicit none
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: hat_valinc(*)
     character(len=19), intent(in) :: sddyna
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +59,7 @@ implicit none
 ! In  hat_valinc       : hat variable for algorithm fields
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddyna           : datastructure for dynamic
+! In  list_func_acti   : list of active functionnalities
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -134,6 +136,6 @@ implicit none
 !
 ! - Create fields
 !
-    call xmelem(mesh, model, ds_contact)
+    call xmelem(mesh, model, ds_contact, list_func_acti)
 !
 end subroutine

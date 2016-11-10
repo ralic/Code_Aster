@@ -20,7 +20,7 @@
 interface
     subroutine nmctcc(mesh      , model_    , mate  , nume_inst, sddyna   ,&
                       sderro    , ds_measure, sddisc, hval_incr, hval_algo,&
-                      ds_contact)
+                      ds_contact, ds_constitutive   , list_func_acti)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model_
@@ -33,5 +33,7 @@ interface
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+        integer, intent(in) :: list_func_acti(*)
     end subroutine nmctcc
 end interface

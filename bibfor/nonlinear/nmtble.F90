@@ -1,7 +1,7 @@
 subroutine nmtble(cont_loop     , model   , mesh  , mate     , ds_contact,&
                   list_func_acti, ds_print, ds_measure, sddyna    ,&
                   sderro        , ds_conv , sddisc, nume_inst, hval_incr ,&
-                  hval_algo)
+                  hval_algo, ds_constitutive)
 !
 use NonLin_Datastructure_type
 !
@@ -55,6 +55,7 @@ implicit none
     integer, intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: hval_algo(*)
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,6 +84,7 @@ implicit none
 ! In  nume_inst        : index of current step time
 ! In  hval_incr        : hat-variable for incremental values fields
 ! In  hval_algo        : hat-variable for algorithms fields
+! In  ds_constitutive  : datastructure for constitutive laws management
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -129,7 +131,7 @@ implicit none
             cont_loop = 1
             call nmctcc(mesh      , model     , mate  , nume_inst, sddyna   ,&
                         sderro    , ds_measure, sddisc, hval_incr, hval_algo,&
-                        ds_contact)
+                        ds_contact, ds_constitutive   , list_func_acti)
             call mmbouc(ds_contact, 'Cont', 'Is_Convergence', loop_state_ = loop_cont_conv)
             call mmbouc(ds_contact, 'Cont', 'Get_Vale'      , loop_vale_  = loop_cont_vale)
             loop_cont_vali = nint(loop_cont_vale)

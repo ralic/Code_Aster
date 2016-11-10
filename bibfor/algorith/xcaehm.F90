@@ -4,12 +4,12 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
                   nno, nnos, nnom, npi, npg,&
                   nddls, nddlm, dimuel, ipoids, ivf,&
                   idfde, ddld, ddlm, ddlp, enrmec, nenr,&
-                  dimenr, nnop, nnops, nnopm, enrhyd, nfh)
+                  dimenr, nnop, nnops, nnopm, enrhyd, ddlc, nfh)
 ! ======================================================================
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +57,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
 ! OUT IPOIDS : ADRESSE DU TABLEAU POIDS POUR FONCTION DE FORME P2
 ! OUT IVF    : ADRESSE DU TABLEAU DES FONCTIONS DE FORME P2
 ! OUT IDFDE  : ADRESSE DU TABLEAU DES DERIVESS DES FONCTIONS DE FORME P2
+! OUT DDLC   : NOMBRE DE DDLS DE CONTACT
 ! CORPS DU PROGRAMME
     implicit none
 !
@@ -77,7 +78,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
     character(len=16) :: nomte
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm, ddlp, dimenr
+    integer :: ddld, ddlm, ddlp, dimenr, ddlc
     integer :: enrmec(3), enrhyd(3), nenr
     integer :: nnop, nnops, nnopm
 !
@@ -110,6 +111,7 @@ subroutine xcaehm(nomte, axi, perman, typmod, modint,&
     call xitghm(modint, mecani, press1, ndim, nno,&
                 nnos, nnom, npi, npg, nddls,&
                 nddlm, dimuel, ddld, ddlm, nnop,&
-                nnops, nnopm, ipoids, ivf, idfde, ddlp)
+                nnops, nnopm, ipoids, ivf, idfde, ddlp,&
+                ddlc)
 ! ======================================================================
 end subroutine

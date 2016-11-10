@@ -37,8 +37,8 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!                      TROUVER LES COORDONNES DU PT MILIEU ENTRE LES
-!                      DEUX POINTS D'INTERSECTION
+!                      TROUVER LES COORDONNES DU PT MILIEU
+!                      D'UNE FACE QUADRANGLE
 !
 !     ENTREE
 !       ELP     : TYPE DE L'ELEMENT
@@ -47,6 +47,9 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, lsn,&
 !       JTABCO  : ADRESSE DES COORDONNEES DES NOEUDS DE L'ELEMENT
 !       JTABLS  : ADRESSE DES LSN DES NOEUDS DE L'ELEMENT
 !       NNO     : NOMBRE DE NOEUX DE L'ELEMENT
+!       NN      : NUMERO DES NOEUDS DU SOUS-TETRA
+!       NUM     : NUMERO DES NOEUDS DE LA FACE QUADRANGLE
+!       JONC    : L'ELEMENT CONTIENT-IL UNE JONCTION
 !     SORTIE
 !       CENFI   : COORDONNES DU PT MILIEU AU CENTRE DE LA FISSURE
 !     ----------------------------------------------------------------

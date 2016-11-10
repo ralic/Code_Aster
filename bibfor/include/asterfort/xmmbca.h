@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,12 +18,15 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact)
+    subroutine xmmbca(mesh, model, mate, hval_incr, ds_contact,&
+                      ds_constitutive, list_func_acti)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: mate
         character(len=19), intent(in) :: hval_incr(*)
         type(NL_DS_Contact), intent(inout) :: ds_contact
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+        integer, intent(in) :: list_func_acti(*)
     end subroutine xmmbca
 end interface

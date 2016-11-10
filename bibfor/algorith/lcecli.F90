@@ -3,7 +3,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
                   vim, vip, r)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
     aster_logical :: resi, rigi, elas
     integer :: i, j, diss, cass
     real(kind=8) :: sc, gc, lc, val(3), rtan, kapp, zero
-    real(kind=8) :: na, ka, kap, rk, ra, coef, coef2
+    real(kind=8) :: na, ka, rk, ra, coef, coef2
     integer :: cod(3)
     character(len=16) :: nom(3)
     character(len=1) :: poum
@@ -98,15 +98,15 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 ! --- CALCUL DE LA FORCE COHESIVE AUGMENTEE
 !
-    do 1 i=1,ndim
+    do i=1,ndim
         laug(i) = lamb(i) + r*saut(i)
-1   end do
+    end do
 !
 ! --- FORCE COHESIVE EQUIVALENTE
 !
-    do 10 i = 2, ndim
+    do i = 2, ndim
         rtan=rtan+laug(i)**2
-10  end do
+    end do
     na = sqrt( max(zero,laug(1))**2 + rtan )
 !
 ! --- MODULE TANGENT POUR LES REGIMES ELASTIQUES
@@ -126,7 +126,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
         cass = nint(vim(3))
 !
-        goto 5000
+        goto 500
     endif
 !
 ! CALCUL DE LA CONTRAINTE
@@ -176,7 +176,6 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 ! ACTUALISATION DES VARIABLES INTERNES
 !
 ! on conserve la distinction à suivre
-    kap = max(ka,na)
     kapp = max(vim(1),na)
     vip(1) = kapp
     vip(2) = diss
@@ -186,8 +185,8 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
 !
 ! -- MATRICE TANGENTE
 !
-5000  continue
-    if (.not. rigi) goto 9999
+500  continue
+    if (.not. rigi) goto 999
 !
     call r8inir(36, 0.d0, dsidep, 1)
 !
@@ -204,7 +203,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
         do 39 i = 2, ndim
             dsidep(i,i) = dsidep(i,i) - 1.d-8
 39      continue
-        goto 9999
+        goto 999
     endif
 !
 !    MATRICE TANGENTE DE FISSURATION
@@ -248,7 +247,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate,&
         endif
 !
     endif
-9999  continue
+999  continue
 !
 !
 end subroutine

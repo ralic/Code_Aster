@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
    subroutine xprfastmarching(cmnd, noma, fispre, cnxinv, noesom,&
                            lcmin, cnsln, grln, cnslt, grlt,&
                            isozro, nodtor,eletor, liggrd,&
-                           vpoint, cnsbl ,deltat ,cnsbet ,listp )
+                           vpoint, cnsbl ,deltat ,cnsbet ,listp)
        character(len=8)  :: cmnd
        character(len=8)  :: noma
        character(len=8)  :: fispre

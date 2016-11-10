@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/nmcmat.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,12 +52,13 @@ implicit none
 !
 ! ----------------------------------------------------------------------
 !
-    aster_logical :: leltc, leltf
+    aster_logical :: leltc, leltf, lxthm
 !
 ! ----------------------------------------------------------------------
 !
     leltc = isfonc(list_func_acti,'ELT_CONTACT')
     leltf = isfonc(list_func_acti,'ELT_FROTTEMENT')
+    lxthm = isfonc(list_func_acti,'THM')
 !
 ! --- ELEMENTS DE CONTACT (XFEM+CONTINU)
 !
@@ -69,7 +70,7 @@ implicit none
 !
 ! --- ELEMENTS DE FROTTEMENT (XFEM+CONTINU)
 !
-    if (leltf) then
+    if (leltf.and.(.not.lxthm)) then
         call nmcmat('MEELTF', ' ', ' ', .true._1,&
                     .false._1, nb_matr, list_matr_type, list_calc_opti, list_asse_opti,&
                     list_l_calc, list_l_asse)

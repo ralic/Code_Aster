@@ -3,11 +3,13 @@ subroutine te0120(nomopt, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/jevech.h"
 #include "asterfort/elref1.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/iselli.h"
+#include "asterfort/tecael.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xlsjon.h"
 #include "asterfort/elrefe_info.h"
@@ -15,7 +17,7 @@ subroutine te0120(nomopt, nomte)
     character(len=16) :: nomopt, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,9 +45,9 @@ subroutine te0120(nomopt, nomte)
 !
 !......................................................................
 !
-    integer :: nnomax, nfismax, base_codage
+    integer :: nnomax, nfismax, base_codage, iadzi, ndime, iazk24
     parameter (nnomax=27, nfismax=4, base_codage=4)
-    character(len=8) :: elrefp, enr, elrese(6), enr2
+    character(len=8) :: elrefp, enr, elrese(6), enr2, typma, noma
     integer :: ibid, jcnset, jheavt, jlonch, jheano, jhease, jheafa, jheavf, jlonco
     integer :: ncomph, ncompn, ifiss, nfiss, ncmpfa, he(nfismax), nbnose(6), nface, ifac, ncmpfa2
     integer ::  id_no(nnomax), id_se, isd, nbsd, list_sd(nfismax), cpt, jfiss, jlsn, nnos, jfisco
@@ -64,7 +66,7 @@ subroutine te0120(nomopt, nomte)
     call teattr('S', 'XFEM', enr, ibid)
     ASSERT(enr(1:2).eq.'XH'.or.enr(1:2).eq.'XT')
 !
-    if (enr .eq. 'XH1C' .or. enr .eq. 'XH2C' .or. enr .eq. 'XH3C' .or. enr .eq. 'XH4C') then
+    if (enr(1:4) .eq. 'XH2C' .or. enr(1:4) .eq. 'XH3C' .or. enr(1:4) .eq. 'XH4C') then
         multi_contact=.true.
     else
         multi_contact=.false.
@@ -72,8 +74,14 @@ subroutine te0120(nomopt, nomte)
 !
     call teattr('C', 'MODTHM', enr2, iret)
     pre1=(iret.eq.0)
-
-    if (pre1.and.(enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3'.or.enr.eq.'XH4')) then
+!
+    call tecael(iadzi, iazk24, noms=0)
+    noma=zk24(iazk24)(1:8)
+    typma=zk24(iazk24-1+3+zi(iadzi-1+2)+3)(1:8)
+    call dismoi('DIM_GEOM', noma, 'MAILLAGE', repi=ndim)
+    call elrefe_info(fami='RIGI', nno=nnop, nnos=nnos, ndim=ndime)
+!
+    if (pre1.and.(enr.eq.'XH1'.or.enr.eq.'XH2'.or.enr.eq.'XH3').and.(ndim.eq.ndime)) then
         multi_contact=.true.
     endif
 !
@@ -91,8 +99,7 @@ subroutine te0120(nomopt, nomte)
     else
         irese=0
     endif
-    call elrefe_info(fami='RIGI', nno=nnop, nnos=nnos, ndim=ndim)
-    nno=nbnose(ndim+irese)   
+    nno=nbnose(ndime+irese)
 !
     call jevech('PCNSETO', 'L', jcnset)
     call jevech('PHEAVTO', 'L', jheavt)

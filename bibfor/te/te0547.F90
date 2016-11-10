@@ -29,7 +29,7 @@ subroutine te0547(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -180,9 +180,9 @@ subroutine te0547(option, nomte)
 !
 ! LISTE DES LAMBDAS ACTIFS
 !
-    call xmulco(contac, ddlc, ddlm, jaint, 1,&
+    call xmulco(contac, ddls, ddlc, ddlm, jaint, 1,&
                 ibid, vstnc, lact, .false._1, lbid,&
-                ndim, nfe, nfh, 1, ninter,&
+                ndim, nfh, 1, ninter,&
                 nlact, nno, nnol, nnom, nnos,&
                 pla, typma)
 !

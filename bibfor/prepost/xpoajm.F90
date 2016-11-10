@@ -5,11 +5,12 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
                   ndim, ndime, jconx1, jconx2, jconq1,&
                   jconq2, ima, iad1, nnn, inn,&
                   inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                  iacoo2, iad9, ninter, iainc, elrefp,&
+                  iacoo2, iad9, ninter, iainc, ncompa, elrefp,&
                   jlsn, jlst, typma, igeom, jheavn, ncompn,&
                   contac, cmp, nbcmp, nfh, nfe,&
                   ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                  pre1, jbaslo, jstno, ka, mu)
+                  pre1, heavno, fisco, nlachm,&
+                  lacthm, jbaslo, jstno, ka, mu)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -48,11 +49,11 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 #include "asterfort/xpolsn.h"
 !
     integer :: nfiss, nnn, inn, inntot, ndim, jconx1, jconx2
-    integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2
-    integer :: nbnoc, nbnofi, inofi
+    integer :: jconq1, jconq2, iacoo1, iacoo2, jcnsl2, fisco(*)
+    integer :: nbnoc, nbnofi, inofi, heavno(20, 3)
     integer :: ima, iad1, jlsn, jlst, igeom, ndime, iad9
     integer :: jheavn, ncompn, cmp(*), nbcmp, nfh, nfe, ddlc, jcnsv1, jcnsv2
-    integer :: ninter, iainc, contac
+    integer :: ninter(4), iainc, ncompa, contac, nlachm(2), lacthm(16)
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, elrefp, typma
     integer :: jtypm2, itypse, nnm, inm, inmtot, nbmac, jdirgr
@@ -193,8 +194,8 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 ! --- IL N'APPARTIENT PAS A LA LISTE, ON LE CREE AVANT DE L'ATTACHER
             call xpolsn(elrefp, ino, n, jlsn, jlst,&
                         ima, iad, igeom, nfiss, ndime,&
-                        ndim, jconx1, jconx2, co, lsn,&
-                        lst)
+                        ndim, jconx1, jconx2, fisco, co,&
+                        lsn, lst)
             call xpoajn(maxfem, ino, lsn, jdirno, prefno,&
                         nfiss, he, nnn, inn, inntot,&
                         nbnoc, nbnofi, inofi, co, iacoo2)
@@ -203,15 +204,16 @@ subroutine xpoajm(maxfem, jtypm2, itypse, jcnse, im,&
 ! --- IL N'APPARTIENT PAS A LA LISTE, ON CALCULE SON DÉPLACEMENT
             call xpolsn(elrefp, ino, n, jlsn, jlst,&
                         ima, iad, igeom, nfiss, ndime,&
-                        ndim, jconq1, jconq2, co, lsn,&
-                        lst)
+                        ndim, jconq1, jconq2, fisco, co,&
+                        lsn, lst)
             call xpoajd(elrefp, ino, n, lsn, lst,&
-                        ninter, iainc, typma, co, igeom,&
+                        ninter, iainc, ncompa, typma, co, igeom,&
                         jdirno, nfiss, jheavn, ncompn, he, ndime,&
                         ndim, cmp, nbcmp, nfh, nfe,&
                         ddlc, ima, jconq1, jconq2, jcnsv1,&
                         jcnsv2, jcnsl2, nbnoc, inntot, inn,&
-                        nnn, contac, lmeca, pre1, jbaslo,&
+                        nnn, contac, lmeca, pre1, heavno,&
+                        nlachm, lacthm, jbaslo,&
                         jlsn, jlst, jstno, ka, mu)
         endif
 !

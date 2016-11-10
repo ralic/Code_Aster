@@ -18,7 +18,8 @@
 interface
     subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
                       ds_constitutive, instam, instap, valinc    , solalg,&
-                      optmaz         , base  , meelem, ds_contact, matele)
+                      optmaz         , base  , meelem, ds_contact, matele,&
+                      list_func_acti)
         use NonLin_Datastructure_type
         character(len=6) :: typmat
         character(len=*) :: modelz
@@ -35,5 +36,6 @@ interface
         character(len=19) :: meelem(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: matele
+        integer, intent(in) :: list_func_acti(*)
     end subroutine nmcalm
 end interface

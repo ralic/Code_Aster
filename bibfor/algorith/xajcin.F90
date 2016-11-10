@@ -92,7 +92,7 @@ implicit none
 !
     elseif (option.eq.'CHAR_MECA_NEUM') then
 !
-        nbadd = 18
+        nbadd = 19
         ASSERT(nchin+nbadd .le. mxchin)
         lpain(nchin + 1 ) = 'PPINTTO'
         lchin(nchin + 1 ) = model(1:8)//'.TOPOSE.PIN'
@@ -130,6 +130,8 @@ implicit none
         lchin(nchin + 17) = model(1:8)// '.TOPONO.HFA'
         lpain(nchin + 18) = 'PBASLOR'
         lchin(nchin + 18) = model(1:8)//'.BASLOC'
+        lpain(nchin + 19) = 'PHEAVNO'
+        lchin(nchin + 19) = model(1:8)//'.HEAVNO'
         nchin = nchin+nbadd
 !
     elseif (option.eq.'REFE_FORC_NODA') then

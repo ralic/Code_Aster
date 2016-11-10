@@ -135,7 +135,7 @@ subroutine op0196()
                     ces1, ces2, cel2, cesvi1, cesvi2,&
                     ior, resuco, nbnoc, nbmac, logrma,&
                     k24, maxfem, ibid, comps1, comps2,&
-                    pre1)
+                    pre1, mo)
 !
 !       ----------------------------------------------------------------
 !       4. TRAITEMENT DES MAILLES DE MAILC

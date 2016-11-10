@@ -2,7 +2,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                   igeom, pinter, ninter, npts, ainter,&
                   pmilie, nmilie, mfis, tx, txlsn,&
                   pintt, pmitt, ifiss, nfiss, fisco, &
-                  nfisc, cut, coupe, exit)
+                  nfisc, cut, coupe, exit, joncno)
     implicit none
 !
 #include "asterf_types.h"
@@ -24,9 +24,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 #include "asterfort/xerfis.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/xinter.h"
+#include "asterfort/xstjon.h"
 #include "asterfort/xxmmvd.h"
     integer :: nnose, it, ndim, cnset(*), ninter, igeom, npts, nmilie, mfis
-    integer :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss), exit(2)
+    integer :: jlsn, ifiss, nfiss, nfisc, fisco(*), coupe(nfiss), exit(2), joncno
     real(kind=8) :: pinter(*), ainter(*), pmilie(*), tx(3, 7), txlsn(28)
     real(kind=8) :: pintt(*), pmitt(*)
     aster_logical :: cut
@@ -87,10 +88,10 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
     integer :: ndime, noeua, noeub, noeuc, im
     integer :: j, a1, a2, ipt, nm
     integer :: ptmax, pmmaxi(3), pmmax
-    integer :: ntm, inm, nptm, nnop, inter
+    integer :: ntm, inm, nptm, nnop, nnops, inter
     integer :: zxain, mxstac
     character(len=8) :: typma, elrese(3), elrefp
-    aster_logical :: papillon, ajout, jonc
+    aster_logical :: papillon, ajout, jonc, najonc, nbjonc
 !
     parameter       (ptmax=6)
     parameter       (mxstac=1000)
@@ -104,7 +105,7 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
 !
     zxain = xxmmvd('ZXAIN')
     call elref1(elrefp)
-    call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop)
+    call elrefe_info(fami='RIGI', ndim=ndime, nno=nnop, nnos=nnops)
 !
 !     VECTEUR REEL A 4 COMPOSANTES, POUR CHAQUE PT D'INTER :
 !     - NUMERO ARETE CORRESPONDANTE (0 SI C'EST UN NOEUD SOMMET)
@@ -289,6 +290,12 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                         endif
                     enddo
                 endif
+!
+                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
+                               txlsn, n=na, c=a)
+                endif
+!
             endif
 !
 !         SI LA FISSURE COUPE L'EXTREMITE B
@@ -312,6 +319,12 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                         endif
                     enddo
                 endif
+!
+                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
+                               txlsn, n=nb, c=b)
+                endif
+!
             endif
 !
 !         SI LA FISSURE COUPE LE MILIEU M
@@ -358,6 +371,12 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                         enddo
                     endif
                 endif
+!
+                if (nfiss.ge.2 .and. nfisc.ge.1) then
+                   call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
+                               txlsn, n=nm, c=m)
+                endif
+!
             endif
 !
 !         SI LA FISSURE COUPE AILLEURS
@@ -372,10 +391,28 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn,&
                 call xajpin(ndim, pinter, ptmax, ipi, ibid,&
                             c, longar, ainter, ia, 0,&
                             alpha, ajout)
-                if (ajout .and. (na .gt. 1000 .and. nb .gt. 1000)) then
-!           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE INTERNE A L'ELEMENT, ON LE MARQUE AVEC
-!           UN ALPHA EGAL A -1
-                   ainter(zxain*(ipi-1)+4) = -1.d0
+!
+                if (ajout .and. nfiss.ge.2 .and. nfisc.ge.1) then
+                   do  i = 1, nfisc
+                      najonc=.false.
+                      nbjonc=.false.
+                      if (na.gt.1000) then
+                         najonc=.true.
+                      else
+                         if (zr(jlsn-1+(na-1)*nfiss+fisco(2*i-1)).eq.0.d0) najonc=.true.
+                      endif
+                      if (nb.gt.1000) then
+                         nbjonc=.true.
+                      else
+                         if (zr(jlsn-1+(nb-1)*nfiss+fisco(2*i-1)).eq.0.d0) nbjonc=.true.
+                      endif
+                      if (najonc.and.nbjonc) then
+                         call xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
+                                     txlsn, c=cref)
+!           IL S'AGIT D'UN POINT DE JONCTION DE FISSURE, ON LE MARQUE AVEC UN ALPHA EGAL A -1
+                         ainter(zxain*(ipi-1)+4) = -1.d0
+                      endif
+                   end do
                 endif
 !
                 if (ajout) then

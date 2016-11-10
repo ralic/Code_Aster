@@ -3,10 +3,10 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                   ces1, ces2, cel2, cesvi1, cesvi2,&
                   ior, resuco, nbnoc, nbmac, logrma,&
                   dirgrm, maxfem, ngfon, comps1, comps2,&
-                  pre1)
+                  pre1, mo)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 #include "asterfort/as_allocate.h"
 !
     integer :: nsetot, nnntot, ncotot, nbnoc, ior, ngfon
-    character(len=8) :: maxfem, malini, resuco, modvis
+    character(len=8) :: maxfem, malini, resuco, modvis, mo
     character(len=19) :: cns1, cns2, ces1, ces2, cel2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2
     character(len=24) :: mailc, listno, logrma, dirgrm, licham
@@ -86,6 +86,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !       LOGRMA : LONGUEUR DES NOUVEAUX GROUP_MA
 !       DIRGRM : VECTEUR D'INDIRECTION ENTRE LES GROUP_MA
 !       NGFON  : NOMBRE TOTAL DE FOND DE FISSURES
+!       MO     : NOM DU MODELE
 !
 !   OUT
 !       MAXFEM : MAILLAGE FISSURE (SI POST_MAIL_XFEM)
@@ -101,12 +102,12 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
     integer :: ier, nbmac, nbma2, nbno, nbno2, iret, igeomr, nbid
     integer :: iadesc, iarefe, iacoo2, jtypm2, jno, jmac
     integer :: ndim, jord, iord, i, ifm, niv, nmaxsp, nmaxcm, nbcham
-    integer :: jdirgr
+    integer :: jdirgr, jxc, contac
     integer :: igma1, nbgma, n, jlogma, nbgma1, nbgma2, cptgr2, jlicha
     integer :: jresc1, nbcmp
     aster_logical :: pre1
     character(len=3) :: tsca
-    character(len=8) :: k8b, ldep3(12), ldep2(8), ltemp(1), ldep1(3), ldep4(4)
+    character(len=8) :: k8b, ldep3(12), ldep2(8), ltemp(1), ldep1(12), ldep4(16)
     character(len=16) :: k16b, nomcmd
     character(len=19) :: coord2, ligrel, chn1, chsig1
     character(len=19) :: nomgd
@@ -126,8 +127,11 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                          'LAG2_C','LAG2_F1','LAG2_F2','LAG3_C','LAG3_F1','LAG3_F2'/
     data          ldep2/ 'DX','DY','LAGS_C','LAGS_F1','LAG2_C','LAG2_F1',&
                          'LAG3_C', 'LAG3_F1'/
-    data          ldep1/ 'DX','DY','PRE1'                           /
-    data          ldep4/ 'DX','DY','DZ','PRE1'                      /
+    data          ldep1/ 'DX','DY','PRE1','PRE_FLU','LAG_FLI','LAG_FLS',&
+                         'LAGS_C','LAGS_F1','LAG2_C','LAG2_F1','LAG3_C', 'LAG3_F1'/
+    data          ldep4/ 'DX','DY','DZ','PRE1','PRE_FLU','LAG_FLI','LAG_FLS',&
+                         'LAGS_C','LAGS_F1','LAGS_F2','LAG2_C','LAG2_F1',&
+                         'LAG2_F2','LAG3_C','LAG3_F1','LAG3_F2'/
     data          ltemp/ 'TEMP'                                     /
 !
     call jemarq()
@@ -280,16 +284,20 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         call cnocns(chn1, 'V', cns1)
         call jeveuo(cns1//'.CNSK', 'L', vk8=cnsk1)
 !
+!       TYPE DE CONTACT
+        call jeveuo(mo//'.XFEM_CONT', 'L', jxc)
+        contac=zi(jxc)
+!
 !       CREATION D'UN CHAMP SIMPLE : CNS2
         if (xismec()) then
             if (pre1) then
 !         CAS DE L'HYDRO-MECANIQUE
                 if (ndim .eq. 2) then
-                    call cnscre(maxfem, 'DEPL_R', ndim+1, ldep1, 'V',&
+                    call cnscre(maxfem, 'DEPL_R', 4*ndim+4, ldep1, 'V',&
                                 cns2)
                 else
                     ASSERT(ndim.eq.3)
-                    call cnscre(maxfem, 'DEPL_R', ndim+1, ldep4, 'V',&
+                    call cnscre(maxfem, 'DEPL_R', 4*ndim+4, ldep4, 'V',&
                                 cns2)
                 endif
             else
@@ -297,7 +305,7 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
                 if (ndim .eq. 2) then
                     call cnscre(maxfem, 'DEPL_R', 4*ndim, ldep2, 'V',&
                                 cns2)
-                else
+                elseif (ndim .eq. 3) then
                     ASSERT(ndim.eq.3)
                     call cnscre(maxfem, 'DEPL_R', 4*ndim, ldep3, 'V',&
                                 cns2)
@@ -321,8 +329,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
         if (xismec()) then
             if (pre1) then
 !           CAS DE L'HYDRO-MECANIQUE
-                cnsd(2)=ndim+1
-                do i = 1, ndim+1
+                cnsd(2)=4*ndim+4
+                do i = 1, 4*ndim+4
                     if (ndim .eq. 2) cnsc(i)=ldep1(i)
                     if (ndim .eq. 3) cnsc(i)=ldep4(i)
                 end do
@@ -330,8 +338,8 @@ subroutine xpodim(malini, mailc, modvis, licham, nsetot,&
 !           CAS DE LA MECANIQUE
                 cnsd(2)=4*ndim
                 do i = 1, 4*ndim
-                    if (ndim .eq. 3) cnsc(i)=ldep3(i)
                     if (ndim .eq. 2) cnsc(i)=ldep2(i)
+                    if (ndim .eq. 3) cnsc(i)=ldep3(i)
                 end do
             endif
         else

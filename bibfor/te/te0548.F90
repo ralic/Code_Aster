@@ -17,7 +17,7 @@ subroutine te0548(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -152,12 +152,12 @@ subroutine te0548(option, nomte)
             if (ndim .eq. 3) then
                 call xjacff(elref, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, ipgf, nno,&
-                            igeom, jbasec, g, rbid, ffp,&
+                            nnos, igeom, jbasec, g, rbid, ffp,&
                             ffpc, dfbid, nd, r3bid, r3bid)
             else if (ndim.eq.2) then
                 call xjacf2(elref, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, nptf, ipgf,&
-                            nno, igeom, jbasec, g, rbid,&
+                            nno, nnos, igeom, jbasec, g, rbid,&
                             ffp, ffpc, dfbid, nd, r3bid)
             endif
 !
@@ -175,7 +175,7 @@ subroutine te0548(option, nomte)
             do 120 i = 1, nnol
                 ffi=ffc(i)
                 ni=i
-                call xplmat(ndim, nfh, nfe, ddlc, ddlm,&
+                call xplmat(ddls, ddlc, ddlm,&
                             nno, nnom, ni, pli)
                 seuil = seuil + ffi * zr(ideppl-1+pli)
 120          continue

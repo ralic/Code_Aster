@@ -25,11 +25,12 @@ interface
                       ndim, ndime, jconx1, jconx2, jconq1,&
                       jconq2, ima, iad1, nnn, inn,&
                       inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                      iacoo2, iad9, ninter, iainc, elrefp,&
+                      iacoo2, iad9, ninter, iainc, ncompa, elrefp,&
                       jlsn, jlst, typma, igeom, jheavn, ncompn,&
                       contac, cmp, nbcmp, nfh, nfe,&
                       ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                      pre1, jbaslo, jstno, ka, mu)
+                      pre1, heavno, fisco,&
+                      nlachm, lacthm, jbaslo, jstno, ka, mu)
         integer :: nfiss
         character(len=8) :: maxfem
         integer :: jtypm2
@@ -67,7 +68,7 @@ interface
         integer :: iacoo1
         integer :: iacoo2
         integer :: iad9
-        integer :: ninter
+        integer :: ninter(4)
         integer :: iainc
         character(len=8) :: elrefp
         integer :: jlsn
@@ -88,6 +89,11 @@ interface
         integer :: jstno
         aster_logical :: lmeca
         aster_logical :: pre1
+        integer :: ncompa
+        integer :: heavno(20,3)
+        integer :: fisco(*)
+        integer :: nlachm(2)
+        integer :: lacthm(16)
         integer :: jbaslo
         real(kind=8) :: ka
         real(kind=8) :: mu

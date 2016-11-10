@@ -125,7 +125,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx,&
 !
 !   ON VERIFIE POUR XMIFIS QUE LE NEWTON RESTE DANS LA FACE TRIA
 !   DE RECHERCHE, SINON ON ACTIVE LA METHODE DE DEKKER
-    if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI'.or.name .eq. 'XINTER') then
+    if (name .eq. 'XMIFIS' .or. name .eq. 'XCENFI' .or. name .eq. 'XINTER') then
         if (present(dekker)) then
             if (iter.eq.itemax) then
 !   DANS CERTAINS CAS, IL EST IMPOSSIBLE DE TROUVER UN POINT MILIEU SUR LA

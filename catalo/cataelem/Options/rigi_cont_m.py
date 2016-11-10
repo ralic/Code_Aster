@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,6 +70,18 @@ comment=""" XFEM """)
 PCOHESO  = OutputParameter(phys=PHY.NEUT_R, type='ELNO')
 
 
+PCOMPOR  = InputParameter(phys=PHY.COMPOR,
+comment=""" UTILE POUR HM-XFEM """)
+
+
+PFISNO   = InputParameter(phys=PHY.NEUT_I,
+comment=""" PFISNO : CONNECTIVITE DES FISSURES ET DES DDL HEAVISIDE """)
+
+
+PHEA_FA  = InputParameter(phys=PHY.N240_I,
+comment="""  XFEM - IDENTIFIANT HEAVISIDE POUR LES FACETTES DE CONTACT XFEM  """)
+
+
 RIGI_CONT_M = Option(
     para_in=(
            PAINTER,
@@ -89,6 +101,14 @@ RIGI_CONT_M = Option(
            PPINTER,
            PSEUIL,
            PSTANO,
+        SP.PINSTMR,
+        SP.PINSTPR,
+           PCOMPOR,
+        SP.PCARCRI,
+        SP.PFISCO,
+           PFISNO,
+        SP.PHEAVNO,
+           PHEA_FA,
     ),
     para_out=(
            PCOHESO,

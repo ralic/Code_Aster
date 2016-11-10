@@ -7,7 +7,7 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
     real(kind=8) :: jonc_no(nfiss)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,12 +77,13 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
 !
 !   MISE A ZERO POUR LA FONCTION JONCTION AU NIVEAU DU BRANCHEMENT
        do i = 1, nfisc
-           if (fisc(2*i)*ljonc(i) .gt. 0.d0) goto 300
+           if (fisc(2*i) .gt. 0.d0 .and. fisc(2*i)*ljonc(i) .ge. 0.d0) goto 300
+           if (fisc(2*i) .lt. 0.d0 .and. fisc(2*i)*ljonc(i) .gt. 0.d0) goto 300
        end do
 !
        if (ljonc(nfisc+1) .lt. 0.d0) then
            jonc_no(ifiss) = -1.d0
-       else if (ljonc(nfisc+1).gt.0.d0) then
+       else if (ljonc(nfisc+1).ge.0.d0) then
            jonc_no(ifiss) = +1.d0
        endif
 300    continue

@@ -707,22 +707,26 @@ list_cmp_depl=(
   'GRX',        'GLIS',       'PRES',       'PRE[2]',     'TEMP',       'PHI',
   'DH',         'H1X',        'H1Y',        'H1Z',        'H1PRE1',     'H2X',
   'H2Y',        'H2Z',        'H2PRE1',     'H3X',        'H3Y',        'H3Z',
-  'H3PRE1',     'H4X',        'H4Y',        'H4Z',        'LAGR',       
-  'K1',         'K2',          'K3',        'LAGS_C',
-  'LAGS_F[2]',  'LAG2_C',     'LAG2_F[2]',  'LAG3_C',     'LAG3_F[2]',  'LAG4_C',
-  'LAG4_F[2]',  'UI2',        'VI2',        'WI2',        'UI3',        'VI3',
-  'WI3',        'UI4',        'VI4',        'WI4',        'UI5',        'VI5',
-  'WI5',        'UI6',        'VI6',        'WI6',        'UO2',        'VO2',
-  'WO2',        'UO3',        'VO3',        'WO3',        'UO4',        'VO4',
-  'WO4',        'UO5',        'VO5',        'WO5',        'UO6',        'VO6',
-  'WO6',        'WO',         'WI1',        'WO1',        'GONF',       'EPXX',
-  'EPYY',       'EPZZ',       'EPXY',       'EPXZ',       'EPYZ',       'D1',
-  'D1X',        'D1Y',        'D1Z',        'D2',         'D2X',        'D2Y',
-  'D2Z',        'D3',         'D3X',        'D3Y',        'D3Z',        'VARI',
-  'LAG_GV',     'V1[3]',      'V2[3]',      'V3[3]',      'PRES1[3]',   'PRES2[3]',
-  'PRES3[3]',   'SIGN',       'SITX',       'SITY',       'LH1',        'SIXX',
-  'SIYY',       'SIZZ',       'SIXY',       'DAMG',       'PTOT',       'PIX',
-  'PIY',        'PIZ',
+  'H3PRE1',     'H4X',        'H4Y',        'H4Z',        'LAGR',       'K1',
+  'K2',         'K3',         'PRE_FLU',
+  'LAG_FLI',    'LAG_FLS',    'LAGS_C',     'LAGS_F[2]',  'LAG2_C',     'LAG2_F[2]',  
+  'LAG3_C',     'LAG3_F[2]',  'PR2_FLU',    'LA2_FLI',    'LA2_FLS',
+  'D1X',        'D1Y',        'D1Z',        'D2X',        'D2Y',        'D2Z',
+  'D3X',        'D3Y',        'D3Z',
+  'PR3_FLU',    'LA3_FLI',    'LA3_FLS',
+  'LAG4_C',     'LAG4_F[2]',  'UI2',        'VI2',
+  'WI2',        'UI3',        'VI3',        'WI3',        'UI4',        'VI4',
+  'WI4',        'UI5',        'VI5',        'WI5',        'UI6',        'VI6',
+  'WI6',        'UO2',        'VO2',        'WO2',        'UO3',        'VO3',
+  'WO3',        'UO4',        'VO4',        'WO4',        'UO5',        'VO5',
+  'WO5',        'UO6',        'VO6',        'WO6',        'WO',         'WI1',
+  'WO1',        'GONF',       'EPXX',       'EPYY',       'EPZZ',       'EPXY',
+  'EPXZ',       'EPYZ',       'D1',
+  'D2',         'D3',
+  'VARI',       'LAG_GV',     'V1[3]',      'V2[3]',
+  'V3[3]',      'PRES1[3]',   'PRES2[3]',   'PRES3[3]',   'SIGN',       'SITX',
+  'SITY',       'LH1',        'SIXX',       'SIYY',       'SIZZ',       'SIXY',
+  'DAMG',       'PTOT',       'PIX',        'PIY',        'PIZ',
 )
 comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        DX, DY, DZ : translation suivant X, Y ET Z (repere global)
@@ -744,7 +748,10 @@ comment_depl= """  DEPL_R/_C/_F  Deplacement reel, complexe ou fonction
        Pour X-FEM: K1, K2, K3 : DDLS enrichis vectoriels (CRACKTIP) X-FEM
        LAGS_C, LAG2_C, LAG3_C, LAG4_C :
        LAGS_F1, LAGS_F2, LAG2_F1, LAG2_F2, LAG3_F1, LAG3_F2, LAG4_F1, LAG4_F2 :
-       HPRE1 : DDL de pression Heaviside pour la pression du massif (HM_XFEM)
+       PRE_FLU, PR2_FLU, PR3_FLU:
+       pression de fluide dans la fracture (HM-XFEM)
+       LAG_FLI, LAG_FLS LA2_FLI, LA2_FLS, LA3_FLI, LA3_FLS :
+       flux pour HM-XFEM
        UI2, VI2, WI2, ...,UO6, VO6, WO6, WO, WI1, WO1 : DDL des elements de tube
        GONF :
        EPXX, EPYY, EPZZ, EPXY, EPXZ, EPYZ :
@@ -1631,11 +1638,13 @@ FTHM_F   = PhysicalQuantity(type='K8',
     components=(
        'PFLU[2]',
        'PTHER',
+       'PFLUF',
     ),
     comment="""  FTHM_F Type:K8 Flux thermo-hydraulique (modelisation THM)
        PFLU1 :
        PFLU2 :
        PTHER : fonction du flux de chaleur
+       PFLUF : fonction du flux de fluide dans une fracture
 
 """)
 
@@ -2033,7 +2042,7 @@ N132_R   = PhysicalQuantity(type='R',
 
 N1360R   = PhysicalQuantity(type='R',
     components=(
-       'X[1280]',
+       'X[1360]',
     ),)
 
 
@@ -2051,7 +2060,7 @@ N240_I   = PhysicalQuantity(type='I',
 
 N2448R   = PhysicalQuantity(type='R',
     components=(
-       'X[2304]',
+       'X[2448]',
     ),)
 
 

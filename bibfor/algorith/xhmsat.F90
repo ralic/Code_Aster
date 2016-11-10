@@ -10,7 +10,7 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -127,6 +127,8 @@ subroutine xhmsat(yachai, option, meca, thmc, ther,&
     sat = 1.0d0
     satm = 1.0d0
     dsatp1 = 0.0d0
+    alpha0 = 0.d0
+    alphfi = 0.d0
     m11m = congem(adcp11)
     retcom = 0
     rho11 = vintm(advihy+vihrho) + rho110

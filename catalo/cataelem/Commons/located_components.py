@@ -265,6 +265,9 @@ E28NEUTR = LocatedComponents(phys=PHY.N2448R, type='ELEM',
 E2NEUTI = LocatedComponents(phys=PHY.N512_I, type='ELEM',
                             components=('X[2]',))
 
+E20NEUTI = LocatedComponents(phys=PHY.N120_I, type='ELEM',
+                             components=('X[20]',))
+
 E2NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
                             components=('X[2]',))
 
@@ -315,6 +318,9 @@ E55NEUTR = LocatedComponents(phys=PHY.N480_R, type='ELEM',
 
 E60NEUTR = LocatedComponents(phys=PHY.N480_R, type='ELEM',
                              components=('X[60]',))
+
+E5NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELEM',
+                            components=('X[5]',))
 
 E6NEUTR = LocatedComponents(phys=PHY.N132_R, type='ELEM',
                             components=('X[6]',))
@@ -573,6 +579,9 @@ N2NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
 
 N3NEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
                              components=('X[3]',))
+
+N5NEUTR = LocatedComponents(phys=PHY.NEUT_R, type='ELNO',
+                            components=('X[5]',))
 
 N5NEUTI = LocatedComponents(phys=PHY.N120_I, type='ELNO',
                             components=('X[5]',))

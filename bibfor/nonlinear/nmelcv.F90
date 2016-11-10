@@ -1,6 +1,6 @@
 subroutine nmelcv(phase    , mesh     , model    , mate     , ds_contact    ,&
                   disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                  vect_elem)
+                  vect_elem, time_prev, time_curr, ds_constitutive, list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -13,6 +13,7 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -49,6 +50,10 @@ implicit none
     character(len=19), intent(in) :: vite_curr
     character(len=19), intent(in) :: disp_cumu_inst
     character(len=19), intent(out) :: vect_elem
+    character(len=19), intent(in) :: time_prev
+    character(len=19), intent(in) :: time_curr
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
+    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,20 +73,24 @@ implicit none
 ! In  vite_curr        : speed at current time
 ! In  acce_prev        : acceleration at beginning of current time
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
+! In  time_prev        : previous time
+! In  time_curr        : current time
+! In  ds_constitutive  : datastructure for constitutive laws management
+! In  list_func_acti   : list of active functionnalities
 ! Out vect_elem        : elementary vectors
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     integer, parameter :: nbout = 3
-    integer, parameter :: nbin  = 30
+    integer, parameter :: nbin  = 35
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
     character(len=1) :: base
     character(len=19) :: ligrel
     character(len=16) :: option
     aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
-    aster_logical :: l_all_verif
+    aster_logical :: l_all_verif, l_xthm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,6 +108,7 @@ implicit none
     l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
+    l_xthm         = isfonc(list_func_acti,'THM')
 !
 ! --- TYPE DE CONTACT
 !
@@ -121,7 +131,7 @@ implicit none
                          mesh     , model    , mate     , ds_contact,&
                          disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                          nbin     , lpain    , lchin    ,&
-                         option)
+                         option   , list_func_acti, time_prev, time_curr , ds_constitutive)
 !
 ! ----- <LIGREL> for contact elements
 !

@@ -103,7 +103,7 @@ class HM_DPSE3_XH(Element):
     )
     elrefe = (
         ElrefeLoc(MT.SE3, gauss=('RIGI=FPG4',),),
-        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG4',),),
+        ElrefeLoc(MT.SE2, gauss=('RIGI=FPG2',),),
     )
     calculs = (
 

@@ -1,9 +1,9 @@
 subroutine lceiou(fami, kpg, ksp, mat, option,&
                   mu, su, de, ddedt, vim,&
-                  vip, r)
+                  vip, r, pfluide)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,6 +28,7 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
     integer :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r
     character(len=*) :: fami
+    real(kind=8), optional, intent(in) :: pfluide
 !
 !-----------------------------------------------------------------------
 !            LOI DE COMPORTEMENT COHESIVE CZM_OUV_MIX
@@ -37,6 +38,7 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
 !      MU  : LAGRANGE
 !      SU  : SAUT DE U
 !      VIM : VARIABLES INTERNES
+!      PFLUIDE : POUR LES MODELES HM-XFEM
 !
 ! OUT : DE    : DELTA, SOLUTION DE LA MINIMISATION
 !       DDEDT : D(DELTA)/DT
@@ -93,18 +95,28 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
     ka = tmp
     sk = max(0.d0,sc - h*ka)
 !
-!    FORCES COHESIVES AUGMENTEES
-    t(1) = mu(1) + r*su(1)
-    t(2) = mu(2) + r*su(2)
-    t(3) = mu(3) + r*su(3)
-    tn = t(1)
+!    FORCE COHESIVE AUGMENTEE : LAMBDA + R.[U] + PF
+!    ON RAJOUTE PF DANS LE CALCUL DE LA CONTRAINTE (EFFECTIVE) POUR 
+!    LE MODELE HM-XFEM
+!
+    if (present(pfluide)) then 
+       t(1) = mu(1) + r*su(1) + pfluide
+       t(2) = mu(2) + r*su(2)
+       t(3) = mu(3) + r*su(3)
+       tn = t(1)
+    else
+       t(1) = mu(1) + r*su(1)
+       t(2) = mu(2) + r*su(2)
+       t(3) = mu(3) + r*su(3)
+       tn = t(1)
+    endif
 !
 ! -- CALCUL DE DELTA
 !
 !    SI RIGI_MECA_*
     if (.not. resi) then
         regime = nint(vim(2))
-        goto 5000
+        goto 500
     endif
 !
 !    CONTACT
@@ -185,8 +197,8 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
 !
 ! -- MATRICE TANGENTE
 !
-5000 continue
-    if (.not. rigi) goto 9999
+500 continue
+    if (.not. rigi) goto 999
 !
 !    AJUSTEMENT POUR PRENDRE EN COMPTE *_MECA_ELAS
     if (elas) then
@@ -211,6 +223,6 @@ subroutine lceiou(fami, kpg, ksp, mat, option,&
     endif
     ddedt(1,1) = ddndtn
 !
-9999 continue
+999 continue
 !
 end subroutine

@@ -122,6 +122,7 @@ class sd_modele_xfem(AsBase):
     TOPOSE_LON = sd_cham_elem(SDNom(nomj='.TOPOSE.LON'))
     TOPOSE_AIN = sd_cham_elem(SDNom(nomj='.TOPOSE.PAI'))
     TOPOSE_PMI = sd_cham_elem(SDNom(nomj='.TOPOSE.PMI'))
+    TOPOSE_PJO = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOSE.PJO')))
     TOPOSE_CRI = Facultatif(sd_cham_elem(SDNom(nomj='.TOPOSE.CRI')))
 
 # II.2) objets relatifs aux facettes de contact

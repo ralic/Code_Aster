@@ -60,7 +60,16 @@ function xfem_cmps(nocmp, phys)
     elseif (nocmp .eq. 'LAGS_C' .or. nocmp .eq. 'LAGS_F1' .or. nocmp .eq. 'LAGS_F2' .or.  &
             nocmp .eq. 'LAG2_C' .or. nocmp .eq. 'LAG2_F1' .or. nocmp .eq. 'LAG2_F2' .or. & 
             nocmp .eq. 'LAG3_C' .or. nocmp .eq. 'LAG3_F1' .or. nocmp .eq. 'LAG3_F2' .or. & 
-            nocmp .eq. 'LAG4_C' .or. nocmp .eq. 'LAG4_F1' .or. nocmp .eq. 'LAG4_F2') then
+            nocmp .eq. 'LAG4_C' .or. nocmp .eq. 'LAG4_F1' .or. nocmp .eq. 'LAG4_F2' .or. &
+            nocmp .eq. 'PRE_FLU' .or. nocmp .eq. 'LAG_FLI' .or. nocmp .eq. 'LAG_FLS' .or. &
+            nocmp .eq. 'PR2_FLU' .or. nocmp .eq. 'LA2_FLI' .or. nocmp .eq. 'LA2_FLS' .or. &
+            nocmp .eq. 'PR3_FLU' .or. nocmp .eq. 'LA3_FLI' .or. nocmp .eq. 'LA3_FLS' .or. &
+            nocmp .eq. 'D1X' .or. nocmp .eq. 'D1Y' .or. nocmp .eq. 'D1Z' .or. &
+            nocmp .eq. 'D2X' .or. nocmp .eq. 'D2Y' .or. nocmp .eq. 'D2Z' .or. &
+            nocmp .eq. 'D3X' .or. nocmp .eq. 'D3Y' .or. nocmp .eq. 'D3Z' .or. &
+            nocmp .eq. 'V11' .or. nocmp .eq. 'V12' .or. nocmp .eq. 'V13' .or. &
+            nocmp .eq. 'V21' .or. nocmp .eq. 'V22' .or. nocmp .eq. 'V23' .or. &
+            nocmp .eq. 'V31' .or. nocmp .eq. 'V32' .or. nocmp .eq. 'V33') then
         goto 99
 ! ON RAJOUTE LES CPMS DE HM-XFEM
     elseif (nocmp .eq. 'H1PRE1' .or. nocmp .eq. 'H2PRE1' .or. nocmp .eq. 'H3PRE1') then
@@ -68,7 +77,8 @@ function xfem_cmps(nocmp, phys)
 ! ON TESTE LES DDLS DE PHYSIQUES 
     elseif( present(phys)) then 
        if (phys .eq. 'OUI' .and. &
-        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ'))&
+        (nocmp .eq. 'TEMP'.or. nocmp .eq. 'DX' .or. nocmp .eq. 'DY' .or. nocmp .eq. 'DZ' .or. &
+         nocmp .eq. 'PRE1'))&
         goto 99
     endif
     xfem_cmps=.false.

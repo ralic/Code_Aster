@@ -789,6 +789,102 @@ phen.add('3D_HM_XH3', Modelisation(dim=(3,3), code='3XO',
         (MT.TRIA6     , EL.HM_FACE6_XH3),
     )))
 
+phen.add('3D_HM_XHC', Modelisation(dim=(3,3), code='3XP',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XHC'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XHC),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XHC),
+        (MT.PENTA15   , EL.HM_PENTA15_XHC),
+        (MT.HEXA20    , EL.HM_HEXA20_XHC),
+    )))
+
+phen.add('3D_HM_XH2C', Modelisation(dim=(3,3), code='3XQ',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH2C'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XH2C),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XH2C),
+        (MT.PENTA15   , EL.HM_PENTA15_XH2C),
+        (MT.HEXA20    , EL.HM_HEXA20_XH2C),
+    )))
+
+phen.add('3D_HM_XH3C', Modelisation(dim=(3,3), code='3XR',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH3C'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XH3C),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XH3C),
+        (MT.PENTA15   , EL.HM_PENTA15_XH3C),
+        (MT.HEXA20    , EL.HM_HEXA20_XH3C),
+    )))
+
+phen.add('3D_HM_XHC3', Modelisation(dim=(3,3), code='3XS',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XHC3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XHC3),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XHC3),
+        (MT.PENTA15   , EL.HM_PENTA15_XHC3),
+        (MT.HEXA20    , EL.HM_HEXA20_XHC3),
+    )))
+
+phen.add('3D_HM_XH2C3', Modelisation(dim=(3,3), code='3XT',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH2C3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XH2C3),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XH2C3),
+        (MT.PENTA15   , EL.HM_PENTA15_XH2C3),
+        (MT.HEXA20    , EL.HM_HEXA20_XH2C3),
+    )))
+
+phen.add('3D_HM_XH3C3', Modelisation(dim=(3,3), code='3XU',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH3C3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.TETRA10   , EL.HM_TETRA10_XH3C3),
+        (MT.PYRAM13   , EL.HM_PYRAM13_XH3C3),
+        (MT.PENTA15   , EL.HM_PENTA15_XH3C3),
+        (MT.HEXA20    , EL.HM_HEXA20_XH3C3),
+    )))
+
 phen.add('3D_HM_XH_D', Modelisation(dim=(3,3), code='3XJ',
     attrs=(
         (AT.THM,'OUI'),
@@ -3054,6 +3150,96 @@ phen.add('D_PLAN_HM_XH3', Modelisation(dim=(2,2), code='DXO',
         (MT.QUAD8     , EL.HM_DPQ8_XH3),
         (MT.TRIA6     , EL.HM_DPTR6_XH3),
         (MT.SEG3      , EL.HM_DPSE3_XH3),
+    )))
+
+phen.add('D_PLAN_HM_XHC', Modelisation(dim=(2,2), code='DXP',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XHC'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XHC),
+        (MT.TRIA6     , EL.HM_DPTR6_XHC),
+    )))
+
+phen.add('D_PLAN_HM_XH2C', Modelisation(dim=(2,2), code='DXQ',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH2C'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XH2C),
+        (MT.TRIA6     , EL.HM_DPTR6_XH2C),
+    )))
+
+phen.add('D_PLAN_HM_XH3C', Modelisation(dim=(2,2), code='DXR',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH3C'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XH3C),
+        (MT.TRIA6     , EL.HM_DPTR6_XH3C),
+    )))
+
+phen.add('D_PLAN_HM_XHC3', Modelisation(dim=(2,2), code='DXS',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XHC3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XHC3),
+        (MT.TRIA6     , EL.HM_DPTR6_XHC3),
+    )))
+
+phen.add('D_PLAN_HM_XH2C3', Modelisation(dim=(2,2), code='DXT',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH2C3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XH2C3),
+        (MT.TRIA6     , EL.HM_DPTR6_XH2C3),
+    )))
+
+phen.add('D_PLAN_HM_XH3C3', Modelisation(dim=(2,2), code='DXU',
+    attrs=(
+        (AT.THM,'OUI'),
+        (AT.MODTHM,'HM'),
+        (AT.D_PLAN,'OUI'),
+        (AT.LXFEM,'OUI'),
+        (AT.XFEM,'XH3C3'),
+        (AT.XLAG,'NOEUD'),
+        (AT.CONTACT,'OUI'),
+    ),
+    elements=(
+        (MT.QUAD8     , EL.HM_DPQ8_XH3C3),
+        (MT.TRIA6     , EL.HM_DPTR6_XH3C3),
     )))
 
 phen.add('D_PLAN_HM_XH_D', Modelisation(dim=(2,2), code='DXK',

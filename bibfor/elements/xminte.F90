@@ -5,7 +5,7 @@ subroutine xminte(ndim, integ, fpg)
     character(len=8) :: fpg
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,8 @@ subroutine xminte(ndim, integ, fpg)
         if (integ .eq. 13) fpg='SIMP'
         if (integ .eq. 23 .or. integ .eq. 33 .or. integ .eq. 43) fpg='SIMP1'
         if (integ .eq. 34 .or. integ .eq. 44 .or. integ .eq. 54) fpg='COTES'
+        if (integ .eq. 12) fpg='FPG3'
+        if (integ .eq. 22) fpg='FPG3'
         if (integ .eq. 32) fpg='FPG4'
         if (integ .eq. 42) fpg='FPG6'
         if (integ .eq. 52) fpg='FPG7'
@@ -53,6 +55,7 @@ subroutine xminte(ndim, integ, fpg)
         if (integ .eq. 54 .or. integ .eq. 44) fpg='COTES1'
         if (integ .eq. 84 .or. integ .eq. 64 .or. integ .eq. 74 .or. integ .eq. 94 .or. integ&
             .eq. 104) fpg='COTES2'
+        if (integ .eq. 12) fpg='FPG2'
         if (integ .eq. 22) fpg='FPG2'
         if (integ .eq. 32) fpg='FPG3'
         if (integ .eq. 42 .or. integ .eq. 52 .or. integ .eq. 62 .or. integ .eq. 72 .or. integ&

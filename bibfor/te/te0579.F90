@@ -5,7 +5,7 @@ subroutine te0579(option, nomte)
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,14 +60,14 @@ subroutine te0579(option, nomte)
     character(len=8) :: noma, elrefp, enr, elref
     character(len=16) :: nomte, option
     integer :: jpintt, jcnset, jheavt, jlonch, kk
-    integer :: jpmilt, nfiss, ifiss, jtab(7), ncomp
+    integer :: jpmilt, nfiss, ifiss, jtab(7), ncomp, contac
     integer :: ier, ndim, nno, nnop, nnops, npg, nnos, kpg
     integer :: ipoids, ivf, idfde, igeom, ires, i, j, jfisno
     integer :: nfh, nse, ise, iret, pos, ndime, nddl, ifh
     integer :: in, ino, iadzi, iazk24, jstno, itemps, jlsn, jheavn, ncompn, jheavs
     integer :: iflux, idec, nddls, nddlm, nnopm, ifluxf
     real(kind=8) :: ff(27), dfdi(27,3)
-    real(kind=8) :: rb1(3), rb2, nbid(3), rb3, rb4
+    real(kind=8) :: rb1(1), rb2, nbid(3), rb3, rb4, rbid(3)
     real(kind=8) :: poids, valpar(4), xg(3)
     real(kind=8) :: deltat, coorse(18), flux, tplus
     character(len=8) :: nompar(4), elrefl
@@ -233,7 +233,7 @@ subroutine te0579(option, nomte)
 !         CALCUL DU POIDS : POIDS = POIDS DE GAUSS * DET(J)
             if (ndime .eq. 1) then
                 kk = (kpg-1)*nno
-                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, rb1,&
+                call dfdm1d(nno, zr(ipoids-1+kpg), zr(idfde+kk), coorse, rbid,&
                             rb2, poids, rb3, rb4)
             else if (ndime.eq.2) then
                  kk = 2*(kpg-1)*nno
@@ -349,10 +349,11 @@ subroutine te0579(option, nomte)
     nddlm = ndim*(1+nfh)
     nnopm = nnop - nnops
     nddl = nnops*nddls + nnopm*nddlm
+    contac = 0
 !
     call xhmddl(ndim, nfh, nddls, nddl, nnop, nnops,&
                 zi(jstno), .false._1, option, nomte, rb1,&
-                zr(ires), nddlm, nfiss, jfisno)
+                zr(ires), nddlm, nfiss, jfisno, .false._1, contac)
 !
 !-----------------------------------------------------------------------
 !     FIN

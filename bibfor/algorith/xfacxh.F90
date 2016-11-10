@@ -1,9 +1,11 @@
 subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                   ninter, jphe, ndim, ainter, nface, nptf,&
                   cface, igeom, jlsn, jaint, jgrlsn, nfiss,&
-                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano)
+                  ifiss, fisc, nfisc, nfisc2, ncompe, jstano,&
+                  jlst, typdis, minlst)
     implicit none
 !
+#include "asterc/r8maem.h"
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -23,10 +25,11 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "blas/ddot.h"
 !
     integer :: ninter, nface, cface(30, 6), jcnset, jnit, jmilt, jpint
-    integer :: nptf, ndim, jphe, igeom, jlsn, jaint, jgrlsn
+    integer :: nptf, ndim, jphe, igeom, jlsn, jaint, jgrlsn, jlst
     integer :: nfiss, ifiss, fisc(*), nfisc, nfisc2, ncompe, jstano
-    real(kind=8) :: pinter(*), ainter(*)
+    real(kind=8) :: pinter(*), ainter(*), minlst
     character(len=8) :: elp
+    character(len=16) :: typdis
 !
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
@@ -65,7 +68,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !
     real(kind=8) :: lsnabs, minlsn, newpt(ndim), p(ndim), lonref, rainter(4), lsninter(20)
     real(kind=8) :: maxlsn, det, ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim)
-    real(kind=8) :: ptref(ndim), ff(20), lsn(ndim+1), cridist, crijonc
+    real(kind=8) :: ptref(ndim), ff(20), lsn(ndim+1), cridist, crijonc, lst
     integer :: iadzi, iazk24, npi, ni, npis, ino
     integer :: i, j, k, nelttot, h, nnose, signe, ifisc, intersec
     integer :: zxain, ar(12,3), nbar, ii, jj, nnos, nno, nbinter
@@ -81,6 +84,7 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
     ASSERT(ndim.eq.2 .or. ndim .eq. 3)
 !      
     zxain = xxmmvd('ZXAIN')
+    minlst = 1*r8maem()
 !
 !     RECUPERATION DES INFORMATIONS SUR LE MACRO-ELEMENT PARENT
     call elrefe_info(fami='RIGI',ndim=ndim,nno=nno,nnos=nnos)
@@ -232,6 +236,29 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                           goto 22
                         endif
                      end do
+!      TEST SPECIFIQUE POUR LA PROPAGATION COHESIVE
+                     if (typdis.eq.'COHESIF') then
+                        do k = 1, 2
+                           lst = 0.d0
+                           if (zi(jcnset-1+nnose*(i-1)+ar(j,k)) .gt. 1000) then
+                              do ii = 1, ndim
+                                  newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
+                                              (i-1)+ar(j,k))-1001)+ii)
+                              end do
+                              call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                          ptref, ff)
+                              do ino = 1, nno
+                                 lst= lst + zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                              end do
+                              if (minlst.gt.lst)  minlst=lst
+                           else
+                              if (minlst.gt.zr(jlst-1+(zi(jcnset-1+&
+                                  nnose*(i-1)+ar(j,k))-1)*nfiss+ifiss)) then
+                                 minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+ar(j,k))-1)*nfiss+ifiss)
+                              endif
+                           endif
+                        end do
+                     endif
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
                            call vecini(ndim+1, 0.d0, lsn)
@@ -447,6 +474,30 @@ subroutine xfacxh(elp, jpint, jmilt, jnit, jcnset, pinter,&
                          goto 23
                        endif
                      end do
+!      TEST SPECIFIQUE POUR LA PROPAGATION COHESIVE
+                     if (typdis.eq.'COHESIF') then
+                        do k = 1, 3
+                           if (zi(jcnset-1+nnose*(i-1)+f(j,k)) .gt. 1000) then
+                              do ii = 1, ndim
+                                  newpt(ii) = zr(jpint-1+ndim*(zi(jcnset-1+nnose*&
+                                              (i-1)+f(j,k))-1001)+ii)
+                              end do
+                              call reeref(elp, nno, zr(igeom), newpt, ndim,&
+                                          ptref, ff)
+                              lst = 0.d0
+                              do ino = 1, nno
+                                 lst= lst + zr(jlst-1+(ino-1)*nfiss+ifiss)*ff(ino)
+                              end do
+                              if (minlst.gt.lst)  minlst=lst
+                           else
+                              if (minlst.gt.zr(jlst-1+(zi(jcnset-1+&
+                                  nnose*(i-1)+f(j,k))-1)*nfiss+ifiss)) then
+                                 minlst=zr(jlst-1+(zi(jcnset-1+nnose*(i-1)+f(j,k))-1)*nfiss+ifiss)
+                              endif
+                           endif
+                        end do
+                     endif
+
 !      TEST SPECIFIQUE POUR LES ELEMENTS MULTI-HEAVISIDE
                      if (nfiss.gt.1) then
                         call vecini(ndim+1, 0.d0, lsn)

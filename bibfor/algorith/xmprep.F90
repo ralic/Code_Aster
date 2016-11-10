@@ -80,12 +80,12 @@ subroutine xmprep(cface, contac, elref, elrefc, elc,&
     if (ndim .eq. 3) then
         call xjacff(elref, elrefc, elc, ndim, fpg,&
                     iptint, ifa, cface, ipgf, nno,&
-                    igeom, ibasec, g, jac, ffp,&
+                    nnos, igeom, ibasec, g, jac, ffp,&
                     ffpc, dfbid, nd, tau1, tau2)
     else if (ndim.eq.2) then
         call xjacf2(elref, elrefc, elc, ndim, fpg,&
                     iptint, ifa, cface, nptf, ipgf,&
-                    nno, igeom, ibasec, g, jac,&
+                    nno, nnos, igeom, ibasec, g, jac,&
                     ffp, ffpc, dfbid, nd, tau1)
     endif
 !Check for axi-symmetric elements

@@ -785,26 +785,26 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
                    ASSERT(.false.)
                 endif
                 if (in.le.ndime+1) then
+!
 !           CALCUL DES FF
 !
+                   call reeref(elp, nnop, zr(igeom), geom, ndim,&
+                               rbid2, ff)
 !
-                call reeref(elp, nnop, zr(igeom), geom, ndim,&
-                            rbid2, ff)
-!
-                do j = 1, nnop
-                    do i = 1, nfisc
-                        somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+&
-                        fisco(2*i-1))
-                    end do
-                    somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
-                    lsno(in) = lsno(in)+ff(j) *lsn((j-1)*nfiss+ifiss)
-                end do
-                abslsn = abslsn+abs(lsno(in))
+                   do j = 1, nnop
+                       do i = 1, nfisc
+                           somlsn(i)=somlsn(i)+ff(j)*lsn((j-1)*nfiss+&
+                           fisco(2*i-1))
+                       end do
+                       somlsn(nfisc+1) = somlsn(nfisc+1)+ff(j)*lsn((j-1)*nfiss+ifiss)
+                       lsno(in) = lsno(in)+ff(j) *lsn((j-1)*nfiss+ifiss)
+                   end do
+                   abslsn = abslsn+abs(lsno(in))
                 endif
             endif
         end do
 !
-!     RECTIFICATION DU SIGNE DE LA PREMEIRE FISSURE POUR LES JONCTIONS SIMPLES
+!     RECTIFICATION DU SIGNE DE LA PREMIERE FISSURE POUR LES JONCTIONS SIMPLES
         if (ifiss.eq.2 .and. nfisc.eq.1) then
             if (fisco(2)*somlsn(1) .gt. 0.d0) then
                if (fisco(2).lt.0) then
@@ -834,7 +834,7 @@ subroutine xdecqv(nnose, it, cnset, heavt, lsn, igeom,&
 !
         if (somlsn(nfisc+1) .lt. 0.d0) then
             heav(ifiss*ise) = -1.d0
-        else if (somlsn(nfisc+1).gt.0.d0) then
+        else if (somlsn(nfisc+1).ge.0.d0) then
             heav(ifiss*ise) = +1.d0
         endif
 !

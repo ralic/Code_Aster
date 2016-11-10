@@ -83,7 +83,7 @@ subroutine te0037(option, nomte)
     integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, pos, zxain, nptf, ifh
     real(kind=8) :: pres, cisa, forrep(3, 2), ff(27), jac, nd(3), he(2), mat(1)
     real(kind=8) :: lst, xg(4), dfbid(27, 3), r27bid(27), r3bid(3), r
-    aster_logical :: lbid, pre1, axi
+    aster_logical :: pre1, axi
     integer :: compt, nddlm, nddls, nddlp, iret, jheafa, ncomph, ncompb
     real(kind=8) :: thet, pinter(3), pinref(3)
     real(kind=8) :: fk(27,3,3), ka, mu
@@ -139,11 +139,10 @@ subroutine te0037(option, nomte)
 !     SI PRE1=.FALSE. -> MODELISATION MECA XFEM CLASSIQUE
 !     SI PRE1=.TRUE.  -> MODELISATION HM XFEM
     if (pre1) then
-        call xhmini(nomte, nfh, ddls, ddlm, nddlp, nfiss)
+        call xhmini(nomte, nfh, ddls, ddlm, nddlp, nfiss, ddlc, contac)
 !
-        contac = 0
         nfe = 0
-        nddls = ddls + nddlp
+        nddls = ddls + nddlp + ddlc
         nddlm = ddlm
         nnom = nno - nnos
         nddl = nnos*nddls + nnom*nddlm
@@ -254,6 +253,7 @@ subroutine te0037(option, nomte)
            call elrefe_info(elrefe=elc,fami=fpg,nno=nnof,&
                             npg=npgf,jpoids=ipoidf,jvf=ivff,jdfde=idfdef)
 !
+        call vecini(27, 0.d0, ff)
 !       ON VERIFIE QUE LES NOEUDS DE LA FACETTE DE CONTACT ONT LST<0
 !
            if (nfe.eq.1) then
@@ -281,15 +281,13 @@ subroutine te0037(option, nomte)
                if (ndim .eq. 3) then
                    call xjacff(elref, elrefc, elc, ndim, fpg,&
                                jptint, ifa, cface, ipgf, nno,&
-                               igeom, jbasec, xg, jac, ff,&
-                               r27bid, dfbid, nd, r3bid, r3bid,&
-                               ifiss, ncompp, ncompb)
+                               nnos, igeom, jbasec, xg, jac, ff,&
+                               r27bid, dfbid, nd, r3bid, r3bid)
                else if (ndim.eq.2) then
                    call xjacf2(elref, elrefc, elc, ndim, fpg,&
                                jptint, ifa, cface, nptf, ipgf,&
-                               nno, igeom, jbasec, xg, jac,&
-                               ff, r27bid, dfbid, nd, r3bid,&
-                               ifiss, ncompp, ncompb)
+                               nno, nnos, igeom, jbasec, xg, jac,&
+                               ff, r27bid, dfbid, nd, r3bid)
                endif
 !
 !         CALCUL DE LA DISTANCE A L'AXE (AXISYMETRIQUE)
@@ -368,42 +366,46 @@ subroutine te0037(option, nomte)
 !
 !         CALCUL EFFECTIF DU SECOND MEMBRE SUR LES DEUX LEVRES
                if (pre1) then
-                   do ilev = 1, 2
-                       pos=0
-                       do ino = 1, nno
+                  do ilev = 1, 2
+                     pos=0
+                     do ino = 1, nno
 !
 !               TERME CLASSIQUE
-                           do j = 1, ndim
-                               pos=pos+1
-                               zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)
-                           end do
+                        do j = 1, ndim
+                           pos=pos+1
+                           zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev)*jac*ff(ino)
+                        end do
 !
 !               ON ZAPPE LES TERMES DE PRESSION CLASSIQUE SI ON EST SUR UN
 !               NOEUD SOMMET
-                           if (ino .le. nnos) pos=pos+1
+                        if (ino .le. nnos) pos=pos+1
 !
 !               TERME HEAVISIDE
-                           do ifh = 1, nfh
+                        do ifh = 1, nfh
 !               EN MULTI-FISSURATION, IL FAUT RECUPERER LES BONNES VALEURS DE HE
-                               if (nfiss.gt.1) then
-                                  hea_fa(ilev) = zi(jheafa-1+ncomph*(ifiss-1)&
-                                             +2*(ifa-1)+ilev)
-                               endif
-                               do j = 1, ndim
-                                  pos=pos+1
-                                  zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
-                                                   zi(jheavn-1+ncompn*(ino-1)+ifh),hea_fa(ilev),&
-                                                   zi(jheavn-1+ncompn*(ino-1)+ncompn))&
-                                                   *forrep(j,ilev)*jac*ff(ino)
-                               end do
+                           if (nfiss.gt.1) then
+                              hea_fa(ilev) = zi(jheafa-1+ncomph*(ifiss-1)&
+                                            +2*(ifa-1)+ilev)
+                           endif
+                           do j = 1, ndim
+                              pos=pos+1
+                              zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                               zi(jheavn-1+ncompn*(ino-1)+ifh),hea_fa(ilev),&
+                                               zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                               *forrep(j,ilev)*jac*ff(ino)
+                           end do
 !               ON ZAPPE LES TERMES DE PRESSION HEAVISIDE SI ON 
 !               EST SUR UN NOEUD SOMMET
-                               if (ino.le.nnos) pos=pos+1 
-                           end do
-                       end do
-                   end do
+                           if (ino.le.nnos) pos=pos+1 
+                        end do
+!               ON ZAPPE LES TERMES DE CONTACT DU MODELE HM-XFEM
+                        if (contac .ge. 2) then
+                           if (ino .le. nnos) pos = pos + ddlc
+                        endif
+                     end do
+                  end do
                else
-                   do ilev = 1, 2
+                  do ilev = 1, 2
 !
                       pos=0
                       if (nfe.gt.0) then
@@ -418,22 +420,22 @@ subroutine te0037(option, nomte)
                       do ino = 1, nno
 !
 !               TERME CLASSIQUE
-                         do j = 1, ndim
-                            pos=pos+1
-                            zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino)
-                         end do
+                        do j = 1, ndim
+                           pos=pos+1
+                           zr(ires-1+pos) = zr(ires-1+pos) + forrep( j,ilev) * jac * ff(ino)
+                        end do
 !
 !               TERME HEAVISIDE
-                         do j = 1, ndim
-                            do ifh = 1, nfh
-                               pos=pos+1
-                               zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
-                                                zi(jheavn-1+ncompn*(ino-1)+ifh),&
-                                                hea_fa(ilev),&
-                                                zi(jheavn-1+ncompn*(ino-1)+ncompn))&
-                                                * forrep(j,ilev) * jac * ff(ino)
-                            enddo
-                         end do
+                        do j = 1, ndim
+                           do ifh = 1, nfh
+                              pos=pos+1
+                              zr(ires-1+pos) = zr(ires-1+pos) + xcalc_heav(&
+                                               zi(jheavn-1+ncompn*(ino-1)+ifh),&
+                                               hea_fa(ilev),&
+                                               zi(jheavn-1+ncompn*(ino-1)+ncompn))&
+                                               * forrep(j,ilev) * jac * ff(ino)
+                           enddo
+                        end do
 !
 !               TERME SINGULIER
                          do 555 alp = 1, nfe*ndim
@@ -447,32 +449,34 @@ subroutine te0037(option, nomte)
 !
 !               ON SAUTE LES POSITIONS DES LAG DE CONTACT FROTTEMENT
 !
-                         if (contac .eq. 3) then
-                            if (ino .le. nnos) pos = pos + ddlc
-                         else
-                            pos = pos + ddlc
-                         endif
+                        if (contac .eq. 3) then
+                           if (ino .le. nnos) pos = pos + ddlc
+                        else
+                           pos = pos + ddlc
+                        endif
 !
-                      end do
-                   end do
+                     end do
+                  end do
                endif
            end do
        end do
 998    continue
+       jbasec = jbasec + ncompb
+       jptint = jptint + ncompp
     end do
 !
 !     SUPPRESSION DES DDLS SUPERFLUS
     if (pre1) then
         call xhmddl(ndim, nfh, nddls, nddl, nno, nnos,&
                     zi(jstno), .false._1, option, nomte, mat,&
-                    zr(ires), nddlm, nfiss, jfisno)
+                    zr(ires), nddlm, nfiss, jfisno, .false._1, contac)
     else
         call teattr('C', 'XLAG', lag, ibid)
         if (ibid .eq. 0 .and. lag .eq. 'ARETE') then
             nno = nnos
         endif
         call xteddl(ndim, nfh, nfe, ddls, nddl,&
-                    nno, nnos, zi(jstno), .false._1, lbid,&
+                    nno, nnos, zi(jstno), .false._1, .false._1,&
                     option, nomte, ddlm, nfiss, jfisno,&
                     vect=zr(ires))
     endif

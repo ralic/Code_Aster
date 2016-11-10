@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,7 +17,7 @@
 !
 interface
     subroutine xmele3(mesh , model , ligrel, nfiss, chelem,&
-                      param, option)
+                      param, option, list_func_acti)
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=*), intent(in) :: param
@@ -25,5 +25,6 @@ interface
         integer, intent(in) :: nfiss
         character(len=19), intent(in) :: chelem
         character(len=19), intent(in) :: ligrel
+        integer, intent(in) :: list_func_acti(*)
     end subroutine xmele3
 end interface

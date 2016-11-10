@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface 
     subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                       stano, matsym, option, nomte, mat,&
-                      vect, ddlm, nfiss, jfisno)
+                      vect, ddlm, nfiss, jfisno, lcontx, contac)
         integer :: ndim
         integer :: nfh
         integer :: ddls
@@ -34,7 +34,9 @@ interface
         real(kind=8) :: mat(*)
         real(kind=8) :: vect(*)
         integer :: ddlm
-        integer, intent(in) :: nfiss
-        integer, intent(in) :: jfisno
+        integer :: nfiss
+        integer :: jfisno
+        aster_logical :: lcontx
+        integer :: contac
     end subroutine xhmddl
 end interface 

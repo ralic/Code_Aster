@@ -1,18 +1,19 @@
 subroutine xitghm(modint, mecani, press1, ndim, nno,&
                   nnos, nnom, npi, npg, nddls,&
                   nddlm, dimuel, ddld, ddlm, nnop,&
-                  nnops, nnopm, ipoids, ivf, idfde, ddlp)
+                  nnops, nnopm, ipoids, ivf, idfde, ddlp,&
+                  ddlc)
     implicit none
 !
 #   include "asterfort/elrefe_info.h"
     integer :: mecani(5), press1(7)
     integer :: ndim, nnos, nno, nnom
     integer :: npi, npg, nddls, nddlm, dimuel
-    integer ::  ipoids, ivf, idfde
+    integer :: ipoids, ivf, idfde
     character(len=3) :: modint
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm, ddlp
+    integer :: ddld, ddlm, ddlp, ddlc
     integer :: nnop, nnops, nnopm
     character(len=8) :: fami(3), elrese(3)
 !
@@ -20,7 +21,7 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
     data    fami   /'BID','XINT','XINT'/
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,6 +58,7 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
 ! IPOIDS    POIDS D'INTEGRATION DU SS-ELEMENT QUADRATIQUE
 ! IVF       FONCTION DE FORME DU SS-ELEMENT QUADRATIQUE
 ! IDFDE     DERIVES DES FONCTIONS DE FORME DU SS-ELEMENT QUADRATIQUE
+! DDLC      NB DE DDL DE CONTACT
 ! =====================================================================
 ! ======================================================================
 ! --- DONNEES POUR XFEM ------------------------------------------------
@@ -66,13 +68,13 @@ subroutine xitghm(modint, mecani, press1, ndim, nno,&
 !
 !     RECUPERATION DES PTS DE GAUSS, DES NOEUDS ET FF DES SS-ELEMENTS
     call elrefe_info(elrefe=elrese(ndim), fami=fami(ndim), nno=nno, nnos=nnos,&
-                npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde)
+                     npg=npi, jpoids=ipoids, jvf=ivf, jdfde=idfde)
 !
 ! ======================================================================
 ! --- POUR METHODES CLASSIQUE ET LUMPEE NPG=NPI
 ! ======================================================================
     npg = npi
-    nddls = mecani(1)*ddld + press1(1)*ddlp
+    nddls = mecani(1)*ddld + press1(1)*ddlp + ddlc
     nddlm = mecani(1)*ddlm
     nnopm = nnop - nnops
     dimuel = nnops*nddls + nnopm*nddlm

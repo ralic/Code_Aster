@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,8 @@ interface
     subroutine xitghm(modint, mecani, press1, ndim, nno,&
                       nnos, nnom, npi, npg, nddls,&
                       nddlm, dimuel, ddld, ddlm, nnop,&
-                      nnops, nnopm, ipoids, ivf, idfde, ddlp)
+                      nnops, nnopm, ipoids, ivf, idfde, ddlp,&
+                      ddlc)
         character(len=3) :: modint
         integer :: mecani(5)
         integer :: press1(7)
@@ -41,5 +42,6 @@ interface
         integer :: ivf
         integer :: idfde
         integer :: ddlp
+        integer :: ddlc
     end subroutine xitghm
 end interface 

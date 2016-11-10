@@ -18,7 +18,7 @@
 interface
     subroutine nmfcon(modele, numedd, mate, fonact, ds_contact,&
                       ds_measure, valinc, solalg,&
-                      veelem, veasse)
+                      veelem, veasse, ds_constitutive)
         use NonLin_Datastructure_type
         character(len=24) :: modele
         character(len=24) :: numedd
@@ -30,5 +30,6 @@ interface
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
+        type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     end subroutine nmfcon
 end interface

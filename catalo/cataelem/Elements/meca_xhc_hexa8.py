@@ -844,7 +844,9 @@ class MECA_XHC_PENTA15(TemplateElement):
         )
     elrefe =(
             ElrefeLoc(MT.P15, gauss = ('RIGI=FPG21','NOEU=NOEU','XFEM=XFEM240','FPG1=FPG1',), mater=('RIGI','XFEM',),),
+            ElrefeLoc(MT.T10, gauss = ('XINT=FPG5','NOEU=NOEU',),),
             ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15','NOEU=NOEU',),),
+            ElrefeLoc(MT.TR6, gauss = ('FPG6=FPG6','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
             ElrefeLoc(MT.TR3, gauss = ('FPG4=FPG4','NOEU=NOEU','FPG6=FPG6','FPG7=FPG7','XCON=FPG12','SIMP=SIMP','GAUSS=FPG12',),),
         )
 

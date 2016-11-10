@@ -32,9 +32,11 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterfort/celces.h"
 #include "asterfort/codent.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/conare.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/elref2.h"
+#include "asterfort/elrfvf.h"
 #include "asterfort/exisd.h"
 #include "asterfort/iselli.h"
 #include "asterfort/jecrec.h"
@@ -52,6 +54,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xismec.h"
 #include "asterfort/xpoajc.h"
@@ -109,19 +112,23 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !
     integer :: nbch, ddlmax
-    parameter (nbch=14,ddlmax=27)
+    parameter (nbch=17,ddlmax=52)
 !
     integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in, l, jbaslo, ncmp
     integer :: jcesd(nbch), jcesv(nbch), jcesl(nbch), iad, jconx1, jconx2
+    integer :: ifisc, jfiss, kfiss
     integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
-    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm
-    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv
-    integer :: jcnse, iad4, iad3, itypel, nbelr, jhea
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn
-    integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi
-    integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2
-    integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter
-    integer :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg
+    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm, nfimax
+    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv, heavno(20,3)
+    parameter(nfimax=10)
+    integer :: jcnse, iad4, iad3, itypel, nbelr, jhea, fisc(2*nfimax)
+    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn, fisco(2*nfimax)
+    integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi, nfijon(3)
+    integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, lacthm(16)
+    integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter(4), vit(16)
+    integer :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg, nlachm(2)
+    integer :: nbar, ar(12,3), dec, ino1, ino2, iar, iad16, nli, ncompi, nvit
+    real(kind=8) :: lsno, ff(20), pinter(3)
     integer :: jstno
     integer :: nuflpg, nblfpg, nufgpg
     character(len=1) :: kbid
@@ -133,7 +140,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     character(len=32) :: noflpg
     aster_logical :: opmail, lmeca, pre1
     integer :: iad9, irese, nnose, tabse(6), ncomp, ncompn, ncompn_tmp
-    integer :: iviex, iret, jconq1, jconq2, jxc
+    integer :: iviex, iret, jconq1, jconq2, jxc, ncompa, nfisc, nfisc2
     integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
     integer, pointer :: maille(:) => null()
     integer, pointer :: cnsd(:) => null()
@@ -192,8 +199,11 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     chs(10) = '&&XPOMAX.PLONCH'
     chs(11) = '&&XPOMAX.PAIN'
     chs(12) = '&&XPOMAX.FHEAVN'
-    chs(13) = '&&XPOMAX.BASLOC'
-    chs(14) = '&&XPOMAX.STANO'
+    chs(13) = '&&XPOMAX.HEAVN0'
+    chs(14) = '&&XPOMAX.FISSC0'
+    chs(15) = '&&XPOMAX.PINT'
+    chs(16) = '&&XPOMAX.BASLOC'
+    chs(17) = '&&XPOMAX.STANO'
 !
 !
     call celces(mo//'.TOPOSE.PIN', 'V', chs(1))
@@ -240,17 +250,38 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     call jeveuo(chs(12)//'.CESV', 'E', jcesv(12))
     call jeveuo(chs(12)//'.CESL', 'L', jcesl(12))
 !
+    call jeexin(mo//'.HEAVNO    .CELD', ier)
+    if (ier .ne. 0) then
+        call celces(mo//'.HEAVNO', 'V', chs(13))
+        call jeveuo(chs(13)//'.CESD', 'L', jcesd(13))
+        call jeveuo(chs(13)//'.CESV', 'E', jcesv(13))
+        call jeveuo(chs(13)//'.CESL', 'L', jcesl(13))
+    endif
+!
+    call jeexin(mo//'.FISSCO    .CELD', ier)
+    if (ier .ne. 0) then
+        call celces(mo//'.FISSCO', 'V', chs(14))
+        call jeveuo(chs(14)//'.CESD', 'L', jcesd(14))
+        call jeveuo(chs(14)//'.CESV', 'E', jcesv(14))
+        call jeveuo(chs(14)//'.CESL', 'L', jcesl(14))
+    endif
+!
+    call celces(mo//'.TOPOFAC.PI', 'V', chs(15))
+    call jeveuo(chs(15)//'.CESD', 'L', jcesd(15))
+    call jeveuo(chs(15)//'.CESV', 'E', jcesv(15))
+    call jeveuo(chs(15)//'.CESL', 'L', jcesl(15))
+!
 !    call imprsd('CHAMP',mo//'.BASLOC',8,'VERIF :: BASLOC')
-    call celces(mo//'.BASLOC', 'V', chs(13))
-    call jeveuo(chs(13)//'.CESD', 'L', jcesd(13))
-    call jeveuo(chs(13)//'.CESV', 'L', jcesv(13))
-    call jeveuo(chs(13)//'.CESL', 'L', jcesl(13))
+    call celces(mo//'.BASLOC', 'V', chs(16))
+    call jeveuo(chs(16)//'.CESD', 'L', jcesd(16))
+    call jeveuo(chs(16)//'.CESV', 'L', jcesv(16))
+    call jeveuo(chs(16)//'.CESL', 'L', jcesl(16))
 !
 !    call imprsd('CHAMP',mo//'.STNO',8,'VERIF :: STNO')
-    call celces(mo//'.STNO', 'V', chs(14))
-    call jeveuo(chs(14)//'.CESD', 'L', jcesd(14))
-    call jeveuo(chs(14)//'.CESV', 'L', jcesv(14))
-    call jeveuo(chs(14)//'.CESL', 'L', jcesl(14))
+    call celces(mo//'.STNO', 'V', chs(17))
+    call jeveuo(chs(17)//'.CESD', 'L', jcesd(17))
+    call jeveuo(chs(17)//'.CESV', 'L', jcesv(17))
+    call jeveuo(chs(17)//'.CESL', 'L', jcesl(17))
 !
     do ich = 1, 4
         call jeveuo(chs(ich)//'.CESD', 'L', jcesd(ich))
@@ -463,6 +494,95 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !       NOMBRE DE FISSURES "VUES" DANS LA MAILLE
         nfiss = zi(jcesd(6)-1+5+4*(ima-1)+2)
+!
+!       CORRESPONDANCE ENTRE FISSURE ET DDL HEAVISIDE
+        call jeexin(mo//'.HEAVNO    .CELD', ier)
+        if (pre1) then
+           do ifiss = 1, nfiss
+              do j = 1, n
+                 if (ier .ne. 0) then
+                    call cesexi('C', jcesd(13), jcesl(13), ima, j,&
+                                ifiss, 1, iad3)
+                    if (iad3 .gt. 0) then
+                       heavno(j,ifiss)=zi(jcesv(13)-1+iad3)
+                    else
+                       heavno(j,ifiss)=1
+                    endif
+                 else
+                    heavno(j,ifiss)=1
+                 endif
+              end do
+           end do
+        else
+           do j = 1, 20
+              heavno(j,1:3)=0
+           end do
+        endif
+!
+!       CONNECTIVITE DES JONCTIONS DE FISSURES
+        nfijon(1:3) = 0
+        fisco(1:2*nfimax) = 0
+        fisc(1:2*nfimax) = 0
+        call jeexin(mo//'.FISSCO    .CELD', ier)
+        if (ier .ne. 0) then
+           do ifiss = 1, nfiss
+              call cesexi('C', jcesd(14), jcesl(14), ima, 1,&
+                          ifiss, 1, iad)
+              if (iad .gt. 0) then
+                 fisco(2*(ifiss-1)+1)= zi(jcesv(14)-1+iad)
+              endif
+              call cesexi('C', jcesd(14), jcesl(14), ima, 1,&
+                          ifiss, 2, iad)
+              if (iad .gt. 0) then
+                 fisco(2*ifiss) = zi(jcesv(14)-1+iad)
+              endif
+           end do
+!
+           do ifiss = 1, nfiss
+!
+              ifisc = ifiss
+              nfisc = 0
+ 80           continue
+              if (fisco(2*ifisc-1) .gt. 0) then
+!       STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+                 nfisc = nfisc+1
+                 fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+                 ifisc = fisco(2*ifisc-1)
+                 fisc(2*(nfisc-1)+1) = ifisc
+                 goto 80
+              endif
+!
+              nfisc2 = 0
+              do jfiss = ifiss+1, nfiss
+!       STOCKAGE DES FISSURES QUI SE BRANCHENT SUR IFISS
+                 kfiss = fisco(2*jfiss-1)
+                 do k = nfisc+1, nfisc+nfisc2
+                    if (fisc(2*(k-1)+1) .eq. kfiss) then
+                       nfisc2 = nfisc2 + 1
+                       fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                       fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
+                    endif
+                 end do
+                 if (kfiss .eq. ifiss) then
+                    nfisc2 = nfisc2 + 1
+                    fisc(2*(nfisc+nfisc2-1)+1) = jfiss
+                    fisc(2*(nfisc+nfisc2)) = fisco(2*jfiss)
+                 endif
+              end do
+!       ON NOTE LE NUMERO DE LA PREMIERE FISSURE BRANCHEE SUR IFISS EN CAS DE
+!       JONCTION
+              ASSERT(nfisc2.le.2) 
+              if (nfisc2.gt.0) then
+                 nfijon(1) = ifiss
+                 do kfiss = 1, nfisc2
+                    nfijon(1+kfiss) = fisc(2*(nfisc+kfiss-1)+1)
+                 end do
+              endif
+              if (nfisc2.eq.1) nfijon(3)=nfijon(2)
+           end do
+
+        endif
+!
 !       NOMBRE DE COMPOSANTE DE LA TOPOSE.HEA
         ncomp = zi(jcesd(4)-1+5+4*(ima-1)+3)
 !
@@ -550,17 +670,16 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
         endif
 !
 !       RECUPERATION DU NOMBRE DE POINTS D'INTERSECTION
-!       SUR LES MAILLES PORTEUSES DE DDL DE CONTACT
+!       PAR FISSURE SUR LES MAILLES PORTEUSES DE DDL DE CONTACT
 !
-        call cesexi('C', jcesd(10), jcesl(10), ima, 1,&
-                    1, 1, iad10)
-!        IF (IAD10.GT.0) THEN
-        ninter=zi(jcesv(10)-1+iad10)
+        do ifiss = 1, nfiss
+           call cesexi('C', jcesd(10), jcesl(10), ima, 1,&
+                       ifiss, 1, iad10)
+           ninter(ifiss)=zi(jcesv(10)-1+iad10)
+        end do
         call cesexi('C', jcesd(11), jcesl(11), ima, 1,&
                     1, 1, iad11)
-!        ELSE
-!          NINTER =0
-!        ENDIF
+        ncompa = zi(jcesd(11)-1+5+4*(ima-1)+3)
 !
 !       RECUPERATION DE LA CONNECTIVITE DES SOUS-ELEMENTS
         call cesexi('C', jcesd(2), jcesl(2), ima, 1,&
@@ -597,6 +716,53 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                 zr(jlst-1+(j-1)*nfiss+ifiss) = zr(jcesv(7)-1+iad)
             end do
         end do
+!
+!       POUR LES JONCTIONS HM-XFEM, ON CONSTRUIT LACT
+        nlachm(1:2) = 0
+        lacthm(1:16) = 0
+        vit(1:16) = 0
+        if (pre1 .and. nfijon(1).ne.0 .and. ndim.eq.ndime .and. .not.opmail) then
+           call cesexi('C', jcesd(15), jcesl(15), ima, 1,&
+                       1, 1, iad16)
+           ncompi = zi(jcesd(15)-1+5+4*(ima-1)+3)
+           call conare(typma, ar, nbar)
+           do nli = 1, ninter(nfijon(1))
+              call vecini(3,0.d0,pinter)
+              do j = 1, ndim
+                 pinter(j) = zr(jcesv(15)-1-1+iad16+ncompi*(nfijon(1)-1)+ndim*(nli-1)+j)
+              end do
+              call vecini(20,0.d0,ff)
+              call elrfvf(elrefp, pinter, 20, ff, n)
+              lsno = 0.d0
+              do j = 1, n
+                 lsno = lsno+ff(j)*zr(jlsn-1+(j-1)*nfiss+nfijon(2))
+              end do
+              dec = 0
+              if (lsno.gt.-1.d-8) dec=8
+              iar=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+1))
+              ino=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+2))
+              nvit=int(zr(jcesv(11)-1-1+iad11+ncompa*(nfijon(1)-1)+5*(nli-1)+5))
+              if (ino .gt. 0) then
+                 lacthm(ino+dec)=nli
+              else if (iar.gt.0) then
+                 ino1=ar(iar,1)
+                 ino2=ar(iar,2)
+                 if (nvit .eq. 1) then
+                    lacthm(ino1+dec)=nli
+                    vit(ino1+dec)=1
+                    lacthm(ino2+dec)=nli
+                    vit(ino2+dec)=1
+                 else
+                    if (vit(ino1+dec) .eq. 0) lacthm(ino1+dec)=nli
+                    if (vit(ino2+dec) .eq. 0) lacthm(ino2+dec)=nli
+                 endif
+              endif
+           end do
+           do ino = 1, 8
+              if (lacthm(ino) .ne. 0) nlachm(1)=nlachm(1)+1
+              if (lacthm(ino+8) .ne. 0) nlachm(2)=nlachm(2)+1
+           end do
+        endif
 !
 !       RECUPERATION DE LA CONNECTIVITÉ DES FISSURES
         if (.not.opmail .and. nfh .gt. 0) then
@@ -641,31 +807,31 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !
 !       RECUPERATION DE LA BASE LOCALE EN FOND DE FISSURE ET DU STATUT DES NOEUDS
         if (.not.opmail .and. (nfh+nfe) .gt. 0) then
-          ncmp = zi(jcesd(14)-1+5+4*(ima-1)+3)
+          ncmp = zi(jcesd(17)-1+5+4*(ima-1)+3)
           stano='&&XPOAJD.STANO'
           call wkvect(stano, 'V V I', n, jstno)
           if (ncmp.gt.0) then
             do j = 1, n
-              call cesexi('C', jcesd(14), jcesl(14), ima, j,&
+              call cesexi('C', jcesd(17), jcesl(17), ima, j,&
                            1, 1, iad)
               ASSERT(iad.gt.0)
-              zi(jstno-1+j)=zi(jcesv(14)-1+iad)
+              zi(jstno-1+j)=zi(jcesv(17)-1+iad)
             enddo
           else
              zi(jstno:(jstno-1+n))=-99
           endif
         endif
         if (.not.opmail .and. nfe .gt. 0) then
-          ncmp = zi(jcesd(13)-1+5+4*(ima-1)+3)
+          ncmp = zi(jcesd(16)-1+5+4*(ima-1)+3)
           basloc='&&XPOAJD.BASLOC'
           call wkvect(basloc, 'V V R', 3*ndim*n, jbaslo)
           if (ncmp.gt.0) then
             do j = 1, n
               do l = 1, 3*ndim
-                 call cesexi('C', jcesd(13), jcesl(13), ima, j,&
+                 call cesexi('C', jcesd(16), jcesl(16), ima, j,&
                               1, l, iad)
                  ASSERT(iad.gt.0)
-                 zr(jbaslo-1+(j-1)*3*ndim+l)=zr(jcesv(13)-1+iad)
+                 zr(jbaslo-1+(j-1)*3*ndim+l)=zr(jcesv(16)-1+iad)
               enddo
             enddo
           else
@@ -719,7 +885,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
 !         BOUCLE D'INTEGRATION SUR LES NSE SOUS-ELEMENTS
         do ise = 1, nse
             do ifiss = 1, nfiss
-                zi(jhea-1+ifiss) = zi(jcesv(4)-1+iad4-1+ncomp*(ifiss- 1)+ise)
+                zi(jhea-1+ifiss) = zi(jcesv(4)-1+iad4-1+ncomp*(ifiss-1)+ise)
             end do
             jcnse = jcesv(2)-1+iad2
             call xpoajm(maxfem, jtypm2, itypse(ndime+irese), jcnse, ise,&
@@ -729,11 +895,12 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
                         ndim, ndime, jconx1, jconx2, jconq1,&
                         jconq2, ima, iad1+jcesv(1)-1, nnn, inn,&
                         inntot, nbnoc, nbnofi, inofi, iacoo1,&
-                        iacoo2, iad9+jcesv(9)-1, ninter, jcesv( 11)+iad11-1, elrefp,&
-                        jlsn, jlst, typma, igeom, jheavn, ncompn, &
+                        iacoo2, iad9+jcesv(9)-1, ninter, jcesv( 11)+iad11-1,&
+                        ncompa, elrefp, jlsn, jlst, typma, igeom, jheavn, ncompn, &
                         zi(jxc), cmp, nbcmp, nfh, nfe,&
                         ddlc, jcnsv1, jcnsv2, jcnsl2, lmeca,&
-                        pre1, jbaslo, jstno, ka, mu)
+                        pre1, heavno, fisco, nlachm, lacthm,&
+                        jbaslo, jstno, ka, mu)
             if (.not.opmail) then
                 if (tysd(1:9) .ne. 'MODE_MECA' .and. tysd(1:9) .ne. 'EVOL_THER') then
 !
@@ -799,7 +966,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac,&
     do ich = 1, 4
         call detrsd('CHAM_ELEM_S', chs(ich))
     end do
-    do ich = 6, 11
+    do ich = 6, 17
         call detrsd('CHAM_ELEM_S', chs(ich))
     end do
 !

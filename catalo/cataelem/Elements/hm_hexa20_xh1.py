@@ -241,7 +241,7 @@ class HM_HEXA20_XH1(Element):
         ElrefeLoc(MT.T10, gauss = ('XINT=FPG15', 'NOEU=NOEU',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'FPG4=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -370,7 +370,7 @@ class HM_HEXA20_XH1(Element):
                      OP.FULL_MECA.PPMILTO, E792NEUT),
                      (OP.FULL_MECA.PSTANO, STANO_I), (SP.PVARCMR, LC.ZVARCPG),
                      (OP.FULL_MECA.PVARCPR, LC.ZVARCPG), (
-                     SP.PVARCRR, LC.ZVARCPG),
+                     SP.PVARCRR, LC.ZVARCPG), (SP.PHEAVNO, LC.FISNO_I),
                      (OP.FULL_MECA.PVARIMR, ZVARIPG), ),
                      para_out=(
                      (SP.PCODRET, LC.ECODRET), (OP.FULL_MECA.PCONTPR, ECONTPG),
@@ -646,7 +646,7 @@ class HM_PENTA15_XH1(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -672,7 +672,7 @@ class HM_PYRAM13_XH1(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -695,7 +695,7 @@ class HM_TETRA10_XH1(HM_HEXA20_XH1):
         ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15', 'MASS=FPG15',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -722,7 +722,7 @@ class HM_HEXA20_XH2(HM_HEXA20_XH1):
         ElrefeLoc(MT.T10, gauss = ('XINT=FPG15', 'NOEU=NOEU',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'FPG4=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -748,7 +748,7 @@ class HM_PENTA15_XH2(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -774,7 +774,7 @@ class HM_PYRAM13_XH2(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -797,7 +797,7 @@ class HM_TETRA10_XH2(HM_HEXA20_XH1):
         ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15', 'MASS=FPG15',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -824,7 +824,7 @@ class HM_HEXA20_XH3(HM_HEXA20_XH1):
         ElrefeLoc(MT.T10, gauss = ('XINT=FPG15', 'NOEU=NOEU',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'FPG4=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -850,7 +850,7 @@ class HM_PENTA15_XH3(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -876,7 +876,7 @@ class HM_PYRAM13_XH3(HM_HEXA20_XH1):
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
@@ -899,7 +899,7 @@ class HM_TETRA10_XH3(HM_HEXA20_XH1):
         ElrefeLoc(MT.TE4, gauss = ('XINT=FPG15', 'MASS=FPG15',),),
         ElrefeLoc(
             MT.TR6, gauss = (
-                'RIGI=FPG6', 'MASS=FPG6', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
+                'RIGI=FPG6', 'MASS=FPG6', 'FPG4=FPG4' , 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),
         ElrefeLoc(
             MT.TR3, gauss = (
                 'MASS=FPG4', 'NOEU=NOEU', 'FPG6=FPG6', 'FPG7=FPG7', 'XCON=FPG12',),),

@@ -32,7 +32,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
 #include "asterfort/jeveuo.h"
     integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(*)
     integer :: ddlc
-    aster_logical :: lmeca, pre1, press, press1
+    aster_logical :: lmeca, pre1, press, press1, pref, lagf
     character(len=8) :: elrefp
     character(len=19) :: cns1
 !
@@ -84,12 +84,18 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
     contas=.true.
     press=.true.
     press1 = .true.
+    pref=.true.
+    lagf=.true.
     call elelin(1, elrefp, k8bid, ibid, nnos)
 !
     do 21 i = 1, nbcmp
         nomcmp = cnsc(i)
 !
-        if (nomcmp(1:4) .eq. 'LAGS') then
+        if (nomcmp(1:4) .eq. 'LAGS' .or. nomcmp(1:4) .eq. 'LAG2' .or.&
+            nomcmp(1:4) .eq. 'LAG3' .or. nomcmp(1:4) .eq. 'LAG4' .or.&
+            nomcmp(1:2) .eq. 'D1' .or. nomcmp(1:2) .eq. 'V1' .or.&
+            nomcmp(1:2) .eq. 'D2' .or. nomcmp(1:2) .eq. 'V2' .or.&
+            nomcmp(1:2) .eq. 'D3' .or. nomcmp(1:2) .eq. 'V3') then
             do 22 k = 1, nnos
                 if (.not. exist(k,i)) contas=.false.
  22         continue
@@ -104,20 +110,37 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
         endif
 !
         if (nomcmp(1:6).eq.'H1PRE1' .or. nomcmp(1:6).eq.'H2PRE1' .or.&
-            nomcmp(1:6).eq.'H3PRE1' .or. nomcmp(1:6).eq.'H4PRE1') then
+            nomcmp(1:6).eq.'H3PRE1') then
            do 24 k = 1, nnos
               if (.not.exist(k,i)) press1 = .false.
  24        continue
              if (press1) goto 1
         endif
 !
-        do 25 j = 1, n
+        if (nomcmp(1:7).eq.'PRE_FLU' .or. nomcmp(1:7).eq.'PR2_FLU' .or.&
+            nomcmp(1:7).eq.'PR3_FLU') then
+           do 25 k = 1, nnos
+              if (.not.exist(k,i)) pref = .false.
+ 25        continue
+             if (pref) goto 1
+        endif
+!
+        if (nomcmp(1:6).eq.'LAG_FL' .or. nomcmp(1:6).eq.'LA2_FL' .or.&
+            nomcmp(1:6).eq.'LA3_FL') then
+           do 26 k = 1, nnos
+              if (.not.exist(k,i)) lagf = .false.
+ 26        continue
+             if (lagf) goto 1
+        endif
+        
+        do 29 j = 1, n
             if (.not.exist(j,i)) goto 21
- 25     continue
+ 29     continue
 !
   1     continue
 !
-        if (nomcmp(1:1) .eq. 'D' .or. nomcmp(1:1) .eq. 'T') then
+        if (nomcmp(1:2) .eq. 'DX' .or. nomcmp(1:2) .eq. 'DY' .or.&
+            nomcmp(1:2) .eq. 'DZ' .or. nomcmp(1:1) .eq. 'T') then
             ipos = ipos +1
             ndc = ndc +1
             cmp(ipos)=i
@@ -135,7 +158,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
         endif
         if (pre1) then
            if (nomcmp(1:6).eq.'H1PRE1' .or. nomcmp(1:6).eq.'H2PRE1' .or.&
-               nomcmp(1:6).eq.'H3PRE1' .or. nomcmp(1:6).eq.'H4PRE1') then
+               nomcmp(1:6).eq.'H3PRE1') then
              ipos = ipos + 1
              cmp(ipos) = i
            endif
@@ -152,11 +175,43 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
             ipos = ipos +1
             cmp(ipos)=i
         endif
-        if (nomcmp(1:3) .eq. 'LAG') then
-            ipos=ipos+1
-            ddlc=ddlc+1
-            cmp(ipos)=i
+        if (.not.pre1) then 
+           if (nomcmp(1:3) .eq. 'LAG') then
+              ipos=ipos+1
+              ddlc=ddlc+1
+              cmp(ipos)=i
+           endif
         endif
+        if (pre1) then 
+           if (nomcmp(1:7).eq.'PRE_FLU' .or. nomcmp(1:7).eq.'PR2_FLU'&
+               .or. nomcmp(1:7).eq.'PR3_FLU') then 
+             ipos=ipos+1
+             ddlc=ddlc+1
+             cmp(ipos)=i
+           endif
+           if (nomcmp(1:6).eq.'LAG_FL' .or. nomcmp(1:6).eq.'LA2_FL'&
+               .or. nomcmp(1:6).eq.'LA3_FL') then 
+             ipos=ipos+1
+             ddlc=ddlc+1
+             cmp(ipos)=i
+           endif
+           if (nomcmp(1:4).eq.'LAGS' .or. nomcmp(1:4).eq.'LAG2' .or.&
+               nomcmp(1:4).eq.'LAG3') then
+              ipos=ipos+1
+              ddlc=ddlc+1
+              cmp(ipos)=i
+           endif
+           if (nomcmp(1:2).eq.'D1' .or. nomcmp(1:2).eq.'D2' .or. nomcmp(1:2).eq.'D3') then
+              ipos=ipos+1
+              ddlc=ddlc+1
+              cmp(ipos)=i
+           endif
+           if (nomcmp(1:2).eq.'V1' .or. nomcmp(1:2).eq.'V2' .or. nomcmp(1:2).eq.'V3') then
+              ipos=ipos+1
+              ddlc=ddlc+1
+              cmp(ipos)=i
+           endif
+        endif    
 !
  21 continue
 !

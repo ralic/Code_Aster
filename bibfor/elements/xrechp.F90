@@ -161,12 +161,12 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps,&
             if (ndim .eq. 3) then
                 call xjacff(elrefp, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, ipgf, nnop,&
-                            igeom, jbasec, xg, jac, ff,&
+                            nnop, igeom, jbasec, xg, jac, ff,&
                             r27bid, dfbid, nd, r3bid, r3bid)
             else if (ndim.eq.2) then
                 call xjacf2(elrefp, elrefc, elc, ndim, fpg,&
                             jptint, ifa, cface, nptf, ipgf,&
-                            nnop, igeom, jbasec, xg, jac,&
+                            nnop, nnop, igeom, jbasec, xg, jac,&
                             ff, r27bid, dfbid, nd, r3bid)
             endif
 !

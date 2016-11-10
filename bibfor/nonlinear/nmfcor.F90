@@ -145,7 +145,7 @@ implicit none
     if (leltc) then
         call nmfocc('CONVERGENC', modele    , mate  , numedd, fonact,&
                     ds_contact  , ds_measure, solalg, valinc, veelem,&
-                    veasse)
+                    veasse, ds_constitutive)
     endif
 !
 ! --- OPTION POUR MERIMO

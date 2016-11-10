@@ -2,7 +2,8 @@ subroutine nmelco_prep(phase    , calc_type,&
                        mesh     , model    , mate     , ds_contact,&
                        disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                        nbin     , lpain    , lchin    ,&
-                       option   , ccohes_  , xcohes_  )
+                       option   , list_func_acti, time_prev, time_curr , ds_constitutive,&
+                       ccohes_  , xcohes_  )
 !
 use NonLin_Datastructure_type
 !
@@ -11,6 +12,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/megeom.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/xmchex.h"
@@ -48,6 +50,10 @@ implicit none
     character(len=8), intent(out) :: lpain(nbin)
     character(len=19), intent(out) :: lchin(nbin)
     character(len=16), intent(out) :: option
+    integer, intent(in) :: list_func_acti(*)
+    character(len=19), intent(in) :: time_prev
+    character(len=19), intent(in) :: time_curr
+    type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), optional, intent(out) :: ccohes_
     character(len=19), optional, intent(out) :: xcohes_
 !
@@ -71,6 +77,10 @@ implicit none
 ! In  acce_prev        : acceleration at beginning of current time
 ! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! In  nbin             : number of input fields
+! In  list_func_acti   : list of active functionnalities
+! In  time_prev        : previous time
+! In  time_curr        : current time
+! In  ds_constitutive  : datastructure for constitutive laws management
 ! Out lpain            : list of parameters for input fields
 ! Out lchin            : list of input fields
 ! Out option           : name of option
@@ -85,7 +95,8 @@ implicit none
     character(len=19) :: heavno=' ', hea_no=' ', hea_fa=' '
     character(len=19) :: pinter=' ', ainter=' ', cface =' ', faclon=' ', baseco=' '
     character(len=19) :: xdonco=' ', xindco=' ', xseuco=' ', xcohes=' ', basefo=' '
-    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac, l_xfem_czm
+    character(len=19) :: fisco =' '
+    aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac, l_xfem_czm, l_xthm
     integer, pointer :: v_model_xfemcont(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -100,6 +111,7 @@ implicit none
     l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
+    l_xthm         = isfonc(list_func_acti,'THM')
 !
 ! - Select option
 !
@@ -187,6 +199,7 @@ implicit none
         hea_no = model(1:8)//'.TOPONO.HNO'
         hea_fa = model(1:8)//'.TOPONO.HFA'
         basefo = model(1:8)//'.BASLOC'
+        fisco  = model(1:8)//'.FISSCO'
         if (l_cont_xfem_gg) then
             cpoint = ds_contact%sdcont_solv(1:14)//'.XFPO'
             stano  = ds_contact%sdcont_solv(1:14)//'.XFST'
@@ -278,7 +291,19 @@ implicit none
       lpain(30) = 'PBASLOR'
       lchin(30) =  basefo
     endif
-    ASSERT(30.le.nbin)
+    if (l_xthm) then
+    lpain(31) = 'PINSTMR'
+    lchin(31) = time_prev
+    lpain(32) = 'PINSTPR'
+    lchin(32) = time_curr
+    lpain(33) = 'PCARCRI'
+    lchin(33) = ds_constitutive%carcri(1:19)
+    lpain(34) = 'PCOMPOR'
+    lchin(34) = ds_constitutive%compor(1:19)
+    lpain(35) = 'PFISCO'
+    lchin(35) = fisco
+    endif
+    ASSERT(35.le.nbin)
 !
 ! - Prepare output field for XFEM/CZM
 !

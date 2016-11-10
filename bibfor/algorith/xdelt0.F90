@@ -11,10 +11,10 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
 #include "asterfort/xnormv.h"
     character(len=8) :: elrefp
     integer :: ndime
-    integer, intent(in), optional :: arete
     real(kind=8) :: tabls(*), ksi, delta, ptxx(*)
+    integer, intent(in), optional :: arete
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

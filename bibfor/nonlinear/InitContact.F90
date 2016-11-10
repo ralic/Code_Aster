@@ -148,7 +148,8 @@ implicit none
         if (l_form_xfem) then
             ds_contact%field_input = ds_contact%sdcont_solv(1:14)//'.CHML'
             if (l_edge_elim) then
-                call xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela)
+                call xrela_elim(mesh, ds_contact, iden_rela, l_iden_rela,&
+                                model)
             else
                 call jeexin(sdcont(1:8)//'.CHME.LIGRE.LGRF', i_exist)
                 ds_contact%l_dof_rela = i_exist .gt. 0

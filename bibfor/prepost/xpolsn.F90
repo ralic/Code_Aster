@@ -1,7 +1,7 @@
 subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                   ima, iad, igeom, nfiss, ndime,&
-                  ndim, jconx1, jconx2, co, lsn,&
-                  lst)
+                  ndim, jconx1, jconx2, fisco, co,&
+                  lsn, lst)
 ! aslint: disable=W1306
     implicit none
 !
@@ -11,7 +11,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 #include "asterfort/vecini.h"
 #include "asterfort/xpoffo.h"
     integer :: n, jlsn, jlst, ndim, ndime, ino, nfiss
-    integer :: iad, igeom, ima, jconx1, jconx2
+    integer :: iad, igeom, ima, jconx1, jconx2, fisco(*)
     character(len=8) :: elrefp
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
@@ -52,13 +52,14 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
 !     JCONX2 : LONGUEUR CUMULEE DE LA CONNECTIVITE DU MAILLAGE SAIN
 !              (CONNECTIVITE QUADRATIQUE SI LAGRANGES DE CONTACT
 !              AUX ARETES)
+!     FISCO  : CONNECTIVITE FISSURE/DDL
 !   OUT
 !     CO     : COORDONNEES DU NOEUD OU DU POINT
 !     LSN    : LEVEL SET NORMALE DU NOEUD OU DU POINT
 !     LST    : LEVEL SET TANGENTE DU NOEUD OU DU POINT
 !
-    real(kind=8) :: ff(n)
-    integer :: i, ifiss
+    real(kind=8) :: ff(n), somlsn(nfiss)
+    integer :: i, j, ifiss, ifisc, nfisc, fisc(2*nfiss)
 !
     call jemarq()
     call vecini(3, 0.d0, co)
@@ -71,8 +72,29 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
         co(3)=zr(iad-1+3*(i-1)+3)
 !
         do 23 ifiss = 1, nfiss
+!
             lsn(ifiss) = zr(jlsn-1+nfiss*(ino-1)+ifiss)
             lst(ifiss) = zr(jlst-1+nfiss*(ino-1)+ifiss)
+!
+!     TRAITEMENT SPECIAL POUR LES JONCTIONS
+            do i = 1, 2*nfiss
+               fisc(i) = 0
+            end do
+            ifisc = ifiss
+            nfisc = 0
+ 80         continue
+            if (fisco(2*ifisc-1) .gt. 0) then
+!     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+               nfisc = nfisc+1
+               fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+               ifisc = fisco(2*ifisc-1)
+               fisc(2*(nfisc-1)+1) = ifisc
+               goto 80
+            endif
+            do i = 1, nfisc
+               if (fisco(2*i)*zr(jlsn-1+(ino-1)*nfiss+fisco(2*i-1)) .gt. 0) lsn(ifiss) = 1.d0
+            end do
+!
 23      continue
 !
 !     CAS D'UN POINT D'INTERSECTION OU D'UN POINT MILIEU
@@ -86,6 +108,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                     co, ff)
 !
         do 35 ifiss = 1, nfiss
+!
             lsn(ifiss) = 0.d0
             lst(ifiss) = 0.d0
             do 30 i = 1, n
@@ -94,6 +117,32 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst,&
                 lst(ifiss)=lst(ifiss)+zr(jlst-1+nfiss*(i-1)+ifiss)*ff(&
                 i)
 30          continue
+!
+!     TRAITEMENT SPECIAL POUR LES JONCTIONS
+            do i = 1, 2*nfiss
+               fisc(i) = 0
+            end do
+            ifisc = ifiss
+            nfisc = 0
+ 90         continue
+            if (fisco(2*ifisc-1) .gt. 0) then
+!     STOCKAGE DES FISSURES SUR LESQUELLES IFISS SE BRANCHE
+               nfisc = nfisc+1
+               fisc(2*(nfisc-1)+2) = fisco(2*ifisc)
+               ifisc = fisco(2*ifisc-1)
+               fisc(2*(nfisc-1)+1) = ifisc
+               goto 90
+            endif
+            call vecini(nfisc+1, 0.d0, somlsn)
+            do i = 1, n
+                do j = 1, nfisc
+                    somlsn(j)=somlsn(j)+ff(i)*zr(jlsn-1+(i-1)*nfiss+fisco(2*j-1))
+                end do
+            end do
+            do i = 1, nfisc
+               if (fisco(2*i)*somlsn(i) .gt. 0) lsn(ifiss) = 1.d0
+            end do
+!
 35      continue
 !
     endif   

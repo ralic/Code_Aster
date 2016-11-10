@@ -1,5 +1,5 @@
 subroutine xmele1(mesh  , model, ds_contact, ligrel, nfiss,&
-                  chelem, param, option)
+                  chelem, param, option,   list_func_acti)
 !
 use NonLin_Datastructure_type
 !
@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/infdbg.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -30,7 +31,7 @@ implicit none
 #include "asterfort/xxconi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,6 +56,7 @@ implicit none
     character(len=19), intent(in) :: ligrel
     character(len=*), intent(in) :: param
     character(len=*), intent(in) :: option
+    integer, intent(in) :: list_func_acti(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -67,6 +69,7 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  model            : name of model
 ! In  ds_contact       : datastructure for contact management
+! In  list_func_acti   : list of active functionnalities
 ! IN  NFISS  : NOMBRE TOTAL DE FISSURES
 ! IN  LIGREL : NOM DU LIGREL DES MAILLES TARDIVES
 ! IN  CHELEM : NOM DU CHAM_ELEM A CREER
@@ -79,18 +82,20 @@ implicit none
     integer :: ifima, jcesd1, jcesl1
     integer :: ndim, nface, nfisc, nnint, npg, typint, nfisc2
     integer :: nbma, nmaenr, jcesd2, jcesl2
-    character(len=8) :: nomfis, nomgd, elc, nomfi2
+    character(len=8) :: nomfis, nomgd, elc, nomfi2, licmp3(3), licmp5(5)
     integer :: jcesl, jcesv, jcesd, ncmp, icmp
     character(len=24) :: grp
     integer :: jgrp, iret, jnbsp, ifiss
-    aster_logical :: vall, isint
+    aster_logical :: vall, isint, lxthm
     character(len=19) :: chelsi, cmafis, faclon, chnbsp
     real(kind=8) :: valr
     character(len=8), pointer :: fiss(:) => null()
     character(len=8), pointer :: cesv1(:) => null()
     integer, pointer :: cesv2(:) => null()
     integer, pointer :: xfem_cont(:) => null()
-    character(len=8), parameter :: licmp3(3) = (/ 'X1', 'X2', 'X3'/)
+!
+    data licmp3    / 'X1', 'X2', 'X3'/
+    data licmp5    / 'X1', 'X2', 'X3', 'X4', 'X5'/
 !
 ! ----------------------------------------------------------------------
 !
@@ -116,10 +121,16 @@ implicit none
 !
 ! --- ELEMENT DE REFERENCE ASSOCIE A UNE FACETTE DE CONTACT
 !
+    lxthm=isfonc(list_func_acti,'THM')
+!
     if (ndim .eq. 3) then
-        elc='TR3'
+        if (lxthm) then
+            elc='TR6'
+        else
+            elc='TR3'
+        endif
     else if (ndim.eq.2) then
-        if (xfem_cont(1) .le. 2) then
+        if (xfem_cont(1) .le. 2 .and. .not.lxthm) then
             elc='SE2'
         else
             elc='SE3'
@@ -136,7 +147,11 @@ implicit none
     endif
 !
     if (param .eq. 'PCOHES') then
-        ncmp = 3
+       if (lxthm) then 
+          ncmp = 5
+       else 
+          ncmp = 3
+       endif
     else
         ncmp = 1
     endif
@@ -213,8 +228,13 @@ implicit none
         end do
 !
         if (param .eq. 'PCOHES') then
-            call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
-                        ncmp, licmp3, [-1], zi( jnbsp), [-ncmp])
+           if (lxthm) then
+              call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
+                          ncmp, licmp5, [-1], zi( jnbsp), [-ncmp])
+           else
+              call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
+                          ncmp, licmp3, [-1], zi( jnbsp), [-ncmp])
+           endif
         else
             call cescre('V', chelsi, 'ELEM', mesh, nomgd,&
                         1, 'X1', [-1], zi( jnbsp), [-ncmp])

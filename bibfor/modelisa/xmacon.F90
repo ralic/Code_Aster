@@ -1,7 +1,7 @@
 subroutine xmacon(char, noma, nomo)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -222,7 +222,7 @@ subroutine xmacon(char, noma, nomo)
             if (enr(2:2) .eq. 'T') statut = 2
             if (enr(3:3) .eq. 'T') statut = 3
 !
-! --- ON VERIFIE QUE LA MAILLE EST LINEAIRE SI 3D OU CRACK TIP
+! --- ON VERIFIE QUE LA MAILLE EST LINEAIRE SI CRACK TIP
             itypma = zi(jtypma-1+ima)
             call jenuno(jexnum('&CATA.TM.NOMTM', itypma), typma)
             lmalin = ismali(typma)
