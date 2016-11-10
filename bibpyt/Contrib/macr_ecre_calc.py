@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: marina.bottoni at edf.fr
 
 
 from Cata import cata
@@ -147,7 +146,7 @@ MACR_ECRE_CALC=MACRO(nom="MACR_ECRE_CALC",
            b_ecou_gele         =BLOC(condition="ECOULEMENT=='GELE'",fr=tr("Modele d'ecoulement gele"),
              PRESS_EBULLITION    =SIMP(statut='o',typ='R',fr=tr("Pression d'ebullition [corrp*psat(t)]")),
            ),
-           FROTTEMENT          =SIMP(statut='o',typ='I',into=(-4,-3,-2,-1,0,1,2,3,4,11,12,13,14),fr=tr("Correlation de frottement [ifrot]")),
+           FROTTEMENT          =SIMP(statut='o',typ='I',into=(-4,-3,-2,-1,0,1,2,3,4,11,12,13,14,21,22,23,24),fr=tr("Correlation de frottement [ifrot]")),
            b_frottement        =BLOC(condition="FROTTEMENT<0",fr=tr("Modele d'ecoulement gele"),
              REYNOLDS_LIM        =SIMP(statut='o',typ='R',fr=tr("Coefficient de Reynolds limite [relim]")),
              FROTTEMENT_LIM      =SIMP(statut='o',typ='R',fr=tr("Coefficient de frottement impose [frtlim]")),
@@ -180,7 +179,7 @@ MACR_ECRE_CALC=MACRO(nom="MACR_ECRE_CALC",
          COURBES            =SIMP(statut='f',typ='TXM',into=("INTERACTIF","POSTSCRIPT","AUCUNE"),defaut="AUCUNE",
                                   fr=tr("Generation eventuelle des courbes") ),
          LOGICIEL           =SIMP(statut='f',typ='TXM',validators=LongStr(1,255),),
-         VERSION            =SIMP(statut='f',typ='TXM',into = ("3.2.1",) ),
+         VERSION            =SIMP(statut='f',typ='TXM',into = ("3.2.2",) ),
          ENTETE             =SIMP(statut='f',typ='TXM',max='**',defaut="Titre du calcul Ecrevisse" ),
          IMPRESSION         =SIMP(statut='f',typ='TXM',defaut='NON',into=( 'OUI','NON') ),
          INFO               =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),

@@ -24,10 +24,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-Npos = 4
-
 # Tested options for friction coefficient
 lst_frot = (11,12,13,14)
+Npos = len(lst_frot)
 
 # Other Ecrevisse options
 ichal  = 2
@@ -48,10 +47,10 @@ VTRECRE = (1.995935E+01, 1.994826E+01, 1.989370E+01, 1.989488E+01)
 ## -------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
 
 # Non regression values for total flow
-VQCALC = (1.382554E-03,4.453095E-03, 0.03789454, 0.03809811)
+VQCALC = (0.001381964,0.004451222, 0.03788347, 0.03809127)
 
 # Non regression values for temperature
-VTCALC  = (19.95935 , 19.94827, 19.89362, 19.89481,)
+VTCALC  = (19.95935 , 19.94827, 19.89365, 19.89481,)
 
 # Boundary conditions for pressure (en Pa)
 prext   = 1.0E5
@@ -279,9 +278,11 @@ for icalc in xrange(Npos):
                     #
                     CONVERGENCE_ECREVISSE = _F(
                           KGTEST         = kgtest,
-                          ITER_GLOB_MAXI = 400,),
+                          ITER_GLOB_MAXI = 400,
+                          CRIT_CONV_DEBI  = 1.E-5,
+                          ),
                     #
-                    VERSION     ='3.2.1',
+                    VERSION     ='3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -289,7 +290,6 @@ for icalc in xrange(Npos):
 
     # Test on the total flow
     TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-                PRECISION = 1.E-5,
                 VALE_CALC = VQCALC[icalc],
                 VALE_REFE = VQRECRE[icalc],
                 NOM_PARA  = 'DEBTOT',
@@ -299,7 +299,6 @@ for icalc in xrange(Npos):
 
     # Test on the temperature (s=0.475)
     TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
-                PRECISION = 1.E-5,
                 VALE_CALC = VTCALC[icalc],
                 VALE_REFE = VTRECRE[icalc],
                 NOM_PARA  = 'TEMP',

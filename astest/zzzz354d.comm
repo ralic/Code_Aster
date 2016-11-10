@@ -23,10 +23,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-Npos = 5
-
 # Tested options for friction coefficient
 lst_frot = (0,1,2,3,4)
+Npos = len(lst_frot)
 
 # Other Ecrevisse options
 ichal  = 2
@@ -34,19 +33,13 @@ ivenac = 0
 
 # Total flow computed by Ecrevisse alone
 VQRECRE = ( 2.172603E-01, 2.349381E-03, 3.929626E-03, 6.647714E-02, 5.274583E-02)
-
 # Temperature computed by Ecrevisse alone, abscissa s=0.475
 VTRECRE = ( 2.000000E+01, 1.996949E+01, 1.996619E+01, 1.992261E+01, 1.992226E+01)
 
-## Non regression values for total flow
-#VQCALC = (0.2172624,2.3494E-03,3.929631E-03,0.06647478,0.05274545, 2.3494E-03, 3.929631E-03, 0.02844714, 0.05233852,2.3494E-03, 3.929631E-03,0.05009747,0.05009747)
-
+# Non regression values for total flow
+VQCALC = (0.2172624,0.002349286, 0.003929447, 0.06648182, 0.05274363)
 ## Non regression values for temperature
-#VTCALC = (20., 19.96949, 19.96619, 19.92234, 19.92223, 19.96949, 19.96619, 19.92864, 19.92257, 19.96949, 19.96619, 19.92431, 19.92431)
-
-VQCALC = (0.21726240000000, 0.002349396, 3.929651E-03, 0.066472490000000, 0.05274592)
-
-VTCALC = (20.0, 19.96949, 19.96619, 19.92173, 19.92225)
+VTCALC = (20.0, 19.96949, 19.96619, 19.92258, 19.92225)
 
 # Boundary conditions for pressure
 prext     = 1.E5 #Pa
@@ -284,7 +277,7 @@ for icalc in xrange(Npos):
                           KGTEST         = kgtest,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     = '3.2.1',
+                    VERSION     = '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -292,7 +285,6 @@ for icalc in xrange(Npos):
                     )
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-4,
                VALE_CALC = VQCALC[icalc],
                VALE_REFE = VQRECRE[icalc],
                NOM_PARA  = 'DEBTOT',
@@ -301,7 +293,6 @@ for icalc in xrange(Npos):
                                VALE     = duree_inj,),),)
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-4,
                VALE_CALC = VTCALC[icalc],
                VALE_REFE = VTRECRE[icalc],
                NOM_PARA  = 'TEMP',

@@ -24,10 +24,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-Npos = 2
-
 # Tested options for heat transfer
 lst_ichal = (11,12)
+Npos = len(lst_ichal)
 
 # Flow computed by Ecrevisse alone
 VQRECRE = (0.004522061, 0.004453095)
@@ -39,7 +38,7 @@ VTRECRE = (19.94819, 19.94827)
 ## Non-Regression results : Temperature
 #VTCALC  = (169.1971, 19.94819, 19.94827, 19.94819, 19.94827, 19.96295, 19.94114, 19.94013, 19.94114)
 
-VQCALC  = (4.5221E-03, 4.453126E-03)
+VQCALC  = (0.004520366, 0.004451243)
 VTCALC  = (19.94818, 19.94826)
 
 # Pressure boundary conditions for Ecrevisse (Pa)
@@ -282,7 +281,7 @@ for icalc in xrange(Npos):
                         KGTEST         = 0.5,
                         ITER_GLOB_MAXI = 400,),
                   #
-                  VERSION     = '3.2.1',
+                  VERSION     = '3.2.2',
                   COURBES     = 'AUCUNE',
                   ENTETE      = titre,
                   IMPRESSION  = 'NON',
@@ -290,7 +289,6 @@ for icalc in xrange(Npos):
                   )
 
   TEST_TABLE(REFERENCE  = 'SOURCE_EXTERNE',
-              PRECISION = 1.E-5,
               VALE_CALC = VQCALC[icalc],
               VALE_REFE = VQRECRE[icalc],
               NOM_PARA  = 'DEBTOT',
@@ -300,7 +298,6 @@ for icalc in xrange(Npos):
                             VALE     = duree_inj,),),)
 
   TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-              PRECISION = 1.E-5,
               VALE_CALC = VTCALC[icalc],
               VALE_REFE = VTRECRE[icalc],
               NOM_PARA  = 'TEMP',

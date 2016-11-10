@@ -16,11 +16,19 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 #
-# syntaxe 9.3.24
+# -------------------------------------------------------
+# NON REGRESSION TEST, ONE CRACK, HOT AIR INJECTION 
+#  Test of the "POURSUITE" command on MACR_ECREVISSE
+# -------------------------------------------------------
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
+
+# Tested non regression values 
+NONREGR = (9.98114973621, 8.46099239237E-06, 8.21283844798E-06,\
+           6.61912102113E-06,-6.99999370406E-05,10.7893260664,\
+           25.9790113468,135.256043116,116.706888382,0.02456396, 0.001040661)
 
 pr_atmos = 1.E5
 pr_ext   = 10.E5
@@ -187,8 +195,8 @@ RMECA = MACR_ECREVISSE(
                       KGTEST         = 0.5,
                       ITER_GLOB_MAXI = 400,),
                 #
-                # LOGICIEL    = '/aster/outils/ecrevisse-3.2.0/ecrevisse_v3.2',
-                VERSION     = '3.2.1',
+                # LOGICIEL    =  '~/dev/codeaster-prerequisites/v13/tools/Ecrevisse-322',
+                VERSION     = '3.2.2',
                 COURBES     = 'AUCUNE',
                 ENTETE      = 'Castest ZZZZ218A',
                 IMPRESSION  = 'NON',
@@ -248,8 +256,8 @@ RMECA = MACR_ECREVISSE(  reuse = RMECA,
                       KGTEST         = 0.5,
                       ITER_GLOB_MAXI = 400,),
                 #
-                # LOGICIEL    = '/aster/outils/ecrevisse-3.2.0/ecrevisse_v3.2',
-                VERSION     = '3.2.1',
+                # LOGICIEL    =  '~/dev/codeaster-prerequisites/v13/tools/Ecrevisse-322',
+                VERSION     = '3.2.2',
                 COURBES     = 'AUCUNE',
                 ENTETE      = 'Castest ZZZZ218A',
                 IMPRESSION  = 'NON',
@@ -312,31 +320,30 @@ T_E_HD = POST_RELEVE_T(ACTION = _F(CRITERE    = 'RELATIF',
                                     REPERE    = 'GLOBAL',),
                         INFO = 1,)
 
-ENERGIE=RECU_TABLE(CO=RMECA,NOM_TABLE='PARA_CALC',);
-
-TEST_TABLE(CRITERE='RELATIF',
-           VALE_CALC=9.9812422849084,
-           NOM_PARA='TRAV_EXT',
-           TABLE=ENERGIE,
-           FILTRE=(_F(NOM_PARA='INST',
-                      VALE=1.E+04,),
-                   ),
-           )
-
-
 
 # TEST OF RESULTS (NON-REGRESSION)
 # ---------------------------------
+ENERGIE = RECU_TABLE(CO=RMECA,NOM_TABLE='PARA_CALC',);
+
+TEST_TABLE(CRITERE   = 'RELATIF',
+           VALE_CALC = NONREGR[0],
+           NOM_PARA  = 'TRAV_EXT',
+           TABLE     = ENERGIE,
+           FILTRE    = (_F(NOM_PARA='INST',
+                           VALE=1.E+04,),
+                        ),
+           )
+
 TEST_TABLE(
-           VALE_CALC = 8.4719913051825E-06,
+           VALE_CALC = NONREGR[1],
            NOM_PARA  = 'DY',
            TABLE     = DY_E_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
                           VALE     = 500.0,),
            )
-
+           
 TEST_TABLE(
-           VALE_CALC = 8.2152371935362E-06,
+           VALE_CALC = NONREGR[2],
            NOM_PARA  = 'DY',
            TABLE     = DY_E_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -344,7 +351,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 6.6188959989773E-06,
+           VALE_CALC = NONREGR[3],
            NOM_PARA  = 'DY',
            TABLE     = DY_I_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -352,7 +359,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = -6.9999937044373E-05,
+           VALE_CALC = NONREGR[4],
            NOM_PARA  = 'DY',
            TABLE     = DY_I_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -360,7 +367,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 10.752194550681,
+           VALE_CALC = NONREGR[5],
            NOM_PARA  = 'TEMP',
            TABLE     = T_E_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -368,7 +375,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 25.977797377366,
+           VALE_CALC = NONREGR[6],
            NOM_PARA  = 'TEMP',
            TABLE     = T_E_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -376,7 +383,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 135.25653154198,
+           VALE_CALC = NONREGR[7],
            NOM_PARA  = 'TEMP',
            TABLE     = T_I_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -384,7 +391,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 116.7069729143,
+           VALE_CALC = NONREGR[8],
            NOM_PARA  = 'TEMP',
            TABLE     = T_I_HD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -392,7 +399,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 0.02456418,
+           VALE_CALC = NONREGR[9],
            NOM_PARA  = 'DEBTOT',
            TABLE     = DEB_ECR0,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -400,7 +407,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 1.040675E-03,
+           VALE_CALC = NONREGR[10],
            NOM_PARA  = 'DEBTOT',
            TABLE     = DEB_ECRE,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -411,12 +418,12 @@ TEST_TABLE(
 
 # PRINT OF RESULTS
 # ---------------------------------
-IMPR_TABLE(TABLE = TBL_ECRE)
-IMPR_TABLE(TABLE = DY_I_HD)
-IMPR_TABLE(TABLE = T_I_HD)
-IMPR_TABLE(TABLE = DY_E_HD)
-IMPR_TABLE(TABLE = T_E_HD)
-IMPR_TABLE(TABLE = DEB_ECRE)
+#IMPR_TABLE(TABLE = TBL_ECRE)
+#IMPR_TABLE(TABLE = DY_I_HD)
+#IMPR_TABLE(TABLE = T_I_HD)
+#IMPR_TABLE(TABLE = DY_E_HD)
+#IMPR_TABLE(TABLE = T_E_HD)
+#IMPR_TABLE(TABLE = DEB_ECRE)
 
 #IMPR_RESU(FORMAT = 'MED',
           #RESU=(_F( RESULTAT=RMECA,),

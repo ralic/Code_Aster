@@ -23,13 +23,13 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),)
 
-Npos = 9
-Nneg = 4
-Nessai = Npos + Nneg
 
 # Tested options for friction coefficient
 #lst_frot = (0,1,2,3,4,11,14,-1,-2,-3,-4)
 lst_frot = (0,1,2,3,4,11,12,13,14,-1,-2,-3,-4)
+Nessai = len(lst_frot)
+Npos = 9
+Nneg = Nessai - Npos
 
 
 # Autres options Ecrevisse
@@ -37,18 +37,14 @@ ichal  = 2
 ivenac = 0
 
 # Total flow computed by Ecrevisse alone
-#VQRECRE = (1.885115E-01, 4.579203E-02, 4.579203E-02, 4.579203E-02, 4.579203E-02, 3.162920E-02, 3.162920E-02, 3.194519E-02, 3.194519E-02, 3.194519E-02, 3.194519E-02)
 VQRECRE = (1.885115E-01, 4.579203E-02, 4.579203E-02, 4.579203E-02, 4.579203E-02, 3.162920E-02, 3.162915E-02, 3.162915E-02, 3.162920E-02, 3.194519E-02, 3.194519E-02,
 3.194519E-02, 3.194519E-02)
-
 # Temperature computed by Ecrevisse alone, abscissa s=0.475
-#VTRECRE = (2.000000E+01, 1.906403E+01, 1.906403E+01, 1.906403E+01, 1.906403E+01, 1.907983E+01, 1.907983E+01, 1.906709E+01, 1.906709E+01, 1.906709E+01, 1.906709E+01)
 VTRECRE = (2.000000E+01, 1.906403E+01, 1.906403E+01, 1.906403E+01, 1.906403E+01, 1.907983E+01, 1.907991E+01, 1.907991E+01, 1.907983E+01, 1.906709E+01, 1.906709E+01,
 1.906709E+01, 1.906709E+01)
 
 # Non regression values for total flow
 VQCALC = (0.1885133,0.04579185,0.04579185, 0.04579185,0.04579185,0.03162911,3.16291E-02,3.16291E-02,0.03162911,0.03194517,0.03194517,0.03194517, 0.03194517)
-
 # Non regression values for temperature
 VTCALC = (20.,19.06399,19.06399,19.06399,19.06399,19.07994, 19.07994,19.07994,19.07994,19.06711,19.06711,19.06711,19.06711)
 
@@ -270,10 +266,11 @@ for icalc in xrange(Npos):
                           CRITERE  = 'EXPLICITE',),
                     #
                     CONVERGENCE_ECREVISSE = _F(
+                          CRIT_CONV_DEBI  = 1.E-5,
                           KGTEST         = kgtest,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     = '3.2.1',
+                    VERSION     = '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -364,7 +361,7 @@ for icalc in xrange(Npos,Npos+Nneg):
                           KGTEST         = kgtest,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     ='3.2.1',
+                    VERSION     ='3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -373,7 +370,6 @@ for icalc in xrange(Npos,Npos+Nneg):
 
     # Test on the total flow
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-5,
                VALE_CALC = VQCALC[icalc],
                VALE_REFE = VQRECRE[icalc],
                NOM_PARA  = 'DEBTOT',
@@ -383,7 +379,6 @@ for icalc in xrange(Npos,Npos+Nneg):
 
     # Test on temperature (s=0.475)
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-5,
                VALE_CALC = VTCALC[icalc],
                VALE_REFE = VTRECRE[icalc],
                NOM_PARA  = 'TEMP',

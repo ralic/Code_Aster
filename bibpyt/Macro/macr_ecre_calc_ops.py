@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -275,8 +275,7 @@ def macr_ecre_calc_ops(
         else:
             chemin_executable = str(LOGICIEL)
     else:
-        chemin_executable = os.path.join(
-            aster_core.get_option('repout'), 'ecrevisse')
+        chemin_executable = os.path.join(aster_core.get_option('repout'), 'ecrevisse')
         # chemin_executable =
         # os.path.join(aster_core.get_option('repout'),version,'ecrevisse')
         if debug:
@@ -342,7 +341,7 @@ def macr_ecre_calc_ops(
     #       COTE z (m), FLUX THERMIQUE (W/m2), PRESSION TOTALE ABSOLUE (Pa),
     #       TEMPERATURE FLUIDE (degres C), COEFFICIENT DE CONVECTION (W/m2/K)
     try:
-        f_ast = open(os.path.join(tmp_ecrevisse, 'pour_aster'), 'r')
+        f_ast = open(os.path.join(tmp_ecrevisse, 'pour_aster_moy'), 'r')
         _txt = f_ast.read()
         f_ast.close()
         # transforme le texte en liste

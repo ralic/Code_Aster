@@ -1,4 +1,3 @@
-# person_in_charge: marina.bottoni at edf.fr
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -27,6 +26,9 @@ temp_ref = 20.0
 temp_int = 140.0
 temp_ext = temp_ref
 
+NONREGRE = (6.62234797464E-07,-1.38748966438E-06,1.98447650104E-06,\
+            -1.56575040839E-06, 111.487696741,0.0009928682,214.6696,\
+            903491.7,89.24706, 396.1696)
 
 # MESH
 # -------------------------------------
@@ -204,8 +206,8 @@ RMECA = MACR_ECREVISSE(
                           KGTEST         = 0.5,
                           ITER_GLOB_MAXI = 400, ),
                 #
-                # LOGICIEL    =  '/aster/outils/ecrevisse-3.2.1/ecrevisse_v3.2.1_aster4',
-                VERSION     ='3.2.1',
+                # LOGICIEL    =  '~/dev/codeaster-prerequisites/v13/tools/Ecrevisse-322',
+                VERSION     ='3.2.2',
                 COURBES     = 'AUCUNE',
                 ENTETE      = 'Castest ZZZZ218C',
                 IMPRESSION  = 'NON',
@@ -290,8 +292,9 @@ dx2b = T_DEPL2['DX',2]
 dy2a = T_DEPL2['DY',1]
 dy2b = T_DEPL2['DY',2]
 
+
 TEST_TABLE(
-           VALE_CALC=6.62232935794E-07,
+           VALE_CALC=NONREGRE[0],
            NOM_PARA     = 'DX',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -299,7 +302,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.38749110626E-06,
+           VALE_CALC=NONREGRE[1],
            NOM_PARA     = 'DX',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -307,7 +310,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=1.98447709114E-06,
+           VALE_CALC=NONREGRE[2],
            NOM_PARA     = 'DY',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -315,7 +318,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-1.56574909119E-06,
+           VALE_CALC=NONREGRE[3],
            NOM_PARA     = 'DY',
            TABLE        = T_DEPL1,
            FILTRE       = _F(NOM_PARA = 'ABSC_CURV',
@@ -323,8 +326,9 @@ TEST_TABLE(
            )
 
 tempMat2 = T_TEMP['TEMP',2]
+
 TEST_TABLE(
-           VALE_CALC=111.487273613,
+           VALE_CALC=NONREGRE[4],
            NOM_PARA     = 'TEMP',
            TABLE        = T_TEMP,
            FILTRE       = _F(NOM_PARA = 'NOEUD',
@@ -332,8 +336,9 @@ TEST_TABLE(
            )
 
 debtot2 = DEB_FIN['DEBTOT',2]
+
 TEST_TABLE(
-           VALE_CALC=0.0009928399,
+           VALE_CALC=NONREGRE[5],
            NOM_PARA     = 'DEBTOT',
            TABLE        = DEB_FIN,
            FILTRE       = _F(NOM_PARA = 'FISSURE',
@@ -341,8 +346,9 @@ TEST_TABLE(
            )
 
 coefConv2 = TBL_FIN2['COEF_CONV',11]
+
 TEST_TABLE(
-           VALE_CALC=214.6674,
+           VALE_CALC=NONREGRE[6],
            NOM_PARA     = 'COEF_CONV',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',
@@ -350,8 +356,9 @@ TEST_TABLE(
            )
 
 press2 = TBL_FIN2['PRESSION',11]
+
 TEST_TABLE(
-           VALE_CALC=903494.8,
+           VALE_CALC=NONREGRE[7],
            NOM_PARA     = 'PRESSION',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',
@@ -359,8 +366,9 @@ TEST_TABLE(
            )
 
 tempFl2 = TBL_FIN2['TEMP',11]
+
 TEST_TABLE(
-           VALE_CALC=89.24661,
+           VALE_CALC=NONREGRE[8],
            NOM_PARA     = 'TEMP',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA='COTES',
@@ -368,8 +376,9 @@ TEST_TABLE(
            )
 
 flux2 = TBL_FIN2['FLUX',11]
+
 TEST_TABLE(
-           VALE_CALC=396.1546,
+           VALE_CALC=NONREGRE[9],
            NOM_PARA     = 'FLUX',
            TABLE        = TBL_FIN1,
            FILTRE       = _F(NOM_PARA = 'COTES',
@@ -388,6 +397,5 @@ TEST_TABLE(
 ##IMPR_RESU(FORMAT='MED',
           ##RESU  = (_F( RESULTAT = RMECA,),
                    ##_F( RESULTAT = RTEMPER,),),)
-
 
 FIN()

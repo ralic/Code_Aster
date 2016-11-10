@@ -19,41 +19,32 @@
 # VALIDATION TEST FOR MACR_ECREVISSE : OPTIONS FOR THE FRICTION COEFFICIENT
 #
 #   HEAT EXCHANGE OPTION : 2 (ICHAL)
-#   FLUID TYPE : 4 (AIR + OVERHEATED STEAM)
+#   FLUID TYPE : 4 (AIR)
 #############################################################################################
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
+
 # Tested options for friction coefficient
-lst_frot = (-1,-2,-3,-4)
-Npos = len(lst_frot)
+lst_frot = (21, 22, 23, 24)
 
 # Other Ecrevisse options
 ichal  = 2
 ivenac = 0
 # Total flow computed by Ecrevisse alone
-VQRECRE = (1.382550E-03,   4.453116E-03,3.820877E-02,  3.820877E-02)
+VQRECRE = (1.376802E-03, 1.609028E-03, 1.609026E-03, 1.609026E-03)
 
-# Temperature computed by Ecrevisse alone, abscissa s=0.475
-VTRECRE = (1.995935E+01, 1.994827E+01,1.989439E+01, 1.989439E+01 )
-
-
-## --------------------------------------------------- Not tested quantities (air, steam, liquid flow, convection coefficient) ---------------------------------------- #
-## --------------------------------------------------------------------------- Computed by Ecrevisse ------------------------------------------------------------------ #
-#VCCECRE = (8.025839E+04, 3.139347E+03, 8.010406E+03, 4.967041E+04, 5.207208E+04, 3.139348E+03, 4.263268E+04, 3.139367E+03, 8.010449E+03, 4.275361E+04, 4.275362E+04 )
-#VQAECRE = (1.194742E-01, 9.673295E-04, 3.115705E-03, 3.648238E-02, 3.551755E-02, 9.673265E-04, 2.665597E-02, 9.673281E-04, 3.115710E-03, 2.673350E-02, 2.673350E-02 )
-#VQVECRE = (1.418452E-04, 1.508547E-05, 4.833266E-05, 3.414659E-04, 3.593636E-04, 1.508348E-05, 3.401894E-04, 1.508469E-05, 4.833607E-05, 3.409385E-04, 3.409386E-04 )
-#VQLECRE = (5.114210E-02, 4.001380E-04, 1.289075E-03, 1.531849E-02, 1.488645E-02, 4.001387E-04, 1.110181E-02, 4.001382E-04, 1.289073E-03, 1.113434E-02, 1.113434E-02 )
-## -------------------------------------------------------------------------------------------------------------------------------------------------------------------- #
+# Temperature computed by Ecrevisse alone, abscissa s=0.47 (fichier : pour_aster_moy)
+VTRECRE = (1.961232E+01, 1.960527E+01,1.960527E+01,1.960527E+01)
 
 # Non regression values for total flow
-VQCALC = (0.001381964,0.004451222,0.03820005,0.03820005,)
+VQCALC = (0.001376793, 0.001609026,0.001609026,0.001609026)
 
 # Non regression values for temperature
-VTCALC  = (19.95935, 19.94827 ,19.89433,19.89433)
+VTCALC  = (19.61263, 19.60527,19.60527,19.60527)
 
 # Boundary conditions for pressure (en Pa)
-prext   = 1.0E5
+prext   = 1.E5
 printe  = 1.E6
 prinin  = 1.E6
 PrAPart = 6.E5
@@ -71,11 +62,12 @@ profondeur = 1.             # m
 
 # Material properties making coupling negligible
 lambd      = 0.             # W/m/K
-cp         = 88000000000.   # J/kg/K
+cp         = 8800000000000  # J/kg/K
 rho        = 2500.          # kg/m3
 rho_cp     = rho*cp         # J/m3/K
 coeff_H    = 0.             # W/m2/K
 alpha      = 1.0E-20        # 1/K
+
 
 # ------------------------------------- #
 # MESH
@@ -217,16 +209,21 @@ L_INST = DEFI_LIST_REEL(
                 INTERVALLE = (
                         _F(JUSQU_A = duree_inj, NOMBRE = 2,), ),)
 
+
 iflow = 4  # Type of ingoing fluid
-RMECA = [None]*Npos
+RMECA = [None]*len(lst_frot)
 
-# User defined friction coefficient
-#  --> Ecrevisse : parameter -5<ifrot<0
-#
-for icalc in xrange(Npos):
+# Friction coefficient computed by rugosity 
+#  --> Ecrevisse : parameter ifrot>0
+#  --> Rugosity is here the maximal size of concrete aggregates
 
+for icalc in xrange(len(lst_frot)):
+    
+    ifrot = lst_frot[icalc]
     kgtest = 0.5
-    ifrot  = lst_frot[icalc]
+    #~ if ifrot == 0 :
+        #~ kgtest = 0.4 
+
     titre = 'ICHAL=2, IFLOW=4, IFROT='+str(ifrot)
     RMECA[icalc] = MACR_ECREVISSE(
                     TABLE  = CO('TABLECR'),
@@ -245,7 +242,7 @@ for icalc in xrange(Npos):
                           PREFIXE_FICHIER  = 'FISSURE1',
                           SECTION          = 'RECTANGLE',
                           GROUP_MA         = ('BFISH','BFISB',),
-                          RUGOSITE         = 0.5E-06,
+                          RUGOSITE         = 0.025,
                           ZETA             = 0.0,
                           GROUP_NO_ORIG    = ('GM27','GM28',),
                           GROUP_NO_EXTR    = ('GM29','GM30',),
@@ -265,8 +262,6 @@ for icalc in xrange(Npos):
                     MODELE_ECRE = _F(
                           IVENAC         = ivenac,
                           ECOULEMENT     = 'SATURATION',
-                          REYNOLDS_LIM   = 1000.,
-                          FROTTEMENT_LIM = 0.044,
                           FROTTEMENT     = ifrot,
                           TRANSFERT_CHAL = ichal,),
                     #
@@ -276,11 +271,11 @@ for icalc in xrange(Npos):
                           CRITERE  = 'EXPLICITE',),
                     #
                     CONVERGENCE_ECREVISSE = _F(
-                          KGTEST         = 0.5,
-                          ITER_GLOB_MAXI = 400,
-                          CRIT_CONV_DEBI  = 1.E-5,
-                          ),
+                          KGTEST          = kgtest,
+                          ITER_GLOB_MAXI  = 400,
+                          CRIT_CONV_DEBI  = 1.E-5,),
                     #
+                    #LOGICIEL    = '/home/B16357/dev/VersEcre/ecrevisse_linux_c9',
                     VERSION     ='3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
@@ -296,19 +291,25 @@ for icalc in xrange(Npos):
                 FILTRE    = ( _F( NOM_PARA = 'INST',
                                   VALE     = duree_inj,),), )
 
-    # Test on the temperature
+    #~ Test on the temperature (s=0.5)
     TEST_TABLE( REFERENCE = 'SOURCE_EXTERNE',
                 VALE_CALC = VTCALC[icalc],
                 VALE_REFE = VTRECRE[icalc],
                 NOM_PARA  = 'TEMP',
                 TABLE     = TABLECR,
                 FILTRE    = (_F(NOM_PARA = 'COTES',
-                                VALE     = 0.475,),
+                                VALE     = 0.5,),
                             _F(NOM_PARA = 'INST',
                                 VALE     = duree_inj,), ), )
 
+    #~ IMPR_TABLE(TABLE = TABLECR)
+    #~ IMPR_TABLE(TABLE = DEBECR)
+    
     DETRUIRE(CONCEPT = _F(NOM = DEBECR))
     DETRUIRE(CONCEPT = _F(NOM = TEMPECR))
     DETRUIRE(CONCEPT = _F(NOM = TABLECR))
 
 FIN();
+
+
+

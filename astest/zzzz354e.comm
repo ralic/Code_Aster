@@ -23,10 +23,9 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-Npos = 4
-
 # Tested options for friction coefficient
 lst_frot = (11,12,13,14)
+Npos = len(lst_frot)
 
 # Other Ecrevisse options
 ichal  = 2
@@ -34,19 +33,13 @@ ivenac = 0
 
 # Total flow computed by Ecrevisse alone
 VQRECRE = (2.349390E-03, 3.929627E-03, 2.844686E-02, 5.233854E-02, 2.349393E-03)
-
 # Temperature computed by Ecrevisse alone, abscissa s=0.475
-VTRECRE = (1.996949E+01,  1.996619E+01,  1.992868E+01, 1.992261E+01)
+VTRECRE = (1.996949E+01,  1.996619E+01, 1.992868E+01, 1.992261E+01)
 
-## Non regression values for total flow
-#VQCALC = (0.2172624,2.3494E-03,3.929631E-03,0.06647478,0.05274545, 2.3494E-03, 3.929631E-03, 0.02844714, 0.05233852,2.3494E-03, 3.929631E-03,0.05009747,0.05009747)
-
-## Non regression values for temperature
-#VTCALC = (20., 19.96949, 19.96619, 19.92234, 19.92223, 19.96949, 19.96619, 19.92864, 19.92257, 19.96949, 19.96619, 19.92431, 19.92431)
-
-VQCALC = (0.002349396, 3.929651E-03, 0.028447110000000, 0.05233873)
-
-VTCALC = (19.96949, 19.96619, 19.92866, 19.9226)
+# Non regression values for total flow
+VQCALC = (0.002349286, 0.003929447, 0.02845005, 0.05233688)
+# Non regression values for temperature
+VTCALC = (19.96949, 19.96619, 19.92868, 19.9226)
 
 # Boundary conditions for pressure
 prext     = 1.E5 #Pa
@@ -285,7 +278,7 @@ for icalc in xrange(Npos):
                               KGTEST         = kgtest,
                               ITER_GLOB_MAXI = 400,),
                         #
-                        VERSION     = '3.2.1',
+                        VERSION     = '3.2.2',
                         COURBES     = 'AUCUNE',
                         ENTETE      = titre,
                         IMPRESSION  = 'NON',
@@ -343,27 +336,23 @@ for icalc in xrange(Npos):
                           KGTEST         = kgtest,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     = '3.2.1',
+                    VERSION     = '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = 'ICHAL=2, FLOW=5, IFROT=13',
                     IMPRESSION  = 'NON',
                     INFO        = 1, )
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-4,
                VALE_CALC = VQCALC[icalc],
                VALE_REFE = VQRECRE[icalc],
-               TOLE_MACHINE = 1.E-5,
                NOM_PARA  = 'DEBTOT',
                TABLE     = DEBECR,
                FILTRE    = (_F(NOM_PARA = 'INST',
                                VALE     = duree_inj,),),)
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-4,
                VALE_CALC = VTCALC[icalc],
                VALE_REFE = VTRECRE[icalc],
-               TOLE_MACHINE = 1.E-5,
                NOM_PARA  = 'TEMP',
                TABLE     = TABLECR,
                FILTRE    = (_F(NOM_PARA = 'COTES',

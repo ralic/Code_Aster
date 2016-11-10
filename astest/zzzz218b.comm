@@ -17,7 +17,14 @@
 # ======================================================================
 #
 
+# ------------------------------------------------------
+# NON REGRESSION TEST : TWO CRACKS, HOT AIR INJECTION 
+# ------------------------------------------------------
+
 DEBUT(CODE = _F(NIV_PUB_WEB = 'INTERNET',),)
+
+NONREGRE = (-3.53094502576E-06,7.242386907E-06, -6.29121707622E-06, 6.69389819569E-05,\
+            10.5220618393,26.9916371704,135.409680271,118.600167736,0.0241921, 0.001105076)
 
 pr_atmos = 1.E5
 pr_int   = 10.E5
@@ -192,8 +199,8 @@ RMECA = MACR_ECREVISSE(
                       KGTEST         = 0.5,
                       ITER_GLOB_MAXI = 400,),
                 #
-                # LOGICIEL    =  '/aster/outils/ecrevisse-3.2.1/ecrevisse_v3.2.1_aster4',
-                VERSION     ='3.2.1',
+                # LOGICIEL    =  '~/dev/codeaster-prerequisites/v13/tools/Ecrevisse-322',
+                VERSION     ='3.2.2',
                 COURBES     = 'AUCUNE',
                 ENTETE      = 'Castest ZZZZ218B',
                 IMPRESSION  = 'NON',
@@ -258,7 +265,7 @@ T_E_MD = POST_RELEVE_T(ACTION = _F(CRITERE    = 'RELATIF',
 # TEST OF RESULTS (NON-REGRESSION)
 # ---------------------------------
 TEST_TABLE(
-           VALE_CALC = -3.5460889889184E-06,
+           VALE_CALC = NONREGRE[0],
            NOM_PARA  = 'DX',
            TABLE     = DX_E_MD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -266,7 +273,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 7.2214005963899E-06,
+           VALE_CALC = NONREGRE[1],
            NOM_PARA  = 'DX',
            TABLE     = DX_E_MD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -274,7 +281,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = -6.2840716008655E-06,
+           VALE_CALC = NONREGRE[2],
            NOM_PARA  = 'DX',
            TABLE     = DX_I_GD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -282,7 +289,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 6.6940055777491E-05,
+           VALE_CALC = NONREGRE[3],
            NOM_PARA  = 'DX',
            TABLE     = DX_I_GD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -290,7 +297,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 10.400021268581 ,
+           VALE_CALC = NONREGRE[4],
            NOM_PARA  = 'TEMP',
            TABLE     = T_E_MD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -298,7 +305,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 26.979090334864,
+           VALE_CALC = NONREGRE[5],
            NOM_PARA  = 'TEMP',
            TABLE     = T_E_MD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -306,7 +313,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 135.40997389719,
+           VALE_CALC = NONREGRE[6],
            NOM_PARA  = 'TEMP',
            TABLE     = T_I_GD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -314,7 +321,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 118.60324962661,
+           VALE_CALC = NONREGRE[7],
            NOM_PARA  = 'TEMP',
            TABLE     = T_I_GD,
            FILTRE    = _F(NOM_PARA = 'INST',
@@ -322,7 +329,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 0.02419557,
+           VALE_CALC = NONREGRE[8],
            NOM_PARA  = 'DEBTOT',
            TABLE     = DEB_ECRE,
            FILTRE    = (_F(NOM_PARA = 'INST',
@@ -333,7 +340,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC = 1.105288E-03,
+           VALE_CALC = NONREGRE[9],
            NOM_PARA  = 'DEBTOT',
            TABLE     = DEB_ECRE,
            FILTRE    = (_F(NOM_PARA = 'INST',

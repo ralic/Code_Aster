@@ -23,20 +23,17 @@
 #############################################################################################
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-
-Npos = 3
-
 # Tested options for heat transfer
 lst_ichal = (0,1,2)
+Npos = len(lst_ichal)
 
 # Flow computed by Ecrevisse alone
-#VQRECRE = (1.027920E-02,3.929612E-03,3.929612E-03,3.929612E-03,3.929612E-03, 3.929612E-03,3.929612E-03,3.929612E-03,3.929612E-03,)
 VQRECRE = (0.01027923, 0.003929631, 0.003929631)
 # Temperature computed by Ecrevisse alone, output file "pour_aster", abscissa s=0.475
-#VTRECRE = (1.052425E+02,1.996705E+01,1.996705E+01,1.996705E+01,1.996705E+01,1.996705E+01,1.996705E+01,1.996705E+01,1.996705E+01)
 VTRECRE = (105.1332, 19.96619, 19.96619)
+
 # Non-Regression results : Flow
-VQCALC  = (0.01027923,3.929631E-03,3.929631E-03)
+VQCALC  = (0.01027938,0.00392945,0.00392945)
 # Non-Regression results : Temperature
 VTCALC  = (105.1331,19.96619,19.96619)
 
@@ -267,10 +264,11 @@ for icalc in xrange(Npos):
                           CRITERE  = 'EXPLICITE',),
                     #
                     CONVERGENCE_ECREVISSE = _F(
+                          CRIT_CONV_DEBI = 1.e-5,
                           KGTEST         = 0.5,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     = '3.2.1',
+                    VERSION     = '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -278,7 +276,6 @@ for icalc in xrange(Npos):
                     )
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-                PRECISION = 1.E-5,
                 VALE_CALC = VQCALC[icalc],
                 VALE_REFE = VQRECRE[icalc],
                 NOM_PARA  = 'DEBTOT',
@@ -287,7 +284,6 @@ for icalc in xrange(Npos):
                               VALE     = duree_inj,),), )
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-                PRECISION = 1.E-5,
                 VALE_CALC = VTCALC[icalc],
                 VALE_REFE = VTRECRE[icalc],
                 NOM_PARA  = 'TEMP',

@@ -24,21 +24,17 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), )
 
-
-Npos = 5
-Nneg = 4
-Nessai = Npos + Nneg
-
 # Tested options for heat transfer
 lst_ichal = (0,1,2,11,12,-1,-2,-11,-12)
-
+Nessai = len(lst_ichal)
+Npos = 5
+Nneg = Nessai - Npos
 
 # Flow computed by Ecrevisse alone
-#VQRECRE= ( 2.408553E-02,4.579144E-02,4.579144E-02,4.579144E-02,4.579144E-02,4.579144E-02,4.579144E-02,4.579144E-02,4.579144E-02)
 VQRECRE= ( 0.02408517, 0.04579185, 0.04579185, 0.04579185, 0.04579185, 0.04579185, 0.04579185, 0.04579185, 0.04579185 )
 # Temperature computed by Ecrevisse alone, output file "pour_aster", abscissa s=0.475
-#VTRECRE =(1.736202E+02,1.911671E+01,1.911671E+01,1.911671E+01,1.911671E+01,1.911671E+01,1.911671E+01,1.911671E+01,1.911671E+01)
 VTRECRE =(173.5219, 19.06408, 19.06408, 19.06408, 19.06408, 19.06408, 19.06408, 19.06408, 19.06408)
+
 # Non-Regression results : Flow
 VQCALC = (0.02408517, 0.04579185,0.04579185,0.04579185,0.04579185,0.04579185,0.04579185,0.04579185,0.04579185)
 # Non-Regression results : Temperature
@@ -274,7 +270,7 @@ for icalc in xrange(Npos):
                           KGTEST         = 0.5,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     = '3.2.1',
+                    VERSION     = '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -361,10 +357,11 @@ for icalc in xrange(Npos,Npos+Nneg):
                           CRITERE  = 'EXPLICITE',),
                     #
                     CONVERGENCE_ECREVISSE = _F(
+                          CRIT_CONV_DEBI = 1.e-5,
                           KGTEST         = 0.5,
                           ITER_GLOB_MAXI = 400,),
                     #
-                    VERSION     =  '3.2.1',
+                    VERSION     =  '3.2.2',
                     COURBES     = 'AUCUNE',
                     ENTETE      = titre,
                     IMPRESSION  = 'NON',
@@ -372,7 +369,6 @@ for icalc in xrange(Npos,Npos+Nneg):
                     )
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-5,
                VALE_CALC = VQCALC[icalc],
                VALE_REFE = VQRECRE[icalc],
                NOM_PARA  = 'DEBTOT',
@@ -382,7 +378,6 @@ for icalc in xrange(Npos,Npos+Nneg):
                               VALE     = duree_inj,),),)
 
     TEST_TABLE(REFERENCE = 'SOURCE_EXTERNE',
-               PRECISION = 1.E-5,
                VALE_CALC = VTCALC[icalc],
                VALE_REFE = VTRECRE[icalc],
                NOM_PARA  = 'TEMP',
