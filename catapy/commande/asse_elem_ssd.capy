@@ -23,14 +23,17 @@ def asse_elem_ssd_prod(self, RESU_ASSE_SSD, **args):
         'NUME_DDL_GENE' : nume_ddl_gene,
         'RIGI_GENE' : matr_asse_gene_r,
         'MASS_GENE' : matr_asse_gene_r,
-              }
-    for res in RESU_ASSE_SSD:
-        if res not in MTYPES:
-            continue
+    }
+    try:
+        RESU_ASSE_SSD = RESU_ASSE_SSD[0]
+    except KeyError:
+        pass
 
-        self.type_sdprod(RESU_ASSE_SSD[res], MTYPES[res])
-
+    for mc, typ in MTYPES.items():
+        if RESU_ASSE_SSD.get(mc):
+            self.type_sdprod(RESU_ASSE_SSD[mc], typ)
     return None
+
 
 ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
                     op=OPS('Macro.asse_elem_ssd_ops.asse_elem_ssd_ops'),
@@ -40,7 +43,7 @@ ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
                     UIinfo={"groupes":("Matrices et vecteurs",)},
 
 # pour les concepts de sortie
-        RESU_ASSE_SSD = FACT( statut='o', max=1,
+        RESU_ASSE_SSD = FACT( statut='o',
                           regles=(PRESENT_PRESENT('RIGI_GENE','NUME_DDL_GENE'),
                                   PRESENT_PRESENT('MASS_GENE','NUME_DDL_GENE'),),
                               MODELE=SIMP(statut='o',typ=CO,defaut=None),
