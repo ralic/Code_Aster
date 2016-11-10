@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,8 +57,13 @@ class MCList(UserList.UserList):
         """
            Retourne la "valeur" d'un objet MCList. Sert à construire
            un contexte d'évaluation pour une expression Python.
-           On retourne l'objet lui-meme.
+           On retourne l'objet lui-meme ou bien le premier élément s'il n'y en
+           a qu'un et que "max=1".
         """
+        if len(self) == 1:
+            mcfact = self[0]
+            if mcfact.definition.max == 1:
+                return mcfact
         return self
 
     def get_val(self):
@@ -213,10 +218,17 @@ class MCList(UserList.UserList):
         """
            Dans le cas d un mot cle facteur de longueur 1 on simule un scalaire
         """
-        if type(key) != types.IntType and len(self) == 1:
+        if type(key) is not int and len(self) == 1:
             return self.data[0].get_mocle(key)
         else:
             return self.data[key]
+
+    def get(self, key, default=None):
+        """Identique à l'opérateur [] le mot-clé s'il existe, sinon *default*"""
+        try:
+            return self[key]
+        except IndexError:
+            return default
 
     def List_F(self):
         """
