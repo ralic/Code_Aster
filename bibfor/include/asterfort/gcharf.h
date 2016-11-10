@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,12 +19,13 @@
 !
 interface
     subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
-                      charg)
+                      charg, oldfon)
         integer :: ichar
         aster_logical :: fonc1
         character(len=19) :: char1
         aster_logical :: fonc2
         character(len=19) :: char2
         character(len=19) :: charg
+        character(len=24) :: oldfon
     end subroutine gcharf
 end interface

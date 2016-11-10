@@ -1,5 +1,5 @@
 subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
-                  charg)
+                  charg, oldfon)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -23,10 +23,11 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: char1, char2, charg
+    character(len=24) :: oldfon
     integer :: ichar
     aster_logical :: fonc1, fonc2
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,13 +53,14 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 !             CHAR2    :  CHARGE 2(ASSOCIEE A FONC2)
 !             ICHAR    :  OCCURENCE DU CHARGEMENT DANS GCHARG
 !     IN/OUT  CHARG    :  CHARGE 1  +  CHARGE 2
+!     IN/OUT  OLDFON   : LISTE DES TYPES DE CHARGEMENTS
 ! ======================================================================
 ! ----------------------------------------------------------------------
 !
     integer :: jzcar1, nbma, p1, p2, nmazo, jdes
     integer :: nbzo1, ima, izo, numa, nbzo2, jzcar2, izo1, izo2, ii, nbzo, nuzo1
     integer :: nuzo2, jzcar, jma, jval, ncmpmx, jk24, ilim, jmazo, jnumz, nuzo
-    integer :: k, jval1, icmp, jval2, kk
+    integer :: k, jval1, icmp, jval2, kk, jfonci
     character(len=8) :: ma, k8b, val1, val2, nomfct, noms2f
     character(len=19) :: charg1, charg2
     character(len=40) :: acces
@@ -84,6 +86,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
 ! --  1.1 LORS D'UNE COMBINAISON DE CHARGEMENT 'SCALAIRE'/'FONCTION'
 !         LE CHARGEMENT 'SCALAIRE' EST TRANSFORME EN CHARGEMENT
 !         'FONCTION' (CONSTANT)
+    call jeveuo(oldfon, 'E', jfonci)
     s2f=.false.
     if (fonc1 .and. .not.fonc2) then
         charg1=char1
@@ -91,6 +94,7 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
         call gchs2f(char2, char1, charg2)
         fonc2=.true.
         s2f=.true.
+        zl(jfonci+ichar-1)=.true.
     else if (.not.fonc1 .and. fonc2) then
         charg1=noms2f
         charg2=char2
