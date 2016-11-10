@@ -59,36 +59,18 @@ cata_msg = {
 """),
 
     7 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est trop long. Il sera tronqué à 24 caractères.
-     Le groupe "%(k2)s" est renommé en "%(k3)s".
+  -> Le nom de groupe "%(k1)s" est trop long.
+     Il vous faut le renommer en vous limitant à 24 caractères.
 """),
 
-    8 : _(u"""
-  -> Famille %(k1)s :
-       Incohérence sur les nombres de %(k2)s, il y en a %(i1)d alors
-       que la fonction MED en annonce %(i2)d.
-  -> Risque & Conseil:
-       Impossible de lire ce fichier.
-       On peut utiliser mdump (utilitaire MED) pour voir si le problème
-       vient du fichier MED ou de la lecture dans Code_Aster.
-"""),
 
-    9 : _(u"""
-  -> Vous ne pouvez pas renommer le groupe "%(k1)s" en "%(k2)s"
-     car "%(k2)s" existe déjà dans le fichier MED.
-"""),
 
     10 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est contient des caractères interdits.
-     Le groupe "%(k2)s" est renommé en "%(k3)s".
+  -> Le nom de groupe "%(k1)s" contient des caractères interdits.
+     Le groupe "%(k1)s" est renommé en "%(k2)s".
 """),
 
-    11 : _(u"""
-  -> Le nom de groupe numéro %(i1)d de la famille %(k1)s
-     est vide.
-"""),
+
 
     12 : _(u"""
   -> Erreur, code retour = %(k1)s
@@ -101,22 +83,7 @@ cata_msg = {
      invalides.
 """),
 
-    13 : _(u"""
-  -> La famille %(k1)s n'a ni groupe, ni attribut.
-"""),
 
-    14 : _(u"""
-  -> Lecture de la famille numéro %(i1)4d de nom %(k1)s.
-"""),
-
-    15 : _(u"""
-      Groupe numéro %(i1)6d : %(k1)s
-"""),
-
-    16 : _(u"""
-      Groupe numéro %(i1)6d : %(k1)s
-                renommé en : %(k2)s
-"""),
 
     17 : _(u"""
   -> Aucune famille n'est présente dans ce fichier MED.
@@ -124,9 +91,7 @@ cata_msg = {
      Vérifier l'intégrité du fichier MED avec medconforme/mdump.
 """),
 
-    18 : _(u"""
-  -> Arrêt en raison des conflits sur les noms de groupe.
-"""),
+
 
     19 : _(u"""
   -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.
@@ -140,12 +105,7 @@ cata_msg = {
   -> Il manque les coordonnées !
 """),
 
-    22 : _(u"""
-  Le nom de groupe numéro  %(i1)d  est en double. %(k1)s
-  - premier nom MED  :  %(k2)s
-  - second nom MED   :  %(k3)s
-  - nom aster retenu :  %(k4)s
-"""),
+
 
     23 : _(u"""
   -> Mailles  %(k1)s

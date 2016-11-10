@@ -42,9 +42,9 @@ THERDEP=LIRE_RESU(
                    TOUT_ORDRE= 'OUI',
                    UNITE     = 21,
                    FORMAT_MED=_F(  NOM_CHAM   = 'TEMP',
-                                   NOM_CHAM_MED   = 'TEMP_SOLIDE',
+                                   NOM_CHAM_MED   = 'THERDEP_TEMP',
                                    NOM_CMP   = ('TEMP',),
-                                   NOM_CMP_MED=('TEMP_SOLIDE', ),),
+                                   NOM_CMP_MED=('TEMP', ),),
                    INFO      = 2,
                    TYPE_RESU = 'EVOL_THER' )
 

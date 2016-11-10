@@ -511,21 +511,21 @@ TAB=MACR_SPECTRE(
 
 
 
-TEST_TABLE(VALE_CALC=0.410364533936,TOLE_MACHINE=4.E-6,  # En attente issue24202 
+TEST_TABLE(VALE_CALC=0.410365169475,TOLE_MACHINE=1.E-5,  # En attente issue24202 
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
                      VALE=3.525,),
            )
 
-TEST_TABLE(VALE_CALC=0.422942897695,
+TEST_TABLE(VALE_CALC=0.422942986674,TOLE_MACHINE=1.E-5,  # En attente issue24202 
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',
                      VALE=4.1,),
            )
 
-TEST_TABLE(VALE_CALC=0.293828606381,TOLE_MACHINE=2.E-6,  # En attente issue24202 
+TEST_TABLE(VALE_CALC=0.293828606381,TOLE_MACHINE=1.E-5,  # En attente issue24202 
            NOM_PARA='eH_0_SOMMET',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='FREQ',

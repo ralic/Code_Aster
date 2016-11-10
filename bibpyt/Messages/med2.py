@@ -19,19 +19,6 @@
 
 cata_msg = {
 
-    1 : _(u"""
-  -> Les groupes '%(k1)s' et '%(k2)s'
-     ont les mêmes vingt quatre premiers caractères, leur nom
-     court est donc '%(k3)s'.
-     Comme il n'est pas légitime dans le cas général que deux
-     groupes aux noms initialement différents soient fusionnés,
-     le calcul s'arrête.
-  -> Conseil :
-     Dans le cas où certains des noms de groupes de votre maillage
-     sont trop longs, modifiez les pour qu'ils ne dépassent pas
-     les 8 caractères.
-"""),
-
     2 : _(u"""
      '%(k1)s'
 """),
@@ -73,6 +60,9 @@ format MED.
      - N'utilisez pas IMPR_NOM_VARI='OUI' pour imprimer ce champ
 """),
 
+    8 : _(u"""
+  Il n'a pas de groupe de mailles ou de noeuds dans ce maillage.
+"""),
 
     9 : _(u"""
   Vous demandez l'impression du champ %(k1)s issu de la commande
