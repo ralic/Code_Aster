@@ -20,7 +20,7 @@ IMPR_CO=PROC(nom="IMPR_CO",op=17,
              fr=tr("Imprimer tous les objets JEVEUX qui constituent un concept utilisateur existant (pour les développeurs)"),
          regles=(UN_PARMI('CONCEPT','CHAINE','TOUT' ),),
 
-         UNITE           =SIMP(statut='f',typ='I',defaut=8, inout='out'),
+         UNITE           =SIMP(statut='f',typ=UnitType(),defaut=8, inout='out'),
          NIVEAU          =SIMP(statut='f',typ='I',defaut=2,into=(-1,0,1,2) ),
          ATTRIBUT        =SIMP(statut='f',typ='TXM',defaut="NON",into=("NON","OUI") ),
          CONTENU         =SIMP(statut='f',typ='TXM',defaut="OUI",into=("NON","OUI") ),

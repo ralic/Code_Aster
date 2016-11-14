@@ -53,7 +53,7 @@ IMPR_JEVEUX=PROC(nom="IMPR_JEVEUX",op=16,
          ),
          IMPRESSION      =FACT(statut='f',
            NOM             =SIMP(statut='f',typ='TXM' ),  
-           UNITE           =SIMP(statut='f',typ='I', inout='out'),  
+           UNITE           =SIMP(statut='f',typ=UnitType(), inout='out'),  
          ),
          COMMENTAIRE     =SIMP(statut='f',typ='TXM' ),  
 )  ;

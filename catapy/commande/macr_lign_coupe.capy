@@ -59,7 +59,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
          b_cham       =BLOC(condition = """exists("CHAM_GD")""",
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),into=C_NOM_CHAM_INTO(),),),
 
-         UNITE_MAILLAGE  =SIMP(statut='f',typ='I',defaut=25, inout='out'),
+         UNITE_MAILLAGE  =SIMP(statut='f',typ=UnitType(),defaut=25, inout='out'),
          MODELE          =SIMP(statut='f',typ=modele_sdaster ),
 
          VIS_A_VIS       =FACT(statut='f',max='**',

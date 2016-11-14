@@ -35,7 +35,7 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
             regles=( PRESENT_PRESENT('FORMAT','UNITE') ),
             FORMAT   =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","MED"),
                            fr=tr("Format du fichier")),
-            UNITE    =SIMP(statut='f',typ='I',defaut= 20, inout='in',
+            UNITE    =SIMP(statut='f',typ=UnitType(),defaut= 20, inout='in',
                            fr=tr("Unite correspondant au format du fichier maillage")),
          ),
 

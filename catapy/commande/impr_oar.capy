@@ -64,6 +64,6 @@ IMPR_OAR =MACRO(nom="IMPR_OAR",
          TABLE     = SIMP(statut='o', typ=table_sdaster),
          MAILLAGE  = SIMP(statut='o', typ=maillage_sdaster)),
          ),
-   UNITE = SIMP(statut='f',typ='I',defaut=38, inout='out'),
+   UNITE = SIMP(statut='f',typ=UnitType(),defaut=38, inout='out'),
    AJOUT = SIMP(statut='f', typ='TXM', defaut='NON', into=('OUI', 'NON')),
    );

@@ -42,7 +42,7 @@ DEBUT=MACRO(nom="DEBUT",
 
          CATALOGUE       =FACT(statut='f',min=1,max=10,
            FICHIER         =SIMP(statut='o',typ='TXM'),
-           UNITE           =SIMP(statut='f',typ='I',inout='in'),
+           UNITE           =SIMP(statut='f',typ=UnitType(),inout='in'),
          ),
 
          CODE            =FACT(fr=tr("paramètres réservés aux cas-tests"),

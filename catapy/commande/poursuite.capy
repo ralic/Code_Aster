@@ -47,7 +47,7 @@ POURSUITE=MACRO(nom="POURSUITE",
 #
          CATALOGUE       =FACT(statut='f',min=1,max=10,
            FICHIER         =SIMP(statut='o',typ='TXM'),
-           UNITE           =SIMP(statut='f',typ='I', inout='in'),
+           UNITE           =SIMP(statut='f',typ=UnitType(), inout='in'),
          ),
 
          ERREUR          =FACT(fr=tr("comportement en cas d'erreur"),statut='f',min=1,max=1,

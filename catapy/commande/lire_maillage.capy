@@ -21,7 +21,7 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                    reentrant='n',
             UIinfo={"groupes":("Lecture","Maillage",)},
 
-         UNITE           =SIMP(statut='f',typ='I',defaut= 20 , inout='in'),
+         UNITE           =SIMP(statut='f',typ=UnitType(),defaut= 20 , inout='in'),
 
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","MED"),
                             fr=tr("Format du fichier : ASTER ou MED."),

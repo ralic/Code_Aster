@@ -127,7 +127,7 @@ MACR_INFO_MAIL=MACRO(nom="MACR_INFO_MAIL",
                                 fr=tr("Fichier supplementaire."),
 
 #
-  UNITE = SIMP(statut='f',typ='I',val_min=1, inout='in',
+  UNITE = SIMP(statut='f',typ=UnitType(),val_min=1, inout='in',
                fr=tr("Unite logique a ajouter a HOMARD.Configuration"),
                ),
 #
