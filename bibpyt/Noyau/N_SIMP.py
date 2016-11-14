@@ -51,7 +51,7 @@ class SIMP(N_ENTITE.ENTITE):
     def __init__(self, typ, fr="", statut='f', into=None, defaut=None,
                  min=1, max=1, homo=1, position='local',
                  val_min='**', val_max='**', docu="", validators=None,
-                 sug=None, inout='in'):
+                 sug=None, inout=None):
         """
             Un mot-clé simple est caractérisé par les attributs suivants :
             - type : cet attribut est obligatoire et indique le type de valeur attendue

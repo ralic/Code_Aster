@@ -291,7 +291,22 @@ class ENTITE:
 
     def check_inout(self):
         """Vérifie l'attribut inout."""
+        if self.inout is None:
+            return
         if self.inout not in ('in', 'out', 'inout'):
             self.cr.fatal(
                 _(u"L'attribut 'inout' doit valoir 'in','out' ou 'inout' : %r"),
                 self.inout)
+        else:
+            # inout is defined == UNITE* keywords
+            from Cata.cata import UnitType
+            typ = self.type
+            if type(typ) in (list, tuple):
+                if len(typ) != 1:
+                    self.cr.fatal(
+                        _(u"L'attribut 'typ' doit valoir UnitType() : %r"),
+                        self.type)
+                typ = typ[0]
+            if typ != UnitType():
+                self.cr.fatal(
+                    _(u"L'attribut 'typ' doit valoir UnitType() : %r"), self.type)
