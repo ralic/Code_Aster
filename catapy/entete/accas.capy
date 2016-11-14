@@ -133,3 +133,23 @@ def UnitType(filter=None):
         filter (str): Can be used to pass a filter or an expected filetype.
     """
     return "I"
+
+
+class FIN_ETAPE(PROC_ETAPE):
+    """Particularisation pour FIN"""
+    def Build_sd(self):
+        """Fonction Build_sd pour FIN"""
+        PROC_ETAPE.Build_sd(self)
+        if self.nom == 'FIN':
+            try:
+                from Noyau.N_Exception import InterruptParsingError
+                raise InterruptParsingError
+            except ImportError:
+                # eficas does not known this exception
+                pass
+        return None
+
+
+class FIN_PROC(PROC):
+    """Procédure FIN"""
+    class_instance = FIN_ETAPE
