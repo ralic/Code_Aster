@@ -238,7 +238,16 @@ CHARG2=AFFE_CHAR_MECA(  MODELE=MO,
 MEST2=MECA_STATIQUE(        MODELE=MO,    CHAM_MATER=CHMAT,
             CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG2)   )
 
+l_inst=DEFI_LIST_REEL(VALE=(0., 1.,),)
+
+inst=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=l_inst,),)
+
+MEST2B=STAT_NON_LINE(        MODELE=MO,    CHAM_MATER=CHMAT,
+            CARA_ELEM=CAREL, EXCIT=_F( CHARGE = CHARG2), INCREMENT=_F(LIST_INST=inst)   )
+
+
 CALC_CHAMP(reuse=MEST2,RESULTAT=MEST2,CONTRAINTE=('EFGE_ELNO'))
+CALC_CHAMP(reuse=MEST2B,RESULTAT=MEST2B,CONTRAINTE=('EFGE_ELNO'))
 
 
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -417,6 +426,29 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                 _F(NUME_ORDRE=1,
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=MEST2,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='MFZ',
+                   VALE_CALC=2.000000000,
+                   VALE_REFE=2.0,
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='S11',),
+                ),
+          )
+
+TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST2B,
+                   NOM_CHAM='EFGE_ELNO',
+                   NOEUD='N1',
+                   NOM_CMP='VY',
+                   VALE_CALC=1.000000000,
+                   VALE_REFE=1.0,
+                   PRECISION=9.9999999999999995E-07,
+                   MAILLE='S11',),
+                _F(NUME_ORDRE=1,
+                   REFERENCE='ANALYTIQUE',
+                   RESULTAT=MEST2B,
                    NOM_CHAM='EFGE_ELNO',
                    NOEUD='N1',
                    NOM_CMP='MFZ',
