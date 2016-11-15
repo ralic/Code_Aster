@@ -44,4 +44,9 @@ Contact LAC
              Vérifiez que votre GROUP_MA_ESCL est bien celui utilisé par DECOUPE_LAC de CREA_MAILLAGE.  
 """),
 
+    6 : _(u"""
+Contact LAC
+         Le frottement n'est pas autorisé (COULOMB=0.0).   
+"""),
+
 }

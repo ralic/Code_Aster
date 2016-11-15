@@ -74,11 +74,13 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                   FORMULATION='CONTINUE',
                   ALGO_RESO_CONT = 'NEWTON',
                   ALGO_RESO_GEOM = 'NEWTON',
+                  FROTTEMENT = 'COULOMB',
                   LISSAGE='OUI',
                   ZONE=_F(ALGO_CONT='LAC',
                           GROUP_MA_MAIT='CON1',
                           GROUP_MA_ESCL='CON2',
                           CONTACT_INIT='OUI',
+                          COULOMB = 0.,
                           ),);
 
 

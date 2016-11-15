@@ -135,6 +135,9 @@ implicit none
         else
             ASSERT(.false.)
         endif
+        if (l_cont_lac) then
+            call utmess('F', 'CONTACT4_1')
+        endif
     else if (algo_reso_geom .eq. 'NEWTON') then
         call getvr8(' ', 'RESI_GEOM', scal=geom_resi)
         v_sdcont_paraci(1) = 0
@@ -206,7 +209,7 @@ implicit none
     else if (l_cont_disc) then
         algo_reso_cont = 'POINT_FIXE'
     else if (l_cont_lac) then
-        call getvtx(' ', 'ALGO_RESO_GEOM', scal=algo_reso_cont)
+        call getvtx(' ', 'ALGO_RESO_CONT', scal=algo_reso_cont)
     else
         ASSERT(.false.)
     endif
@@ -241,6 +244,8 @@ implicit none
             call getvis(' ', 'ITER_CONT_MULT', scal=cont_mult)
             v_sdcont_paraci(5)  = cont_mult
             v_sdcont_paraci(10) = -1
+        else if (l_cont_lac) then
+            call utmess('F', 'CONTACT4_1')
         else
             ASSERT(.false.)
         endif
@@ -353,14 +358,6 @@ implicit none
             v_sdcont_paraci(25) = 0
         else
             ASSERT(.false.)
-        endif
-    endif
-!
-! - Checks for LAC method
-!
-    if (l_cont_lac) then
-        if (algo_reso_cont .ne. 'NEWTON' .or. algo_reso_geom .ne. 'NEWTON') then
-            call utmess('F', 'CONTACT4_1')
         endif
     endif
 !

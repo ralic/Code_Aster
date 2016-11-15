@@ -152,7 +152,13 @@ implicit none
         endif
     else if (cont_form.eq.5) then
         algo_cont = 8
-        ASSERT(.not.l_frot)
+        if (l_frot) then 
+            do izone = 1, cont_nbzone
+                call getvr8(keywf, 'COULOMB', iocc=izone, scal=coefff)
+                if (coefff .ne. 0.0d0) call utmess('F', 'CONTACT4_6')
+            end do
+        endif
+!        ASSERT(.not.l_frot)
     else
         ASSERT(.false.)
     endif
