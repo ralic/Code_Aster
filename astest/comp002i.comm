@@ -28,8 +28,10 @@ vitesse = 1.e-5
 
 t_0 = 5.e-2/(8.0*vitesse)
 
+larch = [t_0*i for i in range(9)]
+
 # liste d'archivage
-temps_ar=DEFI_LIST_REEL( VALE =[t_0*i for i in range(9)],)
+temps_ar=DEFI_LIST_REEL( VALE = larch,)
 
 
 YOUNG = 200000.0;

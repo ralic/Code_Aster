@@ -30,8 +30,7 @@ POISSON = 0.3;
 #parametres loi ISOT_LINE
 SY = 437.0;
 pente = 2024.74690664;
-# def des materiaux
-ACIER = [None]*2
+
 #unite en Pa
 C_Pa = 1.e+6
 #C_Pa = 1.
@@ -39,13 +38,13 @@ YOUNG_Pa = YOUNG * C_Pa
 pente_Pa = pente * C_Pa
 SY_Pa = SY * C_Pa;
 
-ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
+acier0 = DEFI_MATERIAU(ELAS=_F(E=YOUNG_Pa,
                                NU=POISSON,
                                ALPHA=11.8e-6),
                     ECRO_LINE=_F(D_SIGM_EPSI=pente_Pa,
                                  SY=SY_Pa,),);
 #unite en MPa
-ACIER[1]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,
+acier1 = DEFI_MATERIAU(ELAS=_F(E=YOUNG,
                                NU=POISSON,
                                ALPHA=11.8e-6),
                     ECRO_LINE=_F(D_SIGM_EPSI=pente,
@@ -57,7 +56,7 @@ tabresu=TEST_COMPOR(OPTION='MECA',
 
               COMPORTEMENT=_F(RELATION=compor,),
               NEWTON=_F(REAC_ITER=1),
-              LIST_MATER=ACIER,
+              LIST_MATER=(acier0, acier1),
               VARI_TEST=('V1','VMIS','TRACE'),
               YOUNG=YOUNG,POISSON=POISSON,
               )
