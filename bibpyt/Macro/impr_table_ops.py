@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,6 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
     macro = 'IMPR_TABLE'
     import aster
     from Accas import _F
-    from Cata.cata import table_jeveux
     from Utilitai.Utmess import UTMESS
     from Utilitai.UniteAster import UniteAster
     from Utilitai.utils import fmtF2PY

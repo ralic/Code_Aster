@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -127,18 +127,13 @@ class table_fonction(table_sdaster):
     """Table contenant en plus une colonne FONCTION et/ou FONCTION_C dont les
     valeurs des cellules sont des noms de fonction_sdaster ou fonction_c."""
 
-class table_jeveux(table_sdaster):
-    """Classe permettant d'accéder à une table jeveux qui n'a pas d'ASSD associée,
-    c'est le cas des concepts résultats (table, evol_xxxx) dérivés."""
-    def __init__(self, nom_jeveux):
-        table_sdaster.__init__(self)
-        self.set_name(nom_jeveux)
 
 class table_fonction(table_sdaster):
     """Table contenant une colonne FONCTION et/ou FONCTION_C dont les
     valeurs des cellules sont des noms de fonction_sdaster ou
     fonction_c."""
     cata_sdj = "SD.sd_table_fonction.sd_table_fonction"
+
 
 class table_container(table_sdaster):
     """Table contenant les colonnes NOM_OBJET, TYPE_OBJET et NOM_SD."""
