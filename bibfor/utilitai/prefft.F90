@@ -287,7 +287,7 @@ subroutine prefft(resin, method, symetr, nsens, grand,&
 !        --- REMPLISSAGE AVEC LES PREMIERS RESULTATS POUR IDDL=1
         lfon2 = nout + nbvout
         do 55 i = 1, nbvout
-            zr(npara+(iddl-1)*nbva+i-1) = zr(lfon2+i-1)
+            zr(npara+(iddl-1)*nbvout+i-1) = zr(lfon2+i-1)
 55      continue
 !
 !        --- BOUCLE DES FFTS INVERSES SUR LES AUTRES DDL'S
