@@ -135,7 +135,7 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !       --- Allocate work vectors for NL_SAVES
         call dtmget(sd_dtm, _NB_NONLI, iscal=nbnoli)
         if (nbnoli.gt.0) then
-            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl, buffer=buffdtm)
             call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
             nbnlsav = nbvint *1.d0
             call intinivec(sd_int, WORK6, nbsavnl, vr=nlsav0)
@@ -213,12 +213,12 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 
     else
 !       --- Algorithm is already initialized, retrieval of all parameters and operators
-        call intget(sd_int, PARAMS, vr=par)
-        call intget(sd_int, WORK1, vr=omegas  , buffer=buffint)
-        call intget(sd_int, WORK2, vr=s0_r    , buffer=buffint)
-        call intget(sd_int, WORK3, vr=za1_ri  , buffer=buffint) 
-        call intget(sd_int, WORK4, vr=za2_ri  , buffer=buffint) 
-        call intget(sd_int, WORK5, vr=trans_vd, buffer=buffint) 
+        call intget(sd_int, PARAMS, vr=par     , buffer=buffint)
+        call intget(sd_int, WORK1 , vr=omegas  , buffer=buffint)
+        call intget(sd_int, WORK2 , vr=s0_r    , buffer=buffint)
+        call intget(sd_int, WORK3 , vr=za1_ri  , buffer=buffint) 
+        call intget(sd_int, WORK4 , vr=za2_ri  , buffer=buffint) 
+        call intget(sd_int, WORK5 , vr=trans_vd, buffer=buffint) 
         if (nbsavnl.gt.0) call intget(sd_int, WORK6, vr=nlsav0, buffer=buffint)
 
 !       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1)

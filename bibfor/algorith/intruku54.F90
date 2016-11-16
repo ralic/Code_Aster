@@ -177,12 +177,12 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
         call intinivec(sd_int, WORK2, 6*nbequ, address=j_kvi)
 
 !       --- Allocate work vectors for NL_SAVES
-        call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli)
+        call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli, buffer=buffdtm)
         if (nbnoli.gt.0) then
-            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl, buffer=buffdtm)
             call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
             nbnlsav = nbvint *1.d0
-            call intinivec(sd_int, WORK3, nbsavnl, vr=nlsav0)
+            call intinivec(sd_int, WORK3, nbvint, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif
@@ -208,12 +208,13 @@ subroutine intruku54(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK2, address=j_kvi  , buffer=buffint)
 
 !       --- Retrieve the algorithm parameters
-        call intget(sd_int, PARAMS, vr=par)
+        call intget(sd_int, PARAMS, vr=par, buffer=buffint)
 
 !       --- Retrieve choc parameters save container
         if (nbsavnl.gt.0) call intget(sd_int, WORK3, vr=nlsav0, buffer=buffint)
 
     end if
+
     if (nbsavnl.gt.0) then
         call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)

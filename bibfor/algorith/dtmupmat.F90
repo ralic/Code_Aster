@@ -176,7 +176,7 @@ subroutine dtmupmat(sd_dtm_, sd_int_, buffdtm, buffint, nlcase,&
             call dtmforc(sd_dtm, sd_int, ind, buffdtm, buffint, 1)
             call intget(sd_int, FORCE_EX, iocc =ind, vr=fext2, buffer=buffint)
 
-            call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1, buffer=buffdtm)
+            call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1, buffer=buffdtm)
 
             call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
             call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)

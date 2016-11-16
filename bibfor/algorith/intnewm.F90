@@ -2,7 +2,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -214,7 +214,7 @@ subroutine intnewm(sd_dtm_, sd_int_, buffdtm, buffint)
         call intget(sd_int, WORK3, vr=ftild2, buffer=buffint)
         call intget(sd_int, WORK4, vr=ftild3, buffer=buffint)
 
-        call intget(sd_int, PARAMS, vr=par)
+        call intget(sd_int, PARAMS, vr=par, buffer=buffint)
 
 !       --- Retrieval of already allocated DEPL/VITE/ACCE/2 (t_i+1)
         call intget(sd_int, DEPL    , iocc=2, vr=depl2, buffer=buffint)

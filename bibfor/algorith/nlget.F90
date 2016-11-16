@@ -58,7 +58,6 @@ subroutine nlget(sd_nl_, ip, iocc, lonvec, savejv,&
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jgetptc.h"
-#include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
 

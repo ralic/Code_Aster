@@ -60,7 +60,7 @@ subroutine dtminit(sd_dtm_, sd_int_)
     aster_logical     :: reuse
     integer           :: nbrede, nbrevi, nbsauv, nbnli, nbpal
     integer           :: nbmode, iret, jmass, nbvint, jchor
-    integer           :: jchor1, nltreat, append, appendind, i
+    integer           :: nltreat, append, appendind, i
 !
     real(kind=8)      :: tinit, dt
     character(len=8)  :: sd_dtm, sd_int, nomres, basemo, sd_nl
@@ -172,10 +172,8 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !   --- Copy the retrieved internal variables to the work object zr(jchor)
     if (nbvint .gt. 0) then
         call dtminivec(sd_dtm, _NL_SAVES, nbvint, address=jchor)
-        call dtminivec(sd_dtm, _NL_SAVE1, nbvint, address=jchor1)
         do i = 1, nbvint
             zr(jchor +i-1) = vint(i)
-            zr(jchor1+i-1) = vint(i)
         end do
     endif
 

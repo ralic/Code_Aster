@@ -59,7 +59,7 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
         call dtmget(sd_dtm, _SD_NONL  , kscal=sd_nl, buffer=buffdtm)
         call dtmget(sd_dtm, _NL_BUFFER, vi=buffnl, buffer=buffdtm)
         call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
-        call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1, buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1, buffer=buffdtm)
         call dcopy(size(nlsav2), nlsav2, 1, nlsav1, 1)
     end if
 

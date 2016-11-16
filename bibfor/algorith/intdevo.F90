@@ -253,12 +253,12 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
         call intinivec(sd_int, WORK6, 3+5*nbequ, address=jw6)
 
 !       --- Allocate work vectors for NL_SAVES
-        call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli)
+        call dtmget(sd_dtm, _NB_NONLI , iscal=nbnoli, buffer=buffdtm)
         if (nbnoli.gt.0) then
-            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl)
+            call dtmget(sd_dtm, _SD_NONL , kscal=sd_nl, buffer=buffdtm)
             call nlget(sd_nl, _INTERNAL_VARS, lonvec=nbvint)
             nbnlsav = nbvint *1.d0
-            call intinivec(sd_int, WORK7, nbsavnl, vr=nlsav0)
+            call intinivec(sd_int, WORK7, nbvint, vr=nlsav0)
         else
             nbnlsav = 0.d0
         endif

@@ -34,7 +34,6 @@ subroutine nlbuff(sd_nl, addrs, level)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveut.h"
 #include "asterfort/jgetptc.h"
-#include "asterfort/wkvect.h"
 
 !   ====================================================================
 !   = 0 =   Variable declarations and initialization
@@ -96,7 +95,6 @@ subroutine nlbuff(sd_nl, addrs, level)
             savename(16:24)='.'//params(ip)
             call jeexin(savename, iret)
             if (iret.gt.0) then
-                call jelibe(savename)
                 call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr

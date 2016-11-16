@@ -70,7 +70,7 @@ subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
         call nlget (sd_nl , _INTERNAL_VARS, vr=nlsav2, buffer=buffnl)
         call nlget (sd_nl , _INTERNAL_VARS_INDEX, vi=vindx, buffer=buffnl)
 
-        call dtmget(sd_dtm, _NL_SAVE1, vr=nlsav1   , buffer=buffdtm)
+        call dtmget(sd_dtm, _NL_SAVES, vr=nlsav1   , buffer=buffdtm)
         call dtmget(sd_dtm, _NL_CASE , iscal=nlcase1, buffer=buffdtm)
 
         AS_ALLOCATE(vi=nlcase_i, size=nbnoli)

@@ -88,7 +88,7 @@ subroutine dtmprep(sd_dtm_)
     integer          :: nbsst, j, jmas3, nbmody
     real(kind=8)     :: acrit, agene, valr(2), omeg2
     real(kind=8)     :: vrotat, dt, dtmax, dtmin, tinit
-    real(kind=8)     :: tfin, dtedyo, epsi
+    real(kind=8)     :: tfin, epsi
     character(len=8) :: sd_dtm, nomres, tran, calcres, masgen
     character(len=8) :: riggen, amogen, basemo, matass
     character(len=8) :: resgen, basemo2, monmot, foncv, fonca
@@ -630,11 +630,11 @@ subroutine dtmprep(sd_dtm_)
     call dtmsav(sd_dtm, _NB_STEPS, 1, iscal=nbpas)
 !
 !   --- If needed, initialiaze EDYOS coupling with time-step information
-    if (nbpal.ne.0) then
-        call dtmget(sd_dtm, _DT_EDYOS, rscal=dtedyo)
-        call inicou(nbpas, tinit, tfin, dt, dtedyo,&
-                    vrotat)
-    endif
+    ! if (nbpal.ne.0) then
+    !     call dtmget(sd_dtm, _DT_EDYOS, rscal=dtedyo)
+    !     call inicou(nbpas, tinit, tfin, dt, dtedyo,&
+    !                 vrotat)
+    ! endif
 !
 !   --------------------------------------------------------------------------------------
 !   9 - Saving periodicity (ARCHIVAGE)

@@ -3,7 +3,7 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,11 +44,12 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
 #define kdiag (nint(par(2)).eq.1)
 #define cdiag (nint(par(3)).eq.1)
 #define tol par(4)
-#define dtmin par(5)
-#define dtmax par(6)
-#define deltadt par(7)
-#define nbnlsav par(8)
-#define nbsavnl nint(par(8))
+#define alpha par(5)
+#define dtmin par(6)
+#define dtmax par(7)
+#define deltadt par(8)
+#define nbnlsav par(9)
+#define nbsavnl nint(par(9))
 
 #define m(row,col) mgen((row-1)*nbequ+col) 
 #define k(row,col) kgen((row-1)*nbequ+col) 

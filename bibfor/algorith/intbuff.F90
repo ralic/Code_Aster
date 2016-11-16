@@ -95,7 +95,6 @@ subroutine intbuff(sd_int, addrs, level)
             savename(16:24)='.'//params(ip)
             call jeexin(savename, iret)
             if (iret.gt.0) then
-                call jelibe(savename)
                 call jeveut(savename, 'E', addr)
                 call jelira(savename, 'LONMAX', long)
                 addrs(dec+ip) = addr
