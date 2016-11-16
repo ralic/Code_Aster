@@ -44,7 +44,7 @@ list_no_later_dro = ['N46','N47','N48','N49','N50','N51','N52','N53',
                      'N54','N55','N187'];
 
 DEBUT(CODE        =_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
-      IGNORE_ALARM=('CALCULEL4_9','ALGORITH9_84',),
+      IGNORE_ALARM=('CALCULEL4_9',),
       PAR_LOT     ='OUI',
       DEBUG       =_F(SDVERI='OUI'),);
 
