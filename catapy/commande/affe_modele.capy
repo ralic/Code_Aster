@@ -268,6 +268,9 @@ AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
                  NB_SOUS_DOMAINE  =SIMP(statut='f',typ='I'), # par defaut : le nombre de processeurs
                  PARTITIONNEUR    =SIMP(statut='f',typ='TXM',into=("METIS","SCOTCH",), defaut="METIS" ),
              ),
+             b_sous_domaine  =BLOC(condition = "equal_to('METHODE', 'SOUS_DOM.OLD')",
+                CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             ),
          ),
 
          VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
