@@ -61,6 +61,16 @@ def build(self):
     VERSION_INFO = pformat(env['ASTER_VERSION']),
     )
 
+    self(
+        features = 'subst py',
+            name = 'aster_version',
+          source = 'aster_version.pytmpl',
+          target = 'aster_version.py',
+    install_path = osp.join(env.ASTERLIBDIR, "Cata"),
+             use = ['bibpyt'],
+VERSION_AS_TUPLE = env['ASTER_VERSION'][0],
+    )
+
 
 def check_aster_version(self):
     """Set ASTER_VERSION to the tuple = (
