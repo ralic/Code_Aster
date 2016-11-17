@@ -1,10 +1,11 @@
-!NECS_EVOL= 77
 subroutine lcidbg(fami, kpg, ksp, typmod,compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm, vim, option)
+
 use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 implicit none
 
 #include "jeveux.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/tecael.h"
@@ -21,7 +22,7 @@ implicit none
     character(len=16)::  compor(*), option, algo
     character(len=64)::  file
     real(kind=8) :: deps(neps), epsm(neps),vim(*),sigm(nsig)
-    real(kind=8) :: crit(*), lvalr(20), vref(10), vrcm(10),vrcp(10), valvrc
+    real(kind=8) :: crit(*), lvalr(2), vref(10), vrcm(10),vrcp(10), valvrc
     real(kind=8) :: instam, instap,rac2
     data nimp / 0/
     save nimp
@@ -89,6 +90,9 @@ implicit none
 !       OUT     un fichier
 !
     real(kind=8) :: epslm(12),eps(12),sig(6)
+    call r8inir(12, 0.d0, epslm, 1)
+    call r8inir(12, 0.d0, eps, 1)
+    call r8inir(6, 0.d0, sig, 1)
 
     nimp=nimp+1
     if (nimp>5) goto 999
