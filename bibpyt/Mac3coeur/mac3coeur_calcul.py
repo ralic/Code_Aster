@@ -667,7 +667,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
             print 'self.etat_init : ',self.etat_init
             __RESULT = None
             if (not self.etat_init) :
-                __RESULT = STAT_NON_LINE(**self.snl(CHAM_MATER=mater[-1],
+                __RESULT = STAT_NON_LINE(**self.snl(CHAM_MATER=self.cham_mater_free,
                                 INCREMENT=_F(LIST_INST=self.times,
                                              INST_FIN=0.),
                                 EXCIT=loads,
