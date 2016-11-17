@@ -2,7 +2,7 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
                  ipt, isp, type_gd, rc, p,&
                  permvec)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,6 +60,10 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai,&
     val(:) = 0.d0
     valr(:)= 0.d0
     vali(:)= 0.d0
+    val1(:) = 0.d0
+    val1r(:)= 0.d0
+    val1i(:)= 0.d0
+    
 ! Vecteur (optionnel) permettant de permuter les composantes (du tenseur ou du vecteur)
 ! après application du changement de repère.  Cette possibilité est utilisée pour le 
 ! changement de repère vers un repère cylindrique dans les éléments de milieu continu. 
