@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,8 @@ CALC_SPEC=MACRO(nom="CALC_SPEC",
                 reentrant='n',
                 fr=tr("Calcule une matrice interspectrale ou des fonctions de transferts"),
                 UIinfo={"groupes":("CACHE",)},
+                regles=(UN_PARMI("ECHANT", "TAB_ECHANT"),
+                        UN_PARMI("INTERSPE", "TRANSFERT"), ),
          TAB_ECHANT      =FACT(statut='f',
            NOM_TAB                  =SIMP(statut='o',typ=table_sdaster),
            LONGUEUR_DUREE           =SIMP(statut='f',typ='R'),

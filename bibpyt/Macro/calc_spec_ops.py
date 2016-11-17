@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,37 +71,17 @@ def calc_spec_ops(self, TAB_ECHANT, ECHANT, INTERSPE, TRANSFERT, TITRE, INFO, **
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
 
 # --- Verifications sur les entrees --#
-
-    if (ECHANT == None and TAB_ECHANT == None):
-        raise FonctionError, 'Vous devez specifier des fonctions en entree'
-
-    if TAB_ECHANT == None:
-        TAB_ECHANT = []
-    if ECHANT == None:
-        ECHANT = []
-    if INTERSPE == None:
-        INTERSPE = []
-    if TRANSFERT == None:
-        TRANSFERT = []
-    if len(TAB_ECHANT) * len(ECHANT) != 0:
-        raise FonctionError, 'Vous pouvez specifier une table_fonction ou' + \
-            ' une liste de fonctions en entree, mais pas les deux'
-    if len(TRANSFERT) * len(INTERSPE) != 0:
-        raise FonctionError, 'Vous ne pouvez specifier qu' + \
-            "'" + 'un type de calcul par appel'
-
-# -- Recuperation des entrees --#
     l_f = []
     l_t = []
     l_G = []
     l_H = []
-    for occ in TAB_ECHANT:
+    for occ in TAB_ECHANT or []:
         l_t.append(('TAB_ECHANT', occ))
-    for occ in ECHANT:
+    for occ in ECHANT or []:
         l_f.append(('ECHANT', occ))
-    for occ in INTERSPE:
+    for occ in INTERSPE or []:
         l_G.append(('INTERSPE', occ))
-    for occ in TRANSFERT:
+    for occ in TRANSFERT or []:
         l_H.append(('TRANSFERT', occ))
 
 # Pour dimensionner les fenetres :
@@ -187,10 +167,6 @@ def calc_spec_ops(self, TAB_ECHANT, ECHANT, INTERSPE, TRANSFERT, TITRE, INFO, **
         # normalisation de la fenetre
         fene = numpy.divide(
             fene, numpy.sqrt(numpy.sum(numpy.multiply(fene, fene)))).tolist()
-
-    if len(TRANSFERT) + len(INTERSPE) == 0:  # -- on ne rentre rien : interspectre par defaut - fenetre rectangulaire
-        fene = [1.] * l_ech
-        INTERSPE = 1.
 
 # --          Recuperation des signaux           --#
 # -- Verifications et transformations de Fourier --#
@@ -307,7 +283,7 @@ def calc_spec_ops(self, TAB_ECHANT, ECHANT, INTERSPE, TRANSFERT, TITRE, INFO, **
 
 #-- Calcul de la matrice inter spectrale
 
-    if len(INTERSPE) != 0:
+    if INTERSPE:
         nb_ord = len(list_ord)
         dimh = (nb_ord * (nb_ord + 1)) / 2
         l_fc = []
@@ -358,7 +334,7 @@ def calc_spec_ops(self, TAB_ECHANT, ECHANT, INTERSPE, TRANSFERT, TITRE, INFO, **
                                   TITRE='DSP',)
 
 #-- Calcul des transferts
-    if len(TRANSFERT) != 0:
+    if TRANSFERT:
 
         l_fc = []
         nume_i1 = []
