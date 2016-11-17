@@ -20,11 +20,24 @@ import aster_core
 from mac3coeur_coeur import CoeurFactory
 from Utilitai.UniteAster import UniteAster
 
+import numpy as N
+import numpy.linalg as LA
+from scipy import stats
+
 UL=UniteAster()
+
+K_star = 100000.
 
 def NodePos(coeur,k):
     
     return coeur.get_XYOut('%s_%s'%(k[0],k[1]))
+
+def compute_cos_alpha(G_0,G_1,G_2):
+    a=G_1-G_0
+    b=G_2-G_1
+    cos_alpha_ = N.dot(a,b)/LA.norm(a)/LA.norm(b)
+    # cos_alpha_ = dotProduct(coorVect(G_0,G_1),coorVect(G_1,G_2))/(norm(G_0,G_1)*norm(G_1,G_2))  
+    return cos_alpha_
 
 
 def makeXMGRACE_entete(coeur,xmgrfile) :
@@ -375,13 +388,15 @@ def post_mac3coeur_ops(self, **args):
     _TAB_N = self['TABLE']
 
     _table = _TAB_N.EXTR_TABLE()
-    name = _table.para[0]
+    nameCoeur = _table.para[0]
 
 # et on renomme la colonne qui identifie les assemblages
-    _table.Renomme(name, 'idAC')
-    _coeur = coeur_factory.get(_typ_coeur)(name, _typ_coeur, self, datg)
+    _table.Renomme(nameCoeur, 'idAC')
+    _coeur = coeur_factory.get(_typ_coeur)(nameCoeur, _typ_coeur, self, datg)
     _coeur.init_from_table(_table,mater=False)
+    tableCreated = False
 
+    self.DeclareOut('__TAB_OUT', self.sd)
     # "
     #                                          MOT-CLE FACTEUR LAME
     # "
@@ -472,6 +487,63 @@ def post_mac3coeur_ops(self, **args):
                 tab1.Renomme(name, 'P_LAME')
                 valjeuac[name] = tab1.P_LAME.values()
                 k = k + 1
+
+        valContactCuve = []
+        valContactAssLame = []
+        # pour table globale
+        for name in _coeur.nomContactCuve:
+            valContactCuve.append(valjeucu[name])
+        for name in _coeur.nomContactAssLame:
+            valContactAssLame.append(valjeuac[name])
+        valContactCuve=N.array(valContactCuve)
+        valContactAssLame=N.array(valContactAssLame)
+        nb_grilles = valContactCuve.shape[1]
+        valQuantile=[70,80,90,95,99]
+        liste_out=[]
+        for i in xrange(nb_grilles) :
+            valContactCuveGrille    = valContactCuve[:,i]
+            valContactAssLameGrille = valContactAssLame[:,i]
+            valContactGrille        = valContactCuveGrille.tolist()
+            valContactGrille.extend(valContactAssLameGrille)
+            for quant in valQuantile :
+                liste_out.append({
+                    'LISTE_R' : stats.scoreatpercentile(valContactCuveGrille,quant),
+                    'PARA'    : 'QuanLE_CU_G%d_%d'%(i+1,quant)
+                    })
+                liste_out.append({
+                    'LISTE_R' : stats.scoreatpercentile(valContactAssLameGrille,quant),
+                    'PARA'    : 'QuanLE_AC_G%d_%d'%(i+1,quant)
+                    })
+                liste_out.append({
+                    'LISTE_R' : stats.scoreatpercentile(valContactGrille,quant),
+                    'PARA'    : 'QuanLE_G%d_%d'%(i+1,quant)
+                    })
+        valContact = valContactCuve.ravel().tolist()
+        valContact.extend(valContactAssLame.ravel())
+        for quant in valQuantile :
+            liste_out.append({
+                'LISTE_R' : stats.scoreatpercentile(valContactCuve.ravel(),quant),
+                'PARA'    : 'QuanLE_CU_%d'%(quant,)
+                })
+            liste_out.append({
+                'LISTE_R' : stats.scoreatpercentile(valContactAssLame.ravel(),quant),
+                'PARA'    : 'QuanLE_AC_%d'%(quant,)
+                })
+            liste_out.append({
+                'LISTE_R' : stats.scoreatpercentile(valContact,quant),
+                'PARA'    : 'QuanLE_%d'%(quant,)
+                })
+
+
+    
+        print 'liste_out : ',liste_out
+
+        __TAB_OUT = CREA_TABLE(TITRE='RESU_GLOB_'+nameCoeur,
+                             LISTE=liste_out
+                             )
+
+        tableCreated = True
+
 
         for attr in POST_LAME:
             _unit = attr['UNITE']
@@ -596,6 +668,259 @@ def post_mac3coeur_ops(self, **args):
 
             k = k + 1
 
+            l_nom_AC = []
+            l_cycle = []
+            l_repere = []
+            l_def_max = []
+            l_XG1 = []
+            l_XG2 = []
+            l_XG3 = []
+            l_XG4 = []
+            l_XG5 = []
+            l_XG6 = []
+            l_XG7 = []
+            l_XG8 = []
+            l_XG9 = []
+            l_XG10 = []
+            l_YG1 = []
+            l_YG2 = []
+            l_YG3 = []
+            l_YG4 = []
+            l_YG5 = []
+            l_YG6 = []
+            l_YG7 = []
+            l_YG8 = []
+            l_YG9 = []
+            l_YG10 = []
+            l_milieu = []
+            l_MinX = []
+            l_MaxX = []
+            l_CCX = []
+            l_MinY = []
+            l_MaxY = []
+            l_CCY = []
+            l_formeX = []
+            l_formeY = []
+            l_forme = []
+            l_valdx = []
+            l_valdy = []
+            l_T5 = []
+            l_T6 = []
+
+
+        # combien de grille ?
+        nbGrille = 0
+        for idAC in _coeur.collAC.keys() :
+            AC = _coeur.collAC[idAC]
+            altitudeGrilles = AC.altitude
+            if len(altitudeGrilles) > nbGrille :
+                nbGrille=len(altitudeGrilles)
+
+        moyenneRhoParType = {}
+        moyenneGraviteParType = {}
+
+        maxRho=0.
+        maxRhoParType = {}
+        listeGravite = []
+        maxGravite = 0.
+        maxGraviteParType = {}
+        maxDeplGrille = [0]*nbGrille
+        locMaxDeplGrille = [None]*nbGrille
+
+        #for name in POSITION:
+        for idAC in _coeur.collAC.keys() :
+            AC = _coeur.collAC[idAC]
+            altitudeGrilles = AC.altitude
+            name_AC_aster = AC.idAST
+            #name_AC_aster = name[0] + '_' + name[1]
+            name_AC_damac = _coeur.position_todamac(name_AC_aster)
+
+            cycle = 1
+            repere = AC.name
+            def_max = valrho[name_AC_aster]
+            XG1 = valdirYac[name_AC_aster][1 - 1]
+            XG2 = valdirYac[name_AC_aster][2 - 1]
+            XG3 = valdirYac[name_AC_aster][3 - 1]
+            XG4 = valdirYac[name_AC_aster][4 - 1]
+            XG5 = valdirYac[name_AC_aster][5 - 1]
+            XG6 = valdirYac[name_AC_aster][6 - 1]
+            XG7 = valdirYac[name_AC_aster][7 - 1]
+            XG8 = valdirYac[name_AC_aster][8 - 1]
+            # XG9 = valdirYac[name_AC_aster][9 - 1]
+            # XG10 = valdirYac[name_AC_aster][10 - 1]
+            YG1 = valdirZac[name_AC_aster][1 - 1]
+            YG2 = valdirZac[name_AC_aster][2 - 1]
+            YG3 = valdirZac[name_AC_aster][3 - 1]
+            YG4 = valdirZac[name_AC_aster][4 - 1]
+            YG5 = valdirZac[name_AC_aster][5 - 1]
+            YG6 = valdirZac[name_AC_aster][6 - 1]
+            YG7 = valdirZac[name_AC_aster][7 - 1]
+            YG8 = valdirZac[name_AC_aster][8 - 1]
+            # YG9 = valdirZac[name_AC_aster][9 - 1]
+            # YG10 = valdirZac[name_AC_aster][10 - 1]
+            if (_typ_coeur == '900'):
+                XG9 = 0.
+                XG10 = 0.
+                YG9 = 0.
+                YG10 = 0.
+            else :
+                XG9 = valdirYac[name_AC_aster][9 - 1]
+                XG10 = valdirYac[name_AC_aster][10 - 1]
+                YG9 = valdirZac[name_AC_aster][9 - 1]
+                YG10 = valdirZac[name_AC_aster][10 - 1]
+            XG=[XG1,XG2,XG3,XG4,XG5,XG6,XG7,XG8,XG9,XG10]
+            YG=[YG1,YG2,YG3,YG4,YG5,YG6,YG7,YG8,YG9,YG10]
+            posGrille = []
+            cosGrille = []
+            for i in xrange(nbGrille) :
+                posGrille.append(N.array((XG[i],YG[i],altitudeGrilles[i]*1000)))
+            for i in xrange(nbGrille-2) :
+                cosGrille.append(compute_cos_alpha(posGrille[i],posGrille[i+1],posGrille[i+2]))
+            gravite = K_star*N.sum(1.-N.array(cosGrille))
+            normeDepl = N.sqrt(N.array(XG)**2+N.array(YG)**2)
+            Milieu = AC.typeAC
+            MinX = min(valdirYac[name_AC_aster])
+            MaxX = max(valdirYac[name_AC_aster])
+            CCX = MaxX - MinX
+            MinY = min(valdirZac[name_AC_aster])
+            MaxY = max(valdirZac[name_AC_aster])
+            CCY = MaxY - MinY
+            FormeX = valforme[name_AC_aster][0]
+            FormeY = valforme[name_AC_aster][1]
+            Forme = valforme[name_AC_aster][2]
+            valdx = val_deport_y[name_AC_aster]
+            valdy = val_deport_z[name_AC_aster]
+
+            l_nom_AC.append(name_AC_damac)
+            l_cycle.append(cycle)
+            l_repere.append(repere)
+            l_def_max.append(def_max)
+            try : 
+                moyenneRhoParType[Milieu].append(def_max)
+            except KeyError :
+                moyenneRhoParType[Milieu]=[def_max]
+            if def_max>maxRho :
+                maxRho=def_max
+                locMaxRho = name_AC_damac
+            try :
+                if def_max>maxRhoParType[Milieu] :
+                    maxRhoParType[Milieu]=def_max
+            except KeyError :
+                maxRhoParType[Milieu] = def_max
+            listeGravite.append(gravite)
+            try : 
+                moyenneGraviteParType[Milieu].append(gravite)
+            except KeyError :
+                moyenneGraviteParType[Milieu]=[gravite]
+            if gravite>maxGravite :
+                maxGravite=gravite
+                locMaxGravite = name_AC_damac
+            try :
+                if gravite>maxGraviteParType[Milieu] :
+                    maxGraviteParType[Milieu]=gravite
+            except KeyError :
+                maxGraviteParType[Milieu] = gravite
+            for i in xrange(nbGrille) :
+                if normeDepl[i] > maxDeplGrille[i] :
+                    maxDeplGrille[i] = normeDepl[i]
+                    locMaxDeplGrille[i] = name_AC_damac
+
+            l_XG1.append(XG1)
+            l_XG2.append(XG2)
+            l_XG3.append(XG3)
+            l_XG4.append(XG4)
+            l_XG5.append(XG5)
+            l_XG6.append(XG6)
+            l_XG7.append(XG7)
+            l_XG8.append(XG8)
+            l_XG9.append(XG9)
+            l_XG10.append(XG10)
+            l_YG1.append(YG1)
+            l_YG2.append(YG2)
+            l_YG3.append(YG3)
+            l_YG4.append(YG4)
+            l_YG5.append(YG5)
+            l_YG6.append(YG6)
+            l_YG7.append(YG7)
+            l_YG8.append(YG8)
+            l_YG9.append(YG9)
+            l_YG10.append(YG10)
+            l_milieu.append(Milieu)
+            l_MinX.append(MinX)
+            l_MaxX.append(MaxX)
+            l_CCX.append(CCX)
+            l_MinY.append(MinY)
+            l_MaxY.append(MaxY)
+            l_CCY.append(CCY)
+            l_formeX.append(FormeX)
+            l_formeY.append(FormeY)
+            l_forme.append(Forme)
+            l_valdx.append(valdx)
+            l_valdy.append(valdy)
+            l_T5.append(0.)
+            l_T6.append(0.)
+        moyenneRhoCoeur = N.mean(N.array(l_def_max))
+        for typ in moyenneRhoParType.keys() :
+            moyenneRhoParType[typ] = N.mean(N.array(moyenneRhoParType[typ]))
+        moyenneGravite = N.mean(N.array(listeGravite))
+        sigmaGravite = N.sqrt(N.mean((N.array(listeGravite)-moyenneGravite)**2))
+        for typ in moyenneGraviteParType.keys() :
+            moyenneGraviteParType[typ] = N.mean(N.array(moyenneGraviteParType[typ]))
+
+
+
+
+        liste_out = []
+        liste_out.append({'LISTE_R' : moyenneRhoCoeur, 'PARA' : 'moyRhoCoeur' })
+        for typ in moyenneRhoParType.keys() :
+            liste_out.append({'LISTE_R' : moyenneRhoParType[typ],
+                              'PARA'    : 'moyRho'+typ })
+        liste_out.append({'LISTE_R' : maxRho, 'PARA' : 'maxRhoCoeur' })
+        for typ in maxRhoParType.keys() :
+            liste_out.append({'LISTE_R' : maxRhoParType[typ],
+                              'PARA'    : 'maxRho'+typ })
+        liste_out.append({'LISTE_R' : moyenneGravite, 'PARA' : 'moyGravCoeur' })
+        liste_out.append({'LISTE_R' : maxGravite,     'PARA' : 'maxGravCoeur' })
+        liste_out.append({'LISTE_R' : sigmaGravite,   'PARA' : 'sigGravCoeur' })
+        for typ in maxGraviteParType.keys() :
+            liste_out.append({'LISTE_R' : maxGraviteParType[typ],
+                              'PARA'    : 'maxGrav'+typ })
+        for typ in moyenneGraviteParType.keys() :
+            liste_out.append({'LISTE_R' : moyenneGraviteParType[typ],
+                              'PARA'    : 'moyGrav'+typ })
+        for i in xrange(2,len(maxDeplGrille)) :
+            liste_out.append({'LISTE_R' : maxDeplGrille[i-1],
+                              'PARA'    : 'maxDeplGrille%i'%i })
+        liste_out.append({'LISTE_K' : locMaxRho, 'PARA' : 'locMaxRho', 'TYPE_K' : 'K8' })
+        liste_out.append({'LISTE_K' : locMaxGravite, 'PARA' : 'locMaxGrav', 'TYPE_K' : 'K8' })
+        for i in xrange(2,len(maxDeplGrille)) :
+            liste_out.append({'LISTE_K' : locMaxDeplGrille[i-1],
+                              'PARA'    : 'locMaxDeplG%i'%i,
+                              'TYPE_K'  : 'K8' })
+    
+        print 'liste_out : ',liste_out
+
+        if tableCreated :
+            tmp_vale = []
+            tmp_para = []
+            for el in liste_out :
+                try :
+                    tmp_vale.append(el['LISTE_R'])
+                except KeyError : 
+                    tmp_vale.append(el['LISTE_K'])
+                tmp_para.append(el['PARA'])
+            __TAB_OUT = CALC_TABLE(reuse=__TAB_OUT,TABLE=__TAB_OUT,
+                                   ACTION=(_F(OPERATION = 'AJOUT_COLONNE', 
+                                              NOM_PARA  = tmp_para,
+                                              VALE      = tmp_vale)))
+
+
+        else :
+            __TAB_OUT = CREA_TABLE(TITRE='RESU_GLOB_'+nameCoeur,
+                             LISTE=liste_out
+                             )
+
+
         for attr in POST_DEF:
             _unit = attr['UNITE']
             _typ_post = attr['FORMAT']
@@ -629,136 +954,7 @@ def post_mac3coeur_ops(self, **args):
                 _format_standard = attr['FORMAT_R'] == 'STANDARD'
                 _nom_site = attr['NOM_SITE']
 
-                l_nom_AC = []
-                l_cycle = []
-                l_repere = []
-                l_def_max = []
-                l_XG1 = []
-                l_XG2 = []
-                l_XG3 = []
-                l_XG4 = []
-                l_XG5 = []
-                l_XG6 = []
-                l_XG7 = []
-                l_XG8 = []
-                l_XG9 = []
-                l_XG10 = []
-                l_YG1 = []
-                l_YG2 = []
-                l_YG3 = []
-                l_YG4 = []
-                l_YG5 = []
-                l_YG6 = []
-                l_YG7 = []
-                l_YG8 = []
-                l_YG9 = []
-                l_YG10 = []
-                l_milieu = []
-                l_MinX = []
-                l_MaxX = []
-                l_CCX = []
-                l_MinY = []
-                l_MaxY = []
-                l_CCY = []
-                l_formeX = []
-                l_formeY = []
-                l_forme = []
-                l_valdx = []
-                l_valdy = []
-                l_T5 = []
-                l_T6 = []
 
-                #for name in POSITION:
-                for idAC in _coeur.collAC.keys() :
-                    AC = _coeur.collAC[idAC]
-                    name_AC_aster = AC.idAST
-                    #name_AC_aster = name[0] + '_' + name[1]
-                    name_AC_damac = _coeur.position_todamac(name_AC_aster)
-
-                    cycle = 1
-                    repere = AC.name
-                    def_max = valrho[name_AC_aster]
-                    XG1 = valdirYac[name_AC_aster][1 - 1]
-                    XG2 = valdirYac[name_AC_aster][2 - 1]
-                    XG3 = valdirYac[name_AC_aster][3 - 1]
-                    XG4 = valdirYac[name_AC_aster][4 - 1]
-                    XG5 = valdirYac[name_AC_aster][5 - 1]
-                    XG6 = valdirYac[name_AC_aster][6 - 1]
-                    XG7 = valdirYac[name_AC_aster][7 - 1]
-                    XG8 = valdirYac[name_AC_aster][8 - 1]
-                    # XG9 = valdirYac[name_AC_aster][9 - 1]
-                    # XG10 = valdirYac[name_AC_aster][10 - 1]
-                    YG1 = valdirZac[name_AC_aster][1 - 1]
-                    YG2 = valdirZac[name_AC_aster][2 - 1]
-                    YG3 = valdirZac[name_AC_aster][3 - 1]
-                    YG4 = valdirZac[name_AC_aster][4 - 1]
-                    YG5 = valdirZac[name_AC_aster][5 - 1]
-                    YG6 = valdirZac[name_AC_aster][6 - 1]
-                    YG7 = valdirZac[name_AC_aster][7 - 1]
-                    YG8 = valdirZac[name_AC_aster][8 - 1]
-                    # YG9 = valdirZac[name_AC_aster][9 - 1]
-                    # YG10 = valdirZac[name_AC_aster][10 - 1]
-                    if (_typ_coeur == '900'):
-                        XG9 = 0.
-                        XG10 = 0.
-                        YG9 = 0.
-                        YG10 = 0.
-                    else :
-                        XG9 = valdirYac[name_AC_aster][9 - 1]
-                        XG10 = valdirYac[name_AC_aster][10 - 1]
-                        YG9 = valdirZac[name_AC_aster][9 - 1]
-                        YG10 = valdirZac[name_AC_aster][10 - 1]
-                    Milieu = AC.typeAC
-                    MinX = min(valdirYac[name_AC_aster])
-                    MaxX = max(valdirYac[name_AC_aster])
-                    CCX = MaxX - MinX
-                    MinY = min(valdirZac[name_AC_aster])
-                    MaxY = max(valdirZac[name_AC_aster])
-                    CCY = MaxY - MinY
-                    FormeX = valforme[name_AC_aster][0]
-                    FormeY = valforme[name_AC_aster][1]
-                    Forme = valforme[name_AC_aster][2]
-                    valdx = val_deport_y[name_AC_aster]
-                    valdy = val_deport_z[name_AC_aster]
-
-                    l_nom_AC.append(name_AC_damac)
-                    l_cycle.append(cycle)
-                    l_repere.append(repere)
-                    l_def_max.append(def_max)
-                    l_XG1.append(XG1)
-                    l_XG2.append(XG2)
-                    l_XG3.append(XG3)
-                    l_XG4.append(XG4)
-                    l_XG5.append(XG5)
-                    l_XG6.append(XG6)
-                    l_XG7.append(XG7)
-                    l_XG8.append(XG8)
-                    l_XG9.append(XG9)
-                    l_XG10.append(XG10)
-                    l_YG1.append(YG1)
-                    l_YG2.append(YG2)
-                    l_YG3.append(YG3)
-                    l_YG4.append(YG4)
-                    l_YG5.append(YG5)
-                    l_YG6.append(YG6)
-                    l_YG7.append(YG7)
-                    l_YG8.append(YG8)
-                    l_YG9.append(YG9)
-                    l_YG10.append(YG10)
-                    l_milieu.append(Milieu)
-                    l_MinX.append(MinX)
-                    l_MaxX.append(MaxX)
-                    l_CCX.append(CCX)
-                    l_MinY.append(MinY)
-                    l_MaxY.append(MaxY)
-                    l_CCY.append(CCY)
-                    l_formeX.append(FormeX)
-                    l_formeY.append(FormeY)
-                    l_forme.append(Forme)
-                    l_valdx.append(valdx)
-                    l_valdy.append(valdy)
-                    l_T5.append(0.)
-                    l_T6.append(0.)
 
                 # creation de la table de sortie
                 _TABOUT = CREA_TABLE(TITRE=_typ_coeur,

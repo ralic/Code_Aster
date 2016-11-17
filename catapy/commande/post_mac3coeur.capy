@@ -18,6 +18,7 @@
 
 POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
                        UIinfo={"groupes":("Outils-métier",)},
+                       sd_prod=table_sdaster,
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
 
            TYPE_COEUR   = SIMP(statut='o',typ='TXM',into=("MONO","MONO_FROID","TEST","900","1300","N4","LIGNE900","LIGNE1300","LIGNEN4")),
