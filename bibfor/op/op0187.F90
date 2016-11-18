@@ -59,6 +59,7 @@ subroutine op0187()
     call jemarq()
     call infmaj()
     call infniv(ifm, niv)
+    pre1=.false.
 !
 !     ------------------------------------------------------------------
 !     1. RECUPERATION DES CONCEPTS UTILISATEURS
