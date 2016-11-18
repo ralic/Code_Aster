@@ -112,6 +112,7 @@ subroutine mbpk2c(sens,alpha, beta, h,covaini,jacini,jacdef,sigin,sigout)
 !
         det = (matp(1,1)*matp(2,2) - matp(1,2)*matp(2,1))
         
+        call r8inir(3*3, 0.d0, matpinv, 1)
         matpinv(1,1) = matp(2,2)/det
         matpinv(2,2) = matp(1,1)/det
         matpinv(1,2) = -matp(1,2)/det
