@@ -52,6 +52,7 @@ use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
 !   ABANDON DE L APPEL A RCVALD2 ==> ON PREFERE L APPEL A RCVALA QUI EST 
 !     PLUS DIRECT ET PLUS ROBUSTE
     nbpar=1
+    iarret=0
     nompar(1)=' '
     valpar(1)=0.d0
     if (present(famiz)) then
