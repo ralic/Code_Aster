@@ -70,6 +70,7 @@ implicit none
     l_eval_geom    = .false.
     loop_geom_node = ' '
     loop_geom_vale = r8vide()
+    nb_cont_iter = 0
 !
 ! - Get contact parameters
 !
