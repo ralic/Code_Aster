@@ -487,6 +487,7 @@ subroutine nmop45(matrig, matgeo, defo, option, nfreq,&
                 ibid, k16bid, ibid)
 !
     if (niv .ge. 2) then
+        lbid = .false.
         call vpwecf(' ', typres, nconv, mxresf, resu_i,&
                     zr(lresur), resu_k, lamor, ktyp, lbid)
     endif
