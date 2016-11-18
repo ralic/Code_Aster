@@ -122,6 +122,7 @@ subroutine te0514(option, nomte)
 !
     call teattr('S', 'XFEM', enr, ibid)
 !
+    ncompm = 0
     if ((ibid.eq.0) .and. ltequa(elp,enr)) then
          call jevech('PPMILTO', 'E', jpmilt)
          call tecach('OOO', 'PPMILTO', 'E', iret, nval=2,&
