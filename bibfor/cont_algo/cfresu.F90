@@ -204,6 +204,9 @@ implicit none
         rtgy = 0.d0
         rtgz = 0.d0
         hn   = 0.d0
+        glix = 0.d0
+        gliy = 0.d0
+        glit = 0.d0
 !
 ! ----- Current link
 !
