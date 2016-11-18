@@ -97,6 +97,7 @@ implicit none
     l_frot_excl       = .false.
     l_gliss           = .false.
     l_dire_excl_frot  = .false.
+    s_algo_frot       = ' '
 !
 ! - Datastructure for contact
 !
