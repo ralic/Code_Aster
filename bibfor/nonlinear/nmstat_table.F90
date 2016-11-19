@@ -57,6 +57,7 @@ implicit none
 !
     i_para_real = 0
     i_para_inte = 0
+    k8bid = ' '
 !
 ! - Get parameters
 !
