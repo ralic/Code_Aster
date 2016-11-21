@@ -138,6 +138,8 @@ NONE = None
         self.alea = None
         # permet transitoirement de conserver la liste des étapes
         self.hist_etape = False
+        # par défaut, les commandes filles sont affichées
+        self.show_children = True
 
     def compile(self):
         """

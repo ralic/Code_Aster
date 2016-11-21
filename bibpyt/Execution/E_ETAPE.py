@@ -140,16 +140,15 @@ class ETAPE:
                         la commande avant son execution.
         """
         from Utilitai.Utmess import UTMESS
-        voir = (not isinstance(self.parent, MACRO_ETAPE)) or self.parent.nom == 'INCLUDE' \
-            or self.jdc.impr_macro == 1
+        voir = not isinstance(self.parent, MACRO_ETAPE) or \
+            self.jdc.impr_macro == 1 or self.parent.show_children
         # top départ du chrono de la commande
         etiq = self.nom
         # id unique pour l'étape. L'attribut n'est pas déclaré dans
         # l'__init__...
         count = (self.icmd or 0)
         self.id_timer = str(time.time() + count)
-        if (isinstance(self.parent, MACRO_ETAPE)) or \
-           (self.parent.nom == 'INCLUDE'):
+        if isinstance(self.parent, MACRO_ETAPE):
             etiq = ' . ' + etiq
         if voir:
             self.jdc.timer.Start(self.id_timer, name=etiq)
@@ -193,8 +192,8 @@ class ETAPE:
                     cartouche de la commande apres son execution.
         """
         from Utilitai.Utmess import UTMESS
-        voir = (not isinstance(self.parent, MACRO_ETAPE)) or self.parent.nom == 'INCLUDE' \
-            or self.jdc.impr_macro == 1
+        voir = not isinstance(self.parent, MACRO_ETAPE) or \
+            self.jdc.impr_macro == 1 or self.parent.show_children
         if not voir:
             return
         # stop pour la commande

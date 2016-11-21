@@ -28,5 +28,5 @@ INCLUDE=MACRO(nom="INCLUDE",
                       fr=tr("Unité logique à inclure")),
          DONNEE = SIMP(statut='f', typ='TXM',
                        fr=tr("Nom du fichier de données à inclure")),
-         INFO  = SIMP(statut='f', typ='I', defaut=1, into=(1, 2)),
+         INFO  = SIMP(statut='f', typ='I', defaut=1, into=(0, 1, 2)),
 );

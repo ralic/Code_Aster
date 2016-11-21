@@ -79,6 +79,8 @@ class MACRO_ETAPE(N_ETAPE.ETAPE):
         self.UserError = RuntimeError
         # permet de stocker le nom du dernier concept nommé dans la macro
         self.last = None
+        # par défaut, on n'affiche pas les commandes filles (fait par IMPR_MACRO)
+        self.show_children = False
 
     def make_register(self):
         """
