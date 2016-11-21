@@ -131,14 +131,6 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='XFEM',
     components=('X[30]',))
 
 
-CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
-    components=('PRES',))
-
-
-EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-    components=('PRES',))
-
-
 ESIGMPC  = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
     components=('SIXX','SIYY','SIZZ','SIXY','SIXZ',
           'SIYZ',))
@@ -199,12 +191,6 @@ class TemplateElement(Element):
     """Only a template to shared definitions of options"""
     calculs = (
 
-        OP.ADD_SIGM(te=581,
-            para_in=((SP.PEPCON1, ECONTPG), (SP.PEPCON2, ECONTPG),
-                     ),
-            para_out=((SP.PEPCON3, ECONTPG), ),
-        ),
-
         OP.CHAR_MECA_PESA_R(te=588,
             para_in=((OP.CHAR_MECA_PESA_R.PCNSETO, LC.E320NEUI), (SP.PGEOMER, NGEOMER),
                      (OP.CHAR_MECA_PESA_R.PHEAVTO, LC.E32NEUTI), (OP.CHAR_MECA_PESA_R.PHEA_NO, LC.N5NEUTI),
@@ -213,27 +199,6 @@ class TemplateElement(Element):
                      (SP.PPESANR, LC.CPESANR), (OP.CHAR_MECA_PESA_R.PPINTTO, E33NEUTR),
                      (OP.CHAR_MECA_PESA_R.PPMILTO, LC.E198NEUT), (OP.CHAR_MECA_PESA_R.PSTANO, STANO_I),
                      ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHAR_MECA_PRES_F(te=37,
-            para_in=((OP.CHAR_MECA_PRES_F.PAINTER, LC.E200NEUT), (OP.CHAR_MECA_PRES_F.PBASECO, LC.E360NEUT),
-                     (OP.CHAR_MECA_PRES_F.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
-                     (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
-                     (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_F.PPINTER, LC.E120NEUT), (SP.PPRESSF, CPRESSF),
-                     (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHAR_MECA_PRES_R(te=37,
-            para_in=((OP.CHAR_MECA_PRES_R.PAINTER, LC.E200NEUT), (OP.CHAR_MECA_PRES_R.PBASECO, LC.E360NEUT),
-                     (OP.CHAR_MECA_PRES_R.PCFACE, LC.E90NEUTI), (SP.PGEOMER, NGEOMER),
-                     (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
-                     (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_R.PPINTER, LC.E120NEUT), (SP.PPRESSR, EPRESNO),
-                     (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), ),
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
@@ -327,12 +292,6 @@ class TemplateElement(Element):
                      ),
         ),
 
-        OP.GRAD_NEUT9_R(te=398,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PNEUTER, LC.N9NEUT_R),
-                     ),
-            para_out=((OP.GRAD_NEUT9_R.PGNEUTR, LC.G27NEUTR), ),
-        ),
-
         OP.INIT_VARC(te=99,
             para_out=((OP.INIT_VARC.PVARCPR, LC.ZVARCPG), ),
         ),
@@ -343,50 +302,9 @@ class TemplateElement(Element):
                      ),
         ),
 
-        OP.MASS_INER(te=65,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     ),
-            para_out=((SP.PMASSINE, LC.EMASSINE), ),
-        ),
-
-        OP.MASS_MECA(te=12,
-            para_in=((OP.MASS_MECA.PBASLOR, LC.N9NEUT_R), (OP.MASS_MECA.PCNSETO, LC.E320NEUI),
-                     (SP.PGEOMER, NGEOMER), (OP.MASS_MECA.PHEAVTO, LC.E32NEUTI),
-                     (OP.MASS_MECA.PLONCHA, LC.E10NEUTI), (OP.MASS_MECA.PLSN, LC.N1NEUT_R),
-                     (OP.MASS_MECA.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (OP.MASS_MECA.PPINTTO, E33NEUTR), (OP.MASS_MECA.PSTANO, STANO_I),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
-        OP.MASS_MECA_DIAG(te=12,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (OP.MASS_MECA_DIAG.PVARCPR, LC.ZVARCPG), ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
-        OP.MASS_MECA_EXPLI(te=12,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                     (OP.MASS_MECA_EXPLI.PVARCPR, LC.ZVARCPG), ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
-        OP.M_GAMMA(te=12,
-            para_in=((SP.PACCELR, DDL_MECA), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), (OP.M_GAMMA.PVARCPR, LC.ZVARCPG),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
         OP.NSPG_NBVA(te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), ),
             para_out=((SP.PDCEL_I, LC.EDCEL_I), ),
-        ),
-
-        OP.PAS_COURANT(te=404,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                       (OP.PAS_COURANT.PVARCPR, LC.ZVARCPG),),
-            para_out=((SP.PCOURAN, LC.ECOURAN), ),
         ),
 
         OP.RAPH_MECA(te=588,

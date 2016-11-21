@@ -180,14 +180,6 @@ EGNEUT_R = LocatedComponents(phys=PHY.NEUT_R, type='ELGA', location='XFEM',
     components=('X[30]',))
 
 
-CPRESSF  = LocatedComponents(phys=PHY.PRES_F, type='ELEM',
-    components=('PRES','CISA',))
-
-
-EPRESNO  = LocatedComponents(phys=PHY.PRES_R, type='ELNO',
-    components=('PRES','CISA',))
-
-
 ESIGMPC  = LocatedComponents(phys=PHY.SIEF_C, type='ELGA', location='RIGI',
     components=('SIXX','SIYY','SIZZ','SIXY','SIXZ',
           'SIYZ',))
@@ -251,17 +243,6 @@ class TemplateElement(Element):
     """Only a template to shared definitions of options"""
     calculs = (
 
-        OP.ADD_SIGM(te=581,
-            para_in=((SP.PEPCON1, ECONTPG), (SP.PEPCON2, ECONTPG),
-                     ),
-            para_out=((SP.PEPCON3, ECONTPG), ),
-        ),
-
-        OP.CARA_GEOM(te=285,
-            para_in=((SP.PGEOMER, NGEOMER), ),
-            para_out=((SP.PCARAGE, LC.ECARAGE), ),
-        ),
-
         OP.CHAR_MECA_PESA_R(te=588,
             para_in=((OP.CHAR_MECA_PESA_R.PCNSETO, LC.E144NEUI), (OP.CHAR_MECA_PESA_R.PFISNO, LC.FISNO_I),
                      (SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_PESA_R.PHEAVTO, E24NEUI),
@@ -274,52 +255,12 @@ class TemplateElement(Element):
             para_out=((SP.PVECTUR, MVECTUR), ),
         ),
 
-        OP.CHAR_MECA_PRES_F(te=37,
-            para_in=((OP.CHAR_MECA_PRES_F.PAINTER, E65NEUTR), (OP.CHAR_MECA_PRES_F.PBASECO, E52NEUTR),
-                     (OP.CHAR_MECA_PRES_F.PCFACE, E21NEUTI), (OP.CHAR_MECA_PRES_F.PFISNO, LC.FISNO_I),
-                     (SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_PRES_F.PHEA_FA, E14NEUI),
-                     (OP.CHAR_MECA_PRES_F.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_F.PLONGCO, LC.E3NEUTI),
-                     (OP.CHAR_MECA_PRES_F.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_F.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_F.PPINTER, E26NEUTR), (SP.PPRESSF, CPRESSF),
-                     (OP.CHAR_MECA_PRES_F.PSTANO, STANO_I), (SP.PTEMPSR, CTEMPSR),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHAR_MECA_PRES_R(te=37,
-            para_in=((OP.CHAR_MECA_PRES_R.PAINTER, E65NEUTR), (OP.CHAR_MECA_PRES_R.PBASECO, E52NEUTR),
-                     (OP.CHAR_MECA_PRES_R.PCFACE, E21NEUTI), (OP.CHAR_MECA_PRES_R.PFISNO, LC.FISNO_I),
-                     (SP.PGEOMER, NGEOMER), (OP.CHAR_MECA_PRES_R.PHEA_FA, E14NEUI),
-                     (OP.CHAR_MECA_PRES_R.PHEA_NO, LC.N5NEUTI), (OP.CHAR_MECA_PRES_R.PLONGCO, LC.E3NEUTI),
-                     (OP.CHAR_MECA_PRES_R.PLSN, LC.N1NEUT_R), (OP.CHAR_MECA_PRES_R.PLST, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_PRES_R.PPINTER, E26NEUTR), (SP.PPRESSR, EPRESNO),
-                     (OP.CHAR_MECA_PRES_R.PSTANO, STANO_I), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
         OP.CHAR_MECA_FLUX_F(te=559,
             para_in=((SP.PFLUXF, CFLUXF), (SP.PGEOMER, NGEOMER),(SP.PTEMPSR, CTEMPSC),
                      (OP.CHAR_MECA_FLUX_F.PLST, LC.N1NEUT_R), (OP.CHAR_MECA_FLUX_F.PLSN, LC.N1NEUT_R),
                      (SP.PHEAVNO, LC.FISNO_I),
                      ),
             para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHAR_MECA_ROTA_R(te=441,
-            para_in=((OP.CHAR_MECA_ROTA_R.PCNSETO, LC.E144NEUI), (SP.PGEOMER, NGEOMER),
-                     (OP.CHAR_MECA_ROTA_R.PHEAVTO, E24NEUI), (OP.CHAR_MECA_ROTA_R.PHEA_NO, LC.N5NEUTI),
-                     (OP.CHAR_MECA_ROTA_R.PLONCHA, LC.E10NEUTI), (OP.CHAR_MECA_ROTA_R.PLSN, LC.N1NEUT_R),
-                     (OP.CHAR_MECA_ROTA_R.PLST, LC.N1NEUT_R), (SP.PMATERC, LC.CMATERC),
-                     (OP.CHAR_MECA_ROTA_R.PPINTTO, LC.E24NEUTR), (OP.CHAR_MECA_ROTA_R.PPMILTO, LC.E88NEUTR),
-                     (SP.PROTATR, LC.CROTATR), (OP.CHAR_MECA_ROTA_R.PSTANO, STANO_I),
-                     ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
-        OP.CHVOIS_XFEM(te=400,
-            para_in=((OP.CHVOIS_XFEM.PCNSETO, LC.E144NEUI), (OP.CHVOIS_XFEM.PLONCHA, LC.E10NEUTI),
-                     ),
-            para_out=((OP.CHVOIS_XFEM.PCVOISX, LC.E18NEUI), ),
         ),
 
         OP.EPEQ_ELGA(te=335,
@@ -440,39 +381,9 @@ class TemplateElement(Element):
                      (OP.INI_XFEM_ELNO.PSTANO, STANO_I), ),
         ),
 
-        OP.MASS_MECA(te=82,
-            para_in=((OP.MASS_MECA.PBASLOR, LC.N6NEUT_R), (OP.MASS_MECA.PCNSETO, LC.E144NEUI),
-                     (SP.PGEOMER, NGEOMER), (OP.MASS_MECA.PHEAVTO, E24NEUI),
-                     (OP.MASS_MECA.PHEA_NO, LC.N5NEUTI), (OP.MASS_MECA.PLONCHA, LC.E10NEUTI),
-                     (OP.MASS_MECA.PLSN, LC.N1NEUT_R), (OP.MASS_MECA.PLST, LC.N1NEUT_R),
-                     (SP.PMATERC, LC.CMATERC), (OP.MASS_MECA.PPINTTO, LC.E24NEUTR),
-                     (OP.MASS_MECA.PPMILTO, LC.E88NEUTR), (OP.MASS_MECA.PSTANO, STANO_I),
-                     ),
-            para_out=((SP.PMATUUR, MMATUUR), ),
-        ),
-
-        OP.M_GAMMA(te=82,
-            para_in=((SP.PACCELR, DDL_MECA), (SP.PGEOMER, NGEOMER),
-                     (SP.PMATERC, LC.CMATERC), ),
-            para_out=((SP.PVECTUR, MVECTUR), ),
-        ),
-
         OP.NSPG_NBVA(te=496,
             para_in=((OP.NSPG_NBVA.PCOMPOR, LC.CCOMPO2), ),
             para_out=((SP.PDCEL_I, LC.EDCEL_I), ),
-        ),
-
-        OP.PAS_COURANT(te=404,
-            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
-                       (OP.PAS_COURANT.PVARCPR, LC.ZVARCPG),),
-            para_out=((SP.PCOURAN, LC.ECOURAN), ),
-        ),
-
-        OP.PDIL_ELGA(te=511,
-            para_in=((OP.PDIL_ELGA.PCOMPOR, CCOMPOR), (OP.PDIL_ELGA.PCONTPR, ESIGMPG),
-                     (SP.PMATERC, LC.CMATERC), (OP.PDIL_ELGA.PVARIPR, ZVARIPG),
-                     ),
-            para_out=((SP.PPDIL, LC.EPDILPG), ),
         ),
 
         OP.RAPH_MECA(te=588,
@@ -684,14 +595,6 @@ class TemplateElement(Element):
             para_in=((OP.VAEX_ELNO.PCOMPOR, CCOMPOR), (SP.PNOVARI, E1NEUTK),
                      (OP.VAEX_ELNO.PVARINR, LC.ZVARINO), ),
             para_out=((SP.PVARINS, LC.E1NNEUT), ),
-        ),
-
-        OP.XFEM_XPG(te=46,
-            para_in=((OP.XFEM_XPG.PCNSETO, LC.E144NEUI), (SP.PGEOMER, NGEOMER),
-                     (OP.XFEM_XPG.PHEAVTO, E24NEUI), (OP.XFEM_XPG.PLONCHA, LC.E10NEUTI),
-                     (OP.XFEM_XPG.PPINTTO, LC.E24NEUTR), (OP.XFEM_XPG.PPMILTO, LC.E88NEUTR),
-                     ),
-            para_out=((OP.XFEM_XPG.PXFGEOM, XFGEOM_R), ),
         ),
 
     )
