@@ -23,12 +23,13 @@ subroutine fonnor(resu, noma, cnxinv)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/normev.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: resu, noma
     character(len=19) :: cnxinv
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -152,7 +153,9 @@ subroutine fonnor(resu, noma, cnxinv)
         ASSERT(nbnoff.eq.1)
         nseg = 1
     else if (ndim.eq.3) then
-        ASSERT(nbnoff.gt.1)
+        if (.not.(nbnoff .gt. 1)) then
+            call utmess('F', 'RUPTURE0_92', sk=noma)
+        endif
         if (casfon .eq. 'LINEAIRE') nseg = nbnoff-1
         if (casfon .eq. 'QUADRATIQUE') nseg = (nbnoff-1)/2
     endif

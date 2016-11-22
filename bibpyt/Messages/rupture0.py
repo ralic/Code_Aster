@@ -517,6 +517,14 @@ calculée à partir de la normale au fond de fissure (donnée dans DEFI_FOND_FIS
     fissure à partir des mailles de lèvres (DEFI_FOND_FISS/LEVRE_SUP et LEVRE_INF).
 """),
 
+    92: _(u"""
+Incohérence entre la dimension du maillage et le nombre de noeuds du fond. L'opérateur
+DEFI_FOND_FISS ne trouve qu'un seul noeud pour le fond, mais le maillage %(k1)s est considéré
+comme tridimensionnel.
+-> Risque et Conseil :
+S'il s'agit d'un maillage 2d, les noeuds doivent obligatoirement se situer dans le plan z=0.
+"""),
+
     93: _(u"""
 Accès impossible au champ SIEF_ELGA pour le numéro d'ordre : %(i1)d.
 Or il est nécessaire de connaître SIEF_ELGA car vous avez activé le mot-clé
