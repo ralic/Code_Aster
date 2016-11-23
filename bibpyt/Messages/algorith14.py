@@ -161,13 +161,7 @@ cata_msg = {
  taille de bloc utilisée : %(r2)f
 """),
 
-    69 : _(u"""
- non-linéarité incompatible avec la définition du modèle généralisé
- NOEUD_1      :  %(k1)s
- SOUS_STRUC_1 :  %(k2)s
- NOEUD_2      :  %(k3)s
- SOUS_STRUC_2 :  %(k4)s
-"""),
+
 
     70 : _(u"""
  problème de cohérence du nombre de noeuds d'interface

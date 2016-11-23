@@ -97,9 +97,7 @@ cata_msg = {
   -> Les mailles  %(k1)s ne sont pas nommées dans le fichier MED.
 """),
 
-    20 : _(u"""
-  -> Impossible de retrouver l'adresse associée au groupe  %(k1)s
-"""),
+
 
     21 : _(u"""
   -> Il manque les coordonnées !
