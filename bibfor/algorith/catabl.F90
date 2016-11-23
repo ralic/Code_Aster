@@ -1,5 +1,5 @@
-subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
-                  newobj, newsd)
+subroutine catabl(table_new, table_old , inst, nume_store, nb_obj,&
+                  obj_name , obj_sdname)
 !
 implicit none
 !
@@ -36,13 +36,13 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: newtab
-    character(len=8), intent(in) :: oldtab
+    character(len=8), intent(in) :: table_new
+    character(len=8), intent(in) :: table_old
     real(kind=8), intent(in) :: inst
-    integer, intent(in) :: numins
-    integer, intent(in) :: nbnobj
-    character(len=16), intent(in) :: newobj(nbnobj)
-    character(len=24), intent(in) :: newsd(nbnobj)
+    integer, intent(in) :: nume_store
+    integer, intent(in) :: nb_obj
+    character(len=16), intent(in) :: obj_name(nb_obj)
+    character(len=24), intent(in) :: obj_sdname(nb_obj)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  newtab : name of created table
-! In  oldtab : name of old table
+! In  table_new : name of created table
+! In  table_old : name of old table
 ! In  inst   : time
-! In  numins : order of time
+! In  nume_store : order of time
 ! In  nbobj  : number of new objects to add
-! In  newobj : name of new objects to add
-! In  newsd  : datastructure name of new objects to add
+! In  obj_name : name of new objects to add
+! In  obj_sdname  : datastructure name of new objects to add
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,25 +71,25 @@ implicit none
         'K16', 'K16', 'K24', 'I  ', 'R8 '/)
     integer :: prepar(nbpara)
 !
-    integer, parameter :: nbobje = 9
-    character(len=16), parameter :: nomobj(nbobje) = (/&
+    integer, parameter :: l_nb_obj = 9
+    character(len=16), parameter :: l_obj_name(l_nb_obj) = (/&
         'MATR_TANG_ELEM  ', 'SIEF_ELGA       ', 'VARI_ELGA       ',&
         'FORC_INTE_ELEM  ', 'FORC_DIRI_ELEM  ', 'FORC_NODA_ELEM  ',&
         'CODE_RETOUR_INTE', 'FORC_VARC_ELEM_M', 'FORC_VARC_ELEM_P'/)
-    character(len=16), parameter :: typobj(nbobje) = (/&
+    character(len=16), parameter :: l_obj_type(l_nb_obj) = (/&
         'MATR_ELEM_DEPL_R', 'CHAM_ELEM       ', 'CHAM_ELEM       ',&
         'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R',&
         'CHAM_ELEM       ', 'VECT_ELEM_DEPL_R', 'VECT_ELEM_DEPL_R'/)
 !
     character(len=19) :: nomtab
-    aster_logical :: l_new_table, l_copy_table, l_repl_object
+    aster_logical :: l_new_table, l_repl_object
     integer :: i_repl_object
     integer :: jnobj, jnosd, jnuor, jtobj, jrins, jlins
-    integer :: nboldp, nblign
-    integer :: ipara, ilign, iobje, iobja, ibid
+    integer :: nboldp, nblign, t_nume_store
+    integer :: ipara, ilign, i_l_obj, i_obj, ibid
     character(len=24) :: vk(3)
-    character(len=16) :: k16bid, oldobj, newtyp
-    real(kind=8) :: r8bid, oldins
+    character(len=16) :: k16bid, t_obj_name, obj_type
+    real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
     integer, pointer :: tbnp(:) => null()    
@@ -100,46 +100,34 @@ implicit none
 !
 ! - Initializations
 !
-    nomtab           = newtab
+    nomtab           = table_new
     nboldp           = 0
     nblign           = 0
     l_new_table      = .false.
-    l_copy_table     = .false.
     prepar(1:nbpara) = 0
-    call detrsd('TABLE_CONTAINER', newtab)
+    
 !
 ! - New table or not ?
 !
-    if (oldtab .eq. ' ') then
+    if (table_old .eq. ' ') then
         l_new_table = .true.
     else
         l_new_table = .false.
     endif
 !
-! - Copying old table in the new one ?
-!
-    if (.not.l_new_table) then
-        if (oldtab .eq. newtab) l_copy_table = .true.
-    endif
-!
 ! - Create new table
 !
     if (l_new_table) then
-        call tbcrsd(newtab, 'G')
-        call tbajpa(newtab, nbpara, nompar, typpar)
-    endif
-!
-! - Copy table
-!
-    if (l_copy_table) then
-        call copisd('TABLE', 'G', oldtab, newtab)
+        call detrsd('TABLE_CONTAINER', table_new)
+        call tbcrsd(table_new, 'G')
+        call tbajpa(table_new, nbpara, nompar, typpar)
     endif
 !
 ! - Check old table
 !
     if (.not.l_new_table) then
-        call jeveuo(nomtab//'.tbnp', 'L', vi=tbnp)
-        call jeveuo(nomtab//'.tblp', 'L', vk24=tblp)
+        call jeveuo(nomtab//'.TBNP', 'L', vi=tbnp)
+        call jeveuo(nomtab//'.TBLP', 'L', vk24=tblp)
         nboldp = tbnp(1)
         if (nboldp .ne. nbpara) then
             call utmess('F', 'CALCUL1_1')
@@ -170,7 +158,20 @@ implicit none
 !
 ! - Loop on objects to add new one or replace old one
 !
-    do iobja = 1, nbnobj
+    do i_obj = 1, nb_obj
+!
+! ----- Find the type of object
+!
+        obj_type = ' '
+        do i_l_obj = 1, l_nb_obj
+            if (l_obj_name(i_l_obj) .eq. obj_name(i_obj)) then
+                obj_type = l_obj_type(i_l_obj)
+            endif
+        end do
+        ASSERT(obj_type .ne. ' ')
+!
+! ----- Find right line in table
+!
         l_repl_object = .false.
         i_repl_object = 0
         if (l_new_table) then
@@ -180,58 +181,37 @@ implicit none
 ! --------- Loop on lines in table
             do ilign = 1, nblign
                 if (zi(jlins+ilign-1) .eq. 1) then
-! ----------------- Time
-                    call tbacce(nomtab, ilign, 'INST', 'L', ibid,&
-                                oldins, c16bid, k16bid)
 ! ----------------- Current object name
                     call tbacce(nomtab, ilign, 'NOM_OBJET', 'L', ibid,&
-                                r8bid, c16bid, oldobj)
+                                r8bid, c16bid, t_obj_name)
+                    call tbacce(nomtab, ilign, 'NUME_ORDRE', 'L', t_nume_store,&
+                                r8bid, c16bid, k16bid)
 ! ----------------- New object or replace old one ?
-                    if (oldobj .eq. newobj(iobja)) then
-                        if (inst .eq. oldins) then
-                            if (i_repl_object .ne. 0) then
-                                call utmess('F', 'CALCUL1_3', sr=inst)
-                            endif
-                            l_repl_object = .true.
-                            i_repl_object = ilign
-                        else
-                            l_repl_object = .false.
-                            i_repl_object = 0
-                        endif
+                    if (nume_store .eq. t_nume_store .and. t_obj_name .eq. obj_name(i_obj)) then
+                        l_repl_object = .true.
+                        i_repl_object = ilign
+                        goto 50
                     endif
                 endif
-            enddo
+            end do
         endif
-!
-! ----- Object type
-!
-        newtyp = ' '
-        do iobje = 1, nbobje
-            if (nomobj(iobje) .eq. newobj(iobja)) then
-                newtyp = typobj(iobje)
-            endif
-        enddo
-        if (newtyp .eq. ' ') then
-            ASSERT(.false.)
-        endif
+ 50     continue
 !
 ! ----- Add object (new line) or replace old one ?
 !
         if (l_repl_object) then
             ASSERT(i_repl_object.ne.0)
-            vk(1) = newobj(iobja)
-            vk(2) = oldtab
-            call utmess('A', 'CALCUL1_4', nk=2, valk=vk, sr=inst)
+            call utmess('I', 'CALCUL1_4', sk = obj_name(i_obj), si = t_nume_store)
             call jedetr(zk24(jnosd+i_repl_object-1))
-            zk24(jnosd+i_repl_object-1) = newobj(iobja)
-            zi(jnuor+i_repl_object-1) = numins
+            zk24(jnosd+i_repl_object-1) = obj_sdname(i_obj)
+            zi(jnuor+i_repl_object-1) = nume_store
             zr(jrins+i_repl_object-1) = inst
         else
             ASSERT(i_repl_object.eq.0)
-            vk(1) = newobj(iobja)
-            vk(2) = newtyp
-            vk(3) = newsd(iobja)
-            call tbajli(nomtab, nbpara, nompar, [numins], [inst],&
+            vk(1) = obj_name(i_obj)
+            vk(2) = obj_type
+            vk(3) = obj_sdname(i_obj)
+            call tbajli(nomtab, nbpara, nompar, [nume_store], [inst],&
                         [c16bid], vk, 0)
         endif
     enddo

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,11 +30,11 @@ Elle n'a pas les bons paramètres.
 """),
 
     3: _(u"""
-On trouve plusieurs lignes dans la table pour l'instant %(r1)f .
+Le nom de la table donné par le mot-clef TABLE n'est pas le même que celui de la table produite par la commande CALCUL.
 """),
 
     4: _(u"""
-L'objet %(k1)s à l'instant %(r1)f existe déjà dans la table fournie.
+L'objet %(k1)s au numéro d'ordre %(i1)d existe déjà dans la table fournie.
 On l'écrase pour le remplacer par le nouveau.
 """),
 

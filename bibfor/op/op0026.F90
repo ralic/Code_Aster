@@ -113,7 +113,7 @@ implicit none
     model         = ' '
     k19bla        = ' '
     fonact(1:100) = 0
-    oldtab        = ' '
+    
     partps(1:2)   = 0.d0
 !
 ! - Name of created table
@@ -123,6 +123,14 @@ implicit none
 ! - Name of reused table
 !
     call getvid(' ', 'TABLE', nbval=0, nbret=n1)
+    if (n1 .eq. 0) then
+        oldtab        = ' '
+    else
+        call getvid(' ', 'TABLE', nbval=1, scal = oldtab)
+        if (oldtab .ne. newtab) then
+            call utmess('F', 'CALCUL1_3')
+        endif
+    endif
 !
 ! - Collecting variables
 !

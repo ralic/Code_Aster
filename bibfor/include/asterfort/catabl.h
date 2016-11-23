@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,14 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine catabl(newtab, oldtab, inst, numins, nbnobj,&
-                      newobj, newsd)
-        character(len=8), intent(in) :: newtab
-        character(len=8), intent(in) :: oldtab
+    subroutine catabl(table_new, table_old , inst, nume_store, nb_obj,&
+                      obj_name , obj_sdname)
+        character(len=8), intent(in) :: table_new
+        character(len=8), intent(in) :: table_old
         real(kind=8), intent(in) :: inst
-        integer, intent(in) :: numins
-        integer, intent(in) :: nbnobj
-        character(len=16), intent(in) :: newobj(nbnobj)
-        character(len=24), intent(in) :: newsd(nbnobj)
+        integer, intent(in) :: nume_store
+        integer, intent(in) :: nb_obj
+        character(len=16), intent(in) :: obj_name(nb_obj)
+        character(len=24), intent(in) :: obj_sdname(nb_obj)
     end subroutine catabl
 end interface
