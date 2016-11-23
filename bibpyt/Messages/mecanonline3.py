@@ -97,7 +97,7 @@ Contact méthode continue et pilotage sont incompatibles
 """),
 
     99 : _(u"""
-Le contact de type LAC n'est pas utilisable avec le solveur MULT_FRONT, il faut utiliser MUMPS.
+Le contact de type LAC et le contact XFEM avec ELIM_ARETE='ELIM' ne sont pas utilisables avec le solveur MULT_FRONT, il faut utiliser MUMPS.
 """),
 
 }

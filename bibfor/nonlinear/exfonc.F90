@@ -61,7 +61,7 @@ implicit none
 !
     integer :: reac_incr, reac_iter
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc, l_cont_lac, l_iden_rela
-    aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
+    aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead, l_cont_xfem
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim, l_mult_front
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps, l_rom
@@ -81,6 +81,7 @@ implicit none
     lxfem           = isfonc(list_func_acti,'XFEM')
     l_cont_cont     = isfonc(list_func_acti,'CONT_CONTINU')
     l_cont_disc     = isfonc(list_func_acti,'CONT_DISCRET')
+    l_cont_xfem     = isfonc(list_func_acti,'CONT_XFEM')
     l_cont          = isfonc(list_func_acti,'CONTACT')
     l_cont_lac      = isfonc(list_func_acti,'CONT_LAC')
     l_unil          = isfonc(list_func_acti,'LIAISON_UNILATER')
@@ -176,6 +177,15 @@ implicit none
         endif
         if (lammo) then
             call utmess('F', 'MECANONLINE3_93')
+        endif
+    endif
+!
+! - Contact (XFEM)
+!
+    if (l_cont_xfem) then
+        l_iden_rela = ds_contact%l_iden_rela
+        if (l_iden_rela .and. l_mult_front) then
+            call utmess('F', 'MECANONLINE3_99')
         endif
     endif
 !
