@@ -15,132 +15,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-"""
-    Maquette demande SEPTEN fonction de lissage enveloppe
-    Les données se présentent sous la forme d'un fichier texte comportant
-    un ensemble de groupe de lignes organisé comme suit :
-        - ligne 1 : Informations générales
-        - ligne 2 : une liste de valeur d'amortissement
-        - lignes 3...n : une liste de valeur commencant par une frequence suivit
-                         des amplitudes du spectre pour chacun des amortissements
-                         liste en ligne 2
-    Points importants :
-        - Le nombre de lignes définissant le spectre peut varier
-        - Le nombre de valeur d'amortissement peut varier ?
 
-    ==> On propose d'opérer ligne par ligne
-    ==> L'absence d'informations sur la variabilité du nombre d'éléments oblige à traiter le cas général
-
-
-
-    Etapes du développement :
-        24/05/2005 : Test de lecture du fichier, choix d'une stratégie de gestion
-        25/05/2005 : Objet itérable pour la  lecture du fichier
-        29/05/2005 : Créations de filtres pour les spectres
-"""
-
-import math
-
-
-def nearestKeys(k1, dct):
-    """
-        retourne les clés (doublet) les plus proches de 'key' dans le dictionnaire dct
-        par valeur inférieure et supérieures
-    """
-    kr = min(dct.keys())
-    for k2 in dct.keys():
-        if (k2 < k1) and (k2 > kr):
-            kr = k2
-    kinf = kr
-
-    kr = max(dct.keys())
-    for k2 in dct.keys():
-        if (k2 > k1) and (k2 < kr):
-            kr = k2
-    ksup = kr
-
-    return (kinf, ksup)
-
-
-def interpole(x2, x0, y0, x1, y1):
-    """
-        renvoie la valeur pour x2 interpolée (linéairement) entre x0 et x1
-    """
-    try:
-        a = (y1 - y0) / (x1 - x0)
-    except ZeroDivisionError:
-        return y0
-
-    return a * (x2 - x0) + y0
-
-
-def listToDict(lst):
-    """
-        Cette fonction recoit une liste et la transforme en un dictionnaire
-    """
-    dctRes = {}
-    for val in lst:
-        dctRes[val] = True
-    return dctRes
-
-
-def inclus(l1, l2):
-    """
-        Teste si une liste (lst1) est incluse dans une autre (lst2)
-        Renvoie le premier élément de l1 qui n'est pas inclus ou None si l1 inclus dans l2)
-    """
-    for v in l1:
-        try:
-            l2.index(v)
-        except ValueError:
-            return v
-    return None
-
-
-def exclus(i1, i2):
-    """
-        Teste si deux listes ne partagent pas d'élément commun
-        Renvoie le premier élément de l1 qui n'est pas exclus ou None si l1 exclus de l2)
-    """
-    for v in i1:
-        try:
-            i2.index(v)
-            return v
-        except ValueError:
-            continue
-    return None
-
-
-class NappeCreationError(Exception):
-
-    def __init__(self):
-        self.mess = "Un problème est survenu lors dla création d'une nappe"
-        self.otherExcept = Exception()
-
-    def getMess(self):
-        """ Retourne le message associé à l'erreur """
-        # Analyse les différents cas d'erreurs
-        if self.otherExcept == IOError:
-            self.mess += "\nProblème à l'ouverture du fichier\n"
-
-        return self.mess
-
-
-class SpectreError(Exception):
-
-    def __init__(self):
-        self.mess = "Un problème est survenu lors de la construction du spectre"
-        self.otherExcept = Exception()
-
-    def getMess(self):
-        """ Retourne le message associé à l'erreur """
-        # Analyse les différents cas d'erreurs
-        if self.otherExcept == IOError:
-            self.mess += "\nProblème à l'ouverture du fichier\n"
-
-        return self.mess
-
-
+import math,copy
+import numpy as N
+from scipy import interpolate 
+from Utilitai.Utmess import UTMESS
+  
 class filtre:
 
     """
@@ -159,85 +39,10 @@ class filtre:
         spr = sp
         return spr  # la fonction filtre de la classe de base retourne le spectre sans le modifier
 
-
-class filtreExpand(filtre):
-
-    """ effectue l'expansion du spectre selon spécif du SEPTEN """
-
-    def __init__(self, **listOpt):
-        try:
-            self.expandCoef = listOpt['coef']
-        except KeyError:
-            self.expandCoef = 0.1
-
-    def _filtre(self, sp):
-        spLower = spectre()
-        spUpper = spectre()
-        # Etape 1 : Construction du spectre inférieur sans considération des
-        # échelons de fréquence
-        for i in range(0, len(sp.listFreq)):
-            spLower.listFreq = spLower.listFreq + \
-                [sp.listFreq[i] - abs(sp.listFreq[i] * self.expandCoef)]
-            spLower.dataVal = spLower.dataVal + [sp.dataVal[i]]
-            spUpper.listFreq = spUpper.listFreq + \
-                [sp.listFreq[i] + abs(sp.listFreq[i] * self.expandCoef)]
-            spUpper.dataVal = spUpper.dataVal + [sp.dataVal[i]]
-
-        # Etape 2 : Construction du spectre "élargi" sur la base de fréquence du spectre initial
-        # On tronque en deca de la fréquence minimale du spectre de référence
-        index = 0
-        while spLower.listFreq[index] < sp.listFreq[0]:
-            index += 1
-
-        # Recopie des valeurs à conserver
-        spLower.dataVal = spLower.dataVal[index:]
-
-        index = 0
-        while spUpper.listFreq[index] < sp.listFreq[len(sp.listFreq) - 1]:
-            index += 1
-
-        # Recopie des valeurs à conserver
-        spUpper.dataVal = spUpper.dataVal[0:index]
-        # calcul du nombre d'éléments à rajouter
-        nb = len(sp.dataVal) - index
-        # Décalage le la liste de nb elements
-        for i in range(0, nb):
-            spUpper.dataVal.insert(0, -1.0e6)
-
-        # On remplace la base de fréquence 'décalée' de lower et upper par la
-        # base de fréquence 'standard'
-        spLower.listFreq = sp.listFreq
-        spUpper.listFreq = sp.listFreq
-
-        return self._selectVal(spLower, sp, spUpper)
-
-    def _selectVal(self, spLower, sp, spUpper):
-        spr = sp
-        for i in range(0, len(sp.listFreq)):
-            try:
-                v1 = spLower.dataVal[i]
-            except IndexError:
-                v1 = -200.0
-            try:
-                v2 = sp.dataVal[i]
-            except IndexError:
-                v2 = -200.0
-            try:
-                v3 = spUpper.dataVal[i]
-            except IndexError:
-                v3 = -200.0
-
-            spr.dataVal[i] = max([v1, v2, v3])
-
-        return spr
-
-
-class filtreLog(filtre):
+class filtreLogLog(filtre):
 
     """
         Convertit un spectre en LogLog (log base 10)
-            + Possibilité d'obtenir un linLog (abcsisses linéaires, ordonnées en log)
-            + Possibilité d'obtenir un logLin (abcsisses log, ordonnées en linéaires)
     """
 
     def __init__(self, **listOpt):
@@ -253,18 +58,21 @@ class filtreLog(filtre):
     def _filtre(self, sp):
         spr = spectre()
         if self.logAbc:
-            spr.listFreq = [math.log10(i) for i in sp.listFreq]
+            # spr.listFreq = [math.log10(i) for i in sp.listFreq]
+            # conversion definie dans le excel du Septen
+            spr.listFreq = [math.log10(i)+4.0 for i in sp.listFreq] 
         else:
             spr.listFreq = [i for i in sp.listFreq]
         if self.logOrd:
-            spr.dataVal = [math.log10(i) for i in sp.dataVal]
+            # spr.dataVal = [math.log10(i) for i in sp.dataVal]
+            # conversion definie dans le excel du Septen
+            spr.dataVal = [math.log10(i)+4.0 for i in sp.dataVal]
         else:
             spr.dataVal = [i for i in sp.dataVal]
 
         return spr
-
-
-class filtreLin(filtre):
+       
+class filtreLinLin(filtre):
 
     """
         Convertit un spectre en LinLin (10^n) à partir d'un spectre en linLog,LogLin ou logLog
@@ -283,19 +91,45 @@ class filtreLin(filtre):
     def _filtre(self, sp):
         spr = spectre()
         if self.logAbc:
-            spr.listFreq = [10 ** i for i in sp.listFreq]
+            # spr.listFreq = [10 ** i for i in sp.listFreq]
+            spr.listFreq = [10 ** (i-4.0) for i in sp.listFreq]
         else:
             spr.listFreq = [i for i in sp.listFreq]
         if self.logOrd:
-            spr.dataVal = [10 ** i for i in sp.dataVal]
+            # spr.dataVal = [10 ** i for i in sp.dataVal]
+            spr.dataVal = [10 ** (i-4.0) for i in sp.dataVal]
         else:
             spr.dataVal = [i for i in sp.dataVal]
 
         return spr
-
-
+        
+class filtreLowerPeaks(filtre):
+    """
+        enleve les pics inferieur dans le signal
+    """
+    def __init__(self):
+        pass
+        
+    def _filtre(self, sp):
+        l_freq = sp.listFreq
+        l_val  = sp.dataVal
+        for j in range(0,len(l_freq)-2) :
+            # pente entre le point j et j+1
+            tpa1 = (l_val[j+1] - l_val[j]) / (l_freq[j+1] - l_freq[j])
+            # pente entre le point j et j+1
+            tpa2 = (l_val[j+2] - l_val[j+1]) / (l_freq[j+2] - l_freq[j+1])
+            # si on a un creux, on augmente la valeur au point j
+            if (tpa2 * tpa1) <= 0 and tpa1 < 0 :
+                tpa3 = (l_val[j+2] - l_val[j]) / (l_freq[j+2] - l_freq[j])
+                tpb3 = l_val[j] - (tpa3 * l_freq[j])
+                l_val[j+1] = tpa3 * l_freq[j+1] + tpb3
+        return spectre(l_freq, l_val)
+                   
 class filtreBandWidth(filtre):
-
+    """
+        enleve les frequences 
+    """
+    
     def __init__(self, **listOpt):
         try:
             self.lowerBound = listOpt['lower']
@@ -313,7 +147,7 @@ class filtreBandWidth(filtre):
             if spr.listFreq[i] > self.upperBound:
                 toDel = toDel + [i]
 
-        # Nettoyage des fréquences à suppimer (on commence par les plus hautes)
+        # Nettoyage des fréquences à supprimer (on commence par les plus hautes)
         for i in toDel[::-1]:
             del spr.listFreq[i]
             del spr.dataVal[i]
@@ -331,173 +165,66 @@ class filtreBandWidth(filtre):
             del spr.dataVal[i]
 
         return spr
+   
+class filtreExpand(filtre):
 
-
-class filtreCrible(filtre):
-
-    """
-        Criblage du spectre selon specif SEPTEN §C-5 (ce que j'en comprend)
-    """
+    """ effectue l'expansion du spectre """
 
     def __init__(self, **listOpt):
         try:
-            self.tolerance = listOpt['tolerance']
+            self.expandCoef = listOpt['coef']
         except KeyError:
-            self.tolerance = 0.25
-
-        self.listEtats = []
+            self.expandCoef = 0.1
 
     def _filtre(self, sp):
-        self._initListeEtats(
-            sp)  # Création de la table des étsts des valeurs du spectre
-        coef = 1
+        spLower = spectre()
+        spUpper = spectre()
+        # Etape 1 : Construction du spectre inférieur sans considération des échelons de fréquence
+        for i in range(0, len(sp.listFreq)):
+            spLower.listFreq = spLower.listFreq + \
+                [sp.listFreq[i] - abs(sp.listFreq[i] * self.expandCoef)]
+            spLower.dataVal = spLower.dataVal + [sp.dataVal[i]]
+            spUpper.listFreq = spUpper.listFreq + \
+                [sp.listFreq[i] + abs(sp.listFreq[i] * self.expandCoef)]
+            spUpper.dataVal = spUpper.dataVal + [sp.dataVal[i]]
 
-        # Parcours de la liste des fréquences
-        i1, i2, i3 = 0, 2, 1
-        bTest = True
-        while True:
-            try:
-                bTest = self._amplitude(sp, i1, i2, i3, coef)
-                if not(bTest) and ((i2 - i1) > 2):
-                    # Le point a été éliminé, on réexamine le point précédent
-                    # sauf si c'est le premier examiné
-                    i3 -= 1
-                    if self._amplitude(sp, i1, i2, i3, coef):
-                        # Le point a été "récupéré", il devient la nouvelle
-                        # origine
-                        i1 = i3
-                        i2 = i2  # écrit quand meme pour la compréhension
-                        i3 += 1
-                    else:
-                        # Le point reste désactivé, on avance au point suivant,
-                        # le point d'origine est conservé
-                        i1 = i1
-                        i2 += 1
-                        i3 += 2
-                elif not(bTest) and not((i2 - i1) > 2):
-                    i1 = i1
-                    i2 += 1
-                    i3 += 1
-                else:  # Le point est conservé, il devient la nouvelle origine
-                    i1 = i3
-                    i2 += 1
-                    i3 += 1
-            except IndexError:
-                break
+        # Etape 2 : Construction du spectre "élargi" sur la base de fréquence du spectre initial
+        indmin = 0
+        while spLower.listFreq[indmin] < sp.listFreq[0]:
+            indmin += 1
+            
+        fmin  = spLower.listFreq[indmin-1]
+            
+        indmax = 0
+        while spUpper.listFreq[indmax] < sp.listFreq[len(sp.listFreq) - 1]:
+            indmax += 1
+        fmax  = spUpper.listFreq[indmax]
+                
+        # Recopie des valeurs à conserver
+        spLower.dataVal  = spLower.dataVal[indmin-1:]+[sp.dataVal[-1]]
+        spLower.listFreq = spLower.listFreq[indmin-1:]+[fmax]
+        
+        # Recopie des valeurs à conserver
+        spUpper.dataVal = [sp.dataVal[0]]+spUpper.dataVal[0:indmax+1]
+        spUpper.listFreq = [fmin]+spUpper.listFreq[0:indmax+1]
 
-        return self._crible(sp)
+        # Mise a jour du spectre initial pour les frequences extremites
+        spMid = spectre()
+        spMid.listFreq = [fmin]+sp.listFreq+[fmax]
+        spMid.dataVal = [sp.dataVal[0]]+sp.dataVal+[sp.dataVal[-1]]
+        
+        # Enveloppe des spectres
+        spr = enveloppe_spectres([spLower, spMid, spUpper])
+        
+        # Filtre sur les frequences initiales
+        l_val=[]
+        for f,freq in enumerate(spr.listFreq):
+            if freq in sp.listFreq:
+                l_val.append(spr.dataVal[f])
+        sp.dataVal  = l_val
+        return sp
 
-    def _initListeEtats(self, sp):
-        """
-            Crée une liste associant à chaque fréquence du spectre passé en paramètre, un état booléen
-            qui spécifie si ce couple fréquence-valeur est supprimé ou pas
-            NB : au départ toutes les valeur sont "True" car aucune valeur n'a été supprimée
-        """
-        self.listEtats = [True for x in sp.listFreq]
-
-    def _crible(self, sp):
-        """
-            Supprime les points de fréquence qui sont marqué False dans listEtats
-        """
-        sp2 = spectre([], [])
-                      # On force car il y a un problème de persistance su
-                      # spectre précédent
-        for x, y, z in zip(self.listEtats, sp.listFreq, sp.dataVal):
-            if x:
-                sp2.listFreq.append(y)
-                sp2.dataVal.append(z)
-
-        return sp2
-
-    def _amplitude(self, sp, id1, id2, id3, coef=1):
-        """
-            teste le point d'indice id3 par rapport aux points à sa gauche(p1 d'indice id1) et
-            à sa droite (p2 d'indice id2).
-            Le point est éliminé si sa valeur est en dessous de la droite reliant les points
-            d'indice id1 et id2 sauf si sa distance à cette droite est supérieure à :
-                tolerance*ordonnée
-            Le critère est purement sur l'amplitude du point indépendemment de l'intervalle
-            sur lequel il s'applique
-        """
-        x0 = sp.listFreq[id1]
-        y0 = sp.dataVal[id1]
-        x1 = sp.listFreq[id2]
-        y1 = sp.dataVal[id2]
-        x2 = sp.listFreq[id3]
-        y2 = sp.dataVal[id3]
-
-        yp2 = interpole(x2, x0, y0, x1, y1)
-
-        # Le point est il susceptible d'etre supprimé (est il en dessous de la droite p1-p2 ?)
-        # Faut-il le supprimer pour autant (distance y2 à yp2 > tolerance% de
-        # y2)
-        bSup = not((y2 < yp2) and (abs(yp2 - y2) / y2 < self.tolerance))
-
-        # Changement de l'état du point
-        self.listEtats[id3] = bSup
-
-        return bSup
-
-
-class filtreChevauchement(filtre):
-
-    """
-        Compare un spectre à un spectre de référence fréquence par fréquence.
-        Si une fréquence n'existe pas, on cherche la valeur équivalent par interpolation
-        Pour éviter tout recouvrement, il est éventuellement nécessaire de rajouter
-        des informations à certaines fréquences
-    """
-
-    def __init__(self, **listOpt):
-        try:
-            self.spRef = listOpt['ref']
-        except KeyError:
-            self.spRef = spectre()
-
-        try:
-            signe = listOpt['ordre']
-            self.ordre = signe / abs(signe)  # coefficient +1 ou -1
-        except KeyError:
-            self.ordre = +1
-        except ZeroDivisionError:
-            self.ordre = +1
-
-    def _filtre(self, sp):
-        spDict = sp.buildMap()
-        spRefDict = self.spRef.buildMap()
-        spTestDict = {}
-
-        # On commence par construire un dictionnaire des valeurs à tester
-        # comportant toutes les clés contenues
-        for k in spDict.keys():
-            spTestDict[k] = True
-        for k in spRefDict.keys():
-            spTestDict[k] = True
-
-        # On teste ensuite toutes les valeurs du dictionnaire
-        for k in spTestDict.keys():
-            # Test d'existence dans le dictionnaire du spectre de référence
-            try:
-                vr = spRefDict[k]
-            except KeyError:
-                ki = nearestKeys(k, spRefDict)
-                vr = interpole(
-                    k, ki[0], spRefDict[ki[0]], ki[1], spRefDict[ki[1]])
-            # Test d'existence dans le dictionnaire du spectre à tester
-            try:
-                vt = spDict[k]
-            except KeyError:
-                ki = nearestKeys(k, spDict)
-                vt = interpole(k, ki[0], spDict[ki[0]], ki[1], spDict[ki[1]])
-
-            # Comparaison des deux valeurs. La clé est ajoutée si elle n'existe
-            # pas
-            if vt * self.ordre < vr * self.ordre:
-                spDict[k] = vr
-
-        return spectre.sortSpectre(spDict)
-
-
+        
 class spectre:
 
     """
@@ -507,159 +234,148 @@ class spectre:
     def __init__(self, listFreq=[], dataVal=[]):
         self.listFreq = [v for v in listFreq]
         self.dataVal = [v for v in dataVal]
-
+        self.l_area = []
+        self.area   = 0
+        
     def filtre(self, fi):
-        """
-        Applique le filtre passé en paramètre au spectre et retourne un nouveau spectre
-        """
+        """ Applique le filtre passé en paramètre au spectre et retourne un nouveau spectre"""
+        self.l_area = []
+        self.area   = 0
         return fi(self)
+ 
+    def getArea(self):
+        l_area = []
+        area_total = 0
+        for j in range(1,len(self.listFreq)) :
+            tpa1 = (0.5 * (self.dataVal[j] + self.dataVal[j-1]) * (self.listFreq[j] - self.listFreq[j-1]))
+            l_area.append(tpa1)
+            area_total += abs(tpa1)
+        self.l_area = l_area + [0.]
+        self.area   = area_total-(self.listFreq[-1]-self.listFreq[0])*self.dataVal[0]
+        return l_area, area_total
+        
+    def getExtremum(self):
+        self.fmax = max( self.listFreq )
+        self.samax = max( self.dataVal )
+        
+    def getdArea(self,j):
+        # on suppose que la frequence peut etre supprimee
+        elim = True
+        
+        # calcul extremum
+        self.getExtremum() 
+        
+        # calcul les coeff directeurs de deux droites successive
+        tpc1 = (self.dataVal[j]   - self.dataVal[j-1]) / (self.listFreq[j]   - self.listFreq[j-1])
+        tpc2 = (self.dataVal[j+1] - self.dataVal[j])   / (self.listFreq[j+1] - self.listFreq[j])
+        
+        # CAS 1 : On supprime le point j 
+        if tpc2 >= tpc1 :   
+            # aire de la courbe approcime avec la suppresion du point j
+            tpa2 = 0.5 * (self.dataVal[j-1] + self.dataVal[j+1]) * (self.listFreq[j+1] - self.listFreq[j-1]) 
+            taba1 = abs(tpa2)
+            # difference avec la courbe reelle et normalisation par l'aire totale
+            # ( on donne ainsi de l'importance au amortissement + fort car aire totale plus faible )
+            dArea= abs(taba1 - self.l_area[j] - self.l_area[j-1]) / self.area
+            
+        # CAS 2 : On conserve le point j et on modifie les valeurs de j-1 et j+1
+        else:
+            tpda3 = (self.dataVal[j+1] - self.dataVal[j-1]) / (self.listFreq[j+1] - self.listFreq[j-1])
+            # liste temporaire avec les nouvelles valeurs
+            l_tmp = N.zeros(5)
+            if j != 1 : 
+                l_tmp[0]=self.dataVal[j-2]
+            l_tmp[1]=tpda3 * (self.listFreq[j-1] - self.listFreq[j]) + self.dataVal[j]
+            l_tmp[2]=self.dataVal[j]
+            l_tmp[3]=tpda3 * (self.listFreq[j+1] - self.listFreq[j]) + self.dataVal[j]
+            if self.dataVal[j+1] != self.dataVal[-1] :  
+                l_tmp[4]=self.dataVal[j+2] 
+            # test si on depasse la valeur max en spectre
+            if l_tmp[3] > self.samax or l_tmp[1] > self.samax:   
+                elim = False
+            # calcul la difference d'air entre la courbe approxime et la courbe reelle
+            for o in range(0, 4) :
+                if j == 1 and o == 0 :
+                    l_tmp[o] = abs(0.0 - abs(0.5 * (l_tmp[o] + l_tmp[o+1]) * (self.listFreq[j-1+o] - 0.0))) ## =0 VLC ???
+                elif (j-1+o) > (len(self.listFreq) - 1):
+                    l_tmp[o] = abs(self.l_area[j-2+o] - abs(0.5 * (l_tmp[o] + l_tmp[o+1]) * (self.listFreq[j-2+o] - self.listFreq[j-2+o]))) # =0 VLC terme = 0
+                else :
+                    l_tmp[o] = abs(self.l_area[j-2+o] - abs(0.5 * (l_tmp[o] + l_tmp[o+1]) * (self.listFreq[j-1+o] - self.listFreq[j-2+o])))
+            if j == 1 :
+                dArea = (l_tmp[1] + l_tmp[2] + l_tmp[3]) / self.area
+            elif self.listFreq[j+1] >= self.fmax :
+                dArea = (l_tmp[0] + l_tmp[1] + l_tmp[2]) / self.area
+            else :
+                dArea = (l_tmp[0] + l_tmp[1] + l_tmp[2] + l_tmp[3]) / self.area
+                    
+        return elim, dArea            
+    
+    def removeFreq(self,j,elim):
+        """Suppression de la frequence f et modification des valeurs"""
+        tpc1 = (self.dataVal[j]   - self.dataVal[j-1]) / (self.listFreq[j]   - self.listFreq[j-1])
+        tpc2 = (self.dataVal[j+1] - self.dataVal[j])   / (self.listFreq[j+1] - self.listFreq[j])
+        tpda4 = tpc1 * tpc2
+        # calcul le a de y = ax + b
+        tpda3 = (self.dataVal[j+1] -self.dataVal[j-1]) / (self.listFreq[j+1] - self.listFreq[j-1])
+        # valeur des y pour la courbe approximé
+        tpa4_0 = tpda3 * (self.listFreq[j-1] - self.listFreq[j]) + self.dataVal[j]
+        tpa4_1 = tpda3 * (self.listFreq[j+1] - self.listFreq[j]) + self.dataVal[j]
+         
+        # on verifie si on supprime un point ou pas
+        if elim == True :
+            if tpc1 > tpc2 : # CAS 1
+                self.listFreq[j] = self.listFreq[j+1]
+                self.dataVal[j-1] = tpa4_0
+                self.dataVal[j] = tpa4_1
+                self.l_area[j-1] = self.l_area[j] + self.l_area[j-1]
+                self.l_area[j] = self.l_area[j+1]
+            else : # CAS 2
+                self.listFreq[j] = self.listFreq[j+1]
+                self.dataVal[j]  = self.dataVal[j+1]
+                self.l_area[j-1] = self.l_area[j] + self.l_area[j-1]
+                self.l_area[j] = self.l_area[j+1] 
+            # decale le reste des valeurs
+            jmax = len(self.listFreq)-2
+            if (j + 1) < jmax+1:
+                for p in range((j + 1),jmax+1) :
+                    self.dataVal[p]      = self.dataVal[p+1]
+                    self.listFreq[p]     = self.listFreq[p+1]
+                    self.l_area[p]       = self.l_area[p+1]
+            del self.dataVal[-1]
+            del self.listFreq[-1]
+            del self.l_area[-1]  
+        # dans le cas ou on ne supprime pas de valeur
+        else :        
+        # test si on depasse la valeur max en y et met les valeur au meme niveau
+        # que la valeur directement superieur, aucune elimination de poinds ne sera alors faite.
+            if tpa4_1 > self.samax :
+                self.dataVal[j+1] = self.samax
+                # dans le cas d'un palier met tout les valeurs au meme niveau (sinon pb de convergenge)
+                tpe = True
+                if ((tpa4_0 / self.samax) > 0.99999) and (tpc1 * tpc2 == 0.) :
+                    self.dataVal[j-1] = self.samax
+                    tpe = False
+                if abs(tpc2 / tpc1) > 0.9999999 :
+                    tpg = (self.samax - self.dataVal[j]) / (self.listFreq[j+1] - self.listFreq[j])
+                    self.dataVal[j-1] = tpg * (self.listFreq[j-1] - self.listFreq[j]) + self.dataVal[j]
+                    tpe = False
+                if tpe == True :
+                    self.dataVal[j-1] = tpa4_0
 
-    def __staticSortSpectre(dict):
-        """
-            Convertit un spectre présenté sous forme d'un dictionnaire en un spectre normal
-            Fonction créé parceque les clés du dictionnaire ne sont pas ordonnées
-        """
-        lstFrq = dict.keys()
-        lstFrq.sort()
-        lstVal = []
-        for fr in lstFrq:
-            try:
-                lstVal.append(dict[fr])
-            except KeyError:  # Ne devrait jamais arriver
-                lstVal.append(-1E15)
-
-        return spectre(lstFrq, lstVal)
-
-    sortSpectre = staticmethod(__staticSortSpectre)
-                               # définition en tant que méthode statique
-
-    def getCoupleVal(self, indice):
-        return (self.listFreq[indice], self.dataVal[indice])
-
-    def moyenne(self):
-        """
-            Calcule la moyenne pondéré : somme(An* dfn) /F
-        """
-        somme = 0.0
-        X0 = self.listFreq[0]
-        X1 = self.listFreq[len(self.listFreq) - 1]
-        for i in range(0, len(self.listFreq) - 1):
-            x0 = self.listFreq[i]
-            y0 = self.dataVal[i]
-            x1 = self.listFreq[i + 1]
-            y1 = self.dataVal[i + 1]
-
-            somme = somme + (y0 + y1) * abs(x1 - x0) / 2
-
-        return somme / abs(X1 - X0)
-
-    def seuil(self, limit=75):
-        """
-            retourne un couple d'index délimitant l'ensemble des valeurs du spectre
-            définissant "limit" pourcent du total cumulé des valeurs
-            [borne à gauche inclue, borne à droite exclue[
-            ATTENTION on fait l'hypothèse que le spectre a une forme en cloche.
-        """
-        resu = [0 for v in self.dataVal]  # initialisation du tableau resultat
-
-        maxi = max(self.dataVal)  # Valeur maxu du spectre
-        iMaxi = self.dataVal.index(maxi)  # Index de la valeur max du spectre
-
-        # ETAPE 1 : SOMMATION
-        somme = 0.0
-        for v, i in zip(self.dataVal[0:iMaxi], range(0, iMaxi)):
-            somme = somme + v
-            resu[i] = somme
-
-        somme = 0.0
-        for v, i in zip(self.dataVal[:iMaxi:-1], range(len(self.dataVal) - 1, iMaxi, -1)):
-            somme = somme + v
-            resu[i] = somme
-
-        resu[iMaxi] = resu[iMaxi - 1] + self.dataVal[iMaxi] + resu[iMaxi + 1]
-
-        # ETAPE 2 : POURCENTAGE (PAS NECESSAIRE MAIS PLUS LISIBLE)
-        for v, i in zip(self.dataVal[0:iMaxi], range(0, iMaxi)):
-            resu[i] = (resu[i] + maxi / 2) / resu[iMaxi] * 100
-
-        for v, i in zip(self.dataVal[iMaxi + 1:], range(iMaxi + 1, len(self.dataVal))):
-            resu[i] = (resu[i] + maxi / 2) / resu[iMaxi] * 100
-
-        resu[iMaxi] = resu[iMaxi - 1] + resu[iMaxi + 1]
-
-        # ETAPE 3 : RECHERCHE DES BORNES
-        limit = (100.0 - limit) / 2.0
-        b1 = b2 = True
-        for v1, v2 in zip(resu[:], resu[::-1]):  # Parcours simultané dans les deux sens
-            if b1 and v1 >= limit:  # Borne à gauche trouvée
-                i1 = resu.index(v1)
-                b1 = False
-            if b2 and v2 >= limit:  # Borne à droite trouvée
-                i2 = resu.index(v2) + 1  # Borne à droit exclue de l'intervalle
-                b2 = False
-
-        return (i1, i2)
-
-    def cut(self, nuplet):
-        """
-            Découpe un spectre en sous-spectres qui sont retournés en sortie de la fonction
-            sous la forme d'un tableau de spectres
-        """
-        # transformation du nuplet en tableau (permet de lui ajouter un
-        # élément)
-        tabNuplet = [v for v in nuplet]
-        tabNuplet.append(len(self.listFreq))
-
-        # Traitement
-        tableRes = list()
-        bGauche = 0
-        for borne in tabNuplet:
-            bDroite = borne
-            sp = spectre()
-            for i in range(bGauche, bDroite):
-                sp.listFreq.append(self.listFreq[i])
-                sp.dataVal.append(self.dataVal[i])
-
-            tableRes.append(sp)
-            bGauche = bDroite
-
-        return tableRes
-
-    def __staticMerge(tabSpectre):
-        """
-            A l'inverse de la fonction cut, construit un seul spectre à partir d'un ensemble de spectres
-        """
-        # On vérifie d'abord que les spectres ne partagent pas la meme bande de
-        # fréquence (fut ce partiellement)
-        for i in range(0, len(tabSpectre) - 1):
-            if exclus(tabSpectre[i].listFreq, tabSpectre[i + 1].listFreq):
-                raise SpectreError
-        if exclus(tabSpectre[0].listFreq, tabSpectre[len(tabSpectre) - 1].listFreq):
-            raise SpectreError
-
-        spRes = spectre()
-        # cumul des spectres
-        for sp in tabSpectre:
-            for f, v in zip(sp.listFreq, sp.dataVal):
-                spRes.listFreq.append(f)
-                spRes.dataVal.append(v)
-
-        return spRes
-
-    merge = staticmethod(__staticMerge)
-                         # définition en tant que méthode statique
-
-    def buildMap(self):
-        """
-            Construit un dictionnaire à partir d'un spectre
-        """
-        dict = {}
-        for i, j in zip(self.listFreq, self.dataVal):
-            dict[i] = j
-
-        return dict
-
-
+            if tpa4_0 > self.samax :
+                self.dataVal[j-1] = self.samax
+                tpe = True 
+                if ((tpa4_1 / self.samax) > 0.99999) and (tpc1 * tpc2 == 0.) :
+                    self.dataVal[j+1] = self.samax
+                    tpe = False
+                if (abs(tpc1 / tpc2) > 0.9999999) :
+                    tpg = (self.dataVal[j] - self.samax) / (self.listFreq[j] - self.listFreq[j-1])
+                    self.dataVal[j+1] = tpg * (self.listFreq[j+1] - self.listFreq[j]) + self.dataVal[j]
+                    tpe = False
+                if tpe == True :
+                    self.dataVal[j+1] = tpa4_1                   
+        
+        
 class nappe:
 
     """
@@ -667,344 +383,354 @@ class nappe:
     """
 
     def __init__(self, listFreq=[], listeTable=[], listAmor=[], entete=""):
-        self.listFreq = [v for v in listFreq]  # recopie physique !
-        self.listTable = [list() for t in listeTable]
-        for t, st in zip(listeTable, self.listTable):
-            for v in t:
-                st.append(v)
-
+        self.listFreq = [v for v in listFreq]  # meme frequence pour tous
+        self.listSpec = []
+        for spec in listeTable:
+            self.listSpec.append(spectre(listFreq, spec))
+            
         self.listAmor = [l for l in listAmor]
         self.entete = entete
-
-    def __staticBuildFromListSpectre(lsp):
-        """
-            Construction d'une nappe à partir d'une liste de spectres
-        """
-        # On commence par vérifier que toutes les nappes on la meme base de fréquences
-        # A inclus dans B inclus dans C inclus dans .... et DERNIER inclus dans
-        # PREMIER ==> tous égaux
-        for i in range(0, len(lsp.listSp) - 1):
-            if inclus(lsp.listSp[i].listFreq, lsp.listSp[i + 1].listFreq):
-                raise NappeCreationError
-        if inclus(lsp.listSp[i + 1].listFreq, lsp.listSp[0].listFreq):
-            raise NappeCreationError
-
-        # Construction de la nappe à proprement parler
-        listeFreq = [fr for fr in lsp.listSp[0].listFreq]
-        listeTable = [list() for sp in lsp.listSp]
-        for sp, lv in zip(lsp.listSp, listeTable):
-            for v in sp.dataVal:
-                lv.append(v)
-        return nappe(listeFreq, listeTable, [], 'toto')
-
-    buildFromListSpectre = staticmethod(
-        __staticBuildFromListSpectre)  # définition en tant que méthode statique
-
+        
+    def getSpectre(self, index):
+        """Retourne le spectre d'indice 'index' dans la nappe"""
+        return self.listTable[index]
+    
     def getNbSpectres(self):
         """ Retourne le nombre d'éléments dans la nappe """
         return len(self.listAmor)
-
+    
     def getNbFreq(self):
-        """ Retourne le nombre d'éléments dans chaque spectre """
+        """ Retourne le nombre d'éléments dans la nappe """
         return len(self.listFreq)
-
-    def getSpectre(self, index):
-        """
-            Retourne le spectre d'indice 'index' dans la nappe
-        """
-        return spectre(self.listFreq, self.listTable[index])
-
-    def filtreDoublons(self):
-        """
-            Supprime bandes de fréquences constantes
-        """
-        prevCpl = None
-        bCount = False
-        i = 0
-        # Recherche des doublons
-        lstBor = list()  # Liste de listes de bornes
-        lst = list()
-        for cpl in self.__getListFreq():
-            if not(prevCpl):
-                prevCpl = cpl
-                continue
-            bTest = True
-            for v1, v2 in zip(cpl[1], prevCpl[1]):
-                bTest &= (v1 == v2)
-            if bTest and not bCount:  # Début d'une suite de valeurs égales
-                bCount = True
-                lst.append(i)
-            elif not bTest and bCount:  # Fin d'une suite de valeurs égales
-                bCount = False
-                lst.append(i)
-                lstBor.append(lst)
-                lst = list()  # Nouvelle liste
-
-            prevCpl = cpl
-            i += 1
-
-        # Suppression des doublons si plus de deux valeurs
-        for cpl in lstBor:
-            if (cpl[1] - cpl[0]) < 2:
-                continue
-            for i in range(cpl[1] - 1, cpl[0], -1):
-                del self.listFreq[i]
-                for j in range(0, len(self.listTable)):
-                    del self.listTable[j][i]
-
-    def __getListFreq(self):
-        """
-            Fonction privé qui parcours la matrice ligne par ligne
-            Retourne à chaque itération un couple frequence, liste de valeurs
-        """
-        fr = 0.0
-
-        for i in range(0, self.getNbFreq()):
-            fr = self.listFreq[i]
-            listVal = []
-            for j in range(0, len(self.listTable)):
-                listVal.append(self.listTable[j][i])
-            yield (fr, listVal)
-
-        raise StopIteration
-
-
-class listSpectre:
-
-    """
-        classe container d'une liste de spectre ne partageant pas la meme base de fréquence
-        cas des spectres à l'issue de la première passe de l'opération de filtrage d'enveloppe
-    """
-
-    def __init__(self, *listSp):
-        self.listSp = []
-        for sp in listSp:
-            self.listSp = sp
-
-    def append(self, spectre):
-        """ Ajoute un spectre à la liste """
-        self.listSp.append(spectre)
-
-    def __staticBuildFromNappe(uneNappe):
-        """
-            Construit une liste de spectres (indépendants) à partir d'une nappe
-        """
-        res = listSpectre()
-        for i in range(0, len(uneNappe.listAmor)):
-            res.append(uneNappe.getSpectre(i))
-
-        return res
-
-    buildFromNappe = staticmethod(
-        __staticBuildFromNappe)  # Définition en tant que méthode statique
-
-    def testChevauchement(self):
-        """
-            Supprime les effets de chevauchement entre les spectres
-        """
-        for i in range(0, len(self.listSp) - 1):
-            filter = filtreChevauchement(ref=self.listSp[i + 1])
-            self.listSp[i] = self.listSp[i].filtre(filter)
-
-    def createBase(self, lspRef=None):
-        """
-            Crée une base de fréquence commune pour l'ensemble des spectres
-            En s'assurant que le l'on reste enveloppe des spectre de la liste lspRef
-        """
-        lspRes = listSpectre([spectre()
-                             for sp in self.listSp])  # Liste résultante
-
-        # Recherche des fréquences attribuées à 5 spectres, 4 spectres, ...
-        # classées dans un dictionnaire
-        dctOc = self.__sortByOccurence()
-
-        iOcc = max(dctOc.keys())
-        lst = dctOc[iOcc]
-            # On comence par mettre les frequences communes à tous les spectres
-        lst.sort()
-        iOcc -= 1
-        test = 0
-        while True:
-            lspRes.__addFreqFromList(self, lst)
-            # On vérifie si on reste enveloppe du spectre initial
-            spTest = spectre()
-            lstComp = list()
-            for sp0, sp1 in zip(lspRes.listSp, self.listSp):
-                filter = filtreChevauchement(ref=sp1)
-                spTest = sp0.filtre(filter)
-                # Crée une liste des fréquences ajoutées (s'il y en a...)
-                for fr in spTest.listFreq:
-                    try:
-                        idx = sp0.listFreq.index(fr)
-                    except ValueError:  # Valeur non trouvée dans le tableau
-                        lstComp.append(fr)
-
-            if len(lstComp) > 0:  # Il est nécessaire de compléter les spectres
-                # on prend de préférence les fréquences définies sur le plus de
-                # spectre possible
-                while True:
-                    lstFreq = dctOc[iOcc]
-                    prevLst = lst  # On sauvegarde la liste précédente pour comparaison
-                    lst = self.__buildList(lstComp, lstFreq)
-                    if not(inclus(lst, prevLst)):
-                        iOcc -= 1
-                    else:
-                        break
-                continue
-            else:
-                break  # On peut sortir les spectres sont complets
-
-        self.listSp = lspRes.listSp  # Remplacement de la liste des spectres
-
-        # On s'assure que le spectre reste enveloppe du spectre de référence rajoute des fréquences si nécessaire
-        # 1. filtre chevauchement
-        if lspRef:  # Si une liste de spectre de référence a été définie, on vérifie le caractère enveloppe du résultat
-            listComp = list()
-
-            for sp1, sp2 in zip(self.listSp, lspRef.listSp):
-                filter = filtreChevauchement(ref=sp2)
-                spTest = sp1.filtre(filter)
-                test = inclus(spTest.listFreq, sp1.listFreq)
-                if test:
-                    listComp.append(test)
-            # 3. Complément éventuel de l'ensemble des spectres
-            if listComp:
-                lspRes.__addFreqFromList(self, listComp)
-
-        self.listSp = lspRes.listSp  # Remplacement de la liste des spectres
+      
+    def updateSpectre(self,index,sp):
+        """Met à jour le spectre d'indice 'index' dans la nappe (liste des freq pas modifiees )!"""
+        self.listTable[index] =sp.dataVal
+      
+    def updateFreq(self,listFreq):
+        """Met à jour la liste des frequences"""
+        self.listFreq =listFreq  
 
     def filtre(self, filter):
-        """
-            Applique un filtre à l'ensemble des spectres de la liste
-        """
-        self.listSp = [sp.filtre(filter) for sp in self.listSp]
+        """Applique un filtre à l'ensemble des spectres de la nappe"""
+        for j in range(0, self.getNbSpectres()):
+            sp = self.listSpec[j]
+            sp = sp.filtre(filter) 
+            self.listSpec[j]=sp
+        self.listFreq = sp.listFreq
+               
+    def getArea(self):
+        """Calcul de l'aire sous chaque spectre"""
+        for j in range(0, self.getNbSpectres()):
+            sp = self.listSpec[j]
+            l_area, area_total = sp.getArea()
+      
+    def getdArea(self):
+        """Calcul de difference entre la courbe approxime et la courbe reelle pour chaque frequence
+              somme pour tous les amortissements"""
+        
+        l_freq_sdarea = N.zeros(len(self.listFreq))
+        l_freq_elim   = N.ones(len(self.listFreq))
+        for f in range(1,len(self.listFreq)-1):
+            for j in range(0, self.getNbSpectres()):    
+                sp = self.listSpec[j]
+                elim, dArea = sp.getdArea(f)
+                l_freq_sdarea[f]+= dArea
+                l_freq_elim[f]   = l_freq_elim[f]*elim
+            
+        return l_freq_elim, l_freq_sdarea
+        
+    def verifZpa(self,j):
+        """Verification que le ZPA n'est pas modifie par la suppression de la frequence f"""
+        for s in range(0, self.getNbSpectres()):    
+            sp = self.listSpec[s]
+            tpc1 = (sp.dataVal[j]   - sp.dataVal[j-1]) / (sp.listFreq[j] - sp.listFreq[j-1])
+            tpc2 = (sp.dataVal[j+1] - sp.dataVal[j]) / (sp.listFreq[j+1] - sp.listFreq[j])
+            if (tpc1 > tpc2):
+                return False
+            if (tpc1 * tpc2) == 0. :    
+                return False
+        return True        
+                
+    def removeFreq(self,j,elim, check=2, zpa=None):
+        """Suppression de la frequence f et modification des valeurs"""
+        for s in range(0, self.getNbSpectres()):    
+            sp = self.listSpec[s] 
+            sp.removeFreq(j,elim) 
+          
+        if check ==2:    
+            self.check_nappe(check, zpa)
+        
+        # Mise a jour de la liste des frequences
+        self.listFreq = sp.listFreq
+        
+    def check_nappe(self,check=1,zpa=None):
+        # tous les amor on la meme ZPA:
+        l_zpa = []
+        for s in range(0, self.getNbSpectres()):    
+            sp = self.listSpec[s]
+            l_zpa.append(sp.dataVal[-1])
+        if min(l_zpa)!=max(l_zpa):  
+            #'Correction ZPA necessaire'
+            if check!=0:
+                for s in range(0, self.getNbSpectres()): 
+                    if zpa!=None:
+                        self.listSpec[s].dataVal[-1]=zpa
+                    else:
+                        self.listSpec[s].dataVal[-1]=max(l_zpa)
+            
+        # on verifie les croisements 
+        l_amor = N.array(self.listAmor)
+        ind_amor = l_amor.argsort()
+        ind_amor = ind_amor.tolist()
+        nb_amor = len(l_amor)
+       
+        dico_res = {}
+        for f,freq in enumerate(self.listFreq):
+            l_val = []
+            # on parcourt les spectres dans l'ordre décroissant d'amortissement
+            for s,s_id in enumerate(ind_amor[:-1]):    
+                sp = self.listSpec[s_id].dataVal[f]
+                l_val =[]
+                for s_inf in range(s+1,nb_amor):
+                    l_val.append(self.listSpec[ind_amor[s_inf]].dataVal[f])
+                if sp < max(l_val):
+                    # on corrige en prenant la valeur max de la nappe ou la valeur zpa 
+                    if check!=0:    
+                        self.listSpec[s_id].dataVal[f] = max(l_val)
+        return l_zpa
 
-    def __sortByOccurence(self):
-        """
-            Fonction qui trie les fréquences par leur occurence d'apparition dans la liste de spectre
-        """
-        dct = {}
-        for sp in self.listSp:  # Boucle sur tous les spectres
-            for fr in sp.listFreq:  # Boucle sur toutes les fréquences de chaque spectre
-                try:
-                    dct[fr] += 1
-                except KeyError:
-                    dct[fr] = 1
+def verif_freq(freq, l_freq, precision, critere):
+   
+    if len(l_freq)==0:
+        return True
+    else:   
+        ind = 0
+        while l_freq[ind]<=freq:
+            if critere=='RELATIF':
+                if abs(l_freq[ind]-freq)/abs(freq)<precision:
+                    return False
+            if critere=='ABSOLU':
+                if abs(l_freq[ind]-freq)<precision:
+                    return False
+            ind +=1
+            if ind == len(l_freq):
+                return True
+         
+def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], precision=1e-3, critere='RELATIF',check = 2, zpa = None):
 
-        # "Inversion" du dictionnaire
-        dctOc = {}  # Dictionnaire des occurences
-        for k in dct.keys():
-            try:
-                dctOc[dct[k]].append(k)
-            except KeyError:
-                dctOc[dct[k]] = [k]
-
-        return dctOc
-
-    def __addFreqFromList(self, lstSp, lstFreq):
-        """
-            Rajoute les fréquences contenues dans lstFreq aux spectres d'un listeSpectre
-            à partir des spectres fournis par le listeSpectre (lstSp) passé en paramètre
-            en procédant éventuellement à une interpolation linéaire
-        """
-        # Suppression des doublons de la liste des fréquences
-        lstFreq = listToDict(lstFreq).keys()
-                             # lst est la liste des points qu'il faudrait
-                             # ajouter pour rester enveloppe
-        lstFreq.sort()
-
-        for i in range(0, len(self.listSp)):
-            # Conversion des spectres en dictionnaire pour pouvoir les traiter
-            spDctSelf = self.listSp[i].buildMap()
-            spDctRef = lstSp.listSp[i].buildMap()
-            for fr in lstFreq:
-                # On cherche la valeur dans le spectre de référence
-                try:
-                    vr = spDctRef[fr]
-                except KeyError:
-                    ki = nearestKeys(fr, spDctRef)
-                    vr = interpole(
-                        fr, ki[0], spDctRef[ki[0]], ki[1], spDctRef[ki[1]])
-
-                # On rajoute la valeur dans le spectre résultat
-                spDctSelf[fr] = vr
-
-            # Conversion du dictionnaire en spectre réel
-            self.listSp[i] = spectre.sortSpectre(spDctSelf)
-
-    def __buildList(self, lstComp, lstFreq):
-        """
-            Construit une liste de fréquences à ajouter à partir d'une liste de fréquences
-            à ajouter (listComp) et d'une liste de référence, (listFreq)
-            retourne une liste
-        """
-        lst = list()
-        for fr in lstComp:
-            try:
-                idx = lstFreq.index(fr)
-                lst.append(fr)
-            except ValueError:  # Fréquence non présente, recherche de la plus proche
-                couple = nearestKeys(fr, listToDict(lstFreq))
-                if abs(couple[0] - fr) > abs(couple[1] - fr):
-                    lst.append(couple[1])
-                else:
-                    lst.append(couple[0])
-
-        lst = listToDict(lst).keys()  # Suppression des doublons
-        lst.sort()
-        return lst
-
-
-def lissage(nappe=nappe, fmin=0.2, fmax=35.5, elarg=0.1, tole_liss=0.25):
-    resultat = listSpectre()
-                           # Le résultat sera contenu dans une liste de spectre
-    lspBrut = listSpectre.buildFromNappe(nappe)
-    # Passage en LogLog
-    lspBrut.filtre(filtreLog())
-    for j in range(0, nappe.getNbSpectres()):
-        # Spectre brut
-        sp = nappe.getSpectre(j)
-        # Limitation de la bande de fréquence
+    # verification et correction 
+    # check = 0 verif mais pas de correction
+    # check = 1 verif et correction à la fin
+    # check = 2 verif et correction au cours de l'algo 
+    if len(l_freq)>nb_pts: 
+        UTMESS('A', 'FONCT0_72', valk=(str(nb_pts), str(len(l_freq))))
+        nb_pts = len(l_freq) 
+    l_freq.sort()
+    
+    # garder une copie de la nappe
+    nappe_up = copy.deepcopy(nappe)
+    # nappe_up = copy.copy(nappe)
+    
+    # Limitation de la bande de fréquence
+    if fmin!=None or fmax!=None:
+        if fmin==None: fmin = min(nappe_up.listFreq)
+        if fmax==None: fmax = max(nappe_up.listFreq)
         filter = filtreBandWidth(lower=fmin, upper=fmax)
-        sp = sp.filtre(filter)
-        # Expansion du spectre
-        filter = filtreExpand(coef=elarg)
-        sp = sp.filtre(filter)
-        # Passage en LogLin
-        filter = filtreLog(logOrd=False)
-        sp = sp.filtre(filter)
-        # éclatement du spectre en 3 sous-parties
-        tabSpectre = sp.cut(sp.seuil())
-        # traitement individuel des sous parties
-        filter = filtreCrible(tolerance=2. * tole_liss)
-        tabSpectre[0] = tabSpectre[0].filtre(filter)
-        tabSpectre[2] = tabSpectre[2].filtre(filter)
-        filter.tolerance = tole_liss
-        tabSpectre[1] = tabSpectre[1].filtre(filter)
-        # Fusion des sous-spectres
-        sp = spectre.merge(tabSpectre)
-
-        # Seconde passe de filtrage
-        sp = sp.filtre(filter)
-
-        # On passe en log-log pour les tests de chevauchement
-        filter = filtreLog(logAbc=False)
-        sp = sp.filtre(filter)
-        # Ecriture dans la liste de spectres résultat
-        resultat.append(sp)  # Ajoute la spectre lissé à la liste des spectres
-
-    resultat.testChevauchement()
-                               # Test de chevauchement entre les spectre de la
-                               # liste
-    resultat.createBase(lspBrut)
-                        # construction d'une base commune de fréquence
-
-    # Passage en lin
-    resultat.filtre(filtreLin())
-
-    # Construction de la nappe résultat
-    nappeRes = nappe.buildFromListSpectre(resultat)
-    nappeRes.listAmor = nappe.listAmor
-    nappeRes.filtreDoublons()  # Suppression des valeurs identiques accolées
-
-    return nappeRes
+        nappe_up.filtre(filter)
+        
+    # Suppression des pics inferieurs
+    # filter = filtreLowerPeaks()
+    # nappe_up.filtre(filter)
+    
+    # Mettre les valeurs en echelle log-log
+    filter = filtreLogLog()
+    nappe_up.filtre(filter)
+    if zpa!=None:
+        zpa_log = math.log10(zpa)+4.0
+    else:
+        zpa_log = None
+    # Initialisation
+    iter = 0
+    iter_max = 5*len(nappe_up.listFreq) 
+    critere = True
+    nappe_up.getArea()
+    if len(nappe_up.listFreq)<=nb_pts:
+        critere = False
+   
+    # Boucle jusqu'a atteinte du critere
+    while critere and iter<iter_max:
+        # Incrementation de l'iteration
+        iter+=1
+        # Tableau : frequence / valeur somme augmentation aire pour tous les amortissements
+        l_freq_elim, l_freq_sdarea = nappe_up.getdArea()
+        # Determination de la frequence a supprimer
+        j_ord = N.argsort(l_freq_sdarea)
+        jmax  = max(j_ord)
+        stop = 0
+        for j in j_ord:
+            # on verifie - que le Zpa n'est pas modifie
+            #            - que la frequence ne fait pas partie des frequences exclues
+            if (j!=0 and j!=jmax and not stop) : 
+                # if j+1==jmax:
+                    # print 'ici'
+                if j+1!=jmax or nappe_up.verifZpa(j):
+                    j_supp = j
+                    stop = 1
+                    # break
+        # Suppression de la frequence j_supp
+        nappe_up.removeFreq(j_supp,l_freq_elim[j_supp],check,zpa_log)
+        
+        # Controle nombre de frequence
+        if nappe_up.getNbFreq()<=nb_pts:
+            critere = False
+            
+    # Non-convergence de l'algorithme 
+    if iter==iter_max:    
+        UTMESS('A', 'FONCT0_73',valk=(str(iter_max),str(nappe_up.getNbFreq()),str(nb_pts)))
+        
+    # Mettre les valeurs en echelle log-log
+    filter = filtreLinLin()
+    nappe_up.filtre(filter)
+    
+    # verification et correction
+    if check!=2:
+        nappe_up.check_nappe(check)
+    
+    return nappe_up    
+    
+ 
+def enveloppe_nappe(l_nappe):
+    # verification que la liste d'amortissement est identique
+    l_amor_unique = []
+    for nappe in l_nappe:
+        l_amor_unique+=nappe.listAmor
+    #Suppression doublons
+    l_amor_unique = list(set(l_amor_unique))
+    l_amor_unique.sort()
+    l_amor_unique = N.array(l_amor_unique)
+    
+    #Filtres
+    filterLogLog = filtreLogLog()
+    filterLinLin = filtreLinLin()
+    
+    l_spec_amor=[]
+    for amor in l_amor_unique:
+        l_spec = []
+        l_freq = []
+        for nappe in l_nappe:
+            try:
+                ind = (nappe.listAmor).index(amor)
+                spec = copy.copy(nappe.listSpec[ind])
+                spec.filtre(filterLogLog)
+                l_spec.append(spec)
+                l_freq+=spec.listFreq
+            except:
+                pass
+        #Suppression doublons
+        l_freq = list(set(l_freq))
+        l_freq.sort()
+        l_freq = N.array(l_freq) 
+        s_max = N.zeros(len(l_freq))
+        for spec in l_spec:
+            fd = interpolate.interp1d(spec.listFreq, spec.dataVal)
+            ynew = fd(l_freq)
+            s_max = [ max(s_max[t], ynew[t]) for t in range(len(l_freq))]
+        spec= spectre(listFreq=l_freq,dataVal=s_max)
+        spec.filtre(filterLinLin)
+        l_spec_amor.append(spec)
+        
+    sp_nappe = copy.copy(nappe)
+    sp_nappe.listAmor = l_amor_unique
+    sp_nappe.listFreq = l_freq   
+    sp_nappe.listSpec = l_spec_amor   
+       
+    print 'l_freq enveloppe',l_freq   
+    return sp_nappe
+      
+def enveloppe_spectres(listSpec):
+    l_freq = []
+    l_spec = []
+    #Filtres
+    filterLogLog = filtreLogLog()
+    filterLinLin = filtreLinLin()
+    for spec in listSpec:
+        l_freq+=spec.listFreq
+        specLL = copy.copy(spec)
+        specLL.filtre(filterLogLog)
+        l_spec.append(specLL)
+    #Suppression doublons
+    l_freq = list(set(l_freq))
+    l_freq.sort()
+    l_freq = N.array(l_freq) 
+    print 'l_freq enveloppe spec',l_freq
+    s_max = N.zeros(len(l_freq))
+    for spec in l_spec:
+        fd = interpolate.interp1d(spec.listFreq, spec.dataVal)
+        ynew = fd(l_freq)
+        s_max = [ max(s_max[t], ynew[t]) for t in range(len(l_freq))]
+    spec= spectre(listFreq=l_freq,dataVal=s_max)
+    spec.filtre(filterLinLin)
+    return spec
+        
+def elargis_spectres(l_spectre,l_coef):
+    if (len(l_coef)!=len(l_spectre)):
+        UTMESS('F', 'FONCT0_76')
+        
+    filterLogLog = filtreLogLog()
+    filterLinLin = filtreLinLin()
+    l_spec_elagr=[]
+    
+    for c,coef in enumerate(l_coef):
+        if coef!=0.:
+            specLL = copy.copy(l_spectre[c])
+            specLL.filtre(filterLogLog)
+            filtreElarg = filtreExpand(coef=coef)
+            specLL.filtre(filtreElarg)
+            specLL.filtre(filterLinLin)   
+            l_spec_elagr.append(specLL)
+        else:
+            l_spec_elagr.append(l_spectre[c])
+    
+    return l_spec_elagr
+    
+def liss_enveloppe(l_nappes ,option = 'CONCEPTION', nb_pts = 50, coef_elarg = None, fmin=0.2, fmax=35.5,l_freq=[], precision=1e-3, critere='RELATIF', zpa = None ):
+    
+    if option == 'CONCEPTION':
+        print 'CONCEPTION', l_nappes
+        if len(l_nappes)>1:
+            env_nappe = enveloppe_nappe(l_nappes)
+        else:
+            env_nappe = l_nappes[0]
+        if len(nb_pts)>1:
+            UTMESS('A', 'FONCT0_75')
+        liss_nappe = lissage_spectres(nappe=env_nappe, fmin=fmin, fmax=fmax, nb_pts=nb_pts[0],l_freq=l_freq,check=2, zpa= zpa)   
+            
+        return liss_nappe
+        
+    elif option == 'VERIFICATION':
+        if len(nb_pts)>1:
+            nb_pts_1 = nb_pts[0]
+            nb_pts_2 = nb_pts[1]
+            if len(nb_pts)>2:
+                UTMESS('A', 'FONCT0_75')
+        else:    
+            nb_pts_1 = nb_pts_2 = nb_pts
+            
+        # Lissage pour chaque nappe    
+        l_liss_nappe = []
+        for nappe in l_nappes:
+            liss_nappe = lissage_spectres(nappe=nappe, fmin=fmin, fmax=fmax, nb_pts=nb_pts_1,l_freq=l_freq,check=2, zpa= zpa) 
+            l_liss_nappe.append(liss_nappe)
+        # Elargissement
+        if coef_elarg!=None:
+            l_liss_nappe = elargis_spectres(l_liss_nappe,coef_elarg)
+        # Enveloppe
+        env_nappe = enveloppe_nappe(l_liss_nappe)
+        # Lissage 
+        liss_nappe = lissage_spectres(nappe=env_nappe, fmin=fmin, fmax=fmax, nb_pts=nb_pts_2,l_freq=l_freq,check=2, zpa = zpa)        
+        return liss_nappe
+    else:
+        print "L'option %s n'est pas traitée"%option
+        
+      

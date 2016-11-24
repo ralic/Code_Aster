@@ -447,4 +447,22 @@ Conseil
     précédente se termine par une virgule.
 """),
 
+    72 : _(u"""
+Le nombre de fréquence imposée est supérieure, on augmente le nombe de points imposé de '%(k1)s' à '%(k2)s'.
+"""),
+
+    73 : _(u"""
+L'algorithme n'a pas converge après %(k1)s itérations , il reste %(k2)s points au lieu de %(k3)s points demandés.
+"""),
+
+    74 : _(u"""
+Les nappes fournit n'ont pas les mêmes valeurs d'amortissements 
+"""),
+
+    75 : _(u"""
+En mode CONCEPTION, un seul nombre de fréquence NB_FREQ_LISS est pris en compte. En mode VERIFICATION, les deux premières valeurs de NB_FREQ_LISS sont pris en compte. Les autres valeurs sont ignorés.
+"""),
+    76 : _(u"""
+Le nombre de coefficients d'élargissement est différent du nombre de nappes ou tables fournies.
+"""),
 }

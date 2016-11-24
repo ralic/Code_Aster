@@ -680,26 +680,106 @@ class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
     """LISS_ENVELOP"""
     def _build_data(self):
         """Read keywords to build the data"""
-        self._build_list_fonc(mcsimp='NAPPE')
+        # CalcFonctionOper._build_list_fonc(self)
+        kw = self.kw
+        if self.kw['NAPPE']!=None:
+            self._build_list_fonc(mcsimp='NAPPE')
+        elif self.kw['FONCTION']!=None:
+            self._build_list_fonc(mcsimp='FONCTION')
+        elif self.kw['TABLE']!=None:
+            lf_in = self._get_mcsimp('TABLE')
+            para_fonc = {'PROL_DROITE': 'EXCLU', 'INTERPOL': ['LIN', 'LIN'], 'PROL_GAUCHE': 'EXCLU', 'NOM_RESU': 'TOUTRESU', 'NOM_PARA': 'FREQ'}
+            para_napp = {'PROL_DROITE': 'EXCLU', 'INTERPOL': ['LIN', 'LIN'], 'PROL_GAUCHE': 'EXCLU', 'NOM_RESU': 'TOUTRESU', 'NOM_PARA': 'AMOR', 'NOM_PARA_FONC': 'FREQ'}
 
+            # conversion des tables en nappes
+            l_nappe=[]
+            for tab in lf_in:
+                nom_para = tab.get_nom_para()
+                # print nom_para
+                if kw['LIST_AMOR']!=None:
+                    amor = kw['LIST_AMOR']
+                else:
+                    amor = range(1,len(nom_para))
+                # error
+                if 'FREQ' not in nom_para:
+                    print 'error'
+                nom_para.remove('FREQ')    
+                # print dir(tab.EXTR_TABLE())
+                dico = tab.EXTR_TABLE().values()
+                l_fonc_f = []    
+                for para in nom_para:
+                    freq = dico['FREQ']
+                    # print freq
+                    vale = dico[para]
+                    # print vale
+                    l_fonc_f.append(t_fonction(freq,vale,para_fonc))  
+                    # print 'fonction'
+                l_nappe.append(t_nappe(amor, l_fonc_f,para_napp))        
+            # print 'nappe',l_nappe
+            self._lf = l_nappe
+        
     def _run(self):
         """LISS_ENVELOP"""
-        f_in = self._lf[0]
         kw = self.kw
-        sp_nappe = LISS.nappe(listFreq=f_in.l_fonc[0].vale_x,
-                              listeTable=[f.vale_y for f in f_in.l_fonc],
-                              listAmor=f_in.vale_para,
+        l_sp_nappe=[]
+        # formatage selon les donnes d'entrees
+        if kw['FONCTION']!=None:
+            f_in = self._lf[0]
+            if kw['LIST_AMOR']!=None:
+                amor = kw['LIST_AMOR'][0]
+            else:
+                amor = 0.
+            sp_nappe = LISS.nappe(listFreq=f_in.vale_x,
+                              listeTable=[f_in.vale_y],
+                              listAmor=[amor],
                               entete="")
-        sp_lisse = LISS.lissage(nappe=sp_nappe,
-                                fmin=kw['FREQ_MIN'],
-                                fmax=kw['FREQ_MAX'],
-                                elarg=kw['ELARG'],
-                                tole_liss=kw['TOLE_LISS'])
-        para_fonc = f_in.l_fonc[0].para
+            para_fonc = f_in.para   
+            para      = f_in.para.copy()   
+            # print 'para',para
+            para['NOM_PARA'] = 'AMOR'
+            para['NOM_PARA_FONC'] = para_fonc['NOM_PARA']
+            l_sp_nappe = [sp_nappe]
+        elif kw['NAPPE']!=None or kw['TABLE']!=None:
+            for i_nappe in range(len(self._lf)):
+                f_in = self._lf[i_nappe]
+                sp_nappe = LISS.nappe(listFreq=f_in.l_fonc[0].vale_x,
+                                  listeTable=[f.vale_y for f in f_in.l_fonc],
+                                  listAmor=f_in.vale_para,
+                                  entete="")
+                # verification que les nappes ont les memes amortissements
+                if i_nappe==0:
+                    l_amor = f_in.vale_para
+                    l_amor.sort()
+                    erreur_amor = 0
+                else:
+                    if len(l_amor)==len(f_in.vale_para):
+                        l_amor2 = f_in.vale_para.copy()
+                        l_amor2.sort()
+                        d_amor = l_amor - l_amor2
+                        if max(abs(d_amor))>1e-6: erreur_amor=1
+                    else:
+                        erreur_amor = 1
+                if erreur_amor:
+                    UTMESS('F', 'FONCT0_74')
+                l_sp_nappe.append(sp_nappe)                  
+            para_fonc = f_in.l_fonc[0].para
+            para      = f_in.para
+            
+        sp_lisse = LISS.liss_enveloppe(l_sp_nappe ,
+                                    option = kw['OPTION'],
+                                    coef_elarg  = kw['ELARG'],
+                                    fmin = kw['FREQ_MIN'], 
+                                    fmax = kw['FREQ_MAX'],
+                                    l_freq = list(kw['LIST_FREQ']),
+                                    nb_pts = kw['NB_FREQ_LISS'],
+                                    zpa    = kw['ZPA'],
+                                    precision=1e-3, 
+                                    critere='RELATIF' )
+                                
         l_fonc_f = []
-        for val in sp_lisse.listTable:
-            l_fonc_f.append(t_fonction(sp_lisse.listFreq, val, para_fonc))
-        self.resu = t_nappe(sp_lisse.listAmor, l_fonc_f, f_in.para)
+        for spec in sp_lisse.listSpec:
+            l_fonc_f.append(t_fonction(sp_lisse.listFreq, spec.dataVal, para_fonc))
+        self.resu = t_nappe(sp_lisse.listAmor, l_fonc_f, para)
 
 class CalcFonction_REGR_POLYNOMIALE(CalcFonctionOper):
     """Polynomial regression"""
