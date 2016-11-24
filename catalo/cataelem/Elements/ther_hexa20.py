@@ -340,7 +340,8 @@ class THER_HEXA20(Element):
         ),
 
         OP.TOU_INI_ELEM(te=99,
-            para_out=((OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR), ),
+            para_out=((OP.TOU_INI_ELEM.PCOEH_R, LC.EHECHPR),
+                      (OP.TOU_INI_ELEM.PSOUR_R, LC.CSOURCR), ),
         ),
 
         OP.TOU_INI_ELGA(te=99,
