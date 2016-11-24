@@ -448,7 +448,7 @@ Conseil
 """),
 
     72 : _(u"""
-Le nombre de fréquence imposée est supérieure, on augmente le nombe de points imposé de '%(k1)s' à '%(k2)s'.
+Le nombre de fréquence imposée est supérieure, on augmente le nombre de points imposé de '%(k1)s' à '%(k2)s'.
 """),
 
     73 : _(u"""
