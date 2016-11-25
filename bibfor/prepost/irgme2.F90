@@ -8,6 +8,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 !
     integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
@@ -15,7 +16,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
     character(len=24) :: connex
     character(len=*) :: partie
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,6 +71,7 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd,&
     isp=1
     iadmax=0
     k = 0
+    call r8inir(6 , 0.d0, val2,1)
     do 11 ior = 1, nbord2
         jcesd = tabd(ior)
         jcesl = tabl(ior)
