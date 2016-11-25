@@ -1,7 +1,7 @@
 subroutine evala1(fami, kpg, ksp, mod, relcom,&
                   sig, vin, imat, module, icode)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,6 +63,9 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
     nbind(2) = 9
     incang(3) = 2.0d-1
     nbind(3) = 9
+    iangmx(1) = 0
+    iangmx(2) = 0
+    iangmx(3) = 0
 ! =====================================================================
 ! --- INITIALISATION MATRICE DE ROTATION ANGULAIRE
 ! =====================================================================
