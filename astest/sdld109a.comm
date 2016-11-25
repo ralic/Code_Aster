@@ -16,7 +16,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
-              DEBUG=_F(SDVERI='NON',),);
+              DEBUG=_F(SDVERI='NON',),IGNORE_ALARM='SPECTRAL0_16',);
 
 import math
 
@@ -133,7 +133,7 @@ TRAN_LA=DYNA_VIBRA( TYPE_CALCUL='TRAN',
                     MATR_RIGI=RIGI_A,
                     MATR_AMOR = AMOR_A,
                     INCREMENT=_F( LIST_INST = L_INST),
-                    EXCIT=_F(  VECT_ASSE = MONO_XA,  FONC_MULT = ACCE)
+                    EXCIT=_F(  VECT_ASSE = MONO_XA,  FONC_MULT = ACCE),
                            )   
                 
 ACCE0 = DEFI_CONSTANTE(VALE = 1.E-8) 
@@ -185,6 +185,85 @@ tabl_spe = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
                                ACCE_Z = ACCE,),),
 )
 
+#
+# Validation ABSOL/RELATIF avec un "faux" relatif avec entrainement nul
+#
+
+ACCE00 = DEFI_CONSTANTE(VALE = 0.) 
+
+tabl_rel = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
+                     AMOR_SPEC = 0.05,
+                     EQUIPEMENT =(_F(NOM='NOEUD2',
+                                  GROUP_NO='N02',
+                                RAPPORT_MASSE_TOTALE = lbd,
+                                COEF_MASS_EQUIP = (m2_1/m2,m2_2/m2,m2_3/m2),
+                                FREQ_EQUIP = (f2_1,f2_2,f2_3), 
+                                FREQ_SUPPORT  = f1,
+                                AMOR_SUPPORT = amor_supp,
+                                AMOR_EQUIP = (amor_equi,amor_equi,amor_equi)
+                                 ),),  
+                     LIST_INST = L_INST,
+                     CALCUL ='RELATIF',
+                     LIST_FREQ = L_FREQ,
+                     NORME = 1.,
+                     RESU = (_F(TABLE = TAB,
+                               ACCE_Z = ACCE00,),),
+)
+
+tabl_abs = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
+                     AMOR_SPEC = 0.05,
+                     EQUIPEMENT =(_F(NOM='NOEUD2',
+                                  GROUP_NO='N02',
+                                RAPPORT_MASSE_TOTALE = lbd,
+                                COEF_MASS_EQUIP = (m2_1/m2,m2_2/m2,m2_3/m2),
+                                FREQ_EQUIP = (f2_1,f2_2,f2_3), 
+                                FREQ_SUPPORT  = f1,
+                                AMOR_SUPPORT = amor_supp,
+                                AMOR_EQUIP = (amor_equi,amor_equi,amor_equi)
+                                 ),),  
+                     LIST_INST = L_INST,
+                     CALCUL ='ABSOLU',
+                     LIST_FREQ = L_FREQ,
+                     NORME = 1.,
+                     RESU = (_F(TABLE = TAB,),),
+)
+
+#
+# Validation CORR_INIT : on decale le signal pour qu'il soit non nul pour t=0
+#
+
+ACCELER2 = FORMULE(NOM_PARA='INST',VALE='sin((INST+0.00001)*20.*2.*pi)')
+ 
+
+ACCE2 = CALC_FONC_INTERP( FONCTION=ACCELER2, LIST_PARA=L_INST,
+        NOM_PARA='INST',
+        NOM_RESU='ACCE',
+        PROL_GAUCHE='EXCLU', PROL_DROITE='LINEAIRE',
+        INTERPOL='LIN',
+        TITRE=' FONCTION' )   
+
+
+tabl_cor = CALC_SPECTRE_IPM(MAILLAGE = MAILLAGE,
+                     AMOR_SPEC = 0.05,
+                     EQUIPEMENT =(_F(NOM='NOEUD2',
+                                  GROUP_NO='N02',
+                                RAPPORT_MASSE_TOTALE = lbd,
+                                COEF_MASS_EQUIP = (m2_1/m2,m2_2/m2,m2_3/m2),
+                                FREQ_EQUIP = (f2_1,f2_2,f2_3), 
+                                FREQ_SUPPORT  = f1,
+                                AMOR_SUPPORT = amor_supp,
+                                AMOR_EQUIP = (amor_equi,amor_equi,amor_equi)
+                                 ),),  
+                     LIST_INST = L_INST,
+                     CALCUL ='RELATIF',
+                     LIST_FREQ = L_FREQ,
+                     NORME = 1.,
+                     RESU = (_F(TABLE = TAB,
+                               ACCE_Z = ACCE2,),),
+                     CORR_INIT = 'OUI',
+)
+
+
 #IMPR_TABLE(TABLE=tabl_spe,FORMAT='TABLEAU',UNITE=28);  
   
 TEST_TABLE(TABLE=tabl_spe,
@@ -194,7 +273,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(0.437517122449 ),
              VALE_REFE=(4.25896E-01, ),
-             PRECISION=6.2E-2,)
+             PRECISION=3.E-2,)
 
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -203,7 +282,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(1.47444236774 ),
              VALE_REFE=(1.44050E+00, ),
-             PRECISION=7.2E-2,)        
+             PRECISION=3.E-2,)        
 
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -212,7 +291,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(1.93646256141 ),
              VALE_REFE=(1.93754E+00, ),
-             PRECISION=2.3E-2,)       
+             PRECISION=1.E-3,)       
 
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -221,7 +300,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(3.40805094425 ),
              VALE_REFE=(3.39816E+00 , ),
-             PRECISION=0.7E-2,)             
+             PRECISION=0.5E-2,)             
              
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -230,7 +309,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(1.46576034744 ),
              VALE_REFE=(1.46011E+00, ),
-             PRECISION=1.6E-2,)
+             PRECISION=1.E-2,)
              
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -257,7 +336,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(0.927037728394 ),
              VALE_REFE=(9.29183E-01, ),
-             PRECISION=0.8E-2,)             
+             PRECISION=0.3E-2,)             
              
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -266,7 +345,7 @@ TEST_TABLE(TABLE=tabl_spe,
              REFERENCE='AUTRE_ASTER',
              VALE_CALC=(0.879024239638 ),
              VALE_REFE=(8.71687E-01, ),
-             PRECISION=1.3E-2,)             
+             PRECISION=1.E-2,)             
              
 TEST_TABLE(TABLE=tabl_spe,
              NOM_PARA='IPM NOEUD2 5%',
@@ -277,6 +356,91 @@ TEST_TABLE(TABLE=tabl_spe,
              VALE_REFE=(8.33936E-01, ),
              PRECISION=1.9E-2,)
              
+#
+# Validation ABSOLU/RELATIF :
+#
+TEST_TABLE(TABLE=tabl_rel,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=15.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(4.32903700772 ),
+             VALE_REFE=(4.32903700772, ),
+             PRECISION=1.E-6,)       
+
+TEST_TABLE(TABLE=tabl_rel,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=20.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(14.1068833704 ),
+             VALE_REFE=(14.1068833704 , ),
+             PRECISION=1.E-6,)             
+             
+TEST_TABLE(TABLE=tabl_rel,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=25.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(5.20282532424 ),
+             VALE_REFE=(5.20282532424, ),
+             PRECISION=1.E-6,)
+
+TEST_TABLE(TABLE=tabl_abs,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=15.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(4.32903700772 ),
+             VALE_REFE=(4.32903700772, ),
+             PRECISION=1.E-6,)       
+
+TEST_TABLE(TABLE=tabl_abs,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=20.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(14.1068833704 ),
+             VALE_REFE=(14.1068833704 , ),
+             PRECISION=1.E-6,)             
+             
+TEST_TABLE(TABLE=tabl_abs,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=25.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(5.20282532424 ),
+             VALE_REFE=(5.20282532424, ),
+             PRECISION=1.E-6,)
+#
+# Validation CORR_INIT :
+#
+TEST_TABLE(TABLE=tabl_cor,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=15.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.93485146496 ),
+             VALE_REFE=(1.93754E+00, ),
+             PRECISION=2.E-3,)       
+
+TEST_TABLE(TABLE=tabl_cor,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=20.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(3.40311455827 ),
+             VALE_REFE=(3.39816E+00 , ),
+             PRECISION=0.5E-2,)             
+             
+TEST_TABLE(TABLE=tabl_cor,
+             NOM_PARA='IPM NOEUD2 5%',
+             FILTRE=_F(NOM_PARA='FREQ NOEUD2',
+                       VALE=25.0,),
+             REFERENCE='AUTRE_ASTER',
+             VALE_CALC=(1.46384430553 ),
+             VALE_REFE=(1.46011E+00, ),
+             PRECISION=1.E-2,)
 
 ## MODELE B : SOLUTION DE REFRENCE
 # MOD_B=AFFE_MODELE(  MAILLAGE=MAILLAGE,AFFE=(
