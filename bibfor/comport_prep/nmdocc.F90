@@ -78,6 +78,9 @@ implicit none
     call comp_meca_info(ds_compor_prep)
     if (ds_compor_prep%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
+        l_auto_elas    = .false.
+        l_auto_deborst = .false.
+        l_comp_erre    = .false.
     endif
     if (ds_compor_prep%nb_comp .ge. 99999) then
         call utmess('A', 'COMPOR4_65')
