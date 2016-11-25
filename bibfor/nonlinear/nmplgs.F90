@@ -6,7 +6,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
                   matr, vect, codret, dfdi2, livois,&
                   nbvois, numa, lisoco, nbsoco)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -192,8 +192,9 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
 !
 1783     continue
 !
+        call r8inir(6, 0.d0, epsrss, 1)
         if (nint(vip(2,1)) .eq. 0) then
-            call r8inir(6, 0.d0, epsrss, 1)
+!            call r8inir(6, 0.d0, epsrss, 1)
             do 2118 kl = 1, ndimsi
                 do 2119 i = 1, nno2
                     ll=kl+ndim+((i-1)*(ndim+ndimsi))
@@ -205,7 +206,7 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2,&
         endif
 !
         if (nint(vip(2,1)) .eq. 1) then
-            call r8inir(6, 0.d0, epsrss, 1)
+!            call r8inir(6, 0.d0, epsrss, 1)
             scal(1)=0
             scal(2)=0
             scal(3)=0
