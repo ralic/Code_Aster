@@ -43,6 +43,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
 #include "asterfort/jexnum.h"
 #include "asterfort/padist.h"
 #include "asterfort/panbno.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xelfis_lists.h"
@@ -103,6 +104,7 @@ subroutine xtyele(model, trav, nfiss, fiss, contac,&
     do i = 1, 3
         indptf(i)=0
     end do
+    call r8inir(ndim, 0.d0, cmin, 1)
     clsn = '&&XTYELE.LSN'
     clst = '&&XTYELE.LST'
     do ifiss = 1, nfiss
