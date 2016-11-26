@@ -18,6 +18,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 #include "asterfort/padist.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
+#include "asterfort/r8inir.h"
 #include "asterfort/tecael.h"
 #include "asterfort/vecini.h"
 #include "asterfort/xassfa.h"
@@ -70,7 +71,7 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
     real(kind=8) :: minlsn, maxlsn, newpt(ndim), p(ndim), lonref, rainter(3,4)
     real(kind=8) :: ff(20), ptref(ndim), ptree(ndim), cooree(6,ndim), cooref(6,ndim)
     real(kind=8) :: maxlst, minlst, lst(6), m(ndim), miref(ndim), pinref(43*ndim), mref(ndim)
-    real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(1), norme
+    real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(ndim), norme
     real(kind=8) :: ptreem(ndim), ptrefm(ndim), epsmax, ls(20), det, cridist, a, b, c
     real(kind=8) :: ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim), lsn(ndim)
     integer :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
@@ -132,6 +133,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, pinter,&
 !      COMPTEUR DU NOMBRE DE POINTS D'INTERSECTION AVEC LES ARETES DES SOUS ELEMENTS
     npis = 0
 !
+    call r8inir(20, 0.d0, ls, 1)
+    call r8inir(ndim, 0.d0, ksi, 1)
+    ibid = 0
+
     if (ndim .eq. 2) then
        if (.not. iselli(elp)) then
            nnose = 6
