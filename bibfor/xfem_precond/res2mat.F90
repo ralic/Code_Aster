@@ -70,6 +70,7 @@ subroutine res2mat(resu, inst, chmat, nommat, mu, ka, lvarc, varcns, cplan)
     if (present(ka)) ka=0.d0
     if (present(lvarc)) lvarc=.false.
     chmat=' '
+    cplan2 =.false.
 !    
     call dismoi('CHAM_MATER', resu(1:8), 'RESULTAT', repk=chmat)
     call dismoi('NOM_MODELE', resu, 'RESULTAT', repk=model)
