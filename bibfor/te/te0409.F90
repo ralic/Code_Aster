@@ -188,6 +188,8 @@ subroutine te0409(option, nomte)
     character(len=16) :: comp3, mult_comp
     character(len=24) :: valk(2)
 !
+    integer      ::  codret2(1)
+    character(len=32) :: phenom
     codret = 0
     nbsig = 6
     q4gg = .false.
@@ -228,9 +230,23 @@ subroutine te0409(option, nomte)
 !
     call utpvgl(nno, 3, pgl, zr(igeom), xyzl)
 !
+
+        call jevech('PMATERC', 'L', imate)            
+! ---   COQUE HOMOGENEISEE ?
+        if ((option.eq.'FULL_MECA') .or. (option.eq.'RAPH_MECA') .or.&
+                (option.eq.'RIGI_MECA_TANG')) then
+                call rccoma(zi(imate), 'ELAS', 1, phenom, codret2(1))
+    !
+                if ((phenom.eq.'ELAS_COQUE') .or. (phenom.eq.'ELAS_COQMU') .or.&
+                    (phenom.eq.'ELAS_ORTH')) then
+                    call utmess('F', 'ELEMENTS2_75')
+                endif
+        endif
+
     if (option .eq. 'FULL_MECA'      .or. option .eq. 'RAPH_MECA'&
    .or. option .eq. 'RIGI_MECA_TANG' .or. option .eq. 'RIGI_MECA') then
 !
+
         if (.not. lrgm) then
             call jevech('PCARCRI', 'L', icarcr)
             call jevech('PVARIMR', 'L', ivarim)
@@ -280,7 +296,7 @@ subroutine te0409(option, nomte)
             icompo=1
             icontm=1
         endif
-!
+        
         call r8inir(8, 0.d0, sig, 1)
         call r8inir(8, 0.d0, dsig, 1)
 !
@@ -465,6 +481,8 @@ subroutine te0409(option, nomte)
                     deps(i) = deps(i)+excen*khi(i)
                 end do
             endif
+            
+            
             if (compor(1:4) .eq. 'ELAS') then
   
                 call r8inir(3*3, 0.d0, dff, 1)
@@ -657,6 +675,7 @@ subroutine te0409(option, nomte)
                     m(i) = sig(i+3)
                 end do
 !               -- PRISE EN COMPTE DE L'EXCENTREMENT DANS LE TERME DE FLEXION (VOIR AUSSI DKTNLI)
+
              if (compor(1:4) .ne. 'ELAS' .and. excen .gt. 0.0d0) then 
                     do i = 1, 3
                         m(i) =   m(i) + excen*n(i)
