@@ -23,7 +23,6 @@ implicit none
 #include "asterfort/apdcma.h"
 #include "asterfort/apdmae.h"
 #include "asterfort/aprtpe.h"
-#include "asterfort/aprtpm.h"
 #include "asterf_types.h"
 !
 ! ======================================================================
