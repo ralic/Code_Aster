@@ -35,8 +35,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.963495E-3,
            NOM_PARA='A',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -45,8 +43,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='CDG_Y',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -55,8 +51,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='CDG_Z',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -65,8 +59,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.0679610000000001E-07,
            NOM_PARA='IY_G',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -75,8 +67,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.0679610000000001E-07,
            NOM_PARA='IZ_G',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -85,8 +75,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='IYZ_G',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -95,8 +83,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.0679610000000001E-07,
            NOM_PARA='IY',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -105,8 +91,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=3.0679610000000001E-07,
            NOM_PARA='IZ',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -114,8 +98,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=-0.025000000000000001,
            NOM_PARA='Y_MIN',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -123,8 +105,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=0.025000000000000001,
            NOM_PARA='Y_MAX',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -132,8 +112,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=-0.025000000000000001,
            NOM_PARA='Z_MIN',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -141,8 +119,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=0.025000000000000001,
            NOM_PARA='Z_MAX',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -151,8 +127,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=6.1358999999999998E-07,
            NOM_PARA='JX',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -160,8 +134,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.1666666999999999,
            NOM_PARA='AY',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -169,8 +141,6 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            VALE_REFE=1.1666666999999999,
            NOM_PARA='AZ',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -179,8 +149,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='EY',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -189,8 +157,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='EZ',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -199,8 +165,6 @@ TEST_TABLE(CRITERE='ABSOLU',
            VALE_REFE=0.0,
            NOM_PARA='JG',
            TABLE=TCARS,
-           FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000012',),
            )
 
 # TEST DE L'ENCHAINEMENT AVEC UN CALCUL POUTRE
@@ -240,7 +204,7 @@ CAREL=AFFE_CARA_ELEM(MODELE=MO,
                                #VALE=rext,
                                 SECTION='GENERALE',
                                 TABLE_CARA=TCARS,
-                                NOM_SEC='.9000012')
+                                NOM_SEC='.9000000')
                                ,)
 CAREL2=AFFE_CARA_ELEM(MODELE=MO,
                      INFO=2,

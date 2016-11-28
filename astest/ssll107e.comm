@@ -26,7 +26,7 @@ TEST_TABLE(VALE_CALC=7.0190292529178E-05,
            NOM_PARA='A_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=0.014518221992301,
@@ -36,7 +36,7 @@ TEST_TABLE(VALE_CALC=0.014518221992301,
            NOM_PARA='CDG_Y_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=0.014518221992301,
@@ -46,7 +46,7 @@ TEST_TABLE(VALE_CALC=0.014518221992301,
            NOM_PARA='CDG_Z_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=3.4265720379176E-09,
@@ -56,7 +56,7 @@ TEST_TABLE(VALE_CALC=3.4265720379176E-09,
            NOM_PARA='IY_G_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=3.4265720379176E-09,
@@ -66,7 +66,7 @@ TEST_TABLE(VALE_CALC=3.4265720379176E-09,
            NOM_PARA='IZ_G_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=-3.1001544409698E-09,
@@ -76,7 +76,7 @@ TEST_TABLE(VALE_CALC=-3.1001544409698E-09,
            NOM_PARA='IYZ_G_M',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=2.8076117011671E-04,
@@ -86,7 +86,7 @@ TEST_TABLE(VALE_CALC=2.8076117011671E-04,
            NOM_PARA='A',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -97,7 +97,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='CDG_Y',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -108,7 +108,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='CDG_Z',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=7.2884782201462E-08,
@@ -118,7 +118,7 @@ TEST_TABLE(VALE_CALC=7.2884782201462E-08,
            NOM_PARA='IY_G',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=7.2884782201462E-08,
@@ -128,7 +128,7 @@ TEST_TABLE(VALE_CALC=7.2884782201462E-08,
            NOM_PARA='IZ_G',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
@@ -139,7 +139,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='IYZ_G',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=7.2884782201462E-08,
@@ -149,7 +149,7 @@ TEST_TABLE(VALE_CALC=7.2884782201462E-08,
            NOM_PARA='IY',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=7.2884782201462E-08,
@@ -159,7 +159,7 @@ TEST_TABLE(VALE_CALC=7.2884782201462E-08,
            NOM_PARA='IZ',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=-0.023096988493356,
@@ -169,7 +169,7 @@ TEST_TABLE(VALE_CALC=-0.023096988493356,
            NOM_PARA='Y_MIN',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=0.023096988493356,
@@ -179,7 +179,7 @@ TEST_TABLE(VALE_CALC=0.023096988493356,
            NOM_PARA='Y_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=-0.023096988493356,
@@ -189,7 +189,7 @@ TEST_TABLE(VALE_CALC=-0.023096988493356,
            NOM_PARA='Z_MIN',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=0.023096988493356,
@@ -199,7 +199,7 @@ TEST_TABLE(VALE_CALC=0.023096988493356,
            NOM_PARA='Z_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(VALE_CALC=0.025000000000000,
@@ -209,7 +209,7 @@ TEST_TABLE(VALE_CALC=0.025000000000000,
            NOM_PARA='R_MAX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 #
@@ -232,7 +232,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            NOM_PARA='ALPHA',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 FIN( )

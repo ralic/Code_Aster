@@ -31,7 +31,7 @@ TEST_TABLE(PRECISION=3.0000000000000001E-3,
            NOM_PARA='JX',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
@@ -40,7 +40,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            NOM_PARA='RT',
            TABLE=TCARA,
            FILTRE=_F(NOM_PARA='LIEU',
-                     VALE_K='.9000002',),
+                     VALE_K='.9000000',),
            )
 
 FIN( )
