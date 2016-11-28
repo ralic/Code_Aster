@@ -108,6 +108,7 @@ NONE = None
         self.args.update(args)
         self.nstep = 0
         self.nsd = 0
+        self.tmpsd = -1
         self.par_lot = 'OUI'
         self.par_lot_user = None
         if definition:
@@ -340,6 +341,11 @@ Causes possibles :
         self.nstep = self.nstep + 1
         idetape = etape.idracine + self.SEP + `self.nstep`
         return idetape
+
+    def get_new_id(self):
+        """Return a new id for temporary datastructures"""
+        self.tmpsd += 1
+        return self.tmpsd
 
     def create_sdprod(self, etape, nomsd):
         """

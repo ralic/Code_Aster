@@ -54,8 +54,8 @@ class JDC:
                   'jeveux', 'jeveux_sysaddr', 'icode')
 
     # attributs du jdc "picklés" (ceux qui contiennent des infos de l'exécution).
-    # nsd : nombre de sd produites
-    l_pick_attr = ('catalc', 'nsd', 'jeveux_sysaddr')
+    # nsd/tmpsd : compteurs de concepts (totaux/temporaires dans les macros)
+    l_pick_attr = ('catalc', 'nsd', 'tmpsd', 'jeveux_sysaddr')
 
     def __init__(self):
         self.info_level = 1

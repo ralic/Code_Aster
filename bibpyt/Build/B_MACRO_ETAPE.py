@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -143,24 +143,25 @@ class MACRO_ETAPE(B_ETAPE.ETAPE):
 
         return ier
 
-    def gcncon(self, type):
+    def gcncon(self, typ):
+        """Retourne un nom de concept non encore utilisé et unique.
+
+        Arguments:
+            typ (str): '.' : le concept sera détruit en fin de job.
+                ou bien '_' : le concept ne sera pas détruit.
+
+        Returns:
+            resul (str): Nom d'un concept unique sur 8 caractères.
+                Ce nom est de la forme ``typ + '9ijklmn'`` ou ``ijklmn`` est un
+                nombre incrémenté à chaque appel pour garantir l'unicité
+                des noms.
+                Donc 1.e6 noms possibles pour les macros.
+                Les noms affectés par gcncon en fortran sont de la forme
+                ``typ + 'ijklmnp'``. Il n'y a pas de conflit jusqu'à 8999999.
         """
-            Entrees:
-              type vaut soit
-                      '.' : le concept sera detruit en fin de job
-                      '_' : le concept ne sera pas detruit
-            Sorties:
-              resul  nom d'un concept delivre par le superviseur
-                     Ce nom est de la forme : type // '9ijklmn' ou ijklmn est un nombre
-                     incremente a chaque appel pour garantir l unicite des noms
-                     Il est donc differencie tant que l'on ne depasse pas 8999999,
-                     de ceux donnes par le fortran qui sont de
-                     la forme : type // 'ijklmnp'
-            Fonction:
-              Delivrer un nom de concept non encore utilise et unique
-        """
-        # nsd est incrémenté à l'enregistrement dans N_JDC
-        return type + "9" + str(self.jdc.nsd).zfill(6)
+        newid = self.jdc.get_new_id()
+        assert newid < 1000000, "more than 1.000.000 of temporary objects!"
+        return "{0}9{1:06}".format(typ, newid)
 
     def DeclareOut(self, nom, concept):
         """
