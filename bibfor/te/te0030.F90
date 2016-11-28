@@ -1,7 +1,7 @@
 subroutine te0030(option, nomte)
 ! =====================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -165,8 +165,7 @@ subroutine te0030(option, nomte)
                             zr(icontp-1+(kpg-1)*nbsig+1 ),&
                             zr(ivarip-1+(kpg-1)*nbvari+1), dsde, icode)
             else
-!C RELATION DE COMPORTEMENT INVALIDE
-                ASSERT(.false.)
+                call utmess('F', 'COMPOR5_11', sk = relcom)
             endif
 ! =====================================================================
 ! --- CALCUL DU TENSEUR ACOUSTIQUE ------------------------------------

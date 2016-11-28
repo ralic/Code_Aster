@@ -59,6 +59,10 @@ Erreur utilisateur :
   Le comportement ou l'élément concerné ne savent pas gérer ce cas.
 """),
 
+    11 : _(u"""
+  L'indicateur INDL_ELGA n'est pas possible avec le comportement %(k1)s.
+"""),
+
     12 : _(u"""
 Problème lors du calcul des déformations hydriques (retrait endogène).
 Il manque la définition du coefficient B_ENDOGE dans DEFI_MATERIAU.
