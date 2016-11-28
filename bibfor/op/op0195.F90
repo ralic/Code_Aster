@@ -352,7 +352,7 @@ implicit none
             call dismoi('PROF_CHNO', chou, 'CHAM_NO', repk=prchn2)
             if (idensd('PROF_CHNO',prchn1,prchn2)) then
                 call detrsd('PROF_CHNO', prchn2)
-                call jeveuo(chou(1:8)//'           .REFE', 'L', vk24 = v_refe)
+                call jeveuo(chou(1:8)//'           .REFE', 'E', vk24 = v_refe)
                 v_refe(2) = prchn1
             else
                 call getfac('COMB', nocc)
