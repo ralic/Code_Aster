@@ -42,17 +42,6 @@ On ne peut pas utiliser le modèle 3D_SI avec un comportement élastique de type
   -> Veuillez renseigner cette argument
 """),
 
-    7 : _(u"""
-  -> Erreur de programmation :
-  -> L argument %(k1)s est manquant ou mal renseigné dans une routine élémentaire XFEM
-  -> Veuillez renseigner cette argument
-"""),
-
-    8 : _(u"""
-  -> Erreur de programmation :
-  -> En dimension %(i1)d, le calcul d'un tenseur de courbure n'est pas autorisé.
-"""),
-
     9 : _(u"""
   -> Erreur de programmation :
   -> En dimension %(i1)d, le calcul d'une matrice de passage n'a pas de sens.

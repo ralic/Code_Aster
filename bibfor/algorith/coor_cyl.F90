@@ -24,12 +24,12 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
 #include "jeveux.h"
 #include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xcoocy.h"
 #include "asterfort/provec.h"
 #include "asterfort/xnormv.h"
-#include "asterfort/dfdmxx.h"
 #include "asterc/r8prem.h"
 #include "asterfort/matinv.h"
 !
@@ -60,8 +60,6 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
     integer :: i, ino
     real(kind=8) :: baslog(3*ndim)
     real(kind=8) :: pt(ndim)
-    integer :: j, k
-    real(kind=8) :: dfdgl(nnop, 3), p(3,3), invp(3,3)
 !
 !----------------------------------------------------------------
 !
@@ -88,31 +86,9 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
 !
     if (present(lcourb)) then
        if (lcourb) then
-         if (.not.present(courb)) then
-          call utmess('F', 'ELEMENTS6_7', sk='courb')
-         endif
-         if (.not.present(dfdi)) then
-          call utmess('F', 'ELEMENTS6_7', sk='dfdi')
-         endif
-         if (ndim.ne.3) then
-          call utmess('F', 'ELEMENTS6_8', si=ndim)
-         endif
-         call dfdmxx(nnop, dfdi, geom, dfdgl) 
-         courb=0.
-         do ino = 1, nnop
-           call xbasgl(3, basloc, ino, p, invp)
-           do i =1,3
-             do j=1,3
-               do k=1,3
-                 courb(i,j,k)=courb(i,j,k)+dfdgl(ino,k)*p(i,j)
-               enddo
-             enddo
-           enddo
-         enddo
-!      print*,' *** KOR ***'        
-!      print*,' - cour(e1)=',courb(1,1:3,1:3)    
-!      print*,' - cour(e2)=',courb(2,1:3,1:3)
-!      print*,' ***********'        
+!          maintien de ce bloc conditionnel suite à la suppression
+!          d'une routine pour couverture (issue25665)
+           ASSERT(.false.)
        endif
     endif
 !
