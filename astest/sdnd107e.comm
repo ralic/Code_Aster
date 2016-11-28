@@ -147,12 +147,13 @@ PROJ_BASE(
 # and saved.
 dtarch = 1.e-2
 ARCHLIST = [0.0 + dtarch*i for i in range(int(4.0*Tsignal/dtarch)+1)] 
+pdt = 0.5/Frequence/640.0
 
 Resultat=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
-    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-9),
-    INCREMENT=_F(PAS=0.5/Frequence/80.0, INST_INIT=0.0, INST_FIN=4.0*Tsignal,),
+    SCHEMA_TEMPS=_F(SCHEMA='RUNGE_KUTTA_32',TOLERANCE=1.0E-9, PAS_MAXI=pdt*5.),
+    INCREMENT=_F(PAS=pdt, INST_INIT=0.0, INST_FIN=4.0*Tsignal,),
     MODE_STAT=ModeSta,
     EXCIT=(
         _F(VECT_ASSE_GENE=Depl1Gen, FONC_MULT=DEPLAI,),
@@ -349,7 +350,6 @@ IMPR_FONCTION(UNITE=26,
 ARCHLIST1 = [0.0 + dtarch*i for i in range(int(2.0*Tsignal/dtarch)+1)] 
 ARCHLIST2 = [2.0*Tsignal + dtarch*i for i in range(1,int(2.0*Tsignal/dtarch)+1)] 
 
-pdt = 0.5/Frequence/640.0
 ResultA=DYNA_VIBRA(
     TYPE_CALCUL='TRAN', BASE_CALCUL='GENE',
     MATR_MASS=MasseGen, MATR_RIGI=RigidGen,
