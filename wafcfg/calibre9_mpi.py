@@ -17,7 +17,7 @@ def configure(self):
 
     opts.parallel = True
     calibre9.configure(self)
-    self.env['ADDMEM'] = 400
+    self.env['ADDMEM'] = 500
 
     self.env.prepend_value('LIBPATH', [
         YAMMROOT + '/prerequisites/Parmetis_aster-403_aster/lib',
