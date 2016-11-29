@@ -80,7 +80,7 @@ TABV2_BC = CREA_TABLE(RESU=_F(RESULTAT=RESU_C2,NOM_CHAM='VARI_ELGA',INST=post_c2
                             GROUP_MA=('CR_B_C', 'TG_B_C')))
 
 TEST_TABLE(
-           VALE_CALC=0.0389466173894,
+           VALE_CALC=0.0394811809985,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -88,7 +88,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0285184565494,
+           VALE_CALC=0.0257448834099,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
@@ -96,7 +96,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0284976972765 ,
+           VALE_CALC=-0.0257448834098 ,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
@@ -104,7 +104,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0389466173894,
+           VALE_CALC=0.0394811809985,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -112,14 +112,14 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0285184565494,
+           VALE_CALC=0.0257448834099,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
            TABLE=TABI2_BA,
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0284976972765,
+           VALE_CALC=-0.0257448834098,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
@@ -127,7 +127,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(CRITERE='ABSOLU',
-           VALE_CALC=5.38839363725E-10,
+           VALE_CALC=7.8148974003E-16,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
@@ -135,7 +135,7 @@ TEST_TABLE(CRITERE='ABSOLU',
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0701346991225,
+           VALE_CALC=0.0714733884011,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -143,7 +143,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0515935438137,
+           VALE_CALC=0.045404946921,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
@@ -151,7 +151,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0299196621598,
+           VALE_CALC=-0.0261408777772,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
@@ -159,7 +159,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.0508354134007,
+           VALE_CALC=0.0495137903225,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DX',
            TYPE_TEST='SOMM',
@@ -167,7 +167,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0140553833601,
+           VALE_CALC=-0.0123210153654,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DY',
            TYPE_TEST='SOMM',
@@ -175,7 +175,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=-0.0133578910066,
+           VALE_CALC=-0.0123886832142,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='DZ',
            TYPE_TEST='SOMM',
@@ -183,7 +183,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00012777517891,
+           VALE_CALC=0.000127937999385,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='V1',
            TYPE_TEST='MAX',
@@ -207,7 +207,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.000175672503408,
+           VALE_CALC=0.000180201984312,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='V1',
            TYPE_TEST='MAX',
@@ -223,7 +223,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00109974931836,
+           VALE_CALC=0.000957716369889,
            TOLE_MACHINE=1.E-3,
            NOM_PARA='V3',
            TYPE_TEST='MAX',

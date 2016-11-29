@@ -449,7 +449,8 @@ class Mac3CoeurCalcul(object):
         comp = [_F(RELATION='MULTIFIBRE',
                                 GROUP_MA=('CRAYON', 'T_GUIDE'),
                                 PARM_THETA=0.5,
-                                DEFORMATION='GROT_GDEP',),
+                                # DEFORMATION='GROT_GDEP',),
+                                DEFORMATION='PETIT',),
                              _F(RELATION='DIS_GRICRA',
                                 GROUP_MA='ELA',),
                              _F(RELATION='DIS_CHOC',
@@ -472,7 +473,8 @@ class Mac3CoeurCalcul(object):
             'COMPORTEMENT': (_F(RELATION='MULTIFIBRE',
                                 GROUP_MA=('CRAYON', 'T_GUIDE'),
                                 PARM_THETA=0.5,
-                                DEFORMATION='GROT_GDEP',),
+                                # DEFORMATION='GROT_GDEP',),
+                                DEFORMATION='PETIT',),
                              _F(RELATION='DIS_GRICRA',
                                 GROUP_MA='ELA',),
                              _F(RELATION='DIS_CHOC',
@@ -618,11 +620,13 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         constant_load = self.archimede_load + \
             self.gravity_load + self.vessel_dilatation_load + \
             self.symetric_cond
+        nbRatio = 9
         # T0 - T8
         if (self.char_init) :
             __RESULT = STAT_NON_LINE(**self.snl(
                                CHAM_MATER=self.cham_mater_free,
                                INCREMENT=_F(LIST_INST=self.times,
+                                            INST_INIT=0.,
                                             INST_FIN=coeur.temps_simu['T5']),
                                COMPORTEMENT=self.char_ini_comp,
                                EXCIT=constant_load + self.vessel_head_load + \
@@ -680,7 +684,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 ETAT_INIT=self.etat_init,
                                ))
             nb_test = 0
-            while nb_test < 5 :
+            while nb_test < nbRatio :
                 try :
                     nb = len(keywords)
                     __res_int = [None]*nb
@@ -751,7 +755,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                 ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                ))
             nb_test = 0
-            while nb_test < 7 :
+            while nb_test < nbRatio :
                 try :
                     nb = len(keywords)
                     __res_int = [None]*nb
@@ -1005,6 +1009,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                 keywords.append(self.snl(CHAM_MATER=mater[-1],
                                 INCREMENT=_F(LIST_INST=self.times_woSubd,
                                              INST_FIN=coeur.temps_simu['T0b']),
+                                ETAT_INIT=_F(EVOL_NOLI=__RESULT),
                                 EXCIT=self.rigid_load + self.archimede_load +
                                 self.vessel_head_load +
                                 self.vessel_dilatation_load +

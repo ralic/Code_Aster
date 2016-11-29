@@ -49,7 +49,7 @@ ZERO = DEFI_CONSTANTE(VALE=0.0);
 
 UN   = DEFI_CONSTANTE(VALE=1.0);
 
-tmax = 1.
+tmax = .5
 
 
 compor='GRAN_IRRA_LOG'
@@ -94,11 +94,11 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.,
                       );
 
 TIMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='TEMP',
-                   VALE=(  0. , T0, 1. , Tmax)
+                   VALE=(  0. , T0, .5, Tmax, 1. , Tmax)
                    )
 
 FLU_IMP=DEFI_FONCTION(NOM_PARA='INST',  NOM_RESU='IRRA',
-                      VALE=(  0. , 0., 1. , 2.)
+                      VALE=(  0. , 0., .5, 0., 1. , 2.)
                       )
 
 U=SIMU_POINT_MAT(COMPORTEMENT=_F(RELATION=compor,),
@@ -134,9 +134,15 @@ for i in range(NCAL):
 
           time = timem + tmax/NCAL
 
-          Ti = T0 + time/tmax * (Tmax - T0)
+          if time < .5 :
+            Ti = T0 + time/tmax * (Tmax - T0)
+          else :
+            Ti = Tmax
 
-          Tm = T0 + timem/tmax * (Tmax - T0)
+          if timem <= .5 : 
+            Tm = T0 + timem/tmax * (Tmax - T0)
+          else :
+            Tm = Tmax
 
           # deformation mecanique imposee correspondant a la deformation thermique du premier calcul
 

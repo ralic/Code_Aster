@@ -1,4 +1,3 @@
-
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
@@ -45,7 +44,7 @@ TAB2_BB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1D,NOM_CHAM='DEPL',INST=33.008,NOM_C
                             GROUP_MA=('TG_B_B')))
 
 
-TEST_TABLE(VALE_CALC= 0.00142092725598,
+TEST_TABLE(VALE_CALC=0.00126644535457,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB2_BB,

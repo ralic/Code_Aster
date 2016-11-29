@@ -509,6 +509,11 @@ class Coeur(object):
         DICCR["PREF_MAILLE"]='M'
         LISCR2=[]
         LISCR2.append(DICCR)
+        DICCR={}
+        DICCR["GROUP_MA"]='ELA'
+        DICCR["NOM"]='ELAP'
+        DICCR["PREF_MAILLE"]='M'
+        LISCR2.append(DICCR)
 
         _MA=CREA_MAILLAGE(MAILLAGE=_MA1,
                       INFO=2,
@@ -658,7 +663,7 @@ class Coeur(object):
             return _LI
         else :
             _TE = DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=_LI,),
-                             ECHEC=_F(SUBD_PAS=2, SUBD_NIVEAU=nbSubdEchec,),)
+                             ECHEC=_F(SUBD_PAS=4, SUBD_NIVEAU=nbSubdEchec,),)
             return _TE
 
     def init_temps_simu(self, fluence, subdivis):
@@ -677,7 +682,7 @@ class Coeur(object):
         self.temps_simu['T8b'] = self.temps_simu['T8'] + Dt / 2
         self.temps_simu['T9'] = self.temps_simu['T8'] + Dt
 
-        self.sub_temps_simu['N0'] = 1
+        self.sub_temps_simu['N0'] = 4
         self.sub_temps_simu['N0b'] = 1
         self.sub_temps_simu['N1'] = 2 * subdivis
         self.sub_temps_simu['N2'] = 2
@@ -821,8 +826,8 @@ class Coeur(object):
             TYPE_RESU='EVOL_VARC', NOM_CHAM='IRRA', OPERATION='AFFE',
             AFFE=(
                 _F(CHAM_GD=_RES_M, INST=-1, PRECISION=1.E-6),
-                _F(CHAM_GD=_RES_0, INST=self.temps_simu[
-                   'T0'], PRECISION=1.E-6),
+                _F(CHAM_GD=_RES_M, INST=-0.75, PRECISION=1.E-6),
+                _F(CHAM_GD=_RES_0, INST=-0.25, PRECISION=1.E-6),
                 _F(CHAM_GD=_RES_0, INST=self.temps_simu[
                    'T4'], PRECISION=1.E-6),
                 _F(CHAM_GD=_RES_1, INST=self.temps_simu[
@@ -941,6 +946,9 @@ class Coeur(object):
             TYPE_RESU='EVOL_THER', NOM_CHAM='TEMP', OPERATION='AFFE',
             AFFE=(
                 _F(CHAM_GD=_CHTEM11, INST=-1, PRECISION=1.E-6),
+                _F(CHAM_GD=_CHTEM41, INST=-0.75, PRECISION=1.E-6),
+                _F(CHAM_GD=_CHTEM41, INST=-0.25, PRECISION=1.E-6),
+                _F(CHAM_GD=_CHTEM11, INST=0., PRECISION=1.E-6),
                 _F(CHAM_GD=_CHTEM11, INST=self.temps_simu[
                    'T1'], PRECISION=1.E-6),
                 _F(CHAM_GD=_CHTEM21, INST=self.temps_simu[
