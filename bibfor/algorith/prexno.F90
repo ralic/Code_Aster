@@ -13,6 +13,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -24,7 +25,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
     character(len=*) :: champ
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -162,6 +163,7 @@ subroutine prexno(champ, ioc, nomax, cmpmax, valmax,&
 !
 100  end do
 !
+    if (inomax .eq. 0) call utmess('F', 'POSTRELE_18')
     call jenuno(jexnum(ma//'.NOMNOE', inomax), nomax)
     call jenuno(jexnum(ma//'.NOMNOE', inomin), nomin)
     call jenuno(jexnum(ma//'.NOMNOE', inamax), noamax)

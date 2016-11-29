@@ -29,7 +29,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
     character(len=*) :: champ
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -186,6 +186,8 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax,&
 110      continue
 100  end do
 !
+    if (imamax .eq. 0) call utmess('F', 'POSTRELE_19')
+    
     call jenuno(jexnum(ma//'.NOMMAI', imamax), mamax)
     call jenuno(jexnum(ma//'.NOMMAI', imamin), mamin)
     call jenuno(jexnum(ma//'.NOMNOE', iptmax), nomax)

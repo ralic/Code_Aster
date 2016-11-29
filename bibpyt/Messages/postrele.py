@@ -90,12 +90,15 @@ Contactez le support technique.
  on ne traite que des champs de type "DEPL_R" pour un changement de repère
 """),
 
- 
+    18 : _(u"""
+Le champ d'intérêt n'a de valeurs pour aucun des noeuds renseignés.
+Vérifiez qu'ils appartiennent au modèle.
+"""),
 
-
-
-
-
+    19 : _(u"""
+Le champ d'intérêt n'a de valeurs pour aucune des mailles renseignées.
+Vérifiez qu'elles appartiennent au modèle.
+"""),
 
     20 : _(u"""
  on ne traite pas ce cas

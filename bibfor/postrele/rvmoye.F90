@@ -1,7 +1,7 @@
 subroutine rvmoye(nomres, iocc)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -147,7 +147,7 @@ subroutine rvmoye(nomres, iocc)
             call jeveuo(nomjv, 'L', jaces)
             do iac = 1, nbacc
                 call rsadpa(resu, 'L', 1, zk16(jaces-1+iac), iord,&
-                            1, sjv=iadr, styp=ctype)
+                            1, sjv=iadr, styp=ctype, istop=0)
                 call tbexip(nomres, zk16(jaces-1+iac), exist, typpar)
                 if (.not. exist) then
                     call tbajpa(nomres, 1, zk16(jaces-1+iac), ctype)
