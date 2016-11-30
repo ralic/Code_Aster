@@ -82,13 +82,13 @@ subroutine ratg2d(stress, strain, rprops, dsidep, ii, jj, mm, &
     common / debug / epflag
 !
 !     if (epflag) then
-!         write(6,'(A)')'!'
-!         write(6,'(A)')'!-----------------------------------------!'
-!         write(6,'(A)')'!                                         !'
-!         write(6,'(A)')'!              ENTER RATG2D               !'
-!         write(6,'(A)')'!                                         !'
-!         write(6,'(A)')'!-----------------------------------------!'
-!         write(6,'(A)')'!'
+!        write(6,'(A)')'!'
+!        write(6,'(A)')'!-----------------------------------------!'
+!        write(6,'(A)')'!                                         !'
+!        write(6,'(A)')'!              ENTER RATG2D               !'
+!        write(6,'(A)')'!                                         !'
+!        write(6,'(A)')'!-----------------------------------------!'
+!        write(6,'(A)')'!'
 !         write(6,'(2(A,E12.5))')'! * EDGE =',edge,'  APEX =',apex
 !         write(6,'(A)')'!'
 !     endif

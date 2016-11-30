@@ -1,0 +1,406 @@
+# Subroutines
+# ------------------------------------------------------------------------------  
+def rankine_traction(YOUNG,POISSON,SIGMA_T,SIG0,epsizz_max,N_pas=100,):
+  """
+  Auteur :: Marc Kham
+  Date   :: 2 novembre 2016
+  
+  INPUT:
+  ------
+  * SIG0       :: Contrainte initiale (<0. en compression)
+  * SIGMA_T    :: Limite de traction (>0.)
+  * epsizz_max :: deformation axiale maximale (>0.)
+  """
+
+  from numpy import array
+  
+  K  =YOUNG/3./(1.-2.*POISSON)
+  G  =YOUNG/2./(1.+POISSON)
+  A  =K+4./3.*G
+  B  =K-2./3.*G
+  C  =2.*(K+G/3.)
+  
+  depzz    = epsizz_max/N_pas
+  epzz     = [depzz*i for i in range(1,N_pas)]
+  sixx     = [SIG0]
+  sizz     = [SIG0]
+  epxx     = [0.]
+  epxx_ela = [0.]
+  epsvp    = [0.]
+  epsdp    = [0.]
+  
+  for i,e in enumerate(epzz):
+  
+    # increment de deformation laterale totale
+    #
+    depxx = (SIG0-sixx[i]-B*depzz) /C
+  
+    # prediction elastique de l'increment de contrainte axiale
+    #
+    dsixx = B*depzz + C*depxx
+    sixx_pred = sixx[i] + dsixx
+    # donne dsixx = 0. et sixx_pred=SIG0
+    
+    dsizz = A*depzz + 2.*B*depxx
+    sizz_pred = sizz[i] + dsizz
+  
+    residu = sizz_pred-SIGMA_T
+    
+    dlambda= max(residu,0.)/A
+    
+    depsvp = dlambda
+    
+    depsdp = 2./3.*dlambda
+    
+    depxx_ela = depxx + B*dlambda /C
+    
+    sixx.append(sixx[i]+dsixx-B*dlambda)
+    
+    sizz.append(sizz[i]+dsizz-A*dlambda)
+    
+    epxx.append(epxx[i]+depxx)
+    
+    epxx_ela.append(epxx_ela[i]+depxx_ela)
+    
+    epsvp.append(epsvp[i]+depsvp)
+    
+    epsdp.append(epsdp[i]+depsdp)
+    
+  return sixx,sizz,epxx_ela,epxx,epsvp,epsdp
+
+def Defi_Xmcourbe(X=None,Y=None,FUNCTION=None,courbe=None,legend='X',color=0,mark=0,):
+
+  if FUNCTION:
+    def_co={'FONCTION': FUNCTION}
+  else:
+    def_co={'ABSCISSE': X}
+    def_co['ORDONNEE'] = Y
+    
+  def_co['LEGENDE' ] = legend
+  def_co['COULEUR' ] = color
+  def_co['MARQUEUR'] = mark
+  
+  try:
+    courbe.append(def_co);
+  except:
+    courbe=[def_co,];
+      
+  return courbe;
+# Fin
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+#***********************************************************************
+#
+# TITRE: ESSAI DE TRACTION AVEC LA LOI DE RANKINE
+#
+#***********************************************************************
+
+# ======================================================================
+DEBUT(CODE   =_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='NON');
+
+#***********************************************************************
+#
+#    MAILLAGE ET MODELE
+#
+#***********************************************************************
+
+MAILLAGE=LIRE_MAILLAGE(FORMAT='MED',);
+
+MODELE=AFFE_MODELE(MAILLAGE=MAILLAGE,
+                   AFFE=_F(TOUT         = 'OUI',
+                           PHENOMENE    = 'MECANIQUE',
+                           MODELISATION = 'AXIS',),);
+
+MAILLAGE=MODI_MAILLAGE(reuse =MAILLAGE,
+                       MAILLAGE=MAILLAGE,
+                       ORIE_PEAU_2D=_F(GROUP_MA=('DROIT','GAUCHE',
+                                                 'BAS','HAUT'),),
+                       INFO=1,);
+
+#***********************************************************************
+#
+#    LISTE D'INSTANTS
+#
+#***********************************************************************
+
+tarret    =10.
+tfin      =20.
+npas      =30
+temps_max =30.
+
+dtemps    =temps_max/npas
+
+ltemps    =[dtemps*i for i in range(npas+1)]
+
+TEMPS=DEFI_LIST_REEL(DEBUT=0.,
+                     INTERVALLE=(_F(JUSQU_A =tarret   , NOMBRE =2,),
+                                 _F(JUSQU_A =temps_max, NOMBRE =npas,),),);
+                                 
+#***********************************************************************
+#
+#    DONNEES MATERIAU
+#
+#***********************************************************************
+
+# modules mecaniques [kPa]
+# ------------------------
+# K=516.2E6
+# G=238.2E6
+# # =>
+# YOUNG = 9.*K*G /(3.*K+G)
+# POISSON = (3.*K-2.*G) /(6.*K+2.*G)
+
+YOUNG   = 1e+6
+POISSON = 0.25
+SIGMA_T = 1.E+3
+K       = YOUNG/3./(1.-2.*POISSON)
+G       = YOUNG/2./(1.+POISSON)
+
+print 'young =',YOUNG,' /// nu    =',POISSON
+print 'g_modu=',G,'     /// k_modu=',K
+
+SOL=DEFI_MATERIAU(ELAS   =_F(E =YOUNG, NU =POISSON,),
+                  RANKINE=_F(SIGMA_T = SIGMA_T,),
+                  INFO   =1,);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL,),);
+
+
+#***********************************************************************
+#
+#    CHARGEMENTS
+#
+#***********************************************************************
+
+# pression de preconsolidation [en kPa]
+P0  =10.E+3
+EPZZ=.03
+
+npas   =300
+dtemps =temps_max/npas
+linst  =[dtemps*i for i in range(npas)]
+
+sixx,sizz,epxx_ela,epxx,epsvp,epsdp = \
+    rankine_traction(YOUNG,POISSON,SIGMA_T,-P0,EPZZ,npas)
+
+SIGLAT=AFFE_CHAR_MECA(MODELE=MODELE,
+                       PRES_REP=_F(GROUP_MA=('DROIT',),
+                                   PRES    =P0,),);
+                
+DEPHAUT=AFFE_CHAR_MECA(MODELE=MODELE,
+                DDL_IMPO=(_F(GROUP_MA=('HAUT',), DY=1.,),),);
+
+DEPL_1=AFFE_CHAR_CINE(MODELE=MODELE,
+                MECA_IMPO=(_F(GROUP_MA='BAS',   DY = 0.,),),);
+                     
+COEF2=DEFI_FONCTION(NOM_PARA='INST',
+                    PROL_DROITE='CONSTANT',
+                    VALE=(  0., 0.,
+                     temps_max, EPZZ,),);
+                     
+#***********************************************************************
+#
+#    PRECONSOLIDATION INITIALE A 10KPA
+#
+#***********************************************************************
+
+SIG0=CREA_CHAMP(INFO=2,
+                TYPE_CHAM='ELGA_SIEF_R',
+                OPERATION='AFFE',
+                MODELE   =MODELE,
+                PROL_ZERO='OUI',
+                AFFE=_F(GROUP_MA='BLOC',
+                        NOM_CMP=('SIXX','SIYY','SIZZ'),
+                        VALE=(-P0,-P0,-P0,),),);
+  
+#***********************************************************************
+#
+#    ESSAI TRIAXIAL DRAINE
+#
+#***********************************************************************
+GrMa ='BLOC'
+
+table_suivi_ddl= [_F(NOM_CMP ='SIXX',
+                     NOM_CHAM ='SIEF_ELGA',
+                     EVAL_ELGA='MIN',
+                     EVAL_CHAM='MIN',
+                     GROUP_MA =GrMa,),
+                     
+                  _F(NOM_CMP  ='SIYY',
+                     NOM_CHAM ='SIEF_ELGA',
+                     EVAL_ELGA='MIN',
+                     EVAL_CHAM='MIN',
+                     GROUP_MA =GrMa,),
+                     
+                  _F(NOM_CMP  ='SIZZ',
+                     NOM_CHAM ='SIEF_ELGA',
+                     EVAL_ELGA='MIN',
+                     EVAL_CHAM='MIN',
+                     GROUP_MA =GrMa,),];
+                     
+U1=STAT_NON_LINE(MODELE    =MODELE,
+                 CHAM_MATER=CHMAT,
+                 
+                 EXCIT=(_F(CHARGE = SIGLAT ,),
+                        _F(CHARGE = DEPHAUT, FONC_MULT = COEF2,),
+                        _F(CHARGE = DEPL_1 ,),),
+                        
+                 ETAT_INIT=_F(SIGM=SIG0,),
+                 
+                 COMPORTEMENT=_F(RELATION='RANKINE',),
+                 
+                 NEWTON=_F(MATRICE   = 'TANGENTE',
+                           REAC_ITER =1,),
+                           
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10,
+                                ARRET='NON',),
+                                
+                 ARCHIVAGE =_F(LIST_INST=TEMPS,),
+                 
+                 SOLVEUR=_F(METHODE='MUMPS',NPREC=8,),
+                 
+                 SUIVI_DDL = table_suivi_ddl,
+                 
+                 INCREMENT=_F(LIST_INST=TEMPS,
+                              INST_INIT=0.,
+                              INST_FIN =tfin,),);
+                              
+# ================================================================
+#
+#     TEST_RESU AU POINT C
+#
+# ================================================================
+
+U1=CALC_CHAMP(reuse       =U1,
+              CONTRAINTE  ='SIGM_NOEU',
+              VARI_INTERNE='VARI_NOEU',
+              DEFORMATION ='EPSI_NOEU',
+              RESULTAT    =U1);
+              
+fsizz = RECU_FONCTION(RESULTAT = U1,
+                   NOM_CHAM = 'SIGM_NOEU',
+                   GROUP_MA = 'BLOC',
+                   GROUP_NO = 'C',
+                   NOM_CMP  = 'SIYY',
+                   INFO     = 1,);
+              
+fepxx = RECU_FONCTION(RESULTAT = U1,
+                   NOM_CHAM = 'EPSI_NOEU',
+                   GROUP_MA = 'BLOC',
+                   GROUP_NO = 'C',
+                   NOM_CMP  = 'EPXX');
+              
+fepdp = RECU_FONCTION(RESULTAT = U1,
+                   NOM_CHAM = 'VARI_NOEU',
+                   GROUP_MA = 'BLOC',
+                   GROUP_NO = 'C',
+                   NOM_CMP  = 'V2');
+
+REFSIZZ  =DEFI_FONCTION(NOM_PARA  ='INST',
+                      NOM_RESU   ='SIYY',
+                      ABSCISSE   =linst,
+                      ORDONNEE   =sizz,
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+                      
+REFEPXX  =DEFI_FONCTION(NOM_PARA  ='INST',
+                      NOM_RESU   ='EPXX',
+                      ABSCISSE   =linst,
+                      ORDONNEE   =epxx,
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+                      
+REFEPDP =DEFI_FONCTION(NOM_PARA  ='INST',
+                      NOM_RESU   ='V2',
+                      ABSCISSE   =linst,
+                      ORDONNEE   =epsdp,
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',);
+                      
+refsizz=CALC_FONC_INTERP(FONCTION =REFSIZZ,
+                         NOM_PARA ='INST',
+                         LIST_PARA=TEMPS,);
+
+refepxx=CALC_FONC_INTERP(FONCTION =REFEPXX,
+                         NOM_PARA ='INST',
+                         LIST_PARA=TEMPS,);
+
+refepdp=CALC_FONC_INTERP(FONCTION =REFEPDP,
+                         NOM_PARA ='INST',
+                         LIST_PARA=TEMPS,);
+
+npas   =20
+dtemps =temps_max/npas
+linst  =[dtemps*i for i in range(npas)]
+                      
+DSIZZ = CALC_FONCTION(INFO=2,
+                      COMB=(_F(FONCTION=fsizz,   COEF = 1.),
+                            _F(FONCTION=refsizz, COEF =-1.),),);
+                      
+DEPXX = CALC_FONCTION(INFO=1,
+                      COMB=(_F(FONCTION=fepxx,   COEF = 1.),
+                            _F(FONCTION=refepxx, COEF =-1.),),);
+                      
+DEPDP = CALC_FONCTION(INFO=1,
+                      COMB=(_F(FONCTION=fepdp,   COEF = 1.),
+                            _F(FONCTION=refepdp, COEF =-1.),),);
+
+TABDSIZZ = CREA_TABLE(FONCTION=_F(FONCTION=DSIZZ),);
+
+TABDEPXX = CREA_TABLE(FONCTION=_F(FONCTION=DEPXX),);
+
+TABDEPDP = CREA_TABLE(FONCTION=_F(FONCTION=DEPDP),);
+                        
+TEST_TABLE(NOM_PARA ='SIYY',
+           TABLE    =TABDSIZZ,
+           TYPE_TEST='MAX',
+           VALE_ABS ='OUI',
+           CRITERE  ='ABSOLU',
+           # Valeur calculee (non-regression)
+           VALE_CALC   =9.09494701773E-12,
+           
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.e-8,
+           VALE_REFE=0.,);
+           
+TEST_TABLE(NOM_PARA ='EPXX',
+           TABLE    =TABDEPXX,
+           TYPE_TEST='MAX',
+           VALE_ABS ='OUI',
+           CRITERE  ='ABSOLU',
+           # Valeur calculee (non-regression)
+           VALE_CALC   =3.E-05,
+           
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.e-4,
+           VALE_REFE=0.,);
+           
+TEST_TABLE(NOM_PARA ='V2',
+           TABLE    =TABDEPDP,
+           TYPE_TEST='MAX',
+           VALE_ABS ='OUI',
+           CRITERE  ='ABSOLU',
+           # Valeur calculee (non-regression)
+           VALE_CALC   =1.33333333333E-05,
+           
+           REFERENCE='ANALYTIQUE',
+           PRECISION=1.e-4,
+           VALE_REFE=0.,);
+FIN();
