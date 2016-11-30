@@ -47,6 +47,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     character(len=8) :: nompar(2), fami, poum
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
+    real(kind=8) :: val_non_physique
 !
 !
     call rccoma(imate, comp(1:6), 1, phenom, icodre(1))
@@ -67,6 +68,13 @@ subroutine rcdiff(imate, comp, temp, c, diff)
         call rcvalb(fami, kpg, spt, poum, imate,&
                     ' ', phenom, nbpar, nompar, valpar,&
                     4, nomres, valres, icodre, 1)
+        
+        val_non_physique = max(valres(2)*c , -valres(3) *(1.d&
+               &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
+        if (val_non_physique .gt. 1.d10) then 
+             call utmess('F', 'ALGORITH10_91', sk=phenom, sr = val_non_physique)
+        endif 
+        
         diff = valres(1) * exp(valres(2)*c) *((temp+tz0)/(valres(4)+ tz0)) * exp(-valres(3) *(1.d&
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)) )
 !

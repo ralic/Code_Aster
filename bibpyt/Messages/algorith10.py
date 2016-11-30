@@ -198,6 +198,13 @@ Contactez le support technique.
  pour une loi de couplage de type  %(k1)s
 """),
 
+    91 : _(u"""
+ Loi de séchage %(k1)s : le coefficient de diffusion atteint des valeurs trop élevées %(r1)f. Il se peut que cela soit dû à la stabilité du thêta-schéma qui empêche la convergence du calcul non linéaire. 
+ Conseils :
+ - Branchez REAC_ITER >=1 (actualisation fréquente de la matrice tangente);
+ - Changez la valeur de PARM_THETA dans THER_NON_LINE tout en raffinant le pas de temps. 
+"""),
+
 
     93 : _(u"""
  il faut un nom de champ
