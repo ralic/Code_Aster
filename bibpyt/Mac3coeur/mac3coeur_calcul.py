@@ -934,6 +934,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
         _snl_lame = STAT_NON_LINE(**self.snl(
                                   INCREMENT=_F(LIST_INST=self.times,
+                                               INST_INIT=0.,
                                                INST_FIN=coeur.temps_simu[
                                                    'T1']),
                                   ARCHIVAGE=_F(INST=coeur.temps_simu['T1']),

@@ -54,7 +54,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00292769527301,
+           VALE_CALC=0.00292110125153,
            NOM_PARA='DY',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -69,20 +69,18 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00293843804115,
+           VALE_CALC=0.00294487117433,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB,
            )
-
-
 TAB2 = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=0.004,NOM_CMP=('DX','DY','DZ'),
                          GROUP_NO=('P_CUV','FIX'),))
 
 #IMPR_TABLE(TABLE=TAB2)
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.023437033514875,
+           VALE_CALC=-0.0234370335149,
            VALE_REFE=-0.023437034,
            NOM_PARA='DX',
            TABLE=TAB2,
@@ -91,7 +89,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC= 1.0512849914717E-03,
+           VALE_CALC=0.00105128499147,
            VALE_REFE=1.05129E-03,
            NOM_PARA='DY',
            TABLE=TAB2,
@@ -100,7 +98,7 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
            )
 
 TEST_TABLE(REFERENCE='ANALYTIQUE',
-           VALE_CALC=-0.023389403207481,
+           VALE_CALC=-0.0233894032075,
            VALE_REFE=-0.0233894,
            NOM_PARA='DX',
            TABLE=TAB2,

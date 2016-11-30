@@ -10,9 +10,10 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
+#include "asterfort/assert.h"
     integer :: neq, icodma, nc
-    real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(6)
-    real(kind=8) :: pgl(3, 3), varip(6), fono(neq), klv(78)
+    real(kind=8) :: ulm(neq), dul(neq), sim(neq), sip(neq), varim(7)
+    real(kind=8) :: pgl(3, 3), varip(7), fono(neq), klv(78)
     character(len=*) :: fami
     character(len=16) :: option
 ! ----------------------------------------------------------------------
@@ -63,34 +64,34 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
 !
 !
-    integer :: codre1(4), codre2(2), codre3(1), codre4(5), codre5(5), iret2
-    character(len=8) :: nomre1(4), nomre2(2), nomre3, nomre4(5), nomre5(5)
+    integer :: codre1(4), codre2(2), codre3(1), codre4(7), codre5(7), iret2
+    character(len=8) :: nomre1(4), nomre2(2), nomre3, nomre4(7), nomre5(7)
     character(len=8) :: nompar(2)
 !
     integer :: npg, nno, nbpar
     integer :: iretp, iretm
-    real(kind=8) :: valre1(4), valre2(2), valre3(1), valre4(5), valre5(5)
+    real(kind=8) :: valre1(4), valre2(2), valre3(1), valre4(7), valre5(7)
     real(kind=8) :: valpar(2), irram, irrap
     real(kind=8) :: fno, h1
     real(kind=8) :: dux, duy, dph, dth
     real(kind=8) :: uxm, phm, thm
     real(kind=8) :: kxx, kyy, kzz, kpp, ktt
     real(kind=8) :: fl(12)
-    real(kind=8) :: temp
+    real(kind=8) :: temp,prec
     real(kind=8) :: ktax, muax, etax, knax
     real(kind=8) :: ktrig, dp, pm, rtm, rtp, rte
     real(kind=8) :: sieleq, beta, seuil, rm
-    real(kind=8) :: phipl, ppm, fphi, mophi, dkh, khm
+    real(kind=8) :: phipl, ppm, fphi, mophi, dkh, khm, fphi2
     real(kind=8) :: phitan, thetan, kkk, ecro
-    real(kind=8) :: phic, kphi, thetac, ktheta, ephi
-    real(kind=8) :: dpp, dphipl, seurot, kthet2
+    real(kind=8) :: phic, kphi, thetac, ktheta, ephi, kphi2, phic2, phipl2
+    real(kind=8) :: dpp, dphipl, dphipl2, seurot, seurot2, kthet2
     real(kind=8) :: tempp, tempm, sgne
 !
     data nomre1/'KN_AX','KT_AX','ET_AX','ET_ROT'/
     data nomre2/'F_SER','COUL_AX'/
     data nomre3/'F_SER_FO'/
-    data nomre4/'ANG1','ANG2','PEN1','PEN2','PEN3'/
-    data nomre5/'ANG1_FO','ANG2_FO','PEN1_FO','PEN2_FO','PEN3_FO'/
+    data nomre4/'ANG1','ANG2','PEN1','PEN2','PEN3','ANG3','PEN4'/
+    data nomre5/'ANG1_FO','ANG2_FO','PEN1_FO','PEN2_FO','PEN3_FO','ANG3_FO','PEN4_FO'/
 !
 !
 !
@@ -106,6 +107,8 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !  recuperer les variables internes  (moins)
 !  recuperer les parametres de defi_materiau
 !
+    prec = 0.000001d0
+
     call r8inir(neq, 0.d0, fl, 1)
 !
 ! recuperation des donnees materiau pour le discret
@@ -124,6 +127,7 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
     call rcvarc(' ', 'IRRA', '+', 'RIGI', 1,&
                 1, irrap, iret2)
     if (iret2 .gt. 0) irrap=0.d0
+    ASSERT((irrap-irram).gt.-prec)
     irrap = irrap - irram + varim(6)
 !
     call rcvalb(fami, 1, 1, '+', icodma,&
@@ -160,14 +164,16 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
 !
     call rcvalb(fami, 1, 1, '+', icodma,&
                 ' ', 'DIS_GRICRA', 0, ' ', [0.d0],&
-                5, nomre4, valre4, codre4, 0)
+                7, nomre4, valre4, codre4, 0)
 !
     if (codre4(1) .eq. 0) then
         phic=valre4(1)
         thetac=valre4(2)
-        ktheta=valre4(4)/2.d0
-        kphi=valre4(3)/2.d0-ktheta
-        kthet2=valre4(5)/2.d0
+        ktheta=valre4(4)/2.d0-valre4(5)/2.d0+valre4(7)/2.d0
+        kphi=valre4(3)/2.d0-valre4(4)/2.d0
+        kthet2=valre4(7)/2.d0
+        phic2=valre4(6)
+        kphi2=valre4(5)/2.d0-valre4(7)/2.d0
     else
         call moytem(fami, npg, 1, '+', tempp,&
                     iretp)
@@ -184,12 +190,14 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
         valpar(1)=temp
         call rcvalb(fami, 1, 1, '+', icodma,&
                     ' ', 'DIS_GRICRA', nbpar, nompar, valpar,&
-                    5, nomre5, valre5, codre5, 0)
+                    7, nomre5, valre5, codre5, 0)
         phic=valre5(1)
         thetac=valre5(2)
-        ktheta=valre5(4)/2.d0
-        kphi=valre5(3)/2.d0-ktheta
-        kthet2=valre5(5)/2.d0
+        ktheta=valre5(4)/2.d0-valre5(5)/2.d0+valre5(7)/2.d0
+        kphi=valre5(3)/2.d0-valre5(4)/2.d0
+        kthet2=valre5(7)/2.d0
+        phic2=valre5(6)
+        kphi2=valre5(5)/2.d0-valre5(7)/2.d0
     endif
     ephi=valre1(4)*kphi
 !
@@ -315,6 +323,21 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
             mophi=kphi*(phm+dph-phipl-dphipl)
             phitan=ephi
         endif
+
+        phipl2=varim(7)
+        fphi2 = phm+dph-phipl2
+        seurot2=abs(fphi2)-phic2
+        if (seurot2.lt.0.d0) then
+            mophi=mophi+kphi2*fphi2
+            varip(7)=varim(7)
+            phitan=phitan+kphi2
+        else
+            sgne = (fphi2)/abs(fphi2)
+            dphipl2 = -sgne*(phic2-abs(phm+dph-phipl2))
+            varip(7) = varim(7)+dphipl2
+            mophi = mophi+kphi2*(phm+dph-phipl2-dphipl2)
+        endif
+
 !
         sip(4)=mophi
         sip(4+nc)=mophi
@@ -342,8 +365,8 @@ subroutine dicrgr(fami, option, neq, nc, icodma,&
             kxx=knax
             kyy=ktax
             kzz=0.d0
-            kpp=kphi
-            kkk=kphi
+            kpp=kphi+kphi2
+            kkk=kphi+kphi2
             ktt=ktheta
         else
             kxx=knax

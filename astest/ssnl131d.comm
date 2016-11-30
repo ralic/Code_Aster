@@ -102,8 +102,10 @@ CHIRRA=CREA_RESU(
 K1=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='1000.');
 K2=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='250.');
 K3=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='71.5');
+K4=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='10');
 A1=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='0.001/(1.+IRRA)');
 A2=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='0.003/(1.+IRRA)');
+A3=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='0.005/(1.+IRRA)');
 FOR=FORMULE(NOM_PARA=('TEMP','IRRA'),VALE='20.*(1.-0.2*(TEMP-20)/300.)');
 
 CHART=AFFE_CHAR_MECA(MODELE=MO,
@@ -169,8 +171,8 @@ NEUT_VI = CREA_CHAMP(MODELE    = MO,
                      PROL_ZERO = 'OUI',
                      TYPE_CHAM = 'ELGA_NEUT_R',
                      AFFE = (_F(GROUP_MA = 'LI1',
-                                NOM_CMP  = 'X1',
-                                VALE     =  1.0,),),);
+                                NOM_CMP  = ('X1','X2'),
+                                VALE     =  (1.0,0.)),),);
 
 
 VARI_V6 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
@@ -179,8 +181,8 @@ VARI_V6 = CREA_CHAMP(TYPE_CHAM = 'ELGA_VARI_R',
                      PROL_ZERO = 'OUI',
                      ASSE      = _F( GROUP_MA     = 'LI1',
                                      CHAM_GD      =  NEUT_VI,
-                                     NOM_CMP      = ('X1',),
-                                     NOM_CMP_RESU = ('V6',),),);
+                                     NOM_CMP      = ('X1','X2'),
+                                     NOM_CMP_RESU = ('V6','V7'),),);
 
 RESG=STAT_NON_LINE(MODELE=MO,
                    CHAM_MATER=CHMATG,
@@ -267,7 +269,7 @@ TEST_RESU(RESU=(_F(INST=0.050000000000000003,
                    NOM_CHAM='FORC_NODA',
                    NOEUD='N2',
                    NOM_CMP='DRX',
-                   VALE_CALC=0.750000075,
+                   VALE_CALC=0.7500000375,
                    TOLE_MACHINE=1.E-3,
                    ),
                 _F(INST=1.0,
@@ -283,7 +285,7 @@ TEST_RESU(RESU=(_F(INST=0.050000000000000003,
                    NOM_CHAM='FORC_NODA',
                    NOEUD='N2',
                    NOM_CMP='DRX',
-                   VALE_CALC=1.3577507125,
+                   VALE_CALC=0.896500675,
                    TOLE_MACHINE=1.E-3,
                    ),
                 ),
