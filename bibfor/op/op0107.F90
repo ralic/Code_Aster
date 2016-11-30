@@ -77,13 +77,13 @@ subroutine op0107()
 !
     call getfac('CHAR_LIMITE', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele, mate)
         call pechli(resu, modele, mate)
     endif
 !
     call getfac('AIRE_INTERNE', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele)
         call peaire(resu, modele, nbocc)
     endif
 !
@@ -137,7 +137,7 @@ subroutine op0107()
 !
     call getfac('INTEGRALE', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele)
         call peeint(resu, modele, nbocc)
     endif
 !
@@ -149,14 +149,14 @@ subroutine op0107()
             call getvid('NORME', 'MODELE', iocc=1, scal=modele, nbret=n2)
         else
             call getvid('NORME', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
-            call medomp(resuco, modele, mate, carele, nh)
+            call medomp(resuco, modele)
         endif
         call penorm(resu, modele)
     endif
 !
     call getfac('VOLUMOGRAMME', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele, carele=carele)
         call pevolu(resu, modele, carele, nbocc)
     endif
 !
@@ -167,7 +167,7 @@ subroutine op0107()
             call getvid('MINMAX', 'MODELE', iocc=1, scal=modele, nbret=n2)
         else
             call getvid('MINMAX', 'RESULTAT', iocc=1, scal=resuco, nbret=nr)
-            call medomp(resuco, modele, mate, carele, nh)
+            call medomp(resuco, modele)
         endif
         call pemima(n1, chdef, resu, modele, nbocc)
     endif
@@ -181,19 +181,19 @@ subroutine op0107()
 !
     call getfac('RICE_TRACEY', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele, carele=carele, nh=nh)
         call peritr(resu, modele, carele, nh, nbocc)
     endif
 !
     call getfac('CARA_GEOM', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele)
         call pecage(resu, modele, nbocc)
     endif
 !
     call getfac('CARA_POUTRE', nbocc)
     if (nbocc .ne. 0) then
-        call medomp(resuco, modele, mate, carele, nh)
+        call medomp(resuco, modele, carele=carele, nh=nh)
         call pecapo(resu, modele, carele, nh)
     endif
 !

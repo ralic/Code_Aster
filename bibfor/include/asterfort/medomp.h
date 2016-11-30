@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,8 +17,10 @@
 !
 interface
     subroutine medomp(result, modele, mate, carele, nh)
-        character(len=8) :: modele, carele, result
-        character(len=24) :: mate
-        integer :: nh
+        character(len=8), intent(in) :: result
+        character(len=8), intent(out) :: modele
+        character(len=24), optional, intent(out) :: mate
+        character(len=8), optional, intent(out) :: carele
+        integer, optional, intent(out) ::  nh
     end subroutine medomp
 end interface

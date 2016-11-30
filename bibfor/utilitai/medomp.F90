@@ -38,9 +38,11 @@ implicit none
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
-    character(len=8) :: modele, carele, result
-    character(len=24) :: mate
-    integer :: nh
+    character(len=8), intent(in) :: result
+    character(len=8), intent(out) :: modele
+    character(len=24), optional, intent(out) :: mate
+    character(len=8), optional, intent(out) :: carele
+    integer, optional, intent(out) ::  nh
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,7 +65,7 @@ implicit none
     integer :: nbordr, numord, inuord, numlu
     integer :: n1, n2, n3
     real(kind=8) :: prec
-    character(len=8) :: materi
+    character(len=8) :: materi, carel
     character(len=16) :: repons
     character(len=19) :: knum
     character(len=8) :: crit
@@ -78,12 +80,10 @@ implicit none
 ! --- INITIALISATIONS
 !
     materi = ' '
+    carel = ' '
     modele = ' '
-    carele = ' '
-    mate = ' '
     nbordr = 0
     numord = 0
-    nh = 0
 !
     if (result(1:1) .eq. ' ') then
 !
@@ -100,16 +100,20 @@ implicit none
 !
 ! ----- RECUPERATION DU CARA_ELEM DANS LA COMMANDE
 !
-        call getvid(' ', 'CARA_ELEM', scal=carele, nbret=n2)
-        if ((n2.eq.0) .and. lrdm) then
-            call utmess('A', 'CALCULEL3_39')
+        if (present(carele)) then
+            call getvid(' ', 'CARA_ELEM', scal=carel, nbret=n2)
+            if ((n2.eq.0) .and. lrdm) then
+                call utmess('A', 'CALCULEL3_39')
+            endif
         endif
 !
 ! ----- RECUPERATION DU CHAM_MATER DANS LA COMMANDE
 !
-        call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
-        if ((n3.eq.0) .and. lmater) then
-            call utmess('A', 'CALCULEL3_40')
+        if (present(mate)) then
+            call getvid(' ', 'CHAM_MATER', scal=materi, nbret=n3)
+            if ((n3.eq.0) .and. lmater) then
+                call utmess('A', 'CALCULEL3_40')
+            endif
         endif
 !
     else
@@ -142,19 +146,31 @@ implicit none
 !
 ! ----- RECUPERATION MODELE, MATERIAU ET CARA_ELEM DANS LA SD RESULTAT
 !
-        call rslesd(result, numlu, modele, materi, carele)
+        call rslesd(result, numlu, modele, materi, carel)
 !
     endif
 !
 ! --- CODAGE DU MATERIAU
 !
-    if (materi .ne. ' ') call rcmfmc(materi, mate)
+    if (present(mate)) then
+        mate = ' '
+        if (materi .ne. ' ') call rcmfmc(materi, mate)
+    endif
+!
+! --- CARA_ELEM SI NECESSAIRE
+!
+    if (present(carele)) then
+        carele = carel
+    endif
 !
 ! --- MODE FOURIER SI NECESSAIRE
 !
-    lfour = getexm(' ','MODE_FOURIER')
-    if (lfour .eq. 1) then
-        call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n1)
+    if (present(nh)) then
+        nh = 0
+        lfour = getexm(' ','MODE_FOURIER')
+        if (lfour .eq. 1) then
+            call getvis(' ', 'MODE_FOURIER', scal=nh, nbret=n1)
+        endif
     endif
 !
     call jedema()
