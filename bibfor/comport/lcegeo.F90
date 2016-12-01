@@ -3,7 +3,7 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
                   deplm, ddepl, elgeom)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,6 +120,9 @@ subroutine lcegeo(nno, npg, ipoids, ivf, idfde,&
             else
                 lc = rac2 * surfac ** 0.5d0
             endif
+!
+           elseif(typmod(1)(1:6).eq.'C_PLAN') then
+                call utmess('F', 'COMPOR5_51')
 !
         else
             ASSERT(.false.)
