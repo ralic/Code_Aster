@@ -28,7 +28,7 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
     character(len=16) :: typres
     character(len=*) :: resuk(*)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -236,9 +236,6 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur,&
         do 125 i = 1, nbpark
             j=1+(i-1)*mxresf
             k24b=resuk(j)
-            if (k24b .ne. resuk(j+1)) then
-                ASSERT(.false.)
-            endif
             call vecink(nconvg, k24b, resuk(j))
 125     continue
 !       ----------------------------------------------------------------
