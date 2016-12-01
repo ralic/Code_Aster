@@ -106,11 +106,18 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
                      VALE=4.0,),
            )
 
-TB4=CREA_TABLE(LISTE=(_F(LISTE_K=('UN','JOUR'),
+TB4=CREA_TABLE(LISTE=(_F(LISTE_K=('UN','UNE'),
                          PARA='L1'),
-                      _F(LISTE_K=('UNE','NUIT'),
+                      _F(LISTE_K=('JOUR','NUIT'),
                          PARA='L2')));
-
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC_K='NUIT',
+           VALE_REFE_K='NUIT',
+           NOM_PARA='L2',
+           TABLE=TB4,
+           FILTRE=_F(NOM_PARA='L1',
+                     VALE_K='UNE',),
+           )
 
 TB5=CREA_TABLE(LISTE=(_F(LISTE_K=('UNE','NUIT'),
                          PARA='L2'),
