@@ -14,27 +14,27 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# MODELISATION : 3D
-# MAILLE       : HEXA8
+#
+# DATE   : 05/12/2014
+# AUTEUR : Francis LEBOUVIER (DeltaCAD)
+# 
+# MODELISATION : C_PLAN
+# MAILLE       : QUAD4
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-mail=LIRE_MAILLAGE(FORMAT='MED');
+mail=LIRE_MAILLAGE(FORMAT='MED',INFO=2);
+
 
 mail=MODI_MAILLAGE(reuse =mail,
                    MAILLAGE=mail,
-                   ORIE_PEAU_3D=_F(GROUP_MA=('Haut_Contact','Bas_Contact',),),);
+                   ORIE_PEAU_2D=_F(GROUP_MA=('Haut_Contact','Bas_Contact',),),);
 
-mail=DEFI_GROUP(reuse =mail,
-              MAILLAGE=mail,
-              CREA_GROUP_NO=(_F(GROUP_MA='Haut_Encastre'),
-                             _F(GROUP_MA='Bas_Encastre'),))
-                               
 modele=AFFE_MODELE(MAILLAGE=mail,
                    AFFE=_F(TOUT='OUI',
                            PHENOMENE='MECANIQUE',
-                           MODELISATION=('3D',),),);
+                           MODELISATION=('C_PLAN',),),);
 
 acier=DEFI_MATERIAU(ELAS=_F(E=200e9,
                             NU=0,
@@ -45,15 +45,14 @@ affe_mat=AFFE_MATERIAU(MAILLAGE=mail,
                                MATER=acier,),);
 
 clim=AFFE_CHAR_MECA(MODELE=modele,
-                    DDL_IMPO=_F(GROUP_MA=('Haut_Encastre','Bas_Encastre',),
+                    DDL_IMPO=_F(GROUP_MA=('Encastrement',),
                                 DX=0,
-                                DY=0,
-                                DZ=0,),);
+                                DY=0,),);
 
 
 force=AFFE_CHAR_MECA(MODELE=modele,
-                     FORCE_ARETE=_F(GROUP_MA='Haut_Pression',
-                                    FY=-1.e7,),);
+                     FORCE_NODALE=_F(GROUP_NO='Force',
+                                  FY=-1.e7,),);
 
 #contact = NEWTON_GENERALISE
 contact=DEFI_CONTACT(MODELE=modele,
@@ -66,7 +65,7 @@ contact=DEFI_CONTACT(MODELE=modele,
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
                              COEF_FROT=1.E7,COEF_CONT=1.E9,
-                             SANS_NOEUD = ('N11','N12'), 
+                             SANS_NOEUD = ('N6'), 
                              COULOMB=0.2),);
 
 #contact2 = NEWTON_PARTIEL
@@ -80,8 +79,8 @@ contact2=DEFI_CONTACT(MODELE=modele,
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
                              COEF_FROT=1.E7,COEF_CONT=1.E9,
-                             SANS_NOEUD = ('N11','N12'),  
-                             COULOMB=0.2),);
+                             SANS_NOEUD = ('N6'), 
+                             COULOMB=0.2),  );
 
 #contact3 = PENALISE+NEWTON_PARTIEL
 contact3=DEFI_CONTACT(MODELE=modele,
@@ -90,14 +89,13 @@ contact3=DEFI_CONTACT(MODELE=modele,
                      ALGO_RESO_GEOM='POINT_FIXE',
                      ALGO_RESO_CONT='NEWTON',
                      ALGO_RESO_FROT='NEWTON',
-                     REAC_GEOM = 'CONTROLE',NB_ITER_GEOM = 4, 
                      ZONE=_F(ALGO_CONT='PENALISATION',ALGO_FROT='PENALISATION',
                              GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
-                             COEF_PENA_FROT=1.E2,COEF_PENA_CONT=1.E3,
-                             SANS_NOEUD = ('N11','N12'), 
-                             COULOMB=0.2),);
+                             COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
+                             SANS_NOEUD = ('N6'), 
+                             COULOMB=0.2), );
 
 #contact4 = PENALISE+POINT_FIXE
 contact4=DEFI_CONTACT(MODELE=modele,
@@ -111,8 +109,15 @@ contact4=DEFI_CONTACT(MODELE=modele,
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
                              COEF_PENA_FROT=1.E7,COEF_PENA_CONT=1.E9,
-                             SANS_NOEUD = ('N11','N12'), 
+                             SANS_NOEUD = ('N6'), 
                              COULOMB=0.2),);
+
+res=MECA_STATIQUE(MODELE=modele,
+                   CHAM_MATER=affe_mat,
+                   EXCIT=(_F(CHARGE=clim,),
+                          _F(CHARGE=force,),))
+IMPR_RESU(RESU=_F(RESULTAT=res,
+                  NOM_CHAM='DEPL',GROUP_NO='Force',NOM_CMP='DY'),);
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 1.,
                                           0.15, 1.))
@@ -136,44 +141,24 @@ evol1=DYNA_NON_LINE(MODELE=modele,
                    CONTACT=contact,
                    COMPORTEMENT=_F(RELATION='ELAS',),
                    NEWTON=_F(REAC_ITER=1,),
-                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2,),
+                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin1,),
                    CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-4,),
                    SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250,),
                    SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.3, MODI_EQUI='OUI',
                                    FORMULATION='DEPLACEMENT',),);
 
-TEST_RESU(RESU=_F(INST      =  lfin2,
+
+TEST_RESU(RESU=_F(INST      =  lfin1,
                   NOM_CHAM  =  'DEPL',
                   NOM_CMP   =  'DY',
-                  NOEUD     =  'N7',
+                  GROUP_NO  =  'Force',
+                  REFERENCE =  'SOURCE_EXTERNE',
                   RESULTAT  =  evol1,
-                  VALE_CALC = -0.0112465263392,
-                  CRITERE   =  'RELATIF',),)
+                  VALE_CALC = -0.0132050023806,
+                  VALE_REFE = -0.03,
+                  CRITERE   =  'RELATIF',
+                  PRECISION =  60.E-2,),)
 
-#evol3 = PENALISE+NEWTON_PARTIEL
-evol3=DYNA_NON_LINE(MODELE=modele,
-                   CHAM_MATER=affe_mat,
-                   EXCIT=(_F(CHARGE=clim,),
-                          _F(CHARGE=force,
-                             FONC_MULT=rampe),),
-                   CONTACT=contact3,
-                   COMPORTEMENT=_F(RELATION='ELAS',),
-                   NEWTON=_F(MATR_RIGI_SYME='OUI',REAC_ITER=1,),
-                   INCREMENT=_F(LIST_INST=list,INST_FIN=lfin2),
-                   CONVERGENCE =_F(ITER_GLOB_MAXI=30,RESI_GLOB_RELA=1.E-6,),
-                   SOLVEUR=_F(METHODE='MUMPS',PCENT_PIVOT=250),
-                   SCHEMA_TEMPS=_F(SCHEMA='HHT',ALPHA=-0.1, MODI_EQUI='NON',
-                                   FORMULATION='DEPLACEMENT',),);
 
-TEST_RESU(RESU=_F(INST      =  lfin2,
-                                    NOM_CHAM  =  'DEPL',
-                                    NOM_CMP   =  'DY',
-                                    NOEUD     =  'N90',
-                                    RESULTAT  =  evol3,
-                                    REFERENCE =  'AUTRE_ASTER',
-                                    VALE_CALC = -0.00908909037404,
-                                    VALE_REFE = -0.0117338528073,
-                                    PRECISION =  0.3,
-                                    CRITERE   =  'RELATIF'),)
+
 FIN();
-#CHECKSUM:2af6539f8f0ef1542b8f866eb84ee269  -:FIN CHECKSUM

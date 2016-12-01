@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/mminfr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,10 +84,10 @@ implicit none
         coef_frot = mminfr(ds_contact%sdcont_defi,'COEF_AUGM_FROT',zone_index)
         p_sdcont_cyccoe(6*(zone_index-1)+1) = coef_cont
         p_sdcont_cyccoe(6*(zone_index-1)+2) = coef_frot
-        p_sdcont_cyccoe(6*(zone_index-1)+3) = +1.d99
-        p_sdcont_cyccoe(6*(zone_index-1)+4) = -1.d99
-        p_sdcont_cyccoe(6*(zone_index-1)+5) = +1.d99
-        p_sdcont_cyccoe(6*(zone_index-1)+6) = -1.d99
+        p_sdcont_cyccoe(6*(zone_index-1)+3) = +1.d12
+        p_sdcont_cyccoe(6*(zone_index-1)+4) = -1.d12
+        p_sdcont_cyccoe(6*(zone_index-1)+5) = +1.d12
+        p_sdcont_cyccoe(6*(zone_index-1)+6) = -1.d12
         if (lveri) goto 25
 !
 ! ----- Loop on slave elements
