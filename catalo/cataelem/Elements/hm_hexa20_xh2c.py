@@ -487,7 +487,6 @@ class TemplateElement(Element):
                      (SP.PTYPDIS, LC.E1NEUTI), ),
             para_out=((OP.TOPOFA.PAINTER, E340NEUT), (OP.TOPOFA.PBASECO, E612NEUT),
                      (OP.TOPOFA.PCFACE, E180NEUI), (SP.PGESCLA, E204NEUT),
-                     (OP.TOPOFA.PGESCLO, E204NEUT), (SP.PGMAITR, E204NEUT),
                      (OP.TOPOFA.PHEAVFA, E60NEUI), (OP.TOPOFA.PLONGCO, LC.E3NEUTI),
                      (OP.TOPOFA.PPINTER, E204NEUT), ),
         ),

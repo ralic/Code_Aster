@@ -70,8 +70,6 @@ GEOM_FAC = Option(
         PLSN,
     ),
     para_out=(
-        SP.PBASESC,
-        SP.PBASMAI,
         SP.PNEWGEM,
         SP.PNEWGES,
     ),

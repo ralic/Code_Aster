@@ -58,11 +58,11 @@ STANO_I  = LocatedComponents(phys=PHY.N120_I, type='ELEM',
 
 
 CCONPI   = LocatedComponents(phys=PHY.N120_R, type='ELEM',
-    components=('X[102]',))
+    components=('X[120]',))
 
 
 CCONAI   = LocatedComponents(phys=PHY.N480_R, type='ELEM',
-    components=('X[170]',))
+    components=('X[200]',))
 
 BASLO_R  = LocatedComponents(phys=PHY.N480_R, type='ELEM',
     components=('X[144]',))

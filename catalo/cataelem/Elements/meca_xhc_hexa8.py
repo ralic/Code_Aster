@@ -447,11 +447,11 @@ class TemplateElement(Element):
 
         OP.GEOM_FAC(te=519,
             para_in=((SP.NOMFIS, E1NEUTK), (SP.PDEPLA, DDL_MECA),
-                     (OP.GEOM_FAC.PGESCLO, LC.E102NEUT), (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
+                     (OP.GEOM_FAC.PGESCLO, LC.E120NEUT), (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
                      (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI), (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
                      (OP.GEOM_FAC.PPINTER, LC.E120NEUT), ),
-            para_out=((SP.PBASESC, LC.E306NEUT), (SP.PBASMAI, LC.E306NEUT),
-                     (SP.PNEWGEM, LC.E102NEUT), (SP.PNEWGES, LC.E102NEUT),
+            para_out=(
+                     (SP.PNEWGEM, LC.E120NEUT), (SP.PNEWGES, LC.E120NEUT),
                      ),
         ),
 
@@ -617,7 +617,6 @@ class TemplateElement(Element):
                      (SP.PTYPDIS, LC.E1NEUTI), ),
             para_out=((OP.TOPOFA.PAINTER, LC.E200NEUT), (OP.TOPOFA.PBASECO, LC.E360NEUT),
                      (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E120NEUT),
-                     (OP.TOPOFA.PGESCLO, LC.E102NEUT), (SP.PGMAITR, LC.E120NEUT),
                      (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E120NEUT),
                      ),
         ),

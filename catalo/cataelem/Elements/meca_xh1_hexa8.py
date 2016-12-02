@@ -495,7 +495,6 @@ class MECA_XH1_HEXA8(Element):
                      (OP.TOPOFA.PPINTTO, LC.E132NEUR), ),
             para_out=((OP.TOPOFA.PAINTER, E90NEUTR), (OP.TOPOFA.PBASECO, LC.E162NEUR),
                      (OP.TOPOFA.PCFACE, LC.E54NEUTI), (SP.PGESCLA, LC.E54NEUTR),
-                     (OP.TOPOFA.PGESCLO, LC.E54NEUTR), (SP.PGMAITR, LC.E54NEUTR),
                      (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E54NEUTR),
                      ),
         ),

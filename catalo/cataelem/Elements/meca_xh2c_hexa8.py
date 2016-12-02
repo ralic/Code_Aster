@@ -538,7 +538,6 @@ class MECA_XH2C_HEXA8(Element):
                      ),
             para_out=((OP.TOPOFA.PAINTER, E90NEUTR), (OP.TOPOFA.PBASECO, LC.E162NEUR),
                      (OP.TOPOFA.PCFACE, LC.E54NEUTI), (SP.PGESCLA, LC.E54NEUTR),
-                     (OP.TOPOFA.PGESCLO, LC.E54NEUTR), (SP.PGMAITR, LC.E54NEUTR),
                      (OP.TOPOFA.PHEAVFA, E24NEUI), (OP.TOPOFA.PLONGCO, LC.E3NEUTI),
                      (OP.TOPOFA.PPINTER, LC.E54NEUTR), ),
         ),

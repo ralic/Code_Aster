@@ -431,14 +431,9 @@ class HM_HEXA20_XH(Element):
                   OP.TOPOFA.PPMILTO, LC.E198NEUT),
                   (SP.PTYPDIS, LC.E1NEUTI), ),
                   para_out=(
-                  (OP.TOPOFA.PAINTER, LC.E200NEUT), (
-                  OP.TOPOFA.PBASECO, LC.E360NEUT),
-                  (OP.TOPOFA.PCFACE, LC.E90NEUTI), (
-                  SP.PGESCLA, LC.E120NEUT),
-                  (OP.TOPOFA.PGESCLO, LC.E102NEUT), (
-                  SP.PGMAITR, LC.E120NEUT),
-                  (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (
-                  OP.TOPOFA.PPINTER, LC.E120NEUT),
+                  (OP.TOPOFA.PAINTER, LC.E200NEUT), (OP.TOPOFA.PBASECO, LC.E360NEUT),
+                  (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E120NEUT),
+                  (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E120NEUT),
                   ),
                   ),
 

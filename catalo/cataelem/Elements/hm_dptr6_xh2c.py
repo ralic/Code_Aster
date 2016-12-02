@@ -507,7 +507,6 @@ class TemplateElement(Element):
                      ),
             para_out=((OP.TOPOFA.PAINTER, E65NEUTR), (OP.TOPOFA.PBASECO, E52NEUTR),
                      (OP.TOPOFA.PCFACE, E21NEUTI), (SP.PGESCLA, E26NEUTR),
-                     (OP.TOPOFA.PGESCLO, E26NEUTR), (SP.PGMAITR, E26NEUTR),
                      (OP.TOPOFA.PHEAVFA, E14NEUTI), (OP.TOPOFA.PLONGCO, LC.E3NEUTI),
                      (OP.TOPOFA.PPINTER, E26NEUTR), ),
         ),

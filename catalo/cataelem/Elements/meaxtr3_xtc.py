@@ -270,7 +270,7 @@ class MEAXTR3_XTC(Element):
                      (OP.GEOM_FAC.PPINTER, LC.E14NEUTR), (OP.GEOM_FAC.PBASLOR, LC.N6NEUT_R),
                      (OP.GEOM_FAC.PLSN, LC.N1NEUT_R), (OP.GEOM_FAC.PSTANO, STANO_I),
                      (SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),),
-            para_out=((SP.PBASESC, LC.E28NEUTR), (SP.PBASMAI, LC.E28NEUTR),
+            para_out=(
                      (SP.PNEWGEM, LC.E14NEUTR), (SP.PNEWGES, LC.E14NEUTR),
                      ),
         ),
@@ -376,7 +376,6 @@ class MEAXTR3_XTC(Element):
                      ),
             para_out=((OP.TOPOFA.PAINTER, LC.E35NEUTR), (OP.TOPOFA.PBASECO, LC.E28NEUTR),
                      (OP.TOPOFA.PCFACE, LC.E9NEUTI), (SP.PGESCLA, LC.E14NEUTR),
-                     (OP.TOPOFA.PGESCLO, LC.E14NEUTR), (SP.PGMAITR, LC.E14NEUTR),
                      (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E14NEUTR),
                      ),
         ),

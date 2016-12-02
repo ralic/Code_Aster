@@ -1160,12 +1160,6 @@ XXXXXX = InputParameter(phys=PHY.SIEF_R, container='RESU!SIGM_ELNO!N',
 
 # Parametres 'Out' :
 # ------------------
-PBASESC = OutputParameter(phys=PHY.N2448R, type='ELEM',
-                          comment="""""")
-
-PBASMAI = OutputParameter(phys=PHY.N2448R, type='ELEM',
-                          comment="""""")
-
 PBIDON = OutputParameter(phys=PHY.NEUT_R, type='ELEM',
                          comment="""""")
 
@@ -1373,9 +1367,6 @@ PGAMIMA = OutputParameter(phys=PHY.SPMX_R, type='ELGA',
                           comment="""""")
 
 PGESCLA = OutputParameter(phys=PHY.N816_R, type='ELEM',
-                          comment="""""")
-
-PGMAITR = OutputParameter(phys=PHY.N816_R, type='ELEM',
                           comment="""""")
 
 PGTHETA = OutputParameter(phys=PHY.G, type='ELEM',

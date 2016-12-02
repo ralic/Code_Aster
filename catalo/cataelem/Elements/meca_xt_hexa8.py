@@ -600,7 +600,6 @@ class MECA_XT_HEXA8(Element):
                      ),
             para_out=((OP.TOPOFA.PAINTER, LC.E200NEUT), (OP.TOPOFA.PBASECO, LC.E360NEUT),
                      (OP.TOPOFA.PCFACE, LC.E90NEUTI), (SP.PGESCLA, LC.E120NEUT),
-                     (OP.TOPOFA.PGESCLO, LC.E102NEUT), (SP.PGMAITR, LC.E120NEUT),
                      (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E120NEUT),
                      ),
         ),

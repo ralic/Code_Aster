@@ -431,10 +431,7 @@ class HM_DPQ8_XH(Element):
                   (OP.TOPOFA.PAINTER, LC.E35NEUTR), (
                   OP.TOPOFA.PBASECO, LC.E28NEUTR),
                   (OP.TOPOFA.PCFACE, LC.E9NEUTI), (SP.PGESCLA, LC.E14NEUTR),
-                  (OP.TOPOFA.PGESCLO, LC.E14NEUTR), (
-                  SP.PGMAITR, LC.E14NEUTR),
-                  (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (
-                  OP.TOPOFA.PPINTER, LC.E14NEUTR),
+                  (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E14NEUTR),
                   ),
                   ),
 

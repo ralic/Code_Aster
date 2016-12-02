@@ -134,8 +134,8 @@ implicit none
         ncmp(10) = 16
     else if (ndim.eq.3) then
         ncmp(2) = 64
-        ncmp(3) = 102
-        ncmp(4) = 170
+        ncmp(3) = 120
+        ncmp(4) = 200
         ncmp(5) = 90
         ncmp(6) = 24
         ncmp(7) = 8

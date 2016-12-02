@@ -420,7 +420,7 @@ class TemplateElement(Element):
                      (OP.GEOM_FAC.PGESCLO, LC.E14NEUTR), (OP.GEOM_FAC.PHEA_NO, LC.N5NEUTI),
                      (OP.GEOM_FAC.PLONGCO, LC.E3NEUTI), (OP.GEOM_FAC.PLST, LC.N1NEUT_R),
                      (OP.GEOM_FAC.PPINTER, LC.E14NEUTR), ),
-            para_out=((SP.PBASESC, LC.E28NEUTR), (SP.PBASMAI, LC.E28NEUTR),
+            para_out=(
                      (SP.PNEWGEM, LC.E14NEUTR), (SP.PNEWGES, LC.E14NEUTR),
                      ),
         ),
@@ -582,7 +582,6 @@ class TemplateElement(Element):
                      (SP.PTYPDIS, LC.E1NEUTI), ),
             para_out=((OP.TOPOFA.PAINTER, LC.E35NEUTR), (OP.TOPOFA.PBASECO, LC.E28NEUTR),
                      (OP.TOPOFA.PCFACE, LC.E9NEUTI), (SP.PGESCLA, LC.E14NEUTR),
-                     (OP.TOPOFA.PGESCLO, LC.E14NEUTR), (SP.PGMAITR, LC.E14NEUTR),
                      (OP.TOPOFA.PLONGCO, LC.E3NEUTI), (OP.TOPOFA.PPINTER, LC.E14NEUTR),
                      ),
         ),

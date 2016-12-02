@@ -540,7 +540,6 @@ class MECPTR3_XH2C(Element):
                      (OP.TOPOFA.PPMILTO, LC.E22NEUTR), ),
             para_out=((OP.TOPOFA.PAINTER, LC.E40NEUTR), (OP.TOPOFA.PBASECO, LC.E32NEUTR),
                      (OP.TOPOFA.PCFACE, E14NEUTI), (SP.PGESCLA, E16NEUTR),
-                     (OP.TOPOFA.PGESCLO, E16NEUTR), (SP.PGMAITR, E16NEUTR),
                      (OP.TOPOFA.PHEAVFA, LC.E8NEUI), (OP.TOPOFA.PLONGCO, LC.E3NEUTI),
                      (OP.TOPOFA.PPINTER, E16NEUTR), ),
         ),
