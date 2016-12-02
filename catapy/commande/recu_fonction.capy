@@ -69,12 +69,16 @@ RECU_FONCTION=OPER(nom="RECU_FONCTION",op=90,sd_prod=recu_fonction_prod,
 # ======= BASE_ELAS_FLUI =================================================
          b_base_elas_flui = BLOC ( condition = """exists("BASE_ELAS_FLUI")""",
                                    fr=tr("Récupération de la fonction à partir d un concept melasflu"),
-           regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
-           TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
-           NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
            NUME_MODE       =SIMP(statut='o',typ='I' ),
-           PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU",) ),
-           PARA_Y          =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),
+           PARA_X          =SIMP(statut='o',typ='TXM',into=("VITE_FLU","NB_CONNORS") ),
+           b_connors = BLOC ( condition = """PARA_X=='NB_CONNORS'""",
+               PARA_Y      =SIMP(statut='o',typ='TXM',into=("VITE_CRIT",) ),),
+           b_cdck    = BLOC ( condition = """PARA_X=='VITE_FLU'""",
+                              regles=(UN_PARMI('TOUT_ORDRE','NUME_ORDRE'),),
+               TOUT_ORDRE  =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+               NUME_ORDRE  =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+               PARA_Y      =SIMP(statut='o',typ='TXM',into=("FREQ","AMOR") ),)
+
          ),
 
 # ======= INTERSPECTRE =================================================

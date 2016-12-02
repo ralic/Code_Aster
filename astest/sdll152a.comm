@@ -1,0 +1,176 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# Simple test of FSI calculations with transverse flow on an array
+# a clamped-clamped steel tubes (beam model).
+#
+# Note : The modeling procedure requires the representation of a single beam
+#        Fluid-structure coupling forces consider confinement details of the 
+#        array.
+#
+#                                    ^ y-axis
+#                                    |
+#                                    --> x-axis      (x) z axis
+#  //|         L, D          |//
+#  //|=======================|//
+#  //|       ^ ^ ^ ^ ^       |//
+#          ^ | | | | | ^            
+#        ^ | | | | | | | ^  
+#      ^ | | | | | | | | | ^ 
+#      | | | | | | | | | | |  
+#
+#          Fluid velocity (parabolic function)
+#
+#-------------------------------------------------------------------
+# 1) Modal analysis of the beam
+# 2) Stability analysis using Connor's model for the fluid forces
+#-------------------------------------------------------------------
+# person_in_charge: hassan.berro at edf.fr
+
+L = 1.000 # Tube length    = 1  m (used for velocity profile definition and 
+#                                  coherent with the associated mesh file)
+D = 0.040 # Tube diameter  = 4 cm
+t = 0.005 # Tube thickness = 5 mm
+
+DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+TUBE=LIRE_MAILLAGE()
+MODI_MAILLAGE(reuse=TUBE, MAILLAGE=TUBE,
+              ABSC_CURV=_F(NOEUD_ORIG='N001',
+                           TOUT='OUI'))
+
+MODEL=AFFE_MODELE(MAILLAGE=TUBE,
+                   AFFE    =(_F(GROUP_MA     = 'BEAM',
+                                PHENOMENE    = 'MECANIQUE',
+                                MODELISATION = 'POU_D_T')))
+
+CARA=AFFE_CARA_ELEM(MODELE = MODEL,
+                    POUTRE = _F(GROUP_MA = 'BEAM',
+                                SECTION  = 'CERCLE',
+                                CARA     = ('R','EP',),
+                                VALE     = (0.5*D, t)))
+
+RHOI=DEFI_FONCTION(NOM_PARA='ABSC',
+                   MAILLAGE=TUBE,
+                   VALE_Y=( 1000.,  1000. ),
+                   NOEUD_PARA=( 'N001', 'N101',))
+
+RHOE=DEFI_FONCTION(NOM_PARA='ABSC',
+                   MAILLAGE=TUBE,
+                   VALE_Y=( 1000.,  1000. ),
+                   NOEUD_PARA=( 'N001', 'N101',))
+
+NbNodes = 101
+Absc = [(L/(NbNodes-1))*i for i in range(NbNodes)]
+Velo = [-4*x*(x-1) for x in Absc]  # Parabolic velocity profile
+Data = [None]*2*NbNodes
+for i in range(NbNodes) : 
+  Data[2*i  ] = Absc[i]
+  Data[2*i+1] = Velo[i]
+
+VELPROF=DEFI_FONCTION(NOM_PARA = 'ABSC',
+                      VALE     = Data)
+
+TYPEFLUI=DEFI_FLUI_STRU(FAISCEAU_TRANS=_F(
+                                          COUPLAGE = 'OUI',
+                                          CARA_ELEM = CARA,
+                                          PROF_RHO_F_INT = RHOI,
+                                          PROF_RHO_F_EXT = RHOE,
+                                          COEF_MASS_AJOU = 1.0, 
+                                          NOM_CMP = 'DY',
+                                          TYPE_PAS = 'CARRE_LIGN',
+                                          TYPE_RESEAU = 675,
+                                          PAS = 1.44,
+                                          PROF_VITE_FLUI = VELPROF,
+                                          RHO_TUBE = 2500.,
+                                          NB_CONNORS   = 5,
+                                          CSTE_CONNORS = (3.0,5.0),
+                                          ),
+                        INFO=2)
+
+FONC_CM=FONC_FLUI_STRU(TYPE_FLUI_STRU=TYPEFLUI)
+
+MAT=DEFI_MATERIAU(ELAS_FLUI=_F(E   = 210.E9,
+                               RHO = 7800.,
+                               NU  = 0.3,
+                               PROF_RHO_F_EXT = RHOE,
+                               PROF_RHO_F_INT = RHOI,
+                               COEF_MASS_AJOU = FONC_CM))
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=TUBE,
+                    AFFE    =_F(TOUT = 'OUI',
+                               MATER = MAT))
+
+CHDDL=AFFE_CHAR_MECA(MODELE =MODEL,
+                     DDL_IMPO= (_F(GROUP_NO = 'CLAMPED',
+                                   DX  = 0.0, DY  = 0.0, DZ  = 0.0,
+                                   DRX = 0.0, DRY = 0.0, DRZ = 0.0),
+                                _F(GROUP_MA = 'BEAM',
+                                   DZ = 0.0)))
+
+MELR=CALC_MATR_ELEM(MODELE=MODEL,
+                    CHARGE=CHDDL,
+                    CARA_ELEM=CARA,
+                    CHAM_MATER=CHMAT,
+                    OPTION='RIGI_FLUI_STRU')
+
+MELM=CALC_MATR_ELEM(MODELE=MODEL,
+                    CHARGE=CHDDL,
+                    CARA_ELEM=CARA,
+                    CHAM_MATER=CHMAT,
+                    OPTION='MASS_FLUI_STRU')
+
+NUM=NUME_DDL(MATR_RIGI=MELR)
+
+MATRR=ASSE_MATRICE(MATR_ELEM=MELR,
+                   NUME_DDL=NUM)
+
+MATRM=ASSE_MATRICE(MATR_ELEM=MELM,
+                   NUME_DDL=NUM)
+
+MODES=CALC_MODES(MATR_RIGI=MATRR,
+                 OPTION='PLUS_PETITE',
+                 CALC_FREQ=_F(NMAX_FREQ=2),
+                 MATR_MASS=MATRM)
+
+MODES=NORM_MODE(reuse=MODES, MODE=MODES, NORME=('TRAN',))
+
+vmin     = 0.1
+vmax     = 5.1
+pas      = 0.1
+nb_poin  = 1 + int((vmax - vmin)/pas)
+
+MELES=CALC_FLUI_STRU(VITE_FLUI  = _F(VITE_MIN  = vmin,
+                                     VITE_MAX  = vmax,
+                                     NB_POIN   = nb_poin),
+                     BASE_MODALE= _F(MODE_MECA = MODES,
+                                     NUME_ORDRE= (1,2),
+                                     AMOR_REDUIT = (0.15E-2,0.15E-2),
+                                     AMOR_REDUIT_CONN = (0.15E-2,0.15E-2)),
+                     TYPE_FLUI_STRU=TYPEFLUI,
+                     IMPRESSION=_F(PARA_COUPLAGE = 'OUI',
+                                   DEFORMEE      = 'NON'))
+
+VCRIT = RECU_FONCTION(BASE_ELAS_FLUI=MELES,
+                     PARA_X='NB_CONNORS',
+                     PARA_Y='VITE_CRIT',
+                     NUME_MODE=1)
+
+TEST_FONCTION(VALEUR=_F(VALE_CALC=0.75484092377406,
+                        CRITERE='RELATIF',
+                        VALE_PARA=4.5,
+                        FONCTION=VCRIT))
+FIN()
