@@ -104,6 +104,7 @@ subroutine xasshm_frac(nddls, nddlm, nnop, nnops,&
     call vecini(16, 0.d0, ffc)
     call vecini(27, 0.d0, ffp2)
     call vecini(64, 0.d0, vihydr)
+    call vecini(3, 0.d0, rbid38)
 !
 !         CALCUL DU PRODUIT DU JACOBIEN AVEC LE jac D'INTEGRATION, DES FONCTIONS
 !         DE FORME POUR L'ELEMENT PARENT QUADRATIQUE ET DE LA NORMALE A LA

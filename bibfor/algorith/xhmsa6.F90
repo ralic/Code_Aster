@@ -92,6 +92,7 @@ subroutine xhmsa6(ndim, ipgf, imate, lamb, wsaut, nd,&
     call vecini(6, 0.d0, sigma)
     call vecini(9, 0.d0, vim)
     call vecini(9, 0.d0, vip)
+    call vecini(3, 0.d0, r7bid)
 !
 !   RECUPERATION DES DONNEES HM
 !

@@ -102,6 +102,7 @@ subroutine xasshv_frac(nddls, nddlm, nnop, nnops,&
     call vecini(16, 0.d0, ffc)
     call vecini(27, 0.d0, ffp2)
     call vecini(64, 0.d0, vihydr)
+    call vecini(3, 0.d0, rbid38)
 !    
 !   BOUCLE SUR LES FACETTES DE CONTACT 
     do ifa = 1 ,nface
