@@ -572,8 +572,6 @@ def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], prec
             # on verifie - que le Zpa n'est pas modifie
             #            - que la frequence ne fait pas partie des frequences exclues
             if (j!=0 and j!=jmax and not stop) : 
-                # if j+1==jmax:
-                    # print 'ici'
                 if j+1!=jmax or nappe_up.verifZpa(j):
                     j_supp = j
                     stop = 1
@@ -645,7 +643,6 @@ def enveloppe_nappe(l_nappe):
     sp_nappe.listFreq = l_freq   
     sp_nappe.listSpec = l_spec_amor   
        
-    print 'l_freq enveloppe',l_freq   
     return sp_nappe
       
 def enveloppe_spectres(listSpec):
@@ -663,7 +660,6 @@ def enveloppe_spectres(listSpec):
     l_freq = list(set(l_freq))
     l_freq.sort()
     l_freq = N.array(l_freq) 
-    print 'l_freq enveloppe spec',l_freq
     s_max = N.zeros(len(l_freq))
     for spec in l_spec:
         fd = interpolate.interp1d(spec.listFreq, spec.dataVal)
@@ -697,7 +693,6 @@ def elargis_spectres(l_spectre,l_coef):
 def liss_enveloppe(l_nappes ,option = 'CONCEPTION', nb_pts = 50, coef_elarg = None, fmin=0.2, fmax=35.5,l_freq=[], precision=1e-3, critere='RELATIF', zpa = None ):
     
     if option == 'CONCEPTION':
-        print 'CONCEPTION', l_nappes
         if len(l_nappes)>1:
             env_nappe = enveloppe_nappe(l_nappes)
         else:
