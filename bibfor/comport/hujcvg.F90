@@ -3,7 +3,7 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
                   indi, iter, itmax, intg, toler,&
                   bnews, mtrac, ye, lreli, iret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -84,6 +84,9 @@ subroutine hujcvg(nmat, mater, nvi, vind, vinf,&
     rtrac = abs(pref*1.d-6)
 !
     tracti = .false.
+    neglam(1) = .false.
+    neglam(2) = .false.
+    neglam(3) = .false.
 !
 ! --- DETERMINATION DU NOMBRE DE MECANISMES POTENTIELLEMENT ACTIFS
     nbmeca = 0
