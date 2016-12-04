@@ -2,7 +2,7 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
                   nindep)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,6 +70,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force,&
     integer, pointer :: vec_ind_nz(:) => null()
     integer, pointer :: deeq(:) => null()
 !
+    ortho =' '
+    iret  =0
     AS_ALLOCATE(vr=new_stat, size=nbc*nbc)
     call wkvect('&&VECIND.TRAV1', 'V V R', nbl, ltrav1)
     AS_ALLOCATE(vi=vec_ind_nz, size=nbc)
