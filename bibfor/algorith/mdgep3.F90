@@ -46,6 +46,7 @@ subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
     k8bid = '        '
     call r8inir(neq, 0.d0, tab, 1)
     nompar = 'INST'
+    cntr = 0
     do 10 iex = 1, nbexci
         if (nomfon(iex) .eq. k8bid) goto 10
 
