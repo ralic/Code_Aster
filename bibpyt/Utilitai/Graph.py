@@ -298,6 +298,7 @@ class Graph(object):
             'TABLEAU': {'mode': 'a', 'driver': TraceTableau, },
             'XMGRACE': {'mode': 'a', 'driver': TraceXmgrace, },
             'AGRAF': {'mode': 'a', 'driver': TraceAgraf, },
+            'LISS_ENVELOP': {'mode': 'a', 'driver': TraceMatplotlib, },
         }
         kargs = {}
         if self.LastTraceArgs == {}:
@@ -1151,6 +1152,129 @@ GRAPHIQUE:
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------------
 # ------------------------------------------------------------------------
+
+class TraceMatplotlib(TraceGraph):
+
+    def Entete(self):
+        entete =' '
+        return entete
+        
+    def DescrCourbe(self, **args):
+        desc=' '
+        return desc
+                
+        
+    def Trace(self):
+        fichier = self.NomFich
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        import numpy as np
+        
+        l_color=['b','r','k','g']
+        g = self.Graph    
+            
+        figsize, dpi = [160./2.54/2*1.35, 100./2.54*1.35], 160
+        fig = plt.figure(1, figsize = figsize, dpi = dpi)
+        fig.clear()
+        ax1 = fig.add_subplot(1, 1, 1)
+        liss_nappe = {}
+        for i in range(g.NbCourbe):
+            dCi = g.Courbe(i)
+            Leg = dCi['Leg']
+            if Leg.startswith('NAPPE_LISSEE'):
+                stycol ='-ok'
+                AMOR = Leg.split('=')[-1]
+                liss_nappe[float(AMOR)]=[dCi['Abs'],dCi['Ord'][0]]
+            else:
+                stycol ='--b'
+            ax1.plot(dCi['Abs'],dCi['Ord'][0],stycol, linewidth=2)
+            
+        if g.Echelle_X=='LOG':    
+            ax1.set_xscale('log')
+        if g.Echelle_Y=='LOG':    
+            ax1.set_yscale('log')
+           
+        plt.title(g.Titre[0], fontsize=32)
+        if g.Min_X!=None and g.Max_X!=None:
+            plt.xlim([g.Min_X,g.Max_X])
+        if g.Min_Y!=None and g.Max_Y!=None:
+            plt.ylim([g.Min_Y,g.Max_Y]) 
+        plt.xlabel(g.Legende_X, fontsize=32) 
+        plt.ylabel(g.Legende_Y, fontsize=32)            
+        ax = plt.gca()
+        ax.xaxis.set_label_coords(0.5, 0.01)  
+        for lab in ax.xaxis.get_ticklabels():
+	    lab.set_fontsize(32)
+        for lab in ax.yaxis.get_ticklabels():
+	    lab.set_fontsize(32)                 
+        plt.grid('on',which='both')    
+
+        
+        if len(liss_nappe)>0:
+            tablefig = []
+            listAmor = liss_nappe.keys()
+            listAmor.sort()
+            listFreq = liss_nappe[listAmor[0]][0]
+            for i in range(len(listFreq)):
+                row = []
+                row.append('%.2f'%listFreq[i])
+                for amor in listAmor:
+                    row.append('%.3f'%liss_nappe[amor][1][i])
+                tablefig.append(row)
+            labelc = ['Freq \n[Hz]']
+            for amor in listAmor:
+                labelc.append('Damp \n %.1f'%(amor*100)+'%')
+            
+            agg = plt.table(cellText=tablefig, 
+              colWidths=[0.06]*9,
+              colColours=['white']*9,
+              cellLoc='center',
+              colLabels=labelc, 
+              colLoc='center', 
+              loc='bottom',
+              alpha =1.0,
+              zorder=10, 
+              ) 
+            table_props = agg.properties()
+            table_cells = table_props['child_artists']
+            for cell in table_cells:
+                txt = cell.get_text().get_text()
+                if 'Freq' in txt or 'Damp' in txt:
+                    cell.set_height(0.03)  
+                else:
+                    cell.set_height(0.018)   
+
+            agg.set_fontsize(28)
+            agg.scale(1.2, 1.2)     
+                        
+        titre = g.Titre[0]
+        sous_titre = g.SousTitre
+        if ',' in sous_titre:
+            sssplit = sous_titre.split(',')
+            sous_titre_1 = sssplit[0]
+            sous_titre_2 = sssplit[1]
+        else:
+            sous_titre_1 = sous_titre
+            sous_titre_2 = ''
+        legend = plt.table(
+             cellText=[[titre],[sous_titre_1],[sous_titre_2]],
+             colWidths=[0.3]*1, 
+             cellLoc='center',
+             rowLoc='center', 
+             loc='upper left',
+             zorder=10, fontsize=32) 
+        table_props = legend.properties()
+        table_cells = table_props['child_artists']
+        table_cells[2].set_height(0.05)      
+        table_cells[1].set_height(0.05)      
+        table_cells[0].set_height(0.1)  
+        legend.set_fontsize(40)    
+        legend.scale(1.3, 1.3)
+    
+        plt.savefig(fichier[0], format='png',bbox_inches='tight')
+        
+    
 
 
 def ValCycl(val, vmin, vmax, vdef):

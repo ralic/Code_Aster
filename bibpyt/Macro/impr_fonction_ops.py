@@ -68,7 +68,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         UTMESS(niv, 'FONCT0_1', valk=nomfich)
 
     # 0.2. Récupération des valeurs sous COURBE
-    unparmi = ('FONCTION', 'LIST_RESU', 'FONC_X', 'ABSCISSE')
+    unparmi = ('FONCTION', 'LIST_RESU', 'FONC_X', 'ABSCISSE' ,'NAPPE','NAPPE_LISSEE')
 
     # i0 : indice du mot-clé facteur qui contient LIST_PARA, sinon i0=0
     i0 = 0
@@ -104,7 +104,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     break
             if obj == None:
                 UTMESS('S', 'SUPERVIS_56')
-            if typi == 'FONCTION':
+            if typi == 'FONCTION' or typi == 'NAPPE' or typi =='NAPPE_LISSEE' :
                 if isinstance(obj, nappe_sdaster):
                     lpar, lval = obj.Valeurs()
                     linterp = lval[0][0]
@@ -142,7 +142,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         # 1.2. Extraction des valeurs
 
         # 1.2.1. Mot-clé FONCTION
-        if typi == 'FONCTION':
+        if typi == 'FONCTION' or typi=='NAPPE' or typi=='NAPPE_LISSEE' :
             # formule à un paramètre seulement
             if isinstance(obj, formule):
                 dpar = obj.Parametres()
@@ -197,6 +197,10 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     # ajoute la valeur du paramètre
                     dCi['LEGENDE'] = '%s %s=%g' % (
                         Leg, dic['NOM_PARA'].strip(), p)
+                    if typi == 'NAPPE':
+                        dCi['LEGENDE'] = '%s %s=%g' % (Leg, dic['NOM_PARA'].strip(), p)
+                    if typi == 'NAPPE_LISSEE':
+                        dCi['LEGENDE'] = 'NAPPE_LISSEE %s %s=%g' % (Leg, dic['NOM_PARA'].strip(), p)    
                     Graph.AjoutParaCourbe(dicC, args=dCi)
                     graph.AjoutCourbe(**dicC)
             else:
@@ -368,7 +372,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         graph.Titre = args['TITRE']
     if args['SOUS_TITRE'] != None:
         graph.SousTitre = args['SOUS_TITRE']
-    if FORMAT in ('XMGRACE', 'AGRAF'):
+    if FORMAT in ('XMGRACE', 'AGRAF','LISS_ENVELOP'):
         if args['BORNE_X'] != None:
             graph.Min_X = args['BORNE_X'][0]
             graph.Max_X = args['BORNE_X'][1]
@@ -417,6 +421,9 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
         kargs['dform'] = {'formR': '%.8g'}
         kargs['PILOTE'] = args['PILOTE']
 
+    # 2.4. au format LISS_ENVELOP
+    elif FORMAT == 'LISS_ENVELOP':
+        kargs['FICHIER'] = nomfich
     # 2.39. Format inconnu
     else:
         UTMESS('S', 'FONCT0_8', valk=FORMAT)

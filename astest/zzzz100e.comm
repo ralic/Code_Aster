@@ -17,7 +17,7 @@
 
 DEBUT(CODE=_F(
               NIV_PUB_WEB='INTERNET',),
-      DEBUG=_F(SDVERI='OUI',),)
+      DEBUG=_F(SDVERI='OUI',))
 
 
 spectre=LIRE_FONCTION(TYPE='NAPPE',
@@ -104,6 +104,26 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC=2.027688367455347113e-02,
                     
                       ),
               )
+
+try:
+    import matplotlib
+    IMPR_FONCTION(FORMAT ="LISS_ENVELOP",
+              BORNE_X=(0.1,100),
+              BORNE_Y=(0.01,100),
+              ECHELLE_X = 'LOG',
+              ECHELLE_Y = 'LOG',
+              LEGENDE_X = 'Frequence (Hz)',
+              LEGENDE_Y = 'Pseudo-acceleration (g)',
+              TITRE = 'BATIMENT',
+              SOUS_TITRE = 'ETAGE,PRECISIONS',
+              COURBE = (_F(NAPPE = spectre),
+                        _F(NAPPE_LISSEE = res),
+                        ),
+              UNITE  =85)
+except:
+    print "L'impression doit se faire sous Salome-Meca avec la librairie Matplotlib"
+    pass
+                
 
 # IMPR_FONCTION(FORMAT='TABLEAU',
               # COURBE=_F(FONCTION=res,),
