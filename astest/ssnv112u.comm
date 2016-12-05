@@ -89,7 +89,8 @@ EVOL=STAT_NON_LINE(MODELE=MO,INFO=1,
                                   EPSI_REFE=3.E-4,
                                   RESI_REFE_RELA=1.E-3,),
                    SOLVEUR=_F(METHODE='MUMPS',NPREC=-1,
-                              PCENT_PIVOT=30,),);
+                              PCENT_PIVOT=30,),
+);
 
 # REMARQUE : STRICTO SENSU, LE CALCUL DE ERME_ELEM EST FAUX CAR
 #            DES BORDS A CONTRAINTE NULLE N'ONT PAS ETE DEFINIS DANS LE
@@ -313,6 +314,7 @@ TEST_RESU(RESU=_F(INST=1.0,
                   NOM_CHAM='ERME_ELEM',
                   NOM_CMP='NUEST',
                   VALE_CALC=0.148705451067,
+                  TOLE_MACHINE=2.E-06,     # Car resolution non-linéaire difficile
                   CRITERE='RELATIF',
                   MAILLE='M1',
                   ),
@@ -324,6 +326,7 @@ TEST_RESU(RESU=_F(GROUP_NO='A',
                   NOM_CHAM='ERME_ELNO',
                   NOM_CMP='ERREST',
                   VALE_CALC=9.52306645688E-05,
+                  TOLE_MACHINE=2.E-06, # Car resolution non-linéaire difficile
                   CRITERE='RELATIF',
                   MAILLE='M1',
                   ),
