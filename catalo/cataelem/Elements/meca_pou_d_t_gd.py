@@ -305,8 +305,8 @@ class MECA_POU_D_T_GD(Element):
                               (SP.PINSTMR, CINSTMR), (SP.PINSTPR, LC.CINSTPR),
                               (SP.PMATERC, LC.CMATERC), (SP.PROMK, DDL_MECA),
                               (SP.PROMKM1, DDL_MECA), (SP.PSTADYN, CSTADYN),
-                              (SP.PVARCMR, LC.ZVARCPG), (
-                              OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
+                              (OP.RAPH_MECA.PVARIMR, ZVARIPG),
+                              (SP.PVARCMR, LC.ZVARCPG), (OP.RAPH_MECA.PVARCPR, LC.ZVARCPG),
                               (SP.PVARCRR, LC.ZVARCPG), (SP.PVARIMP, ZVARIPG),
                               (SP.PVITKM1, DDL_MECA), (SP.PVITPLU, DDL_MECA),
                               ),
