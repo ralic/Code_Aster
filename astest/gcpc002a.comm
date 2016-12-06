@@ -319,7 +319,7 @@ TEST_RESU(RESU=(_F(INST=0.0,
 # GCPC + LDLT_SP
 MATAS=FACTORISER(reuse=MATAS,MATR_ASSE=MATAS,
                  METHODE='GCPC', PRE_COND='LDLT_SP',
-                 );
+                 PCENT_PIVOT=30);
 
 DEP2=RESOUDRE(MATR=MATAS,
              CHAM_NO=VECAS,
