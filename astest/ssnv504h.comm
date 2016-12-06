@@ -125,6 +125,7 @@ CH0=AFFE_CHAR_MECA(MODELE=MO,
                                );
 
 
+coef = 1.E-9
 CH2  = DEFI_CONTACT(MODELE         = MO,
                     FORMULATION    = 'CONTINUE',
                     ALGO_RESO_GEOM = 'POINT_FIXE',
@@ -133,11 +134,15 @@ CH2  = DEFI_CONTACT(MODELE         = MO,
                            _F(
                              GROUP_MA_MAIT = 'SMAI1',
                              GROUP_MA_ESCL = 'SESC1',
+                             ALGO_CONT='PENALISATION',
+                             COEF_PENA_CONT   = coef,
                              ),
                            _F(
                              GROUP_MA_MAIT = 'SESC2',
                              GROUP_MA_ESCL = 'SMAI2',
                              INTEGRATION   = 'GAUSS',
+                             ALGO_CONT='PENALISATION',
+                             COEF_PENA_CONT   = coef,
                              ),
                           ),
                    );
@@ -219,19 +224,19 @@ DEPLAC=POST_RELEVE_T(ACTION=_F(INTITULE='DEPLAC',
 
 IMPR_TABLE(TABLE=DEPLAC,);
 
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+TEST_RESU(RESU=(_F(INST=10.0,
                    GROUP_NO='K',
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=10.1167744963,
+                   VALE_CALC=10.0,
                    ),
                 _F(GROUP_NO='K',
                    INST=155.0,
                    RESULTAT=U,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DY',
-                   VALE_CALC=155.076716332,
+                   VALE_CALC=155.0,
                    ),
                 ),
           )
