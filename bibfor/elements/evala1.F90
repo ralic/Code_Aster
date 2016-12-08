@@ -69,10 +69,11 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! =====================================================================
 ! --- INITIALISATION MATRICE DE ROTATION ANGULAIRE
 ! =====================================================================
-    do 5 i = 1, 2
-        do 5 j = 1, 2
+    do i = 1, 2
+        do j = 1, 2
             rot(i,j) = 0.d0
- 5      continue
+        end do
+    end do
 ! =====================================================================
 ! --- EXPRESSION DU TENSEUR DES CONTRAINTES SOUS FORME MATRICIEL
 ! --- LIMITE AU 2D POUR L'INSTANT
@@ -94,11 +95,11 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! =====================================================================
 ! BOUCLE SUR LA VALEUR DE L'INCREMENT DE DISCRETISATION
 ! =====================================================================
-    do 10 disc = 1, 3
+    do disc = 1, 3
 ! =====================================================================
 ! BOUCLE SUR LES ANGLES POUR RECHERCHER LA VALEUR DU MODULE
 ! =====================================================================
-        do 20 iang = 1, nbind(disc)
+        do iang = 1, nbind(disc)
 ! =====================================================================
 ! CONSTRUCTION MATRICE DE ROTATION
 ! =====================================================================
@@ -111,15 +112,15 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! CALCUL DE L'ETAT DE CONTRAINTES SUITE A LA ROTATION
 ! --- SIGF = TRANSPOSE(ROT)*SIG*ROT
 ! =====================================================================
-            do 30 i = 1, 2
-                do 31 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     temp = 0.d0
-                    do 32 k = 1, 2
+                    do k = 1, 2
                         temp = temp + sigt(i,k)*rot(k,j)
-32                  continue
+                    end do
                     sigr1(i,j) = temp
-31              continue
-30          continue
+                end do
+            end do
 !
 ! =====================================================================
 ! --- TRANSPOSE(ROT) = ROT
@@ -128,15 +129,15 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
             rot(2,1) = rot(1,2)
             rot(1,2) = temp
 !
-            do 40 i = 1, 2
-                do 41 j = 1, 2
+            do i = 1, 2
+                do j = 1, 2
                     temp = 0.d0
-                    do 42 k = 1, 2
+                    do k = 1, 2
                         temp = temp + rot(i,k)*sigr1(k,j)
-42                  continue
+                    end do
                     sigr2(i,j) = temp
-41              continue
-40          continue
+                end do
+            end do
 !
 ! =====================================================================
 ! --- EXPRESSION DES CONTRAINTES SOUS FORME VECTORIELLE
@@ -200,7 +201,7 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
                 endif
             endif
 !
-20      continue
+        end do
 ! =====================================================================
 ! ------ FIN DE LA BOUCLE POUR CETTE VALEUR DE DISCRETISATION ---------
 ! =====================================================================
@@ -209,7 +210,7 @@ subroutine evala1(fami, kpg, ksp, mod, relcom,&
 ! ------ LA RECHERCHE DU MAXIMUM
 ! =====================================================================
         angref = (iangmx(disc)-1)*incang(disc)*degr+angref
-10  end do
+    end do
 ! =====================================================================
 ! ------ FIN DE LA BOUCLE POUR OBTENIR LE MAX DE VALUE1 ---------
 ! =====================================================================

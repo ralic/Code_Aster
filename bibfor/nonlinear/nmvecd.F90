@@ -122,7 +122,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
     call r8inir(np*nb, 0.d0, drpdb, 1)
     call r8inir(nb*nb, 0.d0, drbdb, 1)
     call r8inir(nb*np, 0.d0, drbdp, 1)
-    call r8inir(6    , 0.d0, dxhidb,1)
+    call r8inir(6, 0.d0, dxhidb, 1)
     call r8inir(nb, 0.d0, rb, 1)
     call r8inir(np, 0.d0, rp, 1)
     call lceqvn(nb, ep(1), epsth)
@@ -144,65 +144,67 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
     endif
     if (d .lt. 0.d0) then
         ier = 10
-        goto 9999
+        goto 999
     endif
     unmd = 1.d0-d
     r = rm+dt*p(1)
-    do 121 i = 1, nb
+    do i = 1, nb
         epsvp(i)=epsvpm(i)+dt*p(1)/unmd*dsedb(i)
-121  end do
+    end do
 !
 !-- 1.3. CONTRAINTES ET DERIVEES
 !   ----------------------------
-    do 131 i = 1, nb
+    do i = 1, nb
         he(i)=0.d0
-        do 131 k = 1, nb
+        do k = 1, nb
             he(i)=he(i)+unmd*hook(i,k)*(epst(k)-epsth(k)-epsvp(k))
-131      continue
+        end do
+    end do
 !
-    do 132 i = 1, nb
-        do 1321 j = 1, nb
+    do i = 1, nb
+        do j = 1, nb
             dhede(i,j)=0.d0
             dhede(i,j)=dhede(i,j)+unmd*hook(i,j)
-1321      continue
+        end do
 !
-        do 1322 j = 1, nb
+        do j = 1, nb
             dhedb(i,j)=0.d0
-            do 1322 k = 1, nb
+            do k = 1, nb
                 dhedb(i,j)=dhedb(i,j)-hook(i,k)*dt*p(1)*dsedb2(k,j)
-1322          continue
+            end do
+        end do
 !
         dhedp(i,1)=0.d0
-        do 1323 k = 1, nb
+        do k = 1, nb
             dhedp(i,1)=dhedp(i,1)-hook(i,k)*dt*dsedb(k)
-1323      continue
+        end do
 !
         dhedp(i,2)=0.d0
-        do 1324 k = 1, nb
+        do k = 1, nb
             dhedp(i,2)=dhedp(i,2)-dt*hook(i,k)*(epst(k)-epsth(k)-&
             epsvp(k))
-1324      continue
+        end do
 !
         dsgdp(i,1)= 0.d0
         dsgdp(i,2)= 0.d0
-        do 1325 j = 1, nb
+        do j = 1, nb
             dsgde(i,j)= 0.d0
             dsgdb(i,j)= dkron(i,j)
-1325      continue
+        end do
 !
-132  end do
+    end do
 !
 !-- 2. EQUATIONS EN BETA ET DERIVEES
 !   ================================
-    do 21 i = 1, nb
+    do i = 1, nb
         rb(i)=beta(i)-he(i)
-        do 211 j = 1, nb
+        do j = 1, nb
             drbde(i,j)=-dhede(i,j)
             drbdb(i,j)=-dhedb(i,j)+dkron(i,j)
-211      continue
+        end do
         drbdp(i,1)=-dhedp(i,1)
         drbdp(i,2)=-dhedp(i,2)
-21  end do
+    end do
 !
 !-- 3. EQUATIONS EN P(1) ET DERIVEES
 !   ================================
@@ -210,10 +212,10 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
 !    -----------------
     if (etatf(1) .eq. 'ELASTIC' .and. se .le. (sy*unmd)) then
         rp(1)=p(1)-0.d0
-        do 311 j = 1, 6
+        do j = 1, 6
             drpde(1,j)=0.d0
             drpdb(1,j)=0.d0
-311      continue
+        end do
         drpdp(1,1)=1.d0
         drpdp(1,2)=0.d0
 !
@@ -256,10 +258,10 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
             drpdse = - gn*unssem*exp(arg)
             etatf(2)='EXPONEN'
         endif
-        do 321 j = 1, nb
+        do j = 1, nb
             drpde(1,j)= 0.d0
             drpdb(1,j)= drpdse/unmd*dsedb(j)
-321      continue
+        end do
         drpdp(1,1)= 1.d0 + drpdsc*dscdr
         drpdp(1,2)= drpdse*se*dt/unmd/unmd
         if (etatf(1) .eq. 'ELASTIC') etatf(1)='PLASTIC'
@@ -297,19 +299,19 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi,&
         p2dxhi = p2*(gr/xhi-log(1.d0-d)*dkxidx)
     endif
 !
-    do 422 j = 1, nb
+    do j = 1, nb
         drpde(2,j)=0.d0
         drpdb(2,j)=-p2dxhi*dxhidb(j)
-422  end do
+    end do
     drpdp(2,1)=0.d0
     drpdp(2,2)=1.d0-p2dp2
 !
-    goto 09999
+    goto 999
 !
 !-- 5. ERREURS
 !   ----------
-5001  continue
+5001 continue
     ier = 11
 !
-9999  continue
+999 continue
 end subroutine
