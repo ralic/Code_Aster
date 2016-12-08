@@ -211,7 +211,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     PetscReal :: aster_petsc_default_real  
     PetscReal, dimension(:), allocatable :: norms_c, norms_ct
     PetscErrorCode :: ierr 
-    Mat :: mat_c, mat_ct, mat_tmp, mat_t
+    Mat :: mat_c, mat_tmp, mat_t
     IS :: isall, isnvco
     mpi_int :: mpicomm
     !
@@ -312,6 +312,8 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
                         elg_ctxt%tfinal, ierr)
         ASSERT(ierr==0)
         call MatDestroy(mat_t, ierr)
+        ASSERT( ierr == 0 )
+        call MatDestroy(mat_tmp, ierr)
         ASSERT( ierr == 0 )
       endif
     enddo

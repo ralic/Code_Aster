@@ -1,7 +1,7 @@
 subroutine elg_calcx0()
 use elim_lagr_data_module
     implicit none
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -62,7 +62,7 @@ use elim_lagr_data_module
 #include "asterf_petsc.h"
 !================================================================
     Vec :: vy, y0
-    Mat :: c, cct
+    Mat :: cct
     KSP :: ksp
     PC  :: pc
     integer :: ifm, niv

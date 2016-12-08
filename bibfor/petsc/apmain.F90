@@ -480,6 +480,7 @@ use lmp_module, only : lmp_update
         ASSERT(ierr.eq.0)
         call KSPDestroy(ksp, ierr)
         ASSERT(ierr.eq.0)
+       
 ! 
 !        -- SUPRESSION DE L'INSTANCE PETSC
         nomats(kptsc) = ' '

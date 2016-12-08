@@ -66,7 +66,7 @@ use elim_lagr_data_module
     PetscScalar, parameter :: neg_rone=-1.d0
     PetscOffset :: xidxay, xidxl
     Mat :: cct, atmp
-    Vec :: bx, y, ay, xtmp, y1
+    Vec :: bx, y, ay, xtmp
     PetscInt :: its
     PetscReal :: aster_petsc_default_real
     integer :: methode
