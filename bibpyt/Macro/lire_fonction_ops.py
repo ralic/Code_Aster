@@ -21,6 +21,8 @@ import os.path as osp
 from math import sin, cos
 import numpy
 
+from Utilitai.Utmess import UTMESS
+
 
 class LectureBlocError(Exception):
     pass
@@ -147,6 +149,86 @@ def liste_simple(nomfich, INDIC_PARA, SEPAR, INFO=1):
     return vale_1.tolist()
 
 
+def column_values(fmt, filename, idbx, separ=' ', info=0):
+    """Return the values of a column.
+
+    Arguments:
+        fmt (str): Format of the file to read.
+        filename (str): File path.
+        idbx ([int, int]): Indexes of the block to read and of the column in
+            the block for the abscissas.
+        separ (str): Text separator (if needed).
+        info (int): Verbosity level.
+    """
+    kwargs = {}
+    if fmt == 'LIBRE':
+        try:
+            values = liste_simple(filename, idbx, separ, info)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
+    else:
+        idx = idbx[1] - 1
+        matrix = numpy.load(filename)
+        values = matrix[:, idx]
+    return values
+
+
+def function_values(fmt, filename, idbx, idby, separ=' ', info=0):
+    """Return the values to be passed to DEFI_FONCTION.
+
+    Arguments:
+        fmt (str): Format of the file to read.
+        filename (str): File path.
+        idbx ([int, int]): Indexes of the block to read and of the column in
+            the block for the abscissas.
+        idby ([int, int]): Some for the ordinates.
+        separ (str): Text separator (if needed).
+        info (int): Verbosity level.
+    """
+    kwargs = {}
+    if fmt == 'LIBRE':
+        try:
+            values = liste_double(filename, idbx, idby, separ, info)
+        except LectureBlocError, exc:
+            UTMESS('F', 'FONCT0_42', valk=exc.args)
+    else:
+        idx = idbx[1] - 1
+        idy = idby[1] - 1
+        matrix = numpy.load(filename)
+        valx = matrix[:, idx]
+        valy = matrix[:, idy]
+        values = numpy.vstack((valx, valy)).transpose().ravel()
+    return values
+
+
+def complex_values(filename, idbx, idbr, idbi, module_phase=False):
+    """Return the values to be passed to DEFI_FONCTION for a complex function.
+
+    Arguments:
+        filename (str): File path.
+        idbx ([int, int]): Indexes of the block to read (unused) and of
+            the column in the block for the abscissas.
+        idbr ([int, int]): Some for the real part.
+        idbi ([int, int]): Some for the imaginary part.
+        module_phase (bool): Indicator that the columns contain module and
+            phase values.
+    """
+    idx = idbx[1] - 1
+    idr = idbr[1] - 1
+    idi = idbi[1] - 1
+    matrix = numpy.load(filename)
+    valx = matrix[:, idx]
+    valr = matrix[:, idr]
+    vali = matrix[:, idi]
+    if module_phase:
+        module = valr
+        phase = vali
+        valr = module * numpy.cos(vali)
+        vali = module * numpy.sin(vali)
+    cols = numpy.vstack((valx, valr, vali)).transpose()
+    return cols.ravel()
+
+
 def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                       NOM_PARA, NOM_RESU, INTERPOL, PROL_DROITE,
                       PROL_GAUCHE, VERIF, INFO, TITRE, **args):
@@ -181,22 +263,8 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
     self.DeclareOut('ut_fonc', self.sd)
 
     if TYPE == 'FONCTION':
-        kwargs = {}
-        # mise en forme de la liste de valeurs suivant le format choisi :
-        if FORMAT == 'LIBRE':
-            try:
-                liste_vale = liste_double(nomfich, INDIC_PARA, args['INDIC_RESU'],
-                                          SEPAR, INFO)
-            except LectureBlocError, exc:
-                UTMESS('F', 'FONCT0_42', valk=exc.args)
-            kwargs['VALE'] = liste_vale
-        else:
-            idx = INDIC_PARA[1] - 1
-            idy = args['INDIC_RESU'][1] - 1
-            values = numpy.load(nomfich)
-            kwargs['ABSCISSE'] = values[:, idx]
-            kwargs['ORDONNEE'] = values[:, idy]
-
+        values = function_values(FORMAT, nomfich, INDIC_PARA,
+                                 args['INDIC_RESU'], SEPAR, INFO)
         # création de la fonction ASTER :
         ut_fonc = DEFI_FONCTION(NOM_PARA=NOM_PARA,
                                 NOM_RESU=NOM_RESU,
@@ -206,37 +274,41 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                                 INFO=INFO,
                                 TITRE=TITRE,
                                 VERIF=VERIF,
-                                **kwargs)
+                                VALE=values)
 
     elif TYPE == 'FONCTION_C':
         # mise en forme de la liste de valeurs suivant le format choisi :
-        if 'INDIC_REEL' in args:
-            indic1 = args['INDIC_REEL']
-            indic2 = args['INDIC_IMAG']
-        if 'INDIC_MODU' in args:
-            indic1 = args['INDIC_MODU']
-            indic2 = args['INDIC_PHAS']
-        try:
-            liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR, INFO)
-        except LectureBlocError, exc:
-            UTMESS('F', 'FONCT0_42', valk=exc.args)
+        if FORMAT == 'LIBRE':
+            if 'INDIC_REEL' in args:
+                indic1 = args['INDIC_REEL']
+                indic2 = args['INDIC_IMAG']
+            if 'INDIC_MODU' in args:
+                indic1 = args['INDIC_MODU']
+                indic2 = args['INDIC_PHAS']
+            try:
+                liste_vale_r = liste_double(nomfich, INDIC_PARA, indic1, SEPAR, INFO)
+            except LectureBlocError, exc:
+                UTMESS('F', 'FONCT0_42', valk=exc.args)
 
-        try:
-            liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR, INFO)
-        except LectureBlocError, exc:
-            UTMESS('F', 'FONCT0_42', valk=exc.args)
+            try:
+                liste_vale_i = liste_double(nomfich, INDIC_PARA, indic2, SEPAR, INFO)
+            except LectureBlocError, exc:
+                UTMESS('F', 'FONCT0_42', valk=exc.args)
 
-        liste = []
-        if 'INDIC_REEL' in args:
-            for i in range(len(liste_vale_r) / 2):
-                liste.extend(
-                    [liste_vale_r[2 * i], liste_vale_r[2 * i + 1], liste_vale_i[2 * i + 1]])
-        elif 'INDIC_MODU' in args:
-            for i in range(len(liste_vale_r) / 2):
-                module = liste_vale_r[2 * i + 1]
-                phase = liste_vale_i[2 * i + 1]
-                liste.extend(
-                    [liste_vale_r[2 * i], module * cos(phase), module * sin(phase)])
+            liste = []
+            if 'INDIC_REEL' in args:
+                for i in range(len(liste_vale_r) / 2):
+                    liste.extend(
+                        [liste_vale_r[2 * i], liste_vale_r[2 * i + 1], liste_vale_i[2 * i + 1]])
+            elif 'INDIC_MODU' in args:
+                for i in range(len(liste_vale_r) / 2):
+                    module = liste_vale_r[2 * i + 1]
+                    phase = liste_vale_i[2 * i + 1]
+                    liste.extend(
+                        [liste_vale_r[2 * i], module * cos(phase), module * sin(phase)])
+        else:
+            liste = complex_values(nomfich, INDIC_PARA, indic1, indic2,
+                                   'INDIC_MODU' in args)
 
         # création de la fonction ASTER :
         ut_fonc = DEFI_FONCTION(NOM_PARA=NOM_PARA,
@@ -250,30 +322,22 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                                 VALE_C=liste,)
 
     elif TYPE == 'NAPPE':
-
         # création de la nappe ASTER :
         motscles = {}
         motscles['DEFI_FONCTION'] = []
         for elem in mc_DEFI_FONCTION:
-            try:
-                liste_vale = liste_double(nomfich, args['INDIC_ABSCISSE'],
-                                          elem['INDIC_RESU'], SEPAR, INFO)
-            except LectureBlocError, exc:
-                UTMESS('F', 'FONCT0_42', valk=exc.args)
+            values = function_values(FORMAT, nomfich, args['INDIC_ABSCISSE'],
+                                     elem['INDIC_RESU'], SEPAR, INFO)
 
-            motscles['DEFI_FONCTION'].append(_F(VALE=liste_vale,
-                                                INTERPOL=args[
-                                                'INTERPOL_FONC'],
-                                                PROL_DROITE=args[
-                                                'PROL_DROITE_FONC'],
-                                                PROL_GAUCHE=args['PROL_GAUCHE_FONC']))
-        try:
-            liste_para = liste_simple(nomfich, INDIC_PARA, SEPAR, INFO)
-        except LectureBlocError, exc:
-            UTMESS('F', 'FONCT0_42', valk=exc.args)
+            motscles['DEFI_FONCTION'].append(
+                _F(INTERPOL=args['INTERPOL_FONC'],
+                   PROL_DROITE=args['PROL_DROITE_FONC'],
+                   PROL_GAUCHE=args['PROL_GAUCHE_FONC'],
+                   VALE=values))
 
+        vale_para = column_values(FORMAT, nomfich, INDIC_PARA, SEPAR, INFO)
         # création de la nappe
-        ut_fonc = DEFI_NAPPE(PARA=liste_para,
+        ut_fonc = DEFI_NAPPE(PARA=vale_para,
                              NOM_PARA=NOM_PARA,
                              NOM_PARA_FONC=args['NOM_PARA_FONC'],
                              NOM_RESU=NOM_RESU,
