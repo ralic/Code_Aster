@@ -45,9 +45,10 @@ def lire_blocs(nomfich, SEPAR, INFO=1):
     for line in fich:
         il += 1
         try:
-            if line.strip() == '':
+            line = line.strip()
+            if line == '':
                 raise ValueError
-            splin = line.split(SEPAR)
+            splin = [i for i in line.split(SEPAR) if i != '']
             lignes.append(map(float, splin))
             if llen == 0:
                 llen = len(splin)
@@ -166,6 +167,7 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
     # On importe les definitions des commandes a utiliser dans la macro
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     DEFI_NAPPE = self.get_cmd('DEFI_NAPPE')
+    assert FORMAT in ('LIBRE', 'NUMPY')
 
     nompro = 'LIRE_FONCTION'
 
@@ -179,12 +181,21 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
     self.DeclareOut('ut_fonc', self.sd)
 
     if TYPE == 'FONCTION':
+        kwargs = {}
         # mise en forme de la liste de valeurs suivant le format choisi :
-        try:
-            liste_vale = liste_double(nomfich, INDIC_PARA, args['INDIC_RESU'],
-                                      SEPAR, INFO)
-        except LectureBlocError, exc:
-            UTMESS('F', 'FONCT0_42', valk=exc.args)
+        if FORMAT == 'LIBRE':
+            try:
+                liste_vale = liste_double(nomfich, INDIC_PARA, args['INDIC_RESU'],
+                                          SEPAR, INFO)
+            except LectureBlocError, exc:
+                UTMESS('F', 'FONCT0_42', valk=exc.args)
+            kwargs['VALE'] = liste_vale
+        else:
+            idx = INDIC_PARA[1] - 1
+            idy = args['INDIC_RESU'][1] - 1
+            values = numpy.load(nomfich)
+            kwargs['ABSCISSE'] = values[:, idx]
+            kwargs['ORDONNEE'] = values[:, idy]
 
         # création de la fonction ASTER :
         ut_fonc = DEFI_FONCTION(NOM_PARA=NOM_PARA,
@@ -195,7 +206,7 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                                 INFO=INFO,
                                 TITRE=TITRE,
                                 VERIF=VERIF,
-                                VALE=liste_vale,)
+                                **kwargs)
 
     elif TYPE == 'FONCTION_C':
         # mise en forme de la liste de valeurs suivant le format choisi :

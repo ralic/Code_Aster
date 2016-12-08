@@ -111,6 +111,12 @@ class t_fonction:
         if not is_ordo(self.vale_x):
             raise FonctionError, 'fonction : abscisses non strictement croissantes'
 
+    @property
+    def values(self):
+        """Attributes that holds the values as a numpy array
+        with a shape of (n, 2)."""
+        return NP.vstack((self.vale_x, self.vale_y)).transpose()
+
     def __add__(self, other):
         """addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
         """
@@ -523,6 +529,13 @@ class t_fonction_c(t_fonction):
 
     """Classe pour fonctions complexes, équivalent au type aster = fonction_c
     """
+
+    @property
+    def values(self):
+        """Attributes that holds the values as a numpy array
+        with a shape of (n, 2)."""
+        columns = (self.vale_x, self.vale_y.real, self.vale_y.imag)
+        return NP.vstack(columns).transpose()
 
     def __add__(self, other):
         """addition avec une autre fonction ou un nombre, par surcharge de l'opérateur +
