@@ -3,7 +3,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,6 +78,9 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
 !
     pi = r8pi()
     imodf = imod1 + nbmr - 1
+    if (imodf .gt. nbm) then
+        call utmess('F', 'MODELISA2_76', ni=2, vali=[nbm, nbmr])
+    end if
 !
     chnumi = table//'.NUMI'
     chnumj = table//'.NUMJ'
@@ -88,6 +91,7 @@ subroutine calcsp(casint, nomu, table, freq, masg,&
     call jeveuo(chfreq, 'L', lfreq)
     call jelira(chnumi, 'LONMAX', mxval)
     call jelira(chfreq, 'LONMAX', nbpf)
+!
 !
     crnumi = nomu//'.NUMI'
     crnumj = nomu//'.NUMJ'
