@@ -3,11 +3,9 @@ subroutine ntcrli(inst_init, list_inst, sddisc, lostat)
 implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getres.h"
 #include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/deprecated_command.h"
 #include "asterfort/diinst.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
@@ -67,9 +65,7 @@ implicit none
     integer :: nb_inst_new, nb_inst
     real(kind=8) :: tole
     real(kind=8) :: dtmin, dt0
-    character(len=8) :: k8bid
-    character(len=16) :: k16bid, command
-    aster_logical :: l_init_noexist, l_inst_init, l_nonline
+    aster_logical :: l_init_noexist, l_inst_init
     character(len=24) :: list_inst_info
     character(len=24) :: list_inst_ditr
     character(len=16) :: list_inst_type, keywf
@@ -108,18 +104,10 @@ implicit none
 !
     call gettco(list_inst, list_inst_type)
 !
-! - Non-linear operator ?
-!
-    call getres(k8bid, k16bid, command)
-    l_nonline = command .eq. 'THER_NON_LINE'
-!
 ! - Create list of times and information vector
 !
     if (list_inst_type .eq. 'LISTR8_SDASTER') then
         call ntcrlm(list_inst, sddisc, list_inst_work)
-        if (l_nonline) then
-            call deprecated_command('LIST_INST')
-        endif
     else if (list_inst_type.eq.'LIST_INST') then
         sddisc_linf    = sddisc(1:19)//'.LINF'
         list_inst_info = list_inst(1:8)//'.LIST.INFOR'
