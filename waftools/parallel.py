@@ -60,6 +60,7 @@ def load_compilers(self):
             self.check_mpi()
         if not self.get_define('HAVE_MPI'):
             self.fatal("Unable to configure the parallel environment")
+        self.env.BUILD_PARALLEL = 1
 
 @Configure.conf
 def check_mpi(self):
