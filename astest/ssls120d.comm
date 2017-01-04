@@ -1,6 +1,6 @@
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -36,6 +36,7 @@ MAIL=MODI_MAILLAGE(reuse =MAIL,
 CARAEL=AFFE_CARA_ELEM(MODELE=MODMECA,
                       COQUE=_F(GROUP_MA='VIROLE',
                                EPAIS=4.E-2,
+                               COEF_RIGI_DRZ = -1.E-8,
                                ANGL_REP=(-90.0,20.0,),),);
 
 ACIER1=DEFI_MATERIAU(ELAS=_F(E=2.10000000000E11,
@@ -127,7 +128,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.44202004E-05,
+                  PRECISION=3.E-03,
+                  VALE_CALC=-2.44563462051E-05,
                   VALE_REFE=-2.4428571428571427E-05,),
           )
 
@@ -137,7 +139,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-2.44202004E-05,
+                  PRECISION=3.E-03,
+                  VALE_CALC=-2.43841652533E-05,
                   VALE_REFE=-2.4428571428571427E-05,),
           )
 
@@ -147,9 +150,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC= 5.79158662E-05,
+                  VALE_CALC=5.78781707056E-05,
                   VALE_REFE=5.8017857142857143E-05,
-                  PRECISION=2.E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -158,9 +161,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC= 5.79158662E-05,
+                  VALE_CALC=5.79444278767E-05,
                   VALE_REFE=5.8017857142857143E-05,
-                  PRECISION=2.E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -169,9 +172,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS1,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-5.79158662E-05,
+                  VALE_CALC=-5.7811511131E-05,
                   VALE_REFE=-5.8017857142857143E-05,
-                  PRECISION=2.E-3,),
+                  PRECISION=5.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -180,7 +183,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=E1CYLC1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIZZ',
-                  VALE_CALC= 2.1356538287685E+06,
+                  PRECISION=3.E-03,
+                  VALE_CALC=2134223.66621,
                   VALE_REFE= 2.137500E6,
                   MAILLE='M1',),
           )
@@ -190,7 +194,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=E1CYLC1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIZZ',
-                  VALE_CALC= 2.1356538287685E+06,
+                  PRECISION=3.E-03,
+                  VALE_CALC=2134223.66621,
                   VALE_REFE= 2.137500E6,
                   MAILLE='M1',),
           )
@@ -224,9 +229,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-6.10504997E-06,
+                  VALE_CALC=-6.10504997074E-06,
                   VALE_REFE=-6.1071428571428566E-06,
-                  PRECISION=1.E-3,),
+                  PRECISION=3.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -235,9 +240,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DZ',
-                  VALE_CALC=-6.10504997E-06,
+                  VALE_CALC=-6.10504996947E-06,
                   VALE_REFE=-6.1071428571428566E-06,
-                  PRECISION=1.E-3,),
+                  PRECISION=3.E-3,),
           )
 
 TEST_RESU(RESU=_F(NUME_ORDRE=1,
@@ -246,7 +251,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DY',
-                  VALE_CALC= 5.79941564E-05,
+                  PRECISION=3.E-03,
+                  VALE_CALC=5.79941564397E-05,
                   VALE_REFE=5.8017857142857143E-05,),
           )
 
@@ -256,7 +262,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC= 5.79941564E-05,
+                  PRECISION=3.E-03,
+                  VALE_CALC=5.79941564377E-05,
                   VALE_REFE=5.8017857142857143E-05,),
           )
 
@@ -266,7 +273,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2,
                   NOM_CHAM='DEPL',
                   NOM_CMP='DX',
-                  VALE_CALC=-5.79941564E-05,
+                  PRECISION=3.E-03,
+                  VALE_CALC=-5.79941564402E-05,
                   VALE_REFE=-5.8017857142857143E-05,),
           )
 
@@ -276,9 +284,9 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   RESULTAT=ELAS2C1M,
                   NOM_CHAM='SIGM_ELNO',
                   NOM_CMP='SIYY',
-                  VALE_CALC=2.13666493E+06,
+                  VALE_CALC=2136664.92549,
                   VALE_REFE=2.137500E6,
-                  PRECISION=1.1E-03,
+                  PRECISION=3.E-03,
                   MAILLE='M1',),
           )
 FIN();

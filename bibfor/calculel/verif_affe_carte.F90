@@ -1,8 +1,8 @@
-subroutine verif_affe_carte(ligrmo,carte,comment)
+subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,6 +25,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jenonu.h"
 #include "asterfort/jelira.h"
 #include "asterfort/knindi.h"
 #include "asterfort/assert.h"
@@ -45,6 +46,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
     character(len=19), intent(in) :: ligrmo
     character(len=19), intent(in) :: carte
     character(len=*), intent(in) :: comment
+    aster_logical, intent(in), optional ::  non_lin
 !
 !-----------------------------------------------------------------------
 !   But :
@@ -71,7 +73,11 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
     integer, pointer :: desc(:) => null()
     integer, pointer :: ptma(:) => null()
     integer, pointer :: dg(:) => null()
-    integer :: list_ma_pb(5)
+    integer, pointer :: typmail(:) => null()
+    integer :: list_ma_pb(5),typq4,typt3
+    aster_logical    :: verif_coef_drz = .false.
+    aster_logical    :: exiq4_drz_nook = .false.,exiq4_coef_drz = .false.
+    aster_logical    :: exit3_coef_drz = .false.
 
 !-----------------------------------------------------------------------
 !
@@ -192,7 +198,8 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
 !   -------------------------------------------------------
     do kcmp=1,nbcmp
         nocmp=zk8(jnocmp-1+kcmp)
-
+!        write (6,*) "kcmp", kcmp, "nocmp", nocmp,"nbcmp",nbcmp
+         verif_coef_drz = .false.
 
 !       -- Exceptions :
 !       ----------------------------------------------------------------
@@ -209,8 +216,10 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
 !       E3) Valeurs fournies en loucede par le code d'AFFE_CARA_ELEM
         if (nomgd.eq.'CAMASS' .and. nocmp.eq.'C') cycle
         if (nomgd.eq.'CACOQU' .and. nocmp.eq.'KAPPA') cycle
-        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') cycle
+!        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') cycle
+        if (nomgd.eq.'CACOQU' .and. nocmp.eq.'CTOR') verif_coef_drz = .true.
         if (nomgd.eq.'CAORIE' .and. nocmp.eq.'ALPHA') cycle
+        
 
         if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'REP') cycle
         if (nomgd.eq.'CINFDI' .and. nocmp(1:3).eq.'SYM') cycle
@@ -234,7 +243,9 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
         do kma=1,nbma_verif
             ima=numa_verif(kma)
             igrel=num_grel(2*(ima-1)+1)
-            if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1) cycle
+!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 242", verif_coef_drz
+            if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1 .and. .not. verif_coef_drz) cycle
+!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 244", verif_coef_drz
 
             ient=ptma(ima)
             decal=3+2*nbgdmx+nec*(ient-1)
@@ -253,9 +264,34 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
             enddo
             deb1 = (ient-1)*nbcmp + 1
             iad1 = deb1 - 1 + ico
+!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 261", verif_coef_drz
 
             if (tsca .eq. 'R') then
-                if (zr(jvale-1+iad1).eq.0.d0) cycle
+                if (verif_coef_drz) then 
+                    if (zr(jvale-1+iad1).lt.0.d0) then
+                        call jeveuo(mailla//'.TYPMAIL', 'L', vi=typmail)
+                        call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typq4)
+                        call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typt3)
+!                       write (6,*) "type_maille QUAD4", typq4
+!                       write (6,*) "type_maille TRIA3", typt3
+!                       write (6,*) "type_maille typmail(ima)", typmail(ima)
+                        ! WARNIG : CALL DISMMA EXI_QUAD4 pour maillage mixte
+!                       if (typmail(ima) .eq. typt3)  write (6,*) "TRIA3 : COEF_RIGI_DRZ < 0 "
+                        if (typmail(ima) .eq. typt3)  exit3_coef_drz = exit3_coef_drz .or. .true.
+!                       if (typmail(ima) .eq. typq4)  write (6,*) "QUAD4 : COEF_RIGI_DRZ < 0 "
+                        if (typmail(ima) .eq. typq4)  then
+                              exiq4_coef_drz   = (exiq4_coef_drz .or. .true.)
+                              exiq4_drz_nook = (exiq4_coef_drz) .and. &
+                                               (zr(jvale-1+iad1).gt.-1.d12) .and. &
+                                               (zr(jvale-1+iad1).lt.-1.d2 )
+                        endif 
+!                       if (typmail(ima) .eq. typq4)  cycle
+                    else 
+                        cycle
+                    endif
+                else
+                    if (zr(jvale-1+iad1).eq.0.d0) cycle
+                endif
             else if (tsca.eq.'C') then
                 if (abs(zc(jvale-1+iad1)).eq.0.d0) cycle
             else if (tsca.eq.'I') then
@@ -291,7 +327,23 @@ subroutine verif_affe_carte(ligrmo,carte,comment)
             valk(3)=nomgd
             valk(4)=nocmp
             valk(5)=nomte
-            call utmess('A','CALCULEL_40',nk=5,valk=valk,si=nbmapb)
+            if (present(non_lin)) then  
+                if (exit3_coef_drz .or. exiq4_coef_drz) &
+                    call utmess('F','CALCULEL_45',nk=5,valk=valk,si=nbmapb) 
+            elseif (exit3_coef_drz .and. exiq4_coef_drz) then 
+                call utmess('A','CALCULEL_42',nk=5,valk=valk,si=nbmapb)
+                cycle
+            elseif (exit3_coef_drz .and. .not. exiq4_coef_drz) then  
+                call utmess('F','CALCULEL_43',nk=5,valk=valk,si=nbmapb)
+            elseif (.not. exit3_coef_drz .and.  exiq4_drz_nook) then  
+                call utmess('A','CALCULEL_44',nk=5,valk=valk,si=nbmapb)
+                cycle
+!            elseif (.not. exit3_coef_drz .and.  exiq4_coef_drz) then  
+            else  
+                if (exit3_coef_drz .or. exiq4_coef_drz) cycle
+                if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1) cycle
+                call utmess('A','CALCULEL_40',nk=5,valk=valk,si=nbmapb)         
+            endif
             do k=1,min(5,nbmapb)
                valk=' '
                ima=list_ma_pb(k)

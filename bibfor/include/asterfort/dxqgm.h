@@ -15,10 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine verif_affe(modele,sd,non_lin)
-              character(len=*), intent(in) :: modele
-              character(len=*) ,optional, intent(in) :: sd
-              aster_logical, intent(in), optional ::  non_lin
-            end subroutine verif_affe
-          end interface 
+interface
+    subroutine dxqgm(shpr1, shpr2, gm)
+    real(kind=8) :: shpr1(3,4)
+    real(kind=8) :: shpr2(3,4)
+    real(kind=8) :: gm(3, 4)
+    end subroutine dxqgm
+end interface

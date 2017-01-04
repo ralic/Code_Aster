@@ -24,7 +24,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     character(len=8) :: nomu, noma
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,6 +79,8 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     call jeveuo(tmpnco, 'E', jdcc)
     call jeveuo(tmpvco, 'E', jdvc)
 !     LES NOMS DES GRANDEURS REELLES
+! PLAQUE : 'EP','ALPHA','BETA','KAPPA','CTOR', 'EXCENT','INERTIE'
+! COQUE  : 'EP','ALPHA','BETA',       ,'CTOR', 'EXCENT','INERTIE'
     zk8(jdcc) = 'EP'
     zk8(jdcc+1) = 'ALPHA'
     zk8(jdcc+2) = 'BETA'
@@ -86,7 +88,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb,&
     zk8(jdcc+4) = 'C_METR'
     zk8(jdcc+5) = 'CTOR'
     zk8(jdcc+6) = 'EXCENT'
-    zk8(jdcc+7) = 'INERTIE'
+    zk8(jdcc+7) = 'INERTIE' 
 !
 !     CARTE POUR LES FONCTIONS
     cartcf = nomu//'.CARCOQUF'

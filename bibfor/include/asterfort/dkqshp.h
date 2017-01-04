@@ -15,10 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine verif_affe(modele,sd,non_lin)
-              character(len=*), intent(in) :: modele
-              character(len=*) ,optional, intent(in) :: sd
-              aster_logical, intent(in), optional ::  non_lin
-            end subroutine verif_affe
-          end interface 
+interface
+    subroutine dkqshp(qsi, eta, caraq4, jacob, shpN, shpr1, shpr2)
+        real(kind=8) :: qsi
+        real(kind=8) :: eta
+        real(kind=8) :: caraq4(*)
+        real(kind=8) :: jacob(*)
+        real(kind=8) :: shpN(3,4)
+        real(kind=8) :: shpr1(3, 4)
+        real(kind=8) ::  shpr2(3,4)
+    end subroutine dkqshp
+end interface

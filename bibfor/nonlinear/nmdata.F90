@@ -24,6 +24,8 @@ implicit none
 #include "asterfort/ReadInOut.h"
 #include "asterfort/ReadMeasure.h"
 #include "asterfort/GetIOField.h"
+#include "asterfort/verif_affe.h"
+#include "asterfort/gettco.h"
 #include "asterfort/nmdomt.h"
 #include "asterfort/nmdomt_ls.h"
 #include "asterfort/nmdopo.h"
@@ -32,7 +34,7 @@ implicit none
 #include "asterfort/nmlect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,7 +105,9 @@ implicit none
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
     aster_logical :: l_etat_init, l_sigm
+    aster_logical    ::  non_lin
 !
+    character(len=24) :: typco
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -128,6 +132,16 @@ implicit none
 !
     call nmlect(result, model, mate, cara_elem, list_load, solver)
     call dismoi('NOM_MAILLA', model, 'MODELE', repk=mesh)
+!
+! --- VERIFICATION DE CARA_ELEM : COEF_RIGI_DRZ INTERDIT EN NON-LINEAIRE
+!
+    write (6, *) "nomcmd(5:13)", nomcmd(5:13)
+    if (nomcmd(6:13) .eq. 'NON_LINE' ) then
+        call gettco(cara_elem, typco)
+        if (typco .eq. 'CARA_ELEM') then
+            call verif_affe(model,cara_elem, non_lin = .true._1)
+        endif
+    endif
 !
 ! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
 !

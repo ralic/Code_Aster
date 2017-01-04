@@ -10,7 +10,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
     integer :: iret
 !     -----------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,11 +51,12 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
 !     VERIFICATION QUE L'ELEMENT EST REELLEMENT PLAN
 !
 !     ------------------------------------------------------------------
-    real(kind=8) :: vx, vy, vz, xi, yi, zzi, xj, yj, zzj, xk, yk, zzk, xl, yl
-    real(kind=8) :: zzl
-    real(kind=8) :: norm
-    real(kind=8) :: x12, y12, z12, x13, y13, z13, x14, y14, z14
-    real(kind=8) :: ux, uy, uz, pscal, normu, norm4, dist
+    real(kind=8) :: vx=0.0, vy=0.0, vz=0.0, xi=0.0, yi=0.0, zzi=0.0, xj=0.0
+    real(kind=8) :: yj=0.0, zzj=0.0, xk=0.0, yk=0.0, zzk=0.0, xl=0.0, yl=0.0
+    real(kind=8) :: zzl=0.0
+    real(kind=8) :: norm=0.0
+    real(kind=8) :: x12=0.0, y12=0.0, z12=0.0, x13=0.0, y13=0.0, z13=0.0, x14=0.0, y14=0.0, z14=0.0
+    real(kind=8) :: ux=0.0, uy=0.0, uz=0.0, pscal=0.0, normu=0.0, norm4=0.0, dist=0.0
     integer :: iadzi, iazk24
 !     ------------------------------------------------------------------
     real(kind=8) :: valr
@@ -81,7 +82,7 @@ subroutine dxqpgl(xyzg, pgl, kstop, iret)
     vx = (yj-yi)*(zzl-zzk) - (zzj-zzi)*(yl-yk)
     vy = - (xj-xi)*(zzl-zzk) + (zzj-zzi)*(xl-xk)
     vz = (xj-xi)*(yl-yk) - (yj-yi)*(xl-xk)
-!
+
     norm = sqrt(vx*vx + vy*vy + vz*vz)
     pgl(3,1) = vx / norm
     pgl(3,2) = vy / norm

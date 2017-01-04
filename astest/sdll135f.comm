@@ -1,4 +1,4 @@
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -55,6 +55,12 @@ CARAC=AFFE_CARA_ELEM(MODELE=MODELE,
                      DISCRET=(_F(GROUP_MA = 'POI_A',CARA = 'K_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0. ),),
                               _F(GROUP_MA = 'POI_A',CARA = 'M_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0. ),),
                               ));
+                              
+CARAC1=AFFE_CARA_ELEM(MODELE=MODELE,
+                     COQUE  =_F(GROUP_MA=('Tuyau','Encas', 'Libre'),EPAIS=epaisseur,COEF_RIGI_DRZ=-1.E-12),
+                     DISCRET=(_F(GROUP_MA = 'POI_A',CARA = 'K_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0. ),),
+                              _F(GROUP_MA = 'POI_A',CARA = 'M_TR_D_N',VALE = ( 0.,0.,0.,0.,0.,0.,0.,0.,0.,0. ),),
+                              ));
 
 # ENCASTREMENT SUR UNE EXTREMITE
 
@@ -72,6 +78,20 @@ CL=AFFE_CHAR_MECA(MODELE=MODELE,
                                    CARA_ELEM=CARAC,
                                    AXE_POUTRE=(1.0,0.0,0.0,),),
              ));
+CL1=AFFE_CHAR_MECA(MODELE=MODELE,
+                  DDL_IMPO=_F(GROUP_NO='Point_A',
+                              DX=0.0,
+                              DY=0.0,
+                              DZ=0.0,
+                              DRX=0.0,
+                              DRY=0.0,
+                              DRZ=0.0,),
+                  LIAISON_ELEM=(_F(OPTION='COQ_POU',
+                                   GROUP_MA_1='Encas',
+                                   GROUP_NO_2='Point_A',
+                                   CARA_ELEM=CARAC1,
+                                   AXE_POUTRE=(1.0,0.0,0.0,),),
+             ));
 
 
 
@@ -84,6 +104,15 @@ ASSEMBLAGE(MODELE=MODELE,
                               OPTION='MASS_MECA',),
                            _F(MATRICE=CO('RIGID'),
                               OPTION='RIGI_MECA',),),);
+ASSEMBLAGE(MODELE=MODELE,
+                CHAM_MATER=CHMAT,
+                CARA_ELEM=CARAC1,
+                CHARGE=CL1,
+                NUME_DDL=CO('NUMEDDL1'),
+                MATR_ASSE=(_F(MATRICE=CO('MASSE1'),
+                              OPTION='MASS_MECA',),
+                           _F(MATRICE=CO('RIGID1'),
+                              OPTION='RIGI_MECA',),),);
 
 
 # RECHERCHE DES MODES PROPRES 
@@ -94,6 +123,12 @@ NBMODE_A = INFO_MODE(MATR_RIGI=RIGID,
                      COMPTAGE=_F(METHODE='STURM'),)
 
 IMPR_TABLE(TABLE=NBMODE_A)
+
+NBMODE_B = INFO_MODE(MATR_RIGI=RIGID1,
+                     MATR_MASS=MASSE1,FREQ=(100.,12000.),
+                     COMPTAGE=_F(METHODE='STURM'),)
+
+IMPR_TABLE(TABLE=NBMODE_B)
 
 # RECHERCHE DES MODES PROPRES DE TRACTION/COMPRESSION
 
@@ -108,7 +143,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DX,
-                  VALE_CALC= 1260.2247507654,
+                  VALE_CALC=1260.22475077,
                   VALE_REFE= 1263.497,
                   CRITERE='RELATIF',
                   PRECISION=0.003))
@@ -117,7 +152,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DX,
-                  VALE_CALC= 3813.1569877294,
+                  VALE_CALC=3813.15705773,
                   VALE_REFE= 3790.49,
                   CRITERE='RELATIF',
                   PRECISION=0.0065))
@@ -126,7 +161,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DX,
-                  VALE_CALC= 6322.7765528469,
+                  VALE_CALC=6322.77656332,
                   VALE_REFE= 6317.484,
                   CRITERE='RELATIF',))
 
@@ -134,7 +169,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DX,
-                  VALE_CALC= 8867.0216659553,
+                  VALE_CALC=8867.02162101,
                   VALE_REFE= 8844.4477,
                   CRITERE='RELATIF',
                   PRECISION=0.003))
@@ -152,7 +187,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC= 283.06900572338,
+                  VALE_CALC=283.068976943,
                   VALE_REFE= 310.133,
                   CRITERE='RELATIF',
                   PRECISION=0.095))
@@ -161,7 +196,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC= 1952.7610757021,
+                  VALE_CALC=1952.76109501,
                   VALE_REFE= 1943.568,
                   CRITERE='RELATIF',
                   PRECISION=0.0055))
@@ -170,7 +205,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC= 5454.2980449079,
+                  VALE_CALC=5454.29804679,
                   VALE_REFE= 5442.048,
                   CRITERE='RELATIF',
                   PRECISION=0.003))
@@ -179,7 +214,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC= 10684.885111419,
+                  VALE_CALC=10684.8851196,
                   VALE_REFE= 10664.242,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
@@ -188,7 +223,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=5,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_FZ,
-                  VALE_CALC= 17656.132225279,
+                  VALE_CALC=17656.1323774,
                   VALE_REFE= 17628.755,
                   CRITERE='RELATIF',
                   PRECISION=0.002))
@@ -206,7 +241,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DRX,
-                  VALE_CALC= 785.06755679556,
+                  VALE_CALC=785.06755681,
                   VALE_REFE= 786.619,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
@@ -215,7 +250,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=2,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DRX,
-                  VALE_CALC= 2355.2066670522,
+                  VALE_CALC=2355.20667866,
                   VALE_REFE= 2359.856,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
@@ -224,7 +259,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=3,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DRX,
-                  VALE_CALC= 3925.3577248351,
+                  VALE_CALC=3925.35773135,
                   VALE_REFE= 3933.094,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
@@ -233,9 +268,53 @@ TEST_RESU(RESU=_F(NUME_ORDRE=4,
                   PARA='FREQ',
                   REFERENCE='ANALYTIQUE',
                   RESULTAT=MODE_DRX,
-                  VALE_CALC= 5495.528274852,
+                  VALE_CALC=5495.52828019,
                   VALE_REFE= 5506.33,
                   CRITERE='RELATIF',
                   PRECISION=0.0025))
 
+                    
+MOD_DRX1=CALC_MODES(MATR_RIGI=RIGID1,
+                    OPTION='PROCHE',
+                    CALC_FREQ=_F(FREQ=(786.619,2359.856,3933.094,5506.33,),
+                                 ),
+                    MATR_MASS=MASSE1,
+                    )
+
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MOD_DRX1,
+                  VALE_CALC=786.609104259,
+                  VALE_REFE= 786.619,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0025))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=2,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MOD_DRX1,
+                  VALE_CALC=2360.41449345,
+                  VALE_REFE= 2359.856,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0025))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=3,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MOD_DRX1,
+                  VALE_CALC=3931.63002596,
+                  VALE_REFE= 3933.094,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0025))
+
+TEST_RESU(RESU=_F(NUME_ORDRE=4,
+                  PARA='FREQ',
+                  REFERENCE='ANALYTIQUE',
+                  RESULTAT=MOD_DRX1,
+                  VALE_CALC=5505.40797115,
+                  VALE_REFE= 5506.33,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0025))   
+       
 FIN()

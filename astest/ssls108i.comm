@@ -1,6 +1,6 @@
 # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,9 +23,17 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',
               VISU_EFICAS='OUI',),)
 
-ma=LIRE_MAILLAGE(FORMAT='MED',);
+ma=LIRE_MAILLAGE(FORMAT='MED',INFO=2);
+mamixte=CREA_MAILLAGE(MAILLAGE=ma,
+                     MODI_MAILLE=_F(MAILLE='M51',
+                                    OPTION='QUAD_TRIA3',),);
 
 mod=AFFE_MODELE(MAILLAGE=ma,
+                AFFE=_F(TOUT='OUI',
+                        PHENOMENE='MECANIQUE',
+                        MODELISATION='DKT',),);
+                        
+modmix=AFFE_MODELE(MAILLAGE=mamixte,
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='DKT',),);
@@ -36,12 +44,30 @@ mate=DEFI_MATERIAU(ELAS=_F(E=29e6,
 chmate=AFFE_MATERIAU(MAILLAGE=ma,
                      AFFE=_F(TOUT='OUI',
                              MATER=mate,),);
+chmixte=AFFE_MATERIAU(MAILLAGE=mamixte,
+                     AFFE=_F(TOUT='OUI',
+                             MATER=mate,),);
 
 cara=AFFE_CARA_ELEM(MODELE=mod,
                     COQUE=_F(GROUP_MA='Poutre',
+                             COEF_RIGI_DRZ = -1.E-8,
+                             EPAIS=0.32,),);
+
+camixte=AFFE_CARA_ELEM(MODELE=modmix,
+                    COQUE=_F(GROUP_MA='Poutre',
+                             COEF_RIGI_DRZ = -1.E-8,
                              EPAIS=0.32,),);
 
 CLIM=AFFE_CHAR_CINE(MODELE=mod,
+                    MECA_IMPO=_F(GROUP_MA='Encas',
+                                 DX=0.,
+                                 DY=0.,
+                                 DZ=0.,
+                                 DRX=0.,
+                                 DRY=0.,
+                                 DRZ=0.,),);
+
+CLmixte=AFFE_CHAR_CINE(MODELE=modmix,
                     MECA_IMPO=_F(GROUP_MA='Encas',
                                  DX=0.,
                                  DY=0.,
@@ -58,6 +84,14 @@ PZ=AFFE_CHAR_MECA(MODELE=mod,
                   FORCE_NODALE=_F(GROUP_NO='A',
                                   FZ=1000,),);
 
+
+PYmix=AFFE_CHAR_MECA(MODELE=modmix,
+                  FORCE_NODALE=_F(GROUP_NO='A',
+                                  FY=1000,),);
+
+PZmix=AFFE_CHAR_MECA(MODELE=modmix,
+                  FORCE_NODALE=_F(GROUP_NO='A',
+                                  FZ=1000,),);
 Resu_PY=MECA_STATIQUE(MODELE=mod,
                       CHAM_MATER=chmate,
                       CARA_ELEM=cara,
@@ -70,6 +104,18 @@ Resu_PZ=MECA_STATIQUE(MODELE=mod,
                       EXCIT=(_F(CHARGE=CLIM,),
                              _F(CHARGE=PZ,),),);
 
+R_PYmix=MECA_STATIQUE(MODELE=modmix,
+                      CHAM_MATER=chmixte,
+                      CARA_ELEM=camixte,
+                      EXCIT=(_F(CHARGE=CLmixte,),
+                             _F(CHARGE=PYmix,),),);
+
+R_PZmix=MECA_STATIQUE(MODELE=modmix,
+                      CHAM_MATER=chmixte,
+                      CARA_ELEM=camixte,
+                      EXCIT=(_F(CHARGE=CLmixte,),
+                             _F(CHARGE=PZmix,),),);
+                             
 TEST_RESU(RESU=_F(RESULTAT=Resu_PY,
                   NUME_ORDRE=1,
                   NOM_CHAM='DEPL',
@@ -78,7 +124,17 @@ TEST_RESU(RESU=_F(RESULTAT=Resu_PY,
                   VALE_REFE=1.754,
                   PRECISION=0.48,
                   REFERENCE='AUTRE_ASTER',
-                  VALE_CALC=0.91875665997673,),);
+                  VALE_CALC=2.5950315383,),);
+                  
+TEST_RESU(RESU=_F(RESULTAT=R_PYmix,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DY',
+                  GROUP_NO='A',
+                  VALE_REFE=1.754,
+                  PRECISION=0.48,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=2.57398907078,),);
 
 TEST_RESU(RESU=_F(RESULTAT=Resu_PZ,
                   NUME_ORDRE=1,
@@ -88,6 +144,16 @@ TEST_RESU(RESU=_F(RESULTAT=Resu_PZ,
                   VALE_REFE=5.424,
                   PRECISION=0.625,
                   REFERENCE='AUTRE_ASTER',
-                  VALE_CALC=2.0699608281757,),);
+                  VALE_CALC=4.40021118823,),);
+
+TEST_RESU(RESU=_F(RESULTAT=R_PZmix,
+                  NUME_ORDRE=1,
+                  NOM_CHAM='DEPL',
+                  NOM_CMP='DZ',
+                  GROUP_NO='A',
+                  VALE_REFE=5.424,
+                  PRECISION=0.625,
+                  REFERENCE='AUTRE_ASTER',
+                  VALE_CALC=4.24948647289,),);
 
 FIN();

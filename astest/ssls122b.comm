@@ -1,6 +1,6 @@
 #
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -147,6 +147,7 @@ CARA=AFFE_CARA_ELEM(MODELE=MODEL,
                               EPAIS=epais_P2,
                               ANGL_REP=(alpha,beta,),
                               EXCENTREMENT=excen_P2,
+                               COEF_RIGI_DRZ = -1.E-8,
                               INER_ROTA='OUI',),
 
 # Plaque P2
@@ -154,18 +155,21 @@ CARA=AFFE_CARA_ELEM(MODELE=MODEL,
                               EPAIS=epais_P2,
                               ANGL_REP=(alpha,beta,),
                               EXCENTREMENT=excen_P2,
+                               COEF_RIGI_DRZ = -1.E-8,
                               INER_ROTA='OUI',),
 # Plaque P1
                            _F(GROUP_MA='PLAQ_P1S',
                               EPAIS=epais_P1S,
                               ANGL_REP=(alpha,beta,),
                               EXCENTREMENT=excen_P1S,
+                               COEF_RIGI_DRZ = -1.E-8,
                               INER_ROTA='OUI',),
 
                            _F(GROUP_MA='PLAQ_P1I',
                               EPAIS=epais_P1I,
                               ANGL_REP=(alpha,beta,),
                               EXCENTREMENT=excen_P1I,
+                               COEF_RIGI_DRZ = -1.E-8,
                               INER_ROTA='OUI',),
                            ),
                     );
@@ -337,6 +341,71 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',NOM_PARA='FZ',TABLE=TABF13,
            FILTRE=_F(NOM_PARA='MAILLE',VALE_K='M13',),
            VALE_CALC=-2.E5 , VALE_REFE=-2.E5,)
 
-#---------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------- 
+       
+
+CAR0=AFFE_CARA_ELEM(MODELE=MODEL,
+                    COQUE=(
+                           _F(GROUP_MA=('PLAQUE',),
+                              EPAIS=epais_P2,
+                              ANGL_REP=(alpha,beta,),
+                              EXCENTREMENT=excen_P2,
+                               #COEF_RIGI_DRZ = -1.E-8,
+                              INER_ROTA='OUI',),
+
+# Plaque P2
+                           _F(GROUP_MA='PLAQ_P2',
+                              EPAIS=epais_P2,
+                              ANGL_REP=(alpha,beta,),
+                              EXCENTREMENT=excen_P2,
+                               #COEF_RIGI_DRZ = -1.E-8,
+                              INER_ROTA='OUI',),
+# Plaque P1
+                           _F(GROUP_MA='PLAQ_P1S',
+                              EPAIS=epais_P1S,
+                              ANGL_REP=(alpha,beta,),
+                              EXCENTREMENT=excen_P1S,
+                               #COEF_RIGI_DRZ = -1.E-8,
+                              INER_ROTA='OUI',),
+
+                           _F(GROUP_MA='PLAQ_P1I',
+                              EPAIS=epais_P1I,
+                              ANGL_REP=(alpha,beta,),
+                              EXCENTREMENT=excen_P1I,
+                               #COEF_RIGI_DRZ = -1.E-8,
+                              INER_ROTA='OUI',),
+                           ),
+                    );
+
+
+
+RES0=MECA_STATIQUE(MODELE=MODEL,
+                   CHAM_MATER=MATER,
+                   CARA_ELEM=CAR0,
+                   EXCIT=(_F(CHARGE=COND_LIM,),
+                          _F(CHARGE=FORCE,),),);            
+RESU=CALC_CHAMP(reuse=RESU, RESULTAT=RESU,ENERGIE=('EPOT_ELEM',))             
+RES0=CALC_CHAMP(reuse=RES0, RESULTAT=RES0,ENERGIE=('EPOT_ELEM',))
+IMPR_RESU(UNITE=6, RESU=_F(RESULTAT=RESU,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,MAILLE='M1'))
+IMPR_RESU(UNITE=6, RESU=_F(RESULTAT=RES0,NOM_CHAM='EPOT_ELEM',NUME_ORDRE=1,MAILLE='M1'))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  NOM_CHAM='EPOT_ELEM',
+                  NOM_CMP='TOTALE',
+                  MAILLE = 'M1',
+                  #REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RES0,
+                  VALE_CALC= 2.52206300715673E+03,
+                  #VALE_REFE= 1.09913688707856E-02,
+                  CRITERE='RELATIF',))
+TEST_RESU(RESU=_F(NUME_ORDRE=1,
+                  NOM_CHAM='EPOT_ELEM',
+                  NOM_CMP='TOTALE',
+                  MAILLE = 'M1',
+                  REFERENCE='AUTRE_ASTER',
+                  RESULTAT=RESU,
+                  VALE_CALC= 2.52206300715673E+03,
+                  VALE_REFE= 2.52206300715673E+03,
+                  CRITERE='RELATIF',
+                  PRECISION=0.0025))
 
 FIN();

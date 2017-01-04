@@ -1,8 +1,8 @@
-subroutine verif_affe(modele,sd)
+subroutine verif_affe(modele,sd,non_lin)
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +33,7 @@ subroutine verif_affe(modele,sd)
 !
     character(len=*), intent(in) :: modele
     character(len=*), intent(in), optional :: sd
+    aster_logical, intent(in), optional ::  non_lin
 !
 !-----------------------------------------------------------------------
 !   But :
@@ -130,7 +131,11 @@ subroutine verif_affe(modele,sd)
                 carte=sd_//'.'//l_cart_cara_elem(k)
                 comment=l_comm_cara_elem(k)
                 call exisd('CARTE', carte, iret)
-                if (iret .gt. 0)  call verif_affe_carte(ligrmo,carte,comment)
+                if (present(non_lin)) then
+                    if (iret .gt. 0)  call verif_affe_carte(ligrmo,carte,comment,non_lin = non_lin)
+                else
+                    if (iret .gt. 0)  call verif_affe_carte(ligrmo,carte,comment)
+                endif
             enddo
 
         else

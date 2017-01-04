@@ -15,10 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-          interface 
-            subroutine verif_affe(modele,sd,non_lin)
-              character(len=*), intent(in) :: modele
-              character(len=*) ,optional, intent(in) :: sd
-              aster_logical, intent(in), optional ::  non_lin
-            end subroutine verif_affe
-          end interface 
+interface
+    subroutine dxqlocdri4(bxb, matloc)
+        real(kind=8) :: bxb(*)
+        real(kind=8) :: matloc(*)
+    end subroutine dxqlocdri4
+end interface
