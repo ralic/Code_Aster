@@ -285,6 +285,7 @@ class fake_mfront_capy(Task.Task):
 ###############################################################################
 def getMaterialProperties(binary, libpath, behav):
     """Return the list of material properties"""
+    # TODO: add get_ld_paths output to LD_LIBRARY_PATH / or use Python bindings
     symb = 'aster%s' % behav.lower()
     try:
         out = subprocess.check_output([binary, "Tridimensional", libpath, symb])

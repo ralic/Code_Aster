@@ -33,8 +33,6 @@ def configure(self):
         YAMMROOT + '/prerequisites/Petsc_mpi-373_aster/include',
     ])
 
-    opts.enable_petsc = True    
+    opts.enable_petsc = True
     self.env.append_value('LIB_METIS', ('parmetis'))
     self.env.append_value('LIB_SCOTCH', ('ptscotch','ptscotcherr','ptscotcherrexit'))
-
-

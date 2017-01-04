@@ -9,25 +9,22 @@ It contains generic script (as ``intel.py``) and some files daily used to build
 the last development version on EDF servers.
 These files can be also used as examples for other servers.
 
-This repository should be written for everyone. You can share your own
-configuration files and/or use the others as examples.
-
 The naming convention: ``<hostname or distro>_<variant>.py``
 
 Note that several files can be used to build a variant.
 For example::
 
-    waf configure --use-config=intel,aster4,aster4_mpi --prefix=.....
+    waf configure --use-config=intel,aster,aster_mpi --prefix=.....
 
 This will define the compilers to be ``icc`` and ``ifort`` (including ``intel``),
-load the ``aster4`` configuration and just add few values for a MPI parallel build
-(through ``aster4_mpi``).
+load the ``aster`` configuration and just add few values for a MPI parallel build
+(through ``aster_mpi``).
 
-This combinaison can be replaced by importing the mpdules.
-For example: ``aster4.py`` contains::
+This combinaison can be replaced by importing the modules.
+For example: ``aster.py`` contains::
 
     import intel
-    
+
     def configure(self):
         intel.configure(self)
         ...
@@ -35,17 +32,13 @@ For example: ``aster4.py`` contains::
 
 PLEASE DO NOT CHANGE the files related to the verification servers:
 
-- ``aster4.py``
+- ``aster*.py``
 
-- ``calibre7.py``
+- ``athosdev*.py``
 
-- ``clap0f0q.py``
-
-- ``ivanoe.py``
-
-- and their variants.
+- ``calibre*.py``
 
 
 .. _Code_Aster: http://www.code-aster.org
-.. _waf: http://code.google.com/p/waf/
+.. _waf: https://waf.io/
 .. _bitbucket: https://bitbucket.org/code_aster/

@@ -50,4 +50,3 @@ def configure(self):
     opts.enable_mfront = True
 
     opts.enable_petsc = False
-
