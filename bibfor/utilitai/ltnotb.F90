@@ -1,6 +1,8 @@
-subroutine ltnotb(litab, nomtab, nomsd)
-    implicit none
-#include "jeveux.h"
+subroutine ltnotb(result, table_iden, table_name, iret_)
+!
+implicit none
+!
+#include "asterf_types.h"
 #include "asterfort/gnoms2.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
@@ -10,10 +12,9 @@ subroutine ltnotb(litab, nomtab, nomsd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: litab, nomtab, nomsd
-!     -----------------------------------------------------------------
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,68 +29,107 @@ subroutine ltnotb(litab, nomtab, nomsd)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!      DETERMINER LE NOM DE LA TABLE DE "LITAB" CORRESPONDANT
-!      AU NOM SYMBOLIQUE "NOMTAB"
 !
-! IN  : LITAB  : NOM DE LA SD L_TABLE
-! IN  : NOMTAB : NOM SYMBOLIQUE DE LA TABLE STOCKEE DANS "LITAB"
-! OUT : NOMSD  : NOM DE LA TABLE STOCKEE (OU A STOCKER) DANS "LITAB"
+    character(len=*), intent(in) :: result
+    character(len=*), intent(in) :: table_iden
+    character(len=*), intent(out) :: table_name
+    integer, optional, intent(out) :: iret_
 !
-!     SI NOMTAB N'EXISTE PAS ENCORE DANS LITAB ON AGRANDIT LITAB
-!     -----------------------------------------------------------------
+! --------------------------------------------------------------------------------------------------
+!
+! Results datastructure
+!
+! Get/Create object for table in results datastructure
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  result           : name of results datastructure
+! In  table_iden       : identifier of table
+! Out table_name       : name of JEVEUX object for this table
+! Out iret             : return code
+!                         iret = 0 => this table exists
+!                         iret = 1 => this table doesn't exist and we cannot create it
+!                         iret = 2 => this table doesn't exist and we can create it
+!
+! --------------------------------------------------------------------------------------------------
+!
     character(len=24) :: noojb
-    integer :: iret, nbtm, nbtu, jltnt, i, jltns
-    character(len=16) :: nomsym
-    character(len=19) :: listab
+    integer :: nb_table_maxi, nb_table_curr, i_table, iret_obj, iret
+    character(len=16) :: table_iden_k16
+    character(len=16), pointer :: v_tabl_ltnt(:) => null()
+    character(len=24), pointer :: v_tabl_ltns(:) => null()
+    character(len=19) :: result_k19
     character(len=24) :: valk(2)
-! DEB------------------------------------------------------------------
+    aster_logical :: stop_error
+!
+! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
-    listab = litab
-    call jeexin(listab//'.LTNT', iret)
-    if (iret .eq. 0) then
-        valk(1) = nomtab
-        valk(2) = litab
-        call utmess('F', 'TABLE0_37', nk=2, valk=valk)
+! - Initializations
+!
+    iret           = 2
+    table_name     = ' '
+    result_k19     = result
+    table_iden_k16 = table_iden
+    stop_error     = .true._1
+    if (present(iret_)) then
+        stop_error = .false._1
     endif
 !
-    nomsym = nomtab
-    call jelira(listab//'.LTNT', 'LONMAX', nbtm)
-    call jelira(listab//'.LTNT', 'LONUTI', nbtu)
-    call jeveuo(listab//'.LTNT', 'L', jltnt)
+! - Get object for list of tables in datastructure
 !
-!
-!     1) LE NOMSYM EXISTE DANS LISTAB :
-!     ---------------------------------
-    do 10 i = 1, nbtu
-        if (zk16(jltnt+i-1) .eq. nomsym) then
-            call jeveuo(listab//'.LTNS', 'L', jltns)
-            nomsd = zk24(jltns+i-1)
-            goto 9999
+    call jeexin(result_k19//'.LTNT', iret_obj)
+    if (iret_obj .eq. 0) then
+        iret = 1
+        if (stop_error) then
+            valk(1) = table_iden
+            valk(2) = result
+            call utmess('F', 'TABLE0_37', nk=2, valk=valk)
         endif
-10  end do
-!
-!
-!     2) LE NOMSYM N'EXISTE PAS DANS LISTAB :
-!     ---------------------------------
-    nbtu = nbtu + 1
-    if (nbtu .gt. nbtm) then
-        call juveca(listab//'.LTNT', nbtu+6)
-        call juveca(listab//'.LTNS', nbtu+6)
     endif
-    call jeecra(listab//'.LTNT', 'LONUTI', nbtu)
-    call jeecra(listab//'.LTNS', 'LONUTI', nbtu)
 !
-    call jeveuo(listab//'.LTNT', 'E', jltnt)
-    zk16(jltnt+nbtu-1) = nomsym
-    noojb=listab(1:8)//'.TB000000  .TBBA'
+! - Access to objects
+!  
+    call jelira(result_k19//'.LTNT', 'LONMAX', nb_table_maxi)
+    call jelira(result_k19//'.LTNT', 'LONUTI', nb_table_curr)
+    call jeveuo(result_k19//'.LTNT', 'L', vk16 = v_tabl_ltnt)
+!
+! - Look for this table in list
+!
+    do i_table = 1, nb_table_curr
+        if (v_tabl_ltnt(i_table) .eq. table_iden_k16) then
+            call jeveuo(result_k19//'.LTNS', 'L', vk24 = v_tabl_ltns)
+            table_name = v_tabl_ltns(i_table)
+            iret = 0
+            goto 999
+        endif
+    end do
+!
+! - Create this table in list
+!
+    iret = 2
+    nb_table_curr = nb_table_curr + 1
+    if (nb_table_curr .gt. nb_table_maxi) then
+        call juveca(result_k19//'.LTNT', nb_table_curr+6)
+        call juveca(result_k19//'.LTNS', nb_table_curr+6)
+    endif
+    call jeecra(result_k19//'.LTNT', 'LONUTI', nb_table_curr)
+    call jeecra(result_k19//'.LTNS', 'LONUTI', nb_table_curr)
+!
+    call jeveuo(result_k19//'.LTNT', 'E', vk16 = v_tabl_ltnt)
+    v_tabl_ltnt(nb_table_curr) = table_iden_k16
+    noojb=result_k19(1:8)//'.TB000000  .TBBA'
     call gnoms2(noojb, 12, 17)
-    call jeveuo(listab//'.LTNS', 'E', jltns)
-    zk24(jltns+nbtu-1) = noojb(1:17)
-    nomsd = zk24(jltns+nbtu-1)
+    call jeveuo(result_k19//'.LTNS', 'E', vk24 = v_tabl_ltns)
+    v_tabl_ltns(nb_table_curr) = noojb(1:17)
+    table_name = v_tabl_ltns(nb_table_curr)
 !
-9999  continue
+999 continue
+!
+    if (present(iret_)) then
+        iret_ = iret
+    endif
 !
     call jedema()
 end subroutine

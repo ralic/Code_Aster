@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ltnotb(litab, nomtab, nomsd)
-        character(len=*) :: litab
-        character(len=*) :: nomtab
-        character(len=*) :: nomsd
+    subroutine ltnotb(result, table_iden, table_name, iret_)
+        character(len=*), intent(in) :: result
+        character(len=*), intent(in) :: table_iden
+        character(len=*), intent(out) :: table_name
+        integer, optional, intent(out) :: iret_
     end subroutine ltnotb
 end interface
