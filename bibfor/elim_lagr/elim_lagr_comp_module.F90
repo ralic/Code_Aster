@@ -32,6 +32,7 @@ implicit none
 !
 private
 #include "asterf.h"
+#include "asterc/asmpi_comm.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apalmc.h"
