@@ -1,6 +1,9 @@
 subroutine apvsmb(kptsc, lmd, rsolu)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,16 +18,14 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
-! 
+!
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
 use petsc_data_module
 use saddle_point_module, only : convert_rhs_to_saddle_point
- 
+
     implicit none
-   
-#include "asterf_types.h"
-#include "asterf.h"
+
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/as_allocate.h"
@@ -45,8 +46,6 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 !
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, rang, nbproc, jnequ, jnequl
@@ -192,7 +191,7 @@ use saddle_point_module, only : convert_rhs_to_saddle_point
 
     if ( precon == 'BLOC_LAGR' ) then
         call convert_rhs_to_saddle_point( b )
-    endif 
+    endif
 
 
     call jedema()

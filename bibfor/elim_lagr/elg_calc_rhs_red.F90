@@ -1,10 +1,13 @@
 subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
 use elim_lagr_data_module
     implicit none
 ! aslint: disable=W0104,C1308
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +26,8 @@ use elim_lagr_data_module
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
+#include "asterfort/elg_calcx0.h"
+#include "asterfort/elg_allocvr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -48,9 +53,6 @@ use elim_lagr_data_module
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
-#include "asterfort/elg_calcx0.h"
-#include "asterfort/elg_allocvr.h"
 !
 !================================================================
     character(len=1) :: kbid

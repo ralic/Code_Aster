@@ -1,7 +1,10 @@
 module elim_lagr_comp_module
 !
-!!----------------------------------------------------------------
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+!----------------------------------------------------------------
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,14 +25,13 @@ module elim_lagr_comp_module
 !
 use elim_lagr_context_class
 use elim_lagr_data_module
-use petsc_data_module 
+use petsc_data_module
 use saddle_point_context_class
 !
-implicit none 
+implicit none
 !
-private 
+private
 #include "asterf.h"
-#include "asterf_petsc.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
 #include "asterfort/apalmc.h"
@@ -45,130 +47,130 @@ private
 !
 public ::  build_elim_lagr_context
 !
-contains 
+contains
 !
-#ifdef _HAVE_PETSC 
+#ifdef _HAVE_PETSC
 subroutine build_elim_lagr_context( full_matas )
-   ! 
-    ! Dummy arguments 
-    character(len=19), intent(in) :: full_matas 
-    ! 
+   !
+    ! Dummy arguments
+    character(len=19), intent(in) :: full_matas
+    !
     ! Local variables
     !
     integer :: iret, ii
-    integer :: kptsc, kptscr 
+    integer :: kptsc, kptscr
     character(len=3) :: matd
     character(len=19) :: kbid
     PetscInt  ::   is_array(1)
     PetscOffset ::  i_is
-    integer, dimension(:), allocatable :: idphys_c  
+    integer, dimension(:), allocatable :: idphys_c
     type(saddle_point_context_type)    :: sp_ctxt
     type(elim_lagr_context_type), pointer :: elg_ctxt => null()
-    PetscErrorCode :: ierr  
+    PetscErrorCode :: ierr
     logical :: k_mat_to_free
     character(len=19) :: nomat_save
     !
-    k_mat_to_free = .false.    
-    !    
-    ! Retrouve l'identifiant de l'objet elim_lagr_context associe 
-    ! a la matrice full_matas 
+    k_mat_to_free = .false.
+    !
+    ! Retrouve l'identifiant de l'objet elim_lagr_context associe
+    ! a la matrice full_matas
     call elg_gest_data('CHERCHE', full_matas, ' ' , ' ')
     ! Alias vers cet objet
-    elg_ctxt => elg_context( ke )  
-    ! On recherche egalement l'identifiant de la matrice PETSc 
-    ! associée à full_matas 
-    kptsc = get_mat_id( full_matas )  
+    elg_ctxt => elg_context( ke )
+    ! On recherche egalement l'identifiant de la matrice PETSc
+    ! associée à full_matas
+    kptsc = get_mat_id( full_matas )
     !
     ! Pour l'instant on interdit les matrices distribuées
     call dismoi('MATR_DISTRIBUEE', full_matas, 'MATR_ASSE', repk=matd)
-    ASSERT( matd == 'NON' ) 
+    ASSERT( matd == 'NON' )
     !
     ! -------------------------------------------------------------------
-    ! Creation d'un clone PETSc de la matrice (matr_asse) definissant 
-    ! le systeme aster complet (avec doubles multiplicateurs de Lagrange) 
+    ! Creation d'un clone PETSc de la matrice (matr_asse) definissant
+    ! le systeme aster complet (avec doubles multiplicateurs de Lagrange)
     ! -------------------------------------------------------------------
-    ! La matrice est deja enregistree et possede l'id kptsc  
+    ! La matrice est deja enregistree et possede l'id kptsc
     ! On prealloue la matrice PETSc correspondante
     call apalmc(kptsc)
     ! On copie les valeurs de la matr_asse dans la matrice PETSc
     call apmamc(kptsc)
-    ! et on assemble 
+    ! et on assemble
     call MatAssemblyBegin(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
     ASSERT(ierr==0)
     call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
     ASSERT(ierr==0)
     !
-    ! Parfois (si matrice de masse ou amortissement), il faut aller chercher 
-    ! les relations lineaires dans une autre matrice 
+    ! Parfois (si matrice de masse ou amortissement), il faut aller chercher
+    ! les relations lineaires dans une autre matrice
     !
-    kptscr = kptsc 
-    if ( elg_ctxt%k_matas /= " ") then  
-       kptscr = get_mat_id( elg_ctxt%k_matas ) 
+    kptscr = kptsc
+    if ( elg_ctxt%k_matas /= " ") then
+       kptscr = get_mat_id( elg_ctxt%k_matas )
     !  S'il n'existe pas encore (ou deja plus) un clone PETSc de cette matrice
        if ( kptscr == 0 ) then
     ! on le crée
-    ! il faudra donc le détruire : on met à jour le flag k_mat_to_free  
+    ! il faudra donc le détruire : on met à jour le flag k_mat_to_free
         k_mat_to_free = .true.
-        call mat_record(  elg_ctxt%k_matas, nosols(kptsc) , kptscr )  
-        ASSERT( kptscr /= 0 ) 
+        call mat_record(  elg_ctxt%k_matas, nosols(kptsc) , kptscr )
+        ASSERT( kptscr /= 0 )
     ! on met à jour (temporairement) le nom de la matrice courante
-    ! en effet, il est utilise dans les routines apalmc et apmamc 
-    ! pour recuperer les valeurs de la matr_asse que l'on est 
-    ! en train de cloner. On n'a pas besoin de mettre à jour 
+    ! en effet, il est utilise dans les routines apalmc et apmamc
+    ! pour recuperer les valeurs de la matr_asse que l'on est
+    ! en train de cloner. On n'a pas besoin de mettre à jour
     ! le nom du nume_ddl: c'est le meme que pour la matrice sur laquelle
     ! on est en train de proceder a l'elimination des lagranges.
-        nomat_save = nomat_courant 
+        nomat_save = nomat_courant
         nomat_courant = elg_ctxt%k_matas
     ! On prealloue la matrice PETSc correspondante
         call apalmc(kptscr)
     ! On copie les valeurs de la matr_asse dans la matrice PETSc
         call apmamc(kptscr)
-    ! et on assemble 
+    ! et on assemble
         call MatAssemblyBegin(ap(kptscr), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr==0)
         call MatAssemblyEnd(ap(kptscr), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr==0)
-     ! On retablit le nom de la matrice courante 
+     ! On retablit le nom de la matrice courante
         nomat_courant  = nomat_save
        endif
     endif
     !
     ! -------------------------------------------------------------------
-    ! Calcul d'un saddle_point_context 
+    ! Calcul d'un saddle_point_context
     ! -------------------------------------------------------------------
     !
     sp_ctxt = new_saddle_point_context( full_matas, ap(kptsc), ap(kptscr) )
-    !  et on libere le clone PETSc de full_matas 
+    !  et on libere le clone PETSc de full_matas
     kbid = repeat(" ",19)
     call  apmain('DETR_MAT', kptsc, [0.d0], kbid, 0, iret)
-    ! ainsi que celui de k_matas 
-    if ( k_mat_to_free ) then 
+    ! ainsi que celui de k_matas
+    if ( k_mat_to_free ) then
       call  apmain('DETR_MAT', kptscr, [0.d0], kbid, 0, iret)
-    endif 
+    endif
     ! -------------------------------------------------------------------
     ! Remplissage de elg_ctxt
     ! -------------------------------------------------------------------
     !
-    ! on utilise sp_ctxt pour definir les matrices ctrans et matb 
+    ! on utilise sp_ctxt pour definir les matrices ctrans et matb
     call MatConvert( sp_ctxt%k_mat, MATSAME, MAT_INITIAL_MATRIX, &
          elg_ctxt%matb, ierr)
-    ASSERT( ierr == 0 ) 
+    ASSERT( ierr == 0 )
     call MatTranspose(sp_ctxt%c_mat, MAT_INITIAL_MATRIX, &
         elg_ctxt%ctrans , ierr )
-    ASSERT( ierr == 0 ) 
+    ASSERT( ierr == 0 )
     elg_ctxt%nphys = sp_ctxt%nphys
     elg_ctxt%nlag = sp_ctxt%nlag1
     !
     ! -- necessaire pour tfinal
-    ! idphys_c(k) = indice (C) global du kième ddl physique. 
+    ! idphys_c(k) = indice (C) global du kième ddl physique.
     allocate( idphys_c( elg_ctxt%nphys ) )
-    idphys_c(:) = 0 
+    idphys_c(:) = 0
     call ISGetIndices(sp_ctxt%is_phys,is_array,i_is,ierr)
-    ASSERT(ierr == 0 ) 
+    ASSERT(ierr == 0 )
     !
     do ii=1, elg_ctxt%nphys
         idphys_c(ii)= is_array(i_is+ii)
-    enddo 
+    enddo
     call ISRestoreIndices(sp_ctxt%is_phys,is_array,i_is,ierr)
     ASSERT(ierr == 0 )
     ! -------------------------------------------------------------------
@@ -176,7 +178,7 @@ subroutine build_elim_lagr_context( full_matas )
     ! -------------------------------------------------------------------
     call free_saddle_point_context( sp_ctxt )
     !
-    call build_tfinal( idphys_c, elg_ctxt )  
+    call build_tfinal( idphys_c, elg_ctxt )
     !
     !   -- Projection T'*(MatB*T) :
     !   -----------------------------
@@ -188,14 +190,14 @@ subroutine build_elim_lagr_context( full_matas )
    !
 end subroutine build_elim_lagr_context
 !
-!  -- Allocation et remplissage de Tfinal, 
-!     qui servira pour la projection de la matrice 
+!  -- Allocation et remplissage de Tfinal,
+!     qui servira pour la projection de la matrice
 !
-subroutine build_tfinal( idphys_c, elg_ctxt ) 
-    ! Dummy arguments 
-    integer, dimension(:), intent(in) :: idphys_c 
+subroutine build_tfinal( idphys_c, elg_ctxt )
+    ! Dummy arguments
+    integer, dimension(:), intent(in) :: idphys_c
     type(elim_lagr_context_type), intent(inout) :: elg_ctxt
-     
+
     ! Local variables
     character(len=16) :: concep, nomcmd
     character(len=8)  :: k8b
@@ -203,14 +205,14 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     integer :: i1, j1, restart, ifm, niv
     real(kind=8) :: eps
     PetscInt :: nbelig
-    PetscInt :: nbnvco, i 
+    PetscInt :: nbnvco, i
     PetscInt, parameter  :: izero=0, ione = 1
     PetscScalar, parameter :: rzero=0.d0, rone = 1.d0
     PetscInt, dimension(:), allocatable :: non_verified_cons_c
-    PetscInt, dimension(:), pointer :: icolnz_c 
-    PetscReal :: aster_petsc_default_real  
+    PetscInt, dimension(:), pointer :: icolnz_c
+    PetscReal :: aster_petsc_default_real
     PetscReal, dimension(:), allocatable :: norms_c, norms_ct
-    PetscErrorCode :: ierr 
+    PetscErrorCode :: ierr
     Mat :: mat_c, mat_tmp, mat_t
     IS :: isall, isnvco
     mpi_int :: mpicomm
@@ -219,20 +221,20 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     call infniv(ifm, niv)
     verbose= ( niv == 2 )
     !
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+#if PETSC_VERSION_LT(3,5,0)
     aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
     aster_petsc_default_real = PETSC_DEFAULT_REAL
-#endif 
+#endif
     !
     ! Allocation et initialisation de T à l'identite
     call MatDuplicate( elg_ctxt%matb, MAT_DO_NOT_COPY_VALUES, &
         &     elg_ctxt%tfinal, ierr )
-    ASSERT( ierr == 0 ) 
+    ASSERT( ierr == 0 )
     call MatZeroRows( elg_ctxt%tfinal, elg_ctxt%nphys, &
        (/ (i, i=0, elg_ctxt%nphys-1)/), &
-     &    rone, PETSC_NULL_OBJECT, PETSC_NULL_OBJECT, ierr ) 
-    ASSERT( ierr == 0 ) 
+     &    rone, PETSC_NULL_OBJECT, PETSC_NULL_OBJECT, ierr )
+    ASSERT( ierr == 0 )
 !
 !----------------------------------------------------!
 !--                                                --!
@@ -243,29 +245,29 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
 !----------------------------------------------------!
 !
 !
-!   -- C est initialisée en transposant Ctrans 
+!   -- C est initialisée en transposant Ctrans
 !
     call MatTranspose(elg_ctxt%ctrans, MAT_INITIAL_MATRIX, mat_c, ierr)
     ASSERT( ierr == 0 )
 ! Number of non-verified constraints
     nbnvco  = elg_ctxt%nlag
     allocate( non_verified_cons_c( elg_ctxt%nlag ), stat = ierr )
-    ASSERT( ierr == 0 ) 
+    ASSERT( ierr == 0 )
     non_verified_cons_c(:)= izero
-! Nombre de tours de boucle   
-    restart = 0 
+! Nombre de tours de boucle
+    restart = 0
     do while (( nbnvco > 0 ).and.( restart < elg_ctxt%nlag ))
 !
 !
-! -- Calcul de T, telle que CT=0 
+! -- Calcul de T, telle que CT=0
 !    en sortie : nbnvco, non_verified_cons_c caractérisent
-!    les contraintes qui n'ont pas pu être prises en compte 
-!    à ce tour de boucle 
+!    les contraintes qui n'ont pas pu être prises en compte
+!    à ce tour de boucle
 !
-      call nullbasis(mat_c, mat_t, nbnvco, non_verified_cons_c) 
+      call nullbasis(mat_c, mat_t, nbnvco, non_verified_cons_c)
 !
-! -- si toutes les contraintes ne sont pas vérifiées, 
-!    on prépare les données pour le tour de boucle 
+! -- si toutes les contraintes ne sont pas vérifiées,
+!    on prépare les données pour le tour de boucle
 !    suivant
       if (nbnvco >  0) then
         restart=restart+1
@@ -276,7 +278,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
         do j1 = 1, nbnvco
             if (verbose) write(ifm,*) j1,' - ', non_verified_cons_c(j1) + 1
         end do
-!   
+!
 ! CT <- C*T (stockée dans mat_tmp)
         call MatMatMult(mat_c, mat_t, MAT_INITIAL_MATRIX, &
              aster_petsc_default_real, mat_tmp, ierr)
@@ -284,13 +286,13 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
         call MatDestroy(mat_c, ierr)
         ASSERT( ierr == 0 )
 ! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
-! On nomme C cette nouvelle matrice des contraintes 
+! On nomme C cette nouvelle matrice des contraintes
         call ISCreateGeneral(mpicomm, nbnvco, non_verified_cons_c, PETSC_USE_POINTER,&
-                             isnvco, ierr) 
+                             isnvco, ierr)
         ASSERT( ierr == 0 )
         call ISCreateStride(mpicomm, elg_ctxt%nphys, izero, ione, &
             isall, ierr)
-        ASSERT( ierr == 0 )  
+        ASSERT( ierr == 0 )
         call MatGetSubMatrix(mat_tmp, isnvco, isall, MAT_INITIAL_MATRIX, mat_c,&
                              ierr)
         ASSERT( ierr == 0 )
@@ -300,14 +302,14 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
         ASSERT( ierr == 0 )
         call ISDestroy( isall, ierr)
         ASSERT( ierr == 0 )
-        
-! T2 = TFinal 
+
+! T2 = TFinal
         call MatDuplicate(elg_ctxt%tfinal, MAT_COPY_VALUES, mat_tmp, ierr)
         ASSERT( ierr == 0 )
- 
+
         call MatDestroy(elg_ctxt%tfinal, ierr)
         ASSERT( ierr == 0 )
-! TFinal = T2 * T 
+! TFinal = T2 * T
         call MatMatMult(mat_tmp, mat_t, MAT_INITIAL_MATRIX, aster_petsc_default_real,&
                         elg_ctxt%tfinal, ierr)
         ASSERT(ierr==0)
@@ -328,7 +330,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
          elg_ctxt%tfinal, ierr)
     ASSERT( ierr == 0 )
     call MatDestroy(mat_tmp, ierr)
-    ASSERT( ierr == 0 ) 
+    ASSERT( ierr == 0 )
     call MatDestroy(mat_c, ierr)
     ASSERT( ierr == 0 )
     call MatDestroy(mat_t, ierr)
@@ -337,35 +339,35 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
 !
 !   -- Verif de la qualite de la base
 !   ----------------------------------
- 
-    allocate( norms_c( elg_ctxt%nlag ) , stat = ierr ) 
-    allocate( norms_ct( elg_ctxt%nlag ) , stat = ierr ) 
-!   -- calcul de la norme de chaque ligne de C 
+
+    allocate( norms_c( elg_ctxt%nlag ) , stat = ierr )
+    allocate( norms_ct( elg_ctxt%nlag ) , stat = ierr )
+!   -- calcul de la norme de chaque ligne de C
     call MatGetColumnNorms(elg_ctxt%ctrans, norm_2, norms_c, ierr)
     ASSERT( ierr == 0 )
 !
 !   -- calcul de T^T C^T = (CT)^T
-!-- Changement de version PETSc 3.2 -> 3.3 
+!-- Changement de version PETSc 3.2 -> 3.3
 !   Renamed MatMatMultTranspose() for C=A^T*B to MatTransposeMatMult()
-#ifdef ASTER_PETSC_VERSION_LEQ_32
+#if PETSC_VERSION_LT(3,3,0)
     call MatMatMultTranspose(elg_ctxt%tfinal, elg_ctxt%ctrans, MAT_INITIAL_MATRIX, &
                                      PETSC_DEFAULT_DOUBLE_PRECISION, mat_tmp, ierr)
-#else 
+#else
     call MatTransposeMatMult(elg_ctxt%tfinal,elg_ctxt%ctrans,MAT_INITIAL_MATRIX, &
                            aster_petsc_default_real, mat_tmp,ierr)
-#endif  
+#endif
 !
     ASSERT( ierr == 0 )
-!     -- calcul de la norme de chaque ligne de CT 
+!     -- calcul de la norme de chaque ligne de CT
     call MatGetColumnNorms(mat_tmp, norm_2, norms_ct, ierr)
     ASSERT( ierr == 0 )
     if (verbose) write(ifm,*) ' '
     if (verbose) write(ifm,*) ' '
     if (verbose) write(ifm,*) '|C.T|/|C| apres elimination :'
     do i1 = 1, elg_ctxt%nlag
-       if ( norms_c(i1) > eps ) then 
+       if ( norms_c(i1) > eps ) then
         if (verbose) write(ifm, '(A11,I3,A3,E11.4)') 'CONTRAINTE ', i1, ' : ',&
-                   norms_ct(i1)/norms_c(i1) 
+                   norms_ct(i1)/norms_c(i1)
        endif
     end do
     !
@@ -381,26 +383,26 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     call extract_nonzero_col( mat_tmp, elg_ctxt%tfinal, icolnz_c)
     call MatDestroy( mat_tmp, ierr )
     ASSERT( ierr == 0 )
-!    
-!   Le tableau elg_ctxt%indred est dans le common elim_lagr.h 
+!
+!   Le tableau elg_ctxt%indred est dans le common elim_lagr.h
 !   il n'est pas forcément désalloué à la fin de la commande courante
 !   -> allocation avec allocate (et pas AS_ALLOCATE)
-    allocate( elg_ctxt%indred(size( icolnz_c ) ), stat = ierr ) 
-    ASSERT( ierr == 0 ) 
-!   indred contient la correspondance entre un indice colonne de 
+    allocate( elg_ctxt%indred(size( icolnz_c ) ), stat = ierr )
+    ASSERT( ierr == 0 )
+!   indred contient la correspondance entre un indice colonne de
 !   Tfinal et la numérotation des degrés de liberté.
 !   (indices Fortran)
-    elg_ctxt%indred(:) = idphys_c(icolnz_c(:) + 1)+1 
+    elg_ctxt%indred(:) = idphys_c(icolnz_c(:) + 1)+1
 
 !
 !  -- Vérification du nombre de contraintes éliminées
 !  --------------------------------------------------
-    if (verbose) then 
+    if (verbose) then
         write(ifm,100) size(icolnz_c(:))
 100  format(  " Taille du système réduit (projeté sur T=Ker(C)) :", I8 )
-    endif 
-! 
-!    Nombre de contraintes éliminées = nb de lignes de C qui sont bien 
+    endif
+!
+!    Nombre de contraintes éliminées = nb de lignes de C qui sont bien
 !    orthogonales à toutes les colonnes de TFinal
 !    c'est à dire nombre de lignes de CT de norme (quasi)nulle
      nbelig=count(norms_ct/norms_c < 10*r8prem())
@@ -434,7 +436,7 @@ end subroutine build_tfinal
 #else
 subroutine build_elim_lagr_context( full_matas )
     character(len=19), intent(in) :: full_matas
-    ASSERT( .false. )  
+    ASSERT( .false. )
 end subroutine build_elim_lagr_context
-#endif 
+#endif
 end module elim_lagr_comp_module

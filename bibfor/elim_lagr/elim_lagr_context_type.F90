@@ -1,7 +1,10 @@
 module elim_lagr_context_class
 !
+#include "asterf_types.h"
+#include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,11 +23,10 @@ module elim_lagr_context_class
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
 !
-implicit none 
+implicit none
 !
-private 
+private
 #include "asterf.h"
-#include "asterf_petsc.h"
 #include "asterfort/assert.h"
 !
 !----------------------------------------------------------------------
@@ -45,33 +47,33 @@ Vec :: vx0
 Vec :: vecb
 Vec :: vecc
 integer :: nphys
-integer :: nlag 
+integer :: nlag
 integer(kind=4), dimension(:), pointer :: indred
 ! nom de la matrice Aster "complète" (avec Lagranges)
 character(len=19) :: full_matas
 ! nom de la matrice Aster "réduite" (sans Lagranges)
 character(len=19) :: reduced_matas
-! nom de la matrice de rigidité Aster contenant les 
-! relations lineaires 
+! nom de la matrice de rigidité Aster contenant les
+! relations lineaires
 ! c'est utile dans le cas ou on reduit une matrice de masse
 ! ou d'amortissement qui ne contient pas ces relations lineaires
 ! il faut alors utiliser la matrice de rigidite du systeme
 character(len=19) ::  k_matas
-#endif 
+#endif
 end type elim_lagr_context_type
 !
 public :: new_elim_lagr_context, free_elim_lagr_context
 !
 #ifdef _HAVE_PETSC
-PetscErrorCode, private :: ierr 
+PetscErrorCode, private :: ierr
 !
-contains 
+contains
 !
-! Returns a fresh elim_lagr_context 
-! 
+! Returns a fresh elim_lagr_context
+!
 function new_elim_lagr_context() result ( elg_ctxt )
   !
-  type(elim_lagr_context_type) :: elg_ctxt 
+  type(elim_lagr_context_type) :: elg_ctxt
   !
   elg_ctxt%full_matas=' '
   elg_ctxt%reduced_matas=' '
@@ -118,7 +120,7 @@ subroutine free_elim_lagr_context( elg_ctxt )
     if (associated(elg_ctxt%indred)) then
     deallocate(elg_ctxt%indred)
         nullify(elg_ctxt%indred)
-    endif 
+    endif
     elg_ctxt%kproj=0
     elg_ctxt%ctrans=0
     elg_ctxt%tfinal=0
@@ -132,9 +134,9 @@ end subroutine free_elim_lagr_context
 !
 !
 #else
-! Si on ne compile pas avec PETSc, il faut quand même définir les 
-! interfaces des routines publiques 
-contains 
+! Si on ne compile pas avec PETSc, il faut quand même définir les
+! interfaces des routines publiques
+contains
 !
 function new_elim_lagr_context() result ( elg_ctxt )
     type(elim_lagr_context_type) :: elg_ctxt

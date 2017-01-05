@@ -1,10 +1,13 @@
 subroutine elg_calcx0()
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
 use elim_lagr_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +22,6 @@ use elim_lagr_data_module
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -30,23 +32,23 @@ use elim_lagr_data_module
 #include "asterfort/utmess.h"
 !----------------------------------------------------------------
 !
-!     Résolution de x0 = A \ c 
+!     Résolution de x0 = A \ c
 !     ========================
-!     On suppose que le système est sous-déterminé 
-!     On calcule x0 comme le vecteur de norme minimale vérifiant la 
-!     contrainte A*x0 = c (i.e. x0 est solution du problème de minimisation 
-!     sous contrainte : min ||x||, Ax = c ) 
-!     On procède en 3 étapes : 
+!     On suppose que le système est sous-déterminé
+!     On calcule x0 comme le vecteur de norme minimale vérifiant la
+!     contrainte A*x0 = c (i.e. x0 est solution du problème de minimisation
+!     sous contrainte : min ||x||, Ax = c )
+!     On procède en 3 étapes :
 !     * calcul de A A' ( A' est ELIMLG/Ctrans )
 !     * résolution de y0 = ( A A' ) \ c (appel du Gradient Conjugué de PETSc)
-!     * calcul de x0 = A' * y0 
-!  
-!     Rq: La méthode originale de résolution est basée sur une 
-!         factorisation QR préalable de A. La solution x0 
-!         est obtenue par:   
+!     * calcul de x0 = A' * y0
+!
+!     Rq: La méthode originale de résolution est basée sur une
+!         factorisation QR préalable de A. La solution x0
+!         est obtenue par:
 !       z   = (L'*L) \  c  (par descente / remontée)
 !       x0  = A' * z
-!       avec : 
+!       avec :
 !     * Mat A'  : matrice des contraintes linéaires
 !       A' utilisée est ELIMLG/Ctrans
 !     * Mat L'  : matrice triangulaire supérieure
@@ -59,8 +61,6 @@ use elim_lagr_data_module
 !       Vx0 utilisé est ELIMLG/Vx0
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
-!================================================================
     Vec :: vy, y0
     Mat :: cct
     KSP :: ksp
@@ -69,37 +69,37 @@ use elim_lagr_data_module
     mpi_int :: mpicomm, rang, nbproc
     PetscInt :: its, reason
     PetscErrorCode :: ierr
-    PetscInt :: mm, nn 
+    PetscInt :: mm, nn
     real(kind=8) :: norm
     PetscScalar, parameter ::  neg_rone = -1.d0
-    aster_logical :: info 
+    aster_logical :: info
     PetscReal :: aster_petsc_default_real
 !----------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
-    info=niv.eq.2 
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+    info=niv.eq.2
+#if PETSC_VERSION_LT(3,5,0)
     aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
     aster_petsc_default_real = PETSC_DEFAULT_REAL
-#endif 
+#endif
     !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
     call asmpi_comm('GET_WORLD', mpicomm)
     call asmpi_info(rank=rang, size=nbproc)
 !
-!   -- Le système est-il bien sous-déterminé ? 
+!   -- Le système est-il bien sous-déterminé ?
     call MatGetSize( elg_context(ke)%ctrans, mm, nn , ierr)
-    ASSERT( mm > nn ) 
+    ASSERT( mm > nn )
 !   -- Calcul de CCT = C * transpose(C)
 
-#ifdef ASTER_PETSC_VERSION_LEQ_32
+#if PETSC_VERSION_LT(3,3,0)
 !   TODO
     ASSERT(.false.)
-#else 
+#else
     call MatTransposeMatMult(elg_context(ke)%ctrans, elg_context(ke)%ctrans,&
         MAT_INITIAL_MATRIX, aster_petsc_default_real, cct, ierr)
-#endif 
+#endif
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !         Create the linear solver and set options
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,7 +109,7 @@ use elim_lagr_data_module
 !  Set operators. Here the matrix that defines the linear system
 !  also serves as the preconditioning matrix.
 !
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+#if PETSC_VERSION_LT(3,5,0)
     call KSPSetOperators(ksp, cct, cct, SAME_PRECONDITIONER, ierr)
 #else
     call KSPSetOperators(ksp, cct, cct, ierr)
@@ -122,20 +122,20 @@ use elim_lagr_data_module
 !                      Solve the linear system
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-! 
+!
 !    y0 = ( A * A' )  \ c
-! 
+!
     call VecDuplicate( elg_context(ke)%vecc, y0, ierr)
     call KSPSolve( ksp, elg_context(ke)%vecc, y0, ierr)
 !
-!  Check the reason why KSP solver ended 
+!  Check the reason why KSP solver ended
     call KSPGetConvergedReason(ksp, reason, ierr)
 !  Reason < 0 indicates a problem during the resolution
-    if (reason<0) then 
+    if (reason<0) then
       call utmess('F','ELIMLAGR_8')
     endif
 !
-!   x0 = A' * y0  
+!   x0 = A' * y0
     call MatMult( elg_context(ke)%ctrans, y0, elg_context(ke)%vx0, ierr)
 !
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,10 +143,10 @@ use elim_lagr_data_module
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 !  Check the error ||A*x0 - c||
-!     
-      if (info) then 
-      call VecDuplicate(elg_context(ke)%vecc ,vy,ierr) 
-      call MatMultTranspose(elg_context(ke)%ctrans,  elg_context(ke)%vx0, vy, ierr)  
+!
+      if (info) then
+      call VecDuplicate(elg_context(ke)%vecc ,vy,ierr)
+      call MatMultTranspose(elg_context(ke)%ctrans,  elg_context(ke)%vx0, vy, ierr)
       call VecAXPY(vy,neg_rone,elg_context(ke)%vecc ,ierr)
       call VecNorm(vy,norm_2,norm,ierr)
       call KSPGetIterationNumber(ksp,its,ierr)

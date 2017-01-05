@@ -1,6 +1,9 @@
 subroutine apmamc(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,8 +25,6 @@ subroutine apmamc(kptsc)
 use petsc_data_module
 
     implicit none
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -53,9 +54,6 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
-!----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong

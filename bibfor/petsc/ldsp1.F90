@@ -1,6 +1,9 @@
 subroutine ldsp1(pc, ierr)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +25,7 @@ use petsc_data_module
 use lmp_module, only : lmp_destroy
 
     implicit none
-    
+
 !----------------------------------------------------------------
 !
 !  PRECONDITIONNEUR ISSU D'UNE FACTORISATION SIMPLE PRECISION
@@ -36,11 +39,10 @@ use lmp_module, only : lmp_destroy
 #include "asterfort/jeveuo.h"
 #include "asterfort/pcmump.h"
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 !----------------------------------------------------------------
 !     Variables PETSc
 ! because of conditional (if _HAVE_PETSC) and external types
-     PC, intent(inout)           :: pc 
+     PC, intent(inout)           :: pc
      PetscErrorCode, intent(out) :: ierr
 !----------------------------------------------------------------
 !     VARIABLES LOCALES
@@ -60,12 +62,12 @@ use lmp_module, only : lmp_destroy
 ! --  APPEL A LA ROUTINE DE FACTO SP POUR LE PRECONDITIONNEMENT
     call pcmump(spmat, spsolv, iret, new_facto )
 !
-! -- SI LE PRECONDITIONNEUR DE SECOND NIVEAU EST ACTIVE, ON DOIT LE DETRUIRE 
+! -- SI LE PRECONDITIONNEUR DE SECOND NIVEAU EST ACTIVE, ON DOIT LE DETRUIRE
 !    A CHAQUE RECONSTRUCTION DU LDLT_SP
     if ( new_facto ) then
        call lmp_destroy( pc_lmp, ierr )
-       ASSERT( ierr == 0 ) 
-    endif 
+       ASSERT( ierr == 0 )
+    endif
     ierr = iret
 !
     call jedema()

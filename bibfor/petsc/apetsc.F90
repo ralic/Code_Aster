@@ -1,7 +1,10 @@
 subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
                   nbsol, istop, iret)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -25,8 +28,6 @@ use elim_lagr_comp_module
 !
     implicit none
 !
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apmain.h"
@@ -83,9 +84,6 @@ use elim_lagr_comp_module
 !-----------------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
-!
-!----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: iprem, k, l, nglo, kdeb, jnequ
@@ -179,27 +177,27 @@ use elim_lagr_comp_module
 !   ----------------------------------------
     call jelira(matas//'.VALM', 'TYPE', cval=rouc)
     if (rouc .ne. 'R') call utmess('F', 'PETSC_2')
-!   nglo est le nombre total de degrés de liberté 
+!   nglo est le nombre total de degrés de liberté
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     nglo = zi(jnequ)
 
-!  2. On recherche l'identifiant de l'image PETSc 
-!  de la matrice matas 
-!   
-    kptsc = get_mat_id( matas ) 
-    mat_not_recorded = ( kptsc == 0 ) 
+!  2. On recherche l'identifiant de l'image PETSc
+!  de la matrice matas
+!
+    kptsc = get_mat_id( matas )
+    mat_not_recorded = ( kptsc == 0 )
 !
 
     if (action .eq. 'DETR_MAT') then
-       if ( mat_not_recorded ) then 
+       if ( mat_not_recorded ) then
 ! On n'a pas cree d'image PETSc de la matrice => rien à detruire !
        else
-! L'image PETSc de la a matrice est stockée dans le tableau ap, 
-! a l'indice kptsc => on la détruit 
+! L'image PETSc de la a matrice est stockée dans le tableau ap,
+! a l'indice kptsc => on la détruit
           kbid = repeat(" ",19)
-          call apmain( action, kptsc, [0.d0], kbid, 0, iret )  
-       endif          
+          call apmain( action, kptsc, [0.d0], kbid, 0, iret )
+       endif
        goto 999
     endif
 !
@@ -207,21 +205,21 @@ use elim_lagr_comp_module
 !   ----------------------------------------------
 !
     if (action .eq. 'PRERES') then
-        call mat_record( matas, solveu, kptsc ) 
+        call mat_record( matas, solveu, kptsc )
 !
     else if (action.eq.'RESOUD') then
-        kptsc = get_mat_id( matas ) 
+        kptsc = get_mat_id( matas )
         ASSERT(nbsol.ge.1)
         ASSERT((istop.eq.0).or.(istop.eq.2))
 
     else if (action.eq.'ELIM_LAGR') then
-        call mat_record( matas, solveu, kptsc ) 
+        call mat_record( matas, solveu, kptsc )
     endif
 
 
 !   4. Si LDLT_INC, il faut renumeroter la matrice (RCMK) :
 !   --------------------------------------------------------
-    
+
     call apldlt(kptsc,action,'PRE',rsolu,vcine,nbsol)
 
 

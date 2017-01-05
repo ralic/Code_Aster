@@ -1,7 +1,9 @@
 module elim_lagr_data_module
 !
+#include "asterf_types.h"
+#include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,17 +20,16 @@ module elim_lagr_data_module
 !----------------------------------------------------------------
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
-! 
+!
 !
 use elim_lagr_context_class
-use petsc_data_module 
+use petsc_data_module
 use saddle_point_context_class
 !
-implicit none 
+implicit none
 !
-private 
+private
 #include "asterf.h"
-#include "asterf_petsc.h"
 #include "asterfort/apalmc.h"
 #include "asterfort/apmamc.h"
 #include "asterfort/apmain.h"
@@ -45,20 +46,20 @@ private
 !
 !     on prévoit de pouvoir utiliser simultanément ELIM_LAGR='OUI'
 !     avec nmax_ctxt matrice(s) Aster différente(s).
-integer, parameter :: nmax_ctxt = 5 
+integer, parameter :: nmax_ctxt = 5
 !     KE est l'indice à utiliser dans le tableau elg_ctxt(:)
 !     C'est la variable "sensible" que l'on doit "positionner" avec
 !     beaucoup de soins.
 !     Aujourd'hui, KE est positionné au début de preres.f et au début
 !     de resoud.f
 integer(kind=4), public :: ke
-!     Tableau d'objets de type elim_lagr_context_type. 
-!     Chaque objet contient toutes les données nécessaires pour 
-!     procéder à l'élimination des multiplicateurs de Lagrange. 
+!     Tableau d'objets de type elim_lagr_context_type.
+!     Chaque objet contient toutes les données nécessaires pour
+!     procéder à l'élimination des multiplicateurs de Lagrange.
 type(elim_lagr_context_type), public, dimension(nmax_ctxt), target :: elg_context
 !
 
-! Routine de gestion des données 
+! Routine de gestion des données
 public :: elg_gest_data
 !
 !----------------------------------------------------------------------
@@ -134,7 +135,7 @@ public :: elg_gest_data
 !     RCt contient  R dans ses 1ères lignes.
 !     RCt est prolongé par 0.
 !----------------------------------------------------------------------
-contains 
+contains
 !
 !--------------------------------------------------------------
 ! BUT :
@@ -158,10 +159,10 @@ contains
 !---------------------------------------------------------------
 subroutine elg_gest_data (action, mat1, mat2, rigi1)
 !
-!   Dummy arguments 
+!   Dummy arguments
     character(len=*), intent(in)  :: action, mat1, mat2, rigi1
-#ifdef _HAVE_PETSC 
-!   Local variables 
+#ifdef _HAVE_PETSC
+!   Local variables
     integer :: k, ktrou, iprem
 !
     save iprem
@@ -233,7 +234,7 @@ subroutine elg_gest_data (action, mat1, mat2, rigi1)
   4     continue
     endif
 !
-#endif 
+#endif
 end subroutine elg_gest_data
 !
 !

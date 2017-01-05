@@ -1,6 +1,9 @@
 subroutine apbloc(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -23,9 +26,6 @@ use petsc_data_module
 !
     implicit none
     integer :: kptsc
-#include "asterf_types.h"
-#include "asterf_petsc.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

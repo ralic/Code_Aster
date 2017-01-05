@@ -1,6 +1,9 @@
 subroutine apmamd(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,8 +24,6 @@ use petsc_data_module
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! aslint:disable=C1308
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
@@ -40,33 +41,28 @@ use petsc_data_module
 !  REMPLISSAGE DE LA MATRICE PETSC (INSTANCE NUMERO KPTSC)
 !  DANS LE CAS MATR_DISTRIBUEE
 !
-!  En entrée : la matrice locale ASTER  
-!  En sortie : les valeurs de la matrice PETSc sont remplies à 
+!  En entrée : la matrice locale ASTER
+!  En sortie : les valeurs de la matrice PETSc sont remplies à
 !              partir des valeurs de la matrice ASTER
 !
-!  Rq : 
-!  - la matrice PETSc n'a pas de stockage symétrique: que la matrice 
-!    ASTER soit symétrique ou non, la matrice PETSc est stockée en entier    
+!  Rq :
+!  - la matrice PETSc n'a pas de stockage symétrique: que la matrice
+!    ASTER soit symétrique ou non, la matrice PETSc est stockée en entier
 !    (termes non-nuls).
-!  - dans le mode "matrice distribuée" chaque processeur connait une partie de 
-!    la matrice ASTER, la matrice ASTER "locale" Aloc. 
-!    Il initialise sa partie de matrice PETSc (i.e. le bloc de lignes A(low:high-1)). 
-!    La matrice locale ASTER et la matrice locale PETSc sont différentes. 
+!  - dans le mode "matrice distribuée" chaque processeur connait une partie de
+!    la matrice ASTER, la matrice ASTER "locale" Aloc.
+!    Il initialise sa partie de matrice PETSc (i.e. le bloc de lignes A(low:high-1)).
+!    La matrice locale ASTER et la matrice locale PETSc sont différentes.
 !    Lors du MatSetValues, le processeur local envoie aux autres processeurs
 !    les valeurs dont ils ont besoin et il récupère les valeurs
-!    lui permettant d'initialiser son bloc. C'est PETSc qui gère les 
-!    communications entre processeurs (qui possède quoi etc ), et cette gestion 
+!    lui permettant d'initialiser son bloc. C'est PETSc qui gère les
+!    communications entre processeurs (qui possède quoi etc ), et cette gestion
 !    est cachée. Ici chaque proc envoie *toutes* les valeurs qu'il possède, sans
-!    savoir à qui.    
-!
-!----------------------------------------------------------------
+!    savoir à qui.
 !
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
-!----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: nsmdi, nsmhc, nz, nvalm, nlong
@@ -116,7 +112,7 @@ use petsc_data_module
     neqg = nglo
     nz=zi(jsmdi-1+nloc)
 !
-! La matrice Aster est-elle symétrique ? 
+! La matrice Aster est-elle symétrique ?
     call jelira(nomat//'.VALM', 'NMAXOC', nvalm)
     if (nvalm .eq. 1) then
         lmnsy=.false.
@@ -125,8 +121,8 @@ use petsc_data_module
     else
         ASSERT(.false.)
     endif
-! Vérification de la cohérence entre le(s) tableau(x) stockant les 
-! valeurs de la matrice nomat et sa structure creuse (telle que définie 
+! Vérification de la cohérence entre le(s) tableau(x) stockant les
+! valeurs de la matrice nomat et sa structure creuse (telle que définie
 ! dans nonu)
     call jeveuo(jexnum(nomat//'.VALM', 1), 'L', jvalm)
     call jelira(jexnum(nomat//'.VALM', 1), 'LONMAX', nlong)
@@ -165,40 +161,40 @@ use petsc_data_module
 ! Compteur de termes sur la colonne locale jcoll
             iterm=iterm+1
             valm=zr(jvalm-1+k)
-! Stockage dans val1 de A(iligg,jcolg)  
+! Stockage dans val1 de A(iligg,jcolg)
             zr(jdval1+iterm-1)=valm
 ! et de son indice ligne global (C)
             zi4(jdxi1+iterm-1)=iligg-1
 ! On passe à la *ligne* jcoll
             if (iligg .ne. jcolg) then
-! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg) 
+! Attention, il ne faut pas stocker le terme diagonal A(jcolg, jcolg)
 ! qui a déjà été rencontré dans la *colonne* jcoll
 ! Compteur de termes sur la ligne jcoll
-                jterm=jterm+1  
+                jterm=jterm+1
                 if (.not. lmnsy) then
 ! si la matrice ASTER est symétrique
-! la ligne jcoll est la transposée de la colonne jcoll  
+! la ligne jcoll est la transposée de la colonne jcoll
 ! on reprend la valeur lue depuis valm
-                    valm=zr(jvalm-1+k)  
-                else 
+                    valm=zr(jvalm-1+k)
+                else
 ! si la matrice ASTER n'est pas symétrique
 ! on lit les termes de la ligne jcoll depuis valm2
-                    valm=zr(jvalm2-1+k) 
+                    valm=zr(jvalm2-1+k)
                 endif
-! on stocke dans val2 
+! on stocke dans val2
                 zr(jdval2+jterm-1)=valm
-! avec l'indice colonne global (C) correspondant 
+! avec l'indice colonne global (C) correspondant
                 zi4(jdxi2+jterm-1)=iligg-1
             endif
         end do
-! Envoi de la colonne jcolg 
+! Envoi de la colonne jcolg
         call MatSetValues(a, to_petsc_int(iterm), zi4(jdxi1), one, [to_petsc_int(jcolg-1)],&
                           zr(jdval1), ADD_VALUES, ierr)
         ASSERT(ierr==0)
 ! Envoi de la ligne jcolg
         call MatSetValues(a, one, [to_petsc_int(jcolg-1)], to_petsc_int(jterm), zi4(jdxi2),&
                           zr(jdval2), ADD_VALUES, ierr)
-        ASSERT(ierr==0) 
+        ASSERT(ierr==0)
         iterm=0
         jterm=0
     end do

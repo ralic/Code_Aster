@@ -2,7 +2,7 @@
 #define ASTERF_PETSC_H
 #ifdef _HAVE_PETSC
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,25 +21,10 @@
 !----------------------------------------------------------------
 !
 #include <petscversion.h>
-! Gestion des versions de PETSc
-#if (( PETSC_VERSION_MAJOR <= 2 )|| ( PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 2 ))
-#   define ASTER_PETSC_VERSION_LEQ_32
-#endif
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 3
-#   define ASTER_PETSC_VERSION_LEQ_33
-#endif
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 4
-#   define ASTER_PETSC_VERSION_LEQ_34
-#endif
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 5
-#   define ASTER_PETSC_VERSION_LEQ_35
-#endif
-#if PETSC_VERSION_MAJOR == 3 && PETSC_VERSION_MINOR <= 6
-#   define ASTER_PETSC_VERSION_LEQ_36
-#endif
+
 ! Inclusion des interfaces Fortran de PETSc définies
-! dans la librairie  
-#ifdef ASTER_PETSC_VERSION_LEQ_35
+! dans la librairie
+#if PETSC_VERSION_LT(3,6,0)
 #include <finclude/petscsys.h>
 #include <finclude/petscvec.h>
 #include <finclude/petscvec.h90>
@@ -51,18 +36,22 @@
 #include <finclude/petscksp.h90>
 #include <finclude/petscviewer.h>
 #include <finclude/petscviewer.h90>
+
 #else
-#include <petsc/finclude/petscsys.h>
-#include <petsc/finclude/petscvec.h>
-#include <petsc/finclude/petscvec.h90>
-#include <petsc/finclude/petscmat.h>
-#include <petsc/finclude/petscmat.h90>
-#include <petsc/finclude/petscpc.h>
-#include <petsc/finclude/petscpc.h90>
-#include <petsc/finclude/petscksp.h>
-#include <petsc/finclude/petscksp.h90>
-#include <petsc/finclude/petscviewer.h>
-#include <petsc/finclude/petscviewer.h90>
+#ifndef PETSC_USE_FORTRAN_MODULES
+#define PETSC_USE_FORTRAN_MODULES
+#endif
+#include <petsc/finclude/petscsysdef.h>
+#include <petsc/finclude/petscvecdef.h>
+#include <petsc/finclude/petscmatdef.h>
+#include <petsc/finclude/petscpcdef.h>
+#include <petsc/finclude/petsckspdef.h>
+#include <petsc/finclude/petscviewerdef.h>
+use petscsys
+use petscvec
+use petscmat
+use petscpc
+use petscksp
 !
 #endif
 !

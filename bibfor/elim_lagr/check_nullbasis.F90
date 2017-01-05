@@ -1,11 +1,14 @@
 function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok )
 !
+#include "asterf.h"
+#include "asterf_petsc.h"
+
 implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +23,6 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/assert.h"
 !
@@ -31,7 +33,6 @@ implicit none
 !
 ! ---------------------------------------------------------------
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 ! Dummy arguments
    Vec, intent(in)                    :: vec_c
    Mat, intent(in)                    :: mat_z
@@ -54,7 +55,7 @@ implicit none
      tol_loc = tolmax
   endif
 ! Allocation d'un vecteur de travail pour calculer le produit vec_c * mat_z
-#ifdef ASTER_PETSC_VERSION_LEQ_35
+#if PETSC_VERSION_LT(3,6,0)
   call MatGetVecs(mat_z, vec_cz, PETSC_NULL_OBJECT, ierr)
 #else
   call MatCreateVecs( mat_z, vec_cz, PETSC_NULL_OBJECT, ierr)

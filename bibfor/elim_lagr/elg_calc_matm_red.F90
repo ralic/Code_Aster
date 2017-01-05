@@ -1,10 +1,13 @@
 subroutine elg_calc_matm_red(matas1, matas2, bas1)
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
 use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
 ! aslint:disable=C1308
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +57,6 @@ use elim_lagr_data_module
 !---------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 !
 !================================================================
     character(len=1) :: kbid
@@ -67,7 +69,7 @@ use elim_lagr_data_module
     integer :: nbnom,  jdeeq2, jprno2, nec, icmp, icmpav, ino, inoav
     integer :: k1ec, k2ec, k3ec, k3ecav
     integer, allocatable :: nbddl(:), nueq(:), dejavu(:)
-    PetscInt :: n1, nterm, mm, nn 
+    PetscInt :: n1, nterm, mm, nn
     PetscErrorCode :: ierr
     PetscInt, allocatable :: irow(:)
     real(kind=8), allocatable :: vrow(:)
@@ -124,7 +126,7 @@ use elim_lagr_data_module
     do ilig = 0, neq2-1
         call MatGetRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                        ierr)
-        ASSERT( ierr == 0 ) 
+        ASSERT( ierr == 0 )
         do k = 1, nterm
             jcol=irow(k)
             if (jcol .eq. ilig) ndiag=ndiag+1
@@ -135,7 +137,7 @@ use elim_lagr_data_module
         enddo
         call MatRestoreRow(elg_context(ke)%kproj, to_petsc_int(ilig), nterm, irow(1), vrow(1),&
                            ierr)
-        ASSERT( ierr == 0 ) 
+        ASSERT( ierr == 0 )
     enddo
     ASSERT(ndiag.eq.neq2)
 !

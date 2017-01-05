@@ -1,10 +1,13 @@
 subroutine extract_nonzero_col(a, acnz, icolnz_c)
-    implicit none
 ! person_in_charge: natacha.bereux at edf.fr
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+implicit none
 ! aslint: disable=W0104
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +22,6 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/r8prem.h"
@@ -36,7 +38,6 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
 ! OUT : ACNZ de taille ma x nacnz
 !---------------------------------------------------------------
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 
     Mat, intent(in)  :: a
     Mat, intent(out) :: acnz

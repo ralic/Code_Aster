@@ -1,6 +1,9 @@
 subroutine apsolu(kptsc, lmd, rsolu)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -25,8 +28,6 @@ use petsc_data_module
 use saddle_point_module, only : update_double_lagrange
 
     implicit none
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
@@ -45,8 +46,6 @@ use saddle_point_module, only : update_double_lagrange
 !
 !----------------------------------------------------------------
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
 !
 !     VARIABLES LOCALES
     integer :: jnequ, jnequl, jnuglp, jnugl, jprddl, nloc, nglo, rang
@@ -82,7 +81,7 @@ use saddle_point_module, only : update_double_lagrange
 !
     call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
     precon = slvk(2)
-    if ( precon == 'BLOC_LAGR' ) then 
+    if ( precon == 'BLOC_LAGR' ) then
             call update_double_lagrange( x )
     endif
 !

@@ -1,6 +1,9 @@
 subroutine apksp(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +24,6 @@ subroutine apksp(kptsc)
 use petsc_data_module
 !
     implicit none
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -36,9 +38,6 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
-!----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: nmaxit, ifm, niv
@@ -59,7 +58,7 @@ use petsc_data_module
     PetscReal :: rtol, atol, dtol, aster_petsc_default_real
     Mat :: a
     KSP :: ksp
-#ifdef ASTER_PETSC_VERSION_LEQ_36
+#if PETSC_VERSION_LT(3,7,0)
 #else
     PetscViewerAndFormat :: vf
 #endif
@@ -68,7 +67,7 @@ use petsc_data_module
 !
     call infniv(ifm, niv)
 !
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+#if PETSC_VERSION_LT(3,5,0)
     aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
     aster_petsc_default_real = PETSC_DEFAULT_REAL
@@ -95,7 +94,7 @@ use petsc_data_module
     else if (algo.eq.'CR') then
         call KSPSetType(ksp, KSPCR, ierr)
         ASSERT(ierr.eq.0)
-    else if (algo.eq.'GMRES') then 
+    else if (algo.eq.'GMRES') then
         call KSPSetType(ksp, KSPGMRES, ierr)
     else if (algo.eq.'GMRES_LMP') then
         call KSPSetType(ksp, KSPGMRES, ierr)
@@ -130,20 +129,20 @@ use petsc_data_module
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
 
-    call KSPSetUp( ksp, ierr ) 
-    ASSERT( ierr == 0 ) 
+    call KSPSetUp( ksp, ierr )
+    ASSERT( ierr == 0 )
 !
 !     - pour suivre les itérations de Krylov
 !     --------------------------------------
     if (niv .ge. 2) then
-#ifdef ASTER_PETSC_VERSION_LEQ_36
+#if PETSC_VERSION_LT(3,7,0)
         call KSPMonitorSet(ksp, KSPMonitorTrueResidualNorm, PETSC_NULL_OBJECT,&
                            PETSC_NULL_FUNCTION, ierr)
 #else
          call PetscViewerAndFormatCreate(PETSC_VIEWER_STDOUT_WORLD, PETSC_VIEWER_DEFAULT, vf,ierr)
          call KSPMonitorSet(ksp,KSPMonitorTrueResidualNorm, vf, PetscViewerAndFormatDestroy,&
                             ierr)
-#endif 
+#endif
         ASSERT(ierr.eq.0)
     endif
 !

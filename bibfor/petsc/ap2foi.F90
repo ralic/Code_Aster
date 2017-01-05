@@ -1,6 +1,9 @@
 subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
    its)
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,8 +24,6 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 use petsc_data_module
 use lmp_module, only : lmp_destroy
 implicit none
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterf_petsc.h"
 #include "asterc/asmpi_comm.h"
@@ -76,7 +77,7 @@ implicit none
     call KSPCreate(mpicou, kp(kptsc), ierr)
     ksp=kp(kptsc)
     ASSERT(ierr.eq.0)
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+#if PETSC_VERSION_LT(3,5,0)
     call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
 #else
     call KSPSetOperators(kp(kptsc), ap(kptsc), ap(kptsc), ierr)
@@ -91,15 +92,15 @@ implicit none
   !   alors il faut effectuer le calcul du préconditionneur LDLT_SP (voir pcmump)
   !
   call jeveuo(nosolv//'.SLVI', 'E', vi=slvi)
-  slvi(5) = 0 
-  ! Attention ! s'il y avait un LMP actif, on le détruit 
+  slvi(5) = 0
+  ! Attention ! s'il y avait un LMP actif, on le détruit
   call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
   lmp_is_active = slvk(6)=='GMRES_LMP'
-  if ( lmp_is_active ) then  
+  if ( lmp_is_active ) then
      call lmp_destroy( pc_lmp, ierr )
-     ASSERT( ierr == 0 ) 
+     ASSERT( ierr == 0 )
      call KSPSetComputeRitz(kp(kptsc), petsc_true, ierr)
-     ASSERT( ierr == 0 ) 
+     ASSERT( ierr == 0 )
   endif
   !
   !

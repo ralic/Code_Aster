@@ -1,6 +1,9 @@
 subroutine apalmd(kptsc)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,8 +25,6 @@ use petsc_data_module
 
     implicit none
 
-#include "asterf_types.h"
-#include "asterf.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/apbloc.h"
@@ -46,9 +47,6 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-!
-#include "asterf_petsc.h"
-!----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
     integer :: rang, nbproc, jnbjoi, nbjoin, jnequ, jnequl, jnugll
@@ -76,7 +74,7 @@ use petsc_data_module
 !     Variables PETSc
     PetscInt :: low, high
     PetscErrorCode ::  ierr
-    integer :: neql, neqg, bs 
+    integer :: neql, neqg, bs
     Vec :: tmp
     mpi_int :: mrank, msize
 !----------------------------------------------------------------
@@ -255,25 +253,25 @@ use petsc_data_module
     ASSERT(ierr.eq.0)
     call MatSetType(ap(kptsc), MATMPIAIJ, ierr)
     ASSERT(ierr.eq.0)
-! 
-#ifndef ASTER_PETSC_VERSION_LEQ_32 
+!
+#ifndef PETSC_VERSION_LT(3,3,0)
 !     AVEC PETSc >= 3.3
-!     IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION 
+!     IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
     call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
     ASSERT(ierr.eq.0)
-#endif 
+#endif
     !
     call MatMPIAIJSetPreallocation(ap(kptsc), PETSC_NULL_INTEGER, zi4(jidxd),&
                                        PETSC_NULL_INTEGER, zi4(jidxo), ierr)
     ASSERT(ierr.eq.0)
     !
-#ifdef ASTER_PETSC_VERSION_LEQ_32
+#if PETSC_VERSION_LT(3,3,0)
 !     AVEC PETSc <= 3.2
 !     LE BS DOIT ABSOLUMENT ETRE DEFINI ICI
       call MatSetBlockSize(ap(kptsc), to_petsc_int(bs), ierr)
       ASSERT(ierr.eq.0)
 !     RQ : A PARTIR DE LA VERSION V 3.3 IL DOIT PRECEDER LA PREALLOCATION
-#endif 
+#endif
 !
     call jedetr(idxd)
     call jedetr(idxo)

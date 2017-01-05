@@ -1,6 +1,9 @@
 subroutine appcrs(kptsc, lmd)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,9 +23,7 @@ subroutine appcrs(kptsc, lmd)
 ! aslint:disable=C1308
 use petsc_data_module
     implicit none
-    
-#include "asterf_types.h"
-#include "asterf.h"
+
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
@@ -43,7 +44,6 @@ use petsc_data_module
 !----------------------------------------------------------------
 !
 #ifdef _HAVE_PETSC
-#include "asterf_petsc.h"
 #include "asterfort/ldsp1.h"
 #include "asterfort/ldsp2.h"
 !----------------------------------------------------------------

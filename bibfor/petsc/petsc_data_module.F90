@@ -1,11 +1,13 @@
 module petsc_data_module
 !
-! aslint:disable=C1308
-implicit none
+!
 #include "asterf.h"
-private 
-#ifdef _HAVE_PETSC
 #include "asterf_petsc.h"
+
+implicit none
+! aslint:disable=C1308
+private
+#ifdef _HAVE_PETSC
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -13,7 +15,7 @@ private
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-!-------------------------------------------------------------------- 
+!--------------------------------------------------------------------
 !
 ! COPYRIGHT (C) 2016 -     EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -32,14 +34,14 @@ private
 !
 !----------------------------------------------------------------
 !
-! person_in_charge natacha.bereux at edf.fr 
+! person_in_charge natacha.bereux at edf.fr
 !
-! Variables globales PETSc pour la définition d'un système linéaire 
-! au format PETSc 
+! Variables globales PETSc pour la définition d'un système linéaire
+! au format PETSc
 !
 ! On ne peut pas creer directement un tableau de pointer,
 ! il faut passer par un artifice (type derive) :
- 
+
  type p_int4
  sequence
     integer(kind=4), pointer :: pi4(:)
@@ -57,7 +59,7 @@ private
  type(p_int4), target, public :: new_ieqs(nmxins), old_ieqs(nmxins)
 !
 !----------------------------------------------------------------
-! Variables globales pour la définition d'un preconditionneur 
+! Variables globales pour la définition d'un preconditionneur
 ! simple precision ldlt_sp
  character(len=19), public :: spsomu, spmat, spsolv
  Vec, public :: xlocal, xglobal
@@ -66,23 +68,23 @@ private
 !
 public :: get_mat_id, mat_record
 !
-contains 
+contains
 !
-! Cette fonction renvoie l'identifiant (kptsc) permettant d'accéder 
+! Cette fonction renvoie l'identifiant (kptsc) permettant d'accéder
 ! à la matrice au format PETSc créée à partir de la matr_asse de nom
-! matas. 
+! matas.
 ! Si on n'a pas créé de matrice PETSc, la fonction renvoie 0.
 !
-function get_mat_id( matas ) result ( kptsc ) 
+function get_mat_id( matas ) result ( kptsc )
   !
-  ! Dummy arguments 
+  ! Dummy arguments
   character(len=19), intent(in) :: matas
   integer :: kptsc
-  ! Local variables 
+  ! Local variables
   character(len=14) :: nu
   integer :: jnequ, nglo, k
-  PetscInt :: m, n 
-  PetscErrorCode :: ierr 
+  PetscInt :: m, n
+  PetscErrorCode :: ierr
   !
   call jemarq()
 !
@@ -93,7 +95,7 @@ function get_mat_id( matas ) result ( kptsc )
     call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
     call jeveuo(nu//'.NUME.NEQU', 'L', jnequ)
     nglo = zi(jnequ)
-! Valeur par défaut de kptsc 
+! Valeur par défaut de kptsc
     kptsc=0
 !
     do k = 1, nmxins
@@ -110,23 +112,23 @@ function get_mat_id( matas ) result ( kptsc )
              else
                ASSERT(nglo.eq.n)
              endif
-          endif 
-! la verification a ete effectuee avec succes, on renvoie k   
+          endif
+! la verification a ete effectuee avec succes, on renvoie k
           kptsc = k
         endif
     enddo
    call jedema()
   !
-end function get_mat_id 
+end function get_mat_id
 !
 !
 ! Retourne un identifiant libre pour stocker une nouvelle
-! matrice. Si on ne trouve pas d'identifiant, on renvoie 0 
+! matrice. Si on ne trouve pas d'identifiant, on renvoie 0
 function get_new_mat_id() result (kptsc)
   !
-  ! Dummy arguments 
-  integer :: kptsc 
-  ! Local variables 
+  ! Dummy arguments
+  integer :: kptsc
+  ! Local variables
   integer :: k
 !
 !   Y-a-t-il encore une place libre ? Calcul de kptsc :
@@ -138,11 +140,11 @@ function get_new_mat_id() result (kptsc)
             exit
         endif
     end do
-end function get_new_mat_id 
+end function get_new_mat_id
 !
-! La routine mat_record enregistre la matrice matas 
-! i.e. determine son identifiant kptsc 
-! et note son nom dans les tableaux  
+! La routine mat_record enregistre la matrice matas
+! i.e. determine son identifiant kptsc
+! et note son nom dans les tableaux
 subroutine mat_record ( matas, solveu, kptsc )
   ! Dummy arguments
   character(len=19), intent(in) :: matas, solveu
@@ -152,13 +154,13 @@ subroutine mat_record ( matas, solveu, kptsc )
   !
   call dismoi('NOM_NUME_DDL', matas, 'MATR_ASSE', repk=nu)
   !
-  ! Verification : est-ce que la matrice est deja enregistree ? 
-  kptsc = get_mat_id( matas ) 
-  if ( kptsc ==  0 ) then   
+  ! Verification : est-ce que la matrice est deja enregistree ?
+  kptsc = get_mat_id( matas )
+  if ( kptsc ==  0 ) then
     kptsc = get_new_mat_id()
-    if ( kptsc == 0 ) then 
+    if ( kptsc == 0 ) then
       call utmess('F', 'PETSC_3')
-    endif 
+    endif
   !
     ASSERT(nomats(kptsc).eq.' ')
     ASSERT(nosols(kptsc).eq.' ')
@@ -167,7 +169,7 @@ subroutine mat_record ( matas, solveu, kptsc )
     nomats(kptsc) = matas
     nonus(kptsc) = nu
     nosols(kptsc) = solveu
-!  Initialisation par défaut 
+!  Initialisation par défaut
 !  la veritable initialisation sera faite en appelant apbloc
     tblocs(kptsc) = -1
     fictifs(kptsc) = -1
@@ -175,8 +177,8 @@ subroutine mat_record ( matas, solveu, kptsc )
     old_ieqs(kptsc)%pi4 => null()
   else
     !  La matrice est deja enregistree, on ne fait rien
-  endif 
+  endif
 !
 end subroutine mat_record
 #endif
-end module petsc_data_module 
+end module petsc_data_module

@@ -1,6 +1,9 @@
-module lmp_module 
+module lmp_module
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+!
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,11 +24,10 @@ module lmp_module
 !
 use lmp_context_class
 !
-implicit none 
+implicit none
 !
-private 
+private
 #include "asterf.h"
-#include "asterf_petsc.h"
 #include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
@@ -34,51 +36,51 @@ private
 public :: lmp_apply_right, lmp_update, lmp_destroy
 !
 !
-#ifdef _HAVE_PETSC 
-contains 
+#ifdef _HAVE_PETSC
+contains
 !
 ! lmp_update est appelé APRES la résolution (KSPSolve)
 !
 subroutine lmp_update( lmp_pc, ksp, ierr )
     !
     use lmp_data_module, only : lmp_context, lmp_is_setup, reac_lmp
-    ! Dummy arguments 
-    PC, intent(inout)           :: lmp_pc 
+    ! Dummy arguments
+    PC, intent(inout)           :: lmp_pc
     KSP, intent(in)             :: ksp
     PetscErrorCode, intent(out) :: ierr
     ! Local variables
-    PetscInt :: maxits 
+    PetscInt :: maxits
     integer :: ifm, niv, si
     aster_logical :: verbose
     !
     call infniv( ifm, niv )
-    verbose = niv == 2 
-    
+    verbose = niv == 2
+
     call KSPGetIterationNumber(ksp, maxits, ierr)
-    ASSERT( ierr == 0 ) 
-    if ( verbose ) then  
+    ASSERT( ierr == 0 )
+    if ( verbose ) then
         call utmess('I', 'PETSC_24' , si=to_aster_int(maxits))
-    endif 
-    if ( lmp_is_setup ) then 
+    endif
+    if ( lmp_is_setup ) then
        if ( maxits > reac_lmp ) then
-       ! todo : il faudrait normalement détruire le LMP, mais cela fonctionne moins bien 
-       ! à comprendre ... 
+       ! todo : il faudrait normalement détruire le LMP, mais cela fonctionne moins bien
+       ! à comprendre ...
        !    call free_lmp_context( lmp_context )
        !    lmp_is_setup =.false.
         endif
-        if ( verbose ) then  
+        if ( verbose ) then
                call utmess('I', 'PETSC_27' , si=reac_lmp )
         endif
-    endif 
-    if (.not. lmp_is_setup ) then 
-       if ( maxits > reac_lmp ) then 
+    endif
+    if (.not. lmp_is_setup ) then
+       if ( maxits > reac_lmp ) then
     ! On construit un nouveau lmp
        if ( verbose ) then
           call utmess( 'I', 'PETSC_26' )
-       endif  
+       endif
        lmp_context = new_lmp_context( )
        call build_lmp_context( ksp, lmp_context )
-       lmp_is_setup = .true. 
+       lmp_is_setup = .true.
        endif
     endif
     !
@@ -95,24 +97,24 @@ subroutine lmp_apply_right ( lmp_pc, x, y, ierr )
     !
     use lmp_data_module, only : lmp_context, lmp_is_setup
     !
-    ! Dummy arguments 
+    ! Dummy arguments
     !
     PC, intent(in)    :: lmp_pc
     Vec, intent(in)   :: x
     Vec, intent(inout):: y
     PetscErrorCode, intent(out) :: ierr
     !
-    ! Local Variables 
+    ! Local Variables
     PetscInt :: jj
     !
     ! --  Copie du vecteur d'entree
     call VecCopy(x, y, ierr)
-    if ( lmp_is_setup ) then 
+    if ( lmp_is_setup ) then
     ! --  sk=yy^T x
     do jj = 1,lmp_context%ritzeff
       call VecDot(lmp_context%yy(jj),y,lmp_context%sk(jj),ierr)
-      ASSERT( ierr == 0 ) 
-    enddo 
+      ASSERT( ierr == 0 )
+    enddo
 ! --  y=I+zz*sk
     call VecMAXPY(y,lmp_context%ritzeff,lmp_context%sk,lmp_context%zz,ierr)
     ASSERT( ierr == 0 )
@@ -124,7 +126,7 @@ subroutine lmp_destroy( lmp_pc, ierr )
     !
     use lmp_data_module, only : lmp_context, lmp_is_setup
     !
-    ! Dummy arguments 
+    ! Dummy arguments
     !
     PC, intent(inout)    :: lmp_pc
     PetscErrorCode, intent(out) :: ierr
@@ -132,21 +134,21 @@ subroutine lmp_destroy( lmp_pc, ierr )
     call free_lmp_context( lmp_context )
     lmp_is_setup = .false.
     !
-    ierr = 0 
+    ierr = 0
     !
 end subroutine lmp_destroy
 !
 #else
-contains 
+contains
 !
 subroutine lmp_update( lmp_pc, ksp, ierr )
     !
-    ! Dummy arguments 
-    integer  :: lmp_pc 
+    ! Dummy arguments
+    integer  :: lmp_pc
     integer  :: ksp
     integer  :: ierr
-    lmp_pc = 0 
-    ksp = 0 
+    lmp_pc = 0
+    ksp = 0
     ierr = 0
     ASSERT(.false.)
 end subroutine lmp_update
@@ -156,9 +158,9 @@ subroutine lmp_apply_right ( lmp_pc, x, y, ierr )
     integer :: x
     integer :: y
     integer :: ierr
-    lmp_pc = 0 
+    lmp_pc = 0
     x = 0
-    y = 0 
+    y = 0
     ierr = 0
     ASSERT(.false.)
 end subroutine lmp_apply_right
@@ -166,7 +168,7 @@ end subroutine lmp_apply_right
 subroutine lmp_destroy( lmp_pc, ierr )
     integer :: lmp_pc
     integer :: ierr
-    lmp_pc = 0 
+    lmp_pc = 0
     ierr = 0
     ASSERT( .false.)
 end subroutine lmp_destroy

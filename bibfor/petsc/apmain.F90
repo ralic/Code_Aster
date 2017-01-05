@@ -1,11 +1,15 @@
 subroutine apmain(action, kptsc, rsolu, vcine, istop,&
                   iret)
+!
+#include "asterf_types.h"
+#include "asterf_petsc.h"
+
 use petsc_data_module
 use saddle_point_module
 use lmp_module, only : lmp_update
     implicit none
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -47,10 +51,7 @@ use lmp_module, only : lmp_update
 ! IN  : ISTOP (I)  : COMPORTEMENT EN CAS D'ERREUR
 ! OUT : IRET  (I)  : CODE RETOUR
 !---------------------------------------------------------------
-#include "asterf.h"
 #include "jeveux.h"
-#include "asterf_types.h"
-#include "asterf_petsc.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/matfpe.h"
 #include "asterfort/apalmc.h"
@@ -82,8 +83,6 @@ use lmp_module, only : lmp_update
 #include "asterfort/uttcpu.h"
 !
 #ifdef _HAVE_PETSC
-
-!
 !----------------------------------------------------------------
 !
 !     VARIABLES LOCALES
@@ -149,7 +148,7 @@ use lmp_module, only : lmp_update
         call dismoi('MATR_DISTRIBUEE', nomat, 'MATR_ASSE', repk=matd)
         lmd = matd.eq.'OUI'
 !
-    endif 
+    endif
 !
 !
     if (action .eq. 'PRERES') then
@@ -181,9 +180,9 @@ use lmp_module, only : lmp_update
         call MatAssemblyEnd(ap(kptsc), MAT_FINAL_ASSEMBLY, ierr)
         ASSERT(ierr.eq.0)
 !
-        if ( precon == 'BLOC_LAGR' ) then 
+        if ( precon == 'BLOC_LAGR' ) then
             call convert_mat_to_saddle_point( nomat, ap(kptsc) )
-        endif 
+        endif
 !
 !        1.4 CREATION DU PRECONDITIONNEUR PETSc (EXTRAIT DU KSP) :
 !        ---------------------------------------------------------
@@ -191,7 +190,7 @@ use lmp_module, only : lmp_update
         call KSPCreate(mpicomm, kp(kptsc), ierr)
         ASSERT(ierr.eq.0)
         !
-#ifdef ASTER_PETSC_VERSION_LEQ_34
+#if PETSC_VERSION_LT(3,5,0)
         call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), DIFFERENT_NONZERO_PATTERN, ierr)
 #else
         call KSPSetOperators( kp(kptsc), ap(kptsc), ap(kptsc), ierr )
@@ -335,13 +334,13 @@ use lmp_module, only : lmp_update
             else if (indic.eq.KSP_DIVERGED_INDEFINITE_PC) then
 !              PRECONDITIONNEUR NON DEFINI
                 call utmess('F', 'PETSC_10')
-!  
-#ifdef ASTER_PETSC_VERSION_LEQ_33
+!
+#if PETSC_VERSION_LT(3,4,0)
             else if (indic.eq.KSP_DIVERGED_NAN) then
-#else          
+#else
             else if (indic.eq.KSP_DIVERGED_NANORINF) then
 #endif
-!               NANORINF 
+!               NANORINF
                 if ( istop == 0 ) then
 !                  ERREUR <F>
                    call utmess('F', 'PETSC_8')
@@ -406,14 +405,14 @@ use lmp_module, only : lmp_update
 
 !        2.7 UTILISATION DU LMP EN 2ND NIVEAU
 !        -------------------------------------
-       
+
         call jeveuo(nosolv//'.SLVK', 'L', vk24=slvk)
         algo = slvk(6)
         if  ( algo == 'GMRES_LMP' ) then
             call KSPGetPC( ksp, pc, ierr )
             ASSERT( ierr == 0 )
-            call lmp_update( pc, ksp, ierr ) 
-            ASSERT( ierr == 0 ) 
+            call lmp_update( pc, ksp, ierr )
+            ASSERT( ierr == 0 )
         endif
 !
 !         2.8 NETTOYAGE PETSc (VECTEURS) :
@@ -428,7 +427,7 @@ use lmp_module, only : lmp_update
 !
 !        -- PRECONDITIONNEUR UTILISE
 !
-!        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LAGRANGIEN AUGMENTE 
+!        -- TRAITEMENT PARTICULIER DU PRECONDITIONNEUR LAGRANGIEN AUGMENTE
         if (precon .eq. 'BLOC_LAGR') then
 !
 !           ON STOCKE LE NOMBRE D'ITERATIONS DU KSP
@@ -480,8 +479,8 @@ use lmp_module, only : lmp_update
         ASSERT(ierr.eq.0)
         call KSPDestroy(ksp, ierr)
         ASSERT(ierr.eq.0)
-       
-! 
+
+!
 !        -- SUPRESSION DE L'INSTANCE PETSC
         nomats(kptsc) = ' '
         nosols(kptsc) = ' '
