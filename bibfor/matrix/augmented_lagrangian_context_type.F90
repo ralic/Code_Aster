@@ -182,19 +182,19 @@ subroutine set_precond_data( ctxt )
        call PCFactorGetMatrix(ctxt%pcphy,F,ierr)
        ASSERT(ierr.eq.0)
  ! ICNTL(7) (sequential matrix ordering): 5 (METIS)
-       call MatMumpsSetIcntl(F,7,5,ierr)
+       call MatMumpsSetIcntl(F,to_petsc_int(7),to_petsc_int(5),ierr)
        ASSERT(ierr.eq.0)
 !  ICNTL(22) (in-core/out-of-core facility): 0/1
-       call MatMumpsSetIcntl(F,22,1,ierr)
+       call MatMumpsSetIcntl(F,to_petsc_int(22),to_petsc_int(1),ierr)
        ASSERT(ierr.eq.0)
 !  ICNTL(24) (detection of null pivot rows): 1
-       call MatMumpsSetIcntl(F,24,1,ierr)
+       call MatMumpsSetIcntl(F,to_petsc_int(24),to_petsc_int(1),ierr)
        ASSERT(ierr.eq.0)
 !  ICNTL(14) (percentage increase in the estimated working space)
-       call MatMumpsSetIcntl(F,14,50,ierr)
+       call MatMumpsSetIcntl(F,to_petsc_int(14),to_petsc_int(50),ierr)
        ASSERT(ierr.eq.0)
 !  CNTL(3) (absolute pivoting threshold):      1e-06
-       call MatMumpsSetCntl(F,3,1.D-6,ierr)
+       call MatMumpsSetCntl(F,to_petsc_int(3),1.D-6,ierr)
        ASSERT(ierr.eq.0)
 #endif
     else

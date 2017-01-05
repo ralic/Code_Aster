@@ -218,7 +218,7 @@ use petsc_data_module
                      ierr)
     ASSERT(ierr.eq.0)
 !
-#ifndef PETSC_VERSION_LT(3,3,0)
+#if PETSC_VERSION_GE(3,3,0)
 !   AVEC PETSc >= 3.3
 !   IL FAUT APPELER MATSETBLOCKSIZE *AVANT* MAT*SETPREALLOCATION
     call MatSetBlockSize(a, to_petsc_int(bs), ierr)

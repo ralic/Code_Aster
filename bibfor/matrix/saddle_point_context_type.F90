@@ -360,7 +360,7 @@ function build_is_for_type_of_dof( matas, type_of_dof ) result ( is )
     ! l'index set retourné
     ! par cette fonction a la même répartition
     ! parallèle qu'un vecteur PETSc de taille ndof
-        call VecCreateMPI(mpicomm, PETSC_DECIDE, ndof, vtmp, ierr )
+        call VecCreateMPI(mpicomm, PETSC_DECIDE, to_petsc_int(ndof), vtmp, ierr)
         ASSERT( ierr == 0 )
         call VecGetOwnerShipRange( vtmp, istart, iend, ierr )
         ASSERT( ierr == 0 )

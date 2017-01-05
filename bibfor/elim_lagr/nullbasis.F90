@@ -291,10 +291,10 @@ subroutine nullbasis( mat_c, mat_z, nbnvco, nvco_c)
 !--
              do ii = 1, nfree
                call MatSetValues( mat_z, ione, idfree_c(ii), nfree, &
-                         idfree_c(1:nfree), rzero, INSERT_VALUES, ierr )
+                         idfree_c(1:nfree), [rzero], INSERT_VALUES, ierr )
                ASSERT( ierr == 0 )
                call MatSetValues( mat_z, ione, idfree_c(ii), ione, &
-                         idfree_c(ii), rone, INSERT_VALUES, ierr )
+                         idfree_c(ii), [rone], INSERT_VALUES, ierr )
                ASSERT( ierr == 0 )
              enddo
              call MatAssemblyBegin( mat_z, MAT_FINAL_ASSEMBLY, ierr )

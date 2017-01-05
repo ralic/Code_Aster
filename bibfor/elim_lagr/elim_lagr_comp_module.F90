@@ -290,7 +290,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
         call ISCreateGeneral(mpicomm, nbnvco, non_verified_cons_c, PETSC_USE_POINTER,&
                              isnvco, ierr)
         ASSERT( ierr == 0 )
-        call ISCreateStride(mpicomm, elg_ctxt%nphys, izero, ione, &
+        call ISCreateStride(mpicomm, to_petsc_int(elg_ctxt%nphys), izero, ione, &
             isall, ierr)
         ASSERT( ierr == 0 )
         call MatGetSubMatrix(mat_tmp, isnvco, isall, MAT_INITIAL_MATRIX, mat_c,&
