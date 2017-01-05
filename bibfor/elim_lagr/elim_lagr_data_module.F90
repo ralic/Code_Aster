@@ -19,7 +19,7 @@ module elim_lagr_data_module
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !----------------------------------------------------------------
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1304
 !
 !
 use elim_lagr_context_class
@@ -53,10 +53,10 @@ integer, parameter :: nmax_ctxt = 5
 !     Aujourd'hui, KE est positionné au début de preres.f et au début
 !     de resoud.f
 integer(kind=4), public :: ke
-!     Tableau d'objets de type elim_lagr_context_type.
+!     Tableau d'objets de type elim_lagr_ctxt.
 !     Chaque objet contient toutes les données nécessaires pour
 !     procéder à l'élimination des multiplicateurs de Lagrange.
-type(elim_lagr_context_type), public, dimension(nmax_ctxt), target :: elg_context
+type(elim_lagr_ctxt), public, dimension(nmax_ctxt), target :: elg_context
 !
 
 ! Routine de gestion des données
@@ -234,6 +234,9 @@ subroutine elg_gest_data (action, mat1, mat2, rigi1)
   4     continue
     endif
 !
+#else
+    character(len=1) :: kdummy
+    kdummy = action // mat1 // mat2 //rigi1
 #endif
 end subroutine elg_gest_data
 !

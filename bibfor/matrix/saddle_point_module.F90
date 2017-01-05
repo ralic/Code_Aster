@@ -3,7 +3,7 @@ module saddle_point_module
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,6 @@ module saddle_point_module
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
 !
 use saddle_point_context_class
 !
@@ -247,14 +246,22 @@ contains
 subroutine convert_mat_to_saddle_point( matrasse, a_mat )
     character(len=19), intent(in) :: matrasse
     integer, intent(in) :: a_mat
+    character(len=1) :: kdummy
+    integer :: idummy
+    kdummy = matrasse(1:1)
+    idummy = a_mat
 end subroutine convert_mat_to_saddle_point
 !
 subroutine convert_rhs_to_saddle_point( b )
     integer, intent(in) :: b
+    integer :: idummy
+    idummy = b
 end subroutine convert_rhs_to_saddle_point
 !
 subroutine  update_double_lagrange( x )
     integer, intent(in)  :: x
+    integer :: idummy
+    idummy = x
 end subroutine update_double_lagrange
 #endif
 end module saddle_point_module

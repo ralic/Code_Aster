@@ -4,7 +4,6 @@ subroutine elg_calc_rhs_red(matas1, nsecm, secm, solu2)
 !
 use elim_lagr_data_module
     implicit none
-! aslint: disable=W0104,C1308
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -158,6 +157,12 @@ use elim_lagr_data_module
 !
     call jedema()
 #else
+    character(len=1) :: kdummy
+    integer :: idummy
+    real(kind=8) :: rdummy
+    kdummy = matas1(1:1) // solu2(1:1)
+    idummy = nsecm
+    rdummy = secm(1)
     call utmess('F', 'ELIMLAGR_1')
 #endif
 !

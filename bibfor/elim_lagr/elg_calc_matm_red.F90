@@ -5,7 +5,7 @@ subroutine elg_calc_matm_red(matas1, matas2, bas1)
 use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1003
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -317,6 +317,8 @@ use elim_lagr_data_module
     call jedetr('&&ELG_CALC_MATM_RED.NZCO')
     call jedema()
 #else
+    character(len=1) :: kdummy
+    kdummy = matas1(1:1) // matas2(1:1) // bas1(1:1)
     call utmess('F', 'ELIMLAGR_1')
 #endif
 !

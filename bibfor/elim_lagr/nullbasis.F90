@@ -6,7 +6,7 @@ subroutine nullbasis( mat_c, mat_z, nbnvco, nvco_c)
   implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1003
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D      WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -519,6 +519,8 @@ ASSERT( ierr == 0 )
   integer :: mat_c, mat_z
   integer :: nbnvco
   integer, dimension(:), intent(inout) :: nvco_c
+  integer :: idummy
+  idummy = mat_c + mat_z + nbnvco + nvco_c(1)
   ASSERT(.false.)
 #endif
 end subroutine nullbasis

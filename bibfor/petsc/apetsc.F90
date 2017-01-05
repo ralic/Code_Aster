@@ -20,7 +20,6 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=C1308
 ! person_in_charge: natacha.bereux at edf.fr
 !
 use petsc_data_module
@@ -274,6 +273,12 @@ use elim_lagr_comp_module
 999 continue
     call jedema()
 #else
+    character(len=1) :: kdummy
+    real(kind=8) :: rdummy
+    integer :: idummy
+    idummy = nbsol + istop + iret
+    rdummy = rsolu(1)
+    kdummy = action // solvez // matasz // vcinez
     call utmess('F', 'FERMETUR_10')
 #endif
 end subroutine

@@ -5,7 +5,7 @@ subroutine skeleton_of_nullbasis( mat_c, mat_z, nnzmax )
 implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1003
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -287,8 +287,9 @@ implicit none
   endif
 !
 #else
-    integer :: mat_c, mat_z
-    integer :: nnzmax
+    integer :: mat_c, mat_z, nnzmax
+    integer :: idummy
+    idummy = mat_c + mat_z + nnzmax
     ASSERT(.false.)
 #endif
 end subroutine

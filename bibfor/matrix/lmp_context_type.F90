@@ -11,7 +11,7 @@ module lmp_context_class
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 2016 -  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -28,7 +28,6 @@ module lmp_context_class
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
 !
 !
 implicit none

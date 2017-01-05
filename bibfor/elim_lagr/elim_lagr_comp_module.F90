@@ -21,7 +21,7 @@ module elim_lagr_comp_module
 !----------------------------------------------------------------
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1003
 !
 use elim_lagr_context_class
 use elim_lagr_data_module
@@ -65,8 +65,8 @@ subroutine build_elim_lagr_context( full_matas )
     PetscInt  ::   is_array(1)
     PetscOffset ::  i_is
     integer, dimension(:), allocatable :: idphys_c
-    type(saddle_point_context_type)    :: sp_ctxt
-    type(elim_lagr_context_type), pointer :: elg_ctxt => null()
+    type(saddlepoint_ctxt)    :: sp_ctxt
+    type(elim_lagr_ctxt), pointer :: elg_ctxt => null()
     PetscErrorCode :: ierr
     logical :: k_mat_to_free
     character(len=19) :: nomat_save
@@ -197,7 +197,7 @@ end subroutine build_elim_lagr_context
 subroutine build_tfinal( idphys_c, elg_ctxt )
     ! Dummy arguments
     integer, dimension(:), intent(in) :: idphys_c
-    type(elim_lagr_context_type), intent(inout) :: elg_ctxt
+    type(elim_lagr_ctxt), intent(inout) :: elg_ctxt
 
     ! Local variables
     character(len=16) :: concep, nomcmd
@@ -209,9 +209,9 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     PetscInt :: nbnvco, i
     PetscInt, parameter  :: izero=0, ione = 1
     PetscScalar, parameter :: rzero=0.d0, rone = 1.d0
-    PetscInt, dimension(:), allocatable :: non_verified_cons_c
+    PetscInt, dimension(:), allocatable :: non_verif_cons_c
     PetscInt, dimension(:), pointer :: icolnz_c
-    PetscReal :: aster_petsc_default_real
+    PetscReal :: aster_petsc_real
     PetscReal, dimension(:), allocatable :: norms_c, norms_ct
     PetscErrorCode :: ierr
     Mat :: mat_c, mat_tmp, mat_t
@@ -223,9 +223,9 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     verbose= ( niv == 2 )
     !
 #if PETSC_VERSION_LT(3,5,0)
-    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+    aster_petsc_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
-    aster_petsc_default_real = PETSC_DEFAULT_REAL
+    aster_petsc_real = PETSC_DEFAULT_REAL
 #endif
     !
     ! Allocation et initialisation de T à l'identite
@@ -252,20 +252,20 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     ASSERT( ierr == 0 )
 ! Number of non-verified constraints
     nbnvco  = elg_ctxt%nlag
-    allocate( non_verified_cons_c( elg_ctxt%nlag ), stat = ierr )
+    allocate( non_verif_cons_c( elg_ctxt%nlag ), stat = ierr )
     ASSERT( ierr == 0 )
-    non_verified_cons_c(:)= izero
+    non_verif_cons_c(:)= izero
 ! Nombre de tours de boucle
     restart = 0
     do while (( nbnvco > 0 ).and.( restart < elg_ctxt%nlag ))
 !
 !
 ! -- Calcul de T, telle que CT=0
-!    en sortie : nbnvco, non_verified_cons_c caractérisent
+!    en sortie : nbnvco, non_verif_cons_c caractérisent
 !    les contraintes qui n'ont pas pu être prises en compte
 !    à ce tour de boucle
 !
-      call nullbasis(mat_c, mat_t, nbnvco, non_verified_cons_c)
+      call nullbasis(mat_c, mat_t, nbnvco, non_verif_cons_c)
 !
 ! -- si toutes les contraintes ne sont pas vérifiées,
 !    on prépare les données pour le tour de boucle
@@ -277,18 +277,18 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
 !
         if (verbose) write(ifm,*) 'NEW NUMBER    ','OLD NUMBER    '
         do j1 = 1, nbnvco
-            if (verbose) write(ifm,*) j1,' - ', non_verified_cons_c(j1) + 1
+            if (verbose) write(ifm,*) j1,' - ', non_verif_cons_c(j1) + 1
         end do
 !
 ! CT <- C*T (stockée dans mat_tmp)
         call MatMatMult(mat_c, mat_t, MAT_INITIAL_MATRIX, &
-             aster_petsc_default_real, mat_tmp, ierr)
+             aster_petsc_real, mat_tmp, ierr)
         ASSERT(ierr.eq.0)
         call MatDestroy(mat_c, ierr)
         ASSERT( ierr == 0 )
 ! On extrait de CT la sous-matrice des contraintes qui n'ont pas été éliminées
 ! On nomme C cette nouvelle matrice des contraintes
-        call ISCreateGeneral(mpicomm, nbnvco, non_verified_cons_c, PETSC_USE_POINTER,&
+        call ISCreateGeneral(mpicomm, nbnvco, non_verif_cons_c, PETSC_USE_POINTER,&
                              isnvco, ierr)
         ASSERT( ierr == 0 )
         call ISCreateStride(mpicomm, to_petsc_int(elg_ctxt%nphys), izero, ione, &
@@ -311,7 +311,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
         call MatDestroy(elg_ctxt%tfinal, ierr)
         ASSERT( ierr == 0 )
 ! TFinal = T2 * T
-        call MatMatMult(mat_tmp, mat_t, MAT_INITIAL_MATRIX, aster_petsc_default_real,&
+        call MatMatMult(mat_tmp, mat_t, MAT_INITIAL_MATRIX, aster_petsc_real,&
                         elg_ctxt%tfinal, ierr)
         ASSERT(ierr==0)
         call MatDestroy(mat_t, ierr)
@@ -327,7 +327,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
     ASSERT( ierr == 0 )
     call MatDestroy(elg_ctxt%tfinal, ierr)
     ASSERT( ierr == 0 )
-    call MatMatMult(mat_tmp, mat_t, MAT_INITIAL_MATRIX, aster_petsc_default_real,&
+    call MatMatMult(mat_tmp, mat_t, MAT_INITIAL_MATRIX, aster_petsc_real,&
          elg_ctxt%tfinal, ierr)
     ASSERT( ierr == 0 )
     call MatDestroy(mat_tmp, ierr)
@@ -355,7 +355,7 @@ subroutine build_tfinal( idphys_c, elg_ctxt )
                                      PETSC_DEFAULT_DOUBLE_PRECISION, mat_tmp, ierr)
 #else
     call MatTransposeMatMult(elg_ctxt%tfinal,elg_ctxt%ctrans,MAT_INITIAL_MATRIX, &
-                           aster_petsc_default_real, mat_tmp,ierr)
+                           aster_petsc_real, mat_tmp,ierr)
 #endif
 !
     ASSERT( ierr == 0 )
@@ -437,6 +437,8 @@ end subroutine build_tfinal
 #else
 subroutine build_elim_lagr_context( full_matas )
     character(len=19), intent(in) :: full_matas
+    character(len=1) :: kdummy
+    kdummy = full_matas(1:1)
     ASSERT( .false. )
 end subroutine build_elim_lagr_context
 #endif

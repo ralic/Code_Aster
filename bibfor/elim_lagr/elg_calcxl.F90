@@ -5,7 +5,7 @@ subroutine elg_calcxl(x1, vlag)
 use elim_lagr_data_module
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -69,7 +69,7 @@ use elim_lagr_data_module
     Mat :: cct, atmp
     Vec :: bx, y, ay, xtmp
     PetscInt :: its
-    PetscReal :: aster_petsc_default_real
+    PetscReal :: aster_petsc_real
     integer :: methode
     integer, parameter :: lsqr=1, cg=2
 
@@ -83,9 +83,9 @@ use elim_lagr_data_module
     call asmpi_info(rank=rang, size=nbproc)
 !
 #if PETSC_VERSION_LT(3,5,0)
-    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+    aster_petsc_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
-    aster_petsc_default_real = PETSC_DEFAULT_REAL
+    aster_petsc_real = PETSC_DEFAULT_REAL
 #endif
 !
 !     -- dimensions :
@@ -127,7 +127,7 @@ use elim_lagr_data_module
          PETSC_DEFAULT_DOUBLE_PRECISION, cct, ierr)
 #else
     call MatTransposeMatMult(elg_context(ke)%ctrans, elg_context(ke)%ctrans, MAT_INITIAL_MATRIX, &
-         aster_petsc_default_real, cct, ierr)
+         aster_petsc_real, cct, ierr)
 #endif
     ASSERT( ierr==0 )
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -20,7 +20,6 @@ module augmented_lagrangian_module
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
 !
 use saddle_point_context_class
 use augmented_lagrangian_context_class
@@ -65,7 +64,7 @@ subroutine augmented_lagrangian_apply ( al_pc, x, y, ierr )
     !
     ! Local Variables
     PetscReal :: beta
-    type(saddle_point_context_type), pointer :: sp_ctxt => null()
+    type(saddlepoint_ctxt), pointer :: sp_ctxt => null()
     !
     ! Use work space and scatter context defined in the underlying saddle_point_context
     sp_ctxt => sp_pc_context%sp_ctxt
@@ -154,6 +153,8 @@ contains
 subroutine augmented_lagrangian_setup( al_pc , ierr )
     integer, intent(inout):: al_pc
     integer, intent(out)  :: ierr
+    integer :: idummy
+    idummy = al_pc
     ierr = 1
 end subroutine augmented_lagrangian_setup
 !
@@ -162,12 +163,16 @@ subroutine augmented_lagrangian_apply ( al_pc, x, y, ierr )
     integer, intent(in)   :: x
     integer, intent(inout):: y
     integer, intent(out) :: ierr
+    integer :: idummy
+    idummy = al_pc + x + y
     ierr = 1
 end subroutine augmented_lagrangian_apply
 !
 subroutine augmented_lagrangian_destroy( al_pc, ierr )
     integer, intent(inout)    :: al_pc
     integer, intent(out) :: ierr
+    integer :: idummy
+    idummy = al_pc
     ierr = 1
 end subroutine augmented_lagrangian_destroy
 #endif

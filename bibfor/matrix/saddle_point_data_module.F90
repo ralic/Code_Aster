@@ -1,6 +1,6 @@
 module saddle_point_data_module
 !
-! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,14 @@ module saddle_point_data_module
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1403
 !
 use saddle_point_context_class
 use augmented_lagrangian_context_class
 !
-implicit none 
+implicit none
 !
-type(saddle_point_context_type), target :: sp_context
-type(augmented_lagrangian_context_type) :: sp_pc_context
+type(saddlepoint_ctxt), target :: sp_context
+type(augm_lagr_ctxt) :: sp_pc_context
 !
 end module saddle_point_data_module

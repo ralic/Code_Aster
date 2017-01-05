@@ -3,7 +3,7 @@ module petsc_data_module
 #include "asterf_petsc.h"
 
 implicit none
-! aslint:disable=C1308
+! aslint:disable=
 private
 #ifdef _HAVE_PETSC
 #include "jeveux.h"
@@ -15,7 +15,7 @@ private
 #include "asterfort/utmess.h"
 !--------------------------------------------------------------------
 !
-! COPYRIGHT (C) 2016 -     EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                 WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

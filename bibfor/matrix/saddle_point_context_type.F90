@@ -19,7 +19,7 @@ module saddle_point_context_class
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -35,7 +35,7 @@ module saddle_point_context_class
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint:disable=C1308
+! aslint:disable=W1003,W1304
 !
 use matrasse_module
 !
@@ -50,7 +50,7 @@ private
 #include "asterfort/utmess.h"
 !
 !
-type, public :: saddle_point_context_type
+type, public :: saddlepoint_ctxt
 #ifdef _HAVE_PETSC
     !
     ! Double Lagrange scaling coefficient (from .conl)
@@ -98,8 +98,10 @@ type, public :: saddle_point_context_type
     aster_logical :: scatter_setup = .false.
     VecScatter :: scatter_to_phys, scatter_to_lag1, scatter_to_lag2
     !
+#else
+    integer :: idummy
 #endif
-end type saddle_point_context_type
+end type saddlepoint_ctxt
 !
 public :: new_saddle_point_context, free_saddle_point_context
 !
@@ -114,7 +116,7 @@ function new_saddle_point_context( full_matas, a_mat, ak_mat ) result ( ctxt )
     character(len=19), intent(in)                :: full_matas
     Mat, intent(in)                              :: a_mat
     Mat, intent(in), optional                    :: ak_mat
-    type(saddle_point_context_type)              :: ctxt
+    type(saddlepoint_ctxt)              :: ctxt
     !
     ! Local variables
     !
@@ -146,7 +148,7 @@ end function new_saddle_point_context
 subroutine set_is( matas , ctxt )
     !
     character(len=19), intent(in)                  :: matas
-    type(saddle_point_context_type), intent(inout) :: ctxt
+    type(saddlepoint_ctxt), intent(inout) :: ctxt
     !
     ! Local variables
     PetscInt :: nphys, nlag1, nlag2
@@ -186,7 +188,7 @@ subroutine set_matrix_data( a_mat, ak_mat,  ctxt)
     !
     Mat, intent(in)                                :: a_mat
     Mat, intent(in)                                :: ak_mat
-    type(saddle_point_context_type), intent(inout) :: ctxt
+    type(saddlepoint_ctxt), intent(inout) :: ctxt
     !
     ASSERT( ctxt%is_setup )
     ASSERT( .not. ctxt%data_setup )
@@ -219,7 +221,7 @@ subroutine set_workspace( ctxt )
     !
     ! Dummy arguments
     !
-    type(saddle_point_context_type), intent(inout) :: ctxt
+    type(saddlepoint_ctxt), intent(inout) :: ctxt
     !
     ASSERT( ctxt%data_setup )
     ASSERT( .not. ctxt%work_setup )
@@ -253,7 +255,7 @@ subroutine set_scatter( a_mat, ctxt )
     ! Dummy arguments
     !
     Mat, intent(in)                                :: a_mat
-    type(saddle_point_context_type), intent(inout) :: ctxt
+    type(saddlepoint_ctxt), intent(inout) :: ctxt
     !
     ! Local Variables
     Vec :: x
@@ -287,7 +289,7 @@ subroutine free_saddle_point_context( ctxt )
     !
     ! Dummy argument
     !
-    type( saddle_point_context_type ), intent(inout) :: ctxt
+    type( saddlepoint_ctxt ), intent(inout) :: ctxt
     !
     call ISDestroy( ctxt%is_phys, ierr )
     ASSERT( ierr == 0 )
@@ -406,15 +408,17 @@ function new_saddle_point_context( matas, a_mat ) result ( ctxt )
     !
     character(len=19), intent(in)                :: matas
     integer, intent(in)                          :: a_mat
-    type(saddle_point_context_type)              :: ctxt
+    type(saddlepoint_ctxt)              :: ctxt
+    character(len=1) :: kdummy
+    integer :: idummy
+    kdummy = matas(1:1)
+    idummy = a_mat
+    ctxt%idummy = 0
 end function
 !
-subroutine set_auglag_precond( ctxt )
-    type(saddle_point_context_type), intent(inout) :: ctxt
-end subroutine
-!
 subroutine free_saddle_point_context( ctxt )
-    type( saddle_point_context_type ), intent(inout) :: ctxt
+    type( saddlepoint_ctxt ), intent(inout) :: ctxt
+    ctxt%idummy = 0
 end subroutine
 !
 #endif

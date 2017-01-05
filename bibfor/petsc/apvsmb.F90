@@ -20,7 +20,7 @@ subroutine apvsmb(kptsc, lmd, rsolu)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 use petsc_data_module
 use saddle_point_module, only : convert_rhs_to_saddle_point
 

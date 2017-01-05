@@ -23,7 +23,7 @@ use petsc_data_module
 
     implicit none
 ! person_in_charge: nicolas.sellenet at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 #include "jeveux.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"

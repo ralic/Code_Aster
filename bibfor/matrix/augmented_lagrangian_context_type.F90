@@ -19,7 +19,7 @@ module augmented_lagrangian_context_class
 #include "asterf_types.h"
 #include "asterf_petsc.h"
 !
-! COPYRIGHT (C) 2016 -  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -36,7 +36,6 @@ module augmented_lagrangian_context_class
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=C1308
 !
 use matrasse_module
 use saddle_point_context_class
@@ -52,10 +51,10 @@ private
 #include "asterfort/utmess.h"
 !
 !
-type, public :: augmented_lagrangian_context_type
+type, public :: augm_lagr_ctxt
     !
 #ifdef _HAVE_PETSC
-    type(saddle_point_context_type), pointer :: sp_ctxt =>null()
+    type(saddlepoint_ctxt), pointer :: sp_ctxt =>null()
     !
     ! Preconditioner data section
     ! ===========================
@@ -66,8 +65,10 @@ type, public :: augmented_lagrangian_context_type
     ! Preconditioner for the block of physical dofs
     PC :: pcphy
     !
+#else
+    integer :: idummy
 #endif
-end type augmented_lagrangian_context_type
+end type augm_lagr_ctxt
 !
 public :: new_augmented_lagrangian_context, free_augm_lagrangian_context
 !
@@ -79,8 +80,8 @@ contains
 !
 function new_augmented_lagrangian_context( sp_ctxt  ) result ( ctxt )
     !
-    type(saddle_point_context_type), target         :: sp_ctxt
-    type(augmented_lagrangian_context_type)         :: ctxt
+    type(saddlepoint_ctxt), target         :: sp_ctxt
+    type(augm_lagr_ctxt)         :: ctxt
     !
     ! Local variables
     !
@@ -98,7 +99,7 @@ subroutine set_precond_data( ctxt )
     !
     ! Dummy arguments
     !
-    type(augmented_lagrangian_context_type), intent(inout) :: ctxt
+    type(augm_lagr_ctxt), intent(inout) :: ctxt
     !
     !
     ! Local variables
@@ -107,8 +108,8 @@ subroutine set_precond_data( ctxt )
     mpi_int :: rang, nbproc
     PetscInt :: niremp
     PetscScalar :: fillp
-    PetscReal :: aster_petsc_default_real
-    type(saddle_point_context_type), pointer :: sp_ctxt =>null()
+    PetscReal :: aster_petsc_real
+    type(saddlepoint_ctxt), pointer :: sp_ctxt =>null()
     integer, parameter :: icc_pre =0, mumps_pre = 1
     integer :: pre_type
     Mat :: f
@@ -134,12 +135,12 @@ subroutine set_precond_data( ctxt )
     !
     ! m_mat = c^T c
 #if PETSC_VERSION_LT(3,5,0)
-    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+    aster_petsc_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
-    aster_petsc_default_real = PETSC_DEFAULT_REAL
+    aster_petsc_real = PETSC_DEFAULT_REAL
 #endif
     call MatTransposeMatMult(sp_ctxt%c_mat,sp_ctxt%c_mat,                  &
-   &   MAT_INITIAL_MATRIX,aster_petsc_default_real, ctxt%m_mat ,ierr)
+   &   MAT_INITIAL_MATRIX,aster_petsc_real, ctxt%m_mat ,ierr)
     ASSERT( ierr == 0 )
     ! m_mat <- k_mat + gamma*m_mat
     call MatAYPX(ctxt%m_mat,ctxt%gamma,sp_ctxt%k_mat,DIFFERENT_NONZERO_PATTERN,ierr)
@@ -209,7 +210,7 @@ subroutine free_augm_lagrangian_context( ctxt )
     !
     ! Dummy argument
     !
-    type( augmented_lagrangian_context_type ), intent(inout) :: ctxt
+    type( augm_lagr_ctxt ), intent(inout) :: ctxt
     !
     call MatDestroy( ctxt%m_mat, ierr )
     ASSERT( ierr == 0 )
@@ -226,12 +227,15 @@ end subroutine free_augm_lagrangian_context
 contains
 !
 function new_augmented_lagrangian_context( sp_ctxt  ) result ( ctxt )
-    type(saddle_point_context_type), target         :: sp_ctxt
-    type(augmented_lagrangian_context_type)         :: ctxt
+    integer :: sp_ctxt
+    type(augm_lagr_ctxt)         :: ctxt
+    ctxt%idummy = 0
+    sp_ctxt = 0
 end function new_augmented_lagrangian_context
 !
 subroutine free_augm_lagrangian_context( ctxt )
-    type( augmented_lagrangian_context_type ), intent(inout) :: ctxt
+    type( augm_lagr_ctxt ), intent(inout) :: ctxt
+    ctxt%idummy = 0
 end subroutine free_augm_lagrangian_context
 #endif
 end module augmented_lagrangian_context_class

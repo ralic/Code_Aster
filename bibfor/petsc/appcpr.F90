@@ -19,7 +19,7 @@ subroutine appcpr(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 use petsc_data_module
 use augmented_lagrangian_module, only : augmented_lagrangian_apply, &
     augmented_lagrangian_setup, augmented_lagrangian_destroy

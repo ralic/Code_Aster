@@ -5,7 +5,6 @@ function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok )
 implicit none
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,8 +72,12 @@ implicit none
 !
 #else
     integer, intent(in)         :: vec_c, mat_z
-    real, optional, intent(in)  :: tol
+    real(kind=8), optional, intent(in)  :: tol
     aster_logical               :: is_ok
+    integer :: idummy
+    real(kind=8) :: rdummy
+    idummy = vec_c + mat_z
+    rdummy = tol
     is_ok = .false.
 #endif
 end function check_nullbasis

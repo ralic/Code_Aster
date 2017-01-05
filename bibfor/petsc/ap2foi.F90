@@ -20,7 +20,7 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic,&
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 use petsc_data_module
 use lmp_module, only : lmp_destroy
 implicit none

@@ -21,7 +21,7 @@ module elim_lagr_context_class
 !----------------------------------------------------------------
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1304,W1003
 !
 implicit none
 !
@@ -35,32 +35,34 @@ private
 ! Ce type contient un pointeur vers un objet de type saddle_point_context
 !----------------------------------------------------------------------
 
-type, public ::  elim_lagr_context_type
+type, public ::  elim_lagr_ctxt
 !
 #ifdef _HAVE_PETSC
-Mat :: kproj
-Mat :: ctrans
-Mat :: tfinal
-Mat :: rct
-Mat :: matb
-Vec :: vx0
-Vec :: vecb
-Vec :: vecc
-integer :: nphys
-integer :: nlag
-integer(kind=4), dimension(:), pointer :: indred
-! nom de la matrice Aster "complète" (avec Lagranges)
-character(len=19) :: full_matas
-! nom de la matrice Aster "réduite" (sans Lagranges)
-character(len=19) :: reduced_matas
-! nom de la matrice de rigidité Aster contenant les
-! relations lineaires
-! c'est utile dans le cas ou on reduit une matrice de masse
-! ou d'amortissement qui ne contient pas ces relations lineaires
-! il faut alors utiliser la matrice de rigidite du systeme
-character(len=19) ::  k_matas
+    Mat :: kproj
+    Mat :: ctrans
+    Mat :: tfinal
+    Mat :: rct
+    Mat :: matb
+    Vec :: vx0
+    Vec :: vecb
+    Vec :: vecc
+    integer :: nphys
+    integer :: nlag
+    integer(kind=4), dimension(:), pointer :: indred
+    ! nom de la matrice Aster "complète" (avec Lagranges)
+    character(len=19) :: full_matas
+    ! nom de la matrice Aster "réduite" (sans Lagranges)
+    character(len=19) :: reduced_matas
+    ! nom de la matrice de rigidité Aster contenant les
+    ! relations lineaires
+    ! c'est utile dans le cas ou on reduit une matrice de masse
+    ! ou d'amortissement qui ne contient pas ces relations lineaires
+    ! il faut alors utiliser la matrice de rigidite du systeme
+    character(len=19) ::  k_matas
+#else
+    integer :: idummy
 #endif
-end type elim_lagr_context_type
+end type elim_lagr_ctxt
 !
 public :: new_elim_lagr_context, free_elim_lagr_context
 !
@@ -73,7 +75,7 @@ contains
 !
 function new_elim_lagr_context() result ( elg_ctxt )
   !
-  type(elim_lagr_context_type) :: elg_ctxt
+  type(elim_lagr_ctxt) :: elg_ctxt
   !
   elg_ctxt%full_matas=' '
   elg_ctxt%reduced_matas=' '
@@ -95,7 +97,7 @@ end function new_elim_lagr_context
 !
 subroutine free_elim_lagr_context( elg_ctxt )
 !   Dummy argument
-    type(elim_lagr_context_type), intent(inout) :: elg_ctxt
+    type(elim_lagr_ctxt), intent(inout) :: elg_ctxt
 !
     elg_ctxt%full_matas=' '
     elg_ctxt%reduced_matas=' '
@@ -139,12 +141,14 @@ end subroutine free_elim_lagr_context
 contains
 !
 function new_elim_lagr_context() result ( elg_ctxt )
-    type(elim_lagr_context_type) :: elg_ctxt
+    type(elim_lagr_ctxt) :: elg_ctxt
+    elg_ctxt%idummy = 0
     ASSERT( .false. )
 end function new_elim_lagr_context
 !
 subroutine free_elim_lagr_context( elg_ctxt )
-    type(elim_lagr_context_type), intent(inout) :: elg_ctxt
+    type(elim_lagr_ctxt), intent(inout) :: elg_ctxt
+    elg_ctxt%idummy = 0
 end subroutine free_elim_lagr_context
 
 #endif

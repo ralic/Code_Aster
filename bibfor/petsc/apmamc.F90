@@ -20,7 +20,7 @@ subroutine apmamc(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=W1304,W1003
 
 use petsc_data_module
 
@@ -313,6 +313,9 @@ use petsc_data_module
 
     call jedema()
 
+#else
+    integer :: idummy
+    idummy = kptsc
 #endif
 !
 end subroutine

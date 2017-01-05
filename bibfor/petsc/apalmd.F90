@@ -20,7 +20,7 @@ subroutine apalmd(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: nicolas.sellenet at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 use petsc_data_module
 
     implicit none

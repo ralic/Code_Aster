@@ -21,7 +21,7 @@ subroutine ldsp2(pc, x1, y, ierr)
 use petsc_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 !
 #include "asterfort/amumph.h"
 #include "asterfort/assert.h"
@@ -73,6 +73,9 @@ use petsc_data_module
 !
 !     DECLARATION BIDON POUR ASSURER LA COMPILATION
     integer :: pc, x1, y, ierr
+    integer :: idummy
+    idummy = pc + x1 + y
+    ierr = 0
 !
 #endif
 !

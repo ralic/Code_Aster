@@ -5,7 +5,7 @@ subroutine elg_calcx0()
 use elim_lagr_data_module
     implicit none
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -73,15 +73,15 @@ use elim_lagr_data_module
     real(kind=8) :: norm
     PetscScalar, parameter ::  neg_rone = -1.d0
     aster_logical :: info
-    PetscReal :: aster_petsc_default_real
+    PetscReal :: aster_petsc_real
 !----------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)
     info=niv.eq.2
 #if PETSC_VERSION_LT(3,5,0)
-    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+    aster_petsc_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
-    aster_petsc_default_real = PETSC_DEFAULT_REAL
+    aster_petsc_real = PETSC_DEFAULT_REAL
 #endif
     !
 !   -- COMMUNICATEUR MPI DE TRAVAIL
@@ -98,7 +98,7 @@ use elim_lagr_data_module
     ASSERT(.false.)
 #else
     call MatTransposeMatMult(elg_context(ke)%ctrans, elg_context(ke)%ctrans,&
-        MAT_INITIAL_MATRIX, aster_petsc_default_real, cct, ierr)
+        MAT_INITIAL_MATRIX, aster_petsc_real, cct, ierr)
 #endif
 ! - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 !         Create the linear solver and set options

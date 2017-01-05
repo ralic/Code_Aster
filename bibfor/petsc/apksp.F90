@@ -20,7 +20,7 @@ subroutine apksp(kptsc)
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint:disable=C1308
+! aslint:disable=
 use petsc_data_module
 !
     implicit none
@@ -55,7 +55,7 @@ use petsc_data_module
 !     Variables PETSc
     PetscErrorCode :: ierr
     PetscInt :: maxits
-    PetscReal :: rtol, atol, dtol, aster_petsc_default_real
+    PetscReal :: rtol, atol, dtol, aster_petsc_real
     Mat :: a
     KSP :: ksp
 #if PETSC_VERSION_LT(3,7,0)
@@ -68,9 +68,9 @@ use petsc_data_module
     call infniv(ifm, niv)
 !
 #if PETSC_VERSION_LT(3,5,0)
-    aster_petsc_default_real = PETSC_DEFAULT_DOUBLE_PRECISION
+    aster_petsc_real = PETSC_DEFAULT_DOUBLE_PRECISION
 #else
-    aster_petsc_default_real = PETSC_DEFAULT_REAL
+    aster_petsc_real = PETSC_DEFAULT_REAL
 #endif
 !     -- LECTURE DU COMMUN
     nomat = nomat_courant
@@ -123,8 +123,8 @@ use petsc_data_module
     endif
 !
     rtol = resire
-    atol = aster_petsc_default_real
-    dtol = aster_petsc_default_real
+    atol = aster_petsc_real
+    dtol = aster_petsc_real
 !
     call KSPSetTolerances(ksp, rtol, atol, dtol, maxits, ierr)
     ASSERT(ierr.eq.0)
