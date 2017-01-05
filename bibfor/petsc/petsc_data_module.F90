@@ -1,7 +1,5 @@
 module petsc_data_module
 !
-!
-#include "asterf.h"
 #include "asterf_petsc.h"
 
 implicit none

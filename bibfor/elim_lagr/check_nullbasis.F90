@@ -1,6 +1,5 @@
 function check_nullbasis( vec_c, mat_z, tol ) result ( is_ok )
 !
-#include "asterf.h"
 #include "asterf_petsc.h"
 
 implicit none

@@ -1,6 +1,5 @@
 subroutine ldsp2(pc, x1, y, ierr)
 !
-#include "asterf.h"
 #include "asterf_petsc.h"
 !
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG

@@ -1,5 +1,8 @@
 #ifndef ASTERF_PETSC_H
 #define ASTERF_PETSC_H
+
+#include "asterf_types.h"
+
 #ifdef _HAVE_PETSC
 !
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
