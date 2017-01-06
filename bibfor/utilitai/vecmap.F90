@@ -2,7 +2,7 @@ subroutine vecmap(mv, n, mp, m)
     implicit none
 !       ----------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,10 +22,11 @@ subroutine vecmap(mv, n, mp, m)
 !       IN      MV = VECTEUR MATRICE STOCKE COLONNE , LONGUEUR N
 !       OUT     MP = MATRICE PLEINE (M*M)
 !       ----------------------------------------------------------------
+    integer:: m, n
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, m, n
+    integer :: i, j, k
 !-----------------------------------------------------------------------
     k = 0
     do 10 j = 1, m

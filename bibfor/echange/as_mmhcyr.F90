@@ -3,7 +3,7 @@ subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
 ! person_in_charge: nicolas.sellenet at edf.fr
 !     L'ARGUMENT CSIZE N'EST PAS DANS L'API MED
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -37,7 +37,6 @@ subroutine as_mmhcyr(fid, maa, conn, csize, switch,&
     med_int :: fid4, typen4, typge4, cret4
     med_int :: typco4, switc4, mdnon4, mdnoi4
     med_int, allocatable :: conn4(:)
-    aster_int :: ic
     mdnont = -1
     mdnoit = -1
     fid4 = fid
