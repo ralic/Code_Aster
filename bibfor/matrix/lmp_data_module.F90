@@ -1,6 +1,6 @@
 module lmp_data_module
 !
-! COPYRIGHT (C) 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 2016 - 2017 EDF R&D                 WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,7 +21,7 @@ module lmp_data_module
 !
 use lmp_context_class
 !
-implicit none 
+implicit none
 #include "asterf.h"
 #include "asterf_types.h"
 !
