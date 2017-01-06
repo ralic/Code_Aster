@@ -4,8 +4,8 @@ subroutine elg_allocvr(vect1, n1)
 #include "asterf_petsc.h"
 !
 implicit none
-! person_in_charge: jacques.pellet at edf.fr
-! aslint: disable=W0104
+! person_in_charge: natacha.bereux@edf.fr
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -45,6 +45,8 @@ implicit none
     call VecSetSizes(vect1, PETSC_DECIDE, to_petsc_int(n1), ierr)
 #else
     integer :: vect1, n1
+    integer :: idummy
     call utmess('F', 'ELIMLAGR_1')
+    idummy = vect1 + n1
 #endif
 end subroutine

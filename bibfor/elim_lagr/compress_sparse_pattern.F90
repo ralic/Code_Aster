@@ -5,7 +5,6 @@ subroutine compress_sparse_pattern(a)
 !
 implicit none
 ! person_in_charge: natacha.bereux at edf.fr
-! aslint: disable=W0104
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -134,6 +133,8 @@ implicit none
 
 #else
     integer, intent(in)  :: a
+    integer :: idummy
+    idummy = a
     ASSERT(.false.)
 #endif
 !

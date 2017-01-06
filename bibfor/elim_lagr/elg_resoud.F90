@@ -1,6 +1,6 @@
-subroutine elg_resoud(matas1, matpre, chcine, nsecm, chsecm,&
-                      chsolu, base, rsolu, csolu, criter,&
-                      prepos, istop, iret)
+subroutine elg_resoud(matas1, matpre, nsecm, chsecm,chsolu,&
+                      base, rsolu, csolu, criter, prepos,&
+                      istop, iret)
 use elim_lagr_data_module
     implicit none
 #include "asterf_types.h"
@@ -25,7 +25,6 @@ use elim_lagr_data_module
 !
     character(len=19), intent(in) :: matas1
     character(len=*), intent(in) :: matpre
-    character(len=*), intent(in) :: chcine
     integer, intent(in) :: nsecm
     character(len=*), intent(in) :: chsecm
     character(len=*), intent(in) :: chsolu
@@ -37,7 +36,7 @@ use elim_lagr_data_module
     integer, intent(in) :: istop
     integer, intent(out) :: iret
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

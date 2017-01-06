@@ -18,6 +18,7 @@ module lmp_data_module
 !
 !
 ! person_in_charge: natacha.bereux at edf.fr
+! aslint: disable=W1403
 !
 use lmp_context_type
 !

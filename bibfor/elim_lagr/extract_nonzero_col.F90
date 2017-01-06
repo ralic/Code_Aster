@@ -4,8 +4,6 @@ subroutine extract_nonzero_col(a, acnz, icolnz_c)
 #include "asterf_petsc.h"
 !
 implicit none
-! aslint: disable=W0104
-!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -110,7 +108,9 @@ implicit none
     integer, intent(in)  :: a
     integer, intent(out)  :: acnz
     integer, dimension(:), pointer :: icolnz_c
+    integer :: idummy
     ASSERT(.false.)
+    idummy = a + icolnz_c(1)
     acnz = 0
 #endif
 !
