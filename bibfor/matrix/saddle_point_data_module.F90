@@ -18,8 +18,8 @@ module saddle_point_data_module
 !
 ! aslint: disable=W1403
 !
-use saddle_point_context_class
-use augmented_lagrangian_context_class
+use saddle_point_context_type
+use augmented_lagrangian_context_type
 !
 implicit none
 !

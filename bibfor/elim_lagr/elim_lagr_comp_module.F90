@@ -23,10 +23,10 @@ module elim_lagr_comp_module
 ! person_in_charge: natacha.bereux at edf.fr
 ! aslint:disable=W1003
 !
-use elim_lagr_context_class
+use elim_lagr_context_type
 use elim_lagr_data_module
 use petsc_data_module
-use saddle_point_context_class
+use saddle_point_context_type
 !
 implicit none
 !

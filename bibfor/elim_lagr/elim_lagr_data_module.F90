@@ -22,9 +22,9 @@ module elim_lagr_data_module
 ! aslint:disable=W1304
 !
 !
-use elim_lagr_context_class
+use elim_lagr_context_type
 use petsc_data_module
-use saddle_point_context_class
+use saddle_point_context_type
 !
 implicit none
 !

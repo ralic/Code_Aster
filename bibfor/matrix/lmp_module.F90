@@ -21,7 +21,7 @@ module lmp_module
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-use lmp_context_class
+use lmp_context_type
 !
 implicit none
 !

@@ -14,7 +14,7 @@
 ! - matrix data ( k_mat, c_mat )
 ! - vector workspace ( x_1, x_2, b_1, b_2 )
 !
-module augmented_lagrangian_context_class
+module augmented_lagrangian_context_type
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
@@ -38,7 +38,7 @@ module augmented_lagrangian_context_class
 ! person_in_charge: natacha.bereux at edf.fr
 !
 use matrasse_module
-use saddle_point_context_class
+use saddle_point_context_type
 !
 implicit none
 !
@@ -238,4 +238,4 @@ subroutine free_augm_lagrangian_context( ctxt )
     ctxt%idummy = 0
 end subroutine free_augm_lagrangian_context
 #endif
-end module augmented_lagrangian_context_class
+end module augmented_lagrangian_context_type

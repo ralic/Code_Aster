@@ -19,14 +19,14 @@ module lmp_data_module
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-use lmp_context_class
+use lmp_context_type
 !
 implicit none
 #include "asterf.h"
 #include "asterf_types.h"
 !
 aster_logical :: lmp_is_setup = .false.
-type(lmp_context_type) :: lmp_context
+type(lmp_ctxt) :: lmp_context
 integer, public :: reac_lmp = 15
 !
 end module lmp_data_module

@@ -21,7 +21,7 @@ module saddle_point_module
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-use saddle_point_context_class
+use saddle_point_context_type
 !
 implicit none
 !

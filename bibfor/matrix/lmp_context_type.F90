@@ -6,7 +6,7 @@
 ! - parameters of the method : ritz
 ! - the necessary data to apply the preconditioner to a PETSc Vec array
 !
-module lmp_context_class
+module lmp_context_type
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
@@ -38,7 +38,7 @@ private
 #include "asterfort/utmess.h"
 !
 !
-type, public :: lmp_context_type
+type, public :: lmp_ctxt
     !
 #ifdef _HAVE_PETSC
     !
@@ -55,7 +55,7 @@ type, public :: lmp_context_type
     ! Vecteur de travail
     PetscReal, dimension(:), allocatable :: sk
 #endif
-end type lmp_context_type
+end type lmp_ctxt
 !
 public :: new_lmp_context, build_lmp_context, free_lmp_context
 !
@@ -69,7 +69,7 @@ contains
 function new_lmp_context( ritz ) result ( ctxt )
     !
     integer, intent(in), optional   :: ritz
-    type(lmp_context_type)          :: ctxt
+    type(lmp_ctxt)          :: ctxt
     !
     ! Local variables
     !
@@ -110,7 +110,7 @@ subroutine build_lmp_context( ksp, ctxt )
     ! Dummy arguments
     !
     KSP, intent(in) :: ksp
-    type(lmp_context_type), intent(inout) :: ctxt
+    type(lmp_ctxt), intent(inout) :: ctxt
     !
     ! Local variables
     !
@@ -222,7 +222,7 @@ subroutine free_lmp_context( ctxt )
     !
     ! Dummy argument
     !
-    type( lmp_context_type ), intent(inout) :: ctxt
+    type( lmp_ctxt ), intent(inout) :: ctxt
     ! Local Variables
     integer :: ii
     !
@@ -285,4 +285,4 @@ subroutine free_lmp_context( ctxt )
     ASSERT(.false.)
 end subroutine free_lmp_context
 #endif
-end module lmp_context_class
+end module lmp_context_type

@@ -1,4 +1,4 @@
-module elim_lagr_context_class
+module elim_lagr_context_type
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
@@ -153,4 +153,4 @@ end subroutine free_elim_lagr_context
 
 #endif
 
-end module elim_lagr_context_class
+end module elim_lagr_context_type

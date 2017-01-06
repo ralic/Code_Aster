@@ -14,7 +14,7 @@
 ! - matrix data ( k_mat, c_mat, d_mat )
 ! - vector workspace ( x_1, x_2, x_3, b_1, b_2, b_3 )
 !
-module saddle_point_context_class
+module saddle_point_context_type
 !
 #include "asterf_types.h"
 #include "asterf_petsc.h"
@@ -422,4 +422,4 @@ subroutine free_saddle_point_context( ctxt )
 end subroutine
 !
 #endif
-end module saddle_point_context_class
+end module saddle_point_context_type

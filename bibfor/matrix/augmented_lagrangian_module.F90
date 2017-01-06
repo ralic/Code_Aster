@@ -21,8 +21,8 @@ module augmented_lagrangian_module
 !
 ! person_in_charge: natacha.bereux at edf.fr
 !
-use saddle_point_context_class
-use augmented_lagrangian_context_class
+use saddle_point_context_type
+use augmented_lagrangian_context_type
 !
 implicit none
 !
