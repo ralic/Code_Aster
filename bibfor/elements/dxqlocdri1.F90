@@ -44,7 +44,6 @@ subroutine dxqlocdri1(gmemb, matloc)
 !                          ---- TERMES DE MEMBRANE (DRILLING-DIAGONAL)
 
     do k = 1, 10
-!        write (6,*) "gmemb", " indice ",jm(k) , " ", gmemb(im(k))
         matloc(jm(k)) = matloc(jm(k)) + gmemb(im(k))
     end do
 

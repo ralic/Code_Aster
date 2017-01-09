@@ -198,7 +198,6 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
 !   -------------------------------------------------------
     do kcmp=1,nbcmp
         nocmp=zk8(jnocmp-1+kcmp)
-!        write (6,*) "kcmp", kcmp, "nocmp", nocmp,"nbcmp",nbcmp
          verif_coef_drz = .false.
 
 !       -- Exceptions :
@@ -243,9 +242,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
         do kma=1,nbma_verif
             ima=numa_verif(kma)
             igrel=num_grel(2*(ima-1)+1)
-!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 242", verif_coef_drz
             if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1 .and. .not. verif_coef_drz) cycle
-!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 244", verif_coef_drz
 
             ient=ptma(ima)
             decal=3+2*nbgdmx+nec*(ient-1)
@@ -264,7 +261,6 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
             enddo
             deb1 = (ient-1)*nbcmp + 1
             iad1 = deb1 - 1 + ico
-!           if (verif_coef_drz) write (6,*) "verif_coef_drz : 261", verif_coef_drz
 
             if (tsca .eq. 'R') then
                 if (verif_coef_drz) then 
@@ -272,20 +268,13 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
                         call jeveuo(mailla//'.TYPMAIL', 'L', vi=typmail)
                         call jenonu(jexnom('&CATA.TM.NOMTM', 'QUAD4'), typq4)
                         call jenonu(jexnom('&CATA.TM.NOMTM', 'TRIA3'), typt3)
-!                       write (6,*) "type_maille QUAD4", typq4
-!                       write (6,*) "type_maille TRIA3", typt3
-!                       write (6,*) "type_maille typmail(ima)", typmail(ima)
-                        ! WARNIG : CALL DISMMA EXI_QUAD4 pour maillage mixte
-!                       if (typmail(ima) .eq. typt3)  write (6,*) "TRIA3 : COEF_RIGI_DRZ < 0 "
                         if (typmail(ima) .eq. typt3)  exit3_coef_drz = exit3_coef_drz .or. .true.
-!                       if (typmail(ima) .eq. typq4)  write (6,*) "QUAD4 : COEF_RIGI_DRZ < 0 "
                         if (typmail(ima) .eq. typq4)  then
                               exiq4_coef_drz   = (exiq4_coef_drz .or. .true.)
                               exiq4_drz_nook = (exiq4_coef_drz) .and. &
                                                (zr(jvale-1+iad1).gt.-1.d12) .and. &
                                                (zr(jvale-1+iad1).lt.-1.d2 )
                         endif 
-!                       if (typmail(ima) .eq. typq4)  cycle
                     else 
                         cycle
                     endif
@@ -337,8 +326,7 @@ subroutine verif_affe_carte(ligrmo,carte,comment,non_lin)
                 call utmess('F','CALCULEL_43',nk=5,valk=valk,si=nbmapb)
             elseif (.not. exit3_coef_drz .and.  exiq4_drz_nook) then  
                 call utmess('A','CALCULEL_44',nk=5,valk=valk,si=nbmapb)
-                cycle
-!            elseif (.not. exit3_coef_drz .and.  exiq4_coef_drz) then  
+                cycle 
             else  
                 if (exit3_coef_drz .or. exiq4_coef_drz) cycle
                 if (a_un_sens((igrel-1)*nbcmp+kcmp).eq.1) cycle

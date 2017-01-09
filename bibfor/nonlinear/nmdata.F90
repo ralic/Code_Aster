@@ -105,7 +105,7 @@ implicit none
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
     aster_logical :: l_etat_init, l_sigm
-    aster_logical    ::  non_lin
+!    aster_logical    ::  non_lin
 !
     character(len=24) :: typco
 ! --------------------------------------------------------------------------------------------------
@@ -135,7 +135,6 @@ implicit none
 !
 ! --- VERIFICATION DE CARA_ELEM : COEF_RIGI_DRZ INTERDIT EN NON-LINEAIRE
 !
-    write (6, *) "nomcmd(5:13)", nomcmd(5:13)
     if (nomcmd(6:13) .eq. 'NON_LINE' ) then
         call gettco(cara_elem, typco)
         if (typco .eq. 'CARA_ELEM') then

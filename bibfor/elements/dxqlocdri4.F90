@@ -62,7 +62,6 @@ subroutine dxqlocdri4(bxb, matloc)
 
 !                       ---- TERMES DE MEMBRANE
     do k = 1, 78
-!        write (6,*) "bxb", " indice ",jm(k) , " ", bxb(im(k))
         matloc(jm(k)) = matloc(jm(k)) + bxb(im(k))
     end do
 

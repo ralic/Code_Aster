@@ -101,7 +101,6 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 ! COEF_RIGI_DRZ ACTIVE = -1 --> dri = true,  dri =  false sinon
     dri = .false.
     if (ctor .lt. 0.0d0 ) dri = .true.
-!    write (6,*) "un/r8gam" , un/r8gaem()
     if (abs(excent) .gt. un/r8gaem()) exce = .true.
 !
 !     ----- MISE A ZERO DES MATRICES : FLEX ,MEMB ET MEFL :
@@ -135,7 +134,6 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig,&
 
       epais = zr(jcoqu)
      gam   = abs(ctor)*dm(1)
-!      write (6,*) "gam", gam
      do ii = 1, npg
 !
 !        ----- COORDINATES :

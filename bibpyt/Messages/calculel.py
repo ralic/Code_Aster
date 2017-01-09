@@ -269,13 +269,13 @@ Conseil :
 """),
 
     42 : _(u"""
- Utilisation de COEF_RIGI_DRZ en mode drilling-rotation :
-   Vous avez affecté une valeur négative de coef_rigi_drz sur des mailles ou groupes de mailles TRIA3 et QUAD4. Ce mode d'utilisation est permis,
-   mais le mode drilling-rotation ne s'activera pas sur les triangles. Le drilling-rotation permet d'associer une signification 
-   physique à la troisième rotation contrairement aux modèles classiques des plaques de Kirchoff.
+ Utilisation de COEF_RIGI_DRZ en mode rotation plane :
+   Vous avez affecté une valeur négative de COEF_RIGI_DRZ sur des mailles ou groupes de mailles TRIA3 et QUAD4. Ce mode d'utilisation est permis,
+   mais le mode rotation plane ne s'activera pas sur les triangles. Le rotation plane permet d'associer une signification 
+   physique à la troisième rotation contrairement aux modèles classiques des plaques minces.
    Il s'agit peut-être d'une erreur d'affectation.
  Conseils : 
-   On coseille que cette valeur soit -1.E-2 < coef_rigi_drz < -1.E-12.
+   On conseille que cette valeur soit -1.E-2 < COEF_RIGI_DRZ < -1.E-12.
 
  Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s
@@ -288,13 +288,13 @@ Conseil :
 
 
     43 : _(u"""
- Utilisation de COEF_RIGI_DRZ en mode drilling-rotation :
-   Vous avez affecté une valeur négative de coef_rigi_drz sur des mailles uniquement TRIA3.
-   Le mode d'utilisation n'est pas possible actuellement pour ces types de mailles. Le drilling-rotation permet d'associer une signification 
-   physique à la troisième rotation contrairement aux modèles classiques des plaques de Kirchoff.
+ Utilisation de COEF_RIGI_DRZ en mode rotation plane :
+   Vous avez affecté une valeur négative de COEF_RIGI_DRZ sur des mailles uniquement TRIA3.
+   Le mode d'utilisation n'est pas possible actuellement pour ces types de mailles. Le rotation plane permet d'associer une signification 
+   physique à la troisième rotation contrairement aux modèles classiques des plaques minces.
    Il s'agit peut-être d'une erreur d'affectation.
  Conseils : 
-   On coseille que cette valeur soit -1.E-2 < coef_rigi_drz < -1.E-12.
+   On conseille que cette valeur soit -1.E-2 < COEF_RIGI_DRZ < -1.E-12.
 
  Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s
@@ -307,11 +307,11 @@ Conseil :
 
 
     44 : _(u"""
- Utilisation de COEF_RIGI_DRZ en mode drilling-rotation :
-   Vous avez affecté une valeur négative de coef_rigi_drz.  Le drilling-rotation permet d'associer une signification   physique à la troisième rotation 
-   contrairement aux modèles classiques des plaques de Kirchoff.
+ Utilisation de COEF_RIGI_DRZ en mode rotation plane :
+   Vous avez affecté une valeur négative de COEF_RIGI_DRZ.  Le rotation plane permet d'associer une signification physique à la troisième rotation 
+   contrairement aux modèles classiques des plaques minces.
  Conseils : 
-   On coseille que cette valeur soit -1.E-2 < coef_rigi_drz < -1.E-12.
+   On conseille que cette valeur soit -1.E-2 < COEF_RIGI_DRZ < -1.E-12.
 
  Champ : '%(k1)s'
  Commentaire sur ce champ : %(k2)s
@@ -324,7 +324,7 @@ Conseil :
 
 
     45 : _(u"""
- Utilisation de COEF_RIGI_DRZ en mode drilling-rotation en non linéaire :
+ Utilisation de COEF_RIGI_DRZ en mode rotation plane en non linéaire :
    Cette option n'est pas possible actuellement
 
  Champ : '%(k1)s'
