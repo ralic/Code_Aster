@@ -10,6 +10,7 @@ implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
+#include "asterfort/exisd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jenuno.h"
@@ -162,6 +163,9 @@ implicit none
 ! - Check components
 !
     if (field_disc .eq. 'NOEU') then
+    
+        call exisd('CHAM_NO', field, iret)
+        if (iret.ne.1) call utmess('F','EXTRACTION_1', sk=field_type)
 !
 ! ----- For nodes
 !
