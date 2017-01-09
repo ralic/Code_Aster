@@ -232,29 +232,35 @@ implicit none
         call jeveuo(list_spoi, 'L', vi = v_list_spoi)
 !
         do i_elem = 1, nb_elem_r
+        
+            if (type_extr .eq. 'VALE') then
 !
-! --------- Current element
+! ------------- Current element
 !
-            elem_nume = v_list_elem(i_elem)
-            call jenuno(jexnum(meshz(1:8)//'.NOMMAI', elem_nume), elem_name)
+                elem_nume = v_list_elem(i_elem)
+                call jenuno(jexnum(meshz(1:8)//'.NOMMAI', elem_nume), elem_name)
 !
-! --------- Real number of point/subpoint for current element
+! ------------- Real number of point/subpoint for current element
 !
-            nb_poin_elem = cesd(1+5+4*(elem_nume-1))
-            nb_spoi_elem = cesd(1+5+4*(elem_nume-1)+1)
+                nb_poin_elem = cesd(1+5+4*(elem_nume-1))
+                nb_spoi_elem = cesd(1+5+4*(elem_nume-1)+1)
 !
-! --------- Check
+! ------------- Check
 !
-            nb_poin_e = nb_poin
-            nb_spoi_e = nb_spoi
-            if (nb_poin_e .gt. nb_poin_elem) nb_poin_e = nb_poin_elem
-            if (nb_spoi_e .gt. nb_spoi_elem) nb_spoi_e = nb_spoi_elem
+                nb_poin_e = nb_poin
+                nb_spoi_e = nb_spoi
+                if (nb_poin_e .gt. nb_poin_elem) nb_poin_e = nb_poin_elem
+                if (nb_spoi_e .gt. nb_spoi_elem) nb_spoi_e = nb_spoi_elem
 !
-! --------- Number for points/subpoints for loop
+! ------------- Number for points/subpoints for loop
 !
-            if (type_extr_elem .eq. 'VALE') then
-                nb_poin_r = nb_poin_e
-                nb_spoi_r = nb_spoi_e
+                if (type_extr_elem .eq. 'VALE') then
+                    nb_poin_r = nb_poin_e
+                    nb_spoi_r = nb_spoi_e
+                else
+                    nb_poin_r = 1
+                    nb_spoi_r = 1
+                endif
             else
                 nb_poin_r = 1
                 nb_spoi_r = 1

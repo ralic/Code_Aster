@@ -226,9 +226,22 @@ RESU2 = DYNA_NON_LINE(
                        OBSERVATION=( _F(NOM_CHAM='DEPL',
                                         NOM_CMP='DX',
                                         LIST_INST= LARCH,
-                                        NOEUD='N1',),),
+                                        NOEUD='N1',),
+                                     _F(NOM_CHAM='SIEF_ELGA',
+                                        NOM_CMP='SIXX',
+                                        LIST_INST= LARCH,
+                                        TOUT='OUI',
+                                        POINT=1,
+                                        SOUS_POINT = 1,
+                                        EVAL_CHAM='MAX',
+                                        ),
+                                    ),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
                      );
+
+TAB= RECU_TABLE(CO=RESU2, NOM_TABLE='OBSERVATION')
+IMPR_TABLE(TABLE=TAB)
+
 
 # Calcul implicite HHT complet fortement amorti
 # Non regression
