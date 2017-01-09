@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -235,12 +235,33 @@ RESU2 = DYNA_NON_LINE(
                                         SOUS_POINT = 1,
                                         EVAL_CHAM='MAX',
                                         ),
+                                     _F(NOM_CHAM='SIEF_ELGA',
+                                        NOM_CMP=('SIXX',),
+                                        LIST_INST= LARCH,
+                                        MAILLE=('M3','M4'),
+                                        EVAL_CHAM='VALE',
+                                        EVAL_ELGA='MIN',
+                                        ),
                                     ),
                        CONVERGENCE=_F(ITER_GLOB_MAXI=0,),
                      );
 
+IMPR_RESU(RESU=_F(RESULTAT=RESU2, NOM_CHAM='SIEF_ELGA',MAILLE=('M3','M4'), ))
+
 TAB= RECU_TABLE(CO=RESU2, NOM_TABLE='OBSERVATION')
 IMPR_TABLE(TABLE=TAB)
+
+TEST_TABLE(
+           VALE_CALC=1.553291910E+06,
+           NOM_PARA='VALE',
+           TABLE=TAB,
+           FILTRE=(_F(NOM_PARA='MAILLE',
+                     VALE_K='M4',),
+                   _F(NOM_PARA='INST',
+                     VALE=1.20000E-03,),
+                  )
+           )
+
 
 
 # Calcul implicite HHT complet fortement amorti
