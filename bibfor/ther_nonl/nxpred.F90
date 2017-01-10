@@ -17,7 +17,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nxreso.h"
-#include "asterfort/romAlgoNLReduCoorInit.h"
 #include "asterfort/romAlgoNLSystemSolve.h"
 #include "asterfort/resoud.h"
 #include "asterfort/verstp.h"
@@ -25,7 +24,7 @@ implicit none
 #include "asterfort/vethbu.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,12 +113,6 @@ implicit none
     call jeveuo(cn2mbr(1:19)//'.VALE', 'E', vr = v_cn2mbr)
     call jeveuo(vec2ni(1:19)//'.VALE', 'L', vr = v_vec2ni)
     call jeveuo(cndirp(1:19)//'.VALE', 'L', vr = v_cndirp)
-!
-! - Initializations of reduced coordinates (ROM)
-!
-    if (ds_algorom%l_rom) then
-        call romAlgoNLReduCoorInit(ds_algorom)
-    endif
 !
     if (lostat) then
 !
