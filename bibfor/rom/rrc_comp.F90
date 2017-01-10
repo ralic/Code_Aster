@@ -1,18 +1,15 @@
-subroutine op0054()
+subroutine rrc_comp(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/titre.h"
-#include "asterfort/rrc_ini0.h"
-#include "asterfort/rrc_read.h"
-#include "asterfort/rrc_init.h"
-#include "asterfort/rrc_chck.h"
-#include "asterfort/rrc_comp.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
+#include "asterfort/rrc_comp_prim.h"
+#include "asterfort/rrc_comp_dual.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,42 +25,39 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-!
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   REST_REDUIT_COMPLET
+    type(ROM_DS_ParaRRC), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(ROM_DS_ParaRRC) :: ds_para
+! REST_REDUIT_COMPLET - Compute
+!
+! Compute
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call titre()
-    call infmaj()
+! In  ds_para          : datastructure for parameters
 !
-! - Initialization of datastructures
+! --------------------------------------------------------------------------------------------------
 !
-    call rrc_ini0(ds_para)
+    integer :: ifm, niv
 !
-! - Read parameters
+! --------------------------------------------------------------------------------------------------
 !
-    call rrc_read(ds_para)
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM6_20')
+    endif
 !
-! - Initializations
+! - For primal field
 !
-    call rrc_init(ds_para)
+    call rrc_comp_prim(ds_para)
 !
-! - Check parameters
+! - For dual field
 !
-    call rrc_chck(ds_para)
-!
-! - Compute 
-!
-    call rrc_comp(ds_para)
+    call rrc_comp_dual(ds_para)
 !
 end subroutine

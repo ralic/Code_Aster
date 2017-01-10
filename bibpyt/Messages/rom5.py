@@ -79,4 +79,5 @@ cata_msg = {
    41 : _(u"""Lecture des paramètres pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 
    42 : _(u"""Suppression de la structure de données pour réaliser le calcul non-linéaire avec réduction de modèle."""),
+
 }

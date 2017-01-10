@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/rs_get_listload.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,8 +102,10 @@ implicit none
 !
     if (present(list_load_)) then
         call rs_get_listload(result, nume, list_load, iexcit)
-        iexcit_    = iexcit
         list_load_ = list_load
+    endif
+    if (present(iexcit_)) then
+        iexcit_    = iexcit
     endif
 !
 end subroutine

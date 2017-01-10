@@ -5,7 +5,7 @@ implicit none
 #include "asterf_types.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -86,6 +86,30 @@ implicit none
 ! ----- Datastructure for lineic base numbering
         type(ROM_DS_LineicNumb) :: ds_lineic
     end type ROM_DS_Empi
+!
+! - Parameters for REST_REDUIT_COMPLET operator
+!
+    type ROM_DS_ParaRRC
+! ----- Phenomenon
+        character(len=16) :: type_resu
+! ----- Number of time steps
+        integer           :: nb_store
+! ----- Reduced results datastructure to read
+        character(len=8)  :: result_rom
+! ----- Model for reduced model
+        character(len=8)  :: model_rom
+! ----- Complete results datastructure to create
+        character(len=8)  :: result_dom
+! ----- Model for complete model
+        character(len=8)  :: model_dom
+! ----- Datastructure for empiric modes (primal)
+        type(ROM_DS_Empi) :: ds_empi_prim
+! ----- Datastructure for empiric modes (dual)
+        type(ROM_DS_Empi) :: ds_empi_dual
+! ----- Table for reduced coordinates
+        character(len=24) :: tabl_name
+        character(len=24) :: coor_redu
+    end type ROM_DS_ParaRRC
 !
 ! - Parameters for DEFI_BASE_REDUITE operator
 !
