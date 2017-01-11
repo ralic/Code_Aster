@@ -60,4 +60,4 @@ Look at the doc/ directory in the source tree and the `Wiki`_ pages.
 .. _src: https://bitbucket.org/code_aster/codeaster-src
 .. _perf: https://bitbucket.org/code_aster/codeaster-perf
 .. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
-.. _wiki: https://bitbucket.org/code_aster/wiki
+.. _wiki: https://bitbucket.org/code_aster/codeaster-src/wiki/
