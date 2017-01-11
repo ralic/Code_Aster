@@ -50,11 +50,14 @@ enhancements:
 
 * ``stable-updates``: the head of the maintenance branch
 
-.. _src: https://bitbucket.org/code_aster/codeaster-src
-.. _perf: https://bitbucket.org/code_aster/codeaster-perf
-.. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
 
 Installation
 ============
 
 Look at the doc/ directory in the source tree.
+
+
+.. _src: https://bitbucket.org/code_aster/codeaster-src
+.. _perf: https://bitbucket.org/code_aster/codeaster-perf
+.. _devtools: https://bitbucket.org/code_aster/codeaster-devtools
+.. _wiki: https://bitbucket.org/code_aster/wiki

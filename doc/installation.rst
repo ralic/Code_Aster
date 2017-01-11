@@ -8,10 +8,12 @@ Getting the sources
 The Code_Aster sources are under Mercurial_ version control system.
 Use this command to check out the latest project source code::
 
-    $ hg clone https://bitbucket.org/code_aster/codeaster-src
+    $ mkdir -p $HOME/dev/codeaster
+    $ cd $HOME/dev/codeaster
+    $ hg clone https://bitbucket.org/code_aster/codeaster-src src
 
 In this manual, we assume that the working directory corresponds to the Code_Aster
-source folder (``cd path/to/codeaster-src``).
+source folder (``cd $HOME/dev/codeaster/src``).
 
 Required dependencies
 =====================
@@ -56,12 +58,6 @@ place (``install`` folder in the current directory for instance)::
 
     $ ./waf configure install --prefix=$PWD/install
 
-Then you must set your environment variables, e.g. (with python 2.7)::
-
-    $ export ASTERPATH=$PWD/install/share/aster
-    $ export PYTHONPATH=$PWD/install/lib/python2.7/site-packages
-    $ export LD_LIBRARY_PATH=$PWD/install/lib
-    $ export PATH=$PWD/install/bin:$PATH
 
 Running the validation tests
 ============================
@@ -72,8 +68,9 @@ To run a single test, use::
 
 To run all the test cases, get the devtools and run the script::
 
-    $ hg clone https://bitbucket.org/code_aster/codeaster-devtools
-    $ cd codaster-devtools
+    $ cd $HOME/dev/codeaster
+    $ hg clone https://bitbucket.org/code_aster/codeaster-devtools devtools
+    $ cd devtools
     $ ./bin/run_testcases
 
 Appendices
@@ -179,5 +176,5 @@ Running test in a dev machine::
     $ as_run --run /usr/lib/codeaster/STA10.3/astout.export
 
 [1] http://www.code-aster.org/V2/doc/default/man_u/u2/u2.10.01.pdf
-[2] You can get them at the address:
-http://www.code-aster.org/V2/UPLOAD/DOC/Telechargement/aster-full-src-10.3.0-3.noarch.tar.gz
+[2] You can get them at the address: http://code-aster.org/spip.php?article90
+
