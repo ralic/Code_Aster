@@ -54,7 +54,7 @@ enhancements:
 Installation
 ============
 
-Look at the doc/ directory in the source tree.
+Look at the doc/ directory in the source tree and the `Wiki`_ pages.
 
 
 .. _src: https://bitbucket.org/code_aster/codeaster-src
