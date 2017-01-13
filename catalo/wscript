@@ -141,8 +141,8 @@ def exec_pyaster(self, pyfile, args, with_aster=False, **kwargs):
     # this position allows CATALO_CMD to define an environment variable
     # or a prefix to wrap the executable
     cmdprefix = Utils.to_list(env['CATALO_CMD'])
-    if self.env.BUILD_PARALLEL:
-        cmdprefix.extend(['mpirun', '-n', '1'])
+    if self.env.BUILD_PARALLEL and not cmdprefix:
+        cmdprefix = ['mpirun', '-n', '1']
     cmds = ' '.join(cmdenv + cmdprefix + cmdexe)
     Logs.debug('os environ: %r' % environ)
     # do not confuse with installed elementsdir
