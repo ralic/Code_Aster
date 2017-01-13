@@ -44,4 +44,13 @@ cata_msg = {
    12 : _(u"""Préparation de la base empirique dans le cas d'une POD."""),
 
    13 : _(u"""La valeur 'POD' n'est pas possible pour enrichir une base existante."""),
+
+   20 : _(u"""Lecture des données pour le calcul multi-paramétrique avec réduction de modèle."""),
+
+   21 : _(u"""Les matrices ne reposent pas toutes sur la même numérotation."""),
+
+   22 : _(u"""Les matrices doivent être symétriques."""),
+
+   30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
+
 }

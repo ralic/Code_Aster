@@ -136,6 +136,30 @@ implicit none
         character(len=19)       :: tabl_name
     end type ROM_DS_ParaDBR_POD
 !
+! - Parameters for definition of multiparametric reduced problem
+!
+    type ROM_DS_MultiPara
+! ----- Type of system to solve
+        character(len=1)         :: syst_type
+! ----- Matrix
+        integer                  :: nb_matr
+        character(len=8)         :: matr_name(8)
+        character(len=1)         :: matr_type(8)
+        aster_logical            :: l_coefm_cplx(8)
+        aster_logical            :: l_coefm_real(8)
+        complex(kind=8)          :: coefm_cplx(8)
+        real(kind=8)             :: coefm_real(8)
+! ----- Second member
+        character(len=8)         :: vect_name
+        character(len=1)         :: vect_type
+        aster_logical            :: l_coefv_cplx
+        aster_logical            :: l_coefv_real
+        complex(kind=8)          :: coefv_cplx
+        real(kind=8)             :: coefv_real
+! ----- Products
+        character(len=24)        :: prod_mode(8)
+    end type ROM_DS_MultiPara
+!
 ! - Parameters for DEFI_BASE_REDUITE operator
 !
     type ROM_DS_ParaDBR
