@@ -17,9 +17,10 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
+#include "asterfort/sdmpic.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,6 +63,7 @@ implicit none
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
     aster_logical :: lmodim
+    character(len=8) ::  kmpic1
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,6 +99,16 @@ implicit none
     call detrsd('NUME_DDL', numedf)
 !
     call infmue()
+    call dismoi('MPI_COMPLET', matass, 'MATR_ASSE', repk=kmpic1)
+    if (kmpic1 .eq. 'NON') then 
+        call sdmpic('MATR_ASSE', matass)
+    endif
+    
+    call dismoi('MPI_COMPLET', matrcf, 'MATR_ASSE', repk=kmpic1)
+    if (kmpic1 .eq. 'NON') then 
+        call sdmpic('MATR_ASSE', matrcf)
+    endif
+    
     call mtcmbl(2, typcst, coefmu, limat, matass,&
                 ' ', numedf, 'ELIM1')
     call infbav()
