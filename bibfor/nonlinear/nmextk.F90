@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ implicit none
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
 ! In  field            : name of field
 ! In  field_type       : type of field (name in results datastructure)
-! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_disc       : localization of field (discretization: NOEU, ELGA or ELEM)
 ! In  field_s          : name of reduced field (CHAM_ELEM_S)
 ! In  list_node        : name of object contains list of nodes
 ! In  nb_node          : number of nodes
@@ -122,7 +122,7 @@ implicit none
 !
 ! - Get reduced field (CHAM_ELEM_S)
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         call jeveuo(field_s(1:19)//'.CESD', 'L', jcesd)
         call jeveuo(field_s(1:19)//'.CESL', 'L', jcesl)
         call jeveuo(field_s(1:19)//'.CESV', 'L', jcesv)
@@ -183,7 +183,7 @@ implicit none
                 endif
             end do
         end do
-    else if (field_disc.eq.'ELGA') then
+    else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
 !
 ! ----- For elements
 !

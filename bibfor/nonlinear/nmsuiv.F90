@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/nmextr_comp.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -221,7 +221,7 @@ implicit none
     do i_field = 1, nb_field
         field_s    = v_extr_field(4*(i_field-1)+2)
         field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
-        if (field_disc.eq.'ELGA') then
+        if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
             call detrsd('CHAM_ELEM_S', field_s)
         elseif (field_disc.eq.'NOEU') then
             call detrsd('CHAM_NO_S', field_s)

@@ -6,7 +6,7 @@ implicit none
 #include "asterfort/nmexto.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,7 +42,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_disc       : localization of field (discretization: NOEU, ELGA or ELEM)
 ! In  type_extr        : type of extraction
 ! In  type_extr_elem   : type of extraction by element
 ! In  type_extr_cmp    : type of extraction for components

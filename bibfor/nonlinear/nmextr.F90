@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -120,6 +120,7 @@ implicit none
 !
     call nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_field_keyw,&
                        nb_field, nb_field_comp)
+!~     print*, 'list_field ',list_field(1)
 !
 ! - Create datastructure
 !
@@ -194,7 +195,7 @@ implicit none
             call utmess('A', 'EXTRACTION_99', sk=field_type)
         else
 !
-! --------- Get localization of field (discretization: NOEU or ELGA)
+! --------- Get localization of field (discretization: NOEU, ELGA or ELEM)
 !
             call nmextt(ds_inout, field_type, field_disc)
 !
@@ -214,9 +215,10 @@ implicit none
 !
 ! --------- Get topology (point and subpoints) and type of extraction for element
 !
-            if (field_disc .eq. 'ELGA') then
-                call nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
-                            list_poin, list_spoi  , nb_poin   , nb_spoi, type_extr_elem)
+            if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
+                call nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field  ,&
+                            field_s  , list_poin  , list_spoi , nb_poin   , nb_spoi,&
+                            type_extr_elem)
             endif
 !
 ! --------- Get component(s)
@@ -264,7 +266,7 @@ implicit none
     do i_field = 1, nb_field
         field_s    = v_extr_field(4*(i_field-1)+2)
         field_disc = v_extr_field(4*(i_field-1)+3)(1:4)
-        if (field_disc.eq.'ELGA') then
+        if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
             call detrsd('CHAM_ELEM_S', field_s)
         elseif (field_disc.eq.'NOEU') then
             call detrsd('CHAM_NO_S', field_s)

@@ -7,7 +7,7 @@ implicit none
 #include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -49,7 +49,7 @@ implicit none
 !      'COMP' : NOMBRE DE COMPOSANTES
 !      'POIN' : NOMBRE DE POINTS
 !      'LIEU' : NOMBRE DE LIEUX
-! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_disc       : localization of field (discretization: NOEU, ELGA or ELEM)
 ! In  type_extr        : type of extraction
 ! In  type_extr_elem   : type of extraction by element
 ! In  type_extr_cmp    : type of extraction for components
@@ -71,7 +71,7 @@ implicit none
             nb_count = 1
         endif
     else if (type_count.eq.'POIN') then
-        if (field_disc .eq. 'ELGA') then
+        if (field_disc .eq. 'ELGA' .or. field_disc.eq.'ELEM') then
             if (type_extr_elem .eq. 'VALE') then
                 nb_count = nb_poin*nb_spoi
             elseif ((type_extr_elem.eq.'MIN').or.&
@@ -99,7 +99,7 @@ implicit none
             else
                 ASSERT(.false.)
             endif
-        else if (field_disc.eq.'ELGA') then
+        else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
             if (type_extr .eq. 'VALE') then
                 nb_count = nb_elem
             elseif ((type_extr.eq.'MIN').or.&

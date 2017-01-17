@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/infdbg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +113,7 @@ implicit none
                                                  .true._1 ,.true._1 ,.true._1 ,&
                                                  .true._1 ,.true._1 ,.false._1,&
                                                  .false._1,.false._1,.true._1,&
-                                                 .false._1/)
+                                                 .true._1/)
 ! - Keyword for OBSERVATION
     character(len=16), parameter :: obsv_keyw(nb_field_defi) = &
             (/'DEPL            ','SIEF_ELGA       ','VARI_ELGA       ',&
@@ -123,7 +123,7 @@ implicit none
               'DEPL_ABSOLU     ','VITE_ABSOLU     ','ACCE_ABSOLU     ',&
               'FORC_NODA       ','STRX_ELGA       ','                ',&
               '                ','                ','EPSI_ELGA       ',&
-              '                '/)
+              'CONT_ELEM       '/)
 ! - Variable (JEVEUX name) for field (#H# for hat variable)
     character(len=24), parameter :: algo_name(nb_field_defi) = &
             (/'#H#VALINC#DEPMOI','#H#VALINC#SIGMOI','#H#VALINC#VARMOI',&

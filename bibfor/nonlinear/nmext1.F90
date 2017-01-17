@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/nmext3.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,9 +92,9 @@ implicit none
                     type_extr_cmp, list_node, list_cmp, work_node)
     endif
 !
-! - For point (Gauss) values)
+! - For point (Gauss) values
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         call nmext3(mesh          , field    , field_type   , field_s      ,&
                     nb_cmp        , nb_elem  , nb_poin      , nb_spoi      ,&
                     type_extr_elem, type_extr, type_extr_cmp, type_sele_cmp,&

@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/nmetob.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,13 +33,13 @@ implicit none
 !
 ! *_NON_LINE - Field extraction datastructure
 !
-! Get localization of field (discretization: NOEU or ELGA)
+! Get localization of field (discretization: NOEU, ELGA or ELEM)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  ds_inout         : datastructure for input/output management
 ! In  field_type       : type of field (name in results datastructure)
-! Out field_disc       : localization of field (discretization: NOEU or ELGA)
+! Out field_disc       : localization of field (discretization: NOEU, ELGA or ELEM)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +59,6 @@ implicit none
 !
 ! - Check
 !
-    ASSERT(field_disc.eq.'NOEU'.or.field_disc.eq.'ELGA')
+    ASSERT(field_disc.eq.'NOEU'.or.field_disc.eq.'ELGA'.or.field_disc.eq.'ELEM')
 
 end subroutine

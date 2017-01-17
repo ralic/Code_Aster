@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,7 @@ implicit none
 !
     if (field_disc .eq. 'NOEU') then
         call wkvect(work_node, 'V V R', nb_node*nb_cmp                , vr = v_work_node)
-    else if (field_disc.eq.'ELGA') then
+    else if (field_disc.eq.'ELGA' .or. field_disc.eq.'ELEM') then
         call wkvect(work_poin, 'V V R', nb_poin*nb_spoi*nb_cmp        , vr = v_work_poin)
         call wkvect(work_elem, 'V V R', nb_elem*nb_poin*nb_spoi*nb_cmp, vr = v_work_elem)
     else
@@ -109,6 +109,14 @@ implicit none
         endif
     endif
 !
+    if (field_disc .eq. 'ELEM') then
+        if (type_extr_elem.eq.'VALE') then
+            elem_init_vale = 0.d0
+        else
+            ASSERT(.false.)
+        endif
+    endif
+!
 ! - Set for working vector (nodes)
 !
     if (field_disc .eq. 'NOEU') then
@@ -121,7 +129,7 @@ implicit none
 !
 ! - Set for working vector (elements and points)
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         do i_elem = 1, nb_elem
             do i_poin = 1, nb_poin
                 do i_spoi = 1, nb_spoi

@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,7 +98,7 @@ implicit none
 !
 ! - Get list of elements
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         call getelem(mesh   , keyw_fact, i_keyw_fact, ' ', list_elem,&
                      nb_elem, model = model)
         if (nb_elem .eq. 0) then

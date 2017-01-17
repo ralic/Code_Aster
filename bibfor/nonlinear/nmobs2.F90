@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/sdmpic.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +79,7 @@ implicit none
 ! In  time             : current time
 ! In  field            : name of field
 ! In  field_type       : type of field (name in results datastructure)
-! In  field_disc       : localization of field (discretization: NOEU or ELGA)
+! In  field_disc       : localization of field (discretization: NOEU, ELGA or ELEM)
 ! In  field_s          : name of reduced field (CHAM_ELEM_S)
 ! In  list_node        : name of object contains list of nodes
 ! In  nb_node          : number of nodes
@@ -130,7 +130,7 @@ implicit none
 !
 ! - Convert to reduced field
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         call jeexin(field_s, iret)
         if (iret .eq. 0) then
             call sdmpic('CHAM_ELEM', field)
@@ -157,7 +157,7 @@ implicit none
 !
 ! - Number of elements for loop
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         if (type_extr .eq. 'VALE') then
             nb_elem_r = nb_elem
         elseif ((type_extr.eq.'MIN').or.&
@@ -225,7 +225,7 @@ implicit none
 !
 ! - For element discretization
 !
-    if (field_disc .eq. 'ELGA') then
+    if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         call jeveuo(work_elem, 'L', vr = v_work_elem)
         call jeveuo(list_elem, 'L', vi = v_list_elem)
         call jeveuo(list_poin, 'L', vi = v_list_poin)

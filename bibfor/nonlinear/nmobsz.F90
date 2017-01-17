@@ -11,7 +11,7 @@ implicit none
 #include "asterfort/tbajli.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -197,7 +197,7 @@ implicit none
         i_para_add = i_para_add + 1
         tabl_vale_r(nb_vale_r) = valr
         nb_vale_r = nb_vale_r + 1
-    else if (field_disc.eq.'ELGA') then
+    else if (field_disc .eq. 'ELGA' .or. field_disc .eq. 'ELEM') then
         if (type_extr .eq. 'VALE') then
             para_name_add(i_para_add) = para_name(12)
             i_para_add = i_para_add + 1

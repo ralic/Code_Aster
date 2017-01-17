@@ -1,5 +1,6 @@
-subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field  , field_s       ,&
-                  list_poin, list_spoi  , nb_poin   , nb_spoi, type_extr_elem)
+subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field  ,&
+                  field_s  , list_poin  , list_spoi , nb_poin   , nb_spoi,&
+                  type_extr_elem)
 !
 implicit none
 !
@@ -14,7 +15,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +36,7 @@ implicit none
     integer, intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
+    character(len=4) , intent(in) :: field_disc
     character(len=24), intent(in) :: field_s
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
@@ -53,6 +55,7 @@ implicit none
 ! In  keyw_fact        : factor keyword to read extraction parameters
 ! In  i_keyw_fact      : index of keyword to read extraction parameters
 ! In  field            : name of field
+! In  field_disc       : type of discretization (ELGA or ELEM)
 ! In  field_s          : name of reduced field (CHAM_ELEM_S)
 ! In  field_type       : type of field (name in results datastructure)
 ! In  list_poin        : name of object contains list of points (Gauss)
@@ -82,20 +85,25 @@ implicit none
 ! - Conversion to reduced field (CHAM_ELEM_S)
 ! 
     call exisd('CHAM_ELEM', field, iret)
-    ASSERT(iret.eq.1)
+    if (iret.ne.1) call utmess('F','EXTRACTION_1', sk=field_type)
     call exisd('CHAM_ELEM_S', field_s, iret)
     if (iret .eq. 0) then
         call sdmpic('CHAM_ELEM', field)
         call celces(field, 'V', field_s)
     endif
+    
     call jeveuo(field_s(1:19)//'.CESD', 'L', vi=cesd)
 !
 ! - Type of extraction on element
 !
-    call getvtx(keyw_fact, 'EVAL_ELGA', iocc=i_keyw_fact, scal=type_extr_elem, nbret=n1)
-    if (n1 .eq. 0) then
+    if (field_disc .eq. 'ELGA') then
+        call getvtx(keyw_fact, 'EVAL_ELGA', iocc=i_keyw_fact, scal=type_extr_elem, nbret=n1)
+        if (n1 .eq. 0) then
+            type_extr_elem = 'VALE'
+            call utmess('A', 'EXTRACTION_6', sk=field_type)
+        endif
+    else
         type_extr_elem = 'VALE'
-        call utmess('A', 'EXTRACTION_6', sk=field_type)
     endif
 !
 ! - Max number of points/subpoint for this field
@@ -105,21 +113,26 @@ implicit none
 !
 ! - Number of points/subpoint
 !
-    if (type_extr_elem .eq. 'VALE') then
-        call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=0, nbret=n2)
-        call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=0, nbret=n3)
-        if (n2 .eq. 0) then
-            call utmess('F', 'EXTRACTION_7', sk = field_type)
-        endif
-        nb_poin = -n2
-        if ((n2.ne.0) .and. (n3.eq.0)) then
-            nb_spoi = nb_spoi_maxi
+    if (field_disc .eq. 'ELGA') then
+        if (type_extr_elem .eq. 'VALE') then
+            call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=0, nbret=n2)
+            call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=0, nbret=n3)
+            if (n2 .eq. 0) then
+                call utmess('F', 'EXTRACTION_7', sk = field_type)
+            endif
+            nb_poin = -n2
+            if ((n2.ne.0) .and. (n3.eq.0)) then
+                nb_spoi = nb_spoi_maxi
+            else
+                nb_spoi = -n3
+            endif
         else
-            nb_spoi = -n3
+            nb_poin = nb_poin_maxi
+            nb_spoi = nb_spoi_maxi
         endif
     else
-        nb_poin = nb_poin_maxi
-        nb_spoi = nb_spoi_maxi
+        nb_poin = 1
+        nb_spoi = 1
     endif
 !
 ! - Protection
@@ -136,7 +149,7 @@ implicit none
 !
 ! - Set lists
 !
-    if (type_extr_elem .eq. 'VALE') then
+    if (type_extr_elem .eq. 'VALE' .and. field_disc .eq. 'ELGA' ) then
         call getvis(keyw_fact, 'POINT', iocc=i_keyw_fact, nbval=nb_poin, vect= v_list_poin)
         if (nb_spoi .ne. 0) then
             call getvis(keyw_fact, 'SOUS_POINT', iocc=i_keyw_fact, nbval=nb_spoi,&
