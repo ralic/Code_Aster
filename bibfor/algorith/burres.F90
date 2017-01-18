@@ -2,7 +2,7 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
                   timef, nvi, vin, yd, yf,&
                   deps, dy, nr, r)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
     implicit none
 !     ----------------------------------------------------------------
 #include "asterc/r8prem.h"
+#include "asterc/r8miem.h"
 #include "asterfort/burafd.h"
 #include "asterfort/burafr.h"
 #include "asterfort/lcdive.h"
@@ -214,7 +215,7 @@ subroutine burres(typmod, nmat, materd, materf, timed,&
 ! === =================================================================
     call lcprsc(depsfi, depsfi, ndfi)
 !   ndfi =depsfi*depsfi toujours >= 0
-    if (ndfi .lt. r8prem()) then
+    if (ndfi .lt. r8miem()) then
         normal(:)=0.d0
         ndfi = 0.d0
     else

@@ -2,7 +2,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
                   vind, timed, timef, yd, yf,&
                   dy, nr, drdy)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsoma.h"
 #include "asterfort/mgauss.h"
-#include "asterc/r8prem.h"
+#include "asterc/r8miem.h"
     common /tdim/   ndt  , ndi
 !     ----------------------------------------------------------------
     integer :: i, ndt, ndi, nmat, nr, nvi, iret
@@ -160,7 +160,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! === =================================================================
 ! --- CALCUL DE EXP(NFIF/KAPPA)/(2*NFIF)
 ! === =================================================================
-    if ((nfif.gt.r8prem()) .and. ((nfif/kappa).lt.1.d2)) then
+    if ((nfif.gt.r8miem()) .and. ((nfif/kappa).lt.1.d2)) then
         coef = exp(nfif/kappa)/(nfif)
     else
         coef = 0.d0
@@ -189,7 +189,7 @@ subroutine burjac(mod, nmat, materd, materf, nvi,&
 ! === =================================================================
     call lcprsc(depsfi, depsfi, ndfi)
 !   ndfi =depsfi*depsfi toujours >= 0
-    if (ndfi .lt. r8prem()) then
+    if (ndfi .lt. r8miem()) then
         normal(:)=0.d0
         ndfi = 0.d0
     else
