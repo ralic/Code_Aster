@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,7 +34,7 @@ DEBUT(CODE=_F(
 M=LIRE_MAILLAGE(FORMAT='MED',UNITE=20,);
 
 MO=AFFE_MODELE(MAILLAGE=M,
-               
+
                AFFE=_F(TOUT='OUI',
                        PHENOMENE='MECANIQUE',
                        MODELISATION='AXIS',),);
@@ -570,7 +570,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
 #  TEST DU CHARGEMENT ROTATION EN AXIS_FOURIER
 
 MO2=AFFE_MODELE(MAILLAGE=M,
-                
+
                 AFFE=_F(TOUT='OUI',
                         PHENOMENE='MECANIQUE',
                         MODELISATION='AXIS_FOURIER',),);
@@ -622,8 +622,98 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
           )
 
 
+IMPR_RESU(RESU=_F(RESULTAT=RESUFOUR, NOM_CHAM='DEPL'))
+
+DEPLFO = CREA_CHAMP(OPERATION='EXTR',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    RESULTAT=RESUFOUR,
+                    NOM_CHAM='DEPL',
+                    )
+
+# Coupe selon le segment AE
+EXTRFO=MACR_LIGN_COUPE(CHAM_GD=DEPLFO,
+                   MODELE=MO2,
+                   LIGN_COUPE=(_F(INTITULE='section1',
+                                  TYPE='SEGMENT',
+                                  NB_POINTS=3,
+                                  DISTANCE_MAX=0.001,
+                                  COOR_ORIG=(0.1,0.),
+                                  COOR_EXTR=(0.1,0.01),),),);
+
+# Point A
+TEST_TABLE(TABLE=EXTRFO,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.0,
+                   ),
+           VALE_CALC=1.35511346318,)
+
+# Point C
+TEST_TABLE(TABLE=EXTRFO,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.005,
+                   ),
+           VALE_CALC=1.35531703991,)
+
+# Point E
+TEST_TABLE(TABLE=EXTRFO,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.01,
+                   ),
+           VALE_CALC=1.35511346318,)
+
+
+EXTRFR=MACR_LIGN_COUPE(RESULTAT=RESUFOUR,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'DEPL',
+                   LIGN_COUPE=(_F(INTITULE='section1',
+                                  TYPE='SEGMENT',
+                                  NB_POINTS=3,
+                                  DISTANCE_MAX=0.001,
+                                  COOR_ORIG=(0.1,0.),
+                                  COOR_EXTR=(0.1,0.01),),),);
+
+
+# Point A
+TEST_TABLE(TABLE=EXTRFR,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.0,
+                   ),
+           VALE_CALC=1.35511346318,
+           VALE_REFE=1.35511346318,
+           REFERENCE='AUTRE_ASTER',
+           )
+
+# Point C
+TEST_TABLE(TABLE=EXTRFR,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.005,
+                   ),
+           VALE_CALC=1.35531703991,
+           VALE_REFE=1.35531703991,
+           REFERENCE='AUTRE_ASTER',
+           )
+
+# Point E
+TEST_TABLE(TABLE=EXTRFR,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.01,
+                   ),
+           VALE_CALC=1.35511346318,
+           VALE_REFE=1.35511346318,
+           REFERENCE='AUTRE_ASTER',
+           )
+
+
+#
+
 CHFO=AFFE_CHAR_MECA(MODELE=MO2,
-                  PRES_REP=_F(GROUP_MA='GRMA13',
+        PRES_REP=_F(GROUP_MA='GRMA13',
                               PRES=60.,),);
 
 RESUF=MACRO_ELAS_MULT(MODELE=MO2,
@@ -631,6 +721,91 @@ RESUF=MACRO_ELAS_MULT(MODELE=MO2,
                       CHAR_MECA_GLOBAL=CHDIR,
                       CAS_CHARGE=_F(MODE_FOURIER=0,
                                     CHAR_MECA=CHFO,),);
+                                    
+
+DEPLF2 = CREA_CHAMP(OPERATION='EXTR',
+                    TYPE_CHAM='NOEU_DEPL_R',
+                    RESULTAT=RESUF,
+                    NOM_CHAM='DEPL',
+                    )
+
+# Coupe selon le segment AE
+EXTRF3=MACR_LIGN_COUPE(CHAM_GD=DEPLF2,
+                   MODELE=MO2,
+                   LIGN_COUPE=(_F(INTITULE='section1',
+                                  TYPE='SEGMENT',
+                                  NB_POINTS=3,
+                                  DISTANCE_MAX=0.001,
+                                  COOR_ORIG=(0.1,0.),
+                                  COOR_EXTR=(0.1,0.01),),),);
+
+# Point A
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.0,
+                   ),
+           VALE_CALC=5.8999716105E-05,)
+
+# Point C
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.005,
+                   ),
+           VALE_CALC=5.90000189066E-05,)
+
+# Point E
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.01,
+                   ),
+           VALE_CALC=5.89997161037E-05,)
+
+
+EXTRF4=MACR_LIGN_COUPE(RESULTAT=RESUF,
+                   NUME_ORDRE = 1,
+                   NOM_CHAM = 'DEPL',
+                   LIGN_COUPE=(_F(INTITULE='section1',
+                                  TYPE='SEGMENT',
+                                  NB_POINTS=3,
+                                  DISTANCE_MAX=0.001,
+                                  COOR_ORIG=(0.1,0.),
+                                  COOR_EXTR=(0.1,0.01),),),);
+
+# Point A
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.0,
+                   ),
+           VALE_CALC=5.8999716105E-05,
+           VALE_REFE=5.8999716105E-05,
+           REFERENCE='AUTRE_ASTER',
+           )
+
+# Point C
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.005,
+                   ),
+           VALE_CALC=5.90000189066E-05,
+           VALE_REFE=5.90000189066E-05,
+           REFERENCE='AUTRE_ASTER',)
+
+# Point E
+TEST_TABLE(TABLE=EXTRF3,
+           NOM_PARA='DX',
+           FILTRE=_F(NOM_PARA='ABSC_CURV',
+                   VALE=0.01,
+                   ),
+           VALE_CALC=5.89997161037E-05,
+           VALE_REFE=5.89997161037E-05,
+           REFERENCE='AUTRE_ASTER',)
+
+
 RESUF = CALC_CHAMP(reuse=RESUF,
                     RESULTAT=RESUF,
                     DEFORMATION='EPSI_ELNO')

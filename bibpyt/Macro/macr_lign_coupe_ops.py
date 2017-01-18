@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -909,7 +909,8 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
 
     __macou = DEFI_GROUP(reuse=__macou, MAILLAGE=__macou, **motscles)
 
-    if AsType(RESULTAT).__name__ in ('evol_elas', 'evol_noli', 'mode_meca'):
+    if AsType(RESULTAT).__name__ in ('evol_elas', 'evol_noli', 'mode_meca',
+                                     'comb_fourier', 'mult_elas', 'fourier_elas'):
         __mocou = AFFE_MODELE(MAILLAGE=__macou,
                               AFFE=_F(TOUT='OUI',
                                       PHENOMENE='MECANIQUE',
@@ -974,7 +975,8 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
     mcACTION = []
     angtab = []
 
-    if AsType(RESULTAT).__name__ in ('evol_ther', 'evol_elas', 'evol_noli', 'mode_meca', 'evol_varc'):
+    if AsType(RESULTAT).__name__ in ('evol_ther', 'evol_elas', 'evol_noli', 'mode_meca', 'evol_varc',
+                                     'comb_fourier', 'mult_elas', 'fourier_elas'):
 
         if NOM_CHAM in ('DEPL', 'SIEF_ELNO', 'SIGM_NOEU', 'SIGM_ELNO', 'FLUX_ELNO', 'FLUX_NOEU'):
             icham = 1
