@@ -235,8 +235,10 @@ subroutine utmess_core(typ, idmess, nk, valk, ni,&
             endif
         else
 !           info/warning, reinit id
-            isFirst = ASTER_TRUE
-            call free_message(firstMsg)
+            if(firstMsg%typ.ne.'F') then
+                isFirst = ASTER_TRUE
+                call free_message(firstMsg)
+            endif
         endif
 !
     endif
