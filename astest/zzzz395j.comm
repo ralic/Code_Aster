@@ -447,7 +447,6 @@ TEST_RESU(CHAM_NO=(
 
 # Gappy-POD (reconstruction tout domine)
 reduR = REST_REDUIT_COMPLET(
-    PHENOMENE        = 'MECANIQUE',
     MODELE           = model,
     RESULTAT_REDUIT  = redu, 
     BASE_PRIMAL      = base_p,
