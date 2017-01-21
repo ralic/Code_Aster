@@ -420,6 +420,8 @@ implicit none
         para_list(ico)='NOM_CHAM#P#K24'
         ico=ico+1
         para_list(ico)='NUME_PLAN#A#I'
+        ico=ico+1
+        para_list(ico)='NB_SNAP#P#I'
         nb_para=ico
         ASSERT(nb_para.le.nb_para_maxi)
 !

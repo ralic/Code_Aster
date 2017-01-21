@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/rsexch.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: iret, nume_first, jv_para, nume_pl
+    integer :: iret, nume_first, jv_para, nume_pl, nb_snap
     integer :: nb_equa = 0, nb_mode = 0, nb_node = 0, nb_cmp = 0
     character(len=8)  :: mesh = ' ', model = ' ', base_type = ' ', axe_line = ' '
     character(len=24) :: surf_num = ' ', field_refe = ' ', field_type = ' '
@@ -74,6 +74,8 @@ implicit none
     model        = zk8(jv_para)
     call rsadpa(base, 'L', 1, 'NUME_PLAN', 1, 0, sjv = jv_para)
     nume_pl      = zi(jv_para)
+    call rsadpa(base, 'L', 1, 'NB_SNAP', 1, 0, sjv = jv_para)
+    nb_snap      = zi(jv_para)
     base_type    = ' '
     if (nume_pl .ne. 0) then
         base_type = 'LINEIQUE'
@@ -107,6 +109,7 @@ implicit none
     ds_empi%nb_node    = nb_node
     ds_empi%nb_cmp     = nb_cmp
     ds_empi%nb_mode    = nb_mode
+    ds_empi%nb_snap    = nb_snap
 !
 ! - Print
 !

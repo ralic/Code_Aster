@@ -83,6 +83,8 @@ implicit none
         integer           :: nb_cmp
 ! ----- Number of modes in base
         integer           :: nb_mode
+! ----- Number of snapshots when created base
+        integer           :: nb_snap
 ! ----- Datastructure for lineic base numbering
         type(ROM_DS_LineicNumb) :: ds_lineic
     end type ROM_DS_Empi

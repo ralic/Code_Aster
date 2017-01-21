@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,14 +27,6 @@ cata_msg = {
 
     4 : _(u"""Base empirique contenant des champs de type %(k1)s"""),
 
-   10 : _(u"""Base empirique contenant des modes linéiques"""),
-
-   11 : _(u"""Les modes linéiques ont pour axe: %(k1)s"""),
-
-   12 : _(u"""Les modes linéiques ont pour section de référence le GROUP_MA %(k1)s"""),
-
-   20 : _(u"""Base empirique contenant des modes volumiques"""),
-
     5 : _(u"""La base contient %(i1)d modes empiriques."""),
 
     6 : _(u"""Un mode est défini sur %(i1)d noeuds."""),
@@ -43,4 +35,13 @@ cata_msg = {
 
     8 : _(u"""Un mode est défini sur %(i1)d composantes."""),
 
+    9 : _(u"""La base empirique a été construite avec %(i1)d clichés."""),
+
+   10 : _(u"""Base empirique contenant des modes linéiques"""),
+
+   11 : _(u"""Les modes linéiques ont pour axe: %(k1)s"""),
+
+   12 : _(u"""Les modes linéiques ont pour section de référence le GROUP_MA %(k1)s"""),
+
+   20 : _(u"""Base empirique contenant des modes volumiques"""),
 }
