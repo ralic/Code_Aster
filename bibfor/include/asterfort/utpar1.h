@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine utpar1(typsd, nbpamx, lipara, nbpara)
-        integer :: nbpamx
-        character(len=*) :: typsd
-        character(len=32) :: lipara(nbpamx)
-        integer :: nbpara
+    subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
+        character(len=*), intent(in) :: resu_type
+        integer, intent(in) :: nb_para_maxi
+        character(len=32), intent(out) :: para_list(nb_para_maxi)
+        integer, intent(out) :: nb_para
     end subroutine utpar1
 end interface

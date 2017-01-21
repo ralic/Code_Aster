@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,9 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rsdocu(docu, repk, iret)
-        character(len=4) :: docu
-        character(len=*) :: repk
-        integer :: iret
+    subroutine rsdocu(docu, resu_type, iret)
+        character(len=4), intent(in)  :: docu
+        character(len=*), intent(out)  :: resu_type
+        integer, intent(out) :: iret
     end subroutine rsdocu
 end interface

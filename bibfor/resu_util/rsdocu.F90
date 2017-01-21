@@ -1,11 +1,9 @@
-subroutine rsdocu(docu, repk, iret)
-    implicit   none
-    integer :: iret
-    character(len=4) :: docu
-    character(len=*) :: repk
-! ----------------------------------------------------------------------
+subroutine rsdocu(docu, resu_type, iret)
+!
+implicit none
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,69 +18,64 @@ subroutine rsdocu(docu, repk, iret)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ----------------------------------------------------------------------
+!
+    character(len=4), intent(in)  :: docu
+    character(len=*), intent(out)  :: resu_type
+    integer, intent(out) :: iret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Results datastructure - Utility
+!
+! Get type of results datastructure from DOCU field
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  docu             : field DOCU
+! Out resu_type        : type of results datastructure
+! Out iret             : return code (0 if OK, 1 else)
+!
+! --------------------------------------------------------------------------------------------------
 !
     iret = 0
     if (docu .eq. 'EVEL') then
-        repk = 'EVOL_ELAS'
-!
+        resu_type = 'EVOL_ELAS'
     else if (docu .eq. 'MUEL') then
-        repk = 'MULT_ELAS'
-!
+        resu_type = 'MULT_ELAS'
     else if (docu .eq. 'FOEL') then
-        repk = 'FOURIER_ELAS'
-!
+        resu_type = 'FOURIER_ELAS'
     else if (docu .eq. 'FOTH') then
-        repk = 'FOURIER_THER'
-!
+        resu_type = 'FOURIER_THER'
     else if (docu .eq. 'COFO') then
-        repk = 'COMB_FOURIER'
-!
+        resu_type = 'COMB_FOURIER'
     else if (docu .eq. 'EVNO') then
-        repk = 'EVOL_NOLI'
-!
+        resu_type = 'EVOL_NOLI'
     else if (docu .eq. 'EVCH') then
-        repk = 'EVOL_CHAR'
-!
+        resu_type = 'EVOL_CHAR'
     else if (docu .eq. 'DYTR') then
-        repk = 'DYNA_TRANS'
-!
+        resu_type = 'DYNA_TRANS'
     else if (docu .eq. 'DYHA') then
-        repk = 'DYNA_HARMO'
-!
+        resu_type = 'DYNA_HARMO'
     else if (docu .eq. 'HAGE') then
-        repk = 'HARM_GENE'
-!
+        resu_type = 'HARM_GENE'
     else if (docu .eq. 'ACHA') then
-        repk = 'ACOU_HARMO'
-!
+        resu_type = 'ACOU_HARMO'
     else if (docu .eq. 'MOAC') then
-        repk = 'MODE_ACOU'
-!
+        resu_type = 'MODE_ACOU'
     else if (docu .eq. 'MOFL') then
-        repk = 'MODE_FLAMB'
-!
+        resu_type = 'MODE_FLAMB'
     else if (docu .eq. 'MOSB') then
-        repk = 'MODE_STAB'
-!
+        resu_type = 'MODE_STAB'
     else if (docu .eq. 'MOME') then
-        repk = 'MODE_MECA'
-!
+        resu_type = 'MODE_MECA'
     else if (docu .eq. 'MOGE') then
-        repk = 'MODE_GENE'
-!
+        resu_type = 'MODE_GENE'
     else if (docu .eq. 'MOEM') then
-        repk = 'MODE_EMPI'
-!
+        resu_type = 'MODE_EMPI'
     else if (docu .eq. 'EVTH') then
-        repk = 'EVOL_THER'
-!
+        resu_type = 'EVOL_THER'
     else if (docu .eq. 'EVVA') then
-        repk = 'EVOL_VARC'
-!
-    else if (docu .eq. 'THET') then
-        repk = 'THETA_GEOM'
-!
+        resu_type = 'EVOL_VARC'
     else
         iret = 1
     endif
