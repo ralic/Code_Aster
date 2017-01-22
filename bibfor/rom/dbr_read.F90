@@ -8,6 +8,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/dbr_read_pod.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
@@ -46,6 +47,7 @@ implicit none
     integer :: ifm, niv
     character(len=16) :: k16bid, operation = ' '
     character(len=8) :: result_out = ' '
+    real(kind=8) :: tole_incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,8 +63,12 @@ implicit none
 ! - Type of ROM methods
 !
     call getvtx(' ', 'OPERATION', scal = operation) 
-    if (operation(1:3) .eq. 'POD') then
+    if (operation .eq. 'POD') then
         call dbr_read_pod(ds_para)
+    elseif (operation .eq. 'POD_INCR') then
+        call dbr_read_pod(ds_para)
+        call getvr8(' ', 'TOLE', scal = tole_incr)
+        ds_para%tole_incr = tole_incr
     else
         ASSERT(.false.)
     endif

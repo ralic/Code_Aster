@@ -48,7 +48,7 @@ implicit none
     character(len=8)  :: result_out = ' ', result_in = ' '
     character(len=8)  :: axe_line = ' ', base_type = ' '
     integer :: nb_mode_maxi
-    real(kind=8) :: tole_svd
+    real(kind=8) :: tole_svd, tole_incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,6 +65,7 @@ implicit none
     base_type    = ds_para%base_type
     axe_line     = ds_para%axe_line
     surf_num     = ds_para%surf_num
+    tole_incr    = ds_para%tole_incr
 !
 ! - Print
 !
@@ -72,6 +73,9 @@ implicit none
         call utmess('I', 'ROM5_15')
         call utmess('I', 'ROM3_1' , sk = result_out)
         call utmess('I', 'ROM5_16', sk = operation)
+        if (operation .eq. 'POD_INCR') then
+            call utmess('I', 'ROM7_13' , sr = tole_incr)
+        endif
         call utmess('I', 'ROM7_1' , sk = result_in)
         call utmess('I', 'ROM5_17', si = nb_mode_maxi)
         call utmess('I', 'ROM7_3' , sr = tole_svd)
@@ -90,13 +94,5 @@ implicit none
 ! - Print about empiric base
 !
     call romBaseInfo(ds_para%ds_empi)
-!
-! - Print / method
-!
-    if (operation .eq. 'POD') then
-        
-    else
-        ASSERT(.false.)
-    endif
 !
 end subroutine

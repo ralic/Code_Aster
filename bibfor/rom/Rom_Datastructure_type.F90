@@ -132,6 +132,8 @@ implicit none
         character(len=24)       :: field_name
 ! ----- Tolerance for SVD
         real(kind=8)            :: tole_svd
+! ----- Tolerance for incremental POD
+        real(kind=8)            :: tole_incr
 ! ----- Maximum number of modes
         integer                 :: nb_mode_maxi
 ! ----- Datastructure for empiric modes

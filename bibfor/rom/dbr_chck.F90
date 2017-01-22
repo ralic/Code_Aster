@@ -53,6 +53,8 @@ implicit none
 !
     if (ds_para%operation .eq. 'POD') then
         call dbr_chck_pod(ds_para)
+    elseif (ds_para%operation .eq. 'POD_INCR') then
+        call dbr_chck_pod(ds_para)
     else
         ASSERT(.false.)
     endif

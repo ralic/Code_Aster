@@ -42,4 +42,6 @@ cata_msg = {
    11 : _(u"""Création de la base empirique sur %(i1)d modes."""),
 
    12 : _(u"""Calcul des coordonnées réduites."""),
+
+   13 : _(u"""Tolérance pour l'algorithme incrémental: %(r1)13.6G."""), 
 }

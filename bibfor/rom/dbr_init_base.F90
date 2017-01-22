@@ -47,6 +47,10 @@ implicit none
         ds_empi = ds_para%ds_empi
         call dbr_init_base_pod(ds_para, ds_empi)
         ds_para%ds_empi = ds_empi
+    elseif (ds_para%operation .eq. 'POD_INCR') then
+        ds_empi = ds_para%ds_empi
+        call dbr_init_base_pod(ds_para, ds_empi)
+        ds_para%ds_empi = ds_empi
     else
         ASSERT(.false.)
     endif
