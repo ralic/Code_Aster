@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jelibe.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/rsadpa.h"
-#include "asterfort/rscrsd.h"
+#include "asterfort/rsagsd.h"
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
@@ -80,23 +80,23 @@ implicit none
     model        = ds_empi%model
     nb_snap      = 0
 !
-! - Create output datastructure
-!
-    call rscrsd('G', base, 'MODE_EMPI', nb_mode)
-!
 ! - Save modes
 !
     do i_mode = 1, nb_mode
         call rsexch(' ', base, field_type, i_mode, field_save, iret)
+        ASSERT(iret.eq.100 .or. iret.eq.0 .or. iret.eq.110)
+        if (iret .eq. 110) then
+            call rsagsd(base, 0)
+        endif
+        call rsexch(' ', base, field_type, i_mode, field_save, iret)
         ASSERT(iret.eq.100 .or. iret.eq.0)
-        if (iret .eq. 100) then
+        if (iret .ge. 100) then
             call copisd('CHAMP_GD', 'G', field_refe, field_save)
         endif
         call jeveuo(field_save(1:19)//'.VALE', 'E', vr = v_field_save)
         do i_equa = 1, nb_equa
             v_field_save(i_equa) = v(nb_equa*(i_mode-1)+i_equa)
         end do
-        call rsnoch(base, field_type, i_mode)
         call rsadpa(base, 'E', 1, 'FREQ', i_mode, 0, sjv=jv_para)
         zr(jv_para)  = s(i_mode)
         call rsadpa(base, 'E', 1, 'MODELE', i_mode, 0, sjv=jv_para)
@@ -109,6 +109,7 @@ implicit none
         zi(jv_para) = i_mode
         call rsadpa(base, 'E', 1, 'NB_SNAP', i_mode, 0, sjv=jv_para)
         zi(jv_para) = nb_snap
+        call rsnoch(base, field_type, i_mode)
     end do
 !
 end subroutine

@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/dismoi.h"
 #include "asterfort/rs_getfirst.h"
 #include "asterfort/rsexch.h"
+#include "asterfort/rscrsd.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -46,7 +47,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: iret, nume_first
-    integer :: nb_equa = 0, nb_node = 0
+    integer :: nb_equa = 0, nb_node = 0, nb_mode_crea = 0, nb_mode_maxi = 0
     character(len=8)  :: model = ' ', mesh = ' '
     character(len=8)  :: result_in = ' ', result_out = ' '
     character(len=24) :: field_refe = '&&ROM_COMP.FIELD', field_name = ' '
@@ -67,6 +68,7 @@ implicit none
     base_type    = ds_para%base_type
     axe_line     = ds_para%axe_line
     surf_num     = ds_para%surf_num
+    nb_mode_maxi = ds_para%nb_mode_maxi
 !
 ! - Get information about model
 !
@@ -82,6 +84,18 @@ implicit none
     call dismoi('NB_EQUA'     , field_refe, 'CHAM_NO' , repi = nb_equa) 
     call dismoi('NOM_MAILLA'  , field_refe, 'CHAM_NO' , repk = mesh)
     call dismoi('NB_NO_MAILLA', mesh      , 'MAILLAGE', repi = nb_node)
+!
+! - Create empiric base
+!
+    if (nb_mode_maxi .eq. 0) then
+        nb_mode_crea = 10
+    else
+        nb_mode_crea = nb_mode_maxi
+    endif
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_11', si = nb_mode_crea)
+    endif
+    call rscrsd('G', result_out, 'MODE_EMPI', nb_mode_crea)
 !
 ! - Save in empiric base
 !
