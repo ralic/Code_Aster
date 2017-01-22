@@ -1,4 +1,4 @@
-subroutine dbr_calc_svd(ds_empi, ds_snap, q, s, v, nb_sing)
+subroutine dbr_calc_svd(ds_empi, ds_snap, q, s, v, nb_sing, nb_line_svd )
 !
 use Rom_Datastructure_type
 !
@@ -33,8 +33,9 @@ implicit none
     type(ROM_DS_Snap), intent(in) :: ds_snap
     real(kind=8), pointer, intent(inout) :: q(:)
     real(kind=8), intent(out), pointer :: v(:)
-    real(kind=8), intent(out), pointer :: s(:)
+    real(kind=8), intent(out), pointer :: s(:)  
     integer, intent(out) :: nb_sing
+    integer, intent(out) :: nb_line_svd 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +49,8 @@ implicit none
 ! In  ds_snap          : datastructure for snapshot selection
 ! In  q                : pointer to [q] matrix
 ! Out s                : singular values 
-! Out v                : singular vectors 
+! Out v                : singular vectors
+! Out nb_line_svd      : number of lines for SVD 
 ! Out nb_sing          : total number of singular values
 !
 ! --------------------------------------------------------------------------------------------------
@@ -92,9 +94,10 @@ implicit none
         m      = nb_equa
         n      = nb_snap
     endif
-    lda     = max(1, m)
-    nb_sing = min(m, n)
-    lwork   = max(1,3*nb_sing+lda,5*nb_sing)
+    nb_line_svd = m
+    lda         = max(1, m)
+    nb_sing     = min(m, n)
+    lwork       = max(1,3*nb_sing+lda,5*nb_sing)
     AS_ALLOCATE(vr = v, size = m*nb_sing)
     AS_ALLOCATE(vr = s, size = nb_sing)
     AS_ALLOCATE(vr = work, size = lwork)

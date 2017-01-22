@@ -138,6 +138,10 @@ implicit none
         type(ROM_DS_Empi)       :: ds_empi
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)       :: ds_snap
+! ----- Name of table to save reduced coordinates
+        character(len=19)       :: tabl_name
+! ----- Number of snap for construction of empiric base
+        integer                 :: nb_snap_redu
     end type ROM_DS_ParaDBR
 !
 ! - Parameters for DEFI_DOMAINE_REDUIT operator

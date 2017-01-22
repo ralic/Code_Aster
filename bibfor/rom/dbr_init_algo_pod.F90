@@ -6,6 +6,7 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dbr_rnum.h"
+#include "asterfort/romTableCreate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -39,11 +40,23 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=19) :: tabl_name
+!
+! --------------------------------------------------------------------------------------------------
+!
 !
 ! - Create numbering of nodes for the lineic model
 !
     if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
         call dbr_rnum(ds_para%ds_empi)
+    endif
+!
+! - Create table for the reduced coordinates in results datatructure
+!
+    call romTableCreate(ds_para%result_out, tabl_name)
+    ds_para%tabl_name    = tabl_name
+    if (ds_para%operation .eq. 'POD') then
+        ds_para%nb_snap_redu = ds_para%ds_snap%nb_snap
     endif
 !
 end subroutine

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -139,11 +139,16 @@ base_p=DEFI_BASE_REDUITE(RESULTAT = thnl,
                          NOM_CHAM = 'TEMP',
                          TOLE_SVD = 1.E-3,);
 
+coorredp=RECU_TABLE(CO=base_p,NOM_TABLE='COOR_REDUIT',);
+
+
 # Create base (FLUX_NOEU)
 base_d=DEFI_BASE_REDUITE(RESULTAT = thnl,
                          INFO     = 2,
                          NOM_CHAM = 'FLUX_NOEU',
                          TOLE_SVD = 1.E-3,);
+
+coorredd=RECU_TABLE(CO=base_d,NOM_TABLE='COOR_REDUIT',);
 
 # Print base (TEMP)
 IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=base_p))
@@ -151,8 +156,13 @@ IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=base_p))
 # Print base (FLUX_NOEU)
 IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=base_d))
 
+# Print reduced coordinates (TEMP)
+IMPR_TABLE(TABLE=coorredp)
 
-# Tests
+# Print reduced coordinates (FLUX_NOEU)
+IMPR_TABLE(TABLE=coorredd)
+
+# Tests base
 TEST_RESU(RESU=(
                 _F(RESULTAT=base_p,
                    NUME_ORDRE= 1,
@@ -223,5 +233,113 @@ TEST_RESU(RESU=(
                    ),
                 ),
           );
+
+# Tests reduced coordinates
+TEST_TABLE(
+           VALE_CALC=-0.210604632955,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredp,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 1,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 11,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=0.152677062959,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredp,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 1,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 5,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=-0.117079140044,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredp,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 3,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 5,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=0.048701986944,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredp,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 3,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 11,),
+                       ),
+           )
+#
+
+TEST_TABLE(
+           VALE_CALC=-4.75526306431E-06,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredd,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 1,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 11,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=0.0140296284465,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredd,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 1,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 5,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=-0.495350572169,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredd,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 4,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 5,),
+                       ),
+           )
+TEST_TABLE(
+           VALE_CALC=-0.00217022959157,
+           NOM_PARA  = 'COOR_REDUIT',
+           TABLE     = coorredd,
+           FILTRE    = (
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_MODE',
+                              VALE_I    = 4,),
+                           _F(CRIT_COMP = 'EQ',
+                              NOM_PARA  = 'NUME_SNAP',
+                              VALE_I    = 11,),
+                       ),
+           )
 
 FIN();

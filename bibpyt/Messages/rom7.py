@@ -40,4 +40,6 @@ cata_msg = {
    10 : _(u"""Consommation mémoire de la SVD: %(i1)d octets."""),
 
    11 : _(u"""Création de la base empirique sur %(i1)d modes."""),
+
+   12 : _(u"""Calcul des coordonnées réduites."""),
 }

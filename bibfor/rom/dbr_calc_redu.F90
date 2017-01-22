@@ -1,4 +1,4 @@
-subroutine dbr_main_pod(ds_para)
+subroutine dbr_calc_redu(nb_snap, m, q, v, nb_mode, v_gamma)
 !
 use Rom_Datastructure_type
 !
@@ -6,15 +6,10 @@ implicit none
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_calc_q.h"
-#include "asterfort/dbr_calc_svd.h"
-#include "asterfort/dbr_calc_sele.h"
-#include "asterfort/dbr_calc_save.h"
-#include "asterfort/dbr_calc_redu.h"
-#include "asterfort/romTableSave.h"
+#include "asterfort/utmess.h"
+#include "asterfort/assert.h"
+#include "blas/dgemm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -34,64 +29,55 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    integer              , intent(in)  :: nb_snap
+    integer              , intent(in)  :: m
+    real(kind=8), pointer, intent(in)  :: q(:)
+    real(kind=8), pointer, intent(in)  :: v(:)
+    integer              , intent(in)  :: nb_mode
+    real(kind=8), pointer, intent(out) :: v_gamma(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_BASE_REDUITE - Compute
 !
-! Main subroutine to compute empiric modes - POD method
+! Compute reduced coordinates
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para        : datastructure for parameters
+! In  nb_snap          : number of snapshots for compute reduced coordinates
+! In  q                : pointer to snapshots matrix
+! In  m                : number of lines
+! In  v                : singular vectors 
+! In  nb_mode          : number of modes
+! Out v_gamma          : pointer to reduced coordinates
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_sing, nb_mode, nb_snap, nb_line_svd, i_snap
-    real(kind=8), pointer :: q(:) => null()
-    real(kind=8), pointer :: v(:) => null()
-    real(kind=8), pointer :: s(:) => null() 
-    real(kind=8), pointer :: v_gamma(:) => null()
-    character(len=19) :: tabl_name
+    integer :: ifm, niv
+    real(kind=8), pointer :: v_pod(:) => null()
+    integer :: ieq, i_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tabl_name = ds_para%tabl_name
-    nb_snap   = ds_para%nb_snap_redu
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_12')
+    endif
 !
-! - Create snapshots matrix Q
-!    
-    call dbr_calc_q(ds_para%ds_empi, ds_para%ds_snap, q)
+! - Get parameters
 !
-! - Compute empiric modes by SVD
-!
-    call dbr_calc_svd(ds_para%ds_empi, ds_para%ds_snap, q, s, v, nb_sing, nb_line_svd)
-!
-! - Select empiric modes
-!
-    call dbr_calc_sele(ds_para, s, nb_sing, nb_mode)
-!
-! - Save empiric modes
-! 
-    call dbr_calc_save(ds_para%ds_empi, nb_mode, s, v)
+    ASSERT(nb_snap .gt. 0)
 !
 ! - Compute reduced coordinates
 !
-    call dbr_calc_redu(nb_snap, nb_line_svd, q, v, nb_mode, v_gamma)
-!
-! - Save the reduced coordinates in a table
-!
-    do i_snap = 1, nb_snap  
-        call romTableSave(tabl_name  , nb_mode, v_gamma   ,&
-                          nume_snap_ = i_snap)
-    end do
-!
-! - Cleaning
-!
-    AS_DEALLOCATE(vr = q)
-    AS_DEALLOCATE(vr = v)
-    AS_DEALLOCATE(vr = s)
-    AS_DEALLOCATE(vr = v_gamma)
+    AS_ALLOCATE(vr = v_pod  , size = m*nb_mode)
+    AS_ALLOCATE(vr = v_gamma, size = nb_mode*nb_snap)
+    do i_mode = 1, nb_mode
+        do ieq = 1, m
+            v_pod(ieq+m*(i_mode-1)) = v(ieq+m*(i_mode-1))
+        enddo
+    enddo
+    call dgemm('T', 'N', nb_mode, nb_snap, m, 1.d0, v_pod, m, q, m, 0.d0, v_gamma, nb_mode)
+    AS_DEALLOCATE(vr = v_pod)
 !
 end subroutine
