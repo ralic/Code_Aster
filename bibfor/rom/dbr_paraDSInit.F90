@@ -67,7 +67,6 @@ implicit none
     ds_para%ds_empi      = ds_empi
     ds_para%ds_snap      = ds_snap
     ds_para%tabl_name    = ' '
-    ds_para%nb_snap_redu = 0
     ds_para%tole_incr    = r8vide()
 !
 end subroutine

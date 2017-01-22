@@ -1,12 +1,7 @@
-subroutine dbr_init_algo_pod(ds_para)
-!
-use Rom_Datastructure_type
+subroutine norm_frobenius(nb, tab, norm)
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/romTableCreate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,38 +17,28 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
-!
-! --------------------------------------------------------------------------------------------------
-!
-! DEFI_BASE_REDUITE - Initializations
-!
-! Init algorithm for POD
+    integer, intent(in)       :: nb
+    real(kind=8), intent(in)  :: tab(nb)
+    real(kind=8), intent(out) :: norm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! Compute Frobenius norm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: tabl_name
+    integer :: i
 !
 ! --------------------------------------------------------------------------------------------------
 !
-!
-! - Create numbering of nodes for the lineic model
-!
-    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_para%ds_empi)
-    endif
-!
-! - Create table for the reduced coordinates in results datatructure
-!
-    call romTableCreate(ds_para%result_out, tabl_name)
-    ds_para%tabl_name    = tabl_name
+    norm = 0
+    do i = 1, nb
+        norm = norm + tab(i)**2
+    enddo
+    norm = sqrt(norm)
 !
 end subroutine
+

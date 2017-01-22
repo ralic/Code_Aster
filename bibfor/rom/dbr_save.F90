@@ -1,4 +1,4 @@
-subroutine dbr_save(ds_empi, nb_mode, s, v, v_nume_slice)
+subroutine dbr_save(ds_empi, nb_mode, nb_snap_redu, s, v, v_nume_slice)
 !
 use Rom_Datastructure_type
 !
@@ -36,6 +36,7 @@ implicit none
 !
     type(ROM_DS_Empi), intent(in) :: ds_empi
     integer, intent(in) :: nb_mode
+    integer, intent(in) :: nb_snap_redu
     real(kind=8), intent(in), pointer :: s(:)
     real(kind=8), intent(in), pointer :: v(:)
     integer, intent(in), pointer      :: v_nume_slice(:)
@@ -50,6 +51,7 @@ implicit none
 !
 ! In  ds_empi          : datastructure for empiric modes
 ! In  nb_mode          : number of empiric modes
+! In  nb_snap_redu     : number of snapshots used to construct empiric base
 ! In  s                : singular values
 ! In  v                : singular vectors
 ! In  v_nume_slice     : index of slices (for lineic bases)
@@ -58,7 +60,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: jv_para, iret
-    integer :: nb_equa, nb_snap
+    integer :: nb_equa
     integer :: i_mode, i_equa
     character(len=8) :: base, model
     character(len=24) :: field_type, field_save, field_refe
@@ -78,7 +80,6 @@ implicit none
     field_refe   = ds_empi%field_refe
     base         = ds_empi%base
     model        = ds_empi%model
-    nb_snap      = 0
 !
 ! - Save modes
 !
@@ -108,7 +109,7 @@ implicit none
         call rsadpa(base, 'E', 1, 'NUME_MODE', i_mode, 0, sjv=jv_para)
         zi(jv_para) = i_mode
         call rsadpa(base, 'E', 1, 'NB_SNAP', i_mode, 0, sjv=jv_para)
-        zi(jv_para) = nb_snap
+        zi(jv_para) = nb_snap_redu
         call rsnoch(base, field_type, i_mode)
     end do
 !

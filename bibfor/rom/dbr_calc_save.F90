@@ -1,4 +1,4 @@
-subroutine dbr_calc_save(ds_empi, nb_mode, s, v)
+subroutine dbr_calc_save(ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 use Rom_Datastructure_type
 !
@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/dbr_save.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,6 +29,7 @@ implicit none
 !
     type(ROM_DS_Empi), intent(in) :: ds_empi
     integer, intent(in) :: nb_mode
+    integer, intent(in) :: nb_snap_redu
     real(kind=8), intent(in), pointer :: v(:)
     real(kind=8), intent(in), pointer :: s(:)
 !
@@ -42,6 +43,7 @@ implicit none
 !
 ! In  ds_empi          : datastructure for empiric modes
 ! In  nb_mode          : number of empiric modes
+! In  nb_snap_redu     : number of snapshots used to construct empiric base
 ! In  s                : singular values
 ! In  v                : singular vectors
 !
@@ -82,13 +84,13 @@ implicit none
                     v(i_2d + nb_equa/nb_slice*(i_mode - 1))
             enddo
         enddo
-        call dbr_save(ds_empi, nb_mode*nb_slice, s_lin, v_lin, v_nume_slice)
+        call dbr_save(ds_empi, nb_mode*nb_slice, nb_snap_redu, s_lin, v_lin, v_nume_slice)
         AS_DEALLOCATE(vr = v_lin)
         AS_DEALLOCATE(vr = s_lin)
         AS_DEALLOCATE(vi = v_nume_slice)
     else
         AS_ALLOCATE(vi=v_nume_slice, size = nb_mode)
-        call dbr_save(ds_empi, nb_mode, s, v, v_nume_slice)
+        call dbr_save(ds_empi, nb_mode, nb_snap_redu, s, v, v_nume_slice)
         AS_DEALLOCATE(vi = v_nume_slice)
     endif
 !

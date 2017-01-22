@@ -44,4 +44,6 @@ cata_msg = {
    12 : _(u"""Calcul des coordonnées réduites."""),
 
    13 : _(u"""Tolérance pour l'algorithme incrémental: %(r1)13.6G."""), 
+
+   14 : _(u"""Nombre final de clichés retenus dans l'algorithe incrémental: %(i1)d."""), 
 }

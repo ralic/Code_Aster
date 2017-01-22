@@ -1,12 +1,16 @@
-subroutine dbr_init_algo_pod(ds_para)
+subroutine dbr_main_podincr(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/romTableCreate.h"
+#include "asterfort/utmess.h"
+#include "asterfort/infniv.h"
+#include "asterfort/dbr_calc_q.h"
+#include "asterfort/dbr_pod_incr.h"
+#include "asterfort/dbr_calc_save.h"
+#include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,34 +30,45 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_ParaDBR), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! DEFI_BASE_REDUITE - Compute
 !
-! Init algorithm for POD
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Main subroutine to compute empiric modes - Incremental POD method
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: tabl_name
+! In  ds_para        : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    real(kind=8), pointer :: q(:) => null()
+    real(kind=8), pointer :: v(:) => null()
+    real(kind=8), pointer :: s(:) => null()
+    integer :: nb_mode, nb_snap_redu
 !
-! - Create numbering of nodes for the lineic model
+! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_para%ds_empi)
-    endif
+
 !
-! - Create table for the reduced coordinates in results datatructure
+! - Create snapshots matrix Q
+!    
+    call dbr_calc_q(ds_para%ds_empi, ds_para%ds_snap, q)
 !
-    call romTableCreate(ds_para%result_out, tabl_name)
-    ds_para%tabl_name    = tabl_name
+! - Incremental POD method
+!
+    call dbr_pod_incr(ds_para, q, s, v, nb_mode, nb_snap_redu)
+!
+! - Save empiric base
+!
+    call dbr_calc_save(ds_para%ds_empi, nb_mode, nb_snap_redu, s, v)
+!
+! - Cleaning
+!
+    AS_DEALLOCATE(vr = q)
+    AS_DEALLOCATE(vr = v)
+    AS_DEALLOCATE(vr = s)
 !
 end subroutine

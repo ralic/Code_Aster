@@ -48,7 +48,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_sing, nb_mode, nb_snap, nb_line_svd, i_snap
+    integer :: nb_sing, nb_mode, nb_snap_redu, nb_line_svd, i_snap
     real(kind=8), pointer :: q(:) => null()
     real(kind=8), pointer :: v(:) => null()
     real(kind=8), pointer :: s(:) => null() 
@@ -57,8 +57,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tabl_name = ds_para%tabl_name
-    nb_snap   = ds_para%nb_snap_redu
+    tabl_name    = ds_para%tabl_name
+    nb_snap_redu = ds_para%ds_snap%nb_snap
 !
 ! - Create snapshots matrix Q
 !    
@@ -74,15 +74,15 @@ implicit none
 !
 ! - Save empiric modes
 ! 
-    call dbr_calc_save(ds_para%ds_empi, nb_mode, s, v)
+    call dbr_calc_save(ds_para%ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 ! - Compute reduced coordinates
 !
-    call dbr_calc_redu(nb_snap, nb_line_svd, q, v, nb_mode, v_gamma)
+    call dbr_calc_redu(nb_snap_redu, nb_line_svd, q, v, nb_mode, v_gamma)
 !
 ! - Save the reduced coordinates in a table
 !
-    do i_snap = 1, nb_snap  
+    do i_snap = 1, nb_snap_redu
         call romTableSave(tabl_name  , nb_mode, v_gamma   ,&
                           nume_snap_ = i_snap)
     end do

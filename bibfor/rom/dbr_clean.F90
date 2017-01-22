@@ -40,6 +40,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     if (ds_para%operation .eq. 'POD') then
+        call romBaseClean(ds_para%ds_empi)
+    elseif (ds_para%operation .eq. 'POD_INCR') then
         call romBaseClean(ds_para%ds_empi)  
     else
         ASSERT(.false.)
