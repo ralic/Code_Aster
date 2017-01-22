@@ -6,6 +6,8 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 #include "asterfort/dbr_chck_pod.h"
 !
 ! ======================================================================
@@ -39,6 +41,15 @@ implicit none
 ! In  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_7')
+    endif
 !
     if (ds_para%operation .eq. 'POD') then
         call dbr_chck_pod(ds_para)

@@ -39,7 +39,7 @@ cata_msg = {
 
    11 : _(u"""On ne trouve pas de champ de type %(k1)s dans la structure de données résultat."""),
 
-   12 : _(u"""Préparation de la numérotation des modes linéiques."""),
+   12 : _(u"""Initialisation de la numérotation pour les modes linéiques."""),
 
    13 : _(u"""On a détecté %(i1)d tranches pour la définition des modes linéiques."""),
 

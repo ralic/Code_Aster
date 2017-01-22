@@ -118,6 +118,12 @@ implicit none
     type ROM_DS_ParaDBR
 ! ----- Type of operation (POD, POD_INCR, ...)
         character(len=16)       :: operation
+! ----- Type of reduced base
+        character(len=8)        :: base_type
+! ----- Direction of the linear model
+        character(len=8)        :: axe_line
+! ----- First section of the linear model
+        character(len=24)       :: surf_num
 ! ----- Name of result datastructures to read
         character(len=8)        :: result_in
 ! ----- Name of empiric base to save

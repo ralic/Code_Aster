@@ -1,12 +1,18 @@
-subroutine dbr_paraDSInit(ds_snap, ds_empi, ds_para)
+subroutine dbr_main_pod(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterc/r8vide.h"
-#include "asterfort/infniv.h"
+#include "asterfort/as_allocate.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
+#include "asterfort/infniv.h"
+#include "asterfort/dbr_calc_q.h"
+#include "asterfort/dbr_calc_svd.h"
+#include "asterfort/dbr_calc_sele.h"
+#include "asterfort/dbr_calc_save.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,45 +32,48 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Snap), intent(in) :: ds_snap
-    type(ROM_DS_Empi), intent(in) :: ds_empi
-    type(ROM_DS_ParaDBR), intent(out) :: ds_para
+    type(ROM_DS_ParaDBR), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! DEFI_BASE_REDUITE - Compute
 !
-! Initialization of datastructures for parameters
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  ds_snap          : datastructure for snapshot selection
-! In  ds_empi          : datastructure for empiric modes
-! Out ds_para          : datastructure for parameters
+! Main subroutine to compute empiric modes - POD method
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! In  ds_para        : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM5_14')
-    endif
+    integer :: nb_sing, nb_mode
+    real(kind=8), pointer :: q(:) => null()
+    real(kind=8), pointer :: v(:) => null()
+    real(kind=8), pointer :: s(:) => null() 
 !
-! - General initialisations of datastructure
+! --------------------------------------------------------------------------------------------------
 !
-    ds_para%operation    = ' '
-    ds_para%base_type    = ' '
-    ds_para%axe_line     = ' '
-    ds_para%surf_num     = ' '
-    ds_para%result_in    = ' '
-    ds_para%result_out   = ' '
-    ds_para%field_name   = ' '
-    ds_para%tole_svd     = r8vide()
-    ds_para%nb_mode_maxi = 0
-    ds_para%ds_empi      = ds_empi
-    ds_para%ds_snap      = ds_snap
+!
+! - Create snapshots matrix Q
+!    
+    call dbr_calc_q(ds_para%ds_empi, ds_para%ds_snap, q)
+!
+! - Compute empiric modes by SVD
+!
+    call dbr_calc_svd(ds_para%ds_empi, ds_para%ds_snap, q, s, v, nb_sing)
+!
+! - Select empiric modes
+!
+    call dbr_calc_sele(ds_para, s, nb_sing, nb_mode)
+!
+! - Save empiric modes
+! 
+    call dbr_calc_save(ds_para%ds_empi, nb_mode, s, v)
+!
+! - Cleaning
+!
+    AS_DEALLOCATE(vr = q)
+    AS_DEALLOCATE(vr = v)
+    AS_DEALLOCATE(vr = s)
 !
 end subroutine

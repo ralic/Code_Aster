@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,6 +106,9 @@ implicit none
                 1, work, lwork, info)
     if (info .ne. 0) then
         call utmess('F', 'ROM5_8')
+    endif
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_10', si = 8*lwork)
     endif
 !
 ! - Clean

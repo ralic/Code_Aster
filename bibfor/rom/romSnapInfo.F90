@@ -1,11 +1,10 @@
-subroutine dbr_paraDSInit(ds_snap, ds_empi, ds_para)
+subroutine romSnapInfo(ds_snap)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterc/r8vide.h"
-#include "asterfort/infniv.h"
+#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -27,44 +26,27 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_Snap), intent(in) :: ds_snap
-    type(ROM_DS_Empi), intent(in) :: ds_empi
-    type(ROM_DS_ParaDBR), intent(out) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction - Initializations
 !
-! Initialization of datastructures for parameters
+! Informations about snapshot selection
 !
 ! --------------------------------------------------------------------------------------------------
-!
+! 
 ! In  ds_snap          : datastructure for snapshot selection
-! In  ds_empi          : datastructure for empiric modes
-! Out ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer :: nb_snap = 0
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM5_14')
-    endif
+    nb_snap = ds_snap%nb_snap
 !
-! - General initialisations of datastructure
+! - Print
 !
-    ds_para%operation    = ' '
-    ds_para%base_type    = ' '
-    ds_para%axe_line     = ' '
-    ds_para%surf_num     = ' '
-    ds_para%result_in    = ' '
-    ds_para%result_out   = ' '
-    ds_para%field_name   = ' '
-    ds_para%tole_svd     = r8vide()
-    ds_para%nb_mode_maxi = 0
-    ds_para%ds_empi      = ds_empi
-    ds_para%ds_snap      = ds_snap
+    call utmess('I','ROM2_9', si = nb_snap)
 !
 end subroutine

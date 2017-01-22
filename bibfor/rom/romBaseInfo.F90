@@ -40,6 +40,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    call utmess('I', 'ROM7_8')
     call utmess('I', 'ROM3_1', sk = ds_empi%base)
     call utmess('I', 'ROM3_2', sk = ds_empi%model)
     call utmess('I', 'ROM3_3', sk = ds_empi%mesh)
@@ -48,6 +49,7 @@ implicit none
         call utmess('I', 'ROM3_10')
         call utmess('I', 'ROM3_11', sk = ds_empi%axe_line)
         call utmess('I', 'ROM3_12', sk = ds_empi%surf_num)
+        call utmess('I', 'ROM5_13', si = ds_empi%ds_lineic%nb_slice)
     else
         call utmess('I', 'ROM3_20')
     endif

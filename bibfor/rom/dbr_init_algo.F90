@@ -6,6 +6,8 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dbr_init_algo_pod.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -38,6 +40,15 @@ implicit none
 ! IO  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_6')
+    endif
 !
     if (ds_para%operation .eq. 'POD') then
         call dbr_init_algo_pod(ds_para)

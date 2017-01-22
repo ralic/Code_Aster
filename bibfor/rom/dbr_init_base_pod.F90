@@ -50,6 +50,7 @@ implicit none
     character(len=8)  :: model = ' ', mesh = ' '
     character(len=8)  :: result_in = ' ', result_out = ' '
     character(len=24) :: field_refe = '&&ROM_COMP.FIELD', field_name = ' '
+    character(len=8)  :: axe_line = ' ', surf_num = ' ', base_type = ' '
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,6 +64,9 @@ implicit none
     result_out   = ds_para%result_out
     result_in    = ds_para%result_in
     field_name   = ds_para%field_name
+    base_type    = ds_para%base_type
+    axe_line     = ds_para%axe_line
+    surf_num     = ds_para%surf_num
 !
 ! - Get information about model
 !
@@ -90,5 +94,8 @@ implicit none
     ds_empi%nb_mode      = 0
     ds_empi%nb_equa      = nb_equa
     ds_empi%nb_cmp       = nb_equa/nb_node
+    ds_empi%base_type    = base_type
+    ds_empi%axe_line     = axe_line
+    ds_empi%surf_num     = surf_num
 !
 end subroutine

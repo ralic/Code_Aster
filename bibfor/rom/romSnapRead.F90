@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,15 +76,11 @@ implicit none
         endif
         if (nb_snap .eq. 0) then
             call utmess('F','ROM2_10')
-        else
-            call utmess('I','ROM2_9', si = nb_snap)
         endif
     else
         call rs_get_liststore(result, nb_snap)
         if (nb_snap .eq. 0) then
             call utmess('F','ROM2_10')
-        else
-            call utmess('I','ROM2_9', si = nb_snap)
         endif
         call wkvect(list_snap, 'V V I', nb_snap, vi = v_list_snap)
         call rs_get_liststore(result, nb_snap, v_list_snap)

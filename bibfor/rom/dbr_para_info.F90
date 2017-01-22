@@ -7,6 +7,8 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romSnapInfo.h"
+#include "asterfort/romBaseInfo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -32,7 +34,7 @@ implicit none
 !
 ! DEFI_BASE_REDUITE - Initializations
 !
-! Read parameters
+! Informations about DEFI_BASE_REDUITE parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,8 +44,11 @@ implicit none
 !
     integer :: ifm, niv
     character(len=16) :: operation = ' '
-    character(len=8) :: result_out = ' '
+    character(len=24) :: field_name = ' ', surf_num = ' '
+    character(len=8)  :: result_out = ' ', result_in = ' '
+    character(len=8)  :: axe_line = ' ', base_type = ' '
     integer :: nb_mode_maxi
+    real(kind=8) :: tole_svd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +58,13 @@ implicit none
 !
     operation    = ds_para%operation
     result_out   = ds_para%result_out
+    result_in    = ds_para%result_in
     nb_mode_maxi = ds_para%nb_mode_maxi
+    tole_svd     = ds_para%tole_svd
+    field_name   = ds_para%field_name
+    base_type    = ds_para%base_type
+    axe_line     = ds_para%axe_line
+    surf_num     = ds_para%surf_num
 !
 ! - Print
 !
@@ -61,8 +72,24 @@ implicit none
         call utmess('I', 'ROM5_15')
         call utmess('I', 'ROM3_1' , sk = result_out)
         call utmess('I', 'ROM5_16', sk = operation)
+        call utmess('I', 'ROM7_1' , sk = result_in)
         call utmess('I', 'ROM5_17', si = nb_mode_maxi)
+        call utmess('I', 'ROM7_3' , sr = tole_svd)
+        call utmess('I', 'ROM7_2' , sk = field_name)
+        if (base_type .eq. '3D') then
+            call utmess('I', 'ROM7_4')
+        elseif (base_type .eq. 'LINEIQUE') then
+            call utmess('I', 'ROM7_5', nk = 2, valk = [axe_line, surf_num])
+        endif
     endif
+!
+! - Print about snapshots selection
+!
+    call romSnapInfo(ds_para%ds_snap)
+!
+! - Print about empiric base
+!
+    call romBaseInfo(ds_para%ds_empi)
 !
 ! - Print / method
 !

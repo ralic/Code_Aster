@@ -19,27 +19,24 @@
 
 cata_msg = {
 
-    1 : _(u"""La base empirique %(k1)s est copiée dans la base empirique %(k2)s."""),
+   1  : _(u"""Création d'une base empirique à partir du résultat %(k1)s."""), 
 
-    2 : _(u"""Lecture de la base empirique de nom %(k1)s."""),
+   2  : _(u"""Création d'une base empirique à partir de champs de type %(k1)s."""), 
 
-    3 : _(u"""Initialisation de la structure de données pour la base empirique."""),
+   3  : _(u"""Tolérance pour les valeurs singulières: %(r1)13.6G."""),   
 
-    4 : _(u"""Lecture des données pour sélectionner les clichés."""),
+   4  : _(u"""Les modes seront 3D."""),
 
-    5 : _(u"""Initialisation de la structure de données pour sélectionner les clichés."""),
+   5  : _(u"""Les modes seront linéiques selon l'axe %(k1)s et avec une section définie par %(k2)s."""),
 
-    6 : _(u"""Initialisation de la structure de données pour les modes linéiques."""),
+   6  : _(u"""<*> Initialisations de l'algorithme."""),
 
-    7 : _(u"""Troncature des modes de la base empirique."""),
+   7  : _(u"""<*> Vérifications."""),
 
-    8 : _(u"""Création de la liste des équations sur la base empirique %(k1)s."""),
+   8  : _(u"""<*> Paramètres de la base empirique."""),
 
-    9 : _(u"""Vous avez demandé %(i1)d clichés."""),
+   9  : _(u"""<*> Calcul de la base empirique."""),
 
-   10 : _(u"""Vous n'avez sélectionné aucun cliché."""),
+   10 : _(u"""Consommation mémoire de la SVD: %(i1)d octets."""),
 
-   11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
-
-   12 : _(u"""<*> Initialisations pour la base empirique."""),
 }

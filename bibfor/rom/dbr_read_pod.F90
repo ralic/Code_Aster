@@ -95,9 +95,8 @@ implicit none
     ds_para%tole_svd     = tole_svd
     ds_para%field_name   = field_name
     ds_para%result_in    = result_in
-    ds_para%operation    = 'POD'
-    ds_para%ds_empi%base_type    = base_type
-    ds_para%ds_empi%axe_line     = axe_line
-    ds_para%ds_empi%surf_num     = surf_num
+    ds_para%base_type    = base_type
+    ds_para%axe_line     = axe_line
+    ds_para%surf_num     = surf_num
 !
 end subroutine

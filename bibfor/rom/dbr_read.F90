@@ -63,9 +63,13 @@ implicit none
     call getvtx(' ', 'OPERATION', scal = operation) 
     if (operation(1:3) .eq. 'POD') then
         call dbr_read_pod(ds_para)
-        ds_para%result_out = result_out
     else
         ASSERT(.false.)
     endif
+!
+! - Save parameters
+!
+    ds_para%result_out = result_out
+    ds_para%operation  = operation
 !
 end subroutine
