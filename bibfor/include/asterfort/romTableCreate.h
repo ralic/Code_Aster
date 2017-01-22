@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine romAlgoNLTableSave(nume_store, time_curr, ds_algorom)
+    subroutine romTableCreate(result, tabl_name)
         use Rom_Datastructure_type
-        integer, intent(in) :: nume_store
-        real(kind=8), intent(in) :: time_curr
-        type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
-    end subroutine romAlgoNLTableSave
+        character(len=8), intent(in) :: result
+        character(len=19), intent(out) :: tabl_name
+    end subroutine romTableCreate
 end interface

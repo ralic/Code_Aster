@@ -1,4 +1,4 @@
-subroutine romAlgoNLTableCreate(result, ds_algorom)
+subroutine romTableCreate(result, tabl_name)
 !
 use Rom_Datastructure_type
 !
@@ -6,7 +6,13 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
-#include "asterfort/romTableCreate.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/ltcrsd.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbajpa.h"
+#include "asterfort/tbcrsd.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,29 +33,54 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: result
-    type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
+    character(len=19), intent(out) :: tabl_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Model reduction - Solving non-linear problem
+! Model reduction
 !
-! Create table for the reduced coordinates
+! Create table for the reduced coordinates in results datatructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  result           : name of datastructure for results
-! IO  ds_algorom       : datastructure for ROM parameters
+! Out tabl_name        : name of table in results datastructure
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=19) :: tabl_name = ' '
+    integer :: ifm, niv
+    integer, parameter :: nb_para = 5
+    character(len=8), parameter :: para_type(nb_para) = (/'I','I','R','I','R'/)
+    character(len=16), parameter :: para_name(nb_para) = (/'NUME_MODE  ','NUME_ORDRE ',&
+                                                           'INST       ','NUME_SNAP  ',&
+                                                           'COOR_REDUIT'/)
+    integer :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call romTableCreate(result, tabl_name)
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM5_38')
+    endif
 !
-! - Save name of table
+! - Create list of tables in results datastructure (if necessary)
 !
-    ds_algorom%tabl_name = tabl_name
+    tabl_name = ' '
+    call jeexin(result//'           .LTNT', iret)
+    if (iret .eq. 0) then
+        call ltcrsd(result, 'G')
+    endif
+!
+! - Get name of reduced coordinates
+!
+    call ltnotb(result, 'COOR_REDUIT', tabl_name)   
+!
+! - Create observation table (if necessary)
+!
+    call exisd('TABLE', tabl_name, iret)
+    if (iret .eq. 0) then
+        call tbcrsd(tabl_name, 'G')
+        call tbajpa(tabl_name, nb_para, para_name, para_type)
+    endif
 !
 end subroutine

@@ -5,13 +5,11 @@ use Rom_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/infniv.h"
-#include "asterfort/tbajli.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
+#include "asterfort/romTableSave.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,29 +44,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nb_para = 4
-    character(len=16), parameter :: para_name(nb_para) = (/'NUME_MODE  ','NUME_ORDRE ',&
-                                                           'INST       ','COOR_REDUIT'/)
     character(len=24) :: tabl_name = ' ', gamma = ' '
-    integer :: i_mode, nb_mode, v_inte(2)
-    real(kind=8) :: v_real(2)
-    real(kind=8), pointer :: v_gamma(:) => null()    
+    integer :: nb_mode 
+    real(kind=8), pointer :: v_gamma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM5_39')
-    endif
-!
-! - Get parameters
 !
     tabl_name  = ds_algorom%tabl_name
     gamma      = ds_algorom%gamma
     nb_mode    = ds_algorom%ds_empi%nb_mode
-    v_inte(2)  = nume_store
-    v_real(1)  = time_curr
 !
 ! - Access to reduced coordinates
 !
@@ -76,10 +60,7 @@ implicit none
 !
 ! - Save in table
 !
-    do i_mode = 1, nb_mode
-        v_inte(1) = i_mode
-        v_real(2) = v_gamma(i_mode)
-        call tbajli(tabl_name, nb_para, para_name, v_inte, v_real, [(0.d0,0.d0)], [' '], 0)
-    enddo
+    call romTableSave(tabl_name , nb_mode  , v_gamma  ,&
+                      nume_store, time_curr)
 !
 end subroutine

@@ -80,9 +80,9 @@ cata_msg = {
 
    37 : _(u"""Initialisations pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 
-   38 : _(u"""Création de la table pour sauver les coordonnées réduites pour le calcul non-linéaire avec réduction de modèle."""),
+   38 : _(u"""Création de la table pour sauver les coordonnées réduites."""),
 
-   39 : _(u"""Sauvegarde des coordonnées réduites pour le calcul non-linéaire avec réduction de modèle."""),
+   39 : _(u"""Sauvegarde des coordonnées réduites dans la table."""),
 
    40 : _(u"""Résolution du problème réduit."""),
 
