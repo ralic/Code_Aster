@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,13 +54,14 @@ implicit none
     integer :: ifm, niv
     integer :: nocc, iret, nume_first
     integer :: nb_mode_maxi = 0, nb_equa = 0, nb_node = 0
-    real(kind=8) :: tole_svd = 0.d0
+    real(kind=8) :: tole_svd = 0.d0, tole_incr = 0.d0
     character(len=8)  :: base = ' ', model = ' ', mesh = ' '
     character(len=16) :: k16bid
     character(len=16) :: field_type = ' '
     character(len=8)  :: axe_line = ' '
     character(len=8)  :: surf_num = ' '
     character(len=8)  :: base_type = ' '
+    character(len=16) :: operation = ' '
     type(ROM_DS_Snap) :: ds_snap
     type(ROM_DS_Empi) :: ds_empi
     character(len=24) :: field_refe = '&&ROM_COMP.FIELD'
@@ -96,6 +97,10 @@ implicit none
 !
 ! - Get parameters - For SVD selection
 !
+    call getvtx(' ', 'OPERATION', scal = operation)
+    if (operation .eq. 'POD_INCR') then
+        call getvr8(' ', 'TOLE_INCR', scal = tole_incr)
+    endif
     call getvr8(' ', 'TOLE_SVD', scal = tole_svd)
     call getvis(' ', 'NB_MODE' , scal = nb_mode_maxi, nbret = nocc)
     if (nocc .eq. 0) then
@@ -135,7 +140,9 @@ implicit none
 !
     ds_para%nb_mode_maxi = nb_mode_maxi
     ds_para%ds_snap      = ds_snap
+    ds_para%operation    = operation
     ds_para%tole_svd     = tole_svd
+    ds_para%tole_incr    = tole_incr
     ds_para%ds_empi      = ds_empi
 !
 end subroutine

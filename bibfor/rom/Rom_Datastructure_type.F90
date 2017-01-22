@@ -116,6 +116,10 @@ implicit none
 ! - Parameters for DEFI_BASE_REDUITE operator
 !
     type ROM_DS_ParaDBR
+! ----- Type of reduced method
+        character(len=16)       :: operation
+! ----- Tolerance for incremental POD
+        real(kind=8)            :: tole_incr
 ! ----- Tolerance for SVD
         real(kind=8)            :: tole_svd
 ! ----- Maximum number of modes

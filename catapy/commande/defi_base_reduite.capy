@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +32,9 @@ DEFI_BASE_REDUITE=OPER(nom="DEFI_BASE_REDUITE",op=53,
      b_lineique      =BLOC(condition ="""(equal_to("TYPE_BASE", 'LINEIQUE'))""",
                            AXE       = SIMP(statut='o',typ='TXM',max=1,into=('OX','OY','OZ')),
                            SECTION   = SIMP(statut='o',typ=grno ,max=1)),
+     OPERATION       =SIMP(statut='f',typ='TXM',defaut="POD",into=("POD","POD_INCR")),
+     b_incr          =BLOC(condition ="(OPERATION=='POD_INCR')",
+                           TOLE      = SIMP(statut='f',typ='R',defaut=1.E-10)),
      NB_MODE         =SIMP(statut='f',typ='I'),
      TOLE_SVD        =SIMP(statut='f',typ='R',defaut=1.E-6),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),

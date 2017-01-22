@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -71,7 +71,9 @@ implicit none
 !
     ds_para%ds_snap      = ds_snap
     ds_para%ds_empi      = ds_empi
+    ds_para%operation    = ' '
     ds_para%nb_mode_maxi = 0
     ds_para%tole_svd     = r8vide()
+    ds_para%tole_incr    = r8vide()
 !
 end subroutine
