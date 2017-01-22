@@ -240,7 +240,7 @@ TEST_RESU(RESU=(
 
 # Tests reduced coordinates
 TEST_TABLE(
-           VALE_CALC=7673.69355304,
+           VALE_CALC=(7673.69355304,-7673.69355304),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredp,
            FILTRE    = (
@@ -253,7 +253,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=879.130655319,
+           VALE_CALC=(879.130655319,-879.130655319),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredp,
            FILTRE    = (
@@ -266,7 +266,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=0.135906406893,
+           VALE_CALC=(0.135906406893,-0.135906406893),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredp,
            FILTRE    = (
@@ -279,7 +279,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=-0.0564625439087,
+           VALE_CALC=(0.0564625439087,-0.0564625439087),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredp,
            FILTRE    = (
@@ -294,7 +294,7 @@ TEST_TABLE(
 #
 
 TEST_TABLE(
-           VALE_CALC=5.01049807634,
+           VALE_CALC=(5.01049807634,-5.01049807634),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredd,
            FILTRE    = (
@@ -307,7 +307,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=2.3667100854,
+           VALE_CALC=(2.3667100854,-2.3667100854),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredd,
            FILTRE    = (
@@ -320,7 +320,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=-0.0112726127965,
+           VALE_CALC=(0.0112726127965,-0.0112726127965),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredd,
            FILTRE    = (
@@ -333,7 +333,7 @@ TEST_TABLE(
                        ),
            )
 TEST_TABLE(
-           VALE_CALC=0.00632713385844,
+           VALE_CALC=(0.00632713385844,-0.00632713385844),
            NOM_PARA  = 'COOR_REDUIT',
            TABLE     = coorredd,
            FILTRE    = (

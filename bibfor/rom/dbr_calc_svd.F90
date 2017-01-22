@@ -61,6 +61,7 @@ implicit none
     integer :: lda, lwork
     character(len=8)  :: base_type
     real(kind=8), pointer :: w(:) => null()
+    real(kind=8), pointer :: qq(:) => null()
     real(kind=8), pointer :: work(:) => null()
     integer(kind=4) :: info
 !
@@ -102,9 +103,14 @@ implicit none
     AS_ALLOCATE(vr = s, size = nb_sing)
     AS_ALLOCATE(vr = work, size = lwork)
 !
+! - Use copy of Q matrix (because dgesvd change it ! )
+!
+    AS_ALLOCATE(vr = qq, size = m*n)
+    qq(1:m*n) = q(1:m*n)
+!
 ! - Compute SVD: Q = V S Wt
 !
-    call dgesvd('S', 'N', m, n, q,&
+    call dgesvd('S', 'N', m, n, qq,&
                 lda, s, v, m, w,&
                 1, work, lwork, info)
     if (info .ne. 0) then
@@ -116,6 +122,7 @@ implicit none
 !
 ! - Clean
 !
+    AS_DEALLOCATE(vr = qq)
     AS_DEALLOCATE(vr = work)
 !
 end subroutine
