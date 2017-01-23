@@ -15,9 +15,10 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/mminfi.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +52,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: i_cont_zone, i_patch, nb_patch, nb_cont_zone
+    integer :: i_cont_zone, i_patch, nb_patch, nb_cont_zone, nb_cont_init
     integer :: j_patch, cont_init
     integer :: indi_cont_curr, indi_cont_prev
     real(kind=8) :: tole_inter, gap, armini, epsint
@@ -74,7 +75,8 @@ implicit none
 !
 ! - Initializations
 !
-    tole_inter = 1.d-5
+    tole_inter   = 1.d-5
+    nb_cont_init = 0
 !
 ! - Tolerance for CONTACT_INIT
 !
@@ -130,10 +132,12 @@ implicit none
                     if (gap .le. epsint.and.&
                         v_sdappa_coef(j_patch-2+i_patch) .ge. tole_inter) then
                         indi_cont_curr = 1
+                        nb_cont_init = nb_cont_init + 1
                     endif
                 else if (cont_init .eq. 1) then
 ! ----------------- All points
                     indi_cont_curr = 1
+                    nb_cont_init = nb_cont_init + 1
                 else if (cont_init .eq. 0) then
 ! ----------------- No initial contact
                     indi_cont_curr = 0
@@ -147,6 +151,8 @@ implicit none
             v_sdcont_stat(j_patch-2+i_patch) = indi_cont_curr
         end do
     end do
+!
+    call utmess('I', 'CONTACT3_6', si = nb_cont_init)
 !
     call jedema()
 !

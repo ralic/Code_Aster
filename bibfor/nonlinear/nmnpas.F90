@@ -117,10 +117,6 @@ implicit none
 !
     instan = diinst(sddisc,numins)
 !
-! - Print management - Initializations for new step time
-!
-    call nmimin(fonact, sddisc, sdsuiv, numins, ds_print)
-!
 ! --- POUTRES EN GRANDES ROTATIONS
 !
     if (lgrot) then
@@ -191,5 +187,9 @@ implicit none
         call cont_init(noma  , modele, ds_contact, numins, ds_measure,&
                        sddyna, valinc, sdnume    , fonact)
     endif
+!
+! - Print management - Initializations for new step time
+!
+    call nmimin(fonact, sddisc, sdsuiv, numins, ds_print)
 !
 end subroutine

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,6 +42,13 @@ Le frottement n'est autorisé qu'avec une formulation pénalisée sur la partie 
   de contact
 """),
 
+    5 : _(u"""
+Il y a %(i1)d points initialement en contact et %(i2)d points exclus.
+"""),
+
+    6 : _(u"""
+Il y a %(i1)d éléments initialement en contact.
+"""),
 
     15 : _(u"""
 La direction d'appariement fixe données par le vecteur DIRE_APPA est nulle !
