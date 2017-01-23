@@ -4,6 +4,7 @@ use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
@@ -49,6 +50,7 @@ implicit none
     character(len=8)  :: axe_line = ' ', base_type = ' '
     integer :: nb_mode_maxi
     real(kind=8) :: tole_svd, tole_incr
+    aster_logical :: l_reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,6 +68,7 @@ implicit none
     axe_line     = ds_para%axe_line
     surf_num     = ds_para%surf_num
     tole_incr    = ds_para%tole_incr
+    l_reuse      = ds_para%l_reuse
 !
 ! - Print
 !
@@ -75,6 +78,9 @@ implicit none
         call utmess('I', 'ROM5_16', sk = operation)
         if (operation .eq. 'POD_INCR') then
             call utmess('I', 'ROM7_13' , sr = tole_incr)
+            if (l_reuse) then
+                call utmess('I', 'ROM7_15', sk = result_out)
+            endif
         endif
         call utmess('I', 'ROM7_1' , sk = result_in)
         call utmess('I', 'ROM5_17', si = nb_mode_maxi)

@@ -4,7 +4,9 @@ use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getres.h"
+#include "asterc/gcucon.h"
 #include "asterfort/assert.h"
 #include "asterfort/dbr_read_pod.h"
 #include "asterfort/getvtx.h"
@@ -48,6 +50,7 @@ implicit none
     character(len=16) :: k16bid, operation = ' '
     character(len=8) :: result_out = ' '
     real(kind=8) :: tole_incr
+    integer :: ireuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,11 +63,16 @@ implicit none
 !
     call getres(result_out, k16bid, k16bid)
 !
+! - Is REUSE?
+!
+    call gcucon(result_out, 'MODE_EMPI', ireuse)
+!
 ! - Type of ROM methods
 !
     call getvtx(' ', 'OPERATION', scal = operation) 
     if (operation .eq. 'POD') then
         call dbr_read_pod(ds_para)
+        ASSERT(ireuse .eq. 0)
     elseif (operation .eq. 'POD_INCR') then
         call dbr_read_pod(ds_para)
         call getvr8(' ', 'TOLE', scal = tole_incr)
@@ -75,6 +83,7 @@ implicit none
 !
 ! - Save parameters
 !
+    ds_para%l_reuse    = ireuse .gt. 0
     ds_para%result_out = result_out
     ds_para%operation  = operation
 !

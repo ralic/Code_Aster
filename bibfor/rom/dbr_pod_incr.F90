@@ -14,6 +14,13 @@ implicit none
 #include "asterfort/dbr_calc_svd2.h"
 #include "asterfort/dbr_calc_sele.h"
 #include "asterfort/romTableSave.h"
+#include "asterfort/romTableCreate.h"
+#include "asterfort/romBaseRead.h"
+#include "asterfort/ltnotb.h"
+#include "asterfort/tbexve.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/detrsd.h"
+#include "asterfort/rsexch.h"
 #include "blas/dgemm.h"
 #include "blas/dgesv.h"
 #include "blas/dgesvd.h"
@@ -61,7 +68,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    integer :: incr_ini, incr_end, i_equa, i_snap, p, i_incr, k
+    integer :: incr_ini, incr_end, i_equa, i_snap, p, i_incr, k, i_mode
     integer :: nb_equa, nb_snap, nb_sing
     real(kind=8) :: tole_incr
     character(len=8)  :: base_type
@@ -79,7 +86,14 @@ implicit none
     integer(kind=4), pointer :: IPIV(:) => null()
     real(kind=8), pointer :: b(:)    => null()
     real(kind=8), pointer :: v_gamma(:)    => null()
-    character(len=19) :: tabl_name
+    character(len=19) :: tabl_name, tabl_name_r
+    character(len=8) :: result_out
+    type(ROM_DS_Empi) :: ds_empi
+    character(len=24) :: typval
+    integer :: nbval, iret
+    real(kind=8), pointer :: v_gm(:) => null()
+    character(len=24) :: mode = '&&IPOD_MODE'
+    real(kind=8), pointer :: v_mode(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +101,8 @@ implicit none
 !
 ! - Get parameters
 !
-    l_reuse      = .false.
+    result_out   = ds_para%result_out
+    l_reuse      = ds_para%l_reuse
     tabl_name    = ds_para%tabl_name
     base_type    = ds_para%base_type
     nb_equa      = ds_para%ds_empi%nb_equa
@@ -102,7 +117,13 @@ implicit none
     AS_ALLOCATE(vr = ri, size = nb_equa)
     AS_ALLOCATE(vr = rt, size = nb_equa)
     if (l_reuse) then
-        ASSERT(.false.)
+        call romBaseRead(result_out, ds_empi)
+        call ltnotb(result_out, 'COOR_REDUIT', tabl_name_r)
+        call tbexve(tabl_name_r, 'COOR_REDUIT', '&&COORHR', 'V', nbval, typval)
+        call jeveuo('&&COORHR', 'E', vr = v_gm)
+        AS_ALLOCATE(vr = vt, size = nb_equa*(nb_snap+ds_empi%nb_mode))
+        AS_ALLOCATE(vr = gt, size = (nb_snap+ds_empi%nb_mode)*(nb_snap+ds_empi%nb_snap))
+        AS_ALLOCATE(vr = g , size = (nb_snap+ds_empi%nb_mode)*(nb_snap+ds_empi%nb_snap))
     else
         AS_ALLOCATE(vr = vt, size = nb_equa*nb_snap)
         AS_ALLOCATE(vr = gt, size = nb_snap*nb_snap)
@@ -112,7 +133,17 @@ implicit none
 ! - Initialize algorithm
 !
     if (l_reuse) then
-        ASSERT(.false.)
+        do i_mode = 1, ds_empi%nb_mode
+            call rsexch(' ', ds_empi%base, ds_empi%field_type, i_mode, mode, iret)
+            call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
+            do i_equa = 1, nb_equa
+                vt(i_equa+nb_equa*(i_mode-1)) = v_mode(i_equa)
+            end do
+        enddo
+        do i_equa = 1, ds_empi%nb_mode*ds_empi%nb_snap
+            gt(i_equa) = v_gm(i_equa)
+        enddo
+        call detrsd('TABLE', tabl_name_r)
     else
         qi(1:nb_equa) = q(1:nb_equa)
         call norm_frobenius(nb_equa, qi, norm_q)
@@ -120,7 +151,9 @@ implicit none
         gt(1)   = norm_q
     endif
     if (l_reuse) then
-        ASSERT(.false.)
+        p        = ds_empi%nb_mode
+        incr_ini = ds_empi%nb_snap+1
+        incr_end = nb_snap+ds_empi%nb_snap
     else
         p        = 1
         incr_ini = 2
@@ -131,7 +164,9 @@ implicit none
 !
     do i_incr = incr_ini, incr_end
         if (l_reuse) then
-            ASSERT(.false.)
+            do i_equa = 1, nb_equa
+                qi(i_equa) = q(i_equa+nb_equa*(i_incr-ds_empi%nb_snap-1))
+            enddo
         else
             do i_equa = 1, nb_equa
                 qi(i_equa) = q(i_equa+nb_equa*(i_incr-1))
@@ -204,6 +239,9 @@ implicit none
 !
 ! - Save the reduced coordinates in a table
 !
+    if (l_reuse) then
+        call romTableCreate(result_out, tabl_name)
+    endif
     do i_snap = 1, incr_end
         call romTableSave(tabl_name  , nb_mode, v_gamma   ,&
                           nume_snap_ = i_snap)

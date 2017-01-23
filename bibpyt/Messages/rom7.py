@@ -45,5 +45,7 @@ cata_msg = {
 
    13 : _(u"""Tolérance pour l'algorithme incrémental: %(r1)13.6G."""), 
 
-   14 : _(u"""Nombre final de clichés retenus dans l'algorithe incrémental: %(i1)d."""), 
+   14 : _(u"""Nombre final de clichés retenus dans l'algorithme incrémental: %(i1)d."""), 
+
+   15 : _(u"""On va enrichir les modes empiriques contenus dans %(k1)s."""), 
 }

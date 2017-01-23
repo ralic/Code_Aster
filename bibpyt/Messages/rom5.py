@@ -51,7 +51,7 @@ cata_msg = {
 
    17 : _(u"""Nombre de modes maximum de la base empirique: %(i1)d """),
 
-   18 : _(u"""Lecture des paramètres pour la méthode POD."""),
+   18 : _(u"""Lecture des paramètres pour la commande DEFI_BASE_REDUITE."""),
 
    19 : _(u"""Vérifications de la conformité de la structure de données résultat utilisée de nom %(k1)s."""),
 

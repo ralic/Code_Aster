@@ -4,6 +4,7 @@ use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
@@ -50,8 +51,9 @@ implicit none
     integer :: nb_equa = 0, nb_node = 0, nb_mode_crea = 0, nb_mode_maxi = 0
     character(len=8)  :: model = ' ', mesh = ' '
     character(len=8)  :: result_in = ' ', result_out = ' '
-    character(len=24) :: field_refe = '&&ROM_COMP.FIELD', field_name = ' '
-    character(len=8)  :: axe_line = ' ', surf_num = ' ', base_type = ' '
+    character(len=24) :: field_refe = '&&ROM_COMP.FIELD', field_name = ' ', surf_num = ' '
+    character(len=8)  :: axe_line = ' ', base_type = ' '
+    aster_logical :: l_reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,6 +71,7 @@ implicit none
     axe_line     = ds_para%axe_line
     surf_num     = ds_para%surf_num
     nb_mode_maxi = ds_para%nb_mode_maxi
+    l_reuse      = ds_para%l_reuse
 !
 ! - Get information about model
 !
@@ -87,15 +90,17 @@ implicit none
 !
 ! - Create empiric base
 !
-    if (nb_mode_maxi .eq. 0) then
-        nb_mode_crea = 10
-    else
-        nb_mode_crea = nb_mode_maxi
+    if (.not. l_reuse) then
+        if (nb_mode_maxi .eq. 0) then
+            nb_mode_crea = 10
+        else
+            nb_mode_crea = nb_mode_maxi
+        endif
+        if (niv .ge. 2) then
+            call utmess('I', 'ROM7_11', si = nb_mode_crea)
+        endif
+        call rscrsd('G', result_out, 'MODE_EMPI', nb_mode_crea)
     endif
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM7_11', si = nb_mode_crea)
-    endif
-    call rscrsd('G', result_out, 'MODE_EMPI', nb_mode_crea)
 !
 ! - Save in empiric base
 !

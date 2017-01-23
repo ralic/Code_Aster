@@ -142,6 +142,8 @@ implicit none
         type(ROM_DS_Snap)       :: ds_snap
 ! ----- Name of table to save reduced coordinates
         character(len=19)       :: tabl_name
+! ----- If reuse
+        aster_logical           :: l_reuse
     end type ROM_DS_ParaDBR
 !
 ! - Parameters for DEFI_DOMAINE_REDUIT operator

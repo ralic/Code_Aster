@@ -4,6 +4,7 @@ use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
@@ -68,5 +69,6 @@ implicit none
     ds_para%ds_snap      = ds_snap
     ds_para%tabl_name    = ' '
     ds_para%tole_incr    = r8vide()
+    ds_para%l_reuse      = .false._1
 !
 end subroutine
