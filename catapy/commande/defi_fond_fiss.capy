@@ -31,8 +31,8 @@ DEFI_FOND_FISS=OPER(nom="DEFI_FOND_FISS",
                      TYPE_FOND = SIMP(statut='f',typ='TXM',into=("OUVERT","FERME","INF","SUP"),defaut="OUVERT"),
 
                      NOEUD    = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**'),
-                     GROUP_NO = SIMP(statut='f',typ=grno,validators=NoRepeat(),max=1   ),
-                     GROUP_MA = SIMP(statut='f',typ=grma,validators=NoRepeat(),max=1   ),
+                     GROUP_NO = SIMP(statut='f',typ=grno,max=1   ),
+                     GROUP_MA = SIMP(statut='f',typ=grma,max=1   ),
                      MAILLE   = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
                      regles=(UN_PARMI('GROUP_NO','NOEUD','GROUP_MA','MAILLE'),),
 

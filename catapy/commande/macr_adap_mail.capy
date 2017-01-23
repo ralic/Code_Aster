@@ -420,7 +420,7 @@ MACR_ADAP_MAIL=MACRO(nom="MACR_ADAP_MAIL",
 #
 # 9.2.1. Nom de la frontière
 #
-    NOM = SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
+    NOM = SIMP(statut='o',typ='TXM',max=1,
                fr=tr("Nom de la frontière analytique"),
                ),
 #

@@ -19,18 +19,18 @@
 def C_SUIVI_DDL() : return FACT(statut='f',max=4,
            regles   =(UN_PARMI('NOM_CMP','NOM_VARI',),),
 
-           NOM_CHAM        =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=1,
+           NOM_CHAM        =SIMP(statut='o',typ='TXM',max=1,
                                    into=("DEPL","VITE","ACCE",
-                                         "FORC_NODA",
+                                         "FORC_NODA",NoRepeat,
                                          "SIEF_ELGA","VARI_ELGA","EPSI_ELGA",)),
 
-           EVAL_CHAM       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
+           EVAL_CHAM       =SIMP(statut='f',typ='TXM',max=1,defaut='VALE',
                                    into=("MIN","MAX","MOY","MAXI_ABS","MINI_ABS","VALE",),),
 
            NOM_CMP         =SIMP(statut='f',typ='TXM',max=20),
            NOM_VARI        =SIMP(statut='f',typ='TXM',max=20),
 
-           EVAL_CMP        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
+           EVAL_CMP        =SIMP(statut='f',typ='TXM',max=1,defaut='VALE',
                                    into=("VALE","FORMULE",),),
 
            b_formule       =BLOC(condition="""(equal_to("EVAL_CMP", 'FORMULE'))""",
@@ -51,7 +51,7 @@ def C_SUIVI_DDL() : return FACT(statut='f',max=4,
                                  TOUT            =SIMP(statut='d',typ='TXM',into=("OUI",) ),
                                  MAILLE          =SIMP(statut='f',typ=ma   ,validators=NoRepeat(),max='**'),
                                  GROUP_MA        =SIMP(statut='f',typ=grma ,validators=NoRepeat(),max='**'),
-                                 EVAL_ELGA       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=1,defaut='VALE',
+                                 EVAL_ELGA       =SIMP(statut='f',typ='TXM',max=1,defaut='VALE',
                                                         into=("MIN","MAX","VALE",),),
                                  b_elga_vale     =BLOC(condition="""(equal_to("EVAL_ELGA", 'VALE'))""",
                                    POINT           =SIMP(statut='o',typ='I'  ,validators=NoRepeat(),max='**'),

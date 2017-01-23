@@ -61,7 +61,7 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
              MATR_HM2        = SIMP(statut='o',typ=corresp_2_mailla,),
 
              b_type_resu     = BLOC(condition = """equal_to("TYPE_RESU", 'EVOL_VARC')""",fr=tr("Instant obligatoire si TYPE_RESU=EVOL_VARC"),
-                                   INST = SIMP(statut='o',typ='R',validators=NoRepeat(),min=1,max=1),
+                                   INST = SIMP(statut='o',typ='R',max=1),
 
            ),),
 
@@ -73,7 +73,7 @@ CHAINAGE_THM=MACRO(nom="CHAINAGE_THM",
              MODELE_HYDR     = SIMP(statut='o',typ=modele_sdaster  ,fr=tr("Modèle d'arrivée hydraulique")),
 
              MATR_MH         = SIMP(statut='o',typ=corresp_2_mailla,),
-             INST            = SIMP(statut='o',typ='R',validators=NoRepeat(),min=1,max=1),
+             INST            = SIMP(statut='o',typ='R',max=1),
            ),
 
          # Cas INIT :
