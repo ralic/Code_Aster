@@ -101,7 +101,7 @@ INFO_MODE=OPER(nom="INFO_MODE",op=32,sd_prod=table_sdaster,
 #-------------------------------------------------------------------
 #-------------------------------------------------------------------
 #  Mot-cles caches pour activer le parallelisme au sein d'une macro-commande
-         PARALLELISME_MACRO=FACT(statut='d',min=0,
+         PARALLELISME_MACRO=FACT(statut='d',
            TYPE_COM   =SIMP(statut='c',typ='I',defaut=-999,into=(-999,1,2),fr=tr("Type de communication")),
          ),
 #-------------------------------------------------------------------

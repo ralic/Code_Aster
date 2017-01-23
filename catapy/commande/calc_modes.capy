@@ -113,7 +113,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                  MATR_MASS  =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r,matr_asse_temp_r ) ),
                  MATR_AMOR  =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
 
-                 CALC_FREQ  =FACT(statut='d', min=0,
+                 CALC_FREQ  =FACT(statut='d', 
              b_plus_petite =BLOC(condition = """equal_to("OPTION", 'PLUS_PETITE')""",
                                  fr=tr("Recherche des plus petites fréquences propres"),
                      NMAX_FREQ  =SIMP(statut='f',typ='I',defaut=10,val_min=0 ),
@@ -185,7 +185,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                           ),
 
          b_flamb_general =BLOC(condition = """is_in("TYPE_RESU", ('MODE_FLAMB','GENERAL'))""",
-                 CALC_CHAR_CRIT  =FACT(statut='d',min=0,
+                 CALC_CHAR_CRIT  =FACT(statut='d',
              b_plus_petite =BLOC(condition = """equal_to("OPTION", 'PLUS_PETITE')""",
                                  fr=tr("Recherche des plus petites valeurs propres"),
                      NMAX_CHAR_CRIT =SIMP(statut='f',typ='I',defaut= 10,val_min=0 ),
@@ -227,7 +227,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
 
 #########################################################################################
 #        Vérification a posteriori
-                 VERI_MODE =FACT(statut='d',min=0,
+                 VERI_MODE =FACT(statut='d',
                      STOP_ERREUR =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              b_veri_mode_simlut = BLOC( condition = """is_in("OPTION", ('PLUS_PETITE','PLUS_GRANDE','BANDE','CENTRE','TOUT'))""",
                      SEUIL       =SIMP(statut='f',typ='R',val_min=0.E+0,defaut=1.e-6,
@@ -247,7 +247,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                                  ),
 #########################################################################################
 #        Amélioration de la qualité des modes
-                 AMELIORATION=SIMP(statut='d',typ='TXM',defaut="NON",into=("OUI","NON"),min=0 ),
+                 AMELIORATION=SIMP(statut='d',typ='TXM',defaut="NON",into=("OUI","NON"), ),
 #########################################################################################
 
                  INFO       =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),

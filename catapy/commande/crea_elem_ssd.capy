@@ -67,7 +67,7 @@ CREA_ELEM_SSD=MACRO(nom="CREA_ELEM_SSD",
 #-------------------------------------------------------------------
 
 # pour le calcul modal
-         CALC_FREQ       =FACT(statut='d',min=0,
+         CALC_FREQ       =FACT(statut='d',
              STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
              OPTION      =SIMP(statut='f',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","BANDE","CENTRE","SANS"),
                                    fr=tr("Choix de l option et par consequent du shift du probleme modal") ),
