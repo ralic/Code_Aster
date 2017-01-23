@@ -1,14 +1,14 @@
-subroutine romLineicBaseInit(ds_lineicnumb)
+subroutine dbr_init_algo_pod(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/infniv.h"
-#include "asterfort/utmess.h"
+#include "asterfort/assert.h"
+#include "asterfort/dbr_rnum.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,34 +25,25 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_LineicNumb), intent(out) :: ds_lineicnumb
+    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Model reduction - Initializations
+! DEFI_BASE_REDUITE - Initializations
 !
-! Initialization of datastructure for lineic base numbering
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Out ds_lineicnumb    : datastructure for lineic base numbering
+! Init algorithm for POD
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! IO  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM2_6')
+!
+! - Create numbering of nodes for the lineic model
+!
+    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
+        call dbr_rnum(ds_para%ds_empi)
     endif
-!
-! - Create parameters datastructure
-!
-    ds_lineicnumb%tole_node = 1.d-7
-    ds_lineicnumb%nb_slice  = 0
-    ds_lineicnumb%v_nume_pl => null()
-    ds_lineicnumb%v_nume_sf => null()
 !
 end subroutine

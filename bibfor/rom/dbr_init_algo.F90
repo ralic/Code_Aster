@@ -1,14 +1,14 @@
-subroutine romSnapInit(ds_snap)
+subroutine dbr_init_algo(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/infniv.h"
-#include "asterfort/utmess.h"
+#include "asterfort/assert.h"
+#include "asterfort/dbr_init_algo_pod.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,33 +25,24 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Snap), intent(out) :: ds_snap
+    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Model reduction - Initializations
+! DEFI_BASE_REDUITE - Initializations
 !
-! Initializations of datastructure for snapshot selection
-!
-! --------------------------------------------------------------------------------------------------
-!
-! Out ds_snap          : datastructure for snapshot selection
+! Init algorithm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! IO  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM2_5')
+    if (ds_para%operation .eq. 'POD') then
+        call dbr_init_algo_pod(ds_para)
+    else
+        ASSERT(.false.)
     endif
-!
-! - Create parameters datastructure
-!
-    ds_snap%result    = ' '
-    ds_snap%nb_snap   = 0
-    ds_snap%list_snap = ' '
 !
 end subroutine

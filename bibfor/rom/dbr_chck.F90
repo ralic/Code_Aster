@@ -1,4 +1,4 @@
-subroutine dbr_chck(result, ds_para)
+subroutine dbr_chck(ds_para)
 !
 use Rom_Datastructure_type
 !
@@ -6,11 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/utmess.h"
-#include "asterfort/romBaseChck.h"
-#include "asterfort/rs_paraonce.h"
+#include "asterfort/dbr_chck_pod.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +26,6 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: result
     type(ROM_DS_ParaDBR), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,32 +36,14 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  result           : results from empirical base is constructed
 ! In  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nb_para = 4
-    character(len=16), parameter :: list_para(nb_para) = (/&
-        'MODELE  ',&
-        'CHAMPMAT',&
-        'CARAELEM',&
-        'EXCIT   '/)
-!
-! --------------------------------------------------------------------------------------------------
-!
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I','ROM5_19', sk = result)
+    if (ds_para%operation .eq. 'POD') then
+        call dbr_chck_pod(ds_para)
+    else
+        ASSERT(.false.)
     endif
-!
-! - Check empiric modes base
-!
-    call romBaseChck(ds_para%ds_empi)
-!
-! - Check results datastructures
-!
-    call rs_paraonce(result, nb_para, list_para)
 !
 end subroutine

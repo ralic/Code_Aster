@@ -6,12 +6,12 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
-#include "asterfort/romBaseInit.h"
-#include "asterfort/romLineicBaseInit.h"
+#include "asterfort/romBaseDSInit.h"
+#include "asterfort/romLineicBaseDSInit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,15 +56,15 @@ implicit none
 !
 ! - Initialization of datastructure for lineic base numbering
 !
-    call romLineicBaseInit(ds_lineicnumb)
+    call romLineicBaseDSInit(ds_lineicnumb)
 !
-! - Initialization of datastructure for empiric modes
+! - Initialization of DSdatastructure for empiric modes
 !
-    call romBaseInit(ds_lineicnumb, ds_empi)
+    call romBaseDSInit(ds_lineicnumb, ds_empi)
 !
 ! - Initialization of datastructure for truncated empiric modes
 !
-    call romBaseInit(ds_lineicnumb, ds_empi_rid)    
+    call romBaseDSInit(ds_lineicnumb, ds_empi_rid)    
 !
 ! - General parameters
 !

@@ -33,15 +33,25 @@ cata_msg = {
 
     8 : _(u"""Échec lors du calcul des modes empiriques."""),
 
-    9 : _(u"""Initialisations de toutes les structures de données."""),
+    9 : _(u"""<*> Initialisations de toutes les structures de données."""),
 
-   10 : _(u"""Lecture de tous les paramètres."""),
+   10 : _(u"""<*> Lecture de tous les paramètres."""),
 
    11 : _(u"""On ne trouve pas de champ de type %(k1)s dans la structure de données résultat."""),
 
    12 : _(u"""Préparation de la numérotation des modes linéiques."""),
 
    13 : _(u"""On a détecté %(i1)d tranches pour la définition des modes linéiques."""),
+
+   14 : _(u"""Initialisation de la structure de données pour les paramètres du calcul."""),
+
+   15 : _(u"""<*> Principaux paramètres de la commande"""),
+
+   16 : _(u"""Méthode de construction de la base empirique: %(k1)s """),
+
+   17 : _(u"""Nombre de modes maximum de la base empirique: %(i1)d """),
+
+   18 : _(u"""Lecture des paramètres pour la méthode POD."""),
 
    19 : _(u"""Vérifications de la conformité de la structure de données résultat utilisée de nom %(k1)s."""),
 

@@ -30,7 +30,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     aster_logical, intent(in), optional :: from_lire_resu
 ! ----------------------------------------------------------------------
 ! ======================================================================bibfor/prepost/lrcomm.F90
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 ! ......................................................................
 !
     integer :: iordr, lordr, nexci, jpara
-    integer :: i, iret, ibid, nbtrou, tord(1), nume_plan
+    integer :: i, iret, ibid, nbtrou, tord(1), nume_plan, nb_snap
     real(kind=8) :: epsi, rbid
     character(len=8) :: crit, k8bid
     character(len=19) :: list_load, list_load_save, vari, ligrmo, list_load_resu
@@ -121,10 +121,13 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
         if (iret .eq. 0) then
             nume_plan = 0
         endif
+        nb_snap = 0
         do i = 1, nbordr
             iordr=zi(lordr+i-1)
             call rsadpa(resu, 'E', 1, 'NUME_PLAN', iordr, 0, sjv=jpara)
             zi(jpara)=nume_plan
+            call rsadpa(resu, 'E', 1, 'NB_SNAP', iordr, 0, sjv=jpara)
+            zi(jpara)=nb_snap
             call rsadpa(resu, 'E', 1, 'NOM_CHAM', iordr, 0, sjv=jpara)
             zk24(jpara)=noch
         end do

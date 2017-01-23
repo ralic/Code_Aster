@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_ini0(ds_para)
+    subroutine dbr_paraDSInit(ds_snap, ds_empi, ds_para)
         use Rom_Datastructure_type
+        type(ROM_DS_Snap), intent(in) :: ds_snap
+        type(ROM_DS_Empi), intent(in) :: ds_empi
         type(ROM_DS_ParaDBR), intent(out) :: ds_para
-    end subroutine dbr_ini0
+    end subroutine dbr_paraDSInit
 end interface

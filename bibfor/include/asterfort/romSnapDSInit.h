@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_read(ds_para)
+    subroutine romSnapDSInit(ds_snap)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(inout) :: ds_para
-    end subroutine dbr_read
+        type(ROM_DS_Snap), intent(out) :: ds_snap
+    end subroutine romSnapDSInit
 end interface

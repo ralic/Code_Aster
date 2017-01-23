@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_read(ds_para)
+    subroutine dbr_para_info(ds_para)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(inout) :: ds_para
-    end subroutine dbr_read
+        type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    end subroutine dbr_para_info
 end interface

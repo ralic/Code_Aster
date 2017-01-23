@@ -5,8 +5,8 @@ use Rom_Datastructure_type
 implicit none
 !
 #include "asterfort/infniv.h"
-#include "asterfort/romBaseInit.h"
-#include "asterfort/romLineicBaseInit.h"
+#include "asterfort/romBaseDSInit.h"
+#include "asterfort/romLineicBaseDSInit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -54,12 +54,12 @@ implicit none
 !
 ! - Creation of datastructure for lineic base numbering
 !
-    call romLineicBaseInit(ds_lineicnumb)
+    call romLineicBaseDSInit(ds_lineicnumb)
 !
 ! - Create datastructure for empiric modes
 !
-    call romBaseInit(ds_lineicnumb, empi_prim)
-    call romBaseInit(ds_lineicnumb, empi_dual)
+    call romBaseDSInit(ds_lineicnumb, empi_prim)
+    call romBaseDSInit(ds_lineicnumb, empi_dual)
 !
 ! - Create parameters datastructure
 !

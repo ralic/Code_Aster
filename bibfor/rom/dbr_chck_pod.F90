@@ -1,11 +1,16 @@
-subroutine romBaseInit(ds_lineicnumb, ds_empi)
+subroutine dbr_chck_pod(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
+#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
+#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romBaseChck.h"
+#include "asterfort/rs_paraonce.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,46 +30,44 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_LineicNumb), intent(in) :: ds_lineicnumb
-    type(ROM_DS_Empi), intent(out) :: ds_empi
+    type(ROM_DS_ParaDBR), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Model reduction - Initializations
+! DEFI_BASE_REDUITE - Initializations
 !
-! Initialisation of datastructure for empiric modes
+! Some checks
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_lineicnumb    : datastructure for lineic base numbering
-! Out ds_empi          : datastructure for empiric modes
+! In  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer, parameter :: nb_para = 4
+    character(len=8) :: result_in
+    character(len=16), parameter :: list_para(nb_para) = (/&
+        'MODELE  ',&
+        'CHAMPMAT',&
+        'CARAELEM',&
+        'EXCIT   '/)
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    result_in = ds_para%result_in
+!
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM2_3')
+        call utmess('I','ROM5_19', sk = result_in)
     endif
 !
-! - Create parameters datastructure
+! - Check empiric modes base
 !
-    ds_empi%base         = ' '
-    ds_empi%field_type   = ' '
-    ds_empi%field_refe   = ' '
-    ds_empi%mesh         = ' '
-    ds_empi%model        = ' '
-    ds_empi%base_type    = ' '
-    ds_empi%axe_line     = ' '
-    ds_empi%surf_num     = ' '
-    ds_empi%nb_node      = 0
-    ds_empi%nb_mode      = 0
-    ds_empi%nb_snap      = 0
-    ds_empi%nb_equa      = 0
-    ds_empi%nb_cmp       = 0
-    ds_empi%ds_lineic    = ds_lineicnumb
+    call romBaseChck(ds_para%ds_empi)
+!
+! - Check results datastructures
+!
+    call rs_paraonce(result_in, nb_para, list_para)
 !
 end subroutine

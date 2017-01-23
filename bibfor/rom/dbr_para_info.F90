@@ -1,12 +1,11 @@
-subroutine ddr_ini0(ds_para)
+subroutine dbr_para_info(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
-#include "asterfort/romBaseDSInit.h"
-#include "asterfort/romLineicBaseDSInit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -27,46 +26,50 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDDR), intent(out) :: ds_para
+    type(ROM_DS_ParaDBR), intent(in) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_DOMAINE_REDUIT - Initializations
+! DEFI_BASE_REDUITE - Initializations
 !
-! Creation of datastructures
+! Read parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out ds_para          : datastructure for parameters
+! In  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    type(ROM_DS_Empi) :: empi_prim, empi_dual
-    type(ROM_DS_LineicNumb) :: ds_lineicnumb
+    character(len=16) :: operation = ' '
+    character(len=8) :: result_out = ' '
+    integer :: nb_mode_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
+!
+! - Get parameters in datastructure
+!
+    operation    = ds_para%operation
+    result_out   = ds_para%result_out
+    nb_mode_maxi = ds_para%nb_mode_maxi
+!
+! - Print
+!
     if (niv .ge. 2) then
-        call utmess('I', 'ROM4_24')
+        call utmess('I', 'ROM5_15')
+        call utmess('I', 'ROM3_1' , sk = result_out)
+        call utmess('I', 'ROM5_16', sk = operation)
+        call utmess('I', 'ROM5_17', si = nb_mode_maxi)
     endif
 !
-! - Creation of datastructure for lineic base numbering
+! - Print / method
 !
-    call romLineicBaseDSInit(ds_lineicnumb)
-!
-! - Create datastructure for empiric modes
-!
-    call romBaseDSInit(ds_lineicnumb, empi_prim)
-    call romBaseDSInit(ds_lineicnumb, empi_dual)
-!
-! - Create parameters datastructure
-!
-    ds_para%mesh          = ' '
-    ds_para%ds_empi_prim  = empi_prim
-    ds_para%ds_empi_dual  = empi_dual
-    ds_para%grelem_rid    = ' '
-    ds_para%grnode_int    = ' '
+    if (operation .eq. 'POD') then
+        
+    else
+        ASSERT(.false.)
+    endif
 !
 end subroutine

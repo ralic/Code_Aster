@@ -27,6 +27,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(ROM_DS_Empi), intent(in) :: ds_empi
+!
 ! --------------------------------------------------------------------------------------------------
 !
 ! Model reduction

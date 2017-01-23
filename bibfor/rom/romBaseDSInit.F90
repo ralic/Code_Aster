@@ -1,14 +1,10 @@
-subroutine dbr_ini0(ds_para)
+subroutine romBaseDSInit(ds_lineicnumb, ds_empi)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterfort/infniv.h"
-#include "asterfort/romBaseInit.h"
-#include "asterfort/romLineicBaseInit.h"
-#include "asterfort/romSnapInit.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -29,51 +25,46 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(out) :: ds_para
+    type(ROM_DS_LineicNumb), intent(in) :: ds_lineicnumb
+    type(ROM_DS_Empi), intent(out) :: ds_empi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction - Initializations
 !
-! Initialization of datastructures
+! Initialization of datastructure for empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out ds_para          : datastructure for parameters
+! In  ds_lineicnumb    : datastructure for lineic base numbering
+! Out ds_empi          : datastructure for empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    type(ROM_DS_Snap) :: ds_snap
-    type(ROM_DS_Empi) :: ds_empi
-    type(ROM_DS_LineicNumb) :: ds_lineicnumb
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM5_9')
+        call utmess('I', 'ROM2_3')
     endif
-!
-! - Initialization of datastructure for snapshot selection
-!
-    call romSnapInit(ds_snap)
-!
-! - Initialization of datastructure for lineic base numbering
-!
-    call romLineicBaseInit(ds_lineicnumb)
-!
-! - Initialization of datastructure for empiric modes
-!
-    call romBaseInit(ds_lineicnumb, ds_empi)
 !
 ! - Create parameters datastructure
 !
-    ds_para%ds_snap      = ds_snap
-    ds_para%ds_empi      = ds_empi
-    ds_para%operation    = ' '
-    ds_para%nb_mode_maxi = 0
-    ds_para%tole_svd     = r8vide()
-    ds_para%tole_incr    = r8vide()
+    ds_empi%base         = ' '
+    ds_empi%field_type   = ' '
+    ds_empi%field_refe   = ' '
+    ds_empi%mesh         = ' '
+    ds_empi%model        = ' '
+    ds_empi%base_type    = ' '
+    ds_empi%axe_line     = ' '
+    ds_empi%surf_num     = ' '
+    ds_empi%nb_node      = 0
+    ds_empi%nb_mode      = 0
+    ds_empi%nb_snap      = 0
+    ds_empi%nb_equa      = 0
+    ds_empi%nb_cmp       = 0
+    ds_empi%ds_lineic    = ds_lineicnumb
 !
 end subroutine

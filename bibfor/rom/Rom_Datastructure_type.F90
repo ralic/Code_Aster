@@ -116,10 +116,14 @@ implicit none
 ! - Parameters for DEFI_BASE_REDUITE operator
 !
     type ROM_DS_ParaDBR
-! ----- Type of reduced method
+! ----- Type of operation (POD, POD_INCR, ...)
         character(len=16)       :: operation
-! ----- Tolerance for incremental POD
-        real(kind=8)            :: tole_incr
+! ----- Name of result datastructures to read
+        character(len=8)        :: result_in
+! ----- Name of empiric base to save
+        character(len=8)        :: result_out
+! ----- Name of field for (NOM_CHAM)
+        character(len=24)       :: field_name
 ! ----- Tolerance for SVD
         real(kind=8)            :: tole_svd
 ! ----- Maximum number of modes

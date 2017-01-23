@@ -5,14 +5,16 @@ use Rom_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/titre.h"
 #include "asterfort/dbr_chck.h"
-#include "asterfort/dbr_ini0.h"
+#include "asterfort/dbr_DSInit.h"
+#include "asterfort/dbr_init_base.h"
+#include "asterfort/dbr_init_algo.h"
+#include "asterfort/dbr_para_info.h"
 #include "asterfort/dbr_read.h"
-#include "asterfort/dbr_rnum.h"
 #include "asterfort/dbr_main.h"
+#include "asterfort/dbr_clean.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -40,7 +42,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     type(ROM_DS_ParaDBR) :: ds_para
-    character(len=8) :: result
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,31 +50,34 @@ implicit none
 !
 ! - Initialization of datastructures
 !
-    call dbr_ini0(ds_para)
+    call dbr_DSInit(ds_para)
 !
 ! - Read parameters
 !
-    call dbr_read(ds_para, result)
+    call dbr_read(ds_para)
+!
+! - Prepare datastructure for empiric modes
+!
+    call dbr_init_base(ds_para)
 !
 ! - Check parameters
 !
-    call dbr_chck(result, ds_para)
+    call dbr_chck(ds_para)
 !
-! - Create numbering of nodes for the lineic model
+! - Init algorithm
 !
-    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_para%ds_empi)
-    endif
+    call dbr_init_algo(ds_para)
+!
+! - Print informations
+!
+    call dbr_para_info(ds_para)
 !
 ! - Compute the POD by the main function
 !
     call dbr_main(ds_para)
 !
-! - Clean
+! - Clean datastructures
 !
-    if (ds_para%ds_empi%base_type .eq. 'LINEIQUE') then
-       AS_DEALLOCATE(vi = ds_para%ds_empi%ds_lineic%v_nume_pl)
-       AS_DEALLOCATE(vi = ds_para%ds_empi%ds_lineic%v_nume_sf)
-    endif
+    call dbr_clean(ds_para)
 !
 end subroutine

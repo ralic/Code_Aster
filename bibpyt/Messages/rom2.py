@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,7 @@ cata_msg = {
 
     2 : _(u"""Lecture de la base empirique de nom %(k1)s."""),
 
-    3 : _(u"""Initialisation de la base empirique."""),
+    3 : _(u"""Initialisation de la structure de données pour la base empirique."""),
 
     4 : _(u"""Lecture des données pour sélectionner les clichés."""),
 
@@ -40,4 +40,6 @@ cata_msg = {
    10 : _(u"""Vous n'avez sélectionné aucun cliché."""),
 
    11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
+
+   12 : _(u"""Initialisations pour la base empirique."""),
 }
