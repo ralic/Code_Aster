@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -68,7 +68,7 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                     ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',
                     ADAPT_COEF     = 'OUI',
-                  RESI_FROT=1e-10,
+                  RESI_FROT=1e-4,
                   ZONE=_F(SANS_GROUP_NO='PPS',
                           GROUP_MA_MAIT='LBATI',
                           GROUP_MA_ESCL='LCONTA',
@@ -77,12 +77,31 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                           SEUIL_INIT=1e-1,
                           ALGO_FROT ='STANDARD',
                           COEF_CONT =1.e2,
-                          COEF_FROT =1.e6,
+                          COEF_FROT =1.e2,
                            ),
                               );
 
 
 
+CHA3=DEFI_CONTACT(MODELE=MO,
+                  FORMULATION='CONTINUE',
+                  FROTTEMENT='COULOMB',
+                    ALGO_RESO_CONT = 'NEWTON',
+                    ALGO_RESO_GEOM = 'NEWTON',
+                    ALGO_RESO_FROT = 'NEWTON',
+                    ADAPT_COEF     = 'OUI',
+                  RESI_FROT=1e-4,
+                  ZONE=_F(SANS_GROUP_NO='PPS',
+                          GROUP_MA_MAIT='LBATI',
+                          GROUP_MA_ESCL='LCONTA',
+                          CONTACT_INIT='INTERPENETRE',
+                          COULOMB=1,
+                          SEUIL_INIT=1e-1,
+                          ALGO_FROT ='PENALISATION',
+                          COEF_CONT =1.e2,
+                          COEF_PENA_FROT =1.e7,
+                           ),
+                              );
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_GAUCHE='LINEAIRE',
                     PROL_DROITE='LINEAIRE',
@@ -212,6 +231,36 @@ TEST_RESU(RESU=_F(INST=1.0,
                   CRITERE='ABSOLU',
                   PRECISION=1.E-08,),
           )
+
+
+U3M=STAT_NON_LINE(MODELE     = MO,
+                  CHAM_MATER = CHMAT,
+                  MESURE     = _F(TABLE='OUI',UNITE=50),
+                  EXCIT=_F(CHARGE=CHA1,
+                           FONC_MULT=RAMPE,),
+                  CONTACT=CHA3,
+                  COMPORTEMENT  = _F(RELATION = 'ELAS'),
+                  INCREMENT  = _F(LIST_INST = L_INST),
+                  NEWTON=_F(REAC_ITER=1,),
+                  AFFICHAGE=_F(INFO_TEMPS='OUI'),
+                  CONVERGENCE= _F(ARRET = 'OUI',
+                                 ITER_GLOB_MAXI = 15,
+                                 RESI_GLOB_RELA = 1.0E-4),
+#                  INFO=2,
+               );
+
+
+
+TEST_RESU(RESU=(_F(GROUP_NO='PPA',
+                   INST=1.0,
+                   REFERENCE='SOURCE_EXTERNE',
+                   RESULTAT=U3M,
+                   NOM_CHAM='DEPL',
+                   NOM_CMP='DX',
+                   VALE_CALC= 2.8665824439E-05,
+                   VALE_REFE=2.8600000000000001E-05,
+                   PRECISION=0.050000000000000003,
+                   ),));
 
 FIN();
 #
