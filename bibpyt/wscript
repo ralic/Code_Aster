@@ -68,7 +68,7 @@ def build(self):
           target = 'aster_version.py',
     install_path = osp.join(env.ASTERLIBDIR, "Cata"),
              use = ['bibpyt'],
-VERSION_AS_TUPLE = env['ASTER_VERSION'][0],
+    VERSION_INFO = pformat(env['ASTER_VERSION']),
     )
 
 
@@ -131,9 +131,6 @@ def get_revision_info_cmd(from_rev=None, rev="."):
     chg = 0
     for info in reversed(logs):
         rev, node, tag, br, idat, files = info.split(":")
-        # ignore revs that just add tags
-        if files.strip() == ".hgtags":
-            continue
         # ignore non official branches
         if br not in BR:
             continue
