@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: josselin.delmas at edf.fr
+#
 
 cata_msg = {
 
@@ -73,22 +73,7 @@ Risques et conseils :
 """),
 
 
-    11 : _(u"""
- Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
-   Pour la variable de commande %(k1)s,
-   Vous avez oublié d'utiliser l'un des 2 mots clés CHAM_GD ou EVOL.
-   L'absence de ces 2 mots clés n'est permise que pour NOM_VARC='TEMP' (modélisations THM)
-"""),
 
-
-    13 : _(u"""
- Erreur d'utilisation (AFFE_MATERIAU/AFFE_VARC) :
-  Le maillage associé au calcul (%(k1)s) est différent de celui associé
-  aux champs (ou EVOL_XXXX) affectés dans AFFE_MATERIAU/AFFE_VARC (%(k2)s).
-
- Conseil :
-  Il faut corriger AFFE_MATERIAU.
-"""),
 
     14 : _(u"""
  Erreur d'utilisation de la commande CREA_RESU / PREP_VRC[1|2] :

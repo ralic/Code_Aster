@@ -1,6 +1,6 @@
 subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -293,7 +293,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
         if (ma2 .ne. mailla) then
             valk(1)=mailla
             valk(2)=ma2
-            call utmess('F', 'CALCULEL4_13', nk=2, valk=valk)
+            call utmess('F', 'MATERIAL2_13', nk=2, valk=valk)
         endif
 
 !       -- VERIFICATION DE NOMCH :

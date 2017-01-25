@@ -16,10 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine afvarc(chmate, mesh, model)
+    subroutine afvarc_read_cata(varc_cata)
         use Material_Datastructure_type
-        character(len=8), intent(in) :: chmate
-        character(len=8), intent(in) :: mesh
-        character(len=8), intent(in) :: model
-    end subroutine afvarc
+        type(Mat_DS_VarcListCata), intent(out) :: varc_cata
+    end subroutine afvarc_read_cata
 end interface
