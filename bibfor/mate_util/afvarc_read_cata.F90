@@ -105,4 +105,22 @@ implicit none
         varc_cata%list_cata_varc(i_varc_cata)%field_type_def = field_type
     end do
 !
+    if (.false.) then
+        do i_varc_cata = 1, nb_varc_cata
+            write(6,*) 'Variable de commande :', i_varc_cata
+            write(6,*) '> Nom      :', varc_cata%list_cata_varc(i_varc_cata)%name
+            write(6,*) '> GRANDEUR :', varc_cata%list_cata_varc(i_varc_cata)%type_phys_para
+            write(6,*) '> Default  :', varc_cata%list_cata_varc(i_varc_cata)%field_type_def
+            write(6,*) '> NB_CMP   :', varc_cata%list_cata_varc(i_varc_cata)%nb_cmp
+            do i_cmp = 1, varc_cata%list_cata_varc(i_varc_cata)%nb_cmp
+                write(6,*) '> Nombre de composantes :', i_cmp
+                write(6,*) '>> CMP_GD   :',& 
+                  varc_cata%list_cata_varc(i_varc_cata)%list_cmp(i_cmp)%phys_para_cmp
+                write(6,*) '>> CMP_VARC :',& 
+                  varc_cata%list_cata_varc(i_varc_cata)%list_cmp(i_cmp)%varc_cmp
+            end do 
+        end do
+         write(6,*) 'Nombre total de variables de commande :', varc_cata%nb_varc
+    endif
+!
 end subroutine

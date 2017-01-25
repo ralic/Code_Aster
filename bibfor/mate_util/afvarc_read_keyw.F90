@@ -176,4 +176,29 @@ implicit none
         end do
     endif
 !
+    if (.false.) then
+        write(6,*) 'Nombre d affectactions :', varc_affe%nb_affe_varc
+        do i_affe_varc = 1, varc_affe%nb_affe_varc
+            write(6,*) 'Variable de commande :', i_affe_varc
+            write(6,*) 'Lié au catalogue :', varc_affe%list_affe_varc(i_affe_varc)%indx_cata
+            write(6,*) ' > VALE_REFE :', &
+                varc_affe%list_affe_varc(i_affe_varc)%vale_refe
+            write(6,*) ' > Valeur du champ  :', &
+                varc_affe%list_affe_varc(i_affe_varc)%vale_phys_para
+            write(6,*) ' > Type affectation :', &
+                varc_affe%list_affe_varc(i_affe_varc)%type_affe
+            if (varc_affe%list_affe_varc(i_affe_varc)%type_affe .eq. 'EVOL') then
+                write(6,*) ' > EVOL :', &
+                    varc_affe%list_affe_varc(i_affe_varc)%evol
+                write(6,*) ' > FONC_INST :', &
+                    varc_affe%list_affe_varc(i_affe_varc)%evol_func
+                write(6,*) ' > PROL_GAUCHE :', &
+                    varc_affe%list_affe_varc(i_affe_varc)%evol_prol_l
+                write(6,*) ' > PROL_DROITE :', &
+                    varc_affe%list_affe_varc(i_affe_varc)%evol_prol_r
+            endif
+        end do
+        write(6,*) 'Nombre total de composantes :', varc_affe%nb_varc_cmp
+    endif
+!
 end subroutine
