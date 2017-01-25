@@ -1,18 +1,15 @@
 subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
 !
-    implicit none
+implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mecact.h"
 #include "asterfort/vrcins.h"
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +32,6 @@ subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
     real(kind=8), intent(in) :: time
     character(len=*), intent(in) :: varcz
 !
-#include "asterf_types.h"
 ! --------------------------------------------------------------------------------------------------
 !
 ! Nonlinear mechanics (algorithm)
@@ -55,24 +51,15 @@ subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
     character(len=2) :: codret
     character(len=8) :: model, mate, cara_elem
     character(len=14) :: varc
-    aster_logical :: l_varc_exist
-    integer :: iret
     character(len=24) :: varc_list
     character(len=24) :: varc_time
-    character(len=24) :: varc_flag
-    aster_logical, pointer :: p_varc_flag(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-!
-    call jemarq()
-!
-! - Initializations
 !
     varc          = varcz
     model         = modelz
     cara_elem     = cara_elemz
     mate          = matez
-    l_varc_exist  = .false.
 !
 ! - Old object deleted
 !
@@ -86,10 +73,6 @@ subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
 !
     call vrcins(model, mate, cara_elem, time, varc_list,&
                 codret)
-    call exisd('CHAMP', varc_list, iret)
-    if (iret .eq. 1) then
-        l_varc_exist = .true.
-    endif
 !
 ! - Construct current time <CARTE>
 !
@@ -97,12 +80,4 @@ subroutine nmvcle(modelz, matez, cara_elemz, time, varcz)
     call mecact('V', varc_time, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&
                 ncmp=1, nomcmp='INST', sr=time)
 !
-! - Set existence flag
-!
-    varc_flag = varc//'.EXISTENCE'
-    call wkvect(varc_flag, 'V V L ', 1, vl = p_varc_flag)
-    p_varc_flag(1) = l_varc_exist
-!
-!
-    call jedema()
 end subroutine

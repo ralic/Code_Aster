@@ -21,13 +21,13 @@ implicit none
 #include "asterfort/nmchex.h"
 #include "asterfort/nmfint.h"
 #include "asterfort/nmmacv.h"
-#include "asterfort/nmvcaf.h"
+#include "asterfort/copisd.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nd_mstp_time.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -148,7 +148,7 @@ implicit none
     call nmchex(hval_incr, 'VALINC', 'COMMOI', varc_prev)
     call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
     call nmvcex('INST', varc_prev, time_prev)
-    call nmvcaf('INST', time_prev, .true._1, varc_curr)
+    call copisd('CHAMP_GD', 'V', time_prev, varc_curr(1:14)//'.INST')
     call nmvcex('INST', varc_curr, time_curr)
 
     call mecact('V', time_prev, 'MODELE', model(1:8)//'.MODELE', 'INST_R',&

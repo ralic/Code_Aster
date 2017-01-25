@@ -1,5 +1,7 @@
 subroutine copisd(typesd, base, sd1, sd2)
-    implicit none
+!
+implicit none
+!
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/copich.h"
@@ -17,10 +19,9 @@ subroutine copisd(typesd, base, sd1, sd2)
 #include "asterfort/rscopi.h"
 #include "asterfort/tbcopi.h"
 #include "asterfort/utmess.h"
-    character(len=*) :: typesd, base, sd1, sd2
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,7 +36,8 @@ subroutine copisd(typesd, base, sd1, sd2)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=*) :: typesd, base, sd1, sd2
 !
 !   BUT:
 !   DUPLIQUER UNE STRUCTURE DE DONNEES SOUS UN AUTRE NOM.
@@ -69,7 +71,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     character(len=8) :: k81, k82
     character(len=12) :: k121, k122
     character(len=14) :: com1, com2, nu1, nu2
-    character(len=16) :: typ2sd, corr1, corr2
+    character(len=16) :: corr1, corr2
     character(len=19) :: ch1, ch2, sdr1, k191, k192
     character(len=24) :: x1, x2
     integer :: j1, iexi
@@ -123,8 +125,6 @@ subroutine copisd(typesd, base, sd1, sd2)
         if (iret .gt. 0) call copich(bas2, com1//'.INST', com2//'.INST')
         call exisd('CHAMP', com1//'.TOUT', iret)
         if (iret .gt. 0) call copich(bas2, com1//'.TOUT', com2//'.TOUT')
-!
-        call jedup1(com1//'.EXISTENCE', bas2, com2//'.EXISTENCE')
 !
 ! ----------------------------------------------------------------------
     else if (typesd.eq.'SOLVEUR') then
@@ -261,8 +261,7 @@ subroutine copisd(typesd, base, sd1, sd2)
         call copis2('STOCKAGE', bas2, nu1//'.SMOS', nu2//'.SMOS')
 !
 ! --------------------------------------------------------------------
-        else if (typesd.eq.'MATR_ASSE_GENE' .or. typesd.eq.'MATR_ASSE')&
-    then
+    else if (typesd.eq.'MATR_ASSE_GENE' .or. typesd.eq.'MATR_ASSE') then
 !     ---------------------------------------------
         k191 = sd1
         k192 = sd2
@@ -452,8 +451,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
 ! ----------------------------------------------------------------------
     else
-        typ2sd = typesd
-        call utmess('F', 'UTILITAI_42', sk=typ2sd)
+        ASSERT(.false.)
     endif
 !
     call jedema()

@@ -1,6 +1,9 @@
 subroutine detrsd(typesd, nomsd)
+!
 use elim_lagr_data_module
-    implicit none
+!
+implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/amumph.h"
@@ -19,11 +22,9 @@ use elim_lagr_data_module
 #include "asterfort/codent.h"
 #include "asterfort/utmess.h"
 #include "asterfort/asmpi_info.h"
-
-    character(len=*) :: typesd, nomsd
-! ----------------------------------------------------------------------
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,7 +39,9 @@ use elim_lagr_data_module
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+!
+    character(len=*) :: typesd, nomsd
+!
 ! ----------------------------------------------------------------------
 !  BUT : DETRUIRE UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
 !  ATTENTION : QUAND ON UTILISE TYPESD=' ', ON APPELLE LA ROUTINE JEDETC
@@ -356,8 +359,7 @@ use elim_lagr_data_module
         call jedetr(table//'.TITR')
 !
 !     ------------------------------------------------------------------
-    else if (typ2sd.eq.'MATR_ASSE_GENE' .or. typ2sd.eq.'MATR_ASSE')&
-    then
+    else if (typ2sd.eq.'MATR_ASSE_GENE' .or. typ2sd.eq.'MATR_ASSE') then
 !     ---------------------------------------
         matas = nomsd
 !
@@ -593,7 +595,6 @@ use elim_lagr_data_module
         call assde1('CHAMP', com//'.EPAN')
         call assde1('CHAMP', com//'.INST')
         call assde1('CHAMP', com//'.TOUT')
-        call jedetr(com//'.EXISTENCE')
 !
 !     ------------------------------------------------------------------
     else if ((typ2sd.eq.'CHAMP') .or. (typ2sd.eq.'CHAMP_GD')) then
@@ -616,8 +617,7 @@ use elim_lagr_data_module
         call jedetr(champ//'.VALV')
 !
 !     ------------------------------------------------------------------
-        else if ((typ2sd.eq.'MATR_ELEM') .or. (typ2sd.eq.'VECT_ELEM'))&
-    then
+    else if ((typ2sd.eq.'MATR_ELEM') .or. (typ2sd.eq.'VECT_ELEM')) then
 !     ---------------------------------------
         matel = nomsd
         call jeexin(matel//'.RELR', iret)
@@ -672,7 +672,7 @@ use elim_lagr_data_module
 !
 !     ------------------------------------------------------------------
     else
-        call utmess('F', 'UTILITAI_47', sk=typ2sd)
+        ASSERT(.false.)
     endif
 !
  70 continue
