@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,13 +38,16 @@ CALC_EUROPLEXUS = MACRO(nom="CALC_EUROPLEXUS",
                         fr=tr("Version d'EUROPLEXUS"),
                         ),
 
-        ETAT_INIT = FACT(statut='f',regles=(PRESENT_PRESENT('VARI_INT','CONTRAINTE'),),
-           RESULTAT    = SIMP(statut='o',typ=evol_noli),
+        ETAT_INIT = FACT(statut='f',
+           RESULTAT   = SIMP(statut='o', typ=evol_noli),
            CONTRAINTE = SIMP(statut='f', typ='TXM', defaut='NON',into=('OUI','NON')),
-           VARI_INT   = SIMP(statut='f', typ='TXM', defaut='NON',into=('OUI','NON')),
            EQUILIBRE  = SIMP(statut='f', typ='TXM', defaut='OUI',into=('OUI','NON')),
            b_niter          =BLOC(condition = """equal_to("CONTRAINTE", 'NON') """,
                                  NITER = SIMP(statut='f',typ='I',defaut=1),
+                                 ),
+           b_cont          =BLOC(condition = """equal_to("CONTRAINTE", 'OUI') """,
+                                 VITESSE    = SIMP(statut='f', typ='TXM', defaut='NON',into=('OUI','NON')),
+                                 VARI_INT   = SIMP(statut='f', typ='TXM', defaut='NON',into=('OUI','NON')),
                                  ),
         ),
         MODELE     = SIMP(statut='f',typ=modele_sdaster),

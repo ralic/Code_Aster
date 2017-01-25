@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -483,7 +483,11 @@ class EUROPLEXUS:
                     res_imp = var_int_a2e(self.compor_gr, RESULTAT, self.MODELE,
                                           nume_ordre)
                     nume_ordre = 1
-
+            
+            if self.ETAT_INIT['CONTRAINTE'] == 'OUI':
+                if self.ETAT_INIT['VITESSE'] == 'OUI':
+                    list_cham.append('VITE')
+            
             # Impression des champs du dernier instant de calcul.
             nume_ordre = RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
             IMPR_RESU(UNITE=unite,
