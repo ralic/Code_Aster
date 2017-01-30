@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,70 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                                       'VMIS_JOHN_COOK',
                                                                       'BPEL_FROT')),
            GROUP_MA  = SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),
+        )
+    elif COMMAND =='CALC_ESSAI_GEOMECA':
+        mcfact = FACT(statut='o',min=1,max='**',  #COMMUN#
+
+           RELATION  = SIMP( statut='o',typ='TXM',into=('HUJEUX',
+                                                        'DRUCK_PRAGER',
+                                                        'DRUCK_PRAGER_N_A',
+                                                        'CAM_CLAY',
+                                                        'CJS',
+                                                        'MOHR_COULOMB',
+                                                        'Iwan',
+                                                        'MFRONT')),
+           b_mfront      = BLOC(condition = "RELATION == 'MFRONT' ",
+                                             fr=tr("Comportement utilisateur de type MFRONT"),
+                               LIBRAIRIE = SIMP(statut='o', typ='TXM',validators=LongStr(1,128),
+                                    fr=tr("Chemin vers la bibliothèque dynamique définissant le comportement MFRONT")),
+                               NOM_ROUTINE = SIMP(statut='o', typ='TXM',
+                                    fr=tr("Nom de la routine MFRONT dans la bibliothèque")),
+                               VERI_BORNE = SIMP(statut='f', typ='TXM',
+                                                 defaut="ARRET",into=('ARRET','SANS','MESSAGE'),
+                                    fr=tr("Vérification des bornes physiques de la loi de comportement MFRONT"),)),
+           DEFORMATION  =SIMP(statut='f',typ='TXM',defaut="PETIT",
+                                               into=("PETIT","GDEF_LOG")),
+    # Parametres d'integration
+
+                b_mfront_resi      = BLOC(condition = "RELATION =='MFRONT'",
+                    RESI_INTE_MAXI    =SIMP(statut='f',typ='R',defaut= 1.0E-8),
+                    ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 100 ),
+                ),
+
+                b_no_mfront      = BLOC(condition = "RELATION !='MFRONT'",
+                    RESI_INTE_RELA    =SIMP(statut='f',typ='R',defaut= 1.0E-6),
+                    ITER_INTE_MAXI    =SIMP(statut='f',typ='I',defaut= 20 ),
+                ),
+
+                b_redec_local      = BLOC(condition = "DEFORMATION in ('PETIT','PETIT_REAC','GROT_GDEP')",
+                                     fr=tr("Nombre de redécoupages internes du pas de temps"),
+                                    ITER_INTE_PAS   =SIMP(statut='f',typ='I',defaut= 0 ),
+                                     ),
+
+                ALGO_INTE         =SIMP(statut='f',typ='TXM',into=("ANALYTIQUE", "SECANTE", "DEKKER", "NEWTON_1D","BRENT",
+                                                              "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
+                                                              "SPECIFIQUE", "SANS_OBJET")),
+
+                TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
+
+                b_perturb         =BLOC(condition = " (TYPE_MATR_TANG != None) and (TYPE_MATR_TANG != 'TANGENTE_SECANTE') ",
+                                   fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
+                    VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
+                                  ),
+
+                b_tangsec        = BLOC(condition = " TYPE_MATR_TANG == 'TANGENTE_SECANTE' ",
+                                   fr=tr("Modification evolutive de la matrice tangente/secante"),
+                    SEUIL        =SIMP(statut='f',typ='R',defaut= 3. ),
+                    AMPLITUDE    =SIMP(statut='f',typ='R',defaut= 1.5 ),
+                    TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
+                                  ),
+
+
+                PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
+                PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
+
+                b_radi          =BLOC(condition = "TYPE_MATR_TANG == None", RESI_RADI_RELA  =SIMP(statut='f',typ='R', ),),
+
         )
     elif COMMAND == 'CREA_RESU' or COMMAND == 'LIRE_RESU' or COMMAND == 'CALC_FORC_NONL':
         mcfact =   FACT(statut='f',min=1,max='**',

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -220,13 +220,6 @@ Risques & conseils :
   La liste de valeurs renseignées pour le mot clef simple <%(k2)s> doit être %(k4)s .
   Or vous avez renseigné la liste suivante :
   %(k3)s
-"""),
-
-    39: _(u"""
-  CALC_ESSAI_GEOMECA :
-  Les seules lois de comportement autorisées pour <%(k1)s> sont les lois de sol suivantes :
-  --> %(k2)s
-  Or vous avez renseigné <RELATION='%(k3)s'> pour le mot clef facteur <COMPORTEMENT>.
 """),
 
     40: _(u"""

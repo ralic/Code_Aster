@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -175,19 +175,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
         typ_essai = "ESSAI_TD"
         List_essais += ESSAI_TD.List_F()
 
-        # Lois de comportement autorisees. (lois de sol elasto-plastiques non
-        # visco)
-        RdC_OK = ['HUJEUX',
-                  'DRUCK_PRAGER',
-                  'DRUCK_PRAG_N_A',
-                  'CAM_CLAY',
-                  'CJS',
-                  'MOHR_COULOMB']
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc in RdC_OK):
-            UTMESS('F', 'COMPOR2_39', valk=(
-                typ_essai, SomListStr(RdC_OK), nom_rdc))
-
         for iocc, DicoEssai in enumerate(ESSAI_TD.List_F()):
 
             # Le "bon" nbre d'elts a-t-il ete renseigne pr les MotCles simples
@@ -224,19 +211,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_TND"
         List_essais += ESSAI_TND.List_F()
-
-        # Lois de comportement autorisees. (lois de sol elasto-plastiques non
-        # visco)
-        RdC_OK = ['HUJEUX',
-                  'DRUCK_PRAGER',
-                  'DRUCK_PRAG_N_A',
-                  'CAM_CLAY',
-                  'CJS',
-                  'MOHR_COULOMB']
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc in RdC_OK):
-            UTMESS('F', 'COMPOR2_39', valk=(
-                typ_essai, SomListStr(RdC_OK), nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_TND.List_F()):
 
@@ -277,11 +251,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_CISA_C"
         List_essais += ESSAI_CISA_C.List_F()
-
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_CISA_C.List_F()):
 
@@ -328,11 +297,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_TND_C"
         List_essais += ESSAI_TND_C.List_F()
-
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_TND_C.List_F()):
 
@@ -393,11 +357,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
         typ_essai = "ESSAI_TD_A"
         List_essais += ESSAI_TD_A.List_F()
 
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
-
         for iocc, DicoEssai in enumerate(ESSAI_TD_A.List_F()):
 
             # coherence du nbre de TABLE_RESU avec le nbre de PRES_CONF
@@ -443,11 +402,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_TD_NA"
         List_essais += ESSAI_TD_NA.List_F()
-
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_TD_NA.List_F()):
 
@@ -495,11 +449,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_OEDO_C"
         List_essais += ESSAI_OEDO_C.List_F()
-
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_OEDO_C.List_F()):
 
@@ -564,11 +513,6 @@ def verif_essais(COMPORTEMENT, ESSAI_TD,
 
         typ_essai = "ESSAI_ISOT_C"
         List_essais += ESSAI_ISOT_C.List_F()
-
-        # Lois de comportement autorisees. (HUJEUX)
-        nom_rdc = COMPORTEMENT.List_F()[0]['RELATION']
-        if not(nom_rdc == 'HUJEUX'):
-            UTMESS('F', 'COMPOR2_39', valk=(typ_essai, 'HUJEUX', nom_rdc))
 
         for iocc, DicoEssai in enumerate(ESSAI_ISOT_C.List_F()):
 
