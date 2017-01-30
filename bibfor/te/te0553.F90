@@ -1,6 +1,6 @@
 subroutine te0553(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ subroutine te0553(option, nomte)
     character(len=8) ::  fami, poum
     integer :: icodre(5), kpg, spt
     real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu
-    real(kind=8) :: rhocp, rhocs, l0, usl0, depla(6)
+    real(kind=8) :: rhocp, rhocs, l0, usl0, depla(6), coef_amor
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
@@ -64,8 +64,8 @@ subroutine te0553(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
-    nomres(4) = 'LONG_CARA'
-    nomres(5) = 'COEF_AMOR'
+    nomres(4) = 'COEF_AMOR'
+    nomres(5) = 'LONG_CARA'
     fami='FPG1'
     kpg=1
     spt=1
@@ -81,27 +81,30 @@ subroutine te0553(option, nomte)
             valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
         enddo
     enddo
-!    
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 2, nompar, valpar,&
-                5, nomres, valres, icodre, 1)
-
+                ' ', 'ELAS', 3, nompar, valpar,&
+                4, nomres, valres, icodre, 1)
+!   appel LONG_CARA en iarret = 0
+    call rcvalb(fami, kpg, spt, poum, mater,&
+                ' ', 'ELAS', 3, nompar, valpar,&
+                1, nomres(5), valres(5), icodre(5), 0)
 !
     e = valres(1)
     nu = valres(2)
     rho = valres(3)
-    l0 = valres(4)
-    if (l0 .lt. 1.d-2) then
-      usl0= 0.d0
-    else
+    coef_amor = valres(4)
+!
+    usl0 = 0.d0    
+    if (icodre(5) .eq. 0) then
+      l0 = valres(5)
       usl0=1.d0/l0
     endif
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
     mu = e/2.d0/ (1.d0+nu)
 !
     if (option .eq. 'AMOR_MECA') then
-      rhocp = valres(5)*sqrt((lambda+2.d0*mu)*rho)
-      rhocs = valres(5)*sqrt(mu*rho)
+      rhocp = coef_amor*sqrt((lambda+2.d0*mu)*rho)
+      rhocs = coef_amor*sqrt(mu*rho)
     else
       rhocp = (lambda+2.d0*mu)*usl0
       rhocs = mu*usl0

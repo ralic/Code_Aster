@@ -12,7 +12,7 @@ subroutine te0498(option, nomte)
 #include "asterfort/rcvalb.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ subroutine te0498(option, nomte)
     real(kind=8) :: taux, tauy, tauz, dirx, diry, dirz
     real(kind=8) :: norm, tanx, tany, norx, nory, norz
     real(kind=8) :: taondx, taondy, taondz
-    real(kind=8) :: nux, nuy, nuz, scal, coedir
+    real(kind=8) :: nux, nuy, nuz, scal, coedir, coef_amor
     real(kind=8) ::  nortan, cele, trace
     real(kind=8) :: param0, param, param2, h, h2, instd, instd2, ris, rip, l0, usl0
     real(kind=8) :: sigma(3, 3), epsi(3, 3), grad(3, 3), valfon, valfon2
@@ -90,8 +90,8 @@ subroutine te0498(option, nomte)
     nomres(1)='E'
     nomres(2)='NU'
     nomres(3) = 'RHO'
-    nomres(4) = 'LONG_CARA'
-    nomres(5) = 'COEF_AMOR'
+    nomres(4) = 'COEF_AMOR'
+    nomres(5) = 'LONG_CARA'
     fami='FPG1'
     kpg=1
     spt=1
@@ -111,14 +111,20 @@ subroutine te0498(option, nomte)
 !
     call rcvalb(fami, kpg, spt, poum, mater,&
                 ' ', 'ELAS', 3, nompar, valpar,&
-                5, nomres, valres, icodre, 1)
+                4, nomres, valres, icodre, 1)
+!   appel LONG_CARA en iarret = 0
+    call rcvalb(fami, kpg, spt, poum, mater,&
+                ' ', 'ELAS', 3, nompar, valpar,&
+                1, nomres(5), valres(5), icodre(5), 0)
+!
     e = valres(1)
     nu = valres(2)
     rho = valres(3)
-    l0 = valres(4)
-    if (l0 .lt. 1.d-2) then
-      usl0= 0.d0
-    else
+    coef_amor = valres(4)
+!
+    usl0 = 0.d0    
+    if (icodre(5) .eq. 0) then
+      l0 = valres(5)
       usl0=1.d0/l0
     endif
 !
@@ -377,9 +383,9 @@ subroutine te0498(option, nomte)
 !
 !        --- CALCUL DU VECTEUR CONTRAINTE
 !
-        taux = - rho*(cp*vondn(1) + cs*vondt(1))*valres(5)
-        tauy = - rho*(cp*vondn(2) + cs*vondt(2))*valres(5)
-        tauz = - rho*(cp*vondn(3) + cs*vondt(3))*valres(5)
+        taux = - rho*(cp*vondn(1) + cs*vondt(1))*coef_amor
+        tauy = - rho*(cp*vondn(2) + cs*vondt(2))*coef_amor
+        tauz = - rho*(cp*vondn(3) + cs*vondt(3))*coef_amor
 !
         if (zk8(ionde+1)(1:7) .eq. '&FOZERO') goto 98
 

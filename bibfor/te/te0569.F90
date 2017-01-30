@@ -1,6 +1,6 @@
 subroutine te0569(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ subroutine te0569(option, nomte)
     integer :: mater, ll, k, l, nnos, jgano
     integer :: ideplm, ideplp, ivectu
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
-    real(kind=8) :: valres(5), e, nu, lambda, mu, rho
+    real(kind=8) :: valres(5), e, nu, lambda, mu, rho, coef_amor
     real(kind=8) :: rhocp, rhocs, l0, usl0
     real(kind=8) :: taux, tauy, tauz
     real(kind=8) :: nux, nuy, nuz, scal, vnx, vny, vnz
@@ -54,8 +54,8 @@ subroutine te0569(option, nomte)
     nomres(1)='E'
     nomres(2)='NU'
     nomres(3) = 'RHO'
-    nomres(4) = 'LONG_CARA'
-    nomres(5) = 'COEF_AMOR'
+    nomres(4) = 'COEF_AMOR'
+    nomres(5) = 'LONG_CARA'
     fami='FPG1'
     kpg=1
     spt=1
@@ -75,23 +75,29 @@ subroutine te0569(option, nomte)
 !
     call rcvalb(fami, kpg, spt, poum, mater,&
                 ' ', 'ELAS', 3, nompar, valpar,&
-                5, nomres, valres, icodre, 1)
+                4, nomres, valres, icodre, 1)
+!   appel LONG_CARA en iarret = 0
+    call rcvalb(fami, kpg, spt, poum, mater,&
+                ' ', 'ELAS', 3, nompar, valpar,&
+                1, nomres(5), valres(5), icodre(5), 0)
 !
     e = valres(1)
     nu = valres(2)
     rho = valres(3)
-    l0 = valres(4)
-    if (l0 .lt. 1.d-2) then
-      usl0= 0.d0
-    else
+    coef_amor = valres(4)
+!
+    usl0 = 0.d0    
+    if (icodre(5) .eq. 0) then
+      l0 = valres(5)
       usl0=1.d0/l0
     endif
+!
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
     mu = e/2.d0/ (1.d0+nu)
 !
     if (option .eq. 'AMOR_MECA') then
-      rhocp = valres(5)*sqrt((lambda+2.d0*mu)*rho)
-      rhocs = valres(5)*sqrt(mu*rho)
+      rhocp = coef_amor*sqrt((lambda+2.d0*mu)*rho)
+      rhocs = coef_amor*sqrt(mu*rho)
     else
       rhocp = (lambda+2.d0*mu)*usl0
       rhocs = mu*usl0

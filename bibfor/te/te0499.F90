@@ -13,7 +13,7 @@ subroutine te0499(option, nomte)
 #include "asterfort/vff2dn.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ subroutine te0499(option, nomte)
     real(kind=8) :: sigma(2, 2), epsi(2, 2), grad(2, 2)
     real(kind=8) :: xgg(4), ygg(4), vondn(2), vondt(2), uondn(2), uondt(2)
     real(kind=8) :: taondx, taondy, norx, nory, dirx, diry, cele
-    real(kind=8) :: trace, norm, jac
+    real(kind=8) :: trace, norm, jac, coef_amor
     real(kind=8) :: param0, param, param2, h, h2, instd, instd2, ris, rip, l0, usl0
     integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
     integer :: ivectu, k, i, mater
@@ -90,8 +90,8 @@ subroutine te0499(option, nomte)
     nomres(1) = 'E'
     nomres(2) = 'NU'
     nomres(3) = 'RHO'
-    nomres(4) = 'LONG_CARA'
-    nomres(5) = 'COEF_AMOR'
+    nomres(4) = 'COEF_AMOR'
+    nomres(5) = 'LONG_CARA'
     fami='FPG1'
     kpg=1
     spt=1
@@ -107,21 +107,26 @@ subroutine te0499(option, nomte)
             valpar(j) = valpar(j) + zr(igeom-1+(i-1)*ndim2+j)/nnos
         enddo
     enddo
-!    
+!
     call rcvalb(fami, kpg, spt, poum, mater,&
-                ' ', 'ELAS', 2, nompar, valpar,&
-                5, nomres, valres, icodre, 1)
+                ' ', 'ELAS', 3, nompar, valpar,&
+                4, nomres, valres, icodre, 1)
+!   appel LONG_CARA en iarret = 0
+    call rcvalb(fami, kpg, spt, poum, mater,&
+                ' ', 'ELAS', 3, nompar, valpar,&
+                1, nomres(5), valres(5), icodre(5), 0)
 !
     e = valres(1)
-    if (e .lt. 1.d-1) goto 99
     nu = valres(2)
     rho = valres(3)
-    l0 = valres(4)
-    if (l0 .lt. 1.d-2) then
-      usl0= 0.d0
-    else
+    coef_amor = valres(4)
+!
+    usl0 = 0.d0    
+    if (icodre(5) .eq. 0) then
+      l0 = valres(5)
       usl0=1.d0/l0
     endif
+!
     lambda = e*nu/ (1.d0+nu)/ (1.d0-2.d0*nu)
     mu = e/2.d0/ (1.d0+nu)
 !
@@ -296,8 +301,8 @@ subroutine te0499(option, nomte)
 !
 !        --- CALCUL DU VECTEUR CONTRAINTE
 !
-        taux = -rho* (cp*vondn(1)+cs*vondt(1))*valres(5)
-        tauy = -rho* (cp*vondn(2)+cs*vondt(2))*valres(5)
+        taux = -rho* (cp*vondn(1)+cs*vondt(1))*coef_amor
+        tauy = -rho* (cp*vondn(2)+cs*vondt(2))*coef_amor
 !
         if (zk8(ionde+1)(1:7) .eq. '&FOZERO') goto 98
         uondt(1) = 0.d0
