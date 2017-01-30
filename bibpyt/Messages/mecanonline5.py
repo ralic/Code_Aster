@@ -108,6 +108,10 @@ en accélération est possible
  Le calcul des énergies n'est pas disponible avec le contact en formulation continue ou XFEM.
 """),
 
+    16 : _(u"""
+ Les modélisations de type THMS sont interdites en dynamique.
+"""),
+
     19 : _(u"""
 Il y a plus d'amortissements modaux (AMOR_MODAL) que de modes.
 """),

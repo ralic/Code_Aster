@@ -1,5 +1,5 @@
 subroutine exfonc(list_func_acti, ds_algopara, solver, ds_contact, sddyna,&
-                  mate)
+                  mate, model)
 !
 use NonLin_Datastructure_type
 !
@@ -8,6 +8,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
+#include "asterfort/exi_thms.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
@@ -18,7 +19,7 @@ implicit none
 #include "asterfort/dismoi.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +41,7 @@ implicit none
     character(len=19), intent(in) :: sddyna
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: mate
+    character(len=24), intent(in) :: model
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -65,8 +67,8 @@ implicit none
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim, l_mult_front
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
     aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps, l_rom
-    aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo
-    character(len=24) :: typilo, metres
+    aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo, lthms
+    character(len=24) :: typilo, metres, char24
     character(len=16) :: reli_meth, matrix_pred
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
@@ -276,6 +278,11 @@ implicit none
         endif
         if (limpex) then
             call utmess('F', 'MECANONLINE5_33')
+        endif
+        char24 = ''
+        lthms = exi_thms(model, .true._1, char24, 0)
+        if (lthms) then
+            call utmess('F', 'MECANONLINE5_16')
         endif
     endif
 !
