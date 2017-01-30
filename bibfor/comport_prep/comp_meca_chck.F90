@@ -20,8 +20,16 @@ implicit none
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/utmess.h"
 !
+#include "asterc/asmpi_comm.h"
+#include "asterfort/asmpi_info.h"
+!
+#ifdef _USE_MPI
+#include "mpif.h"
+#include "asterf_mpi.h"
+#endif
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,12 +86,20 @@ implicit none
     integer :: i_comp, nb_comp
     character(len=8) :: repons
     aster_logical :: l_kit_thm, l_one_elem, l_elem_bound
+    character(len=24) :: ligrmo
+    character(len=8) :: partit
+    mpi_int :: nb_proc, mpicou
 !
 ! --------------------------------------------------------------------------------------------------
 !
     keywordfact    = 'COMPORTEMENT'
     list_elem_affe = '&&COMPMECASAVE.LIST'
     nb_comp        = ds_compor_prep%nb_comp
+!
+! - MPI initialisation
+! 
+    call asmpi_comm('GET', mpicou)
+    call asmpi_info(mpicou, size=nb_proc)
 !
 ! - Loop on occurrences of COMPORTEMENT
 !
@@ -102,8 +118,16 @@ implicit none
         rela_thmc = ds_compor_prep%v_comp(i_comp)%kit_comp(1)
 !
 ! ----- Detection of specific cases
-!
+!              
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+!
+        if (rela_comp .eq. 'ENDO_HETEROGENE') then 
+            ligrmo = model//'.MODELE'
+            call dismoi('PARTITION', ligrmo, 'LIGREL', repk=partit)
+            if (partit .ne. ' ' .and. nb_proc .gt. 1) then
+                call utmess('F', 'CALCULEL_25', sk=model)
+            endif
+         endif
 !
 ! ----- Warning if ELASTIC comportment and initial state
 !

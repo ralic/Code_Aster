@@ -136,9 +136,9 @@ Les champs réel et imaginaire à assembler ne contiennent pas la même grandeur
 """),
 
     25 : _(u"""
-Erreur utilisateur dans PROJ_SPEC_BASE :
- La commande n'accepte que le parallélisme de type METHODE='CENTRALISE'.
- Modèle impliqué : %(k1)s
+Erreur utilisateur :
+ Vous utilisez probablement la commande PROJ_SPEC_BASE ou le comportement ENDO_HETEROGENE.
+ Seul le parallélisme de type METHODE='CENTRALISE' est autorisé. Modèle concerné : %(k1)s
 
 Conseil :
  Dans la commande AFFE_MODELE (ou MODI_MODELE), il faut utiliser METHODE='CENTRALISE'
