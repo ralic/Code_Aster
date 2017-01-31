@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -184,7 +184,11 @@ On ne trouve pas le coefficient de Poisson
 """),
 
     73 : _(u"""
-   élément: élasticité non linéaire non programmée.
+Les comportements écrits en configuration de référence ne sont pas disponibles
+sur les éléments linéaires pour la modélisation 3D_SI.
+
+Pour contourner le problème et passer à un comportement en configuration actuelle,
+ajoutez un état initial nul au calcul. 
 """),
 
 
