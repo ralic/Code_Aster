@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -69,7 +69,7 @@ implicit none
 !
     call teattr('C', 'TYPMOD'         , model_type , iret, typel = elem_type_name)
     call teattr('C', 'PRINCIPAL'      , principal  , iret, typel = elem_type_name)
-    call teattr('C', 'THM'            , model_thm  , iret, typel = elem_type_name)
+    call teattr('C', 'TYPMOD3'        , model_thm  , iret, typel = elem_type_name)
     call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel = elem_type_name)
     read(model_dim_s,'(I1)') model_dim
 !
@@ -97,7 +97,7 @@ implicit none
             model_mfront = '_Axisymmetrical'
             model_dim    = 2
             type_cpla    = 'DEBORST'
-        elseif ( model_thm .eq. 'OUI' ) then
+        elseif ( model_thm .eq. 'THM' ) then
             model_mfront = '_Tridimensional'
         else
             model_mfront = model_type

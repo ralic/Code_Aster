@@ -34,7 +34,7 @@ subroutine te0514(option, nomte)
     character(len=16) :: option, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,8 +142,8 @@ subroutine te0514(option, nomte)
     endif
 !
 !   Le modèle est-il HM-XFEM
-    call teattr('C', 'MODTHM', enr2, iret)
-    pre1=(iret.eq.0)
+    call teattr('C', 'HYDR1', enr2, iret)
+    pre1 = (enr2.eq.'1' .or. enr2.eq.'2' )
     joncno = 1
     if (pre1 .and.(enr(1:4).eq.'XH2C'.or.enr(1:4).eq.'XH3C')) then
        call jevech('PJONCNO', 'E', joncno)

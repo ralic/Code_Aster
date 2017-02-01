@@ -1,10 +1,10 @@
 subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
                   tempe, enrmec, dimdef, dimcon, nmec,&
                   np1, np2, nenr, dimenr, enrhyd, nfh)
-    implicit none
+implicit none
 !
-#   include "asterfort/teattr.h"
-#   include "asterfort/assert.h"
+#include "asterfort/teattr.h"
+#include "asterfort/assert.h"
     integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: dimdef, dimcon, ier, nfh
     integer :: ndim, nmec, np1, np2, i
@@ -16,7 +16,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
     integer :: nenr
 !
 ! =====================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -100,14 +100,19 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    call teattr('C', 'MODTHM', enr, ier, typel=nomte)
-    if (ier .eq. 0) then
-        mecani(1) = 1
-        press1(1) = 1
-        press1(2) = 1
-    else
-        ASSERT(.false.)
-    endif
+    call teattr('C', 'MECA', enr, ier, typel=nomte)
+    ASSERT(enr .eq. 'OUI')
+    call teattr('C', 'THER', enr, ier, typel=nomte)
+    ASSERT(enr .eq. 'NON')
+    call teattr('C', 'HYDR1', enr, ier, typel=nomte)
+    ASSERT(enr .eq. '1')
+    call teattr('C', 'HYDR2', enr, ier, typel=nomte)
+    ASSERT(enr .eq. '0')
+
+    mecani(1) = 1
+    press1(1) = 1
+    press1(2) = 1
+
 ! =====================================================================
 ! --- ON VERIFIE LA NATURE DE L'ELEMENT HM-XFEM -----------------------
 ! =====================================================================

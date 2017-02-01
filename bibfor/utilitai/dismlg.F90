@@ -25,7 +25,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
     character(len=*) :: questi, repkz, nomobz
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
     integer :: dimge(3)
     aster_logical :: melang
-    character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid, mthm
+    character(len=8) :: calcri, mailla, nomacr, modele, typemail, k8bid, typmod2, typmod3
     character(len=16) :: nomte, phenom, nomodl, tyvois
     character(len=19) :: nomob
     character(len=32) :: repk
@@ -117,7 +117,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
             call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
-            do 20 igrel = 1, nbgrel
+            do igrel = 1, nbgrel
                 call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
                 call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
                 itypel=zi(jliel-1+nel)
@@ -125,28 +125,27 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 call teattr('C', 'TYPE_VOISIN', tyvois, iret, typel=nomte)
                 if (iret .eq. 0) then
                     repk='OUI'
-                    goto 20
-!
+                    exit
                 endif
- 20         continue
+            end do
         endif
 !
 !
 !
 !     -----------------------------------------------------------------
-        elseif ((questi.eq.'EXI_RDM') .or. (questi.eq.'EXI_POUX') .or.&
-    (questi(1:7).eq.'EXI_THM') .or. (questi.eq.'EXI_TUYAU') .or. (&
-    questi.eq.'EXI_COQ3D') .or. (questi.eq.'EXI_COQ1D') .or. (&
-    questi.eq.'EXI_GRILLE') .or. (questi.eq.'EXI_PLAQUE') .or. (&
-    questi.eq.'EXI_COQUE') .or. (questi.eq.'CALC_RIGI') .or. (&
-    questi.eq.'EXI_STRX') .or. (questi.eq.'EXI_STR2') ) then
+    elseif ((questi.eq.'EXI_RDM') .or. (questi.eq.'EXI_POUX') .or.&
+            (questi(1:7).eq.'EXI_THM') .or. (questi.eq.'EXI_TUYAU') .or. &
+            (questi.eq.'EXI_COQ3D') .or. (questi.eq.'EXI_COQ1D') .or.&
+            (questi.eq.'EXI_GRILLE') .or. (questi.eq.'EXI_PLAQUE') .or.&
+            (questi.eq.'EXI_COQUE') .or. (questi.eq.'CALC_RIGI') .or.&
+            (questi.eq.'EXI_STRX') .or. (questi.eq.'EXI_STR2') ) then
 !
 !     -----------------------------------------------------------------
         call jeexin(nomob//'.LIEL', iexi)
         if (iexi .gt. 0) then
             call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
             repk='NON'
-            do 30 igrel = 1, nbgrel
+            do igrel = 1, nbgrel
                 call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
                 call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
                 itypel=zi(jliel-1+nel)
@@ -156,14 +155,14 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     if (lteatt('COQUE','OUI', typel=nomte)) repk='OUI'
                     if (lteatt('POUTRE','OUI', typel=nomte)) repk='OUI'
                     if (lteatt('DISCRET','OUI', typel=nomte)) repk='OUI'
-                    if (repk.eq.'OUI') goto 110
+                    if (repk.eq.'OUI') exit
 !
                 else if (questi.eq.'CALC_RIGI') then
                     repk='NON'
                     call dismte(questi, nomte, repi, calcri, ierd)
                     if (calcri .eq. 'OUI') then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -171,7 +170,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     call dismte('MODELISATION', nomte, repi, nomodl, ierd)
                     if (nomodl(1:5) .eq. 'COQUE') then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -180,7 +179,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     repk='NON'
                     if (nomodl(1:6) .eq. 'GRILLE') then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -189,7 +188,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     call dismte('MODELISATION', nomte, repi, nomodl, ierd)
                     if (nomodl(1:8) .eq. 'COQUE_3D') then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -198,7 +197,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     if ((nomodl(1:3).eq.'DKT') .or. (nomodl(1:3) .eq.'DST') .or.&
                         (nomodl(1:3).eq.'Q4G')) then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -206,7 +205,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                     if ((nomte.eq.'MET3SEG3') .or. ( nomte.eq.'MET3SEG4') .or.&
                         (nomte.eq.'MET6SEG3')) then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
@@ -215,48 +214,47 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         ( nomte.eq.'MECA_POU_D_T') .or. ( nomte.eq.'MECA_POU_D_TG') .or.&
                         ( nomte.eq.'MECA_POU_D_TGM')) then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
                 else if (questi.eq.'EXI_STRX') then
                     if ((nomte(1:10).eq.'MECA_POU_D') .and. ( nomte.ne.'MECA_POU_D_T_GD')) then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
                 else if (questi.eq.'EXI_STR2') then
                     if (nomte .eq. 'MECA_POU_D_EM') then
                         repk='OUI'
-                        goto 110
+                        exit
 !
                     endif
 !
 !
                 else if (questi.eq.'EXI_THM') then
-                    call teattr('C', 'MODTHM', mthm, iret, typel=nomte)
-                    if (iret .eq. 0) then
+                    call teattr('C', 'TYPMOD2', typmod2, iret, typel=nomte)
+                    if (typmod2 .eq. 'THM') then
                         repk='OUI'
-                        if ((nomte.eq.'HM_DPSE3_P') .or. ( nomte.eq.'HM_DPQ8_P') .or.&
-                            ( nomte.eq.'HM_DPTR6_P')) then
+                        call teattr('C', 'TYPMOD3', typmod3, iret, typel=nomte)
+                        if (typmod3 .eq. 'THM_P') then
                             repk='OUI_P'
                         endif
-                        goto 110
-!
                     endif
 !
                 else
                     ASSERT(.false.)
                 endif
- 30         continue
+            end do
         else
             repk='NON'
         endif
 !
 !     ------------------------------------------
-        elseif ((questi.eq.'NB_SM_MAILLA') .or. (questi.eq.'NB_SS_ACTI')&
-    .or. (questi.eq.'NB_NL_MAILLA')) then
+    elseif ((questi.eq.'NB_SM_MAILLA') .or.&
+            (questi.eq.'NB_SS_ACTI') .or.&
+            (questi.eq.'NB_NL_MAILLA')) then
 !     ------------------------------------------
         call jeexin(nomob//'.SSSA', iexi)
         if (iexi .eq. 0) then
@@ -297,7 +295,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             dimge(2)=0
             dimge(3)=0
             melang=.false.
-            do 40 igr = 1, nbgr
+            do igr = 1, nbgr
                 call jeveuo(jexnum(nomob//'.LIEL', igr), 'L', jliel)
                 call jelira(jexnum(nomob//'.LIEL', igr), 'LONMAX', n1)
                 ite=zi(jliel-1+n1)
@@ -307,7 +305,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 if ((ige2.eq.0) .and. (ige1.ne.0)) ige2=ige1
                 if ((ige1*ige2.gt.0) .and. (ige1.ne.ige2)) melang= .true.
                 if (ige1 .gt. 0) dimge(ige1)=1
- 40         continue
+            end do
             if (melang) then
                 ige3=+100*dimge(1)
                 ige3=ige3+10*2*dimge(2)
@@ -324,7 +322,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
             mailla=zk8(jlgrf-1+1)
             call jeveuo(mailla//'.NOMACR', 'L', jnomac)
             nbsm=n1-3
-            do 50 ism = 1, nbsm
+            do ism = 1, nbsm
                 if (zi(jsssa-1+ism) .eq. 1) then
                     nomacr=zk8(jnomac-1+ism)
                     call dismml(questi, nomacr, ige1, repk, ierd)
@@ -333,7 +331,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                         ige2=dimge1(ige2,ige1)
                     endif
                 endif
- 50         continue
+            end do
         endif
         repi=ige2
 !
@@ -393,7 +391,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         ico=0
         if (iexi .gt. 0) then
             call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
-            do 60 igrel = 1, nbgrel
+            do igrel = 1, nbgrel
                 call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
                 call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
                 itypel=zi(jliel-1+nel)
@@ -401,7 +399,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 if (lteatt('AXIS','OUI', typel=nomte)) then
                     ico=ico+1
                 endif
- 60         continue
+            end do
             if (questi .eq. 'EXI_AXIS' .and. ico .gt. 0) repk='OUI'
             if (questi .eq. 'AXIS' .and. ico .eq. nbgrel) repk='OUI'
         endif
@@ -413,7 +411,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         repk='NON'
 !        -- SI IL EXISTE DES ELEMENTS "ABSORBANT" :
         call jelira(nomob//'.LIEL', 'NUTIOC', nbgrel)
-        do 70 igrel = 1, nbgrel
+        do igrel = 1, nbgrel
             call jeveuo(jexnum(nomob//'.LIEL', igrel), 'L', jliel)
             call jelira(jexnum(nomob//'.LIEL', igrel), 'LONMAX', nel)
             itypel=zi(jliel-1+nel)
@@ -423,7 +421,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 goto 80
 !
             endif
- 70     continue
+        end do
  80     continue
 !        -- SI IL EXISTE DES MACRO-ELEMENTS, IL FAUT LES EXAMINER :
         if (repk .eq. 'NON') then
@@ -435,13 +433,13 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
                 mailla=zk8(jlgrf-1+1)
                 call jeveuo(mailla//'.NOMACR', 'L', jnomac)
                 nbsm=n1-3
-                do 90 ism = 1, nbsm
+                do ism = 1, nbsm
                     if (zi(jsssa-1+ism) .eq. 1) then
                         nomacr=zk8(jnomac-1+ism)
                         call dismml(questi, nomacr, ibid, repk, ierd)
                         if (repk .eq. 'OUI') goto 100
                     endif
- 90             continue
+                end do
             endif
         endif
 100     continue
@@ -481,7 +479,6 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
         ierd=1
     endif
 !
-110 continue
     repkz=repk
     call jedema()
 end subroutine

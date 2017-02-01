@@ -17,7 +17,7 @@ subroutine te0120(nomopt, nomte)
     character(len=16) :: nomopt, nomte
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,8 +72,8 @@ subroutine te0120(nomopt, nomte)
         multi_contact=.false.
     endif
 !
-    call teattr('C', 'MODTHM', enr2, iret)
-    pre1=(iret.eq.0)
+    call teattr('C', 'HYDR1', enr2, iret)
+    pre1 = (enr2.eq.'1' .or. enr2.eq.'2' )
 !
     call tecael(iadzi, iazk24, noms=0)
     noma=zk24(iazk24)(1:8)
