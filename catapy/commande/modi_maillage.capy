@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,6 +50,7 @@ MODI_MAILLAGE=OPER(nom="MODI_MAILLAGE",op= 154,sd_prod=maillage_sdaster,
               EXCLUS('SYMETRIE','MODI_BASE'),
               EXCLUS('SYMETRIE','ECHELLE'),
               ),
+         reuse=SIMP(statut='o', typ=CO),
          MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster ),
          ORIE_FISSURE    =FACT(statut='f',
            GROUP_MA        =SIMP(statut='o',typ=grma,validators=NoRepeat(),max='**'),

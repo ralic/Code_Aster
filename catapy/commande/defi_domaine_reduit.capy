@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@ DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
               sd_prod=maillage_sdaster,
               reentrant='o',
               UIinfo={"groupes":("Maillage","Post-traitements")},
+     reuse=SIMP(statut='o', typ=CO),
      BASE_PRIMAL   = SIMP(statut='o',typ=mode_empi,max=1),
      BASE_DUAL     = SIMP(statut='o',typ=mode_empi,max=1),
      NOM_DOMAINE   = SIMP(statut='o',typ='TXM',max=1),

@@ -33,6 +33,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                    fr       = tr("Calcul dynamique transitoire ou harminque, sur base physique ou généralisée"),
                    UIinfo   = {"groupes":("Résolution","Dynamique",)},
 
+        reuse=SIMP(statut='f', typ=CO),
         # Calculation type and basis
         BASE_CALCUL     = SIMP(statut='o',typ='TXM',position='global',into=("PHYS","GENE"),),
         TYPE_CALCUL     = SIMP(statut='o',typ='TXM',position='global',into=("HARM","TRAN"),),

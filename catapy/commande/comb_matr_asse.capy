@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,6 +37,7 @@ COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
                     reentrant='f',
             UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),
+         reuse=SIMP(statut='f', typ=CO),
          COMB_R          =FACT(statut='f',max='**',
            PARTIE          =SIMP(statut='f',typ='TXM',into=("REEL","IMAG") ),
            MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,matr_asse_temp_c

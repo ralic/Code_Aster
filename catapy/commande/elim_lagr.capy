@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,7 @@ ELIM_LAGR=OPER(nom="ELIM_LAGR",op=69,sd_prod=elim_lagr_prod,
                fr=tr("Créer une matrice en ayant éliminé les condition cinématiques dualisées."),
                reentrant='f', UIinfo={"groupes":("Résolution",)},
 
+         reuse=SIMP(statut='f', typ=CO),
          # Matrice de "rigidité" (celle qui contient les équations dualisées) :
          MATR_RIGI       =SIMP(statut='o',typ=(matr_asse_depl_r,) ),
 

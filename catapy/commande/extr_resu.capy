@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +34,7 @@ def extr_resu_prod(RESULTAT,**args):
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
             fr=tr("Extraire des champs au sein d'une SD Résultat"),
+         reuse=SIMP(statut='f', typ=CO),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,
                                                mode_acou,evol_ther,evol_noli,evol_varc,
                                                mult_elas,fourier_elas,fourier_ther ) ),

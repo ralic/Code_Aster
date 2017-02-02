@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -20,7 +20,7 @@ CALC_STABILITE=MACRO(nom="CALC_STABILITE",sd_prod=table_container,
                reentrant='f',
                UIinfo={"groupes":("Résolution","Dynamique",)},
 
-               reuse =SIMP(statut='f',typ='table_container'),
+               reuse =SIMP(statut='f',typ=CO),
 
                MODE_NON_LINE = SIMP(statut='o',typ=table_container,max=1),
                SCHEMA_TEMPS = FACT(statut='d',max=1,

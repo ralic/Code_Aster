@@ -17,17 +17,18 @@
 # person_in_charge: mickael.abbas@edf.fr
 #
 def post_champ_prod(RESULTAT_REDUIT,**args):
-    if (AsType(RESULTAT_REDUIT) == evol_noli): 
+    if (AsType(RESULTAT_REDUIT) == evol_noli):
         return evol_noli
-    if (AsType(RESULTAT_REDUIT) == evol_ther): 
+    if (AsType(RESULTAT_REDUIT) == evol_ther):
         return evol_ther
 
 REST_REDUIT_COMPLET=OPER(nom="REST_REDUIT_COMPLET",op=54,
                          sd_prod=post_champ_prod,
                          reentrant='f',
                          UIinfo={"groupes":("Post-traitements")},
+    reuse = SIMP(statut='f', typ=CO),
     MODELE           = SIMP(statut='o',typ=modele_sdaster),
-    RESULTAT_REDUIT  = SIMP(statut='o',typ=resultat_sdaster,max=1), 
+    RESULTAT_REDUIT  = SIMP(statut='o',typ=resultat_sdaster,max=1),
     BASE_PRIMAL      = SIMP(statut='o',typ=mode_empi,max=1),
     BASE_DUAL        = SIMP(statut='o',typ=mode_empi,max=1),
     INFO             = SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
