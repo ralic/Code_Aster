@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -204,6 +204,9 @@ class ENTITE:
             self.cr.fatal(
                 _(u"L'attribut 'reentrant' doit valoir 'o','n' ou 'f' : %r"),
                 self.reentrant)
+        if self.reentrant != 'n' and 'reuse' not in self.entites.keys():
+            self.cr.fatal(_(u"L'opérateur est réentrant, il faut ajouter "
+                            u"le mot-clé 'reuse'."))
 
     def check_statut(self, into=('o', 'f', 'c', 'd')):
         """Vérifie l'attribut statut."""
