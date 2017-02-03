@@ -85,7 +85,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         MATR_IMPE_PHI   =     SIMP(statut='f',typ=(matr_asse_gene_r),),),
 
         # Calculation in continue-mode, obligatory keyword reuse with RESULTAT
-        b_reuse_harm    = BLOC(condition = """reuse and equal_to("TYPE_CALCUL", 'HARM')""",
+        b_reuse_harm    = BLOC(condition = """exists('reuse') and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr        = tr("en mode concept reentrant : RESULTAT obligatoire"),
         RESULTAT        =     SIMP(statut='o',typ=(dyna_harmo,harm_gene),),),
 

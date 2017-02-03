@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -235,7 +235,7 @@ class MCCOMPO(N_OBJECT.OBJECT):
         # On ajoute la cle "reuse" pour les MCCOMPO qui ont un attribut reuse. A destination
         # uniquement des commandes. Ne devrait pas etre dans cette classe mais
         # dans une classe dérivée
-        if not dico.has_key('reuse') and hasattr(self, 'reuse'):
+        if not dico.get('reuse') and hasattr(self, 'reuse'):
             dico['reuse'] = self.reuse
         return dico
 
