@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -46,7 +46,7 @@ TAB = CREA_TABLE(RESU=_F(RESULTAT=RESU_C1,NOM_CHAM='DEPL',INST=post_i,NOM_CMP=('
 
 #IMPR_TABLE(TABLE=TAB)
 TEST_TABLE(
-           VALE_CALC=0.00725050948878,
+           VALE_CALC=0.00533976715201,
            NOM_PARA='DX',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -54,7 +54,7 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00292110125153,
+           VALE_CALC=0.00299373821569,
            NOM_PARA='DY',
            TABLE=TAB,
            FILTRE=_F(NOM_PARA='NOEUD',
@@ -62,14 +62,14 @@ TEST_TABLE(
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00727636997452,
+           VALE_CALC=0.00563624520485,
            NOM_PARA='DX',
            TYPE_TEST='MAX',
            TABLE=TAB,
            )
 
 TEST_TABLE(
-           VALE_CALC=0.00294487117433,
+           VALE_CALC=0.00301730096117,
            NOM_PARA='DY',
            TYPE_TEST='MAX',
            TABLE=TAB,

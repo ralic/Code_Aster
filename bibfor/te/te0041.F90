@@ -21,7 +21,7 @@ subroutine te0041(option, nomte)
     character(len=16) :: option, nomte
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -146,7 +146,7 @@ subroutine te0041(option, nomte)
         call jevech('PCAORIE', 'L', lorien)
         call matrot(zr(lorien), pgl)
         if (option .eq. 'RIGI_MECA' .or. option .eq. 'RIGI_MECA_TANG' .or. option .eq.&
-            'RIGI_FLUI_STRU') then
+            'RIGI_FLUI_STRU' .or. option .eq. 'RIGI_MECA_ELAS') then
 !           DISCRET DE TYPE RAIDEUR
             call infdis('DISK', infodi, r8bid, k8bid)
             if (infodi .eq. 0) then

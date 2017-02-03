@@ -81,6 +81,7 @@ MATERI=DEFI_MATERIAU(ELAS_FO=_F(E=YOUN,
                       GRAN_IRRA_LOG=_F(
                                        A = 1.28E-1,
                                        B=0.01159,
+                                       C=1.,
                                        CSTE_TPS = 0.3540,
                                        ENER_ACT=5000.,
                                        GRAN_FO = GRAND,
@@ -170,6 +171,7 @@ for i in range(NCAL):
                       GRAN_IRRA_LOG=_F(
                                        A = 1.28E-1,
                                        B=0.01159,
+                                       C=1.,
                                        CSTE_TPS = 0.3540,
                                        ENER_ACT=5000.,
                                        GRAN_FO = GRAND,),

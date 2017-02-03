@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -27,10 +27,10 @@ interface
         real(kind=8) :: ulm(neq)
         real(kind=8) :: dul(neq)
         real(kind=8) :: sim(neq)
-        real(kind=8) :: varim(6)
+        real(kind=8) :: varim(7)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: klv(78)
-        real(kind=8) :: varip(6)
+        real(kind=8) :: varip(7)
         real(kind=8) :: fono(neq)
         real(kind=8) :: sip(neq)
     end subroutine dicrgr

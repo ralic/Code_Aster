@@ -79,14 +79,14 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 !     COMMON POUR LES PARAMETRES DES LOIS DE FLUAGE SOUS IRRADIATION
 !     VISC_IRRA_LOG: A      B      CTPS    ENER
     common / nmpair / a,b,ctps,ener
-    real(kind=8) :: a, b, ctps, ener
+    real(kind=8) :: a, b, c, ctps, ener
 ! PARAMETRES MATERIAUX
 ! ELASTIQUES
     real(kind=8) :: ep, nup, troikp, deumup
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
     integer :: nbcgil, iret2
-    parameter  (nbcgil=4)
+    parameter  (nbcgil=5)
     real(kind=8) :: coegil(nbcgil)
     character(len=8) :: nomgil(nbcgil)
     integer :: codgil(nbcgil)
@@ -94,7 +94,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
     real(kind=8) :: degran, depsan, depsim, depsgr
     real(kind=8) :: coef1, coefb, expqt
     real(kind=8) :: fluphi
-    data nomgil /'A','B','CSTE_TPS','ENER_ACT'/
+    data nomgil /'A','B','CSTE_TPS','ENER_ACT', 'C'/
 !
     iret = 0
 !     PARAMETRE THETA D'INTEGRATION
@@ -147,7 +147,11 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
         b = coegil(2)
         ctps = coegil(3)
         ener = coegil(4)
-!
+        if (compo(1:10) .eq. 'GRAN_IRRA_') then
+          c = coegil(5)
+        else
+          c= 0.0d0
+        endif
         if (fluphi .lt. -prec) then
             call utmess('F', 'ALGORITH6_57')
         endif
@@ -181,7 +185,10 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi,&
 !
     expqt=exp(-ener/(tp+273.15d0))
 !
-    coefb=expqt*((a*ctps/(1.d0+ctps*irrap))+b)*(irrap-irram)
+!     coefb=expqt*((a*ctps/(1.d0+ctps*irrap))+b+c*ctps*exp(-ctps*irrap))*(irrap-irram)
+    coefb=expqt*(a*(log(1.d0+ctps*irrap)-log(1.d0+ctps*irram))+&
+                 b*(irrap-irram)+&
+                 c*(exp(-ctps*irram)-exp(-ctps*irrap)))
     coef1 = ep/(1.d0+ep*coefb)
 !
 ! CONTRAINTE ACTUALISEE
