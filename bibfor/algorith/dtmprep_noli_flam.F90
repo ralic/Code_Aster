@@ -2,7 +2,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -277,9 +277,14 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     end if
 !
 !   --- 3.3 - Other information are read from the user input
-    call codent(i, 'D0', intk)
-    nl_title = nltype(NL_BUCKLING)//intk
-    call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nl_title)
+    call getvtx(motfac, 'INTITULE', iocc=icomp, scal=nl_title, nbret=n1)
+        if (n1.ne.0) then
+            call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nl_title)
+        else
+            call codent(i, 'D0', intk)
+            nl_title = nltype(NL_BUCKLING)//intk
+            call nlsav(sd_nl, _NL_TITLE, 1, iocc=i, kscal=nl_title)
+        end if
 
     call nlsav(sd_nl, _GAP, 1, iocc=i, rscal=0.d0)
     call getvr8(motfac, 'JEU', iocc=icomp, scal=gap, nbret=n1)
