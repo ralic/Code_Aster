@@ -1,9 +1,8 @@
 # coding=utf-8
-# person_in_charge: josselin.delmas at edf.fr
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +43,7 @@ ERRE_TEMPS_THM = Option(
            PERREUR,
     ),
     condition=(
-      CondCalcul('+', ((AT.PHENO,'ME'),(AT.THM,'OUI'),(AT.DIM_COOR_MODELI,'2'),(AT.BORD,'0'),)),
+      CondCalcul('+', ((AT.PHENO,'ME'),(AT.TYPMOD2, 'THM'),(AT.DIM_COOR_MODELI,'2'),(AT.BORD,'0'),)),
     ),
     comment="""  ERRE_TEMPS_THM :
            ESTIMATEUR D ERREUR TEMPORELLE POUR LA THM SATURE

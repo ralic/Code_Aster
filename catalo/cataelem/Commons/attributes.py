@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -382,39 +382,6 @@ METH_CONTINUE = Attribute(value=(
 """)
 
 
-MODTHM = Attribute(value=(
-                   'H',
-                   'HH',
-                   'HH2',
-                   'HH2M',
-                   'HHM',
-                   'HM',
-                   'SUSHI',
-                   'THH',
-                   'THH2',
-                   'THH2M',
-                   'THHM',
-                   'THM',
-                   'THV',
-                   ),
-                   comment="""
-  MODTHM =  "type" pour les modelisations "THM" (thermo-hydro-mecanique) :
-       /  'H'      modelisation hydraulique saturee (monophasique)
-       /  'HH'     modelisation hydraulique insaturee (diphasique)
-       /  'HH2'    modelisation hydraulique insaturee avec 2 composants miscibles pour chaque phase
-       /  'HH2M'   modelisation hydro-mecanique insaturee avec 2 composants miscibles pour chaque phase
-       /  'HHM'    modelisation hydro-mecanique insaturee
-       /  'HM'     modelisation hydro-mecanique saturee
-       /  'THH'    modelisation thermo-hydraulique insaturee (diphasique)
-       /  'THH2'   modelisation thermo-hydraulique insaturee avec 2 composants miscibles pour chaque phase
-       /  'THH2M'  modelisation thermo-hydro-mecanique insaturee avec 2 composants miscibles pour chaque phase
-       /  'THHM'   modelisation thermo-hydro-mecanique insaturee
-       /  'THM'    modelisation thermo-hydro-mecanique saturee
-       /  'THV'    modelisation thermo-hydraulique liquide vapeur (eau sous deux phases)
-       /  'SUSHI'  : elements relevant de R7.01.34
-
-""")
-
 
 NBSIGM = Attribute(value=(
                    '4',
@@ -458,15 +425,6 @@ SOUS_POINT = Attribute(value=(
   SOUS_POINT = 'OUI' => l'element peut definir des sous-points dans AFFE_CARA_ELEM
 """)
 
-
-THM = Attribute(value=(
-                'OUI',
-                ),
-                comment="""
-    utilise ?
-""")
-
-
 TUYAU = Attribute(value=(
                   'OUI',
                   ),
@@ -474,6 +432,39 @@ TUYAU = Attribute(value=(
   TUYAU  =  'OUI' :  l'element est un element de "tuyau".
 """)
 
+MECA = Attribute(value=(
+                  'OUI',
+                  'NON',
+                  ),
+                  comment="""
+  MECA  =  'OUI' :  l'element est en mécanique.
+""")
+
+THER = Attribute(value=(
+                  'OUI',
+                  'NON',
+                  ),
+                  comment="""
+  THER  =  'OUI' :  l'element est en thermique.
+""")
+
+HYDR1 = Attribute(value=(
+                  '0',
+                  '1',
+                  '2',
+                  ),
+                  comment="""
+ Nombre de phases pour le premier constituant
+""")
+
+HYDR2 = Attribute(value=(
+                  '0',
+                  '1',
+                  '2',
+                  ),
+                  comment="""
+ Nombre de phases pour le second constituant
+""")
 
 TYPE_VOISIN = Attribute(value=(
                         'A2',
@@ -510,6 +501,7 @@ TYPMOD2 = Attribute(value=(
                     'GRADEPSI',
                     'INTERFAC',
                     'PMF',
+                    'THM',
                     ),
                     comment="""
   TYPMOD2 : Complement au type de  modelisation utilise pour integrer les lois de comportement TYPMOD
@@ -521,6 +513,17 @@ TYPMOD2 = Attribute(value=(
            INTERFAC l'element utilise des comportements d'elements d'interface (CZM sur des modelisations *_INTERFACE)
            ELEMDISC l'element utilise des comportements d'elements a discontinuite interne
            PMF      l'element fait appel a des comportements 1D PMF (GROT_GDEP PERMIS)
+           THM      themo-hydro-mechanic
+""")
+
+TYPMOD3 = Attribute(value=(
+                    'SUSHI',
+                    ),
+                    comment="""
+  TYPMOD3 : Complement au type de  modelisation utilise pour integrer les lois de comportement TYPMOD
+            (TYPMOD3 est utilise dans NMCOMP et certaines routines LCxxxx)
+           Les valeurs possibles de cet attribut sont :
+  TYPMOD3= SUSHI    finite volume
 """)
 
 

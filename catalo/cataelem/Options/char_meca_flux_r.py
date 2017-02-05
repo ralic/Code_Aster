@@ -3,7 +3,7 @@
 
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,7 +77,7 @@ CHAR_MECA_FLUX_R = Option(
         SP.PVECTUR,
     ),
     condition=(
-        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.THM, 'OUI'), (AT.BORD, '-1'),)),
+        CondCalcul('+', ((AT.PHENO, 'ME'), (AT.TYPMOD2, 'THM'), (AT.BORD, '-1'),)),
     ),
     comment=""" CHAR_MECA_FLUX_R (MOT-CLE FLUX_THM_REP) : CALCUL DU SECOND MEMBRE
            CORRESPONDANT A UN FLUX DE CHALEUR ET/OU UN APPORT DE MASSE FLUIDE
