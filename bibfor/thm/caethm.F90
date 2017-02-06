@@ -1,4 +1,4 @@
-subroutine caethm(nomte, axi, perman, vf, typvf,&
+subroutine caethm(axi, perman, vf, typvf,&
                   typmod, modint, mecani, press1, press2,&
                   tempe, dimdep, dimdef, dimcon, nmec,&
                   np1, np2, ndim, nno, nnos,&
@@ -6,10 +6,17 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
                   nddlm, nddlfa, nddlk, dimuel, ipoids,&
                   ivf, idfde, ipoid2, ivf2, idfde2,&
                   npi2, jgano)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/grdthm.h"
+#include "asterfort/itgthm.h"
+#include "asterfort/modthm.h"
+#include "asterfort/typthm.h"
+!
 ! ======================================================================
-! person_in_charge: sylvie.granet at edf.fr
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,10 +31,32 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! --- BUT : PREPARATION DU CALCUL SUR UN ELEMENT THM -------------------
-! ======================================================================
+! aslint: disable=W1504
+! person_in_charge: sylvie.granet at edf.fr
 !
-! IN NOMTE   : NOM DU TYPE D'ELEMENT
+    aster_logical, intent(in) :: axi
+    aster_logical, intent(in) :: perman
+    aster_logical, intent(in) :: vf
+    integer, intent(in)  :: ndim
+    integer, intent(out) :: mecani(5)
+    integer, intent(out) :: press1(7)
+    integer, intent(out) :: press2(7)
+    integer, intent(out) :: tempe(5)
+    integer, intent(out) :: dimdep
+    integer, intent(out) :: dimdef
+    integer, intent(out) :: dimcon
+    integer, intent(out) :: nmec
+    integer, intent(out) :: np1
+    integer, intent(out) :: np2
+!
+! --------------------------------------------------------------------------------------------------
+!
+! THM - Initializations
+!
+! Prepare data
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! IN AXI     : AXI ?
 ! OUT PERMAN : MODELISATION HM PERMAMENTE ?
 ! OUT TYPMOD : TYPE DE MODELISATION (AXI DPLAN 3D)
@@ -69,26 +98,15 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 !                          3  = SUSHI AVEC VOISIN DECENTRE ARETE (SUDA)
 !                          4  = SUSHI AVEC VOISIN CENTRE  (SUC - SUPPRIME)
 ! CORPS DU PROGRAMME
-! aslint: disable=W1504
-    implicit none
-!
-! DECLARATION PARAMETRES D'APPELS
-#include "asterf_types.h"
-#include "asterfort/grdthm.h"
-#include "asterfort/itgthm.h"
-#include "asterfort/modthm.h"
-#include "asterfort/typthm.h"
-    aster_logical :: axi, perman, vf
+
+
     integer :: typvf
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: ndim, nno, nnos, nnom
-    integer :: dimdep, dimdef, dimcon, nmec, np1, np2
+    integer :: dimuel
+    integer :: nno, nnos, nnom
     integer :: npg, npi, nddls, nddlm, nddlk, ipoids, ivf, idfde
     integer :: ipoid2, ivf2, idfde2, npi2, jgano, nface, nddlfa
     character(len=3) :: modint
     character(len=8) :: typmod(2)
-    character(len=16) :: nomte
-!
 !
 ! --- INITIALISATIONS --------------------------------------------------
 ! ======================================================================
@@ -109,10 +127,32 @@ subroutine caethm(nomte, axi, perman, vf, typvf,&
 ! ======================================================================
 ! --- INITIALISATION DES GRANDEURS GENERALISEES SELON MODELISATION -----
 ! ======================================================================
-    call grdthm(nomte, perman, vf, ndim, mecani,&
-                press1, press2, tempe, dimdep, dimdef,&
-                dimcon, nmec, np1, np2)
-!     &           JGANO)
+    call grdthm(perman, vf, ndim,&
+                mecani, press1, press2, tempe)
+    dimdep = 0
+    dimdef = 0
+    dimcon = 0
+    nmec = 0
+    np1 = 0
+    np2 = 0
+    if (mecani(1) .eq. 1) then
+        nmec      = ndim
+    endif
+    if (.not. vf) then
+        if (press1(1) .eq. 1) then
+            np1 = 1
+        endif
+        if (press2(1) .eq. 1) then
+            np2 = 1
+        endif
+    endif
+!
+! - Total of dimensions
+!
+    dimdep = ndim*mecani(1) + press1(1) + press2(1) + tempe(1)
+    dimdef = mecani(4) + press1(6) + press2(6) + tempe(4)
+    dimcon = mecani(5) + press1(2)*press1(7) + press2(2)*press2(7) + tempe(5)
+
 ! ======================================================================
 ! --- ADAPTATION AU MODE D'INTEGRATION ---------------------------------
 ! --- DEFINITION DE L'ELEMENT (NOEUDS, SOMMETS, POINTS DE GAUSS) -------

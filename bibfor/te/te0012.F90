@@ -2,7 +2,7 @@ subroutine te0012(option, nomte)
     implicit none
 !.......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ subroutine te0012(option, nomte)
     integer :: idepl, ivite, iecin, ifreq
     real(kind=8) :: trace, alfa, wgt, masvit(81), masdep(81)
     real(kind=8) :: vect1(81), vect2(81)
-    integer :: mecani(5), press1(7), press2(7), tempe(5), ibi, idec
+    integer :: mecani(5), press1(7), press2(7), tempe(5), idec
 !.......................................................................
 !
     fami='MASS'
@@ -69,12 +69,8 @@ subroutine te0012(option, nomte)
   npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     nddl = 3*nno
     nvec = nddl* (nddl+1)/2
-    press1(1) = 0
-    press2(1) = 0
-    tempe(1) = 0
-    call grdthm(nomte, .false._1, .false._1, 3, mecani,&
-                press1, press2, tempe, ibi, ibi,&
-                ibi, ibi, ibi, ibi)
+    call grdthm(.false._1, .false._1, 3,&
+                mecani, press1, press2, tempe)
     idec = press1(1) + press2(1) + tempe(1)
 !
     call jevech('PGEOMER', 'L', igeom)

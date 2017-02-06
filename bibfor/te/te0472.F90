@@ -8,11 +8,12 @@ subroutine te0472(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/assert.h"
     character(len=16) :: option, nomte
-! ======================================================================
+!
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,6 +114,8 @@ subroutine te0472(option, nomte)
         nompar(2) = 'Y'
         nompar(3) = 'INST'
         valpar(3) = zr(itemps)
+    else
+        ASSERT(.false.)
     endif
 ! ======================================================================
 ! --- CAS DU PERMANENT POUR LA PARTIE H OU T : LE SYSTEME A ETE --------
@@ -122,7 +125,7 @@ subroutine te0472(option, nomte)
 ! ======================================================================
 ! --- BOUCLE SUR LES POINTS DE GAUSS DE L'ELEMENT DE BORD --------------
 ! ======================================================================
-    do 190 kp = 1, npg
+    do kp = 1, npg
         k = (kp-1)*nno
         kk = (kp-1)*nno2
 ! ======================================================================
@@ -138,10 +141,10 @@ subroutine te0472(option, nomte)
         if (axi) then
             r = 0.d0
             z = 0.d0
-            do 10 i = 1, nno
+            do i = 1, nno
                 l = (kp-1)*nno + i
                 r = r + zr(igeom+2*i-2)*zr(ivf+l-1)
- 10         continue
+            end do
             poids = poids*r
         endif
 ! ======================================================================
@@ -159,11 +162,11 @@ subroutine te0472(option, nomte)
 ! --- FLU2 REPRESENTE LE FLUX ASSOCIE A PRE2 ---------------------------
 ! ======================================================================
         if (iopt .eq. 1 .or. iopt .eq. 2) then
-! ======================================================================
-! --- SI MODELISATION = THHM, THH OU THH2 ------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','THHM') .or. lteatt('MODTHM','THH') .or.&
-                lteatt('MODTHM','THH2')) then
+!
+! --------- Temp-Meca-Hydr1-Hydr2
+!
+            if (lteatt('HYDR1','2')  .and. .not.lteatt('HYDR2','0') .and.&
+                lteatt('THER','OUI') ) then
                 napre1 = 0
                 napre2 = 1
                 natemp = 2
@@ -174,44 +177,38 @@ subroutine te0472(option, nomte)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 20 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
- 20                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
-                    call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
-                                flu1, iret)
-                    call fointe('FM', zk8(ifluxf+napre2), 3, nompar, valpar,&
-                                flu2, iret)
-                    call fointe('FM', zk8(ifluxf+natemp), 3, nompar, valpar,&
-                                fluth, iret)
+                    call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar, flu1 , iret)
+                    call fointe('FM', zk8(ifluxf+napre2), 3, nompar, valpar, flu2 , iret)
+                    call fointe('FM', zk8(ifluxf+natemp), 3, nompar, valpar, fluth, iret)
                 endif
-! ======================================================================
-! --- SI MODELISATION = THHM, OU THH2M ---------------------------------
-! ======================================================================
-                if (lteatt('MODTHM','THHM') .or. lteatt('MODTHM','THH2M')) then
-                    do 30 i = 1, nno2
+                if (lteatt('MECA','OUI')) then
+                    do i = 1, nno2
                         l = 5* (i-1) - 1
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+4) = zr(ires+l+4) - poids*deltat* flu2*zr(ivf2+kk+i-1)
                         zr(ires+l+5) = zr(ires+l+5) - poids*deltat* fluth*zr(ivf2+kk+i-1)
- 30                 continue
+                    end do
                 else
-                    do 40 i = 1, nno2
+                    do i = 1, nno2
                         l = 3* (i-1) - 1
                         zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(ivf2+kk+i-1)
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* fluth*zr(ivf2+kk+i-1)
- 40                 continue
+                    end do
                 endif
             endif
-! ======================================================================
-! --- SI MODELISATION = HH, OU HH2 -------------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','HH') .or. lteatt('MODTHM','HH2') .or.&
-                lteatt('MODTHM','SUSHI')) then
+!
+! --------- Hydr1-Hydr2
+!
+            if (lteatt('HYDR1','2')  .and. .not. lteatt('HYDR2','0') .and.&
+                lteatt('THER','NON') .and.       lteatt('MECA','NON')) then
                 napre1 = 0
                 napre2 = 1
                 if (iopt .eq. 1) then
@@ -220,42 +217,35 @@ subroutine te0472(option, nomte)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 201 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-201                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
-                    call fointe('FM', zk8(ifluxf+napre1), 2, nompar, valpar,&
-                                flu1, iret)
-                    call fointe('FM', zk8(ifluxf+napre2), 2, nompar, valpar,&
-                                flu2, iret)
+                    call fointe('FM', zk8(ifluxf+napre1), 2, nompar, valpar, flu1, iret)
+                    call fointe('FM', zk8(ifluxf+napre2), 2, nompar, valpar, flu2, iret)
                 endif
 !
-                if (lteatt('MODTHM','SUSHI')) then
-! ======================================================================
-! --- SI TE = DHH2S3_SU ------------------------------------------------
-! ======================================================================
-                    do 401 i = 1, nno2
+                if (lteatt('TYPMOD3','SUSHI')) then
+                    do i = 1, nno2
                         zr(ires) = zr(ires) - poids*flu1*zr(ivf2+kk+i- 1)
                         zr(ires+1) = zr(ires+1) - poids*flu2*zr(ivf2+ kk+i-1)
-401                 continue
+                    end do
                 else
-! ======================================================================
-! --- SI MODELISATION = HH*, OU HH2*------------------------------------
-! ======================================================================
-                    do 402 i = 1, nno2
+                    do i = 1, nno2
                         l = 2* (i-1) - 1
                         zr(ires+l+1) = zr(ires+l+1) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                         zr(ires+l+2) = zr(ires+l+2) - poids*deltat* flu2*zr(ivf2+kk+i-1)
-402                 continue
+                    end do
                 endif
             endif
-! ======================================================================
-! --- SI MODELISATION = THV --------------------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','THV')) then
+!
+! --------- Temp-Hydr1
+!
+            if (lteatt('HYDR1','2')  .and. lteatt('HYDR2','0') .and.&
+                lteatt('THER','OUI') .and. lteatt('MECA','NON')) then
                 napre1 = 0
                 natemp = 1
                 if (iopt .eq. 1) then
@@ -264,11 +254,11 @@ subroutine te0472(option, nomte)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 50 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
- 50                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -278,70 +268,73 @@ subroutine te0472(option, nomte)
                     call fointe('FM', zk8(ifluxf+natemp), 3, nompar, valpar,&
                                 fluth, iret)
                 endif
-                do 60 i = 1, nno2
+                do i = 1, nno2
                     l = 2* (i-1) - 1
                     zr(ires+l+1) = zr(ires+l+1) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+2) = zr(ires+l+2) - poids*deltat*fluth* zr(ivf2+kk+i-1)
- 60             continue
+                end do
             endif
-! ======================================================================
-! --- SI MODELISATION = H ---------------------------------------------
-! ======================================================================
-            if (lteatt('MODELI','DHA')) then
+!
+! --------- Temp-Hydr1
+!
+            if (lteatt('MECA','NON') .and. lteatt('THER','NON') .and.&
+                lteatt('HYDR1','1')  .and. lteatt('HYDR2','0')) then
                 napre1 = 0
                 if (iopt .eq. 1) then
                     flu1 = zr(iflux+ (kp-1)+napre1)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 69 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
- 69                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
                                 flu1, iret)
                 endif
-                do 79 i = 1, nno2
+                do i = 1, nno2
                     l = 1* (i-1) - 1
                     zr(ires+l+1) = zr(ires+l+1) - poids*deltat*flu1* zr(ivf2+kk+i-1)
- 79             continue
+                end do
             endif
-! ======================================================================
-! --- SI MODELISATION = HM ---------------------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','HM')) then
+!
+! --------- Meca-Hydr1
+!
+            if (lteatt('MECA','OUI') .and. lteatt('THER','NON') .and.&
+                lteatt('HYDR1','1')  .and. lteatt('HYDR2','0')) then
                 napre1 = 0
                 if (iopt .eq. 1) then
                     flu1 = zr(iflux+ (kp-1)+napre1)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 70 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
- 70                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
                                 flu1, iret)
                 endif
-                do 80 i = 1, nno2
+                do i = 1, nno2
                     l = 3* (i-1) - 1
                     if (.not.perman) then
                         zr(ires+l+3) = zr(ires+l+3) - poids*deltat* flu1*zr(ivf2+kk+i-1)
                     else
                         zr(ires+l+3) = zr(ires+l+3) - poids*flu1*zr( ivf2+kk+i-1)
                     endif
- 80             continue
+                end do
             endif
-! ======================================================================
-! --- SI MODELISATION = HHM OU HH2M ------------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','HHM') .or. lteatt('MODTHM','HH2M')) then
+!
+! --------- Meca-Hydr1-Hydr2
+!
+            if (lteatt('MECA','OUI') .and.      lteatt('THER','NON') .and.&
+                lteatt('HYDR1','2')  .and. .not.lteatt('HYDR2','0')) then
                 napre1 = 0
                 napre2 = 1
                 if (iopt .eq. 1) then
@@ -350,28 +343,27 @@ subroutine te0472(option, nomte)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 90 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
- 90                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
-                    call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
-                                flu1, iret)
-                    call fointe('FM', zk8(ifluxf+napre2), 3, nompar, valpar,&
-                                flu2, iret)
+                    call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar, flu1, iret)
+                    call fointe('FM', zk8(ifluxf+napre2), 3, nompar, valpar, flu2, iret)
                 endif
-                do 100 i = 1, nno2
+                do i = 1, nno2
                     l = 4* (i-1) - 1
                     zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+4) = zr(ires+l+4) - poids*deltat*flu2* zr(ivf2+kk+i-1)
-100             continue
+                end do
             endif
-! ======================================================================
-! --- SI MODELISATION = THM --------------------------------------------
-! ======================================================================
-            if (lteatt('MODTHM','THM')) then
+!
+! --------- Meca-Temp-Hydr1
+!
+            if (lteatt('MECA','OUI') .and. lteatt('THER','OUI') .and.&
+                lteatt('HYDR1','1')  .and. lteatt('HYDR2','0')) then
                 napre1 = 0
                 natemp = 1
                 if (iopt .eq. 1) then
@@ -380,11 +372,11 @@ subroutine te0472(option, nomte)
                 else if (iopt.eq.2) then
                     r = 0.d0
                     z = 0.d0
-                    do 110 i = 1, nno2
+                    do i = 1, nno2
                         l = (kp-1)*nno2 + i
                         r = r + zr(igeom+2*i-2)*zr(ivf2+l-1)
                         z = z + zr(igeom+2*i-1)*zr(ivf2+l-1)
-110                 continue
+                    end do
                     valpar(1) = r
                     valpar(2) = z
                     call fointe('FM', zk8(ifluxf+napre1), 3, nompar, valpar,&
@@ -392,11 +384,11 @@ subroutine te0472(option, nomte)
                     call fointe('FM', zk8(ifluxf+natemp), 3, nompar, valpar,&
                                 fluth, iret)
                 endif
-                do 120 i = 1, nno2
+                do i = 1, nno2
                     l = 4* (i-1) - 1
                     zr(ires+l+3) = zr(ires+l+3) - poids*deltat*flu1* zr(ivf2+kk+i-1)
                     zr(ires+l+4) = zr(ires+l+4) - poids*deltat*fluth* zr(ivf2+kk+i-1)
-120             continue
+                end do
             endif
 ! ======================================================================
 ! --- OPTION CHAR_MECA_PRES_R OU CHAR_MECA_PRES_F ----------------------
@@ -406,34 +398,34 @@ subroutine te0472(option, nomte)
         else if ((iopt.eq.3) .or. (iopt.eq.4)) then
             if (iopt .eq. 3) then
                 pres = 0.d0
-                do 160 i = 1, nno
+                do i = 1, nno
                     l = (kp-1)*nno + i
                     pres = pres + zr(ipres+i-1)*zr(ivf+l-1)
-160             continue
+                end do
             else if (iopt.eq.4) then
                 pres = 0.d0
-                do 170 i = 1, nno
+                do i = 1, nno
                     valpar(1) = zr(igeom+2*i-2)
                     valpar(2) = zr(igeom+2*i-1)
                     call fointe('FM', zk8(ipresf), 3, nompar, valpar,&
                                 presf, iret)
                     l = (kp-1)*nno + i
                     pres = pres + presf*zr(ivf+l-1)
-170             continue
+                end do
             endif
             tx = -nx*pres
             ty = -ny*pres
-            do 180 i = 1, nnos
+            do i = 1, nnos
                 l = ndlno* (i-1) - 1
                 zr(ires+l+1) = zr(ires+l+1) + tx*zr(ivf+k+i-1)*poids
                 zr(ires+l+2) = zr(ires+l+2) + ty*zr(ivf+k+i-1)*poids
-180         continue
-            do 181 i = 1, (nno - nnos)
+            end do
+            do i = 1, (nno - nnos)
                 l = ndlno*nnos+ndlnm* (i-1) -1
                 zr(ires+l+1) = zr(ires+l+1) + tx*zr(ivf+k+i+nnos-1)* poids
                 zr(ires+l+2) = zr(ires+l+2) + ty*zr(ivf+k+i+nnos-1)* poids
-181         continue
+            end do
         endif
-190 end do
-! ======================================================================
+    end do
+!
 end subroutine

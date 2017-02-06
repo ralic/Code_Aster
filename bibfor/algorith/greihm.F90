@@ -3,13 +3,14 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
     implicit none
 #include "asterf_types.h"
 #include "asterfort/lteatt.h"
+#include "asterfort/assert.h"
 !
     aster_logical :: perman
     integer :: mecani(8), press1(9), press2(9), tempe(5)
     integer :: dimdef, dimcon
     integer :: ndim
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -106,14 +107,17 @@ subroutine greihm(perman, ndim, mecani, press1, press2,&
 ! =====================================================================
 ! --- SI MODELISATION = HM --------------------------------------------
 ! =====================================================================
-    if (lteatt('MODTHM','HM')) then
-        mecani(1) = 1
-        press1(1) = 1
-        press2(1) = 0
-        tempe(1) = 0
-        press1(2) = 1
-        press2(2) = 0
-    endif
+    ASSERT(lteatt('MECA','OUI'))
+    ASSERT(lteatt('THER','NON'))
+    ASSERT(lteatt('HYDR1','1'))
+    ASSERT(lteatt('HYDR2','0'))
+
+    mecani(1) = 1
+    press1(1) = 1
+    press2(1) = 0
+    tempe(1) = 0
+    press1(2) = 1
+    press2(2) = 0
 !
 ! 2. CALCUL PREALABLE DES ADRESSES LOCALES DES VARIABLES
 ! =====================================================================

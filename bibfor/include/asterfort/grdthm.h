@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,22 +18,14 @@
 #include "asterf_types.h"
 !
 interface 
-    subroutine grdthm(nomte, perman, vf, ndim, mecani,&
-                      press1, press2, tempe, dimdep, dimdef,&
-                      dimcon, nmec, np1, np2)
-        character(len=16) :: nomte
-        aster_logical :: perman
-        aster_logical :: vf
-        integer :: ndim
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: press2(7)
-        integer :: tempe(5)
-        integer :: dimdep
-        integer :: dimdef
-        integer :: dimcon
-        integer :: nmec
-        integer :: np1
-        integer :: np2
+    subroutine grdthm(perman, vf, ndim,&
+                      mecani, press1, press2, tempe)
+        aster_logical, intent(in) :: perman
+        aster_logical, intent(in) :: vf
+        integer, intent(in) :: ndim
+        integer, intent(out) :: mecani(5)
+        integer, intent(out) :: press1(7)
+        integer, intent(out) :: press2(7)
+        integer, intent(out) :: tempe(5)
     end subroutine grdthm
 end interface 

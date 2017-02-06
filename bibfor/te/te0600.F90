@@ -25,7 +25,7 @@ subroutine te0600(option, nomte)
 ! =====================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! =====================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,8 @@ subroutine te0600(option, nomte)
     integer :: dimdep, dimdef, dimcon, nbvari, nddls, nddlm, ii
     integer :: nmec, np1, np2, i, ncmp, nnos, ichg, ichn
     integer :: jtab(7), igau, isig, nnom
-    real(kind=8) :: defgep(21), defgem(21), dfdbid(27), poids
+    real(kind=8) :: defgep(21), defgem(21), poids
+    real(kind=8) :: dfdbid1(27), dfdbid2(27), dfdbid3(27)
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3), b(21, 120), epsm(405)
     real(kind=8) :: drds(22, 31+5), drdsr(21, 31+5), dsde(31+5, 21)
     real(kind=8) :: r(22), sigbar(21), c(21), ck(21), cs(21)
@@ -138,7 +139,7 @@ subroutine te0600(option, nomte)
 ! --- RECUPERATION DES FONCTIONS DE FORME -----------------------------
 ! =====================================================================
     ibid = 0
-    call caethm(nomte, axi, perman, vf, typvf,&
+    call caethm(axi, perman, vf, typvf,&
                 typmod, modint, mecani, press1, press2,&
                 tempe, dimdep, dimdef, dimcon, nmec,&
                 np1, np2, ndim, nno, nnos,&
@@ -284,7 +285,7 @@ subroutine te0600(option, nomte)
             do 70 kp = 1, npg
                 l = (kp-1)*nno
                 call dfdm3d(nno, kp, ipoids, idfde, zr(igeom),&
-                            poids, dfdbid, dfdbid, dfdbid)
+                            poids, dfdbid1, dfdbid2, dfdbid3)
                 coef = rho(1)*poids*zr(ipesa)
                 do 60 i = 1, nnos
                     ii = nddls* (i-1)
@@ -307,7 +308,7 @@ subroutine te0600(option, nomte)
             do 110 kp = 1, npg
                 k = (kp-1)*nno
                 call dfdm2d(nno, kp, ipoids, idfde, zr(igeom),&
-                            poids, dfdbid, dfdbid)
+                            poids, dfdbid1, dfdbid2)
                 poids = poids*rho(1)*zr(ipesa)
                 if (axi) then
                     rx = 0.d0

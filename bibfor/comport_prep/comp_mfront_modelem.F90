@@ -69,7 +69,7 @@ implicit none
 !
     call teattr('C', 'TYPMOD'         , model_type , iret, typel = elem_type_name)
     call teattr('C', 'PRINCIPAL'      , principal  , iret, typel = elem_type_name)
-    call teattr('C', 'TYPMOD3'        , model_thm  , iret, typel = elem_type_name)
+    call teattr('C', 'TYPMOD2'        , model_thm  , iret, typel = elem_type_name)
     call teattr('C', 'DIM_TOPO_MODELI', model_dim_s, iret, typel = elem_type_name)
     read(model_dim_s,'(I1)') model_dim
 !

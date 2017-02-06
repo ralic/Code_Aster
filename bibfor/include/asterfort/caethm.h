@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine caethm(nomte, axi, perman, vf, typvf,&
+    subroutine caethm(axi, perman, vf, typvf,&
                       typmod, modint, mecani, press1, press2,&
                       tempe, dimdep, dimdef, dimcon, nmec,&
                       np1, np2, ndim, nno, nnos,&
@@ -26,24 +26,23 @@ interface
                       nddlm, nddlfa, nddlk, dimuel, ipoids,&
                       ivf, idfde, ipoid2, ivf2, idfde2,&
                       npi2, jgano)
-        character(len=16) :: nomte
-        aster_logical :: axi
-        aster_logical :: perman
-        aster_logical :: vf
+        aster_logical, intent(in) :: axi
+        aster_logical, intent(in) :: perman
+        aster_logical, intent(in) :: vf
+        integer, intent(in) :: ndim
+        integer, intent(out) :: mecani(5)
+        integer, intent(out) :: press1(7)
+        integer, intent(out) :: press2(7)
+        integer, intent(out) :: tempe(5)
         integer :: typvf
         character(len=8) :: typmod(2)
         character(len=3) :: modint
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: press2(7)
-        integer :: tempe(5)
-        integer :: dimdep
-        integer :: dimdef
-        integer :: dimcon
-        integer :: nmec
-        integer :: np1
-        integer :: np2
-        integer :: ndim
+        integer, intent(out) :: dimdep
+        integer, intent(out) :: dimdef
+        integer, intent(out) :: dimcon
+        integer, intent(out) :: nmec
+        integer, intent(out) :: np1
+        integer, intent(out) :: np2
         integer :: nno
         integer :: nnos
         integer :: nnom

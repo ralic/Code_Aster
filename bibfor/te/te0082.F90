@@ -17,7 +17,7 @@ subroutine te0082(option, nomte)
     character(len=16) :: option, nomte
 ! ......................................................................
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ subroutine te0082(option, nomte)
     integer :: ipoids, ivf, idfde, igeom, imate
     integer :: kd1, kd2, ij1, ij2, nddl, nvec, iacce, ivect, ndim
     integer :: idepl, ivite, ifreq, iecin
-    integer :: mecani(5), press1(7), press2(7), tempe(5), ibi
+    integer :: mecani(5), press1(7), press2(7), tempe(5)
     integer :: idec, iret
 ! ......................................................................
 !
@@ -66,12 +66,9 @@ subroutine te0082(option, nomte)
   npg=npg2,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
     nddl = 2 * nno
     nvec = nddl * ( nddl + 1 ) / 2
-    press1(1) = 0
-    press2(1) = 0
-    tempe(1) = 0
-    call grdthm(nomte, .false._1, .false._1, 2, mecani,&
-                press1, press2, tempe, ibi, ibi,&
-                ibi, ibi, ibi, ibi)
+
+    call grdthm(.false._1, .false._1, 2,&
+                mecani, press1, press2, tempe)
     idec = press1(1) + press2(1) + tempe(1)
 !
     call jevech('PGEOMER', 'L', igeom)

@@ -605,7 +605,6 @@ phen.add('3D_HH2S', Modelisation(dim=(3,3), code='3Z3',
 
 phen.add('3D_HH2SUDA', Modelisation(dim=(3,3), code='3AD',
     attrs=(
-        (AT.TYPMOD ,'COMP3D'),
         (AT.TYPMOD2,'THM'),
         (AT.TYPMOD3,'SUSHI'),
         (AT.MECA   ,'NON'),
@@ -3185,7 +3184,6 @@ phen.add('D_PLAN_HH2S', Modelisation(dim=(2,2), code='DZ3',
 
 phen.add('D_PLAN_HH2SUDA', Modelisation(dim=(2,2), code='2DA',
     attrs=(
-        (AT.TYPMOD ,'D_PLAN'),
         (AT.TYPMOD2,'THM'),
         (AT.TYPMOD3,'SUSHI'),
         (AT.MECA   ,'NON'),
