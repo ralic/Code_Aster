@@ -6,7 +6,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                   codret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -181,6 +181,8 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
             call daxpy(neps, -1.d0, depsth, 1, dstran,1)
 ! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS MFRONT, GAMMAXY,XZ,YZ
             call dscal(3, rac2, dstran(4), 1)
+        else if (option(1:9).eq. 'RIGI_MECA') then
+            call r8inir(6, 0.d0, dstran, 1)
         endif
 !
         call dcopy(neps, epsm, 1, stran, 1)
@@ -298,7 +300,6 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                               nprops, drot, pnewdt, nummod)
 !
     else if (option(1:9).eq. 'RIGI_MECA') then
-        call r8inir(6, 0.d0, dstran, 1)
         call mfront_behaviour(pfcmfr, sigm, vim, ddsdde, stran,&
                               dstran, dtime, temp, dtemp, predef,&
                               dpred, ntens, nstatv, props, nprops,&
