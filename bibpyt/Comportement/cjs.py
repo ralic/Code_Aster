@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,18 +20,18 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='CJS',
-    doc="""Comportement élastoplastique multicritère des sols  cf. R7.01.13""",
-    num_lc=23,
-    nb_vari=16,
-    nom_vari=(
-        'SEUILISO', 'ANGLEDEV', 'XCINXX', 'XCINYY', 'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ',
-        'DISTSDEV', 'SDEVCRIT', 'DISTSISO', 'NBITER', 'RESIDU', 'NBSSPAS', 'SDEVEPSP', 'INDIPLAS'),
-    mc_mater = ('ELAS', 'CJS'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN', 'KIT_THM'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = 'NEWTON',
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = ' ',
+    nom            = 'CJS',
+    doc            = """Comportement élastoplastique multicritère des sols  cf. R7.01.13"""  ,
+    num_lc         = 23,
+    nb_vari        = 16,
+    nom_vari       = ('SEUILISO','ANGLEDEV','XCINXX','XCINYY','XCINZZ',
+        'XCINXY','XCINXZ','XCINYZ','DISTSDEV','SDEVCRIT',
+        'DISTSISO','NBITER','RESIDU','NBSSPAS','SDEVEPSP',
+        'INDIPLAS',),
+    mc_mater       = ('ELAS','CJS',),
+    modelisation   = ('3D','AXIS','D_PLAN','KIT_THM',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('NEWTON',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

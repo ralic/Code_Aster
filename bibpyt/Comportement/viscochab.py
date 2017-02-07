@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,23 +20,22 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='VISCOCHAB',
-    doc="""Modèle élastoviscoplastique de Lemaitre-Chaboche avec effet de
+    nom            = 'VISCOCHAB',
+    doc            = """Modèle élastoviscoplastique de Lemaitre-Chaboche avec effet de
    mémoire et restauration.
-   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
-    num_lc=32,
-    nb_vari=28,
-    nom_vari=(
-        'VISCHA1', 'VISCHA2', 'VISCHA3', 'VISCHA4', 'VISCHA5', 'VISCHA6', 'VISCHA7',
-        'VISCHA8', 'VISCHA9', 'VISCHA10', 'VISCHA11', 'VISCHA12', 'VISCHA13',
-        'VISCHA14', 'VISCHA15', 'VISCHA16', 'VISCHA17', 'VISCHA18', 'VISCHA19',
-        'VISCHA20', 'VISCHA21', 'VISCHA22', 'VISCHA23', 'VISCHA24', 'VISCHA25',
-        'VISCHA26', 'VISCHA27', 'VISCHA28',),
-    mc_mater = ('ELAS', 'VISCOCHAB'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = ('NEWTON', 'NEWTON_RELI', 'RUNGE_KUTTA'),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC."""  ,
+    num_lc         = 32,
+    nb_vari        = 28,
+    nom_vari       = ('VISCHA1','VISCHA2','VISCHA3','VISCHA4','VISCHA5',
+        'VISCHA6','VISCHA7','VISCHA8','VISCHA9','VISCHA10',
+        'VISCHA11','VISCHA12','VISCHA13','VISCHA14','VISCHA15',
+        'VISCHA16','VISCHA17','VISCHA18','VISCHA19','VISCHA20',
+        'VISCHA21','VISCHA22','VISCHA23','VISCHA24','VISCHA25',
+        'VISCHA26','VISCHA27','VISCHA28',),
+    mc_mater       = ('ELAS','VISCOCHAB',),
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('NEWTON','NEWTON_RELI','RUNGE_KUTTA',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

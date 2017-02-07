@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,19 +20,17 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='RANKINE',
-    doc="""Loi de Rankine, associee, pour les joints de plots (cf. [R7.01.39] pour plus de details).
-            Pas d'ecrouissage""",
-    num_lc=25,
-    nb_vari=9,
-    nom_vari=('EPSPVOL','EPSPEQ','INDIPLAS',
-              'EPSPXX','EPSPYY','EPSPZZ',
-              'EPSPXY','EPSPXZ','EPSPYZ',),
-    mc_mater = ('ELAS', 'RANKINE'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN', 'CPLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP',),
-    algo_inte = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+    nom            = 'RANKINE',
+    doc            = """Loi de Rankine, associee, pour les joints de plots (cf. [R7.01.39] pour plus de details).
+            Pas d'ecrouissage"""  ,
+    num_lc         = 25,
+    nb_vari        = 9,
+    nom_vari       = ('EPSPVOL','EPSPEQ','INDIPLAS','EPSPXX','EPSPYY',
+        'EPSPZZ','EPSPXY','EPSPXZ','EPSPYZ',),
+    mc_mater       = ('ELAS','RANKINE',),
+    modelisation   = ('3D','AXIS','D_PLAN','CPLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

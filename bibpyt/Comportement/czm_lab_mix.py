@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,16 +19,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='CZM_LAB_MIX',
-    doc="""Relation de comportement pour une liaison acier-béton, basée sur une formulation mixte (Cf. [R7.02.11])""",
-    num_lc=51,
-    nb_vari=5,
-    nom_vari=('SEUILDEP', 'INDIDISS', 'SAUT_N', 'SAUT_T1', 'SAUT_T2'),
-    mc_mater = ('CZM_LAB_MIX'),
-    modelisation = ('3D', 'PLAN', 'AXIS', 'INTERFAC'),
-    deformation = ('PETIT'),
-    nom_varc = None,
-    algo_inte = ('ANALYTIQUE'),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+    nom            = 'CZM_LAB_MIX',
+    doc            = """Relation de comportement pour une liaison acier-béton, basée sur une formulation mixte (Cf. [R7.02.11])"""  ,
+    num_lc         = 51,
+    nb_vari        = 5,
+    nom_vari       = ('SEUILDEP','INDIDISS','SAUT_N','SAUT_T1','SAUT_T2',
+        ),
+    mc_mater       = ('CZM_LAB_MIX',),
+    modelisation   = ('3D','PLAN','AXIS','INTERFAC',),
+    deformation    = ('PETIT',),
+    algo_inte      = ('ANALYTIQUE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

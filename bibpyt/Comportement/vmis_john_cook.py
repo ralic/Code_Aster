@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,22 +15,20 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: sebastien.fayolle at edf.fr
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='VMIS_JOHN_COOK',
-    doc="""Loi de plasticité de Von Mises à écrouissage de Johnson-Cook [R5.03.02]""",
-    num_lc=54,
-    nb_vari=5,
-    nom_vari=('EPSPEQ', 'INDIPLAS', 'DEPSPEQ', 'DINSTM', 'DDISSM',),
-    mc_mater = ('ECRO_COOK'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN',),
-    deformation = ('PETIT', 'PETIT_REAC',
-                   'GROT_GDEP', 'GDEF_LOG'),
-    nom_varc = ('TEMP',),
-    algo_inte = ('BRENT', 'DEKKER', 'SECANTE',),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+    nom            = 'VMIS_JOHN_COOK',
+    doc            = """Loi de plasticité de Von Mises à écrouissage de Johnson-Cook [R5.03.02]"""  ,
+    num_lc         = 54,
+    nb_vari        = 5,
+    nom_vari       = ('EPSPEQ','INDIPLAS','DEPSPEQ','DINSTM','DDISSM',
+        ),
+    mc_mater       = ('ECRO_COOK',),
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG',),
+    algo_inte      = ('BRENT','DEKKER','SECANTE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

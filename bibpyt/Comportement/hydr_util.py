@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,8 +20,8 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='HYDR_UTIL',
-    doc="""Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
+    nom            = 'HYDR_UTIL',
+    doc            = """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
    Signifie qu'aucune donnée matériau n'est rentrée en dur.
    Concrètement dans le cas saturé, il faudra définir les 6 courbes point par point (par DEFI_FONCTION) suivantes :
    - la saturation en fonction de la pression capillaire,
@@ -29,16 +29,15 @@ loi = LoiComportement(
    - la perméabilité relative au liquide en fonction de la saturation,
    - sa dérivée.
    - la perméabilité relative au gaz en fonction de la saturation,
-   - sa dérivée.""",
-    num_lc=9999,
-    nb_vari=1,
-    nom_vari=('HYDRUTI1'),
-    mc_mater = None,
-    modelisation = ('KIT_HH', 'KIT_HHM', 'KIT_HM',
-                    'KIT_THHM', 'KIT_THH', 'KIT_THM', 'KIT_THV'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = 'SANS_OBJET',
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = ' ',
+   - sa dérivée."""  ,
+    num_lc         = 0,
+    nb_vari        = 1,
+    nom_vari       = ('HYDRUTI1',),
+    mc_mater       = None,
+    modelisation   = ('KIT_HH','KIT_HHM','KIT_HM','KIT_THHM','KIT_THH',
+        'KIT_THM','KIT_THV',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('SANS_OBJET',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

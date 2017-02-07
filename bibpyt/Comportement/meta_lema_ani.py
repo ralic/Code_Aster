@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='META_LEMA_ANI',
-    doc="""Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
-            pour le Zirconium uniquement""",
-    num_lc=15,
-    nb_vari=2,
-    nom_vari=('EPSPEQ', 'INDIPLAS'),
-    mc_mater = ('ELAS_META', 'META_LEMA_ANI'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP', 'GDEF_LOG'),
-    nom_varc = ('TEMP',),
-    algo_inte = ('NEWTON',),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+    nom            = 'META_LEMA_ANI',
+    doc            = """Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
+            pour le Zirconium uniquement"""  ,
+    num_lc         = 15,
+    nb_vari        = 2,
+    nom_vari       = ('EPSPEQ','INDIPLAS',),
+    mc_mater       = ('ELAS_META','META_LEMA_ANI',),
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP','GDEF_LOG',),
+    algo_inte      = ('NEWTON',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

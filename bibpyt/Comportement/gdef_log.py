@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,18 +15,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: mickael.abbas at edf.fr
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='GDEF_LOG',
-    doc="""Algo pour résolution en grandes déformations.""",
-    num_lc=9999,
-    nb_vari=6,
-    nom_vari=('TXX', 'TYY', 'TZZ', 'TXY', 'TXZ', 'TYZ'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN'),
-    deformation = 'GDEF_LOG',
-    algo_inte = ('SANS_OBJET'),
-    nom_varc = None,
-    proprietes = (),
+    nom            = 'GDEF_LOG',
+    doc            = """Algo pour résolution en grandes déformations."""  ,
+    num_lc         = 0,
+    nb_vari        = 6,
+    nom_vari       = ('TXX','TYY','TZZ','TXY','TXZ',
+        'TYZ',),
+    mc_mater       = None,
+    modelisation   = ('3D','AXIS','D_PLAN','C_PLAN',),
+    deformation    = ('GDEF_LOG',),
+    algo_inte      = ('SANS_OBJET',),
+    type_matr_tang = None,
+    proprietes     = None,
 )

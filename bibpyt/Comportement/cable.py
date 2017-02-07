@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='CABLE',
-    doc="""Relation de comportement élastique adaptée aux câbles (DEFORMATION: 'GREEN' obligatoire) :
-   le module d'YOUNG du câble peut être différent en compression et en traction (en particulier il peut être nul en compression).""",
-    num_lc=9999,
-    nb_vari=1,
-    nom_vari=('VIDE'),
-    mc_mater = ('ELAS'),
-    modelisation = ('CABLE'),
-    deformation = ('GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = 'ANALYTIQUE',
+    nom            = 'CABLE',
+    doc            = """Relation de comportement élastique adaptée aux câbles (DEFORMATION: 'GREEN' obligatoire) :
+   le module d'YOUNG du câble peut être différent en compression et en traction (en particulier il peut être nul en compression)."""  ,
+    num_lc         = 0,
+    nb_vari        = 1,
+    nom_vari       = ('VIDE',),
+    mc_mater       = ('ELAS',),
+    modelisation   = ('CABLE',),
+    deformation    = ('GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
-    proprietes = ('COMP_ELAS'),
+    proprietes     = ('COMP_ELAS',),
 )

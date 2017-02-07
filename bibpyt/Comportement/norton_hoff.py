@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,8 +20,8 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='NORTON_HOFF',
-    doc="""Loi de visco-plasticité  indépendante de la température, régularisant la loi rigide-plastique de Von Mises
+    nom            = 'NORTON_HOFF',
+    doc            = """Loi de visco-plasticité  indépendante de la température, régularisant la loi rigide-plastique de Von Mises
    à utiliser pour le calcul de charges limites de structures, à seuil de VON MISES.
    Le seul paramètre matériau est la limite d'élasticité à renseigner dans l'opérateur DEFI_MATERIAU [U4.43.01]
    sous le mot-clé ECRO_LINE (Cf. [R7.07.01] et [R5.03.12] pour plus de détails).
@@ -29,15 +29,14 @@ loi = LoiComportement(
    (voir mot clé PILOTAGE='ANA_LIM' de STAT_NON_LINE [U4.51.03]).
    Il est fortement conseillé d'employer de la recherche linéaire (voir mot clé RECH_LINEAIRE de STAT_NON_LINE [U4.51.03]).
    En effet, le calcul de la charge limite requiert beaucoup d'itérations de recherche linéaire (de l'ordre de 50)
-   et d'itérations de Newton (de l'ordre de 50).""",
-    num_lc=17,
-    nb_vari=1,
-    nom_vari=('VIDE',),
-    mc_mater = ('ECRO_LINE'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP',),
-    algo_inte = ('ANALYTIQUE',),
-    modelisation = ('3D', 'AXIS', 'D_PLAN'),
-    nom_varc = ('TEMP'),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+   et d'itérations de Newton (de l'ordre de 50)."""  ,
+    num_lc         = 17,
+    nb_vari        = 1,
+    nom_vari       = ('VIDE',),
+    mc_mater       = ('ECRO_LINE',),
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

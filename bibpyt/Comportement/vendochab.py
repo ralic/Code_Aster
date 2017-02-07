@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,23 +15,22 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean-michel.proix at edf.fr
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='VENDOCHAB',
-    doc="""Modèle viscoplastique couplé à l'endommagement isotrope de Lemaitre-Chaboche [R5.03.15].
-   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC.""",
-    num_lc=31,
-    nb_vari=10,
-    nom_vari=('EPSPXX', 'EPSPYY', 'EPSPZZ', 'EPSPXY',
-              'EPSPXZ', 'EPSPYZ', 'EPSPEQ', 'ECROISOT', 'ENDO', 'INDIPLAS'),
-    mc_mater = ('ELAS', 'VENDOCHAB'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = ('NEWTON', 'RUNGE_KUTTA'),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = None,
+    nom            = 'VENDOCHAB',
+    doc            = """Modèle viscoplastique couplé à l'endommagement isotrope de Lemaitre-Chaboche [R5.03.15].
+   Ce modèle s'emploie avec les mots clés DEFORMATION = PETIT ou PETIT_REAC."""  ,
+    num_lc         = 31,
+    nb_vari        = 10,
+    nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ',
+        'EPSPYZ','EPSPEQ','ECROISOT','ENDO','INDIPLAS',
+        ),
+    mc_mater       = ('ELAS','VENDOCHAB',),
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('NEWTON','RUNGE_KUTTA',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

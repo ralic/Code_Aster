@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,16 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='DIS_CHOC',
-    doc="""Relation de comportement de contact-frottement avec choc des elements discrets""",
-    num_lc=9999,
-    nb_vari=8,
-    nom_vari=('DIS1', 'DIS2', 'DIS3',
-              'DIS4', 'DIS5', 'DIS6', 'DIS7', 'DIS8'),
-    modelisation = ('DIS_T', 'DIS_TR', '2D_DIS_T', '2D_DIS_TR'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = None,
-    algo_inte = ('ANALYTIQUE'),
+    nom            = 'DIS_CHOC',
+    doc            = """Relation de comportement de contact-frottement avec choc des elements discrets"""  ,
+    num_lc         = 0,
+    nb_vari        = 8,
+    nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5',
+        'DIS6','DIS7','DIS8',),
+    mc_mater       = None,
+    modelisation   = ('DIS_T','DIS_TR','2D_DIS_T','2D_DIS_TR',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
-    proprietes = None,
+    proprietes     = None,
 )

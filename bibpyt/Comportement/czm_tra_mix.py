@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,18 +20,17 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='CZM_TRA_MIX',
-    doc="""Relation de comportement cohésive (Cohesive Zone Model TRApèze MIXte) pour la rupture ductile (Cf. [R7.02.11]) modélisant l'ouverture et la
-   propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte lagrangien augmenté (Cf. [R3.06.13]) """,
-    num_lc=49,
-    nb_vari=9,
-    nom_vari=('SEUILDEP', 'INDIDISS', 'INDIENDO', 'PCENERDI',
-              'DISSIP', 'ENEL_RES', 'SAUT_N', 'SAUT_T1', 'SAUT_T2'),
-    mc_mater = ('RUPT_FRAG'),
-    modelisation = ('3D', 'PLAN', 'AXIS', 'INTERFAC'),
-    deformation = ('PETIT'),
-    nom_varc = None,
-    algo_inte = ('ANALYTIQUE'),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = ('PRED_ELAS'),
+    nom            = 'CZM_TRA_MIX',
+    doc            = """Relation de comportement cohésive (Cohesive Zone Model TRApèze MIXte) pour la rupture ductile (Cf. [R7.02.11]) modélisant l'ouverture et la
+   propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte lagrangien augmenté (Cf. [R3.06.13]) """  ,
+    num_lc         = 49,
+    nb_vari        = 9,
+    nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
+        'ENEL_RES','SAUT_N','SAUT_T1','SAUT_T2',),
+    mc_mater       = ('RUPT_FRAG',),
+    modelisation   = ('3D','PLAN','AXIS','INTERFAC',),
+    deformation    = ('PETIT',),
+    algo_inte      = ('ANALYTIQUE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

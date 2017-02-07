@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,7 +137,7 @@ class Base(object):
     """Classe de base : partie commune loi de comportement/kit."""
 
     __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
-                      'nom_varc', 'nom_vari', 'proprietes', 'algo_inte',
+                      'nom_vari', 'proprietes', 'algo_inte',
                       'type_matr_tang')
 
     def copy(self):
@@ -190,7 +190,6 @@ class Base(object):
    modélisations disponibles  : %(modelisation)r
    types de déformations      : %(deformation)r
    mots-clés du matériau      : %(mc_mater)r
-   variables de commandes     : %(nom_varc)r
    schémas d'intégration      : %(algo_inte)r
    type de matrice tangente   : %(type_matr_tang)r
    propriétés supplémentaires : %(proprietes)r
@@ -217,7 +216,7 @@ class LoiComportement(Base):
 
     nom_vari, proprietes : definition, affectation de valeurs
     mc_mater : besoin de regles ENSEMBLE, AU_MOINS_UN, UN_PARMI
-    modelisation, deformation, nom_varc, algo_inte, type_matr_tang : listes des
+    modelisation, deformation, algo_inte, type_matr_tang : listes des
     valeurs acceptees"""
     _ldctype = 'std'
 
@@ -268,8 +267,6 @@ class LoiComportement(Base):
         'modelisation',   (str, unicode), "Modélisations")
     deformation = Base.gen_property(
         'deformation',    (str, unicode), "Types de déformation")
-    nom_varc = Base.gen_property(
-        'nom_varc',       (str, unicode), "Noms des variables de commandes")
     algo_inte = Base.gen_property(
         'algo_inte',      (str, unicode), "Schéma d'intégration")
     type_matr_tang = Base.gen_property(
@@ -313,12 +310,6 @@ class LoiComportementMFront(LoiComportement):
         super(LoiComportementMFront, self).__init__(
             nom,
             symbol_mfront=symbol_mfront,
-            num_lc=58,
-            mc_mater=nom,
-            nb_vari=0,
-            nom_vari=None,
-            nom_varc=None,
-            type_matr_tang=None,
             doc=doc,
             **kwargs)
 
@@ -364,7 +355,6 @@ class KIT(Base):
     mc_mater = property(Base.gen_getfunc(union,        'mc_mater'))
     modelisation = property(Base.gen_getfunc(intersection, 'modelisation'))
     deformation = property(Base.gen_getfunc(intersection, 'deformation'))
-    nom_varc = property(Base.gen_getfunc(intersection, 'nom_varc'))
     algo_inte = property(Base.gen_getfunc(intersection, 'algo_inte'))
     type_matr_tang = property(Base.gen_getfunc(intersection, 'type_matr_tang'))
     proprietes = property(Base.gen_getfunc(intersection, 'proprietes'))

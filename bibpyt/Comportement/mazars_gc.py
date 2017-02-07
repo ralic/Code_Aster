@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,13 +15,12 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: jean-luc.flejou at edf.fr
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='MAZARS_GC',
-    doc="""
+    nom            = 'MAZARS_GC',
+    doc            = """
    Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars.
    Permet de rendre compte de l'adoucissement en compression et la fragilité en traction.
    Dans le cas des poutres multifibres :
@@ -30,18 +29,15 @@ loi = LoiComportement(
    En contrainte plane :
       Pas de couplage possible avec d'autres phénomènes tels que le fluage.
       Cette version permet de rendre mieux compte du cisaillement.
-   """,
-    # dans le cas multifibres => interception dans pmfcom, donc pas d'appel à
-    # lc0008
-    num_lc=8,
-    nb_vari=8,
-    nom_vari=('CRITSIG', 'CRITEPS', 'ENDO',
-              'EPSEQT', 'EPSEQC', 'RSIGMA', 'TEMP_MAX', 'DISSIP',),
-    mc_mater = ('ELAS', 'MAZARS'),
-    modelisation = ('1D', 'C_PLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP', 'SECH', 'HYDR'),
-    algo_inte = ('ANALYTIQUE',),
+   """  ,
+    num_lc         = 8,
+    nb_vari        = 8,
+    nom_vari       = ('CRITSIG','CRITEPS','ENDO','EPSEQT','EPSEQC',
+        'RSIGMA','TEMP_MAX','DISSIP',),
+    mc_mater       = ('ELAS','MAZARS',),
+    modelisation   = ('1D','C_PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
-    proprietes = None,
+    proprietes     = None,
 )

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,17 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='ENDO_FRAGILE',
-    doc="""Comportement élastique-fragile, à endommagement scalaire et
-   écrouissage isotrope linéaire négatif - R5.03.18""",
-    num_lc=5,
-    nb_vari=2,
-    nom_vari=('ENDO', 'INDIENDO'),
-    mc_mater = ('ELAS', 'ECRO_LINE', 'NON_LOCAL'),
-    modelisation = ('3D', 'AXIS', 'C_PLAN', 'D_PLAN', 'GRADEPSI'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP', 'SECH', 'HYDR'),
-    algo_inte =('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION', 'IMPLEX'),
-    proprietes = None,
+    nom            = 'ENDO_FRAGILE',
+    doc            = """Comportement élastique-fragile, à endommagement scalaire et
+   écrouissage isotrope linéaire négatif - R5.03.18"""  ,
+    num_lc         = 5,
+    nb_vari        = 2,
+    nom_vari       = ('ENDO','INDIENDO',),
+    mc_mater       = ('ELAS','ECRO_LINE','NON_LOCAL',),
+    modelisation   = ('3D','AXIS','C_PLAN','D_PLAN','GRADEPSI',
+        ),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('ANALYTIQUE',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
+    proprietes     = None,
 )

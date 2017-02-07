@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,16 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='SANS',
-    doc="""comportement inopérant, utile à la simulation des cables de précontrainte""",
-    num_lc=38,
-    nb_vari=1,
-    nom_vari=('VIDE'),
-    mc_mater = None,
-    modelisation = ('3D', 'AXIS', 'D_PLAN', 'C_PLAN', '1D'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = None,
-    algo_inte = ('SANS_OBJET'),
+    nom            = 'SANS',
+    doc            = """comportement inopérant, utile à la simulation des cables de précontrainte"""  ,
+    num_lc         = 38,
+    nb_vari        = 1,
+    nom_vari       = ('VIDE',),
+    mc_mater       = None,
+    modelisation   = ('3D','AXIS','D_PLAN','C_PLAN','1D',
+        ),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('SANS_OBJET',),
     type_matr_tang = None,
-    proprietes = None,
+    proprietes     = None,
 )

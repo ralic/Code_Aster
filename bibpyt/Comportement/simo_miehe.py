@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,13 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='SIMO_MIEHE',
-    doc="""Algo pour résolution en grandes déformations.""",
-    num_lc=9999,
-    nb_vari=6,
-    nom_vari=('SM1', 'SM2', 'SM3', 'SM4', 'SM5', 'SM6'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN'),
-    deformation = 'SIMO_MIEHE',
-    nom_varc = None,
-    proprietes = (),
+    nom            = 'SIMO_MIEHE',
+    doc            = """Algo pour résolution en grandes déformations."""  ,
+    num_lc         = 0,
+    nb_vari        = 6,
+    nom_vari       = ('SM1','SM2','SM3','SM4','SM5',
+        'SM6',),
+    mc_mater       = None,
+    modelisation   = ('3D','AXIS','D_PLAN',),
+    deformation    = ('SIMO_MIEHE',),
+    algo_inte      = None,
+    type_matr_tang = None,
+    proprietes     = None,
 )

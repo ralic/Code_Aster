@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,20 +20,19 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='CAM_CLAY',
-    doc="""Comportement élastoplastique des sols normalement consolidés (argiles par exemple). cf. R7.01.14
+    nom            = 'CAM_CLAY',
+    doc            = """Comportement élastoplastique des sols normalement consolidés (argiles par exemple). cf. R7.01.14
    La partie élastique est non-linéaire. La partie plastique peut être durcissante ou adoucissante.
    Si le modèle CAM_CLAY est utilisé avec la modélisation THM, le mot clé PORO renseigné sous CAM_CLAY et
-   sous THM_INIT doit être le même.""",
-    num_lc=22,
-    nb_vari=7,
-    nom_vari=('PCR', 'INDIPLAS', 'SIGP',
-                     'SIEQ', 'EPSPVOL', 'EPSPEQ', 'INDIVIDE'),
-    mc_mater = ('ELAS', 'CAM_CLAY'),
-    modelisation = ('3D', 'AXIS', 'D_PLAN', 'KIT_THM'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    nom_varc = ('TEMP'),
-    algo_inte = 'NEWTON_1D',
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    proprietes = ' ',
+   sous THM_INIT doit être le même."""  ,
+    num_lc         = 22,
+    nb_vari        = 7,
+    nom_vari       = ('PCR','INDIPLAS','SIGP','SIEQ','EPSPVOL',
+        'EPSPEQ','INDIVIDE',),
+    mc_mater       = ('ELAS','CAM_CLAY',),
+    modelisation   = ('3D','AXIS','D_PLAN','KIT_THM',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('NEWTON_1D',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

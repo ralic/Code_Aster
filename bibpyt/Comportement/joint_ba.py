@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,20 +20,19 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='JOINT_BA',
-    doc="""Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
+    nom            = 'JOINT_BA',
+    doc            = """Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
    Elle permet de rendre compte de l'influence de la liaison dans la redistribution des contraintes dans le corps du béton ainsi que la prédiction des fissures et leur espacement.
    Disponible pour des chargements en monotone et en cyclique, elle prend en compte les effets du frottement des fissures, et du confinement.
-   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails).""",
-    num_lc=13,
-    nb_vari=6,
-    nom_vari=('ENDONOR', 'ENDOTAN',
-              'ECRISOM1', 'ECRISOM2', 'GLIS', 'ECROCINE'),
-    mc_mater = ('ELAS', 'JOINT_BA'),
-    modelisation = ('AXIS', 'PLAN'),
-    deformation = ('PETIT', 'PETIT_REAC', 'GROT_GDEP'),
-    algo_inte = ('NEWTON_1D',),
-    type_matr_tang = ('PERTURBATION', 'VERIFICATION'),
-    nom_varc = ('TEMP'),
-    proprietes = None,
+   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails)."""  ,
+    num_lc         = 13,
+    nb_vari        = 6,
+    nom_vari       = ('ENDONOR','ENDOTAN','ECRISOM1','ECRISOM2','GLIS',
+        'ECROCINE',),
+    mc_mater       = ('ELAS','JOINT_BA',),
+    modelisation   = ('AXIS','PLAN',),
+    deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
+    algo_inte      = ('NEWTON_1D',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    proprietes     = None,
 )

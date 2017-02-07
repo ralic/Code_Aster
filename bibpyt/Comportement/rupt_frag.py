@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,17 +20,16 @@
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom='RUPT_FRAG',
-    doc="""Relation de comportement non locale basée sur la formulation de J.J. Marigo et G. Francfort de la mécanique de la rupture (pas d'équivalent en version locale).
-   Ce modèle décrit l'apparition et la propagation de fissures dans un matériau élastique (cf. [R7.02.11]).""",
-    num_lc=9999,
-    nb_vari=1,
-    nom_vari=('ENDO'),
-    mc_mater = ('ELAS', 'RUPT_FRAG', 'NON_LOCAL'),
-    modelisation = ('ELEMDISC', 'GRADVARI'),
-    deformation = ('PETIT'),
-    nom_varc = None,
-    algo_inte = ('ANALYTIQUE'),
+    nom            = 'RUPT_FRAG',
+    doc            = """Relation de comportement non locale basée sur la formulation de J.J. Marigo et G. Francfort de la mécanique de la rupture (pas d'équivalent en version locale).
+   Ce modèle décrit l'apparition et la propagation de fissures dans un matériau élastique (cf. [R7.02.11])."""  ,
+    num_lc         = 0,
+    nb_vari        = 1,
+    nom_vari       = ('ENDO',),
+    mc_mater       = ('ELAS','RUPT_FRAG','NON_LOCAL',),
+    modelisation   = ('ELEMDISC','GRADVARI',),
+    deformation    = ('PETIT',),
+    algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
-    proprietes = None,
+    proprietes     = None,
 )
