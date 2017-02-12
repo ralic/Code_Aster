@@ -47,5 +47,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON','NEWTON_PERT','NEWTON_RELI','SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    symmetry       = ('No',),
 )

@@ -33,5 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    symmetry       = ('No',),
 )

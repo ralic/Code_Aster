@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = None,
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    symmetry       = ('No',),
 )
