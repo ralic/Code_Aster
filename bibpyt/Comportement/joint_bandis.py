@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'JOINT_BANDIS',
-    doc            = """Bandis"""  ,
+    doc            =  """Bandis"""    ,
     num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('PERM_LONG',),
@@ -30,4 +30,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

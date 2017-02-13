@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'LIQU_VAPE',
-    doc            = """Loi de comportement pour un milieux poreux saturé par un composant présent sous forme liquide ou vapeur
-   avec changement de phase (Cf. [R7.01.11] pour plus de détails)."""  ,
+    doc            =  """Loi de comportement pour un milieux poreux saturé par un composant présent sous forme liquide ou vapeur
+   avec changement de phase (Cf. [R7.01.11] pour plus de détails)."""    ,
     num_lc         = 0,
     nb_vari        = 3,
     nom_vari       = ('LIQVAP1','LIQVAP2','LIQVAP3',),
@@ -33,4 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ELAS',
-    doc            = """élasticité linéaire isotrope"""  ,
+    doc            =  """élasticité linéaire isotrope"""    ,
     num_lc         = 1,
     nb_vari        = 1,
     nom_vari       = ('VIDE',),
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
     proprietes     = ('COMP_ELAS',),
+    symmetry       = ('Yes',),
 )

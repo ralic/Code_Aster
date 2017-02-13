@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VMIS_ASYM_LINE',
-    doc            = """Relation de comportement des barres, à écrouissage isotrope, et seuils non symétrique en traction et compression"""  ,
+    doc            =  """Relation de comportement des barres, à écrouissage isotrope, et seuils non symétrique en traction et compression"""    ,
     num_lc         = 0,
     nb_vari        = 4,
     nom_vari       = ('EPSPEQT','INDIPLAT','EPSPEQC','INDIPLAC',),
@@ -30,4 +30,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'PETIT',
-    doc            = """Algo pour résolution en petites déformations."""  ,
+    doc            =  """Algo pour résolution en petites déformations."""    ,
     num_lc         = 0,
     nb_vari        = 0,
     nom_vari       = None,
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

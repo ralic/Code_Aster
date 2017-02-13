@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'TANGENTE_SECANTE',
-    doc            = """Bascule matrice tangente/sécante"""  ,
+    doc            =  """Bascule matrice tangente/sécante"""    ,
     num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('PROPMATR',),
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = None,
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

@@ -2524,6 +2524,29 @@ void DEFSS(LCSYMB, lcsymb, _IN char *compor, STRING_SIZE lcompor,
    Py_XDECREF(catalc);
 }
 
+
+void DEFSS(LCSYMM, lcsymm, _IN char *compor, STRING_SIZE lcompor,
+                          _OUT char *symm, STRING_SIZE lsymm)
+{
+/*
+   Retourne le nom de la fonction dans la bibliothèque MFront
+
+      CALL LCSYMM(COMPOR, SYMMETRY)
+      ==> name = catalc.get_symbol(COMPOR)
+*/
+   PyObject *catalc, *res;
+
+   catalc = GetJdcAttr("catalc");
+   res = PyObject_CallMethod(catalc, "get_symmetry", "s#", compor, lcompor);
+   if (res == NULL) {
+      MYABORT("Echec lors de la recuperation de la symétrie de la matrice !");
+   }
+   convertxt(1, res, symm, lsymm);
+
+   Py_XDECREF(res);
+   Py_XDECREF(catalc);
+}
+
 /* ----------   FIN catalogue de loi de comportement   -------------- */
 /* ------------------------------------------------------------------ */
 

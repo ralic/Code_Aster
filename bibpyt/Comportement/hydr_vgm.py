@@ -21,10 +21,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'HYDR_VGM',
-    doc            = """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
+    doc            =  """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
    Ici et uniquement pour les lois de couplage liquide/gaz 'LIQU_GAZ', 'LIQU_AD_VAPE_GAZ' et 'LIQVAP_GAZ',
    les courbes de saturation, de perméabilités relatives à l'eau et au gaz et leur dérivées sont définies par
-   le modèle de Mualem Van-Genuchten. """  ,
+   le modèle de Mualem Van-Genuchten. """    ,
     num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('HYDRUTI1',),
@@ -35,4 +35,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

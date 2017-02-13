@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'META_P_IL_PT_RE',
-    doc            = """Loi de comportement elastoplastique à écrouissage isotrope linéaire,
-   prenant en compte la métallurgie, la plasticité de transformation et la restauration"""  ,
+    doc            =  """Loi de comportement elastoplastique à écrouissage isotrope linéaire,
+   prenant en compte la métallurgie, la plasticité de transformation et la restauration"""    ,
     num_lc         = 15,
     nb_vari        = 1,
     nom_vari       = ('EPSPEQ',),
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

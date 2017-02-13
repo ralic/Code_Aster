@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'CZM_EXP_REG',
-    doc            = """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture d'une fissure.
+    doc            =  """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture d'une fissure.
    Cette loi est utilisable avec l'élément fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohésion entre les lèvres de la fissure.
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""  ,
+   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""    ,
     num_lc         = 10,
     nb_vari        = 9,
     nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
@@ -35,4 +35,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

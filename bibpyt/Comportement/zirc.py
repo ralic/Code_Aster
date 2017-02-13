@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ZIRC',
-    doc            = """phases metallurgiques du zirconium"""  ,
+    doc            =  """phases metallurgiques du zirconium"""    ,
     num_lc         = 0,
     nb_vari        = 3,
     nom_vari       = ('ZIRCALPH','ZIRCALBE','ZIRCBETA',),
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

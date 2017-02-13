@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VIDE',
-    doc            = """comportement inopérant, nécessaire pour THM quand absence de comportement mécanique"""  ,
+    doc            =  """comportement inopérant, nécessaire pour THM quand absence de comportement mécanique"""    ,
     num_lc         = 0,
     nb_vari        = 0,
     nom_vari       = None,
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

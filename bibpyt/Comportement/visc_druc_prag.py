@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VISC_DRUC_PRAG',
-    doc            = """Modele viscoplastique base sur une loi de type Drucker Prager non associee,
-   pour la mecanique des roches (cf. [R7.01.22] pour plus de details).Le fluage suit la loi de Perzyna"""  ,
+    doc            =  """Modele viscoplastique base sur une loi de type Drucker Prager non associee,
+   pour la mecanique des roches (cf. [R7.01.22] pour plus de details).Le fluage suit la loi de Perzyna"""    ,
     num_lc         = 42,
     nb_vari        = 4,
     nom_vari       = ('EPSPEQ','INDIPLAS','POS','NBITER',),
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SECANTE','BRENT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

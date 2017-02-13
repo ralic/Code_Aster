@@ -21,12 +21,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'CZM_LIN_REG',
-    doc            = """Relation de comportement cohésive (Cohesive Zone Model LINéaire REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture
+    doc            =  """Relation de comportement cohésive (Cohesive Zone Model LINéaire REGularisée) (Cf. [R7.02.11]) modélisant l'ouverture
    et la propagation d'une fissure. L'intérêt d'une telle loi, comparée à CZM_EXP_REG, est de pouvoir représenter un vrai front de rupture.
    Ce dernier est visible grâce à la variable interne V3 (V3=2 correspond à un élément totalement cassé).
    Cette loi est utilisable avec l'élément fini de type joint (Cf. [R3.06.09]) et permet d'introduire une force de cohésion entre les
    lèvres de la fissure.
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""  ,
+   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""    ,
     num_lc         = 11,
     nb_vari        = 9,
     nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
@@ -38,4 +38,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

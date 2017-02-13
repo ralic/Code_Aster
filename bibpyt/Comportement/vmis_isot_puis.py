@@ -20,8 +20,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VMIS_ISOT_PUIS',
-    doc            = """Loi de plasticité de Von Mises à écrouissage isotrope défini
-par une courbe de traction analytique avec une loi puissance"""  ,
+    doc            =  """Loi de plasticité de Von Mises à écrouissage isotrope défini
+par une courbe de traction analytique avec une loi puissance"""    ,
     num_lc         = 2,
     nb_vari        = 2,
     nom_vari       = ('EPSPEQ','INDIPLAS',),
@@ -31,4 +31,5 @@ par une courbe de traction analytique avec une loi puissance"""  ,
     algo_inte      = ('DEKKER',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

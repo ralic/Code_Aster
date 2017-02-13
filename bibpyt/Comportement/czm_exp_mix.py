@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'CZM_EXP_MIX',
-    doc            = """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle en formulation MIXte) (Cf. [R7.02.11]) modélisant l'ouverture et la  propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte
+    doc            =  """Relation de comportement cohésive (Cohesive Zone Model EXPonentielle en formulation MIXte) (Cf. [R7.02.11]) modélisant l'ouverture et la  propagation d'une fissure. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte
    lagrangien augmenté (Cf. [R3.06.13]) et permet d'introduire une force de cohésion entre les lèvres de la fissure en mode d'ouverture plus proche des matériaux quasi-fragile. Cette loi est utilisée lorsqu'on impose des conditions de symétrie sur l'élément d'interface.
-   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""  ,
+   Par ailleurs l'utilisation de ce modèle requiert souvent la présence du pilotage par PRED_ELAS (cf. [U4.51.03])."""    ,
     num_lc         = 56,
     nb_vari        = 9,
     nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
@@ -34,4 +34,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

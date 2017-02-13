@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ENDO_HETEROGENE',
-    doc            = """Comportement élastique-heterogene, à endommagement  - R5.03.24"""  ,
+    doc            =  """Comportement élastique-heterogene, à endommagement  - R5.03.24"""    ,
     num_lc         = 47,
     nb_vari        = 12,
     nom_vari       = ('ENDO','INDIENDO','ALEA','SURF','ELEP1',
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

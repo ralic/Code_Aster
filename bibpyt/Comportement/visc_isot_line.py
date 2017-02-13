@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VISC_ISOT_LINE',
-    doc            = """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh"""  ,
+    doc            =  """Loi viscoplastique avec critère de Von Mises, écrouissage isotrope linéaire et viscosité en sinh"""    ,
     num_lc         = 2,
     nb_vari        = 2,
     nom_vari       = ('EPSPEQ','INDIPLAS',),
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('SECANTE','BRENT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

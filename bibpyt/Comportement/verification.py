@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VERIFICATION',
-    doc            = """Vérification numérique de la matrice tangente"""  ,
+    doc            =  """Vérification numérique de la matrice tangente"""    ,
     num_lc         = 0,
     nb_vari        = 0,
     nom_vari       = None,
@@ -31,4 +31,5 @@ loi = LoiComportement(
     algo_inte      = None,
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

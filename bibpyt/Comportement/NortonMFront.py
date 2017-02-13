@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 loi = LoiComportementMFront(
     nom            = 'Norton',
     symbol_mfront  = 'asternorton',
-    doc            = """To complete ...""",
+    doc            =  """To complete ..."""  ,
     num_lc         = 58,
     nb_vari        = 0,
     nom_vari       = None,
@@ -31,4 +31,5 @@ loi = LoiComportementMFront(
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

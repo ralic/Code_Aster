@@ -21,13 +21,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'HUJEUX',
-    doc            = """Relation de comportement élasto-plastique cyclique pour la mécanique
+    doc            =  """Relation de comportement élasto-plastique cyclique pour la mécanique
    des sols (géomatériaux granulaires : argiles sableuses, normalement consolidées
    ou sur-consolidées, graves) (Cf. [R7.01.23] pour plus de détails).
    Ce modèle est un modèle multicritère qui comporte un mécanisme élastique non
    linéaire, trois mécanismes plastiques déviatoires et un mécanisme plastique isotrope.
    Pour faciliter l'intégration de ce modèle, on peut utiliser le redécoupage
-   automatique local du pas de temps (ITER_INTE_PAS)"""  ,
+   automatique local du pas de temps (ITER_INTE_PAS)"""    ,
     num_lc         = 34,
     nb_vari        = 50,
     nom_vari       = ('FECRDVM1','FECRDVM2','FECRDVM3','FECRISM1','FECRDVC1',
@@ -47,4 +47,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON','NEWTON_PERT','NEWTON_RELI','SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

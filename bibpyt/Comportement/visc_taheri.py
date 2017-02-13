@@ -21,12 +21,12 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VISC_TAHERI',
-    doc            = """Relation de comportement (visco)-plastique de S.Taheri modélisant la réponse de matériaux sous chargement plastique cyclique,
+    doc            =  """Relation de comportement (visco)-plastique de S.Taheri modélisant la réponse de matériaux sous chargement plastique cyclique,
    et en particulier permettant de représenter les effets de rochet.
    Les données nécessaires sont fournies dans l'opérateur DEFI_MATERIAU [U4.43.01],
    sous les mots clés TAHERI(_FO) pour la description de l'écrouissage, LEMAITRE(_FO) pour la viscosité
    et ELAS(_FO) (Cf. [R5.03.05] pour plus de détails).
-   En l'absence de LEMAITRE, la loi est purement élasto-plastique."""  ,
+   En l'absence de LEMAITRE, la loi est purement élasto-plastique."""    ,
     num_lc         = 18,
     nb_vari        = 9,
     nom_vari       = ('EPSPEQ','SIGMAPIC','EPSPXX','EPSPYY','EPSPZZ',
@@ -37,4 +37,5 @@ loi = LoiComportement(
     algo_inte      = ('SECANTE','BRENT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

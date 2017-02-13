@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'HYDR_UTIL',
-    doc            = """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
+    doc            =  """Loi de comportement hydraulique, si le comportement mécanique est sans endommagement :
    Signifie qu'aucune donnée matériau n'est rentrée en dur.
    Concrètement dans le cas saturé, il faudra définir les 6 courbes point par point (par DEFI_FONCTION) suivantes :
    - la saturation en fonction de la pression capillaire,
@@ -29,7 +29,7 @@ loi = LoiComportement(
    - la perméabilité relative au liquide en fonction de la saturation,
    - sa dérivée.
    - la perméabilité relative au gaz en fonction de la saturation,
-   - sa dérivée."""  ,
+   - sa dérivée."""    ,
     num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('HYDRUTI1',),
@@ -40,4 +40,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

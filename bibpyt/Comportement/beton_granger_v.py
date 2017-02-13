@@ -20,8 +20,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'BETON_GRANGER_V',
-    doc            = """Comportement de fluage propre du beton avec prise en compte du
-   phénomène de vieillissement, cf. R7.01.01"""  ,
+    doc            =  """Comportement de fluage propre du beton avec prise en compte du
+   phénomène de vieillissement, cf. R7.01.01"""    ,
     num_lc         = 26,
     nb_vari        = 55,
     nom_vari       = ('VG1','VG2','VG3','VG4','VG5',
@@ -42,4 +42,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

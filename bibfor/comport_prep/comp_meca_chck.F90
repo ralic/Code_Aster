@@ -9,6 +9,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/lcsymm.h"
 #include "asterc/lcdiscard.h"
 #include "asterfort/assert.h"
 #include "asterfort/comp_meca_full.h"
@@ -78,7 +79,7 @@ implicit none
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
-    character(len=16) :: texte(2)
+    character(len=16) :: texte(2), answer
     character(len=16) :: defo_comp, rela_comp, rela_thmc, type_cpla
     character(len=16) :: rela_comp_py, defo_comp_py
     integer :: iret
@@ -162,6 +163,9 @@ implicit none
             texte(2) = rela_comp
             call utmess('F', 'COMPOR1_44', nk = 2, valk = texte)
         endif
+
+        call lcsymm(rela_comp_py, answer)
+        WRITE(6,*) 'SYMM: ',rela_comp,answer
 !
 ! ----- Check comportment/model for THM (cannot use Comportement.py)
 !

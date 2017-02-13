@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'GRILLE_ISOT_LINE',
-    doc            = """Relation de comportement des grilles d'armatures de béton armé, à écrouissage isotrope linéaire"""  ,
+    doc            =  """Relation de comportement des grilles d'armatures de béton armé, à écrouissage isotrope linéaire"""    ,
     num_lc         = 0,
     nb_vari        = 4,
     nom_vari       = ('EPSPEQ','INDIPLAS','VIDE','VIDE',),
@@ -30,4 +30,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'MFRONT',
-    doc            = """Loi de comportement utilisateur dont l'intégration
-            est réalisée par MFront."""  ,
+    doc            =  """Loi de comportement utilisateur dont l'intégration
+            est réalisée par MFront."""    ,
     num_lc         = 58,
     nb_vari        = 0,
     nom_vari       = None,
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

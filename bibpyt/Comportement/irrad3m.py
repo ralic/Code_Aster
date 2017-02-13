@@ -21,10 +21,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'IRRAD3M',
-    doc            = """Relation de comportement élasto-plastique sous irradiation des aciers inoxydables 304 et 316,
+    doc            =  """Relation de comportement élasto-plastique sous irradiation des aciers inoxydables 304 et 316,
    matériaux dont sont constitués les structures internes de cuve des réacteurs nucléaires (cf. [R5.03.13]).
    Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU.
-   Le modèle prend en compte la plasticité, le fluage sous irradiation, le gonflement sous flux neutronique."""  ,
+   Le modèle prend en compte la plasticité, le fluage sous irradiation, le gonflement sous flux neutronique."""    ,
     num_lc         = 30,
     nb_vari        = 7,
     nom_vari       = ('EPSPEQ','SEUIL','EPEQIRRA','GONF','INDIPLAS',
@@ -35,4 +35,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON','NEWTON_RELI',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

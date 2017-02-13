@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DIS_ECRO_CINE',
-    doc            = """Relation de comportement à écrouissage cinématique des elements discrets"""  ,
+    doc            =  """Relation de comportement à écrouissage cinématique des elements discrets"""    ,
     num_lc         = 0,
     nb_vari        = 18,
     nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5',
@@ -34,4 +34,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )

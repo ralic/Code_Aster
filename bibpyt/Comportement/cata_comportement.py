@@ -138,7 +138,7 @@ class Base(object):
 
     __properties__ = ('deformation', 'mc_mater', 'modelisation', 'nb_vari',
                       'nom_vari', 'proprietes', 'algo_inte',
-                      'type_matr_tang')
+                      'type_matr_tang', 'syme_matr_tang')
 
     def copy(self):
         """Copie d'un objet LoiComportement"""
@@ -193,6 +193,7 @@ class Base(object):
    schémas d'intégration      : %(algo_inte)r
    type de matrice tangente   : %(type_matr_tang)r
    propriétés supplémentaires : %(proprietes)r
+   symétrie                   : %(syme_matr_tang)r
 """
         return template % self.dict_info()
 
@@ -273,6 +274,8 @@ class LoiComportement(Base):
         'type_matr_tang', (str, unicode), "Type de matrice tangente")
     proprietes = Base.gen_property(
         'proprietes',     (str, unicode), "Propriétés")
+    syme_matr_tang  = Base.gen_property(
+        'syme_matr_tang', (str, unicode), "Symétrie")
 
     def check_vari(self):
         """Vérifie la cohérence de la définition des variables internes"""
@@ -358,6 +361,7 @@ class KIT(Base):
     algo_inte = property(Base.gen_getfunc(intersection, 'algo_inte'))
     type_matr_tang = property(Base.gen_getfunc(intersection, 'type_matr_tang'))
     proprietes = property(Base.gen_getfunc(intersection, 'proprietes'))
+    syme_matr_tang = property(Base.gen_getfunc(intersection, 'syme_matr_tang'))
     symbol_mfront = property(Base.gen_getfunc(first,        'symbol_mfront'))
 
     @property
@@ -554,6 +558,16 @@ class CataLoiComportement(Singleton):
             print 'catalc.get_symbol - args =', loi
         comport = self.get(loi)
         return comport.symbol_mfront
+
+    def get_symmetry(self, loi):
+        """Retourne le type de symétrie de la matrice
+
+        CALL LCSYMM(COMPOR, NAME)
+        ==> syme_matr_tang = catalc.get_symbol(COMPOR)"""
+        if self.debug:
+            print 'catalc.get_symbol - args =', loi
+        comport = self.get(loi)
+        return comport.syme_matr_tang
 
     def __repr__(self):
         """Représentation du catalogue"""

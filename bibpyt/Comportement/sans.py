@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'SANS',
-    doc            = """comportement inopérant, utile à la simulation des cables de précontrainte"""  ,
+    doc            =  """comportement inopérant, utile à la simulation des cables de précontrainte"""    ,
     num_lc         = 38,
     nb_vari        = 1,
     nom_vari       = ('VIDE',),
@@ -32,4 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = None,
     proprietes     = None,
+    symmetry       = ('Yes',),
 )
