@@ -1,0 +1,251 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+#  SOL-FLUIDE-STRUCTURE
+
+DEBUT(CODE=_F(
+              NIV_PUB_WEB='INTERNET',),
+      DEBUG=_F(SDVERI='OUI',),);
+
+mail0=LIRE_MAILLAGE(FORMAT='MED',);
+
+mail0=DEFI_GROUP(reuse =mail0,
+                MAILLAGE=mail0,
+                CREA_GROUP_NO=_F(GROUP_MA=('FOND_SS','FOND_AM','FOND_AV','FONDAT','barrage'),),);
+
+mail0=DEFI_GROUP(reuse =mail0,
+                MAILLAGE=mail0,
+                CREA_GROUP_MA=_F(UNION=('barreau','fonfeau'),NOM='I_EAU'),);
+                
+mail0=DEFI_GROUP(reuse =mail0,
+                MAILLAGE=mail0,
+                CREA_GROUP_NO=_F(INTERSEC=('barrage','FONDAT'),NOM='BASE'),);
+                
+mail1=CREA_MAILLAGE(MAILLAGE=mail0,
+                   CREA_POI1=(_F(NOM_GROUP_MA='P_EAU',
+                                 GROUP_MA='I_EAU',), ),
+                    ); 
+
+#doublement des mailles en fond de retenue pour imposer une absorption partielle des ondes
+mail=CREA_MAILLAGE(MAILLAGE=mail1,
+                    CREA_MAILLE=_F(NOM='fonfeau2',
+                                     GROUP_MA='fonfeau',
+                                     PREF_MAILLE='N',),);                                     
+                     
+#parametre du sol et determination des parametre du modele d'interaction sol-structure
+Esol = 35000000000;
+Nusol = 0.25;
+Msol = 2600.0;
+
+
+#parametres materiaux du modele
+EAU=DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0,
+                            CELE_R=1440.0*10.0e1,),);
+
+VASE=DEFI_MATERIAU(FLUIDE=_F(RHO=1000.0,
+                             CELE_R=5760.0,),);
+
+beton=DEFI_MATERIAU(ELAS=_F(E=40000000000.0,
+                            NU=0.2,
+                            RHO=2400.0,
+#amortissement 5% calé pour 2 et 8Hz
+                            AMOR_ALPHA=0.001061,
+                            AMOR_BETA=1.50796,),);
+#amortissement 1%
+#                            AMOR_ALPHA=0.000212,
+#                            AMOR_BETA=0.30159,),);
+
+sol=DEFI_MATERIAU(ELAS=_F(E=Esol,
+                          NU=Nusol,
+                            RHO=Msol,
+                ),);
+
+CHMAT=AFFE_MATERIAU(MAILLAGE=mail,
+                    AFFE=(_F(GROUP_MA=('fluide','barreau','fonfeau','infeau',),
+                             MATER=EAU,),
+                          _F(GROUP_MA='fonfeau2',
+                             MATER=VASE,),
+                          _F(GROUP_MA=('FONDAT','FOND_SS','FOND_AM','FOND_AV'),
+                             MATER=sol,),
+                          _F(GROUP_MA='barrage',
+                             MATER=beton,),),
+                   );
+#definition du modele
+MODELF=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=(_F(GROUP_MA=('barrage','FONDAT',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN',),
+                         _F(GROUP_MA=('fluide',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_FLUIDE',),
+                         _F(GROUP_MA=('barreau','fonfeau',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_FLUI_STRU',),
+                         #_F(GROUP_MA=('infeau','fonfeau2',),
+                         _F(GROUP_MA=('infeau',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_FLUI_ABSO',),
+                ),);
+                
+#Conditions aux limites dont impedance pour l'absorption des ondes en retenues
+CLF=AFFE_CHAR_MECA(MODELE=MODELF,
+                  DDL_IMPO=(_F(GROUP_MA='fluihaut',
+                              PRES=0.0,
+                              PHI=0.0,),
+                _F(GROUP_MA='FOND_SS',
+                                    DY=0.0,),
+                _F(GROUP_MA=('FOND_AM','FOND_AV',),
+                    DX=0,),
+                 ),
+#              VITE_FACE=(_F(GROUP_MA='infeau',VNOR=0,),),
+                  IMPE_FACE=(
+                   _F(GROUP_MA='infeau',
+                                IMPE=1440000.0*1.0e0,),
+                             #_F(GROUP_MA='fonfeau2',
+                             #   IMPE=5760000.0,),
+                ),
+                );
+
+ASSEMBLAGE(MODELE=MODELF,
+           CHAM_MATER=CHMAT,
+           CHARGE=CLF,
+           NUME_DDL=CO('NUMEDDF'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIF'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSEF'),
+                         OPTION='MASS_MECA',),
+                      ),
+             );
+
+                         
+MODEF=CALC_MODES(MATR_RIGI=RIGIF,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    NORM_MODE=_F(INFO=1,
+                                 NORME='TRAN_ROTA',),
+                    SOLVEUR=_F(NPREC=18,
+                               METHODE='MULT_FRONT',),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.1,10.),
+                                 ),
+                    FILTRE_MODE=_F(SEUIL=0.000000001,
+                                   ),
+                    MATR_MASS=MASSEF,
+                    )
+
+TEST_RESU(RESU=(_F(RESULTAT=MODEF,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=2.77377795185,),
+                _F(RESULTAT=MODEF,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   VALE_CALC=3.57270125634,),
+                ),
+           );
+
+
+#definition du modele
+MODELA=AFFE_MODELE(MAILLAGE=mail,
+                   AFFE=(_F(GROUP_MA=('barrage','FONDAT',),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='D_PLAN',),
+                         _F(GROUP_MA=('P_EAU'),
+                            PHENOMENE='MECANIQUE',
+                            MODELISATION='2D_DIS_T',),
+                         ),);
+                
+#Conditions aux limites dont impedance pour l'absorption des ondes en retenues
+CLA=AFFE_CHAR_MECA(MODELE=MODELA,
+                  DDL_IMPO=(
+                _F(GROUP_NO='FOND_SS',
+                               DY=0.0,),
+                _F(GROUP_NO=('FOND_AM','FOND_AV',),
+                    DX=0,),
+                 ),
+                );
+                
+fonz = DEFI_FONCTION (
+NOM_PARA = 'Y',
+PROL_GAUCHE = 'LINEAIRE',
+PROL_DROITE = 'CONSTANT',
+INTERPOL = 'LIN',
+VALE = (210.67,100000.,310.67, 0.,) );
+
+cara_ele=AFFE_CARA_ELEM(MODELE=MODELA,
+                        INFO=2,
+                        DISCRET_2D=(
+                                 _F(GROUP_MA='P_EAU',
+                                    REPERE='GLOBAL',
+                                    CARA='A_T_D_N',
+                                    VALE=(0.,0.,)),
+                                 ),
+                     MASS_AJOU=_F(
+                                   FONC_GROUP=fonz,
+                                   GROUP_MA='I_EAU',
+                                   GROUP_MA_POI1='P_EAU',
+                                 ),     
+                        );
+
+ASSEMBLAGE(MODELE=MODELA,
+           CHAM_MATER=CHMAT,
+           CHARGE=CLA,
+           CARA_ELEM=cara_ele,
+           NUME_DDL=CO('NUMEDDA'),
+           MATR_ASSE=(_F(MATRICE=CO('RIGIA'),
+                         OPTION='RIGI_MECA',),
+                      _F(MATRICE=CO('MASSEA'),
+                         OPTION='MASS_MECA',),
+                      ),
+           );
+                         
+MODEA=CALC_MODES(MATR_RIGI=RIGIA,
+                    VERI_MODE=_F(STOP_ERREUR='NON',
+                                 ),
+                    NORM_MODE=_F(INFO=1,
+                                 NORME='TRAN_ROTA',),
+                    SOLVEUR=_F(NPREC=18,
+                               METHODE='MULT_FRONT',),
+                    OPTION='BANDE',
+                    CALC_FREQ=_F(FREQ=(0.1,10.,),
+                                 ),
+                    FILTRE_MODE=_F(SEUIL=0.0000001,
+                                   ),
+                    MATR_MASS=MASSEA,
+                    );
+
+TEST_RESU(RESU=(_F(RESULTAT=MODEA,
+                   NUME_ORDRE=1,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   PRECISION=0.002,
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_REFE=2.77377795185,
+                   VALE_CALC=2.77706763462,),
+                _F(RESULTAT=MODEA,
+                   NUME_ORDRE=2,
+                   PARA='FREQ',
+                   CRITERE='RELATIF',
+                   PRECISION=0.002,
+                   REFERENCE = 'AUTRE_ASTER',
+                   VALE_REFE=3.57270125634,
+                   VALE_CALC=3.57877607313,),
+                ),
+           );
+
+FIN( );

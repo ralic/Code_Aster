@@ -31,7 +31,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
     aster_logical :: lvale
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -210,7 +210,19 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr,&
             hc = hc/nm
 !
             if (appui .eq. 1) then
-                ASSERT(.false.)
+!                ASSERT(.false.)
+                b(1) = x(2) - x(1)
+                b(2) = y(2) - y(1)
+                b(3) = zero
+                surf=ddot(3,b,1,b,1)
+                surmai(im) = sqrt(surf)
+                c(1) = y(1) - y(2)
+                c(2) = x(2) - x(1)
+                c(3) = zero
+                surf=ddot(3,c,1,c,1)
+                c(1)=c(1)/sqrt(surf)
+                c(2)=c(2)/sqrt(surf)
+                c(3)=c(3)/sqrt(surf)
             else if (appui.eq.2) then
                 a(1) = x(3) - x(1)
                 a(2) = y(3) - y(1)
