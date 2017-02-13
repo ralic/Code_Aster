@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +26,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     import aster
 
     from Accas import _F
+    from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table import Table
     from math import log, sqrt, floor
@@ -139,7 +140,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 # definition d un facteur de correction sur les parametres de Rayleigh pour obtenir
 # l amortissement hysteretique en moyenne sur la plage de frequence
     ca = 1 / (0.5 + f1 * f2 / (f1 + f2) * log(f2 / f1) / (f2 - f1))
-    print 'aamult abmult ca ', aamult, abmult, ca
+    text = ('aamult=' + str(aamult) + ' abmult=' + str(abmult) + ' ca=' + str(ca) )
+    aster.affiche('MESSAGE', text)
 
 # coefficient pour calcul gamma_eff / gamma_max
     geff = args['COEF_GAMMA']
@@ -180,7 +182,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     fmaxc = fcoup
     if fmax < fcoup:
         fmaxc = fmax
-    print 'df fmax fmaxc ', df, fmax, fmaxc
+    text = ('df=' + str(df) + ' fmax=' + str(fmax) + ' fmaxc=' + str(fmaxc) )
+    aster.affiche('MESSAGE', text)
 
 # On genere les frequences
     __lfreq = DEFI_LIST_REEL(DEBUT=0.0, INTERVALLE=_F(JUSQU_A=fmax, PAS=df),)
@@ -243,10 +246,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     legendeT = 's' + str(s) + 'v' + str(v) + 'a' + str(a)
     legende = '-acce' + str(a) + '-sol' + str(s) + '-cvar=' + str(v)
     if args['TABLE_MATER_ELAS'] != None:
-        utabdata = 13
-        IMPR_TABLE(TABLE=args['TABLE_MATER_ELAS'], UNITE=utabdata)
-        __TMAT = LIRE_TABLE(FORMAT='TABLEAU', UNITE=utabdata)
-        os.system('rm fort.13 ')
+        __TMAT = CALC_TABLE( TABLE=args['TABLE_MATER_ELAS'],
+          ACTION=_F(OPERATION='EXTR',NOM_PARA=('Y','M','RHO','Emax','NU','AH','GDgam')));
         tmat = __TMAT.EXTR_TABLE()
         NCOU = len(tmat) - 1
         nbmat = 0
@@ -255,7 +256,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 nbmat = __TMAT['GDgam', k]
         __GG = [None] * (nbmat + 1)
         __DG = [None] * (nbmat + 1)
-        utabequ = 16
+        UL = UniteAster()
+        utabequ = UL.Libre(action='ASSOCIER')
         IMPR_TABLE(TABLE=args['TABLE_GEQUI_GMAX'], UNITE=utabequ)
         IMPR_TABLE(TABLE=args['TABLE_AMOR_EQUI'], UNITE=utabequ)
 
@@ -268,7 +270,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                                     INTERPOL=('LOG','LIN'), PROL_DROITE='CONSTANT', PROL_GAUCHE='CONSTANT',
                                     INDIC_PARA=[2, 1], INDIC_RESU=[2, j + 1],
                                     )
-        os.system('rm fort.16 ')
+        UL.EtatInit()
     else:
     # 1. dictionnaires des MATERIAUX
         MATERIAU = args['MATERIAU']
@@ -418,7 +420,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
       print 'NCOU=',NCOU
       NCOUB=NCOU+1
       larcol=1.0
-      resultfile = open("fort.16", 'w')
+      resultfile = open("dse.mail", 'w')
       resultfile.write( " TITRE \n")
       resultfile.write( " %  GIBI FECIT \n")
       resultfile.write( " FINSF \n")
@@ -478,9 +480,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
       resultfile.write( " FIN \n")
   
       resultfile.close()
-
-      __mailla=LIRE_MAILLAGE(UNITE=16);
-      os.system('rm fort.16');
+      UL = UniteAster()
+      umail = UL.Libre(action='ASSOCIER', nom='dse.mail')
+      __mailla=LIRE_MAILLAGE(UNITE=umail);
+      UL.EtatInit()
  
     IMPR_RESU(RESU=_F(MAILLAGE=__mailla,));
 
@@ -547,7 +550,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         rat[0].append(1)
 
     while etat <> 'fin':
-        print 'iter= ',iter
+        text = ('iter=' + str(iter))
+        aster.affiche('MESSAGE', text)
 
         if iter == 0:
 
@@ -1021,10 +1025,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         deltaE = max(max(diff), abs(min(diff)))
 
-        print 'diff=',diff
-        print 'deltaE =',deltaE
-        print 'E_iter =',E[iter]
-        print 'rat_iter =',rat[iter]
+        #print 'E_iter =',E[iter]
+        #print 'rat_iter =',rat[iter]
+        text = ('deltaE=' + str(deltaE))
+        aster.affiche('MESSAGE', text)
 
         __Enew = DEFI_FONCTION(NOM_PARA='Y', NOM_RESU='DX',
                                ORDONNEE=tuple(E[iter]),
@@ -1436,16 +1440,12 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 DETRUIRE(CONCEPT=_F(NOM=__SOLH[k],), INFO=1)
 
             if deltaE > tole:
-                print('CONVERGENCE NON ATTEINTE')
-                print('NOMBRE ITERATIONS')
-                print (iter)
-                print (deltaE)
+                text = ('CONVERGENCE NON ATTEINTE NOMBRE ITERATIONS=' + str(iter) + ' deltaE=' + str(deltaE))
+                aster.affiche('MESSAGE', text)
 
             else:
-                print('CONVERGENCE ATTEINTE')
-                print('NOMBRE ITERATIONS')
-                print (iter)
-                print (deltaE)
+                text = ('CONVERGENCE ATTEINTE NOMBRE ITERATIONS=' + str(iter) + ' deltaE=' + str(deltaE))
+                aster.affiche('MESSAGE', text)
 
     # definition de la table
     # para/typ pre-trie les colonnes
