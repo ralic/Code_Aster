@@ -501,7 +501,6 @@ class nappe:
         return l_zpa
 
 def verif_freq(freq, l_freq, precision, critere):
-   
     if len(l_freq)==0:
         return True
     else:   
@@ -516,8 +515,9 @@ def verif_freq(freq, l_freq, precision, critere):
             ind +=1
             if ind == len(l_freq):
                 return True
+        return True 
          
-def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], precision=1e-3, critere='RELATIF',check = 2, zpa = None):
+def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], precision=1e-3, critereVF='ABSOLU',check = 2, zpa = None):
 
     # verification et correction 
     # check = 0 verif mais pas de correction
@@ -527,6 +527,10 @@ def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], prec
         UTMESS('A', 'FONCT0_72', valk=(str(nb_pts), str(len(l_freq))))
         nb_pts = len(l_freq) 
     l_freq.sort()
+    for freq in l_freq:
+        if verif_freq(freq, nappe.listFreq, precision, critereVF):
+            UTMESS('A', 'FONCT0_77', valk=(str(freq)))
+    l_freq_log = [math.log10(i)+4.0 for i in l_freq]
     
     # garder une copie de la nappe
     nappe_up = copy.deepcopy(nappe)
@@ -571,7 +575,7 @@ def lissage_spectres(nappe=nappe, fmin=0.2, fmax=35.5, nb_pts=50,l_freq=[], prec
         for j in j_ord:
             # on verifie - que le Zpa n'est pas modifie
             #            - que la frequence ne fait pas partie des frequences exclues
-            if (j!=0 and j!=jmax and not stop) : 
+            if (j!=0 and j!=jmax and not stop and verif_freq(nappe_up.listFreq[j], l_freq_log, precision, critereVF)): 
                 if j+1!=jmax or nappe_up.verifZpa(j):
                     j_supp = j
                     stop = 1

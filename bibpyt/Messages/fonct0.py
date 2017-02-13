@@ -465,4 +465,7 @@ En mode CONCEPTION, un seul nombre de fréquence NB_FREQ_LISS est pris en compte
     76 : _(u"""
 Le nombre de coefficients d'élargissement est différent du nombre de nappes ou tables fournies.
 """),
+    77 : _(u"""
+La fréquence fournie %(k1)s n'appartient pas à la liste des fréquences initiales du spectre.
+"""),
 }
