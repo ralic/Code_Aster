@@ -2,7 +2,7 @@ subroutine op0109()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,6 @@ subroutine op0109()
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsutnu.h"
 #include "asterfort/tbexp2.h"
@@ -506,8 +505,8 @@ subroutine op0109()
 !
 !     -- CREATION DE L'OBJET .REFD SI NECESSAIRE:
 !     -------------------------------------------
-    call refdaj(' ', resu, -1, ' ', 'INIT',&
-                ' ', iret)
+!    call refdaj(' ', resu, -1, ' ', 'INIT',&
+!                ' ', iret)
 !
 !
 !      DEPLACEMENT: (QN/MN)*DNM, FORCE: (QN/MN*W2)*DNM.

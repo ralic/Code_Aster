@@ -7,9 +7,12 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 #include "asterc/getres.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsexch.h"
@@ -25,7 +28,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
     character(len=*) :: mome, resu, typcdi
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,15 +58,17 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 ! IN  : TYPCDI : TYPE DE COMBINAISON DES DIRECTIONS
 !     ------------------------------------------------------------------
     integer :: ibid, i, id, ieq, ier, in, iordr, jdef, jdir, jval, lvale, nbmode
-    integer :: nbtrou, jdrr, tordr(1)
+    integer :: nbtrou, jdrr, jdor, jmod, jcar, jchm, tordr(1), icole
     real(kind=8) :: r8b, r1, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19
     real(kind=8) :: r2, r20, r21, r22, r23, r24, r3, r4, r5, r6, r7, r8, r9, rx
     real(kind=8) :: ry, rz, xxx
     character(len=8) :: k8b, comp(5)
     character(len=16) :: noms2, concep, nomcmd, def
-    character(len=19) :: moncha, champ
+    character(len=19) :: moncha, champ, resu19
     character(len=24) :: vale
     character(len=24) :: valk(3)
+    character(len=14) :: numedd
+    character(len=24) :: matric(3)
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
     data  comp / 'X' , 'Y' , 'Z' , 'QUAD' , 'NEWMARK' /
@@ -76,7 +81,7 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
 !
     do 10 i = 1, 3
         if (ndir(i) .eq. 1) nbmode = nbmode + 1
- 10 end do
+ 10 continue
     if (comdir) nbmode = nbmode + 1
 !
 !     --- CREATION DE LA STRUCTURE D'ACCUEIL ---
@@ -139,8 +144,26 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
             call rsadpa(resu, 'E', 1, 'FREQ', iordr,&
                         0, sjv=jdrr, styp=k8b)
             zr(jdrr) = id
+            call rsadpa(resu, 'E', 1, 'NUME_MODE', iordr,&
+                        0, sjv=jdor, styp=k8b)
+            zi(jdor) = iordr
+            call rsadpa(mome, 'L', 1, 'MODELE', 1,&
+                       0, sjv=jval, styp=k8b, istop=0)
+            call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
+                       0, sjv=jmod, styp=k8b)
+            zk8(jmod) = zk8(jval)
+            call rsadpa(mome, 'L', 1, 'CARAELEM', 1,&
+                       0, sjv=jval, styp=k8b, istop=0)
+            call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
+                       0, sjv=jcar, styp=k8b)
+            zk8(jcar) = zk8(jval)
+            call rsadpa(mome, 'L', 1, 'CHAMPMAT', 1,&
+                       0, sjv=jval, styp=k8b, istop=0)
+            call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
+                       0, sjv=jchm, styp=k8b)
+            zk8(jchm) = zk8(jval)
         endif
- 20 end do
+ 20 continue
 !
     if (comdir) then
         iordr = iordr + 1
@@ -221,7 +244,32 @@ subroutine asstoc(mome, resu, nomsy, neq, repdir,&
         call rsadpa(resu, 'E', 1, 'FREQ', iordr,&
                     0, sjv=jdrr, styp=k8b)
         zr(jdrr) = 4
+        call rsadpa(resu, 'E', 1, 'NUME_MODE', iordr,&
+                    0, sjv=jdor, styp=k8b)
+        zi(jdor) = iordr
+        call rsadpa(mome, 'L', 1, 'MODELE', 1,&
+                    0, sjv=jval, styp=k8b, istop=0)
+        call rsadpa(resu, 'E', 1, 'MODELE', iordr,&
+                    0, sjv=jmod, styp=k8b)
+        zk8(jmod) = zk8(jval)
+        call rsadpa(mome, 'L', 1, 'CARAELEM', 1,&
+                    0, sjv=jval, styp=k8b, istop=0)
+        call rsadpa(resu, 'E', 1, 'CARAELEM', iordr,&
+                    0, sjv=jcar, styp=k8b)
+        zk8(jcar) = zk8(jval)
+        call rsadpa(mome, 'L', 1, 'CHAMPMAT', 1,&
+                    0, sjv=jval, styp=k8b, istop=0)
+        call rsadpa(resu, 'E', 1, 'CHAMPMAT', iordr,&
+                    0, sjv=jchm, styp=k8b)
+        zk8(jchm) = zk8(jval)
     endif
+    resu19 = resu(1:8)
+    call jeveuo(jexnum(mome(1:8)//'           .REFD', 1), 'L', icole)
+    numedd = zk24(icole+1)
+    do 50 i = 1, 3
+       matric(i) = zk24(icole+i+1)
+ 50 continue
+    call refdaj('F', resu19, iordr, numedd, 'DYNAMIQUE', matric, ier)
 !
     call jedema()
 end subroutine
