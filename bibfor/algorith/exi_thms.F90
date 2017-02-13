@@ -55,7 +55,7 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
     integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
     integer :: j_elem_affe
     character(len=8) :: mesh, rep
-    character(len=16) :: notype, typmod
+    character(len=16) :: notype
     integer, pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
