@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'LKR',
-    doc            =  """To complete ..."""  ,
+    doc            =   """To complete ..."""    ,
     num_lc         = 59,
     nb_vari        = 12,
     nom_vari       = ('XIP','GAMMAP','XIVP','GAMMAVP','INDICDIL',
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON','NEWTON_PERT','SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('No',),
+    syme_matr_tang = ('No',),
 )

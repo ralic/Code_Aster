@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ENDO_PORO_BETON',
-    doc            =  """Loi RAG pour le beton"""    ,
+    doc            =   """Loi RAG pour le beton"""      ,
     num_lc         = 66,
     nb_vari        = 116,
     nom_vari       = ('HYD0','SSG1','SSG2','SSG3','SSG4',
@@ -54,5 +54,5 @@ loi = LoiComportement(
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

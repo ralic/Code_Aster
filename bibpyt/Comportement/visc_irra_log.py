@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VISC_IRRA_LOG',
-    doc            =  """Loi de fluage axial sous irradiation des assemblages combustibles.
+    doc            =   """Loi de fluage axial sous irradiation des assemblages combustibles.
    Elle permet de modéliser le fluage primaire et secondaire, paramétrés par la fluence neutronique (cf. [R5.03.09]).
-   Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU."""    ,
+   Le champ de fluence est défini par le mot-clé AFFE_VARC de la commande AFFE_MATERIAU."""      ,
     num_lc         = 28,
     nb_vari        = 2,
     nom_vari       = ('EPSPEQ','IRVECU',),
@@ -33,5 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

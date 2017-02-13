@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'MAZARS_GC',
-    doc            =  """
+    doc            =   """
    Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars.
    Permet de rendre compte de l'adoucissement en compression et la fragilité en traction.
    Dans le cas des poutres multifibres :
@@ -29,7 +29,7 @@ loi = LoiComportement(
    En contrainte plane :
       Pas de couplage possible avec d'autres phénomènes tels que le fluage.
       Cette version permet de rendre mieux compte du cisaillement.
-   """    ,
+   """      ,
     num_lc         = 8,
     nb_vari        = 8,
     nom_vari       = ('CRITSIG','CRITEPS','ENDO','EPSEQT','EPSEQC',
@@ -40,5 +40,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('No',),
+    syme_matr_tang = ('No',),
 )

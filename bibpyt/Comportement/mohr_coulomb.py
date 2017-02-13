@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'MOHR_COULOMB',
-    doc            =  """Loi de Mohr_Coulomb, non-associée, pour la mécanique des sols (cf. [R7.01.16] pour plus de détails).
-            Pas d'ecrouissage"""    ,
+    doc            =   """Loi de Mohr_Coulomb, non-associée, pour la mécanique des sols (cf. [R7.01.16] pour plus de détails).
+            Pas d'ecrouissage"""      ,
     num_lc         = 55,
     nb_vari        = 3,
     nom_vari       = ('EPSPVOL','EPSPEQ','INDIPLAS',),
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('No',),
+    syme_matr_tang = ('No',),
 )

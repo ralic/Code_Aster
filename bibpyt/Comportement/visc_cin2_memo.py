@@ -20,8 +20,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VISC_CIN2_MEMO',
-    doc            =  """Loi élasto-visco-plastique de Chaboche à 2 variables cinématiques et
-   effet de memoire"""    ,
+    doc            =   """Loi élasto-visco-plastique de Chaboche à 2 variables cinématiques et
+   effet de memoire"""      ,
     num_lc         = 4,
     nb_vari        = 28,
     nom_vari       = ('EPSPEQ','INDIPLAS','ALPHAXX','ALPHAYY','ALPHAZZ',
@@ -36,5 +36,5 @@ loi = LoiComportement(
     algo_inte      = ('SECANTE','BRENT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

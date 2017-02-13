@@ -20,13 +20,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VMIS_CIN2_MEMO',
-    doc            =  """Loi élastoplastique de J.L.Chaboche à 2 variables cinématiques qui
+    doc            =   """Loi élastoplastique de J.L.Chaboche à 2 variables cinématiques qui
    rend compte du comportement cyclique en élasto-plasticité avec 2 tenseurs
    d'écrouissage cinématique non linéaire, un écrouissage isotrope non linéaire,
    un effet d'écrouissage sur les variables
    tensorielles de rappel et une effet de mémoire du plus grand écrouissage.
    Toutes les constantes du matériau peuvent éventuellement dépendre de la
-   température."""    ,
+   température."""      ,
     num_lc         = 4,
     nb_vari        = 28,
     nom_vari       = ('EPSPEQ','INDIPLAS','ALPHAXX','ALPHAYY','ALPHAZZ',
@@ -41,5 +41,5 @@ loi = LoiComportement(
     algo_inte      = ('SECANTE','BRENT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

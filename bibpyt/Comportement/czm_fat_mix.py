@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'CZM_FAT_MIX',
-    doc            =  """Relation de comportement cohésive (Cohesive Zone Model FATigue MIXte) pour la fatigue (Cf. [R7.02.11]) modélisant l'ouverture et la
+    doc            =   """Relation de comportement cohésive (Cohesive Zone Model FATigue MIXte) pour la fatigue (Cf. [R7.02.11]) modélisant l'ouverture et la
    propagation d'une fissure sous chargement cyclique. Cette loi est utilisable avec l'élément fini d'interface basé sur une formulation mixte
-   lagrangien augmenté (Cf. [R3.06.13]) """    ,
+   lagrangien augmenté (Cf. [R3.06.13]) """      ,
     num_lc         = 43,
     nb_vari        = 9,
     nom_vari       = ('SEUILDEP','INDIDISS','INDIENDO','PCENERDI','DISSIP',
@@ -34,5 +34,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'HAYHURST',
-    doc            =  """Modele viscoplastique couple a l'endommagement isotrope de Kachanov."""    ,
+    doc            =   """Modele viscoplastique couple a l'endommagement isotrope de Kachanov."""      ,
     num_lc         = 32,
     nb_vari        = 12,
     nom_vari       = ('EPSPXX','EPSPYY','EPSPZZ','EPSPXY','EPSPXZ',
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON','RUNGE_KUTTA','NEWTON_PERT',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

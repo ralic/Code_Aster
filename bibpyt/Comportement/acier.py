@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ACIER',
-    doc            =  """phases metallurgiques de l'acier"""    ,
+    doc            =   """phases metallurgiques de l'acier"""      ,
     num_lc         = 0,
     nb_vari        = 5,
     nom_vari       = ('FERRITE','PERLITE','BAINITE','MARTENSITE','AUSTENITE',
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

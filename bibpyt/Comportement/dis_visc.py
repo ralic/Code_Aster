@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DIS_VISC',
-    doc            =  """Relation de comportement visqueuse pour les éléments discrets"""    ,
+    doc            =   """Relation de comportement visqueuse pour les éléments discrets"""      ,
     num_lc         = 0,
     nb_vari        = 4,
     nom_vari       = ('FORCE','UVISQ','DISSTHER','RAIDEUR',),
@@ -31,5 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('SPECIFIQUE',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

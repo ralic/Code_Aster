@@ -21,7 +21,7 @@ from cata_comportement import LoiComportementMFront
 loi = LoiComportementMFront(
     nom            = 'DruckPragEcroLin',
     symbol_mfront  = 'asterdruckpragecrolin',
-    doc            =  """To complete ..."""  ,
+    doc            =   """To complete ..."""    ,
     num_lc         = 58,
     nb_vari        = 0,
     nom_vari       = None,
@@ -31,5 +31,5 @@ loi = LoiComportementMFront(
     algo_inte      = ('NEWTON_PERT',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

@@ -21,7 +21,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DIS_GRICRA',
-    doc            =  """Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable à des elements discrets"""    ,
+    doc            =   """Relation de comportement de la liaison grille-crayons des assemblages combustibles, applicable à des elements discrets"""      ,
     num_lc         = 0,
     nb_vari        = 7,
     nom_vari       = ('DIS1','DIS2','DIS3','DIS4','DIS5',
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

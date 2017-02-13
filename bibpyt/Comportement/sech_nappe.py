@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'SECH_NAPPE',
-    doc            =  """Relation de comportement de thermique non lineaire pour modéliser le séchage du béton"""    ,
+    doc            =   """Relation de comportement de thermique non lineaire pour modéliser le séchage du béton"""      ,
     num_lc         = 0,
     nb_vari        = 0,
     nom_vari       = None,
@@ -31,5 +31,5 @@ loi = LoiComportement(
     algo_inte      = ('SANS_OBJET',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

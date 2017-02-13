@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'POLYCRISTAL',
-    doc            =  """Comportement poly-cristallin homogénéisé, défini par DEFI_COMPOR"""    ,
+    doc            =   """Comportement poly-cristallin homogénéisé, défini par DEFI_COMPOR"""      ,
     num_lc         = 37,
     nb_vari        = 0,
     nom_vari       = None,
@@ -30,5 +30,5 @@ loi = LoiComportement(
     algo_inte      = ('RUNGE_KUTTA',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

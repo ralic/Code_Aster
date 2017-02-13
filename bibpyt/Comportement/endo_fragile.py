@@ -21,8 +21,8 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ENDO_FRAGILE',
-    doc            =  """Comportement élastique-fragile, à endommagement scalaire et
-   écrouissage isotrope linéaire négatif - R5.03.18"""    ,
+    doc            =   """Comportement élastique-fragile, à endommagement scalaire et
+   écrouissage isotrope linéaire négatif - R5.03.18"""      ,
     num_lc         = 5,
     nb_vari        = 2,
     nom_vari       = ('ENDO','INDIENDO',),
@@ -33,5 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'GRILLE_PINTO_MEN',
-    doc            =  """Relation de comportement des grilles d'armatures de béton armé, à comportement cyclique phénoménologique de Pinto et Menegotto"""    ,
+    doc            =   """Relation de comportement des grilles d'armatures de béton armé, à comportement cyclique phénoménologique de Pinto et Menegotto"""      ,
     num_lc         = 0,
     nb_vari        = 16,
     nom_vari       = ('EPSRN-1','EPSRN','SIGRN','EPSM+V5','DEPS-TH',
@@ -33,5 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

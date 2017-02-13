@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ARME',
-    doc            =  """Relation de comportement élasto-plastique isotherme pour les armements de lignes [R5.03.31]"""    ,
+    doc            =   """Relation de comportement élasto-plastique isotherme pour les armements de lignes [R5.03.31]"""      ,
     num_lc         = 0,
     nb_vari        = 1,
     nom_vari       = ('DUY',),
@@ -30,5 +30,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

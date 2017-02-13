@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'DEBORST',
-    doc            =  """Algo pour résolution en contraintes planes."""    ,
+    doc            =   """Algo pour résolution en contraintes planes."""      ,
     num_lc         = 0,
     nb_vari        = 4,
     nom_vari       = ('DB1','DB2','DB3','DB4',),
@@ -30,5 +30,5 @@ loi = LoiComportement(
     algo_inte      = None,
     type_matr_tang = None,
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

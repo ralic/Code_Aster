@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ENDO_ISOT_BETON',
-    doc            =  """Comportement élastique-fragile qui distingue traction et compression du bétonRelation de comportement élastique fragile.
+    doc            =   """Comportement élastique-fragile qui distingue traction et compression du bétonRelation de comportement élastique fragile.
    Il s'agit d'une modélisation locale à endommagement scalaire et à écrouissage isotrope linéaire négatif qui distingue le comportement
-   en traction et en compression du béton (Cf. [R7.01.04] pour plus de détails)."""    ,
+   en traction et en compression du béton (Cf. [R7.01.04] pour plus de détails)."""      ,
     num_lc         = 6,
     nb_vari        = 2,
     nom_vari       = ('ENDO','INDIENDO',),
@@ -34,5 +34,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION','TANGENTE_SECANTE','IMPLEX',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

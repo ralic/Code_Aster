@@ -21,11 +21,11 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'MAZARS',
-    doc            =  """Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars.
+    doc            =   """Loi d'endommagement isotrope élastique-fragile du béton, suivant le modèle de Mazars.
    Elle permet de prendre en comtpe l'adoucissement et distingue l'endommagemetn en traction et en compression.
    Une seule variable d'endommagement scalaire est utilisée (cf [R7.01.08]).
    En cas de chargement thermique, les coefficients matériau dépendent de la température maximale atteinte au point de Gauss considéré,
-   et la dilatation thermique, supposée linéaire, ne contribue pas à l'évolution de l'endommagement."""    ,
+   et la dilatation thermique, supposée linéaire, ne contribue pas à l'évolution de l'endommagement."""      ,
     num_lc         = 8,
     nb_vari        = 4,
     nom_vari       = ('ENDO','INDIENDO','TEMP_MAX','EPSEQ',),
@@ -36,5 +36,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('No',),
 )

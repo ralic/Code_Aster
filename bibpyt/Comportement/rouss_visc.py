@@ -21,10 +21,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'ROUSS_VISC',
-    doc            =  """Relation de comportement élasto-visco-plastique de G.Rousselier, en petites déformations.
+    doc            =   """Relation de comportement élasto-visco-plastique de G.Rousselier, en petites déformations.
    Elle permet de rendre compte de la croissance des cavités et de décrire la rupture ductile.
    Pour faciliter l'intégration de ce modèle, il est conseillé d'utiliser le redécoupage automatique local du pas de temps (ITER_INTE_PAS).
-   Pour l'intégration de cette loi, une theta-méthode est disponible et on conseille d'utiliser une intégration semi-NEWTON_1D c'est-à-dire : PARM_THETA = 0.5."""    ,
+   Pour l'intégration de cette loi, une theta-méthode est disponible et on conseille d'utiliser une intégration semi-NEWTON_1D c'est-à-dire : PARM_THETA = 0.5."""      ,
     num_lc         = 30,
     nb_vari        = 5,
     nom_vari       = ('EPSPEQ','POROSITE','DISSIP','EBLOC','INDIPLAS',
@@ -35,5 +35,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON_1D',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

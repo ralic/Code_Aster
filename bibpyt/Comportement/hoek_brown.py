@@ -21,9 +21,9 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'HOEK_BROWN',
-    doc            =  """Relation de comportement de Hoek et Brown modifiée pour la modélisation du comportement
+    doc            =   """Relation de comportement de Hoek et Brown modifiée pour la modélisation du comportement
    des roches [R7.01.18] pour la mécanique pure. Pour faciliter l'intégration de ce modèle,
-   on peut utiliser le re-découpage local du pas de temps (ITER_INTE_PAS)."""    ,
+   on peut utiliser le re-découpage local du pas de temps (ITER_INTE_PAS)."""      ,
     num_lc         = 33,
     nb_vari        = 3,
     nom_vari       = ('GAMMAECR','EPSPVOL','INDIPLAS',),
@@ -33,5 +33,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON_1D',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('No',),
+    syme_matr_tang = ('No',),
 )

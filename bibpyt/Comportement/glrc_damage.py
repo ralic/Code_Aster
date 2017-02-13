@@ -20,13 +20,13 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'GLRC_DAMAGE',
-    doc            =  """Modèle global de plaque en béton armé capable de représenter son comportement jusqu'à la ruine.
+    doc            =   """Modèle global de plaque en béton armé capable de représenter son comportement jusqu'à la ruine.
    Contrairement aux modélisations locales où chaque constituant du matériau est modélisé à part, dans les modèles globaux,
    la loi de comportement s'écrit directement en terme de contraintes et de déformations généralisées.
    Les phénomènes pris en compte sont l'élasto-plasticité couplée entre les effets de membrane et de flexion
    (contre une élasto-plasticité en flexion seulement dans GLRC) et l'endommagement en flexion.
    L'endommagement couplé membrane/flexion est traité par GLRC_DM, lequel, par contre, néglige complètement l'élasto-plasticité.
-   Pour les précisions sur la formulation du modèle voir [R7.01.31]."""    ,
+   Pour les précisions sur la formulation du modèle voir [R7.01.31]."""      ,
     num_lc         = 0,
     nb_vari        = 19,
     nom_vari       = ('EPSP1','EPSP2','EPSP3','KHIP1','KHIP2',
@@ -39,5 +39,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

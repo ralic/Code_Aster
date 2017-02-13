@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'VMIS_ISOT_LINE',
-    doc            =  """Loi de plasticité de Von Mises à écrouissage linéaire [R5.03.02]"""    ,
+    doc            =   """Loi de plasticité de Von Mises à écrouissage linéaire [R5.03.02]"""      ,
     num_lc         = 2,
     nb_vari        = 2,
     nom_vari       = ('EPSPEQ','INDIPLAS',),
@@ -32,5 +32,5 @@ loi = LoiComportement(
     algo_inte      = ('ANALYTIQUE',),
     type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )

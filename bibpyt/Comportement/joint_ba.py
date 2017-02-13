@@ -21,10 +21,10 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'JOINT_BA',
-    doc            =  """Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
+    doc            =   """Relation de comportement locale en 2D décrivant le phénomène de la liaison acier - béton pour les structures en béton armé.
    Elle permet de rendre compte de l'influence de la liaison dans la redistribution des contraintes dans le corps du béton ainsi que la prédiction des fissures et leur espacement.
    Disponible pour des chargements en monotone et en cyclique, elle prend en compte les effets du frottement des fissures, et du confinement.
-   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails)."""    ,
+   Une seule variable d'endommagement scalaire est utilisée (cf. [R7.01.21] pour plus de détails)."""      ,
     num_lc         = 13,
     nb_vari        = 6,
     nom_vari       = ('ENDONOR','ENDOTAN','ECRISOM1','ECRISOM2','GLIS',
@@ -35,5 +35,5 @@ loi = LoiComportement(
     algo_inte      = ('NEWTON_1D',),
     type_matr_tang = ('PERTURBATION','VERIFICATION',),
     proprietes     = None,
-    symmetry       = ('Yes',),
+    syme_matr_tang = ('Yes',),
 )
