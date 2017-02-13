@@ -38,6 +38,6 @@ RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
          # mots-clés pour solveur PETSc:
          ALGORITHME      =SIMP(statut='f',typ='TXM',into=("CG", "CR", "GMRES", "GCR", "FGMRES" ),defaut="FGMRES" ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 )  ;

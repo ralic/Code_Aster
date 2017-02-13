@@ -75,6 +75,6 @@ EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
                fr=tr("le CARA_ELEM est nécessaire dès que le modèle contient des éléments de structure : coques, poutres, ..."),),
             ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
          INFO            =SIMP(statut='f',typ='I',into=(1,2),defaut=1),
 )  ;

@@ -116,6 +116,6 @@ IMPR_TABLE=MACRO(nom="IMPR_TABLE",
                             fr=tr("Légende associée à l'axe des ordonnées") ),
    ),
 
-   TITRE          =SIMP(statut='f',typ='TXM',max='**'),
+   TITRE          =SIMP(statut='f',typ='TXM'),
    INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )

@@ -48,7 +48,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
          FORMAT          =SIMP(statut='o',typ='TXM',into=("IDEAS","IDEAS_DS58","ENSIGHT","MED") ),
 
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 
          regles=(UN_PARMI('MAILLAGE','MODELE'),),
          MAILLAGE        =SIMP(statut='f',typ=maillage_sdaster),

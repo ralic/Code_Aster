@@ -121,5 +121,5 @@ POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f'
 
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

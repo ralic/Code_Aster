@@ -50,5 +50,5 @@ REST_SPEC_PHYS=OPER(nom="REST_SPEC_PHYS",op= 148,sd_prod=interspectre,
          MOUVEMENT       =SIMP(statut='f',typ='TXM',defaut="ABSOLU",into=("RELATIF","ABSOLU","DIFFERENTIEL") ),
          OPTION          =SIMP(statut='f',typ='TXM',defaut="DIAG_DIAG",
                                into=("DIAG_TOUT","DIAG_DIAG","TOUT_TOUT","TOUT_DIAG") ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

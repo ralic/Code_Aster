@@ -42,5 +42,5 @@ PROJ_SPEC_BASE=OPER(nom="PROJ_SPEC_BASE",op= 146,sd_prod=interspectre,reentrant=
          VECT_X         =SIMP(statut='f',typ='R',min=3,max=3 ),
          VECT_Y         =SIMP(statut='f',typ='R',min=3,max=3 ),
          ORIG_AXE       =SIMP(statut='f',typ='R',min=3,max=3 ),
-         TITRE          =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE          =SIMP(statut='f',typ='TXM' ),
 );

@@ -52,5 +52,5 @@ DEFI_LIST_ENTI=OPER(nom="DEFI_LIST_ENTI",op=22,sd_prod=listis_sdaster,
 
 
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

@@ -114,5 +114,5 @@ POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=table_sdaster,reentrant='f',
          LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
          COEF_INST       =SIMP(statut='f',typ='R',defaut=1.0E+0),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

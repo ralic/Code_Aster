@@ -40,5 +40,5 @@ POST_DYNA_MODA_T=OPER(nom="POST_DYNA_MODA_T",op= 130,sd_prod=table_sdaster,
            NOM_CMP         =SIMP(statut='o',typ='TXM' ),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

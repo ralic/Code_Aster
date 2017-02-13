@@ -28,7 +28,7 @@ GENE_ACCE_SEISME=MACRO(nom = "GENE_ACCE_SEISME",
  #                EXCLUS('DSP', 'PHASE')),
 
          INIT_ALEA       =SIMP(statut='f',typ='I'),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
          PAS_INST        =SIMP(statut='o',typ='R' ),
          NB_POIN           =SIMP(statut='f',typ='I',fr=tr("nombre de points") ),

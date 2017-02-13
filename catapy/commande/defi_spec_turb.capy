@@ -115,5 +115,5 @@ DEFI_SPEC_TURB=OPER(nom="DEFI_SPEC_TURB",op= 145,sd_prod=spectre_sdaster,
            CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),
            MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 );

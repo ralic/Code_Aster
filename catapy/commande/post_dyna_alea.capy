@@ -61,6 +61,6 @@ POST_DYNA_ALEA=MACRO(nom="POST_DYNA_ALEA",
                                                  fr=tr("Moments spectraux en complément des cinq premiers")),
                            DUREE           =SIMP(statut='f',typ='R',
                                                  fr=tr("durée de la phase forte pour facteur de peak"))),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
 )

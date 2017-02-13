@@ -58,5 +58,5 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
              CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
              CARA_ELEM       =SIMP(statut='f',typ=cara_elem),),
              RESU_FINAL      =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

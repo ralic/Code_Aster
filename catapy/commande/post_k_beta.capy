@@ -42,5 +42,5 @@ POST_K_BETA=OPER(nom="POST_K_BETA",op=198,sd_prod=table_sdaster,
             TABL_THER      = SIMP(statut='o',typ=(table_sdaster)),
             INTITULE       = SIMP(statut='o',typ='TXM' ),
          ),
-         TITRE         = SIMP(statut='f',typ='TXM',max='**'),
+         TITRE         = SIMP(statut='f',typ='TXM'),
 );

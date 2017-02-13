@@ -97,5 +97,5 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
              ),
              ),
          INFO          =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE         =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE         =SIMP(statut='f',typ='TXM'),
 )  ;

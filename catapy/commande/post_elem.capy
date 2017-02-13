@@ -591,7 +591,7 @@ POST_ELEM=OPER(nom="POST_ELEM",op=107,sd_prod=table_sdaster,reentrant='n',
                        TOUT_ORDRE     = SIMP(statut='f',typ='TXM',into=("OUI",) ),
          ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
 
  )  ;

@@ -244,5 +244,5 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
 # FIN DU CATALOGUE : INFO,TITRE ET TYPAGE DU RESULTAT :
 #-----------------------------------------------------
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

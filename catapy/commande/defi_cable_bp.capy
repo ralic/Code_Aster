@@ -62,6 +62,6 @@ DEFI_CABLE_BP=MACRO(nom="DEFI_CABLE_BP",
          b_non_adherent=BLOC(condition="""(equal_to("ADHERENT", 'NON'))""",
             TYPE_RELAX      =SIMP(statut='c',typ='TXM',into=("SANS",),defaut="SANS",),
             ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

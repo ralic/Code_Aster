@@ -58,5 +58,5 @@ EXTR_TABLE=OPER(nom="EXTR_TABLE",
            PRECISION       =SIMP(statut='f',typ='R',defaut= 1.0E-3 ),
          ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

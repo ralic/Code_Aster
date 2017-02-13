@@ -43,5 +43,5 @@ DEFI_BASE_REDUITE=OPER(nom="DEFI_BASE_REDUITE",op=53,
      NB_MODE         =SIMP(statut='f',typ='I'),
      TOLE_SVD        =SIMP(statut='f',typ='R',defaut=1.E-6),
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-     TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+     TITRE           =SIMP(statut='f',typ='TXM'),
 ) ;

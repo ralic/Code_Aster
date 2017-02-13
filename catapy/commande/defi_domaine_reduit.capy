@@ -26,5 +26,5 @@ DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
      NOM_DOMAINE   = SIMP(statut='o',typ='TXM',max=1),
      NOM_INTERFACE = SIMP(statut='o',typ='TXM',max=1),
      INFO          = SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-     TITRE         = SIMP(statut='f',typ='TXM',max='**'),
+     TITRE         = SIMP(statut='f',typ='TXM'),
 ) ;

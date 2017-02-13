@@ -24,6 +24,6 @@ POST_MAIL_XFEM=OPER(nom="POST_MAIL_XFEM",op= 187,sd_prod=maillage_sdaster,
     PREF_NOEUD_P   =SIMP(statut='f',typ='TXM',defaut="NP",validators=LongStr(1,2),),
     PREF_MAILLE_X  =SIMP(statut='f',typ='TXM',defaut="MX",validators=LongStr(1,2),),
     PREF_GROUP_CO  =SIMP(statut='f',typ=grno ,defaut="NFISSU",),
-    TITRE         = SIMP(statut='f',typ='TXM',max='**'),
+    TITRE         = SIMP(statut='f',typ='TXM'),
     INFO           =SIMP(statut='f',typ='I',defaut= 1,into=(1,2,) ),
 );

@@ -127,5 +127,5 @@ COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
            TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
            NIVEAU          =SIMP(statut='f',typ='TXM',into=("SPEC_OSCI","MASS_EFFE","MAXI_GENE"),validators=NoRepeat(),max=3 ),
          ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

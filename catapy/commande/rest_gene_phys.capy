@@ -67,5 +67,5 @@ REST_GENE_PHYS=OPER(nom="REST_GENE_PHYS",op=  75,sd_prod=rest_gene_phys_prod,
          MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
          ACCE_MONO_APPUI =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
          DIRECTION       =SIMP(statut='f',typ='R',min=3,max=3 ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),
+         TITRE           =SIMP(statut='f',typ='TXM' ),
 )  ;

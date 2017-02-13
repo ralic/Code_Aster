@@ -79,6 +79,6 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
            ),
          ),
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 )  ;

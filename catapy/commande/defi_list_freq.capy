@@ -45,5 +45,5 @@ DEFI_LIST_FREQ=MACRO(nom="DEFI_LIST_FREQ",
                     LIST_AMOR       =SIMP(statut='f',typ=listr8_sdaster ),),
              ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2)),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

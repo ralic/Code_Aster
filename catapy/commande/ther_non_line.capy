@@ -89,7 +89,7 @@ THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
 #-------------------------------------------------------------------
          OBSERVATION     =C_OBSERVATION('THERMIQUE'),
 #------------------------------------------------------------------- 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',into=(1,2) ),
 
 )  ;

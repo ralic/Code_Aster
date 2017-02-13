@@ -31,5 +31,5 @@ REST_REDUIT_COMPLET=OPER(nom="REST_REDUIT_COMPLET",op=54,
     BASE_PRIMAL      = SIMP(statut='o',typ=mode_empi,max=1),
     BASE_DUAL        = SIMP(statut='o',typ=mode_empi,max=1),
     INFO             = SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-    TITRE            = SIMP(statut='f',typ='TXM',max='**'),
+    TITRE            = SIMP(statut='f',typ='TXM'),
 ) ;

@@ -30,6 +30,6 @@ INFO_EXEC_ASTER=OPER(nom="INFO_EXEC_ASTER",op=35,sd_prod=table_sdaster,
             FICHIER        =SIMP(statut='f',typ='TXM',validators=LongStr(1,255),
                                  fr=tr("Nom du fichier dont on veut obtenir l'état"),),
          ),
-         TITRE          =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE          =SIMP(statut='f',typ='TXM'),
          INFO           =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )  ;

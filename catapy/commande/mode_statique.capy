@@ -87,6 +87,6 @@ MODE_STATIQUE=OPER(nom="MODE_STATIQUE",op= 93,sd_prod=mode_meca,
          SOLVEUR         =C_SOLVEUR('MODE_STATIQUE'),
 #-------------------------------------------------------------------
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ,) ),
 )  ;

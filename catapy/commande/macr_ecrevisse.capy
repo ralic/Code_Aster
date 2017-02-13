@@ -221,7 +221,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
                                   fr=tr("Generation eventuelle des courbes") ),
          LOGICIEL           = SIMP(statut='f',typ='TXM',validators=LongStr(1,255),),
          VERSION            = SIMP(statut='f',typ='TXM',into = ("3.2.2",) ),
-         ENTETE             = SIMP(statut='f',typ='TXM',max='**',defaut="Titre du calcul Ecrevisse" ),
+         ENTETE             = SIMP(statut='f',typ='TXM',defaut="Titre du calcul Ecrevisse" ),
          IMPRESSION         = SIMP(statut='f',typ='TXM',defaut='NON',into=( 'OUI','NON') ),
          INFO               = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 

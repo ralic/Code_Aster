@@ -37,5 +37,5 @@ LIRE_PLEXUS=OPER(nom="LIRE_PLEXUS",op= 184,sd_prod=evol_char,
                    PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
                b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
                    PRECISION       =SIMP(statut='o',typ='R',),),),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

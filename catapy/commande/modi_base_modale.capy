@@ -28,5 +28,5 @@ MODI_BASE_MODALE=OPER(nom="MODI_BASE_MODALE",op= 149,sd_prod=mode_meca,
          AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
          AMOR_UNIF       =SIMP(statut='f',typ='R' ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=(1,2) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

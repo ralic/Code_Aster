@@ -52,6 +52,6 @@ CALC_FONC_INTERP=OPER(nom="CALC_FONC_INTERP",op= 134,sd_prod=calc_fonc_interp_pr
             PROL_DROITE_FONC=SIMP(statut='f',typ='TXM',into=("EXCLU","CONSTANT","LINEAIRE") ),
             PROL_GAUCHE_FONC=SIMP(statut='f',typ='TXM',into=("EXCLU","CONSTANT","LINEAIRE") ),
          ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
 )  ;

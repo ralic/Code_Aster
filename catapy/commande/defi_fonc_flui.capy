@@ -38,5 +38,5 @@ DEFI_FONC_FLUI=OPER(nom="DEFI_FONC_FLUI",op= 142,sd_prod=fonction_sdaster,
          PROL_GAUCHE     =SIMP(statut='f',typ='TXM' ,defaut="EXCLU",
                                into=("CONSTANT","LINEAIRE","EXCLU") ),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2 ) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

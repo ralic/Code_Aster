@@ -140,7 +140,7 @@ CALC_TABLE=MACRO(nom="CALC_TABLE",
       ),
    ),
 
-   TITRE = SIMP(statut='f',typ='TXM',max='**',
+   TITRE = SIMP(statut='f',typ='TXM',
                 fr=tr("Titre de la table produite")),
    INFO  = SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 )

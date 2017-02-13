@@ -31,5 +31,5 @@ GENE_FONC_ALEA=OPER(nom="GENE_FONC_ALEA",op= 118,sd_prod=interspectre,
          NB_TIRAGE       =SIMP(statut='f',typ='I',defaut= 1 ),
          INIT_ALEA       =SIMP(statut='f',typ='I'),
          INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
 )  ;

@@ -113,6 +113,6 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
          ),
 
 
-         TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE           =SIMP(statut='f',typ='TXM'),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 );

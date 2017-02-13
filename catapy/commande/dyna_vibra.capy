@@ -487,7 +487,7 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 ##########################################################################################
 
 #       Diverse
-        TITRE           = SIMP(statut='f',typ='TXM',max='**'),
+        TITRE           = SIMP(statut='f',typ='TXM'),
         INFO            = SIMP(statut='f',typ='I',into=(1,2),),
         b_impression    = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'TRAN')""",
             IMPRESSION      = FACT(statut='f',

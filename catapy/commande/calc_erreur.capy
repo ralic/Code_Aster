@@ -78,5 +78,5 @@ CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
 #-------------------------------------------------------------------
 
      INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
-     TITRE           =SIMP(statut='f',typ='TXM',max='**'),
+     TITRE           =SIMP(statut='f',typ='TXM'),
 ) ;

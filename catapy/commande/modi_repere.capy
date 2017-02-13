@@ -110,6 +110,6 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                           into=("GLOBAL_UTIL",),),
         CARA_ELEM   =SIMP(statut='o',typ=cara_elem,),
     ),
-    TITRE   =SIMP(statut='f',typ='TXM',max='**',),
+    TITRE   =SIMP(statut='f',typ='TXM',),
     INFO    =SIMP(statut='f',typ='I',defaut=1,into=(1,2),),
 );

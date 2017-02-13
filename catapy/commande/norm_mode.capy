@@ -49,6 +49,6 @@ NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
          MASSE = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r ), ),
          RAIDE = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_gene_r,matr_asse_pres_r ), ),
          AMOR  = SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
-         TITRE      =SIMP(statut='f',typ='TXM',max='**'),
+         TITRE      =SIMP(statut='f',typ='TXM'),
          INFO       =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
 )  ;

@@ -80,5 +80,5 @@ REST_SOUS_STRUC=OPER(nom="REST_SOUS_STRUC",op=  77,sd_prod=rest_sous_struc_prod,
          SQUELETTE       =SIMP(statut='f',typ=squelette ),
          SOUS_STRUC      =SIMP(statut='f',typ='TXM' ),  
          SECTEUR         =SIMP(statut='f',typ='I'),  
-         TITRE           =SIMP(statut='f',typ='TXM',max='**' ),  
+         TITRE           =SIMP(statut='f',typ='TXM' ),  
 )  ;

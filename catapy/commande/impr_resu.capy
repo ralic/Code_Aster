@@ -191,7 +191,7 @@ IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
              FORMAT_R        =SIMP(statut='f',typ='TXM',defaut="1PE21.14"),
            ),
 
-           SOUS_TITRE      =SIMP(statut='f',typ='TXM',max='**'),
+           SOUS_TITRE      =SIMP(statut='f',typ='TXM'),
          ),
          INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
 ) ;
