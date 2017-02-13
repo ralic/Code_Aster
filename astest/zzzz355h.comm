@@ -1,6 +1,6 @@
 # ======================================================================
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -142,9 +142,7 @@ BETON = DEFI_MATERIAU(ELAS = _F(E      = young,
 CHMAT=AFFE_MATERIAU(MAILLAGE  = MAIL,
                     AFFE      = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS',
                                                 'EXTRADOS','BFISH','BFISB',),
-                                    MATER    = BETON,),),
-                    AFFE_VARC = (_F(NOM_VARC ='TEMP',
-                                    VALE_REF = temp_ref),),)
+                                    MATER    = BETON,),),)
 
 
 
@@ -230,6 +228,7 @@ for icalc in xrange(Npos):
                     CHAM_MATER  = CHMAT,
                     MODELE_MECA = MODMECA,
                     MODELE_THER = MODTHER,
+                    TEMP_INIT   = temp_ref,
                     EXCIT_MECA  = _F(CHARGE   = CONDMECA),
                     EXCIT_THER  = _F(CHARGE   = CONDTHER),
                     COMPORTEMENT= _F(RELATION ='ELAS',),
@@ -318,6 +317,7 @@ for icalc in xrange(Npos,Npos+Nneg):
                     CHAM_MATER  = CHMAT,
                     MODELE_MECA = MODMECA,
                     MODELE_THER = MODTHER,
+                    TEMP_INIT   = temp_ref,
                     EXCIT_MECA  = _F(CHARGE   = CONDMECA),
                     EXCIT_THER  = _F(CHARGE   = CONDTHER),
                     COMPORTEMENT= _F(RELATION ='ELAS',),

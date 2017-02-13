@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,6 +35,7 @@ def macr_ecrevisse_ops(self, reuse,
                        ENTETE,
                        IMPRESSION,
                        CHAM_MATER,
+                       TEMP_INIT,
                        CARA_ELEM,
                        CONTACT,
                        EXCIT_MECA,
@@ -258,15 +259,8 @@ def macr_ecrevisse_ops(self, reuse,
                 # Definition de l'etat initial
                 motclefs = {}
                 if (nume_ordre == 0):
-                    # On verifie que temp_ref est bien renseigne dans
-                    # AFFE_MATERIAU
-                    try:
-                        tref = CHAM_MATER.get_vale_ref('TEMP')
-                    except:
-                        UTMESS('F', 'ECREVISSE0_22',)
-
                     motclefs['ETAT_INIT'] = [
-                        _F(VALE=tref, NUME_ORDRE=nume_ordre)]
+                        _F(VALE=TEMP_INIT, NUME_ORDRE=nume_ordre)]
                     if (debug):
                         print 'thermique initialise avec tref'
                 else:
@@ -334,19 +328,14 @@ def macr_ecrevisse_ops(self, reuse,
                 #        est different a chaque passage
                 motclefmater = {}
                 motclefmater['AFFE'] = []
-                motclefmater['AFFE_VARC'] = []
-
-                for j in CHAM_MATER['AFFE_VARC']:
-                    dvarc = j.cree_dict_toutes_valeurs()
-                    motclefmater['AFFE_VARC'].append(dvarc)
-
                 for j in CHAM_MATER['AFFE']:
                     motclefmater['AFFE'].append(j.cree_dict_toutes_valeurs())
-
-                # XXX on croise les doigts que AFFE_VARC est de longueur non
-                # nulle ?!!
-                dvarc['EVOL'] = _RTHMPJ
                 motclefmater['MAILLAGE'] = CHAM_MATER['MAILLAGE']
+
+                # Set external state variables
+                motclefmater['AFFE_VARC'] = []
+                motclefmater['AFFE_VARC'] = [_F(NOM_VARC = 'TEMP', VALE_REF = TEMP_INIT, EVOL = _RTHMPJ)]
+                
                 __MATMEC = AFFE_MATERIAU(
                     **motclefmater
                 )

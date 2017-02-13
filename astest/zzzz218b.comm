@@ -1,6 +1,6 @@
 # person_in_charge: marina.bottoni at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,8 +81,7 @@ CHMAT = AFFE_MATERIAU(
                 MAILLAGE = MAIL,
                 AFFE     = (_F(GROUP_MA = ('BETON','ENCASTRE','INTRADOS','EXTRADOS',
                                            'MILIEU','BFISG1','BFISM1','BFISM2','BFISD2',),
-                               MATER = BETON,),),
-                AFFE_VARC = _F(NOM_VARC = 'TEMP',VALE_REF = temp_ref),)
+                               MATER = BETON,),),)
 
 
 
@@ -149,6 +148,7 @@ RMECA = MACR_ECREVISSE(
                 #
                 MODELE_MECA = MODMECA,
                 MODELE_THER = MODTHER,
+                TEMP_INIT   = temp_ref,
                 CHAM_MATER  = CHMAT,
                 EXCIT_MECA  = _F(CHARGE   = CONDMECA),
                 EXCIT_THER  = _F(CHARGE   = CONDTHER),
