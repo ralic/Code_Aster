@@ -76,6 +76,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
                 TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
 
+                SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
+
                 b_perturb         =BLOC(condition = " (TYPE_MATR_TANG != None) and (TYPE_MATR_TANG != 'TANGENTE_SECANTE') ",
                                    fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
                     VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
@@ -440,6 +442,8 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                           "SPECIFIQUE", "SANS_OBJET")),
 
             TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
+
+            SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
             b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) and (not equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE')) """,
                                fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),

@@ -196,7 +196,11 @@ implicit none
     carcri(14) = ds_compor_para%v_para(i_comp)%c_pointer%nbvarext
     carcri(15) = ds_compor_para%v_para(i_comp)%c_pointer%namevarext
     carcri(16) = ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc
-    carcri(17) = 0
+    if (ds_compor_para%v_para(i_comp)%l_matr_unsymm) then
+        carcri(17) = 1
+    else
+        carcri(17) = 0
+    endif
     carcri(18) = 0
     carcri(19) = ds_compor_para%v_para(i_comp)%c_pointer%matprop
     carcri(20) = ds_compor_para%v_para(i_comp)%c_pointer%nbprop

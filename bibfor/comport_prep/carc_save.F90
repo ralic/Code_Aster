@@ -24,7 +24,7 @@ implicit none
 #include "asterc/mfront_set_integer_parameter.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: list_elem_affe
-    aster_logical :: l_affe_all
+    aster_logical :: l_affe_all, l_matr_unsymm
     integer :: nb_elem_affe, model_dim
     integer, pointer :: v_elem_affe(:) => null()
     character(len=16) :: keywordfact
@@ -109,10 +109,12 @@ implicit none
         post_incr        = ds_compor_para%v_para(i_comp)%post_incr
         rela_comp        = ds_compor_para%v_para(i_comp)%rela_comp
         algo_inte        = ds_compor_para%v_para(i_comp)%algo_inte
+        l_matr_unsymm    = ds_compor_para%v_para(i_comp)%l_matr_unsymm
         libr_name        = ds_compor_para%v_para(i_comp)%comp_exte%libr_name
         subr_name        = ds_compor_para%v_para(i_comp)%comp_exte%subr_name
         model_mfront     = ds_compor_para%v_para(i_comp)%comp_exte%model_mfront
         model_dim        = ds_compor_para%v_para(i_comp)%comp_exte%model_dim
+
 !
 ! ----- Detection of specific cases
 !
@@ -181,7 +183,12 @@ implicit none
         p_carc_valv(15) = ds_compor_para%v_para(i_comp)%c_pointer%namevarext
         p_carc_valv(16) = ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc
 !       cf. CALC_POINT_MAT / PMDORC
-        p_carc_valv(17) = 0
+        if (l_matr_unsymm) then
+            p_carc_valv(17) = 1
+        else
+            p_carc_valv(17) = 0
+        endif
+!       For THM
         p_carc_valv(18) = parm_alpha
 !       exte_comp UMAT / MFRONT
         p_carc_valv(19) = ds_compor_para%v_para(i_comp)%c_pointer%matprop

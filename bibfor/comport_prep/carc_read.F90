@@ -15,6 +15,7 @@ implicit none
 #include "asterc/lcalgo.h"
 #include "asterc/lccree.h"
 #include "asterc/lctest.h"
+#include "asterc/lcsymm.h"
 #include "asterfort/jeveuo.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/umat_get_function.h"
@@ -28,7 +29,7 @@ implicit none
 #include "asterfort/deprecated_algom.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +61,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: keywordfact=' '
+    character(len=16) :: keywordfact=' ', answer
     integer :: i_comp=0, iret=0, nb_comp=0, model_dim=0
     integer :: cptr_nbvarext=0, cptr_namevarext=0, cptr_fct_ldc=0
     integer :: cptr_matprop=0, cptr_nbprop=0, nbval = 0
@@ -72,11 +73,12 @@ implicit none
     integer :: ipostiter=0, ipostincr=0
     character(len=8) :: mesh = ' '
     character(len=16) :: rela_comp=' ', rela_comp_py=' '
+    character(len=16) :: defo_comp=' ', defo_comp_py=' '
     character(len=16) :: veri_b=' '
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
-    aster_logical :: l_kit_thm=.false._1, l_mfront_proto=.false._1
-    aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1, l_kit = .false._1
+    aster_logical :: l_kit_thm=.false._1, l_mfront_proto=.false._1, l_kit_ddi = .false._1
+    aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1, l_kit = .false._1, l_matr_unsymm
     character(len=16) :: texte(3)=(/ ' ',' ',' '/), model_mfront=' '
     character(len=255) :: libr_name=' ', subr_name=' '
     integer, pointer :: v_model_elem(:) => null()
@@ -98,37 +100,45 @@ implicit none
 !
     do i_comp = 1, nb_comp
 !
-! ----- Get RELATION
+! ----- Get parameters
 !
-        call getvtx(keywordfact, 'RELATION', iocc = i_comp, scal = rela_comp)
+        call getvtx(keywordfact, 'RELATION'   , iocc = i_comp, scal = rela_comp)
+        call getvtx(keywordfact, 'DEFORMATION', iocc = i_comp, scal = defo_comp)
 !
 ! ----- Detection of specific cases
 !
         call comp_meca_l(rela_comp, 'KIT'    , l_kit)
         call comp_meca_l(rela_comp, 'KIT_THM', l_kit_thm)
+        call comp_meca_l(rela_comp, 'KIT_DDI', l_kit_ddi)
 !
 ! ----- Coding comportment (Python)
 !
         call lccree(1, rela_comp, rela_comp_py)
+        call lccree(1, defo_comp, defo_comp_py)
+!
+! ----- Get mechanics part
+!
+        if (l_kit_thm) then
+            call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
+            rela_thmc = kit_comp(1)
+            rela_ther = kit_comp(2)
+            rela_hydr = kit_comp(3)
+            rela_meca = kit_comp(4)
+        elseif (l_kit_ddi) then
+            call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
+            rela_meca = kit_comp(1)
+        else
+            rela_meca = rela_comp
+        endif
+        call lccree(1, rela_meca, rela_meca_py)
 !
 ! ----- Get ALGO_INTE
 !
         call getvtx(keywordfact, 'ALGO_INTE', iocc = i_comp, scal = algo_inte, nbret = iret)
         if (iret .eq. 0) then
             call lcalgo(rela_comp_py, algo_inte)
-        else
-            if (l_kit_thm) then
-                call comp_meca_rkit(keywordfact, i_comp, rela_comp, kit_comp)
-                rela_thmc = kit_comp(1)
-                rela_ther = kit_comp(2)
-                rela_hydr = kit_comp(3)
-                rela_meca = kit_comp(4)
-            else
-                rela_meca = rela_comp
-            endif
-            call lccree(1, rela_meca, rela_meca_py)
+        else  
             call lctest(rela_meca_py, 'ALGO_INTE', algo_inte, iret)
-            call lcdiscard(rela_meca_py)
             if (iret .eq. 0) then
                 texte(1) = algo_inte
                 texte(2) = 'ALGO_INTE'
@@ -136,6 +146,21 @@ implicit none
                 call utmess('F', 'COMPOR1_45', nk = 3, valk = texte)
             endif
         endif
+!
+! ----- Symmetric or not ?
+!
+        l_matr_unsymm = .false.
+        call lcsymm(rela_comp_py, answer)
+        l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'No'
+        call lcsymm(rela_meca_py, answer)
+        l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'No'
+        call lcsymm(defo_comp_py, answer)
+        l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'No'
+        call getvtx(keywordfact, 'SYME_MATR_TANG', iocc = i_comp, scal = answer, nbret = iret)
+        if (iret .ne. 0) then
+            l_matr_unsymm = l_matr_unsymm .or. answer .eq. 'NON'
+        endif
+        call lcdiscard(rela_meca_py)
 !
 ! ----- Get ITER_INTE_PAS
 !
@@ -341,6 +366,7 @@ implicit none
         ds_compor_para%v_para(i_comp)%c_pointer%nbprop         = cptr_nbprop
         ds_compor_para%v_para(i_comp)%rela_comp                = rela_comp
         ds_compor_para%v_para(i_comp)%algo_inte                = algo_inte
+        ds_compor_para%v_para(i_comp)%l_matr_unsymm            = l_matr_unsymm
         ds_compor_para%v_para(i_comp)%comp_exte%nb_vari_umat   = 0
         ds_compor_para%v_para(i_comp)%comp_exte%libr_name      = libr_name 
         ds_compor_para%v_para(i_comp)%comp_exte%subr_name      = subr_name
