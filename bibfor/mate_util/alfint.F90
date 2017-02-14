@@ -4,12 +4,13 @@ subroutine alfint(chmatz   , imate, mate_namz, tdef, para_namz,&
 implicit none
 !
 #include "jeveux.h"
+#include "asterf_types.h"
 #include "asterc/getres.h"
+#include "asterc/r8nnem.h"
 #include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/gcncon.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
@@ -19,9 +20,11 @@ implicit none
 #include "asterfort/jexnum.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
+#include "asterfort/rccome.h"
+#include "asterfort/get_tref.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -65,21 +68,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(1)
-    character(len=8) :: k8dummy, chmate, mate_name, phys_name, valk(2)
-    character(len=24) :: ktref
+    aster_logical :: l_thm, l_tref_is_nan
+    integer :: icodre(1),codret
+    character(len=8) :: k8dummy, chmate, mate_name, valk(2)
     character(len=32) :: phenom
     character(len=16) :: typres, nomcmd, para_name
     character(len=19) :: chwork
-    integer :: nb_cmp, i, nbpts, jv_nomrc
-    integer :: nbec, k, ec1, kk, ngdmax
+    integer :: i, nbpts, jv_nomrc
     real(kind=8) :: undemi, tref, alfref(1), alphai, ti, tim1, tip1
     real(kind=8) :: alfim1, alfip1, dalref
     character(len=24), pointer :: v_prol(:) => null()
     real(kind=8), pointer :: v_func_vale(:) => null()
     real(kind=8), pointer :: v_work_vale(:) => null()
-    integer, pointer :: v_chmate_desc(:) => null()
-    character(len=8), pointer :: v_chmate_vale(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -95,43 +95,15 @@ implicit none
         goto 100
     endif
 !
-! - Access to CHAM_MATER
-!
-    call jeveuo(chmate//'.CHAMP_MAT .DESC', 'L', vi =v_chmate_desc)
-    call jeveuo(chmate//'.CHAMP_MAT .VALE', 'L', vk8=v_chmate_vale)
-!
-! - Check physical quantity
-!
-    call jenuno(jexnum('&CATA.GD.NOMGD', v_chmate_desc(1)), phys_name)
-    ASSERT(phys_name.eq.'NOMMATER')
-    call jelira(jexnom('&CATA.GD.NOMCMP', 'NOMMATER'), 'LONMAX', nb_cmp)
-    call dismoi('NB_EC', phys_name, 'GRANDEUR', repi=nbec)
-    ngdmax=v_chmate_desc(2)
-!
-! - Get TREF (SUR LE 1ER ENTIER CODE)
-!
-    ec1 = v_chmate_desc(3+2*ngdmax+nbec*(imate-1)+1)
-    k   = 0
-    do kk = 1, 30
-        if (exisdg([ec1],kk)) then
-            k=k+1
-        endif
-    end do
-    if (v_chmate_vale(nb_cmp*(imate-1)+k-3) .ne. 'TREF=>') then
-        call utmess('F', 'MATERIAL1_56', sk=chmate)
-    endif
-    ktref(1:8)   = v_chmate_vale(nb_cmp*(imate-1)+k-2)
-    ktref(9:16)  = v_chmate_vale(nb_cmp*(imate-1)+k-1)
-    ktref(17:24) = v_chmate_vale(nb_cmp*(imate-1)+k)
-    if (ktref(1:3) .eq. 'NAN') then
-        goto 999
-    endif
-    read (ktref,'(1PE22.15)') tref
-!
 ! - Get phenomen for material
 !
     call jeveut(mate_name//'.MATERIAU.NOMRC', 'L', jv_nomrc)
     phenom = zk32(jv_nomrc+mate_nume-1)(1:10)
+!
+! - Is THM ?
+!
+    call rccome(mate_name, 'THM_DIFFU', codret)
+    l_thm = codret .eq. 0
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -165,15 +137,32 @@ implicit none
 !
     if (nbpts .eq. 1) then
         call jeveuo(chwork(1:19)//'.PROL', 'L', vk24=v_prol)
-!        -- SI LA FONCTION EST UNE CONSTANTE, ON NE FAIT RIEN :
         if (v_prol(1) .eq. 'CONSTANT') then
             goto 100
-!        -- SI TREF ET TDEF SONT PROCHES (1 DEGRE), ON NE FAIT RIEN :
-        else if (abs(tref-tdef) .lt. 1.d0) then
-            goto 100
         else
-            call utmess('F', 'MATERIAL1_42', sk=func_name(1:8))
+            if (l_thm) then
+                call utmess('F', 'MATERIAL1_4')
+            endif
+            call get_tref(chmate, imate, tref, l_tref_is_nan)
+            if (l_tref_is_nan) then
+                goto 999
+            endif
+            if (abs(tref-tdef) .lt. 1.d0) then
+                goto 100
+            else
+                call utmess('F', 'MATERIAL1_42', sk=func_name(1:8))
+            endif
         endif
+    endif
+!
+! - Get TREF
+!
+    if (l_thm) then
+        call utmess('F', 'MATERIAL1_4')
+    endif
+    call get_tref(chmate, imate, tref, l_tref_is_nan)
+    if (l_tref_is_nan) then
+        goto 999
     endif
 !
 ! - Get ALPHA at reference temperature tref
@@ -258,8 +247,9 @@ implicit none
     func_name = chwork
 !
     goto 100
-!     -- SECTION "ERREUR":
+!
 999 continue
+!
     valk(1)=chmate
     valk(2)=mate_name
     call utmess('F', 'MATERIAL1_2', nk=2, valk=valk)

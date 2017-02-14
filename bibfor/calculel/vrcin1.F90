@@ -167,8 +167,7 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
                 prolga=cesv(iad+5)(1:8)
                 proldr=cesv(iad+6)(1:8)
                 finst =cesv(iad+7)(1:8)
-                ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP') .or. (tysd.eq.'VIDE'))
-                if (tysd .eq. 'VIDE') goto 2
+                ASSERT((tysd.eq.'EVOL') .or. (tysd.eq.'CHAMP'))
 
                 k80=' '
                 k80(1:8) =tysd

@@ -15,13 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine afvarc_obje_affe(chmate, mesh, model, varc_cata, varc_affe)
-        use Material_Datastructure_type
+    subroutine get_tref(chmate, imate, tref, l_tref_is_nan)
         character(len=8), intent(in) :: chmate
-        character(len=8), intent(in) :: mesh
-        character(len=8), intent(in) :: model
-        type(Mat_DS_VarcListCata), intent(in) :: varc_cata
-        type(Mat_DS_VarcListAffe), intent(in) :: varc_affe
-    end subroutine afvarc_obje_affe
+        integer, intent(in) :: imate
+        real(kind=8), intent(out) :: tref
+        aster_logical, intent(out) :: l_tref_is_nan
+    end subroutine get_tref
 end interface

@@ -114,7 +114,7 @@ implicit none
             endif
             varc_affe%list_affe_varc(i_affe_varc)%vale_refe = vale_refe
 ! --------- To affect
-            type_affe      = 'VIDE'
+            type_affe      = ' '
             vale_phys_para = ' '
             evol           = ' '
             call getvid('AFFE_VARC', 'CHAM_GD', iocc=i_affe_varc, scal=vale_phys_para, nbret=n1)
@@ -127,14 +127,7 @@ implicit none
                 type_affe      = 'EVOL'
                 vale_phys_para = ' '
             else
-                type_affe      = 'VIDE'
-                vale_phys_para = ' '
-                evol           = ' '
-                if (varc_name .ne. 'TEMP') then
-                    call utmess('F', 'MATERIAL2_11', sk=varc_name)
-                endif
-!           -- POUR LA THM, ON PEUT UTILISER VALE_REF SANS DONNER CHAM_GD NI EVOL :
-                ASSERT(vale_refe .ne. r8vide())
+                ASSERT(.FALSE.)
             endif
             evol_prol_l = ' '
             evol_prol_r = ' '
