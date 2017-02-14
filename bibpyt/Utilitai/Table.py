@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -603,7 +603,7 @@ class Table(TableBase):
         self.titr = cut_long_lines(self.titr, 80)
         # il y a eu limite à 50 titres dans le fortran autant le limiter
         # maintenant
-        dico = {'TITRE': ['%-80s' % lig for lig in self.titr.split('\n')][:50],
+        dico = {'TITRE': ['%-80s' % lig for lig in self.titr.split('\n')][:1],
                 'LISTE': [], }
         # remplissage de chaque occurrence (pour chaque paramètre) du mot-clé
         # facteur LISTE

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -246,7 +246,7 @@ SISM_SPE=COMB_SISM_MODAL(  MODE_MECA=MODE_MEC,
                                     NATURE = 'ACCE'),
                             COMB_MODE=_F(  TYPE = 'SRSS'),
                             OPTION=( 'ACCE_ABSOLU',),
-                            TITRE=( 'CAS TEST &CODE','&RL DATE &DATE',)
+                            TITRE=( 'CAS TEST &CODE &RL DATE &DATE',)
                      )
 
 ###--->> REFERENCE : FICHE DE VALIDATION (DYNAM S&M)

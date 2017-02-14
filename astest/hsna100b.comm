@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -212,8 +212,7 @@ RESUSECH=THER_NON_LINE(          MODELE=MOTH,
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                             EVOL_THER_SECH=RESUTHER,
-                             TITRE=( ' CAS TEST &CODE',
-                                     '&RL COMMANDE &COMMANDE', )
+                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
                          )
 
 RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
@@ -227,8 +226,7 @@ RESUSECH=THER_NON_LINE(reuse=RESUSECH,          MODELE=MOTH,
                                             TOUT = 'OUI',            ),
                             CONVERGENCE=_F(ITER_GLOB_MAXI=20),
                             EVOL_THER_SECH=RESUTHER,
-                             TITRE=( ' CAS TEST &CODE',
-                                     '&RL COMMANDE &COMMANDE', )
+                             TITRE=( ' CAS TEST &CODE &RL COMMANDE &COMMANDE', )
                          )
 
 
