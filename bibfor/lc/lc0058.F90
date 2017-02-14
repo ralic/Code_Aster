@@ -4,6 +4,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                   nvi, vim, option, angmas, nwkin,&
                   wkin, icomp, stress, statev, dsidep,&
                   codret)
+use calcul_module, only : ca_iactif_
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -57,7 +58,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !       OUT  DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !       OUT  CODRET  CODE-RETOUR = 0 SI OK, =1 SINON
 ! ======================================================================
-! aslint: disable=W1504,W0104
+! aslint: disable=W1504
     implicit none
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
@@ -111,8 +112,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
 !     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
     noel=0
 
-    if (nint(crit(17)) .ne. 1) then
-!        NUMERO D'ELEMENT
+    if (ca_iactif_ .ne. 2) then
         call tecael(iadzi, iazk24, noms=0)
         noel=zi(iadzi)
     endif

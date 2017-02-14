@@ -24,7 +24,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -196,7 +196,7 @@ implicit none
     carcri(14) = ds_compor_para%v_para(i_comp)%c_pointer%nbvarext
     carcri(15) = ds_compor_para%v_para(i_comp)%c_pointer%namevarext
     carcri(16) = ds_compor_para%v_para(i_comp)%c_pointer%fct_ldc
-    carcri(17) = 1
+    carcri(17) = 0
     carcri(18) = 0
     carcri(19) = ds_compor_para%v_para(i_comp)%c_pointer%matprop
     carcri(20) = ds_compor_para%v_para(i_comp)%c_pointer%nbprop
