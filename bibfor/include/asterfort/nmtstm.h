@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,9 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmtstm(compor, imatri, matsym)
-        character(len=16) :: compor(*)
-        integer :: imatri
-        aster_logical :: matsym
+    subroutine nmtstm(carcri, jv_matr, l_matr_symm)
+        real(kind=8), intent(in) :: carcri(*)
+        aster_logical, intent(out) :: l_matr_symm
+        integer, intent(out) :: jv_matr
     end subroutine nmtstm
 end interface
