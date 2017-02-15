@@ -1,25 +1,25 @@
-subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
-                  rkfct, solu, decoup, fonction)
+subroutine rk5app(nbeq, vparam_real, vparam_int, dtemps, yinit, dyinit,&
+                  rk5fct, solu, decoup)
     implicit none
 #include "asterf_types.h"
     integer :: nbeq
-    real(kind=8) :: vparam(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
+    real(kind=8) :: vparam_real(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
     aster_logical :: decoup
-    integer, optional :: fonction(*)
+    integer :: vparam_int(*)
+!
     interface
-        subroutine rkfct(pp, nbeq, yy0, dy0, dyy, decoup, pf)
-            integer :: nbeq
-            real(kind=8) :: pp(*)
-            real(kind=8) :: yy0(nbeq)
-            real(kind=8) :: dy0(nbeq)
-            real(kind=8) :: dyy(nbeq)
+        subroutine rk5fct(ppr, ppi, yy0, dy0, dyy, decoup)
+            real(kind=8) :: ppr(*)
+            integer      :: ppi(*)
+            real(kind=8) :: yy0(*)
+            real(kind=8) :: dy0(*)
+            real(kind=8) :: dyy(*)
             aster_logical :: decoup
-            integer, optional :: pf(*)
-        end subroutine rkfct
+        end subroutine rk5fct
     end interface
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,7 +47,8 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
 !
 ! IN
 !  nbeq        : nombre d'équations
-!  vparam      : paramètres
+!  vparam_real : paramètres réels
+!  vparam_int  : paramètres entiers
 !  dtemps      : incrément de temps
 !  yinit       : valeurs à t
 !  dyinit      : vitesse à t
@@ -85,29 +86,16 @@ subroutine rk5app(nbeq, vparam, dtemps, yinit, dyinit,&
                     /110592.0d0, 253.0d0/4096.0d0 /)
 !
 !   niveaux de RK
-    if ( present(fonction) ) then
-        do niv = 1, nivrk
-            do ii = 1, nbeq
-                yy(ii) = yinit(ii)
-                do nn = 1, niv - 1
-                    yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
-                enddo
+    do niv = 1, nivrk
+        do ii = 1, nbeq
+            yy(ii) = yinit(ii)
+            do nn = 1, niv - 1
+                yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
             enddo
-            call rkfct(vparam, nbeq, yy, dyinit, rr(1, niv), decoup, pf=fonction)
-            if (decoup) goto 999
         enddo
-    else
-        do niv = 1, nivrk
-            do ii = 1, nbeq
-                yy(ii) = yinit(ii)
-                do nn = 1, niv - 1
-                    yy(ii) = yy(ii) + tabb(niv,nn)*dtemps*rr(ii,nn)
-                enddo
-            enddo
-            call rkfct(vparam, nbeq, yy, dyinit, rr(1, niv), decoup)
-            if (decoup) goto 999
-        enddo
-    endif
+        call rk5fct(vparam_real, vparam_int, yy, dyinit, rr(1,niv), decoup)
+        if (decoup) goto 999
+    enddo
 !
     do ii = 1, nbeq
 !       intégration

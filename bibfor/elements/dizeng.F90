@@ -2,7 +2,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
                   nc, ulm, dul, pgl, iret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,6 +77,7 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !   SOUPL_1  RAIDE_2  SOUPL_3  RAID_VISQ   PUIS_VISQ
     parameter  (nbpara=5)
     real(kind=8) :: ldcpar(nbpara)
+    integer      :: ldcpai(1)
     real(kind=8) :: temps0, temps1, dtemps
 !   équations du système : sigma, epsivis, epsi, puiss
     integer :: nbequa, nbdecp
@@ -216,9 +217,8 @@ subroutine dizeng(option, nomte, ndim, nbt, nno,&
 !   récupération des variables internes : epsivis  puiss  tangente
     y0(2) = zr(ivarim+1)
     y0(4) = zr(ivarim+2)
-    call rk5adp(nbequa, ldcpar, temps0, dtemps, nbdecp,&
-                errmax, y0, dy0, zengen, resu,&
-                iret)
+    call rk5adp(nbequa, ldcpar, ldcpai, temps0, dtemps, nbdecp,&
+                errmax, y0, dy0, zengen, resu, iret)
 !   resu(1:nbeq)            : variables intégrées
 !   resu(nbeq+1:2*nbeq)     : d(resu)/d(t) a t+dt
     if (iret .ne. 0) goto 999

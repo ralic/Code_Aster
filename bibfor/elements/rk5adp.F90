@@ -1,36 +1,33 @@
-subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
-                  errmax, y0, dy0, rkfct, resu,&
-                  iret, fonction )
+subroutine rk5adp(nbeq, param_real, param_int, t0, dt0, nbmax,&
+                  errmax, y0, dy0, rk5fct, resu, iret)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/rk5app.h"
-    integer :: nbeq
-    real(kind=8) :: param(*)
+    integer      :: nbeq
+    real(kind=8) :: param_real(*)
+    integer      :: param_int(*)
     real(kind=8) :: t0
     real(kind=8) :: dt0
-    integer :: nbmax
+    integer      :: nbmax
     real(kind=8) :: errmax
     real(kind=8) :: y0(nbeq)
     real(kind=8) :: dy0(nbeq)
     real(kind=8) :: resu(2*nbeq)
-    integer :: iret
-    integer, optional :: fonction(*)
+    integer      :: iret
 !
     interface
-        subroutine rkfct(pp, nbeq, yy0, dy0, dyy, decoup, pf)
-            real(kind=8) :: pp(*)
-            integer :: nbeq
-            real(kind=8) :: yy0(nbeq)
-            real(kind=8) :: dy0(nbeq)
-            real(kind=8) :: dyy(nbeq)
+        subroutine rk5fct(ppr, ppi, yy0, dy0, dyy, decoup)
+            real(kind=8) :: ppr(*)
+            integer      :: ppi(*)
+            real(kind=8) :: yy0(*)
+            real(kind=8) :: dy0(*)
+            real(kind=8) :: dyy(*)
             aster_logical :: decoup
-            integer, optional :: pf(*)
-        end subroutine rkfct
+        end subroutine rk5fct
     end interface
-
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,8 +54,9 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
 ! --------------------------------------------------------------------------------------------------
 !
 !  IN
-!     nbeq     : nombre d'équations
-!     param    : paramètres du comportement
+!     nbeq          : nombre d'équations
+!     param_real    : paramètres réels du comportement
+!     param_int     : paramètres entier du comportement
 !     t0       : temps
 !     dt0      : incrément de temps
 !     nbmax    : nombre d'adaptation successive
@@ -106,12 +104,8 @@ subroutine rk5adp(nbeq, param, t0, dt0, nbmax,&
         iret = 1
         goto 999
     endif
-    decoup = .false.
-    if ( present(fonction) ) then
-        call rk5app(nbeq, param, dt9, y9, dy0, rkfct, solu, decoup, fonction=fonction)
-    else
-        call rk5app(nbeq, param, dt9, y9, dy0, rkfct, solu, decoup)
-    endif
+    decoup = ASTER_FALSE
+    call rk5app(nbeq, param_real, param_int, dt9, y9, dy0, rk5fct, solu, decoup)
     nbbou = nbbou + 1
 !   découpage forcé
     if (decoup) then

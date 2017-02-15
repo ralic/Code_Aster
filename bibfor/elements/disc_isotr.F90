@@ -1,13 +1,15 @@
-subroutine disc_isotr(pp, nbeq, yy0, dy0, dyy, decoup, pf)
+subroutine disc_isotr(ppr, ppi, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
-    integer :: nbeq
-    real(kind=8) :: pp(*), yy0(nbeq), dy0(nbeq), dyy(nbeq)
+    real(kind=8) :: ppr(*)
+    integer      :: ppi(*)
+    real(kind=8) :: yy0(*)
+    real(kind=8) :: dy0(*)
+    real(kind=8) :: dyy(*)
     aster_logical :: decoup
-    integer, optional :: pf(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,15 +30,19 @@ subroutine disc_isotr(pp, nbeq, yy0, dy0, dyy, decoup, pf)
 !        DISCRET AVEC COMPORTEMENT ISOTROPE
 !
 !  IN
-!     pp       : paramètres
+!     ppr      : paramètres réels
+!     ppi      : paramètres entiers
 !     nbeq     : nombre d'équations
 !     yy0      : valeurs initiales
 !     dy0      : dérivées initiales
-!     pf       : informations sur les fonctions pf(3*nbfct) : (nbvale, jprol, jvale)
 !
 !  OUT
 !     dyy      : dérivées calculées
 !     decoup   : pour forcer l'adaptation du pas de temps
+!
+! --------------------------------------------------------------------------------------------------
+!
+!     ppi  : informations sur les fonctions (3*nbfct) : (nbvale, jprol, jvale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +54,9 @@ subroutine disc_isotr(pp, nbeq, yy0, dy0, dyy, decoup, pf)
 !
     decoup = .false.
     dyy(iu) = dy0(iu)
-    raidex = pp(1)/pp(2)
+    raidex = ppr(1)/ppr(2)
 !   La fonction seuil et sa dérivée
-    call val_fct_dfct(pf,pp(2)+yy0(ip),vfct,dfct)
+    call val_fct_dfct(ppi,ppr(2)+yy0(ip),vfct,dfct)
     seuil = abs(yy0(iforce)) - vfct
     if ( seuil .le. 0.0 ) then
         dyy(ip) = 0.0

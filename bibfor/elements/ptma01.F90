@@ -81,9 +81,9 @@ subroutine ptma01(kanl, itype, m, ist, rho,&
 !
 !     INITIALISATION
     zero = 0.0d0
-    do 10 i = 1, 78
+    do i = 1, 78
         m(i) = zero
-10  end do
+    enddo
 !
 !     -- SI G  ET E SONT NULS : ON FAIT G=1.
     if (abs(g) .lt. 1.0d0/r8gaem()) then

@@ -3,7 +3,7 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     implicit none
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,21 +34,17 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/distno.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/fointe.h"
-#include "asterfort/ftang.h"
 #include "asterfort/gloloc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/locglo.h"
 #include "asterfort/rk5adp.h"
 #include "asterfort/nlget.h"
-#include "asterfort/nlsav.h"
 #include "asterfort/tophys.h"
 #include "asterfort/tophys_ms.h"
 #include "asterfort/togene.h"
 #include "asterfort/utmess.h"
-#include "asterfort/vecini.h"
 #include "asterfort/zengen.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -74,6 +70,7 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8)      :: dvitlo(3), flocal(3), errmax, fgloba(3), y0(4)
     real(kind=8)      :: dy0(4), ldcpar(5), resu(8)
+    integer           :: ldcpai(1)
     character(len=8)  :: sd_dtm, sd_nl, monmot, obst_typ
     character(len=19) :: nomres
 !
@@ -229,7 +226,7 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
     
 !       --- Runge-Kutta 5/4 integration from t -> t+dt
         iret = 0
-        call rk5adp(4, ldcpar, time, step, nbdecp,&
+        call rk5adp(4, ldcpar, ldcpai, time, step, nbdecp,&
                     errmax, y0, dy0, zengen, resu, iret)
         if ( iret.ne.0 ) then
             call utmess('A', 'DISCRETS_42',si=nbdecp, sr=errmax)

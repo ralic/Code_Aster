@@ -1,13 +1,15 @@
-subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
+subroutine zengen(ppr, ppi, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
-    integer :: nbeq
-    real(kind=8) :: pp(*), yy0(nbeq), dy0(nbeq), dyy(nbeq)
+    real(kind=8) :: ppr(*)
+    integer      :: ppi(*)
+    real(kind=8) :: yy0(*)
+    real(kind=8) :: dy0(*)
+    real(kind=8) :: dyy(*)
     aster_logical :: decoup
-    integer, optional :: pf(*)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +30,8 @@ subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
 !        MODÈLE DE D'AMORTISSEUR DE ZENER GÉNÉRALISÉ
 !
 !  IN
-!     pp       : paramètres
+!     ppr      : paramètres réels
+!     ppi      : paramètres entiers
 !     nbeq     : nombre d'équations
 !     yy0      : valeurs initiales
 !     dy0      : dérivées initiales
@@ -51,22 +54,22 @@ subroutine zengen(pp, nbeq, yy0, dy0, dyy, decoup, pf)
     parameter (is1=1,ie2=2,is3=3,inu3=4,ialp3=5)
 !
     dyy(iepsi) = dy0(iepsi)
-    xx = (yy0(isig)*(1.0d0+pp(ie2)*pp(is1)) -pp(ie2)*yy0(iepsi))/pp(inu3)
+    xx = (yy0(isig)*(1.0d0+ppr(ie2)*ppr(is1)) -ppr(ie2)*yy0(iepsi))/ppr(inu3)
     if (abs(xx) .gt. seuil) then
-        if (log10(abs(xx)) .gt. 200.0d0 * pp(ialp3)) then
+        if (log10(abs(xx)) .gt. 200.0d0 * ppr(ialp3)) then
             decoup=.true.
             goto 999
         endif
     endif
     if (xx .ge. 0.0d0) then
-        dyy(iepvis) = ( abs(xx) )**(1.0d0/pp(ialp3))
+        dyy(iepvis) = ( abs(xx) )**(1.0d0/ppr(ialp3))
     else
-        dyy(iepvis) = -( abs(xx) )**(1.0d0/pp(ialp3))
+        dyy(iepvis) = -( abs(xx) )**(1.0d0/ppr(ialp3))
     endif
-    dyy(idissi) = pp(inu3)*abs(xx*dyy(iepvis))
+    dyy(idissi) = ppr(inu3)*abs(xx*dyy(iepvis))
 !
-    dyy(isig) = (dyy(iepsi)*(1.0d0+pp(ie2)*pp(is3)) - dyy(iepvis))
-    dyy(isig) = dyy(isig)/(pp(is1)+pp(is3)+pp(ie2)*pp(is1)*pp(is3))
+    dyy(isig) = (dyy(iepsi)*(1.0d0+ppr(ie2)*ppr(is3)) - dyy(iepvis))
+    dyy(isig) = dyy(isig)/(ppr(is1)+ppr(is3)+ppr(ie2)*ppr(is1)*ppr(is3))
 !
 999 continue
 end subroutine
