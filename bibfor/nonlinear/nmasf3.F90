@@ -3,7 +3,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
                   compor)
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,11 +23,12 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/asvedh.h"
+#include "asterfort/asvgam.h"
 #include "asterfort/cast3d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/invjac.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
@@ -65,21 +66,19 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     integer :: codre(1)
     character(len=16) :: nomres(2)
     character(len=32) :: phenom
-    integer :: kpg, i, ii, ino, ia, j, k, kl, proj, nbpg2
-    integer :: ndim, nnos, jgano, kp, iaa
-    real(kind=8) :: d(6, 6), f(3, 3), eps(6), r, s
+    integer :: kpg, i, ii, ino, ia, j, kl, proj, nbpg2
+    integer :: ndim, nnos, jgano, iaa
+    real(kind=8) :: d(6, 6), f(3, 3), eps(6), r
     real(kind=8) :: poids, poipg2(8)
-    real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)
-    real(kind=8) :: gam(4, 8), coopg2(24), h(8, 4), dh(4, 24)
+    real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8)
+    real(kind=8) :: invj(3, 3)
+    real(kind=8) :: gam(4, 8), coopg2(24), dh(4, 3)
+    real(kind=8) :: coopg(3)
     real(kind=8) :: qplus(72)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: nu, nub, rac2, den
     real(kind=8) :: valres(2)
-    data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
-     &        1.d0,-1.d0, -1.d0, 1.d0,-1.d0, 1.d0, 1.d0,-1.d0,&
-     &        1.d0,-1.d0,  1.d0,-1.d0, 1.d0,-1.d0, 1.d0,-1.d0,&
-     &       -1.d0, 1.d0, -1.d0, 1.d0, 1.d0,-1.d0, 1.d0,-1.d0/
 !
 ! - INITIALISATION
 !   ==============
@@ -107,8 +106,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
     call r8inir(3*nno, 0.d0, bi, 1)
     den = 0.d0
     do kpg = 1, nbpg2
-        call dfdm3d(nno, kpg, ipoid2, idfde2, geom,&
-                    jac, dfdx, dfdy, dfdz)
+        call dfdm3d(nno, kpg, ipoid2, idfde2, geom,  jac, dfdx=dfdx, dfdy=dfdy, dfdz=dfdz)
         den = den + jac
         do ino = 1, nno
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)
@@ -124,24 +122,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !
 ! - CALCUL DES COEFFICIENTS GAMMA
 !
-    do i = 1, 4
-        do k = 1, 3
-            hx(k,i) = 0.d0
-            do j = 1, nno
-                hx(k,i) = hx(k,i) + h(j,i) * geom(k,j)
-            end do
-        end do
-    end do
-!
-    do i = 1, 4
-        do j = 1, nno
-            s = 0.d0
-            do k = 1, 3
-                s = s + hx(k,i) * bi(k,j)
-            end do
-            gam(i,j) = 0.125d0 * (h(j,i) - s)
-        end do
-    end do
+    call asvgam(2, geom, bi, gam)
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
@@ -201,27 +182,13 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
 !      OPERATEUR DE STABILISATION DU GRADIENT AUX 8 POINTS DE GAUSS
 !
     do kpg = 1, nbpg2
-        kp = 3*(kpg-1)
-        call invjac(nno, kpg, ipoid2, idfde2, geom,&
-                    invja, jac)
+        call dfdm3d(nno, kpg, ipoid2, idfde2, geom,  jac)
 !
-        do i = 1, 3
-            dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
-        end do
+        coopg(1) = coopg2(3*kpg-2)
+        coopg(2) = coopg2(3*kpg-1)
+        coopg(3) = coopg2(3*kpg)
 !
-        do i = 1, 3
-            dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
-        end do
-!
-        do i = 1, 3
-            dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
-        end do
-!
-        do i = 1, 3
-            dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg-1) &
-                                &* coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(3*kpg) *&
-                                & invja(2,i)
-        end do
+        call asvedh(2, coopg, invja, dh)
 !
 !
 !  CALCUL DE BN AU POINT DE GAUSS KPG
@@ -237,7 +204,7 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde,&
             do ia = 1, 4
                 iaa = 3*(ia-1)
                 do j = 1, 3
-                    sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,kp+j)
+                    sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,j)
                 end do
             end do
         end do

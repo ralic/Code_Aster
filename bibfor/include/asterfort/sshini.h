@@ -18,21 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cast3d(proj, gamma, dh, def, nno,&
-                      kpg, nub, nu, dsidep, calbn,&
-                      bn, jac, matuu)
-        integer :: proj
-        real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
-        real(kind=8) :: def(6, 3, 8)
-        integer :: nno
-        integer :: kpg
-        real(kind=8) :: nub
-        real(kind=8) :: nu
-        real(kind=8) :: dsidep(6, 6)
-        aster_logical :: calbn
-        real(kind=8) :: bn(6, 3, 8)
-        real(kind=8) :: jac
-        real(kind=8) :: matuu(*)
-    end subroutine cast3d
+    subroutine sshini(nno, nnos, hexa, shb6, shb8)
+        integer, intent(in) :: nno
+        integer, intent(in) :: nnos
+        aster_logical, intent(out) :: hexa
+        aster_logical, intent(out) :: shb6
+        aster_logical, intent(out) :: shb8
+    end subroutine sshini
 end interface

@@ -1,4 +1,3 @@
-!
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -15,24 +14,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine cast3d(proj, gamma, dh, def, nno,&
-                      kpg, nub, nu, dsidep, calbn,&
-                      bn, jac, matuu)
-        integer :: proj
-        real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
-        real(kind=8) :: def(6, 3, 8)
-        integer :: nno
-        integer :: kpg
-        real(kind=8) :: nub
-        real(kind=8) :: nu
-        real(kind=8) :: dsidep(6, 6)
-        aster_logical :: calbn
-        real(kind=8) :: bn(6, 3, 8)
-        real(kind=8) :: jac
-        real(kind=8) :: matuu(*)
-    end subroutine cast3d
+    subroutine tpsivp_shb(mp, sigmav, shtwf2)
+        real(kind=8), dimension(3,3), intent(in) :: mp
+        real(kind=8), dimension(6), intent(inout) :: sigmav
+        aster_logical, intent(in) :: shtwf2
+    end subroutine tpsivp_shb
 end interface

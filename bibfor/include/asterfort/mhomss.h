@@ -15,24 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine cast3d(proj, gamma, dh, def, nno,&
-                      kpg, nub, nu, dsidep, calbn,&
-                      bn, jac, matuu)
-        integer :: proj
-        real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
-        real(kind=8) :: def(6, 3, 8)
-        integer :: nno
-        integer :: kpg
-        real(kind=8) :: nub
-        real(kind=8) :: nu
-        real(kind=8) :: dsidep(6, 6)
-        aster_logical :: calbn
-        real(kind=8) :: bn(6, 3, 8)
-        real(kind=8) :: jac
-        real(kind=8) :: matuu(*)
-    end subroutine cast3d
+    subroutine mhomss(young, nu, cmatlo, dsidep)
+        real(kind=8), intent(in) :: young
+        real(kind=8), intent(in) :: nu
+        real(kind=8), intent(out) :: cmatlo(6,6)
+        real(kind=8), optional, intent(in) :: dsidep(6,6)
+    end subroutine mhomss
 end interface

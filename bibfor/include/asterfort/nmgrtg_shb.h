@@ -18,21 +18,28 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cast3d(proj, gamma, dh, def, nno,&
-                      kpg, nub, nu, dsidep, calbn,&
-                      bn, jac, matuu)
-        integer :: proj
-        real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
-        real(kind=8) :: def(6, 3, 8)
+    subroutine nmgrtg_shb(ndim, nno, poids, kpg, vff,&
+                      dfdi, def, pff, option, axi,&
+                      r, fm, f, dsidep, sign,&
+                      sigma, matsym, matuu, vectu)
+        integer :: ndim
         integer :: nno
+        real(kind=8) :: poids
         integer :: kpg
-        real(kind=8) :: nub
-        real(kind=8) :: nu
+        real(kind=8) :: vff(*)
+        real(kind=8) :: dfdi(*)
+        real(kind=8) :: def(*)
+        real(kind=8) :: pff(*)
+        character(len=16) :: option
+        aster_logical :: axi
+        real(kind=8) :: r
+        real(kind=8) :: fm(3, 3)
+        real(kind=8) :: f(3, 3)
         real(kind=8) :: dsidep(6, 6)
-        aster_logical :: calbn
-        real(kind=8) :: bn(6, 3, 8)
-        real(kind=8) :: jac
+        real(kind=8) :: sign(6)
+        real(kind=8) :: sigma(6)
+        aster_logical :: matsym
         real(kind=8) :: matuu(*)
-    end subroutine cast3d
+        real(kind=8) :: vectu(*)
+    end subroutine nmgrtg_shb
 end interface

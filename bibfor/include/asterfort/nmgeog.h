@@ -18,21 +18,23 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine cast3d(proj, gamma, dh, def, nno,&
-                      kpg, nub, nu, dsidep, calbn,&
-                      bn, jac, matuu)
-        integer :: proj
-        real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
-        real(kind=8) :: def(6, 3, 8)
+    subroutine nmgeog(ndim, nno, axi, grand, geom,&
+                      kpg, ivf, depl,&
+                      ldfdi, poids, dfdi, f, eps,&
+                      r)
+        integer :: ndim
         integer :: nno
+        aster_logical :: axi
+        aster_logical :: grand
+        real(kind=8) :: geom(ndim, nno)
         integer :: kpg
-        real(kind=8) :: nub
-        real(kind=8) :: nu
-        real(kind=8) :: dsidep(6, 6)
-        aster_logical :: calbn
-        real(kind=8) :: bn(6, 3, 8)
-        real(kind=8) :: jac
-        real(kind=8) :: matuu(*)
-    end subroutine cast3d
+        integer :: ivf
+        real(kind=8) :: depl(ndim, nno)
+        aster_logical :: ldfdi
+        real(kind=8) :: poids
+        real(kind=8) :: dfdi(nno, ndim)
+        real(kind=8) :: f(3, 3)
+        real(kind=8) :: eps(6)
+        real(kind=8) :: r
+    end subroutine nmgeog
 end interface

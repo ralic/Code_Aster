@@ -2,7 +2,7 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
                   kpg, nub, nu, dsidep, calbn,&
                   bn, jac, matuu)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,9 +27,9 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 #include "asterf_types.h"
 #include "asterfort/caatdb.h"
     aster_logical :: calbn
-    integer :: kpg, i, j, k, nno, proj, ic, iadpg
+    integer :: kpg, i, j, k, nno, proj, ic
     real(kind=8) :: dsidep(6, 6), bn(6, 3, 8)
-    real(kind=8) :: gamma(4, 8), dh(4, 24)
+    real(kind=8) :: gamma(4, 8), dh(4, 3)
     real(kind=8) :: jac, xf(8), yf(8), zf(8)
     real(kind=8) :: matuu(*)
     real(kind=8) :: nub, nu, unt, deut, def(6, 3, 8)
@@ -42,8 +42,6 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 !           1 ADS
 !           2 ASBQI
 !
-    iadpg = 3*(kpg-1)
-!
 !   CALCUL DE TERMES INTERMEDIAIRES
 !
     do 1 i = 1, nno
@@ -54,9 +52,9 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 !
     do 2 ic = 1, 4
         do 3 i = 1, nno
-            xf(i) = xf(i) + dh(ic,iadpg+1) * gamma(ic,i)
-            yf(i) = yf(i) + dh(ic,iadpg+2) * gamma(ic,i)
-            zf(i) = zf(i) + dh(ic,iadpg+3) * gamma(ic,i)
+            xf(i) = xf(i) + dh(ic,1) * gamma(ic,i)
+            yf(i) = yf(i) + dh(ic,2) * gamma(ic,i)
+            zf(i) = zf(i) + dh(ic,3) * gamma(ic,i)
   3     continue
   2 end do
 !
@@ -96,22 +94,22 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 !
         do 6 ic = 1, 2
             do 7 i = 1, nno
-                x12(i) = x12(i) + dh(ic,iadpg+1) * gamma(ic,i)
-                y12(i) = y12(i) + dh(ic,iadpg+2) * gamma(ic,i)
+                x12(i) = x12(i) + dh(ic,1) * gamma(ic,i)
+                y12(i) = y12(i) + dh(ic,2) * gamma(ic,i)
   7         continue
   6     end do
 !
         do 8 ic = 1, 3, 2
             do 9 i = 1, nno
-                x13(i) = x13(i) + dh(ic,iadpg+1) * gamma(ic,i)
-                z13(i) = z13(i) + dh(ic,iadpg+3) * gamma(ic,i)
+                x13(i) = x13(i) + dh(ic,1) * gamma(ic,i)
+                z13(i) = z13(i) + dh(ic,3) * gamma(ic,i)
   9         continue
   8     end do
 !
         do 10 ic = 2, 3
             do 11 i = 1, nno
-                y23(i) = y23(i) + dh(ic,iadpg+2) * gamma(ic,i)
-                z23(i) = z23(i) + dh(ic,iadpg+3) * gamma(ic,i)
+                y23(i) = y23(i) + dh(ic,2) * gamma(ic,i)
+                z23(i) = z23(i) + dh(ic,3) * gamma(ic,i)
  11         continue
  10     end do
 !
@@ -149,29 +147,29 @@ subroutine cast3d(proj, gamma, dh, def, nno,&
 !
             do 13 ic = 1, 4, 3
                 do 14 i = 1, nno
-                    x14(i) = x14(i) + dh(ic,iadpg+1) * gamma(ic,i)
+                    x14(i) = x14(i) + dh(ic,1) * gamma(ic,i)
  14             continue
  13         continue
 !
             do 15 ic = 2, 4, 2
                 do 16 i = 1, nno
-                    y24(i) = y24(i) + dh(ic,iadpg+2) * gamma(ic,i)
+                    y24(i) = y24(i) + dh(ic,2) * gamma(ic,i)
  16             continue
  15         continue
 !
             do 17 ic = 3, 4
                 do 18 i = 1, nno
-                    z34(i) = z34(i) + dh(ic,iadpg+3) * gamma(ic,i)
+                    z34(i) = z34(i) + dh(ic,3) * gamma(ic,i)
  18             continue
  17         end do
 !
             do 19 i = 1, nno
-                x2(i) = dh(2,iadpg+1) * gamma(2,i)
-                x3(i) = dh(3,iadpg+1) * gamma(3,i)
-                y1(i) = dh(1,iadpg+2) * gamma(1,i)
-                y3(i) = dh(3,iadpg+2) * gamma(3,i)
-                z1(i) = dh(1,iadpg+3) * gamma(1,i)
-                z2(i) = dh(2,iadpg+3) * gamma(2,i)
+                x2(i) = dh(2,1) * gamma(2,i)
+                x3(i) = dh(3,1) * gamma(3,i)
+                y1(i) = dh(1,2) * gamma(1,i)
+                y3(i) = dh(3,2) * gamma(3,i)
+                z1(i) = dh(1,3) * gamma(1,i)
+                z2(i) = dh(2,3) * gamma(2,i)
  19         continue
 !
             do 30 i = 1, nno

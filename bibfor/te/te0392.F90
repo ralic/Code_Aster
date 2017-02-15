@@ -5,13 +5,14 @@ subroutine te0392(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/asvedh.h"
+#include "asterfort/asvgam.h"
 #include "asterfort/caatdb.h"
 #include "asterfort/cast3d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/dmatmc.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/invjac.h"
 #include "asterfort/jevech.h"
 #include "asterfort/ortrep.h"
 #include "asterfort/rccoma.h"
@@ -22,7 +23,7 @@ subroutine te0392(option, nomte)
 #include "asterfort/get_elas_para.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,19 +60,17 @@ subroutine te0392(option, nomte)
 !
     aster_logical :: calbn
     integer :: i, ino, j, k, proj, nbpg2, ipg, ispg
-    integer :: ndim, nnos, kp, idim
-    real(kind=8) :: d(6, 6), s
+    integer :: ndim, nnos, idim
+    real(kind=8) :: d(6, 6)
     real(kind=8) :: poipg2(8), b(6, 81), b0(6, 3, 8)
-    real(kind=8) :: jac, invja(3, 3), bi(3, 8), hx(3, 4), bary(3)
-    real(kind=8) :: gam(4, 8), coopg2(24), h(8, 4), dh(4, 24)
+    real(kind=8) :: jac, invja(3, 3), bi(3, 8), bary(3)
+    real(kind=8) :: invj(3, 3)
+    real(kind=8) :: invjat(3, 3), coopg(3)
+    real(kind=8) :: gam(4, 8), coopg2(24), dh(4, 3)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: nu, nub, nu12
     integer :: elas_id
-    data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
-     &        1.d0,-1.d0, -1.d0, 1.d0,-1.d0, 1.d0, 1.d0,-1.d0,&
-     &        1.d0,-1.d0,  1.d0,-1.d0, 1.d0,-1.d0, 1.d0,-1.d0,&
-     &       -1.d0, 1.d0, -1.d0, 1.d0, 1.d0,-1.d0, 1.d0,-1.d0/
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,8 +119,7 @@ subroutine te0392(option, nomte)
 ! - Compute [Bi] (mean value for derivate of shape functions)
 !
     do ipg = 1, npg1
-        call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom),&
-                    jac, dfdx, dfdy, dfdz)
+        call dfdm3d(nno, ipg, ipoids, idfde, zr(igeom),  jac, dfdx, dfdy, dfdz)
         do ino = 1, nno
             bi(1,ino) = dfdx(ino)
             bi(2,ino) = dfdy(ino)
@@ -145,8 +143,7 @@ subroutine te0392(option, nomte)
 !
 ! ----- Compute matrix [B]: displacement -> strain (first order)
 !
-        call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),&
-                    jacgau, dfdx, dfdy, dfdz)
+        call dfdm3d(nno, igau, ipoids, idfde, zr(igeom),  jacgau, dfdx, dfdy, dfdz)
 !
 ! ----- Modify matrix [B] for underintegrated elements
 !
@@ -184,24 +181,7 @@ subroutine te0392(option, nomte)
 !
 ! - Gamma ratio
 !
-    do i = 1, 4
-        do k = 1, 3
-            hx(k,i) = 0.d0
-            do j = 1, nno
-                hx(k,i) = hx(k,i) + h(j,i) * zr(igeom-1+3*(j-1)+k)
-            end do
-        end do
-    end do
-!
-    do i = 1, 4
-        do j = 1, nno
-            s = 0.d0
-            do k = 1, 3
-                s = s + hx(k,i) * bi(k,j)
-            end do
-            gam(i,j) = 0.125d0 * (h(j,i) - s)
-        end do
-    end do
+    call asvgam(2, zr(igeom), bi, gam)
 !
 ! - Poisson ration for ASQBI
 !
@@ -233,22 +213,27 @@ subroutine te0392(option, nomte)
 ! - Compute corrected stabilization matrix [K_STAB]
 !
     do ipg = 1, nbpg2
-        kp = 3*(ipg-1)
-        call invjac(nno, ipg, ipoid2, idfde2, zr(igeom),&
-                    invja, jac)
+        call dfdm3d(nno, ipg, ipoid2, idfde2, zr(igeom),  jac)
+!
+! - Glut \ Start
+! - To comply with initial code, it is required to use transposed matrix of invja
         do i = 1, 3
-            dh(1,kp+i) = coopg2(3*ipg-1) * invja(i,3) + coopg2(3*ipg) * invja(i,2)
+           do j = 1, 3
+              invjat(j,i) = invja(i,j)
+           end do
         end do
         do i = 1, 3
-            dh(2,kp+i) = coopg2(3*ipg-2) * invja(i,3) + coopg2(3*ipg) * invja(i,1)
+           do j = 1, 3
+              invja(i,j) = invjat(i,j)
+           end do
         end do
-        do i = 1, 3
-            dh(3,kp+i) = coopg2(3*ipg-2) * invja(i,2) + coopg2(3*ipg- 1) * invja(i,1)
-        end do
-        do i = 1, 3
-            dh(4,kp+i) = coopg2(3*ipg-2) * coopg2(3*ipg-1) * invja(i, 3) + coopg2(3*ipg-1) * coop&
-                         &g2(3*ipg) * invja(i,1) + coopg2(3*ipg-2) * coopg2(3*ipg) * invja(i,2)
-        end do
+! - Glut \ End
+!
+        coopg(1) = coopg2(3*ipg-2)
+        coopg(2) = coopg2(3*ipg-1)
+        coopg(3) = coopg2(3*ipg)
+        call asvedh(2, coopg, invja, dh)
+!
         call cast3d(proj, gam, dh, b0, nno,&
                     ipg, nub, nu, d, calbn,&
                     bn, jac, zr( imatuu))
