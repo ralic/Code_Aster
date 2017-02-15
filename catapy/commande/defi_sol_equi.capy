@@ -91,7 +91,7 @@ DEFI_SOL_EQUI = MACRO(nom="DEFI_SOL_EQUI",
       NUME_MATE = SIMP(statut='o', typ='I', fr=tr("Numéro du matériau")),
     ),
    ),
-   TITRE = SIMP(statut='f', typ='TXM', max='**',
+   TITRE = SIMP(statut='f', typ='TXM',
                 fr=tr("Titre de la table produite")),
    INFO  = SIMP(statut='f', typ='I', defaut=1, into=(1,2)),
 )

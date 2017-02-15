@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -446,10 +446,9 @@ def macr_spectre_ops(
         lListe.append(_F(LISTE_K=l_plancher, PARA='PLANCHER'))
         titre = 'Calcul des spectres enveloppes'
     elif NOM_CHAM == 'ACCE':
-        titre = [
-            'Calcul des spectres enveloppes par planchers pour les amortissements numérotés :', ]
-        b = [' %d : %g ' % (i, AMOR_SPEC[i]) for i in range(len(AMOR_SPEC))]
-        titre.append('/'.join(b))
+        titre = 'Calcul des spectres enveloppes par planchers pour les amortissements numérotés :'
+        for i in range(len(AMOR_SPEC)):
+           titre=titre+' %d : %g '% (i, AMOR_SPEC[i])
     lkeys = dico_glob.keys()
     lkeys.sort()
     for key in lkeys:

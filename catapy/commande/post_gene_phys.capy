@@ -61,5 +61,5 @@ POST_GENE_PHYS  = OPER( nom="POST_GENE_PHYS",op=  58,sd_prod=table_sdaster,
                       ACCE_MONO_APPUI = SIMP(statut = 'f', typ=(fonction_sdaster,nappe_sdaster,formule)),
                       DIRECTION       = SIMP(statut = 'f', typ='R', min=3, max = 3 ),),),
 
-                  TITRE       = SIMP(statut = 'f', typ='TXM', max = '**' ),  
+                  TITRE       = SIMP(statut = 'f', typ='TXM',),  
 )  ;

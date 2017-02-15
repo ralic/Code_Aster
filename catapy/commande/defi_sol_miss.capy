@@ -73,7 +73,7 @@ DEFI_SOL_MISS = MACRO(nom="DEFI_SOL_MISS",
       DECALAGE_AUTO        = SIMP(statut='f', typ='TXM', into=("OUI","NON",), defaut="OUI"),
    ),      
    ),   
-   TITRE = SIMP(statut='f', typ='TXM', max='**',
+   TITRE = SIMP(statut='f', typ='TXM',
                 fr=tr("Titre de la table produite")),
    INFO  = SIMP(statut='f', typ='I', defaut=1, into=(1,2)),
 )

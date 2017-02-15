@@ -27,6 +27,6 @@ LIRE_TABLE=MACRO(nom="LIRE_TABLE",
          NUME_TABLE      = SIMP(statut='f', typ='I', defaut=1),
          SEPARATEUR      = SIMP(statut='f', typ='TXM', defaut=' '),
          RENOMME_PARA    = SIMP(statut='f', typ='TXM', into=("UNIQUE",),),
-         TITRE           = SIMP(statut='f', typ='TXM', max='**'),
+         TITRE           = SIMP(statut='f', typ='TXM',),
          INFO            = SIMP(statut='f', typ='I', into=(1, 2), ),
          )  ;

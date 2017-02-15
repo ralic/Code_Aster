@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,8 +135,7 @@ S1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     REPERE = 'UTILISATEUR',
                                     ANGL_NAUT = ( 0., 0., 0., )),
-         TITRE=( 'S1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ',
-                 'ANGL_NAUT: ( 0. 0. 0. )', )
+         TITRE=( 'S1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ANGL_NAUT: ( 0. 0. 0. )', )
                          )
 
 IMPR_TABLE(   TABLE=S1L_U,
@@ -168,8 +167,7 @@ S2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     REPERE = 'CYLINDRIQUE',
                                     ORIGINE = ( 0., 0., 0., ),
                                     AXE_Z = ( 0., 0., 1., )),
-           TITRE=( 'S2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
-                     'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+           TITRE=( 'S2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE,  ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
                          )
 
 IMPR_TABLE(   TABLE=S2L_C,
@@ -230,8 +228,7 @@ S3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     OPERATION = 'EXTRACTION',
                                     REPERE = 'UTILISATEUR',
                                     ANGL_NAUT = ( 45., 0., 0., )),
-          TITRE=( 'S3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR, ',
-                 'ANGL_NAUT : ( 45. 0. 0. )', )
+          TITRE=( 'S3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR, ANGL_NAUT : ( 45. 0. 0. )', )
                          )
 
 IMPR_TABLE(   TABLE=S3L_U,
@@ -279,8 +276,7 @@ D1L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     REPERE = 'UTILISATEUR',
                                     ANGL_NAUT = ( 0., 0., 0., )),
-         TITRE=( 'D1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ',
-                 'ANGL_NAUT : ( 0. 0. 0. )', )
+         TITRE=( 'D1L_U: LISTE DE NOEUDS P1 P2, REPERE UTILISATEUR, ANGL_NAUT : ( 0. 0. 0. )', )
                          )
 
 IMPR_TABLE(   TABLE=D1L_U,
@@ -327,8 +323,7 @@ D2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     REPERE = 'CYLINDRIQUE',
                                     ORIGINE = ( 0., 0., 0., ),
                                     AXE_Z = ( 0., 0., 1., )),
-         TITRE=( 'D2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
-                 'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+         TITRE=( 'D2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
                          )
 
 IMPR_TABLE(   TABLE=D2L_C,
@@ -389,8 +384,7 @@ D3L_U=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST3',
                                     OPERATION = 'EXTRACTION',
                                     REPERE = 'UTILISATEUR',
                                     ANGL_NAUT = ( 45., 0., 0., )),
-          TITRE=( 'D3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR, ',
-                  'ANGL_NAUT : ( 45. 0. 0. )', )
+          TITRE=( 'D3L_U: LISTE DE NOEUDS P4 P3, REPERE UTILISATEUR, ANGL_NAUT : ( 45. 0. 0. )', )
                          )
 
 IMPR_TABLE(   TABLE=D3L_U,
@@ -443,8 +437,7 @@ S1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     TRAC_DIR = 'OUI',
                                     DIRECTION = ( 1., 0., 0., )),
-             TITRE=( 'S1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, ',
-                     'DIRECTION: (1. 0. 0.)', )
+             TITRE=( 'S1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)', )
                          )
 
 IMPR_TABLE(   TABLE=S1L_TDX,
@@ -460,8 +453,7 @@ S1L_TDY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     TRAC_DIR = 'OUI',
                                     DIRECTION = ( 0., 1., 0., )),
-             TITRE=( 'S1L_TDY: LISTE DE NOEUDS P1 P2, TRAC_DIR, ',
-                     'DIRECTION: (0. 1. 0.)', )
+             TITRE=( 'S1L_TDY: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (0. 1. 0.)', )
                          )
 
 IMPR_TABLE(   TABLE=S1L_TDY,
@@ -477,8 +469,7 @@ S1L_TDXY=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     TRAC_DIR = 'OUI',
                                     DIRECTION = ( 1., 1., 0., )),
-             TITRE=( 'S1L_TDXY: LISTE DE NOEUDS P1 P2, TRAC_DIR, ',
-                     'DIRECTION: (1. 1. 0.)', )
+             TITRE=( 'S1L_TDXY: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 1. 0.)', )
                          )
 
 IMPR_TABLE(   TABLE=S1L_TDXY,
@@ -498,8 +489,7 @@ D1L_TDX=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST1',
                                     OPERATION = 'EXTRACTION',
                                     TRAC_DIR = 'OUI',
                                     DIRECTION = ( 1., 0., 0., )),
-             TITRE=( 'D1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, ',
-                     'DIRECTION: (1. 0. 0.)', )
+             TITRE=( 'D1L_TDX: LISTE DE NOEUDS P1 P2, TRAC_DIR, DIRECTION: (1. 0. 0.)', )
                          )
 
 IMPR_TABLE(   TABLE=D1L_TDX,
@@ -520,8 +510,7 @@ INVA_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      INVARIANT = 'OUI',
                                   ),
-             TITRE=( 'INVA_EL: LISTE DE NOEUDS P1 P2, INVARIANT, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'INVA_EL: LISTE DE NOEUDS P1 P2, INVARIANT, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=INVA_EL,
@@ -535,8 +524,7 @@ INVA_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      INVARIANT = 'OUI',
                                   ),
-             TITRE=( 'INVA_NO: LISTE DE NOEUDS P1 P2, INVARIANT, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'INVA_NO: LISTE DE NOEUDS P1 P2, INVARIANT, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=INVA_NO,
@@ -558,8 +546,7 @@ PRIN_EL = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),
-             TITRE=( 'PRIN_EL: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'PRIN_EL: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=PRIN_EL,
@@ -573,8 +560,7 @@ PRIN_NO = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),
-             TITRE=( 'PRIN_NO: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'PRIN_NO: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=PRIN_NO,
@@ -706,8 +692,7 @@ P2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     REPERE = 'CYLINDRIQUE',
                                     ORIGINE = ( 0., 0., 0., ),
                                     AXE_Z = ( 0., 0., 1., )),
-           TITRE=( 'P2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
-                     'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+           TITRE=( 'P2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
                          )
 
 IMPR_TABLE(   TABLE=P2L_C,
@@ -885,8 +870,7 @@ Z2L_C=POST_RELEVE_T(  ACTION=_F(  GROUP_NO = 'GXXXXXX_LIST2',
                                     REPERE = 'CYLINDRIQUE',
                                     ORIGINE = ( 0., 0., 0., ),
                                     AXE_Z = ( 0., 0., 1., )),
-         TITRE=( 'Z2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ',
-                 'ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
+         TITRE=( 'Z2L_C: LISTE DE NOEUDS P2 P3, REPERE CYLINDRIQUE, ORIGINE: (0. 0. 0.), AXE_Z: (0. 0. 1.)', )
                          )
 
 IMPR_TABLE(   TABLE=Z2L_C,
@@ -1075,8 +1059,7 @@ INVA_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      INVARIANT = 'OUI',
                                   ),
-             TITRE=( 'INVA_P: LISTE DE NOEUDS P1 P2, INVARIANT, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'INVA_P: LISTE DE NOEUDS P1 P2, INVARIANT, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=INVA_P,
@@ -1109,8 +1092,7 @@ PRIN_P = POST_RELEVE_T(  ACTION=_F( GROUP_NO = 'GXXXXXX_LIST1',
                                      OPERATION = 'EXTRACTION',
                                      ELEM_PRINCIPAUX = 'OUI',
                                   ),
-             TITRE=( 'PRIN_P: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, ',
-                     'A PARTIR DE SIGM_NOEU', )
+             TITRE=( 'PRIN_P: LISTE DE NOEUDS P1 P2, ELEM_PRINCIPAUX, A PARTIR DE SIGM_NOEU', )
                          )
 
 IMPR_TABLE(   TABLE=PRIN_P,

@@ -1,5 +1,5 @@
 
-# COPYRIGHT (C) 1991 - 2016  EDF R2013  EDF R&DD                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2016  EDF R2017  EDF R&DD                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -103,8 +103,7 @@ tab=CALC_TABLE(
       _F(OPERATION='TRI',
          NOM_PARA='ABS_corr', ORDRE='CROISSANT',),
    ),
-   TITRE=('Combinaison des tables EFF_GEN et DEPLNO sur ABSC_CURV,NOEUD communs',
-          'Ajout de NORM_DEP'),
+   TITRE=('Combinaison des tables EFF_GEN et DEPLNO sur ABSC_CURV,NOEUD communs. Ajout de NORM_DEP'),
 )
 
 # Impression de la table après toutes les manipulations
