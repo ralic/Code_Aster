@@ -1,6 +1,6 @@
 subroutine nmelcm(phase    , mesh     , model    , mate     , ds_contact    ,&
                   disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                  matr_elem, time_prev, time_curr, ds_constitutive, list_func_acti)
+                  matr_elem, time_prev, time_curr, ds_constitutive, l_xthm)
 !
 use NonLin_Datastructure_type
 !
@@ -14,7 +14,6 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/inical.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
@@ -23,7 +22,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +53,7 @@ implicit none
     character(len=19), intent(in) :: time_prev
     character(len=19), intent(in) :: time_curr
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-    integer, intent(in) :: list_func_acti(*)
+    aster_logical, intent(in) :: l_xthm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,8 +76,8 @@ implicit none
 ! In  time_prev        : previous time
 ! In  time_curr        : current time
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  list_func_acti   : list of active functionnalitie
 ! Out matr_elem        : elementary matrix
+! In  l_xthm           : contact with THM and XFEM (!)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +91,7 @@ implicit none
     character(len=19) :: xcohes, ccohes
     character(len=16) :: option
     aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
-    aster_logical :: l_cont_pena, l_all_verif, l_xfem_czm    , l_xthm
+    aster_logical :: l_cont_pena, l_all_verif, l_xfem_czm    
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -111,8 +110,7 @@ implicit none
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
     l_cont_pena    = cfdisl(ds_contact%sdcont_defi,'EXIS_PENA')
     l_xfem_czm     = cfdisl(ds_contact%sdcont_defi,'EXIS_XFEM_CZM')
-    l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-    l_xthm         = isfonc(list_func_acti,'THM')
+    l_all_verif    = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
     
     if (.not.l_all_verif) then
 !
@@ -133,7 +131,7 @@ implicit none
                          mesh     , model    , mate     , ds_contact,&
                          disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                          nbin     , lpain    , lchin    ,&
-                         option   , list_func_acti, time_prev, time_curr , ds_constitutive,&
+                         option   , time_prev, time_curr , ds_constitutive,&
                          ccohes   , xcohes)
 !
 ! ----- <LIGREL> for contact elements

@@ -6,7 +6,7 @@ implicit none
 #include "asterfort/assert.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -107,7 +107,7 @@ implicit none
 !       ROM                :  reduced order model
 !       HROM               :  hyper-reduced order model
 !
-! DERNIER NUMERO UTILISE: 64
+! DERNIER NUMERO UTILISE: 65
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -135,6 +135,8 @@ implicit none
         isfonc = list_func_acti(5).eq.1
     else if (func_name.eq.'CONT_XFEM') then
         isfonc = list_func_acti(9) .eq.1
+    else if (func_name.eq.'CONT_XFEM_THM') then
+        isfonc = list_func_acti(65).eq.1
     else if (func_name.eq.'CONT_LAC') then
         isfonc = list_func_acti(63) .eq.1
     else if (func_name.eq.'CONTACT_INIT') then

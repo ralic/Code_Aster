@@ -1,6 +1,6 @@
-subroutine nmelcv(phase    , mesh     , model    , mate     , ds_contact    ,&
-                  disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                  vect_elem, time_prev, time_curr, ds_constitutive, list_func_acti)
+subroutine nmelcv(phase    , mesh     , model    , mate           , ds_contact    ,&
+                  disp_prev, vite_prev, acce_prev, vite_curr      , disp_cumu_inst,&
+                  vect_elem, time_prev, time_curr, ds_constitutive)
 !
 use NonLin_Datastructure_type
 !
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,7 +53,6 @@ implicit none
     character(len=19), intent(in) :: time_prev
     character(len=19), intent(in) :: time_curr
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-    integer, intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +75,6 @@ implicit none
 ! In  time_prev        : previous time
 ! In  time_curr        : current time
 ! In  ds_constitutive  : datastructure for constitutive laws management
-! In  list_func_acti   : list of active functionnalities
 ! Out vect_elem        : elementary vectors
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,7 +88,7 @@ implicit none
     character(len=19) :: ligrel
     character(len=16) :: option
     aster_logical :: l_cont_cont, l_cont_xfem, l_cont_xfem_gg, l_cont_lac
-    aster_logical :: l_all_verif, l_xthm
+    aster_logical :: l_all_verif
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,8 +105,7 @@ implicit none
     l_cont_xfem    = cfdisl(ds_contact%sdcont_defi,'FORMUL_XFEM')
     l_cont_lac     = cfdisl(ds_contact%sdcont_defi,'FORMUL_LAC')
     l_cont_xfem_gg = cfdisl(ds_contact%sdcont_defi,'CONT_XFEM_GG')
-    l_all_verif    = cfdisl(ds_contact%sdcont_defi, 'ALL_VERIF')
-    l_xthm         = isfonc(list_func_acti,'THM')
+    l_all_verif    = cfdisl(ds_contact%sdcont_defi,'ALL_VERIF')
 !
 ! --- TYPE DE CONTACT
 !
@@ -122,8 +119,7 @@ implicit none
 !
 ! ----- Init fields
 !
-        call inical(nbin, lpain, lchin, nbout, lpaout,&
-                    lchout)
+        call inical(nbin, lpain, lchin, nbout, lpaout, lchout)
 !
 ! ----- Prepare input fields
 !
@@ -131,7 +127,7 @@ implicit none
                          mesh     , model    , mate     , ds_contact,&
                          disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                          nbin     , lpain    , lchin    ,&
-                         option   , list_func_acti, time_prev, time_curr , ds_constitutive)
+                         option   , time_prev, time_curr , ds_constitutive)
 !
 ! ----- <LIGREL> for contact elements
 !

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@ interface
                            mesh     , model    , mate     , ds_contact,&
                            disp_prev, vite_prev, acce_prev, vite_curr , disp_cumu_inst,&
                            nbin     , lpain    , lchin    ,&
-                           option   , list_func_acti, time_prev, time_curr , ds_constitutive,&
+                           option   , time_prev, time_curr , ds_constitutive,&
                            ccohes_  , xcohes_)
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: phase
@@ -38,7 +38,6 @@ interface
         character(len=8), intent(out) :: lpain(nbin)
         character(len=19), intent(out) :: lchin(nbin)
         character(len=16), intent(out) :: option
-        integer, intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: time_prev
         character(len=19), intent(in) :: time_curr
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive

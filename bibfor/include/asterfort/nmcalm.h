@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
     subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
                       ds_constitutive, instam, instap, valinc    , solalg,&
                       optmaz         , base  , meelem, ds_contact, matele,&
-                      list_func_acti)
+                      l_xthm)
         use NonLin_Datastructure_type
         character(len=6) :: typmat
         character(len=*) :: modelz
@@ -36,6 +38,6 @@ interface
         character(len=19) :: meelem(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: matele
-        integer, intent(in) :: list_func_acti(*)
+        aster_logical, intent(in) :: l_xthm
     end subroutine nmcalm
 end interface

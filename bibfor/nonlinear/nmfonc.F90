@@ -29,7 +29,7 @@ implicit none
 #include "asterfort/nmlssv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -390,6 +390,9 @@ implicit none
 !
     call dismoi('EXI_THM', model, 'MODELE', repk=repk)
     if (repk .eq. 'OUI') list_func_acti(37) = 1
+    if (l_cont .and. (repk .eq. 'OUI')) then
+        list_func_acti(65) = 1
+    endif 
 !
 ! - Elemesnt with STRX field (multifibers for instantce)
 !
@@ -487,6 +490,9 @@ implicit none
         endif
         if (isfonc(list_func_acti,'CONT_XFEM')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT XFEM'
+        endif
+        if (isfonc(list_func_acti,'CONT_XFEM_THM')) then
+            write (ifm,*) '<MECANONLINE> ...... CONTACT XFEM_THM'
         endif
         if (isfonc(list_func_acti,'CONT_LAC')) then
             write (ifm,*) '<MECANONLINE> ...... CONTACT LAC'

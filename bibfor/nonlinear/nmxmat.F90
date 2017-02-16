@@ -12,6 +12,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
+#include "asterfort/isfonc.h"
 #include "asterfort/nmassm.h"
 #include "asterfort/nmcalm.h"
 #include "asterfort/nmchex.h"
@@ -20,7 +21,7 @@ implicit none
 #include "asterfort/nmtime.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -105,7 +106,7 @@ implicit none
     character(len=19) :: matele, matass
     character(len=1) :: base
     real(kind=8) :: instam, instap
-    aster_logical :: lcalc, lasse
+    aster_logical :: lcalc, lasse, l_xthm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,6 +114,7 @@ implicit none
     instam = diinst(sddisc,numins-1)
     instap = diinst(sddisc,numins)
     ldccvg = -1
+    l_xthm = isfonc(fonact,'CONT_XFEM_THM')
 !
 ! --- SI CALCUL DES FORCES INTERNES
 !
@@ -149,7 +151,7 @@ implicit none
                 call nmcalm(typmat, modelz, lischa, mate       , carele,&
                             ds_constitutive, instam, instap, valinc     , solalg,&
                             optcal, base  , meelem, ds_contact_, matele,&
-                            fonact)
+                            l_xthm)
                 if ((typmat.eq.'MEELTC') .or. (typmat.eq.'MEELTF')) then
                     call nmtime(ds_measure, 'Stop', 'Cont_Elem')
                     call nmrinc(ds_measure, 'Cont_Elem')

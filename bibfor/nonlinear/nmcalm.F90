@@ -1,7 +1,7 @@
 subroutine nmcalm(typmat         , modelz, lischa, mate      , carele,&
                   ds_constitutive, instam, instap, valinc    , solalg,&
                   optmaz         , base  , meelem, ds_contact, matele,&
-                  list_func_acti)
+                  l_xthm)
 !
 use NonLin_Datastructure_type
 !
@@ -30,7 +30,7 @@ implicit none
 #include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -58,7 +58,7 @@ implicit none
     character(len=1) :: base
     character(len=19) :: meelem(*), solalg(*), valinc(*)
     character(len=19) :: matele
-    integer, intent(in) :: list_func_acti(*)
+    aster_logical, intent(in) :: l_xthm
 !
 ! ----------------------------------------------------------------------
 !
@@ -89,6 +89,7 @@ implicit none
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
 ! IN  OPTMAT : OPTION DE CALCUL POUR LA MATRICE
 ! OUT MATELE : MATRICE ELEMENTAIRE
+! In  l_xthm           : contact with THM and XFEM (!)
 !
 !
 !
@@ -210,14 +211,14 @@ implicit none
     else if (typmat.eq.'MEELTC') then
         call nmelcm('CONT'   , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    matele   , time_prev, time_curr, ds_constitutive, list_func_acti)
+                    matele   , time_prev, time_curr, ds_constitutive, l_xthm)
 !
 ! --- MATR_ELEM DES ELTS DE FROTTEMENT (XFEM+CONTINUE)
 !
     else if (typmat.eq.'MEELTF') then
         call nmelcm('FROT'   , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev, vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    matele   , time_prev, time_curr, ds_constitutive, list_func_acti)
+                    matele   , time_prev, time_curr, ds_constitutive, l_xthm)
     else
         ASSERT(.false.)
     endif

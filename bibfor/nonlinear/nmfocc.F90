@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/vtaxpy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,7 +102,7 @@ implicit none
     l_newt_cont = isfonc(list_func_acti,'CONT_NEWTON')
     l_newt_geom = isfonc(list_func_acti,'GEOM_NEWTON')
     l_cont_lac  = isfonc(list_func_acti,'CONT_LAC')
-    l_xthm = isfonc(list_func_acti,'THM')
+    l_xthm      = isfonc(list_func_acti,'CONT_XFEM_THM')
 !
 ! - Get fields
 !
@@ -145,7 +145,7 @@ implicit none
         call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('CONT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    vect_elem_cont, time_prev, time_curr, ds_constitutive, list_func_acti)
+                    vect_elem_cont, time_prev, time_curr, ds_constitutive)
         call assvec('V', vect_asse_cont, 1, vect_elem_cont, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
@@ -162,7 +162,7 @@ implicit none
         call nmtime(ds_measure, 'Launch', 'Cont_Elem')
         call nmelcv('FROT'        , mesh     , model    , mate     , ds_contact    ,&
                     disp_prev     , vite_prev, acce_prev, vite_curr, disp_cumu_inst,&
-                    vect_elem_frot, time_prev, time_curr, ds_constitutive, list_func_acti)
+                    vect_elem_frot, time_prev, time_curr, ds_constitutive)
         call assvec('V', vect_asse_frot, 1, vect_elem_frot, [1.d0],&
                     nume_dof, ' ', 'ZERO', 1)
         call nmtime(ds_measure, 'Stop', 'Cont_Elem')
