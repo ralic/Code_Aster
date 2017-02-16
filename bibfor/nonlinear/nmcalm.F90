@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/mecgme.h"
 #include "asterfort/medime.h"
 #include "asterfort/memame.h"
-#include "asterfort/memare.h"
+#include "asterfort/messtr.h"
 #include "asterfort/merige.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
@@ -104,7 +104,6 @@ implicit none
     character(len=24) :: charge, infoch
     character(len=8) :: mesh
     integer :: ifm, niv
-    character(len=24), pointer :: rerr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !
@@ -197,10 +196,8 @@ implicit none
 ! --- MATR_ELEM DES SOUS-STRUCTURES
 !
     else if (typmat.eq.'MESSTR') then
-        call memare(base, matele, model(1:8), mate, carele,&
-                    optmat)
-        call jeveuo(matele//'.RERR', 'E', vk24=rerr)
-        rerr(3) = 'OUI_SOUS_STRUC'
+        call messtr(base  , optmat, model, carele, mate,&
+                    matele)
 !
 ! --- MATR_ELEM DES ELTS DE CONTACT (XFEM+CONTINUE)
 !
