@@ -14,7 +14,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     character(len=8) :: elrefa
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,6 +63,7 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
     call jeexin('&INEL.'//elrefa//'.ELRA_I', iret)
     if (iret .gt. 0) goto 150
 !
+!    write (6,*) "elrefa  ", elrefa
     call elraca(elrefa, ndim, nno, nnos, nbfpg,&
                 nofpg, nbpg, xno, vol)
     ASSERT((ndim.ge.0) .and. (ndim.le.3))

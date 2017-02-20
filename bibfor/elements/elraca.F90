@@ -11,7 +11,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
     character(len=*) :: elrefz
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -329,7 +329,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         zin(9) = +0.5d0
 !
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'PE6') then
+    else if (elrefa.eq.'PE6' .or. elrefa .eq. 'SH6') then
         ndim = 3
         nno = 6
         nnos = 6
@@ -357,21 +357,36 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
         fapg(8) = 'FPG6NOS'
         fapg(9) = 'SHB6'
 !
-        do 60 i = 1, 6
-            yin(i) = 0.d0
-            zin(i) = 0.d0
-60      continue
-        do 62 i = 1, 3
-            xin(i ) = -1.d0
-            xin(i+3) = 1.d0
-62      continue
-        yin(1) = +1.d0
-        yin(4) = +1.d0
-        zin(2) = +1.d0
-        zin(5) = +1.d0
+        if (elrefa .eq. 'SH6') then 
+            do  i = 1, 6
+                xin(i) = 0.d0
+                yin(i) = 0.d0
+            enddo
+            do i = 1, 3
+                zin(i ) = -1.d0
+                zin(i+3) = 1.d0
+            enddo
+            xin(1) = +1.d0
+            xin(4) = +1.d0
+            yin(2) = +1.d0
+            yin(5) = +1.d0
+        else
+            do i = 1, 6
+                yin(i) = 0.d0
+                zin(i) = 0.d0
+            enddo
+            do i = 1, 3
+                xin(i ) = -1.d0
+                xin(i+3) = 1.d0
+            enddo
+            yin(1) = +1.d0
+            yin(4) = +1.d0
+            zin(2) = +1.d0
+            zin(5) = +1.d0
+        endif
 !
 !     ------------------------------------------------------------------
-    else if (elrefa.eq.'P15') then
+    else if (elrefa.eq.'P15' .or. elrefa .eq. 'S15') then
         ndim = 3
         nno = 15
         nnos = 6
@@ -402,24 +417,45 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
             yin(i) = 0.d0
             zin(i) = 0.d0
 70      continue
-        do 72 i = 1, 3
-            xin(i) = -1.d0
-            xin(i+6) = -1.d0
-            xin(i+3) = +1.d0
-            xin(i+12) = +1.d0
-72      continue
-        yin(1) = +1.d0
-        yin(4) = +1.d0
-        yin(10) = +1.d0
-        zin(2) = +1.d0
-        zin(5) = +1.d0
-        zin(11) = +1.d0
-        do 74 i = 1, 2
-            do 76 j = 1, 2
-                yin(6*i+2*j-1) = +0.5d0
-                zin(6*i+j) = +0.5d0
-76          continue
-74      continue
+        if (elrefa .eq. 'S15') then 
+            do  i = 1, 3
+                zin(i) = -1.d0
+                zin(i+6) = -1.d0
+                zin(i+3) = +1.d0
+                zin(i+12) = +1.d0
+            enddo
+            xin(1) = +1.d0
+            xin(4) = +1.d0
+            xin(10) = +1.d0
+            yin(2) = +1.d0
+            yin(5) = +1.d0
+            yin(11) = +1.d0
+            do i = 1, 2
+                do j = 1, 2
+                    xin(6*i+2*j-1) = +0.5d0
+                    yin(6*i+j) = +0.5d0
+                enddo
+            enddo
+        else
+            do  i = 1, 3
+                xin(i) = -1.d0
+                xin(i+6) = -1.d0
+                xin(i+3) = +1.d0
+                xin(i+12) = +1.d0
+            enddo
+            yin(1) = +1.d0
+            yin(4) = +1.d0
+            yin(10) = +1.d0
+            zin(2) = +1.d0
+            zin(5) = +1.d0
+            zin(11) = +1.d0
+            do i = 1, 2
+                do  j = 1, 2
+                    yin(6*i+2*j-1) = +0.5d0
+                    zin(6*i+j) = +0.5d0
+                enddo
+            enddo
+        endif
 !
 !     ------------------------------------------------------------------
     else if (elrefa.eq.'P18') then

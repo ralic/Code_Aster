@@ -8,7 +8,7 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -458,6 +458,35 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
         dff(3,27) = al32(x0)*al32(y0)*dal32(z0)
 !
 !     ------------------------------------------------------------------
+    else if (elrefe.eq.'SH6') then
+!
+        x0 = x(1)
+        y0 = x(2)
+        z0 = x(3)
+        nno = 6
+        ndim = 3
+        al = (un-x0-y0)
+!
+        dff(1,1) =  (un-z0)*undemi
+        dff(2,1) =  zero
+        dff(3,1) = -x0*undemi
+        dff(1,2) =  zero
+        dff(2,2) =  (un-z0)*undemi
+        dff(3,2) = -y0*undemi
+        dff(1,3) = -(un-z0)*undemi
+        dff(2,3) = -(un-z0)*undemi
+        dff(3,3) = -al*undemi
+        dff(1,4) =  (un+z0)*undemi
+        dff(2,4) =  zero
+        dff(3,4) =  x0*undemi
+        dff(1,5) =  zero
+        dff(2,5) =  (un+z0)*undemi
+        dff(3,5) =  y0*undemi
+        dff(1,6) = -(un+z0)*undemi
+        dff(2,6) = -(un+z0)*undemi
+        dff(3,6) =  al*undemi
+!
+!     ------------------------------------------------------------------
     else if (elrefe.eq.'PE6') then
 !
         x0 = x(1)
@@ -648,6 +677,62 @@ subroutine elrfdf(elrefz, x, dimd, dff, nno,&
         dff(1,14) = 2.25d0*p
         dff(2,14) = -2.25d0*q
         dff(3,14) = -2.25d0*o
+!
+!     ------------------------------------------------------------------
+    else if (elrefe.eq.'S15') then
+!
+        x0 = x(1)
+        y0 = x(2)
+        z0 = x(3)
+        nno = 15
+        ndim = 3
+        al = un - x0 - y0
+!
+        dff(1,1)  =  (un-z0)*(quatre*x0-deux-z0) /deux
+        dff(2,1)  =  zero
+        dff(3,1)  =  (-x0*(deux*x0-deux-z0) - x0*(un-z0)) /deux
+        dff(1,2)  =  zero
+        dff(2,2)  =  (un-z0)*(quatre*y0-deux-z0) /deux
+        dff(3,2)  = -y0*(deux*y0-un-deux*z0) /deux
+        dff(1,3)  =  (z0-un)*(-z0 - quatre*x0 - quatre*y0 + deux) /deux
+        dff(2,3)  =  (z0-un)* (-z0-quatre*x0-quatre*y0+deux) /deux
+        dff(3,3)  =  al*(deux*z0 + deux*x0 + deux*y0 - un) /deux
+        dff(1,4)  =  (un+z0)* (quatre*x0-deux+z0) /deux
+        dff(2,4)  =  zero
+        dff(3,4)  =  x0* (deux*x0-un+deux*z0) /deux
+        dff(1,5)  =  zero
+        dff(2,5)  =  (un+z0)* (quatre*y0-deux+z0) /deux
+        dff(3,5)  =  y0* (deux*y0-un+deux*z0) /deux
+        dff(1,6)  =  (z0+un)* (-z0+quatre*x0+quatre*y0-deux) /deux
+        dff(2,6)  =  (z0+un)* (-z0+quatre*x0+quatre*y0-deux) /deux
+        dff(3,6)  =  al* (deux*z0-deux*x0-deux*y0+un) /deux
+        dff(1,7)  =  deux*y0* (un-z0) 
+        dff(2,7)  =  deux*x0* (un-z0)
+        dff(3,7)  = -deux*x0*y0
+        dff(1,8)  = -deux*y0* (un-z0)
+        dff(2,8)  =  (deux*al-deux*y0)* (un-z0)
+        dff(3,8)  = -deux*al*y0
+        dff(1,9)  =  (deux*al-deux*x0)* (un-z0)
+        dff(2,9)  = -deux*x0* (un-z0)
+        dff(3,9)  = -deux*x0*al
+        dff(1,10) =  (un-z0*z0)
+        dff(2,10) =  zero
+        dff(3,10) = -deux*x0*z0
+        dff(1,11) =  zero
+        dff(2,11) =  (un-z0*z0)
+        dff(3,11) = -deux*y0*z0
+        dff(1,12) = -(un-z0*z0)
+        dff(2,12) = -(un-z0*z0)
+        dff(3,12) = -deux*al*z0
+        dff(1,13) =  deux*y0* (un+z0)
+        dff(2,13) =  deux*x0* (un+z0)
+        dff(3,13) =  deux*x0*y0
+        dff(1,14) = -deux*y0* (un+z0)
+        dff(2,14) =  (deux*al-deux*y0)* (un+z0)
+        dff(3,14) =  deux*al*y0
+        dff(1,15) =  (deux*al-deux*x0)* (un+z0)
+        dff(2,15) = -deux*x0* (un+z0)
+        dff(3,15) =  deux*x0*al
 !
 !     ------------------------------------------------------------------
     else if (elrefe.eq.'P15') then

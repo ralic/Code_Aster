@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -506,7 +506,7 @@ class MECA_SHB6(MECA_SHB8):
     meshType = MT.PENTA6
     elrefe = (
         ElrefeLoc(
-            MT.PE6, gauss=(
+            MT.SH6, gauss=(
                 'RIGI=SHB6', 'MASS=SHB6', 'FPG1=FPG1',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.TR3, gauss = ('RIGI=FPG3', 'MASS=FPG3',),),
         ElrefeLoc(MT.QU4, gauss = ('RIGI=FPG4', 'MASS=FPG4',),),
@@ -520,7 +520,7 @@ class MECA_SHB15(MECA_SHB8):
     meshType = MT.PENTA15
     elrefe = (
         ElrefeLoc(
-            MT.P15, gauss=(
+            MT.S15, gauss=(
                 'RIGI=SHB15', 'MASS=SHB15', 'FPG1=FPG1',), mater=('RIGI', 'FPG1',),),
         ElrefeLoc(MT.QU8, gauss = ('RIGI=FPG9', 'MASS=FPG9',),),
         ElrefeLoc(MT.TR6, gauss = ('RIGI=FPG6', 'MASS=FPG6',),),

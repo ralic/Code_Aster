@@ -1,7 +1,7 @@
 subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,8 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 ! --------------------------------------------------------------------------------------------------
 !   POUR LES PENTA :
-    elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18') then
+    elseif (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or. elrefa.eq.'P18' &
+            .or. elrefa.eq.'SH6' .or. elrefa.eq.'S15' ) then
         ASSERT(ndim.eq.3)
         if (x .lt. -1.d0) goto 40
         if (x .gt. +1.d0) goto 40

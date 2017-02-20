@@ -1,7 +1,7 @@
 function isnomi(elrefa, ino)
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,7 +46,8 @@ function isnomi(elrefa, ino)
     else if (elrefa.eq.'TE4'.or.elrefa.eq.'T10') then
       nnos=4
       goto 100
-    else if (elrefa.eq.'PE6'.or.elrefa.eq.'P15'.or.elrefa.eq.'P18') then
+    else if (elrefa.eq.'PE6'.or.elrefa.eq.'P15'.or.elrefa.eq.'P18'&
+             .or. elrefa.eq.'SH6'.or.elrefa.eq.'S15') then
       nnos=6
       goto 100
     else if (elrefa.eq.'PY5'.or.elrefa.eq.'P13') then

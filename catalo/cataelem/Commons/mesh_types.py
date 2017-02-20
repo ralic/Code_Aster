@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -302,6 +302,21 @@ PE6.addLocation('XFEM960', 960)
 PE6.addLocation('SHB6', 5)
 PENTA6.addElrefe(PE6)
 
+SH6 = Elrefe()
+SH6.addLocation('NOEU', 6)
+SH6.addLocation('NOEU_S', 6)
+SH6.addLocation('FPG1', 1)
+SH6.addLocation('FPG6', 6)
+SH6.addLocation('FPG6NOS', 12)
+SH6.addLocation('FPG8', 8)
+SH6.addLocation('FPG21', 21)
+SH6.addLocation('XFEM72', 72)
+SH6.addLocation('XFEM240', 240)
+SH6.addLocation('XFEM480', 480)
+SH6.addLocation('XFEM720', 720)
+SH6.addLocation('XFEM960', 960)
+SH6.addLocation('SHB6', 5)
+PENTA6.addElrefe(SH6)
 
 #------------------------------------------------------------
 PENTA15 = MeshType(nbno=15, dim=3, code='P15')
@@ -321,6 +336,20 @@ P15.addLocation('XFEM2160', 2160)
 P15.addLocation('SHB15', 15)
 PENTA15.addElrefe(P15)
 
+S15 = Elrefe()
+S15.addLocation('NOEU', 15)
+S15.addLocation('NOEU_S', 6)
+S15.addLocation('FPG1', 1)
+S15.addLocation('FPG6', 6)
+S15.addLocation('FPG6NOS', 12)
+S15.addLocation('FPG8', 8)
+S15.addLocation('FPG21', 21)
+S15.addLocation('XFEM240', 240)
+S15.addLocation('XFEM720', 720)
+S15.addLocation('XFEM1440', 1440)
+S15.addLocation('XFEM2160', 2160)
+S15.addLocation('SHB15', 15)
+PENTA15.addElrefe(S15)
 
 #------------------------------------------------------------
 PENTA18 = MeshType(nbno=18, dim=3, code='P18')
@@ -334,7 +363,6 @@ P18.addLocation('FPG6NOS', 12)
 P18.addLocation('FPG8', 8)
 P18.addLocation('FPG21', 21)
 PENTA18.addElrefe(P18)
-
 
 #------------------------------------------------------------
 PYRAM5 = MeshType(nbno=5, dim=3, code='PY5')

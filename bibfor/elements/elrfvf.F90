@@ -6,7 +6,7 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
     character(len=*) :: elrefz
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
     real(kind=8) :: pface2
     real(kind=8) :: pface3, pface4, pmili1, pmili2, pmili3, pmili4
     real(kind=8) :: x1, x2, x3, x4, d1, d2, d3, d4
-    real(kind=8) :: zero, undemi, un, deux, quatre, uns4, uns8
+    real(kind=8) :: zero, undemi, un, deux, quatre,huit, uns4, uns8
 !
 ! -----  FONCTIONS FORMULES
 #define al31(u)   0.5d0*(u)* (u-1.d0)
@@ -54,8 +54,10 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
     un = 1.0d0
     deux = 2.0d0
     quatre = 4.0d0
-    uns4 = un/4.0d0
-    uns8 = un/8.0d0
+    huit = 8.0d0
+    uns4 = un/quatre
+    uns8 = un/huit
+
 !
 !     ------------------------------------------------------------------
     if (elrefe .eq. 'HE8') then
@@ -140,6 +142,21 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
         ff(27) = al32(x0)*al32(y0)*al32(z0)
 !
 !     ------------------------------------------------------------------
+    else if (elrefe.eq.'SH6') then
+!
+        x0 = x(1)
+        y0 = x(2)
+        z0 = x(3)
+        nno = 6
+        al = un - x0 - y0
+!
+        ff(1) = undemi*x0*(un-z0)
+        ff(2) = undemi*y0*(un-z0)
+        ff(3) = undemi*al*(un-z0)
+        ff(4) = undemi*x0*(un+z0)
+        ff(5) = undemi*y0*(un+z0)
+        ff(6) = undemi*al*(un+z0)
+!     ------------------------------------------------------------------
     else if (elrefe.eq.'PE6') then
 !
         x0 = x(1)
@@ -153,6 +170,34 @@ subroutine elrfvf(elrefz, x, dimf, ff, nno)
         ff(4) = undemi*y0* (un+x0)
         ff(5) = undemi*z0* (un+x0)
         ff(6) = undemi* (un-y0-z0)* (un+x0)
+!
+!     ------------------------------------------------------------------
+    else if (elrefe.eq.'S15') then
+!
+        x0 = x(1)
+        y0 = x(2)
+        z0 = x(3)
+        nno = 15
+        al = un - x0 - y0
+!
+        ff(1)  = x0* (un-z0)* ((deux*x0)-deux-z0)/deux
+        ff(2)  = y0* (un-z0)* ((deux*y0)-deux-z0)/deux
+        ff(3)  = al* (z0-un)* (z0+ (deux*x0)+ (deux*y0))/deux
+        ff(4)  = x0* (un+z0)* ((deux*x0)-deux+z0)/deux
+        ff(5)  = y0* (un+z0)* ((deux*y0)-deux+z0)/deux
+        ff(6)  = al* (-z0-un)* (-z0+ (deux*x0)+(deux*y0))/deux
+!
+        ff(7)  = deux*x0*y0* (un-z0)
+        ff(8)  = deux*y0*al* (un-z0)
+        ff(9)  = deux*x0*al* (un-z0)
+!
+        ff(10) = x0* (un-z0*z0)
+        ff(11) = y0* (un-z0*z0)
+        ff(12) = al* (un-z0*z0)
+!
+        ff(13) = deux*x0*y0* (un+z0)
+        ff(14) = deux*y0*al* (un+z0)
+        ff(15) = deux*x0*al* (un+z0)
 !
 !     ------------------------------------------------------------------
     else if (elrefe.eq.'P15') then

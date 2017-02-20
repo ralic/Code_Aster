@@ -107,7 +107,7 @@ subroutine te0477(option, nomte)
 !   Output parameters
 !
     if (option(1:10) .eq. 'RIGI_MECA_' .or. option(1:9) .eq. 'FULL_MECA') then
-       call nmtstm(zr(icarcr), imatuu, matsym)
+            call nmtstm(zr(icarcr), imatuu, matsym)
     endif
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

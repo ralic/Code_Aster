@@ -1,6 +1,6 @@
 subroutine inmat6(elrefa, fapg, mganos)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,6 +76,8 @@ subroutine inmat6(elrefa, fapg, mganos)
         elref2 = 'HE8'
     else if ((elrefa.eq.'P15').or.(elrefa.eq.'P18')) then
         elref2 = 'PE6'
+    else if ((elrefa.eq.'S15')) then
+        elref2 = 'SH6'
     else if (elrefa.eq.'P13') then
         elref2 = 'PY5'
     else if (elrefa.eq.'T10') then

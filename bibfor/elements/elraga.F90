@@ -9,7 +9,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
     real(kind=8) :: coopg(*), poipg(*)
     character(len=*) :: elrefz, fapz
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,11 +43,11 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 !
     character(len=8) :: elrefa, fapg, nofpg(nbfamx)
     character(len=24) :: valk(2)
-    integer :: i, npar, npi, ix, iy, iz, npx, npyz
+    integer :: i, npar, npi, ix, iy, iz, npx, npyz, npz, npxy
     integer :: nno, nnos, nbfpg, nbpg1(nbfamx), ino, ifam
     real(kind=8) :: xpg(nbpgmx), ypg(nbpgmx), zpg(nbpgmx), hpg(nbpgmx), a(4)
     real(kind=8) :: h(4)
-    real(kind=8) :: aty(7), atz(7), ht(7)
+    real(kind=8) :: atx(7), aty(7), ht(7), atz(7)
     real(kind=8) :: aa, bb, cc, hh, h1, h2, h3, rac5, rac15, a1, b1, b6, c1, c8
     real(kind=8) :: d1, d12
     real(kind=8) :: p1, p2, p3, p4, p5, xxg5(20), xyg5(20), xzg5(20)
@@ -259,6 +259,216 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
 40              continue
 50          continue
 60      continue
+
+!     ------------------------------------------------------------------
+        else if (elrefa.eq.'SH6' .or. elrefa.eq.'S15') then
+!
+        if (fapg .eq. 'FPG6') then
+            npz = 2
+            npxy = 3
+            a(1) = -0.577350269189626d0
+            a(2) = -a(1)
+            atx(1) = undemi
+            atx(2) = zero
+            atx(3) = undemi
+            aty(1) = undemi
+            aty(2) = undemi
+            aty(3) = zero
+            h(1) = un
+            h(2) = un
+            ht(1) = un/6.d0
+            ht(2) = ht(1)
+            ht(3) = ht(1)
+!
+        else if (fapg.eq.'FPG6B') then
+            npz = 2
+            npxy = 3
+            a(1) = -0.577350269189626d0
+            a(2) = -a(1)
+            atx(1) = 1.d0/6.d0
+            atx(2) = 2.d0/3.d0
+            atx(3) = 1.d0/6.d0
+            aty(1) = 1.d0/6.d0
+            aty(2) = 1.d0/6.d0
+            aty(3) = 2.d0/3.d0
+            h(1) = un
+            h(2) = un
+            ht(1) = 1.d0/6.d0
+            ht(2) = ht(1)
+            ht(3) = ht(1)
+!
+        else if (fapg.eq.'FPG8') then
+!
+! --------- FORMULE A 4 * 2 POINTS :  (CF TOUZOT PAGE 297)
+!                   2 POINTS DE GAUSS  EN X   (ORDRE 3)
+!                   4 POINTS DE HAMMER EN Y Z (ORDRE 3 EN Y Z)
+!
+! --------- FORMULE DE GAUSS
+!
+            npz = 2
+            a(1) = -0.577350269189626d0
+            a(2) = -a(1)
+            h(1) = un
+            h(2) = un
+!
+! --------- FORMULE DE HAMMER
+!
+            npxy = 4
+            atx(1) = 0.333333333333333d0
+            atx(2) = 0.6d0
+            atx(3) = 0.2d0
+            atx(4) = 0.2d0
+            aty(1) = 0.333333333333333d0
+            aty(2) = 0.2d0
+            aty(3) = 0.6d0
+            aty(4) = 0.2d0
+            ht(1) = -27.d0/96.d0
+            ht(2) = 25.d0/96.d0
+            ht(3) = ht(2)
+            ht(4) = ht(2)
+!
+        else if (fapg.eq.'FPG21') then
+!
+! --------- FORMULE A 7 * 3 POINTS :   (CF TOUZOT PAGE 298)
+!                   3 POINTS DE GAUSS EN X (ORDRE 5)
+!                   7 POINTS DE HAMMER EN Y Z (ORDRE 5 EN Y Z)
+!
+! --------- FORMULE DE GAUSS
+!
+            npz = 3
+            a(1) = -0.774596669241483d0
+            a(2) = zero
+            a(3) = -a(1)
+            h(1) = 0.555555555555556d0
+            h(2) = 0.888888888888889d0
+            h(3) = h(1)
+!
+! --------- FORMULE DE HAMMER
+!
+            npxy = 7
+            atx(1) = 0.333333333333333d0
+            aty(1) = 0.333333333333333d0
+            atx(2) = 0.470142064105115d0
+            aty(2) = 0.470142064105115d0
+            atx(3) = un - deux*atx(2)
+            aty(3) = 0.470142064105115d0
+            atx(4) = 0.470142064105115d0
+            aty(4) = un - deux*atx(2)
+            atx(5) = 0.101286507323456d0
+            aty(5) = 0.101286507323456d0
+            atx(6) = un - deux*atx(5)
+            aty(6) = 0.101286507323456d0
+            atx(7) = 0.101286507323456d0
+            aty(7) = un - deux*atx(5)
+            ht(1) = 9.d0/80.d0
+            ht(2) = 0.0661970763942530d0
+            ht(3) = ht(2)
+            ht(4) = ht(2)
+            ht(5) = 0.0629695902724135d0
+            ht(6) = ht(5)
+            ht(7) = ht(5)
+!
+        else if (fapg.eq.'FPG6NOS') then
+! ------- POUR LES POINTS DE GAUSS -------------------------------------
+            npz = 2
+            npxy = 3
+            a(1) = -0.577350269189626d0
+            a(2) = 0.577350269189626d0
+            atx(1) = undemi
+            atx(2) = zero
+            atx(3) = undemi
+            aty(1) = undemi
+            aty(2) = undemi
+            aty(3) = zero
+            h(1) = un
+            h(2) = un
+            ht(1) = 0.166666666666667d0
+            ht(2) = ht(1)
+            ht(3) = ht(1)
+!
+! ------- POUR LES SOMMETS ---------------------------------------------
+            do ino = 1,nnos
+            hpg(ino+6) = vol/nnos
+! ---------- ON UTILISE LE FAIT QUE LES SOMMETS SONT TOUJOURS ----------
+! ---------- NUMEROTES EN PREMIER --------------------------------------
+            xpg(ino+6) = xno(ndim* (ino-1)+1)
+            if (ndim .ge. 2) ypg(ino+6) = xno(ndim* (ino-1)+2)
+            if (ndim .eq. 3) zpg(ino+6) = xno(ndim* (ino-1)+3)
+            enddo
+!
+        else if (fapg.eq.'SHB6') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 5 POINTS DANS
+!           L EPAISSEUR POUR LE SHB6, AU CENTRE DE L'ELEMENT
+            xxg5(1) = -0.906179845938664d0
+            xxg5(2) = -0.538469310105683d0
+            xxg5(3) = 0.d0
+            xxg5(4) = 0.538469310105683d0
+            xxg5(5) = 0.906179845938664d0
+!
+            pxg5(1) = 0.236926885056189d0
+            pxg5(2) = 0.478628670499366d0
+            pxg5(3) = 0.568888888888889d0
+            pxg5(4) = 0.478628670499366d0
+            pxg5(5) = 0.236926885056189d0
+!         IL FAUT MULTIPLIER LES POIDS PAR 0.5 POUR OBTENIR VOL=1
+            do  iz = 1, 5
+                xpg(iz) = untiers
+                ypg(iz) = untiers
+                zpg(iz) = xxg5(iz)
+                hpg(iz) = pxg5(iz)*0.5d0
+            enddo
+            goto 170
+!
+        else if (fapg.eq.'SHB15') then
+! --------- FORMULE DE QUADRATURE DE GAUSS A 15 POINTS DANS
+!           L EPAISSEUR POUR LE SHB15
+            do  iz = 1, 5
+                xyg5(iz) = 0.5d0
+                xxg5(iz) = 0.5d0
+                xyg5(iz+5) = 0.d0
+                xxg5(iz+5) = 0.5d0
+                xyg5(iz+10) = 0.5d0
+                xxg5(iz+10) = 0.d0
+            enddo
+!
+            do  iz = 1, 3
+                xzg5(5*(iz-1)+1) = -0.906179845938664d0
+                xzg5(5*(iz-1)+2) = -0.538469310105683d0
+                xzg5(5*(iz-1)+3) = 0.d0
+                xzg5(5*(iz-1)+4) = 0.538469310105683d0
+                xzg5(5*(iz-1)+5) = 0.906179845938664d0
+!
+                pxg5(5*(iz-1)+1) = 0.236926885056189d0/6.d0
+                pxg5(5*(iz-1)+2) = 0.478628670499366d0/6.d0
+                pxg5(5*(iz-1)+3) = 0.568888888888889d0/6.d0
+                pxg5(5*(iz-1)+4) = 0.478628670499366d0/6.d0
+                pxg5(5*(iz-1)+5) = 0.236926885056189d0/6.d0
+            enddo
+            do iz = 1, 15
+                xpg(iz) = xxg5(iz)
+                ypg(iz) = xyg5(iz)
+                zpg(iz) = xzg5(iz)
+                hpg(iz) = pxg5(iz)
+            enddo
+            goto 170
+!
+        else
+            valk (1) = elrefa
+            valk (2) = fapg
+            call utmess('F', 'ELEMENTS4_84', nk=2, valk=valk)
+        endif
+!
+!       TRAITEMENT POUR LES FAPG NON SHB
+        npi = 0
+        do  iz = 1, npz
+            do  ix = 1, npxy
+                npi = npi + 1
+                xpg(npi) = atx(ix)
+                ypg(npi) = aty(ix)
+                zpg(npi) = a(iz)
+                hpg(npi) = h(iz)*ht(ix)
+             enddo
+        enddo
 !     ------------------------------------------------------------------
         else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15' .or.&
     elrefa.eq.'P18') then

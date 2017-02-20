@@ -4,7 +4,7 @@ subroutine nuelrf(elrefe, nujni)
     character(len=8) :: elrefe
     integer :: nujni
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,8 @@ subroutine nuelrf(elrefe, nujni)
         elrefe .eq. 'PY5' .or. elrefe .eq. 'P13' .or. elrefe .eq. 'QU4' .or. elrefe .eq.&
         'QU8' .or. elrefe .eq. 'QU9' .or. elrefe .eq. 'TR3' .or. elrefe .eq. 'TR6' .or.&
         elrefe .eq. 'TR7' .or. elrefe .eq. 'SE2' .or. elrefe .eq. 'SE3' .or. elrefe .eq.&
-        'SE4' .or. elrefe .eq. 'PO1' .or. elrefe .eq. 'P18') then
+        'SE4' .or. elrefe .eq. 'PO1' .or. elrefe .eq. 'P18' .or.  elrefe .eq. 'SH6' &
+         .or. elrefe .eq. 'S15'  ) then
         nujni = 2
 !
     else if (elrefe.eq.'CABPOU') then

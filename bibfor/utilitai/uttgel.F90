@@ -1,6 +1,6 @@
 subroutine uttgel(nomte, typgeo)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,8 @@ subroutine uttgel(nomte, typgeo)
         typgeo='QU'
     elseif (codtma.eq.'HE8' .or. codtma.eq.'H20' .or. codtma.eq.'H27') then
         typgeo='HE'
-    elseif (codtma.eq.'PE6' .or. codtma.eq.'P15' .or. codtma.eq.'P18') then
+    elseif (codtma.eq.'PE6' .or. codtma.eq.'P15' .or. codtma.eq.'P18' .or. &
+            codtma == 'SH6' .or. codtma == 'S15' ) then
         typgeo='PE'
     elseif (codtma.eq.'TE4' .or. codtma.eq.'T10') then
         typgeo='TE'

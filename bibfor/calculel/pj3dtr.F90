@@ -1,7 +1,7 @@
 subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                   geom2, dala)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -266,7 +266,8 @@ subroutine pj3dtr(cortr3, corres, nutm3d, elrf3d, geom1,&
                 dzeta = dzeta + pjef_cf(ideca1+kk)*x3
             enddo
 
-        else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or. elrefa.eq.'P18' ) then
+        else if (elrefa.eq.'PE6' .or. elrefa.eq.'P15'.or. elrefa.eq.'P18' &
+                 .or. elrefa.eq.'SH6' .or. elrefa.eq.'S15' ) then
             do kk = 1, 4
                 x1 = crrefe(ndim*(cnpent(kk,ityp)-1)+1)
                 x2 = crrefe(ndim*(cnpent(kk,ityp)-1)+2)
