@@ -23,7 +23,7 @@ interface
                       idfde,   geom, typmod, option,  imate,&
                      compor,   lgpg,   crit, instam, instap,&
                       deplm,  deplp, angmas,   sigm,    vim,&
-                     matsym,   sigp,    vip,  matuu,  vectu,&
+                       sigp,    vip,  matuu,  vectu,&
                      codret)
         aster_logical, intent(in) :: hexa
         aster_logical, intent(in) :: shb6
@@ -49,7 +49,6 @@ interface
         real(kind=8), intent(in) :: angmas(*)
         real(kind=8), intent(in) :: sigm(18, npg)
         real(kind=8), intent(in) :: vim(lgpg, npg)
-        aster_logical, intent(in) :: matsym
         real(kind=8), intent(out) :: sigp(18, npg)
         real(kind=8), intent(out) :: vip(lgpg, npg)
         real(kind=8), intent(out) :: matuu(*)

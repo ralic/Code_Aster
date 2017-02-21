@@ -1,6 +1,6 @@
 subroutine te0473(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,144 +17,168 @@ subroutine te0473(option, nomte)
 ! ======================================================================
     implicit none
 !
-!          ELEMENT SHB
-!    FONCTION REALISEE:
-!            OPTION : 'RIGI_MECA      '
-!                            CALCUL DES MATRICES ELEMENTAIRES  3D
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
-!.......................................................................
+! 'RIGI_MECA' option for SHB elements
+!
+!
+! 'RIGI_MECA' option for solid-shell elements SHB6, SHB8, SHB15 & SHB20.
+! Computation of 3D elementary matrix.
+!
+!
+! IN  option   'RIGI_MECA'
+! IN  nomte    elment type name
 !
 #include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/idsshb.h"
+#include "asterf_types.h"
 #include "asterfort/jevech.h"
-#include "asterfort/moytem.h"
 #include "asterfort/r8inir.h"
+!
+#include "asterfort/bmatmc.h"
+#include "asterfort/btdbpr.h"
+#include "asterfort/elrefe_info.h"
+#include "asterfort/mhomss.h"
+#include "asterfort/mpsoqo.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/sh1rig.h"
-#include "asterfort/sh2rig.h"
-#include "asterfort/sh6rig.h"
-#include "asterfort/sh8rig.h"
+#include "asterfort/sshini.h"
+#include "asterfort/ss6bgl.h"
+#include "asterfort/ss8hsm.h"
+#include "asterfort/tmassf.h"
+#include "asterfort/utbtab.h"
 !
-!-----------------------------------------------------------------------
-    integer :: i, idfde, igeom, imate, imatuu, ipoids, iret
-    integer :: ivf, j, jgano, k, lag, nbinco, nbres
-    integer :: ndim, nno, nnos, npg
-    real(kind=8) :: tempm, ygot
-!-----------------------------------------------------------------------
-    parameter (nbres=2)
-    character(len=4) :: fami
-    integer :: icodre(nbres)
-    character(len=8) :: famil, poum
-    character(len=16) :: nomres(nbres), nomte, option, nomshb
-    real(kind=8) :: para(11), re20(60, 60)
-    real(kind=8) :: valres(nbres), re(24, 24), re6(18, 18)
-    integer :: nbv, kpg, spt
-    real(kind=8) :: nu, e, re15(45, 45)
-    real(kind=8) :: dsde(20, 6, 6)
+    character(len=16) :: option
+    character(len=16) :: nomte
 !
-    fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-    call idsshb(ndim, nno, npg, nomshb)
-    nbinco = ndim*nno
-    do 10 i = 1, 11
-        para(i) = 0.d0
-10  end do
-    famil='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    if (option .eq. 'RIGI_MECA') then
-! ----  RECUPERATION DES COORDONNEES DES CONNECTIVITES
-        call jevech('PGEOMER', 'L', igeom)
-! ----  RECUPERATION DU MATERIAU DANS ZI(IMATE)
-        call jevech('PMATERC', 'L', imate)
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nbv = 2
-! ----  INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-! ----  ET DU TEMPS
+    aster_logical :: hexa, shb6, shb8
+    integer :: i, icoopg, idfde, igeom, imate, imatuu, ipoids, ivf
+    integer :: j
+    integer :: k, kpg
+    integer :: nbinco, nbv, ndim, nno, nnos, npg
+    integer :: icodre(2)
+    character(len=8) :: nomres(2)
+    real(kind=8) :: para(2)
+    real(kind=8) :: jac, nharm
+    real(kind=8), dimension(3,3) :: pgl
+    real(kind=8), dimension(6,6) :: pglqo, work66, cmatlo, cmatgl
+    real(kind=8), dimension(6,81) :: bg
+    real(kind=8), dimension(81,81) :: btdb
 !
-        call moytem(fami, npg, 1, '+', tempm,&
-                    iret)
+! ......................................................................
 !
-        call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, 'TEMP', [tempm],&
-                    nbv, nomres, valres, icodre, 1)
-        e = valres(1)
-        nu = valres(2)
-! ----  PARAMETRES MATERIAUX
-        ygot = e
-! ----  PARAMETRES MATERIAUX POUR LE CALCUL DE LA
-! ----  MATRICE TANGENTE PLASTIQUE
-!       MATRICE TANGENTE PLASTIQUE SI WORK(13)=1
-!       LAG=0 LAGRANGIEN REACTUALISE (EPS=EPSLIN)
-!       LAG=1 LAGRANGIEN TOTAL (EPS=EPSLIN+EPSNL)
-        lag = 0
-        para(1) = e
-        para(2) = nu
-        para(3) = ygot
-! PARA(4) = WORK(13)
-        para(4) = 0
-! PARA(5) = WORK(150)
-        para(5) = 1
-! PARA(6) = LAG
-        para(6) = lag
+    parameter(ndim = 3)
+!
+    parameter(nbv = 2)
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+!
+! - Finite element informations
+!
+    call elrefe_info(fami='RIGI', nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids, jcoopg=icoopg, jvf=ivf, jdfde=idfde)
+!
+! - Geometry
+!
+    call jevech('PGEOMER', 'L', igeom)
+!
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', imate)
+!
+! - Initializations
+!
+    nbinco = nno*ndim
+!
+!   Initialization of btdb which is a (81,81) matrix not fully used.
+!   At most (60,60) is used for SHB20. matini or r8inir routines are thus not used.
+!   To save time, its initialization is managed in a dedicated loop.
+    do 10 i = 1, nbinco
+       do 11 j = 1, nbinco
+          btdb(i,j) = 0.0d0
+11     continue
+10  continue
+!
+!   Initialization of specific SHB variables
+!
+    call sshini(nno, nnos, hexa, shb6, shb8)
+!
+!
+! - Loop over Gauss points \ Start
+!  
+    do 100 kpg = 1, npg
+!
+!      Retrieving matrial data
+!
+       call rcvalb('RIGI', kpg, 1, '+', zi(imate),&
+                   ' ', 'ELAS', 1, 'INST', [0.d0],&
+                   nbv, nomres, para, icodre, 1)
+!
+!      Assemble modified Hooke matrix
+!
+       call mhomss(para(1), para(2), cmatlo)
+!
+!      Evaluate pgl(3,3) transformation matrix from global coordinate system
+!      to local 'shell' coordinate system
+!
+       call tmassf(zr(igeom), icoopg, kpg, hexa, pgl)
+!
+! ---- Compute matrix [B]: displacement -> strain (first order)
+!
+       if (shb6) then
+!
+!         [B] SHB6 \ Start
+!         Evaluation of SHB6 B matrix in global coordinates
+!         This code being re-used for non-linear behaviors (PETIT, GROT_GDEP),
+!         it is encapsulated in a dedicated routine
+!
+          call ss6bgl(.false._1, kpg, zr(igeom), ipoids, idfde, icoopg, pgl, jac, bg)
+!
+!         [B] SHB6 \ End
+!
+       else
+!
+!         [B] SHB8, SHB15 & SHB20 \ Start
+!         ([B] SHB8 will be 'completed' later with a stabilization matrix)
+!
+          call bmatmc(kpg, 6, zr(igeom), ipoids, ivf,&
+                      idfde, nno, nharm, jac, bg)
+!
+!         [B] SHB8, SHB15 & SHB20 \ End
+!
+       endif
+!
+!      pgl(3,3) transformation matrix modified into fourth order transformation matrix pglqo(6,6)
+!
+       call mpsoqo(pgl, pglqo)
+!
+!      Transforming modified Hooke matrix in global coordinate system
+!
+       call utbtab('ZERO', 6, 6, cmatlo, pglqo, work66, cmatgl)
+!
+!      Evaluate elementary stiffness matrix
+!
+       call btdbpr(bg, cmatgl, jac, 6, nbinco, btdb)
+!
+100 continue
+!
+! - Loop over Gauss points \ End
+!
+!   Storing elementary stiffness matrix (half of this symmetric matrix is stored)
+!
+    call jevech('PMATUUR', 'E', imatuu)
+    k = 0
+    do 300 i = 1, nbinco
+       do 301 j = 1, i
+          k = k + 1
+          zr(imatuu+k-1) = btdb(i,j)
+301    continue
+300 continue
+!
+! - SHB8 stabilization matrix
+!   Matrix evaluated at the center of the element in a corotional frame
+!
+    if (shb8) then
+!
+       call ss8hsm(zr(igeom), para, zr(imatuu))
+!
     endif
 !
-!  ===========================================
-!  -- MATRICE DE RIGIDITE
-!  ===========================================
-    if (option .eq. 'RIGI_MECA') then
-        if (nomshb .eq. 'SHB8') then
-            call r8inir(nbinco*nbinco, 0.d0, re, 1)
-            call sh8rig(zr(igeom), para, dsde, option, re)
-!        RECUPERATION ET AFFECTATION DU VECTEUR EN SORTIE
-!        DEMI-MATRICE DE RIGIDITE
-            call jevech('PMATUUR', 'E', imatuu)
-            k = 0
-            do 50 i = 1, nbinco
-                do 40 j = 1, i
-                    k = k + 1
-                    zr(imatuu+k-1) = re(i,j)
-40              continue
-50          continue
-        else if (nomshb.eq.'SHB6') then
-            call r8inir(nbinco*nbinco, 0.d0, re6, 1)
-            call sh6rig(zr(igeom), para, dsde, option, re6)
-            call jevech('PMATUUR', 'E', imatuu)
-            k = 0
-            do 90 i = 1, nbinco
-                do 80 j = 1, i
-                    k = k + 1
-                    zr(imatuu+k-1) = re6(i,j)
-80              continue
-90          continue
-        else if (nomshb.eq.'SHB15') then
-            call r8inir(nbinco*nbinco, 0.d0, re15, 1)
-!
-            call sh1rig(zr(igeom), para, dsde, option, re15)
-            call jevech('PMATUUR', 'E', imatuu)
-            k = 0
-            do 130 i = 1, nbinco
-                do 120 j = 1, i
-                    k = k + 1
-                    zr(imatuu+k-1) = re15(i,j)
-120              continue
-130          continue
-        else if (nomshb.eq.'SHB20') then
-            call r8inir(60*60, 0.d0, re20, 1)
-            call sh2rig(zr(igeom), para, dsde, option, re20)
-            call jevech('PMATUUR', 'E', imatuu)
-            k = 0
-            do 170 i = 1, 60
-                do 160 j = 1, i
-                    k = k + 1
-                    zr(imatuu+k-1) = re20(i,j)
-160              continue
-170          continue
-        endif
-    endif
 end subroutine
+

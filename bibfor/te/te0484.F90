@@ -1,6 +1,6 @@
 subroutine te0484(option, nomte)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,160 +17,202 @@ subroutine te0484(option, nomte)
 ! ======================================================================
     implicit none
 !
-!          ELEMENT SHB
-!    FONCTION REALISEE:
-!            OPTION : 'RIGI_MECA      '
-!                            CALCUL DES MATRICES ELEMENTAIRES  3D
-!     ENTREES  ---> OPTION : OPTION DE CALCUL
-!              ---> NOMTE  : NOM DU TYPE ELEMENT
+! 'FORC_NODA' option for SHB elements
+!
+!
+! 'FORC_NODA' option for solid-shell elements SHB6, SHB8, SHB15 & SHB20.
+! Computation of 3D elementary force vector.
+!
+!
+! IN  option   'FORC_NODA'
+! IN  nomte    elment type name
 !
 #include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/idsshb.h"
+#include "asterf_types.h"
 #include "asterfort/jevech.h"
-#include "asterfort/moytem.h"
 #include "asterfort/r8inir.h"
+!
+#include "asterfort/elrefe_info.h"
+#include "asterfort/moytem.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/sh1for.h"
-#include "asterfort/sh2for.h"
-#include "asterfort/sh6for.h"
-#include "asterfort/sh8for.h"
+#include "asterfort/ss6bgl.h"
 #include "asterfort/tecach.h"
+#include "asterfort/dfdmshb.h"
+#include "asterfort/dxqpgl.h"
+#include "asterfort/dxtpgl.h"
+#include "asterfort/tpsivp_shb.h"
+#include "asterfort/hgfsca.h"
+#include "asterfort/bmatmc.h"
+#include "asterfort/btsig.h"
+#include "asterfort/sshini.h"
+#include "asterfort/tmassf.h"
 !
-!-----------------------------------------------------------------------
-    integer :: i, icompo, icontm, ideplm, idfde, igeom, imate
-    integer :: ipoids, iret, ivectu, ivf, j, jgano
-    integer :: nbres, nbv, ndim, nno, nnos, npg
-    real(kind=8) :: tempm
-!-----------------------------------------------------------------------
-    parameter (nbres=2)
+    character(len=16) :: option
+    character(len=16) :: nomte
+!
+    aster_logical :: hexa, shb6, shb8
+    integer :: i, icompo, icontm, icoopg, ideplm, idfde, igeom, imate
+    integer :: ipoids, iret, ivectu, ivf, j, jgano, kpg
+    integer :: nbinco, nbsig, nbv, ndim, nno, nnos, npg
+    integer :: icodre(2)
     character(len=4) :: fami
-    integer :: icodre(nbres), kpg, spt
-    character(len=8) ::  famil, poum
-    character(len=16) :: nomres(nbres), nomte, nomshb, option
-    real(kind=8) :: sigma(120), xidepm(60)
-    real(kind=8) :: fstab(12), para(2)
-    real(kind=8) :: valres(nbres)
-    real(kind=8) :: nu, e
-    fami = 'RIGI'
-    call elrefe_info(fami=fami,ndim=ndim,nno=nno,nnos=nnos,&
-  npg=npg,jpoids=ipoids,jvf=ivf,jdfde=idfde,jgano=jgano)
-! --- INITIALISATIONS :
-    call idsshb(ndim, nno, npg, nomshb)
-    do 10 i = 1, 2
-        para(i) = 0.d0
-10  continue
-    famil='FPG1'
-    kpg=1
-    spt=1
-    poum='+'
-    if (option .eq. 'FORC_NODA') then
-! ----  RECUPERATION DES COORDONNEES DES CONNECTIVITES
-        call jevech('PGEOMER', 'L', igeom)
-! ----  RECUPERATION DU MATERIAU DANS ZI(IMATE)
-        call jevech('PMATERC', 'L', imate)
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nbv = 2
-! ----  INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-! ----  ET DU TEMPS
+    character(len=8) :: nomres(2)
+    real(kind=8) :: poids, nharm, tmp
+    real(kind=8) :: para(2), sigmag(6), xidepm(24)
+    real(kind=8) :: pgl(3,3), fstp(3,4), bg(6,81)
 !
-        call moytem(fami, npg, 1, '+', tempm,&
-                    iret)
-        call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, 'TEMP', [tempm],&
-                    nbv, nomres, valres, icodre, 1)
-        e = valres(1)
-        nu = valres(2)
-! ----  PARAMETRES MATERIAUX
-        para(1) = e
-        para(2) = nu
+! ......................................................................
+!
+    parameter(fami='RIGI')
+    parameter(nbsig=6)
+    parameter(ndim=3)
+!
+! - Finite element informations
+!
+    call elrefe_info(fami=fami, nno=nno, nnos=nnos, npg=npg,&
+                     jpoids=ipoids,jcoopg=icoopg,jvf=ivf,jdfde=idfde,&
+                     jgano=jgano)
+!
+!   Initialization of specific SHB variables
+!
+    call sshini(nno, nnos, hexa, shb6, shb8)
+!
+! - Geometry
+!
+    call jevech('PGEOMER', 'L', igeom)
+!
+! - Material parameters
+!
+    call jevech('PMATERC', 'L', imate)
+    nomres(1) = 'E'
+    nomres(2) = 'NU'
+    nbv = 2
+!
+! - Initializations
+!
+    nbinco = ndim*nno
+!
+!   Input parameters
+!
+! - Stress at Gauss points
+    call jevech('PCONTMR', 'L', icontm)
+!
+!   Displacement at last converged increment
+    call jevech('PDEPLMR', 'L', ideplm)
+!
+    call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
+    if (icompo .ne. 0) then
+       call jevech('PCOMPOR', 'L', icompo)
     endif
 !
-!  ==============================================
-!  -- VECTEUR DES FORCES INTERNES
-!  ==============================================
-    if (option .eq. 'FORC_NODA') then
-        call jevech('PGEOMER', 'L', igeom)
-! ----     CONTRAINTES AUX POINTS D'INTEGRATION
-        call jevech('PCONTMR', 'L', icontm)
-!         CHAMPS POUR LA REACTUALISATION DE LA GEOMETRIE
-        call jevech('PDEPLMR', 'L', ideplm)
-! ----     CONTRAINTES DE STABILISATION
-! ----     PARAMETRES EN SORTIE
-! ----     VECTEUR DES FORCES INTERNES (BT*SIGMA)
-        call jevech('PVECTUR', 'E', ivectu)
-        call tecach('ONO', 'PCOMPOR', 'L', iret, iad=icompo)
-        if (icompo .ne. 0) then
-            call jevech('PCOMPOR', 'L', icompo)
-        endif
-!  =============================================
-!  -  ACTUALISATION : GEOM ORIG + DEPL DEBUT PAS
-!  =============================================
-        call r8inir(60, 0.d0, xidepm, 1)
-        if ((zk16(icompo+2).eq.'GROT_GDEP')) then
-            call r8inir(60, 0.d0, xidepm, 1)
-            do 150 i = 1, 3*nno
-                zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1)
-!            WORK(100+I) = ZR(IDEPLM+I-1)
-                xidepm(i) = zr(ideplm+i-1)
-150          continue
-        else if ((zk16(icompo+2) (1:5).eq.'PETIT')) then
-!          CALL R8INIR(24,0.D0,WORK(101),1)
-            call r8inir(60, 0.d0, xidepm, 1)
-        else
-            do 152 i = 1, 3*nno
-!            WORK(100+I) = ZR(IDEPLM+I-1)
-                xidepm(i) = zr(ideplm+i-1)
-152          continue
-        endif
-! ----   CALCUL DES FORCES INTERNES BT.SIGMA
+! - Geometrical update
+!      Initial geometry + displacement at last converged increment
 !
-!           ON PASSE EN PARAMETRES
-!           ZR(IGEOM) : GEOMETRIE CONFIG DEBUT PAS
-!           ZR(IDEPLM) : DEPLACEMENT
-!           ZR(ICONTM) : CONTRAINTE DE CAUCHY DEBUT DE PAS
-!           ZR(IVARIM) (DE 2 A 14) : CONTRAINTES DE STABILISATION
-!           ON RECUPERE :
-!           ZR(IVECTU) : FORCES INTERNES FIN DE PAS
-! ----   INTERPOLATION DES COEFFICIENTS EN FONCTION DE LA TEMPERATURE
-! ----   ET DU TEMPS
-!
-        call moytem(fami, npg, 1, '+', tempm,&
-                    iret)
-        call jevech('PMATERC', 'L', imate)
-        nomres(1) = 'E'
-        nomres(2) = 'NU'
-        nbv = 2
-        call rcvalb(famil, kpg, spt, poum, zi(imate),&
-                    ' ', 'ELAS', 1, 'TEMP', [tempm],&
-                    nbv, nomres, valres, icodre, 1)
-        e = valres(1)
-        nu = valres(2)
-        para(1) = e
-        para(2) = nu
-        do 557 i = 1, npg
-            do 556 j = 1, 6
-                sigma(6*(i-1)+j)=zr(icontm+18*(i-1)+j-1)
-556          continue
-557      continue
-!
-        if (nomshb .eq. 'SHB8') then
-            do 94 i = 1, 12
-                fstab(i) = zr(icontm+i-1+6)
-94          continue
-            call jevech('PVECTUR', 'E', ivectu)
-            call sh8for(zr(igeom), para, xidepm, sigma, fstab,&
-                        zr(ivectu))
-        else if (nomshb.eq.'SHB6') then
-            call jevech('PVECTUR', 'E', ivectu)
-            call sh6for(zr(igeom), sigma, zr(ivectu))
-        else if (nomshb.eq.'SHB15') then
-            call jevech('PVECTUR', 'E', ivectu)
-            call sh1for(zr(igeom), sigma, zr(ivectu))
-        else if (nomshb.eq.'SHB20') then
-            call jevech('PVECTUR', 'E', ivectu)
-            call sh2for(zr(igeom), sigma, zr(ivectu))
-        endif
+    if ((zk16(icompo+2).eq.'GROT_GDEP')) then
+       do 150 i = 1, ndim*nno
+          zr(igeom+i-1) = zr(igeom+i-1) + zr(ideplm+i-1)
+150    continue
     endif
+!
+!
+!   Output parameter
+!
+! - Internal force vector (B^T.sigma) & stresses for stabilization
+    call jevech('PVECTUR', 'E', ivectu)
+!
+!
+! - Loop over Gauss points \ Start
+!
+    do 65 kpg = 1, npg
+!
+!      Retrieving matrial data
+!
+       call rcvalb('RIGI', kpg, 1, '+', zi(imate),&
+                   ' ', 'ELAS', 1, 'INST', [0.d0],&
+                   nbv, nomres, para, icodre, 1)
+!
+!      Evaluate pgl(3,3) transformation matrix from global coordinate system
+!      to local 'shell' coordinate system
+       call tmassf(zr(igeom), icoopg, kpg, hexa, pgl)
+!
+!      Internal forces B^T.sigma
+!
+       if (shb6) then
+!
+!         [B] SHB6 \ Start
+!         Evaluation of SHB6 B matrix in global coordinates
+!
+          call ss6bgl(.true._1, kpg, zr(igeom), ipoids, idfde, icoopg, pgl, poids, bg)
+!
+!         [B] SHB6 \ End
+!
+       else
+!
+!         [B] SHB8, SHB15 & SHB20 \ Start
+!         ([B] SHB8 will be 'completed' later with a stabilization matrix)
+!
+          call bmatmc(kpg, nbsig, zr(igeom), ipoids, ivf,&
+                      idfde, nno, nharm, poids, bg)
+!
+! Glut / Start
+          do 132 j = 1, ndim*nno
+             tmp = bg(5,j)
+             bg(5,j) = bg(6,j)
+             bg(6,j) = tmp
+132       continue
+! Glut / End
+!
+!         [B] SHB8, SHB15 & SHB20 \ End
+!
+       endif
+!
+!      Expressing sigma in global coordinates
+       do 481 i = 1, 6
+          sigmag(i)=zr(icontm+18*(kpg-1)+i-1)
+481    continue
+!
+!      Transforming stress from local to global coordinate system
+!      Glut \ 1/2 \ Start
+       tmp       = sigmag(5) 
+       sigmag(5) = sigmag(6)
+       sigmag(6) = tmp
+!      Glut \ 1/2 \ End
+!      Expressing stress tensor at T- from global to local frame
+       call tpsivp_shb(pgl, sigmag, .false._1)
+!      Glut \ 2/2 \ Start
+       tmp       = sigmag(5) 
+       sigmag(5) = sigmag(6)
+       sigmag(6) = tmp
+!      Glut \ 2/2 \ End
+!
+!      Evaluating B^T.sigma product
+       call btsig(nbinco, nbsig, poids, bg, sigmag, zr(ivectu))
+!
+65  continue
+!
+! - Loop over Gauss points \ End
+!
+!
+! - SHB8 hourglass forces
+!
+    if (shb8) then
+!
+       call r8inir(24, 0.d0, xidepm, 1)
+!
+       if ((zk16(icompo+2).eq.'GROT_GDEP')) then
+          do 151 i = 1, 24
+             xidepm(i) = zr(ideplm+i-1)
+151       continue
+       else if ((zk16(icompo+2) (1:5).eq.'PETIT')) then
+          call r8inir(24, 0.d0, xidepm, 1)
+       else
+          do 153 i = 1, 24
+             xidepm(i) = zr(ideplm+i-1)
+153       continue
+       endif
+!
+       call hgfsca(zr(igeom), para, xidepm, zr(icontm+6), zr(ivectu), fstp)
+!
+    endif
+!
 end subroutine

@@ -3,8 +3,7 @@ subroutine nmsspl( hexa,  shb6,   shb8, icoopg,&
                   idfde,  geom, typmod, option,  imate,&
                  compor,  lgpg,   crit, instam, instap,&
                   deplm, deplp, angmas,   sigm,    vim,&
-                 matsym,  sigp,    vip,  matuu,  vectu,&
-                 codret)
+                 sigp,    vip,  matuu,  vectu, codret)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -54,7 +53,6 @@ subroutine nmsspl( hexa,  shb6,   shb8, icoopg,&
 ! IN  angmas   3 angles for MASSIF keyword
 ! IN  sigm     stress at previous time
 ! IN  vim      internal variables at previous time
-! IN  matsym   true if tangent stiffness matrix is symmetric
 ! OUT sigp     stress at current time
 ! OUT vip      internal variables at current time
 ! OUT matuu    tangent stiffness matrix
@@ -108,7 +106,6 @@ subroutine nmsspl( hexa,  shb6,   shb8, icoopg,&
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(in) :: sigm(18,npg)
     real(kind=8), intent(in) :: vim(lgpg,npg)
-    aster_logical, intent(in) :: matsym
     real(kind=8), intent(out) :: sigp(18,npg)
     real(kind=8), intent(out) :: vip(lgpg,npg)
     real(kind=8), intent(out) :: matuu(*)
