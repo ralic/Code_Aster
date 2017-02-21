@@ -9,8 +9,6 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/asvedh.h"
-#include "asterfort/asvgam.h"
 #include "asterfort/caatdb.h"
 #include "asterfort/calcdq.h"
 #include "asterfort/cast3d.h"
@@ -18,6 +16,7 @@ implicit none
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
+#include "asterfort/invjac.h"
 #include "asterfort/lcegeo.h"
 #include "asterfort/matini.h"
 #include "asterfort/nmcomp.h"
@@ -96,15 +95,13 @@ implicit none
 !.......................................................................
 !
     aster_logical :: grand, calbn, axi
-    integer :: kpg, i, ii, ino, ia, j, kl, proj, cod(9), nbpg2
-    integer :: ndim, nnos, jgano, iaa
-    real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
+    integer :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
+    integer :: ndim, nnos, jgano, kp, iaa
+    real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, s, sigma(6), sign(6)
     real(kind=8) :: poids, poipg2(8), rbid(1)
     real(kind=8) :: elgeom(10, 9)
-    real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8)
-    real(kind=8) :: invj(3, 3)
-    real(kind=8) :: gam(4, 8), coopg2(24), dh(4, 3)
-    real(kind=8) :: coopg(3)
+    real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)
+    real(kind=8) :: gam(4, 8), coopg2(24), h(8, 4), dh(4, 24)
     real(kind=8) :: qplus(72), qmoins(72), dq(72)
     real(kind=8) :: bn(6, 3, 8)
     real(kind=8) :: pqx(4), pqy(4), pqz(4)
@@ -113,6 +110,10 @@ implicit none
     integer :: icodre(1)
     character(len=16) :: nomres(2)
     character(len=16) :: optios
+    data h/ 1.d0, 1.d0, -1.d0,-1.d0,-1.d0,-1.d0, 1.d0, 1.d0,&
+     &        1.d0,-1.d0, -1.d0, 1.d0,-1.d0, 1.d0, 1.d0,-1.d0,&
+     &        1.d0,-1.d0,  1.d0,-1.d0, 1.d0,-1.d0, 1.d0,-1.d0,&
+     &       -1.d0, 1.d0, -1.d0, 1.d0, 1.d0,-1.d0, 1.d0,-1.d0/
 !
 ! - INITIALISATION
 !   ==============
@@ -153,7 +154,8 @@ implicit none
 !
     den = 0.d0
     do kpg = 1, nbpg2
-        call dfdm3d(nno, kpg, ipoid2, idfde2, geom,  jac, dfdx, dfdy, dfdz)
+        call dfdm3d(nno, kpg, ipoid2, idfde2, geom,&
+                    jac, dfdx, dfdy, dfdz)
         den = den + jac
         do ino = 1, nno
             bi(1,ino) = bi(1,ino) + jac * dfdx(ino)
@@ -169,7 +171,23 @@ implicit none
 !
 ! - CALCUL DES COEFFICIENTS GAMMA
 !
-    call asvgam(2, geom, bi, gam)
+    do i = 1, 4
+        do k = 1, 3
+            hx(k,i) = 0.d0
+            do j = 1, nno
+                hx(k,i) = hx(k,i) + h(j,i) * geom(k,j)
+            end do
+        end do
+    end do
+    do i = 1, 4
+        do j = 1, nno
+            s = 0.d0
+            do k = 1, 3
+                s = s + hx(k,i) * bi(k,j)
+            end do
+            gam(i,j) = 0.125d0 * (h(j,i) - s)
+        end do
+    end do
 !
 ! - CALCUL POUR LE POINT DE GAUSS CENTRAL
     kpg = 1
@@ -276,18 +294,25 @@ implicit none
 !
 !        CALCUL DES TERMES EVALUES AUX 8 POINTS DE GAUSS
         do kpg = 1, nbpg2
-!
-            call dfdm3d(nno, kpg, ipoid2, idfde2, geom,  jac)
-!
-            coopg(1) = coopg2(3*kpg-2)
-            coopg(2) = coopg2(3*kpg-1)
-            coopg(3) = coopg2(3*kpg)
-            call asvedh(2, coopg, invja, dh)
-!
+            call invjac(nno, kpg, ipoid2, idfde2, geom,&
+                        invja, jac)
+            do i = 1, 3
+                dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
+            end do
+            do i = 1, 3
+                dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
+            end do
+            do i = 1, 3
+                dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
+            end do
+            do i = 1, 3
+                dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg&
+                                    &-1) * coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(&
+                                    &3*kpg) * invja(2,i)
+            end do
             call cast3d(proj, gam, dh, def, nno,&
                         kpg, nub, nu, d, calbn,&
                         bn, jac, matuu)
-!
         end do
     endif
 !
@@ -330,13 +355,23 @@ implicit none
 !      OPERATEUR DE STABILISATION DU GRADIENT AUX 8 POINTS DE GAUSS
 !
         do kpg = 1, nbpg2
-!
-            call dfdm3d(nno, kpg, ipoid2, idfde2, geom,  jac)
-!
-            coopg(1) = coopg2(3*kpg-2)
-            coopg(2) = coopg2(3*kpg-1)
-            coopg(3) = coopg2(3*kpg)
-            call asvedh(2, coopg, invja, dh)
+            kp = 3*(kpg-1)
+            call invjac(nno, kpg, ipoid2, idfde2, geom,&
+                        invja, jac)
+            do i = 1, 3
+                dh(1,3*(kpg-1)+i) = coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg) * invja(2,i)
+            end do
+            do i = 1, 3
+                dh(2,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(3,i) + coopg2(3*kpg) * invja(1,i)
+            end do
+            do i = 1, 3
+                dh(3,3*(kpg-1)+i) = coopg2(3*kpg-2) * invja(2,i) + coopg2(3*kpg-1) * invja(1,i)
+            end do
+            do i = 1, 3
+                dh(4,3*(kpg-1)+i) = coopg2(3*kpg-2) * coopg2(3*kpg-1) * invja(3,i) + coopg2(3*kpg&
+                                    &-1) * coopg2(3*kpg) * invja(1,i) + coopg2(3*kpg-2) * coopg2(&
+                                    &3*kpg) * invja(2,i)
+            end do
 !
 !  CALCUL DE BN AU POINT DE GAUSS KPG
 !
@@ -351,7 +386,7 @@ implicit none
                 do ia = 1, 4
                     iaa = 3*(ia-1)
                     do j = 1, 3
-                        sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,j)
+                        sigas(i,kpg) = sigas(i,kpg) + qplus(ii+iaa+j) * dh(ia,kp+j)
                     end do
                 end do
             end do

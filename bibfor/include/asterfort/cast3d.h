@@ -23,7 +23,7 @@ interface
                       bn, jac, matuu)
         integer :: proj
         real(kind=8) :: gamma(4, 8)
-        real(kind=8) :: dh(4, 3)
+        real(kind=8) :: dh(4, 24)
         real(kind=8) :: def(6, 3, 8)
         integer :: nno
         integer :: kpg
