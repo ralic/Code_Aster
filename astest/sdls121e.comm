@@ -285,6 +285,7 @@ if crea_mesure:
                         PROJECTION='OUI',)
 
     IMPR_RESU(FORMAT='IDEAS',
+          PROC0='NON',
           UNITE=30,
           RESU=_F(RESULTAT=MODMES,),);
 
@@ -365,7 +366,7 @@ BASER = CREA_RESU(OPERATION='AFFE',
 
 unite =80       
 DEFI_FICHIER( UNITE = unite, FICHIER = 'REPE_OUT/mode.pos')
-IMPR_RESU(FORMAT='GMSH',
+IMPR_RESU(FORMAT='GMSH',PROC0='NON',
         RESU=_F(RESULTAT=BASER,
                 NOM_CMP=('DX','DY','DZ' ),
                 TYPE_CHAM='VECT_3D',
@@ -514,7 +515,7 @@ MODET = CREA_RESU(OPERATION='AFFE',
                   MATR_MASS =M_AS_MAS,
                   NOM_CHAM='DEPL',)
 
-IMPR_RESU(FORMAT='IDEAS',UNITE=38,
+IMPR_RESU(FORMAT='IDEAS',UNITE=38,PROC0='NON',
           RESU=_F(RESULTAT =MODET,));
 
 

@@ -75,7 +75,7 @@ DYNAHARM=DYNA_VIBRA(TYPE_CALCUL='HARM',BASE_CALCUL='PHYS',
 #----------------------------------------------------------
 #
 
-IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38 ,
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38, PROC0 = 'NON',
            RESU=_F( RESULTAT = DYNAHARM,
                     TOUT_ORDRE = 'OUI'))
 

@@ -266,7 +266,7 @@ MODET=REST_GENE_PHYS(RESU_GENE=PROJ,
                    TOUT_ORDRE='OUI',
                    NOM_CHAM   ='DEPL');
 
-IMPR_RESU(FORMAT='IDEAS',UNITE=38,
+IMPR_RESU(FORMAT='IDEAS',UNITE=38,PROC0='NON',
           RESU=_F(RESULTAT =MODET,));
 
 # les termes extra-diagonaux des matrices generalisees nuls

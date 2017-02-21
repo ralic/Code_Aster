@@ -193,7 +193,7 @@ TEST_RESU(RESU=(_F(INST=0.1,
 # TEST DE IMPR_RESU
 #----------------------------------------------------------
 
-IMPR_RESU( FORMAT = 'IDEAS',  UNITE = 37, RESU=_F( RESULTAT = TEMPE ),)
+IMPR_RESU( FORMAT = 'IDEAS',  UNITE = 37, RESU=_F( RESULTAT = TEMPE ), PROC0='NON', )
 
 #----------------------------------------------------------
 # TEST DE LIRE_RESU

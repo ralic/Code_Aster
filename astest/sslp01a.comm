@@ -117,7 +117,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
 #----------------------------------------------------------
 #
 
-IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38,
+IMPR_RESU( FORMAT = 'IDEAS', UNITE = 38, PROC0='NON',
            RESU=_F( RESULTAT = DEF,
                     TOUT_ORDRE = 'OUI', ))
 

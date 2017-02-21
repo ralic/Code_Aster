@@ -145,7 +145,7 @@ MODE_1=CALC_MODES(MATR_RIGI=K_MODAL,
 # et de poursuivre la calcul apres l'avoir relu :
 #----------------------------------------------------------------------
 
-IMPR_RESU( FORMAT='IDEAS',UNITE=75,
+IMPR_RESU( FORMAT='IDEAS',UNITE=75,PROC0='NON',
            RESU=_F(RESULTAT=MODE_1, ),);
 
 MODE_2=LIRE_RESU(TYPE_RESU='MODE_MECA',
