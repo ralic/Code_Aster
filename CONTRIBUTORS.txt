@@ -251,7 +251,9 @@
     Nicolas Chauvat <nicolas.chauvat .at. logilab.fr>
     Daniele Colombo <daniele.colombo .at. ifpen.fr>
     Peter Halverson <halverson .at. byu.edu>
+    Pierre Juillard <pierre.juillard@gmail.com>
     Denis Laxalde <denis.laxalde .at. logilab.fr>
     Alain Leufroy <alain.leufroy .at. logilab.fr>
     Stefan H. Reiterer <stefan.harald.reiterer .at. gmail.com>
     Thierry Thomas <thierry .at. FreeBSD.org>
+
