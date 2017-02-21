@@ -185,6 +185,7 @@ MOD_CAL1=CALC_MODES(MATR_RIGI=RAID_1,
 # CE BLOC POUR TESTER ESU POUR LES BASES
 IMPR_RESU(FORMAT='MED',
           UNITE=81,
+          PROC0='NON',
           RESU=_F(
                   RESULTAT=MOD_CAL1,
                   NOM_CHAM='DEPL',),);
@@ -257,6 +258,7 @@ MOD_CAL2=CALC_MODES(MATR_RIGI=RAID_2,
 # CE BLOC POUR TESTER LIRE_RESU POUR LES BASES
 IMPR_RESU(FORMAT='MED',
           UNITE=82,
+          PROC0='NON',
           RESU=_F(
                   RESULTAT=MOD_CAL2,
                   NOM_CHAM='DEPL',),);
