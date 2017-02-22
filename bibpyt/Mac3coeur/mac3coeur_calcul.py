@@ -492,6 +492,7 @@ class Mac3CoeurCalcul(object):
                          #PREDICTION='ELASTIQUE',
                          REAC_ITER=1,),
             'SOLVEUR': _F(METHODE='MUMPS',
+                          NPREC=15,
                           RENUM='AMF',
                           GESTION_MEMOIRE='OUT_OF_CORE',
                           ELIM_LAGR='NON',
