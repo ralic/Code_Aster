@@ -130,15 +130,27 @@ dtemps    =temps_max/npas
 
 ltemps    =[dtemps*i for i in range(npas+1)]
 
-TEMPS=DEFI_LIST_REEL(DEBUT=0.,
-                     INTERVALLE=(_F(JUSQU_A =tarret   , NOMBRE =2,),
+TEMPS=DEFI_LIST_REEL(DEBUT=-10.,
+                     INTERVALLE=(_F(JUSQU_A =0.       , NOMBRE =2,),
+                                 _F(JUSQU_A =tarret   , NOMBRE =2,),
                                  _F(JUSQU_A =temps_max, NOMBRE =npas,),),);
-                                 
+
 #***********************************************************************
 #
-#    DONNEES MATERIAU
+#    CHARGEMENTS
 #
 #***********************************************************************
+
+# pression de preconsolidation [en kPa]
+P0  =10.E+3
+
+BLOQ=AFFE_CHAR_CINE(MODELE=MODELE,
+                MECA_IMPO=_F(TOUT='OUI', DZ=0.,DX=0.,DY=0.,),);
+
+DEPL_1=AFFE_CHAR_CINE(MODELE=MODELE,
+                MECA_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.,),
+                           _F(GROUP_MA='GAUCHE',DX = 0.,),
+                           _F(GROUP_MA='DEVANT',DY = 0.,),),);
 
 # modules mecaniques [kPa]
 # ------------------------
@@ -153,17 +165,85 @@ POISSON = 0.25
 SIGMA_T = 1.E+3
 K       = YOUNG/3./(1.-2.*POISSON)
 G       = YOUNG/2./(1.+POISSON)
+alpha   = P0/K/3./10.
 
 print 'young =',YOUNG,' /// nu    =',POISSON
 print 'g_modu=',G,'     /// k_modu=',K
+print 'alpha =',alpha
 
-SOL=DEFI_MATERIAU(ELAS   =_F(E =YOUNG, NU =POISSON, ALPHA=0.,),
+SOL=DEFI_MATERIAU(ELAS   =_F(E =YOUNG, NU =POISSON, ALPHA=alpha,),
                   RANKINE=_F(SIGMA_T = SIGMA_T,),
                   INFO   =1,);
+                           
+#***********************************************************************
+#
+#    MISE EN COMPRESSION THERMIQUE JUSQU'A P0
+#
+#***********************************************************************
+foncth=DEFI_FONCTION(NOM_PARA='INST',
+                     NOM_RESU='EV_TEMP',
+                     VALE    =(-10.,20.,
+                                 0.,30.,),
+                     PROL_DROITE='CONSTANT',);
+        
+chamth=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_F',
+                  OPERATION='AFFE',
+                  MAILLAGE =MAILLAGE,
+                  AFFE=_F(TOUT='OUI',
+                          NOM_CMP='TEMP',
+                          VALE_F=foncth,),);
+                     
+th=CREA_RESU(OPERATION='AFFE',
+             TYPE_RESU='EVOL_THER',
+             NOM_CHAM ='TEMP',
+             AFFE=_F(CHAM_GD  =chamth,
+                     LIST_INST=TEMPS,
+                     NUME_INIT=1,
+                     NUME_FIN =3,),);
+                              
+# IMPR_RESU(FORMAT='ASTER',
+#           UNITE=8,
+#           RESU=_F(RESULTAT=th,),);
+          
+#***********************************************************************
+#
+#    DONNEES MATERIAU
+#
+#***********************************************************************
+chmath=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL,),
+                    
+                    AFFE_VARC=_F(TOUT    ='OUI',
+                                 NOM_VARC='TEMP',
+                                 EVOL    =th,
+                                 VALE_REF=20.,),);
+                    
+U0=STAT_NON_LINE(MODELE    =MODELE,
+                 CHAM_MATER=chmath,
+                 
+                 EXCIT=(_F(CHARGE = BLOQ,),),
+                        
+                 COMPORTEMENT=_F(RELATION='RANKINE',),
+                 
+                 NEWTON=_F(MATRICE   = 'TANGENTE',
+                           REAC_ITER =1,),
+                           
+                 CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
+                                ITER_GLOB_MAXI = 10,
+                                ARRET='OUI',),
+                                
+                 SOLVEUR=_F(METHODE='MUMPS',),
+                 
+                 INCREMENT=_F(LIST_INST=TEMPS,
+                              INST_INIT=-10.,
+                              INST_FIN =  0.,),);
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
-                    AFFE=_F(TOUT='OUI', MATER=SOL,),);
-
+SIG0 = CREA_CHAMP(TYPE_CHAM = 'ELGA_SIEF_R',
+                  OPERATION = 'EXTR',
+                  RESULTAT  = U0,
+                  NOM_CHAM  = 'SIEF_ELGA',
+                  INST      = 0.,
+                  INFO      = 2,);
 
 #***********************************************************************
 #
@@ -171,8 +251,7 @@ CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
 #
 #***********************************************************************
 
-# pression de preconsolidation [en kPa]
-P0  =10.E+3
+# deformation verticale appliquee
 EPZZ=.03
 
 SIGLAT=AFFE_CHAR_MECA(MODELE=MODELE,
@@ -181,37 +260,20 @@ SIGLAT=AFFE_CHAR_MECA(MODELE=MODELE,
                      
 DEPTOP=AFFE_CHAR_MECA(MODELE=MODELE,
                 DDL_IMPO=(_F(GROUP_MA='APPUI', DZ=1.,),),);
-
-DEPL_1=AFFE_CHAR_CINE(MODELE=MODELE,
-                MECA_IMPO=(_F(GROUP_MA='BAS',   DZ = 0.,),
-                           _F(GROUP_MA='GAUCHE',DX = 0.,),
-                           _F(GROUP_MA='DEVANT',DY = 0.,),),);
                      
 COEF2=DEFI_FONCTION(NOM_PARA='INST',
                     PROL_DROITE='CONSTANT',
                     VALE=(  0., 0.,
                      temps_max, EPZZ,),);
-
-#***********************************************************************
-#
-#    PRECONSOLIDATION INITIALE A 10KPA
-#
-#***********************************************************************
-
-SIG0=CREA_CHAMP(INFO=2,
-                TYPE_CHAM='ELGA_SIEF_R',
-                OPERATION='AFFE',
-                MODELE   =MODELE,
-                PROL_ZERO='OUI',
-                AFFE=_F(GROUP_MA='ECHAN',
-                        NOM_CMP=('SIXX','SIYY','SIZZ'),
-                        VALE=(-P0,-P0,-P0,),),);
   
 #***********************************************************************
 #
-#    ESSAI TRIAXIAL DRAINE
+#    ESSAI DE TRACTION
 #
 #***********************************************************************
+CHMAT=AFFE_MATERIAU(MAILLAGE=MAILLAGE,
+                    AFFE=_F(TOUT='OUI', MATER=SOL,),);
+                    
 U1=STAT_NON_LINE(MODELE    =MODELE,
                  CHAM_MATER=CHMAT,
                  
@@ -228,7 +290,7 @@ U1=STAT_NON_LINE(MODELE    =MODELE,
                            
                  CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,
                                 ITER_GLOB_MAXI = 10,
-                                ARRET='NON',),
+                                ARRET='OUI',),
                                 
                  ARCHIVAGE =_F(LIST_INST=TEMPS,),
                  
@@ -366,4 +428,5 @@ TEST_TABLE(NOM_PARA ='V2',
            REFERENCE='ANALYTIQUE',
            PRECISION=1.e-4,
            VALE_REFE=0.,);
+
 FIN();

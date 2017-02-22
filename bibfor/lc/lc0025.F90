@@ -8,7 +8,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 ! aslint: disable=W1504,W0104
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -155,7 +155,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 !       write(6,'(A)')
 !       write(6,'(A)')'> LC0101 :: entering LCRANK'
 !       write(6,'(A,6(1X,E15.8))')'! * DEPS =',(deps(i),i=1,6)
-        call lcrank(ndim, typmod, imate, option, tm, &
+        call lcrank(ndim, typmod, imate, option, tm, tp,&
                     deps, sigm, sigp, vim, vip, dsidep, codret)
 !
     endif

@@ -1,4 +1,4 @@
-subroutine lcrank(ndim, typmod, imate, option, tmpp,&
+subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp,&
                   dstrai0, stresm0, stres, vim, vip,&
                   dsidep, codret)
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
 ! ----------------------------------------------------------------------
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -58,7 +58,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
     character(len=8)  :: typmod(*)
     character(len=16) :: option
     integer      :: ndim, imate, codret
-    real(kind=8) :: tmpp
+    real(kind=8) :: tmpm, tmpp
     real(kind=8) :: dstrai(6), dstrai0(6)
     real(kind=8) :: stresm(6), stresm0(6), stres(6)
     real(kind=8) :: vim(*), vip(*)
@@ -138,16 +138,37 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
     endif
 !
     epflag=.false.
+    
+    write(6,*)
+!     write(6,'(A,6(I2))')'! * NDI,NDT =',ndi,ndt
 !
+! Reading material linear elastic properties
+! ALPHA must be constant
+    nomres(1)= 'E       '
+    nomres(2)= 'NU      '
+    nomres(3)= 'ALPHA   '
+    call rcvala(imate, ' ', 'ELAS', 0, '   ', &
+                [tmpp], 3, nomres, rprops, icode, 2)
+!
+! Reading material Rankine properties
+    nomres(1)= 'SIGMA_T'
+    call rcvala(imate, ' ', 'RANKINE', 0, '   ', &
+                [tmpp], 1, nomres, rprops(4), icode(4), 2)
 !
 ! Remove SQRT(2) from extradiagonal terms of input strain and stress
 ! ------------------------------------------------------------------
     call lceqvn(nmax, dstrai0, dstrai)
     call lceqvn(nmax, stresm0, stresm)
 !
-!     if (epflag) then
-!         write(6,'(A,6(1X,E15.8))')'! * DSTRAI =',(dstrai(i),i=1,ndt)
-!     endif
+! Thermal deformation rate
+! -------------------------
+!     write(6,'(4(A,E12.5))')'! * TEMP+=',tmpp,' TEMP-=',tmpm,' ALPHA=',rprops(3)
+    if ((.not.isnan(tmpm)) .and. (.not.isnan(tmpp)) &
+         .and. (rprops(3).gt.r0)) then
+        do 5 i = 1, ndi
+            dstrai(i) = dstrai(i) - rprops(3)*(tmpp-tmpm)
+ 5      continue
+    endif
 !
     dstrai(4)=dstrai(4)/sqr
     stresm(4)=stresm(4)/sqr
@@ -157,17 +178,6 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
         stresm(5)=stresm(5)/sqr
         stresm(6)=stresm(6)/sqr
     endif
-!
-! Reading material linear elastic properties
-    nomres(1)= 'E       '
-    nomres(2)= 'NU      '
-    call rcvala(imate, ' ', 'ELAS', 0, '   ', &
-                [tmpp], 2, nomres, rprops, icode, 2)
-!
-! Reading material Rankine properties
-    nomres(1)= 'SIGMA_T'
-    call rcvala(imate, ' ', 'RANKINE', 0, '   ', &
-                [tmpp], 1, nomres, rprops(3), icode(3), 2)
 !
 ! Initialize some algorithmic and internal variables
     dgama =r0
@@ -181,12 +191,13 @@ subroutine lcrank(ndim, typmod, imate, option, tmpp,&
 ! Set some material properties
     young =rprops(1)
     poiss =rprops(2)
-    cohe  =rprops(3)
+    cohe  =rprops(4)
 !
-    if (epflag) then
-        write(6,'(3(A,E12.5))')&
-        '! * YOUNG  =',young,' POISSON =',poiss,' COHESION =',cohe
-    endif
+!      if (epflag) then
+!         write(6,'(4(A,E12.5))')&
+!         '! * YOUNG  =',young,' POISSON =',poiss,' COHESION =',cohe,&
+!         ' ALPHA =',rprops(3)
+!      endif
 !
 ! Set some constants
     gmodu =young/(r2*(r1+poiss))

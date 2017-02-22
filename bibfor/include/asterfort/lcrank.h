@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,13 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lcrank(ndim, typmod, imate, option, tmpp, &
+    subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp, &
                       dstrai0, stresm0, stres, vim, vip, &
                       dsidep, codret)
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: option
+        real(kind=8) :: tmpm
         real(kind=8) :: tmpp
         real(kind=8) :: dstrai0(6)
         real(kind=8) :: stresm0(6)
