@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -395,5 +395,11 @@ le même nombres de valeurs.
 Les valeurs numéro %(i1)d  des abscisses des signaux renseignés dans les opérandes 
 %(k1)s et %(k2)s de EXCIT_SOL sont différentes.
 """),
+
+    82: _(u"""
+Il faut renseigner le spectre à un sigma jusque 0.1 Hz pour SPEC_FRACTILE.
+"""),
+
+
 
 }

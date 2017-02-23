@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -981,9 +981,15 @@ def corrcoefmodel(Period, f_beta=None):
     Mat_Eps = NP.array([0.0] * nbT * nbT)
     Mat_Eps.resize(nbT, nbT)
     # Le modele de Baker est defini pour  max(Periods)<=10.
+
+
     if f_beta != None:
-        f_beta = f_beta.evalfonc(1. / Periods)
-        vale_beta = f_beta.vale_y
+        if min(f_beta.vale_x) > 0.1:
+            UTMESS('F', 'SEISME_82') 
+        else : 
+            f_beta = f_beta.evalfonc(1. / Periods)
+            vale_beta = f_beta.vale_y
+
     for (ii, Ti) in enumerate(Periods):
         for (jj, Tj) in enumerate(Periods):
             Tmin = min(Ti, Tj)
