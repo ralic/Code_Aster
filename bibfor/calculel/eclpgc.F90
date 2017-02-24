@@ -227,9 +227,12 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
     call jeveuo(jexatr(ligrel//'.LIEL', 'LONCUM'), 'L', jcliel)
     call jeveuo(ma2//'.CONNEX', 'L', vi=connex)
     call jeveuo(jexatr(ma2//'.CONNEX', 'LONCUM'), 'L', jcmaco)
+
     ima=0
     nbgr=nbgrel(ligrel)
     do igr = 1, nbgr
+        nbelgr=nbelem(ligrel,igr)
+        if (nbelgr.eq.0) cycle
         moloc1=zi(jceld1-1+zi(jceld1-1+4+igr)+2)
         if (moloc1 .eq. 0) goto 80
 !
@@ -269,7 +272,6 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, prchno,&
             goto 80
 !
         endif
-        nbelgr=nbelem(ligrel,igr)
 !
 !            -- QUELLES SONT LES CMPS PORTEES PAR LES POINTS DE GAUSS ?
 !            ----------------------------------------------------------
