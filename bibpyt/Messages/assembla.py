@@ -31,6 +31,9 @@ cata_msg = {
   Erreur d'utilisation :
     La matrice élémentaire %(k1)s n'est pas complète au sens MPI.
     La commande ASSE_MATRICE n'autorise pas cela.
+
+  Conseil : Vous pouvez changer le mode de parallélisme dans AFFE_MODELE
+  en choisissant METHODE='CENTRALISE'.
 """),
 
     3: _(u"""
