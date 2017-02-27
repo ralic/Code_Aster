@@ -434,8 +434,6 @@ implicit none
         real(kind=8)  :: resi_deborst_max
         integer       :: iter_deborst_max
         real(kind=8)  :: seuil
-        real(kind=8)  :: amplitude
-        real(kind=8)  :: taux_retour
         integer       :: post_iter
         integer       :: post_incr
         aster_logical :: l_matr_unsymm

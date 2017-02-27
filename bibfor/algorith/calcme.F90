@@ -9,7 +9,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! aslint: disable=W1504
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -681,10 +681,10 @@ subroutine calcme(option, compor, thmc, meca, imate,&
         endif
 !       dsdeme12(i,j) ne sert qu'a la compatibilite de l'interface
 !       tous les termess i,6+j doive,t etre nuls
-        call lcldsb('RIGI', 1, 1, ndim, typmod,&
+        call lcldsb('RIGI', 1, 1, ndim,&
                     imate, compor, defgem( addeme+ndim), deps, vintm,&
-                    tini, t, tref, option, congep(adcome),&
-                    vintp, dsdeme12, carcri)
+                    option, congep(adcome),&
+                    vintp, dsdeme12)
         if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
             do i = 1, 2*ndim
                 do j = 1, 2*ndim

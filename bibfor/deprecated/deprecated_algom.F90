@@ -44,9 +44,7 @@ implicit none
     if (algo .eq. 'CASTEM') then
         vali = 13
         valk = "IMPR_RESU/FORMAT='CASTEM'"
-    elseif (algo .eq. 'TANG_SECA') then
-        vali = 13
-        valk = "STAT_NON_LINE/TYPE_MATR_TANG='TANGENTE_SECANTE'"
+    else
         goto 999
     endif
 !

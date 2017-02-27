@@ -1,7 +1,7 @@
 subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, tinstm, tinstp, epsm,&
                   deps, sigm, vim, option, rela_plas,&
-                  sigp, vip, dsidep, crit)
+                  sigp, vip, dsidep)
 !
 implicit none
 !
@@ -24,7 +24,7 @@ implicit none
 #include "blas/dcopy.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -51,7 +51,7 @@ implicit none
     character(len=*), intent(in) :: fami
     real(kind=8) :: tinstm, tinstp
     real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6), crit(*), tbid(36)
+    real(kind=8) :: dsidep(6, 6), tbid(36)
 !
 !---&s---1---------2---------3---------4---------5---------6---------7--
 ! IN  NDIM    : DIMENSION DE L'ESPACE
@@ -534,10 +534,10 @@ implicit none
         if (rela_plas .eq. 'ENDO_ISOT_BETON') then
             compoz(1)='ENDO_ISOT_BETON'
 !    MATRICE ELASTO-ENDOMMAGEE ET MISE A JOUR DE L ENDOMMAGEMENT
-            call lcldsb(fami, kpg, ksp, ndim, typmod,&
+            call lcldsb(fami, kpg, ksp, ndim,&
                         imate, compoz, epsm, deps, vim(22),&
-                        tm, tp, tref, 'RAPH_COUP       ', tbid,&
-                        vip(22), dep, crit)
+                        'RAPH_COUP       ', tbid,&
+                        vip(22), dep)
         else
 !    MATRICE D ELASTICITE DE HOOKE POUR MAZARS ET UMLV SANS COUPLAGE
             if (rela_plas .eq. 'MAZARS') then
@@ -630,10 +630,10 @@ implicit none
             if (option(1:9) .eq. 'RIGI_MECA') then
                 if (rela_plas .eq. 'ENDO_ISOT_BETON') then
                     compoz(1)='ENDO_ISOT_BETON'
-                    call lcldsb(fami, kpg, ksp, ndim, typmod,&
+                    call lcldsb(fami, kpg, ksp, ndim,&
                                 imate, compoz, epsm, tbid, vim(22),&
-                                tm, tp, tref, option2, tbid,&
-                                tbid, dep, crit)
+                                option2, tbid,&
+                                tbid, dep)
                 else
                     call lcumme(youn, xnu, ifou, dep)
                 endif

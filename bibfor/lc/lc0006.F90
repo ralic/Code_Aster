@@ -4,7 +4,7 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
                   option, angmas, sigp, vip, nwkin,&
                   wkin, typmod, icomp, nvi, ndsde,&
                   dsidep, nwkout, wkout, codret)
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/eibex.h"
 #include "asterfort/lcdsbe.h"
@@ -29,7 +29,7 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
 !
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,10 +126,10 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
                     ksp, tref, iret)
 !
         if (crit(2) .ne. 9) then
-            call lcldsb(fami, kpg, ksp, ndim, typmod,&
+            call lcldsb(fami, kpg, ksp, ndim,&
                         imate, compor, epsm, deps, vim,&
-                        tm, tp, tref, option, sigp,&
-                        vip, dsidep, crit)
+                        option, sigp,&
+                        vip, dsidep)
         else
             call eibex(fami, kpg, ksp, ndim, imate,&
                        compor, instam, instap, epsm, deps,&

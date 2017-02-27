@@ -74,22 +74,14 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                               "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
                                                               "SPECIFIQUE", "SANS_OBJET")),
 
-                TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
+                TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
 
                 SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
-                b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) and (not equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE')) """,
+                b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
                                    fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
                     VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
                                   ),
-
-                b_tangsec        = BLOC(condition = """ equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE') """,
-                                   fr=tr("Modification evolutive de la matrice tangente/secante"),
-                    SEUIL        =SIMP(statut='f',typ='R',defaut= 3. ),
-                    AMPLITUDE    =SIMP(statut='f',typ='R',defaut= 1.5 ),
-                    TAUX_RETOUR  =SIMP(statut='f',typ='R',defaut= 0.05 ),
-                                  ),
-
 
                 PARM_THETA      =SIMP(statut='f',typ='R',val_min=0.,val_max=1., defaut= 1.),
                 PARM_ALPHA      =SIMP(statut='f',typ='R',defaut= 1. ),
@@ -441,11 +433,11 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
                                                           "NEWTON", "NEWTON_RELI", "NEWTON_PERT", "RUNGE_KUTTA",
                                                           "SPECIFIQUE", "SANS_OBJET")),
 
-            TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION","TANGENTE_SECANTE")),
+            TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
 
             SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
-            b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) and (not equal_to("TYPE_MATR_TANG", 'TANGENTE_SECANTE')) """,
+            b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
                                fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
                 VALE_PERT_RELA  =SIMP(statut='f',typ='R',defaut= 1.0E-5),
                               ),

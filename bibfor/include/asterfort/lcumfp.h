@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@ interface
     subroutine lcumfp(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, tinstm, tinstp, epsm,&
                       deps, sigm, vim, option, rela_plas,&
-                      sigp, vip, dsidep, crit)
+                      sigp, vip, dsidep)
         integer, intent(in) :: ndim
         integer, intent(in) :: imate
         integer, intent(in) :: kpg
@@ -31,6 +31,6 @@ interface
         character(len=*), intent(in) :: fami
         real(kind=8) :: tinstm, tinstp
         real(kind=8) :: epsm(*), deps(*), sigm(*), sigp(*), vim(*), vip(*)
-        real(kind=8) :: dsidep(6, 6), crit(*), tbid(36)
+        real(kind=8) :: dsidep(6, 6), tbid(36)
     end subroutine lcumfp
 end interface

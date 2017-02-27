@@ -67,7 +67,7 @@ implicit none
     integer :: cptr_matprop=0, cptr_nbprop=0, nbval = 0
     character(len=16) :: algo_inte=' ', type_matr_tang=' ', method=' ', post_iter=' ', post_incr=' '
     real(kind=8) :: parm_theta=0.d0, vale_pert_rela=0.d0
-    real(kind=8) :: resi_deborst_max=0.d0, seuil=0.d0, amplitude=0.d0, taux_retour=0.d0
+    real(kind=8) :: resi_deborst_max=0.d0, seuil=0.d0
     real(kind=8) :: parm_alpha=0.d0, resi_radi_rela=0.d0
     integer :: type_matr_t=0, iter_inte_pas=0, iter_deborst_max=0
     integer :: ipostiter=0, ipostincr=0
@@ -182,12 +182,9 @@ implicit none
             call getvr8(keywordfact, 'RESI_CPLAN_RELA', iocc = i_comp, scal = resi_deborst_max)
         endif
 !
-! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR
+! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA
 !
         vale_pert_rela = 0.d0
-        seuil = -1.d0
-        amplitude = -1.d0
-        taux_retour = -1.d0
         type_matr_t = 0
         type_matr_tang = ' '
         call getvtx(keywordfact, 'TYPE_MATR_TANG', iocc = i_comp, scal = type_matr_tang,&
@@ -201,11 +198,6 @@ implicit none
             else if (type_matr_tang .eq. 'VERIFICATION') then
                 type_matr_t = 2
                 call getvr8(keywordfact, 'VALE_PERT_RELA', iocc = i_comp, scal = vale_pert_rela)
-            else if (type_matr_tang .eq. 'TANGENTE_SECANTE') then
-                call deprecated_algom('TANG_SECA')
-                call getvr8(keywordfact, 'SEUIL', iocc = i_comp, scal = seuil)
-                call getvr8(keywordfact, 'AMPLITUDE', iocc = i_comp, scal = amplitude)
-                call getvr8(keywordfact, 'TAUX_RETOUR', iocc = i_comp, scal = taux_retour)
             else
                 ASSERT(.false.)
             endif
@@ -217,7 +209,7 @@ implicit none
             endif
         endif
 !
-! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA/SEUIL/AMPLITUDE/TAUX_RETOUR - <IMPLEX>
+! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA - <IMPLEX>
 !
         if (getexm(' ','METHODE') .eq. 1) then
             call getvtx(' ', 'METHODE', iocc = 0, scal = method, nbret = iret)
@@ -249,7 +241,7 @@ implicit none
 !
 ! ----- Get RESI_RADI_RELA
 !
-        if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
+        if (type_matr_t .eq. 0) then
             call getvr8(keywordfact, 'RESI_RADI_RELA', iocc = i_comp, scal = resi_radi_rela,&
                         nbret = iret)
             if (iret .ne. 0) then
@@ -264,7 +256,7 @@ implicit none
         ipostiter = 0
         if (getexm('COMPORTEMENT','POST_ITER') .eq. 1) then
             post_iter = ' '
-            if (type_matr_t .eq. 0 .and. type_matr_tang .ne. 'TANGENTE_SECANTE') then
+            if (type_matr_t .eq. 0) then
                 call getvtx(keywordfact, 'POST_ITER', iocc = i_comp, scal = post_iter, nbret = iret)
                 if (iret .eq. 1) then
                     if (post_iter .eq. 'CRIT_RUPT') then
@@ -355,8 +347,6 @@ implicit none
         ds_compor_para%v_para(i_comp)%resi_deborst_max         = resi_deborst_max
         ds_compor_para%v_para(i_comp)%iter_deborst_max         = iter_deborst_max
         ds_compor_para%v_para(i_comp)%seuil                    = seuil
-        ds_compor_para%v_para(i_comp)%amplitude                = amplitude
-        ds_compor_para%v_para(i_comp)%taux_retour              = taux_retour
         ds_compor_para%v_para(i_comp)%post_iter                = ipostiter
         ds_compor_para%v_para(i_comp)%post_incr                = ipostincr
         ds_compor_para%v_para(i_comp)%c_pointer%nbvarext       = cptr_nbvarext

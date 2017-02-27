@@ -1,4 +1,4 @@
-recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
+recursive subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
 !
 implicit none
 !
@@ -9,7 +9,7 @@ implicit none
 #include "asterc/lcdiscard.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,6 @@ implicit none
     character(len=16), intent(in) :: rela_comp
     character(len=*), intent(in) :: whatz
     aster_logical, intent(out) :: l_detec
-    character(len=16), optional, intent(in) :: type_matg
     character(len=16), optional, intent(in) :: post_iter
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +41,6 @@ implicit none
 !
 ! In  rela_comp    : RELATION comportment
 ! In  what         : what to detect
-! In  type_matg    : type of tangent matrix
 ! In  post_iter    : type of post_treatment
 ! Out l_detec      : .true. if specific case is detected
 !
@@ -87,9 +85,6 @@ implicit none
         endif
     else if (what .eq. 'PMF') then
         l_detec = (rela_comp .eq. 'MULTIFIBRE')
-    else if (what .eq. 'MATR_TGSC') then
-        ASSERT(present(type_matg))
-        l_detec = type_matg .eq. 'TANGENTE_SECANTE'
     else if (what .eq. 'CRIT_RUPT') then
         ASSERT(present(post_iter))
         l_detec = post_iter .eq. 'CRIT_RUPT'

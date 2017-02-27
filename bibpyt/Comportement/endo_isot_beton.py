@@ -32,7 +32,7 @@ loi = LoiComportement(
         ),
     deformation    = ('PETIT','PETIT_REAC','GROT_GDEP',),
     algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION','TANGENTE_SECANTE','IMPLEX',),
+    type_matr_tang = ('PERTURBATION','VERIFICATION','IMPLEX',),
     proprietes     = None,
     syme_matr_tang = ('Yes',),
 )

@@ -1,9 +1,9 @@
-subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
+subroutine lcldsb(fami, kpg, ksp, ndim,&
                   imate, compor, epsm, deps, vim,&
-                  tm, tp, tref, option, sig,&
-                  vip, dsidep, crit)
+                  option, sig,&
+                  vip, dsidep)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,17 +22,15 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/diagp3.h"
-#include "asterfort/evolts.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lceib1.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvarc.h"
 #include "blas/ddot.h"
-    character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
     character(len=*) :: fami
     integer :: ndim, imate, ksp, kpg
-    real(kind=8) :: epsm(6), deps(6), vim(*), tp, tm, tref, crit(*)
+    real(kind=8) :: epsm(6), deps(6), vim(*)
     real(kind=8) :: sig(6), vip(*), dsidep(6, 12)
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT ENDO_ISOT_BETON (EN LOCAL)
@@ -55,16 +53,15 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
     aster_logical :: rigi, resi, elas, coup
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret, iterat
+    integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret
     real(kind=8) :: eps(6), treps, sigel(6), kron(6)
-    real(kind=8) :: rac2, coef, coef2
+    real(kind=8) :: rac2, coef
     real(kind=8) :: rigmin, fd, d, ener
     real(kind=8) :: tr(6), rtemp2, epsthe(2)
     real(kind=8) :: epsp(3), vecp(3, 3), dspdep(6, 6)
     real(kind=8) :: deumud(3), lambdd, sigp(3), rtemp, rtemp3, rtemp4
     real(kind=8) :: kdess, bendo, lambda, deuxmu, gamma
     real(kind=8) :: seuil
-    real(kind=8) :: tseuil, tsampl, tsretu
     real(kind=8) :: hydrm, hydrp, sechm, sechp, sref
     parameter  (rigmin = 1.d-5)
     data        kron/1.d0,1.d0,1.d0,0.d0,0.d0,0.d0/
@@ -97,10 +94,6 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 !
 ! -- INITIALISATION
 !
-    tseuil = crit(10)
-    tsampl = crit(11)
-    tsretu = crit(12)
-!
     call lceib1(fami, kpg, ksp, imate, compor,&
                 ndim, epsm, sref, sechm, hydrm,&
                 t, lambda, deuxmu, epsthe, kdess,&
@@ -120,13 +113,13 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
     endif
 !
 !
-    do 45 k = 4, ndimsi
+    do k = 4, ndimsi
         eps(k) = eps(k)/rac2
- 45 end do
+    end do
     if (ndimsi .lt. 6) then
-        do 46 k = ndimsi+1, 6
+        do k = ndimsi+1, 6
             eps(k)=0.d0
- 46     continue
+        enddo
     endif
 !
 ! -- DIAGONALISATION DES DEFORMATIONS
@@ -151,11 +144,11 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
             sigel(k) = 0.d0
  61     continue
     endif
-    do 15 k = 1, 3
+    do k = 1, 3
         if (epsp(k) .gt. 0.d0) then
             sigel(k) = sigel(k) + deuxmu*epsp(k)
         endif
- 15 end do
+    end do
     ener = 0.5d0 * ddot(3,epsp,1,sigel,1)
 !
 ! -- CALCUL (OU RECUPERATION) DE L'ENDOMMAGEMENT
@@ -231,18 +224,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
 !
 ! -- CALCUL DE LA MATRICE TANGENTE
 !
-!----EVOLUTION DES PARALETRES DE CONTROLANT LA MATRICE TANGENTE/SECANTE
-    if (tseuil .ge. 0.0d0) then
-        call jevech('PITERAT', 'L', iterat)
-        iterat = nint(zr(iterat))
-        if ((option(1:4) .eq. 'RIGI') .or. (iterat .le. 1)) then
-            vip(3) = 0.0d0
-        else
-            call evolts(tseuil, tsretu, vip(2), vip(3), iterat)
-        endif
-!
-    endif
-!-----------------------------------------------------------
+!---------------------------------
     if (rigi) then
         if (option(11:14) .eq. 'ELAS') elas=.true.
         call r8inir(36, 0.d0, dspdep, 1)
@@ -455,16 +437,6 @@ subroutine lcldsb(fami, kpg, ksp, ndim, typmod,&
                     sigel(k)=rac2*sigel(k)
  28             continue
                 coef = (1+gamma)/(2*gamma*(1+gamma*d)*ener)
-!
-! CALCUL DE LA MATRICE EVOLUTIVE TANGENTE/SECANTE
-                if (tseuil .gt. 0.0d0) then
-                    if (abs(vip(3)) .gt. tseuil) then
-                        coef2 = coef/(tsampl**(abs(vip(3)) - tseuil))
-                        if (abs(coef2) .lt. abs(coef)) then
-                            coef = coef2
-                        endif
-                    endif
-                endif
 !
                 do 200 k = 1, ndimsi
                     do 210 l = 1, ndimsi

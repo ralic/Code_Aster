@@ -73,7 +73,7 @@ implicit none
     character(len=16) :: algo_inte, rela_comp, model_mfront
     character(len=255) :: libr_name, subr_name
     real(kind=8) :: iter_inte_maxi, resi_inte_rela, parm_theta, vale_pert_rela, algo_inte_r
-    real(kind=8) :: resi_deborst_max, seuil, amplitude, taux_retour, parm_alpha
+    real(kind=8) :: resi_deborst_max, seuil, parm_alpha
     real(kind=8) :: post_iter, post_incr
     character(len=16) :: kit_comp(9) = (/' ',' ',' ',' ',' ',' ',' ',' ',' '/)
     integer :: type_matr_t, iter_inte_pas, iter_deborst_max
@@ -102,8 +102,6 @@ implicit none
         resi_deborst_max = ds_compor_para%v_para(i_comp)%resi_deborst_max
         iter_deborst_max = ds_compor_para%v_para(i_comp)%iter_deborst_max
         seuil            = ds_compor_para%v_para(i_comp)%seuil
-        amplitude        = ds_compor_para%v_para(i_comp)%amplitude
-        taux_retour      = ds_compor_para%v_para(i_comp)%taux_retour
         post_iter        = ds_compor_para%v_para(i_comp)%post_iter
         parm_alpha       = ds_compor_para%v_para(i_comp)%parm_alpha
         post_incr        = ds_compor_para%v_para(i_comp)%post_incr
@@ -174,8 +172,6 @@ implicit none
         p_carc_valv(8)  = resi_deborst_max
         p_carc_valv(9)  = iter_deborst_max
         p_carc_valv(10) = seuil
-        p_carc_valv(11) = amplitude
-        p_carc_valv(12) = taux_retour
         p_carc_valv(13) = post_iter
         p_carc_valv(21) = post_incr
 !       exte_comp UMAT / MFRONT

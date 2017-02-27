@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,11 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine comp_meca_l(rela_comp, whatz, l_detec, type_matg, post_iter)
+    subroutine comp_meca_l(rela_comp, whatz, l_detec, post_iter)
         character(len=16), intent(in) :: rela_comp
         character(len=*), intent(in) :: whatz
         aster_logical, intent(out) :: l_detec
-        character(len=16), optional, intent(in) :: type_matg
         character(len=16), optional, intent(in) :: post_iter
     end subroutine comp_meca_l
 end interface

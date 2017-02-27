@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,6 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'))
 LOI_COMPORTEMENT = 'ENDO_ISOT_BETON'
 CALCUL = 'STATIQUE'
 RESOLUTION = 'TANGENTE'
-TANG_SEC = 'TANGENTE_SECANTE'
 
 Nmax = 30;
 Nmaxdb = 40
@@ -331,21 +330,18 @@ comp_incr.append({'GROUP_MA' : ('MUR_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'RESI_CPLAN_MAXI' : ResiDB,
                   'ITER_CPLAN_MAXI' : Nmaxdb,
-                  'TYPE_MATR_TANG' : TANG_SEC,
                 })
 
 comp_incr.append({'GROUP_MA' : ('F1_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'ITER_CPLAN_MAXI' : Nmaxdb,
                   'RESI_CPLAN_MAXI' : ResiDB,
-                  'TYPE_MATR_TANG' : TANG_SEC,
                   })
 
 comp_incr.append({'GROUP_MA' : ('F2_QUAD'),
                   'RELATION' : LOI_COMPORTEMENT,
                   'ITER_CPLAN_MAXI' : Nmaxdb,
                   'RESI_CPLAN_MAXI' : ResiDB,
-                  'TYPE_MATR_TANG' : TANG_SEC,
                   })
 
 #-----------------------------------------------------------------------
