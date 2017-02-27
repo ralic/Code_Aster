@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,7 +113,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                  MATR_MASS  =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_gene_r,matr_asse_pres_r,matr_asse_temp_r ) ),
                  MATR_AMOR  =SIMP(statut='f',typ=(matr_asse_depl_r,matr_asse_gene_r) ),
 
-                 CALC_FREQ  =FACT(statut='d', 
+                 CALC_FREQ  =FACT(statut='d',
              b_plus_petite =BLOC(condition = """equal_to("OPTION", 'PLUS_PETITE')""",
                                  fr=tr("Recherche des plus petites fréquences propres"),
                      NMAX_FREQ  =SIMP(statut='f',typ='I',defaut=10,val_min=0 ),
@@ -135,7 +135,7 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                                       fr=tr("Valeurs des fréquences délimitant la (les) bande(s) de recherche")),
                      TABLE_FREQ =SIMP(statut= 'f',typ=table_sdaster),
 
-                 b_multi_bande =BLOC( condition= """len(FREQ) > 2""",
+                 b_multi_bande =BLOC( condition= """length('FREQ') > 2""",
                      NIVEAU_PARALLELISME  =SIMP(statut='f',typ='TXM',defaut="COMPLET",into=("PARTIEL","COMPLET") ),
                                      ),
                                  ),

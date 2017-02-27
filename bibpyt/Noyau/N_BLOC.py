@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -193,6 +193,31 @@ def block_utils(evaluation_context):
     def is_type(name):
         """Return the type of a keyword."""
         return AsType(value(name))
+
+    def length(name):
+        """Return the *length* of the keyword value, 0 if the length can not
+        be evaluated."""
+        try:
+            ret = len(value(name))
+        except AttributeError:
+            ret = 0
+        return ret
+
+    def less_than(name, number):
+        """Tell if the value of a keyword is less than *number*.
+        Return *False* if the value is not defined."""
+        val = value(name, None)
+        if val is None:
+            return False
+        return value(name, 0) < number
+
+    def greater_than(name, number):
+        """Tell if the value of a keyword is greter than *number*.
+        Return *False* if the value is not defined."""
+        val = value(name, None)
+        if val is None:
+            return False
+        return value(name, 0) > number
 
     equal_to = is_in
 

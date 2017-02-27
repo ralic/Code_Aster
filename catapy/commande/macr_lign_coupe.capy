@@ -45,7 +45,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
            ),
 
 # extraction des résultats
-         b_meca        =BLOC(condition = """is_type("RESULTAT") in (evol_elas,evol_noli,mode_meca, comb_fourier, 
+         b_meca        =BLOC(condition = """is_type("RESULTAT") in (evol_elas,evol_noli,mode_meca, comb_fourier,
                                             mult_elas, fourier_elas)""",fr=tr("résultat mécanique"),
            NOM_CHAM        =SIMP(statut='f',typ='TXM',validators=NoRepeat(),defaut='SIGM_NOEU',into=C_NOM_CHAM_INTO(),),
          ),
@@ -128,7 +128,7 @@ MACR_LIGN_COUPE=MACRO(nom="MACR_LIGN_COUPE",
              ANGLE           =SIMP(statut='o',typ='R',max=1),
              DNOR            =SIMP(statut='f',typ='R',min=2,max=3),),
 
-           b_cylind       =BLOC(condition = ("REPERE=='CYLINDRIQUE' and TYPE!='ARC'"),
+           b_cylind       =BLOC(condition = """equal_to("REPERE", 'CYLINDRIQUE') and not equal_to("TYPE", 'ARC')""",
              ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3),
              AXE_Z           =SIMP(statut='f',typ='R',min=3,max=3),),
 

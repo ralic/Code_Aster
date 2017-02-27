@@ -226,16 +226,14 @@ class ENTITE:
                     self.condition)
             from Cata import cata
             try:
-                ctxt = {"reuse": None}
+                ctxt = {"reuse": None} # to be removed after #26025
                 ctxt.update(cata.__dict__)
                 ctxt.update(block_utils({}))
                 eval(self.condition, ctxt)
             except Exception as exc:
-                # !!! Remove comments to force checking of block conditions !!!
-                pass
-                # self.cr.fatal(
-                #     _(u"L'attribut 'condition' ne peut être évalué : %r; Raison : %s"),
-                #     self.condition, str(exc))
+                self.cr.fatal(
+                    _(u"L'attribut 'condition' ne peut être évalué : %r; Raison : %s"),
+                    self.condition, str(exc))
         else:
             self.cr.fatal(_(u"La condition ne doit pas valoir None !"))
 

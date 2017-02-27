@@ -83,7 +83,7 @@ def C_OBSERVATION(PHYSIQUE) :
                                  ),
                              **_BlocElem
                                 ),
-            b_cham_elem     =BLOC(condition="(NOM_CHAM=='CONT_ELEM')",
+            b_cham_elem     =BLOC(condition="""(equal_to("NOM_CHAM", 'CONT_ELEM'))""",
                              regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')), 
                              **_BlocElem
                                 ),
