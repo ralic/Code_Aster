@@ -226,7 +226,7 @@ class ENTITE:
                     self.condition)
             from Cata import cata
             try:
-                ctxt = {"reuse": None} # to be removed after #26025
+                ctxt = {}
                 ctxt.update(cata.__dict__)
                 ctxt.update(block_utils({}))
                 eval(self.condition, ctxt)
