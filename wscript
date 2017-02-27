@@ -334,11 +334,11 @@ def check_optimization_options(self):
 @Configure.conf
 def check_variant_vars(self):
     self.setenv('debug')
-    self.env['_ASTERBEHAVIOUR'] = 'AsterBehaviourDebug'
+    self.env['_ASTERBEHAVIOUR'] = 'AsterMFrOfficialDebug'
     self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
 
     self.setenv('release')
-    self.env['_ASTERBEHAVIOUR'] = 'AsterBehaviour'
+    self.env['_ASTERBEHAVIOUR'] = 'AsterMFrOfficial'
     self.define('ASTERBEHAVIOUR', self.env['_ASTERBEHAVIOUR'])
 
 # same idea than waflib.Tools.c_config.write_config_header

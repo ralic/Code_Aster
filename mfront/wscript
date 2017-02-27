@@ -168,7 +168,7 @@ def check_mfront_obsolete_source(self):
     src = self.path.get_src().abspath()
     # clean obsolete behaviours (from a previous build)
     bld, mfront = osp.split(self.path.get_bld().abspath())
-    excl = ['libAsterBehaviour.so', 'libAsterBehaviourDebug.so',
+    excl = ['libAsterMFrOfficial.so', 'libAsterMFrOfficialDebug.so',
             'include', 'mfront_request']
     for variant in ('debug', 'release'):
         build = osp.join(bld, variant, mfront)
@@ -244,7 +244,7 @@ class mfront_capy(Task.Task):
     def run(self):
         """Create a .capy file for the MFront behaviours"""
         req = self.inputs[0].abspath()
-        # open libAsterBehaviour.so
+        # open libAsterMFrOfficial.so
         libpath = self.inputs[1].abspath()
         lst = self.generator.lst
         target = self.outputs[0]
