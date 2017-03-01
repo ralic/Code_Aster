@@ -3,7 +3,7 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
     ca_illiel_, ca_igr_, ca_iel_, ca_nomtm_, ca_iamaco_, ca_ilmaco_
 
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+!
 
 ! But : Cette routine complete le message d'erreur emis par utmess
 !       pendant un calcul elementaire :
@@ -110,7 +110,7 @@ use calcul_module, only : ca_option_, ca_nomte_, ca_icaelk_, ca_ialiel_,&
     enddo
     if (nbgrma.eq.4)  valkc(5+4)='...'
 
-    call utmess_core(typ, 'CALCUL1_6', 9, valkc, 0,&
+    call utmess_core(typ, 'CALCUL_49', 9, valkc, 0,&
                          [0], 3, valrc, ufname)
 
     call jedema()

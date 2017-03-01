@@ -15,15 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine catabl(table_new, table_old  , time, nume_store, nb_obje,&
-                      obje_name, obje_sdname)
-        character(len=8), intent(in) :: table_new
-        character(len=8), intent(in) :: table_old
-        real(kind=8), intent(in) :: time
-        integer, intent(in) :: nume_store
-        integer, intent(in) :: nb_obje
-        character(len=16), intent(in) :: obje_name(nb_obje)
-        character(len=24), intent(in) :: obje_sdname(nb_obje)
-    end subroutine catabl
+    subroutine isOptionPossible(ligrel_, option_, para_name_,&
+                                l_all_ , l_some_)
+        character(len=*), intent(in) :: ligrel_
+        character(len=*), intent(in) :: option_
+        character(len=*), intent(in) :: para_name_
+        aster_logical, optional, intent(out) :: l_all_
+        aster_logical, optional, intent(out) :: l_some_
+    end subroutine isOptionPossible
 end interface

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -388,6 +388,20 @@ Conseils :
     48 : _(u"""
   Les chargements de pression sont interdits pour les modélisations 
   GRILLE_EXCENTRE, GRILLE_MEMBRANE et MEMBRANE (en petites déformations).
+"""),
+
+    49 : _(u"""
+--------------------------------------------
+Contexte du message :
+   Option         : %(k1)s
+   Type d'élément : %(k2)s
+   Maillage       : %(k3)s
+   Maille         : %(k4)s
+   Type de maille : %(k5)s
+   Cette maille appartient aux groupes de mailles suivants :
+      %(k6)s %(k7)s %(k8)s %(k9)s
+   Position du centre de gravité de la maille :
+      x=%(r1)f y=%(r2)f z=%(r3)f
 """),
 
 }

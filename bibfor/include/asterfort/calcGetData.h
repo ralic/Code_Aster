@@ -16,14 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine catabl(table_new, table_old  , time, nume_store, nb_obje,&
-                      obje_name, obje_sdname)
-        character(len=8), intent(in) :: table_new
-        character(len=8), intent(in) :: table_old
-        real(kind=8), intent(in) :: time
-        integer, intent(in) :: nume_store
-        integer, intent(in) :: nb_obje
-        character(len=16), intent(in) :: obje_name(nb_obje)
-        character(len=24), intent(in) :: obje_sdname(nb_obje)
-    end subroutine catabl
+    subroutine calcGetData(table_new, table_old  ,&
+                           nb_option, list_option,&
+                           nume_inst, list_inst  ,&
+                           phenom)
+        character(len=8), intent(out) :: table_new
+        character(len=8), intent(out) :: table_old
+        integer, intent(out) :: nb_option
+        character(len=16), intent(out) :: list_option(:)
+        integer, intent(out) :: nume_inst
+        character(len=19), intent(out) :: list_inst
+        character(len=16), intent(out) :: phenom
+    end subroutine calcGetData
 end interface
