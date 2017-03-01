@@ -32,6 +32,7 @@ subroutine op0173()
 #include "asterfort/jemarq.h"
 #include "asterc/putvir.h"
 #include "asterc/putvrr.h"
+#include "asterfort/sdmpic.h"
 #include "asterfort/tbcopi.h"
 #include "asterfort/tbimfi.h"
 #include "asterfort/tbliva.h"
@@ -93,6 +94,7 @@ subroutine op0173()
     else if (typesd .eq. 'MATR_ELEM_DEPL_R') then
 !          ------------------------------
         call copisd('MATR_ELEM', 'G', valk, nomres)
+        call sdmpic('MATR_ELEM', nomres)
 !
     else if (typesd .eq. 'VECT_ELEM_DEPL_R') then
 !          ------------------------------

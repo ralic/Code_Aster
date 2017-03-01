@@ -7,6 +7,7 @@ subroutine sdmpic(typesd, nomsd)
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
@@ -43,11 +44,12 @@ subroutine sdmpic(typesd, nomsd)
 ! ----------------------------------------------------------------------
     character(len=24) :: noms2, types2
     character(len=19) :: k19
-    character(len=8) :: kmpic
-    integer :: ifm, niv,  iexi
+    character(len=8) :: kmpic, kbid
+    integer :: ifm, niv, iexi, nbrel, i
     character(len=24), pointer :: noli(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: celk(:) => null()
+    character(len=24), pointer :: relr(:) => null()
     character(len=16), pointer :: valk(:) => null()
 ! ----------------------------------------------------------------------
 !
@@ -67,7 +69,6 @@ subroutine sdmpic(typesd, nomsd)
         call jeveuo(k19//'.CELK', 'E', vk24=celk)
         celk(7)='MPI_COMPLET'
 !
-!
     else if (types2.eq.'RESUELEM') then
 !     ----------------------------------
         call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
@@ -76,6 +77,21 @@ subroutine sdmpic(typesd, nomsd)
         call jeveuo(k19//'.NOLI', 'E', vk24=noli)
         noli(3)='MPI_COMPLET'
 !
+    else if (types2.eq.'MATR_ELEM') then
+!     ----------------------------------
+        k19 = noms2
+        call jeveuo(k19//'.RELR', 'L', vk24=relr)
+        call jelira(k19//'.RELR', 'LONMAX', nbrel, kbid)
+        do i = 1, nbrel
+            if( relr(i).ne.' ' ) then
+                k19=relr(i)
+                call dismoi('MPI_COMPLET', k19, 'RESUELEM', repk=kmpic)
+                if (kmpic .eq. 'OUI') cycle
+                call asmpi_comm_jev('MPI_SUM', k19//'.RESL')
+                call jeveuo(k19//'.NOLI', 'E', vk24=noli)
+                noli(3)='MPI_COMPLET'
+            endif
+        enddo
 !
     else if (types2.eq.'MATR_ASSE') then
 !     ----------------------------------
