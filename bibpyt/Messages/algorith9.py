@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,10 +82,15 @@ cata_msg = {
     29 : _(u"""
  concept réentrant : "RESULTAT" est d'un type différent
 """),
-
+ 
     30 : _(u"""
  argument en double pour "NOM_CHAM"
 """),
+
+    31 : _(u"""
+ concept réentrant et TYPE_CALCUL="HARM" : le mot-clé "RESULTAT" est obligatoire
+"""),
+
 
     34 : _(u"""
  les matrices ne possèdent pas toutes la même numérotation

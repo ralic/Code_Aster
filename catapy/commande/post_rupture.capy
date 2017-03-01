@@ -26,7 +26,6 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
       reuse=SIMP(statut='f', typ=CO),
       TABLE     = SIMP(statut='o',typ=table_sdaster,max='**'),
 
-#     rq : il est impossible de proposer le bon choix pour OPERATION suivant la valeur de reuse...
       OPERATION = SIMP(statut='o',typ='TXM',into=(
                                                   'ABSC_CURV_NORM',
                                                   'ANGLE_BIFURCATION',

@@ -14,9 +14,10 @@ implicit none
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,6 +100,10 @@ implicit none
     if (nocc.ge.1) then
         ds_inout%stin_evol   = stin_evol
         ds_inout%l_stin_evol = .true.
+    endif
+    
+    if ( ds_inout%l_reuse .and. (.not.ds_inout%l_state_init) ) then
+        call utmess ('F', 'MECANONLINE_4')
     endif
 !
 ! - For DIDI loads

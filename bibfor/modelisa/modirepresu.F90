@@ -1,6 +1,6 @@
 subroutine modirepresu(resuou, resuin )
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,6 +102,16 @@ subroutine modirepresu(resuou, resuin )
 !
 !   DEFINITION DU REPERE UTILISE
     call getvtx(' ', 'REPERE', scal=repere, nbret=i)
+    
+    if ( lreuse ) then  
+       if ( i .eq. 0) then 
+          call utmess('F', 'MODELISA3_14')
+       endif
+       if (repere .ne. 'COQUE_INTR_UTIL' .and. repere .ne. 'COQUE_UTIL_INTR' &
+                                         .and. repere .ne. 'COQUE_UTIL_CYL' ) then
+          call utmess('F', 'MODELISA3_15')
+       endif 
+    endif
 !
 !   RECUPERATION DES NUMEROS D'ORDRE DE LA STRUCTURE DE DONNEES DE TYPE RESULTAT RESU A PARTIR
 !   DES VARIABLES D'ACCES UTILISATEUR 'NUME_ORDRE','FREQ','INST','NOEUD_CMP'

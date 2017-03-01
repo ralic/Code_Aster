@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,15 @@ MODI_REPERE / CHAMP_GD
     Seuls les champs de contraintes à sous-points issus d'une projection sont traités.
 """),
 
+    2: _(u"""
+MODI_REPERE / CHAMP_GD
+    Le mot clé REPERE est obligatoire et doit valoir GLOBAL_UTIL.
+"""),
+
+    3: _(u"""
+MODI_REPERE / CHAMP_GD
+    Le mot clé REPERE doit valoir GLOBAL_UTIL.
+"""),
 
     4: _(u"""
 MODI_REPERE / CHAMP_GD
@@ -45,7 +54,10 @@ MODI_REPERE / CHAMP_GD
         Le CARA_ELEM est bâti sur le modèle %(k2)s.
 """),
 
-
+    7: _(u"""
+MODI_REPERE / CHAMP_GD
+    Le mot clé CARA_ELEM est obligatoire.
+"""),
 
     8: _(u"""
  Erreur utilisateur dans CREA_MAILLAGE / QUAD_LINE :
@@ -77,7 +89,16 @@ MODI_REPERE / CHAMP_GD
     13: _(u"""
  Il n'y a aucun groupe de noeuds ni aucun noeud défini après le mot facteur  %(k1)s
 """),
+ 
+    14: _(u"""
+MODI_REPERE / RESULTAT / concept réentrant
+    Le mot clé REPERE est obligatoire et doit valoir "COQUE_INTR_UTIL" ou "COQUE_UTIL_INTR" ou "COQUE_UTIL_CYL"
+"""),
 
+    15: _(u"""
+MODI_REPERE / RESULTAT / concept réentrant
+    Le mot clé REPERE doit prendre une des valeurs "COQUE_INTR_UTIL" ou "COQUE_UTIL_INTR" ou "COQUE_UTIL_CYL"
+"""),
 
 
     18: _(u"""

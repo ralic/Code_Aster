@@ -1,7 +1,7 @@
 subroutine modirepcham(resuou, resuin )
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,18 +66,31 @@ subroutine modirepcham(resuou, resuin )
 !     integer ::  vali(2)
     character(len=80) :: valk(3)
 !
+    aster_logical :: lreuse
 ! --------------------------------------------------------------------------------------------------
 !
     call jemarq()
 !
     call infmaj()
     call infniv(ifm, niv)
+
+    lreuse = .false.
+    if (resuin .eq. resuou) then
+        lreuse = .true.
+    endif
 !
 !   Définition du repère utilisé
-    call getvtx(' ', 'REPERE', scal=repere, nbret=nret)
-    ASSERT( repere.eq.'GLOBAL_UTIL' )
+    call getvtx(' ', 'REPERE', scal=repere, nbret=nret)    
+    if (nret .eq. 0 .and. .not. lreuse) then
+        call utmess('F', 'MODELISA3_2')
+    else if ( repere .ne. 'GLOBAL_UTIL' .and. .not. lreuse) then
+        call utmess('F', 'MODELISA3_3')
+    endif
 !   Lecture du concept CARA_ELEM
     call getvid(' ', 'CARA_ELEM', scal=carelem, nbret=nret)
+    if (nret .eq. 0 .and. .not. lreuse) then
+        call utmess('F', 'MODELISA3_7')
+    endif
 !
 !   Informations sur le champ en entrée.
 !    call dismoi('TYPE_CHAMP', resuin, 'CHAMP', repk=tychamp)

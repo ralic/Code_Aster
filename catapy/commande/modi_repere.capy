@@ -67,19 +67,19 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                 NOM_CMP     =SIMP(statut='o',typ='TXM',min=8,max=8,), ),
         ),
     ),
-    b_resu_reuse=BLOC(condition = """exists("RESULTAT") and reuse""",
-                fr="Résultat réentrant : COQUE_INTR_UTIL ou COQUE_UTIL_INTR autorise",
-        REPERE          =SIMP(statut='o',typ='TXM',
-                                into=("COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),
-        AFFE     =FACT(statut='o',max='**',
-            GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
-            MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
-        ),
-    ),
-    b__resu_not_reuse=BLOC(condition = """exists("RESULTAT") and not reuse""",fr="Résultat non réentrant ",
-        REPERE  =SIMP(statut='f',typ='TXM',defaut="UTILISATEUR",position='global',
-                        into=("UTILISATEUR","CYLINDRIQUE","COQUE",
-                            "COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),
+#
+#   Traitement de RESULTAT and reuse
+#
+#       REPERE          =SIMP(statut='o',typ='TXM', into=("COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),
+#       AFFE     =FACT(statut='o',max='**',
+#            GROUP_MA    =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**',),
+#            MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),),
+#
+#   Traitement de RESULTAT and not reuse
+#
+        REPERE  =SIMP(statut='f',typ='TXM',position='global',    #defaut="UTILISATEUR",
+                        into=("UTILISATEUR","CYLINDRIQUE","COQUE","GLOBAL_UTIL",
+                              "COQUE_INTR_UTIL","COQUE_UTIL_INTR","COQUE_UTIL_CYL"),),
         AFFE     =FACT(statut='o',max='**',
             b_cyl       =BLOC(condition = """is_in("REPERE", ('CYLINDRIQUE', 'COQUE_UTIL_CYL'))""",
                 ORIGINE         =SIMP(statut='f',typ='R',min=2,max=3,),
@@ -102,15 +102,12 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
         MAILLE      =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**',),
         NOEUD       =SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**',),
         ),
-    ),
 #
-#   Traitement de CHAM_GD
-    b_cham_gd=BLOC(condition="""exists("CHAM_GD") and not reuse""",
-            fr="Changement de repère du champ",
-        REPERE      =SIMP(statut='o',typ='TXM',defaut="GLOBAL_UTIL",
-                          into=("GLOBAL_UTIL",),),
-        CARA_ELEM   =SIMP(statut='o',typ=cara_elem,),
-    ),
+#   Traitement de CHAM_GD and not reuse
+#
+#       REPERE      =SIMP(statut='o',typ='TXM',into=("GLOBAL_UTIL",),),
+    CARA_ELEM   =SIMP(statut='f',typ=cara_elem,),
+ 
     TITRE   =SIMP(statut='f',typ='TXM',),
     INFO    =SIMP(statut='f',typ='I',defaut=1,into=(1,2),),
 );

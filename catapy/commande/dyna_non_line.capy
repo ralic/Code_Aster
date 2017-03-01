@@ -77,10 +77,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
 #-------------------------------------------------------------------
          COMPORTEMENT      =C_COMPORTEMENT('DYNA_NON_LINE'),
 #-------------------------------------------------------------------
-         b_reuse =BLOC(condition = """reuse""",fr=tr("en mode concept reentrant : ETAT_INIT obligatoire"),
-            ETAT_INIT         =C_ETAT_INIT('DYNA_NON_LINE','o'),),
-         b_notreuse =BLOC(condition = """not reuse""",fr=tr("en mode concept reentrant : ETAT_INIT facultatif"),
-            ETAT_INIT         =C_ETAT_INIT('DYNA_NON_LINE','f'),),
+         ETAT_INIT         =C_ETAT_INIT('DYNA_NON_LINE','f'),
 #-------------------------------------------------------------------
          INCREMENT         =C_INCREMENT('MECANIQUE'),
 #-------------------------------------------------------------------
