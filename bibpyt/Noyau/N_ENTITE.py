@@ -213,8 +213,8 @@ class ENTITE:
         if self.statut not in into:
             self.cr.fatal(_(u"L'attribut 'statut' doit être parmi %s : %r"),
                           into, self.statut)
-        if self.nom == 'reuse' and self.statut != 'f':
-            self.cr.fatal(_(u"L'attribut 'statut' doit être 'f' pour reuse."))
+        if self.nom == 'reuse' and self.statut != 'c':
+            self.cr.fatal(_(u"L'attribut 'statut' doit être 'c' pour reuse."))
 
     def check_condition(self):
         """Vérifie l'attribut condition."""
