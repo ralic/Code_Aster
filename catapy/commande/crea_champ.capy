@@ -31,7 +31,7 @@ CREA_CHAMP=OPER(nom="CREA_CHAMP",op= 195,sd_prod=crea_champ_prod,
                 fr=tr("Création d'un champ "),reentrant='f',
             UIinfo={"groupes":("Résultats et champs",)},
 
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
        # TYPE_CHAM doit etre de la forme : CART_xx, NOEU_xx, ELEM_xx, ELGA_xx ou ELNO_xx
        # ou xx est le nom d'une grandeur définie dans le catalogue des grandeurs
          TYPE_CHAM       =SIMP(statut='o',typ='TXM',into=C_TYPE_CHAM_INTO()),

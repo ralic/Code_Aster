@@ -20,7 +20,7 @@ MACR_ELEM_STAT=OPER(nom="MACR_ELEM_STAT",op=86,sd_prod=macr_elem_stat,reentrant=
                     fr=tr("Définition d'un macro-élément pour l'analyse statique par sous-structuration"),
         regles=(AU_MOINS_UN('DEFINITION','RIGI_MECA','MASS_MECA','CAS_CHARGE'),
                 ENSEMBLE('DEFINITION','EXTERIEUR'),),
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          DEFINITION      =FACT(statut='f',
            regles=(PRESENT_PRESENT('PROJ_MESU','MODE_MESURE'),),
            MODELE          =SIMP(statut='o',typ=modele_sdaster),

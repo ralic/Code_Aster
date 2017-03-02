@@ -23,7 +23,7 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                    reentrant='f',
                    UIinfo={"groupes":("Résultats et champs","Rupture",)},
 
-      reuse=SIMP(statut='f', typ=CO),
+      reuse=SIMP(statut='c', typ=CO),
       TABLE     = SIMP(statut='o',typ=table_sdaster,max='**'),
 
       OPERATION = SIMP(statut='o',typ='TXM',into=(

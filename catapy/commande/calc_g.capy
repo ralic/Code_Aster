@@ -21,7 +21,7 @@ CALC_G=OPER(nom="CALC_G",op=100,sd_prod=table_sdaster,
                     reentrant='f',
             UIinfo={"groupes":("Post-traitements","Rupture",)},
 
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          THETA          =FACT(statut='o',
            FOND_FISS       =SIMP(statut='f',typ=fond_fiss,max=1),
            FISSURE         =SIMP(statut='f',typ=fiss_xfem,max=1),

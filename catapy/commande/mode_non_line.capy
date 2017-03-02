@@ -19,7 +19,7 @@ MODE_NON_LINE=OPER(nom="MODE_NON_LINE",op=  61,sd_prod=table_container,
                      reentrant='f',
            UIinfo={"groupes":("Résolution","Dynamique",)},
 
-        reuse =SIMP(statut='f',typ=CO),
+        reuse =SIMP(statut='c',typ=CO),
 
         ETAT_INIT       =FACT(statut='o',max=1,
                 regles=( UN_PARMI('MODE_LINE','MODE_NON_LINE'),),

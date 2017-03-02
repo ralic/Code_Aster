@@ -33,7 +33,7 @@ MACR_ECREVISSE=MACRO(nom="MACR_ECREVISSE",
                      UIinfo={"groupes":("Résolution","Outils-métier",)},
                      fr=tr("Procedure de couplage avec Ecrevisse"),
 
-       reuse  = SIMP(statut='f',typ=CO),
+       reuse  = SIMP(statut='c',typ=CO),
        regles = (EXCLUS('TEMPER','ETAT_INIT'),
                  UN_PARMI('LOGICIEL','VERSION'),),
 

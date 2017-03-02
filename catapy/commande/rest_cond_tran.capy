@@ -33,7 +33,7 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
         regles=(
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),),
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          RESULTAT        =SIMP(statut='f',typ=(evol_noli,dyna_trans) ),
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNA_TRANS",
                           into=("DYNA_TRANS","EVOL_NOLI") ),

@@ -32,7 +32,7 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",
                       fr=tr("Calculer les réponses statiques linéaires pour différents cas "
                            "de charges ou modes de Fourier"),
          regles=(UN_PARMI('CHAR_MECA_GLOBAL','LIAISON_DISCRET', ),),
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
          CARA_ELEM       =SIMP(statut='f',typ=cara_elem),

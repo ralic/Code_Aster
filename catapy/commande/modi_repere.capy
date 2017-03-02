@@ -24,7 +24,7 @@ MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f'
                  fr="Calcule les champs dans un nouveau repère.",
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT',),),
-    reuse=SIMP(statut='f', typ=CO),
+    reuse=SIMP(statut='c', typ=CO),
     CHAM_GD     =SIMP(statut='f',typ=cham_gd_sdaster),
     RESULTAT    =SIMP(statut='f',typ=resultat_sdaster),
 #

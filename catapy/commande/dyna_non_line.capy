@@ -19,7 +19,7 @@
 DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
             fr=tr("Calcul de l'évolution dynamique d'une structure dont le matériau ou la géométrie ont un comportement non linéaire"),
             UIinfo={"groupes":("Résolution","Dynamique",)},
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          MODELE          =SIMP(statut='o',typ=modele_sdaster),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater),
          MODE_STAT       =SIMP(statut='f',typ=mode_meca),

@@ -20,7 +20,7 @@ RESOUDRE=OPER(nom="RESOUDRE",op=15,sd_prod=cham_no_sdaster,reentrant='f',
                fr=tr("Résolution par méthode directe un système d'équations linéaires préalablement factorisé par FACT_LDLT"
                   "ou Résolution d'un système linéaire par la méthode du gradient conjugué préconditionné"),
                UIinfo={"groupes":("Résolution",)},
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          MATR           =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),
          CHAM_NO         =SIMP(statut='o',typ=cham_no_sdaster),

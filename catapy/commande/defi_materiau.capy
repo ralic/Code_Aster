@@ -61,7 +61,7 @@ DEFI_MATERIAU=OPER(nom="DEFI_MATERIAU",op=5,sd_prod=mater_sdaster,
                PRESENT_PRESENT('MOHR_COULOMB','ELAS'),
                PRESENT_PRESENT('ELAS_GLRC','GLRC_DM'),
                ),
-           reuse=SIMP(statut='f', typ=CO),
+           reuse=SIMP(statut='c', typ=CO),
            MATER      =SIMP(statut='f',typ=mater_sdaster),
 #
 # comportement élastique

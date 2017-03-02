@@ -19,7 +19,7 @@
 APPL_CINE_SCMB=OPER(nom="APPL_CINE_SCMB",op=159,sd_prod=cham_no_sdaster,reentrant='f',
                fr=tr("Application des C.L. cinématiques au second membre"),
                UIinfo={"groupes":("Résolution",)},
-         reuse=SIMP(statut='f', typ=CO),
+         reuse=SIMP(statut='c', typ=CO),
          CHAM_NO        =SIMP(statut='o',typ=cham_no_sdaster),
          MATR           =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),

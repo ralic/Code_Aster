@@ -22,7 +22,7 @@ def calc_erreur_prod(RESULTAT,**args):
 CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
             UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
             fr=tr("Compléter ou créer un résultat en calculant des champs d'erreur"),
-     reuse=SIMP(statut='f', typ=CO),
+     reuse=SIMP(statut='c', typ=CO),
      MODELE          =SIMP(statut='f',typ=modele_sdaster),
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
 

@@ -21,7 +21,7 @@ CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
 
      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),
 
-     reuse=SIMP(statut='f', typ=CO),
+     reuse=SIMP(statut='c', typ=CO),
      MODELE          =SIMP(statut='f',typ=modele_sdaster ),
      CHAM_MATER      =SIMP(statut='f',typ=cham_mater ),
      RESULTAT        =SIMP(statut='o',typ=evol_ther ),
