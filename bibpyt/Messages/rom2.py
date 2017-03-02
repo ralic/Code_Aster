@@ -42,4 +42,6 @@ cata_msg = {
    11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
 
    12 : _(u"""<*> Initialisations pour la base empirique."""),
+
+   13 : _(u"""La valeur 'POD' n'est pas possible pour enrichir une base existante."""),
 }

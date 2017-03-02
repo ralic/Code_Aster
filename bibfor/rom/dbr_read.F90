@@ -69,10 +69,12 @@ implicit none
 !
 ! - Type of ROM methods
 !
-    call getvtx(' ', 'OPERATION', scal = operation) 
+    call getvtx(' ', 'OPERATION', scal = operation)
     if (operation .eq. 'POD') then
         call dbr_read_pod(ds_para)
-        ASSERT(ireuse .eq. 0)
+        if (ireuse .ne. 0) then
+            call utmess('F', 'ROM2_13')
+        endif
     elseif (operation .eq. 'POD_INCR') then
         call dbr_read_pod(ds_para)
         call getvr8(' ', 'TOLE', scal = tole_incr)
