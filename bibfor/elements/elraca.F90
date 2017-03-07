@@ -47,7 +47,7 @@ subroutine elraca(elrefz, ndim, nno, nnos, nbfpg,&
 !   -------------------------------------------------------------------
     character(len=8) :: elrefa
     integer :: i, j
-    real(kind=8) :: xin(27), yin(27), zin(27)
+    real(kind=8) :: xin(27)=0.0, yin(27)=0.0, zin(27)=0.0
 ! DEB ------------------------------------------------------------------
 !
     elrefa = elrefz
