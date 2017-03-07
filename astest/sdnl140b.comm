@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -75,7 +75,7 @@ contact=DEFI_CONTACT(MODELE=modele,
                      ALGO_RESO_FROT='NEWTON',
                      RESI_FROT = 1.E-4,
                      RESI_GEOM = 1.E-4,
-                     ADAPT_COEF='OUI',
+                     #ADAPT_COEF='OUI',
                      ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',
@@ -94,7 +94,7 @@ contac2=DEFI_CONTACT(MODELE=modele,
                      ALGO_RESO_FROT='POINT_FIXE',
                      RESI_FROT = 1.E-1,
                      RESI_GEOM = 1.E-2,
-                     #ADAPT_COEF='OUI',
+                     ##ADAPT_COEF='OUI',
                      ZONE=_F(GROUP_MA_MAIT='Haut_Contact',
                              GROUP_MA_ESCL='Bas_Contact',
                              CONTACT_INIT='OUI',

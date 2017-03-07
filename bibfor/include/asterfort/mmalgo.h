@@ -20,7 +20,7 @@
 !
 interface
     subroutine mmalgo(ds_contact, l_loop_cont   , l_frot_zone   , l_vite    , &
-                  l_glis_init   , l_coef_adap   , zone_index    , i_cont_poin , &
+                  l_glis_init   , type_adap   , zone_index    , i_cont_poin , &
                   indi_cont_init, indi_cont_eval, indi_frot_eval, dist_cont_curr, &
                   vite_cont_curr, pres_cont_curr, dist_frot_curr, pres_frot_curr, &
                   v_sdcont_cychis, v_sdcont_cyccoe, v_sdcont_cyceta, indi_cont_curr,&
@@ -31,7 +31,7 @@ interface
         aster_logical, intent(in) :: l_frot_zone
         aster_logical, intent(in) :: l_vite
         aster_logical, intent(in) :: l_glis_init
-        aster_logical, intent(in) :: l_coef_adap
+        integer, intent(in) :: type_adap
         integer, intent(in) :: i_cont_poin
         integer, intent(in) :: zone_index
         integer, intent(inout) :: indi_cont_init

@@ -119,7 +119,6 @@ implicit none
         cycl_sub_type = 5
         alpha_cont_matr = 0.5
         alpha_cont_vect = 1.0
-        write (6,*) "CYCLAGE NON DETECTE : AVERTIR LE DEVELOPPEUR"
 !        ASSERT(.false.)
     endif
 

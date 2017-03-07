@@ -6,7 +6,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -114,7 +114,7 @@ implicit none
     else if (question.eq.'LISSAGE') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(19)
-    else if (question.eq.'COEF_ADAPT') then
+    else if (question.eq.'TYPE_ADAPT') then
         call jeveuo(sdcont_paraci, 'L', vi = v_sdcont_paraci)
         cfdisi = v_sdcont_paraci(20)
     else if (question.eq.'EXIS_XFEM_CZM') then

@@ -30,7 +30,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: sdcont
     integer, intent(in) :: i_zone
@@ -56,6 +56,7 @@ implicit none
     integer :: nb_dire_excl, noc
     character(len=16) :: s_cont_excl, s_frot_excl
     character(len=16) :: s_gliss, s_type_inte, s_cont_init, s_algo_cont, s_algo_frot
+    character(len=16) :: adaptation
     real(kind=8) :: dire_excl_frot_i, dire_excl_frot(3)
     real(kind=8) :: coef_cont, coef_frot, seuil_init, coef_coul_frot
     real(kind=8) :: coef_augm_frot, coef_augm_cont
@@ -70,6 +71,9 @@ implicit none
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     character(len=24) :: sdcont_exclfr
     real(kind=8), pointer :: v_sdcont_exclfr(:) => null()
+    character(len=24) :: sdcont_paraci
+    integer, pointer :: v_sdcont_paraci(:) => null()
+    aster_logical ::  l_newt_fr, l_cont_cont
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -97,6 +101,8 @@ implicit none
     l_frot_excl       = .false.
     l_gliss           = .false.
     l_dire_excl_frot  = .false.
+    l_newt_fr  = .false.
+    l_cont_cont= .false.
     s_algo_frot       = ' '
 !
 ! - Datastructure for contact
@@ -104,14 +110,18 @@ implicit none
     sdcont_defi   = sdcont(1:8)//'.CONTACT'
     sdcont_caracf = sdcont_defi(1:16)//'.CARACF'
     sdcont_exclfr = sdcont_defi(1:16)//'.EXCLFR'
+    sdcont_paraci = sdcont_defi(1:16)//'.PARACI'
     call jeveuo(sdcont_caracf, 'E', vr = v_sdcont_caracf)
     call jeveuo(sdcont_exclfr, 'E', vr = v_sdcont_exclfr)
+    call jeveuo(sdcont_paraci, 'E', vi = v_sdcont_paraci)
     zcmcf = cfmmvd('ZCMCF')
     zexcl = cfmmvd('ZEXCL')
 !
 ! - Parameters
 !
     l_frot      = cfdisl(sdcont_defi,'FROTTEMENT')
+    l_cont_cont = cfdisl(sdcont_defi,'FORMUL_CONTINUE')
+    l_newt_fr = cfdisl(sdcont_defi,'FROT_NEWTON')
     l_newt_geom = cfdisl(sdcont_defi,'GEOM_NEWTON')
     l_newt_cont = cfdisl(sdcont_defi,'CONT_NEWTON')
 !
@@ -316,5 +326,77 @@ implicit none
     v_sdcont_exclfr(zexcl*(i_zone-1)+1)  = dire_excl_frot(1)
     v_sdcont_exclfr(zexcl*(i_zone-1)+2)  = dire_excl_frot(2)
     v_sdcont_exclfr(zexcl*(i_zone-1)+3)  = dire_excl_frot(3)
+!
+! - Adptation method
+!
+    call getvtx(keywf, 'ADAPTATION', iocc=i_zone, scal=adaptation)
+    v_sdcont_paraci(20) = -1
+    
+    if (adaptation .eq. 'NON') then
+    ! Aucun traitement adaptatif inactif
+         v_sdcont_paraci(20) = 0
+         
+         
+    else if (adaptation .eq. 'ADAPT_COEF') then
+    ! IL FAUT DISTINGUER 3 CAS DE FIGURES :
+    ! FROTTEMENT NEWTON ACTIF : ON ADAPTE COEF_FROT COMME DECRIT DANS LA DOC R + THESE DK
+    !                    PARACI = 1
+    !                    SI PENALISATION CONTACT COEF_CONT ADAPTE SELON BUSSETTA
+    !                    PARACI = 2
+    ! CONTACT PENALISE ACTIF  FROTTEMENT TRESCA OU NEWTON OU SANS : COEF_CONT ADAPTE SELON BUSSETTA
+    !                    PARACI = 3
+    ! CONTACT STANDARD ACTIF FROTTEMENT TRESCA ACTIF  : ON NE FAIT RIEN
+    !                    PARACI = 0
+        if (l_cont_cont) then
+            if (l_newt_fr) then 
+                v_sdcont_paraci(20) = 1
+                if (s_algo_cont .eq. 'PENALISATION')  v_sdcont_paraci(20) = 2
+            elseif (s_algo_cont .eq. 'PENALISATION' .and. .not. l_frot  ) then 
+                v_sdcont_paraci(20) = 3
+            else
+                v_sdcont_paraci(20) = 0 
+       !         write (6,*) "CONDITIONS D ADAPTATION NON VALIDE : IL FAUT QUE"
+       !         write (6,*) "Le mot-clef ADAPTATION pemret de contrôler COEF_CONT dans le cas"
+       !         write (6,*) "où la penalisation est active ou COEF_FROT uniquement dans le cas"
+       !         write (6,*) "ALGO_RESO_FROT='NEWTON' s'il y a frottement"
+       !         write (6,*) "si c'est uniquement le cyclage qui vous intéresse :"
+       !         write (6,*) "branchez ADAPTATION=CYCLAGE"
+            endif
+        endif
+        
+    else if (adaptation .eq. 'CYCLAGE') then
+        v_sdcont_paraci(20) = 4
+        
+    else if (adaptation .eq. 'TOUT') then
+    ! IL FAUT DISTINGUER 3 CAS DE FIGURES :
+    ! FROTTEMENT NEWTON ACTIF : ON ADAPTE COEF_FROT COMME DECRIT DANS LA DOC R + THESE DK
+    !                    PARACI = 1+4
+    !                    SI PENALISATION CONTACT COEF_CONT ADAPTE SELON BUSSETTA
+    !                    PARACI = 2+4
+    ! CONTACT PENALISE ACTIF  FROTTEMENT TRESCA OU NON   : COEF_CONT ADAPTE SELON BUSSETTA
+    !                    PARACI = 3+4
+    ! CONTACT STANDARD ACTIF FROTTEMENT TRESCA OU NON  : ON NE FAIT RIEN
+    !                    PARACI = 0+4
+        v_sdcont_paraci(20) = 4
+        if (l_cont_cont) then
+            if (l_newt_fr) then 
+                v_sdcont_paraci(20) = 1+4
+                if (s_algo_cont .eq. 'PENALISATION')  v_sdcont_paraci(20) = 2+4
+            else if (s_algo_cont .eq. 'PENALISATION' .and. .not. l_frot) then 
+                v_sdcont_paraci(20) = 3+4
+            else
+                v_sdcont_paraci(20) = 0+4            
+     !           write (6,*) "CONDITIONS D ADAPTATION NON VALIDE : IL FAUT QUE"
+     !           write (6,*) "Le mot-clef ADAPTATION pemret de contrôler COEF_CONT dans le cas"
+     !           write (6,*) "où la penalisation est active ou COEF_FROT uniquement dans le cas"
+     !           write (6,*) "ALGO_RESO_FROT='NEWTON' s'il y a frottement"
+     !           write (6,*) "si c'est uniquement le cyclage qui vous intéresse :"
+     !           write (6,*) "branchez ADAPTATION=CYCLAGE"
+            endif
+        endif
+        
+    else
+        ASSERT(.false.)
+    endif
 !
 end subroutine

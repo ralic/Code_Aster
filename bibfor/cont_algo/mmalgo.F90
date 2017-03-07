@@ -1,5 +1,5 @@
 subroutine mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_vite,&
-                  l_glis_init, l_coef_adap, zone_index, i_cont_poin, indi_cont_init,&
+                  l_glis_init, type_adap, zone_index, i_cont_poin, indi_cont_init,&
                   indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, &
                   pres_cont_curr, dist_frot_curr, pres_frot_curr, v_sdcont_cychis,&
                   v_sdcont_cyccoe, v_sdcont_cyceta, indi_cont_curr,indi_frot_curr,&
@@ -42,7 +42,7 @@ implicit none
     aster_logical, intent(in) :: l_frot_zone
     aster_logical, intent(in) :: l_vite
     aster_logical, intent(in) :: l_glis_init
-    aster_logical, intent(in) :: l_coef_adap
+    integer, intent(in) :: type_adap
     integer, intent(in) :: i_cont_poin
     integer, intent(in) :: zone_index
     integer, intent(inout) :: indi_cont_init
@@ -99,7 +99,8 @@ implicit none
     real(kind=8) :: coef_cont_prev = 0.0, coef_frot_prev=0.0
     real(kind=8) :: coef_cont_curr=0.0, coef_frot_curr=0.0
     real(kind=8) ::  coefficient=0.0
-    aster_logical:: coef_found=.false.,treatment =.true.
+    aster_logical:: coef_found=.false._1,treatment =.true._1
+    aster_logical:: l_coef_adap = .false.
     integer      ::  mode_cycl = 0
     real(kind=8) :: pres_frot_prev(3)=0.0, pres_cont_prev=0.0
     real(kind=8) :: dist_frot_prev(3)=0.0, dist_cont_prev=0.0
@@ -115,7 +116,12 @@ implicit none
 ! - Initializations
 !
     scotch = .false.
-    treatment = .true.
+    
+    l_coef_adap = ((type_adap .eq. 1) .or. (type_adap .eq. 2) .or. &
+                  (type_adap .eq. 5) .or. (type_adap .eq. 6 ))
+    
+    treatment =  ((type_adap .eq. 4) .or. (type_adap .eq. 5) .or. &
+                  (type_adap .eq. 6) .or. (type_adap .eq. 7 ))
 !
 ! - Velocity theta-scheme (dynamic)
 !
@@ -263,7 +269,7 @@ implicit none
 ! WARNING CYCLAGE FROTTEMENT    : ADHE_GLIS
                 
     if ((ds_contact%iteration_newton .ge. 3 ) .and. &
-       (v_sdcont_cyceta(4*(i_cont_poin-1)+2) .ge. 10 )  ) then   
+       (v_sdcont_cyceta(4*(i_cont_poin-1)+2) .ge. 10 ) .and. treatment   ) then   
         
            if (v_sdcont_cyceta(4*(i_cont_poin-1)+1) .eq. 11) then
                v_sdcont_cychis(60*(i_cont_poin-1)+50) = 0.0d0
@@ -309,7 +315,7 @@ implicit none
     
                     
     if ((ds_contact%iteration_newton .ge. 3 ) .and. &
-       (v_sdcont_cyceta(4*(i_cont_poin-1)+3) .ge. 10 )  ) then   
+       (v_sdcont_cyceta(4*(i_cont_poin-1)+3) .ge. 10 )  .and. treatment  ) then   
         
          if (v_sdcont_cyceta(4*(i_cont_poin-1)+1) .eq. 11) then
              v_sdcont_cychis(60*(i_cont_poin-1)+50) = 0.0d0
@@ -352,10 +358,10 @@ implicit none
 ! WARNING CYCLAGE FROTTEMENT: END
 ! - Convergence ?
 !
-    mmcvca =  indi_cont_init .eq. indi_cont_curr
-    if (nint(v_sdcont_cychis(60*(i_cont_poin-1) + 57)) .eq. 1 ) &
-        mmcvca =  indi_cont_prev .eq. indi_cont_curr
-    if (.not. mmcvca) then
+!    mmcvca =  indi_cont_init .eq. indi_cont_curr
+!    if (nint(v_sdcont_cychis(60*(i_cont_poin-1) + 57)) .eq. 1 ) &
+    mmcvca =  indi_cont_prev .eq. indi_cont_curr
+    if (.not. mmcvca .and. treatment) then
         mode_cycl = 1
         if (mode_cycl .eq. 1 .and. &
             ds_contact%iteration_newton .gt. ds_contact%it_cycl_maxi+3 ) then 
@@ -384,5 +390,7 @@ implicit none
         endif
 !        ctcsta  = ctcsta + 1
     endif
+    if (.not. mmcvca ) ctcsta = ctcsta+1 
+    mmcvca = mmcvca .and. (ctcsta .eq. 0) 
 !
 end subroutine

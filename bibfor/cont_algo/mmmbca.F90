@@ -110,9 +110,10 @@ implicit none
     character(len=19) :: speed_field, chdepd
     character(len=19) :: depdel, depplu, vitplu
     aster_logical :: l_glis, l_speed, scotch
-    aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv, l_coef_adap, l_loop_cont
+    aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv,  l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: loop_geom_count, loop_fric_count, loop_cont_count
+    integer :: type_adap
     character(len=24) :: sdcont_cychis, sdcont_cyccoe, sdcont_cyceta
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
@@ -121,6 +122,7 @@ implicit none
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
     real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
+    aster_logical :: l_coef_adap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -140,7 +142,7 @@ implicit none
     l_speed      = ndynlo(sddyna,'FORMUL_VITE')
     l_exis_glis  = cfdisl(ds_contact%sdcont_defi,'EXIS_GLISSIERE')
     l_loop_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_BOUCLE')
-    l_coef_adap  = cfdisl(ds_contact%sdcont_defi,'COEF_ADAPT')
+    type_adap    = cfdisi(ds_contact%sdcont_defi,'TYPE_ADAPT')
     model_ndim   = cfdisi(ds_contact%sdcont_defi,'NDIM' )
     nb_cont_zone = cfdisi(ds_contact%sdcont_defi,'NZOCO')
     l_frot       = cfdisl(ds_contact%sdcont_defi,'FROTTEMENT')
@@ -370,7 +372,7 @@ implicit none
 ! ------------- Status treatment
 !
                 call mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_speed,&
-                            l_glis_init, l_coef_adap, i_zone, i_cont_poin, indi_cont_init,&
+                            l_glis_init, type_adap, i_zone, i_cont_poin, indi_cont_init,&
                             indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
                        gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, v_sdcont_cyceta,&
                         indi_cont_curr,indi_frot_curr, loop_cont_vali, loop_cont_conv, scotch)
@@ -412,6 +414,9 @@ implicit none
 !
 ! - Propagation of coefficient
 !
+    l_coef_adap = ((type_adap .eq. 1) .or. (type_adap .eq. 2)  .or.  &
+                  (type_adap .eq. 5) .or. (type_adap .eq. 6) )
+    
     if (l_coef_adap) then
         call mm_cycl_prop(ds_contact)
     endif
