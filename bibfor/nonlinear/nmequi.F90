@@ -1,8 +1,8 @@
-subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
+subroutine nmequi(eta, fonact, sddyna, veasse,&
                   cnfext, cnfint)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,6 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/ndthet.h"
 #include "asterfort/ndynin.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
@@ -35,7 +34,7 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
     integer :: fonact(*)
     character(len=19) :: sddyna
     character(len=19) :: veasse(*)
-    character(len=19) :: foiner, cnfext, cnfint
+    character(len=19) :: cnfext, cnfint
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,14 +49,13 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 ! IN  FONACT : FONCTIONNALITES ACTIVEES
 ! IN  ETA    : COEFFICIENT DE PILOTAGE
 ! IN  VEASSE : VARIABLE CHAPEAU POUR NOM DES VECT_ASSE
-! IN  FOINER : VECTEUR DES FORCES D'INERTIE POUR CONVERGENCE
 !
 !
 !
 !
     integer :: ifm, niv
     aster_logical :: ldyna, lstat
-    aster_logical :: lnewma, lthetd, lthetv, lkrenk, ldepl, lvite
+    aster_logical :: lnewma
 !
 ! ----------------------------------------------------------------------
 !
@@ -78,8 +76,6 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 ! --- INITIALISATIONS
 !
     lnewma = .false.
-    lthetv = .false.
-    lthetd = .false.
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
@@ -87,13 +83,6 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
     lstat = ndynlo(sddyna,'STATIQUE')
     if (ldyna) then
         lnewma = ndynlo(sddyna,'FAMILLE_NEWMARK')
-        lthetd = ndynlo(sddyna,'THETA_METHODE_DEPL')
-        lthetv = ndynlo(sddyna,'THETA_METHODE_VITE')
-        lkrenk = ndynlo(sddyna,'KRENK')
-        if (lkrenk) then
-            ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-            lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-        endif
     endif
 !
 ! --- VECTEURS EN SORTIE
@@ -101,10 +90,6 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
     if (lstat .or. lnewma) then
         call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
         call nmchex(veasse, 'VEASSE', 'CNFINT', cnfint)
-        elseif (lthetv.or.(lkrenk.and.lvite).or.lthetd .or.(&
-    lkrenk.and.ldepl)) then
-        call nmchex(veasse, 'VEASSE', 'CNFEXT', cnfext)
-        cnfint = '&&CNPART.CHP3'
     else
         ASSERT(.false.)
     endif
@@ -113,10 +98,6 @@ subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
 !
     if (lstat .or. lnewma) then
         call nmfext(eta, fonact, sddyna, veasse, cnfext)
-        elseif (lthetv.or.(lkrenk.and.lvite).or.lthetd .or.(&
-    lkrenk.and.ldepl)) then
-        call ndthet(fonact, sddyna, foiner, veasse, cnfint,&
-                    cnfext)
     else
         ASSERT(.false.)
     endif

@@ -90,10 +90,6 @@ en accélération est possible
  Pour un schéma de type NEWMARK, seules les formulations en accélération et en déplacement sont possibles
 """),
 
-    12 : _(u"""
- Pour un schéma de type THETA, seules les formulations en vitesse et en déplacement sont possibles
-"""),
-
     13 : _(u"""
  La matrice de masse diagonale (option MASS_DIAG) n'est pas utilisable avec un schéma implicite.
 """),
@@ -148,11 +144,6 @@ qu'en faibles rotations.
     25 : _(u"""
 Dynamique non-linéaire
 Le pilotage n'est pas possible.
-"""),
-
-    27 : _(u"""
-Dynamique non-linéaire avec schéma THETA
-Les poutres en grandes rotations POU_D_T_GD et POU_D_TGM sont interdits.
 """),
 
     28 : _(u"""

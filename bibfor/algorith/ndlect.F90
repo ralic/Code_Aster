@@ -1,7 +1,7 @@
 subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,7 +73,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     integer :: nmodam, nreavi, nondp
     integer :: nbmods, nbmoda, nbmodp
     integer :: iret
-    integer :: n1, n2, nbmg, nrv
+    integer :: n1, nbmg, nrv
     integer :: nbexci, nbgene
     character(len=24) :: tsch, psch, losd, nosd, tfor
     integer :: jtsch, jpsch, jlosd, jnosd, jtfor
@@ -90,7 +90,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     character(len=24) :: chondp
     integer :: iform
     integer :: ifm, niv
-    real(kind=8) :: alpha, beta, gamma, theta, phi, kappa
+    real(kind=8) :: alpha, beta, gamma, phi
     real(kind=8) :: rcmp(3), shima
     aster_logical :: lmuap, lammo, lshima, lviss, lamra
     aster_logical :: lamor, lktan, londe, limped, ldyna, lexpl
@@ -146,8 +146,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     beta = 0.d0
     gamma = 0.d0
     phi = 0.d0
-    theta = 0.d0
-    kappa = 0.d0
 !
 ! --- LECTURE DONNEES DYNAMIQUE
 !
@@ -216,8 +214,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     beta = 0.d0
     gamma = 0.d0
     phi = 0.d0
-    theta = 0.d0
-    kappa = 0.d0
     alpha = 0.d0
     call getvtx('SCHEMA_TEMPS', 'SCHEMA', iocc=1, scal=schema, nbret=iret)
 !
@@ -236,11 +232,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         call getvr8('SCHEMA_TEMPS', 'GAMMA', iocc=1, scal=gamma, nbret=n1)
         phi = 0.5d0
         zk16(jtsch+2-1) = 'NEWMARK'
-    else if (schema(1:13).eq.'THETA_METHODE') then
-        call getvr8('SCHEMA_TEMPS', 'THETA', iocc=1, scal=theta, nbret=n2)
-        zk16(jtsch+4-1) = 'THETA_METHODE'
-        phi = 0.5d0
-        call deprecated_algom('THETA')
     else if (schema(1:3).eq.'HHT') then
         call getvr8('SCHEMA_TEMPS', 'ALPHA', iocc=1, scal=alpha, nbret=n1)
         call getvtx('SCHEMA_TEMPS', 'MODI_EQUI', iocc=1, scal=rep, nbret=n1)
@@ -252,11 +243,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         phi = undemi
         beta = (un-alpha)* (un-alpha)/quatre
         gamma = undemi - alpha
-    else if (schema(1:5).eq.'KRENK') then
-        call getvr8('SCHEMA_TEMPS', 'KAPPA', iocc=1, scal=kappa, nbret=n2)
-        zk16(jtsch+9-1) = 'KRENK'
-        phi = 0.5d0
-        call deprecated_algom('KRENK')
+
     else
         ASSERT(.false.)
     endif
@@ -264,8 +251,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
     zr(jpsch+1-1) = beta
     zr(jpsch+2-1) = gamma
     zr(jpsch+3-1) = phi
-    zr(jpsch+4-1) = theta
-    zr(jpsch+5-1) = kappa
     zr(jpsch+7-1) = alpha
 !
 ! --- TYPE DE SCHEMA
@@ -312,11 +297,6 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
         endif
         if (iform .eq. 2) then
             call utmess('F', 'MECANONLINE5_11')
-        endif
-    endif
-    if (ndynlo(sddyna,'THETA_METHODE')) then
-        if (iform .eq. 3) then
-            call utmess('F', 'MECANONLINE5_12')
         endif
     endif
     if (lexpl) then
@@ -387,8 +367,7 @@ subroutine ndlect(modele, mate, carele, lischa, sddyna)
 !
 ! --- SCHEMA MULTIPAS: VECT_* SAUVEGARDES PAS PRECEDENT
 !
-    if ((zk16(jtsch+5-1)(1:11).eq.'HHT_COMPLET') .or.&
-        (zk16(jtsch+4-1)(1:13).eq.'THETA_METHODE') .or. (zk16(jtsch+9-1)(1:5).eq.'KRENK')) then
+    if (zk16(jtsch+5-1)(1:11).eq.'HHT_COMPLET') then
         zk24(jveol+1-1) = vefedo
         zk24(jveol+2-1) = vefsdo
         zk24(jveol+3-1) = vedido

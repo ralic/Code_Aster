@@ -32,7 +32,7 @@ implicit none
 #include "asterfort/nmviss.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,7 +98,6 @@ implicit none
     character(len=24) :: charge, infoch, fomult, fomul2
     character(len=16) :: typvec
     integer :: jimpe, jvaanc
-    aster_logical :: ltheta
     integer :: ifm, niv
 !
 ! ----------------------------------------------------------------------
@@ -261,12 +260,7 @@ implicit none
 ! --- FORCE D'EQUILIBRE DYNAMIQUE (PAS DE VECT_ELEM)
 !
     else if (typvec.eq.'CNDYNA') then
-        ltheta = ndynlo(sddyna,'THETA_METHODE')
-        if (ltheta) then
-            call ndfdyn(sddyna, measse, vitmoi, accmoi, vecass)
-        else
-            call ndfdyn(sddyna, measse, vitplu, accplu, vecass)
-        endif
+        call ndfdyn(sddyna, measse, vitplu, accplu, vecass)
 !
 ! --- FORCES D'AMORTISSEMENT MODAL EN PREDICTION (PAS DE VECT_ELEM)
 !

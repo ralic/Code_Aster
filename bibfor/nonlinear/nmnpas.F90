@@ -88,7 +88,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lgrot, ldyna, lnkry
-    aster_logical :: l_cont, l_cont_cont, l_diri_undead, scotch
+    aster_logical :: l_cont, l_cont_cont, l_diri_undead
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu
@@ -102,7 +102,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
-    scotch = .false.
 !
 ! - Active functionnalites
 !
@@ -165,13 +164,8 @@ implicit none
 ! --- INITIALISATIONS EN DYNAMIQUE
 !
     if (ldyna) then
-        if (l_cont_cont) then
-            scotch = ds_contact%l_getoff
-        else
-            scotch = .false._1
-        endif
         call ndnpas(fonact, numedd, numins, sddisc, sddyna,&
-                    scotch, valinc, solalg)
+                    valinc, solalg)
     endif
 !
 ! --- NEWTON-KRYLOV : COPIE DANS LA SD SOLVEUR DE LA PRECISION DE LA

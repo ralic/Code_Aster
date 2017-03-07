@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmequi(eta, fonact, sddyna, foiner, veasse,&
+    subroutine nmequi(eta, fonact, sddyna, veasse,&
                       cnfext, cnfint)
         real(kind=8) :: eta
         integer :: fonact(*)
         character(len=19) :: sddyna
-        character(len=19) :: foiner
         character(len=19) :: veasse(*)
         character(len=19) :: cnfext
         character(len=19) :: cnfint

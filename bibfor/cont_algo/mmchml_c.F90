@@ -19,7 +19,7 @@ implicit none
 #include "asterfort/ndynre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,8 +64,7 @@ implicit none
     integer :: ztabf
     integer :: i_cont_poin, i_zone, nt_cont_poin
     integer :: vale_indx, decal
-    aster_logical :: l_dyna, l_theta
-    real(kind=8) :: theta
+    aster_logical :: l_dyna
     integer :: dyna_form
     real(kind=8) :: coef_fric
     integer :: i_algo_cont, i_algo_fric, i_reso_fric, i_reso_geom
@@ -88,7 +87,6 @@ implicit none
 ! - Active functionnalities
 !
     l_dyna  = ndynlo(sddyna,'DYNAMIQUE')
-    l_theta = ndynlo(sddyna,'THETA_METHODE')
 !
 ! - Access to contact objects
 !
@@ -108,15 +106,9 @@ implicit none
 !
 ! - Get dynamic parameters
 !
-    theta     = 0.d0
     dyna_form = 0
     if (l_dyna) then
-        if (l_theta) then
-            theta = ndynre(sddyna,'THETA')
-            dyna_form = 2
-        else
-            dyna_form = 1
-        endif
+        dyna_form = 1
     endif
 !
 ! - Access to input field
@@ -168,7 +160,7 @@ implicit none
             zr(vale_indx-1+21) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+20)
             zr(vale_indx-1+22) = dyna_form
             zr(vale_indx-1+23) = time_incr
-            zr(vale_indx-1+24) = theta
+            zr(vale_indx-1+24) = 0.d0
         enddo
         nt_liel = nt_liel + nb_liel
     enddo

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,13 +19,12 @@
 !
 interface
     subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
-                      scotch, valinc, solalg)
+                      valinc, solalg)
         integer :: fonact(*)
         character(len=24) :: numedd
         integer :: numins
         character(len=19) :: sddisc
         character(len=19) :: sddyna
-        aster_logical :: scotch
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
     end subroutine ndnpas

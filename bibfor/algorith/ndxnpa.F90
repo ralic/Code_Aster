@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/nmvcle.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -72,7 +72,6 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     aster_logical :: lgrot
-    aster_logical :: scotch
     integer :: neq
     character(len=19) :: depmoi, varmoi
     character(len=19) :: depplu, varplu, vitplu, accplu
@@ -89,7 +88,6 @@ implicit none
 ! --- INITIALISATIONS
 !
     instap = diinst(sddisc,numins)
-    scotch = .false.
     call dismoi('NB_EQUA', numedd, 'NUME_DDL', repi=neq)
 !
 ! --- FONCTIONNALITES ACTIVEES
@@ -136,7 +134,7 @@ implicit none
 ! --- INITIALISATIONS EN DYNAMIQUE
 !
     call ndnpas(fonact, numedd, numins, sddisc, sddyna,&
-                scotch, valinc, solalg)
+                valinc, solalg)
 !
 ! - Print or not ?
 !

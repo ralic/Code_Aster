@@ -1,7 +1,7 @@
 function ndynre(sddyna, chaine)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,10 +61,6 @@ function ndynre(sddyna, chaine)
         ndynre = para_sch(2)
     else if (chaine.eq.'PHI') then
         ndynre = para_sch(3)
-    else if (chaine.eq.'THETA') then
-        ndynre = para_sch(4)
-    else if (chaine.eq.'KAPPA') then
-        ndynre = para_sch(5)
     else if (chaine.eq.'COEF_MASS_SHIFT') then
         ndynre = para_sch(6)
     else if (chaine.eq.'ALPHA') then

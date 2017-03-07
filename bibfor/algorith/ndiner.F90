@@ -1,7 +1,7 @@
 subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
     integer :: jmasse, jvitm, jvect
     integer :: neq
     real(kind=8) :: coiner
-    aster_logical :: lnewma, lthetv, lthetd, lkrenk, ldepl, lvite
+    aster_logical :: lnewma
     character(len=19) :: vitmoi, vitplu, vector
     character(len=19) :: masse
     real(kind=8), pointer :: foine(:) => null()
@@ -89,13 +89,6 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 ! --- FONCTIONNALITES ACTIVEES
 !
     lnewma = ndynlo(sddyna,'FAMILLE_NEWMARK')
-    lthetv = ndynlo(sddyna,'THETA_METHODE_VITE')
-    lthetd = ndynlo(sddyna,'THETA_METHODE_DEPL')
-    lkrenk = ndynlo(sddyna,'KRENK')
-    if (lkrenk) then
-        ldepl = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1
-        lvite = ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2
-    endif
 !
 ! --- INITIALISATIONS
 !
@@ -118,14 +111,6 @@ subroutine ndiner(numedd, sddyna, valinc, measse, foiner)
 !
     if (lnewma) then
         call mrmult('ZERO', jmasse, vitp, foine, 1,&
-                    .true._1)
-        call dscal(neq, coiner, foine, 1)
-        elseif (lthetv.or.(lkrenk.and.lvite).or.lthetd .or.(&
-    lkrenk.and.ldepl)) then
-        call vtaxpy(-1.d0, vitplu, vector)
-        call vtaxpy(1.d0, vitmoi, vector)
-        call jeveuo(vector(1:19)//'.VALE', 'L', jvect)
-        call mrmult('ZERO', jmasse, zr(jvect), foine, 1,&
                     .true._1)
         call dscal(neq, coiner, foine, 1)
     else

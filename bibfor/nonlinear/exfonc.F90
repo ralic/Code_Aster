@@ -66,7 +66,7 @@ implicit none
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead, l_cont_xfem
     aster_logical :: l_vibr_mode, l_buckling, lexpl, lxfem, lmodim, l_mult_front
     aster_logical :: lgcpc, lpetsc, lamg, limpex, l_matr_rigi_syme
-    aster_logical :: londe, l_dyna, l_grot_gdep, ltheta, l_newt_krylov, l_mumps, l_rom
+    aster_logical :: londe, l_dyna, l_grot_gdep, l_newt_krylov, l_mumps, l_rom
     aster_logical :: l_energy, lproj, lmatdi, lldsp, lctgcp, l_comp_rela, lammo, lthms
     character(len=24) :: typilo, metres, char24
     character(len=16) :: reli_meth, matrix_pred
@@ -96,7 +96,6 @@ implicit none
     l_dyna          = ndynlo(sddyna,'DYNAMIQUE')
     lexpl           = isfonc(list_func_acti,'EXPLICITE')
     l_grot_gdep     = isfonc(list_func_acti,'GD_ROTA')
-    ltheta          = ndynlo(sddyna,'THETA_METHODE')
     lammo           = ndynlo(sddyna,'AMOR_MODAL')
     limpex          = isfonc(list_func_acti,'IMPLEX')
     l_newt_krylov   = isfonc(list_func_acti,'NEWTON_KRYLOV')
@@ -267,11 +266,6 @@ implicit none
         endif
         if (l_pilo) then
             call utmess('F', 'MECANONLINE5_25')
-        endif
-        if (ltheta) then
-            if (l_grot_gdep) then
-                call utmess('F', 'MECANONLINE5_27')
-            endif
         endif
         if (lxfem) then
             call utmess('F', 'MECANONLINE5_28')

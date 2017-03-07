@@ -34,7 +34,7 @@ implicit none
 #include "asterfort/romAlgoNLMecaResidual.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -197,7 +197,7 @@ implicit none
 !
 ! --- RESULTANTE DES EFFORTS POUR ESTIMATION DE L'EQUILIBRE
 !
-    call nmequi(eta, fonact, sddyna, foiner, veasse,&
+    call nmequi(eta, fonact, sddyna, veasse,&
                 cnfext, cnfint)
 !
 ! --- POINTEUR SUR LES DDLS ELIMINES PAR AFFE_CHAR_CINE

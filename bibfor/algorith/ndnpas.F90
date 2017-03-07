@@ -1,8 +1,8 @@
 subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
-                  scotch, valinc, solalg)
+                  valinc, solalg)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
     integer :: fonact(*)
-    aster_logical :: scotch
 !
 ! ----------------------------------------------------------------------
 !
@@ -63,7 +62,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 ! IN  SDDYNA : SD DYNAMIQUE
 ! IN  VALINC : VARIABLE CHAPEAU POUR INCREMENTS VARIABLES
 ! IN  SOLALG : VARIABLE CHAPEAU POUR INCREMENTS SOLUTIONS
-! IN  SCOTCH : .TRUE. SI NOEUD COLLE EN CONTACT CONTINU
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,11 +71,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
     character(len=24) :: cfsc
     real(kind=8), pointer :: coef_sch(:) => null()
-    real(kind=8) :: alpha, beta, gamma, theta, phi, unthet, kappa
+    real(kind=8) :: alpha, beta, gamma, phi
     real(kind=8) :: instam, instap, deltat
     aster_logical :: lexge, lctcc, lmuap, lgrot, lexpl, lmpas, lhhtc, limpl
     aster_logical :: ldepl, lvite, lacce
-    aster_logical :: lnewma, ltheta, lkrenk
+    aster_logical :: lnewma
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2
     integer :: imode
@@ -132,12 +130,10 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         ASSERT(.false.)
     endif
 !
-! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA
+! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES)
 !
     lnewma = ndynlo(sddyna,'FAMILLE_NEWMARK')
-    ltheta = ndynlo(sddyna,'THETA_METHODE')
-    lkrenk = ndynlo(sddyna,'KRENK')
-    if (.not.(lnewma.or.ltheta.or.lkrenk)) then
+    if (.not.(lnewma)) then
         ASSERT(.false.)
     endif
 !
@@ -149,22 +145,8 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
     beta = ndynre(sddyna,'BETA')
     gamma = ndynre(sddyna,'GAMMA')
-    theta = ndynre(sddyna,'THETA')
-    unthet = un-theta
-    if (abs(unthet) .le. r8prem()) unthet = un
     phi = ndynre(sddyna,'PHI')
     alpha = ndynre(sddyna,'ALPHA')
-    kappa = ndynre(sddyna,'KAPPA')
-!
-! --- SI NOEUD COLLE, THETA-SCHEMA PUREMENT IMPLICITE
-!
-    if (lctcc) then
-        if (ltheta) then
-            if (scotch) then
-                theta = 1.d0
-            endif
-        endif
-    endif
 !
 ! --- COEFFICIENTS POUR MATRICES
 !
@@ -183,30 +165,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         if (lhhtc) then
             coeamo = coeamo/(un+alpha)
             coemas = coemas/(un+alpha)
-        endif
-    else if (ltheta) then
-        if (ldepl) then
-            coerig = theta
-            coeamo = un/(theta*deltat)
-            coemas = un/(theta*deltat*deltat)
-        else if (lvite) then
-            coerig = theta*theta*deltat
-            coeamo = theta
-            coemas = un/deltat
-        else
-            ASSERT(.false.)
-        endif
-    else if (lkrenk) then
-        if (ldepl) then
-            coerig = kappa/deux
-            coeamo = un/deltat
-            coemas = deux/(kappa*deltat*deltat)
-        else if (lvite) then
-            coerig = (kappa/deux)*(kappa/deux)*deltat
-            coeamo = kappa/deux
-            coemas = un/deltat
-        else
-            ASSERT(.false.)
         endif
     else
         ASSERT(.false.)
@@ -234,30 +192,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coedep = beta*deltat*deltat
             coevit = gamma*deltat
             coeacc = un
-        else
-            ASSERT(.false.)
-        endif
-    else if (ltheta) then
-        if (ldepl) then
-            coedep = un
-            coevit = un/(theta*deltat)
-            coeacc = deux/(theta*deltat*deltat)
-        else if (lvite) then
-            coedep = deltat*theta
-            coevit = un
-            coeacc = deux/deltat
-        else
-            ASSERT(.false.)
-        endif
-    else if (lkrenk) then
-        if (ldepl) then
-            coedep = un
-            coevit = deux/(kappa*deltat)
-            coeacc = deux*deux/(kappa*deltat*deltat)
-        else if (lvite) then
-            coedep = deltat*(kappa/deux)
-            coevit = un
-            coeacc = deux/deltat
         else
             ASSERT(.false.)
         endif
@@ -324,54 +258,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         else
             ASSERT(.false.)
         endif
-    else if (ltheta) then
-        if (ldepl) then
-            coefd(1) = zero
-            coefd(2) = zero
-            coefd(3) = zero
-            coefv(1) = zero
-            coefv(2) = (theta-un)/theta
-            coefv(3) = zero
-            coefa(1) = zero
-            coefa(2) = -deux/(theta*deltat)
-            coefa(3) = -un
-        else if (lvite) then
-            coefd(1) = un
-            coefd(2) = deltat
-            coefd(3) = zero
-            coefv(1) = zero
-            coefv(2) = un
-            coefv(3) = zero
-            coefa(1) = zero
-            coefa(2) = zero
-            coefa(3) = -un
-        else
-            ASSERT(.false.)
-        endif
-    else if (lkrenk) then
-        if (ldepl) then
-            coefd(1) = un
-            coefd(2) = zero
-            coefd(3) = zero
-            coefv(1) = zero
-            coefv(2) = (kappa-deux)/kappa
-            coefv(3) = zero
-            coefa(1) = zero
-            coefa(2) = -deux*deux/(kappa*deltat)
-            coefa(3) = -un
-        else if (lvite) then
-            coefd(1) = un
-            coefd(2) = deltat
-            coefd(3) = zero
-            coefv(1) = zero
-            coefv(2) = un
-            coefv(3) = zero
-            coefa(1) = zero
-            coefa(2) = zero
-            coefa(3) = -un
-        else
-            ASSERT(.false.)
-        endif
     else
         ASSERT(.false.)
     endif
@@ -402,26 +288,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
             coeint = -alpha/(un+alpha)
             coeequ = un/(un+alpha)
             coeex2 = un
-        else if (ltheta) then
-            coeext = (un-theta)
-            if (abs(un-theta) .le. r8prem()) then
-                coeext = zero
-            endif
-            coeint = zero
-            coeequ = un
-            coeex2 = theta
-        else if (lkrenk) then
-            if (ldepl) then
-                coeext = un/deux
-                coeint = zero
-                coeequ = un
-                coeex2 = un/deux
-            else if (lvite) then
-                coeext = un/deux
-                coeint = zero
-                coeequ = un
-                coeex2 = un/deux
-            endif
         else
             ASSERT(.false.)
         endif
@@ -453,18 +319,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
         else
             coiner = un/deltat
         endif
-    else if (ltheta) then
-        if (ldepl) then
-            coiner = un/deltat
-        else
-            coiner = un/deltat
-        endif
-    else if (lkrenk) then
-        if (ldepl) then
-            coiner = un/deltat
-        else
-            coiner = un/deltat
-        endif
     else
         coiner = un/deltat
     endif
@@ -476,38 +330,9 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
 !
 ! --- COEFFICIENTS DEVANT MATRICE POUR TERME DE RAPPEL DYNAMIQUE
 !
-    if (ltheta) then
-        if (lvite) then
-            coerma = zero
-            coeram = un
-            coerri = theta*deltat
-            if (abs(un-theta) .le. r8prem()) then
-                coerri = deltat
-            endif
-        else if (ldepl) then
-            if (abs(un-theta) .le. r8prem()) then
-                coerma = -un/(theta*deltat)
-            else
-                coerma = -un/(theta*deltat)
-            endif
-            coeram = un
-            coerri = un
-        endif
-    else if (lkrenk) then
-        if (ldepl) then
-            coerma = deux/((deux-kappa)*deltat)
-            coeram = un
-            coerri = un
-        else if (lvite) then
-            coerma = zero
-            coeram = zero
-            coerri = (kappa/deux)*deltat
-        endif
-    else
-        coerma = un
-        coeram = un
-        coerri = un
-    endif
+    coerma = un
+    coeram = un
+    coerri = un
     coef_sch(20) = coerma
     coef_sch(21) = coeram
     coef_sch(22) = coerri

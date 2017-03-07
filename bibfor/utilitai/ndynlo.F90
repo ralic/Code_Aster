@@ -1,7 +1,7 @@
 function ndynlo(sddyna, chainz)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,8 +43,8 @@ function ndynlo(sddyna, chainz)
 !               FALSE SINON
 ! IN  SDDYNA : NOM DE LA SD DEDIEE A LA DYNAMIQUE
 ! IN  CHAINE : PROPRIETE EVENTUELLE DE LA SD DYNAC
-!                    = 'DIFF_CENT','TCHAMWA','NEWMARK','THETA_METHODE',
-!                      'HHT_NON_MODIFIE','HHT_MODIFIE','KRENK',
+!                    = 'DIFF_CENT','TCHAMWA','NEWMARK',
+!                      'HHT_NON_MODIFIE','HHT_MODIFIE',
 !                      'IMPLICITE', 'EXPLICITE',
 !                       'STATIQUE', 'DYNAMQIUE'
 !                      'MAT_AMORT','MASS_DIAG',
@@ -124,32 +124,6 @@ function ndynlo(sddyna, chainz)
             ndynlo = .false.
         endif
 !
-    else if (chaine(1:13).eq.'THETA_METHODE') then
-        if (zk16(jtsch+4-1)(1:13) .eq. 'THETA_METHODE') then
-            if (chaine(14:18) .eq. '_DEPL') then
-                if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 1) then
-                    ndynlo = .true.
-                else if (ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2) then
-                    ndynlo = .false.
-                else
-                    ASSERT(.false.)
-                endif
-            else if (chaine(14:18).eq.'_VITE') then
-                if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 2) then
-                    ndynlo = .true.
-                else if (ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.1) then
-                    ndynlo = .false.
-                else
-                    ASSERT(.false.)
-                endif
-            else
-                ndynlo = .true.
-            endif
-        else
-            ndynlo = .false.
-        endif
-!
-!
     else if (chaine(1:11).eq.'HHT_COMPLET') then
         if (zk16(jtsch+5-1)(1:11) .eq. 'HHT_COMPLET') then
             ndynlo = .true.
@@ -158,14 +132,10 @@ function ndynlo(sddyna, chainz)
         if (zk16(jtsch+3-1)(1:3) .eq. 'HHT') then
             ndynlo = .true.
         endif
-    else if (chaine(1:5).eq.'KRENK') then
-        if (zk16(jtsch+9-1)(1:5) .eq. 'KRENK') then
-            ndynlo = .true.
-        endif
     else if (chaine(1:9).eq.'IMPLICITE') then
-        if (zk16(jtsch+2-1)(1:7) .eq. 'NEWMARK' .or. zk16(jtsch+4-1)(1: 13) .eq.&
-            'THETA_METHODE' .or. zk16(jtsch+5-1)(1:11) .eq. 'HHT_COMPLET' .or.&
-            zk16(jtsch+3-1)(1:3) .eq. 'HHT' .or. zk16(jtsch+9-1)(1:5) .eq. 'KRENK') then
+        if (zk16(jtsch+2-1)(1:7) .eq. 'NEWMARK' .or. &
+            zk16(jtsch+5-1)(1:11).eq. 'HHT_COMPLET' .or.&
+            zk16(jtsch+3-1)(1:3) .eq. 'HHT') then
             ndynlo = .true.
         endif
     else if (chaine(1:9).eq.'EXPLICITE') then
@@ -226,22 +196,6 @@ function ndynlo(sddyna, chainz)
         if ((zk16(jtsch+5-1)(1:11).eq.'HHT_COMPLET')) then
             ndynlo = .true.
             goto 9999
-        else if ((zk16(jtsch+4-1)(1:13).eq.'THETA_METHODE')) then
-            ndynlo = .true.
-            goto 9999
-        else if ((zk16(jtsch+9-1)(1:5).eq.'KRENK')) then
-            ndynlo = .true.
-            goto 9999
-        else
-            ndynlo = .false.
-        endif
-!
-        if ((ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2) .and.&
-            (&
-            ( zk16( jtsch+4-1)(1:13).eq.'THETA_METHODE') .or.&
-            (zk16(jtsch+9-1)(1:5) .eq.'KRENK')&
-            )) then
-            ndynlo = .true.
         else
             ndynlo = .false.
         endif

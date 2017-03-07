@@ -1,7 +1,7 @@
 subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -56,15 +56,11 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
 !
 !
     character(len=19) :: amort, masse, rigid
-    character(len=19) :: vites, accel, vite2
+    character(len=19) :: vites, accel
     character(len=19) :: cniner, cnhyst
-    character(len=24) :: nu
-    integer :: jprov, neq
     real(kind=8) :: coerma, coeram, coerri
     aster_logical :: lamor, limpl
-    aster_logical :: lnewma, ltheta, lthetd, lthetv, lkrenk
-    character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: deeq(:) => null()
+    aster_logical :: lnewma
 !
 ! ----------------------------------------------------------------------
 !
@@ -81,29 +77,11 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
     lamor = ndynlo(sddyna,'MAT_AMORT')
     limpl = ndynlo(sddyna,'IMPLICITE')
 !
-! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES) OU THETA
+! --- TYPE DE SCHEMA: NEWMARK (ET SES DERIVEES)
 !
     lnewma = ndynlo(sddyna,'FAMILLE_NEWMARK')
-    ltheta = ndynlo(sddyna,'THETA_METHODE')
-    lkrenk = ndynlo(sddyna,'KRENK')
-    if (.not.(lnewma.or.ltheta.or.lkrenk)) then
+    if (.not.(lnewma)) then
         ASSERT(.false.)
-    endif
-!
-! --- TYPE DE THETA
-!
-    lthetd = ndynlo(sddyna,'THETA_METHODE_DEPL')
-    lthetv = ndynlo(sddyna,'THETA_METHODE_VITE')
-    if (lkrenk) then
-        if (ndynin(sddyna,'FORMUL_DYNAMIQUE') .eq. 1) then
-            lthetd = .true.
-            lthetv = .false.
-        else if (ndynin(sddyna,'FORMUL_DYNAMIQUE').eq.2) then
-            lthetd = .false.
-            lthetv = .true.
-        else
-            ASSERT(.false.)
-        endif
     endif
 !
 ! --- MATRICES ASSEMBLEES
@@ -128,24 +106,6 @@ subroutine ndfdyn(sddyna, measse, vitplu, accplu, cndyna)
         if (lnewma) then
             call nminer(masse, accel, cniner)
             call vtaxpy(coerma, cniner, cndyna)
-        else if (lthetd) then
-            call nminer(masse, vites, cniner)
-            call vtaxpy(coerma, cniner, cndyna)
-        else if (lthetv) then
-!  Mise a zero des termes Lagrange pour la resolution en vitesse
-            vite2 = '&&NDFDYN.VITE'
-            call copisd('CHAMP_GD', 'V', vites, vite2)
-            call jeveuo(vite2(1:19)//'.VALE', 'E', jprov)
-            call jeveuo(rigid//'.REFA', 'L', vk24=refa)
-            nu = refa(2)
-            call jeveuo(nu(1:14)//'.NUME.DEEQ', 'L', vi=deeq)
-            call jelira(vite2(1:19)//'.VALE', 'LONMAX', neq)
-            call zerlag(neq, deeq, vectr=zr(jprov))
-            call nminer(rigid, vite2, cniner)
-            call jeveuo(cniner(1:19)//'.VALE', 'E', jprov)
-            call zerlag(neq, deeq, vectr=zr(jprov))
-            call vtaxpy(coerri, cniner, cndyna)
-            call jeveuo(cndyna(1:19)//'.VALE', 'E', jprov)
         else
             ASSERT(.false.)
         endif
