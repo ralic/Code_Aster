@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,9 +20,10 @@
 !
 interface
     subroutine mmalgo(ds_contact, l_loop_cont   , l_frot_zone   , l_vite    , &
-                  l_glis_init   , l_coef_adap   , zone_index    , i_cont_poin   , indi_cont_init, &
-                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, pres_cont_curr, &
-                  dist_frot_curr, pres_frot_curr, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
+                  l_glis_init   , l_coef_adap   , zone_index    , i_cont_poin , &
+                  indi_cont_init, indi_cont_eval, indi_frot_eval, dist_cont_curr, &
+                  vite_cont_curr, pres_cont_curr, dist_frot_curr, pres_frot_curr, &
+                  v_sdcont_cychis, v_sdcont_cyccoe, v_sdcont_cyceta, indi_cont_curr,&
                   indi_frot_curr, ctcsta        , mmcvca        , scotch        )
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
@@ -33,16 +34,17 @@ interface
         aster_logical, intent(in) :: l_coef_adap
         integer, intent(in) :: i_cont_poin
         integer, intent(in) :: zone_index
-        integer, intent(in) :: indi_cont_init
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_frot_eval
-        real(kind=8), intent(in) :: dist_cont_curr
-        real(kind=8), intent(in) :: vite_cont_curr
-        real(kind=8), intent(in) :: pres_cont_curr
-        real(kind=8), intent(in) :: dist_frot_curr(3)
+        integer, intent(inout) :: indi_cont_init
+        integer, intent(inout) :: indi_cont_eval
+        integer, intent(inout) :: indi_frot_eval
+        real(kind=8), intent(inout) :: dist_cont_curr
+        real(kind=8), intent(inout) :: vite_cont_curr
+        real(kind=8), intent(inout) :: pres_cont_curr
+        real(kind=8), intent(inout) :: dist_frot_curr(3)
         real(kind=8), intent(in) :: pres_frot_curr(3)
         real(kind=8), pointer, intent(in) :: v_sdcont_cychis(:)
         real(kind=8), pointer, intent(in) :: v_sdcont_cyccoe(:)
+        integer, pointer, intent(in) :: v_sdcont_cyceta(:)
         integer, intent(out) :: indi_cont_curr
         integer, intent(out) :: indi_frot_curr
         integer, intent(out) :: ctcsta

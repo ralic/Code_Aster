@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/mminfr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,7 +31,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -51,7 +51,10 @@ implicit none
     real(kind=8), pointer :: p_sdcont_cychis(:) => null()
     character(len=24) :: sdcont_cyccoe
     real(kind=8), pointer :: p_sdcont_cyccoe(:) => null()
+    character(len=24) :: sdcont_cyceta
+    integer, pointer :: p_sdcont_cyceta(:) => null()
     integer :: i_cont_poin
+    integer :: i_cyc
     integer :: zone_index, nb_cont_zone
     integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
     integer :: slave_pt_index, slave_pt_nb
@@ -70,8 +73,10 @@ implicit none
 !
     sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
     sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     call jeveuo(sdcont_cychis, 'E', vr = p_sdcont_cychis)
     call jeveuo(sdcont_cyccoe, 'E', vr = p_sdcont_cyccoe)
+    call jeveuo(sdcont_cyceta, 'E', vi = p_sdcont_cyceta)
 !
 ! - Init history
 !
@@ -105,9 +110,20 @@ implicit none
 ! --------- Loop on points
 !
             do slave_pt_index = 1, slave_pt_nb
-                p_sdcont_cychis(25*(i_cont_poin-1)+2) = coef_cont
-                p_sdcont_cychis(25*(i_cont_poin-1)+6) = coef_frot
-                p_sdcont_cychis(25*(i_cont_poin-1)+25) = zone_index
+                do i_cyc =1,60 
+                    p_sdcont_cychis(60*(i_cont_poin-1) + i_cyc) = 0
+                enddo
+                do i_cyc =1,4 
+                    p_sdcont_cyceta(4*(i_cont_poin-1) + i_cyc) = -1
+                enddo
+                p_sdcont_cychis(60*(i_cont_poin-1)+2) = coef_cont
+                p_sdcont_cychis(60*(i_cont_poin-1)+6) = coef_frot
+                p_sdcont_cychis(60*(i_cont_poin-1)+60) = zone_index
+                p_sdcont_cychis(60*(i_cont_poin-1)+59) = 1.0
+                p_sdcont_cychis(60*(i_cont_poin-1)+56) = 1.0
+                p_sdcont_cychis(60*(i_cont_poin-1)+54) = 1.0
+                p_sdcont_cychis(60*(i_cont_poin-1)+55) = 1.0
+                p_sdcont_cychis(60*(i_cont_poin-1)+51) = 1.0
                 i_cont_poin = i_cont_poin + 1
             end do
         end do

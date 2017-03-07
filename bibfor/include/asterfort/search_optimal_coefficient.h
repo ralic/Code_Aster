@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine mmopti(mesh, ds_contact)
-        use NonLin_Datastructure_type
-        character(len=8), intent(in) :: mesh
-        type(NL_DS_Contact), intent(inout) :: ds_contact
-    end subroutine mmopti
+    subroutine search_optimal_coefficient(coef, indi, pres_cont, dist_cont,&
+                                      coef_opt , terminate)
+        real(kind=8), intent(in) :: coef(2)
+        integer  :: indi(2)
+        real(kind=8), intent(inout) :: pres_cont(2)
+        real(kind=8), intent(inout) :: dist_cont(2)
+        real(kind=8), intent(out) :: coef_opt
+        aster_logical, intent(out) :: terminate
+    end subroutine search_optimal_coefficient
 end interface

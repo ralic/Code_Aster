@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,19 +19,26 @@
 !
 interface
     subroutine mm_cycl_detect(ds_contact    , l_loop_cont   ,&
-                              l_frot_zone   , i_cont_poin   , coef_cont,&
+                              l_frot_zone   , i_cont_poin   ,&
+                              coef_cont, coef_frot ,& 
                               pres_cont_prev, dist_cont_prev,&
+                              pres_frot_curr,pres_frot_prev ,&
                               indi_frot_prev, dist_frot_prev,&
                               indi_cont_eval, indi_frot_eval,&
-                              dist_cont_curr, pres_cont_curr, dist_frot_curr)
+                              dist_cont_curr, pres_cont_curr, dist_frot_curr,&
+                              alpha_cont_matr, alpha_cont_vect,&
+                              alpha_frot_matr, alpha_frot_vect)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical, intent(in) :: l_loop_cont
         aster_logical, intent(in) :: l_frot_zone
         integer, intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont
+        real(kind=8), intent(in) :: coef_frot
         real(kind=8), intent(in) :: pres_cont_prev
         real(kind=8), intent(in) :: dist_cont_prev
+        real(kind=8), intent(in) :: pres_frot_prev(3)
+        real(kind=8), intent(in) :: pres_frot_curr(3)
         integer, intent(in) :: indi_frot_prev
         real(kind=8), intent(in) :: dist_frot_prev(3)
         integer, intent(in) :: indi_cont_eval
@@ -39,5 +46,9 @@ interface
         real(kind=8), intent(in) :: dist_cont_curr
         real(kind=8), intent(in) :: pres_cont_curr
         real(kind=8), intent(in) :: dist_frot_curr(3)
+        real(kind=8), intent(out) :: alpha_cont_matr
+        real(kind=8), intent(out) :: alpha_cont_vect
+        real(kind=8), intent(out) :: alpha_frot_matr
+        real(kind=8), intent(out) :: alpha_frot_vect
     end subroutine mm_cycl_detect
 end interface

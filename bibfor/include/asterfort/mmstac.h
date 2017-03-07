@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval)
+    subroutine mmstac(dist_cont, pres_cont, coef_cont, indi_cont_eval,cycling_type)
         real(kind=8), intent(in) :: dist_cont
         real(kind=8), intent(in) :: pres_cont
         real(kind=8), intent(in) :: coef_cont
         integer, intent(out) :: indi_cont_eval
+        integer, intent(in), optional :: cycling_type
     end subroutine mmstac
 end interface

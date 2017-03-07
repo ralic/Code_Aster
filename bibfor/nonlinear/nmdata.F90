@@ -173,7 +173,7 @@ implicit none
 !
 ! - Read parameters for contact management
 !
-    call ReadContact(ds_contact)
+    call ReadContact(ds_contact,ds_conv%iter_glob_maxi)
 !
 ! - Read parameters for energy management
 !

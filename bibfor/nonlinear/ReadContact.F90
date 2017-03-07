@@ -1,4 +1,4 @@
-subroutine ReadContact(ds_contact)
+subroutine ReadContact(ds_contact,it_maxi)
 !
 use NonLin_Datastructure_type
 !
@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/getvid.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,6 +27,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
+    integer,   intent(in),  optional   :: it_maxi 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,6 +63,10 @@ implicit none
     ds_contact%l_contact = nocc .gt. 0
     if (nocc .ne. 0) then   
         ds_contact%sdcont = sdcont
+        if (present(it_maxi)) then
+!            ds_contact%iteration_cycl_maxi = it_maxi
+            ds_contact%it_cycl_maxi = 6
+        endif
     endif
 !
 end subroutine

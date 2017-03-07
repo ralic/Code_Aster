@@ -286,11 +286,14 @@ implicit none
 ! ----- Loops
         integer           :: nb_loop
         integer           :: nb_loop_maxi = 3
+        integer           :: iteration_newton = 0
+        integer           :: it_cycl_maxi = 0
         type(NL_DS_Loop)  :: loop(3)
 ! ----- Flag for (re) numbering
         aster_logical     :: l_renumber
 ! ----- Geometric loop control
         real(kind=8)      :: geom_maxi
+        real(kind=8)      :: arete_min
 ! ----- Get-off indicator
         aster_logical     :: l_getoff
 ! ----- First geometric loop

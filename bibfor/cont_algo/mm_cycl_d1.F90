@@ -1,6 +1,6 @@
 subroutine mm_cycl_d1(ds_contact    , i_cont_poin   ,&
                       coef_cont     , pres_cont_prev, dist_cont_prev,&
-                      indi_cont_eval, dist_cont     , pres_cont)
+                      indi_cont_eval, dist_cont     , pres_cont,alpha_cont_matr,alpha_cont_vect)
 !
 use NonLin_Datastructure_type
 !
@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/mm_cycl_d1_ss.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: i_cont_poin
@@ -42,6 +42,7 @@ implicit none
     integer, intent(in) :: indi_cont_eval
     real(kind=8), intent(in) :: dist_cont
     real(kind=8), intent(in) :: pres_cont
+    real(kind=8), intent(out) :: alpha_cont_matr, alpha_cont_vect 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,7 +85,9 @@ implicit none
 !
     cycl_long_acti = 3
     cycl_type = 1
-    pres_near = 1.d+2
+    pres_near = 1.d2 * ds_contact%arete_min
+    alpha_cont_matr = 1.0d0
+    alpha_cont_vect = 1.0d0
 !
 ! - Access to cycling objects
 !
@@ -119,11 +122,13 @@ implicit none
 !
     cycl_stat = 0
     if (cycl_long .eq. cycl_long_acti) then
-        detect = iscycl(cycl_ecod(1), cycl_long_acti)
+        detect = iscycl(cycl_ecod(1), cycl_long_acti) .and. &
+                 laug_cont_curr *laug_cont_prev .lt. 0.0d0
         if (detect) then
             cycl_stat = 10
             call mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev,&
-                               zone_cont_curr, cycl_sub_type)
+                               zone_cont_curr, cycl_sub_type,alpha_cont_matr,alpha_cont_vect)
+
             cycl_stat = cycl_stat + cycl_sub_type
         endif
     endif

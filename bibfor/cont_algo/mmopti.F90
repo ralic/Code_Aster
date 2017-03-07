@@ -44,10 +44,10 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    type(NL_DS_Contact), intent(in) :: ds_contact
+    type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,6 +116,7 @@ implicit none
 !
     armini = armin(mesh)
     epsint = 1.d-6*armini
+    ds_contact%arete_min = armini
 !
 ! - Preparation for SEUIL_INIT
 !
@@ -225,8 +226,7 @@ implicit none
                 if (cont_init .eq. 2) then
 ! ----------------- Only interpenetrated points
                     if (jeusgn .le. epsint) then
-                        flag_cont    = 1.d0
-                        nb_cont_init = nb_cont_init + 1
+                        flag_cont = 1.d0
                     endif
                 else if (cont_init .eq. 1) then
 ! ----------------- All points

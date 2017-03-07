@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     integer, intent(in) :: cycl_type
@@ -86,7 +86,7 @@ implicit none
             do i_cont_poin = 1, nt_cont_poin
                 p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
                 p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
-                p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = 0
+                p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = -1
             enddo
         end do
     else if (cycl_type.gt.0) then
@@ -98,7 +98,7 @@ implicit none
         i_cont_poin = point_curr
         p_sdcont_cyclis(4*(i_cont_poin-1)+cycl_index) = 0
         p_sdcont_cycnbr(4*(i_cont_poin-1)+cycl_index) = 0
-        p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = 0
+        p_sdcont_cyceta(4*(i_cont_poin-1)+cycl_index) = -1
     else
         ASSERT(.false.)
     endif

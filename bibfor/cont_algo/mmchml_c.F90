@@ -35,6 +35,8 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+!
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: ligrcf
     character(len=19), intent(in) :: chmlcf
@@ -57,7 +59,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ncmp   = 28
+    integer, parameter :: ncmp   = 60
     integer, parameter :: nceld1 = 4
     integer, parameter :: nceld2 = 4
     integer, parameter :: nceld3 = 4 
@@ -151,16 +153,54 @@ implicit none
             zr(vale_indx-1+13) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+17)
             zr(vale_indx-1+14) = v_sdcont_jsupco(i_cont_poin)
             zr(vale_indx-1+15) = i_algo_cont
-            zr(vale_indx-1+16) = v_sdcont_cychis(25*(i_cont_poin-1)+2)
+            zr(vale_indx-1+16) = v_sdcont_cychis(60*(i_cont_poin-1)+2)
             zr(vale_indx-1+17) = i_reso_fric
             zr(vale_indx-1+25) = i_reso_geom
             zr(vale_indx-1+18) = i_algo_fric
-            zr(vale_indx-1+19) = v_sdcont_cychis(25*(i_cont_poin-1)+6)
+            zr(vale_indx-1+19) = v_sdcont_cychis(60*(i_cont_poin-1)+6)
             zr(vale_indx-1+20) = coef_fric
             zr(vale_indx-1+21) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+20)
             zr(vale_indx-1+22) = dyna_form
             zr(vale_indx-1+23) = time_incr
             zr(vale_indx-1+24) = 0.d0
+!           Previous iteration state      
+            ! previous pressure      
+            zr(vale_indx-1+26) = v_sdcont_cychis(60*(i_cont_poin-1)+24+3)    
+            ! previous contact status      
+            zr(vale_indx-1+27) = nint(v_sdcont_cychis(60*(i_cont_poin-1)+24+1))
+            ! alpha_cont_matr
+            zr(vale_indx-1+28) = v_sdcont_cychis(60*(i_cont_poin-1)+59)
+            ! alpha_frot_matr
+            zr(vale_indx-1+42) = v_sdcont_cychis(60*(i_cont_poin-1)+55)  
+            ! alpha_frot_vect
+            zr(vale_indx-1+43) = v_sdcont_cychis(60*(i_cont_poin-1)+54)  
+            ! previous gap
+            zr(vale_indx-1+29) = v_sdcont_cychis(60*(i_cont_poin-1)+24+4)
+            ! treatment of cycling or not cycling
+            !    contact cycling
+            zr(vale_indx-1+30) = v_sdcont_cychis(60*(i_cont_poin-1)+57)
+            !    glis_av-glis_ar cycling
+            zr(vale_indx-1+44) = v_sdcont_cychis(60*(i_cont_poin-1)+50)
+            ! alpha_cont_vect
+            zr(vale_indx-1+31) = v_sdcont_cychis(60*(i_cont_poin-1)+56) 
+!            zr(vale_indx-1+31) = 1.0 
+            ! Previous tangentials
+            zr(vale_indx-1+32) = v_sdcont_cychis(60*(i_cont_poin-1)+24+13)
+            zr(vale_indx-1+33) = v_sdcont_cychis(60*(i_cont_poin-1)+24+14)
+            zr(vale_indx-1+34) = v_sdcont_cychis(60*(i_cont_poin-1)+24+15)
+            zr(vale_indx-1+35) = v_sdcont_cychis(60*(i_cont_poin-1)+24+16)
+            zr(vale_indx-1+36) = v_sdcont_cychis(60*(i_cont_poin-1)+24+17)
+            zr(vale_indx-1+37) = v_sdcont_cychis(60*(i_cont_poin-1)+24+18)
+            ! Previous contact points coordinates and projections
+            zr(vale_indx-1+38) = v_sdcont_cychis(60*(i_cont_poin-1)+24+19)
+            zr(vale_indx-1+39) = v_sdcont_cychis(60*(i_cont_poin-1)+24+20)
+            zr(vale_indx-1+40) = v_sdcont_cychis(60*(i_cont_poin-1)+24+21)
+            zr(vale_indx-1+41) = v_sdcont_cychis(60*(i_cont_poin-1)+24+22)
+            !mode robuste contact
+            zr(vale_indx-1+45) = v_sdcont_cychis(60*(i_cont_poin-1)+51)
+            !mode robuste frottement
+!            zr(vale_indx-1+46) = v_sdcont_cychis(60*(i_cont_poin-1)+52)
+   
         enddo
         nt_liel = nt_liel + nb_liel
     enddo

@@ -40,7 +40,7 @@ implicit none
 #include "asterfort/mreacg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: iter_newt
@@ -113,9 +113,10 @@ implicit none
     aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv, l_coef_adap, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: loop_geom_count, loop_fric_count, loop_cont_count
-    character(len=24) :: sdcont_cychis, sdcont_cyccoe
+    character(len=24) :: sdcont_cychis, sdcont_cyccoe, sdcont_cyceta
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
+    integer, pointer :: v_sdcont_cyceta(:) => null()
     character(len=24) :: sdcont_tabfin, sdcont_jsupco, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()
@@ -156,8 +157,10 @@ implicit none
 !
 ! - Acces to cycling objects
 !
+    sdcont_cyceta = ds_contact%sdcont_solv(1:14)//'.CYCETA'
     sdcont_cychis = ds_contact%sdcont_solv(1:14)//'.CYCHIS'
     sdcont_cyccoe = ds_contact%sdcont_solv(1:14)//'.CYCCOE'
+    call jeveuo(sdcont_cyceta, 'L', vi = v_sdcont_cyceta)
     call jeveuo(sdcont_cychis, 'E', vr = v_sdcont_cychis)
     call jeveuo(sdcont_cyccoe, 'E', vr = v_sdcont_cyccoe)
 !
@@ -292,6 +295,22 @@ implicit none
                 tau2(2) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+12)
                 tau2(3) = v_sdcont_tabfin(ztabf*(i_cont_poin-1)+13)
 !
+! ------------- Store current local basis :
+!               needed for previous cycling matrices and vectors computrations
+!
+                v_sdcont_cychis(60*(i_cont_poin-1)+13) = tau1(1) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+14) = tau1(2) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+15) = tau1(3) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+16) = tau2(1) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+17) = tau2(2) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+18) = tau2(3) 
+                v_sdcont_cychis(60*(i_cont_poin-1)+19) = ksipc1 
+                v_sdcont_cychis(60*(i_cont_poin-1)+20) = ksipc2 
+                v_sdcont_cychis(60*(i_cont_poin-1)+22) = ksipr1
+                v_sdcont_cychis(60*(i_cont_poin-1)+23) = ksipr2 
+                v_sdcont_cychis(60*(i_cont_poin-1)+24) = elem_mast_nume
+
+!
 ! ------------- Compute gap and contact pressure
 !
                 call mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
@@ -311,8 +330,8 @@ implicit none
                 if (l_frot_zone) then
                     indi_frot_init = nint(v_sdcont_tabfin(ztabf*(i_cont_poin-1)+24))
                 endif
-                coef_cont = v_sdcont_cychis(25*(i_cont_poin-1)+2)
-                coef_frot = v_sdcont_cychis(25*(i_cont_poin-1)+6)
+                coef_cont = v_sdcont_cychis(60*(i_cont_poin-1)+2)
+                coef_frot = v_sdcont_cychis(60*(i_cont_poin-1)+6)
 !
 ! ------------- Initial bilateral contact ?
 !
@@ -353,8 +372,8 @@ implicit none
                 call mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_speed,&
                             l_glis_init, l_coef_adap, i_zone, i_cont_poin, indi_cont_init,&
                             indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
-                       gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, indi_cont_curr,&
-                            indi_frot_curr, loop_cont_vali, loop_cont_conv, scotch)
+                       gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, v_sdcont_cyceta,&
+                        indi_cont_curr,indi_frot_curr, loop_cont_vali, loop_cont_conv, scotch)
 !
  19             continue
 !

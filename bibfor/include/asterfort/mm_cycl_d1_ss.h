@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,9 +17,11 @@
 !
 interface
     subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_prev, &
-                             zone_cont_curr, cycl_sub_type)
+                             zone_cont_curr, cycl_sub_type, alpha_cont_matr,alpha_cont_vect)
         real(kind=8), intent(in) :: pres_near
         real(kind=8), intent(in) :: laug_cont_prev, laug_cont_curr
+        real(kind=8), intent(out) :: alpha_cont_vect
+        real(kind=8), intent(out) :: alpha_cont_matr
         integer, intent(out) :: cycl_sub_type
         integer, intent(out) :: zone_cont_prev, zone_cont_curr
     end subroutine mm_cycl_d1_ss

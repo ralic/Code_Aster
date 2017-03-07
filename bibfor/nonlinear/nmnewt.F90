@@ -193,6 +193,7 @@ implicit none
 !
     iterat = 0
     nbiter = nbiter + 1
+    ds_contact%iteration_newton = iterat
 !
 ! --- GESTION DEBUT DE BOUCLE POINTS FIXES
 !
@@ -316,6 +317,7 @@ implicit none
 !
     iterat = iterat + 1
     nbiter = nbiter + 1
+    ds_contact%iteration_newton = iterat
 !
 ! --- CAS DU CONTACT DISCRET
 !

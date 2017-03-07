@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/mm_cycl_zonf.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -28,7 +28,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -76,19 +76,19 @@ implicit none
 ! - Erasing cycling information
 !
     do i_cont_poin = 1, nb_cont_poin
-        i_zone      = nint(v_sdcont_cychis(25*(i_cont_poin-1)+25))
+        i_zone      = nint(v_sdcont_cychis(60*(i_cont_poin-1)+60))
         l_frot_zone = mminfl(ds_contact%sdcont_defi,'FROTTEMENT_ZONE',i_zone)
         if (l_frot_zone) then
             cycl_stat      = v_sdcont_cyceta(4*(i_cont_poin-1)+2)
             coef_frot_mini = v_sdcont_cyccoe(6*(i_zone-1)+5)
             coef_frot_maxi = v_sdcont_cyccoe(6*(i_zone-1)+6)
-            coef_frot      = v_sdcont_cychis(25*(i_cont_poin-1)+6)
-            pres_frot(1)   = v_sdcont_cychis(25*(i_cont_poin-1)+7)
-            pres_frot(2)   = v_sdcont_cychis(25*(i_cont_poin-1)+8)
-            pres_frot(3)   = v_sdcont_cychis(25*(i_cont_poin-1)+9)
-            dist_frot(1)   = v_sdcont_cychis(25*(i_cont_poin-1)+10)
-            dist_frot(2)   = v_sdcont_cychis(25*(i_cont_poin-1)+11)
-            dist_frot(3)   = v_sdcont_cychis(25*(i_cont_poin-1)+12)
+            coef_frot      = v_sdcont_cychis(60*(i_cont_poin-1)+6)
+            pres_frot(1)   = v_sdcont_cychis(60*(i_cont_poin-1)+7)
+            pres_frot(2)   = v_sdcont_cychis(60*(i_cont_poin-1)+8)
+            pres_frot(3)   = v_sdcont_cychis(60*(i_cont_poin-1)+9)
+            dist_frot(1)   = v_sdcont_cychis(60*(i_cont_poin-1)+10)
+            dist_frot(2)   = v_sdcont_cychis(60*(i_cont_poin-1)+11)
+            dist_frot(3)   = v_sdcont_cychis(60*(i_cont_poin-1)+12)
             if (cycl_stat .ne. -1) then
 !
 ! ------------- Norm of augmented lagrangian for friction
@@ -135,17 +135,19 @@ implicit none
 ! ------------- New coefficient ?
 !
                 if (propa) then
-                    if (coef_frot .ne. coef_frot_maxi) then
+                    if ( (coef_frot .ge. coef_frot_maxi-1.d-15) .or.&
+                         (coef_frot .le. coef_frot_maxi+1.d-15) ) then
                         coef_frot = coef_frot_maxi
                     endif
                 else
-                    if (nrese_prop .eq. nrese_maxi) then
+                    if ( (nrese_prop .ge. nrese_maxi-1.d-15) .or. &
+                         (nrese_prop .le. nrese_maxi+1.d-15) )then
                         nrese_prop = nrese_mini
                         goto 10
                     endif
                 endif
             endif
-            v_sdcont_cychis(25*(i_cont_poin-1)+6) = coef_frot
+            v_sdcont_cychis(60*(i_cont_poin-1)+6) = coef_frot
         endif
     enddo
 !

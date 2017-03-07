@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,8 @@
 interface
     subroutine mm_cycl_d1(ds_contact    , i_cont_poin   , &
                           coef_cont     , pres_cont_prev, dist_cont_prev, &
-                          indi_cont_eval, dist_cont     , pres_cont)
+                          indi_cont_eval, dist_cont     , pres_cont,&
+                          alpha_cont_matr,alpha_cont_vect)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
         integer, intent(in) :: i_cont_poin
@@ -28,5 +29,7 @@ interface
         integer, intent(in) :: indi_cont_eval
         real(kind=8), intent(in) :: dist_cont
         real(kind=8), intent(in) :: pres_cont
+        real(kind=8), intent(out) :: alpha_cont_matr
+        real(kind=8), intent(out) :: alpha_cont_vect
     end subroutine mm_cycl_d1
 end interface
