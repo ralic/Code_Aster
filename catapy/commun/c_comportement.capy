@@ -36,7 +36,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
            RELATION  = SIMP( statut='o',typ='TXM',into=('HUJEUX',
                                                         'DRUCK_PRAGER',
-                                                        'DRUCK_PRAGER_N_A',
+                                                        'DRUCK_PRAG_N_A',
                                                         'CAM_CLAY',
                                                         'CJS',
                                                         'MOHR_COULOMB',
