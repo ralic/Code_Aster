@@ -17,6 +17,7 @@ implicit none
 #include "asterfort/mm_cycl_trait.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/search_optimal_coefficient.h"
+#include "asterfort/bussetta_algorithm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -109,6 +110,7 @@ implicit none
     real(kind=8) :: alpha_cont_matr=0.0, alpha_cont_vect=0.0
     real(kind=8) :: alpha_frot_matr=0.0, alpha_frot_vect=0.0
     real(kind=8) :: coef_opt=0.0,pres_cont(2)=0.0, dist_cont(2)=0.0
+    real(kind=8) :: coef_bussetta=0.0, dist_max
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -394,4 +396,17 @@ implicit none
     if (.not. mmcvca ) ctcsta = ctcsta+1 
     mmcvca = mmcvca .and. (ctcsta .eq. 0) 
 !
+!  Algorithm of Bussetta
+!  
+    if ((type_adap .eq. 2) .or. (type_adap .eq. 3) .or. &
+        (type_adap .eq. 6) .or. (type_adap .eq. 7)) then
+        
+        coef_bussetta = v_sdcont_cychis(60*(i_cont_poin-1)+2)
+        dist_max      = 0.001*ds_contact%arete_min
+!        write (6,*) "ADAPTATION DU COEFFICIENT DE PENALISATION : Avant", coef_bussetta
+        call bussetta_algorithm(dist_cont_curr, dist_cont_prev,dist_max, coef_bussetta)
+        v_sdcont_cychis(60*(i_cont_poin-1)+2) = coef_bussetta
+!        write (6,*) "ADAPTATION DU COEFFICIENT DE PENALISATION : Apres", coef_bussetta
+        
+    endif
 end subroutine
