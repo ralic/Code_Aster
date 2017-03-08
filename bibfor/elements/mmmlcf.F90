@@ -77,13 +77,13 @@ subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
 !
 ! --- PENALISATION ?
 !
-    lpenac = (ialgoc.eq.3)
+!    lpenac = (ialgoc.eq.3)
     lpenac = (ialgoc.eq.3) .or. &
-              nint(zr(jpcf-1+45)) .eq. 4.0
+              nint(zr(jpcf-1+45)) .eq. 4
               
 !    lpenaf = (ialgof.eq.3) 
     lpenaf = (ialgof.eq.3) .or. &
-             nint(zr(jpcf-1+46)) .eq. 4.0
+             nint(zr(jpcf-1+46)) .eq. 4
              
 !
 end subroutine

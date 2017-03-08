@@ -56,7 +56,7 @@ implicit none
     aster_logical :: l_cont_gcp, l_newt_fr
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_xfem, l_frot, l_cont_lac
     aster_logical :: l_xfem_mortar
-    character(len=16) :: lissage, coef_adap
+    character(len=16) :: lissage
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     character(len=24) :: sdcont_paraci

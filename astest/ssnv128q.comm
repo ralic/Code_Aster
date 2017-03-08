@@ -83,7 +83,7 @@ CHA2=DEFI_CONTACT(MODELE=MO,
                           COULOMB=1.0,
                           SANS_GROUP_NO_FR='PPS',
                           SEUIL_INIT=1.0E-1,
-                          ADAPTATION='NON',
+                          ADAPTATION='ADAPT_COEF',
                           COEF_FROT=1.0,),);
 
 RAMPE=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,

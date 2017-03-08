@@ -385,8 +385,8 @@ implicit none
              v_sdcont_cychis(60*(i_cont_poin-1)+51) = 4.0
              v_sdcont_cychis(60*(i_cont_poin-1)+52) = 4.0
              v_sdcont_cyceta(4*(i_cont_poin-1)+1)   = 10
-!             v_sdcont_cychis(60*(i_cont_poin-1)+2)    = 1.d2
-!             v_sdcont_cychis(60*(i_cont_poin-1)+24+2) = 1.d2
+             v_sdcont_cychis(60*(i_cont_poin-1)+2)    = 1.d2
+             v_sdcont_cychis(60*(i_cont_poin-1)+24+2) = 1.d2
              mmcvca =  indi_cont_prev .eq. indi_cont_curr
         endif
 !        ctcsta  = ctcsta + 1

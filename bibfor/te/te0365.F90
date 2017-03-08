@@ -80,7 +80,7 @@ subroutine te0365(option, nomte)
     character(len=8) :: typmae, typmam
     character(len=9) :: phasep
     character(len=9) :: phasep_prev
-    real(kind=8) :: alpha_cont=1.0, alpha_frot=1.0
+    real(kind=8) :: alpha_cont=1.0
 !    
     aster_logical :: laxis = .false. , leltf = .false. 
     aster_logical :: lpenac = .false. , lpenaf = .false. 
@@ -363,11 +363,11 @@ subroutine te0365(option, nomte)
             zr(jvect-1+iddl) = 1.0d0 * vtmp(iddl)
         endif
         
-        if (debug) then
-            if (vtmp(iddl) .ne. 0.d0) then
-                write(6,*) 'TE0365: ',iddl,vtmp(iddl)
-            endif
-        endif
+!        if (debug) then
+!            if (vtmp(iddl) .ne. 0.d0) then
+!                write(6,*) 'TE0365: ',iddl,vtmp(iddl)
+!            endif
+!        endif
     end do
 !
 end subroutine

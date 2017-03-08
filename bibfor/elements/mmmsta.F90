@@ -104,7 +104,8 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
     if (loptf) then
 ! This test influence highly the NON_REGRESSION     
 !        if (lambda .lt. 1.d-30) lcont = .false.
-        if (lambda .eq. 0.0d0) lcont = .false.
+        if ( (abs(lambda) .ge. 0.0d0-1d-30) .and. &
+            (abs(lambda)  .le. 0.0d0+1d-30)) lcont = .false.
     endif
 !
 ! --- ETAT D'ADHERENCE DU POINT DE CONTACT

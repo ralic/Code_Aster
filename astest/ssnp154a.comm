@@ -78,6 +78,7 @@ CONT=DEFI_CONTACT(MODELE=MO,
                           GROUP_MA_ESCL='Bottom_C',
                           CONTACT_INIT='OUI',
                           INTEGRATION='GAUSS',
+                          ADAPTATION='TOUT',
                           ),);
 
 MESH=DEFI_GROUP(reuse =MESH,
