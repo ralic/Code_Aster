@@ -199,8 +199,8 @@ implicit none
             !mode robuste contact
             zr(vale_indx-1+45) = v_sdcont_cychis(60*(i_cont_poin-1)+51)
             !mode robuste frottement
-!            zr(vale_indx-1+46) = v_sdcont_cychis(60*(i_cont_poin-1)+52)
-   
+            zr(vale_indx-1+46) = v_sdcont_cychis(60*(i_cont_poin-1)+52)
+            
         enddo
         nt_liel = nt_liel + nb_liel
     enddo

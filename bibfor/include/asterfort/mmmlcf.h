@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,12 +19,13 @@
 !
 interface
     subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
-                      iresof, iresog, lambds)
+                      iresof, iresog, lambds, l_previous)
         real(kind=8) :: coefff
         real(kind=8) :: coefac
         real(kind=8) :: coefaf
         aster_logical :: lpenac
         aster_logical :: lpenaf
+        aster_logical :: l_previous
         integer :: iresof
         integer :: iresog
         real(kind=8) :: lambds

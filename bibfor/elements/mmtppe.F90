@@ -6,10 +6,10 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
                   mprojt, mprt1n, mprt2n, gene11, gene21,&
                   gene22, kappa, h, vech1, vech2,&
                   a, ha, hah, mprt11, mprt21,&
-                  mprt22)
+                  mprt22,l_previous)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
 ! aslint: disable=W1504
     implicit none
@@ -46,7 +46,7 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
     integer :: ndim, nne, nnm, nnl, nbdm
 !
     integer :: iresog
-    aster_logical :: laxis, ldyna
+    aster_logical :: laxis, ldyna,l_previous
 !
     real(kind=8) :: jeusup
     real(kind=8) :: jacobi, wpg
@@ -176,6 +176,26 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
     wpg = zr(jpcf-1+11)
     ppe = 0.d0
 !
+! TRAITEMENT CYCLAGE : ON REMPLACE LES VALEURS DE JEUX et DE NORMALES
+!                      POUR AVOIR UNE MATRICE CONSISTANTE
+!     
+    if (l_previous) then 
+        if (iresog .eq. 1) then
+            xpc = zr(jpcf-1+38)
+            ypc = zr(jpcf-1+39)
+            xpr = zr(jpcf-1+40)
+            ypr = zr(jpcf-1+41)
+        endif
+        tau1(1) = zr(jpcf-1+32)
+        tau1(2) = zr(jpcf-1+33)
+        tau1(3) = zr(jpcf-1+34)
+        tau2(1) = zr(jpcf-1+35)
+        tau2(2) = zr(jpcf-1+36)
+        tau2(3) = zr(jpcf-1+37)
+        wpg = zr(jpcf-1+11)
+        ppe = 0.d0
+    endif
+!
 ! --- RECUPERATION DE LA GEOMETRIE ET DES CHAMPS DE DEPLACEMENT
 !
     call jevech('PGEOMER', 'L', jgeom)
@@ -235,8 +255,24 @@ subroutine mmtppe(typmae, typmam, ndim, nne, nnm,&
                 ddeple, ddeplm, mprojt, jeu, djeu,&
                 djeut, iresog)
 !
-!
-!
+! TRAITEMENT CYCLAGE : ON REMPLACE LES VALEURS DE JEUX et DE NORMALES
+!                      POUR AVOIR UNE MATRICE CONSISTANTE
+!     
+    
+    if (l_previous) then 
+        jeu    = zr(jpcf-1+29)
+!       djeu(1)    = zr(jpcf-1+29)
+!       djeu(2)    = zr(jpcf-1+29)
+!       djeu(3)    = zr(jpcf-1+29)
+!       djeut(1)    = zr(jpcf-1+29)
+!       djeut(2)    = zr(jpcf-1+29)
+!       djeut(3)    = zr(jpcf-1+29)
+        dlagrc = zr(jpcf-1+26)
+!       dlagrf(1) = zr(jpcf-1+26)
+!       dlagrf(2) = zr(jpcf-1+26)
+        
+    endif
+
 !
 ! MATRICES UTILITAIRES POUR LA DEUXIEME VARIATION DU GAP NORMAL
 !

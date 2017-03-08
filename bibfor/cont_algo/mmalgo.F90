@@ -261,7 +261,7 @@ implicit none
            v_sdcont_cychis(60*(i_cont_poin-1)+24+3) = pres_cont_prev
            v_sdcont_cychis(60*(i_cont_poin-1)+4)    = dist_cont_curr
            v_sdcont_cychis(60*(i_cont_poin-1)+24+4) = dist_cont_prev          
-           if (indi_cont_curr .ne. indi_cont_prev) write (6,*) "Traitement NOOK"
+!           if (indi_cont_curr .ne. indi_cont_prev) write (6,*) "Traitement NOOK"
        endif
          
     endif
@@ -383,6 +383,7 @@ implicit none
              v_sdcont_cychis(60*(i_cont_poin-1)+59) = 0.7
              v_sdcont_cychis(60*(i_cont_poin-1)+56) = 1.0
              v_sdcont_cychis(60*(i_cont_poin-1)+51) = 4.0
+             v_sdcont_cychis(60*(i_cont_poin-1)+52) = 4.0
              v_sdcont_cyceta(4*(i_cont_poin-1)+1)   = 10
 !             v_sdcont_cychis(60*(i_cont_poin-1)+2)    = 1.d2
 !             v_sdcont_cychis(60*(i_cont_poin-1)+24+2) = 1.d2

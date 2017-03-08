@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -26,7 +26,7 @@ interface
                       mprojt,mprt1n,mprt2n,gene11,gene21, &
               gene22,kappa ,h     ,vech1 ,vech2 , &
               a     ,ha    ,hah   ,mprt11,mprt21, &
-              mprt22)
+              mprt22, l_previous)
               
         character(len=8) :: typmae
         character(len=8) :: typmam
@@ -38,6 +38,7 @@ interface
         integer :: iresog
         aster_logical :: laxis
         aster_logical :: ldyna
+        aster_logical :: l_previous
     
         real(kind=8) :: jeusup
         real(kind=8) :: ffe(9)

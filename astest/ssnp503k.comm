@@ -44,7 +44,6 @@ CONT   = DEFI_CONTACT(MODELE         = MODELE,
                     ALGO_RESO_CONT = 'NEWTON',
                     ALGO_RESO_GEOM = 'NEWTON',
                     ALGO_RESO_FROT = 'NEWTON',
-                    #ADAPT_COEF     = 'OUI',
                       ZONE = (_F(
                                  GROUP_MA_MAIT = 'S21',
                                  GROUP_MA_ESCL = 'S13',
@@ -53,6 +52,7 @@ CONT   = DEFI_CONTACT(MODELE         = MODELE,
                                  COULOMB       = 0.5,
                                  TOLE_PROJ_EXT = 0.1,
                                  CONTACT_INIT  = 'INTERPENETRE',
+                                 ADAPTATION     = 'TOUT',
                               ),
                              _F(
                                  GROUP_MA_MAIT = 'S23',
@@ -62,6 +62,7 @@ CONT   = DEFI_CONTACT(MODELE         = MODELE,
                                  COULOMB       = 0.5,
                                  TOLE_PROJ_EXT = 0.1,
                                  CONTACT_INIT  = 'INTERPENETRE',
+                                 ADAPTATION     = 'TOUT',
                               ),
                             )
                     );

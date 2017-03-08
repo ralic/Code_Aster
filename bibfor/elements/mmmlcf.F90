@@ -1,8 +1,8 @@
 subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
-                  iresof, iresog, lambds)
+                  iresof, iresog, lambds, l_previous)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,7 @@ subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     implicit none
 #include "asterf_types.h"
@@ -25,7 +25,7 @@ subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
 #include "asterfort/jevech.h"
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: coefff, lambds
-    aster_logical :: lpenac, lpenaf
+    aster_logical :: lpenac, lpenaf, l_previous
     integer :: iresof, iresog
 !
 ! ----------------------------------------------------------------------
@@ -67,11 +67,23 @@ subroutine mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
     ialgof = nint(zr(jpcf-1+18))
     iresof = nint(zr(jpcf-1+17))
     iresog = nint(zr(jpcf-1+25))
-    lambds = zr(jpcf-1+13)
+    
+    if (l_previous) then 
+        lambds = zr(jpcf-1+26)
+    else 
+        lambds = zr(jpcf-1+13)    
+    endif
+    
 !
 ! --- PENALISATION ?
 !
-    lpenaf = (ialgof.eq.3)
     lpenac = (ialgoc.eq.3)
+    lpenac = (ialgoc.eq.3) .or. &
+              nint(zr(jpcf-1+45)) .eq. 4.0
+              
+!    lpenaf = (ialgof.eq.3) 
+    lpenaf = (ialgof.eq.3) .or. &
+             nint(zr(jpcf-1+46)) .eq. 4.0
+             
 !
 end subroutine

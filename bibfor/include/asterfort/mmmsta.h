@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,11 +20,12 @@
 interface
     subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
                       dlagrf, coefaf,  tau1, tau2,&
-                      lcont, ladhe, lambda, rese, nrese)
+                      lcont, ladhe, lambda, rese, nrese, l_previous)
         integer :: ndim
         aster_logical :: leltf
         aster_logical :: lpenaf
         aster_logical :: loptf
+        aster_logical :: l_previous
         real(kind=8) :: djeut(3)
         real(kind=8) :: dlagrf(2)
         real(kind=8) :: coefaf
