@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,11 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcvarp(arret, novrc, poum, valvrc, iret)
-        character(len=1) :: arret
-        character(len=*) :: novrc
-        character(len=*) :: poum
-        real(kind=8) :: valvrc
-        integer :: iret
+    subroutine rcvarp(arret, varc_name_, poum, varc_vale, iret)
+        character(len=1), intent(in) :: arret
+        character(len=*), intent(in) :: varc_name_
+        character(len=*), intent(in) :: poum
+        integer, intent(out) :: iret
+        real(kind=8), intent(out) :: varc_vale
     end subroutine rcvarp
 end interface

@@ -16,8 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcmfmc(chmatz, chmacz)
-        character(len=*), intent(in) :: chmatz
-        character(len=*), intent(out) :: chmacz
-    end subroutine rcmfmc
+    subroutine varc_prep(chmate)
+        character(len=8), intent(in) :: chmate
+    end subroutine varc_prep
 end interface

@@ -1,11 +1,18 @@
-subroutine rcvarp(arret, novrc, poum, valvrc, iret)
-
+subroutine rcvarp(arret, varc_name_, poum, varc_vale, iret)
+!
 use calcul_module, only : ca_iredec_, ca_jvcnom_, ca_jvcval_, ca_nbcvrc_,&
                           ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
-
+!
 implicit none
+!
+#include "jeveux.h"
+#include "asterc/indik8.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,124 +27,119 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
-#include "asterc/indik8.h"
-#include "asterc/r8nnem.h"
-#include "asterfort/assert.h"
-#include "asterfort/utmess.h"
-
-    character(len=*) :: novrc, poum
-    character(len=1) :: arret
-    integer :: iret
-    real(kind=8) :: valvrc
-!-----------------------------------------------------------------------
-! but: recuperer la valeur d'une variable de commande  CALC_POINT_MAT
-!      pour une valeur d'instant ('+','-','REF')
+! person_in_charge: mickael.abbas at edf.fr
 !
-! arguments :
-!  in   arret (k1)  : ce qu'il faut faire en cas de probleme
-!              = ' ' : on remplit codret et on sort sans message.
-!              = 'F' : si la variable n'est pas trouvee, on arrete
-!                       en fatal.
-!  in   novrc  (k8) : nom de la variable de commande souhaitee
-!  in   poum   (k*) : /'+', /'-', /'REF'
-!  out  valvrc (r)  : valeur de la variable de commande
-!  out  iret   (i)  : code retour : 0 -> ok
-!                                   1 -> variable non trouvee
-! ---------------------------------------------------------------
-    character(len=8) :: novr8
-    integer :: kcvrc, iprem
-    character(len=24) :: valk(4)
+    character(len=1), intent(in) :: arret
+    character(len=*), intent(in) :: varc_name_
+    character(len=*), intent(in) :: poum
+    integer, intent(out) :: iret
+    real(kind=8), intent(out) :: varc_vale
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Material - External state variables (VARC)
+!
+! Get value of external state variable when used in SIMU_POINT_MAT
+!
+! --------------------------------------------------------------------------------------------------
+!
+! In  arret            : in case of problem
+!                     ' '   no message and output return code (iret)
+!                     'F'   fatal error
+! In  varc_name        : name of external state variable
+! In  poum             : when get external state variables
+!                     '-'   at beginning of step time
+!                     '+'   at end of step time
+!                     'REF' for reference value
+! Out varc_vale        : value of external state variable
+! Out iret             : code if error
+!                      0    if OK
+!                      1    if not found
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=8) :: varc_name
+    integer :: varc_indx
+    integer :: iprem = 0
     real(kind=8) :: valvrm, valvrp, tdef, rundf
     save rundf
-    data iprem /0/
-! ---------------------------------------------------------------
+!
+! --------------------------------------------------------------------------------------------------
+!
     if (iprem .eq. 0) then
-        rundf=r8nnem()
-        iprem=1
+        rundf = r8nnem()
+        iprem = 1
     endif
-
-    tdef=rundf
-    iret=0
-
-
-!   1. calcul de kcvcrc :
-!   ----------------------
-    novr8=novrc
-    kcvrc=indik8(zk8(ca_jvcnom_),novr8,1,ca_nbcvrc_)
-
-!   -- si la cvrc n'est pas fournie, on rend "r8nnem"
-    if (kcvrc .eq. 0) then
+    tdef = rundf
+    iret = 0
+!
+! - Get index of external state variable
+!
+    varc_name = varc_name_
+    varc_indx = indik8(zk8(ca_jvcnom_), varc_name, 1, ca_nbcvrc_)
+!
+! - Not found: NaN
+!
+    if (varc_indx .eq. 0) then
         iret=1
         if (arret .eq. ' ') then
-            valvrc=rundf
-            goto 9999
+            varc_vale = rundf
+            goto 999
         else
-            valk(1) = novr8
-            valk(2) = zk8(ca_jvcnom_-1+kcvrc)
-            valk(3) = poum
-            call utmess('F', 'CALCUL_26', nk=3, valk=valk)
+            call utmess('F', 'CALCUL_50', sk = varc_name)
         endif
     endif
-
-
-!   2. calcul de valvrc :
-!   ----------------------
+!
+! - Get value
+!
     if (poum .eq. 'REF') then
-        valvrc=zr(ca_jvcval_-1+ 3*(kcvrc-1)+3)
+        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+3)
 
-    else if (poum.eq.'+' .and. ca_iredec_.eq.0) then
-        valvrc=zr(ca_jvcval_-1+ 3*(kcvrc-1)+2)
+    else if (poum .eq. '+' .and. ca_iredec_ .eq. 0) then
+        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+2)
 
-    else if (poum.eq.'-' .and. ca_iredec_.eq.0) then
-        valvrc=zr(ca_jvcval_-1+ 3*(kcvrc-1)+1)
+    else if (poum .eq. '-' .and. ca_iredec_ .eq. 0) then
+        varc_vale = zr(ca_jvcval_-1+ 3*(varc_indx-1)+1)
 
-    else if (ca_iredec_.eq.1) then
-        valvrm=zr(ca_jvcval_-1+ 3*(kcvrc-1)+1)
-        valvrp=zr(ca_jvcval_-1+ 3*(kcvrc-1)+2)
-
+    else if (ca_iredec_ .eq. 1) then
+        valvrm    = zr(ca_jvcval_-1+ 3*(varc_indx-1)+1)
+        valvrp    = zr(ca_jvcval_-1+ 3*(varc_indx-1)+2)
         if ((.not.isnan(valvrm)) .and. (.not.isnan(valvrp))) then
             if (poum .eq. '-') then
-                valvrc=valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-&
-                ca_timed1_)
+                varc_vale = valvrm+(ca_td1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-ca_timed1_)
             else if (poum.eq.'+') then
-                valvrc=valvrm+(ca_tf1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-&
-                ca_timed1_)
+                varc_vale = valvrm+(ca_tf1_-ca_timed1_)*(valvrp-valvrm)/(ca_timef1_-ca_timed1_)
             else
                 ASSERT(.false.)
             endif
         else
-            valvrc=rundf
+            varc_vale = rundf
         endif
 
     else
         ASSERT(.false.)
     endif
-
-    iret=0
-    if (isnan(valvrc)) iret=1
-
-
-!   -- traitement si iret=1
-!   ------------------------
+!
+    iret = 0
+    if (isnan(varc_vale)) then
+        iret = 1
+    endif
+!
+! - Manage error
+!
     if (iret .eq. 1) then
-        if (novr8 .eq. 'TEMP') then
-            valvrc=tdef
-            iret=1
-            goto 9999
+        if (varc_name .eq. 'TEMP') then
+            varc_vale = tdef
+            iret      = 1
+            goto 999
         endif
         if (arret .eq. ' ') then
-            valvrc=rundf
+            varc_vale = rundf
         else
-            valk(1) = novr8
-            valk(2) = zk8(ca_jvcnom_-1+kcvrc)
-            call utmess('F', 'CALCUL_26', nk=2, valk=valk)
+            call utmess('F', 'CALCUL_50', sk = varc_name)
         endif
     endif
-    goto 9999
-
-
-9999  continue
-
-
+!
+999 continue
+!
 end subroutine

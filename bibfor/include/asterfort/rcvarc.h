@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine rcvarc(arret, novrc, poum, fami, kpg,&
-                      ksp, valvrc, iret)
+    subroutine rcvarc(arret    , varc_name_, poum,&
+                      fami     , kpg       , ksp ,&
+                      varc_vale, iret)
         character(len=1), intent(in) :: arret
-        character(len=*), intent(in) :: novrc
+        character(len=*), intent(in) :: varc_name_
         character(len=*), intent(in) :: poum
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
-        real(kind=8), intent(out) :: valvrc
+        real(kind=8), intent(out) :: varc_vale
         integer, intent(out) :: iret
     end subroutine rcvarc
 end interface

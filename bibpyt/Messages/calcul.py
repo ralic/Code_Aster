@@ -255,8 +255,8 @@ Contactez le support technique.
     option       : %(k3)s
     type_élément : %(k4)s
 
- Conseil :
- Émettez une fiche d'anomalie
+Ce message est un message d'erreur développeur.
+Contactez le support technique.
 """),
 
     32: _(u"""
@@ -402,6 +402,29 @@ Contexte du message :
       %(k6)s %(k7)s %(k8)s %(k9)s
    Position du centre de gravité de la maille :
       x=%(r1)f y=%(r2)f z=%(r3)f
+"""),
+
+    50 : _(u"""
+ Erreur utilisateur :
+    On ne trouve pas la variable de commande %(k1)s.
+
+ Conseils :
+    Les variables de commande sont des variables connues a priori qui influencent
+    le calcul du comportement des matériaux (exemple : la température).
+
+    Lorsque le comportement mécanique dépend d'une variable de commande, il faut que l'utilisateur
+    la fournisse au calcul.
+    Cela se fait via la commande SIMU_POINT_MAT/AFFE_VARC.
+
+    Les variables de commande les plus utilisées sont :
+      'TEMP'  : la température
+      'HYDR'  : l'hydratation
+      'SECH'  : le séchage
+      'CORR'  : la corrosion
+      'IRRA'  : l'irradiation
+
+    Attention au fait que les variables de commandes doivent pouvoir être calculées pour TOUS
+    les instants du calcul.
 """),
 
 }

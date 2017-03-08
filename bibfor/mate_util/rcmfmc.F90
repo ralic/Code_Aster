@@ -1,9 +1,29 @@
 subroutine rcmfmc(chmatz, chmacz)
-use calcul_module, only : ca_jvcnom_, ca_nbcvrc_
-
+!
 implicit none
+!
+#include "jeveux.h"
+#include "asterfort/assert.h"
+#include "asterfort/codent.h"
+#include "asterfort/copisd.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/exisd.h"
+#include "asterfort/jedema.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/jeexin.h"
+#include "asterfort/jelira.h"
+#include "asterfort/jemarq.h"
+#include "asterfort/jenonu.h"
+#include "asterfort/jenuno.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/jexnom.h"
+#include "asterfort/jexnum.h"
+#include "asterfort/rcmaco.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/varc_prep.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,141 +38,112 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-#include "jeveux.h"
-#include "asterc/ismaem.h"
-#include "asterfort/assert.h"
-#include "asterfort/codent.h"
-#include "asterfort/copisd.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jeveut.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/rcmaco.h"
-#include "asterfort/wkvect.h"
-
-    character(len=*) :: chmatz, chmacz
-!-----------------------------------------------------------------------
+!
+    character(len=*), intent(in) :: chmatz
+    character(len=*), intent(out) :: chmacz
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Material
+!
 ! Creation de la carte du materiau code a partir du champ_mater
 !
-! in/jxin   chmatz    : cham_mater
-! out/jxout chmacz    : carte de materiau code
-!-----------------------------------------------------------------------
-    integer :: nbval,  iret, jvale, igd, jdesc, kk
+! --------------------------------------------------------------------------------------------------
+!
+! In  chmate           : name of material field (CHAM_MATER)
+! Out chmace           : name of CODED material field (CHAM_MATER)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: nbval,  iret, jvale, igd, kk
     integer :: nbgrp, i, icompt, igrp, ingrp, nbcmp, j, k, nbmat
     integer :: inbmat
     character(len=4) :: knumat
     character(len=8) :: chmat, nomgd
     character(len=19) :: codi
     character(len=19) :: chemat, chmace
-    character(len=8), pointer :: vale(:) => null()
-!-----------------------------------------------------------------------
+    character(len=8), pointer :: v_vale(:) => null()
+    integer, pointer :: v_desc(:) => null()
+!
+! --------------------------------------------------------------------------------------------------
+!
     call jemarq()
-
-    chmat=chmatz
-    chemat=chmat//'.CHAMP_MAT'
-    chmace=chmat//'.MATE_CODE'
-
-    call jelira(chemat//'.VALE', 'LONMAX', nbval)
-    call jeveuo(chemat//'.VALE', 'L', vk8=vale)
-
-
-!   -- si chmace existe, c'est que l'on a deja appele
-!      la routine rcmfmc. tout est deja fait :
-!   ----------------------------------------------------------
+!
+    chmat  = chmatz
+    chemat = chmat//'.CHAMP_MAT'
+    chmace = chmat//'.MATE_CODE'
+!
     call exisd('CARTE', chmace, iret)
-    if (iret .gt. 0) goto 90
+    if (iret .eq. 0) then
+! ----- Preparation for external state variables (VARC)
+        call varc_prep(chmat)
 
+! ----- Traitement du materiau par elements
+        call jelira(chemat//'.VALE', 'LONMAX', nbval)
+        call jeveuo(chemat//'.VALE', 'L', vk8= v_vale)
+        call jeveuo(chemat//'.DESC', 'L', vi = v_desc)
+        call jenuno(jexnum('&CATA.GD.NOMCMP', v_desc(1)), nomgd)
+        call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
+        ASSERT(nbcmp.ge.30)
+        ASSERT((nbval/nbcmp)*nbcmp.eq.nbval)
+        call copisd('CHAMP_GD', 'V', chemat, chmace)
+        call jedetr(chmace//'.VALE')
+        nbgrp=nbval/nbcmp
+        call wkvect(chmace//'.VALE', 'V V I', nbgrp, jvale)
+        call jenonu(jexnom('&CATA.GD.NOMGD', 'ADRSJEVE'), igd)
+        call jeveuo(chmace//'.DESC', 'E', vi = v_desc)
+        v_desc(1) = igd
 
-!   -- mise a jour des variables ca_nbcvrc_ et ca_jvcnom_
-!   -----------------------------------------------
-    call jeexin(chmat//'.CVRCNOM', iret)
-    if (iret .ne. 0) then
-        call jeveut(chmat//'.CVRCNOM', 'L', ca_jvcnom_)
-        call jelira(chmat//'.CVRCNOM', 'LONMAX', ca_nbcvrc_)
-    else
-        ca_nbcvrc_=0
-        ca_jvcnom_=ismaem()
-    endif
-
-
-!   -- traitement du materiau par elements :
-!   ----------------------------------------
-    call jeveuo(chemat//'.DESC', 'L', jdesc)
-    call jenuno(jexnum('&CATA.GD.NOMCMP', zi(jdesc)), nomgd)
-    call dismoi('NB_CMP_MAX', nomgd, 'GRANDEUR', repi=nbcmp)
-    ASSERT(nbcmp.ge.30)
-    ASSERT((nbval/nbcmp)*nbcmp.eq.nbval)
-
-    call copisd('CHAMP_GD', 'V', chemat, chmace)
-    call jedetr(chmace//'.VALE')
-    nbgrp=nbval/nbcmp
-    call wkvect(chmace//'.VALE', 'V V I', nbgrp, jvale)
-    call jenonu(jexnom('&CATA.GD.NOMGD', 'ADRSJEVE'), igd)
-    call jeveuo(chmace//'.DESC', 'E', jdesc)
-    zi(jdesc)=igd
-
-
-!   -- codage du materiau :
-!   -----------------------
-    icompt=0
-    do i = 1, nbval
-        if (vale(i) .ne. ' ') icompt=icompt+1
-    end do
-    ASSERT(icompt.gt.0)
-
-    call jedetr(chmat//'.MATE_CODE.GRP')
-    call jedetr(chmat//'.MATE_CODE.NGRP')
-    call wkvect(chmat//'.MATE_CODE.GRP', 'V V K8', icompt, igrp)
-    call wkvect(chmat//'.MATE_CODE.NGRP', 'V V I', nbgrp, ingrp)
-
-    icompt=0
-    inbmat=0
-    do i = 1, nbgrp
-!        -- il ne peut pas y avoir plus de 26 materiaux
-        do j = 1, 26
-            k=(i-1)*nbcmp+j
-            if (vale(k) .eq. 'TREF=>') goto 30
-            if (vale(k) .ne. ' ') then
-                zk8(igrp+icompt)=vale(k)
+! ----- Codage du materiau
+        icompt = 0
+        do i = 1, nbval
+            if (v_vale(i) .ne. ' ') then
                 icompt=icompt+1
-                inbmat=inbmat+1
             endif
         end do
- 30     continue
-        zi(ingrp-1+i)=inbmat
-        inbmat=0
-    end do
+        ASSERT(icompt .gt. 0)
 
-    codi=' '
-    call jeveuo(chmat//'.MATE_CODE.GRP', 'L', igrp)
-    call jeveuo(chmat//'.MATE_CODE.NGRP', 'L', ingrp)
-    icompt=0
-    do kk = 1, nbgrp
-        nbmat=zi(ingrp-1+kk)
-        if (nbmat .eq. 0) goto 50
-        call rcmaco(chmat(1:8), icompt, nbmat, kk)
-        call codent(kk, 'D0', knumat)
+        call jedetr(chmat//'.MATE_CODE.GRP')
+        call jedetr(chmat//'.MATE_CODE.NGRP')
+        call wkvect(chmat//'.MATE_CODE.GRP', 'V V K8', icompt, igrp)
+        call wkvect(chmat//'.MATE_CODE.NGRP', 'V V I', nbgrp, ingrp)
+
+        icompt=0
+        inbmat=0
+        do i = 1, nbgrp
+            do j = 1, 26
+                k=(i-1)*nbcmp+j
+                if (v_vale(k) .eq. 'TREF=>') exit
+                if (v_vale(k) .ne. ' ') then
+                    zk8(igrp+icompt)=v_vale(k)
+                    icompt=icompt+1
+                    inbmat=inbmat+1
+                endif
+            end do
+            zi(ingrp-1+i)=inbmat
+            inbmat=0
+        end do
+
+        codi=' '
+        call jeveuo(chmat//'.MATE_CODE.GRP', 'L', igrp)
+        call jeveuo(chmat//'.MATE_CODE.NGRP', 'L', ingrp)
+        icompt=0
+        do kk = 1, nbgrp
+            nbmat=zi(ingrp-1+kk)
+            if (nbmat .ne. 0) then
+            call rcmaco(chmat(1:8), icompt, nbmat, kk)
+            call codent(kk, 'D0', knumat)
 
 !       -- le nom du codi est celui du premier materiau du groupe kk
-        codi(1:8)=zk8(igrp+icompt)
-        codi(9:13)='.'//knumat
-        call jeveuo(codi//'.CODI', 'L', zi(jvale+kk-1))
-        icompt=icompt+nbmat
- 50     continue
-    end do
+            codi(1:8)=zk8(igrp+icompt)
+            codi(9:13)='.'//knumat
+            call jeveuo(codi//'.CODI', 'L', zi(jvale+kk-1))
+            icompt=icompt+nbmat
+            endif
+        end do
 
-
- 90 continue
+    endif
     chmacz=chmace
+!
     call jedema()
-
 end subroutine

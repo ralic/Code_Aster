@@ -48,7 +48,7 @@ implicit none
 #include "blas/dscal.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 !
 
 !
@@ -72,7 +72,7 @@ implicit none
 ! ----------------------------------------------------------------------
 !
     integer :: ndim, iret, nbmat, nbvari, nbpar, i, incela, ier
-    integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt, nbvrcm
+    integer :: imate, kpg, ksp, iter, pred, ncmp, imptgt
     integer :: ntamax, matrel, irota, defimp, liccvg(5)
     integer :: indimp(9), numins, actite, action, itgt, iforta
 !     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
@@ -83,8 +83,6 @@ implicit none
 !    DIMANV = DIMENSION MAX DE LA LISTE DU NOMBRE DE VAR INT EN THM
     parameter    (dimanv=4)
     parameter    (ncmpma=7+dimaki+dimanv)
-!     nombre de variables de commande maxi
-    parameter    (nbvrcm=100)
     character(len=4) :: fami, cargau
     character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
     character(len=16) :: option, compor(ncmpma), nompar(ntamax), opt2, mult_comp
@@ -165,7 +163,7 @@ implicit none
 !
 !     GESTION DES VARIABLES DE COMMANDE
 !
-    call vrcinp(nbvrcm, 1, 0.d0, 0.d0)
+    call vrcinp(1, 0.d0, 0.d0)
 !
 !
 !     INITIALISATIONS SD
@@ -175,7 +173,7 @@ implicit none
                 zr(lvip), vr, defimp, coef, indimp,&
                 fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara, &
                 pred, matrel, imptgt, option, zk8(lnomvi),&
-                nbvita, nbvrcm, sderro)
+                nbvita, sderro)
     call r8inir(54, 0.d0, dsidep, 1)
 !
 ! - Message if PETIT_REAC
@@ -196,35 +194,35 @@ implicit none
 !==================================
 !
 200 continue
-    do 11 i = 1, 5
-        liccvg(i)=0
- 11 continue
+!
+    liccvg(1:5)=0
+!
 !        RECUPERATION DU NUMERO D'ORDRE ET DE L'INSTANT COURANTS
 !        DECOUPE INITIALE DU PAS DE TEMPS
 !
     instam = diinst(sddisc, numins-1)
     instap = diinst(sddisc, numins )
 !        CALCUL DES VARIABLES DE COMMANDE
-    call vrcinp(nbvrcm, 2, instam, instap)
+    call vrcinp(2, instam, instap)
 !
     if (defimp .lt. 2) then
         igrad=0
 !            VALEURS IMPOSEES DE CONTRAINTES OU DEFORMATIONS
-        do 20 i = 1, 6
+        do i = 1, 6
             call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
 !               NORMALISATION DES TERMES EN CONTRAINTES
             if (indimp(i) .eq. 0) valimp(i)=valimp(i)/coef
- 20     continue
+        end do
 !            NORMALEMENT DEJA VERIFIE PAR SIMU_POINT_MAT_OPS
         ASSERT(compor(3).eq.'PETIT')
     else if (defimp.eq.2) then
         igrad=1
 !           VALEURS IMPOSEES DE GRADIENTS F
-        do 21 i = 1, 9
+        do i = 1, 9
             call fointe('F', fonimp(i), 1, ['INST'], [instap],&
                         valimp(i), ier)
- 21     continue
+        end do
     endif
 !
     if (irota .eq. 1) then
@@ -244,9 +242,9 @@ implicit none
         if (imptgt .eq. 1) opt2='FULL_MECA'
         if (defimp .eq. 1) then
             ncmp=6
-            do 30 i = 1, ncmp
+            do i = 1, ncmp
                 deps(i)=valimp(i)-epsm(i)
- 30         continue
+            end do
         else if (defimp.eq.2) then
             ncmp=9
             call matinv('S', 3, epsm, fem, jm)
@@ -496,7 +494,7 @@ implicit none
 900 continue
 !
 !     GESTION DES VARIABLES DE COMMANDE
-    call vrcinp(nbvrcm, 0, instam, instap)
+    call vrcinp(0, instam, instap)
 !
 !
 !     DESTRUCTION DE lA FONCTION F0 NULLE

@@ -4,7 +4,7 @@ subroutine pminit(imate, nbvari, ndim, typmod, table,&
                   vip, vr, defimp, coef, indimp,&
                   fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
                   pred, matrel, imptgt, option, nomvi,&
-                  nbvita, nbvrcm, sderro)
+                  nbvita, sderro)
 !
 use NonLin_Datastructure_type
 !
@@ -43,7 +43,7 @@ implicit none
 #include "blas/dscal.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -103,7 +103,7 @@ implicit none
     integer :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
     integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
     integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
-    integer :: iligne, icolon, nbcol, nbvrcm, numins
+    integer :: iligne, icolon, nbcol, numins
     character(len=4), parameter :: nomeps(6) = (/'EPXX','EPYY','EPZZ','EPXY','EPXZ','EPYZ'/)
     character(len=4), parameter :: nomsig(6) = (/'SIXX','SIYY','SIZZ','SIXY','SIXZ','SIYZ'/)
     character(len=4), parameter :: nomgrd(9) = (/'F11','F12','F13',&
@@ -134,6 +134,7 @@ implicit none
     typmod(2)=' '
     solveu = '&&OP0033'
     rac2=sqrt(2.d0)
+    pgl(:,:) = 0.d0
 !
 ! - Read parameters for convergence
 !
@@ -277,7 +278,6 @@ implicit none
     if ((n1.ne.0) .and. (ang1(1).ne.0.d0)) then
 !        VERIFS
         irota=1
-        call r8inir(9, 0.d0, pgl, 1)
         call dscal(1, r8dgrd(), ang1(1), 1)
         pgl(1,1)=cos(ang1(1))
         pgl(2,2)=cos(ang1(1))
@@ -497,7 +497,7 @@ implicit none
     numins=0
     instam = diinst(sddisc, numins)
 !     CALCUL DES VARIABLES DE COMMANDE
-    call vrcinp(nbvrcm, 2, instam, instam)
+    call vrcinp(2, instam, instam)
 !     ----------------------------------------
 !     MATRICE ELASTIQUE ET COEF POUR ADIMENSIONNALISER
 !     ----------------------------------------

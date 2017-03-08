@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,18 +16,18 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine fointe_varc(codmes, fami, kpg, ksp, poum,&
-                           nomf, nbpu, nompu, valpu,&
-                      resu, ier)
+    subroutine fointe_varc(codmes   , fami        , kpg           , ksp           , poum,&
+                           func_name, nb_para_user, para_name_user, para_vale_user,&
+                           resu     , ier)
         character(len=*), intent(in) :: codmes
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
         character(len=*), intent(in) :: poum
-        character(len=*), intent(in) :: nomf
-        integer, intent(in) :: nbpu
-        character(len=*), intent(in) :: nompu(*)
-        real(kind=8), intent(in) :: valpu(*)
+        character(len=*), intent(in) :: func_name
+        integer, intent(in) :: nb_para_user
+        character(len=*), intent(in) :: para_name_user(*)
+        real(kind=8), intent(in) :: para_vale_user(*)
         real(kind=8), intent(out) :: resu
         integer, intent(out) :: ier
     end subroutine fointe_varc

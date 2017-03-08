@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -24,7 +24,7 @@ interface
                       vip, vr, defimp, coef, indimp,&
                       fonimp, cimpo, kel, sddisc, ds_conv, ds_algopara,&
                       pred, matrel, imptgt, option, nomvi,&
-                      nbvita, nbvrcm, sderro)
+                      nbvita, sderro)
         use NonLin_Datastructure_type
         integer :: nbvari
         integer :: imate
@@ -58,7 +58,6 @@ interface
         character(len=16) :: option
         character(len=8) :: nomvi(*)
         integer :: nbvita
-        integer :: nbvrcm
         character(len=24) :: sderro
     end subroutine pminit
 end interface
