@@ -20,7 +20,7 @@ from cata_comportement import LoiComportement
 
 loi = LoiComportement(
     nom            = 'BETON_REGLE_PR',
-    doc            =   """Relation de comportement de béton (développée par la société NECS) dite 'parabole rectangle' [R7.01.22].
+    doc            =   """Relation de comportement de béton (développée par la société NECS) dite 'parabole rectangle' [R7.01.27].
    La loi BETON_REGLE_PR est une loi de béton se rapprochant des lois réglementaires de béton (d'où son nom)
    qui a les caractéristiques sommaires suivantes :
 -c'est une loi 2D et plus exactement 2 fois 1D : dans le repère propre de déformation, on écrit une loi 1D contrainte-déformation ;
