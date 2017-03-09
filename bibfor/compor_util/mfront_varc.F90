@@ -1,5 +1,5 @@
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,7 +15,7 @@
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
     subroutine mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, &
-                           lvarc, nbvarc, nwkin, wkin, temp, dtemp, predef, dpred, &
+                           lvarc, nbvarc, temp, dtemp, predef, dpred, &
                            neps, epsth, depsth)
 !     but: variables de commande et deformation thermique pour interface MFront
 !       in   fami    famille de point de gauss (rigi,mass,...)
@@ -36,9 +36,9 @@
 #include "asterfort/verift.h"
 !
     integer           :: imate, kpg, ksp, i, iret, iret2,  codret(3), npred
-    integer           :: ifm, niv, idbg, ndimloc, neps, nbvarc, j, nwkin
+    integer           :: ifm, niv, idbg, ndimloc, neps, nbvarc, j
     parameter          ( npred = 8)
-    real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3),wkin(nwkin)
+    real(kind=8)      :: predef(npred),dpred(npred),vrcm,vrcp,valres(3),valrem(3)
     real(kind=8)      :: hydrm,hydrp,sechm,sechp,sref,epsbp,epsbm,bendom,kdessm,bendop,kdessp
     real(kind=8)      :: tm,tp,tref,epsth(neps),depsth(neps),temp,dtemp
     character(len=8)  :: lvarc(npred), materi
@@ -56,19 +56,12 @@
     call r8inir(npred, r8nnem(), dpred, 1)
 
 
-!   APPEL DE RCVARC POUR LE PASSAGE A UMAT DE LA TEMPERATURE
-    if ((nwkin.eq.4).and.(wkin(1).lt.-0.5)) then
-         tm=wkin(2)
-         tp=wkin(3)
-         tref=wkin(4)
-    else
     call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret)
     if (iret .ne. 0) tm=0.d0
     call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tref, iret)
     if (iret .ne. 0) tref=0.d0
     call rcvarc(' ', 'TEMP', '+', fami, kpg,  ksp, tp, iret)
     if (iret .ne. 0) tp=0.d0
-    endif
 !
     call rccoma(imate, 'ELAS', 1, mcmate, iret2)
     ASSERT(iret2.eq.0)

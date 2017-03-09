@@ -1,5 +1,5 @@
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@
 ! ======================================================================
 interface
     subroutine mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, &
-                           lvarc, nbvarc, nwkin, wkin, temp, dtemp, &
+                           lvarc, nbvarc, temp, dtemp, &
                            predef, dpred, neps, epsth, depsth )
         character(len=*) :: fami
         integer :: kpg
@@ -26,9 +26,9 @@ interface
         integer :: niv
         integer :: idbg, nkwin
         character(len=8)  :: lvarc(8)
-        integer :: nbvarc, nwkin
+        integer :: nbvarc
         real(kind=8) :: temp
-        real(kind=8) :: dtemp, wkin(nwkin)
+        real(kind=8) :: dtemp
         real(kind=8) :: predef(8)
         real(kind=8) :: dpred(8)
         integer :: neps

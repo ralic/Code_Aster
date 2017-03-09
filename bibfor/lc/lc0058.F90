@@ -1,10 +1,10 @@
 subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
-                  nvi, vim, option, angmas, nwkin,&
-                  wkin, icomp, stress, statev, dsidep,&
+                  nvi, vim, option, angmas, &
+                  icomp, stress, statev, dsidep,&
                   codret)
-use calcul_module, only : ca_iactif_
+use calcul_module, only : ca_iactif_, ca_ctempl_
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -51,7 +51,6 @@ use calcul_module, only : ca_iactif_
 ! !!!!        ATTENTION : ZONE MEMOIRE NON DEFINIE SI RIGI_MECA_TANG
 !       OUT  STATEV  VARIABLES INTERNES A T+DT
 ! !!!!        ATTENTION : ZONE MEMOIRE NON DEFINIE SI RIGI_MECA_TANG
-!        IN  WKIN  TABLEAUX DES ELEMENTS GEOMETRIQUES SPECIFIQUES
 !            TYPMOD  TYPE DE MODELISATION (3D, AXIS, D_PLAN)
 !            ICOMP   NUMERO DU SOUS-PAS DE TEMPS (CF. REDECE.F)
 !            NVI     NOMBRE TOTAL DE VARIABLES INTERNES (+9 SI GDEF_HYP)
@@ -82,7 +81,7 @@ use calcul_module, only : ca_iactif_
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm, nbvarc
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin
+    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv
     integer ::      pfcmfr
     integer ::      nummod
     parameter     ( npropmax = 197)
@@ -90,12 +89,12 @@ use calcul_module, only : ca_iactif_
     integer ::      neps, nsig, iadzi, iazk24
     real(kind=8) :: angmas(*), crit(*)
     real(kind=8) :: instam, instap, drot(3, 3), dstran(9), props(npropmax)
-    real(kind=8) :: epsm(6), deps(6), wkin(nwkin)
+    real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
     real(kind=8) :: vim(*), statev(nvi)
     real(kind=8) :: predef(npred), dpred(npred)
     real(kind=8) :: ddsdde(54), dfgrd0(3, 3), dfgrd1(3, 3)
-    real(kind=8) :: ddsddt(6), drplde(6), celent, stran(9), dsidep(6, 6)
+    real(kind=8) :: ddsddt(6), drplde(6), stran(9), dsidep(6, 6)
     real(kind=8) :: dtime, temp, dtemp, coords(3), rpl, pnewdt, drpldt
     real(kind=8) :: depsth(6), epsth(6), rac2, usrac2, drott(3, 3),detf
     character(len=16) :: compor(*), option
@@ -144,16 +143,11 @@ use calcul_module, only : ca_iactif_
     else
         ASSERT(.false.)
     endif
-    if ((nwkin.eq.4).and.(wkin(1).lt.-0.5)) then
-        nbvarc=0
-    else
-        call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
-        ASSERT(nbvarc.le.npred)
-    endif
+
     call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
     ASSERT(nbvarc.le.npred)
     call mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, lvarc, nbvarc, &
-                     nwkin, wkin, temp, dtemp, predef, dpred, neps, epsth, depsth )
+                     temp, dtemp, predef, dpred, neps, epsth, depsth )
 !
     czm=0
     call r8inir(9, 0.d0, stran, 1)
@@ -226,7 +220,6 @@ use calcul_module, only : ca_iactif_
  90 continue
 100 continue
 !
-    celent=wkin(1)
     npt=kpg
     layer=1
     kspt=ksp
