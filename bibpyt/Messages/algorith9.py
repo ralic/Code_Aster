@@ -59,14 +59,6 @@ cata_msg = {
  Le nombre de pas est négatif.
 """),
 
-    18 : _(u"""
- Les matrices assemblées généralisées doivent avoir un stockage plein (cf. NUME_DDL_GENE)
-"""),
-
-    19 : _(u"""
- COEF_VAR_AMOR non nul et amortissement non présent
-"""),
-
     26 : _(u"""
  le modèle est obligatoire
 """),

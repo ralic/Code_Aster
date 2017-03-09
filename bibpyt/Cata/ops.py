@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -488,70 +488,3 @@ def build_formule(self, d):
     elif VALE_C != None:
         texte = ''.join(VALE_C.splitlines())
     self.sd.setFormule(NOM_PARA, texte.strip())
-
-
-def build_gene_vari_alea(self, d):
-    """Fonction ops de la macro GENE_VARI_ALEA."""
-    from Utilitai.Utmess import UTMESS
-    a = self.etape['BORNE_INF']
-    moyen = self.etape['VALE_MOY']
-    TYPE = self.etape['TYPE']
-    if self['INIT_ALEA'] is not None:
-        jump = self.etape['INIT_ALEA']
-        self.iniran(jump)
-    if TYPE == 'EXP_TRONQUEE':
-        b = self.etape['BORNE_SUP']
-        if a >= b:
-            UTMESS('F', 'PROBA0_1', valr=[a, b])
-        elif moyen <= a or moyen >= b:
-            UTMESS('F', 'PROBA0_2', valr=[a, moyen, b])
-        k = 1. / (moyen - a)
-        if exp(-b * k) < 1.e-12:
-            UTMESS('F', 'PROBA0_3')
-        # résolution par point fixe
-        eps = 1.E-4
-        nitmax = 100000
-        test = 0.
-        while abs((test - k) / k) > eps:
-            test = k
-            k = 1. / (moyen - (a * exp(-a * k) - b * exp(-b * k)) /
-                     (exp(-a * k) - exp(-b * k)))
-        # génération de la variable aléatoire
-        alpha = exp(-a * k) - exp(-b * k)
-        self.sd.valeur = -(log(exp(-a * k) - alpha * self.getran()[0])) / k
-    elif TYPE == 'EXPONENTIELLE':
-        if moyen <= a:
-            UTMESS('F', 'PROBA0_4', valr=[moyen, a])
-        v = moyen - a
-        u = self.getran()[0]
-        x = -log(1 - u)
-        self.sd.valeur = a + v * x
-    elif TYPE == 'GAMMA':
-        delta = self.etape['COEF_VAR']
-        if moyen <= a:
-            UTMESS('F', 'PROBA0_4', valr=[moyen, a])
-        v = moyen - a
-        alpha = 1. / delta ** 2
-        if alpha <= 1.:
-            UTMESS('F', 'PROBA0_5')
-        gamma2 = alpha - 1.
-        gamm1 = 1. / gamma2
-        beta = sqrt(2. * alpha - 1.)
-        beta2 = 1. / beta ** 2
-        f0 = 0.5 + (1. / pi) * atan2(-gamma2 / beta, 1.)
-        c1 = 1. - f0
-        c2 = f0 - 0.5
-        vref = 0.
-        vv = -1.
-        while -vv > vref:
-            u = self.getran()[0]
-            gamdev = beta * tan(pi * (u * c1 + c2)) + gamma2
-            unif = self.getran()[0]
-            if unif < 0.:
-                UTMESS('F', 'PROBA0_6')
-            vv = -log(unif)
-            vref = log(1 + beta2 * ((gamdev - gamma2) ** 2)) \
-                + gamma2 * log(gamdev * gamm1) - gamdev + gamma2
-        if vv <= 0.:
-            UTMESS('F', 'PROBA0_7')
-        self.sd.valeur = a + v * delta ** 2 * gamdev

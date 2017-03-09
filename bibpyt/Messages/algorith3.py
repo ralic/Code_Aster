@@ -154,15 +154,6 @@ Contactez le support technique.
  on prend la puissance de 2 supérieure
 """),
 
-    81 : _(u"""
- coefficient de dispersion trop grand
- consulter la documentation d'utilisation
-"""),
-
-    82 : _(u"""
- matrice moyenne non définie positive
-"""),
-
     83 : _(u"""
  le pas tend vers 0 ...
 """),
