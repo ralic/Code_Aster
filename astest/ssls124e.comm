@@ -265,7 +265,7 @@ RESU33=MECA_STATIQUE(MODELE=MODMEC33,
                     EXCIT=_F(CHARGE=CHARG33,),
                     SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
                                NPREC=-1,
-                               RESI_RELA=1.E-2,
+                               RESI_RELA=2.E-2,
                                ),
                     );
 

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,12 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
+    subroutine crsolv(method, renum, accemu, blreps, solve, bas)
         character(len=*) :: method
         character(len=*) :: renum
-        real(kind=8)     :: blrfront
+        integer          :: accemu
         real(kind=8)     :: blreps
         character(len=*) :: solve
         character(len=*) :: bas
     end subroutine crsolv
 end interface
+

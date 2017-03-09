@@ -2,7 +2,7 @@ subroutine conint(nume, raide, coint, connec,&
                   noddli, nnoint, nume_gene, raiint, ssami)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -256,11 +256,11 @@ subroutine conint(nume, raide, coint, connec,&
     r8bid=0.0
     call haslib('MUMPS', iret)
     if (iret .eq. 0) then
-        call crsolv('LDLT', 'SANS', r8bid, r8bid, solveu, 'V')
+        call crsolv('LDLT', 'SANS', ibid, r8bid, solveu, 'V')
     else
         if (neq .lt. 120) then
 !-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT
-            call crsolv('LDLT', 'SANS', r8bid, r8bid,  solveu, 'V')
+            call crsolv('LDLT', 'SANS', ibid, r8bid,  solveu, 'V')
         else
 !-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
             call crsint(solveu)
@@ -437,3 +437,4 @@ subroutine conint(nume, raide, coint, connec,&
     call jedema()
 !
 end subroutine
+

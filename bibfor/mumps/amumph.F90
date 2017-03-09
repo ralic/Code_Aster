@@ -1,7 +1,7 @@
 subroutine amumph(action, solvez, matasz, rsolu, csolu,&
                   vcinez, nbsol, iret, prepos)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -32,7 +32,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !     /'VERSION' : POUR RECUPERER LE NUMERO DE VERSION (SEULEMENT LA
 !              SD_SOLVEUR OU LA MATAS SONT REQUIS). CE NUMERO EST
 !              STOCKEE DANS SD_SOLVEUR.SLVK(12). IL DOIT ETRE LICITE
-!              (4.10.0, 5.0.1 ou 5.0.1consortium) SINON UTMESS_F.
+!              (5.1.0 ou 5.1.0consortium) SINON UTMESS_F.
 !              PAR DEFAUT ON CHERCHE LE NUMERO DS LA SD_SOLVEUR, SINON ON PREND CELUI LIE
 !              AU PACKAGE MUMPS LINKE.
 !     /'PRERES'  : POUR DEMANDER LES ETAPES ANALYSE+FACTORISATION
@@ -236,7 +236,7 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 ! --- STOCKE DANS LA SD_SOLVEUR
                     kvers=trim(adjustl(slvk(12)))
                     select case (kvers)
-                        case('5.0.1','5.0.1consortium','5.0.2','5.0.2consortium')
+                        case('5.1.0','5.1.0consortium')
                     case default
                         call utmess('F', 'FACTOR_72', sk=kvers)
                     end select
@@ -489,3 +489,4 @@ subroutine amumph(action, solvez, matasz, rsolu, csolu,&
 !
 #endif
 end subroutine
+

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,10 +126,10 @@ Conseils :
 
     48: _(u"""
 Solveur MUMPS :
-  Un opérateur a demandé à MUMPS d'activer la compression de rang faible. Or cette option n'est disponible
-  qu'a partir de la version 5.0.1consortium. Votre exécutable est lui lié a MUMPS v: %(k1)s. 
+  Une option d'accélération de ce solveur linéaire a été activée. Or cette option n'est disponible
+  que sur les versions consortium à partir de la 5.1.0consortium. Votre exécutable est lui lié a MUMPS v: %(k1)s. 
   Pour continuer malgré tout le calcul, on a débranché cette option particulière de MUMPS et on a
-  demandé un calcul standard sans compression. Votre calcul risque juste d'être ralenti.
+  demandé un calcul standard sans accélération. Votre calcul risque juste d'être ralenti.
 """),
 
 

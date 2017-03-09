@@ -271,7 +271,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.00193337474631,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
+                   TOLE_MACHINE=1.e-1, # Voir commentaire plus haut
                    PRECISION=0.05,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
@@ -281,7 +281,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    NOM_CMP='DZ',
                    VALE_CALC=0.00191083770911,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-4, # Voir commentaire plus haut
+                   TOLE_MACHINE=1.e-1, # Voir commentaire plus haut
                    PRECISION=0.05,),
                 ),
           )

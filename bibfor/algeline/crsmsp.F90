@@ -1,6 +1,6 @@
 subroutine crsmsp(solvbz, matasz, pcpiv)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,8 +108,9 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     zi(jslvi-1+4) = -9999
     zi(jslvi-1+5) = -9999
     zi(jslvi-1+6) = 1
-    zi(jslvi-1+7) = -9999
+    zi(jslvi-1+7) = 0
     zi(jslvi-1+8) = 0
 !
     call jedema()
 end subroutine
+

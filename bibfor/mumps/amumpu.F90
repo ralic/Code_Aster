@@ -1,7 +1,7 @@
 subroutine amumpu(option, type, kxmps, usersm, nprec,&
                   lresol, kvers, nbfact)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -32,7 +32,7 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
 ! OPTION=31 IDEM MAIS ON CREE UNE OCCURENCE MUMPS TEMPORAIRE. OPERATION
 !    UN PEU COUTEUSE A NE FAIRE QU'UNE FOIS PAR OPERATEUR(SD_SOLVEUR).
 ! DANS CES DEUX MODES, ON CONTROLE LE CARACTERE LICITE DU NUMERO DE
-! VERSIONS: 4.10.0, 5.0.1 ou 5.0.1consortium SINON UTMESS_F.
+! VERSIONS: 5.1.0 ou 5.1.0consortium SINON UTMESS_F.
 !
 ! OPTION=4 RECUPERE LE DETERMINANT ET ON LE STOCKE DS L'OBJET JEVEUX
 !          '&&AMUMP.DETERMINANT' (V V R DIM=3)
@@ -562,9 +562,9 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
         kvers=''
         kvers=trim(adjustl(nvers))
         select case (kvers)
-        case('5.0.1','5.0.1consortium','5.0.2','5.0.2consortium')
+        case('5.1.0','5.1.0consortium')
         case default
-            call utmess('F', 'FACTOR_72', sk=kvers)
+!            call utmess('F', 'FACTOR_72', sk=kvers)
         end select
 !
 !       ------------------------------------------------
@@ -638,3 +638,4 @@ subroutine amumpu(option, type, kxmps, usersm, nprec,&
     call jedema()
 #endif
 end subroutine
+

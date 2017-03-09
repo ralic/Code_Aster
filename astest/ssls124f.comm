@@ -294,7 +294,6 @@ Uz=F*L*L*L/3./YG/Iy
 # La solution obtenue presente une certaine variabilite entre machines qui decoule
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
 # => l'usage du mot cle TOLE_MACHINE.
-# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
 calc_aster5_p7=0.00196742542888
 calc_aster5_p8=0.00196755888617
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
@@ -303,7 +302,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00196674139122,
+                   VALE_CALC=0.00196734459553,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),
@@ -313,7 +312,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00196687212222,
+                   VALE_CALC=0.00196747097096,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),

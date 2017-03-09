@@ -1,7 +1,7 @@
 subroutine op0014()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,8 +64,8 @@ subroutine op0014()
     integer :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
     integer :: iret, isingu, istop, jadia, pcpiv, niremp
     integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
-    integer :: jslvk, jslvr, jslvi, reacpr
-    real(kind=8) :: fillin, epsmat, eps, blrfront, blreps
+    integer :: jslvk, jslvr, jslvi, reacpr, accemu
+    real(kind=8) :: fillin, epsmat, eps, blreps
     character(len=24), pointer :: refa(:) => null()
     aster_logical :: lreuse
 !   ------------------------------------------------------------------
@@ -87,10 +87,10 @@ subroutine op0014()
     call getvtx(' ', 'RENUM', scal=renum)
 
     if (metres.eq.'MUMPS') then
-        call getvr8(' ', 'LOW_RANK_TAILLE', iocc=1, scal=blrfront)
+        call getvis(' ', 'ACCELERATION', iocc=1, scal=accemu)
         call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps)
     else
-        blrfront=0.d0
+        accemu=0
         blreps=0.d0
     endif
 
@@ -134,7 +134,7 @@ subroutine op0014()
 !   -- on cree un solveur minimal pour retenir les infos entre FACTORISER et RESOUDRE:
 !   ----------------------------------------------------------------------------------
     solveu=mfac(1:8)//'.SOLVEUR'
-    call crsolv(metres, renum, blrfront, blreps, solveu, 'G')
+    call crsolv(metres, renum, accemu, blreps, solveu, 'G')
     call jeveuo(mass//'.REFA', 'E', vk24=refa)
     refa(7)=solveu
     call jeveuo(solveu//'.SLVK', 'E', jslvk)
@@ -359,3 +359,4 @@ subroutine op0014()
 
     call jedema()
 end subroutine
+

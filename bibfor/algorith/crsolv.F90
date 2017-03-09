@@ -1,4 +1,4 @@
-subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
+subroutine crsolv(method, renum, accemu, blreps, solve, bas)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -7,11 +7,12 @@ subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
 #include "asterfort/jevtbl.h"
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
-    real(kind=8) :: blrfront, blreps
+    real(kind=8) :: blreps
+    integer :: accemu
     character(len=*) :: method, renum, solve, bas
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,7 +93,7 @@ subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
     zr(islvr-1+1) = epsmat
     zr(islvr-1+2) = resire
     if (method .eq. 'MUMPS') then
-        zr(islvr-1+3) = blrfront
+        zr(islvr-1+3) = 0.d0
         zr(islvr-1+4) = blreps
     else
         zr(islvr-1+3) = jevtbl('TAILLE_BLOC')
@@ -105,9 +106,14 @@ subroutine crsolv(method, renum, blrfront, blreps, solve, bas)
     zi(islvi-1+4) =-9999
     zi(islvi-1+5) =-9999
     zi(islvi-1+6) =-9999
-    zi(islvi-1+7) =-9999
+    if (method .eq. 'MUMPS') then
+      zi(islvi-1+7) =accemu
+    else
+      zi(islvi-1+7) =-9999
+    endif
     zi(islvi-1+8) = 0
 !
     call jedema()
 !
 end subroutine
+

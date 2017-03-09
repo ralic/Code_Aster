@@ -19,7 +19,7 @@ use elim_lagr_data_module
 #include "asterfort/utmess.h"
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,8 @@ use elim_lagr_data_module
     character(len=16) :: concep, nomcmd
     character(len=14) :: nu1, nu2
     character(len=3) :: kellag
-    integer ::  ifm, niv, jrefa, jslvk,  iautre
+    real(kind=8) :: r8bid
+    integer ::  ifm, niv, jrefa, jslvk,  iautre, ibid
 !   ------------------------------------------------------------------
     call jemarq()
 
@@ -78,7 +79,7 @@ use elim_lagr_data_module
     if (solv1.eq.' ') then
 !       -- on cree un solveur par defaut (qui sera surcharge dans CALC_MODES) :
         solv1='&&OP0069.SOLVEUR'
-        call crsolv('MULT_FRONT', 'METIS', 0.d0, 0.d0, solv1, 'V')
+        call crsolv('MULT_FRONT', 'METIS', ibid, r8bid, solv1, 'V')
     else
         ASSERT(.false.)
     endif
@@ -121,3 +122,4 @@ use elim_lagr_data_module
 
     call jedema()
 end subroutine
+
