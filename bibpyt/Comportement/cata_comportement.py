@@ -352,7 +352,7 @@ class KIT(Base):
         self.doc = os.linesep.join(txt)
 
     # definition des propriétés (seulement la méthode get)
-    num_lc = property(Base.gen_getfunc(first,        'num_lc'))
+    num_lc = property(Base.gen_getfunc(sum,        'num_lc'))
     nb_vari = property(Base.gen_getfunc(sum,          'nb_vari'))
     nom_vari = property(Base.gen_getfunc(union,        'nom_vari'))
     mc_mater = property(Base.gen_getfunc(union,        'mc_mater'))
