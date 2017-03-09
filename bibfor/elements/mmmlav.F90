@@ -1,5 +1,5 @@
 subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
-                  coefaf, l_previous)
+                  coefaf)
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -23,7 +23,7 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-    aster_logical :: lfovit, ldyna, l_previous
+    aster_logical :: lfovit, ldyna
     real(kind=8) :: jeusup
     integer :: ndexfr
     real(kind=8) :: coefac, coefaf

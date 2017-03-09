@@ -146,14 +146,14 @@ subroutine te0365(option, nomte)
                 iresof, iresog, lambds, .false._1)
                 
     call mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
-                coefaf, .false._1)
+                coefaf)
                 
                 
     if (l_previous) then
         call mmmlcf(coefff, coefac_prev, coefaf_prev, lpenac_prev, lpenaf_prev,&
                     iresof_prev, iresog_prev, lambds_prev, l_previous)
         call mmmlav(ldyna, lfovit, jeusup_prev, ndexfr_prev, coefac_prev,&
-                    coefaf_prev, l_previous)
+                    coefaf_prev)
         
 !        debug = .false.
 !        if (debug) then 

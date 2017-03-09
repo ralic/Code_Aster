@@ -19,10 +19,9 @@
 !
 interface
     subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
-                      coefaf, l_previous)
+                      coefaf)
         aster_logical :: ldyna
         aster_logical :: lfovit
-        aster_logical :: l_previous
         real(kind=8) :: jeusup
         integer :: ndexfr
         real(kind=8) :: coefac
