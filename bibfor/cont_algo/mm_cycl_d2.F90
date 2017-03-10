@@ -126,8 +126,8 @@ implicit none
 !
             call mm_cycl_laugf(pres_frot_prev, dist_frot_prev, coef_frot_prev, nrese_prev)
             call mm_cycl_laugf(pres_frot_curr, dist_frot_curr, coef_frot_prev, nrese_curr)
-            call mm_cycl_zonf(nrese_prev, 0.98, 1.02, zone_frot_prev)
-            call mm_cycl_zonf(nrese_curr, 0.98, 1.02, zone_frot_curr)
+            call mm_cycl_zonf(nrese_prev, 0.98D0, 1.02D0, zone_frot_prev)
+            call mm_cycl_zonf(nrese_curr, 0.98D0, 1.02D0, zone_frot_curr)
             
             !
             ! - Sub-cycling 1 : grazing adherence
