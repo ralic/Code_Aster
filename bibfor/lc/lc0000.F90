@@ -57,7 +57,6 @@ implicit none
 #include "asterfort/lc0044.h"
 #include "asterfort/lc0045.h"
 #include "asterfort/lc0046.h"
-#include "asterfort/lc0047.h"
 #include "asterfort/lc0048.h"
 #include "asterfort/lc0049.h"
 #include "asterfort/lc0050.h"
@@ -120,6 +119,7 @@ implicit none
 #include "asterfort/lc2006.h"
 #include "asterfort/lc2038.h"
 #include "asterfort/lc3053.h"
+#include "asterfort/lc4047.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -561,13 +561,6 @@ implicit none
                     option, angmas, sigp, vip, nwkin,&
                     wkin, typmod, icomp, nvi, ndsde,&
                     dsidep, nwkout, wkout, codret)
-    case (47)
-!     ENDO_HETEROGENE
-        call lc0047(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, wkout, typmod,&
-                    icomp, nvi, dsidep, codret)
     case (48)
         call lc0048(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -978,6 +971,19 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
+
+!
+! --------------------------------------------------------------------------------------------------
+! - With GRADSIGM
+! --------------------------------------------------------------------------------------------------
+!
+    case (4047)
+!     ENDO_HETEROGENE
+        call lc4047(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, wkout, typmod,&
+                    icomp, nvi, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - Error

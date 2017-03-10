@@ -75,10 +75,6 @@ Le redécoupage local du pas de temps n'est pas compatible avec <%(k1)s>
 La rotation de réseau n'est pas compatible avec RUNGE_KUTTA. Utiliser l'intégration IMPLICITE.
 """),
 
-    12 : _(u"""
-  LA LOI ENDO_HETEROGENE N'EST COMPATIBLE QU'AVEC LE MODELE NON LOCAL GRAD_SIGM.
-"""),
-
     13 : _(u"""
   LA MODELISATION GRAD_SIGM N'EST COMPATIBLE QU'AVEC LA LOI ENDO_HETEROGENE.
 """),
