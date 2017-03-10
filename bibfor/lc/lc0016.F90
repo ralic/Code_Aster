@@ -6,9 +6,7 @@ subroutine lc0016(fami, kpg, ksp, ndim, imate,&
 !
 implicit none
 !
-#include "asterfort/lcdpnl.h"
 #include "asterfort/lcdrpr.h"
-#include "asterfort/rcvarc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -60,15 +58,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (typmod(2) .eq. 'GRADEPSI') then
-        call lcdpnl(fami, typmod, ndim,&
-                    option, compor, imate, sigm, deps,&
-                    vim, vip, sigp, dsidep, wkin,&
-                    codret)
-    else
-        call lcdrpr(fami, typmod, option, imate, compor, sigm,&
-                    deps, vim,&
-                    vip, sigp, dsidep, codret)
-    endif
+    call lcdrpr(fami, typmod, option, imate, compor, sigm,&
+                deps, vim,&
+                vip, sigp, dsidep, codret)
 !
 end subroutine

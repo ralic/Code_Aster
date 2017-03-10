@@ -120,6 +120,11 @@ implicit none
 #include "asterfort/lc2038.h"
 #include "asterfort/lc3053.h"
 #include "asterfort/lc4047.h"
+#include "asterfort/lc5005.h"
+#include "asterfort/lc5006.h"
+#include "asterfort/lc5007.h"
+#include "asterfort/lc5008.h"
+#include "asterfort/lc5016.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -293,26 +298,26 @@ implicit none
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (5)
-!     ENDO_FRAGILE+GRAD_EPSI
+!     ENDO_FRAGILE
         call lc0005(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkout, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (6)
 !     ENDO_ISOT_BETON
         call lc0006(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps,&
                     epsm, deps, nsig, sigm, vim,&
-                    option, angmas, sigp, vip, nwkin,&
-                    wkin, typmod, icomp, nvi, ndsde,&
-                    dsidep, nwkout, wkout, codret)
+                    option, angmas, sigp, vip,&
+                    typmod, icomp, nvi, ndsde,&
+                    dsidep, codret)
     case (7)
 !     ENDO_ORTH_BETON
         call lc0007(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (8)
 !     MAZARS
@@ -984,6 +989,47 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, wkout, typmod,&
                     icomp, nvi, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With GRADEPSI
+! --------------------------------------------------------------------------------------------------
+!
+    case (5005)
+!     ENDO_FRAGILE
+        call lc5005(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, wkout, dsidep, codret)
+    case (5006)
+!     ENDO_ISOT_BETON
+        call lc5006(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip, nwkin,&
+                    wkin, typmod, icomp, nvi, ndsde,&
+                    dsidep, nwkout, wkout, codret)
+    case (5007)
+!     ENDO_ORTH_BETON
+        call lc5007(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (5008)
+!     MAZARS
+        call lc5008(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkout, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (5016)
+!     DRUCK_PRAGER
+        call lc5016(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkout, typmod, icomp,&
+                    nvi, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - Error

@@ -1,28 +1,13 @@
 subroutine lc0005(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
+                  compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, tampon, typmod, icomp,&
+                  sigp, vip, typmod, icomp,&
                   nvi, dsidep, codret)
-! aslint: disable=W1504
-    implicit none
-#include "asterfort/fragex.h"
-#include "asterfort/lcfrge.h"
+!
+implicit none
+!
 #include "asterfort/lcfrlo.h"
-    integer :: imate, ndim, ksp, kpg
-    integer :: icomp, nvi
-    integer :: codret
-    real(kind=8) :: angmas(*)
-    real(kind=8) :: tampon(*)
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
-    real(kind=8) :: epsm(*), deps(*), crit(*)
-    real(kind=8) :: sigp(*), sigm(*), instam, instap
-    real(kind=8) :: vim(*), vip(*)
-    real(kind=8) :: dsidep(*)
 !
-!
-! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -39,46 +24,41 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jean-michel.proix at edf.fr
-! ======================================================================
-!.......................................................................
+! aslint: disable=W1504,W0104
 !
-!     BUT: LOI D'ENDOMMAGEMENT D'UN MATERIAU ELASTIQUE FRAGILE
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    real(kind=8), intent(in) :: sigm(*)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(*)
+    real(kind=8), intent(out) :: sigp(*)
+    real(kind=8), intent(out) :: vip(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(*)
+    integer, intent(out) :: codret
 !
-!          RELATION : 'ENDO_FRAGILE'
+! --------------------------------------------------------------------------------------------------
 !
-!       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)
-!               TYPMOD  TYPE DE MODELISATION
-!               OPTION     OPTION DE CALCUL A FAIRE
-!                             'RIGI_MECA_TANG'> DSIDEP(T)
-!                             'FULL_MECA'     > DSIDEP(T+DT) , SIG(T+DT)
-!                             'RAPH_MECA'     > SIG(T+DT)
-!               IMATE    ADRESSE DU MATERIAU CODE
-!               EPSM   DEFORMATION TOTALE A T
-!               DEPS   INCREMENT DE DEFORMATION TOTALE
-!               VIM    VARIABLES INTERNES A T    + INDICATEUR ETAT T
-!    ATTENTION  VIM    VARIABLES INTERNES A T MODIFIEES SI REDECOUPAGE
-!       OUT     SIGP    CONTRAINTE A T+DT
-!               VIP    VARIABLES INTERNES A T+DT + INDICATEUR ETAT T+DT
-!               DSIDEP    MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
+! Behaviour
 !
+! ENDO_FRAGILE
 !
+! --------------------------------------------------------------------------------------------------
 !
-!     NORMALEMENT, LES VERIF ONT ETE FAITES AVANT POUR INTERDIRE
-!     SIMO_MIEHE
-!     EXPLICITE
-!
-!     FORMULATION NON-LOCALE AVEC REGULARISATION DES DEFORMATIONS
-    if (typmod(2) .eq. 'GRADEPSI') then
-!
-        call lcfrge(ndim, typmod, imate, epsm, deps,&
-                    vim, option, sigp, vip, dsidep,&
-                    tampon)
-!
-!     FORMULATION LOCALE
-    else
-            call lcfrlo(ndim, typmod, imate, epsm, deps,&
-                        vim, option, sigp, vip, dsidep)
-    endif
+    codret = 0
+    call lcfrlo(ndim, typmod, imate, epsm, deps,&
+                vim, option, sigp, vip, dsidep)
 !
 end subroutine

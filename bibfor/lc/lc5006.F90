@@ -1,14 +1,13 @@
-subroutine lc0006(fami, kpg, ksp, ndim, imate,&
+subroutine lc5006(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps,&
                   epsm, deps, nsig, sigm, vim,&
-                  option, angmas, sigp, vip, &
-                  typmod, icomp, nvi, ndsde,&
-                  dsidep, codret)
+                  option, angmas, sigp, vip, nwkin,&
+                  wkin, typmod, icomp, nvi, ndsde,&
+                  dsidep, nwkout, wkout, codret)
 !
 implicit none
 !
-#include "asterfort/lcldsb.h"
-#include "asterfort/lceigv.h"
+#include "asterfort/lcdsbe.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -37,43 +36,38 @@ implicit none
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
     real(kind=8), intent(in) :: epsm(*)
     real(kind=8), intent(in) :: deps(*)
+    integer, intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(*)
     real(kind=8), intent(in) :: vim(*)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(*)
+    integer, intent(in) :: nwkin
+    real(kind=8), intent(in) :: wkin(nwkin)
     character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: nwkout
+    real(kind=8), intent(out) :: wkout(nwkout)
     integer, intent(in) :: icomp
     integer, intent(in) :: nvi
+    integer, intent(in) :: ndsde
     real(kind=8), intent(out) :: dsidep(*)
     integer, intent(out) :: codret
-    integer, intent(in) :: neps
-    integer, intent(in) :: nsig
-    integer, intent(in) :: ndsde
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Behaviour
+! Behaviour - Special GRADEPSI
 !
 ! ENDO_ISOT_BETON
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret   = 0
-    if (typmod(2) .eq. 'GRADVARI') then
-!
-        call lceigv(fami, kpg, ksp, neps, imate,&
-                    compor, epsm, deps, vim, option,&
-                    sigp, vip, dsidep)
-    else
-        call lcldsb(fami, kpg, ksp, ndim,&
-                    imate, compor, epsm, deps, vim,&
-                    option, sigp,&
-                    vip, dsidep)
-!
-    endif
+    codret = 0
+    call lcdsbe(fami, ndim, typmod, imate, compor,&
+                epsm, deps, vim, option, sigp,&
+                vip, dsidep, wkout)
 !
 end subroutine

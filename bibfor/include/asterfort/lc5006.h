@@ -18,11 +18,12 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0016(fami, kpg, ksp, ndim, imate,&
-                      compor, carcri, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, wkin, typmod, icomp,&
-                      nvi, dsidep, codret)
+    subroutine lc5006(fami, kpg, ksp, ndim, imate,&
+                      compor, carcri, instam, instap, neps,&
+                      epsm, deps, nsig, sigm, vim,&
+                      option, angmas, sigp, vip, nwkin,&
+                      wkin, typmod, icomp, nvi, ndsde,&
+                      dsidep, nwkout, wkout, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
@@ -32,19 +33,25 @@ interface
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
+        integer, intent(in) :: neps
         real(kind=8), intent(in) :: epsm(*)
         real(kind=8), intent(in) :: deps(*)
+        integer, intent(in) :: nsig
         real(kind=8), intent(in) :: sigm(*)
         real(kind=8), intent(in) :: vim(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(*)
         real(kind=8), intent(out) :: sigp(*)
         real(kind=8), intent(out) :: vip(*)
-        real(kind=8), intent(in) :: wkin(*)
+        integer, intent(in) :: nwkin
+        real(kind=8), intent(in) :: wkin(nwkin)
         character(len=8), intent(in) :: typmod(*)
+        integer, intent(in) :: nwkout
+        real(kind=8), intent(out) :: wkout(nwkout)
         integer, intent(in) :: icomp
         integer, intent(in) :: nvi
+        integer, intent(in) :: ndsde
         real(kind=8), intent(out) :: dsidep(*)
         integer, intent(out) :: codret
-    end subroutine lc0016
+    end subroutine lc5006
 end interface

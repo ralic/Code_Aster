@@ -1,14 +1,12 @@
-subroutine lc0006(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, neps,&
-                  epsm, deps, nsig, sigm, vim,&
-                  option, angmas, sigp, vip, &
-                  typmod, icomp, nvi, ndsde,&
-                  dsidep, codret)
+subroutine lc5005(fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, epsm,&
+                  deps, sigm, vim, option, angmas,&
+                  sigp, vip, typmod, icomp,&
+                  nvi, wkout, dsidep, codret)
 !
 implicit none
 !
-#include "asterfort/lcldsb.h"
-#include "asterfort/lceigv.h"
+#include "asterfort/lcfrge.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -48,32 +46,21 @@ implicit none
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: wkout(*)
     real(kind=8), intent(out) :: dsidep(*)
     integer, intent(out) :: codret
-    integer, intent(in) :: neps
-    integer, intent(in) :: nsig
-    integer, intent(in) :: ndsde
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Behaviour
+! Behaviour - Special GRADEPSI
 !
-! ENDO_ISOT_BETON
+! ENDO_FRAGILE
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret   = 0
-    if (typmod(2) .eq. 'GRADVARI') then
-!
-        call lceigv(fami, kpg, ksp, neps, imate,&
-                    compor, epsm, deps, vim, option,&
-                    sigp, vip, dsidep)
-    else
-        call lcldsb(fami, kpg, ksp, ndim,&
-                    imate, compor, epsm, deps, vim,&
-                    option, sigp,&
-                    vip, dsidep)
-!
-    endif
+    codret = 0
+    call lcfrge(ndim, typmod, imate, epsm, deps,&
+                vim, option, sigp, vip, dsidep,&
+                wkout)
 !
 end subroutine

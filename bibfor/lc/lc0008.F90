@@ -9,7 +9,6 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/lcmaza.h"
 #include "asterfort/lcmzcp.h"
-#include "asterfort/lcmzge.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -58,7 +57,7 @@ implicit none
 !
 ! Behaviour
 !
-! Mazars
+! MAZARS
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,24 +66,18 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     codret = 0
-    if (typmod(2) .eq. 'GRADEPSI') then
-        call lcmzge(fami, kpg, ksp, ndim, typmod,&
-                    imate, epsm, deps, vim, option,&
-                    sigp, vip, dsidep, wkin)
-    else
-        cplane = (typmod(1).eq.'C_PLAN  ').and. (compor(1)(1:9).eq.'MAZARS_GC')
-        if (cplane) then
-            coup = (option(6:9).eq.'COUP')
-            if (coup) then
-                call utmess('F', 'ALGORITH4_10', sk=compor(1))
-            endif
-            call lcmzcp(fami, kpg, ksp, ndim, imate,&
-                        epsm, deps, vim, &
-                        option, sigp, vip, dsidep)
-        else
-            call lcmaza(fami, kpg, ksp, ndim, typmod,&
-                        imate, compor, epsm, deps, vim,&
-                        option, sigp, vip, dsidep)
+    cplane = (typmod(1).eq.'C_PLAN  ').and. (compor(1)(1:9).eq.'MAZARS_GC')
+    if (cplane) then
+        coup = (option(6:9).eq.'COUP')
+        if (coup) then
+            call utmess('F', 'ALGORITH4_10', sk=compor(1))
         endif
+        call lcmzcp(fami, kpg, ksp, ndim, imate,&
+                    epsm, deps, vim, &
+                    option, sigp, vip, dsidep)
+    else
+        call lcmaza(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, epsm, deps, vim,&
+                    option, sigp, vip, dsidep)
     endif
 end subroutine
