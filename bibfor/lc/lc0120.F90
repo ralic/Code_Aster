@@ -1,4 +1,4 @@
-subroutine lc0020(fami, kpg, ksp, ndim, imate,&
+subroutine lc0120(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
                   sigp, vip, tampon, typmod, icomp,&

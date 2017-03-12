@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0020(fami, kpg, ksp, ndim, imate,&
+    subroutine lc0120(fami, kpg, ksp, ndim, imate,&
                       compor, crit, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
                       sigp, vip, tampon, typmod, icomp,&
@@ -46,5 +46,5 @@ interface
         integer :: nvi
         real(kind=8) :: dsidep(6, 6)
         integer :: codret
-    end subroutine lc0020
+    end subroutine lc0120
 end interface

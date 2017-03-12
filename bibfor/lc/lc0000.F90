@@ -31,7 +31,6 @@ implicit none
 #include "asterfort/lc0017.h"
 #include "asterfort/lc0018.h"
 #include "asterfort/lc0019.h"
-#include "asterfort/lc0020.h"
 #include "asterfort/lc0021.h"
 #include "asterfort/lc0022.h"
 #include "asterfort/lc0023.h"
@@ -108,6 +107,7 @@ implicit none
 #include "asterfort/lc0099.h"
 #include "asterfort/lc0100.h"
 #include "asterfort/lc0115.h"
+#include "asterfort/lc0120.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
@@ -404,12 +404,6 @@ implicit none
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (20)
-        call lc0020(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (21)
         call lc0021(fami, kpg, ksp, ndim, imate,&
@@ -873,6 +867,13 @@ implicit none
     case (115)
 !     META_LEMA_ANI
         call lc0115(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (120)
+!     BETON_DOUBLE_DP
+        call lc0120(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&

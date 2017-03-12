@@ -24,7 +24,7 @@ loi = LoiComportement(
     doc            =   """Relation de comportement tridimensionnelle utilisée pour la description du comportement non linéaire du béton.
    Il comporte un critere de Drucker-Prager en traction et un critère de Drucker-Prager en compression, découplés.
    Les deux critères peuvent avoir un écrouissage adoucissant."""      ,
-    num_lc         = 20,
+    num_lc         = 120,
     nb_vari        = 4,
     nom_vari       = ('EPSPEQT','EPSPEQC','TEMP_MAX','INDIPLAS',),
     mc_mater       = ('ELAS','BETON_DOUBLE_DP',),
