@@ -79,7 +79,10 @@ implicit none
         v_vari_name(1:nb_vari) = vari_excl
     else
         call comp_meca_code(rela_comp, defo_comp, type_cpla   , kit_comp    , type_matg,&
-                            post_iter, .false._1, comp_code_py, rela_code_py, meta_code_py)
+                            post_iter, l_implex_ = .false._1,&
+                            comp_code_py = comp_code_py,&
+                            rela_code_py_ = rela_code_py,&
+                            meta_code_py_ = meta_code_py)
         if (l_kit_meta) then
             call lcinfo(meta_code_py, idummy, nb_vari_meta)
             call lcinfo(rela_code_py, idummy, nb_vari_rela)

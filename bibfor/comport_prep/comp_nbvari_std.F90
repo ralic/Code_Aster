@@ -1,6 +1,7 @@
-subroutine comp_nbvari_std(rela_comp , defo_comp , type_cpla     , nb_vari   ,&
-                           kit_comp_ , type_matg_, post_iter_   , mult_comp_,&
-                           l_cristal_, l_implex_ , nume_comp_, nb_vari_rela_)
+subroutine comp_nbvari_std(rela_comp , defo_comp , type_cpla   , nb_vari   ,&
+                           kit_comp_ , type_matg_, post_iter_  , mult_comp_,&
+                           l_cristal_, l_implex_ , type_model2_,&
+                           nume_comp_, nb_vari_rela_)
 !
 implicit none
 !
@@ -39,6 +40,7 @@ implicit none
     character(len=16), optional, intent(in) :: mult_comp_
     aster_logical, optional, intent(in) :: l_cristal_
     aster_logical, optional, intent(in) :: l_implex_
+    character(len=16), optional, intent(in) :: type_model2_
     integer, optional, intent(out) :: nb_vari_rela_
     integer, optional, intent(out) :: nume_comp_(4)
 !
@@ -59,13 +61,14 @@ implicit none
 ! In  mult_comp        : multi-comportment
 ! In  l_cristal        : .true. if *CRISTAL comportment
 ! In  l_implex         : .true. if IMPLEX method
+! In  type_model2      : type of modelization (TYPMOD2)
 ! Out nb_vari          : number of internal variables
 ! Out nb_vari_rela     : number of internal variables for RELATION
 ! Out nume_comp        : number LCxxxx subroutine
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    character(len=16) :: kit_comp(4), type_matg, post_iter, mult_comp
+    character(len=16) :: kit_comp(4), type_matg, post_iter, mult_comp, type_model2
     aster_logical :: l_cristal, l_implex
     integer :: nb_vari_rela, nume_comp(4)
     character(len=16) :: comp_elem_py, rela_comp_py
@@ -100,14 +103,18 @@ implicit none
     if (present(l_implex_)) then
         l_implex = l_implex_
     endif
+    type_model2 = 'VIDE'
+    if (present(type_model2_)) then
+        type_model2 = type_model2_
+    endif
     nb_vari      = 0
     nb_vari_rela = 0
     nume_comp(:) = 0
 !
 ! - Coding composite comportment (Python)
 !
-    call comp_meca_code(rela_comp   , defo_comp   , type_cpla   , kit_comp, type_matg,&
-                        post_iter   , l_implex    ,&
+    call comp_meca_code(rela_comp   , defo_comp   , type_cpla  , kit_comp, type_matg,&
+                        post_iter   , l_implex    , type_model2,&
                         comp_elem_py, rela_comp_py)
 !
 ! - Get number of variables

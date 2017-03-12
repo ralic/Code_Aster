@@ -1,6 +1,6 @@
 subroutine nmdovd(model         , l_affe_all  , l_auto_deborst,&
                   list_elem_affe, nb_elem_affe, full_elem_s   ,&
-                  defo_comp     , defo_comp_py)
+                  defo_comp     , defo_comp_py, type_model2)
 !
 implicit none
 !
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,6 +44,7 @@ implicit none
     character(len=19), intent(in) :: full_elem_s
     character(len=16), intent(in) :: defo_comp
     character(len=16), intent(in) :: defo_comp_py
+    character(len=16), intent(out) :: type_model2
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,6 +62,7 @@ implicit none
 ! In  list_elem_affe : list of elements where comportment affected
 ! In  defo_comp      : comportement DEFORMATION
 ! In  defo_comp_py   : comportement DEFORMATION - Python coding
+! Out type_model2    : type of modelization (TYPMOD2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -101,7 +103,6 @@ implicit none
         call jeveuo(list_elem_affe, 'L', j_elem_affe)
         nb_elem = nb_elem_affe
     endif
-
 !
 ! - No Deborst allowed with large strains models
 !
@@ -114,6 +115,7 @@ implicit none
 !
 ! - Loop on elements
 !
+    type_model2 = 'VIDE'
     do ielem = 1, nb_elem
 !
 ! ----- Current element
@@ -144,6 +146,17 @@ implicit none
             call teattr('C', 'TYPMOD', type_elem, iret, typel=notype)
             if (iret .eq. 0) then
                 call teattr('C', 'TYPMOD2', type_elem2, iret, typel=notype)
+                if (type_model2 .eq. 'VIDE' .and. type_elem2 .ne. 'NON_DEFINI') then
+                    type_model2 = type_elem2
+                elseif (type_model2 .eq. 'VIDE' .and. type_elem2 .eq. 'NON_DEFINI') then
+                    type_model2 = 'VIDE'
+                else
+                    if (type_elem2 .ne. 'NON_DEFINI') then
+                        if (type_model2 .ne. type_elem2) then
+                            call utmess('F', 'COMPOR5_24', sk = type_model2)
+                        endif
+                    endif
+                endif
                 if (type_elem(1:6) .eq. 'COMP3D') then
                     call lctest(defo_comp_py, 'MODELISATION', '3D', irett)
                     if (irett .eq. 0) then

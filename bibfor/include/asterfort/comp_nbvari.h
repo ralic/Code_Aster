@@ -21,7 +21,8 @@ interface
     subroutine comp_nbvari(rela_comp    , defo_comp , type_cpla    , kit_comp_ ,&
                            type_matg_   , post_iter_, mult_comp_   , libr_name_,&
                            subr_name_   , model_dim_, model_mfront_, nb_vari_  ,&
-                           nb_vari_umat_, l_implex_ , nb_vari_comp_, nume_comp_)
+                           nb_vari_umat_, l_implex_ , type_model2_ ,&
+                           nb_vari_comp_, nume_comp_)
         use NonLin_Datastructure_type
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
@@ -37,6 +38,7 @@ interface
         integer, optional, intent(out) :: nb_vari_
         integer, optional, intent(in) :: nb_vari_umat_
         aster_logical, optional, intent(in) :: l_implex_
+        character(len=16), optional, intent(in) :: type_model2_
         integer, optional, intent(out) :: nb_vari_comp_(4)
         integer, optional, intent(out) :: nume_comp_(4)
     end subroutine comp_nbvari

@@ -78,7 +78,7 @@ implicit none
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
     integer :: nb_elem_affe
-    character(len=16) :: texte(2)
+    character(len=16) :: texte(2), type_model2
     character(len=16) :: defo_comp, rela_comp, rela_thmc, type_cpla
     character(len=16) :: rela_comp_py, defo_comp_py
     integer :: iret
@@ -173,7 +173,8 @@ implicit none
 !
         call nmdovd(model         , l_affe_all  , l_auto_deborst,&
                     list_elem_affe, nb_elem_affe, full_elem_s   ,&
-                    defo_comp     , defo_comp_py)
+                    defo_comp     , defo_comp_py, type_model2)
+        ds_compor_prep%v_comp(i_comp)%type_model2 = type_model2
 !
 ! ----- Check if COQUE_3D+GROT_GDEP is activated
 !

@@ -7,7 +7,7 @@ implicit none
 #include "asterc/getfac.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,5 +50,6 @@ implicit none
     ds_compor%nb_vari         = 0
     ds_compor%nb_vari_comp(:) = 0
     ds_compor%nume_comp(:)    = 0
+    ds_compor%type_model2     = 'VIDE'
 !
 end subroutine

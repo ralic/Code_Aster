@@ -99,6 +99,12 @@ La déformation est supposée nulle.
  Utilisez un autre type de déformations (cf. U4.51.11 et les documents R).
 """),
 
+    24: _(u"""
+ La modélisation doit être la même sur toutes les mailles d'une occurrence du mot-clef comportement.
+ Conseils:
+   Réutilisez les groupes définies dans AFFE_MODELE pour affecter le comportement.
+"""),
+
     30: _(u"""
   Pour les poutres multifibres, l'utilisation de lois de comportement via
   DEBORST nécessite d'avoir un seul matériau par poutre!

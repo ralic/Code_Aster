@@ -403,6 +403,7 @@ implicit none
         integer           :: nb_vari
         integer           :: nb_vari_comp(4)
         integer           :: nume_comp(4)
+        character(len=16) :: type_model2
     end type NL_DS_Compor
 !
 ! - Type: for preparation of comportment

@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/comp_meca_l.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ implicit none
     character(len=16) :: keywordfact
     integer :: i_comp, nb_comp, model_dim, iret
     character(len=16) :: defo_comp, rela_comp, type_cpla, mult_comp, type_comp
-    character(len=16) :: type_matg, post_iter, model_mfront
+    character(len=16) :: type_matg, post_iter, model_mfront, type_model2
     character(len=16) :: kit_comp(4)
     character(len=255) :: libr_name, subr_name
     integer :: unit_comp, nb_vari_umat
@@ -97,6 +97,7 @@ implicit none
         type_matg      = ' '
         post_iter      = ' '
         kit_comp(1:4)  = 'VIDE'
+        type_model2    = 'VIDE'
 !
 ! ----- Get RELATION from command file
 !
@@ -172,6 +173,7 @@ implicit none
         ds_compor_prep%v_comp(i_comp)%mult_comp      = mult_comp
         ds_compor_prep%v_comp(i_comp)%type_matg      = type_matg
         ds_compor_prep%v_comp(i_comp)%post_iter      = post_iter
+        ds_compor_prep%v_comp(i_comp)%type_model2    = type_model2
         ds_compor_prep%v_exte(i_comp)%l_umat         = l_umat
         ds_compor_prep%v_exte(i_comp)%l_mfront_proto = l_mfront_proto
         ds_compor_prep%v_exte(i_comp)%l_mfront_offi  = l_mfront_offi
