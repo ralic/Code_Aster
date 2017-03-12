@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                       imate, compor, crit, instam, instap,&
                       neps, epsm, deps, nsig, sigm,&
-                      nvi, vim, option, angmas, nwkin,&
-                      wkin, icomp, stress, statev, ndsde,&
+                      nvi, vim, option, angmas, &
+                      icomp, stress, statev, ndsde,&
                       dsidep, codret)
-        integer :: nwkin
         integer :: nvi
         character(len=*) :: fami
         integer :: kpg
@@ -42,7 +43,6 @@ interface
         real(kind=8) :: vim(*)
         character(len=16) :: option
         real(kind=8) :: angmas(*)
-        real(kind=8) :: wkin(nwkin)
         integer :: icomp
         real(kind=8) :: stress(6)
         real(kind=8) :: statev(nvi)

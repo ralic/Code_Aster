@@ -501,8 +501,8 @@ implicit none
         call lc0050(fami, kpg, ksp, ndim, typmod,&
                     imate, compor, carcri, instam, instap,&
                     neps, epsm, deps, nsig, sigm,&
-                    nvi, vim, option, angmas, nwkin,&
-                    wkin, icomp, sigp, vip, ndsde,&
+                    nvi, vim, option, angmas, &
+                    icomp, sigp, vip, ndsde,&
                     dsidep, codret)
     case (54)
         call lc0054(fami, kpg, ksp, ndim, imate,&
