@@ -18,10 +18,10 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0015(fami, kpg, ksp, ndim, imate,&
+    subroutine lc0115(fami, kpg, ksp, ndim, imate,&
                       compor, carcri, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
-                      sigp, vip, typmod, icomp,&
+                      sigp, vip, wkin, typmod, icomp,&
                       nvi, dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
@@ -40,10 +40,11 @@ interface
         real(kind=8), intent(in) :: angmas(*)
         real(kind=8), intent(out) :: sigp(*)
         real(kind=8), intent(out) :: vip(*)
+        real(kind=8), intent(in) :: wkin(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
         integer, intent(in) :: nvi
         real(kind=8), intent(out) :: dsidep(*)
         integer, intent(out) :: codret
-    end subroutine lc0015
+    end subroutine lc0115
 end interface

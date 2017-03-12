@@ -23,7 +23,7 @@ loi = LoiComportement(
     nom            = 'META_LEMA_ANI',
     doc            =   """Loi de comportement viscoplastique anisotrope prenant en compte la métallurgie,
             pour le Zirconium uniquement"""      ,
-    num_lc         = 15,
+    num_lc         = 115,
     nb_vari        = 2,
     nom_vari       = ('EPSPEQ','INDIPLAS',),
     mc_mater       = ('ELAS_META','META_LEMA_ANI',),

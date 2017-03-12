@@ -1,18 +1,12 @@
-subroutine lc0015(fami, kpg, ksp, ndim, imate,&
+subroutine lc0115(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
+                  sigp, vip, wkin, typmod, icomp,&
                   nvi, dsidep, codret)
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/lcgdpm.h"
-#include "asterfort/nzcifw.h"
-#include "asterfort/nzcizi.h"
-#include "asterfort/nzedga.h"
-#include "asterfort/nzgdzi.h"
-#include "asterfort/nzisfw.h"
+#include "asterfort/lcedga.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -49,6 +43,7 @@ implicit none
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(in) :: wkin(*)
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: nvi
@@ -59,36 +54,13 @@ implicit none
 !
 ! Behaviour
 !
-! 'META_*'
+! META_LEMA_ANI
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (compor(1)(8:8) .eq. 'I') then
-        if (compor(8) .eq. 'ACIER') then
-            call nzisfw(fami, kpg, ksp, ndim, imate,&
-                        compor, carcri, instam, instap, epsm,&
-                        deps, sigm, vim, option, sigp,&
-                        vip, dsidep, codret)
-        else if (compor(8).eq.'ZIRC') then
-            call nzedga(fami, kpg, ksp, ndim, imate,&
-                        compor, carcri, instam, instap, epsm,&
-                        deps, sigm, vim, option, sigp,&
-                        vip, dsidep, codret)
-        endif
-    else if (compor(1)(8:8).eq.'C') then
-        if (compor(8) .eq. 'ACIER') then
-            call nzcifw(fami, kpg, ksp, ndim, imate,&
-                        compor, carcri, instam, instap, epsm,&
-                        deps, sigm, vim, option, sigp,&
-                        vip, dsidep, codret)
-        else if (compor(8).eq.'ZIRC') then
-            call nzcizi(fami, kpg, ksp, ndim, imate,&
-                        compor, carcri, instam, instap, epsm,&
-                        deps, sigm, vim, option, sigp,&
-                        vip, dsidep, codret)
-        endif
-    else
-        ASSERT(.falsE.)
-    endif
+    call lcedga(fami, kpg, ksp, ndim, imate,&
+                carcri, typmod, instam, instap, wkin,&
+                deps, sigm, vim, option, sigp,&
+                vip, dsidep, codret)
 !
 end subroutine

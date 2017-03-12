@@ -107,6 +107,7 @@ implicit none
 #include "asterfort/lc0098.h"
 #include "asterfort/lc0099.h"
 #include "asterfort/lc0100.h"
+#include "asterfort/lc0115.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
@@ -374,7 +375,7 @@ implicit none
         call lc0015(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (16)
 !     DRUCK_PRAGER
@@ -868,6 +869,13 @@ implicit none
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (115)
+!     META_LEMA_ANI
+        call lc0115(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
