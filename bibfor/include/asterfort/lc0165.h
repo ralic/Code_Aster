@@ -17,10 +17,10 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0066(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
+    subroutine lc0165(fami, kpg, ksp, ndim, imate,&
+                      compor, carcri, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
-                      sigp, vip, tampon, typmod, icomp,&
+                      sigp, vip, wkin, typmod, icomp,&
                       nvi, dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
@@ -28,7 +28,7 @@ interface
         integer :: ndim
         integer :: imate
         character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
+        real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: epsm(6)
@@ -39,11 +39,11 @@ interface
         real(kind=8) :: angmas(*)
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
-        real(kind=8) :: tampon(*)
+        real(kind=8) :: wkin(*)
         character(len=8) :: typmod(*)
         integer :: icomp
         integer :: nvi
         real(kind=8) :: dsidep(6, 6)
         integer :: codret
-    end subroutine lc0066
+    end subroutine lc0165
 end interface

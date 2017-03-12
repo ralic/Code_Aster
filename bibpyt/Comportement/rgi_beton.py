@@ -22,7 +22,7 @@ from cata_comportement import LoiComportement
 loi = LoiComportement(
     nom            = 'RGI_BETON',
     doc            =   """lois associees aux reactions de gonglements internes (RAG et RSI) dans le beton"""      ,
-    num_lc         = 67,
+    num_lc         = 167,
     nb_vari        = 26,
     nom_vari       = ('SEE1','SEE2','SEE3','SEE4','SEE5',
         'SEE6','HYD','CSH','ALL','ALF',

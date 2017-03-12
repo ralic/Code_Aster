@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/lcumfp.h"
 #include "asterfort/nmcpla.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lc0065.h"
+#include "asterfort/lc0165.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -173,7 +173,7 @@ implicit none
 ! ----- For "KIT_RGI"
         if ((rela_plas(1:15) .eq. 'ENDO_PORO_BETON') .or.&
             (rela_flua(1:15) .eq. 'ENDO_PORO_BETON')) then
-            call lc0065(fami  , kpg , ksp  , ndim  , imat  ,&
+            call lc0165(fami  , kpg , ksp  , ndim  , imat  ,&
                         compor, carcri, timed, timef , epsdt ,&
                         depst , sigd, vind , option, angmas,&
                         sigf  , vinf, wkin , typmod, 1     ,&

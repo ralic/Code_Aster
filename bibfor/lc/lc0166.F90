@@ -1,12 +1,11 @@
-subroutine lc0066(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
+subroutine lc0166(fami, kpg, ksp, ndim, imate,&
+                  compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, tampon, typmod, icomp,&
+                  sigp, vip, wkin, typmod, icomp,&
                   nvi, dsidep, codret)
-    implicit none
+implicit none
 #include "asterfort/lcsend.h"
 !
-! ======================================================================
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -30,8 +29,8 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
 !
 !          RELATION : 'ENDO_PORO_BETON'
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(*)
-    real(kind=8) :: instam, instap, tampon(*)
+    real(kind=8) :: carcri(*), angmas(*)
+    real(kind=8) :: instam, instap, wkin(*)
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), sigp(6)
     real(kind=8) :: vim(*), vip(*)
@@ -41,9 +40,9 @@ subroutine lc0066(fami, kpg, ksp, ndim, imate,&
     character(len=*) :: fami
 !
     call lcsend(fami, kpg, ksp, ndim, imate,&
-                compor, crit, instam, instap, epsm,&
+                compor, carcri, instam, instap, epsm,&
                 deps, sigm, vim, option, angmas,&
-                sigp, vip, tampon, typmod, icomp,&
+                sigp, vip, wkin, typmod, icomp,&
                 nvi, dsidep, codret)
 !
 end subroutine

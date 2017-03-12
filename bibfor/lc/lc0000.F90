@@ -57,9 +57,6 @@ implicit none
 #include "asterfort/lc0062.h"
 #include "asterfort/lc0063.h"
 #include "asterfort/lc0064.h"
-#include "asterfort/lc0065.h"
-#include "asterfort/lc0066.h"
-#include "asterfort/lc0067.h"
 #include "asterfort/lc0068.h"
 #include "asterfort/lc0069.h"
 #include "asterfort/lc0070.h"
@@ -97,6 +94,9 @@ implicit none
 #include "asterfort/lc0120.h"
 #include "asterfort/lc0137.h"
 #include "asterfort/lc0152.h"
+#include "asterfort/lc0165.h"
+#include "asterfort/lc0166.h"
+#include "asterfort/lc0167.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
@@ -560,24 +560,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (65)
-        call lc0065(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (66)
-        call lc0066(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (67)
-        call lc0067(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (68)
         call lc0068(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -801,6 +783,27 @@ implicit none
     case (152)
 !     CABLE_GAINE
         call lc0152(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (165)
+!     FLUA_PORO_BETON
+        call lc0165(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (166)
+!     ENDO_PORO_BETON
+        call lc0166(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (167)
+!     RGI_BETON
+        call lc0167(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
