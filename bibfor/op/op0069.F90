@@ -39,6 +39,7 @@ use elim_lagr_data_module
     character(len=19) :: matass, matred, krigi, krigred, solv1, solv2
     character(len=16) :: concep, nomcmd
     character(len=14) :: nu1, nu2
+    character(len=8) :: k8bid
     character(len=3) :: kellag
     real(kind=8) :: r8bid
     integer ::  ifm, niv, jrefa, jslvk,  iautre, ibid
@@ -79,7 +80,7 @@ use elim_lagr_data_module
     if (solv1.eq.' ') then
 !       -- on cree un solveur par defaut (qui sera surcharge dans CALC_MODES) :
         solv1='&&OP0069.SOLVEUR'
-        call crsolv('MULT_FRONT', 'METIS', ibid, r8bid, solv1, 'V')
+        call crsolv('MULT_FRONT', 'METIS', k8bid, r8bid, solv1, 'V')
     else
         ASSERT(.false.)
     endif

@@ -126,10 +126,9 @@ Conseils :
 
     48: _(u"""
 Solveur MUMPS :
-  Une option d'accélération de ce solveur linéaire a été activée. Or cette option n'est disponible
-  que sur les versions consortium à partir de la 5.1.0consortium. Votre exécutable est lui lié a MUMPS v: %(k1)s. 
-  Pour continuer malgré tout le calcul, on a débranché cette option particulière de MUMPS et on a
-  demandé un calcul standard sans accélération. Votre calcul risque juste d'être ralenti.
+  Une option d'accélération non disponible avec cette version de MUMPS a été activée.
+  Pour continuer malgré tout le calcul, on lui a substitué l'option %(k1)s.
+  Votre calcul risque juste d'être ralenti.
 """),
 
 
@@ -349,7 +348,7 @@ Solveur MUMPS :
 Solveur MUMPS :
   Votre exécutable Aster embarque la version de MUMPS: %(k1)s
   Les seules versions de MUMPS supportée dans Code_Aster sont:
-                  les 5.0.1/2 et la 5.0.1/2 consortium (usage EDF seulement)
+            les 5.0.2/5.1.0 et les 5.0.2consortium/5.1.0consortium (usage EDF seulement)
 
 Conseils :
   Télécharger, installer et relier à Code_Aster une version de MUMPS adéquate.

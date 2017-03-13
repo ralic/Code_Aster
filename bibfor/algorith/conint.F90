@@ -78,7 +78,7 @@ subroutine conint(nume, raide, coint, connec,&
     integer :: nbvois, iret, nbvmax, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3), r8bid
-    character(len=8) :: nomma
+    character(len=8) :: nomma, k8bid
     character(len=19) :: prof_gene, prof_chno, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
     integer, pointer :: ipos_ddl_interf(:) => null()
@@ -256,11 +256,11 @@ subroutine conint(nume, raide, coint, connec,&
     r8bid=0.0
     call haslib('MUMPS', iret)
     if (iret .eq. 0) then
-        call crsolv('LDLT', 'SANS', ibid, r8bid, solveu, 'V')
+        call crsolv('LDLT', 'SANS', k8bid, r8bid, solveu, 'V')
     else
         if (neq .lt. 120) then
 !-- SOLVEUR = LDLT / OPTIONS PAR DEFAUT
-            call crsolv('LDLT', 'SANS', ibid, r8bid,  solveu, 'V')
+            call crsolv('LDLT', 'SANS', k8bid, r8bid,  solveu, 'V')
         else
 !-- SOLVEUR = MUMPS / OPTIONS PAR DEFAUT
             call crsint(solveu)

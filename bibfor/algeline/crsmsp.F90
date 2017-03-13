@@ -81,8 +81,8 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     endif
 !     RENUM
     zk24(jslvk-1+4) = 'AUTO'
-
-    zk24(jslvk-1+5) = 'XXXX'
+!     ACCELERATION
+    zk24(jslvk-1+5) = 'AUTO'
 !     ELIM_LAGR
     zk24(jslvk-1+6) = 'NON'
 !     MIXER_PRECISION
@@ -108,7 +108,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     zi(jslvi-1+4) = -9999
     zi(jslvi-1+5) = -9999
     zi(jslvi-1+6) = 1
-    zi(jslvi-1+7) = 0
+    zi(jslvi-1+7) = -9999
     zi(jslvi-1+8) = 0
 !
     call jedema()

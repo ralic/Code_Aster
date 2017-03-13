@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine crsolv(method, renum, accemu, blreps, solve, bas)
+    subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
         character(len=*) :: method
         character(len=*) :: renum
-        integer          :: accemu
+        character(len=*) :: kacmum
         real(kind=8)     :: blreps
         character(len=*) :: solve
         character(len=*) :: bas

@@ -57,11 +57,10 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
 ! ----------------------------------------------------------
 !
     integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
-    integer :: monit(12), vali(2), compt
-    integer :: nbma, accemu
+    integer :: monit(12), vali(2), compt, nbma
     real(kind=8) :: eps, blreps
     character(len=5) :: klag2
-    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra
+    character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, partit, matra, kacmum
     character(len=12) :: kooc
     character(len=19) :: k19b
     character(len=24) :: kmonit(12)
@@ -213,7 +212,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     ASSERT(ibid.eq.1)
     call getvtx(motfac, 'PRETRAITEMENTS', iocc=1, scal=ktyps, nbret=ibid)
     ASSERT(ibid.eq.1)
-    call getvis(motfac, 'ACCELERATION', iocc=1, scal=accemu, nbret=ibid)
+    call getvtx(motfac, 'ACCELERATION', iocc=1, scal=kacmum, nbret=ibid)
     ASSERT(ibid.eq.1)
     call getvr8(motfac, 'LOW_RANK_SEUIL', iocc=1, scal=blreps, nbret=ibid)
     ASSERT(ibid.eq.1)
@@ -249,7 +248,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     slvk(2) = ktyps
     slvk(3) = ktypr
     slvk(4) = ktyprn
-    slvk(5) = 'XXXX'
+    slvk(5) = kacmum
     slvk(6) = klag2
     slvk(7) = mixpre
     slvk(8) = 'NON'
@@ -271,7 +270,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec,&
     slvi(4) = -9999
     slvi(5) = -9999
     slvi(6) = 1
-    slvi(7) = accemu
+    slvi(7) = -9999
     slvi(8) = 0
 !
     call jedema()

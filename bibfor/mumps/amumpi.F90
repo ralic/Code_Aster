@@ -1,6 +1,6 @@
 subroutine amumpi(option, lquali, ldist, kxmps, type)
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -55,11 +55,12 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     type(dmumps_struc), pointer :: dmpsk => null()
     type(zmumps_struc), pointer :: zmpsk => null()
     integer :: ifm, niv, i, isymm, isymv, isym, nbproc
-    integer :: nprec, ibid, accemu
+    integer :: nprec, ibid
     mumps_int :: i4, icntl(nicntl)
     real(kind=8) :: cntl(ncntl), rr4max, blreps
     aster_logical :: lbid
     character(len=4) :: typm, etam
+    character(len=8) :: kacmum
     character(len=12) :: k12bid
     character(len=14) :: nonu
     character(len=19) :: nomat, nosolv
@@ -100,7 +101,7 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
     nprec=slvi(1)
     call jeveuo(nosolv//'.SLVR', 'L', vr=slvr)
        
-    accemu=slvi(7)
+    kacmum=trim(adjustl(slvk(5)))
     blreps=slvr(4)
 
 !
@@ -214,36 +215,72 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
         kvers=trim(adjustl(kvers))
 
 ! ---     OPTIONS AVANCEES (ACCELERATIONS)
-        if (accemu.gt.1) then
-            if ((kvers(1:15).eq.'5.1.0consortium')) then
-                ! ok
-            else
-                call utmess('A', 'FACTOR_48', sk=kvers)
-                accemu=0
-            endif
+! ------     TEST DE COMPATIBILITE ACCELERATION/VERSIONS
+        if ((kvers(1:5).eq.'5.0.2')) then
+            select case(kacmum)
+            case('FR')
+                !ok
+            case('FR+','LR','LR+')
+                kacmum='FR'
+                call utmess('A', 'FACTOR_48', sk=kacmum)
+            case('AUTO')
+                kacmum='FR'
+            case default
+                ASSERT(.false.)
+            end select
+        else if (kvers(1:6).eq.'5.1.0 ') then
+            select case(kacmum)
+            case('FR','LR')
+                !ok
+            case('FR+')
+                kacmum='FR'
+                call utmess('A', 'FACTOR_48', sk=kacmum)
+            case('LR+')
+                kacmum='LR'
+                call utmess('A', 'FACTOR_48', sk=kacmum)
+            case('AUTO')
+                kacmum='FR'
+            case default
+                ASSERT(.false.)
+            end select
+        else if (kvers(1:15).eq.'5.1.0consortium') then
+            select case(kacmum)
+            case('FR','FR+','LR','LR+')
+                !ok
+            case('AUTO')
+                kacmum='FR'
+            case default
+                ASSERT(.false.)
+            end select
+        else
+            ASSERT(.false.)
         endif
-        select case(accemu)
-        case(0)
+! ------     API MUMPS ACCELERATION
+        select case(kacmum)
+        case('FR')
 ! FR std
             icntl(35)=0
-        case(1)
+        case('FR+')
+! FR +  aggressive optimizations
+            icntl(35)=0
+            if (type .eq. 'S') then
+                smpsk%keep(370)=1
+                smpsk%keep(371)=1
+            else if (type.eq.'C') then
+                cmpsk%keep(370)=1
+                cmpsk%keep(371)=1
+            else if (type.eq.'D') then
+                dmpsk%keep(370)=1
+                dmpsk%keep(371)=1
+            else if (type.eq.'Z') then
+                zmpsk%keep(370)=1
+                zmpsk%keep(371)=1
+            endif
+        case('LR')
 ! BLR std
             icntl(35)=1
             cntl(7)=blreps
-        case(2)
-! BLR+
-            icntl(35)=1
-            cntl(7)=blreps
-            if (type .eq. 'S') then
-                smpsk%keep(467)=1
-            else if (type.eq.'C') then
-                cmpsk%keep(467)=1
-            else if (type.eq.'D') then
-                dmpsk%keep(467)=1
-            else if (type.eq.'Z') then
-                zmpsk%keep(467)=1
-            endif
-        case(3)
+        case('LR+')
 ! BLR+ + aggressive optimizations
             icntl(35)=1
             cntl(7)=blreps
@@ -264,26 +301,10 @@ subroutine amumpi(option, lquali, ldist, kxmps, type)
                 zmpsk%keep(370)=1
                 zmpsk%keep(371)=1
             endif
-         case(4)
-! FR +  aggressive optimizations
-            icntl(35)=0
-            if (type .eq. 'S') then
-                smpsk%keep(370)=1
-                smpsk%keep(371)=1
-            else if (type.eq.'C') then
-                cmpsk%keep(370)=1
-                cmpsk%keep(371)=1
-            else if (type.eq.'D') then
-                dmpsk%keep(370)=1
-                dmpsk%keep(371)=1
-            else if (type.eq.'Z') then
-                zmpsk%keep(370)=1
-                zmpsk%keep(371)=1
-            endif
         case default
-            ASSERT(.false.)  	      	
+            ASSERT(.false.)
         end select
-	
+        
 !
 ! ---     MESSAGES/ALERTES MUMPS
         icntl(1) = to_mumps_int(ifm)

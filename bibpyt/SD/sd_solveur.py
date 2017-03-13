@@ -30,20 +30,19 @@ class sd_solveur(AsBase):
         slvk = self.SLVK.get_stripped()
         method = slvk[0]
         assert slvk[12] in ('OUI', 'NON', '')
-        assert slvk[4] in ('XXXX')
         assert slvk[9] in ('XXXX')
         if method == 'MUMPS':
             assert slvk[1] in ('AUTO', 'SANS')
             assert slvk[2] in ('NONSYM', 'SYMGEN', 'SYMDEF', 'AUTO')
             assert slvk[3] in (
                 'AMD', 'AMF', 'PORD', 'METIS', 'QAMD', 'AUTO', 'SCOTCH', 'PARMETIS', 'PTSCOTCH')
-            assert slvk[5] in ('LAGR2', 'NON',), slvk
-            assert slvk[6] in ('OUI', 'NON', 'XXXX')
+            assert slvk[4] in ('AUTO', 'FR', 'FR+','LR','LR+')
+            assert slvk[5] in ('LAGR2', 'NON',)
             assert slvk[7] in ('OUI', 'NON', 'XXXX')
             assert slvk[8] in (
                 'IN_CORE', 'OUT_OF_CORE', 'AUTO', 'EVAL', 'XXXX')
             assert slvk[10] in ('SANS', 'AUTO', 'FORCE', 'XXXX', 'MINI')
-            assert slvk[11] in ('XXXX', '5.1.0consortium', '5.1.0')
+            assert slvk[11] in ('XXXX', '5.0.2consortium', '5.0.2', '5.1.0consortium', '5.1.0')
         elif method == 'MULT_FRONT':
             assert slvk[1] in ('XXXX')
             assert slvk[2] in ('XXXX')

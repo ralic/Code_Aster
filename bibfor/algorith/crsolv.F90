@@ -1,4 +1,4 @@
-subroutine crsolv(method, renum, accemu, blreps, solve, bas)
+subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -8,8 +8,7 @@ subroutine crsolv(method, renum, accemu, blreps, solve, bas)
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: blreps
-    integer :: accemu
-    character(len=*) :: method, renum, solve, bas
+    character(len=*) :: method, renum, solve, bas, kacmum
 ! ----------------------------------------------------------------------
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -75,13 +74,14 @@ subroutine crsolv(method, renum, accemu, blreps, solve, bas)
     endif
     if (method .eq. 'MUMPS') then
         zk24(islvk-1+3) = 'AUTO'
+        zk24(islvk-1+5) = kacmum
         zk24(islvk-1+6) = 'LAGR2'
     else
         zk24(islvk-1+3) = 'XXXX'
+        zk24(islvk-1+5) = 'XXXX'
         zk24(islvk-1+6) = 'XXXX'
     endif
     zk24(islvk-1+4) = renum
-    zk24(islvk-1+5) = 'XXXX'
     zk24(islvk-1+7) = 'XXXX'
     zk24(islvk-1+8) = 'XXXX'
     zk24(islvk-1+9) = 'XXXX'
@@ -106,11 +106,7 @@ subroutine crsolv(method, renum, accemu, blreps, solve, bas)
     zi(islvi-1+4) =-9999
     zi(islvi-1+5) =-9999
     zi(islvi-1+6) =-9999
-    if (method .eq. 'MUMPS') then
-      zi(islvi-1+7) =accemu
-    else
-      zi(islvi-1+7) =-9999
-    endif
+    zi(islvi-1+7) =-9999
     zi(islvi-1+8) = 0
 !
     call jedema()

@@ -25,9 +25,10 @@
 #   ON TESTE AUSSI, SUR LA PREMIERE CONFIGURATION, LES RENUMEROTEURS
 #   METIS ET SCOTCH.
 #   PARALLELE: VALEUR CONSEILLEE 8 PROCS
-#   ON DECLINE AUSSI LA VERSION CENTRALISEE DES TESTS EN LOW-RANK EN
-#   JOUANT SUR LES RENUMEROTEURS ET LES NIVEAUX DE COMPRESSION. BIEN SUR
+#   ON DECLINE AUSSI LA VERSION CENTRALISEE DES TESTS EN JOUANT SUR LES
+#   RENUMEROTEURS ET LES NIVEAUX D'ACCELERATION. BIEN SUR
 #   LE CAS ETANT TROP PETIT, ON NE GAGNE RIEN EN TEMPS.
+#   RQ. 6 ALARMES NORMALES SI COMPILE AVEC MUMPS5.0.2, 4 AVEC MUMPS5.1.0
 #########################################################################
 #
 # Choix du solveur
@@ -91,8 +92,7 @@ TPS=DEFI_LIST_REEL(DEBUT=0.0,
                    INTERVALLE=_F(JUSQU_A=1,
                                  NOMBRE=1));
 
-# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + METIS + FULL/LOW-RANK
-# AVEC DIFFERENT NIVEAU DE COMPRESSION POSITIFS
+# 1.1 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + METIS + ACCELERATIONS
 #-----------------------------------------------------------------------
 
 MODI_MODELE(reuse=MO, MODELE=MO, DISTRIBUTION=_F(METHODE='CENTRALISE'))
@@ -108,7 +108,7 @@ MECAC=MECA_STATIQUE(INFO=niv_info,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 PCENT_PIVOT=pcent_pivot,
-                                ACCELERATION =0,
+                                ACCELERATION ='FR',
                                 NPREC=-1,
                                 ));
 
@@ -144,8 +144,7 @@ MECACL0=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='AUTO',RESI_RELA=1.E+6,
-                                ACCELERATION =1,
-                                LOW_RANK_SEUIL=0.0,
+                                ACCELERATION ='FR+',
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
@@ -182,7 +181,7 @@ MECACL1=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='FORCE',RESI_RELA=1.E+6,
-                                ACCELERATION =2,
+                                ACCELERATION ='LR',
                                 LOW_RANK_SEUIL=1.E-12,
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
@@ -219,7 +218,7 @@ MECACL9=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renum,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='MINI',RESI_RELA=1.E+6,
-                                ACCELERATION =3,
+                                ACCELERATION ='LR+',
                                 LOW_RANK_SEUIL=1.E-9,
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
@@ -247,9 +246,8 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   PRECISION=1.E-08,),
           )
 
-# 1.2 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + SCOTCH + FULL/LOW-RANK
-# AVEC DIFFERENT NIVEAU DE COMPRESSION POSITIF ET NEGATIF
-#--------------------------------------------------------
+# 1.2 : AVEC CHARGE DUALISEE ET MUMPS CENTRALISE + SCOTCH + ACCELERATIONS
+#------------------------------------------------------------------------
 
 MECAC2=MECA_STATIQUE(INFO=niv_info,
                      MODELE=MO,
@@ -261,7 +259,7 @@ MECAC2=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renu2,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
-                                ACCELERATION =0,
+                                ACCELERATION ='FR',
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
@@ -298,8 +296,7 @@ MECAC2L0=MECA_STATIQUE(INFO=niv_info,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='MINI',
-                                ACCELERATION =1,
-                                LOW_RANK_SEUIL=0.0,
+                                ACCELERATION ='FR+',
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
                                 ));
@@ -337,7 +334,7 @@ MECAC2L1=MECA_STATIQUE(INFO=niv_info,
                                 RESI_RELA=-1.0,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='MINI',
-                                ACCELERATION =2,
+                                ACCELERATION ='LR',
                                 LOW_RANK_SEUIL=1.E-12,
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,
@@ -375,7 +372,7 @@ MECAC2L2=MECA_STATIQUE(INFO=niv_info,
                                 RENUM=meth_renu2,
                                 GESTION_MEMOIRE='OUT_OF_CORE',
                                 POSTTRAITEMENTS='MINI',
-                                ACCELERATION =3,
+                                ACCELERATION ='LR+',
                                 LOW_RANK_SEUIL=-1.E-12,
                                 PCENT_PIVOT=pcent_pivot,
                                 NPREC=-1,

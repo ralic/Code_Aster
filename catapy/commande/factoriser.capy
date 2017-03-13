@@ -59,7 +59,7 @@ FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
            PCENT_PIVOT     =SIMP(statut='f',typ='I',defaut=20,),
            ELIM_LAGR       =SIMP(statut='f',typ='TXM',defaut="LAGR2",into=("LAGR2","NON")),
            GESTION_MEMOIRE =SIMP(statut='f',typ='TXM',defaut="IN_CORE",into=("IN_CORE","OUT_OF_CORE","EVAL")),
-           ACCELERATION=SIMP(statut='f', typ='I', defaut=4,into=(0,1,2,3,4)),
+           ACCELERATION=SIMP(statut='f', typ='TXM', defaut='AUTO',into=('AUTO','FR','FR+','LR','LR+')),
            LOW_RANK_SEUIL=SIMP(statut='f', typ='R', defaut=0.0, )
          ),
          b_iterat        =BLOC(condition="""equal_to("METHODE", 'GCPC') or equal_to("METHODE", 'PETSC')""",fr=tr("paramètres associés à la GCPC ou PETSc"),

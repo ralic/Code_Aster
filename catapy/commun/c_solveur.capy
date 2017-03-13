@@ -273,7 +273,7 @@ def C_SOLVEUR( COMMAND, BASE=None ) :  #COMMUN#
 
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-   _BlocMU['ACCELERATION'] =SIMP(statut='f', typ='I', defaut=4, into=(0,1,2,3,4))
+   _BlocMU['ACCELERATION'] =SIMP(statut='f', typ='TXM', defaut='AUTO',into=('AUTO','FR','FR+','LR','LR+'))
    _BlocMU['LOW_RANK_SEUIL']=SIMP(statut='f', typ='R', defaut=0.0, )
 
 # ----------------------------------------------------------------------------------------------------------------------------------

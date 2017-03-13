@@ -57,14 +57,14 @@ subroutine op0014()
     character(len=3) :: kstop
     character(len=5) :: klag2
     character(len=24) :: valk(2)
-    character(len=8) :: matass, matfac, type, ktypr, ktyps, precon, mixpre
+    character(len=8) :: matass, matfac, type, ktypr, ktyps, precon, mixpre, kacmum
     character(len=12) :: kooc
     character(len=16) :: concep, nomcmd, metres , renum
     character(len=19) :: mass, mfac, solveu, solvbd
     integer :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
     integer :: iret, isingu, istop, jadia, pcpiv, niremp
     integer :: ldtblo, lfnblo, ndeci, neq, niv, npvneg
-    integer :: jslvk, jslvr, jslvi, reacpr, accemu
+    integer :: jslvk, jslvr, jslvi, reacpr
     real(kind=8) :: fillin, epsmat, eps, blreps
     character(len=24), pointer :: refa(:) => null()
     aster_logical :: lreuse
@@ -87,10 +87,10 @@ subroutine op0014()
     call getvtx(' ', 'RENUM', scal=renum)
 
     if (metres.eq.'MUMPS') then
-        call getvis(' ', 'ACCELERATION', iocc=1, scal=accemu)
+        call getvtx(' ', 'ACCELERATION', iocc=1, scal=kacmum)
         call getvr8(' ', 'LOW_RANK_SEUIL', iocc=1, scal=blreps)
     else
-        accemu=0
+        kacmum='XXXX'
         blreps=0.d0
     endif
 
@@ -134,7 +134,7 @@ subroutine op0014()
 !   -- on cree un solveur minimal pour retenir les infos entre FACTORISER et RESOUDRE:
 !   ----------------------------------------------------------------------------------
     solveu=mfac(1:8)//'.SOLVEUR'
-    call crsolv(metres, renum, accemu, blreps, solveu, 'G')
+    call crsolv(metres, renum, kacmum, blreps, solveu, 'G')
     call jeveuo(mass//'.REFA', 'E', vk24=refa)
     refa(7)=solveu
     call jeveuo(solveu//'.SLVK', 'E', jslvk)
