@@ -25,6 +25,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef OPEN_MPI
+#include <dlfcn.h>
+#endif
 
 /*! Global object that store the entire tree */
 static aster_comm_t aster_mpi_world;
@@ -62,6 +65,20 @@ void aster_mpi_init(int argc, char **argv)
 #ifdef _USE_MPI
 
     printf("MPI_Init...\n");
+#ifdef OPEN_MPI
+    void *handle = 0;
+    int mode = RTLD_NOW | RTLD_GLOBAL;
+    mode |= RTLD_NOLOAD;
+    if (!handle) handle = dlopen("libmpi.so.15", mode);
+    if (!handle) handle = dlopen("libmpi.so.14", mode);
+    if (!handle) handle = dlopen("libmpi.so.13", mode);
+    if (!handle) handle = dlopen("libmpi.so.12", mode);
+    if (!handle) handle = dlopen("libmpi.so.11", mode);
+    if (!handle) handle = dlopen("libmpi.so.10", mode);
+    if (!handle) handle = dlopen("libmpi.so.1", mode);
+    if (!handle) handle = dlopen("libmpi.so.0", mode);
+    if (!handle) handle = dlopen("libmpi.so",   mode);
+#endif
     AS_ASSERT(MPI_Init(&argc, &argv) == MPI_SUCCESS);
     AS_ASSERT(atexit(terminate) == 0);
     /* set the error handler */
