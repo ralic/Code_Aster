@@ -18,7 +18,7 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0002(fami, kpg, ksp, ndim, imate,&
+    subroutine lc1002(fami, kpg, ksp, ndim, imate,&
                       compor, carcri, instam, instap, neps,&
                       epsm, deps, nsig, sigm, vim,&
                       option, sigp, vip, typmod, ndsde,&
@@ -45,5 +45,5 @@ interface
         integer, intent(in) :: ndsde
         real(kind=8), intent(out) :: dsidep(ndsde)
         integer, intent(out) :: codret
-    end subroutine lc0002
+    end subroutine lc1002
 end interface

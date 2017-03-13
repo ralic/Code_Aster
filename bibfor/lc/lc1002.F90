@@ -1,4 +1,4 @@
-subroutine lc0002(fami, kpg, ksp, ndim, imate,&
+subroutine lc1002(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps,&
                   epsm, deps, nsig, sigm, vim,&
                   option, sigp, vip, typmod, ndsde,&
@@ -6,8 +6,7 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
 !
 implicit none
 !
-#include "asterfort/nmisex.h"
-#include "asterfort/nmisot.h"
+#include "asterfort/lcpivm.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -52,22 +51,20 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Behaviour
+! Behaviour - Special SIMO_MIEHE
 !
 ! 'VMIS_ISOT_LINE', 'VMIS_ISOT_TRAC', 'VMIS_ISOT_PUIS', 'VISC_ISOT_TRAC', 'VISC_ISOT_LINE'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (nint(carcri(2)) .eq. 9) then
-        call nmisex(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, deps,&
-                    sigm, vim, option, sigp, vip,&
-                    typmod, dsidep, codret)
-    else
-        call nmisot(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor(1), carcri, deps, sigm,&
-                    vim, option, sigp, vip, dsidep,&
-                    codret)
-    endif
+    character(len=16) :: rela_comp
+!
+! --------------------------------------------------------------------------------------------------
+!
+    rela_comp = compor(1)
+    call lcpivm(fami, kpg, ksp, imate, rela_comp,&
+                carcri, instam, instap, epsm, deps,&
+                vim, option, sigp, vip, dsidep,&
+                codret)
 !
 end subroutine

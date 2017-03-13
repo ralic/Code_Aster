@@ -1,10 +1,31 @@
-subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
+subroutine lc1058(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, crit, instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
-                  nvi, vim, option, angmas, &
+                  nvi, vim, option, angmas,&
                   icomp, stress, statev, dsidep,&
                   codret)
-use calcul_module, only : ca_iactif_, ca_ctempl_
+use calcul_module, only : ca_iactif_
+!
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/mfront_behaviour.h"
+#include "asterc/mfront_get_external_state_variable.h"
+#include "asterc/r8nnem.h"
+#include "asterfort/assert.h"
+#include "asterfort/infniv.h"
+#include "asterfort/lceqvn.h"
+#include "asterfort/lcicma.h"
+#include "asterfort/matrot.h"
+#include "asterfort/pmat.h"
+#include "asterfort/tecael.h"
+#include "asterfort/mfront_get_mater_value.h"
+#include "asterfort/mfront_varc.h"
+#include "asterfort/lcdetf.h"
+#include "asterfort/utmess.h"
+#include "blas/daxpy.h"
+#include "blas/dcopy.h"
+#include "blas/dscal.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -22,6 +43,9 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504
+!
+
 ! ======================================================================
 !     BUT: INTERFACE POUR ROUTINE D'INTEGRATION LOI DE COMPORTEMENT MFRONT
 !       IN   FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
@@ -57,35 +81,17 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
 !       OUT  DSIDEP  MATRICE DE COMPORTEMENT TANGENT A T+DT OU T
 !       OUT  CODRET  CODE-RETOUR = 0 SI OK, =1 SINON
 ! ======================================================================
-! aslint: disable=W1504
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8nnem.h"
-#include "asterc/mfront_behaviour.h"
-#include "asterc/mfront_get_external_state_variable.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
-#include "asterfort/lceqvn.h"
-#include "asterfort/lcicma.h"
-#include "asterfort/matrot.h"
-#include "asterfort/pmat.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/tecael.h"
-#include "asterfort/mfront_get_mater_value.h"
-#include "asterfort/mfront_varc.h"
-#include "asterfort/lcdetf.h"
-#include "asterfort/utmess.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
-#include "blas/dscal.h"
+
+
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm, nbvarc
-    integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv
+    integer ::      ntens, ndi, nshr, i, nstatv, npt, nume_elem, layer
+    integer ::      kspt, kstep, kinc, j, ifm, niv
     integer ::      pfcmfr
     integer ::      nummod
-    parameter     ( npropmax = 197)
-    parameter     ( npred = 8)
+    integer :: idbg = 1
+    integer, parameter :: npropmax = 197
+    integer, parameter :: npred = 8
     integer ::      neps, nsig, iadzi, iazk24
     real(kind=8) :: angmas(*), crit(*)
     real(kind=8) :: instam, instap, drot(3, 3), dstran(9), props(npropmax)
@@ -100,38 +106,47 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
     character(len=16) :: compor(*), option
     character(len=8) :: typmod(*), lvarc(npred)
     character(len=*) :: fami
-    character(len=80) :: cmname
     common/tdim/  ntens  , ndi
-    data idbg/1/
 !
 !     NTENS  :  NB TOTAL DE COMPOSANTES TENSEURS
 !     NDI    :  NB DE COMPOSANTES DIRECTES  TENSEURS
 ! ======================================================================
-!
-!     NUMERO D'ELEMENT SEULEMENT SI ON N'EST PAS DANS CALC_POINT_MAT
-    noel=0
 
+!
+    call infniv(ifm, niv)
+
+!
+! - Initializations
+!
+    ntens       = 2*ndim
+    ndi         = 3
+    nshr        = ntens-ndi
+    codret      = 0
+    rac2        = sqrt(2.d0)
+    usrac2      = rac2*0.5d0
+    nprops      = npropmax
+    czm         = 0
+    stran(:)    = 0.d0
+    dstran(:)   = 0.d0
+    dfgrd0(:,:) = 0.d0
+    dfgrd1(:,:) = 0.d0
+    coords(:)   = r8nnem()
+!
+! - Get current index of cell
+!
+    nume_elem = 0
     if (ca_iactif_ .ne. 2) then
         call tecael(iadzi, iazk24, noms=0)
-        noel=zi(iadzi)
+        nume_elem=zi(iadzi)
     endif
 !
-    ntens=2*ndim
-    ndi=3
-    nshr=ntens-ndi
-    codret=0
-    rac2=sqrt(2.d0)
-    usrac2=rac2*0.5d0
-    nprops = npropmax
-
-!     IMPRESSIONS EVENTUELLES EN DEBUG
-    call infniv(ifm, niv)
+! - Get material properties
 !
-!   LECTURE DES PROPRIETES MATERIAU (MOT-CLE MFRONT DE DEFI_MATERIAU)
     call mfront_get_mater_value(fami, kpg, ksp, imate, ifm, &
                                 niv, idbg, compor(1), nprops, props)
-
-!   LECTURE DES VARIABLES DE COMMANDE ET DEFORMATIONS ASSOCIEES
+!
+! - Get type of modelization
+!
     if ( typmod(1)(1:4).eq.'AXIS' ) then
         nummod = 4
     else if ( typmod(1)(1:6).eq.'C_PLAN' ) then
@@ -143,66 +158,39 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
     else
         ASSERT(.false.)
     endif
-
+!
+! - Prepare external state variables
+!
     call mfront_get_external_state_variable(int(crit(14)), int(crit(15)), lvarc, nbvarc)
     ASSERT(nbvarc.le.npred)
     call mfront_varc(fami, kpg, ksp, imate, ifm, niv, idbg, lvarc, nbvarc, &
                      temp, dtemp, predef, dpred, neps, epsth, depsth )
 !
-    czm=0
-    call r8inir(9, 0.d0, stran, 1)
-    call r8inir(9, 0.d0, dstran, 1)
-    call r8inir(9, 0.d0, dfgrd0, 1)
-    call r8inir(9, 0.d0, dfgrd1, 1)
-
-! CAS DES GRANDES DEFORMATIONS : ON VEUT F- ET F+
+! - Prepare strains
 !
-    ASSERT(neps .ne. 9)
-    if ((neps.eq.6).or.(neps.eq.4)) then
-!
-! PETITES DEFORMATIONS : DEFORMATION - DEFORMATION THERMIQUE
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            call dcopy(neps, deps, 1, dstran, 1)
-            call daxpy(neps, -1.d0, depsth, 1, dstran,1)
-! TRAITEMENT DES COMPOSANTES 4,5,6 : DANS MFRONT, GAMMAXY,XZ,YZ
-            call dscal(3, rac2, dstran(4), 1)
-        else if (option(1:9).eq. 'RIGI_MECA') then
-            call r8inir(6, 0.d0, dstran, 1)
-        endif
-!
-        call dcopy(neps, epsm, 1, stran, 1)
-        call daxpy(neps, -1.d0, epsth, 1, stran, 1)
-        call dscal(3, rac2, stran(4), 1)
-
-    else if ((neps.eq.3).and.(typmod(2).eq.'ELEMJOIN')) then
-! PETITES DEFORMATIONS : CZM
-        if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-            call dcopy(neps, deps, 1, dstran, 1)
-        else
-            call r8inir(neps, 0.d0, dstran, 1)
-        endif
-        call dcopy(neps, epsm, 1, stran, 1)
-        ntens=6
-        nshr=3
-        czm=1
+    ASSERT(neps .eq. 9)
+    call dcopy(neps, epsm, 1, dfgrd0, 1)
+    if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
+        call pmat(3, deps, dfgrd0, dfgrd1)
     else
-        ASSERT(.false.)
+        call dcopy(neps, dfgrd0, 1, dfgrd1, 1)
     endif
+    call dcopy(neps, dfgrd0, 1, stran, 1)
+    call dcopy(neps, dfgrd1, 1, dstran, 1)
 !
-    if (compor(3) .eq. 'GDEF_LOG') then
-        nstatv=nvi-6
-    else
-        nstatv=nvi
-    endif
+! - Real number of internal variable: SIMO_MIEHE
 !
-    time(1)=instap-instam
-    time(2)=instam
-    dtime=instap-instam
-    cmname=compor(1)
+    nstatv=nvi-6
 !
-    call r8inir(3, r8nnem(), coords, 1)
+! - Time parameters
+!
+    time(1) = instap-instam
+    time(2) = instam
+    dtime   = instap-instam
+!
+! - Anistropic case
+!
     call matrot(angmas, drott)
-!
     do i = 1,3
         do j = 1,3
             drot(j,i) = drott(i,j)
@@ -214,20 +202,22 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
     kspt=ksp
     kstep=icomp
     kinc=1
-!     initialisations des arguments inutilises
-    sse=0.d0
-    spd=0.d0
-    scd=0.d0
-    rpl=0.d0
-    call r8inir(6, 0.d0, ddsddt, 1)
-    call r8inir(6, 0.d0, drplde, 1)
-    drpldt=0.d0
+!
+! - Unused arguments for MFront
+!
+    sse       = 0.d0
+    spd       = 0.d0
+    scd       = 0.d0
+    rpl       = 0.d0
+    ddsddt(:) = 0.d0
+    drplde(:) = 0.d0
+    drpldt    = 0.d0
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         if ((niv.ge.2) .and. (idbg.eq.1)) then
             write(ifm,*)' '
             write(ifm,*)'AVANT APPEL MFRONT, INSTANT=',time(2)+dtime
-            write(ifm,*)'NUMERO ELEMENT=',noel
+            write(ifm,*)'NUMERO ELEMENT=',nume_elem
             write(ifm,*)'DEFORMATIONS INSTANT PRECEDENT STRAN='
             write(ifm,'(6(1X,E11.4))') (stran(i),i=1,ntens)
             write(ifm,*)'ACCROISSEMENT DE DEFORMATIONS DSTRAN='
@@ -300,46 +290,13 @@ use calcul_module, only : ca_iactif_, ca_ctempl_
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
         call dscal(3, rac2, stress(4), 1)
-        if (compor(3) .eq. 'SIMO_MIEHE') then
 ! transformation cauchy kirchhoff
-           call lcdetf(3, dfgrd1, detf)
-           call dscal(3, detf, stress, 1)
-        endif
+        call lcdetf(3, dfgrd1, detf)
+        call dscal(3, detf, stress, 1)
     endif
 !
     if (option(1:9) .eq. 'RIGI_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
-
-       if (compor(3) .eq. 'SIMO_MIEHE') then
-           call dcopy(54, ddsdde, 1, dsidep, 1)
-       else
-           call r8inir(36, 0.d0, dsidep, 1)
-!          cas des CZM
-           if (czm.eq.1) then
-               do i=1,3
-                  do j=1,3
-                     dsidep(i,j)=ddsdde(3*(i-1)+j)
-                  enddo
-               enddo
-           else
-               call lcicma(ddsdde, ntens, ntens, ntens, ntens,  1, 1, dsidep, 6, 6, 1, 1)
-               do i = 1, 6
-                   do j = 4, 6
-                       dsidep(i,j) = dsidep(i,j)*rac2
-                   end do
-               end do
-               do i = 4, 6
-                   do j = 1, 6
-                       dsidep(i,j) = dsidep(i,j)*rac2
-                   end do
-               end do
-           endif
-           if ((niv.ge.2) .and. (idbg.eq.1)) then
-               write(ifm,*)'APRES APPEL MFRONT,OPERATEUR TANGENT DSIDEP='
-               do i = 1, 6
-                   write(ifm,'(6(1X,E11.4))') (dsidep(i,j),j=1,6)
-               end do
-           endif
-        endif
+        call dcopy(54, ddsdde, 1, dsidep, 1)  
     endif
 !
     if (pnewdt .lt. 0.0d0) then

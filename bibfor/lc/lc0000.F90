@@ -47,7 +47,6 @@ implicit none
 #include "asterfort/lc0033.h"
 #include "asterfort/lc0034.h"
 #include "asterfort/lc0035.h"
-#include "asterfort/lc0036.h"
 #include "asterfort/lc0037.h"
 #include "asterfort/lc0038.h"
 #include "asterfort/lc0039.h"
@@ -112,6 +111,10 @@ implicit none
 #include "asterfort/lc0098.h"
 #include "asterfort/lc0099.h"
 #include "asterfort/lc0100.h"
+#include "asterfort/lc1002.h"
+#include "asterfort/lc1015.h"
+#include "asterfort/lc1036.h"
+#include "asterfort/lc1058.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -485,12 +488,6 @@ implicit none
                     nvi, dsidep, codret)
     case (35)
         call lc0035(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (36)
-        call lc0036(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
@@ -890,6 +887,44 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With SIMO_MIEHE
+! --------------------------------------------------------------------------------------------------
+!
+    case (1002)
+!     VMIS_ISOT_XXX, VISC_ISOT_XXX
+        call lc1002(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, sigp, vip, typmod, ndsde,&
+                    dsidep, codret)
+
+    case (1015)
+!     META_XXX
+        call lc1015(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+
+    case (1036)
+!     ROUSSELIER
+        call lc1036(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+
+    case (1058)
+!     MFRONT
+        call lc1058(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, carcri, instam, instap,&
+                    neps, epsm, deps, nsig, sigm,&
+                    nvi, vim, option, angmas,&
+                    icomp, sigp, vip, dsidep,&
+                    codret)
+
     case (9999)
         call lc9999(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&

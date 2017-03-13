@@ -18,11 +18,11 @@
 ! aslint: disable=W1504
 !
 interface
-    subroutine lc0002(fami, kpg, ksp, ndim, imate,&
-                      compor, carcri, instam, instap, neps,&
-                      epsm, deps, nsig, sigm, vim,&
-                      option, sigp, vip, typmod, ndsde,&
-                      dsidep, codret)
+    subroutine lc1015(fami, kpg, ksp, ndim, imate,&
+                      compor, carcri, instam, instap, epsm,&
+                      deps, sigm, vim, option, angmas,&
+                      sigp, vip, typmod, icomp,&
+                      nvi, dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
@@ -32,18 +32,18 @@ interface
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
-        integer, intent(in) :: neps
-        real(kind=8), intent(in) :: epsm(neps)
-        real(kind=8), intent(in) :: deps(neps)
-        integer, intent(in) :: nsig
-        real(kind=8), intent(in) :: sigm(nsig)
+        real(kind=8), intent(in) :: epsm(*)
+        real(kind=8), intent(in) :: deps(*)
+        real(kind=8), intent(in) :: sigm(*)
         real(kind=8), intent(in) :: vim(*)
         character(len=16), intent(in) :: option
-        real(kind=8), intent(out) :: sigp(nsig)
+        real(kind=8), intent(in) :: angmas(*)
+        real(kind=8), intent(out) :: sigp(*)
         real(kind=8), intent(out) :: vip(*)
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: ndsde
-        real(kind=8), intent(out) :: dsidep(ndsde)
+        integer, intent(in) :: icomp
+        integer, intent(in) :: nvi
+        real(kind=8), intent(out) :: dsidep(*)
         integer, intent(out) :: codret
-    end subroutine lc0002
+    end subroutine lc1015
 end interface

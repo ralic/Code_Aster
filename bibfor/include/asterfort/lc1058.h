@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,33 +16,35 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lc0036(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, tampon, typmod, icomp,&
-                      nvi, dsidep, codret)
+    subroutine lc1058(fami, kpg, ksp, ndim, typmod,&
+                      imate, compor, crit, instam, instap,&
+                      neps, epsm, deps, nsig, sigm,&
+                      nvi, vim, option, angmas,&
+                      icomp, stress, statev, dsidep,&
+                      codret)
+        integer :: nvi
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
         integer :: ndim
+        character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
-        real(kind=8) :: sigm(*)
+        integer :: neps
+        real(kind=8) :: epsm(6)
+        real(kind=8) :: deps(6)
+        integer :: nsig
+        real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)
         character(len=16) :: option
         real(kind=8) :: angmas(*)
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: tampon(*)
-        character(len=8) :: typmod(*)
         integer :: icomp
-        integer :: nvi
-        real(kind=8) :: dsidep(*)
+        real(kind=8) :: stress(6)
+        real(kind=8) :: statev(nvi)
+        real(kind=8) :: dsidep(6, 6)
         integer :: codret
-    end subroutine lc0036
+    end subroutine lc1058
 end interface
