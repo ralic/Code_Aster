@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -88,7 +88,7 @@ def export_mate(epx, CHAM_MATER, COMPORTEMENT, INTERFACES, dicOrthotropie):
         concept_mater = affe['MATER']
         nom_mater = concept_mater.get_name()
         # Recuperer les group_ma concernes
-        group_ma = get_group_ma(affe)
+        group_ma = get_group_ma(affe, mcfact='AFFE_MATERIAU/AFFE')
         for gr in group_ma:
             if gr in dic_comportement:
                 dic_comportement[gr]['MATER'] = concept_mater

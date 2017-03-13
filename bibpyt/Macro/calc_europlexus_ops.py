@@ -115,9 +115,9 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     # Creation d'un repertoire commun pour les echanges de donnees entre procs
     user=getpass.getuser()
     name_tmp = uuid.uuid4()
-    
+
     run = AsRunFactory()
-    
+
     os.mkdir('%s/EPX_%s'%(run['shared_tmp'],name_tmp))
     rep_tmp='%s/EPX_%s'%(run['shared_tmp'],name_tmp)
 
@@ -141,7 +141,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
     #
     # LANCEMENT DU CALCUL
     #
-    
+
 
     #Commandes pour le cas parallele
     #rank, np = aster_core.MPI_CommRankSize()
@@ -152,7 +152,7 @@ def calc_europlexus_ops(self, EXCIT, COMPORTEMENT, ARCHIVAGE, CALCUL,
             host = socket.gethostname()
             path = "{}:{}".format(host, cwd)
             alldirs = aster_core.MPI_GatherStr(path, 0)
-            if rank==0 : 
+            if rank==0 :
                 # Execution d Europlexus
                 EPX.lancer_calcul()
                 # Envoie des donnees sur les autres processeurs
@@ -317,7 +317,7 @@ class EUROPLEXUS:
         self.INFO = INFO
         self.COMPORTEMENT = COMPORTEMENT
         self.AMORTISSEMENT = AMORTISSEMENT
-   
+
         self.REPE_epx = REPE_epx
         self.NP = NP
         self.RANK=RANK
@@ -349,12 +349,12 @@ class EUROPLEXUS:
             self.PAS_NBRE_COURBE = args['PAS_NBRE_COURBE']
         else:
             self.PAS_NBRE_COURBE = None
-            
+
         if args.has_key('INST_COURBE'):
             self.INST_COURBE = args['INST_COURBE']
         else:
             self.INST_COURBE = None
-        
+
         if args.has_key('NUME_ORDRE_COURBE'):
             self.NUME_ORDRE_COURBE = args['NUME_ORDRE_COURBE']
         else:
@@ -447,16 +447,16 @@ class EUROPLEXUS:
         # Donner un nom au fichier de maillage parce que le fort.unite peut
         # être ecrasée par d'autre operation d'ecriture.
         unite = self.get_unite_libre()
-        
+
         if self.NP > 1 :
             # Ecriture du fichier maillage dans un repertoire commun a tous les procs
             fichiermaillage = self.nom_fichiers['MAILLAGE']
-            namemsh = os.path.basename(fichiermaillage)          
+            namemsh = os.path.basename(fichiermaillage)
             send_file(fichiermaillage, self.REPE_tmp)
             fichier_maillage='%s/%s'%(self.REPE_tmp,namemsh)
         else :
             fichier_maillage = self.nom_fichiers['MAILLAGE']
-        
+
         DEFI_FICHIER(UNITE=unite, FICHIER=fichier_maillage, ACTION='ASSOCIER')
 
         if self.ETAT_INIT is not None:
@@ -483,11 +483,11 @@ class EUROPLEXUS:
                     res_imp = var_int_a2e(self.compor_gr, RESULTAT, self.MODELE,
                                           nume_ordre)
                     nume_ordre = 1
-            
+
             if self.ETAT_INIT['CONTRAINTE'] == 'OUI':
                 if self.ETAT_INIT['VITESSE'] == 'OUI':
                     list_cham.append('VITE')
-            
+
             # Impression des champs du dernier instant de calcul.
             nume_ordre = RESULTAT.LIST_PARA()['NUME_ORDRE'][-1]
             IMPR_RESU(UNITE=unite,
@@ -578,7 +578,7 @@ class EUROPLEXUS:
                     dicOrthotropie = {}
                     donnees_coque = tolist(cara_elem_struc[cle])
                     for elem in donnees_coque:
-                        l_group = get_group_ma(elem)
+                        l_group = get_group_ma(elem, mcfact='AFFE_CARA_ELEM/COQUE')
 
                         if elem.has_key('VECTEUR'):
                             for group in l_group:
@@ -637,13 +637,13 @@ class EUROPLEXUS:
         if self.OBSERVATION is not None:
             listing_fact = self.OBSERVATION.List_F()[0]
             nom_cham = tolist(listing_fact['NOM_CHAM'])
-            
+
             # champs
             for cham_aster in nom_cham:
                 cham_epx = cata_champs[cham_aster]
                 bloc_champ = BLOC_DONNEES(cham_epx)
                 epx[directive].add_bloc(bloc_champ)
-            
+
             # instants
             blocs_inst = ctime(listing_fact)
             for bloc in blocs_inst:
@@ -698,7 +698,7 @@ class EUROPLEXUS:
 
             mot_cle = "FICHIER ALIT 11"
             objet = epx[directive].add_mcfact(mot_cle)
-            
+
             # instants
             blocs_inst = ctime(concept_bid)
             for bloc in blocs_inst:
@@ -1110,7 +1110,7 @@ class EUROPLEXUS:
         """
         from Cata.cata import LIRE_EUROPLEXUS
         import med_aster
-      
+
         fichier_med = self.nom_fichiers['MED']
 
         if not os.path.isfile(fichier_med):

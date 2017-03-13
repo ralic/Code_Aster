@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,7 @@ def export_modele(epx, MAILLAGE, MODELE, gmaInterfaces, info_mode_compl):
                 UTMESS('A', 'PLEXUS_3')
             group_ma = ['TOUT']
         else:
-            group_ma = get_group_ma(affe)
+            group_ma = get_group_ma(affe, mcfact='AFFE_MODELE/AFFE')
         if not cata_modelisa[modelisation]['ETAT_INIT']:
             etat_init_cont.append(modelisation)
         if cata_modelisa[modelisation].has_key('MODI_REPERE'):

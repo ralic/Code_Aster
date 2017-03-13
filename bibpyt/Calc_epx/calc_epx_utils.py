@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,7 +92,7 @@ def recupere_structure(concept, mot_cle=None):
 #-----------------------------------------------------------------------
 
 
-def get_motcle(fact, mot_cle, code_mess='F'):
+def get_motcle(fact, mot_cle, mcfact='', code_mess='F'):
     """
         Renvoie la valeur associée à mot_cle dans l'objet fact.
     """
@@ -103,17 +103,20 @@ def get_motcle(fact, mot_cle, code_mess='F'):
     except:
         out = None
         if code_mess is not None:
-            UTMESS(code_mess, 'PLEXUS_2', valk=mot_cle)
+            if mcfact:
+                UTMESS(code_mess, 'PLEXUS_58', valk=(mot_cle, mcfact))
+            else:
+                UTMESS(code_mess, 'PLEXUS_2', valk=mot_cle)
     return out
 #-----------------------------------------------------------------------
 
 
-def get_group_ma(fact, mot_cle='GROUP_MA'):
+def get_group_ma(fact, mot_cle='GROUP_MA', mcfact=''):
     """
         Renvoie la liste des groupes de mailles de l'instance 'fact'
         associée au mot-clé mot_cle.
     """
-    group_ma = get_motcle(fact, mot_cle, code_mess='F')
+    group_ma = get_motcle(fact, mot_cle, mcfact, code_mess='F')
     group_ma = tolist(group_ma)
     return group_ma
 #-----------------------------------------------------------------------
@@ -167,21 +170,21 @@ def ctime(fact):
     les différentes possibilités d'EPX (correspond à /CTIME/ de EPX)
     """
     from Calc_epx.calc_epx_struc import BLOC_DONNEES
-    
+
     cata_inst = {
     'PAS_NBRE': 'FREQ',
     'PAS_INST': 'TFREQ',
     'INST'    : 'TIME',
     'NUME_ORDRE' : 'NUPA',
-    }  
-    
+    }
+
     blocs_ctime = []
-    
+
     for cle in cata_inst.keys():
         val = get_motcle(fact, cle, code_mess=None)
         if val is not None:
             cle_epx = cata_inst[cle]
-            
+
             if cle_epx == 'TIME':
                 bloc_ctime = BLOC_DONNEES(cle_epx, l_group=val, cle_l_group='PROG',
                                           dispo_group='hori')
@@ -189,9 +192,9 @@ def ctime(fact):
                 bloc_ctime = BLOC_DONNEES(cle_epx, l_group=val, dispo_group='hori')
             else:
                 bloc_ctime = BLOC_DONNEES(cle_epx, cle=val)
-            
+
             blocs_ctime.append(bloc_ctime)
-            
+
     return blocs_ctime
 #------------------------------------------------------------------------
 

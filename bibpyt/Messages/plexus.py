@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,13 +24,13 @@ Pour que CALC_EUROPLEXUS fonctionne il faut ajouter DEBUG=_F(HIST_ETAPE='OUI')
 dans la commande DEBUT.
 Remarque : CALC_EUROPLEXUS ne fonctionne pas en POURSUITE"""),
 
-    2:  _(u"""Le mot-clé %(k1)s n'existe pas"""),
+    2:  _(u"""Le mot-clé '%(k1)s' n'est pas renseigné."""),
 
     3 : _(u"""
 CALC_EUROPLEXUS tente de créer le groupe de mailles 'TOUT' dans le maillage car
 TOUT='OUI' est activé dans AFFE_MODELE, or ce groupe de mailles existe déjà.
 
-Conseil : détruisez le ou vérifiez qu'il contient bien toutes les mailles du modèle. 
+Conseil : détruisez le ou vérifiez qu'il contient bien toutes les mailles du modèle.
 """),
 
     4 : _(u"""
@@ -119,7 +119,7 @@ en état initial ne sera pas transmis à EPX pour les éléments affectés des m
 
     21 : _(u"""
 Dans l'occurrence %(i1)d du mot-clé COURBE, NOM_COURBE dépasse.%(i2)d caractères.
-Le nom de la colonne correspondante sera tronqué dans la table. 
+Le nom de la colonne correspondante sera tronqué dans la table.
 """),
 
     22 : _(u"""La valeur du mot-clé %(k1)s du matériau %(k2)s est différente de %(k3)s.
@@ -344,8 +344,9 @@ le mot-clé %(k2)s qui est obligatoire.
 
     57 : _(u"""
 Échec de la transformation des variables internes d'EPX vers Code_Aster pour la loi %(k1)s.
-Des mailles de bord sont certainement présentes parmi les mailles renseignées dans le 
+Des mailles de bord sont certainement présentes parmi les mailles renseignées dans le
 mot-clé COMPORTEMENT pour cette loi.
 """),
 
+    58:  _(u"""Le mot-clé '%(k1)s' n'est pas renseigné sous le mot-clé facteur '%(k2)s'."""),
 }

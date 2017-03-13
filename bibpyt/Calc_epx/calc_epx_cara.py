@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -143,13 +143,13 @@ def bloc_cara(typ_carel, l_elem, epx, group, select, directive, mot_cle_aster,
                     continue
                 else:
                     UTMESS('F', 'PLEXUS_45', valk=[key, typ_carel])
-            
+
             # on complete VALE avec des donnees provenant d'ailleurs
             if None in vale:
                 for i, val in enumerate(vale):
                     if val is None:
                         car = cara[i]
-                        # s'il y a en même temps K_T_D_L et A_T_D_L sur des DISCRET en repère local 
+                        # s'il y a en même temps K_T_D_L et A_T_D_L sur des DISCRET en repère local
                         # VX, VY et VZ vont être présents deux fois : on ne les ajoutes pas dans ce cas
                         if car in l_cara:
                             cara[i] = None
@@ -229,7 +229,7 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
         # recuperation des données pour chaque groupe (nécessaire pour le
         # mot-clé DISCRET)
         for elem in donnees_cle:
-            l_group = get_group_ma(elem)
+            l_group = get_group_ma(elem, mcfact='AFFE_CARA_ELEM/' + cle)
             for group in l_group:
                 if not group in dic_gr_donnees.keys():
                     dic_gr_donnees[group] = []
@@ -237,7 +237,7 @@ def export_cara(cle, epx, donnees_cle, MAILLAGE, CARA_ELEM,
 
         for group in dic_gr_donnees.keys():
             l_elem = dic_gr_donnees[group]
-            epx, mode_from_cara = bloc_cara(cle, l_elem, epx, group, 
+            epx, mode_from_cara = bloc_cara(cle, l_elem, epx, group,
                                             select, directive, mot_cle_aster, mot_cle_epx,
                                             cara_aster, cara_epx, coef_mult, is_vale_aster,
                                             mode_epx, mode_from_cara, titre, verif,
@@ -433,7 +433,7 @@ def recu_cara_cata(cle):
                 coef_mult.append(co)
             else:
                 coef_mult.append(1.)
-            
+
         if dic.has_key('MODE_EPX'):
             mode_epx.append(dic['MODE_EPX'])
         else:
