@@ -15,12 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine plasti(fami, kpg, ksp, typmod, imate,&
                       compor, carcri, instam, instap, &
                       epsdt, depst, sigm,&
                       vim, option, angmas, sigp, vip,&
-                      dsidep, icomp, nvi, wkin, codret, mult_compor_)
+                      dsidep, icomp, nvi, codret, mult_compor_, wkin_)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
@@ -37,12 +39,12 @@ interface
         real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(*)
-        real(kind=8), intent(in) :: wkin(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
         integer, intent(in) :: nvi
         real(kind=8), intent(out) :: dsidep(6, *)
         integer, intent(out) :: codret
         character(len=16), optional, intent(in) :: mult_compor_
+        real(kind=8), optional, intent(in) :: wkin_(9)
     end subroutine plasti
 end interface

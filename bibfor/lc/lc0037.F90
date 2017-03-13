@@ -84,7 +84,7 @@ implicit none
                         compor, carcri, instam, instap,&
                         epsm, deps, sigm,&
                         vim, option, angmas, sigp, vip,&
-                        dsidep, icomp, nvi, wkin, codret, mult_comp)
+                        dsidep, icomp, nvi, codret, mult_comp, wkin)
         else if (algo_inte.eq.'RUNGE_KUTTA') then
             meting = 'RUNGE_KUTTA'
             call nmvprk(fami, kpg, ksp, ndim, typmod,&

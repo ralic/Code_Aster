@@ -465,7 +465,7 @@ implicit none
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, &
-                    wkin, typmod, icomp, nvi, dsidep,&
+                    typmod, icomp, nvi, dsidep,&
                     codret)
     case (31)
         call lc0031(fami, kpg, ksp, ndim, imate,&
@@ -477,26 +477,26 @@ implicit none
         call lc0032(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps,&
                     epsm, deps, sigm, vim, option,&
-                    angmas, sigp, vip, wkin, typmod, icomp, nvi,&
+                    angmas, sigp, vip, typmod, icomp, nvi,&
                     dsidep, codret)
     case (33)
         call lc0033(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, &
-                    wkin, typmod, icomp, nvi, dsidep,&
+                    typmod, icomp, nvi, dsidep,&
                     codret)
     case (34)
         call lc0034(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (35)
         call lc0035(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
 
     case (37)
@@ -616,7 +616,7 @@ implicit none
         call lc0059(fami, kpg, ksp, imate,&
                     compor, carcri, instam, instap, neps, epsm,&
                     deps, nsig, sigm, nvi, vim, option, angmas,&
-                    sigp, vip, wkin,&
+                    sigp, vip,&
                     typmod, icomp, dsidep, codret)
     case (60)
         call lc0060(fami, kpg, ksp, ndim, imate,&

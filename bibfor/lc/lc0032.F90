@@ -2,7 +2,7 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps,&
                   epsm, deps, sigm, vim, option,&
                   angmas, sigp, vip,&
-                  wkin, typmod, icomp, nvi,&
+                  typmod, icomp, nvi,&
                   dsidep, codret)
 !
 implicit none
@@ -47,7 +47,6 @@ implicit none
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(*)
-    real(kind=8), intent(in) :: wkin(*)
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
     integer, intent(in) :: nvi
@@ -77,7 +76,7 @@ implicit none
                     compor, carcri, instam, instap, &
                     epsm, deps, sigm,&
                     vim, option, angmas, sigp, vip,&
-                    dsidep, icomp, nvi, wkin, codret)
+                    dsidep, icomp, nvi, codret)
 !
     else if (algo.eq.'RUNGE_KUTTA') then
 !

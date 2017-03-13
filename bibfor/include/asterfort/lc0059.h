@@ -19,7 +19,7 @@ interface
     subroutine lc0059(fami, kpg, ksp, imate,&
                       compor, carcri, instam, instap, neps, epsm,&
                       deps, nsig, sigm, nvi, vim, option, angmas,&
-                      sigp, vip, wkin,&
+                      sigp, vip,&
                       typmod, icomp, dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
@@ -40,7 +40,6 @@ interface
         real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(nsig)
         real(kind=8), intent(out) :: vip(nvi)
-        real(kind=8), intent(in) :: wkin(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
 
