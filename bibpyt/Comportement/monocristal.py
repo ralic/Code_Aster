@@ -24,7 +24,7 @@ loi = LoiComportement(
             sont fournies via le concept compor, issu de DEFI_COMPOR.
             Le nombre de variables internes est fonction des choix effectués dans DEFI_COMPOR ;
             pour plus de précisions consulter [R5.03.11]."""      ,
-    num_lc         = 37,
+    num_lc         = 137,
     nb_vari        = 0,
     nom_vari       = None,
     mc_mater       = None,

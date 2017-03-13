@@ -46,7 +46,6 @@ implicit none
 #include "asterfort/lc0033.h"
 #include "asterfort/lc0034.h"
 #include "asterfort/lc0035.h"
-#include "asterfort/lc0037.h"
 #include "asterfort/lc0038.h"
 #include "asterfort/lc0039.h"
 #include "asterfort/lc0040.h"
@@ -108,9 +107,11 @@ implicit none
 #include "asterfort/lc0100.h"
 #include "asterfort/lc0115.h"
 #include "asterfort/lc0120.h"
+#include "asterfort/lc0137.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
+#include "asterfort/lc1137.h"
 #include "asterfort/lc1058.h"
 #include "asterfort/lc2001.h"
 #include "asterfort/lc2002.h"
@@ -498,14 +499,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
-
-    case (37)
-        call lc0037(fami, kpg, ksp, ndim, imate,&
-                    compor, mult_comp, carcri, instam, instap, neps,&
-                    epsm, deps, sigm, vim, option,&
-                    angmas, sigp, vip, &
-                    wkin, typmod, icomp, nvi,&
-                    dsidep, codret)
     case (38)
         call lc0038(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -878,6 +871,14 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
+    case (137)
+!     MONOCRISTAL, POLYCRISTAL
+        call lc0137(fami, kpg, ksp, ndim, imate,&
+                    compor, mult_comp, carcri, instam, instap, neps,&
+                    epsm, deps, sigm, vim, option,&
+                    angmas, sigp, vip, &
+                    wkin, typmod, icomp, nvi,&
+                    dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With SIMO_MIEHE
@@ -915,6 +916,15 @@ implicit none
                     nvi, vim, option, angmas,&
                     icomp, sigp, vip, dsidep,&
                     codret)
+
+    case (1137)
+!     MONOCRISTAL, POLYCRISTAL
+        call lc1137(fami, kpg, ksp, ndim, imate,&
+                    compor, mult_comp, carcri, instam, instap, neps,&
+                    epsm, deps, sigm, vim, option,&
+                    angmas, sigp, vip, &
+                    wkin, typmod, icomp, nvi,&
+                    dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With IMPLEX

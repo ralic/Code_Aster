@@ -1,4 +1,4 @@
-subroutine lc0037(fami, kpg, ksp, ndim, imate,&
+subroutine lc0137(fami, kpg, ksp, ndim, imate,&
                   compor, mult_comp, carcri, instam, instap,&
                   neps, epsm, deps, sigm, vim, option,&
                   angmas, sigp, vip, &
