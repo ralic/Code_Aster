@@ -1,7 +1,7 @@
 subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -160,9 +160,9 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc)
 !       On ouvre et écriture
         call ulopen(unite, fichier, ' ', 'N', 'O')
         if ( geomi .ne. ' ') then
-            call irmail('MED', unite, ibid, maili, ASTER_FALSE , k8bid, ibid, 1, formar)
+            call irmail('MED', unite, ibid, maili, ASTER_FALSE , k8bid, 1, formar)
         else
-            call irmail('MED', unite, ibid, nomai, ASTER_FALSE , k8bid, ibid, 1, formar)
+            call irmail('MED', unite, ibid, nomai, ASTER_FALSE , k8bid, 1, formar)
         endif
 !       On ferme
         call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)

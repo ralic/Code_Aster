@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,14 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine irchml(chamel, partie, ifi, form, titre,&
+    subroutine irchml(chamel, ifi, form, titre,&
                       loc, nomsd, nomsym, numord, lcor,&
                       nbnot, numnoe, nbmat, nummai, nbcmp,&
                       nomcmp, lsup, borsup, linf, borinf,&
-                      lmax, lmin, lresu, formr, ncmp,&
-                      nucmp, nive)
+                      lmax, lmin, formr, ncmp,&
+                      nucmp)
         character(len=*) :: chamel
-        character(len=*) :: partie
         integer :: ifi
         character(len=*) :: form
         character(len=*) :: titre
@@ -46,10 +45,8 @@ interface
         real(kind=8) :: borinf
         aster_logical :: lmax
         aster_logical :: lmin
-        aster_logical :: lresu
         character(len=*) :: formr
         integer :: ncmp
         integer :: nucmp(*)
-        integer :: nive
     end subroutine irchml
 end interface

@@ -4,7 +4,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     implicit none
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -173,7 +173,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 lnoe = (lprofv-1)/2
                 call jeveuo('&&FLUST1.TEMP.PROFV', 'L', vr=profv)
                 vmoyto = profv(lprofv)
-                write (ifr,1001) vmoyto
+                write (ifr,101) vmoyto
                 write (ifr,*)
             endif
         endif
@@ -208,7 +208,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
         do 10 im = 1, nbm
             imod = nuor(im)
             if (calcul(1)) then
-                write (ifr,1002) imod,freqi(imod)
+                write (ifr,102) imod,freqi(imod)
                 write (ifr,*) ' ------------------------------------------'
                 write (ifr,*)
 !
@@ -260,26 +260,26 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         vrmin = vrzo(1+2*(j-1)+0)
                         call codree(vrmin, 'E', xvmin)
                         if (vrmin .lt. 0.d0) then
-                            xvmin = '-'//xvmin
+                            xvmin = '-'//xvmin(1:12)
                         else
-                            xvmin = ' '//xvmin
+                            xvmin = ' '//xvmin(1:12)
                         endif
 !
                         vrmax = vrzo(1+2*(j-1)+1)
                         call codree(vrmax, 'E', xvmax)
                         if (vrmax .lt. 0.d0) then
-                            xvmax = '-'//xvmax
+                            xvmax = '-'//xvmax(1:12)
                         else
-                            xvmax = ' '//xvmax
+                            xvmax = ' '//xvmax(1:12)
                         endif
 !
                         if (iret .ne. 0) then
                             vmoy = profv(1+lnoe+n1)
                             call codree(vmoy, 'E', xvmoy)
                             if (vmoy .lt. 0.d0) then
-                                xvmoy = '-'//xvmoy
+                                xvmoy = '-'//xvmoy(1:12)
                             else
-                                xvmoy = ' '//xvmoy
+                                xvmoy = ' '//xvmoy(1:12)
                             endif
                         else
                             xvmoy = '      -      '
@@ -291,23 +291,23 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         trav4(j) = chazv6(1:2 )//xvmin//' | ' //xvmax//' *'
  15                 continue
 !
-                    write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
+                    write(ifr,301) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
-                    write(ifr,3001) ' *',chav12,chav12,chav12,chav13,&
+                    write(ifr,301) ' *',chav12,chav12,chav12,chav13,&
                     (chazp2,trav1(j),j=1,nzone)
-                    write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
+                    write(ifr,301) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
-                    write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
+                    write(ifr,301) ' *',chav13,chav13,chav13,chav13,&
                     (trav2(j),chazv3,j=1,nzone)
-                    write(ifr,3001) ' *',chav21,chav21,chav22,chav23,&
+                    write(ifr,301) ' *',chav21,chav21,chav22,chav23,&
                     (chazp4,chazv4,j=1,nzone)
-                    write(ifr,3001) ' *',chav31,chav32,chav33,chav34,&
+                    write(ifr,301) ' *',chav31,chav32,chav33,chav34,&
                     (trav3(j),chazv5,j=1,nzone)
-                    write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
+                    write(ifr,301) ' *',chav13,chav13,chav13,chav13,&
                     (chazp6,trav4(j),j=1,nzone)
-                    write(ifr,3001) ' *',chav13,chav13,chav13,chav13,&
+                    write(ifr,301) ' *',chav13,chav13,chav13,chav13,&
                     (chazp7,chazv7,j=1,nzone)
-                    write(ifr,3001) ' *',chav11,chav11,chav11,chav11,&
+                    write(ifr,301) ' *',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
 !
                     AS_DEALLOCATE(vk80=trav1)
@@ -316,15 +316,15 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                     AS_DEALLOCATE(vk80=trav4)
                 endif
             else
-                write(ifr,2001) ' *',chav11,chav11,chav11,chav11
-                write(ifr,2001) ' *',chav12,chav12,chav12,chav13
-                write(ifr,2001) ' *',chav11,chav11,chav11,chav11
-                write(ifr,2001) ' *',chav13,chav13,chav13,chav13
-                write(ifr,2001) ' *',chav21,chav21,chav22,chav23
-                write(ifr,2001) ' *',chav31,chav32,chav33,chav34
-                write(ifr,2001) ' *',chav13,chav13,chav13,chav13
-                write(ifr,2001) ' *',chav13,chav13,chav13,chav13
-                write(ifr,2001) ' *',chav11,chav11,chav11,chav11
+                write(ifr,201) ' *',chav11,chav11,chav11,chav11
+                write(ifr,201) ' *',chav12,chav12,chav12,chav13
+                write(ifr,201) ' *',chav11,chav11,chav11,chav11
+                write(ifr,201) ' *',chav13,chav13,chav13,chav13
+                write(ifr,201) ' *',chav21,chav21,chav22,chav23
+                write(ifr,201) ' *',chav31,chav32,chav33,chav34
+                write(ifr,201) ' *',chav13,chav13,chav13,chav13
+                write(ifr,201) ' *',chav13,chav13,chav13,chav13
+                write(ifr,201) ' *',chav11,chav11,chav11,chav11
             endif
 !
             if (calcul(1)) then
@@ -337,54 +337,54 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
 !
                     if (vite(iv) .ge. 0) then
                         call codree(vite(iv), 'E', xcod)
-                        xcod=' '//xcod
+                        xcod=' '//xcod(1:12)
                     else
                         call codree(abs(vite(iv)), 'E', xcod)
-                        xcod='-'//xcod
+                        xcod='-'//xcod(1:12)
                     endif
 !
                     if (freq1 .lt. 0.d0) then
                         chav40 = ' * '//xcod//' *            '// 'PROBLEME DE CONVERGENCE *'
                         if (itypfl .eq. 1) then
                             chaz40 = '                            |'// '        | *'
-                            write(ifr,3002) chav40,(chaz40,j=1,nzone)
+                            write(ifr,302) chav40,(chaz40,j=1,nzone)
                         else
-                            write(ifr,2002) chav40
+                            write(ifr,202) chav40
                         endif
 !
                     else if (dif1.lt.1.d-8) then
                         chav40 = ' * '//xcod//' *              '// 'SYSTEME SUR-AMORTI *'
                         if (itypfl .eq. 1) then
                             chaz40 = '                            |'// '        | *'
-                            write(ifr,3002) chav40,(chaz40,j=1,nzone)
+                            write(ifr,302) chav40,(chaz40,j=1,nzone)
                         else
-                            write(ifr,2002) chav40
+                            write(ifr,202) chav40
                         endif
 !
                     else
                         vred = vite(iv)/(freq1*carac(1))
                         if (vred .ge. 0) then
                             call codree(vred, 'E', xvred)
-                            xvred = ' '//xvred
+                            xvred = ' '//xvred(1:12)
                         else
                             call codree(abs(vred), 'E', xvred)
-                            xvred = '-'//xvred
+                            xvred = '-'//xvred(1:12)
                         endif
 !
                         if (freq1 .ge. 0) then
                             call codree(freq1, 'E', xfreq1)
-                            xfreq1 = ' '//xfreq1
+                            xfreq1 = ' '//xfreq1(1:12)
                         else
                             call codree(abs(freq1), 'E', xfreq1)
-                            xfreq1 = '-'//xfreq1
+                            xfreq1 = '-'//xfreq1(1:12)
                         endif
 !
                         if (amor1 .ge. 0) then
                             call codree(amor1*1.d+02, 'E', xamor)
-                            xamor = ' '//xamor
+                            xamor = ' '//xamor(1:12)
                         else
                             call codree(abs(amor1*1.d+02), 'E', xamor)
-                            xamor = '-'//xamor
+                            xamor = '-'//xamor(1:12)
                         endif
 !
                         chav40 =' * '//xcod//' * '//xvred//' * '//&
@@ -410,10 +410,10 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                                 else
                                     if (bmin .lt. 0.d0) then
                                         call codree(bmin, 'E', xbmin)
-                                        xbmin = '-'//xbmin
+                                        xbmin = '-'//xbmin(1:12)
                                     else
                                         call codree(bmin, 'E', xbmin)
-                                        xbmin = ' '//xbmin
+                                        xbmin = ' '//xbmin(1:12)
                                     endif
                                 endif
                                 if (l3 .eq. 0) then
@@ -421,33 +421,33 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                                 else
                                     if (bmax .lt. 0.d0) then
                                         call codree(bmax, 'E', xbmax)
-                                        xbmax = '-'//xbmax
+                                        xbmax = '-'//xbmax(1:12)
                                     else
                                         call codree(bmax, 'E', xbmax)
-                                        xbmax = ' '//xbmax
+                                        xbmax = ' '//xbmax(1:12)
                                     endif
                                 endif
                                 trav5(ik) =' '//xl1(1:8)//' '//xl2(1:8)&
                                     &//' '//xl3(1:8)//' | '//xbmin//' | '&
                                     &//xbmax//' *'
  25                         continue
-                            write (ifr,3002) chav40,(trav5(j),&
+                            write (ifr,302) chav40,(trav5(j),&
                             j=1,nzone)
                             AS_DEALLOCATE(vk80=trav5)
                         else
-                            write (ifr,2002) chav40
+                            write (ifr,202) chav40
                         endif
                     endif
  20             continue
 !
                 if (itypfl .eq. 1) then
-                    write(ifr,3001) '*',chav13,chav13,chav13,chav13,&
+                    write(ifr,301) '*',chav13,chav13,chav13,chav13,&
                     (chazp2,chazv7,j=1,nzone)
-                    write(ifr,3001) '*',chav11,chav11,chav11,chav11,&
+                    write(ifr,301) '*',chav11,chav11,chav11,chav11,&
                     (chazp1,chazv1,j=1,nzone)
                 else
-                    write(ifr,2001) '*',chav13,chav13,chav13,chav13
-                    write(ifr,2001) '*',chav11,chav11,chav11,chav11
+                    write(ifr,201) '*',chav13,chav13,chav13,chav13
+                    write(ifr,201) '*',chav11,chav11,chav11,chav11
                 endif
             endif
             if (calcul(2)) then
@@ -459,12 +459,12 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write (ifr,*)
                 write (ifr,*) '==============================================='
                 write (ifr,*)
-                write (ifr,1003) mass(1)
-                write (ifr,1004) mass(2)
+                write (ifr,103) mass(1)
+                write (ifr,104) mass(2)
 !
                 if (calcul(1)) then
 !
-                    write (ifr,5007)('*',j=1,117)
+                    write (ifr,507)('*',j=1,117)
                     write (ifr,'(A)')' *   MODE    *      FREQUENCE(Hz)      *'//&
      &'    AMORTISSEMENT (%)    *  VITESSE EFFICACE (m/s) *'//&
      &'  VITESSE EFFICACE (m/s) *'
@@ -472,10 +472,10 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
      &'                         *       (GEVIBUS)         *'//&
      &'       TTES CMPS         *'
 !
-                    write (ifr,5007)('*',j=1,117)
-                    write (ifr,5001) imod,freqi(imod),(amoc(im)*100),&
+                    write (ifr,507)('*',j=1,117)
+                    write (ifr,501) imod,freqi(imod),(amoc(im)*100),&
                     ven(im),ven(nbm+im)
-                    write (ifr,5007)('*',j=1,117)
+                    write (ifr,507)('*',j=1,117)
                     write (ifr,*)
 !
                 endif
@@ -484,12 +484,12 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write(ifr,*)'PLAGE DE VARIATION DES CONSTANTES DE CONNORS'
                 write(ifr,*) '============================================'
                 write(ifr,*)
-                write(ifr,5005) (cham30,j=1,nzone)
-                write(ifr,5003) ('ZONE',i,i=1,nzone)
-                write(ifr,5005) (cham30,j=1,nzone)
-                write(ifr,5004) (fsvr(1+3+2*(j-1)), fsvr(1+3+2*(j-&
+                write(ifr,505) (cham30,j=1,nzone)
+                write(ifr,503) ('ZONE',i,i=1,nzone)
+                write(ifr,505) (cham30,j=1,nzone)
+                write(ifr,504) (fsvr(1+3+2*(j-1)), fsvr(1+3+2*(j-&
                 1)+1),j=1,nzone)
-                write(ifr,5005) (cham30,j=1,nzone)
+                write(ifr,505) (cham30,j=1,nzone)
                 write(ifr,*)
                 ctrav1=' *'
                 ctrav3=' * '
@@ -511,13 +511,13 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                 write(ifr,'(A)') ctrav3(1:(2+(30*nzone)+120))
                 write(ifr,'(A)') ctrav2(1:(2+(30*nzone)+120))
 !
-                do 100 i = 1, nbval
+                do i = 1, nbval
                     ctrav1='* '
-                    do 110 j = 1, nzone
+                    do j = 1, nzone
                         modul=1
-                        do 120 k = (j+1), nzone
+                        do k = (j+1), nzone
                             modul=modul*zi(lfsvi+1+nzone+k)
-120                     continue
+                        enddo
                         if (j .eq. 1) then
                             pas=(i-1)/modul
                         else
@@ -530,16 +530,16 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                         call codree(cste(j), 'E', ccste)
                         ctrav1((3+(30*(j-1))):(3+(30*j)))='  '//ccste//'  *'
 !
-110                 continue
+                    enddo
                     reduit=vcn((im-1)*nbval+i)/(freqi(imod)*&
                     carac(1))
                     rappor=rap((im-1)*nbval+i)
                     rappo2=rap(nbm*nbval+(im-1)*nbval+i)
 !
-                    write(ifr,5006) cste, vcn((im-1)*nbval+&
+                    write(ifr,506) cste, vcn((im-1)*nbval+&
                     i), reduit,rappor,rappo2
 !
-100             continue
+                enddo
                 write(ifr,'(A)') ctrav2(1:(2+(30*nzone)+120))
                 write(ifr,*)
             endif
@@ -569,18 +569,18 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
         endif
 !
         do 30 im = 1, nbm
-            write(ifr,4001) nuor(im)
+            write(ifr,401) nuor(im)
             write(ifr,*)
             write(cham19(14:16),'(I3.3)') nuor(im)
             do 40 iv = 1, npasv
-                write(ifr,4002) iv
+                write(ifr,402) iv
                 write(ifr,*)
                 write(cham19(17:19),'(I3.3)') iv
-                call irdepl(cham19, ' ', ifr, 'RESULTAT', k8bid,&
+                call irdepl(cham19, ifr, 'RESULTAT', k8bid,&
                             k8bid, nomsym, ibid, lcor, 0,&
                             [0], 6, nomcmp, lsup, rbid,&
                             linf, rbid, lmax, lmin, lresu,&
-                            formar, nive)
+                            formar)
                 write(ifr,*)
  40         continue
  30     continue
@@ -590,25 +590,25 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
     call jedema()
 ! --- FORMATS
 !
-    1001 format (1p,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',d13.6)
-    1002 format (1p,' MODE : NUMERO D ORDRE:',i3,'/ FREQ:',d13.6)
-    1003 format (1p,' MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : ',e13.6)
-    1004 format (1p,' MASSE VOLUMIQUE DE REFERENCE DU FLUIDE SECONDAIRE (kg/m3) : ',e13.6)
-    2001 format (a2,4a16)
-    2002 format (a66)
+    101 format (1p,' VITESSE MOYENNE SUR L ENSEMBLE DES ZONES = ',d13.6)
+    102 format (1p,' MODE : NUMERO D ORDRE:',i3,'/ FREQ:',d13.6)
+    103 format (1p,' MASSE LINEIQUE DE REFERENCE DU TUBE (kg/m) : ',e13.6)
+    104 format (1p,' MASSE VOLUMIQUE DE REFERENCE DU FLUIDE SECONDAIRE (kg/m3) : ',e13.6)
+    201 format (a2,4a16)
+    202 format (a66)
 !
-    3001 format (a2,4a16,30(a28,a33))
-    3002 format (a66,30a61)
+    301 format (a2,4a16,30(a28,a33))
+    302 format (a66,30a61)
 !
-    4001 format (1x,' MODE N ',i3)
-    4002 format (1x,' VITESSE N ',i3)
+    401 format (1x,' MODE N ',i3)
+    402 format (1x,' VITESSE N ',i3)
 !
-    5001 format (1p,1x,'*',3x,i3,5x,'*',4(5x,e13.6,7x,'*'))
-    5003 format (1x,'*',100(10x,a4,1x,i3,11x,'*'))
-    5004 format (1p,1x,100('*',d13.6,1x,'-',d13.6,1x))
-    5005 format (1x,'*',100a30)
-    5006 format (1p,1x,'*',5(8x,e13.6,8x,'*'))
-    5007 format (1p,1x,118a1)
+    501 format (1p,1x,'*',3x,i3,5x,'*',4(5x,e13.6,7x,'*'))
+    503 format (1x,'*',100(10x,a4,1x,i3,11x,'*'))
+    504 format (1p,1x,100('*',d13.6,1x,'-',d13.6,1x))
+    505 format (1x,'*',100a30)
+    506 format (1p,1x,'*',5(8x,e13.6,8x,'*'))
+    507 format (1p,1x,118a1)
 !
 !
 end subroutine

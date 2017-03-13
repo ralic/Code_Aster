@@ -150,7 +150,7 @@ IMPR_FONCTION(FORMAT='XMGRACE',
                       _F(FONCTION=Z_REF,),),
               TITRE='Coordonnees du point B en fonction du pseudo-temps',);
 
-IMPR_RESU(FORMAT='CASTEM',
+IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=RESO,
                   NOM_CHAM='DEPL',),);

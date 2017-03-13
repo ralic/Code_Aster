@@ -179,7 +179,7 @@ MAIL=DEFI_GROUP(reuse = MAIL,
                                   GROUP_MA='CORPSGOU',
                                   CRIT_NOEUD='TOUS')), )
 
-IMPR_RESU(UNITE=53,FORMAT='CASTEM',RESU=_F(MAILLAGE=MAIL,),)
+IMPR_RESU(UNITE=53,FORMAT='MED',RESU=_F(MAILLAGE=MAIL,),)
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,

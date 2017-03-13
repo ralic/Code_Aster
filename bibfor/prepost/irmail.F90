@@ -1,10 +1,10 @@
 subroutine irmail(form, ifi, versio, noma, lmod,&
-                  nomo, nive, infmai, formar)
+                  nomo, infmai, formar)
 !
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 ! ======================================================================
 !
 !     BUT: ECRITURE DU MAILLAGE AU FORMAT RESULTAT, IDEAS, ENSIGHT, MED,
-!          OU CASTEM
 !     ENTREE:
 !        FORM  : FORMAT DES IMPRESSIONS: IDEAS, ENSIGHT, ...
 !        IFI   : UNITE LOGIQUE D'IMPRESSION
@@ -30,14 +29,12 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 !        LMOD  : LOGIQUE INDIQUANT SI IMPRESSION MODELE OU MAILLAGE
 !                 .TRUE. MODELE
 !        NOMO  : NOM UTILISATEUR DU MODELE ' ' SI SEULEMENT MAILLAGE
-!        NIVE  : NIVEAU IMPRESSION CASTEM 3 OU 10
 !        INFMAI: POUR LE FORMAT MED, NIVEAU DES INFORMATIONS A IMPRIMER
 !     ------------------------------------------------------------------
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/iradhs.h"
-#include "asterfort/irmaca.h"
 #include "asterfort/irmare.h"
 #include "asterfort/irmasu.h"
 #include "asterfort/irmgms.h"
@@ -54,7 +51,7 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
 #include "asterfort/wkvect.h"
 !
 !---------------- ARGUMENTS --------------------------------------------
-    integer :: versio, nive, infmai
+    integer :: versio, infmai
     aster_logical :: lmod
     character(len=8) :: noma, nomo
     character(len=16) :: formar
@@ -192,12 +189,6 @@ subroutine irmail(form, ifi, versio, noma, lmod,&
                     connex, zi(jpoin), noma, typmail, zk80(jtitr),&
                     nbtitr, nbgrn, zk24(jnogn), nbgrm, zk24(jnogm),&
                     zk8(jnomai), zk8(jnonoe), infmai)
-!
-    else if (form.eq.'CASTEM') then
-!       - TRAITEMENT DU FORMAT 'CASTEM'
-        call irmaca(ifi, ndim, nbnoe, vale, nbmai,&
-                    connex, zi(jpoin), noma, typmail, lmod,&
-                    nbgrn, zk24(jnogn), nbgrm, zk24(jnogm), nive)
 !
     else if (form.eq.'GMSH') then
 !       - TRAITEMENT DU FORMAT 'GMSH'

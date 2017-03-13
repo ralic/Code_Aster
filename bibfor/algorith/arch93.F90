@@ -3,7 +3,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
 #include "asterfort/vtcrem.h"
 #include "asterfort/wkvect.h"
     integer :: ibid, neq, ifm, niv, lmoad, lmoda, vali, iret, nbmodi, lddld
-    integer :: lmodd, lddlf, lmodf, lvale, nive, versio, ind, ie, i, ia, id, ieq
+    integer :: lmodd, lddlf, lmodf, lvale, versio, ind, ie, i, ia, id, ieq
     integer :: ierd, ifin, im, imoad, imoda, imode, imodf, iul, jaxe, jpara
     integer :: lcoef, lddad, lfreq, lnom, lnume, lres, ltype, na, nbmoad, nbmoda
     integer :: ladpa, nbmodd, nbmode, nbmodf, nbpar, nbpsmo, nbtrou, nnaxe, nnd
@@ -119,7 +119,6 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
     call rscrsd('G', resu, concep, nbmode)
 !
     imode = 0
-    nive=3
     un=1.d0
     zero=0.d0
     call infniv(ifm, niv)
@@ -550,7 +549,7 @@ subroutine arch93(resu, concep, nume, raide, nbmodd,&
                     'T', k8b, .false._1, ibid, [0],&
                     ibid, [0], ibid, k8b, .false._1,&
                     r8b, .false._1, r8b, .false._1, .false._1,&
-                    formar, nive, versio, 2)
+                    formar, versio, 2)
     endif
 !
 !

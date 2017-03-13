@@ -125,7 +125,7 @@ IMPR_FONCTION(UNITE=29,
               FORMAT='XMGRACE',
               COURBE=(_F(FONCTION=TN8R1,),),);
 
-IMPR_RESU(MODELE=MOTHER,FORMAT='CASTEM',
+IMPR_RESU(FORMAT='MED',
           RESU=_F(MAILLAGE=MA,
                   RESULTAT=TEMPE,
                   INST=(0.1, 4.0, 10.0,),),);

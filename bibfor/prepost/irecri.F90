@@ -4,7 +4,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
                   cecr, tycha, lcor, nbnot, numnoe,&
                   nbmat, nummai, nbcmp, nomcmp, lsup,&
                   borsup, linf, borinf, lmax, lmin,&
-                  formr, nive, versio,niv)
+                  formr, versio,niv)
 ! aslint: disable=W1504
     implicit none
 !
@@ -14,7 +14,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 #include "asterfort/dismoi.h"
 #include "asterfort/irch19.h"
 #include "asterfort/irgmsh.h"
-#include "asterfort/irpaca.h"
 #include "asterfort/irpara.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -23,9 +22,7 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/lxcaps.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/rsnopa.h"
 #include "asterfort/rsutrg.h"
 #include "asterfort/titre2.h"
 #include "asterfort/utmess.h"
@@ -36,14 +33,14 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     character(len=*) :: nomcmp(*), formr, partie
     character(len=8) :: tycha
     real(kind=8) :: borsup, borinf
-    integer :: nive, versio, nbcham, nbpara, niv
+    integer :: versio, nbcham, nbpara, niv
     integer :: nbordr, ordr(*), nbcmp, iocc
     integer :: nbnot, numnoe(*), nbmat, nummai(*)
     aster_logical :: lresu, lcor
     aster_logical :: lsup, linf, lmax, lmin, lgmsh
 !-----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,28 +93,22 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 ! IN  LMAX   : L   : =.TRUE. INDIQUE IMPRESSION VALEUR MAXIMALE
 ! IN  LMIN   : L   : =.TRUE. INDIQUE IMPRESSION VALEUR MINIMALE
 ! IN  FORMR  : K   : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
-! IN  NIVE   : I   : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! IN  VERSIO : I   : NIVEAU VERSION GMSH 1 OU 2
 ! IN  NIV    : I   : NIVEAU IMPRESSION MOT CLE INFO
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    character(len=4) :: tych
     character(len=6) :: chnumo
     character(len=8) :: nomco
-    character(len=19) :: noch19, knacc
+    character(len=19) :: noch19
     character(len=24) :: nomst
     aster_logical :: lordr
-    integer :: nbchca, nbacc, nbcara
-    integer :: nbrk16, nbk16, ierd, ibid
-    integer :: i, icha, ifi, isy, itype
-    integer :: iun, ideu
-    integer :: iord, iordr, ivsi
+    integer :: nbrk16, ibid
+    integer :: i, ifi, isy
+    integer :: iordr
     integer :: iret
-    integer :: jcham, jpara, jtitr, jtot
-    integer :: nbobj, nbtitr
-    integer, pointer :: castem(:) => null()
-    integer, pointer :: last(:) => null()
+    integer :: jtitr
+    integer :: nbtitr
 !     ------------------------------------------------------------------
 !     --- IMPRESSION D'UN TABLEAU SYNTHETIQUE DES PARAMETRES-----
 !         (UNIQUEMENT FORMAT 'RESULTAT')
@@ -130,38 +121,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !
     nomst = '&&IRECRI.SOUS_TITRE.TITR'
     nomco = nomcon
-!
-!     --- RECHERCHE DES OBJETS COMPOSANT LA TABLE CASTEM
-!         (UNIQUEMENT FORMAT 'CASTEM')
-    if (form .eq. 'CASTEM' .and. lresu .and. nbordr .ne. 0) then
-        call jeexin('&&IRECRI.TABLE.TOT', iret)
-        if (iret .eq. 0) then
-            call wkvect('&&IRECRI.TABLE.TOT', 'V V I', nbordr*4, jtot)
-        endif
-        nbchca = 0
-        call wkvect('&&IRECRI.CHAM.CASTEM', 'V V K16', nbcham, jcham)
-        do icha = 1, nbcham
-            do iord = 1, nbordr
-                call rsexch(' ', nomco, cham(icha), ordr(iord), noch19,&
-                            iret)
-                if (iret .eq. 0) then
-                    call dismoi('TYPE_CHAMP', noch19, 'CHAMP', repk=tych, arret='C',&
-                                ier=ierd)
-                    if (tych(1:4) .eq. 'NOEU' .or. tych(1:4) .eq. 'ELNO') then
-                        nbchca = nbchca + 1
-                        zk16(jcham-1+nbchca) = cham(icha)
-                        goto 50
-                    endif
-                endif
-            end do
- 50         continue
-        end do
-        knacc = '&&IRECRI.NOM_ACCES '
-        call rsnopa(nomco, 0, knacc, nbacc, ibid)
-        call jeexin(knacc, iret)
-        if (iret .gt. 0) call jeveuo(knacc, 'E', jpara)
-        nbobj = nbchca + nbacc + 1
-    endif
 !
 !
 !     --------------------------
@@ -188,13 +147,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
         do iordr = 1, nbordr
             call jemarq()
             call jerecu('V')
-!       --- FORMAT 'CASTEM'
-            if (form .eq. 'CASTEM' .and. lresu) then
-                call irpaca(nomcon, ifi, nbordr, iordr, ordr,&
-                            nbacc, zk16(jpara), nbchca, zk16(jcham), nbk16,&
-                            nive)
-                nbrk16 = nbrk16 + nbk16
-            endif
 !
 !       --- SI VARIABLE DE TYPE RESULTAT = RESULTAT COMPOSE :
 !           VERIFICATION CORRESPONDANCE ENTRE NUMERO D'ORDRE
@@ -263,66 +215,17 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
 !                LE CHAMP EST UN CHAM_GD SIMPLE SI LRESU=.FALSE. OU
 !                LE CHAMP EST LE CHAM_GD CHAM(ISY) DE NUMERO D'ORDRE
 !                ORDR(IORDR) ISSU DE LA SD_RESULTAT NOMCON
-                    call irch19(noch19, partie, form, ifi, titre,&
+                    call irch19(noch19, form, ifi, titre,&
                                 nomcon, cham(isy), ordr(iordr), lcor, nbnot,&
                                 numnoe, nbmat, nummai, nbcmp, nomcmp,&
                                 lsup, borsup, linf, borinf, lmax,&
-                                lmin, lresu, formr, nive)
+                                lmin, lresu, formr)
  20                 continue
                 end do
-            endif
-!
-!       --- IMPRESSION  DE LA TABLE SI FORMAT 'CASTEM'
-            if (form .eq. 'CASTEM' .and. lresu .and. nbordr .ne. 0) then
-                call jeveuo('&&IRPACA.TABL.CASTEM', 'L', vi=castem)
-                call jeveuo('&&OP0039.LAST', 'E', vi=last)
-                nbcara = 4*nbobj
-                itype = 10
-                ivsi = 26
-                zi(jtot-1+(iordr-1)*4+1)= ivsi
-                zi(jtot-1+(iordr-1)*4+2)= last(7)+iordr*2-1
-                zi(jtot-1+(iordr-1)*4+3)= itype
-                zi(jtot-1+(iordr-1)*4+4)= last(6)*2+1
-                iun = 1
-                ideu = 2
-                itype = 10
-                write (ifi,'(A,I4)') ' ENREGISTREMENT DE TYPE',ideu
-                if (nive .eq. 3) then
-                    write (ifi,'(A,I4,A,I4,A,I4)') ' PILE NUMERO',&
-                    itype, 'NBRE OBJETS NOMMES ',iun,'NBRE OBJETS ',&
-                    ideu
-                else if (nive.eq.10) then
-                    write (ifi,'(A,I4,A,I8,A,I8)') ' PILE NUMERO',&
-                    itype, 'NBRE OBJETS NOMMES',iun,'NBRE OBJETS',&
-                    ideu
-                endif
-                call lxcaps(nomco)
-                write(ifi,'(1X,A8)') nomco
-                if (nive .eq. 3) then
-                    write(ifi,'(I5)') last(6)*2+2
-                    write(ifi,'(I5)') nbcara
-                    write(ifi,'(16I5)') (castem(i),i=1,nbobj*4)
-                    write(ifi,'(I5)') 4*iordr
-                    write(ifi,'(16I5)') (zi(jtot-1+i),i=1,iordr*4)
-                else if (nive.eq.10) then
-                    write(ifi,'(I8)') last(6)*2+2
-                    write(ifi,'(I8)') nbcara
-                    write(ifi,'(10I8)') (castem(i),i=1,nbobj*4)
-                    write(ifi,'(I8)') 4*iordr
-                    write(ifi,'(10I8)') (zi(jtot-1+i),i=1,iordr*4)
-                endif
-                last(6) = last(6) + 1
-                call jedetr('&&IRPACA.TABL.CASTEM')
             endif
  22         continue
             call jedema()
         end do
-!
-        if (lresu .and. form .eq. 'CASTEM' .and. nbordr .ne. 0) then
-            last(7) = last(1)
-            last(8) = last(8) + nbobj + nbrk16
-            last(3) = last(3) + nbobj
-        endif
 !
     endif
 !
@@ -331,8 +234,6 @@ subroutine irecri(nomcon, form, ifi, titre, lgmsh,&
     call jedetr('&&IRECRI.FVIDAV')
     call jedetr('&&IRECRI.FVIDAP')
     call jedetr('&&IRECRI.NOM_ACC')
-    call jedetr('&&IRPACA.TABL.CASTEM')
-    call jedetr('&&IRECRI.CHAM.CASTEM')
     call jedetr('&&IRECRI.TABLE.TOT')
     call jeexin(nomst, iret)
     if (iret .ne. 0) call jedetr(nomst)

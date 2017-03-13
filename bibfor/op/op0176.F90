@@ -2,7 +2,7 @@ subroutine op0176()
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -66,7 +66,7 @@ subroutine op0176()
 !
     integer :: ibid, nbordr, jordr, nbexcl, jexcl, nbarch, jarch
     integer :: nbac, nbpa, jpa, iret, nbnosy, nbpara, nbrest
-    integer :: izero, nive, versio, iul, tord(1), ifm, niv
+    integer :: izero, versio, iul, tord(1), ifm, niv
 !
     real(kind=8) :: r8b
 !
@@ -98,7 +98,6 @@ subroutine op0176()
     lichex = '&&'//nompro//'.LISTE.CHAM'
     nompar = '&&'//nompro//'.NOMS_PARA '
     formar = '1PE12.5'
-    nive = 3
     versio = 0
 !
     call getres(resuou, typcon, nomcmd)
@@ -195,7 +194,7 @@ subroutine op0176()
                 cecr, k8b, fals, 0, [0],&
                 0, [0], izero, k8b, fals,&
                 r8b, fals, r8b, fals, fals,&
-                formar, nive, versio, niv)
+                formar, versio, niv)
 !
 9997 continue
 !

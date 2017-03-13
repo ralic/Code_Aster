@@ -1,6 +1,6 @@
 # person_in_charge: gerald.nicolas at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -179,9 +179,9 @@ for num_calc in range(0,nb_calc1) :
                        'ERME_ELEM',
                        'ERME_ELNO',),);
 
-# IMPRESSION FORMAT CASTEM I
+# IMPRESSION FORMAT MED I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
-   IMPR_RESU(MODELE=MO[num_calc], FORMAT='CASTEM', UNITE=55,
+   IMPR_RESU(FORMAT='MED', UNITE=55,
             RESU=_F(MAILLAGE=MA[num_calc],
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIGM_ELNO',

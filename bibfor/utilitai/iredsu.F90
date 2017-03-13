@@ -23,7 +23,7 @@ subroutine iredsu(macr, form, ifc, versio)
     character(len=*) :: macr, form
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,7 +62,6 @@ subroutine iredsu(macr, form, ifc, versio)
 !
 !
 !
-    integer :: nive
     integer :: i, icol, idrx, idry, idrz, idx, idy, idz
     integer :: iero, ifor, im, imat
     integer :: in, ind, inoe, inoeu, iord, iret, is, is2, ityp, i2
@@ -106,11 +105,10 @@ subroutine iredsu(macr, form, ifc, versio)
     f = .false.
     macrel = macr
     formar = '1PE12.5'
-    nive = 3
 !
     call jeveuo(macrel//'.MAEL_REFE', 'L', vk24=mael_refe)
     basemo = mael_refe(1)
-    noma = mael_refe(2)
+    noma = mael_refe(2)(1:8)
     manono = noma//'.NOMNOE'
     call dismoi('NB_NO_MAILLA', noma, 'MAILLAGE', repi=nbnoeu)
     call rslipa(basemo, 'NOEUD_CMP', '&&IREDSU.LINOEU', jnoeu, nbmodt)
@@ -130,9 +128,9 @@ subroutine iredsu(macr, form, ifc, versio)
     if (nbmods .ne. 0) then
         AS_ALLOCATE(vk8=noeuds, size=nbnoeu)
         inoeu = 1
-        noeuds(1) = zk16(jnoeu+nbmode)
+        noeuds(1) = zk16(jnoeu+nbmode)(1:8)
         do im = 2, nbmods
-            noeu = zk16(jnoeu+nbmode+im-1)
+            noeu = zk16(jnoeu+nbmode+im-1)(1:8)
             do j = 1, inoeu
                 if (noeu .eq. noeuds(j)) goto 20
             end do
@@ -218,7 +216,7 @@ subroutine iredsu(macr, form, ifc, versio)
                         cecr, k8b, f, 0, [0],&
                         0, [0], iero, k8b, f,&
                         zero, f, zero, f, f,&
-                        formar, nive, versio, 2)
+                        formar, versio, 2)
         endif
     end do
     if (nstat .ne. 0) then
@@ -306,7 +304,7 @@ subroutine iredsu(macr, form, ifc, versio)
         write (ifc,'(A)') '   252'
         write (ifc,'(I10)') imat
         write (ifc,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (ifc,1000) (mass_gene(1+i) , i= 0, m2-1 )
+        write (ifc,111) (mass_gene(1+i) , i= 0, m2-1 )
         write (ifc,'(A)') '    -1'
 !
 !        --- RAIDEUR GENERALISEE ---
@@ -320,7 +318,7 @@ subroutine iredsu(macr, form, ifc, versio)
         write (ifc,'(A)') '   252'
         write (ifc,'(I10)') imat
         write (ifc,'(5I10)') ityp, ifor, nbmode, nbmode, icol
-        write (ifc,1000) (rigi_gene(1+i) , i= 0, m2-1 )
+        write (ifc,111) (rigi_gene(1+i) , i= 0, m2-1 )
         write (ifc,'(A)') '    -1'
 !
         if (nbmods .ne. 0) then
@@ -337,7 +335,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (ifc,1000) (mass_jonc(1+i) , i= 0, m2-1 )
+            write (ifc,111) (mass_jonc(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
 !          --- RIGIDITE CONDENSEE A LA JONCTION ---
@@ -351,7 +349,7 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmods, nbmods, icol
-            write (ifc,1000) (rigi_jonc(1+i) , i= 0, m2-1 )
+            write (ifc,111) (rigi_jonc(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
             m2 = nbmode * nbmods
@@ -367,13 +365,13 @@ subroutine iredsu(macr, form, ifc, versio)
             write (ifc,'(A)') '   252'
             write (ifc,'(I10)') imat
             write (ifc,'(5I10)') ityp, ifor, nbmode, nbmods, icol
-            write (ifc,1000) (part_infe(1+i) , i= 0, m2-1 )
+            write (ifc,111) (part_infe(1+i) , i= 0, m2-1 )
             write (ifc,'(A)') '    -1'
 !
         endif
     endif
 !
-    1000 format( 1p, 4d20.12 )
+    111 format( 1p, 4d20.12 )
 !
 ! --- MENAGE
 !

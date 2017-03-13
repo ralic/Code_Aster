@@ -161,9 +161,9 @@ for num_calc in range(0,nb_calc1) :
                        'ERTH_ELEM',
                        'ERTH_ELNO',),);
 
-# IMPRESSION FORMAT CASTEM I
+# IMPRESSION FORMAT MED I
    DEFI_FICHIER(FICHIER='IMPR',UNITE=55)
-   IMPR_RESU(MODELE=MOT[num_calc],FORMAT='CASTEM',UNITE=55,
+   IMPR_RESU(FORMAT='MED',UNITE=55,
             RESU=_F(MAILLAGE=MAT[num_calc],
                     RESULTAT=TEMP[num_calc],
                     NOM_CHAM=('TEMP','FLUX_ELNO',
@@ -224,9 +224,9 @@ for num_calc in range(0,nb_calc1) :
                        'ERME_ELEM',
                        'ERME_ELNO',),);
 
-# IMPRESSION FORMAT CASTEM II
+# IMPRESSION FORMAT MED II
    DEFI_FICHIER(FICHIER='IMPR',UNITE=56)
-   IMPR_RESU(MODELE=MOM[num_calc],FORMAT='CASTEM',UNITE=56,
+   IMPR_RESU(FORMAT='MED',UNITE=56,
             RESU=_F(MAILLAGE=MAM[num_calc],
                     RESULTAT=DEPLA[num_calc],
                     NOM_CHAM=('DEPL','SIGM_ELNO',

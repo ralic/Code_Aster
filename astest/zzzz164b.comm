@@ -40,7 +40,7 @@ MA = MODI_MAILLAGE (  reuse = MA ,
                        ECHELLE = 5. ,
                        )
 #
-IMPR_RESU( FORMAT = 'CASTEM',
+IMPR_RESU( FORMAT = 'MED',
            RESU = _F ( MAILLAGE = MA , ) , )
 #
 CHCO3 = CREA_CHAMP ( OPERATION = 'EXTR' ,

@@ -1,9 +1,9 @@
-subroutine irchml(chamel, partie, ifi, form, titre,&
+subroutine irchml(chamel, ifi, form, titre,&
                   loc, nomsd, nomsym, numord, lcor,&
                   nbnot, numnoe, nbmat, nummai, nbcmp,&
                   nomcmp, lsup, borsup, linf, borinf,&
-                  lmax, lmin, lresu, formr, ncmp,&
-                  nucmp, nive)
+                  lmax, lmin, formr, ncmp,&
+                  nucmp)
 ! aslint: disable=W1504
     implicit none
 !
@@ -21,7 +21,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/imprsd.h"
 #include "asterfort/iradhs.h"
 #include "asterfort/irccmp.h"
-#include "asterfort/irceca.h"
 #include "asterfort/ircecl.h"
 #include "asterfort/ircecs.h"
 #include "asterfort/ircerl.h"
@@ -41,14 +40,14 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: chamel, nomcmp(*), form, titre, loc, nomsd, nomsym
-    character(len=*) :: formr, partie
+    character(len=*) :: formr
     real(kind=8) :: borsup, borinf
     integer :: nbnot, numnoe(*), nbmat, nummai(*), nbcmp, ifi, numord, ncmp
-    integer :: nucmp(*), nive
-    aster_logical :: lcor, lsup, linf, lmax, lmin, lresu
+    integer :: nucmp(*)
+    aster_logical :: lcor, lsup, linf, lmax, lmin
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,10 +63,9 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 !        IMPRESSION D'UN CHAM_ELEM A COMPOSANTES REELLES OU COMPLEXES
-!         AU FORMAT IDEAS, RESULTAT, CASTEM
+!         AU FORMAT IDEAS, RESULTAT
 !  ENTREES:
 !     CHAMEL : NOM DU CHAM_ELEM A ECRIRE
-!     PARTIE : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 !     IFI    : NUMERO LOGIQUE DU FICHIER DE SORTIE
 !     FORM   : FORMAT DES SORTIES: IDEAS, RESULTAT
 !     TITRE  : TITRE POUR IDEAS
@@ -88,13 +86,11 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
 !     BORINF : VALEUR DE LA BORNE INFERIEURE
 !     LMAX   : =.TRUE.  INDIQUE IMPRESSION VALEUR MAXIMALE
 !     LMIN   : =.TRUE.  INDIQUE IMPRESSION VALEUR MINIMALE
-!     LRESU  : =.TRUE.  INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 !     FORMR  : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
-!     NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! ----------------------------------------------------------------------
 !
     character(len=1) :: type
-    integer :: gd, nuti, jcelv, iprem
+    integer :: gd, jcelv, iprem
     integer :: vali(2), versio
     character(len=8) :: nomma, nomgd, nomel, nomno
     character(len=16) :: nomsy2
@@ -102,13 +98,13 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     character(len=24) :: nolili, nconec, ncncin, valk(2)
     character(len=80) :: titmai
     aster_logical :: lmasu
-    integer :: i, iad, iadr, iel
-    integer :: im, imod, in, ino, iret, itype
+    integer :: iad, iadr, iel
+    integer :: im, in, ino, iret, itype
     integer :: jcncin, jcnx, jcoor, jdrvlc, jliste
     integer :: jlongr, jnbnm, jncmp, jnmn, jnoel
-    integer :: jpnt, jtypm, jvale, kk, libre, lon1
+    integer :: jpnt, jtypm, kk, libre, lon1
     integer :: maxnod, n, n2, nbcmpt, nbel, nbgrel, nbm
-    integer :: nbmac, nbmodl, nbn, nbno, nbtitr, nbtma, ncmpmx
+    integer :: nbmac, nbn, nbno, nbtitr, nbtma, ncmpmx
     integer :: ndim, ngr
     integer, pointer :: permuta(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
@@ -116,7 +112,6 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
     integer, pointer :: liel(:) => null()
     character(len=80), pointer :: titr(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    character(len=24), pointer :: nom_modele(:) => null()
 !-----------------------------------------------------------------------
     data iprem /0/
 !
@@ -331,59 +326,8 @@ subroutine irchml(chamel, partie, ifi, form, titre,&
         call jedetr('&&IRADHS.CODEGRA')
         call jedetr('&&IRADHS.CODEPHY')
         call jedetr('&&IRADHS.CODEPHD')
-! ---------------------------------------------------------------------
-!                    F O R M A T   C A S T E M
-! ---------------------------------------------------------------------
-    else if (form.eq.'CASTEM') then
-!
-! ------ AU FORMAT CASTEM, PAS DE MINUSCULES
-!        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
-        if (.not. lresu) call lxcaps(nomsy2)
-!
-        call jeveuo('&&OP0039.NOM_MODELE', 'L', vk24=nom_modele)
-        call jelira('&&OP0039.NOM_MODELE', 'LONUTI', nbmodl)
-        do imod = 1, nbmodl
-            if (nolili .eq. nom_modele(imod)) goto 202
-        end do
-        call utmess('A', 'PREPOST2_2', sk=chame)
-        goto 204
-202     continue
-        if (itype .eq. 1) then
-            call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
-            if (loc .eq. 'ELNO') then
-                call irceca(ifi, liel, nbgrel, zi(jlongr), ncmpmx,&
-                            zr(jcelv), nomgd, zk8(iad), celd, zi(jnbnm),&
-                            zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
-                            nomcmp, imod, ncmp, nucmp, nive)
-            else if (loc.eq.'ELGA') then
-                call utmess('A', 'PREPOST2_3')
-            endif
-        else if (itype.eq.2) then
-            call jeveuo(nomma//'.TYPMAIL', 'L', jtypm)
-            if (loc .eq. 'ELNO') then
-                call jelira(chame//'.CELV', 'LONUTI', nuti)
-                call wkvect('&&IRCHML.VALE', 'V V R', nuti, jvale)
-                if (partie .eq. 'REEL') then
-                    do i = 1, nuti
-                        zr(jvale-1+i)=dble(zc(jcelv-1+i))
-                    end do
-                else if (partie.eq.'IMAG') then
-                    do i = 1, nuti
-                        zr(jvale-1+i)=dimag(zc(jcelv-1+i))
-                    end do
-                else
-                    call utmess('F', 'PREPOST2_4')
-                endif
-                call irceca(ifi, liel, nbgrel, zi(jlongr), ncmpmx,&
-                            zr(jcelv), nomgd, zk8(iad), celd, zi(jnbnm),&
-                            zi( jtypm), nomsy2, nbmat, lresu, nbcmp,&
-                            nomcmp, imod, ncmp, nucmp, nive)
-            else if (loc.eq.'ELGA') then
-                call utmess('A', 'PREPOST2_3')
-            endif
-        endif
     endif
-204 continue
+
     call jedetr('&&IRCHML.NUM_CMP')
     call jedetr('&&IRCHML.NOMMAI')
     call jedetr('&&IRCHML.NBNOMA')

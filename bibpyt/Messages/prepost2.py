@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,18 +21,6 @@ cata_msg = {
 
     1 : _(u"""
   Il faut autant de nom pour NOM_CHAM_MED que pour NOM_CHAM.
-"""),
-
-    2 : _(u"""
-Modèle inconnu, pas d'impression du champ  %(k1)s
-"""),
-
-    3 : _(u"""
-On ne sait pas écrire des champs par élément aux points de gauss au format CASTEM
-"""),
-
-    4 : _(u"""
- erreur programmation
 """),
 
     5 : _(u"""
@@ -57,10 +45,6 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
 
     35 : _(u"""
    désolé on ne sait pas écrire les champs aux noeuds de représentation constante et a valeurs complexes au format  %(k1)s
-"""),
-
-    36 : _(u"""
-   désolé on ne sait pas écrire le champ aux noeuds  %(k1)s  au format  %(k2)s
 """),
 
     40 : _(u"""
@@ -131,18 +115,6 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
  erreur de programmation
 """),
 
-    64 : _(u"""
- SEG4 élément inexistant dans CASTEM, converti en SEG2
-"""),
-
-    65 : _(u"""
- tria7 élément inexistant dans CASTEM, converti en tria6
-"""),
-
-    66 : _(u"""
- QUAD9 élément inexistant dans CASTEM, converti en QUAD8
-"""),
-
     67 : _(u"""
  les champs n'ont pas la même grandeur
 """),
@@ -199,10 +171,6 @@ Le filtre TYPE_MAILLE a éliminée %(i1)d mailles .
 
     85 : _(u"""
  L'élément PENTA18 est inexistant dans IDEAS, il est converti en PENTA15.
-"""),
-
-    86 : _(u"""
- L'élément PENTA18 est inexistant dans CASTEM, il est converti en PENTA15.
 """),
 
     93 : _(u"""

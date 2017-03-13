@@ -28,7 +28,7 @@ subroutine pjloin(nbnod,nbnodm,m2,geom2,nbmax,tino2m,tdmin2,lino_loin)
 #include "asterfort/gcncon.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -98,7 +98,7 @@ subroutine pjloin(nbnod,nbnodm,m2,geom2,nbmax,tino2m,tdmin2,lino_loin)
         if (unite.le.0) call utmess('F', 'UTILITAI5_10')
         call ulopen(unite, fichier, ' ', 'N', 'O')
         formar=' '
-        call irmail('MED', unite, ibid, madebug, ASTER_FALSE , k8bid, ibid, 1, formar)
+        call irmail('MED', unite, ibid, madebug, ASTER_FALSE , k8bid, 1, formar)
         call ulopen(-unite, k8bid, k8bid, k8bid, k8bid)
         call detrsd('MAILLAGE', madebug)
     endif

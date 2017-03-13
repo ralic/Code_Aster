@@ -3,7 +3,7 @@ subroutine op0039()
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,18 +52,18 @@ subroutine op0039()
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_info.h"
     mpi_int :: mrank, msize
-    integer :: nocc, iocc, ioc2, ifc, ifi, versio, infmai, nive, nbrank
-    integer :: numemo, nbmodl, nmail, nresu, ncham, ibid, nres, n11, iret
-    integer :: jlast, jmodl, nmo, nn, nmod, nforma, ngibi, nproc
+    integer :: nocc, iocc, ifc, ifi, versio, nbrank
+    integer :: nmail, nresu, ncham, nres, n11
+    integer :: nmo, nn, nmod, nforma, ngibi, nproc
 !
     real(kind=8) :: versi2, eps
 !
     character(len=8) :: modele, noma, form, nomare, nomsq, proc
-    character(len=8) :: resu, nomab, resure(9)
-    character(len=16) :: fich, formr
-    character(len=24) :: nomjv, valk(6)
+    character(len=8) :: resu, resure(9)
+    character(len=16) :: fich
+    character(len=24) :: valk(6)
 !
-    aster_logical :: lresu, lcasts, lmod
+    aster_logical :: lresu, lmod
     aster_logical :: lmail, lgmsh
 !
 ! ----------------------------------------------------------------------
@@ -129,14 +129,8 @@ subroutine op0039()
 !
 !
 !     --- VERSION D'ECRITURE  ----
-       nive = 0
        versio = 0
-       lcasts = .false.
-       if (form .eq. 'CASTEM') then
-           call deprecated_algom(form)
-           lcasts = .true.
-           call getvis(' ', 'NIVE_GIBI', scal=nive, nbret=ngibi)
-       else if (form(1:5) .eq. 'IDEAS') then
+       if (form(1:5) .eq. 'IDEAS') then
            versio = 5
            call getvis(' ', 'VERSION', scal=versio, nbret=ngibi)
        else if (form(1:4) .eq. 'GMSH') then
@@ -159,53 +153,6 @@ subroutine op0039()
        if (.not. ulexis( ifi )) then
            call ulopen(ifi, ' ', fich, 'NEW', 'O')
        endif
-!
-!     -- FORMAT CASTEM : IMPRESSION DU MAILLAGE :
-!     -------------------------------------------
-      formr=' '
-      if (form .eq. 'CASTEM') then
-        numemo = 0
-        nomjv = '&&OP0039.NOM_MODELE'
-        infmai = 0
-        do iocc = 1, nocc
-            if (numemo .eq. 0) then
-                if (lmod) then
-                    nbmodl = 1
-                    call wkvect(nomjv, 'V V K24', 10, jmodl)
-                    call jeecra(nomjv, 'LONUTI', nbmodl)
-                    call jeveuo(nomjv, 'E', jmodl)
-                    zk24(jmodl) = modele//'.MODELE'
-                endif
-                do ioc2 = 1, nocc
-                    call getvid('RESU', 'RESULTAT', iocc=ioc2, scal=resu, nbret=nresu)
-                    if (nresu .ne. 0) call rscrmo(ioc2, resu, nomjv)
-                end do
-                numemo = numemo + 1
-            endif
-!
-!           ---  IMPRESSION DU MAILLAGE -----
-            call getvid('RESU', 'MAILLAGE', iocc=iocc, scal=noma, nbret=nmail)
-            if (nmail .ne. 0) then
-                if (lmod) then
-                    call dismoi('NOM_MAILLA', modele, 'MODELE', repk=nomab, arret='C',&
-                                ier=iret)
-                    if (noma .ne. nomab) then
-                        call utmess('F', 'PREPOST3_66')
-                    endif
-                endif
-                call irmail(form, ifi, versio, noma, lmod,&
-                            modele, nive, infmai, formr)
-                numemo = numemo + 1
-            endif
-        end do
-!
-        if (numemo .le. 1) then
-            call utmess('F', 'PREPOST3_67')
-        endif
-!
-        call jeexin('&&OP0039.LAST', iret)
-        if (iret .eq. 0) call wkvect('&&OP0039.LAST', 'V V I', 8, jlast)
-      endif
 !
 !     -- VERIFICATIONS POUR GMSH :
       if (form(1:4) .eq. 'GMSH') then
@@ -233,18 +180,10 @@ subroutine op0039()
 !     -----------------------------------------------------------------
       do iocc = 1, nocc
 !
-        call irmfac(iocc, form, ifi, nive, versio,&
+        call irmfac(iocc, form, ifi, versio,&
                     modele, noma, nomare, resure(iocc), lgmsh)
 !
       end do
-      if (lcasts) then
-        ibid=5
-        write(ifc,'(A,I4)') ' ENREGISTREMENT DE TYPE',ibid
-        if (nive .eq. 10) then
-            ibid = 1
-            write(ifc,'(A,I4)') 'LABEL AUTOMATIQUE :',ibid
-        endif
-      endif
 !
 !     -- IMPRESSION DES CARTES DE DONNEES DE CHAM_MATER,  ... :
       call w039ca(ifi, form)

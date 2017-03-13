@@ -564,18 +564,4 @@ IMPR_RESU(FORMAT='RESULTAT',
                   ),
           );
 
-#
-#  validation de NOM_CMP de IMPR_RESU au format CASTEM sur un nombre limite de
-#  deformations
-#
-
-IMPR_RESU( MODELE= DPLAN,
-           FORMAT='CASTEM', UNITE=37,
-           RESU= _F( MAILLAGE=CARRE,
-                     RESULTAT=SOLNL2,
-                     NUME_ORDRE=13,
-                     NOM_CHAM='EPSI_ELNO',
-                     NOM_CMP = ('EPXX','EPXY',)
-                   ));
-
 FIN();

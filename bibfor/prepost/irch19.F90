@@ -1,11 +1,11 @@
-subroutine irch19(cham19, partie, form, ifi, titre,&
+subroutine irch19(cham19, form, ifi, titre,&
                   nomsd, nomsym, numord, lcor, nbnot,&
                   numnoe, nbmat, nummai, nbcmp, nomcmp,&
                   lsup, borsup, linf, borinf, lmax,&
-                  lmin, lresu, formr, nive)
+                  lmin, lresu, formr)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,8 +25,6 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !     IMPRIMER UN CHAMP (CHAM_NO OU CHAM_ELEM)
 !
 ! IN  CHAM19: NOM DU CHAM_XX
-! IN  PARTIE: IMPRESSION DE LA PARTIE IMAGINAIRE OU REELLE POUR
-!             UN CHAMP COMPLEXE AU FORMAT CASTEM OU GMSH OU MED
 ! IN  FORM  : FORMAT :'RESULTAT' OU 'SUPERTAB'
 ! IN  IFI   : UNITE LOGIQUE D'IMPRESSION DU CHAMP.
 ! IN  TITRE : TITRE.
@@ -50,7 +48,6 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 ! IN  LMIN  : =.TRUE. INDIQUE IMPRESSION VALEUR MINIMALE
 ! IN  LRESU : =.TRUE. INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 ! IN  FORMR : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
-! IN  NIVE  : NIVEAU IMPRESSION CASTEM 3 OU 10
 ! ----------------------------------------------------------------------
 !
 ! aslint: disable=W1306,W1504
@@ -66,11 +63,10 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 #include "asterfort/utcmp3.h"
 #include "asterfort/utmess.h"
     character(len=*) :: cham19, nomsd, nomsym
-    character(len=*) :: form, formr, titre, nomcmp(*), partie
+    character(len=*) :: form, formr, titre, nomcmp(*)
     real(kind=8) :: borsup, borinf
     integer :: numord, nbmat
     integer :: nbnot, numnoe(*), nummai(*), nbcmp, ncmp
-    integer :: nive
     aster_logical :: lcor, lsup, linf, lmax, lmin, lresu
 !
 ! 0.3. ==> VARIABLES LOCALES
@@ -123,18 +119,18 @@ subroutine irch19(cham19, partie, form, ifi, titre,&
 !     -------------------------
 !
     if (tych(1:4) .eq. 'NOEU' .and. nbnot .ge. 0) then
-        call irdepl(ch19, partie, ifi, form, titre,&
+        call irdepl(ch19, ifi, form, titre,&
                     nomsd, nomsym, numord, lcor, nbnot,&
                     numnoe, nbcmp, nomcmp, lsup, borsup,&
                     linf, borinf, lmax, lmin, lresu,&
-                    formr, nive)
+                    formr)
     else if (tych(1:2).eq.'EL'.and.nbmat.ge.0) then
-        call irchml(ch19, partie, ifi, form, titre,&
+        call irchml(ch19, ifi, form, titre,&
                     tych(1:4), nomsd, nomsym, numord, lcor,&
                     nbnot, numnoe, nbmat, nummai, nbcmp,&
                     nomcmp, lsup, borsup, linf, borinf,&
-                    lmax, lmin, lresu, formr, ncmp,&
-                    numcmp, nive)
+                    lmax, lmin, formr, ncmp,&
+                    numcmp)
     endif
 999 continue
 !

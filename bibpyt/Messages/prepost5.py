@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,14 +104,6 @@ Séchage moins %(r2)f  Séchage plus %(r3)f
 
     46 : _(u"""
  élément inconnu dans le fichier IDEAS élément numéro :  %(i1)d
-"""),
-
-    47 : _(u"""
- Erreur d'utilisation IMPR_RESU FORMAT='CASTEM' :
-   Le format CASTEM n'autorise pas les noms de groupes de plus de
-   8 caractères. Les noms plus longs sont tronqués.
-   Ici, deux groupes sont identiques si on les tronquent : %(k1)s
-
 """),
 
     48 : _(u"""

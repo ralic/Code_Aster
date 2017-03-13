@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,14 +19,13 @@
 !
 interface
     subroutine irmail(form, ifi, versio, noma, lmod,&
-                      nomo, nive, infmai, formar)
+                      nomo, infmai, formar)
         character(len=*) :: form
         integer :: ifi
         integer :: versio
         character(len=8) :: noma
         aster_logical :: lmod
         character(len=8) :: nomo
-        integer :: nive
         integer :: infmai
         character(len=16) :: formar
     end subroutine irmail

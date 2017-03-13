@@ -175,9 +175,6 @@ TEST_RESU(RESU=(_F(GROUP_NO='PPA',
                 ),
           )
 
-#IMPR_RESU(FORMAT='CASTEM',
-#          UNITE=37,RESU=_F(MAILLAGE= MA,
-#          RESULTAT=U2M));
 
 PRFUS=POST_RELEVE_T(ACTION=_F(INTITULE='USURE',
                              GROUP_NO='NCONTA',

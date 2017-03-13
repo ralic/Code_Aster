@@ -1,8 +1,8 @@
-subroutine irdepl(chamno, partie, ifi, form, titre,&
+subroutine irdepl(chamno, ifi, form, titre,&
                   nomsd, nomsym, numord, lcor, nbnot,&
                   numnoe, nbcmp, nomcmp, lsup, borsup,&
                   linf, borinf, lmax, lmin, lresu,&
-                  formr, nive)
+                  formr)
 ! aslint: disable=W1504
     implicit none
 !
@@ -15,10 +15,8 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 #include "asterfort/ircnc8.h"
 #include "asterfort/ircnrl.h"
 #include "asterfort/ircrrl.h"
-#include "asterfort/irdeca.h"
 #include "asterfort/irdesc.h"
 #include "asterfort/irdesr.h"
-#include "asterfort/irdrca.h"
 #include "asterfort/irdrsr.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
@@ -39,8 +37,8 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: chamno, form, titre, nomsd, nomsym
-    character(len=*) :: nomcmp(*), formr, partie
-    integer :: nbnot, ifi, numnoe(*), nbcmp, nive
+    character(len=*) :: nomcmp(*), formr
+    integer :: nbnot, ifi, numnoe(*), nbcmp
     integer :: numord
     aster_logical :: lcor
     aster_logical :: lsup, linf, lmax, lmin
@@ -48,7 +46,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
     real(kind=8) :: borsup, borinf
 !_____________________________________________________________________
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -67,7 +65,6 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !         AU FORMAT IDEAS, ...
 !     ENTREES:
 !        CHAMNO : NOM DU CHAMNO A ECRIRE
-!        PARTIE : IMPRESSION DE LA PARTIE COMPLEXE OU REELLE DU CHAMP
 !        IFI    : NUMERO LOGIQUE DU FICHIER DE SORTIE
 !        FORM   : FORMAT DES SORTIES: IDEAS, RESULTAT
 !        TITRE  : TITRE POUR IMPRESSION IDEAS
@@ -87,12 +84,10 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !        LMIN   : =.TRUE. INDIQUE IMPRESSION VALEUR MINIMALE
 !        LRESU  : =.TRUE. INDIQUE IMPRESSION D'UN CONCEPT RESULTAT
 !        FORMR  : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
-!        NIVE   : NIVEAU IMPRESSION CASTEM 3 OU 10
 !     ------------------------------------------------------------------
 !
     character(len=1) :: type
     integer :: gd, lgconc, lgch16
-    integer :: nuti
     aster_logical :: lmasu
     character(len=8) :: nomsdr, nomma, nomgd, cbid, forma
     character(len=16) :: nomcmd, nosy16
@@ -103,7 +98,7 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iaec, iaprno
+    integer :: iad, iaec, iaprno
     integer :: iavale, ibid, ino, iret, itype
     integer :: jncmp, nbcmpt
     integer :: nbno, nbnot2, nbtitr, ncmpmx, ndim, nec, num
@@ -233,46 +228,6 @@ subroutine irdepl(chamno, partie, ifi, form, titre,&
             call utmess('E', 'PREPOST2_35', sk=forma)
         else if ((itype.eq.3).or.(itype.eq.4)) then
             call imprsd('CHAMP', chamno, ifi, nomsd)
-        endif
-!
-    else if (form(1:6).eq.'CASTEM') then
-!
-! ------ AU FORMAT CASTEM, PAS DE MINUSCULES
-!        LE NOM DU CHAM_GD EST DANS LA VARIABLE NOMSYM
-        if (.not. lresu) call lxcaps(nosy16)
-!
-        if (itype .eq. 1 .and. num .ge. 0) then
-            call irdeca(ifi, nbnot2, zi(iaprno), nueq, nec,&
-                        zi(iaec), ncmpmx, zr(iavale), nomgd, zk8(iad),&
-                        nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
-                        nive)
-        else if (itype.eq.1.and.num.lt.0) then
-            call irdrca(ifi, nbnot2, desc, nec, zi(iaec),&
-                        ncmpmx, zr( iavale), nomgd, zk8(iad), nosy16,&
-                        vnumnoe, lresu, nbcmp, nomcmp, nive)
-        else if (itype.eq.2.and.num.ge.0) then
-            call jelira(chamn//'.VALE', 'LONUTI', nuti)
-            AS_ALLOCATE(vr=vale, size=nuti)
-!
-            if (partie .eq. 'REEL') then
-                do i = 1, nuti
-                    vale(i)=dble(zc(iavale-1+i))
-                end do
-            else if (partie.eq.'IMAG') then
-                do i = 1, nuti
-                    vale(i)=dimag(zc(iavale-1+i))
-                end do
-            else
-                call utmess('F', 'PREPOST2_4')
-            endif
-            call irdeca(ifi, nbnot2, zi(iaprno), nueq, nec,&
-                        zi(iaec), ncmpmx, vale, nomgd, zk8(iad),&
-                        nosy16, vnumnoe, lresu, nbcmp, nomcmp,&
-                        nive)
-        else
-            valk(1) = chamn
-            valk(2) = forma
-            call utmess('E', 'PREPOST2_36', nk=2, valk=valk)
         endif
 !
     else if (form(1:5).eq.'IDEAS') then

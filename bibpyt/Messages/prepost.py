@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -248,22 +248,6 @@ Contactez le support technique.
 
     75 : _(u"""
  pas d'impression du champ
-"""),
-
-    76 : _(u"""
-  -> Il y a des groupes de noeuds dans le maillage %(k1)s.
-     Ils  n'apparaîtront pas dans le fichier géométrie ENSIGHT.
-     Seuls des groupes de mailles peuvent y être intégrés.
-"""),
-
-    77 : _(u"""
-  incompatibilité entre les groupes d'éléments
-Ce message est un message d'erreur développeur.
-Contactez le support technique.
-"""),
-
-    79 : _(u"""
-  le nombre de couches est supérieur à 1
 """),
 
     80 : _(u"""

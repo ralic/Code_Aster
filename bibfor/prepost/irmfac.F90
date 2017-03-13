@@ -1,4 +1,4 @@
-subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
+subroutine irmfac(ioccur, formaf, ifichi, versio,&
                   modele, nomail, nomare, resure, lgmsh)
     implicit none
 #include "asterf_types.h"
@@ -21,11 +21,11 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ioccur, ifichi, versio, niveau
+    integer :: ioccur, ifichi, versio
     character(len=8) :: formaf, resure, modele, nomare, nomail
     aster_logical :: lgmsh
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,7 +50,6 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
 !   IOCCUR  I    NUMERO D'OCCURENCE DU MOT CLE FACTEUR
 !   FORMAF  K8   FORMAT DU FICHIER A IMPRIMER
 !   IFICHI  I    UNITE LOGIQUE DU FICHIER A IMPRIMER
-!   NIVEAU  I    NIVEAU D'IMPRESSION POUR GIBI
 !   VERSIO  I    VERSION DU FICHIER IDEAS OU GMSH
 !   MODELE  K8   NOM DU MODELE DONNE PAR L'UTILISATEUR
 !   NOMAIL  K8   NOM DU MAILLAGE
@@ -144,7 +143,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     if (nresu .ne. 0) then
         call gettco(resu, tyres)
         if (tyres(1:10) .eq. 'DYNA_HARMO' .or. tyres(1:10) .eq. 'ACOU_HARMO') then
-            if (formaf(1:4) .eq. 'GMSH' .or. formaf(1:6) .eq. 'CASTEM' .or. formaf(1:3)&
+            if (formaf(1:4) .eq. 'GMSH'.or. formaf(1:3)&
                 .eq. 'MED') then
                 if (npart .eq. 0) then
                     call utmess('F', 'PREPOST3_69')
@@ -159,7 +158,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
         call dismoi('NOM_GD', resu19, 'CHAMP', repk=nomgd, arret='C',&
                     ier=ier)
         if (nomgd(6:6) .eq. 'C') then
-            if (formaf(1:4) .eq. 'GMSH' .or. formaf(1:6) .eq. 'CASTEM') then
+            if (formaf(1:4) .eq. 'GMSH') then
                 if (npart .eq. 0) then
                     call utmess('F', 'PREPOST3_69')
                 endif
@@ -232,10 +231,10 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
     call irtitr(resu, nomail, formaf, ifichi, titre)
 !
 !     ---  IMPRESSION DU MAILLAGE AU PREMIER PASSAGE -----
-    if (nmail .ne. 0 .and. formaf .ne. 'CASTEM') then
+    if (nmail .ne. 0) then
         if (formaf(1:4) .ne. 'GMSH' .or. (nresu.eq.0.and.ncham.eq.0)) then
             call irmail(formaf, ifichi, versio, nomail, lmodel,&
-                        modele, niveau, infmai, formr)
+                        modele, infmai, formr)
         endif
     endif
 !
@@ -323,7 +322,7 @@ subroutine irmfac(ioccur, formaf, ifichi, niveau, versio,&
                         cecr, tycha, lcor, nbnot, zi(jnunot),&
                         nbmat, zi(jnumat), nbcmp, zk8(jcmp), lsup,&
                         borsup, linf, borinf, lmax, lmin,&
-                        formr, niveau, versio, 2)
+                        formr, versio, 2)
         endif
     endif
 !     **********************

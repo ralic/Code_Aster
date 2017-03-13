@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,14 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine irch19(cham19, partie, form, ifi, titre,&
+    subroutine irch19(cham19, form, ifi, titre,&
                       nomsd, nomsym, numord, lcor, nbnot,&
                       numnoe, nbmat, nummai, nbcmp, nomcmp,&
                       lsup, borsup, linf, borinf, lmax,&
-                      lmin, lresu, formr, nive)
+                      lmin, lresu, formr)
         integer :: nbcmp
         character(len=*) :: cham19
-        character(len=*) :: partie
         character(len=*) :: form
         integer :: ifi
         character(len=*) :: titre
@@ -46,6 +45,5 @@ interface
         aster_logical :: lmin
         aster_logical :: lresu
         character(len=*) :: formr
-        integer :: nive
     end subroutine irch19
 end interface
