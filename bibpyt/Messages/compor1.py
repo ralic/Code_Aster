@@ -227,7 +227,7 @@ Contactez le support technique.
 
 
     43: _(u"""
-Le numéro de loi de comportement choisi n'existe pas.
+Le numéro de loi de comportement %(i1)d n'existe pas.
 Conseil:
 Vous utilisez probablement une loi de comportement qui est incompatible avec la modélisation.
 Si ce n'est pas le cas, contactez le support technique.

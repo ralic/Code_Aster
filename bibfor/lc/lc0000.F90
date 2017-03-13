@@ -21,10 +21,7 @@ implicit none
 #include "asterfort/lc0007.h"
 #include "asterfort/lc0008.h"
 #include "asterfort/lc0009.h"
-#include "asterfort/lc0010.h"
-#include "asterfort/lc0011.h"
 #include "asterfort/lc0012.h"
-#include "asterfort/lc0013.h"
 #include "asterfort/lc0014.h"
 #include "asterfort/lc0015.h"
 #include "asterfort/lc0016.h"
@@ -48,20 +45,11 @@ implicit none
 #include "asterfort/lc0035.h"
 #include "asterfort/lc0038.h"
 #include "asterfort/lc0039.h"
-#include "asterfort/lc0040.h"
-#include "asterfort/lc0041.h"
 #include "asterfort/lc0042.h"
-#include "asterfort/lc0043.h"
 #include "asterfort/lc0044.h"
-#include "asterfort/lc0045.h"
-#include "asterfort/lc0048.h"
-#include "asterfort/lc0049.h"
 #include "asterfort/lc0050.h"
-#include "asterfort/lc0051.h"
-#include "asterfort/lc0052.h"
 #include "asterfort/lc0054.h"
 #include "asterfort/lc0055.h"
-#include "asterfort/lc0056.h"
 #include "asterfort/lc0058.h"
 #include "asterfort/lc0059.h"
 #include "asterfort/lc0060.h"
@@ -108,6 +96,7 @@ implicit none
 #include "asterfort/lc0115.h"
 #include "asterfort/lc0120.h"
 #include "asterfort/lc0137.h"
+#include "asterfort/lc0152.h"
 #include "asterfort/lc1002.h"
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
@@ -128,6 +117,18 @@ implicit none
 #include "asterfort/lc6006.h"
 #include "asterfort/lc6046.h"
 #include "asterfort/lc6057.h"
+#include "asterfort/lc7010.h"
+#include "asterfort/lc7011.h"
+#include "asterfort/lc7013.h"
+#include "asterfort/lc7040.h"
+#include "asterfort/lc7041.h"
+#include "asterfort/lc7043.h"
+#include "asterfort/lc7045.h"
+#include "asterfort/lc7048.h"
+#include "asterfort/lc7049.h"
+#include "asterfort/lc7051.h"
+#include "asterfort/lc7056.h"
+#include "asterfort/lc7058.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -336,34 +337,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (10)
-!     CZM_EXP_REG
-        call lc0010(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (11)
-!     CZM_LIN_REG
-        call lc0011(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (12)
-!     CZM_EXP
-        call lc0012(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (13)
-!     JOINT_BA
-        call lc0013(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (14)
 !     ROUSSELIER
         call lc0014(fami, kpg, ksp, ndim, imate,&
@@ -511,53 +484,17 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (40)
-        call lc0040(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (41)
-        call lc0041(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (42)
         call lc0042(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (43)
-        call lc0043(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (44)
         call lc0044(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (45)
-        call lc0045(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (48)
-        call lc0048(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (49)
-        call lc0049(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (50)
 !     UMAT
@@ -567,18 +504,6 @@ implicit none
                     nvi, vim, option, angmas, nwkin,&
                     wkin, icomp, sigp, vip, ndsde,&
                     dsidep, codret)
-    case (51)
-        call lc0051(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (52)
-        call lc0052(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (54)
         call lc0054(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -590,12 +515,6 @@ implicit none
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
-                    nvi, dsidep, codret)
-    case (56)
-        call lc0056(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (58)
 !     MFRONT
@@ -879,6 +798,13 @@ implicit none
                     angmas, sigp, vip, &
                     wkin, typmod, icomp, nvi,&
                     dsidep, codret)
+    case (152)
+!     CABLE_GAINE
+        call lc0152(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - With SIMO_MIEHE
@@ -1065,7 +991,88 @@ implicit none
                     option, angmas, sigp, vip,&
                     typmod, icomp, ndsde,&
                     dsidep, codret)
-
+!
+! --------------------------------------------------------------------------------------------------
+! - With INTERFAC/ELEMDISC/EJ_HYME/ELEMJOIN
+! --------------------------------------------------------------------------------------------------
+!
+    case (7010)
+!     CZM_EXP_REG
+        call lc7010(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7011)
+!     CZM_LIN_REG
+        call lc7011(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7013)
+!     JOINT_BA
+        call lc7013(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7040)
+        call lc7040(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7041)
+        call lc7041(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7043)
+        call lc7043(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7045)
+        call lc7045(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7048)
+        call lc7048(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7049)
+        call lc7049(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7051)
+        call lc7051(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7056)
+        call lc7056(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (7058)
+!     MFRONT
+        call lc7058(fami, kpg, ksp, ndim, typmod,&
+                    imate, compor, carcri, instam, instap,&
+                    neps, epsm, deps, nsig, sigm,&
+                    nvi, vim, option, angmas, &
+                    icomp, sigp, vip, dsidep,&
+                    codret)
 !
 ! --------------------------------------------------------------------------------------------------
 ! - Error

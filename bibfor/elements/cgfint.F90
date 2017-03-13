@@ -6,7 +6,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
                   vim, sigp, vip, matr, vect,&
                   codret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,7 +112,7 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref,&
         compoz(i)=compor(i)
     end do
     compoz(1)=cmp1
-    write (compoz(6),'(I16)') 52
+    write (compoz(6),'(I16)') 152
     do g = 1, npg
         cod(g)=0
     end do

@@ -15,20 +15,21 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
+# person_in_charge: mickael.abbas at edf.fr
 
 from cata_comportement import LoiComportement
 
 loi = LoiComportement(
-    nom            = 'CABLE_GAINE_FROT',
-    doc            =   """Relation de comportement cohésive d'adherence Cable/Gaine"""      ,
-    num_lc         = 152,
-    nb_vari        = 2,
-    nom_vari       = ('GLIS','INDIC',),
-    mc_mater       = ('CABLE_GAINE_FROT',),
-    modelisation   = ('1D',),
-    deformation    = ('PETIT',),
-    algo_inte      = ('ANALYTIQUE',),
-    type_matr_tang = ('PERTURBATION','VERIFICATION',),
+    nom            = 'ELEMJOIN',
+    doc            =   """Pour modélisation de type ELEM_JOINT"""      ,
+    num_lc         = 7000,
+    nb_vari        = 0,
+    nom_vari       = None,
+    mc_mater       = None,
+    modelisation   = ('3D','AXIS','D_PLAN','C_PLAN'),
+    deformation    = ('PETIT','PETIT_REAC','GDEF_LOG',),
+    algo_inte      = None,
+    type_matr_tang = None,
     proprietes     = None,
     syme_matr_tang = ('Yes',),
 )
