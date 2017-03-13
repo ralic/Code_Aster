@@ -1,4 +1,4 @@
-subroutine lc0006(fami, kpg, ksp, ndim, imate,&
+subroutine lc6006(fami, kpg, ksp, ndim, imate,&
                   compor, carcri, instam, instap, neps,&
                   epsm, deps, nsig, sigm, vim,&
                   option, angmas, sigp, vip, &
@@ -7,7 +7,7 @@ subroutine lc0006(fami, kpg, ksp, ndim, imate,&
 !
 implicit none
 !
-#include "asterfort/lcldsb.h"
+#include "asterfort/lceigv.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,16 +55,15 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Behaviour
+! Behaviour - Special GRADVARI
 !
 ! ENDO_ISOT_BETON
 !
 ! --------------------------------------------------------------------------------------------------
 !
     codret   = 0
-    call lcldsb(fami, kpg, ksp, ndim,&
-                imate, compor, epsm, deps, vim,&
-                option, sigp,&
-                vip, dsidep)
+    call lceigv(fami, kpg, ksp, neps, imate,&
+                compor, epsm, deps, vim, option,&
+                sigp, vip, dsidep)
 !
 end subroutine

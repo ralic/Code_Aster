@@ -338,13 +338,6 @@ Ce message est un message d'erreur développeur.
 Contactez le support technique.
 """),
 
-    66 : _(u"""
-La loi de comportement ENDO_SCALAIRE n'est disponible que pour la formulation
-non locale GRAD_VARI, assurez vous que votre modélisation soit l'une des trois
-suivantes : - D_PLAN_GRAD_VARI
-            - AXIS_GRAD_VARI
-            - 3D_GRAD_VARI
-"""),
     67 : _(u"""
 Dans la définition du matériau RUPT_DUCT les coefficients de forme de la loi CZM_TRA_MIX doivent vérifier : COEF_EXTR <= COEF_PLAS
 """),

@@ -56,7 +56,6 @@ implicit none
 #include "asterfort/lc0043.h"
 #include "asterfort/lc0044.h"
 #include "asterfort/lc0045.h"
-#include "asterfort/lc0046.h"
 #include "asterfort/lc0048.h"
 #include "asterfort/lc0049.h"
 #include "asterfort/lc0050.h"
@@ -65,7 +64,6 @@ implicit none
 #include "asterfort/lc0054.h"
 #include "asterfort/lc0055.h"
 #include "asterfort/lc0056.h"
-#include "asterfort/lc0057.h"
 #include "asterfort/lc0058.h"
 #include "asterfort/lc0059.h"
 #include "asterfort/lc0060.h"
@@ -125,6 +123,9 @@ implicit none
 #include "asterfort/lc5007.h"
 #include "asterfort/lc5008.h"
 #include "asterfort/lc5016.h"
+#include "asterfort/lc6006.h"
+#include "asterfort/lc6046.h"
+#include "asterfort/lc6057.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -558,14 +559,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (46)
-!     ENDO_SCALAIRE
-        call lc0046(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, vim,&
-                    option, angmas, sigp, vip, nwkin,&
-                    wkin, typmod, icomp, nvi, ndsde,&
-                    dsidep, nwkout, wkout, codret)
     case (48)
         call lc0048(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -616,13 +609,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (57)
-        call lc0057(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, neps,&
-                    epsm, deps, nsig, sigm, vim,&
-                    option, angmas, sigp, vip, nwkin,&
-                    wkin, typmod, icomp, nvi, ndsde,&
-                    dsidep, nwkout, wkout, codret)
     case (58)
 !     MFRONT
         call lc0058(fami, kpg, ksp, ndim, typmod,&
@@ -1030,6 +1016,37 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkout, typmod, icomp,&
                     nvi, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With GRADVARI
+! --------------------------------------------------------------------------------------------------
+!
+    case (6006)
+!     ENDO_ISOT_BETON
+        call lc6006(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip,&
+                    typmod, icomp, nvi, ndsde,&
+                    dsidep, codret)
+    case (6046)
+!     ENDO_SCALAIRE
+        call lc6046(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, nvi, vim,&
+                    option, angmas, sigp, vip,&
+                    typmod, icomp, ndsde,&
+                    dsidep, codret)
+!
+    case (6057)
+!     ENDO_FISS_EXP
+        call lc6057(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, nvi, vim,&
+                    option, angmas, sigp, vip,&
+                    typmod, icomp, ndsde,&
+                    dsidep, codret)
+
 !
 ! --------------------------------------------------------------------------------------------------
 ! - Error
