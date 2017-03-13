@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -228,7 +227,10 @@ Contactez le support technique.
 
 
     43: _(u"""
- Le numéro de loi de comportement choisi <%(i1)i> est hors des bornes 1-100
+Le numéro de loi de comportement choisi n'existe pas.
+Conseil:
+Vous utilisez probablement une loi de comportement qui est incompatible avec la modélisation.
+Si ce n'est pas le cas, contactez le support technique.
 """),
 
 

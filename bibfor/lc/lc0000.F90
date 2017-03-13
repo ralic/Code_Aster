@@ -63,7 +63,6 @@ implicit none
 #include "asterfort/lc0050.h"
 #include "asterfort/lc0051.h"
 #include "asterfort/lc0052.h"
-#include "asterfort/lc0053.h"
 #include "asterfort/lc0054.h"
 #include "asterfort/lc0055.h"
 #include "asterfort/lc0056.h"
@@ -120,6 +119,7 @@ implicit none
 #include "asterfort/lc2005.h"
 #include "asterfort/lc2006.h"
 #include "asterfort/lc2038.h"
+#include "asterfort/lc3053.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -600,13 +600,6 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
-    case (53)
-!     ENDO_CARRE
-        call lc0053(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, epsm,&
-                    deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
-                    nvi, dsidep, codret)
     case (54)
         call lc0054(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
@@ -956,6 +949,7 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+
     case (2006)
 !     ENDO_ISOT_BETON
         call lc2006(fami, kpg, ksp, ndim, imate,&
@@ -972,6 +966,23 @@ implicit none
                     deps, sigm, vim, option, angmas,&
                     sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With GDVARINO
+! --------------------------------------------------------------------------------------------------
+!
+    case (3053)
+!     ENDO_CARRE
+        call lc3053(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, wkin, typmod, icomp,&
+                    nvi, dsidep, codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - Error
+! --------------------------------------------------------------------------------------------------
+!
     case (9999)
         call lc9999(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
