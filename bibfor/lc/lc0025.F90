@@ -1,12 +1,11 @@
 subroutine lc0025(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, cp, &
                   epsm, deps, sigm, vim, option, &
-                  sigp, vip, tampon, typmod, icomp,&
+                  sigp, vip, typmod, icomp,&
                   nvi, numlc, dsidep, codret)
 !
-    implicit none
-! aslint: disable=W1504,W0104
-
+implicit none
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
@@ -24,7 +23,8 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
+! aslint: disable=W1504,W0104
+!
     character(len=*) :: fami
     integer :: kpg
     integer :: ksp
@@ -41,7 +41,6 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: option
     real(kind=8) :: sigp(6)
     real(kind=8) :: vip(*)
-    real(kind=8) :: tampon(*)
     character(len=8) :: typmod(*)
     integer :: icomp
     integer :: nvi

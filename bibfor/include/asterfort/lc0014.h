@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine lc0014(fami, kpg, ksp, ndim, imate,&
                       compor, crit, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
-                      sigp, vip, tampon, typmod, icomp,&
+                      sigp, vip, typmod, icomp,&
                       nvi, dsidep, codret)
         character(len=*) :: fami
         integer :: kpg
@@ -38,7 +40,6 @@ interface
         real(kind=8) :: angmas(3)
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
-        real(kind=8) :: tampon(*)
         character(len=8) :: typmod(*)
         integer :: icomp
         integer :: nvi

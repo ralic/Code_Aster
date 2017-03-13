@@ -1,10 +1,10 @@
 subroutine lc0031(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, neps,&
                   epsm, deps, sigm, vim, option,&
-                  angmas, sigp, vip, tampon, typmod,&
+                  angmas, sigp, vip, typmod,&
                   icomp, nvi, dsidep, codret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,15 +19,13 @@ subroutine lc0031(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!   BUT : INTEGRATION DE LA LOI VENDOCHAB / VISC_ENDO_LEMA
-!
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/nmveei.h"
 #include "asterfort/nmvprk.h"
 #include "asterfort/utlcal.h"
     integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
-    real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
+    real(kind=8) :: crit(*), angmas(*), instam, instap
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
     character(len=16) :: compor(*), option, algo

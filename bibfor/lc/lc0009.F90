@@ -1,9 +1,8 @@
 subroutine lc0009(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, tampon, typmod, icomp,&
+                  sigp, vip, typmod, icomp,&
                   nvi, dsidep, codret)
-! aslint: disable=W1504
     implicit none
 #include "asterfort/lclbr1.h"
     integer :: kpg, ksp, ndim, imate
@@ -12,13 +11,13 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate,&
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
     integer :: icomp, nvi
-    real(kind=8) :: angmas(*), tampon(*)
+    real(kind=8) :: angmas(*)
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: epsm(*), deps(*)
     real(kind=8) :: sigm(*), vim(*), sigp(*), vip(*), dsidep(*)
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,6 +32,8 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504,W0104
+
 !       IN      FAMI    FAMILLE DE POINT DE GAUSS (RIGI,MASS,...)
 !       IN      KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 !       IN      NDIM    DIMENSION DE L ESPACE (3D=3,2D=2,1D=1)

@@ -1,8 +1,8 @@
 subroutine lc0059(fami, kpg, ksp, imate,&
                   compor, carcri, instam, instap, neps, epsm,&
-                  deps, nsig, sigm, vim, option, angmas,&
+                  deps, nsig, sigm, nvi, vim, option, angmas,&
                   sigp, vip, wkin,&
-                  typmod, icomp, nvi, dsidep, codret)
+                  typmod, icomp, dsidep, codret)
 !
 implicit none
 !
@@ -26,7 +26,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504,W0104
+! aslint: disable=W1504
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg
@@ -41,6 +41,7 @@ implicit none
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
     real(kind=8), intent(in) :: sigm(nsig)
+    integer, intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(3)
@@ -49,7 +50,6 @@ implicit none
     real(kind=8), intent(in) :: wkin(*)
     character(len=8), intent(in) :: typmod(*)
     integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, 6)
     integer, intent(out) :: codret
 !

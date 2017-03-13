@@ -1,9 +1,9 @@
 subroutine lc0013(fami, kpg, ksp, ndim, imate,&
                   compor, crit, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, tampon, typmod, icomp,&
+                  sigp, vip, typmod, icomp,&
                   nvi, dsidep, codret)
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/lcjoba.h"
     integer :: kpg, ksp, ndim, imate, iret
@@ -12,13 +12,13 @@ subroutine lc0013(fami, kpg, ksp, ndim, imate,&
     character(len=16) :: compor(*), option
     integer :: icomp, nvi
     integer :: codret
-    real(kind=8) :: angmas(*), tampon(*)
+    real(kind=8) :: angmas(*)
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigm(6), vim(7), sigp(6), vip(7), dsidep(6, 6)
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR

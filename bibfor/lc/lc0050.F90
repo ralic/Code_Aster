@@ -3,10 +3,10 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
                   neps, epsm, deps, nsig, sigm,&
                   nvi, vim, option, angmas, nwkin,&
                   wkin, icomp, stress, statev, ndsde,&
-                  dsidep, nwkout, wkout, codret)
+                  dsidep, codret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,13 +79,13 @@ subroutine lc0050(fami, kpg, ksp, ndim, typmod,&
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, pfumat
     integer ::      npropmax, ntens, ndi, nshr, i, nstatv, npt, noel, layer, npred
-    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, nwkout, ndsde
+    integer ::      kspt, kstep, kinc, idbg, j, ifm, niv, nwkin, ndsde
     parameter     ( npropmax = 197)
     parameter     ( npred = 8)
-    integer ::      neps, nsig, iadzi, iazk24
+    integer ::      neps, nsig
     real(kind=8) :: angmas(*), crit(*)
     real(kind=8) :: instam, instap, drot(3, 3), dstran(9), props(npropmax)
-    real(kind=8) :: epsm(6), deps(6), wkin(nwkin), wkout(nwkout)
+    real(kind=8) :: epsm(6), deps(6), wkin(nwkin)
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
     real(kind=8) :: vim(*), statev(nvi)
     real(kind=8) :: predef(npred), dpred(npred)

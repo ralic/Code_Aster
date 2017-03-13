@@ -15,11 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface
     subroutine lc0042(fami, kpg, ksp, ndim, imate,&
                       compor, carcri, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
-                      sigp, vip, wkin, typmod, icomp,&
+                      sigp, vip, typmod, icomp,&
                       nvi, dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
@@ -38,7 +40,6 @@ interface
         real(kind=8), intent(in) :: angmas(3)
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(*)
-        real(kind=8), intent(in) :: wkin(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
         integer, intent(in) :: nvi

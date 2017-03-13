@@ -18,9 +18,9 @@
 interface
     subroutine lc0059(fami, kpg, ksp, imate,&
                       compor, carcri, instam, instap, neps, epsm,&
-                      deps, nsig, sigm, vim, option, angmas,&
+                      deps, nsig, sigm, nvi, vim, option, angmas,&
                       sigp, vip, wkin,&
-                      typmod, icomp, nvi, dsidep, codret)
+                      typmod, icomp, dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
@@ -31,6 +31,7 @@ interface
         real(kind=8), intent(in) :: instap
         integer, intent(in) :: neps
         integer, intent(in) :: nsig
+        integer, intent(in) :: nvi
         real(kind=8), intent(in) :: epsm(neps)
         real(kind=8), intent(in) :: deps(neps)
         real(kind=8), intent(in) :: sigm(nsig)
@@ -42,7 +43,7 @@ interface
         real(kind=8), intent(in) :: wkin(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
-        integer, intent(in) :: nvi
+
         real(kind=8), intent(out) :: dsidep(6, 6)
         integer, intent(out) :: codret
     end subroutine lc0059

@@ -28,7 +28,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg

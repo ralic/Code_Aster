@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -21,8 +21,7 @@ interface
                       neps, epsm, deps, nsig, sigm,&
                       nvi, vim, option, angmas, nwkin,&
                       wkin, icomp, stress, statev, ndsde,&
-                      dsidep, nwkout, wkout, codret)
-        integer :: nwkout
+                      dsidep, codret)
         integer :: nwkin
         integer :: nvi
         character(len=*) :: fami
@@ -49,7 +48,6 @@ interface
         real(kind=8) :: statev(nvi)
         integer :: ndsde
         real(kind=8) :: dsidep(6, 6)
-        real(kind=8) :: wkout(nwkout)
         integer :: codret
     end subroutine lc0050
 end interface

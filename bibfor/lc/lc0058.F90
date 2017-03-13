@@ -4,7 +4,7 @@ subroutine lc0058(fami, kpg, ksp, ndim, typmod,&
                   nvi, vim, option, angmas, &
                   icomp, stress, statev, dsidep,&
                   codret)
-use calcul_module, only : ca_iactif_, ca_ctempl_
+use calcul_module, only : ca_iactif_
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
