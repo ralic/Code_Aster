@@ -2,7 +2,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),
       DEBUG=_F(SDVERI='OUI',),);
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -50,12 +50,14 @@ RESSORT=DEFI_MATERIAU(DIS_CONTACT=_F(RIGI_NOR=1e+13,
                                      COULOMB=0.4,
                                      DIST_1=1.0,),);
 
-L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+L_INST=DEFI_LIST_INST(METHODE='AUTO', 
+                      DEFI_LIST=_F(
                                    VALE=(0.0,1.0,),
                                    PAS_MINI=1e-06,
                                    PAS_MAXI=1.0,),);
 
-L_INST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
+L_INST2=DEFI_LIST_INST(METHODE='AUTO',
+                       DEFI_LIST=_F(
                                     VALE=(0.0,1.0,2.0,),
                                     PAS_MINI=1e-06,
                                     PAS_MAXI=1.0,),);

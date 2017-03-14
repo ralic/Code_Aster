@@ -54,8 +54,7 @@ list_t=DEFI_LIST_REEL(DEBUT=0.0,
                       INTERVALLE=_F(JUSQU_A=10.0,
                                     PAS=1.0,),);
 
-list_i=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=list_t,),);
+list_i=DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST=list_t,),);
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.0,0.0,
                                           10.,1.,

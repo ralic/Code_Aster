@@ -183,8 +183,8 @@ listarc2=DEFI_LIST_REEL(DEBUT=0.,
                                     _F(JUSQU_A=.15,
                                       NOMBRE=nombre*1,),
                                       ));
-list=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                 LIST_INST=listinst,),
+list=DEFI_LIST_INST(METHODE='MANUEL',
+                    DEFI_LIST=_F(LIST_INST=listinst,),
                     ECHEC=_F(SUBD_PAS=2.,SUBD_NIVEAU=12,),);
 
 evol1=DYNA_NON_LINE(MODELE=modele,

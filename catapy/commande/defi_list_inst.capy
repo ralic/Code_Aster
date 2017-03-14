@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -144,25 +144,22 @@ DEFI_LIST_INST = OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='
                       UIinfo={"groupes":("Fonctions",)},
                       fr=tr("Définition de la gestion de la liste d'instants"),
 
+METHODE      = SIMP(fr = tr("Methode de definition de la liste d'instants"),
+                    statut = 'f',typ = 'TXM', max = 1,
+                    into = ("MANUEL","AUTO",), defaut = "MANUEL",
+                   ),
+
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour la definition a priori de la liste d'instant
 # ----------------------------------------------------------------------------------------------------------------------------------
 
-DEFI_LIST   =FACT(fr                = tr("Definition a priori de la liste d'instants"),
-                  statut            = 'o',
-                  max               = 1,
-                  METHODE           = SIMP(fr                = tr("Methode de definition de la liste d'instants"),
-                                           statut            = 'o',
-                                           typ               = 'TXM',
-                                           max               = 1,
-                                           position          = 'global',
-                                           into              = ("MANUEL","AUTO",),
-                                           defaut            = "MANUEL",
-                                           ),
-                  b_manuel          = BLOC(fr                = tr("Liste d'instants donnée par l'utilisateur"),
-                                           condition         = """equal_to("METHODE", 'MANUEL') """,
-                                           regles=(UN_PARMI('LIST_INST','VALE','RESULTAT'),
-                                                   PRESENT_PRESENT('RESULTAT','SUBD_PAS'),),
+b_manuel = BLOC(fr = tr("Liste d'instants donnée par l'utilisateur"),
+                condition = """equal_to("METHODE", 'MANUEL') """,
+
+  DEFI_LIST   =FACT(fr = tr("Definition a priori de la liste d'instants"),
+                    statut = 'o', max = 1,
+                    regles=(UN_PARMI('LIST_INST','VALE','RESULTAT'),
+                            PRESENT_PRESENT('RESULTAT','SUBD_PAS'),),
                                            VALE              = SIMP(statut          = 'f',
                                                                     typ             = 'R',
                                                                     max             = '**'),
@@ -177,11 +174,13 @@ DEFI_LIST   =FACT(fr                = tr("Definition a priori de la liste d'inst
                                                                     max             = 1,
                                                                     val_min         = 1,
                                                                     ),
-
-                                           ),
-                  b_auto            = BLOC(fr                = tr("Gestion automatique de la liste d'instants"),
-                                           condition         = """(equal_to("METHODE", 'AUTO')) """,
-                                           regles=(UN_PARMI('LIST_INST','VALE',),),
+  ), # end fkw_defi_list                                                                    
+), # end b_manuel                                                                    
+b_auto =   BLOC(fr = tr("Gestion automatique de la liste d'instants"),
+                condition = """(equal_to("METHODE", 'AUTO')) """,
+  DEFI_LIST   =FACT(fr = tr("Definition a priori de la liste d'instants"),
+                    statut = 'o', max = 1,               
+                    regles=(UN_PARMI('LIST_INST','VALE',),),
                                            VALE              = SIMP(statut          = 'f',
                                                                     typ             = 'R',
                                                                     max             = '**'),
@@ -203,8 +202,8 @@ DEFI_LIST   =FACT(fr                = tr("Definition a priori de la liste d'inst
                                                                     val_max         = 1000000,
                                                                     defaut          = 1000000,
                                                                     ),
-                                           ),
-                 ),
+  ), # end fkw_defi_list 
+), # end b_auto  
 # ----------------------------------------------------------------------------------------------------------------------------------
 # mot-cle pour le comportement en cas d'echec (on doit recommencer le meme instant)
 # ----------------------------------------------------------------------------------------------------------------------------------

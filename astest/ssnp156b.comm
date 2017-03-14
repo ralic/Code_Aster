@@ -55,8 +55,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=8,),),
                                   );
 
-LINST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                  LIST_INST=L_INST,),
+LINST=DEFI_LIST_INST(METHODE='MANUEL',
+                     DEFI_LIST=_F(LIST_INST=L_INST,),
                      ECHEC=_F(SUBD_PAS=4,
                               SUBD_NIVEAU=3,),);
 

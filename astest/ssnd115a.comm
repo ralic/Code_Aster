@@ -1,6 +1,6 @@
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,9 +90,8 @@ npas_par_cycle1=48
 
 temps_ca=DEFI_LIST_REEL(DEBUT=0,INTERVALLE=_F(JUSQU_A=tmax,NOMBRE=npas_par_cycle1*nbcycle1*nbcycle2),);
 
-deflist=DEFI_LIST_INST(INFO=1,
-                         DEFI_LIST=_F(LIST_INST=temps_ca,
-                                      METHODE='MANUEL'),
+deflist=DEFI_LIST_INST(INFO=1, METHODE='MANUEL',
+                         DEFI_LIST=_F(LIST_INST=temps_ca,),
                          ECHEC=_F(SUBD_NIVEAU=3,
                                   SUBD_PAS=6,
                                   SUBD_PAS_MINI=1.E-08,),

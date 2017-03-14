@@ -1,6 +1,6 @@
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -96,8 +96,8 @@ L_INST=DEFI_LIST_REEL(DEBUT=0.0,
 
 # gestion manuelle avec event-driven
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                    LIST_INST=L_INST,),
+DEFLIST=DEFI_LIST_INST(METHODE='MANUEL', 
+                       DEFI_LIST=_F(LIST_INST=L_INST,),
                        ECHEC=_F(EVENEMENT='DELTA_GRANDEUR',
                                 SUBD_NIVEAU=10,
                                 VALE_REF=0.1e-2,
@@ -136,9 +136,9 @@ L_INST2=DEFI_LIST_REEL(DEBUT=0.0,
 
 # gestion manuelle avec event-driven
 
-DEFLIST2=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                    LIST_INST=L_INST2,),
-                       ECHEC=_F(SUBD_NIVEAU=10,),
+DEFLIST2=DEFI_LIST_INST(METHODE='MANUEL', 
+                        DEFI_LIST=_F(LIST_INST=L_INST2,),
+                        ECHEC=_F(SUBD_NIVEAU=10,),
                        );
 
 U2=STAT_NON_LINE(MODELE=MO,

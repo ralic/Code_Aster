@@ -273,11 +273,11 @@ class ENTITE:
 
     def check_position(self):
         """Vérifie l'attribut position."""
-        if self.position not in ('local', 'global'):
+        if self.position != None:
             # a priori, 'global_jdc' est aussi autorisée mais ça ne me semble
             # pas une bonne idée !
-            self.cr.fatal(_(u"Seule la valeur 'global' est autorisée pour "
-                            u"l'attribut 'position' : %r"), self.position)
+            self.cr.fatal(_(u"l'attribut 'position' n'est plus autorisé"))
+            
 
     def check_defaut(self):
         """Vérifie l'attribut defaut."""

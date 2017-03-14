@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -261,8 +261,8 @@ prectps = 1.E-3
 inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=tfin,
                                    PAS=dt,),);
-linst1=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=inst1,),
+linst1=DEFI_LIST_INST(METHODE='MANUEL',
+                      DEFI_LIST=_F(LIST_INST=inst1,),
                       ECHEC=_F(ACTION        = 'DECOUPE',
                                SUBD_METHODE  = 'MANUEL',
                                SUBD_PAS=4,
@@ -273,9 +273,9 @@ inst1f=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=(_F(JUSQU_A=textr,PAS=dtf,),
                                  _F(JUSQU_A=tfin,PAS=dtf,),),
                                    );
-linst1f=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=inst1f,),
-                      ECHEC=_F(ACTION        = 'DECOUPE',
+linst1f=DEFI_LIST_INST(METHODE='MANUEL',
+                       DEFI_LIST=_F(LIST_INST=inst1f,),
+                       ECHEC=_F(ACTION        = 'DECOUPE',
                                SUBD_METHODE  = 'MANUEL',
                                SUBD_PAS=2,
                                SUBD_PAS_MINI=0.0000001,),);

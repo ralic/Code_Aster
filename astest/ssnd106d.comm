@@ -1,6 +1,6 @@
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -86,7 +86,7 @@ INCLUDE(UNITE=30)
 
 #listes d'instants initiale
 L_inst=DEFI_LIST_REEL(DEBUT=0.0,INTERVALLE=_F(JUSQU_A=dureetrac,NOMBRE=npastrac),)
-DEFLIST1 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = L_inst,))
+DEFLIST1 = DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST = L_inst,))
 
 #### boucle sur les comportements
 resu=[None]*len(compor)
@@ -117,7 +117,7 @@ for icomp,comp in enumerate(compor) :
         Rota2[icl]=CHAR_ROTA(ANGLE_DEGRES=angle_degres,TINI=tini,TFIN=tfinrot,RESU=resu[icomp],MAIL=MA)
 
         Linst2=DEFI_LIST_REEL(DEBUT=tini,INTERVALLE=_F(JUSQU_A=tfinrot,NOMBRE=npasrota),);
-        DEFLIST2 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = Linst2,))
+        DEFLIST2 = DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST = Linst2,))
 
         resu[icomp]=STAT_NON_LINE(reuse =resu[icomp],
                            MODELE=modele,CHAM_MATER=mat,
@@ -140,7 +140,7 @@ for icomp,comp in enumerate(compor) :
                                       ),)
         Ftra2[icl]=DEFI_FONCTION(NOM_PARA='INST',VALE=(tfinrot,0.,tfintrac,1.,),PROL_DROITE='LINEAIRE',);
         Linst2=DEFI_LIST_REEL(DEBUT=tfinrot,INTERVALLE=_F(JUSQU_A=tfintrac,NOMBRE=npastrac),)
-        DEFLIST2 = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='MANUEL',LIST_INST = Linst2,))
+        DEFLIST2 = DEFI_LIST_INST(METHODE='MANUEL', DEFI_LIST=_F(LIST_INST = Linst2,))
 
         DEBUG(SDVERI='NON')
         resu[icomp]=STAT_NON_LINE(reuse = resu[icomp],MODELE=modele,CHAM_MATER=mat,

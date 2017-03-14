@@ -35,8 +35,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
 
         reuse=SIMP(statut='c', typ=CO),
         # Calculation type and basis
-        BASE_CALCUL     = SIMP(statut='o',typ='TXM',position='global',into=("PHYS","GENE"),),
-        TYPE_CALCUL     = SIMP(statut='o',typ='TXM',position='global',into=("HARM","TRAN"),),
+        BASE_CALCUL     = SIMP(statut='o',typ='TXM',into=("PHYS","GENE"),),
+        TYPE_CALCUL     = SIMP(statut='o',typ='TXM',into=("HARM","TRAN"),),
 
         # Physical model information
         b_phys_model    = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS')""",
@@ -87,134 +87,157 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         RESULTAT        =     SIMP(statut='f',typ=(dyna_harmo,harm_gene),),
 
         # Modal damping
-        AMOR_MODAL      = FACT(statut='f',
-            AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
-            LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
-            b_mode      =     BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
-            MODE_MECA   =         SIMP(statut='o',typ=mode_meca),
-            NB_MODE     =         SIMP(statut='f',typ='I'),),),
+        b_mode      =     BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
+           AMOR_MODAL      = FACT(statut='f',
+               AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
+               LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
+               MODE_MECA   =         SIMP(statut='o',typ=mode_meca),
+               NB_MODE     =         SIMP(statut='f',typ='I'),
+           ), # end fkw_amor_modal
+        ), # end b_mode
+        b_not_mode      =     BLOC(condition = """not equal_to("BASE_CALCUL", 'PHYS') or not  equal_to("TYPE_CALCUL", 'TRAN')""",
+           AMOR_MODAL      = FACT(statut='f',
+               AMOR_REDUIT =     SIMP(statut='f',typ='R',max='**'),
+               LIST_AMOR   =     SIMP(statut='f',typ=listr8_sdaster),
+           ), # end fkw_amor_modal
+        ), # end b_not_mode
 
         # Harmonic calculation parameters
         b_param_harm    = BLOC(condition= """equal_to("TYPE_CALCUL", 'HARM')""",
                                regles   = (UN_PARMI('FREQ','LIST_FREQ'),
                                            EXCLUS('NOM_CHAM','TOUT_CHAM'),),
-        FREQ            =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-        LIST_FREQ       =     SIMP(statut='f',typ=listr8_sdaster),
-        NOM_CHAM        =     SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE"),),
-        TOUT_CHAM       =     SIMP(statut='f',typ='TXM',into=("OUI",),),),
-
+           FREQ            =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+           LIST_FREQ       =     SIMP(statut='f',typ=listr8_sdaster),
+           NOM_CHAM        =     SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=3,into=("DEPL","VITE","ACCE"),),
+           TOUT_CHAM       =     SIMP(statut='f',typ='TXM',into=("OUI",),),
+        ), # end b_param_harm
+        
         # Transient calculation parameters
         b_param_tran    = BLOC(condition = """equal_to("TYPE_CALCUL", 'TRAN')""",
 
-        # 1. Integration schemes
-        SCHEMA_TEMPS    =     FACT(statut='d',
-            SCHEMA      =         SIMP(statut='o', typ='TXM', defaut="DIFF_CENTRE",
-                                       into=("NEWMARK", "WILSON", "DIFF_CENTRE",
-                                             "DEVOGE", "ADAPT_ORDRE1", "ADAPT_ORDRE2",
-                                             "RUNGE_KUTTA_32", "RUNGE_KUTTA_54", "ITMI"),),
-            b_newmark   =         BLOC(condition = """equal_to("SCHEMA", 'NEWMARK')""",
-            BETA        =             SIMP(statut='f',typ='R',defaut= 0.25),
-            GAMMA       =             SIMP(statut='f',typ='R',defaut= 0.5),),
-
-            b_wilson    =         BLOC(condition = """equal_to("SCHEMA", 'WILSON')""",
-            THETA       =             SIMP(statut='f',typ='R',defaut= 1.4),),
-
-            b_rk_devo   =         BLOC(condition="""equal_to("SCHEMA", 'RUNGE_KUTTA_54') or equal_to("SCHEMA", 'RUNGE_KUTTA_32') or equal_to("SCHEMA", 'DEVOGE')""",
-            TOLERANCE   =             SIMP(statut='f',typ='R',defaut= 1.E-5),
-            ALPHA       =             SIMP(statut='f',typ='R',defaut= 0.),),
-
-            b_adapt_ord =         BLOC(condition = """equal_to("SCHEMA", 'ADAPT_ORDRE1') or  equal_to("SCHEMA", 'ADAPT_ORDRE2')""",
-            VITE_MIN    =             SIMP(statut='f',typ='TXM',defaut="NORM",into=("MAXI","NORM"),),
-            COEF_MULT_PAS=            SIMP(statut='f',typ='R',defaut= 1.1),
-            COEF_DIVI_PAS=            SIMP(statut='f',typ='R',defaut= 1.3333334),
-            PAS_LIMI_RELA=            SIMP(statut='f',typ='R',defaut= 1.E-6),
-            NB_POIN_PERIODE=          SIMP(statut='f',typ='I',defaut= 50),),
-
-            b_alladapt  =         BLOC(condition = """is_in("SCHEMA", ('RUNGE_KUTTA_54','RUNGE_KUTTA_32','DEVOGE','ADAPT_ORDRE1','ADAPT_ORDRE2'))""",
-            PAS_MINI    =             SIMP(statut='f',typ='R'),
-            PAS_MAXI    =             SIMP(statut='f',typ='R'),
-            NMAX_ITER_PAS=            SIMP(statut='f',typ='I',defaut= 16),),           ),
-
-        # 2. Time discretisation
-        INCREMENT       =     FACT(statut='o', regles=(UN_PARMI('LIST_INST','PAS'),),
-            LIST_INST   =         SIMP(statut='f',typ=listr8_sdaster),
-            b_list      =         BLOC(condition = """exists("LIST_INST")""", regles=(EXCLUS('INST_FIN','NUME_FIN'),),
-            NUME_FIN    =             SIMP(statut='f',typ='I'),
-            INST_FIN    =             SIMP(statut='f',typ='R'),),
-
-            PAS         =         SIMP(statut='f',typ='R'),
-            b_pas       =         BLOC(condition = """exists("PAS")""",
-            INST_INIT   =             SIMP(statut='f',typ='R'),
-            INST_FIN    =             SIMP(statut='o',typ='R'),),
-
-            VERI_PAS    =         SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),),
-
-       # 3. Initial state
-
-        b_init_gene     = BLOC(condition="""equal_to("BASE_CALCUL", 'GENE')""",
-        ETAT_INIT       =     FACT(statut='f', max = 1,
-                                               regles=(EXCLUS('RESULTAT','DEPL'), EXCLUS('RESULTAT','VITE'),),
-
-            RESULTAT    =         SIMP(statut='f',typ=tran_gene),
-
-            b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
-            NUME_ORDRE  =             SIMP(statut='f',typ='I'),
-            INST_INIT   =             SIMP(statut='f',typ='R'),
-            b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
-            CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-            PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-            PRECISION   =                     SIMP(statut='o',typ='R',),),),),
-
-            DEPL        =         SIMP(statut='f',typ=vect_asse_gene),
-            VITE        =         SIMP(statut='f',typ=vect_asse_gene),),),
-
-        b_init_phys     = BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
-        ETAT_INIT       =     FACT(statut='f', max = 1,
-                                               regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
-                                                       PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
-            RESULTAT    =         SIMP(statut='f',typ=dyna_trans),
-
-            b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
-            NUME_ORDRE  =             SIMP(statut='f',typ='I'),
-            INST_INIT   =             SIMP(statut='f',typ='R'),
-            b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
-            CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-            PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-            PRECISION   =                     SIMP(statut='o',typ='R',),),),),
-
-            DEPL        =         SIMP(statut='f',typ=cham_no_sdaster),
-            VITE        =         SIMP(statut='f',typ=cham_no_sdaster),
-            ACCE        =         SIMP(statut='f',typ=cham_no_sdaster),),),
-
-       # 4. Archiving parameters
-        ARCHIVAGE       = FACT(statut='f', max=1, regles=(EXCLUS('LIST_INST','INST'), AU_MOINS_UN('LIST_INST','INST','PAS_ARCH')),
-            PAS_ARCH    =     SIMP(statut='f',typ='I', defaut=1),
-
-            LIST_INST   =     SIMP(statut='f',typ=(listr8_sdaster),),
-            INST        =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
-
-            b_dlt_prec  =     BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS') and (exists("LIST_INST") or exists("INST"))""",
-            CRITERE     =         SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
-            b_prec_rela =         BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
-            PRECISION   =             SIMP(statut='f',typ='R',defaut= 1.E-6,),),
-            b_prec_abso =         BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
-            PRECISION   =             SIMP(statut='o',typ='R',),),),
-            b_cham_exclu=     BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
-            CHAM_EXCLU  =         SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("DEPL","VITE","ACCE"),),),),
-
+           # 1. Integration schemes
+           SCHEMA_TEMPS    =     FACT(statut='d',
+               SCHEMA      =         SIMP(statut='o', typ='TXM', defaut="DIFF_CENTRE",
+                                          into=("NEWMARK", "WILSON", "DIFF_CENTRE",
+                                                "DEVOGE", "ADAPT_ORDRE1", "ADAPT_ORDRE2",
+                                                "RUNGE_KUTTA_32", "RUNGE_KUTTA_54", "ITMI"),),
+               b_newmark   =         BLOC(condition = """equal_to("SCHEMA", 'NEWMARK')""",
+               BETA        =             SIMP(statut='f',typ='R',defaut= 0.25),
+               GAMMA       =             SIMP(statut='f',typ='R',defaut= 0.5),),
+   
+               b_wilson    =         BLOC(condition = """equal_to("SCHEMA", 'WILSON')""",
+               THETA       =             SIMP(statut='f',typ='R',defaut= 1.4),),
+   
+               b_rk_devo   =         BLOC(condition="""equal_to("SCHEMA", 'RUNGE_KUTTA_54') or equal_to("SCHEMA", 'RUNGE_KUTTA_32') or equal_to("SCHEMA", 'DEVOGE')""",
+               TOLERANCE   =             SIMP(statut='f',typ='R',defaut= 1.E-5),
+               ALPHA       =             SIMP(statut='f',typ='R',defaut= 0.),),
+   
+               b_adapt_ord =         BLOC(condition = """equal_to("SCHEMA", 'ADAPT_ORDRE1') or  equal_to("SCHEMA", 'ADAPT_ORDRE2')""",
+               VITE_MIN    =             SIMP(statut='f',typ='TXM',defaut="NORM",into=("MAXI","NORM"),),
+               COEF_MULT_PAS=            SIMP(statut='f',typ='R',defaut= 1.1),
+               COEF_DIVI_PAS=            SIMP(statut='f',typ='R',defaut= 1.3333334),
+               PAS_LIMI_RELA=            SIMP(statut='f',typ='R',defaut= 1.E-6),
+               NB_POIN_PERIODE=          SIMP(statut='f',typ='I',defaut= 50),),
+   
+               b_alladapt  =         BLOC(condition = """is_in("SCHEMA", ('RUNGE_KUTTA_54','RUNGE_KUTTA_32','DEVOGE','ADAPT_ORDRE1','ADAPT_ORDRE2'))""",
+               PAS_MINI    =             SIMP(statut='f',typ='R'),
+               PAS_MAXI    =             SIMP(statut='f',typ='R'),
+               NMAX_ITER_PAS=            SIMP(statut='f',typ='I',defaut= 16),),           
+           ), # end fkw_schema_temps
+   
+           # 2. Time discretisation
+           INCREMENT       =     FACT(statut='o', regles=(UN_PARMI('LIST_INST','PAS'),),
+               LIST_INST   =         SIMP(statut='f',typ=listr8_sdaster),
+               b_list      =         BLOC(condition = """exists("LIST_INST")""", regles=(EXCLUS('INST_FIN','NUME_FIN'),),
+               NUME_FIN    =             SIMP(statut='f',typ='I'),
+               INST_FIN    =             SIMP(statut='f',typ='R'),),
+   
+               PAS         =         SIMP(statut='f',typ='R'),
+               b_pas       =         BLOC(condition = """exists("PAS")""",
+               INST_INIT   =             SIMP(statut='f',typ='R'),
+               INST_FIN    =             SIMP(statut='o',typ='R'),),
+   
+               VERI_PAS    =         SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
+           ), # end fkw_discretisation
+        ), # end b_param_tran  
+         
+           
+        # 3. Initial state
+   
+        b_init_gene     = BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'GENE')""",
+           ETAT_INIT       =     FACT(statut='f', max = 1,
+                                                  regles=(EXCLUS('RESULTAT','DEPL'), EXCLUS('RESULTAT','VITE'),),
+   
+               RESULTAT    =         SIMP(statut='f',typ=tran_gene),
+   
+               b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles = (EXCLUS('NUME_ORDRE','INST_INIT'),),
+               NUME_ORDRE  =             SIMP(statut='f',typ='I'),
+               INST_INIT   =             SIMP(statut='f',typ='R'),
+               b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
+               CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
+               b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
+               PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+               b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+               PRECISION   =                     SIMP(statut='o',typ='R',),),),),
+   
+               DEPL        =         SIMP(statut='f',typ=vect_asse_gene),
+               VITE        =         SIMP(statut='f',typ=vect_asse_gene),),
+        ), # end b_init_gene
+   
+        b_init_phys     = BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'PHYS')""",
+           ETAT_INIT       =     FACT(statut='f', max = 1,
+                                                  regles=(AU_MOINS_UN('RESULTAT', 'DEPL', 'VITE', 'ACCE'),
+                                                          PRESENT_ABSENT('RESULTAT', 'DEPL', 'VITE', 'ACCE'),),
+               RESULTAT    =         SIMP(statut='f',typ=dyna_trans),
+   
+               b_resu      =         BLOC(condition = """exists("RESULTAT")""", regles=( EXCLUS('NUME_ORDRE','INST_INIT'),),
+               NUME_ORDRE  =             SIMP(statut='f',typ='I'),
+               INST_INIT   =             SIMP(statut='f',typ='R'),
+               b_inst_init =             BLOC(condition = """exists("INST_INIT")""",
+               CRITERE     =                 SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
+               b_prec_rela =                 BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
+               PRECISION   =                     SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+               b_prec_abso =                 BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+               PRECISION   =                     SIMP(statut='o',typ='R',),),),),
+   
+               DEPL        =         SIMP(statut='f',typ=cham_no_sdaster),
+               VITE        =         SIMP(statut='f',typ=cham_no_sdaster),
+               ACCE        =         SIMP(statut='f',typ=cham_no_sdaster),),
+        ), # end b_init_phys
+ 
+        # 4. Archiving parameters
+        b_dlt_prec  =  BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
+          ARCHIVAGE       = FACT(statut='f', max=1, regles=(EXCLUS('LIST_INST','INST'), AU_MOINS_UN('LIST_INST','INST','PAS_ARCH')),
+               PAS_ARCH    =     SIMP(statut='f',typ='I', defaut=1),
+               LIST_INST   =     SIMP(statut='f',typ=(listr8_sdaster),),
+               INST        =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+   
+               b_list_inst =     BLOC(condition="""(exists("LIST_INST") or exists("INST"))""",
+                  CRITERE     =         SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU"),),
+                  b_prec_rela =         BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                    PRECISION   =             SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+                  b_prec_abso =         BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                    PRECISION   =             SIMP(statut='o',typ='R',),),
+               ), # end b_list_inst
+               CHAM_EXCLU  =         SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("DEPL","VITE","ACCE"),),
+          ), # end fkw_archivage
+        ), # end b_dlt_prec
+        b_not_dlt_prec  =  BLOC(condition="""not equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
+          ARCHIVAGE       = FACT(statut='f', max=1, regles=(EXCLUS('LIST_INST','INST'), AU_MOINS_UN('LIST_INST','INST','PAS_ARCH')),
+               PAS_ARCH    =     SIMP(statut='f',typ='I', defaut=1),
+               LIST_INST   =     SIMP(statut='f',typ=(listr8_sdaster),),
+               INST        =     SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+#               CHAM_EXCLU  =     SIMP(statut='f',typ='TXM',validators=NoRepeat(),max=2,into=("DEPL","VITE","ACCE"),),
+          ), # end fkw_archivage
+        ), # end b_not_dlt_prec
+       
         # 5. Energy calculation
         bloc_ener       = BLOC(condition="""equal_to("BASE_CALCUL", 'PHYS')""",
-        ENERGIE         =     FACT(statut='f',max=1,
-        CALCUL          =         SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),),),
-
-        ),
+              ENERGIE     =     FACT(statut='f',max=1,
+                CALCUL    =         SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI",),),
+        ), # end b_bloc_ener
 
 ##########################################################################################
-
 #       Definition of the external excitation
 #       A. Harmonic case
         b_excit_harm    = BLOC(condition="""equal_to("TYPE_CALCUL", 'HARM')""",
@@ -231,10 +254,9 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             PUIS_PULS   =     SIMP(statut='f',typ='I',defaut= 0),),
         EXCIT_RESU      = FACT(statut='f',max='**',
             RESULTAT    =     SIMP(statut='o',typ=(dyna_harmo,harm_gene),),
-            COEF_MULT_C =     SIMP(statut='o',typ='C'),),),
-
+            COEF_MULT_C =     SIMP(statut='o',typ='C'),),
+        ), # end b_excit_harm
 ##########################################################################################
-
 #       B. Transient case, physical basis
         b_excit_line_tran= BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'PHYS')""",
         EXCIT            = FACT(statut='f',max='**',
@@ -256,10 +278,9 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         MODE_STAT        = SIMP(statut='f',typ=mode_meca),
         EXCIT_RESU       = FACT(statut='f',
             RESULTAT     =     SIMP(statut='o',typ=dyna_trans),
-            COEF_MULT    =     SIMP(statut='o',typ='R'),),),
-
+            COEF_MULT    =     SIMP(statut='o',typ='R'),),
+        ), # end b_excit_line_tran
 ##########################################################################################
-
 #       C. Transient case, reduced basis
 #       C.1 Regular excitation (linear)
         b_excit_tran_mod = BLOC(condition="""equal_to("TYPE_CALCUL", 'TRAN') and equal_to("BASE_CALCUL", 'GENE')""",
@@ -333,9 +354,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             b_c_st_dyna =         BLOC(condition="""equal_to("FROTTEMENT", 'COULOMB_STAT_DYNA')""",
             COULOMB_STAT=             SIMP(statut='o',typ='R'),
             COULOMB_DYNA=             SIMP(statut='o',typ='R'),
-            UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),),
-
-
+            UNIDIRECTIONNEL =         SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON"),),),
+        ), # end b_choc
 #       C.2.2 Cracked rotor
         b_rotor         = BLOC(condition="""equal_to("RELATION", 'ROTOR_FISS')""",
                                regles=(UN_PARMI('NOEUD_D','GROUP_NO_D'),
@@ -349,10 +369,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             GROUP_NO_G  =     SIMP(statut='f',typ=grno),
             GROUP_NO_D  =     SIMP(statut='f',typ=grno),
             K_PHI       =     SIMP(statut='o',typ=(fonction_sdaster,formule),),
-            DK_DPHI     =     SIMP(statut='o',typ=(fonction_sdaster,formule),),),
-
-
-
+            DK_DPHI     =     SIMP(statut='o',typ=(fonction_sdaster,formule),),
+        ), # end b_rotor
 #       C.2.3 Code coupling with EDYOS
         b_lubrication   = BLOC(condition="""equal_to("RELATION", 'PALIER_EDYOS')""",
                                regles=(PRESENT_ABSENT('UNITE','GROUP_NO'),
@@ -361,8 +379,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             UNITE       =     SIMP(statut='f',typ=UnitType(), inout='in'),
             GROUP_NO    =     SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**'),
             NOEUD       =     SIMP(statut='f',typ=no),
-            TYPE_EDYOS  =     SIMP(statut='f',typ='TXM',into=("PAPANL","PAFINL","PACONL","PAHYNL",),),),
-
+            TYPE_EDYOS  =     SIMP(statut='f',typ='TXM',into=("PAPANL","PAFINL","PACONL","PAHYNL",),),
+        ), # end b_lubrication
 #       C.2.4 Buckling
         b_buckling      = BLOC(condition="""equal_to("RELATION", 'FLAMBAGE')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
@@ -383,7 +401,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             RIGI_NOR    =     SIMP(statut='o',typ='R'),
             FNOR_CRIT   =     SIMP(statut='f',typ='R'),
             FNOR_POST_FL=     SIMP(statut='f',typ='R'),
-            RIGI_NOR_POST_FL= SIMP(statut='f',typ='R'),),
+            RIGI_NOR_POST_FL= SIMP(statut='f',typ='R'),
+        ), # end b_buckling
 
 #       C.2.5 Anti-sismic disposition non linearity
         b_antisism      = BLOC(condition="""equal_to("RELATION", 'ANTI_SISM')""",
@@ -398,8 +417,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             SEUIL_FX    =     SIMP(statut='f',typ='R',defaut= 0.E+0),
             C           =     SIMP(statut='f',typ='R',defaut= 0.E+0),
             PUIS_ALPHA  =     SIMP(statut='f',typ='R',defaut= 0.E+0),
-            DX_MAX      =     SIMP(statut='f',typ='R',defaut= 1.),),
-
+            DX_MAX      =     SIMP(statut='f',typ='R',defaut= 1.),
+        ), # end b_antisism
 #       C.2.6.1 Discrete viscous coupling, generalized Zener
         b_disvisc       = BLOC(condition="""equal_to("RELATION", 'DIS_VISC')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
@@ -419,8 +438,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             PUIS_ALPHA  =     SIMP(statut='o',typ='R',val_min = 1.0E-08, fr=tr("Puissance de la loi visqueuse ]0.0, 1.0]."),
                                    val_max=1.0, defaut=0.5,),
             ITER_INTE_MAXI=   SIMP(statut='o',typ='I',defaut= 20),
-            RESI_INTE_RELA=   SIMP(statut='o',typ='R',defaut= 1.0E-6),),
-
+            RESI_INTE_RELA=   SIMP(statut='o',typ='R',defaut= 1.0E-6),
+        ), # end b_disvisc
 #       C.2.6.2 Discrete nonlinear behavior
         b_disecro       = BLOC(condition="""equal_to("RELATION", 'DIS_ECRO_TRAC')""",
                                regles=(UN_PARMI('NOEUD_1','GROUP_NO_1'),
@@ -431,8 +450,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             GROUP_NO_2  =   SIMP(statut='f',typ=grno),
             FX          =   SIMP(statut='o',typ=(fonction_sdaster), fr=tr("Comportement en fonction du déplacement relatif."),),
             ITER_INTE_MAXI = SIMP(statut='o',typ='I',defaut= 20),
-            RESI_INTE_RELA = SIMP(statut='o',typ='R',defaut= 1.0E-6),),
-
+            RESI_INTE_RELA = SIMP(statut='o',typ='R',defaut= 1.0E-6),
+        ), # end b_disecro
 #       C.2.7 Force displacement relationship non linearity
         b_refx          = BLOC(condition="""equal_to("RELATION", 'RELA_EFFO_DEPL')""",
                                regles=(UN_PARMI('NOEUD','GROUP_NO'),),
@@ -440,8 +459,8 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             GROUP_NO    =     SIMP(statut='f',typ=grno, max=1),
             SOUS_STRUC  =     SIMP(statut='f',typ='TXM'),
             NOM_CMP     =     SIMP(statut='f',typ='TXM'),
-            FONCTION    =     SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),),
-
+            FONCTION    =     SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
+        ), # end b_refx
 #       C.2.8 Force velocity relationship non linearity
         b_refv          = BLOC(condition="""equal_to("RELATION", 'RELA_EFFO_VITE')""",
                                regles=(UN_PARMI('NOEUD','GROUP_NO'),),
@@ -449,9 +468,9 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
             GROUP_NO    =     SIMP(statut='f',typ=grno, max=1),
             SOUS_STRUC  =     SIMP(statut='f',typ='TXM'),
             NOM_CMP     =     SIMP(statut='f',typ='TXM'),
-            FONCTION    =     SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),),
-
-            ),
+            FONCTION    =     SIMP(statut='o',typ=(fonction_sdaster,nappe_sdaster,formule),),
+        ), # end b_refv
+        ), # end fkw_comportement
 
         BASE_ELAS_FLUI  =     SIMP(statut='f',typ=melasflu_sdaster, max=1),
         NUME_VITE_FLUI  =     SIMP(statut='f',typ='I', max=1),
@@ -459,31 +478,26 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
         VERI_CHOC       =     FACT(statut='f',
             STOP_CRITERE=         SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON"),),
             SEUIL       =         SIMP(statut='f',typ='R',defaut= 0.5),),
-
 #            Implicit or explicit treatment of choc non-linearities in integration
         b_nl_wet        =     BLOC(condition="""exists("BASE_ELAS_FLUI")""",
-        TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='IMPLICITE', into=('IMPLICITE',),),),
+          TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='IMPLICITE', into=('IMPLICITE',),),),
         b_nl_dry        =     BLOC(condition="""not exists("BASE_ELAS_FLUI")""",
-        TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='EXPLICITE', into=('IMPLICITE','EXPLICITE'),),),
+          TRAITEMENT_NONL =         SIMP(statut='o',typ='TXM', defaut='EXPLICITE', into=('IMPLICITE','EXPLICITE'),),),
 
-       ),
-
+        ), # end b_excit_tran_mod
 ##########################################################################################
-
 #       Solver parameters (common catalogue)
         b_sol_harm_gene = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr=tr("Methode de resolution matrice generalisee"),
-        SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','GENE'),),
+          SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','GENE'),),
         b_sol_harm_phys = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'HARM')""",
                                fr=tr("Methode de resolution matrice sur ddl physique"),
-        SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','PHYS'),),
+          SOLVEUR         =     C_SOLVEUR('DYNA_LINE_HARM','PHYS'),),
         b_sol_line_tran = BLOC(condition = """equal_to("BASE_CALCUL", 'PHYS') and equal_to("TYPE_CALCUL", 'TRAN')""",
-        SOLVEUR         =     C_SOLVEUR('DYNA_LINE_TRAN'),),
+          SOLVEUR         =     C_SOLVEUR('DYNA_LINE_TRAN'),),
         b_sol_tran_gene = BLOC(condition = """equal_to("BASE_CALCUL", 'GENE') and equal_to("TYPE_CALCUL", 'TRAN')""",
-        SOLVEUR         =     C_SOLVEUR('DYNA_TRAN_MODAL'),),
-
+          SOLVEUR         =     C_SOLVEUR('DYNA_TRAN_MODAL'),),
 ##########################################################################################
-
 #       Diverse
         TITRE           = SIMP(statut='f',typ='TXM'),
         INFO            = SIMP(statut='f',typ='I',into=(1,2),),
@@ -498,5 +512,5 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                 UNITE_DIS_VISC = SIMP(statut='f',typ=UnitType(), fr=tr("Unité de sortie des variables internes pour les DIS_VISC"),),
                 UNITE_DIS_ECRO_TRAC = SIMP(statut='f',typ=UnitType(), fr=tr("Unité de sortie des variables internes pour les DIS_ECRO_TRAC"),),
             ),
-        ),
+        ),# end b_impression
 )
