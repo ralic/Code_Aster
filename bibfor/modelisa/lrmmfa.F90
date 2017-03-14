@@ -1,10 +1,9 @@
 subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
                   gpptnn, grpmai, gpptnm, nbgrno, nbgrma,&
-                  typgeo, nomtyp, nmatyp, prefix, infmed,&
-                  vecgrm, nbcgrm)
+                  typgeo, nomtyp, nmatyp, prefix, infmed)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -79,7 +78,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
 ! 0.1. ==> ARGUMENTS
 !
     integer :: fid
-    integer :: nbnoeu, nbmail, nbgrno, nbgrma, nbcgrm
+    integer :: nbnoeu, nbmail, nbgrno, nbgrma
     integer :: typgeo(ntymax), nmatyp(ntymax)
     integer :: infmed
 !
@@ -87,7 +86,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
     character(len=8) :: nomtyp(ntymax)
     character(len=*) :: nomamd
 !
-    character(len=24) :: grpnoe, grpmai, vecgrm
+    character(len=24) :: grpnoe, grpmai
 !
 ! 0.2. ==> COMMUNS
 !
@@ -107,7 +106,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
     integer :: nbgr, jv2, jv3, num, ifam, igrp, jnogrp, numfam, nbver
     integer :: ityp, ilmed, jgrp, ecart, jv4
     integer :: nbrfam, jnbnog, jadcor, ino, jcolno, jnbno, jvec, nbno
-    integer :: adfano, val_max, val_min, ngro, ima, jreno, ingrp
+    integer :: adfano, val_max, val_min, ngro, ima
     integer :: ifm, nivinf, jcolma, jnbma, nbma, nummai, nbattr
     integer :: jnumty(ntymax), jfamma(ntymax), idatfa(200), vaatfa(200)
     aster_logical :: bgrpno
@@ -115,7 +114,7 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
     character(len=8) :: saux08
     character(len=19) :: nocorf
     character(len=24) :: famnoe, gpptnn, gpptnm, nomgro, nomtmp, nonbgr
-    character(len=24) :: nonufa, nonogn, nonogm, nofnog, noadco, noreno
+    character(len=24) :: nonufa, nonogn, nonogm, nofnog, noadco
     character(len=64) :: nomfam
     character(len=80) :: nomgrp, valk(4), newgrm
     character(len=200) :: descat(200)
@@ -134,22 +133,6 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
         write (ifm,1001) nompro
         1001 format( 60('='),/,'DEBUT DU PROGRAMME ',a)
 !
-    endif
-
-    noreno = '&&LRMMFA.RENOMME'
-    if( nbcgrm.ne.0 ) then
-        call jecreo(noreno, 'V N K24')
-        call jeecra(noreno, 'NOMMAX', ival=nbcgrm)
-        call jeveuo(vecgrm, 'L', jreno)
-        do ingrp = 1, nbcgrm
-            nomgro = zk80(jreno+(ingrp-1)*2)
-            call jenonu(jexnom(noreno, nomgro), num)
-            if( num.eq.0 ) then
-                call jecroc(jexnom(noreno, nomgro))
-            else
-                ASSERT(.false.)
-            endif
-        enddo
     endif
 !
 !====
@@ -290,15 +273,11 @@ subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
                 do igrp = 1, nbgr
                     nomgrp = zk80(jnogrp+igrp-1)
                     ilmed = lxlgut(nomgrp)
-                    if( nbcgrm.eq.0.and.ilmed.gt.24 ) then
+                    if( ilmed.gt.24 ) then
                         valk(1) = nomgrp
                         call utmess('F', 'MED_7', nk=1, valk=valk)
                     endif
                     nomgro = nomgrp
-                    if( nbcgrm.ne.0 ) then
-                        call jenonu(jexnom(noreno, nomgrp), num)
-                        if( num.ne.0 ) nomgro = zk80(jreno+(num*2-1))
-                    endif
                     call lxnoac(nomgro, newgrm)
                     if( nomgro.ne.newgrm ) then
                         valk(1) = nomgro

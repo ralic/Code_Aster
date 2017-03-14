@@ -1,6 +1,6 @@
 subroutine op0001()
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,9 +33,7 @@ subroutine op0001()
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
 #include "asterfort/cargeo.h"
 #include "asterfort/chckma.h"
 #include "asterfort/getvem.h"
@@ -49,7 +47,6 @@ subroutine op0001()
 #include "asterfort/jemarq.h"
 #include "asterfort/lrmast.h"
 #include "asterfort/lrmhdf.h"
-#include "asterfort/lxlgut.h"
 #include "asterfort/mavegr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -57,21 +54,17 @@ subroutine op0001()
 !
 ! ----- DECLARATIONS
 !
-    integer :: i, iaux, niv, ifl, ifm, ibid
-    integer :: nbnoeu, nbmail, nbcoor, nbcgrm
+    integer :: iaux, niv, ifl, ifm
+    integer :: nbnoeu, nbmail, nbcoor
     integer :: iret, infmed
     character(len=8) :: nomu, fmt, veri
     character(len=16) :: concep,cmd
-    character(len=24) :: vecgrm
     character(len=64) :: nomamd
     real(kind=8) :: dtol
-    integer :: ilng
-    character(len=80), pointer :: tgrm(:) => null()
     integer, pointer :: dime(:) => null()
 
 !---------------------------------------------------------------------------------------
     call jemarq()
-    vecgrm = '&&OP0001.VECGRM'
 !
 ! --- RECUPERATION DES ARGUMENTS  DE LA COMMANDE
 !
@@ -93,19 +86,6 @@ subroutine op0001()
         endif
         call getvis(' ', 'INFO_MED', scal=infmed, nbret=iaux)
 !
-!   --- LECTURE DES CORRESPONDANCES NOM MED - NOM ASTER
-!
-        call getfac('RENOMME', nbcgrm)
-        if (nbcgrm .gt. 0) then
-            call wkvect(vecgrm, 'V V K80', nbcgrm*2, vk80=tgrm)
-            do 100 i = 1, nbcgrm
-                call getvtx('RENOMME', 'NOM_MED', iocc=i, scal=tgrm(i*2-1), nbret=ibid)
-                call getvtx('RENOMME', 'NOM', iocc=i, scal=tgrm(i*2), nbret=ibid)
-                ilng = lxlgut(tgrm(i*2))
-                ASSERT(ilng.gt.0 .and. ilng.le.8)
-100          continue
-        endif
-!
     endif
 !
 ! --- LECTURE DU MAILLAGE AU FORMAT ASTER :
@@ -118,8 +98,7 @@ subroutine op0001()
 !     ---------------------------------
     else if (fmt(1:3) .eq. 'MED') then
         call lrmhdf(nomamd, nomu, ifm, ifl, niv,&
-                    infmed, nbnoeu, nbmail, nbcoor, vecgrm,&
-                    nbcgrm)
+                    infmed, nbnoeu, nbmail, nbcoor)
     endif
 
 

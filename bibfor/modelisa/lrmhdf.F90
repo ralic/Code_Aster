@@ -1,10 +1,9 @@
 subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
-                  infmed, nbnoeu, nbmail, nbcoor, vecgrm,&
-                  nbcgrm)
+                  infmed, nbnoeu, nbmail, nbcoor)
 !     ------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -62,9 +61,8 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
     integer :: ifm, nivinf
-    integer :: nrofic, infmed, nbcgrm
+    integer :: nrofic, infmed
     character(len=*) :: nomamd
-    character(len=24) :: vecgrm
     character(len=8) :: nomu
 !
 !     OUT
@@ -289,8 +287,7 @@ subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
 !
     call lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
                 gpptnn, grpmai, gpptnm, nbgrno, nbgrma,&
-                typgeo, nomtyp, nmatyp, saux06, infmed,&
-                vecgrm, nbcgrm)
+                typgeo, nomtyp, nmatyp, saux06, infmed)
 !
 !====
 ! 8. LES EQUIVALENCES

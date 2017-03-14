@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,8 +18,7 @@
 interface
     subroutine lrmmfa(fid, nomamd, nbnoeu, nbmail, grpnoe,&
                       gpptnn, grpmai, gpptnm, nbgrno, nbgrma,&
-                      typgeo, nomtyp, nmatyp, prefix, infmed,&
-                      vecgrm, nbcgrm)
+                      typgeo, nomtyp, nmatyp, prefix, infmed)
         integer :: fid
         character(len=*) :: nomamd
         integer :: nbnoeu
@@ -35,7 +34,5 @@ interface
         integer :: nmatyp(69)
         character(len=6) :: prefix
         integer :: infmed
-        character(len=24) :: vecgrm
-        integer :: nbcgrm
     end subroutine lrmmfa
 end interface

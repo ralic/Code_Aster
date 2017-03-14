@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,8 +17,7 @@
 !
 interface
     subroutine lrmhdf(nomamd, nomu, ifm, nrofic, nivinf,&
-                      infmed, nbnoeu, nbmail, nbcoor, vecgrm,&
-                      nbcgrm)
+                      infmed, nbnoeu, nbmail, nbcoor)
         character(len=*) :: nomamd
         character(len=8) :: nomu
         integer :: ifm
@@ -28,7 +27,5 @@ interface
         integer :: nbnoeu
         integer :: nbmail
         integer :: nbcoor
-        character(len=24) :: vecgrm
-        integer :: nbcgrm
     end subroutine lrmhdf
 end interface
