@@ -282,9 +282,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00185439264898,
+                   VALE_CALC=0.00185474114215,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),
                 _F(NUME_ORDRE=1,
                    GROUP_NO='P8',
@@ -292,9 +292,9 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00185518190853,
+                   VALE_CALC=0.00185552640406,
                    VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
+                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),
                 ),
           )
