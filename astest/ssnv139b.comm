@@ -73,9 +73,8 @@ L_INST=DEFI_LIST_REEL(   DEBUT=0.0,INTERVALLE=(
 
 #
 
-DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=L_INST,
-                                     METHODE='AUTO',
-                                     PAS_MINI=1.0E-12),
+DEFLIST1=DEFI_LIST_INST(METHODE='AUTO',           
+                        DEFI_LIST=_F(LIST_INST=L_INST, PAS_MINI=1.0E-12),
                         ECHEC=_F(ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',
                                  SUBD_PAS      = 4,

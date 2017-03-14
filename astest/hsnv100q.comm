@@ -81,8 +81,8 @@ L_REEL=DEFI_LIST_REEL(DEBUT=0.,
                                   _F(JUSQU_A=90.000E0,
                                      NOMBRE=2)));
 
-L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=L_REEL),
+L_INST=DEFI_LIST_INST(METHODE='MANUEL',
+                      DEFI_LIST=_F(LIST_INST=L_REEL),
                       ECHEC=_F(SUBD_METHODE='MANUEL'));
 
 #

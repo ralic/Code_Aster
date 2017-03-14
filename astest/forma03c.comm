@@ -118,10 +118,10 @@ RESUNL=STAT_NON_LINE(MODELE=MODE,
 TFIN  = 243.0;
 
 # EN GESTION AUTOMATIQUE, ON IMPOSE SEULEMENT LE 1ER PAS DE TEMPS
-DEFAUTO=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='AUTO',
-                                     VALE=(0., 50., TFIN),
-                                     PAS_MINI=1.e-6,
-                                     PAS_MAXI=100.)
+DEFAUTO=DEFI_LIST_INST(METHODE='AUTO',
+                       DEFI_LIST=_F(VALE=(0., 50., TFIN),
+                                    PAS_MINI=1.e-6,
+                                    PAS_MAXI=100.)
                       )
 
 # CALCUL

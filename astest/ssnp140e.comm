@@ -122,14 +122,11 @@ FX=RECU_FONCTION(TABLE=FORC,
 
 
 
-DEFLIST1 = DEFI_LIST_INST(DEFI_LIST=_F(
-                                       LIST_INST = L_INST1,
-#                                       PAS_MINI=1,
-                                       METHODE='AUTO',
-                                       ),
-                           ADAPTATION=_F(EVENEMENT='TOUT_INST',
+DEFLIST1 = DEFI_LIST_INST(METHODE='AUTO',
+                          DEFI_LIST=_F(LIST_INST = L_INST1,),
+                          ADAPTATION=_F(EVENEMENT='TOUT_INST',
                                        MODE_CALCUL_TPLUS='IMPLEX'
-                                         ),
+                                       ),
                           );
 
 

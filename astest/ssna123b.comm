@@ -68,8 +68,8 @@ LISTE=DEFI_LIST_REEL(DEBUT=0.0,
                                     NOMBRE=3)),
                      INFO=2);
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                    LIST_INST=LISTE),
+DEFLIST=DEFI_LIST_INST(METHODE='MANUEL',
+                       DEFI_LIST=_F(LIST_INST=LISTE,),
                        ECHEC=_F(ACTION='DECOUPE',
                                  SUBD_METHODE='MANUEL',
                                 SUBD_NIVEAU=6));

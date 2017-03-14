@@ -253,8 +253,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
               UNITE=31,
               COURBE=_F(FONCTION=VMISO,),);
 
-LIS=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                LIST_INST=LISTR,),
+LIS=DEFI_LIST_INST(METHODE='MANUEL',
+                   DEFI_LIST=_F(LIST_INST=LISTR,),
                    ECHEC=_F(SUBD_NIVEAU=5,
                             SUBD_PAS_MINI=1e-5,
                             SUBD_METHODE='MANUEL',),);

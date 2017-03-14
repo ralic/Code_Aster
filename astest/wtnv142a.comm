@@ -87,9 +87,8 @@ TEMPS2=DEFI_LIST_REEL(DEBUT=0.,
                       INTERVALLE=(_F(JUSQU_A = 9.6, NOMBRE = 24,),
                                   _F(JUSQU_A = 20., NOMBRE = 416,),),);
 
-DEFLIST1=DEFI_LIST_INST(DEFI_LIST=_F(LIST_INST=TEMPS1,
-                                    METHODE='AUTO',
-                                    PAS_MINI=0.000001,),
+DEFLIST1=DEFI_LIST_INST(METHODE='AUTO',
+                        DEFI_LIST=_F(LIST_INST=TEMPS1,PAS_MINI=0.000001,),
                         ECHEC=_F(EVENEMENT     = 'ERREUR',
                                  ACTION        = 'DECOUPE',
                                  SUBD_METHODE  = 'MANUEL',

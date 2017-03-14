@@ -83,8 +83,8 @@ L_REEL=DEFI_LIST_REEL(DEBUT=0,
                       INTERVALLE=_F(JUSQU_A=TFIN,
                                     NOMBRE=NB_PAS,),);
 
-L_INST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                   LIST_INST=L_REEL,),
+L_INST=DEFI_LIST_INST(METHODE='MANUEL',
+                      DEFI_LIST=_F(LIST_INST=L_REEL,),
                       ECHEC=_F(SUBD_NIVEAU=5,
                                SUBD_METHODE='MANUEL',
                                SUBD_PAS=4,

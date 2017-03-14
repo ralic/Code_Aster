@@ -363,8 +363,8 @@ INST2=DEFI_LIST_REEL(DEBUT=0.0,
                                  _F(JUSQU_A=  5000,NOMBRE= 1),
                                  _F(JUSQU_A=100000,NOMBRE= 1),),);
 
-DEFLIST = DEFI_LIST_INST(DEFI_LIST=_F(METHODE   ='AUTO',
-                                      LIST_INST = INST2,
+DEFLIST = DEFI_LIST_INST(METHODE='AUTO',
+                         DEFI_LIST=_F(LIST_INST = INST2,
                                       PAS_MINI  = 1.e-3),)
 
 cal2 = STAT_NON_LINE (

@@ -128,14 +128,11 @@ LINSTDD=DEFI_LIST_REEL(DEBUT=0.0,
                                   ),
                       );
 
-LISTDD=DEFI_LIST_INST(INFO=1,
-                        DEFI_LIST=_F(LIST_INST=LINSTDD,
-                                     METHODE='MANUEL',
-                                     ),
-                        ECHEC=_F(SUBD_NIVEAU=10,
-                                 SUBD_PAS=10,
-                                 ),
-                        );
+LISTDD=DEFI_LIST_INST(INFO=1,METHODE='MANUEL',
+                      DEFI_LIST=_F(LIST_INST=LINSTDD,),
+                      ECHEC=_F(SUBD_NIVEAU=10,
+                               SUBD_PAS=10,),
+                     );
 
 
 
