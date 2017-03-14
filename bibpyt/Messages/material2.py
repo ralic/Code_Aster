@@ -34,4 +34,9 @@ Erreur utilisateur dans la commande AFFE_MATERIAU / AFFE_VARC
   la grandeur associée du champ doit être:  %(k2)s  mais elle est:  %(k3)s
 """),
 
+    51 : _(u"""
+ Vous utilisez la variable de commande de température alors que votre problème est couplé.
+ Ce n'est pas possible.
+"""),
+
 }

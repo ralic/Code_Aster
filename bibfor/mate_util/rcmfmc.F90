@@ -1,7 +1,8 @@
-subroutine rcmfmc(chmatz, chmacz)
+subroutine rcmfmc(chmatz, chmacz, l_thm_)
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
@@ -41,6 +42,7 @@ implicit none
 !
     character(len=*), intent(in) :: chmatz
     character(len=*), intent(out) :: chmacz
+    aster_logical, intent(in), optional :: l_thm_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,6 +54,7 @@ implicit none
 !
 ! In  chmate           : name of material field (CHAM_MATER)
 ! Out chmace           : name of CODED material field (CHAM_MATER)
+! In  l_thm            : .true. if THM
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,6 +67,7 @@ implicit none
     character(len=19) :: chemat, chmace
     character(len=8), pointer :: v_vale(:) => null()
     integer, pointer :: v_desc(:) => null()
+    aster_logical :: l_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,10 +77,16 @@ implicit none
     chemat = chmat//'.CHAMP_MAT'
     chmace = chmat//'.MATE_CODE'
 !
+    if (present(l_thm_)) then
+        l_thm = l_thm_
+    else
+        l_thm = .false.
+    endif
+!
     call exisd('CARTE', chmace, iret)
     if (iret .eq. 0) then
 ! ----- Preparation for external state variables (VARC)
-        call varc_prep(chmat)
+        call varc_prep(chmat, l_thm)
 
 ! ----- Traitement du materiau par elements
         call jelira(chemat//'.VALE', 'LONMAX', nbval)

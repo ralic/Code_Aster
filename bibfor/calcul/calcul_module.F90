@@ -1,7 +1,7 @@
 module calcul_module
 implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -16,7 +16,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: jacques.pellet at edf.fr
+! person_in_charge: mickael.abbas at edf.fr
 #include "asterf_types.h"
 
 !    Ce module contient quelques variables "globales" utilisees
@@ -256,6 +256,13 @@ implicit none
 !     ca_jvcnom_ : adresse dans ZK8 des noms des cvrc
 !     ca_jvcfon_ : adresse dans zk8 de '&&OP0033.TVCFON' (CALC_POINT_MAT)
 !     ca_jvcval_ : adresse dans ZR  de '&&OP0033.TVCVAL' (CALC_POINT_MAT)
+!======================================================================
+    integer :: ca_ctempl_
+    real(kind=8) :: ca_ctempr_, ca_ctempm_, ca_ctempp_ 
+!     ca_ctempl_ : 1 if temperature is coupled variable (non external state variable)
+!     ca_ctempr_ : for reference temperature when coupled variable (non external state variable)
+!     ca_ctempm_ : for previous temperature when coupled variable (non external state variable)
+!     ca_ctempp_ : for end temperature when coupled variable (non external state variable)
 !======================================================================
     integer :: ca_nfpgmx_
     parameter (ca_nfpgmx_=10)

@@ -10,7 +10,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,7 @@ implicit none
 !
     integer :: nocc
     character(len=8) :: concept, answer
+    aster_logical :: l_thm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,6 +60,8 @@ implicit none
     call getvid(' ', 'MODELE', scal=concept, nbret=nocc)
     ASSERT(nocc .ne. 0)
     model = concept
+    call dismoi('EXI_THM', model, 'MODELE', repk=answer)
+    l_thm = answer .eq. 'OUI'
 !
 ! - Get material characteristics field
 !
@@ -69,7 +72,7 @@ implicit none
         call utmess('A', 'MECHANICS1_40')
     endif
     if (nocc .ne. 0) then
-        call rcmfmc(concept, mate)
+        call rcmfmc(concept, mate, l_thm_ = l_thm)
     else
         mate = ' '
     endif

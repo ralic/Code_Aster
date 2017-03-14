@@ -15,9 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine rcmfmc(chmatz, chmacz)
+    subroutine rcmfmc(chmatz, chmacz, l_thm_)
         character(len=*), intent(in) :: chmatz
         character(len=*), intent(out) :: chmacz
+        aster_logical, intent(in), optional :: l_thm_
     end subroutine rcmfmc
 end interface

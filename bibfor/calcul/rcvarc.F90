@@ -5,7 +5,7 @@ subroutine rcvarc(arret    , varc_name_, poum,&
 use calcul_module, only : ca_decala_, ca_iactif_, ca_iel_, ca_iredec_, &
      ca_jfpgl_, ca_jvcnom_, ca_km_, ca_kp_,&
      ca_kr_, ca_nbcvrc_, ca_nfpg_, ca_nomte_, ca_option_, &
-     ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_
+     ca_td1_, ca_tf1_, ca_timed1_, ca_timef1_, ca_ctempl_, ca_ctempr_, ca_ctempm_, ca_ctempp_
 !
 implicit none
 !
@@ -88,12 +88,7 @@ implicit none
         rundf = r8nnem()
         iprem = 1
     endif
-!
-! - No external state variable
-!
-    if (ca_nbcvrc_ .eq. 0) then
-        goto 998
-    endif
+    varc_name = varc_name_
 !
 ! - From SIMU_POINT_MAT
 !
@@ -103,9 +98,32 @@ implicit none
         goto 999
     endif
 !
+! - For coupled problems
+!
+    if (ca_ctempl_ .eq. 1) then
+        if (varc_name .eq. 'TEMP') then
+            if (poum .eq. '-') then
+                varc_vale = ca_ctempm_
+            elseif (poum .eq. '+') then
+                varc_vale = ca_ctempp_
+            elseif (poum .eq. 'REF') then
+                varc_vale = ca_ctempr_
+            else
+                ASSERT(.false.)
+            endif
+            iret = 0
+            goto 999
+        endif
+    endif
+!
+! - No external state variable
+!
+    if (ca_nbcvrc_ .eq. 0) then
+        goto 998
+    endif
+!
 ! - Get index of external state variable
 !
-    varc_name = varc_name_
     varc_indx = indik8(zk8(ca_jvcnom_), varc_name, 1, ca_nbcvrc_)
     if (varc_indx .eq. 0) then
         iret=1

@@ -4,9 +4,12 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
                   p20, depsv, epsv, deps, t,&
                   p1, p2, grat, grap1, grap2,&
                   dp1, dp2, dt, retcom)
+!
+use calcul_module, only : ca_ctempr_, ca_ctempm_, ca_ctempp_
+!
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,6 +126,13 @@ subroutine calcva(kpi, yachai, yamec, yate, yap1,&
             call utmess('A', 'ELEMENTS5_41', sk=nomail)
             retcom = 1
         endif
+        ca_ctempr_ = t0
+        ca_ctempm_ = t-dt 
+        ca_ctempp_ = t
+    else
+        ca_ctempr_ = 0.d0
+        ca_ctempm_ = 0.d0
+        ca_ctempp_ = 0.d0
     endif
 !
 end subroutine
