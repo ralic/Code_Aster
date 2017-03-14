@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,8 +17,8 @@
 !
 interface
     subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
-                      epsm, deps, vim, tm, tp,&
-                      tref, option, sig, vip, dsidep)
+                      epsm, deps, vim, &
+                      option, sig, vip, dsidep)
         character(len=*) :: fami
         integer :: kpg
         integer :: ksp
@@ -27,9 +27,6 @@ interface
         real(kind=8) :: epsm(*)
         real(kind=8) :: deps(*)
         real(kind=8) :: vim(*)
-        real(kind=8) :: tm
-        real(kind=8) :: tp
-        real(kind=8) :: tref
         character(len=16) :: option
         real(kind=8) :: sig(*)
         real(kind=8) :: vip(*)

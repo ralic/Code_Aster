@@ -2,7 +2,7 @@ subroutine redece(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, mult_comp, carcri, instam, instap,&
                   neps, epsdt, depst, nsig, sigd,&
                   vind, option, angmas, nwkin, wkin,&
-                  cp, numlc, tempd, tempf, tref,&
+                  cp, numlc, &
                   sigf, vinf, ndsde, dsde, nwkout,&
                   wkout, codret)
 !
@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -90,7 +90,6 @@ implicit none
 !     WKIN    : TABLEAU DE TRAVAIL EN ENTREE(SUIVANT MODELISATION)
 !     CP      : LOGIQUE = VRAI EN CONTRAINTES PLANES DEBORST
 !     NUMLC   : NUMERO DE LOI DE COMPORTEMENT ISSUE DU CATALOGUE DE LC
-!     TEMPD,TEMPF,TREF : TEMPERATURES SI L'APPEL PROVIENT DE CALCME
 !
 ! OUT SIGP    : CONTRAINTES A L'INSTANT ACTUEL
 ! VAR VIP     : VARIABLES INTERNES
@@ -132,7 +131,7 @@ implicit none
     integer :: neps, nsig, nwkin, nwkout, ndsde
 !
     real(kind=8) :: carcri(*), angmas(*)
-    real(kind=8) :: instam, instap, tempd, tempf, tref
+    real(kind=8) :: instam, instap
     real(kind=8) :: wkin(nwkin), wkout(nwkout)
     real(kind=8) :: epsdt(neps), depst(neps)
     real(kind=8) :: sigd(nsig), sigf(nsig)
@@ -181,8 +180,11 @@ implicit none
     ipal = int(carcri(5))
     codret=0
 !
-!       CORRECTION JMP : POURQUOI REDECOUPER POUR RIGI_MECA_TANG ?
-    if (option(1:9) .eq. 'RIGI_MECA') ipal=0
+    if (option(1:9) .eq. 'RIGI_MECA')  then
+        ipal=0
+    endif
+!
+! - Get number of internal variables
 !
     read (compor(2),'(I16)') nvi
 !
@@ -210,7 +212,7 @@ implicit none
                 imate, compor, mult_comp, carcri, instam, instap,&
                 neps, epsdt, depst, nsig, sigd,&
                 vind, option, angmas, nwkin, wkin,&
-                cp, numlc, tempd, tempf, tref,&
+                cp, numlc, &
                 sigf, vinf, ndsde, dsde, icomp,&
                 nvi, nwkout, wkout, codret)
 !
@@ -278,7 +280,7 @@ implicit none
                     imate, compor, mult_comp, carcri, td, tf,&
                     neps, eps, deps, nsig, sd,&
                     vind, option, angmas, nwkin, wkin,&
-                    cp, numlc, tempd, tempf, tref,&
+                    cp, numlc, &
                     sigf, vinf, ndsde, dsdelo, icomp,&
                     nvi, nwkout, wkout, codret)
 !

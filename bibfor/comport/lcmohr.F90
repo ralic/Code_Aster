@@ -1,4 +1,5 @@
-subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
+subroutine lcmohr(fami, kpg, ksp, ndim,&
+                  typmod, imate, carcri, option,&
                   dstrai0, stresm0, stres, vim, vip,&
                   dsidep, codret)
 ! ----------------------------------------------------------------------
@@ -25,8 +26,6 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 ! IN  DSTRAI0 : INCREMENT DE DEFORMATION
 ! IN  STRESM0 : CONTRAINTE EN T-
 ! IN  VIM     : VARIABLES INTERNES EN T-
-! IN  TMPP    : TEMPERATURE EN T+
-! IN  TMPREF  : TEMPERATURE DE REFERENCE
 ! IN  OPTION  : OPTION DEMANDEE
 !                 RIGI_MECA_TANG -> DSIDEP
 !                 FULL_MECA      -> STRES DSIDEP VIP
@@ -45,7 +44,7 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 ! ----------------------------------------------------------------------
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -61,11 +60,13 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
     character(len=8)  :: typmod(*)
     character(len=16) :: option
     integer           :: ndim, imate, codret
-    real(kind=8)      :: crit(*)
-    real(kind=8)      :: tmpp
+    real(kind=8)      :: carcri(*)
     real(kind=8)      :: dstrai(6), dstrai0(6)
     real(kind=8)      :: stresm(6), stresm0(6), stres(6)
     real(kind=8)      :: vim(*), vip(*)
@@ -83,6 +84,7 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 #include "asterfort/vecini.h"
 #include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
+#include "asterfort/get_varc.h"
 !
 ! Declaration of constant parameters
     integer      :: mmax, nmax
@@ -118,6 +120,7 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 ! Declaration of character type variables
     character(len=8)  :: mod
     character(len=16) :: nomres(3)
+    real(kind=8) :: tp, tm, tref
 !
 ! Declaration of constant variables
     data  r0   ,r1   ,r2   ,r3   ,r4   ,small ,tol   ,sqr /&
@@ -127,7 +130,23 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 !
 ! Declaration of Common space variables
     common / tdim  / ndt, ndi
-!    common / debug / epflag
+
+
+    codret = 0
+!
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tm, tp, tref)
+
+    if (option(1:14) .eq. 'RIGI_MECA_TANG') then
+        nomres(1)= 'E       '
+        nomres(2)= 'NU      '
+        call rcvala(imate, ' ', 'ELAS', 0, '   ',&
+                    [0.d0], 2, nomres, rprops(2), icode,2)
+        call mctgel(dsidep, rprops)
+        goto 999
+    endif
 !
 ! Is the problem tridimensional?
     if (ndim .eq. 3) then
@@ -166,14 +185,14 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
     nomres(2)= 'E       '
     nomres(3)= 'NU      '
     call rcvala(imate, ' ', 'ELAS', 0, '   ', &
-                [tmpp], 3, nomres, rprops, icode, 2)
+                [tm], 3, nomres, rprops, icode, 2)
 !
 ! Reading material Mohr-Coulomb properties
     nomres(1)= 'PHI     '
     nomres(2)= 'ANGDIL  '
     nomres(3)= 'COHESION'
     call rcvala(imate, ' ', 'MOHR_COULOMB', 0, '   ', &
-                [tmpp], 3, nomres, rprops(4), icode(4), 2)
+                [tm], 3, nomres, rprops(4), icode(4), 2)
 !
 ! Initialize some algorithmic and internal variables
     dgama =r0
@@ -183,7 +202,7 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
     sufail=r0
     edge  =r0
     apex  =r0
-    tolcv =crit(3)
+    tolcv =carcri(3)
 !
 ! Set some material properties
     young =rprops(2)
@@ -521,9 +540,9 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
         call bptobg(tr, stres, eigprj)
 !
 ! Attention: On re-projete les contraintes dans la base de Voigt
-        do 80 i = mmax+1, nmax
+        do i = mmax+1, nmax
             stres(i)=sqr*stres(i)
- 80     continue
+        end do
 !
 ! Update internal variables
         if (apex .eq. r1) then
@@ -583,10 +602,10 @@ subroutine lcmohr(ndim, typmod, imate, crit, option, tmpp,&
 ! ------------------------------------------------------
     else
 !
-        do 90 i = 1, mmax
+        do i = 1, mmax
             stres(i)     =strest(i)
             stres(mmax+i)=sqr*strest(mmax+i)
- 90     continue
+        end do
 !
 ! Update internal variables
         vip(1)=vim(1)

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,19 +16,15 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmcjs(typmod, imat, comp, crit, instam,&
-                     instap, tempm, tempf, tref, epsd,&
+    subroutine nmcjs(typmod, imat, crit, &
+                     epsd,&
                      deps, sigd, vind, opt, sigf,&
                      vinf, dsde, iret)
         character(len=8) :: typmod(*)
         integer :: imat
-        character(len=16) :: comp(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: tempm
-        real(kind=8) :: tempf
-        real(kind=8) :: tref
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)

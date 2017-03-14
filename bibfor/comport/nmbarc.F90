@@ -1,11 +1,24 @@
-subroutine nmbarc(ndim, imate, crit, sat, biot,&
-                  tm, tp, deps, sbism, vim,&
+subroutine nmbarc(ndim, imate, carcri, sat, biot,&
+                  deps, sbism, vim,&
                   option, sbisp, vip, dsidep, p1,&
                   p2, dp1, dp2, dsidp1, sipm,&
                   sipp, retcom)
 !
+implicit none
+!
+#include "jeveux.h"
+#include "asterc/r8maem.h"
+#include "asterfort/iunifi.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,21 +33,11 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1501,W1504
-    implicit none
-#include "jeveux.h"
-#include "asterc/r8maem.h"
-#include "asterfort/iunifi.h"
-#include "asterfort/mgauss.h"
-#include "asterfort/promat.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvala.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
+! aslint: disable=W1501
 !
     integer :: ndim, imate, retcom
     character(len=16) :: option
-    real(kind=8) :: crit(*), tm, tp
+    real(kind=8) :: carcri(*)
     real(kind=8) :: deps(6), deuxmu, biot, sat, p1, p2, dp1, dp2
     real(kind=8) :: sbism(6), vim(5), sbisp(6), vip(5), dsidep(6, 6)
     real(kind=8) :: dsidp1(6)
@@ -91,7 +94,7 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
     real(kind=8) :: hhb(6, 6), ses(6, 6), hhbm(6, 6), gg(6, 6), sps(6, 6)
     real(kind=8) :: d1g(6, 6), id2(6, 6), devhyd(6, 6), devhym(6, 6)
     real(kind=8) :: d1ghhm(6, 6)
-    real(kind=8) :: un, deux, trois, six, unsde
+    real(kind=8) :: un, deux, trois, six, unsde, tm, tp, tref
     integer :: ndimsi, signf, signfi, iret
     integer :: k, l, iter, matr, iadzi, iazk24, umess
     integer :: icodre(16)
@@ -118,6 +121,11 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !
 !
     retcom = 0
+!
+! - Get temperatures
+!
+    call get_varc('RIGI' , 1  , 1 , 'T',&
+                  tm, tp, tref)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES
 !     ---------------------------------------
@@ -206,17 +214,17 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     --------------------------------
     coef = alpha*tp - alpha*tm
     depsmo = 0.d0
-    do 110 k = 1, ndimsi
+    do k = 1, ndimsi
         depsth(k) = deps(k)
-110  end do
-    do 111 k = 1, 3
+    end do
+    do k = 1, 3
         depsth(k) = depsth(k) - coef
         depsmo = depsmo + depsth(k)
-111  end do
+    end do
     depsmo = -depsmo
-    do 112 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = depsth(k) + depsmo/3.d0 * kron(k)
-112  end do
+    end do
 !     -- 4 CALCUL DES CONTRAINTES DE BARCELONE A PARTIR DES
 !     ------------------------------------------------------
 !     CONTRAINTES DE BISHOP
@@ -224,15 +232,15 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
     p2m=p2-dp2
     p1m=p1-dp1
 !
-    do 113 k = 1, ndimsi
+    do k = 1, ndimsi
         sbarm(k) = sbism(k) + (sipm+p2m)*kron(k)
-113  end do
+    end do
 !     -- 5 CALCUL DE SIGMMO, SIGMDV, SIGEL,SIMOEL,SIELEQ, SIEQM :
 !     -------------------------------------------------------------
     sigmmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + sbarm(k)
-116  end do
+    end do
     sigmmo = -sigmmo/3.d0
     if (sigmmo .le. (-0.99d0*kc*p1)) then
         call utmess('F', 'ALGORITH6_61')
@@ -240,12 +248,12 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !
     sieleq = 0.d0
     sieqm = 0.d0
-    do 117 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmdv(k) = sbarm(k) + sigmmo * kron(k)
         sieqm = sieqm + sigmdv(k)**2
         sigel(k) = sigmdv(k) + deuxmu * depsdv(k)
         sieleq = sieleq + sigel(k)**2
-117  end do
+    end do
     sieleq = sqrt(1.5d0*sieleq)
     sieqm = sqrt(1.5d0*sieqm)
 !
@@ -253,19 +261,19 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
         umess = iunifi('MESSAGE')
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        write (umess,9001) 'NMBARC_2','EXP EXPLOSE A LA MAILLE: ',&
+        write (umess,901) 'NMBARC_2','EXP EXPLOSE A LA MAILLE: ',&
         nomail
         retcom = 1
-        goto 8000
+        goto 999
     endif
     if ((-beta*p1m) .gt. epxmax) then
         umess = iunifi('MESSAGE')
         call tecael(iadzi, iazk24)
         nomail = zk24(iazk24-1+3) (1:8)
-        write (umess,9001) 'NMBARC_3','EXP EXPLOSE A LA MAILLE: ',&
+        write (umess,901) 'NMBARC_3','EXP EXPLOSE A LA MAILLE: ',&
         nomail
         retcom = 1
-        goto 8000
+        goto 999
     endif
 !
 !
@@ -322,14 +330,14 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
             pc0p(2) = 0.d0
             psp = 0.d0
 !
-            do 118 k = 1, ndimsi
+            do k = 1, ndimsi
 !     -- REACTUALISATION DES CONTRAINTES
                 sigpmo = simoel
                 sigpdv(k) = sigel(k)
                 sbarp(k) = sigel(k)-simoel*kron(k)
 !     -- CALCUL DES CONTRAINTES DE BISHOP
                 sbisp(k) = sbarp(k)-(sipp+p2)*kron(k)
-118          end do
+            end do
         else
 !     -- PLASTIFICATION : CALCUL DE LA DEFORMATION
 !     -- VOLUMIQUE PLASTIQUE : DEPPMO
@@ -344,35 +352,32 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                     umess = iunifi('MESSAGE')
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3) (1:8)
-                    write (umess,9001) 'NMBARC_4','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                    write (umess,901) 'NMBARC_4','EXP EXPLOSE A LA MAILLE: ', nomail
                     retcom = 1
-                    goto 8000
+                    goto 999
                 endif
 !
                 if ((xk*deppmo) .gt. epxmax) then
                     umess = iunifi('MESSAGE')
                     call tecael(iadzi, iazk24)
                     nomail = zk24(iazk24-1+3) (1:8)
-                    write (umess,9001) 'NMBARC_5','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                    write (umess,901) 'NMBARC_5','EXP EXPLOSE A LA MAILLE: ', nomail
                     retcom = 1
-                    goto 8000
+                    goto 999
                 endif
 !
                 sigpmo = simoel*exp(-xk0*deppmo)
                 pcrp(1) = pcrmp1*exp(xk*deppmo)
 !
-                do 114 k = 1, ndimsi
+                do k = 1, ndimsi
                     sigpdv(k) = sigel(k)
                     sbarp(k) = sigpdv(k)-sigpmo*kron(k)
                     sbisp(k) = sbarp(k)-(sipp+p2)*kron(k)
-114              end do
+                end do
                 f1 = simoel*exp(-xk0*deppmo)
                 f2 = simoel*exp(-xk0*deppmo)-2.d0*pcrmp1
                 f3 = 2.d0*simoel*exp(-xk0*deppmo)-2.d0*pcrmp1+kpmax
-                f = sieleq**2/(1.d0+6.d0*deuxmu*deppmo*alphab/2.d0/m/ m/f3)**2 +m**2*(f1+kpmax)*f&
-                    &2
+                f = sieleq**2/(1.d0+6.d0*deuxmu*deppmo*alphab/2.d0/m/ m/f3)**2 +m**2*(f1+kpmax)*f2
                 if (f .gt. 0) then
                     pcrp(2) = 1
                 else
@@ -397,30 +402,28 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_6','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                        write (umess,901) 'NMBARC_6','EXP EXPLOSE A LA MAILLE: ',nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if ((xk*xb0) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_7','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                        write (umess,901) 'NMBARC_7','EXP EXPLOSE A LA MAILLE: ',nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
 !
                     f0 = simoel*exp(-xk0*xb0)-pcrmp1*exp(xk*xb0)+(kc* p1)/2.d0
                     fp0 = -xk0*simoel*exp(-xk0*xb0)-xk*pcrmp1*exp(xk* xb0)
 !
-                    do 210 iter = 1, nint(crit(1))
+                    do iter = 1, nint(carcri(1))
 !     --CRITERE DE CONVERGENCE
 !
-                        if ((abs(f0/seuil0)) .le. crit(3)) goto 101
+                        if ((abs(f0/seuil0)) .le. carcri(3)) goto 101
 !
 !     --CONSTRUCTION DU NOUVEL ITERE
                         xb0 = xb0-f0/fp0
@@ -429,20 +432,18 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_8','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                            write (umess,901) 'NMBARC_8','EXP EXPLOSE A LA MAILLE: ',nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((xk*xb0) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_9','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                            write (umess,901) 'NMBARC_9','EXP EXPLOSE A LA MAILLE: ',nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
 !     -- DICHOTOMIE
@@ -457,20 +458,18 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_10','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                            write (umess,901) 'NMBARC_10','EXP EXPLOSE A LA MAILLE: ',nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((xk*xinf0) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_11','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                            write (umess,901) 'NMBARC_11','EXP EXPLOSE A LA MAILLE: ',nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         fxi0 = simoel*exp(-xk0*xinf0)-pcrmp1*exp(xk* xinf0)+(kc*p1)/2.d0
@@ -481,9 +480,9 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                         if ((signf0*sigfi0) .lt. zero) xsup0 = xb0
                         if ((signf0*sigfi0) .gt. zero) xinf0 = xb0
 !
-210                  end do
+                    end do
                     call utmess('F', 'ALGORITH6_62')
-101                  continue
+101                 continue
                     xb = xb0
                     xsup = xb
 !
@@ -495,40 +494,40 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_12','EXP EXPLOSE A LA MAILLE:',&
+                        write (umess,901) 'NMBARC_12','EXP EXPLOSE A LA MAILLE:',&
      &                                                           nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if ((xk*v0) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_13','EXP EXPLOSE A LA MAILLE:',&
+                        write (umess,901) 'NMBARC_13','EXP EXPLOSE A LA MAILLE:',&
      &                                                           nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if ((-2.d0*xk0*v0) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_14','EXP EXPLOSE A LA MAILLE: ',&
+                        write (umess,901) 'NMBARC_14','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if (((xk-xk0)*v0) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_15','EXP EXPLOSE A LA MAILLE: ',&
+                        write (umess,901) 'NMBARC_15','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     f1 = simoel*exp(-xk0*v0)
@@ -545,9 +544,9 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                     fp = m**2*f4**2*f5+6.d0*deuxmu*alphab*f4*(f1+ kpmax)*f2*(f6/f3/f3)
 !
 !
-                    do 200 iter = 1, nint(crit(1))
+                    do iter = 1, nint(carcri(1))
 !     --CRITERE DE CONVERGENCE
-                        if ((abs(f)/seuil) .le. crit(3)) goto 100
+                        if ((abs(f)/seuil) .le. carcri(3)) goto 100
 !
 !     --CONSTRUCTION DU NOUVEL ITERE
                         v0 = v0-f/fp
@@ -561,50 +560,50 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_16','EXP EXPLOSE A LA MAILLE:',&
+                            write (umess,901) 'NMBARC_16','EXP EXPLOSE A LA MAILLE:',&
      &                                                           nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((xk*v0) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_17','EXP EXPLOSE A LA MAILLE: ',&
+                            write (umess,901) 'NMBARC_17','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((-2.d0*xk0*v0) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_18','EXP EXPLOSE A LA MAILLE: ',&
+                            write (umess,901) 'NMBARC_18','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((-xk0*xinf) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_19','EXP EXPLOSE A LA MAILLE: ',&
+                            write (umess,901) 'NMBARC_19','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
                         if ((xk*xinf) .gt. epxmax) then
                             umess = iunifi('MESSAGE')
                             call tecael(iadzi, iazk24)
                             nomail = zk24(iazk24-1+3) (1:8)
-                            write (umess,9001) 'NMBARC_20','EXP EXPLOSE A LA MAILLE: ',&
+                            write (umess,901) 'NMBARC_20','EXP EXPLOSE A LA MAILLE: ',&
      &                                                           nomail
                             retcom = 1
-                            goto 8000
+                            goto 999
                         endif
 !
 !     --CALCUL DE LA FONCTION EN V0 ET DE SA DERIVEE
@@ -636,39 +635,36 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                         if ((signf*signfi) .gt. zero) xinf = v0
 !
 !
-200                  end do
+                    end do
                     call utmess('F', 'ALGORITH3_55')
-100                  continue
+100                 continue
                     deppmo=v0
 !
                     if ((xk*deppmo) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_21','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                        write (umess,901) 'NMBARC_21','EXP EXPLOSE A LA MAILLE: ', nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if ((xks*deppmo) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_22','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                        write (umess,901) 'NMBARC_22','EXP EXPLOSE A LA MAILLE: ', nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
                     if ((xk0*(depsmo-deppmo)) .gt. epxmax) then
                         umess = iunifi('MESSAGE')
                         call tecael(iadzi, iazk24)
                         nomail = zk24(iazk24-1+3) (1:8)
-                        write (umess,9001) 'NMBARC_23','EXP EXPLOSE A LA MAILLE: ',&
-     &                                                           nomail
+                        write (umess,901) 'NMBARC_23','EXP EXPLOSE A LA MAILLE: ', nomail
                         retcom = 1
-                        goto 8000
+                        goto 999
                     endif
 !
 !     -- REACTUALISATION DE LA VARIABLE INTERNE MECANIQUE PCR
@@ -683,13 +679,13 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     -- REACTUALISATION DES CONTRAINTES NETTES DE BARCELONE
                     sigpmo = sigmmo*exp( xk0*(depsmo-deppmo))/ ((p1+pa) /(p1m+pa))**(xk0/xk0s )
                     call r8inir(6, 0.d0, sigpdv, 1)
-                    do 119 k = 1, ndimsi
+                    do k = 1, ndimsi
                         sigpdv(k) = sigel(k)/(1.d0+(6.d0*deuxmu/2.d0* alphab* deppmo)/(m*m*(2.d0*&
                                     &sigpmo-2.d0*pcrp(1) +kpmax)))
                         sbarp(k) = sigpdv(k)-sigpmo*kron(k)
 !     -- CALCUL DES CONTRAINTES DE BISHOP
                         sbisp(k) = sbarp(k)-(sipp+p2)*kron(k)
-119                  end do
+                    end do
 !
                 endif
             endif
@@ -726,30 +722,30 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !
 !     --9.0 INITIALISATION DE L'OPERATEUR TANGENT
 !     ---------------------------------------
-        do 125 k = 1, 6
-            do 126 l = 1, 6
+        do k = 1, 6
+            do l = 1, 6
                 dsidep(k,l) = 0.d0
                 dsidp1(k) = 0.d0
-126          end do
-125      end do
+            end do
+        end do
 !
 !     -- 9.1 CALCUL DE DSIDEP(6,6)-ELASTIQUE:
 !     ---------------------------------------
         if (matr .eq. 0) then
-            do 127 k = 1, 3
-                do 128 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l) = xk0*simoel-deuxmu/3.d0
-128              end do
-127          end do
-            do 129 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = dsidep(k,k)+deuxmu
-129          end do
+            end do
 !
 !     -- 9.2 CALCUL DE DSIDP1(6) ELASTIQUE:
 !     ---------------------------------------
-            do 139 k = 1, ndimsi
+            do k = 1, ndimsi
                 dsidp1(k) = (xk0/xk0s*simoel/(p1+pa)-sat*biot)*kron(k)
-139          end do
+            end do
         endif
 !     -- 9.3 CALCUL DE DSIDEP(6,6) CRITERE MECANIQUE ATTEINT
 !     ------------------------------------------------------
@@ -762,45 +758,45 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                 &)+2.d0*xk*pcrmp1* (sigmmo+ kpmax))+6.d0*deuxmu*sieqm**2*alphab
 !
 !     -- 9.3.2 CALCUL D'UN TERME INTERMEDIAIRE
-            do 160 k = 1, ndimsi
+            do k = 1, ndimsi
                 a(k) = 0.d0
-160          end do
-            do 130 k = 1, 3
+            end do
+            do k = 1, 3
                 a(k) = -xk0*m*m*sigmmo*(2.d0*sigmmo-2.d0*pcrmp1+kpmax) *kron(k)+3.d0*deuxmu*sigmd&
                        &v(k)
                 ap(k) = -xk0*m*m*sigmmo*(2.d0*sigmmo-2.d0*pcrmp1+ kpmax) *kron(k)+3.d0*deuxmu*sig&
                         &mdv(k)*alphab
-130          end do
+            end do
             call r8inir(3, 0.d0, aa, 1)
-            do 131 k = 4, ndimsi
+            do k = 4, ndimsi
                 aa(k) = 3.d0*deuxmu*sigmdv(k)
                 aap(k) = 3.d0*deuxmu*sigmdv(k)*alphab
-131          end do
+            end do
 !
 !     -- 9.3.3 CALCUL DES TERMES DE DSIDEP
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
-            do 132 k = 1, 3
-                do 133 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l)=xk0*sigmmo-deuxmu/3.d0 - 1.d0/2.d0/h*(&
                     a(k)*ap(l)+a(l)*ap(k))
-133              end do
-132          end do
-            do 134 k = 1, 3
-                do 135 l = 4, ndimsi
+                end do
+            end do
+            do k = 1, 3
+                do l = 4, ndimsi
                     dsidep(k,l) = -1.d0/2.d0*(a(k)*aap(l)+ap(k)*aa(l))
                     dsidep(k,l) = dsidep(k,l)/h
                     dsidep(l,k) = dsidep(k,l)
-135              end do
-134          end do
-            do 136 k = 4, ndimsi
-                do 137 l = 4, ndimsi
+                end do
+            end do
+            do k = 4, ndimsi
+                do l = 4, ndimsi
                     dsidep(k,l) = -1.d0/2.d0*(aa(k)*aap(l)+aa(l)*aap( k))
                     dsidep(k,l) = dsidep(k,l)/h
-137              end do
-136          end do
-            do 138 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = deuxmu + dsidep(k,k)
-138          end do
+            end do
 !     -- 9.4 CALCUL DE DSIDP1(6) CRITERE MECANIQUE ATTEINT-
 !     -----------------------------------------------------
 !     EN VITESSE :
@@ -810,31 +806,31 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                   kc*(2.d0*pcrmp1-sigmmo)-2.d0*pcrmp1* (sigmmo+kpmax) *log(2.d0*prescr/pa)* ((lam&
                   &bda-kapa)/(lambb-kapa)**2)* lamp&
                   )
-            do 161 k = 1, 3
+            do k = 1, 3
                 dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+pa) +m*m*par/h* ap(k) +xk0*sigmmo/xk0s/(p1&
                             &+pa) -biot*sat
-161          end do
-            do 166 k = 4, ndimsi
+            end do
+            do k = 4, ndimsi
                 dsidp1(k)=-deuxmu*tra*sigmdv(k)*alphab/h/xk0s/(p1+pa)&
                 +3.d0*deuxmu*sigmdv(k)*alphab*m*m*par/h
-166          end do
+            end do
         endif
 !     -- 9.5 CALCUL DE DSIDEP(6,6)CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !     ---------------------------------------------------------------
         if (matr .eq. 11) then
-            do 162 k = 1, 3
-                do 163 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l) = xk0*sigmmo-deuxmu/3.d0
-163              end do
-162          end do
-            do 164 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = dsidep(k,k)+deuxmu
-164          end do
+            end do
 !     -- 9.6 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !     --------------------------------------------------------------
-            do 165 k = 1, ndimsi
+            do k = 1, ndimsi
                 dsidp1(k) = ( xk0*sigmmo/(p1+pa)*(1.d0/xks+1.d0/xk0s) -sat*biot)*kron(k )
-165          end do
+            end do
         endif
 !
 !---OPERATEUR TANGENT EN VITESSE  A LINSTATNT COURANT AU LIEU
@@ -842,9 +838,9 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
         if (matr .eq. 2) then
 !
             sieqp = 0.0d0
-            do 4000 k = 1, ndimsi
+            do k = 1, ndimsi
                 sieqp = sieqp + sigpdv(k)**2
-4000          continue
+            end do
             sieqp = sqrt(1.5d0*sieqp)
 !     -- 9.3.11 CALCUL DU MODULE ELASTOPLASTIQUE H
             h = m**4*(&
@@ -853,45 +849,45 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                 )+6.d0*deuxmu*sieqp**2*alphab
 !
 !     -- 9.3.12 CALCUL D'UN TERME INTERMEDIAIRE
-            do 260 k = 1, ndimsi
+            do k = 1, ndimsi
                 a(k) = 0.d0
-260          end do
-            do 230 k = 1, 3
+            end do
+            do k = 1, 3
                 a(k) = -xk0*m*m*sigpmo*(&
                        2.d0*sigpmo-2.d0*pcrp(1)+ kpmax) *kron(k)+3.d0*deuxmu*sigpdv(k)
                 ap(k) = -xk0*m*m*sigpmo*(&
                         2.d0*sigpmo-2.d0*pcrp(1)+ kpmax) *kron(k)+3.d0*deuxmu*sigpdv(k)*alphab
-230          end do
+            end do
             call r8inir(3, 0.d0, aa, 1)
-            do 231 k = 4, ndimsi
+            do k = 4, ndimsi
                 aa(k) = 3.d0*deuxmu*sigpdv(k)
                 aap(k) = 3.d0*deuxmu*sigpdv(k)*alphab
-231          end do
+            end do
 !
 !     -- 9.3.13 CALCUL DES TERMES DE DSIDEP
             call r8inir(ndimsi*ndimsi, 0.d0, dsidep, 1)
-            do 232 k = 1, 3
-                do 233 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l)=xk0*sigpmo-deuxmu/3.d0 - 1.d0/2.d0/h*(&
                     a(k)*ap(l)+a(l)*ap(k))
-233              end do
-232          end do
-            do 234 k = 1, 3
-                do 235 l = 4, ndimsi
+                end do
+            end do
+            do k = 1, 3
+                do l = 4, ndimsi
                     dsidep(k,l) = -1.d0/2.d0*(a(k)*aap(l)+ap(k)*aa(l))
                     dsidep(k,l) = dsidep(k,l)/h
                     dsidep(l,k) = dsidep(k,l)
-235              end do
-234          end do
-            do 236 k = 4, ndimsi
-                do 237 l = 4, ndimsi
+                end do
+            end do
+            do k = 4, ndimsi
+                do l = 4, ndimsi
                     dsidep(k,l) = -1.d0/2.d0*(aa(k)*aap(l)+aa(l)*aap( k))
                     dsidep(k,l) = dsidep(k,l)/h
-237              end do
-236          end do
-            do 238 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = deuxmu + dsidep(k,k)
-238          end do
+            end do
 !     -- 9.3.14 CALCUL DE DSIDP1(6) CRITERE MECANIQUE ATTEINT-
 !     -----------------------------------------------------
 !     EN VITESSE :
@@ -903,31 +899,31 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                   &a-kapa)/(lambb-kapa)** 2&
                   )*lamp&
                   )
-            do 261 k = 1, 3
+            do k = 1, 3
                 dsidp1(k) = -ap(k)*tra/3.d0/h/xk0s/(p1+pa) +m*m*par/h* ap(k) +xk0*sigpmo/xk0s/(p1&
                             &+pa) -biot*sat
-261          end do
-            do 266 k = 4, ndimsi
+            end do
+            do k = 4, ndimsi
                 dsidp1(k)=-deuxmu*tra*sigpdv(k)*alphab/h/xk0s/(p1+pa)&
                 +3.d0*deuxmu*sigpdv(k)*alphab*m*m*par/h
-266          end do
+            end do
         endif
 !   -- 9.3.15 CALCUL DE DSIDEP(6,6)CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !   ---------------------------------------------------------------
         if (matr .eq. 21) then
-            do 262 k = 1, 3
-                do 263 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     dsidep(k,l) = xk0*sigpmo-deuxmu/3.d0
-263              end do
-262          end do
-            do 264 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 dsidep(k,k) = dsidep(k,k)+deuxmu
-264          end do
+            end do
 !     -- 9.3.16 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT-EN VITESSE:
 !     --------------------------------------------------------------
-            do 265 k = 1, ndimsi
+            do k = 1, ndimsi
                 dsidp1(k) = ( xk0*sigpmo/(p1+pa)*(1.d0/xks+1.d0/xk0s) -sat*biot)*kron(k )
-265          end do
+            end do
         endif
 !
 !---------------------------------------------------------------------
@@ -937,71 +933,71 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     -----------------------------------------------------------------
         if (matr .eq. 3) then
             sieqp = 0.0d0
-            do 3000 k = 1, ndimsi
+            do k = 1, ndimsi
                 sieqp = sieqp + sigpdv(k)**2
-3000          continue
+            end do
             sieqp = sqrt(1.5d0*sieqp)
             diff1 = abs((sigpmo-pcrp(1)+kpmax/2)/(pcrp(1)-kpmax/2))
-            if (diff1 .lt. crit(3)) then
+            if (diff1 .lt. carcri(3)) then
 !
 !     -- 9.7.0.1 OPERATEUR TANGENT COHERENT AU POINT CRITIQUE
 !     -- TRAITEMENT DE LA PARTIE DEVIATORIQUE
 !     -- CALCUL DE Q+
 !     -- CALCUL DU TENSEUR HHB QUI MULTIMPLIE LA DEFORMATION
                 call r8inir(6*6, 0.d0, ses, 1)
-                do 1000 k = 1, ndimsi
-                    do 1001 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         ses(k,l) = 1.d0/2.d0*( sigpdv(k)*sigel(l)+ sigel(k)*sigpdv(l))
-1001                  end do
-1000              end do
+                    end do
+                end do
                 call r8inir(6*6, 0.d0, hhb, 1)
-                do 3001 k = 1, ndimsi
-                    do 3002 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         hhb(k,l) = -deuxmu*3.d0*ses(k,l )/2.d0/sieleq/ sieqp/alphab
-3002                  continue
-3001              continue
-                do 3003 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     hhb(k,k) = deuxmu+hhb(k,k)
-3003              continue
+                end do
                 if (ndim .eq. 2) then
                     hhb(5,5) = 1.d0
                     hhb(6,6) = 1.d0
                 endif
 !     -- INVERSE DE HHB
                 call r8inir(6*6, 0.d0, hhbm, 1)
-                do 3004 k = 1, 6
+                do k = 1, 6
                     hhbm(k,k)=1.d0
-3004              continue
+                end do
                 call mgauss('NFVP', hhb, hhbm, 6, 6,&
                             6, det, iret)
 !     -- CALCUL DU TENSEUR GG QUI MULTIMPLIE LA CONTRAINTE
                 call r8inir(6*6, 0.d0, sps, 1)
-                do 1002 k = 1, ndimsi
-                    do 1003 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         sps(k,l) = sigpdv(k)*sigpdv(l)
-1003                  end do
-1002              end do
+                    end do
+                end do
                 call r8inir(6*6, 0.d0, gg, 1)
-                do 3005 k = 1, ndimsi
-                    do 3006 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         gg(k,l) = -3.d0*sieleq*sps(k,l)/2.d0/sieqp**3/ alphab
-3006                  continue
-3005              continue
-                do 3007 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     gg(k,k) = sieleq/sieqp/alphab+(1.d0-1.d0/alphab)+ gg(k,k)
-3007              continue
+                end do
 !     --  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, v, 1)
-                do 3015 k = 1, 3
-                    do 3016 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         v(k,l) = -1.d0/3.d0
                         v(l,k) = v(k,l)
-3016                  continue
-3015              continue
-                do 3017 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     v(k,k) = v(k,k) + 1.d0
-3017              continue
+                end do
 !     --  PRODUIT DE LA MATRICE DE PROJECTION SUR L'ESPACE
 !     --  DES CONTRAINTES DEVIATORIQUES PAR GG
                 call r8inir(6*6, 0.d0, d1g, 1)
@@ -1017,43 +1013,43 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     --  DES CONTRAINTES HYDROSTATIQUES PAR LA MATRICE IDENTITE
 !     --  D'ORDRE 2
                 call r8inir(6*6, 0.d0, id2, 1)
-                do 3008 k = 1, 3
-                    do 3009 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         id2(k,l) = -1.d0/3.d0/xk0/sigpmo
-3009                  continue
-3008              continue
+                    end do
+                end do
 !     -- SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, devhyd, 1)
-                do 3010 k = 1, ndimsi
-                    do 3011 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         devhyd(k,l) = d1ghhm(k,l)/deuxmu + id2(k,l)
-3011                  continue
-3010              continue
+                    end do
+                end do
                 if (ndim .eq. 2) then
                     devhyd(5,5) = 1.d0
                     devhyd(6,6) = 1.d0
                 endif
 !     -- INVERSE DE LA SOMME DES TERMES DEVIATORIQUE ET HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, devhym, 1)
-                do 3012 k = 1, 6
+                do k = 1, 6
                     devhym(k,k)=1.d0
-3012              continue
+                end do
                 call mgauss('NFVP', devhyd, devhym, 6, 6,&
                             6, det, iret)
 !     -- TERMES DE L'OPERATEUR TANGENT QUI RELIENT LA CONTRAINTE
 !     -- A LA DEFORMATION
                 call r8inir(6*6, 0.d0, dsidep, 1)
-                do 3013 k = 1, 6
-                    do 3014 l = 1, 6
+                do k = 1, 6
+                    do l = 1, 6
                         dsidep(k,l) = devhym(k,l)
-3014                  continue
-3013              continue
+                    end do
+                end do
 !     -- 9.7.0.3 CALCUL DE DSIDP1(6) COHERENT AU POINT CRITIQUE:
 !    -- MATRICE QUI RELIE LES CONTRAINTES A LA SUCCION
                 call r8inir(6*6, 0.d0, dsidp1, 1)
-                do 3018 k = 1, ndimsi
+                do k = 1, ndimsi
                     dsidp1(k) = -kron(k)/xk0s/(p1+pa)-biot*sat*kron(k)
-3018              continue
+                end do
 !
             else
 !
@@ -1061,19 +1057,19 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !      -- CALCUL DES INCREMENTS DE P ET DE S
                 deltap = sigpmo - sigmmo
                 call r8inir(6, 0.d0, deltas, 1)
-                do 140 k = 1, ndimsi
+                do k = 1, ndimsi
                     deltas(k)=sigpdv(k)-sigmdv(k)
-140              end do
+                end do
 !
 !     -- 9.7.2 CALCUL DE VECTEURS INTERMEDIAIRES
                 spards = 0.d0
-                do 141 k = 1, ndimsi
+                do k = 1, ndimsi
                     spards = spards+deltas(k)*sigpdv(k)
-141              end do
+                end do
                 call r8inir(6, 0.d0, tplus, 1)
-                do 142 k = 1, ndimsi
+                do k = 1, ndimsi
                     tplus(k) = sigpdv(k) + deltas(k)
-142              end do
+                end do
 !
 !      9.7.3-- TERMES NECESSAIRES A LA PARTIE DEVIATORIQUE
                 hp = 2.d0*m**4*xk*(sigpmo+kpmax)*pcrp(1)* (2.d0* sigpmo-2.d0*pcrp(1)+kpmax)
@@ -1101,38 +1097,38 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     9.7.4-- CALCUL DE LA MATRICE CC-SYMETRISATION DE TPLUS.I
 !
                 call r8inir(6*6, 0.d0, cc, 1)
-                do 172 k = 1, 3
-                    do 173 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         cc(k,l)=(tplus(k)+tplus(l))/2.d0
-173                  end do
-172              end do
-                do 174 k = 1, 3
-                    do 175 l = 4, ndimsi
+                    end do
+                end do
+                do k = 1, 3
+                    do l = 4, ndimsi
                         cc(k,l)=tplus(l)/2.d0
                         cc(l,k)=cc(k,l)
-175                  end do
-174              end do
+                    end do
+                end do
 !
 !     9.7.5-- CALCUL DES TERMES D'UNE MATRICE INTERMEDIAIRE C
 !
                 call r8inir(6*6, 0.d0, c, 1)
-                do 170 k = 1, ndimsi
-                    do 171 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         c(k,l) = 9.d0*alphab/2.d0/(hp+xa)*(sigpdv(k)* tplus(l)+ tplus(k)*sigpdv(l&
                                  &))
-171                  end do
-170              end do
-                do 149 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     c(k,k) = c(k,k)+1.d0/deuxmu+xc+xd+xgg+xhhc
-149              end do
+                end do
 !
 !     9.7.6-- ASSEMBLAGE DES TERMES POUR LA PARTIE DEVIATORIQUE
                 call r8inir(6*6, 0.d0, ee, 1)
-                do 180 k = 1, ndimsi
-                    do 181 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         ee(k,l) = c(k,l) - rap*cc(k,l)
-181                  continue
-180              continue
+                    end do
+                end do
 !
 !      9.7.7-- TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE
                 xu = 2.d0*m**2*xk*pcrp(1)
@@ -1155,35 +1151,35 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !
 !     9.7.8--  VECTEUR INTERMEDIAIRE
                 call r8inir(6, 0.d0, fv, 1)
-                do 190 k = 1, ndimsi
+                do k = 1, ndimsi
                     fv(k)=3.d0*xf/xe*sigpdv(k)-ct*kron(k)/3.d0
-190              end do
+                end do
 !     9.7.9-- SYMMETRISATION DEFV ET SA PROJECTION SUR L'ESPACE
 !     -- DES CONTRAINTES HYDROSTATIQUES
                 call r8inir(6*6, 0.d0, ffi, 1)
-                do 195 k = 1, 3
-                    do 196 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         ffi(k,l) = -(1.d0/3.d0)*(fv(k)+fv(l))/2.d0
-196                  end do
-195              end do
-                do 197 k = 1, 3
-                    do 198 l = 4, ndimsi
+                    end do
+                end do
+                do k = 1, 3
+                    do l = 4, ndimsi
                         ffi(k,l) = -(1.d0/3.d0)*fv(l)/2.d0
                         ffi(l,k) = ffi(k,l)
-198                  end do
-197              end do
+                    end do
+                end do
 !     9.7.10--  MATRICE DE PROJECTION SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, v, 1)
-                do 185 k = 1, 3
-                    do 186 l = 1, 3
+                do k = 1, 3
+                    do l = 1, 3
                         v(k,l) = -1.d0/3.d0
                         v(l,k) = v(k,l)
-186                  end do
-185              end do
-                do 187 k = 1, ndimsi
+                    end do
+                end do
+                do k = 1, ndimsi
                     v(k,k) = v(k,k) + 1.d0
-187              end do
+                end do
 !     9.7.11-- PROJECTION DE EE SUR L'ESPACE DES CONTRAINTES
 !     -- DEVIATORIQUES
                 call r8inir(6*6, 0.d0, s, 1)
@@ -1193,29 +1189,29 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
 !     9.7.12-- COMBINAISON DES DEUX PARTIES DEVIATORIQUE ET
 !     -- HYDROSTATIQUE
                 call r8inir(6*6, 0.d0, t, 1)
-                do 204 k = 1, ndimsi
-                    do 205 l = 1, ndimsi
+                do k = 1, ndimsi
+                    do l = 1, ndimsi
                         t(k,l) = s(k,l)+ ffi(k,l)
-205                  end do
-204              end do
+                    end do
+                end do
                 if (ndim .eq. 2) then
                     t(5,5) = 1.d0
                     t(6,6) = 1.d0
                 endif
 !     9.7.13-- INVERSE DE LA MATRICE T
                 call r8inir(6*6, 0.d0, vv, 1)
-                do 108 k = 1, 6
+                do k = 1, 6
                     vv(k,k)=1.d0
-108              end do
+                end do
                 call mgauss('NFVP', t, vv, 6, 6,&
                             6, det, iret)
 !     --  9.7.14 CALCUL DES TERMES DSIDEP L'OPERATEUR TANGENT
                 call r8inir(6*6, 0.d0, dsidep, 1)
-                do 106 k = 1, 6
-                    do 107 l = 1, 6
+                do k = 1, 6
+                    do l = 1, 6
                         dsidep(k,l) = vv(k,l)
-107                  end do
-106              end do
+                    end do
+                end do
 !     -- 9.8 CALCUL DE DSIDP1(6) COHERENT CRITERE MECANIQUE ATTEINT:
 !    -- MATRICE QUI RELIE LES CONTRAINTES A LA SUCCION
 !     -----------------------------------------------------------
@@ -1228,10 +1224,10 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                 xdd = -kc*(xlam*m*m)**2/(m**2*xlam+1.d0/(2.d0*xk*pcrp( 1)))+ m*m*xlam*kc
 !     9.8.2 VECTEUR INTERMEDIAIRE MULTIPLIE DP1 EN DEVIATORIQUE
                 call r8inir(6, 0.d0, hh, 1)
-                do 300 k = 1, ndimsi
+                do k = 1, ndimsi
                     hh(k) = 3.d0*xz/(hp+xa)*sigpdv(k)- xi*xz/3.d0/(hp+ xa)*kron(k) + xdd/3.d0*kro&
                             &n(k) + kron(k)/3.d0/ xk0s/(p1+pa)
-300              continue
+                end do
 !     9.8.3 TERMES NECESSAIRES A LA PARTIE HYDROSTATIQUE
                 xj = xu*xlam*kc/2.d0/(1.d0+xu*xlam)
                 xhh = m*m/hp*(&
@@ -1246,22 +1242,22 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
                       )
 !     9.8.4 VECTEUR INTERMEDIAIRE MULTIPLIE DP1 EN HYDROSTATIQUE
                 call r8inir(6, 0.d0, kv, 1)
-                do 310 k = 1, ndimsi
+                do k = 1, ndimsi
                     kv(k) = 3.d0*xhh/xe*sigpdv(k)-ct1*kron(k)/3.d0
-310              continue
+                end do
 !     9.8.5 MULTIPLICATION DE VV par H(K)-KV(K)
                 call r8inir(6, 0.d0, hhkv, 1)
-                do 320 k = 1, ndimsi
+                do k = 1, ndimsi
                     hhkv(k) = hh(k) - kv(k)
-320              continue
+                end do
                 call r8inir(6, 0.d0, ssh, 1)
                 call promat(vv, 6, ndimsi, ndimsi, hhkv,&
                             6, ndimsi, 1, ssh)
 !     9.8.6 LES TERMES DE L'OPERATEUR TANGENT COHERENT DSIDP1(6)
                 call r8inir(6, 0.d0, dsidp1, 1)
-                do 330 k = 1, ndimsi
+                do k = 1, ndimsi
                     dsidp1(k) = ssh(k)-biot*sat*kron(k)
-330              continue
+                end do
             endif
         endif
 !     --9.9 CALCUL DE DSIDEP(6,6) CRITERE HYDRIQUE ATTEINT
@@ -1270,62 +1266,62 @@ subroutine nmbarc(ndim, imate, crit, sat, biot,&
         if (matr .eq. 31) then
 !     9.9.1 -- MATRICE QUI RELIE LES CONTRAINTES AUX DEFORMATIONS
             call r8inir(6*6, 0.d0, vh, 1)
-            do 340 k = 1, 3
-                do 345 l = 1, 3
+            do k = 1, 3
+                do l = 1, 3
                     vh(k,l) = -1.d0/3.d0+deuxmu/9.d0/xk0/sigpmo
                     vh(l,k) = vh(k,l)
-345              end do
-340          end do
-            do 350 k = 1, ndimsi
+                end do
+            end do
+            do k = 1, ndimsi
                 vh(k,k) = vh(k,k)+1.d0
-350          end do
+            end do
             call r8inir(6*6, 0.d0, vhh, 1)
-            do 355 k = 1, ndimsi
-                do 360 l = 1, ndimsi
+            do k = 1, ndimsi
+                do l = 1, ndimsi
                     vhh(k,l) = 1.d0/deuxmu*vh(k,l)
-360              end do
-355          end do
+                end do
+            end do
             if (ndim .eq. 2) then
                 vhh(5,5) = 1.d0
                 vhh(6,6) = 1.d0
             endif
 !     9.9.2-- INVERSE DE LA MATRICE VHH
             call r8inir(6*6, 0.d0, vvh, 1)
-            do 390 k = 1, 6
+            do k = 1, 6
                 vvh(k,k)=1.d0
-390          end do
+            end do
             call mgauss('NFVP', vhh, vvh, 6, 6,&
                         6, det, iret)
 !     9.9.3--  LES TERMES DSIDEP L'OPERATEUR TANGENT
             call r8inir(6*6, 0.d0, dsidep, 1)
-            do 395 k = 1, 6
-                do 400 l = 1, 6
+            do k = 1, 6
+                do l = 1, 6
                     dsidep(k,l) = vvh(k,l)
-400              end do
-395          end do
+                end do
+            end do
 !     --9.10 CALCUL DE DSIDP1(6) CRITERE HYDRIQUE ATTEINT
 !    -- MATRICE QUI RELIE LES CONTRAINTES A LA SUCCION
 !     LES TERMES DE L'OPERATEUR TANGENT COHERENT DSIDP1(6)
 !    ------------------------------------------------------
             call r8inir(6, 0.d0, kkh, 1)
-            do 402 k = 1, 3
+            do k = 1, 3
                 kkh(k) = 1.d0
-402          continue
-            do 403 k = 4, ndimsi
+            end do
+            do k = 4, ndimsi
                 kkh(k) = 0.d0
-403          continue
+            end do
             call r8inir(6, 0.d0, sshh, 1)
             call promat(vvh, 6, ndimsi, ndimsi, kkh,&
                         6, ndimsi, 1, sshh)
             bb = 1.d0/3.d0*(1.d0/xk0s/(p1+pa)+1.d0/xks/(p1+pa))
-            do 410 k = 1, ndimsi
+            do k = 1, ndimsi
                 dsidp1(k) = sshh(k)*bb-biot*sat*kron(k)
-410          continue
+            end do
         endif
     endif
 ! ======================================================================
-8000  continue
+999  continue
 ! =====================================================================
-    9001 format (a10,2x,a40,2x,a8)
+901 format (a10,2x,a40,2x,a8)
 !    FIN ---------------------------------------------------------
 end subroutine

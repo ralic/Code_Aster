@@ -1,9 +1,9 @@
 subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                   imate, compor, epsm, deps, vim,&
-                  tm, tp, tref, option, sig,&
+                  option, sig,&
                   vip, dsidep)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,11 +31,12 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     character(len=*) :: fami
     integer :: ndim, imate, kpg, ksp
-    real(kind=8) :: epsm(6), deps(6), vim(4), tm, tp, tref
+    real(kind=8) :: epsm(6), deps(6), vim(4)
     real(kind=8) :: sig(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT ENDOMMAGEABLE : MODELE DE MAZARS
@@ -84,7 +85,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     integer :: ndimsi, nperm, nitjac, trij, ordrej
     integer :: i, j, l, iret
     real(kind=8) :: e, nu, epsthe, kdess, bendo, rtemp
-    real(kind=8) :: ac, at, bc, bt, epsd0
+    real(kind=8) :: ac, at, bc, bt, epsd0, tm, tp, tref
     real(kind=8) :: eps(6), epse(6), epsplu(6), epsep(3), epseq
     real(kind=8) :: sigel(6), sigelp(3)
     real(kind=8) :: temp, tmax, tmaxm, hydr, sech, sref
@@ -99,6 +100,14 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 ! ======================================================================
 !                            INITIALISATION
 ! ======================================================================
+
+
+!
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tm, tp, tref)
+
 ! -- OPTION ET MODELISATION
     if ((.not.( compor(1)(1:6) .eq. 'MAZARS')) .and. (.not.( compor(1)(1:6) .eq. 'KIT_HM'))&
         .and. (.not.( compor(1)(1:7) .eq. 'KIT_HHM')) .and.&
@@ -234,21 +243,21 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
 !  -  MISE A JOUR DE LA DEFORMATION TOTALE
     call r8inir(6, 0.d0, eps, 1)
     if (resi) then
-        do 10 j = 1, ndimsi
+        do j = 1, ndimsi
             eps(j) = epsm(j) + deps(j)
- 10     continue
+        end do
     else
-        do 20 j = 1, ndimsi
+        do j = 1, ndimsi
             eps(j)=epsm(j)
- 20     continue
+        end do
         d=vim(1)
     endif
 !    CALCUL DE LA DEFORMATION ELASTIQUE (LA SEULE QUI CONTRIBUE
 !    A FAIRE EVOLUER L'ENDOMMAGEMENT)
     call r8inir(6, 0.d0, epse, 1)
-    do 35 j = 1, ndimsi
+    do j = 1, ndimsi
         epse(j) = eps(j) - ( epsthe - kdess * (sref-sech) - bendo * hydr ) * kron(j)
- 35 end do
+    end do
     if (cplan) then
         coplan = - nu/(1.d0-nu)
         epse(3) = coplan * (epse(1)+epse(2))
@@ -259,19 +268,19 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     if (coup .and. resi) then
         call lcumvi('FT', vip, epsfp)
         call r8inir(6, 0.d0, epscou, 1)
-        do 1010 j = 1, ndimsi
+        do j = 1, ndimsi
             epsi(j) = epse(j)
             epse(j) = epsi(j) - epsfp(j)
             epscou(j) = epsi(j) - (1-chi)*epsfp(j)
-1010     continue
+        end do
     endif
-    do 30 j = 4, ndimsi
+    do j = 4, ndimsi
         epse(j) = epse(j)/rac2
- 30 end do
+    end do
     if (coup .and. resi) then
-        do 31 j = 4, ndimsi
+        do j = 4, ndimsi
             epscou(j) = epscou(j)/rac2
- 31     continue
+        end do
     endif
 !    2 - CALCUL DE EPSEQ = SQRT(TR (<EPSE>+ * <EPSE>+)  )
 !        C EST EPSEQ ELASTIQUE DANS LE CAS DU COUPLAGE
@@ -301,11 +310,11 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                 tu, vecpe, epsep, jacaux, nitjac,&
                 trij, ordrej)
     epseq = 0.d0
-    do 40 j = 1, 3
+    do j = 1, 3
         if (epsep(j) .gt. 0.d0) then
             epseq = epseq + (epsep(j)**2)
         endif
- 40 end do
+    end do
     epseq = sqrt(epseq)
 !    2BIS - CALCUL DE EPSEQC = SQRT(TR (<EPSCOU>+ * <EPSCOU>+))
 !        M.B.: C EST LA DEFORMATION EQUIVALENT DANS LE CAS DU COUPLAGE
@@ -332,49 +341,48 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
                     tu, vecpec, epsepc, jacaux, nitjac,&
                     trij, ordrej)
         epseqc = 0.d0
-        do 1040 j = 1, 3
+        do j = 1, 3
             if (epsepc(j) .gt. 0.d0) then
                 epseqc = epseqc + (epsepc(j)**2)
             endif
-1040     continue
+        end do
         epseqc = sqrt(epseqc)
     endif
 ! -  3     CALCUL DE <EPS>+
 ! ------------------------------------------------------
     call r8inir(6, 0.d0, tr, 1)
     call r8inir(6, 0.d0, epsplu, 1)
-    do 42 j = 1, 3
+    do j = 1, 3
         if (epsep(j) .gt. 0.d0) then
             tr(j) = epsep(j)
         endif
- 42 end do
+    end do
     call bptobg(tr, epsplu, vecpe)
-    do 44 j = 4, ndimsi
+    do j = 4, ndimsi
         epsplu(j) = epsplu(j)*rac2
- 44 end do
+    end do
 !   4 -  CALCUL DES CONTRAINTES ELASTIQUES (REPERE PRINCIPAL)
 !----------------------------------------------------------------
-    do 50 j = 1, 3
+    do j = 1, 3
         sigelp(j) = lambda*(epsep(1)+epsep(2)+epsep(3))
- 50 end do
-    do 60 j = 1, 3
+    end do
+    do j = 1, 3
         sigelp(j) = sigelp(j) + deuxmu*epsep(j)
- 60 end do
+    end do
 !
     tmp1 = 0.d0
-    do 70 j = 1, 3
+    do j = 1, 3
         if (sigelp(j) .lt. 0.d0) then
             tmp1 = tmp1 + sigelp(j)
         endif
- 70 end do
+    end do
 !   5 -     CALCUL DE R
 !----------------------------------------------------------------
-    vala=abs(sigelp(1))+abs(sigelp(2))&
-     &+abs(sigelp(3))
+    vala=abs(sigelp(1))+abs(sigelp(2)) +abs(sigelp(3))
     r=0.d0
-    do 80 i = 1, 3
+    do i = 1, 3
         r = r + max(0.00000000d0,sigelp(i))
- 80 end do
+    end do
     if (vala .gt. 1.d-10) then
         r=r/(vala)
     else
@@ -384,10 +392,10 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod,&
     if (r .gt. 0.99999d0) r=1.d0
     gama=0.d0
     rap=0.d0
-    do 69 i = 1, 3
+    do i = 1, 3
         rap = rap + min(0.d0,sigelp(i))
         gama = gama + (min(0.d0,sigelp(i)))**2
- 69 end do
+    end do
     if ((abs(rap).gt.1.d-10) .and. (r.eq.0.d0)) then
         gama = -(sqrt(gama)/ rap)
     else

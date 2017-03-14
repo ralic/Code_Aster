@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,18 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmbarc(ndim, imate, crit, sat, biot,&
-                      tm, tp, deps, sbism, vim,&
+    subroutine nmbarc(ndim, imate, carcri, sat, biot,&
+                      deps, sbism, vim,&
                       option, sbisp, vip, dsidep, p1,&
                       p2, dp1, dp2, dsidp1, sipm,&
                       sipp, retcom)
         integer :: ndim
         integer :: imate
-        real(kind=8) :: crit(*)
+        real(kind=8) :: carcri(*)
         real(kind=8) :: sat
         real(kind=8) :: biot
-        real(kind=8) :: tm
-        real(kind=8) :: tp
         real(kind=8) :: deps(6)
         real(kind=8) :: sbism(6)
         real(kind=8) :: vim(5)

@@ -14,7 +14,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -108,7 +108,7 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! ======================================================================
 ! --- VARIABLES LOCALES POUR BARCELONE----------------------------------
 ! ======================================================================
-    real(kind=8) :: tini, crit(*)
+    real(kind=8) :: crit(*)
     real(kind=8) :: dsidp1(6), deps(6)
     real(kind=8) :: dsdeme(6, 6)
 !CCC    SIP NECESSAIRE POUR CALCULER LES CONTRAINTES TOTALES
@@ -424,11 +424,10 @@ subroutine hmlvag(yachai, option, meca, ther, hydr,&
 ! --- TERMES SPECIAL BARCELONE --------------------------------------
 ! =====================================================================
     if ((yamec.eq.1) .and. (meca.eq.'BARCELONE')) then
-        tini = t-dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
         call nmbarc(ndim, imate, crit, sat, tbiot(1),&
-                    tini, t, deps, congem(adcome), vintm,&
+                    deps, congem(adcome), vintm,&
                     option, congep(adcome), vintp, dsdeme, p1,&
                     p2, dp1, dp2, dsidp1, sipm,&
                     sipp, retcom)

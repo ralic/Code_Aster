@@ -1,10 +1,11 @@
-subroutine lkcomp(mod, imate, instam, instap, tm,&
-                  tp, tref, deps, sigm, vinm,&
+subroutine lkcomp(fami, kpg, ksp, typmod, imate, instam, instap, &
+                  deps, sigm, vinm,&
                   option, sigp, vinp, dside, retcom,&
                   invi)
 !
     implicit none
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcdive.h"
@@ -22,17 +23,21 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     integer :: retcom, imate, invi
-    character(len=8) :: mod(*)
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    character(len=8) :: typmod(*)
     character(len=16) :: option
-    real(kind=8) :: instam, instap, tm, tp, tref
+    real(kind=8) :: instam, instap
     real(kind=8) :: deps(6)
     real(kind=8) :: sigm(6), vinm(invi)
     real(kind=8) :: sigp(6), vinp(invi)
     real(kind=8) :: dside(6, 6)
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,9 +64,6 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 ! IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
 ! IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 ! IN  INSTAP  : INSTANT DU CALCUL
-! IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
-! IN  TP      : TEMPERATURE A L'INSTANT DU CALCUL
-! IN  TREF    : TEMPERATURE DE REFERENCE
 ! IN  DEPS    : INCREMENT DE DEFORMATION
 ! IN  SIGM    : CONTRAINTES A L'INSTANT DU CALCUL PRECEDENT
 ! IN  VINM    : VARIABLES INTERNES A L'INSTANT DU CALCUL PRECEDENT
@@ -84,6 +86,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
     integer :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr
     integer :: iret
     integer :: indal
+    aster_logical ::  l_temp
     real(kind=8) :: mun, un, zero, deux, trois
 !      REAL*8        LGLEPS
     parameter    (nbmat  = 90 )
@@ -92,7 +95,7 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
     real(kind=8) :: sigml(6), sigpl(6), depml(6), depsth(6)
     real(kind=8) :: i1ml, sml(6), siim
     real(kind=8) :: iel, i1el, sel1(6)
-    real(kind=8) :: dvml, devml(6)
+    real(kind=8) :: dvml, devml(6), tm, tp, tref
     real(kind=8) :: dvml1, devml1(6)
     real(kind=8) :: sel(6), sigel(6)
     real(kind=8) :: seuilv, seuilp
@@ -128,13 +131,19 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
     dxip = zero
     dxiv = zero
     seuivm= zero
+!
+! - Get temperatures
+!
+    call get_varc(fami, kpg, ksp , 'T',&
+                  tm , tp , tref, l_temp)
+
 ! =================================================================
 ! --- RECUPERATION DES PARAMETRES DU MODELE -----------------------
 ! --- LES COEFFICIENTS MATERIAU N EVOLUENT PAS AVEC LE TEMPS-------
 ! =================================================================
 !
     matcst = 'OUI'
-    call lklmat(mod(1), imate, nbmat, tm, materd,&
+    call lklmat(typmod(1), imate, nbmat, tm, materd,&
                 materf, matcst, ndt, ndi, nvi,&
                 indal)
     ASSERT(invi.eq.nvi)
@@ -167,12 +176,8 @@ subroutine lkcomp(mod, imate, instam, instap, tm,&
 !
     alpha = materd(3,1)
 !
-    if ((.not.isnan(tp)) .and. (isnan(tm))) then
-        if ((isnan(tref)) .and. (indal.eq.0)) then
-            call utmess('F', 'COMPOR5_41')
-        else
-            coef = alpha*(tp-tref) - alpha*(tm-tref)
-        endif
+    if (l_temp) then
+        coef = alpha*(tp-tref) - alpha*(tm-tref)
     else
         coef = zero
     endif

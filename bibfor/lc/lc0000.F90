@@ -1,8 +1,9 @@
 subroutine lc0000(fami, kpg, ksp, ndim, typmod,&
-                  imate, compor, mult_comp, carcri, instam, instap,&
+                  imate, compor, mult_comp, carcri,&
+                  instam, instap,&
                   neps, epsm, deps, nsig, sigm,&
                   vim, option, angmas, nwkin, wkin,&
-                  cp, numlc, tempd, tempf, tref,&
+                  cp, numlc, &
                   sigp, vip, ndsde, dsidep, icomp,&
                   nvi, nwkout, wkout, codret)
 !
@@ -116,7 +117,7 @@ implicit none
 #include "asterfort/vrcpto.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -136,7 +137,7 @@ implicit none
     integer :: imate, ndim, nvi, kpg, ksp
     integer :: neps, nsig, nwkin, nwkout, ndsde
     real(kind=8) :: carcri(*), angmas(3)
-    real(kind=8) :: instam, instap, tempd, tempf, tref
+    real(kind=8) :: instam, instap
     real(kind=8) :: wkin(nwkin), wkout(nwkout)
     real(kind=8) :: epsm(neps), deps(neps)
     real(kind=8) :: sigm(nsig), sigp(nsig)
@@ -185,7 +186,6 @@ implicit none
 !     WKIN    : TABLEAU DE TRAVAIL EN ENTREE(SUIVANT MODELISATION)
 !     CP      : LOGIQUE = VRAI EN CONTRAINTES PLANES DEBORST
 !     NUMLC   : NUMERO DE LOI DE COMPORTEMENT ISSUE DU CATALOGUE DE LC
-!     TEMPD,TEMPF,TREF : TEMPERATURES SI L'APPEL PROVIENT DE CALCME
 !     ICOMP   : COMPTEUR DE REDECOUPAGE PRODUIT PAR REDECE
 !     NVI     : NOMBRE DE VARIABLES INTERNES DU POINT D'INTEGRATION
 !
@@ -245,14 +245,11 @@ implicit none
 !     ----------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-!     NUMLC doit etre compris entre 1 et 100
+!
+! - Compute mechanical strain with PTOT external state variable
 !
     if (calcul_status() .eq. 3) then
         if (option(1:9) .ne. 'RIGI_MECA') then
-!           DEFORMATION MECANIQUE ASSOCIEE A LA VARIABLE DE
-!           COMMANDE PTOT. CE CALCUL N'EST POSSIBLE QUE :
-!           1 => EN PETITES DEFORMATIONS
-!           2 => AVEC UNE LOI MECANIQUE DU KIT THM
             call vrcpto(compor, deps, neps, fami, kpg,&
                         ksp, imate)
         endif
@@ -455,12 +452,10 @@ implicit none
                     sigp, vip, wkin, typmod, icomp,&
                     nvi, dsidep, codret)
     case (30)
-!     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
-!     NE PAS UTILISER COMME EXEMPLE
         call lc0030(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, tempd, tempf, tref,&
+                    sigp, vip, &
                     wkin, typmod, icomp, nvi, dsidep,&
                     codret)
     case (31)
@@ -470,21 +465,16 @@ implicit none
                     angmas, sigp, vip, wkin, typmod,&
                     icomp, nvi, dsidep, codret)
     case (32)
-!     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
-!     NE PAS UTILISER COMME EXEMPLE
         call lc0032(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, neps,&
                     epsm, deps, sigm, vim, option,&
-                    angmas, sigp, vip, tempd, tempf,&
-                    tref, wkin, typmod, icomp, nvi,&
+                    angmas, sigp, vip, wkin, typmod, icomp, nvi,&
                     dsidep, codret)
     case (33)
-!     TEMPD,TEMPF,TREF pour PLASTI, CAR APPEL POSSIBLE EN THM
-!     NE PAS UTILISER COMME EXEMPLE
         call lc0033(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, tempd, tempf, tref,&
+                    sigp, vip, &
                     wkin, typmod, icomp, nvi, dsidep,&
                     codret)
     case (34)
@@ -510,8 +500,8 @@ implicit none
         call lc0037(fami, kpg, ksp, ndim, imate,&
                     compor, mult_comp, carcri, instam, instap, neps,&
                     epsm, deps, sigm, vim, option,&
-                    angmas, sigp, vip, tempd, tempf,&
-                    tref, wkin, typmod, icomp, nvi,&
+                    angmas, sigp, vip, &
+                    wkin, typmod, icomp, nvi,&
                     dsidep, codret)
     case (38)
         call lc0038(fami, kpg, ksp, ndim, imate,&
@@ -652,7 +642,7 @@ implicit none
         call lc0059(fami, kpg, ksp, imate,&
                     compor, carcri, instam, instap, neps, epsm,&
                     deps, nsig, sigm, vim, option, angmas,&
-                    sigp, vip, tempd, tempf, tref, wkin,&
+                    sigp, vip, wkin,&
                     typmod, icomp, nvi, dsidep, codret)
     case (60)
         call lc0060(fami, kpg, ksp, ndim, imate,&

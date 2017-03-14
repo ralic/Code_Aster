@@ -1,11 +1,11 @@
-subroutine srcomp(mod, imate, instam, instap, tm,&
-                  tp, tref, deps, sigm, vinm,&
+subroutine srcomp(mod, imate, instam, instap, &
+                  deps, sigm, vinm,&
                   option, sigp, vinp, dside, retcom,&
                   invi)
 
 !
 ! ===================================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG             
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG             
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY               
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY               
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR                  
@@ -75,6 +75,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/cos3t.h"
+#include "asterfort/get_varc.h"
 
     !!!
     !!! Variables globales
@@ -88,6 +89,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
     real(kind=8) :: sigm(6),vinm(invi)
     real(kind=8) :: sigp(6),vinp(invi)
     real(kind=8) :: dside(6,6)
+    aster_logical :: l_temp
     
     !!!
     !!! Variables locales 
@@ -127,6 +129,20 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
     seuip2=zero
     call r8inir(6,zero,depsp,1)
     call r8inir(6,zero,depsv,1)
+!
+! - Get temperatures
+!
+    call get_varc('RIGI' , 1  , 1 , 'T',&
+                  tm, tp, tref, l_temp)
+!
+! - Glute pour LKR
+!
+    if (.not.l_temp) then
+        tm = 0.d0
+        tp = 0.d0
+        tref  = 0.d0
+    endif
+
     
     !!!
     !!! Recuperation des parametres du modele : les coefficients materiau n'evoluent
@@ -280,7 +296,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
                         tmm, depsv, dgamv, iret)
             if (iret.eq.1) then
                 retcom=1
-                goto 1000
+                goto 999
             endif
             dvml1=trace(ndi,depsv)
             call lcdevi(depsv, devml1)
@@ -326,7 +342,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
         call srcrip(i1el,sel1,vinm,nvi,nbmat,materd,tpp,ucrip,seuilp)
         if ((ucrip.lt.zero).or.(ucrpm.lt.zero)) then
             retcom=1
-            goto 1000
+            goto 999
         endif
         
         if (seuilp.lt.zero) then
@@ -376,7 +392,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
             
             if (iret.eq.1) then
                 retcom=1
-                goto 1000
+                goto 999
             endif
             
             !!!maj des contraintes
@@ -480,7 +496,7 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
                        
             if (iret.eq.1) then
                 retcom=1
-                goto 1000
+                goto 999
             endif
         
         endif
@@ -496,6 +512,6 @@ subroutine srcomp(mod, imate, instam, instap, tm,&
         deps(i)=mun*depsth(i)
     end do
     
-1000 continue
+999 continue
 
 end subroutine

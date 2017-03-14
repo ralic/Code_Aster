@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,7 +22,7 @@ interface
                       imate, compor, mult_comp, carcri, instam, instap,&
                       neps, epsm, deps, nsig, sigm,&
                       vim, option, angmas, nwkin, wkin,&
-                      cp, numlc, tempd, tempf, tref,&
+                      cp, numlc,&
                       sigp, vip, ndsde, dsidep, icomp,&
                       nvi, nwkout, wkout, codret)
         integer :: nwkout
@@ -51,9 +51,6 @@ interface
         real(kind=8) :: wkin(nwkin)
         aster_logical :: cp
         integer :: numlc
-        real(kind=8) :: tempd
-        real(kind=8) :: tempf
-        real(kind=8) :: tref
         real(kind=8) :: sigp(nsig)
         real(kind=8) :: vip(nvi)
         real(kind=8) :: dsidep(ndsde)

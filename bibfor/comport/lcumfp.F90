@@ -20,6 +20,7 @@ implicit none
 #include "asterfort/sigela.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
+#include "asterfort/get_varc.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !
@@ -256,14 +257,10 @@ implicit none
 !
     isph = 1
 !
-! RECUPERATION DES VALEURS DE TEMPERATURE
+! - Get temperatures
 !
-    call rcvarc('F', 'TEMP', '-', fami, kpg,&
-                ksp, tm, iret)
-    call rcvarc('F', 'TEMP', '+', fami, kpg,&
-                ksp, tp, iret)
-    call rcvarc('F', 'TEMP', 'REF', fami, kpg,&
-                ksp, tref, iret)
+    call get_varc(fami, kpg, ksp ,'T',&
+                  tm  , tp , tref)
 !
 !
 !  ------- LECTURE DES CARACTERISTIQUES ELASTIQUES
@@ -602,7 +599,7 @@ implicit none
             option2='RAPH_COUP'
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
-                        tm, tp, tref, option2, sigp,&
+                        option2, sigp,&
                         vip, tbid)
         endif
     endif
@@ -623,7 +620,7 @@ implicit none
             endif
             call lcmaza(fami, kpg, ksp, ndim, typmod,&
                         imate, compor, epsm, deps, vim(22),&
-                        tm, tp, tref, option2, tbid,&
+                        option2, tbid,&
                         vip, dsidep)
         else
             option2='RIGI_COUP'

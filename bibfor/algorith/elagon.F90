@@ -1,10 +1,10 @@
-subroutine elagon(ndim, imate, crit, sat, biot,&
-                  tm, tp, alpha, deps, e,&
+subroutine elagon(ndim, imate, biot,&
+                  alpha, deps, e,&
                   nu, snetm, option, snetp, dsidep,&
-                  p1, p2, dp1, dsidp1, dsidp2)
+                  p1, dp1, dsidp1, dsidp2)
+!
 ! ======================================================================
-! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,10 +32,11 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
 #include "asterfort/dpgfp1.h"
 #include "asterfort/prgonf.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/get_varc.h"
     integer :: ndim, imate
     character(len=16) :: option
-    real(kind=8) :: crit(*), tm, tp, alpha
-    real(kind=8) :: deps(6), biot, sat, p1, p2, dp1
+    real(kind=8) :: alpha
+    real(kind=8) :: deps(6), biot, p1, dp1
     real(kind=8) :: snetm(6), snetp(6), dsidep(6, 6)
     real(kind=8) :: dsidp1(6), dsidp2(6)
 !
@@ -44,7 +45,7 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
     real(kind=8) :: depsmo, sigmmo, e, nu, k0, deuxmu
     real(kind=8) :: kron(6), depsdv(6), sigmdv(6), sigpdv(6)
     real(kind=8) :: sigpmo
-    real(kind=8) :: p1m
+    real(kind=8) :: p1m, tm, tp, tref
     real(kind=8) :: valpam(1)
     integer :: ndimsi
     integer :: k, l, kpg, spt
@@ -65,6 +66,11 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
 !
     pref= 1.d6
     p1m=p1-dp1
+!
+! - Get temperatures
+!
+    call get_varc('RIGI' , 1  , 1 , 'T',&
+                  tm, tp, tref)
 !
 !
 !     --  RECUPERATION DES CARACTERISTIQUES
@@ -97,32 +103,32 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
 ! ======================================================================
 ! --- RETRAIT DE LA DEFORMATION DUE A LA DILATATION THERMIQUE ----------
 ! ======================================================================
-    do 110 k = 1, ndi
+    do k = 1, ndi
         deps(k) = deps(k) - alpha*(tp-tm)
-110  end do
+    end do
 !
 !     --  CALCUL DE DEPSMO ET DEPSDV :
 !     --------------------------------
     depsmo = 0.d0
-    do 111 k = 1, 3
+    do k = 1, 3
         depsmo = depsmo + deps(k)
-111  end do
+    end do
 !
-    do 112 k = 1, ndimsi
+    do k = 1, ndimsi
         depsdv(k) = deps(k) - depsmo/3.d0 * kron(k)
-112  end do
+    end do
 !
 !     --  CALCUL DES CONTRAINTES
 !     ----------------------------
 ! Contraintes moyenne (1/3 trace(sig) )
     sigmmo = 0.d0
-    do 116 k = 1, 3
+    do k = 1, 3
         sigmmo = sigmmo + snetm(k)/3.d0
-116  end do
+    end do
 !
-    do 117 k = 1, ndimsi
+    do k = 1, ndimsi
         sigmdv(k) = snetm(k) - sigmmo * kron(k)
-117  end do
+    end do
     sigpmo = 0.d0
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then
 !
@@ -136,10 +142,10 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
         sigpmo = sigmmo+k0*depsmo +prgonf(biot,betam,pref,p1)-prgonf( biot,betam,pref,p1m)
     endif
 !
-    do 118 k = 1, ndimsi
+    do k = 1, ndimsi
         sigpdv(k) = sigmdv(k) + deuxmu * depsdv(k)
         snetp(k) = sigpdv(k) + sigpmo*kron(k)
-118  end do
+    end do
 !
 !
 !     --  CALCUL DE L'OPERATEUR TANGENT :
@@ -148,30 +154,30 @@ subroutine elagon(ndim, imate, crit, sat, biot,&
 !
 !     --9.0 INITIALISATION DE L'OPERATEUR TANGENT
 !     ---------------------------------------
-        do 125 k = 1, 6
+        do k = 1, 6
             dsidp1(k) = 0.d0
             dsidp2(k) = 0.d0
-            do 126 l = 1, 6
+            do l = 1, 6
                 dsidep(k,l) = 0.d0
-126          continue
-125      continue
+            end do
+        end do
 !
-        do 127 k = 1, 3
-            do 128 l = 1, 3
+        do k = 1, 3
+            do l = 1, 3
                 dsidep(k,l) = k0-deuxmu/3.d0
-128          continue
-127      continue
-        do 129 k = 1, ndimsi
+            end do
+        end do
+        do k = 1, ndimsi
             dsidep(k,k) = dsidep(k,k)+deuxmu
-129      continue
+        end do
 !
     endif
 !
     if (option(1:9) .eq. 'FULL_MECA' .or. option(1:9) .eq. 'RAPH_MECA') then
 !
-        do 139 k = 1, ndimsi
+        do k = 1, ndimsi
             dsidp1(k) = dpgfp1(biot,betam,pref,p1)
-139      continue
+        end do
 !
     endif
 end subroutine

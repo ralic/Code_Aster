@@ -1,10 +1,17 @@
-subroutine dpvplc(typmod, option, imate, crit, instam,&
-                  instap, td, tf, tr, depsm,&
+subroutine dpvplc(typmod, option, imate, carcri, instam,&
+                  instap, depsm,&
                   sigm, vim, sig, vip, dsidep,&
                   iret)
-! =====================================================================
+!
+implicit none
+!
+#include "asterfort/dpvpdi.h"
+#include "asterfort/dpvpma.h"
+#include "asterfort/dpvpre.h"
+#include "asterfort/get_varc.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,14 +26,11 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit      none
-#include "asterfort/dpvpdi.h"
-#include "asterfort/dpvpma.h"
-#include "asterfort/dpvpre.h"
+!
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
-    real(kind=8) :: sigm(6), td, tf, tr
-    real(kind=8) :: instam, instap, crit(3)
+    real(kind=8) :: sigm(6)
+    real(kind=8) :: instam, instap, carcri(*)
     character(len=8) :: typmod(*)
     character(len=16) :: option
 ! =====================================================================
@@ -50,11 +54,17 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
     integer :: nbmat, ndt, ndi, nvi, indal, nbre
     parameter    (nbmat  = 50 )
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), deps(6)
+    real(kind=8) :: td, tf, tr
     character(len=3) :: matcst
 ! =====================================================================
     common /tdim/   ndt, ndi
 ! =====================================================================
     matcst = 'OUI'
+!
+! - Get temperatures
+!
+    call get_varc('RIGI' , 1  , 1 , 'T',&
+                  td, tf, tr)
 ! =====================================================================
 ! --- RECUPERATION DU TYPE DE LOI DE COMPORTEMENT DP ------------------
 ! =====================================================================
@@ -70,7 +80,7 @@ subroutine dpvplc(typmod, option, imate, crit, instam,&
 ! =====================================================================
 ! --- RESOLTUTION DE LA LOI DRUCKER PRAGER VISCOPLASTIQUE -------------
 ! =====================================================================
-    call dpvpre(typmod(1), nvi, option, crit, instam,&
+    call dpvpre(typmod(1), nvi, option, carcri, instam,&
                 instap, nbmat, materf, sigm, deps,&
                 vim, vip, sig, nbre, dsidep,&
                 iret)

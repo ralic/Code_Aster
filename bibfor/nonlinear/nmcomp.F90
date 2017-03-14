@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/lcidbg.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -119,10 +119,8 @@ implicit none
     character(len=16) :: optio2, mult_comp
     aster_logical :: cp, convcp
     integer :: cpl, nvv, ncpmax
-    real(kind=8) :: r8bid
 !
     codret = 0
-    r8bid=r8vide()
 !
 !     CONTRAINTES PLANES
     call nmcpl1(compor, typmod, option, vip, deps,&
@@ -165,7 +163,7 @@ implicit none
                         imate, compor, mult_comp, carcri, instam, instap,&
                         neps, epsm, deps, nsig, sigm,&
                         vim, option, angmas, nwkin, wkin,&
-                        cp, numlc, r8bid, r8bid, r8bid,&
+                        cp, numlc,&
                         sigp, vip, ndsde, dsidep, nwkout,&
                         wkout, codret)
         endif

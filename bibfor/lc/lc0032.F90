@@ -1,11 +1,18 @@
 subroutine lc0032(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, neps,&
+                  compor, carcri, instam, instap, neps,&
                   epsm, deps, sigm, vim, option,&
-                  angmas, sigp, vip, tm, tp,&
-                  tref, tampon, typmod, icomp, nvi,&
+                  angmas, sigp, vip,&
+                  wkin, typmod, icomp, nvi,&
                   dsidep, codret)
+!
+implicit none
+!
+#include "asterfort/nmvprk.h"
+#include "asterfort/plasti.h"
+#include "asterfort/utlcal.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,41 +28,63 @@ subroutine lc0032(fami, kpg, ksp, ndim, imate,&
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! aslint: disable=W1504
-    implicit none
-#include "asterfort/nmvprk.h"
-#include "asterfort/plasti.h"
-#include "asterfort/utlcal.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, neps
-    real(kind=8) :: crit(12), angmas(3), instam, instap, tampon(*)
-    real(kind=8) :: epsm(neps), deps(neps), sigm(6), sigp(6), vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6), tm, tp, tref
-    character(len=16) :: compor(*), option, algo
-    character(len=8) :: typmod(*)
+!
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(in) :: wkin(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Behaviour
+!
+! hayhurst, norton, viscochab
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: algo
     character(len=11) :: meting
-    character(len=*) :: fami
     common /meti/   meting
 !
-!     Lois de comportement intégrées en IMPLICITE (NEWTON & CO) et en
-!                                       EXPLICITE (RUNGE_KUTTA)
+! --------------------------------------------------------------------------------------------------
 !
-!     RECUP DU NOM DE L'ALGORITHME D'INTEGRATION LOCAL
-    call utlcal('VALE_NOM', algo, crit(6))
+    call utlcal('VALE_NOM', algo, carcri(6))
 !
     if (algo(1:6) .eq. 'NEWTON') then
 !
         meting = algo(1:11)
         call plasti(fami, kpg, ksp, typmod, imate,&
-                    compor, crit, instam, instap, tm,&
-                    tp, tref, epsm, deps, sigm,&
+                    compor, carcri, instam, instap, &
+                    epsm, deps, sigm,&
                     vim, option, angmas, sigp, vip,&
-                    dsidep, icomp, nvi, tampon, codret)
+                    dsidep, icomp, nvi, wkin, codret)
 !
     else if (algo.eq.'RUNGE_KUTTA') then
 !
         meting = 'RUNGE_KUTTA'
 !
         call nmvprk(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor, crit, instam, instap,&
+                    imate, compor, carcri, instam, instap,&
                     neps, epsm, deps, sigm, vim,&
                     option, angmas, sigp, vip, dsidep,&
                     codret)

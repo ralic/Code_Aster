@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,32 +17,32 @@
 !
 interface
     subroutine lc0016(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, epsm,&
+                      compor, carcri, instam, instap, epsm,&
                       deps, sigm, vim, option, angmas,&
-                      sigp, vip, tampon, typmod, icomp,&
+                      sigp, vip, wkin, typmod, icomp,&
                       nvi, dsidep, codret)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
-        real(kind=8) :: sigm(*)
-        real(kind=8) :: vim(*)
-        character(len=16) :: option
-        real(kind=8) :: angmas(*)
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: tampon(*)
-        character(len=8) :: typmod(*)
-        integer :: icomp
-        integer :: nvi
-        real(kind=8) :: dsidep(*)
-        integer :: codret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor(*)
+        real(kind=8), intent(in) :: carcri(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: epsm(*)
+        real(kind=8), intent(in) :: deps(*)
+        real(kind=8), intent(in) :: sigm(*)
+        real(kind=8), intent(in) :: vim(*)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: angmas(*)
+        real(kind=8), intent(out) :: sigp(*)
+        real(kind=8), intent(out) :: vip(*)
+        real(kind=8), intent(in) :: wkin(*)
+        character(len=8), intent(in) :: typmod(*)
+        integer, intent(in) :: icomp
+        integer, intent(in) :: nvi
+        real(kind=8), intent(out) :: dsidep(*)
+        integer, intent(out) :: codret
     end subroutine lc0016
 end interface

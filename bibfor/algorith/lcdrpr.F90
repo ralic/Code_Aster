@@ -1,9 +1,18 @@
-subroutine lcdrpr(typmod, option, imate, compor, sigm,&
-                  td, tf, tr, depsm, vim,&
+subroutine lcdrpr(fami, typmod, option, imate, compor, sigm,&
+                  depsm, vim,&
                   vip, sig, dsidep, iret)
-! =====================================================================
+!
+implicit none
+!
+#include "asterfort/dpmate.h"
+#include "asterfort/dpvpdi.h"
+#include "asterfort/lcdpli.h"
+#include "asterfort/lcdppa.h"
+#include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,16 +27,11 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! =====================================================================
-    implicit      none
-#include "asterfort/dpmate.h"
-#include "asterfort/dpvpdi.h"
-#include "asterfort/lcdpli.h"
-#include "asterfort/lcdppa.h"
-#include "asterfort/utmess.h"
+!
+    character(len=*), intent(in) :: fami
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
-    real(kind=8) :: sigm(6), td, tf, tr
+    real(kind=8) :: sigm(6)
     character(len=8) :: typmod(*)
     character(len=16) :: option, compor(*)
 ! ======================================================================
@@ -51,11 +55,17 @@ subroutine lcdrpr(typmod, option, imate, compor, sigm,&
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! ======================================================================
     integer :: nbmat, typedp, ndt, ndi, nvi
+    real(kind=8) :: td, tf, tr
     parameter    (nbmat  = 5 )
     real(kind=8) :: materf(nbmat, 2), deps(6)
     character(len=8) :: mod
 ! ======================================================================
     common /tdim/   ndt, ndi
+!
+! - Get temperatures
+!
+    call get_varc(fami , 1  , 1 , 'T',&
+                  td, tf, tr)
 ! ======================================================================
 ! --- RECUPERATION DU TYPE DE LOI DE COMPORTEMENT DP -------------------
 ! ======================================================================

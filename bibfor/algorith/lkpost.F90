@@ -1,7 +1,7 @@
-subroutine lkpost(imate, tempd, sigf, nvi, vip)
+subroutine lkpost(imate, sigf, nvi, vip)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,11 +22,11 @@ subroutine lkpost(imate, tempd, sigf, nvi, vip)
 #include "asterfort/lcprsc.h"
 #include "asterfort/lkcrit.h"
 #include "asterfort/rcvala.h"
+#include "asterfort/get_varc.h"
     integer :: imate, nvi
-    real(kind=8) :: tempd, sigf(6), vip(nvi)
+    real(kind=8) :: sigf(6), vip(nvi)
 ! =================================================================
 ! IN  : IMATE  : ADRESSE DU MATERIAU CODE -------------------------
-! --- : TEMPD  : TEMPERATURE BIDON --------------------------------
 ! --- : NVI    : NOMBRE DE VARIABLES INTERNES ---------------------
 ! OUT : VIP    : MISE A JOUR DES VARIABLES INTERNES DE POST -------
 ! =================================================================
@@ -34,9 +34,14 @@ subroutine lkpost(imate, tempd, sigf, nvi, vip)
     parameter(dimpar=12)
     integer :: cerr(dimpar)
     real(kind=8) :: mater(dimpar), i1, sii, devsig(6), lgleps, rcos3t
-    real(kind=8) :: crit0, crite
+    real(kind=8) :: crit0, crite, tempd , tempf , tref
     parameter(lgleps=1.0d-8)
     character(len=16) :: nomc(dimpar)
+!
+! - Get temperatures
+!
+    call get_varc('RIGI', 1, 1 , 'T',&
+                  tempd , tempf , tref)
 !
 ! =================================================================
 ! --- RECUPERATION DES PROPRIETES MATERIAUX -----------------------

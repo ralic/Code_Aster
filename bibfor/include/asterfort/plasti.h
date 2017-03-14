@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,36 +16,33 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine plasti(fami, kpg, ksp, typmod, imat,&
-                      comp, crit, timed, timef, tempd,&
-                      tempf, tref, epsdt, depst, sigd,&
-                      vind, opt, angmas, sigf, vinf,&
-                      dsde, icomp, nvi, tampon, irteti, mult_comp_)
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        character(len=8) :: typmod(*)
-        integer :: imat
-        character(len=16) :: comp(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: timed
-        real(kind=8) :: timef
-        real(kind=8) :: tempd
-        real(kind=8) :: tempf
-        real(kind=8) :: tref
-        real(kind=8) :: epsdt(9)
-        real(kind=8) :: depst(9)
-        real(kind=8) :: sigd(6)
-        real(kind=8) :: vind(*)
-        character(len=16) :: opt
-        real(kind=8) :: angmas(3)
-        real(kind=8) :: sigf(6)
-        real(kind=8) :: vinf(*)
-        real(kind=8) :: dsde(6, *)
-        integer :: icomp
-        integer :: nvi
-        real(kind=8) :: tampon(*)
-        integer :: irteti
-        character(len=16), optional, intent(in) :: mult_comp_
+    subroutine plasti(fami, kpg, ksp, typmod, imate,&
+                      compor, carcri, instam, instap, &
+                      epsdt, depst, sigm,&
+                      vim, option, angmas, sigp, vip,&
+                      dsidep, icomp, nvi, wkin, codret, mult_compor_)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor(*)
+        real(kind=8), intent(in) :: carcri(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: epsdt(9)
+        real(kind=8), intent(in) :: depst(9)
+        real(kind=8), intent(in) :: sigm(6)
+        real(kind=8), intent(in) :: vim(*)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: angmas(3)
+        real(kind=8), intent(out) :: sigp(6)
+        real(kind=8), intent(out) :: vip(*)
+        real(kind=8), intent(in) :: wkin(*)
+        character(len=8), intent(in) :: typmod(*)
+        integer, intent(in) :: icomp
+        integer, intent(in) :: nvi
+        real(kind=8), intent(out) :: dsidep(6, *)
+        integer, intent(out) :: codret
+        character(len=16), optional, intent(in) :: mult_compor_
     end subroutine plasti
 end interface

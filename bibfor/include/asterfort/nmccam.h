@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,18 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine nmccam(ndim, typmod, imate, compor, crit,&
-                      tm, tp, tref,&
+    subroutine nmccam(fami, kpg, ksp, ndim, typmod, imate, compor, carcri,&
                       deps, sigm, pcrm, option, sigp,&
                       pcrp, dsidep, retcom)
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
         integer :: ndim
         character(len=8) :: typmod(*)
         integer :: imate
         character(len=16) :: compor(*)
-        real(kind=8) :: crit(3)
-        real(kind=8) :: tm
-        real(kind=8) :: tp
-        real(kind=8) :: tref
+        real(kind=8) :: carcri(3)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: pcrm(7)

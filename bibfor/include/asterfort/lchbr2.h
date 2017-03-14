@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,19 +16,16 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine lchbr2(typmod, option, imate, crit, sigm,&
-                      epsm, td, tf, tr, depsm,&
+    subroutine lchbr2(typmod, option, imate, carcri, sigm,&
+                      epsm, depsm,&
                       vim, vip, dspdp1, dspdp2, sipp,&
                       sigp, dsidep, dsidp1, dsidp2, iret)
         character(len=8) :: typmod(*)
         character(len=16) :: option
         integer :: imate
-        real(kind=8) :: crit(*)
+        real(kind=8) :: carcri(*)
         real(kind=8) :: sigm(6)
         real(kind=8) :: epsm(6)
-        real(kind=8) :: td
-        real(kind=8) :: tf
-        real(kind=8) :: tr
         real(kind=8) :: depsm(6)
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)

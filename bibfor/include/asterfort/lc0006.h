@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,39 +17,39 @@
 !
 interface
     subroutine lc0006(fami, kpg, ksp, ndim, imate,&
-                      compor, crit, instam, instap, neps,&
+                      compor, carcri, instam, instap, neps,&
                       epsm, deps, nsig, sigm, vim,&
                       option, angmas, sigp, vip, nwkin,&
                       wkin, typmod, icomp, nvi, ndsde,&
                       dsidep, nwkout, wkout, codret)
-        integer :: nwkout
-        integer :: nwkin
-        character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
-        character(len=16) :: compor(*)
-        real(kind=8) :: crit(*)
-        real(kind=8) :: instam
-        real(kind=8) :: instap
-        integer :: neps
-        real(kind=8) :: epsm(*)
-        real(kind=8) :: deps(*)
-        integer :: nsig
-        real(kind=8) :: sigm(*)
-        real(kind=8) :: vim(*)
-        character(len=16) :: option
-        real(kind=8) :: angmas(*)
-        real(kind=8) :: sigp(*)
-        real(kind=8) :: vip(*)
-        real(kind=8) :: wkin(nwkin)
-        character(len=8) :: typmod(2)
-        integer :: icomp
-        integer :: nvi
-        integer :: ndsde
-        real(kind=8) :: dsidep(*)
-        real(kind=8) :: wkout(nwkout)
-        integer :: codret
+        character(len=*), intent(in) :: fami
+        integer, intent(in) :: kpg
+        integer, intent(in) :: ksp
+        integer, intent(in) :: ndim
+        integer, intent(in) :: imate
+        character(len=16), intent(in) :: compor(*)
+        real(kind=8), intent(in) :: carcri(*)
+        real(kind=8), intent(in) :: instam
+        real(kind=8), intent(in) :: instap
+        real(kind=8), intent(in) :: epsm(*)
+        real(kind=8), intent(in) :: deps(*)
+        real(kind=8), intent(in) :: sigm(*)
+        real(kind=8), intent(in) :: vim(*)
+        character(len=16), intent(in) :: option
+        real(kind=8), intent(in) :: angmas(*)
+        real(kind=8), intent(out) :: sigp(*)
+        real(kind=8), intent(out) :: vip(*)
+        integer, intent(in) :: nwkin
+        real(kind=8), intent(in) :: wkin(nwkin)
+        character(len=8), intent(in) :: typmod(*)
+        integer, intent(in) :: nwkout
+        real(kind=8), intent(out) :: wkout(nwkout)
+        integer, intent(in) :: icomp
+        integer, intent(in) :: nvi
+        real(kind=8), intent(out) :: dsidep(*)
+        integer, intent(out) :: codret
+        integer, intent(in) :: neps
+        integer, intent(in) :: nsig
+        integer, intent(in) :: ndsde
     end subroutine lc0006
 end interface

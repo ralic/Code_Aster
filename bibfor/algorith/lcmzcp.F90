@@ -1,8 +1,8 @@
 subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
-                  epsm, deps, vim, tm, tp,&
-                  tref, option, sig, vip, dsidep)
+                  epsm, deps, vim, &
+                  option, sig, vip, dsidep)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,10 +26,11 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     character(len=16) :: option
     character(len=*) :: fami
     integer :: ndim, imate, kpg, ksp
-    real(kind=8) :: epsm(*), deps(*), vim(*), tm, tp, tref
+    real(kind=8) :: epsm(*), deps(*), vim(*)
     real(kind=8) :: sig(*), vip(*), dsidep(6, 6)
 ! --- ------------------------------------------------------------------
 !
@@ -85,7 +86,7 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
     real(kind=8) :: epsthe, kdess, bendo, epsane
     real(kind=8) :: ee, nu
     real(kind=8) :: temp, tmax, tmaxm, hydr, sech, sref
-    real(kind=8) :: valpar
+    real(kind=8) :: valpar, tm, tp, tref
     character(len=1) :: poum
     character(len=8) :: nompar
     character(len=30) :: valkm(3)
@@ -96,6 +97,12 @@ subroutine lcmzcp(fami, kpg, ksp, ndim, imate,&
 !
 ! ----------------------------------------------------------------------
 !
+!
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tm, tp, tref)
+
 !       RIGI  = (OPTION(1:4).EQ.'RIGI' .OR. OPTION(1:4).EQ.'FULL')
     resi = (option(1:4).eq.'RAPH' .or. option(1:4).eq.'FULL')
 !

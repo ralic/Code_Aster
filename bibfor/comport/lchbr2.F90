@@ -1,10 +1,10 @@
-subroutine lchbr2(typmod, option, imate, crit, sigm,&
-                  epsm, td, tf, tr, depsm,&
+subroutine lchbr2(typmod, option, imate, carcri, sigm,&
+                  epsm, depsm,&
                   vim, vip, dspdp1, dspdp2, sipp,&
                   sigp, dsidep, dsidp1, dsidp2, iret)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,8 +19,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
-! ======================================================================
+!
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8pi.h"
@@ -46,10 +45,11 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 #include "asterfort/lcsove.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     integer :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sigp(6), dsidep(6, 6)
-    real(kind=8) :: sigm(6), td, tf, tr, dsidp1(6), dsidp2(6), epsm(6)
-    real(kind=8) :: crit(*), sipp, dspdp1, dspdp2
+    real(kind=8) :: sigm(6), dsidp1(6), dsidp2(6), epsm(6)
+    real(kind=8) :: carcri(*), sipp, dspdp1, dspdp2
     character(len=8) :: typmod(*)
     character(len=16) :: option
 ! ======================================================================
@@ -67,7 +67,6 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 !                         (RESI_INTE_RELA == RESCREL)
 ! IN  SIGM    CHAMP DE CONTRAINTES EFFECTIVES A T-
 ! IN  EPSM    CHAMP DE DEFORMATIONS A T-
-! IN  TD,TF,TR TEMPERATURES A T-, T+ ET DE REFERENCE
 ! IN  DEPSM   INCREMENT DU CHAMP DE DEFORMATION
 ! IN  VIM     VARIABLES INTERNES EN T-
 !               1   : PARAMETRE D ECROUISSAGE
@@ -102,7 +101,7 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
     real(kind=8) :: materf(16, 2), materd(16, 2)
     real(kind=8) :: deps(6), epsp(6), sige(6), se(6), sigeb(6)
     real(kind=8) :: toler, seq, i1e, seuil, plas, dg, sigeqe, un
-    real(kind=8) :: hookf(6, 6), deux, trois, vi
+    real(kind=8) :: hookf(6, 6), deux, trois, vi, td, tf, tr
     real(kind=8) :: vp(3), vecp(3, 3), detadg, dgdl, dsdsip(6), eta, gam
     real(kind=8) :: incrg, gnp, dgnp, etanp, vh, vg, zero, grup, gres
     real(kind=8) :: parame(4), derive(5), pi, fmoins, pphi0, pphi1, pphi2
@@ -122,11 +121,16 @@ subroutine lchbr2(typmod, option, imate, crit, sigm,&
 ! --- INITIALISATION DES PARAMETRES DE CONVERGENCE ---------------------
 ! ======================================================================
     mod = typmod(1)
-    itmax = int(crit(1))
-    toler = crit(3)
+    itmax = int(carcri(1))
+    toler = carcri(3)
     pi = r8pi()
     pi = pi/180.d0
     nbmat = 16
+!
+! - Get temperatures
+!
+    call get_varc('RIGI' , 1  , 1 , 'T',&
+                  td, tf, tr)
 ! ======================================================================
 ! --- RECUPERATION DES PARAMETRES DE LA LOI ----------------------------
 ! ======================================================================

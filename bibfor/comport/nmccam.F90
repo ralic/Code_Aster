@@ -1,9 +1,24 @@
-subroutine nmccam(ndim, typmod, imate, compor, crit,&
-                  tm, tp, tref,&
+subroutine nmccam(fami, kpg, ksp, ndim,&
+                  typmod, imate, compor, carcri,&
                   deps, sigm, pcrm, option, sigp,&
                   pcrp, dsidep, retcom)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "jeveux.h"
+#include "asterc/r8miem.h"
+#include "asterfort/matini.h"
+#include "asterfort/mgauss.h"
+#include "asterfort/promat.h"
+#include "asterfort/r8inir.h"
+#include "asterfort/rcvala.h"
+#include "asterfort/tecael.h"
+#include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,25 +33,16 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-!
 ! ======================================================================
 ! aslint: disable=W1501
-    implicit none
-#include "asterf_types.h"
-#include "jeveux.h"
-#include "asterc/r8miem.h"
-#include "asterfort/matini.h"
-#include "asterfort/mgauss.h"
-#include "asterfort/promat.h"
-#include "asterfort/r8inir.h"
-#include "asterfort/rcvala.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
 !
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
     integer :: ndim, imate, retcom
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
-    real(kind=8) :: crit(3), tm, tp, tref
+    real(kind=8) :: carcri(3)
     real(kind=8) :: deps(6), deuxmu
     real(kind=8) :: sigm(6), pcrm(7), sigp(6), pcrp(7), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -47,7 +53,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
 ! IN  TYPMOD  : TYPE DE MODELISATION
 ! IN  IMATE   : ADRESSE DU MATERIAU CODE
 ! IN  COMPOR  : COMPORTEMENT : RELCOM ET DEFORM
-! IN  CRIT    : CRITERES DE CONVERGENCE LOCAUX
+! IN  carcri    : carcriERES DE CONVERGENCE LOCAUX
 ! IN  INSTAM  : INSTANT DU CALCUL PRECEDENT
 ! IN  INSTAP  : INSTANT DU CALCUL
 ! IN  TM      : TEMPERATURE A L'INSTANT PRECEDENT
@@ -93,7 +99,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     real(kind=8) :: xinf, xsup, rbid
     real(kind=8) :: diff, diff2
     real(kind=8) :: zero, un, deux, trois, six, unsde, tol, ptit
-    real(kind=8) :: valm, valp
+    real(kind=8) :: valm, valp, tm, tp, tref
     integer :: ndimsi, signf, signfi
     integer :: i, k, l, iter, matr
     integer :: icodre(9)
@@ -122,6 +128,11 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     retcom = 0
 !
     ptit = r8miem()
+!
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tm, tp, tref)
 !
 !     -- 2 RECUPERATION DES CARACTERISTIQUES MATERIAUX
 !     -------------------------------------------------
@@ -292,7 +303,7 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
     endif
 !
 !
-!     -- 5 CALCUL DU CRITERE :
+!     -- 5 CALCUL DU carcriERE :
 !     ----------------------
     fonc = sieleq**2+m*m*(simoel-ptrac)**2- 2.d0*m*m*(simoel-ptrac)*pcrm(1)
 !
@@ -402,10 +413,10 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
             fp = m**2*f4**2*(f1p*f2 + f1*f2p) + 2.d0*m**2*f4*f4p*f1* f2
 !
 !
-            do iter = 1, nint(crit(1))
+            do iter = 1, nint(carcri(1))
 !
-!     --CRITERE DE CONVERGENCE
-                if ((abs(f)/seuil) .le. crit(3)) goto 100
+!     --carcriERE DE CONVERGENCE
+                if ((abs(f)/seuil) .le. carcri(3)) goto 100
 !
 !     --CONSTRUCTION DU NOUVEL ITERE
                 v0 = v0-f/fp
@@ -705,9 +716,9 @@ subroutine nmccam(ndim, typmod, imate, compor, crit,&
             end do
             sieqp = sqrt(1.5d0*sieqp)
             diff2 = abs((pcrp(1)-sigpmo)/pcrp(1))
-            if (diff2 .lt. crit(3)) then
+            if (diff2 .lt. carcri(3)) then
 !
-!     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT CRITIQUE
+!     -- 7.3.1 OPERATEUR TANGENT COHERENT AU POINT carcriIQUE
 !     -- TRAITEMENT DE LA PARTIE DEVIATORIQUE
 !     -- CALCUL DE Q+
 !     -- CALCUL DU TENSEUR HH QUI MULTIMPLIE LA DEFORMATION

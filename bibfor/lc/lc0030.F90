@@ -1,11 +1,16 @@
 subroutine lc0030(fami, kpg, ksp, ndim, imate,&
-                  compor, crit, instam, instap, epsm,&
+                  compor, carcri, instam, instap, epsm,&
                   deps, sigm, vim, option, angmas,&
-                  sigp, vip, tm, tp, tref,&
-                  tampon, typmod, icomp, nvi, dsidep,&
+                  sigp, vip, &
+                  wkin, typmod, icomp, nvi, dsidep,&
                   codret)
+!
+implicit none
+!
+#include "asterfort/plasti.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,21 +25,44 @@ subroutine lc0030(fami, kpg, ksp, ndim, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504
-    implicit none
-#include "asterfort/plasti.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
-    real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
-    real(kind=8) :: epsm(*), deps(*), sigm(6), sigp(6), vim(*), vip(*)
-    real(kind=8) :: dsidep(6, 6), tm, tp, tref
-    character(len=16) :: compor(*), option
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
+! aslint: disable=W1504,W0104
 !
-!      Lois de comportement intégrées en IMPLICITE seulement
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: ndim
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsm(*)
+    real(kind=8), intent(in) :: deps(*)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(in) :: wkin(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Behaviour
+!
+! beton_burger, irrad3m, rouss_pr, rouss_visc
+!
+! --------------------------------------------------------------------------------------------------
+!
     call plasti(fami, kpg, ksp, typmod, imate,&
-                compor, crit, instam, instap, tm,&
-                tp, tref, epsm, deps, sigm,&
+                compor, carcri, instam, instap,&
+                epsm, deps, sigm,&
                 vim, option, angmas, sigp, vip,&
-                dsidep, icomp, nvi, tampon, codret)
+                dsidep, icomp, nvi, wkin, codret)
+!
 end subroutine

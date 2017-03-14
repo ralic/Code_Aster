@@ -1,11 +1,11 @@
-subroutine nmcjs(typmod, imat, comp, crit, instam,&
-                 instap, tempm, tempf, tref, epsd,&
+subroutine nmcjs(typmod, imat, crit, &
+                 epsd,&
                  deps, sigd, vind, opt, sigf,&
                  vinf, dsde, iret)
     implicit none
-!       ================================================================
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -20,7 +20,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-!       ================================================================
+!
 !       INTEGRATION DE LA LOI DE COMPORTEMENT ELASTO PLASTIQUE CJS
 !               AVEC    . N VARIABLES INTERNES
 !                       . 2 FONCTIONS SEUIL ELASTIQUE
@@ -51,9 +51,6 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !                                 N = NOMBRE DE PALIERS
 !               INSTAM  INSTANT T
 !               INSTAP  INSTANT T+DT
-!               TEMPM   TEMPERATURE A T
-!               TEMPF   TEMPERATURE A T+DT
-!               TREF    TEMPERATURE DE REFERENCE
 !               EPSD    DEFORMATION TOTALE A T
 !               DEPS    INCREMENT DE DEFORMATION TOTALE
 !               SIGD    CONTRAINTE A T
@@ -111,11 +108,12 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 #include "asterfort/lcinma.h"
 #include "asterfort/lcsove.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     integer :: imat, ndt, ndi, nvi, iret
 !
     real(kind=8) :: crit(*)
     real(kind=8) :: vind(*), vinf(*)
-    real(kind=8) :: instam, instap, tempm, tempf, tref
+    real(kind=8) :: tempm, tempf, tref
     real(kind=8) :: epsd(6), deps(6), epsf(6)
     real(kind=8) :: sigd(6), sigf(6)
 !
@@ -130,7 +128,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     character(len=6) :: mecand, mecanf
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typmod(*)
-    character(len=16) :: comp(*), opt
+    character(len=16) :: opt
     integer :: niter, i, ndec
     real(kind=8) :: epscon
     real(kind=8) :: epsthe, epsthm
@@ -146,6 +144,11 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !       ----------------------------------------------------------------
 !
 !
+!
+! - Get temperatures
+!
+    call get_varc('RIGI', 1, 1, 'T',&
+                  tempm, tempf, tref)
 !
     umess = iunifi('MESSAGE')
     mod = typmod(1)
@@ -170,9 +173,9 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
     epscon = 0
 !
     i1d = 0.d0
-    do 10 i = 1, ndi
+    do i = 1, ndi
         i1d = i1d + sigd(i)
- 10 continue
+    end do
 !
 !     --  CALCUL DE DEPSTH ET EPSDTH
 !     --------------------------------
@@ -186,19 +189,19 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
         epsthe = alphaf*(tempf-tref) - alpham*(tempm-tref)
         epsthm = alpham*(tempm-tref)
     endif
-    do 20 i = 1, ndi
+    do i = 1, ndi
         depsth(i) = deps(i) - epsthe
         epsdth(i) = epsd(i) - epsthm
- 20 continue
-    do 21 i = ndi+1, ndt
+    end do
+    do i = ndi+1, ndt
         depsth(i) = deps(i)
         epsdth(i) = epsd(i)
- 21 continue
+    end do
     if (ndt .lt. 6) then
-        do 22 i = ndt+1, 6
+        do i = ndt+1, 6
             depsth(i) = 0.d0
             epsdth(i) = 0.d0
- 22     continue
+        end do
     endif
 !
 !  TESTER QUE VIND DE NVI EST 1 2 OU 3
@@ -292,7 +295,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
 !
         call cjsela(mod, crit, materf, depsth, sigd,&
                     sigf, nvi, vind, vinf, iret)
-        if (iret .eq. 1) goto 9999
+        if (iret .eq. 1) goto 999
 !
 !
 ! --    PREDICTION ETAT ELASTIQUE A T+DT :
@@ -318,7 +321,7 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
                         nvi, epsdth, depsth, sigd, vind,&
                         sigf, vinf, mecanf, nivcjs, niter,&
                         ndec, epscon, iret, trac)
-            if (iret .eq. 1) goto 9999
+            if (iret .eq. 1) goto 999
             if ((trac)) then
                 etatf = 'ELASTIC'
             endif
@@ -427,5 +430,5 @@ subroutine nmcjs(typmod, imat, comp, crit, instam,&
                     niter, nvi, nivcjs, ndec, epscon)
     endif
 !
-9999 continue
+999 continue
 end subroutine

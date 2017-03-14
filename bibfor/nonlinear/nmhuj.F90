@@ -1,11 +1,11 @@
 subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
-                 comp, crit, instam, instap,&
-                 tempm, tempf, tref, angmas, epsd,&
+                 carcri,&
+                 angmas, epsd,&
                  deps, sigd, vind, opt, sigf,&
                  vinf, dsde, iret)
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,10 +33,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !          KPG,KSP NUMERO DU (SOUS)POINT DE GAUSS
 !          TYPMOD  TYPE DE MODELISATION
 !          IMAT    ADRESSE DU MATERIAU CODE
-!          COMP    COMPORTEMENT DE L ELEMENT
-!                  COMP(1) = RELATION DE COMPORTEMENT (CHABOCHE...)
-!                  COMP(2) = NB DE VARIABLES INTERNES
-!                  COMP(3) = TYPE DE DEFORMATION (PETIT,JAUMANN...)
 !          CRIT    CRITERES  LOCAUX
 !                  CRIT(1) = NOMBRE D ITERATIONS MAXI A CONVERGENCE
 !                            (ITER_INTE_MAXI == ITECREL)
@@ -51,11 +47,6 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !                            (RESI_INTE_PAS == ITEDEC )
 !                            0 = PAS DE REDECOUPAGE
 !                            N = NOMBRE DE PALIERS
-!          INSTAM  INSTANT T
-!          INSTAP  INSTANT T+DT
-!          TEMPM   TEMPERATURE A T
-!          TEMPF   TEMPERATURE A T+DT
-!          TREF    TEMPERATURE DE REFERENCE
 !          ANGMAS  LES TROIS ANGLES DU MOT_CLEF MASSIF (AFFE_CARA_ELEM),
 !                    + UN REEL QUI VAUT 0 SI NAUTIQUIES OU 2 SI EULER
 !                    + LES 3 ANGLES D'EULER
@@ -119,10 +110,10 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 #include "asterfort/lcinma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
+#include "asterfort/get_varc.h"
     integer :: imat, ndt, ndi, nvi, iret, iret1, kpg, ksp
     integer :: i, inc, incmax, ndtt, limsup
-    real(kind=8) :: crit(*), vind(50), vinf(50), vind0(50)
-    real(kind=8) :: instam, instap, tempm, tempf, tref
+    real(kind=8) :: carcri(*), vind(50), vinf(50), vind0(50)
     real(kind=8) :: epsd(6), deps(6), deps0(6)
     real(kind=8) :: sigd(6), sigf(6), dsde(6, 6), seuil
     real(kind=8) :: piso, depsr(6), depsq(6), tin(3)
@@ -130,9 +121,9 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     real(kind=8) :: pc0, sigd0(6), hill, dsig(6)
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typmod(*)
-    character(len=16) :: comp(*), opt
+    character(len=16) :: opt
     character(len=*) :: fami
-    real(kind=8) :: depsth(6), alpha(3)
+    real(kind=8) :: depsth(6), alpha(3), tempm, tempf, tref
     real(kind=8) :: det, bid16(6), bid66(6, 6)
     real(kind=8) :: materf(22, 2), zero, un, deux, dix
     real(kind=8) :: neps, nsig, ptrac, rtrac
@@ -156,6 +147,11 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
     if (debug) write(6,'(A)')'HHHHHHHHHHHHHHHHHHHHHH'
     mod = typmod(1)
+!
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tempm, tempf, tref)
 !
 ! ---> RECUPERATION COEF DE LA LOI HUJEUX
 !      (INDEPENDANTS DE LA TEMPERATURE)
@@ -219,33 +215,29 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     endif
 !
     if ((isnan(tempm)) .or. (isnan(tempf)) .or. (isnan(tref))) then
-!
-        do 20 i = 1, ndi
+        do i = 1, ndi
             depsth(i) = deps(i)
-20      continue
-!
+        end do
     else
-!
-        do 25 i = 1, ndi
+        do i = 1, ndi
             depsth(i) = deps(i) - alpha(i)*(tempf-tref) + alpha(i)*( tempm-tref)
-25      continue
-!
+        end do
     endif
 !
-    do 21 i = ndi+1, ndt
+    do i = ndi+1, ndt
         depsth(i) = deps(i)
-21  continue
+    end do
 !
     if (ndtt .lt. 6) then
-        do 22 i = ndtt+1, 6
+        do i = ndtt+1, 6
             depsth(i) = zero
             sigd(i) = zero
-22      continue
+        end do
     endif
 !
 ! ---> INITIALISATION SEUIL DEVIATOIRE SI NUL
 !
-    do 30 i = 1, ndi
+    do i = 1, ndi
         if (vind(i) .eq. zero) then
 !
             if (materf(13, 2) .eq. zero) then
@@ -272,7 +264,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
             endif
 !
         endif
-30  continue
+    end do
 !
 ! ---> INITIALISATION SEUIL ISOTROPE SI NUL
     if (vind(4) .eq. zero) then
@@ -302,7 +294,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     endif
 !
 ! ---> INITIALISATION SEUIL CYCLIQUE SI NUL
-    do 40 i = 1, ndi
+    do i = 1, ndi
         if (vind(4+i) .eq. zero) then
             if (materf(18, 2) .eq. zero) then
                 vind(4+i) = 1.d-3
@@ -310,7 +302,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 vind(4+i) = materf(18,2)
             endif
         endif
-40  continue
+    end do
 !
     if (vind(8) .eq. zero) then
         if (materf(19, 2) .eq. zero) then
@@ -321,9 +313,9 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     endif
 !
 !ONTROLE DES INDICATEURS DE PLASTICITE
-    do 39 i = 1, 4
+    do i = 1, 4
         if (abs(vind(27+i)-un) .lt. r8prem()) vind(23+i)=-un
-39  continue
+    end do
 !
     if (opt(1:9) .ne. 'RIGI_MECA') call lceqvn(50, vind, vinf)
 !
@@ -344,15 +336,15 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
         if (debug) write(6,*)'DEPS =',(depsth(i),i=1,3)
 !
-        do 44 i = 1, 3
+        do i = 1, 3
             call hujprj(i, sigd, tin, piso, q)
             if (abs(piso+deux*rtrac-ptrac) .lt. r8prem()) tract = .true.
-44      continue
+        end do
 !
 ! ---> INTEGRATION ELASTIQUE SUR DT
-        do 45 i = 1, ndt
+        do i = 1, ndt
             depsq(i) = zero
-45      continue
+        end do
 !
 ! -----------------------------------------------
 ! ---> INCREMENT TOTAL DE DEFORMATION A APPLIQUER
@@ -372,14 +364,14 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! -----------------------------------------------------
         inc = 0
         incmax = 1
-100      continue
+100     continue
 !
         inc = inc + 1
         call lceqve(depsq, depsr)
         call hujpre(fami, kpg, ksp, etatd, mod,&
-                    crit, imat, materf, depsr, sigd,&
+                    carcri, imat, materf, depsr, sigd,&
                     sigf, vind0, iret)
-        if (iret .eq. 1) goto 9999
+        if (iret .eq. 1) goto 999
 !
 ! ----------------------------------------------------
 ! ---> CONTROLE DE L EVOLUTION DE LA PRESSION ISOTROPE
@@ -391,7 +383,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
 ! --- ON LIMITE LE REDECOUPAGE LOCAL A 20 POUR HUJDP
         limsup = 20
-        if (abs(crit(5)) .gt. limsup) limsup = int(abs(crit(5)))
+        if (abs(carcri(5)) .gt. limsup) limsup = int(abs(carcri(5)))
         if (incmax .ge. limsup) then
             incmax = limsup
         else if (incmax.le.1) then
@@ -399,12 +391,12 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         endif
 !
         if (inc .eq. 1 .and. incmax .gt. 1) then
-            do 48 i = 1, ndt
+            do i = 1, ndt
                 depsq(i)=deps0(i) /incmax
                 depsr(i)=deps0(i) /incmax
-48          continue
+            end do
             call hujpre(fami, kpg, ksp, etatd, mod,&
-                        crit, imat, materf, depsr, sigd,&
+                        carcri, imat, materf, depsr, sigd,&
                         sigf, vind0, iret)
         endif
 !
@@ -412,10 +404,10 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 ! CALCUL DE L'ETAT DE CONTRAINTES CORRESPONDANT
 ! ---------------------------------------------
         if (debug) write(6,*)'NMHUJ -- VINF =',(vinf(i),i=24,31)
-        call hujres(fami, kpg, ksp, mod, crit,&
+        call hujres(fami, kpg, ksp, mod, carcri,&
                     materf, imat, nvi, depsr, sigd,&
                     vind, sigf, vinf, iret, etatf)
-        if (iret .eq. 1) goto 9999
+        if (iret .eq. 1) goto 999
 !
 ! -------------------------------------------
 ! - CONTROLE DES DEFORMATIONS DEJA APPLIQUEES
@@ -436,12 +428,12 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         hill = zero
         nsig = zero
         neps = zero
-        do 57 i = 1, ndt
+        do i = 1, ndt
             dsig(i) = sigf(i) - sigd0(i)
             hill = hill + dsig(i)*deps0(i)
             nsig = nsig + dsig(i)**2.d0
             neps = neps + deps0(i)**2.d0
-57      continue
+        end do
 !
 ! --- NORMALISATION DU CRITERE : VARIE ENTRE -1 ET 1
         if ((neps.gt.r8prem()) .and. (nsig.gt.r8prem())) then
@@ -475,7 +467,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         if (etatd .eq. 'PLASTIC') then
             call hujtid(fami, kpg, ksp, mod, imat,&
                         sigd, vind, dsde, iret)
-            if (iret .eq. 1) goto 9999
+            if (iret .eq. 1) goto 999
         endif
 !
         call hujori('GLOBA', 2, reorie, angmas, bid16,&
@@ -494,7 +486,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
         if (etatf .eq. 'PLASTIC') then
             call hujtid(fami, kpg, ksp, mod, imat,&
                         sigf, vinf, dsde, iret)
-            if (iret .eq. 1) goto 9999
+            if (iret .eq. 1) goto 999
         endif
 !
     else if (opt .eq. 'FULL_MECA_ELAS') then
@@ -532,7 +524,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
         vinf(34) = zero
 !
-        do 60 i = 1, 8
+        do i = 1, 8
             if (abs(vinf(23+i)-un) .lt. r8prem()) then
                 if (i .eq. 1) vinf(34)=vinf(34)+dix**zero
                 if (i .eq. 2) vinf(34)=vinf(34)+dix**un
@@ -543,7 +535,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
                 if (i .eq. 7) vinf(34)=vinf(34)+dix**6.d0
                 if (i .eq. 8) vinf(34)=vinf(34)+dix**7.d0
             endif
-60      continue
+        end do
 !
 !
     endif
@@ -554,7 +546,7 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
     if (opt .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') call hujori('GLOBA', 1, reorie,&
                                                                          angmas, sigf, bid66)
 !
-9999  continue
+999  continue
 !
     if (opt(1:9) .eq. 'RAPH_MECA' .or. opt(1:9) .eq. 'FULL_MECA') then
         if (iret .eq. 1) then
@@ -577,10 +569,10 @@ subroutine nmhuj(fami, kpg, ksp, typmod, imat,&
 !
                 call lcinma(zero, dsde)
                 call hujtel(mod, materf, sigd, dsde)
-                do 61 i = 1, 3
+                do i = 1, 3
                     sigf(i) = -deux*rtrac+ptrac
                     sigf(i+3) = zero
-61              continue
+                end do
                 call lceqvn(50, vind0, vinf)
                 iret = 0
             endif

@@ -1,13 +1,26 @@
-subroutine plasti(fami, kpg, ksp, typmod, imat,&
-                  comp, crit, timed, timef, tempd,&
-                  tempf, tref, epsdt, depst, sigd,&
-                  vind, opt, angmas, sigf, vinf,&
-                  dsde, icomp, nvi, tampon, irteti, mult_comp_)
-! aslint: disable=W1504
-    implicit none
-! ----------------------------------------------------------------------
+subroutine plasti(fami, kpg, ksp, typmod, imate,&
+                  compor, carcri, instam, instap, &
+                  epsdt, depst, sigm,&
+                  vim, option, angmas, sigp, vip,&
+                  dsidep, icomp, nvi, wkin, codret, mult_compor_)
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/lccnvx.h"
+#include "asterfort/lcdedi.h"
+#include "asterfort/lcdehy.h"
+#include "asterfort/lcelas.h"
+#include "asterfort/lcelpl.h"
+#include "asterfort/lcmate.h"
+#include "asterfort/lcotan.h"
+#include "asterfort/lcplas.h"
+#include "asterfort/lcpopl.h"
+#include "asterfort/get_varc.h"
+#include "blas/dcopy.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +35,32 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! ======================================================================
+! aslint: disable=W1504
+!
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    real(kind=8), intent(in) :: epsdt(9)
+    real(kind=8), intent(in) :: depst(9)
+    real(kind=8), intent(in) :: sigm(6)
+    real(kind=8), intent(in) :: vim(*)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(6)
+    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(in) :: wkin(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, *)
+    integer, intent(out) :: codret
+    character(len=16), optional, intent(in) :: mult_compor_
+!
 !     INTEGRATION DE LOIS DE COMPORTEMENT ELASTO PLASTIQUE ET VISCO
 !     PLASTIQUE PAR UNE MATHODE DE NEWTON (DISCRETISATION IMPLICITE)
 !
@@ -51,9 +89,6 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !                CRIT(6) = ALGO_INTE(NEWTON, NEWTON_PERT, NEWTON_RELI)
 !        TIMED   INSTANT T
 !        TIMEF   INSTANT T+DT
-!        TEMPD   TEMPERATURE A T           POUR LA THM
-!        TEMPF   TEMPERATURE A T+DT        POUR LA THM
-!        TREF    TEMPERATURE DE REFERENCE  POUR LA THM
 !        CES PARAMETRES DE TEMPERATURE NE SONT PAS PRIS EN COMPTE EN
 !        MECANIQUE PURE (ON UTILISE LES VARIABLES DE COMMANDES)
 !
@@ -102,40 +137,29 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     POUR LE MONOCRISTAL, DIMENSIONS MAX
 !     NSG=NOMBRE DE SYSTEMES DE GLISSEMENT MAXIMUM
 !     NFS=NOMBRE DE FAMILLES DE SYSTEMES DE GLISSEMENT MAXIMUM
-#include "asterf_types.h"
-#include "asterfort/lccnvx.h"
-#include "asterfort/lcdedi.h"
-#include "asterfort/lcdehy.h"
-#include "asterfort/lcelas.h"
-#include "asterfort/lcelpl.h"
-#include "asterfort/lcmate.h"
-#include "asterfort/lcotan.h"
-#include "asterfort/lcplas.h"
-#include "asterfort/lcpopl.h"
-#include "blas/dcopy.h"
+
     integer :: nmat, nsg, nfs, nrm, iret
     parameter  ( nsg=30)
     parameter  ( nfs=5)
     parameter  ( nrm=nfs*nsg+6)
     parameter  ( nmat=90)
 !
-    character(len=*) :: fami
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
-    character(len=8) :: mod, typma, typmod(*)
-    character(len=16) :: comp(*), opt, rela_comp, defo_comp, mult_comp
+    character(len=8) :: mod, typma
+    character(len=16) :: rela_compor, defo_compor, mult_compor
     character(len=24) :: cpmono(5*nmat+1)
-    character(len=16), optional, intent(in) :: mult_comp_
+    aster_logical :: l_temp
 !
-    integer :: imat, ndt, ndi, nr, nvi, itmax, icomp, kpg, ksp, irteti, irtet
+    integer :: ndt, ndi, nr, itmax, irtet
     integer :: nbcomm(nmat, 3), numhsr(1), irr, decirr, nbsyst, decal, gdef
     real(kind=8) :: toler, epsi, materd(nmat, 2), materf(nmat, 2)
-    real(kind=8) :: crit(*), vind(*), vinf(*), timed, timef, tempd, tempf, tref
-    real(kind=8) :: epsd(9), deps(9), epsdt(9), depst(9), sigd(6), sigf(6)
+    real(kind=8) :: epsd(9), deps(9)
     real(kind=8) :: seuil, theta, dt, devg(6), devgii
-    real(kind=8) :: vp(3), vecp(3, 3), tampon(*), dsde(6, *), pgl(3, 3)
-    real(kind=8) :: angmas(3)
+    real(kind=8) :: vp(3), vecp(3, 3), pgl(3, 3)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), drdy(nrm*nrm)
+
+    real(kind=8) :: tempd, tempf, tref
 !     POUR BETON_BURGER - ATTENTION DIMENSION MAXI POUR CE MODELE
     real(kind=8) :: yd(21), yf(21)
     parameter  ( epsi = 1.d-15 )
@@ -147,35 +171,48 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !
 ! --  INITIALISATION DES PARAMETRES DE CONVERGENCE ET ITERATIONS
 !
-    irteti = 0
-    itmax = int(crit(1))
-    toler = crit(3)
-    theta = crit(4)
-    rela_comp = comp(1)
-    defo_comp = comp(3) 
-    mult_comp = ' '
-    if (present(mult_comp_)) then
-        mult_comp = mult_comp_
+    codret = 0
+    itmax = int(carcri(1))
+    toler = carcri(3)
+    theta = carcri(4)
+    rela_compor = compor(1)
+    defo_compor = compor(3) 
+    mult_compor = ' '
+    if (present(mult_compor_)) then
+        mult_compor = mult_compor_
     endif
     mod = typmod(1)
-    dt = timef - timed
-    resi = opt(1:9).eq.'RAPH_MECA' .or. opt(1:9).eq.'FULL_MECA'
-    rigi = opt(1:9).eq.'RIGI_MECA' .or. opt(1:9).eq.'FULL_MECA'
+    dt = instap - instam
+    resi = option(1:9).eq.'RAPH_MECA' .or. option(1:9).eq.'FULL_MECA'
+    rigi = option(1:9).eq.'RIGI_MECA' .or. option(1:9).eq.'FULL_MECA'
     gdef = 0
-    if (defo_comp .eq. 'SIMO_MIEHE') gdef=1
+    if (defo_compor .eq. 'SIMO_MIEHE') gdef=1
     numhsr(1)=1
 !
     typma = 'VITESSE '
 !
+! - Get temperatures
+!
+    call get_varc(fami , kpg  , ksp , 'T',&
+                  tempd, tempf, tref, l_temp)
+!
+! - Glute pour LKR
+!
+    if (.not.l_temp .and. compor(1).eq.'LKR') then
+        tempd = 0.d0
+        tempf = 0.d0
+        tref  = 0.d0
+    endif
+!
 ! --  RECUPERATION COEF MATERIAU A T ET/OU T+DT
 !
-    call lcmate(fami, kpg, ksp, comp, mod,&
-                imat, nmat, tempd, tempf, tref, 0,&
+    call lcmate(fami, kpg, ksp, compor, mod,&
+                imate, nmat, tempd, tempf, tref, 0,&
                 typma, hsr, materd, materf, matcst,&
                 nbcomm, cpmono, angmas, pgl, itmax,&
-                toler, ndt, ndi, nr, crit,&
-                nvi, vind, nfs, nsg, toutms,&
-                1, numhsr, sigd, mult_comp)
+                toler, ndt, ndi, nr, carcri,&
+                nvi, vim, nfs, nsg, toutms,&
+                1, numhsr, sigm, mult_compor)
 !
 !
     if (gdef .eq. 1) then
@@ -193,15 +230,15 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
     endif
 !
 ! --    SEUIL A T > ETAT ELASTIQUE OU PLASTIQUE A T
-    if (abs(vind(nvi)) .le. epsi) then
+    if (abs(vim(nvi)) .le. epsi) then
         etatd = 'ELASTIC'
     else
         etatd = 'PLASTIC'
     endif
 !
 ! --> REDECOUPAGE IMPOSE
-    if (icomp .eq. -1 .and. opt .ne. 'RIGI_MECA_TANG') then
-        irteti = 0
+    if (icomp .eq. -1 .and. option .ne. 'RIGI_MECA_TANG') then
+        codret = 0
         goto 999
     endif
 !
@@ -216,21 +253,21 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
             seuil=1.d0
         else
 ! --        INTEGRATION ELASTIQUE SUR DT
-            call lcelas(fami, kpg, ksp, rela_comp, mod,&
-                        imat, nmat, materd, materf, matcst,&
-                        nvi, angmas, deps, sigd, vind,&
-                        sigf, vinf, theta, etatd, crit,&
+            call lcelas(fami, kpg, ksp, rela_compor, mod,&
+                        imate, nmat, materd, materf, matcst,&
+                        nvi, angmas, deps, sigm, vim,&
+                        sigp, vip, theta, etatd, carcri,&
                         iret)
             if (iret .ne. 0) goto 1
 !
 ! --        PREDICTION ETAT ELASTIQUE A T+DT : F(SIG(T+DT),VIN(T)) = 0 ?
             seuil=1.d0
-            call lccnvx(fami, kpg, ksp, rela_comp, mod,&
-                        imat, nmat, materd, materf, sigd,&
-                        sigf, deps, vind, vinf, nbcomm,&
+            call lccnvx(fami, kpg, ksp, rela_compor, mod,&
+                        imate, nmat, materd, materf, sigm,&
+                        sigp, deps, vim, vip, nbcomm,&
                         cpmono, pgl, nvi, vp, vecp,&
-                        hsr, nfs, nsg, toutms, timed,&
-                        timef, nr, yd, yf, toler,&
+                        hsr, nfs, nsg, toutms, instam,&
+                        instap, nr, yd, yf, toler,&
                         seuil, iret)
 !
             if (iret .ne. 0) goto 1
@@ -240,14 +277,14 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 ! --        PREDICTION INCORRECTE > INTEGRATION ELASTO-PLASTIQUE SUR DT
             etatf = 'PLASTIC'
 !
-            call lcplas(fami, kpg, ksp, rela_comp, toler,&
-                        itmax, mod, imat, nmat, materd,&
-                        materf, nr, nvi, timed, timef,&
-                        deps, epsd, sigd, vind, sigf,&
-                        vinf, comp, nbcomm, cpmono, pgl,&
+            call lcplas(fami, kpg, ksp, rela_compor, toler,&
+                        itmax, mod, imate, nmat, materd,&
+                        materf, nr, nvi, instam, instap,&
+                        deps, epsd, sigm, vim, sigp,&
+                        vip, compor, nbcomm, cpmono, pgl,&
                         nfs, nsg, toutms, hsr, icomp,&
                         irtet, theta, vp, vecp, seuil,&
-                        devg, devgii, drdy, tampon, crit)
+                        devg, devgii, drdy, wkin, carcri)
 !
 
             if (irtet .eq. 1) then
@@ -260,16 +297,16 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
             etatf = 'ELASTIC'
 ! ---       MISE A JOUR DE VINF EN FONCTION DE LA LOI
 !           ET POST-TRAITEMENTS POUR DES LOIS PARTICULIERES
-            call lcelpl(mod, rela_comp, nmat, materd, materf,&
-                        timed, timef, deps, nvi, vind,&
-                        vinf, nr, yd, yf, sigd,&
-                        sigf, drdy)
+            call lcelpl(mod, rela_compor, nmat, materd, materf,&
+                        instam, instap, deps, nvi, vim,&
+                        vip, nr, yd, yf, sigm,&
+                        sigp, drdy)
         endif
 !
 !        POST-TRAITEMENTS PARTICULIERS
-        call lcpopl(rela_comp, angmas, nmat, materd, materf,&
-                    mod, deps, sigd, sigf, vind,&
-                    vinf)
+        call lcpopl(rela_compor, angmas, nmat, materd, materf,&
+                    mod, deps, sigm, sigp, vim,&
+                    vip)
 !
     endif
 !
@@ -281,29 +318,29 @@ subroutine plasti(fami, kpg, ksp, typmod, imat,&
 !     ----------------------------------------------------------------
 !
     if (rigi) then
-        call lcotan(opt, angmas, etatd, etatf, fami,&
-                    kpg, ksp, rela_comp, mod, imat,&
+        call lcotan(option, angmas, etatd, etatf, fami,&
+                    kpg, ksp, rela_compor, mod, imate,&
                     nmat, materd, materf, epsd, deps,&
-                    sigd, sigf, nvi, vind, vinf,&
+                    sigm, sigp, nvi, vim, vip,&
                     drdy, vp, vecp, theta, dt,&
-                    devg, devgii, timed, timef, comp,&
+                    devg, devgii, instam, instap, compor,&
                     nbcomm, cpmono, pgl, nfs, nsg,&
                     toutms, hsr, nr, itmax, toler,&
-                    typma, dsde, irtet)
+                    typma, dsidep, irtet)
         if (irtet .ne. 0) goto 1
 !
     endif
 !
 !       ----------------------------------------------------------------
 !
-    irteti = 0
+    codret = 0
     goto 999
   1 continue
-    irteti = 1
+    codret = 1
     goto 999
 !
   2 continue
-    irteti = 2
+    codret = 2
     goto 999
 !
 999 continue

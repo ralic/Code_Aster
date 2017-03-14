@@ -22,7 +22,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -135,7 +135,7 @@ implicit none
     real(kind=8) :: dsigf(6), hydrd, hydrf, sechd, sechf, sref
     real(kind=8) :: epseld(6), epself(6), epsthe
     integer :: k, iter, itemax, iret1, iret2, iret3, nume_plas
-    real(kind=8) :: sigf2(6), r8bid
+    real(kind=8) :: sigf2(6)
     real(kind=8) :: tmpdmx, tmpfmx, epsth
     real(kind=8) :: alphad, alphaf, bendod, bendof, kdessd, kdessf
     aster_logical :: cp, l_inte_forc
@@ -147,7 +147,6 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     l_inte_forc = option .eq. 'RAPH_MECA' .or. option .eq. 'FULL_MECA'
-    r8bid       = r8vide()
     read (compor(2),'(I16)') nvi_tot
     rela_flua   = compor(8)
     rela_plas   = compor(9)
@@ -295,7 +294,7 @@ implicit none
                     imat             , compor_plas      , mult_comp, carcri  , timed, timef ,&
                     neps             , epsdt            , deps  , nsig , sigd  ,&
                     vind(idx_vi_plas), option           , angmas, nwkin, wkin  ,&
-                    cp               , nume_plas        , r8bid , r8bid, r8bid ,&
+                    cp               , nume_plas        , &
                     sigf             , vinf(idx_vi_plas), ndsde , dsde , nwkout,&
                     wkout            , retcom)
     else

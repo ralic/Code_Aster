@@ -1,12 +1,17 @@
 subroutine lc0059(fami, kpg, ksp, imate,&
-                  compor, crit, instam, instap, neps, epsm,&
+                  compor, carcri, instam, instap, neps, epsm,&
                   deps, nsig, sigm, vim, option, angmas,&
-                  sigp, vip, tmin, tpin, trefin, tampon,&
+                  sigp, vip, wkin,&
                   typmod, icomp, nvi, dsidep, codret)
-
+!
+implicit none
+!
+#include "asterfort/plasti.h"
+#include "asterfort/srcomp.h"
+#include "asterfort/utlcal.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,12 +26,41 @@ subroutine lc0059(fami, kpg, ksp, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-
-!!!
-!!! MODELE LKR ROUTINE PRINCIPALE
-!!!
-
-! ======================================================================
+! aslint: disable=W1504,W0104
+!
+    character(len=*), intent(in) :: fami
+    integer, intent(in) :: kpg
+    integer, intent(in) :: ksp
+    integer, intent(in) :: imate
+    character(len=16), intent(in) :: compor(*)
+    real(kind=8), intent(in) :: carcri(*)
+    real(kind=8), intent(in) :: instam
+    real(kind=8), intent(in) :: instap
+    integer, intent(in) :: neps
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: epsm(neps)
+    real(kind=8), intent(in) :: deps(neps)
+    real(kind=8), intent(in) :: sigm(nsig)
+    real(kind=8), intent(in) :: vim(nvi)
+    character(len=16), intent(in) :: option
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(nsig)
+    real(kind=8), intent(out) :: vip(nvi)
+    real(kind=8), intent(in) :: wkin(*)
+    character(len=8), intent(in) :: typmod(*)
+    integer, intent(in) :: icomp
+    integer, intent(in) :: nvi
+    real(kind=8), intent(out) :: dsidep(6, 6)
+    integer, intent(out) :: codret
+!
+! --------------------------------------------------------------------------------------------------
+!
+! Behaviour
+!
+! lkr
+!
+! --------------------------------------------------------------------------------------------------
+!
 ! VARIABLES INTERNES DU MODELE :
 !         1.  RXIP      : VARIABLE D ECROUISSAGE MECA. PLASTIQUE
 !         2.  RGAMMAP   : DISTORSION PLASTIQUE
@@ -45,79 +79,25 @@ subroutine lc0059(fami, kpg, ksp, imate,&
 !                          PLAS PRE-PIC              ---> DOMAINE = 1
 !                          PLAS POST-PIC AVT CLIVAGE ---> DOMAINE = 2
 !                          PLAS POST-PIC AP CLIVAGE  ---> DOMAINE = 3
-! ======================================================================
-    
-    implicit none
-     
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/plasti.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/srcomp.h"
-#include "asterfort/utlcal.h"
-    
-    !!!
-    !!! Variables
-    !!!
-    
-    integer :: imate, kpg, ksp, codret, icomp, nvi
-    integer :: neps, nsig, iret1, iret2, iret3
-    real(kind=8) :: crit(*), angmas(*), instam, instap, tampon(*)
-    real(kind=8) :: epsm(neps), deps(neps), sigm(nsig), sigp(nsig)
-    real(kind=8) :: vim(nvi), vip(nvi)
-    real(kind=8) :: dsidep(6,6), tmin, tpin, trefin, tm, tp, tref
-    character(len=16) :: compor(*), option, algo
-    character(len=8) :: typmod(*)
-    character(len=*) :: fami
-    
-    !!!
-    !!! Cas sans thm : initialisation a r8vide de r8bid passe en argument pour
-    !!!                tmin, tpin et trefin
-    !!!
-    
-    if (trefin .eq. r8vide()) then
-        !!! on verifie si on fait appel a affe_varc dans le fichier de commande
-        call rcvarc(' ', 'TEMP', '-', fami, kpg, ksp, tm, iret1)
-        call rcvarc(' ', 'TEMP', '+', fami, kpg, ksp, tp, iret2)
-        call rcvarc(' ', 'TEMP', 'REF', fami, kpg, ksp, tref, iret3)
-        !!! en l'absence de varc, on affecte 0 aux temperatures
-        if (iret1.eq.1 .or. iret2.eq.1 .or. iret3.eq.1) then
-            tm   = 0.d0
-            tp   = 0.d0
-            tref = 0.d0
-        endif
-    
-    !!!
-    !!! Cas thm : initialisation de tmin, tpin et trefin dans calcme
-    !!!
-    
-    else
-        tm   = tmin
-        tp   = tpin
-        tref = trefin
-    endif
-    
-    !!!
-    !!! Choix de l'algorithme d'integration
-    !!!
-    
-    call utlcal('VALE_NOM', algo, crit(6))
-    
-    !!! explicite
-    if ((algo(1:10).eq.'SPECIFIQUE') .or. (option(1:14).eq.'RIGI_MECA_TANG')) then
-        
-        call srcomp(typmod, imate, instam, instap, tm, tp, tref, deps, sigm, vim,&
+!
+! --------------------------------------------------------------------------------------------------
+!
+    character(len=16) :: algo_inte
+!
+! --------------------------------------------------------------------------------------------------
+! 
+    call utlcal('VALE_NOM', algo_inte, carcri(6))
+!
+    if ((algo_inte(1:10).eq.'SPECIFIQUE') .or. (option(1:14).eq.'RIGI_MECA_TANG')) then
+        call srcomp(typmod, imate, instam, instap, deps, sigm, vim,&
                     option, sigp, vip, dsidep, codret, nvi)
-     
-    !!! implicite
     else
         
         call plasti(fami, kpg, ksp, typmod, imate,&
-                    compor, crit, instam, instap, tm,&
-                    tp, tref, epsm, deps, sigm,&
+                    compor, carcri, instam, instap, &
+                    epsm, deps, sigm,&
                     vim, option, angmas, sigp, vip,&
-                    dsidep, icomp, nvi, tampon, codret)
-    
+                    dsidep, icomp, nvi, wkin, codret)
     endif
 
 end subroutine

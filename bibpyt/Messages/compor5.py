@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -112,10 +112,6 @@ On ne peut donc pas calculer la déformation thermique.
     40 : _(u"""
 Les caractéristiques matériaux dans %(k1)s dépendent de la température mais elle n'est pas renseignée.
 Il faut une température dans AFFE_MATERIAU/AFFE_VARC.
-"""),
-
-    41 : _(u"""
-Le paramètre ALPHA a été fourni mais on ne peut pas calculer la déformation thermique car la température n'est pas renseignée.
 """),
 
     42 : _(u"""
