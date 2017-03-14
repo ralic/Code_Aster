@@ -25,7 +25,7 @@ loi = LoiComportement(
    des roches [R7.01.18] pour la mécanique pure. Le couplage est formulé en contraintes effectives.
    Pour faciliter l'intégration de ce modèle, on peut utiliser le re-découpage local du pas de temps
    (ITER_INTE_PAS)."""      ,
-    num_lc         = 0,
+    num_lc         = 33,
     nb_vari        = 3,
     nom_vari       = ('GAMMAECR','EPSPVOL','INDIPLAS',),
     mc_mater       = ('ELAS','HOEK_BROWN',),

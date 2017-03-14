@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,9 +15,11 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+! aslint: disable=W1504
+!
 interface 
     subroutine calcme(option, compor, thmc, meca, imate,&
-                      typmod, carcri, instam, instap, tref,&
+                      typmod, carcri, instam, instap,&
                       ndim, dimdef, dimcon, nvimec, yate,&
                       addeme, adcome, addete, defgem, congem,&
                       congep, vintm, vintp, addep1, addep2,&
@@ -36,7 +38,6 @@ interface
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        real(kind=8) :: tref
         integer :: ndim
         integer :: yate
         integer :: addeme

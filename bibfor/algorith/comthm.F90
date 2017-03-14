@@ -12,7 +12,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! ======================================================================
 ! person_in_charge: sylvie.granet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -177,7 +177,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                 dp1, dp2, grat, grap1, grap2,&
                 retcom, instap)
     if (retcom .ne. 0) then
-        goto 9000
+        goto 999
     endif
 ! ======================================================================
 ! --- CALCUL DES RESIDUS ET DES MATRICES TANGENTES ---------------------
@@ -198,7 +198,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                 phenom)              
 !
     if (retcom .ne. 0) then
-        goto 9000
+        goto 999
     endif
 !
 ! VOLUMES FINIS
@@ -233,7 +233,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
 ! ======================================================================
     if (yamec .eq. 1 .and. kpi .le. npg) then
         call calcme(option, compor, thmc, meca, imate,&
-                    typmod, crit, instam, instap, t0,&
+                    typmod, crit, instam, instap,&
                     ndim, dimdef, dimcon, nvim, yate,&
                     addeme, adcome, addete, defgem, congem,&
                     congep, vintm, vintp, addep1, addep2,&
@@ -241,7 +241,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     dt, retcom, dp1, dp2, sat,&
                     tbiot, angmas, aniso, phenom)
         if (retcom .ne. 0) then
-            goto 9000
+            goto 999
         endif
     endif
 ! ======================================================================
@@ -295,7 +295,7 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     dviscg, mamovg, vf, ifa,&
                     valfac, valcen)
         if (retcom .ne. 0) then
-            goto 9000
+            goto 999
         endif
     endif
 ! ======================================================================
@@ -311,10 +311,10 @@ subroutine comthm(option, perman, vf, ifa, valfac,&
                     mamovg, tlamct, rho11, h11, h12,&
                     angmas, anisof, phenom)
         if (retcom .ne. 0) then
-            goto 9000
+            goto 999
         endif
     endif
 ! ======================================================================
-9000 continue
+999 continue
 ! ======================================================================
 end subroutine

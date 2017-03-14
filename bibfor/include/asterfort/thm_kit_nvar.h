@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther, nb_vari_thmc,&
-                            nb_vari_hydr, nb_vari_meca, nb_vari_ther)
+    subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther     , nb_vari_thmc,&
+                            nb_vari_hydr, nb_vari_meca, nb_vari_ther, nume_comp_meca)
         character(len=16), intent(in) :: rela_thmc
         character(len=16), intent(in) :: rela_hydr
         character(len=16), intent(in) :: rela_meca
@@ -26,5 +26,6 @@ interface
         integer, intent(out) :: nb_vari_hydr
         integer, intent(out) :: nb_vari_meca
         integer, intent(out) :: nb_vari_ther
+        integer, intent(out) :: nume_comp_meca
     end subroutine thm_kit_nvar
 end interface

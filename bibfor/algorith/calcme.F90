@@ -1,13 +1,25 @@
 subroutine calcme(option, compor, thmc, meca, imate,&
-                  typmod, carcri, instam, instap, tref,&
+                  typmod, carcri, instam, instap, &
                   ndim, dimdef, dimcon, nvimec, yate,&
                   addeme, adcome, addete, defgem, congem,&
                   congep, vintm, vintp, addep1, addep2,&
                   dsde, deps, p1, p2, t,&
                   dt, retcom, dp1, dp2, sat,&
                   tbiot, ang2, aniso, phenom)
-! aslint: disable=W1504
-! ----------------------------------------------------------------------
+!
+implicit none
+!
+#include "asterf_types.h"
+#include "asterfort/calela.h"
+#include "asterfort/nmcomp.h"
+#include "asterfort/dsipdp.h"
+#include "asterfort/elagon.h"
+#include "asterfort/lchbr2.h"
+#include "asterfort/nmbarc.h"
+#include "asterfort/rcvalb.h"
+#include "asterfort/utmess.h"
+#include "asterfort/lcidbg.h"
+!
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -24,7 +36,11 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! aslint: disable=W1504
 ! person_in_charge: sylvie.granet at edf.fr
+
+
+
 ! **********************************************************************
 ! ROUTINE CALC_MECA
 ! CALCULE LES CONTRAINTES GENERALISEES ET LA MATRICE TANGENTE MECANIQUES
@@ -45,29 +61,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !                                 N = NOMBRE DE PALIERS
 !                OUT RETCOM
 ! ======================================================================
-    implicit none
-#include "asterf_types.h"
-#include "asterfort/calela.h"
-#include "asterfort/dpvplc.h"
-#include "asterfort/dsipdp.h"
-#include "asterfort/elagon.h"
-#include "asterfort/lcdrpr.h"
-#include "asterfort/lchbr2.h"
-#include "asterfort/lcldsb.h"
-#include "asterfort/lcmaza.h"
-#include "asterfort/nmbarc.h"
-#include "asterfort/nmccam.h"
-#include "asterfort/nmcjs.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/redece.h"
-#include "asterfort/tecael.h"
-#include "asterfort/utmess.h"
-#include "asterfort/rcvala.h"
-#include "asterfort/lcmohr.h"
-#include "asterfort/mctgel.h"
-#include "asterfort/matini.h"
-#include "asterfort/mcbnvi.h"
-#include "asterfort/lcidbg.h"
+
     aster_logical :: mectru, pre2tr
     integer :: ndim, dimdef, dimcon, nvimec, addeme, addete, addep1
     integer :: addep2, adcome, imate, yate, retcom
@@ -79,21 +73,19 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, j, nelas, nresma, numlc, aniso, nwkin
-    real(kind=8) :: deps(6), t, dt, tini, p1, p2, wkin(4)
-    real(kind=8) :: young, nu, alpha0, carcri(*), instam, instap, tref
+    integer :: i, j, nelas, nresma, aniso, numlc
+    real(kind=8) :: deps(6), t, dt, p1, p2
+    real(kind=8) :: young, nu, alpha0, carcri(*), instam, instap
     parameter     (nelas = 4  )
     parameter     (nresma = 18)
     real(kind=8) :: elas(nelas)
     character(len=8) :: ncra1(nelas), fami, poum
     integer :: icodre(nresma)
-    real(kind=8) :: dsdeme(6, 6), dsdeme12 (6, 12)
-    real(kind=8) :: angma1(3), angmas(7), ang2(3), depstr(6)
+    real(kind=8) :: dsdeme(6, 6)
+    real(kind=8) :: angma1(3), ang2(3), depstr(6)
     real(kind=8) :: d(6, 6), mdal(6), dalal
-    character(len=16) :: complg(3)
-    aster_logical :: cp, yapre2
-    character(len=16) :: nomres(3)
-    real(kind=8) :: rprops(3)
+    character(len=16) :: complg(20)
+    aster_logical :: yapre2
 ! ======================================================================
 !    VARIABLES LOCALES POUR L'APPEL AU MODELE DE BARCELONE
     real(kind=8) :: dsidp1(6), dp1, dp2, sat, tbiot(6)
@@ -104,7 +96,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 !    VARIABLES LOCALES POUR L'APPEL AU MODELE DE HOEK_BROWN_TOT
     real(kind=8) :: dsidp2(6), dspdp1, dspdp2
 ! ======================================================================
-    integer :: ndt, ndi, kpg, spt
+    integer :: ndt, ndi, kpg, ksp
     common /tdim/   ndt  , ndi
 !
     data ncra1 / 'E','NU','ALPHA','RHO' /
@@ -113,7 +105,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! ======================================================================
     fami='FPG1'
     kpg=1
-    spt=1
+    ksp=1
     poum='+'
     mult_comp = ' '
 !
@@ -126,7 +118,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
             call utmess('F', 'ALGORITH_67')
         endif
     endif
-    call rcvalb(fami, kpg, spt, poum, imate,&
+    call rcvalb(fami, kpg, ksp, poum, imate,&
                 ' ', 'ELAS', 1, 'TEMP', [t],&
                 3, ncra1(1), elas(1), icodre, 0)
     young = elas(1)
@@ -144,6 +136,7 @@ subroutine calcme(option, compor, thmc, meca, imate,&
 ! --- INITIALISATION INDICATEUR RETCOM
 ! ======================================================================
     retcom = 0
+    mectru = .false.
 ! ======================================================================
 ! --- CALCUL DES CONTRAINTES -------------------------------------------
 ! ======================================================================
@@ -220,278 +213,13 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 end do
             endif
         endif
-!
-    endif
-! ======================================================================
-! --- LOI DE MOHR-COULOMB                                       -------
-! ======================================================================
-    mectru = .false.
-!
-    if (meca .eq. 'MOHR_COULOMB') then
-!
-        call mcbnvi(typmod, ndt, ndi)
-!
-        complg(1) = 'MOHR_COULOMB'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc=55
-
-        mectru = .true.
-        tini = t - dt
-        call matini(6, 6, 0.d0, dsdeme)
-
-
-        call lcmohr('RIGI', 1, 1, ndim,&
-                    typmod, imate, carcri, option,&
-                    deps, congem(adcome), congep(adcome), vintm, vintp,&
-                    dsdeme, retcom)
-
-    endif
-!
-!
-! ======================================================================
-! --- LOI CJS, LOI LAIGLE, LOI HOEK-BROWN OU LOI DRUCKER_PRAGER -------
-! ======================================================================
-    if (meca .eq. 'CJS') then
-
-        complg(1) = 'CJS'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc=23
-
-        mectru = .true.
-        tini = t - dt
-        call nmcjs(typmod, imate, carcri,&
-                   defgem(addeme+ndim),&
-                   deps, congem(adcome), vintm, option, congep(adcome),&
-                   vintp, dsdeme, retcom)
-    endif
-!
-! ======================================================================
-! ------                       LOI DE HUJEUX                      ------
-! ======================================================================
-    if (meca .eq. 'HUJEUX') then
-!
-        mectru = .true.
-        tini = t - dt
-!
-        do i = 1, 7
-            angmas(i)=0.d0
-        end do
-!
-        complg(1) = 'HUJEUX'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc=34
-        cp=.false.
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angmas, 1, [0.d0],&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-!
-    endif
-! --- End
-!
-    if (meca .eq. 'LAIGLE') then
-        complg(1) = 'LAIGLE'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        mectru = .true.
-        tini = t - dt
-        numlc=33
-        cp=.false.
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, [0.d0],&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-    endif
-    if (meca .eq. 'HOEK_BROWN_EFF') then
-        complg(1) = 'HOEK_BROWN_EFF'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        mectru = .true.
-        tini = t - dt
-        numlc=33
-        cp=.false.
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, [0.d0],&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-    endif
-    if (meca .eq. 'DRUCK_PRAGER' .or. meca .eq. 'DRUCK_PRAG_N_A') then
-
-        complg(1) = meca
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc = 16
-
-        mectru = .true.
-        tini = t - dt
-        call lcdrpr(fami, typmod, option, imate, meca, congem(adcome),&
-                    deps, vintm,&
-                    vintp, congep(adcome), dsdeme, retcom)
-    endif
-    if (meca .eq. 'LETK') then
-        complg(1) = 'LETK'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        mectru = .true.
-        tini = t - dt
-        numlc=35
-        cp=.false.
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, [0.d0],&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-    endif
-    if (meca .eq. 'LKR') then
-        complg(1) = 'LKR'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        mectru = .true.
-        tini = t - dt
-        numlc=59
-        cp=.false.
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, 1, [0.d0],&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-    endif
-    if (meca .eq. 'MFRONT') then
-        complg(1) = 'MFRONT'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        mectru = .true.
-        tini = t - dt
-        numlc=58
-        cp=.false.
-        nwkin=4
-        wkin(1)=-1
-        wkin(2)=tini
-        wkin(3)=t
-        wkin(4)=tref
-        call redece('RIGI', 1, 1, ndim, typmod,&
-                    imate, complg, mult_comp, carcri, instam, instap,&
-                    6, defgem(addeme+ndim), deps, 6, congem(adcome),&
-                    vintm, option, angma1, nwkin, wkin ,&
-                    cp, numlc, &
-                    congep(adcome), vintp, 36, dsdeme, 1,&
-                    [0.d0], retcom)
-    endif
-
-    if (mectru) then
-        if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do i = 1, ndt
-                do j = 1, ndt
-                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-                end do
-            end do
-! ======================================================================
-! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
-! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
-! ======================================================================
-            if (yate .eq. 1) then
-                do i = 1, 3
-                    dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
-                    addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
-                    + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-                end do
-            endif
-        endif
-    endif
-! ======================================================================
-! --- LOI VISC_DRUC_PRAG -----------------------------------------------
-! ======================================================================
-    if (meca .eq. 'VISC_DRUC_PRAG') then
-
-        complg(1) = 'VISC_DRUC_PRAG'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc = 42
-
-        tini = t - dt
-        call dpvplc(typmod, option, imate, carcri, instam,&
-                    instap, deps,&
-                    congem(adcome), vintm, congep(adcome), vintp, dsdeme,&
-                    retcom)
-        if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do i = 1, 2*ndim
-                do j = 1, 2*ndim
-                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-                end do
-            end do
-! ======================================================================
-! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
-! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
-! ======================================================================
-            if (yate .eq. 1) then
-                do i = 1, 3
-                    dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
-                    addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
-                    + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-                end do
-            endif
-        endif
-    endif
-! ======================================================================
-! --- LOI CAM_CLAY -----------------------------------------------------
-! ======================================================================
-    if (meca .eq. 'CAM_CLAY') then
-
-        complg(1) = 'CAM_CLAY'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc = 22
-
-        tini = t - dt
-        call nmccam('RIGI', 1,1,ndim, typmod, imate, compor, carcri,&
-                    deps, congem(adcome), vintm, option, congep(adcome),&
-                    vintp, dsdeme, retcom)
-        if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do i = 1, 2*ndim
-                do j = 1, 2*ndim
-                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
-                end do
-            end do
-! ======================================================================
-! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
-! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
-! ======================================================================
-            if (yate .eq. 1) then
-                do i = 1, 3
-                    dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
-                    addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
-                    + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-                end do
-            endif
-        endif
-    endif
+    elseif (meca .eq. 'BARCELONE') then
 ! ======================================================================
 ! --- LOI BARCELONE ----------------------------------------------------
 ! ======================================================================
-    if (meca .eq. 'BARCELONE') then
-
         complg(1) = 'BARCELONE'
         write (complg(2),'(I16)') nvimec
         complg(3) = compor(3)
-        numlc = 9999
-
-        tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
         call nmbarc(ndim, imate, carcri, sat, tbiot(1),&
@@ -517,18 +245,13 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 end do
             endif
         endif
-    endif
+    elseif (meca .eq. 'ELAS_GONF') then
 ! ======================================================================
 ! --- LOI ELAS_GONF ----------------------------------------------------
 ! ======================================================================
-    if (meca .eq. 'ELAS_GONF') then
-
         complg(1) = 'ELAS_GONF'
         write (complg(2),'(I16)') nvimec
         complg(3) = compor(3)
-        numlc = 9999
-
-        tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
 !
@@ -564,18 +287,13 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 end do
             endif
         endif
-    endif
+    elseif (meca .eq. 'HOEK_BROWN_TOT') then
 ! ======================================================================
 ! --- LOI HOEK_BROWN_TOT -----------------------------------------------
 ! ======================================================================
-    if (meca .eq. 'HOEK_BROWN_TOT') then
-
         complg(1) = 'HOEK_BROWN_TOT'
         write (complg(2),'(I16)') nvimec
         complg(3) = compor(3)
-        numlc = 9999
-
-        tini = t - dt
         sipm=congem(adcome+6)
         sipp=congep(adcome+6)
         dspdp1 = 0.0d0
@@ -612,25 +330,36 @@ subroutine calcme(option, compor, thmc, meca, imate,&
                 end do
             endif
         endif
-    endif
-! ======================================================================
-! --- LOI MAZARS -------------------------------------------------------
-! ======================================================================
-    if (meca .eq. 'MAZARS') then
-
-        complg(1) = 'MAZARS'
+        mectru = .false.
+    else
+        mectru    = .false.
+        complg(1) = meca
         write (complg(2),'(I16)') nvimec
         complg(3) = compor(3)
-        numlc = 8
+        complg(6) = compor(15)
+        read (complg(6),'(I16)') numlc
+        if (numlc .ge. 100) then
+            call utmess('F', 'THM1_1', sk = meca)
+        endif
+        if (numlc .ne. 0) then
+            mectru    = .true.
+            fami      = 'RIGI'
+            kpg       = 1
+            ksp       = 1
+            call nmcomp(fami, kpg, ksp, ndim, typmod,&
+                      imate, complg, carcri, instam, instap,&
+                      6, defgem(addeme+ndim), deps, 6, congem(adcome),&
+                      vintm, option, angma1, 1, [0.d0],&
+                      congep(adcome), vintp, 36, dsdeme, 1,&
+                      [0.d0], retcom)
+        endif
+    endif
 
-        tini = t - dt
-        call lcmaza('RIGI', 1, 1, ndim, typmod,&
-                    imate, compor, defgem( addeme+ndim), deps, vintm,&
-                    option, congep(adcome),&
-                    vintp, dsdeme)
-        if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do i = 1, 2*ndim
-                do j = 1, 2*ndim
+
+    if (mectru) then
+        if ((option(1:9).eq.'RIGI_MECA') .or. (option(1:9) .eq.'FULL_MECA')) then
+            do i = 1, ndt
+                do j = 1, ndt
                     dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme(i,j)
                 end do
             end do
@@ -647,52 +376,13 @@ subroutine calcme(option, compor, thmc, meca, imate,&
             endif
         endif
     endif
-! ======================================================================
-! --- LOI ENDO_ISOT_BETON ----------------------------------------------
-! ======================================================================
-    if (meca .eq. 'ENDO_ISOT_BETON') then
 
-        complg(1) = 'ENDO_ISOT_BETON'
-        write (complg(2),'(I16)') nvimec
-        complg(3) = compor(3)
-        numlc = 6
-
-        tini = t - dt
-        if (option(6:9) .eq. 'COUP') then
-!           on interdit le couplage fluage-eib car dans ce cas dsdeme(6,12)
-            call utmess('F', 'ALGORITH_74')
-        endif
-!       dsdeme12(i,j) ne sert qu'a la compatibilite de l'interface
-!       tous les termess i,6+j doive,t etre nuls
-        call lcldsb('RIGI', 1, 1, ndim,&
-                    imate, compor, defgem( addeme+ndim), deps, vintm,&
-                    option, congep(adcome),&
-                    vintp, dsdeme12)
-        if ((option(1:16).eq.'RIGI_MECA_TANG') .or. (option(1:9) .eq.'FULL_MECA')) then
-            do i = 1, 2*ndim
-                do j = 1, 2*ndim
-                    dsde(adcome+i-1,addeme+ndim+j-1)=dsdeme12(i,j)
-                end do
-            end do
-! ======================================================================
-! --- LA DEPENDANCE DES CONTRAINTES / T = -ALPHA0 * DEPENDANCE ---------
-! --- PAR RAPPORT A TRACE DE DEPS ( APPROXIMATION) ---------------------
-! ======================================================================
-            if (yate .eq. 1) then
-                do i = 1, 3
-                    dsde(adcome-1+i,addete)=-alpha0* (dsde(adcome-1+i,&
-                    addeme+ndim-1+1)+ dsde(adcome-1+i,addeme+ndim-1+2)&
-                    + dsde(adcome-1+i,addeme+ndim-1+3))/3.d0
-                end do
-            endif
-        endif
-    endif
-! ======================================================================
-! --- AFFICHAGE DES DONNEES NECESSAIRES POUR REJOUER CALCUL SI ---------
-! --- ECHEC DU MODELE DE COMPORTEMENT - RETCOM.EQ.1 --------------------
-! ======================================================================
+!! ======================================================================
+!! --- AFFICHAGE DES DONNEES NECESSAIRES POUR REJOUER CALCUL SI ---------
+!! --- ECHEC DU MODELE DE COMPORTEMENT - RETCOM.EQ.1 --------------------
+!! ======================================================================
     if(retcom .eq. 1) then
-        call lcidbg(fami, kpg, spt, typmod, complg, &
+        call lcidbg(fami, kpg, ksp, typmod, complg, &
                     carcri, instam, instap, 6, & 
                     defgem(addeme+ndim),deps, 6,&
                     congem(adcome), vintm, option) 

@@ -13,7 +13,7 @@ implicit none
 #include "asterfort/meta_kit_nvar.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -70,7 +70,7 @@ implicit none
     integer :: nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup
     character(len=16) :: rela_comp_cg(2)
     integer :: nb_vari_cg(2)
-    integer :: nume_comp_plas
+    integer :: nume_comp_plas, nume_comp_meca
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,7 +86,7 @@ implicit none
         rela_hydr = kit_comp(3)
         rela_meca = kit_comp(4)
         call thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther, nb_vari_thmc,&
-                          nb_vari_hydr, nb_vari_meca, nb_vari_ther)
+                          nb_vari_hydr, nb_vari_meca, nb_vari_ther, nume_comp_meca)
         nb_vari_comp(1) = nb_vari_thmc
         nb_vari_comp(2) = nb_vari_ther
         nb_vari_comp(3) = nb_vari_hydr
@@ -96,6 +96,7 @@ implicit none
         else
             nb_vari_comp(4) = nb_vari_meca
         endif
+        nume_comp(2)    = nume_comp_meca
     endif
 !
 ! - Number of internal variables for KIT META

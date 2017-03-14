@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -154,10 +154,6 @@ Contactez le support technique.
 
     70 : _(u"""
  Le nombre de système de glissement est égal à 0
-"""),
-
-    74 : _(u"""
- Le couplage FLUAGE/ENDO_ISOT_BETON n'est pas valide en THM.
 """),
 
     96 : _(u"""

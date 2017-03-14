@@ -1,15 +1,14 @@
-subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther, nb_vari_thmc,&
-                        nb_vari_hydr, nb_vari_meca, nb_vari_ther)
+subroutine thm_kit_nvar(rela_thmc   , rela_hydr   , rela_meca   , rela_ther     , nb_vari_thmc,&
+                        nb_vari_hydr, nb_vari_meca, nb_vari_ther, nume_comp_meca)
 !
 implicit none
 !
-#include "jeveux.h"
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -34,6 +33,7 @@ implicit none
     integer, intent(out) :: nb_vari_hydr
     integer, intent(out) :: nb_vari_meca
     integer, intent(out) :: nb_vari_ther
+    integer, intent(out) :: nume_comp_meca
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,6 +51,7 @@ implicit none
 ! Out nb_vari_hydr     : number of internal variables for hydraulic
 ! Out nb_vari_meca     : number of internal variables for mechanic
 ! Out nb_vari_ther     : number of internal variables for thermic
+! Out nume_comp_meca   : number LCxxxx subroutine for mechanics
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,10 +60,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_vari_thmc = 0
-    nb_vari_ther = 0
-    nb_vari_hydr = 0
-    nb_vari_meca = 0
+    nb_vari_thmc   = 0
+    nb_vari_ther   = 0
+    nb_vari_hydr   = 0
+    nb_vari_meca   = 0
+    nume_comp_meca = 0
     call lccree(1, rela_thmc, rela_thmc_py)
     call lcinfo(rela_thmc_py, ibid, nb_vari_thmc)
     call lcdiscard(rela_thmc_py)
@@ -73,7 +75,7 @@ implicit none
     call lcinfo(rela_hydr_py, ibid, nb_vari_hydr)
     call lcdiscard(rela_hydr_py)
     call lccree(1, rela_meca, rela_meca_py)
-    call lcinfo(rela_meca_py, ibid, nb_vari_meca)
+    call lcinfo(rela_meca_py, nume_comp_meca, nb_vari_meca)
     call lcdiscard(rela_meca_py)
 !
 end subroutine
