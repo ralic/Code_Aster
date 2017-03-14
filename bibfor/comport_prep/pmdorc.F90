@@ -69,7 +69,7 @@ implicit none
     character(len=16) :: keywordfact
     character(len=16) :: rela_comp, algo_inte, defo_comp, type_comp
     character(len=16) :: kit_comp(4), type_cpla, type_matg, post_iter
-    aster_logical :: l_kit_thm, l_etat_init
+    aster_logical :: l_kit_thm, l_etat_init, l_implex
     real(kind=8) :: algo_inte_r, iter_inte_maxi, resi_inte_rela
     type(NL_DS_ComporPrep) :: ds_compor_prep
     type(NL_DS_ComporParaPrep) :: ds_compor_para
@@ -81,6 +81,7 @@ implicit none
     compor_info  = '&&PMDORC.LIST_VARI'
     keywordfact  = 'COMPORTEMENT'
     compor(1:20) = 'VIDE'
+    l_implex     = .false.
 !
 ! - Initial state
 !
@@ -91,7 +92,7 @@ implicit none
 !
 ! - Create datastructure to prepare comportement
 !
-    call comp_meca_info(ds_compor_prep)
+    call comp_meca_info(l_implex, ds_compor_prep)
     if (ds_compor_prep%nb_comp .eq. 0) then
         call utmess('F', 'COMPOR4_63')
     endif
@@ -166,7 +167,7 @@ implicit none
 !
 ! - Read informations from command file
 !
-    call carc_read(ds_compor_para)
+    call carc_read(ds_compor_para, l_implex_ = l_implex)
 !  
 ! - Save in list
 !

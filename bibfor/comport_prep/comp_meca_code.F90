@@ -1,5 +1,6 @@
-subroutine comp_meca_code(rela_comp_, defo_comp_  , type_cpla_   , kit_comp_   , type_matg_,&
-                          post_iter_, comp_code_py, rela_code_py_, meta_code_py_)
+subroutine comp_meca_code(rela_comp_  , defo_comp_   , type_cpla_   , kit_comp_   , type_matg_,&
+                          post_iter_  , l_implex_    ,&
+                          comp_code_py, rela_code_py_, meta_code_py_)
 !
 implicit none
 !
@@ -8,7 +9,7 @@ implicit none
 #include "asterfort/comp_meca_l.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,6 +32,7 @@ implicit none
     character(len=16), optional, intent(in) :: kit_comp_(4)
     character(len=16), optional, intent(in) :: type_matg_
     character(len=16), optional, intent(in) :: post_iter_
+    aster_logical, optional, intent(in) :: l_implex_
     character(len=16), intent(out) :: comp_code_py
     character(len=16), optional, intent(out) :: rela_code_py_
     character(len=16), optional, intent(out) :: meta_code_py_
@@ -49,6 +51,7 @@ implicit none
 ! In  kit_comp         : KIT comportment
 ! In  type_matg        : type of tangent matrix
 ! In  post_iter        : type of post_treatment
+! In  l_implex         : .true. if IMPLEX method
 ! Out comp_code_py     : composite coded comportment (coding in Python)
 ! Out rela_code_py     : coded comportment for RELATION (coding in Python)
 ! Out meta_code_py     : coded comportment for metallurgy (coding in Python)
@@ -58,7 +61,7 @@ implicit none
     integer :: nb_comp_elem, ikit
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: comp_elem(20), rela_meta, meta_code_py, rela_code_py
-    aster_logical :: l_kit_meta, l_kit_thm
+    aster_logical :: l_kit_meta, l_kit_thm, l_implex
     character(len=16) :: type_matg, post_iter
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla
 !
@@ -87,6 +90,10 @@ implicit none
     post_iter = 'VIDE'
     if (present(post_iter_)) then
         post_iter = post_iter_
+    endif
+    l_implex  = .false.
+    if (present(l_implex_)) then
+        l_implex = l_implex_
     endif
 !
     nb_comp_elem    = 0
@@ -126,6 +133,13 @@ implicit none
         comp_elem(5) = rela_hydr
         comp_elem(6) = rela_ther
         comp_elem(7) = rela_thmc
+    endif
+!
+! - Implex
+!
+    if (l_implex) then
+        nb_comp_elem = nb_comp_elem + 1
+        comp_elem(nb_comp_elem) = 'IMPLEX'
     endif
 !
 ! - Coding metallurgy comportment

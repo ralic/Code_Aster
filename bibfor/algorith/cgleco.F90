@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,7 +63,7 @@ implicit none
     character(len=16) :: keywordfact
     character(len=24) :: repk
     character(len=8) :: mesh
-    aster_logical :: limpel, l_etat_init, l_temp
+    aster_logical :: limpel, l_etat_init, l_temp, l_implex
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,6 +71,7 @@ implicit none
 !
 ! - Initializations
 !
+    l_implex = .false.
     limpel = .false.
     incr = .false.
     nbcomp = 0
@@ -104,7 +105,7 @@ implicit none
 !
 ! ----- Get COMPORTEMENT from command file
 !
-        call nmdocc(modele, mate, l_etat_init, compor)
+        call nmdocc(modele, mate, l_etat_init, l_implex, compor)
 !
     endif
 !

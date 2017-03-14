@@ -126,7 +126,8 @@ implicit none
     if (l_elem_nonl) then
         call nonlinDSConstitutiveCreate(ds_constitutive)
         call nmdorc(model, mate, l_etat_init,&
-                    ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
+                    ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
+                    l_implex_ = .false._1)
         call nonlinDSConstitutiveInit(model, cara_elem, ds_constitutive)
     endif
 !

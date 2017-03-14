@@ -1,12 +1,14 @@
-subroutine lc0038(fami, kpg, ksp, ndim, imate,&
-                  compor, carcri, instam, instap, epsm,&
-                  deps, sigm, vim, option, angmas,&
-                  sigp, vip, typmod, icomp,&
-                  nvi, dsidep, codret)
+subroutine lc2001(fami, kpg, ksp, ndim, imate,&
+                  neps, deps, nsig, sigm, option,&
+                  angmas, sigp, vip, typmod, ndsde,&
+                  dsidep, codret)
 !
 implicit none
 !
-#include "asterfort/lcsans.h"
+#include "asterfort/assert.h"
+#include "asterfort/nmelas.h"
+#include "asterfort/nmorth.h"
+#include "asterfort/rccoma.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -24,41 +26,47 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! aslint: disable=W1504,W0104
+! aslint: disable=W0104
 !
     character(len=*), intent(in) :: fami
     integer, intent(in) :: kpg
     integer, intent(in) :: ksp
     integer, intent(in) :: ndim
     integer, intent(in) :: imate
-    character(len=16), intent(in) :: compor(*)
-    real(kind=8), intent(in) :: carcri(*)
-    real(kind=8), intent(in) :: instam
-    real(kind=8), intent(in) :: instap
-    real(kind=8), intent(in) :: epsm(6)
-    real(kind=8), intent(in) :: deps(6)
-    real(kind=8), intent(in) :: sigm(6)
-    real(kind=8), intent(in) :: vim(*)
+    integer, intent(in) :: neps
+    real(kind=8), intent(in) :: deps(neps)
+    integer, intent(in) :: nsig
+    real(kind=8), intent(in) :: sigm(nsig)
     character(len=16), intent(in) :: option
-    real(kind=8), intent(in) :: angmas(*)
-    real(kind=8), intent(out) :: sigp(6)
-    real(kind=8), intent(out) :: vip(*)
+    real(kind=8), intent(in) :: angmas(3)
+    real(kind=8), intent(out) :: sigp(nsig)
+    real(kind=8), intent(out) :: vip(1)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
-    real(kind=8), intent(out) :: dsidep(6,6)
+    integer, intent(in) :: ndsde
+    real(kind=8), intent(out) :: dsidep(ndsde)
     integer, intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Behaviour
+! Behaviour - Special IMPLEX
 !
-! SANS
+! 'ELAS'
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    codret = 0
-    call lcsans(ndim, option, sigp, dsidep)
-    vip(1) = 0.d0
+    character(len=16) :: mcmate
+    integer :: icodre
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call rccoma(imate, 'ELAS', 1, mcmate, icodre)
+    ASSERT(icodre.eq.0)
+    if (mcmate .eq. 'ELAS') then
+        call nmelas(fami, kpg, ksp, ndim, typmod,&
+                    imate, deps, sigm, option, sigp,&
+                    vip, dsidep, codret)
+    else 
+        ASSERT(.false.)
+    endif
 !
 end subroutine

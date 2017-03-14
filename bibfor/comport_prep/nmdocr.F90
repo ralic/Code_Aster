@@ -1,9 +1,10 @@
-subroutine nmdocr(model, carcri)
+subroutine nmdocr(model, carcri, l_implex)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/carc_info.h"
 #include "asterfort/carc_init.h"
 #include "asterfort/carc_read.h"
@@ -12,7 +13,7 @@ implicit none
 #include "asterfort/nocart.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,6 +33,7 @@ implicit none
 !
     character(len=8), intent(in)   :: model
     character(len=24), intent(out) :: carcri
+    aster_logical, intent(in) :: l_implex
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,6 +45,7 @@ implicit none
 !
 ! In  model            : name of model
 ! Out carcri           : name of <CARTE> CARCRI
+! In  l_implex         : .true. if IMPLEX method
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +72,7 @@ implicit none
 !
 ! - Read informations from command file
 !
-    call carc_read(ds_compor_para, model)
+    call carc_read(ds_compor_para, model, l_implex)
 !
 ! - Save and check informations in CARCRI <CARTE>
 !

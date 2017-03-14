@@ -115,6 +115,11 @@ implicit none
 #include "asterfort/lc1015.h"
 #include "asterfort/lc1036.h"
 #include "asterfort/lc1058.h"
+#include "asterfort/lc2001.h"
+#include "asterfort/lc2002.h"
+#include "asterfort/lc2005.h"
+#include "asterfort/lc2006.h"
+#include "asterfort/lc2038.h"
 #include "asterfort/lc9999.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrcpto.h"
@@ -504,7 +509,7 @@ implicit none
         call lc0038(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&
                     deps, sigm, vim, option, angmas,&
-                    sigp, vip, wkin, typmod, icomp,&
+                    sigp, vip, typmod, icomp,&
                     nvi, dsidep, codret)
     case (39)
         call lc0039(fami, kpg, ksp, ndim, imate,&
@@ -924,7 +929,49 @@ implicit none
                     nvi, vim, option, angmas,&
                     icomp, sigp, vip, dsidep,&
                     codret)
+!
+! --------------------------------------------------------------------------------------------------
+! - With IMPLEX
+! --------------------------------------------------------------------------------------------------
+!
+    case (2001)
+!     ELAS
+        call lc2001(fami, kpg, ksp, ndim, imate,&
+                    neps, deps, nsig, sigm, option,&
+                    angmas, sigp, vip, typmod, ndsde,&
+                    dsidep, codret)
 
+    case (2002)
+!     VMIS_ISOT_XXX, VISC_ISOT_XXX
+        call lc2002(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, sigp, vip, typmod, ndsde,&
+                    dsidep, codret)
+
+    case (2005)
+!     ENDO_FRAGILE+GRAD_EPSI
+        call lc2005(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
+    case (2006)
+!     ENDO_ISOT_BETON
+        call lc2006(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, neps,&
+                    epsm, deps, nsig, sigm, vim,&
+                    option, angmas, sigp, vip, &
+                    typmod, icomp, nvi, ndsde,&
+                    dsidep, codret)
+
+    case (2038)
+!     SANS
+        call lc2038(fami, kpg, ksp, ndim, imate,&
+                    compor, carcri, instam, instap, epsm,&
+                    deps, sigm, vim, option, angmas,&
+                    sigp, vip, typmod, icomp,&
+                    nvi, dsidep, codret)
     case (9999)
         call lc9999(fami, kpg, ksp, ndim, imate,&
                     compor, carcri, instam, instap, epsm,&

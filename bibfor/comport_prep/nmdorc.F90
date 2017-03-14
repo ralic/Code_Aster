@@ -1,4 +1,4 @@
-subroutine nmdorc(model, chmate, l_etat_init, compor, carcri, mult_comp_)
+subroutine nmdorc(model, chmate, l_etat_init, compor, carcri, mult_comp_, l_implex_)
 !
 implicit none
 !
@@ -8,7 +8,7 @@ implicit none
 #include "asterfort/nmdocr.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,8 +29,9 @@ implicit none
     character(len=*), intent(in) :: chmate
     aster_logical, intent(in) :: l_etat_init
     character(len=*), intent(in) :: compor
-    character(len=*), intent(in) :: carcri
+    character(len=*), intent(out) :: carcri
     character(len=*), optional, intent(in) :: mult_comp_
+    aster_logical, optional, intent(in) :: l_implex_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,23 +41,32 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model       : name of model
-! In  chmate      : name of material field
-! In  l_etat_init : .true. if initial state is defined
-! In  compor      : name of <CARTE> COMPOR
-! In  carcri      : name of <CARTE> CARCRI
-! In  mult_comp   : name of <CARTE> MULT_COMP
+! In  model            : name of model
+! In  chmate           : name of material field
+! In  l_etat_init      : .true. if initial state is defined
+! In  compor           : name of <CARTE> COMPOR
+! Out carcri           : name of <CARTE> CARCRI
+! In  mult_comp        : name of <CARTE> MULT_COMP
+! In  l_implex         : .true. if IMPLEX method
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    aster_logical :: l_implex
+!
+! --------------------------------------------------------------------------------------------------
+!
+    l_implex    = .false.
+    if (present(l_implex_)) then
+        l_implex = l_implex_
+    endif
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare COMPOR <CARTE>
 !
-    call nmdocc(model, chmate, l_etat_init, compor)
+    call nmdocc(model, chmate, l_etat_init, l_implex, compor)
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare CARCRI <CARTE>
 !
-    call nmdocr(model, carcri)
+    call nmdocr(model, carcri, l_implex)
 !
 ! - Get parameters from COMPORTEMENT keyword and prepare MULT_COMP <CARTE> (for crystals)
 !

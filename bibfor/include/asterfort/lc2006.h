@@ -15,14 +15,15 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=W1504
+! aslint: disable=W1504,W0104
 !
 interface
-    subroutine lc0038(fami, kpg, ksp, ndim, imate,&
-                      compor, carcri, instam, instap, epsm,&
-                      deps, sigm, vim, option, angmas,&
-                      sigp, vip, typmod, icomp,&
-                      nvi, dsidep, codret)
+    subroutine lc2006(fami, kpg, ksp, ndim, imate,&
+                      compor, carcri, instam, instap, neps,&
+                      epsm, deps, nsig, sigm, vim,&
+                      option, angmas, sigp, vip, &
+                      typmod, icomp, nvi, ndsde,&
+                      dsidep, codret)
         character(len=*), intent(in) :: fami
         integer, intent(in) :: kpg
         integer, intent(in) :: ksp
@@ -32,18 +33,21 @@ interface
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
-        real(kind=8), intent(in) :: epsm(6)
-        real(kind=8), intent(in) :: deps(6)
-        real(kind=8), intent(in) :: sigm(6)
+        real(kind=8), intent(in) :: epsm(*)
+        real(kind=8), intent(in) :: deps(*)
+        real(kind=8), intent(in) :: sigm(*)
         real(kind=8), intent(in) :: vim(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(*)
-        real(kind=8), intent(out) :: sigp(6)
+        real(kind=8), intent(out) :: sigp(*)
         real(kind=8), intent(out) :: vip(*)
         character(len=8), intent(in) :: typmod(*)
         integer, intent(in) :: icomp
         integer, intent(in) :: nvi
-        real(kind=8), intent(out) :: dsidep(6,6)
+        real(kind=8), intent(out) :: dsidep(*)
         integer, intent(out) :: codret
-    end subroutine lc0038
+        integer, intent(in) :: neps
+        integer, intent(in) :: nsig
+        integer, intent(in) :: ndsde
+    end subroutine lc2006
 end interface

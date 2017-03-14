@@ -29,7 +29,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
     character(len=*) :: noch
     aster_logical, intent(in), optional :: from_lire_resu
 ! ----------------------------------------------------------------------
-! ======================================================================bibfor/prepost/lrcomm.F90
+! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -135,7 +135,7 @@ subroutine lrcomm(resu, typres, nbordr, chmat, carael,&
 !
     if (modele .ne. ' ') then
         if (typres(1:9) .eq. 'EVOL_NOLI') then
-            call nmdorc(modele, chmat, l_etat_init, compor, carcri)
+            call nmdorc(modele, chmat, l_etat_init, compor, carcri, l_implex_ = .false._1)
             if (compor .ne. ' ') then
                 do i = 1, nbordr
                     iordr=zi(lordr+i-1)

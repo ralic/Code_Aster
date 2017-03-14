@@ -24,7 +24,7 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
 !
 ! ======================================================================
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -77,15 +77,8 @@ subroutine lc0005(fami, kpg, ksp, ndim, imate,&
 !
 !     FORMULATION LOCALE
     else
-        if (crit(2) .ne. 9) then
             call lcfrlo(ndim, typmod, imate, epsm, deps,&
                         vim, option, sigp, vip, dsidep)
-        else
-            call fragex(ndim, imate, instam, instap, epsm,&
-                        deps, vim, option, sigp, vip,&
-                        typmod, dsidep, codret)
-        endif
-!
     endif
 !
 end subroutine

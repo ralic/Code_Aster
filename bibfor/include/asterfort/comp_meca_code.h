@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,15 +15,19 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine comp_meca_code(rela_comp_, defo_comp_  , type_cpla_   , kit_comp_   , type_matg_,&
-                              post_iter_, comp_code_py, rela_code_py_, meta_code_py_)
+    subroutine comp_meca_code(rela_comp_  , defo_comp_   , type_cpla_   , kit_comp_   , type_matg_,&
+                              post_iter_  , l_implex_    ,&
+                              comp_code_py, rela_code_py_, meta_code_py_)
         character(len=16), optional, intent(in) :: rela_comp_
         character(len=16), optional, intent(in) :: defo_comp_
         character(len=16), optional, intent(in) :: type_cpla_
         character(len=16), optional, intent(in) :: kit_comp_(4)
         character(len=16), optional, intent(in) :: type_matg_
         character(len=16), optional, intent(in) :: post_iter_
+        aster_logical, optional, intent(in) :: l_implex_
         character(len=16), intent(out) :: comp_code_py
         character(len=16), optional, intent(out) :: rela_code_py_
         character(len=16), optional, intent(out) :: meta_code_py_

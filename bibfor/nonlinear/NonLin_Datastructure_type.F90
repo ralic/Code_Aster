@@ -414,6 +414,8 @@ implicit none
         type(NL_DS_Compor), pointer     :: v_comp(:)
 ! ----- List of external comportements
         type(NL_DS_ComporExte), pointer :: v_exte(:)
+! ----- Flag for IMPLEX method
+        aster_logical                   :: l_implex
     end type NL_DS_ComporPrep
 !
 ! - Type: pointer to external constitutive laws

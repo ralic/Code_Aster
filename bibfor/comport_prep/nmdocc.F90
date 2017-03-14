@@ -1,4 +1,4 @@
-subroutine nmdocc(model, chmate, l_etat_init, compor)
+subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor)
 !
 use NonLin_Datastructure_type
 !
@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -42,6 +42,7 @@ implicit none
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: chmate
     aster_logical, intent(in) :: l_etat_init
+    aster_logical, intent(in) :: l_implex
     character(len=19), intent(in) :: compor
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,10 +53,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  model       : name of model
-! In  chmate      : name of material field
-! In  l_etat_init : .true. if initial state is defined
-! In  compor      : name of <CARTE> COMPOR
+! In  model            : name of model
+! In  chmate           : name of material field
+! In  l_etat_init      : .true. if initial state is defined
+! In  l_implex         : .true. if IMPLEX method
+! In  compor           : name of <CARTE> COMPOR
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,7 +77,7 @@ implicit none
 !
 ! - Create datastructure to prepare comportement
 !
-    call comp_meca_info(ds_compor_prep)
+    call comp_meca_info(l_implex, ds_compor_prep)
     if (ds_compor_prep%nb_comp .eq. 0) then
         call utmess('I', 'COMPOR4_64')
         l_auto_elas    = .false.

@@ -1,7 +1,7 @@
 subroutine op0183()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +82,7 @@ subroutine op0183()
     character(len=24) :: vreno, compor, chvive, chacve, raide
     character(len=24) :: bidon, chvarc
     character(len=24) :: numref, valk(3)
-    aster_logical :: l_etat_init
+    aster_logical :: l_etat_init, l_implex
 !     ------------------------------------------------------------------
     parameter(nompro='OP0183')
 !     ------------------------------------------------------------------
@@ -145,6 +145,7 @@ subroutine op0183()
     bidon='&&'//nompro//'.BIDON'
 !
 !
+    l_implex = .false.
     exitim=.true.
     carac=' '
     charge=' '
@@ -287,7 +288,7 @@ subroutine op0183()
 !       --- CALCUL DES VECTEURS ELEMENTAIRES ---
         if (i .eq. 1) then
             compor='&&OP0183.COMPOR'
-            call nmdocc(modele(1:8), materi, l_etat_init, compor)
+            call nmdocc(modele(1:8), materi, l_etat_init, l_implex, compor)
         endif
 !
         call vefnme(option, 'V', modele, mater, carac,&

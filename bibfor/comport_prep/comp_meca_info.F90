@@ -1,14 +1,15 @@
-subroutine comp_meca_info(ds_compor_prep)
+subroutine comp_meca_info(l_implex, ds_compor_prep)
 !
 use NonLin_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterfort/comp_meca_init.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,6 +27,7 @@ implicit none
 ! aslint: disable=W1003
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    aster_logical, intent(in) :: l_implex
     type(NL_DS_ComporPrep), intent(out) :: ds_compor_prep
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,6 +38,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  l_implex         : .true. if IMPLEX method
 ! Out ds_compor_prep   : datastructure to prepare comportement
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,8 +55,9 @@ implicit none
 !
 ! - Initializations
 !
-    ds_compor_prep%v_comp => null()
-    ds_compor_prep%v_exte => null()
+    ds_compor_prep%v_comp   => null()
+    ds_compor_prep%v_exte   => null()
+    ds_compor_prep%l_implex = l_implex
 !
 ! - Number of comportement information
 !

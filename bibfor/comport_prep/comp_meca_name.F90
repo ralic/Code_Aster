@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/comp_meca_code.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -78,8 +78,8 @@ implicit none
     if (l_excl) then
         v_vari_name(1:nb_vari) = vari_excl
     else
-        call comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp    , type_matg,&
-                            post_iter, comp_code_py, rela_code_py, meta_code_py)
+        call comp_meca_code(rela_comp, defo_comp, type_cpla   , kit_comp    , type_matg,&
+                            post_iter, .false._1, comp_code_py, rela_code_py, meta_code_py)
         if (l_kit_meta) then
             call lcinfo(meta_code_py, idummy, nb_vari_meta)
             call lcinfo(rela_code_py, idummy, nb_vari_rela)

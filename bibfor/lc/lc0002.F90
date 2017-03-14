@@ -6,7 +6,6 @@ subroutine lc0002(fami, kpg, ksp, ndim, imate,&
 !
 implicit none
 !
-#include "asterfort/nmisex.h"
 #include "asterfort/nmisot.h"
 !
 ! ======================================================================
@@ -58,16 +57,9 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (nint(carcri(2)) .eq. 9) then
-        call nmisex(fami, kpg, ksp, ndim, imate,&
-                    compor, carcri, instam, instap, deps,&
-                    sigm, vim, option, sigp, vip,&
-                    typmod, dsidep, codret)
-    else
-        call nmisot(fami, kpg, ksp, ndim, typmod,&
-                    imate, compor(1), carcri, deps, sigm,&
-                    vim, option, sigp, vip, dsidep,&
-                    codret)
-    endif
+    call nmisot(fami, kpg, ksp, ndim, typmod,&
+                imate, compor(1), carcri, deps, sigm,&
+                vim, option, sigp, vip, dsidep,&
+                codret)
 !
 end subroutine

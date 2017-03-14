@@ -1,4 +1,4 @@
-subroutine carc_read(ds_compor_para, model_)
+subroutine carc_read(ds_compor_para, model_, l_implex_)
 !
 use NonLin_Datastructure_type
 !
@@ -47,6 +47,7 @@ implicit none
 !
     type(NL_DS_ComporParaPrep), intent(inout) :: ds_compor_para
     character(len=8), intent(in), optional :: model_
+    aster_logical, intent(in), optional :: l_implex_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,6 +59,7 @@ implicit none
 !
 ! IO  ds_compor_para   : datastructure to prepare parameters for constitutive laws
 ! In  model            : name of model
+! In  l_implex         : .true. if IMPLEX method
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,6 +81,7 @@ implicit none
     character(len=16):: rela_thmc=' ', rela_hydr=' ', rela_ther=' ', rela_meca=' ', rela_meca_py=' '
     aster_logical :: l_kit_thm=.false._1, l_mfront_proto=.false._1, l_kit_ddi = .false._1
     aster_logical :: l_mfront_offi=.false._1, l_umat=.false._1, l_kit = .false._1, l_matr_unsymm
+    aster_logical :: l_implex
     character(len=16) :: texte(3)=(/ ' ',' ',' '/), model_mfront=' '
     character(len=255) :: libr_name=' ', subr_name=' '
     integer, pointer :: v_model_elem(:) => null()
@@ -88,6 +91,10 @@ implicit none
     keywordfact = 'COMPORTEMENT'
     nb_comp     = ds_compor_para%nb_comp
     mesh        = ' '
+    l_implex    = .false.
+    if (present(l_implex_)) then
+        l_implex = l_implex_
+    endif
 !
 ! - Pointer to list of elements in model
 !
@@ -211,24 +218,20 @@ implicit none
 !
 ! ----- Get TYPE_MATR_TANG/VALE_PERT_RELA - <IMPLEX>
 !
-        if (getexm(' ','METHODE') .eq. 1) then
-            call getvtx(' ', 'METHODE', iocc = 0, scal = method, nbret = iret)
-            if (iret .ne. 0) then
-                if (method .eq. 'IMPLEX') then
-                    if ((type_matr_t.ne.0) .and. (rela_comp.ne.'SANS')) then
-                        texte(1) = type_matr_tang
-                        texte(2) = method
-                        call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
-                    else
-                        type_matr_t = 9
-                    endif
-                    call lctest(rela_comp_py, 'TYPE_MATR_TANG', method, iret)
-                    if ((iret.eq.0) .and. (rela_comp.ne.'SANS')) then
-                        texte(1) = type_matr_tang
-                        texte(2) = method
-                        call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
-                    endif
-                endif
+        if (l_implex) then
+            method = 'IMPLEX'
+            if ((type_matr_t.ne.0) .and. (rela_comp.ne.'SANS')) then
+                texte(1) = type_matr_tang
+                texte(2) = method
+                call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
+            else
+                type_matr_t = 9
+            endif
+            call lctest(rela_comp_py, 'TYPE_MATR_TANG', method, iret)
+            if ((iret.eq.0) .and. (rela_comp.ne.'SANS')) then
+                texte(1) = type_matr_tang
+                texte(2) = method
+                call utmess('F', 'COMPOR1_46', nk = 2, valk = texte)
             endif
         endif
 !
@@ -254,7 +257,7 @@ implicit none
 ! ----- Get POST_ITER
 !
         ipostiter = 0
-        if (getexm('COMPORTEMENT','POST_ITER') .eq. 1) then
+        if (getexm(keywordfact,'POST_ITER') .eq. 1) then
             post_iter = ' '
             if (type_matr_t .eq. 0) then
                 call getvtx(keywordfact, 'POST_ITER', iocc = i_comp, scal = post_iter, nbret = iret)
@@ -269,7 +272,7 @@ implicit none
 ! ----- Get POST_INCR
 !
         ipostincr = 0
-        if (getexm('COMPORTEMENT','POST_INCR') .eq. 1) then
+        if (getexm(keywordfact,'POST_INCR') .eq. 1) then
             post_incr = ' '
             call getvtx(keywordfact, 'POST_INCR', iocc = i_comp, scal = post_incr, nbret = iret)
             if (iret .eq. 1) then

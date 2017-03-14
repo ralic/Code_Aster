@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016 EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017 EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmdocc(model, chmate, l_etat_init, compor)
+    subroutine nmdocc(model, chmate, l_etat_init, l_implex, compor)
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: chmate
         aster_logical, intent(in) :: l_etat_init
+        aster_logical, intent(in) :: l_implex
         character(len=19), intent(in) :: compor
     end subroutine nmdocc
 end interface

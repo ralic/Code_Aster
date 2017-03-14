@@ -104,10 +104,9 @@ implicit none
     integer :: ifm, niv
     character(len=8) :: result
     character(len=16) :: k16bid, nomcmd
-    aster_logical :: l_etat_init, l_sigm
-!    aster_logical    ::  non_lin
-!
+    aster_logical :: l_etat_init, l_sigm, l_implex
     character(len=24) :: typco
+!
 ! --------------------------------------------------------------------------------------------------
 !
     call infdbg('MECA_NON_LINE', ifm, niv)
@@ -142,15 +141,6 @@ implicit none
         endif
     endif
 !
-! --- RELATION DE COMPORTEMENT ET CRITERES DE CONVERGENCE LOCAL
-!
-    call nmdorc(model, mate, l_etat_init,&
-                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp)
-!
-! - Read parameters for convergence
-!
-    call nmdocn(ds_conv)
-!
 ! - Read parameters for algorithm management
 !
     call nmdomt(ds_algopara, ds_algorom)
@@ -158,6 +148,17 @@ implicit none
 ! - Read parameters for algorithm management (line search)
 !
     call nmdomt_ls(ds_algopara)
+!
+! - Read objects for constitutive laws
+!
+    l_implex = ds_algopara%method.eq.'IMPLEX'
+    call nmdorc(model, mate, l_etat_init,&
+                ds_constitutive%compor, ds_constitutive%carcri, ds_constitutive%mult_comp,&
+                l_implex)
+!
+! - Read parameters for convergence
+!
+    call nmdocn(ds_conv)
 !
 ! --- CREATION SD DYNAMIQUE
 !

@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/comp_nbvari.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -47,6 +47,7 @@ implicit none
     integer :: nume_comp(4), nb_vari, nb_vari_comp(4), nb_vari_umat, model_dim
     character(len=255) :: libr_name, subr_name
     character(len=16) :: model_mfront
+    aster_logical :: l_implex
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -77,13 +78,14 @@ implicit none
         nb_vari_umat = ds_compor_prep%v_exte(i_comp)%nb_vari_umat
         model_mfront = ds_compor_prep%v_exte(i_comp)%model_mfront
         model_dim    = ds_compor_prep%v_exte(i_comp)%model_dim
+        l_implex     = ds_compor_prep%l_implex
 !
 ! ----- Count internal variables
 !
-        call comp_nbvari(rela_comp   , defo_comp   , type_cpla   , kit_comp ,&
-                         type_matg   , post_iter   , mult_comp   , libr_name,&
-                         subr_name   , model_dim   , model_mfront, nb_vari  ,&
-                         nb_vari_umat, nb_vari_comp, nume_comp)
+        call comp_nbvari(rela_comp   , defo_comp, type_cpla   , kit_comp ,&
+                         type_matg   , post_iter, mult_comp   , libr_name,&
+                         subr_name   , model_dim, model_mfront, nb_vari  ,&
+                         nb_vari_umat, l_implex , nb_vari_comp, nume_comp)
 !
 ! ----- Save informations
 !

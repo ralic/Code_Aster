@@ -1,6 +1,6 @@
-subroutine comp_nbvari_std(rela_comp , defo_comp, type_cpla     , nb_vari   ,&
+subroutine comp_nbvari_std(rela_comp , defo_comp , type_cpla     , nb_vari   ,&
                            kit_comp_ , type_matg_, post_iter_   , mult_comp_,&
-                           l_cristal_, nume_comp_, nb_vari_rela_)
+                           l_cristal_, l_implex_ , nume_comp_, nb_vari_rela_)
 !
 implicit none
 !
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,6 +38,7 @@ implicit none
     character(len=16), optional, intent(in) :: post_iter_
     character(len=16), optional, intent(in) :: mult_comp_
     aster_logical, optional, intent(in) :: l_cristal_
+    aster_logical, optional, intent(in) :: l_implex_
     integer, optional, intent(out) :: nb_vari_rela_
     integer, optional, intent(out) :: nume_comp_(4)
 !
@@ -57,6 +58,7 @@ implicit none
 ! In  post_iter        : type of post_treatment
 ! In  mult_comp        : multi-comportment
 ! In  l_cristal        : .true. if *CRISTAL comportment
+! In  l_implex         : .true. if IMPLEX method
 ! Out nb_vari          : number of internal variables
 ! Out nb_vari_rela     : number of internal variables for RELATION
 ! Out nume_comp        : number LCxxxx subroutine
@@ -64,7 +66,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: kit_comp(4), type_matg, post_iter, mult_comp
-    aster_logical :: l_cristal
+    aster_logical :: l_cristal, l_implex
     integer :: nb_vari_rela, nume_comp(4)
     character(len=16) :: comp_elem_py, rela_comp_py
     integer :: idummy
@@ -94,14 +96,19 @@ implicit none
     if (present(l_cristal_)) then
         l_cristal = l_cristal_
     endif
+    l_implex  = .false.
+    if (present(l_implex_)) then
+        l_implex = l_implex_
+    endif
     nb_vari      = 0
     nb_vari_rela = 0
     nume_comp(:) = 0
 !
 ! - Coding composite comportment (Python)
 !
-    call comp_meca_code(rela_comp, defo_comp   , type_cpla   , kit_comp, type_matg,&
-                        post_iter, comp_elem_py, rela_comp_py)
+    call comp_meca_code(rela_comp   , defo_comp   , type_cpla   , kit_comp, type_matg,&
+                        post_iter   , l_implex    ,&
+                        comp_elem_py, rela_comp_py)
 !
 ! - Get number of variables
 !

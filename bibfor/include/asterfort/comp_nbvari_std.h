@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -15,12 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-! aslint: disable=W1504
+#include "asterf_types.h"
 !
 interface
-    subroutine comp_nbvari_std(rela_comp , defo_comp, type_cpla     , nb_vari   ,&
+    subroutine comp_nbvari_std(rela_comp , defo_comp , type_cpla     , nb_vari   ,&
                                kit_comp_ , type_matg_, post_iter_   , mult_comp_,&
-                               l_cristal_, nume_comp_, nb_vari_rela_)
+                               l_cristal_, l_implex_ , nume_comp_, nb_vari_rela_)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: type_cpla
@@ -30,6 +30,7 @@ interface
         character(len=16), optional, intent(in) :: post_iter_
         character(len=16), optional, intent(in) :: mult_comp_
         aster_logical, optional, intent(in) :: l_cristal_
+        aster_logical, optional, intent(in) :: l_implex_
         integer, optional, intent(out) :: nb_vari_rela_
         integer, optional, intent(out) :: nume_comp_(4)
     end subroutine comp_nbvari_std
