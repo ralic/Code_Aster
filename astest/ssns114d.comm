@@ -185,8 +185,8 @@ inst1=DEFI_LIST_REEL(DEBUT=0.0,
                      INTERVALLE=_F(JUSQU_A=t3,
                                    PAS=dt,),);
 
-DEFLIST=DEFI_LIST_INST(DEFI_LIST=_F(METHODE='MANUEL',
-                                    LIST_INST=inst1,),
+DEFLIST=DEFI_LIST_INST(METHODE='MANUEL',
+                       DEFI_LIST=_F(LIST_INST=inst1,),
                        ECHEC=_F(ACTION        = 'DECOUPE',
                                 SUBD_METHODE  = 'MANUEL',
                                 SUBD_PAS=4,
