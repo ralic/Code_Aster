@@ -1,7 +1,7 @@
 subroutine op0008()
     implicit none
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -37,7 +37,7 @@ subroutine op0008()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/me2mac.h"
-#include "asterfort/me2mme.h"
+#include "asterfort/me2mme_2.h"
 #include "asterfort/me2mth.h"
 #include "asterfort/mecact.h"
 #include "asterfort/rcmfmc.h"
@@ -146,7 +146,7 @@ subroutine op0008()
 !     ----------------------------------
 !        -- TRAITEMENT DES ELEMENTS FINIS CLASSIQUES (.RELR)
 !           (ET CREATION DE L'OBJET .RERR).
-        call me2mme(modele, ncha, zk8(icha), mate, cara,&
+        call me2mme_2(modele, ncha, zk8(icha), mate, cara,&
                     time, matel, nh, 'G')
 !
 !        -- TRAITEMENT DES SOUS-STRUCTURES EVENTUELLES. (.RELC):
@@ -161,7 +161,7 @@ subroutine op0008()
                     ncmp=6, lnomcmp=nomcmp, vr=tps)
         call mecact('V', '&&OP0008.PTEMPER', 'MODELE', modele//'.MODELE', 'TEMP_R',&
                     ncmp=4, lnomcmp=ncmpth, vr=vcmpth)
-        call me2mth(modele, ncha, zk8(icha), mate, cara,&
+        call me2mth(modele, ncha, zk8(icha), cara,&
                     time2, '&&OP0008.PTEMPER', matel)
     else if (suropt.eq.'CHAR_ACOU') then
         call me2mac(modele, ncha, zk8(icha), mate, matel)

@@ -1,7 +1,7 @@
 subroutine nmvarc_prep(type_comp, model    , cara_elem, mate     , varc_refe,&
                        compor   , exis_temp, mxchin   , nbin     , lpain    ,&
                        lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
-                       sigm_prev, vari_prev, varc_prev, varc_curr)
+                       sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
 implicit none
 !
@@ -14,11 +14,12 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
+#include "asterfort/meharm.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/xajcin.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,6 +55,7 @@ implicit none
     character(len=19), intent(in) :: vari_prev
     character(len=19), intent(in) :: varc_prev
     character(len=19), intent(in) :: varc_curr
+    integer, intent(in) :: nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -84,6 +86,7 @@ implicit none
 ! In  vari_prev      : internal variables at previous step
 ! In  varc_prev      : command variables at previous step
 ! In  varc_curr      : command variables at current step
+! In  nume_harm      : Fourier harmonic number
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,7 +94,7 @@ implicit none
     integer :: iret
     character(len=19) :: chsith
     character(len=19) :: vrcmoi, vrcplu, time_curr, time_prev
-    character(len=24) :: chgeom, chcara(18), chvref, ligrmo
+    character(len=24) :: chgeom, chcara(18), chvref, ligrmo, chharm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -160,27 +163,30 @@ implicit none
     lchin(15) = chcara(1) (1:8)//'.CANBSP'
     lpain(16) = 'PFIBRES'
     lchin(16) = chcara(1) (1:8)//'.CAFIBR'
+    call meharm(model, nume_harm, chharm)
+    lpain(17)='PHARMON'
+    lchin(17)=chharm
 !
 ! - Computation of elementary vectors - Previous
 !
     if (type_comp.eq.'-') then
-        lpain(17) = 'PTEMPSR'
-        lchin(17) = time_prev
-        lpain(18) = 'PVARCPR'
-        lchin(18) = vrcmoi
-        nbin = 18
+        lpain(18) = 'PTEMPSR'
+        lchin(18) = time_prev
+        lpain(19) = 'PVARCPR'
+        lchin(19) = vrcmoi
+        nbin = 19
     endif
 !
 ! - Computation of elementary vectors - Current
 !
     if (type_comp.eq.'+') then
-        lpain(17) = 'PTEMPSR'
-        lchin(17) = time_curr
-        lpain(18) = 'PVARCPR'
-        lchin(18) = vrcplu
-        lpain(19) = 'PVARCMR'
-        lchin(19) = vrcmoi
-        nbin = 19
+        lpain(18) = 'PTEMPSR'
+        lchin(18) = time_curr
+        lpain(19) = 'PVARCPR'
+        lchin(19) = vrcplu
+        lpain(20) = 'PVARCMR'
+        lchin(20) = vrcmoi
+        nbin = 20
     endif
 !
 ! - XFEM input fields

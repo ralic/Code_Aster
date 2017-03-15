@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -92,10 +92,11 @@ Conseil :
    non pas sous la forme 'TEMP'.
 """),
 
-
-
-
-
+    19 : _(u"""
+La variable de commande %(k1)s est présente dans le champ de matériau fourni à CALC_VECT_ELEM.
+Attention : les chargements induits par les variables de commande ne sont pas calculés par
+CALC_VECT_ELEM. Pour en tenir compte, il faut utiliser l'opérateur CALCUL.   
+"""),
 
     22 : _(u"""
   L'option %(k1)s est inexistante.

@@ -1,6 +1,6 @@
 subroutine nmvcpr(modelz   , mate , cara_elem      , varc_refe      , compor   ,&
                   hval_incr, base_, vect_elem_curr_, vect_elem_prev_, nume_dof_,&
-                  cnvcpr_)
+                  cnvcpr_, nume_harm_)
 !
 implicit none
 !
@@ -17,7 +17,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,7 @@ implicit none
     character(len=*), optional, intent(in) :: vect_elem_prev_
     character(len=24), optional, intent(in) :: nume_dof_
     character(len=24), optional, intent(in) :: cnvcpr_
+    integer, optional, intent(in) :: nume_harm_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,11 +66,12 @@ implicit none
 ! In  vect_elem_prev : elementary vector for previous command variables
 ! In  vect_elem_curr : elementary vector for current command variables
 ! In  cnvcpr         : name of second member for command variables
+! In  nume_harm      : Fourier harmonic number
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchin, mxchout, nbin, nbout
-    parameter    (mxchout=2, mxchin=31)
+    parameter    (mxchout=2, mxchin=32)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
@@ -79,7 +81,7 @@ implicit none
     character(len=19) :: vect_elem(2)
     character(len=19) :: sigm_prev, vari_prev, varc_prev, varc_curr
     character(len=24) :: model
-    integer :: iret
+    integer :: iret, nume_harm
     character(len=1)  :: base
     character(len=19) :: vect_elem_curr, vect_elem_prev
     character(len=24) :: nume_dof, cnvcpr
@@ -88,6 +90,7 @@ implicit none
 !
     model = modelz
     base  = 'V'
+    nume_harm = 0
     if (present(base_)) then
         base = base_
     endif
@@ -103,6 +106,9 @@ implicit none
         cnvcpr   = cnvcpr_
         ASSERT(present(nume_dof_))
         nume_dof = nume_dof_
+    endif
+    if (present(nume_harm_)) then
+        nume_harm = nume_harm_
     endif
 
 !
@@ -151,7 +157,7 @@ implicit none
         call nmvarc_prep('-'      , model    , cara_elem, mate     , varc_refe,&
                          compor   , exis_temp, mxchin   , nbin     , lpain    ,&
                          lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
-                         sigm_prev, vari_prev, varc_prev, varc_curr)
+                         sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
 ! - Computation of elementaty vectors - Previous
 ! - For metallurgy: already incremental
@@ -168,7 +174,7 @@ implicit none
         call nmvarc_prep('+'      , model    , cara_elem, mate     , varc_refe,&
                          compor   , exis_temp, mxchin   , nbin     , lpain    ,&
                          lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
-                         sigm_prev, vari_prev, varc_prev, varc_curr)
+                         sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
 ! - Computation of elementary vectors - Current
 !

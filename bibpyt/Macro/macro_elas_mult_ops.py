@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,6 +40,9 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
     RESOUDRE = self.get_cmd('RESOUDRE')
     CREA_RESU = self.get_cmd('CREA_RESU')
     CALC_CHAMP = self.get_cmd('CALC_CHAMP')
+    CALCUL = self.get_cmd('CALCUL')
+    EXTR_TABLE = self.get_cmd('EXTR_TABLE')
+    DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
     # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
 
@@ -99,7 +102,6 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
                               METHODE        =SOLVEUR['METHODE'],
                               RENUM          =SOLVEUR['RENUM'],
                               )
-
 #
 # boucle sur les items de CAS_CHARGE
 
@@ -152,8 +154,10 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
 
         if m['VECT_ASSE'] == None:
             motscles = {}
+            l_calc_varc = False
             if CHAM_MATER:
                 motscles['CHAM_MATER'] = CHAM_MATER
+                l_calc_varc = True
             if CARA_ELEM:
                 motscles['CARA_ELEM'] = CARA_ELEM
             if ifour:
@@ -161,7 +165,51 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
             if len(lchar1) > 0:
                 motscles['CHARGE'] = lchar1
             __nomvel = CALC_VECT_ELEM(OPTION='CHAR_MECA', **motscles)
-            __nomasv = ASSE_VECTEUR(VECT_ELEM=__nomvel, NUME_DDL=num)
+                
+                # chargement du aux variables de commandes
+            if l_calc_varc :
+                motscles = {}
+                if CARA_ELEM:
+                    motscles['CARA_ELEM'] = CARA_ELEM
+                if ifour:
+                    motscles['MODE_FOURIER'] = m['MODE_FOURIER']
+                
+                __list1=DEFI_LIST_REEL(DEBUT=0.0,
+                                    INTERVALLE=_F(JUSQU_A=1.0,
+                                                  NOMBRE=1,),);
+
+                if CHAR_MECA_GLOBAL :
+                    excit = []
+                    for ch in CHAR_MECA_GLOBAL:
+                        excit.append({'CHARGE' : ch})
+                    __cont1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
+                                MODELE=MODELE,
+                                CHAM_MATER = CHAM_MATER,
+                                INCREMENT=_F(LIST_INST=__list1,
+                                             NUME_ORDRE=1),
+                                EXCIT=excit,
+                                COMPORTEMENT=_F(RELATION='ELAS',),
+                                **motscles
+                                )
+                else:
+                    __cont1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
+                                MODELE=MODELE,
+                                CHAM_MATER = CHAM_MATER,
+                                INCREMENT=_F(LIST_INST=__list1,
+                                             NUME_ORDRE=1),
+                                COMPORTEMENT=_F(RELATION='ELAS',),
+                                **motscles
+                                )
+
+                __vvarcp=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                                 TABLE=__cont1,
+                                 NOM_PARA='NOM_SD',
+                                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                                           VALE_K='FORC_VARC_ELEM_P'),)
+                                           
+                __nomasv = ASSE_VECTEUR(VECT_ELEM=(__nomvel,__vvarcp), NUME_DDL=num)
+            else:
+                __nomasv = ASSE_VECTEUR(VECT_ELEM=(__nomvel,), NUME_DDL=num)
         else:
             __nomasv = m['VECT_ASSE']
 

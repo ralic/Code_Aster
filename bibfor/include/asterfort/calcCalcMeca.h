@@ -25,7 +25,7 @@ interface
                             l_elem_nonl , ds_constitutive, varc_refe  ,&
                             hval_incr   , hval_algo      ,&
                             merigi      , vediri         , vefint     , veforc,&
-                            vevarc_prev , vevarc_curr    ,&
+                            vevarc_prev , vevarc_curr    , nume_harm  ,&
                             nb_obje_maxi, obje_name      , obje_sdname, nb_obje)
         use NonLin_Datastructure_type
         integer, intent(in) :: nb_option
@@ -45,6 +45,7 @@ interface
         character(len=19), intent(in) :: veforc
         character(len=19), intent(in) :: vevarc_prev
         character(len=19), intent(in) :: vevarc_curr
+        integer, intent(in) :: nume_harm
         integer, intent(in) :: nb_obje_maxi
         character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
         character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)

@@ -1,6 +1,6 @@
 subroutine calcGetDataMeca(list_load      , model         , mate     , cara_elem,&
                            disp_prev      , disp_cumu_inst, vari_prev, sigm_prev,&
-                           ds_constitutive, l_elem_nonl)
+                           ds_constitutive, l_elem_nonl, nume_harm)
 !
 use NonLin_Datastructure_type
 !
@@ -9,6 +9,7 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/nmlect.h"
 #include "asterfort/getvid.h"
+#include "asterfort/getvis.h"
 #include "asterfort/nonlinDSConstitutiveCreate.h"
 #include "asterfort/nmdorc.h"
 #include "asterfort/nonlinDSConstitutiveInit.h"
@@ -44,6 +45,7 @@ implicit none
     character(len=19), intent(out) :: sigm_prev
     type(NL_DS_Constitutive), intent(out) :: ds_constitutive
     aster_logical, intent(out) :: l_elem_nonl
+    integer, intent(out) :: nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,6 +65,7 @@ implicit none
 ! Out sigm_prev        : stress at beginning of step
 ! Out ds_constitutive  : datastructure for constitutive laws management
 ! Out l_elem_nonl      : .true. if all elements can compute non-linear options
+! Out nume_harm        : Fourier harmonic number 
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,6 +94,10 @@ implicit none
 !
     call dismoi('NOM_LIGREL', model, 'MODELE', repk=ligrmo)
     call isOptionPossible(ligrmo, 'TOU_INI_ELGA', 'PVARI_R', l_some_ = l_elem_nonl)
+! - Does option FULL_MECA exist
+    if (l_elem_nonl) then
+        call isOptionPossible(ligrmo, 'FULL_MECA', 'PDEPLPR', l_some_ = l_elem_nonl)
+    endif
 !
 ! - Get displacements
 !
@@ -120,6 +127,11 @@ implicit none
     if (vari_prev .ne. ' ' .and. .not. l_elem_nonl) then
         call utmess('I', 'CALCUL1_7')
     endif
+!
+! - Get Fourier Mode
+!
+    call getvis(' ', 'MODE_FOURIER', scal=nume_harm, nbret=nocc)
+    if (nocc .eq. 0) nume_harm = 0
 !
 ! - Prepare constitutive laws management datastructure
 !

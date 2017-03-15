@@ -15,7 +15,7 @@ implicit none
 #include "asterfort/reajre.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -63,14 +63,14 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: mxchin, mxchout, nbin, nbout
-    parameter    (mxchout=2, mxchin=31)
+    parameter    (mxchout=2, mxchin=32)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
 !
     aster_logical :: exis_temp, exis_hydr, exis_ptot, exis_sech, exis_epsa
     aster_logical :: exis_meta_zirc, exis_meta_acier, exis_meta, calc_meta
     character(len=19) :: sigm_prev, vari_prev, varc_prev, varc_curr
-    integer :: iret
+    integer :: iret, nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,10 +109,11 @@ implicit none
 !
 ! - Fields preparation of elementary vectors
 !
+    nume_harm = 0
     call nmvarc_prep(type_comp, model    , cara_elem, mate     , varc_refe,&
                      compor   , exis_temp, mxchin   , nbin     , lpain    ,&
                      lchin    , mxchout  , nbout    , lpaout   , lchout   ,&
-                     sigm_prev, vari_prev, varc_prev, varc_curr)
+                     sigm_prev, vari_prev, varc_prev, varc_curr, nume_harm)
 !
 ! - Computation of elementary vectors
 !

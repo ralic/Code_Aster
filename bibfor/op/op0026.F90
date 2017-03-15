@@ -51,7 +51,7 @@ implicit none
     character(len=16) :: obje_name(nb_obje_maxi)
     character(len=24) :: obje_sdname(nb_obje_maxi)
     integer :: nb_option, nume_inst
-    integer :: long
+    integer :: long, nume_harm
     integer :: nb_obje
     real(kind=8) :: time_prev, time_curr
     character(len=8) :: table_new, table_old
@@ -82,7 +82,7 @@ implicit none
     if (phenom .eq. 'MECANIQUE') then
         call calcGetDataMeca(list_load      , model         , mate  , cara_elem,&
                              disp_prev      , disp_cumu_inst     , vari_prev, sigm_prev   ,&
-                             ds_constitutive, l_elem_nonl)
+                             ds_constitutive, l_elem_nonl, nume_harm)
     elseif (phenom .eq. 'THERMIQUE') then
         !call calcGetDataTher()
     else
@@ -127,7 +127,7 @@ implicit none
                           l_elem_nonl , ds_constitutive, varc_refe  ,&
                           hval_incr   , hval_algo      ,&
                           merigi      , vediri         , vefint     , veforc,&
-                          vevarc_prev , vevarc_curr    ,&
+                          vevarc_prev , vevarc_curr    , nume_harm  ,&
                           nb_obje_maxi, obje_name      , obje_sdname, nb_obje)
     elseif (phenom .eq. 'THERMIQUE') then
         !call calcCalcTher()

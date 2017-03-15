@@ -1,4 +1,4 @@
-subroutine me2mth(model_, nb_load, list_name_, mate_, cara_elem_,&
+subroutine me2mth(model_, nb_load, list_name_, cara_elem_,&
                   time_ , temp_  , vect_elem_)
 !
 implicit none
@@ -20,7 +20,7 @@ implicit none
 #include "asterfort/load_neut_excl.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -39,7 +39,6 @@ implicit none
     character(len=*), intent(in) :: model_
     character(len=*), intent(in) :: temp_
     character(len=*), intent(in) :: cara_elem_
-    character(len=*), intent(in) :: mate_
     character(len=*), intent(in) :: vect_elem_
     character(len=*), intent(in) :: time_
     character(len=*), intent(in) :: list_name_(*)
@@ -56,7 +55,6 @@ implicit none
 !        MODELZ : NOM DU MODELE
 !        NCHAR  : NOMBRE DE CHARGES
 !        LCHAR  : LISTE DES CHARGES
-!        MATEZ  : CHAM_MATER
 !        CARAZ  : CARAC_ELEM
 !        TIMEZ  : CHAMPS DE TEMPSR
 !        CHTNZ  : CHAM_NO DE TEMPERATURE A L'INSTANT TN
@@ -68,7 +66,7 @@ implicit none
     character(len=8) :: model, cara_elem
     character(len=8) :: load_name
     character(len=19) :: vect_elem
-    character(len=24) :: mate, time
+    character(len=24) :: time
     aster_logical :: lfonc
     character(len=8) :: lpain(5), lpaout(1), k8bid
     character(len=16) :: option
@@ -82,7 +80,6 @@ implicit none
     call jemarq()
 !
     model     = model_
-    mate      = mate_
     cara_elem = cara_elem_
     vect_elem = vect_elem_
     time      = time_
@@ -229,11 +226,9 @@ implicit none
                     lpain(3) = 'PGRAINR'
                 endif
                 lchin(3) = ligrch(1:13)//'.GRAIN     '
-                lpain(4) = 'PMATERC'
-                lchin(4) = mate
                 ilires = ilires + 1
                 call codent(ilires, 'D0', lchout(1) (12:14))
-                call calcul('S', option, ligrmo, 4, lchin,&
+                call calcul('S', option, ligrmo, 3, lchin,&
                             lpain, 1, lchout, lpaout, 'G',&
                             'OUI')
                 call reajre(vect_elem, lchout(1), 'G')

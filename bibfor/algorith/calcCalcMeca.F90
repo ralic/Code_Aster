@@ -3,7 +3,7 @@ subroutine calcCalcMeca(nb_option   , list_option    , &
                         l_elem_nonl , ds_constitutive, varc_refe  ,&
                         hval_incr   , hval_algo      ,&
                         merigi      , vediri         , vefint     , veforc,&
-                        vevarc_prev , vevarc_curr    ,&
+                        vevarc_prev , vevarc_curr    , nume_harm  ,&
                         nb_obje_maxi, obje_name      , obje_sdname, nb_obje)
 !
 use NonLin_Datastructure_type
@@ -61,6 +61,7 @@ implicit none
     character(len=19), intent(in) :: veforc
     character(len=19), intent(in) :: vevarc_prev
     character(len=19), intent(in) :: vevarc_curr
+    integer, intent(in) :: nume_harm
     integer, intent(in) :: nb_obje_maxi
     character(len=16), intent(inout) :: obje_name(nb_obje_maxi)
     character(len=24), intent(inout) :: obje_sdname(nb_obje_maxi)
@@ -223,11 +224,13 @@ implicit none
 !
     if (l_varc_prev) then
         call nmvcpr(model, mate       , cara_elem, varc_refe     , ds_constitutive%compor   ,&
-                    hval_incr, base_ = 'G', vect_elem_prev_ = vevarc_prev)
+                    hval_incr, base_ = 'G', vect_elem_prev_ = vevarc_prev,&
+                    nume_harm_ = nume_harm)
     endif
     if (l_varc_curr) then
         call nmvcpr(model, mate       , cara_elem, varc_refe     , ds_constitutive%compor   ,&
-                    hval_incr, base_ = 'G', vect_elem_curr_ = vevarc_curr)
+                    hval_incr, base_ = 'G', vect_elem_curr_ = vevarc_curr,&
+                    nume_harm_ = nume_harm)
     endif
 !
 ! - New objects in table

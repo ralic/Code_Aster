@@ -1,6 +1,6 @@
 # person_in_charge: jean-luc.flejou at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,9 +137,28 @@ DDL_IMPO=RESOUDRE(reuse=DDL_IMPO,  MATR=MATASS2,     CHAM_NO=DDL_IMPO )
 #----------------------------------------------------------------------
 # CAS 3:         DILATATION THERMIQUE A 100
 #----------------------------------------------------------------------
+                        
+# prise en compte des variables de commande
 
-VEL3=CALC_VECT_ELEM( CHARGE=( COND_LIM,),   OPTION='CHAR_MECA',
-                        CHAM_MATER=CHMAT,   CARA_ELEM=CARLEM )
+LIST1=DEFI_LIST_REEL(DEBUT=0.0,
+                    INTERVALLE=_F(JUSQU_A=1.0,
+                                  NOMBRE=1,),);
+
+CONT1=CALCUL(OPTION=('FORC_VARC_ELEM_P'),
+            MODELE=MOD,
+            CARA_ELEM=CARLEM,
+            CHAM_MATER=CHMAT,
+            INCREMENT=_F(LIST_INST=LIST1,
+                         NUME_ORDRE=1),
+            EXCIT=_F(CHARGE=COND_LIM,),
+            COMPORTEMENT=_F(RELATION='ELAS',),
+            );
+
+VEL3=EXTR_TABLE(TYPE_RESU='VECT_ELEM_DEPL_R',
+                 TABLE=CONT1,
+                 NOM_PARA='NOM_SD',
+                 FILTRE=_F(NOM_PARA='NOM_OBJET',
+                           VALE_K='FORC_VARC_ELEM_P'),)
 
 DILA_THE=ASSE_VECTEUR(  VECT_ELEM=VEL3,    NUME_DDL=NUM     )
 

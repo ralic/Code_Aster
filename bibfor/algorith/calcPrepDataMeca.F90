@@ -150,7 +150,7 @@ implicit none
 ! - Checking number of internal variables
 !
     call jeexin(ds_constitutive%compor(1:19)//'.CESD', iret)
-    if (iret .gt. 0) then
+    if (iret .gt. 0 .and. vari_prev .ne. ' ') then
         call vrcomp(ds_constitutive%compor, vari_prev, ligrmo, iret)
         if (iret .eq. 1) then
             call utmess('F', 'CALCUL1_5')
