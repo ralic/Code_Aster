@@ -400,6 +400,9 @@ Les valeurs numéro %(i1)d  des abscisses des signaux renseignés dans les opér
 Il faut renseigner le spectre à un sigma jusque 0.1 Hz pour SPEC_FRACTILE.
 """),
 
-
+    83: _(u"""
+-------Tirages aléatoires:         ----------------------------
+        Le germe pour les tirages aléatoires vaut %(i1)d.
+"""),
 
 }

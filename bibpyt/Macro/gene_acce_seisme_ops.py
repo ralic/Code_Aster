@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,6 +22,7 @@
 
 import sys
 import traceback
+from datetime import datetime
 from math import pi, ceil, exp, sqrt, log
 import numpy as NP
 from Accas import _F
@@ -49,8 +50,11 @@ def gene_acce_seisme_ops(self, **kwargs):
     ier = 0
     # conteneur des paramètres du calcul
     params = GeneAcceParameters(**kwargs)
-    if params.seed:
-        NP.random.seed(params.seed)
+    if not params.seed:
+        now = datetime.now()
+        params.seed = now.microsecond
+        UTMESS('I', 'SEISME_83', vali = params.seed)
+    NP.random.seed(params.seed)     
     # création de l'objet generator
     generator = Generator.factory(self, params)
     try:
@@ -1234,6 +1238,5 @@ class SimulatorDSPPhase(Simulator):
         Xt = self.process_TimeHistory(generator, Xt)
         Xtl = calc_phase_delay(generator.sampler.liste_temps, Xt, Data_phase)
         return Xtl
-
 
 

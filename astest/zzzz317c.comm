@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -48,27 +48,27 @@ pga=0.2
 ##############################
 # OPTION ACCE_MAXI
 #####
-ACCE1=GENE_ACCE_SEISME(INFO =2, INIT_ALEA = 1000000, TITRE = 'DSP1',
+ACCE1b=GENE_ACCE_SEISME(INFO =2, INIT_ALEA = 1000000, TITRE = 'DSP1',
               PAS_INST = DT, NB_POIN = 2**10, PESANTEUR = 9.81, DUREE_PHASE_FORTE = 10.1,
               DSP         = _F(AMOR_REDUIT = amor,FREQ_FOND = frr,),
               MODULATION  = _F(TYPE = "JENNINGS_HOUSNER", ACCE_MAX=pga),),
 
-FONCT1=RECU_FONCTION( TABLE=ACCE1,
+FONCT1b=RECU_FONCTION( TABLE=ACCE1b,
                       FILTRE=_F(  NOM_PARA = 'NUME_ORDRE', VALE_I = 1),
                       NOM_PARA_TABL='FONCTION',)
 
-RMS1=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1))
-N1=INFO_FONCTION(  NOCI_SEISME=_F(FONCTION = FONCT1,  OPTION = 'MAXI') )
-IMPR_TABLE (TABLE=N1,  UNITE=8,);
+RMS1b=INFO_FONCTION( ECART_TYPE=_F(  FONCTION = FONCT1b))
+N1b=INFO_FONCTION(  NOCI_SEISME=_F(FONCTION = FONCT1b,  OPTION = 'MAXI') )
+IMPR_TABLE (TABLE=N1b,  UNITE=8,);
 
 TEST_TABLE(VALE_CALC=2.57627250552,
            NOM_PARA='ACCE_MAX',
-           TABLE=N1,)
+           TABLE=N1b,)
 
 TEST_TABLE( VALE_CALC=0.631013119619,
 #           VALE_REFE=0.603,PRECISION=0.1,REFERENCE='ANALYTIQUE',
            NOM_PARA='ECART_TYPE',
-           TABLE=RMS1,)
+           TABLE=RMS1b,)
 
 ##############################
 # TYPE "GAMMA"
@@ -132,68 +132,72 @@ TEST_TABLE( VALE_CALC=0.618787639789,
 ########################################################
 # TEST DU MAX MEDIAN DES SIGNAUX AVEC OPTION PGA
 ########################################################
+
+#   List of random seeds (Twister Mersenne)
+########################################################
+ini_alea = [2424713978, 1819933322, 3620512650, 4265540793, 2354028011, 2220830760, 
+           2912797286, 1383422999, 892674545, 1808648372, 2091475844, 1466132308, 209539164, 
+           829169084, 3742233024, 312729214, 1902971851, 2516437928, 1240967087, 2373952364, 
+           1014113760, 3543625559, 2501220597, 3114294892, 2161193363]
+Nsim = 25
+########################################################
 # CONSTANT
+#
 l_PGA2=[]
-Nsim2=25
-for iii in range(Nsim2):
-   DETRUIRE(CONCEPT =_F(NOM=(ACCE2b, FONCT2b, N2b)))
-   ACCE2b = GENE_ACCE_SEISME( PAS_INST = DT, NB_POIN = 2**10, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
+for iii in range(Nsim):
+   ACCE2 = GENE_ACCE_SEISME( INIT_ALEA = ini_alea[iii],
+               PAS_INST = DT, NB_POIN = 2**10, PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
                DSP        = _F(AMOR_REDUIT = amor,FREQ_FOND = frr,),
                MODULATION      = _F(TYPE="CONSTANT",  ACCE_MAX=pga),)
 
-   FONCT2b=RECU_FONCTION(    TABLE=ACCE2b,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
+   FONCT2 = RECU_FONCTION(    TABLE=ACCE2,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',   VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-   N2b=INFO_FONCTION(  NOCI_SEISME=_F(
-                             FONCTION = FONCT2b, OPTION = ('MAXI')) )
+   N2 = INFO_FONCTION(  NOCI_SEISME =_F(
+                             FONCTION = FONCT2, OPTION = ('MAXI')) )
 
-   tab2b = N2b.EXTR_TABLE()
-   l_PGA2.append(tab2b.ACCE_MAX[0])
+   tab2 = N2.EXTR_TABLE()
+   l_PGA2.append(tab2.ACCE_MAX[0])
+   DETRUIRE(CONCEPT =_F(NOM=(ACCE2, FONCT2, N2)))
 
-PGA_MED2=NP.median(NP.array(l_PGA2))/9.81
-print "median PGA", PGA_MED2
-print 'mean PGA FIN', NP.mean(NP.array(l_PGA2))/9.81
+PGA_MED2 = NP.median(NP.array(l_PGA2))/9.81
+#print "median PGA", PGA_MED2
+#print 'mean PGA FIN', NP.mean(NP.array(l_PGA2))/9.81
 
 ########################################################
 #JH
 #
 l_PGA1=[]
-Nsim1=25
-for iii in range(Nsim1):
-   print iii , ' JH'
-
-   ACCE1b=GENE_ACCE_SEISME(PAS_INST  = DT,PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
+for iii in range(Nsim):
+   ACCE1=GENE_ACCE_SEISME( INIT_ALEA = ini_alea[iii],
+              PAS_INST  = DT,PESANTEUR = 9.81, DUREE_PHASE_FORTE = TSM,
               DSP        = _F(AMOR_REDUIT  = amor,FREQ_FOND = frr,),
               MODULATION      = _F(TYPE = "JENNINGS_HOUSNER", ACCE_MAX = pga), )
 
-   FONCT1b=RECU_FONCTION(    TABLE=ACCE1b,
-                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',
-                                       VALE_I = 1),
+   FONCT1=RECU_FONCTION(    TABLE=ACCE1,
+                              FILTRE=_F(  NOM_PARA = 'NUME_ORDRE',  VALE_I = 1),
                               NOM_PARA_TABL='FONCTION',)
 
-   N1b=INFO_FONCTION(  NOCI_SEISME=_F(
-                             FONCTION = FONCT1, OPTION = ('MAXI')) )
-   tab1 = N1b.EXTR_TABLE()
+   N1=INFO_FONCTION(  NOCI_SEISME=_F(
+                              FONCTION = FONCT1, OPTION = ('MAXI')) )
+   tab1 = N1.EXTR_TABLE()
    l_PGA1.append(tab1.ACCE_MAX[0])
-   DETRUIRE(CONCEPT=_F(NOM=(ACCE1b, FONCT1b, N1b)))
+   DETRUIRE(CONCEPT=_F(NOM=(ACCE1, FONCT1, N1)))
 
-PGA_MED1=NP.median(NP.array(l_PGA1))/9.81
-print "median PGA", PGA_MED1
-print 'mean PGA FIN', NP.mean(NP.array(l_PGA1))/9.81
-
+PGA_MED1 = NP.median(NP.array(l_PGA1))/9.81
+#print "median PGA", PGA_MED1
+#print 'mean PGA FIN', NP.mean(NP.array(l_PGA1))/9.81
 
 
 ########################################################
 #GAMMA
 #
 l_PGA3=[]
-Nsim3=25
-for iii in range(Nsim3):
+for iii in range(Nsim):
    DETRUIRE(CONCEPT=_F(NOM=(ACCE3, FONCT3, N3)))
-
-   ACCE3=GENE_ACCE_SEISME(PAS_INST = DT,PESANTEUR = 9.81,DUREE_PHASE_FORTE = TSM,
+   ACCE3=GENE_ACCE_SEISME( INIT_ALEA = ini_alea[iii],
+              PAS_INST = DT,PESANTEUR = 9.81,DUREE_PHASE_FORTE = TSM,
               DSP        = _F(AMOR_REDUIT = amor,FREQ_FOND = frr,),
               MODULATION = _F(TYPE = "GAMMA",
                                     INST_INI= t_ini,  ACCE_MAX =pga),)
@@ -209,31 +213,31 @@ for iii in range(Nsim3):
    tab3 = N3.EXTR_TABLE()
    l_PGA3.append(tab3.ACCE_MAX[0])
 
-PGA_MED3=NP.median(NP.array(l_PGA3))/9.81
-print "median PGA", PGA_MED3
-print 'mean PGA FIN', NP.mean(NP.array(l_PGA3))/9.81
+PGA_MED3 = NP.median(NP.array(l_PGA3))/9.81
+#print "median PGA", PGA_MED3
+#print 'mean PGA FIN', NP.mean(NP.array(l_PGA3))/9.81
 
 
 ########################################################
 ## TEST TABLE
 
-tabres=CREA_TABLE(LISTE = (
+tabres = CREA_TABLE(LISTE = (
           _F(    PARA='GAMMA',      LISTE_R=(PGA_MED3,),),
-          _F(    PARA='CONSTANT', LISTE_R=(PGA_MED2,),),
+          _F(    PARA='CONSTANT',   LISTE_R=(PGA_MED2,),),
           _F(    PARA='JH',         LISTE_R=(PGA_MED1,),),))
 
 TEST_TABLE(
-           VALE_CALC=0.221363062385,
+           VALE_CALC= 0.219996251856,
            NOM_PARA='GAMMA',
            TABLE=tabres,)
 
 TEST_TABLE(
-           VALE_CALC=0.26261697304,
+           VALE_CALC= 0.192391911186,
            NOM_PARA='JH',
            TABLE=tabres,)
 
 TEST_TABLE(
-           VALE_CALC=0.197868771372,
+           VALE_CALC= 0.202496752699,
            NOM_PARA='CONSTANT',
            TABLE=tabres,)
 
