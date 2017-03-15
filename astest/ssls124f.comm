@@ -293,16 +293,16 @@ Uz=F*L*L*L/3./YG/Iy
 
 # La solution obtenue presente une certaine variabilite entre machines qui decoule
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
+# Cette variabilite se vérifie aussi lorsqu'on change de version de compilateur,
+# de solveur linéaire, de renuméroteur, de version de routine BLAS...
 # => l'usage du mot cle TOLE_MACHINE.
-calc_aster5_p7=0.00196742542888
-calc_aster5_p8=0.00196755888617
 TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    GROUP_NO='P7',
                    REFERENCE='ANALYTIQUE',
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00196688152522,
+                   VALE_CALC=0.00196734459553,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),
@@ -312,7 +312,7 @@ TEST_RESU(RESU=(_F(NUME_ORDRE=1,
                    RESULTAT=RESU33,
                    NOM_CHAM='DEPL',
                    NOM_CMP='DZ',
-                   VALE_CALC=0.00196701634209,
+                   VALE_CALC=0.00196747097096,
                    VALE_REFE=Uz,
                    TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
                    PRECISION=0.1,),
