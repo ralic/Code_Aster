@@ -61,7 +61,7 @@ M_ASSE=ASSE_MATRICE(MATR_ELEM=M_ELEM,
 # QUESTION 1: CALCUL BANDE AVEC SORENSEN
 
 MODE_SOB=CALC_MODES(MATR_RIGI=K_ASSE,
-                    OPTION='BANDE',
+                    OPTION='BANDE',SOLVEUR=_F(NPREC=9),
                     CALC_FREQ=_F(#SEUIL_FREQ=.1,
                                  #NMAX_ITER_SHIFT=6,
                                  FREQ=(-.3,2700.0,),
