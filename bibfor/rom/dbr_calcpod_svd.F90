@@ -1,4 +1,4 @@
-subroutine dbr_calc_svd(ds_empi, ds_snap, q, s, v, nb_sing, nb_line_svd )
+subroutine dbr_calcpod_svd(ds_empi, ds_snap, q, s, v, nb_sing, nb_line_svd)
 !
 use Rom_Datastructure_type
 !

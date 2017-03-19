@@ -16,12 +16,14 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_calc_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
+    subroutine dbr_calcpod_svd2(p, incr_end, g, s, b, nb_sing)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        real(kind=8), intent(in) :: tole_svd
-        real(kind=8), intent(in), pointer :: s(:)
-        integer, intent(in) :: nb_sing
-        integer, intent(out) :: nb_mode
-    end subroutine dbr_calc_sele
+        integer, intent(in) :: p
+        integer, intent(in) :: incr_end
+        real(kind=8), pointer, intent(in) :: g(:)
+        real(kind=8), intent(out), pointer :: b(:)
+        real(kind=8), intent(out), pointer :: s(:)
+        integer, intent(out) :: nb_sing
+    end subroutine dbr_calcpod_svd2
 end interface
+

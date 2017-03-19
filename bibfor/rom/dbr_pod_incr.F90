@@ -12,8 +12,8 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/norm_frobenius.h"
-#include "asterfort/dbr_calc_svd2.h"
-#include "asterfort/dbr_calc_sele.h"
+#include "asterfort/dbr_calcpod_svd2.h"
+#include "asterfort/dbr_calcpod_sele.h"
 #include "asterfort/romTableSave.h"
 #include "asterfort/romTableCreate.h"
 #include "asterfort/romBaseRead.h"
@@ -225,11 +225,11 @@ implicit none
 !
 ! - Compute SVD: Q = V S Wt
 !
-    call dbr_calc_svd2(p, incr_end, g, s, b, nb_sing)
+    call dbr_calcpod_svd2(p, incr_end, g, s, b, nb_sing)
 !
 ! - Select empiric modes
 !
-    call dbr_calc_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
+    call dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
 ! - Compute matrix V
 !

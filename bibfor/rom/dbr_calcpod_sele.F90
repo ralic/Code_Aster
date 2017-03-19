@@ -1,4 +1,4 @@
-subroutine dbr_calc_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
+subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
 use Rom_Datastructure_type
 !

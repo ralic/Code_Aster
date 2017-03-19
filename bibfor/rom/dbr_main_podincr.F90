@@ -8,9 +8,9 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_calc_q.h"
+#include "asterfort/dbr_calcpod_q.h"
 #include "asterfort/dbr_pod_incr.h"
-#include "asterfort/dbr_calc_save.h"
+#include "asterfort/dbr_calcpod_save.h"
 #include "asterfort/as_deallocate.h"
 !
 ! ======================================================================
@@ -59,7 +59,7 @@ implicit none
 !
 ! - Create snapshots matrix Q
 !    
-    call dbr_calc_q(ds_empi, ds_para_pod%ds_snap, q)
+    call dbr_calcpod_q(ds_empi, ds_para_pod%ds_snap, q)
 !
 ! - Incremental POD method
 !
@@ -68,7 +68,7 @@ implicit none
 !
 ! - Save empiric base
 !
-    call dbr_calc_save(ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 ! - Cleaning
 !

@@ -1,4 +1,4 @@
-subroutine dbr_calc_redu(nb_snap, m, q, v, nb_mode, v_gamma)
+subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, v_gamma)
 !
 use Rom_Datastructure_type
 !

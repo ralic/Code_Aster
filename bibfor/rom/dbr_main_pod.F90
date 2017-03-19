@@ -7,12 +7,11 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/dbr_calc_q.h"
-#include "asterfort/dbr_calc_svd.h"
-#include "asterfort/dbr_calc_sele.h"
-#include "asterfort/dbr_calc_redu.h"
-#include "asterfort/dbr_calc_save.h"
+#include "asterfort/dbr_calcpod_q.h"
+#include "asterfort/dbr_calcpod_svd.h"
+#include "asterfort/dbr_calcpod_sele.h"
+#include "asterfort/dbr_calcpod_save.h"
+#include "asterfort/dbr_calcpod_redu.h"
 #include "asterfort/romTableSave.h"
 !
 ! ======================================================================
@@ -66,23 +65,23 @@ implicit none
 !
 ! - Create snapshots matrix Q
 !    
-    call dbr_calc_q(ds_empi, ds_para_pod%ds_snap, q)
+    call dbr_calcpod_q(ds_empi, ds_para_pod%ds_snap, q)
 !
 ! - Compute empiric modes by SVD
 !
-    call dbr_calc_svd(ds_empi, ds_para_pod%ds_snap, q, s, v, nb_sing, nb_line_svd)
+    call dbr_calcpod_svd(ds_empi, ds_para_pod%ds_snap, q, s, v, nb_sing, nb_line_svd)
 !
 ! - Select empiric modes
 !
-    call dbr_calc_sele(nb_mode_maxi, ds_para_pod%tole_svd, s, nb_sing, nb_mode)
+    call dbr_calcpod_sele(nb_mode_maxi, ds_para_pod%tole_svd, s, nb_sing, nb_mode)
 !
 ! - Save empiric modes
 ! 
-    call dbr_calc_save(ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 ! - Compute reduced coordinates
 !
-    call dbr_calc_redu(nb_snap_redu, nb_line_svd, q, v, nb_mode, v_gamma)
+    call dbr_calcpod_redu(nb_snap_redu, nb_line_svd, q, v, nb_mode, v_gamma)
 !
 ! - Save the reduced coordinates in a table
 !

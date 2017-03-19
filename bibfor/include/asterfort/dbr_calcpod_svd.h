@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_calc_svd(ds_empi, ds_snap, q, s, v, nb_sing, nb_line_svd)
+    subroutine dbr_calcpod_svd(ds_empi, ds_snap, q, s, v, nb_sing, nb_line_svd)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: ds_empi
         type(ROM_DS_Snap), intent(in) :: ds_snap
@@ -24,7 +24,6 @@ interface
         real(kind=8), intent(out), pointer :: v(:)
         real(kind=8), intent(out), pointer :: s(:)
         integer, intent(out) :: nb_sing
-        integer, intent(out) :: nb_line_svd 
-    end subroutine dbr_calc_svd
+        integer, intent(out) :: nb_line_svd
+    end subroutine dbr_calcpod_svd
 end interface
-

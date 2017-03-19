@@ -1,4 +1,4 @@
-subroutine dbr_calc_svd2(p, incr_end, g, s, b, nb_sing)
+subroutine dbr_calcpod_svd2(p, incr_end, g, s, b, nb_sing)
 !
 use Rom_Datastructure_type
 !
