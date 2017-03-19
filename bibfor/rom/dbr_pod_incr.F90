@@ -1,4 +1,5 @@
-subroutine dbr_pod_incr(ds_para, q, s, v, nb_mode, nb_snap_redu)
+subroutine dbr_pod_incr(l_reuse, nb_mode_maxi, ds_empi, ds_para_pod,&
+                        q, s, v, nb_mode, nb_snap_redu)
 !
 use Rom_Datastructure_type
 !
@@ -43,7 +44,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR) , intent(in) :: ds_para
+    aster_logical, intent(in) :: l_reuse
+    integer, intent(in) :: nb_mode_maxi
+    type(ROM_DS_Empi), intent(inout) :: ds_empi
+    type(ROM_DS_ParaDBR_POD) , intent(in) :: ds_para_pod
     real(kind=8), pointer, intent(inout) :: q(:)
     real(kind=8), pointer, intent(out)   :: s(:)
     real(kind=8), pointer, intent(out)   :: v(:)
@@ -58,7 +62,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !  
-! In  ds_para          : datastructure for parameters
+! In  l_reuse          : .true. if reuse
+! In  nb_mode_maxi     : maximum number of emprical modes
+! IO  ds_empi          : datastructure for empiric modes
+! In  ds_para_pod      : datastructure for parameters (POD)
 ! IO  q                : pointer to snapshots matrix (be modified after SVD)
 ! Out s                : singular values 
 ! Out v                : singular vectors 
@@ -70,9 +77,8 @@ implicit none
     integer :: ifm, niv
     integer :: incr_ini, incr_end, i_equa, i_snap, p, i_incr, k, i_mode
     integer :: nb_equa, nb_snap, nb_sing
-    real(kind=8) :: tole_incr
-    character(len=8)  :: base_type
-    aster_logical :: l_reuse
+    real(kind=8) :: tole_incr, tole_svd
+    character(len=8)  :: base_type, base
     real(kind=8) :: norm_q, norm_r
     integer(kind=4) :: info
     real(kind=8), pointer :: qi(:)   => null()
@@ -87,8 +93,6 @@ implicit none
     real(kind=8), pointer :: b(:)    => null()
     real(kind=8), pointer :: v_gamma(:)    => null()
     character(len=19) :: tabl_name, tabl_name_r
-    character(len=8) :: result_out
-    type(ROM_DS_Empi) :: ds_empi
     character(len=24) :: typval
     integer :: nbval, iret
     real(kind=8), pointer :: v_gm(:) => null()
@@ -101,13 +105,13 @@ implicit none
 !
 ! - Get parameters
 !
-    result_out   = ds_para%result_out
-    l_reuse      = ds_para%l_reuse
-    tabl_name    = ds_para%tabl_name
-    base_type    = ds_para%base_type
-    nb_equa      = ds_para%ds_empi%nb_equa
-    nb_snap      = ds_para%ds_snap%nb_snap
-    tole_incr    = ds_para%tole_incr
+    nb_equa      = ds_empi%nb_equa
+    base         = ds_empi%base
+    tabl_name    = ds_para_pod%tabl_name
+    base_type    = ds_para_pod%base_type
+    nb_snap      = ds_para_pod%ds_snap%nb_snap
+    tole_incr    = ds_para_pod%tole_incr
+    tole_svd     = ds_para_pod%tole_svd
     ASSERT(base_type .eq. '3D')
 !
 ! - Allocate objects
@@ -117,8 +121,8 @@ implicit none
     AS_ALLOCATE(vr = ri, size = nb_equa)
     AS_ALLOCATE(vr = rt, size = nb_equa)
     if (l_reuse) then
-        call romBaseRead(result_out, ds_empi)
-        call ltnotb(result_out, 'COOR_REDUIT', tabl_name_r)
+        call romBaseRead(base, ds_empi)
+        call ltnotb(base, 'COOR_REDUIT', tabl_name_r)
         call tbexve(tabl_name_r, 'COOR_REDUIT', '&&COORHR', 'V', nbval, typval)
         call jeveuo('&&COORHR', 'E', vr = v_gm)
         AS_ALLOCATE(vr = vt, size = nb_equa*(nb_snap+ds_empi%nb_mode))
@@ -225,7 +229,7 @@ implicit none
 !
 ! - Select empiric modes
 !
-    call dbr_calc_sele(ds_para, s, nb_sing, nb_mode)
+    call dbr_calc_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
 ! - Compute matrix V
 !
@@ -240,7 +244,7 @@ implicit none
 ! - Save the reduced coordinates in a table
 !
     if (l_reuse) then
-        call romTableCreate(result_out, tabl_name)
+        call romTableCreate(base, tabl_name)
     endif
     do i_snap = 1, incr_end
         call romTableSave(tabl_name  , nb_mode, v_gamma   ,&

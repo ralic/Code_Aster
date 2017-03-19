@@ -51,10 +51,10 @@ implicit none
         call utmess('I', 'ROM7_7')
     endif
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_chck_pod(ds_para)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_chck_pod(ds_para)
+    if (ds_para%operation(1:3) .eq. 'POD') then
+        call dbr_chck_pod(ds_para%operation, ds_para%para_pod, ds_para%ds_empi, ds_para%l_reuse)
+    elseif (ds_para%operation .eq. 'RB_GREEDY') then
+        ASSERT(.false.)
     else
         ASSERT(.false.)
     endif

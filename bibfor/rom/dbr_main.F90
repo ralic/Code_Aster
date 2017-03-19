@@ -28,7 +28,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -38,7 +38,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para        : datastructure for parameters
+! IO  ds_para          : datastructure for parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,12 @@ implicit none
     endif
 !
     if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para)
+        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%ds_empi)
     elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para)
+        call dbr_main_podincr(ds_para%l_reuse, ds_para%nb_mode_maxi, ds_para%para_pod,&
+                              ds_para%ds_empi)
+    elseif (ds_para%operation .eq. 'RB_GREEDY') then
+        ASSERT(.false.)
     else
         ASSERT(.false.)
     endif

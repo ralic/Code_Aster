@@ -23,7 +23,7 @@ cata_msg = {
 
     2 : _(u"""Lecture de la base empirique de nom %(k1)s."""),
 
-    3 : _(u"""Initialisation de la structure de données pour la base empirique."""),
+    3 : _(u"""Initialisation de la base empirique."""),
 
     4 : _(u"""Lecture des données pour sélectionner les clichés."""),
 
@@ -41,7 +41,7 @@ cata_msg = {
 
    11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
 
-   12 : _(u"""<*> Initialisations pour la base empirique."""),
+   12 : _(u"""Préparation de la base empirique dans le cas d'une POD."""),
 
    13 : _(u"""La valeur 'POD' n'est pas possible pour enrichir une base existante."""),
 }

@@ -33,25 +33,23 @@ cata_msg = {
 
     8 : _(u"""Échec lors du calcul des modes empiriques."""),
 
-    9 : _(u"""<*> Initialisations de toutes les structures de données."""),
+    9 : _(u"""Initialisations de toutes les structures de données."""),
 
-   10 : _(u"""<*> Lecture de tous les paramètres."""),
+   10 : _(u"""Lecture de tous les paramètres de la commande."""),
 
    11 : _(u"""On ne trouve pas de champ de type %(k1)s dans la structure de données résultat."""),
 
-   12 : _(u"""Initialisation de la numérotation pour les modes linéiques."""),
+   12 : _(u"""Préparation de la numérotation des modes linéiques."""),
 
    13 : _(u"""On a détecté %(i1)d tranches pour la définition des modes linéiques."""),
 
-   14 : _(u"""Initialisation de la structure de données pour les paramètres du calcul."""),
-
-   15 : _(u"""<*> Principaux paramètres de la commande"""),
+   14 : _(u"""Initialisations des structures de données pour les paramètres du calcul."""),
 
    16 : _(u"""Méthode de construction de la base empirique: %(k1)s """),
 
    17 : _(u"""Nombre de modes maximum de la base empirique: %(i1)d """),
 
-   18 : _(u"""Lecture des paramètres pour la commande DEFI_BASE_REDUITE."""),
+   18 : _(u"""Lecture des paramètres pour la méthode POD ou POD_INCR."""),
 
    19 : _(u"""Vérifications de la conformité de la structure de données résultat utilisée de nom %(k1)s."""),
 
@@ -63,6 +61,10 @@ cata_msg = {
               Ce n'est pas possible, utilisez AFFE_CHAR_CINE"""),
 
    23 : _(u"""Un mode empirique contient une composante au noeud %(k1)s qui n'est pas utilisable."""),
+
+   24 : _(u"""Paramètres de la commande."""),
+
+   25 : _(u"""Initialisations des structures de données pour les paramètres POD du calcul."""),
 
    30 : _(u"""Vérification des paramètres pour le calcul non-linéaire avec réduction de modèle."""),
 
@@ -82,7 +84,7 @@ cata_msg = {
 
    38 : _(u"""Création de la table pour sauver les coordonnées réduites."""),
 
-   39 : _(u"""Sauvegarde des coordonnées réduites dans la table."""),
+   39 : _(u"""Sauvegarde des coordonnées réduites pour le calcul non-linéaire avec réduction de modèle."""),
 
    40 : _(u"""Résolution du problème réduit."""),
 

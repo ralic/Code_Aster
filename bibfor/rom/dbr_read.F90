@@ -10,6 +10,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/dbr_read_pod.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
@@ -49,8 +50,8 @@ implicit none
     integer :: ifm, niv
     character(len=16) :: k16bid, operation = ' '
     character(len=8) :: result_out = ' '
-    real(kind=8) :: tole_incr
-    integer :: ireuse
+    integer :: ireuse, nb_mode_maxi, nocc
+    aster_logical :: l_reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,27 +67,31 @@ implicit none
 ! - Is REUSE?
 !
     call gcucon(result_out, 'MODE_EMPI', ireuse)
+    l_reuse = ireuse .ne. 0
+!
+! - Maximum number of modes
+!
+    call getvis(' ', 'NB_MODE' , scal = nb_mode_maxi, nbret = nocc)
+    if (nocc .eq. 0) then
+        nb_mode_maxi = 0
+    endif
 !
 ! - Type of ROM methods
 !
     call getvtx(' ', 'OPERATION', scal = operation)
-    if (operation .eq. 'POD') then
-        call dbr_read_pod(ds_para)
-        if (ireuse .ne. 0) then
-            call utmess('F', 'ROM2_13')
-        endif
-    elseif (operation .eq. 'POD_INCR') then
-        call dbr_read_pod(ds_para)
-        call getvr8(' ', 'TOLE', scal = tole_incr)
-        ds_para%tole_incr = tole_incr
+    if (operation(1:3) .eq. 'POD') then
+        call dbr_read_pod(operation, ds_para%para_pod)
+    elseif (operation .eq. 'RB_GREEDY') then
+        ASSERT(.false.)
     else
         ASSERT(.false.)
     endif
 !
-! - Save parameters
+! - Save parameters in datastructure
 !
-    ds_para%l_reuse    = ireuse .gt. 0
-    ds_para%result_out = result_out
-    ds_para%operation  = operation
+    ds_para%operation    = operation
+    ds_para%result_out   = result_out
+    ds_para%nb_mode_maxi = nb_mode_maxi
+    ds_para%l_reuse      = l_reuse
 !
 end subroutine

@@ -4,11 +4,11 @@ use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romBaseDSInit.h"
 #include "asterfort/romLineicBaseDSInit.h"
 #include "asterfort/romSnapDSInit.h"
+#include "asterfort/dbr_paraPODDSInit.h"
 #include "asterfort/dbr_paraDSInit.h"
 #include "asterfort/utmess.h"
 !
@@ -48,6 +48,7 @@ implicit none
     type(ROM_DS_Snap) :: ds_snap
     type(ROM_DS_Empi) :: ds_empi
     type(ROM_DS_LineicNumb) :: ds_lineicnumb
+    type(ROM_DS_ParaDBR_POD) :: ds_para_pod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,8 +69,12 @@ implicit none
 !
     call romBaseDSInit(ds_lineicnumb, ds_empi)
 !
+! - Initialization of datastructures for POD parameters
+!
+    call dbr_paraPODDSInit(ds_snap, ds_para_pod)
+!
 ! - Initialization of datastructures for parameters
 !
-    call dbr_paraDSInit(ds_snap, ds_empi, ds_para)
+    call dbr_paraDSInit(ds_empi, ds_para_pod, ds_para)
 !
 end subroutine

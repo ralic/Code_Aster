@@ -18,8 +18,10 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dbr_init_algo_pod(ds_para)
+    subroutine dbr_init_algo_pod(base, ds_empi, tabl_name)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+        character(len=8), intent(in) :: base
+        type(ROM_DS_Empi), intent(inout) :: ds_empi
+        character(len=19), intent(out) :: tabl_name
     end subroutine dbr_init_algo_pod
 end interface

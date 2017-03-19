@@ -113,37 +113,44 @@ implicit none
         character(len=24) :: coor_redu
     end type ROM_DS_ParaRRC
 !
-! - Parameters for DEFI_BASE_REDUITE operator
+! - Parameters for DEFI_BASE_REDUITE operator (POD)
 !
-    type ROM_DS_ParaDBR
-! ----- Type of operation (POD, POD_INCR, ...)
-        character(len=16)       :: operation
+    type ROM_DS_ParaDBR_POD
+! ----- Name of result datastructures to read
+        character(len=8)        :: result_in
+! ----- Name of field for read (NOM_CHAM)
+        character(len=24)       :: field_type
 ! ----- Type of reduced base
         character(len=8)        :: base_type
 ! ----- Direction of the linear model
         character(len=8)        :: axe_line
 ! ----- First section of the linear model
         character(len=24)       :: surf_num
-! ----- Name of result datastructures to read
-        character(len=8)        :: result_in
-! ----- Name of empiric base to save
-        character(len=8)        :: result_out
-! ----- Name of field for (NOM_CHAM)
-        character(len=24)       :: field_name
 ! ----- Tolerance for SVD
         real(kind=8)            :: tole_svd
 ! ----- Tolerance for incremental POD
         real(kind=8)            :: tole_incr
-! ----- Maximum number of modes
-        integer                 :: nb_mode_maxi
-! ----- Datastructure for empiric modes
-        type(ROM_DS_Empi)       :: ds_empi
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)       :: ds_snap
 ! ----- Name of table to save reduced coordinates
         character(len=19)       :: tabl_name
-! ----- If reuse
-        aster_logical           :: l_reuse
+    end type ROM_DS_ParaDBR_POD
+!
+! - Parameters for DEFI_BASE_REDUITE operator
+!
+    type ROM_DS_ParaDBR
+! ----- Type of operation (POD, POD_INCR, ...)
+        character(len=16)        :: operation
+! ----- Name of empiric base to save
+        character(len=8)         :: result_out
+! ----- Maximum number of modes
+        integer                  :: nb_mode_maxi
+! ----- Parameters for POD/POD_INCR method
+        type(ROM_DS_ParaDBR_POD) :: para_pod
+! ----- Datastructure for empiric modes
+        type(ROM_DS_Empi)        :: ds_empi
+! ----- If operator is "reuse"
+        aster_logical            :: l_reuse
     end type ROM_DS_ParaDBR
 !
 ! - Parameters for DEFI_DOMAINE_REDUIT operator

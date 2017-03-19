@@ -15,9 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dbr_chck_pod(ds_para)
+    subroutine dbr_chck_pod(operation, ds_para_pod, ds_empi, l_reuse)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(in) :: ds_para
+        character(len=16), intent(in) :: operation
+        type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+        type(ROM_DS_Empi), intent(in) :: ds_empi
+        aster_logical, intent(in) :: l_reuse
     end subroutine dbr_chck_pod
 end interface

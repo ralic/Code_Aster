@@ -18,9 +18,12 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dbr_init_base_pod(ds_para, ds_empi)
+    subroutine dbr_init_base_pod(base, ds_para_pod, nb_mode_maxi, l_reuse, ds_empi)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(in) :: ds_para
+        character(len=8), intent(in) :: base
+        type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+        integer, intent(in) :: nb_mode_maxi
+        aster_logical, intent(in) :: l_reuse
         type(ROM_DS_Empi), intent(inout) :: ds_empi
     end subroutine dbr_init_base_pod
 end interface

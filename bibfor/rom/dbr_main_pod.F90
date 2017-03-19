@@ -1,4 +1,4 @@
-subroutine dbr_main_pod(ds_para)
+subroutine dbr_main_pod(nb_mode_maxi, ds_para_pod, ds_empi)
 !
 use Rom_Datastructure_type
 !
@@ -7,13 +7,12 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
-#include "asterfort/infniv.h"
+#include "asterfort/dbr_rnum.h"
 #include "asterfort/dbr_calc_q.h"
 #include "asterfort/dbr_calc_svd.h"
 #include "asterfort/dbr_calc_sele.h"
-#include "asterfort/dbr_calc_save.h"
 #include "asterfort/dbr_calc_redu.h"
+#include "asterfort/dbr_calc_save.h"
 #include "asterfort/romTableSave.h"
 !
 ! ======================================================================
@@ -34,17 +33,21 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    integer, intent(in) :: nb_mode_maxi
+    type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+    type(ROM_DS_Empi), intent(inout) :: ds_empi
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_BASE_REDUITE - Compute
 !
-! Main subroutine to compute empiric modes - POD method
+! Main subroutine to compute empiric modes - For POD methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para        : datastructure for parameters
+! In  nb_mode_maxi     : maximum number of emprical modes
+! In  ds_para_pod      : datastructure for parameters (POD)
+! IO  ds_empi          : datastructure for empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,24 +60,25 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    tabl_name    = ds_para%tabl_name
-    nb_snap_redu = ds_para%ds_snap%nb_snap
+    tabl_name    = ds_para_pod%tabl_name
+    nb_snap_redu = ds_para_pod%ds_snap%nb_snap
+    nb_line_svd  = 0
 !
 ! - Create snapshots matrix Q
 !    
-    call dbr_calc_q(ds_para%ds_empi, ds_para%ds_snap, q)
+    call dbr_calc_q(ds_empi, ds_para_pod%ds_snap, q)
 !
 ! - Compute empiric modes by SVD
 !
-    call dbr_calc_svd(ds_para%ds_empi, ds_para%ds_snap, q, s, v, nb_sing, nb_line_svd)
+    call dbr_calc_svd(ds_empi, ds_para_pod%ds_snap, q, s, v, nb_sing, nb_line_svd)
 !
 ! - Select empiric modes
 !
-    call dbr_calc_sele(ds_para, s, nb_sing, nb_mode)
+    call dbr_calc_sele(nb_mode_maxi, ds_para_pod%tole_svd, s, nb_sing, nb_mode)
 !
 ! - Save empiric modes
 ! 
-    call dbr_calc_save(ds_para%ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calc_save(ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 ! - Compute reduced coordinates
 !

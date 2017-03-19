@@ -1,4 +1,4 @@
-subroutine dbr_calc_sele(ds_para, s, nb_sing, nb_mode)
+subroutine dbr_calc_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
 use Rom_Datastructure_type
 !
@@ -9,7 +9,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,8 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    integer, intent(in) :: nb_mode_maxi
+    real(kind=8), intent(in) :: tole_svd
     real(kind=8), intent(in), pointer :: s(:)
     integer, intent(in) :: nb_sing
     integer, intent(out) :: nb_mode
@@ -39,7 +40,8 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para          : datastructure for parameters
+! In  nb_mode_maxi     : maximum number of emprical modes
+! In  tole_svd         : tolerance for SVD
 ! In  nb_sing          : total number of singular values
 ! In  s                : singular values
 ! Out nb_mode          : number of modes selected
@@ -47,8 +49,8 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    real(kind=8) :: tole_svd, vale_mini, vale_maxi, vale_tole, valr(2)
-    integer :: i_sing, nb_mode_maxi, vali(2)
+    real(kind=8) :: vale_mini, vale_maxi, vale_tole, valr(2)
+    integer :: i_sing, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,8 +65,6 @@ implicit none
 !
 ! - Get parameters
 !
-    nb_mode_maxi = ds_para%nb_mode_maxi
-    tole_svd     = ds_para%tole_svd
     vale_mini    = s(nb_sing)
     vale_maxi    = s(1)
     vale_tole    = tole_svd*vale_maxi

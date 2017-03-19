@@ -1,9 +1,10 @@
-subroutine dbr_main_podincr(ds_para)
+subroutine dbr_main_podincr(l_reuse, nb_mode_maxi, ds_para_pod, ds_empi)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
@@ -30,7 +31,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    aster_logical, intent(in) :: l_reuse
+    integer, intent(in) :: nb_mode_maxi
+    type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+    type(ROM_DS_Empi), intent(inout) :: ds_empi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,15 +59,16 @@ implicit none
 !
 ! - Create snapshots matrix Q
 !    
-    call dbr_calc_q(ds_para%ds_empi, ds_para%ds_snap, q)
+    call dbr_calc_q(ds_empi, ds_para_pod%ds_snap, q)
 !
 ! - Incremental POD method
 !
-    call dbr_pod_incr(ds_para, q, s, v, nb_mode, nb_snap_redu)
+    call dbr_pod_incr(l_reuse, nb_mode_maxi, ds_empi, ds_para_pod,&
+                      q, s, v, nb_mode, nb_snap_redu)
 !
 ! - Save empiric base
 !
-    call dbr_calc_save(ds_para%ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calc_save(ds_empi, nb_mode, nb_snap_redu, s, v)
 !
 ! - Cleaning
 !

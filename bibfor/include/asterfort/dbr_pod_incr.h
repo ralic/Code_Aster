@@ -15,10 +15,16 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dbr_pod_incr(ds_para, q, s, v, nb_mode, nb_snap_redu)
+    subroutine dbr_pod_incr(l_reuse, nb_mode_maxi, ds_empi, ds_para_pod,&
+                            q, s, v, nb_mode, nb_snap_redu)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR) , intent(in) :: ds_para
+        aster_logical, intent(in) :: l_reuse
+        integer, intent(in) :: nb_mode_maxi
+        type(ROM_DS_Empi), intent(inout) :: ds_empi
+        type(ROM_DS_ParaDBR_POD) , intent(in) :: ds_para_pod
         real(kind=8), pointer, intent(inout) :: q(:)
         real(kind=8), pointer, intent(out)   :: s(:)
         real(kind=8), pointer, intent(out)   :: v(:)

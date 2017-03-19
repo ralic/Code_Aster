@@ -18,6 +18,6 @@
 interface
     subroutine dbr_main(ds_para)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDBR), intent(in) :: ds_para
+        type(ROM_DS_ParaDBR), intent(inout) :: ds_para
     end subroutine dbr_main
 end interface
