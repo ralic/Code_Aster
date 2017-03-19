@@ -56,7 +56,7 @@ implicit none
     integer :: iret, nume_first, jv_para, nume_pl, nb_snap
     integer :: nb_equa = 0, nb_mode = 0, nb_node = 0, nb_cmp = 0
     character(len=8)  :: mesh = ' ', model = ' ', base_type = ' ', axe_line = ' '
-    character(len=24) :: surf_num = ' ', field_refe = ' ', field_type = ' '
+    character(len=24) :: surf_num = ' ', field_refe = ' ', field_name = ' '
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,7 +69,7 @@ implicit none
 !
     call rs_get_liststore(base, nb_mode)
     call rsadpa(base, 'L', 1, 'NOM_CHAM', 1, 0, sjv = jv_para)
-    field_type   = zk24(jv_para)
+    field_name   = zk24(jv_para)
     call rsadpa(base, 'L', 1, 'MODELE'  , 1, 0, sjv = jv_para)
     model        = zk8(jv_para)
     call rsadpa(base, 'L', 1, 'NUME_PLAN', 1, 0, sjv = jv_para)
@@ -85,7 +85,7 @@ implicit none
 !
     call rs_getfirst(base, nume_first)
     field_refe = base(1:8)//'FIELD_REFE'
-    call rsexch(' ', base, field_type, nume_first, field_refe, iret)
+    call rsexch(' ', base, field_name, nume_first, field_refe, iret)
     ASSERT(iret.eq.0)
 !
 ! - Get informations about empiric modes - Others
@@ -98,7 +98,7 @@ implicit none
 ! - Save informations about empiric modes
 !
     ds_empi%base       = base
-    ds_empi%field_type = field_type
+    ds_empi%field_name = field_name
     ds_empi%field_refe = field_refe
     ds_empi%mesh       = mesh
     ds_empi%model      = model

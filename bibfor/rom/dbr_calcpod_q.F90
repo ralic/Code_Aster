@@ -53,7 +53,7 @@ implicit none
     integer :: nb_snap, nb_slice, nb_cmp, n_2d, nb_equa
     integer :: nume_inst, iret
     character(len=8)  :: base_type, result
-    character(len=24) :: field_type, list_snap
+    character(len=24) :: field_name, list_snap
     integer, pointer :: v_list_snap(:) => null()
     type(ROM_DS_LineicNumb) :: ds_line
     real(kind=8), pointer :: v_field_resu(:) => null()
@@ -75,7 +75,7 @@ implicit none
     nb_equa      = ds_empi%nb_equa
     nb_cmp       = ds_empi%nb_cmp
     base_type    = ds_empi%base_type
-    field_type   = ds_empi%field_type
+    field_name   = ds_empi%field_name
     ASSERT(nb_snap .gt. 0)
     ASSERT(nb_equa .gt. 0)
 !
@@ -93,7 +93,7 @@ implicit none
         nb_slice  =  ds_line%nb_slice
         do i_snap = 1, nb_snap
             nume_inst = v_list_snap(i_snap)
-            call rsexch(' '  , result, field_type, nume_inst, field_resu, iret)
+            call rsexch(' '  , result, field_name, nume_inst, field_resu, iret)
             ASSERT(iret .eq. 0)
             call jeveuo(field_resu(1:19)//'.VALE', 'L', vr = v_field_resu)
             do i_equa = 1, nb_equa
@@ -109,7 +109,7 @@ implicit none
     else
         do i_snap = 1, nb_snap
             nume_inst = v_list_snap(i_snap)
-            call rsexch(' '  , result, field_type, nume_inst, field_resu, iret)
+            call rsexch(' '  , result, field_name, nume_inst, field_resu, iret)
             ASSERT(iret .eq. 0)
             call jeveuo(field_resu(1:19)//'.VALE', 'L', vr = v_field_resu)
             do i_equa = 1, nb_equa

@@ -13,7 +13,7 @@ implicit none
 #include "blas/ddot.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ implicit none
     aster_logical :: l_hrom
     character(len=8) :: base
     character(len=19) :: mode
-    character(len=24) :: field_type
+    character(len=24) :: field_name
     integer :: i_equa, nb_equa, nb_mode, i_mode, iret
     real(kind=8) :: term
     real(kind=8), pointer :: v_mode(:)=> null()
@@ -78,7 +78,7 @@ implicit none
     base       = ds_empi%base
     nb_equa    = ds_empi%nb_equa
     nb_mode    = ds_empi%nb_mode
-    field_type = ds_empi%field_type
+    field_name = ds_empi%field_name
 !
 ! - Compute equilibrium residual
 !
@@ -100,7 +100,7 @@ implicit none
 ! - Compute norm
 !  
     do i_mode = 1, nb_mode
-        call rsexch(' ', base, field_type, i_mode, mode, iret)
+        call rsexch(' ', base, field_name, i_mode, mode, iret)
         call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
         term = ddot(nb_equa, v_mode, 1, v_resi, 1)
         resi = max (resi, abs(term))

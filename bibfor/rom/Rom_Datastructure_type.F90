@@ -62,7 +62,7 @@ implicit none
 ! ----- Name of empiric base to save
         character(len=8)  :: base
 ! ----- Type of field for (NOM_CHAM)
-        character(len=24) :: field_type
+        character(len=24) :: field_name
 ! ----- A field for reference (to manipulate real field)
         character(len=24) :: field_refe
 ! ----- Mesh
@@ -119,7 +119,7 @@ implicit none
 ! ----- Name of result datastructures to read
         character(len=8)        :: result_in
 ! ----- Name of field for read (NOM_CHAM)
-        character(len=24)       :: field_type
+        character(len=24)       :: field_name
 ! ----- Type of reduced base
         character(len=8)        :: base_type
 ! ----- Direction of the linear model

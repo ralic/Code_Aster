@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ implicit none
     integer :: nb_node, nb_equa, nb_cmp
     integer, pointer :: v_list_node(:) => null()
     character(len=8), pointer :: v_list_cmp(:) => null() 
-    character(len=24) :: field_type = ' '
+    character(len=24) :: field_name = ' '
     character(len=8) :: mesh = ' '
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,7 +70,7 @@ implicit none
 ! - Get parameters
 !
     mesh       = ds_empi%mesh
-    field_type = ds_empi%field_type
+    field_name = ds_empi%field_name
 !
 ! - Access to mesh
 !
@@ -84,11 +84,11 @@ implicit none
 !
 ! - List of components to search
 !
-    if (field_type .eq. 'TEMP') then
+    if (field_name .eq. 'TEMP') then
         nb_cmp        = 1
         AS_ALLOCATE(vk8 = v_list_cmp, size = nb_cmp)
         v_list_cmp(1) = 'TEMP'
-    elseif (field_type .eq. 'DEPL') then
+    elseif (field_name .eq. 'DEPL') then
         nb_cmp        = 3
         AS_ALLOCATE(vk8 = v_list_cmp, size = nb_cmp)
         v_list_cmp(1) = 'DX'

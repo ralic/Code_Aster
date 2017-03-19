@@ -60,7 +60,7 @@ implicit none
     complex(kind=8), pointer :: v_soluti(:) => null()
     complex(kind=8) :: c16bid = (0.d0, 0.d0)
     character(len=8) :: base, model
-    character(len=24) :: field_type, field_save
+    character(len=24) :: field_name, field_save
     complex(kind=8), pointer :: v_field_save(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -74,7 +74,7 @@ implicit none
     syst_2mbr      = ds_para_rb%syst_2mbr
     nb_equa        = ds_empi%nb_equa
     base           = ds_empi%base
-    field_type     = ds_empi%field_type
+    field_name     = ds_empi%field_name
     model          = ds_empi%model
 !
 ! - Prepare matrix and second member
@@ -102,7 +102,7 @@ implicit none
 !
 ! - Save solution
 !
-    call rsexch(' ', base, field_type, 1, field_save, iret)
+    call rsexch(' ', base, field_name, 1, field_save, iret)
     ASSERT(iret .eq. 100 .or. iret .eq. 0)
     if (iret .eq. 100) then
         call copisd('CHAMP_GD', 'G', syst_2mbr, field_save)
@@ -111,13 +111,13 @@ implicit none
     do i_equa = 1, nb_equa
         v_field_save(i_equa) = v_soluti(i_equa)
     end do
-    call rsnoch(base, field_type, 1)
+    call rsnoch(base, field_name, 1)
     call rsadpa(base, 'E', 1, 'FREQ', 1, 0, sjv=jv_para)
     zr(jv_para)  = 1.d0
     call rsadpa(base, 'E', 1, 'MODELE', 1, 0, sjv=jv_para)
     zk8(jv_para) = model
     call rsadpa(base, 'E', 1, 'NOM_CHAM', 1, 0, sjv=jv_para)
-    zk24(jv_para) = field_type
+    zk24(jv_para) = field_name
     call rsadpa(base, 'E', 1, 'NUME_PLAN', 1, 0, sjv=jv_para)
     zi(jv_para) = 0
     call rsadpa(base, 'E', 1, 'NUME_MODE', 1, 0, sjv=jv_para)

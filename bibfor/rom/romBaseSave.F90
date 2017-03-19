@@ -64,7 +64,7 @@ implicit none
     integer :: nb_equa = 0, nume_slice
     real(kind=8) :: mode_freq
     character(len=8)  :: base = ' ', model = ' '
-    character(len=24) :: field_refe = ' ', field_type = ' '
+    character(len=24) :: field_refe = ' ', field_name = ' '
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -81,7 +81,7 @@ implicit none
 ! - Get parameters
 !
     nb_equa      = ds_empi%nb_equa
-    field_type   = ds_empi%field_type
+    field_name   = ds_empi%field_name
     field_refe   = ds_empi%field_refe
     base         = ds_empi%base
     model        = ds_empi%model
@@ -97,14 +97,14 @@ implicit none
         endif
         if (mode_type.eq.'R') then
             call romModeSave(base                , i_mode    , model  ,&
-                             field_type          , field_refe, nb_equa,&
+                             field_name          , field_refe, nb_equa,&
                              mode_vectr_   = mode_vectr_(nb_equa*(i_mode-1)+1:),&
                              mode_freq_    = mode_freq   ,&
                              nume_slice_   = nume_slice  ,&
                              nb_snap_      = nb_snap)
         elseif (mode_type.eq.'C') then
             call romModeSave(base                , i_mode    , model  ,&
-                             field_type          , field_refe, nb_equa,&
+                             field_name          , field_refe, nb_equa,&
                              mode_vectc_ = mode_vectc_(nb_equa*(i_mode-1)+1:),&
                              mode_freq_    = mode_freq   ,&
                              nume_slice_   = nume_slice  ,&

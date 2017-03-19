@@ -64,7 +64,7 @@ implicit none
 ! - Copy informations
 !
     ds_empi_out%base       = ds_empi_in%base
-    ds_empi_out%field_type = ds_empi_in%field_type
+    ds_empi_out%field_name = ds_empi_in%field_name
     ds_empi_out%field_refe = ds_empi_in%field_refe
     ds_empi_out%mesh       = ds_empi_in%mesh
     ds_empi_out%model      = ds_empi_in%model

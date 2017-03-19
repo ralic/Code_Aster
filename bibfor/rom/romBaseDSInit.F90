@@ -53,7 +53,7 @@ implicit none
 ! - Create parameters datastructure
 !
     ds_empi%base         = ' '
-    ds_empi%field_type   = ' '
+    ds_empi%field_name   = ' '
     ds_empi%field_refe   = ' '
     ds_empi%mesh         = ' '
     ds_empi%model        = ' '

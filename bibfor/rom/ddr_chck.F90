@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/jexnom.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -102,12 +102,12 @@ implicit none
 !
 ! - Check fields for empiric modes
 !
-    if (empi_prim%field_type .eq. 'TEMP') then
-        if (empi_dual%field_type .ne. 'FLUX_NOEU') then
+    if (empi_prim%field_name .eq. 'TEMP') then
+        if (empi_dual%field_name .ne. 'FLUX_NOEU') then
             call utmess('F', 'ROM4_17', sk = 'FLUX_NOEU')
         endif
-    elseif (empi_prim%field_type .eq. 'DEPL') then
-        if (empi_dual%field_type .ne. 'SIEF_NOEU') then
+    elseif (empi_prim%field_name .eq. 'DEPL') then
+        if (empi_dual%field_name .ne. 'SIEF_NOEU') then
             call utmess('F', 'ROM4_17', sk = 'SIEF_NOEU')
         endif
     else
@@ -115,4 +115,3 @@ implicit none
     endif
 !
 end subroutine
-

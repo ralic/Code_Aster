@@ -138,7 +138,7 @@ implicit none
 !
     if (l_reuse) then
         do i_mode = 1, ds_empi%nb_mode
-            call rsexch(' ', ds_empi%base, ds_empi%field_type, i_mode, mode, iret)
+            call rsexch(' ', ds_empi%base, ds_empi%field_name, i_mode, mode, iret)
             call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
             do i_equa = 1, nb_equa
                 vt(i_equa+nb_equa*(i_mode-1)) = v_mode(i_equa)

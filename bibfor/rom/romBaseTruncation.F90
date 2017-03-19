@@ -18,7 +18,7 @@ implicit none
 #include "asterfort/vtcreb.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -60,7 +60,7 @@ implicit none
     integer :: iret, nb_equa_rid
     character(len=8) :: base, base_rid
     character(len=19) :: mode, mode_rid, mode_tmp
-    character(len=24) :: field_type = ' '
+    character(len=24) :: field_name = ' '
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,7 +76,7 @@ implicit none
 ! - Get parameters
 !
     nb_mode    = ds_empi%nb_mode
-    field_type = ds_empi%field_type
+    field_name = ds_empi%field_name
     base       = ds_empi%base
     base_rid   = ds_empi_rid%base
 !
@@ -87,13 +87,13 @@ implicit none
 ! - Copy and truncation of modes
 !
     do i_mode = 1, nb_mode
-        call rsexch(' ', base, field_type    , i_mode, mode, iret)
-        call rsexch(' ', base_rid, field_type, i_mode, mode_rid, iret)
+        call rsexch(' ', base, field_name    , i_mode, mode, iret)
+        call rsexch(' ', base_rid, field_name, i_mode, mode_rid, iret)
         call detrsd('CHAMP_GD', mode_tmp)
         call vtcreb(mode_tmp, 'V', 'R', nume_ddlz = nume_dof_rid, nb_equa_outz = nb_equa_rid)
         call vtcopy(mode, mode_tmp, 'F', iret)
         call copisd('CHAMP_GD', 'V', mode_tmp, mode_rid)
-        call rsnoch(base_rid, field_type, i_mode)
+        call rsnoch(base_rid, field_name, i_mode)
     end do
 !
 ! - Save values

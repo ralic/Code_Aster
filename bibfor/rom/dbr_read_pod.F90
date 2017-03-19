@@ -49,7 +49,7 @@ implicit none
 !
     integer :: nocc, ifm, niv
     real(kind=8) :: tole_svd = 0.d0, tole_incr = 0.d0
-    character(len=16) :: field_type = ' '
+    character(len=16) :: field_name = ' '
     character(len=8)  :: axe_line = ' '
     character(len=8)  :: surf_num = ' '
     character(len=8)  :: base_type = ' '
@@ -66,7 +66,7 @@ implicit none
 ! - Get parameters - Results to process
 !
     call getvid(' ', 'RESULTAT', scal = result_in)
-    call getvtx(' ', 'NOM_CHAM', scal = field_type, nbret = nocc)
+    call getvtx(' ', 'NOM_CHAM', scal = field_name, nbret = nocc)
     ASSERT(nocc .eq. 1)
 !
 ! - Get parameters - Base type to numeration
@@ -94,7 +94,7 @@ implicit none
 ! - Save parameters in datastructure
 !
     ds_para_pod%result_in    = result_in
-    ds_para_pod%field_type   = field_type
+    ds_para_pod%field_name   = field_name
     ds_para_pod%base_type    = base_type
     ds_para_pod%axe_line     = axe_line
     ds_para_pod%surf_num     = surf_num

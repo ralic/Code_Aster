@@ -21,7 +21,7 @@ implicit none
 #include "blas/ddot.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: gamma = ' ', field_type = ' '
+    character(len=24) :: gamma = ' ', field_name = ' '
     real(kind=8), pointer :: v_gamma(:) => null()
     real(kind=8), pointer :: v_vect_2mbr(:) => null()
     integer :: nb_equa_2mbr, nb_equa_matr, nb_equa, nb_mode
@@ -108,12 +108,12 @@ implicit none
         base       = ds_algorom%ds_empi_rid%base
         nb_mode    = ds_algorom%ds_empi_rid%nb_mode
         nb_equa    = ds_algorom%ds_empi_rid%nb_equa
-        field_type = ds_algorom%ds_empi_rid%field_type
+        field_name = ds_algorom%ds_empi_rid%field_name
     else
         base       = ds_algorom%ds_empi%base
         nb_mode    = ds_algorom%ds_empi%nb_mode
         nb_equa    = ds_algorom%ds_empi%nb_equa
-        field_type = ds_algorom%ds_empi%field_type
+        field_name = ds_algorom%ds_empi%field_name
     endif
     ASSERT(nb_equa .eq. nb_equa_2mbr)
     ASSERT(nb_equa .eq. nb_equa_matr)
@@ -137,7 +137,7 @@ implicit none
 ! - Compute reduced objects
 !
     do i_mode = 1, nb_mode
-        call rsexch(' ', base, field_type, i_mode, mode, iret)
+        call rsexch(' ', base, field_name, i_mode, mode, iret)
         call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
         term1 = ddot(nb_equa, v_mode, 1, v_vect_2mbr, 1)
         v_vect_rom(i_mode) = term1
@@ -150,7 +150,7 @@ implicit none
             end do
         endif
         do j_mode = 1, nb_mode
-            call rsexch(' ', base, field_type, j_mode, mode, iret)
+            call rsexch(' ', base, field_name, j_mode, mode, iret)
             call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
             term2 = ddot(nb_equa, v_mode, 1, v_mrmult, 1)
             v_matr_rom(nb_mode*(i_mode-1)+j_mode) = term2
@@ -168,7 +168,7 @@ implicit none
     call vtzero(vect_solu)
     do i_mode = 1 , nb_mode
         term = v_vect_rom(i_mode)
-        call rsexch(' ', base, field_type, i_mode, mode, iret)
+        call rsexch(' ', base, field_name, i_mode, mode, iret)
         call vtaxpy(term, mode, vect_solu)
     enddo
 !

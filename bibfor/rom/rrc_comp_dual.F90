@@ -89,7 +89,7 @@ implicit none
 ! - List of equations in RID
 !
     AS_ALLOCATE(vi = v_noeu_rid, size = nb_equa)
-    call rsexch(' ', result_rom, ds_para%ds_empi_dual%field_type,&
+    call rsexch(' ', result_rom, ds_para%ds_empi_dual%field_name,&
                 1, sigm_rom, iret)
     call jelira(sigm_rom(1:19)//'.VALE', 'LONMAX', nb_equa_rom)
     call select_dof_3(sigm_rom, nb_cmp, v_noeu_rid)
@@ -99,7 +99,7 @@ implicit none
     AS_ALLOCATE(vr = v_dual, size = nb_equa*nb_mode)
     AS_ALLOCATE(vr = v_dual_rom, size = nb_equa_rom*nb_mode)
     do i_mode = 1, nb_mode
-        call rsexch(' ', ds_para%ds_empi_dual%base, ds_para%ds_empi_dual%field_type,&
+        call rsexch(' ', ds_para%ds_empi_dual%base, ds_para%ds_empi_dual%field_name,&
                     i_mode, mode, iret)
         ASSERT(iret .eq. 0)
         call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
@@ -119,7 +119,7 @@ implicit none
     AS_ALLOCATE(vi4 = IPIV  , size = nb_mode)
     do i_store = 1, nb_store-1
         nume_store = i_store
-        call rsexch(' ', result_rom, ds_para%ds_empi_dual%field_type,&
+        call rsexch(' ', result_rom, ds_para%ds_empi_dual%field_name,&
                     nume_store, sigm_rom, iret)
         ASSERT(iret .eq. 0)
         call jeveuo(sigm_rom(1:19)//'.VALE', 'L', vr = v_sigm_rom)
@@ -136,13 +136,13 @@ implicit none
 ! - Initial state
 !
     nume_store = 0
-    call rsexch(' ', result_dom, ds_para%ds_empi_dual%field_type,&
+    call rsexch(' ', result_dom, ds_para%ds_empi_dual%field_name,&
                 nume_store, field_save, iret)
     ASSERT(iret .eq. 100)
     call copisd('CHAMP_GD', 'G', ds_para%ds_empi_dual%field_refe, field_save)
     call jeveuo(field_save(1:19)//'.VALE', 'E', vr = v_field_save)
     v_field_save(1:nb_equa) = 0.d0
-    call rsnoch(result_dom, ds_para%ds_empi_dual%field_type,&
+    call rsnoch(result_dom, ds_para%ds_empi_dual%field_name,&
                 nume_store)
 !
 ! - Compute new field
@@ -152,7 +152,7 @@ implicit none
                v_dual, nb_equa, v_cohr, nb_mode, 0.d0, v_sigm_dom, nb_equa)
     do i_store = 1, nb_store-1
         nume_store = i_store
-        call rsexch(' ', result_dom, ds_para%ds_empi_dual%field_type,&
+        call rsexch(' ', result_dom, ds_para%ds_empi_dual%field_name,&
                     nume_store, field_save, iret)
         ASSERT(iret .eq. 100)
         call copisd('CHAMP_GD', 'G', ds_para%ds_empi_dual%field_refe, field_save)
@@ -160,7 +160,7 @@ implicit none
         do i_equa = 1, nb_equa
             v_field_save(i_equa) = v_sigm_dom(i_equa+nb_equa*(nume_store-1))
         enddo
-        call rsnoch(result_dom, ds_para%ds_empi_dual%field_type,&
+        call rsnoch(result_dom, ds_para%ds_empi_dual%field_name,&
                     nume_store)
     enddo
 !

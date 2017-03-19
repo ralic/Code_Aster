@@ -55,7 +55,7 @@ implicit none
 ! - General initialisations of datastructure
 !
     ds_para_pod%result_in    = ' '
-    ds_para_pod%field_type   = ' '
+    ds_para_pod%field_name   = ' '
     ds_para_pod%base_type    = ' '
     ds_para_pod%axe_line     = ' '
     ds_para_pod%surf_num     = ' '

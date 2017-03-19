@@ -90,7 +90,7 @@ implicit none
 !
     AS_ALLOCATE(vr = v_prim, size = nb_equa*nb_mode)
     do i_mode = 1, nb_mode
-        call rsexch(' ', ds_para%ds_empi_prim%base, ds_para%ds_empi_prim%field_type,&
+        call rsexch(' ', ds_para%ds_empi_prim%base, ds_para%ds_empi_prim%field_name,&
                     i_mode, mode, iret)
         ASSERT(iret .eq. 0)
         call jeveuo(mode(1:19)//'.VALE', 'L', vr = v_mode)
@@ -102,13 +102,13 @@ implicit none
 ! - Initial state
 !
     nume_store = 0
-    call rsexch(' ', result_dom, ds_para%ds_empi_prim%field_type,&
+    call rsexch(' ', result_dom, ds_para%ds_empi_prim%field_name,&
                 nume_store, field_save, iret)
     ASSERT(iret .eq. 100)
     call copisd('CHAMP_GD', 'G', ds_para%ds_empi_prim%field_refe, field_save)
     call jeveuo(field_save(1:19)//'.VALE', 'E', vr = v_field_save)
     v_field_save(1:nb_equa) = 0.d0
-    call rsnoch(result_dom, ds_para%ds_empi_prim%field_type,&
+    call rsnoch(result_dom, ds_para%ds_empi_prim%field_name,&
                 nume_store)
 !
 ! - Compute new fields
@@ -121,7 +121,7 @@ implicit none
 !
     do i_store = 1, nb_store-1
         nume_store = i_store
-        call rsexch(' ', result_dom, ds_para%ds_empi_prim%field_type,&
+        call rsexch(' ', result_dom, ds_para%ds_empi_prim%field_name,&
                     nume_store, field_save, iret)
         ASSERT(iret .eq. 100)
         call copisd('CHAMP_GD', 'G', ds_para%ds_empi_prim%field_refe, field_save)
@@ -141,7 +141,7 @@ implicit none
                     list_load)
         call rsadpa(result_dom, 'E', 1, 'INST', nume_store, 0, sjv=jv_para)
         zr(jv_para) = time
-        call rsnoch(result_dom, ds_para%ds_empi_prim%field_type,&
+        call rsnoch(result_dom, ds_para%ds_empi_prim%field_name,&
                     nume_store)
     end do
 !

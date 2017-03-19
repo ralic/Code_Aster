@@ -45,7 +45,7 @@ implicit none
 !
     integer :: ifm, niv
     character(len=16) :: operation = ' '
-    character(len=24) :: field_type = ' ', surf_num = ' '
+    character(len=24) :: field_name = ' ', surf_num = ' '
     character(len=8)  :: result_out = ' ', result_in = ' '
     character(len=8)  :: axe_line = ' ', base_type = ' '
     integer :: nb_mode_maxi
@@ -79,7 +79,7 @@ implicit none
     tole_svd     = ds_para%para_pod%tole_svd
     tole_incr    = ds_para%para_pod%tole_incr
     result_in    = ds_para%para_pod%result_in
-    field_type   = ds_para%para_pod%field_type
+    field_name   = ds_para%para_pod%field_name
     base_type    = ds_para%para_pod%base_type
     axe_line     = ds_para%para_pod%axe_line
     surf_num     = ds_para%para_pod%surf_num
@@ -92,7 +92,7 @@ implicit none
             call utmess('I', 'ROM7_13' , sr = tole_incr)
         endif
         call utmess('I', 'ROM7_1' , sk = result_in)
-        call utmess('I', 'ROM7_2' , sk = field_type)
+        call utmess('I', 'ROM7_2' , sk = field_name)
         if (base_type .eq. '3D') then
             call utmess('I', 'ROM7_4')
         elseif (base_type .eq. 'LINEIQUE') then

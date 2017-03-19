@@ -18,7 +18,7 @@ implicit none
 #include "blas/dgesv.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -59,7 +59,7 @@ implicit none
     integer(kind=4) :: info
     integer(kind=4), pointer :: IPIV(:) => null()
     character(len=8)  :: base
-    character(len=24) :: field_type
+    character(len=24) :: field_name
     character(len=24) :: mode = '&&CEIM_MODE'
     real(kind=8) :: vale_maxi, term
     real(kind=8), pointer :: v_mode(:) => null()
@@ -83,7 +83,7 @@ implicit none
     nb_equa     = ds_empi%nb_equa
     nb_mode     = ds_empi%nb_mode
     base        = ds_empi%base
-    field_type  = ds_empi%field_type
+    field_name  = ds_empi%field_name
 !
 ! - Prepare working objects
 !
@@ -120,7 +120,7 @@ implicit none
             AS_ALLOCATE(vi=v_list_loca, size=nb_motr)
 ! - First mode of slice
             k_mode = 1
-            call rsexch(' ', base, field_type, i_mode+k_mode-1, mode, iret)
+            call rsexch(' ', base, field_name, i_mode+k_mode-1, mode, iret)
             ASSERT(iret .eq. 0)
             call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
             vale_maxi   = -r8gaem()
@@ -136,7 +136,7 @@ implicit none
             v_list_loca(k_mode) = equa_maxi
 ! - Loop on mode of slice
             do k_mode = 2, nb_motr
-                call rsexch(' ', base, field_type, i_mode+k_mode-1, mode, iret)
+                call rsexch(' ', base, field_name, i_mode+k_mode-1, mode, iret)
                 ASSERT(iret .eq. 0)
                 call jeveuo(mode(1:19)//'.VALE', 'E', vr = v_mode)
                 nb_vect = k_mode-1

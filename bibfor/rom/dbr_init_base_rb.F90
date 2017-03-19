@@ -72,7 +72,7 @@ implicit none
 ! - Save in empiric base
 !
     ds_empi%base         = base
-    ds_empi%field_type   = 'DEPL'
+    ds_empi%field_name   = 'DEPL'
     ds_empi%mesh         = mesh
     ds_empi%model        = model
     ds_empi%nb_equa      = nb_equa

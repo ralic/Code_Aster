@@ -56,7 +56,7 @@ implicit none
     integer :: iret, nume_first
     integer :: nb_equa = 0, nb_node = 0, nb_mode_crea = 0
     character(len=8)  :: model = ' ', mesh = ' '
-    character(len=16) :: field_type = ' '
+    character(len=16) :: field_name = ' '
     character(len=8)  :: axe_line = ' ', surf_num = ' ', base_type = ' ', result_in = ' '
     character(len=24) :: field_refe = '&&ROM_COMP.FIELD'
 !
@@ -70,7 +70,7 @@ implicit none
 ! - Get informations from parameters
 !
     result_in    = ds_para_pod%result_in
-    field_type   = ds_para_pod%field_type(1:16)
+    field_name   = ds_para_pod%field_name(1:16)
     base_type    = ds_para_pod%base_type
     axe_line     = ds_para_pod%axe_line
     surf_num     = ds_para_pod%surf_num(1:8)
@@ -82,9 +82,9 @@ implicit none
 ! - Get informations about fields
 !
     call rs_getfirst(result_in, nume_first)
-    call rsexch(' ', result_in, field_type, nume_first, field_refe, iret)
+    call rsexch(' ', result_in, field_name, nume_first, field_refe, iret)
     if (iret .ne. 0) then
-        call utmess('F', 'ROM5_11', sk = field_type)
+        call utmess('F', 'ROM5_11', sk = field_name)
     endif
     call dismoi('NB_EQUA'     , field_refe, 'CHAM_NO' , repi = nb_equa) 
     call dismoi('NOM_MAILLA'  , field_refe, 'CHAM_NO' , repk = mesh)
@@ -107,7 +107,7 @@ implicit none
 ! - Save in empiric base
 !
     ds_empi%base         = base
-    ds_empi%field_type   = field_type
+    ds_empi%field_name   = field_name
     ds_empi%field_refe   = field_refe
     ds_empi%mesh         = mesh
     ds_empi%model        = model

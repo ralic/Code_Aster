@@ -14,7 +14,7 @@ implicit none
 #include "asterfort/jexnom.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +54,7 @@ implicit none
     integer :: ifm, niv
     integer :: iret, nb_mode
     character(len=8) :: mesh_base = ' '
-    character(len=24) :: field_type = ' '
+    character(len=24) :: field_name = ' '
     character(len=24) :: grnode_int
     aster_logical :: l_hrom
     type(ROM_DS_Empi) :: ds_empi
@@ -81,13 +81,13 @@ implicit none
 !
 ! - Check field in base
 !
-    field_type = ds_empi%field_type
+    field_name = ds_empi%field_name
     if (phenom .eq. 'THER') then
-        if (field_type .ne. 'TEMP') then
+        if (field_name .ne. 'TEMP') then
             call utmess('F', 'ROM5_32')
         endif
     elseif (phenom .eq. 'MECA') then
-        if (field_type .ne. 'DEPL') then
+        if (field_name .ne. 'DEPL') then
             call utmess('F', 'ROM5_32')
         endif
     else

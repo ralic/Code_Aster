@@ -49,7 +49,7 @@ implicit none
 !
     integer :: ifm, niv
     integer :: iret
-    character(len=24) :: typval, field_type
+    character(len=24) :: typval, field_name
     integer :: nbval, nb_store, nb_mode
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,10 +76,10 @@ implicit none
 !
 ! - Type of result
 !
-    field_type = ds_para%ds_empi_prim%field_type
-    if (field_type .eq. 'DEPL') then
+    field_name = ds_para%ds_empi_prim%field_name
+    if (field_name .eq. 'DEPL') then
         ds_para%type_resu = 'EVOL_NOLI'
-    elseif (field_type .eq. 'TEMP') then
+    elseif (field_name .eq. 'TEMP') then
         ds_para%type_resu = 'EVOL_THER'
     else
         ASSERT(.false.)

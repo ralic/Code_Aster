@@ -72,7 +72,7 @@ implicit none
     integer :: indx_cmp_chck(6)
     integer :: nume_cmp, nume_node
     aster_logical :: l_find
-    character(len=24) :: field_type = ' ', field_refe = ' '
+    character(len=24) :: field_name = ' ', field_refe = ' '
     character(len=8), pointer :: v_list_cmp(:) => null()
     integer, pointer :: v_deeq(:) => null()
 !
@@ -86,7 +86,7 @@ implicit none
     model      = ds_empi%model
     nb_cmp     = ds_empi%nb_cmp
     nb_equa    = ds_empi%nb_equa
-    field_type = ds_empi%field_type
+    field_name = ds_empi%field_name
     field_refe = ds_empi%field_refe
     result_in  = ds_para_pod%result_in
     if (niv .ge. 2) then
@@ -121,16 +121,16 @@ implicit none
     call jeveuo(pfchno//'.DEEQ', 'L', vi = v_deeq)
     call jeveuo(jexnom('&CATA.GD.NOMCMP', gran_name), 'L', vk8 = v_list_cmp)
     call jelira(jexnom('&CATA.GD.NOMCMP', gran_name), 'LONMAX', nb_cmp_maxi)
-    if (field_type .eq. 'TEMP') then
+    if (field_name .eq. 'TEMP') then
         if (nb_cmp .ne. 1) then
-            call utmess('F','ROM5_21', sk = field_type, si = 1)
+            call utmess('F','ROM5_21', sk = field_name, si = 1)
         endif
         nb_cmp_chck      = 1
         name_cmp_chck(1) = 'TEMP'
         indx_cmp_chck(1) = indik8(v_list_cmp, 'TEMP', 1, nb_cmp_maxi)
-    elseif (field_type .eq. 'DEPL') then
+    elseif (field_name .eq. 'DEPL') then
         if (nb_cmp .ne. 3) then
-            call utmess('F','ROM5_21', sk = field_type, si = 3)
+            call utmess('F','ROM5_21', sk = field_name, si = 3)
         endif
         nb_cmp_chck      = 3
         name_cmp_chck(1) = 'DX'
@@ -139,9 +139,9 @@ implicit none
         indx_cmp_chck(2) = indik8(v_list_cmp, name_cmp_chck(2), 1, nb_cmp_maxi)
         name_cmp_chck(3) = 'DZ'
         indx_cmp_chck(3) = indik8(v_list_cmp, name_cmp_chck(3), 1, nb_cmp_maxi)
-    elseif (field_type .eq. 'FLUX_NOEU') then
+    elseif (field_name .eq. 'FLUX_NOEU') then
         if (nb_cmp .ne. 3) then
-            call utmess('F','ROM5_21', sk = field_type, si = 3)
+            call utmess('F','ROM5_21', sk = field_name, si = 3)
         endif
         nb_cmp_chck      = 3
         name_cmp_chck(1) = 'FLUX'
@@ -150,9 +150,9 @@ implicit none
         indx_cmp_chck(2) = indik8(v_list_cmp, name_cmp_chck(2), 1, nb_cmp_maxi)
         name_cmp_chck(3) = 'FLUZ'
         indx_cmp_chck(3) = indik8(v_list_cmp, name_cmp_chck(3), 1, nb_cmp_maxi)
-    elseif (field_type .eq. 'SIEF_NOEU') then
+    elseif (field_name .eq. 'SIEF_NOEU') then
         if (nb_cmp .ne. 6) then
-            call utmess('F','ROM5_21', sk = field_type, si = 6)
+            call utmess('F','ROM5_21', sk = field_name, si = 6)
         endif
         nb_cmp_chck      = 6
         name_cmp_chck(1) = 'SIXX'

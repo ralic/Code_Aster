@@ -66,7 +66,7 @@ implicit none
     model      = ds_empi%model
     nb_cmp     = ds_empi%nb_cmp
     nb_equa    = ds_empi%nb_equa
-    field_name = ds_empi%field_type
+    field_name = ds_empi%field_name
     field_refe = ds_empi%field_refe
 !
 ! - Check mesh

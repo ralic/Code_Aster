@@ -19,7 +19,7 @@
 !
 interface
     subroutine romModeSave(base        , i_mode     , model  ,&
-                           field_type  , field_refe , nb_equa,&
+                           field_name  , field_refe , nb_equa,&
                            mode_vectr_ ,&
                            mode_vectc_ ,&
                            mode_freq_  ,&
@@ -28,7 +28,7 @@ interface
         character(len=8), intent(in) :: base
         integer, intent(in) :: i_mode
         character(len=8), intent(in) :: model
-        character(len=24), intent(in) :: field_type
+        character(len=24), intent(in) :: field_name
         character(len=24), intent(in) :: field_refe
         integer, intent(in) :: nb_equa
         real(kind=8), optional, intent(in) :: mode_vectr_(nb_equa)

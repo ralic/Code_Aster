@@ -44,7 +44,7 @@ implicit none
     call utmess('I', 'ROM3_1', sk = ds_empi%base)
     call utmess('I', 'ROM3_2', sk = ds_empi%model)
     call utmess('I', 'ROM3_3', sk = ds_empi%mesh)
-    call utmess('I', 'ROM3_4', sk = ds_empi%field_type)
+    call utmess('I', 'ROM3_4', sk = ds_empi%field_name)
     if (ds_empi%base_type .eq. 'LINEIC') then
         call utmess('I', 'ROM3_10')
         call utmess('I', 'ROM3_11', sk = ds_empi%axe_line)
