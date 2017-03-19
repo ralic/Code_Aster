@@ -15,14 +15,22 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dbr_save(ds_empi, nb_mode, nb_snap_redu, s, v, v_nume_slice)
+    subroutine romBaseSave(ds_empi      , nb_mode, nb_snap, mode_type,&
+                           mode_vectr_  ,&
+                           mode_vectc_  ,&
+                           v_mode_freq_ ,&
+                           v_nume_slice_)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: ds_empi
         integer, intent(in) :: nb_mode
-        integer, intent(in) :: nb_snap_redu
-        real(kind=8), intent(in), pointer :: s(:)
-        real(kind=8), intent(in), pointer :: v(:)
-        integer, intent(in), pointer      :: v_nume_slice(:)
-    end subroutine dbr_save
+        integer, intent(in) :: nb_snap
+        character(len=1), intent(in) :: mode_type
+        real(kind=8), optional, intent(in), pointer :: mode_vectr_(:)
+        complex(kind=8), optional, intent(in), pointer :: mode_vectc_(:)
+        real(kind=8), optional, intent(in), pointer :: v_mode_freq_(:)
+        integer, optional, intent(in), pointer      :: v_nume_slice_(:)
+    end subroutine romBaseSave
 end interface

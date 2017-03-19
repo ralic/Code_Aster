@@ -7,7 +7,7 @@ implicit none
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_save.h"
+#include "asterfort/romBaseSave.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,13 +84,19 @@ implicit none
                     v(i_2d + nb_equa/nb_slice*(i_mode - 1))
             enddo
         enddo
-        call dbr_save(ds_empi, nb_mode*nb_slice, nb_snap_redu, s_lin, v_lin, v_nume_slice)
+        call romBaseSave(ds_empi, nb_mode*nb_slice, nb_snap_redu, mode_type = 'R',&
+                         mode_vectr_   = v_lin, &
+                         v_mode_freq_  = s_lin, &
+                         v_nume_slice_ = v_nume_slice)
         AS_DEALLOCATE(vr = v_lin)
         AS_DEALLOCATE(vr = s_lin)
         AS_DEALLOCATE(vi = v_nume_slice)
     else
         AS_ALLOCATE(vi=v_nume_slice, size = nb_mode)
-        call dbr_save(ds_empi, nb_mode, nb_snap_redu, s, v, v_nume_slice)
+        call romBaseSave(ds_empi, nb_mode, nb_snap_redu, mode_type = 'R',&
+                         mode_vectr_   = v, &
+                         v_mode_freq_  = s, &
+                         v_nume_slice_ = v_nume_slice)
         AS_DEALLOCATE(vi = v_nume_slice)
     endif
 !
