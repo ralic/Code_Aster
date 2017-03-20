@@ -6,20 +6,21 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
+#include "asterfort/mcmult.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/preres.h"
 #include "asterfort/vtcrem.h"
 #include "asterfort/copisd.h"
+#include "asterfort/romModeProd.h"
 #include "asterfort/resoud.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rsexch.h"
-#include "asterfort/rsadpa.h"
-#include "asterfort/rscrsd.h"
-#include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
+#include "asterfort/romModeSave.h"
 #include "asterfort/dbr_calcrb_prep.h"
+#include "asterfort/dbr_calcrb_solv.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -55,13 +56,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icode, ibid, nb_equa, iret, i_equa, jv_para
+    integer :: nb_matr, nb_equa, i_mode, i_matr
     character(len=19) :: maprec, solver, vect_zero, syst_solu, crgc, syst_2mbr, syst_matr
-    complex(kind=8), pointer :: v_soluti(:) => null()
-    complex(kind=8) :: c16bid = (0.d0, 0.d0)
+    complex(kind=8), pointer :: v_modec(:) => null()
+    real(kind=8), pointer :: v_moder(:) => null()
     character(len=8) :: base, model
-    character(len=24) :: field_name, field_save
-    complex(kind=8), pointer :: v_field_save(:) => null()
+    character(len=24) :: field_name = ' ', field_refe = ' ', field_iden = ' '
+    character(len=1) :: syst_type
+    complex(kind=8), pointer :: v_prodc(:) => null()
+    real(kind=8), pointer :: v_prodr(:) => null()
+    integer :: jv_desc_matr
+    character(len=1) :: nume_prod, matr_type
+    character(len=8) :: matr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,53 +80,89 @@ implicit none
     syst_2mbr      = ds_para_rb%syst_2mbr
     nb_equa        = ds_empi%nb_equa
     base           = ds_empi%base
-    field_name     = ds_empi%field_name
     model          = ds_empi%model
+    field_name     = ds_empi%field_name
+    field_refe     = syst_2mbr
+    nb_matr        = ds_para_rb%ds_multipara%nb_matr
+    syst_type      = ds_para_rb%ds_multipara%syst_type
+
+    ds_empi%nb_mode = 1
+    i_mode          = 1
 !
 ! - Prepare matrix and second member
 !
     call dbr_calcrb_prep(ds_para_rb)
 !
-! - Factor matrix
+! - Solve linear system
 !
-    call preres(solver, 'V', icode, maprec, syst_matr,&
-                ibid, -9999)
-    if ((icode .eq. 1) .or. (icode .eq. 2)) then
-        call utmess('I', 'DYNAMIQUE_14', sr=0.d0)
+    call dbr_calcrb_solv(ds_para_rb)
+!
+! - Save mode
+!
+    field_iden     = 'DEPL'
+    if (syst_type .eq. 'C') then
+        call jeveuo(syst_solu(1:19)//'.VALE', 'L', vc=v_modec)
+        call romModeSave(base       , i_mode    , model, &
+                         field_name , field_iden, field_refe, nb_equa,&
+                         mode_vectc_ = v_modec)
+    elseif (syst_type .eq. 'R') then
+        call jeveuo(syst_solu(1:19)//'.VALE', 'L', vr=v_moder)
+        call romModeSave(base       , i_mode    , model, &
+                         field_name , field_iden, field_refe, nb_equa,&
+                         mode_vectr_ = v_moder)
+    else
+        ASSERT(.false.)
     endif
 !
-! - Solve system
+! - Compute products matrix x mode
+!  
+    call romModeProd(nb_matr   ,&
+                     ds_para_rb%ds_multipara%matr_name,&
+                     ds_para_rb%ds_multipara%matr_type,&
+                     ds_para_rb%ds_multipara%prod_mode,&
+                     syst_type , v_modec  , v_moder)
 !
-    call resoud(syst_matr, maprec    , solver, vect_zero, 0       ,&
-                syst_2mbr, syst_solu , 'V'   , [0.d0]   , [c16bid],&
-                crgc     , .true._1  , 0     , iret)
-    call jeveuo(syst_solu(1:19)//'.VALE', 'L', vc=v_soluti)
-!
-! - Create output datastructure
-!
-    call rscrsd('G', base, 'MODE_EMPI', 1)
-!
-! - Save solution
-!
-    call rsexch(' ', base, field_name, 1, field_save, iret)
-    ASSERT(iret .eq. 100 .or. iret .eq. 0)
-    if (iret .eq. 100) then
-        call copisd('CHAMP_GD', 'G', syst_2mbr, field_save)
-    endif
-    call jeveuo(field_save(1:19)//'.VALE', 'E', vc = v_field_save)
-    do i_equa = 1, nb_equa
-        v_field_save(i_equa) = v_soluti(i_equa)
+! - Save products matrix x mode
+!  
+    do i_matr = 1, nb_matr
+        matr      = ds_para_rb%ds_multipara%matr_name(i_matr)
+        matr_type = ds_para_rb%ds_multipara%matr_type(i_matr)
+        call jeveuo(matr(1:8)//'           .&INT', 'L', jv_desc_matr)
+        write(nume_prod,'(I1)') i_matr
+        field_iden = 'PROD_BASE_MATR_'//nume_prod
+        if (matr_type .eq. 'C') then
+            if (syst_type .eq. 'C') then
+                call jeveuo(ds_para_rb%ds_multipara%prod_mode(i_matr)(1:19)//'.VALE', 'L',&
+                            vc = v_prodc)
+                call romModeSave(base      , i_mode    , model     ,&
+                                 field_name, field_iden, field_refe, nb_equa,&
+                                 mode_vectc_ = v_prodc)
+            elseif (syst_type .eq. 'R') then
+                call jeveuo(ds_para_rb%ds_multipara%prod_mode(i_matr)(1:19)//'.VALE', 'L',&
+                            vr = v_prodr)
+                call romModeSave(base      , i_mode    , model     ,&
+                                 field_name, field_iden, field_refe, nb_equa,&
+                                 mode_vectc_ = v_prodc)
+            else
+                ASSERT(.false.)
+            endif
+        elseif (matr_type .eq. 'R') then
+            if (syst_type .eq. 'C') then
+                call jeveuo(ds_para_rb%ds_multipara%prod_mode(i_matr)(1:19)//'.VALE', 'L',&
+                            vc = v_prodc)
+                call romModeSave(base      , i_mode    , model     ,&
+                                 field_name, field_iden, field_refe, nb_equa,&
+                                 mode_vectc_ = v_prodc)
+            elseif (syst_type .eq. 'R') then
+                call jeveuo(ds_para_rb%ds_multipara%prod_mode(i_matr)(1:19)//'.VALE', 'L', vr =&
+                            v_prodr)
+                call romModeSave(base      , i_mode    , model     ,&
+                                 field_name, field_iden, field_refe, nb_equa,&
+                                 mode_vectr_ = v_prodr)
+            else
+                ASSERT(.false.)
+            endif
+        endif
     end do
-    call rsnoch(base, field_name, 1)
-    call rsadpa(base, 'E', 1, 'FREQ', 1, 0, sjv=jv_para)
-    zr(jv_para)  = 1.d0
-    call rsadpa(base, 'E', 1, 'MODELE', 1, 0, sjv=jv_para)
-    zk8(jv_para) = model
-    call rsadpa(base, 'E', 1, 'NOM_CHAM', 1, 0, sjv=jv_para)
-    zk24(jv_para) = field_name
-    call rsadpa(base, 'E', 1, 'NUME_PLAN', 1, 0, sjv=jv_para)
-    zi(jv_para) = 0
-    call rsadpa(base, 'E', 1, 'NUME_MODE', 1, 0, sjv=jv_para)
-    zi(jv_para) = 1
 !
 end subroutine

@@ -47,8 +47,9 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=19) :: syst_matr, syst_2mbr, vect_zero
-    character(len=1) :: syst_matr_type, syst_2mbr_type, matr_type, vect_type
+    character(len=19) :: syst_matr, syst_2mbr, vect_zero, syst_solu
+    character(len=24) :: prod_mode
+    character(len=1) :: syst_matr_type, syst_2mbr_type, matr_type, vect_type, syst_type, prod_type
     integer :: i_matr, nb_matr
     aster_logical :: l_coefm_cplx, l_coefv_cplx
     character(len=8) :: matr_name = ' '
@@ -64,12 +65,14 @@ implicit none
 !
     matr_name = ds_para_rb%ds_multipara%matr_name(1)
     nb_matr   = ds_para_rb%ds_multipara%nb_matr
+    syst_type = ds_para_rb%ds_multipara%syst_type
 !
 ! - Get parameters
 !
-    syst_matr      = ds_para_rb%syst_matr
-    syst_2mbr      = ds_para_rb%syst_2mbr
-    vect_zero      = ds_para_rb%vect_zero
+    syst_matr = ds_para_rb%syst_matr
+    syst_2mbr = ds_para_rb%syst_2mbr
+    vect_zero = ds_para_rb%vect_zero
+    syst_solu = ds_para_rb%syst_solu
 !
 ! - Evaluate type of resultant matrix
 !
@@ -133,6 +136,24 @@ implicit none
 ! - Prepare second member
 !
     call vtcrem(syst_2mbr, syst_matr, 'V', syst_2mbr_type)
+!
+! - Prepare product [Matrix] x [Mode]
+!
+    do i_matr = 1, nb_matr
+        prod_mode    = ds_para_rb%ds_multipara%prod_mode(i_matr)
+        matr_name    = ds_para_rb%ds_multipara%matr_name(i_matr)
+        matr_type    = ds_para_rb%ds_multipara%matr_type(i_matr)
+        l_coefm_cplx = ds_para_rb%ds_multipara%l_coefm_cplx(i_matr)
+        prod_type    = 'R'
+        if (matr_type .eq. 'C' .or. l_coefm_cplx .or. syst_type.eq.'C') then
+            prod_type    = 'C'
+        endif
+        call vtcrem(prod_mode, matr_name, 'V', prod_type)
+    end do
+!
+! - Prepare solution
+!
+    call vtcrem(syst_solu, syst_matr, 'V', syst_type)
 !
 ! - Prepare null vector
 !

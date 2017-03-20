@@ -18,11 +18,14 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode_maxi, ds_empi)
-        use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
-        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+    subroutine romModeProd(nb_matr  , l_matr_name, l_matr_type, prod_mode,&
+                           mode_type, v_modec    , v_moder)
+        integer, intent(in) :: nb_matr
+        character(len=8), intent(in) :: l_matr_name(:)
+        character(len=1), intent(in) :: l_matr_type(:)
+        character(len=24), intent(in) :: prod_mode(:)
+        character(len=1), intent(in) :: mode_type
+        complex(kind=8), pointer, intent(in) :: v_modec(:)
+        real(kind=8), pointer, intent(in) :: v_moder(:)
+    end subroutine romModeProd
 end interface

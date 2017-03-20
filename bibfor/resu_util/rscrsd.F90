@@ -18,7 +18,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
     integer :: nbordr
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,7 +52,7 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !     ------------------------------------------------------------------
 !                      C H A M P _ T H E R M O M E C A (ROM)
 !     ------------------------------------------------------------------
-    integer, parameter :: ncthme = 4
+    integer, parameter :: ncthme = 12
 
 !     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E
@@ -88,7 +88,18 @@ subroutine rscrsd(base, nomsd, typesd, nbordr)
 !                      C H A M P _ T H E R M O M E C A (ROM)
 !     ------------------------------------------------------------------
     character(len=16), parameter :: chthme(ncthme) = (/&
-            'TEMP     ', 'DEPL     ', 'FLUX_NOEU', 'SIEF_NOEU'/)
+            'TEMP            ',&
+            'DEPL            ',&
+            'FLUX_NOEU       ',&
+            'SIEF_NOEU       ',&
+            'PROD_BASE_MATR_1',&
+            'PROD_BASE_MATR_2',&
+            'PROD_BASE_MATR_3',&
+            'PROD_BASE_MATR_4',&
+            'PROD_BASE_MATR_5',&
+            'PROD_BASE_MATR_6',&
+            'PROD_BASE_MATR_7',&
+            'PROD_BASE_MATR_8'/)
 
 !     ------------------------------------------------------------------
 !                      C H A M P _ M E C A N I Q U E

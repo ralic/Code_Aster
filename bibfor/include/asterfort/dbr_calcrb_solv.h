@@ -15,14 +15,9 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode_maxi, ds_empi)
+    subroutine dbr_calcrb_solv(ds_para_rb)
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
         type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+    end subroutine dbr_calcrb_solv
 end interface

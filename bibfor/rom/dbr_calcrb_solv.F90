@@ -1,12 +1,14 @@
-subroutine dbr_init_base(ds_para)
+subroutine dbr_calcrb_solv(ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_init_base_pod.h"
-#include "asterfort/dbr_init_base_rb.h"
+#include "asterfort/preres.h"
+#include "asterfort/resoud.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,29 +28,47 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! DEFI_BASE_REDUITE - Compute
 !
-! Prepare datastructure for empiric modes
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Solve linear system
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_init_base_pod(ds_para%result_out, ds_para%para_pod, ds_para%nb_mode_maxi,&
-                               ds_para%l_reuse   , ds_para%ds_empi)
-        ds_para%field_iden = ds_para%para_pod%field_name
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_init_base_rb(ds_para%result_out, ds_para%para_rb, ds_para%nb_mode_maxi,&
-                              ds_para%ds_empi)
-    else
-        ASSERT(.false.)
+! In  ds_para_rb       : datastructure for parameters (RB)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    complex(kind=8), parameter :: c16bid =(0.d0,0.d0)
+    integer :: icode, ibid
+    character(len=19) :: maprec, solver, crgc, vect_zero
+    character(len=19)  :: syst_matr, syst_2mbr, syst_solu
+!
+! --------------------------------------------------------------------------------------------------
+!
+    vect_zero      = ds_para_rb%vect_zero
+    maprec         = '&&OP0053.MAPREC'
+    syst_solu      = ds_para_rb%syst_solu
+    crgc           = '&&OP0053.GCPC'
+    solver         = ds_para_rb%solver
+    syst_matr      = ds_para_rb%syst_matr
+    syst_2mbr      = ds_para_rb%syst_2mbr
+!
+! - Factor matrix
+!
+    call preres(solver, 'V', icode, maprec, syst_matr,&
+                ibid, -9999)
+    if ((icode .eq. 1) .or. (icode .eq. 2)) then
+        call utmess('I', 'ROM2_18')
     endif
+!
+! - Solve system
+!
+    call resoud(syst_matr, maprec    , solver, vect_zero, 0       ,&
+                syst_2mbr, syst_solu , 'V'   , [0.d0]   , [c16bid],&
+                crgc     , .true._1  , 0     , icode)
 !
 end subroutine
