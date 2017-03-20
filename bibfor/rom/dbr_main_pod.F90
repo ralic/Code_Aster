@@ -1,4 +1,4 @@
-subroutine dbr_main_pod(nb_mode_maxi, ds_para_pod, ds_empi)
+subroutine dbr_main_pod(nb_mode_maxi, ds_para_pod, field_iden, ds_empi)
 !
 use Rom_Datastructure_type
 !
@@ -33,6 +33,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     integer, intent(in) :: nb_mode_maxi
+    character(len=24), intent(in) :: field_iden
     type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
     type(ROM_DS_Empi), intent(inout) :: ds_empi
 !
@@ -45,6 +46,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  nb_mode_maxi     : maximum number of emprical modes
+! In  field_iden       : identificator of field (name in results datastructure)
 ! In  ds_para_pod      : datastructure for parameters (POD)
 ! IO  ds_empi          : datastructure for empiric modes
 !
@@ -77,7 +79,7 @@ implicit none
 !
 ! - Save empiric modes
 ! 
-    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, field_iden, s, v)
 !
 ! - Compute reduced coordinates
 !

@@ -1,5 +1,5 @@
-subroutine romModeSave(base        , i_mode     , model  ,&
-                       field_type  , field_refe , nb_equa,&
+subroutine romModeSave(base        , i_mode     , model      ,&
+                       field_name  , field_iden , field_refe , nb_equa,&
                        mode_vectr_ ,&
                        mode_vectc_ ,&
                        mode_freq_  ,&
@@ -38,7 +38,8 @@ implicit none
     character(len=8), intent(in) :: base
     integer, intent(in) :: i_mode
     character(len=8), intent(in) :: model
-    character(len=24), intent(in) :: field_type
+    character(len=24), intent(in) :: field_name
+    character(len=24), intent(in) :: field_iden
     character(len=24), intent(in) :: field_refe
     integer, intent(in) :: nb_equa
     real(kind=8), optional, intent(in) :: mode_vectr_(nb_equa)
@@ -58,7 +59,8 @@ implicit none
 ! In  base             : name of empiric base
 ! In  i_mode           : index of empiric modes
 ! In  model            : name of model
-! In  field_type       : type of field (name in results datastructure)
+! In  field_name       : name of field where empiric modes have been constructed (NOM_CHAM)
+! In  field_iden       : identificator of field (name in results datastructure)
 ! In  field_refe       : name of a reference field if necessary
 ! In  nb_equa          : length of empiric mode
 ! In  mode_vectr       : singular vector for empiric mode (real)
@@ -92,11 +94,11 @@ implicit none
 !
 ! - Get current mode
 !
-    call rsexch(' ', base, field_type, i_mode, field, iret)
+    call rsexch(' ', base, field_iden, i_mode, field, iret)
     ASSERT(iret .eq. 100 .or. iret.eq.0 .or. iret .eq. 110)
     if (iret .eq. 110) then
         call rsagsd(base, 0)
-        call rsexch(' ', base, field_type, i_mode, field, iret)
+        call rsexch(' ', base, field_iden, i_mode, field, iret)
         ASSERT(iret .eq. 100 .or. iret.eq.0)
     endif
     if (iret .eq. 100) then
@@ -118,7 +120,7 @@ implicit none
     else
         v_field_r(:) = mode_vectr_(1:nb_equa)
     endif
-    call rsnoch(base, field_type, i_mode)
+    call rsnoch(base, field_iden, i_mode)
 !
 ! - Save parameters
 !
@@ -129,7 +131,7 @@ implicit none
     call rsadpa(base, 'E', 1, 'MODELE', i_mode, 0, sjv=jv_para)
     zk8(jv_para)  = model
     call rsadpa(base, 'E', 1, 'NOM_CHAM', i_mode, 0, sjv=jv_para)
-    zk24(jv_para) = field_type
+    zk24(jv_para) = field_name
     call rsadpa(base, 'E', 1, 'NUME_PLAN', i_mode, 0, sjv=jv_para)
     zi(jv_para)   = nume_slice
     call rsadpa(base, 'E', 1, 'NB_SNAP', i_mode, 0, sjv=jv_para)

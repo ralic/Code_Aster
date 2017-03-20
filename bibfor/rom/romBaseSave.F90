@@ -1,4 +1,4 @@
-subroutine romBaseSave(ds_empi      , nb_mode, nb_snap, mode_type,&
+subroutine romBaseSave(ds_empi      , nb_mode, nb_snap, mode_type, field_iden,&
                        mode_vectr_  ,&
                        mode_vectc_  ,&
                        v_mode_freq_ ,&
@@ -36,6 +36,7 @@ implicit none
     integer, intent(in) :: nb_mode
     integer, intent(in) :: nb_snap
     character(len=1), intent(in) :: mode_type
+    character(len=24), intent(in) :: field_iden
     real(kind=8), optional, intent(in), pointer :: mode_vectr_(:)
     complex(kind=8), optional, intent(in), pointer :: mode_vectc_(:)
     real(kind=8), optional, intent(in), pointer :: v_mode_freq_(:)
@@ -53,8 +54,10 @@ implicit none
 ! In  nb_mode          : number of empiric modes
 ! In  nb_snap          : number of snapshots used to construct empiric base
 ! In  mode_type        : type of mode (real or complex, 'R' ou 'C')
-! In  mode_freq        : singular values
-! In  mode_vect        : singular vectors
+! In  field_iden       : identificator of field (name in results datastructure)
+! In  mode_vectr       : singular vectors (R)
+! In  mode_vectc       : singular vectors (C)
+! In  v_mode_freq      : singular values
 ! In  v_nume_slice     : index of slices (for lineic bases)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -97,14 +100,14 @@ implicit none
         endif
         if (mode_type.eq.'R') then
             call romModeSave(base                , i_mode    , model  ,&
-                             field_name          , field_refe, nb_equa,&
+                             field_name, field_iden, field_refe, nb_equa,&
                              mode_vectr_   = mode_vectr_(nb_equa*(i_mode-1)+1:),&
                              mode_freq_    = mode_freq   ,&
                              nume_slice_   = nume_slice  ,&
                              nb_snap_      = nb_snap)
         elseif (mode_type.eq.'C') then
-            call romModeSave(base                , i_mode    , model  ,&
-                             field_name          , field_refe, nb_equa,&
+            call romModeSave(base      , i_mode    , model     ,&
+                             field_name, field_iden, field_refe, nb_equa,&
                              mode_vectc_ = mode_vectc_(nb_equa*(i_mode-1)+1:),&
                              mode_freq_    = mode_freq   ,&
                              nume_slice_   = nume_slice  ,&

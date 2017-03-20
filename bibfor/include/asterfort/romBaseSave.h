@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine romBaseSave(ds_empi      , nb_mode, nb_snap, mode_type,&
+    subroutine romBaseSave(ds_empi      , nb_mode, nb_snap, mode_type, field_iden,&
                            mode_vectr_  ,&
                            mode_vectc_  ,&
                            v_mode_freq_ ,&
@@ -28,6 +28,7 @@ interface
         integer, intent(in) :: nb_mode
         integer, intent(in) :: nb_snap
         character(len=1), intent(in) :: mode_type
+        character(len=24), intent(in) :: field_iden
         real(kind=8), optional, intent(in), pointer :: mode_vectr_(:)
         complex(kind=8), optional, intent(in), pointer :: mode_vectc_(:)
         real(kind=8), optional, intent(in), pointer :: v_mode_freq_(:)

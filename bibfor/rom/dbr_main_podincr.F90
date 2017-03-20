@@ -1,4 +1,4 @@
-subroutine dbr_main_podincr(l_reuse, nb_mode_maxi, ds_para_pod, ds_empi)
+subroutine dbr_main_podincr(l_reuse, nb_mode_maxi, ds_para_pod, field_iden, ds_empi)
 !
 use Rom_Datastructure_type
 !
@@ -34,6 +34,7 @@ implicit none
     aster_logical, intent(in) :: l_reuse
     integer, intent(in) :: nb_mode_maxi
     type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+    character(len=24), intent(in) :: field_iden
     type(ROM_DS_Empi), intent(inout) :: ds_empi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +45,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para        : datastructure for parameters
+! In  l_reuse          : .true. if reuse
+! In  nb_mode_maxi     : maximum number of emprical modes
+! In  field_iden       : identificator of field (name in results datastructure)
+! In  ds_para_pod      : datastructure for parameters (POD)
+! IO  ds_empi          : datastructure for empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,7 +73,7 @@ implicit none
 !
 ! - Save empiric base
 !
-    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, s, v)
+    call dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, field_iden, s, v)
 !
 ! - Cleaning
 !

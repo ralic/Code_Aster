@@ -76,5 +76,6 @@ implicit none
     ds_algorom%tabl_name   = ' '
     ds_algorom%gamma       = ' '
     ds_algorom%v_equa_int  => null()
+    ds_algorom%field_iden  = ' '
 !
 end subroutine

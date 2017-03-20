@@ -18,10 +18,11 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dbr_main_pod(nb_mode_maxi, ds_para_pod, ds_empi)
+    subroutine dbr_main_pod(nb_mode_maxi, ds_para_pod, field_iden, ds_empi)
         use Rom_Datastructure_type
         integer, intent(in) :: nb_mode_maxi
         type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
+        character(len=24), intent(in) :: field_iden
         type(ROM_DS_Empi), intent(inout) :: ds_empi
     end subroutine dbr_main_pod
 end interface

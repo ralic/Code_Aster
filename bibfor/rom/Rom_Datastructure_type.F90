@@ -183,6 +183,8 @@ implicit none
         character(len=16)        :: operation
 ! ----- Name of empiric base to save
         character(len=8)         :: result_out
+! ----- Identificator for field in result datastructure
+        character(len=24)        :: field_iden
 ! ----- Maximum number of modes
         integer                  :: nb_mode_maxi
 ! ----- Parameters for POD/POD_INCR method
@@ -229,6 +231,8 @@ implicit none
         character(len=24) :: tabl_name
 ! ----- Object to save reduced coordinates
         character(len=24) :: gamma
+! ----- Identificator for field
+        character(len=24) :: field_iden
     end type ROM_DS_AlgoPara
 !     
 end module

@@ -60,6 +60,7 @@ implicit none
 !
     ds_para%operation    = ' '
     ds_para%result_out   = ' '
+    ds_para%field_iden   = ' '
     ds_para%nb_mode_maxi = 0
     ds_para%para_pod     = ds_para_pod
     ds_para%para_rb      = ds_para_rb

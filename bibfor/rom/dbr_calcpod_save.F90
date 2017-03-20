@@ -1,4 +1,4 @@
-subroutine dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, s, v)
+subroutine dbr_calcpod_save(ds_empi, nb_mode, nb_snap_redu, field_iden, s, v)
 !
 use Rom_Datastructure_type
 !
@@ -30,6 +30,7 @@ implicit none
     type(ROM_DS_Empi), intent(in) :: ds_empi
     integer, intent(in) :: nb_mode
     integer, intent(in) :: nb_snap_redu
+    character(len=24), intent(in) :: field_iden
     real(kind=8), intent(in), pointer :: v(:)
     real(kind=8), intent(in), pointer :: s(:)
 !
@@ -44,6 +45,7 @@ implicit none
 ! In  ds_empi          : datastructure for empiric modes
 ! In  nb_mode          : number of empiric modes
 ! In  nb_snap_redu     : number of snapshots used to construct empiric base
+! In  field_iden       : identificator of field (name in results datastructure)
 ! In  s                : singular values
 ! In  v                : singular vectors
 !
@@ -85,6 +87,7 @@ implicit none
             enddo
         enddo
         call romBaseSave(ds_empi, nb_mode*nb_slice, nb_snap_redu, mode_type = 'R',&
+                         field_iden    = field_iden,&
                          mode_vectr_   = v_lin, &
                          v_mode_freq_  = s_lin, &
                          v_nume_slice_ = v_nume_slice)
@@ -94,6 +97,7 @@ implicit none
     else
         AS_ALLOCATE(vi=v_nume_slice, size = nb_mode)
         call romBaseSave(ds_empi, nb_mode, nb_snap_redu, mode_type = 'R',&
+                         field_iden    = field_iden,&
                          mode_vectr_   = v, &
                          v_mode_freq_  = s, &
                          v_nume_slice_ = v_nume_slice)
