@@ -200,12 +200,12 @@ CHARG32=AFFE_CHAR_MECA(MODELE=MODMEC32,
                            );
 # DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+9)
 # ON UTILISE MUMPS
-RESU32=MECA_STATIQUE(MODELE=MODMEC32,
-                    CHAM_MATER=CHMAT32,INFO=2,
-                    SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
-                               ),
-                    EXCIT=_F(CHARGE=CHARG32,),
-                    );
+#RESU32=MECA_STATIQUE(MODELE=MODMEC32,
+                    #CHAM_MATER=CHMAT32,INFO=2,
+                    #SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
+                               #),
+                    #EXCIT=_F(CHARGE=CHARG32,),
+                    #);
 
 Iy=b*h*h*h/12.
 Uz=F*L*L*L/3./YG/Iy
@@ -213,30 +213,28 @@ Uz=F*L*L*L/3./YG/Iy
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
 # => l'usage du mot cle TOLE_MACHINE.
 # Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
-calc_aster5_p1=1.97075649353E-06
-calc_aster5_p2=1.97114961124E-06
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU32,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.97075645543E-06,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU32,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=1.97114957277E-06,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=1.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                ),
-          )
+#calc_aster5_p1=1.97075649353E-06
+#calc_aster5_p2=1.97114961124E-06
+#TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   #GROUP_NO='P7',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU32,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=1.97075645543E-06,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #_F(NUME_ORDRE=1,
+                   #GROUP_NO='P8',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU32,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=1.97114957277E-06,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #),
+          #)
 
 # ===========================================================================================
 # CAS 3 :
@@ -278,17 +276,17 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
 # DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+13 DEJA)
 # L/h=1000 ET MAILLAGE DISTORDU
 # ON UTILISE MUMPS ET ON DESACTIVE LA DETECTION DE SINGULARITE AINSI QUE LA VERIFICATION DE QUALITE
-RESU33=MECA_STATIQUE(MODELE=MODMEC33,
-                    CHAM_MATER=CHMAT33,
-                    EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
-                               NPREC=-1,
-                               RESI_RELA=1.E-2,
-                               ),
-                    );
+#RESU33=MECA_STATIQUE(MODELE=MODMEC33,
+                    #CHAM_MATER=CHMAT33,
+                    #EXCIT=_F(CHARGE=CHARG33,),
+                    #SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
+                               #NPREC=-1,
+                               #RESI_RELA=1.E-2,
+                               #),
+                    #);
 
-Iy=b*h*h*h/12.
-Uz=F*L*L*L/3./YG/Iy
+#Iy=b*h*h*h/12.
+#Uz=F*L*L*L/3./YG/Iy
 
 
 # La solution obtenue presente une certaine variabilite entre machines qui decoule
@@ -296,27 +294,25 @@ Uz=F*L*L*L/3./YG/Iy
 # Cette variabilite se vérifie aussi lorsqu'on change de version de compilateur,
 # de solveur linéaire, de renuméroteur, de version de routine BLAS...
 # => l'usage du mot cle TOLE_MACHINE.
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.00196734459553,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.00196747097096,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                ),
-          )
+#TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   #GROUP_NO='P7',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU33,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=0.00196734459553,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #_F(NUME_ORDRE=1,
+                   #GROUP_NO='P8',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU33,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=0.00196747097096,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #),
+          #)
 
 FIN()

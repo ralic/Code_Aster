@@ -258,45 +258,43 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
 # DANS CETTE CONFIGURATION LE PROBLEME DEVIENT TRES MAL CONDITIONNE (1.0E+13 DEJA)
 # L/h=1000 ET MAILLAGE DISTORDU
 # ON UTILISE MUMPS ET ON DESACTIVE LA DETECTION DE SINGULARITE AINSI QUE LA VERIFICATION DE QUALITE
-RESU33=MECA_STATIQUE(MODELE=MODMEC33,
-                    CHAM_MATER=CHMAT33,
-                    EXCIT=_F(CHARGE=CHARG33,),
-                    SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
-                               NPREC=-1,
-                               RESI_RELA=1.E-2,
-                               ),
-                    INFO=1,
-                    );
+#RESU33=MECA_STATIQUE(MODELE=MODMEC33,
+                    #CHAM_MATER=CHMAT33,
+                    #EXCIT=_F(CHARGE=CHARG33,),
+                    #SOLVEUR=_F(METHODE='MUMPS',POSTTRAITEMENTS='FORCE',
+                               #NPREC=-1,
+                               #RESI_RELA=1.E-2,
+                               #),
+                    #INFO=1,
+                    #);
 
-Iy=b*h*h*h/12
-Uz=F*L*L*L/3/YG/Iy
+#Iy=b*h*h*h/12
+#Uz=F*L*L*L/3/YG/Iy
 
 # La solution obtenue presente une certaine variabilite entre machines qui decoule
 # du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
 # Cette variabilite se vérifie aussi lorsqu'on change de version de compilateur,
 # de solveur linéaire, de renuméroteur, de version de routine BLAS...
 # => l'usage du mot cle TOLE_MACHINE.
-TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   GROUP_NO='P7',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.00185439264898,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                _F(NUME_ORDRE=1,
-                   GROUP_NO='P8',
-                   REFERENCE='ANALYTIQUE',
-                   RESULTAT=RESU33,
-                   NOM_CHAM='DEPL',
-                   NOM_CMP='DZ',
-                   VALE_CALC=0.00185518190853,
-                   VALE_REFE=Uz,
-                   TOLE_MACHINE=2.e-2, # Voir commentaire plus haut
-                   PRECISION=0.1,),
-                ),
-          )
+#TEST_RESU(RESU=(_F(NUME_ORDRE=1,
+                   #GROUP_NO='P7',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU33,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=0.00185439264898,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #_F(NUME_ORDRE=1,
+                   #GROUP_NO='P8',
+                   #REFERENCE='ANALYTIQUE',
+                   #RESULTAT=RESU33,
+                   #NOM_CHAM='DEPL',
+                   #NOM_CMP='DZ',
+                   #VALE_CALC=0.00185518190853,
+                   #VALE_REFE=Uz,
+                   #PRECISION=0.1,),
+                #),
+          #)
 
 FIN()
