@@ -380,8 +380,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
 !
 ! 3.1.1 ==> MISE A BLANC
 !
-    nolopg =&
-     &'                                                                '
+    nolopg =' '
 !      1234567890123456789012345678901234567890123456789012345678901234
 !
 ! 3.1.2 ==> INSERTION DU NOM DE LA FAMILLE
@@ -399,11 +398,12 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp,&
     if (nbsp .gt. 1) then
         call codent(nbsp, 'D', saux08)
         nolopg (17:24) = saux08
-        do 313 , iaux = 1, 24
-        if (nolopg(iaux:iaux) .eq. ' ') then
-            nolopg(iaux:iaux) = '_'
-        endif
-313     continue
+        do iaux = 1, 24
+            if (nolopg(iaux:iaux) .eq. ' ') then
+                nolopg(iaux:iaux) = '_'
+            endif
+        enddo
+        nolopg(33:40) = 'ASTER_SP'
     endif
 !
 ! 3.1.4 ==> INSERTION DU COMPTEUR AU DELA DE 1

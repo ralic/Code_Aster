@@ -83,7 +83,7 @@ subroutine lrvcpg(idfimd, nbpgm, nbpga, nomtm, typgeo,&
     call jemarq()
 !
     call infniv(ifm, nivinf)
-    if ( locnam(23:64).ne.' ' ) then
+    if ( locnam(33:40).eq.'ASTER_SP' ) then
         read(locnam(23:28),'(I6)') nbsp
         nbpgm2 = nbpgm/nbsp
     else
