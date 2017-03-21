@@ -5,7 +5,7 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
 ! person_in_charge: mickael.abbas at edf.fr
 !
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -98,8 +98,11 @@ subroutine nmchoi(phase, sddyna, numins, fonact, metpre,&
             optrig = 'RIGI_MECA_TANG'
         else if (metpre.eq.'SECANTE') then
             optrig = 'RIGI_MECA_ELAS'
-        else
+        else if (metpre.eq.'ELASTIQUE') then
+!            optrig = 'RIGI_MECA_ELAS'
             optrig = 'RIGI_MECA'
+        else
+            optrig = 'RIGI_MECA_TANG'
         endif
 !
 ! --- METHODE IMPLEX

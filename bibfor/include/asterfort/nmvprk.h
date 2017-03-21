@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -40,7 +40,7 @@ interface
         real(kind=8) :: angmas(*)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
-        real(kind=8) :: dsde(6, 6)
+        real(kind=8) :: dsde(6, *)
         integer :: iret
         character(len=16), optional, intent(in) :: mult_comp_
     end subroutine nmvprk
