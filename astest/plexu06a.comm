@@ -29,7 +29,7 @@ PRE_GIBI();
 
 # ------------------- Lecture du maillage
 
-MA00=LIRE_MAILLAGE();
+MA00=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 MA=CREA_MAILLAGE(MAILLAGE=MA00,
                  CREA_POI1=_F(NOM_GROUP_MA='PLINE',

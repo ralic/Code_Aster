@@ -1,6 +1,6 @@
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,7 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON');
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 MODEL=AFFE_MODELE(MAILLAGE=MAIL,
                 AFFE=_F(TOUT='OUI',
@@ -117,7 +117,7 @@ U_X=CALC_CHAMP(reuse=U_X,RESULTAT=U_X,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_X,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_X,
                   TOUT_CHAM='OUI',),);
 
 #MATRICE DIAGONALE
@@ -139,7 +139,7 @@ U_X_DIAG=CALC_CHAMP(reuse=U_X_DIAG,RESULTAT=U_X_DIAG,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_X_DIAG,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_X_DIAG,
                   TOUT_CHAM='OUI',),);
 
 #***********************************************************************
@@ -165,7 +165,7 @@ U_Y=CALC_CHAMP(reuse=U_Y,RESULTAT=U_Y,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_Y,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_Y,
                   TOUT_CHAM='OUI',),);
 
 #MATRICE DIAGONALE
@@ -187,7 +187,7 @@ U_Y_DIAG=CALC_CHAMP(reuse=U_Y_DIAG,RESULTAT=U_Y_DIAG,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_Y_DIAG,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_Y_DIAG,
                   TOUT_CHAM='OUI',),);
 
 #***********************************************************************
@@ -212,7 +212,7 @@ U_Z=CALC_CHAMP(reuse=U_Z,RESULTAT=U_Z,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_Z,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_Z,
                   TOUT_CHAM='OUI',),);
 
 #MATRICE DIAGONALE
@@ -234,7 +234,7 @@ U_Z_DIAG=CALC_CHAMP(reuse=U_Z_DIAG,RESULTAT=U_Z_DIAG,
                FORCE=('FORC_NODA','REAC_NODA'),
                );
 
-IMPR_RESU(RESU=_F(RESULTAT=U_Z_DIAG,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U_Z_DIAG,
                   TOUT_CHAM='OUI',),);
 #***********************************************************************
 # Construction des modes // X, Y et Z et projection de la matrice de masse

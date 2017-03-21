@@ -482,10 +482,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
       resultfile.close()
       UL = UniteAster()
       umail = UL.Libre(action='ASSOCIER', nom='dse.mail')
-      __mailla=LIRE_MAILLAGE(UNITE=umail);
+      __mailla=LIRE_MAILLAGE(FORMAT='ASTER',UNITE=umail);
       UL.EtatInit()
  
-    IMPR_RESU(RESU=_F(MAILLAGE=__mailla,));
+    IMPR_RESU(FORMAT='RESULTAT',RESU=_F(MAILLAGE=__mailla,));
 
     __MODELE = AFFE_MODELE(MAILLAGE=__mailla,
                            AFFE=(

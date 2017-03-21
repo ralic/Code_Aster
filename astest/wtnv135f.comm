@@ -205,7 +205,7 @@ U1 = STAT_NON_LINE(MODELE = MODELE,
                    INCREMENT = _F(LIST_INST = DEFLIST1,),
                    ARCHIVAGE = _F(PRECISION = 1.E-6))
 
-IMPR_RESU(RESU = _F(RESULTAT = U1),)
+IMPR_RESU(FORMAT="RESULTAT",RESU = _F(RESULTAT = U1),)
 
 # ===================================================================================
 # ::: POST-TRAITEMENT PHASE 1 -------------------------------------------------------

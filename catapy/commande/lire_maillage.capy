@@ -23,7 +23,7 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
 
          UNITE           =SIMP(statut='f',typ=UnitType(),defaut= 20 , inout='in'),
 
-         FORMAT          =SIMP(statut='f',typ='TXM',defaut="ASTER",into=("ASTER","MED"),
+         FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",into=("ASTER","MED"),
                             fr=tr("Format du fichier : ASTER ou MED."),
                             ),
 

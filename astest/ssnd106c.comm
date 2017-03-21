@@ -21,7 +21,7 @@ from Contrib.veri_matr_tang import VERI_MATR_TANG
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 #lire le maillage
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 #affecter les elements
 modele=AFFE_MODELE(MAILLAGE=MA,

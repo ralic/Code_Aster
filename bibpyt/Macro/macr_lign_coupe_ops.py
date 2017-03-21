@@ -891,7 +891,7 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
     UL.EtatInit(UNITE_MAILLAGE)
 
     # Lecture du maillage de seg2 contenant toutes les lignes de coupe
-    __macou = LIRE_MAILLAGE(UNITE=UNITE_MAILLAGE,)
+    __macou = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=UNITE_MAILLAGE,)
 
     # distance min entre 2 points de la ligne de coupe (utile pour PROJ_CHAMP)
     dmin = dist_min_deux_points(__macou)

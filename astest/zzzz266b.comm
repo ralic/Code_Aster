@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),
       DEBUG=_F(SDVERI='OUI'),
       IGNORE_ALARM=('MODELE1_63','MODELE1_64',),)
 
-mail=LIRE_MAILLAGE()
+mail=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 modeldp=AFFE_MODELE(MAILLAGE=mail,
                     AFFE=_F(TOUT='OUI',
@@ -48,9 +48,9 @@ mail=MODI_MAILLAGE(reuse=mail,
                                ANGLE=30,),);
 coor3d=CALC_CHAM_ELEM(MODELE=model3d, OPTION='COOR_ELGA',)
 
-IMPR_RESU(RESU=_F(CHAM_GD=coordp,),)
-IMPR_RESU(RESU=_F(CHAM_GD=coorcp,),)
-IMPR_RESU(RESU=_F(CHAM_GD=coor3d,),)
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coordp,),)
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coorcp,),)
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=coor3d,),)
 
 # =============================================================================================
 #  On peut verifier que l'on obtient bien la bonne longueur de la maille M5

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,7 +19,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),DEBUG=_F(SDVERI='OUI')
      );
 #
 '''
-mail0 = LIRE_MAILLAGE(FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'));
+mail0 = LIRE_MAILLAGE(FORMAT="ASTER",FORMAT='MED', VERI_MAIL=_F(VERIF='OUI'));
 #
 # Modification du maillage pour creer des mailles a un noeud pour
 # placer les impedances sous la fondation du barrages.
@@ -83,7 +83,7 @@ mail=MODI_MAILLAGE( reuse=mail,
 
 '''
 
-mail0 = LIRE_MAILLAGE(VERI_MAIL=_F(VERIF='OUI'));
+mail0 = LIRE_MAILLAGE(FORMAT="ASTER",VERI_MAIL=_F(VERIF='OUI'));
 
 mail=CREA_MAILLAGE(MAILLAGE=mail0,
                       CREA_POI1 =(

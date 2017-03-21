@@ -283,10 +283,10 @@ RESU=CALC_CHAMP(reuse =RESU,
                RESULTAT=RESU,
                 CONTRAINTE=('SIEF_ELGA'),);
 
-#IMPR_RESU(FORMAT='GMSH',
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='GMSH',
 #          RESU=_F(RESULTAT=RESU,),);
 
-#IMPR_RESU(RESU=_F(MAILLAGE=MAILL,),);
+#IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAILL,),);
 
 #--------------------------------------------------------------------
 # expression des contraintes a partir du moment SIXX=MXX*12*z/(h*h*h)

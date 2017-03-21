@@ -16,7 +16,7 @@
 # ======================================================================
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
-MAIL=LIRE_MAILLAGE()
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 #
 # DEFINITION DES GROUPES DE NOEUDS

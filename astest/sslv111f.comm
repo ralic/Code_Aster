@@ -221,7 +221,7 @@ TEST_RESU(CHAM_NO=(_F(NOEUD='N17',
                    ),
           )
 
-IMPR_RESU(MODELE=MO,
+IMPR_RESU(FORMAT="RESULTAT",MODELE=MO,
           RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='SIZ1_NOEU',
                    NUME_ORDRE=1,

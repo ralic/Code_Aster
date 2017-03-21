@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,7 +55,7 @@ KINT     = DEFI_CONSTANTE(VALE=1.E-12);
 
 MA=LIRE_MAILLAGE(FORMAT='MED',);
 
-#IMPR_RESU(FORMAT='IDEAS',RESU=_F(MAILLAGE=MA,));
+#IMPR_RESU(FORMAT="RESULTAT",FORMAT='IDEAS',RESU=_F(MAILLAGE=MA,));
 
 # Definition des differents modeles associes a chaque couche
 MOD=[None]*(nbcouche-1);
@@ -588,9 +588,9 @@ for n in range(1,nbcouche-1):
                              CH_DEPL,CH_BID,FONCH,MAT1_f,PESHAU,PESBAS,
                              AFFMAT2),),);
 
-#    IMPR_RESU(RESU=_F(CHAM_GD=DEP[n]));
-#    IMPR_RESU(RESU=_F(CHAM_GD=VAR[n]));
-#    IMPR_RESU(RESU=_F(CHAM_GD=SIG[n]));
+#    IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=DEP[n]));
+#    IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=VAR[n]));
+#    IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=SIG[n]));
 
 # <--10: fin boucle for
 

@@ -91,7 +91,7 @@ RESU=CALC_CHAMP(reuse =RESU,
              RESULTAT=RESU,
              FORCE='FORC_NODA',);
 
-IMPR_RESU(UNITE=8,
+IMPR_RESU(FORMAT="RESULTAT",UNITE=8,
           RESU=(_F(RESULTAT=RESU,
                    NOM_CHAM='DEPL',
                    GROUP_NO=('K','B','D',),),

@@ -33,7 +33,7 @@
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),IMPR_MACRO='OUI',DEBUG=_F(SDVERI='NON'))
 # SDVERI='NON' car la verification est trop couteuse en CPU
 
-MA=LIRE_MAILLAGE(  )
+MA=LIRE_MAILLAGE(FORMAT="ASTER",  )
 
 DEFI_GROUP( reuse=MA,   MAILLAGE=MA,CREA_GROUP_NO=(
                        _F(  NOM = 'GXXXXXX_LIST1',

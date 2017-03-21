@@ -24,7 +24,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 # DEFINITION DES CARACTERISTIQUES DU MATERIAU
 #
 
-MAIL=LIRE_MAILLAGE( )
+MAIL=LIRE_MAILLAGE(FORMAT="ASTER", )
 
 # -----------------------------------------------------------------------------
 # DONNEES DE MODELISATION
@@ -213,8 +213,8 @@ U2=STAT_NON_LINE(
                 ITER_GLOB_MAXI = 10)
               );
 
-IMPR_RESU(RESU=_F(RESULTAT=U));
-IMPR_RESU(RESU=_F(RESULTAT=U2));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=U2));
 # -----------------------------------------------------------------------------
 # TESTS
 # -----------------------------------------------------------------------------

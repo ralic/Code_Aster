@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -64,7 +64,7 @@ nor_DNOR = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       MODELE    = MO,
                       GROUP_MA  = 'FE'     );
 
-IMPR_RESU( RESU=_F( CHAM_GD= nor_DNOR ), );
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_DNOR ), );
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='X',
@@ -98,7 +98,7 @@ nor_PRES = CREA_CHAMP( TYPE_CHAM = 'NOEU_GEOM_R',
                       MODELE    = MO,
                       GROUP_MA  = 'AE'     );
 
-IMPR_RESU( RESU=_F( CHAM_GD= nor_PRES ), );
+IMPR_RESU(FORMAT="RESULTAT", RESU=_F( CHAM_GD= nor_PRES ), );
 
 TEST_RESU(CHAM_NO=(_F(REFERENCE='ANALYTIQUE',
                       NOM_CMP='X',

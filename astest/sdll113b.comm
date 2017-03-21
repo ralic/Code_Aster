@@ -40,7 +40,7 @@ LIST_R=DEFI_LIST_REEL(       DEBUT=0.,
 #                           CALCUL DIRECT                              #
 ########################################################################
 #
-MAYA=LIRE_MAILLAGE( UNITE=20)
+MAYA=LIRE_MAILLAGE(FORMAT="ASTER", UNITE=20)
 
 MAYA=DEFI_GROUP( reuse=MAYA,   MAILLAGE=MAYA,
   CREA_GROUP_MA=_F(  NOM = 'TOUT', TOUT = 'OUI'))
@@ -243,7 +243,7 @@ PRE_IDEAS(UNITE_IDEAS=19,
            UNITE_MAILLAGE=21)
 
 #
-MAYA1=LIRE_MAILLAGE( UNITE=21)
+MAYA1=LIRE_MAILLAGE(FORMAT="ASTER", UNITE=21)
 
 MAYA1=DEFI_GROUP( reuse=MAYA1,   MAILLAGE=MAYA1,
   CREA_GROUP_MA=_F(  NOM = 'TOUT1', TOUT = 'OUI'))

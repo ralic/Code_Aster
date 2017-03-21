@@ -68,7 +68,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E=E,NU=0.3,),
 
 
 #lire le maillage
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 mat=AFFE_MATERIAU(MAILLAGE=MA,
                   AFFE=_F(TOUT='OUI',MATER=acier,),);

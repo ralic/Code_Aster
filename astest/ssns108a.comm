@@ -38,7 +38,7 @@ ResiDB=1.E-4
 #              MAILLAGE
 #-----------------------------------------------------------------------
 
-MA = LIRE_MAILLAGE();#FORMAT='MED',);
+MA = LIRE_MAILLAGE(FORMAT="ASTER");
 
 MURS = []
 MURS.append('F1_QUAD')

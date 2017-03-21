@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -81,7 +81,7 @@ MAIL = DEFI_GROUP(reuse=MAIL,
                                _F(NOM='LATHD',
                                   DIFFE=('LAT_RIGH','HA10'))));
 
-IMPR_RESU(RESU=_F(MAILLAGE=MAIL,));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(MAILLAGE=MAIL,));
 
 list_group_ma=['ELEM'+str(n) for n in range(nbcouche)];
 
@@ -244,7 +244,7 @@ FORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                 INST=0.,
                 INFO=1);
 
-IMPR_RESU(RESU=_F(CHAM_GD=BIDDEP0));
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(CHAM_GD=BIDDEP0));
 
 CHFORCE0=CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                   OPERATION='ASSE',

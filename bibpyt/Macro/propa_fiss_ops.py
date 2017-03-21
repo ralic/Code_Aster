@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1248,10 +1248,10 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
             unit = mm[numfis].ToAster()
             DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
-            ma_xfem2 = LIRE_MAILLAGE(UNITE=unit)
+            ma_xfem2 = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=unit)
 
             if numfis == 0:
-                __MMX[0] = LIRE_MAILLAGE(UNITE=unit)
+                __MMX[0] = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=unit)
             else:
                 __MMX[numfis] = ASSE_MAILLAGE(MAILLAGE_1=__MMX[numfis - 1],
                                               MAILLAGE_2=ma_xfem2,
@@ -1498,7 +1498,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
         unit = mm.ToAster()
         DEFI_FICHIER(UNITE=unit, ACTION="LIBERER")
         self.DeclareOut('ma_xfem2', MAIL_FISS2)
-        ma_xfem2 = LIRE_MAILLAGE(UNITE=unit)
+        ma_xfem2 = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=unit)
 
         MAIL_TOTAL = args['MAIL_TOTAL']
         if MAIL_TOTAL != None:

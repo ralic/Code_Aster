@@ -1,6 +1,6 @@
 #
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,7 +45,7 @@ acier=DEFI_MATERIAU(ELAS=_F(E=210000000000.0,
 # L'etat initial est tel que la maille CD est mal orientee, il faut donc la
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU_2D/GROUP_MA_SURF
 #
-mail2D = LIRE_MAILLAGE (INFO=2) ;
+mail2D = LIRE_MAILLAGE (FORMAT="ASTER",INFO=2) ;
 
 mail2D=MODI_MAILLAGE(reuse=mail2D,
                  MAILLAGE=mail2D,
@@ -106,7 +106,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   MAILLE='MA1',),
           )
 
-IMPR_RESU(RESU=_F(RESULTAT=resu2D))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu2D))
 
 
 
@@ -138,7 +138,7 @@ IMPR_RESU(RESU=_F(RESULTAT=resu2D))
 # reoriente avec MODI_MAILLAGE et ORIE_PEAU_3D/GROUP_MA_VOLU
 #
 
-mail3D = LIRE_MAILLAGE (UNITE=21,INFO=2) ;
+mail3D = LIRE_MAILLAGE (FORMAT="ASTER",UNITE=21,INFO=2) ;
 
 mail3D=MODI_MAILLAGE(reuse=mail3D,
                  MAILLAGE=mail3D,
@@ -198,7 +198,7 @@ TEST_RESU(RESU=_F(NUME_ORDRE=1,
                   MAILLE='MA1',),
           )
 
-IMPR_RESU(RESU=_F(RESULTAT=resu3D))
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=resu3D))
 
 
 FIN();

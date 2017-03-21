@@ -50,7 +50,7 @@ MAT2=DEFI_MATERIAU(      ELAS=_F( E = 1.0,  NU = 0.3),
                          ),
                    )
 
-MAILL=LIRE_MAILLAGE(   )
+MAILL=LIRE_MAILLAGE(FORMAT="ASTER",   )
 
 CHMAT=AFFE_MATERIAU(  MAILLAGE=MAILL,
                           AFFE=_F(  TOUT = 'OUI',   MATER = MAT) )

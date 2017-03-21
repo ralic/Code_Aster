@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -346,7 +346,7 @@ def simu_point_mat_ops(
         UL = UniteAster()
         umail = UL.Libre(action='ASSOCIER', nom='simu.mail')
 
-        __MA = LIRE_MAILLAGE(UNITE=umail)
+        __MA = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=umail)
         UL.EtatInit()
 
         if MODELISATION == "3D":
@@ -589,7 +589,7 @@ def simu_point_mat_ops(
                         __EVOV = CREA_RESU(
                             OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                             NOM_CHAM=str('META_ELNO'), AFFE=l_affe_cham)
-                        IMPR_RESU(RESU=_F(RESULTAT=__EVOV))
+                        IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=__EVOV))
                     elif(str(lvarc[ivarc]['NOM_VARC']) == 'M_ACIER'):
                         typech = 'ELNO_NEUT_R'
                         labsc = lvarc[ivarc]['V1'].Absc()
@@ -663,7 +663,7 @@ def simu_point_mat_ops(
                         __EVOV = CREA_RESU(
                             OPERATION='AFFE', TYPE_RESU='EVOL_THER',
                             NOM_CHAM=str('META_ELNO'), AFFE=l_affe_cham)
-                        IMPR_RESU(RESU=_F(RESULTAT=__EVOV))
+                        IMPR_RESU(FORMAT='RESULTAT', RESU=_F(RESULTAT=__EVOV))
                     else:
                         typech = 'NOEU_' + str(lvarc[ivarc]['NOM_VARC']) + '_R'
                         labsc = lvarc[ivarc]['VALE_FONC'].Absc()

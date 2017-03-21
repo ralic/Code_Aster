@@ -1171,5 +1171,5 @@ class Mesh(object):
             mail.dime_maillage[2] += 1
         mail.gma['MFICTIF'] = NP.array(gr_ma)
         unite = mail.ToAster()
-        _mail = LIRE_MAILLAGE(UNITE=unite)
+        _mail = LIRE_MAILLAGE(FORMAT='ASTER',UNITE=unite)
         self.new_mesh = _mail

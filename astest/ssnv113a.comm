@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTRANET'), DEBUG=_F(SDVERI='OUI'),)
 #......................................................................
 
 
-M=LIRE_MAILLAGE()
+M=LIRE_MAILLAGE(FORMAT="ASTER",)
 
 MO=AFFE_MODELE(
             MAILLAGE=M, 

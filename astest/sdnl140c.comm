@@ -116,7 +116,7 @@ res=MECA_STATIQUE(MODELE=modele,
                    CHAM_MATER=affe_mat,
                    EXCIT=(_F(CHARGE=clim,),
                           _F(CHARGE=force,),))
-IMPR_RESU(RESU=_F(RESULTAT=res,
+IMPR_RESU(FORMAT="RESULTAT",RESU=_F(RESULTAT=res,
                   NOM_CHAM='DEPL',GROUP_NO='Force',NOM_CMP='DY'),);
 
 rampe=DEFI_FONCTION(NOM_PARA='INST',VALE=(0.    , 1.,

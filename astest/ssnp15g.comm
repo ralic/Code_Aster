@@ -26,7 +26,7 @@ DEBUT(CODE=_F(
 #                  ETUDE DU RAFFINEEMNT DU PAS DE TEMPS
 #......................................................................
 
-MA=LIRE_MAILLAGE();
+MA=LIRE_MAILLAGE(FORMAT="ASTER",);
 
 MO=AFFE_MODELE(MAILLAGE=MA,
 

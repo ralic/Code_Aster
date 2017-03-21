@@ -45,7 +45,7 @@ t1 = 1.0;
 dt = 0.05;
 
 
-MAIL=LIRE_MAILLAGE();
+MAIL=LIRE_MAILLAGE(FORMAT='ASTER');
 
 MAIL=DEFI_GROUP(reuse =MAIL,
                 MAILLAGE=MAIL,
