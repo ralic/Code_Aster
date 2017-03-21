@@ -6,6 +6,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romMultiParaChck.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -45,6 +46,16 @@ implicit none
 !
     if (l_reuse) then
         call utmess('F','ROM2_13', sk = operation)
+    endif
+!
+! - Check data for multiparametric problems
+!
+    call romMultiParaChck(ds_para_rb%multipara)
+!
+! - Specific checks for DEFI_BASE_REDUITE
+!
+    if (ds_para_rb%multipara%nb_vari_coef .eq. 0) then
+        call utmess('F', 'ROM2_43')
     endif
 !
 end subroutine

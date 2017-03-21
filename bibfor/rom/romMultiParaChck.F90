@@ -43,30 +43,60 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: syme
-    integer :: nb_matr, i_matr
+    integer :: nb_matr, nb_vari_para, nb_vale_para
+    integer :: i_matr, i_vari_para
     character(len=24) :: nume_dof_ref, nume_dof 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    nb_matr    = ds_multipara%nb_matr
+    nb_matr      = ds_multipara%nb_matr
+    nb_vari_para = ds_multipara%nb_vari_para
 !
 ! - Check numbering
 !
-    call dismoi('NOM_NUME_DDL', ds_multipara%matr_name(1), 'MATR_ASSE', repk=nume_dof_ref)
-    do i_matr = 2, nb_matr
-        call dismoi('NOM_NUME_DDL', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=nume_dof)
-        if (nume_dof .ne. nume_dof_ref) then
-            call utmess('F','ROM2_21')
-        endif
-    end do
+    if (ds_multipara%matr_name(1) .ne. ' ') then
+        call dismoi('NOM_NUME_DDL', ds_multipara%matr_name(1), 'MATR_ASSE', repk=nume_dof_ref)
+        do i_matr = 2, nb_matr
+            call dismoi('NOM_NUME_DDL', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=nume_dof)
+            if (nume_dof .ne. nume_dof_ref) then
+                call utmess('F','ROM2_21')
+            endif
+        end do
+    endif
 !
 ! - Only symmetric matrix
 !
-    do i_matr = 1, nb_matr
-        call dismoi('TYPE_MATRICE', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=syme)
-        if (syme .eq. 'NON_SYM') then
-            call utmess('F','ROM2_22')
+    if (ds_multipara%matr_name(1) .ne. ' ') then
+        do i_matr = 1, nb_matr
+            call dismoi('TYPE_MATRICE', ds_multipara%matr_name(i_matr), 'MATR_ASSE', repk=syme)
+            if (syme .eq. 'NON_SYM') then
+                call utmess('F','ROM2_22')
+            endif
+        end do
+    endif
+!
+! - If no definition of variation => no functions !
+!
+    if (nb_vari_para .eq. 0) then
+        do i_matr = 1, nb_matr
+            if (ds_multipara%matr_coef(i_matr)%l_func) then
+                call utmess('F','ROM2_25', sk = ds_multipara%matr_name(i_matr))
+            endif
+        end do
+        if (ds_multipara%vect_coef%l_func) then
+            call utmess('F','ROM2_31')
         endif
-    end do 
+    endif
+!
+! - Same number of values for each parameter
+!
+    if (nb_vari_para .ne. 0) then
+        nb_vale_para = ds_multipara%vari_para(1)%nb_vale_para
+        do i_vari_para = 2, nb_vari_para
+            if (ds_multipara%vari_para(i_vari_para)%nb_vale_para .ne. nb_vale_para) then
+                call utmess('F','ROM2_29')
+            endif
+        end do
+    endif 
 !
 end subroutine

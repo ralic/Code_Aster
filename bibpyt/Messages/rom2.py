@@ -77,7 +77,11 @@ cata_msg = {
 
    28 : _(u"""Initialisation de la base empirique dans le cas d'une méthode GLOUTON."""),
 
+   29 : _(u"""Le nombre de coefficients pour faire varier les fonctions n'est pas le même pour tous les paramètres."""),
+
    30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
+
+   31 : _(u"""Le coefficient devant le second membre est une fonction et il n'y a aucune donnée sur la variation de cette fonction."""),
 
    32 : _(u"""Initialisation des coefficients pour le problème multi-paramétrique."""),
 
@@ -92,4 +96,6 @@ cata_msg = {
    41 : _(u"""Initialisation de l'algorithme pour la méthode GLOUTON."""),
 
    42 : _(u"""Initialisation pour l'algorithme GLOUTON."""),
+
+   43 : _(u"""Le calcul d'une base réduite pour le calcul multi-paramétrique avec réduction de modèle nécessite de faire varier les coefficients."""),
 }
