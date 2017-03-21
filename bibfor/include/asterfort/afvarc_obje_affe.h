@@ -16,8 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine afvarc_obje_affe(chmate, mesh, model, varc_cata, varc_affe)
+    subroutine afvarc_obje_affe(jv_base, chmate, mesh, model, varc_cata, varc_affe)
         use Material_Datastructure_type
+        character(len=1), intent(in) :: jv_base
         character(len=8), intent(in) :: chmate
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model

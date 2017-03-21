@@ -19,6 +19,14 @@
 
 cata_msg = {
 
+    11 : _(u"""
+ Erreur d'utilisation lors de l'affectation des variables de commande (AFFE_MATERIAU/AFFE_VARC):
+   Pour la variable de commande %(k1)s,
+   Vous avez oublié d'utiliser l'un des 2 mots clés CHAM_GD ou EVOL.
+   L'absence de ces deux mots clés n'est permise que pour NOM_VARC='TEMP'.
+"""),
+
+
     13 : _(u"""
  Erreur d'utilisation (AFFE_MATERIAU/AFFE_VARC) :
   Le maillage associé au calcul (%(k1)s) est différent de celui associé

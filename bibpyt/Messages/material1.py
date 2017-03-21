@@ -63,6 +63,12 @@ Risque & Conseil:
  Il faut définir la fonction ALPHA avec plus d'un point.
 """),
 
+    43: _(u"""
+ Le coefficient de dilatation thermique ALPHA du matériau est une fonction de la température.
+ Or vous ne fournissez pas de résultats thermiques dans AFFE_MATERIAU / AFFE_VARC.
+ Dans ce cas, TEMP_DEF_ALPHA et TEMP_REF doivent être identiques. 
+"""),
+
     56: _(u"""
 Erreur utilisateur :
  Un des matériaux du CHAM_MATER %(k1)s contient un coefficient de dilatation ALPHA fonction de la température.

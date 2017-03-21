@@ -53,7 +53,7 @@ AFFE_MATERIAU=OPER(nom="AFFE_MATERIAU",op=6,sd_prod=cham_mater,
           regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),
                   PRESENT_ABSENT('GROUP_MA','TOUT'),
                   PRESENT_ABSENT('MAILLE','TOUT'),
-                  UN_PARMI('EVOL','CHAM_GD'),
+                  EXCLUS('EVOL','CHAM_GD'),
                   ),
 
           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ), # [défaut]

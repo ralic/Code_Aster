@@ -64,7 +64,7 @@ implicit none
 ! ----- Create objects
         call afvarc_obje_crea('G', chmate, mesh, varc_cata, varc_affe)
 ! ----- Affect values in objects
-        call afvarc_obje_affe(chmate, mesh, model, varc_cata, varc_affe)
+        call afvarc_obje_affe('G', chmate, mesh, model, varc_cata, varc_affe)
 ! ----- Shrink number of components to save memory
         call afvarc_shrink(chmate, varc_affe)
     endif

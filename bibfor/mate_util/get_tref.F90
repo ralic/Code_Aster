@@ -1,4 +1,4 @@
-subroutine get_tref(chmate, imate, tref, l_tref_is_nan)
+subroutine get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
 !
 implicit none
 !
@@ -8,6 +8,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
+#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
@@ -36,6 +37,7 @@ implicit none
     integer, intent(in) :: imate
     real(kind=8), intent(out) :: tref
     aster_logical, intent(out) :: l_tref_is_nan
+    aster_logical, intent(out) :: l_empty
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,25 +51,36 @@ implicit none
 ! In  imate            : index of current material
 ! Out tref             : temperature for reference
 ! Out l_tref_is_nan    : .true. if tref is a NaN
+! Out l_empty          : .true. if TREF without field for temperature
 !
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: ktref
+    character(len=19) :: cartrf
     integer :: nb_cmp, nbec, ngdmax
-    integer :: ec1, k, kk
+    integer :: ec1, k, kk, iret
     character(len=8) :: phys_name
     integer, pointer :: v_chmate_desc(:) => null()
     character(len=8), pointer :: v_chmate_vale(:) => null()
+    character(len=16), pointer :: v_vtrf(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     tref          = r8nnem()
     l_tref_is_nan = .false.
+    l_empty       = .false.
 !
 ! - Access to CHAM_MATER
 !
     call jeveuo(chmate//'.CHAMP_MAT .DESC', 'L', vi =v_chmate_desc)
     call jeveuo(chmate//'.CHAMP_MAT .VALE', 'L', vk8=v_chmate_vale)
+
+    cartrf = chmate//'.TEMP    .2'
+    call jeexin(cartrf//'.DESC', iret)
+    if (iret .ne. 0) then
+        call jeveuo(cartrf//'.VALE', 'L', vk16=v_vtrf)
+        l_empty = v_vtrf(1) .eq. 'CHAMP' .and. v_vtrf(4) .eq. 'VIDE'
+    endif
 !
 ! - Check physical quantity
 !

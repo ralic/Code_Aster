@@ -68,7 +68,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    aster_logical :: l_thm, l_tref_is_nan
+    aster_logical :: l_thm, l_tref_is_nan, l_empty
     integer :: icodre(1),codret
     character(len=8) :: k8dummy, chmate, mate_name, valk(2)
     character(len=32) :: phenom
@@ -143,7 +143,7 @@ implicit none
             if (l_thm) then
                 call utmess('F', 'MATERIAL1_4')
             endif
-            call get_tref(chmate, imate, tref, l_tref_is_nan)
+            call get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
             if (l_tref_is_nan) then
                 goto 999
             endif
@@ -160,9 +160,14 @@ implicit none
     if (l_thm) then
         call utmess('F', 'MATERIAL1_4')
     endif
-    call get_tref(chmate, imate, tref, l_tref_is_nan)
+    call get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
     if (l_tref_is_nan) then
         goto 999
+    endif
+    if (l_empty) then
+        if (abs(tref-tdef) .gt. 1.d-6) then
+            call utmess('F', 'MATERIAL1_43')
+        endif
     endif
 !
 ! - Get ALPHA at reference temperature tref
