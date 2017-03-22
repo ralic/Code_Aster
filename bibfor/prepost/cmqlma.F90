@@ -30,6 +30,7 @@ subroutine cmqlma(main, maout, nbma, mailq)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
+#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
@@ -72,8 +73,8 @@ subroutine cmqlma(main, maout, nbma, mailq)
     parameter(nbtyma=27)
     integer ::  i, nbtma,   jtypm2, jconn1, jconn2
     integer :: tymal(nbtyma), num1, num2, nbnol(nbtyma), ityp, j,  nbnomx
-    integer :: ndim, ij
-    character(len=8) :: nomnoi
+    integer :: ndim, ij, numno
+    character(len=8) :: nomnoi, vk8(2)
     character(len=24) :: connex, typma
     integer, pointer :: maille(:) => null()
     integer, pointer :: nbno(:) => null()
@@ -145,7 +146,13 @@ subroutine cmqlma(main, maout, nbma, mailq)
         do j = 1, num2
             ij=zi(jconn1+j-1)
             call jenuno(jexnum(main//'.NOMNOE', ij), nomnoi)
-            call jenonu(jexnom(maout//'.NOMNOE', nomnoi), zi(jconn2+j-1))
+            call jenonu(jexnom(maout//'.NOMNOE', nomnoi), numno)
+            if( numno.eq.0 ) then
+                vk8(1) = main
+                vk8(2) = nomnoi
+                call utmess('F', 'MAILLAGE1_4', nk=2, valk=vk8)
+            endif
+            zi(jconn2+j-1) = numno
         end do
     end do
 !

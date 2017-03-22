@@ -103,19 +103,13 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
     nbnoto = dime(1)
 !
     AS_ALLOCATE(vi=tab_ma, size=nbmato)
-    do 10 ii = 1, nbmato
-        tab_ma(ii) = 0
- 10 end do
 !
-    do 20 ii = 1, nbma
+    do ii = 1, nbma
         numma = zi(jmaqu+ii-1)
         tab_ma(numma) = 1
- 20 end do
+    enddo
 !
     AS_ALLOCATE(vi=tab_no, size=nbnoto)
-    do 70 ii = 1, nbnoto
-        tab_no(ii) = 0
- 70 end do
 !
 !     CREATION DE LA CONNECTIVITE INVERSE
     call cncinv(main, [0], 0, 'V', '&&CMQLNM.CONINV')
@@ -124,37 +118,37 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
 !
 !     BOUCLE SUR LES MAILLES A MODIFIER
     nbnosu = 0
-    do 30 ii = 1, nbma
+    do ii = 1, nbma
         numamo = zi(jmaqu+ii-1)
         nbnomi = nbnmtm(typmail(numamo))
         ponomi = ppnm(typmail(numamo))
 !
         jco=iacnx1+ zi(ilcnx1-1+numamo)-1
 !       BOUCLE SUR LES NOEUDS MILIEUX DE CES MAILLES
-        do 40 jj = 1, nbnomi
+        do jj = 1, nbnomi
             nunomi = zi(jco+ponomi-1+jj-1)
 !
 !         SI LE NOEUD A DEJA ETE TRAITE ON NE LE TRAITE PAS
-            if (tab_no(nunomi) .ne. 0) goto 40
+            if (tab_no(nunomi) .ne. 0) cycle
 !
             nbm1 = zi(ilcnx2+nunomi)-zi(ilcnx2-1+nunomi)
 !
 !         BOUCLE SUR LES MAILLES AUXQUELLES SONT LIEES CE NOEUD
             isasup = .true.
-            do 50 kk = 1, nbm1
+            do kk = 1, nbm1
                 numa2 = coninv(1+zi(ilcnx2-1+nunomi)-1+kk-1)
 !           SI UNE DE CES MAILLES N'EST PAS A MODIFIER ALORS ON
 !           NE DOIT PAS SUPPRIMER LE NOEUD
                 if (tab_ma(numa2) .eq. 0) isasup = .false.
- 50         continue
+            enddo
             if (isasup) then
                 tab_no(nunomi) = 2
                 nbnosu = nbnosu + 1
             else
                 tab_no(nunomi) = 1
             endif
- 40     continue
- 30 end do
+        enddo
+    enddo
 !
     AS_DEALLOCATE(vi=tab_ma)
 !
@@ -166,17 +160,16 @@ subroutine cmqlnm(main, nomaqu, nbma, nonomi, nbnm)
     nbnm = nbnosu
 !
     nbnosu = 0
-    do 60 ii = 1, nbnoto
+    do ii = 1, nbnoto
         if (tab_no(ii) .eq. 2) then
             nbnosu = nbnosu+1
             zi(jnomi+nbnosu-1) = ii
         endif
- 60 end do
+    enddo
 !
     ASSERT(nbnosu.eq.nbnm)
 !
     AS_DEALLOCATE(vi=tab_no)
-!
 !
     call jedema()
 !

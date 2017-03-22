@@ -45,4 +45,13 @@ très faiblement négative ( > -1.d-6 * X_MAX)
     dans le demi espace  X >= 0
 """),
 
+    4: _(u"""
+Il n'est pas possible de linéariser le maillage %(k1)s.
+Ce maillage possède des mailles dont certains noeuds linéaires reposent sur des
+noeuds quadratiques d'autres mailles. Exemple : le noeud %(k2)s.
+
+Il n'est donc pas possible de supprimer ces noeuds quadratiques sans compromettre
+l'intégrité du maillage.
+"""),
+
 }
