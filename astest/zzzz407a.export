@@ -1,0 +1,13 @@
+P time_limit 60
+P memory_limit 512
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist verification sequential
+
+F comm zzzz407a.comm D 1
+F libr zzzz407a.20 D 20
+F libr zzzz407a.21 D 21
+F libr zzzz407a.22 D 22
+F libr zzzz407a.82 D 82
+

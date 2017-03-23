@@ -1,7 +1,7 @@
 subroutine op0119()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,6 +31,7 @@ subroutine op0119()
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
+#include "asterc/r8dgrd.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
@@ -77,7 +78,8 @@ subroutine op0119()
     integer :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnbfig, jtyfig
     integer :: ibid, ipointeur, iinbgf, jmafig, jmaill, jsdfig
 !
-    real(kind=8) :: x(4), y(4), centre(2), axep(2), surf
+    real(kind=8) :: x(4), y(4), centre(2), axep(2), surf, angle, xx, yy, cc, ss
+    integer :: iangle
 !
     character(len=8)  :: sdgf, nomas, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
@@ -238,6 +240,9 @@ subroutine op0119()
 !       Récupération des coordonnées de l'axe de la poutre
         call getvr8('SECTION', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
         if (iret .ne. 2) axep(1:2) = 0.0d0
+!       Récupération de l'angle de rotation autour de l'origine
+        call getvr8('SECTION', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
+        if (iangle .ne. 1) angle= 0.0d0
 !       Concept maillage associé
         mlgtms = nomas//'.TYPMAIL'
         mlgcnx = nomas//'.CONNEX'
@@ -269,11 +274,24 @@ subroutine op0119()
             call jeveuo(jexnum(mlgcnx, nummai), 'L', jdno)
             nno = 3
             if (nutyma.eq.ntqua4) nno = 4
-            do in  = 1, nno
-                no = zi(jdno-1+in)
-                x(in) = zr(jdco+(no-1)*3)   - axep(1)
-                y(in) = zr(jdco+(no-1)*3+1) - axep(2)
-            enddo
+            if ( iangle .eq. 1 ) then
+                cc = cos(angle*r8dgrd())
+                ss = sin(angle*r8dgrd())
+                do in  = 1, nno
+                    no = zi(jdno-1+in)
+                    xx = zr(jdco+(no-1)*3)   - axep(1)
+                    yy = zr(jdco+(no-1)*3+1) - axep(2)
+                    ! On tourne
+                    x(in) = xx*cc - yy*ss
+                    y(in) = xx*ss + yy*cc
+                enddo
+            else
+                do in  = 1, nno
+                    no = zi(jdno-1+in)
+                    x(in) = zr(jdco+(no-1)*3)   - axep(1)
+                    y(in) = zr(jdco+(no-1)*3+1) - axep(2)
+                enddo
+            endif
 !           Recherche de la correspondance dans le vecteur vinoeud
             correni(1:4) = 0
             cin: do in = 1, nno
@@ -341,6 +359,9 @@ subroutine op0119()
 !       Récupération des coordonnées de l'axe de la poutre
         call getvr8('FIBRE', 'COOR_AXE_POUTRE', iocc=ioc, nbval=2, vect=axep, nbret=iret)
         if (iret .ne. 2) axep(1:2) = 0.0d0
+!       Récupération de l'angle de rotation autour de l'origine
+        call getvr8('FIBRE', 'ANGLE', iocc=ioc, nbval=1, scal=angle, nbret=iangle)
+        if (iangle .ne. 1) angle= 0.0d0
 !       Nom du groupe de mailles
         call jenonu(jexnom(vnmfig, nomgf), iret)
         if ( iret .ne. 0 ) then
@@ -352,8 +373,18 @@ subroutine op0119()
 !       Si diamètre ==> calcul de la surface
         nbmagr = 0
         do ido = 1, nbvfibre/ncarfi1
-            centre(1) = valfibre(ncarfi1*(ido-1)+1) - axep(1)
-            centre(2) = valfibre(ncarfi1*(ido-1)+2) - axep(2)
+            if ( iangle .eq. 1 ) then
+                cc = cos(angle*r8dgrd())
+                ss = sin(angle*r8dgrd())
+                xx = valfibre(ncarfi1*(ido-1)+1) - axep(1)
+                yy = valfibre(ncarfi1*(ido-1)+2) - axep(2)
+                ! On tourne
+                centre(1) = xx*cc - yy*ss
+                centre(2) = xx*ss + yy*cc
+            else
+                centre(1) = valfibre(ncarfi1*(ido-1)+1) - axep(1)
+                centre(2) = valfibre(ncarfi1*(ido-1)+2) - axep(2)
+            endif
             if (ksudi .eq. 'DIAMETRE') then
                 surf = valfibre(ncarfi1*(ido-1)+3)*valfibre(ncarfi1*(ido-1)+3)*pi4
             else
