@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,6 +30,10 @@ from cataelem.Options.options import OP
 #----------------
 
 
+NDEPLAC  = LocatedComponents(phys=PHY.DEPL_C, type='ELNO',
+    components=('DX','DY',))
+
+
 DDL_MECA = LocatedComponents(phys=PHY.DEPL_R, type='ELNO',
     components=('DX','DY',))
 
@@ -47,6 +51,8 @@ CTEMPSR  = LocatedComponents(phys=PHY.INST_R, type='ELEM',
 
 
 MVECTUR  = ArrayOfComponents(phys=PHY.VDEP_R, locatedComponents=DDL_MECA)
+
+MMATUUC  = ArrayOfComponents(phys=PHY.MDEP_C, locatedComponents=NDEPLAC)
 
 MMATUUR  = ArrayOfComponents(phys=PHY.MDEP_R, locatedComponents=DDL_MECA)
 
@@ -113,6 +119,13 @@ class MEPASE2(Element):
             para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
                      ),
             para_out=((SP.PMATUUR, MMATUUR), ),
+        ),
+
+        OP.RIGI_MECA_HYST(te=50,
+            para_in=((SP.PGEOMER, NGEOMER), (SP.PMATERC, LC.CMATERC),
+                     (SP.PRIGIEL, MMATUUR), (OP.RIGI_MECA_HYST.PVARCPR, LC.ZVARCPG),
+                     ),
+            para_out=((SP.PMATUUC, MMATUUC), ),
         ),
 
         OP.RIGI_MECA_TANG(te=553,

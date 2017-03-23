@@ -16,7 +16,7 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
-      
+
 mail0 = LIRE_MAILLAGE(FORMAT="ASTER", );
 
 mail1 = CREA_MAILLAGE(MAILLAGE=mail0,
@@ -54,7 +54,8 @@ beton = DEFI_MATERIAU( ELAS=_F( E= 3.6E+10, RHO= 2400. , NU= 0.2,
 # une longueur caracteristique du domaine borne par les frontieres absorbantes
 #
 roche = DEFI_MATERIAU( ELAS=_F( E= 3.0E+11, RHO= 2000., NU= 0.16, 
-                               AMOR_ALPHA=0.0005, AMOR_BETA=0.6,
+                               #AMOR_ALPHA=0.0005, AMOR_BETA=0.6,
+                               AMOR_HYST=0.04,
                                LONG_CARA=340.,
                                ),
                       ) ;
@@ -117,6 +118,11 @@ rigi_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA',
                                CHAM_MATER= champmat, 
                                CHARGE= (cond_lib)    ) ;
                                
+righ_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'RIGI_MECA_HYST',
+                               RIGI_MECA = rigi_ele,
+                               CHAM_MATER= champmat, 
+                               CHARGE= (cond_lib)    ) ;
+                               
 
 mass_ele = CALC_MATR_ELEM( MODELE= ensemble , OPTION= 'MASS_MECA',
                                CHAM_MATER= champmat, 
@@ -146,6 +152,7 @@ nume_ddl = NUME_DDL( MATR_RIGI= rigi_ele, );
 #-------------------------------------
 #  
 rigidite = ASSE_MATRICE( MATR_ELEM= rigi_ele , NUME_DDL= nume_ddl ) ;
+rigihyst = ASSE_MATRICE( MATR_ELEM= righ_ele , NUME_DDL= nume_ddl ) ;
 masse    = ASSE_MATRICE( MATR_ELEM= mass_ele , NUME_DDL= nume_ddl ) ;
 amort    = ASSE_MATRICE( MATR_ELEM= amor_ele , NUME_DDL= nume_ddl ) ;
 imped    = ASSE_MATRICE( MATR_ELEM= impe_ele , NUME_DDL= nume_ddl ) ;
@@ -310,7 +317,7 @@ lfreqc = DEFI_LIST_REEL ( DEBUT = df,
 # Calcul pour la premiere frequence qu'on va decaler a 0 :
 #
 dynah0 = DYNA_VIBRA    ( TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
-                        MATR_MASS= masse,   MATR_RIGI= rigidite,
+                        MATR_MASS= masse,   MATR_RIGI= rigihyst, #rigidite,
                         MATR_AMOR = amort,  MATR_IMPE_PHI = imped,
                         EXCIT   = _F( VECT_ASSE = VECAS,
                                       COEF_MULT = 1.
@@ -371,7 +378,7 @@ dynah=CREA_RESU(reuse=dynah, OPERATION='AFFE',
 
 dynah = DYNA_VIBRA    ( reuse=dynah, RESULTAT=dynah,
                         TYPE_CALCUL='HARM', BASE_CALCUL='PHYS',
-                        MATR_MASS= masse,   MATR_RIGI= rigidite,
+                        MATR_MASS= masse,   MATR_RIGI= rigihyst, #rigidite,
                         MATR_AMOR = amort,  MATR_IMPE_PHI = imped,
                         EXCIT   = _F( VECT_ASSE = VECAS,
                                       COEF_MULT = 1.
@@ -490,12 +497,12 @@ sro_axd=CALC_FONCTION(SPEC_OSCI=_F(FONCTION=acc_x, AMOR_REDUIT=0.05,
 #
 # Valeurs de reference pour test :
 inst1 = 0.27
-calt1 = 1.273984709738
-reft1 = 1.27
-tolt1 = 0.01
-calsro = 3.446278205765
-refsro = 3.44
-tolsro = 0.01
+calt1 = 1.258811841068 
+reft1 = 1.273984709738
+tolt1 = 0.013
+calsro = 3.413043472460
+refsro = 3.446278205765
+tolsro = 0.011
 
 
 TEST_FONCTION(VALEUR=(
@@ -519,3 +526,4 @@ TEST_FONCTION(VALEUR=(
               );
 
 FIN( );
+
