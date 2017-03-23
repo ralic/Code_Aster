@@ -1,9 +1,9 @@
 subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
-                  indcon, indfri, indfrn, lfrot, lvites,&
-                  lgliss, jeu, jeuvit, lambdc)
+                  indcon, indfri, indfrn, lfrot, &
+                  lgliss, jeu,  lambdc)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,8 +32,8 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
     integer :: iptm
     integer :: indcoi, indcon
     integer :: indfri, indfrn
-    aster_logical :: lfrot, lvites, lgliss
-    real(kind=8) :: jeu, jeuvit, lambdc
+    aster_logical :: lfrot,  lgliss
+    real(kind=8) :: jeu,  lambdc
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,11 +60,9 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 ! IN  INDFRN : INDICATEUR DE FROTTEMENT FINAL
 !              - INDFRN = 0 SI ADHERENT
 !              - INDFRN = 1 SI GLISSANT
-! IN  LVITES : .TRUE. SI FORMULATION EN VITESSE
 ! IN  LGLISS : .TRUE. SI CONTACT GLISSIERE
 ! IN  LFROT  : .TRUE. SI FROTTEMENT
 ! IN  JEU    : JEU TOTAL (Y COMPRIS DIST_*)
-! IN  JEUVIT : GAP VITESSE
 ! IN  LAMBDC : LAGRANGE DE CONTACT (PRESSION DE CONTACT)
 !
 ! ----------------------------------------------------------------------
@@ -85,12 +83,8 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 !
 ! --- PROPRIETES (FORMULATION)
 !
-    if (lvites) then
-        write(ifm,1001)
-    else
-        write(ifm,1002)
-    endif
-    1001 format (' <CONTACT>        (FORMULATION VITESSE)')
+    write(ifm,1002)
+    
     1002 format (' <CONTACT>        (FORMULATION DEPLACEMENT)')
 !
 ! --- PROPRIETES (GLISSIERE)
@@ -124,17 +118,11 @@ subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
 !
 ! --- PROPRIETES (JEUX)
 !
-    if (lvites) then
-        write(ifm,6001) jeu,jeuvit,lambdc
-    else
-        write(ifm,6000) jeu,lambdc
-    endif
+     write(ifm,6000) jeu,lambdc
+
     6000 format (' <CONTACT>         <> JEU:',e10.3,&
      &        ' - LAGS_C :',e10.3)
 !
-    6001 format (' <CONTACT>         <> JEU:',e10.3,&
-     &        ' - SAUT VITESSE:',e10.3,&
-     &        ' - LAGS_C :',e10.3)
 !
 ! --- ETAT DE CONTACT FINAL
 !

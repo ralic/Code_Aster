@@ -1,9 +1,9 @@
-subroutine mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_vite,&
-                  l_glis_init, type_adap, zone_index, i_cont_poin, indi_cont_init,&
-                  indi_cont_eval, indi_frot_eval, dist_cont_curr, vite_cont_curr, &
+subroutine mmalgo(ds_contact, l_loop_cont, l_frot_zone, &
+                  l_glis_init, type_adap, zone_index, i_cont_poin, &
+                  indi_cont_eval, indi_frot_eval, dist_cont_curr,  &
                   pres_cont_curr, dist_frot_curr, pres_frot_curr, v_sdcont_cychis,&
                   v_sdcont_cyccoe, v_sdcont_cyceta, indi_cont_curr,indi_frot_curr,&
-                  ctcsta, mmcvca, scotch)
+                  ctcsta, mmcvca)
 !
 use NonLin_Datastructure_type
 !
@@ -41,16 +41,13 @@ implicit none
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_loop_cont
     aster_logical, intent(in) :: l_frot_zone
-    aster_logical, intent(in) :: l_vite
     aster_logical, intent(in) :: l_glis_init
     integer, intent(in) :: type_adap
     integer, intent(in) :: i_cont_poin
     integer, intent(in) :: zone_index
-    integer, intent(inout) :: indi_cont_init
     integer, intent(inout) :: indi_cont_eval
     integer, intent(inout) :: indi_frot_eval
     real(kind=8), intent(inout) :: dist_cont_curr
-    real(kind=8), intent(inout) :: vite_cont_curr
     real(kind=8), intent(inout) :: pres_cont_curr
     real(kind=8), intent(inout) :: dist_frot_curr(3)
     real(kind=8), intent(in) :: pres_frot_curr(3)
@@ -61,7 +58,6 @@ implicit none
     integer, intent(out) :: indi_frot_curr
     integer, intent(out) :: ctcsta
     aster_logical, intent(out) :: mmcvca
-    aster_logical, intent(out) :: scotch
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,14 +71,11 @@ implicit none
 ! In  l_frot_zone      : .true. if friction on zone
 ! In  l_loop_cont      : .true. if fixed poitn on contact loop
 ! In  l_coef_adap      : .true. if automatic lagrangian adaptation
-! In  l_vite           : .true. if velocity scheme (dynamic)
 ! In  l_glis_init      : .true. if bilateral contact for first step
 ! In  i_cont_poin      : contact point index
-! In  indi_cont_init   : previous contact status (but not for cycling)
 ! In  indi_cont_eval   : evaluation of new contact status
 ! In  indi_frot_eval   : evaluation of new friction status
 ! In  dist_cont_curr   : current contact gap
-! In  vite_cont_curr   : current contact velocity gap
 ! In  pres_cont_curr   : current contact pressure
 ! In  dist_frot_curr   : current friction distance
 ! In  pres_frot_curr   : current friction pressure
@@ -92,7 +85,6 @@ implicit none
 ! Out indi_frot_curr   : current friction status
 ! Out mmcvca           : .true. if contact loop converged
 ! Out ctcsta           : number of contact points has changed their status
-! Out scotch           : .true. if contact point glued
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -117,21 +109,12 @@ implicit none
 !
 ! - Initializations
 !
-    scotch = .false.
     
     l_coef_adap = ((type_adap .eq. 1) .or. (type_adap .eq. 2) .or. &
                   (type_adap .eq. 5) .or. (type_adap .eq. 6 ))
     
     treatment =  ((type_adap .eq. 4) .or. (type_adap .eq. 5) .or. &
                   (type_adap .eq. 6) .or. (type_adap .eq. 7 ))
-!
-! - Velocity theta-scheme (dynamic)
-!
-    if (indi_cont_init .eq. 1) then
-        scotch = .true.
-    else
-        scotch = .false.
-    endif
     i_reso_cont  = cfdisi(ds_contact%sdcont_defi,'ALGO_RESO_CONT')
 !
 ! - Save old history
@@ -198,14 +181,6 @@ implicit none
     if (coef_frot_curr .le. coef_frot_mini) coef_frot_mini = coef_frot_curr
     v_sdcont_cyccoe(6*(zone_index-1)+5) = coef_frot_mini
     v_sdcont_cyccoe(6*(zone_index-1)+6) = coef_frot_maxi
-!
-! - Special treatment if velocity scheme
-!
-    if (l_vite) then
-        if ((indi_cont_eval.eq.0) .and. (vite_cont_curr.le.0.d0)) then
-            indi_cont_curr = 0
-        endif
-    endif
 !
 ! - Special treatment if bilateral contact : every point is in contact
 !
@@ -360,8 +335,6 @@ implicit none
 ! WARNING CYCLAGE FROTTEMENT: END
 ! - Convergence ?
 !
-!    mmcvca =  indi_cont_init .eq. indi_cont_curr
-!    if (nint(v_sdcont_cychis(60*(i_cont_poin-1) + 57)) .eq. 1 ) &
     mmcvca =  indi_cont_prev .eq. indi_cont_curr
     if (.not. mmcvca .and. treatment) then
         mode_cycl = 1
@@ -403,10 +376,8 @@ implicit none
         
         coef_bussetta = v_sdcont_cychis(60*(i_cont_poin-1)+2)
         dist_max      = 0.001*ds_contact%arete_min
-!        write (6,*) "ADAPTATION DU COEFFICIENT DE PENALISATION : Avant", coef_bussetta
         call bussetta_algorithm(dist_cont_curr, dist_cont_prev,dist_max, coef_bussetta)
         v_sdcont_cychis(60*(i_cont_poin-1)+2) = coef_bussetta
-!        write (6,*) "ADAPTATION DU COEFFICIENT DE PENALISATION : Apres", coef_bussetta
         
     endif
 end subroutine

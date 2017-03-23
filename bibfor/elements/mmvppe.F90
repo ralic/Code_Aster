@@ -34,7 +34,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 #include "asterfort/mmlagm.h"
 #include "asterfort/mmmjac.h"
 #include "asterfort/mmmjeu.h"
-#include "asterfort/mmmjev.h"
 #include "asterfort/mmreac.h"
 #include "asterfort/mmvitm.h"
 #include "asterfort/utmess.h"
@@ -269,12 +268,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
         
     endif
 
-!
-! --- CALCUL DU JEU EN VITESSE NORMALE
-!
-    if (lfovit) then
-        call mmmjev(ndim, norm, vitpe, vitpm, jeuvit)
-    endif
 !
 !
 end subroutine

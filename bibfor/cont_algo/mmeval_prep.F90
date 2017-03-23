@@ -1,5 +1,5 @@
 subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
-                       l_speed, speed_field, i_zone         ,&
+                        i_zone         ,&
                        ksipc1 , ksipc2     , ksipr1         , ksipr2     ,&
                        tau1   , tau2       ,&
                        elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
@@ -7,7 +7,7 @@ subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
                        elem_mast_nume,&
                        lagr_cont_node,&
                        norm   , &
-                       gap    , gap_user, gap_speed  , lagr_cont_poin)
+                       gap    , gap_user,  lagr_cont_poin)
 !
 use NonLin_Datastructure_type
 !
@@ -27,10 +27,9 @@ implicit none
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmnewj.h"
-#include "asterfort/mmmjev.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -52,8 +51,6 @@ implicit none
     real(kind=8), intent(in) :: time_curr
     integer, intent(in) :: model_ndim
     type(NL_DS_Contact), intent(in) :: ds_contact
-    aster_logical, intent(in) :: l_speed
-    character(len=19), intent(in) :: speed_field
     integer, intent(in) :: i_zone
     real(kind=8), intent(in) :: ksipc1
     real(kind=8), intent(in) :: ksipc2
@@ -71,7 +68,6 @@ implicit none
     real(kind=8), intent(out) :: norm(3)
     real(kind=8), intent(out) :: gap
     real(kind=8), intent(out) :: gap_user
-    real(kind=8), intent(out) :: gap_speed
     real(kind=8), intent(out) :: lagr_cont_poin
 !
 ! --------------------------------------------------------------------------------------------------
@@ -86,8 +82,6 @@ implicit none
 ! In  time_curr        : current time
 ! In  model_ndim       : size of model
 ! In  ds_contact       : datastructure for contact management
-! In  l_speed          : .true. if speed scheme
-! In  speed_field      : name of field for speed
 ! In  i_zone           : index of contact zone
 ! In  ksipc1           : first parametric coordinate of contact point in slave element
 ! In  ksipc2           : second parametric coordinate of contact point in slave element
@@ -105,14 +99,12 @@ implicit none
 ! Out norm             : normal vector for local basis
 ! Out gap              : contact gap
 ! Out gap_user         : contact gap defined by user
-! Out gap_speed        : contact gap for speed
 ! Out lagr_cont_poin   : value of contact lagrangian at contact point
 !
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: noor
     real(kind=8) :: poin_slav_coor(3), poin_proj_coor(3)
-    real(kind=8) :: speed_mast_poin(3), speed_slav_poin(3)
     character(len=19) :: newgeo
     character(len=8) :: elem_mast_name
 !
@@ -151,15 +143,5 @@ implicit none
 !
     call mmvalp_scal(model_ndim    , elem_slav_type, elem_slav_nbno, ksipc1, ksipc2,&
                      lagr_cont_node, lagr_cont_poin)
-!
-! - For speed schemes
-!
-    if (l_speed) then
-        call mcopco(mesh  , speed_field    , model_ndim, elem_slav_nume, ksipc1,&
-                    ksipc2, speed_slav_poin)
-        call mcopco(mesh  , speed_field    , model_ndim, elem_mast_nume, ksipr1,&
-                    ksipr2, speed_mast_poin)
-        call mmmjev(model_ndim, norm, speed_slav_poin, speed_mast_poin, gap_speed)
-    endif
 !
 end subroutine

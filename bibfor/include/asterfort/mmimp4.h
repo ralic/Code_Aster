@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,8 +19,8 @@
 !
 interface
     subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
-                      indcon, indfri, indfrn, lfrot, lvites,&
-                      lgliss, jeu, jeuvit, lambdc)
+                      indcon, indfri, indfrn, lfrot, &
+                      lgliss, jeu,  lambdc)
         integer :: ifm
         character(len=8) :: noma
         integer :: nummae
@@ -30,10 +30,8 @@ interface
         integer :: indfri
         integer :: indfrn
         aster_logical :: lfrot
-        aster_logical :: lvites
         aster_logical :: lgliss
         real(kind=8) :: jeu
-        real(kind=8) :: jeuvit
         real(kind=8) :: lambdc
     end subroutine mmimp4
 end interface

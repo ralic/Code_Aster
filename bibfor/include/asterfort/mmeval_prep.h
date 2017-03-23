@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 !
 interface
     subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
-                           l_speed, speed_field, i_zone         ,&
+                            i_zone         ,&
                            ksipc1 , ksipc2     , ksipr1         , ksipr2    ,&
                            tau1   , tau2       ,&
                            elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
@@ -28,14 +28,12 @@ interface
                            elem_mast_nume,&
                            lagr_cont_node,&
                            norm   , &
-                           gap    , gap_user, gap_speed  , lagr_cont_poin)
+                           gap    , gap_user,  lagr_cont_poin)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         real(kind=8), intent(in) :: time_curr
         integer, intent(in) :: model_ndim
         type(NL_DS_Contact), intent(in) :: ds_contact
-        aster_logical, intent(in) :: l_speed
-        character(len=19), intent(in) :: speed_field
         integer, intent(in) :: i_zone
         real(kind=8), intent(in) :: ksipc1
         real(kind=8), intent(in) :: ksipc2
@@ -53,7 +51,6 @@ interface
         real(kind=8), intent(out) :: norm(3)
         real(kind=8), intent(out) :: gap
         real(kind=8), intent(out) :: gap_user
-        real(kind=8), intent(out) :: gap_speed
         real(kind=8), intent(out) :: lagr_cont_poin
     end subroutine mmeval_prep
 end interface

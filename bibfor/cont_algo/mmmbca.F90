@@ -101,15 +101,15 @@ implicit none
     real(kind=8) :: lagr_cont_node(9), lagr_fro1_node(9), lagr_fro2_node(9)
     real(kind=8) :: elem_slav_coor(27)
     real(kind=8) :: lagr_cont_poin, time_curr
-    real(kind=8) :: gap, gap_speed, gap_user
+    real(kind=8) :: gap,  gap_user
     real(kind=8) :: pres_frot(3), gap_user_frot(3)
     real(kind=8) :: coef_cont, coef_frot, loop_cont_vale
     character(len=8) :: elem_slav_type
     character(len=19) :: cnscon, cnsfr1, cnsfr2
     character(len=19) :: oldgeo, newgeo
-    character(len=19) :: speed_field, chdepd
+    character(len=19) ::  chdepd
     character(len=19) :: depdel, depplu, vitplu
-    aster_logical :: l_glis, l_speed, scotch
+    aster_logical :: l_glis,  scotch
     aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv,  l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: loop_geom_count, loop_fric_count, loop_cont_count
@@ -139,7 +139,7 @@ implicit none
 !
 ! - Parameters
 !
-    l_speed      = ndynlo(sddyna,'FORMUL_VITE')
+    
     l_exis_glis  = cfdisl(ds_contact%sdcont_defi,'EXIS_GLISSIERE')
     l_loop_cont  = cfdisl(ds_contact%sdcont_defi,'CONT_BOUCLE')
     type_adap    = cfdisi(ds_contact%sdcont_defi,'TYPE_ADAPT')
@@ -178,21 +178,13 @@ implicit none
 !
 ! - Get off indicator for speed schemes
 !
-    scotch = ds_contact%l_getoff
+!    scotch = ds_contact%l_getoff
 !
 ! - Geometric update
 !
     oldgeo = mesh//'.COORDO'
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
     call mreacg(mesh, ds_contact, field_update_ = depplu)
-!
-! - Create speed field
-!    
-    speed_field = '&&MMMBCA.ACTUVIT'
-    if (l_speed) then
-        call mmfield_prep(oldgeo, speed_field,&
-                          l_update_ = .true._1, field_update_ = vitplu)
-    endif
 !
 ! - Prepare displacement field to get contact Lagrangien multiplier
 !
@@ -316,7 +308,7 @@ implicit none
 ! ------------- Compute gap and contact pressure
 !
                 call mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
-                                 l_speed, speed_field, i_zone         ,&
+                                  i_zone         ,&
                                  ksipc1 , ksipc2     , ksipr1         , ksipr2    ,&
                                  tau1   , tau2       ,&
                                  elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
@@ -324,7 +316,7 @@ implicit none
                                  elem_mast_nume,&
                                  lagr_cont_node,&
                                  norm   , &
-                                 gap    , gap_user, gap_speed, lagr_cont_poin)
+                                 gap    , gap_user,  lagr_cont_poin)
 !
 ! ------------- Previous status and coefficients
 !
@@ -371,11 +363,11 @@ implicit none
 !
 ! ------------- Status treatment
 !
-                call mmalgo(ds_contact, l_loop_cont, l_frot_zone, l_speed,&
-                            l_glis_init, type_adap, i_zone, i_cont_poin, indi_cont_init,&
-                            indi_cont_eval, indi_frot_eval, gap, gap_speed, lagr_cont_poin,&
+                call mmalgo(ds_contact, l_loop_cont, l_frot_zone, &
+                            l_glis_init, type_adap, i_zone, i_cont_poin, &
+                            indi_cont_eval, indi_frot_eval, gap,  lagr_cont_poin,&
                        gap_user_frot, pres_frot, v_sdcont_cychis, v_sdcont_cyccoe, v_sdcont_cyceta,&
-                        indi_cont_curr,indi_frot_curr, loop_cont_vali, loop_cont_conv, scotch)
+                        indi_cont_curr,indi_frot_curr, loop_cont_vali, loop_cont_conv)
 !
  19             continue
 !
@@ -390,8 +382,8 @@ implicit none
 !
                 if (niv .ge. 2) then
                     call mmimp4(ifm, mesh, elem_slav_nume, i_poin_elem, indi_cont_prev,&
-                                indi_cont_curr, indi_frot_prev, indi_frot_curr, l_frot, l_speed,&
-                                l_glis, gap, gap_speed, lagr_cont_poin)
+                                indi_cont_curr, indi_frot_prev, indi_frot_curr, l_frot, &
+                                l_glis, gap,  lagr_cont_poin)
                 endif
 !
 ! ------------- Next contact point
@@ -450,7 +442,6 @@ implicit none
 ! - Cleaning
 !
     call jedetr(newgeo)
-    call jedetr(speed_field)
     call jedetr(chdepd)
     call detrsd('CHAM_NO_S', cnscon)
     call detrsd('CHAM_NO_S', cnsfr1)
