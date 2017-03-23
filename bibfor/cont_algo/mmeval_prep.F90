@@ -2,7 +2,7 @@ subroutine mmeval_prep(mesh   , time_curr  , model_ndim     , ds_contact,&
                         i_zone         ,&
                        ksipc1 , ksipc2     , ksipr1         , ksipr2     ,&
                        tau1   , tau2       ,&
-                       elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
+                       elem_slav_indx,  elem_slav_nbno,&
                        elem_slav_type, elem_slav_coor,&
                        elem_mast_nume,&
                        lagr_cont_node,&
@@ -44,7 +44,7 @@ implicit none
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-! person_in_charge: mickael.abbas at edf.fr
+! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 ! aslint: disable=W1504
 !
     character(len=8), intent(in) :: mesh
@@ -60,7 +60,6 @@ implicit none
     real(kind=8), intent(in) :: tau2(3)
     integer, intent(in) :: elem_slav_nbno
     integer, intent(in) :: elem_slav_indx
-    integer, intent(in) :: elem_slav_nume
     character(len=8), intent(in) :: elem_slav_type
     real(kind=8), intent(in) :: elem_slav_coor(27)
     integer, intent(in) :: elem_mast_nume
@@ -90,7 +89,6 @@ implicit none
 ! In  tau1             : first tangent vector for local basis
 ! In  tau1             : second tangent vector for local basis
 ! In  elem_slav_indx   : index of slave element (in contact datastructure)
-! In  elem_slav_nume   : index of slave element (in mesh datastructure)
 ! In  elem_slav_nbno   : number of nodes of slave element
 ! In  elem_slav_type   : type of slave element
 ! In  elem_slav_coor   : coordinates of slave element

@@ -1,4 +1,4 @@
-subroutine mmmbca(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
+subroutine mmmbca(mesh  , iter_newt, nume_inst,  ds_measure,&
                   sddisc, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
@@ -60,7 +60,6 @@ implicit none
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: iter_newt
     integer, intent(in) :: nume_inst
-    character(len=19), intent(in) :: sddyna
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
@@ -78,7 +77,6 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  iter_newt        : index of current Newton iteration
 ! In  nume_inst        : index of current time step
-! In  sddyna           : dynamic parameters datastructure
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
 ! In  hval_incr        : hat-variable for incremental values fields
@@ -109,7 +107,7 @@ implicit none
     character(len=19) :: oldgeo, newgeo
     character(len=19) ::  chdepd
     character(len=19) :: depdel, depplu, vitplu
-    aster_logical :: l_glis,  scotch
+    aster_logical :: l_glis
     aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv,  l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: loop_geom_count, loop_fric_count, loop_cont_count
@@ -176,9 +174,6 @@ implicit none
 !
     time_curr = diinst(sddisc, nume_inst)
 !
-! - Get off indicator for speed schemes
-!
-!    scotch = ds_contact%l_getoff
 !
 ! - Geometric update
 !
@@ -311,7 +306,7 @@ implicit none
                                   i_zone         ,&
                                  ksipc1 , ksipc2     , ksipr1         , ksipr2    ,&
                                  tau1   , tau2       ,&
-                                 elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
+                                 elem_slav_indx,  elem_slav_nbno,&
                                  elem_slav_type, elem_slav_coor,&
                                  elem_mast_nume,&
                                  lagr_cont_node,&
@@ -424,10 +419,7 @@ implicit none
     else
         call mmeven('FIN', ds_contact)
     endif
-!
-! - Get off indicator for speed schemes
-!
-    ds_contact%l_getoff = scotch
+
 !
 ! - Set loop values
 !

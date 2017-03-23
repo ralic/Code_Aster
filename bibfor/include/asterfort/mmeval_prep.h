@@ -23,7 +23,7 @@ interface
                             i_zone         ,&
                            ksipc1 , ksipc2     , ksipr1         , ksipr2    ,&
                            tau1   , tau2       ,&
-                           elem_slav_indx, elem_slav_nume, elem_slav_nbno,&
+                           elem_slav_indx,  elem_slav_nbno,&
                            elem_slav_type, elem_slav_coor,&
                            elem_mast_nume,&
                            lagr_cont_node,&
@@ -43,7 +43,6 @@ interface
         real(kind=8), intent(in) :: tau2(3)
         integer, intent(in) :: elem_slav_nbno
         integer, intent(in) :: elem_slav_indx
-        integer, intent(in) :: elem_slav_nume
         character(len=8), intent(in) :: elem_slav_type
         real(kind=8), intent(in) :: elem_slav_coor(27)
         integer, intent(in) :: elem_mast_nume

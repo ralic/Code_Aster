@@ -241,14 +241,12 @@ subroutine te0364(option, nomte)
                 iresof, iresog, lambds, .false._1)
     
                 
-    call mmmlav(ldyna,  jeusup, ndexfr, coefac,&
-                coefaf)
+    call mmmlav(ldyna,  jeusup, ndexfr)
                 
     if (l_previous) then
         call mmmlcf(coefff, coefac_prev, coefaf_prev, lpenac_prev, lpenaf_prev,&
                     iresof_prev, iresog_prev, lambds_prev, l_previous)
-        call mmmlav(ldyna,  jeusup_prev, ndexfr_prev, coefac_prev,&
-                    coefaf_prev)
+        call mmmlav(ldyna,  jeusup_prev, ndexfr_prev)
         
 !        debug = .true.
 !        if (debug) then 

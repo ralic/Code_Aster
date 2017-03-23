@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -18,7 +18,7 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine nmctcc(mesh      , model_    , mate  , nume_inst, sddyna   ,&
+    subroutine nmctcc(mesh      , model_    , mate  , nume_inst, &
                       sderro    , ds_measure, sddisc, hval_incr, hval_algo,&
                       ds_contact, ds_constitutive   , list_func_acti)
         use NonLin_Datastructure_type
@@ -26,7 +26,6 @@ interface
         character(len=24), intent(in) :: model_
         character(len=24), intent(in) :: mate
         integer, intent(in) :: nume_inst
-        character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: sderro
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddisc

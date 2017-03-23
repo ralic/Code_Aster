@@ -373,7 +373,7 @@ implicit none
 ! --- GESTION FIN DE BOUCLE POINTS FIXES
 !
     call nmtble(niveau, model, mesh    , mate  , ds_contact, &
-                fonact, ds_print, ds_measure, sddyna,&
+                fonact, ds_print, ds_measure, &
                 sderro, ds_conv , sddisc, numins, valinc,&
                 solalg,  ds_constitutive)
 !

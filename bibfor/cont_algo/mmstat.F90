@@ -1,4 +1,4 @@
-subroutine mmstat(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
+subroutine mmstat(mesh  , iter_newt, nume_inst,  ds_measure,&
                   sddisc, hval_incr, hval_algo, ds_contact)
 !
 use NonLin_Datastructure_type
@@ -12,7 +12,7 @@ implicit none
 #include "asterfort/mmmbca_lac.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,6 @@ implicit none
     character(len=8), intent(in) :: mesh
     integer, intent(in) :: iter_newt
     integer, intent(in) :: nume_inst
-    character(len=19), intent(in) :: sddyna
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_incr(*)
@@ -50,7 +49,6 @@ implicit none
 ! In  mesh             : name of mesh
 ! In  iter_newt        : index of current Newton iteration
 ! In  nume_inst        : index of current time step
-! In  sddyna           : dynamic parameters datastructure
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
 ! In  hval_incr        : hat-variable for incremental values fields
@@ -70,7 +68,7 @@ implicit none
     l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
     if (l_cont_cont) then
-        call mmmbca(mesh  , iter_newt, nume_inst, sddyna    , ds_measure,&
+        call mmmbca(mesh  , iter_newt, nume_inst,  ds_measure,&
                     sddisc, hval_incr, hval_algo, ds_contact)
     elseif (l_cont_lac) then
         call mmmbca_lac(mesh, hval_incr, ds_contact)
