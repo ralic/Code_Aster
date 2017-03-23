@@ -52,9 +52,9 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 ! IN  COEFAF : COEF_AUGM_FROT
 ! IN  TAU1   : PREMIER VECTEUR TANGENT
 ! IN  TAU2   : SECOND VECTEUR TANGENT
+! IN LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL FIXE)
 ! OUT LCONT  : .TRUE. SI CONTACT (SU=1)
 ! OUT LADHE  : .TRUE. SI ADHERENCE
-! OUT LAMBDA : VALEUR DU MULT. DE CONTACT (SEUIL FIXE)
 ! OUT RESE   : SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
 !               GTK = LAMBDAF + COEFAF*VITESSE
 ! OUT NRESE  : NORME DU SEMI-MULTIPLICATEUR GTK DE FROTTEMENT
@@ -90,7 +90,7 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 !
 ! --- STATUT DU CONTACT
 !
-    lcont = indco.eq.1
+    lcont = (indco.eq.1) 
 !
 ! --- PAS DE FROTTEMENT SI CALCUL OPTION CONTACT
 !
@@ -102,14 +102,15 @@ subroutine mmmsta(ndim, leltf, lpenaf, loptf, djeut,&
 !
 !
     if (loptf) then
-! This test influence highly the NON_REGRESSION     
-!        if (lambda .lt. 1.d-30) lcont = .false.
-        if ( (abs(lambda) .ge. 0.0d0-1d-30) .and. &
-            (abs(lambda)  .le. 0.0d0+1d-30)) lcont = .false.
+! This test influence highly the NON_REGRESSION & CONVERGENCE 
+! ONE MUST HAVE ATTENTION WHEN MODIFYING    
+        if (lambda .eq. 0.d0) lcont = .false._1
+!        if ( abs(lambda) .lt. 1.d-100) lcont = .false._1
     endif
 !
 ! --- ETAT D'ADHERENCE DU POINT DE CONTACT
 !
+    
     if (loptf .and. lcont) then
         call mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
                     tau1, tau2, ladhe, rese, nrese)

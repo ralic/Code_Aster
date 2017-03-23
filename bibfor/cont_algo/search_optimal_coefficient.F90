@@ -75,7 +75,6 @@ implicit none
            terminate = .true.
            indi(1)   = indi_prev
            indi(2)   = indi_curr
-!          write (6,*) "valeur optimale trouvee", coefficient
            
        elseif (indi_curr + indi_prev .eq. 1) then 
            terminate = .false.
@@ -96,7 +95,6 @@ implicit none
            else 
                terminate = .true.
            endif
-!          write (6,*) "On continue la dichotomie",it
            
        else
            save_coefficient = coefficient
