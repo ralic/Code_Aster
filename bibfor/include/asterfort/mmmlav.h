@@ -18,10 +18,9 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
+    subroutine mmmlav(ldyna,  jeusup, ndexfr, coefac,&
                       coefaf)
         aster_logical :: ldyna
-        aster_logical :: lfovit
         real(kind=8) :: jeusup
         integer :: ndexfr
         real(kind=8) :: coefac

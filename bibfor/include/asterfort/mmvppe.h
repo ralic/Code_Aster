@@ -20,7 +20,7 @@
 interface
     subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                       nnm, nnl, nbdm, laxis, ldyna,&
-                      lfovit,lpenac, jeusup, ffe, ffm, ffl,&
+                      lpenac, jeusup, ffe, ffm, ffl,&
                       norm, tau1, tau2, mprojt, jacobi,&
                       wpg, dlagrc, dlagrf, jeu, djeu,&
                       djeut, l_previous)
@@ -35,7 +35,6 @@ interface
         aster_logical :: laxis
         aster_logical :: ldyna
         aster_logical :: l_previous
-        aster_logical :: lfovit
         aster_logical :: lpenac
         real(kind=8) :: jeusup
         real(kind=8) :: ffe(9)

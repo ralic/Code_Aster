@@ -1,6 +1,6 @@
 subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
                   nnm, nnl, nbdm, laxis, ldyna,&
-                  lfovit,lpenac, jeusup, ffe, ffm, ffl,&
+                  lpenac, jeusup, ffe, ffm, ffl,&
                   norm, tau1, tau2, mprojt, jacobi,&
                   wpg, dlagrc, dlagrf, jeu, djeu,&
                   djeut, l_previous)
@@ -45,7 +45,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: norm(3)
     real(kind=8) :: mprojt(3, 3)
-    aster_logical :: laxis, ldyna, lfovit,lpenac,l_previous
+    aster_logical :: laxis, ldyna, lpenac,l_previous
     real(kind=8) :: jacobi, wpg
     real(kind=8) :: jeusup
     real(kind=8) :: dlagrc, dlagrf(2)
@@ -73,7 +73,6 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
 ! IN  NBDM   : NOMBRE DE COMPOSANTES/NOEUD DES DEPL+LAGR_C+LAGR_F
 ! IN  LAXIS  : .TRUE. SI AXISYMETRIE
 ! IN  LDYNA  : .TRUE. SI DYNAMIQUE
-! IN  LFOVIT : .TRUE. SI FORMULATION EN VITESSE
 ! IN  JEUSUP : JEU SUPPLEMENTAIRE PAR DIST_ESCL/DIST_MAIT
 ! OUT FFE    : FONCTIONS DE FORMES DEPL_ESCL
 ! OUT FFM    : FONCTIONS DE FORMES DEPL_MAIT
@@ -106,7 +105,7 @@ subroutine mmvppe(typmae, typmam, iresog, ndim, nne,&
     real(kind=8) :: dffl(2, 9), ddffl(3, 9)
     real(kind=8) :: xpc, ypc, xpr, ypr
     real(kind=8) :: mprojn(3, 3)
-    real(kind=8) :: jeuvit,tmp,vec(3),valmax,valmin
+    real(kind=8) :: tmp,vec(3),valmax,valmin
 !
 ! ----------------------------------------------------------------------
 !

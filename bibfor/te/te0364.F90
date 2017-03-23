@@ -70,7 +70,7 @@ subroutine te0364(option, nomte)
     aster_logical :: laxis, leltf
     aster_logical :: lpenac, lpenaf
     aster_logical :: lpenac_prev, lpenaf_prev
-    aster_logical :: loptf, ldyna, lfovit, lcont
+    aster_logical :: loptf, ldyna,  lcont
     aster_logical :: lcont_prev
     aster_logical :: ladhe
     aster_logical :: ladhe_prev
@@ -241,13 +241,13 @@ subroutine te0364(option, nomte)
                 iresof, iresog, lambds, .false._1)
     
                 
-    call mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
+    call mmmlav(ldyna,  jeusup, ndexfr, coefac,&
                 coefaf)
                 
     if (l_previous) then
         call mmmlcf(coefff, coefac_prev, coefaf_prev, lpenac_prev, lpenaf_prev,&
                     iresof_prev, iresog_prev, lambds_prev, l_previous)
-        call mmmlav(ldyna, lfovit, jeusup_prev, ndexfr_prev, coefac_prev,&
+        call mmmlav(ldyna,  jeusup_prev, ndexfr_prev, coefac_prev,&
                     coefaf_prev)
         
 !        debug = .true.

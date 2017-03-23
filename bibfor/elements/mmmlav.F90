@@ -1,4 +1,4 @@
-subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
+subroutine mmmlav(ldyna,  jeusup, ndexfr, coefac,&
                   coefaf)
 !
 ! ======================================================================
@@ -23,7 +23,7 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
-    aster_logical :: lfovit, ldyna
+    aster_logical ::  ldyna
     real(kind=8) :: jeusup
     integer :: ndexfr
     real(kind=8) :: coefac, coefaf
@@ -38,7 +38,6 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 !
 !
 ! OUT LDYNA  : .TRUE. SI DYNAMIQUE
-! OUT LFOVIT : .TRUE. SI FORMULATION EN VITESSE
 ! OUT JEUSUP : JEU SUPPLEMENTAIRE PAR DIST_ESCL/DIST_MAIT
 ! OUT NDEXFR : ENTIER CODE POUR EXCLUSION DIRECTION DE FROTTEMENT
 ! I/O COEFAC : COEF_AUGM_CONT
@@ -64,14 +63,6 @@ subroutine mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
 !
 ! --- FONCTIONNALITES ACTIVEES
 !
-    lfovit = iform.eq.2
     ldyna = iform.ne.0
-!
-! --- COEFFICIENTS MODIFIES POUR FORMULATION EN THETA-VITESSE
-!
-    if (lfovit) then
-        coefaf = coefaf/deltat/theta
-        coefac = coefac/deltat/theta
-    endif
 !
 end subroutine

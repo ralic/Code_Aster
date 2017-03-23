@@ -85,7 +85,7 @@ subroutine te0365(option, nomte)
     aster_logical :: laxis = .false. , leltf = .false. 
     aster_logical :: lpenac = .false. , lpenaf = .false. 
     aster_logical :: lpenac_prev = .false. , lpenaf_prev = .false. 
-    aster_logical :: loptf = .false. , ldyna = .false. , lfovit = .false. , lcont = .false. 
+    aster_logical :: loptf = .false. , ldyna = .false. ,  lcont = .false. 
     aster_logical :: lcont_prev = .false. 
     aster_logical :: ladhe = .false. 
     aster_logical :: ladhe_prev  = .false. 
@@ -145,14 +145,14 @@ subroutine te0365(option, nomte)
     call mmmlcf(coefff, coefac, coefaf, lpenac, lpenaf,&
                 iresof, iresog, lambds, .false._1)
                 
-    call mmmlav(ldyna, lfovit, jeusup, ndexfr, coefac,&
+    call mmmlav(ldyna, jeusup, ndexfr, coefac,&
                 coefaf)
                 
                 
     if (l_previous) then
         call mmmlcf(coefff, coefac_prev, coefaf_prev, lpenac_prev, lpenaf_prev,&
                     iresof_prev, iresog_prev, lambds_prev, l_previous)
-        call mmmlav(ldyna, lfovit, jeusup_prev, ndexfr_prev, coefac_prev,&
+        call mmmlav(ldyna, jeusup_prev, ndexfr_prev, coefac_prev,&
                     coefaf_prev)
         
 !        debug = .false.
@@ -185,7 +185,7 @@ subroutine te0365(option, nomte)
 !
         call mmvppe(typmae, typmam, iresog, ndim, nne,&
                              nnm, nnl, nbdm, laxis, ldyna,&
-                             lfovit,lpenac, jeusup, ffe, ffm, ffl,&
+                             lpenac, jeusup, ffe, ffm, ffl,&
                              norm, tau1, tau2, mprojt, jacobi,&
                              wpg, dlagrc, dlagrf, jeu, djeu,&
                              djeut, .false._1)
@@ -193,7 +193,7 @@ subroutine te0365(option, nomte)
         if (l_previous) then
             call      mmvppe(typmae, typmam, iresog, ndim, nne,&
                              nnm, nnl, nbdm, laxis, ldyna,&
-                             lfovit,lpenac_prev, jeusup_prev, ffe, ffm, ffl,&
+                             lpenac_prev, jeusup_prev, ffe, ffm, ffl,&
                              norm_prev, tau1_prev, tau2_prev, mprojt_prev, jacobi,&
                              wpg, dlagrc_prev, dlagrf_prev, jeu_prev, djeu_prev,&
                              djeut_prev, l_previous)
