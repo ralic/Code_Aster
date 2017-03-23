@@ -16,7 +16,7 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine search_optimal_coefficient(coef, indi, pres_cont, dist_cont,&
+    subroutine search_opt_coef(coef, indi, pres_cont, dist_cont,&
                                       coef_opt , terminate)
         real(kind=8), intent(in) :: coef(2)
         integer  :: indi(2)
@@ -24,5 +24,5 @@ interface
         real(kind=8), intent(inout) :: dist_cont(2)
         real(kind=8), intent(out) :: coef_opt
         aster_logical, intent(out) :: terminate
-    end subroutine search_optimal_coefficient
+    end subroutine search_opt_coef
 end interface

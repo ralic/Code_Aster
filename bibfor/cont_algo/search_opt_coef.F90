@@ -1,4 +1,4 @@
-subroutine search_optimal_coefficient(coef, indi, pres_cont, dist_cont,&
+subroutine search_opt_coef(coef, indi, pres_cont, dist_cont,&
                                       coef_opt , terminate)
 
 !
