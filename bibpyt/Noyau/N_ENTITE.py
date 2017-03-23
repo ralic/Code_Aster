@@ -118,10 +118,12 @@ class ENTITE:
            les objets REGLES associés ne portent que sur des sous-entités
            existantes
         """
+        from Cata import cata
         for regle in self.regles:
             l = []
             for mc in regle.mcs:
-                if not self.entites.has_key(mc):
+                keyword = self.entites.get(mc)
+                if not isinstance(keyword, (cata.SIMP, cata.FACT)):
                     l.append(mc)
             if l != []:
                 txt = str(regle)
@@ -135,15 +137,8 @@ class ENTITE:
         for nom, val in args.items():
             if val.label == 'SIMP':
                 mcs.add(nom)
-                # XXX
-                # if val.max != 1 and val.type == 'TXM':
-                    # print "#CMD", parent, nom
             elif val.label == 'FACT':
                 val.check_definition(parent)
-                # CALC_SPEC !
-                # assert self.label != 'FACT', \
-                   #'Commande %s : Mot-clef facteur present sous un mot-clef facteur : interdit !' \
-                   #% parent
             else:
                 continue
             del args[nom]
@@ -152,8 +147,6 @@ class ENTITE:
         for nom, val in args.items():
             if val.label == 'BLOC':
                 mcbloc = val.check_definition(parent)
-                # XXX
-                # print "#BLOC", parent, re.sub('\s+', ' ', val.condition)
                 assert mcs.isdisjoint(mcbloc), "Commande %s : Mot(s)-clef(s) vu(s) plusieurs fois : %s" \
                     % (parent, tuple(mcs.intersection(mcbloc)))
         return mcs
@@ -277,7 +270,7 @@ class ENTITE:
             # a priori, 'global_jdc' est aussi autorisée mais ça ne me semble
             # pas une bonne idée !
             self.cr.fatal(_(u"l'attribut 'position' n'est plus autorisé"))
-            
+
 
     def check_defaut(self):
         """Vérifie l'attribut defaut."""
