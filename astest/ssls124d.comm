@@ -272,32 +272,6 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
 #Iy=b*h*h*h/12
 #Uz=F*L*L*L/3/YG/Iy
 
-# La solution obtenue presente une certaine variabilite entre machines qui decoule
-# du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
-# Valeurs obtenues avec Code_Aster v13.3+MUMPS5.0.2+AMF sur Athosdev
-# => l'usage du mot cle TOLE_MACHINE.
-#calc_aster5_p7=0.00198330258193
-#calc_aster5_p8=0.00198330178932
-#TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   #GROUP_NO='P7',
-                   #REFERENCE='ANALYTIQUE',
-                   #RESULTAT=RESU33,
-                   #NOM_CHAM='DEPL',
-                   #NOM_CMP='DZ',
-                   #VALE_CALC=0.00198316737256,
-                   #VALE_REFE=Uz,
-                   #PRECISION=0.1,
-#),
-                #_F(NUME_ORDRE=1,
-                   #GROUP_NO='P8',
-                   #REFERENCE='ANALYTIQUE',
-                   #RESULTAT=RESU33,
-                   #NOM_CHAM='DEPL',
-                   #NOM_CMP='DZ',
-                   #VALE_CALC=0.00198316692466,
-                   #VALE_REFE=Uz,
-                   #PRECISION=0.1,),
-                #),
-          #)
+
 
 FIN()

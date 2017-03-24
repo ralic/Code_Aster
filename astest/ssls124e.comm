@@ -273,31 +273,5 @@ CHARG33=AFFE_CHAR_MECA(MODELE=MODMEC33,
 #Uz=F*L*L*L/3/YG/Iy
 
 
-# La solution obtenue presente une certaine variabilite entre machines qui decoule
-# du mauvais conditionnement du probleme quand l'epaisseur est trop petite.
-# Cette variabilite se vérifie aussi lorsqu'on change de version de compilateur,
-# de solveur linéaire, de renuméroteur, de version de routine BLAS...
-# => l'usage du mot cle TOLE_MACHINE.
-
-#TEST_RESU(RESU=(_F(NUME_ORDRE=1,
-                   #GROUP_NO='P7',
-                   #REFERENCE='ANALYTIQUE',
-                   #RESULTAT=RESU33,
-                   #NOM_CHAM='DEPL',
-                   #NOM_CMP='DZ',
-                   #VALE_CALC=0.00195887944384,
-                   #VALE_REFE=Uz,
-                   #PRECISION=0.1,),
-                #_F(NUME_ORDRE=1,
-                   #GROUP_NO='P8',
-                   #REFERENCE='ANALYTIQUE',
-                   #RESULTAT=RESU33,
-                   #NOM_CHAM='DEPL',
-                   #NOM_CMP='DZ',
-                   #VALE_CALC=0.00196198864771,
-                   #VALE_REFE=Uz,
-                   #PRECISION=0.1,),
-                #),
-          #)
 
 FIN()
