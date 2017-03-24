@@ -1,101 +1,109 @@
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
-#
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-# (AT YOUR OPTION) ANY LATER VERSION.
-#
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
-#
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-# 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
+# (AT YOUR OPTION) ANY LATER VERSION.                                                    
+#                                                                       
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
+#                                                                       
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# ======================================================================
 
-POURSUITE(CODE='OUI',IGNORE_ALARM='MODELE1_63')
+# PARTIE 2 : CALCUL MECANIQUE ET POST TRAITEMENT SANS RUPTURE
 
-# MODELIDATION A : X-FEM 3D
+POURSUITE(CODE='OUI', DEBUG=_F(SDVERI='OUI'),);
 
-# PARTIE 2 : CALCUL MECANIQUE
+########
+# Lecture et modification du maillage raffine
+########
 
-# CE FICHIER EST LA VERSION CORRIGEE DU 4EME EXERCICE DES TPS
-# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
-# - REMPLACER LE CONTENU DU MOT-CLE FACTEUR DEFI_FISS PAR ...
+MA = LIRE_MAILLAGE(FORMAT='MED', UNITE=41);
 
-# lecture du maillage raffine
-MAIL=LIRE_MAILLAGE(FORMAT='MED',UNITE=41)
+MA = MODI_MAILLAGE(reuse=MA,
+                   MAILLAGE=MA,
+                   ORIE_PEAU_3D=_F(GROUP_MA=('FACE_AV', 'FACE_SUP', 'FACE_LAT', 'FACE_INF'),),);
 
-MAIL=MODI_MAILLAGE(reuse =MAIL,
-                   MAILLAGE=MAIL,
-                   ORIE_PEAU_3D=_F(GROUP_MA=('FACE_SUP','FACE_INF')))
+########
+# Materiau
+########
 
-MOD=AFFE_MODELE(MAILLAGE=MAIL,
-                AFFE=_F(GROUP_MA = ('CUBE','FACE_SUP','FACE_INF','FACE_LAT','FACE_AV'),
-                        PHENOMENE = 'MECANIQUE',
-                        MODELISATION = '3D') )
+MAT = DEFI_MATERIAU(ELAS=_F(E=2e+11, NU=0.3),);
 
-# fissure X-FEM
-FISSX=DEFI_FISS_XFEM(MAILLAGE=MAIL, NB_COUCHES=5,  
-                     DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
-                                  DEMI_GRAND_AXE = 2.,
-                                  DEMI_PETIT_AXE = 2.,
-                                  CENTRE         = (0.,0.,0.),
-                                  VECT_X         = (1.,0.,0.), 
-                                  VECT_Y         = (0.,1.,0.),
-                                  ),
-                     )
+MATE = AFFE_MATERIAU(AFFE=_F(MATER=MAT, 
+                             TOUT='OUI'), 
+                     MAILLAGE=MA,);
 
-# elements X-FEM
-MOX=MODI_MODELE_XFEM(MODELE_IN=MOD,FISSURE=FISSX)
+########
+# Modele
+########
 
+MO = AFFE_MODELE(AFFE=_F(MODELISATION='3D', 
+                         PHENOMENE='MECANIQUE', 
+                         TOUT='OUI'),
+                 MAILLAGE=MA,);
 
-MAT=DEFI_MATERIAU(ELAS=_F(E = 2.E11,
-                          NU = 0.3,
-                          ALPHA = 0.) )
+########
+# Definition de la fissure
+########
 
-CHMAT=AFFE_MATERIAU(MAILLAGE=MAIL,
-                    AFFE=_F(TOUT = 'OUI',
-                            MATER = MAT) )
+FISS = DEFI_FISS_XFEM(DEFI_FISS=_F(CENTRE=(0.0, 0.0, 0.0),
+                                   DEMI_GRAND_AXE=2.0,
+                                   DEMI_PETIT_AXE=2.0,
+                                   FORM_FISS='ELLIPSE',
+                                   VECT_X=(1.0, 0.0, 0.0),
+                                   VECT_Y=(0.0, 1.0, 0.0),),
+                      MAILLAGE=MA,);
 
-SYMETR=AFFE_CHAR_MECA(MODELE=MOX,
-                      DDL_IMPO= (_F(GROUP_MA='FACE_AV', DY=0.0, H1Y=0.),
-                                 _F(GROUP_MA='FACE_LAT',DX=0.0, H1X=0.),
-                                 _F(GROUP_NO='D',DZ=0.0,),)
-                      )           
+########
+# Prise en compte du modele enrichi
+########
 
-PRESSION=AFFE_CHAR_MECA(MODELE=MOX,
-                        PRES_REP=_F(GROUP_MA = ('FACE_SUP','FACE_INF'),
-                                    PRES = -1.E6), )
+MOXFEM = MODI_MODELE_XFEM(FISSURE=FISS, MODELE_IN=MO);
 
-RESU=MECA_STATIQUE(MODELE=MOX,
-                   CHAM_MATER=CHMAT,              
-                   EXCIT=(_F(CHARGE=SYMETR,),
-                          _F(CHARGE=PRESSION,),),              
-                   )
+########
+# Conditions limites
+########
 
-#----------------------------------------------------------------------
-#                       POST-TRAITEMENT VISU
-#----------------------------------------------------------------------
+CHAR = AFFE_CHAR_MECA(DDL_IMPO=(_F(DZ=0.0, GROUP_NO='D',),
+                                _F(DY=0.0, GROUP_MA='FACE_AV',),
+                                _F(DX=0.0, GROUP_MA='FACE_LAT',),),
+                      MODELE=MOXFEM,
+                      PRES_REP=_F(GROUP_MA=('FACE_SUP', 'FACE_INF'), 
+                                  PRES=-1000000.0),);
 
-# uniquement pour la visu !
-MA_VISU=POST_MAIL_XFEM(MODELE=MOX)
+########
+# Calcul mecanique
+########
 
-# uniquement pour la visu !
-MOD_VISU=AFFE_MODELE(MAILLAGE=MA_VISU,
-                     AFFE=_F(TOUT='OUI',
-                             PHENOMENE='MECANIQUE',
-                             MODELISATION='3D',),)
+RESU = MECA_STATIQUE(CHAM_MATER=MATE, 
+                     EXCIT=_F(CHARGE=CHAR), 
+                     MODELE=MOXFEM,);
 
-# uniquement pour la visu !
-RES_XFEM=POST_CHAM_XFEM(MODELE_VISU= MOD_VISU,
-                        RESULTAT=RESU)
+########
+# Post traitement pour la visualisation
+########
 
-RES_XFEM=CALC_CHAMP(reuse =RES_XFEM,
-                    RESULTAT=RES_XFEM,
-                    CRITERES=('SIEQ_ELGA','SIEQ_ELNO','SIEQ_NOEU',),);
+MA_VISU = POST_MAIL_XFEM(MODELE=MOXFEM);
 
-IMPR_RESU(FORMAT='MED',UNITE=81,RESU=_F(RESULTAT=RES_XFEM))
+MO_VISU = AFFE_MODELE(AFFE=_F(MODELISATION='3D',
+                              PHENOMENE='MECANIQUE', 
+                              TOUT='OUI'),
+                      MAILLAGE=MA_VISU,);
 
-FIN()
+RES_VISU = POST_CHAM_XFEM(MODELE_VISU=MO_VISU, 
+                          RESULTAT=RESU);
+
+RES_VISU = CALC_CHAMP(reuse=RES_VISU,
+                      CONTRAINTE='SIGM_NOEU',
+                      CRITERES='SIEQ_NOEU',
+                      RESULTAT=RES_VISU,);
+
+IMPR_RESU(FORMAT='MED', RESU=_F(RESULTAT=RES_VISU), UNITE=81);
+
+FIN();

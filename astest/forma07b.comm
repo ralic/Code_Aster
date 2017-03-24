@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
@@ -16,67 +16,87 @@
 # ======================================================================
 
 DEBUT(CODE=_F(VISU_EFICAS='NON',NIV_PUB_WEB='INTERNET'),
-      DEBUG=_F(SDVERI='OUI'),)
+      DEBUG=_F(SDVERI='OUI'),);
 
-# MODELIDATION A : X-FEM 3D
+# MODELIDATION B : X-FEM 3D
 
 # PARTIE 1 : RAFFINEMENT DE MAILLAGE
 
-# CE FICHIER EST LA VERSION CORRIGEE DU 4EME EXERCICE DES TPS
-# POUR LA PREPARATION DES TPS, FOURNIR EGALEMENT UNE VERSION A TROUS DE CE FICHIER :
-# - REMPLACER LA VALEUR DE nb_calc PAR UNE VALEUR BIDON
-# - REMPLACER LA VALEUR DE crit PAR UNE VALEUR BIDON
+import math
 
-# nbre d'iterations
-nb_calc = 6
+########
+# Calcul du nombre d iterations pour le raffinement
+########
 
-# initialisation
-MA    = [None]*(nb_calc+1)
-MO    = [None]*nb_calc
-CHERR = [None]*nb_calc
-FISS  = [None]*nb_calc
+# Taille de la plus grande maille dans la zone de la fissure
+h0=5.;
 
-num_calc=0   
+# Profondeur de la fissure
+a=2.;
 
-crit = [1., 1, 1, 0.2, 0.1, 0.1]
+# Taille cible des elements qu el on souhaite avoir apres raffinement
+hc=a/20.;
 
-MA[num_calc]=LIRE_MAILLAGE(FORMAT='MED');
+# Calcul du nombre d iterations
+n= (log(h0)-log(hc))/log(2.)
+nb_raff=int(n);
+nb_iter=nb_raff+1;
 
-for num_calc in range(0,nb_calc) :
-   
-   MO[num_calc]=AFFE_MODELE(MAILLAGE=MA[num_calc],
-                            AFFE=_F(GROUP_MA='CUBE',
-                                    PHENOMENE='MECANIQUE',
-                                    MODELISATION='3D',),);
-  
-   # definition de la fissure semi elliptique                     
-   FISS[num_calc]=DEFI_FISS_XFEM(MAILLAGE=MA[num_calc],  
-                                 DEFI_FISS=_F(FORM_FISS      = 'ELLIPSE',
-                                              DEMI_GRAND_AXE = 2.,
-                                              DEMI_PETIT_AXE = 2.,
-                                              CENTRE         = (0.,0.,0.),
-                                              VECT_X         = (1.,0.,0.), 
-                                              VECT_Y         = (0.,1.,0.),
-                                              ),
-                                 )
-      
-   # evaluation des formules           
-   CHERR[num_calc]=RAFF_XFEM(FISSURE=FISS[num_calc])
-   
-   # definition du type du maillage n+1 --> pour dire que MAILLAGE_NP1 est un type 'maillage'
-   MA[num_calc+1]=CO('MA_%d' % (num_calc+1))
-   
-   MACR_ADAP_MAIL(ADAPTATION         = 'RAFFINEMENT',
-                  CHAM_GD            = CHERR[num_calc],
-                  CRIT_RAFF_PE       = crit[num_calc],  
-                  USAGE_CMP          = 'RELATIF',
-                  MAILLAGE_N         = MA[num_calc],
-                  MAILLAGE_NP1       = MA[num_calc+1])
-   
-   # Impression des maillages
-   #IMPR_RESU(FORMAT='MED',UNITE=81+num_calc,RESU=_F(MAILLAGE=MA[num_calc+1]));
+# Calcul de la taille reelle apres raffinement (doit etre proche de hc)
+h=h0/2**nb_raff;
 
-# impression du dernier maillage
-IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[num_calc+1]));
-    
-FIN()
+# Rayon de la zone que l on souhaite raffiner autour du front de fissure
+r_raff=5*h;
+
+########
+# Initialisation
+########
+
+MA=[None]*(nb_iter+1);
+CHERR=[None]*nb_iter;
+FISS=[None]*nb_iter;
+
+########
+# Lecture du maillage non raffine
+########
+
+MA[0] = LIRE_MAILLAGE(UNITE=20, FORMAT='MED');
+
+########
+# Boucle de raffinements
+########
+
+for i_raff in range(nb_iter) :
+
+# Definition de la fissure
+    FISS[i_raff]=DEFI_FISS_XFEM(MAILLAGE=MA[i_raff],  
+                                TYPE_DISCONTINUITE='FISSURE',
+                                DEFI_FISS=_F(FORM_FISS='ELLIPSE',
+                                DEMI_GRAND_AXE=a,
+                                DEMI_PETIT_AXE=a,
+                                CENTRE=(0,0,0,),
+                                VECT_X=(1.,0.,0.,),
+                                VECT_Y=(0.,1.,0.,),),);
+
+# Calcul du critere de raffinement       
+    CHERR[i_raff]=RAFF_XFEM(FISSURE=FISS[i_raff],TYPE='ZONE',RAYON=r_raff);
+
+#Definition du type du maillage n+1 --> pour dire que MAILLAGE_NP1 est un type maillage        
+    MA[i_raff+1]=CO('MA_%d' % (i_raff+1))
+
+#Adaptation du maillage
+    MACR_ADAP_MAIL(ADAPTATION    = 'RAFFINEMENT',
+                   CHAM_GD       = CHERR[i_raff],
+                   CRIT_RAFF_ABS = 0.5,
+                   DIAM_MIN      = hc,
+                   MAILLAGE_N    = MA[i_raff],
+                   MAILLAGE_NP1  = MA[i_raff+1],);
+
+########
+# Impression du maillage raffine
+########
+                                          
+IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(MAILLAGE=MA[nb_iter]));
+
+FIN();
+
