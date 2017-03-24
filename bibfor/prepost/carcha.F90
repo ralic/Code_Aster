@@ -209,6 +209,18 @@ subroutine carcha(noch, nomgd, typcha, option, param)
         typcha = 'ELEM'
         option = 'CHAR_THER_TEXT_R'
         param = 'PCOEFHR'
+    else if (noch.eq.'EPSG_NOEU') then
+        nomgd = 'EPSI_R'
+        typcha = 'NOEU'
+    else if (noch.eq.'EPVC_NOEU') then
+        nomgd = 'EPSI_R'
+        typcha = 'NOEU'
+    else if (noch.eq.'EPFP_NOEU') then
+        nomgd = 'EPSI_R'
+        typcha = 'NOEU'
+    else if (noch.eq.'EPFD_NOEU') then
+        nomgd = 'EPSI_R'
+        typcha = 'NOEU'
 !
 !     ERREUR
     else
