@@ -98,13 +98,17 @@ Il y a des doublons dans la liste des paramètres fournis :
 """),
 
     16 : _(u"""
-Les paramètres nécessaires sont :
+Les paramètres dont dépend la fonction sont :
    %(ktout)s
 """),
 
     17 : _(u"""
-Les paramètres fournis sont :
+Alors que les paramètres fournis pour réaliser l'interpolation sont :
    %(ktout)s
+
+L'interpolation n'est donc pas possible.
+Conseil : Modifier les paramètres dont la fonction dépend pour rendre possible
+l'interpolation.
 """),
 
     18 : _(u"""
