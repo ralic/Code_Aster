@@ -1,7 +1,7 @@
 subroutine te0409(option, nomte)
 ! aslint: disable=W1501
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -423,7 +423,8 @@ subroutine te0409(option, nomte)
 !
   
             call r8inir(3, 0.d0, eps, 1)
-            call r8inir(3, 0.d0, deps, 1)
+            call r8inir(6, 0.d0, deps, 1)
+            call r8inir(6, 0.d0, epsm, 1)
             call r8inir(3, 0.d0, khi, 1)
             call r8inir(3, 0.d0, dkhi, 1)
             call pmrvec('ZERO', 3, 2*nno, bm, um, eps)
