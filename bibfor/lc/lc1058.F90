@@ -13,9 +13,11 @@ implicit none
 #include "asterc/mfront_get_external_state_variable.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
+#include "asterfort/get_elas_para.h"
 #include "asterfort/infniv.h"
 #include "asterfort/lceqvn.h"
 #include "asterfort/lcicma.h"
+#include "asterfort/lcsmelas.h"
 #include "asterfort/matrot.h"
 #include "asterfort/pmat.h"
 #include "asterfort/tecael.h"
@@ -86,7 +88,7 @@ implicit none
 !
     integer ::      imate, ndim, kpg, ksp, codret, icomp, nvi, nprops, czm, nbvarc
     integer ::      ntens, ndi, nshr, i, nstatv, npt, nume_elem, layer
-    integer ::      kspt, kstep, kinc, j, ifm, niv
+    integer ::      kspt, kstep, kinc, j, ifm, niv, elas_id
     integer ::      pfcmfr
     integer ::      nummod
     integer :: idbg = 1
@@ -95,7 +97,7 @@ implicit none
     integer ::      neps, nsig, iadzi, iazk24
     real(kind=8) :: angmas(*), crit(*)
     real(kind=8) :: instam, instap, drot(3, 3), dstran(9), props(npropmax)
-    real(kind=8) :: epsm(6), deps(6)
+    real(kind=8) :: epsm(6), deps(6), young, nu
     real(kind=8) :: sigm(6), stress(6), sse, spd, scd, time(2)
     real(kind=8) :: vim(*), statev(nvi)
     real(kind=8) :: predef(npred), dpred(npred)
@@ -272,10 +274,14 @@ implicit none
                               nprops, drot, pnewdt, nummod)
 !
     else if (option(1:9).eq. 'RIGI_MECA') then
-        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde, stran,&
-                              dstran, dtime, temp, dtemp, predef,&
-                              dpred, ntens, nstatv, props, nprops,&
-                              drot, pnewdt, nummod)
+!        call mfront_behaviour(pfcmfr, sigm, vim, ddsdde, stran,&
+!                              dstran, dtime, temp, dtemp, predef,&
+!                              dpred, ntens, nstatv, props, nprops,&
+!                              drot, pnewdt, nummod)
+        call get_elas_para(fami     , imate, '-', kpg, ksp, elas_id,&
+                               e = young, nu = nu)
+        call lcsmelas(stran, dstran , ddsdde,&
+                      nmat = 0, young_ = young, nu_ = nu)
     endif
 !
     if (option(1:9) .eq. 'RAPH_MECA' .or. option(1:9) .eq. 'FULL_MECA') then

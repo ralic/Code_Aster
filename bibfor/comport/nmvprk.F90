@@ -7,7 +7,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     implicit none
 ! ----------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -104,6 +104,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
 #include "asterfort/lcopli.h"
 #include "asterfort/lcrkin.h"
 #include "asterfort/lcrksg.h"
+#include "asterfort/lcsmelas.h"
 #include "blas/dcopy.h"
     character(len=*) :: fami
     integer :: imat, ndim, ndt, ndi, nr, nvi, kpg, ksp, i, nbphas, itmax
@@ -122,7 +123,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsdt(neps), depst(neps)
     real(kind=8) :: rbid
     real(kind=8) :: toler, ymfs, crit(*), vind(*), vinf(*), timed, timef
-    real(kind=8) :: sigd(6), sigf(6), dsde(6, 6), angmas(*)
+    real(kind=8) :: sigd(6), sigf(6), dsde(6, *), angmas(*)
     real(kind=8) :: cothe(nmat), dcothe(nmat), pgl(3, 3), epsd(9)
     real(kind=8) :: coeff(nmat), dcoeff(nmat), coel(nmat), dtime, x
 !     POUR POLYCRISTAL, 5 MATRICE HSR MAXI. POUR MONOCRISTAL, 1 MAXI
@@ -226,6 +227,13 @@ subroutine nmvprk(fami, kpg, ksp, ndim, typmod,&
                 materf, pgl)
 !
 900 continue
+!
+    if (opt(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and. rela_comp .eq. 'MONOCRISTAL') then
+        call lcsmelas(epsdt, depst, dsde,&
+                      nmat = nmat, materd_ = materd)
+        iret = 0
+        goto 999
+    endif
 !
 !     OPERATEUR TANGENT = ELASTIQUE OU SECANT (ENDOMMAGEMENT)
     if (materf(nmat,1) .eq. 0) then

@@ -16,6 +16,7 @@ implicit none
 #include "asterfort/lcotan.h"
 #include "asterfort/lcplas.h"
 #include "asterfort/lcpopl.h"
+#include "asterfort/lcsmelas.h"
 #include "asterfort/get_varc.h"
 #include "blas/dcopy.h"
 !
@@ -243,6 +244,14 @@ implicit none
 !
 ! --> REDECOUPAGE IMPOSE
     if (icomp .eq. -1 .and. option .ne. 'RIGI_MECA_TANG') then
+        codret = 0
+        goto 999
+    endif
+!
+    if (option(1:10) .eq. 'RIGI_MECA_' .and. gdef .eq. 1 .and.&
+        compor(1) .eq. 'MONOCRISTAL') then
+        call lcsmelas(epsd, deps, dsidep,&
+                      nmat = nmat, materd_ = materd)
         codret = 0
         goto 999
     endif
