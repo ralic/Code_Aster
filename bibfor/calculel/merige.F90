@@ -1,4 +1,4 @@
-subroutine merige(modele, cara, sigg, strx, matel,&
+subroutine merige(model_, cara_elem_, sigg, strx, matel,&
                   base, nh, deplr, mater)
     implicit none
 #include "jeveux.h"
@@ -15,13 +15,15 @@ subroutine merige(modele, cara, sigg, strx, matel,&
 #include "asterfort/utmess.h"
     integer :: nh
     character(len=1) :: base
-    character(len=8) :: modele, cara
     character(len=*) :: sigg, strx
     character(len=19) :: matel
-    character(len=*) , optional, intent(in) :: deplr,mater
+    character(len=*) , intent(in) :: model_
+    character(len=*) , intent(in) :: cara_elem_
+    character(len=*), optional, intent(in) :: deplr
+    character(len=*), optional, intent(in) :: mater
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,16 +55,19 @@ subroutine merige(modele, cara, sigg, strx, matel,&
     character(len=24) :: ligrmo, chgeom, chcara(18), chharm
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano, pmilto, hea_no
     aster_logical :: lfiss
+    character(len=8) :: modele, cara
 !
 !-----------------------------------------------------------------------
     integer :: icode, ier, nbpara
 !-----------------------------------------------------------------------
     call jemarq()
+!
+    modele = model_
+    cara   = cara_elem_
+    option = 'RIGI_GEOM'
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL2_82')
     endif
-!
-    option = 'RIGI_GEOM'
     call mecham(option, modele, cara, nh, chgeom,&
                 chcara, chharm, icode)
 !

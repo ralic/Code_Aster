@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,10 +16,10 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine merige(modele, cara, sigg, strx, matel,&
+    subroutine merige(model_, cara_elem_, sigg, strx, matel,&
                       base, nh, deplr, mater)
-        character(len=8) :: modele
-        character(len=8) :: cara
+        character(len=*) , intent(in) :: model_
+        character(len=*) , intent(in) :: cara_elem_
         character(len=*) :: sigg
         character(len=*) :: strx
         character(len=19) :: matel
