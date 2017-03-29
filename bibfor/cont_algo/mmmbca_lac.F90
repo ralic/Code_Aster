@@ -1,4 +1,4 @@
-subroutine mmmbca_lac(mesh, hval_incr, ds_contact)
+subroutine mmmbca_lac(mesh, disp_curr, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -18,11 +18,10 @@ implicit none
 #include "asterfort/detrsd.h"
 #include "asterfort/mreacg.h"
 #include "asterfort/mmbouc.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/mmfield_prep.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +39,7 @@ implicit none
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    character(len=19), intent(in) :: hval_incr(*)
+    character(len=19), intent(in) :: disp_curr
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +51,7 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
 ! In  mesh             : name of mesh
-! In  hval_incr        : hat-variable for incremental values fields
+! In  disp_curr        : current displacements
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,7 +61,7 @@ implicit none
     integer :: j_patch, node_nume
     integer :: indi_cont_curr, indi_cont_prev, loop_cont_vali
     aster_logical :: loop_cont_conv
-    character(len=19) :: depplu, oldgeo, newgeo, cnscon
+    character(len=19) :: oldgeo, newgeo, cnscon
     real(kind=8) :: tole_inter, gap, lagc, coefint, loop_cont_vale
     character(len=24) :: sdcont_stat
     integer, pointer :: v_sdcont_stat(:) => null()
@@ -115,20 +114,16 @@ implicit none
     call jeveuo(sdappa_gapi, 'L', vr = v_sdappa_gapi)
     call jeveuo(sdappa_coef, 'L', vr = v_sdappa_coef)
 !
-! - Get hat variables
-!
-    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
-!
 ! - Geometric update
 !
     oldgeo = mesh//'.COORDO'
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
-    call mreacg(mesh, ds_contact, field_update_ = depplu)
+    call mreacg(mesh, ds_contact, field_update_ = disp_curr)
 !
 ! - Prepare displacement field to get contact Lagrangien multiplier
 !
     cnscon = '&&MMMBCA.CNSCON'
-    call mmfield_prep(depplu, cnscon,&
+    call mmfield_prep(disp_curr, cnscon,&
                       l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
     call jeveuo(cnscon//'.CNSV', 'L', vr = v_cnscon_cnsv)
 !

@@ -18,16 +18,16 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine mmstat(mesh  , iter_newt, nume_inst,  ds_measure,&
-                      sddisc, hval_incr, hval_algo, ds_contact)
+    subroutine mmstat(mesh  , iter_newt, nume_inst     , ds_measure,&
+                      sddisc, disp_curr, disp_cumu_inst, ds_contact)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         integer, intent(in) :: iter_newt
         integer, intent(in) :: nume_inst
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddisc
-        character(len=19), intent(in) :: hval_incr(*)
-        character(len=19), intent(in) :: hval_algo(*)
+        character(len=19), intent(in) :: disp_curr
+        character(len=19), intent(in) :: disp_cumu_inst
         type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine mmstat
 end interface

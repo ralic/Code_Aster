@@ -68,14 +68,16 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_all_verif, l_newt_cont, l_newt_geom
-    character(len=19) :: sdcont_depgeo, disp_curr
+    character(len=19) :: sdcont_depgeo
+    character(len=19) :: disp_curr, disp_cumu_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
-! - Get fields' name
+! - Get hat variables
 !
     call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
     sdcont_depgeo = ds_contact%sdcont_solv(1:14)//'.DEPG'
 !
 ! - Get contact parameters
@@ -116,8 +118,8 @@ implicit none
 ! ----- Management of contact loop
 !
         if (l_newt_cont .or. l_newt_geom) then
-            call mmstat(mesh  , iter_newt, nume_inst,  ds_measure,&
-                        sddisc, hval_incr, hval_algo, ds_contact)
+            call mmstat(mesh  , iter_newt, nume_inst, ds_measure,&
+                        sddisc, disp_curr, disp_cumu_inst, ds_contact)
         endif
 !
 ! ----- Update input field

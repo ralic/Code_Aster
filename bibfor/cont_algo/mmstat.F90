@@ -1,5 +1,5 @@
-subroutine mmstat(mesh  , iter_newt, nume_inst,  ds_measure,&
-                  sddisc, hval_incr, hval_algo, ds_contact)
+subroutine mmstat(mesh  , iter_newt, nume_inst     , ds_measure,&
+                  sddisc, disp_curr, disp_cumu_inst, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -34,8 +34,8 @@ implicit none
     integer, intent(in) :: nume_inst
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: hval_incr(*)
-    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: disp_curr
+    character(len=19), intent(in) :: disp_cumu_inst
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,8 +51,8 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
-! In  hval_incr        : hat-variable for incremental values fields
-! In  hval_algo        : hat-variable for algorithms fields
+! In  disp_curr        : current displacements
+! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,10 +68,10 @@ implicit none
     l_cont_lac   = cfdisl(ds_contact%sdcont_defi, 'FORMUL_LAC')
 !
     if (l_cont_cont) then
-        call mmmbca(mesh  , iter_newt, nume_inst,  ds_measure,&
-                    sddisc, hval_incr, hval_algo, ds_contact)
+        call mmmbca(mesh  , iter_newt, nume_inst     , ds_measure,&
+                    sddisc, disp_curr, disp_cumu_inst, ds_contact)
     elseif (l_cont_lac) then
-        call mmmbca_lac(mesh, hval_incr, ds_contact)
+        call mmmbca_lac(mesh, disp_curr, ds_contact)
     else
         ASSERT(.false.)
     endif

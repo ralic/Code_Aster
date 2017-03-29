@@ -19,6 +19,7 @@ implicit none
 #include "asterfort/utmess.h"
 #include "asterfort/xmmbca.h"
 #include "asterfort/xmtbca.h"
+#include "asterfort/nmchex.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -84,6 +85,7 @@ implicit none
     real(kind=8) :: loop_cont_vale
     integer :: iter_newt
     aster_logical :: cycl_flip, loop_cont_conv
+    character(len=19) :: disp_curr, disp_cumu_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,6 +111,11 @@ implicit none
     nb_cont_poin   = cfdisi(ds_contact%sdcont_defi, 'NTPC')
     iter_cont_mult = cfdisi(ds_contact%sdcont_defi, 'ITER_CONT_MULT')
 !
+! - Get hat variables
+!
+    call nmchex(hval_incr, 'VALINC', 'DEPPLU', disp_curr)
+    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', disp_cumu_inst)
+!
 ! - Compute convergence criterion
 ! 
     if (iter_cont_mult .eq. -1) then
@@ -128,8 +135,8 @@ implicit none
                         list_func_acti)
         endif
     else if (l_cont_cont) then
-        call mmstat(mesh  , iter_newt, nume_inst,  ds_measure,&
-                    sddisc, hval_incr, hval_algo, ds_contact)
+        call mmstat(mesh  , iter_newt, nume_inst     , ds_measure,&
+                    sddisc, disp_curr, disp_cumu_inst, ds_contact)
     else
         ASSERT(.false.)
     endif

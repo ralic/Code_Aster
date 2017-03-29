@@ -1,5 +1,5 @@
-subroutine mmmbca(mesh  , iter_newt, nume_inst,  ds_measure,&
-                  sddisc, hval_incr, hval_algo, ds_contact)
+subroutine mmmbca(mesh  , iter_newt, nume_inst     , ds_measure,&
+                  sddisc, disp_curr, disp_cumu_inst, ds_contact)
 !
 use NonLin_Datastructure_type
 !
@@ -35,7 +35,6 @@ implicit none
 #include "asterfort/mminfm.h"
 #include "asterfort/mmstaf.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/mmfield_prep.h"
 #include "asterfort/mreacg.h"
 !
@@ -62,8 +61,8 @@ implicit none
     integer, intent(in) :: nume_inst
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
-    character(len=19), intent(in) :: hval_incr(*)
-    character(len=19), intent(in) :: hval_algo(*)
+    character(len=19), intent(in) :: disp_curr
+    character(len=19), intent(in) :: disp_cumu_inst
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,8 +78,8 @@ implicit none
 ! In  nume_inst        : index of current time step
 ! IO  ds_measure       : datastructure for measure and statistics management
 ! In  sddisc           : datastructure for time discretization
-! In  hval_incr        : hat-variable for incremental values fields
-! In  hval_algo        : hat-variable for algorithms fields
+! In  disp_curr        : current displacements
+! In  disp_cumu_inst   : displacement increment from beginning of current time
 ! IO  ds_contact       : datastructure for contact management
 !
 ! --------------------------------------------------------------------------------------------------
@@ -105,10 +104,9 @@ implicit none
     character(len=8) :: elem_slav_type
     character(len=19) :: cnscon, cnsfr1, cnsfr2
     character(len=19) :: oldgeo, newgeo
-    character(len=19) ::  chdepd
-    character(len=19) :: depdel, depplu, vitplu
+    character(len=19) :: chdepd
     aster_logical :: l_glis
-    aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv,  l_loop_cont
+    aster_logical :: l_glis_init, l_veri, l_exis_glis, loop_cont_conv, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot, l_frot
     integer :: loop_geom_count, loop_fric_count, loop_cont_count
     integer :: type_adap
@@ -164,27 +162,21 @@ implicit none
     call jeveuo(sdcont_cychis, 'E', vr = v_sdcont_cychis)
     call jeveuo(sdcont_cyccoe, 'E', vr = v_sdcont_cyccoe)
 !
-! - Get hat variables
-!
-    call nmchex(hval_incr, 'VALINC', 'DEPPLU', depplu)
-    call nmchex(hval_incr, 'VALINC', 'VITPLU', vitplu)
-    call nmchex(hval_algo, 'SOLALG', 'DEPDEL', depdel)
 !
 ! - Get current time
 !
     time_curr = diinst(sddisc, nume_inst)
 !
-!
 ! - Geometric update
 !
     oldgeo = mesh//'.COORDO'
     newgeo = ds_contact%sdcont_solv(1:14)//'.NEWG'
-    call mreacg(mesh, ds_contact, field_update_ = depplu)
+    call mreacg(mesh, ds_contact, field_update_ = disp_curr)
 !
 ! - Prepare displacement field to get contact Lagrangien multiplier
 !
     cnscon = '&&MMMBCA.CNSCON'
-    call mmfield_prep(depplu, cnscon,&
+    call mmfield_prep(disp_curr, cnscon,&
                       l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_C  '])
 !
 ! - Prepare displacement field to get friction Lagrangien multiplier
@@ -193,14 +185,14 @@ implicit none
     cnsfr1 = '&&MMMBCA.CNSFR1'
     cnsfr2 = '&&MMMBCA.CNSFR2'
     if (l_frot) then
-        call mmfield_prep(depdel, cnsfr1,&
+        call mmfield_prep(disp_cumu_inst, cnsfr1,&
                           l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_F1 '])
         if (model_ndim .eq. 3) then
-            call mmfield_prep(depdel, cnsfr2,&
+            call mmfield_prep(disp_cumu_inst, cnsfr2,&
                               l_sort_ = .true._1, nb_cmp_ = 1, list_cmp_ = ['LAGS_F2 '])
         endif
         call mmfield_prep(oldgeo, chdepd,&
-                          l_update_ = .true._1, field_update_ = depdel)
+                          l_update_ = .true._1, field_update_ = disp_cumu_inst)
     endif
 !
 ! - Loop on contact zones
@@ -403,7 +395,6 @@ implicit none
 !
     l_coef_adap = ((type_adap .eq. 1) .or. (type_adap .eq. 2)  .or.  &
                   (type_adap .eq. 5) .or. (type_adap .eq. 6) )
-    
     if (l_coef_adap) then
         call mm_cycl_prop(ds_contact)
     endif
@@ -419,7 +410,6 @@ implicit none
     else
         call mmeven('FIN', ds_contact)
     endif
-
 !
 ! - Set loop values
 !
