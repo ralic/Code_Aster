@@ -25,6 +25,7 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
     """
     ier = 0
     import types
+    import aster
     from Accas import _F
     from Utilitai.Utmess import UTMESS
 
@@ -157,7 +158,9 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
             l_calc_varc = False
             if CHAM_MATER:
                 motscles['CHAM_MATER'] = CHAM_MATER
-                l_calc_varc = True
+                iret, ibid, answer = aster.dismoi('EXI_VARC', CHAM_MATER.nom, 'CHAM_MATER', 'F')
+                if answer == 'OUI':
+                    l_calc_varc = True
             if CARA_ELEM:
                 motscles['CARA_ELEM'] = CARA_ELEM
             if ifour:
@@ -225,6 +228,8 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
     motscle2 = {}
     if CHAM_MATER:
         motscle2['CHAM_MATER'] = CHAM_MATER
+        iret, ibid, nom_ma = aster.dismoi('EXI_VARC', CHAM_MATER.nom, 'CHAM_MATER', 'F')
+        print 'toto:',nom_ma
     if CARA_ELEM:
         motscle2['CARA_ELEM'] = CARA_ELEM
     if ielas:
