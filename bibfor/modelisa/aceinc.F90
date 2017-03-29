@@ -2,7 +2,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                   locaco, locagb, locamb, zjdlm, lmax, ier)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -125,7 +125,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                         nummai = zi(jdgm+jj-1)
                         call jenuno(jexnum(mlgnma, nummai), nommai)
                         nutyel = zi(jdme+nummai-1)
-                        if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -mcl
+                        if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
                         call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara,&
                                     ivr, kioc, ier)
                     enddo
@@ -140,7 +140,7 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
                     nommai = zk24(jdls+ii-1)
                     call jenonu(jexnom(mlgnma, nommai), nummai)
                     nutyel = zi(jdme+nummai-1)
-                    if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -mcl
+                    if (mcl.ne.ACE_ORIENTATION) zjdlm(nummai) = -abs(zjdlm(nummai))
                     call vafcar('MAILLE', mcl, nommai, nutyel, ntyele, car, ncara,&
                                 ivr, kioc, ier)
                 enddo
@@ -163,7 +163,8 @@ subroutine aceinc(noma, nomo, ntyele, nbocc, ivr, &
             enddo
         endif
         if (nbocc(ACE_DISCRET).ne.0 .or. nbocc(ACE_RIGI_PARASOL).ne.0 .or. &
-            nbocc(ACE_MASS_AJOU).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0) then
+            nbocc(ACE_MASS_AJOU).ne.0 .or. nbocc(ACE_DISCRET_2D).ne.0 .or. &
+            nbocc(ACE_MASS_REP).ne.0 ) then
             iid = ACE_NB_POUTRE+1
             iif = ACE_NB_POUTRE+ACE_NB_DISCRET
             do ii = iid, iif

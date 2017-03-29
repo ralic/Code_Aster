@@ -1,7 +1,7 @@
 subroutine op0019()
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -302,7 +302,9 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Pour mémoriser les mailles affectées.
-!           Si traité affe_mail(i)=elem_supp_num sinon 0
+!           Si affe_mail(i)= -elem_supp_num     la maille est affectée et traitée
+!                          = elem_supp_num      la maille est affectée et pas traitée
+!                          = 0                  la maille n'est pas affectée
     AS_ALLOCATE(vi=affe_mail, size=nbmail)
 ! --------------------------------------------------------------------------------------------------
 !   Création des cartes utilisées
@@ -456,7 +458,8 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !   Traitement des masses réparties
-    call ace_masse_repartie(nbocc(ACE_MASS_REP), info_concept, grp_lmax, lmax, info_carte, nbdisc)
+    call ace_masse_repartie(nbocc(ACE_MASS_REP), info_concept, grp_lmax, lmax, info_carte, &
+                            nbdisc, affe_mail)
 !
 ! --------------------------------------------------------------------------------------------------
 !   AFFECTATION DES ORIENTATIONS AUX ELEMENTS POUTRES ET DISCRETS  ET

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -19,7 +19,7 @@
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
 interface
-    subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc )
+    subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, zjdlm)
         use cara_elem_info_type
         use cara_elem_carte_type
         integer :: nbocc
@@ -28,5 +28,6 @@ interface
         integer :: lmax
         type (cara_elem_carte) :: infcarte(*)
         integer :: nbdisc
+        integer :: zjdlm(*)
     end subroutine ace_masse_repartie
 end interface

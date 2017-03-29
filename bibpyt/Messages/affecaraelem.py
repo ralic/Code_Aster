@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -143,6 +143,29 @@ AFFE_CARA_ELEM. Il y a %(i1)d occurrences du mot clef facteur <%(k1)s>.
 Entre ces différentes occurrences les GROUP_MA_POI1 ont %(i2)d mailles en communs.
 La règle de surcharge est donc appliquée %(i2)d fois.
 
+"""),
+
+    21 : _(u"""
+AFFE_CARA_ELEM / MASS_REP. Occurrence %(i1)d.
+
+Le nombre des mailles POI1 affectées lors des différentes occurrences de MASS_REP dépasse
+le nombre de DIS_T/DIS_TR présent dans le modèle : %(i3)d
+
+Pour information :
+- le nombre de maille de type POI1 précédemment affecté par MASS_REP est de %(i4)d
+- le nombre de maille de type POI1 dans %(k1)s est %(i2)d
+
+Conseils : Vérifiez que lors de votre AFFE_MODELE, vous n'avez pas oublié d'affecter des
+           DIS_T ou DIS_TR.
+"""),
+
+    22 : _(u"""AFFE_CARA_ELEM / <%(k1)s> / occurrence %(i1)d
+Des éléments appartenant au GROUP_MA_POI1 <%(k2)s> ne sont pas dans le modèle.
+
+Pour information :
+ - maille détectée : %(k3)s
+
+Vérifiez vos données.
 """),
 
 }
