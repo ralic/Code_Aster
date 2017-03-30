@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,9 +17,6 @@
 # ======================================================================
 # person_in_charge: jean-luc.flejou at edf.fr
 
-from Accas import _F
-import aster
-import numpy
 import numpy as NP
 from Utilitai.Utmess import UTMESS
 
@@ -59,15 +56,15 @@ def BetonEC2(Classe):
     #
     if (Dico['fck'] > 50.0):
         Dico['epsi_cu1'] = 2.80 + 27.000 * \
-            NP.pow((98.0 - Dico['fcm']) / 100.0, 4.0)
-        Dico['epsi_c2'] = 2.00 + 0.085 * NP.pow(Dico['fck'] - 50.0, 0.53)
+            NP.power((98.0 - Dico['fcm']) / 100.0, 4.0)
+        Dico['epsi_c2'] = 2.00 + 0.085 * NP.power(Dico['fck'] - 50.0, 0.53)
         Dico['epsi_cu2'] = 2.60 + 35.000 * \
-            NP.pow((90.0 - Dico['fck']) / 100.0, 4.0)
+            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
         Dico['n']        = 1.40 + 23.400 * \
-            NP.pow((90.0 - Dico['fck']) / 100.0, 4.0)
+            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
         Dico['epsi_c3'] = 1.75 + 0.550 * (Dico['fck'] - 50.0) / 40.0
         Dico['epsi_cu3'] = 2.60 + 35.000 * \
-            NP.pow((90.0 - Dico['fck']) / 100.0, 4.0)
+            NP.power((90.0 - Dico['fck']) / 100.0, 4.0)
     else:
         Dico['epsi_cu1'] = 3.50
         Dico['epsi_c2'] = 2.00
@@ -122,7 +119,7 @@ def Mazars_Unil(DMATER, args):
     #
     # Obligatoire : Règlement de codification
     Regle = MATER['CODIFICATION']
-    # Liste des paramètes matériaux facultatifs mais nécessaires pour calculer
+    # Liste des paramètres matériaux facultatifs mais nécessaires pour calculer
     # les valeurs des paramètres de MAZARS
     listepara = ['NU', 'EPSD0', 'K', 'BT',
                  'AT', 'BC', 'AC', 'SIGM_LIM', 'EPSI_LIM']
@@ -238,7 +235,7 @@ def Mazars_Unil(DMATER, args):
 
 def Acier_Cine_Line(DMATER, args):
     """
-    ACIER = Paramètes matériaux de l'acier
+    ACIER = Paramètres matériaux de l'acier
         E              = Module d'Young
         D_SIGM_EPSI    = Module plastique
         SY             = Limite élastique
@@ -252,7 +249,7 @@ def Acier_Cine_Line(DMATER, args):
         AMOR_BETA      =
         AMOR_HYST      =
     """
-        #
+    #
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
     # Obligatoire E
     E = MATER['E']
@@ -302,7 +299,6 @@ def Acier_Cine_Line(DMATER, args):
 
 
 def Ident_Endo_Fiss_Exp(ft,fc,beta,prec=1E-10,itemax=100):
-
     # Estimation initiale
     A = (2.0/3.0 + 3*beta**2)**0.5
     r = fc/ft
@@ -315,50 +311,45 @@ def Ident_Endo_Fiss_Exp(ft,fc,beta,prec=1E-10,itemax=100):
 
     # Resolution de l'equation par methode de Newton
     for i in range(itemax):
-        f  = L*x + (2+numpy.exp(-2*r*x))**0.5 - (2+numpy.exp(2*x))**0.5
+        f  = L*x + (2+NP.exp(-2*r*x))**0.5 - (2+NP.exp(2*x))**0.5
         if abs(f) < prec: break
-        df = L - r*numpy.exp(-2*r*x)/(2+numpy.exp(-2*r*x))**0.5 - numpy.exp(2*x)/(2+numpy.exp(2*x))**0.5
+        df = L - r*NP.exp(-2*r*x)/(2+NP.exp(-2*r*x))**0.5 - NP.exp(2*x)/(2+NP.exp(2*x))**0.5
         x  = x - f/df
     else:
         UTMESS('F', 'COMPOR1_87' )
-
-    tau  = A*x + (2+numpy.exp(2*x))**0.5
+    #
+    tau  = A*x + (2+NP.exp(2*x))**0.5
     sig0 = ft/x
-
     return (sig0,tau)
 
 
 
 def ConfinedTension(nu,sig0,tau,beta,prec=1E-10,itemax=100):
-
     # Initialisation
-    s = numpy.array((1-nu,nu,nu))
+    s = NP.array((1-nu,nu,nu))
     L  = (2.0/3.0*(1-2*nu)**2 + 3*beta**2*(1+nu)**2)**0.5
-
     # Estimation initiale
-    xe = numpy.log(tau**2-2)/(2*s[0])
+    xe = NP.log(tau**2-2)/(2*s[0])
     xl = tau/L
     x  = min(xe,xl)
-
-    # Resolution de l'equation par methode de Newton
+    # Résolution de l'équation par méthode de Newton
     for i in range(itemax):
-        ep  = numpy.exp(x*s)
-        epr = numpy.dot(ep,ep)**0.5
+        ep  = NP.exp(x*s)
+        epr = NP.dot(ep,ep)**0.5
         f  = L*x + epr - tau
         if abs(f) < prec: break
-        df = L + numpy.add.reduce(ep*ep*s)/epr
+        df = L + NP.add.reduce(ep*ep*s)/epr
         x  = x - f/df
     else:
         UTMESS('F', 'COMPOR1_87' )
-
+    #
     sig1 = x*sig0*(1-nu)
     return sig1
 
 
-
 def Endo_Fiss_Exp(DMATER,args):
     """
-    ENDO_FISS_EXP = Paramètes utilisateurs de la loi ENDO_FISS_EXP
+    ENDO_FISS_EXP = Paramètres utilisateurs de la loi ENDO_FISS_EXP
       E              = Module de Young
       NU             = Coefficient de Poisson
       FT             = Limite en traction simple
@@ -371,10 +362,9 @@ def Endo_Fiss_Exp(DMATER,args):
       LARG_BANDE     = Largeur de bande d'endommagement (2*D)
       REST_RIGI_FC   = Restauration de rigidité pour eps=fc/E (0=sans)
     """
-
+    #
     MATER = DMATER.cree_dict_valeurs(DMATER.mc_liste)
-
-    # Lecture et interpretation des parametres utilisateurs
+    # Lecture et interprétation des paramètres utilisateurs
     E   = float(MATER['E'])
     NU  = float(MATER['NU'])
     GF  = float(MATER['GF'])
@@ -383,60 +373,50 @@ def Endo_Fiss_Exp(DMATER,args):
     CRM = float(MATER['COEF_RIGI_MINI'])
     D   = float(MATER['LARG_BANDE']/2.0)
     rrc = float(MATER['REST_RIGI_FC'])
-
     # Valeur par défaut
     beta = 0.1
-
-    # Parametres de la fonction seuil
+    # Paramètres de la fonction seuil
     if FC/FT < 5.83 :
         UTMESS('F', 'COMPOR1_86', valr=(float(FC)/float(FT),) )
     (sig0,tau) = Ident_Endo_Fiss_Exp(FT,FC,beta)
     sigc = ConfinedTension(NU,sig0,tau,beta)
-
-
-    # Parametres de la fonction d'adoucissement
+    # Paramètres de la fonction d'adoucissement
     if MATER['P'] <> None:
         P = float(MATER['P'])
     else:
         G1 = float(MATER['G_INIT'])
-        P  = ((3*numpy.pi*GF)/(4*G1))**(2.0/3.0) - 2
-        if P<1: UTMESS('F','COMPOR1_93')      
-
-
+        P  = ((3*NP.pi*GF)/(4*G1))**(2.0/3.0) - 2
+        if P<1: UTMESS('F','COMPOR1_93')
+    #
     if MATER['Q'] <> None:
         Q = float(MATER['Q'])
     elif MATER['Q_REL'] <> None:
-        qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-numpy.exp(-1.98935*P)) - 0.01
+        qmax = (1.11375+0.565239*P-0.003322*P**2)*(1-NP.exp(-1.98935*P)) - 0.01
         Q = qmax * float(MATER['Q_REL'])
     else:
         Q = 0.0
-
-
-    # Parametres internes au modele
+    #
+    # Paramètres internes au modèle
     rig = E*(1-NU)/((1+NU)*(1-2*NU))
     K = 0.75*GF/D
     C = 0.375*GF*D
     M = 1.5*rig*GF/(D*sigc**2)
-
+    #
     if M < P+2 :
         UTMESS('F','COMPOR1_94',valr=(float(M),float(P)))
-
-
-    # restauration de rigidite
+    # Restauration de rigidité
     if rrc == 0.0:
         gamma = 0
     else:
-        gamma = -1.0/(FC/E*numpy.log(rrc))
-
-
-    # Parametres pour DEFI_MATERIAU    
+        gamma = -1.0/(FC/E*NP.log(rrc))
+    # Paramètres pour DEFI_MATERIAU
     mclef = {
-     'ELAS':            {'E':E, 'NU':NU},
-     'ENDO_FISS_EXP':   {'M':M,'P':P,'Q':Q,'K':K,'TAU':tau,'SIG0':sig0, 'BETA':beta,
-                         'COEF_RIGI_MINI':CRM, 'REST_RIGIDITE':gamma},
-     'NON_LOCAL':       {'C_GRAD_VARI':C, 'PENA_LAGR':1.E3*K},
-     }
-
+        'ELAS':            {'E':E, 'NU':NU},
+        'ENDO_FISS_EXP':   {'M':M,'P':P,'Q':Q,'K':K,'TAU':tau,'SIG0':sig0, 'BETA':beta,
+                            'COEF_RIGI_MINI':CRM, 'REST_RIGIDITE':gamma},
+        'NON_LOCAL':       {'C_GRAD_VARI':C, 'PENA_LAGR':1.E3*K},
+    }
+    #
     mclef['INFO'] = 1
     if 'INFO' in args:
         mclef['INFO'] = args['INFO']
