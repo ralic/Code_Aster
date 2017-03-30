@@ -16,7 +16,6 @@
 # ======================================================================
 # person_in_charge: nicolas.sellenet at edf.fr
 IMPR_RESU=PROC(nom="IMPR_RESU",op=39,
-            UIinfo={"groupes":("Impression","Résultats et champs",)},
                fr=tr("Imprimer un maillage et/ou les résultats d'un calcul (différents formats)"),
 
          FORMAT          =SIMP(statut='f',typ='TXM',defaut="MED",

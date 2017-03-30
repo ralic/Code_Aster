@@ -22,7 +22,6 @@ def calc_ferraillage_prod(RESULTAT,**args):
 
 
 CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_prod, reentrant='o',
-            UIinfo={"groupes":("Post-traitements","Outils-métier",)},
                  fr=tr("calcul de cartes de densité de ferraillage "),
 
          reuse=SIMP(statut='c', typ=CO),

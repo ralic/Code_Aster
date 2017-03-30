@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -17,7 +17,6 @@
 # person_in_charge: jacques.pellet at edf.fr
 CREA_MAILLAGE=OPER(nom="CREA_MAILLAGE",op= 167,sd_prod=maillage_sdaster,
             reentrant='n',fr=tr("Crée un maillage à partir d'un maillage existant"),
-            UIinfo={"groupes":("Maillage",)},
          regles=(UN_PARMI('COQU_VOLU', 'CREA_FISS', 'CREA_MAILLE', 'CREA_POI1',
                          'ECLA_PG', 'HEXA20_27', 'LINE_QUAD', 'MODI_MAILLE',
                         'QUAD_LINE', 'REPERE','RESTREINT','PENTA15_18','GEOM_FIBRE', 'DECOUPE_LAC'),),

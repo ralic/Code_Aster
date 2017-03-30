@@ -47,7 +47,6 @@ CALC_MODES=MACRO(nom="CALC_MODES",
                  sd_prod=calc_modes_prod,
                  reentrant='n',
                  fr=tr("Calculer les modes propres ou de flambement d'une structure"),
-                 UIinfo={"groupes":("Résolution","Dynamique",)},
 
            TYPE_RESU    =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE", into=("DYNAMIQUE","MODE_FLAMB","GENERAL"), fr=tr("Type d'analyse")),
            OPTION       =SIMP(statut='d',typ='TXM',defaut="PLUS_PETITE",into=("PLUS_PETITE","PLUS_GRANDE","BANDE","CENTRE","TOUT","SEPARE","AJUSTE","PROCHE"),

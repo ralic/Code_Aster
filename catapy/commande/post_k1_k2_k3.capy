@@ -22,7 +22,6 @@ POST_K1_K2_K3=MACRO(nom="POST_K1_K2_K3",
                     fr=tr("Calcul des facteurs d'intensité de contraintes en 2D et en 3D par "
                          "extrapolation des sauts de déplacements sur les lèvres de la fissure"),
                     reentrant='n',
-                    UIinfo={"groupes":("Post-traitements","Rupture",)},
 
            regles=(UN_PARMI('FISSURE','FOND_FISS'),),
 

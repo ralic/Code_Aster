@@ -21,7 +21,6 @@ POST_RUPTURE=MACRO(nom="POST_RUPTURE",
                    sd_prod=table_sdaster,
                    fr=tr("post-traitements en Rupture"),
                    reentrant='f',
-                   UIinfo={"groupes":("Résultats et champs","Rupture",)},
 
       reuse=SIMP(statut='c', typ=CO),
       TABLE     = SIMP(statut='o',typ=table_sdaster,max='**'),

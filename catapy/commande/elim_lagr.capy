@@ -22,7 +22,7 @@ def elim_lagr_prod(MATR_RIGI,**args):
 
 ELIM_LAGR=OPER(nom="ELIM_LAGR",op=69,sd_prod=elim_lagr_prod,
                fr=tr("Créer une matrice en ayant éliminé les condition cinématiques dualisées."),
-               reentrant='f', UIinfo={"groupes":("Résolution",)},
+               reentrant='f',
 
          reuse=SIMP(statut='c', typ=CO),
          # Matrice de "rigidité" (celle qui contient les équations dualisées) :

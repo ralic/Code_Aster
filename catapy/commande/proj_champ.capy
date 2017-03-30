@@ -28,7 +28,6 @@ def proj_champ_prod(RESULTAT=None,CHAM_GD=None,METHODE=None,**args ):
 
 
 PROJ_CHAMP=OPER(nom="PROJ_CHAMP",op= 166,sd_prod=proj_champ_prod,reentrant='f',
-        UIinfo={"groupes":("Résultats et champs",)},
             fr=tr("Projeter des champs d'un maillage sur un autre"),
 
      reuse=SIMP(statut='c', typ=CO),

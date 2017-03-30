@@ -21,7 +21,6 @@ IMPR_FONCTION=MACRO(nom="IMPR_FONCTION",
                     sd_prod=None,
                     fr=tr("Imprime le contenu d'objets de type fonction ou liste de "
                          "réels dans un fichier destiné à un traceur de courbe"),
-                    UIinfo={"groupes":("Impression","Fonctions",)},
          FORMAT          =SIMP(statut='o',typ='TXM',defaut='TABLEAU',
                                into=("TABLEAU","AGRAF","XMGRACE",),),
          b_pilote = BLOC(condition = """equal_to("FORMAT", 'XMGRACE')""",

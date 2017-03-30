@@ -28,7 +28,7 @@ def factoriser_prod(MATR_ASSE,**args):
 FACTORISER=OPER(nom="FACTORISER",op=14,sd_prod=factoriser_prod,
                fr=tr("Factoriser une matrice assemblée en un produit de deux matrices triangulaires"
                   "ou construire une matrice de préconditionnement pour une résolution par gradient conjugué"),
-               reentrant='f', UIinfo={"groupes":("Résolution",)},
+               reentrant='f',
          reuse=SIMP(statut='c', typ=CO),
          MATR_ASSE       =SIMP(statut='o',typ=(matr_asse_depl_r,matr_asse_depl_c,matr_asse_temp_r,
                                                matr_asse_temp_c,matr_asse_pres_r,matr_asse_pres_c) ),

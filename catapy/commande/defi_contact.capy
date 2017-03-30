@@ -19,7 +19,6 @@
 DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, reentrant = 'n',
                   fr        = tr("Définit les zones soumises à des conditions de contact unilatéral avec ou sans frottement"),
                   #en        = "Allows the definition of contact surfaces as well as unilateral conditions",
-                  UIinfo    = {"groupes":("Modélisation",)},
 # MODELE
          MODELE          =SIMP(statut='o',typ=modele_sdaster,),
          INFO            =SIMP(statut='f',typ='I',into=(1,2),),

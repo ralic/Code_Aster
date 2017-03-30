@@ -17,7 +17,6 @@
 # person_in_charge: jacques.pellet at edf.fr
 
 MODI_MODELE=OPER(nom="MODI_MODELE",op= 103,sd_prod=modele_sdaster,reentrant='o',
-         UIinfo={"groupes":("Modélisation",)},
          fr=tr("Modifier la partition d'un modèle (parallélisme) "),
 
          reuse=SIMP(statut='c', typ=CO),

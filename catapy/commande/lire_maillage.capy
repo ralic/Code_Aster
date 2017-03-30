@@ -19,7 +19,6 @@ LIRE_MAILLAGE=OPER(nom="LIRE_MAILLAGE",op=   1,sd_prod=maillage_sdaster,
                    fr=tr("Crée un maillage par lecture d'un fichier au format Aster ou Med"),
                    
                    reentrant='n',
-            UIinfo={"groupes":("Lecture","Maillage",)},
 
          UNITE           =SIMP(statut='f',typ=UnitType(),defaut= 20 , inout='in'),
 

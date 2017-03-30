@@ -16,7 +16,6 @@
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
 THER_NON_LINE=OPER(nom="THER_NON_LINE",op= 186,sd_prod=evol_ther,reentrant='f',
-            UIinfo={"groupes":("Résolution","Thermique",)},
                    fr=tr("Résoudre un problème thermique non linéaire (conditions limites ou comportement matériau)"
                        " stationnaire ou transitoire"),
          reuse=SIMP(statut='c', typ=CO),

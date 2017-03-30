@@ -16,7 +16,6 @@
 # ======================================================================
 # person_in_charge: harinaivo.andriambololona at edf.fr
 POST_USURE=OPER(nom="POST_USURE",op=153,sd_prod=table_sdaster,reentrant='f',
-            UIinfo={"groupes":("Post-traitements",)},
                 fr=tr("Calcul des volumes d'usure et des profondeurs d'usure d'après la puissance d'usure"),
          regles=(UN_PARMI('TUBE_NEUF','RESU_GENE','PUIS_USURE'),
                  PRESENT_PRESENT('RESU_GENE','LOI_USURE'),

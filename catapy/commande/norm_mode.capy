@@ -25,7 +25,6 @@ def norm_mode_prod(MODE,**args ):
 NORM_MODE=OPER(nom="NORM_MODE",op=  37,sd_prod=norm_mode_prod,
                fr=tr("Normer des modes propres en fonction d'un critère choisi par l'utilisateur"),
                reentrant='f',
-            UIinfo={"groupes":("Résolution","Dynamique",)},
          regles=(UN_PARMI('NORME','GROUP_NO','NOEUD','AVEC_CMP','SANS_CMP'),),
          reuse=SIMP(statut='c', typ=CO),
          MODE       =SIMP(statut='o',typ=(mode_meca,mode_flamb) ),

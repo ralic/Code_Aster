@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,6 @@ def macr_recal_prod(self,**args ):
 MACR_RECAL = MACRO(nom="MACR_RECAL",
                    op=OPS('Macro.macr_recal_ops.macr_recal_ops'),
                    sd_prod=macr_recal_prod,
-                   UIinfo={"groupes":("Résolution","Résultats et champs",)},
                    fr=tr("Réalise le recalage des calculs Aster sur des résultats expérimentaux "
                         "ou sur d'autres résultats de calculs"),
             regles=(UN_PARMI('PARA_OPTI','LIST_PARA'),

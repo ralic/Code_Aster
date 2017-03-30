@@ -21,7 +21,6 @@ MACR_CARA_POUTRE=MACRO(nom="MACR_CARA_POUTRE",
                        op=OPS('Macro.macr_cara_poutre_ops.macr_cara_poutre_ops'),
                        sd_prod=table_sdaster,
                        reentrant='n',
-                       UIinfo={"groupes":("Modélisation",)},
                        fr=tr("Calculer les caractéristiques d'une section transversale de "
                             "poutre à partir d'un maillage 2D de la section"),
          regles=(

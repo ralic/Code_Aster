@@ -141,7 +141,6 @@ bloc_pene   =BLOC(fr                = tr("Action d' adaptation du coefficient de
                  )
 
 DEFI_LIST_INST = OPER(nom="DEFI_LIST_INST",op=  28,sd_prod=list_inst,reentrant='n',
-                      UIinfo={"groupes":("Fonctions",)},
                       fr=tr("Définition de la gestion de la liste d'instants"),
 
 METHODE      = SIMP(fr = tr("Methode de definition de la liste d'instants"),

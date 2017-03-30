@@ -16,7 +16,6 @@
 # ======================================================================
 # person_in_charge: sofiane.hendili at edf.fr
 CALC_META=OPER(nom="CALC_META",op=194,sd_prod=evol_ther,reentrant='o',
-            UIinfo={"groupes":("Post-traitements","Thermique",)},
                fr=tr("Calcule l'évolution métallurgique à partir du résultat d'un calcul thermique"),
 
      regles=(PRESENT_ABSENT('TOUT','GROUP_MA','MAILLE'),),

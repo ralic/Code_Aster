@@ -17,7 +17,6 @@
 # person_in_charge: romeo.fernandes at edf.fr
 
 POST_MAC3COEUR = MACRO(nom="POST_MAC3COEUR",
-                       UIinfo={"groupes":("Outils-métier",)},
                        sd_prod=table_sdaster,
                        op=OPS("Mac3coeur.post_mac3coeur_ops.post_mac3coeur_ops"),
 

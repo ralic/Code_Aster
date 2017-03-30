@@ -29,7 +29,6 @@ EXEC_LOGICIEL = MACRO(nom="EXEC_LOGICIEL",
                       op=OPS('Macro.exec_logiciel_ops.exec_logiciel_ops'),
                       sd_prod=exec_logiciel_prod,
                       fr=tr("Exécute un logiciel ou une commande système depuis Aster"),
-                      UIinfo={"groupes":("Gestion du travail","Outils-métier",)},
 
       regles = ( AU_MOINS_UN('LOGICIEL', 'MAILLAGE', 'SALOME'),
                  EXCLUS('MAILLAGE','SALOME'),

@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,7 +18,6 @@
 LIRE_FORC_MISS=OPER(nom="LIRE_FORC_MISS",op= 179,sd_prod=vect_asse_gene,
                     fr=tr("Création d'un vecteur assemblé à partir d'une base modale"),
                     reentrant='n',
-            UIinfo={"groupes":("Matrices et vecteurs","Outils-métier",)},
          BASE            =SIMP(statut='o',typ=mode_meca),
          NUME_DDL_GENE   =SIMP(statut='o',typ=nume_ddl_gene ),
          FREQ_EXTR       =SIMP(statut='o',typ='R',max=1),

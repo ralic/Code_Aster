@@ -21,7 +21,6 @@ MACR_SPECTRE=MACRO(nom="MACR_SPECTRE",
                    op=OPS('Macro.macr_spectre_ops.macr_spectre_ops'),
                    sd_prod=table_sdaster,
                    reentrant='n',
-                   UIinfo={"groupes":("Post-traitements","Outils-métier",)},
                    fr=tr("Calcul de spectre, post-traitement de séisme"),
          MAILLAGE      =SIMP(statut='f',typ=maillage_sdaster,),
          

@@ -20,7 +20,6 @@ def modi_repere_prod(RESULTAT,CHAM_GD,**args):
   if AsType(CHAM_GD)  != None : return AsType(CHAM_GD)
 
 MODI_REPERE=OPER(nom="MODI_REPERE",op=191,sd_prod=modi_repere_prod,reentrant='f',
-                 UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
                  fr="Calcule les champs dans un nouveau repère.",
 #
     regles=(UN_PARMI('CHAM_GD','RESULTAT',),),

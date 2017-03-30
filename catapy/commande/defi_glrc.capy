@@ -16,7 +16,6 @@
 # ======================================================================
 # person_in_charge: sebastien.fayolle at edf.fr
 DEFI_GLRC=OPER(nom="DEFI_GLRC",op=57,sd_prod=mater_sdaster,reentrant='f',
-               UIinfo={"groupes":("Modélisation",)},
                fr=tr("Déterminer les caractéristiques homogenéisées du béton armé à partir des propriétés du béton et des  "
                      " armatures"),
                reuse = SIMP(statut='c',typ=mater_sdaster),

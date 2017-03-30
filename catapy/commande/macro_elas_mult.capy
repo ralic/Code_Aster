@@ -28,7 +28,6 @@ MACRO_ELAS_MULT=MACRO(nom="MACRO_ELAS_MULT",
                       op=OPS('Macro.macro_elas_mult_ops.macro_elas_mult_ops'),
                       sd_prod=macro_elas_mult_prod,
                       reentrant='f',
-                      UIinfo={"groupes":("Résolution",)},
                       fr=tr("Calculer les réponses statiques linéaires pour différents cas "
                            "de charges ou modes de Fourier"),
          regles=(UN_PARMI('CHAR_MECA_GLOBAL','LIAISON_DISCRET', ),),

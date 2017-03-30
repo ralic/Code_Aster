@@ -18,7 +18,7 @@
 POST_RELEVE_T=OPER(nom="POST_RELEVE_T",op=51,sd_prod=table_sdaster,reentrant='f',
             fr=tr("Extraire des valeurs de composantes de champs de grandeurs pour y effectuer des calculs (moyenne,invariants,..)"
                " ou pour les exprimer dans d'autres repères"),
-            docu="U4.81.21",UIinfo={"groupes":("Post-traitements","Résultats et champs",)},
+            docu="U4.81.21",
 
          reuse=SIMP(statut='c', typ=CO),
          ACTION          =FACT(statut='o',max='**',

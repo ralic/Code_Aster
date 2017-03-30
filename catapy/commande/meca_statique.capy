@@ -17,7 +17,6 @@
 # person_in_charge: jacques.pellet at edf.fr
 MECA_STATIQUE=OPER(nom="MECA_STATIQUE",op=46,sd_prod=evol_elas,
                    fr=tr("Résoudre un problème de mécanique statique linéaire"),reentrant='f',
-            UIinfo={"groupes":("Résolution","Mécanique",)},
          regles=(EXCLUS("INST","LIST_INST"),
                  AU_MOINS_UN('CHAM_MATER','CARA_ELEM',),),
          reuse=SIMP(statut='c', typ=CO),

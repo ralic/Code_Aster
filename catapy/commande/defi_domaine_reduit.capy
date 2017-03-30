@@ -20,7 +20,6 @@
 DEFI_DOMAINE_REDUIT=OPER(nom="DEFI_DOMAINE_REDUIT",op=50,
               sd_prod=maillage_sdaster,
               reentrant='o',
-              UIinfo={"groupes":("Maillage","Post-traitements")},
      reuse=SIMP(statut='c', typ=CO),
      BASE_PRIMAL   = SIMP(statut='o',typ=mode_empi,max=1),
      BASE_DUAL     = SIMP(statut='o',typ=mode_empi,max=1),

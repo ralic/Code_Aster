@@ -18,7 +18,6 @@
 COMB_SISM_MODAL=OPER(nom="COMB_SISM_MODAL",op= 109,sd_prod=mode_meca,
                      fr=tr("Réponse sismique par recombinaison modale par une méthode spectrale"),
                      reentrant='n',
-            UIinfo={"groupes":("Post-traitements","Dynamique",)},
          regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','FREQ','NUME_MODE','LIST_FREQ','LIST_ORDRE'),
                  UN_PARMI('AMOR_REDUIT','LIST_AMOR','AMOR_GENE' ),
                  UN_PARMI('MONO_APPUI','MULTI_APPUI' ),),

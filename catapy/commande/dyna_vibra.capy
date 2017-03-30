@@ -31,7 +31,6 @@ DYNA_VIBRA = OPER (nom      = "DYNA_VIBRA",
                    sd_prod  = dyna_vibra_sdprod,
                    reentrant='f',
                    fr       = tr("Calcul dynamique transitoire ou harminque, sur base physique ou généralisée"),
-                   UIinfo   = {"groupes":("Résolution","Dynamique",)},
 
         reuse=SIMP(statut='c', typ=CO),
         # Calculation type and basis

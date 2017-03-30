@@ -35,7 +35,6 @@ def comb_matr_asse_prod(COMB_R,COMB_C,CALC_AMOR_GENE,**args):
 COMB_MATR_ASSE=OPER(nom="COMB_MATR_ASSE",op=  31,sd_prod=comb_matr_asse_prod,
                     fr=tr("Effectuer la combinaison linéaire de matrices assemblées"),
                     reentrant='f',
-            UIinfo={"groupes":("Matrices et vecteurs",)},
          regles=(UN_PARMI('COMB_R','COMB_C','CALC_AMOR_GENE' ),),
          reuse=SIMP(statut='c', typ=CO),
          COMB_R          =FACT(statut='f',max='**',

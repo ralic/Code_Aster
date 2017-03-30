@@ -32,7 +32,6 @@ def extr_resu_prod(RESULTAT,**args):
   raise AsException("type de concept resultat non prevu")
 
 EXTR_RESU=OPER(nom="EXTR_RESU",op=176,sd_prod=extr_resu_prod,reentrant='f',
-            UIinfo={"groupes":("Résultats et champs",)},
             fr=tr("Extraire des champs au sein d'une SD Résultat"),
          reuse=SIMP(statut='c', typ=CO),
          RESULTAT        =SIMP(statut='o',typ=(evol_elas,dyna_trans,dyna_harmo,acou_harmo,mode_meca,

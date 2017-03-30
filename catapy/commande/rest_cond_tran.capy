@@ -29,7 +29,6 @@ REST_COND_TRAN=OPER(nom="REST_COND_TRAN",op=  78,sd_prod=rest_cond_tran_prod,
                          "non-lineaire avec projection modale ou d'un calcul transitoire linear"
                          "avec condensation dynamique"),
                     reentrant='f',
-            UIinfo={"groupes":("Matrices et vecteurs",)},
         regles=(
                 EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','LIST_INST','TOUT_INST'),
                 EXCLUS('MACR_ELEM_DYNA','BASE_MODALE'),),

@@ -18,7 +18,6 @@
 DEFI_BASE_MODALE=OPER(nom="DEFI_BASE_MODALE",op=  99,sd_prod=mode_meca,
                      reentrant='f',
                      fr=tr("Définit la base d'une sous-structuration dynamique ou d'une recombinaison modale"),
-            UIinfo={"groupes":("Matrices et vecteurs","Dynamique",)},
          regles=(UN_PARMI('CLASSIQUE','RITZ','DIAG_MASS','ORTHO_BASE'),),
          reuse=SIMP(statut='c', typ=CO),
          CLASSIQUE       =FACT(statut='f',

@@ -18,7 +18,6 @@
 
 POST_ERREUR=MACRO(nom="POST_ERREUR",
                   op=OPS('Macro.post_erreur_ops.post_erreur_ops'),
-                  UIinfo={"groupes":("Post-traitements",)},
                   sd_prod=table_sdaster,
                   reentrant='f',
                   reuse=SIMP(statut='c', typ=CO),

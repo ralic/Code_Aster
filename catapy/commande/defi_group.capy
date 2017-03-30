@@ -26,7 +26,6 @@ def defi_group_prod(MAILLAGE,GRILLE,**args):
 DEFI_GROUP=OPER(nom="DEFI_GROUP",op= 104,sd_prod=defi_group_prod,
                 fr=tr("Définition de nouveaux groupes de noeuds et/ou de mailles dans un concept maillage"),
                 reentrant='o',
-            UIinfo={"groupes":("Maillage",)},
          regles=(AU_MOINS_UN('CREA_GROUP_MA','CREA_GROUP_NO','DETR_GROUP_NO','DETR_GROUP_MA'),
                  UN_PARMI('MAILLAGE','GRILLE'),),
          reuse=SIMP(statut='c', typ=CO),
