@@ -90,7 +90,7 @@ class BLOC(N_ENTITE.ENTITE):
         """
         return self.class_instance(nom=nom, definition=self, val=val, parent=parent)
 
-    def verif_cata(self):
+    def verif_cata(self, dummy=None):
         """
            Cette méthode vérifie si les attributs de définition sont valides.
            Les éventuels messages d'erreur sont écrits dans l'objet compte-rendu (self.cr).

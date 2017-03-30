@@ -78,9 +78,12 @@ class ENTITE:
             v.pere = self
             v.nom = k
 
-    def verif_cata(self):
+    def verif_cata(self, nom=None):
         """
-            Cette methode sert à valider les attributs de l'objet de définition
+            Cette methode sert à valider les attributs de l'objet de définition.
+
+            L'argument 'nom' est passé par l'objet parent et peut être utile
+            aux objets qui ne possèdent pas un tel attribut.
         """
         raise NotImplementedError("La méthode verif_cata de la classe %s doit être implémentée"
                                   % self.__class__.__name__)
@@ -92,20 +95,22 @@ class ENTITE:
         raise NotImplementedError("La méthode __call__ de la classe %s doit être implémentée"
                                   % self.__class__.__name__)
 
-    def report(self):
+    def report(self, nom=None):
         """
            Cette méthode construit pour tous les objets dérivés de ENTITE un
            rapport de validation de la définition portée par cet objet
         """
         self.cr = self.CR()
-        self.verif_cata()
+        self.verif_cata(nom)
         for k, v in self.entites.items():
             try:
-                cr = v.report()
+                cr = v.report(k)
                 cr.debut = u"Début " + v.__class__.__name__ + ' : ' + k
                 cr.fin = u"Fin " + v.__class__.__name__ + ' : ' + k
                 self.cr.add(cr)
             except:
+                import traceback
+                traceback.print_exc()
                 self.cr.fatal(
                     _(u"Impossible d'obtenir le rapport de %s %s"), k, `v`)
                 print "Impossible d'obtenir le rapport de %s %s" % (k, `v`)
@@ -282,27 +287,30 @@ class ENTITE:
                     typeProto.adapt(val)
                 except ValError:
                     self.cr.fatal(
-                        _(u"La valeur de l'attribut 'defaut' n'est pas cohérente " \
-                          u"avec le type %r : %r"), self.type, val)
+                        _(u"La valeur de l'attribut 'defaut' n'est pas "
+                          u"cohérente avec le type %r : %r"), self.type, val)
 
     def check_inout(self):
         """Vérifie l'attribut inout."""
+        from Cata.cata import UnitType
         if self.inout is None:
             return
-        if self.inout not in ('in', 'out', 'inout'):
+        elif self.inout not in ('in', 'out', 'inout'):
             self.cr.fatal(
                 _(u"L'attribut 'inout' doit valoir 'in','out' ou 'inout' : %r"),
                 self.inout)
-        else:
-            # inout is defined == UNITE* keywords
-            from Cata.cata import UnitType
-            typ = self.type
-            if type(typ) in (list, tuple):
-                if len(typ) != 1:
-                    self.cr.fatal(
-                        _(u"L'attribut 'typ' doit valoir UnitType() : %r"),
-                        self.type)
-                typ = typ[0]
-            if typ != UnitType():
+        elif UnitType() not in self.type or len(self.type) != 1:
+            self.cr.fatal(
+                _(u"L'attribut 'typ' doit valoir UnitType() : %r"),
+                self.type)
+
+    def check_unit(self, nom):
+        """Vérification ayant besoin du nom"""
+        from Cata.cata import UnitType
+        # As UnitType() is not an object, this forbids UNITE* keywords
+        # for another kind of 'int'.
+        if nom.startswith('UNITE') and UnitType() in self.type:
+            if not self.inout:
                 self.cr.fatal(
-                    _(u"L'attribut 'typ' doit valoir UnitType() : %r"), self.type)
+                    _(u"L'attribut 'inout' est obligatoire pour le type "
+                      u"UnitType()."))

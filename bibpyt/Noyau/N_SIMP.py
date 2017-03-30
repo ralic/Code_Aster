@@ -89,7 +89,7 @@ class SIMP(N_ENTITE.ENTITE):
         self.sug = sug
         self.inout = inout
 
-    def verif_cata(self):
+    def verif_cata(self, nom=None):
         """
             Cette methode sert à valider les attributs de l'objet de définition
             de la classe SIMP
@@ -104,6 +104,7 @@ class SIMP(N_ENTITE.ENTITE):
         self.check_validators()
         self.check_defaut()
         self.check_inout()
+        self.check_unit(nom)
 
     def __call__(self, val, nom, parent=None):
         """
