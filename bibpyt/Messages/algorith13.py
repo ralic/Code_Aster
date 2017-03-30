@@ -37,10 +37,6 @@ cata_msg = {
  base modale -->  %(k1)s
 """),
 
-    18 : _(u"""
-  GAMMA négatif et valant  %(r1)f
-"""),
-
     26 : _(u"""
  conflit de nom de groupe de maille dans le squelette
  le nom de groupe               :  %(k1)s
