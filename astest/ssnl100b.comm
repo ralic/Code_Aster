@@ -38,16 +38,17 @@ CH_TEMP=CREA_CHAMP(TYPE_CHAM='NOEU_TEMP_R',
                            NOM_CMP='TEMP',
                            VALE=100,),);
 
-MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 5.E7,  NU=0.,  RHO = 30.),
+MAT1=DEFI_MATERIAU(   ELAS=_F(  E = 5.E7,  NU=0.,  RHO = 30., ALPHA = 0.0),
                       CABLE=_F(EC_SUR_E = 1.E0),
                         )
 
-MAT2=DEFI_MATERIAU(    ELAS=_F(  E = 5.E7,  NU = 0.3,  RHO = 30.)
+MAT2=DEFI_MATERIAU(    ELAS=_F(  E = 5.E7,  NU = 0.3,  RHO = 30., ALPHA = 0.0)
                         )
 
 CHMAT1=AFFE_MATERIAU(  MAILLAGE=MA1,
+                       AFFE_VARC=_F(TOUT='OUI',NOM_VARC='TEMP',VALE_REF=0,),
                        AFFE=(_F( GROUP_MA = ('MCABLE',),   MATER = MAT1),
-                             _F( GROUP_MA = ('MCABPOUL',), MATER = MAT2)),)
+                             _F( GROUP_MA = ('MCABPOUL',), MATER = MAT2)), )
 
 CHA1=AFFE_CHAR_MECA(  MODELE=MO1,
                       DDL_IMPO=(_F( GROUP_NO = 'PORTEE',    DY = 0.        ),

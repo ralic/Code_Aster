@@ -1,6 +1,10 @@
 subroutine te0167(option, nomte)
+!
+implicit none
+#include "asterfort/utmess.h"
+!
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,31 +19,8 @@ subroutine te0167(option, nomte)
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 !    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
-    implicit none
-#include "jeveux.h"
 !
-#include "asterfort/jevech.h"
     character(len=16) :: option, nomte
-! ......................................................................
-!    - FONCTION REALISEE: OPTION BIDON : 'CHAR_MECA_TEMP_R' POUR MEPOULI
-!                                =====
-!    - POULIE. NE SERT EN FAIT QU'A INITIALISER LES VECTUR A ZERO.
-!
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
-!
-    integer :: k, ivectu
-!
-!
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-    call jevech('PVECTUR', 'E', ivectu)
-!
-    do 101 k = 1, 9
-        zr(ivectu-1+k) = 0.d0
-101  end do
+    call utmess('F', 'FERMETUR_8')
 !
 end subroutine
