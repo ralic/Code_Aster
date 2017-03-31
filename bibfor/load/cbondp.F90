@@ -19,7 +19,7 @@ subroutine cbondp(load, mesh, ndim, vale_type)
 #include "asterfort/vetyma.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -167,8 +167,8 @@ subroutine cbondp(load, mesh, ndim, vale_type)
 !
 ! --------- Get distance
 !
-            dist = 0.d0
-            call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
+!            dist = 0.d0
+!            call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
 !
 ! --------- Affectation of values in <CARTE> - Wave type and direction
 !
@@ -178,8 +178,14 @@ subroutine cbondp(load, mesh, ndim, vale_type)
             zr(jvalv-1+2) = wave_dire(2)
             zr(jvalv-1+3) = wave_dire(3)
             zr(jvalv-1+4) = wave_type_r
-            zr(jvalv-1+5) = dist
+            zr(jvalv-1+5) = r8vide()
             zr(jvalv-1+6) = r8vide()
+            call getvr8(keywordfact, 'DIST', iocc=iocc,&
+                        nbval=0, nbret=ndir)
+            if (ndir .ne. 0) then
+               call getvr8(keywordfact, 'DIST', iocc=iocc, scal=dist)
+               zr(jvalv-1+5) = dist
+            endif
             call getvr8(keywordfact, 'DIST_REFLECHI', iocc=iocc,&
                         nbval=0, nbret=ndir)
             if (ndir .ne. 0) then

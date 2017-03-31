@@ -58,8 +58,8 @@ subroutine te0499(option, nomte)
     integer :: ier, ii, imate, indic1, indic2, iondc, ionde
     integer :: j, jgano, jinst, ndim, nnos, ndim2
     real(kind=8) :: coedir, typer, valfon, valfon2
-    character(len=8) :: nompar(2)
-    real(kind=8) :: valpar(2)
+    character(len=8) :: nompar(2), lpar2(2)
+    real(kind=8) :: valpar(2), vpar2(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -179,9 +179,6 @@ subroutine te0499(option, nomte)
     else
         cele = cs
     endif
-!    write(6,*) 'cele=',cele
-!    write(6,*) 'inst=',zr(jinst)
-!    write(6,*) 'h=',h
 !
 !    BOUCLE SUR LES POINTS DE GAUSS
 !
@@ -190,26 +187,35 @@ subroutine te0499(option, nomte)
 !
 !        CALCUL DU CHARGEMONT PAR ONDE PLANE
         param0=dirx*xgg(kp)+diry*ygg(kp)
-!        write(6,*) 'param av=',param
-        param = param0 -h
-!        write(6,*) 'param 1=',param
-!        write(6,*) 'param 2=',param2
-        instd = zr(jinst) - param/cele
-        if (instd .lt. 0.d0) then
-          valfon = 0.d0
-        else
-          call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
-        endif
-        if (h2 .ne. r8vide()) then
-          param2= 2.0d0*(h2-h)-param
-          instd2 = zr(jinst) - param2/cele
-          if (instd2 .lt. 0.d0) then
-            valfon2 = 0.d0
+        if (h .ne. r8vide()) then
+          param = param0 -h
+          instd = zr(jinst) - param/cele
+          if (instd .lt. 0.d0) then
+            valfon = 0.d0
           else
-            call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+            call fointe('F ', zk8(ionde), 1, 'INST', [instd], valfon, ier)
+          endif
+          if (h2 .ne. r8vide()) then
+            param2= 2.0d0*(h2-h)-param
+            instd2 = zr(jinst) - param2/cele
+            if (instd2 .lt. 0.d0) then
+              valfon2 = 0.d0
+            else
+              call fointe('F ', zk8(ionde), 1, 'INST', [instd2], valfon2, ier)
+            endif
+          else
+            valfon2 = 0.d0
           endif
         else
-           valfon2 = 0.d0
+          lpar2(1) = 'X'
+          lpar2(2) = 'INST'
+          vpar2(1) = 1.0*param0
+          vpar2(2) = zr(jinst)
+          call fointe('F ', zk8(ionde), 2, lpar2, vpar2, valfon, ier)
+          if (type .ne. 'P') then
+            valfon = -valfon
+          endif
+          valfon2 = 0.d0
         endif
 !
         valfon = -valfon/cele
@@ -273,7 +279,12 @@ subroutine te0499(option, nomte)
 !ER        if (scal .gt. 0.d0) then
 !ER            coedir = 1.d0
 !ER        else
-        coedir = -1.d0
+        if (h .ne. r8vide()) then
+          coedir = -1.d0
+        else
+          coedir = 0.d0
+!          coedir = -1.d0
+        endif
 !ER        endif
 !
 !        --- CALCUL DE V.N ---
@@ -308,18 +319,30 @@ subroutine te0499(option, nomte)
         uondt(1) = 0.d0
         uondt(2) = 0.d0
 !
-        if (instd .lt. 0.d0) then
-          valfon = 0.d0
-        else
-          call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
-        endif
-        if (h2 .ne. r8vide()) then
-          if (instd2 .lt. 0.d0) then
-            valfon2 = 0.d0
+        if (h .ne. r8vide()) then
+          if (instd .lt. 0.d0) then
+            valfon = 0.d0
           else
-            call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+            call fointe('F ', zk8(ionde+1), 1, 'INST', [instd], valfon, ier)
+          endif
+          if (h2 .ne. r8vide()) then
+            if (instd2 .lt. 0.d0) then
+              valfon2 = 0.d0
+            else
+              call fointe('F ', zk8(ionde+1), 1, 'INST', [instd2], valfon2, ier)
+            endif
+          else
+            valfon2 = 0.d0
           endif
         else
+          lpar2(1) = 'X'
+          lpar2(2) = 'INST'
+          vpar2(1) = 1.0*param0
+          vpar2(2) = zr(jinst)
+          call fointe('F ', zk8(ionde+1), 2, lpar2, vpar2, valfon, ier)
+          if (type .ne. 'P') then
+            valfon = -valfon
+          endif
           valfon2 = 0.d0
         endif
         if (type .eq. 'P') then
