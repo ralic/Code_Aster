@@ -1,20 +1,12 @@
-subroutine op0053()
+subroutine romEvalCoefDSInit(ds_evalcoef)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/infmaj.h"
-#include "asterfort/titre.h"
-#include "asterfort/dbr_chck.h"
-#include "asterfort/dbr_DSInit.h"
-#include "asterfort/dbr_init_algo.h"
-#include "asterfort/dbr_init_base.h"
-#include "asterfort/dbr_para_info.h"
-#include "asterfort/dbr_read.h"
-#include "asterfort/dbr_main.h"
-#include "asterfort/dbr_clean.h"
+#include "asterc/r8vide.h"
+#include "asterfort/infniv.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,54 +22,35 @@ implicit none
 !
 ! YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
-!    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+!   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
+! person_in_charge: mickael.abbas at edf.fr
 !
-!
-!
-! --------------------------------------------------------------------------------------------------
-!
-!   DEFI_BASE_REDUITE
+    type(ROM_DS_EvalCoef), intent(out) :: ds_evalcoef
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    type(ROM_DS_ParaDBR) :: ds_para
+! Model reduction - Initializations
+!
+! Initialisation of datastructure for multiparametric problems - Evaluation
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call titre()
-    call infmaj()
+! Out ds_evalcoef      : datastructure for multiparametric problems - Evaluation
 !
-! - Initialization of datastructures
+! --------------------------------------------------------------------------------------------------
 !
-    call dbr_DSInit(ds_para)
+    integer :: ifm, niv
 !
-! - Read parameters
+! --------------------------------------------------------------------------------------------------
 !
-    call dbr_read(ds_para)
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM5_82')
+    endif
 !
-! - Prepare datastructure for empiric modes
-!
-    call dbr_init_base(ds_para)
-!
-! - Init algorithm
-!
-    call dbr_init_algo(ds_para)
-!
-! - Check parameters
-!
-    call dbr_chck(ds_para)
-!
-! - Print informations
-!
-    call dbr_para_info(ds_para)
-!
-! - Compute the POD by the main function
-!
-    call dbr_main(ds_para)
-!
-! - Clean datastructures
-!
-    call dbr_clean(ds_para)
+    ds_evalcoef%nb_para      = 0
+    ds_evalcoef%para_name(:) = ' '
+    ds_evalcoef%para_vale(:) = 0.d0
 !
 end subroutine

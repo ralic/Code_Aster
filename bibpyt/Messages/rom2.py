@@ -63,7 +63,13 @@ cata_msg = {
 
    22 : _(u"""Les matrices doivent être symétriques."""),
 
+   23 : _(u"""Lecture des données pour la construction du système - Le second membre."""),
+
+   24 : _(u"""Lecture des données pour la variation des coefficients."""),
+
    30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
+
+   38 : _(u"""Pas de lecture des données pour la variation des coefficients."""),
 
    40 : _(u"""Initialisation de l'algorithme pour les méthodes POD."""),
 

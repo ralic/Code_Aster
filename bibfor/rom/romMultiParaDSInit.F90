@@ -1,4 +1,5 @@
-subroutine romMultiParaDSInit(ds_multipara)
+subroutine romMultiParaDSInit(ds_multicoef_v, ds_multicoef_m, ds_varipara, ds_evalcoef,&
+                              ds_multipara)
 !
 use Rom_Datastructure_type
 !
@@ -26,6 +27,10 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
+    type(ROM_DS_MultiCoef), intent(in)  :: ds_multicoef_v
+    type(ROM_DS_MultiCoef), intent(in)  :: ds_multicoef_m
+    type(ROM_DS_VariPara), intent(in)   :: ds_varipara
+    type(ROM_DS_EvalCoef), intent(in)   :: ds_evalcoef
     type(ROM_DS_MultiPara), intent(out) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,6 +41,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! In  ds_multicoef_v   : datastructure for multiparametric problems - Coefficients (vectors)
+! In  ds_multicoef_m   : datastructure for multiparametric problems - Coefficients (matrix)
+! In  ds_varipara      : datastructure for multiparametric problems - Variations
+! In  ds_evalcoef      : datastructure for multiparametric problems - Evaluation
 ! Out ds_multipara     : datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,27 +58,34 @@ implicit none
         call utmess('I', 'ROM5_43')
     endif
 !
-!    ds_multipara%syst_type       = ' '
-!    ds_multipara%nb_matr         = 0
-!    ds_multipara%matr_name(:)    = ' '
-!    ds_multipara%matr_type(:)    = ' '
-!    ds_multipara%l_coefm_cplx(:) = .false.
-!    ds_multipara%l_coefm_real(:) = .false.
-!    ds_multipara%coefm_cplx(:)   = (0.d0,0.d0)
-!    ds_multipara%coefm_real(:)   = 0.d0
-!    ds_multipara%vect_name       = ' '
-!    ds_multipara%vect_type       = ' '
-!    ds_multipara%l_coefv_cplx    = .false.
-!    ds_multipara%l_coefv_real    = .false.
-!    ds_multipara%coefv_cplx      = (0.d0,0.d0)
-!    ds_multipara%coefv_real      = 0.d0
-!    ds_multipara%prod_mode(1)    = '&&OP0053.PRODMODE_1'
-!    ds_multipara%prod_mode(2)    = '&&OP0053.PRODMODE_2'
-!    ds_multipara%prod_mode(3)    = '&&OP0053.PRODMODE_3'
-!    ds_multipara%prod_mode(4)    = '&&OP0053.PRODMODE_4'
-!    ds_multipara%prod_mode(5)    = '&&OP0053.PRODMODE_5'
-!    ds_multipara%prod_mode(6)    = '&&OP0053.PRODMODE_6'
-!    ds_multipara%prod_mode(7)    = '&&OP0053.PRODMODE_7'
-!    ds_multipara%prod_mode(8)    = '&&OP0053.PRODMODE_8'
+! - General
+!
+    ds_multipara%syst_type       = ' '
+    ds_multipara%nb_matr         = 0
+    ds_multipara%matr_name(:)    = ' '
+    ds_multipara%matr_type(:)    = ' '
+    ds_multipara%vect_name       = ' '
+    ds_multipara%vect_type       = ' '
+    ds_multipara%prod_mode(1)    = '&&OP0053.PRODMODE_1'
+    ds_multipara%prod_mode(2)    = '&&OP0053.PRODMODE_2'
+    ds_multipara%prod_mode(3)    = '&&OP0053.PRODMODE_3'
+    ds_multipara%prod_mode(4)    = '&&OP0053.PRODMODE_4'
+    ds_multipara%prod_mode(5)    = '&&OP0053.PRODMODE_5'
+    ds_multipara%prod_mode(6)    = '&&OP0053.PRODMODE_6'
+    ds_multipara%prod_mode(7)    = '&&OP0053.PRODMODE_7'
+    ds_multipara%prod_mode(8)    = '&&OP0053.PRODMODE_8'
+    ds_multipara%matr_coef(:)    = ds_multicoef_m
+    ds_multipara%vect_coef       = ds_multicoef_v
+!
+! - Initializations of variation of parameters for multiparametric problems
+!
+    ds_multipara%nb_vari_coef    = 0
+    ds_multipara%nb_vari_para    = 0
+    ds_multipara%type_vari_coef  = ' '
+    ds_multipara%vari_para(:)    = ds_varipara
+!
+! - Initializations of evaluation of coefficients for multiparametric problems
+!
+    ds_multipara%evalcoef        = ds_evalcoef
 !
 end subroutine

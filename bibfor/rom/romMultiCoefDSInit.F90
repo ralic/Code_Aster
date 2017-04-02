@@ -1,11 +1,11 @@
-subroutine dbr_paraRBDSInit(ds_multipara, ds_solveDOM, ds_solveROM, ds_para_rb)
+subroutine romMultiCoefDSInit(object_type, ds_multicoef)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
 #include "asterc/r8vide.h"
+#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
@@ -27,23 +27,19 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Solve), intent(in)       :: ds_solveDOM
-    type(ROM_DS_Solve), intent(in)       :: ds_solveROM
-    type(ROM_DS_MultiPara), intent(in)   :: ds_multipara
-    type(ROM_DS_ParaDBR_RB), intent(out) :: ds_para_rb
+    character(len=1), intent(in)       :: object_type
+    type(ROM_DS_MultiCoef), intent(out) :: ds_multicoef
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction - Initializations
 !
-! Initialization of datastructures for parameters - POD methods
+! Initialisation of datastructure for multiparametric problems - Coefficients
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_solveDOM      : datastructure for datastructure to solve systems (DOM)
-! In  ds_solveROM      : datastructure for datastructure to solve systems (ROM)
-! In  ds_multipara     : datastructure for multiparametric problems
-! Out ds_para_rb       : datastructure for RB parameters
+! In  object_type      : type of object (VECT or MATR)
+! Out ds_multicoef     : datastructure for multiparametric problems - Coefficients
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,20 +49,23 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM5_26')
+        if (object_type .eq. 'V') then
+            call utmess('I', 'ROM5_90')
+        elseif (object_type .eq. 'M') then
+            call utmess('I', 'ROM5_91')
+        else
+            ASSERT(.false.)
+        endif
     endif
 !
-! - General initialisations of datastructure
-!
-    ds_para_rb%coef_redu       = '&&OP0053.COEF_REDU'
-    ds_para_rb%solver          = '&&OP0053.SOLVER'
-    ds_para_rb%resi_type       = ' '
-    ds_para_rb%resi_vect       = '&&OP0053.RESI_VECT'
-    ds_para_rb%vect_2mbr_init  = '&&OP0053.2MBR_INIT'
-    ds_para_rb%resi_norm       => null()
-    ds_para_rb%resi_refe       = 0.d0
-    ds_para_rb%multipara       = ds_multipara
-    ds_para_rb%solveROM        = ds_solveROM
-    ds_para_rb%solveDOM        = ds_solveDOM
+    ds_multicoef%l_func         = .false.
+    ds_multicoef%l_cste         = .false.
+    ds_multicoef%l_cplx         = .false.
+    ds_multicoef%l_real         = .false.
+    ds_multicoef%func_name      = ' '
+    ds_multicoef%coef_cste_cplx = dcmplx(0.d0, 0.d0)
+    ds_multicoef%coef_cste_real = 0.d0
+    ds_multicoef%coef_cplx      => null()
+    ds_multicoef%coef_real      => null()
 !
 end subroutine

@@ -48,16 +48,16 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_matr = 0, i_matr, nbret, ifm, niv
+    integer :: ifm, niv
 !    character(len=1)  :: matr_type, vect_type, ktyp, matr_elem_type
 !    character(len=16) :: keywfact
 !    character(len=8) :: matr_asse, vect_asse, gran_name
 !    aster_logical :: l_coef_cplx, l_coef_real
 !    real(kind=8) :: coef_r
 !    complex(kind=8) :: coef_c
-!!
-!! --------------------------------------------------------------------------------------------------
-!!
+!
+! --------------------------------------------------------------------------------------------------
+!
     call infniv(ifm, niv)
     if (niv .ge. 2) then
         call utmess('I', 'ROM2_20')

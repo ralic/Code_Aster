@@ -16,8 +16,13 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine romMultiParaDSInit(ds_multipara)
+    subroutine romMultiParaDSInit(ds_multicoef_v, ds_multicoef_m, ds_varipara, ds_evalcoef,&
+                                  ds_multipara)
         use Rom_Datastructure_type
+        type(ROM_DS_MultiCoef), intent(in)  :: ds_multicoef_v
+        type(ROM_DS_MultiCoef), intent(in)  :: ds_multicoef_m
+        type(ROM_DS_VariPara), intent(in)   :: ds_varipara
+        type(ROM_DS_EvalCoef), intent(in)   :: ds_evalcoef
         type(ROM_DS_MultiPara), intent(out) :: ds_multipara
     end subroutine romMultiParaDSInit
 end interface

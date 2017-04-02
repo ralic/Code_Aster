@@ -1,11 +1,9 @@
-subroutine dbr_paraRBDSInit(ds_multipara, ds_solveDOM, ds_solveROM, ds_para_rb)
+subroutine romSolveDSInit(type_syst, ds_solve)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
@@ -27,23 +25,19 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Solve), intent(in)       :: ds_solveDOM
-    type(ROM_DS_Solve), intent(in)       :: ds_solveROM
-    type(ROM_DS_MultiPara), intent(in)   :: ds_multipara
-    type(ROM_DS_ParaDBR_RB), intent(out) :: ds_para_rb
+    character(len=3), intent(in) :: type_syst
+    type(ROM_DS_Solve), intent(out) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction - Initializations
 !
-! Initialization of datastructures for parameters - POD methods
+! Initialisation of datastructure to solve systems
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_solveDOM      : datastructure for datastructure to solve systems (DOM)
-! In  ds_solveROM      : datastructure for datastructure to solve systems (ROM)
-! In  ds_multipara     : datastructure for multiparametric problems
-! Out ds_para_rb       : datastructure for RB parameters
+! In  type_syst        : type of system
+! Out ds_solve         : datastructure to solve systems
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,20 +47,16 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM5_26')
+        call utmess('I', 'ROM5_50', sk = type_syst)
     endif
 !
-! - General initialisations of datastructure
-!
-    ds_para_rb%coef_redu       = '&&OP0053.COEF_REDU'
-    ds_para_rb%solver          = '&&OP0053.SOLVER'
-    ds_para_rb%resi_type       = ' '
-    ds_para_rb%resi_vect       = '&&OP0053.RESI_VECT'
-    ds_para_rb%vect_2mbr_init  = '&&OP0053.2MBR_INIT'
-    ds_para_rb%resi_norm       => null()
-    ds_para_rb%resi_refe       = 0.d0
-    ds_para_rb%multipara       = ds_multipara
-    ds_para_rb%solveROM        = ds_solveROM
-    ds_para_rb%solveDOM        = ds_solveDOM
+    ds_solve%syst_matr       = '&&'//type_syst//'.MATR'
+    ds_solve%syst_2mbr       = '&&'//type_syst//'.SECMBR'
+    ds_solve%syst_solu       = '&&'//type_syst//'.SOLUTI'
+    ds_solve%vect_zero       = '&&'//type_syst//'.VEZERO'
+    ds_solve%syst_size       = 0
+    ds_solve%syst_matr_type  = ' '
+    ds_solve%syst_2mbr_type  = ' '
+    ds_solve%syst_type       = ' '
 !
 end subroutine

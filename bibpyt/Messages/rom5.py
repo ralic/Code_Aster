@@ -33,7 +33,7 @@ cata_msg = {
 
     8 : _(u"""Échec lors du calcul des modes empiriques."""),
 
-    9 : _(u"""Initialisations de toutes les structures de données."""),
+    9 : _(u"""Initialisation de toutes les structures de données."""),
 
    10 : _(u"""Lecture de tous les paramètres de la commande."""),
 
@@ -43,7 +43,7 @@ cata_msg = {
 
    13 : _(u"""On a détecté %(i1)d tranches pour la définition des modes linéiques."""),
 
-   14 : _(u"""Initialisations des structures de données pour les paramètres du calcul."""),
+   14 : _(u"""Initialisation des structures de données pour les paramètres du calcul."""),
 
    16 : _(u"""Méthode de construction de la base empirique: %(k1)s """),
 
@@ -62,11 +62,11 @@ cata_msg = {
 
    23 : _(u"""Un mode empirique contient une composante au noeud %(k1)s qui n'est pas utilisable."""),
 
-   24 : _(u"""Initialisations des structures de données."""),
+   24 : _(u"""Initialisation des structures de données."""),
 
-   25 : _(u"""Initialisations des structures de données pour les paramètres POD du calcul."""),
+   25 : _(u"""Initialisation des structures de données pour les paramètres POD du calcul."""),
 
-   26 : _(u"""Initialisations des structures de données pour les paramètres GLOUTON du calcul."""),
+   26 : _(u"""Initialisation des structures de données pour les paramètres GLOUTON du calcul."""),
 
    27 : _(u"""Lecture des paramètres pour la méthode GLOUTON."""),
 
@@ -84,7 +84,7 @@ cata_msg = {
 
    36 : _(u"""Création de la structure de données pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 
-   37 : _(u"""Initialisations pour réaliser le calcul non-linéaire avec réduction de modèle."""),
+   37 : _(u"""Initialisation pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 
    38 : _(u"""Création de la table pour sauver les coordonnées réduites."""),
 
@@ -97,4 +97,15 @@ cata_msg = {
    42 : _(u"""Suppression de la structure de données pour réaliser le calcul non-linéaire avec réduction de modèle."""),
 
    43 : _(u"""Initialisation de la structure de données pour le calcul multi-paramétrique avec réduction de modèle."""),
+
+   50 : _(u"""Initialisation de la structure de données pour résoudre le système %(k1)s."""),
+
+   81 : _(u"""Initialisation de la structure de données pour la variation des coefficients pour le calcul multi-paramétrique."""),
+
+   82 : _(u"""Initialisation de la structure de données pour l'évaluation des coefficients pour le calcul multi-paramétrique."""),
+
+   90 : _(u"""Initialisation de la structure de données des coefficients pour le calcul multi-paramétrique (second membre)."""),
+
+   91 : _(u"""Initialisation de la structure de données des coefficients pour le calcul multi-paramétrique (matrice)."""),
+
 }
