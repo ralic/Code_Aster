@@ -1,10 +1,10 @@
-subroutine romBaseInfo(ds_empi)
+subroutine romSolveInfo(ds_solve)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
@@ -26,41 +26,42 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Empi), intent(in) :: ds_empi
+    type(ROM_DS_Solve), intent(in) :: ds_solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Model reduction
 !
-! Informations about empiric modes base
+! Informations about objects to solve system
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_empi          : datastructure for empiric modes
+! In  ds_solve         : datastructure to solve systems
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I', 'ROM7_8')
-    call utmess('I', 'ROM3_1', sk = ds_empi%base)
-    call utmess('I', 'ROM3_2', sk = ds_empi%model)
-    call utmess('I', 'ROM3_3', sk = ds_empi%mesh)
-    call utmess('I', 'ROM3_4', sk = ds_empi%field_name)
-    if (ds_empi%base_type .eq. 'LINEIC') then
-        call utmess('I', 'ROM3_10')
-        call utmess('I', 'ROM3_11', sk = ds_empi%axe_line)
-        call utmess('I', 'ROM3_12', sk = ds_empi%surf_num)
-        call utmess('I', 'ROM5_13', si = ds_empi%ds_lineic%nb_slice)
-    else
-        call utmess('I', 'ROM3_20')
+    character(len=1) :: syst_matr_type, syst_2mbr_type, syst_type
+!
+! --------------------------------------------------------------------------------------------------
+!
+    syst_matr_type = ds_solve%syst_matr_type
+    syst_2mbr_type = ds_solve%syst_2mbr_type
+    syst_type      = ds_solve%syst_type
+    if (syst_matr_type .eq. 'C') then
+        call utmess('I', 'ROM2_14')
+    elseif (syst_matr_type .eq. 'R') then
+        call utmess('I', 'ROM2_15')
     endif
-    if (ds_empi%nb_mode .ne. 0) then
-        call utmess('I', 'ROM3_5', si = ds_empi%nb_mode)
-    endif
-    call utmess('I', 'ROM3_6', si = ds_empi%nb_node)
-    call utmess('I', 'ROM3_7', si = ds_empi%nb_equa)
-    call utmess('I', 'ROM3_8', si = ds_empi%nb_cmp)
-    if (ds_empi%nb_snap .ne. 0) then
-        call utmess('I', 'ROM3_9', si = ds_empi%nb_snap)
-    endif
+    if (syst_2mbr_type .eq. 'C') then
+        call utmess('I', 'ROM2_16')
+    elseif (syst_2mbr_type .eq. 'R') then
+        call utmess('I', 'ROM2_17')
+    endif 
+    if (syst_type .eq. 'C') then
+        call utmess('I', 'ROM2_36')
+    elseif (syst_type .eq. 'R') then
+        call utmess('I', 'ROM2_37')
+    endif 
+    call utmess('I', 'ROM2_35', si = ds_solve%syst_size)
 !
 end subroutine

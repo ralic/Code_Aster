@@ -35,7 +35,7 @@ cata_msg = {
 
     8 : _(u"""Création de la liste des équations sur la base empirique %(k1)s."""),
 
-    9 : _(u"""Vous avez demandé %(i1)d clichés."""),
+    9 : _(u"""Base empirique créée à partir de %(i1)d clichés."""),
 
    10 : _(u"""Vous n'avez sélectionné aucun cliché."""),
 
@@ -88,6 +88,12 @@ cata_msg = {
    33 : _(u"""Création des objets pour le système réduit."""),
 
    34 : _(u"""Initialisation des produits matrices par mode."""),
+
+   35 : _(u"""Taille du système: %(i1)d."""),
+
+   36 : _(u"""Le système résultant sera complexe."""),
+
+   37 : _(u"""Le système résultant sera réel."""),
 
    38 : _(u"""Pas de lecture des données pour la variation des coefficients."""),
 

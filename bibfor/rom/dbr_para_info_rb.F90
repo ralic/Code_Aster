@@ -1,12 +1,15 @@
-subroutine romBaseInfo(ds_empi)
+subroutine dbr_para_info_rb(ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "jeveux.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romSolveInfo.h"
+#include "asterfort/romMultiParaInfo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,41 +29,38 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Empi), intent(in) :: ds_empi
+    type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Model reduction
+! DEFI_BASE_REDUITE - Initializations
 !
-! Informations about empiric modes base
-!
-! --------------------------------------------------------------------------------------------------
-!
-! In  ds_empi          : datastructure for empiric modes
+! Informations about DEFI_BASE_REDUITE parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I', 'ROM7_8')
-    call utmess('I', 'ROM3_1', sk = ds_empi%base)
-    call utmess('I', 'ROM3_2', sk = ds_empi%model)
-    call utmess('I', 'ROM3_3', sk = ds_empi%mesh)
-    call utmess('I', 'ROM3_4', sk = ds_empi%field_name)
-    if (ds_empi%base_type .eq. 'LINEIC') then
-        call utmess('I', 'ROM3_10')
-        call utmess('I', 'ROM3_11', sk = ds_empi%axe_line)
-        call utmess('I', 'ROM3_12', sk = ds_empi%surf_num)
-        call utmess('I', 'ROM5_13', si = ds_empi%ds_lineic%nb_slice)
-    else
-        call utmess('I', 'ROM3_20')
+! In  ds_para_rb       : datastructure for parameters (RB)
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: ifm, niv
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM7_21')
     endif
-    if (ds_empi%nb_mode .ne. 0) then
-        call utmess('I', 'ROM3_5', si = ds_empi%nb_mode)
-    endif
-    call utmess('I', 'ROM3_6', si = ds_empi%nb_node)
-    call utmess('I', 'ROM3_7', si = ds_empi%nb_equa)
-    call utmess('I', 'ROM3_8', si = ds_empi%nb_cmp)
-    if (ds_empi%nb_snap .ne. 0) then
-        call utmess('I', 'ROM3_9', si = ds_empi%nb_snap)
+!
+! - Print - General for RB
+!
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM3_39')
+        call romMultiParaInfo(ds_para_rb%multipara)
+        call utmess('I', 'ROM3_37')
+        call romSolveInfo(ds_para_rb%solveDOM)
+        call utmess('I', 'ROM3_38')
+        call romSolveInfo(ds_para_rb%solveROM)
     endif
 !
 end subroutine

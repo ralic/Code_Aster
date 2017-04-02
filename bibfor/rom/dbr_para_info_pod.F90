@@ -1,4 +1,4 @@
-subroutine dbr_para_info(ds_para)
+subroutine dbr_para_info_pod(ds_para_pod)
 !
 use Rom_Datastructure_type
 !
@@ -8,9 +8,7 @@ implicit none
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/dbr_para_info_pod.h"
-#include "asterfort/dbr_para_info_rb.h"
-#include "asterfort/romBaseInfo.h"
+#include "asterfort/romSnapInfo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,7 +28,7 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(in) :: ds_para
+    type(ROM_DS_ParaDBR_POD), intent(in) :: ds_para_pod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,58 +38,47 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_para          : datastructure for parameters
+! In  ds_para_pod      : datastructure for parameters (POD)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
     character(len=16) :: operation = ' '
-    character(len=8)  :: result_out = ' '
-    integer :: nb_mode_maxi
-    aster_logical :: l_reuse
+    character(len=24) :: field_name = ' ', surf_num = ' '
+    character(len=8)  :: result_in = ' ', axe_line = ' '
+    real(kind=8) :: tole_svd, tole_incr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
-!
-! - Get parameters in datastructure - General for DBR
-!
-    operation    = ds_para%operation
-    result_out   = ds_para%result_out
-    nb_mode_maxi = ds_para%nb_mode_maxi
-    l_reuse      = ds_para%l_reuse
-!
-! - Print - General for DBR
-!
     if (niv .ge. 2) then
-        call utmess('I', 'ROM5_24')
-        call utmess('I', 'ROM5_16', sk = operation)
-        if (nb_mode_maxi .ne. 0) then
-            call utmess('I', 'ROM5_17', si = nb_mode_maxi)
-        endif
-        if (l_reuse) then
-            call utmess('I', 'ROM7_15', sk = result_out)
-        else
-            call utmess('I', 'ROM7_16')
-        endif
+        call utmess('I', 'ROM7_20')
     endif
 !
-! - Print about empiric base
+! - Get parameters in datastructure - General for POD
+!
+    tole_svd     = ds_para_pod%tole_svd
+    tole_incr    = ds_para_pod%tole_incr
+    result_in    = ds_para_pod%result_in
+    field_name   = ds_para_pod%field_name
+    axe_line     = ds_para_pod%axe_line
+    surf_num     = ds_para_pod%surf_num
+!
+! - Print - General for POD
 !
     if (niv .ge. 2) then
-        call romBaseInfo(ds_para%ds_empi)
+        call utmess('I', 'ROM7_3' , sr = tole_svd)
+        if (operation .eq. 'POD_INCR') then
+            call utmess('I', 'ROM7_13' , sr = tole_incr)
+        endif
+        call utmess('I', 'ROM7_1' , sk = result_in)
+        call utmess('I', 'ROM7_2' , sk = field_name)
     endif
 !
-! - Print / method
+! - Print about snapshots selection
 !
-    if (operation(1:3) .eq. 'POD') then
-        call dbr_para_info_pod(ds_para%para_pod)
-        
-    elseif (operation .eq. 'GLOUTON') then
-        call dbr_para_info_rb(ds_para%para_rb)
-
-    else
-        ASSERT(.false.)
+    if (niv .ge. 2) then
+        call romSnapInfo(ds_para_pod%ds_snap)
     endif
 !
 end subroutine

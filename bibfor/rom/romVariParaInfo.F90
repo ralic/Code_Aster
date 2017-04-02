@@ -1,10 +1,9 @@
-subroutine romBaseInfo(ds_empi)
+subroutine romVariParaInfo(ds_varipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
@@ -26,41 +25,22 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_Empi), intent(in) :: ds_empi
+    type(ROM_DS_VariPara), intent(in) :: ds_varipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! Model reduction
 !
-! Informations about empiric modes base
+! Variation of parameters for multiparametric problems - Print informations
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  ds_empi          : datastructure for empiric modes
+! IO  ds_varipara      : datastructure for multiparametric problems - Variations
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call utmess('I', 'ROM7_8')
-    call utmess('I', 'ROM3_1', sk = ds_empi%base)
-    call utmess('I', 'ROM3_2', sk = ds_empi%model)
-    call utmess('I', 'ROM3_3', sk = ds_empi%mesh)
-    call utmess('I', 'ROM3_4', sk = ds_empi%field_name)
-    if (ds_empi%base_type .eq. 'LINEIC') then
-        call utmess('I', 'ROM3_10')
-        call utmess('I', 'ROM3_11', sk = ds_empi%axe_line)
-        call utmess('I', 'ROM3_12', sk = ds_empi%surf_num)
-        call utmess('I', 'ROM5_13', si = ds_empi%ds_lineic%nb_slice)
-    else
-        call utmess('I', 'ROM3_20')
-    endif
-    if (ds_empi%nb_mode .ne. 0) then
-        call utmess('I', 'ROM3_5', si = ds_empi%nb_mode)
-    endif
-    call utmess('I', 'ROM3_6', si = ds_empi%nb_node)
-    call utmess('I', 'ROM3_7', si = ds_empi%nb_equa)
-    call utmess('I', 'ROM3_8', si = ds_empi%nb_cmp)
-    if (ds_empi%nb_snap .ne. 0) then
-        call utmess('I', 'ROM3_9', si = ds_empi%nb_snap)
-    endif
+    call utmess('I', 'ROM3_50', sk = ds_varipara%para_name)
+    call utmess('I', 'ROM3_51', si = ds_varipara%nb_vale_para)
+    call utmess('I', 'ROM3_52', sr = ds_varipara%para_init)
 !
 end subroutine

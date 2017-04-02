@@ -62,7 +62,7 @@ cata_msg = {
 
    23 : _(u"""Un mode empirique contient une composante au noeud %(k1)s qui n'est pas utilisable."""),
 
-   24 : _(u"""Initialisation des structures de données."""),
+   24 : _(u"""Paramètres généraux de DEFI_BASE_REDUITE."""),
 
    25 : _(u"""Initialisation des structures de données pour les paramètres POD du calcul."""),
 
