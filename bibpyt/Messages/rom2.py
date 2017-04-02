@@ -67,6 +67,8 @@ cata_msg = {
 
    24 : _(u"""Lecture des données pour la variation des coefficients."""),
 
+   25 : _(u"""Lecture des données pour la construction du système - Les matrices."""),
+
    30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
 
    38 : _(u"""Pas de lecture des données pour la variation des coefficients."""),
