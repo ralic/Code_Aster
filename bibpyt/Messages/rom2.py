@@ -41,9 +41,21 @@ cata_msg = {
 
    11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
 
-   12 : _(u"""Préparation de la base empirique dans le cas d'une POD."""),
+   12 : _(u"""Préparation de la base empirique dans le cas d'une méthode POD."""),
 
-   13 : _(u"""La valeur 'POD' n'est pas possible pour enrichir une base existante."""),
+   13 : _(u"""On ne peut pas enrichir une base empirique avec la méthode %(k1)s."""),
+
+   13 : _(u"""Préparation de l'algorithme."""),
+
+   14 : _(u"""La matrice du système sera complexe."""),
+
+   15 : _(u"""La matrice du système sera réelle."""),
+
+   16 : _(u"""Le second membre du système sera complexe."""),
+
+   17 : _(u"""Le second membre du système sera réel."""),
+
+   18 : _(u"""Préparation de la base empirique dans le cas de la méthode GLOUTON."""),
 
    20 : _(u"""Lecture des données pour le calcul multi-paramétrique avec réduction de modèle."""),
 
@@ -53,4 +65,7 @@ cata_msg = {
 
    30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
 
+   40 : _(u"""Initialisation de l'algorithme pour les méthodes POD."""),
+
+   41 : _(u"""Initialisation de l'algorithme pour la méthode GLOUTON."""),
 }

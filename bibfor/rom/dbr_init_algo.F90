@@ -6,6 +6,7 @@ implicit none
 !
 #include "asterfort/assert.h"
 #include "asterfort/dbr_init_algo_pod.h"
+#include "asterfort/dbr_init_algo_rb.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
@@ -54,7 +55,7 @@ implicit none
         call dbr_init_algo_pod(ds_para%result_out, ds_para%ds_empi,&
                                ds_para%para_pod%tabl_name)
     elseif (ds_para%operation .eq. 'GREEDY') then
-        ASSERT(.false.)
+        call dbr_init_algo_rb(ds_para%para_rb)
     else
         ASSERT(.false.)
     endif

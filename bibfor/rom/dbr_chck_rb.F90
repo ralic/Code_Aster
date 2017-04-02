@@ -1,13 +1,11 @@
-subroutine dbr_init_algo_pod(base, ds_empi, tabl_name)
+subroutine dbr_chck_rb(operation, ds_para_rb, l_reuse)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/romTableCreate.h"
-#include "asterfort/infniv.h"
+#include "asterf_types.h"
+#include "asterfort/romMultiParaChck.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -28,41 +26,28 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: base
-    type(ROM_DS_Empi), intent(inout) :: ds_empi
-    character(len=19), intent(out) :: tabl_name
+    character(len=16), intent(in) :: operation
+    type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
+    aster_logical, intent(in) :: l_reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_BASE_REDUITE - Initializations
 !
-! Init algorithm for POD
+! Some checks - For RB methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  base             : name of empiric base
-! IO  ds_empi          : datastructure for empiric modes
-! Out tabl_name        : name of table in results datastructure
+! In  operation        : type of method
+! In  ds_para_rb       : datastructure for parameters (RB)
+! In  l_reuse          : .true. if reuse
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-!
-! --------------------------------------------------------------------------------------------------
-!
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM2_40')
+    if (l_reuse) then
+        call utmess('F','ROM2_13', sk = operation)
     endif
-!
-! - Create numbering of nodes for the lineic model
-!
-    if (ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_empi)
-    endif
-!
-! - Create table for the reduced coordinates in results datatructure
-!
-    call romTableCreate(base, tabl_name)
+
+    call romMultiParaChck(ds_para_rb%ds_multipara)
 !
 end subroutine

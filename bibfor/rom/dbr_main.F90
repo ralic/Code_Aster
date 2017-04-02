@@ -9,6 +9,7 @@ implicit none
 #include "asterfort/infniv.h"
 #include "asterfort/dbr_main_pod.h"
 #include "asterfort/dbr_main_podincr.h"
+#include "asterfort/dbr_main_rb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -56,8 +57,8 @@ implicit none
     elseif (ds_para%operation .eq. 'POD_INCR') then
         call dbr_main_podincr(ds_para%l_reuse, ds_para%nb_mode_maxi, ds_para%para_pod,&
                               ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'RB_GREEDY') then
-        ASSERT(.false.)
+    elseif (ds_para%operation .eq. 'GLOUTON') then
+        call dbr_main_rb(ds_para%para_rb, ds_para%ds_empi)
     else
         ASSERT(.false.)
     endif

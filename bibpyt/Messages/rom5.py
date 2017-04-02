@@ -62,9 +62,13 @@ cata_msg = {
 
    23 : _(u"""Un mode empirique contient une composante au noeud %(k1)s qui n'est pas utilisable."""),
 
-   24 : _(u"""Paramètres de la commande."""),
+   24 : _(u"""Initialisations des structures de données."""),
 
    25 : _(u"""Initialisations des structures de données pour les paramètres POD du calcul."""),
+
+   26 : _(u"""Initialisations des structures de données pour les paramètres GLOUTON du calcul."""),
+
+   27 : _(u"""Lecture des paramètres pour la méthode GLOUTON."""),
 
    30 : _(u"""Vérification des paramètres pour le calcul non-linéaire avec réduction de modèle."""),
 

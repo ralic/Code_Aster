@@ -160,10 +160,26 @@ implicit none
         character(len=24)        :: prod_mode(8)
     end type ROM_DS_MultiPara
 !
+! - Parameters for DEFI_BASE_REDUITE operator (RB)
+!
+    type ROM_DS_ParaDBR_RB
+! ----- Datastructure for solver's parameters
+        character(len=19)        :: solver
+! ----- Parameters for solving system
+        character(len=1)         :: syst_matr_type
+        character(len=1)         :: syst_2mbr_type
+        character(len=19)        :: syst_matr
+        character(len=19)        :: syst_2mbr
+        character(len=19)        :: syst_solu
+        character(len=19)        :: vect_zero
+! ----- Datastructure for multiparametric reduced problem
+        type(ROM_DS_MultiPara)   :: ds_multipara
+    end type ROM_DS_ParaDBR_RB
+!
 ! - Parameters for DEFI_BASE_REDUITE operator
 !
     type ROM_DS_ParaDBR
-! ----- Type of operation (POD, POD_INCR, ...)
+! ----- Type of operation (POD, POD_INCR, GREEDY, ...)
         character(len=16)        :: operation
 ! ----- Name of empiric base to save
         character(len=8)         :: result_out
@@ -171,6 +187,8 @@ implicit none
         integer                  :: nb_mode_maxi
 ! ----- Parameters for POD/POD_INCR method
         type(ROM_DS_ParaDBR_POD) :: para_pod
+! ----- Parameters for RB method
+        type(ROM_DS_ParaDBR_RB ) :: para_rb
 ! ----- Datastructure for empiric modes
         type(ROM_DS_Empi)        :: ds_empi
 ! ----- If operator is "reuse"

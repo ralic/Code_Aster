@@ -1,12 +1,11 @@
-subroutine dbr_init_algo_pod(base, ds_empi, tabl_name)
+subroutine dbr_paraRBDSInit(ds_multipara, ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/romTableCreate.h"
+#include "asterf_types.h"
+#include "asterc/r8vide.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
@@ -28,21 +27,18 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: base
-    type(ROM_DS_Empi), intent(inout) :: ds_empi
-    character(len=19), intent(out) :: tabl_name
+    type(ROM_DS_MultiPara), intent(in)   :: ds_multipara
+    type(ROM_DS_ParaDBR_RB), intent(out) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_BASE_REDUITE - Initializations
 !
-! Init algorithm for POD
+! Initialization of datastructures for parameters - POD methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  base             : name of empiric base
-! IO  ds_empi          : datastructure for empiric modes
-! Out tabl_name        : name of table in results datastructure
+! Out ds_para_rb       : datastructure for RB parameters
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,17 +48,18 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM2_40')
+        call utmess('I', 'ROM5_26')
     endif
 !
-! - Create numbering of nodes for the lineic model
+! - General initialisations of datastructure
 !
-    if (ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_empi)
-    endif
-!
-! - Create table for the reduced coordinates in results datatructure
-!
-    call romTableCreate(base, tabl_name)
+    ds_para_rb%solver          = '&&OP0053.SOLVER'
+    ds_para_rb%syst_matr       = '&&OP0053.MATR'
+    ds_para_rb%syst_matr_type  = ' '
+    ds_para_rb%syst_2mbr       = '&&OP0053.SECMBR'
+    ds_para_rb%syst_2mbr_type  = ' '
+    ds_para_rb%syst_solu       = '&&OP0053.SOLUTI'
+    ds_para_rb%vect_zero       = '&&OP0053.VEZERO'
+    ds_para_rb%ds_multipara    = ds_multipara
 !
 end subroutine

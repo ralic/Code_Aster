@@ -9,6 +9,7 @@ implicit none
 #include "asterc/gcucon.h"
 #include "asterfort/assert.h"
 #include "asterfort/dbr_read_pod.h"
+#include "asterfort/dbr_read_rb.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
@@ -81,8 +82,8 @@ implicit none
     call getvtx(' ', 'OPERATION', scal = operation)
     if (operation(1:3) .eq. 'POD') then
         call dbr_read_pod(operation, ds_para%para_pod)
-    elseif (operation .eq. 'RB_GREEDY') then
-        ASSERT(.false.)
+    elseif (operation .eq. 'GLOUTON') then
+        call dbr_read_rb(ds_para%para_rb)
     else
         ASSERT(.false.)
     endif

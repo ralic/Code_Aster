@@ -48,7 +48,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  operation        : type of POD method
+! In  operation        : type of method
 ! In  ds_para_pod      : datastructure for parameters (POD)
 ! In  ds_empi          : datastructure for empiric modes
 ! In  l_reuse          : .true. if reuse
@@ -93,7 +93,7 @@ implicit none
         call utmess('I','ROM5_19', sk = result_in)
     endif
     if (l_reuse .and. operation.eq.'POD') then
-        call utmess('F','ROM2_13')
+        call utmess('F','ROM2_13', sk = operation)
     endif
 !
 ! - Check mesh

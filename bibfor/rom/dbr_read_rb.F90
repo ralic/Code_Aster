@@ -1,13 +1,14 @@
-subroutine dbr_init_algo_pod(base, ds_empi, tabl_name)
+subroutine dbr_read_rb(ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_rnum.h"
-#include "asterfort/romTableCreate.h"
+#include "asterfort/cresol.h"
 #include "asterfort/infniv.h"
+#include "asterfort/romMultiParaRead.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -28,21 +29,17 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in) :: base
-    type(ROM_DS_Empi), intent(inout) :: ds_empi
-    character(len=19), intent(out) :: tabl_name
+    type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
 ! DEFI_BASE_REDUITE - Initializations
 !
-! Init algorithm for POD
+! Read parameters - For RB methods
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  base             : name of empiric base
-! IO  ds_empi          : datastructure for empiric modes
-! Out tabl_name        : name of table in results datastructure
+! IO  ds_para_rb       : datastructure for parameters (RB)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,17 +49,15 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM2_40')
+        call utmess('I', 'ROM5_27')
     endif
 !
-! - Create numbering of nodes for the lineic model
+! - Read data for multiparametric problems
 !
-    if (ds_empi%base_type .eq. 'LINEIQUE') then
-        call dbr_rnum(ds_empi)
-    endif
+    call romMultiParaRead(ds_para_rb%ds_multipara)
 !
-! - Create table for the reduced coordinates in results datatructure
+! - Get solver parameters
 !
-    call romTableCreate(base, tabl_name)
+    call cresol(ds_para_rb%solver)
 !
 end subroutine
