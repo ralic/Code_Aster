@@ -55,8 +55,6 @@ cata_msg = {
 
    17 : _(u"""Le second membre du système sera réel."""),
 
-   18 : _(u"""Préparation de la base empirique dans le cas de la méthode GLOUTON."""),
-
    19 : _(u"""Initialisation pour le problème multi-paramétrique."""),
 
    20 : _(u"""Lecture des données pour le calcul multi-paramétrique avec réduction de modèle."""),

@@ -1,12 +1,11 @@
-subroutine dbr_clean(ds_para)
+subroutine romMultiParaClean(ds_multipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dbr_clean_pod.h"
-#include "asterfort/dbr_clean_rb.h"
+#include "asterfort/romMultiCoefClean.h"
+#include "asterfort/romVariParaClean.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,26 +25,32 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Model reduction
 !
-! Clean datastructures
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Clean datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_clean_pod(ds_para)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_clean_rb(ds_para)
-    else
-        ASSERT(.false.)
-    endif
+! IO  ds_multipara     : datastructure for multiparametric problems
+!
+! --------------------------------------------------------------------------------------------------
+!
+    integer :: i_matr, nb_matr, i_vari_para, nb_vari_para
+!
+! --------------------------------------------------------------------------------------------------
+!
+    nb_matr = ds_multipara%nb_matr
+    do i_matr = 1, nb_matr
+        call romMultiCoefClean(ds_multipara%matr_coef(i_matr))
+    end do
+    call romMultiCoefClean(ds_multipara%vect_coef)
+    nb_vari_para = ds_multipara%nb_vari_para
+    do i_vari_para = 1, nb_vari_para
+        call romVariParaClean(ds_multipara%vari_para(i_vari_para))
+    end do
 !
 end subroutine

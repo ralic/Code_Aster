@@ -1,12 +1,12 @@
-subroutine dbr_clean(ds_para)
+subroutine romMultiCoefClean(ds_multicoef)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_clean_pod.h"
-#include "asterfort/dbr_clean_rb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -26,26 +26,25 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Model reduction
 !
-! Clean datastructures
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Delete coefficients for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_clean_pod(ds_para)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_clean_rb(ds_para)
-    else
-        ASSERT(.false.)
+! IO  ds_multicoef     : datastructure for multiparametric problems - Coefficients
+!
+! --------------------------------------------------------------------------------------------------
+!
+    if (ds_multicoef%l_real) then
+        AS_DEALLOCATE(vr  = ds_multicoef%coef_real)
+    endif
+    if (ds_multicoef%l_cplx) then
+        AS_DEALLOCATE(vc  = ds_multicoef%coef_cplx)
     endif
 !
 end subroutine

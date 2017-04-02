@@ -1,12 +1,12 @@
-subroutine dbr_clean(ds_para)
+subroutine romVariParaClean(ds_varipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
+#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_clean_pod.h"
-#include "asterfort/dbr_clean_rb.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -25,27 +25,22 @@ implicit none
 !   1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
+! aslint: disable=W1403
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
-!
-! --------------------------------------------------------------------------------------------------
-!
-! DEFI_BASE_REDUITE - Compute
-!
-! Clean datastructures
+    type(ROM_DS_VariPara), intent(inout) :: ds_varipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! Model reduction
+!
+! Variation of parameters for multiparametric problems - Delete objects
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_clean_pod(ds_para)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_clean_rb(ds_para)
-    else
-        ASSERT(.false.)
-    endif
+! IO  ds_varipara      : datastructure for multiparametric problems - Variations
+!
+! --------------------------------------------------------------------------------------------------
+!
+    AS_DEALLOCATE(vr   = ds_varipara%para_vale)
 !
 end subroutine

@@ -1,12 +1,13 @@
-subroutine dbr_clean(ds_para)
+subroutine dbr_clean_rb(ds_para)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterfort/romBaseClean.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_clean_pod.h"
-#include "asterfort/dbr_clean_rb.h"
+#include "asterfort/as_deallocate.h"
+#include "asterfort/romMultiParaClean.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -30,22 +31,18 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! DEFI_BASE_REDUITE
 !
-! Clean datastructures
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Clean datastructures for GREEDY
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_clean_pod(ds_para)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_clean_rb(ds_para)
-    else
-        ASSERT(.false.)
-    endif
+! IO  ds_para           : datastructure for parameters 
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call romBaseClean(ds_para%ds_empi)
+    call romMultiParaClean(ds_para%para_rb%multipara)
+    AS_DEALLOCATE(vr = ds_para%para_rb%resi_norm)
 !
 end subroutine
