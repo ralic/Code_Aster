@@ -1,14 +1,15 @@
-subroutine dbr_init_algo(ds_para)
+subroutine romMultiParaInit(ds_multipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_init_algo_pod.h"
-#include "asterfort/dbr_init_algo_rb.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romMultiParaProdModeInit.h"
+#include "asterfort/romMultiParaCoefInit.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,17 +29,17 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction
 !
-! Init algorithm
+! Initializations for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! IO  ds_multipara     : datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,16 +49,15 @@ implicit none
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_6')
+        call utmess('I', 'ROM2_19')
     endif
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_init_algo_pod(ds_para%result_out, ds_para%ds_empi,&
-                               ds_para%para_pod%tabl_name)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_init_algo_rb(ds_para%nb_mode_maxi, ds_para%para_rb)
-    else
-        ASSERT(.false.)
-    endif
+! - Prepare product [Matrix] x [Mode]
+!
+    call romMultiParaProdModeInit(ds_multipara)
+!
+! - Initializations of coefficients
+!
+    call romMultiParaCoefInit(ds_multipara)
 !
 end subroutine

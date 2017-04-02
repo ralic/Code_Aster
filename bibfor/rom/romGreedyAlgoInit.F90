@@ -1,14 +1,16 @@
-subroutine dbr_init_algo(ds_para)
+subroutine romGreedyAlgoInit(syst_type , nb_mode   , nb_vari_coef,&
+                             vect_refe , ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
-#include "asterfort/assert.h"
-#include "asterfort/dbr_init_algo_pod.h"
-#include "asterfort/dbr_init_algo_rb.h"
+#include "asterf_types.h"
+#include "asterfort/as_allocate.h"
 #include "asterfort/infniv.h"
+#include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,36 +30,44 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    character(len=1), intent(in) :: syst_type
+    integer, intent(in) :: nb_mode
+    integer, intent(in) :: nb_vari_coef
+    character(len=19), intent(in) :: vect_refe
+    type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Greedy algorithm
 !
 ! Init algorithm
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! In  syst_type        : global type of system (real or complex)
+! In  nb_mode          : number of empirical modes
+! In  nb_vari_coef     : number of coefficients to vary
+! In  vect_refe        : reference vector to create residual vector
+! IO  ds_para_rb       : datastructure for parameters (RB)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: jv_dummy
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_6')
+        call utmess('I', 'ROM2_42')
     endif
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_init_algo_pod(ds_para%result_out, ds_para%ds_empi,&
-                               ds_para%para_pod%tabl_name)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_init_algo_rb(ds_para%nb_mode_maxi, ds_para%para_rb)
-    else
-        ASSERT(.false.)
-    endif
+    ds_para_rb%coef_redu  = '&&OP0053.COEF_REDU'
+    ds_para_rb%resi_type  = syst_type
+    ds_para_rb%resi_vect  = '&&OP0053.RESI_VECT'
+    call wkvect(ds_para_rb%coef_redu, 'V V '//syst_type, nb_mode * nb_vari_coef, jv_dummy)
+    call copisd('CHAMP_GD', 'V', vect_refe, ds_para_rb%resi_vect)
+    call copisd('CHAMP_GD', 'V', vect_refe, ds_para_rb%vect_2mbr_init)
+    AS_ALLOCATE(vr = ds_para_rb%resi_norm, size = nb_vari_coef+1)
 !
 end subroutine

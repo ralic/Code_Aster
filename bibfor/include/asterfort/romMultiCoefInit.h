@@ -15,14 +15,10 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode, ds_empi)
+    subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
-        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
-        integer, intent(in) :: nb_mode
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+        integer, intent(in) :: nb_vari_coef
+        type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
+    end subroutine romMultiCoefInit
 end interface

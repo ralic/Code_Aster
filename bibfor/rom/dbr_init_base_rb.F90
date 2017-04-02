@@ -1,4 +1,4 @@
-subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode_maxi, ds_empi)
+subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode, ds_empi)
 !
 use Rom_Datastructure_type
 !
@@ -6,6 +6,8 @@ implicit none
 !
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/dismoi.h"
+#include "asterfort/rscrsd.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -27,7 +29,7 @@ implicit none
 !
     character(len=8), intent(in) :: base
     type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
-    integer, intent(in) :: nb_mode_maxi
+    integer, intent(in) :: nb_mode
     type(ROM_DS_Empi), intent(inout) :: ds_empi
 !
 ! --------------------------------------------------------------------------------------------------
@@ -40,10 +42,57 @@ implicit none
 !
 ! In  base             : name of empiric base
 ! In  ds_para_rb       : datastructure for parameters (RB)
-! In  nb_mode_maxi     : maximum of modes to compute
+! In  nb_mode          : number of modes to compute
 ! IO  ds_empi          : datastructure for empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    integer :: ifm, niv
+    integer :: nb_equa = 0, nb_node = 0
+    character(len=8)  :: model = ' ', mesh = ' ', matr_name = ' '
+    character(len=24) :: field_refe
+    character(len=24) :: field_name = ' '
+!
+! --------------------------------------------------------------------------------------------------
+!
+    call infniv(ifm, niv)
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM2_28')
+    endif
+!
+! - Get "representative" matrix
+!
+    matr_name = ds_para_rb%multipara%matr_name(1)
+!
+! - Get information about model
+!
+    call dismoi('NOM_MODELE', matr_name, 'MATR_ASSE', repk = model)
+!
+! - Get informations about fields
+!
+    call dismoi('NB_EQUA'     , matr_name, 'MATR_ASSE', repi = nb_equa) 
+    call dismoi('NOM_MAILLA'  , model    , 'MODELE'   , repk = mesh)
+    call dismoi('NB_NO_MAILLA', mesh     , 'MAILLAGE' , repi = nb_node)
+    field_name = 'DEPL'
+    field_refe = ds_para_rb%solveDOM%syst_solu
+!
+! - Save in empiric base
+!
+    ds_empi%base         = base
+    ds_empi%field_name   = field_name
+    ds_empi%field_refe   = field_refe
+    ds_empi%mesh         = mesh
+    ds_empi%model        = model
+    ds_empi%base_type    = ' '
+    ds_empi%axe_line     = ' '
+    ds_empi%surf_num     = ' '
+    ds_empi%nb_node      = nb_node
+    ds_empi%nb_mode      = 0
+    ds_empi%nb_equa      = nb_equa
+    ds_empi%nb_cmp       = nb_equa/nb_node
+!
+! - Create output datastructure
+!
+    call rscrsd('G', base, 'MODE_EMPI', nb_mode)
 !
 end subroutine

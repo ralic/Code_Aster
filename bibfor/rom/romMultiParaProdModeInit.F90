@@ -1,14 +1,13 @@
-subroutine dbr_init_algo(ds_para)
+subroutine romMultiParaProdModeInit(ds_multipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/dbr_init_algo_pod.h"
-#include "asterfort/dbr_init_algo_rb.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/vtcrem.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,36 +27,51 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction
 !
-! Init algorithm
+! Initializations for products matrix x mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! In  ds_multipara     : datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: i_matr, nb_matr
+    character(len=24) :: prod_mode
+    character(len=8) :: matr_name
+    character(len=1) :: matr_type, prod_type, syst_type
+    aster_logical :: l_coefm_cplx
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_6')
+        call utmess('I', 'ROM2_34')
     endif
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_init_algo_pod(ds_para%result_out, ds_para%ds_empi,&
-                               ds_para%para_pod%tabl_name)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_init_algo_rb(ds_para%nb_mode_maxi, ds_para%para_rb)
-    else
-        ASSERT(.false.)
-    endif
+! - Get parameters
+!
+    nb_matr   = ds_multipara%nb_matr
+    syst_type = ds_multipara%syst_type
+!
+! - Prepare product [Matrix] x [Mode]
+!
+    do i_matr = 1, nb_matr
+        prod_mode    = ds_multipara%prod_mode(i_matr)
+        matr_name    = ds_multipara%matr_name(i_matr)
+        matr_type    = ds_multipara%matr_type(i_matr)
+        l_coefm_cplx = ds_multipara%matr_coef(i_matr)%l_cplx
+        prod_type    = 'R'
+        if (matr_type .eq. 'C' .or. l_coefm_cplx .or. syst_type .eq. 'C') then
+            prod_type    = 'C'
+        endif
+        call vtcrem(prod_mode, matr_name, 'V', prod_type)
+    end do
 !
 end subroutine

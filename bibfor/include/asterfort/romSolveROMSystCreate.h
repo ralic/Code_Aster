@@ -15,14 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode, ds_empi)
+    subroutine romSolveROMSystCreate(syst_matr_type, syst_2mbr_type, syst_type,&
+                                     nb_mode       , ds_solve)
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
-        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
+        character(len=1), intent(in) :: syst_matr_type
+        character(len=1), intent(in) :: syst_2mbr_type
+        character(len=1), intent(in) :: syst_type
         integer, intent(in) :: nb_mode
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+        type(ROM_DS_Solve), intent(inout) :: ds_solve
+    end subroutine romSolveROMSystCreate
 end interface

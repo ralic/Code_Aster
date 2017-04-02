@@ -1,14 +1,15 @@
-subroutine dbr_init_algo(ds_para)
+subroutine romMultiParaCoefInit(ds_multipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/dbr_init_algo_pod.h"
-#include "asterfort/dbr_init_algo_rb.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
+#include "asterfort/romEvalCoefInit.h"
+#include "asterfort/romMultiCoefInit.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -28,36 +29,41 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Initializations
+! Model reduction
 !
-! Init algorithm
+! Initializations of coefficients
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! IO  ds_multipara     : datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: i_matr
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_6')
+        call utmess('I', 'ROM2_32')
     endif
 !
-    if (ds_para%operation(1:3) .eq. 'POD') then
-        call dbr_init_algo_pod(ds_para%result_out, ds_para%ds_empi,&
-                               ds_para%para_pod%tabl_name)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_init_algo_rb(ds_para%nb_mode_maxi, ds_para%para_rb)
-    else
-        ASSERT(.false.)
-    endif
+! - Initialisation for evaluation of coefficients
+!
+    call romEvalCoefInit(ds_multipara%nb_vari_para,&
+                         ds_multipara%vari_para   ,&
+                         ds_multipara%evalcoef)
+!
+! - Allocate list of coefficients and set them if constant
+!
+    do i_matr = 1,  ds_multipara%nb_matr
+        call romMultiCoefInit(ds_multipara%nb_vari_coef, ds_multipara%matr_coef(i_matr))
+    end do
+    call romMultiCoefInit(ds_multipara%nb_vari_coef, ds_multipara%vect_coef)
 !
 end subroutine

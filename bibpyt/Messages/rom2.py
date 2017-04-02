@@ -41,7 +41,7 @@ cata_msg = {
 
    11 : _(u"""On n'a pas réussi à extraire les informations de la structure de données %(k1)s."""),
 
-   12 : _(u"""Préparation de la base empirique dans le cas d'une méthode POD."""),
+   12 : _(u"""Initialisation de la base empirique dans le cas d'une méthode POD."""),
 
    13 : _(u"""On ne peut pas enrichir une base empirique avec la méthode %(k1)s."""),
 
@@ -57,6 +57,8 @@ cata_msg = {
 
    18 : _(u"""Préparation de la base empirique dans le cas de la méthode GLOUTON."""),
 
+   19 : _(u"""Initialisation pour le problème multi-paramétrique."""),
+
    20 : _(u"""Lecture des données pour le calcul multi-paramétrique avec réduction de modèle."""),
 
    21 : _(u"""Les matrices ne reposent pas toutes sur la même numérotation."""),
@@ -69,11 +71,25 @@ cata_msg = {
 
    25 : _(u"""Lecture des données pour la construction du système - Les matrices."""),
 
+   26 : _(u"""Évaluation du type du système (réel ou complexe)."""),
+
+   27 : _(u"""Création des objets pour le système complet."""),
+
+   28 : _(u"""Initialisation de la base empirique dans le cas d'une méthode GLOUTON."""),
+
    30 : _(u"""Création du système pour le calcul multi-paramétrique avec réduction de modèle."""),
+
+   32 : _(u"""Initialisation des coefficients pour le problème multi-paramétrique."""),
+
+   33 : _(u"""Création des objets pour le système réduit."""),
+
+   34 : _(u"""Initialisation des produits matrices par mode."""),
 
    38 : _(u"""Pas de lecture des données pour la variation des coefficients."""),
 
    40 : _(u"""Initialisation de l'algorithme pour les méthodes POD."""),
 
    41 : _(u"""Initialisation de l'algorithme pour la méthode GLOUTON."""),
+
+   42 : _(u"""Initialisation pour l'algorithme GLOUTON."""),
 }

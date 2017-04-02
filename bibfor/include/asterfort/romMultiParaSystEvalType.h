@@ -15,14 +15,13 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
-#include "asterf_types.h"
-!
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode, ds_empi)
+    subroutine romMultiParaSystEvalType(ds_multipara,&
+                                        syst_matr_type, syst_2mbr_type, syst_type)
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
-        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
-        integer, intent(in) :: nb_mode
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+        type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+        character(len=1), intent(out) :: syst_matr_type
+        character(len=1), intent(out) :: syst_2mbr_type
+        character(len=1), intent(out) :: syst_type
+    end subroutine romMultiParaSystEvalType
 end interface

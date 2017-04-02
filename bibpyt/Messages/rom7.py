@@ -29,7 +29,7 @@ cata_msg = {
 
    5  : _(u"""Les modes seront linéiques selon l'axe %(k1)s et avec une section définie par %(k2)s."""),
 
-   6  : _(u"""Initialisations de l'algorithme."""),
+   6  : _(u"""Initialisation de l'algorithme."""),
 
    7  : _(u"""Vérifications des paramètres."""),
 

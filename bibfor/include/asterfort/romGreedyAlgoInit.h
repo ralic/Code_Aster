@@ -18,11 +18,13 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dbr_init_base_rb(base, ds_para_rb, nb_mode, ds_empi)
+    subroutine romGreedyAlgoInit(syst_type , nb_mode   , nb_vari_coef,&
+                                 vect_refe , ds_para_rb)
         use Rom_Datastructure_type
-        character(len=8), intent(in) :: base
-        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
+        character(len=1), intent(in) :: syst_type
         integer, intent(in) :: nb_mode
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_init_base_rb
+        integer, intent(in) :: nb_vari_coef
+        character(len=19), intent(in) :: vect_refe
+        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
+    end subroutine romGreedyAlgoInit
 end interface
