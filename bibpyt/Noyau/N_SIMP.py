@@ -112,3 +112,7 @@ class SIMP(N_ENTITE.ENTITE):
             de sa valeur (val), de son nom (nom) et de son parent dans l arboresence (parent)
         """
         return self.class_instance(nom=nom, definition=self, val=val, parent=parent)
+
+    def check_statut(self, into=('o', 'f', 'c')):
+        """Vérifie l'attribut statut."""
+        N_ENTITE.ENTITE.check_statut(self, into)

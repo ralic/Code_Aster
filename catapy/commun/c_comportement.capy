@@ -76,7 +76,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
                 TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
 
-                SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
+                SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
                 b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
                                    fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),
@@ -548,7 +548,7 @@ def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#
 
             TYPE_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("PERTURBATION","VERIFICATION",)),
 
-            SYME_MATR_TANG    =SIMP(statut='d',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
+            SYME_MATR_TANG    =SIMP(statut='f',typ='TXM',into=("OUI","NON"), defaut = "OUI"),
 
             b_perturb         =BLOC(condition = """ (exists("TYPE_MATR_TANG")) """,
                                fr=tr("Calcul de la matrice tangente par perturbation, valeur de la perturbation"),

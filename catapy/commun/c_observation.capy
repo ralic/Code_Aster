@@ -26,7 +26,7 @@ def C_OBSERVATION(PHYSIQUE) :
 
 # Select nodal fields
         _BlocNode  = {}
-        _BlocNode['TOUT']       = SIMP(statut='d',typ='TXM',into=("OUI",) )
+        _BlocNode['TOUT']       = SIMP(statut='f',typ='TXM',into=("OUI",) )
         _BlocNode['NOEUD']      = SIMP(statut='f',typ=no  ,validators=NoRepeat(),max='**')
         _BlocNode['GROUP_NO']   = SIMP(statut='f',typ=grno,validators=NoRepeat(),max='**')
         _BlocNode['MAILLE']     = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**')
@@ -34,7 +34,7 @@ def C_OBSERVATION(PHYSIQUE) :
 
 # Select element fields
         _BlocElem = {}
-        _BlocElem['TOUT']       = SIMP(statut='d',typ='TXM',into=("OUI",) )
+        _BlocElem['TOUT']       = SIMP(statut='f',typ='TXM',into=("OUI",) )
         _BlocElem['MAILLE']     = SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**')
         _BlocElem['GROUP_MA']   = SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**')
 
@@ -84,7 +84,7 @@ def C_OBSERVATION(PHYSIQUE) :
                              **_BlocElem
                                 ),
             b_cham_elem     =BLOC(condition="""(equal_to("NOM_CHAM", 'CONT_ELEM'))""",
-                             regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')), 
+                             regles          =(UN_PARMI('GROUP_MA','MAILLE','TOUT')),
                              **_BlocElem
                                 ),
             b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
