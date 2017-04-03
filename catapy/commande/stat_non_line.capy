@@ -46,7 +46,7 @@ STAT_NON_LINE=OPER(nom="STAT_NON_LINE",op=70,sd_prod=evol_noli,
 #-------------------------------------------------------------------
          INCREMENT       =C_INCREMENT('MECANIQUE'),
 #-------------------------------------------------------------------
-         METHODE         =SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX","NEWTON_KRYLOV","MODELE_REDUIT")),
+         METHODE         =SIMP(statut='f',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX","NEWTON_KRYLOV","MODELE_REDUIT")),
              b_meth_newton = BLOC(condition = """equal_to("METHODE", 'NEWTON') or equal_to("METHODE", 'NEWTON_KRYLOV')""",
                                   NEWTON = C_NEWTON(),
                                   ),

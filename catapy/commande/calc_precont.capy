@@ -34,7 +34,7 @@ CALC_PRECONT=MACRO(nom="CALC_PRECONT",
 #-------------------------------------------------------------------
          ETAT_INIT       =C_ETAT_INIT('STAT_NON_LINE','f'),
 #-------------------------------------------------------------------
-         METHODE = SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX")),
+         METHODE = SIMP(statut='f',typ='TXM',defaut="NEWTON",into=("NEWTON","IMPLEX")),
          b_meth_newton = BLOC(condition = """equal_to("METHODE", 'NEWTON')""",
                            NEWTON = C_NEWTON(),
                         ),

@@ -103,7 +103,7 @@ DYNA_NON_LINE=OPER(nom="DYNA_NON_LINE",op= 70,sd_prod=evol_noli,reentrant='f',
                FORMULATION  =SIMP(statut='o',max=1,typ='TXM',into=("DEPLACEMENT","VITESSE","ACCELERATION"),),),
          ),
 #-------------------------------------------------------------------
-         METHODE        =SIMP(statut='d',typ='TXM',defaut="NEWTON",into=("NEWTON","NEWTON_KRYLOV")),
+         METHODE        =SIMP(statut='f',typ='TXM',defaut="NEWTON",into=("NEWTON","NEWTON_KRYLOV")),
          NEWTON          =C_NEWTON(),
 #-------------------------------------------------------------------
          RECH_LINEAIRE   =C_RECH_LINEAIRE(),
