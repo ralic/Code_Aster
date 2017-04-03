@@ -90,7 +90,7 @@ class OPER(N_ENTITE.ENTITE):
     nommage = nommage
 
     def __init__(self, nom, op, sd_prod, reentrant='n', repetable='o', fr="",
-                 docu="", regles=(), op_init=None, niveau = None, UIinfo=None, **args):
+                 docu="", regles=(), op_init=None, niveau = None, **args):
         """
            Méthode d'initialisation de l'objet OPER. Les arguments sont utilisés pour initialiser
            les attributs de meme nom
@@ -100,8 +100,8 @@ class OPER(N_ENTITE.ENTITE):
         self.sd_prod = sd_prod
         self.reentrant = reentrant
         self.fr = fr
-        assert args.get(
-            'ang') is None, '"ang" attribute does not exist anymore'
+        assert args.get('ang') is None, '"ang" does not exist anymore'
+        assert args.get('UIinfo') is None, '"UIinfo" does not exist anymore'
         self.repetable = repetable
         self.docu = docu
         if type(regles) == types.TupleType:
@@ -119,7 +119,6 @@ class OPER(N_ENTITE.ENTITE):
         else:
             self.niveau = current_cata.get_niveau(niveau)
             self.niveau.enregistre(self)
-        self.UIinfo = UIinfo
         self.affecter_parente()
         self.check_definition(self.nom)
 

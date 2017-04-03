@@ -91,7 +91,7 @@ class MACRO(N_ENTITE.ENTITE):
 
     def __init__(
         self, nom, op, sd_prod=None, reentrant='n', repetable='o', fr="",
-            docu="", regles=(), op_init=None, niveau = None, fichier_ini=0, UIinfo=None, **args):
+            docu="", regles=(), op_init=None, niveau = None, fichier_ini=0, **args):
         """
            Méthode d'initialisation de l'objet MACRO. Les arguments sont utilisés pour initialiser
            les attributs de meme nom
@@ -113,8 +113,8 @@ class MACRO(N_ENTITE.ENTITE):
         self.sd_prod = sd_prod
         self.reentrant = reentrant
         self.fr = fr
-        assert args.get(
-            'ang') is None, '"ang" attribute does not exist anymore'
+        assert args.get('ang') is None, '"ang" does not exist anymore'
+        assert args.get('UIinfo') is None, '"UIinfo" does not exist anymore'
         self.repetable = repetable
         self.docu = docu
         if type(regles) == types.TupleType:
@@ -133,7 +133,6 @@ class MACRO(N_ENTITE.ENTITE):
         else:
             self.niveau = current_cata.get_niveau(niveau)
             self.niveau.enregistre(self)
-        self.UIinfo = UIinfo
         self.affecter_parente()
         self.check_definition(self.nom)
 

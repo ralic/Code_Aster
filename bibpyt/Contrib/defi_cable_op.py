@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,7 +25,6 @@ from Cata.cata import *
 DEFI_CABLE_OP=OPER(nom="DEFI_CABLE_OP",op= 180,sd_prod=cabl_precont,reentrant='n',
             fr=tr("Définit les profils initiaux de tension d'une structure en béton le long des cables de précontrainte"
                 " (utilisée par la macro DEFI_CABLE_BP)"),
-            UIinfo={"groupes":("CACHE",)},
          MODELE          =SIMP(statut='o',typ=modele_sdaster ),
          CHAM_MATER      =SIMP(statut='o',typ=cham_mater ),
          CARA_ELEM       =SIMP(statut='o',typ=cara_elem ),

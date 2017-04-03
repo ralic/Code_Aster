@@ -84,7 +84,7 @@ class PROC(N_ENTITE.ENTITE):
     label = 'PROC'
 
     def __init__(self, nom, op, reentrant='n', repetable='o', fr="",
-                 docu="", regles=(), op_init=None, niveau = None, UIinfo=None, **args):
+                 docu="", regles=(), op_init=None, niveau = None, **args):
         """
            Méthode d'initialisation de l'objet PROC. Les arguments sont utilisés pour initialiser
            les attributs de meme nom
@@ -94,8 +94,8 @@ class PROC(N_ENTITE.ENTITE):
         self.reentrant = reentrant
         self.repetable = repetable
         self.fr = fr
-        assert args.get(
-            'ang') is None, '"ang" attribute does not exist anymore'
+        assert args.get('ang') is None, '"ang" does not exist anymore'
+        assert args.get('UIinfo') is None, '"UIinfo" does not exist anymore'
         self.docu = docu
         if type(regles) == types.TupleType:
             self.regles = regles
@@ -112,7 +112,6 @@ class PROC(N_ENTITE.ENTITE):
         else:
             self.niveau = current_cata.get_niveau(niveau)
             self.niveau.enregistre(self)
-        self.UIinfo = UIinfo
         self.affecter_parente()
         self.check_definition(self.nom)
 

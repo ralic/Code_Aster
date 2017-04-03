@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,6 @@ from Cata.cata import OPER, SIMP, cham_no_sdaster, evol_noli, evol_elas
 
 POST_K_VARC = OPER(
     nom="POST_K_VARC", op=48, sd_prod=cham_no_sdaster, reentrant='n',
-    UIinfo={"groupes": ("Post-traitements",)},
     fr="Récuperation d'un champ de variable de commande a un instant donné à partir d'un résultat",
 
     RESULTAT=SIMP(statut='o', typ=(evol_elas,evol_noli)),

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,7 +23,6 @@ from Cata.cata import *
 
 
 CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='f',
-            UIinfo={"groupes":("CACHE",)},
             fr=tr("Intégrer une loi de comportement"),
      MATER           =SIMP(statut='o',typ=mater_sdaster,max=30),
      COMPORTEMENT    =C_COMPORTEMENT('CALC_POINT_MAT'),
@@ -125,12 +124,12 @@ CALC_POINT_MAT=OPER(nom="CALC_POINT_MAT",op=33,sd_prod=table_sdaster,reentrant='
 
      AFFE_VARC    = FACT(statut='f',max='**',
         NOM_VARC    = SIMP(statut='o',typ='TXM', into=("TEMP","CORR","IRRA","HYDR","SECH","NEUT1","NEUT2",
-                                                 "PFERRITE","PPERLITE","PBAINITE","PMARTENS",  
+                                                 "PFERRITE","PPERLITE","PBAINITE","PMARTENS",
                                                  "ALPHPUR","ALPHBETA", #"M_ZIRC",
                                                  "EPSA",
                                                   )),
         VALE_FONC   = SIMP(statut='f',typ=(fonction_sdaster,formule) ),
- 
+
         B_VALE_REF          =BLOC(condition="NOM_VARC in ('TEMP', 'SECH')",
             VALE_REF         =SIMP(statut='o',typ='R'), ),
                         ),

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -22,7 +22,6 @@ from Cata.cata import *
 MACRO_BASCULE_SCHEMA = MACRO(
     nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema_ops, sd_prod=evol_noli, reentrant='f',
     fr="Macro permettant la bascule de schema en temps dans DYNA_NON_LINE",
-    UIinfo={"groupes": ("Résolution", "Dynamique",)},
     MODELE=SIMP(statut='o', typ=modele_sdaster),
     CHAM_MATER=SIMP(statut='o', typ=cham_mater),
     MODE_STAT=SIMP(statut='f', typ=mode_meca),

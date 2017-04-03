@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -43,7 +43,6 @@ def mode_iter_inv_prod(TYPE_RESU, **args ):
 MODE_ITER_INV=OPER(nom="MODE_ITER_INV",op=  44,sd_prod=mode_iter_inv_prod
                     ,fr=tr("Calcul des modes propres par itérations inverses ; valeurs propres et modes réels ou complexes"),
                      reentrant='n',
-            UIinfo={"groupes":("CACHE",)},
 
          TYPE_RESU       =SIMP(statut='f',typ='TXM',defaut="DYNAMIQUE",
                                into=("MODE_FLAMB","DYNAMIQUE","GENERAL"),

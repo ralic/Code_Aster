@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,7 +26,6 @@ CALC_FORC_AJOU=OPER(nom="CALC_FORC_AJOU",op=199,sd_prod=vect_asse_gene,
                    fr=tr("Calculer l'effet de surpression hydrodynamique due au mouvement d'entrainement de la structure"
                          " en analyse sismique"),
                    reentrant ='n',
-            UIinfo={"groupes":("CACHE",)},
 
         regles=(EXCLUS('MODE_MECA','MODELE_GENE'),
                 PRESENT_PRESENT( 'MODELE_GENE','NUME_DDL_GENE'),
