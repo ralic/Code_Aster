@@ -114,26 +114,28 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     elif args['LIEU_SIGNAL'] == 'CHAMP_LIBRE':
         input = 'CL'
 
-    if args['LIAISON'] == 'PERIODIQUE':
+    lliaison = 'OUI'
+    lmassp = 'NON'
+    ltranin = 'NON'
+    llcara = 'NON'
+    if args['CHARGEMENT'] == 'ONDE_PLANE':
+      if args['LIAISON'] == 'PERIODIQUE':
         lliaison = 'OUI'
-    elif args['LIAISON'] == 'SANS':
+      elif args['LIAISON'] == 'SANS':
         lliaison = 'NON'
 
 # Possibilite d utiliser des masses penalisées :
 # lmassp ='OUI' ou 'NON'
-    lmassp = 'NON'
-    if args['UNITE_TRAN_INIT'] != None :
-      input = 'RA'
-      lliaison = 'NON'
-      if args['MASS_PENA'] != None:
-        lmassp = 'OUI'
-
+      if args['UNITE_TRAN_INIT'] != None :
+        ltranin = 'OUI'
+        input = 'RA'
+        lliaison = 'NON'
+        if args['MASS_PENA'] != None:
+          lmassp = 'OUI'
 # Possibilite d utiliser une longueur caracteristique :
 # llcara ='OUI' ou 'NON'
-    llcara = 'NON'
-    if args['UNITE_TRAN_INIT'] != None :
-      if args['LONG_CARA'] != None :
-        llcara = 'OUI'
+        if args['LONG_CARA'] != None :
+          llcara = 'OUI'
 
 # Possibilite de faire une verification en temporel avec coeff Rayleigh :
 # veriftmp ='OUI' ou 'NON'
@@ -148,7 +150,6 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     zpa = 1
     coefzpa = kh / zpa
 # frequence de coupure pour calcul des FDT
-   # fcoup = 35.
     fcoup = args['FREQ_COUP']
 
 # Groupes de mailles et maillage
@@ -157,10 +158,10 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     grma_gauch = args['GROUP_MA_GAUCHE']
     grma_subst = args['GROUP_MA_SUBSTR']
     grma_colon = args['GROUP_MA_COL']
-    if args['GROUP_MA_LATE'] != None:
-      grma_late = args['GROUP_MA_LATE']
-    else:
-      grma_late = 'LATE'
+    #if args['GROUP_MA_LATE'] != None:
+    #  grma_late = args['GROUP_MA_LATE']
+    #else:
+    grma_late = 'LATE'
 #
 
 # impression des graphiques au format postscipt 'EPS' ou '' pour format GRACE
@@ -193,9 +194,9 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     utabspec = args['UNITE_RESU_SPEC']
 
 # Parametres FFT ### TRES IMPORTANT ###
-    if args['UNITE_TRAN_INIT'] != None :
-      utabtranin = args['UNITE_TRAN_INIT']
-      __fonc_acce=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+    if ltranin == 'OUI' :
+      utranin = args['UNITE_TRAN_INIT']
+      __fonc_acce=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[1,1],INDIC_RESU=[1,3],
                    );
@@ -528,11 +529,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                           MAILLAGE=__mailla,
                           CREA_GROUP_NO=_F(GROUP_MA=(grma_droit,),),
                           )
-      if args['GROUP_MA_LATE'] == None:
-        __mailla = DEFI_GROUP(reuse=__mailla,
-                          MAILLAGE=__mailla,
-                          CREA_GROUP_MA=_F(NOM=grma_late, UNION=(grma_droit,grma_gauch,),),
-                          )
+      #if args['GROUP_MA_LATE'] == None:
+      #  __mailla = DEFI_GROUP(reuse=__mailla,
+      #                    MAILLAGE=__mailla,
+      #                    CREA_GROUP_MA=_F(NOM=grma_late, UNION=(grma_droit,grma_gauch,),),
+      #                    )
 
       __mailla = DEFI_GROUP(reuse=__mailla,
                           MAILLAGE=__mailla,
@@ -610,6 +611,18 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
         resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
       resultfile.write( " FINSF \n")
       resultfile.write( " % \n")
+      resultfile.write( " GROUP_MA \n")
+      resultfile.write( str(grma_gauch)  + " \n")
+      for k in range(1,NCOUB+1):     
+        resultfile.write( " M"+str(NCOUB+1+k)+" \n")
+      resultfile.write( " FINSF \n")
+      resultfile.write( " % \n")
+      resultfile.write( " GROUP_MA \n")
+      resultfile.write( str(grma_droit)  + " \n")
+      for k in range(1,NCOUB+1):     
+        resultfile.write( " M"+str(2*NCOUB+1+k)+" \n")
+      resultfile.write( " FINSF \n")
+      resultfile.write( " % \n")
       for k in range(1,NCOUB+1):
         resultfile.write( " GROUP_MA \n")
         resultfile.write( " G"+str(__TMAT['M',k])+"      \n")
@@ -659,9 +672,8 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                           CREA_GROUP_NO=_F(GROUP_MA=('PLATE',),),
                            )
       UL.EtatInit()
-    if args['UNITE_TRAN_INIT'] != None :
+    if ltranin == 'OUI' :
       NPC = NCOU+3 
-      # __faccX=[None]*NPC
       l_para = []
       l_foncx = []
       l_vitex = []
@@ -670,32 +682,32 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
       for k in range(1, NPC):
          if k < NPC-1 :
            if lmassp == 'OUI':
-             __faccex0=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __faccex0=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[1,1],INDIC_RESU=[1,NPC+2-k],
                    );
            else:
-             __fvitex=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __fvitex=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[2,1],INDIC_RESU=[2,NPC+2-k],
                    );
-             __fdeplx=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __fdeplx=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[3,1],INDIC_RESU=[3,NPC+2-k],
                    );
            l_para.append(-1.0*__TMAT['Y',NPC-1-k])
          else:
            if lmassp == 'OUI':
-             __faccex0=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __faccex0=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[1,1],INDIC_RESU=[1,2],
                    );
            else:
-             __fvitex=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __fvitex=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[2,1],INDIC_RESU=[2,2],
                    );
-             __fdeplx=LIRE_FONCTION(UNITE=utabtranin,NOM_PARA='INST',
+             __fdeplx=LIRE_FONCTION(UNITE=utranin,NOM_PARA='INST',
                INTERPOL = 'LIN',PROL_DROITE = 'CONSTANT',
                INDIC_PARA=[3,1],INDIC_RESU=[3,2],
                    );
@@ -757,7 +769,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
       __mailla=MODI_MAILLAGE(reuse =__mailla,
                 MAILLAGE=__mailla,
-                ORIE_PEAU_2D=_F(GROUP_MA=(grma_subst,grma_late),GROUP_MA_SURF=grma_colon,),
+                ORIE_PEAU_2D=_F(GROUP_MA=(grma_subst,grma_gauch,grma_droit),GROUP_MA_SURF=grma_colon,),
                 );
       if lmassp == 'OUI':
         __MODELE = AFFE_MODELE(MAILLAGE=__mailla,
@@ -766,7 +778,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                               MODELISATION='D_PLAN',),
                            _F(GROUP_MA='PLATE', PHENOMENE='MECANIQUE',
                               MODELISATION='2D_DIS_T',),
-                           _F(GROUP_MA=(grma_subst,grma_late), PHENOMENE='MECANIQUE',
+                           _F(GROUP_MA=(grma_subst,grma_gauch,grma_droit), PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN_ABSO',),
                            ),)
 
@@ -783,7 +795,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                            AFFE=(
                            _F(GROUP_MA=grma_colon, PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN',),
-                           _F(GROUP_MA=(grma_subst,grma_late), PHENOMENE='MECANIQUE',
+                           _F(GROUP_MA=(grma_subst,grma_gauch,grma_droit), PHENOMENE='MECANIQUE',
                               MODELISATION='D_PLAN_ABSO',),
                            ),)
 
@@ -1068,7 +1080,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 FONC_SIGNAL = __VITEX, GROUP_MA=grma_subst)
                      );
           else:
-            if args['UNITE_TRAN_INIT'] != None :
+            if ltranin == 'OUI' :
               if lmassp == 'OUI' :
                 __ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                   ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
@@ -1080,13 +1092,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                   FORCE_NODALE=(_F(GROUP_NO='PLATE',FX=__NSEISMX,),),
                       );
               else:
-                #__ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                 __FSEISMX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                   ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
                   TYPE_ONDE = 'S',
                   DEPL_IMPO=__FONCDX,
-                  #FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_subst,grma_late))
-                  FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_late))
+                  FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_gauch,grma_droit))
                       );
                 __ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                 ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
@@ -1099,7 +1109,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
                 TYPE_ONDE = 'S',
                 DIST=-1.0*__TMAT['Y', NCOU + 1], DIST_REFLECHI=0.,
-                FONC_SIGNAL = __VITEX, GROUP_MA=(grma_subst,grma_late))
+                FONC_SIGNAL = __VITEX, GROUP_MA=(grma_subst,grma_gauch,grma_droit))
                      );
         else:
           __VECASX = CALC_CHAR_SEISME(
@@ -1112,7 +1122,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 FONC_SIGNAL = __VITEX, GROUP_MA=grma_subst)
                      );
           else:
-            if args['UNITE_TRAN_INIT'] != None :
+            if ltranin == 'OUI' :
               if lmassp == 'OUI' :
                 __ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                   ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
@@ -1124,13 +1134,11 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                   FORCE_NODALE=(_F(GROUP_NO='PLATE',FY=__NSEISMX,),),
                       );
               else:
-                #__ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                 __FSEISMX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                   ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
                   TYPE_ONDE = 'P',
                   DEPL_IMPO=__FONCDX,
-                  #FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_subst,grma_late))
-                  FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_late))
+                  FONC_SIGNAL = __FONCVX, GROUP_MA=(grma_gauch,grma_droit))
                       );
                 __ONDEX=AFFE_CHAR_MECA_F(  MODELE=__MODELE,
                 ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
@@ -1143,7 +1151,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
                 ONDE_PLANE=_F( DIRECTION = (0., 1., 0.,), 
                 TYPE_ONDE = 'P',
                 DIST=-1.0*__TMAT['Y', NCOU + 1], DIST_REFLECHI=0.,
-                FONC_SIGNAL = __VITEX, GROUP_MA=(grma_subst,grma_late))
+                FONC_SIGNAL = __VITEX, GROUP_MA=(grma_subst,grma_gauch,grma_droit))
                      );
 
             #
@@ -1154,7 +1162,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
 
         if args['CHARGEMENT'] == 'ONDE_PLANE':
           for k in range(1,nbdt+1):
-            if args['UNITE_TRAN_INIT'] != None :
+            if ltranin == 'OUI' :
               if lmassp == 'OUI':
                 __VECTEL1=CALC_VECT_ELEM(INST=(k-1)*dt, OPTION='CHAR_MECA', CARA_ELEM=__ELEM, 
                                        CHAM_MATER=__CHAMPMAH, CHARGE=(__ONDEX,__FSEISMX))
