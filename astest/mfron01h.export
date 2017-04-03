@@ -6,7 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron01h.comm D 1
-
-
-
 F mail mfron01h.mail D 20
+F nom  plast01a.mfront   D 0
+F nom  simvm01a.mfront   D 0

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,6 +18,11 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+import os
+
+os.system("mfront --obuild chabo01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Chaboche.so")
 
 
 C1_I=187.*341.
@@ -46,18 +51,9 @@ MAT=DEFI_MATERIAU(
 
 MATF=DEFI_MATERIAU(ELAS=_F(E=young,
                            NU=0.3),
-                   Chaboche=_F(YoungModulus = young ,
-                               PoissonRatio = 0.3 ,
-                               R_inf  = 151.,
-                               R_0  = 87.,
-                               b  = 2.3,
-                               k  = k,
-                               w  = w,
-                               C_inf_0 = C1_I,
-                               C_inf_1 = C2_I,
-                               g_0_0 = g1,
-                               g_0_1 = g2,
-                               a_inf = 1.,),)
+                   MFRONT=_F(LISTE_COEF=(young ,0.3 ,151., 87.,2.3,k, w,C1_I,C2_I,g1,g2,1.
+                                ,),)
+                            ,)
 
 
 
@@ -132,8 +128,10 @@ TEST_TABLE(FILTRE=_F(NOM_PARA='INST',VALE=1.435),
 # MFRONT
 
 SOLMF=SIMU_POINT_MAT( MATER=MATF,
-                COMPORTEMENT=_F(RELATION='Chaboche',
-                                RESI_INTE_RELA=1e-12,),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='asterchaboche',
+                                LIBRAIRIE='Chaboche.so',
+                                RESI_INTE_MAXI=1e-12,),
                 INCREMENT=_F(  LIST_INST = LSUB),
                 NEWTON=_F(REAC_ITER = 1, ),
                 SIGM_IMPOSE=_F(SIXX=S1,SIXY=S3,),

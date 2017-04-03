@@ -19,6 +19,13 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),PAR_LOT='OUI');
 
+import os
+
+os.system("mfront --obuild vchab01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so ViscoChaboche.so")
+os.system("mfront --obuild vmenr01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so ViscoMemoNrad.so")
+
 pilote=''
 #pilote='INTERACTIF'
 
@@ -82,59 +89,30 @@ ACIER[0]=DEFI_MATERIAU(ELAS=_F(E=YOUNG,NU=POISSON),
 ACIER[1] =DEFI_MATERIAU(
                      ELAS=_F(E=YOUNG,
                              NU=POISSON,),
-                    ViscoChaboche=_F(
-                                YoungModulus = YOUNG,
-                                PoissonRatio = POISSON,
-                                alpha = 0.,
-                                Rinf = R_I,
-                                R0 = R_0,
-                                b = B,
-                                C_0 = C1_I,
-                                C_1 = C2_I,
-                                g_0 = G1_0,
-                                g_1 = G2_0,
-                                m = N,
-                                UNsurK = UN_SUR_K,
-                    )
-                               )
+                     MFRONT=_F(LISTE_COEF=(YOUNG,POISSON,0.,R_I,R_0,B,C1_I,C2_I,G1_0,G2_0,N,UN_SUR_K,
+                                                ),)
+                                        ,)
 
 # ViscMemoNrad
 ACIER[2] =DEFI_MATERIAU(
                      ELAS=_F(E=YOUNG,
                              NU=POISSON,),
-                    ViscoMemoNrad=_F(
-                                YoungModulus = YOUNG,
-                                PoissonRatio = POISSON,
-                                delta1 = delta[2][0],
-                                delta2 = delta[2][1],
-                                Rinf = R_I,
-                                R0 = R_0,
-                                b = B,
-                                k = K,
-                                w = W,
-                                C1inf = C1_I,
-                                g1 = G1_0,
-                                C2inf = C2_I,
-                                g2 = G2_0,
-                                m = N,
-                                UNsurK = UN_SUR_K,
-                                ainf = A_I,
-                                Eta = ETA,
-                                Qm = Q_M,
-                                Q0 = Q_0,
-                                Mu = MU,
-                    )
-                               )
+                     MFRONT=_F(LISTE_COEF=(YOUNG,POISSON,delta[2][0],delta[2][1],R_I,R_0,B,K,W,C1_I,G1_0,C2_I,G2_0,N,UN_SUR_K,A_I,ETA,Q_M,Q_0,MU,
+                                                ),)
+                                    ,)
+                                    
 
 typcal= [None]*ncal
-typcal[0]=['VISC_MEMO_NRAD','BRENT',0]
-typcal[1]=['ViscoChaboche',' ',1]
-typcal[2]=['ViscoMemoNrad',' ',2]
+typcal[0]=['VISC_MEMO_NRAD','BRENT',0,' ',' ']
+typcal[1]=['MFRONT',' ',1,'asterviscochaboche','ViscoChaboche.so']
+typcal[2]=['MFRONT',' ',2,'asterviscomemonrad','ViscoMemoNrad.so']
+
+
 
 compor=[None]*ncal
 compor[0]=[{'RELATION':typcal[0][0],'ALGO_INTE':typcal[0][1],'RESI_INTE_RELA':1.E-8,'ITER_INTE_MAXI':50,'ITER_INTE_PAS':10}]
-compor[1]=[{'RELATION':typcal[1][0], 'ITER_INTE_PAS':10,'RESI_INTE_RELA':1e-12}]
-compor[2]=[{'RELATION':typcal[2][0], 'ITER_INTE_PAS':10 }]
+compor[1]=[{'RELATION':typcal[1][0],'NOM_ROUTINE':typcal[1][3],'LIBRAIRIE':typcal[1][4],'ITER_INTE_PAS':10,'RESI_INTE_MAXI':1e-12}]
+compor[2]=[{'RELATION':typcal[2][0],'NOM_ROUTINE':typcal[2][3],'LIBRAIRIE':typcal[2][4],'ITER_INTE_PAS':10 }]
 
 
 legende= [None]*ncal

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,6 +24,11 @@
 #
 
 DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
+
+import os
+
+os.system("mfront --obuild chabo01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Chaboche.so")
 
 MAIL_B=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )
 MAIL_B=DEFI_GROUP(reuse =MAIL_B,
@@ -51,30 +56,17 @@ CAR_EL_B=AFFE_CARA_ELEM(   MODELE=MOD_B,
 #                     CARACTERISTIQUES MATERIAUX
 #---------------------------------------------------------------------
 #
-MAT_B=DEFI_MATERIAU(        ELAS=_F( E = 2.E+11,
+MAT_B=DEFI_MATERIAU(     ELAS=_F(   E = 2.E+11,
                                     NU = 0.3),
                          ECRO_LINE=_F( D_SIGM_EPSI = 0.,
-                                    SY = 2.35E+08),
-                    Chaboche=_F(
-                                YoungModulus = 2.e11,
-                                PoissonRatio = 0.3,
-                                R_inf = 2.35e8,
-                                R_0 = 2.35e8,
-                                b = 0.,
-                                k = 0.,
-                                w = 0.,
-                                C_inf_0 = 0.,
-                                C_inf_1 = 0.,
-                                g_0_0 = 0.,
-                                g_0_1 = 0.,
-                                a_inf = 0.,
-                    )
-
-                       )
+                                       SY = 2.35E+08),
+                         MFRONT=_F(LISTE_COEF = (2.e11,0.3,2.35e8,2.35e8,0.,0.,0.,0.,0.,0.,0.,0.,
+                                        ),)
+                                )
 
 #
 CH_MAT_B=AFFE_MATERIAU(   MAILLAGE=MAIL_B,
-                                AFFE=_F( TOUT = 'OUI', MATER = MAT_B)
+                          AFFE=_F( TOUT = 'OUI', MATER = MAT_B)
                           )
 
 #
@@ -112,27 +104,34 @@ LIS_INST=DEFI_LIST_REEL(        DEBUT=0.,INTERVALLE=(
                            )
 
 
-RESULTAT=STAT_NON_LINE(      MODELE=MOD_B,
+RESULTAT=STAT_NON_LINE(     MODELE=MOD_B,
                             CHAM_MATER=CH_MAT_B,
-                             CARA_ELEM=CAR_EL_B,EXCIT=(
-                                 _F( CHARGE = CHAR0),
-                                       _F( CHARGE = PRES_LIM,
-                                        TYPE_CHARGE = 'FIXE_PILO')),
+                            CARA_ELEM=CAR_EL_B,
+                            EXCIT=(  _F( CHARGE = CHAR0),
+                                     _F( CHARGE = PRES_LIM,
+                                         TYPE_CHARGE = 'FIXE_PILO')
+                                            ,),
 
-                             COMPORTEMENT=_F( RELATION = 'Chaboche',
-                                              RESI_INTE_RELA=1.E-12,
-                                            ),
-                             INCREMENT=_F( LIST_INST = LIS_INST),
+                            COMPORTEMENT=_F( RELATION = 'MFRONT',
+                                             NOM_ROUTINE='asterchaboche',
+                                             LIBRAIRIE='Chaboche.so',
+                                             RESI_INTE_MAXI=1.E-12,
+                                             ALGO_CPLAN='ANALYTIQUE',
+                                                ),
+                                            
+                            INCREMENT=_F( LIST_INST = LIS_INST),
 
-                                       NEWTON=_F(
-                                        PAS_MINI_ELAS = 0.24,
+                            NEWTON=_F( PAS_MINI_ELAS = 0.24,
                                         REAC_INCR = 1,
                                         REAC_ITER = 1,
                                         REAC_ITER_ELAS = 1),
+                                        
 
-                                       CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6,
-                                        ITER_GLOB_MAXI = 1030,ITER_GLOB_ELAS = 60,),
-                              PILOTAGE=_F( TYPE = 'DDL_IMPO',
+                            CONVERGENCE=_F( RESI_GLOB_RELA = 1.E-6, 
+                                            ITER_GLOB_MAXI = 1030, 
+                                            ITER_GLOB_ELAS = 60,),
+                                        
+                            PILOTAGE=_F( TYPE = 'DDL_IMPO',
                                         GROUP_NO = 'E',
                                         NOM_CMP = 'DX',
                                         COEF_MULT = -213.9708)

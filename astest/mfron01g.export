@@ -6,3 +6,5 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron01g.comm D 1
+F nom  plath01a.mfront   D 0
+F nom  plath02a.mfront   D 0

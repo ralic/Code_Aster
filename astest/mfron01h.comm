@@ -36,6 +36,13 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+import os
+
+os.system("mfront --obuild plast01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Plasticity.so")
+os.system("mfront --obuild simvm01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so SimoMieheVmis.so")
+
 
 MA=LIRE_MAILLAGE(FORMAT="ASTER",)
 
@@ -50,26 +57,15 @@ MO=AFFE_MODELE(
 
 
 ACIER=DEFI_MATERIAU(
-                   ELAS=_F(
-                   E = 200000.,
-                   NU = 0.3,),
+                   ELAS=_F(E = 200000.,
+                           NU = 0.3,
+                                ),
                    ECRO_LINE=_F(D_SIGM_EPSI=2000,
-                                SY=1000.0,),
-                    Plasticity=_F(
-                                YoungModulus = 200000.,
-                                PoissonRatio = 0.3,
-                                ThermalExpansion = 0.,
-                                s0 = 1000.,
-                                ET = 2000.,
-                    ),
-                    SimoMieheVmis=_F(
-                                YoungModulus = 200000.,
-                                PoissonRatio = 0.3,
-                                ThermalExpansion = 0.,
-                                s_y = 1000.,
-                                ET = 2000.,
-                    )
-             )
+                                SY=1000.0,
+                                    ),
+                   MFRONT=_F(LISTE_COEF=(200000.,0.3,0.,1000.,2000.,
+                                            ),),
+                            )
 
 L_INST=DEFI_LIST_REEL(
               DEBUT=0.0,INTERVALLE=(
@@ -132,8 +128,10 @@ LOGMF=STAT_NON_LINE( MODELE=MO,
                          _F(CHARGE = CHR_TRAC,
                             FONC_MULT = F_CHAR,
                             TYPE_CHARGE = 'DIDI')),
-                COMPORTEMENT=_F(RELATION='Plasticity',
-                                RESI_INTE_RELA=1.e-8,
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='asterplasticity',
+                                LIBRAIRIE='Plasticity.so',
+                                RESI_INTE_MAXI=1.e-8,
                                 DEFORMATION='GDEF_LOG',
                         ),
                   INCREMENT=_F(LIST_INST = L_INST),
@@ -291,10 +289,12 @@ SMF=STAT_NON_LINE( MODELE=MO,
                          _F(CHARGE = CHR_TRAC,
                             FONC_MULT = F_CHAR,
                             TYPE_CHARGE = 'DIDI')),
-                COMPORTEMENT=_F(RELATION='SimoMieheVmis',
-                        RESI_INTE_RELA=1e-11,
-                        DEFORMATION='SIMO_MIEHE',
-                        ),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='astersimomiehevmis',
+                                LIBRAIRIE='SimoMieheVmis.so',
+                                RESI_INTE_MAXI=1e-11,
+                                DEFORMATION='SIMO_MIEHE',
+                            ),
                   INCREMENT=_F(LIST_INST = DLIST),
                   NEWTON=_F(MATRICE = 'ELASTIQUE',
                             PREDICTION = 'EXTRAPOLE',

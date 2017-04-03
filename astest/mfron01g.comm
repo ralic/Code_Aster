@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -18,6 +18,12 @@
 # ======================================================================
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
+
+import os
+
+os.system("mfront --obuild plath01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so PlasticityTH.so")
+
 
 #......................................................................
 # CAS TEST THERMOPLASTICITE ELEMENTAIRE
@@ -57,13 +63,9 @@ CTRACB=DEFI_NAPPE(   NOM_PARA='TEMP',  PROL_DROITE='LINEAIRE',
 MATER=DEFI_MATERIAU(THER=_F( RHO_CP = 0.0E-3,LAMBDA = 1.0E-3),
                     ELAS=_F( E = 200.E+3, NU = .3,ALPHA = 10.0E-6),
                     TRACTION=_F( SIGM = CTRACB),
-                    PlasticityTH=_F(
-                                YoungModulus = 200.e3,
-                                PoissonRatio = 0.3,
-                                ThermalExpansion = 10.e-6,
-                                ET = 50000.,
-                    ),
-           )
+                    MFRONT=_F(LISTE_COEF=(200.e3,0.3,10.e-6,50000.,
+                                ),)
+                        ,)
 
 TIMPVAR=DEFI_FONCTION(
                              NOM_PARA='INST',  NOM_RESU='TEMP',
@@ -82,8 +84,10 @@ L_INST=DEFI_LIST_REEL(
          )
 
 RESU1=SIMU_POINT_MAT(INFO=2,
-                COMPORTEMENT=_F(RELATION='PlasticityTH',
-                        ),
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='asterplasticityth',
+                                LIBRAIRIE='PlasticityTH.so',
+                                    ),
                    NEWTON=_F(MATRICE='TANGENTE',REAC_ITER=1,),
                    MATER      = MATER,
                    AFFE_VARC=(

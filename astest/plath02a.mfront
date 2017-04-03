@@ -1,0 +1,18 @@
+@Parser   MaterialLaw;
+@Material Acier;
+@Law      ElasticYield ;
+
+@Input TC;
+
+TC.setGlossaryName("Temperature");
+
+@Output s0;
+
+@PhysicalBounds TC in [-273.15:*[;
+
+@Bounds TC in [-273.15:*[;
+
+@Function
+{
+  s0 = 400.0  - 4.0*TC ;
+}
