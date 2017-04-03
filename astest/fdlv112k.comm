@@ -387,9 +387,11 @@ mdx253=CALC_FONCTION(EXTRACTION=_F(FONCTION=dx253,
 
 TEST_FONCTION(VALEUR=(_F(FONCTION=mdx253,
                          VALE_PARA=3.0,
+                         TOLE_MACHINE=0.000005,  # En attente issue24202
                          VALE_CALC=4.057190104222,),
                       _F(FONCTION=mdx253,
                          VALE_PARA=0.1,
+                         TOLE_MACHINE=0.0006,  # En attente issue24202
                          VALE_CALC=1.046696989885),),);
 
 FIN();
