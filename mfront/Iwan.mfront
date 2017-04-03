@@ -110,7 +110,6 @@ nu.setGlossaryName("PoissonRatio");
     }
 } 
 
-
 @TangentOperator{
     using namespace tfel::material::lame;
     StiffnessTensor De;
@@ -122,6 +121,7 @@ nu.setGlossaryName("PoissonRatio");
 
 // Elastic prediction
 @Predictor{
+	real eps=1.e-12;
     // Initial timestep
     if (t0==0.){
         eel=eto;
@@ -153,7 +153,7 @@ nu.setGlossaryName("PoissonRatio");
                    dpp[i]=0.;
                 }       
                 else{
-                    if(C[i+1]==0){
+                    if(C[i+1]<eps*qn[i]){
                         dpp[i]=dt*(qe[i]-Y[i])/(1.5*(C[i]));
                     }
                     else{
@@ -167,7 +167,6 @@ nu.setGlossaryName("PoissonRatio");
             aux = dpp[i]*PSI[i]+aux;
         }
         deel=deto-aux;
-  
     }
 }
 
@@ -176,6 +175,7 @@ nu.setGlossaryName("PoissonRatio");
 } 
 
 @Integrator{
+	real eps=1.e-12;
     p=trace(sig)/3.;
     S=sig-p*Stensor::Id();
     real dev=trace(deel)/3.;
@@ -190,12 +190,11 @@ nu.setGlossaryName("PoissonRatio");
             PSI[i]=1.5*(S-X[i])/qn[i];
         }
         fn[i]=qn[i]-Y[i];
-        
         if (fn[i]<0.){
             fpp[i]=dpp[i];
         }       
         else{
-            if(C[i+1]==0){
+            if(C[i+1]<eps*qn[i]){
                 fpp[i]=dpp[i]-dt*(qe[i]-Y[i])/(1.5*(C[i]));
             }
             else{
@@ -203,6 +202,7 @@ nu.setGlossaryName("PoissonRatio");
             }
         }
     }
+
     Stensor aux=Stensor(0.);
     for (unsigned short i=0;i<Ns;i++){
         aux = dpp[i]*PSI[i]+aux;
