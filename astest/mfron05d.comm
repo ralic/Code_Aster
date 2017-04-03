@@ -19,6 +19,10 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='OUI'),DEBUG=_F(SDVERI='OUI'))
 
+import os
+
+os.system("mfront --obuild tverg01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Tvergaard.so")
 
 MA=LIRE_MAILLAGE(FORMAT="ASTER", )
 
@@ -46,13 +50,9 @@ rigin=1.1*1.1/0.9/pena
 
 MATF=DEFI_MATERIAU(
                       ELAS=_F(E=Youn, NU=0.0),
-                      Tvergaard=_F(
-                               NormalStiffness = rigin ,
-                               TangentStiffness = 1.e4 ,
-                               UltTensStrength = 1.1 ,
-                               MaxOpeningDispl = delta ,
-                               ),
-                               )
+                      MFRONT=_F(LISTE_COEF=(rigin ,1.e4 ,1.1 ,delta ,
+                                    ),)
+                                ,)
 
 CMF=AFFE_MATERIAU(
 
@@ -111,12 +111,14 @@ U_1F=STAT_NON_LINE( MODELE     = MO,
                                   ),
                     ),
                     RECH_LINEAIRE=_F(ITER_LINE_MAXI=5,METHODE='MIXTE'),
-                    COMPORTEMENT  = (
-                                      _F(RELATION='Tvergaard',MAILLE = 'CUBEDEG',
-                                              RESI_INTE_RELA=1.E-8,
-                                              ),
+                    COMPORTEMENT  = ( _F(RELATION='MFRONT',
+                                         NOM_ROUTINE='astertvergaard',
+                                         LIBRAIRIE='Tvergaard.so',
+                                         MAILLE = 'CUBEDEG',
+                                         RESI_INTE_MAXI=1.E-8,
+                                                ),
                                       _F(RELATION = 'ELAS',
-                                        GROUP_MA = 'G_CUBE',),
+                                         GROUP_MA = 'G_CUBE',),
                             ),
                     INCREMENT  = _F(LIST_INST = DEF2, ),
                     NEWTON     = _F(MATRICE = 'TANGENTE', REAC_ITER=1,

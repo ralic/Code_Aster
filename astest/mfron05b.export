@@ -6,3 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron05b.comm D 1
+F nom  hayi01a.mfront   D 0
+F nom  hay01a.mfront   D 0
+

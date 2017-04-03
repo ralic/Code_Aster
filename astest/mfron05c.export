@@ -6,3 +6,4 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron05c.comm D 1
+F nom  gtn01a.mfront   D 0
