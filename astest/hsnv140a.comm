@@ -193,6 +193,8 @@ ACIERME0 = DEFI_MATERIAU (ELAS_FO      = _F(E              = E,
                           REST_ECRO    = _F(FONC_MULT = REST1), 
                          ) 
 
+
+
 CHMATM0 = AFFE_MATERIAU (MAILLAGE  = MAIL,
                          AFFE      = _F(TOUT  = 'OUI',
                                         MATER = ACIERME0,
@@ -294,4 +296,149 @@ TEST_RESU (RESU = (
                 )
           )
 
+
+# Test en quadratique
+
+MAILQ=CREA_MAILLAGE(MAILLAGE=MAIL,
+                    LINE_QUAD=_F(TOUT='OUI',),);
+
+
+CHTHQ = CREA_CHAMP(OPERATION = 'AFFE', 
+                  TYPE_CHAM = 'NOEU_TEMP_F',
+                  MAILLAGE  = MAILQ,
+                  AFFE      = _F(TOUT = 'OUI',
+                                 NOM_CMP = 'TEMP',
+                                 VALE_F = TEMP1)
+                  )
+#
+THERQ = CREA_RESU(OPERATION = 'AFFE', 
+                  TYPE_RESU = 'EVOL_THER',
+                  NOM_CHAM  = 'TEMP',
+                  AFFE      = _F( CHAM_GD = CHTHQ, LIST_INST = LLPAS)
+                 )
+#
+# Calcul Mecanique
+#
+
+MOMECAQ = AFFE_MODELE (MAILLAGE = MAILQ,
+                       AFFE     = _F(TOUT         = 'OUI',
+                                     PHENOMENE    = 'MECANIQUE',
+                                     MODELISATION = '3D',
+                                    ),
+                      )
+
+
+CHMECAQ = AFFE_CHAR_MECA (MODELE   = MOMECAQ,
+                          DDL_IMPO = (_F( NOEUD = 'NO3',     DX = 0.,  DY = 0.,  DZ = 0.),
+                                      _F( NOEUD = 'NO7',     DX = 0.,  DY = 0.),
+                                      _F( NOEUD = 'NO4',     DY = 0.,  ),
+                                      _F( NOEUD = 'NO8',     DY = 0.,  ),
+                                      _F( NOEUD = 'NO1',     DY = 0.),
+                                      _F( NOEUD = 'NO2',     DY = 0.),
+                                      _F( NOEUD = 'NO5',     DY = 0.),
+                                      _F( NOEUD = 'NO6',     DY = 0.)
+                                     )
+                         )
+
+
+CHMATMQ = AFFE_MATERIAU (MAILLAGE  = MAILQ,
+                         AFFE      = _F(TOUT  = 'OUI',
+                                        MATER = ACIERME0,
+                                       ),
+                         AFFE_VARC = _F(TOUT     = 'OUI',
+                                        EVOL     = THERQ,
+                                        NOM_VARC = 'TEMP',
+                                        NOM_CHAM = 'TEMP',
+                                        VALE_REF = 20.,
+                                       ),
+                        ) 
+
+UQ =  STAT_NON_LINE (MODELE       = MOMECAQ,
+                     CHAM_MATER   = CHMATMQ,
+                     EXCIT        = _F(CHARGE = CHMECAQ,),
+                     COMPORTEMENT = _F(RELATION    ='VMIS_ISOT_LINE',
+                                       DEFORMATION = 'PETIT_REAC',
+                                       TOUT        = 'OUI',
+                                       POST_INCR   = 'REST_ECRO',
+                                      ),
+                     INCREMENT    = _F(LIST_INST     = L_INST1,
+                                       NUME_INST_FIN = 800
+                                      ),
+                     NEWTON       = _F(REAC_INCR=1,
+                                      MATRICE='TANGENTE',
+                                      REAC_ITER=5,
+                                     ),
+                     CONVERGENCE  = _F(RESI_GLOB_RELA = 5.0E-05,
+                                      ITER_GLOB_MAXI = 50,
+                                      ARRET          = 'OUI',
+                                      ),
+                     SOLVEUR=_F(RENUM='METIS',),
+                     );
+
+#
+# Post traitement
+#
+
+UQ = CALC_CHAMP  (reuse        = UQ,
+                  MODELE       = MOMECAQ,
+                  CHAM_MATER   = CHMATMQ,
+                  CONTRAINTE   = ('SIEF_NOEU'),
+                  VARI_INTERNE = ('VARI_NOEU'),
+                  RESULTAT     = UQ
+                 )
+#
+TEST_RESU (RESU = (
+                _F(INST           = 89.0,
+                   RESULTAT       = UQ,
+                   NOM_CHAM       = 'VARI_NOEU',
+                   NOEUD       = 'NO6',
+                   NOM_CMP        = 'V1',
+                   VALE_CALC      = 0.0,
+                   VALE_REFE      = 0.0,
+                   REFERENCE      = 'SOURCE_EXTERNE',
+                   ORDRE_GRANDEUR = 1e-6,
+                   CRITERE        = 'ABSOLU',
+                  ),
+                _F(INST      = 200.0,
+                   RESULTAT  = UQ,
+                   NOM_CHAM  = 'SIEF_NOEU',
+                   NOEUD  = 'NO6',
+                   NOM_CMP   = 'SIYY',
+                   VALE_CALC = 227268918.063,
+                   VALE_REFE = 303.0E+06,
+                   REFERENCE = 'SOURCE_EXTERNE',
+                   PRECISION = 0.25,
+                  ),
+                _F(INST      = 400.0,
+                   RESULTAT  = UQ,
+                   NOM_CHAM  = 'SIEF_NOEU',
+                   NOEUD  = 'NO6',
+                   NOM_CMP   = 'SIYY',
+                   VALE_CALC = 219930083.244,
+                   VALE_REFE = 316.0E+06,
+                   REFERENCE = 'SOURCE_EXTERNE',
+                   PRECISION = 0.31,
+                  ),
+                _F(INST      = 600.0,
+                   RESULTAT  = UQ,
+                   NOM_CHAM  = 'SIEF_NOEU',
+                   NOEUD  = 'NO6',
+                   NOM_CMP   = 'SIYY',
+                   VALE_CALC = 206767203.141,
+                   VALE_REFE = 325.0E+06,
+                   REFERENCE = 'SOURCE_EXTERNE',
+                   PRECISION = 0.37,
+                  ),
+                _F(INST      = 800.0,
+                   RESULTAT  = UQ,
+                   NOM_CHAM  = 'SIEF_NOEU',
+                   NOEUD  = 'NO6',
+                   NOM_CMP   = 'SIYY',
+                   VALE_CALC = 206123842.16,
+                   VALE_REFE = 327.0E+06,
+                   REFERENCE = 'SOURCE_EXTERNE',
+                   PRECISION = 0.37,
+                  ),
+                )
+          )
 FIN();

@@ -16,7 +16,7 @@ implicit none
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -61,7 +61,7 @@ implicit none
     integer :: j_vectu
     integer :: j_vari
     real(kind=8) :: sig(6), sigdv(6)
-    real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, kron(6)
+    real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, kron(6)
     real(kind=8) :: coef, trans
     real(kind=8) :: zcold_curr
     real(kind=8) :: phas_prev(5), phas_curr(5), temp
@@ -177,6 +177,7 @@ implicit none
                            e  = young , nu = nu)
         ASSERT(elas_id.eq.1)
         deuxmu = young/(1.d0+nu)
+
 !
 ! ----- Compute coefficients for second member
 !
