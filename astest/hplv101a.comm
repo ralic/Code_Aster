@@ -33,6 +33,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 #
 
+import os
+
+os.system("mfront --obuild plast01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so Plasticity.so")
+
+#
 
 MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,      NU = 0.3, ALPHA = 0.),
                           THER=_F(  LAMBDA = 1.0,   RHO_CP = 0.0) )
@@ -41,14 +47,9 @@ MAT=DEFI_MATERIAU( ELAS=_F(  E = 1.0,      NU = 0.3, ALPHA = 0.),
 #           ECRO_LINE=_F( D_SIGM_EPSI = 0., SY = 10000.) )
 
 MAT2=DEFI_MATERIAU(      ELAS=_F( E = 1.0,  NU = 0.3),
-                         Plasticity=_F(
-                                YoungModulus = 1.0,
-                                PoissonRatio = 0.3,
-                                ThermalExpansion = 0.,
-                                s0 = 10000.,
-                                ET = 0.,
-                         ),
-                   )
+                         MFRONT=_F(LISTE_COEF=(1.0,0.3,0.,10000.,0.,
+                                        ),)
+                                ,)
 
 MAILL=LIRE_MAILLAGE(FORMAT="ASTER",   )
 
@@ -138,25 +139,21 @@ RAMPE=DEFI_FONCTION(   NOM_PARA='INST',
 #---------------------
 
 
-DEPLD2=STAT_NON_LINE(
-                            MODELE=MODME,
-                        CHAM_MATER=CHMAT2,
-                             EXCIT=_F(
-                CHARGE = CHARMM,
-                FONC_MULT = RAMPE),
-                         COMPORTEMENT=_F(
-                #RELATION = 'VMIS_ISOT_LINE',
-                RELATION='Plasticity',
-                ITER_INTE_MAXI = 30,
-                RESI_INTE_RELA = 1.E-8),
-                         INCREMENT=_F(
-                LIST_INST = L_INST),
-                            NEWTON=_F(
-                MATRICE = 'TANGENTE',
-                REAC_ITER = 2),
-                       CONVERGENCE=_F(
-                RESI_GLOB_RELA = 1.E-6,)
-              )
+DEPLD2=STAT_NON_LINE( MODELE=MODME,
+                      CHAM_MATER=CHMAT2,
+                      EXCIT=_F( CHARGE = CHARMM,
+                                FONC_MULT = RAMPE),
+                      COMPORTEMENT=_F( #RELATION = 'VMIS_ISOT_LINE',
+                                       RELATION='MFRONT',
+                                       NOM_ROUTINE='asterplasticity',
+                                       LIBRAIRIE='Plasticity.so',
+                                       ITER_INTE_MAXI = 30,
+                                       RESI_INTE_MAXI = 1.E-8),
+                      INCREMENT=_F( LIST_INST = L_INST),
+                      NEWTON=_F( MATRICE = 'TANGENTE',
+                                 REAC_ITER = 2),
+                      CONVERGENCE=_F(RESI_GLOB_RELA = 1.E-6,)
+                            )
 
 
 # ------------------------------------------------------------------
@@ -205,10 +202,11 @@ TEST_RESU(RESU=_F(INST=1.0,
                    POINT=1,
                    NOM_CHAM='VARI_ELGA',
                     REFERENCE='ANALYTIQUE',
-                   NOM_VARI='ElasticStrainXX',
+                   NOM_CMP='V1',
                    VALE_CALC=-1.0,
                     VALE_REFE=-1.0,
                    ),)
+                   
 
 TEST_RESU(CHAM_NO=(_F(NOEUD='A',
                       CRITERE='RELATIF',
