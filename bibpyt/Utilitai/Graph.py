@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -1205,9 +1205,9 @@ class TraceMatplotlib(TraceGraph):
         ax = plt.gca()
         ax.xaxis.set_label_coords(0.5, 0.01)  
         for lab in ax.xaxis.get_ticklabels():
-	    lab.set_fontsize(32)
+            lab.set_fontsize(32)
         for lab in ax.yaxis.get_ticklabels():
-	    lab.set_fontsize(32)                 
+            lab.set_fontsize(32)                 
         plt.grid('on',which='both')    
 
         

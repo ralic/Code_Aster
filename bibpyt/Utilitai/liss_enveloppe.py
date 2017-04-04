@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -684,10 +684,10 @@ def elargis_spectres(l_spectre,l_coef):
     for c,coef in enumerate(l_coef):
         if coef!=0.:
             specLL = copy.copy(l_spectre[c])
-            specLL.filtre(filterLogLog)
+            # specLL.filtre(filterLogLog)
             filtreElarg = filtreExpand(coef=coef)
             specLL.filtre(filtreElarg)
-            specLL.filtre(filterLinLin)   
+            # specLL.filtre(filterLinLin)   
             l_spec_elagr.append(specLL)
         else:
             l_spec_elagr.append(l_spectre[c])
