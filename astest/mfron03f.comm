@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -29,7 +29,10 @@ from numpy.linalg import norm
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('COMPOR4_62'))
 
+import os
 
+os.system("mfront --obuild pcrys03a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so PolyCrystalDDCFC.so")
 
 MU       = 80000. ;
 NU       = 0.3    ;
@@ -83,28 +86,9 @@ G=E/2./(1.+NU)
 
 MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      PolyCrystalDDCFC=_F(
-                              YoungModulus1 = E ,
-                              YoungModulus2 = E ,
-                              YoungModulus3 = E,
-                              PoissonRatio12 = NU,
-                              PoissonRatio23 = NU,
-                              PoissonRatio13 = NU,
-                              ShearModulus12 = G,
-                              ShearModulus23 = G,
-                              ShearModulus13 = G,
-                               tauf=  TAU_F,
-                               y = Y,
-                               pn = N,
-                               gamma0 = GAMMA0,
-                               a = A,
-                               b = B,
-                               rhoref = RHOREF ,
-                               alpha = ALPHA ,
-                               beta = BETA ,
-                               Mu = G,
-                               ),
-                               )
+                      MFRONT=_F(LISTE_COEF=(E ,E ,E,NU,NU,NU,G,G,G,TAU_F,Y,N,GAMMA0,A,B,RHOREF ,ALPHA ,BETA ,G,
+                                            ),)
+                                    ,)
 
 tfin = 1.
 
@@ -268,9 +252,11 @@ lvari=list(avari)
 
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='PolyCrystalDDCFC',
-                        RESI_INTE_RELA=1e-9,
-                        ),
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                                     NOM_ROUTINE='asterpolycrystalddcfc',
+                                     LIBRAIRIE='PolyCrystalDDCFC.so',
+                                     RESI_INTE_MAXI=1e-9,
+                                            ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
                              PREDICTION='EXTRAPOLE',

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -29,6 +29,11 @@ from numpy.linalg import norm
 
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
+
+import os
+
+os.system("mfront --obuild pcrys04a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so PolyCrystal_MC.so")
 
 tfin = 5.
 
@@ -58,28 +63,19 @@ G=E_L/2./(1.+Nu)
 
 MATFRONT=DEFI_MATERIAU(
                       ELAS=_F(E=145200.0, NU=0.3,),
-                      PolyCrystal_MC=_F(
-                           YoungModulus1 = E_L ,
-                           YoungModulus2 = E_L ,
-                           YoungModulus3 = E_L,
-                           PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,
-                           PoissonRatio13 = Nu,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                               m = 10.,   # N
-                               K = 40.,   # K
-                               C = 0.,    # C
-                               R0 = 75.5,  # R0
-                               Q = 9.77,  # Q
-                               b = 19.34, # b
-                               H = 1.,    # H
-                               d1 = 36.68, # D
-                               Mu = G, # Mu
-                               ),
-                               )
+                      MFRONT=_F(LISTE_COEF=(E_L ,E_L ,E_L,Nu,Nu,Nu,G,G,G,10.,40.,0.,75.5,9.77,19.34,1.,36.68,G,
+                                                    ),)
+                                      ,)              
 
+#m = 10.,   # N
+#K = 40.,   # K
+#C = 0.,    # C
+#R0 = 75.5,  # R0
+#Q = 9.77,  # Q
+#b = 19.34, # b
+#H = 1.,    # H
+#d1 = 36.68, # D
+#Mu = G, # Mu
 
 EPSZZ=DEFI_FONCTION(NOM_PARA='INST',
                    VALE=(0.0,0.0,tfin,0.005,),
@@ -270,9 +266,11 @@ FEPZZ=RECU_FONCTION(TABLE=SOLNL,
                    INTERPOL='LIN');
 
 SOLMF=SIMU_POINT_MAT(INFO=1,
-                     COMPORTEMENT=_F(RELATION='PolyCrystal_MC',
-                        RESI_INTE_RELA=1e-6,
-                        ),
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                                     NOM_ROUTINE='asterpolycrystal_mc',
+                                     LIBRAIRIE='PolyCrystal_MC.so',
+                                     RESI_INTE_MAXI=1e-6,
+                                            ),
                    NEWTON=_F(
                              MATRICE='ELASTIQUE',
                              PREDICTION='EXTRAPOLE',

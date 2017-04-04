@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -38,6 +38,10 @@ assert os.path.isfile("fort.30")
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+import os
+
+os.system("mfront --obuild mcrys06a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so MonoCrystalDDCFC.so")
 
 reaciter=1
 info=1
@@ -95,28 +99,32 @@ G=E/2./(1.+NU)
 
 MATF=DEFI_MATERIAU(
                       ELAS=_F( E=E, NU=NU,),
-                      MonoCrystalDDCFC=_F(
-                              YoungModulus1 = E ,
-                              YoungModulus2 = E ,
-                              YoungModulus3 = E,
-                              PoissonRatio12 = NU,
-                              PoissonRatio23 = NU,
-                              PoissonRatio13 = NU,
-                              ShearModulus12 = G,
-                              ShearModulus23 = G,
-                              ShearModulus13 = G,
-                               rhoref = RHOREF,
-                               alpha = ALPHA,
-                               beta = BETA,
-                               tauf=  TAU_F,
-                               y = Y,
-                               pn = N,
-                               gamma0 = GAMMA0,
-                               a = A,
-                               b = B,
-                               Mu = G,
-                               ),
-                               )
+                      MFRONT=_F(LISTE_COEF=(E ,E ,E,NU,NU,NU,G,G,G,TAU_F,Y,N,GAMMA0,A,B,RHOREF,ALPHA,BETA,G,
+                                                ),)
+                                        ,)
+
+#MonoCrystalDDCFC=_F(
+          #YoungModulus1 = E ,
+          #YoungModulus2 = E ,
+          #YoungModulus3 = E,
+          #PoissonRatio12 = NU,
+          #PoissonRatio23 = NU,
+          #PoissonRatio13 = NU,
+          #ShearModulus12 = G,
+          #ShearModulus23 = G,
+          #ShearModulus13 = G,
+          #rhoref = RHOREF,
+          #alpha = ALPHA,
+          #beta = BETA,
+          #tauf=  TAU_F,
+          #y = Y,
+          #pn = N,
+          #gamma0 = GAMMA0,
+          #a = A,
+          #b = B,
+          #Mu = G,
+              #),
+
 
 
 tmax=1.
@@ -225,9 +233,11 @@ lvar2=list(avar2)
 
 RES2=SIMU_POINT_MAT( INFO=info,
                      MATER=MATF,
-                     COMPORTEMENT=_F(RELATION='MonoCrystalDDCFC',
-                        RESI_INTE_RELA=1e-10,
-                        ),
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                                     NOM_ROUTINE='astermonocrystalddcfc',
+                                     LIBRAIRIE='MonoCrystalDDCFC.so',
+                                     RESI_INTE_MAXI=1e-10,
+                                            ),
                       MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
                       INCREMENT=_F(LIST_INST=LISTDD, INST_FIN=tmax),
                       NEWTON=_F(REAC_ITER=reaciter,PREDICTION='ELASTIQUE'),

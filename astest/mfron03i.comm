@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,6 +23,10 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
+import os
+
+os.system("mfront --obuild mcrys07a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so MonoDDCC_Irra.so")
 
 from numpy.linalg import norm
 from numpy import *
@@ -78,42 +82,9 @@ RHOREF = RHO_0_A    # en m**-2
 
 ACIERDDI=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=Nu, ALPHA=0.),
-                  MonoDDCC_Irra=_F(
-                           YoungModulus1 = E_L ,
-                           YoungModulus2 = E_L ,
-                           YoungModulus3 = E_L,
-                           PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,
-                           PoissonRatio13 = Nu,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                           b = b,
-                           H = GH,
-                           DeltaG_0 = DeltaG0,
-                           tau_0 = tau_0,
-                           tau_f = tau_f,
-                           gamma0 = gamma0,
-                           pn = N,
-                           omega_mob = rho_ini,
-                           d = D,
-                           d_lath = d_lat,
-                           y_at = y_at,
-                           K_f = K_f,
-                           K_self = K_self ,
-                           k_b = k_b,
-                           epsi_1 = epsi_1,
-                           Mu = G,
-                           a_irr = a_irr,
-                           xi_irr = xi_irr,
-                           h0 = a_self,
-                           h1 = a_coli,
-                           h2 = a_ncol,
-                           h3 = a_ncol,
-                           h4 = a_ncol,
-                           h5 = a_ncol,
-                           ),
-                           )
+                  MFRONT=_F(LISTE_COEF=(E_L ,E_L ,E_L,Nu,Nu,Nu,G,G,G,b,GH,DeltaG0,tau_0,tau_f,gamma0,N,rho_ini,D,d_lat,y_at,K_f,K_self ,k_b,epsi_1,G, a_irr,xi_irr,a_self,a_coli,a_ncol,a_ncol,a_ncol,a_ncol,
+                                        ),)
+                                ,)
 
 ACIERDDA=DEFI_MATERIAU(
                   ELAS_ORTH=_F(  E_L = E,
@@ -382,9 +353,11 @@ sigDIRA=CALC_FONCTION(COMB=(_F(FONCTION = sigXXA,
 
 IMPLDDM=SIMU_POINT_MAT(INFO=1,
                       MATER=ACIERDDI,
-                      COMPORTEMENT=_F(RELATION='MonoDDCC_Irra',
-                        RESI_INTE_RELA=1e-9,
-                        ),
+                      COMPORTEMENT=_F(RELATION='MFRONT',
+                                      NOM_ROUTINE='astermonoddcc_irra',
+                                      LIBRAIRIE='MonoDDCC_Irra.so',
+                                      RESI_INTE_MAXI=1e-9,
+                                            ),
                       INCREMENT=(_F(LIST_INST=LIS2DDI,),),
                       NEWTON=(_F(REAC_ITER=1,
                                  PREDICTION='EXTRAPOLE',

@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron03e.comm D 1
-
-
+F nom  mcrys06a.mfront   D 0
+F nom  mcrys05a.mfront   D 0
 F libr mfron03e.30   D 30

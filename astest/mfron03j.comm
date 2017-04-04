@@ -26,6 +26,11 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 import os
 import numpy as NP
 
+os.system("mfront --obuild mcrys09a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so GdefMonoCrystal.so")
+os.system("mfront --obuild mcrys10a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so GdefMono_Jacnum.so")
+
 
 N__=    10.  ;
 K__=    25.0   ;
@@ -106,43 +111,9 @@ COMPORA=DEFI_COMPOR(MONOCRISTAL=_F(MATER=MATA,
 
 MATF=DEFI_MATERIAU(
                   ELAS=_F(E=E_L, NU=Nu,),
-                  GdefMonoCrystal=_F(
-                           YoungModulus1 = E_L ,
-                           YoungModulus2 = E_L ,
-                           YoungModulus3 = E_L,
-                           PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,
-                           PoissonRatio13 = Nu,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                           m = N__,
-                           K = K__,
-                           C = C__,
-                           R0 = R_0__,
-                           Q = Q__,
-                           b = B__,
-                           d1 = D__,
-                           ),
-                  GdefMono_Jacnum=_F(
-                           YoungModulus1 = E_L ,
-                           YoungModulus2 = E_L ,
-                           YoungModulus3 = E_L,
-                           PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,
-                           PoissonRatio13 = Nu,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                           m = N__,
-                           K = K__,
-                           C = C__,
-                           R0 = R_0__,
-                           Q = Q__,
-                           b = B__,
-                           d1 = D__,
-                           ),
-                           )
+                  MFRONT=_F(LISTE_COEF=(E_L ,E_L ,E_L,Nu,Nu,Nu,G,G,G,N__,K__,C__, R_0__,Q__, B__,D__,
+                                    ),)
+                            ,)
 
 MAIL = LIRE_MAILLAGE(FORMAT="ASTER",);
 
@@ -398,9 +369,11 @@ SOLMF=STAT_NON_LINE(
                               FONC_MULT=COEF,),),
                     COMPORTEMENT=(
 
-                            _F(RELATION='GdefMonoCrystal',
+                            _F( RELATION='MFRONT',
+                                NOM_ROUTINE='astergdefmonocrystal',
+                                LIBRAIRIE='GdefMonoCrystal.so',
                                 DEFORMATION='SIMO_MIEHE',
-                                RESI_INTE_RELA=1.E-10,
+                                RESI_INTE_MAXI=1.E-10,
                                 ITER_INTE_MAXI=100,
                                 GROUP_MA='VOL',
                                 ),
@@ -528,9 +501,11 @@ SOLMFn=STAT_NON_LINE(
                               FONC_MULT=COEF,),),
                     COMPORTEMENT=(
 
-                            _F(RELATION='GdefMono_Jacnum',
+                            _F( RELATION='MFRONT',
+                                NOM_ROUTINE='astergdefmono_jacnum',
+                                LIBRAIRIE='GdefMono_Jacnum.so',
                                 DEFORMATION='SIMO_MIEHE',
-                                RESI_INTE_RELA=1.E-8,
+                                RESI_INTE_MAXI=1.E-8,
                                  GROUP_MA='VOL',
                                ),
 

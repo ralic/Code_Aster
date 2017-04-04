@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: david.haboussa at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -26,6 +26,12 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 import numpy as NP
 from numpy.linalg import norm
+
+import os
+
+os.system("mfront --obuild mcrys08a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so MonoDDCFC_Irra.so")
+
 
 # MATERIAU DEFINI POUR LE COMPORTEMENT  DD_CFC. Unites : MPa, mm, N
 
@@ -90,37 +96,9 @@ MATER=DEFI_MATERIAU(ELAS=_F(E=E, NU=NU, ),
 G=E/2./(1.+NU)
 MATFR=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=NU, ),
-                  MonoDDCFC_Irra=_F(
-                           YoungModulus1 = E ,
-                           YoungModulus2 = E ,
-                           YoungModulus3 = E,
-                           PoissonRatio12 = NU,
-                           PoissonRatio23 = NU,
-                           PoissonRatio13 = NU,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                           tauf=  TAU_F,
-                           y = Y,
-                           pn = N,
-                           gamma0 = GAMMA0,
-                           a = A,
-                           b = B,
-                           rhoref = RHOREF,
-                           alpha = ALPHA,
-                           beta = BETA,
-                           Mu = G,
-                           RHO_VOID = ome_void,
-                           PHI_LOOP = PHI_LOOP,
-                           ALP_VOID = ALP_VOID,
-                           ALP_LOOP = ALP_LOOP,
-                           RHO_SAT = ome_sat ,
-                           PHI_SAT = PHI_SAT ,
-                           XI_IRRA = XI_IRRA ,
-                           DZ_IRRA = DZ_IRRA ,
-                           ),
-                           )
-
+                  MFRONT=_F(LISTE_COEF=(E ,E ,E,NU,NU,NU,G,G,G,TAU_F,Y,N,GAMMA0,A,B,RHOREF,ALPHA,BETA,G,ome_void,PHI_LOOP,ALP_VOID,ALP_LOOP,ome_sat ,PHI_SAT ,XI_IRRA ,DZ_IRRA ,
+                                                ),)
+                                        ,)
 
 
 
@@ -247,10 +225,12 @@ lvari=list(avari)
 IMPLMF=SIMU_POINT_MAT(INFO=1,
                       MATER=MATFR,
                       MASSIF=_F(ANGL_EULER=angles),
-                      COMPORTEMENT=_F(RELATION='MonoDDCFC_Irra',
-                        RESI_INTE_RELA=1e-12,
-                        ITER_INTE_MAXI=100,
-                        ),
+                      COMPORTEMENT=_F(RELATION='MFRONT',
+                                      NOM_ROUTINE='astermonoddcfc_irra',
+                                      LIBRAIRIE='MonoDDCFC_Irra.so',
+                                      RESI_INTE_MAXI=1e-12,
+                                      ITER_INTE_MAXI=100,
+                                            ),
                       INCREMENT=(_F(LIST_INST=LIS2DD,),),
                       NEWTON=(_F(REAC_ITER=1, PREDICTION='ELASTIQUE' ),),
                       CONVERGENCE=(_F(ITER_GLOB_MAXI=100,),),

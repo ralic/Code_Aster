@@ -24,6 +24,11 @@
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
+import os
+
+os.system("mfront --obuild mcrys01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so MonoCrystal_CFC.so")
+
 import numpy as NP
 
 MU       = 80000. ;
@@ -79,25 +84,9 @@ E_L=E
 G=MU
 MATF2=DEFI_MATERIAU(
                   ELAS=_F( E=E, NU=NU,),
-                      MonoCrystal_CFC=_F(
-                           YoungModulus1 = E_L ,
-                           YoungModulus2 = E_L ,
-                           YoungModulus3 = E_L,
-                           PoissonRatio12 = Nu,
-                           PoissonRatio23 = Nu,
-                           PoissonRatio13 = Nu,
-                           ShearModulus12 = G,
-                           ShearModulus23 = G,
-                           ShearModulus13 = G,
-                           m = N__,
-                           K = K__,
-                           C = C__,
-                           R0= R_0__,
-                           Q = Q__,
-                           b = B__,
-                           d1= D__,
-                               ),
-                               )
+                  MFRONT=_F(LISTE_COEF=(E_L ,E_L ,E_L,Nu,Nu,Nu,G,G,G,N__,K__,C__,R_0__,Q__,B__,D__,
+                                    ),)
+                            ,)
 
 tmax=2.e5
 
@@ -185,10 +174,12 @@ GAM1AS=RECU_FONCTION( TABLE=RES1,
 
 RES3=SIMU_POINT_MAT(
                      MATER=MATF2,
-                     COMPORTEMENT=_F(RELATION='MonoCrystal_CFC',
-                        RESI_INTE_RELA=1e-11,
-                        ITER_INTE_MAXI=100,
-                        ),
+                     COMPORTEMENT=_F(RELATION='MFRONT',
+                                     NOM_ROUTINE='astermonocrystal_cfc',
+                                     LIBRAIRIE='MonoCrystal_CFC.so',
+                                     RESI_INTE_MAXI=1e-11,
+                                     ITER_INTE_MAXI=100,
+                                            ),
                       MASSIF=_F(ANGL_EULER=(phi1,phi,phi2)),
                       INCREMENT=_F(LIST_INST=LIS2DD, INST_FIN=tmax),
                       NEWTON=_F(REAC_ITER=1,
