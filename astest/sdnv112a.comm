@@ -344,15 +344,31 @@ frequ=DEFI_LIST_REEL(VALE=(0.10,0.20,0.30,0.41,0.52,10.,15., 20.))
 TABAVMAC=MACR_SPECTRE(
     MAILLAGE=MA,
     RESU=_F(RESU_GENE=RESU,),
-    PLANCHER=(_F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_1'),),
+    PLANCHER=(_F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_1', BATIMENT='BATI', COMMENTAIRE='TEST DE COMMENTAIRE'),),
     LIST_FREQ=frequ,
     NOM_CHAM='ACCE',
     CALCUL='ABSOLU',
     NORME = 9.81,
-    AMOR_SPEC=(0.05),
+    AMOR_SPEC=(0.05,0.07),
     MULT_APPUI='OUI',
 )
-IMPR_TABLE(TABLE=TABAVMAC)
+#IMPR_TABLE(TABLE=TABAVMAC)
+
+# test de l'ecriture de colonne NOM, BATIMENT et COMMENTAIRE dans la table
+TABTEST=MACR_SPECTRE(
+    MAILLAGE=MA,
+    RESU=_F(RESU_GENE=RESU,),
+    PLANCHER=(_F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_1', BATIMENT='BATI', ),
+              _F(GROUP_NO=('A1','B1','C1','D1'),NOM='P_2', COMMENTAIRE='TEST DE COMMENTAIRE2'),),
+    LIST_FREQ=frequ,
+    NOM_CHAM='ACCE',
+    CALCUL='ABSOLU',
+    NORME = 9.81,
+    AMOR_SPEC=(0.05,0.07),
+    MULT_APPUI='OUI',
+)
+
+IMPR_TABLE(TABLE=TABTEST)
 
 TEST_TABLE(REFERENCE='AUTRE_ASTER',
            VALE_REFE=4.53316E-02,
@@ -364,11 +380,27 @@ TEST_TABLE(REFERENCE='AUTRE_ASTER',
            )
 
 TEST_TABLE(
-           VALE_CALC=0.05,
+           VALE_CALC=0.07,
            NOM_PARA='AMOR',
-           TABLE=TABAVMAC,
+           TABLE=TABTEST,
            FILTRE=_F(NOM_PARA='NUME_AMOR',
-                     VALE_I=0,),
+                     VALE_I=1,),
+           )
+
+TEST_TABLE(
+           VALE_CALC_K='BATI',
+           NOM_PARA='BATIMENT',
+           TABLE=TABTEST,
+           FILTRE=_F(NOM_PARA='NOM',
+                     VALE_K='P_1',),
+           )
+
+TEST_TABLE(
+           VALE_CALC_K='TEST DE COMMENTAIRE2',
+           NOM_PARA='COMMENTAIRE',
+           TABLE=TABTEST,
+           FILTRE=_F(NOM_PARA='NOM',
+                     VALE_K='P_2',),
            )
 
 # --------------------------------------------------------------------------------------------------
