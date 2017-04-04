@@ -442,16 +442,29 @@ def macr_spectre_ops(
     #
     # Etape6 : Renseignement de la table finale des résultats
     lListe = []
+    nb_amor = 0
     if NOM_CHAM == 'DEPL':
         lListe.append(_F(LISTE_K=l_plancher, PARA='PLANCHER'))
         titre = 'Calcul des spectres enveloppes'
     elif NOM_CHAM == 'ACCE':
-        titre = 'Calcul des spectres enveloppes par planchers pour les amortissements numérotés :'
+        titre = 'Calcul des spectres enveloppes par planchers'
+        infos_amor={}
+        infos_amor['NUME_AMOR'] = []
+        infos_amor['AMOR'] = []
+        nb_amor = len(AMOR_SPEC)
         for i in range(len(AMOR_SPEC)):
-           titre=titre+' %d : %g '% (i, AMOR_SPEC[i])
+           infos_amor['NUME_AMOR'].append(i)
+           infos_amor['AMOR'].append(AMOR_SPEC[i])
+    
+    
     lkeys = dico_glob.keys()
     lkeys.sort()
     for key in lkeys:
-        lListe.append(_F(LISTE_R=dico_glob[key], PARA=key))
+        nb_lignes = len(dico_glob[key]) 
+        lListe.append(_F(LISTE_R=dico_glob[key], PARA=key, 
+                         NUME_LIGN=range(nb_amor+1,nb_amor+nb_lignes+1)))
+    if NOM_CHAM == 'ACCE':
+        lListe.append(_F(LISTE_I=infos_amor['NUME_AMOR'], PARA='NUME_AMOR'))
+        lListe.append(_F(LISTE_R=infos_amor['AMOR'], PARA='AMOR'))
     tab = CREA_TABLE(LISTE=lListe, TITRE=titre)
     return ier
