@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # person_in_charge: sofiane.hendili at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,6 +19,8 @@
 
 import os
 
+os.system("mfront --obuild anlem01a.mfront --interface=aster")
+os.system("cp src/libAsterBehaviour.so AnisoLemaitre.so")
 
 # PAR_LOT='NON' a cause dela procedure qui calcule les repères locaux
 # on pourrait en faire une macro
@@ -115,34 +117,35 @@ MATF=DEFI_MATERIAU(
                             F_MRZ_RZ=0.75,               C_MRZ_RZ=0.75,
                             F_MTZ_TZ=0.75,               C_MTZ_TZ=0.75,),
 
-                  AnisoLemaitre=_F(
-                           YoungModulus  =80000.,
-                           PoissonRatio  =0.35,
-                           a_0  =2.39,       ## F1_A
-                           a_1  =0.22,       ## F2_A
-                           a_2  =9.36,       ## C_A
-                           m_0  =0.0,        ## F1_M
-                           m_1  =0.77E-04,   ## F2_M
-                           m_2  =0.99E-04,   ## C_M
-                           pn_0 =4.39,       ## F1_N
-                           pn_1 =2.96,       ## F2_N
-                           pn_2 =6.11,       ## C_N
-                           Q_0 =19922.8,     ## F1_Q
-                           Q_1 =21023.7,     ## F2_Q,
-                           Q_2 =6219.,       ## C_Q
-                           M1_0 =0.4414,     ## F_M11
-                           M1_1 =0.714,      ## F_M22
-                           M1_2 =1.,         ## F_M33
-                           M1_3 =0.75,       ## F_M12
-                           M1_4 =0.75,       ## F_M13
-                           M1_5 =0.75,       ## F_M23
-                           M3_0 =1.,         ## C_M11
-                           M3_1 =1.,         ## C_M22
-                           M3_2 =1.,         ## C_M33
-                           M3_3 =0.75,       ## C_M12
-                           M3_4 =0.75,       ## C_M13
-                           M3_5 =0.75,       ## C_M23
+                  MFRONT=_F(LISTE_COEF=(80000.,0.35,2.39,0.22,9.36,0.0,0.77E-04,0.99E-04,4.39,2.96,6.11,19922.8,21023.7,6219.,0.4414,0.714,1.,0.75,0.75,0.75,1.,1.,1.,0.75,0.75,0.75,
                             ),)
+                        ,)
+                                                       
+
+#a_0  =2.39,       ## F1_A
+#a_1  =0.22,       ## F2_A
+#a_2  =9.36,       ## C_A
+#m_0  =0.0,        ## F1_M
+#m_1  =0.77E-04,   ## F2_M
+#m_2  =0.99E-04,   ## C_M
+#pn_0 =4.39,       ## F1_N
+#pn_1 =2.96,       ## F2_N
+#pn_2 =6.11,       ## C_N
+#Q_0 =19922.8,     ## F1_Q
+#Q_1 =21023.7,     ## F2_Q,
+#Q_2 =6219.,       ## C_Q
+#M1_0 =0.4414,     ## F_M11
+#M1_1 =0.714,      ## F_M22
+#M1_2 =1.,         ## F_M33
+#M1_3 =0.75,       ## F_M12
+#M1_4 =0.75,       ## F_M13
+#M1_5 =0.75,       ## F_M23
+#M3_0 =1.,         ## C_M11
+#M3_1 =1.,         ## C_M22
+#M3_2 =1.,         ## C_M33
+#M3_3 =0.75,       ## C_M12
+#M3_4 =0.75,       ## C_M13
+#M3_5 =0.75,       ## C_M23
 
 
 CMF=AFFE_MATERIAU(MAILLAGE=MAIL,
@@ -376,8 +379,10 @@ UMF=STAT_NON_LINE(MODELE=MO, CARA_ELEM=ORIEN,
                 EXCIT=(_F(CHARGE = CHPC,FONC_MULT = FMULT),
                        _F(CHARGE = CH_L),),
 
-                COMPORTEMENT=_F(RELATION='AnisoLemaitre',
-                         RESI_INTE_RELA=1e-10,
+                COMPORTEMENT=_F(RELATION='MFRONT',
+                                NOM_ROUTINE='asteranisolemaitre',
+                                LIBRAIRIE='AnisoLemaitre.so',
+                         RESI_INTE_MAXI=1e-10,
                         ),
 
                INCREMENT=_F(LIST_INST = L_INST,),
