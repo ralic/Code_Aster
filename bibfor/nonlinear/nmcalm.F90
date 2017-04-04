@@ -17,7 +17,6 @@ implicit none
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/meamme.h"
-#include "asterfort/mecgm2.h"
 #include "asterfort/mecgme.h"
 #include "asterfort/medime.h"
 #include "asterfort/memame.h"
@@ -196,7 +195,6 @@ implicit none
     else if (typmat.eq.'MESUIV') then
         call mecgme(model, carele, mate  , lischa, instap,&
                     disp_prev, disp_cumu_inst, instam, ds_constitutive%compor, matele)
-        call mecgm2(lischa, instap, matele)
 !
 ! --- MATR_ELEM DES SOUS-STRUCTURES
 !

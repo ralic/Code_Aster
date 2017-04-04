@@ -17,9 +17,12 @@ implicit none
 #include "asterfort/load_neum_matr.h"
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
+#include "asterfort/fointe.h"
+#include "asterfort/jedetr.h"
+#include "asterfort/wkvect.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,15 +77,18 @@ implicit none
     character(len=19) :: lchin(nb_in_maxi), lchout(nbout)
 !
     character(len=24) :: model, cara_elem, mate
-    character(len=24), pointer :: p_matr_elem_relr(:) => null()
+    character(len=24), pointer :: v_relr(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()
+    character(len=24), pointer :: v_load_func(:) => null()
     integer, pointer :: v_load_info(:) => null()
-    character(len=8) :: load_name
+    character(len=8) :: load_name, load_func
     integer :: load_nume
-    real(kind=8) :: inst_theta
+    character(len=24) :: list_coef
+    real(kind=8), pointer :: v_list_coef(:) => null()
+    real(kind=8) :: inst_theta, vale
     character(len=19) :: ligrel_model
-    integer :: iret, ier, ichme, i_load, idx_matr
-    aster_logical :: l_first_matr, load_empty
+    integer :: iret, ier, ichme, i_load, idx_matr, icha
+    aster_logical :: l_first_matr, load_empty, l_func
     integer :: nb_load, nbchme, nb_in_prep
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,6 +102,7 @@ implicit none
     mate         = matez
     ligrel_model = model(1:8)//'.MODELE'
     nb_load      = 0
+    list_coef    = matr_elem(1:15)//'.COEF'
 !
 ! - Init fields
 !
@@ -122,7 +129,7 @@ implicit none
         l_first_matr = .false.
         call jelira(matr_elem//'.RELR', 'LONUTI', nbchme)
         if (nbchme .gt. 0) then
-            call jeveuo(matr_elem//'.RELR', 'L', vk24 = p_matr_elem_relr)
+            call jeveuo(matr_elem//'.RELR', 'L', vk24 = v_relr)
         endif
     endif
 !
@@ -148,8 +155,8 @@ implicit none
         end do
     else
         do ichme = 1, nbchme
-            if (p_matr_elem_relr(ichme)(10:10) .eq. 'G') then
-                call lxliis(p_matr_elem_relr(ichme)(7:8), i_load, ier)
+            if (v_relr(ichme)(10:10) .eq. 'G') then
+                call lxliis(v_relr(ichme)(7:8), i_load, ier)
                 idx_matr  = -ichme
                 load_name = v_load_name(i_load)(1:8)
                 load_nume = v_load_info(nb_load+i_load+1)
@@ -161,6 +168,52 @@ implicit none
             endif
         end do
     endif
+!
+! - Get number of resu_elem for undead loads
+!
+    call jeexin(matr_elem(1:19)//'.RELR', iret)
+    if (iret .ne. 0) then
+        call jelira(matr_elem(1:19)//'.RELR', 'LONUTI', nbchme)
+        if (nbchme .eq. 0) then
+            goto 99
+        else
+            call jeveuo(matr_elem(1:19)//'.RELR', 'L', vk24=v_relr)
+            if (v_relr(1)(7:8) .eq. '00') then
+                goto 99
+            endif
+        endif
+    else
+        ASSERT(.false.)
+    endif
+!
+! - Access to function
+!
+    call jeexin(list_load(1:19)//'.FCHA', iret)
+    if (iret .eq. 0) then
+        l_func = .false.
+    else
+        l_func = .true.
+        call jeveuo(list_load(1:19)//'.FCHA', 'L', vk24 = v_load_func)
+    endif
+!
+! - Create list of coefficients
+!
+    call jedetr(list_coef)
+    call wkvect(list_coef, 'V V R', nbchme, vr = v_list_coef)
+    do i_load = 1, nbchme
+        if (l_func) then
+            call lxliis(v_relr(i_load)(7:8), icha, iret)
+            load_func = v_load_func(icha)(1:8)
+            if (icha .gt. 0) then
+                call fointe('F ', load_func, 1, ['INST'], [inst_curr], vale, iret)
+            else
+                ASSERT(.false.)
+            endif
+        else
+            vale = 1.d0
+        endif
+        v_list_coef(i_load) = vale
+    end do
 !
  99 continue
 !
