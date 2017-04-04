@@ -58,6 +58,7 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    codret = 0
     call lccgad(fami, kpg, ksp, imate, option,&
                 epsm(1), deps(1), sigp(1), dsidep(1,1), vim,&
                 vip, wkin)

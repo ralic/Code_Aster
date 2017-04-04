@@ -9,7 +9,6 @@ implicit none
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
@@ -172,7 +171,6 @@ implicit none
 ! --- MATR_ELEM RIGIDITE GEOMETRIQUE
 !
     else if (typmat.eq.'MEGEOM') then
-        call detrsd('MATR_ELEM', matele)
         call merige(model(1:8), carele(1:8), sigplu, strplu, matele,&
                     'V', 0, mater=mate)
 !

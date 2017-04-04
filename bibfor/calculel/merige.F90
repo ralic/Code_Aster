@@ -6,6 +6,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
 #include "asterfort/assert.h"
 #include "asterfort/exi_fiss.h"
 #include "asterfort/calcul.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/exixfe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -68,6 +69,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel,&
     if (modele(1:1) .eq. ' ') then
         call utmess('F', 'CALCULEL2_82')
     endif
+    call detrsd('MATR_ELEM', matel)
     call mecham(option, modele, cara, nh, chgeom,&
                 chcara, chharm, icode)
 !
