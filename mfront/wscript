@@ -121,6 +121,7 @@ def check_mfront(self):
         self.env.append_value('CXXFLAGS_MFRONT_ONLY', flag)
     self.check_mfront_version( (2, 0, 3) )
     self.check_mfront_libs()
+    self.check_cxx11_abi()
     self.check_mfront_obsolete_source()
 
 @Configure.conf
@@ -150,11 +151,26 @@ def check_mfront_version(self, minver=None):
 
 @Configure.conf
 def check_mfront_libs(self):
-    check_mfront = partial(self.check_cc, mandatory=True, uselib_store='MFRONT', use='MFRONT')
-    check_lib = lambda lib: check_mfront(lib=lib)
-    libs = ['AsterInterface', ]
+    _check = partial(self.check_cc, mandatory=True, uselib_store='MFRONT',
+                     use='MFRONT')
+    check_lib = lambda lib: _check(lib=lib)
+    libs = ['AsterInterface', 'TFELSystem']
     map(check_lib, Utils.to_list(libs))
 
+@Configure.conf
+def check_cxx11_abi(self):
+    import ctypes
+    libname = "libTFELSystem.so"
+    symbol = "getUMATElasticSymmetryType"
+    lib = ctypes.cdll.LoadLibrary(libname)
+    exists = getattr(lib, symbol, None) is not None
+    # if a such symbol exists, MFront was not compiled with cxx11 ABI.
+    use_cxx11_abi = int(not exists)
+    reverse = int(exists)
+    self.safe_remove('CXXFLAGS',
+        '-D_GLIBCXX_USE_CXX11_ABI={0}'.format(reverse))
+    self.env.append_value('CXXFLAGS',
+        '-D_GLIBCXX_USE_CXX11_ABI={0}'.format(use_cxx11_abi))
 
 def remove(path):
     """Remove a file or a directory"""
