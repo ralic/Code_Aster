@@ -1,11 +1,11 @@
 subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, nbmaec, limaec, sdcarm,&
-                  codret)
+                  carael, codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -57,7 +57,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: typech, modele, sdcarm
+    character(len=8) :: typech, modele, sdcarm, carael
     character(len=19) :: chanom
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie, etiqcp
@@ -115,7 +115,7 @@ subroutine irceme(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, etiqcp, partie, numpt,&
                 instan, numord, jcesk, jcesd, jcesc,&
                 jcesv, jcesl, nbmaec, limaec, sdcarm,&
-                codret)
+                carael, codret)
 !
 !====
 ! 3. ON NETTOIE

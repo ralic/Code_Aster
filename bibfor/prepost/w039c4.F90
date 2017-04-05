@@ -20,7 +20,7 @@ subroutine w039c4(carte, ifi, form)
     character(len=*) :: carte, form
     integer :: ifi
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -110,7 +110,7 @@ subroutine w039c4(carte, ifi, form)
     call ircame(ifi, nommed, chels1, typech, k8bid,&
                 0, k8bid, k8bid, k8bid, 0,&
                 0.0d0, 0, jcesk, jcesd, jcesc,&
-                jcesv, jcesl, 0, [0], k8bid,&
+                jcesv, jcesl, 0, [0], k8bid, k8bid,&
                 iret)
 !
     ASSERT(iret.eq.0)

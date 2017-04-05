@@ -19,7 +19,7 @@ interface
     subroutine irvari(ifi        , field_med    , vari_elga, field_loca, model    ,&
                       nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                       nume_store , nbmaec       , limaec   , result    , cara_elem,&
-                      codret)
+                      carael     , codret)
         integer, intent(in) :: ifi
         character(len=64), intent(in) :: field_med
         character(len=19), intent(in) :: vari_elga
@@ -34,7 +34,7 @@ interface
         integer, intent(in) :: nbmaec
         integer, intent(in) :: limaec(*)
         character(len=8), intent(in) :: result
-        character(len=8), intent(in) :: cara_elem
+        character(len=8), intent(in) :: cara_elem, carael
         integer, intent(out) :: codret
     end subroutine irvari
 end interface

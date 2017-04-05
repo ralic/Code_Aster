@@ -22,7 +22,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
     logical :: aunoeud
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -126,16 +126,16 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
     if (form .eq. 'MED') then
 !     -------------------------
         call irceme(ifi, nommed(1), chrmed(1), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, [0], sdcarm, iret)
+                    0.d0, 0, 0, [0], sdcarm, sdcarm, iret)
         ASSERT(iret.eq.0)
 !
         call irceme(ifi, nommed(2), chrmed(2), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                    0.d0, 0, 0, [0], sdcarm, iret)
+                    0.d0, 0, 0, [0], sdcarm, sdcarm, iret)
         ASSERT(iret.eq.0)
 !
         if (l3d) then
             call irceme(ifi, nommed(3), chrmed(3), typech, modele, 0, nomcmp, ' ', ' ', 0,&
-                        0.d0, 0, 0, [0], sdcarm, iret)
+                        0.d0, 0, 0, [0], sdcarm, sdcarm, iret)
             ASSERT(iret.eq.0)
         endif
 !

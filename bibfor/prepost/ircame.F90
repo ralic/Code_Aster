@@ -2,7 +2,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, etiqcp, partie, numpt,&
                   instan, numord, adsk, adsd, adsc,&
                   adsv, adsl, nbenec, lienec, sdcarm,&
-                  codret)
+                  carael, codret)
 !_______________________________________________________________________
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -74,7 +74,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
 #include "asterfort/ulisog.h"
 #include "asterfort/utlicm.h"
 #include "asterfort/utmess.h"
-    character(len=8) :: typech, modele, sdcarm
+    character(len=8) :: typech, modele, sdcarm, carael
     character(len=19) :: chanom
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie, etiqcp
@@ -271,7 +271,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele,&
             if (sdcarm .ne. ' ' .and. typech(1:4) .eq. 'ELGA') then
                 call irelst(nofimd, chanom, nochmd, typech, nomaas,&
                             nomamd, nbimpr, zi( adcaii), zk80(adcaik),&
-                            sdcarm)
+                            sdcarm, carael)
             endif
 !
             call irmpga(nofimd, chanom, nochmd, typech, nomtyp,&

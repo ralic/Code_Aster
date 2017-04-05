@@ -20,7 +20,7 @@ interface
                       nbcmp, nomcmp, etiqcp, partie, numpt,&
                       instan, numord, adsk, adsd, adsc,&
                       adsv, adsl, nbenec, lienec, sdcarm,&
-                      codret)
+                      carael, codret)
         integer :: ifi
         character(len=64) :: nochmd
         character(len=19) :: chanom
@@ -40,7 +40,7 @@ interface
         integer :: adsl
         integer :: nbenec
         integer :: lienec(*)
-        character(len=8) :: sdcarm
+        character(len=8) :: sdcarm, carael
         integer :: codret
     end subroutine ircame
 end interface

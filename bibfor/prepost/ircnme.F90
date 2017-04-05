@@ -1,10 +1,11 @@
 subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
                   nbcmp, nomcmp, partie, numpt, instan,&
-                  numord, nbnoec, linoec, sdcarm, codret)
+                  numord, nbnoec, linoec, sdcarm, carael,&
+                  codret)
 !_______________________________________________________________________
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -54,7 +55,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
 !
 ! 0.1. ==> ARGUMENTS
 !
-    character(len=8) :: typech, modele, sdcarm
+    character(len=8) :: typech, modele, sdcarm, carael
     character(len=19) :: chanom
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie
@@ -107,7 +108,7 @@ subroutine ircnme(ifi, nochmd, chanom, typech, modele,&
                 nbcmp, nomcmp, ' ', partie, numpt,&
                 instan, numord, jcnsk, jcnsd, jcnsc,&
                 jcnsv, jcnsl, nbnoec, linoec, sdcarm,&
-                codret)
+                carael, codret)
 !
 !====
 ! 3. ON NETTOIE
