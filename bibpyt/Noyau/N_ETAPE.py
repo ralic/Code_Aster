@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -184,8 +184,9 @@ class ETAPE(N_MCCOMPO.MCCOMPO):
             except Exception, exc:
                 if CONTEXT.debug:
                     traceback.print_exc()
-                raise AsException("Impossible d'affecter un type au résultat:",
-                                  str(exc))
+                # "Impossible d'affecter un type au résultat:", str(exc)
+                # Do not raise an exception, will be stopped later by V_ETAPE
+                sd_prod = lambda etape: None
         else:
             sd_prod = self.definition.sd_prod
         # on teste maintenant si la SD est réutilisée ou s'il faut la créer
