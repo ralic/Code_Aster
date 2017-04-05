@@ -7,6 +7,7 @@ implicit none
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/codent.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
@@ -63,9 +64,10 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    character(len=8) :: saux08
     character(len=16) :: rela_comp_ask
     aster_logical :: l_kit_thm = .false._1
-    integer :: nb_vari_umat
+    integer :: nb_vari_umat, scali, nbret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,7 +101,14 @@ implicit none
         call mfront_get_function(rela_comp_ask, subr_name)
     elseif (l_mfront_proto) then
         if (present(keywordfact_)) then
-            call getvtx(keywordfact_, 'LIBRAIRIE'  , iocc = i_comp_, scal = libr_name)
+            call getvis(keywordfact_, 'UNITE_LIBRAIRIE'  , iocc = i_comp_,&
+                        scal = scali, nbret = nbret)
+            if( nbret.ne.0 ) then
+                call codent(scali, 'G', saux08)
+                libr_name = 'fort.'//saux08
+            else
+                call getvtx(keywordfact_, 'LIBRAIRIE'  , iocc = i_comp_, scal = libr_name)
+            endif
             call getvtx(keywordfact_, 'NOM_ROUTINE', iocc = i_comp_, scal = subr_name)
         endif
     elseif (l_umat) then
