@@ -20,7 +20,7 @@
 # MODELISATION AXIS_META  (ELEMENTS AXISYMETRIQUES METALLURGIQUES)
 #             13 NOEUDS  2 MAILLES QUAD8
 
-os.system("mfront --obuild maept01a.mfront --interface=aster")
+os.system("mfront --obuild MetaAcierEPIL_PT.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so MetaAcierEPIL_PT.so")
 
 DEBUT(CODE  = _F(NIV_PUB_WEB = 'INTERNET'),
