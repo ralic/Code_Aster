@@ -23,7 +23,7 @@ IMPR_MACRO='OUI',
 
 import os
 
-os.system("mfront --obuild anlem01a.mfront --interface=aster")
+os.system("mfront --obuild AnisoLemaitre.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so AnisoLemaitre.so")
 
 # def des materiaux

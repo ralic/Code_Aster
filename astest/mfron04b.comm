@@ -19,7 +19,7 @@
 
 import os
 
-os.system("mfront --obuild anlem01a.mfront --interface=aster")
+os.system("mfront --obuild AnisoLemaitre.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so AnisoLemaitre.so")
 
 # PAR_LOT='NON' a cause dela procedure qui calcule les repères locaux
