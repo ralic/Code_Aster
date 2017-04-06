@@ -35,7 +35,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild plast01a.mfront --interface=aster")
+os.system("mfront --obuild Plasticity.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so Plasticity.so")
 
 #

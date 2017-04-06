@@ -7,4 +7,4 @@ P testlist verification sequential
 
 F comm hplv101a.comm D 1
 F mail hplv101a.mail D 20
-F nom  plast01a.mfront   D 0
+F nom  Plasticity.mfront   D 0

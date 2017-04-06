@@ -8,4 +8,4 @@ P testlist verification sequential
 F comm ssnl112a.comm D 1
 F mail ssnl112a.mail D 20
 F libr ssnl112a.38 D 38
-F nom  plast01a.mfront   D 0
+F nom  Plasticity.mfront   D 0

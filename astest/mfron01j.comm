@@ -27,7 +27,7 @@ DEBUT( CODE=_F(NIV_PUB_WEB='INTERNET'))
 
 import os
 
-os.system("mfront --obuild chabo01a.mfront --interface=aster")
+os.system("mfront --obuild Chaboche.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so Chaboche.so")
 
 MAIL_B=LIRE_MAILLAGE(FORMAT='MED',VERI_MAIL=_F(VERIF='OUI'), )

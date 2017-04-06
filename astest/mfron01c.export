@@ -7,5 +7,5 @@ P testlist verification sequential
 
 F comm mfron01c.comm D 1
 F libr mfron01c.93 D 93
-F nom  vchab01a.mfront   D 0
-F nom  vmenr01a.mfront   D 0
+F nom  ViscoChaboche.mfront   D 0
+F nom  ViscoMemoNrad.mfront   D 0

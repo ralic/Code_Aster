@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',),);
 
 import os
 
-os.system("mfront --obuild vchab01a.mfront --interface=aster")
+os.system("mfront --obuild ViscoChaboche.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so ViscoChaboche.so")
 
 

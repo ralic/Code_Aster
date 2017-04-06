@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-os.system("mfront --obuild chabo01a.mfront --interface=aster")
+os.system("mfront --obuild Chaboche.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so Chaboche.so")
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))

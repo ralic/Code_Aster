@@ -21,7 +21,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='NON'),IMPR_MACRO='OUI')
 
 import os
 
-os.system("mfront --obuild plath01a.mfront --interface=aster")
+os.system("mfront --obuild PlasticityTH.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so PlasticityTH.so")
 
 

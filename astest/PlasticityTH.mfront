@@ -8,7 +8,7 @@
 alpha.setGlossaryName("ThermalExpansion");
 //@MaterialProperty stress s0;
 @MaterialProperty stress ET;
-@MaterialLaw{"plath02a.mfront"};
+@MaterialLaw{"Plasticity_Sy.mfront"};
 
 @LocalVariable stress s0;
 @InitLocalVars{
