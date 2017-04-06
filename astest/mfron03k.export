@@ -8,6 +8,6 @@ P testlist verification sequential
 F comm mfron03k.comm D 1
 F nom PolyCrystal_Orientation_100grains.mfront   D 0
 F libr ssnv194d.91 D 91
-F nom  pcrys01a.mfront   D 0
-F nom  pcrys02a.mfront   D 0
-F nom  mcrys02a.mfront   D 0
+F nom  PolyCrystalDDCC.mfront   D 0
+F nom  PolyCrystal_DD_CC_SlidingSystems.mfront   D 0
+F nom  MonoCrystal_DD_CC_InteractionMatrix.mfront   D 0

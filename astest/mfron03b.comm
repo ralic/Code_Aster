@@ -26,7 +26,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild mcrys01a.mfront --interface=aster")
+os.system("mfront --obuild MonoCrystal_CFC.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so MonoCrystal_CFC.so")
 
 import numpy as NP

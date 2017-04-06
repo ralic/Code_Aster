@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='NON'),)
 
 import os
 
-os.system("mfront --obuild pcrys01a.mfront --interface=aster")
+os.system("mfront --obuild PolyCrystalDDCC.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so PolyCrystalDDCC.so")
 
 # SDVERI='NON' car la verification est trop couteuse en CPU

@@ -68,7 +68,7 @@
 @Includes{
 #include"TFEL/Material/MetallicCFCSlidingSystems.hxx"
 }
-@Import"mcrys05a.mfront"; //MonoCrystal_DD_CFC_InteractionMatrix.mfront
+@Import"MonoCrystal_DD_CFC_InteractionMatrix.mfront";
 
 @Members{
   // Mono crystal gliding system

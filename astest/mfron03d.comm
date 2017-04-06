@@ -32,7 +32,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild pcrys04a.mfront --interface=aster")
+os.system("mfront --obuild PolyCrystal_MC.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so PolyCrystal_MC.so")
 
 tfin = 5.

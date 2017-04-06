@@ -25,7 +25,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 
 import os
 
-os.system("mfront --obuild mcrys07a.mfront --interface=aster")
+os.system("mfront --obuild MonoDDCC_Irra.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so MonoDDCC_Irra.so")
 
 from numpy.linalg import norm

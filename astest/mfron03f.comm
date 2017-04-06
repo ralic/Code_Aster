@@ -31,7 +31,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),IGNORE_ALARM=('COMP
 
 import os
 
-os.system("mfront --obuild pcrys03a.mfront --interface=aster")
+os.system("mfront --obuild PolyCrystalDDCFC.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so PolyCrystalDDCFC.so")
 
 MU       = 80000. ;

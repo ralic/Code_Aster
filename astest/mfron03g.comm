@@ -29,7 +29,7 @@ from numpy.linalg import norm
 
 import os
 
-os.system("mfront --obuild mcrys08a.mfront --interface=aster")
+os.system("mfront --obuild MonoDDCFC_Irra.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so MonoDDCFC_Irra.so")
 
 

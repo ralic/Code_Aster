@@ -7,5 +7,5 @@ P testlist verification sequential
 
 F comm mfron03j.comm D 1
 F mail mfron03j.mail D 20
-F nom  mcrys09a.mfront   D 0
-F nom  mcrys10a.mfront   D 0
+F nom  GdefMonoCrystal.mfront   D 0
+F nom  GdefMono_Jacnum.mfront   D 0

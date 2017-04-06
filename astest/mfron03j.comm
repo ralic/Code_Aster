@@ -26,9 +26,9 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),DEBUG=_F(SDVERI='OUI'));
 import os
 import numpy as NP
 
-os.system("mfront --obuild mcrys09a.mfront --interface=aster")
+os.system("mfront --obuild GdefMonoCrystal.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so GdefMonoCrystal.so")
-os.system("mfront --obuild mcrys10a.mfront --interface=aster")
+os.system("mfront --obuild GdefMono_Jacnum.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so GdefMono_Jacnum.so")
 
 

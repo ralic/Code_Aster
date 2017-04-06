@@ -40,7 +40,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
 
 import os
 
-os.system("mfront --obuild mcrys06a.mfront --interface=aster")
+os.system("mfront --obuild MonoCrystalDDCFC.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so MonoCrystalDDCFC.so")
 
 reaciter=1

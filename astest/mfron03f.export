@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron03f.comm D 1
-F nom  pcrys03a.mfront   D 0
-F nom  mcrys05a.mfront   D 0
+F nom  PolyCrystalDDCFC.mfront   D 0
+F nom  MonoCrystal_DD_CFC_InteractionMatrix.mfront   D 0
 F nom PolyCrystal_Orientation.mfront   D 0

@@ -6,6 +6,6 @@ P mpi_nbnoeud 1
 P testlist verification sequential
 
 F comm mfron03i.comm D 1
-F nom  mcrys07a.mfront   D 0
-F nom  mcrys02a.mfront   D 0
-F nom  mcrys04a.mfront   D 0
+F nom  MonoDDCC_Irra.mfront   D 0
+F nom  MonoCrystal_DD_CC_InteractionMatrix.mfront   D 0
+F nom  MonoCrystal_DD_CC_SlidingSystems.mfront   D 0
