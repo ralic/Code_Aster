@@ -19,7 +19,7 @@
 
 import os
 
-os.system("mfront --obuild gtn01a.mfront --interface=aster")
+os.system("mfront --obuild GTN.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so gtn.so")
 
 
