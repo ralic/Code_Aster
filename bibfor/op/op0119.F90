@@ -333,15 +333,28 @@ subroutine op0119()
 !       Nombre de maille du groupe
         vmailgrp(iinbgf) = nbmagr
 !       Les nouveaux noeuds dans la SD MAILLAGE
-        do ii = iidepnoeud , iinbnoeuds
-            numno = vinoeud(ii)
-            vcoord( (ii-1)*2 + 1 ) = zr(jdco+(numno-1)*3)   - axep(1)
-            vcoord( (ii-1)*2 + 2 ) = zr(jdco+(numno-1)*3+1) - axep(2)
-        enddo
+        if ( iangle .eq. 1 ) then
+            cc = cos(angle*r8dgrd())
+            ss = sin(angle*r8dgrd())
+            do ii = iidepnoeud , iinbnoeuds
+                numno = vinoeud(ii)
+                xx = zr(jdco+(numno-1)*3)   - axep(1)
+                yy = zr(jdco+(numno-1)*3+1) - axep(2)
+                ! On tourne
+                vcoord( (ii-1)*2 + 1 ) = xx*cc - yy*ss
+                vcoord( (ii-1)*2 + 2 ) = xx*ss + yy*cc
+            enddo
+        else
+            do ii = iidepnoeud , iinbnoeuds
+                numno = vinoeud(ii)
+                vcoord( (ii-1)*2 + 1 ) = zr(jdco+(numno-1)*3)   - axep(1)
+                vcoord( (ii-1)*2 + 2 ) = zr(jdco+(numno-1)*3+1) - axep(2)
+            enddo
+        endif
         iidepnoeud = iinbnoeuds+1
         call jecroc(jexnom(vnmfig, nomgf))
         zi(jnbfig+iinbgf-1) = nbmagr
-        zi(jpofig+iinbgf-1)   = ipointeur
+        zi(jpofig+iinbgf-1) = ipointeur
         zi(jtyfig+iinbgf-1) = 1
         ipointeur = ipointeur + nbmagr*ncarfi1
     enddo

@@ -832,14 +832,14 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
                 #
                 # Vérification que le CDG est l'origine du maillage
                 cdgy = ligne['CDG_Y']; cdgz = ligne['CDG_Z']
-                dcdg = pow(cdgy*cdgy + cdgz*cdgz,0.5)/pow(ligne['A'],0.5)
+                dcdg = (cdgy*cdgy + cdgz*cdgz)/ligne['A']
                 if ( dcdg > 1.0E-08 ):
                     if ( not ImprTable ): IMPR_TABLE(TABLE=nomres)
                     ImprTable = True
                     UTMESS('A', 'POUTRE0_12',valr=[cdgy,cdgz])
                 # Vérification que la section n'est pas tournée
                 alpha = ligne['ALPHA']
-                if ( alpha > 1.0E-08 ):
+                if ( abs(alpha) > 0.001 ):
                     if ( not ImprTable ): IMPR_TABLE(TABLE=nomres)
                     ImprTable = True
                     UTMESS('A', 'POUTRE0_13',valr=[alpha, -alpha])
