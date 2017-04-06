@@ -25,7 +25,7 @@ import os
 
 os.system("tfel-config --version ")
 
-os.system("mfront --obuild burag01a.mfront --interface=aster ")
+os.system("mfront --obuild BurgerAgeing.mfront --interface=aster ")
 
 from subprocess import Popen, PIPE
 

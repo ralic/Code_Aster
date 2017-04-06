@@ -20,7 +20,7 @@
 # -----------------------------------------------------
 
 
-os.system("mfront --obuild burag01a.mfront --interface=aster")
+os.system("mfront --obuild BurgerAgeing.mfront --interface=aster")
 os.system("cp src/libAsterBehaviour.so BurgerAgeing.so")
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'))
