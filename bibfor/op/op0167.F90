@@ -2,7 +2,7 @@ subroutine op0167()
     implicit none
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,7 +99,7 @@ subroutine op0167()
     character(len=24) :: nommav, grpmav, typmav, connev, nodimv, grpnov, nomnov
     character(len=24) :: coovav, coodsv, coorev
     character(len=24) :: momanu, momano, crgrnu, crgrno, lisi
-    character(len=24) :: lisk
+    character(len=24) :: lisk,typ_dec_lac
     character(len=24) :: nomg, valk(2), nogma, gpptnm, gpptnn
     character(len=24) :: prfn1, prfn2, nume2, iadr, nume1, momoto, momuto, prfn
     integer :: nn1, iaa, iagma, iatyma, ii, ima, in, ino, inumol, j, nfi
@@ -111,7 +111,7 @@ subroutine op0167()
     integer :: ibid, icham, ifm, iocc, jdime, jiad, jlima, jma, jmomno, jmomnu
     integer :: jnommc, jnu2, jnum, joccmc, jpr2, jpro, jrefe, jtypmv
     integer :: nbmaiv, nbmoma, nbnoaj, nbnoev, nch, ndinit, niv, k, jgeofi
-    integer :: dimcon, decala, iocct
+    integer :: dimcon, decala, iocct, typ_dec
     real(kind=8) :: shrink, lonmin
     aster_logical :: lpb
     integer, pointer :: adrjvx(:) => null()
@@ -1093,6 +1093,14 @@ subroutine op0167()
         call getvtx('DECOUPE_LAC', 'GROUP_MA_ESCL' , &
                     iocc=1, nbval=nbgrma,vect=zk24(jlgrma),nbret=n1b)
         ASSERT(n1b.eq.nbgrma)
+! ------ TYPE DE DECOUPE ------------------------------------------------------------------
+        call getvtx('DECOUPE_LAC', 'DECOUPE_HEXA' , iocc=1,scal=typ_dec_lac,nbret=n1b)
+        if (typ_dec_lac=="PYRA") then
+            typ_dec = 1
+        elseif (typ_dec_lac=="HEXA") then
+            typ_dec = 0
+        endif
+        ASSERT(n1b.eq.1)
 ! ------ INITIALISATION ---------------------------------------------------------------------------
         call copisd('MAILLAGE', 'V', nomain, nomaax)
 ! ------ BOUCLE SUR LES GROUP_MA ------------------------------------------------------------------
@@ -1100,7 +1108,7 @@ subroutine op0167()
 ! ------ LISTE DE MAILLE DU GROUP_MA
             call gtgrma(nomaax, zk24(jlgrma+izone-1), lima, nbma)
 ! ------ CREATION DES PATCHS ET RAFFINEMENT LOCAL
-            call cppagn(nomaax, nomaou,  nbma, lima, izone)
+            call cppagn(nomaax, nomaou,  nbma, lima, izone,typ_dec)
 ! ------ COPIE DES DONNEES DANS LE MAILLAGE AUXILIAIRE
             call jedetr(nomaax)
             call copisd('MAILLAGE', 'V', nomaou, nomaax)

@@ -38,7 +38,9 @@ Mail=MODI_MAILLAGE(reuse=Mail,
                    ORIE_PEAU_3D=_F(GROUP_MA=('Group_2','Group_1','Group_3','Group_4',),),);                       
 
 Mail2=CREA_MAILLAGE(MAILLAGE=Mail,
-                    DECOUPE_LAC=_F(GROUP_MA_ESCL='Group_1',),)
+                    DECOUPE_LAC=_F(GROUP_MA_ESCL='Group_1',
+                                   DECOUPE_HEXA='HEXA',
+                                   ),)
                     
 mat1=DEFI_MATERIAU(ELAS=_F(E=2000,
                            NU=0.3,),);

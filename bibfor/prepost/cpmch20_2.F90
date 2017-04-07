@@ -287,6 +287,5 @@ subroutine cpmch20_2(conloc, jmacsu, indno, indma, conneo)
     zi(jconloc+13-1) = indno + 4 +conneo(lino(4))
 
 ! -------------------------------------------------------------------------------------------------
-
     call jedema()
 end subroutine
