@@ -77,14 +77,14 @@ implicit none
 !
 ! - Generate name of objects
 !
-    ASSERT(i_zone .le. 9)
-    call codent(i_zone, 'G', knuzo)
-    sdappa_mane = sdappa(1:19)//'.MAN'//knuzo(1:1)
-    sdappa_slne = sdappa(1:19)//'.ESN'//knuzo(1:1)
-    sdappa_mast = sdappa(1:19)//'.MAS'//knuzo(1:1)
-    sdappa_slav = sdappa(1:19)//'.ESC'//knuzo(1:1)
-    sdappa_civm = sdappa(1:19)//'.CIM'//knuzo(1:1)
-    sdappa_lnma = sdappa(1:19)//'.LNM'//knuzo(1:1)
+    ASSERT(i_zone .le. 100)
+    call codent(i_zone-1, 'G', knuzo)
+    sdappa_mane = sdappa(1:19)//'.MN'//knuzo(1:2)
+    sdappa_slne = sdappa(1:19)//'.EN'//knuzo(1:2)
+    sdappa_mast = sdappa(1:19)//'.MS'//knuzo(1:2)
+    sdappa_slav = sdappa(1:19)//'.EC'//knuzo(1:2)
+    sdappa_civm = sdappa(1:19)//'.CM'//knuzo(1:2)
+    sdappa_lnma = sdappa(1:19)//'.LM'//knuzo(1:2)
 !
 ! - Access to objects
 !

@@ -119,13 +119,13 @@ implicit none
     nb_slav_start  = 0
     elem_slav_start(1:nb_elem_slav) = 0
     elem_mast_start(1:nb_elem_slav) = 0
-    ASSERT(i_zone .le. 9)
-    call codent(i_zone, 'G', knuzo)
-    conx_inve=sdappa(1:19)//'.CIM'//knuzo(1:1)
+    ASSERT(i_zone .le. 100)
+    call codent(i_zone-1, 'G', knuzo)
+    conx_inve=sdappa(1:19)//'.CM'//knuzo(1:2)
     call jeveuo(conx_inve, 'L', vi = v_cninv)
     call jeveuo(jexatr(conx_inve, 'LONCUM'), 'L', vi = v_cninv_lcum)
-    call jeveuo(sdappa(1:19)//'.LNM'//knuzo(1:1),'L', vi = list_node_mast)
-    call jelira(sdappa(1:19)//'.LNM'//knuzo(1:1),'LONMAX',nb_node_mast)
+    call jeveuo(sdappa(1:19)//'.LM'//knuzo(1:2),'L', vi = list_node_mast)
+    call jelira(sdappa(1:19)//'.LM'//knuzo(1:2),'LONMAX',nb_node_mast)
     if(nb_node_mast .eq. 0) then
         go to 100
     end if

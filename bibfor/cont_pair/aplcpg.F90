@@ -203,10 +203,10 @@ implicit none
 !
 ! - Object for neighbours (inverse connectivity)
 !
-    ASSERT(i_zone .le. 9)
-    call codent(i_zone, 'G', knuzo)
-    sdappa_mane = sdappa(1:19)//'.MAN'//knuzo(1:1)
-    sdappa_slne = sdappa(1:19)//'.ESN'//knuzo(1:1)
+    ASSERT(i_zone .le. 100)
+    call codent(i_zone-1, 'G', knuzo)
+    sdappa_mane = sdappa(1:19)//'.MN'//knuzo(1:2)
+    sdappa_slne = sdappa(1:19)//'.EN'//knuzo(1:2)
     call jeveuo(sdappa_mane, 'L', vi = v_sdappa_mane)
     call jeveuo(sdappa_slne, 'L', vi = v_sdappa_slne)
 !

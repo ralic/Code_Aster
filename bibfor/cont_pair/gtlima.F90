@@ -60,10 +60,12 @@ implicit none
 !
 ! - Generate name of objects
 !
-    ASSERT(i_zone .le. 9)
-    call codent(i_zone, 'G', knuzo)
-    sdappa_mast = sdappa(1:19)//'.MAS'//knuzo(1:1)
-    sdappa_slav = sdappa(1:19)//'.ESC'//knuzo(1:1)
+    ASSERT(i_zone .le. 100)
+    call codent(i_zone-1, 'G', knuzo)
+    write(*,*) "hello gtlima", knuzo(1:2)
+    sdappa_mast = sdappa(1:19)//'.MS'//knuzo(1:2)
+    sdappa_slav = sdappa(1:19)//'.EC'//knuzo(1:2)
+    write(*,*) "bye" 
 !
 ! - Access to contact datastructures
 !
