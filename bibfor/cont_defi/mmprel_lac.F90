@@ -21,7 +21,7 @@ implicit none
 #include "asterfort/get_patchzi_num.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -252,6 +252,20 @@ implicit none
                 call ajellt(ligret, mesh  , nb_list_elem, list_elem, ' ',&
                             phenom, modeli, 0           , ' ')
                 nb_sub_elem    = nb_sub_elem+5
+            else if (patch_type .eq. 125 .or. patch_type .eq. 126) then
+! ------------- 3D - HEXA8/QUAD4 => PYRA5/TRIA3
+! ------------- 3D - HEXA20/QUAD8 => PYRA13/TRIA6
+                do i_sub_elem =1,4
+                    elem_slav_indx = jdecme+i_elem_slav+i_sub_elem-1
+                    elem_slav_nume = v_sdcont_mailco(elem_slav_indx)
+                    v_list_elem(i_sub_elem) = elem_slav_nume
+                end do
+                nb_list_elem = 4
+                i_elem_slav  = i_elem_slav+4
+                modeli       = 'CONT_LAC_SL_3D'
+                call ajellt(ligret, mesh  , nb_list_elem, list_elem, ' ',&
+                            phenom, modeli, 0           , ' ')
+                nb_sub_elem    = nb_sub_elem+4
             else
                 ASSERT(.false.)
             end if
