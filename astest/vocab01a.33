@@ -8,16 +8,8 @@ import tempfile
 
 def getListOfCommands():
     """Build the list of operators"""
-    from Cata import cata
-    commands = []
-    for name, elem in cata.__dict__.items():
-        if isinstance(elem, OPER):
-            commands.append(elem)
-        elif isinstance(elem, PROC):
-            commands.append(elem)
-        elif isinstance(elem, MACRO):
-            commands.append(elem)
-    return commands
+    from code_aster.Cata.Commands import commandStore
+    return commandStore.values()
 
 def checkDefinition( commands ):
     """Check the definition of the catalog of the commands (see N_ENTITE.py)"""
@@ -100,7 +92,7 @@ def printKeywordsUsage( commands, fileList=None ):
 
 def vocab01_ops(self, EXISTANT, INFO, **kwargs):
     """Fake macro-command to check the catalog"""
-    from Cata.cata import CREA_TABLE, TEST_TABLE
+    from code_aster.Cata.Commands import CREA_TABLE, TEST_TABLE
     from Utilitai.Utmess import UTMESS
     self.set_icmd(1)
 

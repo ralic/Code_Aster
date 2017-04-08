@@ -1,7 +1,10 @@
 # coding=utf-8
 
-from Cata.cata import *
-from Cata.cata import _F
+from code_aster.Cata.Syntax import _F, CO, MACRO, SIMP
+from code_aster.Cata.DataStructure import (evol_ther, modele_sdaster,
+    cham_no_sdaster, listr8_sdaster, cham_mater, char_ther, char_cine_ther)
+from code_aster.Cata.Commands import THER_LINEAIRE
+
 
 def ma_macro_ops(self, TEMPER, **kwargs):
     """Corps de la macro de test."""

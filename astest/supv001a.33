@@ -8,7 +8,9 @@ Demander un avis avant d'utiliser ce genre de mécanisme !
 """
 
 from Noyau.nommage import GetNomConceptResultat as GNC
-from Cata.cata import MACRO, SIMP, OPS, CO, table_sdaster
+from code_aster.Cata.Syntax import MACRO, SIMP, OPS, CO, _F
+from code_aster.Cata.DataStructure import table_sdaster
+
 
 def build_naming_function(macro, intern):
     """Construit la fonction de nommage.
@@ -27,7 +29,6 @@ def build_naming_function(macro, intern):
 
 def mon_include_ops(self, UNITE, INTERNE, TABLE, **kwargs):
     """Corps de la macro de test."""
-    from Cata.cata import _F
     self.set_icmd(1)
     INCLUDE = self.get_cmd('INCLUDE')
     TEST_TABLE = self.get_cmd('TEST_TABLE')
