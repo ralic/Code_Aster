@@ -1,0 +1,88 @@
+# coding=utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: mathieu.corus at edf.fr
+
+
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
+def asse_elem_ssd_prod(self, RESU_ASSE_SSD, **args):
+    MTYPES = {
+        'MODELE' : modele_gene,
+        'NUME_DDL_GENE' : nume_ddl_gene,
+        'RIGI_GENE' : matr_asse_gene_r,
+        'MASS_GENE' : matr_asse_gene_r,
+    }
+    for mc, typ in MTYPES.items():
+        if RESU_ASSE_SSD.get(mc):
+            self.type_sdprod(RESU_ASSE_SSD[mc], typ)
+    return None
+
+
+ASSE_ELEM_SSD=MACRO(nom="ASSE_ELEM_SSD",
+                    op=OPS('Macro.asse_elem_ssd_ops.asse_elem_ssd_ops'),
+                    sd_prod=asse_elem_ssd_prod,
+                    reentrant='n',
+                    fr=tr("Enchainer les commandes DEFI_MODELE_GENE, NUME_DDL_GENE et ASSE_MATR_GENE"),
+
+# pour les concepts de sortie
+        RESU_ASSE_SSD = FACT( statut='o',
+                          regles=(PRESENT_PRESENT('RIGI_GENE','NUME_DDL_GENE'),
+                                  PRESENT_PRESENT('MASS_GENE','NUME_DDL_GENE'),),
+                              MODELE=SIMP(statut='o',typ=CO,defaut=None),
+                              NUME_DDL_GENE=SIMP(statut='o',typ=CO,defaut=None),
+                              RIGI_GENE=SIMP(statut='o',typ=CO,defaut=None),
+                              MASS_GENE=SIMP(statut='o',typ=CO,defaut=None),
+                           ),
+
+        INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+
+# pour DEFI_MODELE_GENE
+        SOUS_STRUC      =FACT(statut='o',max='**',
+           NOM             =SIMP(statut='o',typ='TXM' ),
+           MACR_ELEM_DYNA  =SIMP(statut='o',typ=macr_elem_dyna ),
+           ANGL_NAUT       =SIMP(statut='f',typ='R',max=3),
+           TRANS           =SIMP(statut='f',typ='R',max=3),
+         ),
+        LIAISON         =FACT(statut='o',max='**',
+           SOUS_STRUC_1    =SIMP(statut='o',typ='TXM' ),
+           INTERFACE_1     =SIMP(statut='o',typ='TXM' ),
+           SOUS_STRUC_2    =SIMP(statut='o',typ='TXM' ),
+           INTERFACE_2     =SIMP(statut='o',typ='TXM' ),
+           regles=(EXCLUS('GROUP_MA_MAIT_1','GROUP_MA_MAIT_2','MAILLE_MAIT_2'),
+                   EXCLUS('MAILLE_MAIT_1','GROUP_MA_MAIT_2','MAILLE_MAIT_2'),),
+           GROUP_MA_MAIT_1   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_MAIT_1     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           GROUP_MA_MAIT_2   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE_MAIT_2     =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           OPTION            =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("REDUIT","CLASSIQUE") ),
+         ),
+        VERIF           =FACT(statut='d',max=1,
+           STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-3 ),
+           CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU") ),
+         ),
+
+
+# pour NUME_DDL_GENE
+        METHODE      =SIMP(statut='f',typ='TXM',defaut="CLASSIQUE",into=("CLASSIQUE","ELIMINE") ),
+        STOCKAGE     =SIMP(statut='f',typ='TXM',defaut="LIGN_CIEL",into=("LIGN_CIEL","PLEIN") ),
+
+)  ;

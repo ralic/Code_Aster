@@ -1,0 +1,49 @@
+# coding=utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: hassan.berro at edf.fr
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
+CALC_FLUI_STRU=OPER(nom="CALC_FLUI_STRU",op= 144,sd_prod=melasflu_sdaster,
+                    reentrant='n',
+                    fr=tr("Calculer les paramètres modaux d'une structure soumise à un écoulement"),
+         VITE_FLUI       =FACT(statut='f',
+                               fr=tr("Définir la plage de vitesse fluide étudiée"),
+           VITE_MIN        =SIMP(statut='f',typ='R' ),
+           VITE_MAX        =SIMP(statut='f',typ='R' ),
+           NB_POIN         =SIMP(statut='f',typ='I' ),
+         ),
+         BASE_MODALE     =FACT(statut='o',
+
+           regles=(AU_MOINS_UN('AMOR_REDUIT','AMOR_UNIF','AMOR_REDUIT_CONN'),),
+           MODE_MECA       =SIMP(statut='o',typ=mode_meca ),
+           NUME_ORDRE      =SIMP(statut='f',typ='I',max='**'),
+           AMOR_REDUIT     =SIMP(statut='f',typ='R',max='**'),
+           AMOR_UNIF       =SIMP(statut='f',typ='R',val_min=0.E+00 ),
+           AMOR_REDUIT_CONN=SIMP(statut='f',typ='R',max='**',val_min=0.E+00),
+         ),
+         TYPE_FLUI_STRU  =SIMP(statut='o',typ=type_flui_stru ),
+         IMPRESSION      =FACT(statut='f',
+                               fr=tr("Choix des informations à imprimer dans le fichier RESULTAT"),
+           PARA_COUPLAGE   =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+           DEFORMEE        =SIMP(statut='f',typ='TXM',defaut="NON",into=("OUI","NON") ),
+         ),
+           STOP_ERREUR     =SIMP(statut='f',typ='TXM',defaut="OUI",into=("OUI","NON") ),
+)  ;

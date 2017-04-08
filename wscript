@@ -181,6 +181,7 @@ def configure(self):
     self.recurse('bibcxx')
     self.recurse('bibc')
     self.recurse('bibpyt')
+    self.recurse('code_aster')
     self.recurse('mfront')
     self.recurse('i18n')
     self.recurse('data')
@@ -220,9 +221,10 @@ def build(self):
     self.recurse('bibcxx')
     self.recurse('bibc')
     self.recurse('bibpyt')
+    self.recurse('code_aster')
     self.recurse('mfront')
     self.recurse('i18n')
-    lsub = ['materiau', 'datg', 'catapy', 'catalo']
+    lsub = ['materiau', 'datg', 'catalo']
     if self.env.install_tests:
         lsub.extend(['astest', '../validation/astest'])
     for optional in lsub:

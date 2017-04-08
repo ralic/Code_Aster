@@ -1,0 +1,283 @@
+# coding=utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: mathieu.courtois at edf.fr
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
+AFFE_MODELE=OPER(nom="AFFE_MODELE",op=18,sd_prod=modele_sdaster,
+                 fr=tr("Définir le phénomène physique modélisé et le type d'éléments finis sur le maillage"),reentrant='n',
+         regles=(AU_MOINS_UN('AFFE','AFFE_SOUS_STRUC'),),
+         MAILLAGE        =SIMP(statut='o',typ=maillage_sdaster),
+         INFO            =SIMP(statut='f',typ='I',defaut=1,into=(1,2) ),
+#
+#====
+# Définition des grandeurs caractéristiques
+#====
+#
+         GRANDEUR_CARA =FACT(statut='f',max=1,
+         fr=tr("Grandeurs caractéristiques pour l'adimensionnement des indicateurs d'erreur HM"),
+
+#
+            LONGUEUR      =SIMP(statut='f',typ='R',val_min=0,
+                                fr =tr("Longueur caractéristique"),
+                                ),
+            PRESSION      =SIMP(statut='f',typ='R',val_min=0,
+                                fr =tr("Pression caractéristique"),
+                                ),
+            TEMPERATURE   =SIMP(statut='f',typ='R',val_min=0,
+                                fr =tr("Température caractéristique"),
+                                ),),
+#
+         AFFE_SOUS_STRUC =FACT(statut='f',
+           regles=(UN_PARMI('TOUT','SUPER_MAILLE'),),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           SUPER_MAILLE    =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           PHENOMENE       =SIMP(statut='f',typ='TXM',defaut="MECANIQUE",into=("MECANIQUE",) ),
+         ),
+         AFFE            =FACT(statut='f',max='**',
+           regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE',)),
+           TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA        =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE          =SIMP(statut='f',typ=ma  ,validators=NoRepeat(),max='**'),
+           PHENOMENE       =SIMP(statut='o',typ='TXM',
+                                 into=("MECANIQUE","THERMIQUE","ACOUSTIQUE") ),
+                b_mecanique     =BLOC( condition = """equal_to("PHENOMENE", 'MECANIQUE')""",
+                                        fr=tr("modélisations mécaniques"),
+                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
+                                  "2D_DIS_T",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "2D_DIS_TR",       # person_in_charge: jean-luc.flejou at edf.fr
+                                  "2D_FLUI_ABSO",    # person_in_charge: georges-cc.devesa at edf.fr
+                                  "2D_FLUI_PESA",    # person_in_charge: nicolas.greffet at edf.fr
+                                  "2D_FLUI_STRU",    # person_in_charge: nicolas.greffet at edf.fr
+                                  "2D_FLUIDE",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_ABSO",         # person_in_charge: georges-cc.devesa at edf.fr
+                                  "3D_FAISCEAU",     # person_in_charge: francois.voldoire at edf.fr
+                                  "3D_FLUI_ABSO",    # person_in_charge: georges-cc.devesa at edf.fr
+                                  "3D_FLUIDE",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "3D_INCO_UPG",     # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UPGB",    # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UP",      # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_INCO_UPO",     # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_SI",           # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_GRAD_EPSI",    # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "3D_GRAD_VARI",    # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "3D_GVNO",         # person_in_charge: jerome.beaurain at edf.fr
+                                  "3D_JOINT",        # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_JOINT_HYME",   # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_INTERFACE",    # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "3D_INTERFACE_S",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS",            # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "AXIS_FLUI_STRU",  # person_in_charge: nicolas.greffet at edf.fr
+                                  "AXIS_FLUIDE",     # person_in_charge: nicolas.greffet at edf.fr
+                                  "AXIS_FOURIER",    # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "AXIS_INCO_UPG",   # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UPGB",  # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UP",    # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_INCO_UPO",   # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_SI",         # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_GRAD_VARI",  # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "AXIS_GVNO",       # person_in_charge: jerome.beaurain at edf.fr
+                                  "AXIS_JOINT",      # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_INTERFACE_S",# person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "AXIS_ELDI",       # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "BARRE",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "CABLE_GAINE",     # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "2D_BARRE",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "C_PLAN",          # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "C_PLAN_SI",       # person_in_charge: mickael.abbas at edf.fr
+                                  "C_PLAN_GRAD_EPSI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "CABLE",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "CABLE_POULIE",    # person_in_charge: jean-luc.flejou at edf.fr
+                                  "COQUE_3D",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "COQUE_AXIS",      # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "D_PLAN",          # person_in_charge: j-pierre.lefebvre at edf.fr
+                                  "D_PLAN_GRAD_EPSI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "D_PLAN_GRAD_VARI",# person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "D_PLAN_GVNO",     # person_in_charge: jerome.beaurain at edf.fr
+                                  "D_PLAN_GRAD_SIGM",# person_in_charge: sylvie.granet at edf.fr
+                                  "PLAN_JOINT",      # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_JOINT_HYME", # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_INTERFACE",  # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_INTERFACE_S",# person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "PLAN_ELDI",       # person_in_charge: kyrylo.kazymyrenko at edf.fr
+                                  "D_PLAN_ABSO",     # person_in_charge: georges-cc.devesa at edf.fr
+                                  "D_PLAN_INCO_UPG", # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UPGB",# person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UP",  # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_INCO_UPO", # person_in_charge: mickael.abbas at edf.fr
+                                  "D_PLAN_SI",       # person_in_charge: mickael.abbas at edf.fr
+                                  "DIS_T",           # person_in_charge: jean-luc.flejou at edf.fr
+                                  "DIS_TR",          # person_in_charge: jean-luc.flejou at edf.fr
+                                  "DKT",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "DKTG",            # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "DST",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "FLUI_STRU",       # person_in_charge: nicolas.greffet at edf.fr
+                                  "POU_FLUI_STRU",   # person_in_charge: nicolas.greffet at edf.fr
+                                  "GRILLE_EXCENTRE", # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "GRILLE_MEMBRANE", # person_in_charge: sylvie.michel-ponnelle at edf.fr
+                                  "MEMBRANE",        # person_in_charge: thomas.de-soza at edf.fr
+                                  "POU_D_E",         # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_EM",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_T",         # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_T_GD",      # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_TG",        # person_in_charge: jean-luc.flejou at edf.fr
+                                  "POU_D_TGM",       # person_in_charge: jean-luc.flejou at edf.fr
+                                  "Q4G",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "Q4GG",            # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "TUYAU_3M",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "TUYAU_6M",        # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "SHB",             # person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
+                                  "D_PLAN_HHM",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2M_SI",  # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM",       # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM_SI",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THM",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHMD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2MD",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HMD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2D",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THVD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2MD",   # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHMD",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THMD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHMS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2MS",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HMS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2S",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THVS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THH2MS",   # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THHMS",    # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_THMS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HM_P",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HHS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2D",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2S",     # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_2DG",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_DIL",      # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_DIL",          # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THM",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHM",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HM",         # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2MD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHMD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HMD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2D",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THVD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHMD",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2MD",     # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THMD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2MS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HMS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2S",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THVS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THHMS",      # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THH2MS",     # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_THMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HHS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2D",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_HH2S",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHM" ,         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2M_SI" ,     # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HM",           # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HM_SI",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHM",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THM",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHMD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HMD",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THVD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHMD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THMD",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHMS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HMS",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THVS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THHMS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THMS",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2MD",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2MS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2MD",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2MS",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2S",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_THH2D",        # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HS",           # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHD",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HHS",          # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2D",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2S",         # person_in_charge: sylvie.granet at edf.fr
+                                  "3D_HH2SUDA",      # person_in_charge: sylvie.granet at edf.fr
+                                  "D_PLAN_HH2SUDA",  # person_in_charge: sylvie.granet at edf.fr
+                                  "PLAN_JHMS",       # person_in_charge: sylvie.granet at edf.fr
+                                  "AXIS_JHMS",       # person_in_charge: sylvie.granet at edf.fr
+                                                                      )  )  ),
+
+                b_thermique     =BLOC( condition = """equal_to("PHENOMENE", 'THERMIQUE')""",
+                                        fr=tr("modélisations thermiques"),
+                    MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "3D_DIAG",         # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS",            # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_DIAG",       # person_in_charge: mickael.abbas at edf.fr
+                                  "AXIS_FOURIER",    # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE",           # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE_AXIS",      # person_in_charge: mickael.abbas at edf.fr
+                                  "COQUE_PLAN",      # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN",            # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN_DIAG",       # person_in_charge: mickael.abbas at edf.fr
+                                                                      ),),),
+
+                b_acoustique    =BLOC( condition = """equal_to("PHENOMENE", 'ACOUSTIQUE')""",
+                                        fr=tr("modélisations acoustiques"),
+                     MODELISATION    =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max=10,into=(
+                                  "3D",              # person_in_charge: mickael.abbas at edf.fr
+                                  "PLAN"             # person_in_charge: mickael.abbas at edf.fr
+                                                                       ), ),),
+
+         ),
+
+         DISTRIBUTION   =FACT(statut='d',
+             METHODE    =SIMP(statut='f',typ='TXM',defaut="SOUS_DOMAINE",
+                                   into=("MAIL_CONTIGU","MAIL_DISPERSE","CENTRALISE",
+                                         "GROUP_ELEM","SOUS_DOMAINE","SOUS_DOM.OLD",)),
+             b_dist_maille          =BLOC(condition = """is_in("METHODE", ('MAIL_DISPERSE','MAIL_CONTIGU'))""",
+                 CHARGE_PROC0_MA =SIMP(statut='f',typ='I',defaut=100,val_min=0,val_max=100),
+             ),
+             b_partition  =BLOC(condition = """is_in("METHODE", ('SOUS_DOMAINE', 'SOUS_DOM.OLD') )""",
+                 NB_SOUS_DOMAINE  =SIMP(statut='f',typ='I'), # par defaut : le nombre de processeurs
+                 PARTITIONNEUR    =SIMP(statut='f',typ='TXM',into=("METIS","SCOTCH",), defaut="METIS" ),
+             ),
+             b_sous_domaine  =BLOC(condition = "equal_to('METHODE', 'SOUS_DOM.OLD')",
+                CHARGE_PROC0_SD =SIMP(statut='f',typ='I',defaut=0,val_min=0),
+             ),
+         ),
+
+         VERI_JACOBIEN  =SIMP(statut='f',typ='TXM',into=('OUI','NON'),defaut='OUI',
+                              fr =tr("Vérification de la forme des mailles (jacobiens tous de meme signe)."),),
+) ;

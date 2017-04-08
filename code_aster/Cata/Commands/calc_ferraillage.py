@@ -1,0 +1,100 @@
+# coding=utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: jessica.haelewyn at edf.fr
+
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
+def calc_ferraillage_prod(RESULTAT,**args):
+   if AsType(RESULTAT) != None : return AsType(RESULTAT)
+   raise AsException("type de concept resultat non prevu")
+
+
+CALC_FERRAILLAGE=OPER(nom="CALC_FERRAILLAGE",op=175,sd_prod=calc_ferraillage_prod, reentrant='o',
+                 fr=tr("calcul de cartes de densité de ferraillage "),
+
+         reuse=SIMP(statut='c', typ=CO),
+         RESULTAT        =SIMP(statut='o',typ=(evol_elas,evol_noli,dyna_trans,) ),
+
+
+#====
+# Sélection des numéros d'ordre pour lesquels on fait le calcul :
+#====
+         TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+         NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**' ),
+         LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+         INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+         LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+         FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**' ),
+         LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+
+         b_acce_reel     =BLOC(condition="""(exists("FREQ"))or(exists("LIST_FREQ"))or(exists("INST"))or(exists("LIST_INST"))""",
+            CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",),),
+            b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
+                 PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6,),),
+            b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+                 PRECISION       =SIMP(statut='o',typ='R',),),
+         ),
+
+
+#
+#====
+# Définition des grandeurs caractéristiques
+#====
+#
+         TYPE_COMB    =SIMP(statut='o',typ='TXM',into=('ELU','ELS')),
+
+#        mot clé facteur répétable pour assigner les caractéristiques locales par zones topologiques (GROUP_MA)
+         AFFE  =FACT(statut='o',max='**',
+           regles=(UN_PARMI('TOUT','GROUP_MA','MAILLE'),),
+           TOUT       =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+           GROUP_MA   =SIMP(statut='f',typ=grma,validators=NoRepeat(),max='**'),
+           MAILLE     =SIMP(statut='f',typ=ma,validators=NoRepeat(),max='**'),
+           ENROBG     =SIMP(statut='o',typ='R'), # enrobage
+           CEQUI      =SIMP(statut='f',typ='R'), # coefficient d'équivalence acier/béton  (pour ELS)
+           SIGM_ACIER =SIMP(statut='o',typ='R'), # contrainte admissible dans l'acier
+           SIGM_BETON =SIMP(statut='o',typ='R'), # contrainte admissible dans le béton
+           PIVA       =SIMP(statut='f',typ='R'), # valeur du pivot a  (pour ELU)
+           PIVB       =SIMP(statut='f',typ='R'), # valeur du pivot b  (pour ELU)
+           ES         =SIMP(statut='f',typ='R'), # valeur du Module d'Young de l'acier (pour ELU)
+           ),
+      )
+
+
+##############################################################################################################
+# Remarques :
+#-----------
+#        l'épaisseur des coques sera récupérée automatiquement
+#        via le cara_elem sous-jacent au résultat
+
+# Le résultat produit est un champ constant par éléments associé à la grandeur FER2_R
+# qui comporte les composantes :
+#
+#     DNSXI  densité d'acier longitudinal suivant X, peau inf
+#     DNSXS  densité d'acier longitudinal suivant X, peau sup
+#     DNSYI  densité d'acier longitudinal suivant Y, peau inf
+#     DNSYS  densité d'acier longitudinal suivant Y, peau sup
+#     DNST   densité d'acier transversal à l'ELU
+#     SIGMBE contrainte beton
+#     EPSIBE deformation béton
+
+# arrêt en erreur si:
+# - EFGE_ELNO n'a pas été précédemment calculé et n'est donc pas présent dans la structure de données RESULTAT
+# - si aucun CARA_ELEM n'est récupérable via la structure de données RESULTAT

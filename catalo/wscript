@@ -21,7 +21,7 @@ def build(self):
 
     self(
         features = 'catalo',
-            name = 'catapy',
+            name = 'cataelem',
           target = 'elem.1',
              env = env,
             vars = ['CATALO_CMD'],

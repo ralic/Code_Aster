@@ -1,0 +1,88 @@
+# coding=utf-8
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+# person_in_charge: josselin.delmas at edf.fr
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
+def calc_erreur_prod(RESULTAT,**args):
+   if AsType(RESULTAT) != None : return AsType(RESULTAT)
+   raise AsException("type de concept resultat non prevu")
+
+CALC_ERREUR=OPER(nom="CALC_ERREUR",op=42,sd_prod=calc_erreur_prod,reentrant='f',
+            fr=tr("Compléter ou créer un résultat en calculant des champs d'erreur"),
+     reuse=SIMP(statut='c', typ=CO),
+     MODELE          =SIMP(statut='f',typ=modele_sdaster),
+     CHAM_MATER      =SIMP(statut='f',typ=cham_mater),
+
+     RESULTAT        =SIMP(statut='o',typ=resultat_sdaster,
+                                      fr=tr("Résultat d'une commande globale")),
+
+     regles=(EXCLUS('TOUT_ORDRE','NUME_ORDRE','INST','FREQ','NUME_MODE',
+                    'NOEUD_CMP','LIST_INST','LIST_FREQ','LIST_ORDRE','NOM_CAS'),
+                    ),
+     TOUT_ORDRE      =SIMP(statut='f',typ='TXM',into=("OUI",) ),
+     NUME_ORDRE      =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+     NUME_MODE       =SIMP(statut='f',typ='I',validators=NoRepeat(),max='**'),
+     NOEUD_CMP       =SIMP(statut='f',typ='TXM',validators=NoRepeat(),max='**'),
+     NOM_CAS         =SIMP(statut='f',typ='TXM' ),
+     INST            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+     FREQ            =SIMP(statut='f',typ='R',validators=NoRepeat(),max='**'),
+     LIST_INST       =SIMP(statut='f',typ=listr8_sdaster),
+     LIST_FREQ       =SIMP(statut='f',typ=listr8_sdaster),
+     CRITERE         =SIMP(statut='f',typ='TXM',defaut="RELATIF",into=("RELATIF","ABSOLU",) ),
+     b_prec_rela=BLOC(condition="""(equal_to("CRITERE", 'RELATIF'))""",
+         PRECISION       =SIMP(statut='f',typ='R',defaut= 1.E-6),),
+     b_prec_abso=BLOC(condition="""(equal_to("CRITERE", 'ABSOLU'))""",
+         PRECISION       =SIMP(statut='o',typ='R'),),
+     LIST_ORDRE      =SIMP(statut='f',typ=listis_sdaster),
+     TOUT            =SIMP(statut='f',typ='TXM',into=("OUI",),defaut="OUI"),
+
+#-----------------------------------------------------------------------
+# pour conserver la compatibilité mais ne sert à rien
+#-----------------------------------------------------------------------
+     CARA_ELEM       =SIMP(statut='f',typ=cara_elem),
+     EXCIT           =FACT(statut='f',max='**',
+                           fr=tr("Charges contenant les températures, les efforts répartis pour les poutres..."),
+                           regles=(EXCLUS('FONC_MULT','COEF_MULT',),),
+                    CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca),),
+                    FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule),),
+                    COEF_MULT       =SIMP(statut='f',typ='R'),),
+#-----------------------------------------------------------------------
+
+     OPTION =SIMP(statut='o',typ='TXM',validators=NoRepeat(),max='**',into=C_NOM_CHAM_INTO(phenomene='ERREUR',),),
+
+     b_erre_qi =BLOC(condition = """is_in('OPTION', ('QIRE_ELEM','QIZ1_ELEM','QIZ2_ELEM','QIRE_ELNO','QIRE_NOEU'))""",
+                     RESU_DUAL=SIMP(statut='o',typ=resultat_sdaster,fr=tr("Résultat du problème dual")),),
+
+     b_sing    =BLOC(condition= """is_in('OPTION', 'SING_ELEM')""",
+                    PREC_ERR=SIMP(statut='o',typ='R',val_min= 0.,
+                                  fr=tr("Précision demandée pour calculer la carte de taille des éléments")),
+                    TYPE_ESTI=SIMP(statut='f',typ='TXM',into=("ERME_ELEM","ERZ1_ELEM","ERZ2_ELEM",
+                                                              "QIRE_ELEM","QIZ1_ELEM","QIZ2_ELEM",),
+                                   fr=tr("Choix de l'estimateur d'erreur")),),
+
+#-------------------------------------------------------------------
+#    Catalogue commun SOLVEUR (utilisé actuellement pour estimateur d'erreur ZZ1)
+     SOLVEUR         =C_SOLVEUR('CALC_ERREUR'),
+#-------------------------------------------------------------------
+
+     INFO            =SIMP(statut='f',typ='I',defaut= 1,into=( 1 , 2) ),
+     TITRE           =SIMP(statut='f',typ='TXM'),
+) ;

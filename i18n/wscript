@@ -242,7 +242,8 @@ def update_qtlinguist(self):
     if not self.env['do_i18n_qtlinguist']:
         raise Errors.WafError('Required tools missing. Run `waf configure` '
             'with the option `--install-i18n` to check what is missing.')
-    catapy = self.bldnode.find_node('cata.py')
+    # TODO replace 'catapy' by path to 'code_aster/Cata'
+    catapy = self.srcnode.find_node('aster_version.py')
     # create a catapy.pro file
     pro = self.path.get_bld().make_node('catapy.pro')
     translations = ["TRANSLATIONS += %s" % osp.basename(i) \

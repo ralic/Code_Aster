@@ -244,7 +244,6 @@ class mfront2cxx(Task.Task):
         self.exec_command(cmd, cwd=wrkdir)
 
 @TaskGen.feature('mfront_mater')
-@TaskGen.before('catapy')
 def mater_capy(self):
     """Create the capy for MFront materials"""
     gen = self.bld.get_tgen_by_name('mfront_request')
@@ -281,7 +280,6 @@ class mfront_capy(Task.Task):
         target.sig = Utils.h_file(target.abspath())
 
 @TaskGen.feature('fake_mfront_mater')
-@TaskGen.before('catapy')
 def fake_mater_capy(self):
     """Create an 'empty' capy when MFront is not available"""
     target = self.bld.bldnode.make_node(self.target)
