@@ -17,7 +17,8 @@
 # ======================================================================
 
 from code_aster.Cata.Syntax import _F
-from Cata.cata import nappe_sdaster,fonction_sdaster,fonction_c
+from code_aster.Cata.DataStructure import (nappe_sdaster, fonction_sdaster,
+                                           fonction_c)
 from Utilitai.Utmess import  UTMESS
 import aster_fonctions
 import numpy as NP
@@ -28,29 +29,29 @@ try:
    from Utilitai.Utmess import  UTMESS
 except:
    pass
- 
+
 def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None,GROUP_NO=None,
-                        AMOR_SPEC=None,LIST_INST=None,FREQ=None, LIST_FREQ=None, NORME=None, TOLE_INIT=None, CORR_INIT=None, **args): 
+                        AMOR_SPEC=None,LIST_INST=None,FREQ=None, LIST_FREQ=None, NORME=None, TOLE_INIT=None, CORR_INIT=None, **args):
     import numpy as NP
     import math
     import string
     from types import ListType, TupleType, StringType
     ier=0;
-    EnumType=(ListType, TupleType) 
-   
+    EnumType=(ListType, TupleType)
+
     ### Comptage commandes + déclaration concept sortant
     self.set_icmd(1);
     self.DeclareOut('tab',self.sd,);
     macro='calc_spectre_ipm';
-   
+
     ### On importe les definitions des commandes a utiliser dans la macro
     RECU_FONCTION = self.get_cmd("RECU_FONCTION")
-    CALC_FONCTION = self.get_cmd('CALC_FONCTION')   
+    CALC_FONCTION = self.get_cmd('CALC_FONCTION')
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     CREA_TABLE       = self.get_cmd('CREA_TABLE')
-   
+
     if AMOR_SPEC!=None and type(AMOR_SPEC) not in EnumType: AMOR_SPEC=(AMOR_SPEC,)
-    
+
     ### construction de la liste des noeuds à traiter
     planch_nodes={}
     planch_param={}
@@ -84,7 +85,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                         liste_no=liste_no+noms_no
         planch_nodes[plancher['NOM']]=liste_no
         l_plancher.append(plancher['NOM'])
-        
+
         if plancher['AMOR_EQUIP']!=None and type(plancher['AMOR_EQUIP']) not in EnumType: AMOR_EQUI=(plancher['AMOR_EQUIP'],)
         else: AMOR_EQUI=plancher['AMOR_EQUIP']
         if plancher['AMOR_SUPPORT']!=None and type(plancher['AMOR_SUPPORT']) not in EnumType: AMOR_SUPP=(plancher['AMOR_SUPPORT'],)
@@ -98,15 +99,15 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
         ## verification de la longueur des listes
         if (len(AMOR_EQUI)!=len(FREQ_EQUI) or len(AMOR_EQUI)!=len(RAP_MAS_COEF)):
             UTMESS('F','SPECTRAL0_14')
-        
+
         ## verification somme des rapport de masses
         pi = math.pi
         sum = NP.sum(RAP_MAS_COEF)
         if abs(sum-1)>1e-4:
             UTMESS('F','SPECTRAL0_15')
-        planch_param[plancher['NOM']]={'AMOR_EQUI':AMOR_EQUI,'AMOR_SUPP':AMOR_SUPP[0],'FREQ_EQUI':FREQ_EQUI,'FREQ_SUPP':FREQ_SUPP[0],'RAP_MAS_COEF':RAP_MAS_COEF,'RAP_MAS':RAP_MAS[0]}    
-        
-    dico_global = {}    
+        planch_param[plancher['NOM']]={'AMOR_EQUI':AMOR_EQUI,'AMOR_SUPP':AMOR_SUPP[0],'FREQ_EQUI':FREQ_EQUI,'FREQ_SUPP':FREQ_SUPP[0],'RAP_MAS_COEF':RAP_MAS_COEF,'RAP_MAS':RAP_MAS[0]}
+
+    dico_global = {}
     # ---------------------------------------------------------------------------------------------
     # boucle 1 sur les planchers
     for plancher in l_plancher :
@@ -180,7 +181,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                                 FILTRE  = ( _F(NOM_PARA='NOEUD',    VALE_K=node),
                                             _F(NOM_PARA='NOM_CHAM', VALE_K='ACCE' ),),
                         )
-                # Etape 2: Combinaisons        
+                # Etape 2: Combinaisons
                 if CALCUL=='RELATIF' :
                     # Combinaison avec fonction d'accélération
                     motscles={}
@@ -190,7 +191,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                                 _F(FONCTION=resu['ACCE_Z'], COEF= 1.0),),
                         **motscles
                     )
-                val_Acc = NP.array( __ACCE_E.Ordo() )  
+                val_Acc = NP.array( __ACCE_E.Ordo() )
                 init = abs(val_Acc[0])/max(abs(val_Acc))
                 if init>TOLE_INIT:
                     if CORR_INIT=="OUI":
@@ -199,7 +200,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                         __ACCE_E  = DEFI_FONCTION(ABSCISSE =__ACCE_E.Absc(),ORDONNEE =val_Acc, NOM_PARA='INST' )
                     else:
                         UTMESS('F','SPECTRAL0_16', valr=(init, TOLE_INIT))
-                          
+
                 freq1 = FREQ_SUPP
                 # frequence modèle A
                 omega1=freq1*2.*pi;
@@ -207,7 +208,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                 omega1_=omega1*(1+RAP_MAS)**0.5
                 # calcul de la fft de l'accelero d entree
                 # methode 2: CALC_FONCTION pour FFT
-                _FFTE = CALC_FONCTION(FFT = _F(FONCTION = __ACCE_E, METHODE='COMPLET'))     
+                _FFTE = CALC_FONCTION(FFT = _F(FONCTION = __ACCE_E, METHODE='COMPLET'))
                 FFT   = NP.array(_FFTE.Ordo()) +complex(0.,1.)*NP.array(_FFTE.OrdoImg())
                 X     = NP.array(_FFTE.Valeurs()[0])
                 #
@@ -219,7 +220,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                     omega = FREQ_EQUI[i]*2.*pi;
                     Delta =  -(2.*pi*X[0:len(FFT)])**2 + 2.*complex(0.,1.)*2.*pi*X[0:len(FFT)]*omega*AMOR_EQUI[i] + omega**2
                     cNum = cNum + RAP_MAS*RAP_MAS_COEF[i]*(Delta+(2.*pi*X[0:len(FFT)])**2)/Delta
-                    cDenom = cDenom + RAP_MAS*RAP_MAS_COEF[i]*(Delta+(2.*pi*X[0:len(FFT)])**2) - RAP_MAS*RAP_MAS_COEF[i]*(Delta+(2.*pi*X[0:len(FFT)])**2)**2/Delta    
+                    cDenom = cDenom + RAP_MAS*RAP_MAS_COEF[i]*(Delta+(2.*pi*X[0:len(FFT)])**2) - RAP_MAS*RAP_MAS_COEF[i]*(Delta+(2.*pi*X[0:len(FFT)])**2)**2/Delta
                 # Modele B
                 Delta1_ = -(2.*pi*X[0:len(FFT)])**2 + 2.*complex(0.,1.)*2.*pi*X[0:len(FFT)]*omega1_*AMOR_SUPP*(1+RAP_MAS)**0.5 + omega1_**2;
                 # Modele A
@@ -233,7 +234,7 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                 for i in range(len(X)/2):
                     val_c+=[X[i],RES[i].real,RES[i].imag]
                 __FRESULT  = DEFI_FONCTION(VALE_C =val_c, NOM_PARA='FREQ' )
-                __ACCEAcor = CALC_FONCTION(FFT = _F(FONCTION = __FRESULT, METHODE='COMPLET', SYME='NON'));     
+                __ACCEAcor = CALC_FONCTION(FFT = _F(FONCTION = __FRESULT, METHODE='COMPLET', SYME='NON'));
                 #
                 # calcul de spectres corriges
                 motscles={}
@@ -242,11 +243,11 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                 __Spec=[None]*len(AMOR_SPEC);
                 for amor in range(len(AMOR_SPEC)): # eviter la boucle ??
                     __Spec[amor] = CALC_FONCTION(
-                                SPEC_OSCI = _F(  FONCTION = __ACCEAcor, 
-                                                 AMOR_REDUIT = AMOR_SPEC[amor], 
+                                SPEC_OSCI = _F(  FONCTION = __ACCEAcor,
+                                                 AMOR_REDUIT = AMOR_SPEC[amor],
                                                  NORME = NORME ,
                                                   **motscles) ,
-                                                 NOM_PARA='FREQ', ) ;     
+                                                 NOM_PARA='FREQ', ) ;
        #****************************************************
                 dico_global['FREQ ' + plancher] = __Spec[amor].Valeurs()[1][0][0];
                 for amor in range(len(AMOR_SPEC)):
@@ -254,12 +255,12 @@ def calc_spectre_ipm_ops(self,EQUIPEMENT,CALCUL,RESU,MAILLAGE=None,RESULTAT=None
                         nom = 'IPM '+ plancher + ' ' +node + ' ' + str(int(AMOR_SPEC[amor]*100)) + '%'
                     else:
                         nom = 'IPM '+ plancher + ' ' + str(int(AMOR_SPEC[amor]*100)) + '%'
-                    dico_global[nom] = __Spec[amor].Valeurs()[1][0][1];    
+                    dico_global[nom] = __Spec[amor].Valeurs()[1][0][1];
     lListe=[]
     lkeys = dico_global.keys()
     lkeys.sort()
     for key in lkeys:
         lListe.append(_F(LISTE_R=dico_global[key],PARA=key))
-    tab=CREA_TABLE(LISTE=lListe, TITRE='Calcul des spectres avec IPM'  + '\n #')    
-    
-    return ier    
+    tab=CREA_TABLE(LISTE=lListe, TITRE='Calcul des spectres avec IPM'  + '\n #')
+
+    return ier

@@ -20,8 +20,9 @@
 # RECUPERATION DES MAILLAGES IFS VENANT DE SATURNE VIA YACS
 #
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 IMPR_MAIL_YACS=PROC(nom="IMPR_MAIL_YACS",op=43,

@@ -26,7 +26,7 @@ from functools import wraps
 import aster_core
 import aster
 
-from Cata.cata import modele_sdaster, maillage_sdaster
+from code_aster.Cata.DataStructure import modele_sdaster, maillage_sdaster
 from code_aster.Cata.Syntax import _F
 
 from Utilitai.UniteAster import UniteAster
@@ -151,7 +151,7 @@ class Mac3CoeurCalcul(object):
         # Note that times depends on niv_fluence and subdivis.
         self.times
         self.fluence_cycle = self.keyw['FLUENCE_CYCLE']
-        
+
     def _run(self):
         """Run the calculation itself"""
         raise NotImplementedError('must be defined in a subclass')
@@ -313,7 +313,7 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def rigid_load(self):
         """Compute the rigid body loading"""
-        from Cata.cata import AFFE_CHAR_MECA
+        from code_aster.Cata.Commands import AFFE_CHAR_MECA
         coeur = self.coeur
         _excit_rigid = AFFE_CHAR_MECA(MODELE=self.model,
                                       LIAISON_SOLIDE=coeur.cl_rigidite_grille())
@@ -390,18 +390,18 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def kinematic_cond(self):
         """Define the kinematic conditions from displacement"""
-        from Cata.cata import AFFE_CHAR_CINE
+        from code_aster.Cata.Commands import AFFE_CHAR_CINE
         _excit = AFFE_CHAR_CINE(MODELE=self.model,
-                                EVOL_IMPO=self.char_init, 
+                                EVOL_IMPO=self.char_init,
                                 NOM_CMP=('DY','DZ',),
                                 )
-        return [_F(CHARGE=_excit), ]  
+        return [_F(CHARGE=_excit), ]
 
     @property
     @cached_property
     def symetric_cond(self):
         """Define the boundary conditions of symetry"""
-        from Cata.cata import AFFE_CHAR_MECA
+        from code_aster.Cata.Commands import AFFE_CHAR_MECA
 
         def block(grma=None, grno=None, ddl=None):
             """Block 'ddl' of 'grma/grno' to zero"""
@@ -421,7 +421,7 @@ class Mac3CoeurCalcul(object):
     @cached_property
     def periodic_cond(self):
         """Define the boundary conditions of periodicity"""
-        from Cata.cata import AFFE_CHAR_MECA
+        from code_aster.Cata.Commands import AFFE_CHAR_MECA
 
         def equal(ddl, grno1, grno2):
             """Return keyword to set ddl(grno1) = ddl(grno2)"""
@@ -461,7 +461,7 @@ class Mac3CoeurCalcul(object):
                                 GROUP_MA='MAINTIEN',
                                 DEFORMATION='PETIT'),]
         return comp
-    
+
 
     def snl(self, **kwds):
         """Return the common keywords for STAT_NON_LINE
@@ -480,7 +480,7 @@ class Mac3CoeurCalcul(object):
                              _F(RELATION='DIS_CHOC',
                                 GROUP_MA='RES_TOT',),
                              _F(RELATION='DIS_CHOC',   GROUP_MA ='CREIC',),
-                             _F(RELATION='ELAS',   GROUP_MA ='CREI',),                      
+                             _F(RELATION='ELAS',   GROUP_MA ='CREI',),
                              _F(RELATION='ELAS',
                                 GROUP_MA=('EBOINF', 'EBOSUP', 'RIG', 'DIL')),
                              _F(RELATION='VMIS_ISOT_TRAC',
@@ -570,16 +570,17 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         else:
             model = super(Mac3CoeurDeformation, self).model
         return model
-        
+
     def dechargePSC(self,RESU) :
-        from Cata.cata import CALC_CHAMP,POST_RELEVE_T,DEFI_FONCTION,AFFE_CHAR_MECA
+        from code_aster.Cata.Commands import (CALC_CHAMP, POST_RELEVE_T,
+                                              DEFI_FONCTION, AFFE_CHAR_MECA)
         coeur = self.coeur
-        
+
         CALC_CHAMP(reuse =RESU,
                     RESULTAT=RESU,
                     INST = coeur.temps_simu['T8'],
                     FORCE=('FORC_NODA',),)
-                    
+
         __SPRING=POST_RELEVE_T(
                     ACTION=_F(INTITULE='FORCES',
                               GROUP_NO=('PMNT_S'),
@@ -595,24 +596,24 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
         inst=valeurs['INST'][-1]
         fx=valeurs['DX']
         noeuds=valeurs['NOEUD']
-        
-        listarg = []        
+
+        listarg = []
         for el in zip(fx,noeuds) :
           listarg.append(_F(NOEUD=el[1],FX=el[0]))
-    
+
         assert(inst==coeur.temps_simu['T8'])
-        
+
         _LI2=DEFI_FONCTION(NOM_PARA='INST',PROL_DROITE='CONSTANT',VALE=(coeur.temps_simu['T8'],1.,coeur.temps_simu['T8b'],0.),);
 
         _F_EMB2=AFFE_CHAR_MECA(MODELE=self.model,
-                                FORCE_NODALE=listarg,)            
-        
+                                FORCE_NODALE=listarg,)
+
         return (_LI2,_F_EMB2)
 
     def _run(self):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE 
-        
+        from code_aster.Cata.Commands import STAT_NON_LINE
+
         coeur = self.coeur
         if self.keyw['TYPE_COEUR'][:4] == "MONO":
             chmat_contact = self.cham_mater_free
@@ -635,7 +636,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                ))
             constant_load = self.archimede_load + \
                 self.gravity_load + self.vessel_dilatation_load_full + \
-                self.symetric_cond + self.periodic_cond + self.rigid_load                  
+                self.symetric_cond + self.periodic_cond + self.rigid_load
             __RESULT = STAT_NON_LINE(**self.snl(
                                reuse=__RESULT,
                                CHAM_MATER=self.cham_mater_free,
@@ -648,7 +649,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                ))
 
             (LI2,F_EMB2)=self.dechargePSC(__RESULT)
-            
+
             # T8 - Tf
             __RESULT = STAT_NON_LINE(**self.snl(
                                   reuse=__RESULT,
@@ -660,7 +661,7 @@ class Mac3CoeurDeformation(Mac3CoeurCalcul):
                                   ))
 
         else :
-                 
+
             constant_load += self.periodic_cond + self.rigid_load
             loads = constant_load \
                     + self.vessel_head_load \
@@ -823,8 +824,8 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def deform_mesh_inverse(self, depl):
         """Use the displacement of the result to deform the mesh"""
-        from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
-        _depl_inv = CREA_CHAMP(OPERATION='COMB',                          
+        from code_aster.Cata.Commands import CREA_CHAMP, MODI_MAILLAGE
+        _depl_inv = CREA_CHAMP(OPERATION='COMB',
                           TYPE_CHAM='NOEU_DEPL_R',
                           COMB=_F(CHAM_GD=depl,COEF_R=-1.))
 
@@ -838,7 +839,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def deform_mesh(self, resu):
         """Use the displacement of the result to deform the mesh"""
-        from Cata.cata import CREA_CHAMP, MODI_MAILLAGE
+        from code_aster.Cata.Commands import CREA_CHAMP, MODI_MAILLAGE
         _depl = CREA_CHAMP(OPERATION='EXTR',
                            INST = self.coeur.temps_simu['T1'],
                            TYPE_CHAM='NOEU_DEPL_R',
@@ -852,30 +853,30 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
         del self.mesh
         self.mesh = _mesh
         return _depl
-        
+
     def extrChamp(self,resu,inst) :
-        from Cata.cata import CREA_CHAMP
-      
+        from code_aster.Cata.Commands import CREA_CHAMP
+
         _depl = CREA_CHAMP(OPERATION='EXTR',
                            TYPE_CHAM='NOEU_DEPL_R',
                            NOM_CHAM='DEPL',
                            INST=inst,
                            RESULTAT=resu)
         return _depl
-        
+
     def asseChamp(self,depl1,depl2) :
-        from Cata.cata import CREA_CHAMP
-        
+        from code_aster.Cata.Commands import CREA_CHAMP
+
         _depl = CREA_CHAMP(TYPE_CHAM = 'NOEU_DEPL_R',
                    OPERATION = 'ASSE',
                    MODELE    = self.model,
                    ASSE = (_F(TOUT='OUI',CHAM_GD = depl1,NOM_CMP=('DY','DZ'),CUMUL = 'NON',),
                            _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DY','DZ'),CUMUL = 'OUI',),
-                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DX',),CUMUL = 'NON',COEF_R=0.0), 
+                           _F(TOUT='OUI',CHAM_GD = depl2,NOM_CMP=('DX',),CUMUL = 'NON',COEF_R=0.0),
                            ),);
-                           
+
         return _depl
-        
+
     def cr(self,inst,cham_gd,reuse=None) :
         """Return the common keywords for CREA_RESU """
         keywords = {
@@ -884,39 +885,39 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
             'NOM_CHAM'  : 'DEPL',
             'AFFE': (_F(CHAM_GD = cham_gd,
                         INST    = inst,
-                        MODELE  = self.model))    
+                        MODELE  = self.model))
                    }
         if reuse :
             keywords['reuse'] = reuse
-        return keywords        
-                        
+        return keywords
+
 
     def output_resdef(self,resu,depl_deformed,tinit,tfin) :
         """save the result to be used by a next calculation"""
-        from Cata.cata import CREA_RESU
+        from code_aster.Cata.Commands import CREA_RESU
         _pdt_ini = self.coeur.temps_simu['T1']
         _pdt_fin = self.coeur.temps_simu['T4']
-                
+
         if ((not tinit) and (not tfin)) :
             _pdt_ini_out = _pdt_ini
             _pdt_fin_out = _pdt_fin
         else :
             _pdt_ini_out = tinit
             _pdt_fin_out = tfin
-        
-       
+
+
         depl_ini = self.extrChamp(resu,_pdt_ini)
         depl_fin = self.extrChamp(resu,_pdt_fin)
-       
+
         depl_tot_ini = self.asseChamp(depl_deformed,depl_ini)
         depl_tot_fin = self.asseChamp(depl_deformed,depl_fin)
-       
+
         self.deform_mesh_inverse(depl_deformed)
-              
+
         __RESFIN = CREA_RESU(**self.cr(_pdt_ini_out,depl_tot_ini))
         CREA_RESU(**self.cr(_pdt_fin_out,depl_tot_fin,reuse=__RESFIN))
         self.res_def=__RESFIN
-        
+
 
     def _prepare_data(self,noresu=None):
         """Prepare the data for the calculation"""
@@ -929,7 +930,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
 
     def _run(self,tinit=None,tfin=None):
         """Run the main part of the calculation"""
-        from Cata.cata import STAT_NON_LINE, PERM_MAC3COEUR, DETRUIRE
+        from code_aster.Cata.Commands import STAT_NON_LINE, PERM_MAC3COEUR, DETRUIRE
         coeur = self.coeur
         # calcul de deformation d'apres DAMAC / T0 - T1
 
@@ -994,7 +995,7 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                              REAC_ITER=1,),
                             }
                         k.update(kwds)
-                    print 
+                    print
                     # if i == nb-1 :
                     #     __RESULT = STAT_NON_LINE(**k)
                     # else :
@@ -1057,18 +1058,18 @@ class Mac3CoeurLame(Mac3CoeurCalcul):
                             )
         __RESULT = STAT_NON_LINE(**keywords)
         _debug(__RESULT, "result STAT_NON_LINE 2")
-        
+
         if self.res_def :
             self.output_resdef(__RESULT,depl_deformed,tinit,tfin)
-            
+
 class Mac3CoeurEtatInitial(Mac3CoeurLame):
-    
+
     """Compute Initial State"""
     mcfact = 'LAME'
-    
+
     def __init__(self,macro,args) :
         """Initialization"""
-        from Cata.cata import CO
+        from code_aster.Cata.Syntax import CO
         self.args_lame={}
         self.args_defo={}
         for el in args :
@@ -1092,13 +1093,13 @@ class Mac3CoeurEtatInitial(Mac3CoeurLame):
     def _run(self,tinit=None,tfin=None):
         tinit = self.coeur.temps_simu['T0']
         tfin  = self.coeur.temps_simu['T5']
-        print 'T0 = %f , T5 = %f'%(tinit,tfin) 
+        print 'T0 = %f , T5 = %f'%(tinit,tfin)
         super(Mac3CoeurEtatInitial, self)._run(tinit,tfin)
 
 
     def run(self):
         super(Mac3CoeurEtatInitial, self).run(noresu=True)
-        self.defo=Mac3CoeurDeformation(self.macro,self.args_defo,self.res_def)        
+        self.defo=Mac3CoeurDeformation(self.macro,self.args_defo,self.res_def)
         self.defo.run()
 
 

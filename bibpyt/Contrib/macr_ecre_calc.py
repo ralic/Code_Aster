@@ -17,8 +17,9 @@
 # ======================================================================
 
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 def macr_ecre_calc_prod(self,TABLE,DEBIT,**args):

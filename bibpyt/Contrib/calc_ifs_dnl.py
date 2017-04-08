@@ -20,9 +20,9 @@
 # MACRO DE COUPLAGE IFS AVEC SATURNE VIA YACS
 #
 
-
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 CALC_IFS_DNL= MACRO(nom='CALC_IFS_DNL',

@@ -21,7 +21,7 @@
 Transformation des variables internes
 """
 
-from Cata.cata import CREA_CHAMP, FORMULE, CALC_CHAMP, IMPR_RESU
+from code_aster.Cata.Commands import CREA_CHAMP, FORMULE, CALC_CHAMP, IMPR_RESU
 from Calc_epx.calc_epx_cata import cata_compor
 from code_aster.Cata.Syntax import _F
 from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
@@ -33,10 +33,10 @@ def var_int_a2e(compor_gr, resu, mod, nume_ordre):
         Renvoie un résultat contenant les champs DEPL, SIEF_ELGA et VARI_ELGA
         transformé du NUME_ORDRE nume_ordre du résultat resu.
     """
-    from Cata.cata import CREA_RESU
-    
+    from code_aster.Cata.Commands import CREA_RESU
+
     # extraction des champs :
-    
+
     __DEPL = CREA_CHAMP(OPERATION = 'EXTR',
                    TYPE_CHAM='NOEU_DEPL_R',
                    RESULTAT=resu,
@@ -56,14 +56,14 @@ def var_int_a2e(compor_gr, resu, mod, nume_ordre):
                    INST=nume_ordre,
                    )
     # transformation
-    
+
     nb_compor = len(compor_gr)
     __VARICO = [None]*nb_compor
     asse = []
     for ico, compor in enumerate(compor_gr.keys()):
         gr_ma = compor_gr[compor]
         nb_var_epx = cata_compor[compor]['NB_VAR_EPX']
-        nom_cmp = ['V%i' % ii for ii in range(1,nb_var_epx+1)] 
+        nom_cmp = ['V%i' % ii for ii in range(1,nb_var_epx+1)]
         if compor == 'VMIS_JOHN_COOK':
             tr_a2e_vmis_john_cook(__VARICO, ico, gr_ma, mod, __VARI,
                                   nume_ordre, resu)
@@ -80,10 +80,10 @@ def var_int_a2e(compor_gr, resu, mod, nume_ordre):
                  )
             UTMESS('A','PLEXUS_47', valk = compor)
 
-        asse.append({'GROUP_MA': gr_ma, 
+        asse.append({'GROUP_MA': gr_ma,
                          'CHAM_GD': __VARICO[ico],
                          'NOM_CMP': nom_cmp,
-                         'CUMUL'  : 'NON', 
+                         'CUMUL'  : 'NON',
                          'COEF_R': 1.})
     if len(asse) == 0:
         UTMESS('A','PLEXUS_48')
@@ -94,7 +94,7 @@ def var_int_a2e(compor_gr, resu, mod, nume_ordre):
                  PROL_ZERO='OUI',
                  ASSE=asse,
                 )
-    
+
     # construction du concept resultat
     MasquerAlarme('COMPOR2_23')
     __res = CREA_RESU(
@@ -133,8 +133,8 @@ def tr_a2e_vmis_john_cook(__VARICO, ico, gr_ma, mod, __VARI, nume_ordre, resu):
     """
         Transformation pour VMIS_JOHN_COOK ASTER vers EPX
     """
-    
-    CALC_CHAMP(reuse=resu,RESULTAT=resu,CRITERES='SIEQ_ELGA', 
+
+    CALC_CHAMP(reuse=resu,RESULTAT=resu,CRITERES='SIEQ_ELGA',
                NUME_ORDRE = nume_ordre)
     CALC_CHAMP(reuse=resu,CHAM_UTIL=_F(NOM_CHAM='SIEF_ELGA',
                                        CRITERE='TRACE',

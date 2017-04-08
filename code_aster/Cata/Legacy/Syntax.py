@@ -80,60 +80,6 @@ JdC = JDC_CATA(code='ASTER',
                        AU_MOINS_UN('FIN'),
                        A_CLASSER(('DEBUT', 'POURSUITE'), 'FIN')))
 
-# Types géométriques
-class no(GEOM):
-    """
-    Classe servant à définir le nom d'un noeud dans le fichier de commande
-    En clair : un chaine de longueur 8.
-    """
-    pass
-
-class grno(GEOM):
-    """
-    Classe servant à définir le nom d'un groupe de noeuds dans le fichier de commande
-    En clair : un chaine de longueur 24.
-    """
-    def __convert__(cls,valeur):
-        """
-        Fonction de verification de la longueur de la chaine
-        """
-        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
-            return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
-    __convert__ = classmethod(__convert__)
-
-class ma(GEOM):
-    """
-    Classe servant à définir le nom d'une maille dans le fichier de commande
-    En clair : un chaine de longueur 8.
-    """
-    pass
-
-class grma(GEOM):
-    """
-    Classe servant à définir le nom d'un groupe de mailles dans le fichier de commande
-    En clair : un chaine de longueur 24.
-    """
-    def __convert__(cls,valeur):
-        """
-        Fonction de verification de la longueur de la chaine
-        """
-        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
-            return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
-    __convert__ = classmethod(__convert__)
-
-
-# Ce type doit être associé à tous les mots-clés devant recevoir un numéro
-# d'unité logique fortran. De base, il s'agit d'un simple entier.
-def UnitType(filter=None):
-    """Emulated type for *UNITE* keywords.
-
-    Arguments:
-        filter (str): Can be used to pass a filter or an expected filetype.
-    """
-    return "I"
-
 
 class FIN_ETAPE(PROC_ETAPE):
     """Particularisation pour FIN"""

@@ -17,7 +17,11 @@
 # ======================================================================
 
 from calc_endo_ops import calc_endo_ops
-from Cata.cata import *
+
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
 
 CALC_ENDO=MACRO(
     nom       = "CALC_ENDO",

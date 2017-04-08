@@ -19,8 +19,9 @@
 # person_in_charge: mathieu.corus at edf.fr
 
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 CALC_SPEC=MACRO(nom="CALC_SPEC",

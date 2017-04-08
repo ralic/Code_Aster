@@ -62,3 +62,60 @@ from .DS.co_char_ther import char_ther
 from .DS.co_compor_sdaster import compor_sdaster
 from .DS.co_vect_asse_gene import vect_asse_gene
 from .DS.co_reel import reel
+
+
+from Accas import GEOM
+
+# Types géométriques
+class no(GEOM):
+    """
+    Classe servant à définir le nom d'un noeud dans le fichier de commande
+    En clair : un chaine de longueur 8.
+    """
+    pass
+
+class grno(GEOM):
+    """
+    Classe servant à définir le nom d'un groupe de noeuds dans le fichier de commande
+    En clair : un chaine de longueur 24.
+    """
+    def __convert__(cls,valeur):
+        """
+        Fonction de verification de la longueur de la chaine
+        """
+        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
+            return valeur.strip()
+        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+    __convert__ = classmethod(__convert__)
+
+class ma(GEOM):
+    """
+    Classe servant à définir le nom d'une maille dans le fichier de commande
+    En clair : un chaine de longueur 8.
+    """
+    pass
+
+class grma(GEOM):
+    """
+    Classe servant à définir le nom d'un groupe de mailles dans le fichier de commande
+    En clair : un chaine de longueur 24.
+    """
+    def __convert__(cls,valeur):
+        """
+        Fonction de verification de la longueur de la chaine
+        """
+        if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
+            return valeur.strip()
+        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+    __convert__ = classmethod(__convert__)
+
+
+# Ce type doit être associé à tous les mots-clés devant recevoir un numéro
+# d'unité logique fortran. De base, il s'agit d'un simple entier.
+def UnitType(filter=None):
+    """Emulated type for *UNITE* keywords.
+
+    Arguments:
+        filter (str): Can be used to pass a filter or an expected filetype.
+    """
+    return "I"

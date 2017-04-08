@@ -22,8 +22,8 @@ import numpy
 import aster
 from code_aster.Cata.Syntax import _F
 from Utilitai.Utmess import UTMESS, MESSAGE_LOGGER
-from Cata.cata import modele_sdaster, matr_asse_depl_r
-from Cata.cata import mode_meca, dyna_harmo, maillage_sdaster
+from code_aster.Cata.DataStructure import modele_sdaster, matr_asse_depl_r
+from code_aster.Cata.DataStructure import mode_meca, dyna_harmo, maillage_sdaster
 from Calc_essai.cata_ce import Resultat, DynaHarmo
 
 
@@ -107,7 +107,8 @@ class CalcEssaiExpansion:
         """!Mancement de MACRO_EPXANS et export des resultats si demande
             4 resultats sont crees, nommes basename + suffix, ou
             suffix = ['_NX','_EX','_ET','_RD']"""
-        from Cata.cata import DETRUIRE, MACRO_EXPANS, CO
+        from code_aster.Cata.Syntax import CO
+        from code_aster.Cata.Commands import DETRUIRE, MACRO_EXPANS
         self.mess.disp_mess("Debut de MACRO_EXPANS")
         mdo = self.ce_objects
 
@@ -186,7 +187,7 @@ class CalcEssaiExpansion:
 
     def calc_mac_mode(self, resu1, resu2, norme):
         """!Calcul de MAC entre deux bases modales compatibles"""
-        from Cata.cata import MAC_MODES, DETRUIRE
+        from code_aster.Cata.Commands import MAC_MODES, DETRUIRE
         o1 = resu1.obj
         o2 = resu2.obj
         try:
@@ -208,8 +209,9 @@ class CalcEssaiExpansion:
 
 def make_mac_salome(mac, resu1, resu2, unite):
 
-    from Cata.cata import LIRE_MAILLAGE, AFFE_MODELE, CREA_CHAMP, DETRUIRE
-    from Cata.cata import INFO_EXEC_ASTER, IMPR_RESU, DEFI_FICHIER, CREA_RESU
+    from code_aster.Cata.Commands import (LIRE_MAILLAGE, AFFE_MODELE,
+        CREA_CHAMP, DETRUIRE, INFO_EXEC_ASTER, IMPR_RESU, DEFI_FICHIER,
+        CREA_RESU)
     import random
     # dimension du MAC
 
@@ -278,7 +280,7 @@ def make_mac_salome(mac, resu1, resu2, unite):
 
 
 def make_mesh_mac(nb_l, nb_c):
-    from Cata.cata import INFO_EXEC_ASTER
+    from code_aster.Cata.Commands import INFO_EXEC_ASTER
     _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
     unite = _UL['UNITE_LIBRE', 1]
 

@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,8 +30,9 @@ import aster
 import os
 from SD.sd_maillage import sd_maillage
 from Utilitai.signal_correlation_utils import (get_group_nom_coord, calc_dist2)
-from Cata.cata import ( _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, 
-                        COMB_MATR_ASSE, DYNA_VIBRA)
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Commands import (DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS,
+                                      COMB_MATR_ASSE, DYNA_VIBRA)
 
 def dyna_iss_vari_ops(self, **kwargs):
     """Corps de la macro DYNA_ISS_VARI"""
@@ -95,7 +96,7 @@ class Generator(object):
             return GeneratorSPEC(macro, params)
         else:
             raise ValueError('unknown configuration')
- 
+
     def __init__(self, macro, params):
         """Constructor Base class"""
         self.name = macro.sd.nom
@@ -123,9 +124,9 @@ class Generator(object):
             self.NOM_CMP = None
         else:
             self.NOM_CMP = params.other_keys['NOM_CMP']
-        
+
     def prepare_input(self):
-        """run prepare data"""       
+        """run prepare data"""
         v_refa_rigi = self.mat_gene_params['MATR_RIGI'].sdj.REFA.get()
         nom_bamo = v_refa_rigi[0]
         nom_ddlgene = v_refa_rigi[1]
@@ -137,13 +138,13 @@ class Generator(object):
         ir, nbmodt, ib = aster.dismoi('NB_MODES_TOT', nom_bamo,'RESULTAT','F')
         ir, nbmodd, ib = aster.dismoi('NB_MODES_DYN', nom_bamo,'RESULTAT','F')
         ir, nbmods, ib = aster.dismoi('NB_MODES_STA', nom_bamo,'RESULTAT','F')
-        self.mat_gene_params['NBMODD'] =  nbmodd        
-        self.mat_gene_params['NBMODS'] =  nbmods  
-        self.mat_gene_params['NBMODT'] =  nbmodt          
+        self.mat_gene_params['NBMODD'] =  nbmodd
+        self.mat_gene_params['NBMODS'] =  nbmods
+        self.mat_gene_params['NBMODT'] =  nbmodt
         l_nom, noe_interf = get_group_nom_coord(
                      self.interf_params['GROUP_NO_INTERF'], nom_mail)
         self.cohe_params['DIST'] = calc_dist2(noe_interf)
-        self.cohe_params['NOEUDS_INTERF'] = noe_interf 
+        self.cohe_params['NOEUDS_INTERF'] = noe_interf
         self.interf_params['NBNO'] =  len(noe_interf)
 
         if self.INFO==2:
@@ -173,7 +174,7 @@ class Generator(object):
         self.build_result()
 
 #     -----------------------------------------------------------------
-#         CLASSE TRANS 
+#         CLASSE TRANS
 #     -----------------------------------------------------------------
 class GeneratorTRANS(Generator):
 
@@ -184,7 +185,7 @@ class GeneratorTRANS(Generator):
         from math import ceil, floor
         CALC_FONCTION = self.macro.get_cmd('CALC_FONCTION')
         __foint = [None]*3
-        
+
         # verification que les abscisses des différents signaux sont les mêmes
         dire0 = self.excit_params.keys()[0]
         tt0, vale_s = self.excit_params[dire0].Valeurs()
@@ -197,15 +198,15 @@ class GeneratorTRANS(Generator):
             for i in range(len(tt0)):
                 if abs(tt0[i]-tt[i])/max_abs > prec:
                     UTMESS('F','SEISME_81', vali=[i+1], valk=[dire0,dire])
-            
-            __foint[idi+1] = CALC_FONCTION(FFT = 
+
+            __foint[idi+1] = CALC_FONCTION(FFT =
                                 _F(FONCTION = self.excit_params[dire],
                                    METHODE = 'PROL_ZERO', ),)
             self.excit_params[dire] = __foint[idi+1]
-            
+
         # utilisation du premier signal uniquement pour calcul des différents paramètres
         DT = tt0[1] - tt0[0]
-        __foint[0] = CALC_FONCTION(FFT = 
+        __foint[0] = CALC_FONCTION(FFT =
                         _F(FONCTION = self.excit_params[dire0],
                            METHODE = 'PROL_ZERO', ),)
         self.excit_params[dire0] = __foint[0]
@@ -215,19 +216,19 @@ class GeneratorTRANS(Generator):
         FREQ_INIT = 0.0
         FREQ_COUP = ((NB_FREQ - 1) * FREQ_PAS)
         FMAX = FREQ_COUP
-        #signal nombre impair (floor(N/2)) ou signal nombre 
+        #signal nombre impair (floor(N/2)) ou signal nombre
         #       pair avec REST_SPEC_TEMP (prend N/2 pour N pair)
-        # NB_FREQ= int(floor(len(vale_fre)/2)+1)  
+        # NB_FREQ= int(floor(len(vale_fre)/2)+1)
         # signal nombre pair: N/2+1
-        # liste des frequences complete       
+        # liste des frequences complete
         for k in range(NB_FREQ):
             self.liste_freq_sig.append(FREQ_INIT + FREQ_PAS * k)
         # si frequences de calcul donnees par l utilisateur
         FREQ_FIN = self.calc_params['FREQ_MAX']
         if FREQ_FIN != None:
             if FREQ_FIN < FREQ_COUP:
-                text = ('FREQ_FIN =' + str(FREQ_FIN) + 'Hz < ' 
-                        + 'FREQUENCE DE COUPURE =' 
+                text = ('FREQ_FIN =' + str(FREQ_FIN) + 'Hz < '
+                        + 'FREQUENCE DE COUPURE ='
                         + str(FREQ_COUP) + 'Hz on complete par zero')
                 aster.affiche('MESSAGE', text)
             FREQ_PAS = self.calc_params['FREQ_PAS']
@@ -239,7 +240,7 @@ class GeneratorTRANS(Generator):
         self.FREQ_INIT = FREQ_INIT
         self.FMAX = FMAX
         for k in range(self.NB_FREQ):
-            self.liste_freq.append(self.FREQ_INIT + self.FREQ_PAS * k) 
+            self.liste_freq.append(self.FREQ_INIT + self.FREQ_PAS * k)
         if self.INFO == 2:
             text = ('DISCRETISATION UTILISATEUR : NB_FREQ, PAS, FREQ_COUP : '
                  + str(self.NB_FREQ) + ' ,' + str(self.FREQ_PAS) +
@@ -255,8 +256,8 @@ class GeneratorTRANS(Generator):
         L_VEC = self.compute_harm_gene()
         __dyge0 = self.create_host_sd()
         REST_SPEC_TEMP = self.macro.get_cmd('REST_SPEC_TEMP')
-        nbmodt = self.mat_gene_params['NBMODT'] 
-        
+        nbmodt = self.mat_gene_params['NBMODT']
+
         tup_re = []
         tup_im = []
         tup_re1 = []
@@ -267,11 +268,11 @@ class GeneratorTRANS(Generator):
         n_dire = len(self.excit_params.keys())
         for i, dire in enumerate(self.excit_params.keys()):
             VEC = L_VEC[i]
-            
-#   ATTENTION:  on sort le champ en déplacement: 
+
+#   ATTENTION:  on sort le champ en déplacement:
 #               c'est équivalent au champ en acceleration
 #               car on a applique un signal en ACCE pour fosi en acce
-# > cela evite de diviser par w2 pour integrer l'acceleration 
+# > cela evite de diviser par w2 pour integrer l'acceleration
 #               (erreurs numeriques au point 0)
 # > on remplace donc le champ en acceleration
 
@@ -316,7 +317,7 @@ class GeneratorTRANS(Generator):
                 for k, freqk in enumerate(self.liste_freq_sig):
                     coef_a = (vale_re[k] + vale_im[k] * 1.j)
                     omegk = 2.0 * pi * freqk
-                    if freqk >= self.calc_params['FREQ_MAX']:   
+                    if freqk >= self.calc_params['FREQ_MAX']:
                     # interpolation du vecteur POD VEC(NB_FREQ, nbmodt)
                         if i == 0:
                             tup_re.append(VEC[-1].real * 0.0)
@@ -334,15 +335,15 @@ class GeneratorTRANS(Generator):
                         else:
                             dfp = (freqk - self.liste_freq[vale_i - 1]) / (
                                 self.liste_freq[vale_i] - self.liste_freq[vale_i - 1])
-                            VEC_comp = coef_a * (VEC[vale_i - 1] + 
-                                             dfp * (VEC[vale_i] - VEC[vale_i - 1])) 
+                            VEC_comp = coef_a * (VEC[vale_i - 1] +
+                                             dfp * (VEC[vale_i] - VEC[vale_i - 1]))
                             if i == 0:
                                 tup_re.append(VEC_comp.real)
                                 tup_im.append(VEC_comp.imag)
                             else:
                                 tup_re[k] += VEC_comp.real
                                 tup_im[k] += VEC_comp.imag
-                    
+
                     # traitement des vitesses et déplacements apres sommation des directions pour l'acceleration
                     if i == n_dire-1:
                         if freqk > 1.e-6 :
@@ -366,7 +367,7 @@ class GeneratorTRANS(Generator):
                             tup_re2.append(VEC_comp.real*0.)
                             tup_im2.append(VEC_comp.imag*0.)
 
-        # affectation des valeurs    
+        # affectation des valeurs
         for k in range(len(self.liste_freq_sig)):
             #                                     1         2         3
             #                                   8901234567890123456789012
@@ -376,9 +377,9 @@ class GeneratorTRANS(Generator):
             range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re2[k]), tuple(tup_im2[k]), 1)
             aster.putvectjev(__dyge0.get_name() + '           .ACCE        ', nbmodt, tuple(
                 range(nbmodt * k + 1, nbmodt * (k + 1) + 1)), tuple(tup_re[k]), tuple(tup_im[k]), 1)
-            
+
         aster.affiche('MESSAGE','START REST_SPEC_TEMP' )
-        
+
         dyha = REST_SPEC_TEMP(RESU_GENE = __dyge0, SYMETRIE='NON',
                               #METHODE = 'PROL_ZERO' ,
                               TOUT_CHAM='OUI',
@@ -387,7 +388,7 @@ class GeneratorTRANS(Generator):
         return dyha
 
     def create_host_sd(self):
-    # on cree la SD resultat - factice 
+    # on cree la SD resultat - factice
     # (le champ ACCE sera remplace dans la suite par celui calcule)
         __impe = LIRE_IMPE_MISS(BASE = self.mat_gene_params['BASE'],
                        TYPE = self.calc_params['TYPE'],
@@ -406,13 +407,13 @@ class GeneratorTRANS(Generator):
                        ISSF = self.calc_params['ISSF'],
                        UNITE_RESU_FORC = self.calc_params['UNITE_RESU_FORC'],
                        FREQ_EXTR = self.FREQ_PAS,)
-                                
+
         __dyge0 = DYNA_VIBRA(
                   TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
                   MATR_MASS = self.mat_gene_params['MATR_MASS'],
                   MATR_RIGI = __rito,
                   TOUT_CHAM='OUI',
-                  FREQ = self.liste_freq_sig, 
+                  FREQ = self.liste_freq_sig,
                   EXCIT=_F(VECT_ASSE_GENE = __fosi,
                            COEF_MULT_C = 1.,),
                         )
@@ -424,23 +425,23 @@ class GeneratorTRANS(Generator):
             nbmodt = self.mat_gene_params['NBMODT']
             VEC = NP.zeros((self.NB_FREQ, nbmodt)) + 0j
         VEC[k] = RS
-        return VEC 
-# 
+        return VEC
+#
 # Ecriture de  tran_gene
-# 1) on cree un concept harm_gene (factice) et le remplit a 
+# 1) on cree un concept harm_gene (factice) et le remplit a
 #    l'aide de putvectjev avec les bonnes valeurs,
 # 2) On interpole les valeurs non calculés (liste_freq_sig)
 # 3) puis on fait la FFT pour obtenir le signal temporel
 
     def compute_harm_gene(self):
-        """ compute harm_gene for spec"""          
-        VEC = calc_miss_vari(self)             
+        """ compute harm_gene for spec"""
+        VEC = calc_miss_vari(self)
         return VEC
 
     def compute_freqk(self, k, RESU, VEC, dict_modes):
         """ compute response for freqk - trans"""
-        nbmodt = self.mat_gene_params['NBMODT']   
-        nbmodd = self.mat_gene_params['NBMODD']        
+        nbmodt = self.mat_gene_params['NBMODT']
+        nbmodd = self.mat_gene_params['NBMODD']
         freqk = self.FREQ_INIT + self.FREQ_PAS * k
         __impe = LIRE_IMPE_MISS(
                       BASE = self.mat_gene_params['BASE'],
@@ -463,19 +464,19 @@ class GeneratorTRANS(Generator):
                           COEF_C = 1.0 + 0.j,),),
                           SANS_CMP = 'LAGR', )
 
-        # IMPEDANCE   
+        # IMPEDANCE
         MIMPE = __impe.EXTR_MATR_GENE()
         #  extraction de la partie modes interface
-        KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt] 
+        KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE
-        FSISM = __fosi.EXTR_VECT_GENE_C()  
-      #  extraction de la partie modes interface 
+        FSISM = __fosi.EXTR_VECT_GENE_C()
+      #  extraction de la partie modes interface
         FS = 0.0
         for k1 in range(dict_modes['nbpod']):
             FS = FS + compute_force_vari(self, dict_modes, VEC[k1], KRS)
         FSISM[nbmodd:nbmodt][:] = FS
-        __fosi.RECU_VECT_GENE_C(FSISM)      
-        # CALCUL ISS 
+        __fosi.RECU_VECT_GENE_C(FSISM)
+        # CALCUL ISS
         if self.mat_gene_params['MATR_AMOR'] is not None :
             __dyge = DYNA_VIBRA(
                   TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',
@@ -500,12 +501,12 @@ class GeneratorTRANS(Generator):
         if k > 0:
             DETRUIRE(CONCEPT = _F(NOM = (__impe, __fosi, __rito)), INFO=1)
         return VECRES
-        VEC = calc_miss_vari(self)             
+        VEC = calc_miss_vari(self)
         return VEC
 
 
 #     -----------------------------------------------------------------
-#         CLASSE SPEC  
+#         CLASSE SPEC
 #     -----------------------------------------------------------------
 class GeneratorSPEC(Generator):
 
@@ -522,14 +523,14 @@ class GeneratorSPEC(Generator):
             self.liste_freq.append(self.FREQ_INIT + self.FREQ_PAS * k)
 
     def compute_harm_gene(self):
-            """ compute harm_gene for spec"""                                  
+            """ compute harm_gene for spec"""
             SPEC = calc_miss_vari(self)
             return SPEC[0]
 
     def compute_freqk(self, k, RESU, VEC, dict_modes):
         """ compute response for freqk - spec"""
-        nbmodt = self.mat_gene_params['NBMODT']   
-        nbmodd = self.mat_gene_params['NBMODD']        
+        nbmodt = self.mat_gene_params['NBMODT']
+        nbmodd = self.mat_gene_params['NBMODD']
         freqk = self.FREQ_INIT + self.FREQ_PAS * k
 
         __impe = LIRE_IMPE_MISS(
@@ -553,16 +554,16 @@ class GeneratorSPEC(Generator):
                                 COEF_C = 1.0 + 0.j,),),
                       SANS_CMP = 'LAGR', )
 
-        # IMPEDANCE   
+        # IMPEDANCE
         MIMPE = __impe.EXTR_MATR_GENE()
         #  extraction de la partie modes interface
-        KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt] 
+        KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
         #  CALCUL FORCE SISMIQUE AVEC VARIABILITE
-        FSISM = __fosi.EXTR_VECT_GENE_C()  
+        FSISM = __fosi.EXTR_VECT_GENE_C()
         SP = NP.zeros((nbmodt, nbmodt))
         for k1 in range(dict_modes['nbpod']):
             #  calcul de la force sismique mode POD par mode POD
-            FS = compute_force_vari(self, dict_modes, VEC[k1], KRS)           
+            FS = compute_force_vari(self, dict_modes, VEC[k1], KRS)
             FSISM[nbmodd:nbmodt][:] = FS
             #  Calcul harmonique
             __fosi.RECU_VECT_GENE_C(FSISM)
@@ -597,11 +598,11 @@ class GeneratorSPEC(Generator):
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         DEFI_INTE_SPEC = self.macro.get_cmd('DEFI_INTE_SPEC')
         SPEC = self.compute_harm_gene()
-        nbmodt = self.mat_gene_params['NBMODT'] 
+        nbmodt = self.mat_gene_params['NBMODT']
         mcfact = []
         for k2 in range(nbmodt):
-            if self.calc_params['OPTION'] == 'DIAG':  
-            # on ecrit uniquement les termes diagonaux 
+            if self.calc_params['OPTION'] == 'DIAG':
+            # on ecrit uniquement les termes diagonaux
             #        (autospectres) de la matrice
                 foncc = []
                 for k in range(self.NB_FREQ):
@@ -640,10 +641,9 @@ class GeneratorSPEC(Generator):
     def append_Vec(self, RS, k , SPEC=None):
         if SPEC == None:
             nbmodt = self.mat_gene_params['NBMODT']
-            SPEC = NP.zeros((self.NB_FREQ, nbmodt, nbmodt)) + 0j 
+            SPEC = NP.zeros((self.NB_FREQ, nbmodt, nbmodt)) + 0j
         if self.interf_params['MODE_INTERF'] =='QUELCONQUE':
             SPEC[k] = RS * NP.conj(RS[:, NP.newaxis])
-        else: 
+        else:
             SPEC[k] = RS
         return SPEC
-

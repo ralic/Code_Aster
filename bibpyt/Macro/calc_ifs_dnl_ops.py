@@ -37,8 +37,7 @@ def calc_ifs_dnl_ops(self, GROUP_MA_IFS, NOM_CMP_IFS, UNITE_NOEUD, UNITE_ELEM, M
     from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table
     from Utilitai.Utmess import UTMESS
-    # from Cata.cata import *
-    from Cata.cata import EXTR_RESU, DEFI_LIST_ENTI, IMPR_RESU
+    from code_aster.Cata.Commands import EXTR_RESU, DEFI_LIST_ENTI, IMPR_RESU
     from SD.sd_maillage import sd_maillage
     #
     self.set_icmd(1)

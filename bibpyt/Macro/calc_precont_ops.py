@@ -32,7 +32,7 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
     import string
     import types
     from code_aster.Cata.Syntax import _F
-    from Cata.cata import listr8_sdaster, list_inst
+    from code_aster.Cata.DataStructure import listr8_sdaster, list_inst
     from Noyau.N_utils import AsType
     from Noyau.N_types import is_sequence
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
@@ -399,14 +399,14 @@ def calc_precont_ops(self, reuse, MODELE, CHAM_MATER, CARA_ELEM, EXCIT,
                             AFFE=_F(TOUT='OUI',
                                     NOM_CMP=('DX','DY','DZ','DRX','DRY','DRZ','GLIS','SITY'),
                                     VALE=(0.,0.,0.,0.,0.,0.,0.,0.)), )
-        
-        
+
+
         __REAC = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                             OPERATION='ASSE',
                             MODELE=MODELE,
                             ASSE=(_F(TOUT='OUI',
                                     CHAM_GD=__REAC0,
-                                    COEF_R=1.), 
+                                    COEF_R=1.),
                                   _F(GROUP_MA=__GROUP_MA_A,
                                     CHAM_GD=__REA,
                                     COEF_R=-1.), ))

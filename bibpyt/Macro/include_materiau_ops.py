@@ -98,7 +98,7 @@ def include_materiau_ops(self,
     """Macro INCLUDE_MATERIAU"""
     import aster
     from code_aster.Cata.Syntax import _F
-    from Cata.cata import formule
+    from code_aster.Cata.DataStructure import formule
     from Utilitai.Utmess import UTMESS
 
     DEFI_MATERIAU = self.get_cmd('DEFI_MATERIAU')

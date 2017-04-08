@@ -33,7 +33,8 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
     import pprint
     import aster
     from code_aster.Cata.Syntax import _F
-    from Cata.cata import nappe_sdaster, fonction_c, formule, formule_c
+    from code_aster.Cata.DataStructure import (nappe_sdaster, fonction_c,
+                                               formule, formule_c)
     from Utilitai import Graph
     from Utilitai.Utmess import UTMESS
     from Utilitai.UniteAster import UniteAster
@@ -170,7 +171,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                     dic.update(ldicf[i])
 
                     if (interp or dCi.has_key('LIST_PARA')) and i > 0:
-                        
+
                         try:
                             __ftmp = CALC_FONC_INTERP(
                                 FONCTION=obj,
@@ -212,7 +213,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
                             **dpar
                         )
                     except aster.error,err:
-                        
+
                             # on verifie que la bonne exception a ete levee
                             assert err.id_message == "FONCT0_9", 'unexpected id : %s' % err.id_message
                             continue

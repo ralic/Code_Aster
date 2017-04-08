@@ -20,8 +20,9 @@
 #  RECUPERATION DES EFFORTS VIA YACS POUR COUPLAGE IFS
 #
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 MODI_CHAR_YACS=OPER(nom            = "MODI_CHAR_YACS",

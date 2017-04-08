@@ -22,8 +22,8 @@ import string
 from pprint import pformat
 
 import aster_core
-from Cata.cata import MACRO, SIMP, table_sdaster
-from Cata.cata import modele_sdaster, maillage_sdaster
+from code_aster.Cata.DataStructure import (modele_sdaster, maillage_sdaster,
+    table_sdaster)
 from mac3coeur_coeur import CoeurFactory
 
 
@@ -64,7 +64,7 @@ def perm_mac3coeur_ops(self, **args):
 
         _MA_N = self.get_concept_by_type(nom_ma, maillage_sdaster)
         _l_MA_N.append(_MA_N)
-    
+
     _l_coeur = []
     for _tabn1 in _l_tabn1 :
     # on recupere le nom du coeur
@@ -118,7 +118,7 @@ def perm_mac3coeur_ops(self, **args):
         _F(RELATION='ELAS',       GROUP_MA =(
            'EBOINF', 'EBOSUP', 'RIG', 'DIL',),),
         _F(RELATION='VMIS_ISOT_TRAC', GROUP_MA ='MAINTIEN', DEFORMATION='PETIT',), ]
-    
+
     self.DeclareOut('BIDON', self.sd)
     __BIDON = STAT_NON_LINE(MODELE=_MO_NP1,
                            CHAM_MATER=_AFSCNP1,
@@ -214,11 +214,11 @@ def perm_mac3coeur_ops(self, **args):
               AFFE=_F(CHAM_GD=__ASSVAR,
                       INST=0.0,
                       MODELE=_MO_NP1,))
-    nbresu = len(l_RESUI) 
+    nbresu = len(l_RESUI)
     assert (len(_l_coeur) == nbresu)
     assert (len(l_last_i) == nbresu)
     assert (len(_l_MA_N) == nbresu)
-    
+
     for nom in _coeurp1.nameAC.keys():
         for i in xrange(len(_l_coeur)) :
             _coeur = _l_coeur[i]

@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: sam.cuvilliez at edf.fr
 
-from Cata.cata import OPER, SIMP, cham_no_sdaster, evol_noli, evol_elas
+from code_aster.Cata.Syntax import OPER, SIMP
+from code_aster.Cata.DataStructure import cham_no_sdaster, evol_noli, evol_elas
+
 
 POST_K_VARC = OPER(
     nom="POST_K_VARC", op=48, sd_prod=cham_no_sdaster, reentrant='n',

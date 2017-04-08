@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: sam.cuvilliez at edf.fr
 
-from Cata.cata import OPER, SIMP, carte_sdaster, evol_noli
+from code_aster.Cata.Syntax import OPER, SIMP
+from code_aster.Cata.DataStructure import carte_sdaster, evol_noli
+
 
 POST_VOISIN_CZM = OPER(
 

@@ -22,7 +22,8 @@ import os
 from Noyau.N_types import is_complex, is_str, is_sequence
 from Utilitai.TestResult import testPrinter
 
-from Cata.cata import formule, formule_c, fonction_sdaster, fonction_c, nappe_sdaster
+from code_aster.Cata.DataStructure import (formule, formule_c, fonction_sdaster,
+    fonction_c, nappe_sdaster)
 
 epsi = 1e-15
 

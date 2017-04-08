@@ -18,9 +18,9 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
-import os
-import aster
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 # ------------------------------------------------------------------------
 

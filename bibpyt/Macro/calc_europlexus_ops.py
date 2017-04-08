@@ -394,7 +394,7 @@ class EUROPLEXUS:
         """
             Retoune une unité de fichier libre.
         """
-        from Cata.cata import DETRUIRE, INFO_EXEC_ASTER
+        from code_aster.Cata.Commands import DETRUIRE, INFO_EXEC_ASTER
         _UL = INFO_EXEC_ASTER(LISTE_INFO='UNITE_LIBRE')
         unite = _UL['UNITE_LIBRE', 1]
         DETRUIRE(CONCEPT=(_F(NOM=_UL),), INFO=1)
@@ -440,7 +440,7 @@ class EUROPLEXUS:
         """
         from Utilitai.Utmess import MasquerAlarme, RetablirAlarme
         from Calc_epx.trans_var_int import var_int_a2e
-        from Cata.cata import IMPR_RESU, MODI_REPERE
+        from code_aster.Cata.Commands import IMPR_RESU, MODI_REPERE
 
         epx = self.epx
 
@@ -1033,7 +1033,7 @@ class EUROPLEXUS:
         """
 
         from Calc_epx.calc_epx_utils import lire_pun
-        from Cata.cata import CREA_TABLE, IMPR_TABLE
+        from code_aster.Cata.Commands import CREA_TABLE, IMPR_TABLE
         global table
 
         if not hasattr(self, 'courbes'):
@@ -1108,7 +1108,7 @@ class EUROPLEXUS:
             Construit un concept aster evol_noli à partir des résultats du
             calcul EPX contenus dans le fichier MED de sortie.
         """
-        from Cata.cata import LIRE_EUROPLEXUS
+        from code_aster.Cata.Commands import LIRE_EUROPLEXUS
         import med_aster
 
         fichier_med = self.nom_fichiers['MED']
@@ -1145,7 +1145,7 @@ class EUROPLEXUS:
 #-----------------------------------------------------------------------
     def lancer_calcul(self):
         """Lancement du calcul EPX"""
-        from Cata.cata import EXEC_LOGICIEL
+        from code_aster.Cata.Commands import EXEC_LOGICIEL
         if self.NP > 1 :
             # Ecriture du fichier epx dans un repertoire commun a tous les procs
             fichierepx = osp.abspath(self.nom_fichiers['COMMANDE'])

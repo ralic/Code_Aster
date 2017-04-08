@@ -292,7 +292,7 @@ class ENTITE:
 
     def check_inout(self):
         """Vérifie l'attribut inout."""
-        from Cata.cata import UnitType
+        from code_aster.Cata.DataStructure import UnitType
         if self.inout is None:
             return
         elif self.inout not in ('in', 'out', 'inout'):
@@ -306,7 +306,7 @@ class ENTITE:
 
     def check_unit(self, nom):
         """Vérification ayant besoin du nom"""
-        from Cata.cata import UnitType
+        from code_aster.Cata.DataStructure import UnitType
         # As UnitType() is not an object, this forbids UNITE* keywords
         # for another kind of 'int'.
         if nom.startswith('UNITE') and UnitType() in self.type:

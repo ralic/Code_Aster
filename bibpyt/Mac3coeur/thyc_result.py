@@ -52,7 +52,7 @@ def compute_ep_from_Z(line) :
   Z=size*[None]
   for i in range(size) :
     Z[i]=float(Zstr[i])
-    
+
   ep=[None]*size
   ep[0]=2*float(Z[0])
   for i in range(size-1) :
@@ -64,7 +64,7 @@ def compute_ep_from_Z(line) :
 
 def definir_chargement_transverse(cote, epaisseur, pos_thyc, force, prod):
     """XXX pas documenté, propre à lire_resu_thyc"""
-    from Cata.cata import DEFI_FONCTION
+    from code_aster.Cata.Commands import DEFI_FONCTION
     # Determination du chargement transverse sur les crayons pour un
     # assemblage donne.
     kk = 2
@@ -138,7 +138,8 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     ou un objet ThycResult avec .read(), .hydr_load()... pour récupérer les
     différents résultats
     """
-    from Cata.cata import DEFI_FONCTION, AFFE_CHAR_MECA, AFFE_CHAR_MECA_F
+    from code_aster.Cata.Commands import (DEFI_FONCTION, AFFE_CHAR_MECA,
+        AFFE_CHAR_MECA_F)
     from code_aster.Cata.Syntax import _F
     # Fonction multiplicative de la force hydrodynamique axiale.
     # On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir
@@ -240,7 +241,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
         line = f.readline().split()
         posi_aster=coeur.position_fromthyc(int(line[0]),int(line[1]))
         idAC = coeur.position_todamac(posi_aster)
-        
+
         print coeur.collAC.keys()
 
         ac = coeur.collAC[idAC]

@@ -28,7 +28,7 @@ import aster
 import string
 from Utilitai.Utmess import UTMESS
 from code_aster.Cata.Syntax import _F
-from Cata.cata import DEFI_GROUP
+from code_aster.Cata.Commands import DEFI_GROUP
 
 
 def export_modele(epx, MAILLAGE, MODELE, gmaInterfaces, info_mode_compl):

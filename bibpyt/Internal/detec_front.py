@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
-from Cata.cata import OPER, SIMP, table_sdaster, evol_noli, fiss_xfem
+from code_aster.Cata.Syntax import OPER, SIMP
+from code_aster.Cata.DataStructure import table_sdaster, evol_noli, fiss_xfem
+
 
 DETEC_FRONT = OPER(
     nom="DETEC_FRONT", op=139, sd_prod=table_sdaster, reentrant='n',

@@ -1,7 +1,7 @@
 # coding=utf-8
 # person_in_charge: mathieu.courtois at edf.fr
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -123,7 +123,8 @@ class AsBase(Type):
             # hors Aster ou en par_lot='oui'
             return self.short_repr()
         else:
-            from Cata.cata import IMPR_CO, _F
+            from code_aster.Cata.Syntax import _F
+            from code_aster.Cata.Commands import IMPR_CO
             IMPR_CO(CONCEPT=_F(NOM=self.nom), UNITE=6)
             return ''
 

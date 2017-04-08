@@ -17,8 +17,10 @@
 # ======================================================================
 # person_in_charge: samuel.geniaut at edf.fr
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
 
 PROPA_XFEM=OPER(nom="PROPA_XFEM",op=10,sd_prod=fiss_xfem,reentrant='n',
                 fr=tr("Propagation de fissure avec X-FEM"),

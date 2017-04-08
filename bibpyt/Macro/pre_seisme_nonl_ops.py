@@ -18,9 +18,6 @@
 
 from Noyau.N_types import force_list
 from Noyau.N_utils import AsType
-from Cata.cata import _F, fonction_sdaster, fonction_c, nappe_sdaster, \
-                      cara_elem, cham_mater, maillage_sdaster, modele_sdaster
-
 import numpy as NP
 import pprint
 import Accas
@@ -30,14 +27,19 @@ from Utilitai.Utmess import UTMESS, ASSERT
 from Utilitai.partition import MAIL_PY
 from Utilitai.UniteAster import UniteAster
 
-from Cata.cata import _F, DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE, \
-    AFFE_MATERIAU, AFFE_MODELE, AFFE_CARA_ELEM, LIRE_MAILLAGE,  \
-    AFFE_CHAR_MECA, ASSE_MATRICE, DEFI_INTERF_DYNA, CALC_MATR_ELEM, \
-    DEFI_BASE_MODALE, CALC_MODES, NUME_DDL, MODE_STATIQUE, \
-    MACR_ELEM_DYNA, DEFI_FONCTION, DEFI_LIST_REEL, STAT_NON_LINE, \
-    CREA_CHAMP, NUME_DDL_GENE, LIRE_IMPE_MISS, COMB_MATR_ASSE, \
-    PROD_MATR_CHAM, DEFI_LIST_INST, CREA_MAILLAGE, DYNA_NON_LINE, \
-    DEFI_GROUP
+from code_aster.Cata.Syntax import _F
+
+from code_aster.Cata.DataStructure import (fonction_sdaster, fonction_c,
+nappe_sdaster, cara_elem, cham_mater, maillage_sdaster, modele_sdaster)
+
+from code_aster.Cata.Commands import (DETRUIRE, DEFI_MAILLAGE, ASSE_MAILLAGE,
+    AFFE_MATERIAU, AFFE_MODELE, AFFE_CARA_ELEM, LIRE_MAILLAGE,
+    AFFE_CHAR_MECA, ASSE_MATRICE, DEFI_INTERF_DYNA, CALC_MATR_ELEM,
+    DEFI_BASE_MODALE, CALC_MODES, NUME_DDL, MODE_STATIQUE,
+    MACR_ELEM_DYNA, DEFI_FONCTION, DEFI_LIST_REEL, STAT_NON_LINE,
+    CREA_CHAMP, NUME_DDL_GENE, LIRE_IMPE_MISS, COMB_MATR_ASSE,
+    PROD_MATR_CHAM, DEFI_LIST_INST, CREA_MAILLAGE, DYNA_NON_LINE,
+    DEFI_GROUP)
 
 
 def pre_seisme_nonl_ops(self, **args):
@@ -258,12 +260,12 @@ class BaseModale(object):
         """Build the dynamic interface where the substructuring approach is applied"""
         if (self.param['PRE_CALC_MISS']['REDUC_DYNA_ISS'] == 'OUI' or
                 self.param['PRE_CALC_MISS']['REDUC_DYNA_IFS'] == 'OUI'):
-            grno = self.get_grno_interf() 
+            grno = self.get_grno_interf()
         else:
             if self.check_radier_rigide():
                 grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
             else:
-                grno =  self.get_grno_interf() 
+                grno =  self.get_grno_interf()
         _C_LIM0 = AFFE_CHAR_MECA(
             MODELE=self.model.get_model(), DDL_IMPO=_F(GROUP_NO=grno,
                                                        DX=0.0, DY=0.0, DZ=0.0,),)
@@ -307,7 +309,7 @@ class BaseModale(object):
         if self.check_radier_rigide():
             grno = self.param['PRE_CALC_MISS']['GROUP_NO_CENT']
         else:
-            grno = self.get_grno_interf() 
+            grno = self.get_grno_interf()
         _modsta = MODE_STATIQUE(MATR_RIGI=self.matr_rigi,
                                 MODE_STAT=_F(GROUP_NO=grno, TOUT_CMP='OUI',))
         self.modes = _modsta
@@ -394,7 +396,7 @@ class MacroElement(object):
             '_Mael', self.param['RESULTAT']['MACR_ELEM_DYNA'])
         _Mael = MACR_ELEM_DYNA(
             BASE_MODALE=Bamo, MATR_RIGI=self.bamo.get_rigi(),
-            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.bamo.get_grno_interf(),) 
+            MATR_MASS=self.bamo.get_mass(), SANS_GROUP_NO=self.bamo.get_grno_interf(),)
 
 
 class Properties(object):

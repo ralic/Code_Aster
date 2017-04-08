@@ -26,8 +26,8 @@ import numpy.linalg as linalg
 try:
     import aster_core
     import aster
-    from Cata.cata import INFO_EXEC_ASTER
-    from Cata.cata import DETRUIRE
+    from code_aster.Cata.Commands import INFO_EXEC_ASTER
+    from code_aster.Cata.Commands import DETRUIRE
     from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
 except:

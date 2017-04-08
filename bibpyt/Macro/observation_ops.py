@@ -46,7 +46,8 @@ def observation_ops(self,
     import aster
     from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
-    from Cata.cata import mode_meca, dyna_harmo, evol_elas, dyna_trans
+    from code_aster.Cata.DataStructure import (mode_meca, dyna_harmo,
+                                               evol_elas, dyna_trans)
     MODI_REPERE = self.get_cmd('MODI_REPERE')
     PROJ_CHAMP = self.get_cmd('PROJ_CHAMP')
     CREA_CHAMP = self.get_cmd('CREA_CHAMP')
@@ -115,7 +116,7 @@ def observation_ops(self,
     # afreq pour les frequences propres
     if isinstance(RESULTAT, mode_meca):
         # frequences propres
-        from Cata.cata import RECU_TABLE
+        from code_aster.Cata.Commands import RECU_TABLE
         __freq = RECU_TABLE(CO=RESULTAT,
                             NOM_PARA='FREQ',)
         afreq = __freq.EXTR_TABLE().Array('NUME_ORDRE', 'FREQ')

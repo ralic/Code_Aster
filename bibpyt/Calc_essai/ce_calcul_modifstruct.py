@@ -22,14 +22,13 @@
 import aster
 from code_aster.Cata.Syntax import _F, ASSD
 
-import Cata.cata
-from Cata.cata import MODE_STATIQUE, PROJ_MESU_MODAL
+from code_aster.Cata.Commands import MODE_STATIQUE, PROJ_MESU_MODAL
 from Modal.mode_iter_simult import MODE_ITER_SIMULT
-from Cata.cata import REST_GENE_PHYS
-from Cata.cata import ASSE_MAILLAGE, AFFE_MODELE
-from Cata.cata import NUME_DDL, CALC_MATR_ELEM, AFFE_CARA_ELEM
-from Cata.cata import ASSE_MATRICE
-from Cata.cata import DETRUIRE
+from code_aster.Cata.Commands import REST_GENE_PHYS
+from code_aster.Cata.Commands import ASSE_MAILLAGE, AFFE_MODELE
+from code_aster.Cata.Commands import NUME_DDL, CALC_MATR_ELEM, AFFE_CARA_ELEM
+from code_aster.Cata.Commands import ASSE_MATRICE
+from code_aster.Cata.Commands import DETRUIRE
 
 from Calc_essai.cata_ce import Resultat, ModeMeca
 from Calc_essai.ce_calcul_expansion import extract_mac_array
@@ -326,7 +325,7 @@ class CalcEssaiModifStruct:
         """!Calcul de la base de projection type Mathieu Corus
         """
 
-        from Cata.cata import NUME_DDL_GENE, PROJ_MATR_BASE
+        from code_aster.Cata.Commands import NUME_DDL_GENE, PROJ_MATR_BASE
 
         __NUMGEN = NUME_DDL_GENE(BASE=base_mod_es.obj,
                                  STOCKAGE='PLEIN',)
@@ -381,7 +380,7 @@ class CalcEssaiModifStruct:
     def condensation(self, resolution=None, nomcham='DEPL'):
         """Calcul la condensation des modes sur la structure modifiee."""
 
-        from Cata.cata import MACR_ELEM_STAT, EXTR_MODE, DEFI_MAILLAGE
+        from code_aster.Cata.Commands import MACR_ELEM_STAT, EXTR_MODE, DEFI_MAILLAGE
 
         modmesu = self.resu_exp
         modlexp = modmesu.modele
@@ -502,7 +501,7 @@ class CalcEssaiModifStruct:
     def maillage_iface(self):
         """Construit le maillage de l'interface."""
 
-        from Cata.cata import CREA_MAILLAGE
+        from code_aster.Cata.Commands import CREA_MAILLAGE
 
         self.group_ma_int = ['IFACE']
 
@@ -570,7 +569,7 @@ class CalcEssaiModifStruct:
     def indicateur_choix_base_expansion(self):
         """Expansion statique du champ de deplacements aux interfaces"""
 
-        from Cata.cata import MAC_MODES, PROJ_CHAMP
+        from code_aster.Cata.Commands import MAC_MODES, PROJ_CHAMP
 
         clear_concept(self.modstint)
         self.modstint
@@ -690,7 +689,7 @@ class CalcEssaiModifStruct:
     def modes_modele_couple(self, mode_simult, calc_freq):
         # ne traite qu'une seule masse/raideur
 
-        from Cata.cata import DEPL_INTERNE
+        from code_aster.Cata.Commands import DEPL_INTERNE
         from Modal.mode_iter_inv import MODE_ITER_INV
 
         cpl = self.cpl
@@ -883,7 +882,7 @@ class CopyModelMeca:
         # replication des AFFE_MATERIAU
         # -----------------------------
 
-        from Cata.cata import AFFE_MATERIAU
+        from code_aster.Cata.Commands import AFFE_MATERIAU
 
         if not mater:
             raise RuntimeError("MODELE est un attribut facultatif de AFFE_MATERIAU \n"
@@ -898,7 +897,7 @@ class CopyModelMeca:
         # replication de AFFE_CHAR_MECA
         # -----------------------------
 
-        from Cata.cata import AFFE_CHAR_MECA
+        from code_aster.Cata.Commands import AFFE_CHAR_MECA
 
         for args, sd in charge:
             args = convert_args(args, self.concepts)

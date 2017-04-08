@@ -19,8 +19,9 @@
 
 # commande cachee appelee uniquement par la macro RAFF_XFEM
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 RAFF_XFEM_ZONE=OPER(nom="RAFF_XFEM_ZONE",

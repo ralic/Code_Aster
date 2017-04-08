@@ -28,7 +28,7 @@ def calc_table_ops(self, TABLE, ACTION, INFO, **args):
 
     from code_aster.Cata.Syntax import _F
     from Noyau.N_types import force_list
-    from Cata.cata import table_fonction, table_container
+    from code_aster.Cata.DataStructure import table_fonction, table_container
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table import merge
     from Utilitai.utils import get_titre_concept

@@ -20,8 +20,9 @@
 #  ENVOI DES CHAMPS CINEMATIQUES VIA YACS POUR COUPLAGE IFS
 #
 
-from Cata import cata
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 ENV_CINE_YACS=PROC(nom             = "ENV_CINE_YACS",

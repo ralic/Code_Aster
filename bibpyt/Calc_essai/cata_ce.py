@@ -33,9 +33,10 @@ import numpy
 
 import aster
 from Utilitai.Utmess import UTMESS
-from Cata.cata import modele_sdaster, mode_meca, matr_asse_depl_r, maillage_sdaster
-from Cata.cata import cara_elem, cham_mater, table_sdaster, table_fonction
-from Cata.cata import nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r, interspectre
+from code_aster.Cata.DataStructure import (modele_sdaster, mode_meca,
+    matr_asse_depl_r, maillage_sdaster, cara_elem, cham_mater, table_sdaster,
+    table_fonction, nume_ddl_sdaster, dyna_harmo, matr_asse_gene_r,
+    interspectre)
 from code_aster.Cata.Syntax import _F
 
 
@@ -473,7 +474,7 @@ class InterSpectre:
         """
         Fabrique un objet aster de type sd_interspectre :
         """
-        from Cata.cata import DEFI_FONCTION
+        from code_aster.Cata.Commands import DEFI_FONCTION
         dim = self.matr_inte_spec.shape[1]
         nb_freq = len(self.f)
         l_fonc = []
@@ -593,7 +594,7 @@ class InterSpectre:
             - Si intersp = 1, on a un vrai inter-spectre. Si = 0, alors c'est une FRF ou une coherence
               (exemple, CALC_SEPC calcule des FRF mais rend un concept de type inter-spectre).
               Dans ce cas, on ne calcule pas la partie symetrique de la matrice."""
-        from Cata.cata import RECU_FONCTION, DETRUIRE
+        from code_aster.Cata.Commands import RECU_FONCTION, DETRUIRE
         self.mess.disp_mess("Extraction de l'inter-spectre " + self.nom)
         self.mess.disp_mess(" ")
 
@@ -754,8 +755,8 @@ class Tempo:
 
     def extr_tempo(self):
         """!Recuperation d'une table_fonction pour creer un catalogue de temporels"""
-        from Cata.cata import RECU_FONCTION
-        from Cata.cata import DETRUIRE
+        from code_aster.Cata.Commands import RECU_FONCTION
+        from code_aster.Cata.Commands import DETRUIRE
         self.mess.disp_mess(
             "Recuperation des informations sur les temporels " + self.nom)
         self.mess.disp_mess(" ")
@@ -767,8 +768,8 @@ class Tempo:
     def extr_temps(self):
         """Extraction des instants d'etude dans la Tempo qui contient
         les temporels mesures"""
-        from Cata.cata import RECU_FONCTION
-        from Cata.cata import DETRUIRE
+        from code_aster.Cata.Commands import RECU_FONCTION
+        from code_aster.Cata.Commands import DETRUIRE
         tabl_py = self.obj.EXTR_TABLE()
         toto = tabl_py['FONCTION']
         nom_fonc = toto.values()['FONCTION'][0]
@@ -1024,7 +1025,7 @@ class CalcEssaiObjects:
     def test_table(self, obj):
         """ test si la table est composee de fonctions et si ces
             fonctions sont temporelles ou frequentielles"""
-        from Cata.cata import RECU_FONCTION
+        from code_aster.Cata.Commands import RECU_FONCTION
         table_py = obj.EXTR_TABLE()
         paras = table_py.para
         if 'FONCTION_C' in paras:
@@ -1128,7 +1129,7 @@ class CalcEssaiObjects:
         self.weakref.append(name)
 
     def del_weakref(self):
-        from Cata.cata import DETRUIRE
+        from code_aster.Cata.Commands import DETRUIRE
         liste = ""
         if len(self.weakref) != 0:
             for obj in self.weakref:
@@ -1148,8 +1149,8 @@ def crea_champ(resu, ind_mod):
         a partir des DDL de mesure pour un mode donne.
         Ces DDL sont identiques a ceux de la macro OBSERVATION
         ayant servi a obtenir le resultat."""
-    from Cata.cata import CREA_CHAMP
-    from Cata.cata import DETRUIRE
+    from code_aster.Cata.Commands import CREA_CHAMP
+    from code_aster.Cata.Commands import DETRUIRE
     __CHANO = CREA_CHAMP(TYPE_CHAM='NOEU_DEPL_R',
                          OPERATION='EXTR',
                          RESULTAT=resu,
@@ -1169,7 +1170,7 @@ def nume_ddl_phy(resu):
     """Fabrication d'une numerotation des DDL actifs associes a une sd resultat
        retourne ['N1_DX','N1_DY','N1_DZ','N2_DZ','N3_DZ'...] dans l'ordre alpha-numerique"""
 
-    from Cata.cata import CREA_CHAMP, DETRUIRE
+    from code_aster.Cata.Commands import CREA_CHAMP, DETRUIRE
     __CHAMP0 = CREA_CHAMP(RESULTAT=resu.obj, OPERATION='EXTR',
                           NUME_ORDRE=1, TYPE_CHAM='NOEU_DEPL_R', NOM_CHAM='DEPL')
     champy0 = __CHAMP0.EXTR_COMP(topo=1)
@@ -1204,7 +1205,7 @@ def nume_ddl_gene(resu, extract_mode=None):
 
 def CreaTable(mcfact, titre, paras_out, mess):
     """!Sortie des donnees sous forme de sd_interspectre"""
-    from Cata.cata import DEFI_INTE_SPEC
+    from code_aster.Cata.Commands import DEFI_INTE_SPEC
     TablesOut = paras_out["TablesOut"]
     DeclareOut = paras_out["DeclareOut"]
     compteur = paras_out["ComptTable"]

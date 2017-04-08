@@ -26,8 +26,7 @@ from Tkinter import Checkbutton, Listbox
 
 import tkFont
 
-from code_aster.Cata.Syntax import _F
-from code_aster.Cata.Syntax import CO
+from code_aster.Cata.Syntax import _F, CO
 from code_aster.Cata.Commands import OBSERVATION, DETRUIRE, IMPR_RESU
 from Calc_essai.cata_ce import Resultat, ModeMeca, InterSpectre, CreaTable
 from Calc_essai.cata_ce import nume_ddl_phy, nume_ddl_gene, CreaTable

@@ -15,7 +15,6 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-from Cata.cata import *
 
 import cPickle
 import string
@@ -200,6 +199,10 @@ def veri_matr_tang_ops(self, SYMETRIE, DIFFERENCE, PRECISION, PREC_ZERO, **args)
             _F(PARA='MAT_DIFF', LISTE_R=liste_diff),))
     return 0
 
+
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 VERI_MATR_TANG = MACRO(
     nom="VERI_MATR_TANG", op=veri_matr_tang_ops, sd_prod=table_sdaster,

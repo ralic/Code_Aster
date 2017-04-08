@@ -155,15 +155,6 @@ def make_include_files(UNITE_INCLUDE, calcul, parametres):
     """  Module permettant de generer les fichiers a inclure (mode INCLUSION)
     """
 
-# Importation de commandes Aster
-#    try:
-#       import aster
-#       import Macro
-#       from code_aster.Cata.Syntax import _F
-#       from Cata.cata import *
-#    except ImportError:
-#       raise Exception("Le mode INCLUSION doit etre lance depuis Aster")
-
     try:
         ASTER_ROOT = os.path.join(aster_core.get_option('repout'), '..')
         sys.path.append(os.path.join(ASTER_ROOT, 'ASTK', 'ASTK_SERV', 'lib'))
@@ -577,13 +568,11 @@ class CALCULS_ASTER:
 
         try:
             import aster
-            import Macro
-            from Cata import cata
-            from Cata.cata import OPER, MACRO
+            from code_aster.Cata.Syntax import OPER, MACRO
             from code_aster.Cata.Syntax import _F
 
             # Declaration de toutes les commandes Aster
-            from Cata.cata import *
+            from code_aster.Cata.Commands import *
         except Exception, e:
             raise Exception("Le mode INCLUDE doit etre lance depuis Aster : \nErreur : %s" % e)
 

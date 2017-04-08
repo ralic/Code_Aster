@@ -17,7 +17,9 @@
 # ======================================================================
 # person_in_charge: jean-luc.flejou at edf.fr
 #
-from Cata.cata import *
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
 
 
 CARA_ELEM=OPER(nom="CARA_ELEM",sd_prod=cara_elem, op= 19,

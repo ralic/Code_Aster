@@ -16,8 +16,12 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
 from macro_bascule_schema_ops import macro_bascule_schema_ops
-from Cata.cata import *
+
 
 MACRO_BASCULE_SCHEMA = MACRO(
     nom="MACRO_BASCULE_SCHEMA", op=macro_bascule_schema_ops, sd_prod=evol_noli, reentrant='f',

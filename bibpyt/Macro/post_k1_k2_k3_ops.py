@@ -1156,7 +1156,7 @@ def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, 
     varcno = tabvarc.NOEUD == Lnofon[ino]
     varcno = varcno.values()
     valpar = varcno[nomcmp][0]
-    assert type(valpar) is float 
+    assert type(valpar) is float
 
     # valeur des parametres elastiques fonctions de la varc
     nompar = (nompar)
@@ -1228,7 +1228,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
 
     # extraction des vecteurs :
     #  - FISSURE.FONDFISS (coords des points du fond)
-    #  - FISSURE.NOFACPTFON (numeros des noeuds des faces des elements 
+    #  - FISSURE.NOFACPTFON (numeros des noeuds des faces des elements
     #    parents qui contiennent les points du fond de fissure
     Listfo = FISSURE.sdj.FONDFISS.get()
     L_NoFacPtFon = FISSURE.sdj.NOFACPTFON.get()
@@ -1244,7 +1244,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
         for k in xrange(NbNoFa):
             vale += ChnoVrcVale[L_NoFacPtFon[k+4*i]-1]
         # si la face est quadrangulaire
-        if L_NoFacPtFon[3+4*i] > 0 : 
+        if L_NoFacPtFon[3+4*i] > 0 :
             NbNoFa = 4
             vale += ChnoVrcVale[L_NoFacPtFon[3+4*i]-1]
         vale = vale/float(NbNoFa)
@@ -1274,7 +1274,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
         for i in xrange(Nnoff):
             absci = i * absmax / (Nnoff - 1)
             ValeVrc[i] = InterpolScalFiss(absci, ValeVrc_Listfo, Listfo)
-    # Sinon : on utilise directement ValeVrc_Listfo 
+    # Sinon : on utilise directement ValeVrc_Listfo
     else:
         ValeVrc  = ValeVrc_Listfo
 
@@ -1881,7 +1881,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table, merge
     from SD.sd_mater import sd_compor1
-    from Cata.cata import mode_meca
+    from code_aster.Cata.DataStructure import mode_meca
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
 
     EnumTypes = (ListType, TupleType)
@@ -1973,7 +1973,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
 
         mater_fonc = True
 
-        # erreur fatale si le MCS MATER est renseigne car on n'autorise que la 
+        # erreur fatale si le MCS MATER est renseigne car on n'autorise que la
         # surcharge par un materiau constant
         if args['MATER'] != None:
             UTMESS('F', 'RUPTURE0_6', valk=MATER.nom)
@@ -2012,7 +2012,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
             list_oper.remove("LONG_CARA")
         except ValueError:
             pass
-        
+
         nom_fonc_e = self.get_concept(list_fonc[list_oper.index("E")])
         nom_fonc_nu = self.get_concept(list_fonc[list_oper.index("NU")])
         nom_fonc_e_prol = nom_fonc_e.sdj.PROL.get()[0].strip()
@@ -2028,7 +2028,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
         assert nom_fonc_e.Parametres()['NOM_PARA'] == nom_fonc_e.Parametres()['NOM_PARA']
         para_fonc = nom_fonc_e.Parametres()['NOM_PARA']
 
-#       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter 
+#       la presence de variables de commande est obligatoire (verif a priori inutile, car on aurait deja du planter
 #       en amont dans STAT_NON_LINE / MECA_STATIQUE (rcvalb))
         assert present_varc
 
@@ -2069,7 +2069,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
 
 #   TYPE_MAILLAGE n'a de sens qu'en 3D, meme si ce MC existe qd meme pour
 #   les modelisations 2D
-    if (TYPE_MAILLAGE != []) and (MODELISATION != '3D') : 
+    if (TYPE_MAILLAGE != []) and (MODELISATION != '3D') :
         TYPE_MAILLAGE = []
 
 #  ------------------------------------------------------------------

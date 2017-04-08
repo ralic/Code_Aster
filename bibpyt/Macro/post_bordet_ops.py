@@ -24,7 +24,7 @@ def post_bordet_ops(self, TOUT, GROUP_MA, INST, PRECISION, CRITERE, NUME_ORDRE,
     import numpy as NP
     import aster
     from code_aster.Cata.Syntax import _F
-    from Cata.cata import fonction_sdaster, nappe_sdaster
+    from code_aster.Cata.DataStructure import fonction_sdaster, nappe_sdaster
     from Utilitai.Utmess import UTMESS
 
     ier = 0
