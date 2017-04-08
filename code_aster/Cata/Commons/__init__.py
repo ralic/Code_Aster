@@ -17,10 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-# TODO
-# from .c_mfront_official import C_MFRONT_OFFICIAL
-def C_MFRONT_OFFICIAL():
-    return {}
+from .c_mfront_official import C_MFRONT_OFFICIAL
 
 from .c_affichage import C_AFFICHAGE
 from .c_archivage import C_ARCHIVAGE

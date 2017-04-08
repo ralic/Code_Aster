@@ -45,6 +45,7 @@ INCLUDES = (
 
 def build(self):
     env = self.all_envs[self.variant]
+    c_mfront = self.path.find_or_declare('c_mfront_official.py')
     if env.BUILD_MFRONT:
         # build mfront_request
         self(
@@ -78,21 +79,25 @@ def build(self):
 
         self.add_group()
         self(
-            features = 'mfront_mater',
+            features = 'mfront_mater py',
                 name = 'mfront_mater',
                  lst = lst,
                 path = self.path,
-              target = 'c_mfront_official.capy',
                  env = env.derive(),
+              target = c_mfront,
+        install_path = osp.join(env.ASTERLIBDIR, "code_aster", "Cata", "Commons"),
+        install_from = self.path.get_bld(),
                  use = 'asterbehaviour',
         )
     else:
         self(
-            features = 'fake_mfront_mater',
+            features = 'fake_mfront_mater py',
                 name = 'mfront_mater',
                 path = self.path,
                  env = env.derive(),
-              target = 'c_mfront_official.capy',
+              target = c_mfront,
+        install_path = osp.join(env.ASTERLIBDIR, "code_aster", "Cata", "Commons"),
+        install_from = self.path.get_bld(),
         )
 
 ###############################################################################
@@ -185,7 +190,7 @@ def check_mfront_obsolete_source(self):
     # clean obsolete behaviours (from a previous build)
     bld, mfront = osp.split(self.path.get_bld().abspath())
     excl = ['libAsterMFrOfficial.so', 'libAsterMFrOfficialDebug.so',
-            'include', 'mfront_request']
+            'include', 'mfront_request', 'c_mfront_official.py']
     for variant in ('debug', 'release'):
         build = osp.join(bld, variant, mfront)
         if osp.exists(build):
@@ -249,12 +254,12 @@ def mater_capy(self):
     gen = self.bld.get_tgen_by_name('mfront_request')
     req = gen.link_task.outputs[0]
     link_task = self.bld.get_tgen_by_name('asterbehaviour').link_task
-    target = self.bld.bldnode.make_node(self.target)
-    tsk = self.create_task('mfront_capy', src=[req] + link_task.outputs, tgt=target)
+    tsk = self.create_task('mfront_capy', src=[req] + link_task.outputs, tgt=self.target)
+    self.process_py(self.target)
 
 class mfront_capy(Task.Task):
     color   = 'PINK'
-    ext_out = ['.capy']
+    ext_out = ['.py']
 
     def run(self):
         """Create a .capy file for the MFront behaviours"""
@@ -282,12 +287,12 @@ class mfront_capy(Task.Task):
 @TaskGen.feature('fake_mfront_mater')
 def fake_mater_capy(self):
     """Create an 'empty' capy when MFront is not available"""
-    target = self.bld.bldnode.make_node(self.target)
-    tsk = self.create_task('fake_mfront_capy', src=[], tgt=target)
+    tsk = self.create_task('fake_mfront_capy', src=[], tgt=self.target)
+    self.process_py(self.target)
 
 class fake_mfront_capy(Task.Task):
     color   = 'PINK'
-    ext_out = ['.capy']
+    ext_out = ['.py']
 
     def run(self):
         """Create a .capy file for the MFront behaviours"""
@@ -326,6 +331,12 @@ capy_header = """#
 #
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 #
+
+from code_aster.Cata.Syntax import *
+from code_aster.Cata.DataStructure import *
+from code_aster.Cata.Commons import *
+
+
 def C_MFRONT_OFFICIAL():
     keywords = {
 """
