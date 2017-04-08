@@ -17,6 +17,7 @@
 # ======================================================================
 #
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 
 

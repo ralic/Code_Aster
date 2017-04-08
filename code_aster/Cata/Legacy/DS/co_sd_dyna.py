@@ -17,6 +17,7 @@
 # ======================================================================
 # person_in_charge: hassan.berro at edf.fr
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 from .co_resultat_sdaster import resultat_sdaster
 

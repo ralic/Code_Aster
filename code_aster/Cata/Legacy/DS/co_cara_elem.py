@@ -18,6 +18,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 
 
@@ -26,7 +27,7 @@ class cara_elem(ASSD):
 
     def toEPX(self):
 
-        # Raideurs 
+        # Raideurs
         ressorts = {}
 
         try:

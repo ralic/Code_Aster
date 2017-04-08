@@ -51,6 +51,7 @@ def VALM_diag2array(dict_VALM, dim, dtype=None):
       valeur[i,i] =  diag[i]
    return valeur
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 
 

@@ -36,6 +36,7 @@ def VALE_triang2array(vect_VALE, dim, dtype=None):
         valeur[i, i] = 0.5 * valeur[i, i]
     return valeur
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 
 

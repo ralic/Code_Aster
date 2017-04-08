@@ -17,6 +17,7 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
+import aster
 from code_aster.Cata.Syntax import ASSD
 
 
