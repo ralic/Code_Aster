@@ -21,6 +21,7 @@ from . import HAVE_ASTERSTUDY
 
 if not HAVE_ASTERSTUDY:
     from .Legacy.Syntax import *
+    from .Legacy.Syntax import _F
 
 else:
     from .Language.Syntax import *
