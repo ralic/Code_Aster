@@ -64,7 +64,7 @@ from .DS.co_vect_asse_gene import vect_asse_gene
 from .DS.co_reel import reel
 
 
-from Accas import GEOM
+from Accas import GEOM, formule, formule_c
 
 # Types géométriques
 class no(GEOM):
