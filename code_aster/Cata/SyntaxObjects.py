@@ -20,8 +20,7 @@
 from . import HAVE_ASTERSTUDY
 
 if not HAVE_ASTERSTUDY:
-    from Accas import OPER, MACRO, PROC
-    Command = OPER, MACRO, PROC
+    from .Legacy.SyntaxObjects import Command
 
 else:
     from .Language.SyntaxObjects import Command

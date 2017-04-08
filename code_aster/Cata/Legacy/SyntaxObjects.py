@@ -17,6 +17,6 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-from Accas import OPER, MACRO, PROC
+from Accas import OPER, MACRO, PROC, FORM
 
-Command = OPER, MACRO, PROC
+Command = OPER, MACRO, PROC, FORM
