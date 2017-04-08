@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -26,8 +26,9 @@ from Tkinter import Checkbutton, Listbox
 
 import tkFont
 
-from Accas import _F
-from Cata.cata import OBSERVATION, DETRUIRE, CO, IMPR_RESU
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Syntax import CO
+from code_aster.Cata.Commands import OBSERVATION, DETRUIRE, IMPR_RESU
 from Calc_essai.cata_ce import Resultat, ModeMeca, InterSpectre, CreaTable
 from Calc_essai.cata_ce import nume_ddl_phy, nume_ddl_gene, CreaTable
 from Calc_essai.ce_calcul_identification import CalcEssaiIdentification

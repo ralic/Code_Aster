@@ -25,7 +25,7 @@ import traceback
 from datetime import datetime
 from math import pi, ceil, exp, sqrt, log
 import numpy as NP
-from Accas import _F
+from code_aster.Cata.Syntax import _F
 from Utilitai.Utmess import UTMESS
 from Cata_Utils.t_fonction import t_fonction
 from Utilitai.Table import Table

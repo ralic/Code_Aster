@@ -364,7 +364,7 @@ def PostForme(l_f, meth):
 def post_mac3coeur_ops(self, **args):
     """Corps principal de la macro de post-traitement de MAC3COEUR"""
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
     from math import sqrt
 

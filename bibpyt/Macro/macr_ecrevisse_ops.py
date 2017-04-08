@@ -54,7 +54,7 @@ def macr_ecrevisse_ops(self, reuse,
     """
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     from Utilitai.Table import Table, merge
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster_core
     import os
     import aster

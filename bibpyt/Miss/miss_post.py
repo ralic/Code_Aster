@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,14 +32,13 @@ import os.path as osp
 
 from math import pi
 
-from Accas import _F
-
 import numpy as NP
 from numpy.fft import ifft, fft
 
 import aster
-from Cata.cata import (
-    _F, DETRUIRE, DEFI_FICHIER,
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Commands import (
+    DETRUIRE, DEFI_FICHIER,
     NUME_DDL_GENE, PROJ_VECT_BASE, PROJ_MATR_BASE, COMB_MATR_ASSE,
     LIRE_IMPE_MISS, LIRE_FORC_MISS,
     DYNA_VIBRA, REST_SPEC_TEMP,
@@ -184,7 +183,7 @@ class PostMiss(object):
 
     def set_fft_accelero(self):
         """Calcul des FFT des accélérogrammes si fonctions temporelles."""
-        
+
         if self.param['INST_FIN'] is not None:
             if self.acce_x:
                 _xff = CALC_FONCTION(FFT=_F(FONCTION=self.acce_x, METHODE=self.methode_fft,),)
@@ -1032,7 +1031,7 @@ class PostMissFichierTemps(PostMissFichier):
         for n in range(0, self.L_points):
             # Symmetric impedance
             Z_temps[:,:, n] = (Z_temps[:,:, n] + Z_temps[:,:, n].transpose())/2.
-        
+
         ibin = 1
         if self.param['TYPE_FICHIER_TEMPS']=='ASCII':
            ibin = 0

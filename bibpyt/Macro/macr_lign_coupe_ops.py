@@ -29,7 +29,7 @@ import os
 def crea_grp_matiere(self, groupe, newgrp, iocc, m, __remodr, NOM_CHAM, LIGN_COUPE, __macou):
 
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Noyau.N_utils import AsType
     from Utilitai.Utmess import UTMESS
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
@@ -126,7 +126,7 @@ def crea_resu_local(self, dime, NOM_CHAM, m, resin, mail, nomgrma):
     from Utilitai.Utmess import UTMESS
     from math import pi, sqrt, atan2, asin
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     MODI_REPERE = self.get_cmd('MODI_REPERE')
 
     epsi = 0.00000001
@@ -667,7 +667,7 @@ def macr_lign_coupe_ops(self, RESULTAT, CHAM_GD, UNITE_MAILLAGE, LIGN_COUPE,
     """
        Ecriture de la macro MACR_LIGN_COUPE
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Noyau.N_utils import AsType
     import aster
     import math

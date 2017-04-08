@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -32,7 +32,7 @@ def impr_fonction_ops(self, FORMAT, COURBE, INFO, **args):
     macro = 'IMPR_FONCTION'
     import pprint
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Cata.cata import nappe_sdaster, fonction_c, formule, formule_c
     from Utilitai import Graph
     from Utilitai.Utmess import UTMESS

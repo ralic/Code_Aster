@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -137,7 +137,7 @@ def expand_values(self, tabout, liste_noeu_a_extr, titre, type_para):
 # Lorsqu'il n'y a pas suffisament de noeud pour le calcul des KJ, on extrapole
 # attention cela n'est valable que pour une seule fissure a la fois
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table
 
     CREA_TABLE = self.get_cmd('CREA_TABLE')
@@ -384,7 +384,7 @@ def get_coor_libre(self, Lnoff, RESULTAT, ndim):
     """ retourne les coordonnees des noeuds de FOND_FISS en dictionnaire"""
 
     import numpy as NP
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import string as S
 
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
@@ -471,7 +471,7 @@ def get_tab_dep(self, Lnocal, Nnocal, d_coorf, dicVDIR, RESULTAT, MODEL,
     """ retourne les tables des deplacements sup et inf pour les noeuds perpendiculaires pour
     tous les points du fond de fissure"""
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     MACR_LIGN_COUPE = self.get_cmd('MACR_LIGN_COUPE')
@@ -535,7 +535,7 @@ def get_coor_regle(self, RESULTAT, ndim, Lnoff, Lnocal, dicoS, syme_char, dicoI)
     import numpy as NP
     import string as S
     import copy
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
 
     POST_RELEVE_T = self.get_cmd('POST_RELEVE_T')
 
@@ -702,7 +702,7 @@ def verif_resxfem(self, RESULTAT):
 
 def get_resxfem(self, xcont, RESULTAT, MODELISATION, MODEL):
     """ retourne le resultat """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
 
     AFFE_MODELE = self.get_cmd('AFFE_MODELE')
@@ -830,7 +830,7 @@ def get_direction_xfem(Nnoff, Vpropa, Coorfo, ndim):
 
 def get_sauts_xfem(self, Nnoff, Coorfo, VDIR, hmax, NB_NOEUD_COUPE, dmax, __RESX):
     """retourne la table des sauts"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     MACR_LIGN_COUPE = self.get_cmd('MACR_LIGN_COUPE')
@@ -857,7 +857,7 @@ def get_sauts_xfem(self, Nnoff, Coorfo, VDIR, hmax, NB_NOEUD_COUPE, dmax, __RESX
 
 def affiche_xfem(self, INFO, Nnoff, VNOR, VDIR):
     """affiche des infos"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
 
     CREA_TABLE = self.get_cmd('CREA_TABLE')
@@ -1109,7 +1109,7 @@ def get_tab_inst(lev, inst, FISSURE, syme_char, PRECISION, CRITERE, tabsup, tabi
 
 def get_propmat_varc_fem(self, RESULTAT, MAILLAGE, MATER, MODELISATION, Lnofon, ino, inst, para_fonc):
     """cas fem : retourne les proprietes materiaux en fonction de la variable de commande au noeud ino à l'instant demandé"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import numpy as NP
     from math import pi
@@ -1197,7 +1197,7 @@ def get_propmat_varc_xfem(self, args, RESULTAT, MAILLAGE, MATER, MODELISATION, F
     """cas xfem : retourne les proprietes materiaux en fonction de la variable de commande au point ipt à l'instant demandé"""
 
     from Utilitai.Utmess import UTMESS
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
     from math import pi
     from Internal.post_k_varc import POST_K_VARC
@@ -1465,7 +1465,7 @@ def get_pgl(syme_char, FISSURE, ino, VDIR, VNOR, dicVDIR, dicVNOR, Lnofon, ndim)
 def get_saut(self, pgl, ds, di, INFO, FISSURE, syme_char, abscs, ndim):
     """retourne le saut de déplacements dans le nouveau repère"""
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import numpy as NP
     from Utilitai.Utmess import UTMESS
@@ -1530,7 +1530,7 @@ def get_kgsig(saut, nbval, coefd, coefd3):
 
 def get_meth1(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
     """retourne kg1"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import numpy as NP
 
@@ -1568,7 +1568,7 @@ def get_meth1(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
 
 def get_meth2(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
     """retourne kg2"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import numpy as NP
 
@@ -1602,7 +1602,7 @@ def get_meth2(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
 
 def get_meth3(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
     """retourne kg3"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import numpy as NP
 
@@ -1640,7 +1640,7 @@ def get_meth3(self, abscs, coefg, coefg3, kgsig, isig, saut2, INFO, ndim):
 def get_erreur(self, ndim, __tabi, type_para):
     """retourne l'erreur selon les méthodes.
     En FEM/X-FEM, on ne retient que le K_MAX de la méthode 1."""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     import string
     import numpy as NP
@@ -1770,7 +1770,7 @@ def get_tabout(
     self, kg, args, TITRE, FOND_FISS, MODELISATION, FISSURE, ndim, ino, inst, iord,
         Lnofon, dicoF, absfon, Nnoff, tabout, type_para, nume):
     """retourne la table de sortie"""
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.utils import get_titre_concept
     import numpy as NP
 
@@ -1878,7 +1878,7 @@ def post_k1_k2_k3_ops(self, FOND_FISS, FISSURE, RESULTAT,
     import numpy as NP
     from math import pi
     from types import ListType, TupleType
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table, merge
     from SD.sd_mater import sd_compor1
     from Cata.cata import mode_meca

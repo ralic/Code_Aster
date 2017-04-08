@@ -1,5 +1,5 @@
 # coding=utf-8
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,10 +19,8 @@
 import types
 
 import aster
-from Cata.cata import _F
-from Cata.cata import DEFI_FICHIER
-from Cata.cata import INFO_EXEC_ASTER
-from Cata.cata import DETRUIRE
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Commands import DEFI_FICHIER, INFO_EXEC_ASTER, DETRUIRE
 
 
 class UniteAster:

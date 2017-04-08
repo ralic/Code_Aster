@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,7 +29,7 @@ import tkFont
 
 from Stanley.xmgrace import Xmgr
 from Stanley.as_courbes import Courbe
-from Accas import _F, ASSD
+from code_aster.Cata.Syntax import _F, ASSD
 
 from numpy import minimum, maximum, array, arange, log
 from Utilitai.Utmess import UTMESS, MESSAGE_LOGGER
@@ -575,7 +575,7 @@ class ParamModelCouple(Frame):
         self.precision.set(0.0)
         self.iter.set(20)
         self.para_ortho.set(0.717)
-        
+
         Label(self, text="Critère de recherche des modes").grid(row=1, column=0)
         #
         self.opt_option = StringVar()
@@ -585,7 +585,7 @@ class ParamModelCouple(Frame):
         self.opt_nmax_freq.set(10)
         self.opt_freq1 = DoubleVar()  # CENTRE, BANDE, SEPARE, AJUSTE
         self.opt_freq2 = DoubleVar()  # BANDE
-        
+
         self.frequences = []
         self.nmax_freq = IntVar()
         self.nmax_freq.set(0)
@@ -617,7 +617,7 @@ class ParamModelCouple(Frame):
         self.opt_panel = None
         self.sorensen = None
         self.select_option()
-        
+
         # Post traitement
         self.opt_seuil_freq = DoubleVar()
         self.opt_seuil_freq.set(1e-4)
@@ -715,7 +715,7 @@ class ParamModelCouple(Frame):
 
     def get_calc_freq(self):
         opt = self.opt_option.get()
-        
+
         if opt == "N plus petites frequences":
             mc = _F(OPTION="PLUS_PETITE")
             mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
@@ -767,7 +767,7 @@ class ParamModeLMME(Frame):
         self.precision.set(0.0)
         self.iter.set(20)
         self.para_ortho.set(0.717)
-        
+
         Label(self, text="Critère de recherche des modes").grid(row=1, column=0)
         #
         self.opt_option = StringVar()
@@ -795,7 +795,7 @@ class ParamModeLMME(Frame):
         self.opt_param.set("Parametres simples")
         self.sorensen = None
         self.select_param()
-        
+
         # Post traitement
         self.opt_seuil_freq = DoubleVar()
         self.opt_seuil_freq.set(1e-4)
@@ -808,7 +808,7 @@ class ParamModeLMME(Frame):
         opt = self.opt_option.get()
         if self.opt_panel:
             self.opt_panel.destroy()
-        
+
         if opt == "autour d'une frequence cible":
             panel = OptionFrame(self, None, [
                 (u"Fréquence cible", Entry, {'textvariable': self.opt_freq1}),
@@ -847,7 +847,7 @@ class ParamModeLMME(Frame):
 
     def get_calc_freq(self):
         opt = self.opt_option.get()
-        
+
         if opt == "N plus petites frequences":
             mc = _F(OPTION="PLUS_PETITE")
             mc['SEUIL_FREQ'] = self.opt_seuil_freq.get()
@@ -1550,7 +1550,7 @@ class DispFRFDialogue(Toplevel):
     def prep_calc(self, num_resu, resu, param):
         """ Calcul des FRF associees a une base de mode et une excitation "marteau".
             Pour les calculs de modification structurale (sumail != None), calcul du depl interne"""
-        from Cata.cata import DEPL_INTERNE
+        from code_aster.Cata.Commands import DEPL_INTERNE
         mdo = self.ce_objects
         if isinstance(self.modes_couple, ModeMeca):
             nom = self.modes_couple
@@ -1623,7 +1623,7 @@ class DispFRFDialogue(Toplevel):
 
     def choix_ddl(self, num_resu):
         # la liste des ddls dispos pour le champ selectionne
-        from Cata.cata import CREA_CHAMP, DETRUIRE
+        from code_aster.Cata.Commands import CREA_CHAMP, DETRUIRE
         ddls = []
         self.champ_choisi[num_resu] = self.param_disp[num_resu]['champ'].get()
         try:
@@ -1662,7 +1662,7 @@ class DispFRFDialogue(Toplevel):
         # TODO :  rendre possible un calcul sur base modale, en fabriquant les
         # matrices de mass et de raideur generalisees a partir des donnees
         # mesurees
-        from Cata.cata import DYNA_VIBRA, AFFE_CHAR_MECA, DEFI_FONCTION
+        from code_aster.Cata.Commands import DYNA_VIBRA, AFFE_CHAR_MECA, DEFI_FONCTION
 
         f_min = string.atof(param['freq_min'].get())
         f_max = string.atof(param['freq_max'].get())
@@ -1708,7 +1708,7 @@ class DispFRFDialogue(Toplevel):
         self.affich_FRF(1)
 
     def affich_FRF(self):
-        from Cata.cata import RECU_FONCTION
+        from code_aster.Cata.Commands import RECU_FONCTION
         if self.sumail:
             dynas = [self.dyna[0], self.dyna[2]]
         else:
@@ -1851,7 +1851,8 @@ class ObservationWindow(Frame):
 
     def _calculate_observabilite(self):
 
-        from Cata.cata import CO, OBSERVATION, DETRUIRE
+        from code_aster.Cata.Syntax import CO
+        from code_aster.Cata.Commands import OBSERVATION, DETRUIRE
 
         if self.obs_co:
             DETRUIRE(CONCEPT=_F(NOM=self.obs_co.obj), INFO=1)

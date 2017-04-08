@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -25,14 +25,15 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
     from math import pi, ceil, sqrt, floor, log, tanh
     import aster_core
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table
     from Utilitai.Utmess import  UTMESS
-    from Utilitai.signal_correlation_utils import (CALC_COHE, 
+    from Utilitai.signal_correlation_utils import (CALC_COHE,
                               get_group_nom_coord, calc_dist2)
-    from Cata.cata import (
-     _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, CREA_CHAMP, COMB_MATR_ASSE,
-     DYNA_VIBRA
+    from code_aster.Cata.Syntax import _F
+    from code_aster.Cata.Commands import (
+        DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, CREA_CHAMP,
+        COMB_MATR_ASSE, DYNA_VIBRA
     )
     #--------------------------------------------------------------------------------
     NB_FREQ = 1+int((fmax-fini)/PAS)
@@ -174,7 +175,7 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
                                 UNITE_RESU_FORC = UNITE_RESU_FORC,
                                 ISSF=ISSF,
                                 FREQ_EXTR=freqk,);
-                                
+
 
       # -------------- impedance--------------------------------
       MIMPE=__impe.EXTR_MATR_GENE()
@@ -186,24 +187,23 @@ def force_iss_vari(self,imod,MATR_GENE,NOM_CMP,ISSF,INFO,UNITE_RESU_FORC,
       FS0 = FSISM[nbmodd:nbmodt][:]    #  extraction de la partie modes interface
       U0 = NP.dot(linalg.inv(KRS), FS0)
       # projection pour obtenir UO en base physique
-      XI = NP.dot(PHI, U0)   
+      XI = NP.dot(PHI, U0)
       XPI = XI
 #      # facteur de correction pour tous les modes (on somme) >> c'est faux
       SI0 = 0.0
       for k1 in range(0, nbme):
-          XOe = abs(NP.sum(PVEC[k1])) / nbno 
-          SI0 = SI0 + XOe**2   
+          XOe = abs(NP.sum(PVEC[k1])) / nbno
+          SI0 = SI0 + XOe**2
       SI = sqrt(SI0)
       for idd in range(0,nddi):#nddi: nombre de ddl interface
           if NCMP2[idd][0:2] == NOM_CMP:
               XPI[idd] = SI * XI[idd]
       # retour en base modale
-      QPI = NP.dot(PHIT, XPI)    
-      U0 = NP.dot(linalg.inv(PPHI), QPI)            
+      QPI = NP.dot(PHIT, XPI)
+      U0 = NP.dot(linalg.inv(PPHI), QPI)
       FS = NP.dot(KRS, U0)
       FSISM[nbmodd:nbmodt][:] =FS
       FSIST[k,nbmods:nbmodt] = FSISM[0:nbmodd][:]
       FSIST[k,0:nbmods] = FS
 
     return FSIST
-

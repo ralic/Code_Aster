@@ -23,8 +23,10 @@ import copy
 import numpy as NP
 
 try:
-    from Cata.cata import *
-    from Accas import _F
+    from code_aster.Cata.Commands import (COPIER, CREA_MAILLAGE, DEFI_FICHIER,
+                                          DEFI_GROUP, DETRUIRE, LIRE_MAILLAGE,
+                                          PRE_GMSH)
+    from code_aster.Cata.Syntax import _F
 except:
     print 'Fonctionnalites Aster indisponibles'
 
@@ -1282,7 +1284,7 @@ class Mesh:
             l_mcf.append(_F(GROUP_MA=self.physicals[gma], NOM=gma))
 
         _SMESH02 = COPIER (CONCEPT=MA)
-        
+
         DEFI_GROUP(reuse=_SMESH02,
                    MAILLAGE=_SMESH02,
                    CREA_GROUP_MA=tuple(l_mcf),

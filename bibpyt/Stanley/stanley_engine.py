@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,8 @@ import cPickle
 import time
 import socket
 import tempfile
+import types
+from types import *
 
 # import Tix as Tk
 import Tkinter as Tk
@@ -72,12 +74,13 @@ from Utilitai import sup_gmsh
 from Utilitai.Utmess import UTMESS
 from graphiqueTk import *
 import ihm_parametres
-# XXX c'est peut-être une commodité mais ça rend le code incompréhensible !
-from Cata.cata import *
-from Accas import _F
-from types import *
+
+from code_aster.Cata.Commands import (AFFE_MODELE, COPIER, CREA_MAILLAGE,
+    CREA_RESU, DEFI_FICHIER, DETRUIRE, IMPR_FONCTION, IMPR_RESU,
+    INFO_EXEC_ASTER, POST_RELEVE_T, PRE_STANLEY, PROJ_CHAMP, STANLEY)
+from code_aster.Cata.Syntax import _F
+
 from Macro.test_fichier_ops import test_file
-import types
 
 import salomeVisu
 __salome__ = True

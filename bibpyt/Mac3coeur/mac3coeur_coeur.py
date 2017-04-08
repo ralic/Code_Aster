@@ -151,7 +151,7 @@ class Coeur(object):
 
     def mcf_deform_impo(self):
         """Retourne les mots-clés facteurs pour AFFE_CHAR_CINE/MECA_IMPO."""
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         mcf = []
         for ac in self.collAC.values():
             mcf.extend(ac.mcf_deform_impo())
@@ -344,7 +344,7 @@ class Coeur(object):
         return _F_TRAN1
 
     def definition_cara_coeur(self, MODELE, _GFF):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         AFFE_CARA_ELEM = self.macro.get_cmd('AFFE_CARA_ELEM')
 
         mcm = self.mcf_cara_multifibre()
@@ -370,7 +370,7 @@ class Coeur(object):
         return _CARA
 
     def definition_pesanteur(self, MODELE):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         AFFE_CHAR_MECA = self.macro.get_cmd('AFFE_CHAR_MECA')
 
         _PESA = AFFE_CHAR_MECA(MODELE=MODELE,
@@ -390,7 +390,7 @@ class Coeur(object):
         et traduisant la fermeture de la cuve"""
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
 
@@ -429,7 +429,7 @@ class Coeur(object):
         """Retourne le chargement d'effort de maintien considéré constant"""
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')
 
@@ -465,7 +465,7 @@ class Coeur(object):
         return _F_EMBO
 
     def affectation_maillage(self, MA0):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
         DEFI_GROUP = self.macro.get_cmd('DEFI_GROUP')
 
@@ -533,7 +533,7 @@ class Coeur(object):
 
     def recuperation_donnees_geom(self, MAILL):
         """recuperation de donnees géometrique a partir du maillage"""
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         CREA_MAILLAGE = self.macro.get_cmd('CREA_MAILLAGE')
         RECU_TABLE = self.macro.get_cmd('RECU_TABLE')
         DETRUIRE = self.macro.get_cmd('DETRUIRE')
@@ -599,7 +599,7 @@ class Coeur(object):
         return
 
     def cl_rigidite_grille(self):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
 
         mcf = []
         for ac in self.collAC.values():
@@ -609,7 +609,7 @@ class Coeur(object):
         return mcf
 
     def affectation_modele(self, MAILLAGE):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         AFFE_MODELE = self.macro.get_cmd('AFFE_MODELE')
         _MODELE = AFFE_MODELE(MAILLAGE=MAILLAGE,
                               AFFE=(_F(GROUP_MA='CRAYON',
@@ -641,7 +641,7 @@ class Coeur(object):
 
     def definition_time(self, fluence, subdivis, nbSubdEchec=10):
         """Return the list of timesteps"""
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_LIST_REEL = self.macro.get_cmd('DEFI_LIST_REEL')
         DEFI_LIST_INST = self.macro.get_cmd('DEFI_LIST_INST')
 
@@ -699,7 +699,7 @@ class Coeur(object):
         """Return the time evolution of the field of fluence"""
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         CREA_CHAMP = self.macro.get_cmd('CREA_CHAMP')
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         DEFI_NAPPE = self.macro.get_cmd('DEFI_NAPPE')
@@ -840,7 +840,7 @@ class Coeur(object):
         """Return the time evolution of the field of temperature"""
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         CREA_CHAMP = self.macro.get_cmd('CREA_CHAMP')
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         CREA_RESU = self.macro.get_cmd('CREA_RESU')
@@ -970,7 +970,7 @@ class Coeur(object):
         return _CHTH_1
 
     def definition_materiau(self, MAILLAGE, GFF, FLUENCE, CHTH, CONTACT='NON',RATIO=1.):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_COMPOR = self.macro.get_cmd('DEFI_COMPOR')
         DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
         AFFE_MATERIAU = self.macro.get_cmd('AFFE_MATERIAU')
@@ -1002,7 +1002,7 @@ class Coeur(object):
         return _A_MAT
 
     def mcf_compor_fibre(self, GFF):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_COMPOR = self.macro.get_cmd('DEFI_COMPOR')
         mcf = []
         for ac in self.collAC.values():
@@ -1028,7 +1028,7 @@ class Coeur(object):
         return mcf
 
     def mcf_coeur_mater(self, _M_RES, _M_BCR):
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_MATERIAU = self.macro.get_cmd('DEFI_MATERIAU')
         # Definition d'un materiau bidon pour les elements de poutres
         _MAT_BID = DEFI_MATERIAU(
@@ -1066,7 +1066,7 @@ class Coeur(object):
         # XXX trop long pour être lisible, création des formules fragile
         assert self.temps_simu[
             'T0'] is not None, '`definition_time` must be called first!'
-        from Accas import _F
+        from code_aster.Cata.Syntax import _F
         DEFI_FONCTION = self.macro.get_cmd('DEFI_FONCTION')
         FORMULE = self.macro.get_cmd('FORMULE')
         AFFE_CHAR_MECA_F = self.macro.get_cmd('AFFE_CHAR_MECA_F')

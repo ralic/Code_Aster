@@ -46,7 +46,7 @@ def RENOMME(self, i, N_pas, label_cal, ch_param, __RES, __RSI):
     """On renomme les composantes en fonction de  l'ordre de discrétisation.
     On modifie les tables de la listes __RSI.
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     DETRUIRE = self.get_cmd('DETRUIRE')
     CALC_TABLE = self.get_cmd('CALC_TABLE')
     N = N_pas[i]
@@ -92,7 +92,7 @@ def ERREUR(X, Xref, prec_zero, coef):
 
 
 def TEST_ECART(self, ch_param2, label_cal, N_pas, Ncal, ch_param, __RSI, prec_ecart, prec_zero):
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     DETRUIRE = self.get_cmd('DETRUIRE')
     FORMULE = self.get_cmd('FORMULE')
     CALC_TABLE = self.get_cmd('CALC_TABLE')
@@ -155,7 +155,7 @@ def CHAR3D(self, POISSON, YOUNG, _tempsar, INFO):
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     DEFI_LIST_REEL = self.get_cmd('DEFI_LIST_REEL')
     IMPR_FONCTION = self.get_cmd('IMPR_FONCTION')
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     #
@@ -296,7 +296,7 @@ def CHAR2D(self, POISSON, YOUNG, _tempsar, INFO):
     #
     # definition du trajet de chargement 2D
     #
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     # fonctions chargement
@@ -388,7 +388,7 @@ def test_compor_ops(
         **args):
  # seule l'option "THER", c'est à dire le test thermomecanique est programmé à ce jour
  # ajouter l'option MECA (tests comp001,002), l'option HYDR, etc..
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
     from Contrib.veri_matr_tang import VERI_MATR_TANG
     from Utilitai.Utmess import MasquerAlarme, RetablirAlarme

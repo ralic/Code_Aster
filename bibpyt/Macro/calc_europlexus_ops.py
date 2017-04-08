@@ -38,7 +38,7 @@ import shutil
 # Protection pour Eficas
 try:
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.partition import MAIL_PY
     from Utilitai.Utmess import UTMESS
     from Calc_epx.calc_epx_utils import tolist

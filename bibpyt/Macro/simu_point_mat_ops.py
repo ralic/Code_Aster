@@ -48,7 +48,7 @@ def simu_point_mat_ops(
     IMPR_RESU = self.get_cmd('IMPR_RESU')
     from Contrib.calc_point_mat import CALC_POINT_MAT
     
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     from Noyau.N_types import is_sequence

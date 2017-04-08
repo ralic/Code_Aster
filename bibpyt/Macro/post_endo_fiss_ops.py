@@ -33,7 +33,7 @@ def cherche_trajet(self, NOM_CMP, NOM_CHAM, dRECHERCHE, __ENDO, __mail, typeCham
 
     from math import radians
     from Utilitai.Utmess import UTMESS
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Macro.macr_lign_coupe_ops import crea_mail_lig_coup
 
@@ -484,7 +484,7 @@ def calcul_ouverture(self, NOM_CHAM, NOM_CMP, dRECHERCHE, __RESUIN, __mail, info
     import numpy as NP
     import aster
     from Utilitai.Utmess import UTMESS
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from post_endo_fiss_utils import versDirMoy, findExtr, crackOpeningStrong, crea_sd_mail
     from Macro.macr_lign_coupe_ops import crea_mail_lig_coup
 
@@ -713,7 +713,7 @@ def post_endo_fiss_ops(self,
 
     import aster
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
 
     # --------------------------------------------------
     # DEVELOPER OPTIONS

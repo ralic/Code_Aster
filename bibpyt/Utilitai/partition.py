@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -27,7 +27,7 @@ import UserList
 import types
 import numpy as NP
 
-from Accas import _F
+from code_aster.Cata.Syntax import _F
 from Noyau.N_utils import AsType
 
 # ============================================================================ #
@@ -294,7 +294,7 @@ class MAIL_PY:
             LIRE_MAILLAGE = self.jdc.get_cmd('LIRE_MAILLAGE')
         except:
             try:
-                from Cata.cata import LIRE_MAILLAGE
+                from code_aster.Cata.Commands import LIRE_MAILLAGE
             except:
                 print "Il faut lancer ce programme depuis Aster pour pouvoir générer un maillage Aster."
                 sys.exit()
@@ -1342,7 +1342,7 @@ class PARTITION:
             DEFI_GROUP = self.jdc.get_cmd('DEFI_GROUP')
         except:
             try:
-                from Cata.cata import DEFI_GROUP
+                from code_aster.Cata.Commands import DEFI_GROUP
             except:
                 print "\n\nERREUR : il faut lancer ce programme depuis Aster pour pouvoir \ngénérer les groupes de mailles Aster.\n\n"
                 return

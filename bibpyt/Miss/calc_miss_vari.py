@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -23,8 +23,9 @@ import numpy as NP
 from math import pi, sqrt
 import os
 from Utilitai.Utmess import  UTMESS
-from Cata.cata import ( _F, DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS, 
-                        CREA_CHAMP, COMB_MATR_ASSE, DYNA_VIBRA)
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Commands import (DETRUIRE, LIRE_IMPE_MISS, LIRE_FORC_MISS,
+                                      CREA_CHAMP, COMB_MATR_ASSE, DYNA_VIBRA)
 
 def calc_miss_vari(self):
     """Compute SSI analysis with spatial variability"""
@@ -45,17 +46,17 @@ def calc_miss_vari(self):
     for k in range(NB_FREQ):
         freqk = self.FREQ_INIT + self.FREQ_PAS * k
         if self.INFO == 2:
-            aster.affiche('MESSAGE', 'FREQUENCE DE CALCUL: ' + str(freqk)) 
-        # COHERENCE  
+            aster.affiche('MESSAGE', 'FREQUENCE DE CALCUL: ' + str(freqk))
+        # COHERENCE
         COHE = CALC_COHE(freqk*2.*pi, **self.cohe_params)
-        # EIGENVALUE DECOMP 
+        # EIGENVALUE DECOMP
         PVEC[k], nbm[k] = compute_POD(COHE, self.calc_params['PRECISION'], self.INFO)
 
 # RECUPERATION DES MODES MECA (STATIQUES)
-    nbmodd = self.mat_gene_params['NBMODD']        
+    nbmodd = self.mat_gene_params['NBMODD']
     nbmods = self.mat_gene_params['NBMODS']
     GROUP_NO_INTER =  self.interf_params['GROUP_NO_INTERF']
-    
+
 # BOUCLE SUR LES DIRECTIONS
     for i_cmp, nom_cmp in enumerate(list_NOM_CMP):
         dict_modes = compute_mecmode(nom_cmp, GROUP_NO_INTER,
@@ -66,7 +67,7 @@ def calc_miss_vari(self):
     # BOUCLE SUR LES FREQUENCES
         for k in range(NB_FREQ):
             dict_modes['nbpod'] = nbm[k]
-          # CALCUL ISS VARI    
+          # CALCUL ISS VARI
             if self.interf_params['MODE_INTERF'] != 'QUELCONQUE' :
                 RESU[i_cmp] = self.compute_freqk( k, RESU[i_cmp], PVEC[k], dict_modes)
             else:  #MODE_INTERF =='QUELCONQUE'
@@ -84,7 +85,7 @@ def compute_POD(COHE, PRECISION, INFO):
       """compute POD"""
      # EIGENVALUE DECOMP
        #nbno = self.interf_params['NBNO']
-     # On desactive temporairement les FPE 
+     # On desactive temporairement les FPE
       aster_core.matfpe(-1)
       eig, vec = linalg.eig(COHE)
       vec = NP.transpose(vec)   # les vecteurs sont en colonne dans numpy
@@ -112,11 +113,11 @@ def compute_POD(COHE, PRECISION, INFO):
             break
       if INFO == 2:
          aster.affiche('MESSAGE','NOMBRE DE MODES POD RETENUS : ' + str(nbme))
-         aster.affiche('MESSAGE','PRECISION (ENERGIE RETENUE) : ' + str(prec))     
+         aster.affiche('MESSAGE','PRECISION (ENERGIE RETENUE) : ' + str(prec))
       PVEC = NP.zeros((nbme, nbno))
       for k1 in range(nbme):
          PVEC[k1, 0:nbno] = NP.sqrt(eig[k1]) * vec[k1]
-      return PVEC, nbme  
+      return PVEC, nbme
 
 #---------------------------------------------------------------------
 # RECUPERATION DES MODES MECA (STATIQUES)
@@ -134,8 +135,8 @@ def compute_mecmode(NOM_CMP, GROUP_NO_INTER, resultat, nbmods, nbmodd):
              NUME_ORDRE = nmo,
              RESULTAT = resultat,
              NOM_CHAM = 'DEPL');
-        MCMP = __CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs 
-        #on recupere la composante COMP (dx,dy,dz) des modes  
+        MCMP = __CHAM.EXTR_COMP(NOM_CMP,[GROUP_NO_INTER]).valeurs
+        #on recupere la composante COMP (dx,dy,dz) des modes
         MCMP2 = __CHAM.EXTR_COMP(' ',[GROUP_NO_INTER],0).valeurs
         if mods == 0:
             NCMP2 =__CHAM.EXTR_COMP(' ',[GROUP_NO_INTER], topo=1).comp
@@ -159,7 +160,7 @@ def compute_mecmode(NOM_CMP, GROUP_NO_INTER, resultat, nbmods, nbmodd):
 #---------------------------------------------------------------------
 def compute_force_vari(self, dict_modes, VEC, *KRS ):
     """compute seismic force with variability"""
-    # CALCUL DE XO PAR PROJECTION------------- 
+    # CALCUL DE XO PAR PROJECTION-------------
     #  CAS 1: MODES DE CORPS RIGIDE
     if self.interf_params['MODE_INTERF'] == 'CORP_RIGI':
         XO = NP.zeros(dict_modes['nbmods'])
@@ -175,7 +176,7 @@ def compute_force_vari(self, dict_modes, VEC, *KRS ):
                      fact = 1. / som
                      XO[mods] = fact * abs(NP.inner(MCMP,VEC))
             #modes de rotation
-            else:  
+            else:
                 if maxm < 10.E-6:
                     if som < 10.E-6:
                         XO[mods] = 0.0
@@ -222,15 +223,15 @@ def compute_corr_vari(dict_modes, VEC, KRS, FS0):
             if NCMP2[idd][0:2] == dict_modes['NOM_CMP']:
               XPI[idd] = SI * XI[idd]
         QPI = NP.dot(PHIT, XPI)
-        U0 = NP.dot(linalg.inv(PPHI), QPI)       
+        U0 = NP.dot(linalg.inv(PPHI), QPI)
         FS = NP.dot(KRS, U0)
         return FS
 
 
 def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
     """ compute response for freqk - quelconque (trans and spec case)"""
-    nbmodt = self.mat_gene_params['NBMODT']   
-    nbmodd = self.mat_gene_params['NBMODD']   
+    nbmodt = self.mat_gene_params['NBMODT']
+    nbmodd = self.mat_gene_params['NBMODD']
     freqk = self.FREQ_INIT + self.FREQ_PAS * k
     __impe = LIRE_IMPE_MISS(
                      BASE = self.mat_gene_params['BASE'],
@@ -252,15 +253,15 @@ def compute_freqk_quelconque(self, k, RESU, VEC, dict_modes):
                       _F(MATR_ASSE = self.mat_gene_params['MATR_RIGI'],
                             COEF_C = 1.0 + 0.j,),),
                       SANS_CMP = 'LAGR', )
-  
+
     MIMPE = __impe.EXTR_MATR_GENE()
     #  extraction de la partie modes interface
-    KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt] 
-    FSISM = __fosi.EXTR_VECT_GENE_C()  
-    FS0 = FSISM[nbmodd:nbmodt][:] 
+    KRS = MIMPE[nbmodd:nbmodt, nbmodd:nbmodt]
+    FSISM = __fosi.EXTR_VECT_GENE_C()
+    FS0 = FSISM[nbmodd:nbmodt][:]
     FS = compute_corr_vari(dict_modes, VEC, KRS, FS0)
     FSISM[nbmodd:nbmodt][:] = FS
-    __fosi.RECU_VECT_GENE_C(FSISM)      
+    __fosi.RECU_VECT_GENE_C(FSISM)
     if self.mat_gene_params['MATR_AMOR'] is not None :
         __dyge = DYNA_VIBRA(
                  TYPE_CALCUL = 'HARM', BASE_CALCUL = 'GENE',

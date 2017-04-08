@@ -139,7 +139,7 @@ def lire_resu_thyc(coeur, MODELE, nom_fic):
     différents résultats
     """
     from Cata.cata import DEFI_FONCTION, AFFE_CHAR_MECA, AFFE_CHAR_MECA_F
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     # Fonction multiplicative de la force hydrodynamique axiale.
     # On multiplie par 0.722 les forces hydrodynamiques a froid pour obtenir
     # celles a chaud.

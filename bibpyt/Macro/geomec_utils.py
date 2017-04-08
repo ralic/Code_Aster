@@ -826,7 +826,7 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich, Leg_x, Leg_y, Ech_x, Ech_
     Tracer une liste de courbes dans une liste de fichiers
     """
 #  import os
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
 
     DEFI_FICHIER = self.get_cmd('DEFI_FICHIER')
     IMPR_FONCTION = self.get_cmd('IMPR_FONCTION')
@@ -906,7 +906,7 @@ def impr_graphique(self, DicoEssai, Courbes, NomsFich, Leg_x, Leg_y, Ech_x, Ech_
 def remplir_tables(self, typ_essai, str_n_essai, DicoEssai, Resu_in):
     """
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     if DicoEssai.has_key('TABLE_RESU'):
 
         CREA_TABLE = self.get_cmd('CREA_TABLE')
@@ -1282,7 +1282,7 @@ def Calc_Gs_max(self, GAMMA_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVERG
     Pour l'essai CISA_C : calcul du module de cisaillement secant max
     (EPSI_ELAS doit etre telle qu'on reste bien dans le domaine elastique)
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
     DEFI_LIST_INST = self.get_cmd('DEFI_LIST_INST')
@@ -1352,7 +1352,7 @@ def Calc_Es_max_TA(self, EPSI_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONVE
     Pour l'essai TD_A  : calcul du module de Young cyclique équivalent max
     (EPSI_ELAS doit etre telle qu'on reste bien dans le domaine elastique)
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
@@ -1423,7 +1423,7 @@ def Calc_Es_max_TNA(self, EPSI_ELAS, PRES_CONF, KZERO, MATER, COMPORTEMENT, CONV
     Pour l'essai TD_NA  : calcul du module de Young cyclique équivalentmax
     (EPSI_ELAS doit etre telle qu'on reste bien dans le domaine elastique)
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import numpy as NP
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')

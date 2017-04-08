@@ -25,7 +25,7 @@ def defi_sol_equi_ops(self, TITRE, INFO, **args):
     """
     import aster
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess import UTMESS
     from Utilitai.Table import Table

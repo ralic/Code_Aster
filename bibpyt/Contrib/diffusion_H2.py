@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,7 +76,7 @@ def char_grad_impo_ops(self, RESU_H2, TINIT, TFIN, RESUMECA, GRMAVOL, DIME, Ctot
 
     import numpy as NP
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
@@ -246,7 +246,7 @@ CHAR_GRAD_IMPO = MACRO(nom="CHAR_GRAD_IMPO",
 def char_grad_ini_ops(self, RESU_H2, GRMAVOL, DIME, INFO, **args):
 
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
@@ -316,7 +316,7 @@ def char_source_ops(self, RESU_H2, TINIT, TFIN, RESUMECA, GRMAVOL, DIME, Ctot0, 
 
     import numpy as NP
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)
@@ -445,7 +445,7 @@ def champ_detoile_ops(self, RESU_H2, TINIT, TFIN, RESUMECA, GRMAVOL, DIME, Ctot0
 
     import numpy as NP
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     ier = 0
    # La macro compte pour 1 dans la numerotation des commandes
     self.set_icmd(1)

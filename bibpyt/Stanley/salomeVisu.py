@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -31,8 +31,8 @@ from graphiqueTk import *
 import cata_champs
 cata = cata_champs.CATA_CHAMPS()
 
-from Cata.cata import *
-from Accas import _F
+from code_aster.Cata.Commands import EXEC_LOGICIEL
+from code_aster.Cata.Syntax import _F
 
 import Templates
 TEMPLATESDIR = osp.dirname(Templates.__file__)

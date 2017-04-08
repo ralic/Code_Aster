@@ -23,7 +23,7 @@ def calc_modes_post(self, modes, lmatphys, norme_mode, filtre_mode, impression):
        Macro-command CALC_MODES, post-treatment
     """
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Noyau.N_utils import AsType
 
     # import the definitions of the commands to use in the macro-command

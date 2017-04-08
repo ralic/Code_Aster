@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -33,8 +33,8 @@ from Tkinter import Scrollbar, Label, Radiobutton, Button, Entry
 from Tkinter import Checkbutton, Canvas, Toplevel
 from Tkinter import NORMAL, DISABLED
 
-from Accas import _F
-from Cata.cata import EXEC_LOGICIEL
+from code_aster.Cata.Syntax import _F
+from code_aster.Cata.Commands import EXEC_LOGICIEL
 from Utilitai.Utmess import UTMESS
 from Utilitai.Table import Table
 
@@ -542,7 +542,7 @@ class InterfaceParametres(Frame):
 #
 # Classes specifiques pour chaque logiciel de post-traitement
 #
-from Cata.cata import INFO_EXEC_ASTER, DEFI_FICHIER, DETRUIRE, IMPR_RESU
+from code_aster.Cata.Commands import INFO_EXEC_ASTER, DEFI_FICHIER, DETRUIRE, IMPR_RESU
 
 # Classe abstraite
 

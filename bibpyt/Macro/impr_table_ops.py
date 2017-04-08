@@ -29,7 +29,7 @@ def impr_table_ops(self, FORMAT, TABLE, INFO, **args):
     """
     macro = 'IMPR_TABLE'
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
     from Utilitai.UniteAster import UniteAster
     from Utilitai.utils import fmtF2PY

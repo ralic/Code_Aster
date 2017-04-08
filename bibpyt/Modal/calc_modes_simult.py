@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -24,7 +24,7 @@ def calc_modes_simult(self, TYPE_RESU, OPTION, SOLVEUR_MODAL,
        Macro-command CALC_MODES, case of the simultaneous iterations method
     """
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Modal.mode_iter_simult import MODE_ITER_SIMULT
 
 

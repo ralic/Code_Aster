@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -30,7 +30,7 @@ from mac3coeur_coeur import CoeurFactory
 def perm_mac3coeur_ops(self, **args):
     """Corps principal de la macro pour la permutation des AC dans MAC3COEUR"""
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from mac3coeur_ac_permute import MACRO_AC_PERMUTE
     from Utilitai.UniteAster import UniteAster
     from Utilitai.Utmess import UTMESS

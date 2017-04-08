@@ -31,7 +31,7 @@ def essai_TD(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, INF
     Essai Triaxial Monotone Draine (TD)
     """
     import numpy as NP
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
@@ -183,7 +183,7 @@ def essai_TND(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, IN
     Essai Triaxial Monotone Non Draine (TND)
     """
     import numpy as NP
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
 
     DEFI_FONCTION = self.get_cmd('DEFI_FONCTION')
@@ -338,7 +338,7 @@ def essai_CISA_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
 
@@ -584,7 +584,7 @@ def essai_TND_C_mono(self, inst_init, sigm, epsi, vari, DicoEssai,
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc
@@ -675,7 +675,7 @@ def essai_TND_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc
@@ -1268,7 +1268,7 @@ def essai_TD_A(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, I
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc
@@ -1528,7 +1528,7 @@ def essai_TD_NA(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE, 
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc
@@ -1774,7 +1774,7 @@ def essai_OEDO_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc
@@ -2024,7 +2024,7 @@ def essai_ISOT_C(self, str_n_essai, DicoEssai, MATER, COMPORTEMENT, CONVERGENCE,
     """
     import numpy as NP
     import math as M
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS
     from Comportement import catalc

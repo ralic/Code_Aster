@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -19,10 +19,10 @@
 
 '''Catalogue des champs de resultats Aster'''
 
-from Cata.cata import *
-from Utilitai.Utmess import UTMESS
+from code_aster.Cata.Commands import CALC_CHAMP, CALC_ERREUR
+from code_aster.Cata.Commons import C_NOM_CHAM_INTO
 
-# ----------------------------------------------------------------------
+from Utilitai.Utmess import UTMESS
 
 
 class CHAMP:
@@ -52,7 +52,7 @@ class CHAMP:
 
         # Lancement de la commande
         try:
-            apply(CALC_CHAMP, (), para)
+            CALC_CHAMP(**para)
         except aster.error, err:
             UTMESS('A', 'STANLEY_4', valk=[str(err)])
         except Exception, err:
@@ -81,7 +81,7 @@ class CHAMP:
 
         # Lancement de la commande
         try:
-            apply(CALC_ERREUR, (), para)
+            CALC_ERREUR(**para)
         except aster.error, err:
             UTMESS('A', 'STANLEY_4', valk=[str(err)])
         except Exception, err:

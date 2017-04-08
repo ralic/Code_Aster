@@ -1,7 +1,7 @@
 # coding=utf-8
 
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -74,7 +74,7 @@ def Recup_Noeuds_Copeaux(maya, Copeau_k):
 
     # Recuperation des noeuds appartenant a la surface de symetrie
     # et aux copeaux
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     dicno = []
     dicno.append(_F(NOM=Copeau_k))
     dicno.append(_F(NOM='Cop_Pl'))
@@ -89,7 +89,7 @@ def Recup_Noeuds_Copeaux(maya, Copeau_k):
 
 
 def Crea_grp_ma(maya, C_k):
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     if C_k == 0:
         dicma = {'NOM': 'Mai_Plan'}
         DEFI_GROUP(reuse=maya, MAILLAGE=maya, DETR_GROUP_MA=dicma),
@@ -134,7 +134,7 @@ def Calcul_mesure_3D(maya, nbcop, l_copo_tot, ltyma, nd_fiss, normale):
     # lors du calcul de la surface
 
     import numpy as NP
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
 
     mesure = [0] * len(l_copo_tot)
@@ -201,7 +201,7 @@ def calc_gp_ops(self, **args):
     """Corps de CALC_GP"""
     from numpy import *
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     MasquerAlarme('CALCCHAMP_1')
 

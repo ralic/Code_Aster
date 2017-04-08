@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -234,7 +234,7 @@ def lire_fonction_ops(self, FORMAT, TYPE, SEPAR, INDIC_PARA, UNITE,
                       PROL_GAUCHE, VERIF, INFO, TITRE, **args):
     """Méthode corps de la macro
     """
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
     from Utilitai.UniteAster import UniteAster
 

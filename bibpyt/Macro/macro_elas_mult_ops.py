@@ -26,7 +26,7 @@ def macro_elas_mult_ops(self, MODELE, CHAM_MATER, CARA_ELEM, NUME_DDL,
     ier = 0
     import types
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
 
     # On met le mot cle NUME_DDL dans une variable locale pour le proteger

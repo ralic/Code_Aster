@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,7 +40,7 @@ def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
     import aster
     import Macro
     from Cata.cata import DEFI_LIST_REEL
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Macro import reca_message
     from Macro import reca_algo
     from Macro import reca_interp
@@ -199,7 +199,7 @@ def macr_recal(self, UNITE_ESCL, RESU_EXP, POIDS, LIST_PARA, RESU_CALC,
     import Macro
     from Cata import cata
     from Cata.cata import OPER, MACRO
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     # from Cata.cata import *
     # Declaration de toutes les commandes Aster
     for k, v in cata.__dict__.items():

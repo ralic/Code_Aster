@@ -16,7 +16,7 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 
-from Accas import _F
+from code_aster.Cata.Syntax import _F
 import string
 
 try:

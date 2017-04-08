@@ -25,7 +25,7 @@ def macr_cara_poutre_ops(self, MAILLAGE, SYME_Y, SYME_Z, GROUP_MA_BORD,
     """
     import types
     import string
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     import aster
     from Utilitai.Utmess import UTMESS, MasquerAlarme, RetablirAlarme
     #

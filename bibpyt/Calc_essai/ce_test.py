@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,7 +21,7 @@
 # options de calcul.
 
 import aster
-from Accas import _F, ASSD
+from code_aster.Cata.Syntax import _F, ASSD
 
 from ce_calcul_expansion import CalcEssaiExpansion
 from ce_calcul_identification import CalcEssaiIdentification, CalculInverse
@@ -189,7 +189,7 @@ def lance_modif_struct_calcul(macro, ce_objects,
 
        :param out_modifstru: dictionaire (ou FACT) utilisé pour les résultats."""
 
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Calc_essai.ce_calcul_modifstruct import CalcEssaiModifStruct
     modif_struct = CalcEssaiModifStruct(macro, ce_objects,
                                         ce_objects.mess, out_modifstru)

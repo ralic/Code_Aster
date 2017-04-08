@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,7 +44,7 @@ def observation_ops(self,
 
     # importation de commandes
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
     from Cata.cata import mode_meca, dyna_harmo, evol_elas, dyna_trans
     MODI_REPERE = self.get_cmd('MODI_REPERE')
@@ -769,7 +769,7 @@ def crea_normale(self, modele_1, modele_2,
     CREA_RESU = self.get_cmd('CREA_RESU')
     DEFI_GROUP = self.get_cmd('DEFI_GROUP')
     import aster
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     # recherche du maillage associe au modele numerique
     nom_modele_num = modele_1.nom
     _maillag = aster.getvectjev(nom_modele_num.ljust(8) + '.MODELE    .LGRF')

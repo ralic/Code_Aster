@@ -246,7 +246,7 @@ def propa_fiss_ops(self, METHODE_PROPA, INFO, **args):
 
     import aster
     import string
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Utmess import UTMESS
     from Utilitai.partition import MAIL_PY
     from Internal.detec_front import DETEC_FRONT

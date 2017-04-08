@@ -34,7 +34,7 @@ def calc_ifs_dnl_ops(self, GROUP_MA_IFS, NOM_CMP_IFS, UNITE_NOEUD, UNITE_ELEM, M
     import os
     import string
     import types
-    from Accas import _F
+    from code_aster.Cata.Syntax import _F
     from Utilitai.Table import Table
     from Utilitai.Utmess import UTMESS
     # from Cata.cata import *

@@ -27,7 +27,7 @@ import aster_core
 import aster
 
 from Cata.cata import modele_sdaster, maillage_sdaster
-from Accas import _F
+from code_aster.Cata.Syntax import _F
 
 from Utilitai.UniteAster import UniteAster
 from Utilitai.Utmess import UTMESS
