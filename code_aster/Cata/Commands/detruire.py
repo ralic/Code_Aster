@@ -22,7 +22,7 @@ from code_aster.Cata.Commons import *
 
 
 DETRUIRE=MACRO(nom="DETRUIRE",
-               op=OPS("Cata.ops.DETRUIRE"),
+               op=OPS("code_aster.Cata.ops.DETRUIRE"),
                fr=tr("Détruit des concepts utilisateurs dans la base GLOBALE ou des objets JEVEUX"),
                op_init=ops.build_detruire,
     regles=(UN_PARMI('CONCEPT', 'OBJET',),),

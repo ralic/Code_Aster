@@ -57,7 +57,7 @@ except ImportError:
 import Accas
 from Accas import *
 from Accas import _F
-from Cata import ops
+from . import ops
 
 try:
     import aster

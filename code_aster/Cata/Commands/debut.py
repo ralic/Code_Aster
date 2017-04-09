@@ -22,7 +22,7 @@ from code_aster.Cata.Commons import *
 
 
 DEBUT=MACRO(nom="DEBUT",
-            op=OPS("Cata.ops.build_debut"),
+            op=OPS("code_aster.Cata.ops.build_debut"),
             repetable='n',
             fr=tr("Ouverture d'une étude. Allocation des ressources mémoire et disque et fichiers"),
             sd_prod=ops.DEBUT,

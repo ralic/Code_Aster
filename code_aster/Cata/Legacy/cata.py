@@ -4,6 +4,8 @@
 Module cata
 -----------
 
+*Kept for compatibility.*
+
 This package imports the objects of the legacy supervisor of commands.
 """
 

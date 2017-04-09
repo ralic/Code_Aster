@@ -33,7 +33,7 @@ def DEFIC_prod(self,ACTION,UNITE,**args):
     raise AsException("ACTION non prevue : %s" % ACTION)
 
 DEFI_FICHIER=MACRO(nom="DEFI_FICHIER",
-                   op=OPS("Cata.ops.build_DEFI_FICHIER"),
+                   op=OPS("code_aster.Cata.ops.build_DEFI_FICHIER"),
                    sd_prod=DEFIC_prod,
                    reentrant='n',
                    fr=tr("Ouvre ou ferme un fichier associé à un numéro d'unité logique"),

@@ -1,4 +1,4 @@
-# coding=utf-8
+# coding: utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -17,21 +17,20 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
-from code_aster.Cata.Syntax import *
-from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+"""
+ops package
+-----------
 
+Currently only used by the legacy supervisor.
 
-INCLUDE=MACRO(nom="INCLUDE",
-              op=OPS("code_aster.Cata.ops.build_include"),
-              fr=tr("Débranchement vers un fichier de commandes secondaires"),
-              sd_prod=ops.INCLUDE,
-              op_init=ops.INCLUDE_context,
-              fichier_ini=1,
-              regles=(UN_PARMI('UNITE', 'DONNEE')),
-         UNITE = SIMP(statut='f', typ=UnitType(), inout='in',
-                      fr=tr("Unité logique à inclure")),
-         DONNEE = SIMP(statut='f', typ='TXM',
-                       fr=tr("Nom du fichier de données à inclure")),
-         INFO  = SIMP(statut='f', typ='I', defaut=1, into=(0, 1, 2)),
-);
+"""
+
+from . import HAVE_ASTERSTUDY
+
+if not HAVE_ASTERSTUDY:
+    from .Legacy.ops import (DEBUT, build_debut,
+                             POURSUITE, build_poursuite, POURSUITE_context,
+                             INCLUDE, build_include, INCLUDE_context,
+                             DETRUIRE, build_detruire,
+                             build_procedure, build_DEFI_FICHIER,
+                             build_formule)

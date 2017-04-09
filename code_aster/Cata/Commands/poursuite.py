@@ -23,7 +23,7 @@ from code_aster.Cata.Commons import *
 
 
 POURSUITE=MACRO(nom="POURSUITE",
-                op=OPS("Cata.ops.build_poursuite"),
+                op=OPS("code_aster.Cata.ops.build_poursuite"),
                 repetable='n',
                 fr=tr("Poursuite d'une étude à partir de la sauvegarde au format JEVEUX "
                      "ou HDF de sa base globale"),
