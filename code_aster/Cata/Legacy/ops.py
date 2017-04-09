@@ -215,7 +215,7 @@ def POURSUITE(self, PAR_LOT, IMPR_MACRO, CODE, DEBUG, IGNORE_ALARM, LANG, INFO, 
             else:
                 UTMESS(
                     'I', 'SUPERVIS_70', valk=newsign, vali=self.jdc.jeveux_sysaddr)
-        from Cata.cata import entier
+        from .DataStructure import entier
         from Noyau.N_CO import CO
         interrupt = []
         count = 0

@@ -36,7 +36,6 @@ NOMPRO = 'MACR_RECAL'
 def Sortie(LIST_NOM_PARA, LIST_PARA, val, CALCUL_ASTER, Mess):
     """ Sortie de la macro, on renvoie les parametres obtenus """
 
-    import Cata
     import aster
     import Macro
     from code_aster.Cata.Commands import DEFI_LIST_REEL
@@ -85,7 +84,6 @@ def macr_recal_ops(self, UNITE_ESCL, RESU_EXP, LIST_POIDS, LIST_PARA, RESU_CALC,
 
     import aster
     import Macro
-    from Cata import cata
     from code_aster.Cata.Commands import (DEFI_LIST_REEL, CREA_TABLE,
         TEST_TABLE, INCLUDE, INFO_EXEC_ASTER)
     from code_aster.Cata.Syntax import _F

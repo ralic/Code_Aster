@@ -3264,7 +3264,7 @@ class PRE_STANLEY:
     """
 
     def __init__(self, FICHIER_VALID=None):
-        from Cata.cata import (
+        from code_aster.Cata.DataStructure import (
             maillage_sdaster, modele_sdaster, evol_elas, evol_noli,
             evol_ther, mode_meca, dyna_harmo, dyna_trans, cham_mater,
             cara_elem, evol_char)

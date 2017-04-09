@@ -114,9 +114,9 @@ class ETAPE(B_OBJECT.OBJECT, B_CODE.CODE):
         `mxval` : longueur maximale de la liste retournée.
         On passe mxval=0, pour savoir comment dimensionner le vecteur résultat.
         """
-        from Cata import cata
+        from code_aster.Cata import DataStructure
         lconcept = []
-        klass = getattr(cata, typaster.lower().strip(), None)
+        klass = getattr(DataStructure, typaster.lower().strip(), None)
         if klass:
             ctxt = self.parent.get_contexte_avant(self)
             lconcept = [(co.order, co.nom) for co in ctxt.values()

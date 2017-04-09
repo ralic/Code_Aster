@@ -126,10 +126,9 @@ class SUPERV:
 
     def imports(self):
         try:
-            import Cata
-            from Cata import cata
+            from code_aster.Cata import cata
             self.cata = cata
-            self.JdC = Cata.cata.JdC
+            self.JdC = cata.JdC
             CONTEXT.unset_current_step()
         except:
             print traceback.print_exc()

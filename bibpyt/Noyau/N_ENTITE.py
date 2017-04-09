@@ -123,12 +123,12 @@ class ENTITE:
            les objets REGLES associés ne portent que sur des sous-entités
            existantes
         """
-        from Cata import cata
+        from code_aster.Cata.Syntax import SIMP, FACT
         for regle in self.regles:
             l = []
             for mc in regle.mcs:
                 keyword = self.entites.get(mc)
-                if not isinstance(keyword, (cata.SIMP, cata.FACT)):
+                if not isinstance(keyword, (SIMP, FACT)):
                     l.append(mc)
             if l != []:
                 txt = str(regle)
@@ -222,7 +222,7 @@ class ENTITE:
                 self.cr.fatal(
                     _(u"L'attribut 'condition' doit être une chaine de caractères : %r"),
                     self.condition)
-            from Cata import cata
+            from code_aster.Cata import cata
             try:
                 ctxt = {}
                 ctxt.update(cata.__dict__)
