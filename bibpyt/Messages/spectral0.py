@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,6 +73,24 @@ La somme des rapport de masses COEF_MASS_EQUIP doit être égale à 1
 
 16: _(u"""
 La valeur initiale du signal d'entrée dépasse le critère limite TOLE_INIT choisi %(r1)f > %(r2)f
+"""),
+
+17: _(u"""
+La table fournie ne comporte pas le paramètre %(k1)s. Elle n'est pas issue de MACR_SPECTRE. 
+"""),
+
+18: _(u"""
+Les valeurs des amortissements de deux instances de SPECTRE sont différentes. 
+"""),
+
+19: _(u"""
+Les impressions de figures ne peuvent pas être faites car il manque une bibliothèque.
+
+Cette librairie est disponible en lançant le calcul depuis Salome-Meca.
+"""),
+
+20: _(u"""
+Le mot-clé ELARG n'a pas d'effet avec l'option CONCEPTION. 
 """),
 
 }

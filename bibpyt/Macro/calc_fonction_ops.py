@@ -765,16 +765,27 @@ class CalcFonction_LISS_ENVELOP(CalcFonctionOper):
             para_fonc = f_in.l_fonc[0].para
             para      = f_in.para
             
-        sp_lisse = LISS.liss_enveloppe(l_sp_nappe ,
-                                    option = kw['OPTION'],
-                                    coef_elarg  = kw['ELARG'],
-                                    fmin = kw['FREQ_MIN'], 
-                                    fmax = kw['FREQ_MAX'],
-                                    l_freq = list(kw['LIST_FREQ']),
-                                    nb_pts = kw['NB_FREQ_LISS'],
-                                    zpa    = kw['ZPA'],
-                                    precision=1e-3, 
-                                    critere='RELATIF' )
+        if kw['OPTION'] =='CONCEPTION':
+            sp_lisse = LISS.liss_enveloppe(l_sp_nappe ,
+                                        option = kw['OPTION'],
+                                        fmin = kw['FREQ_MIN'], 
+                                        fmax = kw['FREQ_MAX'],
+                                        l_freq = list(kw['LIST_FREQ']),
+                                        nb_pts = kw['NB_FREQ_LISS'],
+                                        zpa    = kw['ZPA'],
+                                        precision=1e-3, 
+                                        critere='RELATIF' )
+        else:
+            sp_lisse = LISS.liss_enveloppe(l_sp_nappe ,
+                                        option = kw['OPTION'],
+                                        coef_elarg  = kw['ELARG'],
+                                        fmin = kw['FREQ_MIN'], 
+                                        fmax = kw['FREQ_MAX'],
+                                        l_freq = list(kw['LIST_FREQ']),
+                                        nb_pts = kw['NB_FREQ_LISS'],
+                                        zpa    = kw['ZPA'],
+                                        precision=1e-3, 
+                                        critere='RELATIF' )
                                 
         l_fonc_f = []
         for spec in sp_lisse.listSpec:

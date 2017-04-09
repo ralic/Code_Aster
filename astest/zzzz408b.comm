@@ -1,0 +1,242 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'),PAR_LOT='NON',IMPR_MACRO='OUI');
+
+# Validation de LISS_SPECTRE/OPTION='VERIFICATION'
+
+
+def adapte_fic_nappe(adr_fic, unite):
+    """
+    Met en forme les données d'une nappe issue de IMPR_FONTION, afin
+    d'être relu correctement par LIRE_FONCTION
+    """
+    fic= open(adr_fic,"r")
+    lines = fic.readlines()
+    fic.close()
+    fic= open('fort.%s'%unite,"w")
+    
+    print 'AMOR\n'
+    for line in lines:
+        if 'Courbe' in line:
+            pass
+        elif 'AMOR=' in line:
+            ll=line.split('AMOR=')
+            fic.write(ll[1])
+        else:
+            fic.write(line)
+    fic.close()
+
+
+spectre=LIRE_FONCTION(TYPE='NAPPE',
+                      INDIC_PARA=(1,1,),
+                      NOM_PARA_FONC='FREQ',
+                      INDIC_ABSCISSE=(2,1,),
+                      INTERPOL_FONC='LOG',
+                      PROL_DROITE_FONC='CONSTANT',
+                      PROL_GAUCHE_FONC='CONSTANT',
+                      DEFI_FONCTION=(_F(INDIC_RESU=(2,2,),),
+                                     _F(INDIC_RESU=(2,3,),),
+                                     _F(INDIC_RESU=(2,4,),),
+                                     _F(INDIC_RESU=(2,5,),),
+                                     _F(INDIC_RESU=(2,6,),),
+                                     _F(INDIC_RESU=(2,7,),),
+                                     _F(INDIC_RESU=(2,8,),),
+                                     _F(INDIC_RESU=(2,9,),),
+                                     ),
+                      UNITE=18,
+                      NOM_PARA='AMOR',
+                      NOM_RESU='ACCE',
+                      INTERPOL='LOG',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      TITRE='essai de lecture de spectre',)
+
+spectre2=LIRE_FONCTION(TYPE='NAPPE',
+                      INDIC_PARA=(1,1,),
+                      NOM_PARA_FONC='FREQ',
+                      INDIC_ABSCISSE=(2,1,),
+                      INTERPOL_FONC='LOG',
+                      PROL_DROITE_FONC='CONSTANT',
+                      PROL_GAUCHE_FONC='CONSTANT',
+                      DEFI_FONCTION=(_F(INDIC_RESU=(2,2,),),
+                                     _F(INDIC_RESU=(2,3,),),
+                                     _F(INDIC_RESU=(2,4,),),
+                                     _F(INDIC_RESU=(2,5,),),
+                                     _F(INDIC_RESU=(2,6,),),
+                                     _F(INDIC_RESU=(2,7,),),
+                                     _F(INDIC_RESU=(2,8,),),
+                                     _F(INDIC_RESU=(2,9,),),
+                                     ),
+                      UNITE=37,
+                      NOM_PARA='AMOR',
+                      NOM_RESU='ACCE',
+                      INTERPOL='LOG',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      TITRE='essai de lecture de spectre',)
+
+
+# calcul de reference
+
+
+refconv=CALC_FONCTION(LISS_ENVELOP=_F(NAPPE=(spectre,spectre2),
+                                  OPTION = 'VERIFICATION',
+                                  ELARG = (0.2,0.8),
+                                  NB_FREQ_LISS = 50,
+                                  FREQ_MIN = 0.5,
+                                  FREQ_MAX = 35.5,
+                                  ZPA   = 2.25793
+                                  ),
+                                  NOM_PARA='AMOR',
+                                  NOM_RESU='ACCE',
+                                  NOM_PARA_FONC='FREQ',) 
+
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.036063333333,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.005, 0.505),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=refconv,
+                         ),
+                      _F(VALE_CALC= 3.048488386783 ,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.02, 3.50270E+01),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=refconv,
+                         ),
+                      _F(VALE_CALC=8.967765000000,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.04, 2.12500E+00),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=refconv,
+                         ),
+                       _F(VALE_CALC=7.219840833333,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.05, 1.46850E+01),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=refconv,
+                         ),
+                       )
+)                         
+
+LISS_SPECTRE(SPECTRE=(_F(NAPPE=spectre, NOM='ETAGE', BATIMENT='BATIVER', 
+                         COMMENTAIRE='PRECISIONS', DIRECTION = 'X',ELARG=0.2),
+                      _F(NAPPE=spectre2, NOM='ETAGE', BATIMENT='BATIVER', 
+                         COMMENTAIRE='PRECISIONS', DIRECTION = 'X',ELARG=0.8),), 
+             OPTION = 'VERIFICATION',
+             NB_FREQ_LISS = 50,
+             FREQ_MIN = 0.5,
+             FREQ_MAX = 35.5,
+             ZPA   = 2.25793,
+             BORNE_X=(0.1,100),
+             BORNE_Y=(0.01,100),
+             ECHELLE_X = 'LOG',
+             ECHELLE_Y = 'LOG',
+             LEGENDE_X = 'Frequence (Hz)',
+             LEGENDE_Y = 'Pseudo-acceleration (g)',)
+
+adapte_fic_nappe('./REPE_OUT/BATIVER_ETAGE_X.txt',86)
+
+
+NAPLISV=LIRE_FONCTION(TYPE='NAPPE',
+                      INDIC_PARA=(1,1,),
+                      NOM_PARA_FONC='FREQ',
+                      INDIC_ABSCISSE=(2,1,),
+                      INTERPOL_FONC='LOG',
+                      PROL_DROITE_FONC='CONSTANT',
+                      PROL_GAUCHE_FONC='CONSTANT',
+                      DEFI_FONCTION=(_F(INDIC_RESU=(2,2,),),
+                                     _F(INDIC_RESU=(2,3,),),
+                                     _F(INDIC_RESU=(2,4,),),
+                                     _F(INDIC_RESU=(2,5,),),
+                                     _F(INDIC_RESU=(2,6,),),
+                                     _F(INDIC_RESU=(2,7,),),
+                                     _F(INDIC_RESU=(2,8,),),
+                                     _F(INDIC_RESU=(2,9,),),
+                                     ),
+                      UNITE=86,
+                      NOM_PARA='AMOR',
+                      NOM_RESU='ACCE',
+                      INTERPOL='LOG',
+                      PROL_DROITE='CONSTANT',
+                      PROL_GAUCHE='CONSTANT',
+                      TITRE='essai de lecture de spectre',)
+
+
+# Comparaison à refconv (ref AUTRE_ASTER), le manque de précision est du
+# à l'écriture/relecture du ficher
+
+TEST_FONCTION(VALEUR=(_F(VALE_CALC=3.036060000000,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.005, 0.505),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=NAPLISV,
+                         VALE_REFE=3.036063333333,
+                         REFERENCE='AUTRE_ASTER',
+                         ),
+                      _F(VALE_CALC= 3.048490000000 ,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.02, 3.50270E+01),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=NAPLISV,
+                         VALE_REFE= 3.048488386783 ,
+                         REFERENCE='AUTRE_ASTER',
+                         ),
+                      _F(VALE_CALC=8.967760000000,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.04, 2.12500E+00),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=NAPLISV,
+                         VALE_REFE=8.967765000000,
+                         REFERENCE='AUTRE_ASTER',
+                         ),
+                       _F(VALE_CALC=7.219840000000,
+                         CRITERE='ABSOLU',
+                         VALE_PARA=(0.05, 1.46850E+01),
+                         NOM_PARA=('AMOR', 'FREQ'),
+                         FONCTION=NAPLISV,
+                         VALE_REFE=7.219840833333,
+                         REFERENCE='AUTRE_ASTER',
+                         ),
+                       )
+)                         
+
+
+# validation de la construction des nappes et du regroupement des nappes
+# selon plancher et direction
+
+TAB1 = LIRE_TABLE(UNITE=40, FORMAT='ASTER', NUME_TABLE=1)
+TAB2 = LIRE_TABLE(UNITE=40, FORMAT='ASTER', NUME_TABLE=2)
+
+# 2 tables, 2 planchers, 4 directions, 2 amortissements,
+# valeurs de fréquence différentes entre les deux tables
+
+LISS_SPECTRE(SPECTRE=(_F(TABLE=TAB1,),
+                      _F(TABLE=TAB2,)
+                      ), 
+             OPTION='VERIFICATION',
+             NB_FREQ_LISS = 3,
+             BORNE_X=(0.1,100),
+             BORNE_Y=(0.01,100),
+             ECHELLE_X = 'LOG',
+             ECHELLE_Y = 'LOG',
+             LEGENDE_X = 'Frequence (Hz)',
+             LEGENDE_Y = 'Pseudo-acceleration (g)',)
+
+
+FIN();

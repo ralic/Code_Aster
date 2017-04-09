@@ -57,7 +57,7 @@ POSTLIQ = POST_LIQUEFACTION(RESU_REF = RESUREF,
 #--------------------------------------------------------------------------------
 
 RUPOSTLI = CREA_CHAMP (OPERATION = 'EXTR',
-               #TYPE_CHAM = 'ELGA_SIEF_R',
+               TYPE_CHAM = 'ELGA_SIEF_R',
                        RESULTAT  = POSTLIQ, 
                NOM_CHAM  = 'SIEF_ELGA',
                INST      = 31536000.,)

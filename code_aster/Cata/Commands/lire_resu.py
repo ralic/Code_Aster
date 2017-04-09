@@ -83,7 +83,7 @@ LIRE_RESU=OPER(nom="LIRE_RESU",op=150,sd_prod=lire_resu_prod,reentrant='n',
            ),
 
           b_evol_noli  = BLOC(condition="""equal_to("TYPE_RESU", 'EVOL_NOLI')""",
-          EXCIT           =FACT(statut='f',max='**', regles=(UN_PARMI('NOEUD','GROUP_NO'),),
+          EXCIT           =FACT(statut='f',max='**', regles=(EXCLUS('NOEUD','GROUP_NO'),),
            CHARGE          =SIMP(statut='o',typ=(char_meca,char_cine_meca)),
            FONC_MULT       =SIMP(statut='f',typ=(fonction_sdaster,nappe_sdaster,formule)),
            TYPE_CHARGE     =SIMP(statut='f',typ='TXM',defaut="FIXE_CSTE",
