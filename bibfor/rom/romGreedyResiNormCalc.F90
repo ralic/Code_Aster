@@ -1,15 +1,13 @@
-subroutine dbr_main(ds_para)
+subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
-#include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "blas/zdotc.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,37 +27,40 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    integer, intent(in) :: i_coef
+    integer, intent(in) :: nb_equa
+    type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Greedy algorithm
 !
-! Main subroutine to compute empiric modes
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Normalization of residual
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! In  i_coef           : index of coefficient
+! In  nb_equa          : number of equations
+! IO  ds_para_rb       : datastructure for parameters (RB)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
-    endif
+    complex(kind=8), pointer :: v_resic(:) => null()
+    complex(kind=8) :: normc
+    character(len=1) :: resi_type
+    character(len=24) :: resi_vect
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
+! --------------------------------------------------------------------------------------------------
+!
+    resi_type = ds_para_rb%resi_type
+    resi_vect = ds_para_rb%resi_vect
+!
+! - Compute norm of residual
+!
+    if (resi_type .eq. 'C') then
+        call jeveuo(resi_vect(1:19)//'.VALE', 'L', vc = v_resic)
+        normc = zdotc(nb_equa, v_resic, 1, v_resic, 1)
+        ds_para_rb%resi_norm(i_coef) = real(sqrt(real(normc)))/ds_para_rb%resi_refe
     else
         ASSERT(.false.)
     endif

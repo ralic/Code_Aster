@@ -133,15 +133,24 @@ implicit none
 ! - Parameters for definition of multiparametric reduced problem - Coefficients
 !
     type ROM_DS_MultiCoef
+! ----- Coefficient is function
         aster_logical               :: l_func
+! ----- Coefficient is constant
         aster_logical               :: l_cste
+! ----- Coefficient is complex
         aster_logical               :: l_cplx
+! ----- Coefficient is real
         aster_logical               :: l_real
+! ----- Value of coefficient if is complex and constant
         complex(kind=8)             :: coef_cste_cplx
+! ----- Value of coefficient if is real and constant
         real(kind=8)                :: coef_cste_real
-        complex(kind=8), pointer    :: coef_cplx(:)
-        real(kind=8), pointer       :: coef_real(:)
+! ----- Value of coefficient if is function
         character(len=8)            :: func_name
+! ----- Value of coefficient if is complex: need evaluation
+        complex(kind=8), pointer    :: coef_cplx(:)
+! ----- Value of coefficient if is real: need evaluation
+        real(kind=8), pointer       :: coef_real(:)
     end type ROM_DS_MultiCoef
 !
 ! - Parameters for definition of multiparametric reduced problem
@@ -149,20 +158,20 @@ implicit none
     type ROM_DS_MultiPara
 ! ----- Type of system to solve
         character(len=1)        :: syst_type
-! ----- Matrix
+! ----- List of matrix for system
         integer                 :: nb_matr
         character(len=8)        :: matr_name(8)
         character(len=1)        :: matr_type(8)
         type(ROM_DS_MultiCoef)  :: matr_coef(8)
-! ----- Second member
+! ----- Second member for system
         character(len=8)        :: vect_name
         character(len=1)        :: vect_type
         type(ROM_DS_MultiCoef)  :: vect_coef
-! ----- Products
+! ----- Products matrix by mode
         character(len=24)       :: prod_mode(8)
 ! ----- Variation of coefficients: number (by mode)
         integer                 :: nb_vari_coef
-! ----- Variation of coefficients: type
+! ----- Variation of coefficients: type (DIRECT, ALEATOIRE, etc. )
         character(len=24)       :: type_vari_coef
 ! ----- Variation of coefficients: by parameter
         integer                 :: nb_vari_para

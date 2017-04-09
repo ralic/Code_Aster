@@ -16,10 +16,17 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_main_rb(nb_mode_maxi, ds_para_rb, ds_empi)
+    subroutine romMultiParaCoefOneCompute(ds_empi       , ds_multipara,&
+                                          syst_2mbr_type, syst_2mbr   , solveROM,&
+                                          i_mode_until  , i_mode_coef , i_coef)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_main_rb
+        type(ROM_DS_Empi), intent(in) :: ds_empi
+        type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
+        character(len=1), intent(in) :: syst_2mbr_type
+        character(len=19), intent(in) :: syst_2mbr
+        type(ROM_DS_Solve), intent(in) :: solveROM
+        integer, intent(in) :: i_mode_until
+        integer, intent(in) :: i_mode_coef
+        integer, intent(in) :: i_coef
+    end subroutine romMultiParaCoefOneCompute
 end interface

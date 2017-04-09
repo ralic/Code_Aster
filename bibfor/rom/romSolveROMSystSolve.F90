@@ -1,15 +1,15 @@
-subroutine dbr_main(ds_para)
+subroutine romSolveROMSystSolve(ds_solve, size_to_solve_)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "asterfort/zgauss.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,37 +29,69 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_Solve), intent(in) :: ds_solve
+    integer, optional, intent(in) :: size_to_solve_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Model reduction
 !
-! Main subroutine to compute empiric modes
+! Solve system (ROM)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! In  ds_solve         : datastructure to solve systems (ROM)
+! In  size_to_solve    : current size of system to solve
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    character(len=19) :: syst_matr, syst_2mbr, syst_solu
+    character(len=1) :: syst_type
+    integer :: nhrs, syst_size, size_to_solve
+    complex(kind=8), pointer :: v_syst_matr(:) => null()
+    complex(kind=8), pointer :: v_syst_2mbr(:) => null()
+    complex(kind=8), pointer :: v_syst_solu(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
+        call utmess('I', 'ROM2_44')
     endif
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
+! - Initializations
+!   
+    nhrs    = 1
+!
+! - Get parameters
+!
+    syst_solu      = ds_solve%syst_solu
+    syst_matr      = ds_solve%syst_matr
+    syst_2mbr      = ds_solve%syst_2mbr
+    syst_size      = ds_solve%syst_size
+    syst_type      = ds_solve%syst_matr_type
+    if (present(size_to_solve_)) then
+        size_to_solve = size_to_solve_
+    else
+        size_to_solve = syst_size
+    endif
+    ASSERT(size_to_solve .le. syst_size)
+!
+! - Access to objects
+!
+    if (syst_type .eq. 'C') then
+        call jeveuo(syst_matr, 'L', vc = v_syst_matr)
+        call jeveuo(syst_2mbr, 'L', vc = v_syst_2mbr)
+        call jeveuo(syst_solu, 'E', vc = v_syst_solu)
+    else
+        ASSERT(.false.)
+    endif
+!
+! - Solve system
+!
+    if (syst_type .eq. 'C') then
+        call zgauss(v_syst_matr, v_syst_2mbr, size_to_solve, nhrs, v_syst_solu)
     else
         ASSERT(.false.)
     endif

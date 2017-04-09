@@ -16,10 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_main_rb(nb_mode_maxi, ds_para_rb, ds_empi)
+    subroutine romSolveROMSystSolve(ds_solve, size_to_solve_)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_main_rb
+        type(ROM_DS_Solve), intent(in) :: ds_solve
+        integer, optional, intent(in) :: size_to_solve_
+    end subroutine romSolveROMSystSolve
 end interface

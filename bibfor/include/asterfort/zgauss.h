@@ -16,10 +16,11 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine dbr_main_rb(nb_mode_maxi, ds_para_rb, ds_empi)
-        use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_main_rb
+    subroutine zgauss(v_matr, v_2mbr, dim, nb, v_solu)
+        integer, intent(in) :: dim
+        integer, intent(in) :: nb
+        complex(kind=8), pointer, intent(in) :: v_matr(:)
+        complex(kind=8), pointer, intent(in) :: v_2mbr(:)
+        complex(kind=8), pointer, intent(in) :: v_solu(:)
+    end subroutine zgauss
 end interface

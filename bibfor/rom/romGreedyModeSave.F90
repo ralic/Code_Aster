@@ -1,15 +1,19 @@
-subroutine dbr_main(ds_para)
+subroutine romGreedyModeSave(ds_multipara, ds_empi,&
+                             i_mode      , mode   ,&
+                             ds_solveDOM )
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "asterfort/romMultiParaProdModeSave.h"
+#include "asterfort/romMultiParaModeSave.h"
+#include "asterfort/romModeProd.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,39 +33,55 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+    type(ROM_DS_Empi), intent(inout)   :: ds_empi
+    integer, intent(in)                :: i_mode
+    character(len=19), intent(in)      :: mode
+    type(ROM_DS_Solve), intent(in)     :: ds_solveDOM
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Greedy algorithm
 !
-! Main subroutine to compute empiric modes
+! Save empiric modes
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! In  ds_multipara     : datastructure for multiparametric problems
+! IO  ds_empi          : datastructure for empiric modes
+! In  i_mode           : index of empiric mode
+! In  mode             : empiric mode to save
+! In  ds_solveDOM      : datastructure for datastructure to solve systems (DOM)
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    complex(kind=8), pointer :: v_modec(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
+        call utmess('I', 'ROM5_64')
     endif
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
-    else
-        ASSERT(.false.)
-    endif
+! - Save mode
+!
+    call romMultiParaModeSave(ds_multipara, ds_empi              ,&
+                              i_mode      , ds_solveDOM%syst_solu)
+!
+! - Compute products
+!
+    call jeveuo(mode(1:19)//'.VALE', 'L', vc = v_modec)
+    call romModeProd(ds_multipara%nb_matr  ,&
+                     ds_multipara%matr_name,&
+                     ds_multipara%matr_type,&
+                     ds_multipara%prod_mode,&
+                     'C' , v_modec = v_modec)
+!
+! - Save products
+!
+    call romMultiParaProdModeSave(ds_multipara, ds_empi,&
+                                  i_mode)
 !
 end subroutine

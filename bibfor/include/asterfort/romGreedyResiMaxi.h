@@ -15,11 +15,12 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dbr_main_rb(nb_mode_maxi, ds_para_rb, ds_empi)
+    subroutine romGreedyResiMaxi(ds_para_rb, i_coef_maxi)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_main_rb
+        type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
+        integer, intent(out) :: i_coef_maxi
+    end subroutine romGreedyResiMaxi
 end interface

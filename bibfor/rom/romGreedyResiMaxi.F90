@@ -1,15 +1,14 @@
-subroutine dbr_main(ds_para)
+subroutine romGreedyResiMaxi(ds_para_rb, i_coef_maxi)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
+#include "asterc/r8gaem.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,39 +28,42 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_ParaDBR_RB), intent(in) :: ds_para_rb
+    integer, intent(out) :: i_coef_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Greedy algorithm
 !
-! Main subroutine to compute empiric modes
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Get maximum of residual
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! In  ds_para_rb       : datastructure for parameters (RB)
+! Out i_coef_maxi      : index where residual is maximum
+!
+! --------------------------------------------------------------------------------------------------
+!    
+    integer :: i_coef, nb_coef
+    real(kind=8) :: vale_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
-    endif
+    vale_maxi   = -r8gaem()
+    i_coef_maxi = 0
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
-    else
-        ASSERT(.false.)
-    endif
+! - Get parameters
+!
+    nb_coef        = ds_para_rb%multipara%nb_vari_coef
+!
+! - Get maximum
+!
+    do i_coef = 1, nb_coef
+        if (ds_para_rb%resi_norm(i_coef) .ge. vale_maxi) then
+            vale_maxi   = ds_para_rb%resi_norm(i_coef)
+            i_coef_maxi = i_coef
+        endif
+    end do
+    !WRITE(6,*) 'Indice du residu max:  ',i_coef_maxi,ds_para_rb%resi_norm(i_coef_maxi)
 !
 end subroutine

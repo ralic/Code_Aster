@@ -1,15 +1,15 @@
-subroutine dbr_main(ds_para)
+subroutine romGreedyResiInit(ds_para_rb)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "asterfort/jeveuo.h"
+#include "asterfort/utmess.h"
+#include "blas/zdotc.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,39 +29,57 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Greedy algorithm
 !
-! Main subroutine to compute empiric modes
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Compute initial residual
 !
 ! --------------------------------------------------------------------------------------------------
 !
+! IO  ds_para_rb       : datastructure for parameters (RB)
+!
+! --------------------------------------------------------------------------------------------------
+!    
     integer :: ifm, niv
+    integer :: nb_equa
+    character(len=1) :: resi_type
+    complex(kind=8), pointer :: v_2mbr_init(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
+        call utmess('I', 'ROM2_53')
     endif
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
+! - Get parameters
+!
+    nb_equa   = ds_para_rb%solveDOM%syst_size
+    resi_type = ds_para_rb%resi_type
+!
+! - Access to objects
+!
+    if (ds_para_rb%solveROM%syst_2mbr_type .eq. 'C') then
+        call jeveuo(ds_para_rb%vect_2mbr_init(1:19)//'.VALE', 'L', vc = v_2mbr_init)
     else
         ASSERT(.false.)
+    endif
+!
+! - Initial residual
+!  
+    if (resi_type .eq. 'C') then
+        ds_para_rb%resi_refe = real(sqrt(real(zdotc(nb_equa, v_2mbr_init, 1, v_2mbr_init, 1))))
+    else
+        ASSERT(.false.)
+    endif
+!
+! - Print norm of residual
+!
+    if (niv .ge. 2) then
+        call utmess('I', 'ROM2_54', sr = ds_para_rb%resi_refe)
     endif
 !
 end subroutine

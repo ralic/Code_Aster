@@ -15,11 +15,14 @@
 ! ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
+#include "asterf_types.h"
+!
 interface
-    subroutine dbr_main_rb(nb_mode_maxi, ds_para_rb, ds_empi)
+    subroutine romMultiParaDOM2mbrCreate(ds_multipara, i_coef, syst_2mbr_type, syst_2mbr)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
-        type(ROM_DS_ParaDBR_RB), intent(inout) :: ds_para_rb
-        type(ROM_DS_Empi), intent(inout) :: ds_empi
-    end subroutine dbr_main_rb
+        type(ROM_DS_MultiPara), intent(in) :: ds_multipara
+        integer, intent(in) :: i_coef
+        character(len=1), intent(in) :: syst_2mbr_type
+        character(len=19), intent(in) :: syst_2mbr
+    end subroutine romMultiParaDOM2mbrCreate
 end interface

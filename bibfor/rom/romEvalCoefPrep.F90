@@ -1,15 +1,13 @@
-subroutine dbr_main(ds_para)
+subroutine romEvalCoefPrep(i_coef_list, ds_multipara)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "asterfort/utmess.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,39 +27,58 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    integer, intent(in) :: i_coef_list
+    type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Model reduction
 !
-! Main subroutine to compute empiric modes
+! Set values of parameters to evaluate coefficients
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! IO  ds_para          : datastructure for parameters
+! In  i_coef_list      : index of coefficient in list of coefficients (VariPara)
+! IO  ds_multipara     : datastructure for multiparametric problems
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: i_vari_para, i_eval_para
+    integer :: nb_vari_para
+    character(len=16) :: para_name
 !
 ! --------------------------------------------------------------------------------------------------
 !
     call infniv(ifm, niv)
     if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
+        if (i_coef_list .eq. 0) then
+            call utmess('I', 'ROM5_94')
+        else
+            call utmess('I', 'ROM5_51', si = i_coef_list)
+        endif
     endif
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
-    else
-        ASSERT(.false.)
-    endif
+! - Get parameters
+!
+    nb_vari_para = ds_multipara%nb_vari_para
+!
+! - Set values of parameters
+!
+    do i_vari_para = 1, nb_vari_para
+        i_eval_para = i_vari_para
+        if (i_coef_list .eq. 0) then
+            ds_multipara%evalcoef%para_vale(i_eval_para) = &
+                             ds_multipara%vari_para(i_vari_para)%para_init
+        else
+            ds_multipara%evalcoef%para_vale(i_eval_para) = &
+                             ds_multipara%vari_para(i_vari_para)%para_vale(i_coef_list)
+        endif
+        if (niv .ge. 2) then
+            para_name = ds_multipara%vari_para(i_vari_para)%para_name
+            call utmess('I', 'ROM5_52', sk = para_name, &
+                        sr = ds_multipara%evalcoef%para_vale(i_eval_para))
+        endif
+    end do
 !
 end subroutine

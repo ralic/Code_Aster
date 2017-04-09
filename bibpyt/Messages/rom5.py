@@ -98,7 +98,37 @@ cata_msg = {
 
    43 : _(u"""Initialisation de la structure de données pour le calcul multi-paramétrique avec réduction de modèle."""),
 
+   44 : _(u"""Evaluation des coefficients pour la valeur %(i1)d des paramètres."""),
+
+   45 : _(u"""Valeur du coefficient réel pour le vecteur de nom %(k1)s : %(r1)19.12e."""),
+
+   46 : _(u"""Valeur du coefficient complexe pour le vecteur de nom %(k1)s : (%(r1)19.12e,%(r2)19.12e)."""),
+
+   47 : _(u"""Valeur du coefficient réel pour la matrice de nom %(k1)s : %(r1)19.12e."""),
+
+   48 : _(u"""Valeur du coefficient complexe pour la matrice de nom %(k1)s : (%(r1)19.12e,%(r2)19.12e)."""),
+
    50 : _(u"""Initialisation de la structure de données pour résoudre le système %(k1)s."""),
+
+   51 : _(u"""Valeur des paramètres pour la variation d'indice %(i1)d."""),
+
+   52 : _(u"""Le paramètre %(k1)s vaut %(r1)19.12e."""),
+
+   60 : _(u"""Calcul par la méthode GLOUTON."""),
+
+   61 : _(u"""Calcul du mode empirique %(i1)d."""),
+
+   62 : _(u"""Calcul du second membre du système complet."""),
+
+   63 : _(u"""Calcul de la matrice du système complet."""),
+
+   64 : _(u"""Post-traitement et sauvegardes."""),
+
+   65 : _(u"""Résolution du système complet."""),
+
+   66 : _(u"""Calcul du second membre du système réduit."""),
+
+   67 : _(u"""Calcul de la matrice du système réduit."""),
 
    81 : _(u"""Initialisation de la structure de données pour la variation des coefficients pour le calcul multi-paramétrique."""),
 
@@ -107,5 +137,11 @@ cata_msg = {
    90 : _(u"""Initialisation de la structure de données des coefficients pour le calcul multi-paramétrique (second membre)."""),
 
    91 : _(u"""Initialisation de la structure de données des coefficients pour le calcul multi-paramétrique (matrice)."""),
+
+   92 : _(u"""Calcul du mode empirique initial."""),
+
+   93 : _(u"""Evaluation des coefficients pour la valeur initiale des paramètres."""),
+
+   94 : _(u"""Copie de la valeur des paramètres initiaux."""),
 
 }

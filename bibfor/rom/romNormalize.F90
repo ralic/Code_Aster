@@ -1,15 +1,13 @@
-subroutine dbr_main(ds_para)
+subroutine romNormalize(vect_type, vect_vale, nb_equa)
 !
 use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
-#include "asterfort/infniv.h"
-#include "asterfort/dbr_main_pod.h"
-#include "asterfort/dbr_main_podincr.h"
-#include "asterfort/dbr_main_rb.h"
+#include "blas/zdotc.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -29,37 +27,33 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    type(ROM_DS_ParaDBR), intent(inout) :: ds_para
+    character(len=1), intent(in) :: vect_type
+    character(len=19), intent(in) :: vect_vale
+    integer, intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! DEFI_BASE_REDUITE - Compute
+! Greedy algorithm
 !
-! Main subroutine to compute empiric modes
-!
-! --------------------------------------------------------------------------------------------------
-!
-! IO  ds_para          : datastructure for parameters
+! Normalization of vector
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+! In  vect_type        : type of vector (real or complex)
+! In  vect_vale        : name of vector to normalize
+! In  nb_equa          : number of equations
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM7_9')
-    endif
+    complex(kind=8), pointer :: v_valec(:) => null()
+    complex(kind=8) :: normc
 !
-    if (ds_para%operation .eq. 'POD') then
-        call dbr_main_pod(ds_para%nb_mode_maxi, ds_para%para_pod, ds_para%field_iden,&
-                          ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'POD_INCR') then
-        call dbr_main_podincr(ds_para%l_reuse   , ds_para%nb_mode_maxi, ds_para%para_pod,&
-                              ds_para%field_iden, ds_para%ds_empi)
-    elseif (ds_para%operation .eq. 'GLOUTON') then
-        call dbr_main_rb(ds_para%nb_mode_maxi, ds_para%para_rb, ds_para%ds_empi)
+! --------------------------------------------------------------------------------------------------
+!
+    if (vect_type .eq. 'C') then
+        call jeveuo(vect_vale(1:19)//'.VALE', 'E', vc = v_valec)
+        normc = zdotc(nb_equa, v_valec, 1, v_valec, 1)
+        v_valec(1:nb_equa) = v_valec(1:nb_equa) / normc
     else
         ASSERT(.false.)
     endif

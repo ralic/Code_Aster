@@ -31,7 +31,7 @@ cata_msg = {
 
    8  : _(u"""Paramètres de la base empirique."""),
 
-   9  : _(u"""<*> Calcul de la base empirique."""),
+   9  : _(u"""Calcul de la base empirique."""),
 
    10 : _(u"""Consommation mémoire de la SVD: %(i1)d octets."""),
 

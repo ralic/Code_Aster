@@ -45,8 +45,6 @@ cata_msg = {
 
    13 : _(u"""On ne peut pas enrichir une base empirique avec la méthode %(k1)s."""),
 
-   13 : _(u"""Préparation de l'algorithme."""),
-
    14 : _(u"""La matrice du système sera complexe."""),
 
    15 : _(u"""La matrice du système sera réelle."""),
@@ -54,6 +52,9 @@ cata_msg = {
    16 : _(u"""Le second membre du système sera complexe."""),
 
    17 : _(u"""Le second membre du système sera réel."""),
+
+   18 : _(u"""Echec lors de la résolution.
+              La matrice est presque singulière à la fréquence."""),
 
    19 : _(u"""Initialisation pour le problème multi-paramétrique."""),
 
@@ -102,4 +103,22 @@ cata_msg = {
    42 : _(u"""Initialisation pour l'algorithme GLOUTON."""),
 
    43 : _(u"""Le calcul d'une base réduite pour le calcul multi-paramétrique avec réduction de modèle nécessite de faire varier les coefficients."""),
+
+   44 : _(u"""Résolution du système réduit."""),
+
+   45 : _(u"""Calcul des coefficients réduits."""),
+
+   46 : _(u"""Pour le coefficient %(i1)d."""),
+
+   49 : _(u"""Norme du résidu pour le coefficient %(i1)d: %(r1)19.12e."""),
+
+   50 : _(u"""Évaluation du résidu."""),
+
+   51 : _(u"""Calcul des coefficients réduits pour le paramètre %(i1)d."""),
+
+   52 : _(u"""Coefficient réduit pour le mode %(i1)d et le paramètre %(i2)d: (%(r1)19.12e,%(r2)19.12e)."""),
+
+   53 : _(u"""Évaluation du résidu initial."""),
+
+   54 : _(u"""Norme du résidu initial: %(r1)19.12e."""),
 }

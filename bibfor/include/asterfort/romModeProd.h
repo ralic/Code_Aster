@@ -25,7 +25,7 @@ interface
         character(len=1), intent(in) :: l_matr_type(:)
         character(len=24), intent(in) :: prod_mode(:)
         character(len=1), intent(in) :: mode_type
-        complex(kind=8), pointer, intent(in) :: v_modec(:)
-        real(kind=8), pointer, intent(in) :: v_moder(:)
+        complex(kind=8), pointer, optional, intent(in) :: v_modec(:)
+        real(kind=8), pointer, optional, intent(in) :: v_moder(:)
     end subroutine romModeProd
 end interface
