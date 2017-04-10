@@ -17,16 +17,12 @@
 # ======================================================================
 
 """
-Module cata
------------
+Context
+-------
 
-*Kept for compatibility.*
-
-This package imports the objects of the legacy supervisor of commands.
+This module defines objects that should be available in Commands (and Commons)
+catalogs and in the user command file.
 """
 
-from .Syntax import *
-from .Syntax import _F
-from .DataStructure import *
-from code_aster.Cata.Commands import *
-from code_aster.Cata.context import *
+from math import (sin, cos, tan, asin, acos, atan2, atan,
+                  sinh, cosh, tanh, pi, exp, log, log10, sqrt)

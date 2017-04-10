@@ -19,8 +19,7 @@
 
 import os
 import os.path as osp
-from math import sin, cos, tan, asin, acos, atan2, atan, sinh, cosh, tanh
-from math import pi, exp, log, log10, sqrt
+
 
 # translation of the docstrings of the commands and keywords is
 # used within Eficas, that's why we are using PyQt i18n functions here
@@ -43,6 +42,7 @@ try:
         locale = get_locale()
     except ImportError:
         locale = QtCore.QLocale.system().name()
+    # TODO change i18n/wscript for the installation dir (prefer use share/aster)
     localedir = osp.normpath(osp.dirname(__file__))
     if translator.load("catapy_" + locale, localedir):
         app.installTranslator(translator)
@@ -59,20 +59,6 @@ from Accas import *
 from Accas import _F
 from . import ops
 
-try:
-    import aster
-    aster_exists = True
-except ImportError:
-    aster = None
-    aster_exists = False
-
-# Le catalogue est constitué par concaténation des fichiers .capy
-# de catapy/{entete,commun,commande}.
-
-# Tous les imports globaux devraient être faits ici dans accas.capy.
-# Veillez à limiter les imports dans la définition des concepts (co_*.capy)
-# au strict nécessaire et les faire sous les méthodes qui en ont
-# expressément besoin.
 
 JdC = JDC_CATA(code='ASTER',
                execmodul=None,
