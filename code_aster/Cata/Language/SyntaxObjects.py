@@ -258,7 +258,7 @@ class PartOfSyntax(UIDMixing):
 
     def _def_status(self):
         """Wrapper that returns the value of 'statut' after precondition."""
-        from . import HAVE_ASTERSTUDY
+        from code_aster.Cata import HAVE_ASTERSTUDY
         definition = self.definition
         value = definition.get("statut", "f")
         if not HAVE_ASTERSTUDY:
