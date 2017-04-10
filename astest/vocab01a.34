@@ -1,4 +1,4 @@
-# person_in_charge: mathieu.courtois at edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 A
 A0
 A1
@@ -665,6 +665,7 @@ DECALAGE
 DECALAGE_AUTO
 DECOMP_IMPE
 DECOUPE_FACETTE
+DECOUPE_HEXA
 DECOUPE_LAC
 DEFINITION
 DEFI_CABLE
