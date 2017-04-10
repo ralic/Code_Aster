@@ -458,8 +458,8 @@ DEFI_CONTACT=OPER(nom       = "DEFI_CONTACT", op=30, sd_prod   = char_contact, r
                                                           TYPE_JACOBIEN   =SIMP(statut='f',typ='TXM',defaut="INITIAL", into=("INITIAL","ACTUALISE",),),
                                                           INTEGRATION     =SIMP(statut='f',typ='TXM',defaut="AUTO", into=("AUTO",),),
 
-                                                          GROUP_MA_MAIT   =SIMP(statut='f',typ=grma ,max=1),
-                                                          GROUP_MA_ESCL   =SIMP(statut='f',typ=grma ,max=1),
+                                                          GROUP_MA_MAIT   =SIMP(statut='o',typ=grma ,max=1),
+                                                          GROUP_MA_ESCL   =SIMP(statut='o',typ=grma ,max=1),
                                                           CONTACT_INIT    =SIMP(statut='f',typ='TXM',defaut="INTERPENETRE", into=("OUI","INTERPENETRE","NON"),),
                                           ), # fin b_pair_morta
 # --- Method for friction
