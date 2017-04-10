@@ -25,9 +25,10 @@ subroutine rc32t()
 #include "asterfort/jedetr.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
+#include "asterfort/getvtx.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -55,8 +56,8 @@ subroutine rc32t()
     character(len=8) :: nocmp(6), crit(2), knume, tabther, tabpres
     character(len=16) :: valek(2)
     integer :: nume1, n1, nume2, n2, nume3, n3, nn, ither, numether
-    integer :: n4, ipres, numepres, imeca, numemeca, nbinst, jinst
-    character(len=8) :: tabmeca, tableok, k8b
+    integer :: n5, ipres, numepres, imeca, numemeca, nbinst, jinst
+    character(len=8) :: tabmeca, tableok, k8b, tabtemp, methode
     aster_logical :: exist
     integer :: nbabsc, jabsc, ncmp, ndim, jorig, jextr, k, i, j
     real(kind=8) :: prec(2)
@@ -64,8 +65,8 @@ subroutine rc32t()
     real(kind=8) :: tmaxsp(2), tresc(2), trescb(2), r3(2), r3b(2)
     real(kind=8) :: tremin(2), treminb(2), tremax(2), tremaxb(2)
     real(kind=8) :: vale(2), momen0, momen1, siglin(1000*6), momen0ther, momen1ther
-    real(kind=8) :: momen0pres, momen1pres, momen0mec, momen1mec
-    integer :: ibid, iret, kk
+    real(kind=8) :: momen0pres, momen1pres, momen0mec, momen1mec, temp(8)
+    integer :: ibid, iret, kk, n4, jtemp, nb
     complex(kind=8) :: cbid
     real(kind=8), pointer :: contraintesth(:) => null()
     real(kind=8), pointer :: contraintespr(:) => null()
@@ -75,6 +76,9 @@ subroutine rc32t()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !
+    call getvtx(' ', 'METHODE', scal=methode, nbret=nb)
+    if (methode .ne. 'TRESCA') goto 999
+!
     call getfac('SITUATION', nbsitu)
 !
     jvorig = '&&RC3200.TRANSIT.ORIG'
@@ -82,6 +86,8 @@ subroutine rc32t()
     call jecrec(jvorig, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsitu)
     call jecrec(jvextr, 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
+                nbsitu)
+    call jecrec('&&RC3200.TEMPCST', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsitu)
 !
     call getfac('RESU_THER', nbther)
@@ -103,6 +109,10 @@ subroutine rc32t()
     crit(1) = 'RELATIF'
     crit(2) = 'RELATIF'
 !
+    do 5 i=1,8
+        temp(i)=0.d0
+5   continue    
+!
     do 10 iocc = 1, nbsitu, 1
 !
 ! ------ on récupère le numéro de la situation
@@ -115,32 +125,33 @@ subroutine rc32t()
         call getvis('SITUATION', 'NUME_RESU_THER', iocc=iocc, scal=nume1, nbret=n1)
         call getvis('SITUATION', 'NUME_RESU_PRES', iocc=iocc, scal=nume2, nbret=n2)
         call getvis('SITUATION', 'NUME_RESU_MECA', iocc=iocc, scal=nume3, nbret=n3)
+        call getvid('SITUATION', 'TABL_TEMP', iocc=iocc, scal=tabtemp, nbret=n4)
         nn= n1+n2+n3
-        if (nn .eq. 0) goto 888
+        if((nn+n4) .eq. 0) goto 888
 !
         if (n1 .ne. 0) then 
             do 20 ither =1, nbther, 1
-                call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n4)
+                call getvis('RESU_THER', 'NUME_RESU_THER', iocc=ither, scal=numether, nbret=n5)
                 if (numether .eq. nume1) then
-                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther, nbret=n4)
+                    call getvid('RESU_THER', 'TABL_RESU_THER', iocc=ither, scal=tabther, nbret=n5)
                 endif
 20          continue
         endif
 !
         if (n2 .ne. 0) then 
             do 30 ipres =1, nbpres, 1
-                call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n4)
+                call getvis('RESU_PRES', 'NUME_RESU_PRES', iocc=ipres, scal=numepres, nbret=n5)
                 if (numepres .eq. nume2) then
-                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres, nbret=n4)
+                    call getvid('RESU_PRES', 'TABL_RESU_PRES', iocc=ipres, scal=tabpres, nbret=n5)
                 endif
 30          continue
         endif
 !
         if (n3 .ne. 0) then 
             do 40 imeca =1, nbmeca, 1
-                call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n4)
+                call getvis('RESU_MECA', 'NUME_RESU_MECA', iocc=imeca, scal=numemeca, nbret=n5)
                 if (numemeca .eq. nume3) then
-                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca, nbret=n4)
+                    call getvid('RESU_MECA', 'TABL_RESU_MECA', iocc=imeca, scal=tabmeca, nbret=n5)
                 endif
 40          continue
         endif
@@ -152,8 +163,10 @@ subroutine rc32t()
             tableok = tabther
         elseif (n2 .ne. 0) then
             tableok = tabpres
-        else
+        elseif (n3 .ne. 0) then
             tableok = tabmeca
+        else
+            tableok = tabtemp
         endif
 !  
 ! --------- on verifie l'ordre des noeuds de la table
@@ -196,10 +209,34 @@ subroutine rc32t()
             endif
         endif
 !
+        if (nn .eq. 0) then
+            if (n4 .ne. 0) then
+                call jecroc(jexnom('&&RC3200.TEMPCST', knume))
+                call jeecra(jexnom('&&RC3200.TEMPCST', knume), 'LONMAX', n4)
+                call jeecra(jexnom('&&RC3200.TEMPCST', knume), 'LONUTI', n4)
+                call jeveuo(jexnom('&&RC3200.TEMPCST', knume), 'E', jtemp)
+!
+                vale(1)= zr(jinst)
+                vale(2)= zr(jabsc)
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, zr(jtemp), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
+            goto 888
+        endif
 !---------------------------------------------------------------
-! ------ CREATION DES 2*7 TABLES A 6 composantes de contraintes
+! ------ CREATION DES 2*8 TABLES A 6 composantes de contraintes
 ! ------ (totales et mécaniques en tminsp et tmaxsp)
-! ------ (linéarisées totales + M_0 en tminsn et tmaxsn)
+! ------ (linéarisées totales + M_0 +flexion thermique en tminsn et tmaxsn)
 ! ------ (lin. ther. + lin. pres. + lin. meca en tminsn et tmaxsn)
 ! ------ tminsn et tmaxsn
 !---------------------------------------------------------------
@@ -211,7 +248,7 @@ subroutine rc32t()
         AS_ALLOCATE(vr=contraintesm, size=nbabsc)
 !
         ncmp=6
-        ndim = 2 * 7 * ncmp + 4
+        ndim = 2 * 8 * ncmp + 4 + 4
         call jecroc(jexnom(jvorig, knume))
         call jeecra(jexnom(jvorig, knume), 'LONMAX', ndim)
         call jeecra(jexnom(jvorig, knume), 'LONUTI', ndim)
@@ -389,11 +426,26 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(1), cbid, k8b,&
                             iret)
             endif
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(1), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
             contraintesm(1)=contraintespr(1)+contraintesmec(1)
             contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
 !
             zr(jorig-1+j) = contraintestot(1)
             zr(jorig-1+72+j) = contraintesm(1)
+            zr(jorig+90) = temp(1)
 !
 ! --------- pour tmaxsp a l'origine 
             vale(1) = tmaxsp(1)
@@ -416,11 +468,26 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(1), cbid, k8b,&
                             iret)
             endif
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(2), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
             contraintesm(1)=contraintespr(1)+contraintesmec(1)
             contraintestot(1)=contraintesth(1)+contraintespr(1)+contraintesmec(1)
 !
             zr(jorig-1+6+j) = contraintestot(1)
             zr(jorig-1+78+j) = contraintesm(1)
+            zr(jorig+91) = temp(2)
 !
 ! --------- pour tminsn a l'origine
             vale(1) = tminsn(1)
@@ -447,16 +514,34 @@ subroutine rc32t()
             contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
  167        continue
 !
+            vale(2) = zr(jabsc)
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(3), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
+            zr(jorig+88) = temp(3)
+!
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
             call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
             zr(jorig-1+12+j) = momen0 - 0.5d0*momen1
-            zr(jorig-1+24+j) = momen0
+            zr(jorig-1+24+j) = momen0pres
             zr(jorig-1+36+j) = momen0ther - 0.5d0*momen1ther
             zr(jorig-1+48+j) = momen0pres - 0.5d0*momen1pres
             zr(jorig-1+60+j) = momen0mec - 0.5d0*momen1mec
+            zr(jorig-1+92+j) = - 0.5d0*momen1ther
 !
 ! --------- pour tmaxsn a l'origine 
             vale(1) = tmaxsn(1)
@@ -484,13 +569,30 @@ subroutine rc32t()
             contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
  367        continue
 !
+            vale(2) = zr(jabsc)
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(4), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
+            zr(jorig+89) = temp(4)
+!
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
             call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
             call rc32my(nbabsc, zr(jabsc), contraintespr, momen0pres, momen1pres)
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
             zr(jorig-1+18+j) = momen0 - 0.5d0*momen1
-            zr(jorig-1+30+j) = momen0
+            zr(jorig-1+30+j) = momen0pres
             zr(jorig-1+42+j) = momen0ther - 0.5d0*momen1ther
             zr(jorig-1+54+j) = momen0pres - 0.5d0*momen1pres
             zr(jorig-1+66+j) = momen0mec - 0.5d0*momen1mec
@@ -498,6 +600,7 @@ subroutine rc32t()
             zr(jorig+85)     = tmaxsn(1)
             zr(jorig+86)     = tminsp(1)
             zr(jorig+87)     = tmaxsp(1)
+            zr(jorig-1+98+j) = -0.5d0*momen1ther
 !
 ! --------- pour tminsp a l'extremite 
             vale(1) = tminsp(2)
@@ -520,12 +623,27 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
                             iret)
             endif
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(5), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
             contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
             contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
                                    contraintesmec(nbabsc)
 !
             zr(jextr-1+j) = contraintestot(nbabsc)
             zr(jextr-1+72+j) = contraintesm(nbabsc)
+            zr(jextr+90) = temp(5)
 !
 ! --------- pour tmaxsp a l'extremite
             vale(1) = tmaxsp(2)
@@ -548,12 +666,27 @@ subroutine rc32t()
                             k8b, ibid, contraintesmec(nbabsc), cbid, k8b,&
                             iret)
             endif
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(6), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
             contraintesm(nbabsc)=contraintespr(nbabsc)+contraintesmec(nbabsc)
             contraintestot(nbabsc)=contraintesth(nbabsc)+contraintespr(nbabsc)+&
                                    contraintesmec(nbabsc)
 !
             zr(jextr-1+6+j) = contraintestot(nbabsc)
             zr(jextr-1+78+j) = contraintesm(nbabsc)
+            zr(jextr+91) = temp(6)
 
 ! --------- pour tminsn a l'extremite 
             vale(1) = tminsn(2)
@@ -579,6 +712,22 @@ subroutine rc32t()
                 endif
             contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
  267        continue
+            vale(2) = zr(jabsc+nbabsc-1)
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(7), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
+            zr(jextr+88) = temp(7)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
             call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
@@ -586,10 +735,11 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
             zr(jextr-1+12+j) = momen0 + 0.5d0*momen1
-            zr(jextr-1+24+j) = momen0
+            zr(jextr-1+24+j) = momen0pres
             zr(jextr-1+36+j) = momen0ther + 0.5d0*momen1ther
             zr(jextr-1+48+j) = momen0pres + 0.5d0*momen1pres
             zr(jextr-1+60+j) = momen0mec + 0.5d0*momen1mec
+            zr(jextr-1+92+j) = 0.5d0*momen1ther
 !
 ! --------- pour tmaxsn a l'extremite
             vale(1) = tmaxsn(2)
@@ -615,6 +765,22 @@ subroutine rc32t()
                 endif
             contraintestot(k)=contraintesth(k)+contraintespr(k)+contraintesmec(k)
  467        continue
+            vale(2) = zr(jabsc+nbabsc-1)
+            if (n4 .ne. 0) then
+                call tbliva(tabtemp, 2, valek, [ibid], vale,&
+                            [cbid], k8b, crit, prec, 'TEMP',&
+                            k8b, ibid, temp(8), cbid, k8b,&
+                            iret)
+                if (iret .ne. 0) then
+                    valk (1) = tabtemp
+                    valk (2) = 'TEMP'
+                    valk (3) = valek(1)
+                    valk (4) = valek(2)
+                    call utmess('F', 'POSTRCCM_2', nk=4, valk=valk, nr=2,&
+                                 valr=vale)
+                endif
+            endif
+            zr(jextr+89) = temp(8)
 !
             call rc32my(nbabsc, zr(jabsc), contraintestot, momen0, momen1)
             call rc32my(nbabsc, zr(jabsc), contraintesth, momen0ther, momen1ther)
@@ -622,7 +788,7 @@ subroutine rc32t()
             call rc32my(nbabsc, zr(jabsc), contraintesmec, momen0mec, momen1mec)
 !
             zr(jextr-1+18+j) = momen0 + 0.5d0*momen1
-            zr(jextr-1+30+j) = momen0
+            zr(jextr-1+30+j) = momen0pres
             zr(jextr-1+42+j) = momen0ther + 0.5d0*momen1ther
             zr(jextr-1+54+j) = momen0pres + 0.5d0*momen1pres
             zr(jextr-1+66+j) = momen0mec + 0.5d0*momen1mec
@@ -630,6 +796,7 @@ subroutine rc32t()
             zr(jextr+85)     = tmaxsn(2)
             zr(jextr+86)     = tminsp(2)
             zr(jextr+87)     = tmaxsp(2)
+            zr(jextr-1+98+j) = 0.5d0*momen1ther
 !
  66     continue
         call jedetr('RC.INSTANT')
@@ -642,6 +809,7 @@ subroutine rc32t()
 !
  888    continue
  10 continue
-!  
+!
+999 continue
     call jedema()
 end subroutine

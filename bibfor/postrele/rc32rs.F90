@@ -12,7 +12,7 @@ subroutine rc32rs(mater, lpmpb, lsn,&
     aster_logical :: lpmpb, lsn, lther, lfat, lefat
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -46,6 +46,6 @@ subroutine rc32rs(mater, lpmpb, lsn,&
         call rc32r0(nomres, lpmpb, lsn, lther)
     endif
 !
-    if (lther) call rc32r8(nomres, mater)
+    if (lther) call rc32r8(nomres, mater, lfat)
 !
 end subroutine

@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -20,7 +20,7 @@
 interface
     subroutine rcZ2sn1b(ze200, lieu, numsip, numsiq, seismeb32, seismeunit,&
                         seismeze200, mse, propi, propj, proqi, proqj,&
-                        instsn, sn, sp3, spmeca3)
+                        instsn, sn, sp3, spmeca3, snet, trescapr, tresth)
         aster_logical :: ze200
         character(len=4) :: lieu
         integer :: numsip
@@ -37,5 +37,8 @@ interface
         real(kind=8) :: sn
         real(kind=8) :: sp3
         real(kind=8) :: spmeca3
+        real(kind=8) :: snet
+        real(kind=8) :: trescapr
+        real(kind=8) :: tresth
     end subroutine rcZ2sn1b
 end interface

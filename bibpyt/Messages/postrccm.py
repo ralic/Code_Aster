@@ -1,6 +1,6 @@
 # coding=utf-8
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -260,6 +260,11 @@ Contactez le support technique.
 
     46: _(u"""
  Les données sous CHAR_MECA et TUYAU/INDI_SIGM ne sont pas cohérentes (cas corps/tubulure).
+"""),
+
+    47: _(u"""
+ Afin de permettre l'interpolation, les températures sous TEMP_A et TEMP_B doivent être
+    différentes.
 """),
 
 }

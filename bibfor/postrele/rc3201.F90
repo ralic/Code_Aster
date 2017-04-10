@@ -17,7 +17,6 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
 #include "asterfort/utmess.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/rc32pm.h"
-#include "asterfort/rc32sn.h"
 #include "asterfort/rcZ2sn.h"
 #include "asterfort/rc32sp.h"
 #include "asterfort/rcma02.h"
@@ -42,7 +41,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     character(len=24) :: factus2(*)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -113,9 +112,9 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     real(kind=8) :: sp3s, spmeca3s, sp1s(2), mat1s(7), mat2s(7)
     real(kind=8) :: instsn(2), instsp(4), instsns(2), instsps(4)
     real(kind=8) :: sp1combs(2), spmecomb(2)
-    real(kind=8) :: spmecombs(2)
-    real(kind=8) :: propi(20), propj(20), proqi(20)
-    real(kind=8) :: proqj(20)
+    real(kind=8) :: spmecombs(2), snthem
+    real(kind=8) :: propi(20), propj(20), proqi(20), tresth
+    real(kind=8) :: proqj(20), setbid, trescabid, trescapr, simpij2
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()
@@ -130,6 +129,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     spthem = 0.d0
     samax = 0.d0
     sigpm = 0.d0
+    snthem = 0.d0
 !
     call getvtx(' ', 'TYPE_KE', scal=typeke, nbret=nb)
 !
@@ -230,14 +230,13 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
               proqi(j) = 0.d0                   
 221         continue
             call rcZ2sn(ze200, lieu, nsitup, nsitup,iocs, mse,&
-                        propi, propi, proqi, proqi, instsn, sn, sp3bid, spmeca3bid)
+                        propi, propi, proqi, proqi, instsn, sn,&
+                        sp3bid, spmeca3bid, snet, trescabid, trescabid)
             resuas(9*(is1-1)+4) = sn
             snmax = max( snmax , sn )
         endif
 ! ----- Calcul du SN*
         if (lsn .and. lther) then
-            call rc32sn('SN*_SITU', lieu, nsitup, ppi, sij0,&
-                        0, ppi, sij0, seisme, mse, snet)
             resuas(9*(is1-1)+5) = snet
             snemax = max( snemax , snet )
         endif
@@ -318,6 +317,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         pm = 0.d0
         pb = 0.d0
         pmpb = 0.d0
+        trescapr = 0.d0
         sn = 0.d0
         snet = 0.d0
         simpij = 0.d0
@@ -357,20 +357,21 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                proqi(j) = 0.d0                   
 321          continue
             call rcZ2sn(ze200, lieu, nsitup, nsitup, 0, mse,&
-                     propi, propj, proqi, proqi, instsn, sn, sp3, spmeca3)
+                     propi, propj, proqi, proqi, instsn, sn,&
+                     sp3, spmeca3, snet, trescapr, tresth)
             resuss(9*(is1-1)+4) = sn
             snmax = max(snmax,sn)
+            snthem = max(snthem, tresth)
         endif
 ! ----- Calcul du SN*
         if (lsn .and. lther) then
-            call rc32sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
-                        0, ppj, mpj, .false._1, mse, snet)
             resuss(9*(is1-1)+5) = snet
             snemax = max(snemax,snet)
         endif
 ! ----- Calcul du Rochet Thermique
         if (lther) then
-            call rc32rt(lieu, ppi, ppj, simpij)
+            call rc32rt(ze200, ppi, ppj, simpij2)
+            simpij=simpij2+trescapr
             sigpm = max ( sigpm, simpij )
         endif
 !------ Calcul du PMPB, SN, SN* si SEISME
@@ -389,13 +390,13 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             endif
             if (lsn) then
                 call rcZ2sn(ze200, lieu, nsitup, nsitup, iocs, mse,&
-                           propi, propj, proqi, proqi, instsns, sns, sp3s, spmeca3s)
+                           propi, propj, proqi, proqi, instsns, sns,&
+                           sp3s, spmeca3s, snets, trescabid, tresth)
                 resuas(9*(is1-1)+4) = sns
                 snmax = max(snmax,sns)
+                snthem = max(snthem, tresth)
             endif
             if (lsn .and. lther) then
-                call rc32sn('SN*_SITU', lieu, nsitup, ppi, mpi,&
-                            0, ppj, mpj, seisme, mse, snets)
                 resuas(9*(is1-1)+5) = snets
                 snemax = max(snemax,snets)
             endif
@@ -515,7 +516,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
         endif
 !
         spmax = max(spmax,sps(1),sp(1))
-        spthem = max(0.0,sps(1)-spmecs(1),sp(1)-spmeca(1))
+        spthem = max(spthem, 0.0,sps(1)-spmecs(1),sp(1)-spmeca(1))
 ! ----- Ajout de commentaires dans le fichier mess
         if (niv .ge. 2) then
           if (seisme) then
@@ -579,19 +580,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             call rcmo02('B', nsituq, mqj)
             call rcma02('A', ioc2, matqi)
             call rcma02('B', ioc2, matqj)
-! --------- Calcul du rochet thermique
-            if (lther) then
-                call rc32rt(lieu, pqi, pqj, simpij)
-                sigpm = max ( sigpm, simpij )
-                call rc32rt(lieu, ppi, pqi, simpij)
-                sigpm = max ( sigpm, simpij )
-                call rc32rt(lieu, ppi, pqj, simpij)
-                sigpm = max ( sigpm, simpij )
-                call rc32rt(lieu, ppj, pqi, simpij)
-                sigpm = max ( sigpm, simpij )
-                call rc32rt(lieu, ppj, pqj, simpij)
-                sigpm = max ( sigpm, simpij )
-            endif
+
 !
 ! --------------------------------------------
 !               CALCUL DU SN SANS SEISME
@@ -617,7 +606,27 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             sp3 = 0.d0
             spmeca3 = 0.d0
             call rcZ2sn(ze200, lieu, nsitup, nsituq, 0, mse,&
-                     propi, propj, proqi, proqj, instsn, snpq, sp3, spmeca3)
+                     propi, propj, proqi, proqj, instsn, snpq,&
+                     sp3, spmeca3, setbid, trescapr, tresth)
+!
+! --------- Calcul du rochet thermique
+            if (lther) then
+                call rc32rt(ze200, pqi, pqj, simpij2)
+                simpij=simpij2+trescapr
+                sigpm = max ( sigpm, simpij )
+                call rc32rt(ze200, ppi, pqi, simpij2)
+                simpij=simpij2+trescapr
+                sigpm = max ( sigpm, simpij )
+                call rc32rt(ze200, ppi, pqj, simpij2)
+                simpij=simpij2+trescapr
+                sigpm = max ( sigpm, simpij )
+                call rc32rt(ze200, ppj, pqi, simpij2)
+                simpij=simpij2+trescapr
+                sigpm = max ( sigpm, simpij )
+                call rc32rt(ze200, ppj, pqj, simpij2)
+                simpij=simpij2+trescapr
+                sigpm = max ( sigpm, simpij )
+            endif
 !
             icss = icss + 1
             if (instsn(1) .ge. 0) then
@@ -637,6 +646,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             resucs(icss) = snpq
             resuca(icss) = r8vide()
             snmax = max(snmax,snpq)
+            snthem = max(snthem,tresth)
 !
 ! --------------------------------------------
 !               CALCUL DU SN AVEC SEISME
@@ -647,7 +657,8 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                 spmeca3s = 0.d0
 !---------- On maximise les parties B3200 et ZE200
                 call rcZ2sn(ze200, lieu, nsitup, nsituq, iocs, mse,&
-                           propi, propj, proqi, proqj, instsns, snpqs, sp3s, spmeca3s)
+                           propi, propj, proqi, proqj, instsns, snpqs,&
+                           sp3s, spmeca3s, setbid, trescabid, tresth)
 !
                 icas = icas + 1
                 if(instsns(1) .ge. 0) then
@@ -664,6 +675,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
                 icas = icas + 1
                 resuca(icas) = snpqs
                 snmax = max(snmax,snpqs)
+                snthem = max(snthem,tresth)
             endif
 !
             if (niv .ge. 2) then
@@ -860,7 +872,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
             endif
 ! ----- Ajout de commentaires dans le fichier mess
             spmax = max(spmax,sps(1),spcomb(1),sps(2),spcomb(2))
-            spthem = max(0.0,sps(1)-spmecs(1),spcomb(1)-spmeca(1))
+            spthem = max(spthem, 0.0,sps(1)-spmecs(1),spcomb(1)-spmeca(1))
 !
             if (niv .ge. 2) then
               write (ifm,121) spcomb(1), spcomb(2)
@@ -924,6 +936,7 @@ subroutine rc3201(ze200, ig, lpmpb, lsn, lther, lfat, lefat,&
     resumax(7)  = samax
     resumax(8) = sigpm
     resumax(9) = spthem
+    resumax(10) = snthem
 !
     if (seisme) then
         AS_DEALLOCATE(vr=matrice_fu_b)

@@ -1,14 +1,12 @@
-subroutine rc32rt(lieu, pi, pj, simpij)
+subroutine rc32rt(ze200, pi, pj, simpij)
     implicit   none
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/rctres.h"
-#include "asterc/getfac.h"
     real(kind=8) :: pi, pj, simpij
-    character(len=4) :: lieu
+    aster_logical :: ze200
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -29,27 +27,24 @@ subroutine rc32rt(lieu, pi, pj, simpij)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jsigu, icmp, nb
-    real(kind=8) :: pij, sigmp(6)
+    real(kind=8) :: s1, s2, rayon, ep
+    integer :: jvalin
+
 ! DEB ------------------------------------------------------------------
 !
-    call getfac('RESU_MECA_UNIT', nb)
-!-- si on est en ZE200 ou B3200_T
-    if (nb .eq. 0) goto 999
+    simpij=0.d0
+    s1=0.d0
+    s2=0.d0
 !
-    call jeveuo('&&RC3200.MECA_UNIT .'//lieu, 'L', jsigu)
+! --- CONTRAINTE MOYENNE DUE A LA PRESSION : partie ze200a
+    if (ze200) then
+        call jeveuo('&&RC3200.INDI', 'L', jvalin)
+        rayon = zr(jvalin+6) 
+        ep = zr(jvalin+7) 
+        s1 = rayon*abs(pi)/ep
+        s2 = rayon*abs(pj)/ep
+    endif
 !
-! --- DIFFERENCE DE PRESSION ENTRE LES ETATS I ET J
+    simpij = max(s1,s2)
 !
-    pij = pj - pi
-!
-! --- CONTRAINTE DE MEMBRANE DUE A LA PRESSION  (RECUP M_0)
-!
-    do 10 icmp = 1, 6
-        sigmp(icmp) = pij * zr(jsigu-1+156+72+icmp)
-10  end do
-!
-    call rctres(sigmp, simpij)
-!
-999 continue
 end subroutine

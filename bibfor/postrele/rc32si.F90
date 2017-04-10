@@ -21,7 +21,7 @@ subroutine rc32si()
 #include "asterfort/as_deallocate.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -73,6 +73,10 @@ subroutine rc32si()
     call jecrec('&&RC3200.SITU_ETAT_A', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
                 ndim)
     call jecrec('&&RC3200.SITU_ETAT_B', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
+                nbsitu)
+    call jecrec('&&RC3200.TEMP_ETAT_A', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
+                ndim)
+    call jecrec('&&RC3200.TEMP_ETAT_B', 'V V R', 'NO', 'DISPERSE', 'VARIABLE',&
                 nbsitu)
 !
     call jecrec('&&RC3200.SITU_THER', 'V V I', 'NO', 'DISPERSE', 'VARIABLE',&
@@ -238,6 +242,19 @@ subroutine rc32si()
                         nbret=n1)
         endif
 !
+! ------ TEMPERATURE EN LIEN AVEC LE CHARGEMENT "A":
+!        ----------------------------
+        call getvr8('SITUATION', 'TEMP_A', iocc=iocc, nbval=0, nbret=n1)
+        nbchar = -n1
+        call jecroc(jexnom('&&RC3200.TEMP_ETAT_A', knume))
+        call jeecra(jexnom('&&RC3200.TEMP_ETAT_A', knume), 'LONMAX', nbchar)
+        call jeecra(jexnom('&&RC3200.TEMP_ETAT_A', knume), 'LONUTI', nbchar)
+        if (nbchar .ne. 0) then
+            call jeveuo(jexnom('&&RC3200.TEMP_ETAT_A', knume), 'E', jtempa)
+            call getvr8('SITUATION', 'TEMP_A', iocc=iocc, nbval=nbchar, scal=zr(jtempa),&
+                        nbret=n1)
+        endif
+!
 ! ------ ETAT DE CHARGEMENT POUR "B":
 !        ----------------------------
         call getvis('SITUATION', 'CHAR_ETAT_B', iocc=iocc, nbval=0, nbret=n1)
@@ -250,6 +267,20 @@ subroutine rc32si()
             call jeveuo(jexnom('&&RC3200.SITU_ETAT_B', knume), 'E', jcharb)
             call getvis('SITUATION', 'CHAR_ETAT_B', iocc=iocc, nbval=nbchar, scal=zi(jcharb),&
                         nbret=n1)
+        endif
+!
+! ------ TEMPERATURE EN LIEN AVEC LE CHARGEMENT "B":
+!        ----------------------------
+        call getvr8('SITUATION', 'TEMP_B', iocc=iocc, nbval=0, nbret=n1)
+        nbchar = -n1
+        call jecroc(jexnom('&&RC3200.TEMP_ETAT_B', knume))
+        call jeecra(jexnom('&&RC3200.TEMP_ETAT_B', knume), 'LONMAX', nbchar)
+        call jeecra(jexnom('&&RC3200.TEMP_ETAT_B', knume), 'LONUTI', nbchar)
+        if (nbchar .ne. 0) then
+            call jeveuo(jexnom('&&RC3200.TEMP_ETAT_B', knume), 'E', jtempb)
+            call getvr8('SITUATION', 'TEMP_B', iocc=iocc, nbval=nbchar, scal=zr(jtempb),&
+                        nbret=n1)
+            if (abs(zr(jtempa)-zr(jtempb)) .lt. 1.0d-08) call utmess('F', 'POSTRCCM_47')
         endif
 !
 ! ------ TRANSITOIRE THERMIQUE ASSOCIE A LA SITUATION:
@@ -363,9 +394,7 @@ subroutine rc32si()
     call ordis(nume_group, nbgr)
 !
 ! -- incompatibilité des situations de passage et de plus de 3 groupes
-    if (nbgr .gt. 3 .and. yapass) then
-        call utmess('F', 'POSTRCCM_34')
-    endif
+    if (nbgr .gt. 3 .and. yapass) call utmess('F', 'POSTRCCM_34')
 !
 ! --- on ajoute un groupe pour les situations de passage
     if (yapass) nbgr = nbgr + 1

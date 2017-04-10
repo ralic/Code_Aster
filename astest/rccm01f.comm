@@ -1,0 +1,1195 @@
+# ======================================================================
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
+# ======================================================================
+
+DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'))
+
+#VALIDATION DE POST_RCCM B3200 (SN et FATIGUE)
+#3e type de Chargement en B3200 avec
+#interpolation des moments sur la température
+
+COURFATA = FORMULE(NOM_PARA='SIGM',VALE='5.E5/SIGM ')
+
+L_INST=DEFI_LIST_REEL(  DEBUT=1.,
+                        INTERVALLE=_F(  JUSQU_A = 1000., PAS = 1.) )
+                           
+FWOHLER=CALC_FONC_INTERP( FONCTION=COURFATA, LIST_PARA=L_INST,
+                          NOM_PARA = 'SIGM',PROL_DROITE='LINEAIRE',
+                          PROL_GAUCHE='CONSTANT',
+                          NOM_RESU='NADM'       )
+
+MAT=DEFI_MATERIAU(  ELAS=_F( E = 200000.,  NU = 0.3,  ALPHA = 1.0E-5),
+                    FATIGUE=_F(  WOHLER = FWOHLER, E_REFE = 200000.),
+                    RCCM=_F(  M_KE = 2.,
+                              N_KE = 0.2,
+                              SM = 2000.,
+                              SY_02 = 200.)
+                               )
+
+# CONTRAINTES "MX"    
+T_MX = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=1,)
+
+# CONTRAINTES "MY"                  
+T_MY = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=2,)
+                      
+# CONTRAINTES "MZ"      
+T_MZ = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=3,)
+
+#  CONTRAINTES "PRES"                    
+T_PRES = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=4,)
+
+#  CONTRAINTES THERMIQUE
+T1 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=5,)
+
+# TEMPERATURES (SITUATION 4)                 
+T_TEMP4 = LIRE_TABLE (UNITE=35, FORMAT='ASTER',SEPARATEUR=' ',
+                      NUME_TABLE=12,)
+
+# VALIDATION DU CALCUL DE SN
+#TRESCA
+SN4=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ),  ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=SN4,)
+
+#TOUT_INST
+SN4b=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=SN4b,)
+
+#TRESCA sans transitoire thermique
+SN4c=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a0th',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=SN4c,)
+
+#TOUT_INST sans transitoire thermique
+SN4d=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a0th',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=SN4d,)
+
+#unitaire+RESU_PRES avec TRESCA
+SN4e=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4b',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,),),);
+
+#unitaire+RESU_PRES avec TOUT_INST
+SN4f=POST_RCCM( MATER=MAT,
+                 METHODE='TOUT_INST',
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,),),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4b',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,),),);
+
+#RESU_PRES+RESU_MECA avec TRESCA
+SN4g=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T1, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4c',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,),),);
+
+#RESU_PRES+RESU_MECA avec TOUT_INST
+SN4h=POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='SN',
+                 INFO=2,
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T1, ), ),
+                 SITUATION=(
+                  _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4c',
+                     NUME_GROUPE=1,
+                     NUME_RESU_THER = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_MECA = 1,),),);
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4a
+# METHODE TRESCA
+FAT14 = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_4a_bis',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=FAT14,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4a
+# METHODE TOUT_INST
+FAT14b = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=4,
+                     NOM_SITU='Situation_4a_bis',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=FAT14b,) 
+
+# MELANGE DES 3 TYPES DE CHARGEMENTS
+
+# VALIDATION DU CALCUL EN FATIGUE :
+# SITUATION 4a (unitaire) + SITUATION 4a (unitaire avec interpolation)
+# METHODE TRESCA
+FAT14c = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=4,
+                     NOM_SITU='Situation_4a_unit',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=FAT14c,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : 
+# SITUATION 4a (unitaire) + SITUATION 4a (unitaire avec interpolation)
+# METHODE TOUT_INST
+FAT14d = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=4,
+                     NOM_SITU='Situation_4b',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     PRES_A=0,
+                     PRES_B=0,),),);
+
+IMPR_TABLE(    TABLE=FAT14d,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4b
+# LA PRESSION EST DEFINIE DIFFEREMMENT
+# METHODE TRESCA
+FAT14e = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4b',
+                     NUME_GROUPE=1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                     ),);
+
+IMPR_TABLE(    TABLE=FAT14e,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4b
+# LA PRESSION EST DEFINIE DIFFEREMMENT
+# METHODE TOUT_INST
+FAT14f = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 METHODE='TOUT_INST',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4b',
+                     NUME_GROUPE=1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_THER = 1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                     ),);
+
+IMPR_TABLE(    TABLE=FAT14f,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4c
+# COMB de UNITAIRE ET RESU_MECA
+# METHODE TRESCA
+FAT14g = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4c',
+                     NUME_GROUPE=1,
+                     NUME_RESU_MECA = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_THER = 1,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                     ),);
+
+IMPR_TABLE(    TABLE=FAT14g,) 
+
+# VALIDATION DU CALCUL EN FATIGUE : SITUATION 4a + SITUATION 4c
+# COMB de UNITAIRE ET RESU_MECA
+# METHODE TOUT_INST
+FAT14h = POST_RCCM( MATER=MAT,
+                 TYPE_RESU='DETAILS',
+                 TYPE_RESU_MECA='B3200',
+                 METHODE='TOUT_INST',
+                 OPTION='FATIGUE',
+                 INFO=2,
+                 TYPE_KE='KE_MECA',
+                 CHAR_MECA=(
+                  _F(NUME_CHAR=1,
+                     NOM_CHAR='ETAT A - SITU1',
+                     MX=1.0,  MY=0.5,  MZ=0.0,),
+                  _F(NUME_CHAR=2,
+                     NOM_CHAR='ETAT B - SITU1',
+                     MX=1.0,  MY=2.0,  MZ=3.0,), ),
+                  RESU_MECA_UNIT=(
+                   _F(TABL_MX=T_MX,
+                      TABL_MY=T_MY,
+                      TABL_MZ=T_MZ,
+                      TABL_PRES=T_PRES,),),
+                 RESU_PRES= (_F(NUME_RESU_PRES=1,
+                            TABL_RESU_PRES=T1, ), ),
+                 RESU_THER= (_F(NUME_RESU_THER=1,
+                            TABL_RESU_THER=T1, ), ),
+                 RESU_MECA= (_F(NUME_RESU_MECA=1,
+                            TABL_RESU_MECA=T1, ), ),
+                 SITUATION=(
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=1,
+                     NOM_SITU='Situation_4c',
+                     NUME_GROUPE=1,
+                     NUME_RESU_MECA = 1,
+                     NUME_RESU_PRES = 1,
+                     NUME_RESU_THER = 1,),
+                 _F(NB_OCCUR=1,
+                     NUME_SITU=2,
+                     NOM_SITU='Situation_4a',
+                     NUME_GROUPE=1,
+                     CHAR_ETAT_A=1,
+                     CHAR_ETAT_B=2,
+                     NUME_RESU_THER = 1,
+                     TEMP_A=0.0,
+                     TEMP_B=300.0,
+                     TABL_TEMP = T_TEMP4,
+                     PRES_A=0,
+                     PRES_B=0,),
+                     ),);
+
+IMPR_TABLE(    TABLE=FAT14h,) 
+
+#-------------------------------------------------------------------------------
+#   TEST (SOLUTION DE REFERENCE ANALYTIQUE)
+#--------------------------------------------------------------------------------
+# SN4
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4b
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4c
+# METHODE TRESCA SANS THERMIQUE
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4d
+# METHODE TOUT_INST SANS THERMIQUE
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=100.000000000,
+           VALE_REFE=100.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=300.000000000,
+           VALE_REFE=300.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4e
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1150.000000000,
+           VALE_REFE=1150.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4f
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1150.000000000,
+           VALE_REFE=1150.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4g
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=600.000000000,
+           VALE_REFE=600.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1275.000000000,
+           VALE_REFE=1275.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# SN4h
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=600.000000000,
+           VALE_REFE=600.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1275.000000000,
+           VALE_REFE=1275.0,
+           NOM_PARA='SN_MAX',
+           TABLE=SN4h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14b
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14b,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14c
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14c,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14d
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=725.000000000,
+           VALE_REFE=725.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=200.000000000,
+           VALE_REFE=200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14d,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14e
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1150.000000000,
+           VALE_REFE=1150.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1100.000000000,
+           VALE_REFE=1100.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14e,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14f
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1150.000000000,
+           VALE_REFE=1150.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=400.000000000,
+           VALE_REFE=400.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1100.000000000,
+           VALE_REFE=1100.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14f,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+# FAT14g
+# METHODE TRESCA
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1275.000000000,
+           VALE_REFE=1275.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1200.000000000,
+           VALE_REFE=1200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14g,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+
+# FAT14h
+# METHODE TOUT_INST
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=700.000000000,
+           VALE_REFE=700.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='ORIG',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1275.000000000,
+           VALE_REFE=1275.0,
+           NOM_PARA='SN_MAX',
+           TABLE=FAT14h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+TEST_TABLE(REFERENCE='ANALYTIQUE',
+           VALE_CALC=1200.000000000,
+           VALE_REFE=1200.0,
+           NOM_PARA='SP_MAX',
+           TABLE=FAT14h,
+           FILTRE=_F(NOM_PARA='LIEU',
+                     VALE_K='EXTR',),
+           )
+
+FIN();

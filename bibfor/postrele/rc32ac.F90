@@ -18,7 +18,6 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 #include "asterfort/rcma02.h"
 #include "asterfort/rcmo02.h"
 #include "asterfort/rc32pm.h"
-#include "asterfort/rc32sn.h"
 #include "asterfort/rcZ2sn.h"
 #include "asterfort/rc32rt.h"
 #include "asterfort/rc32sp.h"
@@ -31,7 +30,7 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
     character(len=8) :: mater
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -82,7 +81,7 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
     character(len=8) :: typeke
     integer :: jresu, k
     real(kind=8) :: spmeca3, instsn(2), instsp(4), propi(20), propj(20)
-    real(kind=8) :: proqi(20)
+    real(kind=8) :: proqi(20), set, trescapr, tresth
 !
 ! DEB ------------------------------------------------------------------
     data lieu / 'ORIG' , 'EXTR' /  
@@ -166,9 +165,9 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 !         ON TRAITE LES SITUATIONS COMBINABLES DANS LEUR GROUPE
 ! ----------------------------------------------------------------------
 !
-        call wkvect('&&RC3200.RESU1.'//lieu(im), 'V V R', 9, jresu1)
+        call wkvect('&&RC3200.RESU1.'//lieu(im), 'V V R', 10, jresu1)
 !
-        do 60 l = 1, 9
+        do 60 l = 1, 10
             zr(jresu1-1+l) = 0.d0
  60     continue
 !
@@ -219,11 +218,11 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 23*50)
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 23*200)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             call jecroc(jexnum(k24fu2, ig))
-            call jeecra(jexnum(k24fu2, ig), 'LONMAX', 2*50)
+            call jeecra(jexnum(k24fu2, ig), 'LONMAX', 2*200)
             call jeveuo(jexnum(k24fu2, ig), 'E', jfact2)
 !
             if (ig .eq. 1) then
@@ -260,8 +259,8 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
             mse(i) = 0.d0
 220     continue
 !
-        call wkvect('&&RC3200.RESU2.'//lieu(im), 'V V R', 9, jresu2)
-        do 40 kk = 1, 9
+        call wkvect('&&RC3200.RESU2.'//lieu(im), 'V V R', 10, jresu2)
+        do 40 kk = 1, 10
             zr(jresu2-1+kk) = 0.d0
  40     continue
 !
@@ -354,7 +353,9 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
                       proqi(j) = 0.d0                  
 221                 continue
                     call rcZ2sn(ze200, lieu(im), nsitup, nsitup,iocs, mse,&
-                                propi, propj, proqi, proqi, instsn, sn, sp3, spmeca3)
+                                propi, propj, proqi, proqi, instsn, sn,&
+                               sp3, spmeca3, set, trescapr, tresth)
+                    zr(jresu2+8) = tresth
                     zr(jress-1+9*(is1-1)+4) = sn
                     if (niv .ge. 2) then
                         write (ifm,203) nsitup, sn
@@ -369,9 +370,7 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 !
 ! ----------- CALCUL DU SN*
                 if (lsn .and. lther) then
-                    snet = 0.d0
-                    call rc32sn('SN*_SITU', lieu(im), nsitup, ppi, mpi,&
-                                nsituq, ppj, mpj, seisme, mse, snet)
+                    snet = set
                     zr(jress-1+9*(is1-1)+5) = snet
                     if (niv .ge. 2) then
                         write (ifm,232) nsitup, snet
@@ -381,7 +380,8 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 !
 ! ----------- CALCUL DU ROCHET THERMIQUE
                 if (lther) then
-                    call rc32rt(lieu(im), ppi, ppj, simpij)
+                    call rc32rt(ze200, ppi, ppj, simpij)
+                    simpij=simpij+trescapr
                     write (ifm,234) nsitup, simpij
                     zr(jresu2+7)=simpij
                 endif
@@ -448,8 +448,8 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 !               ON TRAITE LES SITUATIONS DE PASSAGE
 ! ----------------------------------------------------------------------
 !
-     call wkvect('&&RC3200.RESU3.'//lieu(im), 'V V R', 9, jresu3)
-     do 50 ll = 1, 9
+     call wkvect('&&RC3200.RESU3.'//lieu(im), 'V V R', 10, jresu3)
+     do 50 ll = 1, 10
         zr(jresu3-1+ll) = 0.d0
  50 continue
 !
@@ -491,11 +491,11 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
             call jeveuo(jexnum(k24cs, ig), 'E', jrecs)
 !
             call jecroc(jexnum(k24fu, ig))
-            call jeecra(jexnum(k24fu, ig), 'LONMAX', 23*50)
+            call jeecra(jexnum(k24fu, ig), 'LONMAX', 23*200)
             call jeveuo(jexnum(k24fu, ig), 'E', jfact)
 !
             call jecroc(jexnum(k24fu2, ig))
-            call jeecra(jexnum(k24fu2, ig), 'LONMAX', 2*50)
+            call jeecra(jexnum(k24fu2, ig), 'LONMAX', 2*200)
             call jeveuo(jexnum(k24fu2, ig), 'E', jfact2)
 !
             yapass = .true.
@@ -514,7 +514,7 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
 !  FACTEUR D'USAGE ENVIRONNEMENTAL TOTAL, ROCHET THERMIQUE(2)
 ! ----------------------------------------------------------------------
 !
-        call wkvect('&&RC3200.RESU.'//lieu(im), 'V V R', 11, jresu)
+        call wkvect('&&RC3200.RESU.'//lieu(im), 'V V R', 12, jresu)
 !------ PM
         zr(jresu) = max(zr(jresu1), zr(jresu2), zr(jresu3))
 !------ PB
@@ -537,6 +537,8 @@ subroutine rc32ac(ze200, mater, lpmpb, lsn,&
         zr(jresu+9) = max(zr(jresu1+7), zr(jresu2+7), zr(jresu3+7))
 !------ ROCHET THERMIQUE SPTHER
         zr(jresu+10) = max(zr(jresu1+8), zr(jresu2+8), zr(jresu3+8))
+!------ ROCHET THERMIQUE SNTHER
+        zr(jresu+11) = max(zr(jresu1+9), zr(jresu2+9), zr(jresu3+9))
 !
  10 continue
 !

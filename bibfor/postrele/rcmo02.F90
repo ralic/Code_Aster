@@ -12,7 +12,7 @@ subroutine rcmo02(etat, numsit, vale)
     character(len=1) :: etat
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -76,30 +76,16 @@ subroutine rcmo02(etat, numsit, vale)
     call jeveuo(jexnom('&&RC3200.SITU_ETAT_'//etats, knumes), 'L', jlcha)
 !
 !
-    do 100 i = 1, nbchar
-!
-        numcha = zi(jlcha-1+i)
+    if(nbchar .ne. 0) then
+        numcha = zi(jlcha)
         knumec = 'C       '
         call codent(numcha, 'D0', knumec(2:8))
-!
         call jeveuo(jexnom('&&RC3200.VALE_CHAR', knumec), 'L', jchar)
 !
-        if (etat .eq. 'S') then
-            do 102 j = 1, 12
-                vale(j) = vale(j) + zr(jchar-1+j)**2
-102          continue
-        else
-            do 104 j = 1, 12
-                vale(j) = vale(j) + zr(jchar-1+j)
-104          continue
-        endif
+        do 102 j = 1, 12
+            vale(j) = zr(jchar-1+j)
+102     continue
 !
-100 continue
-!
-    if (etat .eq. 'S') then
-        do 106 j = 1, 12
-            vale(j) = sqrt ( vale(j) )
-106      continue
     endif
 !
 999    continue

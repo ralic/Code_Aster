@@ -1,4 +1,4 @@
-subroutine rc32r8(nomres, mater)
+subroutine rc32r8(nomres, mater, lfat)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8vide.h"
@@ -9,11 +9,11 @@ subroutine rc32r8(nomres, mater)
 #include "asterfort/tbajpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getvr8.h"
-#include "asterc/getfac.h"
     character(len=8) :: nomres, mater
+    aster_logical :: lfat
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -35,8 +35,8 @@ subroutine rc32r8(nomres, mater)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, npar1, im, jresu, n1, nb
-    parameter    ( npar1 = 7 )
+    integer :: ibid, npar1, im, jresu, n1
+    parameter    ( npar1 = 8 )
     real(kind=8) :: rbid, valer(npar1), valres(1), symax
     complex(kind=8) :: c16b
     integer :: icodre(1)
@@ -46,14 +46,10 @@ subroutine rc32r8(nomres, mater)
 !     ------------------------------------------------------------------
     data lieu   / 'ORIG' , 'EXTR' /
 !
-    data nopar1 / 'TYPE', 'LIEU', 'SY', 'SP_THER', 'SIGM_M_PRES',&
-     &              'VALE_MAXI_LINE', 'VALE_MAXI_PARAB' /
-    data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R' /
+    data nopar1 / 'TYPE', 'LIEU', 'SY', 'SIGM_M_PRES','SN_THER_MAX',&
+     &              'VALE_MAXI_LINE', 'SP_THER_MAX', 'VALE_MAXI_PARAB' /
+    data typar1 / 'K8', 'K8', 'R', 'R', 'R', 'R', 'R', 'R' /
 ! DEB ------------------------------------------------------------------
-!
-    call getfac('RESU_MECA_UNIT', nb)
-!-- si on est en ZE200 ou B3200_T
-    if (nb .eq. 0) goto 888
 !
     symax = r8vide()
     call getvr8(' ', 'SY_MAX', scal=symax, nbret=n1)
@@ -83,10 +79,17 @@ subroutine rc32r8(nomres, mater)
 !
         call jeveuo('&&RC3200.RESU.'//lieu(im), 'L', jresu)
 !
-        valer(2) = zr(jresu+10)
-        valer(3) = zr(jresu+9)
+        valer(2) = zr(jresu+9)
+        if (lfat) then
+            valer(5) = zr(jresu+10)
+        else
+            valer(5) = r8vide()
+        endif
+        valer(3) = zr(jresu+11)
 !
-        call rcmcrt(symax, valer(3), valer(4), valer(5))
+        call rcmcrt(symax, valer(2), valer(4), valer(6))
+!
+        if (.not. lfat) valer(6) = r8vide()
 !
         call tbajli(nomres, npar1, nopar1, [ibid], valer,&
                     [c16b], valek, 0)
@@ -94,6 +97,5 @@ subroutine rc32r8(nomres, mater)
 10  continue
 !
 999  continue
-888  continue
 !
 end subroutine

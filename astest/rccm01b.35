@@ -1,6 +1,5 @@
+#CONTRAINTES "MX"
 #DEBUT_TABLE
-#TITRE CONTRAINTES "MX"
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY          SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R              R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -10,9 +9,8 @@
 
 #
 #--------------------------------------------------------------------------------
+#CONTRAINTES "MY"
 #DEBUT_TABLE
-#TITRE CONTRAINTES "MY"
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY          SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R              R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -22,9 +20,8 @@
 #
 #--------------------------------------------------------------------------------
 
+#CONTRAINTES "MZ"
 #DEBUT_TABLE
-#TITRE CONTRAINTES "MZ"
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY          SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R              R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -33,9 +30,8 @@
 #FIN_TABLE
 #
 #--------------------------------------------------------------------------------
+#CONTRAINTES "PRES"
 #DEBUT_TABLE
-#TITRE CONTRAINTES "PRES"
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY            SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                   R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -44,10 +40,8 @@
 #FIN_TABLE
 #
 #--------------------------------------------------------------------------------
-#
+#SITUATION 1 - CONTRAINTES THERMIQUES
 #DEBUT_TABLE
-#TITRE  SITUATION 1 - CONTRAINTES THERMIQUES
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  2.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -64,10 +58,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#SITUATION 3 - CONTRAINTES THERMIQUES
 #DEBUT_TABLE
-#TITRE  SITUATION 3 - CONTRAINTES THERMIQUES
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.50000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -78,10 +70,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  1.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#SITUATION 1 - CONTRAINTES THERMIQUES ENVIRONNEMENT
 #DEBUT_TABLE
-#TITRE  SITUATION 1 - CONTRAINTES THERMIQUES ENVIRONNEMENT
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.90000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -98,10 +88,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#SITUATION 3 - CONTRAINTES THERMIQUES ENVIRONNEMENT
 #DEBUT_TABLE
-#TITRE  SITUATION 3 - CONTRAINTES THERMIQUES ENVIRONNEMENT
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    COOR_X       COOR_Y       COOR_Z       SIXX         SIYY         SIZZ         SIXY               SIXZ             SIYZ
  K16              K8       I            I            K16              I            R            R            R            R            R            R            R            R            R                    R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  0.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.90000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
@@ -118,10 +106,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  2.00000E+00  5.00000E-01  0.00000E+00  0.00000E+00  0.00000E+02  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#SITUATION 1 - TEMPERATURE POUR .COM3
 #DEBUT_TABLE
-#TITRE  SITUATION 1 - TEMPERATURE
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    TEMP
  K16              K8       I            I            K16              I            R            R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  0.50000E+02
@@ -138,10 +124,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  3.00000E+02
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#SITUATION 3 - TEMPERATURE POUR .COM3
 #DEBUT_TABLE
-#TITRE  SITUATION 3 - TEMPERATURE
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    TEMP
  K16              K8       I            I            K16              I            R            R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  1.00000E+02
@@ -158,10 +142,8 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  0.50000E+02
 #FIN_TABLE
 #--------------------------------------------------------------------------------
-#
+#MODULE YOUNG EN FCT DE LA TEMPERATURE
 #DEBUT_TABLE
-#TITRE  MODULE YOUNG EN FCT DE LA TEMPERATURE
-#TITRE TABLE_SDASTER
  INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         YOUNG         TEMP
  K16              K8       I            I            K16              I            R            R            R
  LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+05  0.00000E+02
@@ -176,4 +158,22 @@
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  4.00000E+02
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  5.00000E+02
  LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+05  6.00000E+02
+#FIN_TABLE
+#--------------------------------------------------------------------------------
+#SITUATION 1 - TEMPERATURE POUR .COMM
+#DEBUT_TABLE
+ INTITULE         CHEMIN   SEGMENT      CMP_CNX      NOM_CHAM         NUME_ORDRE   INST         ABSC_CURV    TEMP
+ K16              K8       I            I            K16              I            R            R            R
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  2.00000E+00  3.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              1  1.00000E+00  0.00000E+00  3.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  2.00000E+00  2.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  1.00000E+00  1.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              2  2.00000E+00  0.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  2.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              3  3.00000E+00  0.00000E+00  1.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  2.00000E+00  3.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  1.00000E+00  0.00000E+02
+ LIGNE            LIGNE               1            1 SIGM_ELNO              4  4.00000E+00  0.00000E+00  0.00000E+02
 #FIN_TABLE

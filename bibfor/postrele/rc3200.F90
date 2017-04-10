@@ -16,7 +16,7 @@ subroutine rc3200()
 #include "asterfort/jedetc.h"
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -99,7 +99,7 @@ subroutine rc3200()
     lefat = .false.
 !
     call getfac('RESU_THER', nbther)
-    if (nbther .ne. 0 .and. nb .ne. 0) then
+    if (nbther .ne. 0) then
         lther = .true.
     endif
 !

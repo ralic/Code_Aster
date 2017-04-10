@@ -1,5 +1,6 @@
 subroutine rcZ2sn(ze200, lieu, numsip, numsiq,iocs, mse,&
-                  propi, propj, proqi, proqj, instsn, sn, sp3, spmeca3)
+                  propi, propj, proqi, proqj, instsn, sn,&
+                  sp3, spmeca3, snet, trescapr, tresth)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -26,11 +27,11 @@ subroutine rcZ2sn(ze200, lieu, numsip, numsiq,iocs, mse,&
     aster_logical :: ze200
     character(len=4) :: lieu
     integer :: numsip, numsiq, iocs
-    real(kind=8) :: sn, instsn(2), sp3, spmeca3
+    real(kind=8) :: sn, instsn(2), sp3, spmeca3, snet, trescapr, tresth
     real(kind=8) :: mse(12), propi(20), propj(20), proqi(20), proqj(20)
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -157,11 +158,11 @@ subroutine rcZ2sn(ze200, lieu, numsip, numsiq,iocs, mse,&
     if (methode .eq. 'TRESCA') then
         call rcZ2sn1a(ze200, lieu, numsip, numsiq, seismeb32,&
                       seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
-                      instsn, sn, sp3, spmeca3)
+                      instsn, sn, sp3, spmeca3, snet, trescapr, tresth)
     else
         call rcZ2sn1b(ze200, lieu, numsip, numsiq, seismeb32,&
                       seismeunit, seismeze200, mse, propi, propj, proqi, proqj,&
-                      instsn, sn, sp3, spmeca3)
+                      instsn, sn, sp3, spmeca3, snet, trescapr, tresth)
     endif
 !
     if (seismeb32) then

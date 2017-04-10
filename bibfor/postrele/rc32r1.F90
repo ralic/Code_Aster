@@ -15,7 +15,7 @@ subroutine rc32r1(nomres, lefat)
     aster_logical :: lefat
 !     ------------------------------------------------------------------
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -312,7 +312,7 @@ subroutine rc32r1(nomres, lefat)
                 call getvr8('ENVIRONNEMENT', 'FEN_INTEGRE', iocc=1, scal=fenint, nbret=n5)
             endif
 !
-            do 114 is = 1, 50
+            do 114 is = 1, 200
                 i3 = int( zr(jfact-1+23*(is-1)+1) )
                 if (i3 .eq. 0) goto 116
 !
