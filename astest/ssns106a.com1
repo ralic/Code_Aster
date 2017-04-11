@@ -1,4 +1,4 @@
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -22,6 +22,8 @@
 #            CHARGEMENT   : CYCLIQUE TRACTION - COMPRESSION
 #            REMARQUE 1   : ON TESTE DEFI_GLRC
 
+import aster
+
 POURSUITE(CODE='OUI',
           DEBUG=_F(SDVERI='OUI',),
           PAR_LOT='NON');
@@ -40,13 +42,13 @@ MAT_G_RA=DEFI_GLRC(RELATION='GLRC_DM',
 
 matph = MAT_G_RA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_1','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -123,13 +125,13 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB_G_RA),),);
 
 matph = MAT_G_RA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_2','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -218,13 +220,13 @@ MAT_G_PA=DEFI_GLRC(RELATION='GLRC_DM',
                    INFO=2,);
 matph = MAT_G_PA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_3','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -301,13 +303,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 DETRUIRE(CONCEPT=_F(NOM=(TAB_G_PA),),);
 matph = MAT_G_PA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_4','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -394,13 +396,13 @@ MAT_G_UT=DEFI_GLRC(RELATION='GLRC_DM',
                    INFO=2,);
 matph = MAT_G_UT.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_5','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -477,13 +479,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 DETRUIRE(CONCEPT=_F(NOM=(TAB_G_UT),),);
 matph = MAT_G_UT.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_6','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -568,13 +570,13 @@ MAT_G_NA=DEFI_GLRC(RELATION='GLRC_DM',
                    INFO=2,);
 matph = MAT_G_NA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_7','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -651,13 +653,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 DETRUIRE(CONCEPT=_F(NOM=(TAB_G_NA),),);
 matph = MAT_G_NA.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_8','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -742,13 +744,13 @@ MAT_G_LI=DEFI_GLRC(RELATION='GLRC_DM',
                    INFO=2,);
 matph = MAT_G_LI.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_9','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -825,13 +827,13 @@ TEST_TABLE(REFERENCE='ANALYTIQUE',
 DETRUIRE(CONCEPT=_F(NOM=(TAB_G_LI),),);
 matph = MAT_G_LI.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_10','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -916,13 +918,13 @@ MAT_G_CI=DEFI_GLRC(RELATION='GLRC_DM',
                    INFO=2,);
 matph = MAT_G_CI.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_11','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -1002,13 +1004,13 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB_G_CI),),);
 
 matph = MAT_G_CI.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_12','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)
@@ -1093,16 +1095,16 @@ MAT_G_CO=DEFI_GLRC(RELATION='GLRC_DM',
                    COMPR='SEUIL',
                    NYC=2.16067e+06,
                    INFO=2,);
-                   
+
 matph = MAT_G_CO.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:9]=='ELAS_GLRC' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_13','ELAS_GLRC non trouvé')
 ns = '{:06d}'.format(ind)
@@ -1177,13 +1179,13 @@ DETRUIRE(CONCEPT=_F(NOM=(TAB_G_CO),),);
 
 matph = MAT_G_CO.sdj.NOMRC.get()
 phenom=None
-ind=0   
+ind=0
 for cmpt in matph :
    ind=ind+1
    if cmpt[:7]=='GLRC_DM' :
       phenom=cmpt
       break
-if phenom==None : 
+if phenom==None :
    from Utilitai.Utmess import UTMESS
    UTMESS('F','GENERIC_14','GLRC_DM non trouvé')
 ns = '{:06d}'.format(ind)

@@ -19,6 +19,7 @@ DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
       ERREUR=_F(ERREUR_F='EXCEPTION',), IGNORE_ALARM='SUPERVIS_1', PAR_LOT='NON')
 # ALARME 'SUPERVIS_1' : PAR_LOT='NON' nécessaire pour intercepter l'exception
 
+import aster
 from Utilitai.Utmess import MessageLog
 import re
 fmt_raison='-'*80+"""

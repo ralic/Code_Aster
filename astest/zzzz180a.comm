@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -21,6 +21,7 @@
 
 import numpy as NP
 from math import atan
+import aster
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET',VISU_EFICAS='NON'),
 PAR_LOT='NON',DEBUG=_F(SDVERI='OUI'))
@@ -356,7 +357,7 @@ TEST_FONCTION(VALEUR=(_F(VALE_CALC= 0.74375120,
                          REFERENCE='ANALYTIQUE',
                          PRECISION=log(1.3),
                          FONCTION=LOGF11,),
-                      _F(VALE_CALC= -2.8438E-03, 
+                      _F(VALE_CALC= -2.8438E-03,
                          VALE_REFE=log(1.005),
                          CRITERE='ABSOLU',
                          VALE_PARA=150.0,
@@ -607,8 +608,8 @@ FONCT2=RECU_FONCTION(INTE_SPEC=VECT1,
 # TEST SUR LES VALEURS RMS DES TEMPORELS
 ##########################################################################################
 # NOTE : LES RESULTATS OBTENUS SANS INTERPOLATION DU SPECTRE DEPENDENT LEGEREMENT
-#        DE LA MACHINE D'EXECUTION (32/64 BITS), LE COMPILATEUR UTILISE ET DE LA VERSION 
-#        DE PYTHON. POUR CES RAISONS, ON A RAJOUTE LES MOT-CLES TOLE_MACHINE DANS LES 
+#        DE LA MACHINE D'EXECUTION (32/64 BITS), LE COMPILATEUR UTILISE ET DE LA VERSION
+#        DE PYTHON. POUR CES RAISONS, ON A RAJOUTE LES MOT-CLES TOLE_MACHINE DANS LES
 #        TEST_TABLES DES VALEURS RMS AVEC DES VALEURS INFERIEURES OU EGALES A 0.1%.
 ##########################################################################################
 

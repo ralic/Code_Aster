@@ -1,5 +1,5 @@
 
-# COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 #
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -17,6 +17,7 @@
 POURSUITE(CODE='OUI',);
 
 import numpy as NP
+import aster
 
 ############################################################
 ################  Transitions Phasis    ####################
@@ -29,7 +30,7 @@ del tmpd
 # Definition de la force tangentielle de transition
 force_tangentielle_transition = -2e3
 ############################################################
-# Time transition search 
+# Time transition search
 ############################################################
 N=len(t)
 dd=[]

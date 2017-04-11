@@ -18,8 +18,8 @@
 # ======================================================================
 #
 
+import aster
 
-#
 # CE CAS-TEST S'INSPIRE DE SSLL105D : ON VERIFIE ICI L'EXCEPTION INSTABILITE
 #
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'), DEBUG=_F(SDVERI='OUI'),

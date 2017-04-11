@@ -1,5 +1,5 @@
 # ======================================================================
-# COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+# COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 # THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 # IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 # THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -15,6 +15,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # MODALISATION A : FEM (FISSURE MAILLEE)
+
+import aster
 
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET'),DEBUG=_F(SDVERI='OUI'));
 
@@ -116,7 +118,7 @@ RESU=MECA_STATIQUE(MODELE=MOD,
                    SOLVEUR=_F(METHODE='MUMPS'),
                    EXCIT=_F(CHARGE=CHAR),
                    )
-                  
+
 #IMPR_RESU(FORMAT='MED',UNITE=80,RESU=_F(RESULTAT=RESU))
 
 #-----------------------------------------------------------------------
@@ -186,7 +188,7 @@ CGKleg2=CALC_G(RESULTAT=RESU,
                           R_SUP=5.*h,
                           FOND_FISS=Fiss_01,),)
 
-# 'CALC_G' LISSAGE LAGRANGE_NO_NO 
+# 'CALC_G' LISSAGE LAGRANGE_NO_NO
 CGlagno=CALC_G(RESULTAT=RESU,
                OPTION='CALC_G',
                LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
@@ -196,7 +198,7 @@ CGlagno=CALC_G(RESULTAT=RESU,
                           FOND_FISS=Fiss_01,
                           ),);
 
-# 'CALC_K_G' LISSAGE LAGRANGE_NO_NO 
+# 'CALC_K_G' LISSAGE LAGRANGE_NO_NO
 CGKlano=CALC_G(RESULTAT=RESU,
                OPTION='CALC_K_G',
                LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
@@ -206,7 +208,7 @@ CGKlano=CALC_G(RESULTAT=RESU,
                           FOND_FISS=Fiss_01,
                          ),);
 
-# 'CALC_G' LISSAGE LAGRANGE 
+# 'CALC_G' LISSAGE LAGRANGE
 CGlag=CALC_G(RESULTAT=RESU,
              OPTION='CALC_G',
              LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
@@ -216,7 +218,7 @@ CGlag=CALC_G(RESULTAT=RESU,
                         FOND_FISS=Fiss_01,
                         ),);
 
-# 'CALC_K_G' LISSAGE LAGRANGE 
+# 'CALC_K_G' LISSAGE LAGRANGE
 CGKlag=CALC_G(RESULTAT=RESU,
               OPTION='CALC_K_G',
               LISSAGE = _F(LISSAGE_THETA='LAGRANGE',
@@ -434,8 +436,8 @@ IMPR_FONCTION(FORMAT='XMGRACE',
 #   -> on teste la valeur de G aux points s = 0. et s = 0.354497665
 
 #----------------------------------------------------------------------
-# 1. LEGENDRE 5 FEM avec la couronne 1 est teste uniquement en non regression car ce sera la valeur 
-#    de reference 'AUTRE_ASTER' pour tous les autres TEST_TABLE de cette modelisation (A) et des 
+# 1. LEGENDRE 5 FEM avec la couronne 1 est teste uniquement en non regression car ce sera la valeur
+#    de reference 'AUTRE_ASTER' pour tous les autres TEST_TABLE de cette modelisation (A) et des
 #    autres modelisations de ce cas-test
 #----------------------------------------------------------------------
 

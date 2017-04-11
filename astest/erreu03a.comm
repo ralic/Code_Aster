@@ -31,6 +31,8 @@
 # AVEC MUMPS, VALIDATION DE LA VALEUR 'EVAL' DU MOT-CLE GESTION_MEMOIRE
 #########################################################################
 
+import aster
+
 DEBUT(CODE=_F(NIV_PUB_WEB='INTERNET', VISU_EFICAS='NON'),
      DEBUG=_F(SDVERI='OUI'),
       ERREUR=_F(ERREUR_F='EXCEPTION',),
