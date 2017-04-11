@@ -81,7 +81,7 @@ from .DS.co_vect_asse_gene import vect_asse_gene
 from .DS.co_reel import reel
 
 
-from Accas import GEOM, formule, formule_c
+from .Syntax import tr, GEOM, formule, formule_c
 
 # Types géométriques
 class no(GEOM):
@@ -102,7 +102,7 @@ class grno(GEOM):
         """
         if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
             return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+        raise ValueError(tr(u'On attend une chaine de caractères (de longueur <= 24).'))
     __convert__ = classmethod(__convert__)
 
 class ma(GEOM):
@@ -123,7 +123,7 @@ class grma(GEOM):
         """
         if isinstance(valeur, (str,unicode)) and len(valeur.strip()) <= 24:
             return valeur.strip()
-        raise ValueError(_(u'On attend une chaine de caractères (de longueur <= 24).'))
+        raise ValueError(tr(u'On attend une chaine de caractères (de longueur <= 24).'))
     __convert__ = classmethod(__convert__)
 
 

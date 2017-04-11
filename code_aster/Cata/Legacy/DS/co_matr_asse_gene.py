@@ -1,21 +1,25 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
+
+import aster
+from code_aster.Cata.Syntax import ASSD, AsException
+
 
 def VALM_triang2array(dict_VALM, dim, dtype=None):
    """Conversion (par recopie) de l'objet .VALM decrivant une matrice pleine
@@ -51,10 +55,6 @@ def VALM_diag2array(dict_VALM, dim, dtype=None):
       valeur[i,i] =  diag[i]
    return valeur
 
-import aster
-from code_aster.Cata.Syntax import ASSD
-
-
 class matr_asse_gene(ASSD):
     cata_sdj = "SD.sd_matr_asse_gene.sd_matr_asse_gene"
 
@@ -65,13 +65,13 @@ class matr_asse_gene_r(matr_asse_gene):
         Attributs retourne
           - self.valeurs : numpy.array contenant les valeurs """
     if not self.accessible():
-       raise Accas.AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
+       raise AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
     import numpy
 
     desc=numpy.array(self.sdj.DESC.get())
     # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+    if not desc:
+       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
     # Si le stockage est plein
     if desc[2]==2 :
        valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1])
@@ -91,23 +91,23 @@ class matr_asse_gene_r(matr_asse_gene):
         Attributs ne retourne rien """
     import numpy
     if not self.accessible():
-       raise Accas.AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
+       raise AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
     desc=numpy.array(self.sdj.DESC.get())
 
     # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+    if not desc:
+       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
     numpy.asarray(matrice)
 
     # On teste si la dimension de la matrice python est 2
     if (len(numpy.shape(matrice))<>2) :
-       raise Accas.AsException("La dimension de la matrice est incorrecte ")
+       raise AsException("La dimension de la matrice est incorrecte ")
 
     # On teste si les tailles des matrices jeveux et python sont identiques
     if (tuple([desc[1],desc[1]])<>numpy.shape(matrice)) :
-       raise Accas.AsException("La taille de la matrice est incorrecte ")
+       raise AsException("La taille de la matrice est incorrecte ")
 
     # Si le stockage est plein
     if desc[2]==2 :
@@ -139,11 +139,11 @@ class matr_asse_gene_c(matr_asse_gene):
           - self.valeurs : numpy.array contenant les valeurs """
     import numpy
     if not self.accessible():
-       raise Accas.AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
+       raise AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
     desc = numpy.array(self.sdj.DESC.get())
-    if desc == None:
-       raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster ")
+    if not desc:
+       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster ")
     # Si le stockage est plein
     if desc[2] == 2 :
        valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1], complex)
@@ -163,24 +163,24 @@ class matr_asse_gene_c(matr_asse_gene):
         Attributs ne retourne rien """
     import numpy
     if not self.accessible():
-       raise Accas.AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
+       raise AsException("Erreur dans matr_asse_gene_c.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     numpy.asarray(matrice)
     ncham=self.get_name()
     desc=numpy.array(self.sdj.DESC.get())
 
     # On teste si le DESC de la matrice existe
-    if (desc==None):
-       raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+    if not desc:
+       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
     numpy.asarray(matrice)
 
     # On teste si la dimension de la matrice python est 2
     if (len(numpy.shape(matrice))<>2) :
-       raise Accas.AsException("La dimension de la matrice est incorrecte ")
+       raise AsException("La dimension de la matrice est incorrecte ")
 
     # On teste si la taille de la matrice jeveux et python est identique
     if (tuple([desc[1],desc[1]])<>numpy.shape(matrice)) :
-       raise Accas.AsException("La taille de la matrice est incorrecte ")
+       raise AsException("La taille de la matrice est incorrecte ")
 
     # Si le stockage est plein
     if desc[2]==2 :

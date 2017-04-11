@@ -18,7 +18,7 @@
 # person_in_charge: hassan.berro at edf.fr
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 from .co_resultat_sdaster import resultat_sdaster
 
 
@@ -35,7 +35,7 @@ class harm_gene  (dyna_gene) :
         Returns a python list of all archived frequencies
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans harm_gene.LIST_ARCH() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans harm_gene.LIST_ARCH() en PAR_LOT='OUI'")
 
         disc = self.sdj.DISC.get()
         return list(disc)
@@ -56,9 +56,9 @@ class tran_gene  (dyna_gene) :
             inoli = 1
         nbnoli = self.__nb_nonl()
         if nbnoli == 0 :
-            raise Accas.AsException("Linear calculation, no information can be retrieved.")
+            raise AsException("Linear calculation, no information can be retrieved.")
         if( inoli <= 0) or (inoli > nbnoli):
-            raise Accas.AsException("The nonlinearity index should be a comprised between 1 and %d, the total number of nonlinearities."%(nbnoli))
+            raise AsException("The nonlinearity index should be a comprised between 1 and %d, the total number of nonlinearities."%(nbnoli))
         return inoli
     def __type_nonl (self):
         Int2StrTypes = {1 : 'DIS_CHOC',
@@ -126,7 +126,7 @@ class tran_gene  (dyna_gene) :
         Returns a python list of all archived instants
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.LIST_ARCH() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.LIST_ARCH() en PAR_LOT='OUI'")
 
         disc = self.sdj.DISC.get()
         return list(disc)
@@ -136,7 +136,7 @@ class tran_gene  (dyna_gene) :
         Returns a python list of the integration steps
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.PTEM() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.PTEM() en PAR_LOT='OUI'")
 
         step = self.sdj.PTEM.get()
         return list(step)
@@ -146,7 +146,7 @@ class tran_gene  (dyna_gene) :
         Returns a 2D numpy array of the calculated modal displacements
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.DEPL() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.DEPL() en PAR_LOT='OUI'")
 
         depl = self.sdj.DEPL.get()
         nbmodes = self.__nb_modes()
@@ -160,7 +160,7 @@ class tran_gene  (dyna_gene) :
         Returns a 2D numpy array of the calculated modal velocities
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.VITE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.VITE() en PAR_LOT='OUI'")
 
         vite = self.sdj.VITE.get()
         nbmodes = self.__nb_modes()
@@ -174,7 +174,7 @@ class tran_gene  (dyna_gene) :
         Returns a 2D numpy array of the calculated modal accelerations
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.ACCE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.ACCE() en PAR_LOT='OUI'")
 
         acce = self.sdj.ACCE.get()
         nbmodes = self.__nb_modes()
@@ -189,7 +189,7 @@ class tran_gene  (dyna_gene) :
         the retrieved information"""
 
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.INFO_NONL() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.INFO_NONL() en PAR_LOT='OUI'")
 
         nbnoli  = self.__nb_nonl()
         if nbnoli == 0 :
@@ -257,7 +257,7 @@ class tran_gene  (dyna_gene) :
          ----------------------------------------
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.VARI_INTERNE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.VARI_INTERNE() en PAR_LOT='OUI'")
 
         inoli = self.__check_input_inoli(inoli)
         i = inoli-1
@@ -291,14 +291,14 @@ class tran_gene  (dyna_gene) :
         Returns a 1D numpy array giving the evolution of the normal force at the archived instants"""
 
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.FORCE_NORMALE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.FORCE_NORMALE() en PAR_LOT='OUI'")
 
         inoli = self.__check_input_inoli(inoli)
 
         nltypes = self.__type_nonl()
         if not(nltypes[inoli-1] in ('DIS_CHOC', 'FLAMBAGE')) :
             dummy = self.INFO_NONL()
-            raise Accas.AsException("The chosen nonlinearity index (%d) does not correspond to a DIS_CHOC or FLAMBAGE nonlinearity\nThese are the only nonlinearities that save the local normal force."%(inoli))
+            raise AsException("The chosen nonlinearity index (%d) does not correspond to a DIS_CHOC or FLAMBAGE nonlinearity\nThese are the only nonlinearities that save the local normal force."%(inoli))
 
 
         vint = self.VARI_INTERNE(inoli, describe=False)
@@ -311,14 +311,14 @@ class tran_gene  (dyna_gene) :
         The evolution of the tangential forces at the archived instants"""
 
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.FORCE_TANGENTIELLE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.FORCE_TANGENTIELLE() en PAR_LOT='OUI'")
 
         inoli = self.__check_input_inoli(inoli)
 
         nltypes = self.__type_nonl()
         if not(nltypes[inoli-1] in ('DIS_CHOC', 'ROTOR_FISS')) :
             dummy = self.INFO_NONL()
-            raise Accas.AsException("The chosen nonlinearity index (%d) does not correspond to a DIS_CHOC or ROTOR_FISS nonlinearity\nThese are the only nonlinearities that calculate and save a local tangential force."%(inoli))
+            raise AsException("The chosen nonlinearity index (%d) does not correspond to a DIS_CHOC or ROTOR_FISS nonlinearity\nThese are the only nonlinearities that calculate and save a local tangential force."%(inoli))
 
 
         vint = self.VARI_INTERNE(inoli, describe=False)
@@ -334,14 +334,14 @@ class tran_gene  (dyna_gene) :
         Returns a 1D numpy array giving the evolution of the axial force at the archived instants"""
 
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.FORCE_AXIALE() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.FORCE_AXIALE() en PAR_LOT='OUI'")
 
         inoli = self.__check_input_inoli(inoli)
 
         nltypes = self.__type_nonl()
         if not(nltypes[inoli-1] in ('ANTI_SISM', 'DIS_VISC', 'DIS_ECRO_TRAC' )) :
             dummy = self.INFO_NONL()
-            raise Accas.AsException("The chosen nonlinearity index (%d) does not correspond to a ANTI_SISM, DIS_VISC, or DIS_ECRO_TRAC' nonlinearity\nThese are the only nonlinearities that calculate and save an axial force."%(inoli))
+            raise AsException("The chosen nonlinearity index (%d) does not correspond to a ANTI_SISM, DIS_VISC, or DIS_ECRO_TRAC' nonlinearity\nThese are the only nonlinearities that calculate and save an axial force."%(inoli))
 
 
         vint = self.VARI_INTERNE(inoli, describe=False)
@@ -357,14 +357,14 @@ class tran_gene  (dyna_gene) :
         Returns a 1D numpy array giving the evolution of the forces defined as displacement or velocity relationships"""
 
         if not self.accessible():
-            raise Accas.AsException("Erreur dans tran_gene.FORCE_RELATION() en PAR_LOT='OUI'")
+            raise AsException("Erreur dans tran_gene.FORCE_RELATION() en PAR_LOT='OUI'")
 
         inoli = self.__check_input_inoli(inoli)
 
         nltypes = self.__type_nonl()
         if not(nltypes[inoli-1] in ('RELA_EFFO_DEPL', 'RELA_EFFO_VITE')) :
             dummy = self.INFO_NONL()
-            raise Accas.AsException("The chosen nonlinearity index (%d) does not correspond to a RELA_EFFO_DEPL or RELA_EFFO_VITE' nonlinearity\nThese are the only nonlinearities that calculate and save a relationship defined force."%(inoli))
+            raise AsException("The chosen nonlinearity index (%d) does not correspond to a RELA_EFFO_DEPL or RELA_EFFO_VITE' nonlinearity\nThese are the only nonlinearities that calculate and save a relationship defined force."%(inoli))
 
 
         vint = self.VARI_INTERNE(inoli, describe=False)

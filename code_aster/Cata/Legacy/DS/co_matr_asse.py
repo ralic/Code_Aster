@@ -19,7 +19,7 @@
 # person_in_charge: mathieu.courtois at edf.fr
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class matr_asse(ASSD):
@@ -39,7 +39,7 @@ class matr_asse(ASSD):
         import numpy as NP
         from SD.sd_stoc_morse import sd_stoc_morse
         if not self.accessible():
-            raise Accas.AsException("Erreur dans matr_asse.EXTR_MATR en PAR_LOT='OUI'")
+            raise AsException("Erreur dans matr_asse.EXTR_MATR en PAR_LOT='OUI'")
         refa = NP.array(self.sdj.REFA.get())
         ma = refa[0]
         nu = refa[1]

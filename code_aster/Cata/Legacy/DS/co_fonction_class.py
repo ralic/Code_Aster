@@ -17,10 +17,11 @@
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
+import os
 from math import pi
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class fonction_class(ASSD):
@@ -64,15 +65,13 @@ class fonction_class(ASSD):
             if len(dico['INTERPOL']) == 1:
                 dico['INTERPOL'] = dico['INTERPOL'] * 2
         else:
-            raise Accas.AsException(
-                "Erreur dans fonction.Parametres en PAR_LOT='OUI'")
+            raise AsException("Erreur dans fonction.Parametres en PAR_LOT='OUI'")
         return dico
 
     def Trace(self, FORMAT='TABLEAU', **kargs):
         """Tracé d'une fonction"""
         if not self.accessible():
-            raise Accas.AsException(
-                "Erreur dans fonction.Trace en PAR_LOT='OUI'")
+            raise AsException("Erreur dans fonction.Trace en PAR_LOT='OUI'")
         from Utilitai.Graph import Graph
         gr = Graph()
         gr.AjoutCourbe(Val=self.Valeurs(),
@@ -124,13 +123,13 @@ class fonction_sdaster(fonction_class):
                 lx = self.etape['ABSCISSE']
                 ly = self.etape['ORDONNEE']
             else:
-                raise Accas.AsException("Erreur (fonction.Valeurs) : ne fonctionne en "
-                                        "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION "
-                                        "dans le fichier de commandes courant.")
+                raise AsException("Erreur (fonction.Valeurs) : ne fonctionne en "
+                                  "PAR_LOT='OUI' que sur des fonctions produites "
+                                  "par DEFI_FONCTION dans le jdc courant.")
         else:
-            raise Accas.AsException("Erreur (fonction.Valeurs) : ne fonctionne en "
-                                    "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION "
-                                    "dans le fichier de commandes courant.")
+            raise AsException("Erreur (fonction.Valeurs) : ne fonctionne en "
+                              "PAR_LOT='OUI' que sur des fonctions produites "
+                              "par DEFI_FONCTION dans le jdc courant.")
         return [lx, ly]
 
     def Absc(self):
@@ -208,9 +207,9 @@ class fonction_c(fonction_class):
             lr = [lbl[i] for i in range(1, dim, 3)]
             li = [lbl[i] for i in range(2, dim, 3)]
         else:
-            raise Accas.AsException("Erreur (fonction_c.Valeurs) : ne fonctionne en "
-                                    "PAR_LOT='OUI' que sur des fonctions produites par DEFI_FONCTION "
-                                    "dans le jdc courant.")
+            raise AsException("Erreur (fonction_c.Valeurs) : ne fonctionne en "
+                              "PAR_LOT='OUI' que sur des fonctions produites "
+                              "par DEFI_FONCTION dans le jdc courant.")
         return [lx, lr, li]
 
     def Absc(self):
@@ -228,7 +227,7 @@ class fonction_c(fonction_class):
     def Trace(self, FORMAT='TABLEAU', **kargs):
         """Tracé d'une fonction complexe"""
         if not self.accessible():
-            raise Accas.AsException(
+            raise AsException(
                 "Erreur dans fonction_c.Trace en PAR_LOT='OUI'")
         from Utilitai.Graph import Graph
         para = self.Parametres()
@@ -279,7 +278,7 @@ class nappe_sdaster(fonction_class):
         """
         from Utilitai.Utmess import UTMESS
         if not self.accessible():
-            raise Accas.AsException(
+            raise AsException(
                 "Erreur dans nappe.Valeurs en PAR_LOT='OUI'")
         nsd = '%-19s' % self.get_name()
         dicv = aster.getcolljev(nsd + '.VALE')
@@ -303,7 +302,7 @@ class nappe_sdaster(fonction_class):
         """
         from Utilitai.Utmess import UTMESS
         if not self.accessible():
-            raise Accas.AsException(
+            raise AsException(
                 "Erreur dans nappe.Parametres en PAR_LOT='OUI'")
         TypeProl = {'E': 'EXCLU', 'L': 'LINEAIRE', 'C': 'CONSTANT'}
         objev = '%-19s.PROL' % self.get_name()
@@ -336,7 +335,7 @@ class nappe_sdaster(fonction_class):
     def Trace(self, FORMAT='TABLEAU', **kargs):
         """Tracé d'une nappe"""
         if not self.accessible():
-            raise Accas.AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
+            raise AsException("Erreur dans nappe.Trace en PAR_LOT='OUI'")
         from Utilitai.Graph import Graph
         gr = Graph()
         lv = self.Valeurs()[1]

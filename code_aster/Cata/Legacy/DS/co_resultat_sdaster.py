@@ -19,7 +19,7 @@
 
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class resultat_sdaster(ASSD):
@@ -27,22 +27,22 @@ class resultat_sdaster(ASSD):
 
    def LIST_CHAMPS (self) :
       if not self.accessible():
-         raise Accas.AsException("Erreur dans resultat.LIST_CHAMPS en PAR_LOT='OUI'")
+         raise AsException("Erreur dans resultat.LIST_CHAMPS en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "CHAMPS")
 
    def LIST_NOM_CMP (self) :
       if not self.accessible():
-         raise Accas.AsException("Erreur dans resultat.LIST_NOM_CMP en PAR_LOT='OUI'")
+         raise AsException("Erreur dans resultat.LIST_NOM_CMP en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "COMPOSANTES")
 
    def LIST_VARI_ACCES (self) :
       if not self.accessible():
-         raise Accas.AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
+         raise AsException("Erreur dans resultat.LIST_VARI_ACCES en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "VARI_ACCES")
 
    def LIST_PARA (self) :
       if not self.accessible():
-         raise Accas.AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
+         raise AsException("Erreur dans resultat.LIST_PARA en PAR_LOT='OUI'")
       return aster.GetResu(self.get_name(), "PARAMETRES")
 
 

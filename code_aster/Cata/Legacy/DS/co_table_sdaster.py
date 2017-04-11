@@ -19,7 +19,7 @@
 
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class table_sdaster(ASSD):
@@ -30,7 +30,7 @@ class table_sdaster(ASSD):
         Exemple : TAB['INST', 1] retourne la 1ère valeur de la colonne 'INST'."""
         from Utilitai.Utmess import UTMESS
         if not self.accessible():
-            raise Accas.AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
+            raise AsException("Erreur dans table.__getitem__ en PAR_LOT='OUI'")
         assert len(key) == 2
         para, numlign = key
         tabnom = self.sdj.TBLP.get()
@@ -53,7 +53,7 @@ class table_sdaster(ASSD):
         on souhaite manipuler la dérivée).
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans table.TITRE en PAR_LOT='OUI'")
+            raise AsException("Erreur dans table.TITRE en PAR_LOT='OUI'")
         #titj = aster.getvectjev('%-19s.TITR' % self.get_name())
         titj = self.sdj.TITR.get()
         if titj != None:
@@ -66,7 +66,7 @@ class table_sdaster(ASSD):
         """Produit une liste des noms des colonnes
         """
         if not self.accessible():
-            raise Accas.AsException("Erreur dans table.get_nom_para en PAR_LOT='OUI'")
+            raise AsException("Erreur dans table.get_nom_para en PAR_LOT='OUI'")
         l_name = []
         shape = self.sdj.TBNP.get()
         desc  = self.sdj.TBLP.get()
@@ -85,7 +85,7 @@ class table_sdaster(ASSD):
             else:
                 return l1
         if not self.accessible():
-            raise Accas.AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
+            raise AsException("Erreur dans table.EXTR_TABLE en PAR_LOT='OUI'")
         from Utilitai.Table import Table
         # titre
         titr = self.TITRE()

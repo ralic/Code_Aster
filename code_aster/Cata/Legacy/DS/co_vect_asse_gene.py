@@ -1,25 +1,25 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
 
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class vect_asse_gene(ASSD):
@@ -32,10 +32,7 @@ class vect_asse_gene(ASSD):
             - self.valeurs : numpy.array contenant les valeurs """
       import numpy
       if not self.accessible():
-         raise Accas.AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
-      #ncham=self.get_name()
-      #ncham=ncham+(8-len(ncham))*' '
-      #valeur=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'))
+         raise AsException("Erreur dans vect_asse_gene_r.EXTR_VECT_GENE en PAR_LOT='OUI'")
       valeur = numpy.array(self.sdj.VALE.get())
       return valeur
 
@@ -44,7 +41,7 @@ class vect_asse_gene(ASSD):
       reel definie dans jeveux
          Attributs ne retourne rien """
       if not self.accessible():
-         raise Accas.AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
+         raise AsException("Erreur dans vect_asse_gene_r.RECU_VECT_GENE en PAR_LOT='OUI'")
       import numpy
       numpy.asarray(vecteur)
       ncham=self.get_name()
@@ -52,12 +49,12 @@ class vect_asse_gene(ASSD):
       #desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
       desc = numpy.array(self.sdj.DESC.get())
       # On teste si le DESC du vecteur existe
-      if (desc==None):
-         raise Accas.AsException("L'objet vecteur n'existe pas ou \
+      if not desc:
+         raise AsException("L'objet vecteur n'existe pas ou \
          est mal cree par Code Aster")
       # On teste si la taille du vecteur jeveux et python est identique
       if desc[1] != numpy.shape(vecteur)[0] :
-         raise Accas.AsException("La taille du vecteur python est incorrecte")
+         raise AsException("La taille du vecteur python est incorrecte")
       aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',
                        len(vecteur),
                        tuple(range(1, len(vecteur)+1)),
@@ -73,11 +70,7 @@ class vect_asse_gene(ASSD):
             - self.valeurs : numpy.array contenant les valeurs """
       import numpy
       if not self.accessible():
-         raise Accas.AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
-
-      #ncham=self.get_name()
-      #ncham=ncham+(8-len(ncham))*' '
-      #valeur=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.VALE'), complex)
+         raise AsException("Erreur dans vect_asse_gene_c.EXTR_VECT_GENE en PAR_LOT='OUI'")
       valeur=numpy.array(self.sdj.VALE.get(), complex)
 
       return valeur
@@ -87,19 +80,19 @@ class vect_asse_gene(ASSD):
       complexe definie dans jeveux
          Attributs ne retourne rien """
       if not self.accessible():
-         raise Accas.AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
+         raise AsException("Erreur dans vect_asse_gene_c.RECU_VECT_GENE en PAR_LOT='OUI'")
       import numpy
       numpy.asarray(vecteur)
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
       desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
       # On teste si le DESC de la matrice existe
-      if (desc==None):
-         raise Accas.AsException("L'objet vecteur n'existe pas ou \
+      if not desc:
+         raise AsException("L'objet vecteur n'existe pas ou \
          est mal cree par Code Aster")
       # On teste si la taille de la matrice jeveux et python est identique
-      if desc[1]<>numpy.shape(vecteur)[0] :
-         raise Accas.AsException("La taille du vecteur python est incorrecte")
+      if desc[1] != numpy.shape(vecteur)[0] :
+         raise AsException("La taille du vecteur python est incorrecte")
       tmpr=vecteur.real
       tmpc=vecteur.imag
       aster.putvectjev(ncham+(19-len(ncham))*' '+'.VALE',

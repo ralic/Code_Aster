@@ -19,7 +19,7 @@
 
 
 import aster
-from code_aster.Cata.Syntax import ASSD
+from code_aster.Cata.Syntax import ASSD, AsException
 
 
 class cham_gd_sdaster(ASSD):
@@ -44,7 +44,7 @@ class cham_elem(cham_gd_sdaster):
           - self.sous_point : numero du sous point dans la maille """
       import numpy
       if not self.accessible() :
-         raise Accas.AsException("Erreur dans cham_elem.EXTR_COMP en PAR_LOT='OUI'")
+         raise AsException("Erreur dans cham_elem.EXTR_COMP en PAR_LOT='OUI'")
 
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
@@ -85,7 +85,7 @@ class cham_no_sdaster(cham_gd_sdaster):
       """
       import numpy
       if not self.accessible() :
-         raise Accas.AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
+         raise AsException("Erreur dans cham_no.EXTR_COMP en PAR_LOT='OUI'")
 
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
@@ -111,6 +111,8 @@ class cham_no_sdaster(cham_gd_sdaster):
 
    def __add__(self, other):
       from SD.sd_nume_equa import sd_nume_equa
+      from code_aster.Cata.Syntax import _F
+      from code_aster.Cata.Commands.crea_champ import CREA_CHAMP
       # on recupere le type
       __nume_ddl=sd_nume_equa(self.sdj.REFE.get()[1])
       __gd=__nume_ddl.REFN.get()[1].strip()
@@ -118,7 +120,7 @@ class cham_no_sdaster(cham_gd_sdaster):
       # on recupere le nom du maillage
       __nomMaillage=self.sdj.REFE.get()[0].strip()
       # on recupere l'objet du maillage
-      __maillage=CONTEXT.get_current_step().get_concept(__nomMaillage)
+      __maillage=self.parent.get_concept(__nomMaillage)
       __CHAM = CREA_CHAMP(OPERATION='ASSE',
                           MAILLAGE=__maillage,
                           TYPE_CHAM=__type,

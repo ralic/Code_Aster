@@ -1,21 +1,26 @@
 # coding=utf-8
 # ======================================================================
 # COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
-# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY  
-# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY  
-# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR     
-# (AT YOUR OPTION) ANY LATER VERSION.                                                  
-#                                                                       
-# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT   
-# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF            
-# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU      
-# GENERAL PUBLIC LICENSE FOR MORE DETAILS.                              
-#                                                                       
-# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE     
-# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,         
-#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.        
+# THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+# IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+# THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+# (AT YOUR OPTION) ANY LATER VERSION.
+#
+# THIS PROGRAM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL, BUT
+# WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+# MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. SEE THE GNU
+# GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+#
+# YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+# ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
+#    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mathieu.courtois at edf.fr
+import aster
+from code_aster.Cata.Syntax import ASSD, AsException
+
+from .co_matr_asse_gene import VALM_triang2array
+
 
 def VALE_triang2array(vect_VALE, dim, dtype=None):
     """Conversion (par recopie) de l'objet .VALE decrivant une matrice pleine
@@ -36,9 +41,6 @@ def VALE_triang2array(vect_VALE, dim, dtype=None):
         valeur[i, i] = 0.5 * valeur[i, i]
     return valeur
 
-import aster
-from code_aster.Cata.Syntax import ASSD
-
 
 class macr_elem_dyna(ASSD):
     cata_sdj = "SD.sd_macr_elem_dyna.sd_macr_elem_dyna"
@@ -53,7 +55,7 @@ class macr_elem_dyna(ASSD):
             - self.valeurs : numpy.array contenant les valeurs """
         import numpy
         if not self.accessible():
-            raise Accas.AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
+            raise AsException("Erreur dans macr_elem_dyna.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
         if (typmat=='MASS_GENE') :
             macr_elem = self.sdj.MAEL_MASS
@@ -62,12 +64,12 @@ class macr_elem_dyna(ASSD):
         elif (typmat=='AMOR_GENE') :
             macr_elem = self.sdj.MAEL_AMOR
         else:
-            raise Accas.AsException("Le type de la matrice est incorrect")
+            raise AsException("Le type de la matrice est incorrect")
 
         desc=numpy.array(macr_elem.DESC.get())
         # On teste si le DESC du vecteur existe
-        if (desc==None):
-            raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+        if not desc:
+            raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
 
         matrice = VALM_triang2array(macr_elem.VALE.get(), desc[1])
         return matrice
@@ -81,7 +83,7 @@ class macr_elem_dyna(ASSD):
          Attributs ne retourne rien """
         import numpy
         if not self.accessible():
-            raise Accas.AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
+            raise AsException("Erreur dans macr_elem_dyna.RECU_MATR_GENE en PAR_LOT='OUI'")
 
         nommacr=self.get_name()
         if (typmat=='MASS_GENE') :
@@ -91,22 +93,22 @@ class macr_elem_dyna(ASSD):
         elif (typmat=='AMOR_GENE') :
             macr_elem = self.sdj.MAEL_AMOR
         else:
-            raise Accas.AsException("Le type de la matrice est incorrect")
+            raise AsException("Le type de la matrice est incorrect")
         nom_vale = macr_elem.VALE.nomj()
         desc=numpy.array(macr_elem.DESC.get())
 
         # On teste si le DESC de la matrice jeveux existe
-        if (desc==None):
-            raise Accas.AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+        if not desc:
+            raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
         numpy.asarray(matrice)
 
         # On teste si la matrice python est de dimension 2
         if (len(numpy.shape(matrice))<>2):
-            raise Accas.AsException("La dimension de la matrice est incorrecte")
+            raise AsException("La dimension de la matrice est incorrecte")
 
         # On teste si les tailles de la matrice jeveux et python sont identiques
         if (tuple([desc[1],desc[1]])<>numpy.shape(matrice)) :
-            raise Accas.AsException("La dimension de la matrice est incorrecte")
+            raise AsException("La dimension de la matrice est incorrecte")
         taille=desc[1]*desc[1]/2.0+desc[1]/2.0
         tmp=numpy.zeros([int(taille)])
         for j in range(desc[1]+1):
