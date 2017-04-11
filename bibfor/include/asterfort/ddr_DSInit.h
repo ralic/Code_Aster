@@ -16,11 +16,8 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ddr_crid(ds_para, nb_node_rid, v_list_rid)
+    subroutine ddr_DSInit(ds_para)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDDR), intent(in) :: ds_para
-        integer, intent(in)           :: nb_node_rid
-        integer, intent(in)           :: v_list_rid(nb_node_rid)
-    end subroutine ddr_crid
+        type(ROM_DS_ParaDDR), intent(out) :: ds_para
+    end subroutine ddr_DSInit
 end interface
-

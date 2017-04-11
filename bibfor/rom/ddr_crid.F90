@@ -1,10 +1,13 @@
-subroutine ddr_crid(mesh, nb_node_rid, v_list_rid, grelem_rid, grnode_int)
+subroutine ddr_crid(ds_para, nb_node_rid, v_list_rid)
+!
+use Rom_Datastructure_type
 !
 implicit none
 !
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
+#include "asterfort/assert.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
@@ -22,9 +25,11 @@ implicit none
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
+#include "asterfort/addGroupElem.h"
+#include "asterfort/addGroupNode.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -41,11 +46,9 @@ implicit none
 ! ======================================================================
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    character(len=8), intent(in)  :: mesh
+    type(ROM_DS_ParaDDR), intent(in) :: ds_para
     integer, intent(in)           :: nb_node_rid
     integer, intent(in)           :: v_list_rid(nb_node_rid)
-    character(len=24), intent(in) :: grelem_rid
-    character(len=24), intent(in) :: grnode_int
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,35 +58,33 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! In  mesh             : mesh
+! In  ds_para          : datastructure for parameters of EIM computation
 ! In  nb_node_rid      : number of nodes in RID
 ! In  v_list_rid       : list of nodes in RID
-! In  grelem_rid       : name of GROUP_MA for RID
-! In  grnode_int       : name of GROUP_NO for interface
 !
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
-    character(len=24) :: group_name
-    character(len=24) :: grpmai, gpptnm, grpmav, grpnoe, gpptnn, grpnov
-    integer :: nb_group, nb_group_new, nb_enti
-    integer :: nb_elem, nb_node, node_nbelem, node_nbelem2, elem_nbnode, elem_nbnode2
-    integer :: i_group, i_enti
-    integer :: nunolo, numamo, nunono
-    integer :: i_elem, i_node, i_elem_node, i_node_elem, i_elem_node2, i_node_elem2, i_elem_node3
-    integer :: nb_rid_elem, nb_int_node
-    integer :: indx, iret, node_nume, elem_nume
+    integer :: nb_elem, nb_node, node_nbelem, elem_nbnode
+    integer :: nunolo
+    integer :: i_layer
+    integer :: i_elem, i_node, i_elem_node, i_node_elem
+    integer :: nb_rid_elem, nb_int_node, nb_group_add, nb_sub_node
+    integer :: indx, node_nume, elem_nume
+    integer :: nb_layer_ma
+    character(len=8) :: mesh
+    character(len=24):: grelem_rid, grnode_int, grnode_sub
     integer, pointer :: v_coninv(:) => null()
     integer, pointer :: v_coninv_longcum(:) => null()
     integer, pointer :: v_connex(:) => null()
     integer, pointer :: v_connex_longcum(:) => null()
-    aster_logical :: test
-    integer, pointer :: v_no_loca(:) => null()
+    aster_logical :: test, l_corr_ef
     aster_logical, pointer :: v_list_ma(:) => null()
     aster_logical, pointer :: v_list_no(:) => null()
+    aster_logical, pointer :: v_loca_no(:) => null()
     aster_logical, pointer :: v_list_in(:) => null()
-    integer, pointer :: v_list_old(:) => null()
-    integer, pointer :: v_list_new(:) => null()
+    aster_logical, pointer :: v_list_sb(:) => null()
+    aster_logical, pointer :: v_loca_sb(:) => null()
     integer, pointer :: v_group(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
@@ -93,14 +94,17 @@ implicit none
         call utmess('I', 'ROM4_21')
     endif
 !
+! - Get parameters
+!
+    mesh         = ds_para%mesh
+    nb_layer_ma  = ds_para%nb_layer_ma
+    grelem_rid   = ds_para%grelem_rid
+    grnode_int   = ds_para%grnode_int
+    l_corr_ef    = ds_para%l_corr_ef
+    grnode_sub   = ds_para%grnode_sub
+!
 ! - Initializations
 !
-    grpmai = mesh//'.GROUPEMA'
-    gpptnm = mesh//'.PTRNOMMAI'
-    grpmav = '&&OP0050'//'.GROUPEMA'
-    grpnoe = mesh//'.GROUPENO'
-    gpptnn = mesh//'.PTRNOMNOE'
-    grpnov = '&&OP0050'//'.GROUPENO'
     call dismoi('NB_MA_MAILLA', mesh, 'MAILLAGE', nb_elem)
     call dismoi('NB_NO_MAILLA', mesh, 'MAILLAGE', nb_node)
 !
@@ -119,117 +123,66 @@ implicit none
 !
     AS_ALLOCATE(vl = v_list_ma, size = nb_elem)
     AS_ALLOCATE(vl = v_list_no, size = nb_node)
-    AS_ALLOCATE(vl = v_list_in, size = nb_node) 
+    AS_ALLOCATE(vl = v_list_in, size = nb_node)
+    AS_ALLOCATE(vl = v_loca_no, size = nb_node)
+    AS_ALLOCATE(vl = v_list_sb, size = nb_node)
+    AS_ALLOCATE(vl = v_loca_sb, size = nb_node)
 !
 ! - Add one GROUP_MA in mesh
 !
-    call jeexin(grpmai, iret)
-    if (iret .eq. 0) then
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', 1, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', 1)
-    else
-        call jelira(grpmai, 'NOMUTI', nb_group)
-        nb_group_new = nb_group + 1
-        call cpclma(mesh, '&&OP0050', 'GROUPEMA', 'V')
-        call jedetr(grpmai)
-        call jedetr(gpptnm)
-        call jecreo(gpptnm, 'G N K24')
-        call jeecra(gpptnm, 'NOMMAX', nb_group_new, ' ')
-        call jecrec(grpmai, 'G V I', 'NO '//gpptnm, 'DISPERSE', 'VARIABLE', nb_group_new)
-        do i_group = 1, nb_group
-            call jenuno(jexnum(grpmav, i_group), group_name)
-            call jecroc(jexnom(grpmai, group_name))
-            call jeveuo(jexnum(grpmav, i_group), 'L', vi = v_list_old)
-            call jelira(jexnum(grpmav, i_group), 'LONUTI', nb_enti)
-            call jeecra(jexnom(grpmai, group_name), 'LONMAX', max(nb_enti, 1))
-            call jeecra(jexnom(grpmai, group_name), 'LONUTI', nb_enti)
-            call jeveuo(jexnom(grpmai, group_name), 'E', vi = v_list_new)
-            do i_enti = 1, nb_enti
-                v_list_new(i_enti) = v_list_old(i_enti)
-            enddo
-        enddo
-    endif    
+    call addGroupElem(mesh, 1) 
 !
 ! - Add one GROUP_NO in mesh
 !
-    call jeexin(grpnoe, iret)
-    if (iret .eq. 0) then
-        call jedetr(gpptnn)
-        call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', 1, ' ')
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', 1)
+    if (ds_para%l_corr_ef) then
+        nb_group_add = 2
     else
-        call jelira(grpnoe, 'NOMUTI', nb_group)
-        nb_group_new = nb_group + 1
-        call cpclma(mesh, '&&OP0050', 'GROUPENO', 'V')
-        call jedetr(grpnoe)
-        call jedetr(gpptnn)
-        call jecreo(gpptnn, 'G N K24')
-        call jeecra(gpptnn, 'NOMMAX', nb_group_new, ' ')
-        call jecrec(grpnoe, 'G V I', 'NO '//gpptnn, 'DISPERSE', 'VARIABLE', nb_group_new)
-        do i_group = 1, nb_group
-            call jenuno(jexnum(grpnov, i_group), group_name)
-            call jecroc(jexnom(grpnoe, group_name))
-            call jeveuo(jexnum(grpnov, i_group), 'L', vi = v_list_old)
-            call jelira(jexnum(grpnov, i_group), 'LONUTI', nb_enti)
-            call jeecra(jexnom(grpnoe, group_name), 'LONMAX', max(nb_enti, 1))
-            call jeecra(jexnom(grpnoe, group_name), 'LONUTI', nb_enti)
-            call jeveuo(jexnom(grpnoe, group_name), 'E', vi = v_list_new)
-            do i_enti = 1, nb_enti
-                v_list_new(i_enti) = v_list_old(i_enti)
-            enddo
-        enddo
+        nb_group_add = 1
     endif
+    call addGroupNode(mesh, nb_group_add) 
 !
 ! - Get all elements of RID
 !
     do i_node = 1, nb_node_rid
-! ----- 1/ Add magic point in RID_Nodes
-        node_nume            = v_list_rid(i_node)
-        v_list_no(node_nume) = .true._1   
-        node_nbelem          = v_coninv_longcum(node_nume+1)-v_coninv_longcum(node_nume)
-        do i_node_elem = 1, node_nbelem
-! --------- 2/ Add element attached to magic point in RID_Elements
-            elem_nume            = v_coninv(v_coninv_longcum(node_nume)+i_node_elem-1)
-            v_list_ma(elem_nume) = .true._1
-            elem_nbnode          = v_connex_longcum(elem_nume+1)-v_connex_longcum(elem_nume)
-            AS_ALLOCATE(vi = v_no_loca, size = elem_nbnode)
-            do i_elem_node = 1, elem_nbnode
-! ------------- 3/ Add node attached to RID_Elements in RID_Nodes
-                nunolo                 = v_connex(v_connex_longcum(elem_nume)+i_elem_node-1)
-                v_list_no(nunolo)      = .true._1
-                v_no_loca(i_elem_node) = nunolo
-            enddo
-            do i_elem_node = 1, elem_nbnode
-! ------------- 3/ Add element attached to RID_Nodes
-                nunolo       = v_connex(v_connex_longcum(elem_nume)+i_elem_node-1)
-                node_nbelem2 = v_coninv_longcum(nunolo+1)-v_coninv_longcum(nunolo)
-                do i_node_elem2 = 1, node_nbelem2
-                    numamo       = v_coninv(v_coninv_longcum(nunolo)+i_node_elem2-1)
-                    elem_nbnode2 = v_connex_longcum(numamo+1)-v_connex_longcum(numamo)
-                    do i_elem_node2 = 1, elem_nbnode2
-                        nunono = v_connex(v_connex_longcum(numamo)+i_elem_node2-1)
-                        test   = .false._1
-                        do i_elem_node3 = 1, elem_nbnode
-                            if (nunono .eq. v_no_loca(i_elem_node3)) then
-                                test = .true._1
-                                exit
-                            endif
-                        enddo
-                        if (.not.test) then
-                            exit
-                        endif
-                    enddo
-                    if (test) then
-                        v_list_ma(numamo) = .true._1
-                    endif   
-                enddo
-            enddo
-            AS_DEALLOCATE(vi=v_no_loca)
-        enddo
-    enddo 
+        node_nume = v_list_rid(i_node)
+        ASSERT(node_nume .gt. 0)
+        v_list_no(node_nume) = .true._1
+        v_loca_no(node_nume) = .true._1
+    end do
+    do i_layer = 1, nb_layer_ma+1
+        do i_node = 1, nb_node
+            if (v_list_no(i_node)) then
+                node_nbelem = v_coninv_longcum(i_node+1)-v_coninv_longcum(i_node)
+                do i_node_elem = 1, node_nbelem
+                    elem_nume = v_coninv(v_coninv_longcum(i_node)+i_node_elem-1)
+                    elem_nbnode = v_connex_longcum(elem_nume+1)-v_connex_longcum(elem_nume)
+                    do i_elem_node = 1, elem_nbnode
+                        nunolo = v_connex(v_connex_longcum(elem_nume)+i_elem_node-1)
+                        v_loca_no(nunolo) = .true._1
+                    end do
+                end do
+            endif
+        end do
+        do i_node = 1, nb_node
+            v_list_no(i_node) = v_loca_no(i_node)
+        end do
+    end do
+    do i_elem = 1, nb_elem
+        elem_nbnode = v_connex_longcum(i_elem+1)-v_connex_longcum(i_elem)
+        test = .false._1
+        do i_elem_node = 1, elem_nbnode
+            nunolo = v_connex(v_connex_longcum(i_elem)+i_elem_node-1)
+            if (v_list_no(nunolo)) then
+                test=.true._1
+            else
+                test=.false._1
+                exit
+            endif
+        end do
+        if (test) then
+            v_list_ma(i_elem) = .true._1
+        endif
+    end do
 !
 ! - Number of elements in RID
 !
@@ -266,11 +219,11 @@ implicit none
                 nunolo = v_connex(v_connex_longcum(i_elem)+i_elem_node-1)
                 if (v_list_no(nunolo)) then
                     v_list_in(nunolo) = .true._1
+                    v_list_sb(nunolo) = .true._1
                 endif
             enddo    
         endif
     enddo
-
 !
 ! - Number of nodes of interface
 !
@@ -290,6 +243,9 @@ implicit none
     call jeecra(jexnom(mesh//'.GROUPENO', grnode_int), 'LONMAX', max(1, nb_int_node))
     call jeecra(jexnom(mesh//'.GROUPENO', grnode_int), 'LONUTI', nb_int_node)
     call jeveuo(jexnom(mesh//'.GROUPENO', grnode_int), 'E', vi = v_group)
+    if (nb_int_node .eq. 0) then
+        call utmess('A', 'ROM4_27')
+    endif
     indx = 0
     do i_node = 1, nb_node
         if (v_list_in(i_node)) then
@@ -298,10 +254,65 @@ implicit none
         endif
     enddo
 !
+! - Create list of nodes for EF correctors
+!
+    do i_node = 1, nb_node
+        if (v_list_sb(i_node)) then
+            node_nbelem = v_coninv_longcum(i_node+1)-v_coninv_longcum(i_node)
+            do i_node_elem = 1, node_nbelem
+                elem_nume = v_coninv(v_coninv_longcum(i_node)+i_node_elem-1)
+                if (.not.v_list_ma(elem_nume)) then
+                    elem_nbnode = v_connex_longcum(elem_nume+1)-v_connex_longcum(elem_nume)
+                    do i_elem_node = 1, elem_nbnode
+                        nunolo = v_connex(v_connex_longcum(elem_nume)+i_elem_node-1)
+                        v_loca_sb(nunolo) = .true._1
+                    enddo
+                endif
+            enddo
+        endif
+    enddo
+    do i_node = 1, nb_node
+        v_list_sb(i_node) = v_loca_sb(i_node)
+    enddo
+!
+! - Number of nodes for EF correcteurs
+!
+    nb_sub_node = 0
+    do i_node = 1, nb_node
+        if (v_list_sb(i_node)) then
+            nb_sub_node = nb_sub_node + 1
+        endif
+    enddo
+    if (ds_para%l_corr_ef .and. nb_sub_node .eq. 0) then
+        call utmess('A', 'ROM4_28')
+    endif
+    if (niv .ge. 2 .and. l_corr_ef) then
+        call utmess('I', 'ROM4_26', si = nb_sub_node)
+    endif
+!
+! - Create group for nodes of rigid zone in EF correctors
+!
+    if (l_corr_ef) then
+        call jecroc(jexnom(mesh//'.GROUPENO', grnode_sub))
+        call jeecra(jexnom(mesh//'.GROUPENO', grnode_sub), 'LONMAX', max(1, nb_sub_node))
+        call jeecra(jexnom(mesh//'.GROUPENO', grnode_sub), 'LONUTI', nb_sub_node)
+        call jeveuo(jexnom(mesh//'.GROUPENO', grnode_sub), 'E', vi = v_group)
+        indx = 0
+        do i_node = 1, nb_node
+            if (v_list_sb(i_node)) then
+                indx = indx + 1
+                v_group(indx) = i_node
+            endif
+        enddo
+    endif
+!
 ! - Clean
 !
     AS_DEALLOCATE(vl=v_list_ma)
     AS_DEALLOCATE(vl=v_list_no)
     AS_DEALLOCATE(vl=v_list_in)
+    AS_DEALLOCATE(vl=v_list_sb)
+    AS_DEALLOCATE(vl=v_loca_sb)
+    AS_DEALLOCATE(vl=v_loca_no)
 !
 end subroutine

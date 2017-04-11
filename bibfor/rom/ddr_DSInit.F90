@@ -1,4 +1,4 @@
-subroutine ddr_ini0(ds_para)
+subroutine ddr_DSInit(ds_para)
 !
 use Rom_Datastructure_type
 !
@@ -33,7 +33,7 @@ implicit none
 !
 ! DEFI_DOMAINE_REDUIT - Initializations
 !
-! Creation of datastructures
+! Initialization of datastructures
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,6 +67,11 @@ implicit none
     ds_para%ds_empi_prim  = empi_prim
     ds_para%ds_empi_dual  = empi_dual
     ds_para%grelem_rid    = ' '
+    ds_para%nb_layer_ma   = 0
     ds_para%grnode_int    = ' '
+    ds_para%l_corr_ef     = .false._1
+    ds_para%grnode_sub    = ' '
+    ds_para%nb_rid_mini   = 0
+    ds_para%v_rid_mini    => null()
 !
 end subroutine

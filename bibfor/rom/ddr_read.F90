@@ -4,16 +4,21 @@ use Rom_Datastructure_type
 !
 implicit none
 !
+#include "asterf_types.h"
 #include "asterc/getres.h"
+#include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
+#include "asterfort/getvis.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romBaseRead.h"
+#include "asterfort/getnode.h"
+#include "asterfort/jeveuo.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,10 +50,13 @@ implicit none
 ! --------------------------------------------------------------------------------------------------
 !
     integer :: ifm, niv
+    integer :: nb_layer_ma = 0, nocc, nb_node = 0
+    aster_logical :: l_corr_ef = .false._1
     type(ROM_DS_Empi) :: empi_prim, empi_dual
     character(len=8)  :: base_prim = ' ', base_dual = ' ', mesh = ' '
-    character(len=16) :: k16bid = ' '
-    character(len=24) :: grelem_rid  = ' ', grnode_int  = ' '
+    character(len=16) :: k16bid = ' ', answer, keywf
+    character(len=24) :: grelem_rid  = ' ', grnode_int  = ' ', grnode_sub = ' '
+    character(len=24) :: list_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,8 +71,24 @@ implicit none
 !
 ! - Get parameters
 !
-    call getvtx(' ', 'NOM_DOMAINE'  , scal = grelem_rid)
-    call getvtx(' ', 'NOM_INTERFACE', scal = grnode_int)
+    call getvtx(' ', 'NOM_DOMAINE'    , scal = grelem_rid)
+    call getvis(' ', 'NB_COUCHE_SUPPL', scal = nb_layer_ma)
+    call getvtx(' ', 'NOM_INTERFACE'  , scal = grnode_int)
+    call getvtx(' ', 'CORR_COMPLET'   , scal = answer)
+    l_corr_ef = answer .eq. 'OUI'
+    if (l_corr_ef) then
+        call getvtx(' ', 'NOM_ENCASTRE', scal = grnode_sub)
+    endif
+    keywf = 'DOMAINE_INCLUS'
+    call getfac(keywf, nocc)
+    ASSERT(nocc .le. 1)
+    if (nocc .eq. 1) then
+        list_node = '&&OP0050.LIST_NODE'
+        call getnode(mesh   , keywf, 1, ' ', list_node,&
+                     nb_node)
+        call jeveuo(list_node, 'L', vi = ds_para%v_rid_mini)
+        ds_para%nb_rid_mini = nb_node
+    endif
 !
 ! - Get informations about bases - Primal
 !
@@ -80,7 +104,10 @@ implicit none
 !
     ds_para%mesh          = mesh
     ds_para%grelem_rid    = grelem_rid
+    ds_para%nb_layer_ma   = nb_layer_ma
     ds_para%grnode_int    = grnode_int
+    ds_para%l_corr_ef     = l_corr_ef
+    ds_para%grnode_sub    = grnode_sub
     ds_para%ds_empi_prim  = empi_prim
     ds_para%ds_empi_dual  = empi_dual
 !

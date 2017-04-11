@@ -7,13 +7,13 @@ implicit none
 #include "asterf_types.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/titre.h"
-#include "asterfort/ddr_ini0.h"
+#include "asterfort/ddr_DSInit.h"
 #include "asterfort/ddr_chck.h"
 #include "asterfort/ddr_read.h"
 #include "asterfort/ddr_main.h"
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -44,9 +44,9 @@ implicit none
     call titre()
     call infmaj()
 !
-! - Create datastructure
+! - Initialization of datastructures
 !
-    call ddr_ini0(ds_para)
+    call ddr_DSInit(ds_para)
 !
 ! - Read parameters
 !

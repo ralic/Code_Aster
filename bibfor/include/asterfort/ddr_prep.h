@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,8 +16,12 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
 interface
-    subroutine ddr_ini0(ds_para)
+    subroutine ddr_prep(ds_para, v_list_prim, v_list_dual, v_list_rid, nb_node_rid)
         use Rom_Datastructure_type
-        type(ROM_DS_ParaDDR), intent(out) :: ds_para
-    end subroutine ddr_ini0
+        type(ROM_DS_ParaDDR), intent(in) :: ds_para
+        integer, intent(in), pointer :: v_list_prim(:)
+        integer, intent(in), pointer :: v_list_dual(:)
+        integer, intent(out), pointer :: v_list_rid(:)
+        integer, intent(out) :: nb_node_rid
+    end subroutine ddr_prep
 end interface

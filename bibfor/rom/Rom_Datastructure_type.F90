@@ -269,8 +269,18 @@ implicit none
         type(ROM_DS_Empi) :: ds_empi_dual
 ! ----- Name of group of elements for RID
         character(len=24) :: grelem_rid
+! ----- Number of layers in the construction of RID
+        integer           :: nb_layer_ma
 ! ----- Name of group of nodes for interface
         character(len=24) :: grnode_int
+! ----- Flag for EF corrector?
+        aster_logical     :: l_corr_ef
+! ----- Name of group of nodes for outside area of EF corrector
+        character(len=24) :: grnode_sub
+! ----- Number of nodes for minimal rid
+        integer           :: nb_rid_mini
+! ----- List of nodes for minimal rid
+        integer, pointer  :: v_rid_mini(:) 
     end type ROM_DS_ParaDDR
 !
 ! - Parameters for non_linear operator
