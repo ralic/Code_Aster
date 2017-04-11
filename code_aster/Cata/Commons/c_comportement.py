@@ -18,7 +18,7 @@
 # person_in_charge: david.haboussa at edf.fr
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Commons import C_RELATION
 
 
 def C_COMPORTEMENT(COMMAND=None) :  #COMMUN#

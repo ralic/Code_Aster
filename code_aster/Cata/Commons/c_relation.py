@@ -19,7 +19,7 @@
 #
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Commons import C_MFRONT_OFFICIAL
 
 
 def C_RELATION( COMMAND ):

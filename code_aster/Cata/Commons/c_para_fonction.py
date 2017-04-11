@@ -19,7 +19,6 @@
 # ce fichier contient la liste des PARA possibles pour les fonctions et les nappes
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
 
 
 def C_PARA_FONCTION() : return  ( #COMMUN#

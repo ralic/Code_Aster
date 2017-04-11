@@ -17,9 +17,8 @@
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
 
-from code_aster.Cata.Syntax import *
-from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Syntax import SIMP, FACT
+from code_aster.Cata.DataStructure import UnitType
 
 
 def C_MESURE():

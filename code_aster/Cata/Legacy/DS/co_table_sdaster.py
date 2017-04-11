@@ -128,10 +128,6 @@ class table_sdaster(ASSD):
             lisdic.append(d)
         return Table(lisdic, lpar, ltyp, titr, self.nom)
 
-class table_fonction(table_sdaster):
-    """Table contenant en plus une colonne FONCTION et/ou FONCTION_C dont les
-    valeurs des cellules sont des noms de fonction_sdaster ou fonction_c."""
-
 
 class table_fonction(table_sdaster):
     """Table contenant une colonne FONCTION et/ou FONCTION_C dont les

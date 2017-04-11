@@ -15,7 +15,7 @@
 # ALONG WITH THIS PROGRAM; IF NOT, WRITE TO EDF R&D CODE_ASTER,
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
-# person_in_charge: josselin.delmas at edf.fr
+# person_in_charge: mathieu.courtois@edf.fr
 
 class NOM_CHAM_INTO:  #COMMUN#
     """
@@ -57,7 +57,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Contraintes de rosette par élément"), ),
         }
         d['DEFORMATION'] = {
-            "DEGE_ELGA":        ( ("lin", "nonlin",),          
+            "DEGE_ELGA":        ( ("lin", "nonlin",),
                                  _(u"Déformations généralisées aux points de Gauss"), ),
             "DEGE_ELNO":        ( ("lin", "nonlin",),
                                  _(u"Déformations généralisées aux noeuds par élément"), ),
@@ -143,7 +143,7 @@ class NOM_CHAM_INTO:  #COMMUN#
                                  _(u"Incrément de densité d'énergie de déformation totale aux noeuds par élément"), ),
             "ETOT_NOEU":        ( ("lin", "nonlin",),
                                  _(u"Incrément de densité d'énergie de déformation totale aux noeuds"), ),
-        }                       
+        }
         d['CRITERES'] = {
             "DERA_ELGA":        ( ("nonlin",),
                                  _(u"Indicateur local de décharge et de perte de radialité aux points de Gauss"), ),
@@ -364,7 +364,7 @@ class NOM_CHAM_INTO:  #COMMUN#
             "MATE_ELEM":        ( ("lin", "nonlin",),
                                  _(u"Valeurs des paramètres matériaux élastiques par élément"), ),
         }
-        
+
         for typ in ('ELGA', 'ELNO', 'ELEM', 'NOEU', 'CART'):
             for i in range(1, 11):
                 d['AUTRES']['UT%02d_%s' % (i, typ)]=( (),
@@ -472,7 +472,7 @@ class NOM_CHAM_INTO:  #COMMUN#
         """Cette fonction retourne la liste des "into" possibles pour le mot-clé NOM_CHAM.
         C'est à dire les noms de champs des SD RESULTAT (DATA de la routine RSCRSD).
         l_typ_cham : rien ou un ou plusieurs parmi 'ELGA', 'ELNO', 'NOEU', 'ELEM'.
-        kwargs : un dictionnaire de mot-cles, les cles parmis : 
+        kwargs : un dictionnaire de mot-cles, les cles parmis :
           'phenomene'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le suivant)
           'categorie'  : retourne la liste des champs en filtrant par le phenomene (eventuellement mixe avec le precedent)
           'l_nom_cham' : (une liste ou un string) retourne uniqement les informations relatives au champ precise en argument

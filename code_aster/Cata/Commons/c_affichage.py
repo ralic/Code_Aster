@@ -17,9 +17,8 @@
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
 
-from code_aster.Cata.Syntax import *
-from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Syntax import FACT, SIMP
+from code_aster.Cata.DataStructure import UnitType
 
 
 def C_AFFICHAGE():

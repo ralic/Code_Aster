@@ -451,9 +451,6 @@ class table_sdaster(ASSD):
 class table_fonction(table_sdaster):
     pass
 
-class table_fonction(table_sdaster):
-    pass
-
 class table_container(table_sdaster):
     pass
 

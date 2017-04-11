@@ -286,6 +286,10 @@ class PartOfSyntax(UIDMixing):
         """Tell if this keyword should be hidden"""
         return self._def_status() == "c"
 
+    def hasDefaultValue(self):
+        """Tell if the keyword has a default value"""
+        raise NotImplementedError("must be defined in a subclass")
+
     def addDefaultKeywords(self, userSyntax, _parent_ctxt=None):
         """Add default keywords into the user dict of keywords.
 
@@ -347,6 +351,7 @@ class PartOfSyntax(UIDMixing):
             if isinstance(kwd, (SimpleKeyword, FactorKeyword)):
                 if key == "reuse": # reuse is deprecated
                     continue
+                # pragma pylint: disable=no-member
                 if kwd.isMandatory() and kwd.undefined(userSyntax.get(key)):
                     debug_message2("mandatory keyword =", key, ":", kwd)
                     debug_message2("given syntax =", userSyntax)

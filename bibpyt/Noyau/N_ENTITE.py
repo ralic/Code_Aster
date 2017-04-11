@@ -32,11 +32,7 @@ import N_VALIDATOR
 from N_VALIDATOR import ValError, TypeProtocol, listProto
 from strfunc import ufmt
 
-try:
-    from PyQt4 import QtCore
-    stringTypes = (str, unicode, QtCore.QString)
-except ImportError:
-    stringTypes = (str, unicode)
+stringTypes = (str, unicode)
 
 
 class ENTITE:

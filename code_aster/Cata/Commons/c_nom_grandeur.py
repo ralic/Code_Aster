@@ -18,7 +18,6 @@
 # person_in_charge: mathieu.courtois at edf.fr
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
 
 
 def C_NOM_GRANDEUR():

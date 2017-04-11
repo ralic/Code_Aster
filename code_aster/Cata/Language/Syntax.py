@@ -95,10 +95,6 @@ def FORM(**kwargs):
     return Formule(kwargs)
 
 
-def tr(kwargs):
-    return kwargs
-
-
 def OPS(kwargs):
     return kwargs
 

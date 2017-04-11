@@ -24,8 +24,8 @@ import os.path as osp
 # translation of the docstrings of the commands and keywords is
 # used within Eficas, that's why we are using PyQt i18n functions here
 try:
-    from PyQt4 import QtCore, QtGui
-    app = QtGui.QApplication
+    from PyQt5 import QtCore, Qt
+    app = Qt.QApplication
     # define the tr function
     try:
         _encoding = app.UnicodeUTF8

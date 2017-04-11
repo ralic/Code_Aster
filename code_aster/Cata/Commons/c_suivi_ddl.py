@@ -19,7 +19,6 @@
 
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
 
 
 def C_SUIVI_DDL() : return FACT(statut='f',max=4,

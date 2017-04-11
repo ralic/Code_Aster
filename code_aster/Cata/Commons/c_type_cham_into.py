@@ -20,7 +20,7 @@
 
 from code_aster.Cata.Syntax import *
 from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Commons.c_nom_grandeur import C_NOM_GRANDEUR
 
 
 def C_TYPE_CHAM_INTO( type_cham=None ):

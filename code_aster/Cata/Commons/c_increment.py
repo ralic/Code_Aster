@@ -16,9 +16,8 @@
 #    1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 # ======================================================================
 # person_in_charge: mickael.abbas at edf.fr
-from code_aster.Cata.Syntax import *
-from code_aster.Cata.DataStructure import *
-from code_aster.Cata.Commons import *
+from code_aster.Cata.Syntax import FACT, SIMP, EXCLUS
+from code_aster.Cata.DataStructure import listr8_sdaster, list_inst
 
 
 def C_INCREMENT(TYPE_CMD) :   #COMMUN#
