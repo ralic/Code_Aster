@@ -155,7 +155,7 @@ class UnitBaseType(ValueCheckMixing):
 
     @staticmethod
     def checkInto(value, into):
-        return self.value(value) in into
+        return UnitBaseType.value(value) in into
 
     @staticmethod
     def checkMax(value, valMax):
