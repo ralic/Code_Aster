@@ -46,12 +46,12 @@ class vect_asse_gene(ASSD):
       numpy.asarray(vecteur)
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      #desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
-      desc = numpy.array(self.sdj.DESC.get())
+      desc = self.sdj.DESC.get()
       # On teste si le DESC du vecteur existe
       if not desc:
-         raise AsException("L'objet vecteur n'existe pas ou \
-         est mal cree par Code Aster")
+         raise AsException("L'objet vecteur {0!r} n'existe pas"
+                           .format(self.sdj.DESC.nomj()))
+      desc = numpy.array(desc)
       # On teste si la taille du vecteur jeveux et python est identique
       if desc[1] != numpy.shape(vecteur)[0] :
          raise AsException("La taille du vecteur python est incorrecte")
@@ -85,11 +85,12 @@ class vect_asse_gene(ASSD):
       numpy.asarray(vecteur)
       ncham=self.get_name()
       ncham=ncham+(8-len(ncham))*' '
-      desc=numpy.array(aster.getvectjev(ncham+(19-len(ncham))*' '+'.DESC'))
+      desc = self.sdj.DESC.get()
       # On teste si le DESC de la matrice existe
       if not desc:
-         raise AsException("L'objet vecteur n'existe pas ou \
-         est mal cree par Code Aster")
+         raise AsException("L'objet vecteur {0!r} n'existe pas"
+                           .format(self.sdj.DESC.nomj()))
+      desc = numpy.array(desc)
       # On teste si la taille de la matrice jeveux et python est identique
       if desc[1] != numpy.shape(vecteur)[0] :
          raise AsException("La taille du vecteur python est incorrecte")

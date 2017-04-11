@@ -68,10 +68,13 @@ class matr_asse_gene_r(matr_asse_gene):
        raise AsException("Erreur dans matr_asse_gene.EXTR_MATR_GENE en PAR_LOT='OUI'")
     import numpy
 
-    desc=numpy.array(self.sdj.DESC.get())
-    # On teste si le DESC de la matrice existe
+    desc = self.sdj.DESC.get()
+    # On teste si le DESC du vecteur existe
     if not desc:
-       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+        raise AsException("L'objet vecteur {0!r} n'existe pas"
+                          .format(self.sdj.DESC.nomj()))
+    desc = numpy.array(desc)
+
     # Si le stockage est plein
     if desc[2]==2 :
        valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1])
@@ -94,19 +97,22 @@ class matr_asse_gene_r(matr_asse_gene):
        raise AsException("Erreur dans matr_asse_gene.RECU_MATR_GENE en PAR_LOT='OUI'")
 
     ncham=self.get_name()
-    desc=numpy.array(self.sdj.DESC.get())
 
+    desc = self.sdj.DESC.get()
     # On teste si le DESC de la matrice existe
     if not desc:
-       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+        raise AsException("L'objet matrice {0!r} n'existe pas"
+                          .format(self.sdj.DESC.nomj()))
+    desc = numpy.array(desc)
+
     numpy.asarray(matrice)
 
     # On teste si la dimension de la matrice python est 2
-    if (len(numpy.shape(matrice))<>2) :
+    if (len(numpy.shape(matrice)) != 2) :
        raise AsException("La dimension de la matrice est incorrecte ")
 
     # On teste si les tailles des matrices jeveux et python sont identiques
-    if (tuple([desc[1],desc[1]])<>numpy.shape(matrice)) :
+    if (tuple([desc[1],desc[1]]) != numpy.shape(matrice)) :
        raise AsException("La taille de la matrice est incorrecte ")
 
     # Si le stockage est plein
@@ -141,9 +147,12 @@ class matr_asse_gene_c(matr_asse_gene):
     if not self.accessible():
        raise AsException("Erreur dans matr_asse_gene_c.EXTR_MATR_GENE en PAR_LOT='OUI'")
 
-    desc = numpy.array(self.sdj.DESC.get())
+    desc = self.sdj.DESC.get()
+    # On teste si le DESC de la matrice existe
     if not desc:
-       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster ")
+        raise AsException("L'objet matrice {0!r} n'existe pas"
+                          .format(self.sdj.DESC.nomj()))
+    desc = numpy.array(desc)
     # Si le stockage est plein
     if desc[2] == 2 :
        valeur = VALM_triang2array(self.sdj.VALM.get(), desc[1], complex)
@@ -167,19 +176,20 @@ class matr_asse_gene_c(matr_asse_gene):
 
     numpy.asarray(matrice)
     ncham=self.get_name()
-    desc=numpy.array(self.sdj.DESC.get())
-
+    desc = self.sdj.DESC.get()
     # On teste si le DESC de la matrice existe
     if not desc:
-       raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+        raise AsException("L'objet matrice {0!r} n'existe pas"
+                          .format(self.sdj.DESC.nomj()))
+    desc = numpy.array(desc)
     numpy.asarray(matrice)
 
     # On teste si la dimension de la matrice python est 2
-    if (len(numpy.shape(matrice))<>2) :
+    if (len(numpy.shape(matrice)) != 2) :
        raise AsException("La dimension de la matrice est incorrecte ")
 
     # On teste si la taille de la matrice jeveux et python est identique
-    if (tuple([desc[1],desc[1]])<>numpy.shape(matrice)) :
+    if (tuple([desc[1],desc[1]]) != numpy.shape(matrice)) :
        raise AsException("La taille de la matrice est incorrecte ")
 
     # Si le stockage est plein

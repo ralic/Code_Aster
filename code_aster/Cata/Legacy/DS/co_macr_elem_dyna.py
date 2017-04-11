@@ -66,10 +66,12 @@ class macr_elem_dyna(ASSD):
         else:
             raise AsException("Le type de la matrice est incorrect")
 
-        desc=numpy.array(macr_elem.DESC.get())
-        # On teste si le DESC du vecteur existe
+        desc = macr_elem.sdj.DESC.get()
+        # On teste si le DESC de la matrice existe
         if not desc:
-            raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+            raise AsException("L'objet matrice {0!r} n'existe pas"
+                          .format(macr_elem.sdj.DESC.nomj()))
+        desc = numpy.array(desc)
 
         matrice = VALM_triang2array(macr_elem.VALE.get(), desc[1])
         return matrice
@@ -95,11 +97,13 @@ class macr_elem_dyna(ASSD):
         else:
             raise AsException("Le type de la matrice est incorrect")
         nom_vale = macr_elem.VALE.nomj()
-        desc=numpy.array(macr_elem.DESC.get())
 
-        # On teste si le DESC de la matrice jeveux existe
+        desc = macr_elem.sdj.DESC.get()
+        # On teste si le DESC de la matrice existe
         if not desc:
-            raise AsException("L'objet matrice n'existe pas ou est mal cree par Code Aster")
+            raise AsException("L'objet matrice {0!r} n'existe pas"
+                          .format(macr_elem.sdj.DESC.nomj()))
+        desc = numpy.array(desc)
         numpy.asarray(matrice)
 
         # On teste si la matrice python est de dimension 2
