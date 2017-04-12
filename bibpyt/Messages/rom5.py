@@ -98,7 +98,7 @@ cata_msg = {
 
    43 : _(u"""Initialisation de la structure de données pour le calcul multi-paramétrique avec réduction de modèle."""),
 
-   44 : _(u"""Evaluation des coefficients pour la valeur %(i1)d des paramètres."""),
+   44 : _(u"""Évaluation des coefficients pour la valeur %(i1)d des paramètres."""),
 
    45 : _(u"""Valeur du coefficient réel pour le vecteur de nom %(k1)s : %(r1)19.12e."""),
 
@@ -140,7 +140,7 @@ cata_msg = {
 
    92 : _(u"""Calcul du mode empirique initial."""),
 
-   93 : _(u"""Evaluation des coefficients pour la valeur initiale des paramètres."""),
+   93 : _(u"""Évaluation des coefficients pour la valeur initiale des paramètres."""),
 
    94 : _(u"""Copie de la valeur des paramètres initiaux."""),
 

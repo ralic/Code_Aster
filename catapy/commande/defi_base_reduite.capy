@@ -58,7 +58,7 @@ DEFI_BASE_REDUITE=OPER(
 
     b_type_rb       =BLOC(condition ="""(equal_to("OPERATION", 'GLOUTON'))""",
         NB_VARI_COEF    =SIMP(statut='o',typ='I', max = 1, val_min = 1),
-        TYPE_VARI_COEF  =SIMP(statut='f',typ='TXM',defaut="DIRECT",into=("DIRECT")),
+        TYPE_VARI_COEF  =SIMP(statut='f',typ='TXM',defaut="DIRECT",into=("DIRECT",)),
         b_direct       =BLOC(condition = """(equal_to("TYPE_VARI_COEF", 'DIRECT'))""",
             VARI_PARA   = FACT( statut='f', min= 1, max=5,
                 NOM_PARA        =SIMP(statut='o',typ='TXM',into=C_PARA_FONCTION(), max=1 ),

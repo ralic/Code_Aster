@@ -63,7 +63,7 @@ cata_msg = {
 
    38 : _(u"""Paramètres du système réduit."""),
 
-   39 : _(u"""Paramètres du problème multiparamétrique."""),
+   39 : _(u"""Paramètres du problème multi-paramétrique."""),
 
    41 : _(u"""Coefficient scalaire complexe: (%(r1)19.12e,%(r2)19.12e)."""),
 

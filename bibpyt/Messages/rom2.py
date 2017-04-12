@@ -53,7 +53,7 @@ cata_msg = {
 
    17 : _(u"""Le second membre du système sera réel."""),
 
-   18 : _(u"""Echec lors de la résolution.
+   18 : _(u"""Échec lors de la résolution.
               La matrice est presque singulière à la fréquence."""),
 
    19 : _(u"""Initialisation pour le problème multi-paramétrique."""),
