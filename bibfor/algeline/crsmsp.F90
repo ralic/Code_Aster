@@ -1,4 +1,4 @@
-subroutine crsmsp(solvbz, matasz, pcpiv)
+subroutine crsmsp(solvbz, matasz, pcpiv, usersmz)
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
@@ -26,7 +26,8 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
 #include "asterfort/sdsolv.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: solvbz, matasz
-    integer :: pcpiv
+    integer          :: pcpiv
+    character(len=*) :: usersmz
 !-----------------------------------------------------------------------
 !     CREATION D'UNE SD SOLVEUR MUMPS SIMPLE PRECISION UTILISEE COMME
 !     PRECONDITIONNEUR
@@ -41,6 +42,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
     integer :: zslvk, zslvr, zslvi
     integer :: jslvk, jslvr, jslvi, iret
     character(len=19) :: matass, solvbd
+    character(len=24) :: usersm
     character(len=8) :: symk
     character(len=3) :: syme
 !----------------------------------------------------------------------
@@ -48,7 +50,8 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
 !
     solvbd = solvbz
     matass = matasz
-!
+    usersm = usersmz
+! 
     call jeexin(solvbd, iret)
     if (iret .eq. 0) call detrsd('SOLVEUR', solvbd)
 !
@@ -90,7 +93,7 @@ subroutine crsmsp(solvbz, matasz, pcpiv)
 !     PRECONDITIONNEUR
     zk24(jslvk-1+8) = 'OUI'
 !     MEMOIRE_MUMPS
-    zk24(jslvk-1+9) = 'IN_CORE'
+    zk24(jslvk-1+9) = usersm
     zk24(jslvk-1+10) = 'XXXX'
     
 !     POSTTRAITEMENTS

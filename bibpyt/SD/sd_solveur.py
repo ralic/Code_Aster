@@ -69,7 +69,7 @@ class sd_solveur(AsBase):
             assert slvk[5] in ('XXXX')
             assert slvk[6] in ('XXXX')
             assert slvk[7] in ('XXXX')
-            assert slvk[8] in ('XXXX')
+            assert slvk[8] in ('IN_CORE','AUTO','XXXX')
             assert slvk[10] in ('XXXX')
             assert slvk[11] in ('XXXX')
         elif method == 'PETSC':

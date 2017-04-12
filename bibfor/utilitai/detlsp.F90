@@ -1,7 +1,7 @@
 subroutine detlsp(matasz, solvez)
 !
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -40,8 +40,8 @@ subroutine detlsp(matasz, solvez)
 !
 !
     character(len=19) :: solveu, matass
-    character(len=24) :: metres, precon, solvbd
-    integer ::  iret
+    character(len=24) :: metres, precon, solvbd, usersmbd
+    integer ::  iret, pcpivbd
     real(kind=8) :: r8bid=0.d0
     complex(kind=8) :: c16bid=dcmplx(0.d0,0.d0)
     character(len=24), pointer :: slvk(:) => null()
@@ -59,7 +59,9 @@ subroutine detlsp(matasz, solvez)
         precon = slvk(2)
         if (precon .eq. 'LDLT_SP') then
             solvbd = slvk(3)
-            call crsmsp(solvbd, matass, 0)
+            pcpivbd = 0
+            usersmbd = 'XXXX'
+            call crsmsp(solvbd, matass, pcpivbd, usersmbd)
             call amumph('DETR_MAT', solvbd, matass, [r8bid], [c16bid],&
                         ' ', 0, iret, .true._1)
             call detrsd('SOLVEUR', solvbd)

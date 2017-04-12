@@ -4,7 +4,7 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
                 criter, solveu, matas, istop,&
                 iret)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -89,8 +89,8 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 ! -----------------------------------------------------------------
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2)
-    integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali
-    character(len=24) :: precon, solvbd
+    integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv
+    character(len=24) :: precon, solvbd, usersm
     complex(kind=8) :: cbid
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -122,10 +122,13 @@ subroutine gcpc(m, in, ip, ac, inpc, perm,&
 !  -- CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
 !  -- (A DETRUIRE A LA SORTIE)
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
+    call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     precon=slvk(2)
+    usersm=slvk(9)
+    pcpiv=slvi(7)
     if (precon .eq. 'LDLT_SP') then
         solvbd = slvk(3)
-        call crsmsp(solvbd, matas, 0)
+        call crsmsp(solvbd, matas, pcpiv, usersm )
     endif
 
 

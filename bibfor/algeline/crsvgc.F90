@@ -18,7 +18,7 @@ subroutine crsvgc(motfac, solveu, istop, nprec, &
     character(len=16) :: motfac
     character(len=19) :: solveu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -53,6 +53,7 @@ subroutine crsvgc(motfac, solveu, istop, nprec, &
     real(kind=8) :: resire
     character(len=8) :: precon
     character(len=19) :: solvbd
+    character(len=24) :: usersm
     character(len=8) :: renum
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -89,6 +90,8 @@ subroutine crsvgc(motfac, solveu, istop, nprec, &
         ASSERT(ibid.eq.1)
         call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
         ASSERT(ibid.eq.1)
+        call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=ibid)
+        ASSERT(ibid.eq.1)
 !
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
@@ -111,7 +114,7 @@ subroutine crsvgc(motfac, solveu, istop, nprec, &
     slvk(6) = 'XXXX'
     slvk(7) = 'XXXX'
     slvk(8) = 'XXXX'
-    slvk(9) = 'XXXX'
+    slvk(9) = usersm
     slvk(10)= 'XXXX'
     slvk(11)= 'XXXX'
     slvk(12)= 'XXXX'

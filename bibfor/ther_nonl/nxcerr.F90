@@ -45,13 +45,11 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: r8bid, pcplus
+    real(kind=8) :: r8bid
     real(kind=8) :: resi_glob_rela, resi_glob_maxi, inikry
     real(kind=8), dimension(2) :: parcrr
     integer, dimension(3) :: parcri
     integer :: ibid, nbiter, iter_glob_maxi
-    integer :: nmax, nplus
-    integer :: i_echec, nb_echec
     character(len=24) :: infocv, infore
     integer :: jifcv, jifre
 !

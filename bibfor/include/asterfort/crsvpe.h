@@ -1,5 +1,5 @@
 !
-! COPYRIGHT (C) 1991 - 2015  EDF R&D                WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                WWW.CODE-ASTER.ORG
 !
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
@@ -16,15 +16,9 @@
 ! 1 AVENUE DU GENERAL DE GAULLE, 92141 CLAMART CEDEX, FRANCE.
 !
           interface 
-            subroutine crsvpe(motfac,solveu,istop,nprec,epsmat,mixpre,  &
-     &kellag,kxfem)
+            subroutine crsvpe(motfac,solveu, kellag )
               character(len=16) :: motfac
               character(len=19) :: solveu
-              integer :: istop
-              integer :: nprec
-              real(kind=8) :: epsmat
-              character(len=3) :: mixpre
               character(len=3) :: kellag
-              character(len=8) :: kxfem
             end subroutine crsvpe
           end interface 

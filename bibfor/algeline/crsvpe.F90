@@ -1,5 +1,4 @@
-subroutine crsvpe(motfac, solveu, istop, nprec, &
-                  epsmat, mixpre, kellag, kxfem)
+subroutine crsvpe(motfac, solveu,  kellag )
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -11,14 +10,11 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-    integer :: istop, nprec
-    real(kind=8) :: epsmat
-    character(len=3) :: mixpre, kellag
-    character(len=8) :: kxfem
+    character(len=3) :: kellag
     character(len=16) :: motfac
     character(len=19) :: solveu
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -38,12 +34,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
 !
 ! IN K19 SOLVEU  : NOM DU SOLVEUR DONNE EN ENTREE
 ! OUT    SOLVEU  : LE SOLVEUR EST CREE ET INSTANCIE
-! IN  IN ISTOP   : PARAMETRE LIE AUX MOT-CLE STOP_SINGULIER
-! IN  IN NPREC   :                           NPREC
-! IN  R8 EPSMAT  :                           FILTRAGE_MATRICE
-! IN  K3 MIXPRE  :                           MIXER_PRECISION
 ! IN  K3 KELLAG  :                           ELIM_LAGR
-! IN  K8 KXFEM   :                           PRE_COND_XFEM
 ! ----------------------------------------------------------
 !
 !
@@ -53,6 +44,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
     real(kind=8) :: fillin, epsmax, resipc
     character(len=24) :: kalgo, kprec, renum
     character(len=19) :: solvbd
+    character(len=24) :: usersm
     character(len=24), pointer :: slvk(:) => null()
     integer, pointer :: slvi(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
@@ -81,6 +73,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
     reacpr = 0
     pcpiv = -9999
     solvbd = ' '
+    usersm = 'XXXX'
 !
     if (kprec .eq. 'LDLT_INC') then
         call getvis(motfac, 'NIVE_REMPLISSAGE', iocc=1, scal=niremp, nbret=ibid)
@@ -93,6 +86,8 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
         call getvis(motfac, 'REAC_PRECOND', iocc=1, scal=reacpr, nbret=ibid)
         ASSERT(ibid.eq.1)
         call getvis(motfac, 'PCENT_PIVOT', iocc=1, scal=pcpiv, nbret=ibid)
+        ASSERT(ibid.eq.1)
+        call getvtx(motfac, 'GESTION_MEMOIRE', iocc=1, scal=usersm, nbret=ibid)
         ASSERT(ibid.eq.1)
 !       NOM DE SD SOLVEUR BIDON QUI SERA PASSEE A MUMPS
 !       POUR LE PRECONDITIONNEMENT
@@ -134,7 +129,7 @@ subroutine crsvpe(motfac, solveu, istop, nprec, &
     slvk(6) = kalgo
     slvk(7) = 'XXXX'
     slvk(8) = 'XXXX'
-    slvk(9) = 'XXXX'
+    slvk(9) = usersm
     slvk(10)= 'XXXX'
     slvk(11)= 'XXXX'
     slvk(12)= 'XXXX'

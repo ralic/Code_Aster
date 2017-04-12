@@ -1,6 +1,6 @@
 subroutine pcmump(matasz, solvez, iretz, new_facto)
 ! ======================================================================
-! COPYRIGHT (C) 1991 - 2016  EDF R&D                  WWW.CODE-ASTER.ORG
+! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
 ! THIS PROGRAM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
 ! IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
 ! THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
@@ -45,6 +45,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
     complex(kind=8) :: cbid
     character(len=19) :: solveu, matass
     character(len=24) :: precon, solvbd
+    character(len=24) :: usersm
     integer, pointer :: slvi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
@@ -59,6 +60,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
     call jeveuo(solveu//'.SLVK', 'L', vk24=slvk)
     call jeveuo(solveu//'.SLVI', 'L', vi=slvi)
     precon=slvk(2)
+    usersm=slvk(9)
     iterpr=slvi(5)
     reacpr=slvi(6)
     pcpiv =slvi(7)
@@ -81,7 +83,7 @@ subroutine pcmump(matasz, solvez, iretz, new_facto)
 ! --  CREATION DE LA SD SOLVEUR MUMPS SIMPLE PRECISION
 ! --  (A DETRUIRE A LA SORTIE)
     solvbd=slvk(3)
-    call crsmsp(solvbd, matass, pcpiv)
+    call crsmsp(solvbd, matass, pcpiv, usersm)
 !
 ! --  APPEL AU PRECONDITIONNEUR
     iret = 0

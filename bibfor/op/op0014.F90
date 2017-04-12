@@ -58,7 +58,7 @@ subroutine op0014()
     character(len=5) :: klag2
     character(len=24) :: valk(2)
     character(len=8) :: matass, matfac, type, ktypr, ktyps, precon, mixpre, kacmum
-    character(len=12) :: kooc
+    character(len=24) :: usersm
     character(len=16) :: concep, nomcmd, metres , renum
     character(len=19) :: mass, mfac, solveu, solvbd
     integer :: nprec, iatfac, ibdeb, ibfin, ibid, ier1, ifm, ildeb, ilfin
@@ -172,6 +172,9 @@ subroutine op0014()
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
+!
+            call getvtx(' ', 'GESTION_MEMOIRE', scal=usersm, nbret=ibid)
+            zk24(jslvk-1+9)=usersm
 
 !           -- appel a la construction du preconditionneur
             call pcmump(mass, solveu, iret)
@@ -190,7 +193,7 @@ subroutine op0014()
         call getvtx(' ', 'PRETRAITEMENTS', scal=ktyps)
         call getvtx(' ', 'ELIM_LAGR', scal=klag2)
         ASSERT(klag2.eq.'NON' .or. klag2.eq.'LAGR2')
-        call getvtx(' ', 'GESTION_MEMOIRE', scal=kooc)
+        call getvtx(' ', 'GESTION_MEMOIRE', scal=usersm)
         mixpre='NON'
         epsmat=-1.d0
         eps=-1.d0
@@ -205,7 +208,7 @@ subroutine op0014()
         zk24(jslvk-1+6)=klag2
         zk24(jslvk-1+7)=mixpre
         zk24(jslvk-1+8)='NON'
-        zk24(jslvk-1+9)=kooc
+        zk24(jslvk-1+9)=usersm
         zk24(jslvk-1+10)='XXXX'
         zk24(jslvk-1+11)='XXXX'
         zk24(jslvk-1+12)='XXXX'
@@ -236,9 +239,11 @@ subroutine op0014()
 
             call getvis(' ', 'REAC_PRECOND', scal=reacpr, nbret=ibid)
             call getvis(' ', 'PCENT_PIVOT', scal=pcpiv, nbret=ibid)
+            call getvtx(' ', 'GESTION_MEMOIRE', scal=usersm)
             zi(jslvi-1+5) = 0
             zi(jslvi-1+6) = reacpr
             zi(jslvi-1+7) = pcpiv
+            zk24(jslvk-1+9)=usersm
         endif
 
         call apetsc('DETR_MAT', ' ', mfac, [0.d0], ' ',&
