@@ -29,5 +29,9 @@ This package imports the objects of the legacy supervisor of commands.
 from .Syntax import *
 from .Syntax import _F
 from .DataStructure import *
-from code_aster.Cata.Commands import *
 from code_aster.Cata.context import *
+from code_aster.Cata.Commands import commandStore
+
+# This is essentially for Cata.cata module to avoid potential
+# conflicts between datastructures and modules names (example: comb_fourier).
+globals().update(commandStore)

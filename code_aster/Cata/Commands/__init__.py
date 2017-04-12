@@ -17,14 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with Code_Aster.  If not, see <http://www.gnu.org/licenses/>.
 
-import os.path as osp
-from glob import glob
-
-from code_aster.Cata.SyntaxObjects import Command
-
-
 def _init_command(ctx, debug):
     """Import de toutes les commandes et les copie dans le contexte"""
+    import os.path as osp
+    from glob import glob
+    from code_aster.Cata.SyntaxObjects import Command
     pkgdir = osp.dirname(__file__)
     pkg = osp.basename(pkgdir)
     l_mod = [osp.splitext(osp.basename(modname))[0]
