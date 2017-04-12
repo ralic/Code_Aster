@@ -6,8 +6,6 @@ implicit none
 !
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/dismoi.h"
-#include "asterfort/rscrsd.h"
 !
 ! ======================================================================
 ! COPYRIGHT (C) 1991 - 2017  EDF R&D                  WWW.CODE-ASTER.ORG
@@ -47,59 +45,5 @@ implicit none
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_equa = 0, nb_node = 0, nb_mode_crea
-    character(len=8)  :: model = ' ', mesh = ' ', matr_name = ' '
-    character(len=24) :: field_refe = '&&ROM_COMP.FIELD'
-    character(len=24) :: field_name = ' '
-!
-! --------------------------------------------------------------------------------------------------
-!
-    call infniv(ifm, niv)
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM2_18')
-    endif
-!
-! - Get "representative" matrix
-!
-    matr_name = ds_para_rb%ds_multipara%matr_name(1)
-!
-! - Get information about model
-!
-    call dismoi('NOM_MODELE', matr_name, 'MATR_ASSE', repk = model)
-!
-! - Get informations about fields
-!
-    call dismoi('NB_EQUA'     , matr_name, 'MATR_ASSE', repi = nb_equa) 
-    call dismoi('NOM_MAILLA'  , model    , 'MODELE'   , repk = mesh)
-    call dismoi('NB_NO_MAILLA', mesh     , 'MAILLAGE' , repi = nb_node)
-    field_name = 'DEPL'
-!
-! - Create empiric base
-!
-    if (nb_mode_maxi .eq. 0) then
-        nb_mode_crea = 10
-    else
-        nb_mode_crea = nb_mode_maxi
-    endif
-    if (niv .ge. 2) then
-        call utmess('I', 'ROM7_11', si = nb_mode_crea)
-    endif
-    call rscrsd('G', base, 'MODE_EMPI', nb_mode_crea)
-!
-! - Save in empiric base
-!
-    ds_empi%base         = base
-    ds_empi%field_name   = field_name
-    ds_empi%field_refe   = field_refe
-    ds_empi%mesh         = mesh
-    ds_empi%model        = model
-    ds_empi%base_type    = ' '
-    ds_empi%axe_line     = ' '
-    ds_empi%surf_num     = ' '
-    ds_empi%nb_equa      = nb_equa
-    ds_empi%nb_node      = nb_node
-    ds_empi%nb_cmp       = nb_equa/nb_node
-    ds_empi%nb_mode      = 0
 !
 end subroutine

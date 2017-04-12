@@ -53,13 +53,13 @@ implicit none
 !
 ! - General initialisations of datastructure
 !
-    ds_para_rb%solver          = '&&OP0053.SOLVER'
-    ds_para_rb%syst_matr       = '&&OP0053.MATR'
-    ds_para_rb%syst_matr_type  = ' '
-    ds_para_rb%syst_2mbr       = '&&OP0053.SECMBR'
-    ds_para_rb%syst_2mbr_type  = ' '
-    ds_para_rb%syst_solu       = '&&OP0053.SOLUTI'
-    ds_para_rb%vect_zero       = '&&OP0053.VEZERO'
-    ds_para_rb%ds_multipara    = ds_multipara
+!    ds_para_rb%solver          = '&&OP0053.SOLVER'
+!    ds_para_rb%syst_matr       = '&&OP0053.MATR'
+!    ds_para_rb%syst_matr_type  = ' '
+!    ds_para_rb%syst_2mbr       = '&&OP0053.SECMBR'
+!    ds_para_rb%syst_2mbr_type  = ' '
+!    ds_para_rb%syst_solu       = '&&OP0053.SOLUTI'
+!    ds_para_rb%vect_zero       = '&&OP0053.VEZERO'
+!    ds_para_rb%ds_multipara    = ds_multipara
 !
 end subroutine

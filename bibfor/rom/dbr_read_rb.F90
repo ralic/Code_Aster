@@ -51,13 +51,13 @@ implicit none
     if (niv .ge. 2) then
         call utmess('I', 'ROM5_27')
     endif
-!
-! - Read data for multiparametric problems
-!
-    call romMultiParaRead(ds_para_rb%ds_multipara)
-!
-! - Get solver parameters
-!
-    call cresol(ds_para_rb%solver)
+!!
+!! - Read data for multiparametric problems
+!!
+!    call romMultiParaRead(ds_para_rb%ds_multipara)
+!!
+!! - Get solver parameters
+!!
+!    call cresol(ds_para_rb%solver)
 !
 end subroutine

@@ -5,7 +5,6 @@ use Rom_Datastructure_type
 implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/romMultiParaChck.h"
 #include "asterfort/utmess.h"
 !
 ! ======================================================================
@@ -47,7 +46,5 @@ implicit none
     if (l_reuse) then
         call utmess('F','ROM2_13', sk = operation)
     endif
-
-    call romMultiParaChck(ds_para_rb%ds_multipara)
 !
 end subroutine

@@ -113,6 +113,77 @@ implicit none
         character(len=24) :: coor_redu
     end type ROM_DS_ParaRRC
 !
+! - Parameters for definition of multiparametric reduced problem - Evaluation
+!
+    type ROM_DS_EvalCoef
+        integer                     :: nb_para
+        real(kind=8)                :: para_vale(5)
+        character(len=16)           :: para_name(5)
+    end type ROM_DS_EvalCoef
+!
+! - Parameters for definition of multiparametric reduced problem - Variations
+!
+    type ROM_DS_VariPara
+        integer                     :: nb_vale_para
+        real(kind=8), pointer       :: para_vale(:)
+        character(len=16)           :: para_name
+        real(kind=8)                :: para_init
+    end type ROM_DS_VariPara
+!
+! - Parameters for definition of multiparametric reduced problem - Coefficients
+!
+    type ROM_DS_MultiCoef
+        aster_logical               :: l_func
+        aster_logical               :: l_cste
+        aster_logical               :: l_cplx
+        aster_logical               :: l_real
+        complex(kind=8)             :: coef_cste_cplx
+        real(kind=8)                :: coef_cste_real
+        complex(kind=8), pointer    :: coef_cplx(:)
+        real(kind=8), pointer       :: coef_real(:)
+        character(len=8)            :: func_name
+    end type ROM_DS_MultiCoef
+!
+! - Parameters for definition of multiparametric reduced problem
+!
+    type ROM_DS_MultiPara
+! ----- Type of system to solve
+        character(len=1)        :: syst_type
+! ----- Matrix
+        integer                 :: nb_matr
+        character(len=8)        :: matr_name(8)
+        character(len=1)        :: matr_type(8)
+        type(ROM_DS_MultiCoef)  :: matr_coef(8)
+! ----- Second member
+        character(len=8)        :: vect_name
+        character(len=1)        :: vect_type
+        type(ROM_DS_MultiCoef)  :: vect_coef
+! ----- Products
+        character(len=24)       :: prod_mode(8)
+! ----- Variation of coefficients: number (by mode)
+        integer                 :: nb_vari_coef
+! ----- Variation of coefficients: type
+        character(len=24)       :: type_vari_coef
+! ----- Variation of coefficients: by parameter
+        integer                 :: nb_vari_para
+        type(ROM_DS_VariPara)   :: vari_para(5)
+! ----- Evaluation of coefficients
+        type(ROM_DS_EvalCoef)   :: evalcoef
+    end type ROM_DS_MultiPara
+!
+! - Parameters to solve systems
+!
+    type ROM_DS_Solve
+        character(len=1)         :: syst_type
+        character(len=1)         :: syst_matr_type
+        character(len=1)         :: syst_2mbr_type
+        character(len=19)        :: syst_matr
+        character(len=19)        :: syst_2mbr
+        character(len=19)        :: syst_solu
+        character(len=19)        :: vect_zero
+        integer                  :: syst_size
+    end type ROM_DS_Solve
+!
 ! - Parameters for DEFI_BASE_REDUITE operator (POD)
 !
     type ROM_DS_ParaDBR_POD
@@ -136,44 +207,25 @@ implicit none
         character(len=19)       :: tabl_name
     end type ROM_DS_ParaDBR_POD
 !
-! - Parameters for definition of multiparametric reduced problem
-!
-    type ROM_DS_MultiPara
-! ----- Type of system to solve
-        character(len=1)         :: syst_type
-! ----- Matrix
-        integer                  :: nb_matr
-        character(len=8)         :: matr_name(8)
-        character(len=1)         :: matr_type(8)
-        aster_logical            :: l_coefm_cplx(8)
-        aster_logical            :: l_coefm_real(8)
-        complex(kind=8)          :: coefm_cplx(8)
-        real(kind=8)             :: coefm_real(8)
-! ----- Second member
-        character(len=8)         :: vect_name
-        character(len=1)         :: vect_type
-        aster_logical            :: l_coefv_cplx
-        aster_logical            :: l_coefv_real
-        complex(kind=8)          :: coefv_cplx
-        real(kind=8)             :: coefv_real
-! ----- Products
-        character(len=24)        :: prod_mode(8)
-    end type ROM_DS_MultiPara
-!
 ! - Parameters for DEFI_BASE_REDUITE operator (RB)
 !
     type ROM_DS_ParaDBR_RB
+! ----- List of reduced components
+        character(len=24)       :: coef_redu
+! ----- Residual
+        character(len=24)       :: vect_2mbr_init
+        character(len=1)        :: resi_type
+        character(len=24)       :: resi_vect
+        real(kind=8), pointer   :: resi_norm(:)
+        real(kind=8)            :: resi_refe
 ! ----- Datastructure for solver's parameters
-        character(len=19)        :: solver
-! ----- Parameters for solving system
-        character(len=1)         :: syst_matr_type
-        character(len=1)         :: syst_2mbr_type
-        character(len=19)        :: syst_matr
-        character(len=19)        :: syst_2mbr
-        character(len=19)        :: syst_solu
-        character(len=19)        :: vect_zero
+        character(len=19)       :: solver
+! ----- To solve complete system
+        type(ROM_DS_Solve)      :: solveROM
+! ----- To solve reduced system
+        type(ROM_DS_Solve)      :: solveDOM
 ! ----- Datastructure for multiparametric reduced problem
-        type(ROM_DS_MultiPara)   :: ds_multipara
+        type(ROM_DS_MultiPara)  :: multipara
     end type ROM_DS_ParaDBR_RB
 !
 ! - Parameters for DEFI_BASE_REDUITE operator
